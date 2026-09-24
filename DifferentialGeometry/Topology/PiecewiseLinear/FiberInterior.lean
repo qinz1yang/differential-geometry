@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.TransverseHeight
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightIndex
+
+/-! # Fiber Interior -/
 
 open Set Topology
 
@@ -12,7 +19,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem IsPLHomeomorphOn.mem_nhdsWithin_fiber_of_notMem_image_boundary {n : ℕ}
     (hdimE : Module.finrank ℝ E = n + 2) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     {D : Set E} {g : (Fin (n + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) D)
-    {r : ℝ} (hDr : D ⊆ {x | ℓ x = r}) {q : E} (hq : q ∈ D) (hqJ : q ∉ g '' stdSimplexBoundary (n + 1)) :
+    {r : ℝ} (hDr : D ⊆ {x | ℓ x = r}) {q : E} (hq : q ∈ D) (hqJ : q ∉ g '' stdSimplexBoundary (n +
+        1)) :
     D ∈ 𝓝[{x | ℓ x = r}] q := by
   have hD : IsPLBall (n + 1) D := ⟨g, hg⟩
   obtain ⟨e, π, -, hfixed, -⟩ := exists_affine_coordinates_of_linear_fiber
@@ -23,7 +31,8 @@ theorem IsPLHomeomorphOn.mem_nhdsWithin_fiber_of_notMem_image_boundary {n : ℕ}
     rwa [(hfixed x).mpr (hDr hx), (hfixed y).mpr (hDr hy)] at h
   have hπ : IsPLHomeomorphOn π D (π '' D) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hD.isPolyhedron
-      ((isPiecewiseAffineOn_of_affine π.toAffineMap isOpen_univ).mono_of_isPolyhedron hD.isPolyhedron (subset_univ D))
+      ((isPiecewiseAffineOn_of_affine π.toAffineMap isOpen_univ).mono_of_isPolyhedron
+          hD.isPolyhedron (subset_univ D))
       ⟨fun x hx => mem_image_of_mem π hx, hπinj, fun _ hy => hy⟩
   have hboundary := (hg.trans hπ).image_stdSimplexBoundary
   have hnot : π q ∉ frontier (π '' D) := by

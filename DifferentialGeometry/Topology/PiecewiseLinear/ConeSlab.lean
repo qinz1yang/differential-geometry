@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.RadialIndependence
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeHalfSpace
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+
+/-! # Cone Slab -/
 
 open Set
 
@@ -127,7 +134,8 @@ theorem IsConeBase.exists_coneComplex_inter_slab [FiniteDimensional ℝ E] {p : 
       L.space = (K.space ∩ ℓ ⁻¹' Icc (ℓ p) b) ∪ ((coneComplex hK).space ∩ {x | ℓ x = b}) ∧
       (coneComplex hL).space = (coneComplex hK).space ∩ ℓ ⁻¹' Icc (ℓ p) b := by
   classical
-  let _ : Finite (coneComplex hK).faces := (coneComplex_faces_finite hK (Set.toFinite K.faces)).to_subtype
+  let _ : Finite (coneComplex hK).faces := (coneComplex_faces_finite hK (Set.toFinite
+      K.faces)).to_subtype
   have hfiber : IsPolyhedron ((coneComplex hK).space ∩ {x | ℓ x = b}) := by
     have h : IsPolyhedron ((coneComplex hK).space ∩ ℓ ⁻¹' Icc b b) :=
       (isPolyhedron_space (coneComplex hK)).inter_preimage isHPolytope_Icc.isPolyhedron ℓ

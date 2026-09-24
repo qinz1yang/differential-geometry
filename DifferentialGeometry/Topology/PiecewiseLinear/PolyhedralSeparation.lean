@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+
+/-! # Polyhedral Separation -/
 
 open Set Topology
 
@@ -51,7 +58,8 @@ theorem IsHPolytope.exists_nonneg_piecewiseAffine_zero_set {P : Set E} (hP : IsH
         obtain ⟨f, hf, hf0, hfzero⟩ := ih
         let A : E →ᵃ[ℝ] ℝ := (l i).toAffineMap - AffineMap.const ℝ E (c i)
         refine ⟨fun x => max (f x) (A x), hf.max
-          (isPiecewiseAffineOn_of_affine A isOpen_univ), fun x => (hf0 x).trans (le_max_left _ _), ?_⟩
+          (isPiecewiseAffineOn_of_affine A isOpen_univ), fun x => (hf0 x).trans (le_max_left _ _),
+              ?_⟩
         intro x
         have hAx : A x = l i x - c i := rfl
         constructor
@@ -63,11 +71,13 @@ theorem IsHPolytope.exists_nonneg_piecewiseAffine_zero_set {P : Set E} (hP : IsH
           · exact (hfzero x).mp hzero j hj
         · intro hx
           have hz := (hfzero x).mpr fun j hj => hx j (Finset.mem_insert_of_mem hj)
-          have hle : A x ≤ 0 := by rw [hAx]; exact sub_nonpos.mpr (hx i (Finset.mem_insert_self _ _))
+          have hle : A x ≤ 0 := by rw [hAx]; exact sub_nonpos.mpr (hx i (Finset.mem_insert_self _
+              _))
           change max (f x) (A x) = 0
           rw [hz, max_eq_left hle]
   obtain ⟨f, hf, hf0, hfzero⟩ := hfinite Finset.univ
-  exact ⟨f, hf, hf0, fun x => by simpa only [mem_ofPred_eq, Finset.mem_univ, forall_const] using hfzero x⟩
+  exact ⟨f, hf, hf0, fun x => by
+    simpa only [mem_ofPred_eq, Finset.mem_univ, forall_const] using hfzero x⟩
 
 theorem IsPolyhedron.exists_nonneg_piecewiseAffine_zero_set {P : Set E} (hP : IsPolyhedron P) :
     ∃ f : E → ℝ, IsPiecewiseAffineOn f univ ∧ (∀ x, 0 ≤ f x) ∧

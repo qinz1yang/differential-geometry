@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Geometry.Boundary.Model.Basic
 import DifferentialGeometry.Geometry.Boundary.Orientation
 import DifferentialGeometry.Tensor.BilinearForm
@@ -7,6 +12,8 @@ import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Linear
+
+/-! # Euclidean Half Space -/
 
 noncomputable section
 
@@ -594,7 +601,8 @@ theorem boundaryInclusionMfderiv_euclideanHalfSpace_apply
   have h := congrArg (fun L => L (tangentSpaceModelContinuousLinearEquiv
     (I := (EuclideanHalfSpaceInstance.instHasSmoothBoundary n).boundaryI) x w))
     (boundaryInclusionMfderiv_model_euclideanHalfSpace x)
-  simpa only [ContinuousLinearEquiv.arrowCongr_apply, ContinuousLinearEquiv.symm_apply_apply] using h
+  simpa only [ContinuousLinearEquiv.arrowCongr_apply, ContinuousLinearEquiv.symm_apply_apply] using
+      h
 
 theorem sub_head_smul_inwardCoord_mem_range_boundaryInclusionMfderiv
     (x : BoundaryManifold (modelWithCornersEuclideanHalfSpace n) M)
@@ -808,7 +816,8 @@ theorem sub_chart_head_smul_inwardCoordAt_mem_range_boundaryInclusionMfderiv
   change boundaryInclusionMfderiv x ((trivializationAt EB (TangentSpace K) alpha).symmL Real x w) =
     L (EuclideanHalfSpaceInstance.inclEuclidean (n + 1) w) at h
   rw [hw] at h
-  change boundaryInclusionMfderiv x ((trivializationAt EB (TangentSpace K) alpha).symmL Real x w) = _
+  change boundaryInclusionMfderiv x ((trivializationAt EB (TangentSpace K) alpha).symmL Real x w) =
+      _
   rw [h]
   have hin : L (EuclideanSpace.single 0 1) = inwardCoordAt (M := M) alpha x :=
     Trivialization.symmL_apply (R := Real) T hx _
@@ -826,7 +835,8 @@ theorem det_gram_chart_euclideanHalfSpace_eq_normal_sq_mul_det_induced
       g.inner (x : M) (outwardDirAt (M := M) g alpha x) (outwardDirAt (M := M) g alpha x) *
         (Matrix.of fun i j : Fin n => (inducedMetric g).inner x
           ((trivializationAt EB (TangentSpace K) alpha).symmL Real x (EuclideanSpace.single i 1))
-          ((trivializationAt EB (TangentSpace K) alpha).symmL Real x (EuclideanSpace.single j 1))).det := by
+          ((trivializationAt EB (TangentSpace K) alpha).symmL Real x (EuclideanSpace.single j
+              1))).det := by
   let T := trivializationAt EB (TangentSpace K) alpha
   let L := (trivializationAt (EuclideanSpace Real (Fin (n + 1))) (TangentSpace J)
     (alpha : M)).symmL Real (x : M)
@@ -892,7 +902,8 @@ theorem det_gram_euclideanHalfSpace_eq_normal_sq_mul_det_induced
       ((tangentSpaceModelContinuousLinearEquiv
         (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).symm (EuclideanSpace.single i 1))
       ((tangentSpaceModelContinuousLinearEquiv
-        (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).symm (EuclideanSpace.single j 1))).det =
+        (I := modelWithCornersEuclideanHalfSpace (n + 1)) (x : M)).symm (EuclideanSpace.single j
+            1))).det =
       g.inner (x : M) (outwardDir (M := M) g x) (outwardDir (M := M) g x) *
         (Matrix.of fun i j : Fin n => (inducedMetric g).inner x
           ((tangentSpaceModelContinuousLinearEquiv

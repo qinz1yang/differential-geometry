@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.Schoenflies.SquareCycle
 import DifferentialGeometry.External.Schoenflies.FaceCyclesLand
+
+/-! # Arc Disk Neighborhood -/
 
 open Set Topology
 
@@ -109,7 +116,8 @@ theorem exists_polygonal_jordan_neighborhood_of_isArc {A U : Set Plane}
   have hpoly : IsPolygonal J := hdraw.isPolygonal_edgesCover
     (hchain.block_polygonal (by omega)) hface.isCycle.isWalk_cons (List.cons_ne_nil _ _)
   have hout : Graph.face G segmentDrawing b = outside J :=
-    hface.eq_inside_or_outside.resolve_left fun heq => hbunb (heq ▸ hface.isSeparating.isBounded_inside)
+    hface.eq_inside_or_outside.resolve_left fun heq => hbunb (heq ▸
+        hface.isSeparating.isBounded_inside)
   have hfr (j : ℕ) (hj : j ≤ (n + 1) * m) :
       frontier (Plane.closedSquare (c j) r) ⊆ Graph.pointSet G segmentDrawing := by
     obtain ⟨i, hi, h₁, h₂⟩ := exists_block_index (j := j) (n := n) (m := m) hj

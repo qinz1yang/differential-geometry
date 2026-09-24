@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import Mathlib.Analysis.ODE.Gronwall
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
+
+/-! Chart Cover Bijective. -/
 
 
 namespace DifferentialGeometry.Analysis.ODE

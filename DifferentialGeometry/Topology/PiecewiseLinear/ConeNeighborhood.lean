@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeHalfSpace
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAvoiding
 import Mathlib.Topology.Algebra.Module.FiniteDimension
+
+/-! # Cone Neighborhood -/
 
 open Set Topology
 
@@ -42,7 +49,8 @@ theorem continuousAt_centralProjection [FiniteDimensional ℝ E]
     (ℓ : E →ₗ[ℝ] ℝ) (r : ℝ) {p x : E} (hx : ℓ x ≠ ℓ p) :
     ContinuousAt (centralProjection ℓ r p) x := by
   exact continuousAt_const.add ((continuousAt_const.div
-    (ℓ.continuous_of_finiteDimensional.continuousAt.sub continuousAt_const) (sub_ne_zero.mpr hx)).smul
+    (ℓ.continuous_of_finiteDimensional.continuousAt.sub continuousAt_const) (sub_ne_zero.mpr
+        hx)).smul
       (continuousAt_id.sub continuousAt_const))
 
 open Classical in
@@ -59,7 +67,8 @@ theorem eventually_mem_coneComplex_of_mem_nhdsWithin [FiniteDimensional ℝ E]
     tendsto_nhdsWithin_iff.mpr ⟨(continuousAt_centralProjection ℓ r hx).tendsto,
       hne.mono (fun y hy => apply_centralProjection ℓ r hy)⟩
   have hpositive : ∀ᶠ y in 𝓝 x, 0 < (ℓ y - ℓ p) / (r - ℓ p) :=
-    ((ℓ.continuous_of_finiteDimensional.sub continuous_const).div_const (r - ℓ p)).continuousAt.eventually
+    ((ℓ.continuous_of_finiteDimensional.sub continuous_const).div_const (r - ℓ
+        p)).continuousAt.eventually
       (Ioi_mem_nhds hpos)
   filter_upwards [hmap.eventually hbase, hne, hpositive] with y hy hyne hypos hybound
   exact (mem_coneComplex_space_iff hpL).mpr (Or.inr
@@ -75,7 +84,8 @@ theorem mem_interior_coneComplex_of_mem_nhdsWithin [FiniteDimensional ℝ E]
     x ∈ interior (coneComplex hpL).space := by
   apply mem_interior_iff_mem_nhds.mpr
   have hbound : ∀ᶠ y in 𝓝 x, (ℓ y - ℓ p) / (r - ℓ p) < 1 :=
-    ((ℓ.continuous_of_finiteDimensional.sub continuous_const).div_const (r - ℓ p)).continuousAt.eventually
+    ((ℓ.continuous_of_finiteDimensional.sub continuous_const).div_const (r - ℓ
+        p)).continuousAt.eventually
       (Iio_mem_nhds hlt)
   filter_upwards [eventually_mem_coneComplex_of_mem_nhdsWithin ℓ hpL hp hx hpos hbase,
     hbound] with y hy hybound

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialZero
 import Mathlib.Analysis.Normed.Operator.Banach
+
+/-! # Polytope Boundary -/
 
 open Set Topology
 
@@ -24,9 +31,11 @@ theorem IsHPolytope.isPolyhedron_frontier {P : Set E} (hP : IsHPolytope P) :
           intro i
           by_cases hi : l i = 0
           · have hc : 0 ≤ c i := by simpa only [hi, LinearMap.zero_apply] using hxle i
-            exact Filter.Eventually.of_forall fun y => by simpa only [hi, LinearMap.zero_apply] using hc
+            exact Filter.Eventually.of_forall fun y => by simpa only [hi, LinearMap.zero_apply]
+                using hc
           · have hlt : l i x < c i := lt_of_le_of_ne (hxle i) (hnot i hi)
-            filter_upwards [(isOpen_lt (l i).continuous_of_finiteDimensional continuous_const).mem_nhds hlt] with y hy
+            filter_upwards [(isOpen_lt (l i).continuous_of_finiteDimensional
+                continuous_const).mem_nhds hlt] with y hy
             exact hy.le
         have hnhds : P ∈ 𝓝 x := by
           rw [hrepr]

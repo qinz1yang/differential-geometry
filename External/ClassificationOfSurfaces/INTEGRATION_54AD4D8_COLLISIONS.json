@@ -1,0 +1,261 @@
+{
+  "incoming_public_names": [
+    "Schoenflies.PrePolygon.exists_triangle_mesh_inside",
+    "Schoenflies.PrePolygon.exists_simplicial_complex_inside",
+    "Schoenflies.eq_closure_inside_of_isCompact_frontier_eq",
+    "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free",
+    "Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free",
+    "Schoenflies.interior_closure_inside_of_separating",
+    "Schoenflies.restrict_triangles_crosscut_partition",
+    "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exists_two_geometrically_free_triangles_of_jordan_support",
+    "Schoenflies.PrePolygon.exists_triangle_mesh_inside_singleton_or_two_geometrically_free"
+  ],
+  "duplicate_selection_exports": [
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleOrder",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:131:noncomputable def freeTriangleOrder (T : M.Triangle) (k : Fin 3) : Fin 3 → Plane :="
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleOrder_affineIndependent",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:134:theorem freeTriangleOrder_affineIndependent (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.triangle_eq_orderedVertices",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:144:theorem triangle_eq_orderedVertices (T : M.Triangle) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.triangleEdges_eq_orderedEdges",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:161:theorem triangleEdges_eq_orderedEdges (T : M.Triangle) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.IsOneEdgeFreeTriangle",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:192:def IsOneEdgeFreeTriangle (T : M.Triangle) (k : Fin 3) : Prop :="
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBase_diff_endpoints_disjoint_apexEdges",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:208:theorem freeTriangleBase_diff_endpoints_disjoint_apexEdges (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseEdge",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:244:noncomputable def freeTriangleBaseEdge (T : M.Triangle) (k : Fin 3) : Finset M.Vertex :="
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge0",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:248:noncomputable def freeTriangleApexEdge0 (T : M.Triangle) (k : Fin 3) : Finset M.Vertex :="
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge1",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:253:noncomputable def freeTriangleApexEdge1 (T : M.Triangle) (k : Fin 3) : Finset M.Vertex :="
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseEdge_card",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:257:theorem freeTriangleBaseEdge_card (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseEdge_subset",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:263:theorem freeTriangleBaseEdge_subset (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseEdge_mem_edges",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:269:theorem freeTriangleBaseEdge_mem_edges (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge0_card",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:275:theorem freeTriangleApexEdge0_card (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge1_card",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:280:theorem freeTriangleApexEdge1_card (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge0_subset",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:285:theorem freeTriangleApexEdge0_subset (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge1_subset",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:291:theorem freeTriangleApexEdge1_subset (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.image_freeTriangleBaseEdge",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:309:theorem image_freeTriangleBaseEdge (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseEdge_carrier",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:330:theorem freeTriangleBaseEdge_carrier (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge0_carrier",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:335:theorem freeTriangleApexEdge0_carrier (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleApexEdge1_carrier",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:344:theorem freeTriangleApexEdge1_carrier (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.triangleEdges_eq_freeTriangleEdges",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:353:theorem triangleEdges_eq_freeTriangleEdges (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.triangleVertex_mem_freeTriangleApexEdges",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:386:theorem triangleVertex_mem_freeTriangleApexEdges (T : M.Triangle) (k : Fin 3)"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isBoundaryEdge_freeTriangleBaseEdge_of_oneEdgeFree",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\PolygonalSchoenflies.lean:1489:theorem TriangleMesh.isBoundaryEdge_freeTriangleBaseEdge_of_oneEdgeFree"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.edgeCarrier_subset_eraseTriangle_support_of_not_boundary",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\PolygonalSchoenflies.lean:1559:theorem TriangleMesh.edgeCarrier_subset_eraseTriangle_support_of_not_boundary"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.eraseTriangle_support_inter_triangleCarrier_of_oneEdgeFree",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\PolygonalSchoenflies.lean:1589:theorem TriangleMesh.eraseTriangle_support_inter_triangleCarrier_of_oneEdgeFree"
+      ]
+    },
+    {
+      "source_selection": "Moise/OneEdgeAttachment.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.frontier_eraseTriangle_support_of_oneEdgeFree",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\PolygonalSchoenflies.lean:1684:theorem TriangleMesh.frontier_eraseTriangle_support_of_oneEdgeFree"
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.IsTwoEdgeFreeTriangle",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:198:def IsTwoEdgeFreeTriangle (T : M.Triangle) (k : Fin 3) : Prop :="
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.IsGeometricallyFreeTriangle",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:204:def IsGeometricallyFreeTriangle (T : M.Triangle) : Prop :="
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.freeTriangleBaseSegment_eq_oppositeEdgeCarrier",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:475:theorem freeTriangleBaseSegment_eq_oppositeEdgeCarrier (T : M.Triangle) (k : Fin 3) :"
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isGeometricallyFreeTriangle_of_boundaryEdges_card_one",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:501:theorem isGeometricallyFreeTriangle_of_boundaryEdges_card_one (T : M.Triangle)"
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isGeometricallyFreeTriangle_of_boundaryEdges_card_two",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:517:theorem isGeometricallyFreeTriangle_of_boundaryEdges_card_two (T : M.Triangle)"
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.isGeometricallyFreeTriangle_of_isFreeTriangle",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:691:theorem isGeometricallyFreeTriangle_of_isFreeTriangle"
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exists_cutting_diagonal_configuration",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:710:theorem exists_cutting_diagonal_configuration"
+      ]
+    },
+    {
+      "source_selection": "Moise/GeometricFreeTriangle.lean",
+      "fullname": "LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.frontier_triangleCarrier_subset_freeTriangleEdges",
+      "canonical_locations": [
+        "External/ClassificationOfSurfaces\\Moise\\FreeTriangleMove.lean:402:theorem frontier_triangleCarrier_subset_freeTriangleEdges (T : M.Triangle) (k : Fin 3) :"
+      ]
+    }
+  ],
+  "scope": "Public declaration name scan across current External and DifferentialGeometry; namespace resolution checked from source. Private declarations keep module-local mangled identities. No compilation claimed.",
+  "constructor_review": "PlaneComplex and TriangleMesh structure declarations and computational fields unchanged; source refactors proof terms in toPlaneComplex and deletes the later barycentric-realization API, so retain current base files.",
+  "base_signature_differences": [
+    "PlaneComplex.endpoint_secondCoords_eq_zero_of_two_axis_points: source removes a != b premise, current retained; no incoming native caller uses it.",
+    "LineSubdivision.convexHull_image_inter_of_affine_separation: source removes injectivity premise, current retained; no incoming native caller uses it."
+  ],
+  "incoming_public_name_collisions_found": [],
+  "checked_target_revision": "712480db4447d42ca5e9cdd38ab575353b24feb9"
+}

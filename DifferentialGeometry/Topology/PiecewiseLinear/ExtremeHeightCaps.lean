@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightCapCone
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiberCircle
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSpanningDisk
+
+/-! # Extreme Height Caps -/
 
 open Set
 
@@ -42,9 +49,11 @@ theorem exists_isSimplyEmbedded_lower_cap_of_heightIndex_eq_zero (I : Schoenflie
       IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D ∧
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       D ⊆ W ∩ {x | ℓ x = r} ∧ IsSimplyEmbedded ((K.space ∩ {x | ℓ x ≤ r}) ∪ D) := by
-  obtain ⟨p, hp, r, hpr, hother, habove⟩ := exists_height_between_lowest_vertices K hK ℓ.toLinearMap hinj
+  obtain ⟨p, hp, r, hpr, hother, habove⟩ := exists_height_between_lowest_vertices K hK ℓ.toLinearMap
+      hinj
   have hbelow : ∃ y ∈ K.space, ℓ y < r := ⟨p, K.vertices_subset_space hp, hpr⟩
-  have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK (by simp) ℓ hℓ hinj hzero r hbelow habove
+  have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK (by simp) ℓ hℓ hinj hzero r hbelow
+      habove
   have hlinear : ℓ.toLinearMap ≠ 0 := by
     intro h
     apply hℓ
@@ -67,7 +76,8 @@ theorem exists_isSimplyEmbedded_upper_cap_of_heightIndex_eq_zero (I : Schoenflie
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       D ⊆ W ∩ {x | ℓ x = r} ∧ IsSimplyEmbedded ((K.space ∩ {x | r ≤ ℓ x}) ∪ D) := by
   have hinj' : InjOn (-ℓ.toLinearMap) K.vertices := fun x hx y hy h => hinj hx hy (neg_injective h)
-  obtain ⟨p, hp, t, hpt, hother, z, hz, htz⟩ := exists_height_between_lowest_vertices K hK (-ℓ.toLinearMap) hinj'
+  obtain ⟨p, hp, t, hpt, hother, z, hz, htz⟩ := exists_height_between_lowest_vertices K hK
+      (-ℓ.toLinearMap) hinj'
   have hpr : -t < ℓ p := by
     change -ℓ p < t at hpt
     linarith
@@ -80,7 +90,8 @@ theorem exists_isSimplyEmbedded_upper_cap_of_heightIndex_eq_zero (I : Schoenflie
     change t < -ℓ z at htz
     linarith⟩
   have habove : ∃ y ∈ K.space, -t < ℓ y := ⟨p, K.vertices_subset_space hp, hpr⟩
-  have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK (by simp) ℓ hℓ hinj hzero (-t) hbelow habove
+  have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK (by simp) ℓ hℓ hinj hzero (-t) hbelow
+      habove
   have hlinear : ℓ.toLinearMap ≠ 0 := by
     intro h
     apply hℓ

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FaceProjection
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberInterior
+
+/-! # Fiber Boundary -/
 
 open Set Topology
 
@@ -23,7 +30,8 @@ theorem IsPLHomeomorphOn.mem_nhdsWithin_fiber_iff_notMem_image_boundary {n : ℕ
     rwa [(hfixed x).mpr (hDr hx), (hfixed y).mpr (hDr hy)] at h
   have hπ : IsPLHomeomorphOn π D (π '' D) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hD.isPolyhedron
-      ((isPiecewiseAffineOn_of_affine π.toAffineMap isOpen_univ).mono_of_isPolyhedron hD.isPolyhedron (subset_univ D))
+      ((isPiecewiseAffineOn_of_affine π.toAffineMap isOpen_univ).mono_of_isPolyhedron
+          hD.isPolyhedron (subset_univ D))
       ⟨fun x hx => mem_image_of_mem π hx, hπinj, fun _ hy => hy⟩
   have hecont : Filter.Tendsto e (𝓝 (π q)) (𝓝 q) := by
     simpa only [ContinuousAt, (hfixed q).mpr (hDr hq)] using
@@ -55,7 +63,8 @@ theorem mem_frontier_space_iff_mem_boundaryComplex_fiber {n : ℕ}
     simp only [h, LinearMap.zero_apply]
   obtain ⟨g, hg⟩ := hL
   have hBd : (boundaryComplex (n + 1) L).space = g '' stdSimplexBoundary (n + 1) := by
-    rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hg, simplexBoundary_stdVertices_space]
+    rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hg,
+        simplexBoundary_stdVertices_space]
   have hxL : x ∈ L.space := hLspace.symm ▸ ⟨hxA, rfl⟩
   have hLH : L.space ⊆ {y | ℓ y = ℓ x} := by rw [hLspace]; exact inter_subset_right
   have hrelative := hg.mem_nhdsWithin_fiber_iff_notMem_image_boundary hdim ℓ hℓ hLH hxL
@@ -89,7 +98,8 @@ theorem mem_frontier_space_iff_mem_boundaryComplex_fiber_of_injOn {n : ℕ}
   have hvert (w : E) (hw : w ∈ s) : w ∈ K.vertices :=
     K.down_closed hs (Finset.singleton_subset_iff.mpr hw) (Finset.singleton_nonempty w)
   have hheight : ℓ v ≠ ℓ u := fun heq => huv (hinj (hvert v hv) (hvert u hu) heq).symm
-  exact mem_frontier_space_iff_mem_boundaryComplex_fiber K A L hAK hdim hL hs hxs hxA hu hv ℓ hheight
+  exact mem_frontier_space_iff_mem_boundaryComplex_fiber K A L hAK hdim hL hs hxs hxA hu hv ℓ
+      hheight
     (by simpa only [hxr] using hLspace)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

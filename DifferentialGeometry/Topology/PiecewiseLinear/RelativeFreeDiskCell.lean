@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeDiskCell
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskComplement
+
+/-! # Relative Free Disk Cell -/
 
 open Set
 
@@ -49,7 +56,8 @@ private theorem exists_free_disk_cell_not_subset_planar
     rw [hcover]
     exact subset_iUnion_of_subset C (subset_iUnion_of_subset hC Subset.rfl)
   obtain ⟨C, hC, hnotCD, htr⟩ := exists_cell_not_subset_with_nontrivial_frontier_inter h
-    hD.isPolyhedron.isClosed (fun hbd => hne (hD.eq_of_subset_of_frontier_subset h.isPLBall hDK hbd))
+    hD.isPolyhedron.isClosed (fun hbd => hne (hD.eq_of_subset_of_frontier_subset h.isPLBall hDK
+        hbd))
   by_cases hfree : IsFreeDiskCell K C
   · exact ⟨C, hC, hnotCD, hfree⟩
   have hmore : 1 < cells.card := by

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homology.HomotopyEquivalence
 import Mathlib.LinearAlgebra.Dimension.Constructions
 import Mathlib.AlgebraicTopology.SingularHomology.HomologyZero
+
+/-! # Betti Number -/
 
 open CategoryTheory AlgebraicTopology
 
@@ -15,7 +22,8 @@ theorem bettiNumber_eq_of_isIso (k : Type u) [Field k] {X Y : TopCat.{u}}
     (n : ℕ) (f : X ⟶ Y)
     [IsIso (((singularHomologyFunctor (ModuleCat.{u} k) n).obj (ModuleCat.of k k)).map f)] :
     bettiNumber k X n = bettiNumber k Y n :=
-  (asIso (((singularHomologyFunctor (ModuleCat.{u} k) n).obj (ModuleCat.of k k)).map f)).toLinearEquiv.finrank_eq
+  (asIso (((singularHomologyFunctor (ModuleCat.{u} k) n).obj (ModuleCat.of k k)).map
+      f)).toLinearEquiv.finrank_eq
 
 theorem bettiNumber_eq_of_homotopyEquiv (k : Type u) [Field k] {X Y : TopCat.{u}}
     (e : ContinuousMap.HomotopyEquiv X Y) (n : ℕ) : bettiNumber k X n = bettiNumber k Y n := by

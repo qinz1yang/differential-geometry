@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularLevelPolygons
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PlanarJordan.Innermost
 import DifferentialGeometry.Topology.ConvexFrontier
+
+/-! # Innermost Level -/
 
 open Set Topology
 
@@ -54,16 +61,19 @@ theorem exists_spanning_disk_of_mem_heightSingularPoints {E : Type*}
   let F := {x | ℓ x = ℓ p}
   have hCfin : C.Finite :=
     finite_levelPolygons K (fun s hs => hK.card_le K hs) hdimE ℓ hℓ hinj (ℓ p)
-  have hpC : p ∈ ⋃₀ C := mem_sUnion_levelPolygons_of_mem_heightSingularPoints K hK hdimE ℓ hℓ hinj hp
+  have hpC : p ∈ ⋃₀ C := mem_sUnion_levelPolygons_of_mem_heightSingularPoints K hK hdimE ℓ hℓ hinj
+      hp
   have hCne : C.Nonempty := by
     obtain ⟨J, hJ, -⟩ := mem_sUnion.mp hpC
     exact ⟨J, hJ⟩
-  have hpv := heightSingularPoints_subset_vertices K hK.isCombinatorialManifoldWithBoundary hdimE ℓ hℓ hinj hp
+  have hpv := heightSingularPoints_subset_vertices K hK.isCombinatorialManifoldWithBoundary hdimE ℓ
+      hℓ hinj hp
   have hcover : K.space ∩ F = ⋃₀ C := by
     rw [show F = {x | ℓ x = ℓ p} from rfl,
       fiber_eq_singleton_union_sUnion_levelPolygons K hK hdimE ℓ hℓ hinj hpv,
       union_eq_right.mpr (singleton_subset_iff.mpr hpC)]
-  obtain ⟨e, π, hleft, hfixed, heheight⟩ := exists_affine_coordinates_of_linear_fiber hdimE ℓ hℓ (ℓ p)
+  obtain ⟨e, π, hleft, hfixed, heheight⟩ := exists_affine_coordinates_of_linear_fiber hdimE ℓ hℓ (ℓ
+      p)
   have hπinj : InjOn π F := by
     intro x hx y hy hxy
     exact ((hfixed x).mpr hx).symm.trans ((congrArg e hxy).trans ((hfixed y).mpr hy))
@@ -96,12 +106,14 @@ theorem exists_spanning_disk_of_mem_heightSingularPoints {E : Type*}
   obtain ⟨J, hJ, rfl⟩ := hJ'
   have heA : IsPLHomeomorphOn e A (e '' A) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hA.isPolyhedron
-      ((isPiecewiseAffineOn_of_affine e isOpen_univ).mono_of_isPolyhedron hA.isPolyhedron (subset_univ _))
+      ((isPiecewiseAffineOn_of_affine e isOpen_univ).mono_of_isPolyhedron hA.isPolyhedron
+          (subset_univ _))
       ⟨mapsTo_image _ _, hleft.injective.injOn, fun _ h => h⟩
   have hπcover : π '' (K.space ∩ F) = ⋃₀ C' := by
     rw [hcover, image_sUnion]
   have hJA : π '' J ⊆ A :=
-    hAfr.symm.subset.trans (frontier_subset_closure.trans hA.isPolyhedron.isClosed.closure_eq.subset)
+    hAfr.symm.subset.trans (frontier_subset_closure.trans
+        hA.isPolyhedron.isClosed.closure_eq.subset)
   have hSD : K.space ∩ (e '' A) = J := by
     apply Subset.antisymm
     · rintro x ⟨hxK, y, hyA, rfl⟩

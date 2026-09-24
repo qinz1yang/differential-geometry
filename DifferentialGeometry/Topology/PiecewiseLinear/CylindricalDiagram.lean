@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismDiskPair
+
+/-! # Cylindrical Diagram -/
 
 open Set
 
@@ -65,7 +72,8 @@ theorem isCylindricalDiagram_piecewise [FiniteDimensional ℝ E]
   refine ⟨?_, ?_, ?_, ?_⟩
   · rw [← hcover]
     exact (hf.isPiecewiseAffineOn.congr hφf).union_of_isClosed
-      (hg.isPiecewiseAffineOn.congr hφg) (hP.isClosed.prod isClosed_Icc) (hP.isClosed.prod isClosed_Icc)
+      (hg.isPiecewiseAffineOn.congr hφg) (hP.isClosed.prod isClosed_Icc) (hP.isClosed.prod
+          isClosed_Icc)
   · rw [← hcover, image_union, hφf.image_eq, hφg.image_eq, hf.image_eq, hg.image_eq]
   · exact ((hφg.mono hone).image_eq.trans hg₁).trans ((hφf.mono hzero).image_eq.trans hf₀).symm
   · intro x hx y hy hxy

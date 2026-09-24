@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
+
+/-! # Height Subcomplex -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem subcomplexBarycentricMass_pos_on_affine_lt
   have hvL : v ∈ (restrict K {x | a x < r}).vertices := by
     refine ⟨K.down_closed hs (Finset.singleton_subset_iff.mpr hvs)
       (Finset.singleton_nonempty v), ?_⟩
-    simpa only [Finset.coe_singleton, convexHull_singleton, singleton_subset_iff, mem_ofPred_eq] using hvr
+    simpa only [Finset.coe_singleton, convexHull_singleton, singleton_subset_iff, mem_ofPred_eq]
+        using hvr
   rw [subcomplexBarycentricMass_eq_sum_filter K _ hs hxc]
   exact Finset.sum_pos' (fun w hw => weights_nonneg hxc (Finset.mem_filter.mp hw).1)
     ⟨v, Finset.mem_filter.mpr ⟨hvs, hvL⟩, (mem_openSimplex_self_iff (K.indep hs) hxc).mp hxs v hvs⟩

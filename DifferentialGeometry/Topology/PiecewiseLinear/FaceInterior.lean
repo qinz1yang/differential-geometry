@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiber
+
+/-! # Face Interior -/
 
 open Set Topology
 
@@ -24,8 +31,10 @@ private theorem IsHPolytope.eventually_mem_iff_add_of_openSimplex
     change (l i y = c i ↔ ∀ w ∈ s, l i w = c i) at hyiff
     by_cases hactive : l i x = c i
     · have hactive' : l i y = c i := hyiff.mpr (hxiff.mp hactive)
-      exact Filter.Eventually.of_forall fun z => by rw [map_add, map_sub, hactive, hactive', sub_self, add_zero]
-    · have hxlt : l i x < c i := lt_of_le_of_ne (hbound (openSimplex_subset_convexHull s hx) i) hactive
+      exact Filter.Eventually.of_forall fun z => by rw [map_add, map_sub, hactive, hactive',
+          sub_self, add_zero]
+    · have hxlt : l i x < c i := lt_of_le_of_ne (hbound (openSimplex_subset_convexHull s hx) i)
+        hactive
       have hylt : l i y < c i := lt_of_le_of_ne (hbound (openSimplex_subset_convexHull s hy) i)
         (fun h => hactive (hxiff.mpr (hyiff.mp h)))
       have hnear : ∀ᶠ z in 𝓝 x, l i z < c i :=
@@ -51,12 +60,14 @@ theorem eventually_mem_space_iff_add_of_mem_openSimplex
     have hT := isHPolytope_convexHull_of_affineIndependent t.val (A.indep t.property)
     by_cases hxt : x ∈ convexHull ℝ (t.val : Set E)
     · have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs (hAK t.property) hx hxt
-      exact hT.eventually_mem_iff_add_of_openSimplex hx hy (convexHull_mono (Finset.coe_subset.mpr hst))
+      exact hT.eventually_mem_iff_add_of_openSimplex hx hy (convexHull_mono (Finset.coe_subset.mpr
+          hst))
     · have hyt : y ∉ convexHull ℝ (t.val : Set E) := by
         intro hyt
         have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs (hAK t.property) hy hyt
         exact hxt (convexHull_mono (Finset.coe_subset.mpr hst) (openSimplex_subset_convexHull s hx))
-      have hnear : ∀ᶠ z in 𝓝 x, z ∉ convexHull ℝ (t.val : Set E) := hT.isClosed.isOpen_compl.mem_nhds hxt
+      have hnear : ∀ᶠ z in 𝓝 x, z ∉ convexHull ℝ (t.val : Set E) :=
+          hT.isClosed.isOpen_compl.mem_nhds hxt
       have hnear' : ∀ᶠ z in 𝓝 x, z + (y - x) ∉ convexHull ℝ (t.val : Set E) :=
         (hT.isClosed.isOpen_compl.preimage (continuous_id.add continuous_const)).mem_nhds
           (by
@@ -108,7 +119,8 @@ theorem restrict_space_frontier_of_faces_subset
   obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K (space_mono_of_faces_subset hAK hxA)
   have hface : convexHull ℝ (s : Set E) ⊆ frontier A.space :=
     (convexHull_subset_closure_openSimplex (K.nonempty_of_mem_faces hs)).trans
-      (closure_minimal (fun y hy => (mem_frontier_space_iff_of_mem_openSimplex K A hAK hs hxs hy).mp hx) isClosed_frontier)
+      (closure_minimal (fun y hy => (mem_frontier_space_iff_of_mem_openSimplex K A hAK hs hxs hy).mp
+          hx) isClosed_frontier)
   exact (restrict K _).convexHull_subset_space ⟨hs, hface⟩ (openSimplex_subset_convexHull s hxs)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

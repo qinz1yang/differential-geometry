@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryCrossingObstruction
 import DifferentialGeometry.Topology.PiecewiseLinear.SingleIntersectionCircle
 import DifferentialGeometry.Topology.PiecewiseLinear.TransverseSegment
+
+/-! # Surface Separation -/
 
 open Set
 
@@ -96,7 +103,8 @@ private theorem not_isPreconnected_compl_of_disk [FiniteDimensional ℝ E] [Fini
   have hAD : A ⊆ D.space := (subset_union_left.trans hunion.subset).trans
     (boundaryComplex_space_subset 2 D)
   obtain ⟨D', hD', hD'fin, hAff⟩ :=
-    (hH.mono_of_isPolyhedron (isPolyhedron_space D) (subset_univ _)).exists_isSubdivision_affineOn_faces D
+    (hH.mono_of_isPolyhedron (isPolyhedron_space D) (subset_univ
+        _)).exists_isSubdivision_affineOn_faces D
   let _ : Finite D'.faces := hD'fin.to_subtype
   obtain ⟨R, hR, hRfin, hcover⟩ := exists_isSubdivision_subcomplexes D'
     (fun _ : Unit => A) (fun _ => hA) (fun _ => hAD.trans hD'.space_eq.symm.subset)

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Pasting
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
+
+/-! # Singular Pasting -/
 
 open Set Topology
 
@@ -21,7 +28,8 @@ theorem faceStarComplex_space_union_geometricFaceCostar (K : Geometry.Simplicial
     by_cases hst : s ⊆ t
     · exact Or.inl ((faceStarComplex K s).convexHull_subset_space
         ⟨ht, by rwa [Finset.union_eq_left.mpr hst]⟩ hxt)
-    · exact Or.inr ((SimplicialComplex.geometricFaceCostar K s).convexHull_subset_space ⟨ht, hst⟩ hxt)
+    · exact Or.inr ((SimplicialComplex.geometricFaceCostar K s).convexHull_subset_space ⟨ht, hst⟩
+        hxt)
 
 open Classical in
 theorem notMem_geometricFaceCostar_of_mem_openSimplex (K : Geometry.SimplicialComplex ℝ E)
@@ -64,7 +72,8 @@ theorem exists_isPLBall_patches_at_fiber_pair [FiniteDimensional ℝ E]
   have hstarSmall : ∀ c, closedStar R c ⊆ Metric.ball c (min εa εb) := by
     intro c x hx
     obtain ⟨s, ⟨hs, hcs⟩, hxs⟩ := mem_iUnion₂.mp (closedStar_subset_of_isSubdivision hRR₀ c hx)
-    exact (Metric.dist_le_diam_of_mem (s.finite_toSet.isCompact_convexHull ℝ).isBounded hxs hcs).trans_lt
+    exact (Metric.dist_le_diam_of_mem (s.finite_toSet.isCompact_convexHull ℝ).isBounded hxs
+        hcs).trans_lt
       (hdiam s hs)
   have : Finite R.faces := hRfinite.to_subtype
   have hKR := hK.of_isSubdivision hR
@@ -86,15 +95,18 @@ theorem exists_isPLBall_patches_at_fiber_pair [FiniteDimensional ℝ E]
   have hCsub : C.space ⊆ R.space := space_mono_of_faces_subset hCR
   have hdisj : Disjoint S.space T.space := disjoint_spaces_of_disjoint_faces R S T hSR hTR
     (disjoint_faceStarComplex_faces_of_eq_of_injOn_starComplex R f hinj
-      (openSimplex_subset_convexHull s has) (openSimplex_subset_convexHull t hbt) hab (hfa.trans hfb.symm))
+      (openSimplex_subset_convexHull s has) (openSimplex_subset_convexHull t hbt) hab (hfa.trans
+          hfb.symm))
   have hinjS : InjOn f S.space := by
     obtain ⟨v, hv⟩ := R.nonempty_of_mem_faces hs
     have hvR := R.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
-    exact (hinj v hvR).mono (space_mono_of_faces_subset (faceStarComplex_faces_subset_starComplex R hv))
+    exact (hinj v hvR).mono (space_mono_of_faces_subset (faceStarComplex_faces_subset_starComplex R
+        hv))
   have hinjT : InjOn f T.space := by
     obtain ⟨v, hv⟩ := R.nonempty_of_mem_faces ht
     have hvR := R.down_closed ht (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
-    exact (hinj v hvR).mono (space_mono_of_faces_subset (faceStarComplex_faces_subset_starComplex R hv))
+    exact (hinj v hvR).mono (space_mono_of_faces_subset (faceStarComplex_faces_subset_starComplex R
+        hv))
   have hcoverSC : S.space ∪ C.space = R.space := faceStarComplex_space_union_geometricFaceCostar R s
   have hTC : T.space ⊆ C.space := by
     intro x hx
@@ -117,7 +129,8 @@ theorem exists_isPLBall_patches_at_fiber_pair [FiniteDimensional ℝ E]
     eventually_preimage_subset_union_of_fiber_eq_pair f (isPolyhedron_space R).isCompact
       hfR hfiber hSneigh hTneigh
   have hclosed : IsClosed (f '' (S.space ∩ C.space)) :=
-    (((isPolyhedron_space S).isCompact.inter_right (isPolyhedron_space C).isClosed).image_of_continuousOn
+    (((isPolyhedron_space S).isCompact.inter_right (isPolyhedron_space
+        C).isClosed).image_of_continuousOn
       (hfR.mono (inter_subset_left.trans hSsub))).isClosed
   have hyseam : y ∉ f '' (S.space ∩ C.space) := by
     rintro ⟨x, hx, hxy⟩
@@ -140,11 +153,13 @@ theorem exists_isPLBall_patches_at_fiber_pair [FiniteDimensional ℝ E]
   have hSA : S.space ⊆ f ⁻¹' V ∩ A₀ := by
     intro x hxS
     have hxStar : x ∈ closedStar R a := by rwa [← faceStarComplex_space R hs has]
-    exact hsmallA ⟨Metric.ball_subset_ball (min_le_left _ _) (hstarSmall a hxStar), hR.space_eq ▸ hSsub hxS⟩
+    exact hsmallA ⟨Metric.ball_subset_ball (min_le_left _ _) (hstarSmall a hxStar), hR.space_eq ▸
+        hSsub hxS⟩
   have hTB : T.space ⊆ f ⁻¹' V ∩ B₀ := by
     intro x hxT
     have hxStar : x ∈ closedStar R b := by rwa [← faceStarComplex_space R ht hbt]
-    exact hsmallB ⟨Metric.ball_subset_ball (min_le_right _ _) (hstarSmall b hxStar), hR.space_eq ▸ hTsub hxT⟩
+    exact hsmallB ⟨Metric.ball_subset_ball (min_le_right _ _) (hstarSmall b hxStar), hR.space_eq ▸
+        hTsub hxT⟩
   have haS : a ∈ S.space := S.convexHull_subset_space
     ⟨hs, by rwa [Finset.union_self]⟩ (openSimplex_subset_convexHull s has)
   refine ⟨S.space, C.space, T.space, U, hcoverSC.trans hR.space_eq,
@@ -177,7 +192,8 @@ theorem exists_isPLBall_patches_at_doublePoint_within [FiniteDimensional ℝ E]
   obtain ⟨P, Q, B, U, hPQ, hP, hQ, hB, hBQ, hdisj, hinjP, hinjB, hU, hyU, hUV, hseam,
     hinjQ, hcover, hmaps, _⟩ := exists_isPLBall_patches_at_fiber_pair K hK f hf hloc hcard
       ha hb hab hfa hfb (A₀ := univ) (B₀ := univ) Filter.univ_mem Filter.univ_mem hV
-  exact ⟨P, Q, B, U, hPQ, hP, hQ, hB, hBQ, hdisj, hinjP, hinjB, hU, hyU, hUV, hseam, hinjQ, hcover, hmaps⟩
+  exact ⟨P, Q, B, U, hPQ, hP, hQ, hB, hBQ, hdisj, hinjP, hinjB, hU, hyU, hUV, hseam, hinjQ, hcover,
+      hmaps⟩
 
 open Classical in
 theorem exists_isPLBall_patches_at_doublePoint_of_continuousOn [FiniteDimensional ℝ E]
@@ -210,7 +226,8 @@ theorem exists_isPLBall_patches_at_doublePoint [FiniteDimensional ℝ E]
       IsOpen U ∧ y ∈ U ∧ closure U ⊆ V ∧
       (∀ x ∈ P ∩ Q, f x ∉ closure U) ∧ InjOn f (Q ∩ f ⁻¹' U) ∧
       ∀ z ∈ closure U, K.space ∩ f ⁻¹' {z} ⊆ P ∪ B := by
-  exact exists_isPLBall_patches_at_doublePoint_of_continuousOn K hK f hf.continuousOn hloc hcard hy hV
+  exact exists_isPLBall_patches_at_doublePoint_of_continuousOn K hK f hf.continuousOn hloc hcard hy
+      hV
 
 open Classical in
 theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint [FiniteDimensional ℝ E]
@@ -332,7 +349,8 @@ theorem exists_isPLBall_postcomp_neighborhood_at_doublePoint_in_manifold
           EqOn g (h ∘ f) P ∧ EqOn g f Pᶜ ∧ ∀ z ∉ U, g ⁻¹' {z} = f ⁻¹' {z} := by
   obtain ⟨P, U, hP, hPK, hU, hyU, hUV, hmodify⟩ :=
     exists_isPLBall_postcomp_neighborhood_at_doublePoint_preserving_injOn K hK f hf hloc hcard
-      (fun i : Empty => nomatch i) (fun i => nomatch i) (fun i => nomatch i) (fun i => nomatch i) hy hV
+      (fun i : Empty => nomatch i) (fun i => nomatch i) (fun i => nomatch i) (fun i => nomatch i) hy
+          hV
   refine ⟨P, U, hP, hPK, hU, hyU, hUV, fun h hh hhinj hfix => ?_⟩
   obtain ⟨g, hg, hgloc, hgcard, hgP, hgQ, hgfiber, _⟩ := hmodify h hh hhinj hfix
   exact ⟨g, hg, hgloc, hgcard, hgP, hgQ, hgfiber⟩

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Analysis.LocallyConvex.Separation
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Analysis.Normed.Module.Convex
 import Mathlib.Topology.Connected.Clopen
+
+/-! # Compact Frontier -/
 
 open Set Topology Metric
 
@@ -88,7 +95,8 @@ theorem IsCompact.exists_mem_frontier_add_smul {C : Set E} (hC : IsCompact C)
     ∃ r : ℝ, 1 ≤ r ∧ p + r • (x - p) ∈ frontier C := by
   let f : ℝ → E := fun r => p + r • (x - p)
   have hf : IsClosedEmbedding f :=
-    (Homeomorph.addLeft p).isClosedEmbedding.comp (isClosedEmbedding_smul_left (sub_ne_zero.mpr hxp))
+    (Homeomorph.addLeft p).isClosedEmbedding.comp (isClosedEmbedding_smul_left (sub_ne_zero.mpr
+        hxp))
   have hpre : IsCompact (f ⁻¹' C) := hf.isCompact_preimage hC
   have h1 : (1 : ℝ) ∈ f ⁻¹' C := by simpa only [mem_preimage, f, one_smul, add_sub_cancel] using hx
   obtain ⟨r, hr, hmax⟩ := hpre.exists_isMaxOn ⟨1, h1⟩ continuous_id.continuousOn

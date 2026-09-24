@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+
+/-! # Height Perturbation -/
 
 open Set Topology
 
@@ -21,7 +28,8 @@ theorem linearMap_lt_on_convexHull_sdiff_singleton
       (convex_halfSpace_gt ℓ.isLinear (ℓ p))
   rintro x ⟨hx, hxp⟩
   have hx' := convexHull_mono (Finset.coe_subset.mpr hsub) hx
-  rcases exists_combo_of_mem_convexHull_insert (Finset.notMem_erase p T) hx' with h | ⟨z, hz, s, hs, -, rfl⟩
+  rcases exists_combo_of_mem_convexHull_insert (Finset.notMem_erase p T) hx' with h | ⟨z, hz, s, hs,
+      -, rfl⟩
   · exact (hxp h).elim
   · rw [map_add, map_smul, map_sub, smul_eq_mul]
     have hpos := mul_pos hs (sub_pos.mpr (hconv hz))
@@ -82,7 +90,8 @@ theorem exists_continuousLinearMap_injOn_preserving_strict_order_and_halfSpace
     by_cases hvp : (v : E) = p
     · exact Filter.Eventually.of_forall fun _ h => (h hvp).elim
     · filter_upwards [(ContinuousLinearMap.apply ℝ ℝ p).continuous.continuousAt.eventually_lt
-        (ContinuousLinearMap.apply ℝ ℝ (v : E)).continuous.continuousAt (hαside v v.2 hvp)] with f hf
+        (ContinuousLinearMap.apply ℝ ℝ (v : E)).continuous.continuousAt (hαside v v.2 hvp)] with f
+            hf
       exact fun _ => hf
   have horderNear := eventually_preserves_strict_order hB α
   have hcloseNear : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 α, dist f ℓ < ε :=

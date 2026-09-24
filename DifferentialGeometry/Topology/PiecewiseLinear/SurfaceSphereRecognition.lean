@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerPolyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubcomplexBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceTreeNeighborhood
+
+/-! # Surface Sphere Recognition -/
 
 open Set
 
@@ -353,13 +360,15 @@ theorem dualCotreeCellComplex_space
       | _ u v =>
           have huv : (dualCotreeGraph K T).Adj u v :=
             (dualCotreeGraph K T).mem_edgeSet.mp he
-          apply mem_embeddedDualTreeDerivedNeighborhood_iff K (dualCotreeGraph K T) (fun q => q) |>.mpr
+          apply mem_embeddedDualTreeDerivedNeighborhood_iff K (dualCotreeGraph K T) (fun q => q)
+              |>.mpr
           refine Or.inr ⟨u, v, huv, ?_⟩
           have hface : u.1 ∩ v.1 = s := by
             simpa only [dualGraphSharedFace, Sym2.lift_mk] using heq
           simpa only [hface] using hxs
   · intro x hx
-    rcases mem_embeddedDualTreeDerivedNeighborhood_iff K (dualCotreeGraph K T) (fun q => q) |>.mp hx with
+    rcases mem_embeddedDualTreeDerivedNeighborhood_iff K (dualCotreeGraph K T) (fun q => q) |>.mp hx
+        with
         ⟨s, hxs⟩ | ⟨s, t, hst, hxst⟩
     · exact mem_iUnion₂.mpr ⟨s.1, ⟨s.2.1, Or.inl s.2.2⟩, hxs⟩
     · let q := s.1 ∩ t.1

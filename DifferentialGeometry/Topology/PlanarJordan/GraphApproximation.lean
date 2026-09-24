@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.GraphStraightening
 import DifferentialGeometry.Topology.PlanarJordan.GraphSubdivision
+
+/-! # Graph Approximation -/
 
 open Set Schoenflies
 open DifferentialGeometry.Topology.PlanarJordan DifferentialGeometry.Topology.PiecewiseLinear
@@ -29,7 +36,8 @@ theorem IsDrawing.exists_homeomorph_polygonal_edges_dist_lt_const
       intro i
       have hi : (⟨⟨d, hd⟩, i⟩ : Σ d : E(G), Fin (n d)) ∈ E(H) := mem_univ _
       exact (isPLBall_one_of_isArcBetween_of_isPolygonal
-        (isArcBetween_image e (hH.edge_isArcBetween (hH.edge_param hi).2.2)) (hpoly _ hi)).isPolyhedron
+        (isArcBetween_image e (hH.edge_isArcBetween (hH.edge_param hi).2.2)) (hpoly _
+            hi)).isPolyhedron
     exact hP.isPolygonal_of_isArcBetween
       (isArcBetween_image e (h.edge_isArcBetween (h.edge_param hd).2.2))
   · exact hfixV.mono (fun _ hx => Or.inl (Or.inl hx))

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
+
+/-! # Height Subdivision -/
 
 open Set
 
@@ -29,7 +36,8 @@ theorem exists_triangulation_union_with_halfSpace_faces
     rintro ⟨j, b⟩
     cases b
     · exact (hA j).inter_affine_le a r
-    · simpa only [C, Bool.true_eq, ↓reduceIte, AffineMap.coe_neg, Pi.neg_apply, neg_le_neg_iff] using
+    · simpa only [C, Bool.true_eq, ↓reduceIte, AffineMap.coe_neg, Pi.neg_apply, neg_le_neg_iff]
+        using
         (hA j).inter_affine_le (-a) (-r)
   have hCA : ∀ j, C j ⊆ A j.1 := by
     rintro ⟨j, b⟩

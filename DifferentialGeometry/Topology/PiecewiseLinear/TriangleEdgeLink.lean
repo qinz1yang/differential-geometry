@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConvexBoundaryLink
+
+/-! # Triangle Edge Link -/
 
 open Set
 
@@ -17,7 +24,8 @@ theorem injOn_linearMap_convexHull_of_card_eq_two
   have hfrs : f r ≠ f s := fun h => hrs (hfinj (by simp) (by simp) h)
   have huv : u = v := by
     have hsum : u * (f s - f r) + f r = v * (f s - f r) + f r := by
-      simpa only [AffineMap.lineMap_apply_module', map_add, map_smul, map_sub, smul_eq_mul] using hxy
+      simpa only [AffineMap.lineMap_apply_module', map_add, map_smul, map_sub, smul_eq_mul] using
+          hxy
     exact mul_right_cancel₀ (sub_ne_zero.mpr hfrs.symm) (add_right_cancel hsum)
   rw [huv]
 

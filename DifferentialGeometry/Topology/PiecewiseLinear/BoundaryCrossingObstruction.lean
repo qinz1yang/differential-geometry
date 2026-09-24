@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PreimageBoundaryRelative
+
+/-! # Boundary Crossing Obstruction -/
 
 open Set
 
@@ -56,7 +63,8 @@ theorem boundary_preimage_ne_singleton_of_transverse_facet
     obtain ⟨w, _, huw, hwcard, _⟩ := hu.2
     have hucard := (Finset.card_le_card huw).trans hwcard
     have hueq : u = s := (Finset.eq_of_subset_of_card_le hsu (by omega)).symm
-    exact huB (hueq.symm ▸ show s ∈ B.faces from ⟨K.nonempty_of_mem_faces hsK, Finset.Subset.refl s⟩)
+    exact huB (hueq.symm ▸ show s ∈ B.faces from ⟨K.nonempty_of_mem_faces hsK, Finset.Subset.refl
+        s⟩)
   have heven := even_ncard_boundary_preimage_of_transverse_subcomplex K B L hBK φ
     hK hL hdim hgood hout
   rw [htrace, Set.ncard_singleton] at heven

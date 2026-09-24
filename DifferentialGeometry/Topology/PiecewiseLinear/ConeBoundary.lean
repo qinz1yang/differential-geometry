@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
+
+/-! # Cone Boundary -/
 
 open Set
 
@@ -39,7 +46,8 @@ theorem frontier_coneComplex [FiniteDimensional ℝ E] [dE : DecidableEq E] {n :
     exists_affineIndependent_openSimplex_subset (n := n + 1) (by omega) (0 : E) Filter.univ_mem
   obtain ⟨a, ha⟩ := Finset.card_pos.mp (by omega : 0 < T.card)
   let F := T.erase a
-  have hF : AffineIndependent ℝ ((↑) : F → E) := affineIndependent_of_subset hT (Finset.erase_subset a T)
+  have hF : AffineIndependent ℝ ((↑) : F → E) := affineIndependent_of_subset hT (Finset.erase_subset
+      a T)
   have hFcard : F.card = n + 2 := by simp only [F, Finset.card_erase_of_mem ha]; omega
   have hFne : F.Nonempty := Finset.card_pos.mp (by omega)
   have haF : a ∉ F := Finset.notMem_erase a T

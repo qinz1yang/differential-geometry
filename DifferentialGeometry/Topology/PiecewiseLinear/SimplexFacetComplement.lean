@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexPush
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCorner
+
+/-! # Simplex Facet Complement -/
 
 open Set
 
@@ -31,7 +38,8 @@ theorem convexHull_erase_inter_closure_frontier_sdiff (T : Finset E)
     {a : E} (ha : a ∈ T) :
     convexHull ℝ (T.erase a : Set E) ∩
       closure (frontier (convexHull ℝ (T : Set E)) \ convexHull ℝ (T.erase a : Set E)) =
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          := by
   rw [closure_frontier_convexHull_sdiff_convexHull_erase T hT hspan ha, inter_comm]
   exact simplexAvoiding_space_inter_convexHull_erase T hT a
 

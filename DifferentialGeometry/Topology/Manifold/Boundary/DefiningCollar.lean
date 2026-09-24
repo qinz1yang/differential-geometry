@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.Boundary.DefiningFunction
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.Height
 import DifferentialGeometry.Topology.Compactness.Nonvanishing
 import DifferentialGeometry.Topology.Manifold.Interval.ShorterStrip
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Restriction
+
+/-! # Defining Collar -/
 
 set_option autoImplicit false
 noncomputable section
@@ -26,7 +33,8 @@ theorem exists_definingFunction_sublevel_collar
           (∀ p, c (p, ⟨0, ⟨le_rfl, ha.le⟩⟩) = p.val) ∧
           (∀ q, r (c q) = q.2.val) ∧ range c = {x | r x ≤ a} ∧
           let U : Opens (BoundaryManifold (𝓡∂ (n + 1)) M × Icc (0 : ℝ) a) :=
-            ⟨{q | q.2.val < a}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
+            ⟨{q | q.2.val < a}, isOpen_lt (continuous_subtype_val.comp continuous_snd)
+                continuous_const⟩
           ∃ Y : Opens M, (Y : Set M) = {x | r x < a} ∧
             ∃ d : Diffeomorph ((HasSmoothBoundary.boundaryModel (𝓡∂ (n + 1))).prod (𝓡∂ 1))
               (𝓡∂ (n + 1)) U Y ∞, ∀ q : U, (d q).val = c q.val := by
@@ -96,7 +104,8 @@ theorem exists_definingFunction_sublevel_collar
   · let Uε : Opens (B × Icc (0 : ℝ) ε) :=
       ⟨{q | q.2.val < a}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
     have hUεS : Uε ≤ S := fun q hq => hq.trans haδ
-    obtain ⟨Y', _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e Uε hUεS
+    obtain ⟨Y', _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e
+        Uε hUεS
     have hY'eq : (Y' : Set M) = {x | r x < a} := by
       ext x
       constructor

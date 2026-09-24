@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BallGluingTwo
+
+/-! # Prism Arc Patch -/
 
 open Set
 
@@ -21,7 +28,8 @@ theorem isPLBall_prism_ends_union_arc
   let _ : Finite B.faces := (boundaryComplex_faces_finite 3 R).to_subtype
   have hR : IsPLBall 3 R.space := hRspace.symm ▸ hprod
   have hB : IsCombinatorialManifoldWithBoundary 2 B :=
-    (isPLSphere_boundaryComplex_space_of_isPLBall R hR).isCombinatorialManifold.isCombinatorialManifoldWithBoundary
+    (isPLSphere_boundaryComplex_space_of_isPLBall R
+        hR).isCombinatorialManifold.isCombinatorialManifoldWithBoundary
   have hboundary : B.space = K.space ×ˢ {a, b} ∪ (boundaryComplex 2 K).space ×ˢ Icc a b :=
     boundaryComplex_space_prism K hK hab R hRspace
   have hAspace : A ⊆ K.space := hAK.trans (boundaryComplex_space_subset 2 K)

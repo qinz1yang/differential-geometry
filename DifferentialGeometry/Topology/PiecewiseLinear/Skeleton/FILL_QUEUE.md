@@ -1003,3 +1003,8 @@ with distinct private outputs and unchanged memory admission thresholds. PRs #28
 and both trace assemblies promoted in d66adfcd7 (frozen count 6 -> 4). E is now accepted as recorded
 in `consult/named-input-cleanup-host-acceptance.md`. D smooth entry is still pending: its isolated
 host replay and audits are active; do not start a duplicate replay or merge it before acceptance.
+
+Codex lead update 09:58 UTC on 2026-09-24: item 21 D source entry is accepted in the main
+checkout with 732/732 entry modules and 27/27 audits; the sphere skeleton is
+promoted and the frozen ledger is 3. The broader all-PL replay found the inherited incomplete FourSpokeCap;
+the aggregate build remains unverified. PR #30 Section 32 acceptance is next.

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplyEmbedded
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativePush
 import DifferentialGeometry.Analysis.Convex.CompactFrontier
+
+/-! # Disk Gluing -/
 
 open Set
 
@@ -33,7 +40,8 @@ theorem exists_isPLHomeomorphOn_push_union_sdiff_diskInterior
     (hS₁.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hD₁).trans
       (hS₂.inter_closure_sdiff_eq_image_stdSimplexBoundary hq hD₂).symm
   have hA₂out : A₂ ⊆ (interior C)ᶜ :=
-    closure_minimal (hout.trans (compl_subset_compl.mpr interior_subset)) isOpen_interior.isClosed_compl
+    closure_minimal (hout.trans (compl_subset_compl.mpr interior_subset))
+        isOpen_interior.isClosed_compl
   have hCA : C ∩ A₂ ⊆ f '' stdSimplexBoundary 2 := by
     rintro x ⟨hxC, hxA₂⟩
     have hxS₁ : x ∈ S₁ := hCfront ▸ (show x ∈ frontier C from ⟨subset_closure hxC, hA₂out hxA₂⟩)
@@ -77,11 +85,14 @@ theorem exists_isPLHomeomorphOn_straighten_union_sdiff_diskInterior
       h '' ((S₁ ∪ S₂) \ (D \ q '' stdSimplexBoundary 2)) =
         frontier (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 3)))) ∧ EqOn h id Wᶜ := by
   classical
-  obtain ⟨T₁, h₁, hT₁, hcard₁, hh₁, himage₁, -⟩ := hS₁.2 univ convex_univ isOpen_univ (subset_univ _)
+  obtain ⟨T₁, h₁, hT₁, hcard₁, hh₁, himage₁, -⟩ := hS₁.2 univ convex_univ isOpen_univ (subset_univ
+      _)
   let C₁ := h₁.symm '' convexHull ℝ (T₁ : Set (EuclideanSpace ℝ (Fin 3)))
-  have hC₁ : HasPushProperty C₁ := (hasPushProperty_convexHull_simplex T₁ hT₁ hcard₁).image hh₁.homeomorph_symm
+  have hC₁ : HasPushProperty C₁ := (hasPushProperty_convexHull_simplex T₁ hT₁ hcard₁).image
+      hh₁.homeomorph_symm
   have hfront₁ : frontier C₁ = S₁ := by
-    rw [show frontier C₁ = frontier (h₁.symm '' convexHull ℝ (T₁ : Set (EuclideanSpace ℝ (Fin 3)))) from rfl,
+    rw [show frontier C₁ = frontier (h₁.symm '' convexHull ℝ (T₁ : Set (EuclideanSpace ℝ (Fin 3))))
+        from rfl,
       ← h₁.symm.image_frontier, ← himage₁, h₁.image_symm, h₁.injective.preimage_image]
   have hnorm : h₁ '' C₁ = convexHull ℝ (T₁ : Set (EuclideanSpace ℝ (Fin 3))) := by
     change h₁ '' (h₁.symm '' _) = _
@@ -91,7 +102,8 @@ theorem exists_isPLHomeomorphOn_straighten_union_sdiff_diskInterior
   have hD₂ : D ⊆ S₂ := hD ▸ inter_subset_right
   have hS₁W : S₁ ⊆ W := subset_union_left.trans hSW
   have hS₂W : S₂ ⊆ W := subset_union_right.trans hSW
-  have hC₁W : C₁ ⊆ W := DifferentialGeometry.Analysis.IsCompact.subset_of_frontier_subset_convex_open
+  have hC₁W : C₁ ⊆ W :=
+      DifferentialGeometry.Analysis.IsCompact.subset_of_frontier_subset_convex_open
     hC₁.1.isPolyhedron.isCompact hW hWo (hfront₁.symm ▸ hS₁W)
   have hmove : ∃ S' : Set (EuclideanSpace ℝ (Fin 3)), IsSimplyEmbedded S' ∧ S' ⊆ W ∧
       ∃ g : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3), IsPLHomeomorphOn g univ univ ∧
@@ -117,8 +129,10 @@ theorem exists_isPLHomeomorphOn_straighten_union_sdiff_diskInterior
       · exact hC₁.1.isPolyhedron.isClosed.frontier_subset (hfront₁.symm ▸ hD₁ hxD)
       · exact interior_subset (hin ⟨hx, hxD⟩)
     obtain ⟨C₂, hball₂, hfront₂, -, hC₂⟩ := exists_hasPushProperty_of_isSimplyEmbedded hS₂
-    have hC₂C₁ : C₂ ⊆ C₁ := DifferentialGeometry.Analysis.IsCompact.subset_of_frontier_subset_of_convex_image
-      hball₂.isPolyhedron.isCompact h₁ (hnorm.symm ▸ convex_convexHull ℝ _) hC₁.1.isPolyhedron.isClosed
+    have hC₂C₁ : C₂ ⊆ C₁ :=
+        DifferentialGeometry.Analysis.IsCompact.subset_of_frontier_subset_of_convex_image
+      hball₂.isPolyhedron.isCompact h₁ (hnorm.symm ▸ convex_convexHull ℝ _)
+          hC₁.1.isPolyhedron.isClosed
       (hfront₂.symm ▸ hS₂C₁)
     have hout' : S₁ \ D ⊆ C₂ᶜ := by
       rintro x ⟨hxS₁, hxD⟩ hxC₂

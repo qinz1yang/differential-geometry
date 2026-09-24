@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homology.BettiNumber
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerPolyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricConnectivity
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricHomology
+
+/-! # Betti Polyhedra -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 

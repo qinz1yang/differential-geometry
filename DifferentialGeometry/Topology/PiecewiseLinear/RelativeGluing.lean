@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.SubdivisionTransport
+
+/-! # Relative Gluing -/
 
 open Set
 
@@ -40,14 +47,16 @@ theorem regularNeighborhoodIn_gluedComplex_subset
       (glued₁ K₁ A₁ ψ).space ∩ (glueFst E F) ⁻¹' (regularNeighborhoodIn K₁ B.space).space := by
   intro z hz
   obtain ⟨s, ⟨_, t, ht, hst, y, hyt, hyB⟩, hzs⟩ :=
-    (regularNeighborhoodIn (gluedComplex K₁ K₂ h hA₂ hfull) (glued₁ B A₁ ψ).space).mem_space_iff.mp hz
+    (regularNeighborhoodIn (gluedComplex K₁ K₂ h hA₂ hfull) (glued₁ B A₁ ψ).space).mem_space_iff.mp
+        hz
   have hzt := convexHull_mono (Finset.coe_subset.mpr hst) hzs
   rcases ht with ht | ht
   · have hzG := (glued₁ K₁ A₁ ψ).convexHull_subset_space ht hzt
     refine ⟨hzG, ?_⟩
     obtain ⟨u, hu, rfl⟩ := ht
     have hpre (x : E × F × ℝ)
-        (hx : x ∈ convexHull ℝ ((u.image (glueEmbed₁ A₁ ψ) : Finset (E × F × ℝ)) : Set (E × F × ℝ))) :
+        (hx : x ∈ convexHull ℝ ((u.image (glueEmbed₁ A₁ ψ) : Finset (E × F × ℝ)) : Set (E × F × ℝ)))
+            :
         glueFst E F x ∈ convexHull ℝ (u : Set E) := by
       rw [← image_convexHull_simplicialMap K₁ _ hu (glueEmbed₁_injective A₁ ψ).injOn] at hx
       obtain ⟨a, ha, rfl⟩ := hx
@@ -110,8 +119,10 @@ theorem PLPieceIn.exists_glue_with_regularNeighborhood {n : ℕ} {X : Type*} [To
       glueFst_simplicialMap R A₁ ψ hxR]
   · rintro y ⟨z, hz, rfl⟩
     rw [hTcomplex] at hz
-    have hbound := regularNeighborhoodIn_gluedComplex_subset R A₁ B T₂.complex A₂ h hA₂ hfull hdis hz
-    refine ⟨glueFst E F z, regularNeighborhoodIn_space_subset_of_isSubdivision hR B.space hbound.2, ?_⟩
+    have hbound := regularNeighborhoodIn_gluedComplex_subset R A₁ B T₂.complex A₂ h hA₂ hfull hdis
+        hz
+    refine ⟨glueFst E F z, regularNeighborhoodIn_space_subset_of_isSubdivision hR B.space hbound.2,
+        ?_⟩
     rw [hTmap]
     exact (gluedMap_of_mem R A₁ ψ T₁.map T₂.map hbound.1).symm
 

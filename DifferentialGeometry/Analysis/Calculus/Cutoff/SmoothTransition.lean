@@ -1,19 +1,16 @@
-import Mathlib.Analysis.SpecialFunctions.SmoothTransition
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
+import DifferentialGeometry.Analysis.Calculus.SmoothTransition
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.Basic
 
-set_option autoImplicit false
+/-! Integrals of the smooth transition function. -/
 
 noncomputable section
 
 namespace Real.smoothTransition
-
-theorem one_sub (x : ℝ) : smoothTransition (1 - x) = 1 - smoothTransition x := by
-  unfold smoothTransition
-  have hden := (pos_denom x).ne'
-  rw [sub_sub_cancel]
-  rw [add_comm (expNegInvGlue (1 - x))]
-  field_simp
-  ring
 
 theorem integral_zero_one : (∫ x in (0 : ℝ)..1, smoothTransition x) = 1 / 2 := by
   have hcont : IntervalIntegrable smoothTransition MeasureTheory.volume 0 1 :=

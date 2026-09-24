@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.LinearMapSmoothness
 import Mathlib.Analysis.Calculus.ContDiff.FiniteDimension
 import Mathlib.Analysis.InnerProductSpace.Symmetric
@@ -6,6 +11,8 @@ import Mathlib.Analysis.Normed.Module.ContinuousInverse
 import Mathlib.Analysis.Normed.Ring.Units
 import Mathlib.Topology.Algebra.Module.ContinuousLinearMap.Quotient
 import Mathlib.Topology.LocallyConstant.Basic
+
+/-! Solution. -/
 
 
 noncomputable section
@@ -449,7 +456,8 @@ theorem _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_kernel_frame_deriv
   have horthorth := congrArg (fun K : Submodule ℝ H => Kᗮ) horth
   simpa using horthorth
 
-theorem _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_contDiffOn_kernel_frame_deriv_annihilation
+theorem
+  _root_.ContinuousLinearMap.ker_and_range_eq_on_Ioo_of_contDiffOn_kernel_frame_deriv_annihilation
     {ι H : Type*} [Finite ι]
     [NormedAddCommGroup H] [InnerProductSpace ℝ H] [FiniteDimensional ℝ H]
     {A : ℝ → H →L[ℝ] H} {w : ι → ℝ → H} {a b : ℝ}

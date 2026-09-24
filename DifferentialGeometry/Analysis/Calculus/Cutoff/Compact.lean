@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Basic
 import Mathlib.Geometry.Manifold.Metrizable
+
+/-! Cutoff: compact. -/
 
 set_option autoImplicit false
 
@@ -165,5 +172,20 @@ theorem exists_mfd_bump
         by_contra hxL
         exact hx (hχzero x hxL))
       hL.isClosed).trans hLU
+
+theorem exists_contDiffOn_cutoff_extension
+    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
+    {n : ℕ∞} {S U : Set E} (hU : IsOpen U) {f : E → F}
+    (hf : ContDiffOn ℝ n f (S ∩ U)) {x : E} (hx : x ∈ U) :
+    ∃ g : E → F, ContDiffOn ℝ n g S ∧ HasCompactSupport g ∧ g =ᶠ[𝓝 x] f := by
+  obtain ⟨χ, hχ, hχsupp, hχone, hχU, _⟩ := exists_bump_compact
+    isCompact_singleton hU (singleton_subset_iff.mpr hx)
+  have hχn : ContDiff ℝ n χ := hχ.of_le (WithTop.coe_le_coe.mpr le_top)
+  refine ⟨fun y => χ y • f y, contDiffOn_cutoff_smul hU hχn hχU hf,
+    hχsupp.smul_right, ?_⟩
+  have hχone' : χ =ᶠ[𝓝 x] 1 := by simpa only [nhdsSet_singleton] using hχone
+  filter_upwards [hχone'] with y hy
+  rw [hy, Pi.one_apply, one_smul]
 
 end DifferentialGeometry.Analysis

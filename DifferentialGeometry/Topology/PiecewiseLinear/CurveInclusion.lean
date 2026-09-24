@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiniteGraphCircles
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereInclusion
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
+
+/-! # Curve Inclusion -/
 
 open Set Topology
 
@@ -91,7 +98,8 @@ theorem isClopen_preimage_space_of_le_isCombinatorialManifold_one
     constructor
     · rintro ⟨hxK, hxH⟩
       obtain ⟨s, hs, hxs⟩ := K.mem_space_iff.mp hxK
-      exact mem_iUnion.mpr ⟨s, mem_iUnion.mpr ⟨⟨hs, fun h => hxH (H.convexHull_subset_space h hxs)⟩, hxs⟩⟩
+      exact mem_iUnion.mpr ⟨s, mem_iUnion.mpr ⟨⟨hs, fun h => hxH (H.convexHull_subset_space h hxs)⟩,
+          hxs⟩⟩
     · intro hx
       obtain ⟨s, hs, hxs⟩ := mem_iUnion₂.mp hx
       refine ⟨K.convexHull_subset_space hs.1 hxs, fun hxH => ?_⟩
@@ -120,7 +128,8 @@ theorem space_eq_of_le_isCombinatorialManifold_one
   have hnonempty : (((↑) ⁻¹' H.space : Set K.space)).Nonempty := by
     obtain ⟨x, hx⟩ := hne
     exact ⟨⟨x, hsub hx⟩, hx⟩
-  have hfull := (isClopen_preimage_space_of_le_isCombinatorialManifold_one H K hHK hH hK).eq_univ hnonempty
+  have hfull := (isClopen_preimage_space_of_le_isCombinatorialManifold_one H K hHK hH hK).eq_univ
+      hnonempty
   apply Subset.antisymm hsub
   intro x hx
   exact (show (⟨x, hx⟩ : K.space) ∈ ((↑) ⁻¹' H.space : Set K.space) by rw [hfull]; trivial)

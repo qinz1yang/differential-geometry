@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.PositiveFlowBox
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.EuclideanFlow
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.Extension
+
+/-! # Half Space Flow Box -/
 
 open Set Function Manifold Filter
 open scoped Topology ContDiff

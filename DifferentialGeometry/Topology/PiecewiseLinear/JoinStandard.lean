@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Join
 import DifferentialGeometry.Topology.PiecewiseLinear.StellarSphere
+
+/-! # Join Standard -/
 
 open Set
 
@@ -213,7 +220,8 @@ theorem isPLSphere_joinComplex_simplexBoundary_simplexBoundary [FiniteDimensiona
     rw [← h] at hmem
     obtain ⟨v, -, hv⟩ := Finset.mem_image.mp hmem
     exact joinFst_ne_joinSnd v w hv
-  have h := isPLSphere_simplexAvoiding_pair (affineIndependent_image_joinFst_union_image_joinSnd hσ hτ)
+  have h := isPLSphere_simplexAvoiding_pair (affineIndependent_image_joinFst_union_image_joinSnd hσ
+      hτ)
     hcard Finset.subset_union_left (hσne.image _) hne
   rwa [union_sdiff_image_joinFst] at h
 

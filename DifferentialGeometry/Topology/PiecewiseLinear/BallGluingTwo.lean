@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexBallGluing
+
+/-! # Ball Gluing Two -/
 
 open Set
 
@@ -155,7 +162,8 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_of_inter_isPLBall_one
       (restrict_faces_subset R D) hAB
   have hboundaryB : A.space ∩ B.space ⊆ (boundaryComplex 2 B).space := by
     rw [inter_comm] at hAB ⊢
-    exact _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall
+    exact
+      _root_.DifferentialGeometry.Topology.PiecewiseLinear.inter_subset_boundaryComplex_of_isPLBall
       R B A (hK.of_isSubdivision hR)
       (hB.symm ▸ hD) (hA.symm ▸ hC) (restrict_faces_subset R D)
       (restrict_faces_subset R C) hAB

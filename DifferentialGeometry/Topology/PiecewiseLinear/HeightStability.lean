@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CarrierInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightProjection
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightPerturbation
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiber
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSubdivision
+
+/-! # Height Stability -/
 
 open Set Topology
 
@@ -10,7 +17,8 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_move_vertices_of_unique_vertex_in_fiber {n : ℕ}
+theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_move_vertices_of_unique_vertex_in_fiber
+    {n : ℕ}
     (K L R : Geometry.SimplicialComplex ℝ E) [Finite R.faces]
     (hK : IsPLSphere (n + 1) K.space) (hLK : IsSubdivision L K) (hLR : L ≤ R)
     (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p)
@@ -21,7 +29,8 @@ theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_move_vertices_of_un
       EqOn h id (R.vertices ∩ {x | ℓ x ≠ ℓ p}) ∧
       (∀ v ∈ R.vertices, ℓ v = ℓ p → f (h v) = f p) ∧
       ∀ s ∈ R.faces, ∃ a : E →ᵃ[ℝ] E, EqOn h a (convexHull ℝ (s : Set E)) := by
-  filter_upwards [eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_in_fiber K R ℓ hℓ hunique hU hRU hε]
+  filter_upwards [eventually_exists_isPLHomeomorphOn_move_fiber_vertices_of_unique_vertex_in_fiber K
+      R ℓ hℓ hunique hU hRU hε]
     with f hf
   obtain ⟨h, hh, hclose, hfix, hfixK, hfixLevel, hlevel, hcarrier, hfaces⟩ := hf
   have hcarL : ∀ v ∈ L.vertices, h v ∈ convexHull ℝ (carrierFace K v : Set E) := by
@@ -70,15 +79,18 @@ theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_move_fiber {n : ℕ
     intro v hv
     change f (a v) = f p
     rw [← ha (subset_convexHull ℝ _ hv)]
-    exact hlevel v (R.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
+    exact hlevel v (R.down_closed hs (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty
+        v))
       (hslevel v hv)
   exact convexHull_min hverts
     (((convex_singleton (f p)).linear_preimage f.toLinearMap).affine_preimage a) hx
 
-theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_of_subdivision_of_unique_vertex_in_fiber {n : ℕ}
+theorem
+    eventually_exists_isPLHomeomorphOn_sphere_height_of_subdivision {n : ℕ}
     (K L R : Geometry.SimplicialComplex ℝ E) [Finite R.faces]
     (hK : IsPLSphere (n + 1) K.space) (hLK : IsSubdivision L K) (hLR : L ≤ R)
-    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈ K.vertices)
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈
+        K.vertices)
     (hside : ∀ s ∈ R.faces, convexHull ℝ (s : Set E) ⊆ {x | ℓ x ≤ ℓ p} ∨
       convexHull ℝ (s : Set E) ⊆ {x | ℓ p ≤ ℓ x})
     {U : Set E} (hU : IsOpen U) (hRU : R.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
@@ -89,7 +101,8 @@ theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_of_subdiv
   have hRfin : R.vertices.Finite :=
     Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)
   have hpR : p ∈ R.vertices := hLR (hLK.singleton_mem hp)
-  filter_upwards [eventually_exists_isPLHomeomorphOn_preserving_sphere_move_vertices_of_unique_vertex_in_fiber
+  filter_upwards
+      [eventually_exists_isPLHomeomorphOn_preserving_sphere_move_vertices_of_unique_vertex_in_fiber
     K L R hK hLK hLR ℓ hℓ hunique hU hRU hε, eventually_preserves_strict_order hRfin ℓ]
     with f hf horder
   obtain ⟨h, hh, hclose, hfix, hfixK, himage, hfixLevel, hlevel, hfaces⟩ := hf
@@ -124,12 +137,14 @@ theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_of_subdiv
       IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
       EqOn h id K.vertices ∧ h '' K.space = K.space ∧
       ∀ x ∈ R.space, ℓ x = ℓ p ↔ f (h x) = f p :=
-  eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_of_subdivision_of_unique_vertex_in_fiber
+  eventually_exists_isPLHomeomorphOn_sphere_height_of_subdivision
     K L R hK hLK hLR ℓ hℓ (fun _ hv h => hinj hv hp h) hp hside hU hRU hε
 
-theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_on_polyhedron_of_unique_vertex_in_fiber {n : ℕ}
+theorem
+    eventually_exists_isPLHomeomorphOn_sphere_height_on_polyhedron {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere (n + 1) K.space)
-    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈ K.vertices)
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈
+        K.vertices)
     {D U : Set E} (hD : IsPolyhedron D) (hU : IsOpen U) (hKU : K.space ⊆ U) (hDU : D ⊆ U)
     {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ h : E → E,
@@ -141,7 +156,7 @@ theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_on_polyhe
   let _ : Finite R.faces := hRfin.to_subtype
   have hRU : R.space ⊆ U := hRspace.subset.trans (union_subset hKU hDU)
   simpa only [hRspace] using
-    eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_of_subdivision_of_unique_vertex_in_fiber
+    eventually_exists_isPLHomeomorphOn_sphere_height_of_subdivision
       K (restrict R K.space) R hK hRK (restrict_faces_subset R K.space)
       ℓ hℓ hunique hp hside hU hRU hε
 
@@ -154,12 +169,13 @@ theorem eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_on_polyhe
       IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
       EqOn h id K.vertices ∧ h '' K.space = K.space ∧
       ∀ x ∈ K.space ∪ D, ℓ x = ℓ p ↔ f (h x) = f p :=
-  eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_on_polyhedron_of_unique_vertex_in_fiber
+  eventually_exists_isPLHomeomorphOn_sphere_height_on_polyhedron
     K hK ℓ hℓ (fun _ hv h => hinj hv hp h) hp hD hU hKU hDU hε
 
 theorem eventually_exists_homeomorph_preserving_sphere_image_fiber_of_unique_vertex_in_fiber {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere (n + 1) K.space)
-    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈ K.vertices)
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈
+        K.vertices)
     {U : Set E} (hU : IsOpen U) (hKU : K.space ⊆ U) {ε : ℝ} (hε : 0 < ε) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∃ h : E ≃ₜ E,
       IsPLHomeomorphOn h univ univ ∧ (∀ x, dist (h x) x < ε) ∧ EqOn h id Uᶜ ∧
@@ -168,7 +184,8 @@ theorem eventually_exists_homeomorph_preserving_sphere_image_fiber_of_unique_ver
       ∀ᶠ y in 𝓝 p, y ∈ h '' {x | ℓ x = ℓ p} ↔ f y = f p := by
   obtain ⟨D, hD, hDU, hDp⟩ :=
     exists_isHPolytope_subset_mem_nhds (hU.mem_nhds (hKU (K.vertices_subset_space hp)))
-  filter_upwards [eventually_exists_isPLHomeomorphOn_preserving_sphere_eq_height_on_polyhedron_of_unique_vertex_in_fiber
+  filter_upwards
+      [eventually_exists_isPLHomeomorphOn_sphere_height_on_polyhedron
     K hK ℓ hℓ hunique hp hD.isPolyhedron hU hKU hDU hε] with f hf
   obtain ⟨g, hg, hclose, hfix, hfixK, himage, hlevel⟩ := hf
   let h := (Homeomorph.Set.univ E).symm.trans (hg.homeomorph.trans (Homeomorph.Set.univ E))

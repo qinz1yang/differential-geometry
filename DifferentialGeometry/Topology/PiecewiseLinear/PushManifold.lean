@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SchoenfliesManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.PLSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartPolyhedron
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartConjugate
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBallBoundary
+
+/-! # Push Manifold -/
 
 open Set
 open scoped Manifold

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChart
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularLevelPolygons
+
+/-! # Height Sides -/
 
 open Set Topology
 
@@ -89,7 +96,8 @@ theorem eventually_mem_fiber_iff_mem_levelPolygon_of_ne_vertex
     {q : E} (hq : q ∈ J) (hqp : q ≠ p) :
     ∀ᶠ x in 𝓝 q, x ∈ K.space ∩ {y | ℓ y = ℓ p} ↔ x ∈ J := by
   let C := levelPolygons K.space ℓ (ℓ p) \ {J}
-  have hC : C.Finite := (finite_levelPolygons K (fun s hs => hK.card_le K hs) hdimE ℓ hℓ hinj (ℓ p)).subset sdiff_subset
+  have hC : C.Finite := (finite_levelPolygons K (fun s hs => hK.card_le K hs) hdimE ℓ hℓ hinj (ℓ
+      p)).subset sdiff_subset
   have hclosed : IsClosed ({p} ∪ ⋃₀ C) := by
     rw [sUnion_eq_biUnion]
     exact isClosed_singleton.union (hC.isClosed_biUnion fun T hT => hT.1.1.isPolyhedron.isClosed)
@@ -137,7 +145,8 @@ theorem eventually_mem_halfSpace_or_of_levelPolygon_partition
   have habne : ℓ (a - b) ≠ 0 := by
     rw [map_sub, sub_ne_zero]
     intro heq
-    exact hab (hinj (K.down_closed hs (Finset.singleton_subset_iff.mpr ha) (Finset.singleton_nonempty a))
+    exact hab (hinj (K.down_closed hs (Finset.singleton_subset_iff.mpr ha)
+        (Finset.singleton_nonempty a))
       (K.down_closed hs (Finset.singleton_subset_iff.mpr hb) (Finset.singleton_nonempty b)) heq)
   obtain ⟨g, P, -, hg0, -, -, hheight, hchart⟩ :=
     exists_height_preserving_chart_of_transverse_face K hK ℓ hs hqs habspan habne
@@ -172,7 +181,8 @@ theorem eventually_mem_halfSpace_or_of_levelPolygon_partition
     rw [← g.preimage_closure]
     change g 0 ∈ closure (B \ A)
     rwa [hg0, hclB]
-  rcases eventually_mem_halfSpace_or_of_closed_partition (hA.preimage g.continuous) (hB.preimage g.continuous)
+  rcases eventually_mem_halfSpace_or_of_closed_partition (hA.preimage g.continuous) (hB.preimage
+      g.continuous)
     P ℓ.toLinearMap hcover' hinter' hclosureA hclosureB with hge | hle
   · refine Or.inl ?_
     filter_upwards [hgs.eventually hge, hgs.eventually hlocal] with x hx hxS
@@ -304,17 +314,21 @@ theorem eventually_mem_opposite_halfSpaces_along_levelPolygon_disk_partition
     ext x
     exact congrArg (fun a : E →ₗ[ℝ] ℝ => a x) hz
   have hlocal : ∀ q ∈ J \ {p}, ∀ᶠ x in 𝓝 q, x ∈ K.space ∩ {y | ℓ y = ℓ p} ↔ x ∈ J :=
-    fun _ hq => eventually_mem_fiber_iff_mem_levelPolygon_of_ne_vertex K hK hdimE ℓ.toLinearMap hlinear hinj hp hJ hq.1 hq.2
-  rcases eventually_mem_halfSpace_along_levelPolygon_disk_partition K hK hdimE ℓ hℓ hinj hp hJ hgA hgB
+    fun _ hq => eventually_mem_fiber_iff_mem_levelPolygon_of_ne_vertex K hK hdimE ℓ.toLinearMap
+        hlinear hinj hp hJ hq.1 hq.2
+  rcases eventually_mem_halfSpace_along_levelPolygon_disk_partition K hK hdimE ℓ hℓ hinj hp hJ hgA
+      hgB
     hunion hinter hgAJ hgBJ with hge | hle
   · refine Or.inl fun q hq => ?_
-    exact (hge q hq).and (eventually_mem_opposite_halfSpace_of_partition hunion hinter ℓ (ℓ p) (hlocal q hq) (hge q hq))
+    exact (hge q hq).and (eventually_mem_opposite_halfSpace_of_partition hunion hinter ℓ (ℓ p)
+        (hlocal q hq) (hge q hq))
   · refine Or.inr fun q hq => ?_
     have hJneg : ∀ᶠ x in 𝓝 q, x ∈ K.space ∩ {y | -ℓ y = -ℓ p} ↔ x ∈ J := by
       simpa only [neg_inj] using hlocal q hq
     have hAneg : ∀ᶠ x in 𝓝 q, x ∈ A ↔ x ∈ K.space ∧ -ℓ p ≤ -ℓ x := by
       simpa only [neg_le_neg_iff] using hle q hq
-    have hB := eventually_mem_opposite_halfSpace_of_partition hunion hinter (fun x => -ℓ x) (-ℓ p) hJneg hAneg
+    have hB := eventually_mem_opposite_halfSpace_of_partition hunion hinter (fun x => -ℓ x) (-ℓ p)
+        hJneg hAneg
     have hB' : ∀ᶠ x in 𝓝 q, x ∈ B ↔ x ∈ K.space ∧ ℓ p ≤ ℓ x := by
       simpa only [neg_le_neg_iff] using hB
     exact (hle q hq).and hB'

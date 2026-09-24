@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricEulerCharacteristic
 import DifferentialGeometry.Topology.SimplicialComplex.Simplex
+
+/-! # PL Ball Sphere -/
 
 open Set
 
@@ -94,7 +101,8 @@ theorem eulerChar_stdSimplex (n : ℕ) :
 
 theorem simplexBoundary_toPreAbstractSimplicialComplex {T : Finset E}
     (hT : AffineIndependent ℝ ((↑) : T → E)) :
-    (simplexBoundary T hT).toPreAbstractSimplicialComplex = SimplicialComplex.boundarySimplex T := by
+    (simplexBoundary T hT).toPreAbstractSimplicialComplex = SimplicialComplex.boundarySimplex T :=
+        by
   ext s
   change s ⊆ T ∧ s.Nonempty ∧ s ≠ T ↔ s.Nonempty ∧ s ⊂ T
   rw [Finset.ssubset_iff_subset_ne]
@@ -137,13 +145,13 @@ theorem not_isPLHomeomorphOn_stdSimplex_stdSimplexBoundary (n : ℕ)
   have hzero : ((-1 : ℤ) ^ n) = 0 := by linarith
   exact pow_ne_zero n (by norm_num) hzero
 
-theorem IsPLBall.not_isPLSphere [FiniteDimensional ℝ E] {n : ℕ} {P : Set E} (hB : IsPLBall n P)
+theorem IsPLBall.not_isPLSphere {n : ℕ} {P : Set E} (hB : IsPLBall n P)
     (hS : IsPLSphere n P) : False := by
   obtain ⟨f, hf⟩ := hB
   obtain ⟨g, hg⟩ := hS
   exact not_isPLHomeomorphOn_stdSimplex_stdSimplexBoundary n _ (hf.trans hg.symm)
 
-theorem IsPLSphere.not_isPLBall [FiniteDimensional ℝ E] {n : ℕ} {P : Set E} (hS : IsPLSphere n P)
+theorem IsPLSphere.not_isPLBall {n : ℕ} {P : Set E} (hS : IsPLSphere n P)
     (hB : IsPLBall n P) : False :=
   hB.not_isPLSphere hS
 

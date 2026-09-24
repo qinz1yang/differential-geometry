@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismHomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
+
+/-! # Prism Arc -/
 
 open Set
 
@@ -19,7 +26,8 @@ theorem exists_isPiecewiseAffineOn_prism_of_isPLHomeomorphOn {J : Set E} {θ : �
       (∀ (S : Set F), Convex ℝ S → MapsTo f J S → MapsTo g J S →
         MapsTo Φ (J ×ˢ Icc (0 : ℝ) 1) S) := by
   classical
-  have hcomp : ∀ h : E → F, IsPiecewiseAffineOn h J → IsPiecewiseAffineOn (h ∘ θ) (Icc (0 : ℝ) 1) := by
+  have hcomp : ∀ h : E → F, IsPiecewiseAffineOn h J → IsPiecewiseAffineOn (h ∘ θ) (Icc (0 : ℝ) 1) :=
+      by
     intro h hh
     have hcc := hh.comp hθ.isPiecewiseAffineOn
     have hset : Icc (0 : ℝ) 1 ∩ θ ⁻¹' J = Icc (0 : ℝ) 1 :=

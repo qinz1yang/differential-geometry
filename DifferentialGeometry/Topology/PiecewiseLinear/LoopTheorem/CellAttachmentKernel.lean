@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.Circle
 import DifferentialGeometry.Topology.Homotopy.ClosedCell
 import DifferentialGeometry.Topology.LoopSpace.BasedCircle
@@ -7,6 +12,8 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.GroupTheory.QuotientGroup.Defs
 import Mathlib.Topology.Piecewise
+
+/-! # Cell Attachment Kernel -/
 
 open CategoryTheory Set
 open scoped ContinuousMap

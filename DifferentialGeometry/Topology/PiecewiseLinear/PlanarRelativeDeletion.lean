@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
+
+/-! # Planar Relative Deletion -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -36,7 +43,8 @@ theorem image_support_eq_eraseTriangle_of_restrictTriangles
     f '' M.toPlaneComplex.support = (M.eraseTriangle t).toPlaneComplex.support := by
   let N := M.restrictTriangles p
   let L := M.restrictTriangles fun u => ¬p u
-  have hsupport : M.toPlaneComplex.support = N.toPlaneComplex.support ∪ L.toPlaneComplex.support := by
+  have hsupport : M.toPlaneComplex.support = N.toPlaneComplex.support ∪ L.toPlaneComplex.support :=
+      by
     rw [M.toPlaneComplex_support, N.toPlaneComplex_support, L.toPlaneComplex_support]
     change (⋃ u ∈ M.triangles, M.triangleCarrier u) =
       (⋃ u ∈ M.triangles.filter p, M.triangleCarrier u) ∪

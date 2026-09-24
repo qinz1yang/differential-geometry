@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CrosscutExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalArc
+
+/-! # Disk Crosscut Extension -/
 
 open Set Topology
 
@@ -86,10 +93,12 @@ theorem exists_isPLHomeomorphOn_eqOn_disk_crosscut
   obtain ⟨C', t, hC', ht⟩ := exists_planar_disk_coordinates ⟨u', hu'⟩
   have hsJ : s '' J = C := by
     rw [← huJ, ← image_comp]
-    exact (hu.trans hs).image_stdSimplexBoundary.trans (frontier_closure_inside_of_isPLSphere_one hC)
+    exact (hu.trans hs).image_stdSimplexBoundary.trans (frontier_closure_inside_of_isPLSphere_one
+        hC)
   have htJ : t '' J' = C' := by
     rw [← huJ', ← image_comp]
-    exact (hu'.trans ht).image_stdSimplexBoundary.trans (frontier_closure_inside_of_isPLSphere_one hC')
+    exact (hu'.trans ht).image_stdSimplexBoundary.trans (frontier_closure_inside_of_isPLSphere_one
+        hC')
   have hcross := isCrosscut_image_of_disk_arc hC hs hsJ hJD hγ hPD hinter
   have hcross' := isCrosscut_image_of_disk_arc hC' ht htJ hJD' hγ' hPD' hinter'
   have hsJP : IsPLHomeomorphOn s (J ∪ P) (C ∪ s '' P) := by
@@ -108,7 +117,8 @@ theorem exists_isPLHomeomorphOn_eqOn_disk_crosscut
   have hvP : v '' (s '' P) = P := by
     rw [image_image]
     exact (show EqOn (v ∘ s) id P from fun x hx => hv x (Or.inr hx)).image_eq.trans (image_id P)
-  have hbC : b '' C = C' := by rw [show b = t ∘ f ∘ v from rfl, image_comp, image_comp, hvC, hfJ, htJ]
+  have hbC : b '' C = C' := by rw [show b = t ∘ f ∘ v from rfl, image_comp, image_comp, hvC, hfJ,
+      htJ]
   have hbP : b '' (s '' P) = t '' P' := by
     rw [show b = t ∘ f ∘ v from rfl, image_comp, image_comp, hvP, hfP]
   have hb0 : b (s (γ 0)) = t (f (γ 0)) := by

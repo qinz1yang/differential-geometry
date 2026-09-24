@@ -215,6 +215,7 @@ theorem partialHomeomorph_succ_apply (S : SupportedPLHomeomorphSystem (n := n) D
     (i : ℕ) (x : X) :
     S.partialHomeomorph (i + 1) x = S.step i (S.partialHomeomorph i x) := rfl
 
+omit [HasGroupoid X (plGroupoid n)] in
 theorem isPL_partialHomeomorph (S : SupportedPLHomeomorphSystem (n := n) D) :
     ∀ i, IsPL n n (S.partialHomeomorph i)
   | 0 => isPL_id
@@ -296,6 +297,7 @@ theorem step_ne_refl (S : SupportedPLHomeomorphSystem (n := n) D) (i : ℕ) :
   intro hi
   exact S.moves_point i (by rw [hi]; rfl)
 
+omit [HasGroupoid X (plGroupoid n)] in
 theorem stage_succ_ne_stage (S : SupportedPLHomeomorphSystem (n := n) D) (i : ℕ) :
     S.toCompatibleExhaustion.stage (i + 1) ≠ S.toCompatibleExhaustion.stage i := by
   intro hi

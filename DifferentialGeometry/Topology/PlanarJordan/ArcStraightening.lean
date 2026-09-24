@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.CrosscutFamily
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarArcNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskFrontierPerturbation
 import DifferentialGeometry.Topology.PiecewiseLinear.BallComplement
+
+/-! # Arc Straightening -/
 
 open Set Topology
 
@@ -167,7 +174,8 @@ theorem exists_homeomorph_polygonal_arc_of_polygonal_ends
       linarith [ht.1]
     · have heq := hi (hCI ht) one_mem_I h1
       linarith [ht.2]
-  have hZclosed : IsClosed ({f 0, f 1} : Set Plane) := ((finite_singleton (f 1)).insert (f 0)).isClosed
+  have hZclosed : IsClosed ({f 0, f 1} : Set Plane) := ((finite_singleton (f 1)).insert (f
+      0)).isClosed
   obtain ⟨V, hV, hCV, hVU⟩ := mem_nhdsSet_iff_exists.mp hU
   obtain ⟨D, hD, hCD, hDV⟩ := exists_isPLBall_neighborhood_of_isArc hCA.isArc
     ((hV.sdiff hZclosed).mem_nhdsSet.mpr (subset_inter hCV hCZ))

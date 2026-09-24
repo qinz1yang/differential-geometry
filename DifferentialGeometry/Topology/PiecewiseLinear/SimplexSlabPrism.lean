@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CellEquivalence
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexHeightInterpolation
 import Mathlib.Tactic.FinCases
+
+/-! # Simplex Slab Prism -/
 
 open Set
 
@@ -101,7 +108,8 @@ private theorem isCellClosed_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (
   · exact sub_nonpos.mp (nonpos_of_sign_eq_or_zero (hsign (Sum.inr 3)) (sub_nonpos.mpr hxb))
 
 open Classical in
-private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc a b)
+private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc
+    a b)
     (hvertices : ∀ i, ℓ (Pi.single i 1) < a ∨ b < ℓ (Pi.single i 1)) :
     cellsOf (simplexSlabArrangement ℓ a b) (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) =
       cellsOf (simplexPrismArrangement ℓ a b r) ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
@@ -139,7 +147,8 @@ theorem exists_isPLHomeomorphOn_stdSimplex_slab_prism
           ((f x).2 = b ↔ ℓ x = b) := by
   classical
   have hP : IsCompact (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) :=
-    (isCompact_stdSimplex ℝ ι).inter_right ((isClosed_le continuous_const ℓ.continuous_of_finiteDimensional).inter
+    (isCompact_stdSimplex ℝ ι).inter_right ((isClosed_le continuous_const
+        ℓ.continuous_of_finiteDimensional).inter
       (isClosed_le ℓ.continuous_of_finiteDimensional continuous_const))
   have hQ : IsCompact ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) :=
     ((isCompact_stdSimplex ℝ ι).inter_right
@@ -153,7 +162,8 @@ theorem exists_isPLHomeomorphOn_stdSimplex_slab_prism
   have heq (i) := congrFun (hsign x hx) i
   simp only [signVec, simplexSlabArrangement_apply, simplexPrismArrangement_apply] at heq
   refine ⟨fun i => ?_, ?_, ?_⟩
-  · exact sign_eq_zero_iff.symm.trans ((congrArg (· = 0) (heq (Sum.inl i))).to_iff.trans sign_eq_zero_iff)
+  · exact sign_eq_zero_iff.symm.trans ((congrArg (· = 0) (heq (Sum.inl i))).to_iff.trans
+      sign_eq_zero_iff)
   · have h := (congrArg (· = 0) (heq (Sum.inr 2))).to_iff
     simpa [sign_eq_zero_iff, sub_eq_zero] using h
   · have h := (congrArg (· = 0) (heq (Sum.inr 3))).to_iff

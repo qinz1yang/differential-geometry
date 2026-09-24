@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.StarIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkSubdivision
+
+/-! # Star Components -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem exists_connectedComponentIn_pair_closedStar_sdiff
     (isPLSphere_geometricLink_iff_of_isSubdivision (barycentricSubdivision_isSubdivision K)
       (hLK hp)).mpr hK
   have hL' : IsPLSphere 1 (SimplicialComplex.geometricLink L' {p}).space :=
-    (isPLSphere_geometricLink_iff_of_isSubdivision (barycentricSubdivision_isSubdivision L) hp).mpr hL
+    (isPLSphere_geometricLink_iff_of_isSubdivision (barycentricSubdivision_isSubdivision L) hp).mpr
+        hL
   have h := (isConeBase_geometricLink K').exists_connectedComponentIn_pair_sdiff hlinks hK' hL'
   rw [← closedStar_eq_coneComplex_space K' hpK',
     ← closedStar_eq_coneComplex_space L' hpL'] at h

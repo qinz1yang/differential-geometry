@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkSubdivision
+
+/-! # Star Complex -/
 
 open Set
 
@@ -43,7 +50,8 @@ theorem starComplex_space (hv : {v} ∈ K.faces) : (starComplex K v).space = clo
     exact hs
 
 theorem geometricLink_starComplex :
-    SimplicialComplex.geometricLink (starComplex K v) {v} = SimplicialComplex.geometricLink K {v} := by
+    SimplicialComplex.geometricLink (starComplex K v) {v} = SimplicialComplex.geometricLink K {v} :=
+        by
   ext t
   rw [SimplicialComplex.mem_geometricLink_singleton, SimplicialComplex.mem_geometricLink_singleton,
     mem_starComplex_faces_iff, Finset.insert_idem]

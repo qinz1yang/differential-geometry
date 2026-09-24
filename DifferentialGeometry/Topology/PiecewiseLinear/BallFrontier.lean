@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FrontierBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
+
+/-! # Ball Frontier -/
 
 open Set
 
@@ -17,7 +24,8 @@ theorem IsPLHomeomorphOn.image_stdSimplexBoundary {n : ℕ}
   let _ : Finite K.faces := hKfin.to_subtype
   have hfK : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
   have hK : IsPLBall (n + 1) K.space := ⟨f, hfK⟩
-  rw [← hKP, frontier_space_eq_boundaryComplex_space (n := n) hK.isCombinatorialManifoldWithBoundary]
+  rw [← hKP, frontier_space_eq_boundaryComplex_space (n := n)
+      hK.isCombinatorialManifoldWithBoundary]
   have hboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hfK
   rw [simplexBoundary_stdVertices_space] at hboundary
   convert hboundary.symm using 1

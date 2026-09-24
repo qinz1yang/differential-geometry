@@ -1,0 +1,80 @@
+--- pinned/ClassificationOfSurfaces/Moise/PolygonalSchoenflies.lean:2408
++++ adapted/DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonDeletion.lean:recognition
+@@ -3,4 +3,6 @@
+-theorem eq_closedRegion_of_isCompact_frontier_eq
+-    {S : Set Plane} (hS : IsCompact S) (hfrontier : frontier S = J.carrier)
+-    (hinterior : (interior S).Nonempty) :
+-    S = J.closedRegion := by
++private theorem eq_closure_inside_of_isCompact_frontier_eq
++    {C S : Set Plane} (hC : IsSeparating C) (hS : IsCompact S)
++    (hfrontier : frontier S = C) (hinterior : (interior S).Nonempty) :
++    S = closure (Schoenflies.inside C) := by
++  have hclosure : closure (Schoenflies.inside C) = Schoenflies.inside C ∪ C :=
++    (IsRegionOf.inside C).closure_eq hC
+@@ -8 +10 @@
+-  have hExteriorCover : J.exteriorRegion ⊆ interior S ∪ Sᶜ := by
++  have hExteriorCover : Schoenflies.outside C ⊆ interior S ∪ Sᶜ := by
+@@ -14,3 +16,3 @@
+-      have hpCarrier : p ∈ J.carrier := hfrontier ▸ hpFrontier
+-      have hpCompl : p ∈ J.carrierᶜ := by
+-        rw [← J.interior_union_exterior]
++      have hpCarrier : p ∈ C := hfrontier ▸ hpFrontier
++      have hpCompl : p ∈ Cᶜ := by
++        rw [← Schoenflies.inside_union_outside C]
+@@ -20 +22 @@
+-  have hExteriorNotS : (J.exteriorRegion ∩ Sᶜ).Nonempty := by
++  have hExteriorNotS : (Schoenflies.outside C ∩ Sᶜ).Nonempty := by
+@@ -22 +24 @@
+-    have hExtSub : J.exteriorRegion ⊆ S := by
++    have hExtSub : Schoenflies.outside C ⊆ S := by
+@@ -26,3 +28,3 @@
+-    exact J.not_isBounded_exteriorRegion (hS.isBounded.subset hExtSub)
+-  have hExteriorSub : J.exteriorRegion ⊆ Sᶜ :=
+-    J.isConnected_exteriorRegion.isPreconnected.subset_right_of_subset_union
++    exact hC.not_isBounded_outside (hS.isBounded.subset hExtSub)
++  have hExteriorSub : Schoenflies.outside C ⊆ Sᶜ :=
++    hC.isConnected_outside.isPreconnected.subset_right_of_subset_union
+@@ -32 +34 @@
+-  have hSSub : S ⊆ J.closedRegion := by
++  have hSSub : S ⊆ closure (Schoenflies.inside C) := by
+@@ -34,2 +36,2 @@
+-    by_cases hpCarrier : p ∈ J.carrier
+-    · rw [J.closedRegion_eq_union]
++    by_cases hpCarrier : p ∈ C
++    · rw [hclosure]
+@@ -37,2 +39,2 @@
+-    · have hpSplit : p ∈ J.interiorRegion ∪ J.exteriorRegion := by
+-        rw [J.interior_union_exterior]
++    · have hpSplit : p ∈ Schoenflies.inside C ∪ Schoenflies.outside C := by
++        rw [Schoenflies.inside_union_outside C]
+@@ -41 +43 @@
+-      · rw [J.closedRegion_eq_union]
++      · rw [hclosure]
+@@ -45 +47 @@
+-  have hpNotCarrier : p ∉ J.carrier := by
++  have hpNotCarrier : p ∉ C := by
+@@ -49,3 +51,3 @@
+-  have hpInteriorJ : p ∈ J.interiorRegion := by
+-    have hpSplit : p ∈ J.interiorRegion ∪ J.exteriorRegion := by
+-      rw [J.interior_union_exterior]
++  have hpInteriorJ : p ∈ Schoenflies.inside C := by
++    have hpSplit : p ∈ Schoenflies.inside C ∪ Schoenflies.outside C := by
++      rw [Schoenflies.inside_union_outside C]
+@@ -54 +56 @@
+-  have hInteriorCover : J.interiorRegion ⊆ interior S ∪ Sᶜ := by
++  have hInteriorCover : Schoenflies.inside C ⊆ interior S ∪ Sᶜ := by
+@@ -60,3 +62,3 @@
+-      have hqCarrier : q ∈ J.carrier := hfrontier ▸ hqFrontier
+-      have hqCompl : q ∈ J.carrierᶜ := by
+-        rw [← J.interior_union_exterior]
++      have hqCarrier : q ∈ C := hfrontier ▸ hqFrontier
++      have hqCompl : q ∈ Cᶜ := by
++        rw [← Schoenflies.inside_union_outside C]
+@@ -66,2 +68,2 @@
+-  have hInteriorSub : J.interiorRegion ⊆ interior S :=
+-    J.isConnected_interiorRegion.isPreconnected.subset_left_of_subset_union
++  have hInteriorSub : Schoenflies.inside C ⊆ interior S :=
++    hC.isConnected_inside.isPreconnected.subset_left_of_subset_union
+@@ -72 +74 @@
+-  rw [J.closedRegion_eq_union]
++  rw [hclosure]

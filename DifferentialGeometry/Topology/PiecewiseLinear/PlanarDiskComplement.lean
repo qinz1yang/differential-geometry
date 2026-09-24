@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
+
+/-! # Planar Disk Complement -/
 
 open Set
 
@@ -27,7 +34,8 @@ theorem IsPLBall.isPLBall_closure_sdiff_of_boundary_arc
   obtain ⟨A, hcutC, _, hA⟩ :=
     exists_isCutPair_of_isArcBetween_subset_isPLSphere hC.isPLSphere_frontier hIpq hIC
   obtain ⟨B, hcutD, _, _⟩ :=
-    exists_isCutPair_of_isArcBetween_subset_isPLSphere hD.isPLSphere_frontier hIpq inter_subset_right
+    exists_isCutPair_of_isArcBetween_subset_isPLSphere hD.isPLSphere_frontier hIpq
+        inter_subset_right
   have hcross : Schoenflies.IsCrosscut (frontier D) A p q := by
     refine ⟨isJordanCurve_of_isPLSphere_one hD.isPLSphere_frontier, hcutC.snd,
       hA.isPolyhedron.isPolygonal_of_isArcBetween hcutC.snd,

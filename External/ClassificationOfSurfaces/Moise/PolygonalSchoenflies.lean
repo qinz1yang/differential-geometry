@@ -784,7 +784,7 @@ private theorem exists_pos_uniform_fintype {I : Type*} [Finite I] [Nonempty I]
     (hP : ∀ i, ∃ ε : ℝ, 0 < ε ∧ ∀ δ : ℝ, 0 < δ → δ < ε → P i δ) :
     ∃ ε : ℝ, 0 < ε ∧ ∀ i, ∀ δ : ℝ, 0 < δ → δ < ε → P i δ := by
   classical
-  letI := Fintype.ofFinite I
+  let := Fintype.ofFinite I
   let values : Finset ℝ := Finset.univ.image fun i => Classical.choose (hP i)
   have hvalues : values.Nonempty := by
     let i : I := Classical.choice inferInstance

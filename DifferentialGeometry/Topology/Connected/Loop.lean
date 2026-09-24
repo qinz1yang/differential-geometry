@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.Order.IntermediateValue
+
+/-! Loop. -/
 
 open Set
 
@@ -70,9 +77,12 @@ theorem isConnected_image_Icc_sdiff_singleton {f : α → X} {a b : α} (hab : a
             · exact hs.1.ne' h
             · exact hta h
       rw [himage]
-      have hleft := (isConnected_Ico hat).image f (hf.mono (fun s hs => ⟨hs.1, (hs.2.trans ht.2).le⟩))
-      have hright := (isConnected_Ioc ht.2).image f (hf.mono (fun s hs => ⟨ht.1.trans hs.1.le, hs.2⟩))
-      exact IsConnected.union ⟨f a, ⟨a, ⟨le_rfl, hat⟩, rfl⟩, b, ⟨ht.2, le_rfl⟩, hclose.symm⟩ hleft hright
+      have hleft := (isConnected_Ico hat).image f (hf.mono (fun s hs => ⟨hs.1, (hs.2.trans
+        ht.2).le⟩))
+      have hright := (isConnected_Ioc ht.2).image f (hf.mono (fun s hs => ⟨ht.1.trans hs.1.le,
+        hs.2⟩))
+      exact IsConnected.union ⟨f a, ⟨a, ⟨le_rfl, hat⟩, rfl⟩, b, ⟨ht.2, le_rfl⟩, hclose.symm⟩
+        hleft hright
   · have heq : f '' Icc a b \ {p} = f '' Icc a b :=
       sdiff_eq_left.mpr (disjoint_singleton_right.mpr hp)
     rw [heq]

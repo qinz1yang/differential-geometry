@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCornerChart
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeBoundary
+
+/-! # Simplex Ball Pair -/
 
 open Set
 
@@ -12,7 +19,8 @@ theorem boundaryComplex_simplexAvoiding_erase_space {n : ℕ}
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : T.card = n + 3)
     {a : E} (ha : a ∈ T) :
     (boundaryComplex (n + 1) (simplexAvoiding T hT {T.erase a})).space =
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          := by
   let _ : DecidableEq E := Classical.decEq _
   let L := simplexAvoiding T hT {T.erase a}
   let F := T.erase a
@@ -37,7 +45,8 @@ theorem boundaryComplex_simplexAvoiding_erase_space {n : ℕ}
     (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a)
   have hfix : EqOn g id B.space := eqOn_simplicialMap_simplex_vertex_star_boundary T hT ha
   have hImageB : g '' B.space = B.space := hfix.image_eq.trans (image_id _)
-  have hboundary := boundaryComplex_space_of_isPLHomeomorphOn L M hL.isCombinatorialManifoldWithBoundary hg
+  have hboundary := boundaryComplex_space_of_isPLHomeomorphOn L M
+      hL.isCombinatorialManifoldWithBoundary hg
   have hBM : (boundaryComplex (n + 1) M).space = B.space := by
     rw [boundaryComplex_simplexComplex hF hFcard]
   apply (hg.bijOn.injOn.image_eq_image_iff (boundaryComplex_space_subset (n + 1) L) hBsub).mp

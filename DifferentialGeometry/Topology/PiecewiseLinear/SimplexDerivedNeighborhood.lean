@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDerivedNeighborhood
+
+/-! # Simplex Derived Neighborhood -/
 
 open Set
 
@@ -14,7 +21,8 @@ theorem derivedNeighborhood_simplex_space_eq_of_card_le_three
         ⋃ e ∈ s.powersetCard 2, (derivedNeighborhoodCell K e).space) ∪
         ⋃ v ∈ s, (derivedNeighborhoodCell K {v}).space := by
   classical
-  rw [← iUnion_derivedNeighborhoodCell_space K (simplexComplex s (K.indep hs)) (fun t ht => K.down_closed hs ht.2 ht.1)]
+  rw [← iUnion_derivedNeighborhoodCell_space K (simplexComplex s (K.indep hs)) (fun t ht =>
+      K.down_closed hs ht.2 ht.1)]
   apply Subset.antisymm
   · intro x hx
     obtain ⟨t, ht, hxt⟩ := mem_iUnion₂.mp hx
@@ -33,7 +41,8 @@ theorem derivedNeighborhood_simplex_space_eq_of_card_le_three
       obtain ⟨hts, htcard⟩ := Finset.mem_powersetCard.mp ht
       exact mem_iUnion₂.mpr ⟨t, ⟨Finset.card_pos.mp (by omega), hts⟩, hxt⟩
     · obtain ⟨v, hv, hxv⟩ := mem_iUnion₂.mp hx
-      exact mem_iUnion₂.mpr ⟨{v}, ⟨Finset.singleton_nonempty v, Finset.singleton_subset_iff.mpr hv⟩, hxv⟩
+      exact mem_iUnion₂.mpr ⟨{v}, ⟨Finset.singleton_nonempty v, Finset.singleton_subset_iff.mpr hv⟩,
+          hxv⟩
 
 variable [FiniteDimensional ℝ E]
 

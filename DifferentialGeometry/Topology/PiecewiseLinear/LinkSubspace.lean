@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeComplex
 import Mathlib.LinearAlgebra.Dual.Lemmas
+
+/-! # Link Subspace -/
 
 open Set Topology
 
@@ -8,7 +15,8 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem eventually_mem_closedStar_iff (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (p : E) :
+theorem eventually_mem_closedStar_iff (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (p : E)
+    :
     ∀ᶠ x in 𝓝 p, x ∈ closedStar K p ↔ x ∈ K.space := by
   obtain ⟨V, hV, hVstar⟩ := mem_nhdsWithin_iff_exists_mem_nhds_inter.mp
     (closedStar_mem_nhdsWithin K p)
@@ -71,7 +79,8 @@ theorem exists_pair_geometricLink_inter_span_singleton [dE : DecidableEq E]
       simpa only [zero_smul, add_zero] using hcont.tendsto 0
     exact (htend.eventually_mem hK).mono fun _ h _ => h
   obtain ⟨a, ha, haK⟩ := exists_ray_mem_geometricLink_space_of_eventually K hp hd (hdir d)
-  obtain ⟨b, hb, hbK⟩ := exists_ray_mem_geometricLink_space_of_eventually K hp (neg_ne_zero.mpr hd) (hdir (-d))
+  obtain ⟨b, hb, hbK⟩ := exists_ray_mem_geometricLink_space_of_eventually K hp (neg_ne_zero.mpr hd)
+      (hdir (-d))
   have hab : p + a • d ≠ p + b • (-d) := by
     intro h
     have hvec : a • d = b • (-d) := add_left_cancel h
@@ -119,7 +128,9 @@ theorem exists_pair_geometricLink_fiber_of_eventually_plane
     rw [hsup, finrank_top, hP] at h
     omega
   let I := P ⊓ LinearMap.ker ℓ
-  have : Nontrivial I := Module.nontrivial_of_finrank_pos (by rw [show Module.finrank ℝ I = 1 from hinf]; norm_num)
+  have : Nontrivial I := Module.nontrivial_of_finrank_pos (by
+    rw [show Module.finrank ℝ I = 1 from hinf]
+    norm_num)
   obtain ⟨d, hd⟩ := exists_ne (0 : I)
   have hd0 : (d : E) ≠ 0 := fun h => hd (Subtype.ext h)
   have hspan : I = Submodule.span ℝ ({(d : E)} : Set E) :=
@@ -153,7 +164,8 @@ theorem exists_pair_geometricLink_fiber_of_eventually_plane
     exact ⟨hsK, by simpa only [mem_ofPred_eq, add_sub_cancel_left] using P.smul_mem s hwP⟩
   · simpa only [map_add, hpℓ, map_smul, hwℓ, smul_eq_mul, mul_one, zero_add] using hs
   · rw [hlink]
-    exact ⟨htK, by simpa only [mem_ofPred_eq, add_sub_cancel_left] using P.smul_mem t (P.neg_mem hwP)⟩
+    exact ⟨htK, by simpa only [mem_ofPred_eq, add_sub_cancel_left] using P.smul_mem t (P.neg_mem
+        hwP)⟩
   · simpa only [map_add, hpℓ, map_smul, map_neg, hwℓ, smul_eq_mul, mul_neg, mul_one,
       zero_add, neg_lt_zero] using ht
 end DifferentialGeometry.Topology.PiecewiseLinear

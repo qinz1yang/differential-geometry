@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCornerChart
+
+/-! # Homogeneity -/
 
 open Set Topology
 
@@ -20,7 +27,8 @@ theorem exists_isPLHomeomorphOn_simplex_fixing_boundary
     ⟨bijOn_id _, hidpl, hidpl.congr fun _ hx => (bijOn_id L.space).invOn_invFunOn.1 hx⟩
   obtain ⟨f, hf, hfix, hfp, -⟩ := exists_isPLHomeomorphOn_coneComplex
     (isConeBase_simplexBoundary hT hcard hp) (isConeBase_simplexBoundary hT hcard hq) hid
-  rw [coneComplex_simplexBoundary_space hT hcard hp, coneComplex_simplexBoundary_space hT hcard hq] at hf
+  rw [coneComplex_simplexBoundary_space hT hcard hp, coneComplex_simplexBoundary_space hT hcard hq]
+      at hf
   exact ⟨f, hf, hfix, hfp⟩
 
 theorem exists_isPLHomeomorphOn_Icc_fixing_endpoints {p q : ℝ}

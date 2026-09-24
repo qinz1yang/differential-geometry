@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CrossingStability
+
+/-! # Height Chart -/
 
 open Set Topology
 
@@ -58,7 +65,8 @@ theorem exists_height_preserving_chart_of_transverse_face
     have huV : u ∉ V := fun huV => hu (Submodule.disjoint_def.mp hcompl.disjoint u huV huT)
     have hspan : Module.finrank ℝ (Submodule.span ℝ ({u} : Set E)) = 1 := finrank_span_singleton hu
     have hI0 : Module.finrank ℝ (V ⊓ Submodule.span ℝ {u} : Submodule ℝ E) = 0 :=
-      Submodule.finrank_eq_zero.mpr (disjoint_iff.mp (Submodule.disjoint_span_singleton_of_notMem huV))
+      Submodule.finrank_eq_zero.mpr (disjoint_iff.mp (Submodule.disjoint_span_singleton_of_notMem
+          huV))
     have hPdim : Module.finrank ℝ P = 2 := by
       have h := Submodule.finrank_sup_add_finrank_inf_eq V (Submodule.span ℝ {u})
       change Module.finrank ℝ P + _ = _ at h
@@ -132,7 +140,8 @@ theorem eventually_hasPLCrossingAt_image_fiber_of_transverse_face
       · intro hz
         exact ⟨H.symm y, hz, H.apply_symm_apply y⟩
     rwa [himage, himage]
-  have hc := eventually_hasPLCrossingAt_of_height_preserving_chart e he P hP hdimE ℓ hv hℓv heheight hS
+  have hc := eventually_hasPLCrossingAt_of_height_preserving_chart e he P hP hdimE ℓ hv hℓv heheight
+      hS
   rwa [he0] at hc
 
 theorem eventually_hasPLCrossingAt_image_fiber_of_notMem_vertices
@@ -149,7 +158,10 @@ theorem eventually_hasPLCrossingAt_image_fiber_of_notMem_vertices
   have hne : ℓ (a - b) ≠ 0 := by
     rw [map_sub, sub_ne_zero]
     intro heq
-    exact hab (hinj (K.down_closed hs (Finset.singleton_subset_iff.mpr ha) (Finset.singleton_nonempty a)) (K.down_closed hs (Finset.singleton_subset_iff.mpr hb) (Finset.singleton_nonempty b)) heq)
-  exact eventually_hasPLCrossingAt_image_fiber_of_transverse_face K hK hdimE ℓ hs hxs habspan hne H hH hheight
+    exact hab (hinj (K.down_closed hs (Finset.singleton_subset_iff.mpr ha)
+        (Finset.singleton_nonempty a)) (K.down_closed hs (Finset.singleton_subset_iff.mpr hb)
+        (Finset.singleton_nonempty b)) heq)
+  exact eventually_hasPLCrossingAt_image_fiber_of_transverse_face K hK hdimE ℓ hs hxs habspan hne H
+      hH hheight
 
 end DifferentialGeometry.Topology.PiecewiseLinear

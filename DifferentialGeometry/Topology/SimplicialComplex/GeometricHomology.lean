@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricRealizationHomeomorphism
 import DifferentialGeometry.Topology.SimplicialSet.FiniteRealizationHomology
 import Mathlib.AlgebraicTopology.SimplicialSet.Homology.Nondegenerate
+
+/-! # Geometric Homology -/
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 
@@ -17,7 +24,8 @@ theorem isZero_singularHomology_geometricSpace_of_card_le
   classical
   let _ := linearOrderOfSTO (WellOrderingRel : E → E → Prop)
   let X := orderedSimplicialSet K.toPreAbstractSimplicialComplex
-  let _ : X.HasDimensionLT d := orderedSimplicialSet_hasDimensionLT K.toPreAbstractSimplicialComplex d hd
+  let _ : X.HasDimensionLT d := orderedSimplicialSet_hasDimensionLT K.toPreAbstractSimplicialComplex
+      d hd
   have hX := X.isZero_homology_of_hasDimensionLT R q d hq
   have hT := hX.of_iso (DifferentialGeometry.SSet.realizationHomologyIso R X q).symm
   exact hT.of_iso (((singularHomologyFunctor (ModuleCat.{u} k) q).obj R).mapIso

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import Mathlib.Analysis.InnerProductSpace.PiL2
+
+/-! # Std Chart -/
 
 open Set Topology
 
@@ -93,11 +100,13 @@ theorem convex_stdTarget : Convex ℝ (stdTarget n) := by
   rcases ha.eq_or_lt with rfl | ha'
   · have hb' : b = 1 := by simpa using hab
     simpa only [hb', zero_mul, one_mul, zero_add] using hy
-  · refine ⟨fun i => add_pos_of_pos_of_nonneg (mul_pos ha' (hx.1 i)) (mul_nonneg hb (hy.1 i).le), ?_⟩
+  · refine ⟨fun i => add_pos_of_pos_of_nonneg (mul_pos ha' (hx.1 i)) (mul_nonneg hb (hy.1 i).le),
+      ?_⟩
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum]
     calc
       a * ∑ i, WithLp.ofLp x i + b * ∑ i, WithLp.ofLp y i < a * 1 + b * 1 :=
-        add_lt_add_of_lt_of_le (mul_lt_mul_of_pos_left hx.2 ha') (mul_le_mul_of_nonneg_left hy.2.le hb)
+        add_lt_add_of_lt_of_le (mul_lt_mul_of_pos_left hx.2 ha') (mul_le_mul_of_nonneg_left hy.2.le
+            hb)
       _ = 1 := by simpa only [mul_one] using hab
 
 theorem isOpen_stdTarget : IsOpen (stdTarget n) := by

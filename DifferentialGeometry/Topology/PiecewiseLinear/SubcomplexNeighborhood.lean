@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerPolyhedra
+
+/-! # Subcomplex Neighborhood -/
 
 open Set Topology unitInterval
 
@@ -128,7 +135,8 @@ theorem subcomplexBarycentricHomotopy_mem_openNeighborhood
     simpa only [sub_zero, one_mul, add_zero] using
       (show 0 < subcomplexBarycentricMass (barycentricSubdivision K)
         (barycentricSubdivision L) x from hx)
-  · exact add_pos_of_nonneg_of_pos (mul_nonneg ht (le_of_lt hx)) (lt_of_le_of_ne t.2.1 (Ne.symm ht0))
+  · exact add_pos_of_nonneg_of_pos (mul_nonneg ht (le_of_lt hx)) (lt_of_le_of_ne t.2.1 (Ne.symm
+      ht0))
 
 open Classical in
 noncomputable def subcomplexOpenNeighborhoodInclusion
@@ -142,7 +150,8 @@ open Classical in
 theorem continuous_subcomplexBarycentricProjection_openNeighborhood
     [FiniteDimensional ℝ E] (K L : Geometry.SimplicialComplex ℝ E) [Finite K.faces] :
     Continuous (fun x : subcomplexOpenNeighborhood K L =>
-      subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) x.1) := by
+      subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) x.1) :=
+          by
   have hm := continuousOn_subcomplexBarycentricMass
     (barycentricSubdivision K) (barycentricSubdivision L)
   have hv := continuousOn_subcomplexBarycentricMoment
@@ -169,7 +178,8 @@ noncomputable def subcomplexOpenNeighborhoodHomotopy
     [FiniteDimensional ℝ E] {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hL : L.faces ⊆ K.faces) :
     ContinuousMap.Homotopy (ContinuousMap.id (subcomplexOpenNeighborhood K L))
-      ((subcomplexOpenNeighborhoodInclusion hL).comp (subcomplexOpenNeighborhoodRetraction hL)) where
+      ((subcomplexOpenNeighborhoodInclusion hL).comp (subcomplexOpenNeighborhoodRetraction hL))
+          where
   toFun z := ⟨⟨subcomplexBarycentricHomotopy (barycentricSubdivision K)
     (barycentricSubdivision L) z.1 z.2.1,
     (subcomplexBarycentricHomotopy_mem_openNeighborhood hL z.2.2 z.1).choose⟩,
@@ -180,7 +190,8 @@ noncomputable def subcomplexOpenNeighborhoodHomotopy
     have hx : Continuous (fun z : I × subcomplexOpenNeighborhood K L => (z.2.1 : E)) :=
       continuous_subtype_val.comp (continuous_subtype_val.comp continuous_snd)
     have hp : Continuous (fun z : I × subcomplexOpenNeighborhood K L =>
-        subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) z.2.1) :=
+        subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) z.2.1)
+            :=
       (continuous_subcomplexBarycentricProjection_openNeighborhood K L).comp continuous_snd
     exact (((continuous_const.sub ht).smul hx |>.add (ht.smul hp)).subtype_mk _).subtype_mk _
   map_zero_left x := by
@@ -243,7 +254,8 @@ noncomputable def subcomplexOpenNeighborhoodStrongDeformationRetract
       apply Subtype.ext
       apply Subtype.ext
       change (1 - (t : ℝ)) • (x.1 : E) + (t : ℝ) •
-        subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) x.1 = x.1
+        subcomplexBarycentricProjection (barycentricSubdivision K) (barycentricSubdivision L) x.1 =
+            x.1
       rw [subcomplexBarycentricProjection_eq_self_on_subcomplex hL hx,
         ← add_smul, sub_add_cancel, one_smul]
   }

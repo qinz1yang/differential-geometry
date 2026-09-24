@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.NhdsWithin
+
+/-! # Local Separation -/
 
 open Set Topology
 
@@ -115,7 +122,8 @@ theorem inter_closure_connectedComponentIn_sdiff_nonempty [LocallyConnectedSpace
     isPreconnected_connectedComponentIn.subset_closure hAclsub inter_subset_left
   have hcleq : closure A ∩ N = A :=
     Subset.antisymm
-      (hclpre.subset_connectedComponentIn ⟨subset_closure (mem_connectedComponentIn hx), hx.1⟩ hclsub)
+      (hclpre.subset_connectedComponentIn ⟨subset_closure (mem_connectedComponentIn hx), hx.1⟩
+          hclsub)
       hAclsub
   have hpreimage : ((↑) : N → X) ⁻¹' closure A = ((↑) : N → X) ⁻¹' A := by
     ext z
@@ -176,9 +184,11 @@ theorem exists_connectedComponentIn_pair_sdiff_of_local_separation [LocallyConne
     rw [← hunion, heq, union_self]
     exact isPreconnected_connectedComponentIn
   have hSA : S ⊆ closure A :=
-    subset_closure_connectedComponentIn_of_local_separation hSN hS.isPreconnected hlocal (htouch a ha)
+    subset_closure_connectedComponentIn_of_local_separation hSN hS.isPreconnected hlocal (htouch a
+        ha)
   have hSB : S ⊆ closure B :=
-    subset_closure_connectedComponentIn_of_local_separation hSN hS.isPreconnected hlocal (htouch b hb)
+    subset_closure_connectedComponentIn_of_local_separation hSN hS.isPreconnected hlocal (htouch b
+        hb)
   have hAclN : closure A ⊆ N := closure_minimal (hAsub.trans sdiff_subset) hNclosed
   have hBclN : closure B ⊆ N := closure_minimal (hBsub.trans sdiff_subset) hNclosed
   refine ⟨a, ha, b, hb, hdisjoint, hunion, ?_, ?_⟩

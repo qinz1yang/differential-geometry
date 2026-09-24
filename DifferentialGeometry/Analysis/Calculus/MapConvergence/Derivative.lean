@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic
 import Mathlib.Analysis.Calculus.ContDiff.Bounds
+
+/-! Derivative. -/
 
 set_option autoImplicit false
 
@@ -39,7 +46,8 @@ theorem MapCInfConvergenceOnCompacts.fderivApply {U : Set E} {Φ : ℕ → E →
     (h : MapCInfConvergenceOnCompacts U Φ Φinf)
     (hΦ : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k))
     (hΦinf : ContDiff ℝ (∞ : WithTop ℕ∞) Φinf) (v : E) :
-    MapCInfConvergenceOnCompacts U (fun k z => fderiv ℝ (Φ k) z v) (fun z => fderiv ℝ Φinf z v) := by
+    MapCInfConvergenceOnCompacts U (fun k z => fderiv ℝ (Φ k) z v) (fun z => fderiv ℝ Φinf z v)
+      := by
   intro K hK hKU p ε hε
   obtain ⟨k0, hk0⟩ := h K hK hKU (p + 1) (ε / (‖v‖ + 1)) (by positivity)
   refine ⟨k0, fun k hk r hr x hx => ?_⟩
@@ -115,6 +123,11 @@ noncomputable def pullbackForm
 theorem pullbackForm_apply (B : F →L[ℝ] F →L[ℝ] ℝ) (D : E →L[ℝ] F) (u v : E) :
     pullbackForm (B, D) u v = B (D u) (D v) :=
   rfl
+
+theorem pullbackForm_pullbackForm_symm (B : F →L[ℝ] F →L[ℝ] ℝ) (e : E ≃L[ℝ] F) :
+    pullbackForm (pullbackForm (B, (e : E →L[ℝ] F)), (e.symm : F →L[ℝ] E)) = B := by
+  ext v w
+  simp [pullbackForm_apply]
 
 theorem pullbackForm.contDiff :
     ContDiff ℝ (∞ : WithTop ℕ∞) (pullbackForm (E := E) (F := F)) := by
@@ -236,7 +249,8 @@ theorem MapCInfConvergenceOnCompacts.mulLeft {U : Set E} {Φ : ℕ → E → ℝ
     (hΦc : ∀ k, ContDiff ℝ (∞ : WithTop ℕ∞) (Φ k)) (hΦic : ContDiff ℝ (∞ : WithTop ℕ∞) Φlim) :
     MapCInfConvergenceOnCompacts U (fun k z => g z * Φ k z) (fun z => g z * Φlim z) := by
   intro K hK hKU p ε hε
-  obtain ⟨Background, hBackground0, hBackground⟩ : ∃ Background : ℝ, 0 ≤ Background ∧ ∀ i ≤ p, ∀ x ∈ K,
+  obtain ⟨Background, hBackground0, hBackground⟩ : ∃ Background : ℝ, 0 ≤ Background ∧ ∀ i ≤ p, ∀
+    x ∈ K,
       ‖iteratedFDeriv ℝ i g x‖ ≤ Background := by
     have hbd : ∀ i : ℕ, ∃ B : ℝ, ∀ x ∈ K, ‖iteratedFDeriv ℝ i g x‖ ≤ B := by
       intro i

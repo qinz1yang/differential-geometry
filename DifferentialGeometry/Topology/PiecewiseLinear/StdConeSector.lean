@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.StdConeLayers
+
+/-! # Std Cone Sector -/
 
 open Set
 
@@ -110,7 +117,8 @@ theorem isHPolytope_stdConeSector (u u' : ℝ) : IsHPolytope (stdConeSector u u'
     exact ((isClosed_le continuous_const continuous_fst).inter
       (isClosed_le continuous_const continuous_snd)).inter
       ((isClosed_le (continuous_fst.add continuous_snd) continuous_const).inter
-        ((isClosed_le (continuous_const.mul (continuous_fst.add continuous_snd)) continuous_snd).inter
+        ((isClosed_le (continuous_const.mul (continuous_fst.add continuous_snd))
+            continuous_snd).inter
           (isClosed_le continuous_snd (continuous_const.mul (continuous_fst.add continuous_snd)))))
   · ext z
     constructor

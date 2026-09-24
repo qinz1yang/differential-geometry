@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.FlowDiffeomorph
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UniformInwardFlow
 import DifferentialGeometry.Topology.Compactness.Strip
 import DifferentialGeometry.Topology.Manifold.Diffeomorph.Restriction
+
+/-! # Diffeomorph -/
 
 open Set Function Manifold Topology TopologicalSpace
 open scoped ContDiff
@@ -57,7 +64,8 @@ theorem exists_boundary_flow_collar_diffeomorph
   let S : Opens (B × Icc (0 : ℝ) ε) :=
     ⟨{q | (q.2 : ℝ) < δ}, isOpen_lt (continuous_subtype_val.comp continuous_snd) continuous_const⟩
   have hSΩ : S ≤ Ω := fun q hq => (hsmall ⟨q, hq, rfl⟩).1
-  obtain ⟨Y, _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e S hSΩ
+  obtain ⟨Y, _, _, d, hd, _⟩ := DifferentialGeometry.Manifold.Diffeomorph.exists_restrict_opens e S
+      hSΩ
   have hdF (q : S) : (d q : M) = c q.val := (hd q).trans (he _)
   have hd0 (p : B) : (d ⟨(p, ⟨0, ⟨le_rfl, hε.le⟩⟩), hδ⟩ : M) = p.val := by
     rw [hdF]

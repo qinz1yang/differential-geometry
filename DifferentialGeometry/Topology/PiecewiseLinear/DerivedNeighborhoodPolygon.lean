@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homotopy.DeformationRetractLoopPower
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodLoop
@@ -5,6 +10,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.NeighborhoodCylinder
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonGeneratedFromLoops
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricConnectivity
+
+/-! # Derived Neighborhood Polygon -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -97,7 +104,8 @@ theorem exists_isGeneratedByPolygon_derivedNeighborhood (hPK : P.faces ⊆ K.fac
   let e := derivedNeighborhoodSubcomplexHomeomorph (K := K) hPK
   let c₂ : (derivedNeighborhood K P).space ≃ₜ
       (barycentricSubdivision (derivedNeighborhood K P)).space :=
-    Homeomorph.setCongr (barycentricSubdivision_isSubdivision (derivedNeighborhood K P)).space_eq.symm
+    Homeomorph.setCongr (barycentricSubdivision_isSubdivision (derivedNeighborhood K
+        P)).space_eq.symm
   have hgen₁ := exists_homotopic_loopZPow_of_homeomorph c₁ hgen₀
   have hgen₂ := exists_homotopic_loopZPow_of_homeomorph e.symm hgen₁
   have hgen₃ := exists_homotopic_loopZPow_of_strongDeformationRetract

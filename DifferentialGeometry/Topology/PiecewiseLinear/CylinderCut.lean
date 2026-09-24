@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
+
+/-! # Cylinder Cut -/
 
 open Set
 
@@ -30,7 +37,8 @@ theorem injOn_strip {a b : ℝ} (ha : 0 ≤ a) (hb : b ≤ 1) (hab : 0 < a ∨ b
     · exfalso
       linarith [hx.2.2, hends.1]
 
-theorem isPLHomeomorphOn_strip [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] (hP : IsPolyhedron P) {a b : ℝ}
+theorem isPLHomeomorphOn_strip [FiniteDimensional ℝ E] [FiniteDimensional ℝ F] (hP : IsPolyhedron P)
+    {a b : ℝ}
     (ha : 0 ≤ a) (hb : b ≤ 1) (hab : 0 < a ∨ b < 1) :
     IsPLHomeomorphOn f (P ×ˢ Icc a b) (f '' (P ×ˢ Icc a b)) := by
   have hpoly := hP.prod (isHPolytope_Icc (a := a) (b := b)).isPolyhedron

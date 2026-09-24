@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedStarFiber
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSectionDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeFreeDiskCell
+
+/-! # Height Star Decomposition -/
 
 open Set
 
@@ -19,7 +26,8 @@ theorem biUnion_heightSectionCells_subset_closedStar_eq
   classical
   let cells := (heightSectionCells 2 K ℓ (ℓ p)).filter (fun C => C ⊆ closedStar K p)
   have hclosed : IsClosed (⋃ C ∈ cells, C) := cells.finite_toSet.isClosed_biUnion
-    (fun _ hC => (isPLBall_of_mem_heightSectionCells (Finset.mem_filter.mp hC).1).isPolyhedron.isClosed)
+    (fun _ hC => (isPLBall_of_mem_heightSectionCells (Finset.mem_filter.mp
+        hC).1).isPolyhedron.isClosed)
   have hverts : K.vertices.Finite :=
     (Set.toFinite K.faces).preimage Finset.singleton_injective.injOn
   have hsub : (closedStar K p ∩ {x | ℓ x = ℓ p}) \ K.vertices ⊆ ⋃ C ∈ cells, C := by

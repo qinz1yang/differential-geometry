@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Derived
 import DifferentialGeometry.Topology.PiecewiseLinear.Star
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricCompactness
 import Mathlib.Analysis.Normed.Module.Convex
+
+/-! # Mesh -/
 
 open Set Metric
 
@@ -59,7 +66,8 @@ theorem card_ratio_le {k N : ℕ} (hk : 0 < k) (hkN : k ≤ N + 1) :
 theorem IsFlag.card_le {K : Geometry.SimplicialComplex ℝ E} {d : Finset (Finset E)}
     (hd : IsFlag K d) {u : Finset E} (htop : ∀ s ∈ d, s ⊆ u) : d.card ≤ u.card := by
   classical
-  have hmaps : Set.MapsTo Finset.card (d : Set (Finset E)) ((Finset.Icc 1 u.card : Finset ℕ) : Set ℕ) := by
+  have hmaps : Set.MapsTo Finset.card (d : Set (Finset E)) ((Finset.Icc 1 u.card : Finset ℕ) : Set
+      ℕ) := by
     intro s hs
     rw [Finset.coe_Icc, mem_Icc]
     exact ⟨Finset.card_pos.mpr (K.nonempty_of_mem_faces (hd.mem_faces hs)),
@@ -152,7 +160,8 @@ instance [DecidableEq E] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
   induction m with
   | zero => exact inferInstanceAs (Finite K.faces)
   | succ m _ =>
-    exact inferInstanceAs (Finite (barycentricSubdivision (iteratedBarycentricSubdivision K m)).faces)
+    exact inferInstanceAs (Finite (barycentricSubdivision (iteratedBarycentricSubdivision K
+        m)).faces)
 
 theorem card_le_of_mem_iteratedBarycentricSubdivision_faces [DecidableEq E]
     (K : Geometry.SimplicialComplex ℝ E) {N : ℕ} (hK : ∀ s ∈ K.faces, s.card ≤ N + 1) (m : ℕ) :

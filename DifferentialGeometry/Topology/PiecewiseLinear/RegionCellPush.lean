@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceRegion
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereCellPush
 import DifferentialGeometry.Topology.ConvexFrontier
 import DifferentialGeometry.Topology.RegularClosed
+
+/-! # Region Cell Push -/
 
 open Set
 
@@ -27,13 +34,15 @@ theorem frontier_closure_sdiff_eq_of_isPLSphere_frontier
   have hpatchK : IsPLBall 2 (C ∩ (boundaryComplex 3 K).space) := by
     rw [← hKfront, hKspace, inter_comm]
     exact hpatch
-  obtain ⟨R, hRfin, hR, hRspace⟩ := hK.exists_isCombinatorialManifoldWithBoundary_closure_sdiff hC hCK hpatchK
+  obtain ⟨R, hRfin, hR, hRspace⟩ := hK.exists_isCombinatorialManifoldWithBoundary_closure_sdiff hC
+      hCK hpatchK
   let _ : Finite R.faces := hRfin.to_subtype
   obtain ⟨A, hAfin, hAspace⟩ := hC.isPolyhedron.exists_simplicialComplex
   let _ : Finite A.faces := hAfin.to_subtype
   have hA : IsPLBall 3 A.space := hAspace.symm ▸ hC
   have hAfront : frontier A.space = (boundaryComplex 3 A).space :=
-    frontier_space_eq_boundaryComplex_space_of_finrank (by simp) A hA.isCombinatorialManifoldWithBoundary
+    frontier_space_eq_boundaryComplex_space_of_finrank (by simp) A
+        hA.isCombinatorialManifoldWithBoundary
   have hRfront : frontier R.space = (boundaryComplex 3 R).space :=
     frontier_space_eq_boundaryComplex_space_of_finrank (by simp) R hR
   have hformula := boundaryComplex_space_of_closure_sdiff K A R hK

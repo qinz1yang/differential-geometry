@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeHalfSpace
 import DifferentialGeometry.Analysis.Convex.CompactFrontier
+
+/-! # Convex Cone -/
 
 open Set Topology
 
@@ -92,7 +99,8 @@ theorem coneComplex_space_eq_of_convex [DecidableEq E] {C : Set E}
   · intro hx
     by_cases hxp : x = p
     · exact Or.inl hxp
-    obtain ⟨r, hr, hz⟩ := DifferentialGeometry.Analysis.IsCompact.exists_mem_frontier_add_smul hCc hx hxp
+    obtain ⟨r, hr, hz⟩ := DifferentialGeometry.Analysis.IsCompact.exists_mem_frontier_add_smul hCc
+        hx hxp
     have hr0 : 0 < r := lt_of_lt_of_le zero_lt_one hr
     refine Or.inr ⟨p + r • (x - p), hL.symm ▸ hz, r⁻¹, inv_pos.mpr hr0,
       (inv_le_one₀ hr0).mpr hr, ?_⟩

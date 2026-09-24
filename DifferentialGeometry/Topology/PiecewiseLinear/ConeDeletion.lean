@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeFreeFace
 import DifferentialGeometry.Topology.PiecewiseLinear.TetrahedronDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleDeletion
+
+/-! # Cone Deletion -/
 
 open Set
 
@@ -68,7 +75,8 @@ theorem exists_isPLHomeomorphOn_frontier_coneComplex_eraseTriangleComplex
   let R := eraseTriangleComplex K t
   let hpR := hp.of_faces_subset (eraseTriangleComplex_faces_subset K t)
   have hRfin : Finite R.faces := (eraseTriangleComplex_faces_finite K t).to_subtype
-  have hCfin : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite K.faces)).to_subtype
+  have hCfin : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite
+      K.faces)).to_subtype
   have hC'fin : Finite (coneComplex hpR).faces :=
     (coneComplex_faces_finite hpR (eraseTriangleComplex_faces_finite K t)).to_subtype
   have hsub : (coneComplex hpR).faces ⊆ (coneComplex hp).faces := by
@@ -77,15 +85,19 @@ theorem exists_isPLHomeomorphOn_frontier_coneComplex_eraseTriangleComplex
     · exact Or.inr (Or.inl rfl)
     · exact Or.inr (Or.inr ⟨s, eraseTriangleComplex_faces_subset K t hs, rfl⟩)
   have htop : insert p t ∈ (coneComplex hp).faces := Or.inr (Or.inr ⟨t, ht, rfl⟩)
-  have htopcard : (insert p t).card = 4 := by rw [Finset.card_insert_of_notMem (hp.notMem_face ht), htcard]
+  have htopcard : (insert p t).card = 4 := by rw [Finset.card_insert_of_notMem (hp.notMem_face ht),
+      htcard]
   have hcard : ∀ s ∈ K.faces, s.card ≤ 3 := fun s hs => card_le_of_isPLBall K hK hs
   have hdelete : ∀ u ∈ (coneComplex hp).faces, u.card = 4 →
       (u ∈ (coneComplex hpR).faces ↔ u ≠ insert p t) := by
     intro u hu hucard
-    simpa only [hu, true_and] using mem_coneComplex_eraseTriangleComplex_tetrahedron_iff K hp hcard ht hucard
-  exact exists_isPLHomeomorphOn_frontier_of_delete_free_tetrahedron (coneComplex hp) (coneComplex hpR)
+    simpa only [hu, true_and] using mem_coneComplex_eraseTriangleComplex_tetrahedron_iff K hp hcard
+        ht hucard
+  exact exists_isPLHomeomorphOn_frontier_of_delete_free_tetrahedron (coneComplex hp) (coneComplex
+      hpR)
     (hp.isPLBall_of_isPLBall hK) (hpR.isPLBall_of_isPLBall hR) hsub htop htopcard hdelete
     (isPLBall_frontier_coneComplex_inter_convexHull_insert (n := 1) (by simp) K hp hK ht htcard
-      hs hst hsne (by simpa only [Finset.coe_erase] using htrace)) hU (by simpa only [Finset.coe_insert] using htU)
+      hs hst hsne (by simpa only [Finset.coe_erase] using htrace)) hU (by simpa only
+          [Finset.coe_insert] using htU)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

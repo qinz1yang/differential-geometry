@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedStarNeighborhood
+
+/-! # Collar Neighborhood -/
 
 open Set Topology
 
@@ -35,7 +42,8 @@ theorem IsPLHomeomorphOn.mem_nhdsSetWithin_boundaryComplex
     have hboundaryJ : (boundaryComplex 2 J).space = D ∩ closure (B.space \ D) := by
       obtain ⟨r, hr⟩ := hD
       rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex J (hJspace.symm ▸ hr),
-        simplexBoundary_stdVertices_space, ← hB.inter_closure_sdiff_eq_image_stdSimplexBoundary B hr hDB]
+        simplexBoundary_stdVertices_space, ← hB.inter_closure_sdiff_eq_image_stdSimplexBoundary B hr
+            hDB]
     have hxnotJ : x ∉ (boundaryComplex 2 J).space := fun hx =>
       hxcl ((hboundaryJ.subset hx).2)
     have hprod : IsPLBall 3 (D ×ˢ Icc a b) := isPLBall_three_prod hD (isPLBall_Icc hab)
@@ -55,7 +63,8 @@ theorem IsPLHomeomorphOn.mem_nhdsSetWithin_boundaryComplex
     obtain ⟨L, hLfin, hLspace⟩ := hC.isPolyhedron.exists_simplicialComplex
     let _ : Finite L.faces := hLfin.to_subtype
     have hL : IsPLBall 3 L.space := hLspace.symm ▸ hC
-    obtain ⟨T, hTfin, hTspace⟩ := (isPLBall_three_prod hJ (isPLBall_Icc hab)).isPolyhedron.exists_simplicialComplex
+    obtain ⟨T, hTfin, hTspace⟩ := (isPLBall_three_prod hJ (isPLBall_Icc
+        hab)).isPolyhedron.exists_simplicialComplex
     let _ : Finite T.faces := hTfin.to_subtype
     let _ : DecidableEq (E × ℝ) := Classical.decEq _
     have hT : IsPLBall 3 T.space := hTspace.symm ▸ isPLBall_three_prod hJ (isPLBall_Icc hab)
@@ -73,7 +82,8 @@ theorem IsPLHomeomorphOn.mem_nhdsSetWithin_boundaryComplex
       · exact ⟨hDB (hJspace.subset (boundaryComplex_space_subset 2 J hz.1)), hz.2⟩
     have hFclosed : IsClosed F :=
       (((hD.isPolyhedron.isCompact.prod isCompact_singleton).union
-        ((isPolyhedron_space (boundaryComplex 2 J)).isCompact.prod isCompact_Icc)).image_of_continuousOn
+        ((isPolyhedron_space (boundaryComplex 2 J)).isCompact.prod
+            isCompact_Icc)).image_of_continuousOn
         (hρ.isPiecewiseAffineOn.continuousOn.mono hFdom)).isClosed
     have hxF : x ∉ F := by
       rintro ⟨z, hz, hzx⟩

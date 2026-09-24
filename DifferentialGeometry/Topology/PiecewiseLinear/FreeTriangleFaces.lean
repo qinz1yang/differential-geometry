@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleDeletion
+
+/-! # Free Triangle Faces -/
 
 open Set
 
@@ -103,7 +110,8 @@ theorem mem_eraseTriangleComplex_iff_of_free_triangle
     (mem_eraseTriangleComplex_edge_iff_not_mem_boundaryComplex K
       hK.isCombinatorialManifoldWithBoundary ht htcard (Finset.erase_subset _ _)
       (by rw [Finset.card_erase_of_mem hv, htcard])).mpr
-      (fun h => hvs ((mem_boundaryComplex_erase_iff_of_boundary_trace K ht htcard hst htrace hv).mp h))
+      (fun h => hvs ((mem_boundaryComplex_erase_iff_of_boundary_trace K ht htcard hst htrace hv).mp
+          h))
   constructor
   · intro hr
     refine ⟨eraseTriangleComplex_faces_subset K t hr, ?_⟩

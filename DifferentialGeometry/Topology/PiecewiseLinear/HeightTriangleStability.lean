@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleFiberEquivalence
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightPerturbation
+
+/-! # Height Triangle Stability -/
 
 open Set Topology
 
@@ -198,15 +205,18 @@ theorem eventually_exists_isPLHomeomorphOn_triangle_fiber_preserving_edges
         hf.1 hf.2.1 hf.2.2 hℓh hℓl hℓr hflo hfhi hlo hhi hcompare.1 hcompare.2
     · rcases lt_or_eq_of_le (le_of_not_gt hhi) with hmax | heq
       · have hfmax := horder _ (show G (1, 0) ∈ V by simp [V]) _ (show p ∈ V by simp [V]) hmax
-        have hnew := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => f (G z)) (r := f p) hf.1 hf.2.1 hf.2.2
+        have hnew := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => f (G z)) (r := f p) hf.1
+            hf.2.1 hf.2.2
           (fun h => (not_le.mpr hfmax) h.2)
-        have hold := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => ℓ (G z)) (r := ℓ p) hℓh hℓl hℓr
+        have hold := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => ℓ (G z)) (r := ℓ p) hℓh
+            hℓl hℓr
           (fun h => (not_le.mpr hmax) h.2)
         refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
         rw [hnew, hold]
         exact IsPolyhedron.empty.isPLHomeomorphOn_id
       · have hpoint := hunique (1, 0) (by simp) heq
-        have hnew := triangle_fiber_max_eq_singleton_of_monotone (b := fun z => f (G z)) hf.1 hf.2.1 hf.2.2
+        have hnew := triangle_fiber_max_eq_singleton_of_monotone (b := fun z => f (G z)) hf.1 hf.2.1
+            hf.2.2
         have hold := triangle_fiber_max_eq_singleton_of_monotone (b := fun z => ℓ (G z)) hℓh hℓl hℓr
         rw [hpoint] at hnew hold
         refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
@@ -214,15 +224,18 @@ theorem eventually_exists_isPLHomeomorphOn_triangle_fiber_preserving_edges
         exact (isHPolytope_singleton (1, 0)).isPolyhedron.isPLHomeomorphOn_id
   · rcases lt_or_eq_of_le (le_of_not_gt hlo) with hmin | heq
     · have hfmin := horder _ (show p ∈ V by simp [V]) _ (show G (0, 0) ∈ V by simp [V]) hmin
-      have hnew := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => f (G z)) (r := f p) hf.1 hf.2.1 hf.2.2
+      have hnew := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => f (G z)) (r := f p) hf.1
+          hf.2.1 hf.2.2
         (fun h => (not_le.mpr hfmin) h.1)
-      have hold := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => ℓ (G z)) (r := ℓ p) hℓh hℓl hℓr
+      have hold := triangle_fiber_eq_empty_of_notMem_Icc (b := fun z => ℓ (G z)) (r := ℓ p) hℓh hℓl
+          hℓr
         (fun h => (not_le.mpr hmin) h.1)
       refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩
       rw [hnew, hold]
       exact IsPolyhedron.empty.isPLHomeomorphOn_id
     · have hpoint := hunique (0, 0) (by simp) heq.symm
-      have hnew := triangle_fiber_min_eq_singleton_of_monotone (b := fun z => f (G z)) hf.1 hf.2.1 hf.2.2
+      have hnew := triangle_fiber_min_eq_singleton_of_monotone (b := fun z => f (G z)) hf.1 hf.2.1
+          hf.2.2
       have hold := triangle_fiber_min_eq_singleton_of_monotone (b := fun z => ℓ (G z)) hℓh hℓl hℓr
       rw [hpoint] at hnew hold
       refine ⟨id, ?_, fun _ _ _ => ⟨Iff.rfl, Iff.rfl, Iff.rfl⟩⟩

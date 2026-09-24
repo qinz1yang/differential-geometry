@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
+
+/-! # Local Manifold -/
 
 open Set
 
@@ -183,7 +190,8 @@ theorem IsLocallyCombinatorialManifoldWithBoundary.upperLink_faces_eq_empty_of_c
   omega
 
 open Classical in
-theorem IsLocallyCombinatorialManifoldWithBoundary.isPLBall_geometricLink_derivedNeighborhood_of_lower
+theorem
+    IsLocallyCombinatorialManifoldWithBoundary.isPLBall_geometricLink_derivedNeighborhood_of_lower
     [FiniteDimensional ℝ E] {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (L : Geometry.SimplicialComplex ℝ E)
     (h : IsLocallyCombinatorialManifoldWithBoundary n K L.space) {e : Finset E}
@@ -225,7 +233,8 @@ theorem IsLocallyCombinatorialManifoldWithBoundary.isPLBall_geometricLink_derive
         (upperLink (barycentricSubdivision K) e)).space := by
       have hdim : k + (n - (k + 1)) + 1 = n := by omega
       rcases hupper with hs | hb
-      · have := isPLBall_joinComplex_of_isPLBall_of_isPLSphere hlower (hs.of_isPLHomeomorphOn hg.symm)
+      · have := isPLBall_joinComplex_of_isPLBall_of_isPLSphere hlower (hs.of_isPLHomeomorphOn
+          hg.symm)
         rwa [hdim] at this
       · have := isPLBall_joinComplex_of_isPLBall_of_isPLBall hlower (hb.of_isPLHomeomorphOn hg.symm)
         rwa [hdim] at this

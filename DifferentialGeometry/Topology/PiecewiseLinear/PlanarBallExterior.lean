@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
+
+/-! # Planar Ball Exterior -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -406,7 +413,8 @@ theorem exists_isPLBall_two_exteriorBall_of_affineBasis (b : AffineBasis (Fin 3)
         exact ⟨w, hw, rfl⟩
     · exact (isPiecewiseAffineOn_of_affine dil isOpen_univ).mono_of_isPolyhedron
         hCpoly (subset_univ _)
-    · have hbij : BijOn dil (convexHull ℝ (Set.range b)) (dilHomeo '' convexHull ℝ (Set.range b)) := by
+    · have hbij : BijOn dil (convexHull ℝ (Set.range b)) (dilHomeo '' convexHull ℝ (Set.range b)) :=
+        by
         refine ⟨fun x hx => ⟨x, hx, rfl⟩, ?_, ?_⟩
         · intro x _ y _ hxy
           have hc2 := congrArg shr hxy
@@ -425,7 +433,8 @@ theorem exists_isPLBall_two_exteriorBall_of_affineBasis (b : AffineBasis (Fin 3)
         rw [← hwy]
         exact hbij.injOn.leftInvOn_invFunOn hw
       rw [h2, ← hwy, hdilH, hleft]
-  · have hbij : BijOn dil (convexHull ℝ (Set.range b)) (dilHomeo '' convexHull ℝ (Set.range b)) := by
+  · have hbij : BijOn dil (convexHull ℝ (Set.range b)) (dilHomeo '' convexHull ℝ (Set.range b)) :=
+      by
       refine ⟨fun x hx => ⟨x, hx, rfl⟩, ?_, ?_⟩
       · intro x _ y _ hxy
         have hc2 := congrArg shr hxy
@@ -470,7 +479,8 @@ theorem exists_isPLBall_two_exteriorBall_of_affineBasis (b : AffineBasis (Fin 3)
   · intro z
     have hC'closed : IsClosed (dilHomeo '' convexHull ℝ (Set.range b)) :=
       dilHomeo.isClosedMap _ hCclosed
-    have hmem : ∀ y : Plane, y ∈ dilHomeo '' convexHull ℝ (Set.range b) ↔ ∀ i, -1 ≤ b.coord i y := by
+    have hmem : ∀ y : Plane, y ∈ dilHomeo '' convexHull ℝ (Set.range b) ↔ ∀ i, -1 ≤ b.coord i y :=
+        by
       intro y
       constructor
       · rintro ⟨w, hw, rfl⟩ i

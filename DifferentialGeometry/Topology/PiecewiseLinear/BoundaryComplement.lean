@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldFaces
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryInvariance
+
+/-! # Boundary Complement -/
 
 open Set
 
@@ -47,8 +54,14 @@ theorem mem_boundaryComplex_complement_iff {n : ℕ}
       constructor
       · intro hsA
         rcases hA.codimension_one_cofaces A hsA hcard with ⟨a, ha⟩ | ⟨a, b, -, ha⟩
-        · exact ⟨a, by change a ∈ {w | w ∉ s ∧ insert w s ∈ A.faces}; rw [ha]; exact mem_singleton a⟩
-        · exact ⟨a, by change a ∈ {w | w ∉ s ∧ insert w s ∈ A.faces}; rw [ha]; exact mem_insert a {b}⟩
+        · exact ⟨a, by
+            change a ∈ {w | w ∉ s ∧ insert w s ∈ A.faces}
+            rw [ha]
+            exact mem_singleton a⟩
+        · exact ⟨a, by
+            change a ∈ {w | w ∉ s ∧ insert w s ∈ A.faces}
+            rw [ha]
+            exact mem_insert a {b}⟩
       · rintro ⟨w, hw⟩
         exact A.down_closed hw.2 (Finset.subset_insert w s)
           (Finset.card_pos.mp (by omega))

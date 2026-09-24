@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexBallGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodCells
+
+/-! # Derived Neighborhood Attachments -/
 
 open Set
 
@@ -83,7 +90,8 @@ theorem IsCombinatorialManifoldWithBoundary.isPLBall_union_derivedNeighborhoodCe
     have hds' : ∀ u ∈ d, u ≠ s := fun u hu => hds u (Finset.mem_insert_of_mem hu)
     have hc' : ∀ u ∈ d, s ⊆ u ∨ u ⊆ s := fun u hu => hcomp u (Finset.mem_insert_of_mem hu)
     have hi' : ∀ u ∈ d, ∀ v ∈ d, u ≠ v → ¬u ⊆ v ∧ ¬v ⊆ u :=
-      fun u hu v hv huv => hincomp u (Finset.mem_insert_of_mem hu) v (Finset.mem_insert_of_mem hv) huv
+      fun u hu v hv huv => hincomp u (Finset.mem_insert_of_mem hu) v (Finset.mem_insert_of_mem hv)
+          huv
     have hball := ih hd' hds' hc' hi'
     have htK := hd t (Finset.mem_insert_self _ _)
     have hts := hds t (Finset.mem_insert_self _ _)

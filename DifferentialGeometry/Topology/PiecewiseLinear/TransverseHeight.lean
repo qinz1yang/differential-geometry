@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import Mathlib.LinearAlgebra.Dual.Lemmas
+
+/-! # Transverse Height -/
 
 open Set Topology
 
@@ -27,7 +34,8 @@ theorem hasPLCrossingAt_affineSubspace_fiber (P : Submodule ℝ E)
     Or.inl rfl, Or.inl rfl, Or.inl rfl, Filter.Eventually.of_forall fun y => ?_⟩
   constructor
   · simp only [LinearMap.zero_apply, le_refl, and_true, mem_ofPred_eq]
-  · simp only [LinearMap.zero_apply, le_refl, and_true, mem_ofPred_eq, LinearMap.mem_ker, map_sub, sub_eq_zero, sub_self]
+  · simp only [LinearMap.zero_apply, le_refl, and_true, mem_ofPred_eq, LinearMap.mem_ker, map_sub,
+      sub_eq_zero, sub_self]
 
 theorem hasPLCrossingAt_fiber_of_transverse_face (K : Geometry.SimplicialComplex ℝ E)
     [Finite K.faces] (hK : IsCombinatorialManifoldWithBoundary 2 K)
@@ -49,7 +57,8 @@ theorem hasPLCrossingAt_fiber_of_transverse_face (K : Geometry.SimplicialComplex
   have hst : vectorSpan ℝ (s : Set E) ⊔ vectorSpan ℝ (T : Set E) = ⊤ := by
     rw [hspan]
     exact sup_ker_eq_top_of_apply_ne_zero _ ℓ hd hℓd
-  have hcross := hasPLCrossingAt_of_transverse_face K L hK hLball.isCombinatorialManifoldWithBoundary
+  have hcross := hasPLCrossingAt_of_transverse_face K L hK
+      hLball.isCombinatorialManifoldWithBoundary
     hdimE hs ht hx hxt hst
   apply hcross.congr (Filter.Eventually.of_forall fun _ => Iff.rfl)
   filter_upwards [eventually_mem_convexHull_iff_sub_mem_vectorSpan hT hxt] with y hy
@@ -68,7 +77,8 @@ theorem eventually_hasPLCrossingAt_fiber_of_transverse_face
   have hne : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, f d ≠ 0 :=
     (ContinuousLinearMap.apply ℝ ℝ d).continuous.continuousAt.preimage_mem_nhds
       (isOpen_compl_singleton.mem_nhds hℓd)
-  exact hne.mono fun f hf => hasPLCrossingAt_fiber_of_transverse_face K hK hdimE f.toLinearMap hs hx hd hf
+  exact hne.mono fun f hf => hasPLCrossingAt_fiber_of_transverse_face K hK hdimE f.toLinearMap hs hx
+      hd hf
 
 theorem eventually_hasPLCrossingAt_fiber_of_affineSubspace_germ (P : Submodule ℝ E)
     (hP : Module.finrank ℝ P = 2) (hdimE : Module.finrank ℝ E = 3) (ℓ : E →L[ℝ] ℝ)

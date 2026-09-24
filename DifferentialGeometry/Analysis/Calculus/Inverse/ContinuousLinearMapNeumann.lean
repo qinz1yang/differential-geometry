@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Analysis.SpecificLimits.Normed
 import Mathlib.Analysis.Normed.Operator.Mul
 import Mathlib.Topology.Algebra.Module.Equiv
+
+/-! Continuous Linear Map Neumann. -/
 
 set_option autoImplicit false
 

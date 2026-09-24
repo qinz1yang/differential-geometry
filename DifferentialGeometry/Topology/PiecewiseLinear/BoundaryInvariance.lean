@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldInvariance
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
+
+/-! # Boundary Invariance -/
 
 open Set
 
@@ -12,7 +19,8 @@ theorem isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision [FiniteD
     {n : ℕ} (K R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite R.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (hR : IsSubdivision R K)
     {x : E} (hxR : {x} ∈ R.faces) :
-    IsPLBall n (SimplicialComplex.geometricLink R {x}).space ↔ x ∈ (boundaryComplex (n + 1) K).space := by
+    IsPLBall n (SimplicialComplex.geometricLink R {x}).space ↔ x ∈ (boundaryComplex (n + 1) K).space
+        := by
   have hxK : x ∈ K.space := hR.space_eq ▸ R.subset_space hxR (Finset.mem_singleton_self x)
   obtain ⟨s, hs, hxs⟩ := exists_face_mem_openSimplex K hxK
   have hxB : x ∈ (boundaryComplex (n + 1) K).space ↔ s ∈ (boundaryComplex (n + 1) K).faces := by
@@ -21,7 +29,8 @@ theorem isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision [FiniteD
       by_contra hnot
       exact notMem_space_of_notMem_faces (boundaryComplex_faces_subset (n + 1) K) hs hnot hxs hx
     · intro hsB
-      exact (boundaryComplex (n + 1) K).convexHull_subset_space hsB (openSimplex_subset_convexHull s hxs)
+      exact (boundaryComplex (n + 1) K).convexHull_subset_space hsB (openSimplex_subset_convexHull s
+          hxs)
   have hspos := Finset.card_pos.mpr (K.nonempty_of_mem_faces hs)
   obtain ⟨k, hk⟩ : ∃ k, s.card = k + 1 := ⟨s.card - 1, by omega⟩
   have hcardle := hK.card_le K hs
@@ -119,7 +128,8 @@ theorem mem_boundaryComplex_space_iff_of_isPLHomeomorphOn {F : Type*}
     ⟨fun h => h.of_isPLHomeomorphOn hlink.symm, fun h => h.of_isPLHomeomorphOn hlink⟩
   exact (isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision L L₁
     (hK.of_isPLHomeomorphOn hf) hL₁ hfx₁).symm.trans
-      (hball.trans (isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision K K₁ hK (hK₁.trans hK₀) hx₁))
+      (hball.trans (isPLBall_geometricLink_iff_mem_boundaryComplex_of_isSubdivision K K₁ hK
+          (hK₁.trans hK₀) hx₁))
 
 open Classical in
 theorem boundaryComplex_space_of_isPLHomeomorphOn {F : Type*}

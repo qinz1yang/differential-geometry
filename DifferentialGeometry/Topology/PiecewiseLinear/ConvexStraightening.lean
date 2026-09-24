@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeStraightening
 import DifferentialGeometry.Topology.PiecewiseLinear.ConvexCone
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalTriangleDeletion
+
+/-! # Convex Straightening -/
 
 open Set
 
@@ -16,7 +23,8 @@ theorem isSimplyEmbedded_frontier_of_convex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLSphere 2 K.space := hKspace.symm ▸ hS
   obtain ⟨p, hp⟩ := hball.interior_nonempty
-  let hpK := isConeBase_of_space_subset_frontier_convex hC hball.isPolyhedron.isClosed hp K hKspace.le
+  let hpK := isConeBase_of_space_subset_frontier_convex hC hball.isPolyhedron.isClosed hp K
+      hKspace.le
   have hcone : (coneComplex hpK).space = C :=
     coneComplex_space_eq_of_convex hC hball.isPolyhedron.isCompact (interior_subset hp) hpK hKspace
   obtain ⟨x, hx⟩ := hK.nonempty

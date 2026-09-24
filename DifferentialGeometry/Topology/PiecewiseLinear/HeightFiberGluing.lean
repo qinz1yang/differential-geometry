@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiniteGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleEdgeLink
+
+/-! # Height Fiber Gluing -/
 
 open Set
 
@@ -63,7 +70,8 @@ theorem exists_isPLHomeomorphOn_height_fiber_of_face_maps
       ∀ s, EqOn g (f s) (convexHull ℝ (s.val : Set E) ∩ S) := by
   have hQ : ∀ s : K.faces, IsPolyhedron (convexHull ℝ (s.val : Set E) ∩ {x | ℓ x = r}) := by
     intro s
-    exact ((isHPolytope_convexHull_of_affineIndependent s.val (K.indep s.property)).inter_preimage (isHPolytope_singleton r) ℓ.toAffineMap).isPolyhedron
+    exact ((isHPolytope_convexHull_of_affineIndependent s.val (K.indep s.property)).inter_preimage
+        (isHPolytope_singleton r) ℓ.toAffineMap).isPolyhedron
   have hP : ∀ s : K.faces, IsPolyhedron (convexHull ℝ (s.val : Set E) ∩ S) := by
     intro s
     have h := (hf s).isPolyhedron_preimage (hQ s) (Subset.refl _)

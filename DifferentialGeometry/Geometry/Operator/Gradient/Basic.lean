@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Geometry.Coordinates.Fields.Scalar
 import DifferentialGeometry.Geometry.Coordinates.Fields.Vector
 import DifferentialGeometry.Geometry.Coordinates.Frame.Chart
@@ -13,6 +18,8 @@ import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
 import Mathlib.LinearAlgebra.Matrix.Adjugate
+
+/-! # Gradient Basic -/
 
 noncomputable section
 
@@ -147,9 +154,11 @@ def chartInvGramMatrix (g : SmoothRiemannianMetric I M) (α : M) (x : M) :
 lemma chartInvGramMatrix_mul_chartGramMatrix
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    chartInvGramMatrix (I := I) g α x * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x = 1 := by
+    chartInvGramMatrix (I := I) g α x * DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I
+        := I) g α x = 1 := by
   have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hx
-  have hdet_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det :=
+  have hdet_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+      x).det :=
     isUnit_iff_ne_zero.mpr (ne_of_gt hpos.det_pos)
   unfold chartInvGramMatrix
   exact Matrix.nonsing_inv_mul _ hdet_unit
@@ -157,9 +166,11 @@ lemma chartInvGramMatrix_mul_chartGramMatrix
 lemma chartGramMatrix_mul_chartInvGramMatrix
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
-    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x * chartInvGramMatrix (I := I) g α x = 1 := by
+    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x * chartInvGramMatrix (I
+        := I) g α x = 1 := by
   have hpos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_posDef (I := I) g α hx
-  have hdet_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det :=
+  have hdet_unit : IsUnit (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+      x).det :=
     isUnit_iff_ne_zero.mpr (ne_of_gt hpos.det_pos)
   unfold chartInvGramMatrix
   exact Matrix.mul_nonsing_inv _ hdet_unit
@@ -168,16 +179,20 @@ lemma chartGramMatrix_adjugate_entry_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
     (i j : Fin (Module.finrank ℝ E)) :
     ContMDiffOn I 𝓘(ℝ) ∞
-      (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).adjugate i j)
+      (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+          x).adjugate i j)
       (trivializationAt E (TangentSpace I) α).baseSet := by
   classical
-  have hexp : (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).adjugate i j) =
-      (fun x : M => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).updateRow j
+  have hexp : (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+      x).adjugate i j) =
+      (fun x : M => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+          x).updateRow j
         (Pi.single i (1 : ℝ))).det) := by
     funext x
     exact Matrix.adjugate_apply _ _ _
   rw [hexp]
-  have hexp2 : (fun x : M => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).updateRow j
+  have hexp2 : (fun x : M => ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+      x).updateRow j
         (Pi.single i (1 : ℝ))).det) =
       (fun x : M => ∑ σ : Equiv.Perm (Fin (Module.finrank ℝ E)),
         (Equiv.Perm.sign σ : ℝ) *
@@ -191,7 +206,8 @@ lemma chartGramMatrix_adjugate_entry_contMDiffOn
   refine ContMDiffOn.mul (contMDiffOn_const (c := ((Equiv.Perm.sign σ : ℤ) : ℝ))) ?_
   refine contMDiffOn_finsetProd (fun k _ => ?_)
   by_cases hσk : σ k = j
-  · have heq : (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).updateRow j
+  · have heq : (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+      x).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
         (fun _ : M => (Pi.single (M := fun _ : Fin (Module.finrank ℝ E) => ℝ) i
           (1 : ℝ)) k) := by
@@ -199,13 +215,16 @@ lemma chartGramMatrix_adjugate_entry_contMDiffOn
       rw [hσk, Matrix.updateRow_self]
     rw [heq]
     exact contMDiffOn_const
-  · have heq : (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).updateRow j
+  · have heq : (fun x : M => (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+      x).updateRow j
         (Pi.single i (1 : ℝ)) (σ k) k) =
-        (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x (σ k) k) := by
+        (fun x : M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x (σ k)
+            k) := by
       funext x
       rw [Matrix.updateRow_ne hσk]
     rw [heq]
-    exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α (σ k) k
+    exact DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_entry_contMDiffOn (I := I) g α (σ
+        k) k
 
 lemma chartInvGramMatrix_entry_contMDiffOn
     (g : SmoothRiemannianMetric I M) (α : M)
@@ -217,13 +236,16 @@ lemma chartInvGramMatrix_entry_contMDiffOn
   have hcongr : ∀ x ∈ (trivializationAt E (TangentSpace I) α).baseSet,
       chartInvGramMatrix (I := I) g α x i j =
         ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det)⁻¹ *
-          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).adjugate i j := by
+          (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).adjugate i j :=
+              by
     intro x hx
     have hdet_pos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g α hx
-    have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det ≠ 0 := ne_of_gt hdet_pos
+    have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det ≠ 0
+        := ne_of_gt hdet_pos
     unfold chartInvGramMatrix
     rw [Matrix.inv_def]
-    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det •
+    change (Ring.inverse (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α
+        x).det •
             (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).adjugate) i j =
       ((DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det)⁻¹ *
           (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).adjugate i j
@@ -238,9 +260,11 @@ lemma chartInvGramMatrix_entry_contMDiffOn
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_contMDiffOn (I := I) g α
     intro x hx
     have hdet_pos := DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_det_pos (I := I) g α hx
-    have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det ≠ 0 := ne_of_gt hdet_pos
+    have hdet_ne : (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det ≠ 0
+        := ne_of_gt hdet_pos
     have hsmooth_inv : ContDiffAt ℝ ∞ (fun y : ℝ => y⁻¹)
-        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det := contDiffAt_inv _ hdet_ne
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x).det :=
+            contDiffAt_inv _ hdet_ne
     have h_at := hdet_smooth x hx
     exact hsmooth_inv.contMDiffAt.comp_contMDiffWithinAt x h_at
   · exact chartGramMatrix_adjugate_entry_contMDiffOn (I := I) g α i j
@@ -282,7 +306,8 @@ def gradChartCoeff (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
     (i : Fin (Module.finrank ℝ E)) (x : M) : ℝ :=
   ∑ j : Fin (Module.finrank ℝ E),
     chartInvGramMatrix (I := I) g α x i j *
-      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+          (extChartAt I α x)
 
 @[simp] lemma gradChartCoeff_def
     (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
@@ -290,7 +315,8 @@ def gradChartCoeff (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ)
     gradChartCoeff (I := I) g α f i x =
       ∑ j : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g α x i j *
-          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) := rfl
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+              (extChartAt I α x) := rfl
 
 def gradChartLocal (g : SmoothRiemannianMetric I M) (α : M) (f : M → ℝ) (x : M) :
     TangentSpace I x :=
@@ -304,8 +330,10 @@ lemma mfderiv_chartBasisVecFiber_of_mdifferentiableAt
     (hxchart : x ∈ (chartAt H α).source)
     (hx_int : extChartAt I α x ∈ interior (extChartAt I α).target)
     (i : Fin (Module.finrank ℝ E)) :
-    mfderiv I 𝓘(ℝ, ℝ) f x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
-      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+    mfderiv I 𝓘(ℝ, ℝ) f x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i
+        x) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f)
+          (extChartAt I α x) := by
   classical
   set φ := extChartAt I α
   have hxsrc : x ∈ φ.source := by
@@ -365,11 +393,13 @@ lemma mfderiv_chartBasisVecFiber_of_mdifferentiableAt
       (x₀ := α) (x := x) hxchart]
     set T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
       trivializationAt E (TangentSpace I) α
-    have heq : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x = T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+    have heq : DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x = T.symm x
+        ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
       by rw [DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, T.symmL_apply hbase]
     rw [heq]
     have h_apply :
-        T.continuousLinearMapAt ℝ x (T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+        T.continuousLinearMapAt ℝ x (T.symm x
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
           = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
       have heqsymm : T.symm x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
             = T.symmL ℝ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) := by
@@ -377,8 +407,10 @@ lemma mfderiv_chartBasisVecFiber_of_mdifferentiableAt
       rw [heqsymm, Bundle.Trivialization.continuousLinearMapAt_symmL T (b := x) hbase]
     exact h_apply
   change fderiv ℝ (scalarOnE (I := I) α f) (φ x)
-        (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
-      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (φ x)
+        (mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (φ
+          x)
   rw [hmfderiv_chartBasis]
   rfl
 
@@ -388,7 +420,8 @@ lemma inner_gradChartLocal_chartBasis
     (k : Fin (Module.finrank ℝ E)) :
     g.inner x (gradChartLocal (I := I) g α f x)
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
-      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+      = DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f)
+          (extChartAt I α x) := by
   classical
   unfold gradChartLocal
   rw [show g.inner x (∑ i, gradChartCoeff (I := I) g α f i x •
@@ -401,7 +434,8 @@ lemma inner_gradChartLocal_chartBasis
   · rw [show (g.inner x (∑ i, gradChartCoeff (I := I) g α f i x •
               DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) =
           (∑ i, gradChartCoeff (I := I) g α f i x •
-              g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)) from ?_]
+              g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
+                  from ?_]
     · rw [sum_apply]
       refine Finset.sum_congr rfl ?_
       intro i _
@@ -412,12 +446,14 @@ lemma inner_gradChartLocal_chartBasis
       rw [map_smul]
   have ha : ∀ i, gradChartCoeff (I := I) g α f i x =
       ∑ j, chartInvGramMatrix (I := I) g α x i j *
-        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) := fun i => rfl
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+            (extChartAt I α x) := fun i => rfl
   rw [show ∑ i, gradChartCoeff (I := I) g α f i x *
             g.inner x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
               (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
           ∑ i, (∑ j, chartInvGramMatrix (I := I) g α x i j *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x)) *
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+                (extChartAt I α x)) *
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k from ?_]
   swap
   · refine Finset.sum_congr rfl ?_
@@ -425,20 +461,24 @@ lemma inner_gradChartLocal_chartBasis
     rw [ha i]
     rfl
   rw [show ∑ i, (∑ j, chartInvGramMatrix (I := I) g α x i j *
-              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
+                  f)
                 (extChartAt I α x)) *
                 DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k =
           ∑ j, (∑ i, chartInvGramMatrix (I := I) g α x i j *
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) from ?_]
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+                (extChartAt I α x) from ?_]
   swap
   · rw [show ∑ i, (∑ j, chartInvGramMatrix (I := I) g α x i j *
-                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+                DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I)
+                    α f)
                   (extChartAt I α x)) *
                   DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k =
               ∑ i, ∑ j, (chartInvGramMatrix (I := I) g α x i j *
                   DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) *
-                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+                  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I :=
+                      I) α f)
                     (extChartAt I α x) from ?_]
     · rw [Finset.sum_comm]
       refine Finset.sum_congr rfl ?_
@@ -451,7 +491,8 @@ lemma inner_gradChartLocal_chartBasis
       intro j _
       ring
   have hsym : ∀ i, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k =
-      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k i := fun i => g.symm x _ _
+      DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x k i := fun i => g.symm
+          x _ _
   have hkron : ∀ j, (∑ i, chartInvGramMatrix (I := I) g α x i j *
         DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) =
       if k = j then (1 : ℝ) else 0 := by
@@ -474,9 +515,11 @@ lemma inner_gradChartLocal_chartBasis
     rw [Matrix.mul_apply]
   rw [show ∑ j, (∑ i, chartInvGramMatrix (I := I) g α x i j *
             DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α x i k) *
-              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) =
+              DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α
+                  f) (extChartAt I α x) =
           ∑ j, (if k = j then (1 : ℝ) else 0) *
-            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) from
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+                (extChartAt I α x) from
       Finset.sum_congr rfl (fun j _ => by rw [hkron j])]
   rw [Finset.sum_eq_single k]
   · simp
@@ -495,8 +538,10 @@ lemma gradChartLocal_eq_gradFun
   have hxchart : x ∈ (chartAt H α).source := by
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)] at hx; exact hx
   set f' : TangentSpace I x →L[ℝ] ℝ := mfderiv I 𝓘(ℝ, ℝ) f x with hf'_def
-  have hmfderiv_basis : ∀ k, f' (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
-      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f) (extChartAt I α x) := by
+  have hmfderiv_basis : ∀ k, f' (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I)
+      α k x) =
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α f)
+          (extChartAt I α x) := by
     intro k
     rw [hf'_def]
     exact mfderiv_chartBasisVecFiber_of_mdifferentiableAt
@@ -510,7 +555,8 @@ lemma gradChartLocal_eq_gradFun
   set b : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
     DifferentialGeometry.Tensor.Coordinates.chartBasisFamily (I := I) α hx
   set c : Fin (Module.finrank ℝ E) → ℝ := fun k => b.repr v k
-  have hv_decomp : v = ∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x := by
+  have hv_decomp : v = ∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I :=
+      I) α k x := by
     have h1 : v = ∑ k, b.repr v k • b k := (b.sum_repr v).symm
     rw [h1]
     refine Finset.sum_congr rfl ?_
@@ -526,8 +572,10 @@ lemma gradChartLocal_eq_gradFun
     refine Finset.sum_congr rfl ?_
     intro k _
     rw [ContinuousLinearMap.map_smul, smul_eq_mul]
-  rw [show f' (∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) =
-        ∑ k, c k * f' (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x) from ?_]
+  rw [show f' (∑ k, c k • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+      =
+        ∑ k, c k * f' (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k x)
+            from ?_]
   swap
   · rw [map_sum]
     refine Finset.sum_congr rfl ?_
@@ -620,8 +668,10 @@ theorem grad_norm_sq_chart
     (hx : x ∈ (chartAt H α).source) :
     g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x) =
       ∑ i, ∑ j, chartInvGramMatrix (I := I) g α x i j *
-        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x) *
-        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) := by
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+            (extChartAt I α x) *
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f)
+            (extChartAt I α x) := by
   classical
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]
@@ -642,7 +692,8 @@ theorem grad_norm_sq_chart
     mfderiv_chartBasisVecFiber_of_mdifferentiableAt
       (I := I) α hf hx hx_int i]
   change gradChartCoeff (I := I) g α f i x *
-      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f) (extChartAt I α x) = _
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α f)
+          (extChartAt I α x) = _
   unfold gradChartCoeff
   rw [Finset.sum_mul]
 
@@ -683,10 +734,12 @@ theorem g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
         (∑ i, c i • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
         (∑ j, c j • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j x)
       = dotProduct (star c) (Matrix.mulVec Gmat c) :=
-    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α x c).symm
+    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_dotProduct_mulVec (I := I) g α x
+        c).symm
   rw [hG_form]
   set d : Fin (Module.finrank ℝ E) → ℝ := fun j =>
-    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f) (extChartAt I α x)
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α f)
+        (extChartAt I α x)
     with hd_def
   set Ginv : Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
     chartInvGramMatrix (I := I) g α x with hGinv_def
@@ -848,7 +901,8 @@ private lemma gradChartCoeff_contMDiffOn
       have hfderiv : ContDiffOn ℝ ∞ (fderiv ℝ (scalarOnE (I := I) α f))
           (interior (extChartAt I α).target) :=
         hbase_int.fderiv_of_isOpen isOpen_interior (by rw [ENat.coe_top_add_one])
-      have hconst : ContDiffOn ℝ ∞ (fun _ : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
+      have hconst : ContDiffOn ℝ ∞ (fun _ : E =>
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)
           (interior (extChartAt I α).target) := contDiffOn_const
       exact hfderiv.clm_apply hconst
     have hpartialM : ContMDiffOn 𝓘(ℝ, E) 𝓘(ℝ) ∞
@@ -883,7 +937,8 @@ private lemma gradChartLocal_contMDiffOn_total
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) :=
     fun i => gradChartCoeff_contMDiffOn (I := I) g α hf i
   have hbasis : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (fun x : M => TotalSpace.mk' E x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
+      (fun x : M => TotalSpace.mk' E x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber
+          (I := I) α i x))
       ((extChartAt I α).source ∩
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) := by
     intro i
@@ -895,7 +950,8 @@ private lemma gradChartLocal_contMDiffOn_total
     exact this
   have hsmul : ∀ i, ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => TotalSpace.mk' E x
-        (gradChartCoeff (I := I) g α f i x • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
+        (gradChartCoeff (I := I) g α f i x •
+            DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x))
       ((extChartAt I α).source ∩
         (extChartAt I α) ⁻¹' interior (extChartAt I α).target) := by
     intro i

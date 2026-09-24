@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCone
 import DifferentialGeometry.Topology.PiecewiseLinear.StarIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood
+
+/-! # Arc Cell Trace -/
 
 open Set
 
@@ -102,7 +109,9 @@ theorem mem_barycentricSubdivision_ssubset_singleton_centroid_iff
       · rw [Finset.mem_singleton.mp hr]
         exact htd
     have hd_eq : ({s', t} : Finset (Finset E)) = d :=
-      Finset.eq_of_subset_of_card_le hpair (by rw [Finset.card_pair hts.symm]; exact hd.card_le_two hG)
+      Finset.eq_of_subset_of_card_le hpair (by
+        rw [Finset.card_pair hts.symm]
+        exact hd.card_le_two hG)
     refine ⟨t, hd.mem_faces htd, hts, hd.subset_or_subset hs'd htd, ?_⟩
     rw [← hd_eq, Finset.image_insert, Finset.image_singleton]
   · rintro ⟨t, ht, hts, hcomp, rfl⟩

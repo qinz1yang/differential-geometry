@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubcomplexBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
+
+/-! # Boundary Ball Replacement -/
 
 open Set
 
@@ -13,7 +20,8 @@ theorem exists_isPLHomeomorphOn_boundary_complement
     (K A R : Geometry.SimplicialComplex ℝ E) [Finite K.faces] [Finite A.faces] [Finite R.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hA : IsPLBall 3 A.space)
     (hAK : A.space ⊆ K.space) (hD : IsPLBall 2 (A.space ∩ (boundaryComplex 3 K).space))
-    (hR : IsCombinatorialManifoldWithBoundary 3 R) (hRspace : R.space = closure (K.space \ A.space)) :
+    (hR : IsCombinatorialManifoldWithBoundary 3 R) (hRspace : R.space = closure (K.space \ A.space))
+        :
     ∃ H : E → E, IsPLHomeomorphOn H (boundaryComplex 3 K).space (boundaryComplex 3 R).space ∧
       EqOn H id (closure ((boundaryComplex 3 K).space \ A.space)) := by
   classical

@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition
 import Mathlib.Analysis.Calculus.ImplicitContDiff
 import Mathlib.Topology.IsLocalHomeomorph
 import Mathlib.Topology.MetricSpace.Thickening
 import Mathlib.Topology.Separation.Regular
+
+/-! Moving Implicit. -/
 
 set_option autoImplicit false
 
@@ -574,7 +581,8 @@ theorem closedTube_compact
       (closure T.parameterDomain ×ˢ Metric.closedBall 0 r) := by
     exact continuousOn_fst.prodMk
       ((hPhi.comp continuousOn_fst (fun q hq => hq.1)).add continuousOn_snd)
-  exact (T.isCompact_closure_parameterDomain.prod (isCompact_closedBall 0 r)).image_of_continuousOn hmap
+  exact (T.isCompact_closure_parameterDomain.prod (isCompact_closedBall 0
+    r)).image_of_continuousOn hmap
 
 
 theorem closedTube_subset
@@ -698,7 +706,8 @@ theorem annulus_compact
 
 theorem exists_residual_gap
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
+    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X]
+      [FiniteDimensional Real X]
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
@@ -730,7 +739,8 @@ theorem exists_residual_gap
 
 theorem eventually_no_root
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
+    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X]
+      [FiniteDimensional Real X]
     [NormedAddCommGroup Y] [NormedSpace Real Y]
     {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
@@ -758,7 +768,8 @@ theorem eventually_no_root
 
 theorem exists_deriv_radius
     {P X Y : Type*}
-    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X] [FiniteDimensional Real X]
+    [NormedAddCommGroup P] [NormedSpace Real P] [NormedAddCommGroup X] [NormedSpace Real X]
+      [FiniteDimensional Real X]
     [NormedAddCommGroup Y] [NormedSpace Real Y] {D : Set (P × X)} {W₀ K : Set P}
     {FInf : P × X → Y} {PhiInf : P → X}
     (T : CompactRootTube D W₀ K FInf PhiInf)
@@ -1146,7 +1157,8 @@ theorem exists_root_c0
     dsimp only [Phi]
     rw [dif_pos ⟨hn, hp⟩]
     exact Classical.choose_spec ((hroot n hn).1 p hp)
-  have hPhiConvergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) := by
+  have hPhiConvergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure
+    T.parameterDomain) := by
     rw [Metric.tendstoUniformlyOn_iff]
     intro eps heps
     let a : Real := min (eps / 2) (inner / 2)
@@ -1554,7 +1566,8 @@ theorem exists_root_cInf
   have hPhiInf_cd : ContDiffOn Real ∞ PhiInf T.parameterDomain :=
     T.limit_branch_smooth.mono fun q hq =>
       T.closure_parameterDomain_subset (subset_closure hq)
-  have hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure T.parameterDomain) := by
+  have hPhi_convergence : TendstoUniformlyOn Phi PhiInf Filter.atTop (closure
+    T.parameterDomain) := by
     rw [Metric.tendstoUniformlyOn_iff] at hconv₀ ⊢
     intro eps heps
     filter_upwards [hconv₀ eps heps, eventually_ge_atTop N] with n hnConvergence hn

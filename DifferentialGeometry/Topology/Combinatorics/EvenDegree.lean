@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Combinatorics.SimpleGraph.DegreeSum
 import Mathlib.Data.Set.Card
+
+/-! # Even Degree -/
 
 open Set
 
@@ -64,7 +71,8 @@ theorem not_isBridge_of_even_neighborSet_ncard (G : SimpleGraph V) [Finite V]
   have haodd : Odd (H.degree a) := by
     rw [hdegree, hDa, Set.ncard_sdiff_singleton_of_mem (show v ∈ G.neighborSet u from huv)]
     obtain ⟨k, hk⟩ := h u
-    have hpos : 0 < (G.neighborSet u).ncard := Nat.pos_of_ne_zero (Set.ncard_ne_zero_of_mem (show v ∈ G.neighborSet u from huv))
+    have hpos : 0 < (G.neighborSet u).ncard := Nat.pos_of_ne_zero (Set.ncard_ne_zero_of_mem (show v
+        ∈ G.neighborSet u from huv))
     refine ⟨k - 1, ?_⟩
     omega
   obtain ⟨b, hba, hbodd⟩ := H.exists_ne_odd_degree_of_exists_odd_degree a haodd

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronIn
 import DifferentialGeometry.Topology.PiecewiseLinear.BallInterior
+
+/-! # Polyhedral Ball Boundary -/
 
 open Set
 open scoped Manifold

@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightProjection
+
+/-! # Height Fiber Witness -/
 
 open Set Topology
 
@@ -28,7 +35,8 @@ theorem eventually_exists_eq_image_height_of_mem_ray_nhds
   have hright : ℓ (H p) < ℓ (H (x + ε • d)) := by
     rw [hheight, hheight, map_add, map_smul, smul_eq_mul, hlevel]
     nlinarith
-  have hleft' := (ContinuousLinearMap.apply ℝ ℝ (H (x + (-ε) • d))).continuous.continuousAt.eventually_lt
+  have hleft' := (ContinuousLinearMap.apply ℝ ℝ (H (x + (-ε) •
+      d))).continuous.continuousAt.eventually_lt
     (ContinuousLinearMap.apply ℝ ℝ (H p)).continuous.continuousAt hleft
   have hright' := (ContinuousLinearMap.apply ℝ ℝ (H p)).continuous.continuousAt.eventually_lt
     (ContinuousLinearMap.apply ℝ ℝ (H (x + ε • d))).continuous.continuousAt hright
@@ -52,7 +60,8 @@ theorem eventually_exists_lt_height_eq_image_height_of_mem_ray_nhds
   have hleft : ℓ (H (x + (-ε) • d)) < ℓ (H p) := by
     rw [hheight, hheight, map_add, map_smul, smul_eq_mul, hlevel]
     nlinarith
-  have hleft' := (ContinuousLinearMap.apply ℝ ℝ (H (x + (-ε) • d))).continuous.continuousAt.eventually_lt
+  have hleft' := (ContinuousLinearMap.apply ℝ ℝ (H (x + (-ε) •
+      d))).continuous.continuousAt.eventually_lt
     (ContinuousLinearMap.apply ℝ ℝ (H p)).continuous.continuousAt hleft
   filter_upwards [hleft'] with f hfleft
   intro hfright

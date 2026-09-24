@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularPasting
+
+/-! # Singular Local -/
 
 open Set Topology Metric
 
@@ -43,7 +50,8 @@ open Classical in
 theorem exists_small_piecewiseAffineOn_doublePointSet_crossing_neighborhood [FiniteDimensional ℝ E]
     [FiniteDimensional ℝ F] (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hdim : Module.finrank ℝ F = 3)
-    (f : E → F) (hf : IsPiecewiseAffineOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict f))
+    (f : E → F) (hf : IsPiecewiseAffineOn f K.space) (hloc : IsLocallyInjective (K.space.domRestrict
+        f))
     (hcard : ∀ z, (K.space ∩ f ⁻¹' {z}).encard ≤ 2) {y : F} (hy : y ∈ doublePointSet f K.space)
     {V : Set F} (hV : V ∈ 𝓝 y) {ε : ℝ} (hε : 0 < ε) :
     ∃ (g : E → F) (W : Set F) (G : Geometry.SimplicialComplex ℝ F),
@@ -55,10 +63,12 @@ theorem exists_small_piecewiseAffineOn_doublePointSet_crossing_neighborhood [Fin
                 ∀ z ∈ W ∩ doublePointSet g K.space, HasPLDoubleCrossingAt g K.space z := by
   obtain ⟨a, ha, b, hb, hab, hfa, hfb⟩ := hy
   obtain ⟨P, Q, B₀, U, hPQ, hP, hQ, _, hB₀Q, hPB₀, hinjP, _, hU, hyU, hUV, hseam, hinjQ,
-    _, _, _, _, _, _, hPa, hB₀b⟩ := exists_isPLBall_patches_at_fiber_pair K hK f hf.continuousOn hloc hcard
+    _, _, _, _, _, _, hPa, hB₀b⟩ := exists_isPLBall_patches_at_fiber_pair K hK f hf.continuousOn
+        hloc hcard
       ha hb hab hfa hfb (A₀ := univ) (B₀ := univ) Filter.univ_mem Filter.univ_mem hV
   obtain ⟨A, Q₁, B, U₁, _, hA, _, hB, _, hAB, hinjA, hinjB, hU₁, hyU₁, hU₁U, _, _,
-    hinner, hmapsU, hAP, hBB₀, _, _, _, _⟩ := exists_isPLBall_patches_at_fiber_pair K hK f hf.continuousOn
+    hinner, hmapsU, hAP, hBB₀, _, _, _, _⟩ := exists_isPLBall_patches_at_fiber_pair K hK f
+        hf.continuousOn
       hloc hcard ha hb hab hfa hfb hPa hB₀b (hU.mem_nhds hyU)
   have hPK : P ⊆ K.space := hPQ ▸ subset_union_left
   have hQK : Q ⊆ K.space := hPQ ▸ subset_union_right
@@ -78,7 +88,8 @@ theorem exists_small_piecewiseAffineOn_doublePointSet_crossing_neighborhood [Fin
     obtain ⟨L, hLfinite, hLspace, hfL⟩ := exists_isPLHomeomorphOn_image S hfS hinjS
     have : Finite L.faces := hLfinite.to_subtype
     rw [hSC] at hfL hLspace
-    exact ⟨L, hLfinite, hLspace, hfL, (hC.of_isPLHomeomorphOn hfL).isCombinatorialManifoldWithBoundary⟩
+    exact ⟨L, hLfinite, hLspace, hfL, (hC.of_isPLHomeomorphOn
+        hfL).isCombinatorialManifoldWithBoundary⟩
   obtain ⟨M, hMfinite, hMA, hfA, hMman⟩ := hrepresent hA hinjA hAK
   obtain ⟨N, hNfinite, hNB, hfB, hNman⟩ := hrepresent hB hinjB hBK
   have : Finite M.faces := hMfinite.to_subtype

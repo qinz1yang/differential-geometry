@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.PeriodicDescent
 import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+
+/-! Affine Lift. -/
 
 
 
@@ -46,14 +53,16 @@ def affineCircleHomeomorph (f : ℝ ≃ₜ ℝ) (hp : ∀ t, f (t + 1) = f t + 1
     obtain ⟨t, rfl⟩ := QuotientAddGroup.mk_surjective θ
     simp only [affineCircleMap_coe, f.apply_symm_apply]
   continuous_toFun := (affineCircleMap f f.continuous hp).continuous
-  continuous_invFun := (affineCircleMap f.symm f.symm.continuous (inverse_affinePeriodic f hp)).continuous
+  continuous_invFun := (affineCircleMap f.symm f.symm.continuous (inverse_affinePeriodic f
+    hp)).continuous
 
 
 theorem affineCircleMap_lipschitz (f : ℝ → ℝ) (hc : Continuous f)
     (hp : ∀ t, f (t + 1) = f t + 1) {K : ℝ≥0} (hK : LipschitzWith K f) :
     LipschitzWith K (affineCircleMap f hc hp) := by
   apply loop_lipschitz_of_lift
-  simpa only [one_mul, affineCircleMap_coe, Function.comp_def] using! loopCircle_projection_lipschitz.comp hK
+  simpa only [one_mul, affineCircleMap_coe, Function.comp_def] using!
+    loopCircle_projection_lipschitz.comp hK
 
 
 theorem affineCircleHomeomorph_lipschitz (f : ℝ ≃ₜ ℝ)

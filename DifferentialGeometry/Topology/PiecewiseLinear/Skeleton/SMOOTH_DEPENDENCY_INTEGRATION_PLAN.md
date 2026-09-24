@@ -127,3 +127,14 @@ lead accepts it. Paths below are absolute or relative to the checkout root.
   `prepare-private-root-worktree.py` + `checker.ps1 -Checkout D:` + the worktree path per module, then the audit.
 - The seven additional prerequisites are added to the worktree by the host side from the same source
   revision before the cone compile, and `compile-order.txt` is extended accordingly.
+
+## 8. Host entry, 2026-09-24
+
+The isolated branch passed corrected strict 741-module replay and 27 audits,
+then entered `codex/moise-integration` as a real merge. The entry closure passed
+732 fresh main-checkout module checks; 27 main-checkout audits passed 11,086
+declarations. All 118 leaf modules and promoted `PLSmoothingCompact` are in the
+flat aggregate. The scoped entry is accepted. The repository aggregate build
+is not certified. The broader all-PL replay found an inherited unfinished
+`FourSpokeCap.lean` outside this entry closure and outside current root imports. See
+`consult/smooth-main-host-acceptance.md` and its source-bound receipt manifest.

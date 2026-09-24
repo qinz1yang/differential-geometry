@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyPolyhedral
+
+/-! # Model Slide -/
 
 open Set
 
@@ -145,7 +152,8 @@ theorem bijective_slideMap : Function.Bijective slideMap :=
   ⟨injective_slideMap, surjective_slideMap⟩
 
 theorem inter_modelBandA_modelBandQ :
-    modelBandA ∩ modelBandQ = {p : ℝ × ℝ × ℝ | p.2.1 = 0 ∧ p.2.2 = 0 ∧ p.1 ∈ Icc (1 / 2 : ℝ) 1} := by
+    modelBandA ∩ modelBandQ = {p : ℝ × ℝ × ℝ | p.2.1 = 0 ∧ p.2.2 = 0 ∧ p.1 ∈ Icc (1 / 2 : ℝ) 1} :=
+        by
   ext p
   constructor
   · rintro ⟨⟨hz, -, hx1⟩, ⟨hy, -, hx2⟩⟩

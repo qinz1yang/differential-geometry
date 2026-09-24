@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutExtension
+
+/-! # Circle Pair -/
 
 open Set
 
@@ -83,7 +90,8 @@ theorem exists_isPLHomeomorphOn_map_crosscut_eqOn_boundary
   obtain ⟨G, hG, hGh⟩ := exists_isPLHomeomorphOn_eqOn_disk_crosscut hu huJ hu' huJ'
     hγ hPD hinter hPD' hh (hhf.image_eq.trans hf.image_eq) (hhg.image_eq.trans hg.image_eq)
   refine ⟨G, hG, fun x hx => (hGh (Or.inl hx)).trans (hhf hx), ?_⟩
-  exact (show EqOn G g P from fun x hx => (hGh (Or.inr hx)).trans (hhg hx)).image_eq.trans hg.image_eq
+  exact (show EqOn G g P from fun x hx => (hGh (Or.inr hx)).trans (hhg hx)).image_eq.trans
+      hg.image_eq
 
 theorem exists_isPLHomeomorphOn_disk_pair_eqOn_boundary
     {A B J P Q : Set E} {A' B' J' P' Q' : Set F}

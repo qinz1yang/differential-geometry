@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Batteries.Tactic.Alias
 import Mathlib.Analysis.Calculus.BumpFunction.Basic
 import Mathlib.Analysis.Calculus.BumpFunction.FiniteDimension
 import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.MeasureTheory.Integral.IntervalIntegral.FundThmCalculus
+
+/-! Smooth. -/
 
 set_option autoImplicit false
 
@@ -423,6 +430,7 @@ end DifferentialGeometry
 
 namespace DifferentialGeometry.Analysis
 
-alias exists_smooth_bounded_eventuallyEq_id := DifferentialGeometry.exists_smooth_bounded_eventuallyEq_id
+alias exists_smooth_bounded_eventuallyEq_id :=
+  DifferentialGeometry.exists_smooth_bounded_eventuallyEq_id
 
 end DifferentialGeometry.Analysis

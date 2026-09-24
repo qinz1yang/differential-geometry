@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Connected.LevelSet
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiberCircle
+
+/-! # Height Half Disk -/
 
 open Set
 
@@ -19,8 +26,10 @@ theorem exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero
       f '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} := by
   have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove
-  obtain ⟨hcllow, hclhigh⟩ := closure_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove
-  obtain ⟨hconnlow, hconnhigh⟩ := isPreconnected_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r
+  obtain ⟨hcllow, hclhigh⟩ := closure_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r
+      hbelow habove
+  obtain ⟨hconnlow, hconnhigh⟩ := isPreconnected_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ
+      hinj hzero r
   obtain ⟨y, hy, hyr⟩ := hbelow
   obtain ⟨z, hz, hrz⟩ := habove
   have hdiff : K.space \ (K.space ∩ {x | ℓ x = r}) = K.space \ {x | ℓ x = r} := by
@@ -47,7 +56,8 @@ theorem isPLBall_halfSpaces_of_heightIndex_eq_zero
     (hbelow : ∃ y ∈ K.space, ℓ y < r) (habove : ∃ z ∈ K.space, r < ℓ z) :
     IsPLBall 2 (K.space ∩ {x | ℓ x ≤ r}) ∧ IsPLBall 2 (K.space ∩ {x | r ≤ ℓ x}) := by
   obtain ⟨f, g, hf, hg, -, -⟩ :=
-    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove
+    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow
+        habove
   exact ⟨⟨f, hf⟩, ⟨g, hg⟩⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

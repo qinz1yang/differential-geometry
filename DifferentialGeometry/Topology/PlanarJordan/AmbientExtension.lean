@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.Schoenflies.JordanSchoenflies
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Homeomorph.Lemmas
+
+/-! Ambient Extension. -/
 
 open Set
 
@@ -63,6 +70,14 @@ theorem isJordanCurve_range_of_isEmbedding_circle
   have h := isJordanCurve_range_circle (he.continuous.comp q.continuous)
     (he.injective.comp q.injective)
   rwa [range_comp, q.surjective.range_eq, image_univ] at h
+
+theorem isJordanCurve_range_of_isEmbedding_addCircle {T : ℝ} (hT : T ≠ 0)
+    {e : AddCircle T → Schoenflies.Plane} (he : Topology.IsEmbedding e) :
+    Schoenflies.IsJordanCurve (range e) := by
+  let G := AddCircle.homeomorphCircle hT
+  have h := isJordanCurve_range_circle (he.continuous.comp G.symm.continuous)
+    (he.injective.comp G.symm.injective)
+  rwa [range_comp, G.symm.surjective.range_eq, image_univ] at h
 
 theorem exists_homeomorph_extending_circle_embedding
     {e : Metric.sphere (0 : Schoenflies.Plane) 1 → Schoenflies.Plane}

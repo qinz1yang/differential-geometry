@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativePush
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SchoenfliesInput
+
+/-! # Sphere Cell Push -/
 
 open Set
 
@@ -30,7 +37,8 @@ theorem HasPushProperty.exists_isPLHomeomorphOn_sphere_surgery
     rintro x ⟨hxS, hxD⟩
     exact ⟨subset_closure ⟨hxS, hxD⟩, fun hxC => hxD ⟨hxS, hxC⟩⟩
   obtain ⟨h, hh, -, hfixA, hfixU, himage⟩ :=
-    (hC.2 D ⟨f, hf⟩ hDC).exists_homeomorph_fixed_on_of_inter_subset hf hA.isPolyhedron hCA hdense hU hCU
+    (hC.2 D ⟨f, hf⟩ hDC).exists_homeomorph_fixed_on_of_inter_subset hf hA.isPolyhedron hCA hdense hU
+        hCU
   have hcover : D ∪ A = S := by
     apply Subset.antisymm (union_subset hDS hAS)
     intro x hx
@@ -63,7 +71,8 @@ theorem exists_isPLHomeomorphOn_sphere_surgery_of_convex (I : SchoenfliesInput)
       IsPLHomeomorphOn h univ univ ∧ EqOn h id Uᶜ ∧ EqOn h id (closure (S \ C)) ∧
       h '' S = closure (S \ C) ∪ closure (frontier C \ S) := by
   have hsimple := I.isSimplyEmbedded_frontier_of_convex C hconv hC
-  exact (hasPushProperty_of_isSimplyEmbedded_frontier hC hsimple).exists_isPLHomeomorphOn_sphere_surgery
+  exact (hasPushProperty_of_isSimplyEmbedded_frontier hC
+      hsimple).exists_isPLHomeomorphOn_sphere_surgery
     hS hD hDC hU hCU
 
 theorem HasPushProperty.isSimplyEmbedded_of_sphere_surgery

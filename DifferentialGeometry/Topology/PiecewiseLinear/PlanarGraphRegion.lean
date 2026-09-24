@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.PolytopeSection
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
+
+/-! # Planar Graph Region -/
 
 open Set Topology
 

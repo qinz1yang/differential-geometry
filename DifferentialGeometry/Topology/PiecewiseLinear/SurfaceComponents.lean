@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronLocalConnectedness
 import DifferentialGeometry.Topology.Connected.LocalSeparation
+
+/-! # Surface Components -/
 
 open Set Topology
 
@@ -50,7 +57,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_connectedComponentIn_pair_adj
     (local_separation_of_surface hK hL hLK hB)
 
 open Classical in
-theorem IsCombinatorialManifoldWithBoundary.exists_connectedComponentIn_pair_sdiff_of_separating_surface
+theorem
+    IsCombinatorialManifoldWithBoundary.exists_connectedComponentIn_pair_sdiff_of_separating_surface
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
     (hLK : L.space ⊆ K.space) (hB : Disjoint L.space (boundaryComplex 3 K).space)

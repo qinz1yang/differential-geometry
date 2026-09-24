@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Analysis.Calculus.Compactness.Superposition
+
+/-! # Singular Chart -/
 
 open Set Topology Metric
 
@@ -23,7 +30,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_halfSpace_chart [FiniteDi
     ∃ (R : Geometry.SimplicialComplex ℝ E) (g : E → F) (G : Geometry.SimplicialComplex ℝ F),
       IsSubdivision R K ∧ R.faces.Finite ∧ IsPiecewiseAffineOn g K.space ∧
         (∀ x ∈ K.space, dist (g x) (f x) < ε) ∧ MapsTo g K.space e.source ∧
-          (∀ v ∈ R.vertices, IsPLHomeomorphOn g (starComplex R v).space (g '' (starComplex R v).space)) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn g (starComplex R v).space (g '' (starComplex R
+              v).space)) ∧
             IsLocallyInjective (K.space.domRestrict g) ∧
               (∀ y : F, (K.space ∩ g ⁻¹' {y}).encard ≤ 2) ∧ MapsTo g K.space M ∧
                 (∀ x ∈ K.space, g x ∈ B ↔ x ∈ (boundaryComplex 2 K).space) ∧
@@ -49,7 +57,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_halfSpace_chart [FiniteDi
       rintro x ⟨hx, hxy⟩
       refine ⟨hx, ?_⟩
       change f x = e.symm y
-      exact e.injOn (hsource hx) (e.map_target hy) ((show e (f x) = y from hxy).trans (e.right_inv hy).symm)
+      exact e.injOn (hsource hx) (e.map_target hy) ((show e (f x) = y from hxy).trans (e.right_inv
+          hy).symm)
     · have hempty : K.space ∩ (e ∘ f) ⁻¹' {y} = ∅ := by
         apply eq_empty_iff_forall_notMem.mpr
         rintro x ⟨hx, hxy⟩
@@ -86,7 +95,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_halfSpace_chart [FiniteDi
     have hsub : u '' (starComplex R v).space ⊆ e.target := by
       rintro y ⟨x, hx, rfl⟩
       exact hu (hR.space_eq ▸ (space_mono_of_faces_subset (starComplex_faces_subset R v) hx))
-    simpa only [g, image_image, Function.comp_def] using (hgstar v hv).postcomp_openPartialHomeomorph e.symm he.symm hsub
+    simpa only [g, image_image, Function.comp_def] using (hgstar v
+        hv).postcomp_openPartialHomeomorph e.symm he.symm hsub
   have hglocal : IsLocallyInjective (K.space.domRestrict g) := by
     have h := isLocallyInjective_of_injOn_starComplex R g fun v hv => (hstar v hv).bijOn.injOn
     rwa [hR.space_eq] at h
@@ -98,7 +108,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_halfSpace_chart [FiniteDi
       rintro x ⟨hx, hxy⟩
       refine ⟨hx, ?_⟩
       change u x = e y
-      exact e.symm.injOn (hu hx) (e.map_source hy) ((show e.symm (u x) = y from hxy).trans (e.left_inv hy).symm)
+      exact e.symm.injOn (hu hx) (e.map_source hy) ((show e.symm (u x) = y from hxy).trans
+          (e.left_inv hy).symm)
     · have hempty : K.space ∩ g ⁻¹' {y} = ∅ := by
         apply eq_empty_iff_forall_notMem.mpr
         rintro x ⟨hx, hxy⟩
@@ -167,7 +178,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_boundary_chart [FiniteDim
     ∃ (R : Geometry.SimplicialComplex ℝ E) (g : E → F) (G : Geometry.SimplicialComplex ℝ F),
       IsSubdivision R K ∧ R.faces.Finite ∧ IsPiecewiseAffineOn g K.space ∧
         (∀ x ∈ K.space, dist (g x) (f x) < ε) ∧ MapsTo g K.space e.source ∧
-          (∀ v ∈ R.vertices, IsPLHomeomorphOn g (starComplex R v).space (g '' (starComplex R v).space)) ∧
+          (∀ v ∈ R.vertices, IsPLHomeomorphOn g (starComplex R v).space (g '' (starComplex R
+              v).space)) ∧
             IsLocallyInjective (K.space.domRestrict g) ∧
               (∀ y : F, (K.space ∩ g ⁻¹' {y}).encard ≤ 2) ∧ MapsTo g K.space M ∧
                 (∀ x ∈ K.space, g x ∈ Bd ↔ x ∈ (boundaryComplex 2 K).space) ∧
@@ -180,7 +192,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_boundary_chart [FiniteDim
   have : Finite (boundaryComplex 2 K).faces :=
     ((Set.toFinite K.faces).subset (boundaryComplex_faces_subset 2 K)).to_subtype
   let C := f '' (boundaryComplex 2 K).space
-  have hC : IsCompact C := (isPolyhedron_space (boundaryComplex 2 K)).isCompact.image_of_continuousOn
+  have hC : IsCompact C := (isPolyhedron_space (boundaryComplex 2
+      K)).isCompact.image_of_continuousOn
     (hf.continuousOn.mono (boundaryComplex_space_subset 2 K))
   let U := interior (B ∪ Bdᶜ)
   have hCU : C ⊆ U := by
@@ -228,7 +241,8 @@ theorem exists_small_map_doublePointSet_normal_form_in_boundary_chart [FiniteDim
       (g x) (f x) δ C ⟨x, hx, rfl⟩ ((hgclose x hxK).trans_le (min_le_right ε δ)).le))
     exact hmem.resolve_right (fun hnot => hnot ((hgBoundary x hxK).mpr hx))
   refine ⟨R, g, G, hR, hfinite, hgPL, fun x hx => (hgclose x hx).trans_le (min_le_left ε δ),
-    hgsource, hgstar, hgloc, hgcard, fun x hx => (hgM hx).2, hgBoundary, hGfinite, hGspace, hGman, ?_, ?_, hgB, ?_⟩
+    hgsource, hgstar, hgloc, hgcard, fun x hx => (hgM hx).2, hgBoundary, hGfinite, hGspace, hGman,
+        ?_, ?_, hgB, ?_⟩
   · intro y hy
     rcases hGcross y hy with ⟨hyBd, hcross⟩ | ⟨hyBd, hcross⟩
     · refine Or.inl ⟨hyBd.2, hcross.congr_target ?_⟩

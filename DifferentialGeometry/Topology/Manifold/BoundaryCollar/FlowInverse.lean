@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.HalfSpaceFlowBox
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.NormalCoordinates
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.CurveUniqueness
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SmoothInverse
+
+/-! # Flow Inverse -/
 
 open Set Function Topology Filter Manifold
 open scoped ContDiff
@@ -102,7 +109,8 @@ theorem exists_smooth_boundary_flow_rightInverse
     rw [heq]
     exact (hΦ.comp ((contDiff_const.prodMk contDiff_snd).prodMk contDiff_fst)).contDiffOn
   have hDon : ContMDiffOn I 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin n)) ∞ D O :=
-    (DifferentialGeometry.Manifold.PartialDiffeomorph.contDiffOn_symm_of_partialDiffeomorph e heforward).contMDiffOn.comp hCon
+    (DifferentialGeometry.Manifold.PartialDiffeomorph.contDiffOn_symm_of_partialDiffeomorph e
+        heforward).contMDiffOn.comp hCon
       (fun y hy => (hOg hy).2.2.2)
   have hDon' : ContMDiffOn I (𝓘(ℝ, ℝ).prod 𝓘(ℝ, EuclideanSpace ℝ (Fin n))) ∞ D O := by
     rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]

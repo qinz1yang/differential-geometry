@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAvoiding
 import Mathlib.Topology.Order.IntermediateValue
+
+/-! # Cone Complement -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem coneComplex_sdiff_coneComplex_eq_image
   · rintro x ⟨z, hz, rfl⟩
     refine ⟨(mem_coneComplex_space_iff hp).mpr (Or.inr ⟨z.1, hz.1.1, z.2, hz.2.1, hz.2.2, rfl⟩), ?_⟩
     intro hxL
-    rcases (mem_coneComplex_space_iff (hp.of_faces_subset hLK)).mp hxL with hxp | ⟨w, hw, t, ht, -, hxt⟩
+    rcases (mem_coneComplex_space_iff (hp.of_faces_subset hLK)).mp hxL with hxp | ⟨w, hw, t, ht, -,
+        hxt⟩
     · exact ne_of_mem_of_notMem_of_radial hz.1.1 hp.notMem_space hz.2.1 rfl hxp
     · have heq := hp.radial.eq_of_add_smul_eq hz.1.1 (space_mono_of_faces_subset hLK hw)
         hz.2.1 ht hxt
@@ -50,7 +58,8 @@ theorem IsConeBase.isConnected_sdiff_coneComplex
     IsConnected ((coneComplex hp).space \ (coneComplex (hp.of_faces_subset hLK)).space) := by
   rw [coneComplex_sdiff_coneComplex_eq_image hp hLK]
   exact (hconn.prod (isConnected_Ioc (by norm_num : (0 : ℝ) < 1))).image _
-    ((continuous_const.add (continuous_snd.smul (continuous_fst.sub continuous_const))).continuousOn)
+    ((continuous_const.add (continuous_snd.smul (continuous_fst.sub
+        continuous_const))).continuousOn)
 
 theorem IsConeBase.closure_sdiff_coneComplex
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] {p : E} (hp : IsConeBase p K)

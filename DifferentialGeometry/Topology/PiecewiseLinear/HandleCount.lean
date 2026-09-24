@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryEuler
 import DifferentialGeometry.Topology.PiecewiseLinear.BettiPolyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodManifold
+
+/-! # Handle Count -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 

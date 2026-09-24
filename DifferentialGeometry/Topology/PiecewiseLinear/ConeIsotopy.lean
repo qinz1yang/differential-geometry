@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientExtension
+
+/-! # Cone Isotopy -/
 
 open Set Topology Metric
 
@@ -67,12 +74,14 @@ theorem exists_isPLHomeomorphOn_coneComplex_of_continuous
         by_cases hs0 : s = 0
         · simp only [hs0, zero_smul, add_zero]
           exact apex_mem_coneComplex_space (hL t)
-        · exact (mem_coneComplex_space_iff (hL t)).mpr (Or.inr ⟨z, hz, s, lt_of_le_of_ne hs (Ne.symm hs0), hs', rfl⟩)
+        · exact (mem_coneComplex_space_iff (hL t)).mpr (Or.inr ⟨z, hz, s, lt_of_le_of_ne hs (Ne.symm
+            hs0), hs', rfl⟩)
       rw [hmap hx]
       exact simplicialMap_coneComplex_eq_of_mem_space (hL t)
         (Function.update_self (p t) (p u) id)
         (fun _ _ => ⟨AffineMap.id ℝ E, fun _ _ => rfl⟩)
-        (fun σ hσ v hv => Function.update_of_ne (ne_of_mem_of_not_mem hv ((hL t).notMem_face hσ)) _ _)
+        (fun σ hσ v hv => Function.update_of_ne (ne_of_mem_of_not_mem hv ((hL t).notMem_face hσ)) _
+            _)
         hz hs hs'
   have hopen : IsOpen {t | R t₀ t} := by
     rw [isOpen_iff_mem_nhds]
@@ -84,7 +93,8 @@ theorem exists_isPLHomeomorphOn_coneComplex_of_continuous
     intro t ht
     filter_upwards [hlocal t] with u hu
     exact fun htu => ht (htrans htu (hsymm hu))
-  have hall : {t | R t₀ t} = univ := (show IsClopen {t | R t₀ t} from ⟨hclosed, hopen⟩).eq_univ ⟨t₀, hrefl t₀⟩
+  have hall : {t | R t₀ t} = univ := (show IsClopen {t | R t₀ t} from ⟨hclosed, hopen⟩).eq_univ ⟨t₀,
+      hrefl t₀⟩
   exact (show t₁ ∈ {t | R t₀ t} by rw [hall]; exact mem_univ t₁)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

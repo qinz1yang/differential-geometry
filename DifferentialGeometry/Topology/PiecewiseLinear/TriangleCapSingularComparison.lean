@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightLocalization
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.ParameterizedTriangleCap
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleCapSideSymmetry
+
+/-! # Triangle Cap Singular Comparison -/
 
 open Set Topology
 

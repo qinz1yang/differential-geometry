@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeIsotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
 import DifferentialGeometry.Topology.PiecewiseLinear.PushProperty
+
+/-! # Simplex Push -/
 
 open Set Topology
 
@@ -39,7 +46,8 @@ theorem exists_isPLHomeomorphOn_push_simplex [FiniteDimensional ℝ E] [dE : Dec
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
     {a : E} (ha : a ∉ T) (hTa : AffineIndependent ℝ ((↑) : ↥(insert a T : Finset E) → E))
     {N : Set E} (hN : IsPolyhedron N)
-    (hTN : convexHull ℝ ((insert a T : Finset E) : Set E) \ (simplexBoundary T hT).space ⊆ interior N) :
+    (hTN : convexHull ℝ ((insert a T : Finset E) : Set E) \ (simplexBoundary T hT).space ⊆ interior
+        N) :
     ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧ EqOn h id Nᶜ ∧
       EqOn h id (simplexBoundary T hT).space ∧
       h '' convexHull ℝ (T : Set E) =
@@ -187,7 +195,8 @@ theorem hasPushPropertyAt_convexHull_simplex_face
     (hT : AffineIndependent ℝ ((↑) : T → EuclideanSpace ℝ (Fin 3))) (hcard : T.card = 3)
     {a : EuclideanSpace ℝ (Fin 3)} (ha : a ∉ T)
     (hTa : AffineIndependent ℝ ((↑) : ↥(insert a T : Finset _) → EuclideanSpace ℝ (Fin 3))) :
-    HasPushPropertyAt (convexHull ℝ ((insert a T : Finset _) : Set _)) (convexHull ℝ (T : Set _)) := by
+    HasPushPropertyAt (convexHull ℝ ((insert a T : Finset _) : Set _)) (convexHull ℝ (T : Set _)) :=
+        by
   have hTaCard : (insert a T).card = 4 := by rw [Finset.card_insert_of_notMem ha, hcard]
   have hspan : affineSpan ℝ ((insert a T : Finset _) : Set (EuclideanSpace ℝ (Fin 3))) = ⊤ := by
     have h := hTa.affineSpan_eq_top_iff_card_eq_finrank_add_one.mpr (by
@@ -203,7 +212,8 @@ theorem hasPushPropertyAt_convexHull_simplex_face
       simpa only [Finset.erase_insert ha] using hx⟩
   · intro f hf N hN hCN
     rw [image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull hT hcard hf] at hCN
-    obtain ⟨h, hh, hfix, -, himage⟩ := exists_isPLHomeomorphOn_push_simplex T hT (by omega) ha hTa hN hCN
+    obtain ⟨h, hh, hfix, -, himage⟩ := exists_isPLHomeomorphOn_push_simplex T hT (by omega) ha hTa
+        hN hCN
     refine ⟨h, hh, ?_, hfix⟩
     rw [closure_frontier_convexHull_sdiff_face T ha hTa hspan]
     exact himage

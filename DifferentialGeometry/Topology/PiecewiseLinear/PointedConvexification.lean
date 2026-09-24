@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Homogeneity
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
 import Mathlib.Analysis.LocallyConvex.Separation
+
+/-! # Pointed Convexification -/
 
 open Set
 
@@ -33,7 +40,8 @@ theorem exists_linearMap_lt_on_convexHull_sdiff_singleton
   refine ⟨ℓ.toLinearMap, hℓ, ?_⟩
   rintro x ⟨hx, hxa⟩
   rw [← Finset.insert_erase ha] at hx
-  rcases exists_combo_of_mem_convexHull_insert (Finset.notMem_erase a T) hx with h | ⟨z, hz, s, hs, -, rfl⟩
+  rcases exists_combo_of_mem_convexHull_insert (Finset.notMem_erase a T) hx with h | ⟨z, hz, s, hs,
+      -, rfl⟩
   · exact (hxa h).elim
   · change ℓ a < ℓ (a + s • (z - a))
     rw [map_add, map_smul, map_sub, smul_eq_mul]

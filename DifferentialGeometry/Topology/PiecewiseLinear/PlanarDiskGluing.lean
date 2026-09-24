@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskContainment
+
+/-! # Planar Disk Gluing -/
 
 open Set
 
@@ -19,7 +26,8 @@ theorem isSimplyEmbedded_union_sdiff_diskInterior
         convex_univ isOpen_univ (subset_univ _)
     have hshape : IsPLSphere 2 (frontier (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 3))))) :=
       (isPLBall_convexHull_of_affineIndependent T hT hcard).isPLSphere_frontier
-    have hback := hshape.of_isPLHomeomorphOn (hh.homeomorph_symm.restrict hshape.isPolyhedron (subset_univ _))
+    have hback := hshape.of_isPLHomeomorphOn (hh.homeomorph_symm.restrict hshape.isPolyhedron
+        (subset_univ _))
     rw [← himage, h.image_symm, h.injective.preimage_image] at hback
     exact hback
   refine ⟨hsphere, fun W hW hWo hSW => ?_⟩
@@ -30,7 +38,8 @@ theorem isSimplyEmbedded_union_sdiff_diskInterior
       obtain ⟨y, hy, rfl⟩ := hx
       exact hq.bijOn.mapsTo hy.1
     exact hSW ⟨Or.inl (hD₁ hxD), fun h => h.2 hx⟩
-  have hDW : D ⊆ W := hq.subset_convex_of_boundary_subset_of_subset_affineSubspace s hs hDs hW hWo hJW
+  have hDW : D ⊆ W := hq.subset_convex_of_boundary_subset_of_subset_affineSubspace s hs hDs hW hWo
+      hJW
   have hSW' : S₁ ∪ S₂ ⊆ W := by
     intro x hx
     by_cases hxD : x ∈ D

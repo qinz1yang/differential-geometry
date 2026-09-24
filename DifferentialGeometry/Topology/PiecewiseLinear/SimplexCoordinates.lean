@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
+
+/-! # Simplex Coordinates -/
 
 open Set
 
@@ -30,7 +37,8 @@ theorem linearCombination_mem_convexHull_image_iff_of_affineIndependent {v : ι 
     let d := Finset.univ.filter (fun i => i ∈ J)
     have hd (i) : i ∈ d ↔ i ∈ J := by simp [d]
     have hsum : ∑ i ∈ d, x i = 1 := by
-      rw [Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => hzero i (fun h => hi ((hd i).mpr h)))]
+      rw [Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => hzero i (fun h => hi ((hd i).mpr
+          h)))]
       exact hx.2
     have hval : ∑ i ∈ d, x i • v i = Fintype.linearCombination ℝ v x := by
       exact Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => by

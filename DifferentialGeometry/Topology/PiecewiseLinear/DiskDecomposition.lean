@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SchoenfliesInput
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskSubdivision
+
+/-! # Disk Decomposition -/
 
 open Set
 
@@ -157,7 +164,8 @@ theorem IsPLDiskDecomposition.isFreeDiskCell_image_iff
     (boundaryComplex_space_subset 2 (restrict K C)).trans
       ((h.cell_space C hC).subset.trans (h.cell_subset hC))
   unfold IsFreeDiskCell
-  rw [hbd, boundaryComplex_space_of_isPLHomeomorphOn K L h.isPLBall.isCombinatorialManifoldWithBoundary hf,
+  rw [hbd, boundaryComplex_space_of_isPLHomeomorphOn K L
+      h.isPLBall.isCombinatorialManifoldWithBoundary hf,
     ← hf.bijOn.injOn.image_inter hCK (boundaryComplex_space_subset 2 K)]
   let _ : Finite (boundaryComplex 2 K).faces :=
     (h.finite_faces.subset (boundaryComplex_faces_subset 2 K)).to_subtype

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightLevelLink
 import DifferentialGeometry.Topology.PiecewiseLinear.RadialEmbedding
+
+/-! # Crossing Fiber -/
 
 open Set Topology
 
@@ -16,7 +23,8 @@ theorem HasPLCrossingAt.exists_continuousOn_injOn_real_inter
   let R : Submodule ℝ E := P ⊓ Q
   obtain ⟨T, hRT⟩ := Submodule.exists_isCompl R
   let π : E →L[ℝ] R := (R.projectionOnto T hRT).toContinuousLinearMap
-  let e : R ≃L[ℝ] ℝ := ContinuousLinearEquiv.ofFinrankEq (by simpa only [Module.finrank_self] using hI)
+  let e : R ≃L[ℝ] ℝ := ContinuousLinearEquiv.ofFinrankEq (by simpa only [Module.finrank_self] using
+      hI)
   have hinj : ∀ {x y : E}, x ∈ R → y ∈ R → e (π x) = e (π y) → x = y := by
     intro x y hx hy hxy
     have heq := e.injective hxy

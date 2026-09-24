@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChart
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightCut
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightRotation
+
+/-! # Height Localization -/
 
 open Set Topology
 
@@ -74,7 +81,8 @@ theorem eventually_mem_heightSingularPoints_image_cap_iff_and_encard_levelPolygo
       (levelPolygons (H '' (A ∪ D)) f (f p)).encard ≤ (levelPolygons K.space ℓ (ℓ p)).encard := by
   have hpC : p ∉ C := fun hpC => hsep p hpC rfl
   filter_upwards [eventually_disjoint_fiber_of_isCompact hC ℓ hsep,
-    eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq K hK ℓ hℓ hinj hp] with f hf hstable
+    eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq K hK ℓ hℓ hinj hp] with f hf
+        hstable
   refine ⟨?_, ?_⟩
   · rw [mem_heightSingularPoints_image_cap_iff_of_eqOn_compl H hfix hC.isClosed hB hAB hDC f hpC,
       hunion, hstable.1]
@@ -94,7 +102,8 @@ theorem eventually_heightSingularPoints_image_cap_sdiff_subset_vertices
       heightSingularPoints R.space f \ H '' D ⊆ H '' K.vertices := by
   let V : Set E := R.vertices \ (H '' D ∪ H '' K.vertices)
   have hV : V.Finite :=
-    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)).subset sdiff_subset
+    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite R.faces)).subset
+        sdiff_subset
   have hcross : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∀ q ∈ V,
       HasPLCrossingAt (H '' K.space) {y | f y = f q} q := by
     rw [hV.eventually_all]
@@ -105,7 +114,8 @@ theorem eventually_heightSingularPoints_image_cap_sdiff_subset_vertices
     have hxA : x ∈ A := hx.resolve_right (fun hxD => hq.2 (Or.inl ⟨x, hxD, rfl⟩))
     have hxK : x ∈ K.space := hunion ▸ Or.inl hxA
     have hxv : x ∉ K.vertices := fun hxv => hq.2 (Or.inr ⟨x, hxv, rfl⟩)
-    exact eventually_hasPLCrossingAt_image_fiber_of_notMem_vertices K hK hdimE ℓ hinj hxK hxv H hH hheight
+    exact eventually_hasPLCrossingAt_image_fiber_of_notMem_vertices K hK hdimE ℓ hinj hxK hxv H hH
+        hheight
   have hABimage : H '' A ∩ H '' B ⊆ H '' D := by
     rintro q ⟨⟨x, hx, rfl⟩, y, hy, heq⟩
     have hyx : y = x := H.injective heq
@@ -118,10 +128,12 @@ theorem eventually_heightSingularPoints_image_cap_sdiff_subset_vertices
     exact congrArg (fun a : E →ₗ[ℝ] ℝ => a x) hz
   rintro q ⟨hq, hqD⟩
   by_contra hqv
-  have hqV : q ∈ V := ⟨heightSingularPoints_subset_vertices R hR hdimE f.toLinearMap hflinear hfinj hq,
+  have hqV : q ∈ V := ⟨heightSingularPoints_subset_vertices R hR hdimE f.toLinearMap hflinear hfinj
+      hq,
     fun h => h.elim hqD hqv⟩
   have hqcap : q ∈ heightSingularPoints (H '' A ∪ H '' D) f \ H '' D := by
-    simpa only [hRspace, image_union] using (show q ∈ heightSingularPoints R.space f \ H '' D from ⟨hq, hqD⟩)
+    simpa only [hRspace, image_union] using (show q ∈ heightSingularPoints R.space f \ H '' D from
+        ⟨hq, hqD⟩)
   rw [heightSingularPoints_cap_sdiff (H.isClosedMap B hB) (H.isClosedMap D hD) hABimage] at hqcap
   have hqold : q ∈ heightSingularPoints (H '' K.space) f := by
     rw [← hunion, image_union]
@@ -141,7 +153,8 @@ theorem exists_convex_open_neighborhood_disjoint_fibers {D A W : Set E}
   refine ⟨U, C, (hW.inter (Metric.isOpen_ball.preimage ℓ.continuous)).inter Metric.isOpen_ball,
     (hWconv.inter ((convex_ball c (δ / 2)).linear_preimage ℓ.toLinearMap)).inter (convex_ball 0 r),
     ?_, inter_subset_left.trans inter_subset_left, ?_,
-    (isCompact_closedBall (0 : E) r).inter_right (Metric.isClosed_closedBall.preimage ℓ.continuous), ?_⟩
+    (isCompact_closedBall (0 : E) r).inter_right (Metric.isClosed_closedBall.preimage ℓ.continuous),
+        ?_⟩
   · intro x hx
     exact ⟨⟨hDW hx, by change dist (ℓ x) c < δ / 2; rw [hDc hx, dist_self]; exact hhalf⟩, hDr hx⟩
   · intro x hx
@@ -168,14 +181,16 @@ theorem eventually_heightSingularPoints_image_cap_sdiff_subset_and_encard_levelP
         (q ∈ heightSingularPoints R.space f ↔ q ∈ heightSingularPoints K.space ℓ ∧ q ∈ A) ∧
         (levelPolygons R.space f (f q)).encard ≤ (levelPolygons K.space ℓ (ℓ q)).encard := by
   have hV : (K.vertices \ {p}).Finite :=
-    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)).subset sdiff_subset
+    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)).subset
+        sdiff_subset
   have hpoint : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, ∀ q ∈ K.vertices \ {p},
       (q ∈ heightSingularPoints R.space f ↔ q ∈ heightSingularPoints K.space ℓ ∧ q ∈ A) ∧
       (levelPolygons R.space f (f q)).encard ≤ (levelPolygons K.space ℓ (ℓ q)).encard := by
     rw [hV.eventually_all]
     intro q hq
     rw [hRspace]
-    exact eventually_mem_heightSingularPoints_image_cap_iff_and_encard_levelPolygons_le K hK ℓ hℓ hinj hq.1
+    exact eventually_mem_heightSingularPoints_image_cap_iff_and_encard_levelPolygons_le K hK ℓ hℓ
+        hinj hq.1
       hunion hB hAB hDC hC (fun x hx heq => Set.disjoint_left.mp (hsep q hq) hx heq) H hfix
   filter_upwards [hpoint, eventually_heightSingularPoints_image_cap_sdiff_subset_vertices K R
     hK.isCombinatorialManifold hR hdimE ℓ hinj hunion hB hD hAB H hH hheight hRspace]

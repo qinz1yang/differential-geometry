@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.External.Schoenflies.JordanClosed
 import DifferentialGeometry.External.Schoenflies.PolyArcRealize
 import DifferentialGeometry.External.Schoenflies.FaceCyclesProof
 import Mathlib.Analysis.InnerProductSpace.PiL2
+
+/-! Regions. -/
 
 noncomputable section
 open Set Topology
@@ -39,7 +46,8 @@ theorem eq_or_eq_of_isArcBetween_subset_isCutPair {J A B C : Set Schoenflies.Pla
     exact hmeet ⟨z, hz, hzB⟩
 
 theorem eq_of_isJordanCurve_of_subset {C J : Set Schoenflies.Plane}
-    (hC : Schoenflies.IsJordanCurve C) (hJ : Schoenflies.IsJordanCurve J) (hCJ : C ⊆ J) : C = J := by
+    (hC : Schoenflies.IsJordanCurve C) (hJ : Schoenflies.IsJordanCurve J) (hCJ : C ⊆ J) : C =
+      J := by
   obtain ⟨γ, hγ, hγC⟩ := hC
   have hp : γ 0 ∈ C := hγC.subset ⟨0, Schoenflies.zero_mem_I, rfl⟩
   have hq : γ (1 / 2) ∈ C := hγC.subset ⟨1 / 2, by norm_num, rfl⟩

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.SeparatedMap
 import Mathlib.Data.Set.Card
 import Mathlib.Data.Set.Piecewise
+
+/-! # Pasting -/
 
 open Set Topology
 
@@ -120,9 +127,11 @@ theorem exists_isOpen_piecewise_postcomp_eqOn_of_finite
   let A := fun i => f '' (C i ∩ P)
   let B := fun i => f '' (C i ∩ Q)
   have hAclosed : ∀ i, IsClosed (A i) := fun i =>
-    (((hC i).inter_right hP).image_of_continuousOn (hf.mono (inter_subset_left.trans (hCS i)))).isClosed
+    (((hC i).inter_right hP).image_of_continuousOn (hf.mono (inter_subset_left.trans (hCS
+        i)))).isClosed
   have hBclosed : ∀ i, IsClosed (B i) := fun i =>
-    (((hC i).inter_right hQ).image_of_continuousOn (hf.mono (inter_subset_left.trans (hCS i)))).isClosed
+    (((hC i).inter_right hQ).image_of_continuousOn (hf.mono (inter_subset_left.trans (hCS
+        i)))).isClosed
   let W := fun i => if y ∈ A i then (B i)ᶜ else (A i)ᶜ
   have hW : ∀ i, IsOpen (W i) := by
     intro i

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerPolyhedra
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 import DifferentialGeometry.Topology.SimplicialComplex.BoundaryCounting
+
+/-! # Boundary Euler -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -46,13 +53,15 @@ theorem eulerChar_boundaryComplex_eq_two_mul
   · intro s hs
     obtain ⟨hsK, hc⟩ := (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp hs
     have h := eulerChar_geometricLink_of_isCombinatorialManifoldWithBoundary K hK hsK hc (by decide)
-    change SimplicialComplex.faceEulerChar (SimplicialComplex.link K.toPreAbstractSimplicialComplex s) = _ at h
+    change SimplicialComplex.faceEulerChar (SimplicialComplex.link K.toPreAbstractSimplicialComplex
+        s) = _ at h
     norm_num at h
     exact h
   · intro s hs
     obtain ⟨hsK, hc⟩ := (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp hs
     have h := eulerChar_geometricLink_of_isCombinatorialManifoldWithBoundary K hK hsK hc (by decide)
-    change SimplicialComplex.faceEulerChar (SimplicialComplex.link K.toPreAbstractSimplicialComplex s) = _ at h
+    change SimplicialComplex.faceEulerChar (SimplicialComplex.link K.toPreAbstractSimplicialComplex
+        s) = _ at h
     norm_num at h
     exact h
 

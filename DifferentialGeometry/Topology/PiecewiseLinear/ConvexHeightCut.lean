@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightLocalization
 import DifferentialGeometry.Topology.PiecewiseLinear.LevelConvexification
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularHeightCut
+
+/-! # Convex Height Cut -/
 
 open Set Topology
 
@@ -42,14 +49,18 @@ theorem exists_isPLSphere_pair_of_singular_height_with_convex_cap
     apply hℓ
     ext x
     exact congrArg (fun a : E →ₗ[ℝ] ℝ => a x) hz
-  have hpv := heightSingularPoints_subset_vertices K hK.isCombinatorialManifold.isCombinatorialManifoldWithBoundary
+  have hpv := heightSingularPoints_subset_vertices K
+      hK.isCombinatorialManifold.isCombinatorialManifoldWithBoundary
     hdimE ℓ.toLinearMap hlinear hinj hp
-  obtain ⟨A, B, D, g, hunion, hinter, hA, hB, hg, hDW, hpD, hAD, hBD, hcap, hrecover, hcount, -, -, -, hSD⟩ :=
-    exists_isPLSphere_pair_of_mem_heightSingularPoints_with_inter_eq_boundary K hK hdimE ℓ.toLinearMap hlinear hinj hp hW hWconv hKW
+  obtain ⟨A, B, D, g, hunion, hinter, hA, hB, hg, hDW, hpD, hAD, hBD, hcap, hrecover, hcount, -, -,
+      -, hSD⟩ :=
+    exists_isPLSphere_pair_of_mem_heightSingularPoints_with_inter_eq_boundary K hK hdimE
+        ℓ.toLinearMap hlinear hinj hp hW hWconv hKW
   have hD : IsPLBall 2 D := ⟨g, hg⟩
   have hAB : A ∩ B ⊆ D := fun x hx => hcap.subset ⟨Or.inl hx.1, Or.inl hx.2⟩
   have hV : (K.vertices \ {p}).Finite :=
-    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)).subset sdiff_subset
+    (Set.Finite.preimage Finset.singleton_injective.injOn (Set.toFinite K.faces)).subset
+        sdiff_subset
   have havoid : ℓ p ∉ ℓ '' (K.vertices \ {p}) := by
     rintro ⟨q, hq, heq⟩
     exact hq.2 (hinj hq.1 hpv heq)
@@ -57,7 +68,8 @@ theorem exists_isPLSphere_pair_of_singular_height_with_convex_cap
     exists_convex_open_neighborhood_disjoint_fibers hD.isPolyhedron.isCompact ℓ
       (hDW.trans inter_subset_right) hV havoid hW hWconv (hDW.trans inter_subset_left)
   obtain ⟨H, m, hH, hfixU, hheight, hconvex, hm, hmsep, hindex⟩ :=
-    exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber hdimE ℓ.toLinearMap hlinear hD
+    exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber hdimE ℓ.toLinearMap
+        hlinear hD
       (hDW.trans inter_subset_right) rfl hpD hUconv hU hDU
   have hfixC : EqOn H id Cᶜ := hfixU.mono (compl_subset_compl.mpr hUC)
   have hfixV : EqOn H id (K.vertices \ {p}) := by
@@ -81,7 +93,8 @@ theorem exists_isPLSphere_pair_of_singular_height_with_convex_cap
     let _ : Finite R.faces := hRfin.to_subtype
     have hR : IsPLSphere 2 R.space := hRspace.symm ▸ himage
     refine ⟨R, hRfin, hRspace, hR, ?_⟩
-    filter_upwards [eventually_heightSingularPoints_image_cap_sdiff_subset_and_encard_levelPolygons_le K R hK
+    filter_upwards
+        [eventually_heightSingularPoints_image_cap_sdiff_subset_and_encard_levelPolygons_le K R hK
       hR.isCombinatorialManifold.isCombinatorialManifoldWithBoundary hdimE ℓ hℓ hinj p hTT' hT'
       hD.isPolyhedron.isClosed hinter' (hDU.trans hUC) hC hsep H hH hfixC hheight hRspace]
       with f hf hfne hfinj
@@ -105,7 +118,8 @@ theorem exists_isPLSphere_pair_of_singular_height_with_convex_cap
     by_cases hqD : q ∈ H '' D
     · exact (hqexc (hinner ⟨hq, hqD⟩)).elim
     · exact houtside ⟨hq, fun h => h.elim hqD (fun heq => hqexc (Or.inr heq))⟩
-  refine ⟨A, B, D, g, H, m, hunion, hinter, hSD, hA, hB, hg, hDW, hpD, hAD, hBD, hcap, hrecover, hcount,
+  refine ⟨A, B, D, g, H, m, hunion, hinter, hSD, hA, hB, hg, hDW, hpD, hAD, hBD, hcap, hrecover,
+      hcount,
     hH, hfixU.mono (compl_subset_compl.mpr hUW), hfixV, hheight, hconvex, hm, hmsep, hindex, ?_⟩
   intro T hT
   rcases hT with hTA | hTB
@@ -113,7 +127,8 @@ theorem exists_isPLSphere_pair_of_singular_height_with_convex_cap
     exact hpiece A B hunion hA.isPolyhedron.isClosed hB.isPolyhedron.isClosed hAB hAD
   · change T = B at hTB
     rw [hTB]
-    exact hpiece B A ((union_comm B A).trans hunion) hB.isPolyhedron.isClosed hA.isPolyhedron.isClosed
+    exact hpiece B A ((union_comm B A).trans hunion) hB.isPolyhedron.isClosed
+        hA.isPolyhedron.isClosed
       ((inter_comm B A).trans_le hAB) hBD
 
 end DifferentialGeometry.Topology.PiecewiseLinear

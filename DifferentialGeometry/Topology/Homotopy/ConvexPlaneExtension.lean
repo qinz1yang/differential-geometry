@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.ContinuousFilling
 import DifferentialGeometry.Topology.LoopSpace.SimplyConnectedTarget
 import Mathlib.Analysis.Convex.GaugeRescale
+
+/-! # Convex Plane Extension -/
 
 
 
@@ -46,7 +53,8 @@ theorem exists_convex_plane_boundary_extension {s : Set ℂ}
   have hθ : AddCircle.toCircle θ = a := by
     rw [← AddCircle.homeomorphCircle_apply one_ne_zero]
     exact (AddCircle.homeomorphCircle (T := (1 : ℝ)) one_ne_zero).apply_symm_apply a
-  have hd : (⟨e z.val, hbody ⟨z.val, hs.frontier_subset z.property⟩⟩ : closedDisk) = diskBoundary θ := by
+  have hd : (⟨e z.val, hbody ⟨z.val, hs.frontier_subset z.property⟩⟩ : closedDisk) = diskBoundary θ
+      := by
     apply Subtype.ext
     exact (congrArg (fun w : Circle => (w : ℂ)) hθ).symm
   change u ⟨e z.val, hbody ⟨z.val, hs.frontier_subset z.property⟩⟩ = f z

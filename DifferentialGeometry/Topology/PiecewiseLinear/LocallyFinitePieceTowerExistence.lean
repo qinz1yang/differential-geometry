@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePieceTower
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeExhaustion
+
+/-! # Locally Finite Piece Tower Existence -/
 
 open Set Topology
 
@@ -26,7 +33,8 @@ theorem exists_locallyFinitePieceTower_of_isOpen {U : Set X} (hU : IsOpen U) :
     ∃ T : LocallyFinitePieceTower (m + 1) X U,
       ∀ i, IsCombinatorialManifoldWithBoundary (m + 1) (T.piece i).piece.complex := by
   classical
-  have : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace (EuclideanSpace ℝ (Fin (m + 1))) X
+  have : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace (EuclideanSpace ℝ (Fin (m + 1)))
+      X
   have := hU.locallyCompactSpace
   let C : ℕ → Set X := fun i => ((↑) : U → X) '' compactCovering U i
   have hC : ∀ i, IsCompact (C i) := fun i =>
@@ -54,7 +62,8 @@ theorem exists_locallyFinitePieceTower_of_isOpen {U : Set X} (hU : IsOpen U) :
   have hstep : ∀ i (P : S), ∃ Q : S,
       ∃ A : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin Q.piece.ambientDim)),
         ∃ φ : EuclideanSpace ℝ (Fin P.piece.ambientDim) → EuclideanSpace ℝ (Fin Q.piece.ambientDim),
-          ∃ φ' : EuclideanSpace ℝ (Fin Q.piece.ambientDim) → EuclideanSpace ℝ (Fin P.piece.ambientDim),
+          ∃ φ' : EuclideanSpace ℝ (Fin Q.piece.ambientDim) → EuclideanSpace ℝ (Fin
+              P.piece.ambientDim),
             P.support ∪ C i ⊆ Q.piece.piece.map '' Q.core.space ∧
               P.support ∪ C i ⊆ interior Q.support ∧ A.faces ⊆ Q.core.faces ∧
                 IsGlueIso P.core A φ φ' ∧ ∀ x ∈ P.core.space,

@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
+
+/-! # Subcomplex Complement Link -/
 
 open Set
 
@@ -135,6 +142,7 @@ theorem geometricLink_subcomplexGeneratedBy_compl_space [FiniteDimensional ℝ E
       (SimplicialComplex.geometricLink K {v}).faces := fun _ ht => ⟨ht.1, ht.2.1, hA ht.2.2⟩
   rw [geometricLink_subcomplexGeneratedBy_compl,
     ← closure_space_sdiff_space_eq_subcomplexGeneratedBy (SimplicialComplex.geometricLink K {v})
-      (SimplicialComplex.geometricLink K {v}) (SimplicialComplex.geometricLink A {v}) Subset.rfl hAL]
+      (SimplicialComplex.geometricLink K {v}) (SimplicialComplex.geometricLink A {v}) Subset.rfl
+          hAL]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

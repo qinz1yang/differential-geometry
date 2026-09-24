@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 import Mathlib.Combinatorics.SimpleGraph.DegreeSum
+
+/-! # One Manifold Boundary -/
 
 open Set
 
@@ -48,7 +55,8 @@ theorem IsCombinatorialManifoldWithBoundary.even_ncard_boundaryComplex_one_space
         ((mem_boundaryComplex_one_space_iff K (fun s hs => hK.card_le K hs)).mp hx).1
       exact ⟨⟨x, hxv⟩, (hodd ⟨x, hxv⟩).mpr hx, rfl⟩
   rw [← himage, Set.ncard_image_of_injective _ Subtype.val_injective]
-  simpa only [Set.ncard_eq_toFinset_card', Set.toFinset_ofPred] using G.even_card_odd_degree_vertices
+  simpa only [Set.ncard_eq_toFinset_card', Set.toFinset_ofPred] using
+      G.even_card_odd_degree_vertices
 
 open Classical in
 theorem IsCombinatorialManifoldWithBoundary.boundaryComplex_one_space_ne_singleton

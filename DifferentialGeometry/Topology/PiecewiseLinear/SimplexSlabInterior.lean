@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSection
 import DifferentialGeometry.Topology.PiecewiseLinear.Combinatorial
+
+/-! # Simplex Slab Interior -/
 
 open Set
 
@@ -46,7 +53,8 @@ theorem closure_interior_convexHull_inter_slab
   · have hpoly : IsHPolytope (convexHull ℝ (T : Set E) ∩ ℓ ⁻¹' Icc a b) :=
       (isHPolytope_convexHull_of_affineIndependent T hT).inter_preimage isHPolytope_Icc ℓ
     exact (hpoly.convex.closure_interior_eq_closure_of_nonempty_interior
-      (interior_convexHull_inter_slab_nonempty T hT hcard ℓ hab havoid hne)).trans hpoly.isClosed.closure_eq
+      (interior_convexHull_inter_slab_nonempty T hT hcard ℓ hab havoid hne)).trans
+          hpoly.isClosed.closure_eq
   · rw [not_nonempty_iff_eq_empty.mp hne, interior_empty, closure_empty]
 
 theorem closure_interior_space_inter_slab
@@ -61,7 +69,8 @@ theorem closure_interior_space_inter_slab
   obtain ⟨T, hT, hcard, hxT⟩ := exists_face_card_eq_finrank_succ_of_mem_closure K
     isOpen_interior interior_subset (hreg.symm.subset hxK)
   have hTreg := closure_interior_convexHull_inter_slab T (K.indep hT) hcard ℓ hab
-    (fun v hv => havoid v (K.down_closed hT (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)))
+    (fun v hv => havoid v (K.down_closed hT (Finset.singleton_subset_iff.mpr hv)
+        (Finset.singleton_nonempty v)))
   exact closure_mono (interior_mono (inter_subset_inter_left _ (K.convexHull_subset_space hT)))
     (hTreg.symm.subset ⟨hxT, hxab⟩)
 

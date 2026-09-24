@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.SlabBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.SchoenfliesInput
+
+/-! # Sublevel Gluing -/
 
 open Set
 
@@ -20,7 +27,8 @@ theorem isSimplyEmbedded_frontier_sublevel_of_slab (I : SchoenfliesInput)
     ext x
     exact congrArg (fun f : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ => f x) h
   have h := I.isSimplyEmbedded_union_sdiff_diskInterior _ _ _ g ℓ.toLinearMap a
-    hleft hslab hg hlinear inter_subset_right (Topology.frontier_sublevel_inter_frontier_slab hP ℓ hℓ hab.le)
+    hleft hslab hg hlinear inter_subset_right (Topology.frontier_sublevel_inter_frontier_slab hP ℓ
+        hℓ hab.le)
   rw [hgb] at h
   rwa [Topology.frontier_sublevel_slab_union_sdiff hP ℓ hℓ hab] at h
 
@@ -39,7 +47,8 @@ theorem isSimplyEmbedded_frontier_of_sublevel_superlevel (I : SchoenfliesInput)
     ext x
     exact congrArg (fun f : EuclideanSpace ℝ (Fin 3) →ₗ[ℝ] ℝ => f x) h
   have h := I.isSimplyEmbedded_union_sdiff_diskInterior _ _ _ g ℓ.toLinearMap a
-    hleft hright hg hlinear inter_subset_right (Topology.frontier_sublevel_inter_frontier_superlevel hP ℓ hℓ a)
+    hleft hright hg hlinear inter_subset_right (Topology.frontier_sublevel_inter_frontier_superlevel
+        hP ℓ hℓ a)
   rw [hgb] at h
   rwa [Topology.frontier_sublevel_union_superlevel_sdiff hP ℓ hℓ a] at h
 

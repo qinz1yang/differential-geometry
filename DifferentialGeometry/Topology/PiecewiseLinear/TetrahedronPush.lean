@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexDiskStraightening
+
+/-! # Tetrahedron Push -/
 
 open Set
 
@@ -12,11 +19,13 @@ theorem hasPushProperty_convexHull_simplex
   refine ⟨isPLBall_convexHull_of_affineIndependent T hT hcard, ?_⟩
   intro D hD hDC
   obtain ⟨a, ha, h, hh, hC, hDh, -⟩ :=
-    exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron T hT hcard hD hDC isOpen_univ (subset_univ _)
+    exists_isPLHomeomorphOn_straighten_disk_in_tetrahedron T hT hcard hD hDC isOpen_univ
+        (subset_univ _)
   have hF : AffineIndependent ℝ ((↑) : T.erase a → EuclideanSpace ℝ (Fin 3)) :=
     affineIndependent_of_subset hT (Finset.erase_subset a T)
   have hFcard : (T.erase a).card = 3 := by rw [Finset.card_erase_of_mem ha, hcard]
-  have hTa : AffineIndependent ℝ ((↑) : ↥(insert a (T.erase a) : Finset _) → EuclideanSpace ℝ (Fin 3)) := by
+  have hTa : AffineIndependent ℝ ((↑) : ↥(insert a (T.erase a) : Finset _) → EuclideanSpace ℝ (Fin
+      3)) := by
     rw [Finset.insert_erase ha]
     exact hT
   have hface := hasPushPropertyAt_convexHull_simplex_face (T.erase a) hF hFcard

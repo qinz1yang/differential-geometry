@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.OpenPartialHomeomorph.Composition
 import DifferentialGeometry.Analysis.Calculus.Compactness.Superposition
+
+/-! # Conjugate -/
 
 open Set Topology
 
@@ -73,7 +80,8 @@ noncomputable def conjugateHomeomorph [T2Space X]
       invFun := e.conjugateMap h.symm
       left_inv := ?_
       right_inv := ?_
-      continuous_toFun := e.continuous_conjugateMap h.continuous.continuousOn (hmaps h hfix) hC hCt hfix
+      continuous_toFun := e.continuous_conjugateMap h.continuous.continuousOn (hmaps h hfix) hC hCt
+          hfix
       continuous_invFun := e.continuous_conjugateMap h.symm.continuous.continuousOn
         (hmaps h.symm hsymfix) hC hCt hsymfix }
   · intro x

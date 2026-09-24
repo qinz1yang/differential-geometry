@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiberClosure
 import DifferentialGeometry.Topology.PiecewiseLinear.LevelPolygons
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalComponents
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularLevelPolygons
 import DifferentialGeometry.Topology.SimplicialComplex.PuncturedConnected
+
+/-! # Height Fiber Circle -/
 
 open Set
 
@@ -34,7 +41,8 @@ theorem exists_levelPolygon_of_between_heights
       hp hx.1 hx.2 (hxr.trans hpr.symm)
     obtain ⟨J, hJ, -⟩ := mem_sUnion.mp hxpoly
     exact ⟨J, hpr ▸ hJ⟩
-  · have havoid : ∀ p ∈ K.vertices, ℓ.toLinearMap p ≠ r := fun p hpK hpheight => hp ⟨p, hpK, hpheight⟩
+  · have havoid : ∀ p ∈ K.vertices, ℓ.toLinearMap p ≠ r := fun p hpK hpheight => hp ⟨p, hpK,
+      hpheight⟩
     obtain ⟨x, hx, hxr⟩ := hK.isConnected.isPreconnected.intermediate_value hy hz
       ℓ.continuous.continuousOn ⟨hyr.le, hrz.le⟩
     have hxpoly : x ∈ ⋃₀ levelPolygons K.space ℓ.toLinearMap r := by
@@ -51,8 +59,10 @@ theorem fiber_eq_levelPolygon_of_heightIndex_eq_zero
     (hbelow : ∃ y ∈ K.space, ℓ y < r) (habove : ∃ z ∈ K.space, r < ℓ z)
     {J : Set E} (hJ : J ∈ levelPolygons K.space ℓ r) :
     K.space ∩ {x | ℓ x = r} = J := by
-  obtain ⟨hcllow, hclhigh⟩ := closure_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove
-  obtain ⟨hconnlow, hconnhigh⟩ := isPreconnected_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r
+  obtain ⟨hcllow, hclhigh⟩ := closure_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r
+      hbelow habove
+  obtain ⟨hconnlow, hconnhigh⟩ := isPreconnected_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ
+      hinj hzero r
   obtain ⟨A, B, hunion, hinter, f, g, hf, hg, hfJ, hgJ⟩ :=
     exists_disk_decomposition_of_isPLSphere_one_subset_two hK hJ.1 (hJ.2.trans inter_subset_left)
   have hA : IsClosed A := (show IsPLBall 2 A from ⟨f, hf⟩).isPolyhedron.isClosed

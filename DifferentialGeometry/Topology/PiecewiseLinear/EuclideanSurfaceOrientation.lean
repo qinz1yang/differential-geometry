@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralSurfaceComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.TwoSidedNeighborhood
+
+/-! # Euclidean Surface Orientation -/
 
 open Set Topology
 

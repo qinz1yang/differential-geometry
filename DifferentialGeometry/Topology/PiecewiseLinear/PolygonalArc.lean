@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedra
 import DifferentialGeometry.External.Schoenflies.PolyLocal
 import DifferentialGeometry.External.Schoenflies.MatchedArc
+
+/-! # Polygonal Arc -/
 
 open Set
 
@@ -13,7 +20,8 @@ theorem IsPolyhedron.isLocallyPolyConnected {P : Set (EuclideanSpace ℝ (Fin 2)
   apply Schoenflies.IsLocallyPolyConn.isLocallyPolyConnected
   intro p hp
   let U := (⋃ i : {i // p ∉ C i}, C i.1)ᶜ
-  have hU : IsOpen U := (isClosed_iUnion_of_finite fun i : {i // p ∉ C i} => (hC i.1).isClosed).isOpen_compl
+  have hU : IsOpen U := (isClosed_iUnion_of_finite fun i : {i // p ∉ C i} => (hC
+      i.1).isClosed).isOpen_compl
   have hpU : p ∈ U := by
     intro hp'
     obtain ⟨i, hi⟩ := mem_iUnion.mp hp'

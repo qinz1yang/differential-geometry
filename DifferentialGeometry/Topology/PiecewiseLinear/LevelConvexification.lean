@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.PointedConvexification
+
+/-! # Level Convexification -/
 
 open Set Topology
 
@@ -48,7 +55,8 @@ theorem exists_isPLHomeomorphOn_convex_image_strict_separation_of_subset_fiber
     rfl
   have hπpl : IsPLHomeomorphOn π P C₀ :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hP
-      ((isPiecewiseAffineOn_of_affine π.toAffineMap isOpen_univ).mono_of_isPolyhedron hP (subset_univ _))
+      ((isPiecewiseAffineOn_of_affine π.toAffineMap isOpen_univ).mono_of_isPolyhedron hP
+          (subset_univ _))
       ⟨fun x hx => hπP ▸ mem_image_of_mem π hx, hπinj, fun y hy => hπP.symm ▸ hy⟩
   have hepl : IsPLHomeomorphOn e C₀ P := hπpl.symm.congr (by
     intro y hy

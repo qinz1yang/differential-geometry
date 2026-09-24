@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.SublevelGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightCone
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeNeighborhood
 import DifferentialGeometry.Topology.HeightRange
+
+/-! # Sublevel Embedding -/
 
 open Set
 
@@ -17,9 +24,11 @@ theorem isSimplyEmbedded_frontier_sublevel_of_lt_other_vertices (I : Schoenflies
     IsSimplyEmbedded (frontier (K.space ∩ ℓ ⁻¹' Iic r)) := by
   classical
   obtain ⟨L, hLfin, hspace⟩ := hD.isPolyhedron.exists_simplicialComplex
-  have hL : IsConeBase p L := isConeBase_of_subset_fiber ℓ L (hspace.trans_le inter_subset_right) hpr.ne
+  have hL : IsConeBase p L := isConeBase_of_subset_fiber ℓ L (hspace.trans_le inter_subset_right)
+      hpr.ne
   have hcone : K.space ∩ ℓ ⁻¹' Iic r = (coneComplex hL).space := by
-    convert inter_le_eq_coneComplex_space_of_lt_other_vertices K ℓ.toAffineMap hp hpr hother L hL hspace using 1
+    convert inter_le_eq_coneComplex_space_of_lt_other_vertices K ℓ.toAffineMap hp hpr hother L hL
+        hspace using 1
     · ext x
       rfl
     · ext x
@@ -118,17 +127,21 @@ theorem isSimplyEmbedded_frontier_sublevel_of_heightIndex_eq_zero (I : Schoenfli
           hbelowA.imp fun _ hx => ⟨hx.1, hx.2.trans hap⟩
         have haboveP : ∃ x ∈ frontier K.space, ℓ p < ℓ x :=
           haboveB.imp fun _ hx => ⟨hx.1, hpb.trans_lt hx.2⟩
-        have hslab := isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_upper I K hK hS
+        have hslab := isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_upper I K hK
+            hS
           hreg hconn ℓ hℓ hinj hzero hpK hap
           (fun w hw hwp => (hgap w hw hwp).imp_right (fun h => hpb.trans_lt h)) hbelowA haboveP
         obtain ⟨ga, hga, hgaB⟩ := hfiber a hbelowA haboveA
-        have hleftP := isSimplyEmbedded_frontier_sublevel_of_slab I hcompact.isClosed ℓ hℓ hap hleft hslab hga hgaB
+        have hleftP := isSimplyEmbedded_frontier_sublevel_of_slab I hcompact.isClosed ℓ hℓ hap hleft
+            hslab hga hgaB
         rcases hpb.lt_or_eq with hpb | hpb
-        · have hslab' := isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower I K hK hS
+        · have hslab' := isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower I K
+            hK hS
             hreg hconn ℓ hℓ hinj hzero hpK hpb
             (fun w hw hwp => (hgap w hw hwp).imp_left (fun h => h.trans hap)) hbelowP haboveB
           obtain ⟨gp, hgp, hgpB⟩ := hfiber (ℓ p) hbelowP haboveP
-          exact isSimplyEmbedded_frontier_sublevel_of_slab I hcompact.isClosed ℓ hℓ hpb hleftP hslab' hgp hgpB
+          exact isSimplyEmbedded_frontier_sublevel_of_slab I hcompact.isClosed ℓ hℓ hpb hleftP
+              hslab' hgp hgpB
         · exact hpb ▸ hleftP
       · have hvp : v = p := by
           by_contra h

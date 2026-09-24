@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Triangulation
+
+/-! # Link Euclidean -/
 
 open Set Topology
 
@@ -73,7 +80,7 @@ theorem affineIndependent_insert_erase {T : Finset E} (hT : AffineIndependent �
     simp only [b, hap, zero_mul, zero_add, hf u h] at h'
     exact h'
 
-theorem exists_facet_convexHull_insert_subset [FiniteDimensional ℝ E]
+theorem exists_facet_convexHull_insert_subset
     (K : Geometry.SimplicialComplex ℝ E) {T : Finset E} (hT : AffineIndependent ℝ ((↑) : T → E))
     {p : E} (hp : p ∈ openSimplex T) (hTnhds : convexHull ℝ (T : Set E) ∈ 𝓝 p)
     (hunion : ∀ v ∈ T, convexHull ℝ ((insert p (T.erase v) : Finset E) : Set E) =

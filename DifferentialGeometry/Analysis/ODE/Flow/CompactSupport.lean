@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Analysis.Calculus.ContDiff.RCLike
 import Mathlib.Geometry.Manifold.IntegralCurve.UniformTime
 import Mathlib.Geometry.Manifold.VectorBundle.ContMDiffSection
 import DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold
+
+/-! Compact Support. -/
 
 noncomputable section
 
@@ -39,11 +46,14 @@ theorem curveAt_injective [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
     (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) (t : ℝ) :
     Function.Injective (fun x : M => curveAt v hcomplete x t) := by
   intro x y h
-  have hx : curveAt v hcomplete (curveAt v hcomplete x t) (-t) = curveAt v hcomplete (curveAt v hcomplete y t) (-t) := by
+  have hx : curveAt v hcomplete (curveAt v hcomplete x t) (-t) = curveAt v hcomplete (curveAt
+    v hcomplete y t) (-t) := by
     exact congrArg (fun z : M => curveAt v hcomplete z (-t)) h
-  have h1 : curveAt v hcomplete (curveAt v hcomplete x t) (-t) = curveAt v hcomplete x (t + (-t)) := by
+  have h1 : curveAt v hcomplete (curveAt v hcomplete x t) (-t) = curveAt v hcomplete x (t +
+    (-t)) := by
     exact (curveAt_add v hv hcomplete x t (-t)).symm
-  have h2 : curveAt v hcomplete (curveAt v hcomplete y t) (-t) = curveAt v hcomplete y (t + (-t)) := by
+  have h2 : curveAt v hcomplete (curveAt v hcomplete y t) (-t) = curveAt v hcomplete y (t +
+    (-t)) := by
     exact (curveAt_add v hv hcomplete y t (-t)).symm
   have hz : t + (-t) = 0 := by ring
   rw [h1, h2, hz, curveAt_zero v hcomplete x, curveAt_zero v hcomplete y] at hx
@@ -260,7 +270,8 @@ private theorem contMDiffAt_curveAt_slice_nonneg [FiniteDimensional ℝ E]
     (v : (x : M) → TangentSpace I x)
     (hv : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
-    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
+    (hcomplete : ∀ x : M, ∃ γ : ℝ → M, γ 0 = x ∧ IsMIntegralCurve γ v) {t₀ : ℝ} (ht₀ : 0 ≤ t₀)
+      (x₀ : M) :
     ContMDiffAt I I ∞
       (fun x : M => curveAt v hcomplete x t₀) x₀ := by
   let γ : ℝ → M := curveAt v hcomplete x₀
@@ -547,7 +558,8 @@ theorem contMDiffAt_globalFlow_joint_of_complete [FiniteDimensional ℝ E]
         (hz.comp (t₀, x₀) (contMDiffAt_snd (p := (t₀, x₀))))
     have hΨat : ContMDiffAt (𝓘(ℝ, ℝ).prod I) I ∞
         (fun q : ℝ × M => Ψ q.2 q.1) (t₀, y) := by
-      exact (hΨsm (t₀, y) (by constructor <;> [exact ⟨by linarith, by linarith⟩; exact hyU])).contMDiffAt
+      exact (hΨsm (t₀, y) (by constructor <;> [exact ⟨by linarith, by linarith⟩; exact
+        hyU])).contMDiffAt
         (prod_mem_nhds (isOpen_Ioo.mem_nhds ⟨by linarith, by linarith⟩)
           (hUopen.mem_nhds hyU))
     have hcomp := hΨat.comp (t₀, x₀) hpair
@@ -677,14 +689,16 @@ private theorem continuousAt_globalFlow_of_compactSupport_nonneg [FiniteDimensio
       dsimp [η] at hsub
       nlinarith [hts, htri]
     have hxU : curveAt v hcomplete x s ∈ U := htx.2
-    have hstep : curveAt v hcomplete x t = curveAt v hcomplete (curveAt v hcomplete x s) (t - s) := by
+    have hstep : curveAt v hcomplete x t = curveAt v hcomplete (curveAt v hcomplete x s) (t -
+      s) := by
       have hh := curveAt_add v hv1 hcomplete x s (t - s)
       rw [show s + (t - s) = t by ring] at hh
       exact hh
     rw [hstep]
     exact hagree (curveAt v hcomplete x s) hxU (t - s)
       ⟨(abs_lt.mp htε).1, (abs_lt.mp htε).2⟩
-  have hmain : ContinuousAt (fun p : ℝ × M => Ψ (curveAt v hcomplete p.2 s) (p.1 - s)) (t₀, x₀) := by
+  have hmain : ContinuousAt (fun p : ℝ × M => Ψ (curveAt v hcomplete p.2 s) (p.1 - s)) (t₀,
+    x₀) := by
     have hfst : ContinuousAt (fun p : ℝ × M => p.1 - s) (t₀, x₀) :=
       (continuousAt_fst : ContinuousAt (fun p : ℝ × M => p.1) (t₀, x₀)).sub continuousAt_const
     have hsnd : ContinuousAt (fun p : ℝ × M => curveAt v hcomplete p.2 s) (t₀, x₀) := by
@@ -776,7 +790,8 @@ private theorem contMDiffAt_curveAt_of_slice [FiniteDimensional ℝ E] [Complete
       dsimp [η] at hsub
       nlinarith [hts, htri]
     have hxU : curveAt v hcomplete x s ∈ U := htx.2
-    have hstep : curveAt v hcomplete x t = curveAt v hcomplete (curveAt v hcomplete x s) (t - s) := by
+    have hstep : curveAt v hcomplete x t = curveAt v hcomplete (curveAt v hcomplete x s) (t -
+      s) := by
       have hh := curveAt_add v hv1 hcomplete x s (t - s)
       rw [show s + (t - s) = t by ring] at hh
       exact hh
@@ -834,7 +849,8 @@ theorem contMDiffAt_globalFlow_of_compactSupport_nonneg [FiniteDimensional ℝ E
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v)) {t₀ : ℝ} (ht₀ : 0 ≤ t₀) (x₀ : M) :
     ContMDiffAt I I ∞
-      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) x₀ := by
+      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀)
+        x₀ := by
   exact contMDiffAt_curveAt_slice_nonneg v hv
     (exists_globalIntegralCurve_of_compactSupport v hv hsupp) ht₀ x₀
 
@@ -845,7 +861,8 @@ theorem contMDiffAt_globalFlow_of_compactSupport [FiniteDimensional ℝ E] [Comp
       (fun x : M => (⟨x, v x⟩ : TangentBundle I M)))
     (hsupp : IsCompact (tsupport v)) (t₀ : ℝ) (x₀ : M) :
     ContMDiffAt I I ∞
-      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀) x₀ := by
+      (fun x : M => curveAt v (exists_globalIntegralCurve_of_compactSupport v hv hsupp) x t₀)
+        x₀ := by
   exact contMDiffAt_curveAt_slice v hv
     (exists_globalIntegralCurve_of_compactSupport v hv hsupp) t₀ x₀
 

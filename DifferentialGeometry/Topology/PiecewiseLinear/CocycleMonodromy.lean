@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BranchSignChain
 import DifferentialGeometry.Topology.PiecewiseLinear.DoubleCoverComplex
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Combinatorics.SimpleGraph.Walk.Operations
+
+/-! # Cocycle Monodromy -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 

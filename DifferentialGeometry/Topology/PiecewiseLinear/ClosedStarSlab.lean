@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabFaceTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
+
+/-! # Closed Star Slab -/
 
 open Set
 
@@ -22,9 +29,11 @@ theorem inter_slab_eq_closedStar_inter_of_fiber_subset
   by_cases hpT : p ∈ T
   · exact mem_iUnion₂.mpr ⟨T, ⟨hAK hT, subset_convexHull ℝ _ hpT⟩, hxT⟩
   have hvertices : ∀ v ∈ T, ℓ v < a ∨ b < ℓ v := fun v hv =>
-    hgap v (K.down_closed (hAK hT) (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
+    hgap v (K.down_closed (hAK hT) (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty
+        v))
       (fun h => hpT (h ▸ hv))
-  obtain ⟨f, hf, hcontrol⟩ := exists_isPLHomeomorphOn_face_slab_prism K (hAK hT) ℓ hpheight hvertices
+  obtain ⟨f, hf, hcontrol⟩ := exists_isPLHomeomorphOn_face_slab_prism K (hAK hT) ℓ hpheight
+      hvertices
   have hfx := hf.bijOn.mapsTo ⟨hxT, hxab⟩
   have hqstar := hfiber ⟨A.convexHull_subset_space hT hfx.1.1, hfx.1.2⟩
   have hiff := (hcontrol x ⟨hxT, hxab⟩).1 (starComplex K p) (starComplex_faces_subset K p)

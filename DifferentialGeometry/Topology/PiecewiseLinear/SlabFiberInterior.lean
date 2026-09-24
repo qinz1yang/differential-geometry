@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSlabInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.BallDensity
+
+/-! # Slab Fiber Interior -/
 
 open Set
 
@@ -52,9 +59,11 @@ theorem closure_interior_space_inter_slab_of_isPLBall_fiber {n : ℕ}
       obtain ⟨v, hv, hxv⟩ := hcross.2
       exact ⟨v, subset_convexHull ℝ _ hv, hxab.1.trans_lt hxv⟩
     have hpoly : IsHPolytope (convexHull ℝ (T : Set E) ∩ ℓ ⁻¹' Icc a b) :=
-      (isHPolytope_convexHull_of_affineIndependent T (K.indep hT)).inter_preimage isHPolytope_Icc ℓ.toAffineMap
+      (isHPolytope_convexHull_of_affineIndependent T (K.indep hT)).inter_preimage isHPolytope_Icc
+          ℓ.toAffineMap
     have hTreg := (hpoly.convex.closure_interior_eq_closure_of_nonempty_interior
-      (interior_convexHull_inter_slab_nonempty_of_lt_of_lt T (K.indep hT) hcard ℓ.toAffineMap hab hlow hhigh)).trans
+      (interior_convexHull_inter_slab_nonempty_of_lt_of_lt T (K.indep hT) hcard ℓ.toAffineMap hab
+          hlow hhigh)).trans
       hpoly.isClosed.closure_eq
     exact closure_mono (interior_mono (inter_subset_inter_left _ (K.convexHull_subset_space hT)))
       (hTreg.symm.subset ⟨hxT, hxab⟩)

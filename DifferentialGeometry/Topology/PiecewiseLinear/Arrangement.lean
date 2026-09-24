@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedra
 import Mathlib.Data.Sign.Defs
+
+/-! # Arrangement -/
 
 open Set Topology
 
@@ -12,8 +19,10 @@ theorem signType_cases_of_sign {a : ℝ} {s : SignType} :
   · simp [sign_eq_zero_iff]
   · constructor
     · rintro (h | h)
-      · exact ⟨fun h0 => by simp at h0, fun h1 => by simp at h1, fun _ => (sign_eq_neg_one_iff.mp h).le⟩
-      · exact ⟨fun h0 => by simp at h0, fun h1 => by simp at h1, fun _ => (sign_eq_zero_iff.mp h).le⟩
+      · exact ⟨fun h0 => by simp at h0, fun h1 => by simp at h1, fun _ => (sign_eq_neg_one_iff.mp
+          h).le⟩
+      · exact ⟨fun h0 => by simp at h0, fun h1 => by simp at h1, fun _ => (sign_eq_zero_iff.mp
+          h).le⟩
     · rintro ⟨-, -, h⟩
       rcases (h rfl).lt_or_eq with h' | h'
       · exact Or.inl (sign_eq_neg_one_iff.mpr h')
@@ -21,7 +30,8 @@ theorem signType_cases_of_sign {a : ℝ} {s : SignType} :
   · constructor
     · rintro (h | h)
       · exact ⟨fun h0 => by simp at h0, fun _ => (sign_eq_one_iff.mp h).le, fun h1 => by simp at h1⟩
-      · exact ⟨fun h0 => by simp at h0, fun _ => (sign_eq_zero_iff.mp h).ge, fun h1 => by simp at h1⟩
+      · exact ⟨fun h0 => by simp at h0, fun _ => (sign_eq_zero_iff.mp h).ge,
+          fun h1 => by simp at h1⟩
     · rintro ⟨-, h, -⟩
       rcases (h rfl).lt_or_eq with h' | h'
       · exact Or.inl (sign_eq_one_iff.mpr h')

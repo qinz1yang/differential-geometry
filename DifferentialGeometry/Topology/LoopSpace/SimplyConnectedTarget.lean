@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.BasedCircle
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
+
+/-! # Simply Connected Target -/
 
 
 
@@ -64,7 +71,8 @@ instance freeLoop_pathConnected_of_simplyConnected : PathConnectedSpace (freeLoo
   joined := joined_freeLoops
 
 
-instance contractibleLoop_pathConnected_of_simplyConnected : PathConnectedSpace (contractibleLoop Q) :=
+instance contractibleLoop_pathConnected_of_simplyConnected : PathConnectedSpace (contractibleLoop Q)
+    :=
   (contractibleLoopHomeomorphFreeLoop Q).symm.surjective.pathConnectedSpace
     (contractibleLoopHomeomorphFreeLoop Q).symm.continuous
 

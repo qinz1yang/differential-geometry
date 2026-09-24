@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Connected.CompactIntersection
 import DifferentialGeometry.Topology.Connected.Dense
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSublevelConnected
+
+/-! # Height Fiber Closure -/
 
 open Set
 
@@ -37,7 +44,8 @@ theorem mem_closure_inter_lt_of_notMem_vertices
     change ℓ (a • x + b • v) < ℓ x
     rw [map_add, map_smul, map_smul, smul_eq_mul, smul_eq_mul]
     calc
-      a * ℓ x + b * ℓ v < a * ℓ x + b * ℓ x := add_lt_add_of_le_of_lt le_rfl (mul_lt_mul_of_pos_left hvlt hb)
+      a * ℓ x + b * ℓ v < a * ℓ x + b * ℓ x := add_lt_add_of_le_of_lt le_rfl (mul_lt_mul_of_pos_left
+          hvlt hb)
       _ = ℓ x := by rw [← add_mul, hab, one_mul]
   exact closure_mono hsegment (segment_subset_closure_openSegment (left_mem_segment ℝ x v))
 
@@ -71,7 +79,8 @@ theorem closure_halfSpaces_of_heightIndex_eq_zero [FiniteDimensional ℝ E]
     (hbelow : ∃ y ∈ K.space, ℓ y < r) (habove : ∃ z ∈ K.space, r < ℓ z) :
     closure (K.space ∩ {x | ℓ x < r}) = K.space ∩ {x | ℓ x ≤ r} ∧
       closure (K.space ∩ {x | r < ℓ x}) = K.space ∩ {x | r ≤ ℓ x} := by
-  have hstrict (t : ℝ) := isPreconnected_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero t
+  have hstrict (t : ℝ) := isPreconnected_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj
+      hzero t
   have hle := Topology.isPreconnected_inter_le_of_isCompact_of_forall_inter_lt
     hK.isPolyhedron.isCompact ℓ.continuous.continuousOn r (fun t _ => (hstrict t).1)
   have hge := Topology.isPreconnected_inter_ge_of_isCompact_of_forall_inter_gt

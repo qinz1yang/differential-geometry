@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.Basic
 import Mathlib.Topology.Covering.AddCircle
 import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Topology.Algebra.Module.LocallyConvex
+
+/-! Homeomorphism Lift. -/
 
 
 

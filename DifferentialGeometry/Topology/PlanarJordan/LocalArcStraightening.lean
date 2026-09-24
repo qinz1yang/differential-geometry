@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.VertexFan
 import DifferentialGeometry.Topology.Homeomorph.UniformGluing
 import DifferentialGeometry.Topology.DiscreteNeighborhoods
 import DifferentialGeometry.Topology.Embedding.RealParameter
 import DifferentialGeometry.Topology.Order.DiscreteRange
 import Mathlib.Analysis.SpecificLimits.Basic
+
+/-! # Local Arc Straightening -/
 
 open Set Topology
 
@@ -66,12 +73,16 @@ theorem exists_homeomorph_polygonal_subarcs_at_interior
     simpa only [(Plane.isOpen_openSquare _ _).interior_eq] using hp.2
   have hqnot : q ∉ Plane.openSquare (f t) r := by
     simpa only [(Plane.isOpen_openSquare _ _).interior_eq] using hq.2
-  have hat : a < t := lt_of_le_of_ne ha.2 fun h => hpnot ((hfa.symm.trans (congrArg f h)).symm ▸ hcenter)
-  have htb : t < b := lt_of_le_of_ne hb.1 fun h => hqnot ((hfb.symm.trans (congrArg f h.symm)).symm ▸ hcenter)
+  have hat : a < t := lt_of_le_of_ne ha.2 fun h => hpnot ((hfa.symm.trans (congrArg f h)).symm ▸
+      hcenter)
+  have htb : t < b := lt_of_le_of_ne hb.1 fun h => hqnot ((hfb.symm.trans (congrArg f h.symm)).symm
+      ▸ hcenter)
   have ha0 : 0 < a := lt_of_le_of_ne ha.1 fun h =>
-    (hsub ((Plane.isClosed_closedSquare _ _).frontier_subset hpC)).2 (Or.inl (hfa.symm.trans (congrArg f h.symm)))
+    (hsub ((Plane.isClosed_closedSquare _ _).frontier_subset hpC)).2 (Or.inl (hfa.symm.trans
+        (congrArg f h.symm)))
   have hb1 : b < 1 := lt_of_le_of_ne hb.2 fun h =>
-    (hsub ((Plane.isClosed_closedSquare _ _).frontier_subset hqC)).2 (Or.inr (hfb.symm.trans (congrArg f h)))
+    (hsub ((Plane.isClosed_closedSquare _ _).frontier_subset hqC)).2 (Or.inr (hfb.symm.trans
+        (congrArg f h)))
   have hAsmall : IsArcBetween (f '' Icc a t) p (f t) := by
     simpa only [uIcc_of_le hat.le, hfa] using
       isArcBetween_subarc_of_injOn_I hf hi ⟨ha.1, ha.2.trans ht.2.le⟩ htI hat.ne
@@ -92,7 +103,8 @@ theorem exists_homeomorph_polygonal_subarcs_at_interior
     by_cases hxq : x = q
     · exact hxq ▸ (Plane.isClosed_closedSquare _ _).frontier_subset hqC
     · exact Plane.openSquare_subset_closedSquare _ _ (hBI ⟨hx, hxq⟩)
-  refine ⟨r, a, b, e, hr, hsub.trans inter_subset_left, ha0, hat, htb, hb1, ?_, ?_, ?_, het, hefix, hedist⟩
+  refine ⟨r, a, b, e, hr, hsub.trans inter_subset_left, ha0, hat, htb, hb1, ?_, ?_, ?_, het, hefix,
+      hedist⟩
   · rw [← Icc_union_Icc_eq_Icc hat.le htb.le, image_union, ← hAeq, ← hBeq]
     exact union_subset hAC hBC
   · rw [← hAeq, heA]
@@ -122,7 +134,8 @@ theorem exists_homeomorph_polygonal_subarcs_of_isDiscrete
         dist (e x) x ≤ Metric.diam (Plane.closedSquare (f (t i)) (r i)) := by
   have hp : Function.Injective fun i => f (t i) := fun i j hij =>
     hinj (hi ⟨(ht i).1.le, (ht i).2.le⟩ ⟨(ht j).1.le, (ht j).2.le⟩ hij)
-  obtain ⟨R, hR, hRdis⟩ := Metric.exists_pairwise_disjoint_closedBall_of_isDiscrete hp hdiscrete hN hδ
+  obtain ⟨R, hR, hRdis⟩ := Metric.exists_pairwise_disjoint_closedBall_of_isDiscrete hp hdiscrete hN
+      hδ
   choose r a b g hr hsub ha hat htb hb hAB hpolyA hpolyB hcenter hfix hdist using fun i =>
     exists_homeomorph_polygonal_subarcs_at_interior hf hi (ht i)
       (Metric.ball_mem_nhds (f (t i)) (hR i).1)

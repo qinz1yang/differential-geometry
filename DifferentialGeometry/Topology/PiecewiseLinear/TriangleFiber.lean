@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
+
+/-! # Triangle Fiber -/
 
 open Set
 
@@ -164,7 +171,8 @@ theorem exists_isPLHomeomorphOn_snd_triangle_fiber {b : ℝ × ℝ → ℝ} {r :
     isPolyhedron_inter_preimage_of_isCompact hb (isHPolytope_singleton r) hcompact
   obtain ⟨t, ht, hbij⟩ := exists_bijOn_snd_triangle_fiber hb.continuousOn hh hl hr h₀ h₁
   refine ⟨t, ht, isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hpoly ?_ hbij⟩
-  exact (isPiecewiseAffineOn_of_affine (LinearMap.snd ℝ ℝ ℝ).toAffineMap isOpen_univ).mono_of_isPolyhedron hpoly (subset_univ _)
+  exact (isPiecewiseAffineOn_of_affine (LinearMap.snd ℝ ℝ ℝ).toAffineMap
+      isOpen_univ).mono_of_isPolyhedron hpoly (subset_univ _)
 
 theorem isPLBall_triangle_fiber_of_monotone {b : ℝ × ℝ → ℝ} {r : ℝ}
     (hb : IsPiecewiseAffineOn b {z | 0 ≤ z.1 ∧ 0 ≤ z.2 ∧ z.1 + z.2 ≤ 1})

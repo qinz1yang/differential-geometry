@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.TwoSidedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.CollarRestriction
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.DisjointGluing
 import Mathlib.Order.Filter.Finite
+
+/-! # Bicollar -/
 
 open Set Topology
 
@@ -107,16 +114,19 @@ theorem IsCombinatorialManifoldWithBoundary.exists_bicollar
       ∀ x ∈ L.space, ρ (x, 0) = x := by
   classical
   let I := ConnectedComponents L.space
-  let R : I → Geometry.SimplicialComplex ℝ E := fun i => PiecewiseLinear.connectedComponentComplex L i
+  let R : I → Geometry.SimplicialComplex ℝ E := fun i => PiecewiseLinear.connectedComponentComplex L
+      i
   let _ : Finite I := finite_connectedComponents_space L
   let _ (i : I) : Finite (R i).faces := (connectedComponentComplex_faces_finite L i).to_subtype
   have hcover : (⋃ i, (R i).space) = L.space := iUnion_connectedComponentComplex_space L
-  have hsub (i : I) : (R i).space ⊆ L.space := (subset_iUnion (fun j => (R j).space) i).trans hcover.subset
+  have hsub (i : I) : (R i).space ⊆ L.space := (subset_iUnion (fun j => (R j).space) i).trans
+      hcover.subset
   have hdis : Pairwise fun i j => Disjoint (R i).space (R j).space :=
     pairwise_disjoint_connectedComponentComplex_space L
   have htwoR (i : I) : Topology.IsTwoSided (((↑) : K.space → E) ⁻¹' (R i).space) := by
     obtain ⟨p, rfl⟩ := ConnectedComponents.surjective_coe i
-    simpa only [R, PiecewiseLinear.connectedComponentComplex_mk, restrict_connectedComponentIn_space]
+    simpa only [R, PiecewiseLinear.connectedComponentComplex_mk,
+        restrict_connectedComponentIn_space]
       using htwo.preimage_connectedComponentIn continuous_subtype_val (p : E)
   have hfilters : Pairwise fun i j : I => Disjoint (𝓝ˢ (R i).space) (𝓝ˢ (R j).space) :=
     fun i j hij => disjoint_nhdsSet_nhdsSet (isPolyhedron_space (R i)).isClosed

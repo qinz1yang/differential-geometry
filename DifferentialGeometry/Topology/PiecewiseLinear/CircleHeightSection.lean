@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcs
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiber
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
+
+/-! # Circle Height Section -/
 
 open Set
 
@@ -48,7 +55,8 @@ theorem isPLSphere_one_height_section_ne_singleton
     exists_lt_and_gt_of_mem_height_section_of_avoids_vertices L ℓ r havoid hz
   have haz : a ≠ z := fun h => ha.ne (h ▸ hz.2)
   have hbz : b ≠ z := fun h => hb.ne' (h ▸ hz.2)
-  obtain ⟨y, hy, hylevel⟩ := (hL.isConnected_sdiff_singleton_one z).isPreconnected.intermediate_value
+  obtain ⟨y, hy, hylevel⟩ := (hL.isConnected_sdiff_singleton_one
+      z).isPreconnected.intermediate_value
     ⟨haL, haz⟩ ⟨hbL, hbz⟩ ℓ.continuous.continuousOn ⟨ha.le, hb.le⟩
   have hysection : y ∈ L.space ∩ ℓ ⁻¹' ({r} : Set ℝ) := ⟨hy.1, hylevel⟩
   have hyz : y = z := by simpa only [mem_singleton_iff] using hsingle.subset hysection

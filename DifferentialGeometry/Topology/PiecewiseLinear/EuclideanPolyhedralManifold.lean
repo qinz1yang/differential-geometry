@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralManifold
+
+/-! # Euclidean Polyhedral Manifold -/
 
 open Set
 
@@ -28,7 +35,8 @@ theorem IsPolyhedralManifold.exists_simplicialComplex {m n : ℕ}
   have hf := T.piece.isPLHomeomorphOn_euclidean
   have hpoly : IsPolyhedron S := by
     rw [← hf.image_eq]
-    exact T.piece.isPolyhedron_space.image_of_isPiecewiseAffineOn hf.isPiecewiseAffineOn hf.bijOn.injOn
+    exact T.piece.isPolyhedron_space.image_of_isPiecewiseAffineOn hf.isPiecewiseAffineOn
+        hf.bijOn.injOn
   obtain ⟨K, hfinite, hspace⟩ := hpoly.exists_simplicialComplex
   let _ : Finite K.faces := hfinite.to_subtype
   refine ⟨K, hfinite, hspace, hT.of_isPLHomeomorphOn (f := T.piece.map) ?_⟩

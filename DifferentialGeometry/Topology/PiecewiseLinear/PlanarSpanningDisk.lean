@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import DifferentialGeometry.Topology.ConvexFrontier
+
+/-! # Planar Spanning Disk -/
 
 open Set
 
@@ -35,7 +42,8 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_disk_of_subset_fiber {J : Set E}
     exact heq.image_eq.trans (image_id _)
   have heA : IsPLHomeomorphOn e A (e '' A) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hA.isPolyhedron
-      ((isPiecewiseAffineOn_of_affine e isOpen_univ).mono_of_isPolyhedron hA.isPolyhedron (subset_univ _))
+      ((isPiecewiseAffineOn_of_affine e isOpen_univ).mono_of_isPolyhedron hA.isPolyhedron
+          (subset_univ _))
       ⟨mapsTo_image _ _, hleft.injective.injOn, fun _ h => h⟩
   have hJW' : π '' J ⊆ e ⁻¹' W := by
     rintro y ⟨x, hx, rfl⟩

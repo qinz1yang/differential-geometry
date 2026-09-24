@@ -7,6 +7,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.ConvexPolytope
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 
+/-! # PL Cell Locally Finite Cover -/
+
 open Set Topology
 open scoped Manifold
 

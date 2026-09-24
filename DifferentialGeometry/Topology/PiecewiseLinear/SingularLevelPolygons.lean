@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Combinatorics.EvenDegree
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarCycleRealization
+
+/-! # Singular Level Polygons -/
 
 open Set Topology
 
@@ -38,12 +45,14 @@ theorem exists_isPLSphere_one_of_mem_space_of_degree_eq_two_except
       ∃ J : Set E, IsPLSphere 1 J ∧ J ⊆ G.space ∧ segment ℝ (u : E) (v : E) ⊆ J := by
     obtain ⟨a, q, hq, hqe⟩ := Combinatorics.exists_cycle_of_adj_of_even_neighborSet_ncard
       (SimplicialComplex.edgeGraph G) heven huv
-    obtain ⟨J, hJ, hJG, hJq⟩ := exists_isPLSphere_one_of_isCycle_of_subset_fiber G hdimE ℓ hℓ hGr q hq
+    obtain ⟨J, hJ, hJG, hJq⟩ := exists_isPLSphere_one_of_isCycle_of_subset_fiber G hdimE ℓ hℓ hGr q
+        hq
     exact ⟨J, hJ, hJG, hJq u v hqe⟩
   obtain ⟨s, hs, hxs⟩ := G.mem_space_iff.mp hx
   by_cases hcard₁ : s.card = 1
   · obtain ⟨v, rfl⟩ := Finset.card_eq_one.mp hcard₁
-    have hxv : x = v := by simpa only [Finset.coe_singleton, convexHull_singleton, mem_singleton_iff] using hxs
+    have hxv : x = v := by simpa only [Finset.coe_singleton, convexHull_singleton,
+        mem_singleton_iff] using hxs
     subst x
     let u : G.vertices := ⟨v, hs⟩
     have hnonempty : ((SimplicialComplex.edgeGraph G).neighborSet u).Nonempty :=
@@ -132,7 +141,8 @@ theorem pairwiseDisjoint_sdiff_singleton_levelPolygons
   intro J hJ T hT hJT
   apply Set.disjoint_left.mpr
   rintro x ⟨hxJ, hxp⟩ ⟨hxT, -⟩
-  exact hxp (inter_subset_singleton_levelPolygons_of_ne K hK hdimE ℓ hℓ hinj hp hJ hT hJT ⟨hxJ, hxT⟩)
+  exact hxp (inter_subset_singleton_levelPolygons_of_ne K hK hdimE ℓ hℓ hinj hp hJ hT hJT ⟨hxJ,
+      hxT⟩)
 
 theorem singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
@@ -147,7 +157,8 @@ theorem singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons
   · intro hpC
     have hclosed : IsClosed (⋃₀ levelPolygons K.space ℓ (ℓ p)) := by
       rw [sUnion_eq_biUnion]
-      exact (finite_levelPolygons K (fun s hs => hK.card_le K hs) hdimE ℓ hℓ hinj (ℓ p)).isClosed_biUnion
+      exact (finite_levelPolygons K (fun s hs => hK.card_le K hs) hdimE ℓ hℓ hinj (ℓ
+          p)).isClosed_biUnion
         (fun J hJ => hJ.1.isPolyhedron.isClosed)
     apply mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr
     refine ⟨(⋃₀ levelPolygons K.space ℓ (ℓ p))ᶜ, hclosed.isOpen_compl.mem_nhds hpC, ?_⟩
@@ -161,8 +172,10 @@ theorem mem_sUnion_levelPolygons_of_mem_heightSingularPoints
     (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) (hinj : InjOn ℓ K.vertices)
     {p : E} (hp : p ∈ heightSingularPoints K.space ℓ) :
     p ∈ ⋃₀ levelPolygons K.space ℓ (ℓ p) := by
-  have hpv := heightSingularPoints_subset_vertices K hK.isCombinatorialManifoldWithBoundary hdimE ℓ hℓ hinj hp
+  have hpv := heightSingularPoints_subset_vertices K hK.isCombinatorialManifoldWithBoundary hdimE ℓ
+      hℓ hinj hp
   by_contra hpC
-  exact hp.2.2 ((singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons K hK hdimE ℓ hℓ hinj hpv).mpr hpC)
+  exact hp.2.2 ((singleton_mem_nhdsWithin_fiber_iff_notMem_sUnion_levelPolygons K hK hdimE ℓ hℓ hinj
+      hpv).mpr hpC)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

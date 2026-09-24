@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFaceStability
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiberGluing
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldFaces
+
+/-! # Height Complex Stability -/
 
 open Set Topology
 
@@ -61,7 +68,8 @@ theorem eventually_exists_isPLHomeomorphOn_height_fiber_preserving_faces
   have hP : ∀ s, IsPolyhedron (P s) := by
     intro s
     have hQ : IsPolyhedron (Q s) :=
-      ((isHPolytope_convexHull_of_affineIndependent s.val.val (K.indep s.val.property)).inter_preimage
+      ((isHPolytope_convexHull_of_affineIndependent s.val.val (K.indep
+          s.val.property)).inter_preimage
         (isHPolytope_singleton (ℓ p)) ℓ.toLinearMap.toAffineMap).isPolyhedron
     have hpoly := (hg s).isPolyhedron_preimage hQ (Subset.refl _)
     have heq : P s ∩ g s ⁻¹' Q s = P s := inter_eq_left.mpr (hg s).bijOn.mapsTo

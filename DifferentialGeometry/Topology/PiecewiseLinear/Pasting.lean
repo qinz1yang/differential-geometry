@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPiece
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
 import DifferentialGeometry.Topology.Pasting
+
+/-! # Pasting -/
 
 open Set Topology
 
@@ -85,7 +92,8 @@ theorem exists_piecewiseAffineOn_postcomp_on_polyhedron [FiniteDimensional ℝ E
     rwa [preimage_univ, inter_univ] at hpl
   have hcommon : EqOn (h ∘ f) f (P ∩ Q) := fun x hx => hfix ⟨x, hx, rfl⟩
   refine ⟨g, hhf.piecewise_of_isClosed hfQ hP.isClosed hQ.isClosed hcommon,
-    fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx, ?_, fun x hx => piecewise_eq_of_notMem P (h ∘ f) f hx⟩
+    fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx, ?_, fun x hx => piecewise_eq_of_notMem P (h ∘ f)
+        f hx⟩
   intro x hx
   by_cases hxP : x ∈ P
   · rw [show g x = h (f x) from piecewise_eq_of_mem P (h ∘ f) f hxP]
@@ -114,7 +122,8 @@ theorem exists_piecewiseAffineOn_postcomp_on_polyhedron_of_locallyInjective
     have hc := hh.comp (hf.mono_of_isPolyhedron hP subset_union_left)
     rwa [preimage_univ, inter_univ] at hc
   have hg : IsPiecewiseAffineOn g (P ∪ Q) :=
-    hhf.piecewise_of_isClosed (hf.mono_of_isPolyhedron hQ subset_union_right) hP.isClosed hQ.isClosed
+    hhf.piecewise_of_isClosed (hf.mono_of_isPolyhedron hQ subset_union_right) hP.isClosed
+        hQ.isClosed
       (fun x hx => hcommon ⟨x, hx, rfl⟩)
   have hlocg : IsLocallyInjective ((P ∪ Q).domRestrict g) := by
     apply IsLocallyInjective.piecewise_postcomp_of_isClosed hloc hf.continuousOn
@@ -133,7 +142,8 @@ theorem exists_piecewiseAffineOn_postcomp_on_polyhedron_of_locallyInjective
       have hzQ : z ∈ Q := hz.1.1.resolve_left hz.1.2
       have hfx : f x = y := hx.2
       have hfz : f z = y := hz.2
-      exact hinjQ ⟨hxQ, by change f x ∈ U; rwa [hfx]⟩ ⟨hzQ, by change f z ∈ U; rwa [hfz]⟩ (hfx.trans hfz.symm)
+      exact hinjQ ⟨hxQ, by change f x ∈ U; rwa [hfx]⟩ ⟨hzQ, by change f z ∈ U; rwa [hfz]⟩ (hfx.trans
+          hfz.symm)
   refine ⟨g, hg, hlocg, hcardg, fun x hx => piecewise_eq_of_mem P (h ∘ f) f hx,
     ?_, fun x hx => piecewise_eq_of_notMem P (h ∘ f) f hx, ?_⟩
   · intro x hx
@@ -167,7 +177,8 @@ theorem exists_isPLOn_postcomp_on_polyhedron_of_locallyInjective
   have hg : IsPLOn n m g (P ∪ Q) :=
     IsPLOn.piecewise_postcomp_of_isClosed hf hh hP.isClosed hQ.isClosed hsevent
   have hgloc : IsLocallyInjective ((P ∪ Q).domRestrict g) :=
-    IsLocallyInjective.piecewise_postcomp_of_isClosed hloc hcont hP.isClosed hQ.isClosed hhinj hsevent
+    IsLocallyInjective.piecewise_postcomp_of_isClosed hloc hcont hP.isClosed hQ.isClosed hhinj
+        hsevent
   have hgcard : ∀ y, ((P ∪ Q) ∩ g ⁻¹' {y}).encard ≤ 2 := by
     apply encard_fiber_piecewise_postcomp_le f (P ∪ Q) P hhinj hfix
       (hinjP.mono inter_subset_right) (n := 1)

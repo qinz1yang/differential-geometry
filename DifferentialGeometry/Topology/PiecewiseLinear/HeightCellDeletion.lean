@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSlabDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSectionDecomposition
+
+/-! # Height Cell Deletion -/
 
 open Set
 
@@ -21,7 +28,8 @@ theorem fiber_subcomplexGeneratedBy_eq_closure_sdiff
     (closure_space_sdiff_convexHull_eq_subcomplexGeneratedBy K K Subset.rfl hT).symm
   have hRreg : closure (interior R.space) = R.space := by
     rw [hRspace]
-    exact Topology.closure_interior_closure_sdiff hreg (T.finite_toSet.isCompact_convexHull ℝ).isClosed
+    exact Topology.closure_interior_closure_sdiff hreg (T.finite_toSet.isCompact_convexHull
+        ℝ).isClosed
   apply Subset.antisymm
   · rintro x ⟨hxR, hxr⟩
     by_cases hxT : x ∈ convexHull ℝ (T : Set E)
@@ -61,7 +69,8 @@ theorem fiber_subcomplexGeneratedBy_eq_closure_sdiff
         · change IsPLBall 1 (D ∩ C) at hI
           simpa only [hdiff] using hD.closure_sdiff_eq_of_isPLBall hI inter_subset_left (by decide)
       exact closure_mono (sdiff_subset_sdiff_left
-        (inter_subset_inter_left _ (K.convexHull_subset_space (hRK hU)))) (hdense.symm.subset ⟨hxU, hxr⟩)
+        (inter_subset_inter_left _ (K.convexHull_subset_space (hRK hU)))) (hdense.symm.subset ⟨hxU,
+            hxr⟩)
     · exact subset_closure ⟨⟨space_mono_of_faces_subset hRK hxR, hxr⟩, fun hx => hxT hx.1⟩
   · apply closure_minimal _ ((isPolyhedron_space R).isClosed.inter
       (isClosed_eq ℓ.continuous_of_finiteDimensional continuous_const))
@@ -82,9 +91,11 @@ theorem heightSectionCells_erase_subset_subcomplexGeneratedBy {n : ℕ}
   obtain ⟨hneq, hCmem⟩ := Finset.mem_erase.mp hC
   obtain ⟨U, hU, hUcard, hlow, hhigh, hCeq⟩ := mem_heightSectionCells_iff.mp hCmem
   apply mem_heightSectionCells_iff.mpr
-  refine ⟨U, ⟨U, ⟨hU, ?_⟩, Finset.Subset.rfl, K.nonempty_of_mem_faces hU⟩, hUcard, hlow, hhigh, hCeq⟩
+  refine ⟨U, ⟨U, ⟨hU, ?_⟩, Finset.Subset.rfl, K.nonempty_of_mem_faces hU⟩, hUcard, hlow, hhigh,
+      hCeq⟩
   intro hUT
   have heq : U = T := Finset.eq_of_subset_of_card_le hUT (by omega)
-  exact hneq (hCeq.trans (congrArg (fun V : Finset E => convexHull ℝ (V : Set E) ∩ {x | ℓ x = r}) heq))
+  exact hneq (hCeq.trans (congrArg (fun V : Finset E => convexHull ℝ (V : Set E) ∩ {x | ℓ x = r})
+      heq))
 
 end DifferentialGeometry.Topology.PiecewiseLinear

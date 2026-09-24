@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Cone
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBall
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorph
 import Mathlib.Analysis.Normed.Affine.AddTorsorBases
+
+/-! # Simplex Boundary -/
 
 open Set Topology
 
@@ -402,7 +409,8 @@ theorem exists_affineIndependent_openSimplex_subset [FiniteDimensional ℝ E] {n
     ∃ T : Finset E, AffineIndependent ℝ ((↑) : T → E) ∧ T.card = n + 2 ∧
       p ∈ openSimplex T ∧ convexHull ℝ (T : Set E) ⊆ U ∧ convexHull ℝ (T : Set E) ∈ 𝓝 p := by
   classical
-  obtain ⟨b⟩ := AffineBasis.exists_affineBasis_of_finiteDimensional (ι := Fin (n + 2)) (k := ℝ) (V := E)
+  obtain ⟨b⟩ := AffineBasis.exists_affineBasis_of_finiteDimensional (ι := Fin (n + 2)) (k := ℝ) (V
+      := E)
     (P := E) (by rw [Fintype.card_fin, hn])
   have hn2 : ((n : ℝ) + 2) ≠ 0 := by positivity
   set c : E := ((n : ℝ) + 2)⁻¹ • ∑ i, b i with hc

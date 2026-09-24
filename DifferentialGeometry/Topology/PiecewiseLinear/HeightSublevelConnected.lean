@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Combinatorics.HeightConnectivity
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkHeightConnected
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeConnectivity
+
+/-! # Height Sublevel Connected -/
 
 open Set
 
@@ -111,7 +118,8 @@ theorem isPreconnected_halfSpaces_of_heightIndex_eq_zero [FiniteDimensional ℝ 
       IsPreconnected ((SimplicialComplex.geometricLink K {p}).space ∩ {x | (-ℓ) x < (-ℓ) p}) := by
     intro p hp
     simpa only [neg_apply, neg_lt_neg_iff] using (hlinks p hp).2
-  have h := isPreconnected_inter_affine_lt_of_preconnected_lower_links K hK.isConnected.isPreconnected
+  have h := isPreconnected_inter_affine_lt_of_preconnected_lower_links K
+      hK.isConnected.isPreconnected
     (-ℓ).toLinearMap.toAffineMap hinj' hlinks' (-r)
   change IsPreconnected (K.space ∩ {x | -ℓ x < -r}) at h
   simpa only [neg_lt_neg_iff] using h

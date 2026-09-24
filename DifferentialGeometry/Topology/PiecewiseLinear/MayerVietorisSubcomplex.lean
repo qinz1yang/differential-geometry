@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homology.HomotopyEquivalence
 import DifferentialGeometry.Topology.Homology.SmallChains.BettiBound
 import DifferentialGeometry.Topology.Homology.SmallChains.Exactness
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNeighborhood
+
+/-! # Mayer Vietoris Subcomplex -/
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 
@@ -106,7 +113,8 @@ theorem finiteHomologyType_subcomplexOpenNeighborhood (k : Type) [Field k]
 theorem finiteHomologyType_subcomplexOpenNeighborhood_inter (k : Type) [Field k]
     (hL : L.faces ⊆ K.faces) (hM : M.faces ⊆ K.faces) :
     Homology.finiteHomologyType k
-      (TopCat.of (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set K.space)) := by
+      (TopCat.of (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set K.space)) :=
+          by
   let _ : Finite L.faces := ((Set.toFinite K.faces).subset hL).to_subtype
   exact (Homology.finiteHomologyType_iff_of_homotopyEquiv k
     (X := TopCat.of (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set K.space))
@@ -135,7 +143,8 @@ theorem bettiNumber_union_le (k : Type) [Field k]
       (X := TopCat.of (subcomplexOpenNeighborhood K M)) (Y := TopCat.of M.space)
       (subcomplexOpenNeighborhoodHomotopyEquiv hM),
     Homology.bettiNumber_eq_of_homotopyEquiv k
-      (X := TopCat.of (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set K.space))
+      (X := TopCat.of (subcomplexOpenNeighborhood K L ∩ subcomplexOpenNeighborhood K M : Set
+          K.space))
       (Y := TopCat.of (intersectionComplex L M).space)
       (subcomplexOpenNeighborhoodInterHomotopyEquiv hL hM)] at h
   exact h

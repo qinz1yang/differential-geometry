@@ -14578,3 +14578,13 @@ Fourteen changed modules and 261 real consumers compile without diagnostics. Sev
 pass two axiom/linter audits; both affected skeletons retain exactly one existing sorry warning.
 The frozen total remains 4. Details and source hashes: `consult/named-input-cleanup-host-acceptance.md`
 and its receipt manifest. Smooth integration continues in the isolated checkout.
+
+# Codex item 21: smooth entry accepted on the host
+
+09:58 UTC on 2026-09-24: merged the verified smooth branch at 04fcba8d3 using the standard
+merge tree; registered 118 new leaves and promoted PLSmoothingCompact.
+The frozen sphere statement is LF-identical (336 characters). Main checkout:
+732/732 entry modules and 27/27 axiom/linter audits (11,086 declarations) pass.
+Broader replay 2,833/2,834; the remaining FourSpokeCap source is inherited
+and outside the three-entry cone. Ledger physical sorry 4 -> 3. See
+consult/smooth-main-host-acceptance.md and its receipt manifest.

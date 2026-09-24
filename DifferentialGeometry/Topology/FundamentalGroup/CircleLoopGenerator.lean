@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Topology.Covering.AddCircle
 import Mathlib.Topology.Homeomorph.Lemmas
@@ -5,6 +10,8 @@ import Mathlib.Topology.Homotopy.Lifting
 import Mathlib.Topology.Instances.ZMultiples
 import DifferentialGeometry.Topology.FundamentalGroup.LoopPower
 import DifferentialGeometry.Topology.LoopSpace.BasedCircle
+
+/-! # Circle Loop Generator -/
 
 namespace DifferentialGeometry.Topology
 

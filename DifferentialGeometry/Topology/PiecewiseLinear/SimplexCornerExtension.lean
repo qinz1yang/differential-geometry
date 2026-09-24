@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeAmbientExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCornerFrontier
+
+/-! # Simplex Corner Extension -/
 
 open Set
 
@@ -7,13 +14,15 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
-theorem exists_isPLHomeomorphOn_extension_simplex_vertex_star_fixing_opposite_face [FiniteDimensional ℝ E] [DecidableEq E]
+theorem exists_isPLHomeomorphOn_extension_simplex_vertex_star_fixing_opposite_face
+    [FiniteDimensional ℝ E] [DecidableEq E]
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
     (hspan : affineSpan ℝ (T : Set E) = ⊤) {a : E} (ha : a ∈ T)
     {f : E → E} (hf : IsPLHomeomorphOn f (starComplex (simplexBoundary T hT) a).space
       (starComplex (simplexBoundary T hT) a).space)
     (hfix : EqOn f id
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space)
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a
+          T))).space)
     {U : Set E} (hU : IsOpen U) (hTU : convexHull ℝ (T : Set E) ⊆ U) :
     ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧
       h '' convexHull ℝ (T : Set E) = convexHull ℝ (T : Set E) ∧
@@ -66,13 +75,15 @@ theorem exists_isPLHomeomorphOn_extension_simplex_vertex_star_fixing_opposite_fa
   · intro x hx
     exact hhfix (fun hxN => hx (hNU hxN))
 
-theorem exists_isPLHomeomorphOn_extension_simplex_vertex_star [FiniteDimensional ℝ E] [DecidableEq E]
+theorem exists_isPLHomeomorphOn_extension_simplex_vertex_star [FiniteDimensional ℝ E] [DecidableEq
+    E]
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
     (hspan : affineSpan ℝ (T : Set E) = ⊤) {a : E} (ha : a ∈ T)
     {f : E → E} (hf : IsPLHomeomorphOn f (starComplex (simplexBoundary T hT) a).space
       (starComplex (simplexBoundary T hT) a).space)
     (hfix : EqOn f id
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space)
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a
+          T))).space)
     {U : Set E} (hU : IsOpen U) (hTU : convexHull ℝ (T : Set E) ⊆ U) :
     ∃ h : E ≃ₜ E, IsPLHomeomorphOn h univ univ ∧
       h '' convexHull ℝ (T : Set E) = convexHull ℝ (T : Set E) ∧

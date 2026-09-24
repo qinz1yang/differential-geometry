@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CylinderComparison
+
+/-! # Cylinder End Map -/
 
 open Set
 
@@ -61,7 +68,7 @@ theorem exists_isPLHomeomorphOn_endMap [FiniteDimensional ℝ E] [FiniteDimensio
     htop.bijOn.invOn_invFunOn.2 (himg ▸ hmem)
   exact hfw.symm.trans (congrArg f (Prod.ext rfl hw2))
 
-theorem endMap_eq_iff [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+theorem endMap_eq_iff
     (h : IsCylindricalDiagram f P S) {u : E → E} (hu : IsPLHomeomorphOn u P P)
     (hfu : ∀ x ∈ P, f (x, 0) = f (u x, 1)) {x y : E} (hx : x ∈ P) (hy : y ∈ P) :
     f (x, 0) = f (y, 1) ↔ y = u x := by

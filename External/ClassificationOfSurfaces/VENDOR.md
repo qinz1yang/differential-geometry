@@ -1782,3 +1782,23 @@ this boundary transport together with the controlled disk collar and its actual 
 No vendored Lean source changed. Five focused checks exit 0 with zero warnings;
 `AuditS81BoundaryReplacement` audits thirteen declarations with only the standard three axioms.
 The side-face product compatibility and whole-boundary collar conclusion remain unproved.
+
+## Native planar adapters from source revision 54ad4d8
+
+Integration preserves every preceding vendor entry and the existing full
+canonical Moise implementation. Four additional adapters of selected upstream
+arguments to the native Schoenflies Jordan/PrePolygon API are retained:
+`PrePolygonTriangulation`, `PrePolygonDeletion`, `TriangleMeshCrosscut`, and
+`TriangleMeshGeometricFree`. They retain original attribution and mathematical
+source, using import remapping and recorded layout normalization. The source variant's three base files and
+two selected-declaration modules are not installed in parallel: their public
+exports already exist in the current canonical vendor, and the source base
+variant intentionally omits the current barycentric-realization interface.
+
+See `MODIFICATIONS.md`, `INTEGRATION_54AD4D8.json`, and
+`INTEGRATION_54AD4D8_COLLISIONS.json` for exact source identities, changed imports,
+canonical export providers, and the distinction between adapted upstream
+arguments and locally authored bridge proofs. Historical source-port metadata
+is retained under its own source identities; it does not certify compilation of
+this integration variant. No source proof body, existing vendor declaration,
+license, or original README is overwritten by this staging plan.

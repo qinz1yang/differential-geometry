@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homotopy.DeformationRetract
 import Mathlib.Topology.Homotopy.Path
+
+/-! # Deformation Retract Path -/
 
 namespace DifferentialGeometry.Topology.Homotopy
 
@@ -35,7 +42,8 @@ noncomputable def retractLoopHomotopy (r : StrongDeformationRetract A) {x : X} (
     (ℓ : Path x x) : Path.Homotopy ℓ (r.retractLoop hx ℓ) where
   toFun z := r.homotopy (z.1, ℓ z.2)
   continuous_toFun :=
-    (map_continuous r.homotopy).comp (continuous_fst.prodMk ((map_continuous ℓ).comp continuous_snd))
+    (map_continuous r.homotopy).comp (continuous_fst.prodMk ((map_continuous ℓ).comp
+        continuous_snd))
   map_zero_left s := r.homotopy.apply_zero (ℓ s)
   map_one_left s := r.homotopy.apply_one (ℓ s)
   prop' := by

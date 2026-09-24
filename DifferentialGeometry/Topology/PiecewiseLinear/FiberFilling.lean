@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSpanningDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiberCircle
 import DifferentialGeometry.Topology.PlanarJordan.RegionRecognition
+
+/-! # Fiber Filling -/
 
 open Set Topology
 
@@ -124,7 +131,8 @@ theorem exists_isPLHomeomorphOn_filling_fiber_of_heightIndex_eq_zero
     ext x
     exact congrArg (fun f : E →ₗ[ℝ] ℝ => f x) hz
   obtain ⟨f, hf, hfJ⟩ := exists_isPLHomeomorphOn_closure_inter_fiber isOpen_interior
-    ((isPolyhedron_space R).isCompact.isBounded.subset interior_subset) hdim ℓ.toLinearMap hlinear hJ hne
+    ((isPolyhedron_space R).isCompact.isBounded.subset interior_subset) hdim ℓ.toLinearMap hlinear
+        hJ hne
   exact ⟨f, hRcl ▸ hf, hUfront ▸ hfJ⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

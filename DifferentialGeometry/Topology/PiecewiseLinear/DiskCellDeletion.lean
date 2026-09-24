@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeFreeDiskCell
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryMonotonicity
 import DifferentialGeometry.Topology.PiecewiseLinear.BallDensity
+
+/-! # Disk Cell Deletion -/
 
 open Set
 
@@ -23,7 +30,8 @@ theorem IsPLDiskDecomposition.isFreeDiskCell_iff_isPLBall_inter_boundaryComplex
   have heq : (boundaryComplex 2 (restrict K C)).space ∩ (boundaryComplex 2 K).space =
       C ∩ (boundaryComplex 2 K).space := by
     apply Subset.antisymm
-    · exact inter_subset_inter_left _ ((boundaryComplex_space_subset 2 (restrict K C)).trans_eq (h.cell_space C hC))
+    · exact inter_subset_inter_left _ ((boundaryComplex_space_subset 2 (restrict K C)).trans_eq
+        (h.cell_space C hC))
     · exact fun _ hx => ⟨hsub hx, hx.2⟩
   exact congrArg (IsPLBall 1) heq |>.to_iff
 
@@ -68,7 +76,8 @@ theorem IsPLDiskDecomposition.erase_of_isFreeDiskCell
   let _ : Finite K.faces := h.finite_faces.to_subtype
   have hball := isPLBall_closure_sdiff_of_inter_boundaryComplex K h.isPLBall (h.cell_isPLBall C hC)
     (h.cell_subset hC) ((h.isFreeDiskCell_iff_isPLBall_inter_boundaryComplex hC).mp hfree)
-  exact h.restrict_cells (Finset.erase_subset C cells) (h.closure_sdiff_cell_eq_biUnion_erase hC) hball
+  exact h.restrict_cells (Finset.erase_subset C cells) (h.closure_sdiff_cell_eq_biUnion_erase hC)
+      hball
 
 omit [FiniteDimensional ℝ E] in
 open Classical in

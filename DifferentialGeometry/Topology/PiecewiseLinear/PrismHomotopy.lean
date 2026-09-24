@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PrismInterval
 import DifferentialGeometry.Topology.PiecewiseLinear.BrokenLine
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+
+/-! # Prism Homotopy -/
 
 open Set
 

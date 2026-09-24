@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi
 import DifferentialGeometry.Analysis.Calculus.Inverse.RingBounds
 import Mathlib.Analysis.Calculus.ContDiff.FaaDiBruno
 import Mathlib.Topology.MetricSpace.Thickening
+
+/-! Composition. -/
 
 set_option autoImplicit false
 

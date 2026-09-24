@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Analysis.Complex.Tietze
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 import Mathlib.MeasureTheory.Function.Jacobian
 import Mathlib.Topology.ContinuousMap.StoneWeierstrass
+
+/-! # Invariance Of Domain -/
 
 namespace DifferentialGeometry.Topology
 

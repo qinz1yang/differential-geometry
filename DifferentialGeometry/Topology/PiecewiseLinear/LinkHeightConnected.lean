@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CrossingFiber
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightRegularity
+
+/-! # Link Height Connected -/
 
 open Set
 
@@ -22,7 +29,8 @@ theorem isPreconnected_inter_lt_of_circle_height_section_encard_le_two
       exact lt_or_gt_of_ne hne
     have hsplit := IsPreconnected.subset_or_subset
       (isOpen_lt ℓ.continuous continuous_const) (isOpen_lt continuous_const ℓ.continuous)
-      (disjoint_left.mpr fun x hx hy => lt_asymm (show ℓ x < r from hx) (show r < ℓ x from hy)) hcover hL.isConnected.isPreconnected
+      (disjoint_left.mpr fun x hx hy => lt_asymm (show ℓ x < r from hx) (show r < ℓ x from hy))
+          hcover hL.isConnected.isPreconnected
     rcases hsplit with hbelow | habove
     · rw [inter_eq_left.mpr hbelow]
       exact hL.isConnected.isPreconnected
@@ -37,7 +45,8 @@ theorem isPreconnected_inter_lt_of_circle_height_section_encard_le_two
       hpair.symm.subset (Set.mem_insert a {b})
     obtain ⟨hneg, hpos⟩ := exists_lt_and_gt_of_mem_height_section_of_avoids_vertices L ℓ r havoid ha
     obtain ⟨γ, δ, -, hδ, -, -, hδ0, hδ1⟩ :=
-      exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair hL ℓ.continuous.continuousOn hpair' hab hpos hneg
+      exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair hL ℓ.continuous.continuousOn hpair' hab hpos
+          hneg
     have hconn := hδ.isConnected_sdiff_endpoints (show (0 : ℝ) < 1 by norm_num)
     rw [hδ0, hδ1] at hconn
     have heq : (L.space ∩ {x | ℓ x ≤ r}) \ {a, b} = L.space ∩ {x | ℓ x < r} := by
@@ -80,7 +89,8 @@ theorem isPreconnected_geometricLink_halfSpaces_of_notMem_heightSingularPoints
       (hvp ▸ (SimplicialComplex.geometricLink K {p}).vertices_subset_space hv)
   have hcard : ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = ℓ p}).encard ≤ 2 :=
     encard_geometricLink_fiber_le_two_of_notMem_heightSingularPoints K hp ℓ.toLinearMap hregular
-  exact ⟨isPreconnected_inter_lt_of_circle_height_section_encard_le_two _ hlink ℓ (ℓ p) havoid hcard,
+  exact ⟨isPreconnected_inter_lt_of_circle_height_section_encard_le_two _ hlink ℓ (ℓ p) havoid
+      hcard,
     isPreconnected_inter_gt_of_circle_height_section_encard_le_two _ hlink ℓ (ℓ p) havoid hcard⟩
 
 theorem isPreconnected_geometricLink_halfSpaces_of_heightIndex_eq_zero

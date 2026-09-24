@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SingularGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkSubspace
+
+/-! # Crossing Neighborhood -/
 
 open Set Topology
 
@@ -36,7 +43,8 @@ theorem HasPLCrossingAt.of_isPLHomeomorphOn_mem_nhds
       source := interior P
       target := interior Q
       map_source' := fun z hz => hf.image_interior rfl ▸ mem_image_of_mem f hz
-      map_target' := fun z hz => hf.symm.image_interior rfl ▸ mem_image_of_mem (Function.invFunOn f P) hz
+      map_target' := fun z hz => hf.symm.image_interior rfl ▸ mem_image_of_mem (Function.invFunOn f
+          P) hz
       left_inv' := fun z hz => hf.bijOn.invOn_invFunOn.1 (interior_subset hz)
       right_inv' := fun z hz => hf.bijOn.invOn_invFunOn.2 (interior_subset hz)
       open_source := isOpen_interior
@@ -55,7 +63,8 @@ theorem HasPLCrossingAt.of_isPLHomeomorphOn_mem_nhds
     · intro hzD
       obtain ⟨w, ⟨hwP, hwC⟩, hfw⟩ := himage.symm.subset ⟨hf.bijOn.mapsTo hz, hzD⟩
       exact hf.bijOn.injOn hwP hz hfw ▸ hwC
-  refine HasPLCrossingAt.of_openPartialHomeomorph e he (mem_interior_iff_mem_nhds.mpr hx) hcross ?_ ?_
+  refine HasPLCrossingAt.of_openPartialHomeomorph e he (mem_interior_iff_mem_nhds.mpr hx) hcross ?_
+      ?_
   · filter_upwards [hx] with z hz
     exact hmem hA hz
   · filter_upwards [hx] with z hz

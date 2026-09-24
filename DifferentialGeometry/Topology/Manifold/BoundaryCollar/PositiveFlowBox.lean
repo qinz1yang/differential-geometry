@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.FlowBox
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
+
+/-! # Positive Flow Box -/
 
 open Set Function Manifold Filter
 open scoped Topology ContDiff

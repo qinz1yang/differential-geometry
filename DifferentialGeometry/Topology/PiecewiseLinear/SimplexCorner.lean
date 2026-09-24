@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeHalfSpace
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAvoiding
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import Mathlib.Analysis.Normed.Module.Convex
+
+/-! # Simplex Corner -/
 
 open Set
 
@@ -46,23 +53,27 @@ theorem simplexBoundary_erase_faces_subset_simplexAvoiding [DecidableEq E]
 theorem simplexAvoiding_space_inter_convexHull_erase [DecidableEq E]
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (a : E) :
     (simplexAvoiding T hT {T.erase a}).space ∩ convexHull ℝ ((T.erase a : Finset E) : Set E) =
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          := by
   apply Subset.antisymm
   · rintro x ⟨hxL, hxF⟩
     obtain ⟨s, hs, hxs⟩ := (simplexAvoiding T hT {T.erase a}).mem_space_iff.mp hxL
     have hxinter : x ∈ convexHull ℝ ((s ∩ T.erase a : Finset E) : Set E) := by
       rw [Finset.coe_inter]
-      exact convexHull_inter_subset_of_affineIndependent hT hs.2.1 (Finset.erase_subset a T) ⟨hxs, hxF⟩
+      exact convexHull_inter_subset_of_affineIndependent hT hs.2.1 (Finset.erase_subset a T) ⟨hxs,
+          hxF⟩
     have hne : (s ∩ T.erase a).Nonempty := by
       by_contra he
       rw [Finset.not_nonempty_iff_eq_empty.mp he, Finset.coe_empty, convexHull_empty] at hxinter
       exact hxinter
-    refine (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).convexHull_subset_space
+    refine (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a
+        T))).convexHull_subset_space
       ⟨Finset.inter_subset_right, hne, ?_⟩ hxinter
     intro he
     exact hs.2.2 _ (Finset.mem_singleton_self _) (he ▸ Finset.inter_subset_left)
   · intro x hx
-    refine ⟨space_mono_of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a) hx, ?_⟩
+    refine ⟨space_mono_of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a)
+        hx, ?_⟩
     exact simplexComplex_space_subset _ _
       (space_mono_of_faces_subset (simplexBoundary_faces_subset_simplexComplex _ _) hx)
 
@@ -177,7 +188,8 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
   let p := a + t • (c - a)
   let q := a + (-t) • (c - a)
   have hpdist : dist p a < ε := by
-    simpa only [p, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos ht] using htε
+    simpa only [p, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_of_pos ht]
+        using htε
   have hqdist : dist q a < ε := by
     simpa only [q, dist_eq_norm, add_sub_cancel_left, norm_smul, Real.norm_eq_abs, abs_neg,
       abs_of_pos ht] using htε
@@ -243,7 +255,8 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
     rw [sum_weights hcT] at h
     linarith
   have hsmulF : ∑ v ∈ T.erase a, weights T c v • v = c - weights T c a • a := by
-    rw [eq_sub_iff_add_eq, add_comm, Finset.add_sum_erase T (fun v => weights T c v • v) ha, sum_weights_smul hcT]
+    rw [eq_sub_iff_add_eq, add_comm, Finset.add_sum_erase T (fun v => weights T c v • v) ha,
+        sum_weights_smul hcT]
   have haopen : a ∈ openSimplex (insert q (T.erase a)) := by
     let w : E → ℝ := fun v => if v = q then β⁻¹ else t / β * weights T c v
     have hwq : w q = β⁻¹ := if_pos rfl
@@ -314,10 +327,12 @@ theorem exists_isConeBase_simplexAvoiding_in_neighborhood [FiniteDimensional ℝ
         (coneComplex hq).space ∩ convexHull ℝ (T : Set E) =
           (simplexAvoiding T hT {T.erase a}).space ∧
         (coneComplex hp).space ∪ (coneComplex hq).space ⊆ U := by
-  obtain ⟨ε, hε, hεU⟩ := (T.finite_toSet.isCompact_convexHull ℝ).exists_thickening_subset_open hU hTU
+  obtain ⟨ε, hε, hεU⟩ := (T.finite_toSet.isCompact_convexHull ℝ).exists_thickening_subset_open hU
+      hTU
   obtain ⟨p, q, -, hqdist, hpopen, hqT, hqind, haopen, hp, hq, hinter, hpT, hqinter⟩ :=
     exists_isConeBase_simplexAvoiding_near_vertex T hT hcard ha hε
-  refine ⟨p, q, hpopen, hqT, hqind, haopen, hp, hq, hinter, hpT, hqinter, union_subset (hpT.trans hTU) ?_⟩
+  refine ⟨p, q, hpopen, hqT, hqind, haopen, hp, hq, hinter, hpT, hqinter, union_subset (hpT.trans
+      hTU) ?_⟩
   have hqε : q ∈ Metric.thickening ε (convexHull ℝ (T : Set E)) :=
     Metric.mem_thickening_iff.mpr ⟨a, subset_convexHull ℝ _ ha, hqdist⟩
   intro x hx

@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.UnitSpeedField
+
+/-! # Defining Function -/
 
 set_option autoImplicit false
 noncomputable section
@@ -50,7 +57,8 @@ theorem exists_global_boundary_definingFunction (hK : IsCompact ((𝓡∂ n).bou
       have h1 : 1 - ρ () x = 0 := (add_eq_zero_iff_of_nonneg
         (mul_nonneg (ρ.nonneg () x) (hfn x)) (sub_nonneg.mpr (ρ.le_one () x))).mp hx |>.2
       have hρ1 : ρ () x = 1 := (sub_eq_zero.mp h1).symm
-      have hxO : x ∈ O := hρ () (subset_tsupport _ (by change ρ () x ≠ 0; rw [hρ1]; exact one_ne_zero))
+      have hxO : x ∈ O := hρ () (subset_tsupport _ (by change ρ () x ≠ 0; rw [hρ1]; exact
+          one_ne_zero))
       apply (hfzero x hxO).mp
       simpa only [hρ1,one_mul] using hm
     · intro hx

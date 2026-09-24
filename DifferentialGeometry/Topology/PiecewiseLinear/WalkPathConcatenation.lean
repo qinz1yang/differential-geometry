@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.FundamentalGroup.LoopPower
 import DifferentialGeometry.Topology.PiecewiseLinear.AmbientPolygonOrientation
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkArcPath
 import DifferentialGeometry.Topology.PiecewiseLinear.WalkMonodromyHomotopy
+
+/-! # Walk Path Concatenation -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 

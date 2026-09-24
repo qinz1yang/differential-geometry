@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.Flow.Planar.IdentityTangentGerm
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
+
+/-! # Local Diffeomorph Straightening -/
 
 noncomputable section
 open Set Filter Topology

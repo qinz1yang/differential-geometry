@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CirclePair
 import DifferentialGeometry.Topology.PiecewiseLinear.LinkSection
+
+/-! # Link Pair -/
 
 open Set Topology
 
@@ -41,7 +48,8 @@ private theorem exists_geometricLink_disk_pair
       IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3))
         ((SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x ≤ 0}) ∧
       u '' stdSimplexBoundary 2 = (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = 0} ∧
-      v '' stdSimplexBoundary 2 = (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = 0} := by
+      v '' stdSimplexBoundary 2 = (SimplicialComplex.geometricLink K {p}).space ∩ {x | ℓ x = 0} :=
+          by
   obtain ⟨u, hu, huB⟩ := exists_isPLHomeomorphOn_geometricLink_halfSpace hn K hp hK ℓ hℓ hpℓ hside
   obtain ⟨v, hv, hvB⟩ := exists_isPLHomeomorphOn_geometricLink_halfSpace hn K hp hK (-ℓ)
     (neg_ne_zero.mpr hℓ) (by simp [hpℓ]) (by
@@ -87,7 +95,8 @@ theorem exists_isPLHomeomorphOn_geometricLink_pair
   obtain ⟨γ, δ, hγ, hδ, hγ0, hγ1, hδ0, hδ1⟩ :=
     exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair hJ ℓ.continuous.continuousOn hzero hab hpos hneg
   obtain ⟨γ', δ', hγ', hδ', hγ'0, hγ'1, hδ'0, hδ'1⟩ :=
-    exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair hJ' ℓ'.continuous.continuousOn hzero' hab' hpos' hneg'
+    exists_isPLHomeomorphOn_Icc_inter_of_fiber_pair hJ' ℓ'.continuous.continuousOn hzero' hab' hpos'
+        hneg'
   have hPJ := (halfSpace_inter_fiber hJK ℓ).1.trans hzero
   have hQJ := (halfSpace_inter_fiber hJK ℓ).2.trans hzero
   have hPJ' := (halfSpace_inter_fiber hJK' ℓ').1.trans hzero'

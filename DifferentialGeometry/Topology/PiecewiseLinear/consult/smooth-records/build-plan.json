@@ -1,0 +1,1907 @@
+{
+  "order": [
+    "DifferentialGeometry.Topology.Diffeomorph.CompactIsotopyComposition",
+    "DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational",
+    "DifferentialGeometry.Analysis.ODE.Flow.Defs",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.VariationalSolutionOperator",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.FrechetDerivative",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.JointFrechetDerivative",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.FiniteOrder",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.OrbitComparison",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderSmoothness",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.SuccessorExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.ZerothOrderExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.LinearMapSmoothness",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Solution",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.GlobalExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Continuity",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Inhomogeneous",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.Hartman",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold",
+    "DifferentialGeometry.Analysis.ODE.Flow.CompactSupport",
+    "DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow",
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Basic",
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact",
+    "DifferentialGeometry.Analysis.Calculus.ProportionalTransport",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Sign",
+    "DifferentialGeometry.Analysis.Calculus.LevelPreservation",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.LevelTransport",
+    "DifferentialGeometry.Topology.Diffeomorph.LevelTransport",
+    "External.ClassificationOfSurfaces.Moise.GeometricTriangulation",
+    "External.ClassificationOfSurfaces.Moise.PlaneComplex",
+    "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+    "DifferentialGeometry.Topology.Diffeomorph.DisjointSupport",
+    "DifferentialGeometry.Analysis.Calculus.SmoothTransition",
+    "DifferentialGeometry.Analysis.Calculus.SmoothMax",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Compact",
+    "DifferentialGeometry.Topology.FiberwiseHomeomorph",
+    "DifferentialGeometry.Topology.Diffeomorph.Fiberwise",
+    "DifferentialGeometry.Topology.Diffeomorph.Perturbation",
+    "DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph",
+    "DifferentialGeometry.External.Schoenflies.Plane",
+    "DifferentialGeometry.Topology.Planar.CornerRounding",
+    "DifferentialGeometry.Analysis.Calculus.SmoothCorner",
+    "DifferentialGeometry.Topology.FiniteSubdivision",
+    "DifferentialGeometry.Topology.Compactness.Nonvanishing",
+    "DifferentialGeometry.Analysis.Calculus.CurveSubdivision",
+    "DifferentialGeometry.Analysis.Calculus.PolygonalRounding",
+    "DifferentialGeometry.External.Schoenflies.Direction",
+    "DifferentialGeometry.External.Schoenflies.UniformBound",
+    "DifferentialGeometry.External.Schoenflies.Strip",
+    "DifferentialGeometry.External.Schoenflies.SegmentCut",
+    "DifferentialGeometry.External.Schoenflies.SegmentOrder",
+    "DifferentialGeometry.External.Schoenflies.Subdivide",
+    "DifferentialGeometry.External.Schoenflies.Square",
+    "DifferentialGeometry.External.Schoenflies.PolyPath",
+    "DifferentialGeometry.External.Schoenflies.Parity",
+    "DifferentialGeometry.External.Schoenflies.Curve",
+    "DifferentialGeometry.External.Schoenflies.Polygonal",
+    "DifferentialGeometry.External.Schoenflies.Concatenate",
+    "DifferentialGeometry.External.Schoenflies.PolygonBridge",
+    "DifferentialGeometry.External.Schoenflies.StripConstants",
+    "DifferentialGeometry.External.Schoenflies.StripConnected",
+    "DifferentialGeometry.External.Schoenflies.StripLocal",
+    "DifferentialGeometry.External.Schoenflies.Topology",
+    "DifferentialGeometry.External.Schoenflies.CrosscutCells",
+    "DifferentialGeometry.External.Schoenflies.Bounded",
+    "DifferentialGeometry.External.Schoenflies.PolygonalJordan",
+    "DifferentialGeometry.External.Schoenflies.ModelCurve",
+    "DifferentialGeometry.External.Schoenflies.SegmentMeet",
+    "DifferentialGeometry.External.Schoenflies.Graph.Degree",
+    "DifferentialGeometry.External.Schoenflies.Graph.Drawing",
+    "DifferentialGeometry.External.Schoenflies.Overlay",
+    "DifferentialGeometry.External.Schoenflies.OverlayGraph",
+    "DifferentialGeometry.External.Schoenflies.Graph.Walk",
+    "DifferentialGeometry.External.Schoenflies.Graph.Cycle",
+    "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan",
+    "DifferentialGeometry.External.Schoenflies.SimpleArc",
+    "DifferentialGeometry.External.Schoenflies.SquareMover",
+    "DifferentialGeometry.External.Schoenflies.Graph.OuterFace",
+    "DifferentialGeometry.External.Schoenflies.ArcComplementPrep",
+    "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected",
+    "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance",
+    "DifferentialGeometry.External.Schoenflies.Subarc",
+    "DifferentialGeometry.External.Schoenflies.Graph.VertexSquares",
+    "DifferentialGeometry.External.Schoenflies.Graph.Component",
+    "DifferentialGeometry.External.Schoenflies.Graph.PathGraph",
+    "DifferentialGeometry.External.Schoenflies.Graph.Ear",
+    "DifferentialGeometry.External.Schoenflies.Graph.Tree",
+    "DifferentialGeometry.External.Schoenflies.Graph.RelativeEar",
+    "DifferentialGeometry.External.Schoenflies.FaceCycles",
+    "DifferentialGeometry.External.Schoenflies.ParitySplitting",
+    "DifferentialGeometry.External.Schoenflies.PolygonalCrosscut",
+    "DifferentialGeometry.External.Schoenflies.TwoArcs",
+    "DifferentialGeometry.External.Schoenflies.Realization",
+    "DifferentialGeometry.External.Schoenflies.FaceCyclesProof",
+    "DifferentialGeometry.External.Schoenflies.PrePolygonSep",
+    "DifferentialGeometry.External.Schoenflies.PrePolygonArc",
+    "DifferentialGeometry.External.Schoenflies.FaceCyclesLand",
+    "DifferentialGeometry.External.Schoenflies.OuterChain",
+    "DifferentialGeometry.External.Schoenflies.CrosscutExists",
+    "DifferentialGeometry.External.Schoenflies.CrosscutEncloses",
+    "DifferentialGeometry.External.Schoenflies.OuterChainClosed",
+    "DifferentialGeometry.External.Schoenflies.Accessible",
+    "DifferentialGeometry.External.Schoenflies.LocallyPolygonal",
+    "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+    "DifferentialGeometry.External.Schoenflies.ArcComplement",
+    "DifferentialGeometry.External.Schoenflies.SquareCycle",
+    "DifferentialGeometry.External.Schoenflies.CrosscutAtMostTwo",
+    "DifferentialGeometry.External.Schoenflies.ArcCollars",
+    "DifferentialGeometry.External.Schoenflies.GeneralCrosscut",
+    "DifferentialGeometry.External.Schoenflies.PolyArcRealize",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33",
+    "DifferentialGeometry.External.Schoenflies.PolygonalCarrier",
+    "DifferentialGeometry.External.Schoenflies.PolyLocal",
+    "DifferentialGeometry.External.Schoenflies.Graph.Redrawing",
+    "DifferentialGeometry.External.Schoenflies.AlternatingCrosscuts",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Planar",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Closed",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Land",
+    "DifferentialGeometry.External.Schoenflies.JordanSeparates",
+    "DifferentialGeometry.External.Schoenflies.Jordan",
+    "DifferentialGeometry.External.Schoenflies.JordanClosed",
+    "DifferentialGeometry.Topology.PlanarJordan.LocalSides",
+    "External.ClassificationOfSurfaces.Moise.AmbientHomeomorph",
+    "External.ClassificationOfSurfaces.Moise.ElementaryMove",
+    "External.ClassificationOfSurfaces.Moise.FreeTriangle",
+    "External.ClassificationOfSurfaces.TriangleMeshCrosscut",
+    "DifferentialGeometry.Topology.Planar.PolygonVertexCharts",
+    "DifferentialGeometry.Topology.Planar.VertexRoundingProfile",
+    "DifferentialGeometry.Topology.Planar.CornerNormalization",
+    "DifferentialGeometry.Analysis.Convex.SegmentGerm",
+    "DifferentialGeometry.Topology.Planar.PolygonCorners",
+    "DifferentialGeometry.Topology.Planar.CornerReanchoring",
+    "DifferentialGeometry.Topology.Compactness.FiniteReplacement",
+    "DifferentialGeometry.Topology.Planar.VertexReplacement",
+    "DifferentialGeometry.Analysis.Calculus.RegularRegion",
+    "DifferentialGeometry.Analysis.Convex.AffineBasis",
+    "DifferentialGeometry.Analysis.Convex.TriangleComplement",
+    "DifferentialGeometry.Analysis.Convex.SegmentSigns",
+    "DifferentialGeometry.Topology.Diffeomorph.Graph",
+    "External.ClassificationOfSurfaces.Moise.CommonSubdivision",
+    "External.ClassificationOfSurfaces.Moise.ThinKiteMove",
+    "External.ClassificationOfSurfaces.Moise.FreeTriangleMove",
+    "External.ClassificationOfSurfaces.Moise.ConeExtension",
+    "External.ClassificationOfSurfaces.Moise.FinitePLHomeomorph",
+    "External.ClassificationOfSurfaces.Moise.PLMoves",
+    "External.ClassificationOfSurfaces.Moise.PolygonalJordan",
+    "External.ClassificationOfSurfaces.Moise.PolygonalPolyhedron",
+    "External.ClassificationOfSurfaces.Moise.PolygonalCrosscut",
+    "External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies",
+    "DifferentialGeometry.External.Schoenflies.GeneratedStructure",
+    "DifferentialGeometry.External.Schoenflies.RefinementStars",
+    "DifferentialGeometry.External.Schoenflies.CellulationInvariants",
+    "DifferentialGeometry.External.Schoenflies.RealizeSubdiv",
+    "External.ClassificationOfSurfaces.PrePolygonDeletion",
+    "DifferentialGeometry.Topology.Planar.PolygonGraphCharts",
+    "DifferentialGeometry.Topology.Planar.PolygonIsotopy",
+    "DifferentialGeometry.Topology.Planar.PolygonRounding",
+    "DifferentialGeometry.Topology.Diffeomorph.Restriction",
+    "DifferentialGeometry.Topology.Diffeomorph.Extension",
+    "DifferentialGeometry.Topology.Diffeomorph.Radial",
+    "DifferentialGeometry.Topology.Diffeomorph.Convex",
+    "DifferentialGeometry.Topology.Planar.TriangleRounding",
+    "External.ClassificationOfSurfaces.PrePolygonTriangulation",
+    "External.ClassificationOfSurfaces.TriangleMeshGeometricFree",
+    "DifferentialGeometry.Topology.Planar.PolygonDisk",
+    "DifferentialGeometry.Topology.Embedding.PeriodicCurve",
+    "DifferentialGeometry.Topology.Planar.InscribedPolygon",
+    "DifferentialGeometry.Analysis.Calculus.Periodic.Affine",
+    "DifferentialGeometry.Topology.Planar.CurveRounding",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse",
+    "DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph",
+    "DifferentialGeometry.Topology.Manifold.ImmersionCriterion",
+    "DifferentialGeometry.Topology.Manifold.ImmersionDifferential",
+    "DifferentialGeometry.Topology.Manifold.ModelTransport",
+    "DifferentialGeometry.Topology.Manifold.SmoothModelTransport",
+    "DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph",
+    "DifferentialGeometry.Topology.Manifold.AddCircle",
+    "DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann",
+    "DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic",
+    "DifferentialGeometry.Topology.Manifold.InverseFunction",
+    "DifferentialGeometry.Topology.Manifold.OpenEmbedding",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative",
+    "DifferentialGeometry.Topology.Manifold.Quotient",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.Descent",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.SmoothEmbedding",
+    "DifferentialGeometry.Bundle.PartialMfderiv.Basic",
+    "DifferentialGeometry.Topology.Embedding.Diffeomorph",
+    "DifferentialGeometry.Topology.Embedding.FiniteDimension",
+    "DifferentialGeometry.Topology.Embedding.ParametricGraph",
+    "DifferentialGeometry.Topology.Embedding.SliceChart",
+    "DifferentialGeometry.Topology.Embedding.Retraction",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic",
+    "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed",
+    "DifferentialGeometry.Topology.Embedding.Extension",
+    "DifferentialGeometry.Topology.Embedding.LocalDiffeomorph",
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic",
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative",
+    "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.RingBounds",
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit",
+    "DifferentialGeometry.Topology.Embedding.SmoothParametricGraph",
+    "DifferentialGeometry.Topology.Embedding.ParametricVelocity",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen",
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant",
+    "DifferentialGeometry.Topology.Manifold.IntervalExtension",
+    "DifferentialGeometry.Analysis.Calculus.LipschitzFamily",
+    "DifferentialGeometry.Topology.Embedding.Stability",
+    "DifferentialGeometry.Topology.Embedding.IntervalExtension",
+    "DifferentialGeometry.Topology.Embedding.AmbientIsotopy",
+    "DifferentialGeometry.Topology.Embedding.PeriodicCurveIsotopy",
+    "DifferentialGeometry.Topology.Planar.RoundingIsotopy",
+    "DifferentialGeometry.Topology.Planar.PolygonVertexArcs",
+    "DifferentialGeometry.Topology.Planar.VertexRoundingFrontier",
+    "DifferentialGeometry.Topology.Planar.CanonicalRounding",
+    "DifferentialGeometry.External.Schoenflies.SkeletonLocal",
+    "DifferentialGeometry.External.Schoenflies.SkeletonSectors",
+    "DifferentialGeometry.External.Schoenflies.SkeletonAccess",
+    "DifferentialGeometry.External.Schoenflies.Graph.Relabel",
+    "DifferentialGeometry.External.Schoenflies.BoundaryCycles",
+    "DifferentialGeometry.External.Schoenflies.BoundaryCyclesGenerated",
+    "DifferentialGeometry.External.Schoenflies.RealizeSplit",
+    "DifferentialGeometry.External.Schoenflies.MatchedSplit",
+    "DifferentialGeometry.External.Schoenflies.MatchedArc",
+    "DifferentialGeometry.External.Schoenflies.FiniteTransfer",
+    "DifferentialGeometry.External.Schoenflies.Line",
+    "DifferentialGeometry.External.Schoenflies.InitialPair",
+    "DifferentialGeometry.External.Schoenflies.InitialPairFixed",
+    "DifferentialGeometry.External.Schoenflies.Inversion",
+    "DifferentialGeometry.External.Schoenflies.BoundaryContinuity",
+    "DifferentialGeometry.External.Schoenflies.Endgame",
+    "DifferentialGeometry.External.Schoenflies.BoundaryContinuity2",
+    "DifferentialGeometry.External.Schoenflies.InitialGenerated",
+    "DifferentialGeometry.External.Schoenflies.ArcMonotone",
+    "DifferentialGeometry.External.Schoenflies.RealizeSubdivHomeo",
+    "DifferentialGeometry.External.Schoenflies.CommonSubdivision",
+    "DifferentialGeometry.External.Schoenflies.FreshAccess",
+    "DifferentialGeometry.External.Schoenflies.FiniteTransferTarget",
+    "DifferentialGeometry.External.Schoenflies.InitialOuterCycle",
+    "DifferentialGeometry.External.Schoenflies.SquareMesh",
+    "DifferentialGeometry.External.Schoenflies.SquareMeshConnected",
+    "DifferentialGeometry.External.Schoenflies.SquareMeshFixed",
+    "DifferentialGeometry.External.Schoenflies.Graph.TwoPaths",
+    "DifferentialGeometry.External.Schoenflies.LocalGrid",
+    "DifferentialGeometry.External.Schoenflies.GridAttach",
+    "DifferentialGeometry.External.Schoenflies.SquareMeshClosed",
+    "DifferentialGeometry.External.Schoenflies.FiniteTransferTargetMesh",
+    "DifferentialGeometry.External.Schoenflies.TargetOverlay",
+    "DifferentialGeometry.External.Schoenflies.FreshDenseSelection",
+    "DifferentialGeometry.External.Schoenflies.StageTransition",
+    "DifferentialGeometry.External.Schoenflies.QuantitativeStages",
+    "DifferentialGeometry.External.Schoenflies.SourceOverlay",
+    "DifferentialGeometry.External.Schoenflies.SourceAttachment",
+    "DifferentialGeometry.External.Schoenflies.OverlayExtension",
+    "DifferentialGeometry.External.Schoenflies.SourceJoining",
+    "DifferentialGeometry.External.Schoenflies.LimitMap",
+    "DifferentialGeometry.External.Schoenflies.StageTower",
+    "DifferentialGeometry.External.Schoenflies.Windows",
+    "DifferentialGeometry.External.Schoenflies.QuantitativeForwardStages",
+    "DifferentialGeometry.External.Schoenflies.QuantitativeRecursion",
+    "DifferentialGeometry.External.Schoenflies.InteriorHomeomorphism",
+    "DifferentialGeometry.External.Schoenflies.BoundaryAnchors",
+    "DifferentialGeometry.External.Schoenflies.JordanSchoenflies",
+    "DifferentialGeometry.Topology.PlanarJordan.AmbientExtension",
+    "DifferentialGeometry.Topology.Connected.Loop",
+    "DifferentialGeometry.Topology.PlanarJordan.Innermost",
+    "DifferentialGeometry.Topology.PlanarJordan.InnermostDisk",
+    "DifferentialGeometry.Topology.PlanarJordan.SmoothSchoenflies",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.Circle",
+    "DifferentialGeometry.Topology.LoopSpace.Basic",
+    "DifferentialGeometry.Topology.LoopSpace.HomeomorphismLift",
+    "DifferentialGeometry.Analysis.Calculus.Periodic.Smoothing",
+    "DifferentialGeometry.Analysis.Calculus.Periodic.SmoothingFamilies",
+    "DifferentialGeometry.Topology.LoopSpace.UniformSmoothing",
+    "DifferentialGeometry.Topology.LoopSpace.PeriodicDescent",
+    "DifferentialGeometry.Topology.LoopSpace.Lipschitz",
+    "DifferentialGeometry.Topology.LoopSpace.AffineLift",
+    "DifferentialGeometry.Topology.LoopSpace.HomeomorphismOrientation",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.DiffeomorphLift",
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion",
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition",
+    "DifferentialGeometry.Topology.Embedding.LinearEquiv",
+    "DifferentialGeometry.Topology.Embedding.Sphere",
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionInterior",
+    "DifferentialGeometry.Topology.Homeomorph.Ball",
+    "DifferentialGeometry.Topology.Circle.Extension",
+    "DifferentialGeometry.Analysis.InnerProductSpace.SphereDerivative",
+    "DifferentialGeometry.Analysis.Calculus.BallBoundary",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv",
+    "DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign",
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Fiberwise",
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph",
+    "DifferentialGeometry.Topology.Diffeomorph.LocalFlowExtension",
+    "DifferentialGeometry.Topology.Diffeomorph.CompactLocalIsotopy",
+    "DifferentialGeometry.Topology.Manifold.ChartSupportedExtension",
+    "DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension",
+    "DifferentialGeometry.Topology.Manifold.PartialChartSupportedExtension",
+    "DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans",
+    "DifferentialGeometry.Tensor.LinearAlgebra.HyperplaneInterpolation",
+    "DifferentialGeometry.Tensor.LinearAlgebra.BoundaryBlockDeterminant",
+    "DifferentialGeometry.Topology.Manifold.RelativeCollarIsotopy",
+    "DifferentialGeometry.Topology.Homeomorph.LevelIsotopy",
+    "DifferentialGeometry.Topology.Diffeomorph.SphereGerm",
+    "DifferentialGeometry.Topology.Manifold.ImmersionRange",
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundary",
+    "DifferentialGeometry.Topology.Manifold.Interval.Immersion",
+    "DifferentialGeometry.Topology.Embedding.Factor",
+    "DifferentialGeometry.Topology.Circle.GermExtension",
+    "DifferentialGeometry.Topology.PlanarJordan.BoundaryGermExtension"
+  ],
+  "dependencies": {
+    "DifferentialGeometry.Topology.Diffeomorph.CompactIsotopyComposition": [],
+    "DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport": [],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow": [],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard": [],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational": [],
+    "DifferentialGeometry.Analysis.ODE.Flow.Defs": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.VariationalSolutionOperator": [
+      "DifferentialGeometry.Analysis.ODE.Flow.Defs"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.FrechetDerivative": [
+      "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.VariationalSolutionOperator"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.JointFrechetDerivative": [
+      "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.FrechetDerivative"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne": [
+      "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.JointFrechetDerivative"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.FiniteOrder": [
+      "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.FiniteOrder"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.OrbitComparison": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderSmoothness": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.OrbitComparison"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderSmoothness"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderExistence": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.SuccessorExistence": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderExistence"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.ZerothOrderExistence": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.SuccessorExistence"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.LinearMapSmoothness": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.ZerothOrderExistence"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Solution": [
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.LinearMapSmoothness"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.GlobalExistence": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Solution"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Continuity": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.GlobalExistence"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Inhomogeneous": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Continuity"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Inhomogeneous"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence",
+      "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue": [],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.Hartman": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.Hartman"
+    ],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold": [
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC",
+      "DifferentialGeometry.Analysis.ODE.Flow.Defs"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.CompactSupport": [
+      "DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow": [
+      "DifferentialGeometry.Analysis.ODE.Flow.CompactSupport"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Basic": [],
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact": [
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Basic"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.ProportionalTransport": [
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact"
+    ],
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Sign": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Solution"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.LevelPreservation": [],
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.LevelTransport": [
+      "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Sign",
+      "DifferentialGeometry.Analysis.Calculus.LevelPreservation"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.LevelTransport": [
+      "DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow",
+      "DifferentialGeometry.Analysis.Calculus.ProportionalTransport",
+      "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.LevelTransport"
+    ],
+    "External.ClassificationOfSurfaces.Moise.GeometricTriangulation": [],
+    "External.ClassificationOfSurfaces.Moise.PlaneComplex": [
+      "External.ClassificationOfSurfaces.Moise.GeometricTriangulation"
+    ],
+    "External.ClassificationOfSurfaces.Moise.LineSubdivision": [
+      "External.ClassificationOfSurfaces.Moise.PlaneComplex"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.DisjointSupport": [],
+    "DifferentialGeometry.Analysis.Calculus.SmoothTransition": [],
+    "DifferentialGeometry.Analysis.Calculus.SmoothMax": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothTransition"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Compact": [
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact"
+    ],
+    "DifferentialGeometry.Topology.FiberwiseHomeomorph": [],
+    "DifferentialGeometry.Topology.Diffeomorph.Fiberwise": [
+      "DifferentialGeometry.Topology.FiberwiseHomeomorph"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.Perturbation": [],
+    "DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Compact",
+      "DifferentialGeometry.Topology.Diffeomorph.Fiberwise",
+      "DifferentialGeometry.Topology.Diffeomorph.Perturbation"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Plane": [],
+    "DifferentialGeometry.Topology.Planar.CornerRounding": [
+      "DifferentialGeometry.Topology.Diffeomorph.CompactIsotopyComposition",
+      "DifferentialGeometry.Topology.Diffeomorph.LevelTransport",
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "DifferentialGeometry.Topology.Diffeomorph.DisjointSupport",
+      "DifferentialGeometry.Analysis.Calculus.SmoothMax",
+      "DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph",
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothCorner": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothMax"
+    ],
+    "DifferentialGeometry.Topology.FiniteSubdivision": [],
+    "DifferentialGeometry.Topology.Compactness.Nonvanishing": [],
+    "DifferentialGeometry.Analysis.Calculus.CurveSubdivision": [
+      "DifferentialGeometry.Topology.FiniteSubdivision",
+      "DifferentialGeometry.Topology.Compactness.Nonvanishing"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.PolygonalRounding": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothCorner",
+      "DifferentialGeometry.Analysis.Calculus.CurveSubdivision"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Direction": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.UniformBound": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Strip": [
+      "DifferentialGeometry.External.Schoenflies.Direction",
+      "DifferentialGeometry.External.Schoenflies.UniformBound"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SegmentCut": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SegmentOrder": [
+      "DifferentialGeometry.External.Schoenflies.SegmentCut"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Subdivide": [
+      "DifferentialGeometry.External.Schoenflies.SegmentCut",
+      "DifferentialGeometry.External.Schoenflies.SegmentOrder"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Square": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolyPath": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Parity": [
+      "DifferentialGeometry.External.Schoenflies.Subdivide",
+      "DifferentialGeometry.External.Schoenflies.Direction",
+      "DifferentialGeometry.External.Schoenflies.Square",
+      "DifferentialGeometry.External.Schoenflies.PolyPath"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Curve": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Polygonal": [
+      "DifferentialGeometry.External.Schoenflies.PolyPath",
+      "DifferentialGeometry.External.Schoenflies.Curve"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Concatenate": [
+      "DifferentialGeometry.External.Schoenflies.Curve"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolygonBridge": [
+      "DifferentialGeometry.External.Schoenflies.Strip",
+      "DifferentialGeometry.External.Schoenflies.Parity",
+      "DifferentialGeometry.External.Schoenflies.Polygonal",
+      "DifferentialGeometry.External.Schoenflies.Concatenate"
+    ],
+    "DifferentialGeometry.External.Schoenflies.StripConstants": [
+      "DifferentialGeometry.External.Schoenflies.Strip",
+      "DifferentialGeometry.External.Schoenflies.PolyPath"
+    ],
+    "DifferentialGeometry.External.Schoenflies.StripConnected": [
+      "DifferentialGeometry.External.Schoenflies.Strip"
+    ],
+    "DifferentialGeometry.External.Schoenflies.StripLocal": [
+      "DifferentialGeometry.External.Schoenflies.StripConstants",
+      "DifferentialGeometry.External.Schoenflies.StripConnected"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Topology": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CrosscutCells": [
+      "DifferentialGeometry.External.Schoenflies.Curve",
+      "DifferentialGeometry.External.Schoenflies.Concatenate",
+      "DifferentialGeometry.External.Schoenflies.Topology"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Bounded": [
+      "DifferentialGeometry.External.Schoenflies.Square"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolygonalJordan": [
+      "DifferentialGeometry.External.Schoenflies.PolygonBridge",
+      "DifferentialGeometry.External.Schoenflies.StripLocal",
+      "DifferentialGeometry.External.Schoenflies.CrosscutCells",
+      "DifferentialGeometry.External.Schoenflies.Bounded"
+    ],
+    "DifferentialGeometry.External.Schoenflies.ModelCurve": [
+      "DifferentialGeometry.External.Schoenflies.Concatenate",
+      "DifferentialGeometry.External.Schoenflies.Polygonal",
+      "DifferentialGeometry.External.Schoenflies.Bounded"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SegmentMeet": [
+      "DifferentialGeometry.External.Schoenflies.PolyPath"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Degree": [],
+    "DifferentialGeometry.External.Schoenflies.Graph.Drawing": [
+      "DifferentialGeometry.External.Schoenflies.Curve",
+      "DifferentialGeometry.External.Schoenflies.Topology",
+      "DifferentialGeometry.External.Schoenflies.Bounded",
+      "DifferentialGeometry.External.Schoenflies.Graph.Degree"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Overlay": [
+      "DifferentialGeometry.External.Schoenflies.Subdivide",
+      "DifferentialGeometry.External.Schoenflies.SegmentOrder",
+      "DifferentialGeometry.External.Schoenflies.SegmentMeet",
+      "DifferentialGeometry.External.Schoenflies.Polygonal",
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing"
+    ],
+    "DifferentialGeometry.External.Schoenflies.OverlayGraph": [
+      "DifferentialGeometry.External.Schoenflies.Overlay"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Walk": [],
+    "DifferentialGeometry.External.Schoenflies.Graph.Cycle": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Walk"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan": [
+      "DifferentialGeometry.External.Schoenflies.Concatenate",
+      "DifferentialGeometry.External.Schoenflies.Graph.Cycle",
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing",
+      "DifferentialGeometry.External.Schoenflies.Polygonal"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SimpleArc": [
+      "DifferentialGeometry.External.Schoenflies.OverlayGraph",
+      "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SquareMover": [
+      "DifferentialGeometry.External.Schoenflies.Square"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.OuterFace": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing"
+    ],
+    "DifferentialGeometry.External.Schoenflies.ArcComplementPrep": [
+      "DifferentialGeometry.External.Schoenflies.PolygonalJordan",
+      "DifferentialGeometry.External.Schoenflies.ModelCurve",
+      "DifferentialGeometry.External.Schoenflies.SimpleArc",
+      "DifferentialGeometry.External.Schoenflies.SquareMover",
+      "DifferentialGeometry.External.Schoenflies.Graph.OuterFace",
+      "DifferentialGeometry.External.Schoenflies.UniformBound"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Walk"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing",
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Subarc": [
+      "DifferentialGeometry.External.Schoenflies.Curve"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.VertexSquares": [
+      "DifferentialGeometry.External.Schoenflies.Square",
+      "DifferentialGeometry.External.Schoenflies.UniformBound",
+      "DifferentialGeometry.External.Schoenflies.Subarc",
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Component": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Walk",
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.PathGraph": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Walk"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Ear": [
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected",
+      "DifferentialGeometry.External.Schoenflies.Graph.PathGraph"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Tree": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Cycle",
+      "DifferentialGeometry.External.Schoenflies.Graph.Degree"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.RelativeEar": [
+      "DifferentialGeometry.External.Schoenflies.Graph.Component",
+      "DifferentialGeometry.External.Schoenflies.Graph.Ear",
+      "DifferentialGeometry.External.Schoenflies.Graph.Tree"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FaceCycles": [
+      "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan",
+      "DifferentialGeometry.External.Schoenflies.Graph.RelativeEar",
+      "DifferentialGeometry.External.Schoenflies.Graph.OuterFace",
+      "DifferentialGeometry.External.Schoenflies.Subarc"
+    ],
+    "DifferentialGeometry.External.Schoenflies.ParitySplitting": [
+      "DifferentialGeometry.External.Schoenflies.PolygonalJordan",
+      "DifferentialGeometry.External.Schoenflies.OverlayGraph"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolygonalCrosscut": [
+      "DifferentialGeometry.External.Schoenflies.ParitySplitting"
+    ],
+    "DifferentialGeometry.External.Schoenflies.TwoArcs": [
+      "DifferentialGeometry.External.Schoenflies.Subarc",
+      "DifferentialGeometry.External.Schoenflies.Concatenate"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Realization": [
+      "DifferentialGeometry.External.Schoenflies.SimpleArc",
+      "DifferentialGeometry.External.Schoenflies.PolygonalCrosscut",
+      "DifferentialGeometry.External.Schoenflies.TwoArcs"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FaceCyclesProof": [
+      "DifferentialGeometry.External.Schoenflies.FaceCycles",
+      "DifferentialGeometry.External.Schoenflies.Realization"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PrePolygonSep": [
+      "DifferentialGeometry.External.Schoenflies.Realization"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PrePolygonArc": [
+      "DifferentialGeometry.External.Schoenflies.PrePolygonSep"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FaceCyclesLand": [
+      "DifferentialGeometry.External.Schoenflies.FaceCyclesProof",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonArc"
+    ],
+    "DifferentialGeometry.External.Schoenflies.OuterChain": [
+      "DifferentialGeometry.External.Schoenflies.FaceCyclesLand",
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CrosscutExists": [
+      "DifferentialGeometry.External.Schoenflies.OuterChain"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CrosscutEncloses": [
+      "DifferentialGeometry.External.Schoenflies.OuterChain",
+      "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance"
+    ],
+    "DifferentialGeometry.External.Schoenflies.OuterChainClosed": [
+      "DifferentialGeometry.External.Schoenflies.CrosscutExists",
+      "DifferentialGeometry.External.Schoenflies.CrosscutEncloses"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Accessible": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.LocallyPolygonal": [
+      "DifferentialGeometry.External.Schoenflies.PolyPath",
+      "DifferentialGeometry.External.Schoenflies.Square",
+      "DifferentialGeometry.External.Schoenflies.UniformBound"
+    ],
+    "DifferentialGeometry.External.Schoenflies.AccessibleJoin": [
+      "DifferentialGeometry.External.Schoenflies.SimpleArc",
+      "DifferentialGeometry.External.Schoenflies.Accessible",
+      "DifferentialGeometry.External.Schoenflies.LocallyPolygonal"
+    ],
+    "DifferentialGeometry.External.Schoenflies.ArcComplement": [
+      "DifferentialGeometry.External.Schoenflies.ArcComplementPrep",
+      "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance",
+      "DifferentialGeometry.External.Schoenflies.Graph.VertexSquares",
+      "DifferentialGeometry.External.Schoenflies.OuterChainClosed",
+      "DifferentialGeometry.External.Schoenflies.AccessibleJoin"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SquareCycle": [
+      "DifferentialGeometry.External.Schoenflies.ArcComplement",
+      "DifferentialGeometry.External.Schoenflies.FaceCycles"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CrosscutAtMostTwo": [
+      "DifferentialGeometry.External.Schoenflies.Subarc",
+      "DifferentialGeometry.External.Schoenflies.Topology",
+      "DifferentialGeometry.External.Schoenflies.Polygonal",
+      "DifferentialGeometry.External.Schoenflies.Strip"
+    ],
+    "DifferentialGeometry.External.Schoenflies.ArcCollars": [
+      "DifferentialGeometry.External.Schoenflies.Concatenate",
+      "DifferentialGeometry.External.Schoenflies.CrosscutAtMostTwo",
+      "DifferentialGeometry.External.Schoenflies.StripLocal"
+    ],
+    "DifferentialGeometry.External.Schoenflies.GeneralCrosscut": [
+      "DifferentialGeometry.External.Schoenflies.CrosscutCells",
+      "DifferentialGeometry.External.Schoenflies.CrosscutAtMostTwo",
+      "DifferentialGeometry.External.Schoenflies.TwoArcs"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolyArcRealize": [
+      "DifferentialGeometry.External.Schoenflies.ArcCollars",
+      "DifferentialGeometry.External.Schoenflies.GeneralCrosscut",
+      "DifferentialGeometry.External.Schoenflies.Realization"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.K33": [
+      "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan",
+      "DifferentialGeometry.External.Schoenflies.Subarc"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolygonalCarrier": [
+      "DifferentialGeometry.External.Schoenflies.PolyPath"
+    ],
+    "DifferentialGeometry.External.Schoenflies.PolyLocal": [
+      "DifferentialGeometry.External.Schoenflies.LocallyPolygonal",
+      "DifferentialGeometry.External.Schoenflies.PolygonalCarrier"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Redrawing": [
+      "DifferentialGeometry.External.Schoenflies.Graph.VertexSquares",
+      "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan",
+      "DifferentialGeometry.External.Schoenflies.PolyLocal",
+      "DifferentialGeometry.External.Schoenflies.Polygonal",
+      "DifferentialGeometry.External.Schoenflies.Concatenate"
+    ],
+    "DifferentialGeometry.External.Schoenflies.AlternatingCrosscuts": [
+      "DifferentialGeometry.External.Schoenflies.PolygonalCrosscut",
+      "DifferentialGeometry.External.Schoenflies.Subarc"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Planar": [
+      "DifferentialGeometry.External.Schoenflies.Graph.K33",
+      "DifferentialGeometry.External.Schoenflies.Graph.Redrawing",
+      "DifferentialGeometry.External.Schoenflies.AlternatingCrosscuts"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Closed": [
+      "DifferentialGeometry.External.Schoenflies.Realization",
+      "DifferentialGeometry.External.Schoenflies.Graph.K33Planar"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Land": [
+      "DifferentialGeometry.External.Schoenflies.PrePolygonArc",
+      "DifferentialGeometry.External.Schoenflies.Graph.K33Closed"
+    ],
+    "DifferentialGeometry.External.Schoenflies.JordanSeparates": [
+      "DifferentialGeometry.External.Schoenflies.Graph.K33Land",
+      "DifferentialGeometry.External.Schoenflies.Graph.OuterFace",
+      "DifferentialGeometry.External.Schoenflies.TwoArcs",
+      "DifferentialGeometry.External.Schoenflies.SimpleArc",
+      "DifferentialGeometry.External.Schoenflies.SegmentCut",
+      "DifferentialGeometry.External.Schoenflies.SegmentOrder"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Jordan": [
+      "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+      "DifferentialGeometry.External.Schoenflies.CrosscutCells",
+      "DifferentialGeometry.External.Schoenflies.JordanSeparates",
+      "DifferentialGeometry.External.Schoenflies.TwoArcs",
+      "DifferentialGeometry.External.Schoenflies.Graph.K33Land"
+    ],
+    "DifferentialGeometry.External.Schoenflies.JordanClosed": [
+      "DifferentialGeometry.External.Schoenflies.SquareCycle",
+      "DifferentialGeometry.External.Schoenflies.PolyArcRealize",
+      "DifferentialGeometry.External.Schoenflies.Jordan"
+    ],
+    "DifferentialGeometry.Topology.PlanarJordan.LocalSides": [
+      "DifferentialGeometry.External.Schoenflies.JordanClosed"
+    ],
+    "External.ClassificationOfSurfaces.Moise.AmbientHomeomorph": [
+      "External.ClassificationOfSurfaces.Moise.PlaneComplex"
+    ],
+    "External.ClassificationOfSurfaces.Moise.ElementaryMove": [
+      "External.ClassificationOfSurfaces.Moise.AmbientHomeomorph",
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision"
+    ],
+    "External.ClassificationOfSurfaces.Moise.FreeTriangle": [
+      "External.ClassificationOfSurfaces.Moise.ElementaryMove"
+    ],
+    "External.ClassificationOfSurfaces.TriangleMeshCrosscut": [
+      "External.ClassificationOfSurfaces.Moise.FreeTriangle",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed"
+    ],
+    "DifferentialGeometry.Topology.Planar.PolygonVertexCharts": [
+      "DifferentialGeometry.Topology.PlanarJordan.LocalSides",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonArc",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonSep",
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "External.ClassificationOfSurfaces.TriangleMeshCrosscut"
+    ],
+    "DifferentialGeometry.Topology.Planar.VertexRoundingProfile": [
+      "DifferentialGeometry.Analysis.Calculus.PolygonalRounding",
+      "DifferentialGeometry.Topology.Planar.PolygonVertexCharts"
+    ],
+    "DifferentialGeometry.Topology.Planar.CornerNormalization": [
+      "DifferentialGeometry.Topology.Planar.VertexRoundingProfile"
+    ],
+    "DifferentialGeometry.Analysis.Convex.SegmentGerm": [],
+    "DifferentialGeometry.Topology.Planar.PolygonCorners": [
+      "DifferentialGeometry.Topology.Planar.PolygonVertexCharts"
+    ],
+    "DifferentialGeometry.Topology.Planar.CornerReanchoring": [
+      "DifferentialGeometry.Topology.Planar.CornerNormalization",
+      "DifferentialGeometry.Analysis.Convex.SegmentGerm",
+      "DifferentialGeometry.Topology.Planar.PolygonCorners"
+    ],
+    "DifferentialGeometry.Topology.Compactness.FiniteReplacement": [],
+    "DifferentialGeometry.Topology.Planar.VertexReplacement": [
+      "DifferentialGeometry.Topology.Planar.CornerRounding",
+      "DifferentialGeometry.Topology.Planar.CornerReanchoring",
+      "DifferentialGeometry.Topology.Compactness.FiniteReplacement"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.RegularRegion": [],
+    "DifferentialGeometry.Analysis.Convex.AffineBasis": [],
+    "DifferentialGeometry.Analysis.Convex.TriangleComplement": [
+      "DifferentialGeometry.Analysis.Convex.AffineBasis"
+    ],
+    "DifferentialGeometry.Analysis.Convex.SegmentSigns": [],
+    "DifferentialGeometry.Topology.Diffeomorph.Graph": [],
+    "External.ClassificationOfSurfaces.Moise.CommonSubdivision": [
+      "External.ClassificationOfSurfaces.Moise.FreeTriangle"
+    ],
+    "External.ClassificationOfSurfaces.Moise.ThinKiteMove": [
+      "External.ClassificationOfSurfaces.Moise.ElementaryMove"
+    ],
+    "External.ClassificationOfSurfaces.Moise.FreeTriangleMove": [
+      "External.ClassificationOfSurfaces.Moise.FreeTriangle",
+      "External.ClassificationOfSurfaces.Moise.ThinKiteMove"
+    ],
+    "External.ClassificationOfSurfaces.Moise.ConeExtension": [
+      "External.ClassificationOfSurfaces.Moise.FreeTriangleMove"
+    ],
+    "External.ClassificationOfSurfaces.Moise.FinitePLHomeomorph": [
+      "External.ClassificationOfSurfaces.Moise.CommonSubdivision",
+      "External.ClassificationOfSurfaces.Moise.ConeExtension"
+    ],
+    "External.ClassificationOfSurfaces.Moise.PLMoves": [
+      "External.ClassificationOfSurfaces.Moise.FinitePLHomeomorph",
+      "External.ClassificationOfSurfaces.Moise.ConeExtension",
+      "External.ClassificationOfSurfaces.Moise.FreeTriangleMove"
+    ],
+    "External.ClassificationOfSurfaces.Moise.PolygonalJordan": [
+      "External.ClassificationOfSurfaces.Moise.PlaneComplex"
+    ],
+    "External.ClassificationOfSurfaces.Moise.PolygonalPolyhedron": [
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "External.ClassificationOfSurfaces.Moise.PolygonalJordan"
+    ],
+    "External.ClassificationOfSurfaces.Moise.PolygonalCrosscut": [
+      "External.ClassificationOfSurfaces.Moise.PolygonalPolyhedron",
+      "External.ClassificationOfSurfaces.Moise.FreeTriangle"
+    ],
+    "External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies": [
+      "External.ClassificationOfSurfaces.Moise.PLMoves",
+      "External.ClassificationOfSurfaces.Moise.PolygonalPolyhedron",
+      "External.ClassificationOfSurfaces.Moise.PolygonalCrosscut"
+    ],
+    "DifferentialGeometry.External.Schoenflies.GeneratedStructure": [
+      "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance",
+      "DifferentialGeometry.External.Schoenflies.Graph.PathGraph",
+      "DifferentialGeometry.External.Schoenflies.GeneralCrosscut"
+    ],
+    "DifferentialGeometry.External.Schoenflies.RefinementStars": [
+      "DifferentialGeometry.External.Schoenflies.GeneratedStructure"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CellulationInvariants": [
+      "DifferentialGeometry.External.Schoenflies.RefinementStars",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed"
+    ],
+    "DifferentialGeometry.External.Schoenflies.RealizeSubdiv": [
+      "DifferentialGeometry.External.Schoenflies.CellulationInvariants",
+      "DifferentialGeometry.External.Schoenflies.Subarc"
+    ],
+    "External.ClassificationOfSurfaces.PrePolygonDeletion": [
+      "External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies",
+      "DifferentialGeometry.External.Schoenflies.FaceCyclesProof",
+      "DifferentialGeometry.External.Schoenflies.RealizeSubdiv",
+      "DifferentialGeometry.External.Schoenflies.TwoArcs",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonSep",
+      "DifferentialGeometry.External.Schoenflies.Graph.K33Land",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed"
+    ],
+    "DifferentialGeometry.Topology.Planar.PolygonGraphCharts": [
+      "DifferentialGeometry.Topology.Planar.CornerNormalization",
+      "DifferentialGeometry.Analysis.Convex.TriangleComplement",
+      "DifferentialGeometry.Analysis.Convex.SegmentSigns",
+      "DifferentialGeometry.Topology.PlanarJordan.LocalSides",
+      "DifferentialGeometry.Topology.Diffeomorph.Graph",
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact",
+      "DifferentialGeometry.Analysis.Calculus.SmoothMax",
+      "External.ClassificationOfSurfaces.PrePolygonDeletion",
+      "External.ClassificationOfSurfaces.TriangleMeshCrosscut",
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "DifferentialGeometry.External.Schoenflies.Graph.K33Land"
+    ],
+    "DifferentialGeometry.Topology.Planar.PolygonIsotopy": [
+      "DifferentialGeometry.Topology.Planar.PolygonGraphCharts",
+      "DifferentialGeometry.Topology.Diffeomorph.LevelTransport"
+    ],
+    "DifferentialGeometry.Topology.Planar.PolygonRounding": [
+      "DifferentialGeometry.Topology.Planar.VertexReplacement",
+      "DifferentialGeometry.Analysis.Calculus.RegularRegion",
+      "DifferentialGeometry.Topology.Planar.VertexRoundingProfile",
+      "DifferentialGeometry.Topology.Compactness.FiniteReplacement",
+      "DifferentialGeometry.Topology.Planar.CornerRounding",
+      "DifferentialGeometry.Topology.Planar.PolygonIsotopy",
+      "External.ClassificationOfSurfaces.PrePolygonDeletion",
+      "DifferentialGeometry.Analysis.Calculus.SmoothMax",
+      "DifferentialGeometry.External.Schoenflies.Plane",
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonSep",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonArc",
+      "DifferentialGeometry.Topology.Planar.PolygonVertexCharts"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.Restriction": [],
+    "DifferentialGeometry.Topology.Diffeomorph.Extension": [
+      "DifferentialGeometry.Topology.Diffeomorph.Restriction"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.Radial": [
+      "DifferentialGeometry.Topology.Diffeomorph.Extension"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.Convex": [
+      "DifferentialGeometry.Topology.Diffeomorph.Radial"
+    ],
+    "DifferentialGeometry.Topology.Planar.TriangleRounding": [
+      "DifferentialGeometry.Topology.Planar.PolygonRounding",
+      "DifferentialGeometry.External.Schoenflies.PolygonBridge",
+      "DifferentialGeometry.Analysis.Calculus.SmoothMax",
+      "DifferentialGeometry.Topology.Diffeomorph.Convex",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonSep",
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "DifferentialGeometry.Analysis.Convex.AffineBasis"
+    ],
+    "External.ClassificationOfSurfaces.PrePolygonTriangulation": [
+      "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+      "DifferentialGeometry.External.Schoenflies.PrePolygonSep"
+    ],
+    "External.ClassificationOfSurfaces.TriangleMeshGeometricFree": [
+      "External.ClassificationOfSurfaces.Moise.FreeTriangle",
+      "DifferentialGeometry.External.Schoenflies.JordanSeparates",
+      "External.ClassificationOfSurfaces.Moise.FreeTriangleMove",
+      "External.ClassificationOfSurfaces.TriangleMeshCrosscut",
+      "External.ClassificationOfSurfaces.PrePolygonTriangulation"
+    ],
+    "DifferentialGeometry.Topology.Planar.PolygonDisk": [
+      "DifferentialGeometry.Topology.Planar.PolygonRounding",
+      "DifferentialGeometry.Topology.Planar.TriangleRounding",
+      "External.ClassificationOfSurfaces.TriangleMeshGeometricFree"
+    ],
+    "DifferentialGeometry.Topology.Embedding.PeriodicCurve": [
+      "DifferentialGeometry.Analysis.Calculus.CurveSubdivision"
+    ],
+    "DifferentialGeometry.Topology.Planar.InscribedPolygon": [
+      "DifferentialGeometry.Topology.Embedding.PeriodicCurve",
+      "DifferentialGeometry.External.Schoenflies.Realization"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Periodic.Affine": [],
+    "DifferentialGeometry.Topology.Planar.CurveRounding": [
+      "DifferentialGeometry.Topology.Planar.InscribedPolygon",
+      "DifferentialGeometry.Analysis.Calculus.PolygonalRounding",
+      "DifferentialGeometry.Analysis.Calculus.Periodic.Affine"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse": [],
+    "DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph": [],
+    "DifferentialGeometry.Topology.Manifold.ImmersionCriterion": [
+      "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse",
+      "DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph"
+    ],
+    "DifferentialGeometry.Topology.Manifold.ImmersionDifferential": [],
+    "DifferentialGeometry.Topology.Manifold.ModelTransport": [],
+    "DifferentialGeometry.Topology.Manifold.SmoothModelTransport": [
+      "DifferentialGeometry.Topology.Manifold.ModelTransport"
+    ],
+    "DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph": [],
+    "DifferentialGeometry.Topology.Manifold.AddCircle": [
+      "DifferentialGeometry.Topology.Manifold.SmoothModelTransport",
+      "DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph"
+    ],
+    "DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn": [
+      "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann": [],
+    "DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic": [
+      "DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann"
+    ],
+    "DifferentialGeometry.Topology.Manifold.InverseFunction": [
+      "DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic",
+      "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse"
+    ],
+    "DifferentialGeometry.Topology.Manifold.OpenEmbedding": [
+      "DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn",
+      "DifferentialGeometry.Topology.Manifold.InverseFunction"
+    ],
+    "DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative": [
+      "DifferentialGeometry.Topology.Manifold.AddCircle",
+      "DifferentialGeometry.Topology.Manifold.OpenEmbedding"
+    ],
+    "DifferentialGeometry.Topology.Manifold.Quotient": [],
+    "DifferentialGeometry.Topology.Manifold.AddCircle.Descent": [
+      "DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative",
+      "DifferentialGeometry.Topology.Manifold.Quotient"
+    ],
+    "DifferentialGeometry.Topology.Manifold.AddCircle.SmoothEmbedding": [
+      "DifferentialGeometry.Topology.Manifold.ImmersionCriterion",
+      "DifferentialGeometry.Topology.Manifold.ImmersionDifferential",
+      "DifferentialGeometry.Topology.Manifold.AddCircle.Descent"
+    ],
+    "DifferentialGeometry.Bundle.PartialMfderiv.Basic": [],
+    "DifferentialGeometry.Topology.Embedding.Diffeomorph": [],
+    "DifferentialGeometry.Topology.Embedding.FiniteDimension": [
+      "DifferentialGeometry.Topology.Embedding.Diffeomorph"
+    ],
+    "DifferentialGeometry.Topology.Embedding.ParametricGraph": [],
+    "DifferentialGeometry.Topology.Embedding.SliceChart": [],
+    "DifferentialGeometry.Topology.Embedding.Retraction": [
+      "DifferentialGeometry.Topology.Embedding.SliceChart"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic": [],
+    "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets": [],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching": [
+      "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic",
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric",
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed": [],
+    "DifferentialGeometry.Topology.Embedding.Extension": [
+      "DifferentialGeometry.Topology.Embedding.Retraction",
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact",
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace",
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed"
+    ],
+    "DifferentialGeometry.Topology.Embedding.LocalDiffeomorph": [],
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic": [],
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative": [
+      "DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi": [],
+    "DifferentialGeometry.Analysis.Calculus.Inverse.RingBounds": [],
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition": [
+      "DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative",
+      "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi",
+      "DifferentialGeometry.Analysis.Calculus.Inverse.RingBounds"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit": [
+      "DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative",
+      "DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition"
+    ],
+    "DifferentialGeometry.Topology.Embedding.SmoothParametricGraph": [
+      "DifferentialGeometry.Topology.Embedding.FiniteDimension",
+      "DifferentialGeometry.Topology.Embedding.ParametricGraph",
+      "DifferentialGeometry.Topology.Embedding.Retraction",
+      "DifferentialGeometry.Topology.Embedding.Extension",
+      "DifferentialGeometry.Topology.Embedding.LocalDiffeomorph",
+      "DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic",
+      "DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit"
+    ],
+    "DifferentialGeometry.Topology.Embedding.ParametricVelocity": [
+      "DifferentialGeometry.Bundle.PartialMfderiv.Basic",
+      "DifferentialGeometry.Topology.Embedding.SmoothParametricGraph",
+      "DifferentialGeometry.Topology.Embedding.Extension"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen": [
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth": [],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace",
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric",
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact"
+    ],
+    "DifferentialGeometry.Topology.Manifold.IntervalExtension": [
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth",
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant",
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact",
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.LipschitzFamily": [],
+    "DifferentialGeometry.Topology.Embedding.Stability": [
+      "DifferentialGeometry.Analysis.Calculus.LipschitzFamily",
+      "DifferentialGeometry.Topology.Embedding.Extension",
+      "DifferentialGeometry.Topology.Embedding.Diffeomorph",
+      "DifferentialGeometry.Topology.Diffeomorph.Perturbation"
+    ],
+    "DifferentialGeometry.Topology.Embedding.IntervalExtension": [
+      "DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen",
+      "DifferentialGeometry.Topology.Manifold.IntervalExtension",
+      "DifferentialGeometry.Topology.Embedding.Stability"
+    ],
+    "DifferentialGeometry.Topology.Embedding.AmbientIsotopy": [
+      "DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow",
+      "DifferentialGeometry.Topology.Embedding.ParametricVelocity",
+      "DifferentialGeometry.Topology.Embedding.IntervalExtension"
+    ],
+    "DifferentialGeometry.Topology.Embedding.PeriodicCurveIsotopy": [
+      "DifferentialGeometry.Topology.Manifold.AddCircle.SmoothEmbedding",
+      "DifferentialGeometry.Topology.Embedding.AmbientIsotopy"
+    ],
+    "DifferentialGeometry.Topology.Planar.RoundingIsotopy": [
+      "DifferentialGeometry.Topology.Planar.CurveRounding",
+      "DifferentialGeometry.Topology.Embedding.PeriodicCurveIsotopy"
+    ],
+    "DifferentialGeometry.Topology.Planar.PolygonVertexArcs": [
+      "DifferentialGeometry.Topology.Planar.PolygonVertexCharts",
+      "DifferentialGeometry.Topology.Compactness.FiniteReplacement"
+    ],
+    "DifferentialGeometry.Topology.Planar.VertexRoundingFrontier": [
+      "DifferentialGeometry.Topology.Planar.VertexRoundingProfile",
+      "DifferentialGeometry.Topology.Planar.PolygonVertexArcs",
+      "DifferentialGeometry.Topology.Planar.CornerRounding",
+      "DifferentialGeometry.Analysis.Calculus.RegularRegion"
+    ],
+    "DifferentialGeometry.Topology.Planar.CanonicalRounding": [
+      "DifferentialGeometry.Topology.Planar.RoundingIsotopy",
+      "DifferentialGeometry.Topology.Planar.VertexRoundingFrontier"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SkeletonLocal": [
+      "DifferentialGeometry.External.Schoenflies.Strip",
+      "DifferentialGeometry.External.Schoenflies.SimpleArc",
+      "DifferentialGeometry.External.Schoenflies.UniformBound",
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SkeletonSectors": [
+      "DifferentialGeometry.External.Schoenflies.SkeletonLocal"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SkeletonAccess": [
+      "DifferentialGeometry.External.Schoenflies.SkeletonSectors",
+      "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+      "DifferentialGeometry.External.Schoenflies.Square"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.Relabel": [
+      "DifferentialGeometry.External.Schoenflies.Graph.PathGraph",
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing",
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected"
+    ],
+    "DifferentialGeometry.External.Schoenflies.BoundaryCycles": [
+      "DifferentialGeometry.External.Schoenflies.GeneratedStructure",
+      "DifferentialGeometry.External.Schoenflies.FaceCyclesProof"
+    ],
+    "DifferentialGeometry.External.Schoenflies.BoundaryCyclesGenerated": [
+      "DifferentialGeometry.External.Schoenflies.BoundaryCycles",
+      "DifferentialGeometry.External.Schoenflies.CellulationInvariants"
+    ],
+    "DifferentialGeometry.External.Schoenflies.RealizeSplit": [
+      "DifferentialGeometry.External.Schoenflies.CellulationInvariants",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed",
+      "DifferentialGeometry.External.Schoenflies.Graph.PathGraph"
+    ],
+    "DifferentialGeometry.External.Schoenflies.MatchedSplit": [
+      "DifferentialGeometry.External.Schoenflies.RealizeSplit",
+      "DifferentialGeometry.External.Schoenflies.FaceCycles"
+    ],
+    "DifferentialGeometry.External.Schoenflies.MatchedArc": [
+      "DifferentialGeometry.External.Schoenflies.FaceCyclesProof"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FiniteTransfer": [
+      "DifferentialGeometry.External.Schoenflies.RefinementStars",
+      "DifferentialGeometry.External.Schoenflies.OverlayGraph",
+      "DifferentialGeometry.External.Schoenflies.SkeletonAccess",
+      "DifferentialGeometry.External.Schoenflies.Graph.RelativeEar",
+      "DifferentialGeometry.External.Schoenflies.Graph.Relabel",
+      "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed",
+      "DifferentialGeometry.External.Schoenflies.BoundaryCyclesGenerated",
+      "DifferentialGeometry.External.Schoenflies.MatchedSplit",
+      "DifferentialGeometry.External.Schoenflies.MatchedArc"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Line": [
+      "DifferentialGeometry.External.Schoenflies.Plane"
+    ],
+    "DifferentialGeometry.External.Schoenflies.InitialPair": [
+      "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance",
+      "DifferentialGeometry.External.Schoenflies.GeneralCrosscut",
+      "DifferentialGeometry.External.Schoenflies.ModelCurve",
+      "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+      "DifferentialGeometry.External.Schoenflies.Jordan",
+      "DifferentialGeometry.External.Schoenflies.Line"
+    ],
+    "DifferentialGeometry.External.Schoenflies.InitialPairFixed": [
+      "DifferentialGeometry.External.Schoenflies.InitialPair",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed",
+      "DifferentialGeometry.External.Schoenflies.BoundaryCycles"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Inversion": [
+      "DifferentialGeometry.External.Schoenflies.Accessible",
+      "DifferentialGeometry.External.Schoenflies.Jordan"
+    ],
+    "DifferentialGeometry.External.Schoenflies.BoundaryContinuity": [
+      "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed",
+      "DifferentialGeometry.External.Schoenflies.Inversion",
+      "DifferentialGeometry.External.Schoenflies.ModelCurve",
+      "DifferentialGeometry.External.Schoenflies.ArcComplementPrep",
+      "DifferentialGeometry.External.Schoenflies.Graph.Drawing"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Endgame": [
+      "DifferentialGeometry.External.Schoenflies.Inversion",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed",
+      "DifferentialGeometry.External.Schoenflies.ModelCurve",
+      "DifferentialGeometry.External.Schoenflies.SquareMover",
+      "DifferentialGeometry.External.Schoenflies.Topology"
+    ],
+    "DifferentialGeometry.External.Schoenflies.BoundaryContinuity2": [
+      "DifferentialGeometry.External.Schoenflies.BoundaryContinuity",
+      "DifferentialGeometry.External.Schoenflies.Endgame"
+    ],
+    "DifferentialGeometry.External.Schoenflies.InitialGenerated": [
+      "DifferentialGeometry.External.Schoenflies.FiniteTransfer",
+      "DifferentialGeometry.External.Schoenflies.InitialPairFixed",
+      "DifferentialGeometry.External.Schoenflies.BoundaryContinuity2"
+    ],
+    "DifferentialGeometry.External.Schoenflies.ArcMonotone": [
+      "DifferentialGeometry.External.Schoenflies.Subarc"
+    ],
+    "DifferentialGeometry.External.Schoenflies.RealizeSubdivHomeo": [
+      "DifferentialGeometry.External.Schoenflies.RealizeSubdiv",
+      "DifferentialGeometry.External.Schoenflies.ArcMonotone"
+    ],
+    "DifferentialGeometry.External.Schoenflies.CommonSubdivision": [
+      "DifferentialGeometry.External.Schoenflies.FiniteTransfer",
+      "DifferentialGeometry.External.Schoenflies.RealizeSubdivHomeo"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FreshAccess": [
+      "DifferentialGeometry.External.Schoenflies.Accessible",
+      "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+      "DifferentialGeometry.External.Schoenflies.SkeletonAccess"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FiniteTransferTarget": [
+      "DifferentialGeometry.External.Schoenflies.CommonSubdivision",
+      "DifferentialGeometry.External.Schoenflies.CrosscutExists",
+      "DifferentialGeometry.External.Schoenflies.FreshAccess",
+      "DifferentialGeometry.External.Schoenflies.Graph.VertexSquares"
+    ],
+    "DifferentialGeometry.External.Schoenflies.InitialOuterCycle": [
+      "DifferentialGeometry.External.Schoenflies.FiniteTransferTarget",
+      "DifferentialGeometry.External.Schoenflies.InitialPairFixed"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SquareMesh": [
+      "DifferentialGeometry.External.Schoenflies.OverlayGraph",
+      "DifferentialGeometry.External.Schoenflies.ModelCurve",
+      "DifferentialGeometry.External.Schoenflies.Graph.OuterFace",
+      "DifferentialGeometry.External.Schoenflies.Graph.Redrawing"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SquareMeshConnected": [
+      "DifferentialGeometry.External.Schoenflies.SquareMesh",
+      "DifferentialGeometry.External.Schoenflies.FaceCycles"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SquareMeshFixed": [
+      "DifferentialGeometry.External.Schoenflies.SquareMeshConnected",
+      "DifferentialGeometry.External.Schoenflies.Graph.Ear"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Graph.TwoPaths": [
+      "DifferentialGeometry.External.Schoenflies.Graph.PathGraph",
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected"
+    ],
+    "DifferentialGeometry.External.Schoenflies.LocalGrid": [
+      "DifferentialGeometry.External.Schoenflies.SquareMeshFixed",
+      "DifferentialGeometry.External.Schoenflies.Graph.TwoPaths"
+    ],
+    "DifferentialGeometry.External.Schoenflies.GridAttach": [
+      "DifferentialGeometry.External.Schoenflies.LocalGrid",
+      "DifferentialGeometry.External.Schoenflies.Graph.Ear",
+      "DifferentialGeometry.External.Schoenflies.Line",
+      "DifferentialGeometry.External.Schoenflies.PolygonalCarrier"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SquareMeshClosed": [
+      "DifferentialGeometry.External.Schoenflies.GridAttach",
+      "DifferentialGeometry.External.Schoenflies.SquareCycle"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FiniteTransferTargetMesh": [
+      "DifferentialGeometry.External.Schoenflies.FiniteTransferTarget",
+      "DifferentialGeometry.External.Schoenflies.SquareMeshClosed"
+    ],
+    "DifferentialGeometry.External.Schoenflies.TargetOverlay": [
+      "DifferentialGeometry.External.Schoenflies.FiniteTransferTargetMesh",
+      "DifferentialGeometry.External.Schoenflies.SkeletonLocal"
+    ],
+    "DifferentialGeometry.External.Schoenflies.FreshDenseSelection": [
+      "DifferentialGeometry.External.Schoenflies.BoundaryContinuity2",
+      "DifferentialGeometry.External.Schoenflies.TargetOverlay"
+    ],
+    "DifferentialGeometry.External.Schoenflies.StageTransition": [
+      "DifferentialGeometry.External.Schoenflies.FiniteTransferTarget"
+    ],
+    "DifferentialGeometry.External.Schoenflies.QuantitativeStages": [
+      "DifferentialGeometry.External.Schoenflies.FreshDenseSelection",
+      "DifferentialGeometry.External.Schoenflies.StageTransition"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SourceOverlay": [
+      "DifferentialGeometry.External.Schoenflies.QuantitativeStages",
+      "DifferentialGeometry.External.Schoenflies.GridAttach"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SourceAttachment": [
+      "DifferentialGeometry.External.Schoenflies.SourceOverlay"
+    ],
+    "DifferentialGeometry.External.Schoenflies.OverlayExtension": [
+      "DifferentialGeometry.External.Schoenflies.SourceAttachment"
+    ],
+    "DifferentialGeometry.External.Schoenflies.SourceJoining": [
+      "DifferentialGeometry.External.Schoenflies.OverlayExtension",
+      "DifferentialGeometry.External.Schoenflies.StageTransition"
+    ],
+    "DifferentialGeometry.External.Schoenflies.LimitMap": [
+      "DifferentialGeometry.External.Schoenflies.RefinementStars",
+      "DifferentialGeometry.External.Schoenflies.Inversion"
+    ],
+    "DifferentialGeometry.External.Schoenflies.StageTower": [
+      "DifferentialGeometry.External.Schoenflies.StageTransition",
+      "DifferentialGeometry.External.Schoenflies.LimitMap",
+      "DifferentialGeometry.External.Schoenflies.BoundaryContinuity2"
+    ],
+    "DifferentialGeometry.External.Schoenflies.Windows": [
+      "DifferentialGeometry.External.Schoenflies.SquareMesh",
+      "DifferentialGeometry.External.Schoenflies.JordanClosed"
+    ],
+    "DifferentialGeometry.External.Schoenflies.QuantitativeForwardStages": [
+      "DifferentialGeometry.External.Schoenflies.SourceJoining",
+      "DifferentialGeometry.External.Schoenflies.QuantitativeStages",
+      "DifferentialGeometry.External.Schoenflies.StageTower",
+      "DifferentialGeometry.External.Schoenflies.Windows"
+    ],
+    "DifferentialGeometry.External.Schoenflies.QuantitativeRecursion": [
+      "DifferentialGeometry.External.Schoenflies.QuantitativeForwardStages"
+    ],
+    "DifferentialGeometry.External.Schoenflies.InteriorHomeomorphism": [
+      "DifferentialGeometry.External.Schoenflies.InitialGenerated",
+      "DifferentialGeometry.External.Schoenflies.InitialOuterCycle",
+      "DifferentialGeometry.External.Schoenflies.QuantitativeRecursion"
+    ],
+    "DifferentialGeometry.External.Schoenflies.BoundaryAnchors": [
+      "DifferentialGeometry.External.Schoenflies.InteriorHomeomorphism"
+    ],
+    "DifferentialGeometry.External.Schoenflies.JordanSchoenflies": [
+      "DifferentialGeometry.External.Schoenflies.BoundaryAnchors"
+    ],
+    "DifferentialGeometry.Topology.PlanarJordan.AmbientExtension": [
+      "DifferentialGeometry.External.Schoenflies.JordanSchoenflies"
+    ],
+    "DifferentialGeometry.Topology.Connected.Loop": [],
+    "DifferentialGeometry.Topology.PlanarJordan.Innermost": [
+      "DifferentialGeometry.External.Schoenflies.JordanClosed",
+      "DifferentialGeometry.Topology.Connected.Loop"
+    ],
+    "DifferentialGeometry.Topology.PlanarJordan.InnermostDisk": [
+      "DifferentialGeometry.Topology.PlanarJordan.AmbientExtension",
+      "DifferentialGeometry.Topology.PlanarJordan.Innermost"
+    ],
+    "DifferentialGeometry.Topology.PlanarJordan.SmoothSchoenflies": [
+      "DifferentialGeometry.Topology.Planar.PolygonDisk",
+      "DifferentialGeometry.Topology.Planar.CanonicalRounding",
+      "DifferentialGeometry.Topology.PlanarJordan.InnermostDisk"
+    ],
+    "DifferentialGeometry.Topology.Manifold.AddCircle.Circle": [
+      "DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative",
+      "DifferentialGeometry.Topology.Manifold.Quotient"
+    ],
+    "DifferentialGeometry.Topology.LoopSpace.Basic": [],
+    "DifferentialGeometry.Topology.LoopSpace.HomeomorphismLift": [
+      "DifferentialGeometry.Topology.LoopSpace.Basic"
+    ],
+    "DifferentialGeometry.Analysis.Calculus.Periodic.Smoothing": [],
+    "DifferentialGeometry.Analysis.Calculus.Periodic.SmoothingFamilies": [
+      "DifferentialGeometry.Analysis.Calculus.Periodic.Smoothing"
+    ],
+    "DifferentialGeometry.Topology.LoopSpace.UniformSmoothing": [
+      "DifferentialGeometry.Topology.LoopSpace.Basic",
+      "DifferentialGeometry.Analysis.Calculus.Periodic.SmoothingFamilies"
+    ],
+    "DifferentialGeometry.Topology.LoopSpace.PeriodicDescent": [
+      "DifferentialGeometry.Topology.LoopSpace.UniformSmoothing"
+    ],
+    "DifferentialGeometry.Topology.LoopSpace.Lipschitz": [
+      "DifferentialGeometry.Topology.LoopSpace.Basic"
+    ],
+    "DifferentialGeometry.Topology.LoopSpace.AffineLift": [
+      "DifferentialGeometry.Topology.LoopSpace.PeriodicDescent",
+      "DifferentialGeometry.Topology.LoopSpace.Lipschitz"
+    ],
+    "DifferentialGeometry.Topology.LoopSpace.HomeomorphismOrientation": [
+      "DifferentialGeometry.Topology.LoopSpace.HomeomorphismLift",
+      "DifferentialGeometry.Topology.LoopSpace.AffineLift"
+    ],
+    "DifferentialGeometry.Topology.Manifold.AddCircle.DiffeomorphLift": [
+      "DifferentialGeometry.Topology.LoopSpace.HomeomorphismOrientation",
+      "DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative",
+      "DifferentialGeometry.Topology.Manifold.Quotient"
+    ],
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion": [
+      "DifferentialGeometry.Topology.Manifold.OpenEmbedding"
+    ],
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition": [
+      "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse"
+    ],
+    "DifferentialGeometry.Topology.Embedding.LinearEquiv": [],
+    "DifferentialGeometry.Topology.Embedding.Sphere": [
+      "DifferentialGeometry.Topology.Manifold.AddCircle.Circle",
+      "DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion",
+      "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition",
+      "DifferentialGeometry.Topology.Embedding.Diffeomorph",
+      "DifferentialGeometry.Topology.Embedding.LinearEquiv"
+    ],
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionInterior": [
+      "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition"
+    ],
+    "DifferentialGeometry.Topology.Homeomorph.Ball": [],
+    "DifferentialGeometry.Topology.Circle.Extension": [
+      "DifferentialGeometry.Topology.Manifold.AddCircle.Circle",
+      "DifferentialGeometry.Topology.Manifold.AddCircle.DiffeomorphLift",
+      "DifferentialGeometry.Topology.Embedding.PeriodicCurveIsotopy",
+      "DifferentialGeometry.Topology.Embedding.Sphere",
+      "DifferentialGeometry.Topology.Embedding.Diffeomorph",
+      "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionInterior",
+      "DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion",
+      "DifferentialGeometry.Topology.Homeomorph.Ball"
+    ],
+    "DifferentialGeometry.Analysis.InnerProductSpace.SphereDerivative": [],
+    "DifferentialGeometry.Analysis.Calculus.BallBoundary": [],
+    "DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv": [],
+    "DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign": [],
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Fiberwise": [
+      "DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn"
+    ],
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph": [],
+    "DifferentialGeometry.Topology.Diffeomorph.LocalFlowExtension": [
+      "DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow",
+      "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact"
+    ],
+    "DifferentialGeometry.Topology.Diffeomorph.CompactLocalIsotopy": [
+      "DifferentialGeometry.Topology.Diffeomorph.LocalFlowExtension"
+    ],
+    "DifferentialGeometry.Topology.Manifold.ChartSupportedExtension": [],
+    "DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension": [
+      "DifferentialGeometry.Topology.Manifold.ChartSupportedExtension"
+    ],
+    "DifferentialGeometry.Topology.Manifold.PartialChartSupportedExtension": [
+      "DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension"
+    ],
+    "DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans": [],
+    "DifferentialGeometry.Tensor.LinearAlgebra.HyperplaneInterpolation": [],
+    "DifferentialGeometry.Tensor.LinearAlgebra.BoundaryBlockDeterminant": [],
+    "DifferentialGeometry.Topology.Manifold.RelativeCollarIsotopy": [
+      "DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign",
+      "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Fiberwise",
+      "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph",
+      "DifferentialGeometry.Topology.Diffeomorph.CompactLocalIsotopy",
+      "DifferentialGeometry.Topology.Manifold.PartialChartSupportedExtension",
+      "DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans",
+      "DifferentialGeometry.Tensor.LinearAlgebra.HyperplaneInterpolation",
+      "DifferentialGeometry.Tensor.LinearAlgebra.BoundaryBlockDeterminant"
+    ],
+    "DifferentialGeometry.Topology.Homeomorph.LevelIsotopy": [],
+    "DifferentialGeometry.Topology.Diffeomorph.SphereGerm": [
+      "DifferentialGeometry.Analysis.InnerProductSpace.SphereDerivative",
+      "DifferentialGeometry.Analysis.Calculus.BallBoundary",
+      "DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv",
+      "DifferentialGeometry.Topology.Manifold.RelativeCollarIsotopy",
+      "DifferentialGeometry.Topology.Homeomorph.LevelIsotopy"
+    ],
+    "DifferentialGeometry.Topology.Manifold.ImmersionRange": [],
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundary": [
+      "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition",
+      "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionInterior"
+    ],
+    "DifferentialGeometry.Topology.Manifold.Interval.Immersion": [
+      "DifferentialGeometry.Topology.Embedding.Extension",
+      "DifferentialGeometry.Topology.Manifold.ImmersionCriterion",
+      "DifferentialGeometry.Topology.Manifold.ImmersionDifferential",
+      "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundary"
+    ],
+    "DifferentialGeometry.Topology.Embedding.Factor": [
+      "DifferentialGeometry.Topology.Manifold.ImmersionRange",
+      "DifferentialGeometry.Topology.Manifold.ImmersionCriterion",
+      "DifferentialGeometry.Topology.Manifold.ImmersionDifferential",
+      "DifferentialGeometry.Topology.Manifold.Interval.Immersion"
+    ],
+    "DifferentialGeometry.Topology.Circle.GermExtension": [
+      "DifferentialGeometry.Topology.Circle.Extension",
+      "DifferentialGeometry.Topology.Diffeomorph.SphereGerm",
+      "DifferentialGeometry.Topology.Embedding.Factor"
+    ],
+    "DifferentialGeometry.Topology.PlanarJordan.BoundaryGermExtension": [
+      "DifferentialGeometry.Topology.Circle.GermExtension",
+      "DifferentialGeometry.Topology.PlanarJordan.SmoothSchoenflies"
+    ]
+  },
+  "compile": [
+    "DifferentialGeometry.Topology.Diffeomorph.CompactIsotopyComposition",
+    "DifferentialGeometry.Analysis.ODE.Flow.IntegralCurveTransport",
+    "DifferentialGeometry.Analysis.ODE.Flow.CompactSupport",
+    "DifferentialGeometry.Topology.Diffeomorph.TimeDependentFlow",
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Basic",
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Compact",
+    "DifferentialGeometry.Analysis.Calculus.ProportionalTransport",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Sign",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.LevelTransport",
+    "DifferentialGeometry.Topology.Diffeomorph.LevelTransport",
+    "External.ClassificationOfSurfaces.Moise.GeometricTriangulation",
+    "External.ClassificationOfSurfaces.Moise.PlaneComplex",
+    "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+    "DifferentialGeometry.Topology.Diffeomorph.DisjointSupport",
+    "DifferentialGeometry.Analysis.Calculus.SmoothTransition",
+    "DifferentialGeometry.Analysis.Calculus.SmoothMax",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Compact",
+    "DifferentialGeometry.Topology.FiberwiseHomeomorph",
+    "DifferentialGeometry.Topology.Diffeomorph.Fiberwise",
+    "DifferentialGeometry.Topology.Diffeomorph.LocalizedGraph",
+    "DifferentialGeometry.Topology.Planar.CornerRounding",
+    "DifferentialGeometry.Analysis.Calculus.SmoothCorner",
+    "DifferentialGeometry.Analysis.Calculus.CurveSubdivision",
+    "DifferentialGeometry.Analysis.Calculus.PolygonalRounding",
+    "DifferentialGeometry.Topology.PlanarJordan.LocalSides",
+    "External.ClassificationOfSurfaces.Moise.AmbientHomeomorph",
+    "External.ClassificationOfSurfaces.Moise.ElementaryMove",
+    "External.ClassificationOfSurfaces.Moise.FreeTriangle",
+    "External.ClassificationOfSurfaces.TriangleMeshCrosscut",
+    "DifferentialGeometry.Topology.Planar.PolygonVertexCharts",
+    "DifferentialGeometry.Topology.Planar.VertexRoundingProfile",
+    "DifferentialGeometry.Topology.Planar.CornerNormalization",
+    "DifferentialGeometry.Analysis.Convex.SegmentGerm",
+    "DifferentialGeometry.Topology.Planar.PolygonCorners",
+    "DifferentialGeometry.Topology.Planar.CornerReanchoring",
+    "DifferentialGeometry.Topology.Compactness.FiniteReplacement",
+    "DifferentialGeometry.Topology.Planar.VertexReplacement",
+    "DifferentialGeometry.Analysis.Calculus.RegularRegion",
+    "DifferentialGeometry.Analysis.Convex.AffineBasis",
+    "DifferentialGeometry.Analysis.Convex.TriangleComplement",
+    "DifferentialGeometry.Analysis.Convex.SegmentSigns",
+    "External.ClassificationOfSurfaces.Moise.CommonSubdivision",
+    "External.ClassificationOfSurfaces.Moise.ThinKiteMove",
+    "External.ClassificationOfSurfaces.Moise.FreeTriangleMove",
+    "External.ClassificationOfSurfaces.Moise.ConeExtension",
+    "External.ClassificationOfSurfaces.Moise.FinitePLHomeomorph",
+    "External.ClassificationOfSurfaces.Moise.PLMoves",
+    "External.ClassificationOfSurfaces.Moise.PolygonalJordan",
+    "External.ClassificationOfSurfaces.Moise.PolygonalPolyhedron",
+    "External.ClassificationOfSurfaces.Moise.PolygonalCrosscut",
+    "External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies",
+    "External.ClassificationOfSurfaces.PrePolygonDeletion",
+    "DifferentialGeometry.Topology.Planar.PolygonGraphCharts",
+    "DifferentialGeometry.Topology.Planar.PolygonIsotopy",
+    "DifferentialGeometry.Topology.Planar.PolygonRounding",
+    "DifferentialGeometry.Topology.Diffeomorph.Radial",
+    "DifferentialGeometry.Topology.Diffeomorph.Convex",
+    "DifferentialGeometry.Topology.Planar.TriangleRounding",
+    "External.ClassificationOfSurfaces.PrePolygonTriangulation",
+    "External.ClassificationOfSurfaces.TriangleMeshGeometricFree",
+    "DifferentialGeometry.Topology.Planar.PolygonDisk",
+    "DifferentialGeometry.Topology.Embedding.PeriodicCurve",
+    "DifferentialGeometry.Topology.Planar.InscribedPolygon",
+    "DifferentialGeometry.Topology.Planar.CurveRounding",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse",
+    "DifferentialGeometry.Topology.Manifold.ImmersionCriterion",
+    "DifferentialGeometry.Topology.Manifold.ImmersionDifferential",
+    "DifferentialGeometry.Topology.Manifold.SmoothModelTransport",
+    "DifferentialGeometry.Topology.Manifold.ChartedSpaceHomeomorph",
+    "DifferentialGeometry.Topology.Manifold.AddCircle",
+    "DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn",
+    "DifferentialGeometry.Topology.Manifold.InverseFunction",
+    "DifferentialGeometry.Topology.Manifold.OpenEmbedding",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.ParameterDerivative",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.Descent",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.SmoothEmbedding",
+    "DifferentialGeometry.Topology.Embedding.Diffeomorph",
+    "DifferentialGeometry.Topology.Embedding.FiniteDimension",
+    "DifferentialGeometry.Topology.Embedding.ParametricGraph",
+    "DifferentialGeometry.Topology.Embedding.SliceChart",
+    "DifferentialGeometry.Topology.Embedding.Retraction",
+    "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.DirectionalJets",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.ProductMatching",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Parametric",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed",
+    "DifferentialGeometry.Topology.Embedding.Extension",
+    "DifferentialGeometry.Topology.Embedding.LocalDiffeomorph",
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Derivative",
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Composition",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.MovingImplicit",
+    "DifferentialGeometry.Topology.Embedding.SmoothParametricGraph",
+    "DifferentialGeometry.Topology.Embedding.ParametricVelocity",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.ConvexOpen",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.JetGluing.Parametric",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.Quadrant",
+    "DifferentialGeometry.Topology.Manifold.IntervalExtension",
+    "DifferentialGeometry.Analysis.Calculus.LipschitzFamily",
+    "DifferentialGeometry.Topology.Embedding.Stability",
+    "DifferentialGeometry.Topology.Embedding.IntervalExtension",
+    "DifferentialGeometry.Topology.Embedding.AmbientIsotopy",
+    "DifferentialGeometry.Topology.Embedding.PeriodicCurveIsotopy",
+    "DifferentialGeometry.Topology.Planar.RoundingIsotopy",
+    "DifferentialGeometry.Topology.Planar.PolygonVertexArcs",
+    "DifferentialGeometry.Topology.Planar.VertexRoundingFrontier",
+    "DifferentialGeometry.Topology.Planar.CanonicalRounding",
+    "DifferentialGeometry.Topology.PlanarJordan.AmbientExtension",
+    "DifferentialGeometry.Topology.Connected.Loop",
+    "DifferentialGeometry.Topology.PlanarJordan.Innermost",
+    "DifferentialGeometry.Topology.PlanarJordan.InnermostDisk",
+    "DifferentialGeometry.Topology.PlanarJordan.SmoothSchoenflies",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.Circle",
+    "DifferentialGeometry.Topology.LoopSpace.PeriodicDescent",
+    "DifferentialGeometry.Topology.LoopSpace.Lipschitz",
+    "DifferentialGeometry.Topology.LoopSpace.AffineLift",
+    "DifferentialGeometry.Topology.LoopSpace.HomeomorphismOrientation",
+    "DifferentialGeometry.Topology.Manifold.AddCircle.DiffeomorphLift",
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorphImmersion",
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition",
+    "DifferentialGeometry.Topology.Embedding.Sphere",
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionInterior",
+    "DifferentialGeometry.Topology.Homeomorph.Ball",
+    "DifferentialGeometry.Topology.Circle.Extension",
+    "DifferentialGeometry.Analysis.InnerProductSpace.SphereDerivative",
+    "DifferentialGeometry.Analysis.Calculus.BallBoundary",
+    "DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.JacobianSign",
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Fiberwise",
+    "DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph",
+    "DifferentialGeometry.Topology.Diffeomorph.LocalFlowExtension",
+    "DifferentialGeometry.Topology.Diffeomorph.CompactLocalIsotopy",
+    "DifferentialGeometry.Topology.Manifold.ChartSupportedExtension",
+    "DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension",
+    "DifferentialGeometry.Topology.Manifold.PartialChartSupportedExtension",
+    "DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans",
+    "DifferentialGeometry.Tensor.LinearAlgebra.HyperplaneInterpolation",
+    "DifferentialGeometry.Topology.Manifold.RelativeCollarIsotopy",
+    "DifferentialGeometry.Topology.Homeomorph.LevelIsotopy",
+    "DifferentialGeometry.Topology.Diffeomorph.SphereGerm",
+    "DifferentialGeometry.Topology.Manifold.ImmersionRange",
+    "DifferentialGeometry.Topology.Manifold.SmoothEmbeddingCompositionBoundary",
+    "DifferentialGeometry.Topology.Manifold.Interval.Immersion",
+    "DifferentialGeometry.Topology.Embedding.Factor",
+    "DifferentialGeometry.Topology.Circle.GermExtension",
+    "DifferentialGeometry.Topology.PlanarJordan.BoundaryGermExtension"
+  ],
+  "seeded": [],
+  "sharedBaseline": [
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldIntegralFlow",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.UniformExistence",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational",
+    "DifferentialGeometry.Analysis.ODE.Flow.Defs",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.VariationalSolutionOperator",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.FrechetDerivative",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.JointFrechetDerivative",
+    "DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.ContDiffOnOne",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.FiniteOrder",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FiniteOrder",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.OrbitComparison",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderSmoothness",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.CoproductDerivative",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.FirstOrderExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.SuccessorExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.ZerothOrderExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.Variational.LinearMapSmoothness",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Solution",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.GlobalExistence",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Continuity",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Inhomogeneous",
+    "DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric",
+    "DifferentialGeometry.Analysis.ODE.Flow.HigherRegularity.InfiniteOrder",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.Basic",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.ChartCoverBijective",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Bijective.UniformBijective",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.Hartman",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.DiffeomorphismFamily.ManifoldFlowFamily",
+    "DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.Manifold",
+    "DifferentialGeometry.Analysis.Calculus.LevelPreservation",
+    "DifferentialGeometry.Topology.Diffeomorph.Perturbation",
+    "DifferentialGeometry.External.Schoenflies.Plane",
+    "DifferentialGeometry.Topology.FiniteSubdivision",
+    "DifferentialGeometry.Topology.Compactness.Nonvanishing",
+    "DifferentialGeometry.External.Schoenflies.Direction",
+    "DifferentialGeometry.External.Schoenflies.UniformBound",
+    "DifferentialGeometry.External.Schoenflies.Strip",
+    "DifferentialGeometry.External.Schoenflies.SegmentCut",
+    "DifferentialGeometry.External.Schoenflies.SegmentOrder",
+    "DifferentialGeometry.External.Schoenflies.Subdivide",
+    "DifferentialGeometry.External.Schoenflies.Square",
+    "DifferentialGeometry.External.Schoenflies.PolyPath",
+    "DifferentialGeometry.External.Schoenflies.Parity",
+    "DifferentialGeometry.External.Schoenflies.Curve",
+    "DifferentialGeometry.External.Schoenflies.Polygonal",
+    "DifferentialGeometry.External.Schoenflies.Concatenate",
+    "DifferentialGeometry.External.Schoenflies.PolygonBridge",
+    "DifferentialGeometry.External.Schoenflies.StripConstants",
+    "DifferentialGeometry.External.Schoenflies.StripConnected",
+    "DifferentialGeometry.External.Schoenflies.StripLocal",
+    "DifferentialGeometry.External.Schoenflies.Topology",
+    "DifferentialGeometry.External.Schoenflies.CrosscutCells",
+    "DifferentialGeometry.External.Schoenflies.Bounded",
+    "DifferentialGeometry.External.Schoenflies.PolygonalJordan",
+    "DifferentialGeometry.External.Schoenflies.ModelCurve",
+    "DifferentialGeometry.External.Schoenflies.SegmentMeet",
+    "DifferentialGeometry.External.Schoenflies.Graph.Degree",
+    "DifferentialGeometry.External.Schoenflies.Graph.Drawing",
+    "DifferentialGeometry.External.Schoenflies.Overlay",
+    "DifferentialGeometry.External.Schoenflies.OverlayGraph",
+    "DifferentialGeometry.External.Schoenflies.Graph.Walk",
+    "DifferentialGeometry.External.Schoenflies.Graph.Cycle",
+    "DifferentialGeometry.External.Schoenflies.Graph.CycleJordan",
+    "DifferentialGeometry.External.Schoenflies.SimpleArc",
+    "DifferentialGeometry.External.Schoenflies.SquareMover",
+    "DifferentialGeometry.External.Schoenflies.Graph.OuterFace",
+    "DifferentialGeometry.External.Schoenflies.ArcComplementPrep",
+    "DifferentialGeometry.External.Schoenflies.Graph.TwoConnected",
+    "DifferentialGeometry.External.Schoenflies.CombinatorialInvariance",
+    "DifferentialGeometry.External.Schoenflies.Subarc",
+    "DifferentialGeometry.External.Schoenflies.Graph.VertexSquares",
+    "DifferentialGeometry.External.Schoenflies.Graph.Component",
+    "DifferentialGeometry.External.Schoenflies.Graph.PathGraph",
+    "DifferentialGeometry.External.Schoenflies.Graph.Ear",
+    "DifferentialGeometry.External.Schoenflies.Graph.Tree",
+    "DifferentialGeometry.External.Schoenflies.Graph.RelativeEar",
+    "DifferentialGeometry.External.Schoenflies.FaceCycles",
+    "DifferentialGeometry.External.Schoenflies.ParitySplitting",
+    "DifferentialGeometry.External.Schoenflies.PolygonalCrosscut",
+    "DifferentialGeometry.External.Schoenflies.TwoArcs",
+    "DifferentialGeometry.External.Schoenflies.Realization",
+    "DifferentialGeometry.External.Schoenflies.FaceCyclesProof",
+    "DifferentialGeometry.External.Schoenflies.PrePolygonSep",
+    "DifferentialGeometry.External.Schoenflies.PrePolygonArc",
+    "DifferentialGeometry.External.Schoenflies.FaceCyclesLand",
+    "DifferentialGeometry.External.Schoenflies.OuterChain",
+    "DifferentialGeometry.External.Schoenflies.CrosscutExists",
+    "DifferentialGeometry.External.Schoenflies.CrosscutEncloses",
+    "DifferentialGeometry.External.Schoenflies.OuterChainClosed",
+    "DifferentialGeometry.External.Schoenflies.Accessible",
+    "DifferentialGeometry.External.Schoenflies.LocallyPolygonal",
+    "DifferentialGeometry.External.Schoenflies.AccessibleJoin",
+    "DifferentialGeometry.External.Schoenflies.ArcComplement",
+    "DifferentialGeometry.External.Schoenflies.SquareCycle",
+    "DifferentialGeometry.External.Schoenflies.CrosscutAtMostTwo",
+    "DifferentialGeometry.External.Schoenflies.ArcCollars",
+    "DifferentialGeometry.External.Schoenflies.GeneralCrosscut",
+    "DifferentialGeometry.External.Schoenflies.PolyArcRealize",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33",
+    "DifferentialGeometry.External.Schoenflies.PolygonalCarrier",
+    "DifferentialGeometry.External.Schoenflies.PolyLocal",
+    "DifferentialGeometry.External.Schoenflies.Graph.Redrawing",
+    "DifferentialGeometry.External.Schoenflies.AlternatingCrosscuts",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Planar",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Closed",
+    "DifferentialGeometry.External.Schoenflies.Graph.K33Land",
+    "DifferentialGeometry.External.Schoenflies.JordanSeparates",
+    "DifferentialGeometry.External.Schoenflies.Jordan",
+    "DifferentialGeometry.External.Schoenflies.JordanClosed",
+    "DifferentialGeometry.Topology.Diffeomorph.Graph",
+    "DifferentialGeometry.External.Schoenflies.GeneratedStructure",
+    "DifferentialGeometry.External.Schoenflies.RefinementStars",
+    "DifferentialGeometry.External.Schoenflies.CellulationInvariants",
+    "DifferentialGeometry.External.Schoenflies.RealizeSubdiv",
+    "DifferentialGeometry.Topology.Diffeomorph.Restriction",
+    "DifferentialGeometry.Topology.Diffeomorph.Extension",
+    "DifferentialGeometry.Analysis.Calculus.Periodic.Affine",
+    "DifferentialGeometry.Topology.Manifold.ChartPartialDiffeomorph",
+    "DifferentialGeometry.Topology.Manifold.ModelTransport",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.ContinuousLinearMapNeumann",
+    "DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic",
+    "DifferentialGeometry.Topology.Manifold.Quotient",
+    "DifferentialGeometry.Bundle.PartialMfderiv.Basic",
+    "DifferentialGeometry.Analysis.Calculus.SmoothExtension.BorelHalfLine.Basic",
+    "DifferentialGeometry.Analysis.Calculus.MapConvergence.Basic",
+    "DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Pi",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.RingBounds",
+    "DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth",
+    "DifferentialGeometry.External.Schoenflies.SkeletonLocal",
+    "DifferentialGeometry.External.Schoenflies.SkeletonSectors",
+    "DifferentialGeometry.External.Schoenflies.SkeletonAccess",
+    "DifferentialGeometry.External.Schoenflies.Graph.Relabel",
+    "DifferentialGeometry.External.Schoenflies.BoundaryCycles",
+    "DifferentialGeometry.External.Schoenflies.BoundaryCyclesGenerated",
+    "DifferentialGeometry.External.Schoenflies.RealizeSplit",
+    "DifferentialGeometry.External.Schoenflies.MatchedSplit",
+    "DifferentialGeometry.External.Schoenflies.MatchedArc",
+    "DifferentialGeometry.External.Schoenflies.FiniteTransfer",
+    "DifferentialGeometry.External.Schoenflies.Line",
+    "DifferentialGeometry.External.Schoenflies.InitialPair",
+    "DifferentialGeometry.External.Schoenflies.InitialPairFixed",
+    "DifferentialGeometry.External.Schoenflies.Inversion",
+    "DifferentialGeometry.External.Schoenflies.BoundaryContinuity",
+    "DifferentialGeometry.External.Schoenflies.Endgame",
+    "DifferentialGeometry.External.Schoenflies.BoundaryContinuity2",
+    "DifferentialGeometry.External.Schoenflies.InitialGenerated",
+    "DifferentialGeometry.External.Schoenflies.ArcMonotone",
+    "DifferentialGeometry.External.Schoenflies.RealizeSubdivHomeo",
+    "DifferentialGeometry.External.Schoenflies.CommonSubdivision",
+    "DifferentialGeometry.External.Schoenflies.FreshAccess",
+    "DifferentialGeometry.External.Schoenflies.FiniteTransferTarget",
+    "DifferentialGeometry.External.Schoenflies.InitialOuterCycle",
+    "DifferentialGeometry.External.Schoenflies.SquareMesh",
+    "DifferentialGeometry.External.Schoenflies.SquareMeshConnected",
+    "DifferentialGeometry.External.Schoenflies.SquareMeshFixed",
+    "DifferentialGeometry.External.Schoenflies.Graph.TwoPaths",
+    "DifferentialGeometry.External.Schoenflies.LocalGrid",
+    "DifferentialGeometry.External.Schoenflies.GridAttach",
+    "DifferentialGeometry.External.Schoenflies.SquareMeshClosed",
+    "DifferentialGeometry.External.Schoenflies.FiniteTransferTargetMesh",
+    "DifferentialGeometry.External.Schoenflies.TargetOverlay",
+    "DifferentialGeometry.External.Schoenflies.FreshDenseSelection",
+    "DifferentialGeometry.External.Schoenflies.StageTransition",
+    "DifferentialGeometry.External.Schoenflies.QuantitativeStages",
+    "DifferentialGeometry.External.Schoenflies.SourceOverlay",
+    "DifferentialGeometry.External.Schoenflies.SourceAttachment",
+    "DifferentialGeometry.External.Schoenflies.OverlayExtension",
+    "DifferentialGeometry.External.Schoenflies.SourceJoining",
+    "DifferentialGeometry.External.Schoenflies.LimitMap",
+    "DifferentialGeometry.External.Schoenflies.StageTower",
+    "DifferentialGeometry.External.Schoenflies.Windows",
+    "DifferentialGeometry.External.Schoenflies.QuantitativeForwardStages",
+    "DifferentialGeometry.External.Schoenflies.QuantitativeRecursion",
+    "DifferentialGeometry.External.Schoenflies.InteriorHomeomorphism",
+    "DifferentialGeometry.External.Schoenflies.BoundaryAnchors",
+    "DifferentialGeometry.External.Schoenflies.JordanSchoenflies",
+    "DifferentialGeometry.Topology.LoopSpace.Basic",
+    "DifferentialGeometry.Topology.LoopSpace.HomeomorphismLift",
+    "DifferentialGeometry.Analysis.Calculus.Periodic.Smoothing",
+    "DifferentialGeometry.Analysis.Calculus.Periodic.SmoothingFamilies",
+    "DifferentialGeometry.Topology.LoopSpace.UniformSmoothing",
+    "DifferentialGeometry.Topology.Embedding.LinearEquiv",
+    "DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv",
+    "DifferentialGeometry.Tensor.LinearAlgebra.BoundaryBlockDeterminant"
+  ]
+}

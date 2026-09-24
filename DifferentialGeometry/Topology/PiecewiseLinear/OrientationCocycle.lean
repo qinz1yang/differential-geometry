@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedCarrier
 import DifferentialGeometry.Topology.PiecewiseLinear.DoubleCoverComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.FaceStarBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
+
+/-! # Orientation Cocycle -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -272,7 +279,8 @@ private theorem orientationCocycle_isCoboundary_of_isOrientable
         ⟨S, mem_faceStarComplex_faces_of_subset K hS hsS, hScard⟩)
     have heq : p.sign T * localOrientationSign r o s T =
         p.sign S * localOrientationSign r o s S := by
-      simpa only [ps, os, CoherentOrientation.restrict, localOrientationSign, dif_pos hs] using hratio
+      simpa only [ps, os, CoherentOrientation.restrict, localOrientationSign, dif_pos hs] using
+          hratio
     rw [heq]
   choose b hb using hex
   refine ⟨fun a => if ha : carrierFace K a ∈ K.faces then b (carrierFace K a) ha else false, ?_⟩
@@ -401,7 +409,8 @@ private theorem isOrientable_of_orientationCocycle_isCoboundary
     sign_top := ?_
     coherent := ?_ }⟩
   · intro S hS hScard
-    rcases localOrientationSign_eq_one_or_neg_one r o hS hS (Finset.Subset.refl S) hScard with hs | hs <;>
+    rcases localOrientationSign_eq_one_or_neg_one r o hS hS (Finset.Subset.refl S) hScard with hs |
+        hs <;>
       cases hd : δ (S.centroid ℝ id) <;> simp only [g, hd, hs] <;> norm_num
   · intro t ht htcard hnotone
     let ot := (o t ht).changeVertexOrder r

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.Flow.C1Regularity.VariationalSolutionOperator
 import Mathlib.Analysis.Calculus.MeanValue
+
+/-! Frechet Derivative. -/
 
 
 noncomputable section
@@ -352,7 +359,8 @@ theorem hasFDerivAt_flow_at_initial_of_isLocalFlow
       exact le_of_lt (hδ_uc s hs z h_norm_lt)
     have h_residual : ‖f s (Φ ⟨x₀, s⟩ + y_h s) - f s (Φ ⟨x₀, s⟩)
         - (fderiv ℝ (f s) (Φ ⟨x₀, s⟩)) (y_h s)‖ ≤ ε_target * ‖y_h s‖ :=
-      norm_residual_le_of_diffOn s (Φ ⟨x₀, s⟩) (y_h s) hS_segment_convergence hf_diff hx_segment hxv_segment hC
+      norm_residual_le_of_diffOn s (Φ ⟨x₀, s⟩) (y_h s) hS_segment_convergence hf_diff
+        hx_segment hxv_segment hC
     have h_eq : f s (Φ ⟨x₀, s⟩) + A s (y_h s) - f s (β_h s)
         = -(f s (Φ ⟨x₀, s⟩ + y_h s) - f s (Φ ⟨x₀, s⟩) - (fderiv ℝ (f s) (Φ ⟨x₀, s⟩)) (y_h s)) := by
       change f s (Φ ⟨x₀, s⟩) + (fderiv ℝ (f s) (Φ ⟨x₀, s⟩)) (y_h s)

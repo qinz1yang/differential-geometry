@@ -1,9 +1,16 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Covering.BoolCocycle
 import DifferentialGeometry.Topology.Covering.DoubleCoverComponents
 import DifferentialGeometry.Topology.Covering.SectionSplit
 import DifferentialGeometry.Topology.FiberBundle.FiniteClosed
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import Mathlib.Analysis.Convex.PathConnected
+
+/-! # Double Cover Complex -/
 
 noncomputable section
 
@@ -186,7 +193,8 @@ theorem exists_section_of_isCoboundary [Finite K.faces] (ε : SimplicialBoolCocy
   let i := C.indexAt x
   have hbase : C.baseSet i ∈ 𝓝 x :=
     (C.isOpen_baseSet i).mem_nhds (C.mem_baseSet_at x)
-  refine (continuousAt_const : ContinuousAt (fun _ : K.space => δ (i : E)) x).congr_of_eventuallyEq ?_
+  refine (continuousAt_const : ContinuousAt (fun _ : K.space => δ (i : E)) x).congr_of_eventuallyEq
+      ?_
   filter_upwards [hbase] with y hy
   have hj : (y : E) ∈ openStar K (C.indexAt y) := C.mem_baseSet_at y
   have hi : (y : E) ∈ openStar K i := hy

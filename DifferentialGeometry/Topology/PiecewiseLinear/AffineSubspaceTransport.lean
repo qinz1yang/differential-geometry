@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 import Mathlib.LinearAlgebra.Basis.VectorSpace
+
+/-! # Affine Subspace Transport -/
 
 open Set
 
@@ -19,7 +26,8 @@ theorem exists_isPLHomeomorphOn_affine_of_subset_affineSubspace
   obtain ⟨r, hr⟩ := s.direction.subtype.exists_leftInverse_of_injective s.direction.ker_subtype
   let A : E →ᵃ[ℝ] F := (e.toLinearMap.comp r).toAffineMap.comp
     (AffineMap.id ℝ E - AffineMap.const ℝ E p)
-  let B : F →ᵃ[ℝ] E := (s.direction.subtype.comp e.symm.toLinearMap).toAffineMap + AffineMap.const ℝ F p
+  let B : F →ᵃ[ℝ] E := (s.direction.subtype.comp e.symm.toLinearMap).toAffineMap + AffineMap.const ℝ
+      F p
   have hBA : EqOn (B ∘ A) id P := by
     intro x hx
     change (e.symm (e (r (x - p))) : E) + p = x

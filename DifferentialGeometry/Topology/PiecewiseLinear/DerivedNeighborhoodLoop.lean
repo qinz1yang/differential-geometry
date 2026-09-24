@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homotopy.DeformationRetractPath
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodRetraction
+
+/-! # Derived Neighborhood Loop -/
 
 open unitInterval
 open DifferentialGeometry.Topology.Homotopy

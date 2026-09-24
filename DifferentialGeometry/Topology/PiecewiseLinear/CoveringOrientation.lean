@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.CoveringTriangulation
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 import DifferentialGeometry.Topology.PiecewiseLinear.OrientationCocycle
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+
+/-! # Covering Orientation -/
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 

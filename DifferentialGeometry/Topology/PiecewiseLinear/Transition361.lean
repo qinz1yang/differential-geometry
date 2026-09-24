@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFinitePieceTowerExistence
 import DifferentialGeometry.Topology.PiecewiseLinear.Manifold
 import DifferentialGeometry.Topology.PiecewiseLinear.FrontierBoundary
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import Mathlib.Topology.MetricSpace.PartitionOfUnity
+
+/-! # Transition361 -/
 
 open Set Topology
 
@@ -304,7 +311,8 @@ theorem Moise352.exists_approx_image_eq_of_isOpen {m : ℕ} (h352 : Moise352.{u}
     let : LocallyPathConnectedSpace M₂ :=
       ChartedSpace.locallyPathConnectedSpace (EuclideanSpace ℝ (Fin (m + 1))) M₂
     let : LocallyPathConnectedSpace V := hV.locallyPathConnectedSpace
-    let K : CompactExhaustion V := compactExhaustion_homeomorph (compactExhaustion_of_pieceTower T hU) e
+    let K : CompactExhaustion V := compactExhaustion_homeomorph (compactExhaustion_of_pieceTower T
+        hU) e
     obtain ⟨δ, hδpos, hδ⟩ := exists_continuous_pos_surjective_of_dist_lt K
     obtain ⟨r, hrpos, hr⟩ := exists_continuous_pos_ball_subset_open hV
     let ε : M₁ → ℝ := fun x => if hx : x ∈ U then
@@ -316,7 +324,8 @@ theorem Moise352.exists_approx_image_eq_of_isOpen {m : ℕ} (h352 : Moise352.{u}
       rw [continuousOn_iff_continuous_domRestrict]
       have heq : U.domRestrict ε = fun x : U => min (φ x) (min (r (e x)) (δ (e x))) := funext hε
       rw [heq]
-      exact hφ.domRestrict.min ((r.continuous.comp e.continuous).min (δ.continuous.comp e.continuous))
+      exact hφ.domRestrict.min ((r.continuous.comp e.continuous).min (δ.continuous.comp
+          e.continuous))
     have hεpos : ∀ x ∈ U, 0 < ε x := by
       intro x hx
       rw [hε ⟨x, hx⟩]

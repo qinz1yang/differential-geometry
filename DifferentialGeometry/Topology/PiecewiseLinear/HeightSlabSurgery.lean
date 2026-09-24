@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFreeSlab
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightSlab
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereCellPush
 import DifferentialGeometry.Topology.ConvexFrontier
+
+/-! # Height Slab Surgery -/
 
 open Set
 
@@ -21,7 +28,8 @@ theorem isPLSphere_frontier_slab_of_heightIndex_eq_zero
   classical
   let B := boundaryComplex 3 K
   let _ : Finite B.faces := (boundaryComplex_faces_finite 3 K).to_subtype
-  have hfront : frontier K.space = B.space := frontier_space_eq_boundaryComplex_space_of_finrank hdim K hK
+  have hfront : frontier K.space = B.space := frontier_space_eq_boundaryComplex_space_of_finrank
+      hdim K hK
   have hB : IsPLSphere 2 B.space := hfront ▸ hS
   have hBinj : InjOn ℓ B.vertices := hinj.mono (fun _ hv => boundaryComplex_faces_subset 3 K hv)
   have hbelowB : ∃ x ∈ B.space, ℓ x < a := hfront ▸ hbelow
@@ -37,10 +45,12 @@ theorem isPLSphere_frontier_slab_of_heightIndex_eq_zero
   obtain ⟨g₁, hg₁, hg₁Bd⟩ := hfiber b ⟨hab.le, le_rfl⟩
   have h := isPLSphere_slab_of_heightIndex_eq_zero B hB hdim ℓ hℓ hBinj (hfront ▸ hzero)
     hab hbelowB haboveB hg₀ hg₁ inter_subset_right inter_subset_right hg₀Bd hg₁Bd
-  rw [Topology.frontier_inter_preimage_Icc_of_ne_zero (isPolyhedron_space K).isClosed ℓ hℓ hab.le, hfront]
+  rw [Topology.frontier_inter_preimage_Icc_of_ne_zero (isPolyhedron_space K).isClosed ℓ hℓ hab.le,
+      hfront]
   convert h using 1
   ext x
-  simp only [mem_union, mem_inter_iff, mem_preimage, mem_Icc, mem_insert_iff, mem_singleton_iff, mem_ofPred_eq]
+  simp only [mem_union, mem_inter_iff, mem_preimage, mem_Icc, mem_insert_iff, mem_singleton_iff,
+      mem_ofPred_eq]
   tauto
 
 theorem exists_isPLHomeomorphOn_delete_slab_cell (I : SchoenfliesInput)
@@ -68,7 +78,8 @@ theorem exists_isPLHomeomorphOn_delete_slab_cell (I : SchoenfliesInput)
     (hbelow.imp fun _ hx => ⟨hx.1, hx.2.trans_le hpheight.1⟩)
     (habove.imp fun _ hx => ⟨hx.1, hpheight.2.trans_lt hx.2⟩)
   obtain ⟨T, hT, hcard, hpnot, hconv, hC, hpatch, hpatchBd⟩ :=
-    exists_convex_slab_cell_of_ne_closedStar K hK hdim hreg ℓ hℓ hinj hp hab hpheight hgap hg hgBd hne
+    exists_convex_slab_cell_of_ne_closedStar K hK hdim hreg ℓ hℓ hinj hp hab hpheight hgap hg hgBd
+        hne
   have hSlab := isPLSphere_frontier_slab_of_heightIndex_eq_zero K hK hS hdim hreg hconn
     ℓ hℓ hinj hzero hab hbelow habove
   have hKW : K.space ∩ ℓ ⁻¹' Icc a b ⊆ W :=

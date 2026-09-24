@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Combinatorics.SimpleGraph.Connectivity.Connected
 import Mathlib.Data.Finset.Max
+
+/-! # Height Connectivity -/
 
 open Set
 
@@ -35,9 +42,11 @@ theorem preconnected_induce_of_preconnected_insert
         refine ⟨fun ha => (SimpleGraph.Adj.reachable
           (show D.Adj ⟨a, ha⟩ ⟨b, hb⟩ from hab)).trans hbc, ?_⟩
         intro hap u hpu
-        exact (hneighbors u ⟨b, hb⟩ hpu (by simpa only [hap] using (show G.Adj (a : V) (b : V) from hab))).trans hbc
+        exact (hneighbors u ⟨b, hb⟩ hpu (by simpa only [hap] using (show G.Adj (a : V) (b : V) from
+            hab))).trans hbc
       · have hbp : (b : V) = p := b.2.resolve_right hb
-        refine ⟨fun ha => ihp hbp ⟨a, ha⟩ (by simpa only [hbp] using (show G.Adj (b : V) (a : V) from hab.symm)), ?_⟩
+        refine ⟨fun ha => ihp hbp ⟨a, ha⟩ (by simpa only [hbp] using (show G.Adj (b : V) (a : V)
+            from hab.symm)), ?_⟩
         intro hap
         exact (hab.ne (Subtype.ext (hap.trans hbp.symm))).elim
   intro u v

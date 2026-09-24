@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.OpenStar
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPiece
 import Mathlib.Topology.Homotopy.Path
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Analysis.Convex.Contractible
+
+/-! # PL Path -/
 
 open Set Topology unitInterval
 
@@ -21,7 +28,8 @@ theorem isHPolytope_Icc {a b : ℝ} : IsHPolytope (Icc a b) := by
   · intro h
     have h1 := h 0
     have h0 := h 1
-    simp only [Matrix.cons_val_zero, LinearMap.id_apply, Matrix.cons_val_one, Matrix.cons_val_fin_one,
+    simp only [Matrix.cons_val_zero, LinearMap.id_apply, Matrix.cons_val_one,
+        Matrix.cons_val_fin_one,
       LinearMap.neg_apply] at h1 h0
     exact ⟨by linarith, h1⟩
 
@@ -76,7 +84,8 @@ theorem IsPLPath.trans {x y z : S} {γ₁ : Path x y} {γ₂ : Path y z} (h₁ :
       simp only [mem_preimage, mem_Icc, hA]
       constructor <;> rintro ⟨h0, h1⟩ <;> constructor <;> linarith
     refine (isPLPath_comp_affine h₁ _ hset).congr fun t ht => ?_
-    change (((γ₁.trans γ₂).extend t : S) : E) = ((γ₁.extend (AffineMap.lineMap (k := ℝ) (0 : ℝ) 2 t) : S) : E)
+    change (((γ₁.trans γ₂).extend t : S) : E) = ((γ₁.extend (AffineMap.lineMap (k := ℝ) (0 : ℝ) 2 t)
+        : S) : E)
     rw [hA, Path.extend_trans_of_le_half γ₁ γ₂ ht.2]
   have hr : IsPiecewiseAffineOn (fun t : ℝ => (((γ₁.trans γ₂).extend t : S) : E))
       (Icc (1 / 2) 1) := by

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Algebra.Module.LinearMap.DivisionRing
 import Mathlib.Topology.Order.Basic
 import Mathlib.Tactic.Tauto
+
+/-! # Slab Boundary -/
 
 open Set
 
@@ -25,7 +32,8 @@ theorem frontier_inter_preimage_Icc_of_ne_zero
     apply hℓ
     ext x
     exact congrArg (fun f : E →ₗ[ℝ] ℝ => f x) h
-  have hopen : IsOpenMap ℓ := ℓ.toLinearMap.isOpenMap_of_finiteDimensional (LinearMap.surjective hlinear)
+  have hopen : IsOpenMap ℓ := ℓ.toLinearMap.isOpenMap_of_finiteDimensional (LinearMap.surjective
+      hlinear)
   rw [frontier_inter_of_isClosed hP (isClosed_Icc.preimage ℓ.continuous),
     ← hopen.preimage_frontier_eq_frontier_preimage ℓ.continuous, frontier_Icc hab]
 
@@ -38,7 +46,8 @@ theorem frontier_inter_preimage_Iic_of_ne_zero
     apply hℓ
     ext x
     exact congrArg (fun f : E →ₗ[ℝ] ℝ => f x) h
-  have hopen : IsOpenMap ℓ := ℓ.toLinearMap.isOpenMap_of_finiteDimensional (LinearMap.surjective hlinear)
+  have hopen : IsOpenMap ℓ := ℓ.toLinearMap.isOpenMap_of_finiteDimensional (LinearMap.surjective
+      hlinear)
   rw [frontier_inter_of_isClosed hP (isClosed_Iic.preimage ℓ.continuous),
     ← hopen.preimage_frontier_eq_frontier_preimage ℓ.continuous, frontier_Iic]
   ext x

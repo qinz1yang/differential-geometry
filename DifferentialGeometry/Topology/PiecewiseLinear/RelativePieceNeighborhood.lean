@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeDerivedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeMesh
+
+/-! # Relative Piece Neighborhood -/
 
 open Set Topology Metric
 
@@ -127,7 +134,8 @@ theorem PLPieceIn.exists_manifold_neighborhood_preserving_subcomplex {Q : Set X}
     intro s hs t ht hst
     exact ((regularNeighborhoodIn R L₁.space).convexHull_subset_space
       ⟨ht, t, ht, Finset.Subset.refl t, s.centroid ℝ id, hst,
-        L₁.convexHull_subset_space hs (s.centroid_mem_convexHull (L₁.nonempty_of_mem_faces hs))⟩).trans
+        L₁.convexHull_subset_space hs (s.centroid_mem_convexHull (L₁.nonempty_of_mem_faces
+            hs))⟩).trans
           houter
   let L := PiecewiseLinear.restrict N L₀.space
   have hLspace : L.space = L₀.space := by

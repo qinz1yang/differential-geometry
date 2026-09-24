@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.Basic
 import Mathlib.Topology.Path
 import Mathlib.Topology.Maps.Proper.Basic
+
+/-! # Based Circle -/
 
 
 
@@ -49,7 +56,8 @@ variable {Q : Type*} [TopologicalSpace Q] {q : Q}
 
 def pathToCircle (p : Path q q) : freeLoop Q :=
   ⟨AddCircle.liftIco 1 0 p.extend,
-    AddCircle.liftIco_zero_continuous (by rw [p.extend_zero, p.extend_one]) p.continuous_extend.continuousOn⟩
+    AddCircle.liftIco_zero_continuous (by rw [p.extend_zero, p.extend_one])
+        p.continuous_extend.continuousOn⟩
 
 theorem pathToCircle_zero (p : Path q q) : pathToCircle p 0 = q := by
   change AddCircle.liftIco 1 0 p.extend ((0 : ℝ) : loopCircle) = q

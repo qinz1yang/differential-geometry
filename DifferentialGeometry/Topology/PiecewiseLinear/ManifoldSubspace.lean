@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.InvarianceOfDomainManifold
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexChart
 import Mathlib.LinearAlgebra.Projection
+
+/-! # Manifold Subspace -/
 
 open Set Topology
 
@@ -22,7 +29,8 @@ theorem eventually_mem_space_iff_sub_mem_submodule
     ContinuousLinearEquiv.ofFinrankEq (by
       simpa only [finrank_euclideanSpace, Fintype.card_fin] using hdim)
   let f : E → EuclideanSpace ℝ (Fin (n + 1)) := fun y => e (π (y - x))
-  have hf : Continuous f := e.continuous.comp (π.continuous.comp (continuous_id.sub continuous_const))
+  have hf : Continuous f := e.continuous.comp (π.continuous.comp (continuous_id.sub
+      continuous_const))
   have hinj : ∀ {y z : E}, y - x ∈ P → z - x ∈ P → f y = f z → y = z := by
     intro y z hy hz hyz
     have hp := e.injective hyz

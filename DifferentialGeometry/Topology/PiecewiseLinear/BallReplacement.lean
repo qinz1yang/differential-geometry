@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphGluing
+
+/-! # Ball Replacement -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem exists_isPLHomeomorphOn_extension_of_stdSimplexBoundary {n : ℕ} {P : S
   have hKboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hfK
   have hLboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hgL
   rw [simplexBoundary_stdVertices_space] at hKboundary hLboundary
-  have hbKL : IsPLHomeomorphOn b (boundaryComplex (n + 1) K).space (boundaryComplex (n + 1) L).space := by
+  have hbKL : IsPLHomeomorphOn b (boundaryComplex (n + 1) K).space (boundaryComplex (n + 1) L).space
+      := by
     rwa [hKboundary, hLboundary]
   obtain ⟨H, hH, hHb⟩ := exists_isPLHomeomorphOn_of_boundaryComplex K L
     (⟨f, hfK⟩ : IsPLBall (n + 1) K.space) (⟨g, hgL⟩ : IsPLBall (n + 1) L.space) hbKL

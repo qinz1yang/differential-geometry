@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCellDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightStarDecomposition
+
+/-! # Height Star Deletion -/
 
 open Set
 
@@ -16,13 +23,15 @@ theorem exists_free_disk_cell_deletion_sequence_to_closedStar
     ∃ L R : Geometry.SimplicialComplex ℝ E,
       IsPLDiskDecomposition L (heightSectionCells 2 K ℓ (ℓ p)) ∧
       L.space = K.space ∩ {x | ℓ x = ℓ p} ∧
-      IsPLDiskDecomposition R ((heightSectionCells 2 K ℓ (ℓ p)).filter (fun C => C ⊆ closedStar K p)) ∧
+      IsPLDiskDecomposition R ((heightSectionCells 2 K ℓ (ℓ p)).filter (fun C => C ⊆ closedStar K
+          p)) ∧
       R.space = closedStar K p ∩ {x | ℓ x = ℓ p} ∧
       Relation.ReflTransGen (IsFreeDiskCellDeletion (closedStar K p ∩ {x | ℓ x = ℓ p}))
         (L, heightSectionCells 2 K ℓ (ℓ p))
         (R, (heightSectionCells 2 K ℓ (ℓ p)).filter (fun C => C ⊆ closedStar K p)) := by
   classical
-  obtain ⟨L, _, hLspace, hL⟩ := exists_isPLDiskDecomposition_heightSectionCells K hdim hreg ℓ hinj (ℓ p) hD
+  obtain ⟨L, _, hLspace, hL⟩ := exists_isPLDiskDecomposition_heightSectionCells K hdim hreg ℓ hinj
+      (ℓ p) hD
   have hcover := biUnion_heightSectionCells_subset_closedStar_eq K hdim hreg ℓ hinj hp hD
   obtain ⟨R, cs, hR, hRspace, hsub, hcs, hsequence⟩ := hL.exists_free_disk_cell_deletion_sequence
     (Finset.filter_subset (fun C => C ⊆ closedStar K p) _)

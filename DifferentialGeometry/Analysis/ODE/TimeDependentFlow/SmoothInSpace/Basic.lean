@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.Selection
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.BanachIC
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.ChartGlue
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
+
+/-! Basic. -/
 
 namespace DifferentialGeometry.Analysis.ODE
 

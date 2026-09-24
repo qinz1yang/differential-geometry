@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.VertexArcs
 import DifferentialGeometry.External.Schoenflies.SimpleArc
 import DifferentialGeometry.External.Schoenflies.MatchedArc
+
+/-! # Arc Chain -/
 
 open Set
 
@@ -69,7 +76,8 @@ theorem exists_polygonal_arc_chain_of_isOpen_isConnected
     exact ⟨hpO n, hCarc n, (hCarc n).isPolygonal_of_subset_arc (hA n) (hApoly n) (hCA n), hCO n⟩
   · intro n
     apply Subset.antisymm
-    · exact (inter_subset_inter_right _ (hBD (n + 1) (state (n + 1)))).trans (hBC n (state n)).subset
+    · exact (inter_subset_inter_right _ (hBD (n + 1) (state (n + 1)))).trans (hBC n (state
+        n)).subset
     · exact singleton_subset_iff.mpr ⟨(hCarc n).right_mem, (hCarc (n + 1)).left_mem⟩
   · intro n m hnm
     exact (hdis (n + 1) (m + 1) (by omega)).mono (hCO n) (hCO m)

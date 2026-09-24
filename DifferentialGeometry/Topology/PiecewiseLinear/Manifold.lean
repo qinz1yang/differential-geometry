@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Groupoid
 import Mathlib.Geometry.Manifold.LocalInvariantProperties
+
+/-! # Manifold -/
 
 open Set Topology
 open scoped Manifold
@@ -60,7 +67,7 @@ def IsPL (f : M → N) : Prop :=
 
 variable {n m}
 
-theorem isPL_id [HasGroupoid M (plGroupoid n)] : IsPL n n (id : M → M) :=
+theorem isPL_id : IsPL n n (id : M → M) :=
   piecewiseAffineProperty_localInvariantProp.liftProp_id piecewiseAffineProperty_id
 
 theorem isPLOn_chart [HasGroupoid M (plGroupoid n)] (x : M) :
@@ -73,8 +80,8 @@ theorem isPLOn_chart_symm [HasGroupoid M (plGroupoid n)] (x : M) :
       (chartAt (EuclideanSpace ℝ (Fin n)) x).target :=
   piecewiseAffineProperty_localInvariantProp.liftPropOn_chart_symm piecewiseAffineProperty_id
 
-theorem isPLWithinAt_iff_of_mem_maximalAtlas [HasGroupoid M (plGroupoid n)]
-    [HasGroupoid N (plGroupoid m)] {f : M → N} {s : Set M} {x : M}
+theorem isPLWithinAt_iff_of_mem_maximalAtlas
+    {f : M → N} {s : Set M} {x : M}
     {e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n))}
     (he : e ∈ (plGroupoid n).maximalAtlas M) (hx : x ∈ e.source)
     {e' : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m))}
@@ -84,8 +91,8 @@ theorem isPLWithinAt_iff_of_mem_maximalAtlas [HasGroupoid M (plGroupoid n)]
         IsPiecewiseAffineWithinAt (e' ∘ f ∘ e.symm) (e.symm ⁻¹' s) (e x) :=
   piecewiseAffineProperty_localInvariantProp.liftPropWithinAt_indep_chart he hx he' hfx
 
-theorem isPLAt_iff_of_mem_maximalAtlas [HasGroupoid M (plGroupoid n)]
-    [HasGroupoid N (plGroupoid m)] {f : M → N} {x : M}
+theorem isPLAt_iff_of_mem_maximalAtlas
+    {f : M → N} {x : M}
     {e : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin n))}
     (he : e ∈ (plGroupoid n).maximalAtlas M) (hx : x ∈ e.source)
     {e' : OpenPartialHomeomorph N (EuclideanSpace ℝ (Fin m))}
@@ -130,7 +137,9 @@ theorem isPL_symm_of_homeomorph [HasGroupoid M (plGroupoid n)] {P : Type*} [Topo
     exact hPA'.congr fun _ _ => rfl
   have hFsymm : IsPiecewiseAffineOn F.symm F.target := hF.symm
   have hyF : e' y ∈ F.target := by
-    have hxF : e x ∈ F.source := (hFsrc (e x)).mpr ⟨e.map_source hxe, by rw [e.left_inv hxe, hfx]; exact hye⟩
+    have hxF : e x ∈ F.source := (hFsrc (e x)).mpr ⟨e.map_source hxe, by
+      rw [e.left_inv hxe, hfx]
+      exact hye⟩
     have hFx : F (e x) = e' y := by
       change e' (f (e.symm (e x))) = e' y
       rw [e.left_inv hxe, hfx]

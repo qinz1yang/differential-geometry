@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryOfBall
 import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
+
+/-! # Boundary Extension -/
 
 open Set
 
@@ -16,7 +23,8 @@ theorem exists_isPLHomeomorphOn_of_boundaryComplex [FiniteDimensional ℝ E] [Fi
     (L : Geometry.SimplicialComplex ℝ F) [Finite L.faces]
     (hK : IsPLBall (n + 1) K.space) (hL : IsPLBall (n + 1) L.space) {g : E → F}
     (hg : IsPLHomeomorphOn g (boundaryComplex (n + 1) K).space (boundaryComplex (n + 1) L).space) :
-    ∃ G : E → F, IsPLHomeomorphOn G K.space L.space ∧ EqOn G g (boundaryComplex (n + 1) K).space := by
+    ∃ G : E → F, IsPLHomeomorphOn G K.space L.space ∧ EqOn G g (boundaryComplex (n + 1) K).space :=
+        by
   obtain ⟨f₁, hf₁⟩ := hK
   obtain ⟨f₂, hf₂⟩ := hL
   let B := simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)

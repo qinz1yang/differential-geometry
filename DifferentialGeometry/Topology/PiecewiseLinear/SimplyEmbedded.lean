@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.TetrahedronPush
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Analysis.Convex.CompactFrontier
+
+/-! # Simply Embedded -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem hasPushProperty_of_isSimplyEmbedded_frontier
     (hS : IsSimplyEmbedded (frontier C)) : HasPushProperty C := by
   obtain ⟨T, h, hT, hcard, hh, himage, -⟩ :=
     hS.2 univ convex_univ isOpen_univ (subset_univ _)
-  have hfront : frontier (h '' C) = frontier (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 3)))) := by
+  have hfront : frontier (h '' C) = frontier (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 3)))) :=
+      by
     rw [← h.image_frontier, himage]
   have hint : (interior (h '' C)).Nonempty := by
     rw [← h.image_interior]

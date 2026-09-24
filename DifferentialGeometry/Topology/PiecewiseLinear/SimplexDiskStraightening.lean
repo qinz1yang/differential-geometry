@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FaceStarTrace
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeFaceTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexDiskDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskSubdivision
+
+/-! # Simplex Disk Straightening -/
 
 open Set
 
@@ -103,7 +110,8 @@ theorem exists_isPLHomeomorphOn_straighten_to_face_on_simplexBoundary
       exact hHfix hx
 termination_by {u ∈ K.faces | u.card = 3}.ncard
 decreasing_by
-  exact ncard_triangles_eraseTriangleComplex_lt K t ht htcard (fun u hu => card_le_of_isPLBall K hK hu)
+  exact ncard_triangles_eraseTriangleComplex_lt K t ht htcard (fun u hu => card_le_of_isPLBall K hK
+      hu)
 
 omit [DecidableEq (EuclideanSpace ℝ (Fin 2))] in
 open Classical in
@@ -134,7 +142,8 @@ theorem exists_isPLHomeomorphOn_straighten_disk_on_simplexBoundary
   have hnot : ¬T ⊆ v := fun h => hv.2.2 (Finset.Subset.antisymm hv.1 h)
   obtain ⟨a, ha, hav⟩ := Finset.not_subset.mp hnot
   let F := T.erase a
-  have hF : AffineIndependent ℝ ((↑) : F → E) := affineIndependent_of_subset hT (Finset.erase_subset a T)
+  have hF : AffineIndependent ℝ ((↑) : F → E) := affineIndependent_of_subset hT (Finset.erase_subset
+      a T)
   have hFcard : F.card = 3 := by rw [Finset.card_erase_of_mem ha, hcard]
   have hFface : F ∈ B.faces := erase_mem_simplexBoundary_faces hT (by omega) ha
   have ht₀F : convexHull ℝ (t₀ : Set E) ⊆ convexHull ℝ (F : Set E) :=
@@ -143,7 +152,8 @@ theorem exists_isPLHomeomorphOn_straighten_disk_on_simplexBoundary
   let _ : Finite J.faces := (restrict_faces_finite R _).to_subtype
   have hJspace : J.space = convexHull ℝ (F : Set E) :=
     restrict_space_of_eq_biUnion R _ (hR.convexHull_eq_biUnion hFface)
-  have hJ : IsPLBall 2 J.space := hJspace.symm ▸ isPLBall_convexHull_of_affineIndependent F hF hFcard
+  have hJ : IsPLBall 2 J.space := hJspace.symm ▸ isPLBall_convexHull_of_affineIndependent F hF
+      hFcard
   have ht₀J : t₀ ∈ J.faces := ⟨hKR ht₀, ht₀F⟩
   obtain ⟨S, hS, hScard, -, -, -⟩ := exists_affineIndependent_openSimplex_subset
     (n := 1) (by simp) (0 : EuclideanSpace ℝ (Fin 2)) Filter.univ_mem

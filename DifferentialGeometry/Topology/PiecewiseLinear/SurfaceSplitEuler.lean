@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homotopy.ConvexProduct
 import DifferentialGeometry.Topology.PiecewiseLinear.EulerCellOperations
+
+/-! # Surface Split Euler -/
 
 noncomputable section
 
@@ -116,7 +123,8 @@ theorem eulerChar_eq_add_two [FiniteDimensional ℝ E]
   let _ : Finite h.cap₁.faces := h.cap₁_faces_finite.to_subtype
   let _ : Finite h.capBoundary₀.faces := h.capBoundary₀_faces_finite.to_subtype
   let _ : Finite h.capBoundary₁.faces := h.capBoundary₁_faces_finite.to_subtype
-  have hsplitResult : eulerChar split = eulerChar source := h.toSurfaceSplitAlongPolygon.eulerChar_eq
+  have hsplitResult : eulerChar split = eulerChar source :=
+      h.toSurfaceSplitAlongPolygon.eulerChar_eq
   have hsplit₀ : split.faces ⊆ result.faces := by
     rw [h.result_faces]
     exact fun s hs => Or.inl (Or.inl hs)

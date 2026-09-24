@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightIndex
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubspace
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalSchoenflies
 import Mathlib.Data.ENat.BigOperators
+
+/-! # Finite Graph Circles -/
 
 open Set Topology
 

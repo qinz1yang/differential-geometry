@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightStability
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChange
+
+/-! # Height Rotation -/
 
 open Set Topology
 
@@ -7,13 +14,17 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
-theorem eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq_of_unique_vertex_in_fiber {n : ℕ}
+theorem
+    eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq_of_unique_vertex_in_fiber {n
+    : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLSphere (n + 1) K.space)
-    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈ K.vertices) :
+    (ℓ : E →L[ℝ] ℝ) (hℓ : ℓ ≠ 0) {p : E} (hunique : ∀ v ∈ K.vertices, ℓ v = ℓ p → v = p) (hp : p ∈
+        K.vertices) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ,
       (p ∈ heightSingularPoints K.space f ↔ p ∈ heightSingularPoints K.space ℓ) ∧
       (levelPolygons K.space f (f p)).encard = (levelPolygons K.space ℓ (ℓ p)).encard := by
-  filter_upwards [eventually_exists_homeomorph_preserving_sphere_image_fiber_of_unique_vertex_in_fiber
+  filter_upwards
+      [eventually_exists_homeomorph_preserving_sphere_image_fiber_of_unique_vertex_in_fiber
     K hK ℓ hℓ hunique hp isOpen_univ (subset_univ _) zero_lt_one] with f hf
   obtain ⟨h, hh, -, -, hfix, himage, hfiber, hplane⟩ := hf
   have hhp : h p = p := hfix hp
@@ -85,7 +96,8 @@ theorem eventually_heightSingularPoints_eq_and_levelPolygons_encard_eq
       (p ∈ heightSingularPoints K.space f ↔ p ∈ heightSingularPoints K.space ℓ) ∧
       (levelPolygons K.space f (f p)).encard = (levelPolygons K.space ℓ (ℓ p)).encard := by
     rw [hV.eventually_all]
-    exact fun p hp => eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq K hK ℓ hℓ hinj hp
+    exact fun p hp => eventually_mem_heightSingularPoints_iff_and_encard_levelPolygons_eq K hK ℓ hℓ
+        hinj hp
   have hne : ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, f ≠ 0 := isOpen_compl_singleton.mem_nhds hℓ
   have hlinear : ℓ.toLinearMap ≠ 0 := by
     intro hz
@@ -124,9 +136,11 @@ theorem eventually_heightIndex_eq (K : Geometry.SimplicialComplex ℝ E) [Finite
     exact congrArg (fun a : E →ₗ[ℝ] ℝ => a x) hz
   have hsing := heightSingularPoints_subset_vertices K
     hK.isCombinatorialManifold.isCombinatorialManifoldWithBoundary hdimE ℓ.toLinearMap hlinear hinj
-  filter_upwards [eventually_heightSingularPoints_eq_and_levelPolygons_encard_eq K hK hdimE ℓ hℓ hinj]
+  filter_upwards [eventually_heightSingularPoints_eq_and_levelPolygons_encard_eq K hK hdimE ℓ hℓ
+      hinj]
     with f hf
-  let e : heightSingularPoints K.space ℓ ≃ heightSingularPoints K.space f := Equiv.setCongr hf.1.symm
+  let e : heightSingularPoints K.space ℓ ≃ heightSingularPoints K.space f := Equiv.setCongr
+      hf.1.symm
   unfold heightIndex
   rw [← e.tsum_eq]
   apply tsum_congr

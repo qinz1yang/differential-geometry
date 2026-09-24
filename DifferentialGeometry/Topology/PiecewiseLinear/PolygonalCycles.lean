@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSchoenflies
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 import Mathlib.Combinatorics.SimpleGraph.Matching
+
+/-! # Polygonal Cycles -/
 
 open Set
 open LeanEval.Topology.ClassificationOfSurfaces.Moise
@@ -145,7 +152,8 @@ theorem disjoint_carrier_of_disjoint_vertex_range (K : Geometry.SimplicialComple
   obtain ⟨j, hj⟩ := mem_iUnion.mp hxL
   have hx : x ∈ convexHull ℝ (({J.vertex i, J.vertex (i + 1)} : Finset Plane) : Set Plane) ∩
       convexHull ℝ (({L.vertex j, L.vertex (j + 1)} : Finset Plane) : Set Plane) := by
-    simpa only [Finset.coe_pair, convexHull_pair, PolygonalCircle.edgeSegment, mem_inter_iff] using And.intro hi hj
+    simpa only [Finset.coe_pair, convexHull_pair, PolygonalCircle.edgeSegment, mem_inter_iff] using
+        And.intro hi hj
   have hv := convexHull_nonempty_iff.mp
     ⟨x, K.inter_subset_convexHull (hJ i) (hL j) hx⟩
   obtain ⟨v, hvJ, hvL⟩ := hv
@@ -179,7 +187,8 @@ theorem exists_polygonalCircle_of_connectedComponent (K : Geometry.SimplicialCom
   obtain ⟨a, ha⟩ := c.nonempty_supp
   have hnonempty : ((SimplicialComplex.edgeGraph K).neighborSet a).Nonempty :=
     Set.nonempty_of_ncard_ne_zero (by rw [hdegree]; decide)
-  obtain ⟨p, hp, hpc⟩ := hcycles.exists_cycle_toSubgraph_verts_eq_connectedComponentSupp ha hnonempty
+  obtain ⟨p, hp, hpc⟩ := hcycles.exists_cycle_toSubgraph_verts_eq_connectedComponentSupp ha
+      hnonempty
   obtain ⟨J, hJK, hJv, hJe, hJp⟩ := exists_polygonalCircle_of_isCycle K p hp
   refine ⟨J, hJK, by rw [hJv, hpc], hJe, ?_⟩
   intro u w hu huw
@@ -189,7 +198,8 @@ theorem exists_polygonalCircle_decomposition (K : Geometry.SimplicialComplex ℝ
     [Finite K.faces] (hK : IsCombinatorialManifold 1 K) :
     ∃ J : (SimplicialComplex.edgeGraph K).ConnectedComponent → PolygonalCircle,
       (∀ c, range (J c).vertex = ((↑) : K.vertices → Plane) '' c.supp) ∧
-      K.space = ⋃ c, (J c).carrier ∧ Pairwise (fun c d => Disjoint (J c).carrier (J d).carrier) := by
+      K.space = ⋃ c, (J c).carrier ∧ Pairwise (fun c d => Disjoint (J c).carrier (J d).carrier) :=
+          by
   classical
   choose J hJK hJv hJe hJseg using exists_polygonalCircle_of_connectedComponent K hK
   refine ⟨J, hJv, ?_, ?_⟩
@@ -199,7 +209,8 @@ theorem exists_polygonalCircle_decomposition (K : Geometry.SimplicialComplex ℝ
     have hcard : s.card ≤ 2 := hK.card_le K hs
     by_cases hcard₁ : s.card = 1
     · obtain ⟨v, rfl⟩ := Finset.card_eq_one.mp hcard₁
-      have hxv : x = v := by simpa only [Finset.coe_singleton, convexHull_singleton, mem_singleton_iff] using hxs
+      have hxv : x = v := by simpa only [Finset.coe_singleton, convexHull_singleton,
+          mem_singleton_iff] using hxs
       subst x
       let c := (SimplicialComplex.edgeGraph K).connectedComponentMk ⟨v, hs⟩
       have hvJ : v ∈ range (J c).vertex := by

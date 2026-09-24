@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiber
+
+/-! # Face Projection -/
 
 open Set Topology
 
@@ -18,20 +25,24 @@ private theorem IsHPolytope.eventually_mem_iff_sub_smul_of_openSimplex
     rwa [hP_eq] at h
   have hsbound (i : ι) (w : E) (hw : w ∈ s) : l i w ≤ c i :=
     (hP_eq ▸ hsP (subset_convexHull ℝ _ hw)) i
-  have hproj : ContinuousAt (fun y => y - f y • (v - u)) x := continuousAt_id.sub (hf.smul continuousAt_const)
+  have hproj : ContinuousAt (fun y => y - f y • (v - u)) x := continuousAt_id.sub (hf.smul
+      continuousAt_const)
   have hprojx : x - f x • (v - u) = x := by rw [hfx, zero_smul, sub_zero]
   have hineq : ∀ i : ι, ∀ᶠ y in 𝓝 x, l i y ≤ c i ↔ l i (y - f y • (v - u)) ≤ c i := by
     intro i
     by_cases hactive : l i x = c i
-    · have hvertices := (affineMap_eq_iff_of_mem_openSimplex_of_le (l i).toAffineMap hx (hsbound i)).mp hactive
+    · have hvertices := (affineMap_eq_iff_of_mem_openSimplex_of_le (l i).toAffineMap hx (hsbound
+        i)).mp hactive
       change ∀ w ∈ s, l i w = c i at hvertices
       have hdir : l i (v - u) = 0 := by rw [map_sub, hvertices v hv, hvertices u hu, sub_self]
-      exact Filter.Eventually.of_forall fun y => by rw [map_sub, map_smul, hdir, smul_zero, sub_zero]
+      exact Filter.Eventually.of_forall fun y => by rw [map_sub, map_smul, hdir, smul_zero,
+          sub_zero]
     · have hstrict : l i x < c i := lt_of_le_of_ne (hxP i) hactive
       have hnear : ∀ᶠ y in 𝓝 x, l i y < c i :=
         (isOpen_lt (l i).continuous_of_finiteDimensional continuous_const).mem_nhds hstrict
       have hnear' : ∀ᶠ y in 𝓝 x, l i (y - f y • (v - u)) < c i :=
-        (by simpa only [ContinuousAt, hprojx] using hproj : Filter.Tendsto (fun y => y - f y • (v - u)) (𝓝 x) (𝓝 x)).eventually hnear
+        (by simpa only [ContinuousAt, hprojx] using hproj : Filter.Tendsto (fun y => y - f y • (v -
+            u)) (𝓝 x) (𝓝 x)).eventually hnear
       filter_upwards [hnear, hnear'] with y hy hy'
       exact iff_of_true hy.le hy'.le
   filter_upwards [Filter.eventually_all.mpr hineq] with y hy
@@ -44,7 +55,8 @@ theorem eventually_mem_space_iff_sub_smul_of_mem_openSimplex
     {u v : E} (hu : u ∈ s) (hv : v ∈ s)
     {f : E → ℝ} (hf : ContinuousAt f x) (hfx : f x = 0) :
     ∀ᶠ y in 𝓝 x, y ∈ L.space ↔ y - f y • (v - u) ∈ L.space := by
-  have hproj : ContinuousAt (fun y => y - f y • (v - u)) x := continuousAt_id.sub (hf.smul continuousAt_const)
+  have hproj : ContinuousAt (fun y => y - f y • (v - u)) x := continuousAt_id.sub (hf.smul
+      continuousAt_const)
   have hprojx : x - f x • (v - u) = x := by rw [hfx, zero_smul, sub_zero]
   have hface : ∀ t : L.faces, ∀ᶠ y in 𝓝 x,
       y ∈ convexHull ℝ (t.val : Set E) ↔ y - f y • (v - u) ∈ convexHull ℝ (t.val : Set E) := by
@@ -52,10 +64,13 @@ theorem eventually_mem_space_iff_sub_smul_of_mem_openSimplex
     have hT := isHPolytope_convexHull_of_affineIndependent t.val (L.indep t.property)
     by_cases hxt : x ∈ convexHull ℝ (t.val : Set E)
     · have hst := face_subset_of_mem_openSimplex_of_mem_convexHull K hs (hLK t.property) hx hxt
-      exact hT.eventually_mem_iff_sub_smul_of_openSimplex hx (convexHull_mono (Finset.coe_subset.mpr hst)) hu hv hf hfx
-    · have hnear : ∀ᶠ y in 𝓝 x, y ∉ convexHull ℝ (t.val : Set E) := hT.isClosed.isOpen_compl.mem_nhds hxt
+      exact hT.eventually_mem_iff_sub_smul_of_openSimplex hx (convexHull_mono (Finset.coe_subset.mpr
+          hst)) hu hv hf hfx
+    · have hnear : ∀ᶠ y in 𝓝 x, y ∉ convexHull ℝ (t.val : Set E) :=
+        hT.isClosed.isOpen_compl.mem_nhds hxt
       have hnear' : ∀ᶠ y in 𝓝 x, y - f y • (v - u) ∉ convexHull ℝ (t.val : Set E) :=
-        (by simpa only [ContinuousAt, hprojx] using hproj : Filter.Tendsto (fun y => y - f y • (v - u)) (𝓝 x) (𝓝 x)).eventually hnear
+        (by simpa only [ContinuousAt, hprojx] using hproj : Filter.Tendsto (fun y => y - f y • (v -
+            u)) (𝓝 x) (𝓝 x)).eventually hnear
       filter_upwards [hnear, hnear'] with y hy hy'
       exact iff_of_false hy hy'
   filter_upwards [Filter.eventually_all.mpr hface] with y hy
@@ -73,9 +88,11 @@ theorem mem_interior_space_iff_mem_nhdsWithin_fiber
     {u v : E} (hu : u ∈ s) (hv : v ∈ s) (ℓ : E →ₗ[ℝ] ℝ) (hℓuv : ℓ v ≠ ℓ u) :
     x ∈ interior L.space ↔ (L.space ∩ {y | ℓ y = ℓ x}) ∈ 𝓝[{y | ℓ y = ℓ x}] x := by
   let f : E → ℝ := fun y => (ℓ y - ℓ x) / (ℓ v - ℓ u)
-  have hf : ContinuousAt f x := (ℓ.continuous_of_finiteDimensional.continuousAt.sub continuousAt_const).div_const _
+  have hf : ContinuousAt f x := (ℓ.continuous_of_finiteDimensional.continuousAt.sub
+      continuousAt_const).div_const _
   have hfx : f x = 0 := by simp only [f, sub_self, zero_div]
-  have hprojection := eventually_mem_space_iff_sub_smul_of_mem_openSimplex K L hLK hs hx hu hv hf hfx
+  have hprojection := eventually_mem_space_iff_sub_smul_of_mem_openSimplex K L hLK hs hx hu hv hf
+      hfx
   have hheight (y : E) : ℓ (y - f y • (v - u)) = ℓ x := by
     rw [map_sub, map_smul, map_sub, smul_eq_mul]
     change ℓ y - ((ℓ y - ℓ x) / (ℓ v - ℓ u)) * (ℓ v - ℓ u) = ℓ x
@@ -89,7 +106,8 @@ theorem mem_interior_space_iff_mem_nhdsWithin_fiber
     tendsto_nhdsWithin_iff.mpr ⟨hcont, Filter.Eventually.of_forall hheight⟩
   constructor
   · intro hint
-    exact Filter.inter_mem (nhdsWithin_le_nhds (mem_interior_iff_mem_nhds.mp hint)) self_mem_nhdsWithin
+    exact Filter.inter_mem (nhdsWithin_le_nhds (mem_interior_iff_mem_nhds.mp hint))
+        self_mem_nhdsWithin
   · intro hsection
     apply mem_interior_iff_mem_nhds.mpr
     filter_upwards [hprojection, hwithin hsection] with y hy hy'

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexComplex
+
+/-! # Join -/
 
 open Set
 
@@ -390,14 +397,16 @@ theorem image_joinSnd_mem_joinComplex {τ : Finset F} (hτ : τ ∈ L.faces) :
   rwa [Finset.image_empty, Finset.empty_union] at this
 
 theorem joinFst_mem_convexHull_image {σ : Finset E} {x : E} (hx : x ∈ convexHull ℝ (σ : Set E)) :
-    joinFst E F x ∈ convexHull ℝ ((σ.image (joinFst E F) : Finset (E × F × ℝ)) : Set (E × F × ℝ)) := by
+    joinFst E F x ∈ convexHull ℝ ((σ.image (joinFst E F) : Finset (E × F × ℝ)) : Set (E × F × ℝ)) :=
+        by
   obtain ⟨c, hc0, hc1, hcx⟩ := mem_convexHull_iff_exists_weights.mp hx
   have h := (mem_convexHull_join_iff σ (∅ : Finset F)).mpr ⟨c, fun _ => 0, hc0, fun _ _ => le_rfl,
     by rw [hc1, Finset.sum_empty, add_zero], by rw [hcx, Finset.sum_empty, Finset.sum_empty]⟩
   rwa [Finset.image_empty, Finset.union_empty] at h
 
 theorem joinSnd_mem_convexHull_image {τ : Finset F} {y : F} (hy : y ∈ convexHull ℝ (τ : Set F)) :
-    joinSnd E F y ∈ convexHull ℝ ((τ.image (joinSnd E F) : Finset (E × F × ℝ)) : Set (E × F × ℝ)) := by
+    joinSnd E F y ∈ convexHull ℝ ((τ.image (joinSnd E F) : Finset (E × F × ℝ)) : Set (E × F × ℝ)) :=
+        by
   obtain ⟨d, hd0, hd1, hdy⟩ := mem_convexHull_iff_exists_weights.mp hy
   have h := (mem_convexHull_join_iff (∅ : Finset E) τ).mpr ⟨fun _ => 0, d, fun _ _ => le_rfl, hd0,
     by rw [hd1, Finset.sum_empty, zero_add], by rw [hdy, Finset.sum_empty, hd1]⟩
@@ -520,7 +529,8 @@ theorem joinComplex_space : (joinComplex K L).space = joinSpace K.space L.space 
           ?_⟩
         · exact K.convexHull_subset_space (hσK hne)
             (mem_convexHull_of_sum_smul_eq ha (by linarith) hσsum)
-        · exact L.convexHull_subset_space (hτL hspos.ne') (mem_convexHull_of_sum_smul_eq hb hspos rfl)
+        · exact L.convexHull_subset_space (hτL hspos.ne') (mem_convexHull_of_sum_smul_eq hb hspos
+            rfl)
         · rw [smul_smul, mul_inv_cancel₀ hne, one_smul, smul_smul, mul_inv_cancel₀ hspos.ne',
             one_smul]
   · rintro z ((⟨x, hx, rfl⟩ | ⟨y, hy, rfl⟩) | ⟨x, hx, y, hy, t, ht, rfl⟩)

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PolytopeSection
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAffine
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightIndex
+
+/-! # Simplex Section -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem isPLBall_convexHull_inter_fiber_of_affineIndependent {n : ℕ}
     IsPLBall n (convexHull ℝ (s : Set E) ∩ {x | a x = r}) := by
   obtain ⟨T, hT, hTcard, -⟩ := exists_affineIndependent_openSimplex_superset (n + 1)
     (show Module.finrank ℝ (EuclideanSpace ℝ (Fin (n + 1))) = n + 1 by simp)
-    (show Bornology.IsBounded (∅ : Set (EuclideanSpace ℝ (Fin (n + 1)))) from Bornology.isBounded_empty)
+    (show Bornology.IsBounded (∅ : Set (EuclideanSpace ℝ (Fin (n + 1)))) from
+        Bornology.isBounded_empty)
   obtain ⟨A, hA⟩ := exists_isPLHomeomorphOn_affine_of_card_eq hT hs (by omega)
   let g := (a.comp A).linear
   let c := a (A 0)
@@ -175,7 +183,8 @@ theorem isPLBall_zero_or_one_inter_face_fibers
       (Finset.singleton_nonempty v)
   rw [heq] at hinter ⊢
   rcases isPLBall_zero_or_isPLBall_convexHull_inter_fiber (s ∩ t)
-    (affineIndependent_of_subset (K.indep hs) Finset.inter_subset_left) ℓ (hinj.mono hverts) hinter with h | h
+    (affineIndependent_of_subset (K.indep hs) Finset.inter_subset_left) ℓ (hinj.mono hverts) hinter
+        with h | h
   · exact Or.inl h
   · have hdim : (s ∩ t).card - 2 = 0 ∨ (s ∩ t).card - 2 = 1 := by omega
     exact hdim.elim (fun hz => Or.inl (hz ▸ h)) (fun hz => Or.inr (hz ▸ h))

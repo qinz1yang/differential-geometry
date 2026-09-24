@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightHalfDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSpanningDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
+
+/-! # Height Slab -/
 
 open Set
 
@@ -24,9 +31,11 @@ theorem isPLSphere_slab_of_heightIndex_eq_zero
   have hbelowb : ∃ y ∈ K.space, ℓ y < b := hbelow.imp fun _ h => ⟨h.1, h.2.trans hab⟩
   have habovea : ∃ z ∈ K.space, a < ℓ z := habove.imp fun _ h => ⟨h.1, hab.trans h.2⟩
   obtain ⟨f₀, f₁, hf₀, hf₁, hf₀J, -⟩ :=
-    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero a hbelow habovea
+    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero a hbelow
+        habovea
   obtain ⟨f₂, f₃, hf₂, hf₃, -, hf₃J⟩ :=
-    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero b hbelowb habove
+    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero b hbelowb
+        habove
   let A := K.space ∩ {x | a ≤ ℓ x}
   let B := K.space ∩ {x | ℓ x ≤ a}
   let C := K.space ∩ {x | b ≤ ℓ x}
@@ -122,8 +131,10 @@ theorem exists_isPLSphere_slab_of_heightIndex_eq_zero
       IsPLSphere 2 ((K.space ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) ∪ D₀ ∪ D₁) := by
   have hbelowb : ∃ y ∈ K.space, ℓ y < b := hbelow.imp fun _ h => ⟨h.1, h.2.trans hab⟩
   have habovea : ∃ z ∈ K.space, a < ℓ z := habove.imp fun _ h => ⟨h.1, hab.trans h.2⟩
-  have hJ₀ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero a hbelow habovea
-  have hJ₁ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero b hbelowb habove
+  have hJ₀ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero a hbelow
+      habovea
+  have hJ₁ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero b hbelowb
+      habove
   have hlinear : ℓ.toLinearMap ≠ 0 := by
     intro h
     apply hℓ

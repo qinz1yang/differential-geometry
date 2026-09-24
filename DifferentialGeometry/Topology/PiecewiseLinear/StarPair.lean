@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeExtension
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeIntersection
+
+/-! # Star Pair -/
 
 open Set
 
@@ -70,7 +77,8 @@ theorem image_coneComplex_inter_fiber_of_radial_eq
 
 private theorem geometricLink_faces_subset_of_faces_subset
     {K M : Geometry.SimplicialComplex ℝ E} (hM : M.faces ⊆ K.faces) (p : E) :
-    (SimplicialComplex.geometricLink M {p}).faces ⊆ (SimplicialComplex.geometricLink K {p}).faces := by
+    (SimplicialComplex.geometricLink M {p}).faces ⊆ (SimplicialComplex.geometricLink K {p}).faces :=
+        by
   intro s hs
   obtain ⟨hne, hp, hs⟩ := (SimplicialComplex.mem_geometricLink_singleton M p s).mp hs
   exact (SimplicialComplex.mem_geometricLink_singleton K p s).mpr ⟨hne, hp, hM hs⟩
@@ -98,7 +106,8 @@ theorem exists_isPLHomeomorphOn_closedStar_pair
   have hstar := image_coneComplex_of_radial_eq hcone hcone'
     (geometricLink_faces_subset_of_faces_subset hM p)
     (geometricLink_faces_subset_of_faces_subset hM' q) hgp hgrad hfM
-  have hzero := image_coneComplex_inter_fiber_of_radial_eq hcone hcone' ℓ ℓ' hpℓ hqℓ hgp hgrad hfzero
+  have hzero := image_coneComplex_inter_fiber_of_radial_eq hcone hcone' ℓ ℓ' hpℓ hqℓ hgp hgrad
+      hfzero
   have hstarM : g '' closedStar M p = closedStar M' q := by
     rw [closedStar_eq_coneComplex_space M hp, closedStar_eq_coneComplex_space M' hq]
     exact hstar

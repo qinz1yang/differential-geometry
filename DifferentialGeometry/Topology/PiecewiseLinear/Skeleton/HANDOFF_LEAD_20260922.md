@@ -626,3 +626,7 @@ emoved-from-shared\`; the shared tree is clean of the batch. Lane c runs
 * 06:08 UTC on 2026-09-24: item 22 E accepted; fourteen changed modules, 261 real consumers, seventy
   audited declarations. Application h305 inputs removed; face-torus API uses hf1 and a Hausdorff
   target. Generic 304-to-305 implication retained. Two skeleton checks keep one sorry each; total 4.
+* 09:58 UTC on 2026-09-24 - accepted the smooth dependency batch and sphere leaf: real merge of
+  codex/moise-smooth-integration@04fcba8d3, 119 root registrations, 732/732 entry modules,
+  27/27 axiom/linter audits (11,086 declarations). Promoted PLSmoothingCompact;
+  physical sorry 4 -> 3. The all-PL replay found the inherited FourSpokeCap failure; aggregate build unverified.

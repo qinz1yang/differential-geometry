@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedStarCone
 import DifferentialGeometry.Topology.PiecewiseLinear.SlabDeletionSequence
+
+/-! # Slab Embedding -/
 
 open Set
 
@@ -81,7 +88,8 @@ theorem isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_upper (I
     rcases hgap v hv hne with h | h
     · exact Or.inr (neg_lt_neg h)
     · exact Or.inl (neg_lt_neg h)
-  have h := isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower I K hK hS hreg hconn
+  have h := isSimplyEmbedded_frontier_slab_of_heightIndex_eq_zero_of_vertex_lower I K hK hS hreg
+      hconn
     (-ℓ) (neg_ne_zero.mpr hℓ) hinj' hzero' hp (neg_lt_neg hap) hgap'
     (habove.imp fun _ hx => ⟨hx.1, neg_lt_neg hx.2⟩)
     (hbelow.imp fun _ hx => ⟨hx.1, neg_lt_neg hx.2⟩)

@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+
+/-! # Open PL Path -/
 
 open Set Metric Topology
 
@@ -32,7 +39,8 @@ theorem exists_isPLPath_of_isOpen {S : Set E} (hS : IsOpen S)
     rw [Path.extend_apply _ ht]
     rfl
   let _ : PreconnectedSpace S := isPreconnected_iff_preconnectedSpace.mp hconn
-  have heq : R = univ := (show IsClopen R from ⟨isOpen_compl_iff.mp hRcompl, hRopen⟩).eq_univ ⟨x, hx⟩
+  have heq : R = univ := (show IsClopen R from ⟨isOpen_compl_iff.mp hRcompl, hRopen⟩).eq_univ ⟨x,
+      hx⟩
   exact (heq.symm ▸ mem_univ y : y ∈ R)
 
 theorem exists_piecewiseAffine_path_of_isOpen {S : Set E} (hS : IsOpen S)

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.TransverseHeight
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChange
+
+/-! # Crossing Stability -/
 
 open Set Topology
 
@@ -22,7 +29,8 @@ theorem eventually_exists_homeomorph_adjust_height_preserving_submodule
   have hφlip : LipschitzWith (‖f - ℓ‖₊ * k) φ := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
-    simpa only [φ, dist_sub_right, Function.comp_apply] using ((f - ℓ).lipschitz.comp hGlip).dist_le_mul x y
+    simpa only [φ, dist_sub_right, Function.comp_apply] using ((f - ℓ).lipschitz.comp
+        hGlip).dist_le_mul x y
   have hvpl : IsPiecewiseAffineOn (fun x => φ x • d) univ :=
     hφpl.affine_comp (LinearMap.toSpanSingleton ℝ E d).toAffineMap
   have hvlip : LipschitzWith ((‖f - ℓ‖₊ * k) * ‖d‖₊) (fun x => φ x • d) := by
@@ -66,10 +74,12 @@ theorem eventually_hasPLCrossingAt_of_height_preserving_chart
     (hheight : ∀ᶠ y in 𝓝 0, ℓ (h y) = ℓ y + ℓ (h 0)) {S : Set E}
     (hS : ∀ᶠ y in 𝓝 (h 0), y ∈ S ↔ y ∈ h '' (P : Set E)) :
     ∀ᶠ f : E →L[ℝ] ℝ in 𝓝 ℓ, HasPLCrossingAt S {y | f y = f (h 0)} (h 0) := by
-  obtain ⟨C, hC, -, hC0⟩ := exists_isHPolytope_subset_mem_nhds (x := (0 : E)) (U := univ) Filter.univ_mem
+  obtain ⟨C, hC, -, hC0⟩ := exists_isHPolytope_subset_mem_nhds (x := (0 : E)) (U := univ)
+      Filter.univ_mem
   have hzeroC : (0 : E) ∈ C := mem_of_mem_nhds hC0
   obtain ⟨G, k, hG, hGlip, hGC, -, -⟩ :=
-    (hh.isPiecewiseAffineOn.mono_of_isPolyhedron hC.isPolyhedron (subset_univ C)).exists_lipschitz_extension
+    (hh.isPiecewiseAffineOn.mono_of_isPolyhedron hC.isPolyhedron (subset_univ
+        C)).exists_lipschitz_extension
       hC.isPolyhedron isOpen_univ (subset_univ C)
   let u : E := (ℓ d)⁻¹ • d
   have huP : u ∈ P := P.smul_mem _ hd
@@ -83,7 +93,8 @@ theorem eventually_hasPLCrossingAt_of_height_preserving_chart
       ext y
       simp only [mem_ofPred_eq, sub_zero, SetLike.mem_coe]
     rwa [hPeq, map_zero] at hc
-  filter_upwards [eventually_exists_homeomorph_adjust_height_preserving_submodule P ℓ huP hℓu hG hGlip]
+  filter_upwards [eventually_exists_homeomorph_adjust_height_preserving_submodule P ℓ huP hℓu hG
+      hGlip]
     with f hf
   obtain ⟨g, hg, hg0, hgP, hformula⟩ := hf
   let e : E ≃ₜ E := g.symm.trans h

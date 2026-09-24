@@ -51,6 +51,7 @@ omit [HasGroupoid X (plGroupoid n)] in
 theorem partialHomeomorph_succ_apply (S : PLHomeomorphIncrementSystem T) (i : ℕ) (x : X) :
     S.partialHomeomorph (i + 1) x = S.step i (S.partialHomeomorph i x) := rfl
 
+omit [HasGroupoid X (plGroupoid n)] in
 theorem isPL_partialHomeomorph (S : PLHomeomorphIncrementSystem T) :
     ∀ i, IsPL n n (S.partialHomeomorph i)
   | 0 => isPL_id

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldRelativeTopology
+
+/-! # Interior Manifold Complement -/
 
 open Set
 
@@ -7,8 +14,11 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
+namespace IsCombinatorialManifoldWithBoundary
+
 open Classical in
-theorem IsCombinatorialManifoldWithBoundary.exists_isCombinatorialManifoldWithBoundary_closure_sdiff_of_disjoint_boundary
+theorem
+    exists_isCombinatorialManifoldWithBoundary_closure_sdiff_of_disjoint_boundary
     {K A : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite A.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K)
     (hA : IsCombinatorialManifoldWithBoundary 3 A) (hAK : A.space ⊆ K.space)
@@ -35,5 +45,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isCombinatorialManifoldWithBo
     (hK.of_isSubdivision hT).complement T B hB hBT htrace, ?_⟩
   rw [← closure_space_sdiff_space_eq_subcomplexGeneratedBy T T B Subset.rfl hBT,
     hT.space_eq, hBspace]
+
+end IsCombinatorialManifoldWithBoundary
 
 end DifferentialGeometry.Topology.PiecewiseLinear

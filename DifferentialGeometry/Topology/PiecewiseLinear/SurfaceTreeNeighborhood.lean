@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallGluingTwo
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDerivedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceSpanningTrees
+
+/-! # Surface Tree Neighborhood -/
 
 open Set
 
@@ -173,7 +180,8 @@ theorem isPLBall_embeddedGraphDerivedNeighborhood_of_isTree
               have h' : (f' u : E) = (f v : E) ∨ (f' u : E) = (f w : E) := by
                 simpa only [q, embeddedEdgeFace, Finset.mem_insert, Finset.mem_singleton] using hmem
               exact h'.imp hf_eq hf_eq
-            have huv : u.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using u.2
+            have huv : u.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using
+                u.2
             have huw : u.1 = w := huvw.resolve_left huv
             exact ⟨by simpa only [cw, embeddedVertexFace, f', huw] using hxu, hxq⟩
           · have hrK : embeddedEdgeFace f' a b ∈ K.faces := embeddedEdgeFace_mem hmap' hab
@@ -191,8 +199,10 @@ theorem isPLBall_embeddedGraphDerivedNeighborhood_of_isTree
               have h' : (f v : E) = (f' a : E) ∨ (f v : E) = (f' b : E) := by
                 simpa only [embeddedEdgeFace, Finset.mem_insert, Finset.mem_singleton] using hvab
               exact h'.imp hf_eq hf_eq
-            have hav : a.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using a.2
-            have hbv : b.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using b.2
+            have hav : a.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using
+                a.2
+            have hbv : b.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using
+                b.2
             exact (hva.elim (fun h => hav h.symm) (fun h => hbv h.symm)).elim
         · rcases mem_embeddedGraphDerivedNeighborhood_iff.mp hxold with
             ⟨u, hxu⟩ | ⟨a, b, hab, hxab⟩
@@ -207,7 +217,8 @@ theorem isPLBall_embeddedGraphDerivedNeighborhood_of_isTree
                 simpa only [cv, embeddedVertexFace, Finset.singleton_subset_iff,
                   Finset.mem_singleton] using h
             have huv : u.1 = v := hf_eq heq
-            have huv' : u.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using u.2
+            have huv' : u.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using
+                u.2
             exact (huv' huv).elim
           · have hrK : embeddedEdgeFace f' a b ∈ K.faces := embeddedEdgeFace_mem hmap' hab
             have hrcard : (embeddedEdgeFace f' a b).card = 2 := embeddedEdgeFace_card hmap' hab
@@ -224,8 +235,10 @@ theorem isPLBall_embeddedGraphDerivedNeighborhood_of_isTree
               have h' : (f v : E) = (f' a : E) ∨ (f v : E) = (f' b : E) := by
                 simpa only [embeddedEdgeFace, Finset.mem_insert, Finset.mem_singleton] using hvab
               exact h'.imp hf_eq hf_eq
-            have hav : a.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using a.2
-            have hbv : b.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using b.2
+            have hav : a.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using
+                a.2
+            have hbv : b.1 ≠ v := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using
+                b.2
             exact (hva.elim (fun h => hav h.symm) (fun h => hbv h.symm)).elim
       · rintro x ⟨hxcw, hxq⟩
         have hwW : w ∈ W := by simpa only [W, Set.mem_compl_iff, Set.mem_singleton_iff] using hwv

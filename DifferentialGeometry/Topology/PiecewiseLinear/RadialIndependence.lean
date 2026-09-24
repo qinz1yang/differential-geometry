@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeBase
+
+/-! # Radial Independence -/
 
 open Set Topology
 
@@ -74,6 +81,7 @@ theorem isConeBase_of_isRadiallyInjective {p : E} (K : Geometry.SimplicialComple
     rw [← Finset.coe_insert]
     exact affineIndependent_insert_of_isRadiallyInjective (K.indep hs)
       (fun h => hp (K.convexHull_subset_space hs h))
-      (fun x hx y hy => hrad x (K.convexHull_subset_space hs hx) y (K.convexHull_subset_space hs hy))
+      (fun x hx y hy => hrad x (K.convexHull_subset_space hs hx) y (K.convexHull_subset_space hs
+          hy))
 
 end DifferentialGeometry.Topology.PiecewiseLinear

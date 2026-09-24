@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.PLMap
 import DifferentialGeometry.Topology.PiecewiseLinear.Pasting
+
+/-! # Manifold Approximation -/
 
 open Set Metric
 
@@ -263,7 +270,8 @@ theorem exists_finsetBiUnion_eq_mapsTo_chart {n m : ℕ} {N : Type*} [MetricSpac
           e ∈ (plGroupoid m).maximalAtlas N ∧ MapsTo f (C s) e.source := by
   classical
   have hPc : IsCompact P := hP.isCompact
-  have hnhds : ∀ x : P, ∃ W : Set (EuclideanSpace ℝ (Fin n)), IsOpen W ∧ (x : EuclideanSpace ℝ (Fin n)) ∈ W ∧
+  have hnhds : ∀ x : P, ∃ W : Set (EuclideanSpace ℝ (Fin n)), IsOpen W ∧ (x : EuclideanSpace ℝ (Fin
+      n)) ∈ W ∧
       W ∩ P ⊆ f ⁻¹' (chartAt (EuclideanSpace ℝ (Fin m)) (f x)).source := by
     intro x
     exact mem_nhdsWithin.mp (hf x x.2
@@ -278,7 +286,8 @@ theorem exists_finsetBiUnion_eq_mapsTo_chart {n m : ℕ} {N : Type*} [MetricSpac
       (fun s hs => card_le_finrank_succ_of_mem_faces K hs) hd
   have hK'space : K'.space = P := by rw [hK'.space_eq, hKspace]
   set C : Finset (EuclideanSpace ℝ (Fin n)) → Set (EuclideanSpace ℝ (Fin n)) :=
-    fun s => if s ∈ K'.faces then convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin n))) else ∅ with hCdef
+    fun s => if s ∈ K'.faces then convexHull ℝ (s : Set (EuclideanSpace ℝ (Fin n))) else ∅ with
+        hCdef
   have hC : ∀ s, IsPolyhedron (C s) := by
     intro s
     by_cases hs : s ∈ K'.faces

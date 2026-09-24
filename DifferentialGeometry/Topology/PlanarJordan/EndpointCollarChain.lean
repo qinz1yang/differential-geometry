@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.ArcCollar
 import DifferentialGeometry.Topology.PlanarJordan.ArcSubdivisionStraightening
 import DifferentialGeometry.Topology.Embedding.RealParameter
 import DifferentialGeometry.Topology.MetricSpace.Diameter
 import Mathlib.Analysis.SpecificLimits.Basic
+
+/-! # Endpoint Collar Chain -/
 
 open Set Filter Topology
 
@@ -119,6 +126,8 @@ theorem exists_shrinking_open_chain_compl_of_polygonal_subarcs
   · exact ((tendsto_closedBall_smallSets (f 0)).comp hRlim).smallSets_mono
       (Eventually.of_forall fun n x hx => Metric.ball_subset_closedBall (hON n hx).2.2)
 
+open DifferentialGeometry.Topology.PlanarJordan
+  (exists_homeomorph_polygonal_subarcs_away_from_endpoint) in
 theorem exists_shrinking_open_chain_compl_arc
     {f : ℝ → Plane} (hf : ContinuousOn f unitInterval) (hi : InjOn f unitInterval)
     {U : Set Plane} (hU : U ∈ 𝓝 (f 0)) :
@@ -128,7 +137,7 @@ theorem exists_shrinking_open_chain_compl_arc
       (∀ n m, n + 1 < m → Disjoint (O n) (O m)) ∧
       Tendsto O atTop (𝓝 (f 0)).smallSets := by
   obtain ⟨e, hpoly, _, _, _, _⟩ :=
-    DifferentialGeometry.Topology.PlanarJordan.exists_homeomorph_polygonal_subarcs_away_from_endpoint
+    exists_homeomorph_polygonal_subarcs_away_from_endpoint
       hf hi (r := 1 / 2) (by norm_num) isOpen_univ (subset_univ _)
   let F := e ∘ f
   have hF : ContinuousOn F unitInterval := e.continuous.comp_continuousOn hf
@@ -137,7 +146,8 @@ theorem exists_shrinking_open_chain_compl_arc
       IsPolygonal (F '' Icc a b) := by
     simpa only [F, image_image, Function.comp_def] using hpoly a b ha hab hb
   have hU' : e.symm ⁻¹' U ∈ 𝓝 (F 0) :=
-    (e.symm.continuous.tendsto (F 0)) (by simpa only [F, Function.comp_def, e.symm_apply_apply] using hU)
+    (e.symm.continuous.tendsto (F 0)) (by simpa only [F, Function.comp_def, e.symm_apply_apply]
+        using hU)
   obtain ⟨O, hO, hmeet, hdis, hlim⟩ := exists_shrinking_open_chain_compl_of_polygonal_subarcs
     hF hFi (by norm_num : (0 : ℝ) < 1 / 2) (by norm_num : (1 / 2 : ℝ) ≤ 1) hFpoly hU'
   refine ⟨fun n => e.symm '' O n, ?_, ?_, ?_, ?_⟩

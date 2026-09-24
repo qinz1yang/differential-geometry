@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDiskNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryBallReplacement
+
+/-! # Disk Collar Complement -/
 
 open Set Topology
 
@@ -27,8 +34,11 @@ theorem IsCombinatorialManifoldWithBoundary.exists_collar_of_boundary_disk_subse
     hK.exists_isCombinatorialManifoldWithBoundary_closure_sdiff hC hCK (hmeet.symm ▸ hD)
   exact ⟨C, ρ, R, hρ, hCK, hCU, hmeet, hfix, hpos, hRfin, hR, hspace⟩
 
+namespace IsCombinatorialManifoldWithBoundary
+
 open Classical in
-theorem IsCombinatorialManifoldWithBoundary.exists_collar_of_boundary_disk_subset_with_boundary_complement
+theorem
+    exists_collar_of_boundary_disk_subset_with_boundary_complement
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {D U : Set E}
     (hD : IsPLBall 2 D) (hDK : D ⊆ (boundaryComplex 3 K).space)
@@ -60,4 +70,6 @@ theorem IsCombinatorialManifoldWithBoundary.exists_collar_of_boundary_disk_subse
     tauto
   rw [hdiff] at hHfix
   exact ⟨C, ρ, R, H, hρ, hCK, hCU, hmeet, hfix, hpos, hRfin, hR, hRspace, hH, hHfix⟩
+end IsCombinatorialManifoldWithBoundary
+
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Homology.Algebra.PushoutHomology
 import DifferentialGeometry.Topology.Homology.SmallChains.QuasiIso
 import DifferentialGeometry.Topology.Homology.SmallChains.Union
+
+/-! # Exactness -/
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology
 
@@ -16,9 +23,11 @@ theorem exists_intersection_preimage_of_small_map_eq_zero (n : ℕ)
       (SSet.chainComplexMap (firstSubspaceToSmall X s t) R) n z = 0) :
     ∃ y : ((TopCat.toSSet.obj (TopCat.of (s ∩ t : Set X))).chainComplex R).homology n,
       _root_.HomologicalComplex.homologyMap (SSet.chainComplexMap
-        (TopCat.toSSet.map (subspaceInclusion X (show s ∩ t ⊆ s from Set.inter_subset_left))) R) n y = z ∧
+        (TopCat.toSSet.map (subspaceInclusion X (show s ∩ t ⊆ s from Set.inter_subset_left))) R) n y
+            = z ∧
       _root_.HomologicalComplex.homologyMap (SSet.chainComplexMap
-        (TopCat.toSSet.map (subspaceInclusion X (show s ∩ t ⊆ t from Set.inter_subset_right))) R) n y = 0 := by
+        (TopCat.toSSet.map (subspaceInclusion X (show s ∩ t ⊆ t from Set.inter_subset_right))) R) n
+            y = 0 := by
   let _ : Mono (subspaceInclusion X (show s ∩ t ⊆ s from Set.inter_subset_left)) :=
     (TopCat.mono_iff_injective _).mpr (Set.inclusion_injective Set.inter_subset_left)
   let _ : Mono (SSet.chainComplexMap (TopCat.toSSet.map

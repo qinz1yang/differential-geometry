@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartComplexPiece
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralBallTopology
+
+/-! # Chart Ball Frontier -/
 
 open Set
 open scoped Manifold
@@ -24,7 +31,8 @@ theorem frontier_chart_symm_image_of_isPLBall
   let T := chartPieceOfComplex e he K (hKspace.symm ▸ hCe)
   have h := T.frontier_eq_image_boundaryComplex hK.isCombinatorialManifoldWithBoundary
   change frontier (e.symm '' K.space) = e.symm '' (boundaryComplex (n + 1) K).space at h
-  rw [← frontier_space_eq_boundaryComplex_space hK.isCombinatorialManifoldWithBoundary, hKspace] at h
+  rw [← frontier_space_eq_boundaryComplex_space
+      hK.isCombinatorialManifoldWithBoundary, hKspace] at h
   exact h
 
 theorem IsPolyhedralBall.image_frontier_chart

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCells
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
+
+/-! # Derived Neighborhood Cells -/
 
 open Set
 
@@ -189,13 +196,16 @@ theorem subset_or_subset_of_nonempty_derivedNeighborhoodCell_inter
     ((mem_derivedNeighborhoodCell_faces_iff_of_flag ht hd ⟨e, he⟩).mp hut e he)
 
 open Classical in
-theorem pair_centroid_mem_barycentricSubdivision_of_subset_or_subset (K : Geometry.SimplicialComplex ℝ E)
+theorem pair_centroid_mem_barycentricSubdivision_of_subset_or_subset (K : Geometry.SimplicialComplex
+    ℝ E)
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces) (hst : s ⊆ t ∨ t ⊆ s) :
     {s.centroid ℝ id, t.centroid ℝ id} ∈ (barycentricSubdivision K).faces := by
   classical
-  refine ⟨{s, t}, ⟨?_, ?_⟩, Finset.insert_nonempty _ _, by simp only [Finset.image_insert, Finset.image_singleton]⟩
+  refine ⟨{s, t}, ⟨?_, ?_⟩, Finset.insert_nonempty _ _, by simp only [Finset.image_insert,
+      Finset.image_singleton]⟩
   · intro u hu
-    rcases (show u = s ∨ u = t by simpa only [Finset.mem_insert, Finset.mem_singleton] using hu) with rfl | rfl
+    rcases (show u = s ∨ u = t by simpa only [Finset.mem_insert, Finset.mem_singleton] using hu)
+        with rfl | rfl
     · exact hs
     · exact ht
   · intro u hu v hv
@@ -218,13 +228,15 @@ theorem derivedNeighborhoodCell_space_inter (K : Geometry.SimplicialComplex ℝ 
     (singleton_centroid_mem_barycentricSubdivision K hs)
     (singleton_centroid_mem_barycentricSubdivision K ht)
     (show {s.centroid ℝ id} ∪ {t.centroid ℝ id} ∈ (barycentricSubdivision K).faces by
-      simpa only [Finset.singleton_union] using pair_centroid_mem_barycentricSubdivision_of_subset_or_subset K hs ht hst)
+      simpa only [Finset.singleton_union] using
+          pair_centroid_mem_barycentricSubdivision_of_subset_or_subset K hs ht hst)
 
 theorem IsCombinatorialManifoldWithBoundary.isPLBall_derivedNeighborhoodCell_inter
     [FiniteDimensional ℝ E] {n : ℕ} {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 2) K) {s t : Finset E}
     (hs : s ∈ K.faces) (ht : t ∈ K.faces) (hne : s ≠ t) (hst : s ⊆ t ∨ t ⊆ s) :
-    IsPLBall (n + 1) ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space) := by
+    IsPLBall (n + 1) ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space) :=
+        by
   classical
   have hcent : s.centroid ℝ id ≠ t.centroid ℝ id := fun h => hne
     (injOn_faces_of_mem_openSimplex K (centroid_mem_openSimplex_of_mem_faces K) hs ht h)
@@ -306,7 +318,8 @@ theorem derivedNeighborhoodCell_singleton (K : Geometry.SimplicialComplex ℝ E)
   ext u
   constructor
   · intro hu
-    exact derivedNeighborhoodCell_faces_subset_derivedNeighborhood K (simplexComplex {v} (K.indep hv))
+    exact derivedNeighborhoodCell_faces_subset_derivedNeighborhood K (simplexComplex {v} (K.indep
+        hv))
       (fun t ht => K.down_closed hv ht.2 ht.1)
       ⟨Finset.singleton_nonempty v, Finset.Subset.rfl⟩ hu
   · intro hu

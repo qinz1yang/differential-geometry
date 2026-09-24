@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.LoopSpace.Basic
-import Mathlib.Analysis.Normed.Group.Quotient
+import Mathlib.Analysis.Normed.Group.AddCircle
+
+/-! Lipschitz. -/
 
 
 
@@ -9,6 +16,28 @@ open Function
 open scoped ENNReal NNReal
 
 namespace DifferentialGeometry.Topology
+
+theorem exists_short_circle_lifts (x y : loopCircle) :
+    ∃ a d : ℝ, 0 ≤ a ∧ a ≤ 1 ∧ -(1 / 2 : ℝ) ≤ d ∧ d ≤ 1 / 2 ∧
+      (a : loopCircle) = y ∧ ((a + d : ℝ) : loopCircle) = x ∧
+      dist x y = |d| := by
+  let a := AddCircle.equivIco (1 : ℝ) 0 y
+  let d := AddCircle.equivIco (1 : ℝ) (-(1 / 2 : ℝ)) (x - y)
+  have ha : 0 ≤ a.1 ∧ a.1 < 1 := by simpa using a.2
+  have hd : -(1 / 2 : ℝ) ≤ d.1 ∧ d.1 < 1 / 2 := by convert d.2 using 1; norm_num
+  have haq : (a.1 : loopCircle) = y := AddCircle.coe_equivIco
+  have hdq : (d.1 : loopCircle) = x - y := AddCircle.coe_equivIco
+  have hadq : ((a.1 + d.1 : ℝ) : loopCircle) = x := by
+    rw [AddCircle.coe_add, haq, hdq]
+    abel
+  have hdabs : |d.1| ≤ |(1 : ℝ)| / 2 := by
+    rw [abs_one, abs_le]
+    exact ⟨hd.1, hd.2.le⟩
+  have hnorm : ‖(d.1 : loopCircle)‖ = |d.1| :=
+    (AddCircle.norm_coe_eq_abs_iff (1 : ℝ) one_ne_zero).mpr hdabs
+  refine ⟨a.1, d.1, ha.1, ha.2.le, hd.1, hd.2.le, haq, hadq, ?_⟩
+  rw [dist_eq_norm, ← hdq]
+  exact hnorm
 
 variable {Q : Type*} [PseudoEMetricSpace Q]
 
@@ -47,7 +76,8 @@ theorem loop_lipschitz_of_lift {γ : loopCircle → Q} {C : ℝ≥0}
     apply (div_le_iff₀ hCpos).mpr
     have h := ENNReal.toReal_mono
       (ENNReal.mul_ne_top ENNReal.coe_ne_top ENNReal.ofReal_ne_top) (hb a ha)
-    simpa only [ENNReal.toReal_mul, ENNReal.coe_toReal, ENNReal.toReal_ofReal (norm_nonneg _), mul_comm] using h
+    simpa only [ENNReal.toReal_mul, ENNReal.coe_toReal, ENNReal.toReal_ofReal (norm_nonneg _),
+      mul_comm] using h
   rw [edist_dist, dist_eq_norm, ← ENNReal.ofReal_coe_nnreal, ← ENNReal.ofReal_mul C.coe_nonneg,
     ← ENNReal.ofReal_toReal hfin]
   exact ENNReal.ofReal_le_ofReal hr

@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskSplit
+
+/-! # Free Disk Cell -/
 
 open Set
 
@@ -36,7 +43,8 @@ private theorem exists_two_free_disk_cells_planar
   induction cells using Finset.strongInductionOn generalizing K with
   | _ cells ih =>
     by_cases hall : ∀ C ∈ cells, (frontier K.space ∩ C).Nontrivial → IsFreeDiskCell K C
-    · obtain ⟨C, hC, D, hD, hne, htrC, htrD⟩ := h.exists_two_cells_with_nontrivial_frontier_inter hmore
+    · obtain ⟨C, hC, D, hD, hne, htrC, htrD⟩ := h.exists_two_cells_with_nontrivial_frontier_inter
+        hmore
       exact ⟨C, hC, D, hD, hne, hall C hC htrC, hall D hD htrD⟩
     · push Not at hall
       obtain ⟨C, hC, htr, hnotfree⟩ := hall
@@ -58,9 +66,11 @@ private theorem exists_two_free_disk_cells_planar
             (h.disjoint_interior_cell hE hC hEC)
       let cellsU := cells.filter (fun E => E ⊆ U)
       let cellsV := cells.filter (fun E => E ⊆ V)
-      have hcoverU : U = ⋃ E ∈ cellsU, E := h.eq_biUnion_filter_of_union_inter hC hunion hinter hside
+      have hcoverU : U = ⋃ E ∈ cellsU, E := h.eq_biUnion_filter_of_union_inter hC hunion hinter
+          hside
       have hcoverV : V = ⋃ E ∈ cellsV, E := h.eq_biUnion_filter_of_union_inter hC
-        ((union_comm V U).trans hunion) ((inter_comm V U).trans hinter) (fun E hE => (hside E hE).symm)
+        ((union_comm V U).trans hunion) ((inter_comm V U).trans hinter) (fun E hE => (hside E
+            hE).symm)
       have hsubU : cellsU ⊆ cells := Finset.filter_subset _ _
       have hsubV : cellsV ⊆ cells := Finset.filter_subset _ _
       have hdecU := h.restrict_cells hsubU hcoverU hU
@@ -104,10 +114,12 @@ private theorem exists_two_free_disk_cells_planar
       have hFV' : F ⊆ V := (Finset.mem_filter.mp hFV).2
       have hfreeE' : IsFreeDiskCell K E := h.isFreeDiskCell_of_frontier_subset_union
         hC hE hEC.symm hCU hEU' hUK hfU (by
-          simpa only [hspaceU] using (hdecU.isFreeDiskCell_iff_isPLBall_frontier_inter hEU).mp hfreeE)
+          simpa only [hspaceU] using (hdecU.isFreeDiskCell_iff_isPLBall_frontier_inter hEU).mp
+              hfreeE)
       have hfreeF' : IsFreeDiskCell K F := h.isFreeDiskCell_of_frontier_subset_union
         hC hF hFC.symm hCV hFV' hVK hfV (by
-          simpa only [hspaceV] using (hdecV.isFreeDiskCell_iff_isPLBall_frontier_inter hFV).mp hfreeF)
+          simpa only [hspaceV] using (hdecV.isFreeDiskCell_iff_isPLBall_frontier_inter hFV).mp
+              hfreeF)
       refine ⟨E, hE, F, hF, ?_, hfreeE', hfreeF'⟩
       intro heq
       apply h.not_cell_subset_cell hE hC hEC

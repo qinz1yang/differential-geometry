@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskUnion
+
+/-! # Planar Disk Decomposition -/
 
 open Set
 
@@ -12,7 +19,8 @@ variable {K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 2))}
 open Classical in
 theorem IsPLDiskDecomposition.boundary_cell_eq_frontier
     (h : IsPLDiskDecomposition K cells) {C : Set (EuclideanSpace ℝ (Fin 2))}
-    (hC : C ∈ cells) : (@boundaryComplex _ _ _ (Classical.decEq _) 2 (restrict K C)).space = frontier C := by
+    (hC : C ∈ cells) : (@boundaryComplex _ _ _ (Classical.decEq _) 2 (restrict K C)).space =
+        frontier C := by
   let _ : Finite K.faces := h.finite_faces.to_subtype
   let _ : Finite (restrict K C).faces := (restrict_faces_finite K C).to_subtype
   have hball : IsPLBall 2 (restrict K C).space := (h.cell_space C hC).symm ▸ h.cell_isPLBall C hC
@@ -106,7 +114,8 @@ theorem IsPLDiskDecomposition.exists_cell_ne_with_nontrivial_frontier_inter
   have hF : F.Finite := Set.Finite.biUnion (cells.erase C₀).finite_toSet hfinite
   have hsub : frontier K.space \ F ⊆ C₀ := by
     intro x hx
-    have hxK : x ∈ K.space := h.isPLBall.isPolyhedron.isClosed.closure_eq ▸ frontier_subset_closure hx.1
+    have hxK : x ∈ K.space := h.isPLBall.isPolyhedron.isClosed.closure_eq ▸ frontier_subset_closure
+        hx.1
     rw [h.space_eq] at hxK
     obtain ⟨C, hC, hxC⟩ := mem_iUnion₂.mp hxK
     by_cases hCC₀ : C = C₀
@@ -136,7 +145,8 @@ theorem IsPLDiskDecomposition.finite_frontier_inter_cells_of_subset
   by_cases hI : (C ∩ D).Nonempty
   · rcases h.inter_isPLBall C hC D hD hne hI with hpoint | harc
     · obtain ⟨p, hp⟩ := isPLBall_zero_iff.mp hpoint
-      exact (hp.symm ▸ Set.toFinite ({p} : Set (EuclideanSpace ℝ (Fin 2)))).subset inter_subset_right
+      exact (hp.symm ▸ Set.toFinite ({p} : Set (EuclideanSpace ℝ (Fin 2)))).subset
+          inter_subset_right
     · have hIC : C ∩ D ⊆ frontier C := by
         rw [← h.boundary_cell_eq_frontier hC]
         exact h.inter_subset_boundary C hC D hD hne

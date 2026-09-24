@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphOpen
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexBranchChartPair
+
+/-! # Branch Chain Chart -/
 
 open Set Topology
 
@@ -165,7 +172,8 @@ theorem exists_slab_branch_chain_instance {c : ℝ} (hc : 0 < c) :
         (M := {p | 0 ≤ p.1 ∧ p.1 ≤ c}) (BdM := {p | p.1 = 0 ∨ p.1 = c}) (c := c)
         (fun _ => isOpen_univ) (fun _ => isOpen_univ) (fun _ => hid) (injOn_id _)
         (fun _ y _ hy => hy) (fun _ y _ hy => hy) (fun _ y _ => Iff.rfl) (fun _ y _ => Iff.rfl)
-        (fun _ => inter_empty _) ((subset_univ _).trans (subset_iUnion (fun _ : Unit => (univ : Set (ℝ × ℝ × ℝ))) ()))
+        (fun _ => inter_empty _) ((subset_univ _).trans (subset_iUnion (fun _ : Unit => (univ : Set
+            (ℝ × ℝ × ℝ))) ()))
         (subset_univ _)
     exact ⟨e, hS, hA, hB, hM, hBd⟩
 

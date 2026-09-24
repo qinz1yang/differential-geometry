@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightHalfDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarSpanningDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
+
+/-! # Height Caps -/
 
 open Set
 
@@ -33,7 +40,8 @@ theorem exists_isPLSphere_pair_of_heightIndex_eq_zero
     ext x
     exact congrArg (fun a : E →ₗ[ℝ] ℝ => a x) h
   obtain ⟨f, h, hf, hh, hfJ, hhJ⟩ :=
-    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove
+    exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow
+        habove
   have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove
   obtain ⟨D, g, hg, hgJ, hDW⟩ := hJ.exists_isPLHomeomorphOn_disk_of_subset_fiber hdimE
     ℓ.toLinearMap hlinear inter_subset_right hW hWconv (inter_subset_left.trans hKW)

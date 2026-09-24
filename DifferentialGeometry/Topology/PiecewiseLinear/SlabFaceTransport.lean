@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSlab
+
+/-! # Slab Face Transport -/
 
 open Set
 
@@ -18,7 +25,8 @@ theorem exists_isPLHomeomorphOn_face_slab_prism
           ((f x).1 ∈ A.space ↔ x ∈ A.space)) ∧
         ((f x).2 = a ↔ ℓ x = a) ∧ ((f x).2 = b ↔ ℓ x = b) := by
   classical
-  obtain ⟨f, hf, hcontrol⟩ := exists_isPLHomeomorphOn_convexHull_slab_prism T (K.indep hT) ℓ hr hvertices
+  obtain ⟨f, hf, hcontrol⟩ := exists_isPLHomeomorphOn_convexHull_slab_prism T (K.indep hT) ℓ hr
+      hvertices
   refine ⟨f, hf, ?_⟩
   intro x hx
   obtain ⟨hfaces, hlow, hhigh⟩ := hcontrol x hx

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.MetricSpace.Lipschitz
+
+/-! # Affine Periodic -/
 
 
 
@@ -30,7 +37,9 @@ theorem exists_homeomorph_affinePeriodic_of_lowerSlope {f : ℝ → ℝ}
     obtain ⟨h₁, h₂⟩ := abs_le.mp h
     constructor <;> linarith
   have htop : Tendsto f atTop atTop := tendsto_atTop_mono (fun x => (hbounds x).1)
-    (by simpa only [sub_eq_add_neg, id_eq] using tendsto_atTop_add_const_right atTop (-B) tendsto_id)
+    (by
+      simpa only [sub_eq_add_neg, id_eq] using
+        tendsto_atTop_add_const_right atTop (-B) tendsto_id)
   have hbot : Tendsto f atBot atBot := tendsto_atBot_mono (fun x => (hbounds x).2)
     (tendsto_atBot_add_const_right atBot B tendsto_id)
   have hsurj : Surjective f := hc.surjective htop hbot

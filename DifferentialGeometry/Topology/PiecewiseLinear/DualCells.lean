@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
+
+/-! # Dual Cells -/
 
 open Set Topology
 
@@ -341,7 +348,8 @@ theorem centroid_mem_splittingDisk_space (K : Geometry.SimplicialComplex ℝ E) 
     (he : e ∈ K.faces) : e.centroid ℝ id ∈ (splittingDisk K e he).space := by
   classical
   rw [splittingDisk_space]
-  exact mem_closedStar_self _ ((barycentricSubdivision_isSubdivision (dualCell K e he)).singleton_mem
+  exact mem_closedStar_self _ ((barycentricSubdivision_isSubdivision (dualCell K e
+      he)).singleton_mem
     (singleton_centroid_mem_dualCell K he))
 
 open Classical in
@@ -404,7 +412,8 @@ theorem mem_graphDualCell_faces_iff_of_flag {K : Geometry.SimplicialComplex ℝ 
       huS (subset_convexHull ℝ _ (Finset.mem_image_of_mem _ he))
     rw [closedStar_barycentricSubdivision_eq_dualCell K hv] at hmem
     exact mem_faces_of_mem_openSimplex_of_mem_space (dualCell_faces_subset K hv) (hD.mem_faces he)
-      (centroid_mem_openSimplex ((barycentricSubdivision K).nonempty_of_mem_faces (hD.mem_faces he)))
+      (centroid_mem_openSimplex ((barycentricSubdivision K).nonempty_of_mem_faces (hD.mem_faces
+          he)))
       hmem
   · rintro ⟨hDN, hfaces⟩
     refine ⟨⟨D, hD, hne, hDN, rfl⟩, ?_⟩
@@ -702,7 +711,8 @@ theorem exists_isSubdivision_graphDualCell_diam_lt [FiniteDimensional ℝ E]
   obtain ⟨K', hK', hfin, _, hdiam⟩ := exists_isSubdivision_diam_lt K
     (fun s hs => card_le_finrank_succ_of_mem_faces K hs) (div_pos hε (by norm_num : (0 : ℝ) < 3))
   let L' := restrict K' L.space
-  have hL' : IsSubdivision L' L := restrict_isSubdivision L fun t ht => hK'.convexHull_eq_biUnion (hL ht)
+  have hL' : IsSubdivision L' L := restrict_isSubdivision L fun t ht => hK'.convexHull_eq_biUnion
+      (hL ht)
   refine ⟨K', L', hK', hL', hfin, restrict_faces_subset _ _, fun s hs => hL'.card_le hcard hs,
     fun v => ?_⟩
   have hbound := diam_graphDualCell_le K' L' v (δ := ε / 3)

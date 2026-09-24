@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightChange
 import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 import DifferentialGeometry.Topology.PiecewiseLinear.VertexCrossing
+
+/-! # Vertex Crossing Level -/
 
 open Set Topology
 

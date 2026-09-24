@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Bicollar
 import DifferentialGeometry.Topology.PiecewiseLinear.PieceParametrization
 import DifferentialGeometry.Topology.PiecewiseLinear.ExhaustionGeneral
 import DifferentialGeometry.Topology.PiecewiseLinear.FrontierBoundary
+
+/-! # Bicollar Manifold -/
 
 open Set Topology
 
@@ -69,7 +76,8 @@ theorem PLPieceIn.exists_bicollar_of_subset_interior {S Y : Set X}
     (P := Icc (-1 : ℝ) 1))
   have hcombined := hprod.trans hρ
   obtain ⟨J, hJfin, hJspace⟩ :=
-    (T.isPolyhedron_space.prod (isHPolytope_Icc (a := (-1 : ℝ)) (b := 1)).isPolyhedron).exists_simplicialComplex
+    (T.isPolyhedron_space.prod (isHPolytope_Icc (a := (-1 : ℝ)) (b :=
+        1)).isPolyhedron).exists_simplicialComplex
   have hparam : IsPLHomeomorphOn (ρ ∘ Prod.map g id) J.space B.complex.space := by
     rw [hJspace, hBspace]
     exact hcombined

@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightCut
 import DifferentialGeometry.Topology.PiecewiseLinear.InnermostLevel
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereCut
+
+/-! # Singular Height Cut -/
 
 open Set Topology
 
@@ -51,7 +58,8 @@ theorem exists_isPLSphere_pair_of_mem_heightSingularPoints_with_inter_eq_boundar
   have hB : IsPLBall 2 B := ⟨fB, hfB⟩
   have hD : IsPLBall 2 D := ⟨f, hf⟩
   have hAB : A ∩ B ⊆ D := hinter.subset.trans (hSD.symm.subset.trans inter_subset_right)
-  have hpv := heightSingularPoints_subset_vertices K hman.isCombinatorialManifoldWithBoundary hdimE ℓ hℓ hinj hp
+  have hpv := heightSingularPoints_subset_vertices K hman.isCombinatorialManifoldWithBoundary hdimE
+      ℓ hℓ hinj hp
   refine ⟨A, B, D, f, hunion, hinter, hA, hB, hf, hDW, hpD, hSA, hSB, hcap, hrecover,
     encard_levelPolygons_add_of_cut_at_vertex K hman hdimE ℓ hℓ hinj hpv
       hA.isPolyhedron.isClosed hB.isPolyhedron.isClosed hunion hinter hJ, ?_, ?_, ?_, hSD⟩
@@ -84,7 +92,8 @@ theorem exists_isPLSphere_pair_of_mem_heightSingularPoints
       heightSingularPoints (B ∪ D) ℓ \ D = (heightSingularPoints K.space ℓ ∩ B) \ D := by
   obtain ⟨A, B, D, f, hunion, hinter, hA, hB, hf, hDW, hpD, hSA, hSB, hcap, hrecover,
     hcount, hother, hsingA, hsingB, -⟩ :=
-    exists_isPLSphere_pair_of_mem_heightSingularPoints_with_inter_eq_boundary K hK hdimE ℓ hℓ hinj hp hW hWconv hKW
+    exists_isPLSphere_pair_of_mem_heightSingularPoints_with_inter_eq_boundary K hK hdimE ℓ hℓ hinj
+        hp hW hWconv hKW
   exact ⟨A, B, D, f, hunion, hinter, hA, hB, hf, hDW, hpD, hSA, hSB, hcap, hrecover,
     hcount, hother, hsingA, hsingB⟩
 

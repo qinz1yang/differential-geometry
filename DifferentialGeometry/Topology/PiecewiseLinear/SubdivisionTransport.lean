@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Gluing
 import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Subcomplex
+
+/-! # Subdivision Transport -/
 
 open Set
 
@@ -121,7 +128,8 @@ theorem IsGlueIso.simplicialMap_comp {G : Type*} [NormedAddCommGroup G] [NormedS
   rw [simplicialMap_eq_of_mem B ψ (h.image₁ s hs) hmem,
     simplicialMap_eq_of_mem A (ψ ∘ φ) hs hxs, Finset.sum_image hinj]
   exact Finset.sum_congr rfl fun v hv => by
-    rw [weights_eq (B.indep (h.image₁ s hs)) hmem hsum hvec _ (Finset.mem_image_of_mem φ hv), hμ v hv]
+    rw [weights_eq (B.indep (h.image₁ s hs)) hmem hsum hvec _ (Finset.mem_image_of_mem φ hv), hμ v
+        hv]
     rfl
 
 theorem IsGlueIso.faces_eq_simplicialImageFaces (h : IsGlueIso A B φ φ') :

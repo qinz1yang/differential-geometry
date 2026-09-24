@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Topology.Connected.Clopen
 import Mathlib.Topology.Separation.Hausdorff
 import Mathlib.Topology.Instances.Real.Lemmas
+
+/-! # Compact Intersection -/
 
 open Set Topology
 
@@ -59,9 +66,12 @@ theorem isPreconnected_inter_le_of_isCompact_of_forall_inter_lt
   rw [← heq]
   apply isPreconnected_iInter_of_directed_isCompact C
   · intro s t
-    refine ⟨⟨min s t, (show r < min (s : ℝ) (t : ℝ) from lt_min (show r < s from s.2) (show r < t from t.2))⟩, ?_, ?_⟩
-    · exact closure_mono (fun _ hx => ⟨hx.1, lt_of_lt_of_le (show f _ < min s t from hx.2) (min_le_left _ _)⟩)
-    · exact closure_mono (fun _ hx => ⟨hx.1, lt_of_lt_of_le (show f _ < min s t from hx.2) (min_le_right _ _)⟩)
+    refine ⟨⟨min s t, (show r < min (s : ℝ) (t : ℝ) from lt_min (show r < s from s.2) (show r < t
+        from t.2))⟩, ?_, ?_⟩
+    · exact closure_mono (fun _ hx => ⟨hx.1, lt_of_lt_of_le (show f _ < min s t from hx.2)
+        (min_le_left _ _)⟩)
+    · exact closure_mono (fun _ hx => ⟨hx.1, lt_of_lt_of_le (show f _ < min s t from hx.2)
+        (min_le_right _ _)⟩)
   · intro t
     exact hS.of_isClosed_subset isClosed_closure ((hsub t).trans inter_subset_left)
   · intro t

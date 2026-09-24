@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SublevelEmbedding
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFilling
 import DifferentialGeometry.Topology.PiecewiseLinear.SchoenfliesReduction
+
+/-! # Schoenflies -/
 
 open Set
 
@@ -43,7 +50,8 @@ theorem isSimplyEmbedded_frontier_of_heightIndex_eq_zero (I : SchoenfliesInput)
     ℓ hℓ hinj hzero r hbelow habove
   have hright := isSimplyEmbedded_frontier_superlevel_of_other_vertices_lt I K ℓ.toLinearMap hp
     hrp hother ⟨g, hg⟩
-  exact isSimplyEmbedded_frontier_of_sublevel_superlevel I hcompact.isClosed ℓ hℓ r hleft hright hg hgb
+  exact isSimplyEmbedded_frontier_of_sublevel_superlevel I hcompact.isClosed ℓ hℓ r hleft hright hg
+      hgb
 
 theorem isSimplyEmbedded_of_heightIndex_eq_zero (I : SchoenfliesInput)
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite K.faces]
@@ -69,7 +77,8 @@ theorem isSimplyEmbedded_of_isPLSphere_two (I : SchoenfliesInput)
 
 theorem exists_isPLBall_of_isPLSphere_two (I : SchoenfliesInput)
     {S : Set (EuclideanSpace ℝ (Fin 3))} (hS : IsPLSphere 2 S) :
-    ∃ B : Set (EuclideanSpace ℝ (Fin 3)), IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B := by
+    ∃ B : Set (EuclideanSpace ℝ (Fin 3)), IsPLBall 3 B ∧ frontier B = S ∧ Bornology.IsBounded B :=
+        by
   obtain ⟨B, hB, hfront, hbounded, -⟩ :=
     exists_hasPushProperty_of_isSimplyEmbedded (isSimplyEmbedded_of_isPLSphere_two I hS)
   exact ⟨B, hB, hfront, hbounded⟩

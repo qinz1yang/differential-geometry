@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 import Mathlib.Topology.Homotopy.Lifting
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected
+
+/-! Smooth Lift. -/
 
 noncomputable section
 

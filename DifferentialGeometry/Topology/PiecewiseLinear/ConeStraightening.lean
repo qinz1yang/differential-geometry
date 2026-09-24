@@ -1,8 +1,15 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeFaceTransport
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplyEmbedded
 import DifferentialGeometry.Analysis.Convex.CompactFrontier
+
+/-! # Cone Straightening -/
 
 open Set
 
@@ -52,7 +59,8 @@ theorem exists_isPLHomeomorphOn_straighten_cone_of_isGlueIso_planar
       ((coneComplex hp).convexHull_subset_space (Or.inr (Or.inr ⟨t, ht, rfl⟩))).trans hKU
     obtain ⟨g, hg, hgK, hgfix⟩ := exists_isPLHomeomorphOn_frontier_coneComplex_eraseTriangleComplex
       K hp hK ht htcard (K.nonempty_of_mem_faces hs) hst hsne
-      (by simpa only [Finset.coe_erase] using htrace) hball hU (by simpa only [Finset.coe_insert] using htU)
+      (by simpa only [Finset.coe_erase] using htrace) hball hU (by simpa only [Finset.coe_insert]
+          using htU)
     let K' := eraseTriangleComplex K t
     let L' := eraseTriangleComplex L (t.image φ)
     let _ : Finite K'.faces := (eraseTriangleComplex_faces_finite K t).to_subtype
@@ -82,7 +90,8 @@ theorem exists_isPLHomeomorphOn_straighten_cone_of_isGlueIso_planar
       exact hHfix hx
 termination_by {u ∈ K.faces | u.card = 3}.ncard
 decreasing_by
-  exact ncard_triangles_eraseTriangleComplex_lt K t ht htcard (fun u hu => card_le_of_isPLBall K hK hu)
+  exact ncard_triangles_eraseTriangleComplex_lt K t ht htcard (fun u hu => card_le_of_isPLBall K hK
+      hu)
 
 theorem isSimplyEmbedded_frontier_coneComplex [dE : DecidableEq (EuclideanSpace ℝ (Fin 3))]
     (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) [Finite K.faces]
@@ -101,7 +110,8 @@ theorem isSimplyEmbedded_frontier_coneComplex [dE : DecidableEq (EuclideanSpace 
   let _ : Finite A.faces := hAfin.to_subtype
   let _ : Finite L.faces := hLfin.to_subtype
   let hpA := hp.of_isSubdivision hA
-  have hAC : (coneComplex hpA).space = (coneComplex hp).space := (coneComplex_isSubdivision hp hA).space_eq
+  have hAC : (coneComplex hpA).space = (coneComplex hp).space := (coneComplex_isSubdivision hp
+      hA).space_eq
   have hAball : IsPLBall 2 A.space := hL.of_isPLHomeomorphOn hIso.symm.isPLHomeomorphOn
   obtain ⟨x, hx⟩ := hAball.nonempty
   obtain ⟨s, hs, -⟩ := A.mem_space_iff.mp hx

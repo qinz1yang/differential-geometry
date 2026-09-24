@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCorner
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexFrontier
+
+/-! # Simplex Corner Frontier -/
 
 open Set
 
@@ -30,7 +37,8 @@ theorem coneComplex_simplexAvoiding_inter_convexHull [DecidableEq E]
     {a : E} (ha : a ∈ T) {p : E} (hpopen : p ∈ openSimplex T)
     (hp : IsConeBase p (simplexAvoiding T hT {T.erase a})) :
     (coneComplex hp).space ∩ convexHull ℝ ((insert p (T.erase a) : Finset E) : Set E) =
-      (coneComplex (hp.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a))).space := by
+      (coneComplex (hp.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT
+          a))).space := by
   have hne : (T.erase a).Nonempty := by
     apply Finset.card_pos.mp
     rw [Finset.card_erase_of_mem ha]
@@ -39,8 +47,10 @@ theorem coneComplex_simplexAvoiding_inter_convexHull [DecidableEq E]
   let hL := simplexAvoiding_erase_faces_subset_simplexBoundary T hT a
   let hM := simplexComplex_erase_faces_subset_simplexBoundary T hT ha
   have hinter : (simplexAvoiding T hT {T.erase a}).space ∩
-      (simplexComplex (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space =
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+      (simplexComplex (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          =
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          := by
     rw [simplexComplex_space _ _ hne]
     exact simplexAvoiding_space_inter_convexHull_erase T hT a
   have h := coneComplex_space_inter hK hL hM
@@ -53,14 +63,17 @@ theorem coneComplex_simplexAvoiding_inter_opposite_face [DecidableEq E]
     {a : E} (ha : a ∈ T) {p : E} (hpopen : p ∈ openSimplex T)
     (hp : IsConeBase p (simplexAvoiding T hT {T.erase a})) :
     (coneComplex hp).space ∩ convexHull ℝ ((T.erase a : Finset E) : Set E) =
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          := by
   have hne : (T.erase a).Nonempty := by
     apply Finset.card_pos.mp
     rw [Finset.card_erase_of_mem ha]
     omega
   have hinter : (simplexAvoiding T hT {T.erase a}).space ∩
-      (simplexComplex (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space =
-      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+      (simplexComplex (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          =
+      (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space
+          := by
     rw [simplexComplex_space _ _ hne]
     exact simplexAvoiding_space_inter_convexHull_erase T hT a
   have h := coneComplex_space_inter_base (isConeBase_simplexBoundary hT hcard hpopen)
@@ -128,7 +141,8 @@ theorem frontier_convexHull_insert_eq_union_coneComplex [DecidableEq E]
     · have hpv : p ≠ v := (ne_of_mem_of_not_mem hv hpT).symm
       rw [Finset.erase_insert_of_ne hpv] at hxv
       rcases (T.erase v).eq_empty_or_nonempty with he | he
-      · rw [he, Finset.insert_empty, Finset.coe_singleton, convexHull_singleton, mem_singleton_iff] at hxv
+      · rw [he, Finset.insert_empty, Finset.coe_singleton, convexHull_singleton, mem_singleton_iff]
+          at hxv
         exact Or.inr (hxv ▸ apex_mem_coneComplex_space hp)
       · refine Or.inr ((coneComplex hp).convexHull_subset_space
           (Or.inr (Or.inr ⟨T.erase v, ?_, rfl⟩)) hxv)
@@ -147,13 +161,17 @@ theorem frontier_convexHull_insert_eq_union_coneComplex [DecidableEq E]
         exact subset_convexHull ℝ _ (Finset.mem_erase.mpr
           ⟨(ne_of_mem_of_not_mem hv hpT).symm, Finset.mem_insert_self p T⟩)
       · obtain ⟨σ, hσ, hzσ⟩ := (simplexBoundary T hT).mem_space_iff.mp hz
-        obtain ⟨v, hv, hvσ⟩ := Finset.exists_of_ssubset (Finset.ssubset_iff_subset_ne.mpr ⟨hσ.1, hσ.2.2⟩)
+        obtain ⟨v, hv, hvσ⟩ := Finset.exists_of_ssubset (Finset.ssubset_iff_subset_ne.mpr ⟨hσ.1,
+            hσ.2.2⟩)
         refine mem_iUnion₂.mpr ⟨v, Finset.mem_insert_of_mem hv, ?_⟩
-        apply convexHull_mono (Finset.coe_subset.mpr ?_) (mem_convexHull_insert_of_combo hzσ hs.le hs')
+        apply convexHull_mono (Finset.coe_subset.mpr ?_) (mem_convexHull_insert_of_combo hzσ hs.le
+            hs')
         intro u hu
         rcases Finset.mem_insert.mp hu with rfl | hu
-        · exact Finset.mem_erase.mpr ⟨(ne_of_mem_of_not_mem hv hpT).symm, Finset.mem_insert_self _ T⟩
-        · exact Finset.mem_erase.mpr ⟨ne_of_mem_of_not_mem hu hvσ, Finset.mem_insert_of_mem (hσ.1 hu)⟩
+        · exact Finset.mem_erase.mpr ⟨(ne_of_mem_of_not_mem hv hpT).symm, Finset.mem_insert_self _
+            T⟩
+        · exact Finset.mem_erase.mpr ⟨ne_of_mem_of_not_mem hu hvσ, Finset.mem_insert_of_mem (hσ.1
+            hu)⟩
 
 theorem frontier_coneComplex_simplexAvoiding_union_subset [FiniteDimensional ℝ E] [DecidableEq E]
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E)) (hcard : 2 ≤ T.card)
@@ -166,8 +184,10 @@ theorem frontier_coneComplex_simplexAvoiding_union_subset [FiniteDimensional ℝ
     (hqinter : (coneComplex hq).space ∩ convexHull ℝ (T : Set E) =
       (simplexAvoiding T hT {T.erase a}).space) :
     frontier ((coneComplex hp).space ∪ (coneComplex hq).space) ⊆
-      (coneComplex (hp.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a))).space ∪
-      (coneComplex (hq.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a))).space := by
+      (coneComplex (hp.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT
+          a))).space ∪
+      (coneComplex (hq.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT
+          a))).space := by
   let F := T.erase a
   let hF := affineIndependent_of_subset hT (Finset.erase_subset a T)
   let L := simplexAvoiding T hT {F}
@@ -229,7 +249,8 @@ theorem frontier_coneComplex_simplexAvoiding_union_subset [FiniteDimensional ℝ
   have hQCq : Q ⊆ Cq := (subset_union_right : Q ⊆ C ∪ Q).trans_eq hCQ
   have hPCq : P ∪ Q ⊆ Cq := union_subset (hPC.trans hCCq) hQCq
   have hPinter : P ∩ Cp = Sp := coneComplex_simplexAvoiding_inter_convexHull T hT hcard ha hpopen hp
-  have hPD : P ∩ D = B.space := coneComplex_simplexAvoiding_inter_opposite_face T hT hcard ha hpopen hp
+  have hPD : P ∩ D = B.space := coneComplex_simplexAvoiding_inter_opposite_face T hT hcard ha hpopen
+      hp
   have hLD : L.space ∩ D = B.space := simplexAvoiding_space_inter_convexHull_erase T hT a
   have hLCp : Cp ∩ L.space = B.space := by
     have hLM : (simplexComplex F hF).space ∩ L.space = B.space := by
@@ -262,11 +283,14 @@ theorem frontier_coneComplex_simplexAvoiding_union_subset [FiniteDimensional ℝ
       exact Or.inl (hxPCp.resolve_right hx.2)
     · exact Or.inr hxQ
   have : Finite L.faces := (simplexAvoiding_faces_finite T hT {F}).to_subtype
-  have : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite L.faces)).to_subtype
-  have : Finite (coneComplex hq).faces := (coneComplex_faces_finite hq (Set.toFinite L.faces)).to_subtype
+  have : Finite (coneComplex hp).faces := (coneComplex_faces_finite hp (Set.toFinite
+      L.faces)).to_subtype
+  have : Finite (coneComplex hq).faces := (coneComplex_faces_finite hq (Set.toFinite
+      L.faces)).to_subtype
   have hNclosed : IsClosed (P ∪ Q) := (isPolyhedron_space (coneComplex hp)).isClosed.union
     (isPolyhedron_space (coneComplex hq)).isClosed
-  have hCpclosed : IsClosed Cp := ((insert p F : Finset E).finite_toSet.isCompact_convexHull ℝ).isClosed
+  have hCpclosed : IsClosed Cp := ((insert p F : Finset E).finite_toSet.isCompact_convexHull
+      ℝ).isClosed
   intro x hx
   have hxN : x ∈ P ∪ Q := hNclosed.closure_subset (frontier_subset_closure hx)
   have hDside (hxD : x ∈ D) : x ∈ Sp ∪ Sq :=
@@ -298,11 +322,14 @@ theorem exists_isConeBase_simplexAvoiding_with_frontier [FiniteDimensional ℝ E
         (simplexAvoiding T hT {T.erase a}).space ∧
       (coneComplex hp).space ∪ (coneComplex hq).space ⊆ U ∧
       frontier ((coneComplex hp).space ∪ (coneComplex hq).space) ⊆
-        (coneComplex (hp.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a))).space ∪
-        (coneComplex (hq.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT a))).space := by
+        (coneComplex (hp.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT
+            a))).space ∪
+        (coneComplex (hq.of_faces_subset (simplexBoundary_erase_faces_subset_simplexAvoiding T hT
+            a))).space := by
   obtain ⟨p, q, hpopen, -, hqind, haopen, hp, hq, hinter, hpT, hqinter, hUsub⟩ :=
     exists_isConeBase_simplexAvoiding_in_neighborhood T hT hcard ha hU hTU
   exact ⟨p, q, hp, hq, hinter, hpT, hqinter, hUsub,
-    frontier_coneComplex_simplexAvoiding_union_subset T hT hcard hspan ha hpopen hp hq hqind haopen hqinter⟩
+    frontier_coneComplex_simplexAvoiding_union_subset T hT hcard hspan ha hpopen hp hq hqind haopen
+        hqinter⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSlabPrism
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.Product
 import DifferentialGeometry.Topology.PiecewiseLinear.PLPath
+
+/-! # Simplex Slab -/
 
 open Set
 
@@ -54,7 +61,8 @@ theorem exists_isPLHomeomorphOn_slab_prism_of_affineIndependent
   rw [hAlevel] at hfQ
   have hgvertices : ∀ i, g (Pi.single i 1) < a ∨ b < g (Pi.single i 1) := by
     intro i
-    simpa only [g, LinearMap.comp_apply, A, Fintype.linearCombination_apply_single, one_smul] using hvertices i
+    simpa only [g, LinearMap.comp_apply, A, Fintype.linearCombination_apply_single, one_smul] using
+        hvertices i
   obtain ⟨f₀, hf₀, hcontrol⟩ := exists_isPLHomeomorphOn_stdSimplex_slab_prism g hr hgvertices
   let f := Prod.map A id ∘ f₀ ∘ Function.invFunOn A P
   have hprod := hfQ.prodMap (isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_Icc (a := a) (b := b)))

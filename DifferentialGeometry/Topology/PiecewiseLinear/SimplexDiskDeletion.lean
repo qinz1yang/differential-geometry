@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarChartDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexCornerChart
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleSubcomplex
+
+/-! # Simplex Disk Deletion -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem exists_isPLHomeomorphOn_eraseTriangleComplex_on_simplexBoundary
   let J := triangleSubcomplexIn K V.space
   let _ : Finite P.faces := (faceStarComplex_faces_finite K s).to_subtype
   let _ : Finite J.faces := (triangleSubcomplexIn_faces_finite K V.space).to_subtype
-  have hP : IsPLBall 2 P.space := hK.isCombinatorialManifoldWithBoundary.isPLBall_faceStarComplex K hs
+  have hP : IsPLBall 2 P.space := hK.isCombinatorialManifoldWithBoundary.isPLBall_faceStarComplex K
+      hs
   have hPV : P.space ⊆ V.space := by
     intro x hx
     have hx' := hPstar hx

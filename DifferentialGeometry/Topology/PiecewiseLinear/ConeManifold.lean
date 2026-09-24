@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceRegion
+
+/-! # Cone Manifold -/
 
 open Set
 
@@ -13,7 +20,8 @@ theorem IsConeBase.isPLBall_of_apex_mem_frontier {n : ℕ}
     (hM : IsCombinatorialManifoldWithBoundary (n + 1) (coneComplex hL))
     (hp : p ∈ frontier (coneComplex hL).space) : IsPLBall n L.space := by
   classical
-  let _ : Finite (coneComplex hL).faces := (coneComplex_faces_finite hL (Set.toFinite L.faces)).to_subtype
+  let _ : Finite (coneComplex hL).faces := (coneComplex_faces_finite hL (Set.toFinite
+      L.faces)).to_subtype
   have hlink : SimplicialComplex.geometricLink (coneComplex hL) {p} = L :=
     Geometry.SimplicialComplex.ext (geometricLink_coneComplex_faces hL)
   have hpB : p ∈ (boundaryComplex (n + 1) (coneComplex hL)).space := by
@@ -30,7 +38,8 @@ theorem IsConeBase.isPLBall_of_isPLSphere_frontier
     (hS : IsPLSphere 2 (frontier (coneComplex hL).space))
     (hp : p ∈ frontier (coneComplex hL).space) : IsPLBall 2 L.space := by
   classical
-  let _ : Finite (coneComplex hL).faces := (coneComplex_faces_finite hL (Set.toFinite L.faces)).to_subtype
+  let _ : Finite (coneComplex hL).faces := (coneComplex_faces_finite hL (Set.toFinite
+      L.faces)).to_subtype
   exact hL.isPLBall_of_apex_mem_frontier hdim
     (isCombinatorialManifoldWithBoundary_of_isPLSphere_frontier (coneComplex hL) hdim hreg hS) hp
 

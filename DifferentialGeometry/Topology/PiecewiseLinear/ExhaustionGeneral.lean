@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Exhaustion
 import DifferentialGeometry.Topology.PiecewiseLinear.LocalManifold
+
+/-! # Exhaustion General -/
 
 open Set Topology Metric
 open scoped Manifold
@@ -111,7 +118,8 @@ theorem exists_isHPolytope_image_symm_mem_nhds_subset {U : Set X} (hU : IsOpen U
   refine ⟨C, hC, hCe, ?_, ?_⟩
   · change e.symm '' C ∈ 𝓝 x
     rw [e.symm_image_eq_source_inter_preimage hCe]
-    exact Filter.inter_mem (e.open_source.mem_nhds hx) ((e.continuousAt hx).preimage_mem_nhds hCnhds)
+    exact Filter.inter_mem (e.open_source.mem_nhds hx) ((e.continuousAt hx).preimage_mem_nhds
+        hCnhds)
   · rintro y ⟨z, hz, rfl⟩
     exact (hCt hz).2
 
@@ -249,7 +257,8 @@ theorem exists_exhaustion_of_isOpen {m : ℕ} {X : Type u} [TopologicalSpace X]
       IsPolyhedralManifoldWithBoundary (n := m + 1) (m + 1) (N i) ∧
       N i ⊆ interior (N (i + 1))) ∧ ⋃ i, N i = U := by
   classical
-  have : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace (EuclideanSpace ℝ (Fin (m + 1))) X
+  have : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace (EuclideanSpace ℝ (Fin (m + 1)))
+      X
   have := hU.locallyCompactSpace
   let C : ℕ → Set X := fun i => ((↑) : U → X) '' compactCovering U i
   have hC : ∀ i, IsCompact (C i) := fun i =>

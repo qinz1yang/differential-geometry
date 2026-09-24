@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiniteIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.PLHomeomorphTopology
+
+/-! # Disk Frontier Perturbation -/
 
 open Set
 
@@ -25,7 +32,8 @@ theorem IsPLBall.exists_isPLBall_finite_frontier_inter
     have hbound' : s.card ≤ 3 := by simpa using hbound
     by_contra hnot
     have hcard : s.card = 3 := by omega
-    obtain ⟨x, hx⟩ := (isPLBall_convexHull_of_affineIndependent s (L.indep hs) hcard).interior_nonempty
+    obtain ⟨x, hx⟩ := (isPLBall_convexHull_of_affineIndependent s (L.indep hs)
+        hcard).interior_nonempty
     have hxT : x ∈ interior T := interior_mono
       ((L.convexHull_subset_space hs).trans hLspace.subset) hx
     rw [hTI] at hxT

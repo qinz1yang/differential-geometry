@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PlanarJordan.GraphApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.CombinatorialZero
+
+/-! # Planar Graph Tameness -/
 
 open Set Schoenflies
 open DifferentialGeometry.Topology.PiecewiseLinear DifferentialGeometry.Topology.PlanarJordan

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodLink
 import DifferentialGeometry.Topology.PiecewiseLinear.FaceNeighborhoodLink
 import DifferentialGeometry.Topology.PiecewiseLinear.JoinBall
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldSubdivision
+
+/-! # Derived Neighborhood Manifold -/
 
 open Set
 
@@ -80,7 +87,8 @@ theorem isPLBall_geometricLink_derivedNeighborhood_of_lower [FiniteDimensional �
         (upperLink (barycentricSubdivision K) e)).space := by
       have hdim : k + (n - (k + 1)) + 1 = n := by omega
       rcases hupper with hs | hb
-      · have := isPLBall_joinComplex_of_isPLBall_of_isPLSphere hlower (hs.of_isPLHomeomorphOn hg.symm)
+      · have := isPLBall_joinComplex_of_isPLBall_of_isPLSphere hlower (hs.of_isPLHomeomorphOn
+          hg.symm)
         rwa [hdim] at this
       · have := isPLBall_joinComplex_of_isPLBall_of_isPLBall hlower (hb.of_isPLHomeomorphOn hg.symm)
         rwa [hdim] at this
@@ -101,9 +109,11 @@ theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhood [FiniteDimension
     IsCombinatorialManifoldWithBoundary (n + 1)
       (DifferentialGeometry.Topology.PiecewiseLinear.derivedNeighborhood K L) := by
   intro v hv
-  have hvK'' : {v} ∈ (PiecewiseLinear.secondDerived K).faces := derivedNeighborhood_faces_subset K L hv
+  have hvK'' : {v} ∈ (PiecewiseLinear.secondDerived K).faces := derivedNeighborhood_faces_subset K L
+      hv
   obtain ⟨e, he, rfl⟩ :=
-    exists_eq_centroid_of_singleton_mem_barycentricSubdivision (PiecewiseLinear.barycentricSubdivision K) hvK''
+    exists_eq_centroid_of_singleton_mem_barycentricSubdivision
+        (PiecewiseLinear.barycentricSubdivision K) hvK''
   have hef : ∃ σ ∈ L.faces, σ.centroid ℝ id ∈ e :=
     (singleton_centroid_mem_derivedNeighborhood_iff K L he).mp hv
   by_cases hsub : ∀ w ∈ e, ∃ σ ∈ L.faces, σ.centroid ℝ id = w
@@ -127,7 +137,8 @@ theorem IsCombinatorialManifoldWithBoundary.derivedNeighborhood [FiniteDimension
       have h2 := Finset.card_pos.mpr hfne
       omega
     exact Or.inr (isPLBall_geometricLink_derivedNeighborhood_of_lower K L h he hef hk
-      (isPLBall_geometricLink_faceNeighborhood_centroid ((PiecewiseLinear.barycentricSubdivision K).indep he)
+      (isPLBall_geometricLink_faceNeighborhood_centroid ((PiecewiseLinear.barycentricSubdivision
+          K).indep he)
         hfT hfne hfe hk))
 
 end DifferentialGeometry.Topology.PiecewiseLinear

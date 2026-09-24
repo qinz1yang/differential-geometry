@@ -1,6 +1,13 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.Cone
 import Mathlib.Data.Set.Card
 import Mathlib.Topology.Order.IntermediateValue
+
+/-! # Radial Embedding -/
 
 open Set
 
@@ -85,6 +92,7 @@ theorem IsRadiallyInjective.encard_le_two_of_real_embedding
         hf.neg (neg_injective.comp_injOn hinj) (hU x) (hU y)
         (neg_lt_neg hxneg) (neg_lt_neg hyneg)
   have hcard := ENat.card_le_card_of_injective hd
-  simpa only [ENat.card_eq_coe_fintype_card, Fintype.card_bool, Nat.cast_ofNat, ENat.card_coe_set_eq] using hcard
+  simpa only [ENat.card_eq_coe_fintype_card, Fintype.card_bool, Nat.cast_ofNat,
+      ENat.card_coe_set_eq] using hcard
 
 end DifferentialGeometry.Topology.PiecewiseLinear

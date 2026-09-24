@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightComplexStability
 import DifferentialGeometry.Topology.PiecewiseLinear.FaceLevelPolygons
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightFiberWitness
 import DifferentialGeometry.Topology.PiecewiseLinear.CapLevelPolygons
+
+/-! # Relative Height Deletion -/
 
 open Set Topology
 
@@ -110,7 +117,8 @@ theorem eventually_exists_isPLHomeomorphOn_fiber_deleting_levelPolygon_of_upper_
     · exact (eventually_exists_face_fiber_witness_outside_closed K hK hdimE ℓ hℓ hinj hp
         H.continuous hheight hQ D.property hDQ).mono fun _ h _ => h
   have hJK : J ∈ C₀ := ⟨hJ.1, fun x hx => ⟨hQK (hJ.2 hx).1, (hJ.2 hx).2⟩⟩
-  filter_upwards [hK.isCombinatorialManifoldWithBoundary.eventually_exists_isPLHomeomorphOn_height_fiber
+  filter_upwards
+      [hK.isCombinatorialManifoldWithBoundary.eventually_exists_isPLHomeomorphOn_height_fiber
       H hH ℓ hheight hinj (fun _ hv h => hinj hv hp h), Filter.eventually_all.mpr hbad,
     eventually_exists_face_fiber_witness_below_upper_side K hK hdimE ℓ hℓ hinj hp
       H.continuous hheight hJK hside] with f hf hbadf hJf

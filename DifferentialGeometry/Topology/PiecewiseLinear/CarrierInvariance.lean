@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereInclusion
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
+
+/-! # Carrier Invariance -/
 
 open Set
 
@@ -36,7 +43,8 @@ theorem mapsTo_space_of_mem_carrierFace
     MapsTo f K.space K.space := by
   intro x hx
   obtain ⟨t, ht, hxt⟩ := K.mem_space_iff.mp hx
-  exact K.convexHull_subset_space ht (mapsTo_convexHull_of_mem_carrierFace K L hLK hf hcarrier ht hxt)
+  exact K.convexHull_subset_space ht (mapsTo_convexHull_of_mem_carrierFace K L hLK hf hcarrier ht
+      hxt)
 
 end Carrier
 
@@ -44,7 +52,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem image_space_eq_of_mem_carrierFace {n : ℕ}
     (K L : Geometry.SimplicialComplex ℝ E) (hK : IsPLSphere (n + 1) K.space)
-    (hLK : IsSubdivision L K) {f : E → E} (hfcont : ContinuousOn f K.space) (hfinj : InjOn f K.space)
+    (hLK : IsSubdivision L K) {f : E → E} (hfcont : ContinuousOn f K.space) (hfinj : InjOn f
+        K.space)
     (hf : ∀ s ∈ L.faces, ∃ a : E →ᵃ[ℝ] E, EqOn f a (convexHull ℝ (s : Set E)))
     (hcarrier : ∀ v ∈ L.vertices, f v ∈ convexHull ℝ (carrierFace K v : Set E)) :
     f '' K.space = K.space :=

@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedStarNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexDiskStraightening
 import DifferentialGeometry.Topology.PiecewiseLinear.BallFrontier
 import DifferentialGeometry.Topology.ConvexFrontier
+
+/-! # Sphere Disk -/
 
 open Set
 
@@ -16,7 +23,8 @@ theorem exists_isPLHomeomorphOn_stdSimplex_starComplex {E : Type*}
     ∃ f : (Fin (n + 2) → ℝ) → E,
       IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) (starComplex (simplexBoundary T hT) a).space ∧
       f '' stdSimplexBoundary (n + 1) =
-        (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a T))).space := by
+        (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a
+            T))).space := by
   obtain ⟨P, g, hP, hPcard, hg, -, hboundary, -⟩ :=
     exists_isPLHomeomorphOn_simplex_vertex_star_euclidean T hT hcard ha
   let L := (starComplex (simplexBoundary T hT) a).space
@@ -199,7 +207,8 @@ theorem exists_disk_decomposition_of_isPLSphere_one_subset_two {E : Type*}
     exists_disk_in_simplexBoundary_of_isPLSphere_one T hT hTcard hJφ hJφB
   obtain ⟨D₂, hunion, hinter, f₂, hf₂, hf₂J⟩ :=
     exists_complementary_disk_in_simplexBoundary T hT hTcard hD₁B hf₁
-  have hD₂B : D₂ ⊆ B := by rw [show B = (simplexBoundary T hT).space from rfl, ← hunion]; exact subset_union_right
+  have hD₂B : D₂ ⊆ B := by rw [show B = (simplexBoundary T hT).space from rfl, ← hunion]; exact
+      subset_union_right
   have hD₁ : IsPLBall 2 D₁ := ⟨f₁, hf₁⟩
   have hD₂ : IsPLBall 2 D₂ := ⟨f₂, hf₂⟩
   have hψ₁ := hψ.restrict hD₁.isPolyhedron hD₁B

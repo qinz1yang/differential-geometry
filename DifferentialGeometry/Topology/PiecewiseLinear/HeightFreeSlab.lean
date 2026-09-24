@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FreeCellSlab
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightStarDecomposition
 import DifferentialGeometry.Topology.PiecewiseLinear.PolytopeSection
 import DifferentialGeometry.Topology.SlabBoundary
+
+/-! # Height Free Slab -/
 
 open Set
 
@@ -38,7 +45,8 @@ theorem exists_convex_slab_cell_of_ne_closedStar
     exact mem_iUnion₂.mpr ⟨T, ⟨hT, subset_convexHull ℝ _ hpT⟩, hx.1⟩
   have hvertices : ∀ v ∈ T, ℓ v < a ∨ b < ℓ v := by
     intro v hv
-    exact hgap v (K.down_closed hT (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
+    exact hgap v (K.down_closed hT (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty
+        v))
       (fun hvp => hpnot (hvp ▸ hv))
   have hlow : ∃ v ∈ T, ℓ v ≤ a := by
     obtain ⟨v, hv, hvp⟩ := hbelow
@@ -69,7 +77,11 @@ theorem exists_convex_slab_cell_of_ne_closedStar
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hgL,
       simplexBoundary_stdVertices_space, hgBd, hKfront]
   have hpatch := isPLBall_slab_patch_of_isFreeDiskCell K (boundaryComplex 3 K)
-    (boundaryComplex_faces_subset 3 K) hT ℓ.toLinearMap hab hpheight hvertices hdec (by rw [hLboundary]; ext x; simp only [mem_inter_iff, mem_ofPred_eq]; tauto)
+    (boundaryComplex_faces_subset 3 K) hT ℓ.toLinearMap hab hpheight hvertices hdec (by
+      rw [hLboundary]
+      ext x
+      simp only [mem_inter_iff, mem_ofPred_eq]
+      tauto)
     (hD_eq ▸ hD) (hD_eq ▸ hfree)
   have hslabBoundary := Topology.frontier_inter_preimage_Icc_of_ne_zero
     (isPolyhedron_space K).isClosed ℓ hℓ hab.le

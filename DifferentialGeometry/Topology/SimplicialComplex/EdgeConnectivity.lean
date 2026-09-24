@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.OneManifoldComponents
+
+/-! # Edge Connectivity -/
 
 open Set
 
@@ -58,6 +65,7 @@ theorem isPreconnected_space_of_edgeGraph_preconnected
 theorem edgeGraph_preconnected_iff_isPreconnected_space
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] :
     (SimplicialComplex.edgeGraph K).Preconnected ↔ IsPreconnected K.space :=
-  ⟨isPreconnected_space_of_edgeGraph_preconnected K, edgeGraph_preconnected_of_isPreconnected_space K⟩
+  ⟨isPreconnected_space_of_edgeGraph_preconnected K, edgeGraph_preconnected_of_isPreconnected_space
+      K⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

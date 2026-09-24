@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.ConnectedNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexNhdsWithin
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceComponentClosure
 import DifferentialGeometry.Topology.Connected.TwoSided
+
+/-! # Two Sided Neighborhood -/
 
 open Set Topology
 
@@ -60,8 +67,11 @@ theorem IsCombinatorialManifoldWithBoundary.exists_connected_neighborhood_sdiff_
     (((↑) : K.space → E) ⁻¹' (N.space \ C)))
   rwa [Subtype.image_preimage_coe, inter_eq_right.mpr (sdiff_subset.trans hNK)]
 
+namespace IsCombinatorialManifoldWithBoundary
+
 open Classical in
-theorem IsCombinatorialManifoldWithBoundary.exists_neighborhood_connectedComponentIn_pair_sdiff_of_twoSided
+theorem
+    exists_neighborhood_connectedComponentIn_pair_sdiff_of_twoSided
     {K L : Geometry.SimplicialComplex ℝ E} [Finite K.faces] [Finite L.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hL : IsCombinatorialManifold 2 L)
     (hLK : L.space ⊆ K.space) (hB : Disjoint L.space (boundaryComplex 3 K).space)
@@ -92,6 +102,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_neighborhood_connectedCompone
   exact ⟨N, hNfin, hN, hNconn, hNK, hNU, hLN, hNnhds, hBN,
     hN.exists_connectedComponentIn_pair_sdiff_of_separating_surface hL hLN hBN
       hNconn.isPreconnected hconn hsep⟩
+
+end IsCombinatorialManifoldWithBoundary
 
 open Classical in
 theorem IsCombinatorialManifoldWithBoundary.exists_neighborhood_manifold_pair_of_twoSided

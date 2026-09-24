@@ -1,5 +1,12 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.FiberCoordinates
 import DifferentialGeometry.Topology.PiecewiseLinear.PolygonalCycles
+
+/-! # Planar Cycle Realization -/
 
 open Set
 
@@ -18,7 +25,8 @@ theorem exists_isPLSphere_one_of_isCycle_of_subset_fiber
   have hπinj : InjOn π G.space := by
     intro x hx y hy hxy
     exact ((hfixed x).mpr (hGr hx)).symm.trans ((congrArg e hxy).trans ((hfixed y).mpr (hGr hy)))
-  obtain ⟨L, hLfin, hLspace, hLfaces, -⟩ := exists_simplicialComplex_image_of_affineOn_faces G (f := π)
+  obtain ⟨L, hLfin, hLspace, hLfaces, -⟩ := exists_simplicialComplex_image_of_affineOn_faces G (f :=
+      π)
     (fun _ _ => ⟨π.toAffineMap, fun _ _ => rfl⟩) hπinj
   have hvertex (v : G.vertices) : π v ∈ L.vertices := by
     apply (hLfaces {π v}).mpr

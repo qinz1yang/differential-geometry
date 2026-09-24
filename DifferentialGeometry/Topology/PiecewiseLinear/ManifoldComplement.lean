@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplementLink
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryMonotonicity
+
+/-! # Manifold Complement -/
 
 open Set
 
@@ -55,7 +62,8 @@ theorem IsCombinatorialManifoldWithBoundary.complement
             (isPLSphere_boundaryComplex_space_of_isPLBall L hLball) inter_subset_right
           have hbd : (boundaryComplex 2 L).space ⊆ B.space :=
             heq.symm.subset.trans inter_subset_left
-          exact (hnot (eq_of_isPLBall_of_boundaryComplex_subset L hLball hB hsub hbd).symm.subset).elim
+          exact (hnot (eq_of_isPLBall_of_boundaryComplex_subset L hLball hB hsub
+              hbd).symm.subset).elim
         · exact isPLBall_closure_sdiff_of_inter_boundaryComplex L hLball hB hsub hb
   · rw [geometricLink_subcomplexGeneratedBy_compl_of_notMem K A hvA]
     exact hK v hvK

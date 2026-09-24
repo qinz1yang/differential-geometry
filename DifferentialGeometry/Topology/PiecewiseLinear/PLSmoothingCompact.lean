@@ -23,21 +23,26 @@ import DifferentialGeometry.Topology.Attachment.Homeomorph
 import DifferentialGeometry.Topology.Manifold.InteriorAtlas
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 import Mathlib.Geometry.Manifold.Instances.Sphere
+import DifferentialGeometry.Topology.Manifold.SphereDiffeomorph
 
 /-!
-# Sorry-first skeleton of C1: the compact PL smoothing model in dimension three
+# The compact PL smoothing model in dimension three
+
+The sphere ingredient was supplied on the smooth integration branch and accepted by
+strict host compilation and axiom/linter audits on 2026-09-24.
 
 The endpoint `PLSmoothingModelCompact 3` (every compact PL three-manifold is homeomorphic to a
 smooth one) is assembled by `plSmoothingModelCompact_three` from two proved zero-handle producers
 and three proved relative boundary formulas
-and the six remaining leaves below, along route R-DN of `consult/C1-smoothing-scope.md` §4:
+and the six proved ingredients below, along route R-DN of `consult/C1-smoothing-scope.md` §4:
 triangulate (`plManifoldTriangulation`),
 take the proved handle filtration `exists_pl_three_handle_filtration`, and carry the invariant
 `IsSmoothHandleStage (N i).space (Subtype.val ⁻¹' (boundaryComplex 3 (N i)).space)` across the
 filtration by induction (`exists_boundarylessManifold_of_isCombinatorialManifold_three`, which
 also proves that the top stage has empty boundary); the interior atlas (`interiorChartedSpace`)
 gives the boundaryless model and `pullbackChartedSpace Homeomorph.ulift` lifts it to `Type u`.
-The empty `X` is handled by `IsManifold.empty`.  No `sorry` sits inside an assembly.  The
+The empty `X` is handled by `IsManifold.empty`.  All assembly proofs use the proved ingredients.
+    The
 bridges `PLSmoothingCompact`, `plSmoothingCompact_of_plSmoothingModelCompact` and
 `exists_isManifold_of_plApproximation_of_plSmoothingCompact` are proved.
 
@@ -243,11 +248,12 @@ theorem nonempty_diffeomorph_sphere_of_homeomorph_sphere
     [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
     (h : S ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) :
     Nonempty (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 ≃ₘ⟮𝓡 2, 𝓡 2⟯ S) := by
-  sorry
+  let _ := (inferInstance : CompactSpace S)
+  exact h.nonempty_diffeomorph_sphere
 
 theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
+    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M]
     (ψ : {z : stdSimplex ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,

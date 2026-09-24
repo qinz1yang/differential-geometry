@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexAffine
+
+/-! # Triangle Coordinates -/
 
 open Set
 
@@ -83,14 +90,16 @@ theorem triangleAffineMap_mem_convexHull_image_iff {v : Fin 3 → E}
     have hsum : ∑ i ∈ B, triangleBarycentricCoord z i = 1 := by
       calc
         (∑ i ∈ B, triangleBarycentricCoord z i) = ∑ i, triangleBarycentricCoord z i :=
-          Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => hzero i (fun h => hi ((hB i).mpr h)))
+          Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => hzero i (fun h => hi ((hB i).mpr
+              h)))
         _ = 1 := sum_triangleBarycentricCoord z
     have hcomb : ∑ i ∈ B, triangleBarycentricCoord z i • v i =
         ∑ i, triangleBarycentricCoord z i • v i :=
       Finset.sum_subset (Finset.subset_univ _) (fun i _ hi => by
         rw [hzero i (fun h => hi ((hB i).mpr h)), zero_smul])
     rw [triangleAffineMap_eq_affineCombination,
-      Finset.affineCombination_eq_linear_combination _ _ _ (sum_triangleBarycentricCoord z), ← hcomb]
+      Finset.affineCombination_eq_linear_combination _ _ _ (sum_triangleBarycentricCoord z), ←
+          hcomb]
     exact (convex_convexHull ℝ (v '' I)).sum_mem
       (fun i _ => triangleBarycentricCoord_nonneg hz i) hsum
       (fun i hi => subset_convexHull ℝ _ ⟨i, (hB i).mp hi, rfl⟩)

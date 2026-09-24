@@ -1,7 +1,14 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.HeightPerturbationSymmetry
 import DifferentialGeometry.Topology.PiecewiseLinear.RelativeHeightDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.ParametricTriangleHeightSides
 import DifferentialGeometry.Topology.PiecewiseLinear.TriangleCapSingularComparisonSymmetry
+
+/-! # Opposite Triangle Cap Perturbation -/
 
 open Set Topology
 

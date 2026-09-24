@@ -1,4 +1,11 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
+
+/-! # Fold Crossing -/
 
 open Set Filter
 open scoped Topology
@@ -64,7 +71,8 @@ theorem hasPLCrossingAt_of_fold [FiniteDimensional ℝ E]
   have hspan : Module.finrank ℝ (Submodule.span ℝ ({w} : Set E)) = 1 :=
     finrank_span_singleton hw
   have hI0 : Module.finrank ℝ (S ⊓ Submodule.span ℝ {w} : Submodule ℝ E) = 0 :=
-    Submodule.finrank_eq_zero.mpr (disjoint_iff.mp (Submodule.disjoint_span_singleton_of_notMem hwS))
+    Submodule.finrank_eq_zero.mpr (disjoint_iff.mp (Submodule.disjoint_span_singleton_of_notMem
+        hwS))
   have hPdim : Module.finrank ℝ P = 2 := by
     have h := Submodule.finrank_sup_add_finrank_inf_eq S (Submodule.span ℝ {w})
     change Module.finrank ℝ P + _ = _ at h
