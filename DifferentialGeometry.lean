@@ -5367,6 +5367,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarDepth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCollarIsotopy
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoverClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedBadPointSelection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedOpenPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowMetricFields
@@ -13565,6 +13566,7 @@ import DifferentialGeometry.Topology.Order.AntitoneSteps
 import DifferentialGeometry.Topology.Manifold.SurvivingSlabSelection
 import DifferentialGeometry.Geometry.Neck.SelectedProperEnd
 import DifferentialGeometry.Geometry.Neck.FiniteFrontierEnd
+import DifferentialGeometry.Geometry.Neck.CompactCapGrowth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalRankOne
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorCurvature

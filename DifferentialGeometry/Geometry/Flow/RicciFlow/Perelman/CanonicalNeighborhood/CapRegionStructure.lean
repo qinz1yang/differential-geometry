@@ -1,4 +1,7 @@
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Boundary
+import DifferentialGeometry.Topology.OpenPartialHomeomorph.Images
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBoundary
+import DifferentialGeometry.Topology.PuncturedConnected
 
 section
 set_option autoImplicit false
@@ -45,6 +48,35 @@ theorem CapCore.isCompact_carrier {X : Set M} (c : CapCore X) : IsCompact X := b
         (U := ⟨Metric.ball (0 : ThreeSpace) 1, Metric.isOpen_ball⟩) hsub
     exact (hopen.isClosed_compl.isCompact).image_of_continuousOn
       (F.contMDiffOn_toFun.continuousOn.mono hc)
+
+omit [IsManifold I3 ∞ M] [SigmaCompactSpace M] in
+open Metric in
+theorem CapCore.closure_interior_carrier {X : Set M} (cap : CapCore X) :
+    closure (interior X) = X := by
+  have hXclosed : IsClosed X := cap.isCompact_carrier.isClosed
+  cases cap with
+  | ball F hF hX =>
+    rw [← hX] at hXclosed ⊢
+    apply F.toOpenPartialHomeomorph.closure_interior_image_of_subset_source hF ?_ hXclosed
+    rw [interior_closedBall _ one_ne_zero, closure_ball _ one_ne_zero]
+  | projective Z pr b hb F hF hX =>
+    have hb1 : closedBall (0 : ThreeSpace) 1 ⊆ b.source :=
+      (closedBall_subset_closedBall (by norm_num : (1 : ℝ) ≤ 2)).trans hb
+    have hbint : interior (b '' closedBall (0 : ThreeSpace) 1) =
+        b '' Metric.ball (0 : ThreeSpace) 1 := by
+      have h := b.toOpenPartialHomeomorph.image_interior_of_subset_source hb1
+      change b '' interior (closedBall (0 : ThreeSpace) 1) =
+        interior (b '' closedBall (0 : ThreeSpace) 1) at h
+      rw [interior_closedBall _ one_ne_zero] at h
+      exact h.symm
+    have hbreg : closure (interior (b '' Metric.ball (0 : ThreeSpace) 1)ᶜ) =
+        (b '' Metric.ball (0 : ThreeSpace) 1)ᶜ := by
+      rw [interior_compl,
+        DifferentialGeometry.Topology.Manifold.closure_image_ball_of_partialDiffeomorph b hb1,
+        closure_compl, hbint]
+    rw [← hX] at hXclosed ⊢
+    exact F.toOpenPartialHomeomorph.closure_interior_image_of_subset_source hF hbreg hXclosed
+
 
 omit [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M] in
 theorem CapCore.nonempty_carrier {X : Set M} (c : CapCore X) : X.Nonempty := by
@@ -338,3 +370,33 @@ end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 end
 
 end
+
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+
+theorem CapCore.isConnected_carrier {K : Set M} (cap : CapCore K) : IsConnected K := by
+  cases cap with
+  | ball F h hK =>
+    rw [← hK]
+    exact capCore_isConnected_image_closedBall F h
+  | projective Z pr b hb F hF hK =>
+    let _ : ConnectedSpace (Sphere 3) := isConnected_iff_connectedSpace.mp
+      (isConnected_sphere (E := EuclideanSpace ℝ (Fin 4))
+        (Module.one_lt_rank_of_one_lt_finrank (by simp)) 0 zero_le_one)
+    let _ : ConnectedSpace Z := pr.onto.connectedSpace pr.smooth.continuous
+    let _ : LocallyPathConnectedSpace Z := ChartedSpace.locallyPathConnectedSpace ThreeSpace Z
+    have hb1 : Metric.closedBall (0 : ThreeSpace) 1 ⊆ b.source :=
+      (Metric.closedBall_subset_closedBall (by norm_num : (1 : ℝ) ≤ 2)).trans hb
+    have hconn := DifferentialGeometry.Topology.isPathConnected_compl_image_ball
+      b.toOpenPartialHomeomorph
+        (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace])) hb1
+    rw [← hK]
+    exact hconn.isConnected.image F (F.contMDiffOn_toFun.continuousOn.mono hF)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
