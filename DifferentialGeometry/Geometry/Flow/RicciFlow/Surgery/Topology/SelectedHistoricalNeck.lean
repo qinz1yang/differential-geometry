@@ -342,3 +342,147 @@ theorem exists_subsequence_selected_backward_neck_from_survivor_footprints :
   exact ⟨rho,hrho,hB.mono fun i hi => ⟨hi.choose⟩⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private local instance (H : ObservedHistory.{u}) (i : Fin H.eventCount) :
+    SigmaCompactSpace (H.event i).incoming.terminalRegularOpen :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.event i).incoming.terminalRegularOpen.isOpen)
+
+private theorem selected_backward_neck_of_growing_source_traces_and_buffers
+    (H : ℕ → ObservedHistory.{u}) (event : ∀ i, Fin (H i).eventCount)
+    (first : ∀ i, Fin ((H i).eventCount + 1)) (hle : ∀ i, first i ≤ (event i).castSucc)
+    (δ : ℕ → ℝ) (hδ : ∀ n, 0 < δ n) (hδ1 : ∀ n, δ n < 1)
+    (hδlim : Tendsto δ atTop (𝓝 0))
+    (eps : ℕ → ℝ) (order : ℕ → ℕ)
+    (O : ∀ i, NormalizedNeck ((H i).event (event i)).terminal.metric (eps i) (order i))
+    (heps : Tendsto eps atTop (𝓝 0)) (horder : Tendsto order atTop atTop)
+    (hprecision0 : ∀ i, eps i ≤ δ 0)
+    {k : ℕ} (hk : ∀ i, k ≤ order i)
+    (N : ∀ i, NormalizedNeck ((H i).event (event i)).terminal.metric (δ 0) k)
+    (hN : ∀ i, N i = ((O i).monoDelta (hprecision0 i) (hδ1 0)).lowerOrder (hk i))
+    (radius : ℕ → ℝ) (hradius : Tendsto radius atTop atTop)
+    (hfit0 : ∀ i, (δ 0)⁻¹ + 1 ≤ radius i)
+    (htrace : ∀ i x, x ∈ (O i).chart '' {z | -(radius i) ≤ z.val.2 ∧ z.val.2 ≤ radius i} →
+      Nonempty (BackwardPointTrace (H i) (first i) (event i).castSucc (hle i) x.val))
+    (hstart2 : ∀ i, (H i).time (first i) ≤ (H i).time (event i).succ - 2 / (O i).scale)
+    (C : ℝ≥0) (q : ℝ)
+    (hscale : Tendsto (fun i => (O i).scale) atTop atTop)
+    (hderivative : ∀ i (j : Fin (H i).eventCount), first i ≤ j.castSucc → j.castSucc ≤ (event i).castSucc →
+      ∀ x : ((H i).stage j.castSucc).Carrier,
+      ∀ t ∈ Ioo ((H i).time j.castSucc) ((H i).time j.succ),
+        q < ((H i).event j).incoming.flow.scalar t x →
+        |derivWithin (fun v => ((H i).event j).incoming.flow.scalar v x) (Iic t) t| ≤
+          C * ((H i).event j).incoming.flow.scalar t x ^ 2)
+    {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi)
+    (hpinching : ∀ i (j : Fin (H i).eventCount), first i ≤ j.castSucc → j.castSucc ≤ (event i).castSucc →
+      Perelman.PhiAlmostNonnegative ((H i).event j).incoming.flow
+        (Ico ((H i).time j.castSucc) ((H i).time j.succ)) phi) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧ ∀ᶠ i in atTop,
+      Nonempty (IncomingBackwardNeck (H (rho i)) (event (rho i)) (N (rho i))
+        (Real.sqrt (N (rho i)).scale⁻¹)) := by
+  classical
+  have htail (n : ℕ) : ∃ m : ℕ, ∀ j, m ≤ j → eps j ≤ δ n ∧ (δ n)⁻¹ + 1 ≤ radius j := by
+    have hp : ∀ᶠ j in atTop, eps j ≤ δ n :=
+      (heps.eventually (Iio_mem_nhds (hδ n))).mono fun j hj => hj.le
+    have hr : ∀ᶠ j in atTop, (δ n)⁻¹ + 1 ≤ radius j :=
+      hradius.eventually (eventually_ge_atTop _)
+    exact eventually_atTop.1 (hp.and hr)
+  choose tail htail using htail
+  let offset : ℕ → ℕ := fun n => Nat.casesOn n 0 (fun m => tail (m+1))
+  have hoffset : offset 0 = 0 := rfl
+  have hprecision : ∀ n j, eps (j + offset n) ≤ δ n := by
+    intro n j
+    cases n with
+    | zero => simpa [offset] using hprecision0 j
+    | succ n => exact (htail (n+1) (j + offset (n+1)) (by dsimp [offset]; omega)).1
+  have hfit : ∀ n j, (δ n)⁻¹ + 1 ≤ radius (j + offset n) := by
+    intro n j
+    cases n with
+    | zero => simpa [offset] using hfit0 j
+    | succ n => exact (htail (n+1) (j + offset (n+1)) (by dsimp [offset]; omega)).2
+  let K : ∀ n j, Set ((H (j + offset n)).event (event (j + offset n))).incoming.terminalRegularOpen :=
+    fun n j => (O (j + offset n)).chart '' {z | -(radius (j + offset n)) ≤ z.val.2 ∧ z.val.2 ≤ radius (j + offset n)}
+  have hinside : ∀ n j, range ((O (j + offset n)).monoDelta (hprecision n j) (hδ1 n)).chart ⊆
+      interior (K n j) := by
+    intro n j x hx
+    obtain ⟨z, rfl⟩ := hx
+    dsimp [K]
+    rw [(O (j + offset n)).interior_image_closedSlab]
+    refine ⟨TopologicalSpace.Opens.inclusion
+      (neckBuffer_le_of_le (O (j + offset n)).delta_pos (hprecision n j)) z, ?_, rfl⟩
+    constructor <;> dsimp <;> linarith [z.property.1, z.property.2, hfit n j]
+  have hqevent : ∀ᶠ i in atTop, q / (O i).scale ≤ 1 := by
+    filter_upwards [hscale.eventually (eventually_gt_atTop q)] with i hi
+    exact (div_le_iff₀ (O i).scale_pos).2 (by linarith)
+  exact exists_subsequence_selected_backward_neck_from_survivor_footprints
+    H event first hle δ hδ hδ1 hδlim eps order O heps horder offset hoffset hprecision hk N hN
+    K (fun n j => htrace (j + offset n)) hinside hstart2 C (fun _ => q) hqevent hscale
+    hderivative hphi hpinching
+
+theorem exists_subsequence_selected_backward_neck_of_growing_source_traces
+    (H : ℕ → ObservedHistory.{u}) (event : ∀ i, Fin (H i).eventCount)
+    (first : ∀ i, Fin ((H i).eventCount + 1)) (hle : ∀ i, first i ≤ (event i).castSucc)
+    {δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1)
+    (eps : ℕ → ℝ) (order : ℕ → ℕ)
+    (O : ∀ i, NormalizedNeck ((H i).event (event i)).terminal.metric (eps i) (order i))
+    (heps : Tendsto eps atTop (𝓝 0)) (horder : Tendsto order atTop atTop)
+    (hprecision0 : ∀ i, eps i ≤ δ)
+    {k : ℕ} (hk : ∀ i, k ≤ order i)
+    (N : ∀ i, NormalizedNeck ((H i).event (event i)).terminal.metric (δ) k)
+    (hN : ∀ i, N i = ((O i).monoDelta (hprecision0 i) (hδ1)).lowerOrder (hk i))
+    (radius : ℕ → ℝ) (hradius : Tendsto radius atTop atTop)
+    (hfit0 : ∀ i, (δ)⁻¹ + 1 ≤ radius i)
+    (htrace : ∀ i x, x ∈ (O i).chart '' {z | -(radius i) ≤ z.val.2 ∧ z.val.2 ≤ radius i} →
+      Nonempty (BackwardPointTrace (H i) (first i) (event i).castSucc (hle i) x.val))
+    (hstart2 : ∀ i, (H i).time (first i) ≤ (H i).time (event i).succ - 2 / (O i).scale)
+    (C : ℝ≥0) (q : ℝ)
+    (hscale : Tendsto (fun i => (O i).scale) atTop atTop)
+    (hderivative : ∀ i (j : Fin (H i).eventCount), first i ≤ j.castSucc → j.castSucc ≤ (event i).castSucc →
+      ∀ x : ((H i).stage j.castSucc).Carrier,
+      ∀ t ∈ Ioo ((H i).time j.castSucc) ((H i).time j.succ),
+        q < ((H i).event j).incoming.flow.scalar t x →
+        |derivWithin (fun v => ((H i).event j).incoming.flow.scalar v x) (Iic t) t| ≤
+          C * ((H i).event j).incoming.flow.scalar t x ^ 2)
+    {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi)
+    (hpinching : ∀ i (j : Fin (H i).eventCount), first i ≤ j.castSucc → j.castSucc ≤ (event i).castSucc →
+      Perelman.PhiAlmostNonnegative ((H i).event j).incoming.flow
+        (Ico ((H i).time j.castSucc) ((H i).time j.succ)) phi) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧ ∀ᶠ i in atTop,
+      Nonempty (IncomingBackwardNeck (H (rho i)) (event (rho i)) (N (rho i))
+        (Real.sqrt (N (rho i)).scale⁻¹)) := by
+  let d : ℕ → ℝ := fun n => Nat.casesOn n δ (fun m => δ / ((m : ℝ) + 2))
+  have hd : ∀ n, 0 < d n := by
+    intro n
+    cases n with
+    | zero => exact hδ
+    | succ n => dsimp [d]; positivity
+  have hd1 : ∀ n, d n < 1 := by
+    intro n
+    cases n with
+    | zero => exact hδ1
+    | succ n =>
+      dsimp [d]
+      apply (div_lt_iff₀ (by positivity : 0 < (n : ℝ) + 2)).2
+      nlinarith [Nat.cast_nonneg (α := ℝ) n]
+  have hdlim : Tendsto d atTop (𝓝 0) := by
+    have hh : Tendsto (fun n : ℕ => (n : ℝ) + 1) atTop atTop :=
+      tendsto_atTop_add_const_right _ 1 (tendsto_natCast_atTop_atTop (R := ℝ))
+    apply (hh.const_div_atTop δ).congr'
+    apply Eventually.of_forall
+    intro n
+    cases n with
+    | zero => simp [d]
+    | succ n =>
+      dsimp [d]
+      congr 1
+      push_cast
+      ring
+  exact selected_backward_neck_of_growing_source_traces_and_buffers H event first hle d hd hd1
+    hdlim eps order O heps horder hprecision0 hk N hN radius hradius hfit0 htrace
+    hstart2 C q hscale hderivative hphi hpinching
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
