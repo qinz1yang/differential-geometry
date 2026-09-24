@@ -65,6 +65,14 @@ theorem TerminalLimitMetric.isCompact_scalar_sublevel
       G.lt G.flow G.equation (by simp [ThreeSpace])
   exact L.isCompact_scalar_sublevel_of_time_derivative_bound hq hbound hPhi hpinch A
 
+theorem TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact
+    (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
+    (hnoncompact : ¬ IsCompact (connectedComponent x)) (A : ℝ) :
+    ∃ y ∈ connectedComponent x, A < metricScalarAt L.metric y := by
+  by_contra! h
+  exact hnoncompact ((L.isCompact_scalar_sublevel A).of_isClosed_subset
+    isClosed_connectedComponent h)
+
 theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel
     (L : G.TerminalLimitMetric) (A : ℝ) :
     {c : ConnectedComponents G.terminalRegularOpen |
