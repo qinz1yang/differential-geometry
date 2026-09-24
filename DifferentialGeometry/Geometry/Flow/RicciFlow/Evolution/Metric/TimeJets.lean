@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TimePolynomialField
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TimeJetFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedIntervalDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
+import DifferentialGeometry.Geometry.Metric.ModelChange
+import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.TensorTimeJets
 
 
 set_option autoImplicit false
@@ -214,7 +217,7 @@ theorem ordinary_metric_time_jet_component_eq_polynomial
     (fun t ht x v w => ancient_metric_hasDerivWithinAt S hS hcarrier hregular ht x v w)).2
       q t ht x basis slots
 
-theorem exists_ordinary_metric_time_jets_on_closed_interval
+private theorem exists_ordinary_metric_time_jets_on_closed_interval_of_inner_product_space
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
     (hcarrier : D.carrier = Icc a b) (hregular : Ioo a b ⊆ D.regular) :
@@ -248,4 +251,56 @@ theorem ordinary_metric_time_jet_component_eq_polynomial_on_closed_interval
       ((Ioo_subset_Ioo_left hac.le).trans hregular) ht x v w)).2 q t ht x basis slots
 
 end Ancient
+
+open DifferentialGeometry.CheegerGromovCompactness
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+theorem exists_ordinary_metric_time_jets_on_closed_interval
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a c b : ℝ} (hac : a < c) (hcb : c < b)
+    (hcarrier : D.carrier = Icc a b) (hregular : Ioo a b ⊆ D.regular) :
+    ∃ B : ℕ → ℝ → Tensor0SField (I := I) (M := M) (n := ∞) 2,
+      (∀ t, B 0 t = metricTensorField (S.base.metric t)) ∧
+      ∀ q t, t ∈ Icc c b → ∀ x,
+        B q t x = iteratedDerivWithin q (fun s => metricTensorField (S.base.metric s) x) (Icc c b) t ∧
+        HasDerivWithinAt (fun s => B q s x) (B (q + 1) t x) (Icc c b) t := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let e : E ≃L[ℝ] EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) :=
+    (Module.finBasis ℝ E).equivFun.toContinuousLinearEquiv.trans
+      (EuclideanSpace.equiv (Fin (Module.finrank ℝ E)) ℝ).symm
+  let J := I.transContinuousLinearEquiv e
+  let Φ := ContinuousLinearEquiv.toTransContinuousLinearEquiv (n := ∞) I M e
+  let U : SolutionOn (I := J) (M := M) D := S.pullback Φ.symm
+  have hU : IsSolutionOn U := hS.pullback S Φ.symm
+  obtain ⟨A, hAzero, hA⟩ :=
+    exists_ordinary_metric_time_jets_on_closed_interval_of_inner_product_space
+      U hU hac hcb hcarrier hregular
+  have hmetric (t : ℝ) : pullbackTensor02FieldCross Φ (metricTensorField (U.base.metric t)) =
+      metricTensorField (S.base.metric t) := by
+    have hp : pullbackTensor02FieldCross Φ (metricTensorField (U.base.metric t)) =
+        metricTensorField (Diffeomorph.pullbackMetricCross (U.base.metric t) Φ) := by
+      ext x v
+      rw [pullbackTensor02FieldCross_apply, metricTensorField_apply, metricTensorField_apply,
+        Diffeomorph.pullbackMetricCross_inner]
+    rw [hp]
+    congr 1
+    exact SmoothRiemannianMetric.pullback_transContinuousLinearEquiv (S.base.metric t) e
+  refine ⟨fun q t => pullbackTensor02FieldCross Φ (A q t), ?_, ?_⟩
+  · intro t
+    change pullbackTensor02FieldCross Φ (A 0 t) = _
+    rw [hAzero, hmetric]
+  · intro q t ht x
+    refine ⟨?_, hasDerivWithinAt_pullbackTensor02FieldCross Φ (A q) (A (q + 1) t) x
+      (hA q t ht (Φ x)).2⟩
+    have hjet := pullbackTensor02FieldCross_eq_iteratedDerivWithin Φ
+      (fun s => metricTensorField (U.base.metric s)) (A q t) q (uniqueDiffOn_Icc hcb) ht
+      (fun y => (hA q t ht y).1) x
+    simpa only [hmetric] using hjet
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
