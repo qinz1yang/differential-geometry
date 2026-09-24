@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness
 import DifferentialGeometry.Geometry.Metric.DerivativeScaleENorm
@@ -251,5 +253,94 @@ theorem exists_uniform_window_curvature_derivative_bounds (j : ℕ) :
     (metric.restrictOpen (standardCapWindow D)) w.windowMetric x (hjet 0 (by omega)) v).1
   norm_num at h ⊢
   exact h
+
+end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open DifferentialGeometry DifferentialGeometry.Geometry.Neck
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.Topology.Manifold.Attachment
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+private local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp⟩
+private local instance : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp⟩
+private local instance {B : ℝ} {hB : 0 < B} :
+    ChartedSpace ThreeSpace (InsertionQuotient hB) :=
+  radialCapAttachmentChartedSpace transitionEnd_pos hB
+private local instance {B : ℝ} {hB : 0 < B} :
+    IsManifold ThreeModel ∞ (InsertionQuotient hB) :=
+  radialCapAttachment_isManifold transitionEnd_pos hB
+private local instance {B : ℝ} {hB : 0 < B} : T2Space (InsertionQuotient hB) :=
+  radialCapAttachment_t2Space transitionEnd_pos hB
+private local instance (V : TopologicalSpace.Opens ThreeSpace) : SigmaCompactSpace V :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel V.isOpen)
+
+theorem exists_uniform_window_scalar_bound :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → 2 ≤ m → ∀ x : standardCapWindow D, ‖x.val‖ < D →
+          |metricScalarAt w.windowMetric x| ≤ C := by
+  obtain ⟨B, hB, hbound⟩ := exists_uniform_window_curvature_derivative_bounds 0
+  refine ⟨9 * B, by positivity, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA D m ε w hε hm x hx
+  have hcurv := hbound w hε hm x hx
+  change Real.sqrt (normSq0S w.windowMetric x 4 (metricRm04At w.windowMetric x)) ≤ B at hcurv
+  have hscalar := scalar_abs_le_rm w.windowMetric x
+  have hdim : Module.finrank ℝ (TangentSpace ThreeModel x) = 3 := by
+    change Module.finrank ℝ ThreeSpace = 3
+    simp [ThreeSpace]
+  rw [hdim] at hscalar
+  norm_num only [Nat.cast_ofNat, show (3 : ℝ) ^ 2 = 9 by norm_num] at hscalar
+  exact hscalar.trans (mul_le_mul_of_nonneg_left hcurv (by norm_num))
+
+namespace CanonicalStaticInsertionWitness
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+  {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+  {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε)
+
+theorem window_scalar (x : standardCapWindow D) :
+    metricScalarAt w.windowMetric x =
+      metricScalarAt w.data.outMetric (w.window x) / metricScalarAt g x₀ := by
+  exact metricScalarAt_pullbackMetricOfInjectiveLocalDiffeomorph_scale
+    w.data.outMetric w.data.windowMap w.properties.window_local
+    w.properties.window_embedding.isEmbedding.injective (metricScalarAt g x₀) d.scalar_pos x
+
+end CanonicalStaticInsertionWitness
+
+theorem exists_uniform_window_image_scalar_bound :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → 2 ≤ m → ∀ x : standardCapWindow D, ‖x.val‖ < D →
+          |metricScalarAt w.data.outMetric (w.window x)| ≤ C * metricScalarAt g x₀ := by
+  obtain ⟨C, hC, hbound⟩ := exists_uniform_window_scalar_bound
+  refine ⟨C, hC, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA D m ε w hε hm x hx
+  have h := hbound w hε hm x hx
+  rw [w.window_scalar, abs_div, abs_of_pos d.scalar_pos] at h
+  exact (div_le_iff₀ d.scalar_pos).mp h
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

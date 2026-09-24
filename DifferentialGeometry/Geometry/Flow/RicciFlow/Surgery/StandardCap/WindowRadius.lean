@@ -72,4 +72,56 @@ theorem window_image_closedBall_subset_ball_of_metric_close
     (metric.restrictOpen (standardCapWindow D)) h x (hclose x hx) v).2
   simpa only [SmoothRiemannianMetric.restrictOpen_inner, show (1 : ℝ) + 1 = 2 by norm_num] using hb
 
+theorem window_edist_map_le_of_metric_upper
+    (g : SmoothRiemannianMetric I M) {D L : ℝ} (hL : 0 < L)
+    (Φ : standardCapWindow D → M) (hΦ : IsLocalDiffeomorph ThreeModel I ∞ Φ)
+    (hinj : Injective Φ)
+    (hupper : ∀ z : standardCapWindow D, ‖z.val‖ < D → ∀ v : TangentSpace ThreeModel z,
+      g.inner (Φ z) (mfderiv ThreeModel I Φ z v) (mfderiv ThreeModel I Φ z v) ≤
+        L ^ 2 * metric.inner z.val v v)
+    (x y : standardCapWindow D) (hx : ‖x.val‖ < D) (hy : ‖y.val‖ < D) :
+    riemannianEDistOf g (Φ x) (Φ y) ≤ ENNReal.ofReal (L * (‖x.val‖ + ‖y.val‖)) := by
+  have hD : 0 < D := (norm_nonneg x.val).trans_lt hx
+  let p : standardCapWindow D := ⟨0, by
+    change ‖(0 : ThreeSpace)‖ < D + 1
+    simp only [norm_zero]
+    linarith⟩
+  have hradial (z : standardCapWindow D) (hz : ‖z.val‖ < D) :
+      riemannianEDistOf g (Φ p) (Φ z) ≤ ENNReal.ofReal (L * ‖z.val‖) := by
+    obtain ⟨R, hzR, hRD⟩ := exists_between hz
+    have hR : 0 < R := (norm_nonneg z.val).trans_lt hzR
+    have hsource : riemannianClosedBallOf metric p.val R ⊆ standardCapWindow D := by
+      intro a ha
+      have hn : ‖a‖ ≤ R := by
+        change riemannianEDistOf metric 0 a ≤ ENNReal.ofReal R at ha
+        rw [edist_zero, ENNReal.ofReal_le_ofReal_iff hR.le] at ha
+        exact ha
+      change ‖a‖ < D + 1
+      linarith
+    have hb := Geometry.Metric.edistOf_map_le_of_metric_upper_on_opens
+      g metric (standardCapWindow D) Φ hΦ hinj p z hR hL hsource
+      (fun a ha v => hupper a (by
+        change riemannianEDistOf metric 0 a.val ≤ ENNReal.ofReal R at ha
+        rw [edist_zero, ENNReal.ofReal_le_ofReal_iff hR.le] at ha
+        exact ha.trans_lt hRD) v) (by
+        change riemannianEDistOf metric 0 z.val < ENNReal.ofReal R
+        rw [edist_zero]
+        exact (ENNReal.ofReal_lt_ofReal_iff hR).mpr hzR)
+    simpa only [show p.val = (0 : ThreeSpace) from rfl, edist_zero,
+      ← ENNReal.ofReal_mul hL.le] using hb
+  have hx' := hradial x hx
+  have hy' := hradial y hy
+  have hsymm : riemannianEDistOf g (Φ x) (Φ p) = riemannianEDistOf g (Φ p) (Φ x) :=
+    riemannianEDistOf_comm g (Φ x) (Φ p)
+  calc
+    riemannianEDistOf g (Φ x) (Φ y) ≤
+        riemannianEDistOf g (Φ x) (Φ p) + riemannianEDistOf g (Φ p) (Φ y) :=
+      riemannianEDistOf_triangle g (Φ x) (Φ p) (Φ y)
+    _ ≤ ENNReal.ofReal (L * ‖x.val‖) + ENNReal.ofReal (L * ‖y.val‖) := by
+      rw [hsymm]
+      exact add_le_add hx' hy'
+    _ = ENNReal.ofReal (L * (‖x.val‖ + ‖y.val‖)) := by
+      rw [← ENNReal.ofReal_add (mul_nonneg hL.le (norm_nonneg _))
+        (mul_nonneg hL.le (norm_nonneg _)), mul_add]
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

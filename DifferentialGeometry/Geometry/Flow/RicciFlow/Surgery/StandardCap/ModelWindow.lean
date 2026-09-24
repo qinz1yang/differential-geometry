@@ -189,6 +189,32 @@ theorem modelWindowPullback_inner {R B : ℝ} (hB : 0 < B) (hfit : R ≤ transit
         (mfderiv (𝓡 3) (𝓡 3) (modelWindowMap hB hfit) x w) :=
   pullbackMetricOfInjectiveLocalDiffeomorph_inner _ _ _ _ _ _ _
 
+theorem modelWindowPullback_restrict {R S B : ℝ} (hB : 0 < B) (hRS : R ≤ S)
+    (hfit : S ≤ transitionEnd + B)
+    (g : SmoothRiemannianMetric (𝓡 3) (InsertionQuotient hB)) :
+    modelWindowPullback hB (hRS.trans hfit) g =
+      (modelWindowPullback hB hfit g).restrictOpenOfSubset
+        (fun _ hx => hx.trans_le hRS : modelWindow R ≤ modelWindow S) := by
+  let hsub : modelWindow R ≤ modelWindow S := fun _ hx => hx.trans_le hRS
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  change (modelWindowPullback hB (hRS.trans hfit) g).inner x v w =
+    (modelWindowPullback hB hfit g).inner (Opens.inclusion hsub x) v w
+  have hmap : modelWindowMap hB (hRS.trans hfit) =
+      modelWindowMap hB hfit ∘ Opens.inclusion hsub := rfl
+  have hd : mfderiv (𝓡 3) (𝓡 3) (modelWindowMap hB (hRS.trans hfit)) x =
+      mfderiv (𝓡 3) (𝓡 3) (modelWindowMap hB hfit) (Opens.inclusion hsub x) := by
+    rw [hmap, mfderiv_comp x
+      ((isSmoothEmbedding_modelWindowMap hB hfit).contMDiff.mdifferentiableAt (by decide))
+      ((contMDiff_inclusion (I := 𝓡 3) (n := ∞) hsub).mdifferentiableAt (by decide)),
+      mfderiv_opens_incl]
+    rfl
+  have hs := modelWindowPullback_inner hB (hRS.trans hfit) g x v w
+  have hl := modelWindowPullback_inner hB hfit g (Opens.inclusion hsub x) v w
+  rw [hd] at hs
+  exact hs.trans hl.symm
+
+
 theorem modelWindowPullback_insertedQuotientMetric {A B η R : ℝ}
     (hA : 0 < A) (hAB : 2 * A < B) (hη : 0 < η)
     (h : SmoothRiemannianMetric ((𝓡 2).prod 𝓘(ℝ)) (DifferentialGeometry.Geometry.Neck.openCylinder B))
