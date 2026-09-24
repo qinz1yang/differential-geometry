@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Metric.Distance.LocalPullCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Invariance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalBallFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.ParabolicTerminalBall
 
@@ -166,5 +169,260 @@ theorem RetainedCoreHistory.exists_parabolic_terminal_ball_flow
       _ = (B/Q)^2 := by simp only [Nat.zero_add,div_pow,inv_pow]; ring
   · have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
     simpa only [hdim,Nat.cast_ofNat,show (3 : ℝ)^2=9 by norm_num] using hh.2.2.2
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+noncomputable section
+open Set
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff ENNReal NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+private theorem exists_uniform_pinching_test_radius {Phi : ℝ → ℝ}
+    (hPhi : AdmissiblePinchingFunction Phi) {θ : ℝ} (hθ : 0 < θ) :
+    ∃ α : ℝ, 0 < α ∧ α ≤ 1 ∧ α ^ 2 ≤ θ ∧
+      ∀ Q : ℝ, 1 ≤ Q →
+        (α / Real.sqrt Q) ^ 2 ≤ θ / Q ∧
+        (α / Real.sqrt Q) ^ 4 * (4 * Real.sqrt 3 * (Q + Phi (4 * Q) + Phi 0)) ^ 2 ≤ 1 := by
+  let B := 4 * Real.sqrt 3 * (1 + Phi 4 + Phi 0)
+  have hB : 0 < B := by dsimp only [B]; positivity [hPhi.pos 4, hPhi.pos 0]
+  let α := min 1 (min θ (1 / B))
+  have hα : 0 < α := lt_min zero_lt_one (lt_min hθ (one_div_pos.mpr hB))
+  have hα1 : α ≤ 1 := min_le_left _ _
+  have hαθ : α ≤ θ := (min_le_right _ _).trans (min_le_left _ _)
+  have hαB : α ≤ 1 / B := (min_le_right _ _).trans (min_le_right _ _)
+  have hαsq : α ^ 2 ≤ α := by nlinarith
+  have hαsqB : α ^ 2 * B ≤ 1 :=
+    (mul_le_mul_of_nonneg_right hαsq hB.le).trans ((le_div_iff₀ hB).mp hαB)
+  refine ⟨α, hα, hα1, hαsq.trans hαθ, ?_⟩
+  intro Q hQ
+  have hQpos : 0 < Q := zero_lt_one.trans_le hQ
+  have hsqrt : 0 < Real.sqrt Q := Real.sqrt_pos.mpr hQpos
+  have hradsq : (α / Real.sqrt Q) ^ 2 = α ^ 2 / Q := by
+    rw [div_pow, Real.sq_sqrt hQpos.le]
+  constructor
+  · rw [hradsq]
+    exact div_le_div_of_nonneg_right (hαsq.trans hαθ) hQpos.le
+  have hfour := hPhi.rescale_le hQ 4
+  change Q⁻¹ * Phi (Q * 4) ≤ Phi 4 at hfour
+  have hfour' := (inv_mul_le_iff₀ hQpos).mp hfour
+  have hzero : Phi 0 ≤ Q * Phi 0 := by nlinarith [hPhi.pos 0]
+  have hin : Q + Phi (4 * Q) + Phi 0 ≤ Q * (1 + Phi 4 + Phi 0) := by
+    rw [mul_comm Q 4] at hfour'
+    nlinarith
+  have hbound : 4 * Real.sqrt 3 * (Q + Phi (4 * Q) + Phi 0) ≤ B * Q := by
+    have hh := mul_le_mul_of_nonneg_left hin (by positivity : 0 ≤ 4 * Real.sqrt 3)
+    dsimp only [B]
+    nlinarith
+  have hcurv : 0 ≤ 4 * Real.sqrt 3 * (Q + Phi (4 * Q) + Phi 0) := by
+    positivity [hPhi.pos (4 * Q), hPhi.pos 0]
+  have hb2 := pow_le_pow_left₀ hcurv hbound 2
+  have heq : (α / Real.sqrt Q) ^ 4 * (B * Q) ^ 2 = (α ^ 2 * B) ^ 2 := by
+    have hs := Real.sq_sqrt hQpos.le
+    field_simp
+    nlinarith [sq_nonneg (Real.sqrt Q)]
+  calc
+    (α / Real.sqrt Q) ^ 4 * (4 * Real.sqrt 3 * (Q + Phi (4 * Q) + Phi 0)) ^ 2
+      ≤ (α / Real.sqrt Q) ^ 4 * (B * Q) ^ 2 := mul_le_mul_of_nonneg_left hb2 (by positivity)
+    _ = (α ^ 2 * B) ^ 2 := heq
+    _ ≤ 1 := by nlinarith [mul_nonneg (sq_nonneg α) hB.le]
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.FlowMetricBall
+
+private theorem isParabolicallyRmControlled_of_uniform_bound
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [IsManifold I 1 M] [T2Space M]
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    {time : D.FlowTime} (B : FlowMetricBall S time) {K : ℝ}
+    (hinterval : Icc ((time : ℝ) - B.radius ^ 2) time ⊆ D.carrier)
+    (hcurv : ∀ t ∈ D.carrier, ∀ x : M,
+      normSq0S (S.base.metric t) x 4 (metricRm04At (S.base.metric t) x) ≤ K ^ 2)
+    (hscale : B.radius ^ 4 * K ^ 2 ≤ 1) : B.IsParabolicallyRmControlled := by
+  refine ⟨hinterval, ?_⟩
+  intro t ht x hx
+  have h := mul_le_mul_of_nonneg_left (hcurv t (hinterval ht) x)
+    (by positivity : 0 ≤ B.radius ^ 4)
+  exact h.trans hscale
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.FlowMetricBall
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private local instance {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+    (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+    (K : Set (H.toHistory.event i).incoming.terminalRegularOpen) :
+    SigmaCompactSpace (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K) := by
+  let : SigmaCompactSpace (H.toHistory.backwardSurvivorDomain first.castSucc i.castSucc hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel
+        (H.toHistory.backwardSurvivorDomain first.castSucc i.castSucc hle).isOpen)
+  let : SigmaCompactSpace (H.toHistory.backwardSurvivorTerminalFace first.castSucc i hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel
+        (H.toHistory.backwardSurvivorTerminalFace first.castSucc i hle).isOpen)
+  exact isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel
+      (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K).isOpen)
+
+theorem RetainedCoreHistory.exists_parabolically_controlled_terminal_ball
+    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+    (x : (H.toHistory.event i).incoming.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
+    (hcompact : IsCompact (riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r))
+    {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)
+    {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi)
+    (hbound : ∀ j : Fin H.eventCount, first.castSucc ≤ j.castSucc → j.castSucc ≤ i.castSucc →
+      ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.toHistory.event j).incoming.flow.scalar t x →
+      |derivWithin (fun v => (H.toHistory.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+        C * (H.toHistory.event j).incoming.flow.scalar t x ^ 2)
+    (hpinch : ∀ j : Fin H.eventCount, first.castSucc ≤ j.castSucc → j.castSucc ≤ i.castSucc →
+      Perelman.PhiAlmostNonnegative (H.toHistory.event j).incoming.flow
+        (Ico (H.time j.castSucc) (H.time j.succ)) Phi)
+    (hscalar : ∀ z ∈ riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r,
+      metricScalarAt (H.toHistory.event i).terminal.metric z ≤ 2 * Q)
+    {c : ℝ} (hc : c ∈ Ico (H.time first.castSucc) (H.time first.succ))
+    (hcap : ∀ j : Fin H.eventCount, H.time j.succ ∈ Ioc c (H.time i.castSucc) →
+      ∀ y ∈ (H.toHistory.event j).capRegion,
+        4 * Q ≤ metricScalarAt (H.toHistory.event j).outputMetric y)
+    (htime : 6 * C * (H.time i.succ - c) * Q ≤ 1)
+    {ρ : ℝ} (hρ : 0 < ρ) (hρr : ρ < r)
+    (hwindow : ρ ^ 2 ≤ H.time i.succ - c)
+    (hscale : ρ ^ 4 * (4 * Real.sqrt 3 * (Q + Phi (4 * Q) + Phi 0)) ^ 2 ≤ 1) :
+    let K := riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r
+    let hab : c ≤ H.time i.succ :=
+      hc.2.le.trans (H.time_strictMono.monotone (by
+        change first.val + 1 ≤ i.val + 1
+        exact Nat.succ_le_succ hle))
+    ∃ (p : H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)
+      (S : SolutionOn (I := ThreeModel)
+        (M := H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)
+        (RealTimeInterval.closed c (H.time i.succ) hab)),
+      H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K p = x ∧
+      range (H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K) = interior K ∧
+      IsSolutionOn S ∧
+      S.base.metric (H.time i.succ) = localPullMetric (H.toHistory.event i).terminal.metric
+        (H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K)
+        (H.toHistory.backwardSurvivorFootprintMap_isLocalDiffeomorph first.castSucc i hle K) ∧
+      (∀ (j : Fin H.eventCount) (hf : first.castSucc ≤ j.castSucc) (hl : j.succ ≤ i.castSucc),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          S.base.metric t = ((H.toHistory.backwardSurvivorSlabMetric first.castSucc i.castSucc hle j hf hl t).restrictOpen
+            (H.toHistory.backwardSurvivorTerminalFace first.castSucc i hle)).restrictOpen
+              (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)) ∧
+      (∀ t ∈ Icc (H.time i.castSucc) (H.time i.succ),
+        S.base.metric t = (H.toHistory.backwardSurvivorTerminalFaceMetric first.castSucc i hle t).restrictOpen
+          (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)) ∧
+      ∃ B : Perelman.FlowMetricBall S ⟨H.time i.succ, hab, le_rfl⟩,
+        B.center = p ∧ B.radius = ρ ∧ B.IsParabolicallyRmControlled ∧
+        B.set = riemannianBallOf (S.base.metric (H.time i.succ)) p ρ ∧
+        H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K '' B.set =
+          riemannianBallOf (H.toHistory.event i).terminal.metric x ρ ∧
+        IsCompact (riemannianClosedBallOf (S.base.metric (H.time i.succ)) p ρ) := by
+  intro K hab
+  obtain ⟨_, p, hp, hrange, G, hslabs, hlast, hterminal, hsol, hRm, hcompact'⟩ :=
+    H.exists_terminal_ball_flow first i hle x hr hcompact hq hqQ hPhi hbound hpinch hscalar
+      hc hcap htime
+  let S : SolutionOn (I := ThreeModel)
+      (M := H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)
+      (RealTimeInterval.closed c (H.time i.succ) hab) := { base := { metric := G } }
+  let B : Perelman.FlowMetricBall S ⟨H.time i.succ, hab, le_rfl⟩ := ⟨p, ρ, hρ⟩
+  have hinterval : Icc (H.time i.succ - ρ ^ 2) (H.time i.succ) ⊆ Icc c (H.time i.succ) := by
+    intro t ht
+    exact ⟨by linarith [ht.1], ht.2⟩
+  have htest : B.IsParabolicallyRmControlled :=
+    Perelman.FlowMetricBall.isParabolicallyRmControlled_of_uniform_bound S B hinterval hRm hscale
+  have hmid : ρ < (ρ + r) / 2 := by linarith
+  have hmidr : (ρ + r) / 2 < r := by linarith
+  have himage : H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K '' B.set =
+      riemannianBallOf (H.toHistory.event i).terminal.metric x ρ := by
+    change _ '' riemannianBallOf (G (H.time i.succ)) p ρ = _
+    rw [hterminal]
+    have h := Geometry.Metric.image_riemannianBallOf_localPullMetric
+      (H.toHistory.event i).terminal.metric
+      (H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K)
+      (H.toHistory.backwardSurvivorFootprintMap_isLocalDiffeomorph first.castSucc i hle K)
+      (H.toHistory.backwardSurvivorFootprintMap_injective first.castSucc i hle K)
+      p hρ hmid (hterminal ▸ hcompact' ((ρ + r) / 2) hmidr)
+    exact h.trans (congrArg (fun y => riemannianBallOf (H.toHistory.event i).terminal.metric y ρ) hp)
+  exact ⟨p, S, hp, hrange, hsol, hterminal, hslabs, hlast,
+    B, rfl, rfl, htest, rfl, himage, hcompact' ρ hρr⟩
+
+
+theorem exists_uniform_parabolically_controlled_terminal_ball_radius
+    {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi)
+    {θ : ℝ} (hθ : 0 < θ) :
+    ∃ α : ℝ, 0 < α ∧ α ≤ 1 ∧ α ^ 2 ≤ θ ∧
+    ∀ {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+      (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+      (x : (H.toHistory.event i).incoming.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
+      (hcompact : IsCompact (riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r))
+      {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q) (hQ : 1 ≤ Q),
+    ( ∀ j : Fin H.eventCount, first.castSucc ≤ j.castSucc → j.castSucc ≤ i.castSucc →
+      ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.toHistory.event j).incoming.flow.scalar t x →
+      |derivWithin (fun v => (H.toHistory.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+        C * (H.toHistory.event j).incoming.flow.scalar t x ^ 2) →
+    ( ∀ j : Fin H.eventCount, first.castSucc ≤ j.castSucc → j.castSucc ≤ i.castSucc →
+      Perelman.PhiAlmostNonnegative (H.toHistory.event j).incoming.flow
+        (Ico (H.time j.castSucc) (H.time j.succ)) Phi) →
+    ( ∀ z ∈ riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r,
+      metricScalarAt (H.toHistory.event i).terminal.metric z ≤ 2 * Q) →
+    ∀ (hc : H.time i.succ - θ / Q ∈ Ico (H.time first.castSucc) (H.time first.succ)),
+    ( ∀ j : Fin H.eventCount, H.time j.succ ∈ Ioc (H.time i.succ - θ / Q) (H.time i.castSucc) →
+      ∀ y ∈ (H.toHistory.event j).capRegion,
+        4 * Q ≤ metricScalarAt (H.toHistory.event j).outputMetric y) →
+    6 * C * θ ≤ 1 →
+    α / Real.sqrt Q < r →
+    let K := riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r
+    let hab : H.time i.succ - θ / Q ≤ H.time i.succ :=
+      hc.2.le.trans (H.time_strictMono.monotone (by
+        change first.val + 1 ≤ i.val + 1
+        exact Nat.succ_le_succ hle))
+    ∃ (p : H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)
+      (S : SolutionOn (I := ThreeModel)
+        (M := H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)
+        (RealTimeInterval.closed (H.time i.succ - θ / Q) (H.time i.succ) hab)),
+      H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K p = x ∧
+      range (H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K) = interior K ∧
+      IsSolutionOn S ∧
+      S.base.metric (H.time i.succ) = localPullMetric (H.toHistory.event i).terminal.metric
+        (H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K)
+        (H.toHistory.backwardSurvivorFootprintMap_isLocalDiffeomorph first.castSucc i hle K) ∧
+      (∀ (j : Fin H.eventCount) (hf : first.castSucc ≤ j.castSucc) (hl : j.succ ≤ i.castSucc),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          S.base.metric t = ((H.toHistory.backwardSurvivorSlabMetric first.castSucc i.castSucc hle j hf hl t).restrictOpen
+            (H.toHistory.backwardSurvivorTerminalFace first.castSucc i hle)).restrictOpen
+              (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)) ∧
+      (∀ t ∈ Icc (H.time i.castSucc) (H.time i.succ),
+        S.base.metric t = (H.toHistory.backwardSurvivorTerminalFaceMetric first.castSucc i hle t).restrictOpen
+          (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K)) ∧
+      ∃ B : Perelman.FlowMetricBall S ⟨H.time i.succ, hab, le_rfl⟩,
+        B.center = p ∧ B.radius = α / Real.sqrt Q ∧ B.IsParabolicallyRmControlled ∧
+        B.set = riemannianBallOf (S.base.metric (H.time i.succ)) p (α / Real.sqrt Q) ∧
+        H.toHistory.backwardSurvivorFootprintMap first.castSucc i hle K '' B.set =
+          riemannianBallOf (H.toHistory.event i).terminal.metric x (α / Real.sqrt Q) ∧
+        IsCompact (riemannianClosedBallOf (S.base.metric (H.time i.succ)) p (α / Real.sqrt Q)) := by
+  obtain ⟨α, hα, hα1, hαθ, hchoice⟩ := Perelman.exists_uniform_pinching_test_radius hPhi hθ
+  refine ⟨α, hα, hα1, hαθ, ?_⟩
+  intro P H first i hle x r hr hcompact q Q C hq hqQ hQ hbound hpinch hscalar hc hcap htime hradius
+  have hQpos : 0 < Q := zero_lt_one.trans_le hQ
+  have hrho : 0 < α / Real.sqrt Q := div_pos hα (Real.sqrt_pos.mpr hQpos)
+  have htime' : 6 * C * (H.time i.succ - (H.time i.succ - θ / Q)) * Q ≤ 1 := by
+    have heq : 6 * C * (H.time i.succ - (H.time i.succ - θ / Q)) * Q = 6 * C * θ := by
+      field_simp
+      ring
+    rwa [heq]
+  have hwindow : (α / Real.sqrt Q) ^ 2 ≤ H.time i.succ - (H.time i.succ - θ / Q) := by
+    simpa only [sub_sub_cancel] using (hchoice Q hQ).1
+  exact H.exists_parabolically_controlled_terminal_ball first i hle x hr hcompact hq hqQ hPhi
+    hbound hpinch hscalar hc hcap htime' hrho hradius hwindow (hchoice Q hQ).2
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

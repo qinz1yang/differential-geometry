@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.Metric.Pullback.Local
+import DifferentialGeometry.Geometry.Metric.Comparison.IsometricBalls
+import DifferentialGeometry.Topology.Manifold.OpenEmbedding
+import DifferentialGeometry.Topology.Manifold.OpenSubtypeDiffeomorph
 import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
@@ -69,5 +73,42 @@ theorem exists_lift_isCompact_riemannianClosedBallOf_localPullMetric
     exact hcompact.of_isClosed_subset hclosed (riemannianClosedBallOf_mono g x hr.le)
   · rw [hp]
     exact hinner.trans hball
+
+end DifferentialGeometry.Geometry.Metric
+
+end
+
+noncomputable section
+
+open Set Manifold
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.Geometry.Metric
+
+universe u
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M N : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace H N] [IsManifold I ∞ N] [T2Space N]
+
+theorem image_riemannianBallOf_localPullMetric
+    (g : SmoothRiemannianMetric I N) (f : M → N)
+    (hf : IsLocalDiffeomorph I I ∞ f) (hinj : Function.Injective f)
+    (p : M) {R r : ℝ} (hr : 0 < r) (hrR : r < R)
+    (hcpt : IsCompact (riemannianClosedBallOf (localPullMetric g f hf) p R)) :
+    f '' riemannianBallOf (localPullMetric g f hf) p r = riemannianBallOf g (f p) r := by
+  let V := hf.image
+  let e : M ≃ₘ⟮I, I⟯ V := DifferentialGeometry.Topology.Manifold.diffeomorphOntoImage f hf hinj
+  let iV := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph I V ⟨e p⟩
+  let Φ : PartialDiffeomorph I I M N ∞ := e.toPartialDiffeomorph.trans iV
+  have hsource : Φ.source = univ := by
+    ext x
+    change (x ∈ (univ : Set M) ∧ e x ∈ (univ : Set V)) ↔ x ∈ (univ : Set M)
+    simp only [mem_univ, and_self]
+  exact DifferentialGeometry.PartialDiffeomorph.image_riemannianBall_eq_of_isometric_on_compact_ball
+    (localPullMetric g f hf) g Φ p hr hrR hcpt
+    (by rw [hsource]; exact subset_univ _)
+    (fun x _ v => (localPullMetric_inner g f hf x v v).symm)
 
 end DifferentialGeometry.Geometry.Metric
