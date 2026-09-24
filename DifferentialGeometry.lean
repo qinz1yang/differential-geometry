@@ -13720,3 +13720,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseDis
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornEndpointRadius
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornMinimizingSegment
 import DifferentialGeometry.Geometry.Metric.Comparison.BoundaryDetour
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.InitialLocalBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompleteInitialCutoff
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCapture
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullbackCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FullMetricWindowCurvature

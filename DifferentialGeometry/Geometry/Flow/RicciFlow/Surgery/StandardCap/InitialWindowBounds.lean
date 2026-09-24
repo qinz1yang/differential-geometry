@@ -5,6 +5,8 @@ import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Topology.Manifold.OpenSubtypeModel
 
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ReferenceCurvatureBounds
+
 set_option autoImplicit false
 noncomputable section
 open Set Function Bundle Manifold MeasureTheory
@@ -214,5 +216,40 @@ theorem exists_uniform_window_ellipticity (R : ℝ) :
       _ ≤ Λ * ‖v‖ ^ 2 := mul_le_mul_of_nonneg_right
         ((by norm_num : (3 / 2 : ℝ) ≤ 2).trans (le_max_left _ _)) hn
 
+
+open DifferentialGeometry.Tensor0SBundle in
+theorem exists_uniform_window_curvature_derivative_bounds (j : ℕ) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → j + 2 ≤ m → ∀ x : standardCapWindow D, ‖x.val‖ < D →
+        Real.sqrt (normSq0S w.windowMetric x (4 + j)
+          (iterCov w.windowMetric 4 (metricRm04 w.windowMetric) j x)) ≤ C := by
+  obtain ⟨C, hC, hbound⟩ :=
+    exists_pos_bound_intrinsic_curvature_derivative_of_metric_jets_on_opens
+      j (1 / 2) (1 / 2) (by norm_num) (by norm_num)
+  refine ⟨C, hC, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA D m ε w heps hj x hx
+  have he := w.properties.window_close
+  change metricDerivENormSupOn
+    {x : standardCapWindow D | (riemannianEDistOf metric 0 x.val).toReal < D} m
+    w.windowMetric (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)) < ENNReal.ofReal ε at he
+  simp only [distance_zero] at he
+  have hjet (q : ℕ) (hq : q ≤ j + 2) :
+      metricDerivNorm q w.windowMetric (metric.restrictOpen (standardCapWindow D))
+        (metric.restrictOpen (standardCapWindow D)) x ≤ 1 / 2 :=
+    (metricDerivNorm_lt_of_sup_lt _ _ _ _ _ he (hq.trans hj) hx).le.trans heps
+  apply hbound (standardCapWindow D) w.windowMetric x _ hjet
+  intro v
+  have h := (Geometry.Metric.inner_bounds_of_metricDerivNorm_le
+    (metric.restrictOpen (standardCapWindow D)) w.windowMetric x (hjet 0 (by omega)) v).1
+  norm_num at h ⊢
+  exact h
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

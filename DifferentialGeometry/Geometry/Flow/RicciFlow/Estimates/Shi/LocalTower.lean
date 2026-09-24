@@ -102,6 +102,90 @@ def ShiInitialDistanceCutoff.toFixedCutoff
 
 variable [CompleteSpace E] [IsManifold I 2 M] [BoundarylessManifold I M]
 
+omit [VectorBundle Real E (TangentSpace I : M → Type _)] [BoundarylessManifold I M] in
+theorem exists_shiFixedCutoff_ball_error_of_curvature_continuousOn
+    {D : RealTimeInterval}
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    {T Ksec R r₁ r₂ Hb Clap Cconn : Real} (p : M)
+    (hT : 0 < T) (hslab : Set.Icc 0 T ⊆ D.carrier)
+    (hreg : Set.Ioc 0 T ⊆ D.regular)
+    (hcont : ∀ x : M, ContinuousOn
+      (fun t => nablaKRm04NormSqIntrinsic (I := I) S 1 t x) (Set.Icc 0 T))
+    (hball : IsCompact {y : M |
+      riemannianEDistOf (I := I) (S.base.metric 0) p y ≤ ENNReal.ofReal R})
+    (hKsec : Ksec ≤ 0)
+    (hsec : ∀ y : M,
+      riemannianEDistOf (I := I) (S.base.metric 0) p y ≤ ENNReal.ofReal R →
+        Geometry.Riemannian.SectionalBoundedBelowAt (I := I)
+          (S.base.metric 0) y Ksec)
+    (hu : ∀ s ∈ Set.Icc (0 : Real) T, ∀ y : M,
+      riemannianEDistOf (I := I) (S.base.metric 0) p y ≤ ENNReal.ofReal R →
+        nablaKRm04NormSqIntrinsic (I := I) S 0 s y ≤ 1)
+    (hr₁ : 0 < r₁) (hr₁₂ : r₁ < r₂) (hr₂R : r₂ ≤ R)
+    (hClap : 0 ≤ Clap) (hCconn : 0 ≤ Cconn)
+    (hlap : InitialDistanceFlowLaplacianBound (I := I) S T p
+      {y : M | riemannianEDistOf (I := I) (S.base.metric 0) p y ≤
+        ENNReal.ofReal R}
+      r₁ Ksec Clap Cconn (nablaRmSupWeight (I := I) S))
+    (hHb0 : 0 ≤ Hb)
+    (hHb : ∀ t ∈ Set.Ioc (0 : Real) T, ∀ x : M,
+      riemannianEDistOf (I := I) (S.base.metric 0) p x ≤ ENNReal.ofReal r₂ →
+        Real.sqrt (nablaKRm04NormSqIntrinsic (I := I) S 1 t x) ≤ Hb / Real.sqrt t) :
+    ∃ fc : ShiFixedCutoff (I := I) (flowG (I := I) S) T
+        (shiFixedCutoffError (Module.finrank Real E) T r₁ r₂ Clap Cconn Hb),
+      (∀ t : Real, ∀ x : M,
+        riemannianEDistOf (I := I) (S.base.metric 0) p x ≤ ENNReal.ofReal r₁ →
+          fc.chi t x = 1) ∧
+      fc.support ⊆ {y : M |
+        riemannianEDistOf (I := I) (S.base.metric 0) p y < ENNReal.ofReal r₂} := by
+  classical
+  obtain ⟨idc⟩ :=
+    nonempty_shiInitialDistanceCutoff_of_solution (I := I) S hS (K := 1) p hT hslab
+      hreg hball hKsec hsec hu hr₁ hr₁₂ hr₂R hClap
+      hCconn (fun t y => nablaRmSupWeight_nonneg (I := I) S t y) hlap
+  have hball : ∀ y : M, 0 < idc.chi y →
+      riemannianEDistOf (I := I) (S.base.metric 0) p y < ENNReal.ofReal r₂ := by
+    intro y hy
+    refine idc.support_subset_ball ?_
+    by_contra hns
+    rw [idc.support_zero y hns] at hy
+    exact lt_irrefl 0 hy
+  have hRm1 : ∀ s ∈ Set.Ioc (0 : Real) T, ∀ y : M, 0 < idc.chi y →
+      nablaKRm04NormSqIntrinsic (I := I) S 1 s y ≤ Hb ^ 2 / s := by
+    intro s hs y hy
+    have hb := hHb s hs y (le_of_lt (hball y hy))
+    have hw0 : 0 ≤ nablaKRm04NormSqIntrinsic (I := I) S 1 s y :=
+      nablaKRm04NormSqIntrinsic_nonneg (I := I) S 1 s y
+    have hmono :
+        (Real.sqrt (nablaKRm04NormSqIntrinsic (I := I) S 1 s y)) ^ 2 ≤
+          (Hb / Real.sqrt s) ^ 2 :=
+      pow_le_pow_left₀ (Real.sqrt_nonneg _) hb 2
+    rw [Real.sq_sqrt hw0, div_pow, Real.sq_sqrt hs.1.le] at hmono
+    exact hmono
+  have hThetaAtt : ∀ t ∈ Set.Ioc (0 : Real) T, ∀ x : M, 0 < idc.chi x →
+      ∃ s ∈ Set.Ioc (0 : Real) t,
+        nablaRmSupWeight (I := I) S t x ≤
+          2 * Real.sqrt T *
+            Real.sqrt (s * nablaKRm04NormSqIntrinsic (I := I) S 1 s x) := by
+    intro t ht x _
+    obtain ⟨s, hs, hle⟩ := exists_mem_Icc_nablaRmSupWeight_le (I := I) S ht.1.le ht.2 x
+      (hcont x |>.mono (fun _ hs => ⟨hs.1, hs.2.trans ht.2⟩))
+    rcases eq_or_lt_of_le hs.1 with h0 | hpos
+    · refine ⟨t, ⟨ht.1, le_rfl⟩, ?_⟩
+      rw [← h0] at hle
+      have hzero : nablaRmSupWeight (I := I) S t x ≤ 0 := by simpa using hle
+      have hnn : 0 ≤ 2 * Real.sqrt T *
+          Real.sqrt (t * nablaKRm04NormSqIntrinsic (I := I) S 1 t x) := by positivity
+      linarith
+    · exact ⟨s, ⟨hpos, hs.2⟩, hle⟩
+  refine ⟨idc.toFixedCutoff (shiInitialCutoffA_nonneg _ _ _ _ _)
+    (shiInitialCutoffD_nonneg hr₁₂.le hCconn) hHb0 (by positivity) hRm1 hThetaAtt,
+    ?_, ?_⟩
+  · intro t x hx
+    exact idc.chi_eq_one x hx
+  · exact idc.support_subset_ball
+
 omit [VectorBundle Real E (TangentSpace I : M → Type _)] in
 theorem exists_shiFixedCutoff_ball_error_of_solution
     {alpha omega : Real} {halphaomega : alpha < omega}
@@ -137,7 +221,6 @@ theorem exists_shiFixedCutoff_ball_error_of_solution
           fc.chi t x = 1) ∧
       fc.support ⊆ {y : M |
         riemannianEDistOf (I := I) (S.base.metric 0) p y < ENNReal.ofReal r₂} := by
-  classical
   have hslab : Set.Icc (0 : Real) T ⊆
       (RealTimeInterval.closedOpen alpha omega halphaomega).carrier := by
     intro s hs
@@ -146,54 +229,10 @@ theorem exists_shiFixedCutoff_ball_error_of_solution
       (RealTimeInterval.closedOpen alpha omega halphaomega).regular := by
     intro s hs
     exact ⟨lt_of_lt_of_le halpha hs.1, lt_of_le_of_lt hs.2 hTomega⟩
-  obtain ⟨idc⟩ :=
-    nonempty_shiInitialDistanceCutoff_of_solution (I := I) S hS (K := 1) p hT hslab
-      (fun s hs => hIccReg ⟨hs.1.le, hs.2⟩) hball hKsec hsec hu hr₁ hr₁₂ hr₂R hClap
-      hCconn (fun t y => nablaRmSupWeight_nonneg (I := I) S t y) hlap
-  have hball : ∀ y : M, 0 < idc.chi y →
-      riemannianEDistOf (I := I) (S.base.metric 0) p y < ENNReal.ofReal r₂ := by
-    intro y hy
-    refine idc.support_subset_ball ?_
-    by_contra hns
-    rw [idc.support_zero y hns] at hy
-    exact lt_irrefl 0 hy
-  have hRm1 : ∀ s ∈ Set.Ioc (0 : Real) T, ∀ y : M, 0 < idc.chi y →
-      nablaKRm04NormSqIntrinsic (I := I) S 1 s y ≤ Hb ^ 2 / s := by
-    intro s hs y hy
-    have hb := hHb s hs y (le_of_lt (hball y hy))
-    have hw0 : 0 ≤ nablaKRm04NormSqIntrinsic (I := I) S 1 s y :=
-      nablaKRm04NormSqIntrinsic_nonneg (I := I) S 1 s y
-    have hmono :
-        (Real.sqrt (nablaKRm04NormSqIntrinsic (I := I) S 1 s y)) ^ 2 ≤
-          (Hb / Real.sqrt s) ^ 2 :=
-      pow_le_pow_left₀ (Real.sqrt_nonneg _) hb 2
-    rw [Real.sq_sqrt hw0, div_pow, Real.sq_sqrt hs.1.le] at hmono
-    exact hmono
-  have hThetaAtt : ∀ t ∈ Set.Ioc (0 : Real) T, ∀ x : M, 0 < idc.chi x →
-      ∃ s ∈ Set.Ioc (0 : Real) t,
-        nablaRmSupWeight (I := I) S t x ≤
-          2 * Real.sqrt T *
-            Real.sqrt (s * nablaKRm04NormSqIntrinsic (I := I) S 1 s x) := by
-    intro t ht x _
-    have hsub : Set.Icc (0 : Real) t ⊆
-        (RealTimeInterval.closedOpen alpha omega halphaomega).regular :=
-      fun s hs => hIccReg ⟨hs.1, hs.2.trans ht.2⟩
-    obtain ⟨s, hs, hle⟩ := exists_mem_Icc_nablaRmSupWeight_le (I := I) S ht.1.le ht.2 x
-      (continuousOn_nablaKRm04NormSqIntrinsic_of_subset_regular (I := I) hS 1 hsub x)
-    rcases eq_or_lt_of_le hs.1 with h0 | hpos
-    · refine ⟨t, ⟨ht.1, le_rfl⟩, ?_⟩
-      rw [← h0] at hle
-      have hzero : nablaRmSupWeight (I := I) S t x ≤ 0 := by simpa using hle
-      have hnn : 0 ≤ 2 * Real.sqrt T *
-          Real.sqrt (t * nablaKRm04NormSqIntrinsic (I := I) S 1 t x) := by positivity
-      linarith
-    · exact ⟨s, ⟨hpos, hs.2⟩, hle⟩
-  refine ⟨idc.toFixedCutoff (shiInitialCutoffA_nonneg _ _ _ _ _)
-    (shiInitialCutoffD_nonneg hr₁₂.le hCconn) hHb0 (by positivity) hRm1 hThetaAtt,
-    ?_, ?_⟩
-  · intro t x hx
-    exact idc.chi_eq_one x hx
-  · exact idc.support_subset_ball
+  exact exists_shiFixedCutoff_ball_error_of_curvature_continuousOn S hS p hT hslab
+    (fun t ht => hIccReg ⟨ht.1.le, ht.2⟩)
+    (fun x => continuousOn_nablaKRm04NormSqIntrinsic_of_subset_regular hS 1 hIccReg x)
+    hball hKsec hsec hu hr₁ hr₁₂ hr₂R hClap hCconn hlap hHb0 hHb
 
 omit [VectorBundle Real E (TangentSpace I : M → Type _)] in
 theorem exists_shiFixedCutoff_ball_of_solution

@@ -22,7 +22,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 
-theorem exists_initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvature
+theorem initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvature
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn S) {T K : ℝ} (hT : 0 < T)
     (hcarrier : Icc (0 : ℝ) T ⊆ D.carrier)
@@ -31,8 +31,12 @@ theorem exists_initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvatu
     (hK : 0 ≤ K)
     (hcurv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       nablaKRm04NormSqIntrinsic S 0 t x ≤ K) :
-    ∃ C : ℝ, 0 ≤ C ∧
-      InitialConnectionDifferenceBound S T univ C (fun t _ => Real.sqrt t) := by
+    InitialConnectionDifferenceBound S T univ
+      ((3 * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) *
+        Real.exp (3 * ((Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt K) * T)) *
+          (2 * Real.sqrt ((2 : ℝ) ^ 1 *
+      (towerConst (max 0 (∑ j ∈ Finset.range 3, rmTowerCost (Module.finrank ℝ E) j))
+        (max 1 K * T) 1) ^ 2 * (max 1 K) ^ 2))) (fun t _ => Real.sqrt t) := by
   have hcurvNorm : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
       Tensor0SBundle.normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x) ≤ K := by
     intro t ht x
@@ -47,12 +51,15 @@ theorem exists_initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvatu
         (Icc (0 : ℝ) T) 0 :=
     continuousWithinAt_initial_connection_pairing_of_complete_bounded_curvature
       S hS hT hcarrier hregular hcomplete hK hcurvNorm
-  obtain ⟨A, _, hweighted⟩ := exists_time_weighted_curvature_derivative_bound
+  let A : ℝ := ((2 : ℝ) ^ 1 *
+      (towerConst (max 0 (∑ j ∈ Finset.range 3, rmTowerCost (Module.finrank ℝ E) j))
+        (max 1 K * T) 1) ^ 2 * (max 1 K) ^ 2)
+  have hweighted := time_weighted_curvature_derivative_bound_of_complete
     S hS hcarrier hregular hcomplete hK hcurvNorm 1
   have hbound : ∀ t ∈ Ioc (0 : ℝ) T, ∀ x : M,
       (t - 0) * nablaKRm04NormSqIntrinsic S 1 t x ≤ A := by
     intro t ht x
-    simpa only [pow_one] using hweighted t ht x
+    simpa only [A, pow_one, sub_zero] using hweighted t ht x
   have hint : ∀ t ∈ Ioc (0 : ℝ) T, ∀ x : M,
       IntervalIntegrable (fun s => Real.sqrt (nablaKRm04NormSqIntrinsic S 1 s x))
         volume 0 t := by
@@ -86,12 +93,30 @@ theorem exists_initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvatu
       S hS ht.1.le (fun _ hs => hregular ⟨hs.1, hs.2.trans ht.2⟩) 1 x
       (fun s hs => hbound s ⟨hs.1, hs.2.trans ht.2⟩ x)
     simpa only [sub_zero, nablaRmTimeIntegral] using h
-  refine ⟨C₀ * (2 * Real.sqrt A), mul_nonneg hC₀ (by positivity), ?_⟩
   intro t ht x hx u w
   have h := hconn.mono hC₀ hintegral t ht x hx u w
   dsimp at h ⊢
   convert h using 1
   ring
+
+theorem exists_initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvature
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn S) {T K : ℝ} (hT : 0 < T)
+    (hcarrier : Icc (0 : ℝ) T ⊆ D.carrier)
+    (hregular : Ioc (0 : ℝ) T ⊆ D.regular)
+    (hcomplete : RiemannianMetricComplete (I := I) (S.base.metric 0))
+    (hK : 0 ≤ K)
+    (hcurv : ∀ t ∈ Icc (0 : ℝ) T, ∀ x : M,
+      nablaKRm04NormSqIntrinsic S 0 t x ≤ K) :
+    ∃ C : ℝ, 0 ≤ C ∧
+      InitialConnectionDifferenceBound S T univ C (fun t _ => Real.sqrt t) := by
+  refine ⟨(3 * Real.sqrt ((Module.finrank ℝ E : ℝ) ^ 5) *
+        Real.exp (3 * ((Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt K) * T)) *
+          (2 * Real.sqrt ((2 : ℝ) ^ 1 *
+      (towerConst (max 0 (∑ j ∈ Finset.range 3, rmTowerCost (Module.finrank ℝ E) j))
+        (max 1 K * T) 1) ^ 2 * (max 1 K) ^ 2)), by positivity, ?_⟩
+  exact initialConnectionDifferenceBound_sqrt_of_complete_bounded_curvature
+    S hS hT hcarrier hregular hcomplete hK hcurv
 
 end DifferentialGeometry.PDE.RicciFlow
 
