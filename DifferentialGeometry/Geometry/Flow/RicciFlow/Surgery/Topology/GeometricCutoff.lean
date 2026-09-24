@@ -272,3 +272,224 @@ structure GeometricCutoffRecord (parameters : CutoffParameters) where
     ∀ x : (H.stage i.succ).Carrier, L ≤ metricScalarAt (H.event i).outputMetric x
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount}
+
+namespace GeometricCutoffRecord
+
+def congrParameters {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    (hdelta : p.delta (H.time i.succ) = q.delta (H.time i.succ))
+    (hneck : p.neckRadius (H.time i.succ) = q.neckRadius (H.time i.succ))
+    (hprotected : p.protectedRadius (H.time i.succ) = q.protectedRadius (H.time i.succ))
+    (hfixed : p.fixed = q.fixed) (hradius : p.modelRadius = q.modelRadius)
+    (horder : p.modelOrder = q.modelOrder) (haccuracy : p.modelAccuracy = q.modelAccuracy)
+    (hrecenter : p.recenterConstant = q.recenterConstant) : GeometricCutoffRecord H i q := by
+  cases p with
+  | mk delta neckRadius protectedRadius delta_pos delta_lt_one neckRadius_pos
+      protectedRadius_pos fixed modelRadius modelRadius_pos modelOrder modelAccuracy
+      modelAccuracy_pos recenterConstant recenterConstant_ge_four =>
+    cases q with
+    | mk delta' neckRadius' protectedRadius' delta_pos' delta_lt_one' neckRadius_pos'
+        protectedRadius_pos' fixed' modelRadius' modelRadius_pos' modelOrder' modelAccuracy'
+        modelAccuracy_pos' recenterConstant' recenterConstant_ge_four' =>
+      dsimp only at hfixed hradius horder haccuracy hrecenter hdelta hneck hprotected
+      cases hfixed
+      cases hradius
+      cases horder
+      cases haccuracy
+      cases hrecenter
+      exact {
+        singular := R.singular
+        nominalRadius := R.nominalRadius
+        nominal_pos := R.nominal_pos
+        nominal_small := fun h => by simpa only [← hdelta, ← hneck] using R.nominal_small h
+        nominal_time := R.nominal_time
+        delta := R.delta
+        delta_pos := R.delta_pos
+        delta_le := fun a => by simpa only [← hdelta] using R.delta_le a
+        order := R.order
+        order_lower := R.order_lower
+        neck := R.neck
+        scale_eq := R.scale_eq
+        buffer_disjoint := R.buffer_disjoint
+        tube_eq := R.tube_eq
+        tube_in_buffer := R.tube_in_buffer
+        backward := R.backward
+        retained_terminal := R.retained_terminal
+        protected_interior := by simpa only [← hprotected] using R.protected_interior
+        retained_meets_protected := by simpa only [← hprotected] using R.retained_meets_protected
+        one_retained_side := R.one_retained_side
+        no_cuts_discard := R.no_cuts_discard
+        static := R.static
+        recenter_scale := R.recenter_scale
+        recenter_mark := R.recenter_mark
+        recenter_delta := R.recenter_delta
+        recenter_scale_comparison := R.recenter_scale_comparison
+        recenter_chart := R.recenter_chart
+        recenter_in_buffer := R.recenter_in_buffer
+        old_eq_retained := R.old_eq_retained
+        curvature_preserving := R.curvature_preserving
+        scalar_preserving := R.scalar_preserving }
+
+@[simp] theorem congrParameters_delta {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    (hdelta : p.delta (H.time i.succ) = q.delta (H.time i.succ))
+    (hneck : p.neckRadius (H.time i.succ) = q.neckRadius (H.time i.succ))
+    (hprotected : p.protectedRadius (H.time i.succ) = q.protectedRadius (H.time i.succ))
+    (hfixed : p.fixed = q.fixed) (hradius : p.modelRadius = q.modelRadius)
+    (horder : p.modelOrder = q.modelOrder) (haccuracy : p.modelAccuracy = q.modelAccuracy)
+    (hrecenter : p.recenterConstant = q.recenterConstant) :
+    (R.congrParameters hdelta hneck hprotected hfixed hradius horder haccuracy hrecenter).delta = R.delta := by
+  cases p
+  cases q
+  cases hfixed
+  cases hradius
+  cases horder
+  cases haccuracy
+  cases hrecenter
+  rfl
+
+@[simp] theorem congrParameters_order {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    (hdelta : p.delta (H.time i.succ) = q.delta (H.time i.succ))
+    (hneck : p.neckRadius (H.time i.succ) = q.neckRadius (H.time i.succ))
+    (hprotected : p.protectedRadius (H.time i.succ) = q.protectedRadius (H.time i.succ))
+    (hfixed : p.fixed = q.fixed) (hradius : p.modelRadius = q.modelRadius)
+    (horder : p.modelOrder = q.modelOrder) (haccuracy : p.modelAccuracy = q.modelAccuracy)
+    (hrecenter : p.recenterConstant = q.recenterConstant) :
+    (R.congrParameters hdelta hneck hprotected hfixed hradius horder haccuracy hrecenter).order = R.order := by
+  cases p
+  cases q
+  cases hfixed
+  cases hradius
+  cases horder
+  cases haccuracy
+  cases hrecenter
+  rfl
+
+@[simp] theorem congrParameters_nominalRadius {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    (hdelta : p.delta (H.time i.succ) = q.delta (H.time i.succ))
+    (hneck : p.neckRadius (H.time i.succ) = q.neckRadius (H.time i.succ))
+    (hprotected : p.protectedRadius (H.time i.succ) = q.protectedRadius (H.time i.succ))
+    (hfixed : p.fixed = q.fixed) (hradius : p.modelRadius = q.modelRadius)
+    (horder : p.modelOrder = q.modelOrder) (haccuracy : p.modelAccuracy = q.modelAccuracy)
+    (hrecenter : p.recenterConstant = q.recenterConstant) :
+    (R.congrParameters hdelta hneck hprotected hfixed hradius horder haccuracy hrecenter).nominalRadius = R.nominalRadius := by
+  cases p
+  cases q
+  cases hfixed
+  cases hradius
+  cases horder
+  cases haccuracy
+  cases hrecenter
+  rfl
+
+theorem congrParameters_neck_heq {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    (hdelta : p.delta (H.time i.succ) = q.delta (H.time i.succ))
+    (hneck : p.neckRadius (H.time i.succ) = q.neckRadius (H.time i.succ))
+    (hprotected : p.protectedRadius (H.time i.succ) = q.protectedRadius (H.time i.succ))
+    (hfixed : p.fixed = q.fixed) (hradius : p.modelRadius = q.modelRadius)
+    (horder : p.modelOrder = q.modelOrder) (haccuracy : p.modelAccuracy = q.modelAccuracy)
+    (hrecenter : p.recenterConstant = q.recenterConstant) :
+    HEq (R.congrParameters hdelta hneck hprotected hfixed hradius horder haccuracy hrecenter).neck R.neck := by
+  cases p
+  cases q
+  cases hfixed
+  cases hradius
+  cases horder
+  cases haccuracy
+  cases hrecenter
+  rfl
+
+end GeometricCutoffRecord
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+namespace CutoffParameters
+
+def spliceAt (p q : CutoffParameters) (s : ℝ) : CutoffParameters :=
+  { p with
+    delta := fun t => if t = s then q.delta t else p.delta t
+    neckRadius := fun t => if t = s then q.neckRadius t else p.neckRadius t
+    protectedRadius := fun t => if t = s then q.protectedRadius t else p.protectedRadius t
+    delta_pos := fun t ht => by split <;> [exact q.delta_pos t ht; exact p.delta_pos t ht]
+    delta_lt_one := fun t ht => by split <;> [exact q.delta_lt_one t ht; exact p.delta_lt_one t ht]
+    neckRadius_pos := fun t ht => by split <;> [exact q.neckRadius_pos t ht; exact p.neckRadius_pos t ht]
+    protectedRadius_pos := fun t ht => by split <;> [exact q.protectedRadius_pos t ht; exact p.protectedRadius_pos t ht] }
+
+@[simp] theorem spliceAt_delta_self (p q : CutoffParameters) (s : ℝ) :
+    (p.spliceAt q s).delta s = q.delta s := if_pos rfl
+
+@[simp] theorem spliceAt_neckRadius_self (p q : CutoffParameters) (s : ℝ) :
+    (p.spliceAt q s).neckRadius s = q.neckRadius s := if_pos rfl
+
+@[simp] theorem spliceAt_protectedRadius_self (p q : CutoffParameters) (s : ℝ) :
+    (p.spliceAt q s).protectedRadius s = q.protectedRadius s := if_pos rfl
+
+theorem spliceAt_delta_of_ne (p q : CutoffParameters) {s t : ℝ} (h : t ≠ s) :
+    (p.spliceAt q s).delta t = p.delta t := if_neg h
+
+theorem spliceAt_neckRadius_of_ne (p q : CutoffParameters) {s t : ℝ} (h : t ≠ s) :
+    (p.spliceAt q s).neckRadius t = p.neckRadius t := if_neg h
+
+theorem spliceAt_protectedRadius_of_ne (p q : CutoffParameters) {s t : ℝ} (h : t ≠ s) :
+    (p.spliceAt q s).protectedRadius t = p.protectedRadius t := if_neg h
+
+end CutoffParameters
+
+namespace GeometricCutoffRecord
+universe u
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount}
+
+def spliceParametersOfNe {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    {s : ℝ} (hs : H.time i.succ ≠ s) : GeometricCutoffRecord H i (p.spliceAt q s) :=
+  R.congrParameters (p.spliceAt_delta_of_ne q hs).symm
+    (p.spliceAt_neckRadius_of_ne q hs).symm
+    (p.spliceAt_protectedRadius_of_ne q hs).symm rfl rfl rfl rfl rfl
+
+def spliceParametersAt {p q : CutoffParameters} (R : GeometricCutoffRecord H i q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    GeometricCutoffRecord H i (p.spliceAt q (H.time i.succ)) :=
+  R.congrParameters (p.spliceAt_delta_self q _).symm
+    (p.spliceAt_neckRadius_self q _).symm (p.spliceAt_protectedRadius_self q _).symm
+    hfixed hradius horder haccuracy hrecenter
+
+def spliceParametersAtEvent {p q : CutoffParameters} (j : Fin H.eventCount)
+    (old : ∀ i : Fin H.eventCount, i ≠ j → GeometricCutoffRecord H i p)
+    (new : GeometricCutoffRecord H j q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    ∀ i : Fin H.eventCount, GeometricCutoffRecord H i (p.spliceAt q (H.time j.succ)) := by
+  classical
+  intro i
+  by_cases hij : i = j
+  · subst i
+    exact new.spliceParametersAt hfixed hradius horder haccuracy hrecenter
+  · apply (old i hij).spliceParametersOfNe
+    intro heq
+    have hindex := H.time_strictMono.injective heq
+    exact hij (Fin.succ_injective _ hindex)
+
+end GeometricCutoffRecord
+
+namespace CutoffParameters
+universe u
+
+def spliceEarlierRecords
+    {H : ObservedHistory.{u}} {p q : CutoffParameters} {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H i p) :
+    ∀ i : Fin H.eventCount, GeometricCutoffRecord H i (p.spliceAt q s) := by
+  intro i
+  apply (records i).spliceParametersOfNe
+  exact ne_of_lt ((H.time_strictMono.monotone (Fin.le_last i.succ)).trans_lt hs)
+
+
+end CutoffParameters
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
