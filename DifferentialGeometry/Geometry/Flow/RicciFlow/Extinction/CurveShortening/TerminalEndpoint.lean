@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
 import DifferentialGeometry.Analysis.Calculus.Compactness.SmoothLimits
 import DifferentialGeometry.Analysis.Calculus.TimeJet.ClosedJetEvolution
 import DifferentialGeometry.Topology.Manifold.SpatialJets
@@ -578,6 +579,46 @@ theorem curveShorteningContinuation_of_localWindow
   (curveShorteningContinuation_iff_terminalClosure_and_extension B).mpr
     ⟨curveShorteningTerminalClosure_of_ricciBackground B,
       curveShorteningExtension_of_localWindow B hwin huniq⟩
+
+theorem curveShorteningExtension_of_ricciBackground
+    (B : RicciBackground (I := I) (M := M) D a b) :
+    curveShorteningExtension (I := I) (M := M) B := by
+  intro T haT hTb c K _ hc hcurv
+  obtain ⟨closed, hclosed, heq⟩ :=
+    CurveMap.exists_isSolutionOn_Icc_of_curvature_le B haT hTb.le c hc hcurv
+  obtain ⟨u, hTu, hub, extended, hextended, hagree⟩ :=
+    closed.exists_solution_extension B.toSmoothMetricWindow haT hTb hclosed
+  refine ⟨u - T, sub_pos.mpr hTu, ?_, extended, ?_, ?_⟩
+  · simpa only [add_sub_cancel] using hub
+  · simpa only [add_sub_cancel] using hextended
+  · intro z t ht
+    exact (hagree z t ⟨ht.1, ht.2.le⟩).trans (heq z t ht)
+
+theorem curveShorteningContinuation_of_ricciBackground
+    (B : RicciBackground (I := I) (M := M) D a b) :
+    curveShorteningContinuation (I := I) (M := M) B :=
+  (curveShorteningContinuation_iff_terminalClosure_and_extension B).mpr
+    ⟨curveShorteningTerminalClosure_of_ricciBackground B,
+      curveShorteningExtension_of_ricciBackground B⟩
+
+theorem CurveMap.curvature_unbounded_of_maximal
+    (B : RicciBackground (I := I) (M := M) D a b)
+    (c : CurveMap M) {T : ℝ} (haT : a < T) (hTb : T < b)
+    (hc : c.IsSolutionOn B.family.metric (Ico a T))
+    (hmax : ∀ u : ℝ, T < u → u ≤ b →
+      ¬∃ extended : CurveMap M, extended.IsSolutionOn B.family.metric (Icc a u) ∧
+        ∀ z t, t ∈ Ico a T → extended z t = c z t) :
+    ∀ K : ℝ, ∃ x t, t ∈ Ico a T ∧ K < c.curvature B.family.metric x t := by
+  intro K
+  by_contra! hbound
+  have hcurv : ∀ x t, t ∈ Ico a T → c.curvature B.family.metric x t ≤ max K 0 := by
+    intro x t ht
+    exact (hbound x t ht).trans (le_max_left K 0)
+  obtain ⟨τ, hτ, hτb, extended, hsol, heq⟩ :=
+    curveShorteningExtension_of_ricciBackground B T haT hTb c (max K 0)
+      (le_max_right K 0) hc hcurv
+  exact hmax (T + τ) (lt_add_of_pos_right T hτ) hτb ⟨extended, hsol, heq⟩
+
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 

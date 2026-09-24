@@ -205,4 +205,25 @@ theorem compact_family_regular_homotopy
     · intro p t z
       rfl
 
+omit [CompleteSpace E] [SigmaCompactSpace M] nonemptyM in
+theorem CurveMap.exists_solution_extension
+    (B : SmoothMetricWindow (I := I) (M := M) D a b)
+    (c : CurveMap M) {T : ℝ} (haT : a < T) (hTb : T < b)
+    (hc : c.IsSolutionOn B.family.metric (Icc a T)) :
+    ∃ u : ℝ, T < u ∧ u ≤ b ∧ ∃ extended : CurveMap M,
+      extended.IsSolutionOn B.family.metric (Icc a u) ∧
+      ∀ z t, t ∈ Icc a T → extended z t = c z t := by
+  let : Nonempty M := ⟨c 0 a⟩
+  obtain ⟨N, ⟨e⟩⟩ := Width.smoothLoopEmbedding_exists (I := I) (Q := M)
+  have hcont : @Continuous Unit (CurveMap M) inferInstance
+      (smoothCylinderTopology e (Icc a T)) (fun _ => c) :=
+    @continuous_const Unit (CurveMap M) inferInstance
+      (smoothCylinderTopology e (Icc a T)) c
+  obtain ⟨u, hTu, hub, V, _, hV, solutions, _, hsol, hagree, _⟩ :=
+    exists_continuous_solution_family_extension B
+      (curveShorteningLocalUniformDependence_of_compact B)
+      (curveShorteningLocalUniqueness_of_compact B) e haT hTb
+      (fun _ : Unit => c) hcont (fun _ => hc) ()
+  exact ⟨u, hTu, hub, solutions ⟨(), hV⟩, hsol ⟨(), hV⟩, hagree ⟨(), hV⟩⟩
+
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening

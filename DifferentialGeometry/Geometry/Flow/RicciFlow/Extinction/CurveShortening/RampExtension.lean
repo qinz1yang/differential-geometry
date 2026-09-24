@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.RampPersistence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.FamilyDependence
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.ParabolicUniqueness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Continuation
 
 noncomputable section
 
@@ -29,9 +28,6 @@ private theorem extend_solution_Icc
   let A : QuotientProductAtlas I M := quotientProductAtlas
   let _ := A.charts
   let _ := A.smoothManifold
-  let : Nonempty (M × Surgery.Topology.Circle) := ⟨c.map 0 a⟩
-  obtain ⟨N, ⟨e⟩⟩ := Width.smoothLoopEmbedding_exists
-    (I := I.prod 𝓘(ℝ, ℝ)) (Q := M × Surgery.Topology.Circle)
   obtain ⟨D', _, _, hB⟩ := exists_quotientProduct_ricciBackground_on_regular A B
   obtain ⟨Bhat, hf, _, _, _, _⟩ := hB lambda hlambda
   have hm : Bhat.family.metric =
@@ -40,20 +36,13 @@ private theorem extend_solution_Icc
   have hsol : c.map.IsSolutionOn Bhat.family.metric (Icc a T) := by
     rw [hm]
     exact c.isSolutionOn_map A B.family.metric lambda hlambda (uniqueDiffOn_Icc haT) hc
-  have hcont : @Continuous Unit (CurveMap (M × Surgery.Topology.Circle)) inferInstance
-      (smoothCylinderTopology e (Icc a T)) (fun _ => c.map) :=
-    @continuous_const Unit (CurveMap (M × Surgery.Topology.Circle)) inferInstance
-      (smoothCylinderTopology e (Icc a T)) c.map
-  obtain ⟨u, hTu, hub, V, _, hV, sols, _, hsols, hagree, _⟩ :=
-    exists_continuous_solution_family_extension Bhat.toSmoothMetricWindow
-      (curveShorteningLocalUniformDependence_of_compact Bhat.toSmoothMetricWindow)
-      (curveShorteningLocalUniqueness_of_compact Bhat.toSmoothMetricWindow) e haT hTb
-      (fun _ : Unit => c.map) hcont (fun _ => hsol) ()
+  obtain ⟨u, hTu, hub, solution, hsolution, hagree⟩ :=
+    c.map.exists_solution_extension Bhat.toSmoothMetricWindow haT hTb hsol
   obtain ⟨extended, hext, heq⟩ := product_solution_lift A B.family.metric lambda hlambda
-    (sols ⟨(), hV⟩) (haT.trans hTu) (Icc a u) (Or.inr rfl)
-    (by rw [← hm]; exact hsols ⟨(), hV⟩)
+    solution (haT.trans hTu) (Icc a u) (Or.inr rfl)
+    (by rw [← hm]; exact hsolution)
   exact ⟨u, hTu, hub, extended, hext, fun z t ht =>
-    (heq z t ⟨ht.1, ht.2.trans hTu.le⟩).trans (hagree ⟨(), hV⟩ z t ht)⟩
+    (heq z t ⟨ht.1, ht.2.trans hTu.le⟩).trans (hagree z t ht)⟩
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [T2Space M] [CompactSpace M]
   [I.Boundaryless] in
