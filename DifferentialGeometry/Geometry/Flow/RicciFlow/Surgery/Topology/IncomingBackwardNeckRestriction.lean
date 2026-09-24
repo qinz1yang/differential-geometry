@@ -149,4 +149,40 @@ def IncomingBackwardNeck.monoDelta (B : IncomingBackwardNeck H i N r)
         (B.timeDifferenceJet b v) := rfl
 
 
+
+variable {j : ℕ}
+
+def IncomingBackwardNeck.lowerOrder (B : IncomingBackwardNeck H i N r) (hjk : j ≤ k) :
+    IncomingBackwardNeck H i (N.lowerOrder hjk) r where
+  radius_pos := B.radius_pos
+  left_nonneg := B.left_nonneg
+  stageChart := B.stageChart
+  stageChart_smooth := B.stageChart_smooth
+  terminal_chart := B.terminal_chart
+  crossing := B.crossing
+  metric := B.metric
+  terminal_metric := B.terminal_metric
+  metric_on_slab := B.metric_on_slab
+  timeDifferenceJet := B.timeDifferenceJet
+  timeDifferenceJet_eq := B.timeDifferenceJet_eq
+  parabolic_closeness := by
+    obtain ⟨η, hη, hbound⟩ := B.parabolic_closeness
+    exact ⟨η, hη, fun a b hab => hbound a b (hab.trans hjk)⟩
+  metric_smooth := B.metric_smooth
+
+@[simp] theorem IncomingBackwardNeck.lowerOrder_stageChart
+    (B : IncomingBackwardNeck H i N r) (hjk : j ≤ k)
+    (l : Fin H.eventCount) (hl : l.val ≤ i.val)
+    (ha : H.time i.succ - r ^ 2 < H.time l.succ) :
+    (B.lowerOrder hjk).stageChart l hl ha = B.stageChart l hl ha := rfl
+
+@[simp] theorem IncomingBackwardNeck.lowerOrder_metric
+    (B : IncomingBackwardNeck H i N r) (hjk : j ≤ k) (t : ℝ) :
+    (B.lowerOrder hjk).metric t = B.metric t := rfl
+
+@[simp] theorem IncomingBackwardNeck.lowerOrder_timeDifferenceJet
+    (B : IncomingBackwardNeck H i N r) (hjk : j ≤ k) (b : ℕ) (v : Icc (-1 : ℝ) 0) :
+    (B.lowerOrder hjk).timeDifferenceJet b v = B.timeDifferenceJet b v := rfl
+
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
