@@ -609,3 +609,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
   `Section34Terminal` keeps one leaf (`exists_section34NormalFamily`). Physical `sorry` 10.
 
 2026-09-24: Codex item 19 accepted PR #19 (40 modules, both frozen statements LF-identical), promoted Section31CanonicalConfiguration after private checks, registered 40+1 modules, and reduced the physical ledger 10 -> 8.
+* 02:39 UTC on 2026-09-24 - accepted the CGN cut frame (collaborator PR #15 / Package E, 77 modules reconciled by Codex item 18;
+  lead checks + two split audits on the lead lease; statement byte-identical). CGN keeps one leaf (the protected
+  circle removal step). Physical `sorry` 7.

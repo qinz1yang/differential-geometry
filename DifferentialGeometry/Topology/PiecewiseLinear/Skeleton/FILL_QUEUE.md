@@ -992,3 +992,4 @@ E. Owed lead cleanups, deferred by the owner: `Section34FaceTorusCycle` to `hf�
 Report (≤ 40 lines) after each of A, B, C: commits, receipts, audit lines, ledger total before/after.
 A DONE by the Claude lead at 03:15 UTC on 2026-09-24 (41 `Verified`, wiring, skeleton recheck errors=0 sorry=1; total 10). Start at B.
 B's lead checks STARTED by the Claude lead at 03:25 UTC on 2026-09-24 (`accept-PR15.ps1`; log `D:\differential-geometry-moise-int\.lake\scratch\AcceptPR15.log`, done = 79 `Verified`). Do not start a second run; read the log, then continue B from `wire_pr15.py --dry`.
+B DONE by the Claude lead at 03:45 UTC on 2026-09-24 (79 `Verified`, two audits clean, wiring, CGN recheck errors=0 sorry=1; total 7 after the §31 promotion 8df9cb5dd). C is running in its own lane; nothing of item 22 remains except D/E.

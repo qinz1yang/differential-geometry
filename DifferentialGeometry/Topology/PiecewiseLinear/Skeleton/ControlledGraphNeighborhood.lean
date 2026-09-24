@@ -13,6 +13,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingPackage
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexPreparation
+import DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphCutFrame
 
 /-!
 # Sorry-first skeleton of the controlled form of Moise 35.1
@@ -261,6 +262,14 @@ relative vertex-sign and reference-map modules: the unit local degree of a topol
 the transfer of boundary normals across a shared disk, the vertex signs and the joint boundary
 matching).  The four leaves left in this file are the cut frame, the vertex preparation, the
 piercing package and the protected circle removal step.
+
+Proved and imported (collaborator PR #15, Package E, reconciled with Codex item 14's modules by
+Codex item 18 on lease e: four canonical declarations reused, two retained under unique names;
+lead-accepted on 2026-09-24 with zero-diagnostic checks of the 77 modules and two axiom/linter
+audits; statement and `variable` block byte-identical): `exists_section34CutFrame` (module
+`ControlledGraphCutFrame` over the locally finite exhaustion, the refined residual cells, the
+graph cut family and the outer rim tori).  The one leaf left in this file is the protected circle
+removal step.
 -/
 
 open Set Topology
@@ -288,36 +297,6 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {Sp Tp : Section34EdgeIndex 𝒦 𝒦' → Set M₂} {cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ}
   {Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂}
   {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
-
-theorem exists_section34CutFrame [T2Space M₁] [SecondCountableTopology M₁]
-    [SecondCountableTopology M₂] [HasGroupoid M₁ (plGroupoid 3)] [HasGroupoid M₂ (plGroupoid 3)]
-    (hU : IsOpen U) (hh : Topology.IsEmbedding (U.domRestrict h))
-    (𝒦 : LocallyFinitePLPieceIn Ea 3 M₁ U) (h𝒦 : IsCombinatorialManifold 3 𝒦.complex)
-    (η : M₁ → ℝ) (H : Finset Ea → Set M₂) (hH : Section34CarrierControl U 𝒦 h η H)
-    (hW : IsOpen W) (hΓW : graphSkeletonSpace 𝒦 ⊆ W) (hWU : W ⊆ U)
-    (ψ : M₁ → ℝ) (hψc : ContinuousOn ψ U) (hψpos : ∀ x ∈ U, 0 < ψ x) :
-    ∃ (𝒦' : LocallyFinitePLPieceIn Ea 3 M₁ U)
-      (src srcBd : Section34CutLabelOf 𝒦 𝒦' → Set M₁)
-      (car : Section34VertexIndex 𝒦 𝒦' → Finset Ea)
-      (Q : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-      (ct : Section34SimplexIndex 𝒦 3 → OpenPartialHomeomorph M₂ (EuclideanSpace ℝ (Fin 3)))
-      (Sd : Section34SimplexIndex 𝒦 3 → Set (EuclideanSpace ℝ (Fin 3))),
-      Section34CutFrame U 𝒦 𝒦' src srcBd ∧
-        IsLocallyFiniteRegularNeighborhoodOf (n := 3) (section34CutNeighborhood src)
-          (graphSkeletonSpace 𝒦) U ∧
-        section34CutNeighborhood src ⊆ W ∧
-        (∀ w, car w ∈ 𝒦.complex.faces) ∧
-        (∀ w, src (.vertexBall w) ⊆ Section34CarrierSupport 𝒦 (car w)) ∧
-        (∀ t : Finset Ea, {w | car w = t}.Finite) ∧
-        (∀ w, h '' src (.vertexBall w) ⊆ interior (Q w)) ∧
-        (∀ w, Q w ⊆ H (car w)) ∧
-        (∀ w, ∀ x ∈ src (.vertexBall w), ∀ y ∈ Q w, ∀ z ∈ Q w, dist y z < ψ x) ∧
-        (∀ (w : Section34VertexIndex 𝒦 𝒦') (s : Section34SimplexIndex 𝒦 3),
-          (Q w ∩ h '' simplexBody 𝒦 s.1).Nonempty → Section34Incident w.1 s.1) ∧
-        (∀ (w : Section34VertexIndex 𝒦 𝒦') (s : Section34SimplexIndex 𝒦 3),
-          Section34Incident w.1 s.1 → Q w ⊆ H s.1) ∧
-        Section34OuterTorus 𝒦 𝒦' h Q ct Sd := by
-  sorry
 
 theorem exists_section34ProtectedCircleRemovalStep
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
