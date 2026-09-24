@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.Embedding.ProductRetraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.Uniqueness
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Existence.AddCircleShiftedCoefficients
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.Sobolev.InitialState
@@ -325,5 +326,45 @@ theorem exists_initial_interval_eq_of_parametric_curves_of_compact
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 end
+
+end
+
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
+
+open DifferentialGeometry.Geometry.Curvature
+
+theorem exists_parametric_solution_prod_of_compact
+    {E F H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+    [FiniteDimensional ℝ F] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    [I.Boundaryless] [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    [T2Space M] [CompactSpace M]
+    (c₀ : SmoothImmersion (I := I.prod 𝓘(ℝ, F)) (M := M × F))
+    (g : ℝ → SmoothRiemannianMetric (I.prod 𝓘(ℝ, F)) (M × F)) {D : RealTimeInterval}
+    (ht : 0 ∈ D.regular) (hg : MetricFamilySmoothOn D g) :
+    ∃ T : ℝ, 0 < T ∧ ∃ c : CurveMap (M × F),
+      c.SmoothOn (I := I.prod 𝓘(ℝ, F)) (Icc 0 T) ∧
+      c.ImmersedOn (I := I.prod 𝓘(ℝ, F)) (Icc 0 T) ∧
+      (∀ z, c z 0 = c₀.map z) ∧
+      ∀ x t, t ∈ Icc 0 T → c.velocity (I := I.prod 𝓘(ℝ, F)) (Icc 0 T) x t =
+        c.speed g x t ^ (-2 : ℤ) • c.Dx g c.X x t := by
+  let : Nonempty M := ⟨(c₀.map 0).1⟩
+  obtain ⟨n, e, r, V, he, hV, heV, hr, hleft⟩ :=
+    DifferentialGeometry.Topology.exists_smooth_neighborhood_retraction_prod_of_compact
+      (I := I) (M := M) (F := F)
+  let U : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin n)) := ⟨V, hV⟩
+  have hrU : ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n))
+      (I.prod 𝓘(ℝ, F)) ∞ r U := hr
+  let β : U := ⟨e (c₀.map 0), heV (mem_range_self _)⟩
+  have hG := metricFamilySmoothOn_retractionMetric g hg he hrU
+  exact DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion.exists_parametric_solution_of_smooth_retraction
+    c₀ g ht he hrU heV hleft β hG
+
+end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.SmoothImmersion
 
 end

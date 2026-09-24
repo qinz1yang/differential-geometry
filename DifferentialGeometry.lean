@@ -12356,6 +12356,7 @@ import DifferentialGeometry.Topology.Manifold.Embedding.CompactNeighborhood
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.TraceLiftLipschitz
 import DifferentialGeometry.Topology.LoopSpace.DiskBoundaryHomeomorphism
 import DifferentialGeometry.Topology.Manifold.Embedding.CompactRetraction
+import DifferentialGeometry.Topology.Manifold.Embedding.ProductRetraction
 import DifferentialGeometry.Geometry.Measure.Area.SmoothDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.WeakJordanDensity
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Reparametrization.AreaEnergy
