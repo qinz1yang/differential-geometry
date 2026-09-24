@@ -2,20 +2,19 @@
 
 L2 `bu_markedPrism_of_bridge` is proved, together with its actual compatible collar
 and cap-free whole-ball marked-prism producer. L3, L4, L5, and L6 are also proved.
-The exact `exists_compactRimCoreBuffer` and frozen `exists_compactCutAndGraph`
-assemblies remain open and are the active work.
+The actual `exists_compactRimCoreBuffer` and finite target rim neighborhoods are proved.
+The frozen `exists_compactCutAndGraph` assembly is the remaining active work.
 No construction hypothesis has been added to any frozen target.
 
-This checkpoint comprises 72 modules and 188 non-auto declarations, including private helpers.
+This checkpoint comprises 75 modules and 203 non-auto declarations, including private helpers.
 Every module compiled under the collaborator strict flags. Independent checks ran all thirteen
 standard environment linters and checked every declaration's transitive axioms:
 only `propext`, `Classical.choice`, and `Quot.sound` occur.
-Source scans and the 1421-local-module import closure exclude forbidden debt,
+Source scans and the 1427-local-module import closure exclude forbidden debt,
 resource overrides, Skeleton imports, and `HurewiczLowDegrees`.
 The requested flat aggregate and `FREE_INPUTS.md` are unchanged.
 The unmodified aggregate build has pre-existing sorry and linter diagnostics outside this
-import closure; no clean aggregate build is claimed. It is being resumed after a needed
-focused baseline dependency build.
+import closure; no clean aggregate build is claimed. The aggregate build is still running.
 
 - Cap correction: `IsPLHomeomorphOn.exists_prism_cap_images_preserving_stdCenter` preserves the entire parametrized axis while matching both cap sets. Shared radial prism and triangle-coordinate proofs replace duplicated arguments in the pointed pseudo-isotopy modules.
 
@@ -34,3 +33,5 @@ focused baseline dependency build.
 - Ribbon geometry: a disk meeting the ambient boundary in a boundary arc is a bridge for the closure of its complementary intrinsic boundary. Positive collar ribbons specialize this producer.
 
 - L2 DONE: `bu_markedPrism_of_bridge` gives the whole-ball PL prism, both prescribed cap sets, ordered marked centers, and the exact marked-axis image. The cap-free primary `IsBridgeDisk.exists_prism_axis` uses actual compatible collars, finite disk-deletion sweeps, boundary arc matching, and the whole-ball shell/core extension. Cap adjustment is applied last and preserves every axis point.
+
+- Rim buffer DONE: `exists_compactRimCoreBuffer` derives each single-vertex marked prism from its actual bridge, glues the three prisms, untwists while preserving their centers, and thickens the entire torus. The exact simplex rim is the zero section of the buffered product. `exists_compactRimNeighborhoods` chooses all buffers and finite open target constraints before approximation. The marked-product sandwich then supplies graph clause 9 from the actual target torus.
