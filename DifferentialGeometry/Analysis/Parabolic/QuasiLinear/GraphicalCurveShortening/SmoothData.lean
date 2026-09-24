@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFiniteRegularity
 import DifferentialGeometry.Geometry.Metric.AddCircle
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Regularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleDerivative
@@ -7,7 +8,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.Paramet
 
 noncomputable section
 open Set MeasureTheory Filter
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Sobolev
@@ -64,6 +65,42 @@ private theorem mfderiv_coordinate_apply
   exact congrArg (fun A => A v) h
 
 
+private theorem hasDerivWithinAt_of_integral_equation
+    {X : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+    {T : ℝ} (f q : ℝ → X)
+    (hq : ContinuousOn q (Icc 0 T))
+    (hint : ∀ t ∈ Icc 0 T, IntervalIntegrable q volume 0 t ∧
+      f t = f 0 + ∫ s in 0..t, q s) :
+    ∀ t ∈ Icc 0 T, HasDerivWithinAt f (q t) (Icc 0 T) t := by
+  intro t ht
+  let _ : Fact (t ∈ Icc 0 T) := ⟨ht⟩
+  have hm : StronglyMeasurableAtFilter q (𝓝[Icc 0 T] t) volume :=
+    ⟨Icc 0 T, self_mem_nhdsWithin, hq.aestronglyMeasurable measurableSet_Icc⟩
+  have hd : HasDerivWithinAt (fun z => f 0 + ∫ s in 0..z, q s) (q t) (Icc 0 T) t :=
+    (intervalIntegral.integral_hasDerivWithinAt_right (hint t ht).1 hm (hq t ht)).const_add _
+  exact hd.congr (fun s hs => (hint s hs).2) (hint t ht).2
+
+
+private theorem hasDerivWithinAt_of_joint_integral_equation
+    {X Y : Type*} [TopologicalSpace X]
+    [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
+    {T : ℝ} (f q : ℝ → X → Y) (f₀ : X → Y)
+    (hinit : ∀ x, f 0 x = f₀ x)
+    (hq : ContinuousOn (Function.uncurry q) (Icc 0 T ×ˢ univ))
+    (hint : ∀ x t, t ∈ Icc 0 T → IntervalIntegrable (fun s => q s x) volume 0 t ∧
+      f t x = f₀ x + ∫ s in 0..t, q s x) :
+    ∀ t ∈ Icc 0 T, ∀ x, HasDerivWithinAt (fun s => f s x) (q t x) (Icc 0 T) t := by
+  intro t ht x
+  have hslice : ContinuousOn (fun s => q s x) (Icc 0 T) :=
+    hq.comp (continuous_id.prodMk continuous_const).continuousOn
+      (fun _ hs => ⟨hs, mem_univ _⟩)
+  apply hasDerivWithinAt_of_integral_equation (fun s => f s x) (fun s => q s x) hslice _ t ht
+  intro s hs
+  obtain ⟨hi, heq⟩ := hint x s hs
+  refine ⟨hi, ?_⟩
+  rw [hinit]
+  exact heq
+
 private theorem integral_eq_of_timeH1_ae_derivative
     {X Y : Type*} [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
     [NormedAddCommGroup Y] [NormedSpace ℝ Y] [CompleteSpace Y]
@@ -98,6 +135,82 @@ private theorem integral_eq_of_timeH1_ae_derivative
   abel
 
 
+private theorem continuousOn_iteratedDeriv_of_circle_h3_representative
+    {ι X : Type*} [Fintype ι] [TopologicalSpace X]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (u : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)))
+    (W : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    {s : Set X} (hW : ContinuousOn W s)
+    (n : ℕ) (hn : n ≤ 2) :
+    let K := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 2))
+    let C := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    (∀ t ∈ s, K (W t) = u t) →
+    let f := fun t (x : ℝ) => scalarH1PiToContinuous g (C (K f₀ + u t))
+      (x : AddCircle (1 : ℝ))
+    ContinuousOn (fun p : X × ℝ => iteratedDeriv n (f p.1) p.2) (s ×ˢ univ) := by
+  intro K C hWu f
+  let P := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+    tensorHsInclusion (g := g) (r := 0) (s := 0)
+      (by have h : (n : ℝ) ≤ 2 := by exact_mod_cast hn
+          norm_num only [Nat.cast_one]
+          linarith : (n : ℝ) + 1 ≤ ((1 : ℕ) : ℝ) + 2))
+  have hhigh : ContinuousOn (fun t => P (f₀ + W t)) s :=
+    P.continuous.comp_continuousOn (continuousOn_const.add hW)
+  have hlow : ∀ t ∈ s,
+      ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+        tensorHsInclusion (g := g) (r := 0) (s := 0)
+          (by norm_num : (1 : ℝ) ≤ (n : ℝ) + 1)) (P (f₀ + W t)) =
+        C (K f₀ + u t) := by
+    intro t ht
+    rw [← hWu t ht, ← map_add]
+    apply PiLp.ext
+    intro i
+    apply TensorHs.ext
+    rfl
+  exact (AddCircle.contDiff_and_continuousOn_iteratedDeriv_scalarH1PiToContinuous
+    g n (fun t => C (K f₀ + u t)) (fun t => P (f₀ + W t)) hhigh hlow).2
+
+private theorem graphical_rhs_continuousOn_of_circle_h3_representative
+    {ι X : Type*} [Fintype ι] [TopologicalSpace X]
+    (g : SmoothRiemannianMetric 𝓘(ℝ, ℝ) (AddCircle (1 : ℝ)))
+    (f₀ : PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    (u : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 ((1 : ℕ) : ℝ)))
+    (W : X → PiLp 2 (fun _ : ι => TensorHs g 0 0 (((1 : ℕ) : ℝ) + 2)))
+    {s : Set X} (hW : ContinuousOn W s) :
+    let K := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : ((1 : ℕ) : ℝ) ≤ ((1 : ℕ) : ℝ) + 2))
+    let C := ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
+      tensorHsInclusion (g := g) (r := 0) (s := 0)
+        (by norm_num : (1 : ℝ) ≤ ((1 : ℕ) : ℝ)))
+    (∀ t ∈ s, K (W t) = u t) →
+    let f := fun t (x : ℝ) => scalarH1PiToContinuous g (C (K f₀ + u t))
+      (x : AddCircle (1 : ℝ))
+    ContinuousOn (fun p : X × ℝ => deriv (f p.1) p.2) (s ×ˢ univ) ∧
+    ContinuousOn (fun p : X × ℝ => deriv (deriv (f p.1)) p.2) (s ×ˢ univ) ∧
+    ContinuousOn (fun p : X × ℝ =>
+      graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f p.1) p.2)) •
+        deriv (deriv (f p.1)) p.2) (s ×ˢ univ) := by
+  intro K C hWu f
+  have hfirst : ContinuousOn (fun p : X × ℝ => deriv (f p.1) p.2) (s ×ˢ univ) := by
+    simpa only [iteratedDeriv_one] using
+      continuousOn_iteratedDeriv_of_circle_h3_representative g f₀ u W hW 1 (by norm_num) hWu
+  have hsecond : ContinuousOn (fun p : X × ℝ => deriv (deriv (f p.1)) p.2) (s ×ˢ univ) := by
+    simpa only [show (2 : ℕ) = 1 + 1 from rfl, iteratedDeriv_succ, iteratedDeriv_one, iteratedDeriv_zero] using
+      continuousOn_iteratedDeriv_of_circle_h3_representative g f₀ u W hW 2 (by norm_num) hWu
+  refine ⟨hfirst, hsecond, ?_⟩
+  have hslope : ContinuousOn
+      (fun p : X × ℝ => (WithLp.toLp 2 (deriv (f p.1) p.2) : EuclideanSpace ℝ ι))
+      (s ×ˢ univ) :=
+    (PiLp.continuous_toLp 2 (fun _ : ι => ℝ)).comp_continuousOn hfirst
+  exact (contDiff_graphDiffusionCoefficient.continuous.comp_continuousOn hslope).smul hsecond
+
+
 private theorem exists_graphical_curve_shortening_coordinates
     {ι : Type*} [Fintype ι]
     (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
@@ -113,6 +226,11 @@ private theorem exists_graphical_curve_shortening_coordinates
           graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f s) x)) •
             deriv (deriv (f s)) x) ∧
       (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (f t)) ∧
+      (ContinuousOn (fun p : ℝ × ℝ => deriv (f p.1) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (f p.1)) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ =>
+          graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f p.1) p.2)) •
+            deriv (deriv (f p.1)) p.2) (Icc 0 T ×ˢ univ)) ∧
       ∀ᵐ t ∂timeMeasure T, ContDiff ℝ 2 (f t) ∧ ∀ x,
         HasDerivAt (fun s => f s x)
           (graphDiffusionCoefficient (WithLp.toLp 2 (deriv (f t) x)) •
@@ -186,7 +304,9 @@ private theorem exists_graphical_curve_shortening_coordinates
     exact ⟨hC2 t htmem, ht⟩
   let f := fun t (x : ℝ) => scalarH1PiToContinuous g (C (K f₀ + u.toFun t))
     (x : AddCircle (1 : ℝ))
-  refine ⟨T, hT, f, ?_, hperiod, ?_, ?_, hC2, hpde⟩
+  have hjets := graphical_rhs_continuousOn_of_circle_h3_representative
+    g f₀ u.toFun W hW hWlow
+  refine ⟨T, hT, f, ?_, hperiod, ?_, ?_, hC2, hjets, hpde⟩
   · intro x
     have hi : f 0 x = scalarH1PiToContinuous g (C (K f₀)) (x : AddCircle (1 : ℝ)) := hinit x
     rw [hi]
@@ -245,7 +365,7 @@ private theorem hasDerivAt_graphical_curve_shortening_toLp
   convert h using 1 <;> rfl
 
 
-theorem exists_graphical_curve_shortening_integral_with_contDiff_two_slices_of_smooth
+private theorem exists_graphical_curve_shortening_integral_with_continuous_derivatives
     {ι : Type*} [Fintype ι]
     (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
     ∃ T : ℝ, 0 < T ∧ ∃ F : ℝ → ℝ → EuclideanSpace ℝ ι,
@@ -258,13 +378,18 @@ theorem exists_graphical_curve_shortening_integral_with_contDiff_two_slices_of_s
         F t x = F₀ (x : AddCircle (1 : ℝ)) + ∫ s in 0..t,
           graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) ∧
       (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (F t)) ∧
+      (ContinuousOn (fun p : ℝ × ℝ => deriv (F p.1) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (F p.1)) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ =>
+          graphDiffusionCoefficient (deriv (F p.1) p.2) •
+            deriv (deriv (F p.1)) p.2) (Icc 0 T ×ˢ univ)) ∧
       ∀ᵐ t ∂timeMeasure T, ContDiff ℝ 2 (F t) ∧ ∀ x,
         HasDerivAt (fun s => F s x)
           (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) t := by
-  obtain ⟨T, hT, f, hinit, hperiod, hcont, hint, hC2, hpde⟩ :=
+  obtain ⟨T, hT, f, hinit, hperiod, hcont, hint, hC2, hjets, hpde⟩ :=
     exists_graphical_curve_shortening_coordinates F₀
   let F : ℝ → ℝ → EuclideanSpace ℝ ι := fun t x => WithLp.toLp 2 (f t x)
-  refine ⟨T, hT, F, ?_, ?_, ?_, ?_, ?_, ?_⟩
+  refine ⟨T, hT, F, ?_, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro x
     change WithLp.toLp 2 (f 0 x) = F₀ (x : AddCircle (1 : ℝ))
     rw [hinit]
@@ -296,8 +421,88 @@ theorem exists_graphical_curve_shortening_integral_with_contDiff_two_slices_of_s
     rfl
   · intro t ht
     exact (PiLp.continuousLinearEquiv 2 ℝ (fun _ : ι => ℝ)).symm.contDiff.comp (hC2 t ht)
+  · let e := (PiLp.continuousLinearEquiv 2 ℝ (fun _ : ι => ℝ)).symm
+    have hfirst (t : ℝ) : deriv (F t) = fun x => WithLp.toLp 2 (deriv (f t) x) :=
+      deriv_toLp (f t)
+    have hsecond (t : ℝ) : deriv (deriv (F t)) =
+        fun x => WithLp.toLp 2 (deriv (deriv (f t)) x) := by
+      rw [hfirst]
+      exact deriv_toLp (deriv (f t))
+    refine ⟨?_, ?_, ?_⟩
+    · apply (e.continuous.comp_continuousOn hjets.1).congr
+      intro p hp
+      exact congrFun (hfirst p.1) p.2
+    · apply (e.continuous.comp_continuousOn hjets.2.1).congr
+      intro p hp
+      exact congrFun (hsecond p.1) p.2
+    · apply (e.continuous.comp_continuousOn hjets.2.2).congr
+      intro p hp
+      dsimp only [Function.comp_apply]
+      rw [hsecond, hfirst]
+      rfl
   · filter_upwards [hpde] with t ht
     exact hasDerivAt_graphical_curve_shortening_toLp f ht.1 ht.2
+
+
+theorem exists_graphical_curve_shortening_classical_of_smooth
+    {ι : Type*} [Fintype ι]
+    (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
+    ∃ T : ℝ, 0 < T ∧ ∃ F : ℝ → ℝ → EuclideanSpace ℝ ι,
+      (∀ x, F 0 x = F₀ (x : AddCircle (1 : ℝ))) ∧
+      (∀ t, Function.Periodic (F t) 1) ∧
+      ContinuousOn (Function.uncurry F) (Icc 0 T ×ˢ univ) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        IntervalIntegrable (fun s =>
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) volume 0 t ∧
+        F t x = F₀ (x : AddCircle (1 : ℝ)) + ∫ s in 0..t,
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) ∧
+      (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (F t)) ∧
+      (ContinuousOn (fun p : ℝ × ℝ => deriv (F p.1) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (F p.1)) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ =>
+          graphDiffusionCoefficient (deriv (F p.1) p.2) •
+            deriv (deriv (F p.1)) p.2) (Icc 0 T ×ˢ univ)) ∧
+      (∀ t ∈ Icc 0 T, ∀ x, HasDerivWithinAt (fun s => F s x)
+        (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) (Icc 0 T) t) ∧
+      ∀ t ∈ Ioo 0 T, ∀ x, HasDerivAt (fun s => F s x)
+        (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) t := by
+  obtain ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, hjets, _⟩ :=
+    exists_graphical_curve_shortening_integral_with_continuous_derivatives F₀
+  have hwithin : ∀ t ∈ Icc 0 T, ∀ x, HasDerivWithinAt (fun s => F s x)
+      (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) (Icc 0 T) t :=
+    hasDerivWithinAt_of_joint_integral_equation F
+      (fun t x => graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x)
+      (fun x => F₀ (x : AddCircle (1 : ℝ))) hinit hjets.2.2 hint
+  refine ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, hjets, hwithin, ?_⟩
+  intro t ht x
+  exact (hwithin t ⟨ht.1.le, ht.2.le⟩ x).hasDerivAt (Icc_mem_nhds ht.1 ht.2)
+
+
+theorem exists_graphical_curve_shortening_integral_with_contDiff_two_slices_of_smooth
+    {ι : Type*} [Fintype ι]
+    (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
+    ∃ T : ℝ, 0 < T ∧ ∃ F : ℝ → ℝ → EuclideanSpace ℝ ι,
+      (∀ x, F 0 x = F₀ (x : AddCircle (1 : ℝ))) ∧
+      (∀ t, Function.Periodic (F t) 1) ∧
+      ContinuousOn (Function.uncurry F) (Icc 0 T ×ˢ univ) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        IntervalIntegrable (fun s =>
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) volume 0 t ∧
+        F t x = F₀ (x : AddCircle (1 : ℝ)) + ∫ s in 0..t,
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) ∧
+      (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (F t)) ∧
+      ∀ᵐ t ∂timeMeasure T, ContDiff ℝ 2 (F t) ∧ ∀ x,
+        HasDerivAt (fun s => F s x)
+          (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) t := by
+  obtain ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, _, _, hpde⟩ :=
+    exists_graphical_curve_shortening_classical_of_smooth F₀
+  refine ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, ?_⟩
+  have hmem : ∀ᵐ t ∂timeMeasure T, t ∈ Ioo 0 T := by
+    unfold timeMeasure
+    rw [← restrict_Ioo_eq_restrict_Icc]
+    exact ae_restrict_mem measurableSet_Ioo
+  filter_upwards [hmem] with t ht
+  exact ⟨hC2 t ⟨ht.1.le, ht.2.le⟩, hpde t ht⟩
 
 
 theorem exists_graphical_curve_shortening_integral_of_smooth
