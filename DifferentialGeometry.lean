@@ -8712,6 +8712,7 @@ import DifferentialGeometry.Topology.Homology.SecondHomologyVanishingClosedThree
 import DifferentialGeometry.Topology.Homology.SimplexBasis
 import DifferentialGeometry.Topology.Homology.SimplexBoundaryFilling
 import DifferentialGeometry.Topology.Homology.SimplexBoundary
+import DifferentialGeometry.Topology.Homology.ChainFacePairing
 import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
 import DifferentialGeometry.Topology.Homology.SimplexEvaluation
 import DifferentialGeometry.Topology.Homology.SimplexMaps
