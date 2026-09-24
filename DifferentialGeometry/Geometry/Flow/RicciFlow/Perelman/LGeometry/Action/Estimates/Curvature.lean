@@ -6,6 +6,93 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Qua
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Bounds.UniformEquivalence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.Range
 
+noncomputable section
+open Set MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : RealTimeInterval}
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lRegularizedAction_ge_riemannianEDistOf_sq_div_add_constant_of_interior_bounds
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (α : ℝ → M)
+    {a b c C : ℝ} (hab : a < b) (hc : 0 ≤ c)
+    (g : SmoothRiemannianMetric I M)
+    (hα : ContMDiffOn 𝓘(ℝ, ℝ) I 1 α (Icc a b))
+    (hmetric : ∀ s ∈ Ioo a b,
+      c * g.inner (α s) (lVelocity (I := I) α s) (lVelocity (I := I) α s) ≤
+        (S.base.metric (T - s ^ 2)).inner (α s)
+          (lVelocity (I := I) α s) (lVelocity (I := I) α s))
+    (hpotential : ∀ s ∈ Ioo a b, C ≤ 2 * s ^ 2 * S.scalar (T - s ^ 2) (α s))
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T α) volume a b) :
+    c * (riemannianEDistOf g (α a) (α b)).toReal ^ 2 / (2 * (b - a)) + C * (b - a) ≤
+      lRegularizedAction S T α a b := by
+  have hE := integrableOn_inner_mfderiv_self_of_contMDiffOn g hα
+  have href : IntervalIntegrable
+      (fun s => g.inner (α s) (lVelocity (I := I) α s) (lVelocity (I := I) α s)) volume a b := by
+    apply IntegrableOn.intervalIntegrable
+    simpa only [uIcc_of_le hab.le, lVelocity] using hE
+  have hcoerc := lRegularizedAction_ge_reference_energy_add_constant_of_interior_bounds S T α g a b c C hab.le
+    hmetric hpotential href hLag
+  rw [intervalIntegral.integral_const_mul] at hcoerc
+  change c / 2 * curveEnergy g α a b + C * (b - a) ≤ _ at hcoerc
+  have hd := riemannianEDistOf_toReal_sq_le_curveEnergy g hab.le hα hE
+  have hdist : c * (riemannianEDistOf g (α a) (α b)).toReal ^ 2 / (2 * (b - a)) ≤
+      c / 2 * curveEnergy g α a b := by
+    apply (div_le_iff₀ (by linarith : 0 < 2 * (b - a))).mpr
+    nlinarith [mul_le_mul_of_nonneg_left hd hc]
+  exact (add_le_add hdist le_rfl).trans hcoerc
+
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lRegularizedAction_ge_of_endpoint_separation_of_interior_bounds
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (α : ℝ → M)
+    {a b v μ B r : ℝ} (ha : 0 ≤ a) (hab : a < b) (hbv : b ≤ v)
+    (hμ : 0 ≤ μ) (hB : 0 ≤ B) (hr : 0 ≤ r)
+    (g : SmoothRiemannianMetric I M)
+    (hα : ContMDiffOn 𝓘(ℝ, ℝ) I 1 α (Icc a b))
+    (hmetric : ∀ s ∈ Ioo a b,
+      μ * g.inner (α s) (lVelocity (I := I) α s) (lVelocity (I := I) α s) ≤
+        (S.base.metric (T - s ^ 2)).inner (α s)
+          (lVelocity (I := I) α s) (lVelocity (I := I) α s))
+    (hscalar : ∀ s ∈ Ioo a b, -B ≤ S.scalar (T - s ^ 2) (α s))
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T α) volume a b)
+    (hseparation : ENNReal.ofReal r ≤ riemannianEDistOf g (α a) (α b)) :
+    μ * r ^ 2 / (2 * (b - a)) - 2 * B * v ^ 2 * (b - a) ≤
+      lRegularizedAction S T α a b := by
+  have hE := integrableOn_inner_mfderiv_self_of_contMDiffOn g hα
+  have hfinite : riemannianEDistOf g (α a) (α b) ≠ ⊤ :=
+    ne_top_of_le_ne_top ENNReal.ofReal_ne_top (edistOf_le_energy g hab.le hα hE)
+  have hdist : r ≤ (riemannianEDistOf g (α a) (α b)).toReal :=
+    (ENNReal.ofReal_le_iff_le_toReal hfinite).mp hseparation
+  have hsq := pow_le_pow_left₀ hr hdist 2
+  have hpotential : ∀ s ∈ Ioo a b, -(2 * B * v ^ 2) ≤
+      2 * s ^ 2 * S.scalar (T - s ^ 2) (α s) := by
+    intro s hs
+    have hs0 : 0 ≤ s := ha.trans hs.1.le
+    have hv0 : 0 ≤ v := ha.trans (hab.le.trans hbv)
+    have hs2 : s ^ 2 ≤ v ^ 2 := (sq_le_sq₀ hs0 hv0).mpr (hs.2.le.trans hbv)
+    have hmul := mul_le_mul_of_nonneg_left (hscalar s hs) (by positivity : 0 ≤ 2 * s ^ 2)
+    have hsqB := mul_le_mul_of_nonneg_left hs2 (by positivity : 0 ≤ 2 * B)
+    nlinarith
+  have hh := lRegularizedAction_ge_riemannianEDistOf_sq_div_add_constant_of_interior_bounds
+    S T α hab hμ g hα hmetric hpotential hLag
+  have hratio := div_le_div_of_nonneg_right (mul_le_mul_of_nonneg_left hsq hμ)
+    (by linarith : 0 ≤ 2 * (b - a))
+  exact (sub_le_sub_right hratio _).trans (by simpa only [neg_mul, sub_eq_add_neg] using hh)
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
 set_option autoImplicit false
 
 noncomputable section
@@ -261,21 +348,9 @@ theorem lRegularizedAction_ge_riemannianEDistOf_sq_div_add_constant
     (hLag : IntervalIntegrable (lRegularizedLagrangian S T α) volume a b) :
     c * (riemannianEDistOf g (α a) (α b)).toReal ^ 2 / (2 * (b - a)) + C * (b - a) ≤
       lRegularizedAction S T α a b := by
-  have hE := integrableOn_inner_mfderiv_self_of_contMDiffOn g hα
-  have href : IntervalIntegrable
-      (fun s => g.inner (α s) (lVelocity (I := I) α s) (lVelocity (I := I) α s)) volume a b := by
-    apply IntegrableOn.intervalIntegrable
-    simpa only [uIcc_of_le hab.le, lVelocity] using hE
-  have hcoerc := lRegularizedAction_ge_reference_energy_add_constant S T α g a b c C hab.le
-    hmetric hpotential href hLag
-  rw [intervalIntegral.integral_const_mul] at hcoerc
-  change c / 2 * curveEnergy g α a b + C * (b - a) ≤ _ at hcoerc
-  have hd := riemannianEDistOf_toReal_sq_le_curveEnergy g hab.le hα hE
-  have hdist : c * (riemannianEDistOf g (α a) (α b)).toReal ^ 2 / (2 * (b - a)) ≤
-      c / 2 * curveEnergy g α a b := by
-    apply (div_le_iff₀ (by linarith : 0 < 2 * (b - a))).mpr
-    nlinarith [mul_le_mul_of_nonneg_left hd hc]
-  exact (add_le_add hdist le_rfl).trans hcoerc
+  exact lRegularizedAction_ge_riemannianEDistOf_sq_div_add_constant_of_interior_bounds S T α hab hc g hα
+    (fun s hs => hmetric s (Ioo_subset_Icc_self hs))
+    (fun s hs => hpotential s (Ioo_subset_Icc_self hs)) hLag
 
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

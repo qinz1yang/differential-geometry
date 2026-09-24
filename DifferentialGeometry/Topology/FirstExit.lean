@@ -143,3 +143,62 @@ theorem mapsTo_or_exists_frontier_pair
       ⟨hc.1.trans ht.1.le, ht.2⟩, hs.2.trans ht.1, hsfront, htfront, hbefore, hafter⟩
 
 end DifferentialGeometry
+
+set_option autoImplicit false
+open Set
+
+namespace DifferentialGeometry
+
+theorem exists_first_exit_frontier_Icc_of_not_mapsTo
+    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
+    {γ : ℝ → X} {a b : ℝ} (hγ : ContinuousOn γ (Icc a b))
+    (haK : γ a ∈ interior K) (hexit : ¬ MapsTo γ (Icc a b) K) :
+    ∃ t ∈ Ioo a b, MapsTo γ (Icc a t) K ∧ γ t ∈ frontier K := by
+  obtain ⟨c, hc, hcK⟩ : ∃ c ∈ Icc a b, γ c ∉ K := by
+    simpa only [MapsTo, not_forall, exists_prop] using hexit
+  have hac : a < c := lt_of_le_of_ne hc.1 (by
+    intro heq
+    exact hcK (heq ▸ interior_subset haK))
+  have hleft : ContinuousOn (fun u : ℝ => γ (a + u)) (Icc 0 (c - a)) :=
+    hγ.comp (continuous_const.add continuous_id).continuousOn (by
+      intro u hu
+      constructor <;> linarith [hu.1, hu.2, hc.2])
+  obtain ⟨t, ht, hstay, hfront⟩ := exists_first_exit_frontier hK (sub_pos.mpr hac) hleft
+    (by simpa using haK) (by simpa using hcK)
+  have htc : t < c - a := lt_of_le_of_ne ht.2 (by
+    intro heq
+    have hh := hstay t ⟨ht.1.le, le_rfl⟩
+    rw [heq, add_sub_cancel] at hh
+    exact hcK hh)
+  refine ⟨a + t, ⟨by linarith [ht.1], by linarith [htc, hc.2]⟩, ?_, hfront⟩
+  intro u hu
+  have hu' : u - a ∈ Icc 0 t := ⟨by linarith [hu.1], by linarith [hu.2]⟩
+  simpa using hstay (u - a) hu'
+
+theorem exists_last_entry_frontier_Icc_of_not_mapsTo
+    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
+    {γ : ℝ → X} {a b : ℝ} (hγ : ContinuousOn γ (Icc a b))
+    (hbK : γ b ∈ interior K) (hexit : ¬ MapsTo γ (Icc a b) K) :
+    ∃ t ∈ Ioo a b, MapsTo γ (Icc t b) K ∧ γ t ∈ frontier K := by
+  obtain ⟨c, hc, hcK⟩ : ∃ c ∈ Icc a b, γ c ∉ K := by
+    simpa only [MapsTo, not_forall, exists_prop] using hexit
+  have hcb : c < b := lt_of_le_of_ne hc.2 (by
+    intro heq
+    exact hcK (heq.symm ▸ interior_subset hbK))
+  have hright : ContinuousOn (fun u : ℝ => γ (b - u)) (Icc 0 (b - c)) :=
+    hγ.comp (continuous_const.sub continuous_id).continuousOn (by
+      intro u hu
+      constructor <;> linarith [hu.1, hu.2, hc.1])
+  obtain ⟨t, ht, hstay, hfront⟩ := exists_first_exit_frontier hK (sub_pos.mpr hcb) hright
+    (by simpa using hbK) (by simpa using hcK)
+  have htc : t < b - c := lt_of_le_of_ne ht.2 (by
+    intro heq
+    have hh := hstay t ⟨ht.1.le, le_rfl⟩
+    rw [heq, sub_sub_cancel] at hh
+    exact hcK hh)
+  refine ⟨b - t, ⟨by linarith [htc, hc.1], by linarith [ht.1]⟩, ?_, hfront⟩
+  intro u hu
+  have hu' : b - u ∈ Icc 0 t := ⟨by linarith [hu.2], by linarith [hu.1]⟩
+  simpa using hstay (b - u) hu'
+
+end DifferentialGeometry

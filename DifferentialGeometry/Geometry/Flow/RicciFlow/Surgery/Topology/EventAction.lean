@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Boundary
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.IntervalLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorMetricSeam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalPullback
@@ -475,6 +476,139 @@ theorem eventRegularizedC1Cost_eq_of_survivor_minimum_and_action_gap
           S hS T hd hdv htime hbefore hafter η hmin α β hα hβ hαstay hβstay hnode hzero hend
       · exact hηlow.le.trans (hgap α β hα hβ hiα hiβ hzero hend hnode (Or.inr hβstay))
     · exact hηlow.le.trans (hgap α β hα hβ hiα hiβ hzero hend hnode (Or.inl hαstay))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+end
+
+noncomputable section
+open Set Manifold TopologicalSpace MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u
+variable {P Q : OrientedThreeStage.{u}} {a s b : ℝ} (E : MetricCutCapEvent P Q a s)
+  (G : Q.IncomingSlab s b)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem event_competitor_action_ge_of_leaves_closed_sets
+    (T : ℝ) {d v μ B r : ℝ} (hd : 0 < d) (hdv : d < v)
+    (hμ : 0 ≤ μ) (hB : 0 ≤ B) (hr : 0 ≤ r)
+    (gPlus : Q.Metric) (gMinus : P.Metric)
+    {KPlus : Set Q.Carrier} {KMinus : Set P.Carrier}
+    (hKPlus : IsClosed KPlus) (hKMinus : IsClosed KMinus)
+    (α : ℝ → Q.Carrier) (β : ℝ → P.Carrier)
+    (hα : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 α (Icc 0 d))
+    (hβ : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 β (Icc d v))
+    (hαLag : IntervalIntegrable (lRegularizedLagrangian G.flow T α) volume 0 d)
+    (hβLag : IntervalIntegrable (lRegularizedLagrangian E.incoming.flow T β) volume d v)
+    (hstart : α 0 ∈ interior KPlus) (hend : β v ∈ interior KMinus)
+    (hmetricPlus : ∀ t ∈ Ioo 0 d, α t ∈ KPlus →
+      μ * gPlus.inner (α t) (lVelocity α t) (lVelocity α t) ≤
+        (G.flow.base.metric (T - t ^ 2)).inner (α t) (lVelocity α t) (lVelocity α t))
+    (hmetricMinus : ∀ t ∈ Ioo d v, β t ∈ KMinus →
+      μ * gMinus.inner (β t) (lVelocity β t) (lVelocity β t) ≤
+        (E.incoming.flow.base.metric (T - t ^ 2)).inner (β t) (lVelocity β t) (lVelocity β t))
+    (hscalarPlus : ∀ t ∈ Ioo 0 d, -B ≤ G.flow.scalar (T - t ^ 2) (α t))
+    (hscalarMinus : ∀ t ∈ Ioo d v, -B ≤ E.incoming.flow.scalar (T - t ^ 2) (β t))
+    (hfrontPlus : ∀ y ∈ frontier KPlus, ENNReal.ofReal r ≤ riemannianEDistOf gPlus (α 0) y)
+    (hfrontMinus : ∀ y ∈ frontier KMinus, ENNReal.ofReal r ≤ riemannianEDistOf gMinus y (β v))
+    (hexit : ¬ MapsTo α (Icc 0 d) KPlus ∨ ¬ MapsTo β (Icc d v) KMinus) :
+    μ * r ^ 2 / (2 * v) - 2 * B * v ^ 3 ≤
+      lRegularizedAction G.flow T α 0 d + lRegularizedAction E.incoming.flow T β d v := by
+  have hv : 0 < v := hd.trans hdv
+  rcases hexit with h | h
+  · have hgap := lRegularizedAction_ge_of_leaves_closed_set G.flow T α le_rfl hdv.le
+      hμ hB hr gPlus hKPlus hα hstart hmetricPlus hscalarPlus hαLag hfrontPlus h
+    have hrest := lRegularizedAction_ge_of_scalar_lower_on_interior E.incoming.flow T β
+      hd.le hdv.le le_rfl hB hscalarMinus hβLag
+    have hratio : μ * r ^ 2 / (2 * v) ≤ μ * r ^ 2 / (2 * d) :=
+      div_le_div_of_nonneg_left (mul_nonneg hμ (sq_nonneg r)) (by positivity) (by linarith)
+    simp only [sub_zero] at hgap
+    nlinarith
+  · have hgap := lRegularizedAction_ge_of_enters_closed_set E.incoming.flow T β hd.le le_rfl
+      hμ hB hr gMinus hKMinus hβ hend hmetricMinus hscalarMinus hβLag hfrontMinus h
+    have hrest := lRegularizedAction_ge_of_scalar_lower_on_interior G.flow T α le_rfl
+      hd.le hdv.le hB hscalarPlus hαLag
+    have hratio : μ * r ^ 2 / (2 * v) ≤ μ * r ^ 2 / (2 * (v - d)) :=
+      div_le_div_of_nonneg_left (mul_nonneg hμ (sq_nonneg r)) (by positivity) (by linarith)
+    simp only [sub_zero] at hrest
+    nlinarith
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+end
+
+noncomputable section
+open Set Manifold TopologicalSpace MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u
+variable {P Q : OrientedThreeStage.{u}} {a s b : ℝ} (E : MetricCutCapEvent P Q a s)
+  (G : Q.IncomingSlab s b)
+  {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+  (f : X → P.Carrier) (g : X → Q.Carrier)
+  (hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f)
+  (hg : IsLocalDiffeomorph ThreeModel ThreeModel ∞ g)
+  (hfi : Function.Injective f) (hgi : Function.Injective g)
+  (hcross : ∀ z : X, E.RegularCrossing (f z) (g z))
+
+include hfi hgi hcross in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem eventRegularizedC1Cost_eq_of_survivor_minimum_and_frontier_separation
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (hS : IsSolutionOn S) (T : ℝ) {d v μ B r : ℝ} (hd : 0 < d) (hdv : d < v)
+    (hclock : T - d ^ 2 = s)
+    (htime : ∀ r ∈ Icc 0 v, T - r ^ 2 ∈ D.carrier)
+    (htimePlus : ∀ r ∈ Icc 0 d, T - r ^ 2 ∈ (RealTimeInterval.closedOpen s b G.lt).carrier)
+    (htimeMinus : ∀ r ∈ Ioc d v, T - r ^ 2 ∈ (RealTimeInterval.closedOpen a s E.incoming.lt).carrier)
+    (hbefore : ∀ r ∈ Ioo d v, S.base.metric (T - r ^ 2) =
+      localPullMetric (E.incoming.flow.base.metric (T - r ^ 2)) f hf)
+    (hafter : ∀ r ∈ Ioo 0 d, S.base.metric (T - r ^ 2) =
+      localPullMetric (G.flow.base.metric (T - r ^ 2)) g hg)
+    (η : ℝ → X) (hη : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η)
+    (hmin : ∀ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ →
+      γ 0 = η 0 → γ v = η v → lRegularizedAction S T η 0 v ≤ lRegularizedAction S T γ 0 v)
+    (hμ : 0 ≤ μ) (hB : 0 ≤ B) (hr : 0 ≤ r)
+    (gPlus : Q.Metric) (gMinus : P.Metric)
+    {KPlus : Set Q.Carrier} {KMinus : Set P.Carrier}
+    (hKPlus : IsClosed KPlus) (hKMinus : IsClosed KMinus)
+    (hKPlusRange : KPlus ⊆ range g) (hKMinusRange : KMinus ⊆ range f)
+    (hstart : g (η 0) ∈ interior KPlus) (hend : f (η v) ∈ interior KMinus)
+    (hmetricPlus : ∀ t ∈ Ioo 0 d, ∀ y ∈ KPlus, ∀ w : TangentSpace ThreeModel y,
+      μ * gPlus.inner y w w ≤ (G.flow.base.metric (T - t ^ 2)).inner y w w)
+    (hmetricMinus : ∀ t ∈ Ioo d v, ∀ y ∈ KMinus, ∀ w : TangentSpace ThreeModel y,
+      μ * gMinus.inner y w w ≤ (E.incoming.flow.base.metric (T - t ^ 2)).inner y w w)
+    (hscalarPlus : ∀ t ∈ Ioo 0 d, ∀ y : Q.Carrier, -B ≤ G.flow.scalar (T - t ^ 2) y)
+    (hscalarMinus : ∀ t ∈ Ioo d v, ∀ y : P.Carrier, -B ≤ E.incoming.flow.scalar (T - t ^ 2) y)
+    (hfrontPlus : ∀ y ∈ frontier KPlus, ENNReal.ofReal r ≤ riemannianEDistOf gPlus (g (η 0)) y)
+    (hfrontMinus : ∀ y ∈ frontier KMinus, ENNReal.ofReal r ≤ riemannianEDistOf gMinus y (f (η v)))
+    (hηlow : lRegularizedAction S T η 0 v < μ * r ^ 2 / (2 * v) - 2 * B * v ^ 3) :
+    E.eventRegularizedC1Cost G T d v (g (η 0)) (f (η v)) =
+      (lRegularizedAction S T η 0 v : WithTop ℝ) := by
+  apply E.eventRegularizedC1Cost_eq_of_survivor_minimum_and_action_gap G f g hf hg hfi hgi hcross
+    S hS T hd hdv hclock htime htimePlus htimeMinus hbefore hafter η hη hmin hηlow
+  intro α β hα hβ hαLag hβLag hzero hvend _ hescape
+  apply E.event_competitor_action_ge_of_leaves_closed_sets G T hd hdv hμ hB hr gPlus gMinus
+    hKPlus hKMinus α β hα.contMDiffOn hβ.contMDiffOn hαLag hβLag
+    (hzero.symm ▸ hstart) (hvend.symm ▸ hend)
+    (fun t ht hy => hmetricPlus t ht (α t) hy (lVelocity α t))
+    (fun t ht hy => hmetricMinus t ht (β t) hy (lVelocity β t))
+    (fun t ht => hscalarPlus t ht (α t)) (fun t ht => hscalarMinus t ht (β t))
+    (by simpa only [hzero] using hfrontPlus) (by simpa only [hvend] using hfrontMinus)
+  rcases hescape with h | h
+  · exact Or.inl (fun hstay => h (fun t ht => hKPlusRange (hstay ht)))
+  · exact Or.inr (fun hstay => h (fun t ht => hKMinusRange (hstay ht)))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
 
