@@ -13583,6 +13583,7 @@ import DifferentialGeometry.Topology.Compactness.ComplementCore
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.CoreAtlas
 import DifferentialGeometry.Geometry.Neck.SmoothSavedEnd
 import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.Inclusion
+import DifferentialGeometry.Topology.Manifold.SmoothBoundaryAtlas.ConnectedComponents
 import DifferentialGeometry.Topology.Manifold.FiniteCollarBoundaryAtlas
 import DifferentialGeometry.Geometry.Neck.BoundaryAtlas
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.Minimizing
