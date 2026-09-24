@@ -13062,6 +13062,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalMet
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeTranslation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MaximalSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHorizonContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteMetricCutCapCurvature
 import DifferentialGeometry.Topology.ThreeManifold.CapAttachingOrientation
