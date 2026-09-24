@@ -311,6 +311,8 @@ private theorem NeckFrontierState.exists_step_at_of_neck_central
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (IsPreconnected S.region → IsPreconnected T.region) ∧
       (IsPreconnected (interior S.region) → IsConnected (interior T.region)) ∧
+      (∀ x ∈ interior T.region,
+        (connectedComponentIn (interior T.region) x ∩ interior S.region).Nonempty) ∧
       (OrdinaryNeckMoveAtCentral g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
   classical
   obtain ⟨p, nk, f, η, hf, hfsmall, hfzero, hmap, hout, hpoint⟩ :=
@@ -461,7 +463,16 @@ private theorem NeckFrontierState.exists_step_at_of_neck_central
       exact DifferentialGeometry.Topology.isConnected_interior_union_of_collar
         A.toOpenPartialHomeomorph zero_lt_one hA S.regular.symm.subset hS
         (hface.subset.trans hfill)
-    refine ⟨T, subset_union_left, hconnected, hconnectedInterior,
+    have hcomponents (x : M) (hx : x ∈ interior T.region) :
+        (connectedComponentIn (interior T.region) x ∩ interior S.region).Nonempty := by
+      let _ : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace ThreeSpace M
+      let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+        (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+          (0 : ThreeSpace) zero_le_one)
+      exact DifferentialGeometry.Topology.connectedComponentIn_interior_union_collar_inter_interior_nonempty
+        A.toOpenPartialHomeomorph zero_lt_one hA S.regular.symm.subset
+        (hface.subset.trans hfill) hx
+    refine ⟨T, subset_union_left, hconnected, hconnectedInterior, hcomponents,
       Or.inl ⟨rfl, hi, p, nk, P, slabReparametrize_source A η.symm hA, ?_, hP0,
         hP1, hsp_ne, ?_, hfill, ?_, ?_, hpoint, ?_⟩⟩
     · change S.region ∪ B = S.region ∪ P '' (univ ×ˢ Icc (0 : ℝ) 1)
@@ -544,7 +555,16 @@ private theorem NeckFrontierState.exists_step_at_of_neck_central
           (0 : ThreeSpace) zero_le_one)
       exact DifferentialGeometry.Topology.isConnected_interior_union_of_collar
         A.toOpenPartialHomeomorph zero_lt_one hA S.regular.symm.subset hS hfill
-    refine ⟨T, subset_union_left, hconnected, hconnectedInterior, Or.inr ⟨?_, rfl⟩⟩
+    have hcomponents (x : M) (hx : x ∈ interior T.region) :
+        (connectedComponentIn (interior T.region) x ∩ interior S.region).Nonempty := by
+      let _ : LocallyConnectedSpace M := ChartedSpace.locallyConnectedSpace ThreeSpace M
+      let _ : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+        (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+          (0 : ThreeSpace) zero_le_one)
+      exact DifferentialGeometry.Topology.connectedComponentIn_interior_union_collar_inter_interior_nonempty
+        A.toOpenPartialHomeomorph zero_lt_one hA S.regular.symm.subset
+        hfill hx
+    refine ⟨T, subset_union_left, hconnected, hconnectedInterior, hcomponents, Or.inr ⟨?_, rfl⟩⟩
     change alive ⊂ S.alive
     apply Finset.ssubset_iff_subset_ne.mpr
     refine ⟨(Finset.erase_subset _ _).trans (Finset.erase_subset _ _), ?_⟩
@@ -561,7 +581,7 @@ private theorem NeckFrontierState.exists_step_at_of_neck
       ((S.sphere i).neck.map ((S.sphere i).neck.center, (S.sphere i).level)))) :
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
-  obtain ⟨T, hsub, _, _, hm | hr⟩ :=
+  obtain ⟨T, hsub, _, _, _, hm | hr⟩ :=
     NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep hneck
   · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
       hinter, hfill, hcontrolled, hband, hpoint, _⟩
@@ -578,15 +598,17 @@ private theorem NeckFrontierState.exists_step_at_connected
     ∃ T : NeckFrontierState g eps ι, S.region ⊆ T.region ∧
       (IsPreconnected S.region → IsPreconnected T.region) ∧
       (IsPreconnected (interior S.region) → IsConnected (interior T.region)) ∧
+      (∀ x ∈ interior T.region,
+        (connectedComponentIn (interior T.region) x ∩ interior S.region).Nonempty) ∧
       (OrdinaryNeckMoveAt g eps ι S T i ∨ (T.alive ⊂ S.alive ∧ T.sphere = S.sphere)) := by
-  obtain ⟨T, hsub, hconn, hconnInterior, hm | hr⟩ :=
+  obtain ⟨T, hsub, hconn, hconnInterior, hcomponents, hm | hr⟩ :=
     NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep hneck
   · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
       hinter, hfill, hcontrolled, hband, hpoint, _⟩
-    exact ⟨T, hsub, hconn, hconnInterior,
+    exact ⟨T, hsub, hconn, hconnInterior, hcomponents,
       Or.inl ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
         hinter, hfill, hcontrolled, hband, hpoint⟩⟩
-  · exact ⟨T, hsub, hconn, hconnInterior, Or.inr hr⟩
+  · exact ⟨T, hsub, hconn, hconnInterior, hcomponents, Or.inr hr⟩
 
 private theorem NeckFrontierState.exists_step_at
     (S : NeckFrontierState g eps ι) (i : ι) (hi : i ∈ S.alive)
@@ -601,7 +623,7 @@ private theorem NeckFrontierState.exists_step_at
     refine mem_iUnion₂.mpr ⟨i, hi, ?_⟩
     rw [(S.sphere i).range_map]
     exact mem_range_self _
-  obtain ⟨T, hsub, _, _, hmove⟩ :=
+  obtain ⟨T, hsub, _, _, _, hmove⟩ :=
     NeckFrontierState.exists_step_at_of_neck_central g eps ι S i hi heps hepsstep (allNeck _ hx)
   rcases hmove with hm | hr
   · rcases hm with ⟨ha, hi', p, nk, P, hsource, hregion, hP0, hP1, hother,
@@ -622,22 +644,24 @@ private theorem NeckFrontierState.exists_step
   · exact ⟨T, hsub, Or.inl ⟨ho.1, i, ho.2⟩⟩
   · exact ⟨T, hsub, Or.inr hr⟩
 
-private theorem NeckFrontierState.exists_scheduled_process
+omit [T2Space M] in
+private theorem NeckFrontierState.exists_scheduled_process_of_transition
     [PreconnectedSpace M] [NoncompactSpace M]
     (S₀ : NeckFrontierState g eps ι) (schedule : ℕ → ι)
-    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
-    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
-    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    (P : NeckFrontierState g eps ι → Prop) (hP₀ : P S₀)
+    (step : ∀ W, P W → ∀ i ∈ W.alive,
+      ∃ V : NeckFrontierState g eps ι, W.region ⊆ V.region ∧ P V ∧
+        (OrdinaryNeckMoveAt g eps ι W V i ∨ (V.alive ⊂ W.alive ∧ V.sphere = W.sphere))) :
     ∃ (S : ℕ → NeckFrontierState g eps ι) (selected : ℕ → ι), S 0 = S₀ ∧
       Monotone (fun n => (S n).region) ∧ Antitone (fun n => (S n).alive) ∧
-      (∀ n, selected n ∈ (S n).alive) ∧
+      (∀ n, P (S n)) ∧ (∀ n, selected n ∈ (S n).alive) ∧
       (∀ n, schedule n ∈ (S n).alive → selected n = schedule n) ∧
       (∀ n, OrdinaryNeckMoveAt g eps ι (S n) (S (n + 1)) (selected n) ∨
         ((S (n + 1)).alive ⊂ (S n).alive ∧ (S (n + 1)).sphere = (S n).sphere)) ∧
       ∃ N : ℕ, ∀ n, N ≤ n →
         OrdinaryNeckMoveAt g eps ι (S n) (S (n + 1)) (selected n) := by
   classical
-  let State := {S : NeckFrontierState g eps ι // S₀.region ⊆ S.region}
+  let State := {S : NeckFrontierState g eps ι // P S}
   let pick (n : ℕ) (S : State) : ι :=
     if schedule n ∈ S.val.alive then schedule n
     else (NeckFrontierState.alive_nonempty g eps ι S.val).choose
@@ -649,12 +673,10 @@ private theorem NeckFrontierState.exists_scheduled_process
   have hnext (n : ℕ) (S : State) : ∃ T : State, S.val.region ⊆ T.val.region ∧
       (OrdinaryNeckMoveAt g eps ι S.val T.val (pick n S) ∨
         (T.val.alive ⊂ S.val.alive ∧ T.val.sphere = S.val.sphere)) := by
-    obtain ⟨T, hsub, hmove⟩ :=
-      NeckFrontierState.exists_step_at g eps ι S.val (pick n S) (hpick n S) heps hepsstep
-        (fun x hx => allNeck x (fun hxint => hx.2 (interior_mono S.property hxint)))
-    exact ⟨⟨T, S.property.trans hsub⟩, hsub, hmove⟩
+    obtain ⟨T, hsub, hPT, hmove⟩ := step S.val S.property (pick n S) (hpick n S)
+    exact ⟨⟨T, hPT⟩, hsub, hmove⟩
   choose next hnext using hnext
-  let states : ℕ → State := Nat.rec ⟨S₀, Subset.rfl⟩ (fun n S => next n S)
+  let states : ℕ → State := Nat.rec ⟨S₀, hP₀⟩ (fun n S => next n S)
   let S : ℕ → NeckFrontierState g eps ι := fun n => (states n).val
   let selected (n) := pick n (states n)
   have hS (n : ℕ) : S (n + 1) = (next n (states n)).val := rfl
@@ -674,9 +696,34 @@ private theorem NeckFrontierState.exists_scheduled_process
     exact (hnext n (states n)).2
   obtain ⟨N, hN⟩ := hanti.exists_forall_ge_of_or_succ_lt
     (fun n => (hsteps n).imp_right And.left)
-  refine ⟨S, selected, rfl, hmono, hanti, fun n => hpick n (states n), ?_, hsteps, N, hN⟩
+  refine ⟨S, selected, rfl, hmono, hanti, fun n => (states n).property,
+    fun n => hpick n (states n), ?_, hsteps, N, hN⟩
   intro n hn
   exact if_pos hn
+
+private theorem NeckFrontierState.exists_scheduled_process
+    [PreconnectedSpace M] [NoncompactSpace M]
+    (S₀ : NeckFrontierState g eps ι) (schedule : ℕ → ι)
+    (heps : eps ≤ Classical.choose (exists_spatial_neck_level_graph_tolerance.{u}))
+    (hepsstep : eps ≤ Classical.choose (exists_spatial_neck_finite_frontier_step_tolerance.{u, v}))
+    (allNeck : ∀ x : M, x ∉ interior S₀.region → Nonempty (SpatialNeck g eps x)) :
+    ∃ (S : ℕ → NeckFrontierState g eps ι) (selected : ℕ → ι), S 0 = S₀ ∧
+      Monotone (fun n => (S n).region) ∧ Antitone (fun n => (S n).alive) ∧
+      (∀ n, selected n ∈ (S n).alive) ∧
+      (∀ n, schedule n ∈ (S n).alive → selected n = schedule n) ∧
+      (∀ n, OrdinaryNeckMoveAt g eps ι (S n) (S (n + 1)) (selected n) ∨
+        ((S (n + 1)).alive ⊂ (S n).alive ∧ (S (n + 1)).sphere = (S n).sphere)) ∧
+      ∃ N : ℕ, ∀ n, N ≤ n →
+        OrdinaryNeckMoveAt g eps ι (S n) (S (n + 1)) (selected n) := by
+  obtain ⟨S, selected, hzero, hmono, hanti, _, hselected, hschedule, hsteps, htail⟩ :=
+    NeckFrontierState.exists_scheduled_process_of_transition g eps ι S₀ schedule
+      (fun W => S₀.region ⊆ W.region) Subset.rfl (by
+        intro W hW i hi
+        obtain ⟨V, hsub, hmove⟩ :=
+          NeckFrontierState.exists_step_at g eps ι W i hi heps hepsstep
+            (fun x hx => allNeck x (fun hxint => hx.2 (interior_mono hW hxint)))
+        exact ⟨V, hsub, hW.trans hsub, hmove⟩)
+  exact ⟨S, selected, hzero, hmono, hanti, hselected, hschedule, hsteps, htail⟩
 
 private theorem NeckFrontierState.exists_ordinary_tail
     [PreconnectedSpace M] [NoncompactSpace M]

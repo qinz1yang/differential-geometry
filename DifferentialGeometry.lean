@@ -12592,6 +12592,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialRestriction
 import DifferentialGeometry.Geometry.Neck.SpatialCollarRadius
 import DifferentialGeometry.Geometry.Neck.SpatialComponentCollar
 import DifferentialGeometry.Geometry.Neck.SpatialCapFilling
+import DifferentialGeometry.Geometry.Neck.SpatialCapEnd
 import DifferentialGeometry.Geometry.Neck.SpatialRestrictionSections
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornEndGeometryDepth
 import DifferentialGeometry.Topology.EMetricSpace.Convergence

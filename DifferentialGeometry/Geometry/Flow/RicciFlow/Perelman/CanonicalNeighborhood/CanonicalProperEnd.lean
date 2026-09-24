@@ -84,7 +84,7 @@ private theorem canonical_frontier_step
     hpair hepscap i hi (RecordedNeckSphere.neck (NeckFrontierState.sphere W i)).center rfl
     (NeckFrontierState.compact W) (NeckFrontierState.regular W) hconn hfront anchor ha hgap with hn | hc
   · obtain ⟨localNeck, htag⟩ := hn
-    obtain ⟨V, hWV, _, hVI, hm | hr⟩ :=
+    obtain ⟨V, hWV, _, hVI, _, hm | hr⟩ :=
       NeckFrontierState.exists_step_at_of_neck_central (S.base.metric t) eps ι W i hi
         heps hepsstep ⟨localNeck.strong.toSpatialNeck⟩
     · rcases hm with ⟨halive, hia, p, nk, P, hsource, hregion, hP0, hP1, hother,
