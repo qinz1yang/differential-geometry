@@ -13849,3 +13849,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Vo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardBlowupVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardLifetime
 import DifferentialGeometry.Topology.ThreeManifold.CoreComponentBoundary
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedComponentClassification

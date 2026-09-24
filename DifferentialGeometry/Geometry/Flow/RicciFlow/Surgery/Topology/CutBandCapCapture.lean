@@ -225,3 +225,39 @@ theorem eq_of_boundarySphere_mem_of_frontier_eq
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
 
 end
+
+section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+variable {M : Type*} [TopologicalSpace M] (T : TubeSystem M)
+
+theorem closedBand_subset_connectedComponent_of_cylinder
+    (b : T.Boundary) (R : Sphere 2 × ℝ → M)
+    (hR : ContinuousOn R (univ ×ˢ Icc (0 : ℝ) 1))
+    (hRzero : ∀ q : Sphere 2, R (q,0) = T.boundarySphere b q)
+    (q : Sphere 2) :
+    T.tube b.1 '' {p : TubeDomain | p.2.val ∈ Icc (-1 : ℝ) 1} ⊆
+      connectedComponent (R (q,1)) := by
+  let _ : PreconnectedSpace (Sphere 2) := isPreconnected_iff_preconnectedSpace.mp
+    (isPreconnected_sphere (Module.one_lt_rank_of_one_lt_finrank (by simp [ThreeSpace]))
+      (0 : ThreeSpace) 1)
+  have hconn : IsPreconnected (R '' (univ ×ˢ Icc (0 : ℝ) 1)) :=
+    (isPreconnected_univ.prod isPreconnected_Icc).image R hR
+  have hR0 : R (q,0) ∈ R '' (univ ×ˢ Icc (0 : ℝ) 1) :=
+    ⟨(q,0),⟨mem_univ _,by norm_num⟩,rfl⟩
+  have hR1 : R (q,1) ∈ R '' (univ ×ˢ Icc (0 : ℝ) 1) :=
+    ⟨(q,1),⟨mem_univ _,by norm_num⟩,rfl⟩
+  have h01 : T.boundarySphere b q ∈ connectedComponent (R (q,1)) :=
+    hRzero q ▸ hconn.subset_connectedComponent hR1 hR0
+  have hqband : T.boundarySphere b q ∈
+      T.tube b.1 '' {p : TubeDomain | p.2.val ∈ Icc (-1 : ℝ) 1} := by
+    refine ⟨(q,boundaryLevel b.2),?_,rfl⟩
+    cases b.2 <;> norm_num [boundaryLevel]
+  intro y hy
+  have hy0 := (T.isPreconnected_closedBand b.1).subset_connectedComponent hqband hy
+  rwa [← connectedComponent_eq h01] at hy0
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
+
+end

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCoreGeometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
 import DifferentialGeometry.Geometry.Neck.ScalarRetainedCore
@@ -109,3 +110,56 @@ theorem TerminalLimitMetric.exists_canonical_threshold_discarded_core
     hPhi hpinch hδ f hf hdisj L hQL
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+universe u
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+
+include G in
+theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
+    {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
+    (hcanonical : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), Q ≤ (H.event i).incoming.flow.scalar t x →
+        ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
+          W.capTubeHasNeckChart eps)
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    (hpinch : PhiAlmostNonnegative (H.event i).incoming.flow
+      (Ico (H.time i.castSucc) (H.time i.succ)) Phi)
+    (hprotected : Q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ),
+        ∀ z : (H.event i).transition.trace.tubes.core,
+          z ∉ (H.event i).transition.trace.retainedCore →
+            Q < (H.event i).incoming.flow.scalar t z.val ∧
+              ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 z.val t,
+                W.capTubeHasNeckChart eps := by
+  let _ := (H.event i).transition.core_compact
+  let F := Subtype.val '' (H.event i).transition.trace.retainedCoreᶜ
+  have hF : IsCompact F := (H.event i).transition.trace.isClopen_retainedCore.compl.isClosed.isCompact.image
+    continuous_subtype_val
+  have hbound : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), Q < (H.event i).incoming.flow.scalar t x →
+        |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+          (⟨C2, hC2⟩ : ℝ≥0) * (H.event i).incoming.flow.scalar t x ^ 2 := by
+    intro x t ht hhigh
+    obtain ⟨W, _⟩ := hcanonical x t ⟨ht.1.le, ht.2⟩ hhigh.le
+    exact W.time_derivative
+  have hlow : ∀ x : (H.event i).incoming.terminalRegularOpen,
+      x.val ∈ F → ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+        metricScalarAt (H.event i).terminal.metric x := by
+    intro x hx
+    obtain ⟨z, hz, hzx⟩ := hx
+    have hxcore : x.val ∈ (H.event i).transition.trace.tubes.core := hzx ▸ z.property
+    apply G.scalar_gt_protected_of_not_mem_retainedCore x hxcore
+    exact (Subtype.ext hzx : z = ⟨x.val, hxcore⟩) ▸ hz
+  obtain ⟨d, hd, hhigh⟩ := (H.event i).terminal.eventually_scalar_gt_on_closed_set
+    hQ hbound hPhi hpinch hF.isClosed hprotected hlow
+  refine ⟨d, hd, ?_⟩
+  intro t ht z hz
+  have h := hhigh t ht z.val ⟨z, hz, rfl⟩
+  exact ⟨h, hcanonical z.val t ⟨hd.1.trans ht.1.le, ht.2⟩ h.le⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord

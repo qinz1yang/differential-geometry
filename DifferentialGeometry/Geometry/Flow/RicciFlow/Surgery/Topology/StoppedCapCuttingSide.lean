@@ -519,3 +519,115 @@ theorem exists_late_capCore_cutting_side_or_whole_of_stopped_cylinder_of_cutting
   · exact Or.inr (Or.inr hside)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+universe u
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffParameters}
+  (G : GeometricCutoffRecord H i parameters)
+
+include G in
+theorem exists_late_capCore_cutting_side_of_stopped_cylinder_of_cutting_scale
+    {C : ℝ} (hC : 1 ≤ C)
+    (hscale : ∀ j, C ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+      (G.neck j).scale) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ), ∀ eps C1 C2 : ℝ, eps ≤ 1 / 8646 → C2 ≤ C →
+        ∀ b : (H.event i).transition.trace.tubes.Boundary,
+          ¬ (H.event i).RetainedBoundary b →
+          ∀ R : PartialDiffeomorph IC I3 Cylinder (H.stage i.castSucc).Carrier ∞,
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source →
+            (∀ q : Sphere 2, R (q, 0) = (H.event i).transition.trace.tubes.boundarySphere b q) →
+            R '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+              (⋃ j, (H.event i).transition.trace.tubes.tube j ''
+                {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1}) =
+              range ((H.event i).transition.trace.tubes.boundarySphere b) →
+            ∀ (p : (H.stage i.castSucc).Carrier)
+              (nk : SpatialNeck ((H.event i).incoming.flow.base.metric t) eps p)
+              (a : ℝ), |a| ≤ 4 →
+              ∀ κ : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
+                (∀ q : Sphere 2, R (q, 1) = nk.map (κ q, a)) →
+                ∀ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2
+                    (nk.map (nk.center, a)) t,
+                  W.capTubeHasNeckChart eps →
+                  ¬ Nonempty (SpatialNeck ((H.event i).incoming.flow.base.metric t) eps
+                    (nk.map (nk.center, a))) →
+                  ∃ K : Set (H.stage i.castSucc).Carrier, Nonempty (CapCore K) ∧
+                      frontier K = range ((H.event i).transition.trace.tubes.boundarySphere b) ∧
+                      Disjoint K ((H.event i).transition.trace.tubes.removedBand b.1) := by
+  obtain ⟨d, hd, hexclude⟩ :=
+    G.exists_late_not_closedBand_subset_canonical_of_cutting_scale hC hscale
+  refine ⟨d, hd, ?_⟩
+  intro t ht eps C1 C2 heps hC2 b hb R hR hRzero hinter p nk a ha κ hRone W hchart hstop
+  obtain ⟨q₀, hq₀⟩ := not_forall.mp hb
+  have hdiscard := (H.event i).transition.trace.cylinder_subset_image_compl_retainedCore
+    b q₀ hq₀ R hR hRzero hinter
+  let _ : LocallyConnectedSpace (H.stage i.castSucc).Carrier :=
+    ChartedSpace.locallyConnectedSpace ThreeSpace (H.stage i.castSucc).Carrier
+  have hwhole : W.domain.carrier ≠ connectedComponent (nk.map (nk.center, a)) := by
+    intro heq
+    apply hexclude t ht eps C1 C2 hC2 _ W W.domain.carrier subset_rfl _ b.1
+    · rw [heq]
+      have hpoint : R (κ.symm nk.center, 1) = nk.map (nk.center, a) := by
+        rw [hRone, κ.apply_symm_apply]
+      rw [← hpoint]
+      exact (H.event i).transition.trace.tubes.closedBand_subset_connectedComponent_of_cylinder
+        b R (R.contMDiffOn_toFun.continuousOn.mono hR) hRzero (κ.symm nk.center)
+    · rw [heq, isClopen_connectedComponent.frontier_eq]
+      exact empty_subset _
+  have hcapdata : ∃ (U : Set (H.stage i.castSucc).Carrier), Nonempty (CapCore U) ∧
+      U ⊆ W.domain.carrier ∧
+      riemannianBallOf ((H.event i).incoming.flow.base.metric t) (nk.map (nk.center, a))
+        (1000 / Real.sqrt (metricScalarAt ((H.event i).incoming.flow.base.metric t)
+          (nk.map (nk.center, a)))) ⊆ interior U := by
+    cases htag : W.alternative with
+    | neck data => exact (hstop ⟨data.strong.toSpatialNeck⟩).elim
+    | positive whole data sec => exact (hwhole whole).elim
+    | round whole data => exact (hwhole whole).elim
+    | cap data depth =>
+      obtain ⟨U, _, _, hU, hUeq, _, hUW, _, _, _⟩ :=
+        CanonicalWitness.exists_cap_core_with_spatial_neck_frontier W hchart data depth htag
+      refine ⟨U.carrier, hU, hUW, ?_⟩
+      have hcore : data.core.carrier ⊆ U.carrier := by rw [hUeq]; exact subset_union_left
+      have hball := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_ball_subset_of_le_frontier_distance
+        ((H.event i).incoming.flow.base.metric t) data.center_inside
+        (r := ENNReal.ofReal (10000 / Real.sqrt ((H.event i).incoming.flow.scalar t (nk.map (nk.center, a))))) (by
+          intro z hz
+          have hztube : z ∈ data.tube := (data.overlap_eq.symm ▸ hz).2
+          exact (ENNReal.ofReal_le_ofReal (depth z hztube)).trans ENNReal.ofReal_toReal_le)
+      intro z hz
+      apply interior_mono hcore (hball ?_)
+      exact hz.trans_le (ENNReal.ofReal_le_ofReal
+        (div_le_div_of_nonneg_right (by norm_num) (Real.sqrt_nonneg _)))
+  obtain ⟨U, hU, hUW, hball⟩ := hcapdata
+  have hslab := nk.image_slab_subset_of_ball_subset heps nk.center ha rfl hball
+  have hlevel : |a| < eps⁻¹ := ha.trans_lt
+    ((lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr (by linarith [nk.eps_small]))
+  obtain ⟨K, hK, _, _, hKfront, hKU⟩ :=
+    hU.some.exists_capCore_side_of_sphere_embedding (fun q : Sphere 2 => nk.map (q, a))
+      (nk.isSmoothEmbedding_level hlevel)
+      (by
+        rintro z ⟨q, rfl⟩
+        exact hslab ⟨(q, a), ⟨mem_univ _, abs_le.mp ha⟩, rfl⟩)
+  have hupperRange : range (fun q : Sphere 2 => R (q, 1)) =
+      range (fun q : Sphere 2 => nk.map (q, a)) := by
+    ext y
+    constructor
+    · rintro ⟨q, rfl⟩
+      exact ⟨κ q, (hRone q).symm⟩
+    · rintro ⟨q, rfl⟩
+      refine ⟨κ.symm q, ?_⟩
+      change R (κ.symm q, 1) = nk.map (q, a)
+      rw [hRone, κ.apply_symm_apply]
+  rcases (H.event i).transition.trace.tubes.closedBand_subset_or_capCore_union_cylinder_cutting_side
+      hK.some b R hR hRzero hinter (hKfront.trans hupperRange.symm) with hcaptured | hside
+  · exfalso
+    apply hexclude t ht eps C1 C2 hC2 _ W K (hKU.trans (interior_subset.trans hUW)) _
+      b.1 (hcaptured.2.trans interior_subset)
+    rw [hKfront, ← hupperRange]
+    rintro z ⟨q, rfl⟩
+    exact hdiscard ⟨(q, 1), ⟨mem_univ _, by norm_num⟩, rfl⟩
+  · exact ⟨_, hside⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
