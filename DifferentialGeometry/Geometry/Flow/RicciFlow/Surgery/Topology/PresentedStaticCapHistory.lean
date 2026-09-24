@@ -63,6 +63,31 @@ theorem MetricCutCapEvent.range_oldOutput_toRetainedCoreEvent
   change range (E.oldOutput ∘ e) = range E.oldOutput
   exact e.surjective.range_comp E.oldOutput
 
+private theorem exists_static_family_of_event_heq
+    {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' : ℝ}
+    (E : MetricCutCapEvent P Q a s) (E' : MetricCutCapEvent P' Q' a' s')
+    (hP : P' = P) (hQ : Q' = Q) (ha : a' = a) (hs : s' = s)
+    (hE : HEq E' E)
+    {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
+    (S : ∀ b : E.RetainedBoundaryIndex, E.PresentedStaticCap fixed D m ε b) :
+    ∃ (e : E'.RetainedBoundaryIndex ≃ E.RetainedBoundaryIndex)
+      (S' : ∀ b : E'.RetainedBoundaryIndex, E'.PresentedStaticCap fixed D m ε b),
+      (∀ b, HEq b.val (e b).val) ∧
+      (∀ b, HEq (S' b).neck (S (e b)).neck) ∧
+      (∀ b, (S' b).neck.scale = (S (e b)).neck.scale) ∧
+      (∀ b, HEq (S' b).witness (S (e b)).witness) ∧
+      (∀ b, HEq (S' b).inclusion (S (e b)).inclusion) ∧
+      (∀ b, HEq (S' b).window (S (e b)).window) ∧
+      HEq E'.outputMetric E.outputMetric ∧
+      HEq (range E'.oldOutput) (range E.oldOutput) := by
+  cases hP
+  cases hQ
+  cases ha
+  cases hs
+  cases eq_of_heq hE
+  exact ⟨Equiv.refl _, S, fun _ => HEq.rfl, fun _ => HEq.rfl, fun _ => rfl,
+    fun _ => HEq.rfl, fun _ => HEq.rfl, fun _ => HEq.rfl, HEq.rfl, HEq.rfl⟩
+
 private theorem exists_static_family_of_retainedEvent_heq
     {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' : ℝ}
     (E : MetricCutCapEvent P Q a s) (hOld : E.old = E.transition.trace.retainedCore)
@@ -177,5 +202,44 @@ theorem RetainedCoreHistory.exists_static_cap_family_at_appendEvent
       (H.appendEvent_time_last E.incoming.lt F hinit) hE S
   exact ⟨e, S', hE, hlabel, hneck, hscale, hwitness, hinclusion, hwindow,
     H.appendEvent_initialMetric_last_heq E.incoming.lt F hinit, hold⟩
+
+theorem RetainedCoreHistory.exists_static_cap_family_before_appendEvent
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    (i : Fin H.eventCount)
+    {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ}
+    (S : ∀ b : (H.toHistory.event i).RetainedBoundaryIndex,
+      (H.toHistory.event i).PresentedStaticCap fixed D m ε b) :
+    let K := H.appendEvent hs E hinit
+    ∃ (e : (K.toHistory.event i.castSucc).RetainedBoundaryIndex ≃
+        (H.toHistory.event i).RetainedBoundaryIndex)
+      (S' : ∀ b : (K.toHistory.event i.castSucc).RetainedBoundaryIndex,
+        (K.toHistory.event i.castSucc).PresentedStaticCap fixed D m ε b),
+      HEq (K.toHistory.event i.castSucc) (H.toHistory.event i) ∧
+      (∀ b, HEq b.val (e b).val) ∧
+      (∀ b, HEq (S' b).neck (S (e b)).neck) ∧
+      (∀ b, (S' b).neck.scale = (S (e b)).neck.scale) ∧
+      (∀ b, HEq (S' b).witness (S (e b)).witness) ∧
+      (∀ b, HEq (S' b).inclusion (S (e b)).inclusion) ∧
+      (∀ b, HEq (S' b).window (S (e b)).window) ∧
+      HEq (K.toHistory.event i.castSucc).outputMetric (H.toHistory.event i).outputMetric ∧
+      HEq (range (K.toHistory.event i.castSucc).oldOutput)
+        (range (H.toHistory.event i).oldOutput) := by
+  let K := H.appendEvent hs E hinit
+  have hE : HEq (K.toHistory.event i.castSucc) (H.toHistory.event i) := by
+    change HEq ((H.extendCoreEventFamily E i.castSucc).toMetricCutCapEvent) (H.toHistory.event i)
+    rw [H.extendCoreEventFamily_toMetricCutCapEvent]
+    exact H.toHistory.appendEvent_event_castSucc_heq hs E.toMetricCutCapEvent hinit i
+  obtain ⟨e, S', hrest⟩ := exists_static_family_of_event_heq (H.toHistory.event i)
+    (K.toHistory.event i.castSucc)
+    (H.appendEvent_stage_castSucc hs E hinit i.castSucc)
+    (H.appendEvent_stage_castSucc hs E hinit i.succ)
+    (H.appendEvent_time_castSucc hs E hinit i.castSucc)
+    (H.appendEvent_time_castSucc hs E hinit i.succ) hE S
+  exact ⟨e, S', hE, hrest⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
