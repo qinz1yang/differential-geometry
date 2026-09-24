@@ -43,12 +43,14 @@ theorem TerminalLimitMetric.eventually_riemannianEDistOf_lt
     G.terminalRegularOpen x y).trans_lt ht
 
 
-theorem TerminalLimitMetric.scalar_le_on_small_ball_of_canonical
+theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
     {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
-    (L : G.TerminalLimitMetric) {eps C1 q Q : ℝ} (C : ℝ≥0)
+    (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
     (hQ : 0 < Q) (hqQ : q ≤ Q)
-    (hcanonical : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
-      Nonempty (CanonicalWitness G.flow eps C1 C x t))
+    (hgradient : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      ∀ v : TangentSpace ThreeModel x,
+        |scalarDifferential G.flow t x v| ≤ C * G.flow.scalar t x *
+          Real.sqrt (G.flow.scalar t x) * Real.sqrt ((G.flow.base.metric t).inner x v v))
     (x : G.terminalRegularOpen) (hx : metricScalarAt L.metric x ≤ Q)
     (y : G.terminalRegularOpen)
     (hy : y ∈ riemannianClosedBallOf L.metric x
@@ -76,13 +78,56 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_canonical
           Real.sqrt ((G.flow.base.metric t).inner w v v) := by
     have hhigh : q < G.flow.scalar t w := by linarith
     have hpos : 0 ≤ G.flow.scalar t w := by linarith
-    have hbound := (hcanonical w t ht hhigh).some.gradient v
+    have hbound := hgradient w t ht hhigh v
     have hterm : 0 ≤ (C : ℝ) * G.flow.scalar t w * Real.sqrt (G.flow.scalar t w) *
         Real.sqrt ((G.flow.base.metric t).inner w v v) := by positivity
     nlinarith
   have hh := scalar_le_on_ball_of_gradient_bound G.flow C.coe_nonneg htwoQ hgrad hb.le hd.le
   change G.flow.scalar t y.val ≤ 6 * Q
   simpa only [show (3 : ℝ) * (2 * Q) = 6 * Q by ring] using hh
+
+
+theorem TerminalLimitMetric.isCompact_small_ball_of_scalar_derivative_bounds
+    {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+    (L : G.TerminalLimitMetric) {q Q : ℝ} (C D : ℝ≥0)
+    (hQ : 0 < Q) (hqQ : q ≤ Q)
+    (hgradient : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      ∀ v : TangentSpace ThreeModel x,
+        |scalarDifferential G.flow t x v| ≤ C * G.flow.scalar t x *
+          Real.sqrt (G.flow.scalar t x) * Real.sqrt ((G.flow.base.metric t).inner x v v))
+    (htime : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ D * G.flow.scalar t x ^ 2)
+    (x : G.terminalRegularOpen) (hx : metricScalarAt L.metric x ≤ Q) :
+    IsCompact (riemannianClosedBallOf L.metric x
+      (localPropagationRadius C / (2 * Real.sqrt (2 * Q)))) := by
+  have hderiv : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, Q < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ D * G.flow.scalar t y ^ 2 := by
+    intro y t ht hy
+    exact htime y t ht (hqQ.trans_lt hy)
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    Perelman.exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
+  apply (L.isCompact_scalar_sublevel_of_time_derivative_bound
+    hQ hderiv hPhi hpinch (6 * Q)).of_isClosed_subset
+  · exact isClosed_le (by
+      unfold riemannianEDistOf
+      exact DifferentialGeometry.Geometry.Riemannian.continuous_riemannianEDist L.metric x)
+      continuous_const
+  · exact fun y hy => L.scalar_le_on_small_ball_of_gradient_bound C hQ hqQ hgradient x hx y hy
+
+theorem TerminalLimitMetric.scalar_le_on_small_ball_of_canonical
+    {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+    (L : G.TerminalLimitMetric) {eps C1 q Q : ℝ} (C : ℝ≥0)
+    (hQ : 0 < Q) (hqQ : q ≤ Q)
+    (hcanonical : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      Nonempty (CanonicalWitness G.flow eps C1 C x t))
+    (x : G.terminalRegularOpen) (hx : metricScalarAt L.metric x ≤ Q)
+    (y : G.terminalRegularOpen)
+    (hy : y ∈ riemannianClosedBallOf L.metric x
+      (localPropagationRadius C / (2 * Real.sqrt (2 * Q)))) :
+    metricScalarAt L.metric y ≤ 6 * Q := by
+  exact L.scalar_le_on_small_ball_of_gradient_bound C hQ hqQ
+    (fun z t ht hz v => (hcanonical z t ht hz).some.gradient v) x hx y hy
 
 
 theorem TerminalLimitMetric.isCompact_small_ball_of_canonical
@@ -94,19 +139,8 @@ theorem TerminalLimitMetric.isCompact_small_ball_of_canonical
     (x : G.terminalRegularOpen) (hx : metricScalarAt L.metric x ≤ Q) :
     IsCompact (riemannianClosedBallOf L.metric x
       (localPropagationRadius C / (2 * Real.sqrt (2 * Q)))) := by
-  have hderiv : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, Q < G.flow.scalar t y →
-      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2 := by
-    intro y t ht hy
-    exact (hcanonical y t ht (hqQ.trans_lt hy)).some.time_derivative
-  obtain ⟨Phi, hPhi, hpinch⟩ :=
-    Perelman.exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
-      G.lt G.flow G.equation (by simp [ThreeSpace])
-  apply (L.isCompact_scalar_sublevel_of_time_derivative_bound
-    hQ hderiv hPhi hpinch (6 * Q)).of_isClosed_subset
-  · exact isClosed_le (by
-      unfold riemannianEDistOf
-      exact DifferentialGeometry.Geometry.Riemannian.continuous_riemannianEDist L.metric x)
-      continuous_const
-  · exact fun y hy => L.scalar_le_on_small_ball_of_canonical C hQ hqQ hcanonical x hx y hy
+  exact L.isCompact_small_ball_of_scalar_derivative_bounds C C hQ hqQ
+    (fun z t ht hz v => (hcanonical z t ht hz).some.gradient v)
+    (fun z t ht hz => (hcanonical z t ht hz).some.time_derivative) x hx
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

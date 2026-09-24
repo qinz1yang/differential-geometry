@@ -135,16 +135,21 @@ open scoped Manifold ContDiff NNReal
 
 universe u
 
-theorem exists_terminal_scalar_escape_radius
+theorem exists_terminal_scalar_escape_radius_of_derivative_bounds
     (P : ℕ → OrientedThreeStage.{u}) (a s : ℕ → ℝ)
     (G : ∀ n, (P n).IncomingSlab (a n) (s n))
     (L : ∀ n, (G n).TerminalLimitMetric)
     (x : ∀ n, (G n).terminalRegularOpen)
     (Q : ℕ → ℝ) (hQ : ∀ n, 0 < Q n)
-    {eps C1 : ℝ} (C : ℝ≥0) (q : ℕ → ℝ) (hqQ : ∀ n, q n ≤ Q n)
-    (hcanonical : ∀ n, ∀ y : (P n).Carrier, ∀ t ∈ Ioo (a n) (s n),
+    (C : ℝ≥0) (q : ℕ → ℝ) (hqQ : ∀ n, q n ≤ Q n)
+    (hgradient : ∀ n, ∀ y : (P n).Carrier, ∀ t ∈ Ioo (a n) (s n),
+      q n < (G n).flow.scalar t y → ∀ v : TangentSpace ThreeModel y,
+        |scalarDifferential (G n).flow t y v| ≤ C * (G n).flow.scalar t y *
+          Real.sqrt ((G n).flow.scalar t y) * Real.sqrt (((G n).flow.base.metric t).inner y v v))
+    (D : ℕ → ℝ≥0)
+    (htime : ∀ n, ∀ y : (P n).Carrier, ∀ t ∈ Ioo (a n) (s n),
       q n < (G n).flow.scalar t y →
-      Nonempty (CanonicalWitness (G n).flow eps C1 C y t))
+      |derivWithin (fun v => (G n).flow.scalar v y) (Iic t) t| ≤ D n * (G n).flow.scalar t y ^ 2)
     (hx : ∀ n, metricScalarAt (L n).metric (x n) ≤ Q n)
     (hfail : ∃ r : ℝ, 0 < r ∧ ¬ ∃ A : ℝ,
       ∀ᶠ n in atTop, ∀ y : (G n).terminalRegularOpen,
@@ -185,7 +190,7 @@ theorem exists_terminal_scalar_escape_radius
       rw [heq, DifferentialGeometry.riemannianClosedBallOf_scaleMetric] at hclosed
       exact hclosed
     exact (div_le_iff₀ (hQ n)).mpr
-      ((L n).scalar_le_on_small_ball_of_canonical C (hQ n) (hqQ n) (hcanonical n) (x n) (hx n) y hball)
+      ((L n).scalar_le_on_small_ball_of_gradient_bound C (hQ n) (hqQ n) (hgradient n) (x n) (hx n) y hball)
   obtain ⟨R, ind, hR, hind, hinner, y, hfinite, hdist, hscalar⟩ :=
     exists_subsequence_radius_escape d f hr₀ hsmall hfail
   refine ⟨R, ind, hr₀.trans_le hR, hind, ?_, y, hfinite, hdist, hscalar⟩
@@ -199,9 +204,9 @@ theorem exists_terminal_scalar_escape_radius
     exact hn y (hy.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by linarith)).mpr (by linarith)))
   refine ⟨?_, hbound⟩
   have hderiv : ∀ y : (P n).Carrier, ∀ t ∈ Ioo (a n) (s n), Q n < (G n).flow.scalar t y →
-      |derivWithin (fun v => (G n).flow.scalar v y) (Iic t) t| ≤ C * (G n).flow.scalar t y ^ 2 := by
+      |derivWithin (fun v => (G n).flow.scalar v y) (Iic t) t| ≤ D n * (G n).flow.scalar t y ^ 2 := by
     intro y t ht hy
-    exact (hcanonical n y t ht ((hqQ n).trans_lt hy)).some.time_derivative
+    exact htime n y t ht ((hqQ n).trans_lt hy)
   obtain ⟨Phi, hPhi, hpinch⟩ :=
     Perelman.exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
       (G n).lt (G n).flow (G n).equation (by simp [ThreeSpace])
@@ -213,5 +218,41 @@ theorem exists_terminal_scalar_escape_radius
       continuous_const
   · intro y hy
     exact (div_le_iff₀ (hQ n)).mp (hbound y hy)
+
+
+theorem exists_terminal_scalar_escape_radius
+    (P : ℕ → OrientedThreeStage.{u}) (a s : ℕ → ℝ)
+    (G : ∀ n, (P n).IncomingSlab (a n) (s n))
+    (L : ∀ n, (G n).TerminalLimitMetric)
+    (x : ∀ n, (G n).terminalRegularOpen)
+    (Q : ℕ → ℝ) (hQ : ∀ n, 0 < Q n)
+    {eps C1 : ℝ} (C : ℝ≥0) (q : ℕ → ℝ) (hqQ : ∀ n, q n ≤ Q n)
+    (hcanonical : ∀ n, ∀ y : (P n).Carrier, ∀ t ∈ Ioo (a n) (s n),
+      q n < (G n).flow.scalar t y →
+      Nonempty (CanonicalWitness (G n).flow eps C1 C y t))
+    (hx : ∀ n, metricScalarAt (L n).metric (x n) ≤ Q n)
+    (hfail : ∃ r : ℝ, 0 < r ∧ ¬ ∃ A : ℝ,
+      ∀ᶠ n in atTop, ∀ y : (G n).terminalRegularOpen,
+        riemannianEDistOf (scaleMetric (Q n) (hQ n) (L n).metric) (x n) y < ENNReal.ofReal r →
+          metricScalarAt (L n).metric y / Q n ≤ A) :
+    ∃ (R : ℝ) (ind : ℕ → ℕ), 0 < R ∧ StrictMono ind ∧
+      (∀ r : ℝ, 0 < r → r < R → ∃ A : ℝ,
+        ∀ᶠ n in atTop,
+          IsCompact (riemannianClosedBallOf
+            (scaleMetric (Q n) (hQ n) (L n).metric) (x n) r) ∧
+          ∀ y : (G n).terminalRegularOpen,
+            y ∈ riemannianClosedBallOf
+              (scaleMetric (Q n) (hQ n) (L n).metric) (x n) r →
+              metricScalarAt (L n).metric y / Q n ≤ A) ∧
+      ∃ y : ∀ n, (G (ind n)).terminalRegularOpen,
+        (∀ n, riemannianEDistOf
+          (scaleMetric (Q (ind n)) (hQ (ind n)) (L (ind n)).metric) (x (ind n)) (y n) ≠ ⊤) ∧
+        Tendsto (fun n => (riemannianEDistOf
+          (scaleMetric (Q (ind n)) (hQ (ind n)) (L (ind n)).metric) (x (ind n)) (y n)).toReal)
+          atTop (𝓝 R) ∧
+        Tendsto (fun n => metricScalarAt (L (ind n)).metric (y n) / Q (ind n)) atTop atTop := by
+  exact exists_terminal_scalar_escape_radius_of_derivative_bounds P a s G L x Q hQ C q hqQ
+    (fun n z t ht hz v => (hcanonical n z t ht hz).some.gradient v) (fun _ => C)
+    (fun n z t ht hz => (hcanonical n z t ht hz).some.time_derivative) hx hfail
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
