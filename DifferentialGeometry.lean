@@ -13831,3 +13831,4 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.IntervalLift
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarRay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapTraceExclusion
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.IncompleteLocal
