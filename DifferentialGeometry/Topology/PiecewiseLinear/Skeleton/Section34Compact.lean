@@ -22,6 +22,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section33TubeApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCutAndGraph
 
 /-!
 # Sorry-first skeleton of Section 34 on a compact piecewise linear ball: a producer of `Moise341`
@@ -274,6 +275,15 @@ claw sphere, the two-ball pocket giving the residual ball, the patches and edge 
 on the vertex spheres, the tilings for interior vertices and edges, and the outer cells from the
 cyclic order of boundary triangles).  The two leaves left in this file are the cut-and-graph
 frame and the trace.
+
+The compact cut-and-graph leaf was proved by Bennett Chow in collaborator PR #27 and
+accepted by the Codex integration lead on 2026-09-24. The 78 retained modules passed host
+private compilation and three foundational-axiom/thirteen-linter audits. One duplicate
+marked-disk theorem reuses the accepted canonical API; a redundant specialization was
+removed and the marked-prism theorem received its mathematical name. The frozen statement
+and variable block are LF-identical. `exists_compactCutAndGraph` retains the existing
+`Moise331OnTube` hypothesis, chooses all constraints before one approximation, and is
+imported from `Section34CompactCutAndGraph`. The trace leaf remains open.
 -/
 
 open Set Topology
@@ -290,16 +300,6 @@ variable {C V : Set (EuclideanSpace ℝ (Fin 3))}
   {src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3))}
   {H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3))}
   {env : Section34CompactSimplexIndex K 3 → Set (EuclideanSpace ℝ (Fin 3))}
-
-theorem exists_compactCutAndGraph (h331 : Moise331OnTube) (hC : IsPLBall 3 C) (hV : IsOpen V)
-    (hCV : C ⊆ V) (hh : Topology.IsEmbedding (V.domRestrict h)) (hε : 0 < ε) :
-    ∃ (K K' : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
-      (src srcBd : Section34CompactLabelOf K K' → Set (EuclideanSpace ℝ (Fin 3)))
-      (H : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
-      (f₁ : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)),
-      Section34CompactCutFrame C K K' src srcBd ∧ Section34CompactCarrierControl K h ε H ∧
-        Section34CompactGraphFrame V h ε K K' src H f₁ := by
-  sorry
 
 theorem compactTrace_of_noOperation (hcut : Section34CompactCutFrame C K K' src srcBd)
     (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)

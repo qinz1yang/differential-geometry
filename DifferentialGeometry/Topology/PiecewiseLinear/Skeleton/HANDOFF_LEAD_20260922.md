@@ -612,3 +612,6 @@ memory file `opus55-fill-lane-lessons` if needed. Then re-dispatch the five leas
 * 02:39 UTC on 2026-09-24 - accepted the CGN cut frame (collaborator PR #15 / Package E, 77 modules reconciled by Codex item 18;
   lead checks + two split audits on the lead lease; statement byte-identical). CGN keeps one leaf (the protected
   circle removal step). Physical `sorry` 7.
+* 03:26 UTC on 2026-09-24 - accepted PR #27 compact cut-and-graph, 78 modules, three private axiom/linter audits;
+  frozen statement LF-identical, named input Moise331OnTube retained. Compact sorry 2 -> 1;
+  physical total 7 -> 6. D/E were not required prerequisites.

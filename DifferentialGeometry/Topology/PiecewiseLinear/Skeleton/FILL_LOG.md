@@ -14306,3 +14306,144 @@ Remaining work: Transport the subsurface embedding invariant through actual comp
   full-repository build was run under the topology-only, shared-output-read-only lease.
 - Origin codex/moise-integration and mirror moise-integration were both verified at 7ce7e5052.
   Unrelated tracked edits and other lanes' untracked files were preserved. D/E remain deferred.
+
+# Codex item 22
+
+## Collaborator PR #27: compact cut-and-graph acceptance (2026-09-24)
+
+- Original head: 50c7ff8aff563a1d0184f69932c06112951475c8; 15 commits, 79 new Lean modules
+  and one progress document. No incoming path collided with any existing working-tree file.
+  Preserved all 15 commits by cherry-pick, 09f128247 through 94bf6fbe5.
+- Compatibility checkpoint: f38a457a9. Reused the accepted
+  exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk_marked from ConeMarkedPrism; deleted the
+  duplicate SphericalDiskPairMarked module and adjusted PrismCapAdjustment's argument order.
+  Renamed bu_markedPrism_of_bridge to exists_marked_prism_of_isBridgeDisk; its consumer follows.
+  Removed bu_untwist_preserving_axis and called the general axis-preserving end-map theorem.
+- Both the frozen exists_compactCutAndGraph statement and its variable block are exactly
+  equal after LF normalization. Moise331OnTube is retained; no new named input was added.
+  Neighborhood constraints precede its single delayed approximation application.
+- All 78 retained modules passed the host private checker. The three audit groups cover
+  49 + 85 + 78 = 212 non-auto declarations, including private helpers, with only propext,
+  Classical.choice and Quot.sound in transitive axiom closures; all thirteen linters passed.
+  An independent compiler-module-metadata probe verified exact audit-selection coverage.
+- Final acceptance log: .lake/scratch/AcceptPR27.log, 82 Verified lines (78 modules,
+  three axiom/linter audits and the coverage probe), with zero diagnostics.
+  An initial counter-only probe syntax error was corrected; the failed attempt is retained
+  privately in AcceptPR27-probe-counter-attempt1.log. No theorem source repair was needed.
+- Complete receipt manifest, dependency order, source closure and commit mapping are saved
+  in the lead private root as PR27_VerifiedModules.json, PR27_ORDER.txt,
+  PR27_ImportClosure.json and PR27_CommitMap.json. Source hashes were rechecked before wiring.
+- D/E prerequisite decision: no dependency required their entry. The 1472-module source
+  closure was tracked and Skeleton-free, and the actual host proof/audits passed on this
+  baseline. D/E were not started. This is a conditional compact leaf, not full Moise341.
+- Registered exactly 78 imports; replaced only the frozen cut-and-graph leaf in the compact
+  skeleton. Skeleton recheck: exitCode=0, one diagnostic, exactly its retained trace sorry
+  warning; source stable, shared outputs unchanged. Compact count 2 -> 1; total 7 -> 6.
+- Verification follows the prescribed topology-only private lease and leaves shared outputs
+  read-only. No unrestricted full-repository lake build is claimed.
+
+### Host audit receipts
+
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private\AuditPR27A.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: `B09488D264BAB2BBB7ECE2F7EE718451557EB44B5818912E63A1BE3BD5589B73`.
+
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private\AuditPR27B.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: `2118DD4A0C067BF69A6D1F8B828F3B43840E61D60E2A08C5A77781A3FD55074B`.
+
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private\AuditPR27C.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: `43E3164838C680ECE5D27E00E683B0CF5EA5026B10EAC19E54D9C7ABAA47874B`.
+
+Verified C:\Users\liao9\AppData\Local\Temp\claude-moise-integration-private\AuditPR27Coverage.lean with no diagnostics; shared outputs unchanged.
+
+SHA-256: `E19BA638A033EFF5D0FCD57A2B455EB61AB38311D0A5BE4AB184451C6667F73A`.
+
+Skeleton SHA-256: `2D211797B49D6289609AF4C8B9C1CE9B661AF0492785030891C2493949A3AF0F`.
+
+### Accepted module receipts
+
+Each module below has exitCode=0, diagnosticLines=0, sourceStable=true, and sharedArtifactsModified=false.
+The receipt path is the lead private root followed by the module path and `.json`.
+
+| Module | Source SHA-256 |
+| --- | --- |
+| DifferentialGeometry.Topology.Collar.Thickening | BC08E93934FEDE9FDC50FDBD3655D5339DC96D1B30CCF351E9463F0F2569295B |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcComplementAccess | 702089E8B39892B9664C8B2D8B4B7E2EB98B7F8B5CE57A5DE735C7197C31822C |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcFirstBoundary | 76E774E699371B125B3C749BC5B2EE78C165ED5F34302F199D96AFE758293C7C |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternEndJunction | 04FF15BFEC657F7613EE8F3C99A3B1F74AE38CF459F77F077A4DCD3CD194A6A7 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternEndStep | 743D2FF895CB593D79D8AF52CBAF7403A61E024C2275151CC696AD7C7A55C09D |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternEndFinal | B05075E53393E8FFC820B5DBCA185197CD4B15A6BF5C20DA8A9ED7522450FE43 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternEnds | 76782D82DEFD7C1FC9F7F17B050A4D67EDB5FEB39A13902E1F02D92E48DFBEF9 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternStripCollar | D0ED20BF214F66053CB0931887A3B6E1993C58E75518ED06EC2DCD7361F17DBA |
+| DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDiskCollarExtension | E6D42A2CE1CC23FF018F300B93126C4C59695C6CB1038C13EB1889C5B016E0DF |
+| DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDiskPairCollarExtension | 3EEE5FD4D65F5B6618EA0966AB75EFFB04D1024D9B6FEFA619CE59076C6B8FA2 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternBoundaryCollar | FCD5C848E430B755774339C660150059CAD176C50CBCACDD3822DE99B787A7F4 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternStraighteningBase | E544595F61FBE81CA002695F4B7EC9E42B6FD5354ABF5CE9574D482184CFEAEC |
+| DifferentialGeometry.Topology.PiecewiseLinear.ConicalGermPattern | 0A032C40E45CE3F817ACEA217A8223EB789408F69816F3EF6C65D6FC678E8214 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternStraighteningJunction | 3D89EC8BDEF1B43FCE19CAB2BA79D7EA0064D945D948DA605649632237E5CE49 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternStraighteningStep | 7F8743860C135F0D10E93D0D0C14C91BFEE6B1096815B506A309485267F792B3 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcPatternStraightening | 6C960DA0523A256C7664CE2C38E61A25CDC4488C99882CE92D9B4028420A19A5 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ArcTriangleMove | 716537645D2ECB5C05DAEC183536CEBC8CFD63A1270C24E74EFEAD961049BE0D |
+| DifferentialGeometry.Topology.PiecewiseLinear.BoundaryArcRibbon | EE1D05B966EE5FBED51507D379F9241F8F217E0AFBCCD9D13BB8BBA0E98E79A1 |
+| DifferentialGeometry.Topology.PiecewiseLinear.RelativeDiskShelling | E47D5F2380FC57EB48C6801DCFC8B1B5EB9364711D8C79D36EBAF4C9A881347A |
+| DifferentialGeometry.Topology.PiecewiseLinear.TriangleArcTrace | 462AED2BE2CDFD63B3BE8A782913CF0B23D0192FA64F55F5021317C8F40A6CD1 |
+| DifferentialGeometry.Topology.PiecewiseLinear.TriangleBoundaryMove | 1E4CC2137E1DA0705634444F6FA750C8EF7F99F1F203431A956CD395E903625F |
+| DifferentialGeometry.Topology.PiecewiseLinear.TriangleBoundaryFold | 87448267E9B7A010E5CCFD77E70EB59583A1212B26594C022B66A898A3924CAA |
+| DifferentialGeometry.Topology.PiecewiseLinear.TriangleBoundaryDeletion | EE820E4FB2AFEC68F98937E9986771C874A3D7C8D0893A6E270909A62704BEEE |
+| DifferentialGeometry.Topology.PiecewiseLinear.DiskDeletionBoundary | D64F6FB92CDE39B3B291A5F84B9544EEDF73172C0DE514DC497C91FE4AF42253 |
+| DifferentialGeometry.Topology.PiecewiseLinear.RelativeDiskBoundaryTransport | 1B435731098E879931106F87C50872BAD0F18CA1B3388EC546370DFB59A53558 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeArcShrinking | FF8B7B89192F903C0328BD5E3A1AFF182D9F37E22869DBF1A742E46AD2779753 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeCollarSweep | DA81A182D49CFE2213A2E2CF9707A93CBB2DC553843259348DB03AC36998E760 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskTransport | 5E21BE4FE1D23890C6B94FDB04D3854A81E96B46D375345EFAB981077FF782BC |
+| DifferentialGeometry.Topology.PiecewiseLinear.CollarCoreShrinking | D0CC4CC19E1229F1D406BCA7503682D0902649EACE2B86E1AD4A95A50474211F |
+| DifferentialGeometry.Topology.PiecewiseLinear.CollarShellExtension | 88D893D677F8AEFE9B013700AE7AB0F83911A9267FB4BBB81B9C754B5EC8331E |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeCollarEquivalence | 1184B74E1F402B70596625CAB171A001680CB4C2583A8F849273D81AB636FA85 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskBoundaryArc | 5A593B730A9AEDB14D00266133003371EF3EAF4BCF652D0BA7A761DD53CE8C88 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskTriangulation | 13209559BEB04F7CB96D3181983608271321ADB2C7C986E675AD654292D88B07 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLinks | 37E97B73A18358B459949985296DD29989D6F9316799180ACA93B0921107A27C |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLinkTraces | FD452E46CD5262D771FEE262ABCB2C685095A1C7A53288C42BD48CB8F58BEA66 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLocalCharts | 19115343F8D1B8778260FA104282796C94637BF5B1FA05E005C0DD16FC841595 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLocalChartsInterior | 0E07A446ADD6D02AC48BEF4348A374E117C95B65B213376F0D28767A704F85E6 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLocalChartsOpen | F88D8051416AEEC477FC12B328A8B0D7220046A0F8378A09C7CF4A601FC665D1 |
+| DifferentialGeometry.Topology.PiecewiseLinear.HalfArcCrosscut | 14B8F329DC00D44AB1E7DEBFDC6E2FEF9ECE57D0365451CE68EF832324A0D1CC |
+| DifferentialGeometry.Topology.PiecewiseLinear.RectangleCrosscutCoordinates | 55B7CD0A97006C6D7A09E02ECED55E6EA4A7D764B90E7BBCA1C56B24246772E6 |
+| DifferentialGeometry.Topology.PiecewiseLinear.HalfArcRectangle | 7029436F17E16F0457C5F59E7DFB379CB8B3B9E8638D3C197C71BCE4CD826754 |
+| DifferentialGeometry.Topology.PiecewiseLinear.HalfArcDiskPair | 910E044C33936C4E5B7B5F2F7C4507CBCB6D7F6D3DD2263FF3C41A1764006DD6 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ConicalHalfArcPair | 5829D942599DBFAFF05EE12DB3E53886BDD67CF065459C82C602E23C799C4686 |
+| DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscutMatching | 7379DBA01A62AD10A056B195DB0F57CB1943C0EFF9823EBA06248D023C3E888F |
+| DifferentialGeometry.Topology.PiecewiseLinear.ConicalCrosscutPair | BAF5C32E8F409FE2C0FC82EB88034748B8C42FC19D51A95933026666D5718F74 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLocalChartsComparison | 0936845127828F4F535254F62CEB623CA19C344D505455EFF9C48AE3B9F277F7 |
+| DifferentialGeometry.Topology.PiecewiseLinear.StandardBoxBridge | 2490A7946EFB37F301A9E7FC0D3A698EE4AC84157131FAE5BE62511B870C59F5 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskLocalChartsCoordinates | 5036DB126358A8213A948D88C3A67961FE5846AC6FF4DB1B555900F30E8E7ABF |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskBoundaryCollar | 7F5B81417F396797A59FB8B28C9381D5625FFF9E2E08F3FF553BBFFFD7855320 |
+| DifferentialGeometry.Topology.PiecewiseLinear.SphericalArcChartMatching | 9EC1EFAE0376F9B560AD54DF5E7584A5BE5AB9BEA7813D2AA38990214AE5B839 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskEquivalence | 7DF1D9280D1F49756B7E9A59532B24D7858CC7C0F2764B282BB384DE65AE3FF1 |
+| DifferentialGeometry.Topology.PiecewiseLinear.StandardMarkedBridge | B42819C9B00F9DDF2B6E2CB9BC47A732CF490A07D0185E20767987765F044F84 |
+| DifferentialGeometry.Topology.PiecewiseLinear.BridgeDiskPrism | 20317179925D4D1B0943AC7B62820B3B6281941F495FB0C75D41FC3B595F9314 |
+| DifferentialGeometry.Topology.PiecewiseLinear.CollarArcBridge | D13009A6F2FF199F91711EADA1C9A227006889F92AC42708E7F0EFACC48B50F4 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ConvexRadialExtension | 5F57BEC5424690045726C517970F5F2CAEA21CEE053B3866EA544432547F3A78 |
+| DifferentialGeometry.Topology.PiecewiseLinear.ConvexPrismBoundaryExtension | 461828D33000EBF16B6A70EFA025CA56A9BED6C95B08988FC432178B3298373A |
+| DifferentialGeometry.Topology.PiecewiseLinear.MarkedPrismGluing | 6AF2B727CEFFE73D445F98E9C4C1219D06964DE305DA5B9F887E228F1F13960E |
+| DifferentialGeometry.Topology.PiecewiseLinear.CyclicMarkedPrisms | BC884FAB938DB132EBF93C41FB85032E4954D1A5F4610D88B9AA424B664D2FD3 |
+| DifferentialGeometry.Topology.PiecewiseLinear.CylindricalManifold | 4913414F28CAF7E5A79E0F69887DC8C11BA12926D5E9997A77E9474976FFB0A3 |
+| DifferentialGeometry.Topology.PiecewiseLinear.CylindricalMarkedProduct | C692347D31A23C25CB57BC21C37D208C5097C268BE16790BD6CCAEBC34A80EA2 |
+| DifferentialGeometry.Topology.PiecewiseLinear.PointedPseudoIsotopy | 3119062ECBFEF08099B6EEED3799228B52A6DD846217AAABE6C24B9DB5431783 |
+| DifferentialGeometry.Topology.PiecewiseLinear.StandardTriangleCoordinates | 8B4F1858A0FE0DFEF78A9D8DBED319E7A47F251491ACE6D861EEDFB55D92CF8B |
+| DifferentialGeometry.Topology.PiecewiseLinear.SimplexPointedPseudoIsotopy | 7F434CA908DB5A6DD410C68908D36148B387B82ACCB497044629E470E05C28D3 |
+| DifferentialGeometry.Topology.PiecewiseLinear.CylindricalPointedUntwisting | DEE12263D40A8AD2E1CC2E4D027B92B3E925D2BAB17131FD0F644D1F15C8123B |
+| DifferentialGeometry.Topology.PiecewiseLinear.PrismCapAdjustment | 1248E795818BF5BCA33D684F8EC11F112939E1C3FE9BE8E777E1EA29E543CE91 |
+| DifferentialGeometry.Topology.PiecewiseLinear.StandardPrismCapAdjustment | ED7CC69A87A3D3C471436902BF009DDD19344970CD7EA703A37B3AE3A8ABC1CF |
+| DifferentialGeometry.Topology.PiecewiseLinear.MarkedBridgePrism | 5DCA970B7F49567963704EB5E5056F448474EE717DD7B33775C7C48C0FE9FE4A |
+| DifferentialGeometry.Topology.PiecewiseLinear.SolidTorusThickening | 5F505B022C0D704CB973458FE93C27E7E0CAC999320C0FE9A69A647EE51B24C9 |
+| DifferentialGeometry.Topology.PiecewiseLinear.MarkedCylindricalBuffer | F088B58CF5175BBC4E4E78E35D21EF6BC145AE83474874E4ED268112B2ED1528 |
+| DifferentialGeometry.Topology.PiecewiseLinear.MarkedPrismCycleBuffer | 9AD36E1E6815A55AE4568B20D5EDC7F0174094EB638C74E7F45BC11AC62B05B9 |
+| DifferentialGeometry.Topology.PiecewiseLinear.MarkedSolidTorusSandwich | 18E954C0EB261AB1FD9DEA4C4F2AA8E8A1CA5AF506C75823CF8578028BEE8239 |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphCarriers | 31B765FE0DFB80B58CC1ED7933383F948881A9AF9BC7A1427138DAE96B43ACD2 |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphNeighborhoods | E612EB1B1C369629009AB54956BE63B159C3A01B621EEF5020BAAE0A7DB22C6F |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactGraphRecognition | 8249E474442CE7FEE14D6B3CC22EBB073BA59088880B09B8764BA86E9682BB13 |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMarkedCaps | CE01688EE40F7F1564867E2547930648292EE77A679E9193C5A8CCD0E2F21C09 |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactRimCoreBuffer | 794DD2646C76409947FBA2555A1401A51DEE78179D5CE29775F1314A6030A3C0 |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactRimNeighborhoods | FCA646BF83A5E6E2DDBB9FCEECD317870F3E74EEECDFCC6E745A2FCFC9F4D12F |
+| DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCutAndGraph | 38AE671FEB3659005770496CE3C0E3A1C2E645C6BC78210F8542D0457599FDC9 |

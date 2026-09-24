@@ -38,3 +38,16 @@ import closure; no clean aggregate build is claimed. The aggregate build is stil
 - Rim buffer DONE: `exists_compactRimCoreBuffer` derives each single-vertex marked prism from its actual bridge, glues the three prisms, untwists while preserving their centers, and thickens the entire torus. The exact simplex rim is the zero section of the buffered product. `exists_compactRimNeighborhoods` chooses all buffers and finite open target constraints before approximation. The marked-product sandwich then supplies graph clause 9 from the actual target torus.
 
 - Final assembly DONE: `exists_compactCutAndGraph` chooses the small carriers, foreign-face avoidance neighborhoods, exterior buffers, and zero-marked rim buffers before the single delayed `Moise331OnTube` application. The actual cut frame is reused with `K' = K`. Finite foreign-cell avoidance gives graph clauses 5–8; the same marked product gives clause 9; existing exterior neighborhoods give clause 11. Independent review checked every clause and the unchanged hypotheses.
+
+## Host integration acceptance, 2026-09-24
+
+The original report above describes PR head 50c7ff8af. Host acceptance retains 78 modules
+and audits 212 non-auto declarations after canonical reuse and removal of a redundant alias.
+SphericalDiskPairMarked is replaced by the accepted theorem in ConeMarkedPrism;
+PrismCapAdjustment follows its parameter order. The marked-prism theorem is now named
+exists_marked_prism_of_isBridgeDisk. The specialized bu_untwist_preserving_axis alias
+is removed in favor of IsCylindricalDiagram.exists_endMap_id_preserving_stdCenter.
+All host module checks, three axiom/linter audits and the independent coverage probe passed.
+The frozen statement and variable block remain LF-identical. The compact skeleton now imports
+the proved leaf and retains only the trace sorry. Physical frozen total: 7 -> 6.
+D/E were not prerequisites. No clean full-repository build is claimed.
