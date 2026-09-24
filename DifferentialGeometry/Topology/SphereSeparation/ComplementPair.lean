@@ -186,6 +186,42 @@ def swap (p : ComplementPair S) : ComplementPair S where
   disjoint := p.disjoint.symm
   union_eq_compl := by rw [union_comm, p.union_eq_compl]
 
+theorem sphere_subset_right_of_sphere_subset_left
+    {T : Set X}
+    (p : ComplementPair S) (q : ComplementPair T)
+    (hS : S ⊆ closure p.right)
+    (hsub : T ⊆ p.left) (hmeet : (p.right ∩ q.right).Nonempty) : S ⊆ q.right := by
+  have havoid : p.right ⊆ Tᶜ := by
+    intro x hx hxT
+    exact p.disjoint.le_bot ⟨hsub hxT, hx⟩
+  have hright : p.right ⊆ q.right := by
+    rcases q.subset_left_or_subset_right p.isConnected_right.isPreconnected havoid with h | h
+    · obtain ⟨x, hx, hxq⟩ := hmeet
+      exact False.elim (q.disjoint.le_bot ⟨h hx, hxq⟩)
+    · exact h
+  intro x hx
+  have hcl : x ∈ closure q.right := closure_mono hright (hS hx)
+  have hxT : x ∈ Tᶜ := fun hxT => p.left_disjoint_sphere.le_bot ⟨hsub hxT, hx⟩
+  rw [← q.union_eq_compl] at hxT
+  rcases hxT with hleft | hright
+  · exact False.elim ((q.disjoint.closure_right q.isOpen_left).le_bot ⟨hleft, hcl⟩)
+  · exact hright
+
+theorem inter_sphere_nonempty_of_isPreconnected
+    (p : ComplementPair S) (hC : IsPreconnected C)
+    (hl : (C ∩ p.left).Nonempty) (hr : (C ∩ p.right).Nonempty) :
+    (C ∩ S).Nonempty := by
+  by_contra hnone
+  have havoid : C ⊆ Sᶜ := by
+    intro x hx hxS
+    exact hnone ⟨x, hx, hxS⟩
+  rcases p.subset_left_or_subset_right hC havoid with h | h
+  · obtain ⟨x, hx, hxr⟩ := hr
+    exact p.disjoint.le_bot ⟨h hx, hxr⟩
+  · obtain ⟨x, hx, hxl⟩ := hl
+    exact p.disjoint.le_bot ⟨hxl, h hx⟩
+
+
 end ComplementPair
 
 end DifferentialGeometry.Topology.SphereSeparation
