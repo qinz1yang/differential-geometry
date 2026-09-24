@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Uniqueness
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Scalar.AddCircleFiniteRegularity
 import DifferentialGeometry.Geometry.Metric.AddCircle
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Regularity
@@ -476,6 +477,50 @@ theorem exists_graphical_curve_shortening_classical_of_smooth
   refine ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, hjets, hwithin, ?_⟩
   intro t ht x
   exact (hwithin t ⟨ht.1.le, ht.2.le⟩ x).hasDerivAt (Icc_mem_nhds ht.1 ht.2)
+
+
+theorem exists_unique_graphical_curve_shortening_classical_of_smooth
+    {ι : Type*} [Fintype ι]
+    (F₀ : C^∞⟮𝓘(ℝ, ℝ), AddCircle (1 : ℝ); 𝓘(ℝ, EuclideanSpace ℝ ι), EuclideanSpace ℝ ι⟯) :
+    ∃ T : ℝ, 0 < T ∧ ∃ F : ℝ → ℝ → EuclideanSpace ℝ ι,
+      (∀ x, F 0 x = F₀ (x : AddCircle (1 : ℝ))) ∧
+      (∀ t, Function.Periodic (F t) 1) ∧
+      ContinuousOn (Function.uncurry F) (Icc 0 T ×ˢ univ) ∧
+      (∀ x t, t ∈ Icc 0 T →
+        IntervalIntegrable (fun s =>
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) volume 0 t ∧
+        F t x = F₀ (x : AddCircle (1 : ℝ)) + ∫ s in 0..t,
+          graphDiffusionCoefficient (deriv (F s) x) • deriv (deriv (F s)) x) ∧
+      (∀ t ∈ Icc 0 T, ContDiff ℝ 2 (F t)) ∧
+      (ContinuousOn (fun p : ℝ × ℝ => deriv (F p.1) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (F p.1)) p.2) (Icc 0 T ×ˢ univ) ∧
+        ContinuousOn (fun p : ℝ × ℝ =>
+          graphDiffusionCoefficient (deriv (F p.1) p.2) •
+            deriv (deriv (F p.1)) p.2) (Icc 0 T ×ˢ univ)) ∧
+      (∀ t ∈ Icc 0 T, ∀ x, HasDerivWithinAt (fun s => F s x)
+        (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) (Icc 0 T) t) ∧
+      (∀ t ∈ Ioo 0 T, ∀ x, HasDerivAt (fun s => F s x)
+        (graphDiffusionCoefficient (deriv (F t) x) • deriv (deriv (F t)) x) t) ∧
+      ∀ G : ℝ → ℝ → EuclideanSpace ℝ ι,
+        (∀ t ∈ Icc 0 T, Function.Periodic (G t) 1) →
+        ContinuousOn (Function.uncurry G) (Icc 0 T ×ˢ Icc 0 1) →
+        (∀ t ∈ Ioo 0 T, ContDiff ℝ 2 (G t)) →
+        ContinuousOn (fun p : ℝ × ℝ => deriv (deriv (G p.1)) p.2) (Icc 0 T ×ˢ Icc 0 1) →
+        (∀ t ∈ Ioo 0 T, ∀ x, HasDerivAt (fun s => G s x)
+          (graphDiffusionCoefficient (deriv (G t) x) • deriv (deriv (G t)) x) t) →
+        (∀ x, G 0 x = F₀ (x : AddCircle (1 : ℝ))) →
+        ∀ t ∈ Icc 0 T, ∀ x, G t x = F t x := by
+  obtain ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, hjets, hwithin, hpde⟩ :=
+    exists_graphical_curve_shortening_classical_of_smooth F₀
+  refine ⟨T, hT, F, hinit, hperiod, hcont, hint, hC2, hjets, hwithin, hpde, ?_⟩
+  intro G hGper hGcont hGspace hGsecond hGpde hGinit
+  have hsame := graphical_curve_shortening_unique F G hT.le
+    (fun t _ => hperiod t) hGper
+    (hcont.mono (prod_mono Subset.rfl (subset_univ _))) hGcont
+    (fun t ht => hC2 t ⟨ht.1.le, ht.2.le⟩) hGspace hpde hGpde
+    (hjets.1.mono (prod_mono Subset.rfl (subset_univ _))) hGsecond
+    (fun x => (hinit x).trans (hGinit x).symm)
+  exact fun t ht x => (hsame t ht x).symm
 
 
 theorem exists_graphical_curve_shortening_integral_with_contDiff_two_slices_of_smooth
