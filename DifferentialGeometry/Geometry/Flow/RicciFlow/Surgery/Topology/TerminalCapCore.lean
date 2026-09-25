@@ -284,6 +284,40 @@ theorem exists_uniform_spatial_neck_or_cap_core
     have hlowy := (div_lt_iff₀ (by positivity : 0 < 2 * C)).mp (hband y hyK).1
     nlinarith
 
+theorem TerminalLimitMetric.spatial_neck_or_cap_core_of_canonical_neighborhoods_of_not_isCompact
+    (L : G.TerminalLimitMetric) {δ q C1 C2 : ℝ}
+    (hδsmall : δ ≤ 1 / 8646) (hq : 0 < q)
+    (p x : G.terminalRegularOpen)
+    (hcanonical : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
+      ∃ W : CanonicalWitness G.flow (δ / 4) C1 C2 x.val t,
+        W.capTubeHasNeckChart (δ / 4))
+    (hqx : q < metricScalarAt L.metric x)
+    (hnoncompact : ¬ IsCompact (connectedComponent x))
+    (nk : SpatialNeck L.metric δ p) (z : Sphere 2) (level : ℝ)
+    (hlevel : |level| ≤ 4) (hxmap : nk.map (z, level) = x) :
+    Nonempty (SpatialNeck L.metric δ x) ∨
+      ∃ K : CompactDomain G.terminalRegularOpen,
+        Nonempty (CapCore K.carrier) ∧
+        nk.map '' (univ ×ˢ Icc (-4 : ℝ) 4) ⊆ interior K.carrier ∧
+        (∀ w ∈ K.carrier,
+          metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric w ∧
+            metricScalarAt L.metric w < (2 * C2) * metricScalarAt L.metric x) := by
+  have hδ : 0 < δ := nk.eps_pos
+  have hepsδ : δ / 4 < δ := by linarith
+  have hfit : δ⁻¹ + 1 ≤ (δ / 4)⁻¹ := by
+    rw [inv_div]
+    apply (le_div_iff₀ hδ).mpr
+    field_simp
+    linarith
+  have hhigh : ∀ᶠ t in 𝓝[<] s, q < G.flow.scalar t x.val :=
+    (L.tendsto_metricScalarAt x).eventually (Ioi_mem_nhds hqx)
+  have hbranch := L.eventually_canonical_neck_or_cap_of_not_isCompact
+    x hnoncompact (δ / 4) C1 C2
+  obtain ⟨τ, _, _, hτ, W, hW, halt⟩ :=
+    exists_canonical_neck_or_cap_sequence_of_eventually hcanonical hhigh hbranch
+  exact spatial_neck_or_cap_core_of_canonical_sequence L hτ x (hq.trans hqx)
+    hδsmall hepsδ hfit W hW halt nk z hlevel hxmap
+
 theorem exists_uniform_spatial_neck_or_cap_core_of_not_isCompact
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ ≤ 1 / 8646) :
     ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
@@ -299,26 +333,19 @@ theorem exists_uniform_spatial_neck_or_cap_core_of_not_isCompact
             (∀ w ∈ K.carrier,
               metricScalarAt L.metric x / C < metricScalarAt L.metric w ∧
                 metricScalarAt L.metric w < C * metricScalarAt L.metric x) := by
-  let eps := δ / 4
-  have heps : 0 < eps := by dsimp [eps]; positivity
-  have hepsδ : eps < δ := by dsimp [eps]; linarith
-  have hδ11 : δ < 1 / 11 := hδsmall.trans_lt (by norm_num)
-  have hfit : δ⁻¹ + 1 ≤ eps⁻¹ := by
-    change δ⁻¹ + 1 ≤ (δ / 4)⁻¹
-    rw [inv_div]
-    apply (le_div_iff₀ hδ).mpr
-    field_simp
-    linarith
-  obtain ⟨C, hC, hsequence⟩ := exists_uniform_canonical_neck_or_cap_sequence_of_not_isCompact.{u}
-    heps (hepsδ.trans hδ11)
+  obtain ⟨C, hC, hcanonical⟩ :=
+    exists_uniform_canonical_constants_with_cap_neck_charts.{u}
+      (show 0 < δ / 4 by positivity)
+      (show δ / 4 < 1 / 11 by linarith)
   refine ⟨2 * C, by linarith, ?_⟩
   intro P a s G
-  obtain ⟨q, hq, hseq⟩ := hsequence P a s G
+  obtain ⟨q, hq, hqcanonical⟩ := hcanonical P a s G
   refine ⟨q, hq, ?_⟩
   intro L p x hqx hnoncompact nk z level hlevel hxmap
-  obtain ⟨τ, _, _, hτ, W, hW, halt⟩ := hseq L x hqx hnoncompact
-  exact spatial_neck_or_cap_core_of_canonical_sequence L hτ x (hq.trans hqx) hδsmall
-    hepsδ hfit W hW halt nk z hlevel hxmap
+  exact L.spatial_neck_or_cap_core_of_canonical_neighborhoods_of_not_isCompact
+    hδsmall hq p x
+    (fun t ht hx => hqcanonical x.val t ⟨ht.1.le, ht.2⟩ hx.le)
+    hqx hnoncompact nk z level hlevel hxmap
 
 
 theorem exists_uniform_spatial_neck_or_cap_core_on_component
