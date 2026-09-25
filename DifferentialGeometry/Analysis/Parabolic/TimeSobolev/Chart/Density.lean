@@ -233,3 +233,51 @@ end Analysis
 end DifferentialGeometry
 
 end
+
+
+open Filter Set
+open scoped Topology
+
+namespace DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+
+variable {X : Type*}
+
+theorem flatJoin_eventuallyEq_right (x : X) (t : ℕ → ℝ) (f : ℕ → ℝ → X)
+    (ht : Monotone t) (hzero : (fun _ : ℝ ↦ x) =ᶠ[𝓝 (t 0)] f 0)
+    (hjoin : ∀ n, f n =ᶠ[𝓝 (t (n + 1))] f (n + 1)) (n : ℕ) :
+    flatJoin x t f n =ᶠ[𝓝 (t n)] f n := by
+  induction n with
+  | zero => exact hzero
+  | succ n hn =>
+    rcases (ht (Nat.le_succ n)).eq_or_lt with heq | hlt
+    · have hp : flatJoin x t f (n + 1) =ᶠ[𝓝 (t n)] f n := by
+        filter_upwards [hn] with s hs
+        by_cases hle : s ≤ t n
+        · exact ((Iic (t n)).piecewise_eq_of_mem (flatJoin x t f n) (f n) hle).trans hs
+        · exact (Iic (t n)).piecewise_eq_of_notMem (flatJoin x t f n) (f n) hle
+      have hj : f n =ᶠ[𝓝 (t n)] f (n + 1) := by simpa only [heq] using hjoin n
+      simpa only [heq] using hp.trans hj
+    · have hp : flatJoin x t f (n + 1) =ᶠ[𝓝 (t (n + 1))] f n := by
+        filter_upwards [eventually_gt_nhds hlt] with s hs
+        exact (Iic (t n)).piecewise_eq_of_notMem (flatJoin x t f n) (f n) (not_le.mpr hs)
+      exact hp.trans (hjoin n)
+
+theorem flatJoin_eventuallyEq_left (x : X) (t : ℕ → ℝ) (f : ℕ → ℝ → X)
+    (ht : Monotone t) (hzero : (fun _ : ℝ ↦ x) =ᶠ[𝓝 (t 0)] f 0)
+    (hjoin : ∀ n, f n =ᶠ[𝓝 (t (n + 1))] f (n + 1)) (n : ℕ) :
+    flatJoin x t f n =ᶠ[𝓝 (t 0)] (fun _ : ℝ ↦ x) := by
+  induction n with
+  | zero => exact Filter.EventuallyEq.rfl
+  | succ n hn =>
+    rcases (ht (Nat.zero_le n)).eq_or_lt with heq | hlt
+    · have hr : flatJoin x t f n =ᶠ[𝓝 (t 0)] f n := by
+        simpa only [← heq] using flatJoin_eventuallyEq_right x t f ht hzero hjoin n
+      have hf := hr.symm.trans hn
+      filter_upwards [hn, hf] with s hs hfs
+      by_cases hle : s ≤ t n
+      · exact ((Iic (t n)).piecewise_eq_of_mem (flatJoin x t f n) (f n) hle).trans hs
+      · exact ((Iic (t n)).piecewise_eq_of_notMem (flatJoin x t f n) (f n) hle).trans hfs
+    · filter_upwards [eventually_lt_nhds hlt, hn] with s hs hns
+      exact ((Iic (t n)).piecewise_eq_of_mem (flatJoin x t f n) (f n) hs.le).trans hns
+
+end DifferentialGeometry.Analysis.Parabolic.TimeSobolev

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
@@ -139,5 +140,24 @@ def ClosedSlab.endpointTerminalLimitMetric {u v : ℝ} (G : P.ClosedSlab u v) :
   metric := (G.flow.base.metric v).restrictOpen
     (G.restrictIncoming le_rfl G.lt le_rfl).terminalRegularOpen
   converges := G.endpoint_terminalMetricConverges P
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+universe u
+variable {P : OrientedThreeStage.{u}}
+
+theorem ClosedSlab.endpointTerminalLimitMetric_extendedMetric_of_le
+    {a b : ℝ} (S : P.ClosedSlab a b) {v : ℝ} (hv : v ≤ b) :
+    (S.endpointTerminalLimitMetric P).extendedMetric v =
+      (S.flow.base.metric v).restrictOpen
+        (S.restrictIncoming le_rfl S.lt le_rfl).terminalRegularOpen := by
+  rcases lt_or_eq_of_le hv with hlt | rfl
+  · rw [IncomingSlab.TerminalLimitMetric.extendedMetric_before _ hlt]
+    rfl
+  · rw [IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    rfl
+
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage

@@ -117,7 +117,7 @@ variable {M : Type u} [UniformSpace M] [ChartedSpace H M]
   [IsManifold I 1 M]
 
 omit [CompleteSpace E] in
-theorem exists_c1_of_flat
+theorem exists_c1_of_flat_const_nhds_endpoints
     {m : Nat} (a b : Real) (t : Fin (m + 1) → Real)
     (htmono : Monotone t) (ht0 : t 0 = a)
     (htlast : t (Fin.last m) = b)
@@ -155,7 +155,9 @@ theorem exists_c1_of_flat
         (chartAt H (p i)).source) ∧
       TendstoUniformly
         (fun n (s : Icc a b) ↦ alpha n s.1)
-        (fun s ↦ gamma s.1) atTop := by
+        (fun s ↦ gamma s.1) atTop ∧
+      (∀ n, alpha n =ᶠ[𝓝 a] fun _ ↦ gamma a) ∧
+      (∀ n, alpha n =ᶠ[𝓝 b] fun _ ↦ gamma b) := by
   classical
   have hseg (i : Fin m) : t i.castSucc ≤ t i.succ :=
     htmono Fin.castSucc_lt_succ.le
@@ -442,8 +444,59 @@ theorem exists_c1_of_flat
       have hsval : s.1 = a := le_antisymm (hab ▸ s.2.2) s.2.1
       rw [hsval, halpha_left]
       exact refl_mem_uniformity hU
+  have hflatLeft (n : ℕ) : alpha n =ᶠ[𝓝 a] fun _ ↦ gamma a := by
+    simpa only [alpha, htNat_zero] using
+      flatJoin_eventuallyEq_left (gamma a) tNat (pieces n) htNat (hpieces_zero n) (hpieces_join n) m
+  have hflatRight (n : ℕ) : alpha n =ᶠ[𝓝 b] fun _ ↦ gamma b := by
+    simpa only [alpha, htNat_m, pieces, dif_neg (Nat.lt_irrefl m)] using
+      flatJoin_eventuallyEq_right (gamma a) tNat (pieces n) htNat (hpieces_zero n) (hpieces_join n) m
   exact ⟨alpha, halpha_c1, halpha_left, halpha_right, halpha_rep,
-    halpha_source, halpha_uniform⟩
+    halpha_source, halpha_uniform, hflatLeft, hflatRight⟩
+
+omit [CompleteSpace E] in
+theorem exists_c1_of_flat
+    {m : Nat} (a b : Real) (t : Fin (m + 1) → Real)
+    (htmono : Monotone t) (ht0 : t 0 = a)
+    (htlast : t (Fin.last m) = b)
+    (p : Fin m → M) (gamma : Real → M)
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
+    (hsrcLim : ∀ i, MapsTo gamma
+      (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
+    (hrepLim : ∀ i, EqOn (uLim i).toFun
+      (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
+    (K : Fin m → Set E) (hKc : ∀ i, IsCompact (K i))
+    (hKtar : ∀ i, K i ⊆ (extChartAt I (p i)).target)
+    (v : (i : Fin m) → Nat → Real → E)
+    (hvC1 : ∀ i n, ContDiff Real 1 (v i n))
+    (hvleft : ∀ i n, v i n =ᶠ[nhds (0 : Real)] fun _ ↦ v i n 0)
+    (hvright : ∀ i n, v i n =ᶠ[nhds (partitionIntervalLength t i)]
+      fun _ ↦ v i n (partitionIntervalLength t i))
+    (hvzero : ∀ i n, v i n 0 = (uLim i).toFun 0)
+    (hvlast : ∀ i n, v i n (partitionIntervalLength t i) =
+      (uLim i).toFun (partitionIntervalLength t i))
+    (hvK : ∀ i n (r : Icc (0 : Real) (partitionIntervalLength t i)), v i n r.1 ∈ K i)
+    (huLimK : ∀ i (r : Icc (0 : Real) (partitionIntervalLength t i)),
+      (uLim i).toFun r.1 ∈ K i)
+    (hvlim : ∀ i, TendstoUniformly
+      (fun n (r : Icc (0 : Real) (partitionIntervalLength t i)) ↦ v i n r.1)
+      (fun r ↦ (uLim i).toFun r.1) atTop) :
+    ∃ alpha : Nat → Real → M,
+      (∀ n, ContMDiff (modelWithCornersSelf Real Real) I 1 (alpha n)) ∧
+      (∀ n, alpha n a = gamma a) ∧
+      (∀ n, alpha n b = gamma b) ∧
+      (∀ i n, EqOn (v i n)
+        (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
+        (Icc (0 : Real) (partitionIntervalLength t i))) ∧
+      (∀ i n, MapsTo (alpha n) (Icc (t i.castSucc) (t i.succ))
+        (chartAt H (p i)).source) ∧
+      TendstoUniformly
+        (fun n (s : Icc a b) ↦ alpha n s.1)
+        (fun s ↦ gamma s.1) atTop := by
+  obtain ⟨alpha, halpha, ha, hb, hrep, hsrc, huniform, _, _⟩ :=
+    exists_c1_of_flat_const_nhds_endpoints a b t htmono ht0 htlast p gamma uLim
+      hsrcLim hrepLim K hKc hKtar v hvC1 hvleft hvright hvzero hvlast hvK huLimK hvlim
+  exact ⟨alpha, halpha, ha, hb, hrep, hsrc, huniform⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Operator.Family.Gram.CarrierStrongConvergen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Chart.CarrierAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.H1.Approximation.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ChartPartition.Construction.Sobolev
+import Mathlib.Topology.Metrizable.Basic
 
 
 noncomputable section
@@ -327,7 +329,7 @@ theorem lAction_h1_lim_of_carrier
     halpha huniform hreg
 
 omit [CompactSpace M] in
-theorem lAction_c1_dense_of_carrier
+theorem lAction_c1_dense_const_nhds_endpoints_of_carrier
     (S : SolutionOn (I := I) (M := M) D)
     (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
     (hSc : ScalarSTContOn (I := I) (M := M) S)
@@ -357,7 +359,9 @@ theorem lAction_c1_dense_of_carrier
             (fun n (s : Icc a b) ↦ alpha n s.1)
             (fun s ↦ gamma s.1) atTop ∧
           Tendsto (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
-            (nhds (lRegularizedAction S T gamma a b)) := by
+            (nhds (lRegularizedAction S T gamma a b)) ∧
+          (∀ n, alpha n =ᶠ[𝓝 a] fun _ ↦ gamma a) ∧
+          (∀ n, alpha n =ᶠ[𝓝 b] fun _ ↦ gamma b) := by
   classical
   have hseg (i : Fin m) : 0 ≤ partitionIntervalLength t i :=
     sub_nonneg.mpr (htmono Fin.castSucc_lt_succ.le)
@@ -411,8 +415,8 @@ theorem lAction_c1_dense_of_carrier
       (fun r ↦ (uLim i).toFun r.1) atTop := by
     intro U hU
     exact (tendsto_add_atTop_nat N).eventually (hvlim i U hU)
-  obtain ⟨alpha, halpha, halpha0, halphaL, hrepV, hsrc, huniform⟩ :=
-    exists_c1_of_flat a b t htmono ht0 htlast p gamma uLim hsrcLim hrepLim
+  obtain ⟨alpha, halpha, halpha0, halphaL, hrepV, hsrc, huniform, hflatLeft, hflatRight⟩ :=
+    exists_c1_of_flat_const_nhds_endpoints a b t htmono ht0 htlast p gamma uLim hsrcLim hrepLim
       K hKc hKtar (fun i n ↦ v i (n + N))
       (fun i n ↦ hvC1 i (n + N))
       (fun i n ↦ (hvg0 i (n + N)).trans
@@ -438,7 +442,44 @@ theorem lAction_c1_dense_of_carrier
     lAction_h1_lim_of_carrier S hMet hSc T a b t htmono ht0 htlast p alpha gamma
       u uLim hsrc hrep hsrcLim hrepLim K hKc hKchart huK huLimK hulim
       (fun n ↦ (halpha n).continuous.continuousOn) huniform hreg
-  exact ⟨alpha, u, halpha, halpha0, halphaL, hsrc, hrep, hulim, huniform, hact⟩
+  exact ⟨alpha, u, halpha, halpha0, halphaL, hsrc, hrep, hulim, huniform, hact, hflatLeft, hflatRight⟩
+
+omit [CompactSpace M] in
+theorem lAction_c1_dense_of_carrier
+    (S : SolutionOn (I := I) (M := M) D)
+    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hSc : ScalarSTContOn (I := I) (M := M) S)
+    (T a b : Real) {m : Nat} (t : Fin (m + 1) → Real)
+    (htmono : Monotone t) (ht0 : t 0 = a)
+    (htlast : t (Fin.last m) = b)
+    (p : Fin m → M) (gamma : Real → M)
+    (uLim : (i : Fin m) → timeH1 E (partitionIntervalLength t i))
+    (hsrcLim : ∀ i, MapsTo gamma
+      (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source)
+    (hrepLim : ∀ i, EqOn (uLim i).toFun
+      (fun r ↦ extChartAt I (p i) (gamma (t i.castSucc + r)))
+      (Icc (0 : Real) (partitionIntervalLength t i)))
+    (hreg : ∀ s ∈ Icc a b, T - s ^ 2 ∈ D.carrier) :
+    ∃ alpha : Nat → Real → M,
+      ∃ u : (i : Fin m) → Nat → timeH1 E (partitionIntervalLength t i),
+        (∀ n, ContMDiff (modelWithCornersSelf Real Real) I 1 (alpha n)) ∧
+          (∀ n, alpha n a = gamma a) ∧
+          (∀ n, alpha n b = gamma b) ∧
+          (∀ i n, MapsTo (alpha n)
+            (Icc (t i.castSucc) (t i.succ)) (chartAt H (p i)).source) ∧
+          (∀ i n, EqOn (u i n).toFun
+            (fun r ↦ extChartAt I (p i) (alpha n (t i.castSucc + r)))
+            (Icc (0 : Real) (partitionIntervalLength t i))) ∧
+          (∀ i, Tendsto (u i) atTop (nhds (uLim i))) ∧
+          TendstoUniformly
+            (fun n (s : Icc a b) ↦ alpha n s.1)
+            (fun s ↦ gamma s.1) atTop ∧
+          Tendsto (fun n ↦ lRegularizedAction S T (alpha n) a b) atTop
+            (nhds (lRegularizedAction S T gamma a b)) := by
+  obtain ⟨alpha, u, halpha, ha, hb, hsrc, hrep, hu, huniform, hact, _, _⟩ :=
+    lAction_c1_dense_const_nhds_endpoints_of_carrier S hMet hSc T a b t htmono ht0 htlast
+      p gamma uLim hsrcLim hrepLim hreg
+  exact ⟨alpha, u, halpha, ha, hb, hsrc, hrep, hu, huniform, hact⟩
 
 omit [CompactSpace M] in
 theorem lRegularizedCostC1_le_action_of_chartH1_of_carrier
@@ -485,3 +526,88 @@ theorem lRegularizedCostC1_le_action_of_chartH1_of_carrier
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 end
+
+noncomputable section
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Filter MeasureTheory Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [TopologicalSpace.PseudoMetrizableSpace M] {D : RealTimeInterval}
+
+theorem exists_lRegularizedAction_c1_approx_const_nhds_endpoints
+    (S : SolutionOn (I := I) (M := M) D)
+    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hSc : ScalarSTContOn (I := I) (M := M) S)
+    (T a b : ℝ) (hab : a ≤ b) (γ : ℝ → M)
+    (hγ : Manifold.absolutelyContinuousOnInterval I γ a b)
+    (hint : IntervalIntegrable (lRegularizedLagrangian S T γ) volume a b)
+    (hclock : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier) :
+    ∃ α : ℕ → ℝ → M,
+      (∀ n, ContMDiff 𝓘(ℝ, ℝ) I 1 (α n)) ∧
+      (∀ n, α n a = γ a) ∧ (∀ n, α n b = γ b) ∧
+      Tendsto (fun n ↦ lRegularizedAction S T (α n) a b) atTop
+        (𝓝 (lRegularizedAction S T γ a b)) ∧
+      (∀ n, α n =ᶠ[𝓝 a] fun _ ↦ γ a) ∧
+      (∀ n, α n =ᶠ[𝓝 b] fun _ ↦ γ b) := by
+  let : UniformSpace M := TopologicalSpace.pseudoMetrizableSpaceUniformity M
+  obtain ⟨m, t, p, u, ht0, htmono, htlast, hsrc, hrep, _⟩ :=
+    exists_timeH1_chart_partition_of_absolutelyContinuousOnInterval S hMet hSc T a b hab γ hγ hint hclock
+  obtain ⟨α, _, hα, ha, hb, _, _, _, _, hlim, hflatLeft, hflatRight⟩ :=
+    lAction_c1_dense_const_nhds_endpoints_of_carrier S hMet hSc T a b t htmono ht0 htlast p γ u hsrc hrep hclock
+  exact ⟨α, hα, ha, hb, hlim, hflatLeft, hflatRight⟩
+
+theorem exists_lRegularizedAction_c1_approx_of_absolutelyContinuousOnInterval
+    (S : SolutionOn (I := I) (M := M) D)
+    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hSc : ScalarSTContOn (I := I) (M := M) S)
+    (T a b : ℝ) (hab : a ≤ b) (γ : ℝ → M)
+    (hγ : Manifold.absolutelyContinuousOnInterval I γ a b)
+    (hint : IntervalIntegrable (lRegularizedLagrangian S T γ) volume a b)
+    (hclock : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier) :
+    ∃ α : ℕ → ℝ → M,
+      (∀ n, ContMDiff 𝓘(ℝ, ℝ) I 1 (α n)) ∧
+      (∀ n, α n a = γ a) ∧ (∀ n, α n b = γ b) ∧
+      Tendsto (fun n ↦ lRegularizedAction S T (α n) a b) atTop
+        (𝓝 (lRegularizedAction S T γ a b)) := by
+  obtain ⟨α, hα, ha, hb, hlim, _, _⟩ :=
+    exists_lRegularizedAction_c1_approx_const_nhds_endpoints S hMet hSc T a b hab γ hγ hint hclock
+  exact ⟨α, hα, ha, hb, hlim⟩
+
+theorem exists_lRegularizedAction_c1_lt_const_nhds_endpoints
+    (S : SolutionOn (I := I) (M := M) D)
+    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hSc : ScalarSTContOn (I := I) (M := M) S)
+    (T a b : ℝ) (hab : a ≤ b) (γ : ℝ → M)
+    (hγ : Manifold.absolutelyContinuousOnInterval I γ a b)
+    (hint : IntervalIntegrable (lRegularizedLagrangian S T γ) volume a b)
+    (hclock : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier) {ε : ℝ} (hε : 0 < ε) :
+    ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α a = γ a ∧ α b = γ b ∧
+      lRegularizedAction S T α a b < lRegularizedAction S T γ a b + ε ∧
+      (α =ᶠ[𝓝 a] fun _ ↦ γ a) ∧ (α =ᶠ[𝓝 b] fun _ ↦ γ b) := by
+  obtain ⟨α, hα, ha, hb, hlim, hflatLeft, hflatRight⟩ :=
+    exists_lRegularizedAction_c1_approx_const_nhds_endpoints S hMet hSc T a b hab γ hγ hint hclock
+  obtain ⟨n, hn⟩ := (hlim.eventually (gt_mem_nhds (lt_add_of_pos_right _ hε))).exists
+  exact ⟨α n, hα n, ha n, hb n, hn, hflatLeft n, hflatRight n⟩
+
+theorem exists_lRegularizedAction_c1_lt_of_absolutelyContinuousOnInterval
+    (S : SolutionOn (I := I) (M := M) D)
+    (hMet : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hSc : ScalarSTContOn (I := I) (M := M) S)
+    (T a b : ℝ) (hab : a ≤ b) (γ : ℝ → M)
+    (hγ : Manifold.absolutelyContinuousOnInterval I γ a b)
+    (hint : IntervalIntegrable (lRegularizedLagrangian S T γ) volume a b)
+    (hclock : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier) {ε : ℝ} (hε : 0 < ε) :
+    ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α a = γ a ∧ α b = γ b ∧
+      lRegularizedAction S T α a b < lRegularizedAction S T γ a b + ε := by
+  obtain ⟨α, hα, ha, hb, hact, _, _⟩ :=
+    exists_lRegularizedAction_c1_lt_const_nhds_endpoints S hMet hSc T a b hab γ hγ hint hclock hε
+  exact ⟨α, hα, ha, hb, hact⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman

@@ -2,6 +2,9 @@ import Mathlib.MeasureTheory.Function.AbsolutelyContinuous
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Topology.Compactness.Lindelof
+import DifferentialGeometry.Analysis.Calculus.AbsolutelyContinuous
+import Mathlib.Topology.Piecewise
+import Mathlib.Geometry.Manifold.HasGroupoid
 
 set_option autoImplicit false
 
@@ -117,5 +120,162 @@ theorem absolutelyContinuousOnInterval_ae_mdifferentiableAt
   have hinner := ae_mono (Measure.restrict_mono_set volume hcover) hunion
   rw [uIcc, ← restrict_Ioo_eq_restrict_Icc]
   exact hinner
+
+end Manifold
+
+namespace Manifold
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+
+theorem absolutelyContinuousOnInterval_piecewise_Iic
+    {alpha beta : ℝ → M} {a c b : ℝ}
+    (hα : absolutelyContinuousOnInterval I alpha a c)
+    (hβ : absolutelyContinuousOnInterval I beta c b)
+    (hac : a ≤ c) (hcb : c ≤ b) (hnode : alpha c = beta c) :
+    absolutelyContinuousOnInterval I (piecewise (Iic c) alpha beta) a b := by
+  classical
+  let gamma := piecewise (Iic c) alpha beta
+  have hleft : ∀ t ≤ c, gamma t = alpha t := fun t ht => piecewise_eq_of_mem _ _ _ ht
+  have hright : ∀ t, c ≤ t → gamma t = beta t := by
+    intro t ht
+    by_cases htc : t = c
+    · subst t
+      exact (hleft c le_rfl).trans hnode
+    · exact piecewise_eq_of_notMem _ _ _ (not_le.mpr (lt_of_le_of_ne ht (Ne.symm htc)))
+  constructor
+  · rw [uIcc_of_le (hac.trans hcb)]
+    apply ContinuousOn.piecewise
+    · intro t ht
+      have htc : t = c := by simpa only [frontier_Iic, mem_singleton_iff] using ht.2
+      simpa only [htc] using hnode
+    · apply hα.1.mono
+      rw [isClosed_Iic.closure_eq, uIcc_of_le hac]
+      exact fun t ht => ⟨ht.1.1, ht.2⟩
+    · apply hβ.1.mono
+      rw [compl_Iic, closure_Ioi, uIcc_of_le hcb]
+      exact fun t ht => ⟨ht.2, ht.1.2⟩
+  have hordered : ∀ (p : M) (x y : ℝ), x ≤ y → Icc x y ⊆ Icc a b →
+      MapsTo gamma (Icc x y) (chartAt H p).source →
+      AbsolutelyContinuousOnInterval ((extChartAt I p) ∘ gamma) x y := by
+    intro p x y hxy hsub hsrc
+    have hax : a ≤ x := (hsub (left_mem_Icc.mpr hxy)).1
+    have hyb : y ≤ b := (hsub (right_mem_Icc.mpr hxy)).2
+    by_cases hyc : y ≤ c
+    · have hsrα : MapsTo alpha (uIcc x y) (chartAt H p).source := by
+        rw [uIcc_of_le hxy]
+        intro t ht
+        rw [← hleft t (ht.2.trans hyc)]
+        exact hsrc ht
+      have hsα : uIcc x y ⊆ uIcc a c := by
+        rw [uIcc_of_le hxy, uIcc_of_le hac]
+        exact Icc_subset_Icc hax hyc
+      apply (hα.2 p x y hsα hsrα).congr
+      intro t ht
+      dsimp only [Function.comp_apply]
+      rw [hleft t ((show t ≤ y from (show t ∈ Icc x y by simpa only [uIcc_of_le hxy] using ht).2).trans hyc)]
+    by_cases hcx : c ≤ x
+    · have hsrβ : MapsTo beta (uIcc x y) (chartAt H p).source := by
+        rw [uIcc_of_le hxy]
+        intro t ht
+        rw [← hright t (hcx.trans ht.1)]
+        exact hsrc ht
+      have hsβ : uIcc x y ⊆ uIcc c b := by
+        rw [uIcc_of_le hxy, uIcc_of_le hcb]
+        exact Icc_subset_Icc hcx hyb
+      apply (hβ.2 p x y hsβ hsrβ).congr
+      intro t ht
+      dsimp only [Function.comp_apply]
+      rw [hright t (hcx.trans (show x ≤ t from (show t ∈ Icc x y by simpa only [uIcc_of_le hxy] using ht).1))]
+    have hxc : x ≤ c := (lt_of_not_ge hcx).le
+    have hcy : c ≤ y := (lt_of_not_ge hyc).le
+    have hsrα : MapsTo alpha (uIcc x c) (chartAt H p).source := by
+      rw [uIcc_of_le hxc]
+      intro t ht
+      rw [← hleft t ht.2]
+      exact hsrc ⟨ht.1, ht.2.trans hcy⟩
+    have hsrβ : MapsTo beta (uIcc c y) (chartAt H p).source := by
+      rw [uIcc_of_le hcy]
+      intro t ht
+      rw [← hright t ht.1]
+      exact hsrc ⟨hxc.trans ht.1, ht.2⟩
+    have hsα : uIcc x c ⊆ uIcc a c := by
+      rw [uIcc_of_le hxc, uIcc_of_le hac]
+      exact Icc_subset_Icc_left hax
+    have hsβ : uIcc c y ⊆ uIcc c b := by
+      rw [uIcc_of_le hcy, uIcc_of_le hcb]
+      exact Icc_subset_Icc_right hyb
+    have hjoin := (hα.2 p x c hsα hsrα).piecewise_Iic hxc hcy
+      (hβ.2 p c y hsβ hsrβ) (congrArg (extChartAt I p) hnode)
+    apply hjoin.congr
+    intro t _
+    by_cases htc : t ≤ c
+    · simp only [piecewise_eq_of_mem (Iic c) _ _ htc, Function.comp_apply, hleft t htc]
+    · simp only [piecewise_eq_of_notMem (Iic c) _ _ htc, Function.comp_apply,
+        hright t (le_of_not_ge htc)]
+  intro p x y hsub hsrc
+  rcases le_total x y with hxy | hyx
+  · apply hordered p x y hxy
+    · simpa only [uIcc_of_le hxy, uIcc_of_le (hac.trans hcb)] using hsub
+    · simpa only [uIcc_of_le hxy] using hsrc
+  · apply AbsolutelyContinuousOnInterval.symm
+    apply hordered p y x hyx
+    · simpa only [uIcc_of_ge hyx, uIcc_of_le (hac.trans hcb)] using hsub
+    · simpa only [uIcc_of_ge hyx] using hsrc
+
+end Manifold
+
+namespace Manifold
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+
+theorem absolutelyContinuousOnInterval_congr
+    {gamma eta : ℝ → M} {a b : ℝ}
+    (h : absolutelyContinuousOnInterval I gamma a b) (heq : EqOn gamma eta (uIcc a b)) :
+    absolutelyContinuousOnInterval I eta a b := by
+  refine ⟨h.1.congr (fun t ht => (heq ht).symm), ?_⟩
+  intro p c d hsub hsrc
+  have hsrc' : MapsTo gamma (uIcc c d) (chartAt H p).source := by
+    intro t ht
+    rw [heq (hsub ht)]
+    exact hsrc ht
+  apply (h.2 p c d hsub hsrc').congr
+  intro t ht
+  exact congrArg (extChartAt I p) (heq (hsub ht))
+
+theorem absolutelyContinuousOnInterval_subtype_of_val
+    (U : TopologicalSpace.Opens M) {eta : ℝ → U} {a b : ℝ}
+    (h : absolutelyContinuousOnInterval I (Subtype.val ∘ eta) a b) :
+    absolutelyContinuousOnInterval I eta a b := by
+  have hcont : ContinuousOn eta (uIcc a b) := by
+    exact Topology.IsInducing.subtypeVal.continuousOn_iff.mpr h.1
+  refine ⟨hcont, ?_⟩
+  intro p c d hsub hsrc
+  have hsrc' : MapsTo (Subtype.val ∘ eta) (uIcc c d) (chartAt H p.val).source := by
+    intro t ht
+    have hp := hsrc ht
+    simpa only [TopologicalSpace.Opens.chartAt_eq, OpenPartialHomeomorph.subtypeRestr_source,
+      mem_preimage, Function.comp_apply] using hp
+  have hac := h.2 p.val c d hsub hsrc'
+  exact hac
+
+theorem exists_absolutelyContinuousOnInterval_openSubtype
+    (U : TopologicalSpace.Opens M) {gamma : ℝ → M} {a b : ℝ}
+    (h : absolutelyContinuousOnInterval I gamma a b)
+    (hU : MapsTo gamma (uIcc a b) U) :
+    ∃ eta : ℝ → U, absolutelyContinuousOnInterval I eta a b ∧
+      EqOn (Subtype.val ∘ eta) gamma (uIcc a b) := by
+  classical
+  let eta : ℝ → U := fun t => if ht : t ∈ uIcc a b then ⟨gamma t, hU ht⟩
+    else ⟨gamma a, hU left_mem_uIcc⟩
+  have heq : EqOn (Subtype.val ∘ eta) gamma (uIcc a b) := by
+    intro t ht
+    simp only [eta, dif_pos ht, Function.comp_apply]
+  refine ⟨eta, ?_, heq⟩
+  apply absolutelyContinuousOnInterval_subtype_of_val U
+  exact absolutelyContinuousOnInterval_congr h heq.symm
 
 end Manifold

@@ -465,6 +465,85 @@ open scoped Manifold ContDiff NNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory
 universe u
 
+theorem exists_uniform_backward_ball_flow_with_stage_bounds
+    (P : OrientedThreeStage.{u}) (g : P.Metric)
+    (Dbig c ρ q Qbar tau : ℝ) (C Cgrad : ℝ≥0)
+    (hDbig : StandardCap.transitionEnd < Dbig)
+    (hc : 0 < c) (hρ : 0 < ρ) (hq : 0 < q) (hqQ : q ≤ Qbar) (htau : 0 < tau) :
+    ∃ (Phi : ℝ → ℝ) (ε₀ δ₀ Δ r : ℝ), Perelman.AdmissiblePinchingFunction Phi ∧
+      0 < ε₀ ∧ 0 < δ₀ ∧ 0 < Δ ∧ Δ ≤ tau ∧ 0 < r ∧
+      ∀ p₀ : CutoffParameters, p₀.modelRadius = Dbig → p₀.recenterConstant ≤ c →
+        2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
+      ∀ H₀ : RetainedCoreHistory P, InitialIdentification P g H₀.toHistory →
+      H₀.hasCanonicalCutoffRecords p₀ δ₀ ρ →
+      let H := H₀.toHistory;
+      ∀ (last : Fin (H.eventCount + 1))
+        (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric),
+      G.flow.base.metric (H.time last) = H.initialMetric last → tau ≤ s →
+      ∀ x : G.terminalRegularOpen, metricScalarAt L.metric x ≤ Qbar →
+      (∀ y : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s, s - Δ ≤ t → q < G.flow.scalar t y →
+        ∀ v : TangentSpace ThreeModel y,
+          |scalarDifferential G.flow t y v| ≤ Cgrad * G.flow.scalar t y *
+            Real.sqrt (G.flow.scalar t y) * Real.sqrt ((G.flow.base.metric t).inner y v v)) →
+      (∀ j : Fin H.eventCount, j.succ ≤ last →
+        ∀ y : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          s - Δ ≤ t → q < (H.event j).incoming.flow.scalar t y →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v y) (Iic t) t| ≤
+            C * (H.event j).incoming.flow.scalar t y ^ 2) →
+      (∀ y : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s, s - Δ ≤ t → q < G.flow.scalar t y →
+        |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2) →
+      ∃ (first : Fin (H.eventCount + 1)) (hle : first ≤ last),
+      H.time first ≤ s - Δ ∧
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last → s - Δ < H.time j.succ) ∧
+      let K := riemannianClosedBallOf L.metric x r;
+      IsCompact K ∧
+      range (H.backwardSurvivorIncomingFootprintMap first last hle G K) = interior K ∧
+      ∃ (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+          (H.backwardSurvivorIncomingFootprint first last hle G K))
+        (hcs : s - Δ ≤ s),
+        (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+          ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+            gflow t = ((H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+              (H.backwardSurvivorIncomingDomain first last hle G)).restrictOpen
+                (H.backwardSurvivorIncomingFootprint first last hle G K)) ∧
+        (∀ t ∈ Icc (H.time last) s,
+          gflow t = (H.backwardSurvivorIncomingMetric first last hle G L t).restrictOpen
+            (H.backwardSurvivorIncomingFootprint first last hle G K)) ∧
+        gflow s = localPullMetric L.metric
+          (H.backwardSurvivorIncomingFootprintMap first last hle G K)
+          (H.backwardSurvivorIncomingFootprintMap_isLocalDiffeomorph first last hle G K) ∧
+        IsSolutionOn ({ base := { metric := gflow } } :
+          SolutionOn (I := ThreeModel) (M := H.backwardSurvivorIncomingFootprint first last hle G K)
+            (RealTimeInterval.closed (s - Δ) s hcs)) ∧
+        ∀ t ∈ Icc (s - Δ) s, ∀ z : H.backwardSurvivorIncomingFootprint first last hle G K,
+          normSq0S (gflow t) z 4 (metricRm04At (gflow t) z) ≤
+            (4 * Real.sqrt 3 * (4 * Qbar + Phi (16 * Qbar) + Phi 0)) ^ 2 := by
+  have hQbar : 0 < Qbar := hq.trans_le hqQ
+  obtain ⟨Phi, ε₀, δ₀, hPhi, hε₀, hδ₀, hflow⟩ :=
+    exists_uniform_backward_ball_flow_of_canonicalCutoffRecords_on_time_window P g Dbig c ρ Qbar
+      hDbig hc hρ hQbar
+  let θ := min (1 / 4 : ℝ) (min (1 / (6 * ((C : ℝ) + 1))) (4 * Qbar * tau))
+  have hθ : 0 < θ := by dsimp [θ]; positivity
+  have hθquarter : θ ≤ 1 / 4 := min_le_left _ _
+  have hθC : θ ≤ 1 / (6 * ((C : ℝ) + 1)) := (min_le_right _ _).trans (min_le_left _ _)
+  have hθtau : θ ≤ 4 * Qbar * tau := (min_le_right _ _).trans (min_le_right _ _)
+  have hbudget : 6 * (C : ℝ) * θ ≤ 1 := by
+    have hh := (le_div_iff₀ (by positivity : 0 < 6 * ((C : ℝ) + 1))).mp hθC
+    nlinarith [C.coe_nonneg]
+  let Δ := θ / (4 * Qbar)
+  have hΔ : 0 < Δ := div_pos hθ (by positivity)
+  have hΔtau : Δ ≤ tau := (div_le_iff₀ (by positivity : 0 < 4 * Qbar)).mpr (by nlinarith)
+  let r := localPropagationRadius Cgrad / (2 * Real.sqrt (2 * Qbar))
+  have hr : 0 < r := div_pos (localPropagationRadius_pos Cgrad.coe_nonneg) (by positivity)
+  refine ⟨Phi, ε₀, δ₀, Δ, r, hPhi, hε₀, hδ₀, hΔ, hΔtau, hr, ?_⟩
+  intro p₀ hpD hpc hpm hpε H₀ hident hInv H last s G L hinit hs x hx hgradient hderiv hfinal
+  obtain ⟨first, hle, hroom, hcross⟩ := exists_stage_covering_time_before H last
+    (show 0 ≤ s - Δ by linarith)
+  refine ⟨first, hle, hroom, hcross, ?_⟩
+  exact hflow p₀ hpD hpc hpm hpε H₀ hident hInv first last hle s G L hinit x
+    q Qbar θ C Cgrad hq hqQ le_rfl hθ hθquarter hbudget hroom hcross hx hgradient
+    (fun j _ hl => hderiv j hl) hfinal
+
 theorem exists_uniform_backward_ball_flow_of_bounded_terminal_scalar_on_time_window
     (P : OrientedThreeStage.{u}) (g : P.Metric)
     (Dbig c ρ q Qbar tau : ℝ) (C Cgrad : ℝ≥0)
@@ -516,31 +595,14 @@ theorem exists_uniform_backward_ball_flow_of_bounded_terminal_scalar_on_time_win
         ∀ t ∈ Icc (s - Δ) s, ∀ z : H.backwardSurvivorIncomingFootprint first last hle G K,
           normSq0S (gflow t) z 4 (metricRm04At (gflow t) z) ≤
             (4 * Real.sqrt 3 * (4 * Qbar + Phi (16 * Qbar) + Phi 0)) ^ 2 := by
-  have hQbar : 0 < Qbar := hq.trans_le hqQ
-  obtain ⟨Phi, ε₀, δ₀, hPhi, hε₀, hδ₀, hflow⟩ :=
-    exists_uniform_backward_ball_flow_of_canonicalCutoffRecords_on_time_window P g Dbig c ρ Qbar
-      hDbig hc hρ hQbar
-  let θ := min (1 / 4 : ℝ) (min (1 / (6 * ((C : ℝ) + 1))) (4 * Qbar * tau))
-  have hθ : 0 < θ := by dsimp [θ]; positivity
-  have hθquarter : θ ≤ 1 / 4 := min_le_left _ _
-  have hθC : θ ≤ 1 / (6 * ((C : ℝ) + 1)) := (min_le_right _ _).trans (min_le_left _ _)
-  have hθtau : θ ≤ 4 * Qbar * tau := (min_le_right _ _).trans (min_le_right _ _)
-  have hbudget : 6 * (C : ℝ) * θ ≤ 1 := by
-    have hh := (le_div_iff₀ (by positivity : 0 < 6 * ((C : ℝ) + 1))).mp hθC
-    nlinarith [C.coe_nonneg]
-  let Δ := θ / (4 * Qbar)
-  have hΔ : 0 < Δ := div_pos hθ (by positivity)
-  have hΔtau : Δ ≤ tau := (div_le_iff₀ (by positivity : 0 < 4 * Qbar)).mpr (by nlinarith)
-  let r := localPropagationRadius Cgrad / (2 * Real.sqrt (2 * Qbar))
-  have hr : 0 < r := div_pos (localPropagationRadius_pos Cgrad.coe_nonneg) (by positivity)
+  obtain ⟨Phi, ε₀, δ₀, Δ, r, hPhi, hε₀, hδ₀, hΔ, hΔtau, hr, hflow⟩ :=
+    exists_uniform_backward_ball_flow_with_stage_bounds P g Dbig c ρ q Qbar tau C Cgrad
+      hDbig hc hρ hq hqQ htau
   refine ⟨Phi, ε₀, δ₀, Δ, r, hPhi, hε₀, hδ₀, hΔ, hΔtau, hr, ?_⟩
   intro p₀ hpD hpc hpm hpε H₀ hident hInv H last s G L hinit hs x hx hgradient hderiv hfinal
-  obtain ⟨first, hle, hroom, hcross⟩ := exists_stage_covering_time_before H last
-    (show 0 ≤ s - Δ by linarith)
-  refine ⟨first, hle, ?_⟩
-  exact hflow p₀ hpD hpc hpm hpε H₀ hident hInv first last hle s G L hinit x
-    q Qbar θ C Cgrad hq hqQ le_rfl hθ hθquarter hbudget hroom hcross hx hgradient
-    (fun j _ hl => hderiv j hl) hfinal
+  obtain ⟨first, hle, _, _, hrest⟩ :=
+    hflow p₀ hpD hpc hpm hpε H₀ hident hInv last s G L hinit hs x hx hgradient hderiv hfinal
+  exact ⟨first, hle, hrest⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory
 
