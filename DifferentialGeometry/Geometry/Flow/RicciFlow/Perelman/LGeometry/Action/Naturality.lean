@@ -12,7 +12,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 open DifferentialGeometry.Geometry.Curvature
 
 universe uM uN uE uH
@@ -132,7 +132,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

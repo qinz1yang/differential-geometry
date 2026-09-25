@@ -10,7 +10,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness.PointedFlowData
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open Bundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u v uE uH uE' uH'
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]

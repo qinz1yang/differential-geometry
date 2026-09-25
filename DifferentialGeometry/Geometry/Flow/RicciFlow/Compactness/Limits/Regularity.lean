@@ -21,14 +21,14 @@ noncomputable section
 namespace DifferentialGeometry
 namespace CheegerGromovCompactness
 
-open scoped Manifold ContDiff Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 open Bundle
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.PDE.RicciFlow (SolutionOn)
 open DifferentialGeometry.Tensor0SBundle
-open Filter Topology
+open Filter _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]

@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Bundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 open PDE.RicciFlow.Perelman (lVelocity)
 

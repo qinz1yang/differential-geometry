@@ -11,7 +11,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Set Bundle Filter
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.Coordinates
-open scoped Manifold ContDiff Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

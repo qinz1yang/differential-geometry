@@ -14,7 +14,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle Set Function Filter
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -338,7 +338,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E F H G M N : Type*}
   [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

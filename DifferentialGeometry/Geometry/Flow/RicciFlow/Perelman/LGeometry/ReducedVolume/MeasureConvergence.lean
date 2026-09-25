@@ -8,9 +8,9 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory Set Manifold
+open Filter MeasureTheory Set _root_.Manifold
 open Integral.Measure PDE.RicciFlow.Perelman
-open scoped CompactlySupported ContDiff Manifold Topology ENNReal
+open scoped CompactlySupported ContDiff _root_.Manifold _root_.Topology ENNReal
 
 universe u uE uH
 
