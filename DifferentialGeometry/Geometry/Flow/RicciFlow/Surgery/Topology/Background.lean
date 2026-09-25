@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
+import DifferentialGeometry.Topology.Manifold.Orientation
 import Mathlib.LinearAlgebra.Orientation
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
 
@@ -31,6 +32,23 @@ structure TangentOrientationSection where
           Orientation.map (Fin 3) (tangentChartEquiv M p x hx) (orientation x)
 
 variable {M}
+
+
+def TangentOrientationSection.restrictOpen
+    (o : TangentOrientationSection M) (U : TopologicalSpace.Opens M) :
+    TangentOrientationSection U where
+  orientation x := o.orientation x.1
+  locally_constant := by
+    let O : DifferentialGeometry.ManifoldOrientation ThreeModel M 3 :=
+      { dimension_eq := by simp
+        orientation := o.orientation
+        locally_constant := o.locally_constant }
+    exact (O.restrictOpen U).locally_constant
+
+@[simp]
+theorem TangentOrientationSection.restrictOpen_orientation
+    (o : TangentOrientationSection M) (U : TopologicalSpace.Opens M) (x : U) :
+    (o.restrictOpen U).orientation x = o.orientation x.1 := rfl
 
 
 def TangentOrientationSection.inChart (o : TangentOrientationSection M) (p x : M)

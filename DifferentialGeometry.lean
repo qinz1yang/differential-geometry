@@ -13866,3 +13866,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Es
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.ConeExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareHornCutoffRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.UniformModelCoverage
+import DifferentialGeometry.Topology.Order.InfimumAddition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction

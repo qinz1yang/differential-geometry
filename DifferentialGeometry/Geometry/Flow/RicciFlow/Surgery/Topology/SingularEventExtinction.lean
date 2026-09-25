@@ -30,10 +30,10 @@ private theorem prefix_metric_zero_heq {H K : ObservedHistory.{u}} (h : H.IsPref
   simpa only [Fin.cast_zero, ObservedHistory.restrict_initialMetric_zero,
     ObservedHistory.restrict_stage_zero] using hh
 
-theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
+theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_invariants
     (P : OrientedThreeStage.{u}) [SimplyConnectedSpace P.Carrier] (g : P.Metric)
-    (Inv : RetainedCoreHistory P → Prop) (hInv : Inv (RetainedCoreHistory.atZero P g))
-    (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ), 0 < v ∧
+    (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ) (Inv : RetainedCoreHistory P → Prop),
+      0 < v ∧ Inv (RetainedCoreHistory.atZero P g) ∧
       ∀ H : RetainedCoreHistory P, InitialIdentification P g H.toHistory → Inv H →
         ∀ p : CutoffParameters,
         H.time (Fin.last H.eventCount) = H.horizon → H.horizon < B →
@@ -80,7 +80,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
   have hB : 0 < B := zero_lt_one.trans_le (le_max_left _ _)
   have hthr : extinctionThreshold c (canonicalWidth g P.orientation) < B :=
     (lt_add_one _).trans_le (le_max_right _ _)
-  obtain ⟨p₀, v, hv, hstep⟩ := hproduce B hB
+  obtain ⟨p₀, v, Inv, hv, hInv, hstep⟩ := hproduce B hB
   let H₀ := RetainedCoreHistory.atZero P g
   let S : Set (RetainedCoreHistory P) := {H |
     H₀.toHistory.IsPrefixOf H.toHistory ∧ H.horizon ≤ B ∧
@@ -176,6 +176,55 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
     (InitialIdentification.atZero P g) S hzero hv
     (fun H hH => hH.1) (fun H hH => hH.2.1) (fun H hH => hH.2.2.1)
     hdebit hclosed p (fun H hH => Classical.choice (hrecords H hH)) hbfr hctrl hc hscalar0 hthr
+
+theorem exists_poincare_controlled_extinction_of_singular_events_of_invariant
+    (P : OrientedThreeStage.{u}) [SimplyConnectedSpace P.Carrier] (g : P.Metric)
+    (Inv : RetainedCoreHistory P → Prop) (hInv : Inv (RetainedCoreHistory.atZero P g))
+    (hproduce : ∀ B : ℝ, 0 < B → ∃ (p₀ : CutoffParameters) (v : ℝ), 0 < v ∧
+      ∀ H : RetainedCoreHistory P, InitialIdentification P g H.toHistory → Inv H →
+        ∀ p : CutoffParameters,
+        H.time (Fin.last H.eventCount) = H.horizon → H.horizon < B →
+        p.fixed = p₀.fixed → p.modelRadius = p₀.modelRadius →
+        p.modelOrder = p₀.modelOrder → p.modelAccuracy = p₀.modelAccuracy →
+        p.recenterConstant = p₀.recenterConstant →
+        (∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p) →
+        (∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing) →
+          (∀ i : Fin H.eventCount,
+            (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded) →
+          (∀ i : Fin H.eventCount,
+            ∃ F : Set (H.coreEvent i).incoming.terminalRegularOpen, IsCompact F ∧
+              riemannianVolumeMeasure ThreeModel (H.stage i.succ).Carrier
+                (H.coreEvent i).outputMetric univ +
+                  ENNReal.ofReal ((Nat.card (H.coreEvent i).transition.trace.tubes.Index : ℝ) * v) ≤
+              riemannianVolumeMeasure ThreeModel (H.coreEvent i).incoming.terminalRegularOpen
+                (H.coreEvent i).terminal.metric F) →
+        ∀ (s : ℝ) (G : (H.stage (Fin.last H.eventCount)).IncomingSlab
+          (H.time (Fin.last H.eventCount)) s), s ≤ B →
+          G.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount) → G.SingularEndpoint →
+          ∃ (Q : OrientedThreeStage.{u})
+            (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+              (H.time (Fin.last H.eventCount)) s)
+            (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric
+              (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
+            (q : CutoffParameters),
+            E.incoming = G ∧ Inv (H.appendEvent E.incoming.lt E hinit) ∧
+            q.fixed = p.fixed ∧ q.modelRadius = p.modelRadius ∧
+            q.modelOrder = p.modelOrder ∧ q.modelAccuracy = p.modelAccuracy ∧
+            q.recenterConstant = p.recenterConstant ∧
+            Nonempty (GeometricCutoffRecord (H.appendEvent E.incoming.lt E hinit).toHistory
+              (Fin.last H.eventCount) q) ∧ E.transition.boundaryFrameReversing ∧
+            E.toMetricCutCapEvent.poincareStandardDiscarded ∧
+            ∃ F : Set E.incoming.terminalRegularOpen, IsCompact F ∧
+              riemannianVolumeMeasure ThreeModel Q.Carrier E.outputMetric univ +
+                ENNReal.ofReal ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
+              riemannianVolumeMeasure ThreeModel E.incoming.terminalRegularOpen
+                E.terminal.metric F) :
+    Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
+  apply exists_poincare_controlled_extinction_of_singular_events_of_horizon_invariants P g
+  intro B hB
+  obtain ⟨p₀, v, hv, hstep⟩ := hproduce B hB
+  exact ⟨p₀, v, Inv, hv, hInv, hstep⟩
 
 theorem exists_poincare_controlled_extinction_of_singular_events
     (P : OrientedThreeStage.{u}) [SimplyConnectedSpace P.Carrier] (g : P.Metric)
