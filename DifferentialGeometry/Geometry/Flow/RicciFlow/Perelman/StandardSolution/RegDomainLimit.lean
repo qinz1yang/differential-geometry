@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Family.TensorNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InitialVectorBound
 import DifferentialGeometry.Geometry.Operator.Family.Gram.Basic
 import Mathlib.Topology.Sequences
@@ -233,6 +234,135 @@ private theorem original_domain_of_compact_range_speed
     isPreconnected_Icc.subset_of_closure_inter_subset hUopen
       ⟨0, ⟨⟨le_rfl, hb.le⟩, h₀U⟩⟩ hclosed
   exact hall ⟨hb.le, le_rfl⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem mem_lRegularizedDomain_of_compact_range
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (T : ℝ) (x : M) (b : ℝ) (hb : 0 < b)
+    (hreg : Icc (T - b ^ 2) T ⊆ D.regular)
+    (Cpt : Set M) (hCpt : IsCompact Cpt)
+    (Z₀ : TangentSpace I x)
+    (hrange : ∀ s ∈ Icc 0 b, s ∈ lRegularizedDomain S T x Z₀ →
+      lRegularizedCurve S T x Z₀ s ∈ Cpt) :
+    b ∈ lRegularizedDomain S T x Z₀ := by
+  classical
+  let gamma : ℝ → M := lRegularizedCurve S T x Z₀
+  have hback (s : ℝ) (hs : s ∈ Icc (0 : ℝ) b) :
+      T - s ^ 2 ∈ Icc (T - b ^ 2) T := by
+    have hs2 := (sq_le_sq₀ hs.1 hb.le).2 hs.2
+    exact ⟨sub_le_sub_left hs2 T, sub_le_self T (sq_nonneg s)⟩
+  have hclock (s : ℝ) (hs : s ∈ Icc (0 : ℝ) b) :
+      T - s ^ 2 ∈ D.regular := hreg (hback s hs)
+  have hcarrier : Icc (T - b ^ 2) T ⊆ D.carrier := fun t ht => D.regular_subset (hreg ht)
+  obtain ⟨K, hRm⟩ := exists_normSq0S_le_of_isCompact S.base.metric (fun t x => S.base.rm04 t x)
+    (hS.smoothMetric.metricTensor_cont.mono hcarrier) (hS.rm04Cont.mono hcarrier) isCompact_Icc hCpt
+  have hpartial (s : ℝ) (hs : s ∈ Icc (0 : ℝ) b)
+      (hsdom : s ∈ lRegularizedDomain S T x Z₀) : gamma s ∈ Cpt := hrange s hs hsdom
+  obtain ⟨Cg, hCg, hgrad⟩ :=
+    lScalarGradient_bound_on_compact S hS hreg hCpt
+  let P : ℝ := (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt K
+  let C : ℝ := max Cg P
+  have hC : 0 ≤ C := hCg.trans (le_max_left Cg P)
+  have hquad := twoTensorQuadBound_of_solutions (I := I)
+    (fun _ : ℕ ↦ S) Cpt (T - b ^ 2) T K
+    (fun _ t ht y hy ↦ hRm t ht y hy)
+  have hgradRay (r : ℝ) (hr : r ∈ Icc (0 : ℝ) b)
+      (hrdom : r ∈ lRegularizedDomain S T x Z₀) :
+      |(S.base.metric (T - r ^ 2)).inner (gamma r)
+          (gradientFun (I := I) (S.base.metric (T - r ^ 2))
+            (S.scalar (T - r ^ 2)) (gamma r))
+          (lVelocity (I := I) gamma r)| ≤
+        C * Real.sqrt (lRegularizedSpeedSq S T gamma r) := by
+    have h := hgrad (T - r ^ 2) (hback r hr) (gamma r)
+      (hpartial r hr hrdom) (lVelocity (I := I) gamma r)
+    exact h.trans (mul_le_mul_of_nonneg_right
+      (le_max_left Cg P) (Real.sqrt_nonneg _))
+  have hricRay (r : ℝ) (hr : r ∈ Icc (0 : ℝ) b)
+      (hrdom : r ∈ lRegularizedDomain S T x Z₀) :
+      |S.ricciAt (T - r ^ 2) (gamma r)
+          (vec2 (lVelocity (I := I) gamma r) (lVelocity (I := I) gamma r))| ≤
+        C * lRegularizedSpeedSq S T gamma r := by
+    have h := hquad.2 0 (T - r ^ 2) (hback r hr)
+      (gamma r) (hpartial r hr hrdom) (lVelocity (I := I) gamma r)
+    exact h.trans (mul_le_mul_of_nonneg_right (le_max_right Cg P)
+      (lRegularizedSpeedSq_nonneg S T gamma r))
+  let k : ℝ := 1 + 2 * C * b ^ 2 + 4 * C * b
+  let d : ℝ := 1 + 2 * C * b ^ 2
+  have hk : 0 < k := by
+    dsimp only [k]
+    nlinarith [mul_nonneg hC (sq_nonneg b), mul_nonneg hC hb.le]
+  have hd : 0 < d := by
+    dsimp only [d]
+    nlinarith [mul_nonneg hC (sq_nonneg b)]
+  let U₀ : ℝ := lRegularizedSpeedSq S T gamma 0
+  have hU₀ : 0 ≤ U₀ := lRegularizedSpeedSq_nonneg S T gamma 0
+  have hterm : 0 ≤ U₀ + d / k := add_nonneg hU₀ (div_nonneg hd.le hk.le)
+  let Q : ℝ := Real.exp (k * b) * (U₀ + d / k)
+  have hspeed (s : ℝ) (hs : s ∈ Icc (0 : ℝ) b)
+      (hsdom : s ∈ lRegularizedDomain S T x Z₀) :
+      lRegularizedSpeedSq S T gamma s ≤ Q := by
+    by_cases hs₀ : s = 0
+    · subst s
+      have hExp : 1 ≤ Real.exp (k * b) := by
+        rw [← Real.exp_zero]
+        exact Real.exp_le_exp.mpr (mul_nonneg hk.le hb.le)
+      calc
+        lRegularizedSpeedSq S T gamma 0 = U₀ := rfl
+        _ ≤ U₀ + d / k := le_add_of_nonneg_right (div_nonneg hd.le hk.le)
+        _ = 1 * (U₀ + d / k) := by ring
+        _ ≤ Real.exp (k * b) * (U₀ + d / k) :=
+          mul_le_mul_of_nonneg_right hExp hterm
+    · have hspos : 0 < s := lt_of_le_of_ne hs.1 (Ne.symm hs₀)
+      have hsub : uIcc (0 : ℝ) s ⊆ Icc (0 : ℝ) b := by
+        simpa only [uIcc_of_le hspos.le] using
+          (Icc_subset_Icc_right hs.2 : Icc (0 : ℝ) s ⊆ Icc (0 : ℝ) b)
+      have hgr := lRegularizedSpeedSq_le_of_gradient_ricci_bounds S hS T
+        (lRegularizedCurve_isLRegularizedCurveOn S hS T x Z₀ hspos hsdom)
+        0 s C C b hC hC
+        (fun _ hr ↦ hr)
+        (fun r hr ↦ by
+          rw [abs_of_nonneg (hsub hr).1]
+          exact (hsub hr).2)
+        (fun r hr ↦ by
+          have hr' : r ∈ Icc (0 : ℝ) s := by
+            simpa only [uIcc_of_le hspos.le] using hr
+          exact hgradRay r (hsub hr)
+            (lRegularizedDomain_segment S T x Z₀ hsdom hr'.1 hr'.2))
+        (fun r hr ↦ by
+          have hr' : r ∈ Icc (0 : ℝ) s := by simpa only [uIcc_of_le hspos.le] using hr
+          exact hricRay r (hsub hr) (lRegularizedDomain_segment S T x Z₀ hsdom hr'.1 hr'.2))
+      have hExp : Real.exp (k * s) ≤ Real.exp (k * b) :=
+        Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hs.2 hk.le)
+      calc
+        lRegularizedSpeedSq S T gamma s ≤ Real.exp (k * s) * (U₀ + d / k) := by
+          simpa only [gamma, U₀, k, d, sub_zero, abs_of_nonneg hs.1] using hgr
+        _ ≤ Real.exp (k * b) * (U₀ + d / k) :=
+          mul_le_mul_of_nonneg_right hExp hterm
+  exact original_domain_of_compact_range_speed S hS T x Z₀ b hb hreg
+    Cpt hCpt hpartial Q hspeed
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lRegDomain_lim_of_compact_range
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (T : ℝ) (x : M) (b : ℝ) (hb : 0 < b)
+    (hreg : Icc (T - b ^ 2) T ⊆ D.regular)
+    (Cpt : Set M) (hCpt : IsCompact Cpt)
+    {Z : ℕ → TangentSpace I x} {Z₀ : TangentSpace I x}
+    (hrange : ∀ n, MapsTo (lRegularizedCurve S T x (Z n)) (Icc 0 b) Cpt)
+    (hZ : Tendsto Z atTop (𝓝 Z₀)) :
+    b ∈ lRegularizedDomain S T x Z₀ := by
+  apply mem_lRegularizedDomain_of_compact_range S hS T x b hb hreg Cpt hCpt Z₀
+  intro s hs hsdom
+  have hlim : Tendsto (fun n ↦ lRegularizedCurve S T x (Z n) s) atTop
+      (𝓝 (lRegularizedCurve S T x Z₀ s)) :=
+    (lRegularizedCurve_smooth S hS T x hsdom).continuousAt.tendsto.comp
+      (hZ.prodMk_nhds tendsto_const_nhds)
+  exact hCpt.isClosed.mem_of_tendsto hlim (Eventually.of_forall fun n ↦ hrange n hs)
+
 
 variable [NeZero (Module.finrank ℝ E)]
   [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
