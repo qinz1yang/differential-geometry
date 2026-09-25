@@ -13953,3 +13953,4 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Metric.InverseCompositio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowVolumeComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ParabolicTerminalBallAlternative
+import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.Scalar

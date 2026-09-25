@@ -4,6 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalClo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalPullback
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CompactSublevel
 
 noncomputable section
 
@@ -262,6 +263,53 @@ theorem TerminalLimitMetric.exists_contMDiff_action_lt_of_terminal_curve
       rw [uIcc_of_le hd.1.le, uIcc_of_le huv.le]; exact Icc_subset_Icc le_rfl hd.2.le)) htailInt
     rw [haction, hact₁] at hη₁act
     linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+noncomputable section
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem TerminalLimitMetric.exists_lRegularizedMinC1_of_compact_action_sublevel
+    (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
+    {c : ℝ} (hac : a ≤ c) (hcs : c < s) (T : ℝ) {u v : ℝ} (huv : u < v)
+    (hclock : ∀ r ∈ Icc u v, T - r ^ 2 ∈ Icc c s)
+    (hregular : ∀ r ∈ Ioo u v, T - r ^ 2 ∈ Ioo c s)
+    (x y : W) (α₀ : ℝ → W) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α₀)
+    (hstart : α₀ u = x) (hend : α₀ v = y)
+    (Q : Set W) (hQ : IsCompact Q)
+    (hconf : ∀ α : ℝ → W, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α → α u = x → α v = y →
+      lRegularizedAction (L.closedSolution W hcs.le) T α u v ≤
+        lRegularizedAction (L.closedSolution W hcs.le) T α₀ u v → MapsTo α (Icc u v) Q) :
+    ∃ η : ℝ → W, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η ∧ η u = x ∧ η v = y ∧
+      MapsTo η (Icc u v) Q ∧
+      ∀ δ : ℝ → W, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 δ → δ u = x → δ v = y →
+        lRegularizedAction (L.closedSolution W hcs.le) T η u v ≤
+          lRegularizedAction (L.closedSolution W hcs.le) T δ u v := by
+  let : SigmaCompactSpace G.terminalRegularOpen :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
+  let : SigmaCompactSpace W :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp (Geometry.isSigmaCompact_of_isOpen ThreeModel W.isOpen)
+  let : TopologicalSpace.MetrizableSpace W := Manifold.metrizableSpace ThreeModel W
+  exact exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivatives
+    (L.closedSolution W hcs.le) (L.closedSolution_isSolutionOn W hac hcs) T huv
+    (Icc c s) Subset.rfl hclock hregular
+    (L.closedSolution_chartGram_spatial_fderiv_continuousOn W hac hcs)
+    (L.closedSolution_scalarOnE_spatial_fderiv_continuousOn W hac hcs)
+    x y α₀ hα₀ hstart hend Q hQ hconf
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
