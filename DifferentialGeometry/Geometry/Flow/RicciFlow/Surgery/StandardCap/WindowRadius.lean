@@ -149,4 +149,132 @@ theorem window_edist_map_le_of_metric_upper
   exact window_edist_map_le_of_metric_upper_of_radius_le g (by linarith) hL
     Φ hΦ hinj hupper x y hx hy
 
+
+variable [T2Space M]
+
+theorem window_tip_ball_subset_image_closedBall_of_metric_lower
+    (g : SmoothRiemannianMetric I M) {D R L : ℝ} (hR : 0 < R) (hRD : R < D + 1)
+    (hL : 0 < L) (Φ : standardCapWindow D → M)
+    (hΦ : IsLocalDiffeomorph ThreeModel I ∞ Φ) (hinj : Injective Φ)
+    (p : standardCapWindow D) (hp : p.val = 0)
+    (hlower : ∀ x : standardCapWindow D, ‖x.val‖ ≤ R → ∀ v : TangentSpace ThreeModel x,
+      metric.inner x.val v v ≤ L ^ 2 *
+        g.inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v)) :
+    riemannianBallOf g (Φ p) (R / L) ⊆
+      Φ '' {x : standardCapWindow D | ‖x.val‖ ≤ R} := by
+  have hnorm (z : ThreeSpace) :
+      z ∈ riemannianClosedBallOf metric p.val R ↔ ‖z‖ ≤ R := by
+    change riemannianEDistOf metric p.val z ≤ ENNReal.ofReal R ↔ ‖z‖ ≤ R
+    rw [hp, edist_zero, ENNReal.ofReal_le_ofReal_iff hR.le]
+  have heq : riemannianClosedBallOf metric p.val R = Metric.closedBall 0 R := by
+    ext z
+    simpa only [Metric.mem_closedBall, dist_zero_right] using hnorm z
+  have hcpt : IsCompact (riemannianClosedBallOf metric p.val R) :=
+    heq ▸ isCompact_closedBall _ _
+  have hsource : riemannianClosedBallOf metric p.val R ⊆ standardCapWindow D := by
+    intro z hz
+    exact ((hnorm z).mp hz).trans_lt hRD
+  have hc := ball_subset_image_of_metric_lower_on_opens g metric
+    (standardCapWindow D) Φ hΦ hinj p hR hL hcpt hsource
+    (fun x hx => hlower x ((hnorm x.val).mp hx))
+  exact hc.trans (image_mono (fun x hx => (hnorm x.val).mp hx))
+
+theorem window_ball_subset_image_closedBall_of_metric_bounds
+    (g : SmoothRiemannianMetric I M) {D R L U d r : ℝ} (hR : 0 < R)
+    (hRD : R < D + 1) (hL : 0 < L) (hU : 0 < U) (hd : 0 ≤ d)
+    (Φ : standardCapWindow D → M) (hΦ : IsLocalDiffeomorph ThreeModel I ∞ Φ)
+    (hinj : Injective Φ)
+    (hlower : ∀ x : standardCapWindow D, ‖x.val‖ ≤ R → ∀ v : TangentSpace ThreeModel x,
+      metric.inner x.val v v ≤ L ^ 2 *
+        g.inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v))
+    (hupper : ∀ x : standardCapWindow D, ‖x.val‖ ≤ R → ∀ v : TangentSpace ThreeModel x,
+      g.inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v) ≤
+        U ^ 2 * metric.inner x.val v v)
+    (u : standardCapWindow D) (hu : ‖u.val‖ < R) (y : M)
+    (hnear : riemannianEDistOf g (Φ u) y ≤ ENNReal.ofReal d)
+    (hmargin : U * ‖u.val‖ + d + r ≤ R / L) :
+    riemannianBallOf g y r ⊆ Φ '' {x : standardCapWindow D | ‖x.val‖ ≤ R} := by
+  let p : standardCapWindow D := ⟨0, by
+    change ‖(0 : ThreeSpace)‖ < D + 1
+    simpa only [norm_zero] using hR.trans hRD⟩
+  have hp : p.val = (0 : ThreeSpace) := rfl
+  have htip := window_edist_map_le_of_metric_upper_of_radius_le g hRD.le hU
+    Φ hΦ hinj (fun x hx => hupper x hx.le) p u (by simpa only [hp, norm_zero] using hR) hu
+  simp only [hp, norm_zero, zero_add] at htip
+  have htipy : riemannianEDistOf g (Φ p) y ≤ ENNReal.ofReal (U * ‖u.val‖ + d) := by
+    apply (riemannianEDistOf_triangle g (Φ p) (Φ u) y).trans
+    rw [ENNReal.ofReal_add (mul_nonneg hU.le (norm_nonneg _)) hd]
+    exact add_le_add htip hnear
+  apply subset_trans ?_
+    (window_tip_ball_subset_image_closedBall_of_metric_lower g hR hRD hL Φ hΦ hinj p hp hlower)
+  intro z hz
+  have hr : 0 < r := ENNReal.ofReal_pos.mp (lt_of_le_of_lt (bot_le) hz)
+  change riemannianEDistOf g (Φ p) z < ENNReal.ofReal (R / L)
+  apply (riemannianEDistOf_triangle g (Φ p) y z).trans_lt
+  apply lt_of_lt_of_le (ENNReal.add_lt_add_of_le_of_lt (ne_top_of_le_ne_top ENNReal.ofReal_ne_top htipy) htipy hz)
+  rw [← ENNReal.ofReal_add (add_nonneg (mul_nonneg hU.le (norm_nonneg _)) hd) hr.le]
+  exact ENNReal.ofReal_le_ofReal hmargin
+
+
+theorem window_exists_preimage_and_ball_subset_image_of_scaled_metric_bounds
+    (g : SmoothRiemannianMetric I M) {D R₀ R₁ R₂ L U q Q C d r : ℝ}
+    (hR₁ : 0 < R₁) (hR₁₂ : R₁ ≤ R₂) (hR₂D : R₂ < D + 1)
+    (hL : 0 < L) (hU : 0 < U) (hq : 0 < q) (hQ : 0 < Q) (hC : 0 < C)
+    (hscale : q ≤ C * Q) (hd : 0 ≤ d) (hr : 0 ≤ r)
+    (Φ : standardCapWindow D → M) (hΦ : IsLocalDiffeomorph ThreeModel I ∞ Φ)
+    (hinj : Injective Φ)
+    (hlower : ∀ x : standardCapWindow D, ‖x.val‖ ≤ R₂ → ∀ v : TangentSpace ThreeModel x,
+      metric.inner x.val v v ≤ L ^ 2 *
+        (scaleMetric q hq g).inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v))
+    (hupper : ∀ x : standardCapWindow D, ‖x.val‖ ≤ R₂ → ∀ v : TangentSpace ThreeModel x,
+      (scaleMetric q hq g).inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v) ≤
+        U ^ 2 * metric.inner x.val v v)
+    (u : standardCapWindow D) (hu : ‖u.val‖ ≤ R₀) (huR : R₀ < R₁) (y : M)
+    (hnear : riemannianEDistOf g (Φ u) y ≤ ENNReal.ofReal (d / Real.sqrt Q))
+    (hinner : U * R₀ + d * Real.sqrt C < R₁ / L)
+    (houter : U * R₀ + (d + r) * Real.sqrt C ≤ R₂ / L) :
+    (∃ x : standardCapWindow D, ‖x.val‖ ≤ R₁ ∧ Φ x = y) ∧
+      riemannianBallOf g y (r / Real.sqrt Q) ⊆
+        Φ '' {x : standardCapWindow D | ‖x.val‖ ≤ R₂} := by
+  have hratio : Real.sqrt q / Real.sqrt Q ≤ Real.sqrt C := by
+    apply (div_le_iff₀ (Real.sqrt_pos.mpr hQ)).mpr
+    calc
+      Real.sqrt q ≤ Real.sqrt (C * Q) := Real.sqrt_le_sqrt hscale
+      _ = Real.sqrt C * Real.sqrt Q := Real.sqrt_mul hC.le Q
+  have hlength (a : ℝ) (ha : 0 ≤ a) :
+      Real.sqrt q * (a / Real.sqrt Q) ≤ a * Real.sqrt C := by
+    calc
+      Real.sqrt q * (a / Real.sqrt Q) = a * (Real.sqrt q / Real.sqrt Q) := by ring
+      _ ≤ a * Real.sqrt C := mul_le_mul_of_nonneg_left hratio ha
+  have hnearq : riemannianEDistOf (scaleMetric q hq g) (Φ u) y ≤
+      ENNReal.ofReal (d * Real.sqrt C) := by
+    rw [edistOf_scale]
+    apply (mul_le_mul (le_refl (ENNReal.ofReal (Real.sqrt q))) hnear bot_le bot_le).trans
+    rw [← ENNReal.ofReal_mul (Real.sqrt_nonneg q)]
+    exact ENNReal.ofReal_le_ofReal (hlength d hd)
+  have hinner' : U * ‖u.val‖ + d * Real.sqrt C < R₁ / L :=
+    (add_le_add (mul_le_mul_of_nonneg_left hu hU.le) le_rfl).trans_lt hinner
+  let e := (R₁ / L - (U * ‖u.val‖ + d * Real.sqrt C)) / 2
+  have he : 0 < e := half_pos (sub_pos.mpr hinner')
+  have hsmall := window_ball_subset_image_closedBall_of_metric_bounds
+    (scaleMetric q hq g) hR₁ (hR₁₂.trans_lt hR₂D) hL hU
+    (mul_nonneg hd (Real.sqrt_nonneg C)) Φ hΦ hinj
+    (fun x hx => hlower x (hx.trans hR₁₂)) (fun x hx => hupper x (hx.trans hR₁₂))
+    u (hu.trans_lt huR) y hnearq (r := e) (by dsimp only [e]; linarith)
+  have hyy : y ∈ riemannianBallOf (scaleMetric q hq g) y e := by
+    change riemannianEDistOf (scaleMetric q hq g) y y < ENNReal.ofReal e
+    rw [riemannianEDistOf_self]
+    exact ENNReal.ofReal_pos.mpr he
+  obtain ⟨x, hx, hxy⟩ := hsmall hyy
+  refine ⟨⟨x, hx, hxy⟩, ?_⟩
+  have hlarge := window_ball_subset_image_closedBall_of_metric_bounds
+    (scaleMetric q hq g) (hR₁.trans_le hR₁₂) hR₂D hL hU
+    (mul_nonneg hd (Real.sqrt_nonneg C)) Φ hΦ hinj hlower hupper
+    u ((hu.trans_lt huR).trans_le hR₁₂) y hnearq (r := r * Real.sqrt C) (by
+      have hh := mul_le_mul_of_nonneg_left hu hU.le
+      nlinarith)
+  apply subset_trans ?_ hlarge
+  rw [← riemannianBallOf_scaleMetric q hq g y (r / Real.sqrt Q)]
+  exact riemannianBallOf_mono _ _ (hlength r hr)
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

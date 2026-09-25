@@ -391,4 +391,32 @@ theorem exists_standard_scalar_lower_bound_at_nonregular_point :
   · have hhalf : (1 : ℝ) / 2 ≤ 1 - t := by linarith
     exact (min_le_left _ _).trans (hhalf.trans (by nlinarith [ht.2]))
 
+theorem exists_standard_scalar_bound_on_ball_of_scalar_le
+    {tau : ℝ} (htau : 0 < tau) (A : ℝ) :
+    ∃ r B : ℝ, 0 < r ∧ 0 < B ∧ ∀ (S : PartialStandardSolution) (t : ℝ),
+      t ∈ S.domain → tau ≤ t → t < 1 → ∀ x : E3,
+        metricScalarAt (S.metric t) x ≤ A →
+        ∀ y ∈ riemannianClosedBallOf (S.metric t) x r,
+          metricScalarAt (S.metric t) y ≤ B := by
+  obtain ⟨C, hC, hgradient⟩ := standard_high_scalar_gradient_bound
+  obtain ⟨Q₀, hQ₀, hgradient⟩ := hgradient tau htau
+  let Q := max Q₀ A + 1
+  have hQ : 0 < Q := hQ₀.trans_le ((le_max_left _ _).trans (le_add_of_nonneg_right zero_le_one))
+  have hQ₀Q : Q₀ ≤ Q := (le_max_left _ _).trans (le_add_of_nonneg_right zero_le_one)
+  have hAQ : A ≤ Q := (le_max_right _ _).trans (le_add_of_nonneg_right zero_le_one)
+  let r := localPropagationRadius C / Real.sqrt Q
+  have hr : 0 < r := div_pos (localPropagationRadius_pos hC.le) (Real.sqrt_pos.mpr hQ)
+  refine ⟨r, 3 * Q, hr, by positivity, ?_⟩
+  intro S t ht htaut ht1 x hx y hy
+  apply scalar_le_on_ball_of_gradient_bound S.toSolutionOn hC.le hQ
+  · intro z hz v
+    change 2 * Q ≤ metricScalarAt (S.metric t) z at hz
+    change |scalarDifferential S.toSolutionOn t z v| ≤
+      2 * C * (metricScalarAt (S.metric t) z * Real.sqrt (metricScalarAt (S.metric t) z)) *
+        Real.sqrt ((S.metric t).inner z v v)
+    have hb := hgradient S z t ht htaut ht1 (hQ₀Q.trans (by linarith)) v
+    simpa only [mul_assoc] using hb
+  · exact hx.trans hAQ
+  · exact hy
+
 end DifferentialGeometry.PDE.RicciFlow

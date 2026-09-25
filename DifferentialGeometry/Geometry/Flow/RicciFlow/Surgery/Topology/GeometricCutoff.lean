@@ -581,3 +581,73 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount}
   apply congrParameters_order
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+
+private theorem exists_small_cutoff_precision
+    (c ρ K : ℝ) (hc : 0 < c) (hρ : 0 < ρ) (hK : 0 < K) :
+    ∃ δ : ℝ, 0 < δ ∧ c * δ ≤ 1 / 2 ∧ 2 * K * (δ ^ 2 * ρ) ^ 2 < 1 := by
+  let B := max 1 (2 * K * ρ ^ 2)
+  have hB : 0 < B := zero_lt_one.trans_le (le_max_left _ _)
+  let δ := min (1 / (2 * c)) (min (1 / 2) (1 / (2 * B)))
+  have hδ : 0 < δ := by dsimp [δ]; positivity
+  have hδc : δ ≤ 1 / (2 * c) := min_le_left _ _
+  have hδhalf : δ ≤ 1 / 2 := (min_le_right _ _).trans (min_le_left _ _)
+  have hδB : δ ≤ 1 / (2 * B) := (min_le_right _ _).trans (min_le_right _ _)
+  have hcδ : c * δ ≤ 1 / 2 := by
+    have hh := (le_div_iff₀ (by positivity : 0 < 2 * c)).mp hδc
+    linarith only [hh]
+  have hBδ : B * δ ≤ 1 / 2 := by
+    have hh := (le_div_iff₀ (by positivity : 0 < 2 * B)).mp hδB
+    linarith only [hh]
+  have hδ2 : δ ^ 2 ≤ δ := by nlinarith only [hδ.le, hδhalf]
+  have hδ4 : δ ^ 4 ≤ δ := by
+    have hh := mul_le_mul hδ2 hδ2 (sq_nonneg δ) hδ.le
+    nlinarith only [hh, hδ2]
+  have hk : 2 * K * ρ ^ 2 ≤ B := le_max_right _ _
+  have hb := mul_le_mul_of_nonneg_left hδ4 (show 0 ≤ 2 * K * ρ ^ 2 by positivity)
+  have hh := mul_le_mul_of_nonneg_right hk hδ.le
+  refine ⟨δ, hδ, hcδ, ?_⟩
+  nlinarith only [hb, hh, hBδ]
+
+theorem exists_uniform_static_cap_scale_lower_bound
+    (c ρ K : ℝ) (hc : 0 < c) (hρ : 0 < ρ) (hK : 0 < K) :
+    ∃ δ₀ : ℝ, 0 < δ₀ ∧
+      ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount) (p : CutoffParameters),
+        p.recenterConstant ≤ c → p.delta (H.time i.succ) ≤ δ₀ →
+        p.neckRadius (H.time i.succ) ≤ ρ →
+        ∀ R : GeometricCutoffRecord H i p,
+          ∀ b : (H.event i).RetainedBoundaryIndex, K < (R.static b).neck.scale := by
+  obtain ⟨δ₀, hδ₀, hcδ, hsmall⟩ := exists_small_cutoff_precision c ρ K hc hρ hK
+  refine ⟨δ₀, hδ₀, ?_⟩
+  intro H i p hpc hδ hρp R b
+  have htime : 0 ≤ H.time i.succ := by
+    rw [← H.time_zero]
+    exact H.time_strictMono.monotone (Fin.zero_le _)
+  have hpδ : 0 < p.delta (H.time i.succ) := p.delta_pos _ htime
+  have hpr : 0 < p.neckRadius (H.time i.succ) := p.neckRadius_pos _ htime
+  have hδsq : (p.delta (H.time i.succ)) ^ 2 ≤ δ₀ ^ 2 :=
+    pow_le_pow_left₀ hpδ.le hδ 2
+  have hradius : R.nominalRadius ⟨b.val.1⟩ < δ₀ ^ 2 * ρ :=
+    (R.nominal_small ⟨b.val.1⟩).trans_le
+      (mul_le_mul hδsq hρp hpr.le (sq_nonneg δ₀))
+  have hnom := R.nominal_pos ⟨b.val.1⟩
+  have hnom2 : (R.nominalRadius ⟨b.val.1⟩) ^ 2 ≤ (δ₀ ^ 2 * ρ) ^ 2 :=
+    pow_le_pow_left₀ hnom.le hradius.le 2
+  have hbudget : 2 * K * (R.nominalRadius ⟨b.val.1⟩) ^ 2 < 1 :=
+    (mul_le_mul_of_nonneg_left hnom2 (by positivity : 0 ≤ 2 * K)).trans_lt hsmall
+  have hscale : 2 * K < (R.neck b.val.1).scale := by
+    rw [R.scale_eq, inv_eq_one_div]
+    exact (lt_div_iff₀ (sq_pos_of_pos hnom)).mpr hbudget
+  have herror : p.recenterConstant * R.delta b.val.1 ≤ 1 / 2 := by
+    have hprec : R.delta b.val.1 ≤ δ₀ := (R.delta_le _).trans hδ
+    have hprod := mul_le_mul hpc hprec (R.delta_pos _).le hc.le
+    exact hprod.trans hcδ
+  have hcomp := (abs_le.mp (R.recenter_scale_comparison b)).1
+  have hratio : 1 / 2 ≤ (R.static b).neck.scale / (R.neck b.val.1).scale := by
+    linarith only [hcomp, herror]
+  have hlow := (le_div_iff₀ (R.neck b.val.1).scale_pos).mp hratio
+  linarith only [hscale, hlow]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
