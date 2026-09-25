@@ -76,6 +76,83 @@ theorem abs_metricRm04StandardAt_sub_le_of_riemannOp_sub_le
       rw [Real.sq_sqrt (metric_inner_self_nonneg G x u),
         Real.sq_sqrt (metric_inner_self_nonneg G x v)]
 
+theorem metricRm04StandardAt_lower_bound_on_range_of_riemannOp_sub_le
+    {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (g G : SmoothRiemannianMetric I M) (x : M)
+    (e : V →ₗ[ℝ] TangentSpace I x) (he : Function.Injective e) {delta R K c c' L : ℝ}
+    (hdelta : 0 ≤ delta) (hc' : 0 ≤ c') (hL : 0 ≤ L)
+    (hmetric : ∀ u v : TangentSpace I x,
+      |g.inner x u v - G.inner x u v| ≤
+        delta * Real.sqrt (G.inner x u u) * Real.sqrt (G.inner x v v))
+    (hdiff : ∀ u v w : TangentSpace I x,
+      let d := riemannOp (LeviCivita g) x u v w - riemannOp (LeviCivita G) x u v w
+      Real.sqrt (G.inner x d d) ≤
+        R * Real.sqrt (G.inner x u u) * Real.sqrt (G.inner x v v) *
+          Real.sqrt (G.inner x w w))
+    (hmodel : ∀ u v w : TangentSpace I x,
+      let r := riemannOp (LeviCivita G) x u v w
+      Real.sqrt (G.inner x r r) ≤
+        K * Real.sqrt (G.inner x u u) * Real.sqrt (G.inner x v v) *
+          Real.sqrt (G.inner x w w))
+    (hupper : ∀ u : TangentSpace I x, g.inner x u u ≤ L * G.inner x u u)
+    (hlower : ∀ u v : V,
+      c * (G.inner x (e u) (e u) * G.inner x (e v) (e v) - (G.inner x (e u) (e v)) ^ 2) ≤
+        metricRm04StandardAt G x (e u) (e v) (e v) (e u))
+    (hsmall : ((1 + delta) * R + delta * K) + c' * L ^ 2 ≤ c) :
+    ∀ u v : V,
+      c' * (g.inner x (e u) (e u) * g.inner x (e v) (e v) - (g.inner x (e u) (e v)) ^ 2) ≤
+        metricRm04StandardAt g x (e u) (e v) (e v) (e u) := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  let : IsManifold I 2 M := IsManifold.of_le (n := ∞) (by decide)
+  let : IsManifold I 3 M := IsManifold.of_le (n := ∞) (by decide)
+  have hA : IsAlgCurvForm (fun u v w z : TangentSpace I x =>
+      metricRm04StandardAt g x u v w z) :=
+    mem_algebraicCurvatureTensorSubmodule.mp
+      (metricRm04At_mem_algebraicCurvatureTensorSubmodule g x)
+  have hAe : IsAlgCurvForm (fun u v w z : V =>
+      metricRm04StandardAt g x (e u) (e v) (e w) (e z)) := by
+    refine ⟨?_, ?_, ?_, ?_, ?_⟩
+    · intros; simp only [map_add]; exact hA.add_left _ _ _ _ _
+    · intros; simp only [map_smul]; exact hA.smul_left _ _ _ _ _
+    · intros; exact hA.anti_first _ _ _ _
+    · intros; exact hA.anti_last _ _ _ _
+    · intros; exact hA.bianchi _ _ _ _
+  let G' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ :=
+    { toFun := fun u => (G.inner x (e u)).toLinearMap.comp e
+      map_add' := by intros; ext; simp
+      map_smul' := by intros; ext; simp }
+  let g' : V →ₗ[ℝ] V →ₗ[ℝ] ℝ :=
+    { toFun := fun u => (g.inner x (e u)).toLinearMap.comp e
+      map_add' := by intros; ext; simp
+      map_smul' := by intros; ext; simp }
+  apply hAe.sectional_lower_bound_of_orthogonal G' g'
+    (fun u hu => G.pos x (e u) (fun hz => hu (he (by simpa only [map_zero] using hz))))
+    (fun u v => g.symm x (e u) (e v))
+  intro u v huv
+  change G.inner x (e u) (e v) = 0 at huv
+  have hlow := hlower u v
+  rw [huv, sq, mul_zero, sub_zero] at hlow
+  have herr := abs_metricRm04StandardAt_sub_le_of_riemannOp_sub_le
+    g G x hdelta hmetric hdiff hmodel (e u) (e v)
+  have hgram : g.inner x (e u) (e u) * g.inner x (e v) (e v) - (g.inner x (e u) (e v)) ^ 2 ≤
+      L ^ 2 * (G.inner x (e u) (e u) * G.inner x (e v) (e v)) := by
+    have hh := mul_le_mul (hupper (e u)) (hupper (e v)) (metric_inner_self_nonneg g x (e v))
+      (mul_nonneg hL (metric_inner_self_nonneg G x (e u)))
+    calc
+      _ ≤ g.inner x (e u) (e u) * g.inner x (e v) (e v) := sub_le_self _ (sq_nonneg _)
+      _ ≤ (L * G.inner x (e u) (e u)) * (L * G.inner x (e v) (e v)) := hh
+      _ = _ := by ring
+  have hsmall' := mul_le_mul_of_nonneg_right hsmall
+    (mul_nonneg (metric_inner_self_nonneg G x (e u)) (metric_inner_self_nonneg G x (e v)))
+  have herr' := (abs_le.mp herr).1
+  change c' * (g.inner x (e u) (e u) * g.inner x (e v) (e v) - (g.inner x (e u) (e v)) ^ 2) ≤ _
+  calc
+    _ ≤ c' * (L ^ 2 * (G.inner x (e u) (e u) * G.inner x (e v) (e v))) :=
+      mul_le_mul_of_nonneg_left hgram hc'
+    _ ≤ metricRm04StandardAt g x (e u) (e v) (e v) (e u) := by nlinarith
+
+
 theorem metricRm04StandardAt_lower_bound_of_riemannOp_sub_le
     (g G : SmoothRiemannianMetric I M) (x : M) {delta R K c c' L : ℝ}
     (hdelta : 0 ≤ delta) (hc' : 0 ≤ c') (hL : 0 ≤ L)
@@ -100,45 +177,47 @@ theorem metricRm04StandardAt_lower_bound_of_riemannOp_sub_le
     ∀ u v : TangentSpace I x,
       c' * (g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2) ≤
         metricRm04StandardAt g x u v v u := by
-  let : CompleteSpace E := FiniteDimensional.complete ℝ E
-  let : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
-  let : IsManifold I 2 M := IsManifold.of_le (n := ∞) (by decide)
-  let : IsManifold I 3 M := IsManifold.of_le (n := ∞) (by decide)
-  have hA : IsAlgCurvForm (fun u v w z : TangentSpace I x =>
-      metricRm04StandardAt g x u v w z) :=
-    mem_algebraicCurvatureTensorSubmodule.mp
-      (metricRm04At_mem_algebraicCurvatureTensorSubmodule g x)
-  let G' : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ :=
-    { toFun := fun u => (G.inner x u).toLinearMap
-      map_add' := by intros; ext; simp
-      map_smul' := by intros; ext; simp }
-  let g' : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ :=
-    { toFun := fun u => (g.inner x u).toLinearMap
-      map_add' := by intros; ext; simp
-      map_smul' := by intros; ext; simp }
-  apply hA.sectional_lower_bound_of_orthogonal G' g' (G.pos x) (g.symm x)
-  intro u v huv
-  change G.inner x u v = 0 at huv
-  have hlow := hlower u v
-  rw [huv, sq, mul_zero, sub_zero] at hlow
-  have herr := abs_metricRm04StandardAt_sub_le_of_riemannOp_sub_le
-    g G x hdelta hmetric hdiff hmodel u v
-  have hgram : g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2 ≤
-      L ^ 2 * (G.inner x u u * G.inner x v v) := by
-    have hh := mul_le_mul (hupper u) (hupper v) (metric_inner_self_nonneg g x v)
-      (mul_nonneg hL (metric_inner_self_nonneg G x u))
-    calc
-      _ ≤ g.inner x u u * g.inner x v v := sub_le_self _ (sq_nonneg _)
-      _ ≤ (L * G.inner x u u) * (L * G.inner x v v) := hh
-      _ = _ := by ring
-  have hsmall' := mul_le_mul_of_nonneg_right hsmall
-    (mul_nonneg (metric_inner_self_nonneg G x u) (metric_inner_self_nonneg G x v))
-  have herr' := (abs_le.mp herr).1
-  change c' * (g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2) ≤ _
-  calc
-    _ ≤ c' * (L ^ 2 * (G.inner x u u * G.inner x v v)) :=
-      mul_le_mul_of_nonneg_left hgram hc'
-    _ ≤ metricRm04StandardAt g x u v v u := by nlinarith
+  exact metricRm04StandardAt_lower_bound_on_range_of_riemannOp_sub_le g G x
+    (LinearMap.id : TangentSpace I x →ₗ[ℝ] TangentSpace I x) Function.injective_id
+    hdelta hc' hL hmetric hdiff hmodel hupper hlower hsmall
+
+theorem metricRm04StandardAt_lower_bound_on_range_of_small_metric_derivatives
+    {V : Type*} [AddCommGroup V] [Module ℝ V]
+    (g G : SmoothRiemannianMetric I M) (x : M)
+    (e : V →ₗ[ℝ] TangentSpace I x) (he : Function.Injective e) {ε K c c' : ℝ}
+    (hε : ε ≤ 1 / 2) (hc' : 0 ≤ c')
+    (hsmall : ∀ k : ℕ, k ≤ 2 → metricDerivNorm k g G G x ≤ ε)
+    (hmodel : ∀ u v w : TangentSpace I x,
+      let r := riemannOp (LeviCivita G) x u v w
+      Real.sqrt (G.inner x r r) ≤
+        K * Real.sqrt (G.inner x u u) * Real.sqrt (G.inner x v v) *
+          Real.sqrt (G.inner x w w))
+    (hlower : ∀ u v : V,
+      c * (G.inner x (e u) (e u) * G.inner x (e v) (e v) - (G.inner x (e u) (e v)) ^ 2) ≤
+        metricRm04StandardAt G x (e u) (e v) (e v) (e u))
+    (hbudget : ε * (360 + K) + 4 * c' ≤ c) :
+    ∀ u v : V,
+      c' * (g.inner x (e u) (e u) * g.inner x (e v) (e v) - (g.inner x (e u) (e v)) ^ 2) ≤
+        metricRm04StandardAt g x (e u) (e v) (e v) (e u) := by
+  have hε0 : 0 ≤ ε := (Real.sqrt_nonneg _).trans (hsmall 0 (by norm_num))
+  have hm (u v : TangentSpace I x) :
+      |g.inner x u v - G.inner x u v| ≤
+        ε * Real.sqrt (G.inner x u u) * Real.sqrt (G.inner x v v) :=
+    (metricDifference_abs_le g G G x u v).trans
+      (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_right (hsmall 0 (by norm_num)) (Real.sqrt_nonneg _))
+        (Real.sqrt_nonneg _))
+  refine metricRm04StandardAt_lower_bound_on_range_of_riemannOp_sub_le g G x e he
+    hε0 hc' (show (0 : ℝ) ≤ 2 by norm_num) hm
+    (riemann_difference_bound_of_small_metric_derivatives g G x ε hε hsmall)
+    hmodel ?_ hlower ?_
+  · intro u
+    have h := hm u u
+    rw [mul_assoc, Real.mul_self_sqrt (metric_inner_self_nonneg G x u)] at h
+    have hnonneg := metric_inner_self_nonneg G x u
+    nlinarith [(abs_le.mp h).2]
+  · nlinarith [mul_nonneg hε0 (show 0 ≤ 1 / 2 - ε by linarith)]
+
 
 end
 

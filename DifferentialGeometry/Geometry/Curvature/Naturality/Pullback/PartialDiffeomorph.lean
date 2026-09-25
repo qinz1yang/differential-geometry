@@ -83,3 +83,60 @@ theorem curvatureOperatorLowerBoundAt_of_partialDiffeomorph_restriction
   simpa only [algebraicCurvatureIdentityQuadraticEval, hmet] using hb
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+
+open Manifold
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+variable {E F H H' M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace H']
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N] [T2Space N]
+
+theorem metricRm04StandardAt_eq_of_partialDiffeomorph_restriction
+    (Phi : PartialDiffeomorph I J M N ∞) (U : TopologicalSpace.Opens M)
+    (hU : (U : Set M) ⊆ Phi.source)
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (hmet : ∀ x : U, ∀ v w : TangentSpace I x,
+      g.inner x.val v w = h.inner (Phi x.val) (mfderiv I J (Phi : M → N) x.val v)
+        (mfderiv I J (Phi : M → N) x.val w))
+    (x : U) (a b c d : TangentSpace I x) :
+    metricRm04StandardAt g x.val a b c d =
+      metricRm04StandardAt h (Phi x.val) (mfderiv I J Phi x.val a)
+        (mfderiv I J Phi x.val b) (mfderiv I J Phi x.val c)
+        (mfderiv I J Phi x.val d) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : CompleteSpace F := FiniteDimensional.complete ℝ F
+  let _ : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  let _ : IsManifold J 1 N := IsManifold.of_le (n := ∞) (by decide)
+  let V : TopologicalSpace.Opens N := ⟨Phi '' (U : Set M), image_opens_isOpen Phi hU⟩
+  let Ψ := PartialDiffeomorph.toOpensDiffeo Phi hU
+  have hmetric : g.restrictOpen U = Diffeomorph.pullbackMetricCross (h.restrictOpen V) Ψ := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rw [Diffeomorph.pullbackMetricCross_inner, SmoothRiemannianMetric.restrictOpen_inner]
+    exact (hmet y v w).trans
+      (congrArg₂ (fun v' w' => h.inner (Phi y.val) v' w')
+        (PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU y v)
+        (PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU y w)).symm
+  have hr := metricRm04StandardAt_restrictOpen g U x a b c d
+  simp only [mfderiv_subtype_val_apply] at hr
+  rw [← hr, hmetric, metricRm04Standard_pullbackCross,
+    metricRm04StandardAt_restrictOpen]
+  simp only [mfderiv_subtype_val_apply]
+  change metricRm04StandardAt h (Phi x.val) (mfderiv I J Ψ x a)
+    (mfderiv I J Ψ x b) (mfderiv I J Ψ x c) (mfderiv I J Ψ x d) = _
+  rw [show mfderiv I J Ψ x a = mfderiv I J Phi x.val a from
+      PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x a,
+    show mfderiv I J Ψ x b = mfderiv I J Phi x.val b from
+      PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x b,
+    show mfderiv I J Ψ x c = mfderiv I J Phi x.val c from
+      PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x c,
+    show mfderiv I J Ψ x d = mfderiv I J Phi x.val d from
+      PartialDiffeomorph.mfderiv_toOpensDiffeo Phi hU x d]
+
+end DifferentialGeometry.Geometry.Curvature

@@ -96,15 +96,15 @@ theorem metricRm04_restricted_roundCylinder_horizontal_pos_of_small_metric_deriv
   exact metricRm04_horizontal_pos_of_small_metric_derivatives g G x hε hsmall
     (u, 0) (v, 0) hnormu hnormv hr
 
-private theorem metricRm04_lower_bound_of_round_curvature_pair
+private theorem metricRm04_lower_bound_of_curvature_pair
     {V H M : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V] [FiniteDimensional ℝ V]
     [TopologicalSpace H] {I : ModelWithCorners ℝ V H}
     [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
     [BoundarylessManifold I M]
-    (g G : SmoothRiemannianMetric I M) (x : M) {ε : ℝ} (hε : ε ≤ 1 / 1000)
+    (g G : SmoothRiemannianMetric I M) (x : M) {ε κ : ℝ} (hε : ε ≤ 1 / 1000) (hκ : 1 / 2 ≤ κ)
     (hsmall : ∀ m : ℕ, m ≤ 2 → metricDerivNorm m g G G x ≤ ε)
     (u v : TangentSpace I x)
-    (hr : riemannOp (LeviCivita G) x u v v = (G.inner x v v / 2) • u) :
+    (hr : riemannOp (LeviCivita G) x u v v = (κ * G.inner x v v) • u) :
     (1 / 16 : ℝ) * (g.inner x u u * g.inner x v v - (g.inner x u v) ^ 2) ≤
       metricRm04StandardAt g x u v v u := by
   have hε0 : 0 ≤ ε := (Real.sqrt_nonneg _).trans (hsmall 0 (by norm_num))
@@ -129,76 +129,83 @@ private theorem metricRm04_lower_bound_of_round_curvature_pair
       (mul_nonneg (by norm_num : (0 : ℝ) ≤ 5 / 4) hA)
     change g.inner x u u * g.inner x v v ≤ (5 / 4 : ℝ) * A * ((5 / 4 : ℝ) * B) at hp
     nlinarith [sq_nonneg (g.inner x u v)]
-  have hRm : metricRm04StandardAt G x u v v u = A * B / 2 := by
+  have hRm : metricRm04StandardAt G x u v v u = κ * (A * B) := by
     rw [metricRm04StandardAt_eq_inner_riemannOp, hr, map_smul, smul_eq_mul]
     dsimp only [A, B]
     ring
   have herr := abs_metricRm04_sub_le_of_small_metric_derivatives g G x
     (show ε ≤ 1 / 2 by linarith) hsmall u v v u
   rw [hRm, hr, Geometry.Riemannian.sqrt_inner_smul,
-    abs_of_nonneg (div_nonneg hB (by norm_num))] at herr
-  change |metricRm04StandardAt g x u v v u - A * B / 2| ≤
-    ε * (360 * Real.sqrt A * Real.sqrt B * Real.sqrt B + B / 2 * Real.sqrt A) * Real.sqrt A at herr
-  have he : ε * (360 * Real.sqrt A * Real.sqrt B * Real.sqrt B + B / 2 * Real.sqrt A) *
-      Real.sqrt A = (721 / 2 : ℝ) * ε * (A * B) := by
+    abs_of_nonneg (mul_nonneg (by linarith : 0 ≤ κ) hB)] at herr
+  change |metricRm04StandardAt g x u v v u - κ * (A * B)| ≤
+    ε * (360 * Real.sqrt A * Real.sqrt B * Real.sqrt B + κ * B * Real.sqrt A) * Real.sqrt A at herr
+  have he : ε * (360 * Real.sqrt A * Real.sqrt B * Real.sqrt B + κ * B * Real.sqrt A) *
+      Real.sqrt A = (360 + κ) * ε * (A * B) := by
     calc
       _ = ε * (360 * (Real.sqrt A * Real.sqrt A) * (Real.sqrt B * Real.sqrt B) +
-        B / 2 * (Real.sqrt A * Real.sqrt A)) := by ring
+        κ * B * (Real.sqrt A * Real.sqrt A)) := by ring
       _ = _ := by rw [hnormA, hnormB]; ring
   rw [he] at herr
-  have hepsmul := mul_le_mul_of_nonneg_right hε hAB
+  have hcoef : (1 / 8 : ℝ) ≤ κ - (360 + κ) * ε := by
+    have hm := mul_le_mul_of_nonneg_left hε (by linarith : 0 ≤ 360 + κ)
+    nlinarith
+  have hprod := mul_le_mul_of_nonneg_right hcoef hAB
   have hlo := (abs_le.mp herr).1
   nlinarith
 
-private theorem riemannOp_roundCylinder_horizontal_orthogonal
-    (x : Metric.sphere (0 : E) 1 × ℝ) (u v : TangentSpace (𝓡 n) x.1)
-    (huv : (Geometry.roundMetric (E := E) (n := n)).inner x.1 u v = 0) :
-    riemannOp (LeviCivita (roundCylinderMetric (E := E) (n := n))) x
-      (u, 0) (v, 0) (v, 0) =
-      ((roundCylinderMetric (E := E) (n := n)).inner x (v, 0) (v, 0) / 2) • (u, 0) := by
+
+private theorem riemannOp_scaled_roundCylinder_horizontal_orthogonal
+    (a : ℝ) (ha : 0 < a) (x : Metric.sphere (0 : E) 1 × ℝ)
+    (u v : TangentSpace (𝓡 n) x.1)
+    (huv : (roundMetric (E := E) (n := n)).inner x.1 u v = 0) :
+    let G := cylinderMetric (scaleMetric a ha (roundMetric (E := E) (n := n)))
+    riemannOp (LeviCivita G) x (u, 0) (v, 0) (v, 0) =
+      (a⁻¹ * G.inner x (v, 0) (v, 0)) • (u, 0) := by
   let _ : FiniteDimensional ℝ E := FiniteDimensional.of_fact_finrank_eq_succ n
   change EuclideanSpace ℝ (Fin n) at u v
-  have hinner : (roundCylinderMetric (E := E) (n := n)).inner x (v, 0) (v, 0) =
-      2 * (Geometry.roundMetric (E := E) (n := n)).inner x.1 v v := by
-    unfold roundCylinderMetric
+  dsimp only
+  have hinner :
+      (cylinderMetric (scaleMetric a ha (roundMetric (E := E) (n := n)))).inner x
+        (v, 0) (v, 0) = a * (roundMetric (E := E) (n := n)).inner x.1 v v := by
     erw [cylinderMetric_inner]
-    change 2 * (Geometry.roundMetric (E := E) (n := n)).inner x.1 v v + (0 : ℝ) * 0 = _
+    change a * (roundMetric (E := E) (n := n)).inner x.1 v v + (0 : ℝ) * 0 = _
     ring
   rw [hinner]
-  unfold roundCylinderMetric cylinderMetric
+  unfold cylinderMetric
   erw [riemannOp_productMetric, riemannOp_scaleMetric, round_riemann_one,
     riemannOp_line_eq_zero]
   rw [huv]
-  change ((Geometry.roundMetric (E := E) (n := n)).inner x.1 v v • u - (0 : ℝ) • v, (0 : ℝ)) =
-    (2 * (Geometry.roundMetric (E := E) (n := n)).inner x.1 v v / 2) • (u, 0)
-  simp only [zero_smul, sub_zero]
+  change ((roundMetric (E := E) (n := n)).inner x.1 v v • u - (0 : ℝ) • v, (0 : ℝ)) =
+    (a⁻¹ * (a * (roundMetric (E := E) (n := n)).inner x.1 v v)) • (u, 0)
+  simp only [zero_smul, sub_zero, inv_mul_cancel_left₀ (ne_of_gt ha)]
   apply Prod.ext
-  · change _ • u = (2 * _ / 2) • u
-    congr 1
-    ring
-  · change (0 : ℝ) = (2 * _ / 2) * 0
+  · rfl
+  · change (0 : ℝ) = _ * 0
     ring
 
-private theorem riemannOp_restricted_roundCylinder_horizontal_orthogonal
+private theorem riemannOp_restricted_scaled_roundCylinder_horizontal_orthogonal
+    (a : ℝ) (ha : 0 < a)
     (U : TopologicalSpace.Opens (Metric.sphere (0 : E) 1 × ℝ)) (x : U)
     (u v : TangentSpace (𝓡 n) x.val.1)
-    (huv : (Geometry.roundMetric (E := E) (n := n)).inner x.val.1 u v = 0) :
-    let G := (roundCylinderMetric (E := E) (n := n)).restrictOpen U
+    (huv : (roundMetric (E := E) (n := n)).inner x.val.1 u v = 0) :
+    let G := (cylinderMetric (scaleMetric a ha (roundMetric (E := E) (n := n)))).restrictOpen U
     riemannOp (LeviCivita G) x (u, 0) (v, 0) (v, 0) =
-      (G.inner x (v, 0) (v, 0) / 2) • (u, 0) := by
+      (a⁻¹ * G.inner x (v, 0) (v, 0)) • (u, 0) := by
   let _ : FiniteDimensional ℝ E := FiniteDimensional.of_fact_finrank_eq_succ n
-  have hrestrict := riemannOp_restrictOpen (roundCylinderMetric (E := E) (n := n)) U x
+  have hrestrict := riemannOp_restrictOpen
+    (cylinderMetric (scaleMetric a ha (roundMetric (E := E) (n := n)))) U x
     (u, 0) (v, 0) (v, 0)
   rw [mfderiv_subtype_val] at hrestrict
-  exact hrestrict.trans (riemannOp_roundCylinder_horizontal_orthogonal x.val u v huv)
+  exact hrestrict.trans (riemannOp_scaled_roundCylinder_horizontal_orthogonal a ha x.val u v huv)
 
-theorem metricRm04_restricted_roundCylinder_horizontal_lower_bound_of_small_metric_derivatives
+theorem metricRm04_restricted_scaled_roundCylinder_horizontal_lower_bound_of_small_metric_derivatives
+    (a : ℝ) (ha : 0 < a) (ha2 : a ≤ 2)
     (U : TopologicalSpace.Opens (Metric.sphere (0 : E) 1 × ℝ))
     (g : SmoothRiemannianMetric ((𝓡 n).prod 𝓘(ℝ)) U) (x : U)
     {ε : ℝ} (hε : ε ≤ 1 / 1000)
     (hsmall : ∀ m : ℕ, m ≤ 2 → metricDerivNorm m g
-      ((roundCylinderMetric (E := E) (n := n)).restrictOpen U)
-      ((roundCylinderMetric (E := E) (n := n)).restrictOpen U) x ≤ ε)
+      ((cylinderMetric (DifferentialGeometry.scaleMetric a ha (Geometry.roundMetric (E := E) (n := n)))).restrictOpen U)
+      ((cylinderMetric (DifferentialGeometry.scaleMetric a ha (Geometry.roundMetric (E := E) (n := n)))).restrictOpen U) x ≤ ε)
     (u v : TangentSpace (𝓡 n) x.val.1) :
     (1 / 16 : ℝ) * (g.inner x (u, 0) (u, 0) * g.inner x (v, 0) (v, 0) -
       (g.inner x (u, 0) (v, 0)) ^ 2) ≤
@@ -251,9 +258,26 @@ theorem metricRm04_restricted_roundCylinder_horizontal_lower_bound_of_small_metr
   apply hAlg.sectional_lower_bound_of_orthogonal G' g'
     (fun u hu => (Geometry.roundMetric (E := E) (n := n)).pos x.val.1 u hu)
     (fun u v => g.symm x (u, 0) (v, 0))
-  intro a b hab
-  exact metricRm04_lower_bound_of_round_curvature_pair g
-    ((roundCylinderMetric (E := E) (n := n)).restrictOpen U) x hε hsmall (a, 0) (b, 0)
-    (riemannOp_restricted_roundCylinder_horizontal_orthogonal U x a b hab)
+  intro v₀ w₀ hab
+  have hk : 1 / 2 ≤ a⁻¹ := by
+    simpa only [inv_eq_one_div] using inv_anti₀ ha ha2
+  exact metricRm04_lower_bound_of_curvature_pair g
+    ((cylinderMetric (DifferentialGeometry.scaleMetric a ha (Geometry.roundMetric (E := E) (n := n)))).restrictOpen U) x hε hk hsmall (v₀, 0) (w₀, 0)
+    (riemannOp_restricted_scaled_roundCylinder_horizontal_orthogonal a ha U x v₀ w₀ hab)
+
+
+theorem metricRm04_restricted_roundCylinder_horizontal_lower_bound_of_small_metric_derivatives
+    (U : TopologicalSpace.Opens (Metric.sphere (0 : E) 1 × ℝ))
+    (g : SmoothRiemannianMetric ((𝓡 n).prod 𝓘(ℝ)) U) (x : U)
+    {ε : ℝ} (hε : ε ≤ 1 / 1000)
+    (hsmall : ∀ m : ℕ, m ≤ 2 → metricDerivNorm m g
+      ((roundCylinderMetric (E := E) (n := n)).restrictOpen U)
+      ((roundCylinderMetric (E := E) (n := n)).restrictOpen U) x ≤ ε)
+    (u v : TangentSpace (𝓡 n) x.val.1) :
+    (1 / 16 : ℝ) * (g.inner x (u, 0) (u, 0) * g.inner x (v, 0) (v, 0) -
+      (g.inner x (u, 0) (v, 0)) ^ 2) ≤
+      metricRm04StandardAt g x (u, 0) (v, 0) (v, 0) (u, 0) := by
+  exact metricRm04_restricted_scaled_roundCylinder_horizontal_lower_bound_of_small_metric_derivatives
+    2 (by norm_num) le_rfl U g x hε hsmall u v
 
 end DifferentialGeometry.Geometry.Curvature
