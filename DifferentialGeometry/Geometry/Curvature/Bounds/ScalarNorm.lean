@@ -75,4 +75,28 @@ theorem metricScalarAt_eq_zero_of_finrank_eq_zero
   change |metricScalarAt (I := I) g x| ≤ (Module.finrank ℝ E : ℝ) ^ 2 * _ at h
   simpa only [hE, Nat.cast_zero, zero_pow (by decide : 2 ≠ 0), zero_mul, abs_nonpos_iff] using h
 
+omit [SigmaCompactSpace M] in
+theorem sq_mul_scalar_abs_le_of_rm_bound
+    (g : SmoothRiemannianMetric I M) (x : M) {r : ℝ}
+    (hbound : r ^ 4 * normSq0S g x 4 (metricRm04At g x) ≤ 1) :
+    r ^ 2 * |metricScalarAt g x| ≤ (Module.finrank ℝ E : ℝ) ^ 2 := by
+  have hsq : (r ^ 2 * Real.sqrt (normSq0S g x 4 (metricRm04At g x))) ^ 2 ≤ 1 := by
+    rw [mul_pow, ← pow_mul, Real.sq_sqrt (normSq0S_nonneg _ _ _ _)]
+    exact hbound
+  have hnorm : r ^ 2 * Real.sqrt (normSq0S g x 4 (metricRm04At g x)) ≤ 1 := by
+    nlinarith
+  have hscalar := scalar_abs_le_rm g x
+  change |metricScalarAt g x| ≤ (Module.finrank ℝ E : ℝ) ^ 2 * _ at hscalar
+  have hscaled := mul_le_mul_of_nonneg_right hscalar (sq_nonneg r)
+  have hdim := mul_le_mul_of_nonneg_left hnorm (sq_nonneg (Module.finrank ℝ E : ℝ))
+  nlinarith
+
+omit [SigmaCompactSpace M] in
+theorem scalar_abs_le_div_sq_of_rm_bound
+    (g : SmoothRiemannianMetric I M) (x : M) {r : ℝ} (hr : r ≠ 0)
+    (hbound : r ^ 4 * normSq0S g x 4 (metricRm04At g x) ≤ 1) :
+    |metricScalarAt g x| ≤ (Module.finrank ℝ E : ℝ) ^ 2 / r ^ 2 := by
+  apply (le_div_iff₀ (sq_pos_of_ne_zero hr)).mpr
+  simpa only [mul_comm] using sq_mul_scalar_abs_le_of_rm_bound g x hbound
+
 end DifferentialGeometry.Geometry.Curvature

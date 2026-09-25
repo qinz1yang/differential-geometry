@@ -364,7 +364,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 universe u
 variable (H : ObservedHistory.{u})
 
-theorem isParabolicallyRmControlledBall_of_incomingFootprint
+theorem isParabolicallyRmControlledBall_of_incomingFootprint_on_ball
     (a t : Icc (0 : ℝ) H.horizon) (hat : a ≤ t)
     (first : Fin (H.eventCount + 1)) (hle : first ≤ H.activeStage t)
     (hfirst : H.time first ≤ (a : ℝ))
@@ -390,6 +390,8 @@ theorem isParabolicallyRmControlledBall_of_incomingFootprint
         (H.backwardSurvivorIncomingFootprintMap first (H.activeStage t) hle G K z).val))
     (hbound : ∀ v ∈ Icc (a : ℝ) t,
       ∀ z : H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K,
+        (H.backwardSurvivorIncomingFootprintMap first (H.activeStage t) hle G K z).val ∈
+          riemannianBallOf (H.stageMetric (H.activeStage t) t) p r →
         r ^ 4 * normSq0S (gflow v) z 4 (metricRm04At (gflow v) z) ≤ 1) :
     H.isParabolicallyRmControlledBall t p r := by
   have hfa : first ≤ H.activeStage a := H.le_activeStage a first hfirst
@@ -404,7 +406,7 @@ theorem isParabolicallyRmControlledBall_of_incomingFootprint
   · intro v hav hvt
     have hfv : first ≤ H.activeStage v := hfa.trans (H.activeStage_mono hav)
     have hvl : H.activeStage v ≤ H.activeStage t := H.activeStage_mono hvt
-    have hb := hbound v ⟨hav, hvt⟩ z
+    have hb := hbound v ⟨hav, hvt⟩ z hx
     by_cases hsame : H.activeStage v = H.activeStage t
     · have hvlast : H.time (H.activeStage t) ≤ (v : ℝ) := by
         rw [← hsame]
@@ -434,7 +436,7 @@ theorem isParabolicallyRmControlledBall_of_incomingFootprint
   · intro j hf hl
     have hjf : first ≤ j.castSucc := hfa.trans hf
     have hjtime := (H.crossed_event_iff_mem_Ioc a t j).mp ⟨hf, hl⟩
-    have hb := hbound (H.time j.succ) ⟨hjtime.1.le, hjtime.2⟩ z
+    have hb := hbound (H.time j.succ) ⟨hjtime.1.le, hjtime.2⟩ z hx
     rw [hslabs j hjf hl _ ⟨(H.time_strictMono j.castSucc_lt_succ).le, le_rfl⟩,
       H.rmNormSq_incomingFootprint_slab, (H.event j).terminal.extendedMetric_terminal] at hb
     have he : H.backwardSurvivorTerminalMap first (H.activeStage t) hle j hjf hl z.val.val =
@@ -445,6 +447,95 @@ theorem isParabolicallyRmControlledBall_of_incomingFootprint
         (j.castSucc_lt_succ.le.trans hl) z.val.val A
     rw [he] at hb
     exact hb
+
+theorem isParabolicallyRmControlledBall_of_incomingFootprint
+    (a t : Icc (0 : ℝ) H.horizon) (hat : a ≤ t)
+    (first : Fin (H.eventCount + 1)) (hle : first ≤ H.activeStage t)
+    (hfirst : H.time first ≤ (a : ℝ))
+    (G : (H.stage (H.activeStage t)).IncomingSlab (H.time (H.activeStage t)) t)
+    (L : G.TerminalLimitMetric)
+    (K : Set G.terminalRegularOpen)
+    (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ H.activeStage t),
+      ∀ v ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        gflow v = ((H.backwardSurvivorSlabMetric first (H.activeStage t) hle j hf hl v).restrictOpen
+          (H.backwardSurvivorIncomingDomain first (H.activeStage t) hle G)).restrictOpen
+            (H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K))
+    (hlast : ∀ v ∈ Icc (H.time (H.activeStage t)) t,
+      gflow v = (H.backwardSurvivorIncomingMetric first (H.activeStage t) hle G L v).restrictOpen
+        (H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K))
+    (hmatch : ∀ v ∈ Icc (H.time (H.activeStage t)) t,
+      L.extendedMetric v = (H.stageMetric (H.activeStage t) v).restrictOpen G.terminalRegularOpen)
+    (p : (H.stageAt t).Carrier) {r : ℝ} (hr : 0 < r)
+    (ha : (a : ℝ) = (t : ℝ) - r ^ 2)
+    (hball : riemannianBallOf (H.stageMetric (H.activeStage t) t) p r ⊆
+      range (fun z : H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K =>
+        (H.backwardSurvivorIncomingFootprintMap first (H.activeStage t) hle G K z).val))
+    (hbound : ∀ v ∈ Icc (a : ℝ) t,
+      ∀ z : H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K,
+        r ^ 4 * normSq0S (gflow v) z 4 (metricRm04At (gflow v) z) ≤ 1) :
+    H.isParabolicallyRmControlledBall t p r := by
+  exact H.isParabolicallyRmControlledBall_of_incomingFootprint_on_ball a t hat first hle
+    hfirst G L K gflow hslabs hlast hmatch p hr ha hball (fun v hv z _ => hbound v hv z)
+
+private local instance (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s)
+    (K : Set G.terminalRegularOpen) :
+    SigmaCompactSpace (H.backwardSurvivorIncomingFootprint first last hle G K) := by
+  let : SigmaCompactSpace (H.backwardSurvivorDomain first last hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.backwardSurvivorDomain first last hle).isOpen)
+  let : SigmaCompactSpace (H.backwardSurvivorIncomingDomain first last hle G) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.backwardSurvivorIncomingDomain first last hle G).isOpen)
+  exact isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel
+      (H.backwardSurvivorIncomingFootprint first last hle G K).isOpen)
+
+theorem isParabolicallyRmControlledBall_of_incomingFootprint_flow_ball
+    (t : Icc (0 : ℝ) H.horizon) (first : Fin (H.eventCount + 1)) (hle : first ≤ H.activeStage t)
+    {c : ℝ} (hfirst : H.time first ≤ c) (hct : c ≤ (t : ℝ))
+    (G : (H.stage (H.activeStage t)).IncomingSlab (H.time (H.activeStage t)) t)
+    (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen)
+    (S : SolutionOn (I := ThreeModel)
+      (M := H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K)
+      (RealTimeInterval.closed c t hct))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ H.activeStage t),
+      ∀ v ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        S.base.metric v = ((H.backwardSurvivorSlabMetric first (H.activeStage t) hle j hf hl v).restrictOpen
+          (H.backwardSurvivorIncomingDomain first (H.activeStage t) hle G)).restrictOpen
+            (H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K))
+    (hlast : ∀ v ∈ Icc (H.time (H.activeStage t)) t,
+      S.base.metric v = (H.backwardSurvivorIncomingMetric first (H.activeStage t) hle G L v).restrictOpen
+        (H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K))
+    (hmatch : ∀ v ∈ Icc (H.time (H.activeStage t)) t,
+      L.extendedMetric v = (H.stageMetric (H.activeStage t) v).restrictOpen G.terminalRegularOpen)
+    (p : (H.stageAt t).Carrier)
+    (B : Perelman.FlowMetricBall S ⟨t, hct, le_rfl⟩)
+    (hB : B.IsParabolicallyRmControlled)
+    (himage : (fun z : H.backwardSurvivorIncomingFootprint first (H.activeStage t) hle G K =>
+        (H.backwardSurvivorIncomingFootprintMap first (H.activeStage t) hle G K z).val) '' B.set =
+      riemannianBallOf (H.stageMetric (H.activeStage t) t) p B.radius) :
+    H.isParabolicallyRmControlledBall t p B.radius := by
+  have hstart : c ≤ (t : ℝ) - B.radius ^ 2 :=
+    (hB.1 ⟨le_rfl, sub_le_self _ (sq_nonneg _)⟩).1
+  let a : Icc (0 : ℝ) H.horizon :=
+    ⟨(t : ℝ) - B.radius ^ 2, (H.time_nonneg first).trans (hfirst.trans hstart),
+      (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩
+  have hat : a ≤ t := show (t : ℝ) - B.radius ^ 2 ≤ t from sub_le_self _ (sq_nonneg _)
+  apply H.isParabolicallyRmControlledBall_of_incomingFootprint_on_ball a t hat first hle
+    (hfirst.trans hstart) G L K S.base.metric hslabs hlast hmatch p B.radius_pos rfl
+  · rw [← himage]
+    exact image_subset_range _ _
+  · intro v hv z hz
+    rw [← himage] at hz
+    obtain ⟨w, hw, hwe⟩ := hz
+    have hwz : w = z :=
+      H.backwardSurvivorIncomingFootprintMap_injective first (H.activeStage t) hle G K
+        (Subtype.ext hwe)
+    subst w
+    exact hB.2 v hv z hw
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
