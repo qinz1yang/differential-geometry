@@ -202,6 +202,17 @@ theorem SpatialNeck.scalar_bounds_on_image_window (nk : SpatialNeck g eps x)
   · apply (div_le_iff₀ nk.Q_pos).mp
     linarith
 
+variable {p : M}
+
+theorem SpatialNeck.not_mem_image_window_of_ricci_lower_bound
+    (nk : SpatialNeck g eps p) {x : M} {κ : ℝ}
+    (hRic : ∀ v : TangentSpace I3 x, κ * g.inner x v v ≤ ricciTensor g x v v)
+    (hκ : 5772 * metricScalarAt g p * eps < κ) :
+    x ∉ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) := by
+  rw [← nk.cylindricalChart_region_univ]
+  exact nk.cylindricalChart.not_mem_region_of_ricci_lower_bound g (nk.eps_small.le.trans (by norm_num))
+    nk.cylindricalChart_metricCloseOn hRic hκ
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
 end

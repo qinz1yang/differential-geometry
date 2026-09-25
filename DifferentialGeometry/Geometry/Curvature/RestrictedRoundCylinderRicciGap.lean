@@ -66,4 +66,32 @@ theorem ricciSharp_restricted_roundCylinder_normalized_axis_bound
   norm_num only [abs_of_pos (by norm_num : (0 : ℝ) < 1 / 2)] at h
   convert h using 1 <;> first | rfl | ring
 
+theorem exists_unit_ricciTensor_bound_of_small_metric_derivatives_on_restricted_roundCylinder
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+    [Fact (Module.finrank ℝ E = 2 + 1)]
+    (U : TopologicalSpace.Opens (Metric.sphere (0 : E) 1 × ℝ))
+    (g : SmoothRiemannianMetric ((𝓡 2).prod 𝓘(ℝ)) U)
+    (x : U) {ε : ℝ} (hε : ε ≤ 1 / 2)
+    (hsmall : ∀ k : ℕ, k ≤ 2 →
+      DifferentialGeometry.CheegerGromovCompactness.metricDerivNorm k g
+        ((Geometry.Metric.roundCylinderMetric (E := E) (n := 2)).restrictOpen U)
+        ((Geometry.Metric.roundCylinderMetric (E := E) (n := 2)).restrictOpen U) x ≤ ε) :
+    ∃ v : TangentSpace ((𝓡 2).prod 𝓘(ℝ)) x,
+      g.inner x v v = 1 ∧ |ricciTensor g x v v| ≤ 5772 * ε := by
+  let v : TangentSpace ((𝓡 2).prod 𝓘(ℝ)) x :=
+    (Real.sqrt (g.inner x (Geometry.Metric.restrictedCylinderAxis U x)
+      (Geometry.Metric.restrictedCylinderAxis U x)))⁻¹ • Geometry.Metric.restrictedCylinderAxis U x
+  obtain ⟨hunit, herror⟩ := ricciSharp_restricted_roundCylinder_normalized_axis_bound U g x ε hε hsmall
+  change g.inner x v v = 1 at hunit
+  have hnorm := herror v
+  change Real.sqrt (g.inner x
+    (ricciSharp g x v - (1 / 2 : ℝ) • (v - g.inner x v v • v))
+    (ricciSharp g x v - (1 / 2 : ℝ) • (v - g.inner x v v • v))) ≤
+    5772 * ε * Real.sqrt (g.inner x v v) at hnorm
+  rw [hunit, one_smul, sub_self, smul_zero, sub_zero, Real.sqrt_one, mul_one] at hnorm
+  have hupper := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+    g x (ricciSharp g x v) v
+  rw [inner_ricciSharp, hunit, Real.sqrt_one, mul_one] at hupper
+  exact ⟨v, hunit, hupper.trans hnorm⟩
+
 end DifferentialGeometry.Geometry.Curvature

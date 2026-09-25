@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardRicciTimeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.RicciTimeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMixedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.UniformMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.RicciFamilyRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardClosedReferenceBounds
@@ -26,85 +27,30 @@ theorem uniformStandardLifetime_ricci_lipschitz_closed
         |ricciTensor (S.val.metric s) x v w - ricciTensor (S.val.metric t) x v w| ≤
           L * Real.sqrt ((S.val.metric 0).inner x v v) *
             Real.sqrt ((S.val.metric 0).inner x w w) * |s - t| := by
-  obtain ⟨B, hB, hjet⟩ :=
-    uniformStandardLifetime_ordinary_ricci_time_bound_positive τ hτ.le hlt
+  obtain ⟨C, hC, hcurv⟩ := uniformStandardLifetime_mixed_bounds_closed τ hτ.le hlt 2
   obtain ⟨Λ, hΛ, hmet⟩ := uniformStandardLifetime_metricComparison τ hτ.le hlt
   have hΛ0 : 0 ≤ Λ := zero_le_one.trans hΛ
-  refine ⟨Λ * B, mul_nonneg hΛ0 hB, ?_⟩
+  refine ⟨Λ * ricciOrdinaryTimeBound 3 C,
+    mul_nonneg hΛ0 (ricciOrdinaryTimeBound_nonneg _ _ hC), ?_⟩
   intro S s hs t ht x v w
-  let f : ℝ → ℝ := fun r => ricciTensor (S.val.metric r) x v w
-  let f' : ℝ → ℝ := fun r =>
-    (derivWithin (fun z => metricRicciAt (S.val.metric z) x) S.val.domain r) (vec2 v w)
-  let A : ℝ := Λ * B * Real.sqrt ((S.val.metric 0).inner x v v) *
-    Real.sqrt ((S.val.metric 0).inner x w w)
-  have hA : 0 ≤ A := mul_nonneg (mul_nonneg (mul_nonneg hΛ0 hB)
-    (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _)
   have hslab : Icc 0 τ ⊆ S.val.domain := fun r hr => (hmet S r hr).1
-  have hcont : ContinuousOn f (Icc 0 τ) := by
-    have hh := S.val.ricci_contDiffOn.comp
-      (contDiffOn_id.prodMk (contDiffOn_const (c := x)))
-      (fun r hr => ⟨hr, mem_univ x⟩)
-    exact (((hh.clm_apply (contDiffOn_const (c := v))).clm_apply
-      (contDiffOn_const (c := w))).continuousOn).mono hslab
-  have hdiff (r : ℝ) (hr : r ∈ Ioo 0 τ) : HasDerivAt f (f' r) r := by
-    have hh := (tensor0SEvalCLM (I := 𝓡 3) (vec2 v w)).hasFDerivAt.comp_hasDerivWithinAt
-      (f := fun z => metricRicciAt (S.val.metric z) x) r
-      (hjet S r ⟨hr.1, hr.2.le⟩ x).1.hasDerivWithinAt
-    have hlife : ENNReal.ofReal τ < S.val.lifetime :=
-      hlt.trans_le (uniformStandardLifetime_le_lifetime S)
-    have hreg : r ∈ (lifetimeInterval S.val.lifetime S.val.lifetime_pos).regular :=
-      (mem_lifetimeInterval_regular S.val.lifetime S.val.lifetime_pos r).mpr
-        ⟨hr.1, (ENNReal.ofReal_le_ofReal hr.2.le).trans_lt hlife⟩
-    have hactual : HasDerivAt
-        (fun z => metricRicciAt (S.val.metric z) x (vec2 v w)) (f' r) r :=
-      hh.hasDerivAt ((lifetimeInterval S.val.lifetime S.val.lifetime_pos).regular_mem_nhds hreg)
-    exact hactual.congr_of_eventuallyEq (Filter.Eventually.of_forall
-      (fun z => (metricRicciAt_apply_eq_ricciTensor (S.val.metric z) x v w).symm))
-  have hbound (r : ℝ) (hr : r ∈ Ioo 0 τ) : |f' r| ≤ A := by
-    obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (S.val.metric r) x
-    have heval := abs_apply_le_sqrt_normSq0S (S.val.metric r) x 2 basis hON
-      (derivWithin (fun z => metricRicciAt (S.val.metric z) x) S.val.domain r) (vec2 v w)
-    have hpair : |f' r| ≤
-        Real.sqrt (normSq0S (S.val.metric r) x 2
-          (derivWithin (fun z => metricRicciAt (S.val.metric z) x) S.val.domain r)) *
-            Real.sqrt ((S.val.metric r).inner x v v) *
-              Real.sqrt ((S.val.metric r).inner x w w) := by
-      simpa [f', vec2, mul_assoc] using heval
-    have hsqrt (z : TangentSpace (𝓡 3) x) :
-        Real.sqrt ((S.val.metric r).inner x z z) ≤
-          Real.sqrt Λ * Real.sqrt ((S.val.metric 0).inner x z z) := by
-      have hz : (S.val.metric r).inner x z z ≤ Λ * (S.val.metric 0).inner x z z := by
-        simpa only [S.val.initial] using ((hmet S r ⟨hr.1.le, hr.2.le⟩).2 x z).2
-      exact (Real.sqrt_le_sqrt hz).trans_eq (Real.sqrt_mul hΛ0 _)
-    calc |f' r|
-        ≤ Real.sqrt (normSq0S (S.val.metric r) x 2
-          (derivWithin (fun z => metricRicciAt (S.val.metric z) x) S.val.domain r)) *
-            Real.sqrt ((S.val.metric r).inner x v v) *
-              Real.sqrt ((S.val.metric r).inner x w w) := hpair
-      _ ≤ B * (Real.sqrt Λ * Real.sqrt ((S.val.metric 0).inner x v v)) *
-          (Real.sqrt Λ * Real.sqrt ((S.val.metric 0).inner x w w)) := by
-        gcongr
-        · exact (hjet S r ⟨hr.1, hr.2.le⟩ x).2
-        · exact hsqrt v
-        · exact hsqrt w
-      _ = (Real.sqrt Λ * Real.sqrt Λ) * B *
-          Real.sqrt ((S.val.metric 0).inner x v v) *
-            Real.sqrt ((S.val.metric 0).inner x w w) := by ring
-      _ = A := by rw [Real.mul_self_sqrt hΛ0]
-  have hinterior : LipschitzOnWith ⟨A, hA⟩ f (Ioo 0 τ) := by
-    apply (convex_Ioo 0 τ).lipschitzOnWith_of_nnnorm_hasDerivWithin_le
-      (fun r hr => (hdiff r hr).hasDerivWithinAt)
+  have hregular : Ioo 0 τ ⊆ (lifetimeInterval S.val.lifetime S.val.lifetime_pos).regular := by
     intro r hr
-    change ‖f' r‖ ≤ A
-    rw [Real.norm_eq_abs]
-    exact hbound r hr
-  have hclosure : ContinuousOn f (closure (Ioo 0 τ)) := by
-    rwa [closure_Ioo hτ.ne]
-  have hfull := LipschitzOnWith.closure hclosure hinterior
-  rw [closure_Ioo hτ.ne] at hfull
-  have hh := hfull.dist_le_mul s hs t ht
-  change |f s - f t| ≤ A * |s - t| at hh
-  exact hh
+    apply (mem_lifetimeInterval_regular S.val.lifetime S.val.lifetime_pos r).mpr
+    exact ⟨hr.1, (ENNReal.ofReal_le_ofReal hr.2.le).trans_lt
+      (hlt.trans_le (uniformStandardLifetime_le_lifetime S))⟩
+  have hjet : ∀ r ∈ Ioo 0 τ, ∀ k ≤ 2,
+      Real.sqrt (nablaKRm04NormSqIntrinsic S.val.toSolutionOn k r x) ≤ C := by
+    intro r hr k hk
+    exact hcurv S k 0 (by omega) r (Ioo_subset_Icc_self hr) x
+  have hm : ∀ r ∈ Ioo 0 τ, ∀ v : TangentSpace (𝓡 3) x,
+      (S.val.metric r).inner x v v ≤ Λ * (S.val.metric 0).inner x v v := by
+    intro r hr z
+    simpa only [S.val.initial] using ((hmet S r (Ioo_subset_Icc_self hr)).2 x z).2
+  have hh := S.val.isSolutionOn.ricciTensor_lipschitz_of_curvature_derivative_bound
+    (S.val.metric 0) x hΛ0 hC hslab hregular hm hjet hs ht v w
+  simpa only [PartialStandardSolution.toSolutionOn_metric, finrank_euclideanSpace_fin] using hh
+
 
 section Maps
 

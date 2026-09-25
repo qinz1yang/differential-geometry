@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Algebra
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
 import Mathlib.Topology.MetricSpace.UniformConvergence
 
@@ -83,3 +85,63 @@ theorem tendstoUniformlyOn_inner_of_isCompact
     (hS.bddAbove_image ((hnorm v hv).sqrt.mul (hnorm w hw).sqrt)) hconv
 
 end DifferentialGeometry.SmoothRiemannianMetric
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+open Set Filter
+open scoped Manifold ContDiff Topology
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem MetricCPConvergenceOn.tendsto_inner
+    {G : ℕ → SmoothRiemannianMetric I M} {g R : SmoothRiemannianMetric I M}
+    {K : Set M} {p : ℕ} (hconv : MetricCPConvergenceOn K p G g R) (hK : IsCompact K)
+    {x : M} (hx : x ∈ K) (v w : TangentSpace I x) :
+    Tendsto (fun n => (G n).inner x v w) atTop (𝓝 (g.inner x v w)) := by
+  let B := Real.sqrt (R.inner x v v) * Real.sqrt (R.inner x w w)
+  have hB : 0 ≤ B := by dsimp [B]; positivity
+  apply Metric.tendsto_atTop.mpr
+  intro e he
+  obtain ⟨N, hN⟩ := hconv (e / (B + 1)) (by positivity)
+  refine ⟨N, fun n hn => ?_⟩
+  have hd := (derivNorm_le_sup hK (Nat.zero_le p) (G n) g R hx).trans_lt (hN n hn)
+  have hbound := metricDifference_abs_le (G n) g R x v w
+  rw [Real.dist_eq]
+  have hprod : metricDerivNorm 0 (G n) g R x * (B + 1) < e :=
+    (lt_div_iff₀ (by positivity : 0 < B + 1)).mp hd
+  have hnonneg : 0 ≤ metricDerivNorm 0 (G n) g R x := Real.sqrt_nonneg _
+  dsimp only [B] at hprod
+  nlinarith [hbound]
+
+variable {A : Type*} [PseudoMetricSpace A]
+
+theorem metricCPConvergenceOn_of_uniform_approximation_of_lipschitz
+    {G : ℕ → A → SmoothRiemannianMetric I M} {g : A → SmoothRiemannianMetric I M}
+    (R : SmoothRiemannianMetric I M) {K : Set M} (hK : IsCompact K)
+    {U : Set A} {p : ℕ} {L : ℝ} (hL : 0 ≤ L)
+    (hconv : ∀ ε : ℝ, 0 < ε → ∃ N : ℕ, ∀ i ≥ N, ∀ t ∈ U,
+      metricDerivNormSupOn K p (G i t) (g t) R < ε)
+    (hlip : ∀ s ∈ U, ∀ t ∈ U, ∀ q : ℕ, q ≤ p → ∀ x ∈ K,
+      metricDerivNorm q (g s) (g t) R x ≤ L * dist s t)
+    {t : ℕ → A} {a : A} (ht : ∀ᶠ i in atTop, t i ∈ U) (ha : a ∈ U)
+    (hlim : Tendsto t atTop (𝓝 a)) :
+    MetricCPConvergenceOn K p (fun i => G i (t i)) (g a) R := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  intro ε hε
+  obtain ⟨N, hN⟩ := hconv (ε / 3) (by positivity)
+  obtain ⟨N', hN'⟩ := Metric.tendsto_atTop.mp hlim (ε / (3 * (L + 1))) (by positivity)
+  obtain ⟨N'', hN''⟩ := eventually_atTop.mp ht
+  refine ⟨max N (max N' N''), fun i hi => ?_⟩
+  have hti := hN'' i ((le_max_right N' N'').trans ((le_max_right _ _).trans hi))
+  apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall K p _ _ R (2 * ε / 3)
+    (by positivity) ?_) (by linarith)
+  intro q hq x hx
+  have hsmall := (derivNorm_le_sup hK hq (G i (t i)) (g (t i)) R hx).trans_lt
+    (hN i ((le_max_left _ _).trans hi) (t i) hti)
+  have hdist := (lt_div_iff₀ (by positivity : 0 < 3 * (L + 1))).mp
+    (hN' i ((le_max_left N' N'').trans ((le_max_right _ _).trans hi)))
+  have htime := hlip (t i) hti a ha q hq x hx
+  have htri := metricDerivNorm_triangle q (G i (t i)) (g (t i)) (g a) R x
+  nlinarith [dist_nonneg (x := t i) (y := a)]
+
+end DifferentialGeometry.CheegerGromovCompactness

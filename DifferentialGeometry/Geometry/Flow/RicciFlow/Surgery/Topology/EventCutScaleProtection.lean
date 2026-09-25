@@ -533,4 +533,77 @@ theorem exists_cutoff_cap_protection_tolerance_of_scaled_subset
     rw [metricScalarAt_scaleMetric, ← div_eq_inv_mul] at h
     exact (le_div_iff₀ hq).mp h
 
+theorem exists_cutoff_separation_tolerance_of_ricci_lower_bound
+    {C D κ : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hκ : 0 < κ) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (K : Set (H.event i).incoming.terminalRegularOpen) (q : ℝ) (hq : 0 < q),
+        (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+        (∀ x ∈ K, ∀ y ∈ K,
+          riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤ ENNReal.ofReal D) →
+        ∀ z ∈ K, (∀ v : TangentSpace ThreeModel z,
+          κ * q * (H.event i).terminal.metric.inner z v v ≤
+            ricciTensor (H.event i).terminal.metric z v v) →
+        ∀ j, Disjoint (Subtype.val '' K)
+          ((H.event i).transition.trace.tubes.tube j ''
+            {w : TubeDomain | w.2.val ∈ Icc (-1 : ℝ) 1}) := by
+  obtain ⟨eta, heta, hsep⟩ := exists_neck_separation_tolerance_of_ricci_lower_bound hC hD hκ
+  refine ⟨min eta (1 / 12), lt_min heta (by norm_num), ?_⟩
+  intro H i parameters R hδ K q hq hscalar hdiam z hz hRic j
+  have hsmall : R.delta j < 1 / 11 :=
+    ((hδ j).trans (min_le_right _ _)).trans_lt (by norm_num)
+  have hk : ⌈(R.delta j)⁻¹⌉₊ ≤ R.order j := by
+    have hf := Nat.ceil_le_floor_add_one ((R.delta j)⁻¹)
+    have horder := (le_max_right (parameters.modelOrder + 6)
+      (2 * ⌊(R.delta j)⁻¹⌋₊ + 4)).trans (R.order_lower j)
+    omega
+  obtain ⟨cut, _, hmap⟩ := (R.neck j).exists_spatialNeck le_rfl hsmall hk
+  have hdis := hsep _ (H.event i).terminal.metric (R.delta j) (R.neck j).center
+    ((hδ j).trans (min_le_left _ _)) cut K q hq hscalar hdiam z hz hRic
+  apply Set.disjoint_left.mpr
+  rintro y ⟨x, hx, rfl⟩ ⟨w, hw, heq⟩
+  have hNx : (R.neck j).chart ⟨(w.1, w.2.val), R.tube_in_buffer j w⟩ = x :=
+    Subtype.ext ((R.tube_eq j w (R.tube_in_buffer j w)).symm.trans heq)
+  apply Set.disjoint_left.mp hdis hx
+  refine ⟨(w.1, w.2.val), ⟨mem_univ _, hw⟩, ?_⟩
+  exact (hmap ⟨(w.1, w.2.val), R.tube_in_buffer j w⟩).trans hNx
+
+theorem exists_cutoff_protection_tolerance_of_ricci_lower_bound
+    {C D κ : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hκ : 0 < κ) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (H.event i).old = (H.event i).transition.trace.retainedCore →
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (K : Set (H.event i).incoming.terminalRegularOpen), IsPreconnected K →
+        ∀ (q : ℝ) (hq : 0 < q),
+        (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+        (∀ x ∈ K, ∀ y ∈ K,
+          riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤ ENNReal.ofReal D) →
+        ∀ z ∈ K, (∀ v : TangentSpace ThreeModel z,
+          κ * q * (H.event i).terminal.metric.inner z v v ≤
+            ricciTensor (H.event i).terminal.metric z v v) →
+        ∀ x ∈ K, ∀ y : (H.stage i.succ).Carrier,
+          (H.event i).RegularCrossing x.val y →
+          ∀ w ∈ K, w.val ∈ interior (Subtype.val '' (H.event i).old) := by
+  obtain ⟨eta, heta, hsep⟩ := exists_cutoff_separation_tolerance_of_ricci_lower_bound hC hD hκ
+  refine ⟨eta, heta, ?_⟩
+  intro H i parameters R hOld hδ K hconn q hq hscalar hdiam z hz hRic x hx y hcross
+  have hdis := hsep H i parameters R hδ K q hq hscalar hdiam z hz hRic
+  apply (H.event i).subset_interior_old_of_isPreconnected hOld hconn _ hx hcross
+  intro w hw
+  let T := (H.event i).transition.trace.tubes
+  let bands := ⋃ j, T.tube j '' {a : TubeDomain | a.2.val ∈ Icc (-1 : ℝ) 1}
+  have hopen : IsOpen bandsᶜ := T.isCompact_iUnion_closedBand.isClosed.isOpen_compl
+  have hsub : bandsᶜ ⊆ T.core := by
+    intro a ha
+    change a ∉ ⋃ j, T.removedBand j
+    intro hm
+    obtain ⟨j, b, hb, heq⟩ := mem_iUnion.mp hm
+    exact ha (mem_iUnion.mpr ⟨j, b, ⟨hb.1.le, hb.2.le⟩, heq⟩)
+  apply interior_maximal hsub hopen
+  intro hm
+  obtain ⟨j, hj⟩ := mem_iUnion.mp hm
+  exact Set.disjoint_left.mp (hdis j) (mem_image_of_mem Subtype.val hw) hj
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

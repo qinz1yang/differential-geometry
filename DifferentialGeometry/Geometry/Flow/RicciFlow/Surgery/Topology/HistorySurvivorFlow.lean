@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.FiniteGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalClosedSolution
@@ -598,4 +599,71 @@ theorem exists_backwardSurvivorTerminal_isSolutionOn :
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
+end
+
+
+noncomputable section
+open Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) (first last₁ last₂ : Fin (H.eventCount + 1))
+  (h₁ : first ≤ last₁) (h₂ : first ≤ last₂)
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {Y : Type*} [TopologicalSpace Y] {I : ModelWithCorners ℝ E Y}
+  {X : Type*} [TopologicalSpace X] [T2Space X] [ChartedSpace Y X] [IsManifold I ∞ X]
+
+theorem localPullMetric_backwardSurvivorSlabMetric_eq_of_initial_eq
+    (F₁ : X → H.backwardSurvivorDomain first last₁ h₁)
+    (F₂ : X → H.backwardSurvivorDomain first last₂ h₂)
+    (hF₁ : IsLocalDiffeomorph I ThreeModel ∞ F₁)
+    (hF₂ : IsLocalDiffeomorph I ThreeModel ∞ F₂)
+    (hfirst : ∀ x, H.backwardSurvivorMap first last₁ h₁ first le_rfl h₁ (F₁ x) =
+      H.backwardSurvivorMap first last₂ h₂ first le_rfl h₂ (F₂ x))
+    (j : Fin H.eventCount) (hf : first ≤ j.castSucc)
+    (hj₁ : j.succ ≤ last₁) (hj₂ : j.succ ≤ last₂) (t : ℝ) :
+    localPullMetric (H.backwardSurvivorSlabMetric first last₁ h₁ j hf hj₁ t) F₁ hF₁ =
+      localPullMetric (H.backwardSurvivorSlabMetric first last₂ h₂ j hf hj₂ t) F₂ hF₂ := by
+  unfold backwardSurvivorSlabMetric
+  rw [DifferentialGeometry.localPullMetric_comp, DifferentialGeometry.localPullMetric_comp]
+  · congr 1
+    funext x
+    apply Subtype.ext
+    exact H.backwardSurvivorMap_eq_of_initial_eq first last₁ last₂ h₁ h₂
+      (F₁ x) (F₂ x) (hfirst x) j.castSucc hf
+      (j.castSucc_lt_succ.le.trans hj₁) (j.castSucc_lt_succ.le.trans hj₂)
+  · exact DifferentialGeometry.isLocalDiffeomorph_comp
+      (H.backwardSurvivorTerminalMap_isLocalDiffeomorph first last₂ h₂ j hf hj₂) hF₂
+  · exact DifferentialGeometry.isLocalDiffeomorph_comp
+      (H.backwardSurvivorTerminalMap_isLocalDiffeomorph first last₁ h₁ j hf hj₁) hF₁
+
+theorem localPullMetric_backwardSurvivorTerminalFaceMetric_eq_slab_of_initial_eq
+    (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last₂)
+    (F₁ : X → H.backwardSurvivorTerminalFace first i hf)
+    (F₂ : X → H.backwardSurvivorDomain first last₂ h₂)
+    (hF₁ : IsLocalDiffeomorph I ThreeModel ∞ F₁)
+    (hF₂ : IsLocalDiffeomorph I ThreeModel ∞ F₂)
+    (hfirst : ∀ x, H.backwardSurvivorMap first i.castSucc hf first le_rfl hf (F₁ x).val =
+      H.backwardSurvivorMap first last₂ h₂ first le_rfl h₂ (F₂ x)) (t : ℝ) :
+    localPullMetric (H.backwardSurvivorTerminalFaceMetric first i hf t) F₁ hF₁ =
+      localPullMetric (H.backwardSurvivorSlabMetric first last₂ h₂ i hf hl t) F₂ hF₂ := by
+  unfold backwardSurvivorTerminalFaceMetric backwardSurvivorSlabMetric
+  rw [DifferentialGeometry.localPullMetric_comp, DifferentialGeometry.localPullMetric_comp]
+  · congr 1
+    funext x
+    apply Subtype.ext
+    have he := H.backwardSurvivorMap_eq_of_initial_eq first i.castSucc last₂ hf h₂
+      (F₁ x).val (F₂ x) (hfirst x) i.castSucc hf le_rfl (i.castSucc_lt_succ.le.trans hl)
+    simpa only [Function.comp_apply, H.backwardSurvivorTerminalFaceMap_val,
+      H.backwardSurvivorTerminalMap_val, H.backwardSurvivorMap_last] using he
+  · exact DifferentialGeometry.isLocalDiffeomorph_comp
+      (H.backwardSurvivorTerminalMap_isLocalDiffeomorph first last₂ h₂ i hf hl) hF₂
+  · exact DifferentialGeometry.isLocalDiffeomorph_comp
+      (H.backwardSurvivorTerminalFaceMap_isLocalDiffeomorph first i hf) hF₁
+
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 end

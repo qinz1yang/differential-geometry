@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Curvature.RicciRayleigh
 import DifferentialGeometry.Geometry.Curvature.TraceNormalizedOperator
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
@@ -211,5 +212,50 @@ theorem iInf_rayleigh_traceNormalizedCurvatureOperatorAt_eq_two_mul_leastUpperRi
         2 * leastUpperRicciAt g x := by
   rw [iInf_rayleigh_traceNormalizedCurvatureOperatorAt g x B hB,
     leastCurvatureOperatorEigenvalueAt_eq_leastUpperRicciAt]
+
+open DifferentialGeometry.Geometry.Riemannian in
+theorem two_mul_leastUpperRicciAt_mul_inner_le_ricciTensor
+    (g : SmoothRiemannianMetric (𝓡 3) E3) (x : E3) (v : TangentSpace (𝓡 3) x) :
+    2 * leastUpperRicciAt g x * g.inner x v v ≤ ricciTensor g x v v := by
+  classical
+  have hbound := (curvatureOperatorLowerBoundAt_iff_neg_leastUpperRicciAt_le
+    g x (-leastUpperRicciAt g x)).mpr le_rfl
+  have hsec (a b : TangentSpace (𝓡 3) x) :
+      leastUpperRicciAt g x * (g.inner x a a * g.inner x b b -
+        g.inner x a b * g.inner x b a) ≤ metricRm04StandardAt g x a b b a := by
+    have hh := hbound 1 (fun _ => 1) (fun _ => a) (fun _ => b)
+    simp only [algebraicCurvatureOperatorQuadraticEval, algebraicCurvatureIdentityQuadraticEval,
+      Fin.sum_univ_one, one_mul] at hh
+    change 0 ≤ metricRm04StandardAt g x a b b a + -leastUpperRicciAt g x * _ at hh
+    linarith
+  obtain ⟨B, hB⟩ := exists_orthonormal_basis g x
+  have hparse : g.inner x v v =
+      ∑ i : Fin (Module.finrank ℝ (TangentSpace (𝓡 3) x)),
+        g.inner x v (B i) * g.inner x (B i) v :=
+    g_inner_eq_orthonormal_parseval_sum g x v v B hB
+  have hsum := Finset.sum_le_sum (s := Finset.univ) (fun i _ => hsec (B i) v)
+  have hterm (i : Fin (Module.finrank ℝ (TangentSpace (𝓡 3) x))) :
+      leastUpperRicciAt g x *
+        (g.inner x (B i) (B i) * g.inner x v v - g.inner x (B i) v * g.inner x v (B i)) =
+      leastUpperRicciAt g x * g.inner x v v -
+        leastUpperRicciAt g x * (g.inner x v (B i) * g.inner x (B i) v) := by
+    simp only [hB i i, ite_true, one_mul]
+    ring
+  rw [Finset.sum_congr rfl (fun i _ => hterm i), Finset.sum_sub_distrib,
+    ← Finset.mul_sum, ← Finset.mul_sum, ← hparse] at hsum
+  simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul] at hsum
+  have htrace : ricciTensor g x v v =
+      ∑ i : Fin (Module.finrank ℝ (TangentSpace (𝓡 3) x)),
+        g.inner x (riemannOp (LeviCivita g) x (B i) v v) (B i) :=
+    ricciTensor_eq_orthonormal_trace g x v v B hB
+  have hcurv (i : Fin (Module.finrank ℝ (TangentSpace (𝓡 3) x))) :
+      metricRm04StandardAt g x (B i) v v (B i) =
+        g.inner x (riemannOp (LeviCivita g) x (B i) v v) (B i) := by
+    rw [DifferentialGeometry.CheegerGromovCompactness.metricRm04StandardAt_eq_inner_riemannOp, g.symm]
+  rw [Finset.sum_congr rfl (fun i _ => hcurv i), ← htrace] at hsum
+  have hdim : Module.finrank ℝ (TangentSpace (𝓡 3) x) = 3 := finrank_euclideanSpace_fin
+  rw [hdim] at hsum
+  norm_num only [Nat.cast_ofNat] at hsum
+  linarith
 
 end DifferentialGeometry.Geometry.Curvature

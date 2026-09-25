@@ -46,6 +46,22 @@ theorem endpoint_eq_of_point_first_eq
         exact (H.event i).regularCrossing_right_unique ha hb
   exact A.endpoint_eq.symm.trans ((hall last hle le_rfl).trans B.endpoint_eq)
 
+section
+
+variable {H : ObservedHistory.{u}} {first last₁ last₂ : Fin (H.eventCount + 1)}
+  {h₁ : first ≤ last₁} {h₂ : first ≤ last₂}
+  {x : (H.stage last₁).Carrier} {y : (H.stage last₂).Carrier}
+
+theorem point_eq_of_point_first_eq
+    (A : BackwardPointTrace H first last₁ h₁ x) (B : BackwardPointTrace H first last₂ h₂ y)
+    (hfirst : A.point first le_rfl h₁ = B.point first le_rfl h₂)
+    (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hj₁ : j ≤ last₁) (hj₂ : j ≤ last₂) :
+    A.point j hf hj₁ = B.point j hf hj₂ :=
+  (A.restrictLast hf hj₁).endpoint_eq_of_point_first_eq (B.restrictLast hf hj₂) hfirst
+
+
+end
+
 end BackwardPointTrace
 
 namespace ObservedHistory
@@ -89,6 +105,24 @@ theorem backwardSurvivorMap_injective
   let A := (Classical.choice x.property).restrictFirst hj hl
   let B := (Classical.choice y.property).restrictFirst hj hl
   exact A.endpoint_eq_of_point_first_eq B hxy
+
+section
+
+variable (last₁ last₂ : Fin (H.eventCount + 1)) (h₁ : first ≤ last₁) (h₂ : first ≤ last₂)
+
+theorem backwardSurvivorMap_eq_of_initial_eq
+    (x : H.backwardSurvivorDomain first last₁ h₁)
+    (y : H.backwardSurvivorDomain first last₂ h₂)
+    (hfirst : H.backwardSurvivorMap first last₁ h₁ first le_rfl h₁ x =
+      H.backwardSurvivorMap first last₂ h₂ first le_rfl h₂ y)
+    (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hj₁ : j ≤ last₁) (hj₂ : j ≤ last₂) :
+    H.backwardSurvivorMap first last₁ h₁ j hf hj₁ x =
+      H.backwardSurvivorMap first last₂ h₂ j hf hj₂ y :=
+  (Classical.choice x.property).point_eq_of_point_first_eq
+    (Classical.choice y.property) hfirst j hf hj₁ hj₂
+
+
+end
 
 theorem backwardSurvivorMap_isLocalDiffeomorph
     (j : Fin (H.eventCount + 1)) (hj : first ≤ j) (hl : j ≤ last) :

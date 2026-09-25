@@ -3,6 +3,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Analysis.Calculus.Derivative.LeftEndpoint
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RmNormFromEigenvalues
 
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingDatum
+import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
+
 set_option autoImplicit false
 noncomputable section
 open Set Filter
@@ -169,5 +172,66 @@ theorem exists_nhds_scalar_lower_bound_of_not_mem_terminalRegularRegion
   rcases lt_max_iff.mp hmax with hq' | hR
   · exact (not_lt_of_ge (le_max_left q A) hq').elim
   · exact (le_max_right q A).trans_lt hR
+
+theorem tendsto_scalar_atTop_of_not_mem_terminalRegularRegion
+    {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    {x : P.Carrier} (hx : x ∉ G.terminalRegularRegion) :
+    Tendsto (fun t => G.flow.scalar t x) (𝓝[<] s) atTop := by
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    Perelman.exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
+  apply tendsto_atTop.mpr
+  intro A
+  obtain ⟨d, hd, hnear⟩ :=
+    G.exists_uniform_scalar_lower_bound_on_nonregular_region hq hbound hPhi hpinch A
+  filter_upwards [Ioo_mem_nhdsLT hd.2] with t ht
+  exact (hnear t ht x hx).le
+
+theorem mem_terminalRegularRegion_of_frequently_scalar_le
+    {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    {x : P.Carrier} {B : ℝ}
+    (hscalar : ∃ᶠ t in 𝓝[<] s, G.flow.scalar t x ≤ B) :
+    x ∈ G.terminalRegularRegion := by
+  by_contra hx
+  have hh := (G.tendsto_scalar_atTop_of_not_mem_terminalRegularRegion hq hbound hx).eventually_gt_atTop B
+  exact hscalar (hh.mono fun _ h => not_le.mpr h)
+
+theorem exists_eventually_scalar_le_of_mem_terminalRegularRegion
+    {x : P.Carrier} (hx : x ∈ G.terminalRegularRegion) :
+    ∃ B : ℝ, ∀ᶠ t in 𝓝[<] s, G.flow.scalar t x ≤ B := by
+  obtain ⟨U, _, hxU, a', ha', K, _, hcurv⟩ := hx
+  refine ⟨9 * K, ?_⟩
+  filter_upwards [Ioo_mem_nhdsLT ha'.2] with t ht
+  have habs := DifferentialGeometry.Geometry.Curvature.scalar_abs_le_rm (G.flow.base.metric t) x
+  have hdim : Module.finrank ℝ (TangentSpace ThreeModel x) = 3 := by
+    change Module.finrank ℝ ThreeSpace = 3
+    simp [ThreeSpace]
+  rw [hdim] at habs
+  have hr := hcurv x hxU t ⟨ht.1.le, ht.2⟩
+  change G.flow.scalar t x ≤ _
+  have hb : |G.flow.scalar t x| ≤ 9 * G.riemannNorm t x := by
+    simpa only [DifferentialGeometry.PDE.RicciFlow.SolutionOn.scalar_eq,
+      DifferentialGeometry.PDE.RicciFlow.SolutionFamily.scalar,
+      DifferentialGeometry.PDE.RicciFlow.SolutionFamily.rm04, riemannNorm,
+      DifferentialGeometry.Geometry.Curvature.metricRm04_apply,
+      Nat.cast_ofNat, show (3 : ℝ) ^ 2 = 9 by norm_num] using habs
+  exact (le_abs_self _).trans (hb.trans (mul_le_mul_of_nonneg_left hr (by norm_num)))
+
+theorem mem_terminalRegularRegion_iff_frequently_scalar_le
+    {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (x : P.Carrier) :
+    x ∈ G.terminalRegularRegion ↔ ∃ B : ℝ, ∃ᶠ t in 𝓝[<] s, G.flow.scalar t x ≤ B := by
+  constructor
+  · intro hx
+    obtain ⟨B, hB⟩ := G.exists_eventually_scalar_le_of_mem_terminalRegularRegion hx
+    exact ⟨B, hB.frequently⟩
+  · rintro ⟨B, hB⟩
+    exact G.mem_terminalRegularRegion_of_frequently_scalar_le hq hbound hB
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

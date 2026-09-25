@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
@@ -203,6 +204,66 @@ theorem riemannOp_sq_le
           Real.sqrt (g.inner q J J) *
           (Real.sqrt (g.inner q V V)) ^ 2) ^ 2 := rfl
 
+omit [InnerProductSpace ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M]
+  [I.Boundaryless] in
+theorem sqrt_inner_riemannOp_le [BoundarylessManifold I M]
+    (g : SmoothRiemannianMetric I M) (x : M) (v w u : TangentSpace I x) :
+    Real.sqrt (g.inner x (riemannOp (LeviCivita g) x v w u)
+      (riemannOp (LeviCivita g) x v w u)) ≤
+      Real.sqrt (normSq0S g x 4 (metricRm04At g x)) *
+        Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) * Real.sqrt (g.inner x u u) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis g x
+  let V := riemannOp (LeviCivita g) x v w u
+  have h := abs_apply_le_sqrt_normSq0S g x 4 basis hON (metricRm04At g x) (vec4 v w u V)
+  have he : metricRm04At g x (vec4 v w u V) = g.inner x V V :=
+    (metricRm04StandardAt_apply g x v w u V).symm.trans
+      (DifferentialGeometry.CheegerGromovCompactness.metricRm04StandardAt_eq_inner_riemannOp g x v w u V)
+  rw [he, abs_of_nonneg (DifferentialGeometry.metric_inner_self_nonneg g x V)] at h
+  have hp : (∏ a : Fin 4, Real.sqrt (g.inner x (vec4 v w u V a) (vec4 v w u V a))) =
+      Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) *
+        Real.sqrt (g.inner x u u) * Real.sqrt (g.inner x V V) := by
+    simp [vec4, Fin.prod_univ_succ, mul_assoc]
+  rw [hp] at h
+  have hs := Real.sq_sqrt (DifferentialGeometry.metric_inner_self_nonneg g x V)
+  have hnonneg : 0 ≤ Real.sqrt (normSq0S g x 4 (metricRm04At g x)) *
+      Real.sqrt (g.inner x v v) * Real.sqrt (g.inner x w w) * Real.sqrt (g.inner x u u) := by
+    positivity
+  change Real.sqrt (g.inner x V V) ≤ _
+  nlinarith [Real.sqrt_nonneg (g.inner x V V)]
+
 end Curvature
 end Geometry
 end DifferentialGeometry
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+
+open scoped Manifold ContDiff
+open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [BoundarylessManifold I M]
+
+theorem riemannOp_normSq_le_of_rmNormSq_le (g : SmoothRiemannianMetric I M) (z : M)
+    {Kb : ℝ} (h : normSq0S (I := I) g z 4 (metricRm04At (I := I) g z) ≤ Kb)
+    (a b c : TangentSpace I z) :
+    g.inner z (riemannOp (cov := LeviCivita (I := I) g) z a b c)
+        (riemannOp (cov := LeviCivita (I := I) g) z a b c) ≤
+      Kb * g.inner z a a * g.inner z b b * g.inner z c c := by
+  have hroot := sqrt_inner_riemannOp_le g z a b c
+  have hsq := (sq_le_sq₀ (Real.sqrt_nonneg _) (by positivity)).mpr hroot
+  rw [mul_pow, mul_pow, mul_pow,
+    Real.sq_sqrt (normSq0S_nonneg g z 4 _),
+    Real.sq_sqrt (metric_inner_self_nonneg g z a),
+    Real.sq_sqrt (metric_inner_self_nonneg g z b),
+    Real.sq_sqrt (metric_inner_self_nonneg g z c),
+    Real.sq_sqrt (metric_inner_self_nonneg g z _)] at hsq
+  exact hsq.trans (mul_le_mul_of_nonneg_right
+    (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h
+      (metric_inner_self_nonneg g z a)) (metric_inner_self_nonneg g z b))
+    (metric_inner_self_nonneg g z c))
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood

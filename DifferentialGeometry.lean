@@ -4790,9 +4790,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Endpoint.UniformCoordinateJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeSliceConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.WindowPrecompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.CountableTerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.CountableInitialConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TracefreeRicciPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.CurvatureDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Shi.Estimate
@@ -5408,10 +5410,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FirstExi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalInitialFlowComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalInitialSpatialCap
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialTipCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvatureHorizon
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.SpatialCapFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.StaticWindowRestriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowIntrinsicBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
@@ -6551,6 +6556,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Mi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinVectorLocalBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MixedMetricBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MixedTimeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.RicciTimeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.OrdinaryRicciTimeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.OriginalRayLocalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.OriginalRaySpeed
@@ -6595,11 +6601,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardInitialExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardInitialVolumeLower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMaximalExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.BoundedFlowExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InitialMetricLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.SequentialCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMetricControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMinimizerAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMixedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardParabolicNoncollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardPositiveCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.UniformTipCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardPositiveSeed
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardRayleigh
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardRicciTimeBounds
@@ -7560,6 +7570,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBoun
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.LaplacianDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciFromJets
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RiemannTensor
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.TensorConvergence
+import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.RicciLowerBound
 import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Coordinates
@@ -7657,6 +7669,7 @@ import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.MetricFamilySm
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.WithinSmoothness
 import DifferentialGeometry.Geometry.Metric.Family.Comparison
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
+import DifferentialGeometry.Geometry.Metric.Family.Cartesian
 import DifferentialGeometry.Geometry.Metric.Family.CurveDistance
 import DifferentialGeometry.Geometry.Metric.Family.Descent
 import DifferentialGeometry.Geometry.Metric.Family.DescentTensor
@@ -12668,6 +12681,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderDiagonalSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectiveCapDomain
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
+import DifferentialGeometry.Geometry.Metric.Pullback.LocalRestriction
 import DifferentialGeometry.Topology.Manifold.FiniteGraphBarrierLevel
 import DifferentialGeometry.Topology.Manifold.CylinderSlabBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckCapCompactDomains
@@ -13622,6 +13636,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventTimeNonaccumulation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalMetricExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalTerminalConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.InitialConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalMetricExtraction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalTerminalCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoricalNeckSequence
@@ -13885,6 +13900,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullbackScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowMetricComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRicciBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapBallCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCapScale

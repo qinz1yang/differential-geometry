@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeSliceConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCrossConvergence
@@ -115,50 +116,8 @@ theorem exists_eventually_metric_uniform_equivalence_of_terminal_convergence
       curvDerivNorm 0 ((S i).base.metric t) x ≤ C) :
     ∃ B : ℝ, 1 ≤ B ∧ ∀ᶠ i in atTop, ∀ t ∈ Icc a b,
       MetricUniformEquivalentOn K R ((S i).base.metric t) B := by
-  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
-  let n : ℝ := Module.finrank ℝ E
-  have hn : 0 ≤ n := Nat.cast_nonneg _
-  let epsilon : ℝ := 1 / (2 * n + 2)
-  have hepsilon : 0 < epsilon := by dsimp [epsilon]; positivity
-  obtain ⟨N, hN⟩ := hterminal K hK 0 epsilon hepsilon
-  have hinit : ∀ᶠ i in atTop,
-      MetricUniformEquivalentOn K R ((S i).base.metric b) 2 := by
-    filter_upwards [eventually_ge_atTop N] with i hi
-    rw [show (2 : ℝ) = (1 - (1 / 2 : ℝ))⁻¹ by norm_num]
-    apply metricUniformEquivalentOn_of_metricDerivNorm ((S i).base.metric b) R
-      (by norm_num) (by norm_num)
-    intro x hx
-    change n * metricDerivNorm 0 ((S i).base.metric b) R R x ≤ 1 / 2
-    have hxnorm : metricDerivNorm 0 ((S i).base.metric b) R R x ≤ epsilon :=
-      (derivNorm_le_sup hK (le_refl 0) ((S i).base.metric b) R R hx).trans (hN i hi).le
-    calc
-      _ ≤ n * epsilon := mul_le_mul_of_nonneg_left hxnorm hn
-      _ ≤ 1 / 2 := by
-        dsimp only [epsilon]
-        rw [mul_one_div, div_le_iff₀ (by positivity : 0 < 2 * n + 2)]
-        linarith
-  let A : ℝ := n ^ 2 * Real.sqrt (C ^ 2)
-  have hA : 0 ≤ A := mul_nonneg (sq_nonneg _) (Real.sqrt_nonneg _)
-  let B : ℝ := Real.exp (2 * A * (b - a))
-  have hB : 1 ≤ B := Real.one_le_exp (by positivity)
-  refine ⟨2 * B, by linarith, ?_⟩
-  filter_upwards [hcurv, hinit] with i hi hini
-  have hquad := twoTensorQuadBound_of_solutions (fun _ => S i) K a b (C ^ 2)
-    (fun _ t ht x hx => by
-      have hsq := (Real.sqrt_le_iff.mp (hi t ht x hx)).2
-      change curvDerivNormSq 0 ((S i).base.metric t) x ≤ C ^ 2
-      exact hsq)
-  have htime := metric_uniform_equivalent_on_closed_interval_of_solution
-    (S i) (hS i) hab hslab hreg (show b ∈ Icc a b from ⟨hab.le, le_rfl⟩)
-    hA (fun t ht x hx v => hquad.2 0 t ht x hx v)
-  intro t ht
-  have hfactor : metricEquivalenceFactor 1 A t b ≤ B := by
-    simp only [metricEquivalenceFactor, one_mul]
-    apply Real.exp_le_exp.mpr
-    exact mul_le_mul_of_nonneg_left
-      (abs_le.mpr ⟨by linarith [ht.1], by linarith [ht.2]⟩)
-      (mul_nonneg (by norm_num) hA)
-  exact hini.trans (metricUniformEquivalentOn_of_le (htime 0 t ht) hfactor)
+  exact exists_eventually_metric_uniform_equivalence_of_time_slice_convergence
+    S hS R hab hslab hreg ⟨hab.le, le_rfl⟩ K hK (hterminal K hK 0) hcurv
 
 end DifferentialGeometry.PDE.RicciFlow
 

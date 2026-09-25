@@ -8,7 +8,6 @@ noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff Topology ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow
 private abbrev E3 := EuclideanSpace ℝ (Fin 3)
@@ -59,4 +58,27 @@ theorem PartialStandardSolution.curvatureOperator_positive
       (metricAlgebraicCurvatureTensorAt (S.metric t) x) c v w :=
   algebraicCurvatureOperatorQuadraticEval_pos_of_leastUpperRicciAt_pos
     (S.metric t) x (S.leastUpperRicciAt_pos t ht htpos x) n c v w hvw
+
+theorem PartialStandardSolution.exists_pos_leastUpperRicciAt_tip_lower_bound
+    (S : PartialStandardSolution) {T : ℝ} (hT : 0 ≤ T)
+    (hTl : ENNReal.ofReal T < S.lifetime) :
+    ∃ c : ℝ, 0 < c ∧ ∀ t ∈ Icc 0 T,
+      c ≤ leastUpperRicciAt (S.metric t) (0 : E3) := by
+  have hdom (t : ℝ) (ht : t ∈ Icc 0 T) : t ∈ S.domain :=
+    (mem_lifetimeInterval_carrier S.lifetime S.lifetime_pos t).mpr
+      ⟨ht.1, (ENNReal.ofReal_le_ofReal ht.2).trans_lt hTl⟩
+  have hmap : Continuous (fun t : ℝ => (t, (0 : E3))) :=
+    continuous_id.prodMk continuous_const
+  have hcont : ContinuousOn
+      (fun t => leastUpperRicciAt (S.metric t) (0 : E3)) (Icc 0 T) := by
+    have hh := S.leastUpperRicciAt_continuousOn.comp (f := fun t : ℝ => (t, (0 : E3)))
+      (s := Icc 0 T) hmap.continuousOn (fun t ht => ⟨hdom t ht, mem_univ _⟩)
+    exact hh
+  obtain ⟨t, ht, hmin⟩ := isCompact_Icc.exists_isMinOn (nonempty_Icc.mpr hT) hcont
+  refine ⟨leastUpperRicciAt (S.metric t) 0, ?_, hmin⟩
+  rcases eq_or_lt_of_le ht.1 with heq | hpos
+  · subst t
+    exact (by norm_num : (0 : ℝ) < 1 / 2).trans_eq S.leastUpperRicciAt_initial_tip.symm
+  · exact S.leastUpperRicciAt_pos t (hdom t ht) hpos 0
+
 end DifferentialGeometry.PDE.RicciFlow

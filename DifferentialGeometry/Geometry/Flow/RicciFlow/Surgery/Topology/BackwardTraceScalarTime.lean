@@ -213,6 +213,29 @@ theorem scalar_le_two_mul_of_scalar_le_at_time
   scalar_le_two_mul_of_reciprocal_bound hq hqQ hscalar
     (A.inv_max_scalar_sub_le_at_times hq j k hj hjk hk hbound ht hb htb) htime
 
+theorem scalar_le_two_mul_of_earlier_scalar_le_at_time
+    (A : BackwardPointTrace H first last hle endpoint)
+    {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (j k : Fin H.eventCount) (hj : first ≤ j.castSucc) (hjk : j ≤ k)
+    (hk : k.castSucc ≤ last)
+    (hbound : ∀ l : Fin H.eventCount, ∀ hf : j.castSucc ≤ l.castSucc,
+      ∀ hl : l.castSucc ≤ k.castSucc, ∀ t ∈ Ioo (H.time l.castSucc) (H.time l.succ),
+      q < (H.event l).incoming.flow.scalar t (A.point l.castSucc (hj.trans hf) (hl.trans hk)) →
+      |derivWithin (fun v => (H.event l).incoming.flow.scalar v
+        (A.point l.castSucc (hj.trans hf) (hl.trans hk))) (Iic t) t| ≤
+        C * (H.event l).incoming.flow.scalar t (A.point l.castSucc (hj.trans hf) (hl.trans hk)) ^ 2)
+    {t b : ℝ} (ht : t ∈ Ico (H.time j.castSucc) (H.time j.succ))
+    (hb : b ∈ Ico (H.time k.castSucc) (H.time k.succ)) (htb : t ≤ b)
+    (hqQ : q ≤ Q)
+    (hscalar : (H.event j).incoming.flow.scalar t
+      (A.point j.castSucc hj (Fin.castSucc_le_castSucc_iff.mpr hjk |>.trans hk)) ≤ Q)
+    (htime : 2 * C * (b - t) * Q ≤ 1) :
+    (H.event k).incoming.flow.scalar b
+      (A.point k.castSucc (hj.trans (Fin.castSucc_le_castSucc_iff.mpr hjk)) hk) ≤ 2 * Q :=
+  scalar_le_two_mul_of_reciprocal_bound hq hqQ hscalar
+    (by simpa only [abs_sub_comm] using
+      A.inv_max_scalar_sub_le_at_times hq j k hj hjk hk hbound ht hb htb) htime
+
 theorem inv_max_scalar_terminal_sub_le_at_time
     (A : BackwardPointTrace H first last hle endpoint)
     {q : ℝ} {C : ℝ≥0} (hq : 0 < q)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
 
@@ -28,33 +29,7 @@ theorem ricciAt_continuousOn_time
     (hS : IsSolutionOn (I := I) S)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T) := by
-  classical
-  let K : Set Real := Set.Icc 0 T
-  have hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
-      (fun t x => S.ricci t x) := by
-    exact DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.mono
-      (I := I) (M := M) hS.ricciCont (by intro s hs; exact hs)
-  have hcont : Continuous (fun p : K =>
-      (S.ricci p.1 x) (fun i : Fin 2 => if i = 0 then v else w)) := by
-    have heval :=
-      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
-        (I := I) (M := M) (s := 2) (K := K) (A := fun t x => S.ricci t x) hA
-        (P := K)
-        (τ := fun p : K => p.1)
-        (b := fun p : K => x)
-        continuous_subtype_val (fun p : K => p.2) continuous_const
-        (v := fun a : Fin 2 => fun p : K => if a = 0 then v else w)
-        (by
-          intro a
-          fin_cases a
-          · simpa using (continuous_const : Continuous (fun p : K =>
-              (⟨x, v⟩ : TangentBundle I M)))
-          · simpa using (continuous_const : Continuous (fun p : K =>
-              (⟨x, w⟩ : TangentBundle I M))))
-    simpa [K, vec2] using heval
-  rw [continuousOn_iff_continuous_domRestrict]
-  change Continuous (fun p : K => S.ricciAt p.1 x (vec2 v w))
-  exact hcont.congr fun _ => rfl
+  exact hS.continuousOn_ricciAt x v w
 
 noncomputable def solutionUhlenbeckIota
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]

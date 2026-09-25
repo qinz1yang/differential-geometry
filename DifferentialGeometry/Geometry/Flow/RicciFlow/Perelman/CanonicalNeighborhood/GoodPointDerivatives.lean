@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LaplacianInputRegularWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.IntervalTransport
@@ -168,83 +169,6 @@ theorem abs_inner_le_sqrt_mul_sqrt (g : SmoothRiemannianMetric I M) (x : M)
     exact (MetricFiberData.toCore_inner D u v).symm
   rw [hnorm, hnorm, hinner]
   exact abs_real_inner_le_norm u v
-
-omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem riemannOp_normSq_le_of_rmNormSq_le (g : SmoothRiemannianMetric I M) (z : M)
-    {Kb : ℝ} (h : normSq0S (I := I) g z 4 (metricRm04At (I := I) g z) ≤ Kb)
-    (a b c : TangentSpace I z) :
-    g.inner z (riemannOp (cov := LeviCivita (I := I) g) z a b c)
-        (riemannOp (cov := LeviCivita (I := I) g) z a b c) ≤
-      Kb * g.inner z a a * g.inner z b b * g.inner z c c := by
-  classical
-  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (I := I) g z
-  set R := riemannOp (cov := LeviCivita (I := I) g) z a b c with hR
-  set N := Real.sqrt (normSq0S (I := I) g z 4 (metricRm04At (I := I) g z)) with hN
-  have hN0 : 0 ≤ N := Real.sqrt_nonneg _
-  have hkey : g.inner z R R ≤
-      N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) * Real.sqrt (g.inner z c c)) *
-        Real.sqrt (g.inner z R R) := by
-    have heval : g.inner z R R = metricRm04At (I := I) g z (vec4 (I := I) a b c R) := by
-      rw [hR, ← metricRm04StandardAt_eq_inner_riemannOp (I := I) g z a b c R]
-      rfl
-    have habs := abs_apply_le_sqrt_normSq0S (I := I) g z 4 basis hON
-      (metricRm04At (I := I) g z) (vec4 (I := I) a b c R)
-    have hprod : (∏ i : Fin 4, Real.sqrt (g.inner z (vec4 (I := I) a b c R i)
-        (vec4 (I := I) a b c R i))) =
-        Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-          Real.sqrt (g.inner z c c) * Real.sqrt (g.inner z R R) := by
-      have h0 : vec4 (I := I) a b c R 0 = a := rfl
-      have h1 : vec4 (I := I) a b c R 1 = b := rfl
-      have h2 : vec4 (I := I) a b c R 2 = c := rfl
-      have h3 : vec4 (I := I) a b c R 3 = R := rfl
-      rw [Fin.prod_univ_four, h0, h1, h2, h3]
-    rw [hprod] at habs
-    calc g.inner z R R = metricRm04At (I := I) g z (vec4 (I := I) a b c R) := heval
-      _ ≤ |metricRm04At (I := I) g z (vec4 (I := I) a b c R)| := le_abs_self _
-      _ ≤ N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-            Real.sqrt (g.inner z c c) * Real.sqrt (g.inner z R R)) := habs
-      _ = N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-            Real.sqrt (g.inner z c c)) * Real.sqrt (g.inner z R R) := by ring
-  have hRR : 0 ≤ g.inner z R R := inner_self_nonneg (I := I) g z R
-  have hroot : Real.sqrt (g.inner z R R) ≤
-      N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-        Real.sqrt (g.inner z c c)) := by
-    rcases eq_or_lt_of_le (Real.sqrt_nonneg (g.inner z R R)) with hz | hz
-    · have hprodnn : 0 ≤ N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-          Real.sqrt (g.inner z c c)) := by positivity
-      rw [← hz]
-      exact hprodnn
-    · have hsq : Real.sqrt (g.inner z R R) * Real.sqrt (g.inner z R R) = g.inner z R R :=
-        Real.mul_self_sqrt hRR
-      nlinarith [hkey, hsq]
-  have hsqNsq : N ^ 2 = normSq0S (I := I) g z 4 (metricRm04At (I := I) g z) :=
-    Real.sq_sqrt (normSq0S_nonneg (I := I) g z 4 _)
-  have haa : Real.sqrt (g.inner z a a) ^ 2 = g.inner z a a :=
-    Real.sq_sqrt (inner_self_nonneg (I := I) g z a)
-  have hbb : Real.sqrt (g.inner z b b) ^ 2 = g.inner z b b :=
-    Real.sq_sqrt (inner_self_nonneg (I := I) g z b)
-  have hcc : Real.sqrt (g.inner z c c) ^ 2 = g.inner z c c :=
-    Real.sq_sqrt (inner_self_nonneg (I := I) g z c)
-  have hsqrt : g.inner z R R ≤
-      (N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-        Real.sqrt (g.inner z c c))) ^ 2 := by
-    have hsq : Real.sqrt (g.inner z R R) ^ 2 = g.inner z R R :=
-      Real.sq_sqrt hRR
-    nlinarith [hroot, Real.sqrt_nonneg (g.inner z R R)]
-  have hexpand : (N * (Real.sqrt (g.inner z a a) * Real.sqrt (g.inner z b b) *
-      Real.sqrt (g.inner z c c))) ^ 2 =
-      normSq0S (I := I) g z 4 (metricRm04At (I := I) g z) *
-        g.inner z a a * g.inner z b b * g.inner z c c := by
-    rw [mul_pow, mul_pow, mul_pow, hsqNsq, haa, hbb, hcc]
-    ring
-  rw [hexpand] at hsqrt
-  refine le_trans hsqrt ?_
-  have h1 : 0 ≤ g.inner z a a := inner_self_nonneg (I := I) g z a
-  have h2 : 0 ≤ g.inner z b b := inner_self_nonneg (I := I) g z b
-  have h3 : 0 ≤ g.inner z c c := inner_self_nonneg (I := I) g z c
-  have := mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right
-    (mul_le_mul_of_nonneg_right h h1) h2) h3
-  exact this
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
 theorem rmNormSq_le_of_riemannOp_norm_le (g : SmoothRiemannianMetric I M) (z : M)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Evaluation
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.ComponentSubsequence
 
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
@@ -97,44 +98,8 @@ theorem metricCInf_inner
     (gSeq : ℕ → SmoothRiemannianMetric I M) (gInf gRef : SmoothRiemannianMetric I M)
     (hconv : MetricCInfConvergenceOnCompacts (I := I) gSeq gInf gRef)
     (x : M) (v w : TangentSpace I x) :
-    Tendsto (fun k => (gSeq k).inner x v w) atTop (nhds (gInf.inner x v w)) := by
-  rw [Metric.tendsto_atTop]
-  intro ε hε
-  let n : ℝ := Module.finrank ℝ (TangentSpace I x)
-  let S : ℝ := gRef.inner x (v + w) (v + w) + gRef.inner x v v + gRef.inner x w w
-  have hn : 0 ≤ n := by dsimp only [n]; positivity
-  have hS : 0 ≤ S := by
-    have hnonneg : ∀ z : TangentSpace I x, 0 ≤ gRef.inner x z z := by
-      intro z
-      by_cases hz : z = 0
-      · subst hz
-        simp
-      · exact (gRef.pos x z hz).le
-    dsimp only [S]
-    linarith [hnonneg (v + w), hnonneg v, hnonneg w]
-  have hden : 0 < n * S + 1 := by positivity
-  obtain ⟨k₀, hk₀⟩ := hconv {x} isCompact_singleton 0 (ε / (n * S + 1)) (by positivity)
-  refine ⟨k₀, fun k hk => ?_⟩
-  have hpoint : metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x <
-      ε / (n * S + 1) := lt_of_le_of_lt
-    (derivNorm_le_sup (I := I) isCompact_singleton le_rfl
-      (gSeq k) gInf gRef (Set.mem_singleton x))
-    (hk₀ k hk)
-  have hbound := metricInnerApply_diff_le (I := I) (gSeq k) gInf gRef x v w
-  change |(gSeq k).inner x v w - gInf.inner x v w| ≤
-    n * metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x * S at hbound
-  rw [Real.dist_eq]
-  have hprod : n * metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x * S ≤
-      (n * S) * (ε / (n * S + 1)) := by
-    have hnorm : 0 ≤ metricDerivNorm (I := I) 0 (gSeq k) gInf gRef x :=
-      Real.sqrt_nonneg _
-    nlinarith [hpoint.le, mul_nonneg hn hS]
-  have hfrac : (n * S) * (ε / (n * S + 1)) < ε := by
-    have hid : (n * S) * (ε / (n * S + 1)) = (n * S) * ε / (n * S + 1) := by
-      rw [mul_div_assoc]
-    rw [hid, div_lt_iff₀ hden]
-    nlinarith [hε, mul_nonneg hn hS]
-  exact lt_of_le_of_lt (le_trans hbound hprod) hfrac
+    Tendsto (fun k => (gSeq k).inner x v w) atTop (nhds (gInf.inner x v w)) :=
+  (hconv {x} isCompact_singleton 0).tendsto_inner isCompact_singleton (Set.mem_singleton x) v w
 
 omit [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]
     [VectorBundle ℝ E (TangentSpace I : M → Type _)]

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Curvature.RicciPullback
+import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Curvature.AmbientNeckChartLeastRicci
 
 noncomputable section
@@ -86,5 +88,33 @@ theorem cylindricalChart.exists_least_ricci_field [BoundarylessManifold J M]
   intro y hy
   obtain ⟨hn, he, hm, hb, hs, hp, hd, _⟩ := hprop y hy
   exact ⟨hn, he, hm, hb, hs, hp, hd⟩
+
+theorem cylindricalChart.not_mem_region_of_ricci_lower_bound [BoundarylessManifold J M]
+    (C : cylindricalChart J (M := M)) (g : SmoothRiemannianMetric J M)
+    {U : Set C.domain} {ε κ : ℝ} (hε : ε ≤ 1 / 2)
+    (hsmall : C.metricCloseOn g ε U) {x : M}
+    (hRic : ∀ v : TangentSpace J x, κ * g.inner x v v ≤ ricciTensor g x v v)
+    (hκ : 5772 * C.scale * ε < κ) : x ∉ C.region U := by
+  rintro ⟨y, ⟨z, hz, rfl⟩, rfl⟩
+  let G := Diffeomorph.pullbackMetricCross
+    (scaleMetric C.scale C.scale_pos (g.restrictOpen C.target)) C.chart
+  obtain ⟨v, hunit, hupper⟩ :=
+    exists_unit_ricciTensor_bound_of_small_metric_derivatives_on_restricted_roundCylinder
+      C.domain G z hε (hsmall z hz)
+  let w := mfderiv ((𝓡 2).prod 𝓘(ℝ)) J C.chart z v
+  have hRicEq : ricciTensor G z v v = ricciTensor g (C.chart z).val w w := by
+    rw [ricciTensor_pullbackMetricCross, ricciTensor_scaleMetric,
+      DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen,
+      mfderiv_subtype_val_apply]
+  have hunit' : C.scale * g.inner (C.chart z).val w w = 1 := by
+    exact hunit
+  have hlow := mul_le_mul_of_nonneg_left (hRic w) C.scale_pos.le
+  have hmul := mul_le_mul_of_nonneg_left
+    ((le_abs_self _).trans hupper) C.scale_pos.le
+  rw [hRicEq] at hmul
+  have heq : C.scale * (κ * g.inner (C.chart z).val w w) = κ := by
+    rw [mul_left_comm, hunit', mul_one]
+  rw [heq] at hlow
+  exact (not_lt_of_ge ((hlow.trans hmul).trans_eq (by ring))) hκ
 
 end DifferentialGeometry.Geometry.Neck

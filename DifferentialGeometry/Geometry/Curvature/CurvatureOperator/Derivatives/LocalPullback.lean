@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Restriction
 import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
@@ -92,3 +93,28 @@ theorem curvDerivNorm_localPullMetric
 end DifferentialGeometry.CheegerGromovCompactness
 
 end
+
+
+noncomputable section
+open Set Manifold TopologicalSpace
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.CheegerGromovCompactness
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem curvDerivNorm_restrictOpenOfSubset {U V : Opens M} (hUV : U ≤ V)
+    (g : SmoothRiemannianMetric I V) (q : ℕ) (x : U) :
+    curvDerivNorm q (g.restrictOpenOfSubset hUV) x =
+      curvDerivNorm q g (Opens.inclusion hUV x) := by
+  have hinc : IsLocalDiffeomorph I I ∞ (Opens.inclusion hUV) := fun y =>
+    isLocalDiffeomorphAt_subtypeCodRestrict (fun z : U => hUV z.property)
+      (isLocalDiffeomorph_subtype_val U y)
+  have heq : g.restrictOpenOfSubset hUV = localPullMetric g (Opens.inclusion hUV) hinc := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    rw [localPullMetric_inner, mfderiv_opens_incl]
+    rfl
+  rw [heq, curvDerivNorm_localPullMetric]
+end DifferentialGeometry.CheegerGromovCompactness

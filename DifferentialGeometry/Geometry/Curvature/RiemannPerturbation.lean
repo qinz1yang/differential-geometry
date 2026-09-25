@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Curvature.Bounds.RiemannTensorOperator
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.UniformEquivalence
@@ -8,6 +11,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Riemannian DifferentialGeometry.Analysis.Laplacian
@@ -172,5 +176,76 @@ theorem abs_metricRm04_sub_le_of_small_metric_derivatives
     _ ≤ eps * (360 * P + N RG) * N z := by gcongr; linarith
     _ = _ := by dsimp only [P, N, RG]; ring
 
+
+theorem metricRm04_difference_norm_le_of_metricDerivNorm_le
+    (g h : SmoothRiemannianMetric I M) (x : M) {delta : ℝ}
+    (hdelta : delta ≤ 1 / 2)
+    (hjet : ∀ a : ℕ, a ≤ 2 → metricDerivNorm a h g g x ≤ delta) :
+    Real.sqrt (normSq0S g x 4 (metricRm04At h x - metricRm04At g x)) ≤
+      (Module.finrank ℝ E : ℝ)^2 * delta *
+        (Real.sqrt (normSq0S g x 4 (metricRm04At g x)) + 360) := by
+  classical
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hdelta0 : 0 ≤ delta := (Real.sqrt_nonneg _).trans (hjet 0 (by norm_num))
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis g x
+  have hinv := metricInverseInBasis_of_orthonormal g basis hON
+  let R := Real.sqrt (normSq0S g x 4 (metricRm04At g x))
+  have hcomponent (v : Fin 4 → Fin (Module.finrank ℝ (TangentSpace I x))) :
+      |component0S basis (metricRm04At h x - metricRm04At g x) v| ≤ delta * (R + 360) := by
+    have hdiff := abs_metricRm04_sub_le_of_small_metric_derivatives
+      h g x hdelta hjet (basis (v 0)) (basis (v 1)) (basis (v 2)) (basis (v 3))
+    have hu (i) : g.inner x (basis i) (basis i) = 1 := by simpa using hON i i
+    have hR := sqrt_inner_riemannOp_le g x (basis (v 0)) (basis (v 1)) (basis (v 2))
+    simp only [hu, Real.sqrt_one, mul_one] at hdiff hR
+    have hv : (fun j => basis (v j)) =
+        vec4 (basis (v 0)) (basis (v 1)) (basis (v 2)) (basis (v 3)) := by
+      funext j
+      fin_cases j <;> rfl
+    rw [component0S_apply, hv]
+    change |metricRm04StandardAt h x _ _ _ _ - metricRm04StandardAt g x _ _ _ _| ≤ _
+    exact hdiff.trans (mul_le_mul_of_nonneg_left ((add_le_add (le_refl 360) hR).trans_eq (add_comm 360 R)) hdelta0)
+  have h := sqrt_normSq0S_le_card_of_component_bound g x 4 basis hinv
+    (metricRm04At h x - metricRm04At g x) (delta * (R + 360)) (by dsimp [R]; positivity)
+    hcomponent
+  have hdim : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
+  have hcard : Real.sqrt (Fintype.card (Fin 4 → Fin (Module.finrank ℝ (TangentSpace I x))) : ℝ) =
+      (Module.finrank ℝ E : ℝ)^2 := by
+    simp only [Fintype.card_fun, Fintype.card_fin, hdim, Nat.cast_pow]
+    rw [show (Module.finrank ℝ E : ℝ)^4 = ((Module.finrank ℝ E : ℝ)^2)^2 by ring,
+      Real.sqrt_sq (sq_nonneg _)]
+  rw [hcard] at h
+  exact h.trans_eq (by dsimp [R]; ring)
+
+theorem sqrt_normSq_metricRm04At_le_of_metricDerivNorm_le
+    (g h : SmoothRiemannianMetric I M) (x : M) {delta : ℝ}
+    (hdelta : delta ≤ 1 / 2)
+    (hjet : ∀ a : ℕ, a ≤ 2 → metricDerivNorm a h g g x ≤ delta) :
+    Real.sqrt (normSq0S h x 4 (metricRm04At h x)) ≤
+      4 * (Real.sqrt (normSq0S g x 4 (metricRm04At g x)) +
+        (Module.finrank ℝ E : ℝ)^2 * delta *
+          (Real.sqrt (normSq0S g x 4 (metricRm04At g x)) + 360)) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hequiv : MetricUniformEquivalentOn {x} g h 2 := by
+    have hh := metricUniformEquivalentOn_of_quadFormDiff
+      (K := {x}) (g := g) (h := h) (δ := 1/2) (by norm_num) (by norm_num) ?_
+    · norm_num at hh
+      exact hh
+    intro y hy v
+    obtain rfl := Set.mem_singleton_iff.mp hy
+    have hv := metricDifference_abs_le h g g y v v
+    rw [mul_assoc, Real.mul_self_sqrt (DifferentialGeometry.metric_inner_self_nonneg g y v)] at hv
+    exact hv.trans (mul_le_mul_of_nonneg_right
+      ((hjet 0 (by norm_num)).trans hdelta) (DifferentialGeometry.metric_inner_self_nonneg g y v))
+  have hnorm := sqrt_normSq0S_le_of_metric_equiv g h x 4 (by norm_num : (1 : ℝ) ≤ 2)
+    (hequiv.2 x (Set.mem_singleton x)) (metricRm04At h x)
+  norm_num at hnorm
+  have htri := _root_.Tensor0SBundle.sqrt_normSq0S_add_le g x 4
+    (metricRm04At h x - metricRm04At g x) (metricRm04At g x)
+  rw [sub_add_cancel] at htri
+  have hdiff := metricRm04_difference_norm_le_of_metricDerivNorm_le
+    g h x hdelta hjet
+  apply hnorm.trans
+  gcongr
+  exact htri.trans ((add_le_add hdiff le_rfl).trans_eq (add_comm _ _))
 
 end DifferentialGeometry.Geometry.Curvature

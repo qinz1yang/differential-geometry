@@ -231,4 +231,62 @@ theorem exists_neck_cap_separation_tolerance
   exact hsep M g eps epsb p pb heps cut boundary hb s hs K K Subset.rfl hK hKi hfront q hq
     hscalar hboundary hdiam
 
+theorem SpatialNeck.disjoint_unit_slab_of_ricci_lower_bound
+    (nk : SpatialNeck g eps p) {K : Set M} {q C D κ : ℝ} {z : M}
+    (hq : 0 < q) (hC : 0 < C) (hD : 0 ≤ D)
+    (heps : 4323 * eps ≤ 1 / 2)
+    (hscalar : ∀ x ∈ K, metricScalarAt g x ≤ C * q)
+    (hdiam : ∀ x ∈ K, ∀ y ∈ K,
+      riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D)
+    (hz : z ∈ K)
+    (hRic : ∀ v : TangentSpace I3 z, κ * q * g.inner z v v ≤ ricciTensor g z v v)
+    (hfit : 2 * (15 + Real.sqrt (2 * C) * D) < eps⁻¹)
+    (hκ : 11544 * C * eps < κ) :
+    Disjoint K (nk.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  apply Set.disjoint_iff_inter_eq_empty.mpr
+  apply Set.eq_empty_iff_forall_notMem.mpr
+  intro x hx
+  obtain ⟨hQ, hcapture⟩ := nk.set_subset_image_slab_of_intersects_unit_slab hq hC hD
+    heps hscalar hdiam ⟨x, hx⟩ hfit
+  have hzwindow : z ∈ nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) := by
+    apply image_mono _ (hcapture hz)
+    intro y hy
+    exact ⟨hy.1, by constructor <;> linarith [hy.2.1, hy.2.2]⟩
+  apply nk.not_mem_image_window_of_ricci_lower_bound hRic _ hzwindow
+  have hmul := mul_le_mul_of_nonneg_right hQ nk.eps_pos.le
+  have hstrict := mul_lt_mul_of_pos_right hκ hq
+  nlinarith
+
+theorem exists_neck_separation_tolerance_of_ricci_lower_bound
+    {C D κ : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hκ : 0 < κ) :
+    ∃ eta : ℝ, 0 < eta ∧
+      ∀ (M : Type*) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] (g : SmoothRiemannianMetric I3 M)
+        (eps : ℝ) (p : M), eps ≤ eta → ∀ (cut : SpatialNeck g eps p)
+        (K : Set M) (q : ℝ) (hq : 0 < q),
+        (∀ x ∈ K, metricScalarAt g x ≤ C * q) →
+        (∀ x ∈ K, ∀ y ∈ K,
+          riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D) →
+        ∀ z ∈ K, (∀ v : TangentSpace I3 z,
+          κ * q * g.inner z v v ≤ ricciTensor g z v v) →
+        Disjoint K (cut.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  let R := 2 * (15 + Real.sqrt (2 * C) * D)
+  have hR : 0 < R := by dsimp [R]; positivity
+  let eta := min (1 / 10000) (min ((2 * R)⁻¹) (κ / (23088 * C)))
+  have heta : 0 < eta := by dsimp [eta]; positivity
+  refine ⟨eta, heta, ?_⟩
+  intro M _ _ _ _ g eps p heps cut K q hq hscalar hdiam z hz hRic
+  have hepsbound : eps ≤ 1 / 10000 := heps.trans (min_le_left _ _)
+  have hepsR : eps ≤ (2 * R)⁻¹ := heps.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hepsc : eps ≤ κ / (23088 * C) := heps.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hfit : R < eps⁻¹ := by
+    have hh := inv_anti₀ cut.eps_pos hepsR
+    rw [inv_inv] at hh
+    linarith
+  have hsmall : 11544 * C * eps < κ := by
+    have hh := (le_div_iff₀ (by positivity : 0 < 23088 * C)).mp hepsc
+    nlinarith
+  exact cut.disjoint_unit_slab_of_ricci_lower_bound hq hC hD (by linarith)
+    hscalar hdiam hz hRic hfit hsmall
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

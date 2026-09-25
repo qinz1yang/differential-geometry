@@ -232,6 +232,55 @@ theorem scalar_le_two_mul_initial_at_time
     (fun k hk hkj => hbound k hk (hkj.trans (j.castSucc_lt_succ.le.trans hl)))
     (hbound j hf hl) hscalar ht htime
 
+theorem extended_riemannNorm_le_of_earlier_scalar_bound_at_time
+    (A : BackwardPointTrace H first last hle endpoint)
+    {q Q a₀ : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q) (ha₀ : 0 < a₀)
+    (j k : Fin H.eventCount) (hj : first ≤ j.castSucc) (hjk : j ≤ k)
+    (hk : k.castSucc ≤ last)
+    (hbound : ∀ l : Fin H.eventCount, ∀ hf : j.castSucc ≤ l.castSucc,
+      ∀ hl : l.castSucc ≤ k.castSucc, ∀ t ∈ Ioo (H.time l.castSucc) (H.time l.succ),
+      q < (H.event l).incoming.flow.scalar t (A.point l.castSucc (hj.trans hf) (hl.trans hk)) →
+      |derivWithin (fun v => (H.event l).incoming.flow.scalar v
+        (A.point l.castSucc (hj.trans hf) (hl.trans hk))) (Iic t) t| ≤
+        C * (H.event l).incoming.flow.scalar t (A.point l.castSucc (hj.trans hf) (hl.trans hk)) ^ 2)
+    {τ : ℝ} (hτ : τ ∈ Ico (H.time j.castSucc) (H.time j.succ))
+    (hscalar : (H.event j).incoming.flow.scalar τ
+      (A.point j.castSucc hj (Fin.castSucc_le_castSucc_iff.mpr hjk |>.trans hk)) ≤ Q)
+    (y : (H.event k).incoming.terminalRegularOpen)
+    (hy : y.val = A.point k.castSucc (hj.trans (Fin.castSucc_le_castSucc_iff.mpr hjk)) hk)
+    (hpinch : ∀ t ∈ Ico (H.time k.castSucc) (H.time k.succ), τ ≤ t →
+      InFixedHamiltonIveyRegion ((H.event k).incoming.flow.base.metric t) a₀ y.val)
+    (htime : 2 * C * (H.time k.succ - τ) * Q ≤ 1) :
+    ∀ t ∈ Icc (H.time k.castSucc) (H.time k.succ), τ ≤ t →
+      Real.sqrt (DifferentialGeometry.Tensor0SBundle.normSq0S
+        ((H.event k).terminal.extendedMetric t) y 4
+        (metricRm04At ((H.event k).terminal.extendedMetric t) y)) ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+  have hQ : 0 < Q := hq.trans_le hqQ
+  have hpast (t : ℝ) (ht : t ∈ Ico (H.time k.castSucc) (H.time k.succ)) (hτt : τ ≤ t) :
+      (H.event k).incoming.riemannNorm t y.val ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+    have hs := A.scalar_le_two_mul_of_earlier_scalar_le_at_time hq j k hj hjk hk
+      hbound hτ ht hτt hqQ hscalar
+      ((mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le _) (by positivity)) hQ.le).trans htime)
+    rw [← hy] at hs
+    have hr := sqrt_normSq0S_le_of_fixedHamiltonIveyRegion
+      ((H.event k).incoming.flow.base.metric t) y.val ha₀ le_rfl (hpinch t ht hτt) hs
+    rw [max_eq_left (by positivity : 0 ≤ 2 * Q), show 2 * Q / 2 = Q by ring] at hr
+    exact hr
+  intro t ht hτt
+  rcases lt_or_eq_of_le ht.2 with hlt | rfl
+  · rw [(H.event k).terminal.extendedMetric_before hlt,
+      DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.rmNormSq_restrictOpen]
+    exact hpast t ⟨ht.1, hlt⟩ hτt
+  · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
+    apply le_of_tendsto ((H.event k).terminal.tendsto_riemannNorm y)
+    have hτk : τ < H.time k.succ := hτ.2.trans_le
+      (H.time_strictMono.monotone (Fin.succ_le_succ_iff.mpr hjk))
+    filter_upwards [Ioo_mem_nhdsLT (H.event k).incoming.lt, Ioo_mem_nhdsLT hτk] with t ht htτ
+    exact hpast t ⟨ht.1.le, ht.2⟩ htτ.1.le
+
 theorem extended_riemannNorm_le_of_initial_scalar_bound
     (A : BackwardPointTrace H first last hle endpoint)
     {q Q a₀ : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q) (ha₀ : 0 < a₀)
@@ -255,27 +304,33 @@ theorem extended_riemannNorm_le_of_initial_scalar_bound
         ((H.event j).terminal.extendedMetric t) y 4
         (metricRm04At ((H.event j).terminal.extendedMetric t) y)) ≤
         2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
-  have hQ : 0 < Q := hq.trans_le hqQ
-  have hpast (t : ℝ) (ht : t ∈ Ico (H.time j.castSucc) (H.time j.succ)) :
-      (H.event j).incoming.riemannNorm t y.val ≤
-        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
-    have hs := A.scalar_le_two_mul_initial_at_time hq hqQ hbound hscalar j hf hl ht
-      ((mul_le_mul_of_nonneg_right
-        (mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le _) (by positivity)) hQ.le).trans htime)
-    rw [← hy] at hs
-    have hr := sqrt_normSq0S_le_of_fixedHamiltonIveyRegion
-      ((H.event j).incoming.flow.base.metric t) y.val ha₀ le_rfl (hpinch t ht) hs
-    rw [max_eq_left (by positivity : 0 ≤ 2 * Q), show 2 * Q / 2 = Q by ring] at hr
-    exact hr
+  let j₀ : Fin H.eventCount := ⟨first.val, lt_of_le_of_lt (show first.val ≤ j.val from hf) j.isLt⟩
+  have he : j₀.castSucc = first := Fin.ext rfl
+  have hj₀ : j₀ ≤ j := by change first.val ≤ j.val; exact hf
+  have hbound₀ : ∀ l : Fin H.eventCount, ∀ hf' : j₀.castSucc ≤ l.castSucc,
+      ∀ hl' : l.castSucc ≤ j.castSucc, ∀ t ∈ Ioo (H.time l.castSucc) (H.time l.succ),
+      q < (H.event l).incoming.flow.scalar t
+        (A.point l.castSucc (he.symm.le.trans hf') (hl'.trans (j.castSucc_lt_succ.le.trans hl))) →
+      |derivWithin (fun v => (H.event l).incoming.flow.scalar v
+        (A.point l.castSucc (he.symm.le.trans hf') (hl'.trans (j.castSucc_lt_succ.le.trans hl)))) (Iic t) t| ≤
+        C * (H.event l).incoming.flow.scalar t
+          (A.point l.castSucc (he.symm.le.trans hf') (hl'.trans (j.castSucc_lt_succ.le.trans hl))) ^ 2 := by
+    intro l hf' hl'
+    exact hbound l (he.symm.le.trans hf') ((Fin.succ_le_succ_iff.mpr (Fin.castSucc_le_castSucc_iff.mp hl')).trans hl)
+  have hτ : H.time first ∈ Ico (H.time j₀.castSucc) (H.time j₀.succ) := by
+    rw [← he]
+    exact ⟨le_rfl, H.time_strictMono j₀.castSucc_lt_succ⟩
+  have hscalar₀ : (H.event j₀).incoming.flow.scalar (H.time first)
+      (A.point j₀.castSucc he.symm.le (Fin.castSucc_le_castSucc_iff.mpr hj₀ |>.trans
+        (j.castSucc_lt_succ.le.trans hl))) ≤ Q := by
+    change metricScalarAt ((H.event j₀).incoming.flow.base.metric (H.time first)) _ ≤ Q
+    rw [← congrArg H.time he, H.event_initial]
+    exact hscalar
   intro t ht
-  rcases lt_or_eq_of_le ht.2 with hlt | rfl
-  · rw [(H.event j).terminal.extendedMetric_before hlt,
-      DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.rmNormSq_restrictOpen]
-    exact hpast t ⟨ht.1, hlt⟩
-  · rw [OrientedThreeStage.IncomingSlab.TerminalLimitMetric.extendedMetric_terminal]
-    apply le_of_tendsto ((H.event j).terminal.tendsto_riemannNorm y)
-    filter_upwards [Ioo_mem_nhdsLT (H.event j).incoming.lt] with t ht
-    exact hpast t ⟨ht.1.le, ht.2⟩
+  exact A.extended_riemannNorm_le_of_earlier_scalar_bound_at_time hq hqQ ha₀
+    j₀ j he.symm.le hj₀ (j.castSucc_lt_succ.le.trans hl) hbound₀ hτ hscalar₀ y hy
+    (fun s hs _ => hpinch s hs) htime t ht ((H.time_strictMono.monotone hf).trans ht.1)
+
 
 end
 

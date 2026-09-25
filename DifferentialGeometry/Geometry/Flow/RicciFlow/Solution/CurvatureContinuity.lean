@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Metric.Family.TensorNorm
 
@@ -41,5 +42,34 @@ theorem IsSolutionOn.continuousOn_riemannNorm_time (hS : IsSolutionOn S) (x : M)
       Real.sqrt (normSq0S (S.base.metric t) x 4 (S.base.rm04 t x))) D.carrier := by
   exact hS.continuousOn_riemannNorm.comp (f := fun t : ℝ => (t, x))
     (continuous_id.prodMk continuous_const).continuousOn (fun t ht => ⟨ht, mem_univ x⟩)
+
+theorem IsSolutionOn.continuousOn_ricciAt {D : RealTimeInterval}
+    {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn S)
+    (x : M) (v w : TangentSpace I x) :
+    ContinuousOn (fun t => S.ricciAt t x (vec2 v w)) D.carrier := by
+  let K := D.carrier
+  have hcont : Continuous (fun p : K =>
+      (S.ricci p.1 x) (fun i : Fin 2 => if i = 0 then v else w)) := by
+    have heval := tensor0SFamilyContinuousOnSet.eval_continuous hS.ricciCont
+      (P := K) (τ := fun p : K => p.1) (b := fun _ : K => x)
+      continuous_subtype_val (fun p => p.2) continuous_const
+      (v := fun a : Fin 2 => fun _ : K => if a = 0 then v else w)
+      (by
+        intro a
+        fin_cases a
+        · simpa using (continuous_const : Continuous (fun _ : K =>
+            (⟨x, v⟩ : TangentBundle I M)))
+        · simpa using (continuous_const : Continuous (fun _ : K =>
+            (⟨x, w⟩ : TangentBundle I M))))
+    simpa [K, vec2] using heval
+  rw [continuousOn_iff_continuous_domRestrict]
+  exact hcont.congr fun _ => rfl
+
+theorem IsSolutionOn.continuousOn_ricciTensor [BoundarylessManifold I M]
+    {D : RealTimeInterval} {S : SolutionOn (I := I) (M := M) D} (hS : IsSolutionOn S)
+    (x : M) (v w : TangentSpace I x) :
+    ContinuousOn (fun t => ricciTensor (S.base.metric t) x v w) D.carrier := by
+  exact (hS.continuousOn_ricciAt x v w).congr fun t _ =>
+    (metricRicciAt_apply_eq_ricciTensor (S.base.metric t) x v w).symm
 
 end DifferentialGeometry.PDE.RicciFlow

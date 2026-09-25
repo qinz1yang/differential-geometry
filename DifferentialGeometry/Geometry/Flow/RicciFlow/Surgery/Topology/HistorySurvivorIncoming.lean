@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Pullback.LocalRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFlow
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Geometry.Metric.Distance.LocalPullCompactness
@@ -593,5 +594,90 @@ theorem backwardSurvivorIncomingMap_eq_of_initial_point_eq
     have he := H.backwardSurvivorMap_eq_point first last hle first le_rfl hle (F y).val B
     exact he.symm.trans ((hF y).trans hbirth)
   exact Subtype.ext (B.endpoint_eq_of_point_first_eq A hB)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+
+noncomputable section
+open Set Manifold TopologicalSpace
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+variable (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+  {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+
+private theorem survivor_incoming_metric_eq
+    (G₁ G₂ : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs₁ : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        G₁ t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs₂ : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        G₂ t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hlast₁ : ∀ t ∈ Icc (H.time last) s,
+      G₁ t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (hlast₂ : ∀ t ∈ Icc (H.time last) s,
+      G₂ t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    {t : ℝ} (ht : t ∈ Icc (H.time first) s) : G₁ t = G₂ t := by
+  by_cases hlast : H.time last ≤ t
+  · exact (hlast₁ t ⟨hlast, ht.2⟩).trans (hlast₂ t ⟨hlast, ht.2⟩).symm
+  have hti : t < H.time last := lt_of_not_ge hlast
+  let tH : Icc (0 : ℝ) H.horizon :=
+    ⟨t, (H.time_nonneg first).trans ht.1, hti.le.trans (H.time_le_horizon_at last)⟩
+  let k := H.activeStage tH
+  have hk : k < last := by
+    apply H.time_strictMono.lt_iff_lt.mp
+    exact (H.activeStage_time_le tH).trans_lt hti
+  have hkfirst : first ≤ k := H.le_activeStage tH first ht.1
+  let j : Fin H.eventCount := ⟨k.val, by have := last.isLt; change k.val < H.eventCount; omega⟩
+  have hjnext : j.succ ≤ last := by
+    change k.val + 1 ≤ last.val
+    exact hk
+  have htj : t ∈ Icc (H.time j.castSucc) (H.time j.succ) :=
+    ⟨H.activeStage_time_le tH,
+      (H.activeStage_before_next tH (show k.val < H.eventCount from j.isLt)).le⟩
+  exact (hslabs₁ j hkfirst hjnext t htj).trans (hslabs₂ j hkfirst hjnext t htj).symm
+
+theorem localPullMetric_backwardSurvivorIncoming_overlap_of_initial_eq
+    {E X M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [TopologicalSpace X] {I : ModelWithCorners ℝ E X}
+    [TopologicalSpace M] [ChartedSpace X M] [IsManifold I ∞ M] [T2Space M]
+    {U V W : Opens M} (hWU : W ≤ U) (hWV : W ≤ V)
+    (G₁ G₂ : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs₁ : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        G₁ t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs₂ : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+      ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        G₂ t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hlast₁ : ∀ t ∈ Icc (H.time last) s,
+      G₁ t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (hlast₂ : ∀ t ∈ Icc (H.time last) s,
+      G₂ t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (F₁ : U → H.backwardSurvivorIncomingDomain first last hle G)
+    (F₂ : V → H.backwardSurvivorIncomingDomain first last hle G)
+    (hF₁ : IsLocalDiffeomorph I ThreeModel ∞ F₁)
+    (hF₂ : IsLocalDiffeomorph I ThreeModel ∞ F₂)
+    (hbirth : ∀ y : W,
+      H.backwardSurvivorMap first last hle first le_rfl hle
+        (F₁ (Opens.inclusion hWU y)).val =
+      H.backwardSurvivorMap first last hle first le_rfl hle
+        (F₂ (Opens.inclusion hWV y)).val)
+    {t : ℝ} (ht : t ∈ Icc (H.time first) s) :
+    (localPullMetric (G₁ t) F₁ hF₁).restrictOpenOfSubset hWU =
+      (localPullMetric (G₂ t) F₂ hF₂).restrictOpenOfSubset hWV := by
+  rw [H.survivor_incoming_metric_eq first last hle G L G₁ G₂
+    hslabs₁ hslabs₂ hlast₁ hlast₂ ht]
+  apply localPullMetric_restrictOpenOfSubset_eq_of_comp_eq
+  funext y
+  apply Subtype.ext
+  exact H.backwardSurvivorMap_injective first last hle first le_rfl hle (hbirth y)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

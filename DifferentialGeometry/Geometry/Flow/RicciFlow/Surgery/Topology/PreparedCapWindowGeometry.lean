@@ -785,6 +785,277 @@ theorem exists_uniform_prepared_incoming_cap_window_flow_with_uniform_curvature_
     prepared_incoming_cap_window_flow_with_uniform_curvature_derivative_bounds_of_scalar_bound
       N D r eps heps hepssmall hr hfit C₀ hC₀ hbound⟩
 
+private theorem prepared_incoming_cap_window_flow_of_scalar_bound
+    (C : ℝ≥0)
+    (C₀ : ℝ) (hC₀ : 0 < C₀)
+    (hscalar_bound :
+      ∀ {E : Type uE} {H : Type uH} {M : Type uM} {N : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold ThreeModel ∞ N]
+        [T2Space N]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : StandardCap.CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → 2 ≤ m →
+        ∀ (h : SmoothRiemannianMetric ThreeModel N) (J : standardCapWindow D → N),
+        IsSmoothEmbedding ThreeModel ThreeModel ∞ J →
+        ∀ q : ℝ, 0 < q →
+        (∀ x v z, w.windowMetric.inner x v z =
+          q * h.inner (J x) (mfderiv ThreeModel ThreeModel J x v)
+            (mfderiv ThreeModel ThreeModel J x z)) →
+        ∀ x : standardCapWindow D, ‖x.val‖ < D →
+          |metricScalarAt h (J x)| ≤ C₀ * q) :
+    ∃ η ε₀ : ℝ, 0 < η ∧ 0 < ε₀ ∧ ε₀ ≤ 1 / 2 ∧
+      ∀ (N : ℕ) (D r : ℝ), 65 ≤ D → 0 < r → 32 * r < D →
+      ∃ δ₀ B : ℝ, 1 ≤ B ∧ 0 < δ₀ ∧
+      ∀ {E : Type uE} {H : Type uH} {M : Type uM} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {Dbig : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A hA Dbig m ζ)
+        (hmargin : D + 1 ≤ Dbig),
+      max 2 N + 2 ≤ m → ζ ≤ ε₀ →
+      let inc : standardCapWindow D → standardCapWindow Dbig := TopologicalSpace.Opens.inclusion
+        (show standardCapWindow D ≤ standardCapWindow Dbig from by
+          intro x hx
+          change ‖x‖ < Dbig + 1
+          change ‖x‖ < D + 1 at hx
+          linarith only [hx, hmargin]);
+      ∀ (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+        (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric),
+      G.flow.base.metric (H.time last) = H.initialMetric last →
+      ∀ (Jbig : standardCapWindow Dbig → (H.stage first).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ Jbig →
+      let J := Jbig ∘ inc;
+      ∀ (q q₀ a₀ : ℝ) (hq : 0 < q), 0 < q₀ → q₀ ≤ C₀ * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric first).inner (Jbig x) (mfderiv ThreeModel ThreeModel Jbig x v)
+          (mfderiv ThreeModel ThreeModel Jbig x z)) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            C * (H.event j).incoming.flow.scalar t x ^ 2) →
+      (∀ x : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s,
+        q₀ < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
+      q * (s - H.time first) ≤ η →
+      ∀ (z : standardCapWindow D) (x : G.terminalRegularOpen)
+        (A : BackwardPointTrace H first last hle x.val),
+        A.point first le_rfl hle = J z →
+      ∃ Ξ : standardCapWindow D → H.backwardSurvivorIncomingDomain first last hle G,
+        IsSmoothEmbedding ThreeModel ThreeModel ∞ Ξ ∧
+        (∀ y, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ y).val = J y) ∧
+        H.backwardSurvivorIncomingMap first last hle G (Ξ z) = x ∧
+        ∃ (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ)
+          (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+            (H.backwardSurvivorIncomingDomain first last hle G))
+          (S : SolutionOn (I := ThreeModel) (M := standardCapWindow D)
+            (RealTimeInterval.closed 0 (q * (s - H.time first))
+              (by have ht := (H.time_strictMono.monotone hle).trans_lt G.lt; positivity))),
+          (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+            ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+              gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+                (H.backwardSurvivorIncomingDomain first last hle G)) ∧
+          (∀ t ∈ Icc (H.time last) s,
+            gflow t = H.backwardSurvivorIncomingMetric first last hle G L t) ∧
+          IsSolutionOn S ∧ S.base.metric 0 = w.windowMetric.restrictOpenOfSubset
+            (show standardCapWindow D ≤ standardCapWindow Dbig from
+              fun _ hx => hx.trans_le (add_le_add (show D ≤ Dbig by linarith) (le_refl 1))) ∧
+          (∀ t, S.base.metric t = localPullMetric
+            (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) ∧
+          (∀ (y : standardCapWindow D) (j k : Fin (Module.finrank ℝ ThreeSpace)),
+            ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ) ∞
+              (fun z : ℝ × standardCapWindow D => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
+                (S.base.metric z.1) y z.2 j k)
+              (Icc 0 (q * (s - H.time first)) ×ˢ
+                (trivializationAt ThreeSpace (TangentSpace ThreeModel) y).baseSet)) ∧
+          (∀ j ≤ N, ∀ t ∈ Icc 0 (q * (s - H.time first)),
+            ∀ y : standardCapWindow D, ‖y.val‖ ≤ r → curvDerivNormSq j (S.base.metric t) y ≤ B) ∧
+          (∀ y (v z : TangentSpace ThreeModel y),
+            (S.base.metric (q * (s - H.time first))).inner y v z =
+              (scaleMetric q hq L.metric).inner
+                (H.backwardSurvivorIncomingMap first last hle G (Ξ y))
+                (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v)
+                (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y z)) ∧
+        (∀ y : standardCapWindow D, ‖y.val‖ < D → ∀ v : TangentSpace ThreeModel y,
+          (1/4:ℝ)*StandardCap.metric.inner y.val v v ≤
+            (scaleMetric q hq L.metric).inner (H.backwardSurvivorIncomingMap first last hle G (Ξ y))
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v)
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v) ∧
+          (scaleMetric q hq L.metric).inner (H.backwardSurvivorIncomingMap first last hle G (Ξ y))
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v)
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v) ≤
+            4*StandardCap.metric.inner y.val v v) ∧
+        ∀ j ≤ N, ∀ y : standardCapWindow D, ‖y.val‖ ≤ r →
+          curvDerivNormSq j L.metric (H.backwardSurvivorIncomingMap first last hle G (Ξ y)) ≤
+            q^(j+2)*B := by
+  obtain ⟨η, ε₀, hη, hε₀, hεhalf, hjets⟩ :=
+    exists_uniform_incoming_cap_window_flow_with_curvature_derivative_bounds_of_radius_lower_bound C₀ C hC₀
+  refine ⟨η, ε₀, hη, hε₀, hεhalf, ?_⟩
+  intro N D r hD65 hrpos hfit
+  obtain ⟨δ₀, B, hB, hδ₀, hjets⟩ := hjets N D r hD65 hrpos hfit
+  refine ⟨δ₀, B, hB, hδ₀, ?_⟩
+  intro E H0 M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA Dbig m ζ w hmargin hm hζ
+    inc H first last hle s G L hinit Jbig hJbig J q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hδ hderiv hfinal htime z x Atrace hanchor
+  have hD : 0 < D := by linarith
+  have hDD : D ≤ Dbig := by linarith only [hmargin]
+  obtain ⟨wsmall,hwsmall⟩ : ∃ ws : StandardCap.CanonicalStaticInsertionWitness d A hA D m ζ,
+      ws = w.restrictWindow hD hDD := ⟨_,rfl⟩
+  obtain ⟨hJ,hupperRaw,hmetricRaw,hscalar⟩ := prepared_window_restriction_bounds
+    (E := E) (H := H0) (M := M) (N := (H.stage first).Carrier) (I := I)
+    (g := g) (x₀ := x₀) (δ := δ) (k := k) (d := d) (A := A) (hA := hA) (m := m) (ζ := ζ)
+    hD hmargin w
+    (hζ.trans hεhalf) (H.initialMetric first) Jbig hJbig hzero
+    (fun x hx => (le_abs_self _).trans (hscalar_bound (E := E) (H := H0) (M := M) (N := (H.stage first).Carrier) (I := I)
+      (g := g) (x₀ := x₀) (δ := δ) (k := k) (d := d) (A := A) (hA := hA) (D := Dbig)
+      (m := m) (ε := ζ) w (hζ.trans hεhalf) (by omega)
+      (H.initialMetric first) Jbig hJbig q hq hzero x hx))
+  have hupper : ∀ x : standardCapWindow D, ∀ v : TangentSpace ThreeModel x,
+      wsmall.windowMetric.inner x v v ≤ (3/2:ℝ)*StandardCap.metric.inner x.val v v := by
+    rw [hwsmall]
+    exact hupperRaw
+  have hmetric : ∀ x (v t : TangentSpace ThreeModel x), wsmall.windowMetric.inner x v t =
+      q*(H.initialMetric first).inner (J x)
+        (mfderiv ThreeModel ThreeModel J x v) (mfderiv ThreeModel ThreeModel J x t) := by
+    rw [hwsmall]
+    exact hmetricRaw
+  obtain ⟨Ξ, hΞs, hbirth, hpoint, hΞ, gflow, S, hslabs, hlast, hS, hSzero,
+    hmetricS, hgram, halljets, hterminal, hcontrol, hcurv⟩ := hjets (E := E) (H := H0) (M := M) (I := I)
+    (g := g) (x₀ := x₀) (δ := δ) (k := k) (d := d) (A := A) (hA := hA)
+    (m := m) (ζ := ζ) wsmall hm hζ hupper H first last hle s G L hinit J hJ
+    q q₀ a₀ hq hq₀ hq₀Q haq hmetric hscalar parameters records hfixed hlower hδ hderiv hfinal
+    htime z x Atrace hanchor
+  refine ⟨Ξ, hΞs, hbirth, hpoint, hΞ, gflow, S, hslabs, hlast, hS, ?_,
+    hmetricS, hgram, halljets, hterminal, hcontrol, hcurv⟩
+  rw [hSzero, hwsmall, StandardCap.CanonicalStaticInsertionWitness.restrictWindow_windowMetric]
+
+
+theorem exists_uniform_prepared_incoming_cap_window_flow_with_curvature_derivative_bounds_of_radius_lower_bound
+    (C : ℝ≥0) :
+    ∃ C₀ : ℝ, 0 < C₀ ∧ (
+      ∀ {E : Type uE} {H : Type uH} {M : Type uM} {N : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold ThreeModel ∞ N]
+        [T2Space N]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : StandardCap.CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → 2 ≤ m →
+        ∀ (h : SmoothRiemannianMetric ThreeModel N) (J : standardCapWindow D → N),
+        IsSmoothEmbedding ThreeModel ThreeModel ∞ J →
+        ∀ q : ℝ, 0 < q →
+        (∀ x v z, w.windowMetric.inner x v z =
+          q * h.inner (J x) (mfderiv ThreeModel ThreeModel J x v)
+            (mfderiv ThreeModel ThreeModel J x z)) →
+        ∀ x : standardCapWindow D, ‖x.val‖ < D →
+          |metricScalarAt h (J x)| ≤ C₀ * q) ∧
+    ∃ η ε₀ : ℝ, 0 < η ∧ 0 < ε₀ ∧ ε₀ ≤ 1 / 2 ∧
+      ∀ (N : ℕ) (D r : ℝ), 65 ≤ D → 0 < r → 32 * r < D →
+      ∃ δ₀ B : ℝ, 1 ≤ B ∧ 0 < δ₀ ∧
+      ∀ {E : Type uE} {H : Type uH} {M : Type uM} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {Dbig : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A hA Dbig m ζ)
+        (hmargin : D + 1 ≤ Dbig),
+      max 2 N + 2 ≤ m → ζ ≤ ε₀ →
+      let inc : standardCapWindow D → standardCapWindow Dbig := TopologicalSpace.Opens.inclusion
+        (show standardCapWindow D ≤ standardCapWindow Dbig from by
+          intro x hx
+          change ‖x‖ < Dbig + 1
+          change ‖x‖ < D + 1 at hx
+          linarith only [hx, hmargin]);
+      ∀ (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+        (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric),
+      G.flow.base.metric (H.time last) = H.initialMetric last →
+      ∀ (Jbig : standardCapWindow Dbig → (H.stage first).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ Jbig →
+      let J := Jbig ∘ inc;
+      ∀ (q q₀ a₀ : ℝ) (hq : 0 < q), 0 < q₀ → q₀ ≤ C₀ * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric first).inner (Jbig x) (mfderiv ThreeModel ThreeModel Jbig x v)
+          (mfderiv ThreeModel ThreeModel Jbig x z)) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            C * (H.event j).incoming.flow.scalar t x ^ 2) →
+      (∀ x : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s,
+        q₀ < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
+      q * (s - H.time first) ≤ η →
+      ∀ (z : standardCapWindow D) (x : G.terminalRegularOpen)
+        (A : BackwardPointTrace H first last hle x.val),
+        A.point first le_rfl hle = J z →
+      ∃ Ξ : standardCapWindow D → H.backwardSurvivorIncomingDomain first last hle G,
+        IsSmoothEmbedding ThreeModel ThreeModel ∞ Ξ ∧
+        (∀ y, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ y).val = J y) ∧
+        H.backwardSurvivorIncomingMap first last hle G (Ξ z) = x ∧
+        ∃ (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ)
+          (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+            (H.backwardSurvivorIncomingDomain first last hle G))
+          (S : SolutionOn (I := ThreeModel) (M := standardCapWindow D)
+            (RealTimeInterval.closed 0 (q * (s - H.time first))
+              (by have ht := (H.time_strictMono.monotone hle).trans_lt G.lt; positivity))),
+          (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+            ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+              gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+                (H.backwardSurvivorIncomingDomain first last hle G)) ∧
+          (∀ t ∈ Icc (H.time last) s,
+            gflow t = H.backwardSurvivorIncomingMetric first last hle G L t) ∧
+          IsSolutionOn S ∧ S.base.metric 0 = w.windowMetric.restrictOpenOfSubset
+            (show standardCapWindow D ≤ standardCapWindow Dbig from
+              fun _ hx => hx.trans_le (add_le_add (show D ≤ Dbig by linarith) (le_refl 1))) ∧
+          (∀ t, S.base.metric t = localPullMetric
+            (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) ∧
+          (∀ (y : standardCapWindow D) (j k : Fin (Module.finrank ℝ ThreeSpace)),
+            ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ) ∞
+              (fun z : ℝ × standardCapWindow D => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
+                (S.base.metric z.1) y z.2 j k)
+              (Icc 0 (q * (s - H.time first)) ×ˢ
+                (trivializationAt ThreeSpace (TangentSpace ThreeModel) y).baseSet)) ∧
+          (∀ j ≤ N, ∀ t ∈ Icc 0 (q * (s - H.time first)),
+            ∀ y : standardCapWindow D, ‖y.val‖ ≤ r → curvDerivNormSq j (S.base.metric t) y ≤ B) ∧
+          (∀ y (v z : TangentSpace ThreeModel y),
+            (S.base.metric (q * (s - H.time first))).inner y v z =
+              (scaleMetric q hq L.metric).inner
+                (H.backwardSurvivorIncomingMap first last hle G (Ξ y))
+                (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v)
+                (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y z)) ∧
+        (∀ y : standardCapWindow D, ‖y.val‖ < D → ∀ v : TangentSpace ThreeModel y,
+          (1/4:ℝ)*StandardCap.metric.inner y.val v v ≤
+            (scaleMetric q hq L.metric).inner (H.backwardSurvivorIncomingMap first last hle G (Ξ y))
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v)
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v) ∧
+          (scaleMetric q hq L.metric).inner (H.backwardSurvivorIncomingMap first last hle G (Ξ y))
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v)
+              (mfderiv ThreeModel ThreeModel (H.backwardSurvivorIncomingMap first last hle G ∘ Ξ) y v) ≤
+            4*StandardCap.metric.inner y.val v v) ∧
+        ∀ j ≤ N, ∀ y : standardCapWindow D, ‖y.val‖ ≤ r →
+          curvDerivNormSq j L.metric (H.backwardSurvivorIncomingMap first last hle G (Ξ y)) ≤
+            q^(j+2)*B := by
+  obtain ⟨C₀,hC₀,hbound⟩ :=
+    StandardCap.exists_uniform_window_image_scalar_bound_of_scaled_pullback
+  exact ⟨C₀,hC₀,hbound,prepared_incoming_cap_window_flow_of_scalar_bound C C₀ hC₀ hbound⟩
+
 theorem exists_uniform_prepared_incoming_cap_window_flow_with_curvature_derivative_bounds
     (N : ℕ) (D r eps : ℝ) (C : ℝ≥0)
     (heps : 0 < eps) (hepssmall : eps ≤ 1 / 1000)
@@ -898,11 +1169,22 @@ theorem exists_uniform_prepared_incoming_cap_window_flow_with_curvature_derivati
         ∀ j ≤ N, ∀ y : standardCapWindow D, ‖y.val‖ ≤ r →
           curvDerivNormSq j L.metric (H.backwardSurvivorIncomingMap first last hle G (Ξ y)) ≤
             q^(j+2)*B := by
-  obtain ⟨C₀, hC₀, hscalar, B, hB, hflow⟩ :=
-    exists_uniform_prepared_incoming_cap_window_flow_with_uniform_curvature_derivative_bounds
-      N D r eps heps hepssmall hr hfit
-  obtain ⟨η, ε₀, δ₀, hη, hε₀, hεhalf, hδ₀, hflowC⟩ := hflow C
-  exact ⟨C₀, hC₀, hscalar, η, ε₀, δ₀, B, hB, hη, hε₀, hεhalf, hδ₀, hflowC⟩
+  have hinv : 1000 ≤ eps⁻¹ := by
+    have hh := inv_anti₀ heps hepssmall
+    norm_num at hh
+    exact hh
+  have hD : 65 ≤ D := by linarith [StandardCap.transitionEnd_pos]
+  have hrpos : 0 < r := by linarith [StandardCap.transitionEnd_pos]
+  obtain ⟨C₀, hC₀, hbound, η, ε₀, hη, hε₀, hεhalf, hflow⟩ :=
+    exists_uniform_prepared_incoming_cap_window_flow_with_curvature_derivative_bounds_of_radius_lower_bound.{u, uE, uH, uM} C
+  obtain ⟨δ₀, B, hB, hδ₀, hflow⟩ := hflow N D r hD hrpos (by linarith)
+  refine ⟨C₀, hC₀, hbound, η, ε₀, δ₀, B, hB, hη, hε₀, hεhalf, hδ₀, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA Dbig m ζ w hmargin hm
+  have hceil : 2 ≤ ⌈eps⁻¹⌉₊ := by
+    exact_mod_cast (show (2 : ℝ) ≤ (⌈eps⁻¹⌉₊ : ℝ) from
+      (by linarith : (2 : ℝ) ≤ eps⁻¹).trans (Nat.le_ceil _))
+  exact hflow w hmargin (by omega)
+
 
 theorem exists_uniform_prepared_incoming_cap_curvature_derivative_bound
     (N : ℕ) (D r eps : ℝ) (C : ℝ≥0)

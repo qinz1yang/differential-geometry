@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Family.Cartesian
 import DifferentialGeometry.Geometry.Curvature.RiemannRicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CompactCapMetricLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSolutionRealization
@@ -11,61 +12,9 @@ noncomputable section
 open Set Bundle Manifold DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.PDE.RicciFlow.StandardCap DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.StandardCap
 open scoped Manifold ContDiff Topology BigOperators ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow
-variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-
-theorem cartesian_contDiffOn_of_chartGram
-    (g : ℝ → SmoothRiemannianMetric 𝓘(ℝ, E) E) (K : Set ℝ)
-    (hgram : ∀ (x₀ : E) (i j : Fin (Module.finrank ℝ E)),
-      ContMDiffOn (𝓘(ℝ, ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, ℝ) ∞
-        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (g p.1) x₀ p.2 i j)
-        (K ×ˢ (trivializationAt E (TangentSpace 𝓘(ℝ, E)) x₀).baseSet)) :
-    ContDiffOn ℝ ∞ (cartesianMetricFamily g) (K ×ˢ (univ : Set E)) := by
-  classical
-  have he (i j : Fin (Module.finrank ℝ E)) :
-      ContDiffOn ℝ ∞
-        (fun p : ℝ × E => (g p.1).inner p.2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j))
-        (K ×ˢ (univ : Set E)) := by
-    have hh := hgram 0 i j
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hh
-    have hb : (trivializationAt E (TangentSpace 𝓘(ℝ, E)) (0 : E)).baseSet = univ := rfl
-    rw [hb] at hh
-    apply hh.contDiffOn.congr
-    intro p _
-    simp only [DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_apply, DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber, TangentBundle.symmL_model_space]
-    rfl
-  apply contDiffOn_clm_apply.mpr
-  intro v
-  apply contDiffOn_clm_apply.mpr
-  intro w
-  let c := fun v i => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr v i
-  have hs : ContDiffOn ℝ ∞
-      (fun p : ℝ × E => ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-        (c v i * c w j) * (g p.1).inner p.2 (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j))
-      (K ×ˢ (univ : Set E)) := by
-    apply ContDiffOn.sum
-    intro i _
-    apply ContDiffOn.sum
-    intro j _
-    exact contDiffOn_const.mul (he i j)
-  apply hs.congr
-  intro p _
-  let B : E →L[ℝ] E →L[ℝ] ℝ := cartesianMetricFamily g p
-  change B v w = ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
-    (c v i * c w j) * B (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)
-  conv_lhs => rw [← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr v, ← (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).sum_repr w]
-  simp only [map_sum, map_smul, FunLike.coe_sum, Finset.sum_apply, smul_apply, smul_eq_mul,
-    Finset.mul_sum]
-  rw [Finset.sum_comm]
-  apply Finset.sum_congr rfl
-  intro i _
-  apply Finset.sum_congr rfl
-  intro j _
-  change c w j * (c v i * B (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E j)) = _
-  ring
-
 private abbrev E3 := EuclideanSpace ℝ (Fin 3)
 private abbrev E4 := EuclideanSpace ℝ (Fin 4)
 private abbrev S3 := Metric.sphere (0 : E4) 1
