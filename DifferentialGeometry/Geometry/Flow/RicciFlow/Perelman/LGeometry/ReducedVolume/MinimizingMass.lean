@@ -8,6 +8,102 @@ import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureBounds
 
 noncomputable section
+open Set Manifold Bundle MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow
+open scoped Manifold ContDiff ENNReal Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+ [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem exists_lExpPartial_on_open_nonconjugate_family
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M) {τ : ℝ}
+    {U : Set E} (hU : IsOpen U)
+    (hdom : ∀ Z ∈ U, (Z, τ) ∈ lExpPosDom S T x)
+    (hnconj : ∀ Z ∈ U, ¬ IsLConjugate S T x Z τ)
+    (hinj : Set.InjOn (fun Z : E => lExp S T x Z τ) U) :
+    ∃ Φ : PartialDiffeomorph 𝓘(ℝ, E) I E M ∞,
+      Φ.source = U ∧ Φ.target = (fun Z : E => lExp S T x Z τ) '' U ∧
+      EqOn Φ (fun Z : E => lExp S T x Z τ) U := by
+  exact Geometry.Riemannian.exists_partial_diffeomorph_of_is_local_diffeomorph_on_inj_on
+    (fun Z => lExp_localDiffeo S hS T x Z.val τ (hdom Z.val Z.property) (hnconj Z.val Z.property)) hU hinj
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem lintegral_lReducedJacobian_eq_on_nonconjugate_family [SigmaCompactSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M) {τ : ℝ}
+    {U A : Set E} (hU : IsOpen U)
+    (hdom : ∀ Z ∈ U, (Z, τ) ∈ lExpPosDom S T x)
+    (hnconj : ∀ Z ∈ U, ¬ IsLConjugate S T x Z τ)
+    (hinj : Set.InjOn (fun Z : E => lExp S T x Z τ) U)
+    (hA : MeasurableSet A) (hAU : A ⊆ U) :
+    (∫⁻ Z in A, ENNReal.ofReal (lReducedJacobian S T x Z τ * lSourceDensity S T x)
+      ∂modelHaar (E := E)) =
+      ∫⁻ y in (fun Z : E => lExp S T x Z τ) '' A,
+        ENNReal.ofReal (redDensity S T x y τ)
+        ∂riemannianVolumeMeasure I M (S.base.metric (T - τ)) := by
+  obtain ⟨Φ, hsource, _, hEq⟩ := exists_lExpPartial_on_open_nonconjugate_family
+    S hS T x hU hdom hnconj hinj
+  let Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1 :=
+    { Φ.toPartialEquiv with
+      open_source := Φ.open_source
+      open_target := Φ.open_target
+      contMDiffOn_toFun := Φ.contMDiffOn_toFun.of_le (by norm_num)
+      contMDiffOn_invFun := Φ.contMDiffOn_invFun.of_le (by norm_num) }
+  have hAsource : A ⊆ Ψ.source := by change A ⊆ Φ.source; rwa [hsource]
+  have hΨeq : EqOn Ψ (fun Z : E => lExp S T x Z τ) Ψ.source := by
+    intro Z hZ
+    exact hEq (hsource ▸ hZ)
+  have himage : Ψ '' A = (fun Z : E => lExp S T x Z τ) '' A :=
+    image_congr (fun Z hZ => hΨeq (hAsource hZ))
+  rw [← himage, riemVol_param_lint (S.base.metric (T - τ)) Ψ
+    (fun y => ENNReal.ofReal (redDensity S T x y τ)) hA hAsource]
+  apply setLIntegral_congr_fun hA
+  intro Z hZ
+  have hdomZ := hdom Z (hAU hZ)
+  have hnc := hnconj Z (hAU hZ)
+  dsimp only
+  rw [paramDensity_eq_lExpDensity_of_eqOn S T x τ Ψ hΨeq Z (hAsource hZ),
+    hΨeq (hAsource hZ), ← ENNReal.ofReal_mul (lExpDensity_pos_of_nonconj S T x Z τ hdomZ hnc).le]
+  exact congrArg ENNReal.ofReal (lRedJac_mul_src_of_nonconj S T x Z τ hdomZ hnc)
+
+
+theorem lintegral_redDensity_image_lExp_le_one_at_minimizing_time_of_bdd [SigmaCompactSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M) {τ : ℝ}
+    {U A : Set E} (hU : IsOpen U)
+    (hmin : ∀ Z ∈ U, (Z, τ) ∈ lMinDomain S T x)
+    (hnconj : ∀ Z ∈ U, ¬ IsLConjugate S T x Z τ)
+    (hinj : Set.InjOn (fun Z : E => lExp S T x Z τ) U)
+    (hbdd : ∀ Z ∈ U, BddBelow {a : ℝ | ∃ γ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧
+      γ (Real.sqrt τ) = lExp S T x Z τ ∧ lRegularizedAction S T γ 0 (Real.sqrt τ) = a})
+    (hA : MeasurableSet A) (hAU : A ⊆ U) :
+    (∫⁻ y in (fun Z : E => lExp S T x Z τ) '' A,
+      ENNReal.ofReal (redDensity S T x y τ)
+      ∂riemannianVolumeMeasure I M (S.base.metric (T - τ))) ≤ 1 := by
+  rw [← lintegral_lReducedJacobian_eq_on_nonconjugate_family S hS T x hU
+    (fun Z hZ => ((mem_lMinDomain S T x Z τ).mp (hmin Z hZ)).1) hnconj hinj hA hAU]
+  calc
+    _ ≤ ∫⁻ Z in A, ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) := by
+      apply setLIntegral_mono' hA
+      intro Z hZ
+      apply ENNReal.ofReal_le_ofReal
+      rw [lSourceGaussian_eq_metric_norm]
+      have hh := mul_le_mul_of_nonneg_right
+        (lReducedJacobian_le_gaussian_at_minimizing_time_of_bdd S hS T x (hmin Z (hAU hZ))
+          (hnconj Z (hAU hZ)) (hbdd Z (hAU hZ))) (lSourceDensity_pos S T x).le
+      simpa only [mul_assoc, mul_left_comm, mul_comm] using hh
+    _ ≤ ∫⁻ Z, ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) := setLIntegral_le_lintegral _ _
+    _ = 1 := lSourceGaussian_mass S T x
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+end
+
+noncomputable section
 
 open Set Manifold Bundle MeasureTheory
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Geometry.Curvature
@@ -76,29 +172,16 @@ theorem lintegral_lReducedJacobian_eq_on_minimizing_family_of_bdd [SigmaCompactS
         ∂riemannianVolumeMeasure I M (S.base.metric (T - τ)) := by
   obtain ⟨Φ, hsource, _, hEq⟩ := exists_lExpPartial_on_open_minimizing_family_of_bdd
     S hS T x hτ hτσ hU hmin hcost
-  let Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1 :=
-    { Φ.toPartialEquiv with
-      open_source := Φ.open_source
-      open_target := Φ.open_target
-      contMDiffOn_toFun := Φ.contMDiffOn_toFun.of_le (by norm_num)
-      contMDiffOn_invFun := Φ.contMDiffOn_invFun.of_le (by norm_num) }
-  have hAsource : A ⊆ Ψ.source := by change A ⊆ Φ.source; rwa [hsource]
-  have hΨeq : EqOn Ψ (fun Z : E => lExp S T x Z τ) Ψ.source := by
-    intro Z hZ
-    exact hEq (hsource ▸ hZ)
-  have himage : Ψ '' A = (fun Z : E => lExp S T x Z τ) '' A :=
-    image_congr (fun Z hZ => hΨeq (hAsource hZ))
-  rw [← himage, riemVol_param_lint (S.base.metric (T - τ)) Ψ
-    (fun y => ENNReal.ofReal (redDensity S T x y τ)) hA hAsource]
-  apply setLIntegral_congr_fun hA
-  intro Z hZ
-  have hdom := lExpPosDom_down S T x Z
-    ((mem_lMinDomain S T x Z σ).mp (hmin Z (hAU hZ))).1 hτ hτσ.le
-  have hnc := lMinVec_nconj_lt_of_bdd S hS T x (hmin Z (hAU hZ)) hτσ (hcost Z (hAU hZ))
-  dsimp only
-  rw [paramDensity_eq_lExpDensity_of_eqOn S T x τ Ψ hΨeq Z (hAsource hZ),
-    hΨeq (hAsource hZ), ← ENNReal.ofReal_mul (lExpDensity_pos_of_nonconj S T x Z τ hdom hnc).le]
-  exact congrArg ENNReal.ofReal (lRedJac_mul_src_of_nonconj S T x Z τ hdom hnc)
+  have hinj : Set.InjOn (fun Z : E => lExp S T x Z τ) U := by
+    intro Z hZ W hW heq
+    apply Φ.injOn (hsource.symm ▸ hZ) (hsource.symm ▸ hW)
+    rw [hEq hZ, hEq hW]
+    exact heq
+  apply lintegral_lReducedJacobian_eq_on_nonconjugate_family S hS T x hU ?_ ?_ hinj hA hAU
+  · intro Z hZ
+    exact lExpPosDom_down S T x Z ((mem_lMinDomain S T x Z σ).mp (hmin Z hZ)).1 hτ hτσ.le
+  · intro Z hZ
+    exact lMinVec_nconj_lt_of_bdd S hS T x (hmin Z hZ) hτσ (hcost Z hZ)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

@@ -336,45 +336,32 @@ private theorem exists_minimizing_vector_in_compact_of_ray_action_lt
     exact hηK ht
   · exact heqact.trans_le ((hmin α hα hα0 hαb).trans_eq hαact)
 
-theorem eventually_mem_lMinDomain_of_compact_action_sublevel
+theorem eventually_mem_lMinDomain_of_unique_of_nonconj_of_compact_action_sublevel
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
-    {Z : E} {σ ρ A B : ℝ} (hmin : (Z, σ) ∈ lMinDomain S T x)
-    (hρ : 0 < ρ) (hρσ : ρ < σ)
-    (hscalar : ∀ t ∈ Icc (T - σ) T, ∀ y : M, -B ≤ S.scalar t y)
+    {Z : E} {ρ A : ℝ} (hmin : (Z, ρ) ∈ lMinDomain S T x)
+    (hunique : ∀ W : E, (W, ρ) ∈ lMinDomain S T x → lExp S T x W ρ = lExp S T x Z ρ → W = Z)
+    (hnconj : ¬ IsLConjugate S T x Z ρ)
+    (hbdd : ∀ y : M, BddBelow {c : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧
+      α 0 = x ∧ α (Real.sqrt ρ) = y ∧ lRegularizedAction S T α 0 (Real.sqrt ρ) = c})
     (K : Set M) (hK : IsCompact K) {U : Set M} (hU : U ∈ 𝓝 (lExp S T x Z ρ))
     (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α → α 0 = x →
       α (Real.sqrt ρ) ∈ U → lRegularizedAction S T α 0 (Real.sqrt ρ) ≤ A →
       MapsTo α (Icc 0 (Real.sqrt ρ)) K)
     (hA : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Real.sqrt ρ) < A) :
-    ∀ᶠ W : E in 𝓝 (Z : E), (W, ρ) ∈ lMinDomain S T x := by
+    ∀ᶠ W : E in 𝓝 Z, (W, ρ) ∈ lMinDomain S T x := by
   classical
-  have hσ : 0 < σ := hρ.trans hρσ
-  have hdomσ := ((mem_lMinDomain S T x Z σ).mp hmin).1
-  have hregσ : Icc (T - σ) T ⊆ D.regular := by
-    intro t ht
-    have hnonneg : 0 ≤ T - t := sub_nonneg.mpr ht.2
-    have hle : T - t ≤ σ := by linarith [ht.1]
-    have hh := lExpPosDom_regularity S T x Z hdomσ ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hle⟩
-    simpa only [Real.sq_sqrt hnonneg, sub_sub_cancel] using hh
-  have hbounded {r : ℝ} (hr : 0 < r) (hrσ : r ≤ σ) (y : M) :
-      BddBelow {c : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α 0 = x ∧
-        α (Real.sqrt r) = y ∧ lRegularizedAction S T α 0 (Real.sqrt r) = c} := by
-    apply lRegularizedCosts_bdd_of_scalar_lower S hS T (Real.sqrt_nonneg r)
-    · intro t ht
-      exact D.regular_subset (lExpPosDom_regularity S T x Z hdomσ
-        ⟨ht.1, ht.2.trans (Real.sqrt_le_sqrt hrσ)⟩)
-    · intro t ht z
-      have ht2 : t ^ 2 ≤ r := (Real.le_sqrt ht.1.le hr.le).mp ht.2.le
-      exact hscalar (T - t ^ 2) ⟨by linarith, sub_le_self _ (sq_nonneg t)⟩ z
-  have hZmin : (Z, ρ) ∈ lMinDomain S T x := lMinDomain_down_of_bdd S hS T x Z hmin hρ hρσ.le
-    (hbounded hρ hρσ.le _) (hbounded hσ le_rfl _)
-  have hZdom := ((mem_lMinDomain S T x Z ρ).mp hZmin).1
+  have hρ := lMinDomain_pos S T x Z ρ hmin
+  have hZdom := ((mem_lMinDomain S T x Z ρ).mp hmin).1
   let b := Real.sqrt ρ
   have hb : 0 < b := Real.sqrt_pos.mpr hρ
   have hb2 : b ^ 2 = ρ := Real.sq_sqrt hρ.le
   have hreg : Icc (T - b ^ 2) T ⊆ D.regular := by
     rw [hb2]
-    exact fun t ht => hregσ ⟨(sub_le_sub_left hρσ.le T).trans ht.1, ht.2⟩
+    intro t ht
+    have hn : 0 ≤ T - t := sub_nonneg.mpr ht.2
+    have hh : T - t ≤ ρ := by linarith [ht.1]
+    have hc := lExpPosDom_regularity S T x Z hZdom ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hh⟩
+    simpa only [Real.sq_sqrt hn, sub_sub_cancel] using hc
   have hnear : ∀ᶠ W : E in 𝓝 Z, (W, ρ) ∈ lExpPosDom S T x ∧
       lRegularizedAction S T (lRegularizedCurve S T x W) 0 b < A ∧ lExp S T x W ρ ∈ U := by
     have hd : {W : E | (W, ρ) ∈ lExpPosDom S T x} ∈ 𝓝 Z :=
@@ -419,7 +406,7 @@ theorem eventually_mem_lMinDomain_of_compact_action_sublevel
   have hW₀reg : b ∈ lRegularizedDomain S T x W₀ :=
     lRegDomain_lim_of_compact_range S hS T x b hb hreg K hK (fun n => hWrange (φ n)) hWlim
   have hW₀dom : (W₀, ρ) ∈ lExpPosDom S T x := (mem_lExpPosDom S T x W₀ ρ).mpr ⟨hρ, hρ.le, hW₀reg⟩
-  have hW₀min := lMinVec_lim_of_bdd S hS T x (fun n => hWmin (φ n)) hWlim hW₀dom (hbounded hρ hρσ.le)
+  have hW₀min := lMinVec_lim_of_bdd S hS T x (fun n => hWmin (φ n)) hWlim hW₀dom hbdd
   have hVsub := hVlim.comp hφ.tendsto_atTop
   have hWExp := ((lExp_smoothOn S hS T x) (W₀, ρ) hW₀dom).continuousWithinAt.continuousAt
     ((lExpPosDom_open S hS T x).mem_nhds hW₀dom)
@@ -429,9 +416,9 @@ theorem eventually_mem_lMinDomain_of_compact_action_sublevel
     tendsto_nhds_unique (hWExp.tendsto.comp (hWlim.prodMk_nhds tendsto_const_nhds))
       ((hZExp.tendsto.comp (hVsub.prodMk_nhds tendsto_const_nhds)).congr'
         (Eventually.of_forall fun n => (hWend (φ n)).symm))
-  have hW₀eq : W₀ = Z := lMinVec_unique_lt_of_bdd S hS T x hmin hρσ hW₀min heqend (hbounded hσ le_rfl _)
+  have hW₀eq : W₀ = Z := hunique W₀ hW₀min heqend
   have hlocal := lExp_localDiffeo S hS T x Z ρ hZdom
-    (lMinVec_nconj_lt_of_bdd S hS T x hmin hρσ (hbounded hσ le_rfl _))
+    hnconj
   obtain ⟨Φ, hΦsrc, hΦeq⟩ := hlocal
   have hWsubZ : Tendsto (fun n => W (φ n)) atTop (𝓝 Z) := hW₀eq ▸ hWlim
   obtain ⟨n, hnW, hnV⟩ := ((hWsubZ.eventually (Φ.open_source.mem_nhds hΦsrc)).and
@@ -441,6 +428,43 @@ theorem eventually_mem_lMinDomain_of_compact_action_sublevel
     rw [← hΦeq hnW, ← hΦeq hnV]
     exact hWend (φ n)
   exact hVnot (φ n) (hWV ▸ hWmin (φ n))
+
+theorem eventually_mem_lMinDomain_of_compact_action_sublevel
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {Z : E} {σ ρ A B : ℝ} (hmin : (Z, σ) ∈ lMinDomain S T x)
+    (hρ : 0 < ρ) (hρσ : ρ < σ)
+    (hscalar : ∀ t ∈ Icc (T - σ) T, ∀ y : M, -B ≤ S.scalar t y)
+    (K : Set M) (hK : IsCompact K) {U : Set M} (hU : U ∈ 𝓝 (lExp S T x Z ρ))
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α → α 0 = x →
+      α (Real.sqrt ρ) ∈ U → lRegularizedAction S T α 0 (Real.sqrt ρ) ≤ A →
+      MapsTo α (Icc 0 (Real.sqrt ρ)) K)
+    (hA : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Real.sqrt ρ) < A) :
+    ∀ᶠ W : E in 𝓝 (Z : E), (W, ρ) ∈ lMinDomain S T x := by
+  classical
+  have hσ : 0 < σ := hρ.trans hρσ
+  have hdomσ := ((mem_lMinDomain S T x Z σ).mp hmin).1
+  have hregσ : Icc (T - σ) T ⊆ D.regular := by
+    intro t ht
+    have hnonneg : 0 ≤ T - t := sub_nonneg.mpr ht.2
+    have hle : T - t ≤ σ := by linarith [ht.1]
+    have hh := lExpPosDom_regularity S T x Z hdomσ ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hle⟩
+    simpa only [Real.sq_sqrt hnonneg, sub_sub_cancel] using hh
+  have hbounded {r : ℝ} (hr : 0 < r) (hrσ : r ≤ σ) (y : M) :
+      BddBelow {c : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α 0 = x ∧
+        α (Real.sqrt r) = y ∧ lRegularizedAction S T α 0 (Real.sqrt r) = c} := by
+    apply lRegularizedCosts_bdd_of_scalar_lower S hS T (Real.sqrt_nonneg r)
+    · intro t ht
+      exact D.regular_subset (lExpPosDom_regularity S T x Z hdomσ
+        ⟨ht.1, ht.2.trans (Real.sqrt_le_sqrt hrσ)⟩)
+    · intro t ht z
+      have ht2 : t ^ 2 ≤ r := (Real.le_sqrt ht.1.le hr.le).mp ht.2.le
+      exact hscalar (T - t ^ 2) ⟨by linarith, sub_le_self _ (sq_nonneg t)⟩ z
+  have hZmin : (Z, ρ) ∈ lMinDomain S T x := lMinDomain_down_of_bdd S hS T x Z hmin hρ hρσ.le
+    (hbounded hρ hρσ.le _) (hbounded hσ le_rfl _)
+  exact eventually_mem_lMinDomain_of_unique_of_nonconj_of_compact_action_sublevel S hS T x hZmin
+    (fun W hW heq => lMinVec_unique_lt_of_bdd S hS T x hmin hρσ hW heq (hbounded hσ le_rfl _))
+    (lMinVec_nconj_lt_of_bdd S hS T x hmin hρσ (hbounded hσ le_rfl _))
+    (hbounded hρ hρσ.le) K hK hU hconf hA
 
 theorem exists_open_lMinDomain_of_compact_action_sublevel
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)

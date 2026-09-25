@@ -114,19 +114,20 @@ theorem lActBranch_upper_of_rm
       (by simpa only [Real.sq_sqrt htau.le] using hRm)
       x y)
 
-theorem lCost_nondiff_two_of_rm
+theorem lCost_nondiff_two_of_bdd
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (K T : ℝ) (x : M) {Z W : TangentSpace I x} {tau : ℝ}
+    (T : ℝ) (x : M) {Z W : TangentSpace I x} {tau : ℝ}
     (hZmin : (Z, tau) ∈ lMinDomain S T x)
     (hWmin : (W, tau) ∈ lMinDomain S T x)
     (hZconj : ¬ IsLConjugate S T x Z tau)
     (hWconj : ¬ IsLConjugate S T x W tau)
     (hZW : Z ≠ W)
     (hpos : lExp S T x Z tau = lExp S T x W tau)
-    (hRm : ∀ t ∈ Icc (T - tau) T, ∀ y : M,
-      normSq0S (I := I) (S.base.metric t) y 4
-        (S.base.rm04 t y) ≤ K) :
+    (hbdd : ∀ᶠ y in nhds (lExp S T x Z tau),
+      BddBelow {r : ℝ | ∃ gamma : ℝ → M,
+        ContMDiff 𝓘(ℝ, ℝ) I 1 gamma ∧ gamma 0 = x ∧ gamma (Real.sqrt tau) = y ∧
+          lRegularizedAction S T gamma 0 (Real.sqrt tau) = r}) :
     ¬ MDifferentiableAt I (modelWithCornersSelf ℝ ℝ)
       (fun y : M => lCost S T x y tau) (lExp S T x Z tau) := by
   let hZdom : (Z, tau) ∈ lExpPosDom S T x :=
@@ -186,7 +187,7 @@ theorem lCost_nondiff_two_of_rm
       rw [heta0] at hcont
       exact hcont
     have hup := htend.eventually
-      (lActBranch_upper_of_rm S hS K T x Z tau hZdom hZconj hRm)
+      (lActBranch_upper_of_bdd S hS T x Z tau hZdom hZconj hbdd)
     change ∀ᶠ u in nhds (0 : ℝ),
       lCost S T x (eta u) tau ≤
         lActBranch S hS T x Z tau hZdom hZconj (eta u)
@@ -200,7 +201,7 @@ theorem lCost_nondiff_two_of_rm
       rw [heta0W] at hcont
       exact hcont
     have hup := htend.eventually
-      (lActBranch_upper_of_rm S hS K T x W tau hWdom hWconj hRm)
+      (lActBranch_upper_of_bdd S hS T x W tau hWdom hWconj (by simpa only [← hpos] using hbdd))
     change ∀ᶠ u in nhds (0 : ℝ),
       lCost S T x (eta u) tau ≤
         lActBranch S hS T x W tau hWdom hWconj (eta u)
@@ -251,6 +252,38 @@ theorem lCost_nondiff_two_of_rm
         (modelWithCornersSelf ℝ ℝ)
         (fun u : ℝ => lCost S T x (eta u) tau) 0 at hcomp
       exact hcomp)
+
+theorem lCost_nondiff_two_of_rm
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (K T : ℝ) (x : M) {Z W : TangentSpace I x} {tau : ℝ}
+    (hZmin : (Z, tau) ∈ lMinDomain S T x)
+    (hWmin : (W, tau) ∈ lMinDomain S T x)
+    (hZconj : ¬ IsLConjugate S T x Z tau)
+    (hWconj : ¬ IsLConjugate S T x W tau)
+    (hZW : Z ≠ W)
+    (hpos : lExp S T x Z tau = lExp S T x W tau)
+    (hRm : ∀ t ∈ Icc (T - tau) T, ∀ y : M,
+      normSq0S (I := I) (S.base.metric t) y 4
+        (S.base.rm04 t y) ≤ K) :
+    ¬ MDifferentiableAt I (modelWithCornersSelf ℝ ℝ)
+      (fun y : M => lCost S T x y tau) (lExp S T x Z tau) := by
+  have hdom := ((mem_lMinDomain S T x Z tau).mp hZmin).1
+  have htau := ((mem_lExpPosDom S T x Z tau).mp hdom).1
+  have hreg : Icc (T - tau) T ⊆ D.regular := by
+    intro t ht
+    have hnonneg : 0 ≤ T - t := sub_nonneg.mpr ht.2
+    have hback : T - t ≤ tau := by linarith [ht.1]
+    have hsqrt : Real.sqrt (T - t) ∈ Icc (0 : ℝ) (Real.sqrt tau) :=
+      ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hback⟩
+    have hclock := lExpPosDom_regularity S T x Z hdom hsqrt
+    have heq : T - (Real.sqrt (T - t)) ^ 2 = t := by rw [Real.sq_sqrt hnonneg]; ring
+    simpa only [heq] using hclock
+  apply lCost_nondiff_two_of_bdd S hS T x hZmin hWmin hZconj hWconj hZW hpos
+  exact Filter.Eventually.of_forall (fun y =>
+    lRegularizedCosts_bdd_rm (I := I) S hS K T 0 (Real.sqrt tau) le_rfl (Real.sqrt_nonneg tau)
+      (by simpa only [Real.sq_sqrt htau.le] using hreg)
+      (by simpa only [Real.sq_sqrt htau.le] using hRm) x y)
 
 end DifferentialGeometry.PDE.RicciFlow
 

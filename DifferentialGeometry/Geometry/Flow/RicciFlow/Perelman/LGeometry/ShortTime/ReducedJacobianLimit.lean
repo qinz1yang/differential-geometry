@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.RedJacobian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeComplete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Basic
@@ -263,4 +264,56 @@ theorem lReducedJacobian_le_gaussian
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 
+end
+
+noncomputable section
+open Set Filter Bundle
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow
+open scoped Manifold ContDiff Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+ [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lReducedJacobian_le_gaussian_at_minimizing_time_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {Z : TangentSpace I x} {tau : ℝ} (hmin : (Z, tau) ∈ lMinDomain S T x)
+    (hnconj : ¬ IsLConjugate S T x Z tau)
+    (hbdd : BddBelow {a : ℝ | ∃ γ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧
+      γ (Real.sqrt tau) = lExp S T x Z tau ∧ lRegularizedAction S T γ 0 (Real.sqrt tau) = a}) :
+    lReducedJacobian S T x Z tau ≤ ((Real.pi : ℝ) ^ ((Module.finrank ℝ E : ℝ) / 2))⁻¹ *
+      Real.exp (-(S.base.metric T).inner x Z Z) := by
+  have hdom := ((mem_lMinDomain S T x Z tau).mp hmin).1
+  have htau : 0 < tau := lMinDomain_pos S T x Z tau hmin
+  let F : ℝ → ℝ := fun s => Real.exp (Real.log (lExpJacobian S T x Z s) -
+    lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Real.sqrt s) / (2 * Real.sqrt s) -
+    ((Module.finrank ℝ E : ℝ) / 2) * Real.log s -
+    ((Module.finrank ℝ E : ℝ) / 2) * Real.log (4 * Real.pi))
+  have hact := (continuousAt_lRegularizedAction_lRegularizedCurve S hS T x (Real.sqrt_pos.mpr htau)
+    ((mem_lExpPosDom S T x Z tau).mp hdom).2.2).comp (f := fun s : ℝ => ((Z : E), Real.sqrt s))
+      (continuousAt_const.prodMk Real.continuous_sqrt.continuousAt)
+  have hlog := (lExpJac_log_hasDeriv_of_nonconj S hS T x Z tau hdom hnconj).continuousAt
+  have hF : ContinuousAt F tau := Real.continuous_exp.continuousAt.comp <|
+    ((hlog.sub (hact.div (continuousAt_const.mul Real.continuous_sqrt.continuousAt)
+      (by positivity : 2 * Real.sqrt tau ≠ 0))).sub
+      (continuousAt_const.mul (Real.continuousAt_log htau.ne'))).sub continuousAt_const
+  have heq (s : ℝ) (hs : 0 < s) (hst : s ≤ tau) : F s = lReducedJacobian S T x Z s := by
+    have hms := lMinDomain_down_of_bdd S hS T x Z hmin hs hst
+      (lRegularizedCosts_prefix_bdd_of_min S hS T x Z hmin hs hst hbdd) hbdd
+    have hc := ((mem_lMinDomain S T x Z s).mp hms).2
+    change lLength S T (squareRootReparametrization (lRegularizedCurve S T x Z)) 0 s = _ at hc
+    rw [lLength_squareRootReparametrization_eq_lRegularizedAction S T _ s hs.le] at hc
+    simp only [F, lReducedJacobian, lRedLog, redLength, hc]
+  have hlim : Tendsto F (𝓝[<] tau) (𝓝 (F tau)) := hF.tendsto.mono_left nhdsWithin_le_nhds
+  have hbound : ∀ᶠ s in 𝓝[<] tau, F s ≤ ((Real.pi : ℝ) ^ ((Module.finrank ℝ E : ℝ) / 2))⁻¹ *
+      Real.exp (-(S.base.metric T).inner x Z Z) := by
+    filter_upwards [self_mem_nhdsWithin, (eventually_gt_nhds htau).filter_mono nhdsWithin_le_nhds] with s hs hsp
+    rw [heq s hsp hs.le]
+    exact lReducedJacobian_le_gaussian_of_bdd S hS T x hmin hsp hs hbdd
+  simpa only [heq tau htau le_rfl] using le_of_tendsto hlim hbound
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
 end

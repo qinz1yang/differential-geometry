@@ -113,3 +113,59 @@ theorem isCompact_lMinVec_over_of_rm
 end DifferentialGeometry.PDE.RicciFlow
 
 end
+
+noncomputable section
+open Bundle Filter Set
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology
+namespace DifferentialGeometry.PDE.RicciFlow
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+theorem isCompact_lMinVec_over_of_compact_range
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {tau : ℝ} (htau : 0 < tau)
+    (hreg : Icc (T - tau) T ⊆ D.regular)
+    (Q : Set M) (hQ : IsCompact Q) {Y : Set M} (hY : IsClosed Y) (A : ℝ)
+    (hbdd : ∀ y : M, BddBelow {r : ℝ | ∃ γ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧ γ (Real.sqrt tau) = y ∧
+        lRegularizedAction S T γ 0 (Real.sqrt tau) = r})
+    (hact : ∀ Z : TangentSpace I x, (Z, tau) ∈ lMinDomain S T x → lExp S T x Z tau ∈ Y →
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Real.sqrt tau) ≤ A)
+    (hrange : ∀ Z : TangentSpace I x, (Z, tau) ∈ lMinDomain S T x → lExp S T x Z tau ∈ Y →
+      MapsTo (lRegularizedCurve S T x Z) (Icc 0 (Real.sqrt tau)) Q) :
+    IsCompact {Z : TangentSpace I x | (Z, tau) ∈ lMinDomain S T x ∧ lExp S T x Z tau ∈ Y} := by
+  classical
+  let F : Set (TangentSpace I x) := {Z | (Z, tau) ∈ lMinDomain S T x ∧ lExp S T x Z tau ∈ Y}
+  let b := Real.sqrt tau
+  have hb : 0 < b := Real.sqrt_pos.mpr htau
+  have hb2 : b ^ 2 = tau := Real.sq_sqrt htau.le
+  have hregSq : Icc (T - b ^ 2) T ⊆ D.regular := by simpa only [hb2] using hreg
+  have hfamilyDom (W : TangentSpace I x) (hW : W ∈ F) : b ∈ lRegularizedDomain S T x W :=
+    ((mem_lExpPosDom S T x W tau).mp (((mem_lMinDomain S T x W tau).mp hW.1).1)).2.2
+  have hbounded : Bornology.IsBounded F := by
+    let Z : F → TangentSpace I x := Subtype.val
+    have hbnd := lRegInit_bound_of_compact_range S hS T x b A hb hregSq hQ Z
+      (fun z => hfamilyDom z z.property) (fun z => hact z z.property.1 z.property.2)
+      (fun z => image_subset_iff.mpr (hrange z z.property.1 z.property.2))
+    simpa only [Z, Subtype.range_coe_subtype, ofPred_mem_eq] using hbnd
+  have hclosed : IsClosed F := by
+    rw [← isSeqClosed_iff_isClosed]
+    intro Z Z₀ hZF hZ
+    have hdom₀ : b ∈ lRegularizedDomain S T x Z₀ :=
+      lRegDomain_lim_of_compact_range S hS T x b hb hregSq Q hQ
+        (fun n => hrange (Z n) (hZF n).1 (hZF n).2) hZ
+    have hpos₀ : (Z₀, tau) ∈ lExpPosDom S T x :=
+      (mem_lExpPosDom S T x Z₀ tau).mpr ⟨htau, htau.le, hdom₀⟩
+    have hmin₀ := lMinVec_lim_of_bdd S hS T x (fun n => (hZF n).1) hZ hpos₀ hbdd
+    have hExpAt : ContinuousAt (fun p : E × ℝ => lExp S T x p.1 p.2) (Z₀, tau) :=
+      ((lExp_smoothOn S hS T x) (Z₀, tau) hpos₀).continuousWithinAt.continuousAt
+        ((lExpPosDom_open S hS T x).mem_nhds hpos₀)
+    have hExpLim := hExpAt.tendsto.comp (hZ.prodMk_nhds tendsto_const_nhds)
+    exact ⟨hmin₀, hY.mem_of_tendsto hExpLim (Filter.Eventually.of_forall fun n => (hZF n).2)⟩
+  exact Metric.isCompact_iff_isClosed_bounded.mpr ⟨hclosed, hbounded⟩
+
+end DifferentialGeometry.PDE.RicciFlow
+
+end
