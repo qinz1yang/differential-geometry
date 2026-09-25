@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TowerInductionStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MasterFlowCompatibility
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorAction
 
@@ -306,3 +309,199 @@ theorem exists_backwardSurvivorIncomingFootprint_isSolutionOn_preserving_action
       (ht0.trans (ht (Nat.zero_le (k.val + 1))))).symm
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Function Manifold
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem RetainedCoreHistory.incomingFootprint_stage_maps_extendHorizon
+    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
+    (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
+    (first : Fin (H.eventCount + 1)) (K : Set G.terminalRegularOpen)
+    (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K))
+    (hslabs : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc),
+      ∀ v ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        gflow v = ((H.toHistory.backwardSurvivorSlabMetric first (Fin.last H.eventCount) (Fin.le_last first)
+          j hf (Fin.le_last _) v).restrictOpen
+            (H.toHistory.backwardSurvivorIncomingDomain first (Fin.last H.eventCount) (Fin.le_last first) G)).restrictOpen
+              (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K))
+    (hlast : ∀ v ∈ Icc (H.time (Fin.last H.eventCount)) s,
+      gflow v = (H.toHistory.backwardSurvivorIncomingMetric first (Fin.last H.eventCount)
+        (Fin.le_last first) G L v).restrictOpen
+          (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K))
+    {t : ℝ} (ht : H.horizon < t) (hts : t < s) :
+    let htstart := H.time_le_horizon.trans_lt ht
+    let A := H.extendHorizon t ht.le (G.closedPrefix t htstart hts) hinit
+    let X := H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K
+    let f : (j : A.toHistory.StageInterval first (Fin.last H.eventCount)) → X → (A.stage j.val).Carrier :=
+      fun j => H.toHistory.backwardSurvivorIncomingFootprintStageMap first (Fin.last H.eventCount)
+        (Fin.le_last first) G K j.val j.property.1 j.property.2
+    ∃ hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j),
+      (∀ j, Injective (f j)) ∧
+      (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ Fin.last H.eventCount), ∀ z : X,
+        (A.toHistory.event i).RegularCrossing
+          (f ⟨i.castSucc, hi, i.castSucc_le_succ.trans hl⟩ z)
+          (f ⟨i.succ, hi.trans i.castSucc_le_succ, hl⟩ z)) ∧
+      (∀ j, ∀ r ∈ Ioo (A.toHistory.regularizedStageStart t 0 j.val)
+        (A.toHistory.regularizedStageEnd t (Real.sqrt (t - H.time first)) j.val),
+        gflow (t - r ^ 2) = localPullMetric (A.toHistory.stageMetric j.val (t - r ^ 2)) (f j) (hf j)) := by
+  intro htstart A X f
+  let hf (j : A.toHistory.StageInterval first (Fin.last H.eventCount)) :
+      IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j) :=
+    H.toHistory.backwardSurvivorIncomingFootprintStageMap_isLocalDiffeomorph first (Fin.last H.eventCount)
+      (Fin.le_last first) G K j.val j.property.1 j.property.2
+  refine ⟨hf, ?_, ?_, ?_⟩
+  · intro j
+    exact (H.toHistory.backwardSurvivorMap_injective first (Fin.last H.eventCount) (Fin.le_last first)
+      j.val j.property.1 j.property.2).comp (Subtype.val_injective.comp Subtype.val_injective)
+  · intro i hi hl z
+    exact H.toHistory.backwardSurvivorIncomingFootprintStageMap_crossing first (Fin.last H.eventCount)
+      (Fin.le_last first) G K i hi hl z
+  · intro j r hr
+    have hstage := A.toHistory.mapsTo_regularizedStage_Ioo t 0 (Real.sqrt (t - H.time first)) j.val hr
+    have hphys_le : t - r ^ 2 ≤ t := sub_le_self _ (sq_nonneg r)
+    have hphys_s : t - r ^ 2 < s := hphys_le.trans_lt hts
+    by_cases hjlast : j.val = Fin.last H.eventCount
+    · rcases j with ⟨j, hjfirst, hjlast'⟩
+      dsimp only at hjlast
+      subst j
+      have hlower : H.time (Fin.last H.eventCount) ≤ t - r ^ 2 := A.toHistory.time_le_of_mem_stageDomain hstage
+      have hAmetric : A.toHistory.stageMetric (Fin.last H.eventCount) (t - r ^ 2) = G.flow.base.metric (t - r ^ 2) :=
+        A.toHistory.stageMetric_last_of_lt (h := htstart) _
+      rw [hAmetric, hlast _ ⟨hlower, hphys_s.le⟩]
+      exact ObservedHistory.incomingMetric_restrict_eq_localPull H.toHistory first (Fin.last H.eventCount)
+        (Fin.le_last first) G L K hphys_s
+    · have hjN : j.val.val < H.eventCount := by
+        have hh : j.val.val < H.eventCount + 1 := j.val.isLt
+        have hn : j.val.val ≠ H.eventCount := fun h => hjlast (Fin.ext h)
+        omega
+      obtain ⟨i, hi⟩ : ∃ i : Fin H.eventCount, j.val = i.castSucc :=
+        ⟨⟨j.val.val, hjN⟩, Fin.ext rfl⟩
+      rcases j with ⟨j, hjfirst, hjlast'⟩
+      dsimp only at hi
+      subst j
+      change t - r ^ 2 ∈ A.toHistory.stageDomain i.castSucc at hstage
+      let iA : Fin A.eventCount := ⟨i.val, i.isLt⟩
+      have hstageA : t - r ^ 2 ∈ A.toHistory.stageDomain iA.castSucc := hstage
+      have hstage' : t - r ^ 2 ∈ Ico (H.time i.castSucc) (H.time i.succ) := by
+        change t - r ^ 2 ∈ Ico (A.time iA.castSucc) (A.time iA.succ)
+        simpa only [ObservedHistory.stageDomain, Fin.lastCases_castSucc] using hstageA
+      have hAmetric : A.toHistory.stageMetric i.castSucc (t - r ^ 2) =
+          (H.toHistory.event i).incoming.flow.base.metric (t - r ^ 2) :=
+        ObservedHistory.stageMetric_castSucc_apply (H := A.toHistory) i _
+      change gflow (t - r ^ 2) = localPullMetric (A.toHistory.stageMetric i.castSucc (t - r ^ 2))
+        (H.toHistory.backwardSurvivorIncomingFootprintStageMap first (Fin.last H.eventCount)
+          (Fin.le_last first) G K i.castSucc hjfirst hjlast') _
+      rw [hAmetric, hslabs i hjfirst _ ⟨hstage'.1, hstage'.2.le⟩]
+      exact ObservedHistory.slabMetric_restrict_eq_localPull H.toHistory first (Fin.last H.eventCount)
+        (Fin.le_last first) G K i hjfirst (Fin.le_last _) hstage'.2
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+noncomputable section
+open Set Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem RetainedCoreHistory.exists_incomingFootprint_regularizedCost_minimum
+    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
+    (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
+    (first : Fin (H.eventCount + 1)) (K : Set G.terminalRegularOpen)
+ :
+    ∃ gflow : ℝ → SmoothRiemannianMetric ThreeModel
+        (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K),
+      (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc),
+        ∀ v ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          gflow v = ((H.toHistory.backwardSurvivorSlabMetric first (Fin.last H.eventCount) (Fin.le_last first)
+            j hf (Fin.le_last _) v).restrictOpen
+              (H.toHistory.backwardSurvivorIncomingDomain first (Fin.last H.eventCount) (Fin.le_last first) G)).restrictOpen
+                (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K)) ∧
+      (∀ v ∈ Icc (H.time (Fin.last H.eventCount)) s,
+        gflow v = (H.toHistory.backwardSurvivorIncomingMetric first (Fin.last H.eventCount)
+          (Fin.le_last first) G L v).restrictOpen
+            (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K)) ∧
+      ∀ (t : ℝ) (ht : H.horizon < t) (hts : t < s),
+      let htstart := H.time_le_horizon.trans_lt ht
+      let A := H.extendHorizon t ht.le (G.closedPrefix t htstart hts) hinit
+      let X := H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount) (Fin.le_last first) G K
+      let D := RealTimeInterval.closed (H.time first) s
+        ((H.time_strictMono.monotone (Fin.le_last first)).trans G.lt.le)
+      let S : SolutionOn (I := ThreeModel) (M := X) D := { base := { metric := gflow } }
+      let v := Real.sqrt (t - H.time first)
+      let f : (j : A.toHistory.StageInterval first (Fin.last H.eventCount)) → X → (A.stage j.val).Carrier :=
+        fun j => H.toHistory.backwardSurvivorIncomingFootprintStageMap first (Fin.last H.eventCount)
+          (Fin.le_last first) G K j.val j.property.1 j.property.2
+      ∀ (Q : Set X), IsCompact Q → ∀ (g : SmoothRiemannianMetric ThreeModel X) (μ B r : ℝ),
+      0 ≤ μ → 0 < r →
+      (∀ z ∈ Ioo 0 v, ∀ p ∈ Q, ∀ w : TangentSpace ThreeModel p,
+        μ * g.inner p w w ≤ (gflow (t - z ^ 2)).inner p w w) →
+      (∀ j : A.toHistory.StageInterval first (Fin.last H.eventCount),
+        ∀ z ∈ Ioo (A.toHistory.regularizedStageStart t 0 j.val) (A.toHistory.regularizedStageEnd t v j.val),
+        ∀ p : (A.stage j.val).Carrier, -B ≤ metricScalarAt (A.toHistory.stageMetric j.val (t - z ^ 2)) p) →
+      ∀ x : X, x ∈ interior Q →
+      (∀ z ∈ frontier Q, ENNReal.ofReal r ≤ riemannianEDistOf g x z) →
+      ∀ (y : X) (γ : ℝ → X), ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ → γ 0 = x → γ v = y →
+      lRegularizedAction S t γ 0 v < μ * r ^ 2 / (2 * v) - (2 * B / 3) * v ^ 3 →
+      ∃ η : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η ∧ η 0 = x ∧ η v = y ∧
+        MapsTo η (Icc 0 v) Q ∧ lRegularizedAction S t η 0 v ≤ lRegularizedAction S t γ 0 v ∧
+        (lRegularizedAction S t η 0 v : WithTop ℝ) ∈ A.toHistory.regularizedActionValues first
+          (Fin.last H.eventCount) (Fin.le_last first) t B 0 v
+          (f ⟨Fin.last H.eventCount, Fin.le_last first, le_rfl⟩ x) (f ⟨first, le_rfl, Fin.le_last first⟩ y) ∧
+        A.toHistory.regularizedCost first (Fin.last H.eventCount) (Fin.le_last first) t B 0 v
+          (f ⟨Fin.last H.eventCount, Fin.le_last first, le_rfl⟩ x) (f ⟨first, le_rfl, Fin.le_last first⟩ y) =
+            (lRegularizedAction S t η 0 v : WithTop ℝ) := by
+  obtain ⟨gflow, hslabs, hlast, hterminal, hsmooth, hS⟩ :=
+    H.toHistory.exists_backwardSurvivorIncomingFootprint_isSolutionOn first (Fin.last H.eventCount)
+      (Fin.le_last first) G L hinit K
+  refine ⟨gflow, (fun j hf v hv => hslabs j hf (Fin.le_last _) v hv), hlast, ?_⟩
+  intro t ht hts htstart A X D S v f Q hQ g μ B r hμ hr hcompare hscalar x hx hfront y γ hγ hstart hend hact
+  obtain ⟨hf, hinj, hcross, hmetric⟩ := H.incomingFootprint_stage_maps_extendHorizon G L hinit first K gflow
+    (fun j hj v hv => hslabs j hj (Fin.le_last _) v hv) hlast ht hts
+  have hfirst : H.time first < t := (H.toHistory.time_le_horizon_at first).trans_lt ht
+  have hv : 0 < v := Real.sqrt_pos.mpr (sub_pos.mpr hfirst)
+  have hv2 : v ^ 2 = t - H.time first := Real.sq_sqrt (sub_nonneg.mpr hfirst.le)
+  have hupper : t - (0 : ℝ) ^ 2 ∈ A.toHistory.stageDomain (Fin.last H.eventCount) := by
+    change t - (0 : ℝ) ^ 2 ∈ A.toHistory.stageDomain (Fin.last A.eventCount)
+    simp only [zero_pow two_ne_zero, sub_zero, ObservedHistory.stageDomain, Fin.lastCases_last]
+    exact ⟨htstart.le, le_rfl⟩
+  have hlower : t - v ^ 2 ∈ A.toHistory.stageDomain first := by
+    rw [hv2, sub_sub_cancel]
+    exact A.toHistory.time_mem_stageDomain first
+  have hclock : ∀ z ∈ Icc 0 v, t - z ^ 2 ∈ Icc (H.time first) s := by
+    intro z hz
+    have hz2 := (sq_le_sq₀ hz.1 hv.le).mpr hz.2
+    rw [hv2] at hz2
+    exact ⟨by linarith, (sub_le_self _ (sq_nonneg z)).trans hts.le⟩
+  have hreg : ∀ z ∈ Ioo 0 v, t - z ^ 2 ∈ D.regular := by
+    intro z hz
+    have hz2 := (sq_lt_sq₀ hz.1.le hv.le).mpr hz.2
+    rw [hv2] at hz2
+    exact ⟨by linarith, (sub_le_self _ (sq_nonneg z)).trans_lt hts⟩
+  apply A.toHistory.exists_regularizedCost_minimum_of_joint_metric_of_action_lt_compact_barrier first
+    (Fin.last H.eventCount) (Fin.le_last first) f hf hinj Q hQ hcross le_rfl hv hupper hlower
+    S hS (Icc (H.time first) s) Subset.rfl hclock hreg hsmooth g hμ hr hmetric hcompare hscalar
+    x hx hfront y γ hγ hstart hend
+  simpa only [sub_zero, zero_pow (by decide : (3 : ℕ) ≠ 0)] using hact
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end

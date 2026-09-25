@@ -555,4 +555,354 @@ theorem eventually_minimizing_segment_cap_window_exclusion_of_scalar_blowup
   exact ht.not_ge (hbound D r eps heps hsmall hr hfit hdepth N hN g hconv P h q hq Φ hΦ hinj
     hmetric u hu γ ell rho t (R t) hell t.property hmin hpoint hmark hend)
 
+theorem exists_minimizing_segment_left_arm_bound_near_core_of_endpoint_scalar_gt
+    (D r : ℝ) (hRD : r < D + 1) :
+    ∃ C : ℝ, 1 ≤ C ∧
+      ∀ eps : ℝ, 0 < eps → eps < 1 / 11 →
+        transitionEnd + eps⁻¹ + 1 < r → r + eps⁻¹ + 1 ≤ D →
+        2 * transitionEnd + 4000 < r / 2 →
+        ∀ N : ℕ, ⌈eps⁻¹⌉₊ ≤ N →
+        ∀ g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D),
+        MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} N g
+          (metric.restrictOpen (standardCapWindow D))
+          (metric.restrictOpen (standardCapWindow D)) →
+        ∀ (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+          [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+          (h : ∀ n, SmoothRiemannianMetric I3 (P n))
+          (Φ : ∀ n, standardCapWindow D → P n),
+          (∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) →
+          (∀ n, Function.Injective (Φ n)) →
+          (∀ n (x : standardCapWindow D) (v w : TangentSpace I3 x),
+            (g n).inner x v w = (h n).inner (Φ n x)
+              (mfderiv I3 I3 (Φ n) x v) (mfderiv I3 I3 (Φ n) x w)) →
+          ∀ᶠ n in Filter.atTop, ∀ u : standardCapWindow D, ‖u.val‖ ≤ transitionEnd →
+            ∀ x : P n, riemannianEDistOf (h n) x (Φ n u) ≤ ENNReal.ofReal (4 : ℝ) →
+            (1 / 2 < metricScalarAt (h n) x ∧ metricScalarAt (h n) x < C) ∧
+            ∀ (γ : ℝ → P n) (a t b : ℝ), t ∈ Icc a b →
+              (∀ s ∈ Icc a b, ∀ v ∈ Icc a b,
+                riemannianEDistOf (h n) (γ s) (γ v) = ENNReal.ofReal |s - v|) →
+              γ t = x → C < metricScalarAt (h n) (γ b) → t - a < 4 * r := by
+  let _ : SigmaCompactSpace (standardCapWindow D) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I3 (standardCapWindow D).isOpen)
+  obtain ⟨η, C, hη, hC, hscalar⟩ := exists_uniform_window_scalar_bounds_of_metric_close D r hRD
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hsmall hr hfit hdepth N hN g hconv P _ _ _ _ h Φ hΦ hinj hmetric
+  have hrpos : 0 < r := by linarith [transitionEnd_pos, inv_pos.mpr heps]
+  have hinv : (11 : ℝ) < eps⁻¹ := by
+    have hh := one_div_lt_one_div_of_lt heps hsmall
+    norm_num at hh
+    exact hh
+  have htwo : 2 ≤ N := by
+    have hh := (Nat.le_ceil eps⁻¹).trans (Nat.cast_le.mpr hN)
+    have hn : (2 : ℝ) ≤ (N : ℝ) := by linarith
+    exact_mod_cast hn
+  have hcompact : IsCompact {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} := by
+    have hc : IsCompact {x : ThreeSpace | ‖x‖ ≤ r + eps⁻¹} := by
+      simpa only [Metric.closedBall, dist_zero_right] using
+        isCompact_closedBall (0 : ThreeSpace) (r + eps⁻¹)
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hc (by
+      intro x hx
+      refine ⟨⟨x, ?_⟩, rfl⟩
+      change ‖x‖ < D + 1
+      change ‖x‖ ≤ r + eps⁻¹ at hx
+      linarith)
+  obtain ⟨n₀, hn₀⟩ := hconv η hη
+  filter_upwards [eventually_spatial_cap_frontier_with_ball_of_metric_cp_convergence
+    D r eps 4000 heps hsmall hr hfit hdepth N hN g hconv P h Φ hΦ hinj hmetric,
+    Filter.eventually_ge_atTop n₀] with n hn hnlarge
+  obtain ⟨p,z,hp,hz,nk,K,hcarrier,hcap,hzero,hmarks,hmap,hfront,hemb,hside,hsc,hball⟩ := hn
+  have hclose : metricDerivENormSupOn {x : standardCapWindow D | ‖x.val‖ ≤ r}
+      2 (g n) (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)) < ENNReal.ofReal η := by
+    apply (metricDerivENormSupOn_mono (show {x : standardCapWindow D | ‖x.val‖ ≤ r} ⊆
+      {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} from
+        fun x hx => (show ‖x.val‖ ≤ r from hx).trans (le_add_of_nonneg_right (inv_pos.mpr heps).le)) htwo (g n) _ _).trans_lt
+    rw [metricDerivENormSupOn_eq_ofReal_of_isCompact hcompact]
+    exact (ENNReal.ofReal_lt_ofReal_iff hη).mpr (hn₀ n hnlarge)
+  have hbound : ∀ y ∈ K.carrier,
+      1 / 2 < metricScalarAt (h n) y ∧ metricScalarAt (h n) y < C := by
+    intro y hy
+    obtain ⟨w, hw, rfl⟩ := hcarrier ▸ hy
+    have hh := hscalar (g n) hclose w hw
+    rwa [(curvature_of_injective_local_isometry (g n) (h n) (Φ n) (hΦ n) (hinj n)
+      (hmetric n) w).1] at hh
+  intro u hu x hx
+  obtain ⟨huin, huscalar, huball⟩ := hmarks u hu
+  have hxball : riemannianBallOf (h n) x 2000 ⊆ interior K.carrier := by
+    intro y hy
+    apply huball
+    change riemannianEDistOf (h n) (Φ n u) y < ENNReal.ofReal (4000 : ℝ)
+    have hux : riemannianEDistOf (h n) (Φ n u) x ≤ ENNReal.ofReal (4 : ℝ) := by
+      rwa [riemannianEDistOf_comm] at hx
+    have hh := (riemannianEDistOf_triangle (h n) (Φ n u) x y).trans
+      (add_le_add hux (show riemannianEDistOf (h n) x y ≤ ENNReal.ofReal (2000 : ℝ) from hy.le))
+    exact hh.trans_lt (by norm_num)
+  have hxin : x ∈ interior K.carrier := hxball (by
+    change riemannianEDistOf (h n) x x < ENNReal.ofReal (2000 : ℝ)
+    rw [riemannianEDistOf_self]
+    norm_num)
+  refine ⟨hbound x (interior_subset hxin), ?_⟩
+  intro γ a t b ht hmin hpoint hhigh
+  by_contra! hlong
+  have hbin := minimizing_endpoint_mem_of_spatial_cap (h n) hrpos nk hsc hfront hball
+    hxin hxball ht hmin hpoint hlong
+  exact (hbound (γ b) (interior_subset hbin)).2.not_gt hhigh
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_scalar_normalized_left_arm_bound_near_core_of_endpoint_scalar_gt
+    (D r : ℝ) (hRD : r < D + 1) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ eps : ℝ, 0 < eps → eps < 1 / 11 →
+      transitionEnd + eps⁻¹ + 1 < r → r + eps⁻¹ + 1 ≤ D →
+      2 * transitionEnd + 4000 < r / 2 →
+      ∀ N : ℕ, ⌈eps⁻¹⌉₊ ≤ N →
+      ∀ g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D),
+      MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} N g
+        (metric.restrictOpen (standardCapWindow D))
+        (metric.restrictOpen (standardCapWindow D)) →
+      ∀ (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+        [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+        (h : ∀ n, SmoothRiemannianMetric I3 (P n)) (q : ℕ → ℝ),
+      ∀ hq : (∀ n, 0 < q n), ∀ Φ : ∀ n, standardCapWindow D → P n,
+      (∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) → (∀ n, Function.Injective (Φ n)) →
+      (∀ n (x : standardCapWindow D) (v w : TangentSpace I3 x),
+        (g n).inner x v w = q n * (h n).inner (Φ n x)
+          (mfderiv I3 I3 (Φ n) x v) (mfderiv I3 I3 (Φ n) x w)) →
+      ∀ᶠ n in Filter.atTop, ∀ u : standardCapWindow D, ‖u.val‖ ≤ transitionEnd →
+        ∀ x : P n, riemannianEDistOf (scaleMetric (q n) (hq n) (h n)) x (Φ n u) ≤ ENNReal.ofReal (4 : ℝ) →
+        ((1 / 2 : ℝ) * q n < metricScalarAt (h n) x ∧ metricScalarAt (h n) x < C * q n) ∧
+        ∀ (γ : ℝ → P n) (a t b : ℝ), t ∈ Icc a b →
+          (∀ s ∈ Icc a b, ∀ v ∈ Icc a b,
+            riemannianEDistOf (h n) (γ s) (γ v) = ENNReal.ofReal |s - v|) →
+          γ t = x → C * q n < metricScalarAt (h n) (γ b) →
+          Real.sqrt (metricScalarAt (h n) x) * (t - a) < 4 * r * Real.sqrt C := by
+  obtain ⟨C, hC, hleft⟩ := exists_minimizing_segment_left_arm_bound_near_core_of_endpoint_scalar_gt D r hRD
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hsmall hr hfit hdepth N hN g hconv P _ _ _ _ h q hq Φ hΦ hinj hmetric
+  have harmevent := hleft eps heps hsmall hr hfit hdepth N hN g hconv P
+    (fun n => scaleMetric (q n) (hq n) (h n)) Φ hΦ hinj hmetric
+  filter_upwards [harmevent] with n hn
+  intro u hu x hx
+  have harm := hn u hu x hx
+  have hscalar : (1 / 2 : ℝ) * q n < metricScalarAt (h n) x ∧ metricScalarAt (h n) x < C * q n := by
+    have hs := harm.1
+    rw [metricScalarAt_scaleMetric, ← div_eq_inv_mul] at hs
+    exact ⟨(lt_div_iff₀ (hq n)).mp hs.1, (div_lt_iff₀ (hq n)).mp hs.2⟩
+  refine ⟨hscalar, ?_⟩
+  intro γ a t b ht hmin hpoint hhigh
+  have hqroot : 0 < Real.sqrt (q n) := Real.sqrt_pos.mpr (hq n)
+  have hsqrt : Real.sqrt (metricScalarAt (h n) x) ≤
+      Real.sqrt C * Real.sqrt (q n) := by
+    rw [← Real.sqrt_mul (zero_le_one.trans hC)]
+    exact Real.sqrt_le_sqrt hscalar.2.le
+  let γq : ℝ → P n := fun s => γ (s / Real.sqrt (q n))
+  have hinterval {s : ℝ} (hs : s ∈ Icc (Real.sqrt (q n) * a) (Real.sqrt (q n) * b)) :
+      s / Real.sqrt (q n) ∈ Icc a b := by
+    constructor
+    · apply (le_div_iff₀ hqroot).mpr
+      simpa only [mul_comm] using hs.1
+    · apply (div_le_iff₀ hqroot).mpr
+      simpa only [mul_comm] using hs.2
+  have hminq : ∀ s ∈ Icc (Real.sqrt (q n) * a) (Real.sqrt (q n) * b),
+      ∀ v ∈ Icc (Real.sqrt (q n) * a) (Real.sqrt (q n) * b),
+        riemannianEDistOf (scaleMetric (q n) (hq n) (h n)) (γq s) (γq v) =
+          ENNReal.ofReal |s - v| := by
+    intro s hs v hv
+    rw [edistOf_scale, hmin _ (hinterval hs) _ (hinterval hv),
+      ← ENNReal.ofReal_mul hqroot.le]
+    congr 1
+    rw [← sub_div, abs_div, abs_of_pos hqroot, mul_div_cancel₀ _ hqroot.ne']
+  have hmarkq : γq (Real.sqrt (q n) * t) = x := by
+    dsimp only [γq]
+    rw [mul_div_cancel_left₀ t hqroot.ne']
+    exact hpoint
+  have hhighq : C < metricScalarAt (scaleMetric (q n) (hq n) (h n))
+      (γq (Real.sqrt (q n) * b)) := by
+    dsimp only [γq]
+    rw [mul_div_cancel_left₀ b hqroot.ne', metricScalarAt_scaleMetric, ← div_eq_inv_mul]
+    exact (lt_div_iff₀ (hq n)).mpr hhigh
+  have harms := harm.2 γq (Real.sqrt (q n) * a) (Real.sqrt (q n) * t)
+    (Real.sqrt (q n) * b)
+    ⟨mul_le_mul_of_nonneg_left ht.1 hqroot.le, mul_le_mul_of_nonneg_left ht.2 hqroot.le⟩
+    hminq hmarkq hhighq
+  have hscaled : Real.sqrt (q n) * (t - a) < 4 * r := by
+    simpa only [mul_sub] using harms
+  calc
+    _ ≤ (Real.sqrt C * Real.sqrt (q n)) * (t - a) :=
+      mul_le_mul_of_nonneg_right hsqrt (sub_nonneg.mpr ht.1)
+    _ = Real.sqrt C * (Real.sqrt (q n) * (t - a)) := mul_assoc _ _ _
+    _ < Real.sqrt C * (4 * r) := mul_lt_mul_of_pos_left hscaled (Real.sqrt_pos.mpr (zero_lt_one.trans_le hC))
+    _ = 4 * r * Real.sqrt C := mul_comm _ _
+
+private theorem scaled_edist_lt_four_of_mem_half_ball
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+    (h : SmoothRiemannianMetric I3 M) {r q : ℝ} (hr : 0 < r) (hq : 0 < q)
+    (hscale : q < 4 * (16 / r ^ 2)) {x y : M}
+    (hy : y ∈ riemannianClosedBallOf h x (r / 2)) :
+    riemannianEDistOf (scaleMetric q hq h) x y < ENNReal.ofReal 4 := by
+  have hqr : q * r ^ 2 < 64 := by
+    have hqdiv : q < 64 / r ^ 2 := by
+      convert hscale using 1
+      ring
+    exact (lt_div_iff₀ (sq_pos_of_pos hr)).mp hqdiv
+  have hproduct : (Real.sqrt q * r) ^ 2 < 8 ^ 2 := by
+    rw [mul_pow, Real.sq_sqrt hq.le]
+    norm_num only [Nat.reducePow]
+    exact hqr
+  have hroot : Real.sqrt q * (r / 2) < 4 := by
+    have hnonneg := mul_nonneg (Real.sqrt_nonneg q) hr.le
+    nlinarith
+  rw [edistOf_scale]
+  calc
+    _ ≤ ENNReal.ofReal (Real.sqrt q) * ENNReal.ofReal (r / 2) :=
+      mul_le_mul' le_rfl hy
+    _ = ENNReal.ofReal (Real.sqrt q * (r / 2)) :=
+      (ENNReal.ofReal_mul (Real.sqrt_nonneg q)).symm
+    _ < ENNReal.ofReal 4 :=
+      (ENNReal.ofReal_lt_ofReal_iff (by norm_num : (0 : ℝ) < 4)).mpr hroot
+
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_scalar_normalized_left_arm_bound_of_cap_scale_radius_bound
+    (D r : ℝ) (hRD : r < D + 1) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ eps : ℝ, 0 < eps → eps < 1 / 11 →
+      transitionEnd + eps⁻¹ + 1 < r → r + eps⁻¹ + 1 ≤ D →
+      2 * transitionEnd + 4000 < r / 2 →
+      ∀ N : ℕ, ⌈eps⁻¹⌉₊ ≤ N →
+      ∀ g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D),
+      MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} N g
+        (metric.restrictOpen (standardCapWindow D))
+        (metric.restrictOpen (standardCapWindow D)) →
+      ∀ (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+        [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+        (h : ∀ n, SmoothRiemannianMetric I3 (P n)) (q : ℕ → ℝ),
+      (∀ n, 0 < q n) → ∀ Φ : ∀ n, standardCapWindow D → P n,
+      (∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) → (∀ n, Function.Injective (Φ n)) →
+      (∀ n (x : standardCapWindow D) (v w : TangentSpace I3 x),
+        (g n).inner x v w = q n * (h n).inner (Φ n x)
+          (mfderiv I3 I3 (Φ n) x v) (mfderiv I3 I3 (Φ n) x w)) →
+      ∀ᶠ n in Filter.atTop, ∀ u : standardCapWindow D, ‖u.val‖ ≤ transitionEnd →
+        ∀ (x : P n) (radius : ℝ), 0 < radius → q n < 4 * (16 / radius ^ 2) →
+        Φ n u ∈ riemannianClosedBallOf (h n) x (radius / 2) →
+        ((1 / 2 : ℝ) * q n < metricScalarAt (h n) x ∧ metricScalarAt (h n) x < C * q n) ∧
+        ∀ (γ : ℝ → P n) (a t b : ℝ), t ∈ Icc a b →
+          (∀ s ∈ Icc a b, ∀ v ∈ Icc a b,
+            riemannianEDistOf (h n) (γ s) (γ v) = ENNReal.ofReal |s - v|) →
+          γ t = x → C * q n < metricScalarAt (h n) (γ b) →
+          Real.sqrt (metricScalarAt (h n) x) * (t - a) < 4 * r * Real.sqrt C := by
+  obtain ⟨C, hC, hbound⟩ := exists_scalar_normalized_left_arm_bound_near_core_of_endpoint_scalar_gt D r hRD
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hsmall hr hfit hdepth N hN g hconv P _ _ _ _ h q hq Φ hΦ hinj hmetric
+  filter_upwards [hbound eps heps hsmall hr hfit hdepth N hN g hconv P h q hq Φ hΦ hinj hmetric]
+    with n hn
+  intro u hu x radius hrad hscale hdist
+  exact hn u hu x (scaled_edist_lt_four_of_mem_half_ball (h n) hrad (hq n) hscale hdist).le
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+open Filter in
+theorem exists_scalar_normalized_left_arm_bound_near_core_of_endpoint_scalar_tendsto_atTop
+    (D r : ℝ) :
+    ∃ C : ℝ, 1 ≤ C ∧ ∀ eps : ℝ, 0 < eps → eps < 1 / 11 →
+      transitionEnd + eps⁻¹ + 1 < r → r + eps⁻¹ + 1 ≤ D →
+      2 * transitionEnd + 4000 < r / 2 →
+      ∀ N : ℕ, ⌈eps⁻¹⌉₊ ≤ N →
+      ∀ g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D),
+      MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} N g
+        (metric.restrictOpen (standardCapWindow D))
+        (metric.restrictOpen (standardCapWindow D)) →
+      ∀ (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+        [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+        (h : ∀ n, SmoothRiemannianMetric I3 (P n)) (q : ℕ → ℝ)
+        (hq : ∀ n, 0 < q n) (Φ : ∀ n, standardCapWindow D → P n),
+      (∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) → (∀ n, Function.Injective (Φ n)) →
+      (∀ n (z : standardCapWindow D) (v w : TangentSpace I3 z),
+        (g n).inner z v w = q n * (h n).inner (Φ n z)
+          (mfderiv I3 I3 (Φ n) z v) (mfderiv I3 I3 (Φ n) z w)) →
+      ∀ u : ℕ → standardCapWindow D, (∀ᶠ n in atTop, ‖(u n).val‖ ≤ transitionEnd) →
+      ∀ x : ∀ n, P n,
+      (∀ᶠ n in atTop, riemannianEDistOf (scaleMetric (q n) (hq n) (h n))
+        (x n) (Φ n (u n)) ≤ ENNReal.ofReal 4) →
+      ∀ (γ : ∀ n, ℝ → P n) (ell : ℕ → ℝ) (rho t R : ℝ),
+      Tendsto ell atTop (𝓝 rho) → t ∈ Ico 0 rho →
+      (∀ᶠ n in atTop, ∀ s ∈ Icc 0 (ell n), ∀ v ∈ Icc 0 (ell n),
+        riemannianEDistOf (h n) (γ n s) (γ n v) = ENNReal.ofReal |s - v|) →
+      (∀ᶠ n in atTop, γ n t = x n) →
+      Tendsto (fun n => metricScalarAt (h n) (x n)) atTop (𝓝 R) →
+      Tendsto (fun n => metricScalarAt (h n) (γ n (ell n))) atTop atTop →
+      Real.sqrt R * t ≤ 4 * r * Real.sqrt C := by
+  by_cases hRD : r < D + 1
+  · obtain ⟨C, hC, hbound⟩ :=
+      exists_scalar_normalized_left_arm_bound_near_core_of_endpoint_scalar_gt D r hRD
+    refine ⟨C, hC, ?_⟩
+    intro eps heps hsmall hr hfit hdepth N hN g hconv P _ _ _ _ h q hq Φ hΦ hinj
+      hmetric u hu x hnear γ ell rho t R hell ht hmin hpoint hR hend
+    have hevent := hbound eps heps hsmall hr hfit hdepth N hN g hconv P h q hq Φ hΦ hinj hmetric
+    have hqm : ∀ᶠ n in atTop, (1 / 2 : ℝ) * q n ≤ metricScalarAt (h n) (x n) := by
+      filter_upwards [hevent, hu, hnear] with n hn hun hxn
+      exact (hn (u n) hun (x n) hxn).1.1.le
+    have hratio : Tendsto (fun n => metricScalarAt (h n) (γ n (ell n)) / q n) atTop atTop :=
+      DifferentialGeometry.Analysis.tendsto_div_atTop_of_tendsto_div_nhds_of_mul_le
+        (b := fun _ => (1 : ℝ)) (c := (1 / 2 : ℝ)) (by norm_num)
+        (Eventually.of_forall fun _ => zero_lt_one) (Eventually.of_forall hq)
+        (by simpa only [div_one] using hR) hqm (by simpa only [div_one] using hend)
+    have hlength : ∀ᶠ n in atTop, t < ell n := hell.eventually (Ioi_mem_nhds ht.2)
+    have hlim : Tendsto (fun n => Real.sqrt (metricScalarAt (h n) (x n)) * t) atTop
+        (𝓝 (Real.sqrt R * t)) := (Real.continuous_sqrt.tendsto R |>.comp hR).mul_const t
+    apply le_of_tendsto hlim
+    filter_upwards [hevent, hu, hnear, hmin, hpoint, hlength, hratio.eventually_gt_atTop C]
+      with n hn hun hxn hmn hpn htn hhigh
+    have hh := (hn (u n) hun (x n) hxn).2 (γ n) 0 t (ell n) ⟨ht.1, htn.le⟩ hmn hpn
+      ((lt_div_iff₀ (hq n)).mp hhigh)
+    simpa only [sub_zero] using hh.le
+  · refine ⟨1, le_rfl, ?_⟩
+    intro eps heps hsmall hr hfit
+    exact (hRD (by linarith [inv_pos.mpr heps])).elim
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+open Filter in
+theorem eventually_minimizing_segment_near_cap_core_exclusion_of_scalar_blowup
+    (D r eps : ℝ) (heps : 0 < eps) (hsmall : eps < 1 / 11)
+    (hr : transitionEnd + eps⁻¹ + 1 < r) (hfit : r + eps⁻¹ + 1 ≤ D)
+    (hdepth : 2 * transitionEnd + 4000 < r / 2)
+    (rho : ℝ) (hrho : 0 < rho) (R : Ico 0 rho → ℝ)
+    (hR : Tendsto R (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) atTop) :
+    ∀ᶠ t : Ico 0 rho in comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho),
+      ∀ N : ℕ, ⌈eps⁻¹⌉₊ ≤ N →
+      ∀ g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D),
+      MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r + eps⁻¹} N g
+        (metric.restrictOpen (standardCapWindow D))
+        (metric.restrictOpen (standardCapWindow D)) →
+      ∀ (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+        [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+        (h : ∀ n, SmoothRiemannianMetric I3 (P n)) (q : ℕ → ℝ)
+        (hq : ∀ n, 0 < q n) (Φ : ∀ n, standardCapWindow D → P n),
+      (∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) → (∀ n, Function.Injective (Φ n)) →
+      (∀ n (z : standardCapWindow D) (v w : TangentSpace I3 z),
+        (g n).inner z v w = q n * (h n).inner (Φ n z)
+          (mfderiv I3 I3 (Φ n) z v) (mfderiv I3 I3 (Φ n) z w)) →
+      ∀ u : ℕ → standardCapWindow D, (∀ᶠ n in atTop, ‖(u n).val‖ ≤ transitionEnd) →
+      ∀ x : ∀ n, P n,
+      (∀ᶠ n in atTop, riemannianEDistOf (scaleMetric (q n) (hq n) (h n))
+        (x n) (Φ n (u n)) ≤ ENNReal.ofReal 4) →
+      ∀ (γ : ∀ n, ℝ → P n) (ell : ℕ → ℝ),
+      Tendsto ell atTop (𝓝 rho) →
+      (∀ᶠ n in atTop, ∀ s ∈ Icc 0 (ell n), ∀ v ∈ Icc 0 (ell n),
+        riemannianEDistOf (h n) (γ n s) (γ n v) = ENNReal.ofReal |s - v|) →
+      (∀ᶠ n in atTop, γ n t = x n) →
+      Tendsto (fun n => metricScalarAt (h n) (x n)) atTop (𝓝 (R t)) →
+      Tendsto (fun n => metricScalarAt (h n) (γ n (ell n))) atTop atTop → False := by
+  obtain ⟨C, _, hbound⟩ :=
+    exists_scalar_normalized_left_arm_bound_near_core_of_endpoint_scalar_tendsto_atTop D r
+  have hlarge : Tendsto (fun t : Ico 0 rho => Real.sqrt (R t) * (t : ℝ))
+      (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) atTop :=
+    (Real.tendsto_sqrt_atTop.comp hR).atTop_mul_pos hrho tendsto_comap
+  filter_upwards [hlarge.eventually_gt_atTop (4 * r * Real.sqrt C)] with t ht
+  intro N hN g hconv P _ _ _ _ h q hq Φ hΦ hinj hmetric u hu x hnear γ ell hell hmin hpoint hmark hend
+  exact ht.not_ge (hbound eps heps hsmall hr hfit hdepth N hN g hconv P h q hq Φ hΦ hinj
+    hmetric u hu x hnear γ ell rho t (R t) hell t.property hmin hpoint hmark hend)
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PresentedStaticCapHistory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordEventExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordHorizonExtension
 
 noncomputable section
 open Set Function Manifold DifferentialGeometry
@@ -116,6 +117,20 @@ theorem hasCanonicalCutoffRecords_atZero (P : OrientedThreeStage.{u}) (g : P.Met
   · exact fun i => Fin.elim0 i
   · exact fun i => Fin.elim0 i
   · exact fun i => Fin.elim0 i
+
+theorem hasCanonicalCutoffRecords_extendHorizon
+    {P : OrientedThreeStage.{u}} {H : RetainedCoreHistory P}
+    {p₀ : CutoffParameters} {δ₀ ρ₀ : ℝ}
+    (hH : H.hasCanonicalCutoffRecords p₀ δ₀ ρ₀)
+    (T : ℝ) (hT : H.horizon ≤ T)
+    (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
+    (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount)) :
+    (H.extendHorizon T hT S hS).hasCanonicalCutoffRecords p₀ δ₀ ρ₀ := by
+  obtain ⟨p, hfixed, hradius, horder, haccuracy, hrecenter, records, hcanonical, hdelta, hneck⟩ := hH
+  refine ⟨p, hfixed, hradius, horder, haccuracy, hrecenter,
+    fun i => (records i).extendHorizon T hT S hS, ?_, hdelta, hneck⟩
+  intro i b
+  exact hcanonical i b
 
 theorem hasCanonicalCutoffRecords_appendEvent
     {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
