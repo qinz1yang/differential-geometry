@@ -102,31 +102,41 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRec
 
 universe u
 
-private theorem exists_poincareStandardDiscarded_thresholds :
-    ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
-      ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
-        ∃ L : ℝ, 0 < L ∧ ∀ (parameters : CutoffParameters)
-          (G : GeometricCutoffRecord H i parameters),
-          (∀ j, G.delta j ≤ eps) →
-          ∀ (C1 C Q : ℝ), 1 ≤ C → 0 < Q →
-            max L Q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
+theorem exists_poincareStandardDiscarded_cutting_scale_of_incoming :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, 0 < eps → eps ≤ eta →
+      ∃ C : ℝ, 1 ≤ C ∧ ∀ (P : OrientedThreeStage.{u}) (a s : ℝ)
+        (S : P.IncomingSlab a s) (L : S.TerminalLimitMetric),
+        ∃ R : ℝ, 0 < R ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+          H.stage i.castSucc = P → H.time i.castSucc = a → H.time i.succ = s →
+          HEq (H.event i).incoming S → HEq (H.event i).terminal L →
+          ∀ (parameters : CutoffParameters) (G : GeometricCutoffRecord H i parameters),
+            (∀ j, G.delta j ≤ eps) →
+            R < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
             (∀ j, C ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
               (G.neck j).scale) →
-            (∀ x : (H.stage i.castSucc).Carrier,
-              ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ),
-                Q ≤ (H.event i).incoming.flow.scalar t x →
-                  ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C x t,
-                    W.capTubeHasNeckChart eps) →
-            ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
-              PhiAlmostNonnegative (H.event i).incoming.flow
-                (Ico (H.time i.castSucc) (H.time i.succ)) Phi →
-              SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
+            SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
   obtain ⟨eta, heta, hboundary⟩ := exists_isPoincareStandard_discarded_boundary_tolerance.{u}
-  refine ⟨eta, heta, ?_⟩
-  intro eps heps H i
-  obtain ⟨L, hL, huncut⟩ := exists_isPoincareStandard_discardedComponent_threshold_of_uncut i
-  refine ⟨L, hL, ?_⟩
-  intro parameters G hdelta C1 C Q hC hQ hprotected hscale hcanonical Phi hPhi hpinch hc D
+  refine ⟨min eta (1 / 44), lt_min heta (by norm_num), ?_⟩
+  intro eps heps hsmall
+  have hep := hsmall.trans (min_le_left _ _)
+  obtain ⟨C, hC, hcanonical⟩ :=
+    OrientedThreeStage.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u}
+      heps ((hsmall.trans (min_le_right _ _)).trans_lt (by norm_num))
+  refine ⟨C, hC, ?_⟩
+  intro P a s S L
+  obtain ⟨Q, hQ, hcan⟩ := hcanonical P a s S
+  obtain ⟨R, hR, hclass⟩ := L.exists_component_poincareStandard_threshold S
+  refine ⟨max R Q, hR.trans_le (le_max_left _ _), ?_⟩
+  intro H i hP ha hs hS hL
+  cases hP
+  cases ha
+  cases hs
+  cases eq_of_heq hS
+  cases eq_of_heq hL
+  intro parameters G hdelta hprotected hscale hc D
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      (H.event i).incoming.lt (H.event i).incoming.flow (H.event i).incoming.equation (by simp [ThreeSpace])
   let X := SphericalCutCapTransition.ofSmoothCutCapTransition (H.event i).transition hc
   obtain ⟨x, d, hd, hxd⟩ := X.exists_core_presentation_eq_inr_component D
   have hxd' : (H.event i).transition.trace.presentation
@@ -161,8 +171,8 @@ private theorem exists_poincareStandardDiscarded_thresholds :
           ((congrArg (H.event i).transition.presentation
             (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion
               (H.event i).transition hc y)).symm.trans hd'.symm)
-      have hs := hboundary eps heps H i parameters G hdelta C1 C Q hC hQ
-        ((le_max_right L Q).trans_lt hprotected) hscale hcanonical Phi hPhi hpinch hc b q d' hdy
+      have hbound := hboundary eps hep H i parameters G hdelta C C Q hC hQ
+        ((le_max_right R Q).trans_lt hprotected) hscale hcan Phi hPhi hpinch hc b q d' hdy
       let r : (H.stage i.succ).toClosedOrientedManifold.Carrier ⊕ X.discarded.Carrier →
           X.discarded.Carrier := Sum.elim (fun _ => d) id
       have hr : Continuous r := continuous_const.sumElim continuous_id
@@ -170,12 +180,27 @@ private theorem exists_poincareStandardDiscarded_thresholds :
         have hh := congrArg hr.connectedComponentsMap hpres
         rw [Continuous.connectedComponentsMap_mk, Continuous.connectedComponentsMap_mk, ← hd'] at hh
         exact hh
-      exact heq ▸ hs
-    · exact huncut parameters G hc (ConnectedComponents.mk x.val) hlocal x
-        ((ClosedOrientedManifold.mem_componentSet _ _ _).mpr rfl) d hxd'
-        ((le_max_left L Q).trans hprotected.le)
+      exact heq ▸ hbound
+    · have hxnot : x ∉ (H.event i).transition.trace.retainedCore := by
+        rintro ⟨q, hq⟩
+        exact Sum.inr_ne_inl (hxd'.symm.trans hq)
+      have hx : x ∈ X.coreComponentSet (ConnectedComponents.mk x.val) :=
+        (ClosedOrientedManifold.mem_componentSet _ _ _).mpr rfl
+      have hambient := hclass (ConnectedComponents.mk x.val) (by
+        intro y hy
+        have hyC : y.val ∈ (H.stage i.castSucc).toClosedOrientedManifold.componentSet
+            (ConnectedComponents.mk x.val) := (ClosedOrientedManifold.mem_componentSet _ _ _).mpr hy
+        have hycore := X.componentSet_subset_core_of_cutIndices_eq_empty _ hlocal hyC
+        let z : X.tubes.core := ⟨y.val, hycore⟩
+        have hn : z ∉ (H.event i).transition.trace.retainedCore :=
+          (H.event i).transition.trace.connectedComponent_subset_compl_retainedCore x hxnot
+            ((X.isPreconnected_coreComponentSet _ hlocal).subset_connectedComponent hx hyC)
+        exact ((le_max_left R Q).trans_lt hprotected).trans
+          (G.scalar_gt_protected_of_not_mem_retainedCore y hycore hn))
+      exact X.isPoincareStandard_discardedComponent_of_cutIndices_eq_empty _ hlocal x hx d hxd hambient
   change ConnectedComponents.mk (α := (H.event i).discarded.Carrier) d = D at hd
   exact hd ▸ hstd
+
 
 theorem exists_poincareStandardDiscarded_cutting_scale :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, 0 < eps → eps ≤ eta →
@@ -187,22 +212,14 @@ theorem exists_poincareStandardDiscarded_cutting_scale :
           (∀ j, C ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
             (G.neck j).scale) →
           SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
-  obtain ⟨eta, heta, hclass⟩ := exists_poincareStandardDiscarded_thresholds.{u}
-  refine ⟨min eta (1 / 44), lt_min heta (by norm_num), ?_⟩
+  obtain ⟨eta, heta, hclass⟩ := exists_poincareStandardDiscarded_cutting_scale_of_incoming.{u}
+  refine ⟨eta, heta, ?_⟩
   intro eps heps hsmall
-  obtain ⟨C, hC, hcanonical⟩ :=
-    OrientedThreeStage.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u}
-      heps ((hsmall.trans (min_le_right _ _)).trans_lt (by norm_num))
+  obtain ⟨C, hC, hCclass⟩ := hclass eps heps hsmall
   refine ⟨C, hC, ?_⟩
   intro H i
-  obtain ⟨Q, hQ, hcan⟩ := hcanonical (H.stage i.castSucc) (H.time i.castSucc)
-    (H.time i.succ) (H.event i).incoming
-  obtain ⟨L, hL, hstd⟩ := hclass eps (hsmall.trans (min_le_left _ _)) H i
-  refine ⟨max L Q, hL.trans_le (le_max_left _ _), ?_⟩
-  intro parameters G hdelta hprotected hscale hc
-  obtain ⟨Phi, hPhi, hpinch⟩ :=
-    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
-      (H.event i).incoming.lt (H.event i).incoming.flow (H.event i).incoming.equation (by simp [ThreeSpace])
-  exact hstd parameters G hdelta C C Q hC hQ hprotected hscale hcan Phi hPhi hpinch hc
+  obtain ⟨L, hL, hLclass⟩ := hCclass (H.stage i.castSucc) (H.time i.castSucc)
+    (H.time i.succ) (H.event i).incoming (H.event i).terminal
+  exact ⟨L, hL, hLclass H i rfl rfl rfl HEq.rfl HEq.rfl⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord

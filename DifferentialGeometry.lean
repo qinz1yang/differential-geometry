@@ -13864,3 +13864,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Para
 import DifferentialGeometry.Geometry.Neck.FiniteEnd
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Constant
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.ConeExclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareHornCutoffRecord
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
