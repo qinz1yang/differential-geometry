@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TerminalRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.IntrinsicDerivation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ModelWitness
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarGradient
@@ -132,3 +133,103 @@ theorem exists_relative_scalar_derivative_bounds_of_curvature_jets
     exact hb.trans (by dsimp [T] at hCT ⊢; nlinarith [mul_le_mul_of_nonneg_left hsq hC.le])
 
 end DifferentialGeometry.PDE.RicciFlow
+
+end
+
+section
+
+noncomputable section
+open Set Filter Manifold
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+section
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M]
+
+theorem abs_derivWithin_scalar_le_of_terminal_curvature_jets
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    {a b B : ℝ} (hab : a < b) (hB : 0 ≤ B)
+    (hcarrier : Icc a b ⊆ D.carrier) (hregular : Ioo a b ⊆ D.regular) (x : M)
+    (hzero : curvDerivNormSq 0 (S.base.metric b) x ≤ B)
+    (hsecond : curvDerivNormSq 2 (S.base.metric b) x ≤ B) :
+    |derivWithin (fun t => S.scalar t x) (Iic b) b| ≤
+      (Module.finrank ℝ E : ℝ) ^ 6 * Real.sqrt (B + 1) +
+        2 * (Module.finrank ℝ E : ℝ) ^ 4 * (B + 1) := by
+  have hnear (k : ℕ) (hk : curvDerivNormSq k (S.base.metric b) x ≤ B) :
+      ∀ᶠ t in 𝓝[≤] b, curvDerivNormSq k (S.base.metric t) x < B + 1 := by
+    have hc := solution_nablaKRm04NormSqIntrinsic_continuousWithinAt_terminal
+      S hS hab hcarrier hregular k x
+    have hh : nablaKRm04NormSqIntrinsic S k b x < B + 1 := by
+      rw [← curvNormSq_eq]
+      linarith
+    simpa only [← curvNormSq_eq] using hc.eventually (Iio_mem_nhds hh)
+  obtain ⟨c, hcb, hc⟩ := (mem_nhdsLE_iff_exists_Ioc_subset).mp ((hnear 0 hzero).and (hnear 2 hsecond))
+  have hmax : max a c < b := max_lt hab hcb
+  apply Perelman.CanonicalNeighborhood.abs_derivWithin_Iic_le_of_interior_bound
+    (fun t => S.scalar t x) hmax (by positivity)
+  · intro t ht
+    exact (hS.scalarTime ht
+      (fun _ hv => hcarrier ⟨(le_max_left a c).trans hv.1, hv.2⟩) x).continuousWithinAt
+  · intro t ht
+    exact (hS.scalarTime (D.regular_subset (hregular ⟨(le_max_left a c).trans_lt ht.1, ht.2⟩))
+      (fun _ h => h) x).differentiableAt
+        (D.regular_mem_nhds (hregular ⟨(le_max_left a c).trans_lt ht.1, ht.2⟩))
+  · intro t ht
+    have hj := hc ⟨(le_max_right a c).trans_lt ht.1, ht.2.le⟩
+    exact abs_deriv_scalar_le_of_curvature_jets S hS
+      (hregular ⟨(le_max_left a c).trans_lt ht.1, ht.2⟩) x hj.1.le hj.2.le
+
+end
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+
+theorem exists_relative_scalar_derivative_bounds_of_terminal_curvature_jets
+    (B : ℝ) (hB : 0 ≤ B) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {H M : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M],
+      ∀ (D : RealTimeInterval) (S : SolutionOn (I := I) (M := M) D), IsSolutionOn S →
+      ∀ (a b : ℝ), a < b → Icc a b ⊆ D.carrier → Ioo a b ⊆ D.regular →
+      ∀ x : M, (∀ j ≤ 2, curvDerivNormSq j (S.base.metric b) x ≤ B) →
+      1 / 2 ≤ S.scalar b x →
+      (∀ v : TangentSpace I x,
+        |Perelman.CanonicalNeighborhood.scalarDifferential S b x v| ≤ C * S.scalar b x * Real.sqrt (S.scalar b x) *
+          Real.sqrt ((S.base.metric b).inner x v v)) ∧
+      (|derivWithin (fun s => S.scalar s x) (Iic b) b| ≤ C * S.scalar b x ^ 2) := by
+  let A := (Module.finrank ℝ E : ℝ) ^ 2 * Real.sqrt B
+  let T := (Module.finrank ℝ E : ℝ) ^ 6 * Real.sqrt (B + 1) + 2 * (Module.finrank ℝ E : ℝ) ^ 4 * (B + 1)
+  have hA : 0 ≤ A := by dsimp [A]; positivity
+  have hT : 0 ≤ T := by dsimp [T]; positivity
+  let C := max (4 * A) (4 * T) + 1
+  have hC : 0 < C := by dsimp [C]; linarith [le_max_left (4*A) (4*T)]
+  have hCA : 4 * A ≤ C := by dsimp [C]; linarith [le_max_left (4*A) (4*T)]
+  have hCT : 4 * T ≤ C := by dsimp [C]; linarith [le_max_right (4*A) (4*T)]
+  refine ⟨C, hC, ?_⟩
+  intro H M _ I _ _ _ _ _ _ D S hS a b hab hcarrier hregular x hjets hR
+  constructor
+  · intro v
+    have hroot : 1 / 2 ≤ Real.sqrt (S.scalar b x) := by
+      have hs := Real.sq_sqrt (by linarith : 0 ≤ S.scalar b x)
+      nlinarith [Real.sqrt_nonneg (S.scalar b x)]
+    have hprod : 1 / 4 ≤ S.scalar b x * Real.sqrt (S.scalar b x) := by nlinarith
+    have hc : A ≤ C * S.scalar b x * Real.sqrt (S.scalar b x) := by
+      nlinarith [mul_le_mul_of_nonneg_left hprod hC.le]
+    exact (abs_scalarDifferential_le_of_curvature_jet S x
+      (hjets 1 (by norm_num)) v).trans
+        (mul_le_mul_of_nonneg_right hc (Real.sqrt_nonneg _))
+  · have hb := abs_derivWithin_scalar_le_of_terminal_curvature_jets S hS hab hB hcarrier hregular x
+      (hjets 0 (by norm_num)) (hjets 2 le_rfl)
+    have hsq : 1 / 4 ≤ S.scalar b x ^ 2 := by nlinarith
+    exact hb.trans (by dsimp [T] at hCT ⊢; nlinarith [mul_le_mul_of_nonneg_left hsq hC.le])
+
+end DifferentialGeometry.PDE.RicciFlow
+
+end
+end

@@ -87,4 +87,28 @@ theorem abs_deriv_le_quadratic_of_finite_exception
     (hdiff t ht).hasDerivAt.norm_le_of_eventually_norm_deriv_le
       (hs.mono fun r hr => hdiff r hr) hg.continuousWithinAt hb
 
+theorem abs_derivWithin_Iic_le_mul_sq_of_interior_bound
+    (f : ℝ → ℝ) {a b C q : ℝ} (hab : a < b)
+    (hcont : ContinuousOn f (Icc a b))
+    (hdiff : ∀ r ∈ Ioo a b, DifferentiableAt ℝ f r)
+    (hq : q < f b)
+    (hbound : ∀ r ∈ Ioo a b, q < f r → |deriv f r| ≤ C * (f r) ^ 2) :
+    |derivWithin f (Iic b) b| ≤ C * (f b) ^ 2 := by
+  have hf : ContinuousWithinAt f (Iio b) b := by
+    have hh := (hcont b ⟨hab.le, le_rfl⟩).mono Ioo_subset_Icc_self
+    rwa [ContinuousWithinAt, nhdsWithin_Ioo_eq_nhdsLT hab] at hh
+  have hg : ContinuousWithinAt (fun r => C * (f r) ^ 2) (Iio b) b :=
+    continuousWithinAt_const.mul (hf.pow 2)
+  have hb : ∀ᶠ r in 𝓝[<] b, ‖deriv f r‖ ≤ C * (f r) ^ 2 := by
+    filter_upwards [Ioo_mem_nhdsLT hab, hf.eventually_const_lt hq] with r hr hqr
+    simpa only [Real.norm_eq_abs] using hbound r hr hqr
+  by_cases hd : DifferentiableWithinAt ℝ f (Iic b) b
+  · simpa only [Real.norm_eq_abs] using
+      hd.hasDerivWithinAt.norm_le_of_eventually_norm_deriv_le
+        (by
+          filter_upwards [Ioo_mem_nhdsLT hab] with r hr
+          exact hdiff r hr) hg hb
+  · rw [derivWithin_zero_of_not_differentiableWithinAt hd, abs_zero]
+    exact ge_of_tendsto hg (hb.mono fun r hr => (norm_nonneg (deriv f r)).trans hr)
+
 end DifferentialGeometry.Analysis

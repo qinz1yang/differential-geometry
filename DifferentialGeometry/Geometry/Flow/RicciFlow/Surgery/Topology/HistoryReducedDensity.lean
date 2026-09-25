@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
 import Mathlib.Topology.Order.Monotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorAction
@@ -310,6 +311,83 @@ theorem lintegral_regularizedC1Density_lt_top_of_scalar_lower
   have hbound := lintegral_mono (μ := μ)
     (H.regularizedC1Density_le_exp_of_scalar_lower first last hle T B hv hscalar p)
   exact hbound.trans_lt (by simp only [lintegral_const]; finiteness)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set Filter MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
+open scoped Manifold ContDiff ENNReal Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+variable (H : ObservedHistory.{u})
+
+def regularizedDensity (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (T B v : ℝ) (p : (H.stage last).Carrier) (q : (H.stage first).Carrier) : ℝ≥0∞ :=
+  ⨆ A : ℝ, ⨆ (_ : (A : WithTop ℝ) ∈ H.regularizedActionValues first last hle T B 0 v p q),
+    ENNReal.ofReal (Real.exp (-A / (2 * v) - (3 / 2 : ℝ) * Real.log (v ^ 2) -
+      (3 / 2 : ℝ) * Real.log (4 * Real.pi)))
+
+theorem regularizedDensity_eq_regularizedC1Density
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (T B : ℝ) {v : ℝ} (hv : 0 < v)
+    (hupper : T ∈ H.stageDomain last)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x)
+    (p : (H.stage last).Carrier) (q : (H.stage first).Carrier) :
+    H.regularizedDensity first last hle T B v p q =
+      H.regularizedC1Density first last hle T v p q := by
+  apply le_antisymm
+  · apply iSup_le
+    intro A
+    apply iSup_le
+    intro hA
+    let F : ℝ → ℝ≥0∞ := fun ε => ENNReal.ofReal
+      (Real.exp (-(A + ε) / (2 * v) - (3 / 2 : ℝ) * Real.log (v ^ 2) -
+        (3 / 2 : ℝ) * Real.log (4 * Real.pi)))
+    have hF : Continuous F := ENNReal.continuous_ofReal.comp
+      (Real.continuous_exp.comp (((continuous_const.add continuous_id).neg.div_const _).sub
+        continuous_const |>.sub continuous_const))
+    have hlim : Tendsto F (𝓝[>] (0 : ℝ)) (𝓝 (F 0)) :=
+      hF.continuousAt.tendsto.mono_left nhdsWithin_le_nhds
+    have hbound : ∀ᶠ ε in 𝓝[>] (0 : ℝ),
+        F ε ≤ H.regularizedC1Density first last hle T v p q := by
+      filter_upwards [self_mem_nhdsWithin] with ε hε
+      obtain ⟨C, hC, hCA⟩ :=
+        H.exists_mem_regularizedC1ActionValues_lt_of_mem_regularizedActionValues
+          first last hle (by simpa using hupper) hscalar p q hA hε
+      exact H.le_regularizedC1Density_of_action_le first last hle T hv p q hC hCA.le
+    simpa only [F, add_zero] using le_of_tendsto hlim hbound
+  · apply iSup_le
+    intro A
+    apply iSup_le
+    intro hA
+    have hAC := H.coe_mem_regularizedActionValues_of_mem_regularizedC1ActionValues
+      first last hle hscalar p q hA
+    exact le_iSup_of_le A (le_iSup_of_le hAC le_rfl)
+
+theorem regularizedDensity_eq_exp_of_cost_eq
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (T B : ℝ) {v A : ℝ} (hv : 0 < v)
+    (hupper : T ∈ H.stageDomain last)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x)
+    (p : (H.stage last).Carrier) (q : (H.stage first).Carrier)
+    (hcost : H.regularizedCost first last hle T B 0 v p q = (A : WithTop ℝ)) :
+    H.regularizedDensity first last hle T B v p q =
+      ENNReal.ofReal (Real.exp (-A / (2 * v) - (3 / 2 : ℝ) * Real.log (v ^ 2) -
+        (3 / 2 : ℝ) * Real.log (4 * Real.pi))) := by
+  rw [H.regularizedDensity_eq_regularizedC1Density first last hle T B hv hupper hscalar p q]
+  apply H.regularizedC1Density_eq_exp_of_cost_eq first last hle T hv p q
+    (H.regularizedC1ActionValues_bddBelow_of_scalar_lower first last hle T 0 v B hscalar p q)
+  rw [← H.regularizedCost_eq_regularizedC1Cost first last hle T B 0 v
+    (by simpa using hupper) hscalar p q]
+  exact hcost
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 

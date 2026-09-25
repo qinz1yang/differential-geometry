@@ -13983,3 +13983,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryTerm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ProspectiveNeckBackwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedTerminalCompactness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.DerivativeRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.FirstContact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabUniqueness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialScalarDerivativeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ScalarDerivativeContactTime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ScalarDerivativeContact
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarDerivativeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMinimizingDensity
+import DifferentialGeometry.Geometry.Metric.Comparison.ScalarGradient
+import DifferentialGeometry.Topology.Sequences.UniformEventually

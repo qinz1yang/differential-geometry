@@ -35,7 +35,7 @@ private theorem action_lower_on_compact_range
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivatives [TopologicalSpace.MetrizableSpace M]
+theorem exists_lRegularizedMinC1_to_closed_set_of_compact_action_sublevel_of_spatial_derivatives [TopologicalSpace.MetrizableSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
     {a b : ℝ} (hab : a < b)
     (U : Set ℝ) (hU : U ⊆ D.carrier)
@@ -47,15 +47,15 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivativ
     (hScalFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
       (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar z.1)) z.2)
       (U ×ˢ interior (extChartAt I p).target))
-    (x y : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
-    (hstart : α₀ a = x) (hend : α₀ b = y)
+    (x : M) (A : Set M) (hA : IsClosed A) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
+    (hstart : α₀ a = x) (hend : α₀ b ∈ A)
     (Q : Set M) (hQ : IsCompact Q)
     (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α →
-      α a = x → α b = y → lRegularizedAction S T α a b ≤ lRegularizedAction S T α₀ a b →
+      α a = x → α b ∈ A → lRegularizedAction S T α a b ≤ lRegularizedAction S T α₀ a b →
       MapsTo α (Icc a b) Q) :
-    ∃ η : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 η ∧ η a = x ∧ η b = y ∧
+    ∃ η : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 η ∧ η a = x ∧ η b ∈ A ∧
       MapsTo η (Icc a b) Q ∧
-      ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x → δ b = y →
+      ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x → δ b ∈ A →
         lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
   classical
   let : MetricSpace M := TopologicalSpace.metrizableSpaceMetric M
@@ -69,7 +69,7 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivativ
   have hpot : ∀ r ∈ Icc a b, ∀ z ∈ Q, C ≤ 2 * r ^ 2 * S.scalar (T - r ^ 2) z := by
     simpa only [uIcc_of_le hab.le] using hC
   let A₀ := lRegularizedAction S T α₀ a b
-  let costs : Set ℝ := {r | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α a = x ∧ α b = y ∧
+  let costs : Set ℝ := {r | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α a = x ∧ α b ∈ A ∧
     lRegularizedAction S T α a b = r ∧ r ≤ A₀}
   have hseed : A₀ ∈ costs := ⟨α₀, hα₀, hstart, hend, rfl, le_rfl⟩
   have hcosts : costs.Nonempty := ⟨A₀, hseed⟩
@@ -77,7 +77,7 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivativ
     refine ⟨C * (b - a), ?_⟩
     rintro r ⟨α, hα, ha, hb, rfl, hact⟩
     exact action_lower_on_compact_range S T a b C hab.le Q hpot α (hconf α hα ha hb hact) (hint α hα)
-  have hbelow (α : ℝ → M) (hα : ContMDiff 𝓘(ℝ, ℝ) I 1 α) (ha : α a = x) (hb : α b = y) :
+  have hbelow (α : ℝ → M) (hα : ContMDiff 𝓘(ℝ, ℝ) I 1 α) (ha : α a = x) (hb : α b ∈ A) :
       sInf costs ≤ lRegularizedAction S T α a b := by
     by_cases hcost : lRegularizedAction S T α a b ≤ A₀
     · exact csInf_le hbdd ⟨α, hα, ha, hb, rfl, hcost⟩
@@ -105,14 +105,22 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivativ
     apply (le_div_iff₀ hc).mpr
     have hactn : lRegularizedAction S T (α n) a b ≤ A₀ := by rw [hval n]; exact hact n
     nlinarith
-  obtain ⟨φ, g, hφ, hconv, hga, hgb⟩ := exists_strictMono_tendstoUniformly_of_curveEnergy_le_of_endpoints
-    gRef a b B hab.le α (fun n => (hα n).contMDiffOn) henergy Q hQ
-      (fun n r => hαQ n r.property) x y hαa hαb
+  obtain ⟨φ, g, hφ, hconv⟩ := exists_strictMono_tendstoUniformly_of_curveEnergy_le
+    gRef a b B α (fun n => (hα n).contMDiffOn) henergy Q hQ
+      (fun n r => hαQ n r.property)
+  have hga : g ⟨a, le_rfl, hab.le⟩ = x := by
+    have hlim := hconv.tendsto_at (⟨a, le_rfl, hab.le⟩ : Icc a b)
+    have hlim' : Tendsto (fun _ : ℕ => x) atTop (𝓝 (g ⟨a, le_rfl, hab.le⟩)) := by
+      simpa only [hαa] using hlim
+    exact tendsto_nhds_unique hlim' tendsto_const_nhds
+  have hgb : g ⟨b, hab.le, le_rfl⟩ ∈ A := by
+    apply hA.mem_of_tendsto (hconv.tendsto_at (⟨b, hab.le, le_rfl⟩ : Icc a b))
+    exact Eventually.of_forall fun n => hαb (φ n)
   let γ : ℝ → M := IccExtend hab.le g
   have hγ : Continuous γ := (continuous_IccExtend_iff (h := hab.le)).mpr g.continuous
   have hγval (r : Icc a b) : γ r.val = g r := IccExtend_of_mem hab.le g r.property
   have hγa : γ a = x := (hγval ⟨a, le_rfl, hab.le⟩).trans hga
-  have hγb : γ b = y := (hγval ⟨b, hab.le, le_rfl⟩).trans hgb
+  have hγb : γ b ∈ A := (hγval ⟨b, hab.le, le_rfl⟩).symm ▸ hgb
   have hconvγ : TendstoUniformly (fun n (r : Icc a b) => α (φ n) r.val) (fun r => γ r.val) atTop := by
     simpa only [hγval] using hconv
   obtain ⟨m, t, p, u, htmono, ht0, htlast, hsrc, hrep, _, χ, hχ, hlsc⟩ :=
@@ -132,21 +140,83 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivativ
   have hmin : ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = γ a → δ b = γ b →
       lRegularizedAction S T γ a b ≤ lRegularizedAction S T δ a b := by
     intro δ hδ hδa hδb
-    exact hupper.trans (hbelow δ hδ (hδa.trans hγa) (hδb.trans hγb))
+    exact hupper.trans (hbelow δ hδ (hδa.trans hγa) (hδb.symm ▸ hγb))
   have hc1 := lMinCurve_c1_of_spatial_derivatives S hS T a b hab t htmono ht0 htlast p γ hγ u hsrc hrep
     U hU htime hreg hGramFd hScalFd hmin
   obtain ⟨η, hη, heq⟩ := DifferentialGeometry.Topology.exists_contMDiff_extension_Icc hc1
   have hηa : η a = x := (heq ⟨le_rfl, hab.le⟩).trans hγa
-  have hηb : η b = y := (heq ⟨hab.le, le_rfl⟩).trans hγb
+  have hηb : η b ∈ A := (heq ⟨hab.le, le_rfl⟩).symm ▸ hγb
   have hηact : lRegularizedAction S T η a b = lRegularizedAction S T γ a b :=
     lRegularizedAction_congr S T η γ a b (fun r hr => heq (by
       rw [uIoo_of_le hab.le] at hr; exact Ioo_subset_Icc_self hr))
-  have hηmin : ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x → δ b = y →
+  have hηmin : ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x → δ b ∈ A →
       lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
     intro δ hδ hδa hδb
     rw [hηact]
     exact hupper.trans (hbelow δ hδ hδa hδb)
   exact ⟨η, hη, hηa, hηb, hconf η hη hηa hηb (hηmin α₀ hα₀ hstart hend), hηmin⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedMinC1_free_endpoint_of_compact_action_sublevel_of_spatial_derivatives [TopologicalSpace.MetrizableSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b : ℝ} (hab : a < b)
+    (U : Set ℝ) (hU : U ⊆ D.carrier)
+    (htime : ∀ r ∈ Icc a b, T - r ^ 2 ∈ U)
+    (hreg : ∀ r ∈ Ioo a b, T - r ^ 2 ∈ D.regular)
+    (hGramFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
+      (fun y : E => chartGramOp (I := I) S.family p (z.1, y)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (hScalFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
+      (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar z.1)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (x : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
+    (hstart : α₀ a = x)
+    (Q : Set M) (hQ : IsCompact Q)
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α →
+      α a = x → lRegularizedAction S T α a b ≤ lRegularizedAction S T α₀ a b →
+      MapsTo α (Icc a b) Q) :
+    ∃ η : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 η ∧ η a = x ∧
+      MapsTo η (Icc a b) Q ∧
+      ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x →
+        lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
+  obtain ⟨η, hη, hηa, _, hηQ, hmin⟩ :=
+    exists_lRegularizedMinC1_to_closed_set_of_compact_action_sublevel_of_spatial_derivatives
+      S hS T hab U hU htime hreg hGramFd hScalFd x Set.univ isClosed_univ α₀ hα₀ hstart
+      (Set.mem_univ _) Q hQ (fun α hα ha _ hact => hconf α hα ha hact)
+  exact ⟨η, hη, hηa, hηQ, fun δ hδ hδa => hmin δ hδ hδa (Set.mem_univ _)⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivatives [TopologicalSpace.MetrizableSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b : ℝ} (hab : a < b)
+    (U : Set ℝ) (hU : U ⊆ D.carrier)
+    (htime : ∀ r ∈ Icc a b, T - r ^ 2 ∈ U)
+    (hreg : ∀ r ∈ Ioo a b, T - r ^ 2 ∈ D.regular)
+    (hGramFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
+      (fun y : E => chartGramOp (I := I) S.family p (z.1, y)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (hScalFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
+      (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar z.1)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (x y : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
+    (hstart : α₀ a = x) (hend : α₀ b = y)
+    (Q : Set M) (hQ : IsCompact Q)
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α →
+      α a = x → α b = y → lRegularizedAction S T α a b ≤ lRegularizedAction S T α₀ a b →
+      MapsTo α (Icc a b) Q) :
+    ∃ η : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 η ∧ η a = x ∧ η b = y ∧
+      MapsTo η (Icc a b) Q ∧
+      ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x → δ b = y →
+        lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
+  obtain ⟨η, hη, hηa, hηb, hηQ, hmin⟩ :=
+    exists_lRegularizedMinC1_to_closed_set_of_compact_action_sublevel_of_spatial_derivatives
+      S hS T hab U hU htime hreg hGramFd hScalFd x {y} isClosed_singleton α₀ hα₀ hstart
+      (Set.mem_singleton_iff.mpr hend) Q hQ
+      (fun α hα ha hb hact => hconf α hα ha (Set.mem_singleton_iff.mp hb) hact)
+  exact ⟨η, hη, hηa, Set.mem_singleton_iff.mp hηb, hηQ,
+    fun δ hδ hδa hδb => hmin δ hδ hδa (Set.mem_singleton_iff.mpr hδb)⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

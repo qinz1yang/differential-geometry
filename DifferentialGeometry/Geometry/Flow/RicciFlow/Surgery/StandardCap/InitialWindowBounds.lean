@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Curvature.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
@@ -410,3 +411,84 @@ theorem exists_uniform_window_image_scalar_bound_of_scaled_pullback :
   exact (div_le_iff₀ hq).mp hb
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+open Set Filter TopologicalSpace
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Metric
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+theorem exists_eventually_curvature_derivative_bounds_of_metric_cp_convergence (N : ℕ) :
+    ∃ B : ℝ, 1 ≤ B ∧ ∀ (U : Opens (EuclideanSpace ℝ (Fin 3))) (g : ℕ → SmoothRiemannianMetric (𝓡 3) U)
+      (K : Set U), IsCompact K →
+      MetricCPConvergenceOn K (N + 2) g (metric.restrictOpen U) (metric.restrictOpen U) →
+      ∀ᶠ i in atTop, ∀ j : ℕ, j ≤ N → ∀ x ∈ K, curvDerivNormSq j (g i) x ≤ B := by
+  classical
+  choose C hC hbound using fun j : Fin (N + 1) =>
+    exists_pos_bound_intrinsic_curvature_derivative_of_metric_jets_on_opens
+      j.val (1 / 2) (1 / 2) (by norm_num) (by norm_num)
+  let B : ℝ := 1 + ∑ j : Fin (N + 1), (C j) ^ 2
+  have hB : 1 ≤ B := by
+    dsimp only [B]
+    exact le_add_of_nonneg_right (Finset.sum_nonneg (fun _ _ => sq_nonneg _))
+  refine ⟨B, hB, ?_⟩
+  intro U g K hK hconv
+  obtain ⟨i0, hi0⟩ := hconv (1 / 2) (by norm_num)
+  filter_upwards [eventually_ge_atTop i0] with i hi
+  intro j hj x hx
+  let j' : Fin (N + 1) := ⟨j, Nat.lt_succ_of_le hj⟩
+  have hsmall (s : ℕ) (hs : s ≤ j + 2) :
+      metricDerivNorm s (g i) (metric.restrictOpen U) (metric.restrictOpen U) x ≤ 1 / 2 :=
+    (derivNorm_le_sup hK (hs.trans (Nat.add_le_add_right hj 2)) _ _ _ hx).trans (hi0 i hi).le
+  have hlower (v : TangentSpace (𝓡 3) x) :
+      (1 / 2 : ℝ) * (metric.restrictOpen U).inner x v v ≤ (g i).inner x v v := by
+    simpa only [show (1 : ℝ) - 1 / 2 = 1 / 2 by norm_num] using
+      (inner_bounds_of_metricDerivNorm_le (metric.restrictOpen U) (g i) x (hsmall 0 (by omega)) v).1
+  have hjet := hbound j' U (g i) x hlower hsmall
+  have hsquared : curvDerivNormSq j (g i) x ≤ (C j') ^ 2 := by
+    unfold curvDerivNormSq
+    rw [curvCovDeriv_normSq_eq]
+    exact (Real.sqrt_le_iff).mp hjet |>.2
+  have hsum : (C j') ^ 2 ≤ ∑ a : Fin (N + 1), (C a) ^ 2 :=
+    Finset.single_le_sum (fun _ _ => sq_nonneg _) (Finset.mem_univ j')
+  exact hsquared.trans (hsum.trans (by dsimp only [B]; linarith))
+
+theorem exists_eventually_window_curvature_derivative_bounds_of_metric_cp_convergence :
+    ∃ B : ℝ, 1 ≤ B ∧ ∀ (D R : ℝ), R < D + 1 → ∀ (order : ℕ), 4 ≤ order →
+      ∀ g : ℕ → SmoothRiemannianMetric (𝓡 3) (Surgery.Topology.standardCapWindow D),
+      MetricCPConvergenceOn {x : Surgery.Topology.standardCapWindow D | ‖x.val‖ ≤ R} order g
+        (metric.restrictOpen (Surgery.Topology.standardCapWindow D))
+        (metric.restrictOpen (Surgery.Topology.standardCapWindow D)) →
+      ∀ᶠ i in atTop, ∀ j : ℕ, j ≤ 2 →
+        ∀ x : Surgery.Topology.standardCapWindow D, ‖x.val‖ ≤ R →
+          curvDerivNormSq j (g i) x ≤ B := by
+  obtain ⟨B, hB, hbound⟩ := exists_eventually_curvature_derivative_bounds_of_metric_cp_convergence 2
+  refine ⟨B, hB, ?_⟩
+  intro D R hR order horder g hconv
+  have hK : IsCompact {x : Surgery.Topology.standardCapWindow D | ‖x.val‖ ≤ R} := by
+    have hball : IsCompact {x : Surgery.Topology.ThreeSpace | ‖x‖ ≤ R} := by
+      simpa only [Metric.closedBall, dist_zero_right] using isCompact_closedBall (0 : Surgery.Topology.ThreeSpace) R
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hball (by
+      intro x hx
+      exact ⟨⟨x, show ‖x‖ < D + 1 from hx.trans_lt hR⟩, rfl⟩)
+  apply hbound _ g _ hK
+  intro ε hε
+  obtain ⟨i0, hi0⟩ := hconv (ε / 2) (by positivity)
+  refine ⟨i0, fun i hi => ?_⟩
+  apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall _ 4 _ _ _
+    (ε / 2) (by positivity) ?_) (by linarith)
+  intro j hj x hx
+  exact (derivNorm_le_sup hK (hj.trans horder) _ _ _ hx).trans (hi0 i hi).le
+
+
+end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+end
+end
