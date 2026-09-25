@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceForwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingForwardScalar
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
@@ -380,6 +381,90 @@ theorem exists_normalized_backwardSurvivorIncoming_chart_solution_of_scalar_boun
   exact ⟨Ξ, hΞ, hproj, hbirth',
     H.exists_normalized_backwardSurvivorIncoming_chart_solution first last hle G L
       hinit Ξ hΞ J hbirth' q hq g₀ hzero⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+end
+
+noncomputable section
+open Set
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+open scoped Manifold ContDiff NNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+theorem exists_backwardSurvivorIncoming_chart_of_earlier_scalar_bound_at_time
+    (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    {E Y X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [TopologicalSpace Y] {I : ModelWithCorners ℝ E Y}
+    [TopologicalSpace X] [ChartedSpace Y X]
+    (Ψ : X → H.backwardSurvivorDomain first last hle)
+    (hΨ : IsLocalDiffeomorph I ThreeModel ∞ Ψ)
+    (j₀ : Fin H.eventCount) (hfirst : first ≤ j₀.castSucc) (hj₀ : j₀.succ ≤ last)
+    {q Q τ : ℝ} {C : ℝ≥0} (hQ : 0 < Q) (hqQ : q ≤ Q)
+    (hbound : ∀ x : X, ∀ j : Fin H.eventCount,
+      ∀ hf : j₀.castSucc ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (H.backwardSurvivorMap first last hle j.castSucc (hfirst.trans hf)
+          (j.castSucc_lt_succ.le.trans hl) (Ψ x)) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (H.backwardSurvivorMap first last hle j.castSucc (hfirst.trans hf)
+          (j.castSucc_lt_succ.le.trans hl) (Ψ x))) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (H.backwardSurvivorMap first last hle j.castSucc (hfirst.trans hf)
+            (j.castSucc_lt_succ.le.trans hl) (Ψ x)) ^ 2)
+    (hfinal : ∀ x : X, ∀ t ∈ Ioo (H.time last) s, q < G.flow.scalar t (Ψ x).val →
+      |derivWithin (fun v => G.flow.scalar v (Ψ x).val) (Iic t) t| ≤
+        C * G.flow.scalar t (Ψ x).val ^ 2)
+    (hτ : τ ∈ Ico (H.time j₀.castSucc) (H.time j₀.succ))
+    (hscalar : ∀ x, (H.event j₀).incoming.flow.scalar τ
+      (H.backwardSurvivorMap first last hle j₀.castSucc hfirst
+        (j₀.castSucc_lt_succ.le.trans hj₀) (Ψ x)) ≤ Q)
+    (htime : 2 * C * (s - τ) * Q ≤ 1) :
+    ∃ Ξ : X → H.backwardSurvivorIncomingDomain first last hle G,
+      IsLocalDiffeomorph I ThreeModel ∞ Ξ ∧ ∀ x, (Ξ x).val = Ψ x := by
+  let f : X → (H.stage last).Carrier := fun x => (Ψ x).val
+  have hf : IsLocalDiffeomorph I ThreeModel ∞ f :=
+    isLocalDiffeomorph_comp (isLocalDiffeomorph_subtype_val _) hΨ
+  have hs (x : X) (t : ℝ) (ht : t ∈ Ico (H.time last) s) :
+      G.flow.scalar t (f x) ≤ 2 * Q := by
+    let A : BackwardPointTrace H first last hle (Ψ x).val := Classical.choice (Ψ x).property
+    have heq (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hl : j ≤ last) :
+        H.backwardSurvivorMap first last hle j hf hl (Ψ x) = A.point j hf hl :=
+      H.backwardSurvivorMap_eq_point first last hle j hf hl (Ψ x) A
+    apply BackwardPointTrace.scalar_incoming_le_two_mul_of_scalar_bound_at_time G hinit
+      (Ψ x).val A j₀ hfirst hj₀ hQ hqQ
+    · intro j hf hl
+      simpa only [heq] using hbound x j hf hl
+    · exact hfinal x
+    · exact hτ
+    · simpa only [heq] using hscalar x
+    · exact ht
+    · exact (mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le τ)
+          (by positivity : 0 ≤ 2 * (C : ℝ))) hQ.le).trans htime
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
+  obtain ⟨C3, hC3, hbridge⟩ := exists_rmNormLeOfCurvatureOperatorBounds.{u} ThreeModel
+  let B : ℝ := 2 * C3 * (Q + Phi (4 * Q) + Phi 0)
+  have hB : 0 ≤ B := by
+    have := hPhi.pos (4 * Q)
+    have := hPhi.pos 0
+    dsimp only [B]
+    positivity
+  have hregular : ∀ x, Ψ x ∈ H.backwardSurvivorIncomingDomain first last hle G := by
+    intro x
+    refine ⟨range f, hf.isOpen_range, mem_range_self x, H.time last, ⟨le_rfl, G.lt⟩,
+      B, hB, ?_⟩
+    rintro y ⟨z, rfl⟩ t ht
+    exact sqrt_rmNormSq_le_of_scalar_le hC3 (hbridge (H.stage last).Carrier G.flow)
+      hPhi hpinch (by simp [ThreeSpace]) ht (f z) hQ (by linarith [hs z t ht])
+  refine ⟨fun x => ⟨Ψ x, hregular x⟩, ?_, fun _ => rfl⟩
+  exact fun x => isLocalDiffeomorphAt_subtypeCodRestrict hregular (hΨ x)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 end

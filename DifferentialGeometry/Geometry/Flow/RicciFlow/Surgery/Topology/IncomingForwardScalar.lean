@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyCurvatureBound
@@ -291,6 +292,68 @@ theorem subset_terminalRegularRegion_of_scalar_bound_at_time
     G.exists_curvature_bound_of_scalar_bound_at_time hA hqA U hbound hτ hscalar htime
   intro x hx
   exact ⟨U, hU, hx, τ, hτ, B, hB, hcurv⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+end
+
+noncomputable section
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+open scoped Manifold ContDiff NNReal Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+universe u
+
+theorem TerminalLimitMetric.riemannNorm_extendedMetric_le_of_scalar_bound_at_time
+    {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
+    (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
+    {q Q a₀ τ : ℝ} {C : ℝ≥0} (hQ : 0 < Q) (hqQ : q ≤ Q) (ha₀ : 0 < a₀)
+    (hτ : τ ∈ Ico a s)
+    (hbound : ∀ t ∈ Ioo τ s, q < G.flow.scalar t x.val →
+      |derivWithin (fun v => G.flow.scalar v x.val) (Iic t) t| ≤
+        C * G.flow.scalar t x.val ^ 2)
+    (hscalar : G.flow.scalar τ x.val ≤ Q)
+    (hpinch : ∀ t ∈ Ico τ s,
+      InFixedHamiltonIveyRegion (G.flow.base.metric t) a₀ x.val)
+    (htime : 2 * C * (s - τ) * Q ≤ 1) :
+    ∀ t ∈ Icc τ s,
+      Real.sqrt (normSq0S (L.extendedMetric t) x 4
+        (metricRm04At (L.extendedMetric t) x)) ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+  let J : P.IncomingSlab τ s :=
+    { lt := hτ.2
+      flow := G.flow.timeRestrict _
+      equation := isSolutionOn_timeRestrict G.equation
+        (fun _ ht => ⟨hτ.1.trans ht.1, ht.2⟩)
+        (fun _ ht => ⟨hτ.1.trans_lt ht.1, ht.2⟩)
+      smoothUpTo := by
+        intro y t ht
+        obtain ⟨U, hU, hy, hsub, V, hV, htV, F, hF, heq⟩ :=
+          G.smoothUpTo y t ⟨hτ.1.trans ht.1, ht.2⟩
+        exact ⟨U, hU, hy, hsub, V, hV, htV, F, hF,
+          fun v hv z hz i j => heq v ⟨hv.1, hτ.1.trans hv.2.1, hv.2.2⟩ z hz i j⟩ }
+  have hpast (t : ℝ) (ht : t ∈ Ico τ s) :
+      G.riemannNorm t x.val ≤
+        2 * Real.sqrt 3 * (Q + max (2 * Q) (Real.exp 4 / a₀)) := by
+    have htime' : 2 * C * Q * (t - τ) ≤ 1 := by
+      have hb := mul_le_mul_of_nonneg_right
+        (mul_le_mul_of_nonneg_left (sub_le_sub_right ht.2.le τ)
+          (by positivity : 0 ≤ 2 * (C : ℝ))) hQ.le
+      nlinarith [hb]
+    have hs : G.flow.scalar t x.val ≤ 2 * Q :=
+      J.scalar_le_two_mul_initial_of_time_sub_le hQ hqQ x.val hbound hscalar ht htime'
+    have hr := sqrt_normSq0S_le_of_fixedHamiltonIveyRegion (G.flow.base.metric t) x.val
+      ha₀ le_rfl (hpinch t ht) hs
+    rw [max_eq_left (by positivity : 0 ≤ 2 * Q), show 2 * Q / 2 = Q by ring] at hr
+    exact hr
+  intro t ht
+  rcases lt_or_eq_of_le ht.2 with hts | rfl
+  · rw [L.extendedMetric_before hts, rmNormSq_restrictOpen]
+    exact hpast t ⟨ht.1, hts⟩
+  · rw [L.extendedMetric_terminal]
+    apply le_of_tendsto (L.tendsto_riemannNorm x)
+    filter_upwards [Ioo_mem_nhdsLT hτ.2] with t ht
+    exact hpast t ⟨ht.1.le, ht.2⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 end

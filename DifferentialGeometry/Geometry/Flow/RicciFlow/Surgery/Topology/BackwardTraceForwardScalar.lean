@@ -407,3 +407,66 @@ theorem terminal_scalar_div_le_birth_scale_of_time_sub_le
   · linarith
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
+universe u
+variable {H : ObservedHistory.{u}}
+
+theorem scalar_incoming_le_two_mul_of_scalar_bound_at_time
+    {first last : Fin (H.eventCount + 1)} {hle : first ≤ last} {s : ℝ}
+    (G : (H.stage last).IncomingSlab (H.time last) s)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (x : (H.stage last).Carrier) (A : BackwardPointTrace H first last hle x)
+    (j₀ : Fin H.eventCount) (hfirst : first ≤ j₀.castSucc) (hj₀ : j₀.succ ≤ last)
+    {q Q τ : ℝ} {C : ℝ≥0} (hQ : 0 < Q) (hqQ : q ≤ Q)
+    (hbound : ∀ j : Fin H.eventCount, ∀ hf : j₀.castSucc ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (A.point j.castSucc (hfirst.trans hf) (j.castSucc_lt_succ.le.trans hl)) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (A.point j.castSucc (hfirst.trans hf) (j.castSucc_lt_succ.le.trans hl))) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (A.point j.castSucc (hfirst.trans hf) (j.castSucc_lt_succ.le.trans hl)) ^ 2)
+    (hfinal : ∀ t ∈ Ioo (H.time last) s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C*G.flow.scalar t x ^ 2)
+    (hτ : τ ∈ Ico (H.time j₀.castSucc) (H.time j₀.succ))
+    (hscalar : (H.event j₀).incoming.flow.scalar τ
+      (A.point j₀.castSucc hfirst (j₀.castSucc_lt_succ.le.trans hj₀)) ≤ Q)
+    {t : ℝ} (ht : t ∈ Ico (H.time last) s) (htime : 2*C*(t-τ)*Q ≤ 1) :
+    G.flow.scalar t x ≤ 2*Q := by
+  let B := A.restrictFirst hfirst (j₀.castSucc_lt_succ.le.trans hj₀)
+  have hpast := B.inv_max_scalar_sub_endpoint_le_at_time hQ
+    (fun j hf hl t ht hR => hbound j hf hl t ht (hqQ.trans_lt hR)) j₀ le_rfl hj₀ hτ
+  have htail := (G.lipschitzOnWith_inv_max_scalar_at hQ x (fun t ht hR => hfinal t ht (hqQ.trans_lt hR))).dist_le_mul
+    (H.time last) ⟨le_rfl,G.lt⟩ t ht
+  rw [Real.dist_eq,Real.dist_eq,abs_sub_comm (H.time last) t,
+    abs_of_nonneg (sub_nonneg.mpr ht.1)] at htail
+  change |(max Q (metricScalarAt (G.flow.base.metric (H.time last)) x))⁻¹-
+    (max Q (G.flow.scalar t x))⁻¹| ≤ _ at htail
+  rw [hinit] at htail
+  have htri := abs_sub_le
+    ((max Q ((H.event j₀).incoming.flow.scalar τ
+      (A.point j₀.castSucc hfirst (j₀.castSucc_lt_succ.le.trans hj₀))))⁻¹)
+    ((max Q (metricScalarAt (H.initialMetric last) x))⁻¹)
+    ((max Q (G.flow.scalar t x))⁻¹)
+  have hrec : |(max Q ((H.event j₀).incoming.flow.scalar τ
+      (A.point j₀.castSucc hfirst (j₀.castSucc_lt_succ.le.trans hj₀))))⁻¹-
+      (max Q (G.flow.scalar t x))⁻¹| ≤ C*(t-τ) := by
+    dsimp only [B, BackwardPointTrace.restrictFirst] at hpast
+    linarith
+  have hinv : Q⁻¹ ≤ (max Q ((H.event j₀).incoming.flow.scalar τ
+      (A.point j₀.castSucc hfirst (j₀.castSucc_lt_succ.le.trans hj₀))))⁻¹ :=
+    inv_anti₀ (hQ.trans_le (le_max_left _ _)) (max_le le_rfl hscalar)
+  have hhalf : C*(t-τ) ≤ (2*Q)⁻¹ := by
+    rw [inv_eq_one_div]
+    apply (le_div_iff₀ (by positivity : 0 < 2*Q)).mpr
+    nlinarith
+  have htwo : Q⁻¹ = 2*(2*Q)⁻¹ := by field_simp
+  have hlow : (2*Q)⁻¹ ≤ (max Q (G.flow.scalar t x))⁻¹ := by
+    have hab := (abs_le.mp hrec).2
+    rw [htwo] at hinv
+    linarith
+  exact (le_max_right _ _).trans
+    ((inv_le_inv₀ (by positivity) (hQ.trans_le (le_max_left _ _))).mp hlow)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace

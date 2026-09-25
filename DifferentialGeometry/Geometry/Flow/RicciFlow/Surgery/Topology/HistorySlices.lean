@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
+import Mathlib.Order.Interval.Set.Infinite
 
 noncomputable section
 open Set
@@ -114,4 +115,37 @@ theorem restrict_sliceMetric (a : Icc (0 : ℝ) H.horizon)
     ((H.restrict a).activeStage_mem t)
   rw [he] at hm
   exact hm
+
+theorem exists_time_mem_Ioo_ne_event_times
+    {a b : ℝ} (hab : a < b) :
+    ∃ τ ∈ Ioo a b, ∀ j : Fin (H.eventCount + 1), τ ≠ H.time j := by
+  obtain ⟨τ, hτ, hnot⟩ := (Ioo_infinite hab).exists_notMem_finite (Set.finite_range H.time)
+  exact ⟨τ, hτ, fun j hj => hnot ⟨j, hj.symm⟩⟩
+
+theorem mem_event_slab_or_after_stage_of_ne_time
+    (first last : Fin (H.eventCount + 1))
+    {τ s : ℝ} (hτ : τ ∈ Ioo (H.time first) s)
+    (hne : ∀ j : Fin (H.eventCount + 1), τ ≠ H.time j) :
+    (∃ next : Fin H.eventCount, first ≤ next.castSucc ∧ next.succ ≤ last ∧
+      τ ∈ Ioo (H.time next.castSucc) (H.time next.succ)) ∨
+      τ ∈ Ioo (H.time last) s := by
+  by_cases hlast : H.time last < τ
+  · exact Or.inr ⟨hlast, hτ.2⟩
+  have hbefore : τ < H.time last := lt_of_le_of_ne (le_of_not_gt hlast) (hne last)
+  let t : Icc (0 : ℝ) H.horizon :=
+    ⟨τ, (H.time_nonneg first).trans hτ.1.le,
+      hbefore.le.trans (H.time_le_horizon_at last)⟩
+  have hk : H.activeStage t < last :=
+    H.time_strictMono.lt_iff_lt.mp ((H.activeStage_time_le t).trans_lt hbefore)
+  have hkval : (H.activeStage t).val < H.eventCount := by
+    have := last.isLt
+    have : (H.activeStage t).val < last.val := hk
+    omega
+  let next : Fin H.eventCount := ⟨(H.activeStage t).val, hkval⟩
+  refine Or.inl ⟨next, H.le_activeStage t first hτ.1.le, ?_, ?_, ?_⟩
+  · change (H.activeStage t).val + 1 ≤ last.val
+    exact hk
+  · exact lt_of_le_of_ne (H.activeStage_time_le t) (Ne.symm (hne (H.activeStage t)))
+  · exact H.activeStage_before_next t hkval
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

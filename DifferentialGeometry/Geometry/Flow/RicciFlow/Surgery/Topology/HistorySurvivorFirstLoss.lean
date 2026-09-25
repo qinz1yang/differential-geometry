@@ -220,3 +220,61 @@ theorem exists_regularCrossing_of_backwardSurvivor_initial_eq
   rwa [he] at hc
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+set_option autoImplicit false
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u v
+variable {H : ObservedHistory.{u}} {first : Fin (H.eventCount + 1)} {i : Fin H.eventCount}
+  {hle : first ≤ i.castSucc}
+  {E Y X : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace Y] {I : ModelWithCorners ℝ E Y} [I.Boundaryless]
+  [TopologicalSpace X] [ChartedSpace Y X] [IsManifold I ∞ X]
+
+theorem exists_backwardSurvivor_chart_after_terminal_crossing
+    (J : X → (H.stage first).Carrier) (hJ : IsSmoothEmbedding I ThreeModel ∞ J)
+    (Ξ : X → H.backwardSurvivorTerminalFace first i hle)
+    (hbirth : ∀ x,
+      H.backwardSurvivorMap first i.castSucc hle first le_rfl hle (Ξ x).val = J x)
+    (ψ : X → (H.stage i.succ).Carrier)
+    (hcross : ∀ x, (H.event i).RegularCrossing
+      (H.backwardSurvivorTerminalFaceMap first i hle (Ξ x)).val (ψ x)) :
+    ∃ Υ : X → H.backwardSurvivorDomain first i.succ (hle.trans i.castSucc_lt_succ.le),
+      IsSmoothEmbedding I ThreeModel ∞ Υ ∧
+      (∀ x, (Υ x).val = ψ x) ∧
+      (∀ x, H.backwardSurvivorMap first i.succ (hle.trans i.castSucc_lt_succ.le)
+        first le_rfl (hle.trans i.castSucc_lt_succ.le) (Υ x) = J x) ∧
+      ∀ x, H.backwardSurvivorMap first i.succ (hle.trans i.castSucc_lt_succ.le)
+        i.castSucc hle i.castSucc_lt_succ.le (Υ x) = (Ξ x).val.val := by
+  classical
+  have hcross' (x : X) : (H.event i).RegularCrossing (Ξ x).val.val (ψ x) := hcross x
+  let A (x : X) : BackwardPointTrace H first i.castSucc hle (Ξ x).val.val :=
+    Classical.choice (Ξ x).val.property
+  let B (x : X) : BackwardPointTrace H first i.succ (hle.trans i.castSucc_lt_succ.le) (ψ x) :=
+    (A x).append (ψ x) (hcross' x)
+  have hBfirst (x : X) : (B x).point first le_rfl (hle.trans i.castSucc_lt_succ.le) = J x := by
+    exact ((A x).append_point_before (ψ x) (hcross' x) first le_rfl hle).trans
+      ((H.backwardSurvivorMap_eq_point first i.castSucc hle first le_rfl hle (Ξ x).val (A x)).symm.trans
+        (hbirth x))
+  let b := H.backwardSurvivorMap first i.succ (hle.trans i.castSucc_lt_succ.le)
+    first le_rfl (hle.trans i.castSucc_lt_succ.le)
+  have hb := H.backwardSurvivorMap_isSmoothEmbedding first i.succ (hle.trans i.castSucc_lt_succ.le)
+    first le_rfl (hle.trans i.castSucc_lt_succ.le)
+  have hrange : range J ⊆ range b := by
+    rintro _ ⟨x, rfl⟩
+    refine ⟨⟨ψ x, ⟨B x⟩⟩, ?_⟩
+    exact (H.backwardSurvivorMap_eq_point first i.succ (hle.trans i.castSucc_lt_succ.le)
+      first le_rfl (hle.trans i.castSucc_lt_succ.le) ⟨ψ x, ⟨B x⟩⟩ (B x)).trans (hBfirst x)
+  let Υ := hb.lift J hrange
+  have hΥ : IsSmoothEmbedding I ThreeModel ∞ Υ := hb.isSmoothEmbedding_lift hJ (by simp) hrange
+  have hΥeq (x : X) : Υ x = ⟨ψ x, ⟨B x⟩⟩ := by
+    apply hb.isEmbedding.injective
+    exact (hb.comp_lift hrange x).trans
+      ((H.backwardSurvivorMap_eq_point first i.succ (hle.trans i.castSucc_lt_succ.le)
+        first le_rfl (hle.trans i.castSucc_lt_succ.le) ⟨ψ x, ⟨B x⟩⟩ (B x)).trans (hBfirst x)).symm
+  refine ⟨Υ, hΥ, fun x => congrArg Subtype.val (hΥeq x), hb.comp_lift hrange, ?_⟩
+  intro x
+  rw [hΥeq, H.backwardSurvivorMap_eq_point _ _ _ _ _ _ _ (B x)]
+  change ((A x).append (ψ x) (hcross' x)).point i.castSucc hle _ = (Ξ x).val.val
+  exact ((A x).append_point_before (ψ x) (hcross' x) i.castSucc hle le_rfl).trans (A x).endpoint_eq
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
