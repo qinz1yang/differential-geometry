@@ -11564,6 +11564,7 @@ import DifferentialGeometry.Topology.Manifold.SublevelCutoff
 import DifferentialGeometry.Geometry.Metric.Distance.Cutoff
 import DifferentialGeometry.Analysis.Calculus.Cutoff.RiemannianExhaustion
 import DifferentialGeometry.Analysis.Integration.Measure.Family.DominatedIntegral
+import DifferentialGeometry.Analysis.Integration.Measure.Family.CompactSetBounds
 import DifferentialGeometry.Geometry.Operator.Gradient.ProductEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.WeightedCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.WeightedIntegratedCutoff

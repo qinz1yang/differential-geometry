@@ -831,6 +831,129 @@ private theorem linear_le_inverse_cubic_barrier {c B C v b : ℝ}
 variable (H : ObservedHistory.{u}) {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
   [IsManifold ThreeModel ∞ X] [T2Space X]
 
+theorem exists_regularizedCost_spatial_minimum_of_compact_history_action_sublevels
+    {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+    [IsManifold ThreeModel ∞ X] [T2Space X]
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j)) (K : Set X) (hK : IsCompact K)
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing (f ⟨i.castSucc, hi, i.castSucc_le_succ.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_le_succ, hl⟩ z))
+    {T v : ℝ} (hv : 0 < v)
+    (hupper : T ∈ H.stageDomain last)
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (J : Set ℝ) (hJ : J ⊆ D.carrier)
+    (hclock : ∀ t ∈ Icc 0 v, T - t ^ 2 ∈ J)
+    (hreg : ∀ t ∈ Ico 0 v, T - t ^ 2 ∈ D.regular)
+    (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
+      (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
+      (fun z : ℝ × X => (⟨z.2, (S.base.metric z.1).inner z.2⟩ :
+        Bundle.TotalSpace (ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)
+          (fun x => TangentSpace ThreeModel x →L[ℝ] TangentSpace ThreeModel x →L[ℝ] ℝ)))
+      (J ×ˢ (univ : Set X)))
+    (B : ℝ)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+      ∀ z : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) z)
+    (x : X)
+    (hconf : ∀ (i : Fin (H.eventCount + 1)) (hfi : first ≤ i) (hil : i ≤ last),
+      ∀ b ∈ Ioc 0 v, T - b ^ 2 ∈ H.stageDomain i →
+      ∀ α : (j : H.StageInterval i last) → ℝ → (H.stage j.val).Carrier,
+      (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (α j)) →
+      (∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (α j)) volume
+        (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T b j.val)) →
+      α ⟨last, hil, le_rfl⟩ 0 = f ⟨last, hle, le_rfl⟩ x →
+      (∀ (k : Fin H.eventCount) (hki : i ≤ k.castSucc) (hkl : k.succ ≤ last),
+        ∃ z : (H.event k).old,
+          z.val.val = α ⟨k.castSucc, hki, k.castSucc_le_succ.trans hkl⟩
+            (Real.sqrt (T - H.time k.succ)) ∧
+          (H.event k).oldOutput z = α ⟨k.succ, hki.trans k.castSucc_le_succ, hkl⟩
+            (Real.sqrt (T - H.time k.succ))) →
+      (∑ j : H.StageInterval i last, H.stageRegularizedAction j.val T (α j)
+        (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T b j.val)) < 3 * b →
+      ∀ j : H.StageInterval i last, MapsTo (α j)
+        (Icc (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T b j.val))
+        (f ⟨j.val, hfi.trans j.property.1, j.property.2⟩ '' K)) :
+    ∃ η : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η ∧ η 0 = x ∧
+      MapsTo η (Icc 0 v) K ∧ lRegularizedAction S T η 0 v < 3 * v ∧
+      (lRegularizedAction S T η 0 v : WithTop ℝ) ∈ H.regularizedActionValues first last hle T B 0 v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) ∧
+      H.regularizedCost first last hle T B 0 v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) = (lRegularizedAction S T η 0 v : WithTop ℝ) ∧
+      ∀ q : (H.stage first).Carrier, H.regularizedCost first last hle T B 0 v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) ≤
+          H.regularizedCost first last hle T B 0 v (f ⟨last, hle, le_rfl⟩ x) q := by
+  classical
+  obtain ⟨δ, hδ, hδv, hseed⟩ := exists_pos_lRegularizedAction_const_lt_linear S hS T hv
+    (fun t ht => hJ (hclock t ht)) x (by norm_num : (0 : ℝ) < 3)
+  let b₀ := δ / 2
+  have hb₀ : 0 < b₀ := half_pos hδ
+  have hb₀δ : b₀ ≤ δ := by dsimp only [b₀]; linarith
+  have hb₀v : b₀ < v := by dsimp only [b₀]; linarith
+  have hseed₀ := hseed b₀ ⟨hb₀, hb₀δ⟩
+  obtain ⟨firstTime, hfirstTime, hlastTime, hfirstClock⟩ :=
+    exists_initial_stages_of_backward_clock H first last hle hupper hlower
+  let jlast : H.StageInterval first last := ⟨last, hle, le_rfl⟩
+  have hemb : _root_.Topology.IsOpenEmbedding (f jlast) :=
+    .of_continuous_injective_isOpenMap (hf jlast).contMDiff.continuous (hinj jlast) (hf jlast).isOpenMap
+  let : SecondCountableTopology (H.stage last).Carrier :=
+    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (H.stage last).Carrier
+  let : SecondCountableTopology X := hemb.toIsEmbedding.secondCountableTopology
+  let : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace ThreeSpace X
+  let : SigmaCompactSpace X := inferInstance
+  let : _root_.TopologicalSpace.MetrizableSpace X := Manifold.metrizableSpace ThreeModel X
+  have hupperIcc : T - (0 : ℝ) ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) := by
+    simpa only [zero_pow two_ne_zero, sub_zero] using
+      (show T ∈ Icc (H.time last) (H.stageEndTime last) from
+        ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩)
+  have hcompact : ∀ b ∈ Ico b₀ v, ∀ α : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α →
+      α 0 = x → lRegularizedAction S T α 0 b < 3 * b → MapsTo α (Icc 0 b) K := by
+    intro b hb α hα hα0 hαact
+    have hb0 : 0 < b := hb₀.trans_le hb.1
+    let fb := fun (j : H.StageInterval (firstTime b) last) =>
+      f ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩
+    let hfb := fun (j : H.StageInterval (firstTime b) last) =>
+      hf ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩
+    have htimeb := hfirstClock b ⟨hb0.le, hb.2.le⟩
+    have hend (j : Fin (H.eventCount + 1)) :
+        H.regularizedStageEnd T b j ≤ H.regularizedStageEnd T v j :=
+      H.regularizedStageEnd_monotoneOn T j hb0.le hv.le hb.2.le
+    obtain ⟨hint, hsum⟩ := H.intervalIntegrable_and_sum_stageRegularizedAction_of_common_curve
+      (firstTime b) last (hlastTime b) fb hfb S hS T le_rfl hb0.le hupperIcc htimeb
+      (fun t ht => hJ (hclock t ⟨ht.1, ht.2.trans hb.2.le⟩))
+      (fun j t ht => hmetric ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩ t
+        ⟨ht.1, ht.2.trans_le (hend j.val)⟩) α hα
+    have hstay := hconf (firstTime b) (hfirstTime b) (hlastTime b) b ⟨hb0, hb.2.le⟩ htimeb
+      (fun j => fb j ∘ α) (fun j => ((hfb j).contMDiff.of_le (by norm_num)).comp hα) hint
+      (by change f ⟨last, hle, le_rfl⟩ (α 0) = _; rw [hα0])
+      (fun k hki hkl => by
+        obtain ⟨z, _, hz, hzg⟩ := hcross k ((hfirstTime b).trans hki) hkl
+          (α (Real.sqrt (T - H.time k.succ)))
+        exact ⟨z, hz, hzg⟩)
+      (hsum.trans_lt hαact)
+    exact H.mapsTo_of_stage_projections_mem (firstTime b) last (hlastTime b) fb
+      (fun j => hinj _) K le_rfl (H.time_le_of_mem_stageDomain htimeb) hupperIcc.2 α hstay
+  have hdim : (Module.finrank ℝ ThreeSpace : ℝ) = 3 := by norm_num [ThreeSpace]
+  obtain ⟨_, _, _, _, _, _, _, _, γ, hγ, hγ0, _, hγact⟩ :=
+    exists_lRegularizedAction_lt_linear_at_carrier_endpoint_of_compact_action_sublevels
+      S hS T hb₀ hb₀v (fun t ht => hJ (hclock t ht)) hreg x K hK (fun _ => x)
+      contMDiff_const rfl (by simpa only [hdim] using hseed₀)
+      (by simpa only [hdim] using hcompact)
+  have hγact' : lRegularizedAction S T γ 0 v < 3 * v := by simpa only [hdim] using hγact
+  obtain ⟨η, hη, hη0, hηK, hηact, hmem, hcost, hmin⟩ :=
+    H.exists_regularizedCost_spatial_minimum_of_compact_action_sublevel
+      first last hle f hf hinj K hK hcross le_rfl hv
+      (by simpa only [zero_pow two_ne_zero, sub_zero] using hupper) hlower S hS J hJ hclock
+      (fun t ht => hreg t ⟨ht.1.le, ht.2⟩) hsmooth hmetric hscalar
+      x γ hγ hγ0 hγact' (hconf first le_rfl hle v ⟨hv, le_rfl⟩ hlower)
+  exact ⟨η, hη, hη0, hηK, hηact.trans_lt hγact', hmem, hcost, hmin⟩
+
 theorem exists_regularizedCost_spatial_minimum_of_uniform_history_escape_barrier
     (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
     (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
@@ -873,73 +996,31 @@ theorem exists_regularizedCost_spatial_minimum_of_uniform_history_escape_barrier
       ∀ q : (H.stage first).Carrier, H.regularizedCost first last hle T B 0 v
         (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) ≤
           H.regularizedCost first last hle T B 0 v (f ⟨last, hle, le_rfl⟩ x) q := by
-  classical
-  obtain ⟨δ, hδ, hδv, firstTime, hfirstTime, hlastTime, m, hfirstClock, _, _, hm⟩ :=
-    H.exists_continuous_spatial_cost_minimum_near_pole first last hle f hf hinj hcross hv
-      hupper hlower S hS J hJ hclock (fun t ht => hreg t ⟨ht.1.le, ht.2⟩) hsmooth
-      K hK B hmetric hscalar x hx
-  let b₀ := δ / 2
-  have hb₀ : 0 < b₀ := half_pos hδ
-  have hb₀δ : b₀ ≤ δ := by dsimp only [b₀]; linarith
-  have hb₀v : b₀ < v := by dsimp only [b₀]; linarith
-  obtain ⟨hneg, _, α₀, hα₀, hα₀start, _, hα₀val, _, _, _⟩ := hm b₀ ⟨hb₀, hb₀δ⟩
-  have hα₀act : lRegularizedAction S T α₀ 0 b₀ < 3 * b₀ := by
-    rw [hα₀val] at hneg
-    nlinarith
-  let jlast : H.StageInterval first last := ⟨last, hle, le_rfl⟩
-  have hemb : _root_.Topology.IsOpenEmbedding (f jlast) :=
-    .of_continuous_injective_isOpenMap (hf jlast).contMDiff.continuous (hinj jlast) (hf jlast).isOpenMap
-  let : SecondCountableTopology (H.stage last).Carrier :=
-    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (H.stage last).Carrier
-  let : SecondCountableTopology X := hemb.toIsEmbedding.secondCountableTopology
-  let : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace ThreeSpace X
-  let : SigmaCompactSpace X := inferInstance
-  let : _root_.TopologicalSpace.MetrizableSpace X := Manifold.metrizableSpace ThreeModel X
-  have hbarrier (b : ℝ) (hb : b ∈ Ioc 0 v) :
-      3 * b ≤ μ * r ^ 2 / (2 * b) - (2 * B / 3) * b ^ 3 := by
+  apply H.exists_regularizedCost_spatial_minimum_of_compact_history_action_sublevels
+    first last hle f hf hinj K hK hcross hv hupper hlower S hS J hJ hclock hreg hsmooth
+    B hmetric hscalar x
+  intro i hfi hil b hb hphysical α hα hint hpole hnode hact
+  let fb := fun (j : H.StageInterval i last) => f ⟨j.val, hfi.trans j.property.1, j.property.2⟩
+  let hfb := fun (j : H.StageInterval i last) => hf ⟨j.val, hfi.trans j.property.1, j.property.2⟩
+  have hend (j : Fin (H.eventCount + 1)) :
+      H.regularizedStageEnd T b j ≤ H.regularizedStageEnd T v j :=
+    H.regularizedStageEnd_monotoneOn T j hb.1.le hv.le hb.2
+  apply H.mapsTo_common_compact_set_of_sum_stageRegularizedAction_lt i last hil fb hfb
+    (fun j => hinj _) K hK (fun k hki hkl z => hcross k (hfi.trans hki) hkl z)
+    le_rfl hb.1.le
+    (by simpa only [zero_pow two_ne_zero, sub_zero] using
+      (show T ∈ Icc (H.time last) (H.stageEndTime last) from
+        ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩))
+    hphysical S g hμ hr
+    (fun j t ht => hmetric ⟨j.val, hfi.trans j.property.1, j.property.2⟩ t
+      ⟨ht.1, ht.2.trans_le (hend j.val)⟩)
+    (fun t ht => hcompare t ⟨ht.1, ht.2.trans_le hb.2⟩) α hα hint
+    (fun j t ht => hscalar ⟨j.val, hfi.trans j.property.1, j.property.2⟩ t
+      ⟨ht.1, ht.2.trans_le (hend j.val)⟩ (α j t)) x hx hfront hpole hnode
+  have hbarrier : 3 * b ≤ μ * r ^ 2 / (2 * b) - (2 * B / 3) * b ^ 3 := by
     apply linear_le_inverse_cubic_barrier (by norm_num : (0 : ℝ) ≤ 3) hB hb.1 hb.2
-    simpa only [show (2:ℝ)*3=6 by norm_num] using hguard
-  have hconf : ∀ b ∈ Ico b₀ v, ∀ α : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α →
-      α 0 = x → lRegularizedAction S T α 0 b < 3 * b → MapsTo α (Icc 0 b) K := by
-    intro b hb α hα hα0 hαact
-    have hb0 : 0 < b := hb₀.trans_le hb.1
-    let fb := fun (j : H.StageInterval (firstTime b) last) =>
-      f ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩
-    let hfb := fun (j : H.StageInterval (firstTime b) last) =>
-      hf ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩
-    have hend (j : Fin (H.eventCount + 1)) :
-        H.regularizedStageEnd T b j ≤ H.regularizedStageEnd T v j :=
-      H.regularizedStageEnd_monotoneOn T j hb0.le hv.le hb.2.le
-    apply H.mapsTo_of_lRegularizedAction_lt_history_escape_barrier
-      (firstTime b) last (hlastTime b) fb hfb (fun j => hinj _) K hK
-      (fun i hi hl z => hcross i ((hfirstTime b).trans hi) hl z) le_rfl hb0.le
-      (by simpa only [zero_pow two_ne_zero, sub_zero] using
-        (show T ∈ Icc (H.time last) (H.stageEndTime last) from
-          ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩))
-      (hfirstClock b ⟨hb0.le, hb.2.le⟩) S hS
-      (fun t ht => hJ (hclock t ⟨ht.1, ht.2.trans hb.2.le⟩)) g hμ hr
-      (fun j t ht => hmetric ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩ t
-        ⟨ht.1, ht.2.trans_le (hend j.val)⟩)
-      (fun t ht => hcompare t ⟨ht.1, ht.2.trans hb.2⟩)
-      (fun j t ht z => hscalar ⟨j.val, (hfirstTime b).trans j.property.1, j.property.2⟩ t
-        ⟨ht.1, ht.2.trans_le (hend j.val)⟩ (fb j z)) x hx hfront α hα hα0
-    simpa only [sub_zero, zero_pow (by norm_num : 3 ≠ 0)] using
-      hαact.trans_le (hbarrier b ⟨hb0, hb.2.le⟩)
-  have hdim : (Module.finrank ℝ ThreeSpace : ℝ) = 3 := by norm_num [ThreeSpace]
-  obtain ⟨_, _, _, _, _, _, _, _, γ, hγ, hγ0, _, hγact⟩ :=
-    exists_lRegularizedAction_lt_linear_at_carrier_endpoint_of_compact_action_sublevels
-      S hS T hb₀ hb₀v (fun t ht => hJ (hclock t ht)) hreg x K hK α₀ hα₀ hα₀start
-      (by simpa only [hdim] using hα₀act) (by simpa only [hdim] using hconf)
-  have hγact' : lRegularizedAction S T γ 0 v < 3 * v := by simpa only [hdim] using hγact
-  obtain ⟨η, hη, hη0, hηK, hηact, hmem, hcost, hmin⟩ :=
-    H.exists_regularizedCost_spatial_minimum_of_joint_metric_of_action_lt_compact_barrier
-      first last hle f hf hinj K hK hcross le_rfl hv
-      (by simpa only [zero_pow two_ne_zero, sub_zero] using hupper) hlower S hS J hJ hclock
-      (fun t ht => hreg t ⟨ht.1.le, ht.2⟩) hsmooth g hμ hr hmetric hcompare hscalar
-      x hx hfront γ hγ hγ0
-      (by simpa only [sub_zero, zero_pow (by norm_num : 3 ≠ 0)] using
-        hγact'.trans_le (hbarrier v ⟨hv, le_rfl⟩))
-  exact ⟨η, hη, hη0, hηK, hηact.trans_lt hγact', hmem, hcost, hmin⟩
+    simpa only [show (2 : ℝ) * 3 = 6 by norm_num] using hguard
+  simpa only [sub_zero, zero_pow (by norm_num : 3 ≠ 0)] using hact.trans_le hbarrier
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 

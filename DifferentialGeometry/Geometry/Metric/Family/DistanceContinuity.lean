@@ -1,3 +1,8 @@
+import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.Parameter
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.DistanceUpper
+import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Analysis.FunctionalAnalysis.SeminormBounds
 import DifferentialGeometry.Geometry.Metric.SmoothMapLipschitz
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
@@ -186,3 +191,126 @@ theorem continuousAt_riemannianEDistOf_center
   exact ((ENNReal.ofReal_lt_iff_lt_toReal (mul_nonneg hLpos.le dist_nonneg) hepstop).2 hmul).le
 
 end DifferentialGeometry
+
+end
+
+noncomputable section
+open Set Filter Bundle Manifold DifferentialGeometry
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Tensor.Coordinates DifferentialGeometry.Geometry.Operator DifferentialGeometry.Integral.Measure
+open scoped Manifold ContDiff Topology ENNReal
+namespace DifferentialGeometry.Geometry.Curvature
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [I.Boundaryless] {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+  {g : ℝ → SmoothRiemannianMetric I M}
+
+private theorem metric_deriv_sup_continuousAt
+    (hg : MetricFamilySmoothOn D g) {t : ℝ} (ht : t ∈ D.regular)
+    {K : Set M} (hK : IsCompact K) (n : ℕ) :
+    ContinuousAt (fun s => metricDerivNormSupOn K n (g s)
+      (g t) (g t)) t := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hc : ContinuousOn (fun s => metricDerivNormSupOn K n (g s)
+      (g t) (g t)) D.regular := by
+    apply metricDerivNormSupOn_continuousOn g (fun _ => g t)
+      (fun _ => g t) (U := univ) _ hK (subset_univ _) n
+    intro x _
+    refine ⟨(extChartAt I x).target, isOpen_extChartAt_target x, mem_extChartAt_target x, Subset.rfl, ?_⟩
+    intro i j
+    have hmain := chartGramOnE_joint_contDiffOn g D.regular
+      (hg.metricCLMSection_contMDiffOn Subset.rfl) x i j
+    have hfixed : ContDiffOn ℝ ∞ (fun z : ℝ × E => chartGramOnE (g t) x i j z.2)
+        (D.regular ×ˢ (extChartAt I x).target) :=
+      (chartGramOnE_contDiffOn (g t) x i j).comp contDiffOn_snd (fun _ hz => hz.2)
+    exact ⟨hmain,hfixed,hfixed⟩
+  exact hc.continuousAt (D.regular_isOpen.mem_nhds ht)
+
+private theorem eventually_metric_upper_on_compact
+    (hg : MetricFamilySmoothOn D g) {t : ℝ} (ht : t ∈ D.regular)
+    (K : Set M) (hK : IsCompact K) {B : ℝ} (hB : 1 < B) :
+    ∀ᶠ s in 𝓝 t, ∀ z ∈ K, ∀ v : TangentSpace I z,
+      (g s).inner z v v ≤ B^2 * (g t).inner z v v := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  have hsmall : 0 < B^2-1 := by nlinarith
+  have hc := metric_deriv_sup_continuousAt hg ht hK 0
+  have hev : ∀ᶠ s in 𝓝 t,
+      metricDerivNormSupOn K 0 (g s) (g t) (g t) < B^2-1 := by
+    have hzero : metricDerivNormSupOn K 0 (g t) (g t) (g t) < B^2-1 := by
+      simpa only [metricDerivNormSupOn_self] using hsmall
+    exact hc.eventually (Iio_mem_nhds hzero)
+  filter_upwards [hev] with s hs
+  intro z hz v
+  have hnorm := derivNorm_le_sup hK (show (0:ℕ) ≤ 0 by rfl)
+    (g s) (g t) (g t) hz
+  have hbound := (Geometry.Metric.inner_bounds_of_metricDerivNorm_le
+    (g t) (g s) z (hnorm.trans hs.le) v).2
+  simpa only [add_sub_cancel] using hbound
+
+
+private theorem eventually_edist_lt_of_lt
+    (hg : MetricFamilySmoothOn D g) {t : ℝ} (ht : t ∈ D.regular) (x z : M)
+    {R : ℝ} (hR : riemannianEDistOf (g t) x z < ENNReal.ofReal R) :
+    ∀ᶠ q : (ℝ × M) × M in 𝓝 ((t,x),z),
+      riemannianEDistOf (g q.1.1) q.1.2 q.2 < ENNReal.ofReal R := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let d := (riemannianEDistOf (g t) x z).toReal
+  have hd : d < R := ENNReal.toReal_lt_of_lt_ofReal hR
+  let e := (R-d)/4
+  have he : 0 < e := div_pos (sub_pos.mpr hd) (by norm_num)
+  have hinner : riemannianEDistOf (g t) x z < ENNReal.ofReal (R-2*e) := by
+    apply (ENNReal.lt_ofReal_iff_toReal_lt (ne_top_of_lt hR)).mpr
+    change d < R-2*e
+    dsimp only [e]
+    linarith
+  have hmiddle := Geometry.Riemannian.eventually_riemannianEDistOf_lt_of_compact_metric_upper
+    (g t) g (fun K hK B hB => eventually_metric_upper_on_compact hg ht K hK hB)
+    x z hinner
+  have hquad := metricTimeBundleQuad_cont_of_metricFamilySmoothOn g hg (subset_refl D.carrier)
+  have hcenterX := continuousAt_riemannianEDistOf_center g
+    (D.regular_mem_nhds ht) hquad x
+  have hcenterZ := continuousAt_riemannianEDistOf_center g
+    (D.regular_mem_nhds ht) hquad z
+  have hX : ∀ᶠ p : ℝ × M in 𝓝 (t,x),
+      riemannianEDistOf (g p.1) x p.2 < ENNReal.ofReal e := by
+    have hzero : riemannianEDistOf (g t) x x < ENNReal.ofReal e := by
+      rw [riemannianEDistOf_self]
+      exact ENNReal.ofReal_pos.mpr he
+    exact hcenterX.eventually (Iio_mem_nhds hzero)
+  have hZ : ∀ᶠ p : ℝ × M in 𝓝 (t,z),
+      riemannianEDistOf (g p.1) z p.2 < ENNReal.ofReal e := by
+    have hzero : riemannianEDistOf (g t) z z < ENNReal.ofReal e := by
+      rw [riemannianEDistOf_self]
+      exact ENNReal.ofReal_pos.mpr he
+    exact hcenterZ.eventually (Iio_mem_nhds hzero)
+  have hparam : Continuous (fun q : (ℝ × M) × M => (q.1.1,q.2)) :=
+    (continuous_fst.comp continuous_fst).prodMk continuous_snd
+  have hmiddlet : ∀ᶠ q : (ℝ × M) × M in 𝓝 ((t,x),z),
+      riemannianEDistOf (g q.1.1) x z < ENNReal.ofReal (R-2*e) :=
+    ((continuous_fst.comp continuous_fst).tendsto ((t,x),z)).eventually hmiddle
+  filter_upwards [(continuous_fst.tendsto ((t,x),z)).eventually hX,
+    hparam.continuousAt.eventually hZ, hmiddlet] with q hx hz hm
+  have heq : ENNReal.ofReal e + ENNReal.ofReal (R-2*e) + ENNReal.ofReal e = ENNReal.ofReal R := by
+    have hmid : 0 ≤ R-2*e := by dsimp only [e,d]; linarith [ENNReal.toReal_nonneg (a := riemannianEDistOf (g t) x z)]
+    rw [← ENNReal.ofReal_add he.le hmid, ← ENNReal.ofReal_add (by positivity) he.le]
+    congr 1
+    ring
+  have hb := (riemannianEDistOf_triangle (g q.1.1) q.1.2 x q.2).trans
+    (add_le_add le_rfl (riemannianEDistOf_triangle (g q.1.1) x z q.2))
+  rw [riemannianEDistOf_comm (g q.1.1) q.1.2 x] at hb
+  exact hb.trans_lt ((ENNReal.add_lt_add hx (ENNReal.add_lt_add hm hz)).trans_eq (by rw [← add_assoc, heq]))
+
+theorem MetricFamilySmoothOn.eventually_compact_subset_ball
+    (hg : MetricFamilySmoothOn D g) {t : ℝ} (ht : t ∈ D.regular) (x : M)
+    {K : Set M} (hK : IsCompact K) {R : ℝ}
+    (hball : K ⊆ riemannianBallOf (g t) x R) :
+    ∀ᶠ p : ℝ × M in 𝓝 (t,x), K ⊆ riemannianBallOf (g p.1) p.2 R := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  apply hK.eventually_forall_of_forall_eventually
+  intro z hz
+  exact eventually_edist_lt_of_lt hg ht x z (hball hz)
+
+end DifferentialGeometry.Geometry.Curvature
+
+end

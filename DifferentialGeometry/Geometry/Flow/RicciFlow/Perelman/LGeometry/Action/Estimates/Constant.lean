@@ -182,6 +182,31 @@ theorem exists_lRegularizedAction_const_lt_compact_barrier
     have hh := mul_le_mul_of_nonneg_left hact (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hb.1.le)
     nlinarith
 
+theorem exists_pos_lRegularizedAction_const_lt_linear
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) {bmax : ℝ} (hbmax : 0 < bmax)
+    (hclock : ∀ s ∈ Icc 0 bmax, T - s ^ 2 ∈ D.carrier)
+    (x : M) {c : ℝ} (hc : 0 < c) :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ bmax ∧ ∀ b ∈ Ioc 0 δ,
+      lRegularizedAction S T (fun _ => x) 0 b < c * b := by
+  obtain ⟨C, hscalar⟩ := exists_scalar_upper_on_compact_backward_clock S hS T bmax x hclock
+  have hpoly : ContinuousAt (fun b : ℝ => 2 * C * b ^ 2 / 3) 0 := by fun_prop
+  have hsmall : {b : ℝ | 2 * C * b ^ 2 / 3 < c} ∈ 𝓝 0 :=
+    hpoly.eventually (Iio_mem_nhds (by simpa only [zero_pow two_ne_zero, mul_zero, zero_div] using hc))
+  obtain ⟨ε, hε, hεsub⟩ := Metric.mem_nhds_iff.mp hsmall
+  refine ⟨min bmax (ε / 2), lt_min hbmax (half_pos hε), min_le_left _ _, ?_⟩
+  intro b hb
+  have hbbmax : b ≤ bmax := hb.2.trans (min_le_left _ _)
+  have hbε : b < ε := (hb.2.trans (min_le_right _ _)).trans_lt (by linarith)
+  have hbound : 2 * C * b ^ 2 / 3 < c := hεsub (show b ∈ Metric.ball 0 ε from by
+    simpa only [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos hb.1] using hbε)
+  have hact := lRegularizedAction_const_le_of_scalar_le S hS T x hb.1.le
+    (fun s hs => hclock s ⟨hs.1, hs.2.trans hbbmax⟩)
+    (fun s hs => hscalar s ⟨hs.1, hs.2.trans hbbmax⟩)
+  apply hact.trans_lt
+  convert mul_lt_mul_of_pos_right hbound hb.1 using 1
+  ring
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 end

@@ -396,3 +396,130 @@ theorem exists_open_regularizedCost_eq_lCost_and_ae_unique_minimizer_of_action_l
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+noncomputable section
+open Set Filter Bundle Manifold MeasureTheory TopologicalSpace
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+variable (H : ObservedHistory.{u}) {X : Type u}
+ [TopologicalSpace X] [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X] [T2Space X] [SigmaCompactSpace X]
+private local instance : MeasurableSpace X := borel X
+private local instance : BorelSpace X := ⟨rfl⟩
+private local instance (j : Fin (H.eventCount + 1)) : MeasurableSpace (H.stage j).Carrier := borel (H.stage j).Carrier
+private local instance (j : Fin (H.eventCount + 1)) : BorelSpace (H.stage j).Carrier := ⟨rfl⟩
+
+omit [SigmaCompactSpace X] in
+theorem exists_open_regularizedDensity_mass_le_one_of_action_lt_compact_barrier
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j)) (K : Set X) (hK : IsCompact K)
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing (f ⟨i.castSucc, hi, i.castSucc_le_succ.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_le_succ, hl⟩ z))
+    {T v : ℝ} (hv : 0 < v)
+    (hupper : T ∈ H.stageDomain last)
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (hreg : ∀ t ∈ Icc 0 v, T - t ^ 2 ∈ D.regular)
+    (g : SmoothRiemannianMetric ThreeModel X) {μ B r : ℝ} (hμ : 0 ≤ μ) (hr : 0 < r)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (hendmetric : S.base.metric (T - v ^ 2) =
+      localPullMetric (H.stageMetric first (T - v ^ 2)) (f ⟨first, le_rfl, hle⟩) (hf ⟨first, le_rfl, hle⟩))
+    (hcompare : ∀ t ∈ Ioo 0 v, ∀ z ∈ K, ∀ w : TangentSpace ThreeModel z,
+      μ * g.inner z w w ≤ (S.base.metric (T - t ^ 2)).inner z w w)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+      ∀ z : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) z)
+    (x : X) (hx : x ∈ interior K)
+    (hfront : ∀ z ∈ frontier K, ENNReal.ofReal r ≤ riemannianEDistOf g x z)
+    (y : X) (γ : ℝ → X) (hγ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ)
+    (hstart : γ 0 = x) (hend : γ v = y)
+    (hact : lRegularizedAction S T γ 0 v <
+      μ * r ^ 2 / (2 * v) - (2 * B / 3) * v ^ 3) :
+    ∃ U : Set X, IsOpen U ∧ y ∈ U ∧
+      (∀ z ∈ U, H.regularizedCost first last hle T B 0 v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ z) = (lCost S T x z (v ^ 2) : WithTop ℝ)) ∧
+      0 < riemannianVolumeMeasure ThreeModel (H.stage first).Carrier
+        (H.stageMetric first (T - v ^ 2)) (f ⟨first, le_rfl, hle⟩ '' U) ∧
+      (∫⁻ q in f ⟨first, le_rfl, hle⟩ '' U,
+        H.regularizedDensity first last hle T B v (f ⟨last, hle, le_rfl⟩ x) q
+        ∂riemannianVolumeMeasure ThreeModel (H.stage first).Carrier (H.stageMetric first (T - v ^ 2))) ≤ 1 := by
+  let jfirst : H.StageInterval first last := ⟨first, le_rfl, hle⟩
+  have hemb : _root_.Topology.IsOpenEmbedding (f jfirst) :=
+    .of_continuous_injective_isOpenMap (hf jfirst).contMDiff.continuous (hinj jfirst) (hf jfirst).isOpenMap
+  let _ : SecondCountableTopology (H.stage first).Carrier := ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (H.stage first).Carrier
+  let _ : SecondCountableTopology X := hemb.isEmbedding.secondCountableTopology
+  let _ : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace ThreeSpace X
+  let _ : SigmaCompactSpace X := inferInstance
+  let _ : MetrizableSpace X := Manifold.metrizableSpace ThreeModel X
+  let _ : PseudoMetricSpace X := pseudoMetrizableSpacePseudoMetric X
+  obtain ⟨U, hU, hyU, _, hcost, _⟩ :=
+    H.exists_open_regularizedCost_eq_lCost_and_ae_unique_minimizer_of_action_lt_compact_barrier
+      first last hle f hf hinj K hK hcross hv hupper hlower S hS hreg g hμ hr hmetric hcompare hscalar
+      x hx hfront y γ hγ hstart hend hact
+  have htime : ∀ t ∈ Icc (0 : ℝ) v, T - t ^ 2 ∈ D.carrier := fun t ht => D.regular_subset (hreg t ht)
+  obtain ⟨A, hγA, hA⟩ := exists_between hact
+  obtain ⟨V, hV, hyV, α, hα, hα0, hαv, _, hαact⟩ :=
+    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T hv htime γ hγ hγA
+  let W := U ∩ V
+  have hW : IsOpen W := hU.inter hV
+  have hyW : y ∈ W := ⟨hyU, hend ▸ hyV⟩
+  have hupper0 : T - (0 : ℝ) ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) := by
+    simp only [zero_pow two_ne_zero, sub_zero]
+    exact ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩
+  have hbdd (z : X) : BddBelow {a : ℝ | ∃ δ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 δ ∧
+      δ 0 = x ∧ δ v = z ∧ lRegularizedAction S T δ 0 v = a} := by
+    refine ⟨-(2 * B / 3) * v ^ 3, ?_⟩
+    rintro _ ⟨δ, hδ, _, _, rfl⟩
+    have hm := H.action_mem_regularizedC1ActionValues_of_common_curve first last hle f hf hcross S hS T
+      le_rfl hv.le hupper0 hlower htime hmetric δ hδ
+    have hh := H.regularizedC1ActionValues_ge_of_scalar_lower first last hle T 0 v B hscalar _ _ hm
+    simpa only [zero_pow (by decide : (3 : ℕ) ≠ 0), sub_zero] using hh
+  have hmass : (∫⁻ z in W, ENNReal.ofReal (redDensity S T x z (v ^ 2))
+      ∂riemannianVolumeMeasure ThreeModel X (S.base.metric (T - v ^ 2))) ≤ 1 := by
+    apply lintegral_redDensity_le_one_of_compact_action_sublevel S hS T x (τ := v ^ 2) (A := A)
+      (sq_pos_of_pos hv) ?_ K hK W hW ?_ ?_ ?_
+    · intro t ht
+      have hn : 0 ≤ T - t := sub_nonneg.mpr ht.2
+      have hh : T - t ≤ v ^ 2 := by linarith [ht.1]
+      have hc := hreg (Real.sqrt (T - t)) ⟨Real.sqrt_nonneg _,
+        (Real.sqrt_le_sqrt hh).trans_eq (Real.sqrt_sq hv.le)⟩
+      simpa only [Real.sq_sqrt hn, sub_sub_cancel] using hc
+    · simpa only [Real.sqrt_sq hv.le] using hbdd
+    · intro z hz
+      exact ⟨α z, hα z hz.2, (hα0 z hz.2).trans hstart,
+        by simpa only [Real.sqrt_sq hv.le] using hαv z hz.2,
+        by simpa only [Real.sqrt_sq hv.le] using hαact z hz.2⟩
+    · intro δ hδ hδ0 _ hδact
+      rw [Real.sqrt_sq hv.le] at hδact ⊢
+      apply H.mapsTo_of_lRegularizedAction_lt_history_escape_barrier first last hle f hf hinj K hK hcross
+        le_rfl hv.le hupper0 hlower S hS htime g hμ hr hmetric hcompare
+        (fun j t ht z => hscalar j t ht (f j z)) x hx hfront δ hδ hδ0
+      simpa only [sub_zero, zero_pow (by decide : (3 : ℕ) ≠ 0)] using hδact.trans_lt hA
+  refine ⟨W, hW, hyW, (fun z hz => hcost z hz.1), ?_, ?_⟩
+  · let _ : (riemannianVolumeMeasure ThreeModel (H.stage first).Carrier (H.stageMetric first (T - v ^ 2))).IsOpenPosMeasure :=
+      riemannianVolumeMeasure_isOpenPosMeasure _
+    exact ((hf jfirst).isOpenMap W hW).measure_pos _ ⟨f jfirst y, y, hyW, rfl⟩
+  · rw [DifferentialGeometry.Geometry.Measure.setLIntegral_image_of_injective_local_isometry
+      (S.base.metric (T - v ^ 2)) (H.stageMetric first (T - v ^ 2)) (f jfirst) (hf jfirst) (hinj jfirst)
+      (fun z V W => by rw [hendmetric, localPullMetric_inner]) W]
+    have heq : ∀ z ∈ W, H.regularizedDensity first last hle T B v (f ⟨last, hle, le_rfl⟩ x) (f jfirst z) =
+        ENNReal.ofReal (redDensity S T x z (v ^ 2)) := by
+      intro z hz
+      rw [H.regularizedDensity_eq_exp_of_cost_eq first last hle T B hv hupper hscalar _ _ (hcost z hz.1)]
+      unfold redDensity redLength
+      rw [Real.sqrt_sq hv.le]
+      congr 2
+      simp only [ThreeSpace, finrank_euclideanSpace, Fintype.card_fin, Nat.cast_ofNat]
+      ring
+    rw [setLIntegral_congr_fun hW.measurableSet heq]
+    exact hmass
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+end

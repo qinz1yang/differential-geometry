@@ -909,7 +909,7 @@ variable (H : ObservedHistory.{u})
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-private theorem common_curve_projection_integrable_sum
+theorem intervalIntegrable_and_sum_stageRegularizedAction_of_common_curve
     (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
     (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
     (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
@@ -980,7 +980,7 @@ theorem action_mem_regularizedC1ActionValues_of_common_curve
     (γ : ℝ → X) (hγ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ) :
     lRegularizedAction S T γ u v ∈ H.regularizedC1ActionValues first last hle T u v
       (f ⟨last, hle, le_rfl⟩ (γ u)) (f ⟨first, le_rfl, hle⟩ (γ v)) := by
-  obtain ⟨hint, hsum⟩ := common_curve_projection_integrable_sum H first last hle f hf S hS T
+  obtain ⟨hint, hsum⟩ := intervalIntegrable_and_sum_stageRegularizedAction_of_common_curve H first last hle f hf S hS T
     hu huv hupper hlower htime hmetric γ hγ
   refine ⟨hu, huv, hupper, hlower, (fun j => f j ∘ γ), ?_, hint, rfl, rfl, ?_, hsum⟩
   · intro j
@@ -3264,6 +3264,21 @@ theorem exists_mem_regularizedStage_Icc
     have hsq : t ^ 2 ≤ T - max (T - v ^ 2) (H.time j.val) := by linarith
     exact (Real.sqrt_sq ht0).symm.trans_le (Real.sqrt_le_sqrt hsq)
 
+theorem mapsTo_of_stage_projections_mem
+    {X : Type*} (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hinj : ∀ j, Function.Injective (f j)) (K : Set X)
+    {T u v : ℝ} (hu : 0 ≤ u)
+    (hlower : H.time first ≤ T - v ^ 2) (hupper : T - u ^ 2 ≤ H.stageEndTime last)
+    (γ : ℝ → X)
+    (hstay : ∀ j, MapsTo (f j ∘ γ)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (f j '' K)) :
+    MapsTo γ (Icc u v) K := by
+  intro t ht
+  obtain ⟨j, hj⟩ := H.exists_mem_regularizedStage_Icc first last hle hu hlower hupper ht
+  obtain ⟨z, hzK, hzeq⟩ := hstay j hj
+  exact (hinj j hzeq) ▸ hzK
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
@@ -3309,7 +3324,7 @@ theorem mapsTo_of_lRegularizedAction_lt_history_escape_barrier
     (γ : ℝ → X) (hγ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ) (hstart : γ u = x)
     (hact : lRegularizedAction S T γ u v <
       μ * r ^ 2 / (2 * (v - u)) - (2 * B / 3) * (v ^ 3 - u ^ 3)) : MapsTo γ (Icc u v) K := by
-  obtain ⟨hint, hsum⟩ := common_curve_projection_integrable_sum H first last hle f hf S hS T
+  obtain ⟨hint, hsum⟩ := intervalIntegrable_and_sum_stageRegularizedAction_of_common_curve H first last hle f hf S hS T
     hu huv hupper hlower htime hmetric γ hγ
   have hstay := H.mapsTo_common_compact_set_of_sum_stageRegularizedAction_lt first last hle f hf hinj K hK
     hcross hu huv hupper hlower S g hμ hr hmetric hcompare (fun j => f j ∘ γ)
@@ -3320,10 +3335,8 @@ theorem mapsTo_of_lRegularizedAction_lt_history_escape_barrier
       intro i hi hl
       obtain ⟨z, _, hz, hzg⟩ := hcross i hi hl (γ (Real.sqrt (T - H.time i.succ)))
       exact ⟨z, hz, hzg⟩) (hsum.trans_lt hact)
-  intro t ht
-  obtain ⟨j, hj⟩ := H.exists_mem_regularizedStage_Icc first last hle hu (H.time_le_of_mem_stageDomain hlower) hupper.2 ht
-  obtain ⟨z, hzK, hzeq⟩ := hstay j hj
-  exact (hinj j hzeq) ▸ hzK
+  exact H.mapsTo_of_stage_projections_mem first last hle f hinj K hu
+    (H.time_le_of_mem_stageDomain hlower) hupper.2 γ hstay
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
