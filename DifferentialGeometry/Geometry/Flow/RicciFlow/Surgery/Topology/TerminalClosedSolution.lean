@@ -1,10 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.JointRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedIntervalDerivative
-import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.Scalar
-import DifferentialGeometry.Geometry.Operator.Family.Gram.Smoothness
-import DifferentialGeometry.Geometry.Metric.Family.JointSmoothness
-import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Parameter
 
 noncomputable section
 open Set Filter Bundle Manifold
@@ -123,31 +119,14 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-private theorem TerminalLimitMetric.closedSolution_chartGramFamilySmoothWithinOn
-    (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
-    {c : ℝ} (hac : a ≤ c) (hcs : c < s) (p : W) :
-    chartGramFamilySmoothWithinOn (I := ThreeModel) (L.closedSolution W hcs.le).base.metric p (Icc c s) := by
-  apply chartGramFamilySmoothWithinOn_of_contMDiffOn
-  intro i j
-  exact chartGramMatrix_joint_contMDiffOn (fun t => (L.extendedMetric t).restrictOpen W) (Icc c s)
-    (L.extendedMetric_restrictOpen_jointContMDiffOn W hac hcs) p i j
-
 theorem TerminalLimitMetric.closedSolution_chartGram_spatial_fderiv_continuousOn
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
     {c : ℝ} (hac : a ≤ c) (hcs : c < s) (p : W) :
     ContinuousOn (fun z : ℝ × ThreeSpace => fderiv ℝ
       (fun y : ThreeSpace => chartGramOp (I := ThreeModel) (L.closedSolution W hcs.le).family p (z.1, y)) z.2)
       (Icc c s ×ˢ interior (extChartAt ThreeModel p).target) := by
-  apply chartGramOp_spatial_fderiv_continuousOn
-    (L.closedSolution W hcs.le).family p (fun _ hz => interior_subset hz.2)
-  intro i j
-  have hg : ContDiffOn ℝ ∞ (fun z : ℝ × ThreeSpace =>
-      chartGramOnE (I := ThreeModel) ((L.closedSolution W hcs.le).base.metric z.1) p i j z.2)
-      (Icc c s ×ˢ interior (extChartAt ThreeModel p).target) :=
-    fun _ hz => L.closedSolution_chartGramFamilySmoothWithinOn W hac hcs p i j hz.1 hz.2
-  exact (hg.iteratedFDeriv_snd (G := fun t y =>
-    chartGramOnE (I := ThreeModel) ((L.closedSolution W hcs.le).base.metric t) p i j y)
-    isOpen_interior 1 (m := 0) (by simp)).continuousOn
+  exact (L.closedSolution W hcs.le).chartGram_spatial_fderiv_continuousOn_of_joint_metric
+    (Icc c s) (L.extendedMetric_restrictOpen_jointContMDiffOn W hac hcs) p
 
 theorem TerminalLimitMetric.closedSolution_scalarOnE_spatial_fderiv_continuousOn
     (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
@@ -156,13 +135,8 @@ theorem TerminalLimitMetric.closedSolution_scalarOnE_spatial_fderiv_continuousOn
       (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := ThreeModel) p
         ((L.closedSolution W hcs.le).scalar z.1)) z.2)
       (Icc c s ×ˢ interior (extChartAt ThreeModel p).target) := by
-  have hg := scalarOnE_contDiffOn_of_chartGramFamilySmoothWithinOn
-    (L.closedSolution W hcs.le).base.metric p
-    (L.closedSolution_chartGramFamilySmoothWithinOn W hac hcs p)
-  exact (hg.fderiv_snd
-    (G := fun t y => DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := ThreeModel) p
-      ((L.closedSolution W hcs.le).scalar t) y)
-    isOpen_interior (m := 0) (by simp)).continuousOn
+  exact (L.closedSolution W hcs.le).scalarOnE_spatial_fderiv_continuousOn_of_joint_metric
+    (Icc c s) (L.extendedMetric_restrictOpen_jointContMDiffOn W hac hcs) p
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
