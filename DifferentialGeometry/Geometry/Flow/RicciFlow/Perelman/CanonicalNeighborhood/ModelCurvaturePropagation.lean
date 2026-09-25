@@ -241,36 +241,16 @@ theorem exists_curvature_radius_lower_bound_of_scalar_tendsto_atTop {r : ℝ} (h
         Tendsto ell atTop (𝓝 d) →
         (∀ᶠ i in atTop, riemannianEDistOf ((X.term i).S.base.metric (s i)) (z i) (y i) ≤
           ENNReal.ofReal (ell i)) → r / Real.sqrt R ≤ d := by
-  obtain ⟨C, hC, hbounds⟩ := exists_uniform_windowed_source_scalar_bounds.{u}
-  obtain ⟨epsStar, hepsStar, hbound⟩ := hbounds r hr
+  obtain ⟨epsStar, hepsStar, hbound⟩ :=
+    exists_windowed_curvature_radius_lower_bound_of_scalar_tendsto_atTop.{u} hr
   refine ⟨epsStar, hepsStar, ?_⟩
   intro eps heps kappa sigma Phi X s z y R d ell hs hR hz hy hell hdist
-  have hR0 : 0 < R := by linarith
-  have hsep : ∀ᶠ i in atTop, ENNReal.ofReal (r / Real.sqrt ((X.term i).S.scalar (s i) (z i))) <
-      ENNReal.ofReal (ell i) := by
-    filter_upwards [hs, hz.eventually (eventually_gt_nhds hR),
-      hz.eventually (eventually_lt_nhds (lt_add_one R)),
-      hy.eventually (eventually_gt_atTop (C r * (R + 1))), hdist] with i hsi hzi hzi' hyi hdi
-    have hfar : ENNReal.ofReal (r / Real.sqrt ((X.term i).S.scalar (s i) (z i))) <
-        riemannianEDistOf ((X.term i).S.base.metric (s i)) (z i) (y i) := by
-      by_contra hh
-      obtain ⟨W, -⟩ := X.higher_good i (s i) hsi (z i) hzi.le
-      have hb := hbound (X.term i).M (X.interval i) (X.term i).S eps kappa (z i) (s i)
-        W heps (y i) (not_lt.mp hh)
-      have hmul := mul_le_mul_of_nonneg_left hzi'.le (hC r).le
-      exact (not_le.mpr hyi) ((le_abs_self _).trans (hb.trans hmul))
-    exact hfar.trans_le hdi
-  have hleft : Tendsto (fun i => ENNReal.ofReal
-      (r / Real.sqrt ((X.term i).S.scalar (s i) (z i)))) atTop (𝓝 (ENNReal.ofReal (r / Real.sqrt R))) :=
-    ENNReal.continuous_ofReal.tendsto _ |>.comp
-      (tendsto_const_nhds.div (Real.continuous_sqrt.tendsto R |>.comp hz)
-        (Real.sqrt_pos.mpr hR0).ne')
-  have hright : Tendsto (fun i => ENNReal.ofReal (ell i)) atTop (𝓝 (ENNReal.ofReal d)) :=
-    ENNReal.continuous_ofReal.tendsto d |>.comp hell
-  have hdd : 0 ≤ d := ge_of_tendsto hell (hsep.mono fun _ hi =>
-    (ENNReal.ofReal_pos.mp (lt_of_le_of_lt bot_le hi)).le)
-  exact (ENNReal.ofReal_le_ofReal_iff hdd).mp
-    (le_of_tendsto_of_tendsto hleft hright (hsep.mono fun _ hi => hi.le))
+  apply hbound (fun i => (X.term i).M) X.interval (fun i => (X.term i).S)
+    (fun _ => eps) (fun _ => kappa) s z y R d ell ?_
+    (Eventually.of_forall fun _ => heps) (by linarith) hz hy hell hdist
+  filter_upwards [hs, hz.eventually (eventually_gt_nhds hR)] with i hsi hzi
+  obtain ⟨W, -⟩ := X.higher_good i (s i) hsi (z i) hzi.le
+  exact ⟨W⟩
 
 theorem NormalizedSequence.pinching_error_eventually
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)

@@ -3,8 +3,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Univ
 
 set_option autoImplicit false
 noncomputable section
-open Set
-open scoped Manifold ContDiff
+open Set Filter
+open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -105,6 +105,73 @@ theorem exists_uniform_windowed_source_scalar_bounds :
   have hm := mul_le_mul_of_nonneg_left hh W.scalar_pos.le
   rw [← mul_assoc, mul_inv_cancel₀ W.scalar_pos.ne', one_mul] at hm
   simpa only [mul_comm] using hm
+
+
+theorem exists_windowed_curvature_radius_lower_bound_of_scalar_tendsto_atTop
+    {r : ℝ} (hr : 0 ≤ r) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧
+      ∀ (M : ℕ → Type u) [∀ i, TopologicalSpace (M i)]
+        [∀ i, ChartedSpace ThreeSpace (M i)] [∀ i, IsManifold I3 ∞ (M i)]
+        [∀ i, T2Space (M i)] (D : ℕ → RealTimeInterval)
+        (S : ∀ i, SolutionOn (I := I3) (M := M i) (D i))
+        (eps kappa t : ℕ → ℝ) (x y : ∀ i, M i) (Q d : ℝ) (ell : ℕ → ℝ),
+        (∀ᶠ i in atTop, Nonempty (WindowedModelWitness (eps i) (kappa i) (S i) (x i) (t i))) →
+        (∀ᶠ i in atTop, eps i ≤ epsStar) → 0 < Q →
+        Tendsto (fun i => (S i).scalar (t i) (x i)) atTop (𝓝 Q) →
+        Tendsto (fun i => (S i).scalar (t i) (y i)) atTop atTop →
+        Tendsto ell atTop (𝓝 d) →
+        (∀ᶠ i in atTop, riemannianEDistOf ((S i).base.metric (t i)) (x i) (y i) ≤
+          ENNReal.ofReal (ell i)) → r / Real.sqrt Q ≤ d := by
+  obtain ⟨C, hC, hbounds⟩ := exists_uniform_windowed_source_scalar_bounds.{u}
+  obtain ⟨epsStar, hepsStar, hbound⟩ := hbounds r hr
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro M _ _ _ _ D S eps kappa t x y Q d ell hw heps hQ hx hy hell hdist
+  have hsep : ∀ᶠ i in atTop,
+      ENNReal.ofReal (r / Real.sqrt ((S i).scalar (t i) (x i))) < ENNReal.ofReal (ell i) := by
+    filter_upwards [hw, heps, hx.eventually_lt_const (lt_add_one Q),
+      hy.eventually_gt_atTop (C r * (Q + 1)), hdist] with i hwi hepsi hxi hyi hdi
+    obtain ⟨W⟩ := hwi
+    have hfar : ENNReal.ofReal (r / Real.sqrt ((S i).scalar (t i) (x i))) <
+        riemannianEDistOf ((S i).base.metric (t i)) (x i) (y i) := by
+      by_contra hh
+      have hb := hbound (M i) (D i) (S i) (eps i) (kappa i) (x i) (t i)
+        W hepsi (y i) (not_lt.mp hh)
+      have hmul := mul_le_mul_of_nonneg_left hxi.le (hC r).le
+      exact (not_le.mpr hyi) ((le_abs_self _).trans (hb.trans hmul))
+    exact hfar.trans_le hdi
+  have hleft : Tendsto (fun i => ENNReal.ofReal
+      (r / Real.sqrt ((S i).scalar (t i) (x i)))) atTop (𝓝 (ENNReal.ofReal (r / Real.sqrt Q))) :=
+    ENNReal.tendsto_ofReal (tendsto_const_nhds.div
+      (Real.continuous_sqrt.tendsto Q |>.comp hx) (Real.sqrt_pos.mpr hQ).ne')
+  have hd : 0 ≤ d := ge_of_tendsto hell (hsep.mono fun _ hi =>
+    (ENNReal.ofReal_pos.mp (lt_of_le_of_lt bot_le hi)).le)
+  exact (ENNReal.ofReal_le_ofReal_iff hd).mp
+    (le_of_tendsto_of_tendsto hleft (ENNReal.tendsto_ofReal hell) (hsep.mono fun _ hi => hi.le))
+
+theorem exists_windowed_scalar_mul_sq_distance_limit_lower_bound {r : ℝ} (hr : 0 ≤ r) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧
+      ∀ (M : ℕ → Type u) [∀ i, TopologicalSpace (M i)]
+        [∀ i, ChartedSpace ThreeSpace (M i)] [∀ i, IsManifold I3 ∞ (M i)]
+        [∀ i, T2Space (M i)] (D : ℕ → RealTimeInterval)
+        (S : ∀ i, SolutionOn (I := I3) (M := M i) (D i))
+        (eps kappa t : ℕ → ℝ) (x y : ∀ i, M i) (Q d : ℝ) (ell : ℕ → ℝ),
+        (∀ᶠ i in atTop, Nonempty (WindowedModelWitness (eps i) (kappa i) (S i) (x i) (t i))) →
+        (∀ᶠ i in atTop, eps i ≤ epsStar) → 0 < Q →
+        Tendsto (fun i => (S i).scalar (t i) (x i)) atTop (𝓝 Q) →
+        Tendsto (fun i => (S i).scalar (t i) (y i)) atTop atTop →
+        Tendsto ell atTop (𝓝 d) →
+        (∀ᶠ i in atTop, riemannianEDistOf ((S i).base.metric (t i)) (x i) (y i) ≤
+          ENNReal.ofReal (ell i)) → r ^ 2 ≤ Q * d ^ 2 := by
+  obtain ⟨epsStar, hepsStar, hbound⟩ :=
+    exists_windowed_curvature_radius_lower_bound_of_scalar_tendsto_atTop.{u} hr
+  refine ⟨epsStar, hepsStar, ?_⟩
+  intro M _ _ _ _ D S eps kappa t x y Q d ell hw heps hQ hx hy hell hdist
+  have hle := hbound M D S eps kappa t x y Q d ell hw heps hQ hx hy hell hdist
+  have hmul : r ≤ Real.sqrt Q * d := by
+    simpa only [mul_comm] using (div_le_iff₀ (Real.sqrt_pos.mpr hQ)).mp hle
+  calc
+    r ^ 2 ≤ (Real.sqrt Q * d) ^ 2 := pow_le_pow_left₀ hr hmul 2
+    _ = Q * d ^ 2 := by rw [mul_pow, Real.sq_sqrt hQ.le]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

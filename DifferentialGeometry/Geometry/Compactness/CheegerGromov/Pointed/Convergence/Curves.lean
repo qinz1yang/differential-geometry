@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Geodesic.Ray
 import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Maps
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
@@ -480,5 +481,73 @@ theorem PointedRiemannianConvergenceMaps.tendsto_edist_curve_endpoint_zero
     _ ≤ ENNReal.ofReal (R / 2) + ENNReal.ofReal (R / 2) := add_le_add hshort.le hn.le
     _ = ENNReal.ofReal R := by rw [← ENNReal.ofReal_add (by linarith) (by linarith)]; congr 1; ring
     _ ≤ ε := hRε.le
+
+section
+
+variable [I.Boundaryless]
+  {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
+  {L : PointedRiemannianManifold.{u, uE, uH} (I := I)} {σ : ℕ → ℕ}
+
+theorem PointedRiemannianConvergenceMaps.exists_isometric_segment_subseq_limit_with_missing_endpoint_of_complete
+    (Φ : PointedRiemannianConvergenceMaps X L σ)
+    (hcomplete : ∀ n, RiemannianMetricComplete (X.obj (σ n)).metric)
+    (hconn : ∀ n, PreconnectedSpace (X.obj (σ n)).M)
+    {rho : ℝ} (hrho : 0 < rho) (r : ℕ → ℝ) (hr : ∀ n, 0 < r n)
+    (hrconv : Tendsto r atTop (𝓝 rho)) (y : ∀ n, (X.obj (σ n)).M)
+    (hellconv : Tendsto (fun n => (riemannianEDistOf (X.obj (σ n)).metric
+      (X.obj (σ n)).basepoint (y n)).toReal) atTop (𝓝 rho))
+    (htarget : ∀ n, riemannianBallOf (X.obj (σ n)).metric
+      (X.obj (σ n)).basepoint (r n) ⊆ Φ.target n)
+    (hlower : ∀ ε : ℝ, 0 < ε → ∀ᶠ n in atTop,
+      ∀ x ∈ Φ.source n, ∀ v : TangentSpace I x,
+        (1 - ε) * L.metric.inner x v v ≤
+          (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+            (mfderiv I I (Φ.partialDiffeomorph n) x v)
+            (mfderiv I I (Φ.partialDiffeomorph n) x v))
+    (hupper : ∀ K : Set L.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ n in atTop,
+      ∀ x ∈ K, ∀ v : TangentSpace I x,
+        (X.obj (σ n)).metric.inner (Φ.partialDiffeomorph n x)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v)
+          (mfderiv I I (Φ.partialDiffeomorph n) x v) ≤ C ^ 2 * L.metric.inner x v v)
+    (hcompact : ∀ R : ℝ, 0 ≤ R → R < rho →
+      IsCompact (riemannianClosedBallOf L.metric L.basepoint R))
+    (hradial : ∀ x : L.M,
+      riemannianEDistOf L.metric L.basepoint x < ENNReal.ofReal rho) :
+    let _ : EMetricSpace L.M := L.emetricSpace
+    ∃ gamma : ∀ n, ℝ → (X.obj (σ n)).M,
+      (∀ n,
+        let ell := (riemannianEDistOf (X.obj (σ n)).metric
+          (X.obj (σ n)).basepoint (y n)).toReal
+        gamma n 0 = (X.obj (σ n)).basepoint ∧ gamma n ell = y n ∧
+          ContMDiff 𝓘(ℝ, ℝ) I ∞ (gamma n) ∧
+          ∀ s ∈ Icc 0 ell, ∀ t ∈ Icc 0 ell,
+            riemannianEDistOf (X.obj (σ n)).metric (gamma n s) (gamma n t) =
+              ENNReal.ofReal |s - t|) ∧
+      ∃ (phi : ℕ → ℕ) (g : C(Ico 0 rho, L.M)), StrictMono phi ∧ Isometry g ∧
+        g ⟨0, le_rfl, hrho⟩ = L.basepoint ∧
+        (∀ A : Set (Ico 0 rho), IsCompact A →
+          TendstoUniformlyOn
+            (fun n (t : Ico 0 rho) =>
+              (Φ.partialDiffeomorph (phi n)).symm (gamma (phi n) t)) g atTop A) ∧
+        Tendsto g (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) (cocompact L.M) ∧
+        ∀ x : L.M, ¬ Tendsto g
+          (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) (𝓝 x) := by
+  classical
+  have hsegments (n : ℕ) := by
+    let _ : PreconnectedSpace (X.obj (σ n)).M := hconn n
+    exact DifferentialGeometry.Geometry.exists_distance_parametrized_minimizer_of_complete
+      (X.obj (σ n)).metric (hcomplete n) (X.obj (σ n)).basepoint (y n)
+  choose gamma hzero hend hsmooth hmin using hsegments
+  let ell := fun n => (riemannianEDistOf (X.obj (σ n)).metric
+    (X.obj (σ n)).basepoint (y n)).toReal
+  let _ : EMetricSpace L.M := L.emetricSpace
+  obtain ⟨phi, g, hphi, hg, hbase, hconv, hescape, hmissing⟩ :=
+    Φ.exists_isometric_segment_subseq_limit_with_missing_endpoint hrho r ell hr
+      (fun _ => ENNReal.toReal_nonneg) hrconv hellconv htarget hlower hupper hcompact hradial
+      gamma (fun n => (hsmooth n).contMDiffOn.of_le (by simp)) hzero hmin
+  exact ⟨gamma, fun n => ⟨hzero n, hend n, hsmooth n, hmin n⟩,
+    phi, g, hphi, hg, hbase, hconv, hescape, hmissing⟩
+
+end
 
 end DifferentialGeometry.CheegerGromovCompactness

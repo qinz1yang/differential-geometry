@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedWindowedSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FixedDepthEnd
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.ConeExclusion
 import DifferentialGeometry.Geometry.Neck.FiniteEnd
@@ -172,5 +173,101 @@ theorem finite_ray_exclusion_of_pos_depth_scale_lower_bounds {kappa : ℝ} (hkap
     hnoncollapse hpinching hgood f L maps conv hcanonical W hW qW delta hdelta
     hcompact hcover x hx hQ' (((2 * alpha)⁻¹) ^ 2 / 8) (by positivity)
     hlower' hupper' hcone
+
+theorem finite_ray_exclusion_of_minimizing_segment_convergence {kappa : ℝ} (hkappa : 0 < kappa) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
+      ∀ sigma : ℝ, 0 < sigma → ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
+      ∀ X : FlowSequence.{u}, ∀ depth scale : ℕ → ℝ,
+      ∀ H0 S0 : ℝ, 0 < H0 → 0 < S0 →
+      (∀ i, H0 ≤ depth i) → (∀ i, S0 ≤ scale i) →
+      (∀ i, (X.interval i).carrier = Icc (-(2 * depth i)) 0) →
+      (∀ i, (X.interval i).regular = Ioo (-(2 * depth i)) 0) →
+      (∀ i, ConnectedSpace (X.term i).M) →
+      ∀ orientation : ∀ i, TangentOrientationSection (X.term i).M,
+      (∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t)) →
+      (∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C) →
+      (∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
+        (Real.sqrt (scale i) * sigma)) →
+      (∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
+        (rescalePinchingFunction (scale i) Phi)) →
+      (∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,
+        2 ≤ (X.term i).S.scalar t x → OrientedWitness (X.term i).S (orientation i) eps kappa x t) →
+      ∀ f : ℕ → ℕ,
+      ∀ L : PointedRiemannianManifold.{u, 0, 0} I3,
+      ∀ maps : PointedRiemannianConvergenceMaps (X.atTime 0) L f,
+      ∀ conv : MetricConvergenceData maps,
+      (∀ i, conv.domain i = CanonicalMetricCompactness.canonicalSourceData maps i) →
+      ∀ hL : PathConnectedSpace L.M,
+      let _ : PathConnectedSpace L.M := hL
+      let _ : EMetricSpace L.M := L.emetricSpace
+      let _ : MetricSpace L.M := EMetricSpace.toMetricSpace
+        (fun x y => riemannianEDistOf_ne_top L.metric x y)
+      ∀ b : ℝ, 0 < b →
+      ∀ ell : ℕ → ℝ, Tendsto ell atTop (𝓝 b) →
+      (∀ R : ℝ, 0 ≤ R → R < b →
+        IsCompact (riemannianClosedBallOf L.metric L.basepoint R)) →
+      ∀ gamma : ∀ n, ℝ → (X.term (f n)).M,
+      (∀ n, gamma n 0 = (X.term (f n)).basepoint) →
+      (∀ n, ∀ s ∈ Icc 0 (ell n), ∀ t ∈ Icc 0 (ell n),
+        riemannianEDistOf ((X.term (f n)).S.base.metric 0) (gamma n s) (gamma n t) =
+          ENNReal.ofReal |s - t|) →
+      (∀ (x : L.M) (v w : TangentSpace I3 x),
+        0 ≤ metricRm04StandardAt L.metric x v w w v) →
+      ∀ g : C(Ico 0 b, L.M), Isometry g →
+      (∀ t : Ico 0 b,
+        Tendsto (fun n => (maps.partialDiffeomorph n).symm (gamma n t)) atTop (𝓝 (g t))) →
+      Tendsto (fun n => (X.term (f n)).S.scalar 0 (gamma n (ell n))) atTop atTop →
+      Tendsto (fun t => metricScalarAt L.metric (g t))
+        (comap (Subtype.val : Ico 0 b → ℝ) (𝓝 b)) atTop →
+      ∀ q : UniformSpace.Completion L.M,
+      Tendsto (fun t => (g t : UniformSpace.Completion L.M))
+        (comap (Subtype.val : Ico 0 b → ℝ) (𝓝 b)) (𝓝 q) →
+      False := by
+  obtain ⟨epsEnd, hepsEnd, hexclude⟩ :=
+    finite_ray_exclusion_of_pos_depth_scale_lower_bounds.{u} hkappa
+  obtain ⟨epsNeck, hepsNeck, hneck⟩ :=
+    exists_spatial_necks_on_limit_segment_of_windowed_models.{u} kappa
+      (alpha := 1 / 4000000) (by norm_num) (by norm_num)
+  refine ⟨min epsEnd epsNeck, lt_min hepsEnd hepsNeck, ?_⟩
+  intro eps heps hle sigma hsigma Phi hPhi X depth scale H0 S0 hH0 hS0 hdepth hscale
+    hcarrier hregular hconnected orientation hcomplete hsource hnoncollapse hpinching hgood
+    f L maps conv hcanonical hL
+  let _ : PathConnectedSpace L.M := hL
+  dsimp only
+  let _ : EMetricSpace L.M := L.emetricSpace
+  let _ : MetricSpace L.M := EMetricSpace.toMetricSpace
+    (fun x y => riemannianEDistOf_ne_top L.metric x y)
+  intro b hb ell hell hcompact gamma hstart hmin hsec g hg hconv hy hblow q hq
+  have hmodels (tau : Ico 0 b) : ∀ᶠ n in atTop,
+      2 ≤ (X.term (f n)).S.scalar 0 (gamma n tau) →
+        ∃ W : WindowedModelWitness eps kappa (X.term (f n)).S (gamma n tau) 0,
+          (∀ s ∈ Ioo (-modelDepth eps) 0,
+            parabolicTime 0 ((X.term (f n)).S.scalar 0 (gamma n tau)) s ∈
+              (X.interval (f n)).regular) ∧
+          Nonempty (TangentOrientationSection W.model.M) := by
+    apply Eventually.of_forall
+    intro n hQ
+    have hdepthpos : 0 < depth (f n) := hH0.trans_le (hdepth (f n))
+    obtain ⟨W, o, _⟩ := hgood (f n) 0 ⟨by linarith only [hdepthpos], le_rfl⟩
+      (gamma n tau) hQ
+    refine ⟨W, ?_, ⟨o⟩⟩
+    intro s hs
+    have hQpos := W.scalar_pos
+    have hstartWindow := W.window_mem (left_mem_Icc.mpr
+      (sub_le_self 0 (inv_nonneg.mpr (mul_nonneg W.eps_pos.le hQpos.le))))
+    rw [hcarrier (f n)] at hstartWindow
+    rw [hregular (f n)]
+    have hdivide : -(eps * (X.term (f n)).S.scalar 0 (gamma n tau))⁻¹ <
+        s / ((X.term (f n)).S.scalar 0 (gamma n tau)) := by
+      have hh := (div_lt_div_iff_of_pos_right hQpos).mpr hs.1
+      simpa only [modelDepth, neg_div, div_eq_mul_inv, mul_inv_rev, mul_comm, neg_mul] using hh
+    exact ⟨by dsimp only [parabolicTime]; linarith [hstartWindow.1],
+      by dsimp only [parabolicTime]; linarith [div_neg_of_neg_of_pos hs.2 hQpos]⟩
+  have hnecks := hneck X f L maps conv hcanonical b hb ell hell hcompact gamma
+    hstart hmin g hconv hy hblow eps (hle.trans (min_le_right _ _)) hmodels
+  exact hexclude eps heps (hle.trans (min_le_left _ _)) sigma hsigma Phi hPhi X depth scale
+    H0 S0 hH0 hS0 hdepth hscale hcarrier hregular hconnected orientation hcomplete hsource
+    hnoncollapse hpinching hgood f L maps conv hcanonical hL b (1 / 4000000)
+    hb (by norm_num) (by norm_num) hsec g hg hblow q hq hnecks
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

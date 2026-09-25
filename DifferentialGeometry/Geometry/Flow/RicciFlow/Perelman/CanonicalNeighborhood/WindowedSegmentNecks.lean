@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedUniformCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LongSegmentNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedNeckRadius
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.InverseDistanceControl
@@ -246,6 +247,129 @@ theorem exists_windowed_strongNeck_of_minimizing_segment (kappa : ℝ)
   apply hneck M D S hS eps x t W heps hreg horient γ _ hsegment
   rw [hcenter, riemannianEDistOf_self]
   exact bot_le
+
+theorem exists_windowed_strongNeck_near_long_minimizing_segment (kappa B : ℝ)
+    (hB : 0 ≤ B)
+    {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 32) :
+    ∃ A epsStar : ℝ, 0 < A ∧ 0 < epsStar ∧
+      ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
+        (D : RealTimeInterval) (S : SolutionOn (I := I3) (M := M) D),
+        IsSolutionOn S → ∀ (eps : ℝ) (x : M) (t : ℝ)
+          (W : WindowedModelWitness eps kappa S x t),
+          eps ≤ epsStar →
+          (∀ s ∈ Ioo (-modelDepth eps) 0,
+            parabolicTime t (S.scalar t x) s ∈ D.regular) →
+          Nonempty (TangentOrientationSection W.model.M) →
+          ∀ (γ : ℝ → M) (a b tau : ℝ),
+            (∀ s ∈ Icc a b, ∀ r ∈ Icc a b,
+              riemannianEDistOf (S.base.metric t) (γ s) (γ r) = ENNReal.ofReal |s - r|) →
+            ENNReal.ofReal (Real.sqrt (S.scalar t x)) *
+              riemannianEDistOf (S.base.metric t) x (γ tau) ≤ ENNReal.ofReal B →
+            A ≤ Real.sqrt (S.scalar t x) * (tau - a) →
+            A ≤ Real.sqrt (S.scalar t x) * (b - tau) →
+            Nonempty (StrongNeck S (2 * alpha) x t) := by
+  obtain ⟨A, epsStar, hA, hepsStar, hneck⟩ :=
+    exists_windowed_strongNeck_near_minimizing_segment.{u} kappa B hB ha hsmall
+  refine ⟨A, epsStar, hA, hepsStar, ?_⟩
+  intro M _ _ _ _ _ D S hS eps x t W heps hreg horient γ a b tau hsegment hnear hleft hright
+  let Q := S.scalar t x
+  have hQpos : 0 < Q := W.scalar_pos
+  have hsqrt : 0 < Real.sqrt Q := Real.sqrt_pos.mpr hQpos
+  have hcenterScaled : riemannianEDistOf
+      (rescaledMetric S t Q W.scalar_pos 0) x (γ tau) ≤ ENNReal.ofReal B := by
+    simpa only [rescaledMetric, parabolicTime_zero, edistOf_scale] using hnear
+  apply hneck M D S hS eps x t W heps hreg horient
+    (fun s => γ (tau + s / Real.sqrt Q))
+    (by simpa only [zero_div, add_zero] using hcenterScaled)
+  have hmem (s : ℝ) (hs : s ∈ Icc (-A) A) : tau + s / Real.sqrt Q ∈ Icc a b := by
+    have hlow : -(tau - a) ≤ s / Real.sqrt Q := by
+      apply (le_div_iff₀ hsqrt).mpr
+      nlinarith [hs.1]
+    have hhigh : s / Real.sqrt Q ≤ b - tau := by
+      apply (div_le_iff₀ hsqrt).mpr
+      nlinarith [hs.2]
+    exact ⟨by linarith, by linarith⟩
+  intro s hs r hr
+  simp only [rescaledMetric, parabolicTime_zero]
+  rw [edistOf_scale, hsegment _ (hmem s hs) _ (hmem r hr),
+    ← ENNReal.ofReal_mul hsqrt.le]
+  congr 1
+  have hdiff : tau + s / Real.sqrt Q - (tau + r / Real.sqrt Q) =
+      (s - r) / Real.sqrt Q := by ring
+  rw [hdiff, abs_div, abs_of_pos hsqrt]
+  field_simp
+
+theorem exists_eventually_windowed_strongNeck_near_scalar_blowup_endpoint (kappa : ℝ)
+    {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 32) :
+    ∃ epsStar : ℝ, 0 < epsStar ∧
+      ∀ (M : ℕ → Type u) [∀ i, TopologicalSpace (M i)]
+        [∀ i, ChartedSpace ThreeSpace (M i)] [∀ i, IsManifold I3 ∞ (M i)]
+        [∀ i, T2Space (M i)] [∀ i, SigmaCompactSpace (M i)]
+        (D : ℕ → RealTimeInterval)
+        (S : ∀ i, SolutionOn (I := I3) (M := M i) (D i)),
+        (∀ i, IsSolutionOn (S i)) → ∀ (eps : ℝ), eps ≤ epsStar →
+          ∀ (t : ℕ → ℝ) (γ : ∀ i, ℝ → M i) (ell : ℕ → ℝ) (rho : ℝ),
+            0 < rho → Tendsto ell atTop (𝓝 rho) → ∀ R : Ico 0 rho → ℝ,
+              (∀ i, ∀ s ∈ Icc 0 (ell i), ∀ r ∈ Icc 0 (ell i),
+                riemannianEDistOf ((S i).base.metric (t i)) (γ i s) (γ i r) =
+                  ENNReal.ofReal |s - r|) →
+              (∀ tau : Ico 0 rho,
+                Tendsto (fun i => (S i).scalar (t i) (γ i tau)) atTop (𝓝 (R tau))) →
+              Tendsto R (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) atTop →
+              Tendsto (fun i => (S i).scalar (t i) (γ i (ell i))) atTop atTop →
+              (∀ tau : Ico 0 rho, 2 < R tau → ∀ᶠ i in atTop,
+                ∃ W : WindowedModelWitness eps kappa (S i) (γ i tau) (t i),
+                  (∀ s ∈ Ioo (-modelDepth eps) 0,
+                    parabolicTime (t i) ((S i).scalar (t i) (γ i tau)) s ∈ (D i).regular) ∧
+                  Nonempty (TangentOrientationSection W.model.M)) →
+              ∀ᶠ tau : Ico 0 rho in comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho),
+                ∀ᶠ i in atTop, Nonempty (StrongNeck (S i) (2 * alpha) (γ i tau) (t i)) := by
+  obtain ⟨A, epsNeck, hA, hepsNeck, hneck⟩ :=
+    exists_windowed_strongNeck_near_long_minimizing_segment.{u} kappa 0 le_rfl ha hsmall
+  obtain ⟨epsEnd, hepsEnd, hend⟩ :=
+    exists_windowed_scalar_mul_sq_distance_limit_lower_bound.{u}
+      (r := 2 * A) (by positivity)
+  refine ⟨min epsNeck epsEnd, lt_min hepsNeck hepsEnd, ?_⟩
+  intro M _ _ _ _ _ D S hS eps heps t γ ell rho hrho hell R hsegment hscalar hblow hy hgood
+  have htime : Tendsto (Subtype.val : Ico 0 rho → ℝ)
+      (comap (Subtype.val : Ico 0 rho → ℝ) (𝓝 rho)) (𝓝 rho) := tendsto_comap
+  have hleft := hblow.atTop_mul_pos (sq_pos_of_pos hrho) (htime.pow 2)
+  filter_upwards [htime.eventually (eventually_gt_nhds hrho),
+    hblow.eventually (eventually_gt_atTop 2),
+    hleft.eventually (eventually_gt_atTop (A ^ 2))] with tau htau hR hleft
+  have hRpos : 0 < R tau := by linarith only [hR]
+  have hw := hgood tau hR
+  have hdist : ∀ᶠ i in atTop,
+      riemannianEDistOf ((S i).base.metric (t i)) (γ i tau) (γ i (ell i)) ≤
+        ENNReal.ofReal (ell i - tau) := by
+    filter_upwards [hell.eventually (eventually_gt_nhds tau.property.2)] with i hi
+    rw [hsegment i tau ⟨tau.property.1, hi.le⟩ (ell i)
+      ⟨tau.property.1.trans hi.le, le_rfl⟩,
+      abs_of_nonpos (sub_nonpos.mpr hi.le), neg_sub]
+  have hrightReserve := hend M D S (fun _ => eps) (fun _ => kappa) t
+    (fun i => γ i tau) (fun i => γ i (ell i)) (R tau) (rho - tau)
+    (fun i => ell i - tau)
+    (hw.mono fun _ hi => by obtain ⟨W, _, _⟩ := hi; exact ⟨W⟩)
+    (Eventually.of_forall fun _ => heps.trans (min_le_right _ _))
+    hRpos (hscalar tau) hy (hell.sub_const tau) hdist
+  have hroot := Real.sqrt_pos.mpr hRpos
+  have hleft' : A < Real.sqrt (R tau) * tau := by
+    nlinarith [Real.sq_sqrt hRpos.le, mul_pos hroot htau]
+  have hright' : A < Real.sqrt (R tau) * (rho - tau) := by
+    nlinarith [Real.sq_sqrt hRpos.le, mul_pos hroot (sub_pos.mpr tau.property.2),
+      sq_pos_of_pos hA]
+  have hsqrt := (Real.continuous_sqrt.tendsto (R tau)).comp (hscalar tau)
+  have hleftLim := hsqrt.mul_const (tau : ℝ)
+  have hrightLim := hsqrt.mul (hell.sub_const (tau : ℝ))
+  filter_upwards [hw, hleftLim.eventually (eventually_gt_nhds hleft'),
+    hrightLim.eventually (eventually_gt_nhds hright')] with i hi hlefti hrighti
+  obtain ⟨W, hreg, horient⟩ := hi
+  apply hneck (M i) (D i) (S i) (hS i) eps (γ i tau) (t i) W
+    (heps.trans (min_le_left _ _)) hreg horient (γ i) 0 (ell i) tau (hsegment i)
+  · simp only [riemannianEDistOf_self, mul_zero, ENNReal.ofReal_zero, le_refl]
+  · simpa only [sub_zero, Function.comp_def] using hlefti.le
+  · exact hrighti.le
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 end

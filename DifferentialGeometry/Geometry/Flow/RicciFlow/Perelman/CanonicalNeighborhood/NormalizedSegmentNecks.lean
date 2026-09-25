@@ -31,13 +31,12 @@ theorem exists_strongNeck_near_long_minimizing_segment (kappa B : ℝ)
             A ≤ Real.sqrt ((X.term i).S.scalar t x) * (b - tau) →
             Nonempty (StrongNeck (X.term i).S (2 * alpha) x t) := by
   obtain ⟨A, epsStar, hA, hepsStar, hneck⟩ :=
-    exists_windowed_strongNeck_near_minimizing_segment.{u} kappa B hB ha hsmall
+    exists_windowed_strongNeck_near_long_minimizing_segment.{u} kappa B hB ha hsmall
   refine ⟨A, epsStar, hA, hepsStar, ?_⟩
   intro eps sigma Phi X heps i t ht γ a b tau x hsegment hQ hnear hleft hright
   obtain ⟨W, o, _⟩ := X.higher_good i t ht x hQ
   let Q := (X.term i).S.scalar t x
   have hQpos : 0 < Q := W.scalar_pos
-  have hsqrt : 0 < Real.sqrt Q := Real.sqrt_pos.mpr hQpos
   have hreg : ∀ s ∈ Ioo (-modelDepth eps) 0,
       parabolicTime t Q s ∈ (X.interval i).regular := by
     intro s hs
@@ -51,38 +50,18 @@ theorem exists_strongNeck_near_long_minimizing_segment (kappa B : ℝ)
     exact ⟨by dsimp only [parabolicTime]; linarith [hstart.1],
       by dsimp only [parabolicTime]; linarith [div_neg_of_neg_of_pos hs.2 hQpos, ht.2]⟩
   let _ : ConnectedSpace (X.term i).M := X.connected i
-  have hdistCenter : riemannianEDistOf ((X.term i).S.base.metric t) x (γ tau) =
-      ENNReal.ofReal (metricDistance ((X.term i).S.base.metric t) x (γ tau)) :=
-    (ENNReal.ofReal_toReal (riemannianEDistOf_ne_top _ _ _)).symm
-  have hcenterScaled : riemannianEDistOf
-      (rescaledMetric (X.term i).S t Q W.scalar_pos 0) x (γ tau) ≤ ENNReal.ofReal B := by
-    simp only [rescaledMetric, parabolicTime_zero]
-    rw [edistOf_scale, hdistCenter, ← ENNReal.ofReal_mul hsqrt.le]
-    exact ENNReal.ofReal_le_ofReal hnear
   apply hneck (X.term i).M (X.interval i) (X.term i).S (X.term i).isSolution
-    eps x t W heps hreg ⟨o⟩ (fun s => γ (tau + s / Real.sqrt Q))
-    (by simpa only [zero_div, add_zero] using hcenterScaled)
-  have hmem (s : ℝ) (hs : s ∈ Icc (-A) A) : tau + s / Real.sqrt Q ∈ Icc a b := by
-    have hlow : -(tau - a) ≤ s / Real.sqrt Q := by
-      apply (le_div_iff₀ hsqrt).mpr
-      nlinarith [hs.1]
-    have hhigh : s / Real.sqrt Q ≤ b - tau := by
-      apply (div_le_iff₀ hsqrt).mpr
-      nlinarith [hs.2]
-    exact ⟨by linarith, by linarith⟩
-  intro s hs r hr
-  have hd : riemannianEDistOf ((X.term i).S.base.metric t)
-      (γ (tau + s / Real.sqrt Q)) (γ (tau + r / Real.sqrt Q)) =
-      ENNReal.ofReal |(tau + s / Real.sqrt Q) - (tau + r / Real.sqrt Q)| := by
-    rw [← hsegment _ (hmem s hs) _ (hmem r hr)]
+    eps x t W heps hreg ⟨o⟩ γ a b tau
+  · intro s hs r hr
+    rw [← hsegment s hs r hr]
     exact (ENNReal.ofReal_toReal (riemannianEDistOf_ne_top _ _ _)).symm
-  simp only [rescaledMetric, parabolicTime_zero]
-  rw [edistOf_scale, hd, ← ENNReal.ofReal_mul hsqrt.le]
-  congr 1
-  have hdiff : tau + s / Real.sqrt Q - (tau + r / Real.sqrt Q) =
-      (s - r) / Real.sqrt Q := by ring
-  rw [hdiff, abs_div, abs_of_pos hsqrt]
-  field_simp
+  · have hdistCenter : riemannianEDistOf ((X.term i).S.base.metric t) x (γ tau) =
+        ENNReal.ofReal (metricDistance ((X.term i).S.base.metric t) x (γ tau)) :=
+      (ENNReal.ofReal_toReal (riemannianEDistOf_ne_top _ _ _)).symm
+    rw [hdistCenter, ← ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+    exact ENNReal.ofReal_le_ofReal hnear
+  · exact hleft
+  · exact hright
 
 theorem exists_strongNeck_of_long_minimizing_segment (kappa : ℝ)
     {alpha : ℝ} (ha : 0 < alpha) (hsmall : alpha < 1 / 32) :

@@ -3,6 +3,8 @@ import DifferentialGeometry.Geometry.Metric.Segment
 import DifferentialGeometry.Geometry.Geodesic.EquationGerm
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Topology.Manifold.ZeroDimensional
 
 noncomputable section
 
@@ -180,5 +182,40 @@ theorem exists_riemannian_ray [NoncompactSpace M]
   rw [riemannianEDistOf_eq_riemannianEDist (I := I) g hEnorm,
     ← riemMetric_dist_eq (I := I)]
   exact hisom.dist_eq s t
+
+
+omit [NeZero (Module.finrank ℝ E)] [T2Space (TangentBundle I M)] [ConnectedSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_distance_parametrized_minimizer_of_complete [PreconnectedSpace M]
+    (g : SmoothRiemannianMetric I M) (hcomplete : RiemannianMetricComplete (I := I) g)
+    (p q : M) :
+    ∃ γ : ℝ → M, γ 0 = p ∧ γ ((riemannianEDistOf g p q).toReal) = q ∧
+      ContMDiff 𝓘(ℝ, ℝ) I ∞ γ ∧
+      ∀ s ∈ Icc 0 ((riemannianEDistOf g p q).toReal),
+        ∀ t ∈ Icc 0 ((riemannianEDistOf g p q).toReal),
+          riemannianEDistOf g (γ s) (γ t) = ENNReal.ofReal |s - t| := by
+  by_cases hpq : p = q
+  · subst q
+    refine ⟨fun _ => p, rfl, rfl, contMDiff_const, ?_⟩
+    intro s hs t ht
+    rw [riemannianEDistOf_self, ENNReal.toReal_zero] at hs ht
+    have hs0 : s = 0 := le_antisymm hs.2 hs.1
+    have ht0 : t = 0 := le_antisymm ht.2 ht.1
+    rw [hs0, ht0, sub_self, abs_zero, ENNReal.ofReal_zero, riemannianEDistOf_self]
+  have hdim : Module.finrank ℝ E ≠ 0 := by
+    intro hzero
+    let _ : Subsingleton M :=
+      DifferentialGeometry.subsingleton_of_preconnected_of_finrank_eq_zero I hzero
+    exact hpq (Subsingleton.elim p q)
+  let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+  let _ : ConnectedSpace M := { toNonempty := ⟨p⟩ }
+  let _ : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  let _ : T2Space (TangentBundle I M) := inferInstance
+  obtain ⟨γ, hzero, hend, hsmooth, _, _, hdist⟩ :=
+    exists_unitSpeed_minimizing_geodesic_of_complete g hcomplete p q hpq
+  refine ⟨γ, hzero, hend, hsmooth, ?_⟩
+  intro s hs t ht
+  rw [← ENNReal.ofReal_toReal (riemannianEDistOf_ne_top g (γ s) (γ t)), hdist s hs t ht]
 
 end DifferentialGeometry.Geometry
