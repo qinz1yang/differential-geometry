@@ -13959,3 +13959,5 @@ import DifferentialGeometry.Geometry.Curvature.ScalarGradientTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ScalarDerivativeTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MarkedScalarBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapScalarBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.IncomingComparisonStep

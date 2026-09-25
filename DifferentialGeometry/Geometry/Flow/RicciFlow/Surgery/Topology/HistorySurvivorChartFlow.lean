@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingForwardScalar
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.Parabolic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
@@ -284,3 +286,100 @@ theorem exists_normalized_backwardSurvivorIncoming_chart_solution
   rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Tensor.Coordinates
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+  {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s)
+  {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+
+omit [IsManifold ThreeModel ∞ X] [T2Space X] in
+theorem exists_backwardSurvivorIncoming_chart_of_scalar_bound_at_time
+    (Ψ : X → H.backwardSurvivorDomain first last hle)
+    (hΨ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ)
+    {q A τ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
+    (hτ : τ ∈ Ico (H.time last) s)
+    (hbound : ∀ x, ∀ t ∈ Ioo τ s, q < G.flow.scalar t (Ψ x).val →
+      |derivWithin (fun v => G.flow.scalar v (Ψ x).val) (Iic t) t| ≤
+        C * G.flow.scalar t (Ψ x).val ^ 2)
+    (hscalar : ∀ x, G.flow.scalar τ (Ψ x).val ≤ A)
+    (htime : 2 * C * A * (s - τ) ≤ 1) :
+    ∃ Ξ : X → H.backwardSurvivorIncomingDomain first last hle G,
+      IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ ∧ ∀ x, (Ξ x).val = Ψ x := by
+  let f : X → (H.stage last).Carrier := fun x => (Ψ x).val
+  have hf : IsLocalDiffeomorph ThreeModel ThreeModel ∞ f :=
+    isLocalDiffeomorph_comp (isLocalDiffeomorph_subtype_val _) hΨ
+  have hregular : ∀ x, Ψ x ∈ H.backwardSurvivorIncomingDomain first last hle G := by
+    have hsub := G.subset_terminalRegularRegion_of_scalar_bound_at_time hA hqA
+      hf.isOpen_range
+      (fun y hy => by obtain ⟨x, rfl⟩ := hy; exact hbound x)
+      hτ (fun y hy => by obtain ⟨x, rfl⟩ := hy; exact hscalar x) htime
+    intro x
+    exact hsub (mem_range_self x)
+  refine ⟨fun x => ⟨Ψ x, hregular x⟩, ?_, fun _ => rfl⟩
+  exact fun x => isLocalDiffeomorphAt_subtypeCodRestrict hregular (hΨ x)
+
+
+theorem exists_normalized_backwardSurvivorIncoming_chart_solution_of_scalar_bound_at_time
+    (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (Ψ : X → H.backwardSurvivorDomain first last hle)
+    (hΨ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ)
+    {r A τ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hrA : r ≤ A)
+    (hτ : τ ∈ Ico (H.time last) s)
+    (hbound : ∀ x, ∀ t ∈ Ioo τ s, r < G.flow.scalar t (Ψ x).val →
+      |derivWithin (fun v => G.flow.scalar v (Ψ x).val) (Iic t) t| ≤
+        C * G.flow.scalar t (Ψ x).val ^ 2)
+    (hscalar : ∀ x, G.flow.scalar τ (Ψ x).val ≤ A)
+    (htime : 2 * C * A * (s - τ) ≤ 1)
+    (J : X → (H.stage first).Carrier)
+    (hbirth : ∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ψ x) = J x)
+    (q : ℝ) (hq : 0 < q) (g₀ : SmoothRiemannianMetric ThreeModel X)
+    (hzero : ∀ x (v w : TangentSpace ThreeModel x),
+      g₀.inner x v w = q * (H.initialMetric first).inner (J x)
+        (mfderiv ThreeModel ThreeModel J x v) (mfderiv ThreeModel ThreeModel J x w)) :
+    ∃ (Ξ : X → H.backwardSurvivorIncomingDomain first last hle G)
+      (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ),
+      (∀ x, (Ξ x).val = Ψ x) ∧
+      (∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ x).val = J x) ∧
+    ∃ gflow : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorIncomingDomain first last hle G),
+      (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+            (H.backwardSurvivorIncomingDomain first last hle G)) ∧
+      (∀ t ∈ Icc (H.time last) s,
+        gflow t = H.backwardSurvivorIncomingMetric first last hle G L t) ∧
+      ∃ S : SolutionOn (I := ThreeModel) (M := X)
+          (RealTimeInterval.closed 0 (q * (s - H.time first))
+            (by have ht := (H.time_strictMono.monotone hle).trans_lt G.lt; positivity)),
+        IsSolutionOn S ∧ S.base.metric 0 = g₀ ∧
+        (∀ t, S.base.metric t =
+          localPullMetric (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) ∧
+        ∀ (x : X) (k l : Fin (Module.finrank ℝ ThreeSpace)),
+          ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ) ∞
+            (fun z : ℝ × X => chartGramMatrix (S.base.metric z.1) x z.2 k l)
+            (Icc 0 (q * (s - H.time first)) ×ˢ
+              (trivializationAt ThreeSpace (TangentSpace ThreeModel) x).baseSet) := by
+  obtain ⟨Ξ, hΞ, hproj⟩ :=
+    H.exists_backwardSurvivorIncoming_chart_of_scalar_bound_at_time first last hle G
+      Ψ hΨ hA hrA hτ hbound hscalar htime
+  have hbirth' : ∀ x, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ x).val = J x := by
+    intro x
+    rw [hproj x]
+    exact hbirth x
+  exact ⟨Ξ, hΞ, hproj, hbirth',
+    H.exists_normalized_backwardSurvivorIncoming_chart_solution first last hle G L
+      hinit Ξ hΞ J hbirth' q hq g₀ hzero⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+end

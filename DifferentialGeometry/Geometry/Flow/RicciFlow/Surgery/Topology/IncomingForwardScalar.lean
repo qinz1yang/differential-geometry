@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyCurvatureBound
 
@@ -244,3 +245,52 @@ theorem curvature_bound_of_initial_scalar_bound_of_initial_fixedHamiltonIveyRegi
   exact hr
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open scoped Manifold ContDiff NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
+
+theorem exists_curvature_bound_of_scalar_bound_at_time
+    {q A τ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
+    (K : Set P.Carrier)
+    (hbound : ∀ x ∈ K, ∀ t ∈ Ioo τ s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (hτ : τ ∈ Ico a s) (hscalar : ∀ x ∈ K, G.flow.scalar τ x ≤ A)
+    (htime : 2 * C * A * (s - τ) ≤ 1) :
+    ∃ B : ℝ, 0 ≤ B ∧ ∀ x ∈ K, ∀ t ∈ Ico τ s, G.riemannNorm t x ≤ B := by
+  let J : P.IncomingSlab τ s :=
+    { lt := hτ.2
+      flow := G.flow.timeRestrict _
+      equation := isSolutionOn_timeRestrict G.equation
+        (fun _ ht => ⟨hτ.1.trans ht.1, ht.2⟩)
+        (fun _ ht => ⟨hτ.1.trans_lt ht.1, ht.2⟩)
+      smoothUpTo := by
+        intro x t ht
+        obtain ⟨U, hU, hx, hsub, V, hV, htV, F, hF, heq⟩ :=
+          G.smoothUpTo x t ⟨hτ.1.trans ht.1, ht.2⟩
+        exact ⟨U, hU, hx, hsub, V, hV, htV, F, hF,
+          fun v hv y hy i j => heq v ⟨hv.1, hτ.1.trans hv.2.1, hv.2.2⟩ y hy i j⟩ }
+  exact J.exists_curvature_bound_of_initial_scalar_bound hA hqA K hbound hscalar htime
+
+theorem subset_terminalRegularRegion_of_scalar_bound_at_time
+    {q A τ : ℝ} {C : ℝ≥0} (hA : 0 < A) (hqA : q ≤ A)
+    {U : Set P.Carrier} (hU : IsOpen U)
+    (hbound : ∀ x ∈ U, ∀ t ∈ Ioo τ s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (hτ : τ ∈ Ico a s) (hscalar : ∀ x ∈ U, G.flow.scalar τ x ≤ A)
+    (htime : 2 * C * A * (s - τ) ≤ 1) :
+    U ⊆ G.terminalRegularRegion := by
+  obtain ⟨B, hB, hcurv⟩ :=
+    G.exists_curvature_bound_of_scalar_bound_at_time hA hqA U hbound hτ hscalar htime
+  intro x hx
+  exact ⟨U, hU, hx, τ, hτ, B, hB, hcurv⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+end
