@@ -1028,7 +1028,8 @@ theorem exists_open_pos_volume_eventRegularizedC1Cost_lt_of_survivor_seed
       (∀ y ∈ U, E.eventRegularizedC1Cost G T d v (g (η 0)) y < (L : WithTop ℝ)) ∧
       0 < riemannianVolumeMeasure ThreeModel P.Carrier (E.incoming.flow.base.metric (T - v ^ 2)) U := by
   obtain ⟨V, hV, hηV, α, hα, hstart, hend, _, hact⟩ :=
-    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T (hd.trans hdv) hreg η hη hseed
+    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T (hd.trans hdv)
+      (fun t ht => D.regular_subset (hreg t ht)) η hη hseed
   have hopen : IsOpen (f '' V) := hf.isOpenMap V hV
   refine ⟨f '' V, hopen, ⟨η v, hηV, rfl⟩, image_subset_range _ _, ?_, ?_⟩
   · rintro y ⟨z, hz, rfl⟩
@@ -1330,7 +1331,8 @@ theorem exists_open_eventRegularizedC1Cost_minimizing_vectors_of_low_seed
   refine ⟨r, μ, hr, hμ, ?_⟩
   intro B hB hplus hminus α₀ hα₀ hstart hend hseed
   obtain ⟨W, hW, hyW, α, hα, hαstart, hαend, _, hαact⟩ :=
-    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T (hd.trans hdv) hreg α₀ hα₀ hseed
+    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T (hd.trans hdv)
+      (fun t ht => D.regular_subset (hreg t ht)) α₀ hα₀ hseed
   refine ⟨U ∩ W, hU.inter hW, ⟨hyU, hend ▸ hyW⟩, ?_⟩
   intro y hy
   obtain ⟨η, hη, hηzero, hηend, hcost, hmin⟩ :=

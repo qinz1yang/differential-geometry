@@ -7596,6 +7596,7 @@ import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.CoveringPullback
 import DifferentialGeometry.Geometry.Metric.CurveDistance
 import DifferentialGeometry.Geometry.Metric.CurveEnergy
+import DifferentialGeometry.Geometry.Metric.CurveEnergy.IntegralComparison
 import DifferentialGeometry.Geometry.Metric.CurveLength
 import DifferentialGeometry.Geometry.Metric.CurveLengthReparametrization
 import DifferentialGeometry.Geometry.Metric.CurveSpeed
@@ -13558,6 +13559,7 @@ import DifferentialGeometry.Geometry.Neck.ProperSlabEnd
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.SmoothAttainment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ReducedAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedDensity
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.TimeDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.MetricDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceConstruction

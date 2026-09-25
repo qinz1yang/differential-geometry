@@ -36,7 +36,7 @@ theorem upperSemicontinuous_lCost_of_scalar_nonneg
   have hfamily : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) I 1 alpha (V ×ˢ K) :=
     halpha.mono (prod_mono subset_rfl (subset_univ K))
   have hcont := continuousOn_lRegularizedAction_family_of_contMDiffOn_one
-    S hS T 0 (Real.sqrt tau) hV hK hfamily hcarrier hslab
+    S hS T 0 (Real.sqrt tau) hV hK hfamily (fun s hs => hcarrier s (hslab hs)) hslab
   have hactcenter : lRegularizedAction S T (fun s => alpha (q, s)) 0 (Real.sqrt tau) < A := by
     have hcurve : (fun s => alpha (q, s)) = gamma := funext hcenter
     rwa [hcurve]

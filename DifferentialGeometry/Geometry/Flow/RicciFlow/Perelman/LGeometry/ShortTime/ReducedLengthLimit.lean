@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinPrefix
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.EndpointVariation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Basic
 
@@ -107,18 +108,23 @@ variable {J : ModelWithCorners Real F K} [J.Boundaryless]
 variable {N : Type u} [PseudoMetricSpace N] [ChartedSpace K N]
   [IsManifold J ∞ N] [T2Space N] [CompactSpace N]
 
-omit [NeZero (Module.finrank ℝ F)] in
-theorem tendsto_redLength_lExp_square_at_zero
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompactSpace N] [NeZero (Module.finrank ℝ F)] in
+theorem tendsto_redLength_lExp_square_at_zero_of_bdd
     (S : SolutionOn (I := J) (M := N) D) (hS : IsSolutionOn (I := J) S)
-    (T : Real) (x : N) (Z : TangentSpace J x) {tau : Real}
-    (hZ : Z ∈ lInjDomain (E := F) (I := J) S T x tau) :
+    (T : Real) (x : N) (Z : TangentSpace J x) {sigma : Real}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x)
+    (hbdd : BddBelow {r : ℝ | ∃ alpha : ℝ → N,
+      ContMDiff 𝓘(ℝ, ℝ) J 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
     Tendsto
       (fun s : Real ↦
         redLength (I := J) S T x (lExp (I := J) S T x Z (s ^ 2))
           (s ^ 2))
       (𝓝[>] (0 : Real))
       (𝓝 ((S.base.metric T).inner x Z Z)) := by
-  obtain ⟨sigma, _htauSigma, hmin⟩ := hZ
   have hsigma : 0 < sigma := lMinDomain_pos S T x Z sigma hmin
   have hposDom : (Z, sigma) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z sigma).1 hmin).1
@@ -147,7 +153,8 @@ theorem tendsto_redLength_lExp_square_at_zero
     filter_upwards [self_mem_nhdsWithin, hsLt] with s hs hsSq
     have hs0 : 0 < s ^ 2 := sq_pos_of_pos hs
     have hminSq : (Z, s ^ 2) ∈ lMinDomain S T x :=
-      lMinDomain_down S hS T x Z hmin hs0 hsSq.le
+      lMinDomain_down_of_bdd S hS T x Z hmin hs0 hsSq.le
+        (lRegularizedCosts_prefix_bdd_of_min S hS T x Z hmin hs0 hsSq.le hbdd) hbdd
     have hcost := ((mem_lMinDomain S T x Z (s ^ 2)).1 hminSq).2
     have hlen :
         lLength S T (fun r : Real ↦ lExp S T x Z r) 0 (s ^ 2) =
@@ -163,6 +170,24 @@ theorem tendsto_redLength_lExp_square_at_zero
     rw [Real.sqrt_sq hs.le]
     exact congrArg (fun q : Real ↦ q / (2 * s)) (hlen.symm.trans hcost)
   exact (tendsto_lRegularizedAction_div_at_zero S hS T x Z hT).congr' hEq
+
+omit [NeZero (Module.finrank ℝ F)] in
+theorem tendsto_redLength_lExp_square_at_zero
+    (S : SolutionOn (I := J) (M := N) D) (hS : IsSolutionOn (I := J) S)
+    (T : Real) (x : N) (Z : TangentSpace J x) {tau : Real}
+    (hZ : Z ∈ lInjDomain (E := F) (I := J) S T x tau) :
+    Tendsto
+      (fun s : Real ↦
+        redLength (I := J) S T x (lExp (I := J) S T x Z (s ^ 2))
+          (s ^ 2))
+      (𝓝[>] (0 : Real))
+      (𝓝 ((S.base.metric T).inner x Z Z)) := by
+  obtain ⟨sigma, _, hmin⟩ := hZ
+  apply tendsto_redLength_lExp_square_at_zero_of_bdd S hS T x Z hmin
+  apply lRegularizedCosts_bdd_of_compact S hS T (Real.sqrt_nonneg sigma)
+  intro t ht
+  exact D.regular_subset (lExpPosDom_regularity S T x Z
+    ((mem_lMinDomain S T x Z sigma).mp hmin).1 ht)
 
 end Compact
 

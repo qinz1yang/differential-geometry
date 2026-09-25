@@ -29,6 +29,27 @@ private local instance : BorelSpace E := ⟨rfl⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompactSpace M] in
+theorem lReducedJacobian_source_le_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {Z : TangentSpace I x} {sigma tau : ℝ}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x) (htau : 0 < tau) (hlt : tau < sigma)
+    (hbdd : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
+    ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x) ≤
+      ENNReal.ofReal (lSourceGaussian S T x Z) := by
+  change E at Z
+  apply ENNReal.ofReal_le_ofReal
+  rw [lSourceGaussian_eq_metric_norm]
+  have hh := mul_le_mul_of_nonneg_right
+    (lReducedJacobian_le_gaussian_of_bdd S hS T x hmin htau hlt hbdd)
+    (lSourceDensity_pos S T x).le
+  simpa only [mul_assoc, mul_left_comm, mul_comm] using hh
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem lReducedJacobian_source_le
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (x : M) {Z : TangentSpace I x} {tau : Real}
@@ -36,23 +57,12 @@ theorem lReducedJacobian_source_le
     (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
     ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x) ≤
       ENNReal.ofReal (lSourceGaussian S T x Z) := by
-  change E at Z
-  apply ENNReal.ofReal_le_ofReal
-  rw [lSourceGaussian_eq_metric_norm]
-  calc
-    lReducedJacobian S T x Z tau * lSourceDensity S T x ≤
-        (((Real.pi : Real) ^
-            ((Module.finrank Real E : Real) / 2))⁻¹ *
-          Real.exp (-(S.base.metric T).inner x Z Z)) *
-            lSourceDensity S T x :=
-      mul_le_mul_of_nonneg_right
-        (lReducedJacobian_le_gaussian S hS T x htau hZ)
-        (lSourceDensity_pos S T x).le
-    _ = ((Real.pi : Real) ^
-          ((Module.finrank Real E : Real) / 2))⁻¹ *
-        lSourceDensity S T x *
-          Real.exp (-(S.base.metric T).inner x Z Z) := by
-      ring
+  obtain ⟨sigma, hlt, hmin⟩ := hZ
+  apply lReducedJacobian_source_le_of_bdd S hS T x hmin htau hlt
+  apply lRegularizedCosts_bdd_of_compact S hS T (Real.sqrt_nonneg sigma)
+  intro t ht
+  exact D.regular_subset (lExpPosDom_regularity S T x Z
+    ((mem_lMinDomain S T x Z sigma).mp hmin).1 ht)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

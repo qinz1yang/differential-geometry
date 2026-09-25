@@ -107,7 +107,7 @@ theorem exists_open_pos_eventRegularizedC1Density_mass_of_survivor_seed
     {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
     (hS : IsSolutionOn S) (T : ℝ) {d v L : ℝ} (hd : 0 < d) (hdv : d < v)
     (hclock : T - d ^ 2 = s)
-    (hreg : ∀ r ∈ Icc 0 v, T - r ^ 2 ∈ D.regular)
+    (hcarrier : ∀ r ∈ Icc 0 v, T - r ^ 2 ∈ D.carrier)
     (htimePlus : ∀ r ∈ Icc 0 d, T - r ^ 2 ∈ (RealTimeInterval.closedOpen s b G.lt).carrier)
     (htimeMinus : ∀ r ∈ Ioc d v, T - r ^ 2 ∈ (RealTimeInterval.closedOpen a s E.incoming.lt).carrier)
     (hbefore : ∀ r ∈ Ioo d v, S.base.metric (T - r ^ 2) =
@@ -124,7 +124,7 @@ theorem exists_open_pos_eventRegularizedC1Density_mass_of_survivor_seed
         ∫⁻ q in U, E.eventRegularizedC1Density G T d v (g (η 0)) q
           ∂riemannianVolumeMeasure ThreeModel P.Carrier (E.incoming.flow.base.metric (T - v ^ 2)) := by
   obtain ⟨V, hV, hηV, α, hα, hstart, hend, _, hact⟩ :=
-    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T (hd.trans hdv) hreg η hη hseed
+    exists_open_endpoint_family_of_lRegularizedAction_lt S hS T (hd.trans hdv) hcarrier η hη hseed
   have hopen : IsOpen (f '' V) := hf.isOpenMap V hV
   refine ⟨f '' V, hopen, ⟨η v, hηV, rfl⟩, image_subset_range _ _, ?_, ?_⟩
   · let _ : (riemannianVolumeMeasure ThreeModel P.Carrier
@@ -136,7 +136,7 @@ theorem exists_open_pos_eventRegularizedC1Density_mass_of_survivor_seed
     rintro y ⟨z, hz, rfl⟩
     refine ⟨lRegularizedAction S T (α z) 0 v, ?_, (hact z hz).le⟩
     have hmem := E.action_mem_eventRegularizedC1ActionValues_of_survivor_curve G f g hf hg hcross
-      S hS T hd hdv hclock (fun t ht => D.regular_subset (hreg t ht)) htimePlus htimeMinus
+      S hS T hd hdv hclock hcarrier htimePlus htimeMinus
       hbefore hafter (α z) (hα z hz)
     simpa only [hstart z hz, hend z hz] using hmem
 

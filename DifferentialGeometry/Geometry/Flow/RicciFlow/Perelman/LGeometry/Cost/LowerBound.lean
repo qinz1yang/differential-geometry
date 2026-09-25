@@ -244,6 +244,27 @@ theorem lRegularizedCosts_bdd_of_scalar_lower
     (fun t ht => hscalar t ht (α t)) hint
 
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lRegularizedCosts_bdd_of_compact [CompactSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b : ℝ} (hab : a ≤ b) (htime : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier)
+    (x y : M) :
+    BddBelow {r : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧
+      α a = x ∧ α b = y ∧ lRegularizedAction S T α a b = r} := by
+  have hmap : Continuous (fun q : ℝ × M => (T - q.1 ^ 2, q.2)) :=
+    (continuous_const.sub (continuous_fst.pow 2)).prodMk continuous_snd
+  have hmaps : MapsTo (fun q : ℝ × M => (T - q.1 ^ 2, q.2))
+      (Icc a b ×ˢ univ) (D.carrier ×ˢ univ) :=
+    fun q hq => ⟨htime q.1 hq.1, mem_univ q.2⟩
+  have hc : ContinuousOn (fun q : ℝ × M => S.scalar (T - q.1 ^ 2) q.2) (Icc a b ×ˢ univ) :=
+    hS.scalarCont.comp (f := fun q : ℝ × M => (T - q.1 ^ 2, q.2)) hmap.continuousOn hmaps
+  obtain ⟨B, hB⟩ := (isCompact_Icc.prod isCompact_univ).bddBelow_image hc
+  apply lRegularizedCosts_bdd_of_scalar_lower S hS T hab htime (B := -B)
+  intro t ht z
+  simpa only [neg_neg] using hB ⟨(t, z), ⟨⟨ht.1.le, ht.2.le⟩, mem_univ z⟩, rfl⟩
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 end

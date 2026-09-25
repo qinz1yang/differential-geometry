@@ -92,14 +92,14 @@ variable [FiniteDimensional ℝ E] [T2Space M]
 
 theorem continuousOn_lRegularizedLagrangian_family_of_contMDiffOn_one
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
-    (T : ℝ) {alpha : E × ℝ → M} {V : Set E} {K : Set ℝ}
+    (T : ℝ) {alpha : E × ℝ → M} {V : Set E} {K J : Set ℝ}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
     (halpha : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) I 1 alpha (V ×ˢ K))
-    (hcarrier : ∀ s ∈ K, T - s ^ 2 ∈ D.carrier) :
+    (hJK : J ⊆ K) (hcarrier : ∀ s ∈ J, T - s ^ 2 ∈ D.carrier) :
     ContinuousOn
       (fun q : E × ℝ => lRegularizedLagrangian S T (fun s => alpha (q.1, s)) q.2)
-      (V ×ˢ K) := by
-  let P := {q : E × ℝ // q ∈ V ×ˢ K}
+      (V ×ˢ J) := by
+  let P := {q : E × ℝ // q ∈ V ×ˢ J}
   let timeLift : P → {t : ℝ // t ∈ D.carrier} :=
     fun q => ⟨T - q.1.2 ^ 2, hcarrier q.1.2 q.2.2⟩
   let velocityLift : P → TangentBundle I M := fun q =>
@@ -107,8 +107,10 @@ theorem continuousOn_lRegularizedLagrangian_family_of_contMDiffOn_one
   have htime : Continuous timeLift :=
     (continuous_const.sub ((continuous_snd.comp continuous_subtype_val).pow 2)).subtype_mk _
   have hvel : Continuous velocityLift :=
-    (continuousOn_lVelocity_family hVopen hKopen halpha).domRestrict
-  have hbase : Continuous (fun q : P => alpha q.1) := halpha.continuousOn.domRestrict
+    ((continuousOn_lVelocity_family hVopen hKopen halpha).mono
+      (prod_mono subset_rfl hJK)).domRestrict
+  have hbase : Continuous (fun q : P => alpha q.1) :=
+    (halpha.continuousOn.mono (prod_mono subset_rfl hJK)).domRestrict
   have hquad := metricTimeBundleQuad_cont_of_metricFamilySmoothOn
     (I := I) (M := M) S.family.metric hS.smoothMetric
     (K := D.carrier) (fun _ ht => ht)
@@ -136,12 +138,11 @@ theorem continuousOn_lRegularizedAction_family_of_contMDiffOn_one
     (T a b : ℝ) {alpha : E × ℝ → M} {V : Set E} {K : Set ℝ}
     (hVopen : IsOpen V) (hKopen : IsOpen K)
     (halpha : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) I 1 alpha (V ×ˢ K))
-    (hcarrier : ∀ s ∈ K, T - s ^ 2 ∈ D.carrier) (hslab : [[a, b]] ⊆ K) :
+    (hcarrier : ∀ s ∈ [[a, b]], T - s ^ 2 ∈ D.carrier) (hslab : [[a, b]] ⊆ K) :
     ContinuousOn (fun A => lRegularizedAction S T (fun s => alpha (A, s)) a b) V := by
   have hlag := continuousOn_lRegularizedLagrangian_family_of_contMDiffOn_one
-    S hS T hVopen hKopen halpha hcarrier
-  exact intervalIntegral.continuousOn_integral_of_continuousOn_prod hVopen
-    (hlag.mono (prod_mono subset_rfl hslab))
+    S hS T hVopen hKopen halpha hslab hcarrier
+  exact intervalIntegral.continuousOn_integral_of_continuousOn_prod hVopen hlag
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 
@@ -162,7 +163,7 @@ variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimen
 theorem exists_open_endpoint_family_of_lRegularizedAction_lt
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
     {a b L : ℝ} (hab : a < b)
-    (hreg : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.regular)
+    (hcarrier : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier)
     (γ : ℝ → M) (hγ : ContMDiff 𝓘(ℝ, ℝ) I 1 γ)
     (hact : lRegularizedAction S T γ a b < L) :
     ∃ U : Set M, IsOpen U ∧ γ b ∈ U ∧ ∃ α : M → ℝ → M,
@@ -174,16 +175,8 @@ theorem exists_open_endpoint_family_of_lRegularizedAction_lt
     Geometry.exists_contMDiff_endpoint_perturbation γ hγ hab
   let p := γ b
   let q : E := extChartAt I p p
-  let K : Set ℝ := (fun t : ℝ => T - t ^ 2) ⁻¹' D.regular
-  have hK : IsOpen K := D.regular_isOpen.preimage (continuous_const.sub (continuous_id.pow 2))
-  have hslab : uIcc a b ⊆ K := by
-    rw [uIcc_of_le hab.le]
-    exact hreg
-  have hcarrier : ∀ t ∈ K, T - t ^ 2 ∈ D.carrier := fun _ ht => D.regular_subset ht
-  have hfamily : ContMDiffOn (𝓘(ℝ, E).prod 𝓘(ℝ, ℝ)) I 1 β (V ×ˢ K) :=
-    hβ.mono (prod_mono Subset.rfl (subset_univ K))
   have hcont := continuousOn_lRegularizedAction_family_of_contMDiffOn_one S hS T a b
-    hV hK hfamily hcarrier hslab
+    hV isOpen_univ hβ (by simpa only [uIcc_of_le hab.le] using hcarrier) (subset_univ _)
   have hactq : lRegularizedAction S T (fun t => β (q, t)) a b < L := by
     have heq : (fun t => β (q, t)) = γ := funext hcenter
     rwa [heq]

@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.RedJacobian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ReducedVolumeComplete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.JacobianLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.ReducedLengthLimit
@@ -25,19 +27,21 @@ variable {D : RealTimeInterval}
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem tendsto_lReducedJacobian_square_at_zero
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
+private theorem tendsto_lReducedJacobian_square_at_zero_of_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (T : Real) (x : M) (Z : TangentSpace I x) {tau : Real}
-    (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x tau) :
+    (T : Real) (x : M) (Z : TangentSpace I x) {sigma : Real}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x)
+    (hbdd : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
     Tendsto
       (fun s : Real ↦ lReducedJacobian S T x Z (s ^ 2))
       (𝓝[>] (0 : Real))
       (𝓝 (((Real.pi : Real) ^
           ((Module.finrank Real E : Real) / 2))⁻¹ *
         Real.exp (-(S.base.metric T).inner x Z Z))) := by
-  have hZlater := hZ
-  obtain ⟨sigma, _htauSigma, hmin⟩ := hZ
   have hsigma : 0 < sigma := lMinDomain_pos S T x Z sigma hmin
   have hposDom : (Z, sigma) ∈ lExpPosDom S T x :=
     ((mem_lMinDomain S T x Z sigma).1 hmin).1
@@ -49,7 +53,7 @@ private theorem tendsto_lReducedJacobian_square_at_zero
     simpa only [zero_pow (by norm_num : (2 : Nat) ≠ 0), sub_zero] using
       lRegularizedDomain_regularity S T x Z hzeroDom
   have hden := tendsto_normalized_lExpDensity_at_zero S hS T x Z hT
-  have hlen := tendsto_redLength_lExp_square_at_zero S hS T x Z hZlater
+  have hlen := tendsto_redLength_lExp_square_at_zero_of_bdd S hS T x Z hmin hbdd
   have hexp : Tendsto
       (fun s : Real ↦ Real.exp
         (-redLength S T x (lExp S T x Z (s ^ 2)) (s ^ 2)))
@@ -97,8 +101,8 @@ private theorem tendsto_lReducedJacobian_square_at_zero
     filter_upwards [self_mem_nhdsWithin, hsLt] with s hs hsSq
     have hs0 : s ≠ 0 := ne_of_gt hs
     have hsSq0 : 0 < s ^ 2 := sq_pos_of_pos hs
-    have hZs : Z ∈ lInjDomain (E := E) (I := I) S T x (s ^ 2) :=
-      ⟨sigma, hsSq, hmin⟩
+    have hdom := lExpPosDom_down S T x Z hposDom hsSq0 hsSq.le
+    have hnc := lMinVec_nconj_lt_of_bdd S hS T x hmin hsSq hbdd
     have hsPow : Real.exp
         ((Module.finrank Real E : Real) / 2 * Real.log (s ^ 2)) =
         s ^ (Module.finrank Real E) := by
@@ -122,7 +126,7 @@ private theorem tendsto_lReducedJacobian_square_at_zero
     have hpi0 : (Real.pi : Real) ^
         ((Module.finrank Real E : Real) / 2) ≠ 0 :=
       ne_of_gt (Real.rpow_pos_of_pos Real.pi_pos _)
-    rw [lReducedJacobian_mul_source S hS T x hsSq0 hZs]
+    rw [lRedJac_mul_src_of_nonconj S T x Z (s ^ 2) hdom hnc]
     unfold redDensity
     rw [Real.exp_sub, Real.exp_sub, hsPow, hfourPow]
     field_simp [hs0, hpi0]
@@ -160,11 +164,15 @@ private theorem tendsto_lReducedJacobian_square_at_zero
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem tendsto_lReducedJacobian_at_zero
+omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
+theorem tendsto_lReducedJacobian_at_zero_of_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (T : Real) (x : M) (Z : TangentSpace I x) {rho : Real}
-    (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x rho) :
+    (T : Real) (x : M) (Z : TangentSpace I x) {sigma : Real}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x)
+    (hbdd : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
     Tendsto
       (fun tau : Real ↦ lReducedJacobian S T x Z tau)
       (𝓝[>] (0 : Real))
@@ -180,13 +188,60 @@ theorem tendsto_lReducedJacobian_at_zero
       by
         filter_upwards [self_mem_nhdsWithin] with tau htau
         exact Real.sqrt_pos.2 htau⟩
-  have hlim := (tendsto_lReducedJacobian_square_at_zero S hS T x Z hZ).comp hsqrt
+  have hlim := (tendsto_lReducedJacobian_square_at_zero_of_bdd S hS T x Z hmin hbdd).comp hsqrt
   have heq :
       (fun tau : Real ↦ lReducedJacobian S T x Z tau) =ᶠ[𝓝[>] (0 : Real)]
         (fun tau : Real ↦ lReducedJacobian S T x Z (Real.sqrt tau ^ 2)) := by
     filter_upwards [self_mem_nhdsWithin] with tau htau
     rw [Real.sq_sqrt htau.le]
   exact hlim.congr' heq.symm
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [NeZero (Module.finrank ℝ E)] in
+theorem tendsto_lReducedJacobian_at_zero
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : Real) (x : M) (Z : TangentSpace I x) {rho : Real}
+    (hZ : Z ∈ lInjDomain (E := E) (I := I) S T x rho) :
+    Tendsto
+      (fun tau : Real ↦ lReducedJacobian S T x Z tau)
+      (𝓝[>] (0 : Real))
+      (𝓝 (((Real.pi : Real) ^
+          ((Module.finrank Real E : Real) / 2))⁻¹ *
+        Real.exp (-(S.base.metric T).inner x Z Z))) := by
+  obtain ⟨sigma, _, hmin⟩ := hZ
+  apply tendsto_lReducedJacobian_at_zero_of_bdd S hS T x Z hmin
+  apply lRegularizedCosts_bdd_of_compact S hS T (Real.sqrt_nonneg sigma)
+  intro t ht
+  exact D.regular_subset (lExpPosDom_regularity S T x Z
+    ((mem_lMinDomain S T x Z sigma).mp hmin).1 ht)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [CompactSpace M] in
+theorem lReducedJacobian_le_gaussian_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {Z : TangentSpace I x} {sigma tau : ℝ}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x) (htau : 0 < tau) (hlt : tau < sigma)
+    (hbdd : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
+    lReducedJacobian S T x Z tau ≤
+      ((Real.pi : ℝ) ^ ((Module.finrank ℝ E : ℝ) / 2))⁻¹ *
+        Real.exp (-(S.base.metric T).inner x Z Z) := by
+  have hsToZero : Tendsto (fun s : ℝ => s ^ 2) (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ)) := by
+    simpa only [id_eq, zero_pow two_ne_zero] using
+      ((tendsto_id.mono_left nhdsWithin_le_nhds : Tendsto (fun s : ℝ => s)
+        (𝓝[>] (0 : ℝ)) (𝓝 (0 : ℝ))).pow 2)
+  have hsLt : ∀ᶠ s in 𝓝[>] (0 : ℝ), s ^ 2 < tau :=
+    hsToZero.eventually (Iio_mem_nhds htau)
+  have hle : ∀ᶠ s in 𝓝[>] (0 : ℝ),
+      lReducedJacobian S T x Z tau ≤ lReducedJacobian S T x Z (s ^ 2) := by
+    filter_upwards [self_mem_nhdsWithin, hsLt] with s hs hsSq
+    exact lRedJac_antitoneOn_of_bdd S hS T x hmin hbdd
+      ⟨sq_pos_of_pos hs, hsSq.trans hlt⟩ ⟨htau, hlt⟩ hsSq.le
+  exact ge_of_tendsto (tendsto_lReducedJacobian_square_at_zero_of_bdd S hS T x Z hmin hbdd) hle
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -199,18 +254,13 @@ theorem lReducedJacobian_le_gaussian
       ((Real.pi : Real) ^
           ((Module.finrank Real E : Real) / 2))⁻¹ *
         Real.exp (-(S.base.metric T).inner x Z Z) := by
-  have hsToZero : Tendsto (fun s : Real ↦ s ^ 2)
-      (𝓝[>] (0 : Real)) (𝓝 (0 : Real)) := by
-    have hid : Tendsto (fun s : Real ↦ s) (𝓝[>] (0 : Real))
-        (𝓝 (0 : Real)) :=
-      tendsto_id.mono_left inf_le_left
-    simpa only [zero_pow (by norm_num : (2 : Nat) ≠ 0)] using hid.pow 2
-  have hsLt : ∀ᶠ s in 𝓝[>] (0 : Real), s ^ 2 < tau :=
-    hsToZero.eventually (Iio_mem_nhds htau)
-  have hle : ∀ᶠ s in 𝓝[>] (0 : Real),
-      lReducedJacobian S T x Z tau ≤ lReducedJacobian S T x Z (s ^ 2) := by
-    filter_upwards [self_mem_nhdsWithin, hsLt] with s hs hsSq
-    exact lReducedJacobian_anti S hS T x (sq_pos_of_pos hs) hsSq.le hZ
-  exact ge_of_tendsto (tendsto_lReducedJacobian_square_at_zero S hS T x Z hZ) hle
+  obtain ⟨sigma, hlt, hmin⟩ := hZ
+  apply lReducedJacobian_le_gaussian_of_bdd S hS T x hmin htau hlt
+  apply lRegularizedCosts_bdd_of_compact S hS T (Real.sqrt_nonneg sigma)
+  intro t ht
+  exact D.regular_subset (lExpPosDom_regularity S T x Z
+    ((mem_lMinDomain S T x Z sigma).mp hmin).1 ht)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end

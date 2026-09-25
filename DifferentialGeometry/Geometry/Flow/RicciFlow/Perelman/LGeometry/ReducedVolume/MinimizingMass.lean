@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.InjectivityExhaustion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.InjGeometry
@@ -353,6 +354,47 @@ theorem exists_open_low_action_lExp_patch [CompactSpace M]
   intro τ₁ hτ₁ hτ₁τ
   exact measure_mul_exp_le_redDensity_image_of_minimizing_action_bound S hS T x hτ₁ hτ₁τ hτσ
     hRm (lInj_isOpen S hS T x σ) hmin hV.measurableSet hVU (fun Z hZ => (hact Z hZ).le)
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] in
+theorem lintegral_lReducedJacobian_le_one_on_minimizing_family_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {sigma tau : ℝ} (htau : 0 < tau) (hlt : tau < sigma)
+    {A : Set E} (hA : MeasurableSet A)
+    (hmin : ∀ Z ∈ A, (Z, sigma) ∈ lMinDomain S T x)
+    (hbdd : ∀ Z ∈ A, BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
+    (∫⁻ Z in A, ENNReal.ofReal (lReducedJacobian S T x Z tau * lSourceDensity S T x)
+      ∂modelHaar (E := E)) ≤ 1 := by
+  calc
+    _ ≤ ∫⁻ Z in A, ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) :=
+      setLIntegral_mono' hA (fun Z hZ =>
+        lReducedJacobian_source_le_of_bdd S hS T x (hmin Z hZ) htau hlt (hbdd Z hZ))
+    _ ≤ ∫⁻ Z, ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) :=
+      setLIntegral_le_lintegral _ _
+    _ = 1 := lSourceGaussian_mass S T x
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lintegral_redDensity_image_lExp_le_one_on_minimizing_family_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (x : M) {sigma tau : ℝ} (htau : 0 < tau) (hlt : tau < sigma)
+    {U A : Set E} (hU : IsOpen U)
+    (hmin : ∀ Z ∈ U, (Z, sigma) ∈ lMinDomain S T x)
+    (hbdd : ∀ Z ∈ U, BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r})
+    (hA : MeasurableSet A) (hAU : A ⊆ U) :
+    (∫⁻ y in (fun Z : E => lExp S T x Z tau) '' A,
+      ENNReal.ofReal (redDensity S T x y tau)
+      ∂riemannianVolumeMeasure I M (S.base.metric (T - tau))) ≤ 1 := by
+  rw [← lintegral_lReducedJacobian_eq_on_minimizing_family_of_bdd S hS T x htau hlt hU hmin hbdd hA hAU]
+  exact lintegral_lReducedJacobian_le_one_on_minimizing_family_of_bdd S hS T x htau hlt hA
+    (fun Z hZ => hmin Z (hAU hZ)) (fun Z hZ => hbdd Z (hAU hZ))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 

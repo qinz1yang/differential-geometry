@@ -854,7 +854,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 universe u
 variable (H : ObservedHistory.{u})
-  {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
   [IsManifold ThreeModel ∞ X] [T2Space X]
 
 theorem stageRegularizedLagrangian_comp_eq_of_localPullMetric
@@ -899,7 +899,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 universe u
 variable (H : ObservedHistory.{u})
-  {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
   [IsManifold ThreeModel ∞ X] [T2Space X]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
