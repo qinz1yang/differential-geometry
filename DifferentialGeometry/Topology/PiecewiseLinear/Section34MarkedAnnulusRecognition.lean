@@ -76,8 +76,8 @@ private theorem annulus_product_arc {E F : Type*} [NormedAddCommGroup E]
   simpa only [prodMap_image_prod, hg.image_eq, hδ.image_eq, image_singleton] using ha
 
 theorem IsAnnulusOn.eq_or_eq_product_bands {E F M : Type*}
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [NormedAddCommGroup F] [NormedSpace ℝ F]
     [TopologicalSpace M] [T2Space M] {J : Set E} {Q B C : Set F} {S A : Set M}
     [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] (hJ : IsPLSphere 1 J)
     {f : E × F → M} (hf : ContinuousOn f (J ×ˢ Q)) (hi : InjOn f (J ×ˢ Q))
@@ -103,7 +103,7 @@ theorem IsAnnulusOn.eq_or_eq_product_bands {E F M : Type*}
     simp only [prod_singleton]
 
 theorem IsAnnulusOn.exists_product_arc_eq {E F M : Type*}
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+    [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     [TopologicalSpace M] [T2Space M] {J : Set E} {Q : Set F} {S A : Set M}
     [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] (hJ : IsPLSphere 1 J)
