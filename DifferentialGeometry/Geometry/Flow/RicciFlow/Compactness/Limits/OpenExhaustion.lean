@@ -18,6 +18,59 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
   [SigmaCompactSpace M]
 
+theorem exists_common_compatible_solution_subsequence_on_open_sets_and_intervals_of_terminal_convergence
+    (U : ℕ → TopologicalSpace.Opens M) (D : ℕ → RealTimeInterval)
+    (S : ∀ n : ℕ, ℕ → SolutionOn (I := I) (M := U n) (D n))
+    (hS : ∀ n i, IsSolutionOn (S n i))
+    (R : ∀ n : ℕ, SmoothRiemannianMetric I (U n))
+    (a b : ℕ → ℝ) (hab : ∀ n, a n < b n)
+    (hslab : ∀ n, Icc (a n) (b n) ⊆ (D n).carrier)
+    (hreg : ∀ n, Ico (a n) (b n) ⊆ (D n).regular)
+    (hterminal : ∀ n, MetricCInfConvergenceOnCompacts
+      (fun i => (S n i).base.metric (b n)) (R n) (R n))
+    (hcurv : ∀ n, ∀ K : Set (U n), IsCompact K → ∀ q : ℕ,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop,
+        ∀ t ∈ Icc (a n) (b n), ∀ x ∈ K, curvDerivNorm q ((S n i).base.metric t) x ≤ C)
+    (N : ℕ → ℕ)
+    (hcompat : ∀ n m t, t ∈ Icc (a n) (b n) → t ∈ Icc (a m) (b m) →
+      (fun i => ((S n (i - N n)).base.metric t).restrictOpenOfSubset
+        (inf_le_left : U n ⊓ U m ≤ U n)) =ᶠ[atTop]
+      (fun i => ((S m (i - N m)).base.metric t).restrictOpenOfSubset
+        (inf_le_right : U n ⊓ U m ≤ U m))) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧
+      ∃ g : ∀ n, ℝ → SmoothRiemannianMetric I (U n),
+        (∀ n, g n (b n) = R n) ∧
+        (∀ n, IsSolutionOn ({ base.metric := g n } : SolutionOn (I := I) (M := U n)
+          (RealTimeInterval.closed (a n) (b n) (hab n).le))) ∧
+        (∀ n, ∀ K : Set (U n), IsCompact K → ∀ p : ℕ, ∀ η : ℝ, 0 < η →
+          ∃ j : ℕ, ∀ i ≥ j, ∀ t ∈ Icc (a n) (b n),
+            metricDerivNormSupOn K p ((S n (rho i - N n)).base.metric t)
+              (g n t) (R n) < η) ∧
+        ∀ n m t, t ∈ Icc (a n) (b n) → t ∈ Icc (a m) (b m) →
+          (g n t).restrictOpenOfSubset (inf_le_left : U n ⊓ U m ≤ U n) =
+            (g m t).restrictOpenOfSubset (inf_le_right : U n ⊓ U m ≤ U m) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ (n : ℕ) : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
+  obtain ⟨rho, hrho, hG⟩ :=
+    exists_common_solution_subsequence_on_open_sets_of_terminal_convergence
+      U D S hS R a b hab hslab hreg hterminal hcurv N
+  choose g hg hflow hconv using hG
+  refine ⟨rho, hrho, g, hg, hflow, hconv, ?_⟩
+  intro n m t htn htm
+  have hn : MetricCInfConvergenceOnCompacts
+      (fun i => (S n (rho i - N n)).base.metric t) (g n t) (R n) := by
+    intro K hK p η hη
+    obtain ⟨j, hj⟩ := hconv n K hK p η hη
+    exact ⟨j, fun i hi => hj i hi t htn⟩
+  have hm : MetricCInfConvergenceOnCompacts
+      (fun i => (S m (rho i - N m)).base.metric t) (g m t) (R m) := by
+    intro K hK p η hη
+    obtain ⟨j, hj⟩ := hconv m K hK p η hη
+    exact ⟨j, fun i hi => hj i hi t htm⟩
+  exact metricCInf_unique_restrictOpenOfSubset_of_eventuallyEq inf_le_left inf_le_right hn hm
+    (hrho.tendsto_atTop.eventually (hcompat n m t htn htm))
+
 theorem exists_common_compatible_solution_subsequence_on_open_sets_of_terminal_convergence
     (U : ℕ → TopologicalSpace.Opens M) {D : RealTimeInterval}
     (S : ∀ n : ℕ, ℕ → SolutionOn (I := I) (M := U n) D)
@@ -48,28 +101,12 @@ theorem exists_common_compatible_solution_subsequence_on_open_sets_of_terminal_c
         ∀ n m t, t ∈ Icc a b →
           (g n t).restrictOpenOfSubset (inf_le_left : U n ⊓ U m ≤ U n) =
             (g m t).restrictOpenOfSubset (inf_le_right : U n ⊓ U m ≤ U m) := by
-  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
-  let _ (n : ℕ) : SigmaCompactSpace (U n) := isSigmaCompact_iff_sigmaCompactSpace.mp
-    (Geometry.isSigmaCompact_of_isOpen I (U n).isOpen)
-  obtain ⟨rho, hrho, hG⟩ :=
-    exists_common_solution_subsequence_on_open_sets_of_terminal_convergence
-      U (fun _ => D) S hS R (fun _ => a) (fun _ => b)
-      (fun _ => hab) (fun _ => hslab) (fun _ => hreg) hterminal hcurv N
-  choose g hg hflow hconv using hG
-  refine ⟨rho, hrho, g, hg, hflow, hconv, ?_⟩
-  intro n m t ht
-  have hn : MetricCInfConvergenceOnCompacts
-      (fun i => (S n (rho i - N n)).base.metric t) (g n t) (R n) := by
-    intro K hK p η hη
-    obtain ⟨j, hj⟩ := hconv n K hK p η hη
-    exact ⟨j, fun i hi => hj i hi t ht⟩
-  have hm : MetricCInfConvergenceOnCompacts
-      (fun i => (S m (rho i - N m)).base.metric t) (g m t) (R m) := by
-    intro K hK p η hη
-    obtain ⟨j, hj⟩ := hconv m K hK p η hη
-    exact ⟨j, fun i hi => hj i hi t ht⟩
-  exact metricCInf_unique_restrictOpenOfSubset_of_eventuallyEq inf_le_left inf_le_right hn hm
-    (hrho.tendsto_atTop.eventually (hcompat n m t ht))
+  obtain ⟨rho, hrho, g, hg, hflow, hconv, hoverlap⟩ :=
+    exists_common_compatible_solution_subsequence_on_open_sets_and_intervals_of_terminal_convergence
+      U (fun _ => D) S hS R (fun _ => a) (fun _ => b) (fun _ => hab)
+      (fun _ => hslab) (fun _ => hreg) hterminal hcurv N
+      (fun n m t ht _ => hcompat n m t ht)
+  exact ⟨rho, hrho, g, hg, hflow, hconv, fun n m t ht => hoverlap n m t ht ht⟩
 
 theorem exists_global_solution_subsequence_of_terminal_convergence_on_open_cover
     (U : ℕ → TopologicalSpace.Opens M) (hcover : ∀ x : M, ∃ n, x ∈ U n)

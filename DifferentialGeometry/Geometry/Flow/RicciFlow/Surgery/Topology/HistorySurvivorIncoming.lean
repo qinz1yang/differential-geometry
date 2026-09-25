@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow
+import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Topology.Manifold.OpenCoverLocalDiffeomorph
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFlow
@@ -1152,3 +1155,88 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
 end
+
+
+noncomputable section
+open Set Manifold Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u uE uH uM
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {XH : Type uH} [TopologicalSpace XH] {I : ModelWithCorners ℝ E XH} [I.Boundaryless]
+  {M : Type uM} [TopologicalSpace M] [ChartedSpace XH M] [IsManifold I ∞ M] [T2Space M]
+
+private local instance (H : ObservedHistory.{u})
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last) :
+    SigmaCompactSpace (H.backwardSurvivorDomain first last hle) :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel (H.backwardSurvivorDomain first last hle).isOpen)
+private local instance (H : ObservedHistory.{u})
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last) {s : ℝ}
+    (G : (H.stage last).IncomingSlab (H.time last) s) :
+    SigmaCompactSpace (H.backwardSurvivorIncomingDomain first last hle G) :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel
+      (H.backwardSurvivorIncomingDomain first last hle G).isOpen)
+private local instance (H : ObservedHistory.{u})
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last) {s : ℝ}
+    (G : (H.stage last).IncomingSlab (H.time last) s) (K : Set G.terminalRegularOpen) :
+    SigmaCompactSpace (H.backwardSurvivorIncomingFootprint first last hle G K) :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel
+      (H.backwardSurvivorIncomingFootprint first last hle G K).isOpen)
+
+theorem exists_historical_localPullback_solution_from_incoming_slab
+    (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (K : Set G.terminalRegularOpen)
+    (htrace : ∀ y ∈ K, Nonempty (BackwardPointTrace H first last hle y.val))
+    (F : M → G.terminalRegularOpen) (hF : IsLocalDiffeomorph I ThreeModel ∞ F)
+    (hinside : ∀ z : M, F z ∈ interior K)
+    {Q θ : ℝ} (hQ : 0 < Q) (hθ : 0 ≤ θ) (hstart : H.time first ≤ s - θ / Q) :
+    ∃ (Ψ : M → H.backwardSurvivorIncomingFootprint first last hle G K)
+      (hΨ : IsLocalDiffeomorph I ThreeModel ∞ Ψ)
+      (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+        (H.backwardSurvivorIncomingFootprint first last hle G K))
+      (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed (-θ) 0 (neg_nonpos.mpr hθ))),
+      Ψ = H.backwardSurvivorIncomingFootprintLift first last hle G K htrace F hinside ∧
+      H.backwardSurvivorIncomingFootprintMap first last hle G K ∘ Ψ = F ∧
+      IsSolutionOn S ∧ S.base.metric 0 = localPullMetric (scaleMetric Q hQ L.metric) F hF ∧
+      (∀ t, S.base.metric t = localPullMetric (scaleMetric Q hQ (gflow (s + t / Q))) Ψ hΨ) ∧
+      (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+        ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+          gflow t = ((H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+            (H.backwardSurvivorIncomingDomain first last hle G)).restrictOpen
+              (H.backwardSurvivorIncomingFootprint first last hle G K)) ∧
+      (∀ t ∈ Icc (H.time last) s,
+        gflow t = (H.backwardSurvivorIncomingMetric first last hle G L t).restrictOpen
+          (H.backwardSurvivorIncomingFootprint first last hle G K)) ∧
+      gflow s = localPullMetric L.metric (H.backwardSurvivorIncomingFootprintMap first last hle G K)
+        (H.backwardSurvivorIncomingFootprintMap_isLocalDiffeomorph first last hle G K) := by
+  obtain ⟨gflow, hslabs, hlast, hterminal, _, hsol⟩ :=
+    H.exists_backwardSurvivorIncomingFootprint_isSolutionOn first last hle G L hinit K
+  let Ψ := H.backwardSurvivorIncomingFootprintLift first last hle G K htrace F hinside
+  have hΨ : IsLocalDiffeomorph I ThreeModel ∞ Ψ :=
+    H.backwardSurvivorIncomingFootprintLift_isLocalDiffeomorph first last hle G K htrace F hinside hF
+  let D := RealTimeInterval.closed (H.time first) s
+    ((H.time_strictMono.monotone hle).trans G.lt.le)
+  let T : SolutionOn (I := ThreeModel)
+      (M := H.backwardSurvivorIncomingFootprint first last hle G K) D := { base.metric := gflow }
+  let U := T.parabolicClosedWindow s Q θ hQ hθ
+  have hU : IsSolutionOn U := isSolutionOn_parabolicClosedWindow T hsol hQ hθ
+    (fun t ht => ⟨hstart.trans ht.1, ht.2⟩)
+    (fun t ht => ⟨hstart.trans_lt ht.1, ht.2⟩)
+  let S := U.localPullback Ψ hΨ
+  refine ⟨Ψ, hΨ, gflow, S, rfl, rfl, hU.localPullback Ψ hΨ, ?_, fun _ => rfl,
+    hslabs, hlast, hterminal⟩
+  change localPullMetric (scaleMetric Q hQ (gflow (s + 0 / Q))) Ψ hΨ = _
+  rw [zero_div, add_zero, DifferentialGeometry.localPullMetric_scaleMetric]
+  rw [H.localPullMetric_backwardSurvivorIncomingFootprintLift_terminal
+    first last hle G K htrace F hinside L hF gflow hterminal]
+  exact (DifferentialGeometry.localPullMetric_scaleMetric L.metric F hF Q hQ).symm
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
