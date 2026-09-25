@@ -45,70 +45,10 @@ theorem SpatialNeck.exists_diffeomorph_graph_in_product_chart
         ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O) (Φ.symm y) ≤ η) :
     ∃ (ψ : N ≃ₘ⟮J, I2⟯ Sphere 2) (a : N → ℝ), ContMDiff J 𝓘(ℝ) ∞ a ∧
       ∀ z : N, (Φ.symm ⟨nk.map (ψ z, s), himage (ψ z)⟩).val = (z, a z) := by
-  let f : Sphere 2 → M := fun q => nk.map (q, s)
-  have hfm (q : Sphere 2) : f q ∈ V := himage q
-  let fV : Sphere 2 → V := fun q => ⟨f q, hfm q⟩
-  have hf : IsSmoothEmbedding I2 I3 ∞ f := nk.isSmoothEmbedding_level (abs_lt.mpr hs)
-  have hfV : IsSmoothEmbedding I2 I3 ∞ fV :=
-    DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen I2 I3 V fV hf
-  let e : Sphere 2 → O := Φ.symm ∘ fV
-  have he : IsSmoothEmbedding I2 (J.prod 𝓘(ℝ)) ∞ e := by
-    have hec : ContMDiff I2 (J.prod 𝓘(ℝ)) ∞ e := Φ.symm.contMDiff.comp hfV.contMDiff
-    refine ⟨DifferentialGeometry.Topology.Manifold.isImmersion_of_injective_mfderiv
-      (by decide) hec ?_,
-      (hec.continuous.isClosedEmbedding (Φ.symm.injective.comp hfV.isEmbedding.injective)).isEmbedding⟩
-    intro q
-    rw [mfderiv_comp q (Φ.symm.contMDiff.mdifferentiableAt (by decide))
-      (hfV.contMDiff.mdifferentiableAt (by decide))]
-    exact (Φ.symm.mfderivToContinuousLinearEquiv (by decide) (fV q)).injective.comp
-      (KappaSolutions.immersionAt_mfderiv_injective (hfV.isImmersion.isImmersionAt q))
-  let G := Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ
-  have hpoint (q : Sphere 2) : Φ (e q) = fV q := Φ.apply_symm_apply (fV q)
-  have hdf (q : Sphere 2) : mfderiv I2 I3 fV q = mfderiv I2 I3 f q := by
-    exact (DifferentialGeometry.mfderiv_subtypeVal_comp fV q).symm
-  have hcomp (q : Sphere 2) (v : TangentSpace I2 q) :
-      mfderiv (J.prod 𝓘(ℝ)) I3 Φ (e q) (mfderiv I2 (J.prod 𝓘(ℝ)) e q v) =
-        mfderiv I2 I3 f q v := by
-    have hc := mfderiv_comp_apply q
-      (Φ.contMDiff.mdifferentiableAt (by decide))
-      (he.contMDiff.mdifferentiableAt (by decide)) v
-    have heq : (Φ : O → V) ∘ e = fV := funext hpoint
-    rw [heq, hdf] at hc
-    exact hc.symm
-  have hinner (q : Sphere 2) (v w : TangentSpace I2 q) :
-      G.inner (e q) (mfderiv I2 (J.prod 𝓘(ℝ)) e q v)
-        (mfderiv I2 (J.prod 𝓘(ℝ)) e q w) =
-      g.inner (f q) (mfderiv I2 I3 f q v) (mfderiv I2 I3 f q w) := by
-    rw [Diffeomorph.pullbackMetricCross_inner, hcomp, hcomp]
-    change g.inner ((Φ (e q)).val) _ _ = _
-    rw [hpoint]
-  have hRm (q : Sphere 2) (u v : TangentSpace I2 q) :
-      metricRm04StandardAt G (e q)
-        (mfderiv I2 (J.prod 𝓘(ℝ)) e q u) (mfderiv I2 (J.prod 𝓘(ℝ)) e q v)
-        (mfderiv I2 (J.prod 𝓘(ℝ)) e q v) (mfderiv I2 (J.prod 𝓘(ℝ)) e q u) =
-      metricRm04StandardAt g (f q)
-        (mfderiv I2 I3 f q u) (mfderiv I2 I3 f q v)
-        (mfderiv I2 I3 f q v) (mfderiv I2 I3 f q u) := by
-    have hp := metricRm04Standard_pullbackCross (g.restrictOpen V) Φ (e q)
-      (mfderiv I2 (J.prod 𝓘(ℝ)) e q u) (mfderiv I2 (J.prod 𝓘(ℝ)) e q v)
-      (mfderiv I2 (J.prod 𝓘(ℝ)) e q v) (mfderiv I2 (J.prod 𝓘(ℝ)) e q u)
-    have hr := metricRm04StandardAt_restrictOpen g V (Φ (e q))
-      (mfderiv (J.prod 𝓘(ℝ)) I3 Φ (e q) (mfderiv I2 (J.prod 𝓘(ℝ)) e q u))
-      (mfderiv (J.prod 𝓘(ℝ)) I3 Φ (e q) (mfderiv I2 (J.prod 𝓘(ℝ)) e q v))
-      (mfderiv (J.prod 𝓘(ℝ)) I3 Φ (e q) (mfderiv I2 (J.prod 𝓘(ℝ)) e q v))
-      (mfderiv (J.prod 𝓘(ℝ)) I3 Φ (e q) (mfderiv I2 (J.prod 𝓘(ℝ)) e q u))
-    simp only [mfderiv_subtype_val_apply] at hr
-    have hh := hp.trans hr
-    erw [hcomp, hcomp, hpoint] at hh
-    exact hh
-  obtain ⟨ψ, a, ha, hgraph⟩ :=
-    exists_diffeomorph_graph_of_tangent_sectional_lower_bound_in_open_product
-      h O G e he (by simpa using hdim.symm) (by simp) hη hsmallη
-      (fun q m hm => hsmall (fV q) (mem_range_self q) m hm) (by
-        intro q u v
-        rw [hinner, hinner, hinner, hRm]
-        exact nk.metricRm04_section_lower_bound heps hs q u v)
-  exact ⟨ψ, a, ha, hgraph⟩
+  exact exists_diffeomorph_graph_of_tangent_sectional_lower_bound_in_product_chart
+    (fun q : Sphere 2 => nk.map (q, s)) (nk.isSmoothEmbedding_level (abs_lt.mpr hs))
+    h (by simpa using hdim.symm) (by simp) O V Φ himage hη hsmallη hsmall
+    (fun q u v => nk.metricRm04_section_lower_bound heps hs q u v)
 
 theorem SpatialNeck.interior_eq_empty_of_frontier_in_product_chart
     (nk : SpatialNeck g eps p) (heps : eps ≤ 1 / 1000)
@@ -124,19 +64,10 @@ theorem SpatialNeck.interior_eq_empty_of_frontier_in_product_chart
         ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O)
         ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O) (Φ.symm y) ≤ η) :
     interior K = ∅ := by
-  have himage (q : Sphere 2) : nk.map (q, s) ∈ V :=
-    hKV (hK.isClosed.frontier_subset (hfront.symm ▸ mem_range_self q))
-  obtain ⟨ψ, a, _, hgraph⟩ := nk.exists_diffeomorph_graph_in_product_chart heps hs h hdim
-    O V Φ himage hη hsmallη (fun y hy => hsmall y (hfront.symm ▸ hy))
-  apply DifferentialGeometry.Topology.interior_eq_empty_of_frontier_graph_in_opens_product_chart
-    O V Φ.toHomeomorph hK hKV a
-  intro y hy
-  obtain ⟨q, hq⟩ := hfront ▸ hy
-  have hyq : y = ⟨nk.map (q, s), himage q⟩ := Subtype.ext hq.symm
-  rw [hyq]
-  refine ⟨ψ.symm q, ?_⟩
-  change (ψ.symm q, a (ψ.symm q)) = (Φ.symm ⟨nk.map (q, s), himage q⟩).val
-  simpa only [ψ.apply_symm_apply] using (hgraph (ψ.symm q)).symm
+  exact interior_eq_empty_of_frontier_sectional_lower_bound_in_product_chart
+    (fun q : Sphere 2 => nk.map (q, s)) (nk.isSmoothEmbedding_level (abs_lt.mpr hs))
+    h (by simpa using hdim.symm) (by simp) O V Φ hK hKV hfront hη hsmallη hsmall
+    (fun q u v => nk.metricRm04_section_lower_bound heps hs q u v)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

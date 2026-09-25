@@ -606,4 +606,199 @@ theorem exists_cutoff_protection_tolerance_of_ricci_lower_bound
   obtain ⟨j, hj⟩ := mem_iUnion.mp hm
   exact Set.disjoint_left.mp (hdis j) (mem_image_of_mem Subtype.val hw) hj
 
+
+section
+
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
+
+theorem MetricCutCapEvent.exists_survivor_partialDiffeomorph_or_discarded_of_isPreconnected
+    (E : MetricCutCapEvent P Q a s) (hOld : E.old = E.transition.trace.retainedCore)
+    {K : Set E.incoming.terminalRegularOpen} (hK : IsPreconnected K)
+    (hcore : ∀ x ∈ K, x.val ∈ interior E.transition.trace.tubes.core) :
+    (∃ F : PartialDiffeomorph ThreeModel ThreeModel
+        E.incoming.terminalRegularOpen Q.Carrier ∞,
+      K ⊆ F.source ∧
+      (∀ y ∈ F.source, E.RegularCrossing y.val (F y)) ∧
+      (∀ z : E.old, E.oldTerminal z ∈ F.source → F (E.oldTerminal z) = E.oldOutput z) ∧
+      ∀ y ∈ F.source, ∀ v w : TangentSpace ThreeModel y,
+        E.outputMetric.inner (F y) (mfderiv ThreeModel ThreeModel (F : _ → _) y v)
+          (mfderiv ThreeModel ThreeModel (F : _ → _) y w) = E.terminal.metric.inner y v w) ∨
+    ∀ x ∈ K, ∃ z : E.transition.trace.tubes.core, z.val = x.val ∧
+      ∃ d : E.discarded.Carrier,
+        E.transition.trace.presentation (E.transition.trace.capping.coreInclusion z) = Sum.inr d := by
+  classical
+  by_cases hc : ∃ x ∈ K, ∃ q : Q.Carrier, E.RegularCrossing x.val q
+  · obtain ⟨x, hx, q, hcross⟩ := hc
+    have hKold := E.subset_interior_old_of_isPreconnected hOld hK hcore hx hcross
+    let W : TopologicalSpace.Opens E.incoming.terminalRegularOpen :=
+      ⟨{y | y.val ∈ interior (Subtype.val '' E.old)},
+        isOpen_interior.preimage continuous_subtype_val⟩
+    obtain ⟨F, hsource, hcrossF, hold, hmetric⟩ :=
+      E.exists_survivor_partialDiffeomorph W ⟨x, hKold x hx⟩ (fun _ hy => hy)
+    left
+    refine ⟨F, ?_, ?_, ?_, ?_⟩
+    · rw [hsource]
+      exact hKold
+    · intro y hy
+      apply hcrossF y
+      rwa [hsource] at hy
+    · intro z hz
+      apply hold z
+      rwa [hsource] at hz
+    · intro y hy
+      apply hmetric y
+      rwa [hsource] at hy
+  · right
+    intro x hx
+    let z : E.transition.trace.tubes.core := ⟨x.val, interior_subset (hcore x hx)⟩
+    refine ⟨z, rfl, ?_⟩
+    cases heq : E.transition.trace.presentation (E.transition.trace.capping.coreInclusion z) with
+    | inr d => exact ⟨d, rfl⟩
+    | inl q =>
+      have hz : z ∈ E.transition.trace.retainedCore := ⟨q, heq⟩
+      have hxold : x.val ∈ interior (Subtype.val '' E.transition.trace.retainedCore) :=
+        DifferentialGeometry.Topology.mem_interior_image_val_of_isOpen
+          E.transition.trace.isClopen_retainedCore.isOpen hz (hcore x hx)
+      obtain ⟨w, _, hw, _⟩ := E.exists_oldTerminal_eq_of_mem_interior_retained hOld x hxold
+      exact (hc ⟨x, hx, E.oldOutput w, hw⟩).elim
+
+
+end
+
+
+theorem exists_cutoff_cap_survivor_partialDiffeomorph_or_discarded_tolerance
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (H.event i).old = (H.event i).transition.trace.retainedCore →
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (epsb : ℝ) (pb : (H.event i).incoming.terminalRegularOpen)
+        (boundary : SpatialNeck (H.event i).terminal.metric epsb pb),
+        epsb ≤ 1 / 1000 → ∀ s ∈ Ioo (-epsb⁻¹) epsb⁻¹,
+        ∀ (L K : Set (H.event i).incoming.terminalRegularOpen), L ⊆ K → IsCompact L →
+          IsPreconnected K → (interior L).Nonempty →
+          frontier L = range (fun z : Sphere 2 => boundary.map (z, s)) →
+          ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+            c * q ≤ metricScalarAt (H.event i).terminal.metric pb →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤
+                ENNReal.ofReal D) →
+            (∃ F : PartialDiffeomorph ThreeModel ThreeModel
+                (H.event i).incoming.terminalRegularOpen (H.stage i.succ).Carrier ∞,
+              K ⊆ F.source ∧
+              (∀ y ∈ F.source, (H.event i).RegularCrossing y.val (F y)) ∧
+              (∀ z : (H.event i).old, (H.event i).oldTerminal z ∈ F.source →
+                F ((H.event i).oldTerminal z) = (H.event i).oldOutput z) ∧
+              ∀ y ∈ F.source, ∀ v w : TangentSpace ThreeModel y,
+                (H.event i).outputMetric.inner (F y)
+                  (mfderiv ThreeModel ThreeModel (F : _ → _) y v)
+                  (mfderiv ThreeModel ThreeModel (F : _ → _) y w) =
+                    (H.event i).terminal.metric.inner y v w) ∨
+            ∀ x ∈ K, ∃ z : (H.event i).transition.trace.tubes.core, z.val = x.val ∧
+              ∃ d : (H.event i).discarded.Carrier,
+                (H.event i).transition.trace.presentation
+                  ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr d := by
+  obtain ⟨eta, heta, hsep⟩ := exists_cutoff_cap_separation_tolerance_of_subset hC hD hc
+  refine ⟨eta, heta, ?_⟩
+  intro H i parameters R hOld hδ epsb pb boundary hb s hs L K hLK hL hK hLi hfront
+    q hq hscalar hboundary hdiam
+  have hdis := hsep H i parameters R hδ epsb pb boundary hb s hs L K hLK hL hLi hfront
+    q hq hscalar hboundary hdiam
+  apply (H.event i).exists_survivor_partialDiffeomorph_or_discarded_of_isPreconnected hOld hK
+  intro z hz
+  let T := (H.event i).transition.trace.tubes
+  let bands := ⋃ j, T.tube j '' {w : TubeDomain | w.2.val ∈ Icc (-1 : ℝ) 1}
+  have hopen : IsOpen bandsᶜ := T.isCompact_iUnion_closedBand.isClosed.isOpen_compl
+  have hsub : bandsᶜ ⊆ T.core := by
+    intro w hw
+    change w ∉ ⋃ j, T.removedBand j
+    intro hm
+    obtain ⟨j, a, ha, heq⟩ := mem_iUnion.mp hm
+    exact hw (mem_iUnion.mpr ⟨j, a, ⟨ha.1.le, ha.2.le⟩, heq⟩)
+  apply interior_maximal hsub hopen
+  intro hm
+  obtain ⟨j, hj⟩ := mem_iUnion.mp hm
+  exact Set.disjoint_left.mp (hdis j) (mem_image_of_mem Subtype.val hz) hj
+
+
+theorem exists_cutoff_cap_survivor_partialDiffeomorph_or_discarded_tolerance_of_sectional_lower_bound
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount)
+      (parameters : CutoffParameters) (R : GeometricCutoffRecord H i parameters),
+      (H.event i).old = (H.event i).transition.trace.retainedCore →
+      (∀ j, R.delta j ≤ eta) →
+      ∀ (f : Sphere 2 → (H.event i).incoming.terminalRegularOpen),
+        IsSmoothEmbedding I2 ThreeModel ∞ f →
+        ∀ (L K : Set (H.event i).incoming.terminalRegularOpen), L ⊆ K → IsCompact L →
+          IsPreconnected K → (interior L).Nonempty → frontier L = range f →
+          ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt (H.event i).terminal.metric x ≤ C * q) →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (scaleMetric q hq (H.event i).terminal.metric) x y ≤
+                ENNReal.ofReal D) →
+            (∀ (z : Sphere 2) (u v : TangentSpace I2 z),
+              (c * q) * ((H.event i).terminal.metric.inner (f z)
+                (mfderiv I2 ThreeModel f z u) (mfderiv I2 ThreeModel f z u) *
+                (H.event i).terminal.metric.inner (f z)
+                  (mfderiv I2 ThreeModel f z v) (mfderiv I2 ThreeModel f z v) -
+                ((H.event i).terminal.metric.inner (f z)
+                  (mfderiv I2 ThreeModel f z u) (mfderiv I2 ThreeModel f z v)) ^ 2) ≤
+              metricRm04StandardAt (H.event i).terminal.metric (f z)
+                (mfderiv I2 ThreeModel f z u) (mfderiv I2 ThreeModel f z v)
+                (mfderiv I2 ThreeModel f z v) (mfderiv I2 ThreeModel f z u)) →
+            (∃ F : PartialDiffeomorph ThreeModel ThreeModel
+                (H.event i).incoming.terminalRegularOpen (H.stage i.succ).Carrier ∞,
+              K ⊆ F.source ∧
+              (∀ y ∈ F.source, (H.event i).RegularCrossing y.val (F y)) ∧
+              (∀ z : (H.event i).old, (H.event i).oldTerminal z ∈ F.source →
+                F ((H.event i).oldTerminal z) = (H.event i).oldOutput z) ∧
+              ∀ y ∈ F.source, ∀ v w : TangentSpace ThreeModel y,
+                (H.event i).outputMetric.inner (F y)
+                  (mfderiv ThreeModel ThreeModel (F : _ → _) y v)
+                  (mfderiv ThreeModel ThreeModel (F : _ → _) y w) =
+                    (H.event i).terminal.metric.inner y v w) ∨
+            ∀ x ∈ K, ∃ z : (H.event i).transition.trace.tubes.core, z.val = x.val ∧
+              ∃ d : (H.event i).discarded.Carrier,
+                (H.event i).transition.trace.presentation
+                  ((H.event i).transition.trace.capping.coreInclusion z) = Sum.inr d := by
+  obtain ⟨eta, heta, hsep⟩ := exists_neck_cap_separation_tolerance_of_frontier_sectional_lower_bound hC hD hc
+  refine ⟨min eta (1 / 12), lt_min heta (by norm_num), ?_⟩
+  intro H i parameters R hOld hδ f hf L K hLK hL hK hLi hfront q hq hscalar hdiam hsec
+  have hdis (j) : Disjoint (Subtype.val '' K)
+      ((H.event i).transition.trace.tubes.tube j ''
+        {z : TubeDomain | z.2.val ∈ Icc (-1 : ℝ) 1}) := by
+    have hsmall : R.delta j < 1 / 11 :=
+      ((hδ j).trans (min_le_right _ _)).trans_lt (by norm_num)
+    have hk : ⌈(R.delta j)⁻¹⌉₊ ≤ R.order j := by
+      have hh := Nat.ceil_le_floor_add_one ((R.delta j)⁻¹)
+      have horder := (le_max_right (parameters.modelOrder + 6)
+        (2 * ⌊(R.delta j)⁻¹⌋₊ + 4)).trans (R.order_lower j)
+      omega
+    obtain ⟨cut, _, hmap⟩ := (R.neck j).exists_spatialNeck le_rfl hsmall hk
+    have hdis := hsep _ (H.event i).terminal.metric (R.delta j) (R.neck j).center
+      ((hδ j).trans (min_le_left _ _)) cut f hf L K hLK hL hLi hfront q hq hscalar hdiam hsec
+    apply Set.disjoint_left.mpr
+    rintro y ⟨x, hx, rfl⟩ ⟨z, hz, heq⟩
+    have hNx : (R.neck j).chart ⟨(z.1, z.2.val), R.tube_in_buffer j z⟩ = x :=
+      Subtype.ext ((R.tube_eq j z (R.tube_in_buffer j z)).symm.trans heq)
+    apply Set.disjoint_left.mp hdis hx
+    refine ⟨(z.1, z.2.val), ⟨mem_univ _, hz⟩, ?_⟩
+    exact (hmap ⟨(z.1, z.2.val), R.tube_in_buffer j z⟩).trans hNx
+  apply (H.event i).exists_survivor_partialDiffeomorph_or_discarded_of_isPreconnected hOld hK
+  intro z hz
+  let T := (H.event i).transition.trace.tubes
+  let bands := ⋃ j, T.tube j '' {w : TubeDomain | w.2.val ∈ Icc (-1 : ℝ) 1}
+  have hopen : IsOpen bandsᶜ := T.isCompact_iUnion_closedBand.isClosed.isOpen_compl
+  have hsub : bandsᶜ ⊆ T.core := by
+    intro w hw
+    change w ∉ ⋃ j, T.removedBand j
+    intro hm
+    obtain ⟨j, a, ha, heq⟩ := mem_iUnion.mp hm
+    exact hw (mem_iUnion.mpr ⟨j, a, ⟨ha.1.le, ha.2.le⟩, heq⟩)
+  apply interior_maximal hsub hopen
+  intro hm
+  obtain ⟨j, hj⟩ := mem_iUnion.mp hm
+  exact Set.disjoint_left.mp (hdis j) (mem_image_of_mem Subtype.val hz) hj
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

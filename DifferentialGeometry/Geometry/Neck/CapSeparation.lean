@@ -289,4 +289,130 @@ theorem exists_neck_separation_tolerance_of_ricci_lower_bound
   exact cut.disjoint_unit_slab_of_ricci_lower_bound hq hC hD (by linarith)
     hscalar hdiam hz hRic hfit hsmall
 
+
+section
+
+open DifferentialGeometry.CheegerGromovCompactness
+
+theorem SpatialNeck.interior_eq_empty_of_frontier_sectional_lower_bound
+    (cut : SpatialNeck g eps p)
+    (f : Sphere 2 → M) (hf : IsSmoothEmbedding I2 I3 ∞ f)
+    {K : Set M} (hK : IsCompact K)
+    (hcapture : K ⊆ cut.cylindricalChart.target) (hfront : frontier K = range f)
+    {b : ℝ} (hsmall : 720 * eps < b / metricScalarAt g p)
+    (hsec : ∀ (z : Sphere 2) (u v : TangentSpace I2 z),
+      b * (g.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z u) *
+        g.inner (f z) (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z v) -
+        (g.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)) ^ 2) ≤
+      metricRm04StandardAt g (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)
+        (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z u)) : interior K = ∅ := by
+  let h := DifferentialGeometry.scaleMetric 2 (by norm_num)
+    (Geometry.roundMetric (E := ThreeSpace) (n := 2))
+  have hprod : Geometry.Metric.roundCylinderMetric (E := ThreeSpace) (n := 2) =
+      h.prod (euclideanMetric (E := ℝ)) := rfl
+  let Q := metricScalarAt g p
+  let gQ := DifferentialGeometry.scaleMetric Q cut.Q_pos g
+  have heps : eps ≤ 1 / 4 := cut.eps_small.le.trans (by norm_num)
+  apply interior_eq_empty_of_frontier_sectional_lower_bound_in_product_chart
+    (g := gQ) f hf h (by simp) (by simp) cut.cylindricalChart.domain cut.cylindricalChart.target
+    cut.cylindricalChart.chart hK hcapture hfront heps hsmall
+  · intro y _ m hm
+    have hh := cut.cylindricalChart_metricCloseOn
+      (cut.cylindricalChart.chart.symm y) (mem_univ _) m hm
+    rw [hprod] at hh
+    exact hh
+  · intro z u v
+    change (b / Q) *
+      (gQ.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z u) *
+        gQ.inner (f z) (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z v) -
+        (gQ.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)) ^ 2) ≤ _
+    simp only [gQ, scaleMetric_inner, metricRmStandard_scale]
+    have hQ : Q ≠ 0 := cut.Q_pos.ne'
+    have heq (a d e : ℝ) : (b / Q) * (Q * a * (Q * d) - (Q * e) ^ 2) =
+        Q * (b * (a * d - e ^ 2)) := by field_simp
+    rw [heq]
+    exact mul_le_mul_of_nonneg_left (hsec z u v) cut.Q_pos.le
+
+theorem SpatialNeck.disjoint_unit_slab_of_frontier_sectional_lower_bound
+    (cut : SpatialNeck g eps p)
+    (f : Sphere 2 → M) (hf : IsSmoothEmbedding I2 I3 ∞ f)
+    {L K : Set M} (hLK : L ⊆ K) (hL : IsCompact L) (hinterior : (interior L).Nonempty)
+    (hfront : frontier L = range f)
+    {q C D c : ℝ} (hq : 0 < q) (hC : 0 < C) (hD : 0 ≤ D)
+    (heps : 4323 * eps ≤ 1 / 2)
+    (hscalar : ∀ x ∈ K, metricScalarAt g x ≤ C * q)
+    (hdiam : ∀ x ∈ K, ∀ y ∈ K,
+      riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D)
+    (hfit : 2 * (15 + Real.sqrt (2 * C) * D) < eps⁻¹)
+    (hsmall : 1440 * C * eps < c)
+    (hsec : ∀ (z : Sphere 2) (u v : TangentSpace I2 z),
+      (c * q) * (g.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z u) *
+        g.inner (f z) (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z v) -
+        (g.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)) ^ 2) ≤
+      metricRm04StandardAt g (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)
+        (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z u)) :
+    Disjoint K (cut.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  apply disjoint_iff_inter_eq_empty.mpr
+  apply Set.eq_empty_iff_forall_notMem.mpr
+  intro x hx
+  obtain ⟨hQ, hcapture⟩ := cut.set_subset_image_slab_of_intersects_unit_slab
+    hq hC hD heps hscalar hdiam ⟨x, hx⟩ hfit
+  have htarget : K ⊆ cut.cylindricalChart.target := by
+    apply hcapture.trans
+    change cut.map '' _ ⊆ cut.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹)
+    apply image_mono
+    intro z hz
+    exact ⟨hz.1, by constructor <;> linarith [hz.2.1, hz.2.2]⟩
+  have hratio : 720 * eps < c * q / metricScalarAt g p := by
+    apply (lt_div_iff₀ cut.Q_pos).mpr
+    have hmul := mul_le_mul_of_nonneg_left hQ
+      (by have := cut.eps_pos; positivity : 0 ≤ 720 * eps)
+    have hstrict := mul_lt_mul_of_pos_right hsmall hq
+    nlinarith
+  have hempty := cut.interior_eq_empty_of_frontier_sectional_lower_bound
+    f hf hL (hLK.trans htarget) hfront hratio hsec
+  exact Set.not_nonempty_empty (hempty ▸ hinterior)
+
+omit [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M] in
+theorem exists_neck_cap_separation_tolerance_of_frontier_sectional_lower_bound
+    {C D c : ℝ} (hC : 0 < C) (hD : 0 ≤ D) (hc : 0 < c) :
+    ∃ eta : ℝ, 0 < eta ∧
+      ∀ (M : Type*) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+        [IsManifold I3 ∞ M] [T2Space M] (g : SmoothRiemannianMetric I3 M)
+        (eps : ℝ) (p : M), eps ≤ eta → ∀ cut : SpatialNeck g eps p,
+        ∀ (f : Sphere 2 → M), IsSmoothEmbedding I2 I3 ∞ f →
+        ∀ (L K : Set M), L ⊆ K → IsCompact L → (interior L).Nonempty →
+          frontier L = range f → ∀ (q : ℝ) (hq : 0 < q),
+            (∀ x ∈ K, metricScalarAt g x ≤ C * q) →
+            (∀ x ∈ K, ∀ y ∈ K,
+              riemannianEDistOf (DifferentialGeometry.scaleMetric q hq g) x y ≤ ENNReal.ofReal D) →
+            (∀ (z : Sphere 2) (u v : TangentSpace I2 z),
+              (c * q) * (g.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z u) *
+                g.inner (f z) (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z v) -
+                (g.inner (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)) ^ 2) ≤
+              metricRm04StandardAt g (f z) (mfderiv I2 I3 f z u) (mfderiv I2 I3 f z v)
+                (mfderiv I2 I3 f z v) (mfderiv I2 I3 f z u)) →
+            Disjoint K (cut.map '' (univ ×ˢ Icc (-1 : ℝ) 1)) := by
+  let R := 2 * (15 + Real.sqrt (2 * C) * D)
+  have hR : 0 < R := by dsimp [R]; positivity
+  let eta := min (1 / 10000) (min ((2 * R)⁻¹) (c / (2880 * C)))
+  have heta : 0 < eta := by dsimp [eta]; positivity
+  refine ⟨eta, heta, ?_⟩
+  intro M _ _ _ _ g eps p heps cut f hf L K hLK hL hLi hfront q hq hscalar hdiam hsec
+  have hepsbound : eps ≤ 1 / 10000 := heps.trans (min_le_left _ _)
+  have hepsR : eps ≤ (2 * R)⁻¹ := heps.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have hepsc : eps ≤ c / (2880 * C) := heps.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hfit : R < eps⁻¹ := by
+    have hh := inv_anti₀ cut.eps_pos hepsR
+    rw [inv_inv] at hh
+    linarith
+  have hsmall : 1440 * C * eps < c := by
+    have hh := (le_div_iff₀ (by positivity : 0 < 2880 * C)).mp hepsc
+    nlinarith
+  exact cut.disjoint_unit_slab_of_frontier_sectional_lower_bound f hf hLK hL hLi hfront
+    hq hC hD (by linarith) hscalar hdiam hfit hsmall hsec
+
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

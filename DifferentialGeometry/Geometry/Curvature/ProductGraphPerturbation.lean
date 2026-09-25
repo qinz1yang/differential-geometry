@@ -1,3 +1,9 @@
+import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
+import DifferentialGeometry.Topology.GraphBandChart
+import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
+import DifferentialGeometry.Geometry.Curvature.Naturality.OpenRestriction
+import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
 import DifferentialGeometry.Geometry.Metric.Construction.OpenExtension
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Locality
 import DifferentialGeometry.Geometry.Curvature.Naturality.MetricLocality
@@ -248,5 +254,139 @@ theorem interior_eq_empty_of_frontier_sectional_lower_bound_in_open_product
   rw [hfront]
   rintro _ ⟨x, rfl⟩
   exact ⟨η.symm x, by simpa only [η.apply_symm_apply, Function.comp_apply] using (hgraph (η.symm x)).symm⟩
+
+end DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.Geometry.Curvature
+open _root_.Manifold (IsSmoothEmbedding)
+open CheegerGromovCompactness
+variable {E₀ H₀ M : Type*} [NormedAddCommGroup E₀] [NormedSpace ℝ E₀]
+  [FiniteDimensional ℝ E₀] [TopologicalSpace H₀] {I₀ : ModelWithCorners ℝ E₀ H₀}
+  [TopologicalSpace M] [ChartedSpace H₀ M]
+  [IsManifold I₀ ∞ M] [T2Space M] {g : SmoothRiemannianMetric I₀ M}
+  {E F H H' : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace H']
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
+  [I.Boundaryless] [J.Boundaryless]
+  {A : Type*} [TopologicalSpace A] [ChartedSpace H A] [IsManifold I ∞ A]
+  [CompactSpace A] [ConnectedSpace A]
+  {N : Type*} [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+  [T2Space N] [ConnectedSpace N] [SigmaCompactSpace N]
+
+theorem exists_diffeomorph_graph_of_tangent_sectional_lower_bound_in_product_chart
+    (f : A → M) (hf : IsSmoothEmbedding I I₀ ∞ f)
+    (h : SmoothRiemannianMetric J N) (hdim : Module.finrank ℝ E = Module.finrank ℝ F)
+    (hdim2 : 1 < Module.finrank ℝ E)
+    (O : TopologicalSpace.Opens (N × ℝ)) (V : TopologicalSpace.Opens M)
+    (Φ : O ≃ₘ⟮J.prod 𝓘(ℝ), I₀⟯ V) (himage : ∀ q : A, f q ∈ V)
+    {η c : ℝ} (hη : η ≤ 1 / 4) (hsmallη : 720 * η < c)
+    (hsmall : ∀ y : V, y.val ∈ range f → ∀ m : ℕ, m ≤ 2 →
+      metricDerivNorm m (Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ)
+        ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O)
+        ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O) (Φ.symm y) ≤ η)
+    (hsec : ∀ (q : A) (u v : TangentSpace I q),
+      c * (g.inner (f q) (mfderiv I I₀ f q u) (mfderiv I I₀ f q u) *
+        g.inner (f q) (mfderiv I I₀ f q v) (mfderiv I I₀ f q v) -
+        (g.inner (f q) (mfderiv I I₀ f q u) (mfderiv I I₀ f q v)) ^ 2) ≤
+      metricRm04StandardAt g (f q) (mfderiv I I₀ f q u) (mfderiv I I₀ f q v)
+        (mfderiv I I₀ f q v) (mfderiv I I₀ f q u)) :
+    ∃ (ψ : N ≃ₘ⟮J, I⟯ A) (a : N → ℝ), ContMDiff J 𝓘(ℝ) ∞ a ∧
+      ∀ z : N, (Φ.symm ⟨f (ψ z), himage (ψ z)⟩).val = (z, a z) := by
+  have hfm (q : A) : f q ∈ V := himage q
+  let fV : A → V := fun q => ⟨f q, hfm q⟩
+  have hfV : IsSmoothEmbedding I I₀ ∞ fV :=
+    DifferentialGeometry.Topology.Manifold.isSmoothEmbedding_intoOpen I I₀ V fV hf
+  let e : A → O := Φ.symm ∘ fV
+  have he : IsSmoothEmbedding I (J.prod 𝓘(ℝ)) ∞ e := by
+    have hec : ContMDiff I (J.prod 𝓘(ℝ)) ∞ e := Φ.symm.contMDiff.comp hfV.contMDiff
+    refine ⟨DifferentialGeometry.Topology.Manifold.isImmersion_of_injective_mfderiv
+      (by decide) hec ?_,
+      (hec.continuous.isClosedEmbedding (Φ.symm.injective.comp hfV.isEmbedding.injective)).isEmbedding⟩
+    intro q
+    rw [mfderiv_comp q (Φ.symm.contMDiff.mdifferentiableAt (by decide))
+      (hfV.contMDiff.mdifferentiableAt (by decide))]
+    exact (Φ.symm.mfderivToContinuousLinearEquiv (by decide) (fV q)).injective.comp
+      ((hfV.isImmersion.isImmersionAt q).injective_mfderiv (by simp))
+  let G := Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ
+  have hpoint (q : A) : Φ (e q) = fV q := Φ.apply_symm_apply (fV q)
+  have hdf (q : A) : mfderiv I I₀ fV q = mfderiv I I₀ f q := by
+    exact (DifferentialGeometry.mfderiv_subtypeVal_comp fV q).symm
+  have hcomp (q : A) (v : TangentSpace I q) :
+      mfderiv (J.prod 𝓘(ℝ)) I₀ Φ (e q) (mfderiv I (J.prod 𝓘(ℝ)) e q v) =
+        mfderiv I I₀ f q v := by
+    have hc := mfderiv_comp_apply q
+      (Φ.contMDiff.mdifferentiableAt (by decide))
+      (he.contMDiff.mdifferentiableAt (by decide)) v
+    have heq : (Φ : O → V) ∘ e = fV := funext hpoint
+    rw [heq, hdf] at hc
+    exact hc.symm
+  have hinner (q : A) (v w : TangentSpace I q) :
+      G.inner (e q) (mfderiv I (J.prod 𝓘(ℝ)) e q v)
+        (mfderiv I (J.prod 𝓘(ℝ)) e q w) =
+      g.inner (f q) (mfderiv I I₀ f q v) (mfderiv I I₀ f q w) := by
+    rw [Diffeomorph.pullbackMetricCross_inner, hcomp, hcomp]
+    change g.inner ((Φ (e q)).val) _ _ = _
+    rw [hpoint]
+  have hRm (q : A) (u v : TangentSpace I q) :
+      metricRm04StandardAt G (e q)
+        (mfderiv I (J.prod 𝓘(ℝ)) e q u) (mfderiv I (J.prod 𝓘(ℝ)) e q v)
+        (mfderiv I (J.prod 𝓘(ℝ)) e q v) (mfderiv I (J.prod 𝓘(ℝ)) e q u) =
+      metricRm04StandardAt g (f q)
+        (mfderiv I I₀ f q u) (mfderiv I I₀ f q v)
+        (mfderiv I I₀ f q v) (mfderiv I I₀ f q u) := by
+    have hp := metricRm04Standard_pullbackCross (g.restrictOpen V) Φ (e q)
+      (mfderiv I (J.prod 𝓘(ℝ)) e q u) (mfderiv I (J.prod 𝓘(ℝ)) e q v)
+      (mfderiv I (J.prod 𝓘(ℝ)) e q v) (mfderiv I (J.prod 𝓘(ℝ)) e q u)
+    have hr := metricRm04StandardAt_restrictOpen g V (Φ (e q))
+      (mfderiv (J.prod 𝓘(ℝ)) I₀ Φ (e q) (mfderiv I (J.prod 𝓘(ℝ)) e q u))
+      (mfderiv (J.prod 𝓘(ℝ)) I₀ Φ (e q) (mfderiv I (J.prod 𝓘(ℝ)) e q v))
+      (mfderiv (J.prod 𝓘(ℝ)) I₀ Φ (e q) (mfderiv I (J.prod 𝓘(ℝ)) e q v))
+      (mfderiv (J.prod 𝓘(ℝ)) I₀ Φ (e q) (mfderiv I (J.prod 𝓘(ℝ)) e q u))
+    simp only [mfderiv_subtype_val_apply] at hr
+    have hh := hp.trans hr
+    erw [hcomp, hcomp, hpoint] at hh
+    exact hh
+  obtain ⟨ψ, a, ha, hgraph⟩ :=
+    exists_diffeomorph_graph_of_tangent_sectional_lower_bound_in_open_product
+      h O G e he hdim hdim2 hη hsmallη
+      (fun q m hm => hsmall (fV q) (mem_range_self q) m hm) (by
+        intro q u v
+        rw [hinner, hinner, hinner, hRm]
+        exact hsec q u v)
+  exact ⟨ψ, a, ha, hgraph⟩
+
+theorem interior_eq_empty_of_frontier_sectional_lower_bound_in_product_chart
+    (f : A → M) (hf : IsSmoothEmbedding I I₀ ∞ f)
+    (h : SmoothRiemannianMetric J N) (hdim : Module.finrank ℝ E = Module.finrank ℝ F)
+    (hdim2 : 1 < Module.finrank ℝ E)
+    (O : TopologicalSpace.Opens (N × ℝ)) (V : TopologicalSpace.Opens M)
+    (Φ : O ≃ₘ⟮J.prod 𝓘(ℝ), I₀⟯ V)
+    {K : Set M} (hK : IsCompact K) (hKV : K ⊆ V) (hfront : frontier K = range f)
+    {η c : ℝ} (hη : η ≤ 1 / 4) (hsmallη : 720 * η < c)
+    (hsmall : ∀ y : V, y.val ∈ frontier K → ∀ m : ℕ, m ≤ 2 →
+      metricDerivNorm m (Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ)
+        ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O)
+        ((h.prod (euclideanMetric (E := ℝ))).restrictOpen O) (Φ.symm y) ≤ η)
+    (hsec : ∀ (q : A) (u v : TangentSpace I q),
+      c * (g.inner (f q) (mfderiv I I₀ f q u) (mfderiv I I₀ f q u) *
+        g.inner (f q) (mfderiv I I₀ f q v) (mfderiv I I₀ f q v) -
+        (g.inner (f q) (mfderiv I I₀ f q u) (mfderiv I I₀ f q v)) ^ 2) ≤
+      metricRm04StandardAt g (f q) (mfderiv I I₀ f q u) (mfderiv I I₀ f q v)
+        (mfderiv I I₀ f q v) (mfderiv I I₀ f q u)) : interior K = ∅ := by
+  have himage (q : A) : f q ∈ V :=
+    hKV (hK.isClosed.frontier_subset (hfront.symm ▸ mem_range_self q))
+  obtain ⟨ψ, a, _, hgraph⟩ := exists_diffeomorph_graph_of_tangent_sectional_lower_bound_in_product_chart
+    f hf h hdim hdim2 O V Φ himage hη hsmallη
+    (fun y hy => hsmall y (hfront.symm ▸ hy)) hsec
+  apply DifferentialGeometry.Topology.interior_eq_empty_of_frontier_graph_in_opens_product_chart
+    O V Φ.toHomeomorph hK hKV a
+  intro y hy
+  obtain ⟨q, hq⟩ := hfront ▸ hy
+  have hyq : y = ⟨f q, himage q⟩ := Subtype.ext hq.symm
+  rw [hyq]
+  refine ⟨ψ.symm q, ?_⟩
+  change (ψ.symm q, a (ψ.symm q)) = (Φ.symm ⟨f q, himage q⟩).val
+  simpa only [ψ.apply_symm_apply] using (hgraph (ψ.symm q)).symm
 
 end DifferentialGeometry.Geometry.Curvature
