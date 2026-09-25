@@ -38,6 +38,57 @@ private theorem lVelocity_comp_of_mdifferentiableAt
   rw [mfderiv_comp s ((hp (alpha s)).mdifferentiableAt (by simp)) ha]
   rfl
 
+theorem unweighted_action_localPullback
+    (g : ℝ → SmoothRiemannianMetric J N) (p : M → N)
+    (hp : IsLocalDiffeomorph I J ∞ p) (alpha : ℝ → M) (b s : ℝ)
+    (ha : ∀ᵐ t ∂volume.restrict (Ioc b s), MDifferentiableAt 𝓘(ℝ, ℝ) I alpha t) :
+    (∫⁻ t in Ioc b s, ENNReal.ofReal
+      (metricScalarAt (localPullMetric (g t) p hp) (alpha t) +
+        (localPullMetric (g t) p hp).inner (alpha t)
+          (lVelocity (I := I) alpha t) (lVelocity (I := I) alpha t))) =
+      ∫⁻ t in Ioc b s, ENNReal.ofReal
+        (metricScalarAt (g t) ((p ∘ alpha) t) +
+          (g t).inner ((p ∘ alpha) t)
+            (lVelocity (I := J) (p ∘ alpha) t) (lVelocity (I := J) (p ∘ alpha) t)) := by
+  apply lintegral_congr_ae
+  filter_upwards [ha] with t ht
+  have hv := lVelocity_comp_of_mdifferentiableAt hp ht
+  rw [metricScalarAt_localPull, localPullMetric_inner, hv]
+  rfl
+
+theorem unweighted_action_localPullback_of_contMDiffOn
+    (g : ℝ → SmoothRiemannianMetric J N) (p : M → N)
+    (hp : IsLocalDiffeomorph I J ∞ p) (alpha : ℝ → M) (b s : ℝ)
+    (ha : ContMDiffOn 𝓘(ℝ, ℝ) I 1 alpha (Icc b s)) :
+    (∫⁻ t in Ioc b s, ENNReal.ofReal
+      (metricScalarAt (localPullMetric (g t) p hp) (alpha t) +
+        (localPullMetric (g t) p hp).inner (alpha t)
+          (lVelocity (I := I) alpha t) (lVelocity (I := I) alpha t))) =
+      ∫⁻ t in Ioc b s, ENNReal.ofReal
+        (metricScalarAt (g t) ((p ∘ alpha) t) +
+          (g t).inner ((p ∘ alpha) t)
+            (lVelocity (I := J) (p ∘ alpha) t) (lVelocity (I := J) (p ∘ alpha) t)) := by
+  apply unweighted_action_localPullback g p hp alpha b s
+  filter_upwards [ae_restrict_mem measurableSet_Ioc,
+    ae_restrict_of_ae (Measure.ae_ne volume s)] with t ht hts
+  exact (ha.contMDiffAt (Icc_mem_nhds ht.1 (lt_of_le_of_ne ht.2 hts))).mdifferentiableAt one_ne_zero
+
+theorem unweighted_action_restrictOpen
+    (g : ℝ → SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M)
+    (alpha : ℝ → U) (b s : ℝ) (ha : ContMDiffOn 𝓘(ℝ, ℝ) I 1 alpha (Icc b s)) :
+    (∫⁻ t in Ioc b s, ENNReal.ofReal
+      (metricScalarAt ((g t).restrictOpen U) (alpha t) +
+        ((g t).restrictOpen U).inner (alpha t)
+          (lVelocity (I := I) alpha t) (lVelocity (I := I) alpha t))) =
+      ∫⁻ t in Ioc b s, ENNReal.ofReal
+        (metricScalarAt (g t) ((alpha t).val) +
+          (g t).inner (alpha t).val
+            (lVelocity (I := I) (fun u => (alpha u).val) t)
+            (lVelocity (I := I) (fun u => (alpha u).val) t)) := by
+  simpa only [localPullMetric_subtype_val, Function.comp_def] using
+    unweighted_action_localPullback_of_contMDiffOn g (Subtype.val : U → M)
+      (isLocalDiffeomorph_subtype_val U) alpha b s ha
+
 theorem lDensity_localPullback
     (S : SolutionOn (I := J) (M := N) D) (p : M → N)
     (hp : IsLocalDiffeomorph I J ∞ p) (T : ℝ)

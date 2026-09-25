@@ -944,3 +944,96 @@ theorem exists_common_flow_with_compact_neighborhood_of_parabolicallyRmControlle
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+open scoped BigOperators in
+open _root_.Manifold TopologicalSpace _root_.MeasureTheory in
+theorem exists_uniform_time_sum_stageRegularizedAction_gt_of_parabolicallyRmControlledBall
+    (A B E r : ℝ) (hB : 0 ≤ B) (hE : 0 ≤ E) (hr : 0 < r) :
+    ∃ w : ℝ, 0 < w ∧ w ≤ r ∧
+      ∀ (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier),
+      H.isParabolicallyRmControlledBall t p r →
+      ∃ (a : Icc (0 : ℝ) H.horizon) (hat : a ≤ t), a.val = t.val - r ^ 2 ∧
+        ∃ U : Opens (H.stageAt t).Carrier,
+          (U : Set (H.stageAt t).Carrier) = riemannianBallOf (H.stageMetric (H.activeStage t) t) p r ∧
+          ∃ f : (j : H.StageInterval (H.activeStage a) (H.activeStage t)) → U → (H.stage j.val).Carrier,
+            ∃ hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j),
+              (∀ j, Function.Injective (f j)) ∧
+              (∀ (i : Fin H.eventCount) (hi : H.activeStage a ≤ i.castSucc)
+                  (hl : i.succ ≤ H.activeStage t), ∀ x : U,
+                (H.event i).RegularCrossing
+                  (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ x)
+                  (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ x)) ∧
+              (∀ x : U, f ⟨H.activeStage t, H.activeStage_mono hat, le_rfl⟩ x = x.val) ∧
+              ∃ S : SolutionOn (I := ThreeModel) (M := U) (RealTimeInterval.closed a.val t.val hat),
+                IsSolutionOn S ∧
+                (∀ j : H.StageInterval (H.activeStage a) (H.activeStage t),
+                  ∀ v ∈ Icc a.val t.val, v ∈ H.stageDomain j.val →
+                    S.base.metric v = localPullMetric (H.stageMetric j.val v) (f j) (hf j)) ∧
+                (∀ v ∈ Icc a.val t.val, ∀ x : U,
+                  r ^ 4 * normSq0S (S.base.metric v) x 4 (S.base.rm04 v x) ≤ 1) ∧
+                S.base.metric t = (H.stageMetric (H.activeStage t) t).restrictOpen U ∧
+                ∃ (pU : U) (K : Set U), pU.val = p ∧
+                  Subtype.val '' K = riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2) ∧
+                  IsCompact K ∧ pU ∈ interior K ∧
+                  (∀ x ∈ frontier K,
+                    ENNReal.ofReal (r / 2) ≤ riemannianEDistOf (S.base.metric t) pU x) ∧
+                  ∀ (first : Fin (H.eventCount + 1)) (v τ : ℝ),
+                    0 < τ → τ ≤ w → τ ≤ v → v ≤ E →
+                    ∀ (j : H.StageInterval (H.activeStage a) (H.activeStage t))
+                      (hfirst : first ≤ j.val),
+                    t.val - v ^ 2 ∈ H.stageDomain first →
+                    t.val - τ ^ 2 ∈ H.stageDomain j.val →
+                    ∀ α : (k : H.StageInterval first (H.activeStage t)) → ℝ → (H.stage k.val).Carrier,
+                    (∀ k, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (α k)) →
+                    (∀ k, IntervalIntegrable (H.stageRegularizedLagrangian k.val t (α k)) volume
+                      (H.regularizedStageStart t 0 k.val) (H.regularizedStageEnd t v k.val)) →
+                    (∀ k, ∀ s ∈ Ioo
+                      (H.regularizedStageStart t 0 k.val) (H.regularizedStageEnd t v k.val),
+                      -B ≤ metricScalarAt (H.stageMetric k.val (t.val - s ^ 2)) (α k s)) →
+                    α ⟨H.activeStage t, hfirst.trans j.property.2, le_rfl⟩ 0 = p →
+                    (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ H.activeStage t),
+                      ∃ z : (H.event i).old,
+                        z.val.val = α ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+                          (Real.sqrt (t.val - H.time i.succ)) ∧
+                        (H.event i).oldOutput z = α ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+                          (Real.sqrt (t.val - H.time i.succ))) →
+                    α ⟨j.val, hfirst, j.property.2⟩ τ ∉ f j '' K →
+                    A < ∑ k : H.StageInterval first (H.activeStage t),
+                      H.stageRegularizedAction k.val t (α k)
+                        (H.regularizedStageStart t 0 k.val) (H.regularizedStageEnd t v k.val) := by
+  obtain ⟨w₁, hw₁, hmodel⟩ :=
+    exists_uniform_time_sum_stageRegularizedAction_gt_of_point_outside_controlled_image.{u, u}
+      A B E (1 / r ^ 4) (r / 2) hB hE (by linarith)
+  refine ⟨min r w₁, lt_min hr hw₁, min_le_left _ _, ?_⟩
+  intro H t p hball
+  obtain ⟨a, hat, ha, U, hU, f, hf, hinj, hcross, hlast, S, hS, hmetric, hRm,
+      hterminal, pU, K, hpU, himage, hK, hpinterior, hseparation⟩ :=
+    H.exists_common_flow_with_compact_neighborhood_of_parabolicallyRmControlledBall t p r hball
+  refine ⟨a, hat, ha, U, hU, f, hf, hinj, hcross, hlast, S, hS, hmetric, hRm,
+    hterminal, pU, K, hpU, himage, hK, hpinterior, hseparation, ?_⟩
+  intro first v τ hτ hτw hτv hvE j hfirst hlower hphysical α hα hint hscalar hrecent hnode hout
+  let S' := S.timeRestrict
+    (RealTimeInterval.closed (t.val - r ^ 2) t.val (sub_le_self _ (sq_nonneg r)))
+  have hS' : IsSolutionOn S' := isSolutionOn_timeRestrict hS
+    (Icc_subset_Icc ha.le le_rfl) (Ioo_subset_Ioo ha.le le_rfl)
+  have hupper : t.val ∈ Icc (H.time (H.activeStage t)) (H.stageEndTime (H.activeStage t)) :=
+    ⟨H.activeStage_time_le t, H.le_stageEndTime_of_mem_stageDomain (H.activeStage_mem t)⟩
+  apply hmodel U H first (H.activeStage a) (H.activeStage t) (H.activeStage_mono hat)
+    f hf hinj hcross t r v τ hτ (hτw.trans (min_le_right _ _))
+    (hτw.trans (min_le_left _ _)) hτv hvE j hfirst S' hS' hupper hlower hphysical
+    (fun k s hs hstage => hmetric k s ⟨ha.le.trans hs.1, hs.2.le⟩ hstage)
+    (fun s hs x => by
+      change normSq0S (S.base.metric s) x 4 (S.base.rm04 s x) ≤ 1 / r ^ 4
+      apply (le_div_iff₀ (pow_pos hr 4)).mpr
+      simpa only [mul_comm] using hRm s ⟨ha.le.trans hs.1, hs.2⟩ x)
+    K hK pU hpinterior hseparation α hα hint hscalar ?_ hnode hout
+  rw [hlast, hpU]
+  exact hrecent
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end

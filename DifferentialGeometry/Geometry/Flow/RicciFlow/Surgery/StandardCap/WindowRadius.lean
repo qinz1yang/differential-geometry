@@ -13,6 +13,14 @@ open DifferentialGeometry.CheegerGromovCompactness
 open scoped Manifold ContDiff ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.StandardCap
 
+theorem isCompact_window_norm_le {D r : ℝ} (hfit : r < D + 1) :
+    IsCompact {x : standardCapWindow D | ‖x.val‖ ≤ r} := by
+  have hc : IsCompact {x : ThreeSpace | ‖x‖ ≤ r} := by
+    simpa only [Metric.closedBall, dist_zero_right] using isCompact_closedBall (0 : ThreeSpace) r
+  exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hc (by
+    intro x hx
+    exact ⟨⟨x, hx.trans_lt hfit⟩, rfl⟩)
+
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
   [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

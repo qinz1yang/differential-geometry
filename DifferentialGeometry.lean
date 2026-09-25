@@ -13963,6 +13963,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CompactW
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.CompactBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Connector
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.TimeExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Unweighted
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurvatureLifespan
@@ -14002,6 +14003,7 @@ import DifferentialGeometry.Geometry.Metric.Comparison.ScalarGradient
 import DifferentialGeometry.Topology.Sequences.UniformEventually
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPoleAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.TimeRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.ParabolicScaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.MinimumTime
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckRebaseStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNeckRebase
@@ -14014,7 +14016,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardRadialSectional
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCurvatureComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLossFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSurvivalStep
