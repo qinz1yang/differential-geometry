@@ -13941,3 +13941,4 @@ import DifferentialGeometry.Geometry.Metric.CurveEnergy.CompactBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Connector
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurvatureLifespan
