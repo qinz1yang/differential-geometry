@@ -234,13 +234,14 @@ theorem exists_common_backward_trace_window_of_pointed_product_limit
     (D r eps a₀ : ℝ) (Ctime : ℝ≥0) (ha₀ : 0 < a₀)
     (heps : 0 < eps) (hepssmall : eps ≤ 1 / 1000)
     (hr : StandardCap.transitionEnd + eps⁻¹ + 1 < r)
-    (hfit : 64 * (r + eps⁻¹) < D)
-    (H : ℕ → ObservedHistory.{u}) (last : ∀ i, Fin ((H i).eventCount + 1))
+    (hfit : 64 * (r + eps⁻¹) < D) (B₀ : ℝ) (hB₀ : 0 < B₀) :
+    ∃ θ ε₀ δ₀ : ℝ, 0 < θ ∧ 0 < ε₀ ∧ 0 < δ₀ ∧
+    ∀ (H : ℕ → ObservedHistory.{u}) (last : ∀ i, Fin ((H i).eventCount + 1))
     (s : ℕ → ℝ) (G : ∀ i, ((H i).stage (last i)).IncomingSlab ((H i).time (last i)) (s i))
-    (L : ∀ i, (G i).TerminalLimitMetric)
-    (hinit : ∀ i, (G i).flow.base.metric ((H i).time (last i)) = (H i).initialMetric (last i))
-    (x : ∀ i, (G i).terminalRegularOpen) (Q : ℕ → ℝ) (hQ : ∀ i, 0 < Q i)
-    (hQlim : Tendsto Q atTop atTop) {a : ℝ} (ha : 0 < a) (hsa : ∀ i, a ≤ s i) :
+    (L : ∀ i, (G i).TerminalLimitMetric),
+    (∀ i, (G i).flow.base.metric ((H i).time (last i)) = (H i).initialMetric (last i)) →
+    ∀ (x : ∀ i, (G i).terminalRegularOpen) (Q : ℕ → ℝ) (hQ : ∀ i, 0 < Q i),
+    Tendsto Q atTop atTop → ∀ {a : ℝ}, 0 < a → (∀ i, a ≤ s i) →
     let X : PointedRiemannianSeq.{u, 0, 0} ThreeModel :=
       { obj := fun i => {
           M := (G i).terminalRegularOpen
@@ -257,8 +258,7 @@ theorem exists_common_backward_trace_window_of_pointed_product_limit
       (hprod : SmoothRiemannianMetric J N), Module.finrank ℝ F = 2 →
     ∀ e : (N × ℝ) ≃ₘ⟮J.prod 𝓘(ℝ), ThreeModel⟯ P.M,
     Diffeomorph.pullbackMetricCross P.metric e = hprod.prod (euclideanMetric (E := ℝ)) →
-    ∀ B₀ : ℝ, 0 < B₀ → (∀ y, metricScalarAt P.metric y ≤ B₀) →
-    ∃ θ ε₀ δ₀ : ℝ, 0 < θ ∧ 0 < ε₀ ∧ 0 < δ₀ ∧
+    (∀ y, metricScalarAt P.metric y ≤ B₀) →
     ∀ (K : Set P.M), IsCompact K → (∀ y ∈ K, 0 < metricScalarAt P.metric y) →
     ∀ (parameters : ℕ → CutoffParameters)
       (records : ∀ i, ∀ j : Fin (H i).eventCount, GeometricCutoffRecord (H i) j (parameters i)),
@@ -310,14 +310,13 @@ theorem exists_common_backward_trace_window_of_pointed_product_limit
         0 ≤ s (subseq i) - θ / Q (subseq i) ∧
         ∀ y ∈ K, Nonempty (BackwardPointTrace (H (subseq i)) first (last (subseq i)) hle
           (Phi.map i y).val) := by
-  intro X P subseq hsubseq Phi Cm hcanonical hcomplete
-    F H' M hnorm hspace hfinite htop J hboundary hMtop hMchart hMsmooth hMt2 hMconn
-    hprod hdim e he B₀ hB₀ hupper
   obtain ⟨θ,ε₀,δ₀,hθ,hε₀,hεhalf,hδ₀,hall⟩ :=
     ObservedHistory.exists_uniform_backward_trace_of_prepared_caps_and_product_chart_of_scalar_upper_bound
       D r eps a₀ (B₀ + 1) Ctime ha₀ (by positivity) heps hepssmall hr hfit
   refine ⟨θ,ε₀,δ₀,hθ,hε₀,hδ₀,?_⟩
-  intro K hK hpositive
+  intro H last s G L hinit x Q hQ hQlim a ha hsa X P subseq hsubseq Phi Cm hcanonical
+    hcomplete F H' M hnorm hspace hfinite htop J hboundary hMtop hMchart hMsmooth hMt2
+    hMconn hprod hdim e he hupper K hK hpositive
   let projection := fun z : P.M => (e.symm z).1
   have hprojection : Function.Surjective projection := fun z => ⟨e (z, 0),by simp [projection]⟩
   let _ : SigmaCompactSpace M := isSigmaCompact_univ_iff.mp (by

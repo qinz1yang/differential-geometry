@@ -13876,3 +13876,7 @@ import DifferentialGeometry.Analysis.Integration.Measure.OpenSubtypeBall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ConnectedComponentVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProductNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.TerminalProductSplitting
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.CompositionComparison
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.ScalarRescaling
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FixedDepthEnd
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FixedDepthEscape
