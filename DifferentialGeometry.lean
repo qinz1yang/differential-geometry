@@ -13955,3 +13955,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCap
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ParabolicTerminalBallAlternative
 import DifferentialGeometry.Geometry.Metric.Family.ChartCurvature.Scalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MinimizingSegment
+import DifferentialGeometry.Geometry.Curvature.ScalarGradientTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ScalarDerivativeTransport
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MarkedScalarBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapScalarBounds

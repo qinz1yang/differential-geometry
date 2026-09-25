@@ -138,4 +138,80 @@ theorem abs_derivWithin_comp_affine_le_sq
       mul_le_mul_of_nonneg_left (hb hh) (sq_nonneg _)
     _ = _ := by ring
 
+theorem abs_derivWithin_le_sq_iff_comp_affine
+    {f : ℝ → ℝ} {T Q s C : ℝ} (hQ : 0 < Q)
+    (hf : DifferentiableWithinAt ℝ f (Iic (T + s / Q)) (T + s / Q)) :
+    (|derivWithin f (Iic (T + s / Q)) (T + s / Q)| ≤ C * f (T + s / Q) ^ 2) ↔
+      |derivWithin (fun u => Q⁻¹ * f (T + u / Q)) (Iic s) s| ≤
+        C * (Q⁻¹ * f (T + s / Q)) ^ 2 := by
+  rw [derivWithin_const_mul_comp_affine_Iic hQ hf, abs_mul]
+  simp only [abs_of_nonneg (sq_nonneg (Q⁻¹))]
+  have heq : C * (Q⁻¹ * f (T + s / Q)) ^ 2 = Q⁻¹ ^ 2 * (C * f (T + s / Q) ^ 2) := by ring
+  rw [heq]
+  exact (mul_le_mul_iff_right₀ (sq_pos_of_pos (inv_pos.mpr hQ))).symm
+
+
+theorem abs_derivWithin_le_sq_iff_of_eventuallyEq_comp_affine
+    {f fhat : ℝ → ℝ} {T Q s C : ℝ} (hQ : 0 < Q)
+    (hf : DifferentiableWithinAt ℝ f (Iic (T + s / Q)) (T + s / Q))
+    (heq : fhat =ᶠ[𝓝[Iic s] s] fun u => Q⁻¹ * f (T + u / Q)) :
+    (|derivWithin f (Iic (T + s / Q)) (T + s / Q)| ≤ C * f (T + s / Q) ^ 2) ↔
+      |derivWithin fhat (Iic s) s| ≤ C * fhat s ^ 2 := by
+  rw [heq.derivWithin_eq_of_mem (mem_Iic.mpr le_rfl),
+    heq.eq_of_nhdsWithin (mem_Iic.mpr le_rfl)]
+  exact abs_derivWithin_le_sq_iff_comp_affine hQ hf
+
+theorem abs_derivWithin_le_sq_iff_of_eqOn_comp_affine_Icc
+    {f fhat : ℝ → ℝ} {T Q a b s C : ℝ} (hQ : 0 < Q)
+    (hf : DifferentiableWithinAt ℝ f (Iic (T + s / Q)) (T + s / Q))
+    (heq : EqOn fhat (fun u => Q⁻¹ * f (T + u / Q)) (Icc a b))
+    (hs : s ∈ Ioc a b) :
+    (|derivWithin f (Iic (T + s / Q)) (T + s / Q)| ≤ C * f (T + s / Q) ^ 2) ↔
+      |derivWithin fhat (Iic s) s| ≤ C * fhat s ^ 2 := by
+  apply abs_derivWithin_le_sq_iff_of_eventuallyEq_comp_affine hQ hf
+  filter_upwards [Icc_mem_nhdsLE_of_mem hs] with u hu
+  exact heq hu
+
+
+
+theorem differentiableWithinAt_of_eqOn_comp_affine_Icc
+    {f fhat : ℝ → ℝ} {T Q a b s : ℝ} (hQ : 0 < Q)
+    (hfhat : DifferentiableWithinAt ℝ fhat (Icc a b) s)
+    (heq : EqOn fhat (fun u => Q⁻¹ * f (T + u / Q)) (Icc a b))
+    (hs : s ∈ Ioc a b) :
+    DifferentiableWithinAt ℝ f (Iic (T + s / Q)) (T + s / Q) := by
+  have hback : Q * (T + s / Q - T) = s := by field_simp; ring
+  have hdhat : DifferentiableWithinAt ℝ fhat (Iic s) (Q * (T + s / Q - T)) := by
+    rw [hback]
+    exact hfhat.mono_of_mem_nhdsWithin (Icc_mem_nhdsLE_of_mem hs)
+  have hdback : DifferentiableWithinAt ℝ (fun t => Q * (t - T))
+      (Iic (T + s / Q)) (T + s / Q) := by fun_prop
+  have hmaps : MapsTo (fun t => Q * (t - T)) (Iic (T + s / Q)) (Iic s) := by
+    intro t ht
+    change Q * (t - T) ≤ s
+    rw [← hback]
+    exact mul_le_mul_of_nonneg_left (sub_le_sub_right ht T) hQ.le
+  have hd := (hdhat.comp (T + s / Q) hdback hmaps).const_mul Q
+  apply hd.congr_of_eventuallyEq_of_mem ?_ (mem_Iic.mpr le_rfl)
+  have hphys : T + s / Q ∈ Ioc (T + a / Q) (T + b / Q) := by
+    constructor
+    · have h := div_lt_div_of_pos_right hs.1 hQ
+      linarith
+    · have h := div_le_div_of_nonneg_right hs.2 hQ.le
+      linarith
+  filter_upwards [Icc_mem_nhdsLE_of_mem hphys] with t ht
+  have hnorm : Q * (t - T) ∈ Icc a b := by
+    constructor
+    · have h := (div_le_iff₀ hQ).mp (show a / Q ≤ t - T by linarith [ht.1])
+      nlinarith
+    · have h := (le_div_iff₀ hQ).mp (show t - T ≤ b / Q by linarith [ht.2])
+      nlinarith
+  have htime : T + Q * (t - T) / Q = t := by field_simp; ring
+  have hvalue := heq hnorm
+  dsimp only at hvalue
+  rw [htime] at hvalue
+  change f t = Q * fhat (Q * (t - T))
+  rw [hvalue, ← mul_assoc, mul_inv_cancel₀ hQ.ne', one_mul]
+
+
 end DifferentialGeometry.Analysis
