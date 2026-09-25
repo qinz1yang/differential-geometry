@@ -374,17 +374,18 @@ private theorem endpoint_mfderiv_injective_of_minimizing
   exact not_lt_of_ge hnonneg hk'
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
-theorem exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
+theorem exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv_of_minimal
     (S : SolutionOn (I := I) (M := M) D)
-    (hS : IsSolutionOn (I := I) S) (K T : Real) (x : M)
-    {Z : TangentSpace I x} {tau s0 : Real}
-    (hmin : (Z, tau) ∈ lMinDomain (E := E) (I := I) S T x)
-    (hreg : Icc (T - tau) T ⊆ D.regular)
-    (hRm : ∀ q ∈ Icc (T - tau) T, ∀ z : M,
-      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
-    (hs00 : 0 < s0) (hs0b : s0 < Real.sqrt tau) :
+    (hS : IsSolutionOn (I := I) S) (T : Real) (x : M)
+    {Z : TangentSpace I x} {b s0 : Real} (hb : 0 < b)
+    (hbdom : b ∈ lRegularizedDomain S T x Z)
+    (hmin : ∀ delta : Real → M,
+      ContMDiff 𝓘(Real, Real) I 1 delta →
+      delta 0 = lRegularizedCurve S T x Z 0 →
+      delta b = lRegularizedCurve S T x Z b →
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b ≤ lRegularizedAction S T delta 0 b)
+    (hs00 : 0 < s0) (hs0b : s0 < b) :
     let gamma : Real → M := lRegularizedCurve S T x Z
-    let b : Real := Real.sqrt tau
     let x0 : M := gamma s0
     let A0 : TangentSpace I x0 := lVelocity (I := I) gamma s0
     ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
@@ -401,24 +402,15 @@ theorem exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
               (mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0) := by
   dsimp only
   let gamma : Real → M := lRegularizedCurve S T x Z
-  let b : Real := Real.sqrt tau
   let x0 : M := gamma s0
   let A0 : TangentSpace I x0 := lVelocity (I := I) gamma s0
-  have htauPos : 0 < tau := lMinDomain_pos S T x Z tau hmin
-  have hb0 : 0 < b := by
-    simpa only [b] using Real.sqrt_pos.2 htauPos
-  have hbdom : b ∈ lRegularizedDomain S T x Z := by
-    have hpos : (Z, tau) ∈ lExpPosDom S T x :=
-      ((mem_lMinDomain S T x Z tau).1 hmin).1
-    simpa only [b] using
-      ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
   let J : Set Real := lRegularizedDomain S T x Z
   have hJopen : IsOpen J := by
     simpa only [J] using lRegularizedDomain_isOpen S T x Z
   have hJconn : IsPreconnected J := by
     simpa only [J] using lRegularizedDomain_preconn S T x Z
   have h0J : 0 ∈ J := by
-    simpa only [J] using lRegularizedDomain_segment S T x Z hbdom le_rfl hb0.le
+    simpa only [J] using lRegularizedDomain_segment S T x Z hbdom le_rfl hb.le
   have hs0J : s0 ∈ J := by
     simpa only [J] using lRegularizedDomain_segment S T x Z hbdom hs00.le hs0b.le
   have hbJ : b ∈ J := by
@@ -453,19 +445,45 @@ theorem exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
     exact hcenterEq.eventuallyEq_of_mem
       ((hKopen.inter hJopen).mem_nhds ⟨hsegK hs, hsegJ hs⟩)
   have hgeo : IsLRegularizedCurveOn S T gamma (uIcc (0 : Real) b) x Z := by
-    simpa only [gamma] using lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb0 hbdom
-  have hminGamma : ∀ delta : Real → M,
-      ContMDiff 𝓘(Real, Real) I 1 delta →
-      delta 0 = gamma 0 → delta b = gamma b →
-      lRegularizedAction S T gamma 0 b ≤ lRegularizedAction S T delta 0 b := by
-    intro delta hdelta hd0 hdb
-    simpa only [gamma, b] using
-      lMinimizingVector_min_rm (I := I) S hS K T x hmin hreg hRm
-        delta hdelta hd0 hdb
+    simpa only [gamma] using lRegularizedCurve_isLRegularizedCurveOn (I := I) S hS T x Z hb hbdom
   have hinj := endpoint_mfderiv_injective_of_minimizing
-    (I := I) S hS T hs00 hs0b hgeo hminGamma
+    (I := I) S hS T hs00 hs0b hgeo hmin
     hVopen hA0V hKopen hKconn h0K hs0K hbK halpha hcurves hcenter
   exact ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, hs0K, hbK,
     alpha, halpha, hcurves, hinj⟩
+
+
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) (K T : Real) (x : M)
+    {Z : TangentSpace I x} {tau s0 : Real}
+    (hmin : (Z, tau) ∈ lMinDomain (E := E) (I := I) S T x)
+    (hreg : Icc (T - tau) T ⊆ D.regular)
+    (hRm : ∀ q ∈ Icc (T - tau) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
+    (hs00 : 0 < s0) (hs0b : s0 < Real.sqrt tau) :
+    let gamma : Real → M := lRegularizedCurve S T x Z
+    let b : Real := Real.sqrt tau
+    let x0 : M := gamma s0
+    let A0 : TangentSpace I x0 := lVelocity (I := I) gamma s0
+    ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
+      ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧
+        0 ∈ K ∧ s0 ∈ K ∧ b ∈ K ∧
+        ∃ alpha : E × Real → M,
+          ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha
+              (V ×ˢ K) ∧
+            (∀ A ∈ V,
+              alpha (A, s0) = x0 ∧
+                lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
+                IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) K) ∧
+            Function.Injective
+              (mfderiv 𝓘(Real, E) I (fun A : E ↦ alpha (A, b)) A0) := by
+  have htau := lMinDomain_pos S T x Z tau hmin
+  have hb : 0 < Real.sqrt tau := Real.sqrt_pos.mpr htau
+  have hbdom : Real.sqrt tau ∈ lRegularizedDomain S T x Z :=
+    ((mem_lExpPosDom S T x Z tau).mp ((mem_lMinDomain S T x Z tau).mp hmin).1).2.2
+  exact exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv_of_minimal
+    S hS T x hb hbdom (lMinimizingVector_min_rm S hS K T x hmin hreg hRm) hs00 hs0b
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

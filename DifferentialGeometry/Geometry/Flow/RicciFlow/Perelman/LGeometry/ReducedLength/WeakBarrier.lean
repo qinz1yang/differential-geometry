@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.Operator.Laplacian.Minimum
+import DifferentialGeometry.Topology.Manifold.CurveIntervalExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.RegularizedRepresentation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Joining
 import DifferentialGeometry.Geometry.Metric.Path.Length
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CompleteManifoldExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.Action
@@ -11,7 +15,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle Filter Function Manifold MeasureTheory Set
-open scoped ContDiff Manifold Topology
+open scoped ContDiff Manifold _root_.Topology
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -96,80 +100,64 @@ private theorem exists_tail_cut
   obtain ⟨a, haerr, ha⟩ := Filter.Eventually.exists hall
   exact ⟨a, ha.1, ha.2, by simpa only [err] using haerr⟩
 
+omit [SigmaCompactSpace M] in
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_redWeak_sup [ConnectedSpace M]
-    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (K T sigma tau : Real)
-    (hg : RiemannianMetricComplete (I := I) (S.base.metric T))
-    (htau : 0 < tau) (htausigma : tau < sigma)
+theorem exists_endpoint_action_branch_of_minimal
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (htau : 0 < tau) (htausigma : tau < sigma)
     (hreg : Icc (T - sigma) T ⊆ D.regular)
-    (hRm : ∀ q ∈ Icc (T - sigma) T, ∀ z : M,
-      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
-    (x y : M) (eps : Real) (heps : 0 < eps) :
-    ∃ (U : Set M) (J : Set Real) (Phi : M → Real → Real) (d : Real),
-      IsOpen U ∧ y ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
-      J ⊆ Ioo (0 : Real) sigma ∧
+    (x : M) (η : ℝ → M) (hη : ContMDiff 𝓘(ℝ, ℝ) I 1 η) (hstart : η 0 = x)
+    (hmin : ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = η 0 →
+      δ (Real.sqrt tau) = η (Real.sqrt tau) →
+      lRegularizedAction S T η 0 (Real.sqrt tau) ≤ lRegularizedAction S T δ 0 (Real.sqrt tau))
+    (eps : ℝ) (heps : 0 < eps) :
+    ∃ a : ℝ, 0 < a ∧ a < Real.sqrt tau ∧
+    ∃ (U : Set M) (J : Set ℝ) (Phi : M → ℝ → ℝ) (d : ℝ),
+      IsOpen U ∧ η (Real.sqrt tau) ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
+      J ⊆ Ioo (a ^ 2) sigma ∧
       (∀ z ∈ U, ∀ rho ∈ J,
-        redLength S T x z rho ≤ Phi z rho) ∧
-      Phi y tau = redLength S T x y tau ∧
-      ContMDiffOn I 𝓘(Real, Real) ∞ (fun z : M ↦ Phi z tau) U ∧
-      HasDerivAt (Phi y) d tau ∧
-      d + laplacian (I := I) (LeviCivita (I := I)
-          (S.base.metric (T - tau))) (S.base.metric (T - tau))
-          (fun z : M ↦ Phi z tau) y ≤
-        ((Module.finrank Real E : Real) / 2 - redLength S T x y tau) / tau + eps := by
+        ∃ beta : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 beta (Icc a (Real.sqrt rho)) ∧
+          beta a = η a ∧ beta (Real.sqrt rho) = z ∧
+          Phi z rho = (lRegularizedAction S T η 0 a +
+            lRegularizedAction S T beta a (Real.sqrt rho)) / (2 * Real.sqrt rho)) ∧
+      Phi (η (Real.sqrt tau)) tau =
+        lRegularizedAction S T η 0 (Real.sqrt tau) / (2 * Real.sqrt tau) ∧
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun z => Phi z tau) U ∧
+      HasDerivAt (Phi (η (Real.sqrt tau))) d tau ∧
+      d + laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+        (S.base.metric (T - tau)) (fun z => Phi z tau) (η (Real.sqrt tau)) ≤
+        ((Module.finrank ℝ E : ℝ) / 2 -
+          lRegularizedAction S T η 0 (Real.sqrt tau) / (2 * Real.sqrt tau)) / tau + eps := by
   classical
-  let b : Real := Real.sqrt tau
-  have hb : 0 < b := by simpa only [b] using Real.sqrt_pos.2 htau
-  have hbSq : b ^ 2 = tau := by simpa only [b] using Real.sq_sqrt htau.le
-  have hsigma : 0 < sigma := htau.trans htausigma
+  let b := Real.sqrt tau
+  let y := η b
+  have hb : 0 < b := Real.sqrt_pos.mpr htau
+  have hbSq : b ^ 2 = tau := Real.sq_sqrt htau.le
   have hregTau : Icc (T - tau) T ⊆ D.regular := by
     intro q hq
-    apply hreg
-    constructor
-    · linarith [hq.1, htausigma]
-    · exact hq.2
-  have hRmTau : ∀ q ∈ Icc (T - tau) T, ∀ z : M,
-      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K := by
-    intro q hq z
-    exact hRm q (by
-      constructor
-      · linarith [hq.1, htausigma]
-      · exact hq.2) z
-  obtain ⟨alpha0, halpha0, halpha00, halpha0b⟩ :
-      ∃ alpha0 : Real → M, ContMDiff 𝓘(Real, Real) I 1 alpha0 ∧
-        alpha0 0 = x ∧ alpha0 (Real.sqrt tau) = y := by
-    let g := S.base.metric T
-    let : RiemannianBundle (TangentSpace I : M → Type _) :=
-      ⟨g.toRiemannianMetric⟩
-    let : IsContinuousRiemannianBundle E
-        (TangentSpace I : M → Type _) :=
-      ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
-    have hxy : Manifold.riemannianEDist I x y < (⊤ : ENNReal) :=
-      lt_of_le_of_ne le_top
-        (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
-          (I := I) x y)
-    obtain ⟨path, hpath, _hlen⟩ :=
-      Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
-        (I := I) hxy
-    let alpha0 : Real → M := fun s ↦ path.extend (s / b)
-    have halpha0 : ContMDiff 𝓘(Real, Real) I 1 alpha0 := by
-      apply hpath.contMDiff.comp
-      rw [contMDiff_iff_contDiff]
-      fun_prop
-    refine ⟨alpha0, halpha0, ?_, ?_⟩
-    · simp only [alpha0, zero_div, Path.extend_zero]
-    · simp only [alpha0, b, div_self hb.ne', Path.extend_one]
-  obtain ⟨Z, hZmin, hZend⟩ :=
-    exists_lMinimizingVector_rm (I := I) S hS K T hg tau htau hregTau hRmTau
-      x y alpha0 halpha0 halpha00 halpha0b
+    exact hreg ⟨(sub_le_sub_left htausigma.le T).trans hq.1, hq.2⟩
+  have hregBack : ∀ s ∈ Icc 0 b, T - s ^ 2 ∈ D.regular := by
+    intro s hs
+    exact hregTau ⟨by nlinarith [pow_le_pow_left₀ hs.1 hs.2 2], sub_le_self _ (sq_nonneg s)⟩
+  have hvec := exists_lMinimizingVector_of_minimal
+    S hS T hb hregBack η hη
+      hmin
+  rw [hstart, hbSq] at hvec
+  obtain ⟨Z, hZmin, hZend, hZeq, hZaction⟩ := hvec
   have hbdom : b ∈ lRegularizedDomain S T x Z := by
     have hpos : (Z, tau) ∈ lExpPosDom S T x :=
       ((mem_lMinDomain S T x Z tau).1 hZmin).1
     simpa only [b] using
       ((mem_lExpPosDom S T x Z tau).1 hpos).2.2
   let gamma : Real → M := lRegularizedCurve S T x Z
+  have hminGamma : ∀ delta : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 delta →
+      delta 0 = gamma 0 → delta b = gamma b →
+      lRegularizedAction S T gamma 0 b ≤ lRegularizedAction S T delta 0 b := by
+    intro delta hdelta hd0 hdb
+    rw [hZaction]
+    exact hmin delta hdelta (hd0.trans (hZeq ⟨le_rfl, hb.le⟩))
+      (hdb.trans (hZeq ⟨hb.le, le_rfl⟩))
   let kval : Real := lK S T gamma b
   obtain ⟨a, ha0, hab, herr⟩ :=
     exists_tail_cut (Module.finrank Real E : Real) b kval eps hb heps
@@ -177,9 +165,8 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       (by simpa only [gamma, kval] using lKTail_tendsto S hS T x Z hb hbdom)
   obtain ⟨V, hVopen, hA0V, Ktime, hKopen, hKconn, h0K, haK, hbK,
       alpha, halpha, hcurves, hinj⟩ :=
-    exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv
-      (E := E) (I := I) S hS K T x hZmin hregTau hRmTau
-      ha0 (by simpa only [b] using hab)
+    exists_lRegularizedGeodesicFamily_with_injective_endpoint_mfderiv_of_minimal
+      (E := E) (I := I) S hS T x hb hbdom hminGamma ha0 hab
   let x0 : M := gamma a
   let A0 : TangentSpace I x0 := lVelocity (I := I) gamma a
   have hstart : ∀ A ∈ V, alpha (A, a) = alpha (A0, a) := by
@@ -361,7 +348,10 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     have hrange := hN.2.2
     exact ⟨lt_of_le_of_lt (sq_nonneg a) hrange.1, hrange.2⟩
   have hsupport : ∀ z ∈ U, ∀ rho ∈ J,
-      redLength S T x z rho ≤ Phi z rho := by
+      ∃ beta : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 beta (Icc a (Real.sqrt rho)) ∧
+        beta a = η a ∧ beta (Real.sqrt rho) = z ∧
+        Phi z rho = (lRegularizedAction S T η 0 a +
+          lRegularizedAction S T beta a (Real.sqrt rho)) / (2 * Real.sqrt rho) := by
     intro z hz rho hrho
     have hN : (z, rho) ∈ N := hprod (Set.mem_prod.2 ⟨hz, hrho⟩)
     have hqgood := hN.1
@@ -391,31 +381,6 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     have hsegC : Icc (0 : Real) c ⊆ Ktime := by
       have hcK : c ∈ Ktime := by rw [← hp2]; exact hpVK.2
       exact hKconn.ordConnected.out h0K hcK
-    have hregC : Icc (T - c ^ 2) T ⊆ D.regular := by
-      intro q hq
-      apply hreg
-      constructor
-      · linarith [hq.1, hrange.2, hcSq]
-      · exact hq.2
-    have hRmC : ∀ q ∈ Icc (T - c ^ 2) T, ∀ w : M,
-        normSq0S (I := I) (S.base.metric q) w 4 (S.base.rm04 q w) ≤ K := by
-      intro q hq w
-      apply hRm q
-      constructor
-      · linarith [hq.1, hrange.2, hcSq]
-      · exact hq.2
-    have hbdd := lRegularizedCosts_bdd_rm (I := I) S hS K T 0 c
-      (by norm_num) hc.le hregC hRmC x z
-    have hregBack : ∀ s ∈ Icc (0 : Real) c,
-        T - s ^ 2 ∈ D.regular := by
-      intro s hs
-      apply hregC
-      have hs2 : s ^ 2 ≤ c ^ 2 := (sq_le_sq₀ hs.1 hc.le).2 hs.2
-      constructor <;> linarith [sq_nonneg s]
-    have hheadC1 : ContMDiffOn 𝓘(Real, Real) I 1 gamma
-        (Icc (0 : Real) a) :=
-      (lRegularizedCurve_c1On (I := I) S hS T x Z hbdom).mono
-        (fun s hs ↦ ⟨hs.1, hs.2.trans hab.le⟩)
     let delta : Real → M := fun s ↦ alpha (p.1, s)
     have htailC1 : ContMDiffOn 𝓘(Real, Real) I 1 delta
         (Icc a c) := by
@@ -428,25 +393,14 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       change gamma a = alpha (p.1, a)
       rw [hstart p.1 hpVK.1]
       exact ((hcenter a ⟨ha0.le, hab.le⟩).self_of_nhds).symm
-    have hle := lCost_le_join_bdd (I := I) S hS T c hc x z ha0 hac
-      hbdd hregBack gamma delta hheadC1 htailC1 hnode
-      (by simpa only [gamma] using lRegularizedCurve_zero S T x Z) hend
-    change lCost S T x z rho / (2 * Real.sqrt rho) ≤
-      (head + joint (z, Real.sqrt rho)) / (2 * Real.sqrt rho)
-    rw [show rho = c ^ 2 from hcSq.symm, Real.sqrt_sq hc.le]
-    apply (div_le_div_iff_of_pos_right (mul_pos (by norm_num) hc)).2
-    simpa only [head, joint, gamma, p, hp2, delta] using hle
-  have hfull : lRegularizedAction S T gamma 0 b = lCost S T x y tau := by
-    have hvec := (mem_lMinDomain S T x Z tau).1 hZmin
-    calc
-      lRegularizedAction S T gamma 0 b =
-          lLength S T (squareRootReparametrization gamma) 0 tau := by
-        simpa only [gamma, b] using
-          (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T gamma tau htau.le).symm
-      _ = lCost S T x (lExp S T x Z tau) tau := by
-        change lLength S T (fun r : Real ↦ gamma (Real.sqrt r)) 0 tau = _
-        simpa only [gamma, lExp] using hvec.2
-      _ = lCost S T x y tau := by rw [hZend]
+    have hheadEta : lRegularizedAction S T gamma 0 a = lRegularizedAction S T η 0 a := by
+      apply lRegularizedAction_congr
+      intro s hs
+      rw [uIoo_of_le ha0.le] at hs
+      exact hZeq ⟨hs.1.le, hs.2.le.trans hab.le⟩
+    refine ⟨delta, htailC1, hnode.symm.trans (hZeq ⟨ha0.le, hab.le⟩), hend, ?_⟩
+    simp only [Phi, joint, p, hp2, delta, head, hheadEta, c]
+  have hfull : lRegularizedAction S T gamma 0 b = lRegularizedAction S T (η) 0 b := hZaction
   have hheadTail : head + fixed y = lRegularizedAction S T gamma 0 b := by
     have hheadInt := lRayLag_int S hS T x Z hb hbdom
     have hheadInt' : IntervalIntegrable (lRegularizedLagrangian S T gamma) volume 0 a :=
@@ -472,11 +426,10 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     simpa only [head] using hadd
   have hjoint0 : joint (y, b) = fixed y := by
     simp only [joint, fixed, htime0, hfixed0]
-  have htouch : Phi y tau = redLength S T x y tau := by
+  have htouch : Phi y tau = lRegularizedAction S T (η) 0 (Real.sqrt tau) / (2 * Real.sqrt tau) := by
     rw [show Phi y tau = (head + joint (y, b)) / (2 * b) by
       simp only [Phi, b]]
     rw [hjoint0, hheadTail, hfull]
-    rfl
   obtain ⟨Ufix, hUfixOpen, hyUfix, Ffix, hFfixSmooth, hFfixEq⟩ :=
     exists_contMDiffOn_lRegularizedAction_endpointBranch
       S hS T a b hab hVopen hA0V hKopen hKconn
@@ -634,7 +587,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
     ring
   have hlapRaw := laplacian_lRegularizedAction_endpointBranch_le_hamilton
     (I := I) S hS T a b ha0 hab x Z hbdom
-    (lMinimizingVector_min_rm (I := I) S hS K T x hZmin hregTau hRmTau)
+    hminGamma
     hVopen hA0V hKopen hKconn h0K hbK hstart halpha hregFamily
     hEulerFamily hcenter hinj P hOmega hOmegaSegment
     (fun i ↦ (hPsm i).of_le (by decide :
@@ -758,7 +711,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         lKTail S T gamma a b / (2 * b * (b - a) ^ 2) := by
     rw [hPhiLap]
     have hPhiAction : Phi y tau = lRegularizedAction S T gamma 0 b / (2 * b) := by
-      rw [htouch, redLength, hfull]
+      rw [htouch, hfull]
     have hbaseEq : alpha (A0, b) = gamma b :=
       (hcenter b ⟨hb.le, le_rfl⟩).self_of_nhds
     let speed : Real := (S.base.metric (T - b ^ 2)).inner (gamma b)
@@ -803,7 +756,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
   have hfinal : d + laplacian (I := I) (LeviCivita (I := I)
         (S.base.metric (T - tau))) (S.base.metric (T - tau))
         (fun z : M ↦ Phi z tau) y ≤
-      ((Module.finrank Real E : Real) / 2 - redLength S T x y tau) / tau + eps := by
+      ((Module.finrank Real E : Real) / 2 - lRegularizedAction S T (η) 0 (Real.sqrt tau) / (2 * Real.sqrt tau)) / tau + eps := by
     calc
       _ ≤ (Module.finrank Real E : Real) / (2 * b * (b - a)) -
           Phi y tau / b ^ 2 + kval / (2 * b ^ 3) -
@@ -811,7 +764,7 @@ theorem exists_redWeak_sup [ConnectedSpace M]
       _ ≤ (Module.finrank Real E : Real) / (2 * b ^ 2) -
           Phi y tau / b ^ 2 + eps := by linarith [herr]
       _ = ((Module.finrank Real E : Real) / 2 -
-          redLength S T x y tau) / tau + eps := by
+          lRegularizedAction S T (η) 0 (Real.sqrt tau) / (2 * Real.sqrt tau)) / tau + eps := by
         rw [htouch, hbSq]
         field_simp [htau.ne']
   have hPhiEqMem : {z : M |
@@ -834,9 +787,438 @@ theorem exists_redWeak_sup [ConnectedSpace M]
         (fun w : M ↦ (head + fixed w) / (2 * b)) :=
       Filter.eventuallyEq_of_mem (hWopen.mem_nhds hz.2) hWsub
     exact (hPsi.congr_of_eventuallyEq hEq).contMDiffWithinAt
-  refine ⟨U', J, Phi, d, hU'open, hyU', hJopen, htauJ, hJsub, ?_,
+  have hJtail : J ⊆ Ioo (a ^ 2) sigma := by
+    intro rho hrho
+    have hN : (y, rho) ∈ N := hprod (Set.mem_prod.2 ⟨hyU, hrho⟩)
+    exact hN.2.2
+  refine ⟨a, ha0, hab, U', J, Phi, d, hU'open, hyU', hJopen, htauJ, hJtail, ?_,
     htouch, hPhiSmooth, hPhiDeriv, hfinal⟩
   intro z hz rho hrho
   exact hsupport z hz.1.1 rho hrho
 
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_redWeak_sup [ConnectedSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (K T sigma tau : Real)
+    (hg : RiemannianMetricComplete (I := I) (S.base.metric T))
+    (htau : 0 < tau) (htausigma : tau < sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (hRm : ∀ q ∈ Icc (T - sigma) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K)
+    (x y : M) (eps : Real) (heps : 0 < eps) :
+    ∃ (U : Set M) (J : Set Real) (Phi : M → Real → Real) (d : Real),
+      IsOpen U ∧ y ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
+      J ⊆ Ioo (0 : Real) sigma ∧
+      (∀ z ∈ U, ∀ rho ∈ J,
+        redLength S T x z rho ≤ Phi z rho) ∧
+      Phi y tau = redLength S T x y tau ∧
+      ContMDiffOn I 𝓘(Real, Real) ∞ (fun z : M ↦ Phi z tau) U ∧
+      HasDerivAt (Phi y) d tau ∧
+      d + laplacian (I := I) (LeviCivita (I := I)
+          (S.base.metric (T - tau))) (S.base.metric (T - tau))
+          (fun z : M ↦ Phi z tau) y ≤
+        ((Module.finrank Real E : Real) / 2 - redLength S T x y tau) / tau + eps := by
+  classical
+  let b : Real := Real.sqrt tau
+  have hb : 0 < b := by simpa only [b] using Real.sqrt_pos.2 htau
+  have hbSq : b ^ 2 = tau := by simpa only [b] using Real.sq_sqrt htau.le
+  have hsigma : 0 < sigma := htau.trans htausigma
+  have hregTau : Icc (T - tau) T ⊆ D.regular := by
+    intro q hq
+    apply hreg
+    constructor
+    · linarith [hq.1, htausigma]
+    · exact hq.2
+  have hRmTau : ∀ q ∈ Icc (T - tau) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric q) z 4 (S.base.rm04 q z) ≤ K := by
+    intro q hq z
+    exact hRm q (by
+      constructor
+      · linarith [hq.1, htausigma]
+      · exact hq.2) z
+  obtain ⟨alpha0, halpha0, halpha00, halpha0b⟩ :
+      ∃ alpha0 : Real → M, ContMDiff 𝓘(Real, Real) I 1 alpha0 ∧
+        alpha0 0 = x ∧ alpha0 (Real.sqrt tau) = y := by
+    let g := S.base.metric T
+    let : RiemannianBundle (TangentSpace I : M → Type _) :=
+      ⟨g.toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle E
+        (TangentSpace I : M → Type _) :=
+      ⟨g.inner, g.contMDiff.continuous, fun _ _ _ ↦ rfl⟩
+    have hxy : Manifold.riemannianEDist I x y < (⊤ : ENNReal) :=
+      lt_of_le_of_ne le_top
+        (DifferentialGeometry.Geometry.Riemannian.Exponential.riemannianEDist_ne_top
+          (I := I) x y)
+    obtain ⟨path, hpath, _hlen⟩ :=
+      Manifold.exists_path_isContMDiffWithSittingInstants_of_riemannianEDist_lt
+        (I := I) hxy
+    let alpha0 : Real → M := fun s ↦ path.extend (s / b)
+    have halpha0 : ContMDiff 𝓘(Real, Real) I 1 alpha0 := by
+      apply hpath.contMDiff.comp
+      rw [contMDiff_iff_contDiff]
+      fun_prop
+    refine ⟨alpha0, halpha0, ?_, ?_⟩
+    · simp only [alpha0, zero_div, Path.extend_zero]
+    · simp only [alpha0, b, div_self hb.ne', Path.extend_one]
+  obtain ⟨gamma, _, hgamma, hgamma0, hgammab, hgammaCost, hgammaMin, _⟩ :=
+    exists_lRegularizedMin_rm S hS K T hg 0 b le_rfl hb
+      (by simpa only [hbSq] using hregTau) (by simpa only [hbSq] using hRmTau)
+      x y alpha0 halpha0 halpha00 halpha0b
+  obtain ⟨η, hη, heq⟩ := DifferentialGeometry.Topology.exists_contMDiff_extension_Icc hgamma
+  have hη0 : η 0 = x := (heq ⟨le_rfl, hb.le⟩).trans hgamma0
+  have hηb : η b = y := (heq ⟨hb.le, le_rfl⟩).trans hgammab
+  have hηact : lRegularizedAction S T η 0 b = lRegularizedAction S T gamma 0 b := by
+    apply lRegularizedAction_congr
+    intro s hs
+    rw [uIoo_of_le hb.le] at hs
+    exact heq (Ioo_subset_Icc_self hs)
+  have hηmin : ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = η 0 → δ b = η b →
+      lRegularizedAction S T η 0 b ≤ lRegularizedAction S T δ 0 b := by
+    intro δ hδ hδ0 hδb
+    rw [hηact]
+    exact hgammaMin δ hδ (hδ0.trans hη0) (hδb.trans hηb)
+  obtain ⟨a, ha, hat, U, J, Phi, d, hU, hyU, hJ, htJ, hJsub, hbranch, hcontact, hsm, hd, htrace⟩ :=
+    exists_endpoint_action_branch_of_minimal S hS T sigma tau htau htausigma hreg x η hη hη0 hηmin eps heps
+  have hcost : lRegularizedAction S T η 0 b = lCost S T x y tau := by
+    rw [hηact, hgammaCost, lCost_eq_regularity S T x y tau htau.le]
+  have hJpos : J ⊆ Ioo 0 sigma := fun rho hrho =>
+    ⟨(sq_nonneg a).trans_lt (hJsub hrho).1, (hJsub hrho).2⟩
+  have hred : lRegularizedAction S T η 0 (Real.sqrt tau) / (2 * Real.sqrt tau) =
+      redLength S T x y tau := by rw [show Real.sqrt tau = b from rfl, hcost]; rfl
+  have hηtau : η (Real.sqrt tau) = y := hηb
+  rw [hηtau] at hyU hcontact hd htrace
+  rw [hred] at hcontact htrace
+  refine ⟨U, J, Phi, d, hU, hyU, hJ, htJ, hJpos, ?_, hcontact, hsm, hd, htrace⟩
+  intro z hz rho hrho
+  obtain ⟨beta, hbeta, hnode, hend, hPhi⟩ := hbranch z hz rho hrho
+  have hrho0 := (hJpos hrho).1
+  have hsqrt : 0 < Real.sqrt rho := Real.sqrt_pos.mpr hrho0
+  have hac : a < Real.sqrt rho := (Real.lt_sqrt ha.le).mpr (hJsub hrho).1
+  have hregC : Icc (T - (Real.sqrt rho) ^ 2) T ⊆ D.regular := by
+    intro t ht
+    apply hreg
+    rw [Real.sq_sqrt hrho0.le] at ht
+    exact ⟨(sub_le_sub_left (hJpos hrho).2.le T).trans ht.1, ht.2⟩
+  have hRmC : ∀ t ∈ Icc (T - (Real.sqrt rho) ^ 2) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric t) z 4 (S.base.rm04 t z) ≤ K := by
+    intro t ht z
+    rw [Real.sq_sqrt hrho0.le] at ht
+    exact hRm t ⟨(sub_le_sub_left (hJpos hrho).2.le T).trans ht.1, ht.2⟩ z
+  have hbdd := lRegularizedCosts_bdd_rm S hS K T 0 (Real.sqrt rho) le_rfl hsqrt.le hregC hRmC x z
+  have hclock : ∀ s ∈ Icc 0 (Real.sqrt rho), T - s ^ 2 ∈ D.regular := by
+    intro s hs
+    exact hregC ⟨sub_le_sub_left (pow_le_pow_left₀ hs.1 hs.2 2) T, sub_le_self _ (sq_nonneg s)⟩
+  have hh := lCost_le_join_bdd S hS T (Real.sqrt rho) hsqrt x z ha hac hbdd hclock
+    η beta hη.contMDiffOn hbeta hnode.symm hη0 hend
+  rw [Real.sq_sqrt hrho0.le] at hh
+  rw [hPhi]
+  exact div_le_div_of_nonneg_right hh (mul_pos (by norm_num) hsqrt).le
+
+
+omit [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_upper_support_of_free_endpoint_minimizers_on
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (V : Set ℝ) (hV : IsOpen V) (htauV : tau ∈ V)
+    (hVsub : V ⊆ Ioo 0 sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (x : M) (η : ℝ → ℝ → M)
+    (hη : ∀ rho ∈ V, ContMDiff 𝓘(ℝ, ℝ) I 1 (η rho))
+    (hstart : ∀ rho ∈ V, η rho 0 = x)
+    (hmin : ∀ rho ∈ V, ∀ δ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = x →
+      lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+        lRegularizedAction S T δ 0 (Real.sqrt rho))
+    (eps : ℝ) (heps : 0 < eps) :
+    ∃ (U : Set M) (J : Set ℝ) (Phi : M → ℝ → ℝ) (d : ℝ),
+      IsOpen U ∧ η tau (Real.sqrt tau) ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
+      J ⊆ V ∧
+      (∀ z ∈ U, ∀ rho ∈ J,
+        lRegularizedAction S T (η rho) 0 (Real.sqrt rho) / (2 * Real.sqrt rho) ≤ Phi z rho) ∧
+      Phi (η tau (Real.sqrt tau)) tau =
+        lRegularizedAction S T (η tau) 0 (Real.sqrt tau) / (2 * Real.sqrt tau) ∧
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun z => Phi z tau) U ∧
+      HasDerivAt (Phi (η tau (Real.sqrt tau))) d tau ∧
+      d + laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+        (S.base.metric (T - tau)) (fun z => Phi z tau) (η tau (Real.sqrt tau)) ≤
+        ((Module.finrank ℝ E : ℝ) / 2 -
+          lRegularizedAction S T (η tau) 0 (Real.sqrt tau) / (2 * Real.sqrt tau)) / tau + eps := by
+  have htau := (hVsub htauV).1
+  have htausigma := (hVsub htauV).2
+  obtain ⟨a, ha, hat, U, J, Phi, d, hU, hyU, hJ, htJ, hJsub, hbranch, hcontact, hsm, hd, htrace⟩ :=
+    exists_endpoint_action_branch_of_minimal S hS T sigma tau htau htausigma hreg x
+      (η tau) (hη tau htauV) (hstart tau htauV)
+      (fun δ hδ hδ0 _ => hmin tau htauV δ hδ (hδ0.trans (hstart tau htauV)))
+      eps heps
+  have hJpos : J ⊆ Ioo 0 sigma := fun rho hrho =>
+    ⟨(sq_nonneg a).trans_lt (hJsub hrho).1, (hJsub hrho).2⟩
+  refine ⟨U, J ∩ V, Phi, d, hU, hyU, hJ.inter hV, ⟨htJ, htauV⟩,
+    inter_subset_right, ?_, hcontact, hsm, hd, htrace⟩
+  intro z hz rho hrho
+  obtain ⟨beta, hbeta, hnode, hend, hPhi⟩ := hbranch z hz rho hrho.1
+  have hrho0 := (hJpos hrho.1).1
+  have hsqrt : 0 < Real.sqrt rho := Real.sqrt_pos.mpr hrho0
+  have hac : a < Real.sqrt rho := by
+    exact (Real.lt_sqrt ha.le).mpr (hJsub hrho.1).1
+  have hclock : ∀ s ∈ Icc 0 (Real.sqrt rho), T - s ^ 2 ∈ D.carrier := by
+    intro s hs
+    apply D.regular_subset
+    apply hreg
+    have hh : s ^ 2 ≤ rho := (pow_le_pow_left₀ hs.1 hs.2 2).trans_eq (Real.sq_sqrt hrho0.le)
+    exact ⟨by linarith [(hJpos hrho.1).2], sub_le_self _ (sq_nonneg s)⟩
+  have hle : lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+      lRegularizedAction S T (η tau) 0 a + lRegularizedAction S T beta a (Real.sqrt rho) := by
+    apply le_of_forall_pos_le_add
+    intro ε hε
+    obtain ⟨ζ, hζ, hζ0, _, hζact⟩ := exists_lRegularizedAction_join_lt_on_carrier
+      S hS.smoothMetric ⟨hS.scalarCont⟩ T 0 a (Real.sqrt rho) ha hac (η tau) beta
+      (hη tau htauV).contMDiffOn hbeta hnode.symm hclock hε
+    exact (hmin rho hrho.2 ζ hζ (hζ0.trans (hstart tau htauV))).trans hζact.le
+  rw [hPhi]
+  exact div_le_div_of_nonneg_right hle (mul_pos (by norm_num) hsqrt).le
+
+
+omit [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_upper_support_of_free_endpoint_minimizers
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (htau : 0 < tau) (htausigma : tau < sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (x : M) (η : ℝ → ℝ → M)
+    (hη : ∀ rho ∈ Ioo 0 sigma, ContMDiff 𝓘(ℝ, ℝ) I 1 (η rho))
+    (hstart : ∀ rho ∈ Ioo 0 sigma, η rho 0 = x)
+    (hmin : ∀ rho ∈ Ioo 0 sigma, ∀ δ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = x →
+      lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+        lRegularizedAction S T δ 0 (Real.sqrt rho))
+    (eps : ℝ) (heps : 0 < eps) :
+    ∃ (U : Set M) (J : Set ℝ) (Phi : M → ℝ → ℝ) (d : ℝ),
+      IsOpen U ∧ η tau (Real.sqrt tau) ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
+      J ⊆ Ioo 0 sigma ∧
+      (∀ z ∈ U, ∀ rho ∈ J,
+        lRegularizedAction S T (η rho) 0 (Real.sqrt rho) / (2 * Real.sqrt rho) ≤ Phi z rho) ∧
+      Phi (η tau (Real.sqrt tau)) tau =
+        lRegularizedAction S T (η tau) 0 (Real.sqrt tau) / (2 * Real.sqrt tau) ∧
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun z => Phi z tau) U ∧
+      HasDerivAt (Phi (η tau (Real.sqrt tau))) d tau ∧
+      d + laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+        (S.base.metric (T - tau)) (fun z => Phi z tau) (η tau (Real.sqrt tau)) ≤
+        ((Module.finrank ℝ E : ℝ) / 2 -
+          lRegularizedAction S T (η tau) 0 (Real.sqrt tau) / (2 * Real.sqrt tau)) / tau + eps := by
+  exact exists_upper_support_of_free_endpoint_minimizers_on S hS T sigma tau (Ioo 0 sigma)
+    isOpen_Ioo ⟨htau, htausigma⟩ Subset.rfl hreg x η
+    hη hstart hmin eps heps
+
+
+omit [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_scaled_action_upper_support_of_free_endpoint_minimizers_on
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (V : Set ℝ) (hV : IsOpen V) (htauV : tau ∈ V)
+    (hVsub : V ⊆ Ioo 0 sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (x : M) (η : ℝ → ℝ → M)
+    (hη : ∀ rho ∈ V, ContMDiff 𝓘(ℝ, ℝ) I 1 (η rho))
+    (hstart : ∀ rho ∈ V, η rho 0 = x)
+    (hmin : ∀ rho ∈ V, ∀ δ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = x →
+      lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+        lRegularizedAction S T δ 0 (Real.sqrt rho))
+    (eps : ℝ) (heps : 0 < eps) :
+    ∃ (U : Set M) (J : Set ℝ) (F : M → ℝ → ℝ) (d : ℝ),
+      IsOpen U ∧ η tau (Real.sqrt tau) ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
+      J ⊆ V ∧
+      (∀ z ∈ U, ∀ rho ∈ J,
+        2 * Real.sqrt rho * lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤ F z rho) ∧
+      F (η tau (Real.sqrt tau)) tau =
+        2 * Real.sqrt tau * lRegularizedAction S T (η tau) 0 (Real.sqrt tau) ∧
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun z => F z tau) U ∧
+      HasDerivAt (F (η tau (Real.sqrt tau))) d tau ∧
+      d + laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+        (S.base.metric (T - tau)) (fun z => F z tau) (η tau (Real.sqrt tau)) ≤
+          2 * (Module.finrank ℝ E : ℝ) + eps := by
+  have htau := (hVsub htauV).1
+  obtain ⟨U, J, Phi, d, hU, hyU, hJ, htJ, hJsub, hbound, hcontact, hsm, hderiv, htrace⟩ :=
+    exists_upper_support_of_free_endpoint_minimizers_on S hS T sigma tau V hV htauV hVsub hreg
+      x η hη hstart hmin (eps / (4 * tau)) (div_pos heps (by positivity))
+  let y := η tau (Real.sqrt tau)
+  let F : M → ℝ → ℝ := fun z rho => 4 * rho * Phi z rho
+  have hscale (rho : ℝ) (hrho : 0 < rho) (A : ℝ) :
+      4 * rho * (A / (2 * Real.sqrt rho)) = 2 * Real.sqrt rho * A := by
+    have hs := Real.sq_sqrt hrho.le
+    field_simp [ne_of_gt (Real.sqrt_pos.mpr hrho)]
+    rw [hs]
+    ring
+  have hFsmooth : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun z => F z tau) U :=
+    contMDiffOn_const.mul hsm
+  have hFderiv : HasDerivAt (F y) (4 * Phi y tau + 4 * tau * d) tau := by
+    have hh := ((hasDerivAt_id tau).const_mul 4).mul hderiv
+    convert hh using 1 <;> first | rfl | simp only [y, id_eq, mul_one]
+  have hMD : ∀ᶠ z in 𝓝 y, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun z => Phi z tau) z := by
+    filter_upwards [hU.mem_nhds hyU] with z hz
+    exact (hsm.contMDiffAt (hU.mem_nhds hz)).mdifferentiableAt (by simp)
+  have hGrad := gradientFun_mdiffOn (E := E) (I := I) (M := M)
+    (U := U) (f := fun z => Phi z tau) (x := y) (S.base.metric (T - tau)) hU hsm hyU
+  have hFlap : laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+      (S.base.metric (T - tau)) (fun z => F z tau) y =
+      4 * tau * laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+        (S.base.metric (T - tau)) (fun z => Phi z tau) y := by
+    change laplacian (LeviCivita (S.base.metric (T - tau))) (S.base.metric (T - tau))
+      ((4 * tau) • (fun z => Phi z tau)) y = _
+    exact laplacian_smul_at (I := I) _ _ _ hMD hGrad
+  refine ⟨U, J, F, 4 * Phi y tau + 4 * tau * d, hU, hyU, hJ, htJ, hJsub, ?_, ?_, hFsmooth, hFderiv, ?_⟩
+  · intro z hz rho hrho
+    have hh := mul_le_mul_of_nonneg_left (hbound z hz rho hrho)
+      (mul_nonneg (by norm_num : (0 : ℝ) ≤ 4) (hVsub (hJsub hrho)).1.le)
+    rw [hscale rho (hVsub (hJsub hrho)).1] at hh
+    exact hh
+  · change 4 * tau * Phi y tau = _
+    rw [hcontact]
+    exact hscale tau htau _
+  · rw [hFlap]
+    have hh := mul_le_mul_of_nonneg_left htrace (by positivity : 0 ≤ 4 * tau)
+    have hcancel : 4 * tau *
+        (((Module.finrank ℝ E : ℝ) / 2 -
+          lRegularizedAction S T (η tau) 0 (Real.sqrt tau) / (2 * Real.sqrt tau)) / tau +
+            eps / (4 * tau)) =
+        2 * (Module.finrank ℝ E : ℝ) - 4 * Phi y tau + eps := by
+      rw [hcontact]
+      field_simp [htau.ne']
+      ring
+    rw [hcancel] at hh
+    linarith
+
+
+omit [SigmaCompactSpace M] in
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_scaled_action_upper_support_of_free_endpoint_minimizers
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (htau : 0 < tau) (htausigma : tau < sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (x : M) (η : ℝ → ℝ → M)
+    (hη : ∀ rho ∈ Ioo 0 sigma, ContMDiff 𝓘(ℝ, ℝ) I 1 (η rho))
+    (hstart : ∀ rho ∈ Ioo 0 sigma, η rho 0 = x)
+    (hmin : ∀ rho ∈ Ioo 0 sigma, ∀ δ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = x →
+      lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+        lRegularizedAction S T δ 0 (Real.sqrt rho))
+    (eps : ℝ) (heps : 0 < eps) :
+    ∃ (U : Set M) (J : Set ℝ) (F : M → ℝ → ℝ) (d : ℝ),
+      IsOpen U ∧ η tau (Real.sqrt tau) ∈ U ∧ IsOpen J ∧ tau ∈ J ∧
+      J ⊆ Ioo 0 sigma ∧
+      (∀ z ∈ U, ∀ rho ∈ J,
+        2 * Real.sqrt rho * lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤ F z rho) ∧
+      F (η tau (Real.sqrt tau)) tau =
+        2 * Real.sqrt tau * lRegularizedAction S T (η tau) 0 (Real.sqrt tau) ∧
+      ContMDiffOn I 𝓘(ℝ, ℝ) ∞ (fun z => F z tau) U ∧
+      HasDerivAt (F (η tau (Real.sqrt tau))) d tau ∧
+      d + laplacian (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+        (S.base.metric (T - tau)) (fun z => F z tau) (η tau (Real.sqrt tau)) ≤
+          2 * (Module.finrank ℝ E : ℝ) + eps := by
+  exact exists_scaled_action_upper_support_of_free_endpoint_minimizers_on S hS T sigma tau (Ioo 0 sigma)
+    isOpen_Ioo ⟨htau, htausigma⟩ Subset.rfl hreg x η
+    hη hstart hmin eps heps
+
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+open Set Filter
+open scoped Manifold ContDiff _root_.Topology
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
+open DifferentialGeometry.Geometry.Operator
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type u} [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {D : RealTimeInterval}
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_time_upper_support_of_free_endpoint_minimizers_on
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (V : Set ℝ) (hV : IsOpen V) (htauV : tau ∈ V)
+    (hVsub : V ⊆ Ioo 0 sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (x : M) (η : ℝ → ℝ → M)
+    (hη : ∀ rho ∈ V, ContMDiff 𝓘(ℝ, ℝ) I 1 (η rho))
+    (hstart : ∀ rho ∈ V, η rho 0 = x)
+    (hmin : ∀ rho ∈ V, ∀ δ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = x →
+      lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+        lRegularizedAction S T δ 0 (Real.sqrt rho))
+    (eps : ℝ) (heps : 0 < eps) :
+    let q := fun rho => 2 * Real.sqrt rho * lRegularizedAction S T (η rho) 0 (Real.sqrt rho) -
+      2 * (Module.finrank ℝ E : ℝ) * rho
+    ∃ (f : ℝ → ℝ) (d : ℝ),
+      (∀ᶠ rho in 𝓝 tau, q rho ≤ f rho) ∧ f tau = q tau ∧ HasDerivAt f d tau ∧ d ≤ eps := by
+  obtain ⟨U, J, F, d, hU, hyU, hJ, htJ, _, hbound, hcontact, hsm, hderiv, htrace⟩ :=
+    exists_scaled_action_upper_support_of_free_endpoint_minimizers_on S hS T sigma tau
+      V hV htauV hVsub hreg x η hη hstart hmin eps heps
+  let y := η tau (Real.sqrt tau)
+  have hFmin : IsLocalMin (fun z => F z tau) y := by
+    filter_upwards [hU.mem_nhds hyU] with z hz
+    rw [hcontact]
+    exact hbound z hz tau htJ
+  have hMD : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun z => F z tau) y :=
+    (hsm.contMDiffAt (hU.mem_nhds hyU)).mdifferentiableAt (by simp)
+  have hMDnear : ∀ᶠ z in 𝓝 y, MDifferentiableAt I 𝓘(ℝ, ℝ) (fun z => F z tau) z := by
+    filter_upwards [hU.mem_nhds hyU] with z hz
+    exact (hsm.contMDiffAt (hU.mem_nhds hz)).mdifferentiableAt (by simp)
+  have hgrad := gradientFun_mdiffOn (E := E) (I := I) (M := M)
+    (S.base.metric (T - tau)) hU hsm hyU
+  have hmc : IsMetricCompatible (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+      (S.base.metric (T - tau)) := by
+    simpa only [LeviCivita] using
+      (leviCivitaConnectionOfMetric_isMetricCompatible (I := I) (S.base.metric (T - tau)))
+  have hlap := laplacian_nonneg_at_spatial_min_of_metricCompatible
+    (I := I) (LeviCivita (I := I) (S.base.metric (T - tau)))
+    (S.base.metric (T - tau)) hmc hFmin hMD hMDnear hgrad
+  refine ⟨fun rho => F y rho - 2 * (Module.finrank ℝ E : ℝ) * rho,
+    d - 2 * (Module.finrank ℝ E : ℝ), ?_, ?_, ?_, ?_⟩
+  · filter_upwards [hJ.mem_nhds htJ] with rho hrho
+    exact sub_le_sub_right (hbound y hyU rho hrho) _
+  · exact congrArg (fun c => c - 2 * (Module.finrank ℝ E : ℝ) * tau) hcontact
+  · have hdlin : HasDerivAt (fun rho : ℝ => 2 * (Module.finrank ℝ E : ℝ) * rho)
+        (2 * (Module.finrank ℝ E : ℝ)) tau := by
+      convert ((hasDerivAt_id tau).const_mul (2 * (Module.finrank ℝ E : ℝ))) using 1 <;> first | rfl | simp only [mul_one]
+    convert hderiv.sub hdlin using 1 <;> rfl
+  · linarith
+
+
+attribute [-instance] DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  DifferentialGeometry.Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_time_upper_support_of_free_endpoint_minimizers
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T sigma tau : ℝ) (htau : 0 < tau) (htausigma : tau < sigma)
+    (hreg : Icc (T - sigma) T ⊆ D.regular)
+    (x : M) (η : ℝ → ℝ → M)
+    (hη : ∀ rho ∈ Ioo 0 sigma, ContMDiff 𝓘(ℝ, ℝ) I 1 (η rho))
+    (hstart : ∀ rho ∈ Ioo 0 sigma, η rho 0 = x)
+    (hmin : ∀ rho ∈ Ioo 0 sigma, ∀ δ : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = x →
+      lRegularizedAction S T (η rho) 0 (Real.sqrt rho) ≤
+        lRegularizedAction S T δ 0 (Real.sqrt rho))
+    (eps : ℝ) (heps : 0 < eps) :
+    let q := fun rho => 2 * Real.sqrt rho * lRegularizedAction S T (η rho) 0 (Real.sqrt rho) -
+      2 * (Module.finrank ℝ E : ℝ) * rho
+    ∃ (f : ℝ → ℝ) (d : ℝ),
+      (∀ᶠ rho in 𝓝 tau, q rho ≤ f rho) ∧ f tau = q tau ∧ HasDerivAt f d tau ∧ d ≤ eps := by
+  exact exists_time_upper_support_of_free_endpoint_minimizers_on S hS T sigma tau (Ioo 0 sigma)
+    isOpen_Ioo ⟨htau, htausigma⟩ Subset.rfl hreg x η
+    hη hstart hmin eps heps
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
