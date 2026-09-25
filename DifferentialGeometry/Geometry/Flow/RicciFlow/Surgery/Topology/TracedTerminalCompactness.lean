@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.BallImage
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.DomainEmbedding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureEscape
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
@@ -1283,6 +1286,95 @@ theorem RetainedCoreHistory.exists_normalized_pointed_convergence_at_scalar_esca
     hmetric, fun n => hfinite (f n), hdist.comp hf.tendsto_atTop, hscalarEscape.comp hf.tendsto_atTop⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+open Set Filter Manifold Bundle TopologicalSpace
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+private local instance {H : ObservedHistory.{u}} {last : Fin (H.eventCount + 1)} {s : ℝ}
+    (G : (H.stage last).IncomingSlab (H.time last) s) : SigmaCompactSpace G.terminalRegularOpen :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
+
+theorem exists_eventually_incomingFootprintLift_of_pointed_convergence
+    (H : ℕ → ObservedHistory.{u}) (last : ∀ i, Fin ((H i).eventCount + 1))
+    {s : ℕ → ℝ} (G : ∀ i, ((H i).stage (last i)).IncomingSlab ((H i).time (last i)) (s i))
+    (x : ∀ i, (G i).terminalRegularOpen)
+    (g : ∀ i, SmoothRiemannianMetric ThreeModel (G i).terminalRegularOpen)
+    (Q : ℕ → ℝ) (hQ : ∀ i, 0 < Q i)
+    {P : PointedRiemannianManifold.{u, 0, 0} ThreeModel} {phi : ℕ → ℕ}
+    (F : PointedRiemannianConvergenceMaps
+      { obj := fun i => { M := (G i).terminalRegularOpen, basepoint := x i, metric := g i } } P phi)
+    {rho : ℝ} (hrho : 0 < rho)
+    (hradial : ∀ z : P.M, riemannianEDistOf P.metric P.basepoint z < ENNReal.ofReal rho)
+    (hcompact : ∀ R : ℝ, 0 ≤ R → R < rho →
+      IsCompact (riemannianClosedBallOf P.metric P.basepoint R))
+    (hupper : ∀ K : Set P.M, IsCompact K → ∀ C : ℝ, 1 < C → ∀ᶠ i in atTop,
+      ∀ z ∈ K, ∀ v : TangentSpace ThreeModel z,
+        (g (phi i)).inner (F.map i z)
+          (mfderiv ThreeModel ThreeModel (F.map i) z v)
+          (mfderiv ThreeModel ThreeModel (F.map i) z v) ≤ C ^ 2 * P.metric.inner z v v)
+    (hbuffer : ∀ R : ℝ, 0 < R → R < rho → ∃ θ : ℝ, 0 < θ ∧ ∀ᶠ i in atTop,
+      ∃ first : Fin ((H (phi i)).eventCount + 1), ∃ hle : first ≤ last (phi i),
+        (∀ y ∈ riemannianClosedBallOf (g (phi i)) (x (phi i)) R,
+          Nonempty (BackwardPointTrace (H (phi i)) first (last (phi i)) hle y.val)) ∧
+        (H (phi i)).time first ≤ s (phi i) - θ / Q (phi i))
+    (V : Opens P.M) (hV : IsCompact (closure (V : Set P.M))) :
+    ∃ R θ : ℝ, 0 < R ∧ R < rho ∧ 0 < θ ∧ (∀ i, 0 < θ / Q i) ∧ ∀ᶠ i in atTop,
+      ∃ first : Fin ((H (phi i)).eventCount + 1), ∃ hle : first ≤ last (phi i),
+      ∃ Ψ : V → (H (phi i)).backwardSurvivorIncomingFootprint first (last (phi i)) hle
+        (G (phi i)) (riemannianClosedBallOf (g (phi i)) (x (phi i)) R),
+        (∀ y ∈ riemannianClosedBallOf (g (phi i)) (x (phi i)) R,
+          Nonempty (BackwardPointTrace (H (phi i)) first (last (phi i)) hle y.val)) ∧
+        (H (phi i)).time first ≤ s (phi i) - θ / Q (phi i) ∧
+        IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ ∧ Function.Injective Ψ ∧
+        (H (phi i)).backwardSurvivorIncomingFootprintMap first (last (phi i)) hle
+          (G (phi i)) (riemannianClosedBallOf (g (phi i)) (x (phi i)) R) ∘ Ψ =
+            (fun z : V => F.map i z.val) := by
+  obtain ⟨R, hR, hRrho, hmaps⟩ :=
+    F.exists_eventually_image_compact_subset_inner_ball hrho hradial hcompact hupper hV
+  obtain ⟨θ, hθ, hbuffer⟩ := hbuffer R hR hRrho
+  refine ⟨R, θ, hR, hRrho, hθ, fun i => div_pos hθ (hQ i), ?_⟩
+  filter_upwards [hmaps, hbuffer] with i hi hbi
+  obtain ⟨first, hle, htrace, hstart⟩ := hbi
+  let Fv : V → (G (phi i)).terminalRegularOpen := fun z => F.map i z.val
+  have hFv : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Fv := by
+    apply DifferentialGeometry.isLocalDiffeomorph_restrict_open V
+    intro z
+    exact (F.partialDiffeomorph i).isLocalDiffeomorphAt ThreeModel ThreeModel ∞
+      (hi.1 (subset_closure z.property))
+  have hFvinj : Function.Injective Fv := by
+    intro z w hzw
+    apply Subtype.ext
+    exact (F.partialDiffeomorph i).toPartialEquiv.injOn
+      (hi.1 (subset_closure z.property)) (hi.1 (subset_closure w.property)) hzw
+  let K := riemannianClosedBallOf (g (phi i)) (x (phi i)) R
+  have himage (z : V) : Fv z ∈ interior K :=
+    Geometry.Metric.riemannianBallOf_subset_interior_riemannianClosedBallOf
+      (g (phi i)) (x (phi i)) R (hi.2 ⟨z.val, subset_closure z.property, rfl⟩)
+  exact ⟨first, hle,
+    (H (phi i)).backwardSurvivorIncomingFootprintLift first (last (phi i)) hle
+      (G (phi i)) K htrace Fv himage, htrace, hstart,
+    (H (phi i)).backwardSurvivorIncomingFootprintLift_isLocalDiffeomorph first (last (phi i)) hle
+      (G (phi i)) K htrace Fv himage hFv,
+    (H (phi i)).backwardSurvivorIncomingFootprintLift_injective first (last (phi i)) hle
+      (G (phi i)) K htrace Fv himage hFvinj,
+    rfl⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
 end

@@ -667,3 +667,39 @@ theorem localPullMetric_backwardSurvivorTerminalFaceMetric_eq_slab_of_initial_eq
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 end
+
+
+noncomputable section
+
+open Manifold TopologicalSpace
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) {first next last : Fin (H.eventCount + 1)}
+  {hfirst : first ≤ last} {hnext : next ≤ last} (hfn : first ≤ next)
+
+theorem localPullMetric_backwardSurvivorSlabMetric_restrictFirst
+    (j : Fin H.eventCount) (hj : next ≤ j.castSucc) (hl : j.succ ≤ last)
+    (t : ℝ) :
+    localPullMetric (H.backwardSurvivorSlabMetric next last hnext j hj hl t)
+      (Opens.inclusion (H.backwardSurvivorDomain_mono_first hfn))
+      (H.backwardSurvivorDomain_inclusion_isLocalDiffeomorph
+        (hfirst := hfirst) (hnext := hnext) hfn) =
+      H.backwardSurvivorSlabMetric first last hfirst j (hfn.trans hj) hl t := by
+  rw [backwardSurvivorSlabMetric, localPullMetric_comp _ _ _ _ _
+    (isLocalDiffeomorph_comp
+      (H.backwardSurvivorTerminalMap_isLocalDiffeomorph next last hnext j hj hl)
+      (H.backwardSurvivorDomain_inclusion_isLocalDiffeomorph
+        (hfirst := hfirst) (hnext := hnext) hfn))]
+  have heq := H.backwardSurvivorTerminalMap_comp_inclusion_first
+    (hfirst := hfirst) (hnext := hnext) hfn j hj hl
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  simp only [localPullMetric_inner, backwardSurvivorSlabMetric_inner]
+  rw [heq]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end

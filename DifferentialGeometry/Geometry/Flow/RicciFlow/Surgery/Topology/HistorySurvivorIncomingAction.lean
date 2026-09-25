@@ -505,3 +505,45 @@ theorem RetainedCoreHistory.exists_incomingFootprint_regularizedCost_minimum
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold Bundle TopologicalSpace
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u uE uH uM
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {XH : Type uH} [TopologicalSpace XH] {I : ModelWithCorners ℝ E XH}
+  {M : Type uM}
+  (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1))
+  (hle : first ≤ last) {s : ℝ}
+  (G : (H.stage last).IncomingSlab (H.time last) s)
+  (K : Set G.terminalRegularOpen)
+  (htrace : ∀ y ∈ K, Nonempty (BackwardPointTrace H first last hle y.val))
+
+variable (F : M → G.terminalRegularOpen)
+  (himage : ∀ z : M, F z ∈ interior K)
+
+theorem backwardSurvivorIncomingFootprintStageMap_lift_eq_point
+    (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hl : j ≤ last) (z : M)
+    (A : BackwardPointTrace H first last hle (F z).val) :
+    H.backwardSurvivorIncomingFootprintStageMap first last hle G K j hf hl
+      (H.backwardSurvivorIncomingFootprintLift first last hle G K htrace F himage z) =
+      A.point j hf hl :=
+  H.backwardSurvivorMap_eq_point first last hle j hf hl
+    (H.backwardSurvivorIncomingFootprintLift first last hle G K htrace F himage z).val.val A
+
+theorem backwardSurvivorIncomingFootprintStageMap_lift_last (z : M) :
+    H.backwardSurvivorIncomingFootprintStageMap first last hle G K last hle le_rfl
+      (H.backwardSurvivorIncomingFootprintLift first last hle G K htrace F himage z) =
+      (F z).val :=
+  H.backwardSurvivorIncomingFootprintStageMap_last first last hle G K _
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+end

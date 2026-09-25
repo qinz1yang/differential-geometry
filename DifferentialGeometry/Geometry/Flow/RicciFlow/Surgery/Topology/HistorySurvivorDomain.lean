@@ -214,3 +214,51 @@ theorem subset_backwardSurvivorDomain_iff {F : Set (H.stage last).Carrier} :
 end ObservedHistory
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) {first next last : Fin (H.eventCount + 1)}
+  {hfirst : first ≤ last} {hnext : next ≤ last} (hfn : first ≤ next)
+
+include hfn in
+theorem backwardSurvivorDomain_mono_first :
+    H.backwardSurvivorDomain first last hfirst ≤ H.backwardSurvivorDomain next last hnext := by
+  intro x hx
+  exact ⟨(Classical.choice hx).restrictFirst hfn hnext⟩
+
+theorem backwardSurvivorMap_comp_inclusion_first
+    (j : Fin (H.eventCount + 1)) (hj : next ≤ j) (hl : j ≤ last) :
+    H.backwardSurvivorMap next last hnext j hj hl ∘
+      Opens.inclusion (H.backwardSurvivorDomain_mono_first hfn) =
+      H.backwardSurvivorMap first last hfirst j (hfn.trans hj) hl := by
+  funext x
+  let A := Classical.choice x.property
+  exact (H.backwardSurvivorMap_eq_point next last hnext j hj hl
+    (Opens.inclusion (H.backwardSurvivorDomain_mono_first hfn) x)
+    (A.restrictFirst hfn hnext)).trans
+      (H.backwardSurvivorMap_eq_point first last hfirst j (hfn.trans hj) hl x A).symm
+
+theorem backwardSurvivorTerminalMap_comp_inclusion_first
+    (j : Fin H.eventCount) (hj : next ≤ j.castSucc) (hl : j.succ ≤ last) :
+    H.backwardSurvivorTerminalMap next last hnext j hj hl ∘
+      Opens.inclusion (H.backwardSurvivorDomain_mono_first hfn) =
+      H.backwardSurvivorTerminalMap first last hfirst j (hfn.trans hj) hl := by
+  funext x
+  apply Subtype.ext
+  exact congrFun (H.backwardSurvivorMap_comp_inclusion_first hfn j.castSucc hj
+    (j.castSucc_lt_succ.le.trans hl)) x
+
+include hfn in
+theorem backwardSurvivorDomain_inclusion_isLocalDiffeomorph :
+    IsLocalDiffeomorph ThreeModel ThreeModel ∞
+      (Opens.inclusion (H.backwardSurvivorDomain_mono_first (hfirst := hfirst)
+        (hnext := hnext) hfn)) := by
+  apply DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv _
+    (contMDiff_inclusion (H.backwardSurvivorDomain_mono_first hfn)) _ rfl
+  intro x
+  rw [mfderiv_opens_incl]
+  exact Function.injective_id
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
