@@ -16,25 +16,26 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34BigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34TraceNormalization
+import DifferentialGeometry.Topology.PiecewiseLinear.ControlledGraphNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34Control
 
 /-!
 # Normalised face balls for Section 34
 
 The current assembly takes `Section34ControlStatement` and
 `ControlledGraphNeighborhoodStatement`; tame nested cells are supplied by `moise305Tame`.
-All leaf proofs are imported. The notes below record the historical decomposition.
+All leaf proofs are imported.  Both hypotheses are theorems of the tree (`section34Control`,
+`controlledGraphNeighborhoodStatement`), so `section34NormalFamilyStatement` proves the
+endpoint without hypotheses.  The notes below record the historical decomposition.
 
 The assembly `section34NormalFamily` proves the endpoint `Section34NormalFamilyStatement` for
 real from five of the six leaves of this file; every `sorry` is a leaf and none sits inside
-an assembly.  The endpoint is stated so that it matches, binder for binder, the frozen leaf
-`exists_section34NormalFamily` of the terminal skeleton, whose hypotheses are
+an assembly.  The endpoint is stated with the binder list of the terminal assembly
+`section34CellDiagram` (module `Section34Terminal`), whose hypotheses are
 `[Nonempty M₁] [T2Space M₁] [SecondCountableTopology M₁] [SecondCountableTopology M₂]`,
 `[HasGroupoid M₁ (plGroupoid 3)]`, `[HasGroupoid M₂ (plGroupoid 3)]`, `IsOpen U`,
-`Topology.IsEmbedding (U.domRestrict h)`, `ContinuousOn η U` and `∀ x ∈ U, 0 < η x`.  Skeletons
-cannot import each other, so the match is textual: the terminal skeleton discharges its leaf by
-`intro`ducing that binder list and applying this endpoint to the two named propositions of
-the real module `Section34Statements` and to `hU hh hηc hηpos`, the four
-explicit hypotheses being in the same order in both statements.
+`Topology.IsEmbedding (U.domRestrict h)`, `ContinuousOn η U` and `∀ x ∈ U, 0 < η x`; that
+assembly applies `section34NormalFamilyStatement` to `hU hh hηc hηpos`.
 
 What is taken as given and what is produced.  `Section34ControlStatement` (step P0) supplies the
 realisation ambient `EuclideanSpace ℝ (Fin N)`, the triangulation `𝒦`, the combinatorial
@@ -478,5 +479,8 @@ theorem section34NormalFamily (hP0 : Section34ControlStatement.{u})
     fun s w Dj Jd h1 h2 h3 h4 h5 h6 => hnc s ⟨w, Dj, Jd, h1, h2, h3, h4, h5, h6⟩,
     fun s w e B B' Bb Dj Jd h1 h2 h3 h4 h5 h6 h7 h8 h9 h10 h11 h12 =>
       hnb s ⟨w, e, B, B', Bb, Dj, Jd, h1, h2, h3, h4, h5, h6, h7, h8, h9, h10, h11, h12⟩⟩
+
+theorem section34NormalFamilyStatement : Section34NormalFamilyStatement.{u} :=
+  section34NormalFamily section34Control controlledGraphNeighborhoodStatement
 
 end DifferentialGeometry.Topology.PiecewiseLinear
