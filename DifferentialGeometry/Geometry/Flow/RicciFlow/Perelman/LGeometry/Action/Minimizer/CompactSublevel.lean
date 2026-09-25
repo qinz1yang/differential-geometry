@@ -220,6 +220,34 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivativ
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedMinC1_free_endpoint_of_compact_action_sublevel [TopologicalSpace.MetrizableSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b : ℝ} (hab : a < b)
+    (hreg : ∀ r ∈ Icc a b, T - r ^ 2 ∈ D.regular)
+    (x : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
+    (hstart : α₀ a = x)
+    (Q : Set M) (hQ : IsCompact Q)
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α →
+      α a = x → lRegularizedAction S T α a b ≤ lRegularizedAction S T α₀ a b →
+      MapsTo α (Icc a b) Q) :
+    ∃ η : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 η ∧ η a = x ∧
+      MapsTo η (Icc a b) Q ∧
+      ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x →
+        lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
+  apply exists_lRegularizedMinC1_free_endpoint_of_compact_action_sublevel_of_spatial_derivatives S hS T hab
+    D.regular D.regular_subset hreg (fun r hr => hreg r (Ioo_subset_Icc_self hr))
+    ?_ ?_ x α₀ hα₀ hstart Q hQ hconf
+  · intro p
+    exact ((chartGramOp_smooth hS.smoothMetric p (K := interior (extChartAt I p).target) Subset.rfl).fderiv_snd
+      (G := fun t y => chartGramOp (I := I) S.family p (t, y)) isOpen_interior (m := 0) (by simp)).continuousOn
+  · intro p
+    exact ((chartScalFun_smooth S hS p).fderiv_snd
+      (G := fun t y => DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar t) y)
+      isOpen_interior (m := 0) (by simp)).continuousOn
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_lRegularizedMinC1_of_compact_action_sublevel [TopologicalSpace.MetrizableSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
     {a b : ℝ} (hab : a < b)

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.DomainContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Ray.ActionIntegrability
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
@@ -125,3 +126,118 @@ theorem mem_lRegularizedDomain_and_edist_lt_of_prefix_speed_le
       (lRegularizedDomain_segment S T x Z hsdom hu.1 hu.2))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+noncomputable section
+open Set Bundle
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
+open scoped Manifold ContDiff ENNReal
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+ [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+
+theorem mem_lRegularizedDomain_and_edist_lt_of_local_gradient_ricci_bounds
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    (g : SmoothRiemannianMetric I M) {b r A G K R : ℝ}
+    (hb : 0 < b) (hr : 0 < r) (hA : 0 ≤ A) (hG : 0 ≤ G) (hK : 0 ≤ K)
+    (hslab : Icc (T - b ^ 2) T ⊆ D.regular)
+    (hcpt : IsCompact {y : M | riemannianEDistOf g x y ≤ ENNReal.ofReal r})
+    (hcompare : ∀ q ∈ Icc (0 : ℝ) b, ∀ y : M,
+      riemannianEDistOf g x y ≤ ENNReal.ofReal r → ∀ w : TangentSpace I y,
+      g.inner y w w ≤ A * (S.base.metric (T - q ^ 2)).inner y w w)
+    (hgrad : ∀ q ∈ Icc (0 : ℝ) b, ∀ y : M,
+      riemannianEDistOf g x y ≤ ENNReal.ofReal r → ∀ w : TangentSpace I y,
+      |(S.base.metric (T - q ^ 2)).inner y (gradientFun (S.base.metric (T - q ^ 2)) (S.scalar (T - q ^ 2)) y) w| ≤
+        G * Real.sqrt ((S.base.metric (T - q ^ 2)).inner y w w))
+    (hric : ∀ q ∈ Icc (0 : ℝ) b, ∀ y : M,
+      riemannianEDistOf g x y ≤ ENNReal.ofReal r → ∀ w : TangentSpace I y,
+      |S.ricciAt (T - q ^ 2) y (vec2 w w)| ≤ K * (S.base.metric (T - q ^ 2)).inner y w w)
+    (hreach : b * Real.sqrt (A * (Real.exp ((1 + 2 * G * b ^ 2 + 4 * K * b) * b) * (4 * R ^ 2 + 1))) < r)
+    (Z : TangentSpace I x) (hZ : (S.base.metric T).inner x Z Z ≤ R ^ 2) :
+    b ∈ lRegularizedDomain S T x Z ∧ ∀ q ∈ Icc (0 : ℝ) b,
+      riemannianEDistOf g x (lRegularizedCurve S T x Z q) < ENNReal.ofReal r := by
+  let Q := Real.exp ((1 + 2 * G * b ^ 2 + 4 * K * b) * b) * (4 * R ^ 2 + 1)
+  have hT : T ∈ D.regular := hslab ⟨sub_le_self _ (sq_nonneg b), le_rfl⟩
+  have hzero : lRegularizedSpeedSq S T (lRegularizedCurve S T x Z) 0 ≤ 4 * R ^ 2 := by
+    unfold lRegularizedSpeedSq
+    norm_num only [zero_pow, sub_zero]
+    rw [lRegularizedCurve_zero, lRegularizedCurve_velocity_zero S hS T x Z hT]
+    have hh := metric_smul2 (I := I) (S.base.metric T) (2 : ℝ) Z
+    nlinarith [hZ]
+  apply mem_lRegularizedDomain_and_edist_lt_of_prefix_speed_le S hS T x Z g b r A Q hb.le hr hA
+    hslab hcpt hcompare ?_ hreach
+  intro q hq hqdom hstay
+  have hc : 0 < 1 + 2 * G * b ^ 2 + 4 * K * b := by positivity
+  have hC : 1 ≤ Real.exp ((1 + 2 * G * b ^ 2 + 4 * K * b) * b) :=
+    Real.one_le_exp_iff.mpr (mul_nonneg hc.le hb.le)
+  by_cases hqzero : q = 0
+  · subst q
+    exact hzero.trans (by dsimp [Q]; nlinarith [sq_nonneg R])
+  have hqpos : 0 < q := lt_of_le_of_ne hq.1 (Ne.symm hqzero)
+  have hcurve := lRegularizedCurve_isLRegularizedCurveOn S hS T x Z hqpos hqdom
+  have hg := lRegularizedSpeedSq_le_of_gradient_ricci_bounds S hS T hcurve 0 q G K b hG hK
+    Subset.rfl (fun s hs => by
+      rw [uIcc_of_le hq.1] at hs
+      rw [abs_of_nonneg hs.1]
+      exact hs.2.trans hq.2)
+    (fun s hs => by
+      rw [uIcc_of_le hq.1] at hs
+      exact hgrad s ⟨hs.1, hs.2.trans hq.2⟩ _ (hstay s hs) _)
+    (fun s hs => by
+      rw [uIcc_of_le hq.1] at hs
+      exact hric s ⟨hs.1, hs.2.trans hq.2⟩ _ (hstay s hs) _)
+  have hratio : (1 + 2 * G * b ^ 2) / (1 + 2 * G * b ^ 2 + 4 * K * b) ≤ 1 := by
+    apply (div_le_iff₀ hc).mpr
+    nlinarith [mul_nonneg hK hb.le]
+  have hexp : Real.exp ((1 + 2 * G * b ^ 2 + 4 * K * b) * |q - 0|) ≤
+      Real.exp ((1 + 2 * G * b ^ 2 + 4 * K * b) * b) := by
+    rw [sub_zero, abs_of_nonneg hq.1]
+    exact Real.exp_le_exp.mpr (mul_le_mul_of_nonneg_left hq.2 hc.le)
+  apply hg.trans
+  exact mul_le_mul hexp (add_le_add hzero hratio)
+    (add_nonneg (lRegularizedSpeedSq_nonneg S T _ 0) (div_nonneg (by positivity) hc.le))
+    (Real.exp_pos _).le
+
+theorem exists_pos_lRegularizedCurve_mem_ball_of_local_gradient_ricci_bounds
+    {B r A G K R : ℝ} (hB : 0 < B) (hr : 0 < r) (hA : 0 ≤ A) (hG : 0 ≤ G) (hK : 0 ≤ K) :
+    ∃ b ∈ Ioc (0 : ℝ) B,
+      ∀ {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D), IsSolutionOn S →
+      ∀ (T : ℝ) (x : M) (g : SmoothRiemannianMetric I M),
+      Icc (T - B ^ 2) T ⊆ D.regular →
+      IsCompact {y : M | riemannianEDistOf g x y ≤ ENNReal.ofReal r} →
+      (∀ q ∈ Icc (0 : ℝ) B, ∀ y : M, riemannianEDistOf g x y ≤ ENNReal.ofReal r →
+        ∀ w : TangentSpace I y, g.inner y w w ≤ A * (S.base.metric (T - q ^ 2)).inner y w w) →
+      (∀ q ∈ Icc (0 : ℝ) B, ∀ y : M, riemannianEDistOf g x y ≤ ENNReal.ofReal r →
+        ∀ w : TangentSpace I y,
+        |(S.base.metric (T - q ^ 2)).inner y (gradientFun (S.base.metric (T - q ^ 2)) (S.scalar (T - q ^ 2)) y) w| ≤
+          G * Real.sqrt ((S.base.metric (T - q ^ 2)).inner y w w)) →
+      (∀ q ∈ Icc (0 : ℝ) B, ∀ y : M, riemannianEDistOf g x y ≤ ENNReal.ofReal r →
+        ∀ w : TangentSpace I y, |S.ricciAt (T - q ^ 2) y (vec2 w w)| ≤
+          K * (S.base.metric (T - q ^ 2)).inner y w w) →
+      ∀ Z : TangentSpace I x, (S.base.metric T).inner x Z Z ≤ R ^ 2 →
+        b ∈ lRegularizedDomain S T x Z ∧ ∀ q ∈ Icc (0 : ℝ) b,
+          riemannianEDistOf g x (lRegularizedCurve S T x Z q) < ENNReal.ofReal r := by
+  let Q := Real.exp ((1 + 2 * G * B ^ 2 + 4 * K * B) * B) * (4 * R ^ 2 + 1)
+  let b := min B (r / (2 * (Real.sqrt (A * Q) + 1)))
+  have hb : 0 < b := lt_min hB (div_pos hr (by positivity))
+  have hbB : b ≤ B := min_le_left _ _
+  have hbR : b ≤ r / (2 * (Real.sqrt (A * Q) + 1)) := min_le_right _ _
+  have hreach : b * Real.sqrt (A * Q) < r := by
+    have hm := (le_div_iff₀ (by positivity : 0 < 2 * (Real.sqrt (A * Q) + 1))).mp hbR
+    nlinarith [Real.sqrt_nonneg (A * Q)]
+  refine ⟨b, ⟨hb, hbB⟩, ?_⟩
+  intro D S hS T x g hslab hcpt hcompare hgrad hric Z hZ
+  have hb2 : b ^ 2 ≤ B ^ 2 := (sq_le_sq₀ hb.le hB.le).mpr hbB
+  have hsub : Icc (0 : ℝ) b ⊆ Icc (0 : ℝ) B := Icc_subset_Icc le_rfl hbB
+  apply mem_lRegularizedDomain_and_edist_lt_of_local_gradient_ricci_bounds S hS T x g hb hr hA hG hK
+    (fun t ht => hslab ⟨by linarith [ht.1], ht.2⟩) hcpt
+    (fun q hq => hcompare q (hsub hq)) (fun q hq => hgrad q (hsub hq)) (fun q hq => hric q (hsub hq)) ?_ Z hZ
+  have hcoeff : 1 + 2 * G * b ^ 2 + 4 * K * b ≤ 1 + 2 * G * B ^ 2 + 4 * K * B := by
+    gcongr
+  have hexp := Real.exp_le_exp.mpr (mul_le_mul hcoeff hbB hb.le (by positivity))
+  have hQ : Real.exp ((1 + 2 * G * b ^ 2 + 4 * K * b) * b) * (4 * R ^ 2 + 1) ≤ Q :=
+    mul_le_mul_of_nonneg_right hexp (by positivity)
+  exact (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (mul_le_mul_of_nonneg_left hQ hA)) hb.le).trans_lt hreach
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+end
