@@ -198,7 +198,13 @@ finds no remaining duplicate full names.
 
 The lead-style audit (axiom closure plus the thirteen Mathlib environment linters, excluding the two
 documentation linters) over the 431 cherry-picked modules, the four new modules and the three
-edge-matching consumers: see the session log below (pending at the time of this paragraph).
+edge-matching consumers, run through `lake env lean` on a probe outside the tree: **1150 declarations
+from 438 modules, 0 failures** (17:15 PDT).  Its first passes found four `unusedArguments` hits, all
+redundant instance binders in cherry-picked modules (`annulus_product_arc`,
+`signs_of_frontier_reading`, and the finite-dimensionality binders that
+`IsAnnulusOn.eq_or_eq_product_bands` and `IsAnnulusOn.exists_product_arc_eq` inherited from the
+first); the binders were removed and the affected modules rebuilt.  After the final rebuild
+`controlledGraphNeighborhood` again depends on `[propext, Classical.choice, Quot.sound]` only.
 
 ## 6. Open items
 
