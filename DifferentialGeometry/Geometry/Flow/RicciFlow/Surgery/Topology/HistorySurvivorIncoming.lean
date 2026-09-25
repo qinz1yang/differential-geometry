@@ -612,7 +612,7 @@ universe u
 variable (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
   {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
 
-private theorem survivor_incoming_metric_eq
+theorem backwardSurvivorIncomingMetric_eq_of_common_piecewise_flow
     (G₁ G₂ : ℝ → SmoothRiemannianMetric ThreeModel
       (H.backwardSurvivorIncomingDomain first last hle G))
     (hslabs₁ : ∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
@@ -678,7 +678,7 @@ theorem localPullMetric_backwardSurvivorIncoming_overlap_of_initial_eq
     {t : ℝ} (ht : t ∈ Icc (H.time first) s) :
     (localPullMetric (G₁ t) F₁ hF₁).restrictOpenOfSubset hWU =
       (localPullMetric (G₂ t) F₂ hF₂).restrictOpenOfSubset hWV := by
-  rw [H.survivor_incoming_metric_eq first last hle G L G₁ G₂
+  rw [H.backwardSurvivorIncomingMetric_eq_of_common_piecewise_flow first last hle G L G₁ G₂
     hslabs₁ hslabs₂ hlast₁ hlast₂ ht]
   apply localPullMetric_restrictOpenOfSubset_eq_of_comp_eq
   funext y
