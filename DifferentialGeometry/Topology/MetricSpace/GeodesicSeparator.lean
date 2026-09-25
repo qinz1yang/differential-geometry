@@ -105,6 +105,28 @@ theorem not_mem_interior_of_minimizing_of_frontier_edist_lt
     ring
   exact (hshort _ huF _ hvF).ne heq
 
+theorem not_eball_subset_interior_of_minimizing_of_frontier_edist_lt
+    {γ : ℝ → X} {a t b : ℝ} (ht : t ∈ Icc a b)
+    (hmin : ∀ s ∈ Icc a b, ∀ u ∈ Icc a b,
+      edist (γ s) (γ u) = ENNReal.ofReal |s - u|)
+    {U : Set X} (ha : γ a ∉ interior U) (hb : γ b ∉ interior U)
+    {r : ENNReal} (hr : 0 < r)
+    (hshort : ∀ x ∈ frontier U, ∀ y ∈ frontier U, edist x y < r + r) :
+    ¬ Metric.eball (γ t) r ⊆ interior U := by
+  intro hball
+  have hcenter : γ t ∈ interior U := hball (by simpa only [Metric.mem_eball, edist_self] using hr)
+  have hat : a < t := lt_of_le_of_ne ht.1 (by rintro rfl; exact ha hcenter)
+  have htb : t < b := lt_of_le_of_ne ht.2 (by rintro rfl; exact hb hcenter)
+  have hfar (x : X) (hx : x ∈ frontier U) : r ≤ edist x (γ t) := by
+    apply le_of_not_gt
+    intro hnear
+    exact hx.2 (hball hnear)
+  have hnot := not_mem_interior_of_minimizing_of_frontier_edist_lt hat htb hmin ha hb
+    (fun x hx y hy => (hshort x hx y hy).trans_le
+      (add_le_add (hfar x hx) (by simpa only [edist_comm] using hfar y hy)))
+  exact hnot hcenter
+
+
 end EMetric
 
 

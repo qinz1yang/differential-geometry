@@ -138,4 +138,45 @@ theorem eventually_half_lt_metricScalarAt_of_metric_cp_convergence
   linarith [(abs_lt.mp herr).1]
 
 
+open Filter in
+theorem exists_uniform_scalar_bound_on_core_of_metric_cp_convergence :
+    ∃ C : ℝ, 0 < C ∧ ∀ D : ℝ, transitionEnd < D + 1 →
+      ∀ N : ℕ, 2 ≤ N →
+      ∀ g : ℕ → SmoothRiemannianMetric ThreeModel (standardCapWindow D),
+      MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ transitionEnd} N g
+        (metric.restrictOpen (standardCapWindow D)) (metric.restrictOpen (standardCapWindow D)) →
+      ∀ᶠ n in atTop, ∀ x : standardCapWindow D, ‖x.val‖ ≤ transitionEnd →
+        metricScalarAt (g n) x ≤ C := by
+  have hK : IsCompact {x : ThreeSpace | ‖x‖ ≤ transitionEnd} := by
+    simpa only [Metric.closedBall, dist_zero_right] using
+      isCompact_closedBall (0 : ThreeSpace) transitionEnd
+  obtain ⟨B, hB⟩ := hK.bddAbove_image (metricScalar_smooth metric).continuous.continuousOn
+  let C := max B 0 + 1
+  refine ⟨C, by dsimp only [C]; positivity, ?_⟩
+  intro D hD N hN g hconv
+  let K : Set (standardCapWindow D) := {x | ‖x.val‖ ≤ transitionEnd}
+  let gRef := metric.restrictOpen (standardCapWindow D)
+  have hcompact : IsCompact K :=
+    _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hK (by
+      intro x hx
+      exact ⟨⟨x, hx.trans_lt hD⟩, rfl⟩)
+  have htwo : MetricCPConvergenceOn K 2 g gRef gRef := by
+    intro eps heps
+    obtain ⟨N0, hN0⟩ := hconv (eps / 2) (half_pos heps)
+    refine ⟨N0, fun n hn => lt_of_le_of_lt
+      (metricDerivNormSupOn_le_of_forall K 2 _ _ _ (eps / 2) (half_pos heps).le ?_)
+      (half_lt_self heps)⟩
+    intro j hj x hx
+    exact (derivNorm_le_sup hcompact (hj.trans hN) _ _ _ hx).trans (hN0 n hn).le
+  have hu := htwo.tendstoUniformlyOn_metricScalarAt hcompact
+  filter_upwards [Metric.tendstoUniformlyOn_iff.mp hu (1 : ℝ) zero_lt_one] with n hn
+  intro x hx
+  have he := hn x hx
+  rw [Real.dist_eq, metricScalarAt_restrictOpen] at he
+  have hb : metricScalarAt metric x.val ≤ B := hB ⟨x.val, hx, rfl⟩
+  have hc : B ≤ C - 1 := by dsimp only [C]; linarith [le_max_left B 0]
+  have herr := (abs_lt.mp he).1
+  linarith
+
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
