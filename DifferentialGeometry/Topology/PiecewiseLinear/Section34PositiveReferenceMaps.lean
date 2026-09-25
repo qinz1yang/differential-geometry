@@ -3,6 +3,7 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConfinedTubePiercingConditions
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RelativeEdgeCharacter
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ReferenceBallMaps
 import DifferentialGeometry.Topology.PiecewiseLinear.MarkedCellOrientation
@@ -44,8 +45,8 @@ theorem exists_section34_positive_reference_maps
     (htor : Section34OuterTorus 𝒦 𝒦' h Q ct Sd)
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends
       Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
+    (hpack : Section34ConfinedTubePiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
     (hDvdef : ∀ w, Dv w = G w '' Cp w \
       ⋃ (e : Section34EdgeIndex 𝒦 𝒦') (_ : (ends e).2 = w),
         interior (G (ends e).1 '' Cp (ends e).1))

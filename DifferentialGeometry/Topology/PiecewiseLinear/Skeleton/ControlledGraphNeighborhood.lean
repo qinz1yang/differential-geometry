@@ -7,8 +7,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStability
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CircleRemovalDescent
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34DeletedBalls
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConfinedTubeCircleRemoval
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PiercingPackage
@@ -270,6 +270,20 @@ audits; statement and `variable` block byte-identical): `exists_section34CutFram
 `ControlledGraphCutFrame` over the locally finite exhaustion, the refined residual cells, the
 graph cut family and the outer rim tori).  The one leaf left in this file is the protected circle
 removal step.
+
+The assembly no longer uses that descent.  It calls
+`exists_section34ConfinedTubePiercingConditions_count_eq_one` (module
+`Section34ConfinedTubeCircleRemoval`), proved without the step leaf: the single-trace motion of
+every edge is chosen once on the original configuration and the motions with a common second
+end are composed, which yields `Section34ConfinedTubePiercingConditions` with one circle at
+every edge.  That predicate replaces the cross-carrier clause of `Section34PiercingConditions`
+by the containment of each tube in the carriers of its two ends; the deletion and the matching
+never read the cross-carrier clause, so both now receive the confined-tube conditions, and the
+step leaf, the count descent and the protected circle removal built on it are deleted from this
+file as dead code (their frozen statements survive on `codex/package-g-protected-circle` and in
+`Section34CircleRemovalDescent`), so this file has no `sorry` left.  `section34Core_of_eqOn_off_support` and
+`section34Step_eqOn_marker_and_boundary` are now the theorems of `Section34ProtectedCircleSupport`
+reached through that import.
 -/
 
 open Set Topology
@@ -298,23 +312,6 @@ variable {Ea : Type} [NormedAddCommGroup Ea] [NormedSpace ℝ Ea] [FiniteDimensi
   {Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂}
   {G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂}
 
-theorem exists_section34ProtectedCircleRemovalStep
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
-    (e₀ : Section34EdgeIndex 𝒦 𝒦') (hlt : 1 < cnt e₀) :
-    ∃ (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) (cnt' : Section34EdgeIndex 𝒦 𝒦' → ℕ)
-      (Pg' : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂),
-      Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
-          Sp Tp cnt' Pg' G' ∧
-        cnt' e₀ < cnt e₀ ∧
-        (∀ e, e ≠ e₀ → cnt' e = cnt e) ∧
-        (∀ w, EqOn (G' w) (G w) {x ∈ Cc w | G w x ∉ interior (Sp e₀)}) ∧
-        ∀ e, e ≠ e₀ → G' (ends e).1 '' Aa e = G (ends e).1 '' Aa e ∧
-          G' (ends e).2 '' Bb e = G (ends e).2 '' Bb e := by
-  sorry
-
 omit [FiniteDimensional ℝ Ea] in
 theorem section34Marker_of_dist_lt
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀
@@ -326,132 +323,12 @@ theorem section34Marker_of_dist_lt
     -, -, -, -, -, -, -, -, -, -, hkc, -⟩ := id hprep
   exact (image_mono (hkc w).2.1).trans ((section34MarkerConditions hprep hGp hGdist).1 w)
 
-omit [FiniteDimensional ℝ Ea] in
-theorem section34Core_of_eqOn_off_support (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂)
-    (hcp : ∀ w, IsPLCellOn 3 (Cp w) (CpBd w)) (hCpCc : ∀ w, Cp w ⊆ Cc w)
-    (hG : ∀ w, IsPLHomeomorphInto 3 (G w) (Cp w))
-    (hG' : ∀ w, IsPLHomeomorphInto 3 (G' w) (Cp w))
-    (hcore : ∀ w, h '' Kcore w ⊆ interior (G w '' Cp w))
-    (hdisj : ∀ w e, Disjoint (h '' Kcore w) (Sp e))
-    (hoff : ∀ w, EqOn (G' w) (G w) {x ∈ Cc w | ∀ e, G w x ∉ interior (Sp e)}) :
-    ∀ w, h '' Kcore w ⊆ interior (G' w '' Cp w) := by
-  intro w y hy
-  have h1 : y ∈ G w '' (Cp w \ CpBd w) := by
-    rw [((hcp w).image_boundary_interior (hG w)).2]
-    exact hcore w hy
-  obtain ⟨x, hx, hxy⟩ := h1
-  have hoffx : x ∈ {x ∈ Cc w | ∀ e, G w x ∉ interior (Sp e)} := by
-    refine ⟨hCpCc w hx.1, fun e hmem => ?_⟩
-    have hmem' : y ∈ Sp e := by rw [← hxy]; exact interior_subset hmem
-    exact Set.disjoint_left.mp (hdisj w e) hy hmem'
-  rw [← ((hcp w).image_boundary_interior (hG' w)).2]
-  exact ⟨x, hx, (hoff w hoffx).trans hxy⟩
-
-omit [FiniteDimensional ℝ Ea] in
-theorem section34Step_eqOn_marker_and_boundary
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
-    (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) (e₀ : Section34EdgeIndex 𝒦 𝒦')
-    (hoff : ∀ w, EqOn (G' w) (G w) {x ∈ Cc w | G w x ∉ interior (Sp e₀)}) :
-    (∀ w, EqOn (G' w) (G w) (simplexBody 𝒦' w.1)) ∧
-      ∀ w, w ≠ (ends e₀).1 → w ≠ (ends e₀).2 → EqOn (G' w) (G w) (CpBd w) := by
-  obtain ⟨-, -, hsubs, -, hcpcell, hbody, -⟩ := hprep
-  obtain ⟨-, -, -, -, -, -, -, -, -, -, -, hmark, hbd, -⟩ := hpack
-  have hcp : ∀ w, IsPLCellOn 3 (Cp w) (CpBd w) := hcpcell
-  constructor
-  · intro w
-    refine eqOn_of_eqOn_off_support (hoff w) ?_ ?_
-    · exact ((hbody w).trans interior_subset).trans (hsubs w).2.1
-    · exact (hmark w e₀).mono_right interior_subset
-  · intro w hw1 hw2
-    refine eqOn_of_eqOn_off_support (hoff w) ?_ ?_
-    · exact ((hcp w).boundary_subset).trans (hsubs w).2.1
-    · exact ((hbd e₀ w hw1 hw2).symm).mono_right interior_subset
-
-theorem exists_section34PiercingConditions_count_le_one
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (e₀ : Section34EdgeIndex 𝒦 𝒦')
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G) :
-    ∃ (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) (cnt' : Section34EdgeIndex 𝒦 𝒦' → ℕ)
-      (Pg' : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂),
-      Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
-          Sp Tp cnt' Pg' G' ∧
-        cnt' e₀ ≤ 1 ∧ (∀ e, e ≠ e₀ → cnt' e = cnt e) ∧
-        (∀ w, EqOn (G' w) (G w) {x ∈ Cc w | G w x ∉ interior (Sp e₀)}) ∧
-        (∀ w, EqOn (G' w) (G w) (simplexBody 𝒦' w.1)) ∧
-        ∀ e, e ≠ e₀ → G' (ends e).1 '' Aa e = G (ends e).1 '' Aa e ∧
-          G' (ends e).2 '' Bb e = G (ends e).2 '' Bb e := by
-  classical
-  suffices H : ∀ n : ℕ, ∀ (G : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂)
-      (cnt : Section34EdgeIndex 𝒦 𝒦' → ℕ) (Pg : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂),
-      Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
-        Sp Tp cnt Pg G → cnt e₀ ≤ n →
-      ∃ (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) (cnt' : Section34EdgeIndex 𝒦 𝒦' → ℕ)
-        (Pg' : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂),
-        Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
-            Sp Tp cnt' Pg' G' ∧
-          cnt' e₀ ≤ 1 ∧ (∀ e, e ≠ e₀ → cnt' e = cnt e) ∧
-          (∀ w, EqOn (G' w) (G w) {x ∈ Cc w | G w x ∉ interior (Sp e₀)}) ∧
-          (∀ w, EqOn (G' w) (G w) (simplexBody 𝒦' w.1)) ∧
-          ∀ e, e ≠ e₀ → G' (ends e).1 '' Aa e = G (ends e).1 '' Aa e ∧
-            G' (ends e).2 '' Bb e = G (ends e).2 '' Bb e by
-    exact H (cnt e₀) G cnt Pg hpack le_rfl
-  intro n
-  induction n with
-  | zero =>
-      intro G cnt Pg hp hle
-      exact ⟨G, cnt, Pg, hp, by omega, fun _ _ => rfl, fun w => Set.eqOn_refl (G w) _,
-        fun w => Set.eqOn_refl (G w) _, fun _ _ => ⟨rfl, rfl⟩⟩
-  | succ n ih =>
-      intro G cnt Pg hp hle
-      by_cases h1 : cnt e₀ ≤ 1
-      · exact ⟨G, cnt, Pg, hp, h1, fun _ _ => rfl, fun w => Set.eqOn_refl (G w) _,
-          fun w => Set.eqOn_refl (G w) _, fun _ _ => ⟨rfl, rfl⟩⟩
-      · obtain ⟨G₁, cnt₁, Pg₁, hp₁, hdrop, hfix, hoff, him⟩ :=
-          exists_section34ProtectedCircleRemovalStep hprep hp e₀ (by omega)
-        have hcore := (section34Step_eqOn_marker_and_boundary hprep hp G₁ e₀ hoff).1
-        obtain ⟨G₂, cnt₂, Pg₂, hp₂, hle₂, hfix₂, hoff₂, hcore₂, him₂⟩ :=
-          ih G₁ cnt₁ Pg₁ hp₁ (by omega)
-        refine ⟨G₂, cnt₂, Pg₂, hp₂, hle₂, fun e he => (hfix₂ e he).trans (hfix e he), ?_, ?_,
-          fun e he => ⟨((him₂ e he).1).trans (him e he).1,
-            ((him₂ e he).2).trans (him e he).2⟩⟩
-        · intro w x hx
-          have hx1 : G₁ w x = G w x := hoff w hx
-          have hx2 : x ∈ {x ∈ Cc w | G₁ w x ∉ interior (Sp e₀)} := by
-            refine ⟨hx.1, ?_⟩
-            rw [hx1]
-            exact hx.2
-          exact (hoff₂ w hx2).trans hx1
-        · exact fun w x hx => (hcore₂ w hx).trans (hcore w hx)
-
-theorem exists_section34ProtectedCircleRemoval
-    (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
-      Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
-    (K : Section34VertexIndex 𝒦 𝒦' → Set M₂)
-    (hK : ∀ w, IsCompact (K w) ∧ Q w ⊆ K w ∧ K w ⊆ h '' U) :
-    ∃ (G' : Section34VertexIndex 𝒦 𝒦' → M₁ → M₂) (cnt' : Section34EdgeIndex 𝒦 𝒦' → ℕ)
-      (Pg' : Section34EdgeIndex 𝒦 𝒦' → ℕ → Set M₂),
-      Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀ Bb₁
-          Sp Tp cnt' Pg' G' ∧
-        (∀ e, cnt' e = 1) ∧
-        (∀ w, EqOn (G' w) (G w) {x ∈ Cc w | ∀ e, G w x ∉ interior (Sp e)}) ∧
-        ∀ w, EqOn (G' w) (G w) (simplexBody 𝒦' w.1) := by
-  exact exists_section34ProtectedCircleRemoval_of_step
-    (fun _ _ _ hp e₀ hlt => exists_section34ProtectedCircleRemovalStep hprep hp e₀ hlt)
-    hprep hpack K hK
-
 end Leaves
 
 theorem controlledGraphNeighborhood (h341 : Moise341) :
     ControlledGraphNeighborhoodStatement.{u} := by
   intro M₁ M₂ _ _ _ _ _ _ _ _ _ U hU h hh Ea _ _ _ 𝒦 h𝒦 η H hH W hW hΓW hWU ψ hψc hψpos
-  obtain ⟨-, hHsub, hHlf, -, hHcell, hHchart⟩ := id hH
+  obtain ⟨-, hHsub, hHlf, -, -, hHchart⟩ := id hH
   obtain ⟨𝒦', src, srcBd, car, Q, ct, Sd, hframe, hN, hNW, hcarF, hcarS, hcarfib, hQint, hQH,
       hQsmall, hQsep, -, htorus⟩ :=
     exists_section34CutFrame hU hh 𝒦 h𝒦 η H hH hW hΓW hWU ψ hψc hψpos
@@ -484,10 +361,8 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
     intro w e
     rw [(hSpdef e).1]
     exact hkdisj₁ w e
-  have hK : ∀ w, IsCompact (H (car w)) ∧ Q w ⊆ H (car w) ∧ H (car w) ⊆ h '' U := fun w =>
-    ⟨(hHcell _ (hcarF w)).isCompact, hQH w, hHsub _ (hcarF w)⟩
   obtain ⟨G₂, cnt₂, Pg₂, hpack₂, hone, hoff₂, -⟩ :=
-    exists_section34ProtectedCircleRemoval hprep hpack (fun w => H (car w)) hK
+    exists_section34ConfinedTubePiercingConditions_count_eq_one hprep hpack
   obtain ⟨-, hGQ₂, -, -, -, -, -, -, -, -, hGp₂, -, -, hCpdisj₂, -, -, -, -, -, -, hLdisj₂,
     -⟩ := id hpack₂
   have hcore₂ : ∀ w, h '' Kcore w ⊆ interior (G₂ w '' Cp w) :=

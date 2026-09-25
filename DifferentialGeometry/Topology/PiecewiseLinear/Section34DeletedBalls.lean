@@ -4,7 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CapDeletion
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
+import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConfinedTubePiercingConditions
 
 /-!
 # The deleted balls of Section 34
@@ -15,7 +15,9 @@ with the annulus `A_e` crossing into `B_w` on one side and staying outside on th
 from each ball the interiors of the finitely many balls of its incoming edges keeps a `3`-cell,
 two adjacent deleted balls meet in the disk `Bd B_v ∩ B_w`, which lies in both frontiers, the
 vertex bodies stay inside, and the deleted balls still cover every original ball, hence form a
-neighbourhood of the image of the one skeleton.
+neighbourhood of the image of the one skeleton.  Only the confined-tube piercing conditions
+are consumed: the deletion reads the boundary meets, the sides, the circle count, the lens
+disjointness and the marker exclusion, none of which mentions the cross-carrier clause.
 -/
 
 open Set Topology
@@ -53,8 +55,8 @@ theorem exists_section34DeletedBalls [T2Space M₁] [SecondCountableTopology M�
     (hQlf : ∀ y ∈ ⋃ w, Q w, ∃ V ∈ 𝓝 y, {w | (Q w ∩ V).Nonempty}.Finite)
     (hprep : Section34VertexPreparation U 𝒦 𝒦' h src Q ends Cp CpBd Cc CcBd Kcore Sn Tn Aa Ab₀ Ab₁
       Bb Bb₀ Bb₁ Bc Bc₀ Bc₁ ε)
-    (hpack : Section34PiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀ Ab₁ Bb Bb₀
-      Bb₁ Sp Tp cnt Pg G)
+    (hpack : Section34ConfinedTubePiercingConditions U 𝒦 𝒦' h Q ends Cp CpBd Cc Sn Tn Aa Ab₀
+      Ab₁ Bb Bb₀ Bb₁ Sp Tp cnt Pg G)
     (hone : ∀ e, cnt e = 1)
     (hcore : ∀ w, h '' Kcore w ⊆ interior (G w '' Cp w)) :
     ∃ (Dv DvBd : Section34VertexIndex 𝒦 𝒦' → Set M₂)
