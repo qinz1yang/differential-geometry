@@ -24,9 +24,9 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Filter MeasureTheory Set Manifold
+open Filter MeasureTheory Set _root_.Manifold
 open DifferentialGeometry.Integral.Measure
-open scoped CompactlySupported ContDiff Manifold _root_.Topology ENNReal
+open scoped CompactlySupported ContDiff _root_.Manifold _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -252,7 +252,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter MeasureTheory Set
 open DifferentialGeometry.Integral.Measure
-open scoped CompactlySupported ContDiff Manifold _root_.Topology ENNReal
+open scoped CompactlySupported ContDiff _root_.Manifold _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -362,7 +362,7 @@ open Filter MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -429,7 +429,7 @@ open Filter MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff CompactlySupported Topology ENNReal
+open scoped _root_.Manifold ContDiff CompactlySupported _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -512,7 +512,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter MeasureTheory Set
 open DifferentialGeometry.Integral.Measure
-open scoped CompactlySupported ContDiff Manifold _root_.Topology ENNReal
+open scoped CompactlySupported ContDiff _root_.Manifold _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -599,7 +599,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter MeasureTheory Set
 open DifferentialGeometry.Integral.Measure
-open scoped CompactlySupported ContDiff Manifold _root_.Topology ENNReal
+open scoped CompactlySupported ContDiff _root_.Manifold _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -715,7 +715,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter MeasureTheory Set
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff CompactlySupported _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff CompactlySupported _root_.Topology ENNReal
 
 universe u uE uH
 

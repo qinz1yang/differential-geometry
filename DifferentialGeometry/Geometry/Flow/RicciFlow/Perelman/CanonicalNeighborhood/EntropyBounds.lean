@@ -27,7 +27,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature MeasureTheory
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 universe u uE uH
 

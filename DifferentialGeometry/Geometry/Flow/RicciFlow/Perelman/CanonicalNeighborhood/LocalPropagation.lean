@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open Bundle DifferentialGeometry.Tensor0SBundle
 open Filter
-open scoped Manifold ContDiff ENNReal Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 
 

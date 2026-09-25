@@ -5,7 +5,7 @@ noncomputable section
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter Set
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

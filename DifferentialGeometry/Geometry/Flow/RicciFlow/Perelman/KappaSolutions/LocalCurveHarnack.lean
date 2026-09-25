@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Calculus
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff _root_.Topology Interval
+open scoped _root_.Manifold ContDiff _root_.Topology Interval
 
 universe u uE uH
 

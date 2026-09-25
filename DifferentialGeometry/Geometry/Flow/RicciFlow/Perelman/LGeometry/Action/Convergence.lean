@@ -13,7 +13,7 @@ noncomputable section
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter MeasureTheory Set
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 open PDE.RicciFlow.Perelman (lDensity lLength lSpeedSq lVelocity)
 
