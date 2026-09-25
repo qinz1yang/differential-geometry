@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurvatureLifespan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabJointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabEndpoints
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarDerivativeBounds
@@ -182,3 +183,127 @@ theorem exists_uniform_initial_scalar_derivative_bounds_of_isometry
   exact hb
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+universe u v
+
+theorem exists_uniform_initial_scalar_bound_of_isometry
+    (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    ∃ τ Qbound : ℝ, 0 < τ ∧ 0 < Qbound ∧
+      ∀ {Q : OrientedThreeStage.{v}} {finish : ℝ} (G : Q.IncomingSlab 0 finish)
+        (φ : P.Carrier ≃ₘ⟮ThreeModel, ThreeModel⟯ Q.Carrier),
+      (∀ x : P.Carrier, ∀ v w : TangentSpace ThreeModel x,
+        (G.flow.base.metric 0).inner (φ x) (mfderiv ThreeModel ThreeModel φ x v)
+          (mfderiv ThreeModel ThreeModel φ x w) = g.inner x v w) →
+      ∀ t ∈ Icc 0 τ, t < finish → ∀ x : Q.Carrier, G.flow.scalar t x < Qbound := by
+  obtain ⟨d, hd, S, hS⟩ := exists_closedSlab_of_metric P g 0
+  have hcompact : IsCompact (Icc (0 : ℝ) d ×ˢ (univ : Set P.Carrier)) :=
+    isCompact_Icc.prod isCompact_univ
+  obtain ⟨B, hB⟩ := hcompact.bddAbove_image S.equation.scalarCont
+  refine ⟨d / 2, max B 0 + 1, half_pos hd, by positivity, ?_⟩
+  intro Q finish G φ hmetric t ht htf x
+  let F := G.pullback φ
+  have hinit : F.flow.base.metric 0 = g := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    exact hmetric y v w
+  let A := S.restrictIncoming le_rfl hd le_rfl
+  have heq := F.metric_eq_on_Ico_of_initial A (hinit.trans hS.symm)
+  have htd : t < d := ht.2.trans_lt (half_lt_self hd)
+  have heqt : F.flow.base.metric t = S.flow.base.metric t :=
+    heq t ⟨ht.1, lt_min htf htd⟩
+  obtain ⟨y, rfl⟩ := φ.surjective x
+  have hscalar : F.flow.scalar t y = G.flow.scalar t (φ y) := G.flow.pullback_scalar φ t y
+  have href : F.flow.scalar t y = S.flow.scalar t y := by
+    change metricScalarAt (F.flow.base.metric t) y = metricScalarAt (S.flow.base.metric t) y
+    rw [heqt]
+  have hbound : S.flow.scalar t y ≤ B :=
+    hB ⟨(t, y), ⟨⟨ht.1, htd.le⟩, mem_univ _⟩, rfl⟩
+  change G.flow.scalar t (φ y) < max B 0 + 1
+  rw [← hscalar, href]
+  exact hbound.trans_lt (by linarith [le_max_left B 0])
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private theorem incoming_metric_cast_initial_time
+    {P : OrientedThreeStage.{u}} {a b finish : ℝ} (h : a = b)
+    (G : P.IncomingSlab a finish) :
+    (h ▸ G : P.IncomingSlab b finish).flow.base.metric = G.flow.base.metric := by
+  cases h
+  rfl
+
+theorem exists_uniform_initial_scalar_and_derivative_bounds_of_initialIdentification
+    (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    ∃ τ : ℝ, 0 < τ ∧ ∀ C : ℝ, 0 < C → ∃ q : ℝ, 0 < q ∧
+      ∀ (H : ObservedHistory.{u}), InitialIdentification P g H →
+      (∀ j : Fin H.eventCount, (H.event j).incoming.SingularEndpoint) →
+      ∀ (last : Fin (H.eventCount + 1)) (finish : ℝ)
+        (G : (H.stage last).IncomingSlab (H.time last) finish),
+      G.flow.base.metric (H.time last) = H.initialMetric last →
+      ∀ t ∈ Ioo (H.time last) finish, t ≤ τ → ∀ x : (H.stage last).Carrier,
+        G.flow.scalar t x < q ∧
+        (G.flow.base.metric t).inner x (gradientFun (G.flow.base.metric t) (G.flow.scalar t) x)
+          (gradientFun (G.flow.base.metric t) (G.flow.scalar t) x) < C ^ 2 * q ^ 3 ∧
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| < C * q ^ 2 := by
+  obtain ⟨aSing, haSing, hsingTime⟩ :=
+    exists_pos_le_singular_incoming_time_of_initialIdentification P g
+  obtain ⟨τderiv, hτderiv, hderiv⟩ :=
+    OrientedThreeStage.exists_uniform_initial_scalar_derivative_bounds_of_isometry P g
+  obtain ⟨τscalar, Qbound, hτscalar, hQbound, hscalar⟩ :=
+    OrientedThreeStage.exists_uniform_initial_scalar_bound_of_isometry P g
+  refine ⟨min aSing (min τderiv τscalar), lt_min haSing (lt_min hτderiv hτscalar), ?_⟩
+  intro C hC
+  obtain ⟨qderiv, hqderiv, hderivBound⟩ := hderiv C hC
+  let q := max qderiv Qbound
+  have hq : 0 < q := hqderiv.trans_le (le_max_left _ _)
+  refine ⟨q, hq, ?_⟩
+  intro H A hsing last finish G hinit t ht htτ x
+  have htSing : t ≤ aSing := htτ.trans (min_le_left _ _)
+  have htDeriv : t ≤ τderiv := htτ.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have htScalar : t ≤ τscalar := htτ.trans ((min_le_right _ _).trans (min_le_right _ _))
+  have hlast : last = 0 := by
+    cases last using Fin.cases with
+    | zero => rfl
+    | succ i =>
+      let j : Fin H.eventCount := ⟨0, Nat.zero_lt_of_lt i.isLt⟩
+      have hfirst := hsingTime H A hsing j.castSucc (H.time j.succ)
+        (H.event j).incoming (H.event_initial j) (hsing j)
+      have hstage : aSing ≤ H.time i.succ := hfirst.trans
+        (H.time_strictMono.monotone
+          (show j.succ ≤ i.succ from Nat.succ_le_succ (Nat.zero_le _)))
+      exact False.elim ((not_lt_of_ge htSing) (hstage.trans_lt ht.1))
+  subst last
+  have hz : H.time 0 = 0 := H.time_zero
+  let F : (H.stage 0).IncomingSlab 0 finish := hz ▸ G
+  have hFmetric : F.flow.base.metric = G.flow.base.metric := incoming_metric_cast_initial_time hz G
+  have hFscalar : F.flow.scalar = G.flow.scalar := by
+    funext r y
+    change metricScalarAt (F.flow.base.metric r) y = metricScalarAt (G.flow.base.metric r) y
+    rw [hFmetric]
+  have hmetric : ∀ y : P.Carrier, ∀ v w : TangentSpace ThreeModel y,
+      (F.flow.base.metric 0).inner (A.map y) (mfderiv ThreeModel ThreeModel A.map y v)
+        (mfderiv ThreeModel ThreeModel A.map y w) = g.inner y v w := by
+    intro y v w
+    rw [hFmetric, ← hz, hinit]
+    exact A.metric_eq y v w
+  have ht0 : 0 < t := by simpa only [H.time_zero] using ht.1
+  have hR := hscalar F A.map hmetric t ⟨ht0.le, htScalar⟩ ht.2 x
+  have hb := hderivBound F A.map hmetric t ⟨ht0, htDeriv⟩ ht.2 x
+  rw [hFmetric, hFscalar] at hb
+  rw [hFscalar] at hR
+  have hRq : G.flow.scalar t x < q := hR.trans_le (le_max_right _ _)
+  have hmax : max qderiv (G.flow.scalar t x) ≤ q :=
+    max_le (le_max_left _ _) hRq.le
+  have hmnonneg : 0 ≤ max qderiv (G.flow.scalar t x) := hqderiv.le.trans (le_max_left _ _)
+  refine ⟨hRq, ?_, ?_⟩
+  · exact hb.1.trans_le (mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ hmnonneg hmax 3) (sq_nonneg C))
+  · exact hb.2.trans_le (mul_le_mul_of_nonneg_left
+      (pow_le_pow_left₀ hmnonneg hmax 2) hC.le)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

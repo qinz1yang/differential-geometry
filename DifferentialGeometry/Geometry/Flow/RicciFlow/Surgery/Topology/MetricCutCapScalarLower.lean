@@ -874,3 +874,51 @@ end
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 end
+
+noncomputable section
+open Set Manifold
+open scoped Manifold ContDiff
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+universe u
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
+
+theorem isInteriorPoint_of_oldOutput_not_mem_capRegion
+    (hOld : E.old = E.transition.trace.retainedCore) (z : E.old)
+    (hz : E.oldOutput z ∉ E.capRegion) :
+    letI : ChartedSpace (EuclideanHalfSpace 3) E.old := E.oldCharts
+    (𝓡∂ 3).IsInteriorPoint z := by
+  let : ChartedSpace (EuclideanHalfSpace 3) E.old := E.oldCharts
+  obtain ⟨p, w, hw, _, hweq⟩ := E.exists_regularCrossing_of_not_mem_capRegion hOld hz
+  have heq : w = z := E.oldOutput_injective hweq
+  exact heq ▸ hw
+
+theorem oldOutput_mem_capRegion_of_not_isInteriorPoint
+    (hOld : E.old = E.transition.trace.retainedCore) (z : E.old) :
+    letI : ChartedSpace (EuclideanHalfSpace 3) E.old := E.oldCharts
+    ¬ (𝓡∂ 3).IsInteriorPoint z → E.oldOutput z ∈ E.capRegion := by
+  let : ChartedSpace (EuclideanHalfSpace 3) E.old := E.oldCharts
+  intro hz
+  by_contra hnot
+  exact hz (E.isInteriorPoint_of_oldOutput_not_mem_capRegion hOld z hnot)
+
+
+theorem exists_retained_cap_of_not_isInteriorPoint
+    (hOld : E.old = E.transition.trace.retainedCore) (z : E.old) :
+    letI : ChartedSpace (EuclideanHalfSpace 3) E.old := E.oldCharts
+    ¬ (𝓡∂ 3).IsInteriorPoint z →
+      ∃ (b : E.RetainedBoundaryIndex) (x : ThreeBall),
+        E.transition.trace.presentation (E.transition.trace.capping.cap b.val x) = Sum.inl (E.oldOutput z) := by
+  let : ChartedSpace (EuclideanHalfSpace 3) E.old := E.oldCharts
+  intro hz
+  obtain ⟨b, x, hx⟩ := E.oldOutput_mem_capRegion_of_not_isInteriorPoint hOld z hz
+  have hret : E.RetainedBoundary b := by
+    rw [retainedBoundary_iff_capRetained]
+    rcases E.transition.trace.cap_retained_or_discarded b with h | h
+    · exact h
+    · obtain ⟨d, hd⟩ := h x
+      exact (Sum.inr_ne_inl (hd.trans hx)).elim
+  exact ⟨⟨b, hret⟩, x, hx⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+end

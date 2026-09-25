@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowDiscarding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCommonFlow
 import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.CarrierIntegrability
@@ -729,3 +732,439 @@ theorem ObservedHistory.exists_uniform_sum_stageRegularizedAction_gt_of_cap_pref
     linarith [le_max_left A 0]
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u uE uH uM
+
+theorem exists_uniform_prepared_cap_prefix_alternative_of_backward_trace
+    (Lambda : ℝ) (C : ℝ≥0) (hLambda : 0 < Lambda) :
+    ∃ theta r Cbirth : ℝ, theta ∈ Ioo (0 : ℝ) 1 ∧ 0 < r ∧ 0 < Cbirth ∧
+      ∀ {E : Type uE} {H₀ : Type uH} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H₀] {I : ModelWithCorners ℝ E H₀} [I.Boundaryless],
+      ∀ (D : ℝ) (hD : 0 < D),
+      ∃ R : ℝ, ∃ hDR : D + 1 < R, ∃ m₀ : ℕ, 4 ≤ m₀ ∧
+      ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
+      ∀ {M : Type uM} [TopologicalSpace M] [ChartedSpace H₀ M]
+        [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A}
+        {Dbig : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A hA Dbig m ζ)
+        (hR : R ≤ Dbig), m₀ ≤ m → ζ ≤ ζ₀ →
+      let hDD : D ≤ Dbig := by linarith;
+      let inc : standardCapWindow D → standardCapWindow Dbig :=
+        TopologicalSpace.Opens.inclusion (fun _ hx => hx.trans_le (add_le_add hDD (le_refl 1)));
+      ∀ (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+        (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric),
+      (∀ t ∈ Ico (H.time last) s, G.flow.base.metric t = H.stageMetric last t) →
+      ∀ (Jbig : standardCapWindow Dbig → (H.stage first).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ Jbig →
+      ∀ (q q₀ a₀ : ℝ) (hq : 0 < q), 0 < q₀ → q₀ ≤ Cbirth * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric first).inner (Jbig x) (mfderiv ThreeModel ThreeModel Jbig x v)
+          (mfderiv ThreeModel ThreeModel Jbig x z)) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            C * (H.event j).incoming.flow.scalar t x ^ 2) →
+      (∀ x : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s,
+        q₀ < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
+      q * (s - H.time first) ≤ theta →
+      ∀ (z : standardCapWindow D) (x : (H.stage last).Carrier)
+        (Atrace : BackwardPointTrace H first last hle x),
+        Atrace.point first le_rfl hle = Jbig (inc z) →
+    ∃ f : (j : H.StageInterval first last) → standardCapWindow D → (H.stage j.val).Carrier,
+      ∃ hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j),
+        (∀ j, Function.Injective (f j)) ∧
+        f ⟨first, le_rfl, hle⟩ = Jbig ∘ inc ∧
+        (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+          ∀ y : standardCapWindow D,
+            (H.event i).RegularCrossing
+              (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ y)
+              (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ y)) ∧
+        f ⟨last, hle, le_rfl⟩ z = x ∧
+      ∀ (T Rbirth Rball : ℝ), s ≤ T → s ≤ H.stageEndTime last →
+        Rbirth + r ≤ Rball → Rball < D + 1 →
+      ∀ alpha : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier,
+        (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (alpha j)) →
+        (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+          ∃ w : (H.event i).old,
+            w.val.val = alpha ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+              (Real.sqrt (T - H.time i.succ)) ∧
+            (H.event i).oldOutput w = alpha ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+              (Real.sqrt (T - H.time i.succ))) →
+      ∀ xPast : standardCapWindow D, ‖xPast.val‖ ≤ Rbirth →
+        alpha ⟨first, le_rfl, hle⟩ (Real.sqrt (T - H.time first)) = Jbig (inc xPast) →
+        (q * (s - H.time first) < theta ∧ s < T ∧
+          ∀ j, MapsTo (alpha j)
+            (Icc (H.regularizedStageStart T (Real.sqrt (T - s)) j.val)
+              (H.regularizedStageEnd T (Real.sqrt (T - H.time first)) j.val))
+            (f j '' {y : standardCapWindow D | ‖y.val‖ ≤ Rball})) ∨
+      ∃ (last' : Fin (H.eventCount + 1)) (hfirst : first ≤ last') (hlast : last' ≤ last)
+          (τ : ℝ) (xRecent : standardCapWindow D),
+        τ ∈ Ico (Real.sqrt (T - s)) (Real.sqrt (T - H.time first)) ∧
+        T - τ ^ 2 ∈ Icc (H.time last') (H.stageEndTime last') ∧
+        (∀ j : H.StageInterval first last',
+          MapsTo (alpha ⟨j.val, j.property.1, j.property.2.trans hlast⟩)
+            (Icc (H.regularizedStageStart T τ j.val)
+              (H.regularizedStageEnd T (Real.sqrt (T - H.time first)) j.val))
+            (f ⟨j.val, j.property.1, j.property.2.trans hlast⟩ ''
+              {x : standardCapWindow D | ‖x.val‖ ≤ Rball})) ∧
+        f ⟨last', hfirst, hlast⟩ xRecent = alpha ⟨last', hfirst, hlast⟩ τ ∧
+        (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last'),
+          ∃ z : (H.event i).old,
+            z.val.val = alpha ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans (hl.trans hlast)⟩
+              (Real.sqrt (T - H.time i.succ)) ∧
+            (H.event i).oldOutput z = alpha ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl.trans hlast⟩
+              (Real.sqrt (T - H.time i.succ))) ∧
+        ((τ = Real.sqrt (T - s) ∧ last' = last ∧ (q * (s - H.time first) = theta ∨ s = T) ∧
+            ∀ j, MapsTo (alpha j)
+              (Icc (H.regularizedStageStart T (Real.sqrt (T - s)) j.val)
+                (H.regularizedStageEnd T (Real.sqrt (T - H.time first)) j.val))
+              (f j '' {x : standardCapWindow D | ‖x.val‖ ≤ Rball})) ∨
+          (Real.sqrt (T - s) < τ ∧
+            xRecent ∈ frontier {x : standardCapWindow D | ‖x.val‖ ≤ Rball} ∧
+            ‖xRecent.val‖ = Rball ∧ T - τ ^ 2 ∈ H.stageDomain last')) ∧
+        (0 < τ → τ * Lambda < ∑ j : H.StageInterval first last',
+          H.stageRegularizedAction j.val T
+            (alpha ⟨j.val, j.property.1, j.property.2.trans hlast⟩)
+            (H.regularizedStageStart T τ j.val)
+            (H.regularizedStageEnd T (Real.sqrt (T - H.time first)) j.val)) := by
+  obtain ⟨theta, r, eta, htheta, hr, heta, hprefix⟩ :=
+    exists_uniform_lRegularizedAction_lower_bound_on_cap_prefix Lambda hLambda
+  obtain ⟨P, Creset, Cbirth, hP, hCreset, hCbirth, hwindow⟩ :=
+    exists_uniform_prepared_cap_common_flow_of_backward_trace.{u, uE, uH, uM}
+      theta C htheta.1 htheta.2
+  refine ⟨theta, r, Cbirth, htheta, hr, hCbirth, ?_⟩
+  intro E H₀ _ _ _ _ _ I _ D hD
+  obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, hwindow⟩ :=
+    hwindow (I := I) D 1 eta hD zero_lt_one heta 2
+  refine ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
+  intro M _ _ _ _ g x₀ δ k d A hA Dbig m ζ w hR hm hζ hDD inc
+    H first last hle s G L hG Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv hfinal htime z x Atrace hanchor
+  obtain ⟨f, hf, hinj, hbirth, hcross, S, hS, hstage, hcurv, Φ, hΦ, hΦval, hmarked,
+      hterminal, Q, hQ, hclose⟩ :=
+    hwindow w hR hm hζ H first last hle s G L hG Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q
+      haq hzero parameters records hfixed hlower hdelta hderiv hfinal htime z x Atrace hanchor
+  refine ⟨f, hf, hinj, hbirth, hcross, ?_, ?_⟩
+  · exact (congrFun hΦval z).symm.trans hmarked
+  intro T Rbirth Rball hsT hsEnd hgap hfit alpha halpha hnode xPast hnormPast hpast
+  by_cases hstop : q * (s - H.time first) = theta ∨ s = T ∨ ∃ j, ¬ MapsTo (alpha j)
+      (Icc (H.regularizedStageStart T (Real.sqrt (T - s)) j.val)
+        (H.regularizedStageEnd T (Real.sqrt (T - H.time first)) j.val))
+      (f j '' {y : standardCapWindow D | ‖y.val‖ ≤ Rball})
+  · right
+    have hbs : H.time first < s := (H.time_strictMono.monotone hle).trans_lt G.lt
+    exact hprefix H first last hle D Rbirth Rball hgap hfit f hf hinj hcross Q T
+      (H.time first) s q hbs hsT hq S hS ⟨G.lt.le, hsEnd⟩ (H.time_mem_stageDomain first)
+      htime (fun j t ht hdomain => hstage j t hdomain ht.2)
+      (fun t ht y j hj => ((hclose t ht).2 j hj y).le) alpha halpha hnode xPast hnormPast
+      (by rw [hbirth]; exact hpast) hstop
+  · left
+    refine ⟨lt_of_le_of_ne htime (fun h => hstop (Or.inl h)),
+      lt_of_le_of_ne hsT (fun h => hstop (Or.inr (Or.inl h))), ?_⟩
+    intro j
+    by_contra hbad
+    exact hstop (Or.inr (Or.inr ⟨j, hbad⟩))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u uE uH uM v
+
+open DifferentialGeometry.Tensor0SBundle in
+theorem exists_uniform_prepared_discard_action_lower_bound
+    (A B Ebound Ccurv rho Rcontrol : ℝ) (Cderiv : ℝ≥0)
+    (hB : 0 ≤ B) (hEbound : 0 ≤ Ebound) (hrho : 0 < rho) (hRcontrol : 0 < Rcontrol) :
+    ∃ theta r qmin Cbirth : ℝ, theta ∈ Ioo (0 : ℝ) 1 ∧ 0 < r ∧ 0 < qmin ∧ 0 < Cbirth ∧
+      ∀ {E : Type uE} {H₀ : Type uH} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H₀] {I : ModelWithCorners ℝ E H₀} [I.Boundaryless],
+      ∀ (Rbirth : ℝ),
+      let a := max 1 (Rbirth + r);
+      ∃ D : ℝ, 0 < D ∧ a + 1 < D ∧
+      ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
+      ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
+      ∀ {M : Type uM} [TopologicalSpace M] [ChartedSpace H₀ M]
+        [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A₀ : ℝ} {hA : 0 < A₀}
+        {Dbig : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A₀ hA Dbig m ζ),
+        R ≤ Dbig → m₀ ≤ m → ζ ≤ ζ₀ →
+      ∀ (H : ObservedHistory.{u}) (capFirst lossLast : Fin (H.eventCount + 1)) (hcapLoss : capFirst ≤ lossLast),
+      ∀ (Jbig : standardCapWindow Dbig → (H.stage capFirst).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ Jbig →
+      ∀ (q q₀ a₀ : ℝ), 0 < q → 0 < q₀ → q₀ ≤ Cbirth * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric capFirst).inner (Jbig x) (mfderiv ThreeModel ThreeModel Jbig x v)
+          (mfderiv ThreeModel ThreeModel Jbig x z)) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, capFirst ≤ j.castSucc → j.succ ≤ lossLast → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, capFirst ≤ j.castSucc → j.succ ≤ lossLast →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            Cderiv * (H.event j).incoming.flow.scalar t x ^ 2) →
+      q * (H.time lossLast - H.time capFirst) ≤ theta →
+      (¬ Jbig '' {x : standardCapWindow Dbig | ‖x.val‖ ≤ a} ⊆
+        range (H.backwardSurvivorMap capFirst lossLast hcapLoss capFirst le_rfl hcapLoss)) →
+      qmin ≤ q →
+      ∀ (X : Type v) [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+        [IsManifold ThreeModel ∞ X] [T2Space X]
+        (first control last : Fin (H.eventCount + 1))
+        (hfirst : first ≤ capFirst) (hlast : lossLast ≤ last) (hcontrol : control ≤ last)
+        (f : (j : H.StageInterval control last) → X → (H.stage j.val).Carrier)
+        (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j)),
+      (∀ j, Function.Injective (f j)) →
+      (∀ (i : Fin H.eventCount) (hi : control ≤ i.castSucc) (hl : i.succ ≤ last), ∀ y : X,
+        (H.event i).RegularCrossing
+          (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ y)
+          (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ y)) →
+      ∀ (T v : ℝ), 0 ≤ v → v ≤ Ebound →
+      ∀ (S : SolutionOn (I := ThreeModel) (M := X)
+          (RealTimeInterval.closed (T - Rcontrol ^ 2) T (sub_le_self _ (sq_nonneg Rcontrol)))),
+      IsSolutionOn S → T ∈ Icc (H.time last) (H.stageEndTime last) →
+      T - v ^ 2 ∈ H.stageDomain first → T - Rcontrol ^ 2 ∈ H.stageDomain control →
+      (∀ j : H.StageInterval control last, ∀ t ∈ Ico (T - Rcontrol ^ 2) T,
+        t ∈ H.stageDomain j.val →
+          S.base.metric t = localPullMetric (H.stageMetric j.val t) (f j) (hf j)) →
+      (∀ t ∈ Icc (T - Rcontrol ^ 2) T, ∀ y : X,
+        normSq0S (S.base.metric t) y 4 (S.base.rm04 t y) ≤ Ccurv) →
+      ∀ (K : Set X), IsCompact K → ∀ (xRecent : X), xRecent ∈ interior K →
+      (∀ y ∈ frontier K,
+        ENNReal.ofReal rho ≤ riemannianEDistOf (S.base.metric T) xRecent y) →
+      T - v ^ 2 ≤ H.time capFirst →
+      ∀ alpha : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier,
+      (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (alpha j)) →
+      (∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (alpha j)) volume
+        (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val)) →
+      (∀ j, ∀ t ∈ Ioo
+        (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val),
+        -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) (alpha j t)) →
+      alpha ⟨last, hfirst.trans (hcapLoss.trans hlast), le_rfl⟩ 0 =
+        f ⟨last, hcontrol, le_rfl⟩ xRecent →
+      (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+        ∃ y : (H.event i).old,
+          y.val.val = alpha ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+            (Real.sqrt (T - H.time i.succ)) ∧
+          (H.event i).oldOutput y = alpha ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+            (Real.sqrt (T - H.time i.succ))) →
+      ∀ xPast : standardCapWindow Dbig, ‖xPast.val‖ ≤ Rbirth →
+      alpha ⟨capFirst, hfirst, hcapLoss.trans hlast⟩ (Real.sqrt (T - H.time capFirst)) = Jbig xPast →
+      A < ∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (alpha j)
+        (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val) := by
+  obtain ⟨theta, r, eta, qmin, htheta, hr, heta, hqmin, haction⟩ :=
+    exists_uniform_sum_stageRegularizedAction_gt_of_cap_prefix_near_controlled_terminal_region
+      A B Ebound Ccurv rho Rcontrol hB hEbound hrho hRcontrol
+  obtain ⟨P, Creset, Cbirth, hP, hCreset, hCbirth, hdiscard⟩ :=
+    exists_uniform_first_cap_discarding_event_of_not_surviving.{u, uE, uH, uM}
+      theta Cderiv htheta.1 htheta.2
+  refine ⟨theta, r, qmin, Cbirth, htheta, hr, hqmin, hCbirth, ?_⟩
+  intro E H₀ _ _ _ _ _ I _ Rbirth a
+  have ha : 0 < a := zero_lt_one.trans_le (le_max_left _ _)
+  have hgap : Rbirth + r ≤ a := le_max_right _ _
+  obtain ⟨D, hD, haD, _, R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, hdiscard⟩ :=
+    hdiscard (I := I) a 0 eta ha heta 2
+  refine ⟨D, hD, haD, R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
+  intro M _ _ _ _ g x₀ δ k d A₀ hA₀ Dbig m ζ w hR hm hζ
+    H capFirst lossLast hcapLoss Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv htime hnot hqscale
+  have hDD : D ≤ Dbig := by linarith
+  let inc : standardCapWindow D → standardCapWindow Dbig :=
+    TopologicalSpace.Opens.inclusion (fun _ hx => hx.trans_le (add_le_add hDD (le_refl 1)))
+  obtain ⟨i, hfi, hiloss, hpast, Ξ, hΞs, hbirth, hΞ, gflow, F, hslabs, hlastFlow,
+    hF, hFzero, hFmetric, hgram, hcurv, hdiscarded, Q, hQ, hclose⟩ :=
+    hdiscard w hR hm hζ H capFirst lossLast hcapLoss Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq
+      hzero parameters records hfixed hlower hdelta hderiv htime hnot
+  have hG : ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      (H.event i).incoming.flow.base.metric t = H.stageMetric i.castSucc t := by
+    intro t _
+    simp only [stageMetric, Fin.lastCases_castSucc]
+  obtain ⟨gcap, hgcap, hcapinj, hcapbirth, hcapcross, Scap, hScap, hcapmetric,
+      hnormalized, Φ, hΦ, hΦval, hΦeq, hterminal⟩ :=
+    exists_common_flow_of_normalized_incoming_window H capFirst i.castSucc hfi
+      (H.time i.succ) (H.event i).incoming (H.event i).terminal hG hq (Jbig ∘ inc)
+      Ξ hΞs hΞ hbirth gflow hslabs hlastFlow F hFmetric
+  have hdisjoint : Disjoint (gcap ⟨i.castSucc, hfi, le_rfl⟩ ''
+      {y : standardCapWindow D | ‖y.val‖ ≤ a})
+      (range (fun y : (H.event i).old => y.val.val)) := by
+    apply (H.event i).disjoint_old_image_of_discarded_core
+    intro y hy
+    obtain ⟨z, hz, dd, hdd⟩ := hdiscarded y hy
+    refine ⟨z, ?_, dd, hdd⟩
+    have hp := congrFun hΦval y
+    rw [hΦeq] at hp
+    exact hz.trans hp
+  intro X _ _ _ _ first control last hfirst hlast hcontrol f hf hinj hcross
+    T v hv hvE S hS hupper hlowerPath hcontrolled hmetric hRm K hK xRecent hxRecent hseparation
+    hstart alpha halpha hint hscalar hrecent hnode xPast hnormPast hbirthPath
+  have hilast : i.succ ≤ last := hiloss.trans hlast
+  have hcaplast : i.castSucc ≤ last := i.castSucc_lt_succ.le.trans hilast
+  have heventT : H.time i.succ ≤ T := (H.time_strictMono.monotone hilast).trans hupper.1
+  have hbs : H.time capFirst < H.time i.succ := H.time_strictMono (hfi.trans_lt i.castSucc_lt_succ)
+  let xPastD : standardCapWindow D := ⟨xPast.val, by
+    change ‖xPast.val‖ < D + 1
+    linarith⟩
+  have hincPast : inc xPastD = xPast := Subtype.ext rfl
+  apply haction X H first capFirst i.castSucc control last hfirst hfi hcaplast hcontrol
+    f hf hinj hcross T v hv hvE S hS hupper hlowerPath hcontrolled hmetric hRm K hK xRecent hxRecent
+    hseparation D Rbirth a hgap (by linarith) gcap hgcap hcapinj hcapcross Q
+    (H.time capFirst) (H.time i.succ) q hbs heventT hstart hq hqscale Scap hScap
+    (by rw [H.stageEndTime_castSucc]; exact ⟨(H.time_strictMono i.castSucc_lt_succ).le, le_rfl⟩)
+    (H.time_mem_stageDomain capFirst)
+    ((mul_le_mul_of_nonneg_left (sub_le_sub_right (H.time_strictMono.monotone hiloss) _) hq.le).trans htime)
+    (fun j t ht hdomain => hcapmetric j t hdomain ht.2)
+    (fun t ht y j hj => by rw [hnormalized t ht]; exact ((hclose t ht).2 j hj y).le)
+    alpha halpha hint hscalar hrecent hnode xPastD hnormPast ?_ ?_
+  · rw [hcapbirth, Function.comp_apply, hincPast]
+    exact hbirthPath
+  · right
+    right
+    refine ⟨⟨i.castSucc, hfi, le_rfl⟩, ?_⟩
+    intro hstay
+    have hclock : H.regularizedStageStart T (Real.sqrt (T - H.time i.succ)) i.castSucc =
+        Real.sqrt (T - H.time i.succ) := by
+      apply H.regularizedStageStart_eq_of_mem_Icc (Real.sqrt_nonneg _)
+      rw [Real.sq_sqrt (sub_nonneg.mpr heventT), sub_sub_cancel, H.stageEndTime_castSucc]
+      exact ⟨(H.time_strictMono i.castSucc_lt_succ).le, le_rfl⟩
+    have hbounds := H.regularizedStage_bounds (Real.sqrt_nonneg (T - H.time i.succ))
+      (Real.sqrt_le_sqrt (sub_le_sub_left hbs.le T))
+      (show T - Real.sqrt (T - H.time i.succ) ^ 2 ∈ Icc (H.time i.castSucc) (H.stageEndTime i.castSucc) by
+        rw [Real.sq_sqrt (sub_nonneg.mpr heventT), sub_sub_cancel, H.stageEndTime_castSucc]
+        exact ⟨(H.time_strictMono i.castSucc_lt_succ).le, le_rfl⟩)
+      (show T - Real.sqrt (T - H.time capFirst) ^ 2 ∈ H.stageDomain capFirst by
+        rw [Real.sq_sqrt (sub_nonneg.mpr (hbs.le.trans heventT)), sub_sub_cancel]
+        exact H.time_mem_stageDomain capFirst)
+      (⟨i.castSucc, hfi, le_rfl⟩ : H.StageInterval capFirst i.castSucc)
+    have hinside := hstay (show Real.sqrt (T - H.time i.succ) ∈ Icc
+        (H.regularizedStageStart T (Real.sqrt (T - H.time i.succ)) i.castSucc)
+        (H.regularizedStageEnd T (Real.sqrt (T - H.time capFirst)) i.castSucc) by
+      rw [hclock] at hbounds ⊢
+      exact ⟨le_rfl, hbounds.2.1⟩)
+    obtain ⟨old, hold, _⟩ := hnode i (hfirst.trans hfi) hilast
+    exact Set.disjoint_left.mp hdisjoint hinside ⟨old, hold⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u uE uH uM
+
+open DifferentialGeometry.Tensor0SBundle in
+theorem exists_uniform_prepared_discard_action_lower_bound_of_parabolicallyRmControlledBall
+    (A B Ebound rTest : ℝ) (Cderiv : ℝ≥0)
+    (hB : 0 ≤ B) (hEbound : 0 ≤ Ebound) (hrTest : 0 < rTest) :
+    ∃ theta r qmin Cbirth : ℝ, theta ∈ Ioo (0 : ℝ) 1 ∧ 0 < r ∧ 0 < qmin ∧ 0 < Cbirth ∧
+      ∀ {E : Type uE} {H₀ : Type uH} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H₀] {I : ModelWithCorners ℝ E H₀} [I.Boundaryless],
+      ∀ (Rbirth : ℝ),
+      let a := max 1 (Rbirth + r);
+      ∃ D : ℝ, 0 < D ∧ a + 1 < D ∧
+      ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
+      ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
+      ∀ {M : Type uM} [TopologicalSpace M] [ChartedSpace H₀ M]
+        [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A₀ : ℝ} {hA : 0 < A₀}
+        {Dbig : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A₀ hA Dbig m ζ),
+        R ≤ Dbig → m₀ ≤ m → ζ ≤ ζ₀ →
+      ∀ (H : ObservedHistory.{u}) (capFirst lossLast : Fin (H.eventCount + 1)) (hcapLoss : capFirst ≤ lossLast),
+      ∀ (Jbig : standardCapWindow Dbig → (H.stage capFirst).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ Jbig →
+      ∀ (q q₀ a₀ : ℝ), 0 < q → 0 < q₀ → q₀ ≤ Cbirth * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric capFirst).inner (Jbig x) (mfderiv ThreeModel ThreeModel Jbig x v)
+          (mfderiv ThreeModel ThreeModel Jbig x z)) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, capFirst ≤ j.castSucc → j.succ ≤ lossLast → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, capFirst ≤ j.castSucc → j.succ ≤ lossLast →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            Cderiv * (H.event j).incoming.flow.scalar t x ^ 2) →
+      q * (H.time lossLast - H.time capFirst) ≤ theta →
+      (¬ Jbig '' {x : standardCapWindow Dbig | ‖x.val‖ ≤ a} ⊆
+        range (H.backwardSurvivorMap capFirst lossLast hcapLoss capFirst le_rfl hcapLoss)) →
+      qmin ≤ q →
+      ∀ (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier),
+      H.isParabolicallyRmControlledBall t p rTest →
+      ∀ (first : Fin (H.eventCount + 1)) (hfirst : first ≤ capFirst)
+        (hlast : lossLast ≤ H.activeStage t) (v : ℝ), 0 ≤ v → v ≤ Ebound →
+      t.val - v ^ 2 ∈ H.stageDomain first → t.val - v ^ 2 ≤ H.time capFirst →
+      ∀ alpha : (j : H.StageInterval first (H.activeStage t)) → ℝ → (H.stage j.val).Carrier,
+      (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (alpha j)) →
+      (∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val t.val (alpha j)) volume
+        (H.regularizedStageStart t.val 0 j.val) (H.regularizedStageEnd t.val v j.val)) →
+      (∀ j, ∀ s ∈ Ioo
+        (H.regularizedStageStart t.val 0 j.val) (H.regularizedStageEnd t.val v j.val),
+        -B ≤ metricScalarAt (H.stageMetric j.val (t.val - s ^ 2)) (alpha j s)) →
+      alpha ⟨H.activeStage t, hfirst.trans (hcapLoss.trans hlast), le_rfl⟩ 0 = p →
+      (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ H.activeStage t),
+        ∃ y : (H.event i).old,
+          y.val.val = alpha ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+            (Real.sqrt (t.val - H.time i.succ)) ∧
+          (H.event i).oldOutput y = alpha ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+            (Real.sqrt (t.val - H.time i.succ))) →
+      ∀ xPast : standardCapWindow Dbig, ‖xPast.val‖ ≤ Rbirth →
+      alpha ⟨capFirst, hfirst, hcapLoss.trans hlast⟩ (Real.sqrt (t.val - H.time capFirst)) = Jbig xPast →
+      A < ∑ j : H.StageInterval first (H.activeStage t), H.stageRegularizedAction j.val t.val (alpha j)
+        (H.regularizedStageStart t.val 0 j.val) (H.regularizedStageEnd t.val v j.val) := by
+  obtain ⟨theta, r, qmin, Cbirth, htheta, hr, hqmin, hCbirth, haction⟩ :=
+    exists_uniform_prepared_discard_action_lower_bound.{u, uE, uH, uM, u}
+      A B Ebound (1 / rTest ^ 4) (rTest / 2) rTest Cderiv hB hEbound (half_pos hrTest) hrTest
+  refine ⟨theta, r, qmin, Cbirth, htheta, hr, hqmin, hCbirth, ?_⟩
+  intro E H₀ _ _ _ _ _ I _ Rbirth a
+  obtain ⟨D, hD, haD, R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, haction⟩ :=
+    haction (I := I) Rbirth
+  refine ⟨D, hD, haD, R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
+  intro M _ _ _ _ g x₀ δ k d A₀ hA Dbig m ζ w hR hm hζ
+    H capFirst lossLast hcapLoss Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv htime hnot hqscale
+    t p hball first hfirst hlast v hv hvE hlowerPath hstart alpha halpha hint hscalar hrecent hnode
+    xPast hnormPast hbirthPath
+  obtain ⟨ta, hat, hta, U, hU, f, hf, hinj, hcross, hflast, S, hS, hmetric, hRm,
+      hterminal, pU, K, hpU, himage, hK, hpinterior, hseparation⟩ :=
+    H.exists_common_flow_with_compact_neighborhood_of_parabolicallyRmControlledBall t p rTest hball
+  let S' := S.timeRestrict
+    (RealTimeInterval.closed (t.val - rTest ^ 2) t.val (sub_le_self _ (sq_nonneg rTest)))
+  have hS' : IsSolutionOn S' := isSolutionOn_timeRestrict hS
+    (Icc_subset_Icc hta.le le_rfl) (Ioo_subset_Ioo hta.le le_rfl)
+  have hupper : t.val ∈ Icc (H.time (H.activeStage t)) (H.stageEndTime (H.activeStage t)) :=
+    ⟨H.activeStage_time_le t, H.le_stageEndTime_of_mem_stageDomain (H.activeStage_mem t)⟩
+  have hcontrolled : t.val - rTest ^ 2 ∈ H.stageDomain (H.activeStage ta) := by
+    rw [← hta]
+    exact H.activeStage_mem ta
+  have hRm' : ∀ s ∈ Icc (t.val - rTest ^ 2) t.val, ∀ x : U,
+      normSq0S (S'.base.metric s) x 4 (S'.base.rm04 s x) ≤ 1 / rTest ^ 4 := by
+    intro s hs x
+    change normSq0S (S.base.metric s) x 4 (S.base.rm04 s x) ≤ 1 / rTest ^ 4
+    apply (le_div_iff₀ (pow_pos hrTest 4)).mpr
+    simpa only [mul_comm] using hRm s ⟨hta.le.trans hs.1, hs.2⟩ x
+  apply haction w hR hm hζ H capFirst lossLast hcapLoss Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq
+    hzero parameters records hfixed hlower hdelta hderiv htime hnot hqscale
+    U first (H.activeStage ta) (H.activeStage t) hfirst hlast (H.activeStage_mono hat)
+    f hf hinj hcross t.val v hv hvE S' hS' hupper hlowerPath hcontrolled
+    (fun j s hs hstage => hmetric j s ⟨hta.le.trans hs.1, hs.2.le⟩ hstage)
+    hRm' K hK pU hpinterior hseparation hstart alpha halpha hint hscalar ?_ hnode
+    xPast hnormPast hbirthPath
+  rw [hflast, hpU]
+  exact hrecent
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

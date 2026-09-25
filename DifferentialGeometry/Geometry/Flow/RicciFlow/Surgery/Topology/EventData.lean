@@ -442,3 +442,26 @@ end MetricCutCapEvent
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 end
+
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent
+
+universe u v
+
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ}
+
+theorem disjoint_old_image_of_discarded_core
+    (E : MetricCutCapEvent P Q a s) {X : Type v} (f : X → P.Carrier) (K : Set X)
+    (hdiscard : ∀ x ∈ K, ∃ z : E.transition.trace.tubes.core, z.val = f x ∧
+      ∃ d : E.discarded.Carrier,
+        E.transition.trace.presentation (E.transition.trace.capping.coreInclusion z) = Sum.inr d) :
+    Disjoint (f '' K) (range (fun z : E.old => z.val.val)) := by
+  apply Set.disjoint_left.mpr
+  rintro _ ⟨x, hx, rfl⟩ ⟨y, hy⟩
+  obtain ⟨z, hz, d, hd⟩ := hdiscard x hx
+  have heq : z = y.val := Subtype.ext (hz.trans hy.symm)
+  rw [heq] at hd
+  exact Sum.inr_ne_inl (hd.symm.trans (E.oldOutput_eq y))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.MetricCutCapEvent

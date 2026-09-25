@@ -14020,8 +14020,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardActionComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFirstLossFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryHorizon
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSurvivalStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowDiscarding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCommonFlow
