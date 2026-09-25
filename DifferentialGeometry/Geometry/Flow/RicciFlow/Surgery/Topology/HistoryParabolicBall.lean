@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction
+import DifferentialGeometry.Topology.Embedding.CompactFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncoming
@@ -594,3 +596,351 @@ theorem isParabolicallyRmControlledBall_of_closedPrefixAt_incomingFootprint
     ⟨(sub_le_sub_left hΔ _).trans hv.1, hv.2⟩ z) (by positivity : 0 ≤ r ^ 4)).trans hscale
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+open _root_.Manifold TopologicalSpace in
+private theorem exists_common_flow_of_parabolicallyRmControlledBall_of_time_gt
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon)
+    (ht : H.time (H.activeStage t) < t.val) (p : (H.stageAt t).Carrier) (r : ℝ)
+    (hball : H.isParabolicallyRmControlledBall t p r) :
+    ∃ (a : Icc (0 : ℝ) H.horizon) (hat : a ≤ t), a.val = t.val - r ^ 2 ∧
+      ∃ U : Opens (H.stageAt t).Carrier,
+        (U : Set (H.stageAt t).Carrier) = riemannianBallOf (H.stageMetric (H.activeStage t) t) p r ∧
+        ∃ f : (j : H.StageInterval (H.activeStage a) (H.activeStage t)) → U → (H.stage j.val).Carrier,
+          ∃ hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j),
+            (∀ j, Function.Injective (f j)) ∧
+            (∀ (i : Fin H.eventCount) (hi : H.activeStage a ≤ i.castSucc)
+                (hl : i.succ ≤ H.activeStage t), ∀ x : U,
+              (H.event i).RegularCrossing
+                (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ x)
+                (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ x)) ∧
+            (∀ x : U, f ⟨H.activeStage t, H.activeStage_mono hat, le_rfl⟩ x = x.val) ∧
+            ∃ S : SolutionOn (I := ThreeModel) (M := U) (RealTimeInterval.closed a.val t.val hat),
+              IsSolutionOn S ∧
+              (∀ j : H.StageInterval (H.activeStage a) (H.activeStage t),
+                ∀ v ∈ Icc a.val t.val, v ∈ H.stageDomain j.val →
+                  S.base.metric v = localPullMetric (H.stageMetric j.val v) (f j) (hf j)) ∧
+              (∀ v ∈ Icc a.val t.val, ∀ x : U,
+                r ^ 4 * normSq0S (S.base.metric v) x 4 (S.base.rm04 v x) ≤ 1) := by
+  classical
+  obtain ⟨hr, a, hat, ha, htraces⟩ := hball
+  let U : Opens (H.stageAt t).Carrier :=
+    ⟨riemannianBallOf (H.stageMetric (H.activeStage t) t) p r,
+      isOpen_lt (Geometry.Riemannian.continuous_riemannianEDist _ p) continuous_const⟩
+  let first := H.activeStage a
+  let last := H.activeStage t
+  have hle : first ≤ last := H.activeStage_mono hat
+  let G := (H.closedPrefixAt t ht).restrictIncoming le_rfl (H.closedPrefixAt t ht).lt le_rfl
+  let L := (H.closedPrefixAt t ht).endpointTerminalLimitMetric (H.stageAt t)
+  have hG (v : ℝ) : G.flow.base.metric v = H.stageMetric last v := H.closedPrefixAt_metric t ht v
+  have hinit : G.flow.base.metric (H.time last) = H.initialMetric last := H.closedPrefixAt_initial t ht
+  have hsurv (x : U) : x.val ∈ H.backwardSurvivorDomain first last hle :=
+    ⟨(htraces x.val x.property).choose⟩
+  let Ψ₀ : U → H.backwardSurvivorDomain first last hle := fun x => ⟨x.val, hsurv x⟩
+  have hΨ₀ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ₀ := fun x =>
+    isLocalDiffeomorphAt_subtypeCodRestrict hsurv (isLocalDiffeomorph_subtype_val U x)
+  have hregular (x : U) : Ψ₀ x ∈ H.backwardSurvivorIncomingDomain first last hle G := by
+    change x.val ∈ G.terminalRegularRegion
+    rw [(H.closedPrefixAt t ht).terminalRegularRegion_eq_univ]
+    exact mem_univ _
+  let Ψ : U → H.backwardSurvivorIncomingDomain first last hle G := fun x => ⟨Ψ₀ x, hregular x⟩
+  have hΨ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ := fun x =>
+    isLocalDiffeomorphAt_subtypeCodRestrict hregular (hΨ₀ x)
+  let f (j : H.StageInterval first last) : U → (H.stage j.val).Carrier :=
+    (H.backwardSurvivorMap first last hle j.val j.property.1 j.property.2 ∘ Subtype.val) ∘ Ψ
+  have hf (j : H.StageInterval first last) : IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j) :=
+    isLocalDiffeomorph_comp
+      (isLocalDiffeomorph_comp
+        (H.backwardSurvivorMap_isLocalDiffeomorph first last hle j.val j.property.1 j.property.2)
+        (isLocalDiffeomorph_subtype_val (H.backwardSurvivorIncomingDomain first last hle G))) hΨ
+  have hflast (x : U) : f ⟨last, hle, le_rfl⟩ x = x.val :=
+    H.backwardSurvivorMap_last first last hle (Ψ₀ x)
+  obtain ⟨gflow, hslabs, hlast, _, hsol⟩ :=
+    H.exists_backwardSurvivorIncoming_isSolutionOn first last hle G L hinit
+  let S₀ : SolutionOn (I := ThreeModel)
+      (M := H.backwardSurvivorIncomingDomain first last hle G)
+      (RealTimeInterval.closed (H.time first) t.val
+        ((H.time_strictMono.monotone hle).trans ht.le)) := { base := { metric := gflow } }
+  let : SigmaCompactSpace (H.backwardSurvivorDomain first last hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
+        (H.backwardSurvivorDomain first last hle).isOpen)
+  let : SigmaCompactSpace (H.backwardSurvivorIncomingDomain first last hle G) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
+        (H.backwardSurvivorIncomingDomain first last hle G).isOpen)
+  let S := (S₀.localPullback Ψ hΨ).timeRestrict (RealTimeInterval.closed a.val t.val hat)
+  have hS : IsSolutionOn S := isSolutionOn_timeRestrict (hsol.localPullback Ψ hΨ)
+    (Icc_subset_Icc (H.activeStage_time_le a) le_rfl)
+    (Ioo_subset_Ioo (H.activeStage_time_le a) le_rfl)
+  have hmetric (j : H.StageInterval first last) (v : ℝ) (hv : v ∈ Icc a.val t.val)
+      (hjv : v ∈ H.stageDomain j.val) :
+      S.base.metric v = localPullMetric (H.stageMetric j.val v) (f j) (hf j) := by
+    change localPullMetric (gflow v) Ψ hΨ = _
+    rcases lt_or_eq_of_le hv.2 with hvt | rfl
+    · rw [H.metric_eq_stage_pullback_of_backwardSurvivorIncoming first last hle t.val G L gflow
+        (fun i hi hl v hv => hslabs i hi hl v (Ico_subset_Icc_self hv))
+        (fun v hv => hlast v (Ico_subset_Icc_self hv)) (fun v _ => hG v)
+        j.val j.property.1 j.property.2 hjv hvt]
+      exact localPullMetric_comp (H.stageMetric j.val v)
+        (H.backwardSurvivorMap first last hle j.val j.property.1 j.property.2 ∘ Subtype.val) Ψ
+        (isLocalDiffeomorph_comp
+          (H.backwardSurvivorMap_isLocalDiffeomorph first last hle j.val j.property.1 j.property.2)
+          (isLocalDiffeomorph_subtype_val (H.backwardSurvivorIncomingDomain first last hle G))) hΨ (hf j)
+    · have hj : j = ⟨last, hle, le_rfl⟩ :=
+        Subtype.ext ((H.mem_stageDomain_iff t j.val).mp hjv).symm
+      subst j
+      rw [hlast _ ⟨ht.le, le_rfl⟩, ObservedHistory.backwardSurvivorIncomingMetric]
+      have hend : L.extendedMetric t.val =
+          (H.stageMetric last t.val).restrictOpen G.terminalRegularOpen :=
+        H.closedPrefixAt_endpointTerminalLimitMetric_extendedMetric t ht le_rfl
+      rw [hend, ← localPullMetric_subtype_val]
+      let k := H.backwardSurvivorIncomingMap first last hle G
+      have hk := H.backwardSurvivorIncomingMap_isLocalDiffeomorph first last hle G
+      have hv := isLocalDiffeomorph_subtype_val (I := ThreeModel) G.terminalRegularOpen
+      have hc := isLocalDiffeomorph_comp hv (isLocalDiffeomorph_comp hk hΨ)
+      rw [localPullMetric_comp _ k Ψ hk hΨ (isLocalDiffeomorph_comp hk hΨ),
+        localPullMetric_comp _ Subtype.val (k ∘ Ψ) hv (isLocalDiffeomorph_comp hk hΨ) hc]
+      apply SmoothRiemannianMetric.ext_inner
+      intro x v w
+      rw [localPullMetric_inner, localPullMetric_inner]
+      have hfend : f ⟨last, hle, le_rfl⟩ = Subtype.val ∘ (k ∘ Ψ) := by
+        funext y
+        exact H.backwardSurvivorMap_last first last hle (Ψ y).val
+      exact congrArg (fun F : U → (H.stage last).Carrier =>
+        (H.stageMetric last t.val).inner (F x)
+          (mfderiv ThreeModel ThreeModel F x v) (mfderiv ThreeModel ThreeModel F x w)) hfend.symm
+  refine ⟨a, hat, ha, U, rfl, f, hf, ?_, ?_, hflast, S, hS, hmetric, ?_⟩
+  · intro j
+    exact (H.backwardSurvivorMap_injective first last hle j.val j.property.1 j.property.2).comp
+      (fun x y hxy => Subtype.ext (congrArg (fun z : H.backwardSurvivorDomain first last hle => z.val) hxy))
+  · intro i hi hl x
+    exact H.backwardSurvivorMap_crossing first last hle i hi hl (Ψ₀ x)
+  · intro v hv x
+    let v' : Icc (0 : ℝ) H.horizon := ⟨v, a.property.1.trans hv.1, hv.2.trans t.property.2⟩
+    have hav : a ≤ v' := hv.1
+    have hvt : v' ≤ t := hv.2
+    let j : H.StageInterval first last :=
+      ⟨H.activeStage v', H.activeStage_mono hav, H.activeStage_mono hvt⟩
+    change r ^ 4 * normSq0S (S.base.metric v) x 4 (metricRm04At (S.base.metric v) x) ≤ 1
+    rw [hmetric j v hv (H.activeStage_mem v'), normSq0S_metricRm04At_localPullMetric]
+    obtain ⟨A, hA⟩ := htraces x.val x.property
+    have hpoint : f j x = A.point j.val j.property.1 j.property.2 :=
+      H.backwardSurvivorMap_eq_point first last hle j.val j.property.1 j.property.2 (Ψ₀ x) A
+    rw [hpoint]
+    exact hA.1 v' hav hvt
+
+open _root_.Manifold TopologicalSpace in
+theorem exists_common_flow_of_parabolicallyRmControlledBall
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon)
+    (p : (H.stageAt t).Carrier) (r : ℝ)
+    (hball : H.isParabolicallyRmControlledBall t p r) :
+    ∃ (a : Icc (0 : ℝ) H.horizon) (hat : a ≤ t), a.val = t.val - r ^ 2 ∧
+      ∃ U : Opens (H.stageAt t).Carrier,
+        (U : Set (H.stageAt t).Carrier) = riemannianBallOf (H.stageMetric (H.activeStage t) t) p r ∧
+        ∃ f : (j : H.StageInterval (H.activeStage a) (H.activeStage t)) → U → (H.stage j.val).Carrier,
+          ∃ hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j),
+            (∀ j, Function.Injective (f j)) ∧
+            (∀ (i : Fin H.eventCount) (hi : H.activeStage a ≤ i.castSucc)
+                (hl : i.succ ≤ H.activeStage t), ∀ x : U,
+              (H.event i).RegularCrossing
+                (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ x)
+                (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ x)) ∧
+            (∀ x : U, f ⟨H.activeStage t, H.activeStage_mono hat, le_rfl⟩ x = x.val) ∧
+            ∃ S : SolutionOn (I := ThreeModel) (M := U) (RealTimeInterval.closed a.val t.val hat),
+              IsSolutionOn S ∧
+              (∀ j : H.StageInterval (H.activeStage a) (H.activeStage t),
+                ∀ v ∈ Icc a.val t.val, v ∈ H.stageDomain j.val →
+                  S.base.metric v = localPullMetric (H.stageMetric j.val v) (f j) (hf j)) ∧
+              (∀ v ∈ Icc a.val t.val, ∀ x : U,
+                r ^ 4 * normSq0S (S.base.metric v) x 4 (S.base.rm04 v x) ≤ 1) := by
+  classical
+  rcases lt_or_eq_of_le (H.activeStage_time_le t) with ht | ht
+  · exact H.exists_common_flow_of_parabolicallyRmControlledBall_of_time_gt t ht p r hball
+  obtain ⟨hr, a, hat, ha, htraces⟩ := hball
+  have hatlt : a.val < t.val := by nlinarith [sq_pos_of_pos hr]
+  let first := H.activeStage a
+  let last := H.activeStage t
+  have hle : first ≤ last := H.activeStage_mono hat
+  have hlt : first < last := lt_of_le_of_ne hle (by
+    intro he
+    have hleft := H.activeStage_time_le a
+    change H.time first ≤ a.val at hleft
+    rw [he, ht] at hleft
+    exact (not_le_of_gt hatlt) hleft)
+  let U : Opens (H.stageAt t).Carrier :=
+    ⟨riemannianBallOf (H.stageMetric (H.activeStage t) t) p r,
+      isOpen_lt (Geometry.Riemannian.continuous_riemannianEDist _ p) continuous_const⟩
+  have hsurv (x : U) : x.val ∈ H.backwardSurvivorDomain first last hle :=
+    ⟨(htraces x.val x.property).choose⟩
+  let Ψ : U → H.backwardSurvivorDomain first last hle := fun x => ⟨x.val, hsurv x⟩
+  have hΨ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ := fun x =>
+    isLocalDiffeomorphAt_subtypeCodRestrict hsurv (isLocalDiffeomorph_subtype_val U x)
+  let f (j : H.StageInterval first last) : U → (H.stage j.val).Carrier :=
+    H.backwardSurvivorMap first last hle j.val j.property.1 j.property.2 ∘ Ψ
+  have hf (j : H.StageInterval first last) : IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j) :=
+    isLocalDiffeomorph_comp
+      (H.backwardSurvivorMap_isLocalDiffeomorph first last hle j.val j.property.1 j.property.2) hΨ
+  have hflast (x : U) : f ⟨last, hle, le_rfl⟩ x = x.val :=
+    H.backwardSurvivorMap_last first last hle (Ψ x)
+  obtain ⟨gflow, hslabs, hstages, _, hsol⟩ :=
+    H.exists_backwardSurvivor_isSolutionOn first last hlt
+  let S₀ : SolutionOn (I := ThreeModel) (M := H.backwardSurvivorDomain first last hle)
+      (RealTimeInterval.closed (H.time first) (H.time last) (H.time_strictMono hlt).le) :=
+    { base := { metric := gflow } }
+  let : SigmaCompactSpace (H.backwardSurvivorDomain first last hle) :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel
+        (H.backwardSurvivorDomain first last hle).isOpen)
+  let S := (S₀.localPullback Ψ hΨ).timeRestrict (RealTimeInterval.closed a.val t.val hat)
+  have hS : IsSolutionOn S := isSolutionOn_timeRestrict (hsol.localPullback Ψ hΨ)
+    (Icc_subset_Icc (H.activeStage_time_le a) ht.ge)
+    (Ioo_subset_Ioo (H.activeStage_time_le a) ht.ge)
+  have hmetric (j : H.StageInterval first last) (v : ℝ) (hv : v ∈ Icc a.val t.val)
+      (hjv : v ∈ H.stageDomain j.val) :
+      S.base.metric v = localPullMetric (H.stageMetric j.val v) (f j) (hf j) := by
+    change localPullMetric (gflow v) Ψ hΨ = _
+    let q := H.backwardSurvivorMap first last hle j.val j.property.1 j.property.2
+    have hq := H.backwardSurvivorMap_isLocalDiffeomorph first last hle
+      j.val j.property.1 j.property.2
+    by_cases hj : j.val = last
+    · have hvlast : v = H.time last :=
+        le_antisymm (hv.2.trans ht.ge) (hj ▸ H.time_le_of_mem_stageDomain hjv)
+      have hvj : v = H.time j.val := hvlast.trans (congrArg H.time hj).symm
+      rw [hvj, hstages j.val j.property.1 j.property.2]
+      rw [ObservedHistory.backwardSurvivorInitialMetric, ← H.stageMetric_initial]
+      exact localPullMetric_comp _ q Ψ hq hΨ (hf j)
+    · have hjlt : j.val < last := lt_of_le_of_ne j.property.2 hj
+      rcases j with ⟨j, hjfirst, hjlast⟩
+      cases j using Fin.lastCases with
+      | last => exact False.elim ((not_lt_of_ge (Fin.le_last last)) hjlt)
+      | cast i =>
+        have hil : i.succ ≤ last := hjlt
+        have htt : v ∈ Ico (H.time i.castSucc) (H.time i.succ) := by
+          simpa only [ObservedHistory.stageDomain, Fin.lastCases_castSucc] using hjv
+        rw [hslabs i hjfirst hil v (Ico_subset_Icc_self htt),
+          ObservedHistory.backwardSurvivorSlabMetric,
+          (H.event i).terminal.extendedMetric_before htt.2]
+        have hinner :
+            localPullMetric (((H.event i).incoming.flow.base.metric v).restrictOpen
+              (H.event i).incoming.terminalRegularOpen)
+              (H.backwardSurvivorTerminalMap first last hle i hjfirst hil)
+              (H.backwardSurvivorTerminalMap_isLocalDiffeomorph first last hle i hjfirst hil) =
+            localPullMetric ((H.event i).incoming.flow.base.metric v) q hq := by
+          rw [← localPullMetric_subtype_val]
+          exact localPullMetric_comp _ _ _ _ _ hq
+        rw [hinner]
+        simpa only [ObservedHistory.stageMetric, Fin.lastCases_castSucc] using
+          (localPullMetric_comp ((H.event i).incoming.flow.base.metric v) q Ψ hq hΨ
+            (hf ⟨i.castSucc, hjfirst, hjlast⟩))
+  refine ⟨a, hat, ha, U, rfl, f, hf, ?_, ?_, hflast, S, hS, hmetric, ?_⟩
+  · intro j
+    exact (H.backwardSurvivorMap_injective first last hle j.val j.property.1 j.property.2).comp
+      (fun x y hxy => Subtype.ext (congrArg (fun z : H.backwardSurvivorDomain first last hle => z.val) hxy))
+  · intro i hi hl x
+    exact H.backwardSurvivorMap_crossing first last hle i hi hl (Ψ x)
+  · intro v hv x
+    let v' : Icc (0 : ℝ) H.horizon := ⟨v, a.property.1.trans hv.1, hv.2.trans t.property.2⟩
+    have hav : a ≤ v' := hv.1
+    have hvt : v' ≤ t := hv.2
+    let j : H.StageInterval first last :=
+      ⟨H.activeStage v', H.activeStage_mono hav, H.activeStage_mono hvt⟩
+    change r ^ 4 * normSq0S (S.base.metric v) x 4 (metricRm04At (S.base.metric v) x) ≤ 1
+    rw [hmetric j v hv (H.activeStage_mem v'), normSq0S_metricRm04At_localPullMetric]
+    obtain ⟨A, hA⟩ := htraces x.val x.property
+    have hpoint : f j x = A.point j.val j.property.1 j.property.2 :=
+      H.backwardSurvivorMap_eq_point first last hle j.val j.property.1 j.property.2 (Ψ x) A
+    rw [hpoint]
+    exact hA.1 v' hav hvt
+
+open _root_.Manifold TopologicalSpace in
+theorem exists_common_flow_with_compact_neighborhood_of_parabolicallyRmControlledBall
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon)
+    (p : (H.stageAt t).Carrier) (r : ℝ)
+    (hball : H.isParabolicallyRmControlledBall t p r) :
+    ∃ (a : Icc (0 : ℝ) H.horizon) (hat : a ≤ t), a.val = t.val - r ^ 2 ∧
+      ∃ U : Opens (H.stageAt t).Carrier,
+        (U : Set (H.stageAt t).Carrier) = riemannianBallOf (H.stageMetric (H.activeStage t) t) p r ∧
+        ∃ f : (j : H.StageInterval (H.activeStage a) (H.activeStage t)) → U → (H.stage j.val).Carrier,
+          ∃ hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j),
+            (∀ j, Function.Injective (f j)) ∧
+            (∀ (i : Fin H.eventCount) (hi : H.activeStage a ≤ i.castSucc)
+                (hl : i.succ ≤ H.activeStage t), ∀ x : U,
+              (H.event i).RegularCrossing
+                (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ x)
+                (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ x)) ∧
+            (∀ x : U, f ⟨H.activeStage t, H.activeStage_mono hat, le_rfl⟩ x = x.val) ∧
+            ∃ S : SolutionOn (I := ThreeModel) (M := U) (RealTimeInterval.closed a.val t.val hat),
+              IsSolutionOn S ∧
+              (∀ j : H.StageInterval (H.activeStage a) (H.activeStage t),
+                ∀ v ∈ Icc a.val t.val, v ∈ H.stageDomain j.val →
+                  S.base.metric v = localPullMetric (H.stageMetric j.val v) (f j) (hf j)) ∧
+              (∀ v ∈ Icc a.val t.val, ∀ x : U,
+                r ^ 4 * normSq0S (S.base.metric v) x 4 (S.base.rm04 v x) ≤ 1) ∧
+              S.base.metric t = (H.stageMetric (H.activeStage t) t).restrictOpen U ∧
+              ∃ (pU : U) (K : Set U), pU.val = p ∧
+                Subtype.val '' K = riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2) ∧
+                IsCompact K ∧ pU ∈ interior K ∧
+                ∀ x ∈ frontier K,
+                  ENNReal.ofReal (r / 2) ≤ riemannianEDistOf (S.base.metric t) pU x := by
+  classical
+  have hr : 0 < r := hball.1
+  obtain ⟨a, hat, ha, U, hU, f, hf, hinj, hcross, hlast, S, hS, hmetric, hRm⟩ :=
+    H.exists_common_flow_of_parabolicallyRmControlledBall t p r hball
+  have hterminal : S.base.metric t = (H.stageMetric (H.activeStage t) t).restrictOpen U := by
+    have h := hmetric ⟨H.activeStage t, H.activeStage_mono hat, le_rfl⟩ t
+      ⟨hat, le_rfl⟩ (H.activeStage_mem t)
+    have heq : f ⟨H.activeStage t, H.activeStage_mono hat, le_rfl⟩ = Subtype.val :=
+      funext hlast
+    simpa only [heq, localPullMetric_subtype_val] using h
+  have hpU : p ∈ U := by
+    change p ∈ (U : Set (H.stageAt t).Carrier)
+    rw [hU]
+    change riemannianEDistOf (H.stageMetric (H.activeStage t) t) p p < ENNReal.ofReal r
+    rw [riemannianEDistOf_self]
+    exact ENNReal.ofReal_pos.mpr hr
+  let pU : U := ⟨p, hpU⟩
+  let K : Set U := Subtype.val ⁻¹'
+    riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2)
+  have hclosed : IsClosed (riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2)) :=
+    Geometry.Metric.isClosed_riemannianClosedBallOf _ _ _
+  have hsubset : riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2) ⊆
+      range (Subtype.val : U → (H.stageAt t).Carrier) := by
+    rw [Subtype.range_coe, hU]
+    intro x hx
+    exact hx.trans_lt ((ENNReal.ofReal_lt_ofReal_iff hr).mpr (by linarith))
+  have hK : IsCompact K :=
+    U.isOpenEmbedding'.isEmbedding.isInducing.isCompact_preimage' hclosed.isCompact hsubset
+  have himage : Subtype.val '' K =
+      riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2) :=
+    image_preimage_eq_of_subset hsubset
+  have hpinterior : pU ∈ interior K := by
+    have h := Geometry.Metric.mem_interior_riemannianClosedBallOf
+      (H.stageMetric (H.activeStage t) t) p (by linarith : 0 < r / 2)
+    rw [← himage,
+      ← DifferentialGeometry.Topology.Embedding.image_interior_of_isOpenEmbedding
+        U.isOpenEmbedding' K] at h
+    obtain ⟨x, hx, hxp⟩ := h
+    exact (show x = pU from Subtype.ext hxp) ▸ hx
+  refine ⟨a, hat, ha, U, hU, f, hf, hinj, hcross, hlast, S, hS, hmetric, hRm,
+    hterminal, pU, K, rfl, himage, hK, hpinterior, ?_⟩
+  intro x hx
+  have hfrontier : x.val ∈ frontier
+      (riemannianClosedBallOf (H.stageMetric (H.activeStage t) t) p (r / 2)) := by
+    rw [← himage,
+      ← DifferentialGeometry.Topology.Embedding.image_frontier_of_isOpenEmbedding_of_isCompact
+        U.isOpenEmbedding' hK]
+    exact ⟨x, hx, rfl⟩
+  have hdist := Geometry.Metric.riemannianEDistOf_eq_of_mem_frontier_riemannianClosedBallOf
+    (H.stageMetric (H.activeStage t) t) p hfrontier
+  rw [hterminal, ← hdist]
+  exact riemannianEDistOf_le_restrictOpen
+    (H.stageMetric (H.activeStage t) t) U pU x
+
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end

@@ -252,3 +252,34 @@ theorem exists_first_exit_frontier_Icc_of_mem_of_not_mapsTo
 end DifferentialGeometry
 
 end
+
+section
+
+open Set
+
+namespace DifferentialGeometry
+
+theorem exists_last_entry_frontier_Icc_of_mem_of_not_mapsTo
+    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
+    {γ : ℝ → X} {a b : ℝ} (hγ : ContinuousOn γ (Icc a b))
+    (hbK : γ b ∈ K) (hexit : ¬ MapsTo γ (Icc a b) K) :
+    ∃ t ∈ Ioc a b, MapsTo γ (Icc t b) K ∧ γ t ∈ frontier K := by
+  obtain ⟨c, hc, hcK⟩ : ∃ c ∈ Icc a b, γ c ∉ K := by
+    simpa only [MapsTo, not_forall, exists_prop] using hexit
+  have hcb : c < b := lt_of_le_of_ne hc.2 (by
+    intro heq
+    exact hcK (heq.symm ▸ hbK))
+  have hright : ContinuousOn (fun u : ℝ => γ (b - u)) (Icc 0 (b - c)) :=
+    hγ.comp (continuous_const.sub continuous_id).continuousOn (by
+      intro u hu
+      constructor <;> linarith [hu.1, hu.2, hc.1])
+  obtain ⟨t, ht, hstay, hfront⟩ := exists_first_exit_frontier_of_mem hK
+    (sub_pos.mpr hcb) hright (by simpa using hbK) (by simpa using hcK)
+  refine ⟨b - t, ⟨by linarith [ht.2, hc.1], by linarith [ht.1]⟩, ?_, hfront⟩
+  intro u hu
+  have hu' : b - u ∈ Icc 0 t := ⟨by linarith [hu.2], by linarith [hu.1]⟩
+  simpa using hstay (b - u) hu'
+
+end DifferentialGeometry
+
+end

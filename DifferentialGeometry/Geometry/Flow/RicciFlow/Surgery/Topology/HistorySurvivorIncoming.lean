@@ -1669,3 +1669,77 @@ theorem localPullMetric_backwardSurvivorIncoming_flow_eq_of_earlier_source_eq
       F₀ F hF₀ hF hbirth i hfirst hi hilast t
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+noncomputable section
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+theorem metric_eq_stage_pullback_of_backwardSurvivorIncoming
+    (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (F : ℝ → SmoothRiemannianMetric ThreeModel (H.backwardSurvivorIncomingDomain first last hle G))
+    (hslabs : ∀ (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ),
+        F t = (H.backwardSurvivorSlabMetric first last hle i hf hl t).restrictOpen
+          (H.backwardSurvivorIncomingDomain first last hle G))
+    (hlast : ∀ t ∈ Ico (H.time last) s,
+      F t = H.backwardSurvivorIncomingMetric first last hle G L t)
+    (hG : ∀ t ∈ Ico (H.time last) s, G.flow.base.metric t = H.stageMetric last t)
+    (j : Fin (H.eventCount + 1)) (hfirstj : first ≤ j) (hjlast : j ≤ last) {t : ℝ}
+    (ht : t ∈ H.stageDomain j) (hts : t < s) :
+    F t = localPullMetric (H.stageMetric j t)
+      (H.backwardSurvivorMap first last hle j hfirstj hjlast ∘ Subtype.val)
+      (isLocalDiffeomorph_comp
+        (H.backwardSurvivorMap_isLocalDiffeomorph first last hle j hfirstj hjlast)
+        (isLocalDiffeomorph_subtype_val (H.backwardSurvivorIncomingDomain first last hle G))) := by
+  let p := H.backwardSurvivorMap first last hle j hfirstj hjlast
+  have hp := H.backwardSurvivorMap_isLocalDiffeomorph first last hle
+    j hfirstj hjlast
+  have hv := isLocalDiffeomorph_subtype_val (I := ThreeModel) (H.backwardSurvivorIncomingDomain first last hle G)
+  have hleft : H.time j ≤ t := by
+    cases j using Fin.lastCases with
+    | last =>
+      simp only [stageDomain, Fin.lastCases_last, mem_Icc] at ht
+      exact ht.1
+    | cast i =>
+      simp only [stageDomain, Fin.lastCases_castSucc, mem_Ico] at ht
+      exact ht.1
+  by_cases hj : j = last
+  · have htime : t ∈ Ico (H.time last) s := ⟨hj ▸ hleft, hts⟩
+    subst j
+    rw [hlast t htime, H.backwardSurvivorIncomingMetric_before first last hle G L hts, hG t htime]
+    have hpval : p = Subtype.val := by
+      funext x
+      exact H.backwardSurvivorMap_last first last hle x
+    change ((H.stageMetric last t).restrictOpen (H.backwardSurvivorDomain first last hle)).restrictOpen
+      (H.backwardSurvivorIncomingDomain first last hle G) =
+      localPullMetric (H.stageMetric last t) (p ∘ Subtype.val) _
+    rw [← localPullMetric_subtype_val, ← localPullMetric_subtype_val]
+    simp only [hpval]
+    exact localPullMetric_comp _ _ _ _ _ _
+  · have hjlt : j < last := lt_of_le_of_ne hjlast hj
+    cases j using Fin.lastCases with
+    | last => exact False.elim ((not_lt_of_ge (Fin.le_last last)) hjlt)
+    | cast i =>
+      have hil : i.succ ≤ last := hjlt
+      have htt : t ∈ Ico (H.time i.castSucc) (H.time i.succ) := by
+        simpa only [ObservedHistory.stageDomain, Fin.lastCases_castSucc] using ht
+      rw [hslabs i hfirstj hil t htt,
+        ObservedHistory.backwardSurvivorSlabMetric,
+        (H.event i).terminal.extendedMetric_before htt.2]
+      have hinner :
+          localPullMetric (((H.event i).incoming.flow.base.metric t).restrictOpen
+            (H.event i).incoming.terminalRegularOpen)
+            (H.backwardSurvivorTerminalMap first last hle i hfirstj hil)
+            (H.backwardSurvivorTerminalMap_isLocalDiffeomorph first last hle i hfirstj hil) =
+          localPullMetric ((H.event i).incoming.flow.base.metric t) p hp := by
+        rw [← localPullMetric_subtype_val]
+        exact localPullMetric_comp _ _ _ _ _ hp
+      rw [hinner, ← localPullMetric_subtype_val]
+      simpa only [ObservedHistory.stageMetric, Fin.lastCases_castSucc] using
+        (localPullMetric_comp ((H.event i).incoming.flow.base.metric t) p Subtype.val hp hv
+          (isLocalDiffeomorph_comp hp hv))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
