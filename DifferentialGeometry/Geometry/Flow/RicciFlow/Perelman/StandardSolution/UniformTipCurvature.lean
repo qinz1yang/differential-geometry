@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMetricReference
+import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.SequentialCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardPositiveCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMetricControl
@@ -77,5 +79,59 @@ theorem exists_uniform_positive_standard_tip_ricci_bound
   have hhalf : 2 * c / 2 = c := by ring
   rw [hhalf] at hlow
   exact (not_lt_of_ge hlow) (hfail.trans hstrict)
+
+theorem exists_uniform_standard_tip_ricci_lower_bound_of_metric_close
+    (θ : ℝ) (hθ : 0 ≤ θ) (hθ1 : θ < 1) :
+    ∃ ε c : ℝ, 0 < ε ∧ 0 < c ∧
+      ∀ (S : StandardSolution) (t : ℝ), t ∈ Icc 0 θ →
+      ∀ (U : TopologicalSpace.Opens E3) (g : SmoothRiemannianMetric (𝓡 3) U)
+        (x : U), x.val = 0 →
+      (∀ k : ℕ, k ≤ 2 → metricDerivNorm k g ((S.val.metric t).restrictOpen U)
+        (StandardCap.metric.restrictOpen U) x ≤ ε) →
+      ∀ v : TangentSpace (𝓡 3) x,
+        c * g.inner x v v ≤ ricciTensor g x v v := by
+  have hlt : ENNReal.ofReal θ < uniformStandardLifetime := by
+    rw [uniformStandardLifetime_eq_one]
+    simpa using (ENNReal.ofReal_lt_ofReal_iff (by norm_num : (0 : ℝ) < 1)).mpr hθ1
+  obtain ⟨κ, hκ, htip⟩ := exists_uniform_positive_standard_tip_ricci_bound hθ hlt
+  obtain ⟨D, hD, hreference⟩ :=
+    exists_uniform_standard_metric_deriv_norm_reference_bound θ hθ hθ1 2
+  let δ := min (1 / 2 : ℝ) (κ / (κ + 1440))
+  have hδ : 0 < δ := by dsimp only [δ]; positivity
+  have hbudget : (κ / 2) * (1 + δ) + 720 * δ ≤ κ := by
+    have hh := (le_div_iff₀ (by positivity : 0 < κ + 1440)).mp
+      (min_le_right _ _ : δ ≤ κ / (κ + 1440))
+    nlinarith
+  let ε := δ / (3 * (D + 1))
+  have hε : 0 < ε := by dsimp only [ε]; positivity
+  refine ⟨ε, κ / 2, hε, by positivity, ?_⟩
+  intro S t ht U g x hx hclose v
+  let G := (S.val.metric t).restrictOpen U
+  have hsmall (j : ℕ) (hj : j ≤ 2) : metricDerivNorm j g G G x ≤ δ := by
+    have hb := hreference U S t ht g G j hj x
+    have hs : (∑ k ∈ Finset.range 3, metricDerivNorm k g G
+        (StandardCap.metric.restrictOpen U) x) ≤ 3 * ε := by
+      calc
+        _ ≤ ∑ _k ∈ Finset.range 3, ε := Finset.sum_le_sum fun k hk =>
+          hclose k (by have := Finset.mem_range.mp hk; omega)
+        _ = _ := by norm_num
+    have heq : 3 * (D + 1) * ε = δ := by
+      dsimp only [ε]
+      exact mul_div_cancel₀ δ (by positivity)
+    exact hb.trans ((mul_le_mul_of_nonneg_left hs hD).trans (by nlinarith))
+  have hRic (w : TangentSpace (𝓡 3) x) :
+      κ * G.inner x w w ≤ ricciTensor G x w w := by
+    dsimp only [G]
+    rw [DifferentialGeometry.Geometry.Curvature.ricciTensor_restrictOpen]
+    simp only [SmoothRiemannianMetric.restrictOpen_inner, mfderiv_subtype_val_apply]
+    change κ * (S.val.metric t).inner x.val w w ≤ ricciTensor (S.val.metric t) x.val w w
+    rw [hx]
+    exact htip S t ht w
+  apply ricciTensor_lower_bound_of_small_metric_derivatives g G x
+    (min_le_left _ _) (by positivity) hsmall hRic ?_ v
+  have hdim : (Module.finrank ℝ E3 : ℝ) = 3 := by simp [E3]
+  rw [hdim]
+  convert hbudget using 1
+  ring
 
 end DifferentialGeometry.PDE.RicciFlow

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.UniformTipCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.RicciTimeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.CurvatureMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.LocalWindowCurvatureHorizon
@@ -90,5 +91,45 @@ theorem exists_uniform_window_ricci_lower_bound_of_local_curvature
     have hd : t - τ ≤ σ := by have hh := ht.2.trans (min_le_left _ _); linarith
     have hh := mul_le_mul_of_nonneg_left hd (mul_nonneg hΛ.le hR)
     linarith
+
+theorem exists_uniform_window_tip_ricci_lower_bound_of_standard_metric_close
+    (Θ T₀ K : ℝ) (hΘ : 0 ≤ Θ) (hΘ1 : Θ < 1) :
+    ∃ ε σ c : ℝ, 0 < ε ∧ 0 < σ ∧ 0 < c ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : CanonicalStaticInsertionWitness d A hA D m ζ),
+      32 < D → 4 ≤ m → ζ ≤ 1 / 2 →
+      ∀ (J : RealTimeInterval) (T : ℝ), 0 < T → T ≤ T₀ →
+        Icc 0 T ⊆ J.carrier → Ioo 0 T ⊆ J.regular →
+        ∀ L : SolutionOn (I := ThreeModel) (M := standardCapWindow D) J,
+        IsSolutionOn L → L.base.metric 0 = w.windowMetric →
+        (∀ (p : standardCapWindow D) (i j : Fin (Module.finrank ℝ ThreeSpace)),
+          ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ, ℝ) ∞
+            (fun z : ℝ × standardCapWindow D =>
+              DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (L.base.metric z.1) p z.2 i j)
+            (Icc 0 T ×ˢ (trivializationAt ThreeSpace (TangentSpace ThreeModel) p).baseSet)) →
+        (∀ t ∈ Icc 0 T, ∀ x : standardCapWindow D, ‖x.val‖ ≤ 32 →
+          nablaKRm04NormSqIntrinsic L 0 t x ≤ K) →
+        ∀ τ ∈ Icc 0 T, ∀ (Q : StandardSolution) (s : ℝ), s ∈ Icc 0 Θ →
+        ∀ (x : standardCapWindow D), x.val = 0 →
+          (∀ j : ℕ, j ≤ 2 → metricDerivNorm j (L.base.metric τ)
+            ((Q.val.metric s).restrictOpen (standardCapWindow D))
+            (metric.restrictOpen (standardCapWindow D)) x ≤ ε) →
+          ∀ t ∈ Icc τ (min (τ + σ) T), ∀ v : TangentSpace ThreeModel x,
+            c * (L.base.metric t).inner x v v ≤ ricciTensor (L.base.metric t) x v v := by
+  obtain ⟨ε, κ, hε, hκ, htip⟩ :=
+    exists_uniform_standard_tip_ricci_lower_bound_of_metric_close Θ hΘ hΘ1
+  obtain ⟨σ, c, hσ, hc, hpropagate⟩ :=
+    exists_uniform_window_ricci_lower_bound_of_local_curvature 1 T₀ K κ (by norm_num) hκ
+  refine ⟨ε, σ, c, hε, hσ, hc, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA D m ζ w hD hm hζ
+    J T hT hTT₀ hcarrier hregular L hL hzero hgram hcurv τ hτ Q s hs x hx hclose t ht v
+  apply hpropagate w (by simpa using hD) hm hζ J T hT hTT₀ hcarrier hregular L hL
+    hzero hgram (by simpa using hcurv) τ hτ x (by rw [hx]; simp) ?_ t ht v
+  exact htip Q s hs (standardCapWindow D) (L.base.metric τ) x hx hclose
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
