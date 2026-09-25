@@ -8,6 +8,7 @@ import DifferentialGeometry.Geometry.Metric.ConeChart.Construction
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Topology.SigmaCompactOpen
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.MapDistance
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.InverseComposition
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorphRange
 
@@ -321,5 +322,121 @@ theorem rescaled_cone_exclusion_of_metric_cp_convergence
       rw [← show edist x y = riemannianEDistOf gInf x y from gInf.toPseudoMetricSpace_edist x y,
         edist_dist, ENNReal.toReal_ofReal dist_nonneg]
     rwa [hgdist] at hh
+
+universe u w
+
+open Set Filter DifferentialGeometry.CheegerGromovCompactness in
+open scoped _root_.Topology in
+theorem rescaled_cone_exclusion_of_inverse_comparison
+    (V : TopologicalSpace.Opens E3) (hV : PreconnectedSpace V)
+    (c : ℝ) (hc : 0 < c) (p : V) (hp : ‖p.val‖ ≤ transitionEnd)
+    {W : Type u} [MetricSpace W] [ChartedSpace E3 W] [IsManifold (𝓡 3) ∞ W]
+    (gW : SmoothRiemannianMetric (𝓡 3) W)
+    (hWmetric : ∀ x y : W, edist x y = riemannianEDistOf gW x y)
+    (scale : ℕ → ℝ) (hscale : ∀ n, 0 < scale n) (hscaleTop : Tendsto scale atTop atTop)
+    (P : ℕ → Type w) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace E3 (P n)]
+    [∀ n, IsManifold (𝓡 3) ∞ (P n)]
+    (H : ∀ n, SmoothRiemannianMetric (𝓡 3) (P n))
+    (A : ∀ n, PartialDiffeomorph (𝓡 3) (𝓡 3) V (P n) ∞)
+    (Bmap : ∀ n, PartialDiffeomorph (𝓡 3) (𝓡 3) W (P n) ∞)
+    (G : ℕ → SmoothRiemannianMetric (𝓡 3) V)
+    {K : Set V} (hK : IsCompact K) (hpK : K ∈ 𝓝 p)
+    (hconv : MetricCPConvergenceOn K 0 G
+      (scaleMetric c hc (metric.restrictOpen V)) (scaleMetric c hc (metric.restrictOpen V)))
+    (hsource : ∀ᶠ n in atTop, K ⊆ (A n).source)
+    (hmetric : ∀ᶠ n in atTop, ∀ y ∈ K, ∀ v : TangentSpace (𝓡 3) y,
+      (G n).inner y v v = (H n).inner (A n y)
+        (mfderiv (𝓡 3) (𝓡 3) (A n) y v) (mfderiv (𝓡 3) (𝓡 3) (A n) y v))
+    (x : ℕ → W) (marks : ℕ → V) (hmarks : Tendsto marks atTop (𝓝 p))
+    (hmark : ∀ᶠ n in atTop, A n (marks n) = Bmap n (x n))
+    {R : ℝ} (hR : 0 < R)
+    (hBsource : ∀ᶠ n in atTop,
+      riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (x n) R ⊆ (Bmap n).source)
+    (hcapture : ∀ᶠ n in atTop,
+      riemannianClosedBallOf (H n) (Bmap n (x n)) (R / 4) ⊆
+        (Bmap n) '' riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (x n) R)
+    (hBconv : ∀ eta : ℝ, 0 < eta → ∀ᶠ n in atTop,
+      ∀ y ∈ riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (x n) R,
+      ∀ v : TangentSpace (𝓡 3) y,
+        (1 - eta) * (scaleMetric (scale n) (hscale n) gW).inner y v v ≤
+          (H n).inner (Bmap n y) (mfderiv (𝓡 3) (𝓡 3) (Bmap n) y v)
+            (mfderiv (𝓡 3) (𝓡 3) (Bmap n) y v) ∧
+        (H n).inner (Bmap n y) (mfderiv (𝓡 3) (𝓡 3) (Bmap n) y v)
+          (mfderiv (𝓡 3) (𝓡 3) (Bmap n) y v) ≤
+            (1 + eta) * (scaleMetric (scale n) (hscale n) gW).inner y v v)
+    {q : UniformSpace.Completion W} {d : ℝ}
+    (cone : DifferentialGeometry.Toponogov.PuncturedConeApproximation q d)
+    {lower upper : ℝ} (hlower : 0 < lower)
+    (hradial : ∀ᶠ n in atTop,
+      dist (x n : UniformSpace.Completion W) q * Real.sqrt (scale n) ∈ Icc lower upper) :
+    False := by
+  let _ : PreconnectedSpace V := hV
+  let gInf := scaleMetric c hc (metric.restrictOpen V)
+  let _ : PseudoMetricSpace V := gInf.toPseudoMetricSpace
+  let _ : MetricSpace V := MetricSpace.ofT0PseudoMetricSpace V
+  let _ : EDist V := gInf.toPseudoMetricSpace.toEDist
+  obtain ⟨Rsrc, hRsrc, hKR, hRK⟩ :=
+    Geometry.Metric.exists_pos_isCompact_riemannianClosedBallOf_subset_of_mem_nhds gInf p hpK
+  have hconv' : MetricCPConvergenceOn (riemannianClosedBallOf gInf p Rsrc) 0 G gInf gInf := by
+    intro eps heps
+    obtain ⟨N, hN⟩ := hconv (eps / 2) (half_pos heps)
+    refine ⟨N, fun n hn => lt_of_le_of_lt
+      (metricDerivNormSupOn_le_of_forall _ 0 _ _ _ (eps / 2) (half_pos heps).le ?_)
+      (half_lt_self heps)⟩
+    intro j hj y hy
+    exact (derivNorm_le_sup hK hj _ _ _ (hRK hy)).trans (hN n hn).le
+  let Hend := fun n => scaleMetric (scale n) (hscale n) gW
+  let Cmap := fun n => (A n).trans (Bmap n).symm
+  obtain ⟨r, hr, _, hKr, hcaptureC, hoffset, hdistC⟩ :=
+    exists_inverse_composition_distance_comparison_of_tendsto_marks
+      gInf gInf G H Hend A Bmap p hRsrc hR hKR hconv'
+      (hsource.mono fun n hn => hRK.trans hn)
+      (hmetric.mono fun n hn y hy v => hn y (hRK hy) v)
+      x hmarks hmark hBsource hcapture hBconv
+  let rho := fun n => 1 / Real.sqrt (scale n)
+  have hrho (n : ℕ) : 0 < rho n := one_div_pos.mpr (Real.sqrt_pos.mpr (hscale n))
+  have hrho0 : Tendsto rho atTop (𝓝 0) :=
+    tendsto_const_nhds.div_atTop (Real.tendsto_sqrt_atTop.comp hscaleTop)
+  have hdscale (n : ℕ) (a b : W) : (riemannianEDistOf (Hend n) a b).toReal =
+      dist a b / rho n := by
+    rw [show Hend n = scaleMetric (scale n) (hscale n) gW by rfl, edistOf_scale,
+      ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _), ← hWmetric,
+      edist_dist, ENNReal.toReal_ofReal dist_nonneg]
+    dsimp only [rho]
+    rw [one_div, div_inv_eq_mul, mul_comm]
+  have hsrcball : riemannianClosedBallOf gInf p r = Metric.closedBall p r := by
+    ext y
+    change riemannianEDistOf gInf p y ≤ ENNReal.ofReal r ↔ dist y p ≤ r
+    rw [← show edist p y = riemannianEDistOf gInf p y from gInf.toPseudoMetricSpace_edist p y,
+      edist_dist, ENNReal.ofReal_le_ofReal_iff hr.le, dist_comm]
+  apply rescaled_cone_limit_exclusion V hV c hc p hp cone x (fun n => Cmap n) rho
+    hrho hrho0 ?_ (R := r) (lower := lower) (B := upper) hr hlower (hsrcball ▸ hKr) ?_ ?_ ?_
+  · have hh := (ENNReal.tendsto_toReal (by simp : (0 : ℝ≥0∞) ≠ ⊤)).comp hoffset
+    simpa only [Function.comp_def, ENNReal.toReal_zero, hdscale] using hh
+  · simpa only [rho, one_div, div_inv_eq_mul] using hradial
+  · filter_upwards [hcaptureC] with n hn
+    have hb := hn.2.1
+    have heq : riemannianClosedBallOf (Hend n) (Cmap n p) (r / 4) =
+        Metric.closedBall (Cmap n p) (r / 4 * rho n) := by
+      have hrad : r / 4 = Real.sqrt (scale n) * (r / 4 * rho n) := by
+        dsimp only [rho]; field_simp [(Real.sqrt_pos.mpr (hscale n)).ne']
+      change riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (Cmap n p) (r / 4) = _
+      conv_lhs => rw [hrad]
+      rw [riemannianClosedBallOf_scaleMetric]
+      ext y
+      change riemannianEDistOf gW (Cmap n p) y ≤ ENNReal.ofReal _ ↔ dist y (Cmap n p) ≤ _
+      rw [← hWmetric, edist_dist, ENNReal.ofReal_le_ofReal_iff (by positivity), dist_comm]
+    rw [heq, hsrcball] at hb
+    exact hb
+  · intro eps heps
+    filter_upwards [hdistC eps heps] with n hn
+    intro a ha b hb
+    have hh := hn a (hsrcball.symm ▸ ha) b (hsrcball.symm ▸ hb)
+    rw [hdscale] at hh
+    have hgdist : (riemannianEDistOf gInf a b).toReal = dist a b := by
+      rw [← show edist a b = riemannianEDistOf gInf a b from gInf.toPseudoMetricSpace_edist a b,
+        edist_dist, ENNReal.toReal_ofReal dist_nonneg]
+    rwa [hgdist] at hh
+
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

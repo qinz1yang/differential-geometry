@@ -108,4 +108,34 @@ theorem exists_subseq_marked_scalar_limit_of_metric_cp_convergence
   have hb := hlower (u n)
   linarith
 
+open Filter in
+theorem eventually_half_lt_metricScalarAt_of_metric_cp_convergence
+    {D r : ℝ} (hrD : r < D + 1) {N : ℕ} (hN : 2 ≤ N)
+    (g : ℕ → SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    (hconv : MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r} N g
+      (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D))) :
+    ∀ᶠ n in atTop, ∀ x : standardCapWindow D, ‖x.val‖ ≤ r →
+      1 / 2 < metricScalarAt (g n) x := by
+  let K : Set (standardCapWindow D) := {x | ‖x.val‖ ≤ r}
+  let gRef := metric.restrictOpen (standardCapWindow D)
+  have hK : IsCompact K := by
+    have hc : IsCompact {x : ThreeSpace | ‖x‖ ≤ r} := by
+      simpa only [Metric.closedBall, dist_zero_right] using isCompact_closedBall (0 : ThreeSpace) r
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hc (by
+      intro x hx
+      exact ⟨⟨x, hx.trans_lt hrD⟩, rfl⟩)
+  obtain ⟨ε, hε, hclose⟩ := exists_abs_metricScalarAt_sub_lt gRef hK
+    (c := 1 / 2) (by norm_num)
+  obtain ⟨n₀, hn₀⟩ := hconv ε hε
+  filter_upwards [eventually_ge_atTop n₀] with n hn
+  intro x hx
+  have herr := hclose (g n) (fun y hy j hj =>
+    (derivNorm_le_sup hK (hj.trans hN) (g n) gRef gRef hy).trans (hn₀ n hn).le) x hx
+  have hlower : 1 ≤ metricScalarAt gRef x := by
+    rw [metricScalarAt_restrictOpen]
+    exact one_le_metricScalarAt x.val
+  linarith [(abs_lt.mp herr).1]
+
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

@@ -13948,3 +13948,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryActionJoin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryBackwardPatch
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PreparedHistoryCutoff
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarDerivativeBounds
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.InverseComposition
