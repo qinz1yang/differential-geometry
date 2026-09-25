@@ -16,7 +16,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact PointedRiemannianManifold.t2TangentBundle
 
-variable {M : Type} [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
+variable {M : Type*} [MetricSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
   [SigmaCompactSpace M] {W : Type*} [MetricSpace W]
 
 theorem solution_not_rescaled_cone_limit

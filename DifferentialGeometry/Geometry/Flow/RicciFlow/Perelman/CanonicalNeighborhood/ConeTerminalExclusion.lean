@@ -14,7 +14,9 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Opera
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+universe u v
+
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
 
 omit [SigmaCompactSpace M] in
@@ -58,7 +60,7 @@ theorem solution_cone_terminal_exclusion
     {D : RealTimeInterval} (S : SolutionOn (I := I3) (M := M) D) (hS : IsSolutionOn S)
     {a b : ℝ} (hab : a < b) (hslab : Set.Icc a b ⊆ D.carrier)
     (hreg : Set.Ioo a b ⊆ D.regular)
-    (U : Set M) (cone : ConeChart (S.base.metric b) U)
+    (U : Set M) (cone : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 (S.base.metric b) U)
     (hsec : ∀ t ∈ Set.Icc a b, SecLower (S.base.metric t) 0 U)
     (hnonflat : ∃ x ∈ U, metricScalarAt (S.base.metric b) x ≠ 0) : False := by
   have : NeZero (Module.finrank ℝ ThreeSpace) := by
@@ -66,7 +68,7 @@ theorem solution_cone_terminal_exclusion
     rw [finrank_euclideanSpace_fin]
     infer_instance
   obtain ⟨x, hxU, hxne⟩ := hnonflat
-  obtain ⟨W, hxW, _hWU, Z, hZ⟩ := cone.exists_concurrentField hxU
+  obtain ⟨W, hxW, _hWU, Z, hZ⟩ := ConeChart.exists_concurrentField cone hxU
   let : SigmaCompactSpace W := isSigmaCompact_iff_sigmaCompactSpace.mp
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen I3 W.isOpen)
   let : IsManifold I3 1 W := IsManifold.of_le (I := I3) (M := W) (n := ∞) (by decide)

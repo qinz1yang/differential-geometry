@@ -1,3 +1,7 @@
+import DifferentialGeometry.Topology.Compactness.ProductNeighborhood
+import DifferentialGeometry.Topology.Compactness.ExtremumNeighborhood
+import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Predicates
 
 set_option autoImplicit false
@@ -223,3 +227,148 @@ theorem parabolicNoLocalCollapsing_parabolicSolution
 end Scaling
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+noncomputable section
+
+open Set Bundle
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.FlowMetricBall
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {D : RealTimeInterval} {S : SolutionOn (I := I) (M := M) D} {time : D.FlowTime}
+
+theorem isParabolicallyRmControlled_of_radius_le
+    {B B' : FlowMetricBall S time} (hcenter : B'.center = B.center)
+    (hradius : B'.radius ≤ B.radius) (hB : B.IsParabolicallyRmControlled) :
+    B'.IsParabolicallyRmControlled := by
+  have hsquare : B'.radius ^ 2 ≤ B.radius ^ 2 :=
+    pow_le_pow_left₀ B'.radius_pos.le hradius 2
+  have hinterval : Icc ((time : ℝ) - B'.radius ^ 2) time ⊆
+      Icc ((time : ℝ) - B.radius ^ 2) time := by
+    intro t ht
+    exact ⟨by linarith [ht.1], ht.2⟩
+  refine ⟨hinterval.trans hB.1, ?_⟩
+  intro t ht x hx
+  have hx' : x ∈ B.set := by
+    change riemannianEDistOf (S.base.metric time) B.center x < ENNReal.ofReal B.radius
+    change riemannianEDistOf (S.base.metric time) B'.center x < ENNReal.ofReal B'.radius at hx
+    rw [hcenter] at hx
+    exact hx.trans_le (ENNReal.ofReal_le_ofReal hradius)
+  have hnorm : 0 ≤ rmNormSq S t x := normSq0S_nonneg _ _ _ _
+  exact (mul_le_mul_of_nonneg_right
+    (pow_le_pow_left₀ B'.radius_pos.le hradius 4) hnorm).trans (hB.2 t (hinterval ht) x hx')
+
+theorem exists_larger_isParabolicallyRmControlled_of_strict_curvature_bound
+    (hS : IsSolutionOn S) (B : FlowMetricBall S time) {R : ℝ}
+    (hBR : B.radius < R)
+    (hcompact : IsCompact (riemannianClosedBallOf (S.base.metric time) B.center R))
+    (hwindow : Icc ((time : ℝ) - R ^ 2) time ⊆ D.carrier)
+    (hstrict : ∀ t ∈ Icc ((time : ℝ) - B.radius ^ 2) time,
+      ∀ x ∈ riemannianClosedBallOf (S.base.metric time) B.center B.radius,
+        B.radius ^ 4 * rmNormSq S t x < 1) :
+    ∃ B' : FlowMetricBall S time, B'.center = B.center ∧
+      B.radius < B'.radius ∧ B'.radius < R ∧ B'.IsParabolicallyRmControlled := by
+  let K := riemannianClosedBallOf (S.base.metric time) B.center B.radius
+  have hR : 0 < R := B.radius_pos.trans hBR
+  let clip : ℝ → ℝ := fun r => max 0 (min r R)
+  have hclip : Continuous clip := continuous_const.max (continuous_id.min continuous_const)
+  have hcpos (r : ℝ) : 0 ≤ clip r := le_max_left _ _
+  have hcle (r : ℝ) : clip r ≤ R := max_le hR.le (min_le_right _ _)
+  have hceq (r : ℝ) (hr : 0 ≤ r) (hrR : r ≤ R) : clip r = r := by
+    exact (congrArg (max 0) (min_eq_left hrR)).trans (max_eq_right hr)
+  have hK : IsCompact K := hcompact.of_isClosed_subset
+    (Geometry.Metric.isClosed_riemannianClosedBallOf _ _ _)
+    (fun x hx => hx.trans (ENNReal.ofReal_le_ofReal hBR.le))
+  have hmaps : MapsTo (fun p : ℝ × (ℝ × M) =>
+      ((time : ℝ) - p.1 * (clip p.2.1) ^ 2, p.2.2))
+      (Icc (0 : ℝ) 1 ×ˢ univ) (D.carrier ×ˢ univ) := by
+    intro p hp
+    refine ⟨hwindow ⟨?_, ?_⟩, mem_univ _⟩
+    · have hpow : (clip p.2.1) ^ 2 ≤ R ^ 2 := pow_le_pow_left₀ (hcpos _) (hcle _) 2
+      have hu : p.1 * (clip p.2.1) ^ 2 ≤ (clip p.2.1) ^ 2 :=
+        mul_le_of_le_one_left (sq_nonneg _) hp.1.2
+      linarith
+    · exact sub_le_self _ (mul_nonneg hp.1.1 (sq_nonneg _))
+  have hm : Continuous (fun p : ℝ × (ℝ × M) =>
+      ((time : ℝ) - p.1 * (clip p.2.1) ^ 2, p.2.2)) :=
+    (continuous_const.sub (continuous_fst.mul ((hclip.comp continuous_snd.fst).pow 2))).prodMk
+      continuous_snd.snd
+  have hcurv : ContinuousOn (fun p : ℝ × M => rmNormSq S p.1 p.2)
+      (D.carrier ×ˢ univ) := hS.continuousOn_rmNormSq
+  have hf : ContinuousOn (fun p : ℝ × (ℝ × M) =>
+      (clip p.2.1) ^ 4 * rmNormSq S ((time : ℝ) - p.1 * (clip p.2.1) ^ 2) p.2.2)
+      (Icc (0 : ℝ) 1 ×ˢ univ) := by
+    have hc := ContinuousOn.comp'
+      (f := fun p : ℝ × (ℝ × M) => ((time : ℝ) - p.1 * (clip p.2.1) ^ 2, p.2.2))
+      hcurv hm.continuousOn hmaps
+    exact ((hclip.comp continuous_snd.fst).pow 4).continuousOn.mul hc
+  have hstrict' : ∀ u ∈ Icc (0 : ℝ) 1, ∀ x ∈ K,
+      (clip B.radius) ^ 4 * rmNormSq S ((time : ℝ) - u * (clip B.radius) ^ 2) x < 1 := by
+    intro u hu x hx
+    rw [hceq B.radius B.radius_pos.le hBR.le]
+    apply hstrict _ ⟨?_, ?_⟩ x hx
+    · have hh := mul_le_of_le_one_left (sq_nonneg B.radius) hu.2
+      linarith
+    · exact sub_le_self _ (mul_nonneg hu.1 (sq_nonneg _))
+  obtain ⟨η, hη, V, hV, hKV, hb⟩ :=
+    hf.exists_pos_radius_open_superset_forall_lt isCompact_Icc hK hstrict'
+  obtain ⟨r₁, hBr₁, hr₁R, hball⟩ :=
+    hcompact.exists_lt_lt_ofReal_sublevel_subset
+      (Geometry.Riemannian.continuous_riemannianEDist (S.base.metric time) B.center).continuousOn
+      hV hKV hBR
+  obtain ⟨r₂, hBr₂, hr₂⟩ := exists_between
+    (lt_min hBr₁ (lt_add_of_pos_right B.radius hη))
+  have hr₂pos : 0 < r₂ := B.radius_pos.trans hBr₂
+  let B' : FlowMetricBall S time := ⟨B.center, r₂, hr₂pos⟩
+  have hr₂R : r₂ < R := (hr₂.trans_le (min_le_left _ _)).trans hr₁R
+  refine ⟨B', rfl, hBr₂, hr₂R, ?_, ?_⟩
+  · intro t ht
+    apply hwindow
+    refine ⟨?_, ht.2⟩
+    have hp : r₂ ^ 2 ≤ R ^ 2 := pow_le_pow_left₀ hr₂pos.le hr₂R.le 2
+    have htlo : (time : ℝ) - r₂ ^ 2 ≤ t := ht.1
+    linarith
+  · intro t ht x hx
+    have hrange : r₂ ∈ Ioo (B.radius - η) (B.radius + η) :=
+      ⟨by linarith, hr₂.trans_le (min_le_right _ _)⟩
+    have hxV : x ∈ V := by
+      apply hball
+      change riemannianEDistOf (S.base.metric time) B.center x < ENNReal.ofReal r₂ at hx
+      exact hx.le.trans (ENNReal.ofReal_le_ofReal (hr₂.trans_le (min_le_left _ _)).le)
+    have hpow : 0 < r₂ ^ 2 := sq_pos_of_pos hr₂pos
+    have hu : ((time : ℝ) - t) / r₂ ^ 2 ∈ Icc (0 : ℝ) 1 := by
+      refine ⟨div_nonneg (sub_nonneg.mpr ht.2) hpow.le, ?_⟩
+      apply (div_le_one hpow).mpr
+      have htlo : (time : ℝ) - r₂ ^ 2 ≤ t := ht.1
+      linarith
+    have hh := hb _ hu r₂ hrange x hxV
+    rw [hceq r₂ hr₂pos.le hr₂R.le, div_mul_cancel₀ _ hpow.ne', sub_sub_cancel] at hh
+    exact hh.le
+
+theorem exists_curvature_contact_of_not_exists_larger_isParabolicallyRmControlled
+    (hS : IsSolutionOn S) (B : FlowMetricBall S time) {R : ℝ}
+    (hBR : B.radius < R)
+    (hcompact : IsCompact (riemannianClosedBallOf (S.base.metric time) B.center R))
+    (hwindow : Icc ((time : ℝ) - R ^ 2) time ⊆ D.carrier)
+    (hbound : ∀ t ∈ Icc ((time : ℝ) - B.radius ^ 2) time,
+      ∀ x ∈ riemannianClosedBallOf (S.base.metric time) B.center B.radius,
+        B.radius ^ 4 * rmNormSq S t x ≤ 1)
+    (hmax : ¬ ∃ B' : FlowMetricBall S time, B'.center = B.center ∧
+      B.radius < B'.radius ∧ B'.radius < R ∧ B'.IsParabolicallyRmControlled) :
+    ∃ t ∈ Icc ((time : ℝ) - B.radius ^ 2) time,
+      ∃ x ∈ riemannianClosedBallOf (S.base.metric time) B.center B.radius,
+        B.radius ^ 4 * rmNormSq S t x = 1 := by
+  by_contra hnone
+  apply hmax
+  apply exists_larger_isParabolicallyRmControlled_of_strict_curvature_bound hS B hBR hcompact hwindow
+  intro t ht x hx
+  exact lt_of_le_of_ne (hbound t ht x hx) (fun he => hnone ⟨t, ht, x, hx, he⟩)
+
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.FlowMetricBall

@@ -60,7 +60,7 @@ def angularModelChart (s : S) :
   contMDiffOn_toFun := contMDiffOn_chart
   contMDiffOn_invFun := contMDiffOn_chart_symm
 
-universe u
+universe u v
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {g : SmoothRiemannianMetric I3 M} {U : Set M}
@@ -69,16 +69,16 @@ attribute [local instance] DifferentialGeometry.Geometry.Riemannian.ConeChart.to
   DifferentialGeometry.Geometry.Riemannian.ConeChart.t2 DifferentialGeometry.Geometry.Riemannian.ConeChart.sigmaCompact
 
 
-def ConeChart.coordinates (C : ConeChart g U) (s : C.surface) :
+def ConeChart.coordinates (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U) (s : C.surface) :
     PartialDiffeomorph 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3
       (ℝ × EuclideanSpace ℝ (Fin 2)) M ∞ :=
   (partialRadialChart (angularModelChart s).symm).trans C.map
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem ConeChart.coordinates_mem_source (C : ConeChart g U)
+theorem ConeChart.coordinates_mem_source (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U)
     {z : ℝ × C.surface} (hz : z ∈ C.map.source) :
     (z.1, chartAt (EuclideanSpace ℝ (Fin 2)) z.2 z.2) ∈
-      (C.coordinates z.2).source := by
+      (ConeChart.coordinates C z.2).source := by
   have hs := mem_chart_source (EuclideanSpace ℝ (Fin 2)) z.2
   refine ⟨⟨Set.mem_univ _, (chartAt (EuclideanSpace ℝ (Fin 2)) z.2).map_source hs⟩, ?_⟩
   change (z.1, (chartAt (EuclideanSpace ℝ (Fin 2)) z.2).symm
@@ -86,17 +86,17 @@ theorem ConeChart.coordinates_mem_source (C : ConeChart g U)
   rwa [(chartAt (EuclideanSpace ℝ (Fin 2)) z.2).left_inv hs]
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem ConeChart.coordinates_apply_center (C : ConeChart g U) (z : ℝ × C.surface) :
-    C.coordinates z.2 (z.1, chartAt (EuclideanSpace ℝ (Fin 2)) z.2 z.2) = C.map z := by
+theorem ConeChart.coordinates_apply_center (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U) (z : ℝ × C.surface) :
+    ConeChart.coordinates C z.2 (z.1, chartAt (EuclideanSpace ℝ (Fin 2)) z.2 z.2) = C.map z := by
   change C.map (z.1, (chartAt (EuclideanSpace ℝ (Fin 2)) z.2).symm
     (chartAt (EuclideanSpace ℝ (Fin 2)) z.2 z.2)) = C.map z
   rw [(chartAt (EuclideanSpace ℝ (Fin 2)) z.2).left_inv
     (mem_chart_source (EuclideanSpace ℝ (Fin 2)) z.2)]
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem ConeChart.coordinates_mfderiv_radial (C : ConeChart g U) (s : C.surface)
-    {y : ℝ × EuclideanSpace ℝ (Fin 2)} (hy : y ∈ (C.coordinates s).source) :
-    mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (C.coordinates s) y (1, 0) =
+theorem ConeChart.coordinates_mfderiv_radial (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U) (s : C.surface)
+    {y : ℝ × EuclideanSpace ℝ (Fin 2)} (hy : y ∈ (ConeChart.coordinates C s).source) :
+    mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (ConeChart.coordinates C s) y (1, 0) =
       mfderiv (𝓘(ℝ, ℝ).prod I2) I3 C.map
         (y.1, (angularModelChart s).symm y.2) (1, 0) := by
   let e := partialRadialChart (angularModelChart s).symm
@@ -112,12 +112,12 @@ theorem ConeChart.coordinates_mfderiv_radial (C : ConeChart g U) (s : C.surface)
   rfl
 
 omit [T2Space M] [SigmaCompactSpace M] in
-theorem ConeChart.coordinates_metric (C : ConeChart g U) (s : C.surface)
-    {y : ℝ × EuclideanSpace ℝ (Fin 2)} (hy : y ∈ (C.coordinates s).source)
+theorem ConeChart.coordinates_metric (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U) (s : C.surface)
+    {y : ℝ × EuclideanSpace ℝ (Fin 2)} (hy : y ∈ (ConeChart.coordinates C s).source)
     (v w : ℝ × EuclideanSpace ℝ (Fin 2)) :
-    g.inner (C.coordinates s y)
-      (mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (C.coordinates s) y v)
-      (mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (C.coordinates s) y w) =
+    g.inner (ConeChart.coordinates C s y)
+      (mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (ConeChart.coordinates C s) y v)
+      (mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (ConeChart.coordinates C s) y w) =
         v.1 * w.1 + y.1 ^ 2 *
           C.metric.inner ((angularModelChart s).symm y.2)
             (mfderiv I2 I2 (angularModelChart s).symm y.2 v.2)
@@ -127,7 +127,7 @@ theorem ConeChart.coordinates_metric (C : ConeChart g U) (s : C.surface)
   have hC : MDifferentiableAt (𝓘(ℝ, ℝ).prod I2) I3 C.map (e y) :=
     C.map.mdifferentiableAt (by simp : (∞ : WithTop ℕ∞) ≠ 0) hy.2
   have hd (a : ℝ × EuclideanSpace ℝ (Fin 2)) :
-      mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (C.coordinates s) y a =
+      mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (ConeChart.coordinates C s) y a =
         mfderiv (𝓘(ℝ, ℝ).prod I2) I3 C.map (e y)
           (a.1, mfderiv I2 I2 (angularModelChart s).symm y.2 a.2) := by
     change mfderiv 𝓘(ℝ, ℝ × EuclideanSpace ℝ (Fin 2)) I3 (C.map ∘ e) y a = _
@@ -137,7 +137,7 @@ theorem ConeChart.coordinates_metric (C : ConeChart g U) (s : C.surface)
   rw [hd, hd]
   exact C.radial_metric (e y) hy.2 _ _
 
-theorem ConeChart.radial_curvature_zero (C : ConeChart g U)
+theorem ConeChart.radial_curvature_zero (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U)
     {z : ℝ × C.surface} (hz : z ∈ C.map.source)
     (u v w : TangentSpace I3 (C.map z)) :
     metricRm04StandardAt g (C.map z) u v
@@ -145,8 +145,8 @@ theorem ConeChart.radial_curvature_zero (C : ConeChart g U)
   let A := EuclideanSpace ℝ (Fin 2)
   let P := ℝ × A
   let y0 : P := (z.1, chartAt A z.2 z.2)
-  let Φ := C.coordinates z.2
-  have hy0 : y0 ∈ Φ.source := C.coordinates_mem_source hz
+  let Φ := ConeChart.coordinates C z.2
+  have hy0 : y0 ∈ Φ.source := ConeChart.coordinates_mem_source C hz
   have ha0 : y0.2 ∈ (angularModelChart z.2).symm.source := hy0.1.2
   obtain ⟨ga, Va, hva, _hva, hga⟩ := exists_partialDiffeomorph_modelMetric
     C.metric (angularModelChart z.2).symm ha0
@@ -161,7 +161,7 @@ theorem ConeChart.radial_curvature_zero (C : ConeChart g U)
     apply ContinuousLinearMap.ext
     intro b
     change gp.inner y a b = a.1 * b.1 + y.1 ^ 2 * ga.inner y.2 a.2 b.2
-    rw [hgp y hyp a b, C.coordinates_metric z.2 (hVp hyp), hga y.2 hya a.2 b.2]
+    rw [hgp y hyp a b, ConeChart.coordinates_metric C z.2 (hVp hyp), hga y.2 hya a.2 b.2]
   have hh : ∀ᶠ y : P in 𝓝 y0, DifferentiableAt ℝ h y.2 :=
     Filter.Eventually.of_forall fun _ => (modelMetric_form_contDiff ga).differentiable
       (by simp) _
@@ -180,7 +180,7 @@ theorem ConeChart.radial_curvature_zero (C : ConeChart g U)
   have hzero' : metricRm04StandardAt gp y0 (eD.symm u) (eD.symm v) (1, 0) (eD.symm w) = 0 :=
     hzero
   rw [htrans] at hzero'
-  rw [hd, hd, hd, C.coordinates_mfderiv_radial z.2 hy0] at hzero'
+  rw [hd, hd, hd, ConeChart.coordinates_mfderiv_radial C z.2 hy0] at hzero'
   have hangular : (y0.1, (angularModelChart z.2).symm y0.2) = z := by
     change (z.1, (chartAt A z.2).symm (chartAt A z.2 z.2)) = z
     rw [(chartAt A z.2).left_inv (mem_chart_source A z.2)]
@@ -191,7 +191,7 @@ theorem ConeChart.radial_curvature_zero (C : ConeChart g U)
   exact hzero'
 
 omit [SigmaCompactSpace M] in
-theorem ConeChart.exists_concurrentField (C : ConeChart g U) {p : M} (hp : p ∈ U) :
+theorem ConeChart.exists_concurrentField (C : DifferentialGeometry.Geometry.Riemannian.ConeChart.{u, 0, 0, v} 2 g U) {p : M} (hp : p ∈ U) :
     ∃ W : Opens M, p ∈ W ∧ (W : Set M) ⊆ U ∧
       ∃ Z : ContMDiffSection I3 ThreeSpace ∞ (TangentSpace I3 : W → Type _),
         ∀ y : W, ∀ v : TangentSpace I3 y,
@@ -203,8 +203,8 @@ theorem ConeChart.exists_concurrentField (C : ConeChart g U) {p : M} (hp : p ∈
   let A := EuclideanSpace ℝ (Fin 2)
   let P := ℝ × A
   let y0 : P := (z.1, chartAt A z.2 z.2)
-  let Φ := C.coordinates z.2
-  have hy0 : y0 ∈ Φ.source := C.coordinates_mem_source hz
+  let Φ := ConeChart.coordinates C z.2
+  have hy0 : y0 ∈ Φ.source := ConeChart.coordinates_mem_source C hz
   obtain ⟨ga, Va, hva, _hVa, hga⟩ := exists_partialDiffeomorph_modelMetric
     C.metric (angularModelChart z.2).symm hy0.1.2
   obtain ⟨gp, Vp, hvp, hVp, hgp⟩ := exists_partialDiffeomorph_modelMetric g Φ hy0
@@ -218,7 +218,7 @@ theorem ConeChart.exists_concurrentField (C : ConeChart g U) {p : M} (hp : p ∈
     apply ContinuousLinearMap.ext
     intro b
     change gp.inner y a b = a.1 * b.1 + y.1 ^ 2 * ga.inner y.2 a.2 b.2
-    rw [hgp y hyp a b, C.coordinates_metric z.2 (hVp hyp), hga y.2 hya a.2 b.2]
+    rw [hgp y hyp a b, ConeChart.coordinates_metric C z.2 (hVp hyp), hga y.2 hya a.2 b.2]
   let ZE : ContMDiffSection 𝓘(ℝ, P) P ∞ (TangentSpace 𝓘(ℝ, P) : P → Type _) :=
     ⟨coneEulerField, coneEulerField_contMDiff⟩
   have hr : y0.1 ≠ 0 := ne_of_gt (C.positive_radius z hz)
@@ -238,7 +238,7 @@ theorem ConeChart.exists_concurrentField (C : ConeChart g U) {p : M} (hp : p ∈
   refine ⟨W, ?_, ?_, Z, hZ⟩
   · change p ∈ (W : Set M)
     rw [hW]
-    exact ⟨y0, hy0K, (C.coordinates_apply_center z).trans hzp⟩
+    exact ⟨y0, hy0K, (ConeChart.coordinates_apply_center C z).trans hzp⟩
   · intro y hy
     rw [hW] at hy
     obtain ⟨a, ha, rfl⟩ := hy

@@ -1,4 +1,5 @@
 import Mathlib.Topology.Order.Compact
+import Mathlib.Topology.Instances.ENNReal.Lemmas
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Tactic.Linarith
 
@@ -86,3 +87,47 @@ theorem Continuous.exists_pos_sublevel_subset_of_unique_zero
   simpa only [mem_preimage, mem_Iic, zero_add] using hx.le
 
 end
+
+open scoped ENNReal in
+theorem IsCompact.exists_lt_lt_sublevel_subset
+    {X L : Type*} [TopologicalSpace X] [LinearOrder L] [DenselyOrdered L]
+    [TopologicalSpace L] [ClosedIicTopology L] {f : X → L} {r R : L} {U : Set X}
+    (hK : IsCompact {x | f x ≤ R}) (hf : ContinuousOn f {x | f x ≤ R})
+    (hU : IsOpen U) (hsub : {x | f x ≤ r} ⊆ U) (hrR : r < R) :
+    ∃ s, r < s ∧ s < R ∧ {x | f x ≤ s} ⊆ U := by
+  by_cases hne : ({x | f x ≤ R} \ U).Nonempty
+  · obtain ⟨q, hq, hmin⟩ := (hK.diff hU).exists_isMinOn hne (hf.mono sdiff_subset)
+    have hrq : r < f q := lt_of_not_ge (fun h => hq.2 (hsub h))
+    obtain ⟨s, hrs, hs⟩ := exists_between (lt_min hrR hrq)
+    refine ⟨s, hrs, hs.trans_le (min_le_left _ _), ?_⟩
+    intro x hx
+    by_contra hxU
+    have hqx : f q ≤ f x := hmin ⟨hx.trans (hs.le.trans (min_le_left _ _)), hxU⟩
+    exact (hs.trans_le (min_le_right _ _)).not_ge (hqx.trans hx)
+  · obtain ⟨s, hrs, hsR⟩ := exists_between hrR
+    refine ⟨s, hrs, hsR, ?_⟩
+    intro x hx
+    by_contra hxU
+    exact hne ⟨x, hx.trans hsR.le, hxU⟩
+
+
+open scoped ENNReal in
+theorem IsCompact.exists_lt_lt_ofReal_sublevel_subset
+    {X : Type*} [TopologicalSpace X] {f : X → ℝ≥0∞} {r R : ℝ} {U : Set X}
+    (hK : IsCompact {x | f x ≤ ENNReal.ofReal R})
+    (hf : ContinuousOn f {x | f x ≤ ENNReal.ofReal R})
+    (hU : IsOpen U) (hsub : {x | f x ≤ ENNReal.ofReal r} ⊆ U) (hrR : r < R) :
+    ∃ s : ℝ, r < s ∧ s < R ∧ {x | f x ≤ ENNReal.ofReal s} ⊆ U := by
+  by_cases hr : 0 ≤ r
+  · obtain ⟨s, hrs, hsR, hssub⟩ := hK.exists_lt_lt_sublevel_subset hf hU hsub
+      ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg hr).mpr hrR)
+    have hsfin : s ≠ ∞ := ne_top_of_lt hsR
+    refine ⟨s.toReal, (ENNReal.ofReal_lt_iff_lt_toReal hr hsfin).mp hrs,
+      ENNReal.toReal_lt_of_lt_ofReal hsR, ?_⟩
+    simpa only [ENNReal.ofReal_toReal hsfin] using hssub
+  · have hrzero : r < 0 := lt_of_not_ge hr
+    obtain ⟨s, hrs, hs⟩ := exists_between (lt_min hrR hrzero)
+    refine ⟨s, hrs, hs.trans_le (min_le_left _ _), ?_⟩
+    have hsnonpos : s ≤ 0 := (hs.trans_le (min_le_right _ _)).le
+    simpa only [ENNReal.ofReal_of_nonpos hsnonpos, ENNReal.ofReal_of_nonpos hrzero.le]
+      using hsub
