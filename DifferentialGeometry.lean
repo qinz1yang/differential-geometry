@@ -13945,3 +13945,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurv
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.MapDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConeExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BackwardPatch
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryActionJoin
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryBackwardPatch
