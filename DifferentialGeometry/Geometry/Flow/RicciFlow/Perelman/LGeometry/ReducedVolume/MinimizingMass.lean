@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CutMultiNull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.CostChartLipComplete
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BallEstimate.SourceTailControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.MinUnique
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ShortTime.InjectivityExhaustion
@@ -598,3 +600,96 @@ theorem lintegral_redDensity_image_lExp_anti_of_scalar_lower
     exact hscalar (T - t ^ 2) ⟨by linarith, sub_le_self _ (sq_nonneg t)⟩ z
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+noncomputable section
+open Set Filter Bundle MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow
+open scoped Manifold ContDiff ENNReal Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+ [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] {D : RealTimeInterval}
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem lintegral_redDensity_le_one_of_compact_action_sublevel
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {τ A : ℝ} (hτ : 0 < τ) (hreg : Icc (T - τ) T ⊆ D.regular)
+    (K : Set M) (hK : IsCompact K) (U : Set M) (hU : IsOpen U)
+    (hbdd : ∀ y : M, BddBelow {a : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α 0 = x ∧
+      α (Real.sqrt τ) = y ∧ lRegularizedAction S T α 0 (Real.sqrt τ) = a})
+    (hseed : ∀ y ∈ U, ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧ α 0 = x ∧
+      α (Real.sqrt τ) = y ∧ lRegularizedAction S T α 0 (Real.sqrt τ) < A)
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α → α 0 = x → α (Real.sqrt τ) ∈ U →
+      lRegularizedAction S T α 0 (Real.sqrt τ) ≤ A → MapsTo α (Icc 0 (Real.sqrt τ)) K) :
+    (∫⁻ y in U, ENNReal.ofReal (redDensity S T x y τ)
+      ∂riemannianVolumeMeasure I M (S.base.metric (T - τ))) ≤ 1 := by
+  let b := Real.sqrt τ
+  have hb : 0 < b := Real.sqrt_pos.mpr hτ
+  have hb2 : b ^ 2 = τ := Real.sq_sqrt hτ.le
+  have hclock : ∀ r ∈ Icc (0 : ℝ) b, T - r ^ 2 ∈ D.regular := by
+    intro r hr
+    have hr2 : r ^ 2 ≤ τ := by
+      have hh := (sq_le_sq₀ hr.1 hb.le).mpr hr.2
+      simpa only [hb2] using hh
+    exact hreg ⟨by linarith, sub_le_self _ (sq_nonneg r)⟩
+  have hexists (y : M) (hy : y ∈ U) : ∃ Z : TangentSpace I x,
+      (Z, τ) ∈ lMinDomain S T x ∧ lExp S T x Z τ = y := by
+    obtain ⟨α, hα, hα0, hαb, hαact⟩ := hseed y hy
+    obtain ⟨η, hη, hη0, hηb, _, hmin⟩ := exists_lRegularizedMinC1_of_compact_action_sublevel S hS T hb hclock
+      x y α hα hα0 hαb K hK (fun δ hδ hδ0 hδb hδact =>
+        hconf δ hδ hδ0 (hδb.symm ▸ hy) (hδact.trans hαact.le))
+    have hm : ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ 0 = η 0 → δ b = η b →
+        lRegularizedAction S T η 0 b ≤ lRegularizedAction S T δ 0 b :=
+      fun δ hδ hδ0 hδb => hmin δ hδ (hδ0.trans hη0) (hδb.trans hηb)
+    cases hη0
+    obtain ⟨Z, hZ, hZend, _, _⟩ := exists_lMinimizingVector_of_minimal S hS T hb hclock η hη hm
+    rw [hb2] at hZ hZend
+    exact ⟨Z, hZ, hZend.trans hηb⟩
+  have hact (Z : E) (hZ : (Z, τ) ∈ lMinDomain S T x) (hy : lExp S T x Z τ ∈ U) :
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b < A := by
+    obtain ⟨α, hα, hα0, hαb, hαact⟩ := hseed _ hy
+    have hc := ((mem_lMinDomain S T x Z τ).mp hZ).2
+    change lLength S T (squareRootReparametrization (lRegularizedCurve S T x Z)) 0 τ = _ at hc
+    rw [lLength_squareRootReparametrization_eq_lRegularizedAction S T _ τ hτ.le] at hc
+    rw [hc, lCost_eq_regularity S T x _ τ hτ.le]
+    exact (lRegularizedCostC1_le_bdd S T 0 b x _ (hbdd _) α hα hα0 hαb).trans_lt hαact
+  have hlip := lCost_chart_locallyLipschitzOn_of_compact_action_sublevel S hS T x hτ hreg K hK U hU hbdd
+    (fun y hy => by obtain ⟨α, hα, hα0, hαb, hαact⟩ := hseed y hy; exact ⟨α, hα, hα0, hαb, hαact.le⟩) hconf
+  let volume := riemannianVolumeMeasure I M (S.base.metric (T - τ))
+  have hmult := lMinimizingVector_nonunique_image_null_on_of_locallyLipschitz S hS T x τ hU hlip
+    (fun Z _ _ => Eventually.of_forall hbdd) (S.base.metric (T - τ))
+  have hconj := lConjugateImage_null S hS T x τ (S.base.metric (T - τ))
+  let V : Set E := {Z | (Z, τ) ∈ lMinDomain S T x ∧
+    (∀ W : E, (W, τ) ∈ lMinDomain S T x → lExp S T x W τ = lExp S T x Z τ → W = Z) ∧
+    ¬ IsLConjugate S T x Z τ ∧ lExp S T x Z τ ∈ U ∧
+    lRegularizedAction S T (lRegularizedCurve S T x Z) 0 b < A}
+  have hV : IsOpen V := isOpen_setOf_unique_nonconjugate_minimizer_of_compact_action_sublevel
+    S hS T x K hK U hU hbdd hconf
+  have hinj : InjOn (fun Z : E => lExp S T x Z τ) V := by
+    intro Z hZ W hW heq
+    exact (hZ.2.1 W hW.1 heq.symm).symm
+  have hsub : (fun Z : E => lExp S T x Z τ) '' V ⊆ U := by rintro y ⟨Z, hZ, rfl⟩; exact hZ.2.2.2.1
+  have haecover : U =ᵐ[volume] (fun Z : E => lExp S T x Z τ) '' V := by
+    filter_upwards [measure_eq_zero_iff_ae_notMem.mp hmult, measure_eq_zero_iff_ae_notMem.mp hconj] with y hym hyc
+    apply propext
+    constructor
+    · intro hy
+      obtain ⟨Z, hZ, hZy⟩ := hexists y hy
+      refine ⟨Z, ⟨hZ, ?_, ?_, hZy.symm ▸ hy, hact Z hZ (hZy.symm ▸ hy)⟩, hZy⟩
+      · intro W hW heq
+        by_contra hWZ
+        exact hym ⟨hy, Z, W, (fun h => hWZ h.symm), hZ, hW, hZy, heq.trans hZy⟩
+      · exact fun hc => hyc ⟨Z, hc, hZy⟩
+    · exact fun hy => hsub hy
+  rw [setLIntegral_congr haecover]
+  exact lintegral_redDensity_image_lExp_le_one_at_minimizing_time_of_bdd S hS T x hV
+    (fun Z hZ => hZ.1) (fun Z hZ => hZ.2.2.1) hinj (fun Z _ => hbdd _) hV.measurableSet Subset.rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+end

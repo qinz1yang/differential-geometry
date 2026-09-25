@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.PartialDiffeomorph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Boundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CompactSublevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.RegularizedRepresentation
@@ -545,4 +546,178 @@ theorem exists_open_lMinDomain_of_action_lt_frontier_barrier
 
 end DifferentialGeometry.PDE.RicciFlow
 
+end
+
+noncomputable section
+open Set Filter Bornology
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology
+namespace DifferentialGeometry.PDE.RicciFlow
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+ [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+theorem eventually_unique_lMinimizingVector_of_compact_action_sublevel
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {Z : E} {ρ A : ℝ} (hmin : (Z, ρ) ∈ lMinDomain S T x)
+    (hunique : ∀ W : E, (W, ρ) ∈ lMinDomain S T x → lExp S T x W ρ = lExp S T x Z ρ → W = Z)
+    (hnconj : ¬ IsLConjugate S T x Z ρ)
+    (hbdd : ∀ y : M, BddBelow {c : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧
+      α 0 = x ∧ α (Real.sqrt ρ) = y ∧ lRegularizedAction S T α 0 (Real.sqrt ρ) = c})
+    (K : Set M) (hK : IsCompact K) {U : Set M} (hU : U ∈ 𝓝 (lExp S T x Z ρ))
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α → α 0 = x →
+      α (Real.sqrt ρ) ∈ U → lRegularizedAction S T α 0 (Real.sqrt ρ) ≤ A →
+      MapsTo α (Icc 0 (Real.sqrt ρ)) K)
+    (hA : lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Real.sqrt ρ) < A) :
+    ∀ᶠ V : E in 𝓝 Z, (V, ρ) ∈ lMinDomain S T x ∧
+      ∀ W : E, (W, ρ) ∈ lMinDomain S T x → lExp S T x W ρ = lExp S T x V ρ → W = V := by
+  classical
+  have hρ := lMinDomain_pos S T x Z ρ hmin
+  have hZdom := ((mem_lMinDomain S T x Z ρ).mp hmin).1
+  let b := Real.sqrt ρ
+  have hb : 0 < b := Real.sqrt_pos.mpr hρ
+  have hb2 : b ^ 2 = ρ := Real.sq_sqrt hρ.le
+  have hreg : Icc (T - b ^ 2) T ⊆ D.regular := by
+    rw [hb2]
+    intro t ht
+    have hn : 0 ≤ T - t := sub_nonneg.mpr ht.2
+    have hh : T - t ≤ ρ := by linarith [ht.1]
+    have hc := lExpPosDom_regularity S T x Z hZdom ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hh⟩
+    simpa only [Real.sq_sqrt hn, sub_sub_cancel] using hc
+  have hnearmin := eventually_mem_lMinDomain_of_unique_of_nonconj_of_compact_action_sublevel
+    S hS T x hmin hunique hnconj hbdd K hK hU hconf hA
+  have ha := (continuousAt_lRegularizedAction_lRegularizedCurve S hS T x hb
+    (((mem_lExpPosDom S T x Z ρ).mp hZdom).2.2)).comp (f := fun W : E => (W,b))
+    (continuousAt_id.prodMk continuousAt_const)
+  have hend := ((lExp_smoothOn S hS T x) (Z, ρ) hZdom).continuousWithinAt.continuousAt
+    ((lExpPosDom_open S hS T x).mem_nhds hZdom)
+  have hpoint : ContinuousAt (fun W : E => lExp S T x W ρ) Z :=
+    hend.comp (f := fun W : E => (W,ρ)) (continuousAt_id.prodMk continuousAt_const)
+  have hnear := hnearmin.and ((ha.eventually (Iio_mem_nhds hA)).and (hpoint.eventually hU))
+  suffices hh : ∀ᶠ V : E in 𝓝 Z, ∀ W : E, (W,ρ) ∈ lMinDomain S T x →
+      lExp S T x W ρ = lExp S T x V ρ → W = V from hnearmin.and hh
+  by_contra hn
+  have hcl : Z ∈ closure {V : E | ∃ W : E, (W,ρ) ∈ lMinDomain S T x ∧
+      lExp S T x W ρ = lExp S T x V ρ ∧ W ≠ V} := by
+    rw [mem_closure_iff_nhds]
+    intro V hV
+    by_contra he
+    apply hn
+    apply mem_of_superset hV
+    intro q hq W hW hend
+    by_contra hne
+    exact he ⟨q, hq, W, hW, hend, hne⟩
+  obtain ⟨Q,hQbad,hQlim⟩ := mem_closure_iff_seq_limit.mp hcl
+  obtain ⟨N,hN⟩ := eventually_atTop.mp (hQlim.eventually hnear)
+  let V := fun n : ℕ => Q (n+N)
+  have hVlim : Tendsto V atTop (𝓝 Z) := hQlim.comp (tendsto_add_atTop_nat N)
+  have hVmin (n : ℕ) := (hN (n+N) (by omega)).1
+  have hVact (n : ℕ) := (hN (n+N) (by omega)).2.1
+  have hVU (n : ℕ) := (hN (n+N) (by omega)).2.2
+  choose W hWmin hWend hWne using fun n => hQbad (n+N)
+  have hWdom (n : ℕ) : b ∈ lRegularizedDomain S T x (W n) :=
+    ((mem_lExpPosDom S T x (W n) ρ).mp (((mem_lMinDomain S T x (W n) ρ).mp (hWmin n)).1)).2.2
+  have hWact (n : ℕ) : lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b < A := by
+    have hw := ((mem_lMinDomain S T x (W n) ρ).mp (hWmin n)).2
+    have hv := ((mem_lMinDomain S T x (V n) ρ).mp (hVmin n)).2
+    change lLength S T (squareRootReparametrization (lRegularizedCurve S T x (W n))) 0 ρ = _ at hw
+    change lLength S T (squareRootReparametrization (lRegularizedCurve S T x (V n))) 0 ρ = _ at hv
+    rw [lLength_squareRootReparametrization_eq_lRegularizedAction S T _ ρ hρ.le] at hw hv
+    rw [hw, hWend n, ← hv]
+    exact hVact n
+  have hWrange (n : ℕ) : MapsTo (lRegularizedCurve S T x (W n)) (Icc 0 b) K := by
+    obtain ⟨α,hα,heq⟩ := DifferentialGeometry.Topology.exists_contMDiff_extension_Icc
+      (lRegularizedCurve_c1On S hS T x (W n) (hWdom n))
+    have hα0 := (heq ⟨le_rfl,hb.le⟩).trans (lRegularizedCurve_zero S T x (W n))
+    have hαb : α b = lExp S T x (W n) ρ := heq ⟨hb.le,le_rfl⟩
+    have ha : lRegularizedAction S T α 0 b = lRegularizedAction S T (lRegularizedCurve S T x (W n)) 0 b := by
+      apply lRegularizedAction_congr
+      rw [uIoo_of_le hb.le]
+      exact heq.mono Ioo_subset_Icc_self
+    have hc := hconf α hα hα0 (hαb.symm ▸ (hWend n).symm ▸ hVU n) (ha.le.trans (hWact n).le)
+    intro t ht
+    rw [← heq ht]
+    exact hc ht
+  have hbnd := lRegInit_bound_of_compact_range S hS T x b A hb hreg hK W hWdom
+    (fun n => (hWact n).le) (fun n => image_subset_iff.mpr (hWrange n))
+  let _ : ProperSpace E := FiniteDimensional.proper ℝ _
+  obtain ⟨W₀,_,φ,hφ,hWlim⟩ := tendsto_subseq_of_bounded hbnd (fun n => mem_range_self n)
+  have hW₀reg := lRegDomain_lim_of_compact_range S hS T x b hb hreg K hK (fun n => hWrange (φ n)) hWlim
+  have hW₀dom : (W₀,ρ) ∈ lExpPosDom S T x := (mem_lExpPosDom S T x W₀ ρ).mpr ⟨hρ,hρ.le,hW₀reg⟩
+  have hW₀min := lMinVec_lim_of_bdd S hS T x (fun n => hWmin (φ n)) hWlim hW₀dom hbdd
+  have hWExp := ((lExp_smoothOn S hS T x) (W₀,ρ) hW₀dom).continuousWithinAt.continuousAt
+    ((lExpPosDom_open S hS T x).mem_nhds hW₀dom)
+  have hVsub := hVlim.comp hφ.tendsto_atTop
+  have heqend : lExp S T x W₀ ρ = lExp S T x Z ρ :=
+    tendsto_nhds_unique (hWExp.tendsto.comp (hWlim.prodMk_nhds tendsto_const_nhds))
+      ((hend.tendsto.comp (hVsub.prodMk_nhds tendsto_const_nhds)).congr'
+        (Eventually.of_forall fun n => (hWend (φ n)).symm))
+  have heq := hunique W₀ hW₀min heqend
+  obtain ⟨Φ,hΦsrc,hΦeq⟩ := lExp_localDiffeo S hS T x Z ρ hZdom hnconj
+  have hWZ : Tendsto (fun n => W (φ n)) atTop (𝓝 Z) := heq ▸ hWlim
+  obtain ⟨n,hnW,hnV⟩ := ((hWZ.eventually (Φ.open_source.mem_nhds hΦsrc)).and
+    (hVsub.eventually (Φ.open_source.mem_nhds hΦsrc))).exists
+  apply hWne (φ n)
+  apply Φ.injOn hnW hnV
+  rw [← hΦeq hnW, ← hΦeq hnV]
+  exact hWend (φ n)
+
+end DifferentialGeometry.PDE.RicciFlow
+end
+
+noncomputable section
+open Set Filter Bundle
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology
+namespace DifferentialGeometry.PDE.RicciFlow
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+ [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] {D : RealTimeInterval}
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem eventually_not_isLConjugate
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {Z : TangentSpace I x} {τ : ℝ} (hdom : (Z, τ) ∈ lExpPosDom S T x)
+    (hnconj : ¬ IsLConjugate S T x Z τ) :
+    ∀ᶠ W : E in 𝓝 Z, ¬ IsLConjugate S T x W τ := by
+  obtain ⟨Φ, hZ, hEq⟩ := lExp_localDiffeo S hS T x Z τ hdom hnconj
+  filter_upwards [Φ.open_source.mem_nhds hZ] with W hW
+  have hloc : IsLocalDiffeomorphAt 𝓘(ℝ, E) I ∞ (fun V : E => lExp S T x V τ) W :=
+    ⟨Φ, hW, hEq⟩
+  have hinj : Function.Injective (mfderiv 𝓘(ℝ, E) I (fun V : E => lExp S T x V τ) W) := by
+    rw [← hloc.mfderivToContinuousLinearEquiv_coe (by simp)]
+    exact (hloc.mfderivToContinuousLinearEquiv (by simp)).injective
+  exact fun hc => hc.2 hinj
+
+theorem isOpen_setOf_unique_nonconjugate_minimizer_of_compact_action_sublevel
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M) {τ A : ℝ}
+    (K : Set M) (hK : IsCompact K) (U : Set M) (hU : IsOpen U)
+    (hbdd : ∀ y : M, BddBelow {a : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧
+      α 0 = x ∧ α (Real.sqrt τ) = y ∧ lRegularizedAction S T α 0 (Real.sqrt τ) = a})
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α → α 0 = x → α (Real.sqrt τ) ∈ U →
+      lRegularizedAction S T α 0 (Real.sqrt τ) ≤ A → MapsTo α (Icc 0 (Real.sqrt τ)) K) :
+    IsOpen {Z : E | (Z, τ) ∈ lMinDomain S T x ∧
+      (∀ W : E, (W, τ) ∈ lMinDomain S T x → lExp S T x W τ = lExp S T x Z τ → W = Z) ∧
+      ¬ IsLConjugate S T x Z τ ∧ lExp S T x Z τ ∈ U ∧
+      lRegularizedAction S T (lRegularizedCurve S T x Z) 0 (Real.sqrt τ) < A} := by
+  apply isOpen_iff_mem_nhds.mpr
+  intro Z hZ
+  have hd := ((mem_lMinDomain S T x Z τ).mp hZ.1).1
+  have hτ := lMinDomain_pos S T x Z τ hZ.1
+  have hb := Real.sqrt_pos.mpr hτ
+  have hv := eventually_unique_lMinimizingVector_of_compact_action_sublevel S hS T x hZ.1 hZ.2.1 hZ.2.2.1
+    hbdd K hK (hU.mem_nhds hZ.2.2.2.1) hconf hZ.2.2.2.2
+  have hnc := eventually_not_isLConjugate S hS T x hd hZ.2.2.1
+  have hact := (continuousAt_lRegularizedAction_lRegularizedCurve S hS T x hb
+    ((mem_lExpPosDom S T x Z τ).mp hd).2.2).comp (f := fun W : E => (W, Real.sqrt τ))
+      (continuousAt_id.prodMk continuousAt_const)
+  have hend := ((lExp_smoothOn S hS T x) (Z, τ) hd).continuousWithinAt.continuousAt
+    ((lExpPosDom_open S hS T x).mem_nhds hd)
+  have hp := hend.comp (f := fun W : E => (W, τ)) (continuousAt_id.prodMk continuousAt_const)
+  filter_upwards [hv, hnc, hp.eventually (hU.mem_nhds hZ.2.2.2.1),
+    hact.eventually (Iio_mem_nhds hZ.2.2.2.2)] with W hW hWnc hWU hWA
+  exact ⟨hW.1, hW.2, hWnc, hWU, hWA⟩
+
+end DifferentialGeometry.PDE.RicciFlow
 end
