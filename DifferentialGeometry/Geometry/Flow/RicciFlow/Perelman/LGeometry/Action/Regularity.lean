@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Defs
+import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
 
 noncomputable section
 
@@ -71,5 +72,51 @@ theorem aestronglyMeasurable_lDensity
   rw [← restrict_Ioo_eq_restrict_Ioc]
   exact (continuousOn_lDensity S T gamma isOpen_Ioo hG hR hgamma hback).aestronglyMeasurable
     measurableSet_Ioo
+
+theorem integrableOn_mul_scalar_add_speedSq_of_contMDiffOn
+    (S : SolutionOn (I := I) (M := M) D) (gamma : ℝ → M) {a b : ℝ}
+    (hG : MetricFamilySmoothOn (I := I) (M := M) D S.family.metric)
+    (hR : ContinuousOn (fun q : ℝ × M => S.scalar q.1 q.2) (D.carrier ×ˢ univ))
+    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) I 1 gamma (Icc a b))
+    (hcarrier : Icc a b ⊆ D.carrier) (weight : ℝ → ℝ)
+    (hweight : ContinuousOn weight (Icc a b)) :
+    IntegrableOn (fun t => weight t *
+      (S.scalar t (gamma t) + (S.base.metric t).inner (gamma t)
+        (lVelocity gamma t) (lVelocity gamma t))) (Icc a b) := by
+  rcases lt_trichotomy a b with hab | rfl | hba
+  · let v (t : ℝ) : TangentSpace I (gamma t) :=
+      mfderivWithin 𝓘(ℝ, ℝ) I gamma (Icc a b) t (1 : ℝ)
+    have hunit : Continuous (fun t : ℝ =>
+        (⟨t, (1 : ℝ)⟩ : TangentBundle 𝓘(ℝ, ℝ) ℝ)) :=
+      (tangentBundleModelSpaceHomeomorph 𝓘(ℝ, ℝ)).symm.continuous.comp
+        (continuous_id.prodMk continuous_const)
+    have hv : ContinuousOn (fun t => TotalSpace.mk' E (gamma t) (v t)) (Icc a b) :=
+      (hgamma.continuousOn_tangentMapWithin le_rfl
+        (uniqueDiffOn_Icc hab).uniqueMDiffOn).comp hunit.continuousOn (fun _ ht => ht)
+    let timeLift : Icc a b → D.carrier := fun t => ⟨t.val, hcarrier t.property⟩
+    let velocityLift : Icc a b → TangentBundle I M :=
+      fun t => TotalSpace.mk' E (gamma t.val) (v t.val)
+    have htime : Continuous timeLift := continuous_subtype_val.subtype_mk _
+    have hvel : Continuous velocityLift := hv.domRestrict
+    have hquad := metricTimeBundleQuad_cont_of_metricFamilySmoothOn
+      S.family.metric hG (K := D.carrier) Subset.rfl
+    have hkin : ContinuousOn (fun t => (S.base.metric t).inner (gamma t) (v t) (v t))
+        (Icc a b) := by
+      rw [continuousOn_iff_continuous_domRestrict]
+      exact hquad.comp (htime.prodMk hvel)
+    have hpair : ContinuousOn (fun t : ℝ => (t, gamma t)) (Icc a b) :=
+      continuousOn_id.prodMk hgamma.continuousOn
+    have hmaps : MapsTo (fun t : ℝ => (t, gamma t)) (Icc a b) (D.carrier ×ˢ univ) :=
+      fun _ ht => ⟨hcarrier ht, mem_univ _⟩
+    have hscalar : ContinuousOn (fun t => S.scalar t (gamma t)) (Icc a b) := by
+      simpa only [Function.comp_def] using hR.comp hpair hmaps
+    apply (hweight.mul (hscalar.add hkin)).integrableOn_compact isCompact_Icc |>.congr
+    rw [← restrict_Ioo_eq_restrict_Icc]
+    filter_upwards [ae_restrict_mem measurableSet_Ioo] with t ht
+    dsimp only [Pi.mul_apply, Pi.add_apply, v, lVelocity]
+    rw [mfderivWithin_of_mem_nhds (Icc_mem_nhds ht.1 ht.2)]
+  · rw [Icc_self]
+    exact IntegrableOn.of_measure_zero (measure_singleton a)
+  · simp [Icc_eq_empty_of_lt hba]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
