@@ -119,10 +119,10 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   (G : GeometricCutoffRecord H i parameters)
 
 include G in
-theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
+theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods
     {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
     (hcanonical : ∀ x : (H.stage i.castSucc).Carrier,
-      ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), Q ≤ (H.event i).incoming.flow.scalar t x →
+      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), Q < (H.event i).incoming.flow.scalar t x →
         ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
           W.capTubeHasNeckChart eps)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
@@ -145,7 +145,7 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
         |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
           (⟨C2, hC2⟩ : ℝ≥0) * (H.event i).incoming.flow.scalar t x ^ 2 := by
     intro x t ht hhigh
-    obtain ⟨W, _⟩ := hcanonical x t ⟨ht.1.le, ht.2⟩ hhigh.le
+    obtain ⟨W, _⟩ := hcanonical x t ht hhigh
     exact W.time_derivative
   have hlow : ∀ x : (H.event i).incoming.terminalRegularOpen,
       x.val ∈ F → ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
@@ -160,6 +160,28 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
   refine ⟨d, hd, ?_⟩
   intro t ht z hz
   have h := hhigh t ht z.val ⟨z, hz, rfl⟩
-  exact ⟨h, hcanonical z.val t ⟨hd.1.trans ht.1.le, ht.2⟩ h.le⟩
+  exact ⟨h, hcanonical z.val t ⟨hd.1.trans_lt ht.1, ht.2⟩ h⟩
+
+include G in
+theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
+    {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
+    (hcanonical : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), Q ≤ (H.event i).incoming.flow.scalar t x →
+        ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
+          W.capTubeHasNeckChart eps)
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    (hpinch : PhiAlmostNonnegative (H.event i).incoming.flow
+      (Ico (H.time i.castSucc) (H.time i.succ)) Phi)
+    (hprotected : Q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ),
+        ∀ z : (H.event i).transition.trace.tubes.core,
+          z ∉ (H.event i).transition.trace.retainedCore →
+            Q < (H.event i).incoming.flow.scalar t z.val ∧
+              ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 z.val t,
+                W.capTubeHasNeckChart eps := by
+  exact exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods G
+    hQ hC2 (fun x t ht hscalar => hcanonical x t ⟨ht.1.le, ht.2⟩ hscalar.le)
+      hPhi hpinch hprotected
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord

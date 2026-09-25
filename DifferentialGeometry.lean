@@ -13994,3 +13994,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalSca
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMinimizingDensity
 import DifferentialGeometry.Geometry.Metric.Comparison.ScalarGradient
 import DifferentialGeometry.Topology.Sequences.UniformEventually
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPoleAction

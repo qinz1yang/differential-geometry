@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.Restriction
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTimeExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
@@ -161,3 +163,49 @@ theorem ClosedSlab.endpointTerminalLimitMetric_extendedMetric_of_le
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ}
+
+theorem ClosedSlab.riemannianEDistOf_endpointTerminalLimitMetric
+    (A : P.ClosedSlab a s)
+    (x y : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) :
+    riemannianEDistOf (A.endpointTerminalLimitMetric P).metric x y =
+      riemannianEDistOf (A.flow.base.metric s) x.val y.val := by
+  exact riemannianEDistOf_restrictOpen_of_isClosed (A.flow.base.metric s)
+    (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen
+    (by
+      change IsClosed (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularRegion
+      rw [A.terminalRegularRegion_eq_univ P]
+      exact isClosed_univ) x y
+
+theorem ClosedSlab.mem_scaled_endpoint_closedBall_iff
+    (A : P.ClosedSlab a s) (Q : ℝ) (hQ : 0 < Q)
+    (x y : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) (R : ℝ) :
+    y ∈ riemannianClosedBallOf (scaleMetric Q hQ (A.endpointTerminalLimitMetric P).metric) x R ↔
+      y.val ∈ riemannianClosedBallOf (A.flow.base.metric s) x.val (R / Real.sqrt Q) := by
+  have hr : Real.sqrt Q * (R / Real.sqrt Q) = R := by
+    rw [mul_div_cancel₀ R (Real.sqrt_pos.mpr hQ).ne']
+  have hball := riemannianClosedBallOf_scaleMetric Q hQ
+    (A.endpointTerminalLimitMetric P).metric x (R / Real.sqrt Q)
+  rw [hr] at hball
+  rw [hball]
+  change riemannianEDistOf (A.endpointTerminalLimitMetric P).metric x y ≤ _ ↔ _
+  rw [A.riemannianEDistOf_endpointTerminalLimitMetric x y]
+  rfl
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
+
+end
+end

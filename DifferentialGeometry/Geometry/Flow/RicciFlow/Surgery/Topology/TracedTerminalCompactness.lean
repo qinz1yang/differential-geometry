@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceSequence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureEscape
+import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCurvatureDerivativeBounds
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.IncompleteLocal
@@ -772,4 +775,514 @@ theorem RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_te
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
+end
+
+section
+
+noncomputable section
+open Set Filter Manifold
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+private theorem exists_eventually_backward_window_on_bounded_scalar_ball_of_growing_preparation :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ (R Amax : ℝ), 0 < R → 1 ≤ Amax →
+    ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
+      ∀ (H : ℕ → ObservedHistory.{u}) (last : ∀ i, Fin ((H i).eventCount + 1))
+        (time : ℕ → ℝ)
+        (A : ∀ i, ((H i).stage (last i)).ClosedSlab ((H i).time (last i)) (time i)),
+      (∀ i, (A i).flow.base.metric ((H i).time (last i)) = (H i).initialMetric (last i)) →
+      ∀ (parameters : ℕ → CutoffParameters)
+        (records : ∀ i j, GeometricCutoffRecord (H i) j (parameters i)),
+      (∀ i j, j.succ ≤ last i → ∀ b, ((records i j).static b).hasCanonicalWindow) →
+      Tendsto (fun i => (parameters i).modelRadius) atTop atTop →
+      (∀ i, max ⌈eps⁻¹⌉₊ 4 + 2 ≤ (parameters i).modelOrder) →
+      Tendsto (fun i => (parameters i).modelAccuracy) atTop (𝓝 0) →
+      (∀ i j, j.succ ≤ last i → ∀ (b : ((H i).event j).RetainedBoundaryIndex) (z : ThreeBall),
+        ((records i j).static b).neck.scale / 2 ≤
+          metricScalarAt ((records i j).static b).witness.metric (((records i j).static b).witness.cap z)) →
+      ∀ q₀ a₀ a : ℝ, 0 < q₀ → 0 < a₀ → 0 < a →
+      (∀ i, a ≤ time i) →
+      (∀ i x, InFixedHamiltonIveyRegion ((H i).initialMetric 0) a₀ x) →
+      (∀ i x, -3 / a₀ ≤ metricScalarAt ((H i).initialMetric 0) x) →
+      (∀ δ : ℝ, 0 < δ → ∀ᶠ i in atTop, ∀ j, j.succ ≤ last i → ∀ b, (records i j).delta b ≤ δ) →
+      (∀ i j, j.succ ≤ last i → ∀ y : ((H i).stage j.castSucc).Carrier,
+        ∀ t ∈ Ioo ((H i).time j.castSucc) ((H i).time j.succ),
+          q₀ < ((H i).event j).incoming.flow.scalar t y →
+          |derivWithin (fun v => ((H i).event j).incoming.flow.scalar v y) (Iic t) t| ≤
+            C * ((H i).event j).incoming.flow.scalar t y ^ 2) →
+      (∀ i y, ∀ t ∈ Ioo ((H i).time (last i)) (time i), q₀ < (A i).flow.scalar t y →
+        |derivWithin (fun v => (A i).flow.scalar v y) (Iic t) t| ≤ C * (A i).flow.scalar t y ^ 2) →
+      ∀ x : ∀ i, ((H i).stage (last i)).Carrier,
+      Tendsto (fun i => (A i).flow.scalar (time i) (x i)) atTop atTop →
+      (∀ i y, q₀ < (A i).flow.scalar (time i) y → ∀ v : TangentSpace ThreeModel y,
+        |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) y v)| ≤
+          C * (A i).flow.scalar (time i) y * Real.sqrt ((A i).flow.scalar (time i) y) *
+            Real.sqrt (((A i).flow.base.metric (time i)).inner y v v)) →
+      (∀ᶠ i in atTop, ∀ y, y ∈ riemannianClosedBallOf ((A i).flow.base.metric (time i)) (x i)
+          (R / Real.sqrt ((A i).flow.scalar (time i) (x i))) →
+        (A i).flow.scalar (time i) y ≤ 2 * Amax * (A i).flow.scalar (time i) (x i)) →
+      (∀ i, (∃ v : TangentSpace ThreeModel (x i), v ≠ 0 ∧
+          C * (A i).flow.scalar (time i) (x i) * Real.sqrt ((A i).flow.scalar (time i) (x i)) *
+              Real.sqrt (((A i).flow.base.metric (time i)).inner (x i) v v) ≤
+            |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) (x i) v)|) ∨
+        C * (A i).flow.scalar (time i) (x i) ^ 2 ≤
+          |derivWithin (fun t => (A i).flow.scalar t (x i)) (Iic (time i)) (time i)|) →
+      ∃ θ : ℝ, 0 < θ ∧ 6 * C * (Amax * θ) ≤ 1 ∧ ∀ᶠ i in atTop,
+        ∃ (first : Fin ((H i).eventCount + 1)) (hle : first ≤ last i),
+          (H i).time first ≤ time i - θ / (A i).flow.scalar (time i) (x i) ∧
+          ∀ y ∈ riemannianClosedBallOf ((A i).flow.base.metric (time i)) (x i)
+            (R / Real.sqrt ((A i).flow.scalar (time i) (x i))),
+            Nonempty (BackwardPointTrace (H i) first (last i) hle y) := by
+  obtain ⟨C, hC, hbase⟩ := exists_eventually_backward_window_on_bounded_scalar_ball_at_scalar_derivative_contact
+  refine ⟨C, hC, ?_⟩
+  intro R Amax hR hAmax eps heps hepssmall
+  let rcap := StandardCap.transitionEnd + eps⁻¹ + 2 +
+    2 * (2 * StandardCap.transitionEnd + (R + 1) * Real.sqrt (8 * Amax))
+  let D := 64 * (rcap + eps⁻¹) + 1
+  have hrcap : StandardCap.transitionEnd + eps⁻¹ + 1 < rcap := by
+    dsimp [rcap]
+    nlinarith [StandardCap.transitionEnd_pos, Real.sqrt_nonneg (8 * Amax), mul_nonneg (by linarith : 0 ≤ R + 1) (Real.sqrt_nonneg (8 * Amax))]
+  have hfit : 64 * (rcap + eps⁻¹) < D := by dsimp [D]; linarith
+  have hcapture : 2 * StandardCap.transitionEnd + (R + 1) * Real.sqrt (8 * Amax) < rcap / 2 := by
+    dsimp [rcap]
+    nlinarith [StandardCap.transitionEnd_pos, inv_pos.mpr heps]
+  obtain ⟨δ₀, hδ₀, htrace⟩ := hbase R Amax hR hAmax 4 le_rfl D rcap eps
+    heps hepssmall hrcap hfit hcapture
+  intro H last time A hinit parameters records hcanonical hmargin hm herrorlim hcap
+    q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hupper hfail
+  have hevent := (hmargin.eventually_ge_atTop (D + 1)).and ((hδ δ₀ hδ₀).and hupper)
+  obtain ⟨M, hM⟩ := eventually_atTop.mp hevent
+  let f : ℕ → ℕ := fun i => i + M
+  have hf : Tendsto f atTop atTop := tendsto_add_atTop_nat M
+  have hgood (i : ℕ) := hM (f i) (by dsimp [f]; omega)
+  obtain ⟨θ, hθ, hbudget, htraces⟩ := htrace
+    (fun i => H (f i)) (fun i => last (f i)) (fun i => time (f i))
+    (fun i => A (f i)) (fun i => hinit (f i)) (fun i => parameters (f i))
+    (fun i => records (f i)) (fun i => hcanonical (f i)) (fun i => (hgood i).1)
+    (fun i => hm (f i)) (herrorlim.comp hf) (fun i => hcap (f i))
+    q₀ a₀ a hq₀ ha₀ ha (fun i => htime (f i)) (fun i => hfixed (f i))
+    (fun i => hlower (f i)) (fun i => (hgood i).2.1) (fun i => hderiv (f i))
+    (fun i => hfinal (f i)) (fun i => x (f i)) (hhigh.comp hf)
+    (fun i => hgradient (f i)) (fun i => (hgood i).2.2) (fun i => hfail (f i))
+  refine ⟨θ, hθ, hbudget, ?_⟩
+  have hmapped : ∀ᶠ i in Filter.map f atTop,
+      ∃ (first : Fin ((H i).eventCount + 1)) (hle : first ≤ last i),
+        (H i).time first ≤ time i - θ / (A i).flow.scalar (time i) (x i) ∧
+        ∀ y ∈ riemannianClosedBallOf ((A i).flow.base.metric (time i)) (x i)
+          (R / Real.sqrt ((A i).flow.scalar (time i) (x i))),
+          Nonempty (BackwardPointTrace (H i) first (last i) hle y) := htraces
+  simpa only [f, map_add_atTop_eq_nat] using hmapped
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+end
+
+section
+
+noncomputable section
+open Set Filter Manifold
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+
+private theorem exists_buffered_backward_traces_of_scalar_derivative_contacts :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
+      ∀ (H : ℕ → ObservedHistory.{u}) (last : ∀ i, Fin ((H i).eventCount + 1))
+        (time : ℕ → ℝ)
+        (A : ∀ i, ((H i).stage (last i)).ClosedSlab ((H i).time (last i)) (time i)),
+      let G := fun i => (A i).restrictIncoming le_rfl (A i).lt le_rfl;
+      let L := fun i => (A i).endpointTerminalLimitMetric ((H i).stage (last i));
+      (∀ i, (A i).flow.base.metric ((H i).time (last i)) = (H i).initialMetric (last i)) →
+      ∀ (parameters : ℕ → CutoffParameters)
+        (records : ∀ i j, GeometricCutoffRecord (H i) j (parameters i)),
+      (∀ i j, j.succ ≤ last i → ∀ b, ((records i j).static b).hasCanonicalWindow) →
+      Tendsto (fun i => (parameters i).modelRadius) atTop atTop →
+      (∀ i, max ⌈eps⁻¹⌉₊ 4 + 2 ≤ (parameters i).modelOrder) →
+      Tendsto (fun i => (parameters i).modelAccuracy) atTop (𝓝 0) →
+      (∀ i j, j.succ ≤ last i → ∀ (b : ((H i).event j).RetainedBoundaryIndex) (z : ThreeBall),
+        ((records i j).static b).neck.scale / 2 ≤
+          metricScalarAt ((records i j).static b).witness.metric (((records i j).static b).witness.cap z)) →
+      ∀ q₀ a₀ a : ℝ, 0 < q₀ → 0 < a₀ → 0 < a →
+      (∀ i, a ≤ time i) →
+      (∀ i x, InFixedHamiltonIveyRegion ((H i).initialMetric 0) a₀ x) →
+      (∀ i x, -3 / a₀ ≤ metricScalarAt ((H i).initialMetric 0) x) →
+      (∀ δ : ℝ, 0 < δ → ∀ᶠ i in atTop, ∀ j, j.succ ≤ last i → ∀ b, (records i j).delta b ≤ δ) →
+      (∀ i j, j.succ ≤ last i → ∀ y : ((H i).stage j.castSucc).Carrier,
+        ∀ t ∈ Ioo ((H i).time j.castSucc) ((H i).time j.succ),
+          q₀ < ((H i).event j).incoming.flow.scalar t y →
+          |derivWithin (fun v => ((H i).event j).incoming.flow.scalar v y) (Iic t) t| ≤
+            C * ((H i).event j).incoming.flow.scalar t y ^ 2) →
+      (∀ i y, ∀ t ∈ Ioo ((H i).time (last i)) (time i), q₀ < (A i).flow.scalar t y →
+        |derivWithin (fun v => (A i).flow.scalar v y) (Iic t) t| ≤ C * (A i).flow.scalar t y ^ 2) →
+      ∀ x : ∀ i, (G i).terminalRegularOpen,
+      Tendsto (fun i => (A i).flow.scalar (time i) (x i).val) atTop atTop →
+      (∀ i y, q₀ < (A i).flow.scalar (time i) y → ∀ v : TangentSpace ThreeModel y,
+        |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) y v)| ≤
+          C * (A i).flow.scalar (time i) y * Real.sqrt ((A i).flow.scalar (time i) y) *
+            Real.sqrt (((A i).flow.base.metric (time i)).inner y v v)) →
+      ∀ hQ : ∀ i, 0 < (A i).flow.scalar (time i) (x i).val,
+      ∀ rho : ℝ, 0 < rho →
+      (∀ R : ℝ, 0 < R → R < rho → ∃ B : ℝ,
+        ∀ᶠ i in atTop, ∀ y : (G i).terminalRegularOpen,
+          y ∈ riemannianClosedBallOf
+            (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) R →
+          metricScalarAt (L i).metric y ≤ B * (A i).flow.scalar (time i) (x i).val) →
+      (∀ i, (∃ v : TangentSpace ThreeModel (x i).val, v ≠ 0 ∧
+          C * (A i).flow.scalar (time i) (x i).val * Real.sqrt ((A i).flow.scalar (time i) (x i).val) *
+              Real.sqrt (((A i).flow.base.metric (time i)).inner (x i).val v v) ≤
+            |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) (x i).val v)|) ∨
+        C * (A i).flow.scalar (time i) (x i).val ^ 2 ≤
+          |derivWithin (fun t => (A i).flow.scalar t (x i).val) (Iic (time i)) (time i)|) →
+      ∀ R : ℝ, 0 < R → R < rho → ∃ r Amax θ : ℝ,
+        0 < r ∧ R + r < rho ∧ 1 ≤ Amax ∧ 0 < θ ∧ 6 * C * (Amax * θ) ≤ 1 ∧
+        ∀ᶠ i in atTop,
+          IsCompact (riemannianClosedBallOf
+            (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) (R + r)) ∧
+          (∀ y ∈ riemannianClosedBallOf
+            (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) (R + r),
+            metricScalarAt (L i).metric y ≤ 2 * (Amax * (A i).flow.scalar (time i) (x i).val)) ∧
+          ∃ (first : Fin ((H i).eventCount + 1)) (hle : first ≤ last i),
+            (∀ y ∈ riemannianClosedBallOf
+              (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) (R + r),
+              Nonempty (BackwardPointTrace (H i) first (last i) hle y.val)) ∧
+            (H i).time first ≤ time i - θ / (A i).flow.scalar (time i) (x i).val := by
+  obtain ⟨C, hC, hbase⟩ := exists_eventually_backward_window_on_bounded_scalar_ball_of_growing_preparation
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hepssmall H last time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
+    q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ rho hrho hupper hfail R hR hRrho
+  let r := (rho - R) / 2
+  have hr : 0 < r := half_pos (sub_pos.mpr hRrho)
+  have hRr : R + r < rho := by dsimp [r]; linarith
+  obtain ⟨B, hB⟩ := hupper (R + r) (by positivity) hRr
+  let Amax := max 1 B
+  have hAmax : 1 ≤ Amax := le_max_left _ _
+  have hscalar (i : ℕ) (y : (G i).terminalRegularOpen) :
+      metricScalarAt (L i).metric y = (A i).flow.scalar (time i) y.val := by
+    change metricScalarAt (((A i).flow.base.metric (time i)).restrictOpen (G i).terminalRegularOpen) y = _
+    rw [metricScalarAt_restrictOpen]
+    rfl
+  have hbound : ∀ᶠ i in atTop, ∀ y,
+      y ∈ riemannianClosedBallOf ((A i).flow.base.metric (time i)) (x i).val
+        ((R + r) / Real.sqrt ((A i).flow.scalar (time i) (x i).val)) →
+      (A i).flow.scalar (time i) y ≤ 2 * Amax * (A i).flow.scalar (time i) (x i).val := by
+    filter_upwards [hB] with i hi y hy
+    let y' : (G i).terminalRegularOpen := ⟨y, by
+      change y ∈ (G i).terminalRegularRegion
+      rw [(A i).terminalRegularRegion_eq_univ ((H i).stage (last i))]
+      trivial⟩
+    have hy' := ((A i).mem_scaled_endpoint_closedBall_iff _ (hQ i) (x i) y' (R + r)).mpr hy
+    have hb := hi y' hy'
+    rw [hscalar] at hb
+    exact hb.trans (mul_le_mul_of_nonneg_right (by
+      have hbA : B ≤ Amax := le_max_right _ _
+      linarith) (hQ i).le)
+  obtain ⟨θ, hθ, hbudget, htraces⟩ := hbase (R + r) Amax (by positivity) hAmax eps heps hepssmall
+    H last time A hinit parameters records hcanonical hmargin hm herrorlim hcap
+    q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal (fun i => (x i).val)
+    hhigh hgradient hbound hfail
+  refine ⟨r, Amax, θ, hr, hRr, hAmax, hθ, hbudget, ?_⟩
+  filter_upwards [htraces, hB] with i hi hbi
+  have hcompact : CompactSpace (G i).terminalRegularOpen := by
+    apply isCompact_iff_compactSpace.mp
+    change IsCompact (G i).terminalRegularRegion
+    rw [(A i).terminalRegularRegion_eq_univ ((H i).stage (last i))]
+    exact isCompact_univ
+  let _ := hcompact
+  refine ⟨(Geometry.Metric.isClosed_riemannianClosedBallOf _ _ _).isCompact, ?_, ?_⟩
+  · intro y hy
+    have hb := hbi y hy
+    have hcoef : B ≤ 2 * Amax := by have := le_max_right (1 : ℝ) B; dsimp [Amax] at *; linarith
+    exact hb.trans (by nlinarith [mul_le_mul_of_nonneg_right hcoef (hQ i).le])
+  · obtain ⟨first, hle, hstart, ht⟩ := hi
+    refine ⟨first, hle, ?_, hstart⟩
+    intro y hy
+    exact ht y.val (((A i).mem_scaled_endpoint_closedBall_iff _ (hQ i) (x i) y (R + r)).mp hy)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+end
+
+section
+
+noncomputable section
+open Set Filter Manifold
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff Topology NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+
+
+private theorem exists_scalar_escape_radius_with_buffered_backward_traces_of_contacts :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
+      ∀ (H : ℕ → ObservedHistory.{u}) (last : ∀ i, Fin ((H i).eventCount + 1))
+        (time : ℕ → ℝ)
+        (A : ∀ i, ((H i).stage (last i)).ClosedSlab ((H i).time (last i)) (time i)),
+      let G := fun i => (A i).restrictIncoming le_rfl (A i).lt le_rfl;
+      let L := fun i => (A i).endpointTerminalLimitMetric ((H i).stage (last i));
+      (∀ i, (A i).flow.base.metric ((H i).time (last i)) = (H i).initialMetric (last i)) →
+      ∀ (parameters : ℕ → CutoffParameters)
+        (records : ∀ i j, GeometricCutoffRecord (H i) j (parameters i)),
+      (∀ i j, j.succ ≤ last i → ∀ b, ((records i j).static b).hasCanonicalWindow) →
+      Tendsto (fun i => (parameters i).modelRadius) atTop atTop →
+      (∀ i, max ⌈eps⁻¹⌉₊ 4 + 2 ≤ (parameters i).modelOrder) →
+      Tendsto (fun i => (parameters i).modelAccuracy) atTop (𝓝 0) →
+      (∀ i j, j.succ ≤ last i → ∀ (b : ((H i).event j).RetainedBoundaryIndex) (z : ThreeBall),
+        ((records i j).static b).neck.scale / 2 ≤
+          metricScalarAt ((records i j).static b).witness.metric (((records i j).static b).witness.cap z)) →
+      ∀ q₀ a₀ a : ℝ, 0 < q₀ → 0 < a₀ → 0 < a →
+      (∀ i, a ≤ time i) →
+      (∀ i x, InFixedHamiltonIveyRegion ((H i).initialMetric 0) a₀ x) →
+      (∀ i x, -3 / a₀ ≤ metricScalarAt ((H i).initialMetric 0) x) →
+      (∀ δ : ℝ, 0 < δ → ∀ᶠ i in atTop, ∀ j, j.succ ≤ last i → ∀ b, (records i j).delta b ≤ δ) →
+      (∀ i j, j.succ ≤ last i → ∀ y : ((H i).stage j.castSucc).Carrier,
+        ∀ t ∈ Ioo ((H i).time j.castSucc) ((H i).time j.succ),
+          q₀ < ((H i).event j).incoming.flow.scalar t y →
+          |derivWithin (fun v => ((H i).event j).incoming.flow.scalar v y) (Iic t) t| ≤
+            C * ((H i).event j).incoming.flow.scalar t y ^ 2) →
+      (∀ i y, ∀ t ∈ Ioo ((H i).time (last i)) (time i), q₀ < (A i).flow.scalar t y →
+        |derivWithin (fun v => (A i).flow.scalar v y) (Iic t) t| ≤ C * (A i).flow.scalar t y ^ 2) →
+      ∀ x : ∀ i, (G i).terminalRegularOpen,
+      Tendsto (fun i => (A i).flow.scalar (time i) (x i).val) atTop atTop →
+      (∀ i y, q₀ < (A i).flow.scalar (time i) y → ∀ v : TangentSpace ThreeModel y,
+        |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) y v)| ≤
+          C * (A i).flow.scalar (time i) y * Real.sqrt ((A i).flow.scalar (time i) y) *
+            Real.sqrt (((A i).flow.base.metric (time i)).inner y v v)) →
+      ∀ hQ : ∀ i, 0 < (A i).flow.scalar (time i) (x i).val,
+      (∀ i y, ∀ t ∈ Ioo ((H i).time (last i)) (time i),
+        q₀ < (G i).flow.scalar t y → ∀ v : TangentSpace ThreeModel y,
+          |Perelman.CanonicalNeighborhood.scalarDifferential (G i).flow t y v| ≤
+            C * (G i).flow.scalar t y * Real.sqrt ((G i).flow.scalar t y) *
+              Real.sqrt (((G i).flow.base.metric t).inner y v v)) →
+      (∀ i, q₀ ≤ (A i).flow.scalar (time i) (x i).val) →
+      (∃ R : ℝ, 0 < R ∧ ¬ ∃ B : ℝ, ∀ᶠ i in atTop,
+        ∀ y : (G i).terminalRegularOpen,
+          riemannianEDistOf (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric)
+            (x i) y < ENNReal.ofReal R →
+          metricScalarAt (L i).metric y / (A i).flow.scalar (time i) (x i).val ≤ B) →
+      (∀ i, (∃ v : TangentSpace ThreeModel (x i).val, v ≠ 0 ∧
+          C * (A i).flow.scalar (time i) (x i).val * Real.sqrt ((A i).flow.scalar (time i) (x i).val) *
+              Real.sqrt (((A i).flow.base.metric (time i)).inner (x i).val v v) ≤
+            |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) (x i).val v)|) ∨
+        C * (A i).flow.scalar (time i) (x i).val ^ 2 ≤
+          |derivWithin (fun t => (A i).flow.scalar t (x i).val) (Iic (time i)) (time i)|) →
+      ∃ (rho : ℝ), 0 < rho ∧ ∃ (ind : ℕ → ℕ), StrictMono ind ∧
+        (∀ R : ℝ, 0 < R → R < rho → ∃ r Amax θ : ℝ,
+          0 < r ∧ R + r < rho ∧ 1 ≤ Amax ∧ 0 < θ ∧ 6 * C * (Amax * θ) ≤ 1 ∧
+          ∀ᶠ i in atTop,
+            IsCompact (riemannianClosedBallOf
+              (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) (R + r)) ∧
+            (∀ y ∈ riemannianClosedBallOf
+              (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) (R + r),
+              metricScalarAt (L i).metric y ≤ 2 * (Amax * (A i).flow.scalar (time i) (x i).val)) ∧
+            ∃ (first : Fin ((H i).eventCount + 1)) (hle : first ≤ last i),
+              (∀ y ∈ riemannianClosedBallOf
+                (scaleMetric ((A i).flow.scalar (time i) (x i).val) (hQ i) (L i).metric) (x i) (R + r),
+                Nonempty (BackwardPointTrace (H i) first (last i) hle y.val)) ∧
+              (H i).time first ≤ time i - θ / (A i).flow.scalar (time i) (x i).val) ∧
+        ∃ z : ∀ i, (G (ind i)).terminalRegularOpen,
+          (∀ i, riemannianEDistOf
+            (scaleMetric ((A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (hQ (ind i)) (L (ind i)).metric)
+              (x (ind i)) (z i) ≠ ⊤) ∧
+          Tendsto (fun i => (riemannianEDistOf
+            (scaleMetric ((A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (hQ (ind i)) (L (ind i)).metric)
+              (x (ind i)) (z i)).toReal) atTop (𝓝 rho) ∧
+          Tendsto (fun i => metricScalarAt (L (ind i)).metric (z i) /
+            (A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) atTop atTop := by
+  obtain ⟨C, hC, hbuffer⟩ := exists_buffered_backward_traces_of_scalar_derivative_contacts
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hepssmall H last time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
+    q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ hinterior hqQ hfailure hfail
+  have hscalar (i : ℕ) (y : (G i).terminalRegularOpen) :
+      metricScalarAt (L i).metric y = (A i).flow.scalar (time i) y.val := by
+    change metricScalarAt (((A i).flow.base.metric (time i)).restrictOpen (G i).terminalRegularOpen) y = _
+    rw [metricScalarAt_restrictOpen]
+    rfl
+  obtain ⟨rho, ind, hrho, hind, hinner, z, hfinite, hdist, hscalarEscape⟩ :=
+    exists_terminal_scalar_escape_radius_of_derivative_bounds
+      (fun i => (H i).stage (last i)) (fun i => (H i).time (last i)) time G L x
+      (fun i => (A i).flow.scalar (time i) (x i).val) hQ C (fun _ => q₀) hqQ
+      hinterior (fun _ => C) hfinal (fun i => (hscalar i (x i)).le) hfailure
+  refine ⟨rho, hrho, ind, hind, ?_, z, hfinite, hdist, hscalarEscape⟩
+  apply hbuffer eps heps hepssmall H last time A hinit parameters records hcanonical hmargin hm herrorlim hcap
+    q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ rho hrho ?_ hfail
+  intro R hR hRrho
+  obtain ⟨B, hB⟩ := hinner R hR hRrho
+  refine ⟨B, ?_⟩
+  filter_upwards [hB] with i hi y hy
+  exact (div_le_iff₀ (hQ i)).mp (hi.2 y hy)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+end
+
+section
+
+noncomputable section
+open Set Filter Manifold
+open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Integral.Measure
+open scoped Manifold ContDiff Topology NNReal ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+universe u
+
+private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s) :
+    SigmaCompactSpace G.terminalRegularOpen :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+
+
+private theorem endpoint_scalar_eq {P : OrientedThreeStage.{u}} {a s : ℝ}
+    (A : P.ClosedSlab a s)
+    (x : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen) :
+    metricScalarAt (A.endpointTerminalLimitMetric P).metric x = A.flow.scalar s x.val :=
+  metricScalarAt_restrictOpen _ _ _
+
+theorem RetainedCoreHistory.exists_normalized_pointed_convergence_at_scalar_escape_of_scalar_derivative_contact :
+    ∃ C : ℝ≥0, 0 < C ∧ ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
+      ∀ (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i))
+        (time : ℕ → ℝ)
+        (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
+          ((H i).time (Fin.last (H i).eventCount)) (time i)),
+      let G := fun i => (A i).restrictIncoming le_rfl (A i).lt le_rfl;
+      let L := fun i => (A i).endpointTerminalLimitMetric ((H i).stage ((Fin.last (H i).eventCount)));
+      ∀ (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) = (H i).initialMetric (Fin.last (H i).eventCount)),
+      ∀ (parameters : ℕ → CutoffParameters)
+        (records : ∀ i j, GeometricCutoffRecord (H i).toHistory j (parameters i)),
+      (∀ i j, j.succ ≤ (Fin.last (H i).eventCount) → ∀ b, ((records i j).static b).hasCanonicalWindow) →
+      Tendsto (fun i => (parameters i).modelRadius) atTop atTop →
+      (∀ i, max ⌈eps⁻¹⌉₊ 4 + 2 ≤ (parameters i).modelOrder) →
+      Tendsto (fun i => (parameters i).modelAccuracy) atTop (𝓝 0) →
+      (∀ i j, j.succ ≤ (Fin.last (H i).eventCount) → ∀ (b : ((H i).toHistory.event j).RetainedBoundaryIndex) (z : ThreeBall),
+        ((records i j).static b).neck.scale / 2 ≤
+          metricScalarAt ((records i j).static b).witness.metric (((records i j).static b).witness.cap z)) →
+      ∀ q₀ a₀ a : ℝ, 0 < q₀ → 0 < a₀ → 0 < a →
+      (∀ i, a ≤ time i) →
+      (∀ i x, InFixedHamiltonIveyRegion ((H i).initialMetric 0) a₀ x) →
+      (∀ i x, -3 / a₀ ≤ metricScalarAt ((H i).initialMetric 0) x) →
+      (∀ δ : ℝ, 0 < δ → ∀ᶠ i in atTop, ∀ j, j.succ ≤ (Fin.last (H i).eventCount) → ∀ b, (records i j).delta b ≤ δ) →
+      (∀ i j, j.succ ≤ (Fin.last (H i).eventCount) → ∀ y : ((H i).stage j.castSucc).Carrier,
+        ∀ t ∈ Ioo ((H i).time j.castSucc) ((H i).time j.succ),
+          q₀ < ((H i).toHistory.event j).incoming.flow.scalar t y →
+          |derivWithin (fun v => ((H i).toHistory.event j).incoming.flow.scalar v y) (Iic t) t| ≤
+            C * ((H i).toHistory.event j).incoming.flow.scalar t y ^ 2) →
+      (∀ i y, ∀ t ∈ Ioo ((H i).time ((Fin.last (H i).eventCount))) (time i), q₀ < (A i).flow.scalar t y →
+        |derivWithin (fun v => (A i).flow.scalar v y) (Iic t) t| ≤ C * (A i).flow.scalar t y ^ 2) →
+      ∀ x : ∀ i, (G i).terminalRegularOpen,
+      Tendsto (fun i => (A i).flow.scalar (time i) (x i).val) atTop atTop →
+      (∀ i y, q₀ < (A i).flow.scalar (time i) y → ∀ v : TangentSpace ThreeModel y,
+        |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) y v)| ≤
+          C * (A i).flow.scalar (time i) y * Real.sqrt ((A i).flow.scalar (time i) y) *
+            Real.sqrt (((A i).flow.base.metric (time i)).inner y v v)) →
+      ∀ hQ : ∀ i, 1 ≤ (A i).flow.scalar (time i) (x i).val,
+      (∀ i y, ∀ t ∈ Ioo ((H i).time ((Fin.last (H i).eventCount))) (time i),
+        q₀ < (G i).flow.scalar t y → ∀ v : TangentSpace ThreeModel y,
+          |Perelman.CanonicalNeighborhood.scalarDifferential (G i).flow t y v| ≤
+            C * (G i).flow.scalar t y * Real.sqrt ((G i).flow.scalar t y) *
+              Real.sqrt (((G i).flow.base.metric t).inner y v v)) →
+      (∀ i, q₀ ≤ (A i).flow.scalar (time i) (x i).val) →
+      (∃ R : ℝ, 0 < R ∧ ¬ ∃ B : ℝ, ∀ᶠ i in atTop,
+        ∀ y : (G i).terminalRegularOpen,
+          riemannianEDistOf (scaleMetric ((A i).flow.scalar (time i) (x i).val) (zero_lt_one.trans_le (hQ i)) (L i).metric)
+            (x i) y < ENNReal.ofReal R →
+          metricScalarAt (L i).metric y / (A i).flow.scalar (time i) (x i).val ≤ B) →
+      (∀ i, (∃ v : TangentSpace ThreeModel (x i).val, v ≠ 0 ∧
+          C * (A i).flow.scalar (time i) (x i).val * Real.sqrt ((A i).flow.scalar (time i) (x i).val) *
+              Real.sqrt (((A i).flow.base.metric (time i)).inner (x i).val v v) ≤
+            |(show ℝ from mfderiv ThreeModel 𝓘(ℝ, ℝ) ((A i).flow.scalar (time i)) (x i).val v)|) ∨
+        C * (A i).flow.scalar (time i) (x i).val ^ 2 ≤
+          |derivWithin (fun t => (A i).flow.scalar t (x i).val) (Iic (time i)) (time i)|) →
+      ∀ (Phi : ℝ → ℝ), Perelman.AdmissiblePinchingFunction Phi →
+      (∀ i j, Perelman.PhiAlmostNonnegative ((H i).toHistory.event j).incoming.flow
+        (Ico ((H i).time j.castSucc) ((H i).time j.succ)) Phi) →
+      (∀ i, Perelman.PhiAlmostNonnegative (G i).flow (Ico ((H i).time (Fin.last (H i).eventCount)) (time i)) Phi) →
+      (∀ i, (H i).horizon < time i) →
+      ∀ κ σ : ℝ, 0 < κ → 0 < σ →
+      (∀ i (t : ℝ) (ht : (H i).horizon < t) (hts : t < time i),
+        let B := (H i).extendHorizon t ht.le
+          ((G i).closedPrefix t ((H i).time_le_horizon.trans_lt ht) hts) (hinit i);
+        let tm : Icc (0 : ℝ) B.horizon := ⟨t, (H i).horizon_nonneg.trans ht.le, le_rfl⟩;
+        ∀ (y : (B.toHistory.stageAt tm).Carrier) (b : ℝ), 0 < b → b ≤ σ →
+          B.toHistory.isParabolicallyRmControlledBall tm y b →
+            ENNReal.ofReal κ * ENNReal.ofReal b ^ 3 ≤
+              riemannianVolumeMeasure ThreeModel (B.toHistory.stageAt tm).Carrier
+                (B.toHistory.stageMetric (B.toHistory.activeStage tm) tm)
+                (riemannianBallOf (B.toHistory.stageMetric (B.toHistory.activeStage tm) tm) y b)) →
+      ∃ (rho : ℝ), 0 < rho ∧ ∃ (ind : ℕ → ℕ), StrictMono ind ∧
+        ∃ z : ∀ i, (G (ind i)).terminalRegularOpen,
+        let X : PointedRiemannianSeq.{u, 0, 0} ThreeModel :=
+          { obj := fun i =>
+              { M := (G (ind i)).terminalRegularOpen
+                basepoint := x (ind i)
+                metric := scaleMetric ((A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val)
+                  (zero_lt_one.trans_le (hQ (ind i))) (L (ind i)).metric } };
+        ∃ (f : ℕ → ℕ), StrictMono f ∧
+          ∃ (r : ℕ → ℝ), (∀ n, 0 < r n ∧ r n < rho) ∧ Tendsto r atTop (𝓝 rho) ∧
+          ∃ (P : PointedRiemannianManifold.{u, 0, 0} ThreeModel)
+            (F : PointedRiemannianConvergenceMaps X.connectedComponent P f),
+            let U := fun i => connectedComponentOpen (I := ThreeModel) (X.obj i).basepoint;
+            let hp := fun i => (mem_connectedComponent : (X.obj i).basepoint ∈ U i);
+            let F' := F.liftTargetOpen U hp;
+            ∃ M : MetricConvergenceData F',
+              metricScalarAt P.metric P.basepoint = 1 ∧
+              (∀ n, M.domain n = CanonicalMetricCompactness.canonicalSourceData F' n) ∧
+              (∀ z : P.M, riemannianEDistOf P.metric P.basepoint z < ENNReal.ofReal rho) ∧
+              (∀ R : ℝ, 0 ≤ R → R < rho → IsCompact (riemannianClosedBallOf P.metric P.basepoint R)) ∧
+              (∀ n, riemannianClosedBallOf (X.obj (f n)).metric (X.obj (f n)).basepoint (r n) ⊆ F'.target n) ∧
+              (∀ eps : ℝ, 0 < eps → ∀ᶠ n in atTop, ∀ y ∈ F'.source n, ∀ v : TangentSpace ThreeModel y,
+                (1 - eps) * P.metric.inner y v v ≤
+                    (X.obj (f n)).metric.inner (F'.map n y)
+                      (mfderiv ThreeModel ThreeModel (F'.map n) y v) (mfderiv ThreeModel ThreeModel (F'.map n) y v) ∧
+                  (X.obj (f n)).metric.inner (F'.map n y)
+                    (mfderiv ThreeModel ThreeModel (F'.map n) y v) (mfderiv ThreeModel ThreeModel (F'.map n) y v) ≤
+                      (1 + eps) * P.metric.inner y v v) ∧
+              (∀ n, riemannianEDistOf (X.obj (f n)).metric (X.obj (f n)).basepoint (z (f n)) ≠ ⊤) ∧
+              Tendsto (fun n => (riemannianEDistOf (X.obj (f n)).metric (X.obj (f n)).basepoint (z (f n))).toReal)
+                atTop (𝓝 rho) ∧
+              Tendsto (fun n => metricScalarAt (L (ind (f n))).metric (z (f n)) /
+                (A (ind (f n))).flow.scalar (time (ind (f n))) (x (ind (f n))).val) atTop atTop := by
+  obtain ⟨C, hC, hbase⟩ := ObservedHistory.exists_scalar_escape_radius_with_buffered_backward_traces_of_contacts
+  refine ⟨C, hC, ?_⟩
+  intro eps heps hepssmall P₀ H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
+    q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ hinterior hqQ hfailure hfail
+    Phi hPhi hpinch hpinchFinal hs κ σ hκ hσ htested
+  obtain ⟨rho, hrho, ind, hind, hbuf, z, hfinite, hdist, hscalarEscape⟩ :=
+    hbase eps heps hepssmall (fun i => (H i).toHistory) (fun i => Fin.last (H i).eventCount)
+      time A hinit parameters records hcanonical hmargin hm herrorlim hcap q₀ a₀ a hq₀ ha₀ ha htime
+      hfixed hlower hδ hderiv hfinal x hhigh hgradient (fun i => zero_lt_one.trans_le (hQ i))
+      hinterior hqQ hfailure hfail
+  refine ⟨rho, hrho, ind, hind, z, ?_⟩
+  dsimp only
+  obtain ⟨f, hf, r, hr, hrlim, P, F, M, hscalarOne, hcanonicalDomain, hradial, hcompact, hcapture, hmetric⟩ :=
+    RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_tested_backward_traces
+      Phi hPhi (fun i => P₀ (ind i)) (fun i => H (ind i)) (fun i => time (ind i))
+      (fun i => G (ind i)) (fun i => L (ind i)) (fun i => hinit (ind i))
+      (fun i => hs (ind i)) (fun i => x (ind i)) (fun _ => q₀)
+      (fun i => (A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (fun i => (endpoint_scalar_eq (A (ind i)) (x (ind i))).symm) (fun _ => hq₀) (fun i => hqQ (ind i)) (fun i => hQ (ind i))
+      (fun i j => hderiv (ind i) j (Fin.le_last _)) (fun i => hfinal (ind i))
+      (fun i => hpinch (ind i)) (fun i => hpinchFinal (ind i)) hrho (by
+        intro R hR hRrho
+        obtain ⟨r, Amax, θ, hrr, hrrho, hAmax, hθ, hbudget, hb⟩ := hbuf R hR hRrho
+        refine ⟨r, Amax, θ, hrr, hrrho, hAmax, hθ, hbudget, ?_⟩
+        filter_upwards [hind.tendsto_atTop.eventually hb] with i hi
+        obtain ⟨first, hle, htrace, hstart⟩ := hi.2.2
+        exact ⟨hi.1, hi.2.1, first, htrace, hstart⟩) hκ hσ (fun i => htested (ind i))
+  refine ⟨f, hf, r, hr, hrlim, P, F, M, hscalarOne, hcanonicalDomain, hradial, hcompact, hcapture,
+    hmetric, fun n => hfinite (f n), hdist.comp hf.tendsto_atTop, hscalarEscape.comp hf.tendsto_atTop⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
 end
