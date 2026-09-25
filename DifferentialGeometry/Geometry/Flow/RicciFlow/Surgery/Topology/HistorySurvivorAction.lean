@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ReducedAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalPullback
@@ -211,5 +212,87 @@ theorem reducedAction_eq_sum_stage_lLength
   intro k _
   exact (lLength_squareRootReparametrization_sq (H.event (event k)).incoming.flow T _
     (t k.val) (t (k.val + 1)) (ht k.val k.isLt.le) (ht (k.val + 1) k.isLt)).symm
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+
+theorem exists_backwardSurvivor_isSolutionOn_action_mem_history
+    (first last : Fin (H.eventCount + 1)) (hlt : first < last) :
+    ∃ S : SolutionOn (I := ThreeModel) (M := H.backwardSurvivorDomain first last hlt.le)
+        (RealTimeInterval.closed (H.time first) (H.time last) (H.time_strictMono hlt).le),
+      IsSolutionOn S ∧
+      (∀ (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
+        ∀ t ∈ Icc (H.time i.castSucc) (H.time i.succ),
+          S.base.metric t = H.backwardSurvivorSlabMetric first last hlt.le i hf hl t) ∧
+      (∀ (j : Fin (H.eventCount + 1)) (hj : first ≤ j) (hl : j ≤ last),
+        S.base.metric (H.time j) = H.backwardSurvivorInitialMetric first last hlt.le j hj hl) ∧
+      ∀ γ : ℝ → H.backwardSurvivorDomain first last hlt.le,
+        ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ →
+        lRegularizedAction S (H.time last) γ 0 (Real.sqrt (H.time last - H.time first)) ∈
+          H.regularizedC1ActionValues first last hlt.le (H.time last) 0
+            (Real.sqrt (H.time last - H.time first)) (γ 0).val
+            (H.backwardSurvivorMap first last hlt.le first le_rfl hlt.le
+              (γ (Real.sqrt (H.time last - H.time first)))) := by
+  obtain ⟨S, hS, hslabs, hinitial, _⟩ := H.exists_backwardSurvivor_isSolutionOn_preserving_action first last hlt
+  refine ⟨S, hS, hslabs, hinitial, ?_⟩
+  intro γ hγ
+  let T := H.time last
+  let v := Real.sqrt (H.time last - H.time first)
+  have hv : 0 ≤ v := Real.sqrt_nonneg _
+  have hv2 : v ^ 2 = H.time last - H.time first := Real.sq_sqrt (sub_nonneg.mpr (H.time_strictMono hlt).le)
+  have hupper : T - (0 : ℝ) ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) := by
+    simp only [zero_pow two_ne_zero, sub_zero, T]
+    exact ⟨le_rfl, H.time_le_stageEndTime last⟩
+  have hlower : T - v ^ 2 ∈ H.stageDomain first := by
+    rw [hv2]
+    simpa only [T, sub_sub_cancel] using H.time_mem_stageDomain first
+  let f : (j : H.StageInterval first last) → H.backwardSurvivorDomain first last hlt.le → (H.stage j.val).Carrier :=
+    fun j => H.backwardSurvivorMap first last hlt.le j.val j.property.1 j.property.2
+  have hf (j : H.StageInterval first last) : IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j) :=
+    H.backwardSurvivorMap_isLocalDiffeomorph first last hlt.le j.val j.property.1 j.property.2
+  have hmetric (j : H.StageInterval first last)
+      (t : ℝ) (ht : t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T v j.val)) :
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j) := by
+    by_cases hjlast : j.val = last
+    · have he : H.regularizedStageEnd T v j.val = 0 := by
+        rw [hjlast, regularizedStageEnd]
+        simp only [T, max_eq_right (sub_le_self _ (sq_nonneg v)), sub_self, Real.sqrt_zero]
+      have hs : 0 ≤ H.regularizedStageStart T 0 j.val := Real.sqrt_nonneg _
+      rw [he] at ht
+      exact False.elim ((not_lt_of_ge hs) (ht.1.trans ht.2))
+    · have hjlt : j.val < last := lt_of_le_of_ne j.property.2 hjlast
+      obtain ⟨i, hi⟩ : ∃ i : Fin H.eventCount, j.val = i.castSucc := by
+        have hjN : j.val.val < H.eventCount := lt_of_lt_of_le hjlt (Fin.le_last last)
+        exact ⟨⟨j.val.val, hjN⟩, Fin.ext rfl⟩
+      rcases j with ⟨j, hjfirst, hjlast'⟩
+      dsimp only at hi
+      subst j
+      have hiLast : i.succ ≤ last := hjlt
+      have hstage := H.mapsTo_regularizedStage_Ioo T 0 v i.castSucc ht
+      simp only [stageDomain, Fin.lastCases_castSucc, mem_Ico] at hstage
+      have hh := (hslabs i hjfirst hiLast _ ⟨hstage.1, hstage.2.le⟩).trans
+        (H.backwardSurvivorSlabMetric_before first last hlt.le i hjfirst hiLast hstage.2)
+      simpa only [stageMetric, Fin.lastCases_castSucc, f] using hh
+  have hmem := H.action_mem_regularizedC1ActionValues_of_common_curve first last hlt.le f hf
+    (fun i hi hl z => H.backwardSurvivorMap_crossing first last hlt.le i hi hl z) S hS T le_rfl hv
+    hupper hlower (fun t ht => by
+      change H.time first ≤ T - t ^ 2 ∧ T - t ^ 2 ≤ H.time last
+      have ht2 := (sq_le_sq₀ ht.1 hv).mpr ht.2
+      rw [hv2] at ht2
+      constructor <;> dsimp only [T] <;> nlinarith [sq_nonneg t]) hmetric γ hγ
+  simpa only [f, backwardSurvivorMap_last] using hmem
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

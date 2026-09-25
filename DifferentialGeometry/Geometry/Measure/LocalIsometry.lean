@@ -1,3 +1,4 @@
+import Mathlib.MeasureTheory.Integral.Lebesgue.Map
 import DifferentialGeometry.Geometry.Metric.Distance.LocalPullCompactness
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
@@ -70,6 +71,51 @@ theorem riemannianVolumeMeasure_image_eq_of_injective_local_isometry
   rw [hpre]
   exact riemannianVolumeMeasure_restrictOpen_preimage_of_subset h V himage
     (by rintro _ ⟨q, _, rfl⟩; exact ⟨q, rfl⟩)
+
+theorem riemannianVolumeMeasure_map_of_injective_local_isometry
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Injective f)
+    (hmetric : ∀ (x : M) (v w : TangentSpace I x),
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w)) :
+    Measure.map f (riemannianVolumeMeasure I M g) =
+      (riemannianVolumeMeasure J N h).restrict (range f) := by
+  have hfmeas := hf.contMDiff.continuous.measurable
+  ext S hS
+  rw [Measure.map_apply hfmeas hS, Measure.restrict_apply hS,
+    riemannianVolumeMeasure_image_eq_of_injective_local_isometry
+      g h f hf hinj hmetric (hfmeas hS), image_preimage_eq_inter_range]
+
+theorem riemannianVolumeMeasure_map_restrict_of_injective_local_isometry
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Injective f)
+    (hmetric : ∀ (x : M) (v w : TangentSpace I x),
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    (S : Set M) :
+    Measure.map f ((riemannianVolumeMeasure I M g).restrict S) =
+      (riemannianVolumeMeasure J N h).restrict (f '' S) := by
+  have hopen : _root_.Topology.IsOpenEmbedding f :=
+    .of_continuous_injective_isOpenMap hf.contMDiff.continuous hinj hf.isOpenMap
+  have hemb := hopen.measurableEmbedding
+  conv_lhs => rw [← hinj.preimage_image S]
+  rw [← hemb.restrict_map,
+    riemannianVolumeMeasure_map_of_injective_local_isometry g h f hf hinj hmetric,
+    Measure.restrict_restrict_of_subset (image_subset_range _ _)]
+
+theorem setLIntegral_image_of_injective_local_isometry
+    (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
+    (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Injective f)
+    (hmetric : ∀ (x : M) (v w : TangentSpace I x),
+      g.inner x v w = h.inner (f x) (mfderiv I J f x v) (mfderiv I J f x w))
+    (S : Set M) (u : N → ℝ≥0∞) :
+    ∫⁻ y in f '' S, u y ∂riemannianVolumeMeasure J N h =
+      ∫⁻ x in S, u (f x) ∂riemannianVolumeMeasure I M g := by
+  have hopen : _root_.Topology.IsOpenEmbedding f :=
+    .of_continuous_injective_isOpenMap hf.contMDiff.continuous hinj hf.isOpenMap
+  rw [← riemannianVolumeMeasure_map_restrict_of_injective_local_isometry
+    g h f hf hinj hmetric S]
+  exact hopen.measurableEmbedding.lintegral_map u
+
+
 
 theorem riemannianVolumeMeasure_ball_le_of_injective_local_isometry
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)

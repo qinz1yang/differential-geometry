@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventAction
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.IntervalLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Joining
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPartition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.LocalPullback
@@ -1052,3 +1055,553 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
 
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+
+theorem regularizedC1ActionValues_eq_eventRegularizedC1ActionValues
+    (i : Fin H.eventCount) {b : ℝ} (G : (H.stage i.succ).IncomingSlab (H.time i.succ) b)
+    {T d v : ℝ} (hd : 0 ≤ d) (hdv : d ≤ v) (hclock : T - d ^ 2 = H.time i.succ)
+    (hT : T ∈ H.stageDomain i.succ) (hpast : T - v ^ 2 ∈ H.stageDomain i.castSucc)
+    (htimePlus : ∀ t ∈ Icc 0 d, T - t ^ 2 ∈ (RealTimeInterval.closedOpen (H.time i.succ) b G.lt).carrier)
+    (hmetric : ∀ t ∈ Ioo 0 d, H.stageMetric i.succ (T - t ^ 2) = G.flow.base.metric (T - t ^ 2))
+    (p : (H.stage i.succ).Carrier) (q : (H.stage i.castSucc).Carrier) :
+    H.regularizedC1ActionValues i.castSucc i.succ i.castSucc_le_succ T 0 v p q =
+      (H.event i).eventRegularizedC1ActionValues G T d v p q := by
+  have hv : 0 ≤ v := hd.trans hdv
+  have hupper : T - (0 : ℝ) ^ 2 ∈ Icc (H.time i.succ) (H.stageEndTime i.succ) := by
+    simp only [zero_pow two_ne_zero, sub_zero]
+    exact ⟨H.time_le_of_mem_stageDomain hT, H.le_stageEndTime_of_mem_stageDomain hT⟩
+  have hw : Real.sqrt (T - H.time i.succ) = d := by
+    rw [show T - H.time i.succ = d ^ 2 by linarith, Real.sqrt_sq hd]
+  have htimes : ∀ t ∈ Ioc d v,
+      T - t ^ 2 ∈ (RealTimeInterval.closedOpen (H.time i.castSucc) (H.time i.succ) (H.event i).incoming.lt).carrier := by
+    intro t ht
+    have ht0 : 0 ≤ t := hd.trans ht.1.le
+    have ht2v : t ^ 2 ≤ v ^ 2 := (sq_le_sq₀ ht0 hv).mpr ht.2
+    have hd2t : d ^ 2 < t ^ 2 := (sq_lt_sq₀ hd ht0).mpr ht.1
+    have hleft := H.time_le_of_mem_stageDomain hpast
+    exact ⟨by linarith, by linarith⟩
+  have hlag (α : ℝ → (H.stage i.succ).Carrier) :
+      EqOn (H.stageRegularizedLagrangian i.succ T α) (lRegularizedLagrangian G.flow T α) (uIoo 0 d) := by
+    intro t ht
+    rw [uIoo_of_le hd] at ht
+    simp only [stageRegularizedLagrangian, lRegularizedLagrangian, SolutionOn.scalar, SolutionFamily.scalar,
+      hmetric t ht]
+  have hact (α : ℝ → (H.stage i.succ).Carrier) :
+      H.stageRegularizedAction i.succ T α 0 d = lRegularizedAction G.flow T α 0 d :=
+    intervalIntegral.integral_congr_uIoo (hlag α)
+  have huold : T - d ^ 2 ∈ Icc (H.time i.castSucc) (H.stageEndTime i.castSucc) := by
+    rw [hclock, H.stageEndTime_castSucc]
+    exact ⟨(H.time_strictMono i.castSucc_lt_succ).le, le_rfl⟩
+  have hvnew : T - d ^ 2 ∈ H.stageDomain i.succ := hclock ▸ H.time_mem_stageDomain i.succ
+  ext A
+  rw [H.mem_regularizedC1ActionValues_split_at_event i.castSucc_le_succ i le_rfl le_rfl le_rfl hv hupper hpast p q, hw]
+  constructor
+  · rintro ⟨z, Ao, An, ho, hn, hsum⟩
+    rcases (H.mem_regularizedC1ActionValues_self i.castSucc z.val.val q).mp ho with
+      ⟨_, _, _, _, β, hβ, hiβ, hβ0, hβv, hβa⟩
+    rcases (H.mem_regularizedC1ActionValues_self i.succ p ((H.event i).oldOutput z)).mp hn with
+      ⟨_, _, _, _, α, hα, hiα, hα0, hαd, hαa⟩
+    refine ⟨hd, hdv, hclock, htimePlus, htimes, α, β, hα, hβ, hiα.congr_uIoo (hlag α), ?_, hα0, hβv,
+      ⟨z, hβ0.symm, hαd.symm⟩, ?_⟩
+    · simpa only [show H.stageRegularizedLagrangian i.castSucc T β = lRegularizedLagrangian (H.event i).incoming.flow T β from funext (H.stageRegularizedLagrangian_castSucc i T β)] using hiβ
+    · rw [← hact α, hαa, ← H.stageRegularizedAction_castSucc i T β d v, hβa]
+      linarith
+  · rintro ⟨_, _, _, _, _, α, β, hα, hβ, hiα, hiβ, hα0, hβv, hnode, hsum⟩
+    obtain ⟨z, hzβ, hzα⟩ := hnode
+    refine ⟨z, H.stageRegularizedAction i.castSucc T β d v, H.stageRegularizedAction i.succ T α 0 d, ?_, ?_, ?_⟩
+    · apply (H.mem_regularizedC1ActionValues_self i.castSucc z.val.val q).mpr
+      refine ⟨hd, hdv, huold, hpast, β, hβ, ?_, hzβ.symm, hβv, rfl⟩
+      simpa only [show H.stageRegularizedLagrangian i.castSucc T β = lRegularizedLagrangian (H.event i).incoming.flow T β from funext (H.stageRegularizedLagrangian_castSucc i T β)] using hiβ
+    · apply (H.mem_regularizedC1ActionValues_self i.succ p ((H.event i).oldOutput z)).mpr
+      exact ⟨le_rfl, hd, hupper, hvnew, α, hα, hiα.congr_uIoo (hlag α).symm, hα0, hzα.symm, rfl⟩
+    · rw [H.stageRegularizedAction_castSucc, hact]
+      linarith
+
+theorem regularizedC1Cost_eq_eventRegularizedC1Cost
+    (i : Fin H.eventCount) {b : ℝ} (G : (H.stage i.succ).IncomingSlab (H.time i.succ) b)
+    {T d v : ℝ} (hd : 0 ≤ d) (hdv : d ≤ v) (hclock : T - d ^ 2 = H.time i.succ)
+    (hT : T ∈ H.stageDomain i.succ) (hpast : T - v ^ 2 ∈ H.stageDomain i.castSucc)
+    (htimePlus : ∀ t ∈ Icc 0 d, T - t ^ 2 ∈ (RealTimeInterval.closedOpen (H.time i.succ) b G.lt).carrier)
+    (hmetric : ∀ t ∈ Ioo 0 d, H.stageMetric i.succ (T - t ^ 2) = G.flow.base.metric (T - t ^ 2))
+    (p : (H.stage i.succ).Carrier) (q : (H.stage i.castSucc).Carrier) :
+    H.regularizedC1Cost i.castSucc i.succ i.castSucc_le_succ T 0 v p q =
+      (H.event i).eventRegularizedC1Cost G T d v p q := by
+  unfold regularizedC1Cost MetricCutCapEvent.eventRegularizedC1Cost
+  rw [H.regularizedC1ActionValues_eq_eventRegularizedC1ActionValues i G hd hdv hclock hT hpast htimePlus hmetric p q]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u v
+
+variable (H : ObservedHistory.{u})
+  {X : Type v} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+
+theorem exists_contMDiff_stage_lifts_of_confined_curves
+    (first last : Fin (H.eventCount + 1))
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j))
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing
+        (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ z))
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (hα : ∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (α j))
+    (hstay : ∀ j, MapsTo (α j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (range (f j)))
+    (hnode : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∃ z : (H.event i).old,
+        z.val.val = α ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+          (Real.sqrt (T - H.time i.succ)) ∧
+        (H.event i).oldOutput z = α ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+          (Real.sqrt (T - H.time i.succ))) :
+    ∃ β : H.StageInterval first last → ℝ → X,
+      (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (β j)) ∧
+      (∀ j, EqOn (f j ∘ β j) (α j)
+        (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val))) ∧
+      (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+        β ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ (Real.sqrt (T - H.time i.succ)) =
+          β ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ (Real.sqrt (T - H.time i.succ))) := by
+  have hbound (j : H.StageInterval first last) := H.regularizedStage_bounds hu huv hupper hlower j
+  have hex (j : H.StageInterval first last) :
+      ∃ β : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 β ∧ EqOn (f j ∘ β) (α j)
+        (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) := by
+    rcases (hbound j).2.1.lt_or_eq with hlt | heq
+    · exact DifferentialGeometry.Topology.Manifold.exists_contMDiff_interval_lift_of_injective_localDiffeomorph
+        (f j) (hf j) (hinj j) (α j) (hα j) hlt (hstay j)
+    · obtain ⟨x, hx⟩ := hstay j ⟨le_rfl, (hbound j).2.1⟩
+      refine ⟨fun _ => x, contMDiff_const, ?_⟩
+      intro t ht
+      have ht' : t = H.regularizedStageStart T u j.val := le_antisymm (ht.2.trans_eq heq.symm) ht.1
+      simpa only [Function.comp_apply, ht'] using hx
+  choose β hβ hβeq using hex
+  refine ⟨β, hβ, hβeq, ?_⟩
+  intro i hi hl
+  let jo : H.StageInterval first last := ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+  let jn : H.StageInterval first last := ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+  have hclocko : H.regularizedStageStart T u jo.val = Real.sqrt (T - H.time i.succ) :=
+    H.regularizedStageStart_castSucc_eq_event_clock hupper i hl
+  have hclockn : H.regularizedStageEnd T v jn.val = Real.sqrt (T - H.time i.succ) :=
+    H.regularizedStageEnd_succ_eq_event_clock hlower i hi
+  have heqo := hβeq jo (show Real.sqrt (T - H.time i.succ) ∈
+      Icc (H.regularizedStageStart T u jo.val) (H.regularizedStageEnd T v jo.val) by
+    rw [← hclocko]
+    exact ⟨le_rfl, (hbound jo).2.1⟩)
+  have heqn := hβeq jn (show Real.sqrt (T - H.time i.succ) ∈
+      Icc (H.regularizedStageStart T u jn.val) (H.regularizedStageEnd T v jn.val) by
+    rw [← hclockn]
+    exact ⟨(hbound jn).2.1, le_rfl⟩)
+  obtain ⟨p, hp, hpout⟩ := hnode i hi hl
+  obtain ⟨q, _, hq, hqout⟩ := hcross i hi hl (β jn (Real.sqrt (T - H.time i.succ)))
+  have hpq : p = q := (H.event i).oldOutput_injective (hpout.trans (heqn.symm.trans hqout.symm))
+  apply hinj jo
+  exact hq.symm.trans ((congrArg (fun z : (H.event i).old => z.val.val) hpq).symm.trans
+    (hp.trans heqo.symm))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Filter Manifold
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff BigOperators Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+variable (H : ObservedHistory.{u})
+
+theorem stageRegularizedAction_congr
+    (j : Fin (H.eventCount + 1)) (T a b : ℝ)
+    (α β : ℝ → (H.stage j).Carrier) (heq : EqOn α β (uIoo a b)) :
+    H.stageRegularizedAction j T α a b = H.stageRegularizedAction j T β a b := by
+  apply intervalIntegral.integral_congr_uIoo
+  intro t ht
+  have hev : α =ᶠ[𝓝 t] β := by
+    filter_upwards [isOpen_Ioo.mem_nhds ht] with r hr
+    exact heq hr
+  have hval : α t = β t := hev.self_of_nhds
+  have hmf := Filter.EventuallyEq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel) hev
+  have hvel : lVelocity (I := ThreeModel) α t = lVelocity (I := ThreeModel) β t := by
+    with_unfolding_all exact congrArg (fun L => L (1 : ℝ)) hmf
+  unfold stageRegularizedLagrangian
+  rw [hval, hvel]
+
+variable {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+
+theorem sum_stageRegularizedAction_eq_of_localPullMetric
+    (first last : Fin (H.eventCount + 1))
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (T u v : ℝ)
+    (α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (β : H.StageInterval first last → ℝ → X)
+    (hβ : ∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (β j))
+    (heq : ∀ j, EqOn (f j ∘ β j) (α j)
+      (uIoo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)))
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ uIoo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j)) :
+    (∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (α j)
+      (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) =
+      ∑ j : H.StageInterval first last, lRegularizedAction S T (β j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val) := by
+  apply Finset.sum_congr rfl
+  intro j _
+  exact (H.stageRegularizedAction_congr j.val T _ _ (f j ∘ β j) (α j) (heq j)).symm.trans
+    (H.stageRegularizedAction_comp_eq_of_localPullMetric j.val S (f j) (hf j) T _ _ (β j)
+      (hβ j) (hmetric j))
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+  {X : Type*} [UniformSpace X] [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X]
+  {D : RealTimeInterval}
+
+theorem exists_lRegularizedAction_lt_sum_stage_on_carrier
+    (S : SolutionOn (I := ThreeModel) (M := X) D)
+    (hMet : MetricFamilySmoothOn (I := ThreeModel) (M := X) D S.family.metric)
+    (hSc : ScalarSTContOn (I := ThreeModel) (M := X) S)
+    (T : ℝ) (v : ℝ) (last : Fin (H.eventCount + 1)) :
+    ∀ (first : Fin (H.eventCount + 1)) (hle : first ≤ last) (u : ℝ), 0 ≤ u → u ≤ v →
+      T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) → T - v ^ 2 ∈ H.stageDomain first →
+      (∀ r ∈ Icc u v, T - r ^ 2 ∈ D.carrier) →
+      ∀ β : H.StageInterval first last → ℝ → X,
+      (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (β j)) →
+      (∀ (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
+        β ⟨i.castSucc, hf, i.castSucc_lt_succ.le.trans hl⟩ (Real.sqrt (T - H.time i.succ)) =
+        β ⟨i.succ, hf.trans i.castSucc_lt_succ.le, hl⟩ (Real.sqrt (T - H.time i.succ))) →
+      ∀ ε : ℝ, 0 < ε →
+      ∃ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ ∧
+        γ u = β ⟨last, hle, le_rfl⟩ u ∧ γ v = β ⟨first, le_rfl, hle⟩ v ∧
+        lRegularizedAction S T γ u v <
+          (∑ j : H.StageInterval first last, lRegularizedAction S T (β j)
+            (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) + ε := by
+  induction last using Fin.induction with
+  | zero =>
+    intro first hle u hu huv hupper hlower hback β hβ hnode ε hε
+    have hf : first = 0 := le_antisymm hle (Fin.zero_le _)
+    subst first
+    let j : H.StageInterval 0 0 := ⟨0, le_rfl, le_rfl⟩
+    refine ⟨β j, hβ j, rfl, rfl, ?_⟩
+    rw [sum_stageInterval_self H 0,
+      H.regularizedStageStart_eq_of_mem_Icc hu hupper,
+      H.regularizedStageEnd_eq_of_mem_stageDomain (hu.trans huv) hlower]
+    exact lt_add_of_pos_right _ hε
+  | succ i ih =>
+    intro first hle u hu huv hupper hlower hback β hβ hnode ε hε
+    by_cases hf : first = i.succ
+    · subst first
+      let j : H.StageInterval i.succ i.succ := ⟨i.succ, le_rfl, le_rfl⟩
+      refine ⟨β j, hβ j, rfl, rfl, ?_⟩
+      rw [sum_stageInterval_self H i.succ,
+        H.regularizedStageStart_eq_of_mem_Icc hu hupper,
+        H.regularizedStageEnd_eq_of_mem_stageDomain (hu.trans huv) hlower]
+      exact lt_add_of_pos_right _ hε
+    have hfi : first ≤ i.castSucc := by
+      have ha : first.val ≤ i.val + 1 := hle
+      have hb : first.val ≠ i.val + 1 := fun h => hf (Fin.ext h)
+      change first.val ≤ i.val
+      omega
+    let w := Real.sqrt (T - H.time i.succ)
+    have hw := H.event_clock_bounds hu huv hupper hlower i hfi le_rfl
+    have huOld : T - w ^ 2 ∈ Icc (H.time i.castSucc) (H.stageEndTime i.castSucc) := by
+      rw [hw.2.2, H.stageEndTime_castSucc]
+      exact ⟨(H.time_strictMono i.castSucc_lt_succ).le, le_rfl⟩
+    let lo : H.StageInterval first i.castSucc → H.StageInterval first i.succ :=
+      fun j => ⟨j.val, j.property.1, j.property.2.trans i.castSucc_lt_succ.le⟩
+    let βold := fun j : H.StageInterval first i.castSucc => β (lo j)
+    have hnodeOld (k : Fin H.eventCount) (hkf : first ≤ k.castSucc) (hki : k.succ ≤ i.castSucc) :
+        βold ⟨k.castSucc, hkf, k.castSucc_lt_succ.le.trans hki⟩ (Real.sqrt (T - H.time k.succ)) =
+        βold ⟨k.succ, hkf.trans k.castSucc_lt_succ.le, hki⟩ (Real.sqrt (T - H.time k.succ)) :=
+      hnode k hkf (hki.trans i.castSucc_lt_succ.le)
+    obtain ⟨η, hη, hηstart, hηend, hηact⟩ := ih first hfi w (hu.trans hw.1) hw.2.1 huOld hlower
+      (fun r hr => hback r ⟨hw.1.trans hr.1, hr.2⟩) βold (fun j => hβ (lo j)) hnodeOld
+      (ε / 2) (half_pos hε)
+    let jlast : H.StageInterval first i.succ := ⟨i.succ, hle, le_rfl⟩
+    have hmatch : β jlast w = η w := (hnode i hfi le_rfl).symm.trans hηstart.symm
+    obtain ⟨γ, hγ, hγstart, hγend, hγact⟩ :=
+      exists_lRegularizedAction_join_lt_on_carrier_of_contMDiff S hMet hSc T u w v hw.1 hw.2.1
+        (β jlast) η (hβ jlast) hη hmatch hback (half_pos hε)
+    refine ⟨γ, hγ, hγstart, hγend.trans hηend, ?_⟩
+    have hstartOld (j : H.StageInterval first i.castSucc) :
+        H.regularizedStageStart T w j.val = H.regularizedStageStart T u j.val :=
+      H.regularizedStageStart_eq_at_event_clock hupper i le_rfl j.val j.property.2
+    have hsum : (∑ j : H.StageInterval first i.succ, lRegularizedAction S T (β j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) =
+        (∑ j : H.StageInterval first i.castSucc, lRegularizedAction S T (βold j)
+          (H.regularizedStageStart T w j.val) (H.regularizedStageEnd T v j.val)) +
+          lRegularizedAction S T (β jlast) u w := by
+      rw [H.sum_stageInterval_split i hle i.castSucc_lt_succ.le]
+      apply congrArg₂ (· + ·)
+      · apply Finset.sum_congr rfl
+        intro j _
+        rw [hstartOld j]
+      · rw [sum_stageInterval_self H i.succ,
+          H.regularizedStageStart_eq_of_mem_Icc hu hupper,
+          H.regularizedStageEnd_succ_eq_event_clock hlower i hfi]
+    rw [hsum]
+    linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+  {X : Type u} [TopologicalSpace X]
+  [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X] [T2Space X]
+
+theorem exists_lRegularizedAction_lt_of_confined_history_curves
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j))
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing
+        (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ z))
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (T : ℝ) {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (htime : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.carrier)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (hα : ∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (α j))
+    (hstay : ∀ j, MapsTo (α j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (range (f j)))
+    (hnode : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∃ z : (H.event i).old,
+        z.val.val = α ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ (Real.sqrt (T - H.time i.succ)) ∧
+        (H.event i).oldOutput z = α ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ (Real.sqrt (T - H.time i.succ)))
+    {ε : ℝ} (hε : 0 < ε) :
+    ∃ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ ∧
+      f ⟨last, hle, le_rfl⟩ (γ u) = α ⟨last, hle, le_rfl⟩ u ∧
+      f ⟨first, le_rfl, hle⟩ (γ v) = α ⟨first, le_rfl, hle⟩ v ∧
+      lRegularizedAction S T γ u v <
+        (∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (α j)
+          (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) + ε := by
+  let j : H.StageInterval first last := ⟨first, le_rfl, hle⟩
+  let : SecondCountableTopology (H.stage j.val).Carrier :=
+    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (H.stage j.val).Carrier
+  have hemb : _root_.Topology.IsOpenEmbedding (f j) :=
+    .of_continuous_injective_isOpenMap (hf j).contMDiff.continuous (hinj j) (hf j).isOpenMap
+  let : SecondCountableTopology X := hemb.toIsEmbedding.secondCountableTopology
+  let : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace ThreeSpace X
+  let : SigmaCompactSpace X := inferInstance
+  let : TopologicalSpace.MetrizableSpace X := Manifold.metrizableSpace ThreeModel X
+  let : MetricSpace X := TopologicalSpace.metrizableSpaceMetric X
+  obtain ⟨β, hβ, heq, hmatch⟩ := H.exists_contMDiff_stage_lifts_of_confined_curves
+    first last f hf hinj hcross hu huv hupper hlower α hα hstay hnode
+  have hbound (j : H.StageInterval first last) := H.regularizedStage_bounds hu huv hupper hlower j
+  have hsum := (H.sum_stageRegularizedAction_eq_of_localPullMetric first last f hf S T u v
+    α β hβ (fun j t ht => heq j (by
+      rw [uIoo_of_le (hbound j).2.1] at ht
+      exact Ioo_subset_Icc_self ht))
+    (fun j t ht => hmetric j t (by rwa [uIoo_of_le (hbound j).2.1] at ht))).symm
+  obtain ⟨γ, hγ, hzero, hend, hact⟩ := H.exists_lRegularizedAction_lt_sum_stage_on_carrier
+    S hS.smoothMetric ⟨hS.scalarCont⟩ T v last first hle u hu huv hupper hlower htime β hβ
+    (fun i hi hl => (hmatch i hi hl).symm) ε hε
+  refine ⟨γ, hγ, ?_, ?_, ?_⟩
+  · rw [hzero]
+    apply heq ⟨last, hle, le_rfl⟩
+    rw [H.regularizedStageStart_eq_of_mem_Icc hu hupper]
+    exact ⟨le_rfl, (hbound ⟨last, hle, le_rfl⟩).1.trans (hbound ⟨last, hle, le_rfl⟩).2.1⟩
+  · rw [hend]
+    apply heq ⟨first, le_rfl, hle⟩
+    rw [H.regularizedStageEnd_eq_of_mem_stageDomain (hu.trans huv) hlower]
+    exact ⟨(hbound ⟨first, le_rfl, hle⟩).2.1.trans (hbound ⟨first, le_rfl, hle⟩).2.2, le_rfl⟩
+  · simpa only [hsum] using hact
+
+theorem action_le_of_minimal_and_confined_history_curves
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j))
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing
+        (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ z))
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (T : ℝ) {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (htime : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.carrier)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (hα : ∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (α j))
+    (hstay : ∀ j, MapsTo (α j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (range (f j)))
+    (hnode : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∃ z : (H.event i).old,
+        z.val.val = α ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ (Real.sqrt (T - H.time i.succ)) ∧
+        (H.event i).oldOutput z = α ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ (Real.sqrt (T - H.time i.succ)))
+    (η : ℝ → X)
+    (hmin : ∀ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ → γ u = η u → γ v = η v →
+      lRegularizedAction S T η u v ≤ lRegularizedAction S T γ u v)
+    (hstart : α ⟨last, hle, le_rfl⟩ u = f ⟨last, hle, le_rfl⟩ (η u))
+    (hend : α ⟨first, le_rfl, hle⟩ v = f ⟨first, le_rfl, hle⟩ (η v)) :
+    lRegularizedAction S T η u v ≤
+      ∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (α j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val) := by
+  apply le_of_forall_pos_le_add
+  intro ε hε
+  obtain ⟨γ, hγ, hγzero, hγend, hact⟩ := H.exists_lRegularizedAction_lt_of_confined_history_curves
+    first last hle f hf hinj hcross S hS T hu huv hupper hlower htime hmetric α hα hstay hnode hε
+  have hzero := hinj ⟨last, hle, le_rfl⟩ (hγzero.trans hstart)
+  have hlast := hinj ⟨first, le_rfl, hle⟩ (hγend.trans hend)
+  exact (hmin γ hγ hzero hlast).trans hact.le
+
+theorem regularizedC1Cost_eq_of_minimal_of_lower_action_confined
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j))
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing
+        (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ z))
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (T : ℝ) {u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (htime : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.carrier)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (η : ℝ → X) (hη : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η)
+    (hmin : ∀ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ → γ u = η u → γ v = η v →
+      lRegularizedAction S T η u v ≤ lRegularizedAction S T γ u v)
+    (hconf : ∀ α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier,
+      (∀ j, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 (α j)) →
+      (∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (α j)) volume
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) →
+      α ⟨last, hle, le_rfl⟩ u = f ⟨last, hle, le_rfl⟩ (η u) →
+      α ⟨first, le_rfl, hle⟩ v = f ⟨first, le_rfl, hle⟩ (η v) →
+      (∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+        ∃ z : (H.event i).old,
+          z.val.val = α ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ (Real.sqrt (T - H.time i.succ)) ∧
+          (H.event i).oldOutput z = α ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ (Real.sqrt (T - H.time i.succ))) →
+      (∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (α j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) < lRegularizedAction S T η u v →
+      ∀ j, MapsTo (α j) (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (range (f j))) :
+    H.regularizedC1Cost first last hle T u v (f ⟨last, hle, le_rfl⟩ (η u))
+        (f ⟨first, le_rfl, hle⟩ (η v)) = (lRegularizedAction S T η u v : WithTop ℝ) := by
+  apply H.regularizedC1Cost_eq_of_minimum first last hle T u v _ _ _
+  · exact H.action_mem_regularizedC1ActionValues_of_common_curve first last hle f hf hcross
+      S hS T hu huv hupper hlower htime hmetric η hη
+  · rintro A ⟨_, _, _, _, α, hα, hint, hstart, hend, hnode, rfl⟩
+    by_contra hnot
+    have hlow := lt_of_not_ge hnot
+    exact (not_lt_of_ge (H.action_le_of_minimal_and_confined_history_curves first last hle
+      f hf hinj hcross S hS T hu huv hupper hlower htime hmetric α hα
+      (hconf α hα hint hstart hend hnode hlow) hnode η hmin hstart hend)) hlow
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+
+theorem stageRegularizedAction_le_of_sum_le
+    {first last : Fin (H.eventCount + 1)} {T u v B A : ℝ}
+    (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (hint : ∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (α j)) volume
+      (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val))
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) (α j t))
+    (hsum : (∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (α j)
+      (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ≤ A)
+    (j : H.StageInterval first last) :
+    H.stageRegularizedAction j.val T (α j)
+      (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val) ≤
+      A + (2 * B / 3) * ((v ^ 3 - u ^ 3) -
+        ((H.regularizedStageEnd T v j.val) ^ 3 - (H.regularizedStageStart T u j.val) ^ 3)) := by
+  classical
+  have hle : first ≤ last := j.property.1.trans j.property.2
+  let action (k : H.StageInterval first last) := H.stageRegularizedAction k.val T (α k)
+    (H.regularizedStageStart T u k.val) (H.regularizedStageEnd T v k.val)
+  let weight (k : H.StageInterval first last) :=
+    (H.regularizedStageEnd T v k.val) ^ 3 - (H.regularizedStageStart T u k.val) ^ 3
+  have hnonneg (k : H.StageInterval first last) : 0 ≤ action k + (2 * B / 3) * weight k := by
+    have hh := H.stageRegularizedAction_ge_of_scalar_lower_bound k.val T (α k)
+      (H.regularizedStage_bounds hu huv hupper hlower k).2.1 (hscalar k) (hint k)
+    dsimp only [action, weight]
+    linarith
+  have hsingle : action j + (2 * B / 3) * weight j ≤
+      ∑ k : H.StageInterval first last, (action k + (2 * B / 3) * weight k) :=
+    Finset.single_le_sum (fun k _ => hnonneg k) (Finset.mem_univ j)
+  have hweight : (∑ k : H.StageInterval first last, weight k) = v ^ 3 - u ^ 3 :=
+    H.sum_regularizedStage_sub (fun r : ℝ => r ^ 3) hle hu huv hupper hlower
+  rw [Finset.sum_add_distrib, ← Finset.mul_sum, hweight] at hsingle
+  change (∑ k : H.StageInterval first last, action k) ≤ A at hsum
+  change action j ≤ A + (2 * B / 3) * ((v ^ 3 - u ^ 3) - weight j)
+  linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
