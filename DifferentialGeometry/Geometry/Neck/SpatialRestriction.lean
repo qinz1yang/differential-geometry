@@ -50,7 +50,7 @@ theorem SpatialNeck.exists_restrict_target
     exact metricScalarAt_restrictOpen g U x
   have hQ : 0 < metricScalarAt (g.restrictOpen U) ⟨p, hp⟩ := by rw [hscalar]; exact nk.Q_pos
   let cmp : MetricComparisonOn (fun _ => nk.cylinder.metric 0)
-      (fun _ => scaleMetric (metricScalarAt (g.restrictOpen U) ⟨p, hp⟩) hQ (g.restrictOpen U))
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt (g.restrictOpen U) ⟨p, hp⟩) hQ (g.restrictOpen U))
       F (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) {0} ⌈eps⁻¹⌉₊ eps := {
     pullback := nk.comparison.pullback
     pullback_eq := by
@@ -117,7 +117,7 @@ theorem SpatialNeck.exists_of_restrictOpen
     metricScalarAt_restrictOpen g U p
   have hQ : 0 < metricScalarAt g (p : M) := hscalar ▸ nk.Q_pos
   let cmp : MetricComparisonOn (fun _ => nk.cylinder.metric 0)
-      (fun _ => scaleMetric (metricScalarAt g (p : M)) hQ g)
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g (p : M)) hQ g)
       F (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) {0} ⌈eps⁻¹⌉₊ eps := {
     pullback := nk.comparison.pullback
     pullback_eq := by

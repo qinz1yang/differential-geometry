@@ -11,7 +11,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter Manifold MeasureTheory
+open Bundle Filter _root_.Manifold MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
@@ -19,7 +19,7 @@ open DifferentialGeometry.Geometry.Riemannian.VolumeComparison
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

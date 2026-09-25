@@ -14,7 +14,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -76,7 +76,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.PDE.RicciFlow
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

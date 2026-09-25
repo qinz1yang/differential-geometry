@@ -9,7 +9,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Set MeasureTheory
+open Bundle _root_.Manifold Set MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
@@ -17,7 +17,7 @@ open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 private theorem finiteAscr_alpha_bounds {C B : ℝ} (hC : 0 < C) (hB : 0 < B) :
     let a := min (1 / 2 : ℝ) (1 / (2 * Real.sqrt (C * B)))

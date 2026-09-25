@@ -40,7 +40,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Set Filter Geometry.Curvature
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

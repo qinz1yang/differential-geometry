@@ -379,8 +379,10 @@ def SpatialNeck.transport {gm : SmoothRiemannianMetric I3 P} {p : P}
     {times' : Set ℝ} {order' : ℕ}
     (nk : SpatialNeck gm alpha p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (fun _ => scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
-      (fun _ => scaleMetric (metricScalarAt g x) hQ g) Fmap V times' order' eps)
+    (cmp : MetricComparisonOn
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g x) hQ g)
+      Fmap V times' order' eps)
     (T : TransportedErrorTower cmp (fun _ => nk.cylinder.metric 0) nk.map
       (Set.univ ×ˢ Set.Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) {0} ⌈(2 * alpha)⁻¹⌉₊ K)
     (hsmall : 2 * alpha < 1 / 11) (hKeps : K * eps ≤ alpha)

@@ -12,7 +12,7 @@ namespace CheegerGromovCompactness
 
 open Filter
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -106,7 +106,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

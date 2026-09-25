@@ -16,7 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Set
 open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped ContDiff Manifold
+open scoped ContDiff _root_.Manifold
 
 universe u uE uH
 

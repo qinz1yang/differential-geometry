@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -87,7 +87,7 @@ open Filter Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

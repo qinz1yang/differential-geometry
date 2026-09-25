@@ -21,7 +21,7 @@ open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 local notation "SphereTwo" => Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1
 

@@ -12,7 +12,7 @@ open Set Filter MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Riemannian
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

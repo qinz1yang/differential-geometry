@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Topology
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u
 

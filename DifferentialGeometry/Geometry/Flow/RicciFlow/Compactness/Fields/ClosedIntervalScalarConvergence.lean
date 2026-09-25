@@ -12,7 +12,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

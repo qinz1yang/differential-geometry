@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open DifferentialGeometry.CheegerGromovCompactness
 open Bundle DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 
 

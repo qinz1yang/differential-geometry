@@ -11,7 +11,7 @@ open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

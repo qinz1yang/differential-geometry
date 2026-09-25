@@ -7,7 +7,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 private theorem max_sq_ratio_sub_one_le_of_le
     {a b s t : ℝ} (ha : 0 < a) (hs : s ∈ Icc a b) (ht : t ∈ Icc a b)

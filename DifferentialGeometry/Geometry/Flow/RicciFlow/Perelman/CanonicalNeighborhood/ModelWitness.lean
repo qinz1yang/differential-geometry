@@ -18,7 +18,7 @@ noncomputable section
 universe u uE uH
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 section Definitions
 

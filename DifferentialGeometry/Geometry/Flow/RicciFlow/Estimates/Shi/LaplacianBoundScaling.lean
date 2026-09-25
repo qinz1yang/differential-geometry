@@ -19,7 +19,7 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Operator
 
 open Bundle
-open scoped Manifold ContDiff Matrix
+open scoped _root_.Manifold ContDiff Matrix
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -92,7 +92,7 @@ end DifferentialGeometry.Geometry.Operator
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set
-open scoped Manifold ContDiff BigOperators Bundle Topology Pointwise
+open scoped _root_.Manifold ContDiff BigOperators Bundle _root_.Topology Pointwise
 
 
 

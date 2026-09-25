@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 universe u uE uH
 

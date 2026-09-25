@@ -11,7 +11,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff CompactlySupported Topology
+open scoped _root_.Manifold ContDiff CompactlySupported _root_.Topology
 
 universe u uE uH
 

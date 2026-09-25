@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 

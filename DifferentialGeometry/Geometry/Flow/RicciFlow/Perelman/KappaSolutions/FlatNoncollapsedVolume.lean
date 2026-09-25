@@ -8,7 +8,7 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Manifold Set MeasureTheory
+open Bundle _root_.Manifold Set MeasureTheory
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Geometry.Riemannian.Exponential
@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Riemannian.Variation
 open DifferentialGeometry.Geometry.Riemannian.BonnetMyers
 open DifferentialGeometry.Integral.Measure
 open CanonicalNeighborhood
-open scoped Manifold ContDiff ENNReal _root_.Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

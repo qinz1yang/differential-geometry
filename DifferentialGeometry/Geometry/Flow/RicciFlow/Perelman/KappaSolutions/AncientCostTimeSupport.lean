@@ -22,7 +22,7 @@ open Set Filter MeasureTheory
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.Variation
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 section Calculus
 

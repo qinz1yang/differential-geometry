@@ -13,7 +13,7 @@ open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Analysis.Parabolic
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 private theorem nonnegative_at_right_endpoint
     {f : ℝ → ℝ} {a b : ℝ} (hab : a < b)

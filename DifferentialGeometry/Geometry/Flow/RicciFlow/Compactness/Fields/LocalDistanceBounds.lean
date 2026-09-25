@@ -5,9 +5,9 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.Manifold Set
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff ENNReal Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 universe u uE uH
 

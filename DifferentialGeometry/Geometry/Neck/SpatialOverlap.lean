@@ -25,7 +25,7 @@ theorem SpatialNeck.ball_subset_closed_slab
     [IsManifold I3 ∞ M] [T2Space M]
     {g : SmoothRiemannianMetric I3 M} {p : M} {eps r : ℝ}
     (nk : SpatialNeck g eps p) (hr : 0 < r) (hreps : r < eps⁻¹) :
-    riemannianBallOf (scaleMetric (metricScalarAt g p) nk.Q_pos g) p (r / 2) ⊆
+    riemannianBallOf (DifferentialGeometry.scaleMetric (metricScalarAt g p) nk.Q_pos g) p (r / 2) ⊆
       nk.map '' (univ ×ˢ Icc (-r) r) := by
   have hslab : (univ ×ˢ Icc (-r) r : Set Cylinder) ⊆ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹ := by
     intro z hz

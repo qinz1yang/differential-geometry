@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Filter
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -223,7 +223,7 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
   (ancientTimeInterval ancientTimeInterval_carrier ancientTimeInterval_regular)
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 
@@ -330,7 +330,7 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
     eventually_windowInterval_carrier_subset_closed tendsto_mul_atTop_of_pos_le)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u
 

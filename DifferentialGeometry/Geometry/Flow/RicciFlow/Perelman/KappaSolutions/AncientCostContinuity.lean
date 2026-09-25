@@ -17,7 +17,7 @@ open Filter MeasureTheory Set
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
-open scoped ContDiff Manifold Topology
+open scoped ContDiff _root_.Manifold _root_.Topology
 
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -133,7 +133,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 

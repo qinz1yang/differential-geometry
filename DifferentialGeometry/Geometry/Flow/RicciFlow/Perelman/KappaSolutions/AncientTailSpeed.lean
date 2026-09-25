@@ -5,7 +5,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood Set MeasureTheory
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u uE uH
 

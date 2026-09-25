@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.Tensor.Coordinates
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology BigOperators NNReal
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators NNReal
 open DifferentialGeometry.Analysis DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Integral.Measure

@@ -15,7 +15,7 @@ open Filter Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Metric
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 
@@ -126,7 +126,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter Set
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

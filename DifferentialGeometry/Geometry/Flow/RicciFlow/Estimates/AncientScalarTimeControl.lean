@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)]

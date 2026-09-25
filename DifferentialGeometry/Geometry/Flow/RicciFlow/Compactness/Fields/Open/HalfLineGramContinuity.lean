@@ -7,7 +7,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Bundle Filter Set
 open DifferentialGeometry.Tensor.Coordinates
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

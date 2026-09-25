@@ -90,8 +90,8 @@ theorem SpatialNeck.exists_transport_of_local_comparisons
     {g : SmoothRiemannianMetric I3 M} {x : M} {alpha eps : ℝ} {V : Set P} {order' : ℕ}
     (nk : SpatialNeck gm (neckModelTolerance alpha) p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (fun _ => scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
-      (fun _ => scaleMetric (metricScalarAt g x) hQ g) Fmap V {0} order' eps)
+    (cmp : MetricComparisonOn (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g x) hQ g) Fmap V {0} order' eps)
     (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
     (heps : 0 ≤ eps) (heps' : eps ≤ neckSourceTolerance alpha)
     (horder : ⌈(2 * alpha)⁻¹⌉₊ ≤ order')

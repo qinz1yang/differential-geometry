@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set
 open DifferentialGeometry.Analysis.Parabolic
-open scoped Manifold ContDiff Topology Bundle
+open scoped _root_.Manifold ContDiff _root_.Topology Bundle
 
 section Constants
 

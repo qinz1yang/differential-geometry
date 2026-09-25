@@ -13,7 +13,7 @@ noncomputable section
 
 universe u uE uH
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 
 

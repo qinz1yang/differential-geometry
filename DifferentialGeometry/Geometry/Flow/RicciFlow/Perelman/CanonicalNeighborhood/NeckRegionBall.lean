@@ -166,7 +166,7 @@ theorem SpatialNeck.image_slab_subset_closedBall
   have haxis := collar_axial_edist_le nk.cylinder _ nk.map nk.comparison rfl
     nk.eps_pos.le (by simp) nk.domain hslab p hz.2
   have htrans := spatial_neck_transverse_edist_le nk nk.center p
-  let h := scaleMetric (metricScalarAt g x) nk.Q_pos g
+  let h := DifferentialGeometry.scaleMetric (metricScalarAt g x) nk.Q_pos g
   have htri := riemannianEDistOf_triangle h (nk.map (nk.center, 0))
     (nk.map (p, 0)) (nk.map (p, z))
   rw [nk.center_eq] at htri htrans
@@ -282,7 +282,7 @@ theorem SpatialNeck.ball_subset_image_slab
     simpa only [zero_sub, zero_add] using
       nk.cylinder.closedBall_subset_slab (nk.center, 0) hr.le
   have hcapture := ball_subset_image_of_metric_lower_crossModel (nk.cylinder.metric 0)
-    (scaleMetric (metricScalarAt g x) nk.Q_pos g) nk.map (nk.center, 0)
+    (DifferentialGeometry.scaleMetric (metricScalarAt g x) nk.Q_pos g) nk.map (nk.center, 0)
     (L := (Real.sqrt (1 - eps))⁻¹) hr (inv_pos.mpr hsqrt)
     (nk.cylinder.isCompact_closedBall (nk.center, 0) hr.le)
     (hball.trans (hslab.trans nk.domain)) (by

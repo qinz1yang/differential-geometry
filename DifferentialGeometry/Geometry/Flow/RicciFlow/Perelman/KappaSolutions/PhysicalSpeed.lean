@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood Set MeasureTheory
 open Bundle Filter Function DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

@@ -29,7 +29,7 @@ theorem SpatialNeck.exists_neckBuffer_pullback_bound (nk : SpatialNeck g eps x)
       (∀ z : neckBuffer δ, (Φ z : M) = nk.map z.val) ∧
       ∀ a ≤ ⌈eps⁻¹⌉₊, ∀ z : neckBuffer δ,
         metricDerivNorm a
-          (scaleMetric (metricScalarAt g x) nk.Q_pos
+          (DifferentialGeometry.scaleMetric (metricScalarAt g x) nk.Q_pos
             (Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ))
           (roundCylinderMetric.restrictOpen (neckBuffer δ))
           (roundCylinderMetric.restrictOpen (neckBuffer δ)) z ≤ eps := by
@@ -43,10 +43,10 @@ theorem SpatialNeck.exists_neckBuffer_pullback_bound (nk : SpatialNeck g eps x)
   let V : TopologicalSpace.Opens M :=
     ⟨nk.map '' (neckBuffer δ : Set Cylinder), image_opens_isOpen nk.map hsource⟩
   let Φ : neckBuffer δ ≃ₘ⟮IC, I3⟯ V := PartialDiffeomorph.toOpensDiffeo nk.map hsource
-  let G := scaleMetric (metricScalarAt g x) nk.Q_pos
+  let G := DifferentialGeometry.scaleMetric (metricScalarAt g x) nk.Q_pos
     (Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ)
   have hG (z : neckBuffer δ) (v w : TangentSpace IC z) :
-      G.inner z v w = (scaleMetric (metricScalarAt g x) nk.Q_pos g).inner
+      G.inner z v w = (DifferentialGeometry.scaleMetric (metricScalarAt g x) nk.Q_pos g).inner
         (nk.map z.val) (mfderiv IC I3 nk.map z.val v) (mfderiv IC I3 nk.map z.val w) := by
     simp only [G, scaleMetric_inner,
       Diffeomorph.pullbackMetricCross_inner, SmoothRiemannianMetric.restrictOpen_inner]
@@ -75,7 +75,7 @@ theorem SpatialNeck.exists_normalizedNeck (nk : SpatialNeck g eps x)
       N.center = x ∧ N.sphereMark = nk.center ∧ ∀ z, N.chart z = nk.map z.val := by
   obtain ⟨V, Φ, hmap, hbound⟩ := nk.exists_neckBuffer_pullback_bound hfit
   have hδ : 0 < δ := nk.eps_pos.trans hepsδ
-  let G := scaleMetric (metricScalarAt g x) nk.Q_pos
+  let G := DifferentialGeometry.scaleMetric (metricScalarAt g x) nk.Q_pos
     (Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ)
   let chart : C(neckBuffer δ, M) :=
     ⟨fun z => (Φ z).1, continuous_subtype_val.comp Φ.continuous⟩

@@ -222,7 +222,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped ContDiff Manifold BigOperators
+open scoped ContDiff _root_.Manifold BigOperators
 
 universe u uE uH
 

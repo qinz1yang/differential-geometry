@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

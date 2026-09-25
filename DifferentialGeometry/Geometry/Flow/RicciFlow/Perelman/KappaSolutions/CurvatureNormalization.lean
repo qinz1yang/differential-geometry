@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 open CanonicalNeighborhood
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 universe u uE uH
 

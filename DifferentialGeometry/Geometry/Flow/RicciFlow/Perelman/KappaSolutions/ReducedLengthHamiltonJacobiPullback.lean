@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter Set
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E]

@@ -16,7 +16,7 @@ open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
-open scoped ContDiff Manifold _root_.Topology ENNReal
+open scoped ContDiff _root_.Manifold _root_.Topology ENNReal
 
 universe u uE uH
 

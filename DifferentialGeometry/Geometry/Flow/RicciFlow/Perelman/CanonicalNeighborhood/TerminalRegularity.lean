@@ -8,7 +8,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 universe u uE uH
 
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable [FiniteDimensional ℝ E] [CompleteSpace E]

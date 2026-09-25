@@ -8,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open Bundle Filter Set
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Tensor0SBundle

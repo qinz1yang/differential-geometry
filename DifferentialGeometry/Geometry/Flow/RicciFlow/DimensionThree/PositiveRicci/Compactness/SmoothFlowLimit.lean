@@ -42,7 +42,7 @@ namespace PDE
 namespace RicciFlow
 namespace HamiltonPositiveRicci
 
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type uE} [NormedAddCommGroup E]
 variable [InnerProductSpace Real E] [FiniteDimensional Real E]

@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]

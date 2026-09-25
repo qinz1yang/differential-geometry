@@ -4,11 +4,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Harn
 set_option autoImplicit false
 noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.Manifold Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
-open scoped _root_.Topology ContDiff Manifold
+open scoped _root_.Topology ContDiff _root_.Manifold
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

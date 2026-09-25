@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 theorem recenterScale_bounds (A : ℝ) :
     A < max (A + 1) 3 ∧ 2 < max (A + 1) 3 := by

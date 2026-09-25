@@ -11,7 +11,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Filter Set TopologicalSpace
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

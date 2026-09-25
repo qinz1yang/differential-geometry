@@ -11,7 +11,7 @@ open Bundle Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
-open scoped BigOperators ContDiff Manifold Topology
+open scoped BigOperators ContDiff _root_.Manifold _root_.Topology
 
 universe u uE uH
 

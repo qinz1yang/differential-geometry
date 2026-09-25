@@ -8,7 +8,7 @@ noncomputable section
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Bundle Filter Function MeasureTheory Set
-open scoped ContDiff Manifold Topology Interval
+open scoped ContDiff _root_.Manifold _root_.Topology Interval
 
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Geometry.Curvature

@@ -19,7 +19,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor.Coordinates
 
 open Bundle
-open scoped Manifold ContDiff BigOperators
+open scoped _root_.Manifold ContDiff BigOperators
 
 section Cost
 

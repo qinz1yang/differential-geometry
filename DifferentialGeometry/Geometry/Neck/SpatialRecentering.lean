@@ -143,23 +143,23 @@ theorem SpatialNeck.exists_at_coordinate_of_scalar_close
         Module.finrank_prod, Module.finrank_self, finrank_euclideanSpace,
         Fintype.card_fin, Nat.cast_add, Nat.cast_ofNat, Nat.cast_one]
       exact herror)
-  have href : scaleMetric 1 zero_lt_one (nk.cylinder.metric 0) = nk.cylinder.metric 0 := by
+  have href : DifferentialGeometry.scaleMetric 1 zero_lt_one (nk.cylinder.metric 0) = nk.cylinder.metric 0 := by
     apply SmoothRiemannianMetric.ext_inner
     intro y v w
     rw [scaleMetric_inner, one_mul]
-  have htgt : scaleMetric ratio hratio_pos (scaleMetric (metricScalarAt g p) nk.Q_pos g) =
-      scaleMetric (metricScalarAt g q) hQq g := by
+  have htgt : DifferentialGeometry.scaleMetric ratio hratio_pos (DifferentialGeometry.scaleMetric (metricScalarAt g p) nk.Q_pos g) =
+      DifferentialGeometry.scaleMetric (metricScalarAt g q) hQq g := by
     apply SmoothRiemannianMetric.ext_inner
     intro y v w
     rw [scaleMetric_inner, scaleMetric_inner, scaleMetric_inner]
     dsimp only [ratio]
     field_simp [nk.Q_pos.ne']
   have cmp0 : MetricComparisonOn (fun _ => nk.cylinder.metric 0)
-      (fun _ => scaleMetric (metricScalarAt g q) hQq g) nk.map
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g q) hQq g) nk.map
       (univ ×ˢ Ioo (-beta⁻¹) beta⁻¹) {0} ⌈beta⁻¹⌉₊ alpha := by
     simpa only [href, htgt] using scaled
   let shifted := comparisonPrecompCylinderTranslation nk.cylinder
-    (scaleMetric (metricScalarAt g q) hQq g) nk.map cmp0 a hdomain nk.domain
+    (DifferentialGeometry.scaleMetric (metricScalarAt g q) hQq g) nk.map cmp0 a hdomain nk.domain
   let map := partialDiffeomorphTransMixed T.toPartialDiffeomorph nk.map
   let out : SpatialNeck g alpha q := {
     eps_pos := halpha

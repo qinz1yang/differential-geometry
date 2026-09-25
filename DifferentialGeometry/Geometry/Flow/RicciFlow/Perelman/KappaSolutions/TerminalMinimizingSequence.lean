@@ -9,7 +9,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open Filter Set
 open DifferentialGeometry.CheegerGromovCompactness CanonicalNeighborhood
 open DifferentialGeometry.Geometry.Curvature
-open scoped ContDiff Manifold Topology
+open scoped ContDiff _root_.Manifold _root_.Topology
 
 universe u uE uH
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]

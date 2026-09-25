@@ -16,7 +16,7 @@ open Bundle Set MeasureTheory
 open DifferentialGeometry.Geometry
 open DifferentialGeometry.Geometry.Riemannian.Topology
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff ENNReal
+open scoped _root_.Manifold ContDiff ENNReal
 
 private theorem cylinderSlab_image_eq_range {X Y : Type*}
     (q : X × ℝ → Y) (A : X ≃ X) (c : ℝ) (hc : c ≠ 0)

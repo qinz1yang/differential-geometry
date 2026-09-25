@@ -16,7 +16,7 @@ universe u uE uH
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set
-open scoped Manifold ContDiff Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle
 

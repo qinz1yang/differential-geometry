@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Tensor0SBundle
-open scoped ContDiff Manifold Topology
+open scoped ContDiff _root_.Manifold _root_.Topology
 
 universe u uE uH
 

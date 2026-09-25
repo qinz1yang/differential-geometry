@@ -12,7 +12,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle
-open scoped ContDiff Manifold Topology
+open scoped ContDiff _root_.Manifold _root_.Topology
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E] [NeZero (Module.finrank Real E)]

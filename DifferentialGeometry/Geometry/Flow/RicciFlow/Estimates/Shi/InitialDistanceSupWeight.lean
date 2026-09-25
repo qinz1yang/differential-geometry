@@ -14,7 +14,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology Bundle
+open scoped _root_.Manifold ContDiff _root_.Topology Bundle
 
 section Scalar
 

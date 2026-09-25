@@ -18,7 +18,7 @@ namespace DifferentialGeometry
 namespace CheegerGromovCompactness
 
 open Set
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]

@@ -7,7 +7,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

@@ -8,7 +8,7 @@ open Filter Set MeasureTheory CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
-open scoped _root_.Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

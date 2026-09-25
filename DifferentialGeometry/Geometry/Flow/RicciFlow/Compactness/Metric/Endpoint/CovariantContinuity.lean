@@ -8,7 +8,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Tensor0SBundle
-open scoped Manifold ContDiff Topology BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology BigOperators
 open Perelman.CanonicalNeighborhood.FiniteHorn
   (exists_local_curvature_derivative_bounds_before_terminal
     metric_covariant_bounds_of_local_curvature_bounds)

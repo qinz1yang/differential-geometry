@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
 open DifferentialGeometry.Analysis.Parabolic
-open scoped Manifold ContDiff BigOperators Bundle Topology
+open scoped _root_.Manifold ContDiff BigOperators Bundle _root_.Topology
 
 
 

@@ -288,7 +288,7 @@ private theorem locallyLipschitzOn_comp_lipschitzWith
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 
-open Bundle Filter Manifold MeasureTheory Set
+open Bundle Filter _root_.Manifold MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
@@ -305,7 +305,7 @@ open DifferentialGeometry.Analysis.Laplacian.MetricExtension
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Integral.Measure
-open scoped Manifold ContDiff _root_.Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

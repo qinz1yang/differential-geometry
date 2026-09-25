@@ -17,7 +17,7 @@ open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Calculus
-open scoped ContDiff Manifold Topology BigOperators
+open scoped ContDiff _root_.Manifold _root_.Topology BigOperators
 
 universe u uE uH uκ
 

@@ -10,7 +10,7 @@ open Set Filter
 open CanonicalNeighborhood
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Curvature
-open scoped ContDiff Manifold _root_.Topology
+open scoped ContDiff _root_.Manifold _root_.Topology
 
 universe u uE uH
 

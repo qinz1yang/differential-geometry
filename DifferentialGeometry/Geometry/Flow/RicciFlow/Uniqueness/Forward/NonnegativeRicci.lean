@@ -226,7 +226,7 @@ open Bundle Set _root_.Manifold DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Tensor.Coordinates
-open scoped _root_.Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

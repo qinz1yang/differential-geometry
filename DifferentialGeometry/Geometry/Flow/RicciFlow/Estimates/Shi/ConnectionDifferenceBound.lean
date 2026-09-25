@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open Set MeasureTheory
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -130,7 +130,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open Set
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
@@ -168,7 +168,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open Set
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

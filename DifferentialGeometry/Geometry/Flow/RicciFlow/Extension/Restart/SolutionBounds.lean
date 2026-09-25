@@ -14,7 +14,7 @@ open DifferentialGeometry.Geometry.Connection
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Set Filter
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.CheegerGromovCompactness

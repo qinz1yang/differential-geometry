@@ -7,7 +7,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness.HalfLineMetricConvergenc
 
 open Set Filter
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

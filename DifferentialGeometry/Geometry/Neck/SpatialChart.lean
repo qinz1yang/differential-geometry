@@ -65,7 +65,7 @@ theorem SpatialNeck.cylindricalChart_metricCloseOn (nk : SpatialNeck g eps p) :
     nk.cylindricalChart.metricCloseOn g eps univ := by
   let C := nk.cylindricalChart
   let G := Diffeomorph.pullbackMetricCross
-    (scaleMetric C.scale C.scale_pos (g.restrictOpen C.target)) C.chart
+    (DifferentialGeometry.scaleMetric C.scale C.scale_pos (g.restrictOpen C.target)) C.chart
   let h := nk.cylinder.metric 0
   have herror : metricTensorField G - metricTensorField (h.restrictOpen C.domain) =
       restrictOpen0S 2 (V := C.domain) (nk.comparison.jet 0 0) := by

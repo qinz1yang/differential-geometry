@@ -10,7 +10,7 @@ namespace DifferentialGeometry
 open Bundle Set
 open Geometry.Curvature Geometry.Connection Geometry.Operator Integral.Measure
 open Tensor.Coordinates
-open scoped Manifold ContDiff BigOperators Topology
+open scoped _root_.Manifold ContDiff BigOperators _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

@@ -132,7 +132,7 @@ private theorem exists_subsequence_radius_escape
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn (CanonicalWitness)
-open scoped Manifold ContDiff NNReal
+open scoped _root_.Manifold ContDiff NNReal
 
 universe u
 

@@ -13,7 +13,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor.Coordinates
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [TopologicalSpace H]

@@ -20,12 +20,12 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
-open Bundle Filter Manifold Set
+open Bundle Filter _root_.Manifold Set
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.CheegerGromovCompactness
 open CanonicalNeighborhood
-open scoped Manifold ContDiff _root_.Topology RealInnerProductSpace
+open scoped _root_.Manifold ContDiff _root_.Topology RealInnerProductSpace
 
 private instance roundSphereShrinkFlowFinrank :
     Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 4)) = 3 + 1) := ⟨by simp⟩

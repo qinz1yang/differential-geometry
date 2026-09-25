@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Neck.SpatialFrontierRecentering
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.CapFilling
 import DifferentialGeometry.Geometry.Neck.SpatialLevelEmbedding
+import DifferentialGeometry.Geometry.Neck.QuarterBandPacking
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCapConnectedInterior
 
 noncomputable section
 open Set Manifold

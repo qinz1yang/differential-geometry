@@ -16,7 +16,7 @@ open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.Integral.DivergenceTheorem
 open Tensor.Coordinates
-open scoped Manifold ContDiff _root_.Topology ENNReal NNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal NNReal
 
 universe u uE uH
 

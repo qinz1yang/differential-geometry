@@ -11,7 +11,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 open Bundle Set
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

@@ -9,7 +9,7 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Curvature
 
 open Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

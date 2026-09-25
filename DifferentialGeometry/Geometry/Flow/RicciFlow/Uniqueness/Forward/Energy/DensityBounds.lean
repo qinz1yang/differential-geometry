@@ -11,9 +11,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
-open Bundle Manifold Set DifferentialGeometry.Tensor0SBundle
+open Bundle _root_.Manifold Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -110,7 +110,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]

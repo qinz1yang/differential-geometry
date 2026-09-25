@@ -9,7 +9,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Bundle Set
 open Geometry.Curvature Geometry.Operator Integral.Measure
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   [FiniteDimensional ℝ E] [CompleteSpace E]

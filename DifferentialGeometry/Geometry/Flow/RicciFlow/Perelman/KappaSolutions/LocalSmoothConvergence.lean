@@ -7,7 +7,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 open Bundle Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 open DifferentialGeometry.CheegerGromovCompactness DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure

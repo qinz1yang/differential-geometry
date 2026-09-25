@@ -10,7 +10,7 @@ open Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
-open scoped Manifold ContDiff Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

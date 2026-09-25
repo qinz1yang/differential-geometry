@@ -18,7 +18,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor.RSTensor
 
-open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
+open Bundle _root_.Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.CheegerGromovCompactness

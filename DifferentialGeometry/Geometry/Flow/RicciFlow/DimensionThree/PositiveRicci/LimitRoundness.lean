@@ -19,7 +19,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 namespace HamiltonPositiveRicci
 
 open Bundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
 variable [FiniteDimensional Real E] [NeZero (Module.finrank Real E)] [CompleteSpace E]

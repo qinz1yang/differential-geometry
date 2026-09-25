@@ -15,7 +15,7 @@ open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
-open scoped Manifold ContDiff BigOperators _root_.Topology
+open scoped _root_.Manifold ContDiff BigOperators _root_.Topology
 
 universe u uE uH
 

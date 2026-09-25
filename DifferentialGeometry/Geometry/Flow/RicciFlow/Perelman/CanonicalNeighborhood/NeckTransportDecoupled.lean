@@ -273,8 +273,8 @@ def SpatialNeck.transport' {gm : SmoothRiemannianMetric I3 P} {p : P}
     {times' : Set ℝ} {order' : ℕ}
     (nk : SpatialNeck gm beta p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (fun _ => scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
-      (fun _ => scaleMetric (metricScalarAt g x) hQ g) Fmap V times' order' eps)
+    (cmp : MetricComparisonOn (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g x) hQ g) Fmap V times' order' eps)
     (T : TransportedErrorTower cmp (fun _ => nk.cylinder.metric 0) nk.map
       (Set.univ ×ˢ Set.Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) {0} ⌈(2 * alpha)⁻¹⌉₊ K)
     (hsmall : 2 * alpha < 1 / 11) (hbeta_le : beta ≤ alpha) (hKeps : K * eps ≤ alpha)
@@ -362,8 +362,8 @@ def SpatialNeck.transport_of_comparisons' {gm : SmoothRiemannianMetric I3 P} {p 
     {g : SmoothRiemannianMetric I3 M} {x : M} {alpha beta eps : ℝ} {V : Set P} {order' : ℕ}
     (nk : SpatialNeck gm beta p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (fun _ => scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
-      (fun _ => scaleMetric (metricScalarAt g x) hQ g) Fmap V {0} order' eps)
+    (cmp : MetricComparisonOn (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g x) hQ g) Fmap V {0} order' eps)
     (Phi : Cylinder ≃ₘ⟮IC, I3⟯ P) (hPhi : ∀ y, Phi y = nk.map y)
     (hsmall : 2 * alpha < 1 / 11) (heps : 0 ≤ eps)
     (hbeta_pos : 0 < beta) (hbeta_le : beta ≤ alpha)
@@ -433,8 +433,8 @@ def SpatialNeck.transport_of_comparisons_of_tolerances {gm : SmoothRiemannianMet
     {g : SmoothRiemannianMetric I3 M} {x : M} {alpha eps : ℝ} {V : Set P} {order' : ℕ}
     (nk : SpatialNeck gm (neckModelTolerance alpha) p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (fun _ => scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
-      (fun _ => scaleMetric (metricScalarAt g x) hQ g) Fmap V {0} order' eps)
+    (cmp : MetricComparisonOn (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt gm p) nk.Q_pos gm)
+      (fun _ => DifferentialGeometry.scaleMetric (metricScalarAt g x) hQ g) Fmap V {0} order' eps)
     (Phi : Cylinder ≃ₘ⟮IC, I3⟯ P) (hPhi : ∀ y, Phi y = nk.map y)
     (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
     (heps : 0 ≤ eps) (heps' : eps ≤ neckSourceTolerance alpha)

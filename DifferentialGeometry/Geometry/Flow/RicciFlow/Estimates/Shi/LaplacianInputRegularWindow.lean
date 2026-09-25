@@ -16,7 +16,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Coordinates
-open scoped Manifold ContDiff Topology Bundle BigOperators
+open scoped _root_.Manifold ContDiff _root_.Topology Bundle BigOperators
 
 universe u uE uH
 

@@ -15,7 +15,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Curvature.DimensionThree
 open Bundle DifferentialGeometry.Tensor0SBundle
 open Filter
-open scoped Manifold ContDiff ENNReal Topology
+open scoped _root_.Manifold ContDiff ENNReal _root_.Topology
 
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E] [CompleteSpace E]

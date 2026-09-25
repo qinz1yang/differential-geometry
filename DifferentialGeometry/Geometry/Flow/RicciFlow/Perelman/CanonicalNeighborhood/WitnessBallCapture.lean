@@ -16,7 +16,7 @@ open Bundle Filter MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian
 open DifferentialGeometry.CheegerGromovCompactness
-open scoped Manifold ContDiff Topology ENNReal
+open scoped _root_.Manifold ContDiff _root_.Topology ENNReal
 
 universe u uE uH
 

@@ -110,9 +110,11 @@ theorem isPoincareStandard_discardedComponent_of_capCore_frontier
     (b : E.tubes.Boundary) (hfront : frontier K = range (E.tubes.boundarySphere b))
     (x : E.tubes.core) (hx : x.val ∈ K) (d : E.discarded.Carrier)
     (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d) :
-    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier :=
-  E.isPoincareStandard_discardedComponent_of_capCore_and_cap_cover cap hK b x d hd
-    (E.capping.image_capCore_union_cap_eq_componentSet cap hK b hfront x hx)
+    isPoincareStandard (E.discarded.component (ConnectedComponents.mk d)).Carrier := by
+  have hstd := E.capping.isPoincareStandard_component_of_capCore_frontier
+    cap hK b hfront x hx
+  obtain ⟨e⟩ := E.cappedDiscardedPresentationRealization x d hd
+  exact isPoincareStandard_of_diffeomorph e.val.symm hstd
 
 end DifferentialGeometry.Topology.SphericalCutCapTransition
 

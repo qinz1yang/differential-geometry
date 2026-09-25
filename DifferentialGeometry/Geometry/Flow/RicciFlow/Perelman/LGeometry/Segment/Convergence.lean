@@ -7,7 +7,7 @@ noncomputable section
 
 namespace DifferentialGeometry.CheegerGromovCompactness
 open Bundle Filter Set
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 open Geometry.Curvature
 open PDE.RicciFlow.Perelman
 universe u uE uH
@@ -211,7 +211,7 @@ section Sobolev
 
 open Function MeasureTheory
 open Analysis.Parabolic.TimeSobolev PDE.RicciFlow
-open scoped Topology Interval
+open scoped _root_.Topology Interval
 
 variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace Real E]
   [FiniteDimensional Real E]

@@ -9,7 +9,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.Fini
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions (windowInterval)
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]

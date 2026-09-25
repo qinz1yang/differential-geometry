@@ -15,7 +15,7 @@ namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter Set
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Geometry.Curvature
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -100,7 +100,7 @@ noncomputable section
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 
@@ -140,7 +140,7 @@ noncomputable section
 namespace DifferentialGeometry.CheegerGromovCompactness
 
 open Filter Set
-open scoped Manifold ContDiff _root_.Topology
+open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u uE uH
 

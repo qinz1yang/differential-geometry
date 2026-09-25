@@ -11,7 +11,7 @@ open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open Bundle
-open scoped Manifold ContDiff
+open scoped _root_.Manifold ContDiff
 
 universe u v uE uH uE' uH'
 variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]

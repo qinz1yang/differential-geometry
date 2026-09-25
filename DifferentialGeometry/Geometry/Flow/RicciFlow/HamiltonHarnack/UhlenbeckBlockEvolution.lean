@@ -17,7 +17,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Operator
-open scoped Manifold ContDiff BigOperators Topology
+open scoped _root_.Manifold ContDiff BigOperators _root_.Topology
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
