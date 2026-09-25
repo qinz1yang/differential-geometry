@@ -13942,3 +13942,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Es
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurvatureLifespan
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.MapDistance
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ConeExclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedVolume.BackwardPatch
