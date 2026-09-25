@@ -329,3 +329,64 @@ end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
 
+noncomputable section
+
+open Set Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) {X : Type u}
+  [TopologicalSpace X] [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X] [T2Space X]
+
+theorem regularizedCost_eq_of_minimal_of_compact_barrier
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j)) (K : Set X) (hK : IsCompact K)
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing
+        (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ z))
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (g : SmoothRiemannianMetric ThreeModel X) {T u v μ B r : ℝ}
+    (hu : 0 ≤ u) (huv : u ≤ v) (hμ : 0 ≤ μ) (hr : 0 < r)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (htime : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.carrier)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (hcompare : ∀ t ∈ Ioo u v, ∀ z ∈ K, ∀ w : TangentSpace ThreeModel z,
+      μ * g.inner z w w ≤ (S.base.metric (T - t ^ 2)).inner z w w)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x)
+    (η : ℝ → X) (hη : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η)
+    (hmin : ∀ γ : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ → γ u = η u → γ v = η v →
+      lRegularizedAction S T η u v ≤ lRegularizedAction S T γ u v)
+    (hpole : η u ∈ interior K)
+    (hfront : ∀ z ∈ frontier K, ENNReal.ofReal r ≤ riemannianEDistOf g (η u) z)
+    (haction : lRegularizedAction S T η u v ≤
+      μ * r ^ 2 / (2 * (v - u)) - (2 * B / 3) * (v ^ 3 - u ^ 3)) :
+    H.regularizedCost first last hle T B u v (f ⟨last, hle, le_rfl⟩ (η u))
+        (f ⟨first, le_rfl, hle⟩ (η v)) = (lRegularizedAction S T η u v : WithTop ℝ) := by
+  have hupper' : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) :=
+    ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩
+  rw [H.regularizedCost_eq_regularizedC1Cost first last hle T B u v hupper hscalar]
+  apply H.regularizedC1Cost_eq_of_minimal_of_lower_action_confined first last hle f hf hinj hcross
+    S hS T hu huv hupper' hlower htime hmetric η hη hmin
+  intro α hα hint hstart _ hnode hlow
+  have hstay : ∀ j, MapsTo (α j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (f j '' K) :=
+    H.mapsTo_common_compact_set_of_sum_stageRegularizedAction_lt first last hle
+      f hf hinj K hK hcross hu huv hupper' hlower S g hμ hr hmetric hcompare α hα hint
+      (fun j t ht => hscalar j t ht (α j t)) (η u) hpole hfront hstart hnode (hlow.trans_le haction)
+  intro j t ht
+  obtain ⟨z, _, hz⟩ := hstay j ht
+  exact ⟨z, hz⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
