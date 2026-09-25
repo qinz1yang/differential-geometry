@@ -13950,3 +13950,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryBack
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PreparedHistoryCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarDerivativeBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.InverseComposition
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowVolumeComparison
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapVolume

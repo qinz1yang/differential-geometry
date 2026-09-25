@@ -3,7 +3,8 @@ import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Boundary
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.CarrierLowerSemicontinuity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.C1Regularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CarrierC1Regularity
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Parameter
 import DifferentialGeometry.Topology.Manifold.CurveIntervalExtension
 
 noncomputable section
@@ -34,11 +35,18 @@ private theorem action_lower_on_compact_range
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_lRegularizedMinC1_of_compact_action_sublevel [TopologicalSpace.MetrizableSpace M]
-    [NeZero (Module.finrank ℝ E)]
+theorem exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivatives [TopologicalSpace.MetrizableSpace M]
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
     {a b : ℝ} (hab : a < b)
-    (hreg : ∀ r ∈ Icc a b, T - r ^ 2 ∈ D.regular)
+    (U : Set ℝ) (hU : U ⊆ D.carrier)
+    (htime : ∀ r ∈ Icc a b, T - r ^ 2 ∈ U)
+    (hreg : ∀ r ∈ Ioo a b, T - r ^ 2 ∈ D.regular)
+    (hGramFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
+      (fun y : E => chartGramOp (I := I) S.family p (z.1, y)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
+    (hScalFd : ∀ p : M, ContinuousOn (fun z : ℝ × E => fderiv ℝ
+      (DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar z.1)) z.2)
+      (U ×ˢ interior (extChartAt I p).target))
     (x y : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
     (hstart : α₀ a = x) (hend : α₀ b = y)
     (Q : Set M) (hQ : IsCompact Q)
@@ -51,7 +59,7 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel [TopologicalSpace.Me
         lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
   classical
   let : MetricSpace M := TopologicalSpace.metrizableSpaceMetric M
-  have hcarrier (r : ℝ) (hr : r ∈ Icc a b) : T - r ^ 2 ∈ D.carrier := D.regular_subset (hreg r hr)
+  have hcarrier (r : ℝ) (hr : r ∈ Icc a b) : T - r ^ 2 ∈ D.carrier := hU (htime r hr)
   have hint (α : ℝ → M) (hα : ContMDiff 𝓘(ℝ, ℝ) I 1 α) :
       IntervalIntegrable (lRegularizedLagrangian S T α) volume a b :=
     intervalIntegrable_lRegularizedLagrangian_of_contMDiffOn_one_of_carrier S hS.smoothMetric
@@ -125,7 +133,8 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel [TopologicalSpace.Me
       lRegularizedAction S T γ a b ≤ lRegularizedAction S T δ a b := by
     intro δ hδ hδa hδb
     exact hupper.trans (hbelow δ hδ (hδa.trans hγa) (hδb.trans hγb))
-  have hc1 := lMinCurve_c1 S hS T a b hab t htmono ht0 htlast p γ hγ u hsrc hrep hreg hmin
+  have hc1 := lMinCurve_c1_of_spatial_derivatives S hS T a b hab t htmono ht0 htlast p γ hγ u hsrc hrep
+    U hU htime hreg hGramFd hScalFd hmin
   obtain ⟨η, hη, heq⟩ := DifferentialGeometry.Topology.exists_contMDiff_extension_Icc hc1
   have hηa : η a = x := (heq ⟨le_rfl, hab.le⟩).trans hγa
   have hηb : η b = y := (heq ⟨hab.le, le_rfl⟩).trans hγb
@@ -139,6 +148,33 @@ theorem exists_lRegularizedMinC1_of_compact_action_sublevel [TopologicalSpace.Me
     exact hupper.trans (hbelow δ hδ hδa hδb)
   exact ⟨η, hη, hηa, hηb, hconf η hη hηa hηb (hηmin α₀ hα₀ hstart hend), hηmin⟩
 
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedMinC1_of_compact_action_sublevel [TopologicalSpace.MetrizableSpace M]
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b : ℝ} (hab : a < b)
+    (hreg : ∀ r ∈ Icc a b, T - r ^ 2 ∈ D.regular)
+    (x y : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) I 1 α₀)
+    (hstart : α₀ a = x) (hend : α₀ b = y)
+    (Q : Set M) (hQ : IsCompact Q)
+    (hconf : ∀ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α →
+      α a = x → α b = y → lRegularizedAction S T α a b ≤ lRegularizedAction S T α₀ a b →
+      MapsTo α (Icc a b) Q) :
+    ∃ η : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 η ∧ η a = x ∧ η b = y ∧
+      MapsTo η (Icc a b) Q ∧
+      ∀ δ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 δ → δ a = x → δ b = y →
+        lRegularizedAction S T η a b ≤ lRegularizedAction S T δ a b := by
+  apply exists_lRegularizedMinC1_of_compact_action_sublevel_of_spatial_derivatives S hS T hab
+    D.regular D.regular_subset hreg (fun r hr => hreg r (Ioo_subset_Icc_self hr))
+    ?_ ?_ x y α₀ hα₀ hstart hend Q hQ hconf
+  · intro p
+    exact ((chartGramOp_smooth hS.smoothMetric p (K := interior (extChartAt I p).target) Subset.rfl).fderiv_snd
+      (G := fun t y => chartGramOp (I := I) S.family p (t, y)) isOpen_interior (m := 0) (by simp)).continuousOn
+  · intro p
+    exact ((chartScalFun_smooth S hS p).fderiv_snd
+      (G := fun t y => DifferentialGeometry.Tensor.Coordinates.scalarOnE (I := I) p (S.scalar t) y)
+      isOpen_interior (m := 0) (by simp)).continuousOn
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 
 end
@@ -151,7 +187,7 @@ open scoped Manifold ContDiff ENNReal
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   [TopologicalSpace M] [TopologicalSpace.MetrizableSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
   {D : RealTimeInterval}
@@ -205,7 +241,7 @@ open scoped Manifold ContDiff ENNReal Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
-  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [FiniteDimensional ℝ E]
   [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   [TopologicalSpace M] [TopologicalSpace.MetrizableSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
   {D : RealTimeInterval}
