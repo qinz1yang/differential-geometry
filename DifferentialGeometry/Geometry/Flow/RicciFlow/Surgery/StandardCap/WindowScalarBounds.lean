@@ -1,4 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
+import Mathlib.Topology.Sequences
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.ScalarPerturbation
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
@@ -51,5 +53,59 @@ theorem exists_uniform_window_scalar_bounds_of_metric_close
   · linarith [(abs_lt.mp herr).1]
   · have hh : metricScalarAt g x < B+1 := by linarith [(abs_lt.mp herr).2]
     exact hh.trans_le (le_max_right _ _)
+
+open Filter in
+theorem exists_subseq_marked_scalar_limit_of_metric_cp_convergence
+    (D r : ℝ) (htr : transitionEnd ≤ r) (hrD : r < D + 1)
+    (N : ℕ) (hN : 2 ≤ N)
+    (gSeq : ℕ → SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    (hconv : MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r} N gSeq
+      (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)))
+    (u : ℕ → standardCapWindow D) (hu : ∀ n, ‖(u n).val‖ ≤ transitionEnd) :
+    ∃ (φ : ℕ → ℕ) (uLim : standardCapWindow D), StrictMono φ ∧
+      ‖uLim.val‖ ≤ transitionEnd ∧ Tendsto (u ∘ φ) atTop (𝓝 uLim) ∧
+      Tendsto (fun n => metricScalarAt (gSeq (φ n)) (u (φ n))) atTop
+        (𝓝 (metricScalarAt (metric.restrictOpen (standardCapWindow D)) uLim)) ∧
+      1 ≤ metricScalarAt (metric.restrictOpen (standardCapWindow D)) uLim ∧
+      ∀ᶠ n in atTop, 1 / 2 < metricScalarAt (gSeq n) (u n) := by
+  let K : Set (standardCapWindow D) := {x | ‖x.val‖ ≤ r}
+  let A : Set (standardCapWindow D) := {x | ‖x.val‖ ≤ transitionEnd}
+  let gRef := metric.restrictOpen (standardCapWindow D)
+  have hcompact (s : ℝ) (hs : s < D + 1) :
+      IsCompact {x : standardCapWindow D | ‖x.val‖ ≤ s} := by
+    have hc : IsCompact {x : ThreeSpace | ‖x‖ ≤ s} := by
+      simpa only [Metric.closedBall, dist_zero_right] using
+        isCompact_closedBall (0 : ThreeSpace) s
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hc (by
+      intro x hx
+      refine ⟨⟨x, ?_⟩, rfl⟩
+      exact hx.trans_lt hs)
+  have hK : IsCompact K := hcompact r hrD
+  have hA : IsCompact A := hcompact transitionEnd (htr.trans_lt hrD)
+  have htwo : MetricCPConvergenceOn K 2 gSeq gRef gRef := by
+    intro ε hε
+    obtain ⟨n₀, hn₀⟩ := hconv (ε / 2) (half_pos hε)
+    refine ⟨n₀, fun n hn => ?_⟩
+    apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall K 2 (gSeq n) gRef gRef
+      (ε / 2) (half_pos hε).le ?_) (half_lt_self hε)
+    intro j hj x hx
+    exact (derivNorm_le_sup hK (hj.trans hN) (gSeq n) gRef gRef hx).trans (hn₀ n hn).le
+  have hdiff := htwo.tendsto_metricScalarAt_sub_of_eventually_mem hK
+    (Eventually.of_forall fun n => (hu n).trans htr)
+  obtain ⟨uLim, huLim, φ, hφ, hlim⟩ := hA.tendsto_subseq hu
+  have hscalar : Tendsto (fun n => metricScalarAt (gSeq (φ n)) (u (φ n))) atTop
+      (𝓝 (metricScalarAt gRef uLim)) := by
+    have href := (metricScalar_smooth gRef).continuous.continuousAt.tendsto.comp hlim
+    simpa only [Function.comp_def, sub_add_cancel, zero_add] using
+      (hdiff.comp hφ.tendsto_atTop).add href
+  have hlower (x : standardCapWindow D) : 1 ≤ metricScalarAt gRef x := by
+    rw [metricScalarAt_restrictOpen]
+    exact one_le_metricScalarAt x.val
+  refine ⟨φ, uLim, hφ, huLim, hlim, hscalar, hlower uLim, ?_⟩
+  filter_upwards [hdiff.eventually (Ioi_mem_nhds (show -(1 / 2 : ℝ) < 0 by norm_num))]
+    with n hn
+  have hb := hlower (u n)
+  linarith
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

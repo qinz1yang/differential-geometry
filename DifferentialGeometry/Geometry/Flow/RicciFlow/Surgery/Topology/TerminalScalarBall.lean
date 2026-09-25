@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarSublevel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.LocalPropagation
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.DistanceUpper
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalCapture
@@ -43,11 +44,11 @@ theorem TerminalLimitMetric.eventually_riemannianEDistOf_lt
     G.terminalRegularOpen x y).trans_lt ht
 
 
-theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
-    {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound_on_time_window
+    {P : OrientedThreeStage.{u}} {a s c : ℝ} {G : P.IncomingSlab a s}
     (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
-    (hQ : 0 < Q) (hqQ : q ≤ Q)
-    (hgradient : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+    (hQ : 0 < Q) (hqQ : q ≤ Q) (hcs : c < s)
+    (hgradient : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, c ≤ t → q < G.flow.scalar t x →
       ∀ v : TangentSpace ThreeModel x,
         |scalarDifferential G.flow t x v| ≤ C * G.flow.scalar t x *
           Real.sqrt (G.flow.scalar t x) * Real.sqrt ((G.flow.base.metric t).inner x v v))
@@ -70,7 +71,7 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
   have hbase : ∀ᶠ t in 𝓝[<] s, G.flow.scalar t x.val < 2 * Q :=
     (L.tendsto_metricScalarAt x).eventually_lt_const (by linarith)
   apply le_of_tendsto (L.tendsto_metricScalarAt y)
-  filter_upwards [Ioo_mem_nhdsLT G.lt, hbase, L.eventually_riemannianEDistOf_lt x y hdist] with t ht hb hd
+  filter_upwards [Ioo_mem_nhdsLT G.lt, Ioo_mem_nhdsLT hcs, hbase, L.eventually_riemannianEDistOf_lt x y hdist] with t ht hct hb hd
   have hgrad (w : P.Carrier) (hw : 2 * (2 * Q) ≤ G.flow.scalar t w)
       (v : TangentSpace ThreeModel w) :
       |scalarDifferential G.flow t w v| ≤
@@ -78,7 +79,7 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
           Real.sqrt ((G.flow.base.metric t).inner w v v) := by
     have hhigh : q < G.flow.scalar t w := by linarith
     have hpos : 0 ≤ G.flow.scalar t w := by linarith
-    have hbound := hgradient w t ht hhigh v
+    have hbound := hgradient w t ht hct.1.le hhigh v
     have hterm : 0 ≤ (C : ℝ) * G.flow.scalar t w * Real.sqrt (G.flow.scalar t w) *
         Real.sqrt ((G.flow.base.metric t).inner w v v) := by positivity
     nlinarith
@@ -86,6 +87,41 @@ theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
   change G.flow.scalar t y.val ≤ 6 * Q
   simpa only [show (3 : ℝ) * (2 * Q) = 6 * Q by ring] using hh
 
+
+theorem TerminalLimitMetric.isCompact_small_ball_of_gradient_bound_on_time_window
+    {P : OrientedThreeStage.{u}} {a s c : ℝ} {G : P.IncomingSlab a s}
+    (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
+    (hQ : 0 < Q) (hqQ : q ≤ Q) (hcs : c < s)
+    (hgradient : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, c ≤ t → q < G.flow.scalar t x →
+      ∀ v : TangentSpace ThreeModel x,
+        |scalarDifferential G.flow t x v| ≤ C * G.flow.scalar t x *
+          Real.sqrt (G.flow.scalar t x) * Real.sqrt ((G.flow.base.metric t).inner x v v))
+    (x : G.terminalRegularOpen) (hx : metricScalarAt L.metric x ≤ Q) :
+    IsCompact (riemannianClosedBallOf L.metric x
+      (localPropagationRadius C / (2 * Real.sqrt (2 * Q)))) := by
+  apply (L.isCompact_scalar_sublevel (6 * Q)).of_isClosed_subset
+  · exact isClosed_le (by
+      unfold riemannianEDistOf
+      exact DifferentialGeometry.Geometry.Riemannian.continuous_riemannianEDist L.metric x)
+      continuous_const
+  · exact fun y hy => L.scalar_le_on_small_ball_of_gradient_bound_on_time_window C hQ hqQ hcs
+      hgradient x hx y hy
+
+theorem TerminalLimitMetric.scalar_le_on_small_ball_of_gradient_bound
+    {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+    (L : G.TerminalLimitMetric) {q Q : ℝ} (C : ℝ≥0)
+    (hQ : 0 < Q) (hqQ : q ≤ Q)
+    (hgradient : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      ∀ v : TangentSpace ThreeModel x,
+        |scalarDifferential G.flow t x v| ≤ C * G.flow.scalar t x *
+          Real.sqrt (G.flow.scalar t x) * Real.sqrt ((G.flow.base.metric t).inner x v v))
+    (x : G.terminalRegularOpen) (hx : metricScalarAt L.metric x ≤ Q)
+    (y : G.terminalRegularOpen)
+    (hy : y ∈ riemannianClosedBallOf L.metric x
+      (localPropagationRadius C / (2 * Real.sqrt (2 * Q)))) :
+    metricScalarAt L.metric y ≤ 6 * Q := by
+  exact L.scalar_le_on_small_ball_of_gradient_bound_on_time_window C hQ hqQ G.lt
+    (fun x t ht _ => hgradient x t ht) x hx y hy
 
 theorem TerminalLimitMetric.isCompact_small_ball_of_scalar_derivative_bounds
     {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}

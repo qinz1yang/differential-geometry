@@ -157,4 +157,81 @@ theorem exists_spatial_cap_frontier_of_window_metric_close
     rw [hK,hK0]
     exact hball
 
+
+universe u
+
+theorem eventually_spatial_cap_frontier_of_metric_cp_convergence
+    (D r eps : ℝ) (heps : 0 < eps) (hsmall : eps < 1 / 11)
+    (hr : transitionEnd + eps⁻¹ + 1 < r) (hfit : r + eps⁻¹ + 1 ≤ D)
+    (N : ℕ) (hN : ⌈eps⁻¹⌉₊ ≤ N)
+    (g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D))
+    (hconv : MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹} N g
+      (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)))
+    (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+    [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+    (h : ∀ n, SmoothRiemannianMetric I3 (P n))
+    (Φ : ∀ n, standardCapWindow D → P n)
+    (hΦ : ∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) (hinj : ∀ n, Injective (Φ n))
+    (hmetric : ∀ n (x : standardCapWindow D) (v w : TangentSpace I3 x),
+      (g n).inner x v w = (h n).inner (Φ n x)
+        (mfderiv I3 I3 (Φ n) x v) (mfderiv I3 I3 (Φ n) x w)) :
+    ∀ᶠ n in Filter.atTop,
+      ∃ (p z : standardCapWindow D), p.val = r • (spherePoint : ThreeSpace) ∧ z.val = 0 ∧
+        ∃ (nk : SpatialNeck (h n) eps (Φ n p)) (K : CompactDomain (P n)),
+          K.carrier = Φ n '' {x : standardCapWindow D | ‖x.val‖ ≤ r} ∧
+          Nonempty (CapCore K.carrier) ∧ Φ n z ∈ interior K.carrier ∧
+          (∀ x : standardCapWindow D, ‖x.val‖ ≤ transitionEnd →
+            Φ n x ∈ interior K.carrier) ∧
+          (∀ w : neckBuffer eps, ∃ x : standardCapWindow D,
+            x.val = (r+w.val.2) • (w.val.1 : ThreeSpace) ∧ nk.map w.val = Φ n x) ∧
+          frontier K.carrier = range (fun q : Sphere 2 => nk.map (q,0)) ∧
+          IsSmoothEmbedding I2 I3 ∞ (fun q : Sphere 2 => nk.map (q,0)) ∧
+          (∀ q : Sphere 2, ∀ t : ℝ, t ∈ Ioo (-eps⁻¹) eps⁻¹ →
+            (nk.map (q,t) ∈ K.carrier ↔ t ≤ 0)) ∧
+          |metricScalarAt (h n) (Φ n p) - 1| ≤ eps ∧
+          K.carrier ⊆ riemannianBallOf (h n) (Φ n z) (2*r) := by
+  let η : ℝ := min (1 / 40000) (eps / 20000) / 2
+  have hη : 0 < η := by dsimp [η]; positivity
+  have hηsmall : η ≤ 1 / 40000 := by
+    have h := min_le_left (1 / 40000 : ℝ) (eps / 20000)
+    dsimp [η]
+    linarith
+  have hηeps : 20000 * η ≤ eps := by
+    have h := min_le_right (1 / 40000 : ℝ) (eps / 20000)
+    dsimp [η]
+    linarith
+  have hK : IsCompact {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹} := by
+    have hc : IsCompact {x : ThreeSpace | ‖x‖ ≤ r+eps⁻¹} := by
+      simpa only [Metric.closedBall, dist_zero_right] using
+        isCompact_closedBall (0 : ThreeSpace) (r+eps⁻¹)
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hc (by
+      intro x hx
+      refine ⟨⟨x, ?_⟩, rfl⟩
+      change ‖x‖ < D+1
+      change ‖x‖ ≤ r+eps⁻¹ at hx
+      linarith)
+  obtain ⟨n₀, hn₀⟩ := hconv η hη
+  refine Filter.eventually_atTop.mpr ⟨n₀, ?_⟩
+  intro n hn
+  have hclose : metricDerivENormSupOn {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹}
+      ⌈eps⁻¹⌉₊ (g n) (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)) < ENNReal.ofReal η := by
+    apply (metricDerivENormSupOn_mono (subset_refl _) hN (g n) _ _).trans_lt
+    rw [metricDerivENormSupOn_eq_ofReal_of_isCompact hK]
+    exact (ENNReal.ofReal_lt_ofReal_iff hη).mpr (hn₀ n hn)
+  have hs : (0 : ℝ) ∈ Ioo (-eps⁻¹) eps⁻¹ :=
+    ⟨neg_neg_of_pos (inv_pos.mpr heps), inv_pos.mpr heps⟩
+  obtain ⟨p,z,hp,hz,nk,K,hcarrier,hcap,hzero,hinterior,hmap,hfront,hemb,hside,hscalar,hball⟩ :=
+    exists_spatial_cap_frontier_of_window_metric_close D r eps heps hsmall hr hfit hs
+      (g n) (h n) (Φ n) (hΦ n) (hinj n) (hmetric n) hη hηsmall hηeps hclose
+  refine ⟨p,z,hp,hz,nk,K,?_,hcap,hzero,?_,hmap,hfront,hemb,?_,?_,?_⟩
+  · simpa only [add_zero] using hcarrier
+  · intro x hx
+    apply hinterior x
+    linarith [inv_pos.mpr heps]
+  · simpa only [zero_add] using hside
+  · exact hscalar.trans (by linarith)
+  · simpa only [add_zero] using hball
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

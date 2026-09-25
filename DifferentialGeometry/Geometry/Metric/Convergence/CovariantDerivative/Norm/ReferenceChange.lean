@@ -145,17 +145,28 @@ theorem exists_metric_deriv_norm_reference_bound
   exact ⟨D, hD, fun A B r hr x hx => hbound u hu gRef g heq
     (fun y hy j _ hj => hb y hy j hj) A B r hr x (hKu hx)⟩
 
-theorem MetricCInfConvergenceOnCompacts.change_reference
-    {gSeq : ℕ → SmoothRiemannianMetric I M}
-    {gInf gRef : SmoothRiemannianMetric I M}
-    (hconv : MetricCInfConvergenceOnCompacts gSeq gInf gRef)
-    (g : SmoothRiemannianMetric I M) :
-    MetricCInfConvergenceOnCompacts gSeq gInf g := by
-  intro K hK p ε hε
+section
+
+variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [FiniteDimensional ℝ F] {G : Type*} [TopologicalSpace G]
+  {J : ModelWithCorners ℝ F G} {P : Type*} [TopologicalSpace P] [ChartedSpace G P]
+  [IsManifold J ∞ P] [T2Space P]
+
+private local instance metricReferenceComplete : CompleteSpace F :=
+  FiniteDimensional.complete ℝ F
+
+theorem MetricCPConvergenceOn.change_reference
+    {gSeq : ℕ → SmoothRiemannianMetric J P}
+    {gInf gRef : SmoothRiemannianMetric J P}
+    {K : Set P} {p : ℕ} (hconv : MetricCPConvergenceOn K p gSeq gInf gRef)
+    (hK : IsCompact K)
+    (g : SmoothRiemannianMetric J P) :
+    MetricCPConvergenceOn K p gSeq gInf g := by
+  intro ε hε
   obtain ⟨D, hD, hbound⟩ := exists_metric_deriv_norm_reference_bound hK gRef g p
   let δ := ε / (2 * (D + 1) * ((p : ℝ) + 1))
   have hδ : 0 < δ := by dsimp only [δ]; positivity
-  obtain ⟨N, hN⟩ := hconv K hK p δ hδ
+  obtain ⟨N, hN⟩ := hconv δ hδ
   refine ⟨N, fun k hk => ?_⟩
   apply lt_of_le_of_lt
     (metricDerivNormSupOn_le_of_forall K p (gSeq k) gInf g (ε / 2)
@@ -183,6 +194,16 @@ theorem MetricCInfConvergenceOnCompacts.change_reference
       apply (div_le_iff₀ hden).mpr
       nlinarith [mul_nonneg (show 0 ≤ (p : ℝ) by positivity) hε.le]
 
+end
+
+theorem MetricCInfConvergenceOnCompacts.change_reference
+    {gSeq : ℕ → SmoothRiemannianMetric I M}
+    {gInf gRef : SmoothRiemannianMetric I M}
+    (hconv : MetricCInfConvergenceOnCompacts gSeq gInf gRef)
+    (g : SmoothRiemannianMetric I M) :
+    MetricCInfConvergenceOnCompacts gSeq gInf g := by
+  intro K hK p
+  exact (hconv K hK p).change_reference hK g
 
 private theorem norm_iterCov_metric_eq_metricDerivNorm
     (h g : SmoothRiemannianMetric I M) (j : ℕ) (hj : 1 ≤ j) (x : M) :

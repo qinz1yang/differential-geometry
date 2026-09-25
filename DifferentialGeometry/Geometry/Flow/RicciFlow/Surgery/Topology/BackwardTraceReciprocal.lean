@@ -136,4 +136,49 @@ theorem inv_max_scalar_initial_sub_incoming_terminal_le
 
 end
 
+theorem inv_max_scalar_sub_incoming_terminal_le_on_time_window
+    {H : ObservedHistory.{u}} {first last : Fin (H.eventCount + 1)} {hle : first ≤ last}
+    {s : ℝ} (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (x : G.terminalRegularOpen) (A : BackwardPointTrace H first last hle x.val)
+    {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last)
+    {t : ℝ} (ht : t ∈ Ico (H.time j.castSucc) (H.time j.succ))
+    (hderiv : ∀ k : Fin H.eventCount, ∀ hfk : j.castSucc ≤ k.castSucc, ∀ hlk : k.succ ≤ last,
+      ∀ v ∈ Ioo (H.time k.castSucc) (H.time k.succ), t ≤ v →
+        q < (H.event k).incoming.flow.scalar v
+          (A.point k.castSucc (hf.trans hfk) (k.castSucc_lt_succ.le.trans hlk)) →
+        |derivWithin (fun w => (H.event k).incoming.flow.scalar w
+          (A.point k.castSucc (hf.trans hfk) (k.castSucc_lt_succ.le.trans hlk))) (Iic v) v| ≤
+          C * (H.event k).incoming.flow.scalar v
+            (A.point k.castSucc (hf.trans hfk) (k.castSucc_lt_succ.le.trans hlk)) ^ 2)
+    (hfinal : ∀ v ∈ Ioo (H.time last) s, t ≤ v → q < G.flow.scalar v x.val →
+      |derivWithin (fun w => G.flow.scalar w x.val) (Iic v) v| ≤ C * G.flow.scalar v x.val ^ 2) :
+    |(max q ((H.event j).incoming.flow.scalar t
+      (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))))⁻¹ -
+      (max q (metricScalarAt L.metric x))⁻¹| ≤ C * (s - t) := by
+  let B := A.restrictFirst (hf.trans j.castSucc_lt_succ.le) hl
+  have htail := B.inv_max_scalar_initial_sub_incoming_terminal_le G L hinit x hq
+    (fun k hk hkl v hv => hderiv k (j.castSucc_lt_succ.le.trans hk) hkl v hv
+      ((ht.2.le.trans (H.time_strictMono.monotone hk)).trans hv.1.le))
+    (fun v hv => hfinal v hv ((ht.2.le.trans (H.time_strictMono.monotone hl)).trans hv.1.le))
+  have hcross := A.crossing j hf hl
+  let p : (H.event j).incoming.terminalRegularOpen :=
+    ⟨A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl),
+      hcross.mem_terminalRegularRegion (H.event j)⟩
+  have hstep := (H.event j).terminal.inv_max_scalar_sub_terminal_le_on_time_window
+    (H.event j).incoming hq p ht.1 ht.2
+    (fun v hv => hderiv j le_rfl hl v ⟨ht.1.trans_lt hv.1,hv.2⟩ hv.1.le)
+    (show t ∈ Ico t (H.time j.succ) from ⟨le_rfl,ht.2⟩)
+  have heq := MetricCutCapEvent.RegularCrossing.scalar_eq (H.event j) (p := p) hcross
+  rw [H.event_output j] at heq
+  rw [heq] at hstep
+  have htri := abs_sub_le
+    ((max q ((H.event j).incoming.flow.scalar t p.val))⁻¹)
+    ((max q (metricScalarAt (H.initialMetric j.succ)
+      (A.point j.succ (hf.trans j.castSucc_lt_succ.le) hl)))⁻¹)
+    ((max q (metricScalarAt L.metric x))⁻¹)
+  dsimp only [B, restrictFirst] at htail
+  nlinarith
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
