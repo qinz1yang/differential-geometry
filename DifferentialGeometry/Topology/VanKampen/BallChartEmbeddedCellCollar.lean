@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.VanKampen.ConnectedSum
+import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialChartEmbedding
@@ -312,3 +313,57 @@ noncomputable def ballChartCellComplementHomeomorph {M : Type u} [TopologicalSpa
   exact Homeomorph.setCongr hset
 
 end DifferentialGeometry.Topology.ThreeManifold
+
+namespace DifferentialGeometry.Topology
+
+open ThreeManifold
+
+theorem BallChart.simplyConnectedSpace_iff_punctured
+    {M : Type u} [TopologicalSpace M] [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
+    (c : BallChart 3 (𝓡 3) M) :
+    SimplyConnectedSpace M ↔ SimplyConnectedSpace c.Punctured := by
+  let B := smoothEmbeddedClosedThreeCellWithCollarOfBallChart c
+  let d := ballChartCellComplementHomeomorph c
+  constructor
+  · intro h
+    let _ : SimplyConnectedSpace M := h
+    let _ : PathConnectedSpace B.complement :=
+      pathConnectedSpace_embeddedCellComplement_of_smoothEmbedding_of_twoSidedCellCollar
+        B.toFun B.injective_toFun B.continuous_toFun B.isSmoothEmbedding_interior
+        B.twoSidedCollar
+    let x : B.complement := Classical.choice inferInstance
+    let e := B.fundamentalGroupComplementEquiv x
+    have hpi : Subsingleton (FundamentalGroup B.complement x) :=
+      ⟨fun a b => e.injective (Subsingleton.elim _ _)⟩
+    let _ : SimplyConnectedSpace B.complement :=
+      (VanKampen.simplyConnectedSpace_iff_fundamentalGroup_subsingleton B.complement x).mpr hpi
+    exact d.symm.toHomotopyEquiv.simplyConnectedSpace
+  · intro h
+    let _ : SimplyConnectedSpace c.Punctured := h
+    let _ : SimplyConnectedSpace B.complement := d.toHomotopyEquiv.simplyConnectedSpace
+    have hopen := isOpen_embeddedCellInteriorImage_of_isSmoothEmbedding B.toFun
+      B.isSmoothEmbedding_interior
+    let a := cellAdjunctionHomeomorphOfEmbeddedCell B.toFun B.injective_toFun
+      B.continuous_toFun hopen
+    let _ : Nonempty (CellBoundary 3) := ⟨CellAttachment.cellBoundaryThreeNorth⟩
+    let _ : PathConnectedSpace (ClosedCell 3) := by
+      apply isPathConnected_iff_pathConnectedSpace.mp
+      have hcell : ({x : EuclideanSpace ℝ (Fin 3) | ‖x‖ ≤ 1} : Set _) =
+          Metric.closedBall 0 1 := by ext x; simp
+      change IsPathConnected {x : EuclideanSpace ℝ (Fin 3) | ‖x‖ ≤ 1}
+      rw [hcell]
+      exact (convex_closedBall (0 : EuclideanSpace ℝ (Fin 3)) 1).isPathConnected
+        ⟨0, by simp⟩
+    let _ : PathConnectedSpace (CellAdjunctionSpace 3
+        (embeddedCellBoundaryMap B.toFun B.injective_toFun)) :=
+      pathConnectedSpace_adjunctionSpace (cellBoundaryInclusion 3)
+        (embeddedCellBoundaryMap B.toFun B.injective_toFun)
+    let _ : PathConnectedSpace M := a.surjective.pathConnectedSpace a.continuous
+    let x : B.complement := Classical.choice inferInstance
+    let e := B.fundamentalGroupComplementEquiv x
+    have hpi : Subsingleton (FundamentalGroup M (x : M)) :=
+      ⟨fun q r => e.symm.injective (Subsingleton.elim _ _)⟩
+    exact (VanKampen.simplyConnectedSpace_iff_fundamentalGroup_subsingleton M (x : M)).mpr hpi
+
+end DifferentialGeometry.Topology

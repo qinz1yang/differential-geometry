@@ -13848,6 +13848,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.St
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardLifetimeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.HighCurvatureModels
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.IntervalLift
+import DifferentialGeometry.Topology.Manifold.SphereBoundarySimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarRay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PreparedCapTraceExclusion
@@ -13944,6 +13945,7 @@ import DifferentialGeometry.Geometry.Neck.PointedRay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedWindowedSegment
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveComponentStability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.RoundComponentStability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardParabolicConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardTerminalRay
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScaledTerminalRay

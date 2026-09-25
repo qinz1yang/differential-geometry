@@ -96,6 +96,10 @@ theorem sphere_separation_of_smoothSphereEmbedding
     exists_chartedSpace_closure_component_of_smoothSphereEmbedding he⟩
 
 theorem simplyConnectedSpace_closure_component_of_smoothSphereEmbedding
+    {M : Type*} [TopologicalSpace M] [T2Space M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+    [IsManifold (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 3))) ∞ M]
+    [SimplyConnectedSpace M] {e : SphereTwo → M}
     (he : IsSmoothEmbedding
       (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 2)))
       (modelWithCornersSelf ℝ (EuclideanSpace ℝ (Fin 3))) ∞ e)
