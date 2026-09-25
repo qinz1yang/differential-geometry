@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowScalarBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapScalarLower
 
 noncomputable section
@@ -64,5 +65,24 @@ theorem exists_presented_cap_scalar_lower_bound_of_canonical_window
   have hlower := mul_le_mul_of_nonneg_left hscalar.le S.neck.scale_pos.le
   rw [hnormalized, hpoint, ← S.scalar_eq E] at hlower
   simpa only [div_eq_mul_inv, one_mul] using hlower
+
+theorem exists_uniform_presented_cap_scalar_abs_bound_of_canonical_window :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
+        {fixed : StaticCapScaffold} {D ε : ℝ} {m : ℕ},
+        StandardCap.transitionEnd < D → ε ≤ 1 / 2 → 2 ≤ m →
+        ∀ {b : E.RetainedBoundaryIndex}
+          (S : E.PresentedStaticCap fixed D m ε b), S.hasCanonicalWindow →
+          ∀ z : ThreeBall,
+            |metricScalarAt S.witness.metric (S.witness.cap z)| ≤ C * S.neck.scale := by
+  obtain ⟨C, hC, hbound⟩ := StandardCap.exists_uniform_window_image_scalar_bound_of_scaled_pullback
+  refine ⟨C, hC, ?_⟩
+  intro P Q a s E fixed D ε m hD hε hm b S hcanonical z
+  obtain ⟨x₀, δ, k, d, w, _, hinner, hcap⟩ := hcanonical
+  obtain ⟨x, hx, hpoint⟩ := hcap z
+  have hscalar := hbound w hε hm E.outputMetric S.window S.window_smooth
+    S.neck.scale S.neck.scale_pos hinner x (hx.trans_lt hD)
+  rw [hpoint, ← S.scalar_eq E] at hscalar
+  exact hscalar
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

@@ -13961,3 +13961,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.MarkedSc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapScalarBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.IncomingComparisonStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryTerminalVolume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceSequence
