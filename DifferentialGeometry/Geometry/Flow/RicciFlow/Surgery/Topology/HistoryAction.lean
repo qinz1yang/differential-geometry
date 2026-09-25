@@ -1605,3 +1605,94 @@ theorem stageRegularizedAction_le_of_sum_le
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+section
+
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u v
+
+namespace ObservedHistory
+
+variable (H : ObservedHistory.{u})
+
+theorem exists_last_nonconfined_stage {X : Type v}
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier) (K : Set X)
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∀ x ∈ K, (H.event i).RegularCrossing
+        (f ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩ x)
+        (f ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩ x))
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    (α : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (hpole : α ⟨last, hle, le_rfl⟩ u ∈ f ⟨last, hle, le_rfl⟩ '' K)
+    (hnode : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∃ z : (H.event i).old,
+        z.val.val = α ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+          (Real.sqrt (T - H.time i.succ)) ∧
+        (H.event i).oldOutput z = α ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+          (Real.sqrt (T - H.time i.succ)))
+    (hexit : ∃ j, ¬ MapsTo (α j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (f j '' K)) :
+    ∃ j : H.StageInterval first last,
+      α j (H.regularizedStageStart T u j.val) ∈ f j '' K ∧
+      (∃ t ∈ Ioc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+        α j t ∉ f j '' K) ∧
+      ∀ k : H.StageInterval first last, j.val < k.val → MapsTo (α k)
+        (Icc (H.regularizedStageStart T u k.val) (H.regularizedStageEnd T v k.val)) (f k '' K) := by
+  classical
+  let bad : Finset (H.StageInterval first last) := Finset.univ.filter fun j =>
+    ¬ MapsTo (α j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (f j '' K)
+  have hbad : bad.Nonempty := by
+    obtain ⟨j, hj⟩ := hexit
+    exact ⟨j, Finset.mem_filter.mpr ⟨Finset.mem_univ j, hj⟩⟩
+  obtain ⟨j, hj, hmax⟩ := bad.exists_max_image (fun j => j.val) hbad
+  have hnewer : ∀ k : H.StageInterval first last, j.val < k.val → MapsTo (α k)
+      (Icc (H.regularizedStageStart T u k.val) (H.regularizedStageEnd T v k.val)) (f k '' K) := by
+    intro k hjk
+    by_contra hk
+    exact (not_le_of_gt hjk) (hmax k (Finset.mem_filter.mpr ⟨Finset.mem_univ k, hk⟩))
+  have hstart : α j (H.regularizedStageStart T u j.val) ∈ f j '' K := by
+    by_cases hjlast : j.val = last
+    · have hj' : j = ⟨last, hle, le_rfl⟩ := Subtype.ext hjlast
+      subst j
+      simpa only [H.regularizedStageStart_eq_of_mem_Icc hu hupper] using hpole
+    · have hjlt : j.val < last := lt_of_le_of_ne j.property.2 hjlast
+      let i : Fin H.eventCount := ⟨j.val.val, by have := last.isLt; omega⟩
+      have hicast : i.castSucc = j.val := Fin.ext rfl
+      have hi : first ≤ i.castSucc := hicast.symm ▸ j.property.1
+      have hl : i.succ ≤ last := by change j.val.val + 1 ≤ last.val; exact hjlt
+      let jo : H.StageInterval first last := ⟨i.castSucc, hi, i.castSucc_lt_succ.le.trans hl⟩
+      let jn : H.StageInterval first last := ⟨i.succ, hi.trans i.castSucc_lt_succ.le, hl⟩
+      have hjo : jo = j := Subtype.ext hicast
+      have hjn : j.val < jn.val := by simpa only [jn, ← hicast] using i.castSucc_lt_succ
+      have hclocko : H.regularizedStageStart T u jo.val = Real.sqrt (T - H.time i.succ) :=
+        H.regularizedStageStart_castSucc_eq_event_clock hupper i hl
+      have hclockn : H.regularizedStageEnd T v jn.val = Real.sqrt (T - H.time i.succ) :=
+        H.regularizedStageEnd_succ_eq_event_clock hlower i hi
+      have hnend : α jn (Real.sqrt (T - H.time i.succ)) ∈ f jn '' K := by
+        apply hnewer jn hjn
+        rw [← hclockn]
+        exact ⟨(H.regularizedStage_bounds hu huv hupper hlower jn).2.1, le_rfl⟩
+      have hmem := ((H.event i).mem_image_iff_of_admissible_node (f jo) (f jn) K
+        (hcross i hi hl) (hnode i hi hl)).mp hnend
+      change α jo (Real.sqrt (T - H.time i.succ)) ∈ f jo '' K at hmem
+      rw [← hclocko] at hmem
+      exact hjo ▸ hmem
+  refine ⟨j, hstart, ?_, hnewer⟩
+  have hjbad := (Finset.mem_filter.mp hj).2
+  simp only [MapsTo, not_forall] at hjbad
+  obtain ⟨t, ht, hout⟩ := hjbad
+  refine ⟨t, ⟨?_, ht.2⟩, hout⟩
+  exact lt_of_le_of_ne ht.1 (by intro heq; exact hout (heq.symm ▸ hstart))
+
+end ObservedHistory
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end

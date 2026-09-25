@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardLifetime
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardMaximalExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarBlowup
 import DifferentialGeometry.Analysis.Asymptotics.RadiusEscape
 
@@ -77,5 +79,37 @@ theorem standard_scalar_limit_tendsto_atTop_of_endpoint_blowup
     hdi.trans (ENNReal.ofReal_le_ofReal hri.le)
   exact hhi.not_ge (hbound (S i) (time i) hti.1 hti.2.1 hti.2.2 (γ i s) hci.le
     (γ i (ell i)) hball)
+
+theorem standard_scalar_time_tendsto_one_of_scalar_tendsto_atTop
+    (S : ℕ → PartialStandardSolution) (time : ℕ → ℝ) (point : ℕ → E3)
+    (htime : ∀ i, time i ∈ (S i).domain ∧ time i < 1)
+    (hscalar : Tendsto (fun i => metricScalarAt ((S i).metric (time i)) (point i)) atTop atTop) :
+    Tendsto time atTop (𝓝 1) := by
+  choose U hU using fun i => (S i).exists_maximal_extension
+  apply tendsto_order.mpr
+  constructor
+  · intro a ha
+    by_cases ha0 : a < 0
+    · exact Eventually.of_forall fun i => ha0.trans_le
+        ((mem_lifetimeInterval_carrier (S i).lifetime (S i).lifetime_pos _).mp (htime i).1).1
+    have hapos : 0 ≤ a := le_of_not_gt ha0
+    obtain ⟨K, _hK, hcurv⟩ := (uniformStandardLifetime_slab a hapos
+      (by rw [uniformStandardLifetime_eq_one]; exact ENNReal.ofReal_lt_one.mpr ha)).2
+    filter_upwards [hscalar.eventually_gt_atTop (9 * K)] with i hi
+    by_contra hnot
+    have hia : time i ≤ a := le_of_not_gt hnot
+    have hi0 := ((mem_lifetimeInterval_carrier (S i).lifetime (S i).lifetime_pos _).mp (htime i).1).1
+    have hm := (hU i).2 (time i) (htime i).1
+    have hrm := hcurv (U i) (time i) ⟨hi0, hia⟩ (point i)
+    rw [hm] at hrm
+    have hsc := scalar_abs_le_rm ((S i).metric (time i)) (point i)
+    change |metricScalarAt ((S i).metric (time i)) (point i)| ≤
+      (Module.finrank ℝ E3 : ℝ) ^ 2 * _ at hsc
+    norm_num only [finrank_euclideanSpace, Fintype.card_fin, Nat.cast_ofNat] at hsc
+    have hb := (le_abs_self _).trans (hsc.trans
+      (mul_le_mul_of_nonneg_left hrm (by norm_num)))
+    exact (not_lt_of_ge hb) hi
+  · intro a ha
+    exact Eventually.of_forall fun i => (htime i).2.trans ha
 
 end DifferentialGeometry.PDE.RicciFlow

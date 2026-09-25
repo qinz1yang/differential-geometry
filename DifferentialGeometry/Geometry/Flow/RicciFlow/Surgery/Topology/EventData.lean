@@ -398,3 +398,47 @@ theorem regularCrossing_left_unique {p r : P.Carrier} {q : Q.Carrier}
 end MetricCutCapEvent
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+section
+
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u v
+
+namespace MetricCutCapEvent
+
+variable {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
+
+theorem oldOutput_eq_iff_of_regularCrossing (z : E.old) {p : P.Carrier} {q : Q.Carrier}
+    (hcross : E.RegularCrossing p q) : E.oldOutput z = q ↔ z.val.val = p := by
+  obtain ⟨w, _, hwp, hwq⟩ := hcross
+  constructor
+  · intro hz
+    have hzw := E.oldOutput_injective (hz.trans hwq.symm)
+    exact (congrArg (fun z : E.old => z.val.val) hzw).trans hwp
+  · intro hz
+    have hzw : z = w := Subtype.ext (Subtype.ext (hz.trans hwp.symm))
+    exact (congrArg E.oldOutput hzw).trans hwq
+
+theorem mem_image_iff_of_admissible_node {X : Type v}
+    (f : X → P.Carrier) (g : X → Q.Carrier) (K : Set X)
+    (hcross : ∀ x ∈ K, E.RegularCrossing (f x) (g x))
+    {p : P.Carrier} {q : Q.Carrier}
+    (hnode : ∃ z : E.old, z.val.val = p ∧ E.oldOutput z = q) :
+    q ∈ g '' K ↔ p ∈ f '' K := by
+  obtain ⟨z, rfl, rfl⟩ := hnode
+  constructor
+  · rintro ⟨x, hx, hq⟩
+    exact ⟨x, hx, ((E.oldOutput_eq_iff_of_regularCrossing z (hcross x hx)).mp hq.symm).symm⟩
+  · rintro ⟨x, hx, hp⟩
+    exact ⟨x, hx, ((E.oldOutput_eq_iff_of_regularCrossing z (hcross x hx)).mpr hp.symm).symm⟩
+
+end MetricCutCapEvent
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end

@@ -83,4 +83,15 @@ theorem lRegularizedExtendedAction_eq_lintegral
   rw [hint]
   simp only [neg_mul, neg_neg, sub_eq_add_neg]
 
+theorem lRegularizedExtendedAction_add
+    (S : SolutionOn (I := I) (M := M) D) (T B : ℝ) (α : ℝ → M) {a c b : ℝ}
+    (hac : a ≤ c) (hcb : c ≤ b)
+    (hα : AEStronglyMeasurable (lRegularizedLagrangian S T α) (volume.restrict (Ioo a b)))
+    (hscalar : ∀ᵐ s ∂volume.restrict (Ioo a b), -B ≤ S.scalar (T - s ^ 2) (α s)) :
+    lRegularizedExtendedAction S T B α a b =
+      lRegularizedExtendedAction S T B α a c + lRegularizedExtendedAction S T B α c b := by
+  unfold lRegularizedExtendedAction
+  exact lowerBoundedIntegral_Ioo_add hac hcb hα (integrable_scalar_floor B a b)
+    (scalar_floor_le_lRegularizedLagrangian S T B a b α hscalar)
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman
