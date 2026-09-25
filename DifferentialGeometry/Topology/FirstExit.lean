@@ -202,3 +202,53 @@ theorem exists_last_entry_frontier_Icc_of_not_mapsTo
   simpa using hstay (b - u) hu'
 
 end DifferentialGeometry
+
+section
+
+namespace DifferentialGeometry
+
+theorem exists_first_exit_frontier_Icc_of_mem_of_not_mapsTo
+    {X : Type*} [TopologicalSpace X] {K : Set X} (hK : IsClosed K)
+    {γ : ℝ → X} {a b : ℝ} (hγ : ContinuousOn γ (Icc a b))
+    (haK : γ a ∈ K) (hexit : ¬ MapsTo γ (Icc a b) K) :
+    ∃ t ∈ Ico a b, MapsTo γ (Icc a t) K ∧ MapsTo γ (Ico a t) (interior K) ∧
+      γ t ∈ frontier K ∧ (γ a ∈ interior K → a < t) := by
+  obtain ⟨c, hc, hcK⟩ : ∃ c ∈ Icc a b, γ c ∉ K := by
+    simpa only [MapsTo, not_forall, exists_prop] using hexit
+  have hac : a < c := lt_of_le_of_ne hc.1 (by
+    intro h
+    exact hcK (h ▸ haK))
+  by_cases haInt : γ a ∈ interior K
+  · have hleft : ContinuousOn (fun u : ℝ => γ (a + u)) (Icc 0 (c - a)) :=
+      hγ.comp (continuous_const.add continuous_id).continuousOn (by
+        intro u hu
+        constructor <;> linarith [hu.1, hu.2, hc.2])
+    obtain ⟨t, ht, hbefore, hfront⟩ := exists_first_exit_frontier_of_not_mem_interior
+      (sub_pos.mpr hac) hleft (by simpa using haInt)
+      (by simpa using fun h => hcK (interior_subset h))
+    have htK : γ (a + t) ∈ K := hK.closure_eq ▸ frontier_subset_closure hfront
+    have htc : t < c - a := lt_of_le_of_ne ht.2 (by
+      intro heq
+      apply hcK
+      simpa only [heq, add_sub_cancel] using htK)
+    have hbefore' : MapsTo γ (Ico a (a + t)) (interior K) := by
+      intro u hu
+      have hu' : u - a ∈ Ico 0 t := ⟨by linarith [hu.1], by linarith [hu.2]⟩
+      simpa using hbefore (u - a) hu'
+    refine ⟨a + t, ⟨by linarith [ht.1], by linarith [htc, hc.2]⟩, ?_,
+      hbefore', hfront, fun _ => by linarith [ht.1]⟩
+    intro u hu
+    rcases hu.2.lt_or_eq with hlt | heq
+    · exact interior_subset (hbefore' ⟨hu.1, hlt⟩)
+    · exact heq ▸ htK
+  · refine ⟨a, ⟨le_rfl, hac.trans_le hc.2⟩, ?_, ?_,
+      ⟨subset_closure haK, haInt⟩, fun h => False.elim (haInt h)⟩
+    · intro u hu
+      have hu' : u = a := le_antisymm hu.2 hu.1
+      exact hu'.symm ▸ haK
+    · intro u hu
+      exact False.elim ((not_lt_of_ge hu.1) hu.2)
+
+end DifferentialGeometry
+
+end
