@@ -277,4 +277,33 @@ theorem window_exists_preimage_and_ball_subset_image_of_scaled_metric_bounds
   rw [← riemannianBallOf_scaleMetric q hq g y (r / Real.sqrt Q)]
   exact riemannianBallOf_mono _ _ (hlength r hr)
 
+theorem window_ball_subset_image_ball_of_metric_bounds
+    (g : SmoothRiemannianMetric I M) {D R L U d r : ℝ}
+    (hRD : R < D + 1) (hL : 0 < L) (hU : 0 < U) (hd : 0 ≤ d)
+    (Φ : standardCapWindow D → M) (hΦ : IsLocalDiffeomorph ThreeModel I ∞ Φ)
+    (hinj : Injective Φ)
+    (hlower : ∀ x : standardCapWindow D, ‖x.val‖ < R → ∀ v : TangentSpace ThreeModel x,
+      metric.inner x.val v v ≤ L ^ 2 *
+        g.inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v))
+    (hupper : ∀ x : standardCapWindow D, ‖x.val‖ < R → ∀ v : TangentSpace ThreeModel x,
+      g.inner (Φ x) (mfderiv ThreeModel I Φ x v) (mfderiv ThreeModel I Φ x v) ≤
+        U ^ 2 * metric.inner x.val v v)
+    (u : standardCapWindow D) (hu : ‖u.val‖ < R) (y : M)
+    (hnear : riemannianEDistOf g (Φ u) y ≤ ENNReal.ofReal d)
+    (hmargin : U * ‖u.val‖ + d + r < R / L) :
+    riemannianBallOf g y r ⊆ Φ '' {x : standardCapWindow D | ‖x.val‖ < R} := by
+  have hmargin' : L * (U * ‖u.val‖ + d + r) < R := by
+    simpa only [mul_comm L] using (lt_div_iff₀ hL).mp hmargin
+  obtain ⟨S, hS, hSR⟩ := exists_between (max_lt hu hmargin')
+  have huS : ‖u.val‖ < S := (le_max_left _ _).trans_lt hS
+  have hSpos : 0 < S := (norm_nonneg _).trans_lt huS
+  have hmarginS : U * ‖u.val‖ + d + r ≤ S / L := by
+    apply (le_div_iff₀ hL).mpr
+    simpa only [mul_comm L] using ((le_max_right _ _).trans_lt hS).le
+  have hball := window_ball_subset_image_closedBall_of_metric_bounds g hSpos
+    (hSR.trans hRD) hL hU hd Φ hΦ hinj
+    (fun x hx => hlower x (hx.trans_lt hSR))
+    (fun x hx => hupper x (hx.trans_lt hSR)) u huS y hnear hmarginS
+  exact hball.trans (image_mono (fun x hx => hx.trans_lt hSR))
+
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

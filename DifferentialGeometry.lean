@@ -13936,3 +13936,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCa
 import DifferentialGeometry.Analysis.Integration.Integral.LogarithmicLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.AbsoluteContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CompactWindowClassification
+import DifferentialGeometry.Geometry.Metric.CurveEnergy.CompactBall
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.Connector

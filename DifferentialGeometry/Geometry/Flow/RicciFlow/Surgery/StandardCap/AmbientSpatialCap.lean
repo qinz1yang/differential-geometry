@@ -1,6 +1,8 @@
+import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSpatialCap
 import DifferentialGeometry.Geometry.Neck.SpatialIsometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowRadius
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowScalarBounds
 
 set_option autoImplicit false
 noncomputable section
@@ -233,5 +235,183 @@ theorem eventually_spatial_cap_frontier_of_metric_cp_convergence
   · simpa only [zero_add] using hside
   · exact hscalar.trans (by linarith)
   · simpa only [add_zero] using hball
+
+theorem eventually_spatial_cap_frontier_with_ball_of_metric_cp_convergence
+    (D r eps depth : ℝ) (heps : 0 < eps) (hsmall : eps < 1 / 11)
+    (hr : transitionEnd + eps⁻¹ + 1 < r) (hfit : r + eps⁻¹ + 1 ≤ D)
+    (hdepth : 2 * transitionEnd + depth < r / 2)
+    (N : ℕ) (hN : ⌈eps⁻¹⌉₊ ≤ N)
+    (g : ℕ → SmoothRiemannianMetric I3 (standardCapWindow D))
+    (hconv : MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹} N g
+      (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)))
+    (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+    [∀ n, IsManifold I3 ∞ (P n)] [∀ n, T2Space (P n)]
+    (h : ∀ n, SmoothRiemannianMetric I3 (P n))
+    (Φ : ∀ n, standardCapWindow D → P n)
+    (hΦ : ∀ n, IsLocalDiffeomorph I3 I3 ∞ (Φ n)) (hinj : ∀ n, Injective (Φ n))
+    (hmetric : ∀ n (x : standardCapWindow D) (v w : TangentSpace I3 x),
+      (g n).inner x v w = (h n).inner (Φ n x)
+        (mfderiv I3 I3 (Φ n) x v) (mfderiv I3 I3 (Φ n) x w)) :
+    ∀ᶠ n in Filter.atTop,
+      ∃ (p z : standardCapWindow D), p.val = r • (spherePoint : ThreeSpace) ∧ z.val = 0 ∧
+        ∃ (nk : SpatialNeck (h n) eps (Φ n p)) (K : CompactDomain (P n)),
+          K.carrier = Φ n '' {x : standardCapWindow D | ‖x.val‖ ≤ r} ∧
+          Nonempty (CapCore K.carrier) ∧ Φ n z ∈ interior K.carrier ∧
+          (∀ x : standardCapWindow D, ‖x.val‖ ≤ transitionEnd →
+            Φ n x ∈ interior K.carrier ∧ 1 / 2 < metricScalarAt (h n) (Φ n x) ∧
+              riemannianBallOf (h n) (Φ n x) depth ⊆ interior K.carrier) ∧
+          (∀ w : neckBuffer eps, ∃ x : standardCapWindow D,
+            x.val = (r+w.val.2) • (w.val.1 : ThreeSpace) ∧ nk.map w.val = Φ n x) ∧
+          frontier K.carrier = range (fun q : Sphere 2 => nk.map (q,0)) ∧
+          IsSmoothEmbedding I2 I3 ∞ (fun q : Sphere 2 => nk.map (q,0)) ∧
+          (∀ q : Sphere 2, ∀ t : ℝ, t ∈ Ioo (-eps⁻¹) eps⁻¹ →
+            (nk.map (q,t) ∈ K.carrier ↔ t ≤ 0)) ∧
+          |metricScalarAt (h n) (Φ n p) - 1| ≤ eps ∧
+          K.carrier ⊆ riemannianBallOf (h n) (Φ n z) (2*r) := by
+  have hinv : (11 : ℝ) < eps⁻¹ := by
+    have hh := one_div_lt_one_div_of_lt heps hsmall
+    norm_num at hh
+    exact hh
+  have htwo : 2 ≤ N := by
+    have hh := (Nat.le_ceil eps⁻¹).trans (Nat.cast_le.mpr hN)
+    have hn : (2 : ℝ) ≤ (N : ℝ) := by linarith
+    exact_mod_cast hn
+  have hcompact : IsCompact {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹} := by
+    have hc : IsCompact {x : ThreeSpace | ‖x‖ ≤ r+eps⁻¹} := by
+      simpa only [Metric.closedBall, dist_zero_right] using
+        isCompact_closedBall (0 : ThreeSpace) (r+eps⁻¹)
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hc (by
+      intro x hx
+      refine ⟨⟨x, ?_⟩, rfl⟩
+      change ‖x‖ < D+1
+      change ‖x‖ ≤ r+eps⁻¹ at hx
+      linarith)
+  obtain ⟨η, C, hη, hC, hscalar⟩ :=
+    exists_uniform_window_scalar_bounds_of_metric_close D (r+eps⁻¹) (by linarith)
+  obtain ⟨n₀, hn₀⟩ := hconv (min (1 / 2) η) (lt_min (by norm_num) hη)
+  filter_upwards [eventually_spatial_cap_frontier_of_metric_cp_convergence
+    D r eps heps hsmall hr hfit N hN g hconv P h Φ hΦ hinj hmetric,
+    Filter.eventually_ge_atTop n₀] with n hn hnlarge
+  obtain ⟨p,z,hp,hz,nk,K,hcarrier,hcap,hzero,hmarks,hmap,hfront,hemb,hside,hsc,hball⟩ := hn
+  have hclose : metricDerivENormSupOn {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹}
+      N (g n) (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)) < ENNReal.ofReal (min (1 / 2) η) := by
+    rw [metricDerivENormSupOn_eq_ofReal_of_isCompact hcompact]
+    exact (ENNReal.ofReal_lt_ofReal_iff (lt_min (by norm_num) hη)).mpr (hn₀ n hnlarge)
+  have hquad := hclose.trans_le (ENNReal.ofReal_le_ofReal (min_le_left (1 / 2 : ℝ) η))
+  have hclose₂ : metricDerivENormSupOn {x : standardCapWindow D | ‖x.val‖ ≤ r+eps⁻¹}
+      2 (g n) (metric.restrictOpen (standardCapWindow D))
+      (metric.restrictOpen (standardCapWindow D)) < ENNReal.ofReal η := by
+    exact (metricDerivENormSupOn_mono (subset_refl _) htwo (g n) _ _).trans_lt
+      (hclose.trans_le (ENNReal.ofReal_le_ofReal (min_le_right (1 / 2 : ℝ) η)))
+  have himage : Φ n '' {x : standardCapWindow D | ‖x.val‖ < r} ⊆ interior K.carrier := by
+    apply interior_maximal ?_ ((hΦ n).isOpenMap _
+      (isOpen_lt (continuous_norm.comp continuous_subtype_val) continuous_const))
+    rw [hcarrier]
+    exact image_mono (fun x hx => show ‖x.val‖ ≤ r from hx.le)
+  refine ⟨p,z,hp,hz,nk,K,hcarrier,hcap,hzero,?_,hmap,hfront,hemb,hside,hsc,hball⟩
+  intro x hx
+  have hxR : ‖x.val‖ ≤ r+eps⁻¹ := by linarith
+  have hscx := (hscalar (g n) hclose₂ x hxR).1
+  rw [(curvature_of_injective_local_isometry (g n) (h n) (Φ n) (hΦ n) (hinj n)
+    (hmetric n) x).1] at hscx
+  refine ⟨hmarks x hx, hscx, ?_⟩
+  apply subset_trans ?_ himage
+  apply window_ball_subset_image_ball_of_metric_bounds (h n) (R := r)
+    (L := 2) (U := 2) (d := 0) (by linarith) (by norm_num) (by norm_num)
+    le_rfl (Φ n) (hΦ n) (hinj n) ?_ ?_ x (by linarith) (Φ n x) ?_ ?_
+  · intro y hy v
+    have hb := inner_bounds_of_metricDerivENormSupOn_lt
+      (metric.restrictOpen (standardCapWindow D)) (g n) hquad
+      (show ‖y.val‖ ≤ r+eps⁻¹ by linarith) v
+    simp only [SmoothRiemannianMetric.restrictOpen_inner, hmetric n] at hb
+    nlinarith [metric_inner_self_nonneg metric y.val v]
+  · intro y hy v
+    have hb := inner_bounds_of_metricDerivENormSupOn_lt
+      (metric.restrictOpen (standardCapWindow D)) (g n) hquad
+      (show ‖y.val‖ ≤ r+eps⁻¹ by linarith) v
+    simp only [SmoothRiemannianMetric.restrictOpen_inner, hmetric n] at hb
+    nlinarith [metric_inner_self_nonneg metric y.val v]
+  · simp only [riemannianEDistOf_self, ENNReal.ofReal_zero, le_refl]
+  · linarith
+
+open Filter
+
+private theorem spatialNeck_map_cast_metric
+    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    {g h : SmoothRiemannianMetric ThreeModel M} {eps : ℝ} {x : M}
+    (heq : g = h) (nk : SpatialNeck g eps x) : (heq ▸ nk : SpatialNeck h eps x).map = nk.map := by
+  cases heq
+  rfl
+
+
+theorem eventually_spatial_cap_of_rescaled_window_convergence
+    (D r eps : ℝ) (heps : 0 < eps) (hsmall : eps < 1 / 11)
+    (hr : transitionEnd + eps⁻¹ + 1 < r) (hfit : r + eps⁻¹ + 1 ≤ D)
+    (hdepth : 2 * transitionEnd + 2000 < r / 2)
+    (N : ℕ) (hN : ⌈eps⁻¹⌉₊ ≤ N)
+    (g : ℕ → SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    (hconv : MetricCPConvergenceOn {y : standardCapWindow D | ‖y.val‖ ≤ r+eps⁻¹} N g
+      (metric.restrictOpen (standardCapWindow D)) (metric.restrictOpen (standardCapWindow D)))
+    (P : ℕ → Type u) [∀ n, TopologicalSpace (P n)] [∀ n, ChartedSpace ThreeSpace (P n)]
+    [∀ n, IsManifold ThreeModel ∞ (P n)] [∀ n, T2Space (P n)]
+    (h : ∀ n, SmoothRiemannianMetric ThreeModel (P n)) (q : ℕ → ℝ) (hq : ∀ n, 0 < q n)
+    (Φ : ∀ n, standardCapWindow D → P n)
+    (hΦ : ∀ n, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (Φ n)) (hinj : ∀ n, Injective (Φ n))
+    (hmetric : ∀ n (y : standardCapWindow D) (v w : TangentSpace ThreeModel y),
+      (g n).inner y v w = (scaleMetric (q n) (hq n) (h n)).inner (Φ n y)
+        (mfderiv ThreeModel ThreeModel (Φ n) y v) (mfderiv ThreeModel ThreeModel (Φ n) y w)) : ∀ᶠ n in atTop, ∃ (p : standardCapWindow D) (nk : SpatialNeck (h n) eps (Φ n p)) (K : CompactDomain (P n)),
+        K.carrier = Φ n '' {y : standardCapWindow D | ‖y.val‖ ≤ r} ∧
+        Nonempty (CapCore K.carrier) ∧
+        (∀ u : standardCapWindow D, ‖u.val‖ ≤ transitionEnd →
+          0 < metricScalarAt (h n) (Φ n u) ∧ Φ n u ∈ interior K.carrier ∧
+          riemannianBallOf (h n) (Φ n u)
+            (1000 / Real.sqrt (metricScalarAt (h n) (Φ n u))) ⊆ interior K.carrier) ∧
+        frontier K.carrier = range (fun z : Sphere 2 => nk.map (z, 0)) ∧
+        (∀ v : neckBuffer eps, ∃ y : standardCapWindow D,
+          y.val = (r + v.val.2) • (v.val.1 : ThreeSpace) ∧ nk.map v.val = Φ n y) := by
+  have hcap := eventually_spatial_cap_frontier_with_ball_of_metric_cp_convergence
+    D r eps 2000 heps hsmall hr hfit hdepth N hN g hconv P
+    (fun n => scaleMetric (q n) (hq n) (h n)) Φ hΦ hinj hmetric
+  filter_upwards [hcap] with n hn
+  obtain ⟨p, tip, hp, htip, nk, K, hK, hcore, htipin, hmarks, hmap, hfront,
+    hsmooth, hside, hscalar, hball⟩ := hn
+  have heq : scaleMetric (q n)⁻¹ (inv_pos.mpr (hq n)) (scaleMetric (q n) (hq n) (h n)) = h n := by
+    apply SmoothRiemannianMetric.ext_inner
+    intro y v w
+    simp only [scaleMetric_inner]
+    rw [← mul_assoc, inv_mul_cancel₀ (hq n).ne', one_mul]
+  let neck := nk.scaleMetric (q n)⁻¹ (inv_pos.mpr (hq n))
+  let out : SpatialNeck (h n) eps (Φ n p) := heq ▸ neck
+  have hout : out.map = nk.map :=
+    (spatialNeck_map_cast_metric heq neck).trans (nk.scaleMetric_map _ _)
+  refine ⟨p, out, K, hK, hcore, ?_, ?_, ?_⟩
+  · intro u hu
+    obtain ⟨hmarkin, hmarkscalar, hmarkball⟩ := hmarks u hu
+    have hRpos : 0 < metricScalarAt (h n) (Φ n u) := by
+      rw [metricScalarAt_scaleMetric] at hmarkscalar
+      exact (mul_pos_iff.mp ((by norm_num : (0 : ℝ) < 1/2).trans hmarkscalar)).elim
+        (fun hh => hh.2) (fun hh => ((inv_pos.mpr (hq n)).not_gt hh.1).elim)
+    have hroot : (1/2 : ℝ) < Real.sqrt
+        (metricScalarAt (scaleMetric (q n) (hq n) (h n)) (Φ n u)) := by
+      have hs := Real.sq_sqrt ((by norm_num : (0 : ℝ) ≤ 1/2).trans hmarkscalar.le)
+      nlinarith [Real.sqrt_nonneg (metricScalarAt (scaleMetric (q n) (hq n) (h n)) (Φ n u))]
+    have hrad : Real.sqrt (q n) * (1000 / Real.sqrt (metricScalarAt (h n) (Φ n u))) < 2000 := by
+      have heq : Real.sqrt (metricScalarAt (scaleMetric (q n) (hq n) (h n)) (Φ n u)) =
+          Real.sqrt (metricScalarAt (h n) (Φ n u)) / Real.sqrt (q n) := by
+        rw [metricScalarAt_scaleMetric, inv_mul_eq_div, Real.sqrt_div hRpos.le]
+      rw [heq] at hroot
+      have hh := (lt_div_iff₀ (Real.sqrt_pos.mpr (hq n))).mp hroot
+      rw [← mul_div_assoc]
+      apply (div_lt_iff₀ (Real.sqrt_pos.mpr hRpos)).mpr
+      nlinarith
+    have hcapture : riemannianBallOf (h n) (Φ n u)
+        (1000 / Real.sqrt (metricScalarAt (h n) (Φ n u))) ⊆ interior K.carrier := by
+      rw [← riemannianBallOf_scaleMetric (q n) (hq n)]
+      exact (riemannianBallOf_mono _ _ hrad.le).trans hmarkball
+    exact ⟨hRpos, hmarkin, hcapture⟩
+  · simpa only [hout] using hfront
+  · simpa only [hout] using hmap
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
