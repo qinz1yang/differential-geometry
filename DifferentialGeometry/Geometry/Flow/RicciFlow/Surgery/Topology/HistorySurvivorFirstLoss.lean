@@ -278,3 +278,39 @@ theorem exists_backwardSurvivor_chart_after_terminal_crossing
   exact ((A x).append_point_before (ψ x) (hcross' x) i.castSucc hle le_rfl).trans (A x).endpoint_eq
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u v
+
+theorem exists_first_event_trace_without_regularCrossing
+    (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {X : Type v} (J : X → (H.stage first).Carrier)
+    (hnot : ¬ range J ⊆ range (H.backwardSurvivorMap first last hle first le_rfl hle)) :
+    ∃ (i : Fin H.eventCount) (hf : first ≤ i.castSucc), i.succ ≤ last ∧
+      (∀ (k : Fin (H.eventCount + 1)) (hk : first ≤ k), k ≤ i.castSucc →
+        range J ⊆ range (H.backwardSurvivorMap first k hk first le_rfl hk)) ∧
+      ∃ (x : X) (p : (H.stage i.castSucc).Carrier)
+        (A : BackwardPointTrace H first i.castSucc hf p),
+        A.point first le_rfl hf = J x ∧
+        ∀ q : (H.stage i.succ).Carrier, ¬ (H.event i).RegularCrossing p q := by
+  classical
+  obtain ⟨i, hf, hl, hpast, hfail⟩ :=
+    H.exists_first_event_of_not_subset_backwardSurvivorMap_range first last hle J hnot
+  obtain ⟨y, hy, hbad⟩ := Set.not_subset.mp hfail
+  obtain ⟨x, rfl⟩ := hy
+  obtain ⟨z, hz⟩ := hpast i.castSucc hf le_rfl (mem_range_self x)
+  let A : BackwardPointTrace H first i.castSucc hf z.val := Classical.choice z.property
+  have hbirth : A.point first le_rfl hf = J x :=
+    (H.backwardSurvivorMap_eq_point first i.castSucc hf first le_rfl hf z A).symm.trans hz
+  refine ⟨i, hf, hl, hpast, x, z.val, A, hbirth, ?_⟩
+  intro q hcross
+  let B := A.append q hcross
+  apply hbad
+  refine ⟨⟨q, ⟨B⟩⟩, ?_⟩
+  exact (H.backwardSurvivorMap_eq_point first i.succ (hf.trans i.castSucc_lt_succ.le)
+    first le_rfl (hf.trans i.castSucc_lt_succ.le) ⟨q, ⟨B⟩⟩ B).trans
+    ((A.append_point_before q hcross first le_rfl hf).trans hbirth)
+
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory

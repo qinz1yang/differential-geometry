@@ -14013,3 +14013,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSurvivalStep
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowPersistence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowDiscarding

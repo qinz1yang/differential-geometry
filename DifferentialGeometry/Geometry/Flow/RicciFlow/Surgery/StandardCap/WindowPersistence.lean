@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceLocalChart
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingReciprocal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowSurvival
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorInitialCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowFlowRestriction
@@ -1025,6 +1026,145 @@ private theorem exists_prepared_incoming_window_control
     nlinarith only [hh, hδ]
   exact ⟨P, Cstep, Cbirth, hP, hCstep, hCbirth, @prepared_incoming_control_mono Θ Θ _ P Cstep Cbirth C hlarge (hcontrol n)⟩
 
+theorem exists_uniform_prepared_incoming_cap_window_flow_of_backward_trace
+    (Θ : ℝ) (C : ℝ≥0) (hΘ : 0 < Θ) (hΘ1 : Θ < 1) :
+    ∃ P Creset Cbirth : ℝ, 0 < P ∧ 0 < Creset ∧ 0 < Cbirth ∧
+      ∀ {E : Type uE} {H₀ : Type uH} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H₀] {I : ModelWithCorners ℝ E H₀} [I.Boundaryless],
+      ∀ (D ε η : ℝ) (hD : 0 < D), 0 < ε → 0 < η → ∀ N : ℕ,
+      ∃ R : ℝ, ∃ hDR : D + 1 < R, ∃ m₀ : ℕ, 4 ≤ m₀ ∧
+      ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
+      ∀ {M : Type uM} [TopologicalSpace M] [ChartedSpace H₀ M]
+        [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A}
+        {Dbig : ℝ} {m : ℕ} {ζ : ℝ}
+        (w : StandardCap.CanonicalStaticInsertionWitness d A hA Dbig m ζ)
+        (hR : R ≤ Dbig), m₀ ≤ m → ζ ≤ ζ₀ →
+      let hDD : D ≤ Dbig := by linarith;
+      let inc : standardCapWindow D → standardCapWindow Dbig :=
+        TopologicalSpace.Opens.inclusion (fun _ hx => hx.trans_le (add_le_add hDD (le_refl 1)));
+      ∀ (H : ObservedHistory.{u}) (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+        (s : ℝ) (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric),
+      G.flow.base.metric (H.time last) = H.initialMetric last →
+      ∀ (Jbig : standardCapWindow Dbig → (H.stage first).Carrier),
+      IsSmoothEmbedding ThreeModel ThreeModel ∞ Jbig →
+      ∀ (q q₀ a₀ : ℝ) (hq : 0 < q), 0 < q₀ → q₀ ≤ Cbirth * q → 1 ≤ a₀ * q →
+      (∀ x (v z : TangentSpace ThreeModel x), w.windowMetric.inner x v z =
+        q * (H.initialMetric first).inner (Jbig x) (mfderiv ThreeModel ThreeModel Jbig x v)
+          (mfderiv ThreeModel ThreeModel Jbig x z)) →
+      ∀ (parameters : CutoffParameters) (records : ∀ j : Fin H.eventCount, GeometricCutoffRecord H j parameters),
+      (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x) →
+      (∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last → ∀ b, (records j).delta b ≤ δ₀) →
+      (∀ j : Fin H.eventCount, first ≤ j.castSucc → j.succ ≤ last →
+        ∀ x : (H.stage j.castSucc).Carrier, ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+          q₀ < (H.event j).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event j).incoming.flow.scalar v x) (Iic t) t| ≤
+            C * (H.event j).incoming.flow.scalar t x ^ 2) →
+      (∀ x : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) s,
+        q₀ < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2) →
+      q * (s - H.time first) ≤ Θ →
+      ∀ (z : standardCapWindow D) (x : (H.stage last).Carrier)
+        (Atrace : BackwardPointTrace H first last hle x),
+        Atrace.point first le_rfl hle = Jbig (inc z) →
+      ∃ hx : x ∈ G.terminalRegularRegion,
+      ∃ Ξ : standardCapWindow D → H.backwardSurvivorIncomingDomain first last hle G,
+          IsSmoothEmbedding ThreeModel ThreeModel ∞ Ξ ∧
+          (∀ y, H.backwardSurvivorMap first last hle first le_rfl hle (Ξ y).val = (Jbig ∘ inc) y) ∧
+          H.backwardSurvivorIncomingMap first last hle G (Ξ z) = ⟨x,hx⟩ ∧
+          ∃ (hΞ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ξ)
+            (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+              (H.backwardSurvivorIncomingDomain first last hle G))
+            (S : SolutionOn (I := ThreeModel) (M := standardCapWindow D)
+              (RealTimeInterval.closed 0 (q * (s - H.time first))
+                (by have ht := (H.time_strictMono.monotone hle).trans_lt G.lt; positivity))),
+            (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc) (hl : j.succ ≤ last),
+              ∀ t ∈ Icc (H.time j.castSucc) (H.time j.succ),
+                gflow t = (H.backwardSurvivorSlabMetric first last hle j hf hl t).restrictOpen
+                  (H.backwardSurvivorIncomingDomain first last hle G)) ∧
+            (∀ t ∈ Icc (H.time last) s,
+              gflow t = H.backwardSurvivorIncomingMetric first last hle G L t) ∧
+            IsSolutionOn S ∧ S.base.metric 0 = (w.restrictWindow hD hDD).windowMetric ∧
+            (∀ t, S.base.metric t =
+              localPullMetric (scaleMetric q hq (gflow (H.time first + t / q))) Ξ hΞ) ∧
+            (∀ (y : standardCapWindow D) (j k : Fin (Module.finrank ℝ ThreeSpace)),
+              ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel) 𝓘(ℝ) ∞
+                (fun z : ℝ × standardCapWindow D => chartGramMatrix (S.base.metric z.1) y z.2 j k)
+                (Icc 0 (q * (s - H.time first)) ×ˢ
+                  (trivializationAt ThreeSpace (TangentSpace ThreeModel) y).baseSet)) ∧
+            (∀ t ∈ Icc 0 (q * (s - H.time first)), ∀ y : standardCapWindow D,
+              normSq0S (S.base.metric t) y 4 (S.base.rm04 t y) ≤ P ^ 2 ∧ |S.scalar t y| ≤ Creset) ∧
+            ∃ Q : StandardSolution, ENNReal.ofReal (q * (s - H.time first)) < Q.val.lifetime ∧
+              ∀ t ∈ Icc 0 (q * (s - H.time first)),
+                (∀ j ≤ N, ∀ y : standardCapWindow D,
+                  metricDerivNorm j (S.base.metric t)
+                    ((Q.val.metric t).restrictOpen (standardCapWindow D))
+                    (StandardCap.metric.restrictOpen (standardCapWindow D)) y < ε) ∧
+                ∀ j ≤ 2, ∀ y : standardCapWindow D,
+                  metricDerivNorm j (S.base.metric t)
+                    ((Q.val.metric t).restrictOpen (standardCapWindow D))
+                    (StandardCap.metric.restrictOpen (standardCapWindow D)) y < η := by
+  obtain ⟨P,Creset,Cbirth,hP,hCreset,hCbirth,hwindow⟩ :=
+    exists_prepared_incoming_window_control.{u, uE, uH, uM} Θ C hΘ hΘ1
+  simp only [preparedIncomingControl, incomingWindowControl, min_self] at hwindow
+  refine ⟨P,Creset,Cbirth,hP,hCreset,hCbirth,?_⟩
+  intro E H₀ _ _ _ _ _ I _ D ε η hD hε hη N
+  obtain ⟨R,hDR,m₀,hm₀,ζ₀,δ₀,hζ₀,hζhalf,hδ₀,hwindow⟩ := hwindow (I := I) D ε η hD hε hη N
+  refine ⟨R,hDR,m₀,hm₀,ζ₀,δ₀,hζ₀,hζhalf,hδ₀,?_⟩
+  intro M _ _ _ _ g x₀ δ k d A hA Dbig m ζ w hR hm hζ hDD inc
+    H first last hle s G L hinit Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv hfinal htime z x Atrace hanchor
+  have hscalar : ∀ τ ∈ Ioo (H.time last) s, G.flow.scalar τ x ≤ Creset*q := by
+    intro τ hτ
+    let Pstage := H.stage last
+    let F := G.closedPrefix τ hτ.1 hτ.2
+    let G₀ := F.restrictIncoming le_rfl F.lt le_rfl
+    let L₀ := F.endpointTerminalLimitMetric Pstage
+    have hreg : G₀.terminalRegularRegion = univ := F.terminalRegularRegion_eq_univ Pstage
+    let x₀ : G₀.terminalRegularOpen := ⟨x, by
+      change x ∈ G₀.terminalRegularRegion
+      rw [hreg]
+      trivial⟩
+    have hscalarEq : ∀ t y, G₀.flow.scalar t y = G.flow.scalar t y := fun _ _ => rfl
+    have hinit₀ : G₀.flow.base.metric (H.time last) = H.initialMetric last := hinit
+    have hfinal₀ : ∀ y : (H.stage last).Carrier, ∀ t ∈ Ioo (H.time last) τ,
+        q₀ < G₀.flow.scalar t y →
+        |derivWithin (fun v => G₀.flow.scalar v y) (Iic t) t| ≤ C * G₀.flow.scalar t y ^ 2 := by
+      intro y t ht hs
+      simp only [hscalarEq] at hs ⊢
+      exact hfinal y t ⟨ht.1,ht.2.trans hτ.2⟩ hs
+    have htime₀ : q*(τ-H.time first) ≤ Θ :=
+      (mul_le_mul_of_nonneg_left (sub_le_sub_right hτ.2.le _) hq.le).trans htime
+    obtain ⟨Ξ,hΞs,hbirth,hmark,hΞ,gflow,S,hslabs,hlast,hS,hSzero,hmetric,hgram,hcurv,Q,hQ,hclose⟩ :=
+      hwindow w hR hm hζ H first last hle τ G₀ L₀ hinit₀ Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+        parameters records hfixed hlower hdelta hderiv hfinal₀ htime₀ z x₀ Atrace hanchor
+    have hage : 0 ≤ q*(τ-H.time first) := mul_nonneg hq.le
+      (sub_nonneg.mpr ((H.time_strictMono.monotone hle).trans hτ.1.le))
+    have hb := (le_abs_self (S.scalar (q*(τ-H.time first)) z)).trans
+      (hcurv _ ⟨hage,le_rfl⟩ z).2
+    have hclock : H.time first + q*(τ-H.time first)/q = τ := by
+      rw [mul_div_cancel_left₀ _ hq.ne']
+      ring
+    change metricScalarAt (S.base.metric (q*(τ-H.time first))) z ≤ Creset at hb
+    rw [hmetric,hclock,metricScalarAt_localPull,metricScalarAt_scaleMetric,
+      hlast τ ⟨hτ.1.le,le_rfl⟩,H.backwardSurvivorIncomingMetric_terminal,
+      metricScalarAt_localPull] at hb
+    have hterminal : L₀.metric = (G.flow.base.metric τ).restrictOpen G₀.terminalRegularOpen := rfl
+    rw [hterminal,metricScalarAt_restrictOpen] at hb
+    have hpoint : (Ξ z).val.val = x := congrArg Subtype.val hmark
+    change q⁻¹ * G.flow.scalar τ (Ξ z).val.val ≤ Creset at hb
+    rw [hpoint,←div_eq_inv_mul,div_le_iff₀ hq] at hb
+    exact hb
+  have hx : x ∈ G.terminalRegularRegion := by
+    apply G.mem_terminalRegularRegion_of_frequently_scalar_le hq₀ hfinal
+    exact (Filter.Eventually.mono (Ioo_mem_nhdsLT G.lt) (fun τ hτ => hscalar τ hτ)).frequently
+  refine ⟨hx,?_⟩
+  exact hwindow w hR hm hζ H first last hle s G L hinit Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv hfinal htime z ⟨x,hx⟩ Atrace hanchor
+
 theorem exists_uniform_prepared_incoming_cap_window_flow_of_bounded_normalized_time
     (Θ : ℝ) (C : ℝ≥0) (hΘ : 0 < Θ) (hΘ1 : Θ < 1) :
     ∃ P Creset Cbirth : ℝ, 0 < P ∧ 0 < Creset ∧ 0 < Cbirth ∧
@@ -1105,7 +1245,17 @@ theorem exists_uniform_prepared_incoming_cap_window_flow_of_bounded_normalized_t
                   metricDerivNorm j (S.base.metric t)
                     ((Q.val.metric t).restrictOpen (standardCapWindow D))
                     (StandardCap.metric.restrictOpen (standardCapWindow D)) y < η := by
-  simpa only [preparedIncomingControl, incomingWindowControl, min_self] using
-    exists_prepared_incoming_window_control.{u, uE, uH, uM} Θ C hΘ hΘ1
+  obtain ⟨P,Creset,Cbirth,hP,hCreset,hCbirth,hwindow⟩ :=
+    exists_uniform_prepared_incoming_cap_window_flow_of_backward_trace Θ C hΘ hΘ1
+  refine ⟨P,Creset,Cbirth,hP,hCreset,hCbirth,?_⟩
+  intro E H₀ _ _ _ _ _ I _ D ε η hD hε hη N
+  obtain ⟨R,hDR,m₀,hm₀,ζ₀,δ₀,hζ₀,hζhalf,hδ₀,hwindow⟩ := hwindow (I := I) D ε η hD hε hη N
+  refine ⟨R,hDR,m₀,hm₀,ζ₀,δ₀,hζ₀,hζhalf,hδ₀,?_⟩
+  intro M _ _ _ _ g x₀ δ k d A hA Dbig m ζ w hR hm hζ hDD inc
+    H first last hle s G L hinit Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv hfinal htime z x Atrace hanchor
+  obtain ⟨hx,hflow⟩ := hwindow w hR hm hζ H first last hle s G L hinit Jbig hJbig q q₀ a₀ hq hq₀ hq₀Q haq hzero
+    parameters records hfixed hlower hdelta hderiv hfinal htime z x.val Atrace hanchor
+  exact hflow
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
