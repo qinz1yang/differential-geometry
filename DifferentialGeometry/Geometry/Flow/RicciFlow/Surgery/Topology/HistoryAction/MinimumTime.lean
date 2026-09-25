@@ -249,3 +249,185 @@ theorem exists_short_negative_continuous_spatial_minimum_of_joint_history_metric
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Filter Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal NNReal Topology BigOperators
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+private theorem spatial_cost_minimum_value_eq
+    (H : ObservedHistory.{u}) {j k last : Fin (H.eventCount + 1)}
+    (heq : j = k) (hj : j ≤ last) (hk : k ≤ last) (T B v : ℝ) (p : (H.stage last).Carrier)
+    {A C : ℝ}
+    (hA : ∃ q : (H.stage j).Carrier, H.regularizedCost j last hj T B 0 v p q = (A : WithTop ℝ))
+    (hAmin : ∀ q : (H.stage j).Carrier, (A : WithTop ℝ) ≤ H.regularizedCost j last hj T B 0 v p q)
+    (hC : ∃ q : (H.stage k).Carrier, H.regularizedCost k last hk T B 0 v p q = (C : WithTop ℝ))
+    (hCmin : ∀ q : (H.stage k).Carrier, (C : WithTop ℝ) ≤ H.regularizedCost k last hk T B 0 v p q) : A = C := by
+  subst k
+  obtain ⟨q, hq⟩ := hA
+  obtain ⟨z, hz⟩ := hC
+  have hac := hAmin z
+  have hca := hCmin q
+  rw [hz] at hac
+  rw [hq] at hca
+  exact le_antisymm (WithTop.coe_le_coe.mp hac) (WithTop.coe_le_coe.mp hca)
+
+private theorem spatial_cost_infimum_eq
+    (H : ObservedHistory.{u}) {j last : Fin (H.eventCount + 1)}
+    (hj : j ≤ last) (T B v : ℝ) (p : (H.stage last).Carrier) {A : ℝ}
+    (hA : ∃ q : (H.stage j).Carrier, H.regularizedCost j last hj T B 0 v p q = (A : WithTop ℝ))
+    (hAmin : ∀ q : (H.stage j).Carrier, (A : WithTop ℝ) ≤ H.regularizedCost j last hj T B 0 v p q) :
+    sInf (Set.range (H.regularizedCost j last hj T B 0 v p)) = (A : WithTop ℝ) := by
+  obtain ⟨q, hq⟩ := hA
+  have hmem : (A : WithTop ℝ) ∈ Set.range (H.regularizedCost j last hj T B 0 v p) := ⟨q, hq⟩
+  have hbdd : BddBelow (Set.range (H.regularizedCost j last hj T B 0 v p)) := by
+    refine ⟨(A : WithTop ℝ), ?_⟩
+    rintro c ⟨z, rfl⟩
+    exact hAmin z
+  apply le_antisymm (csInf_le hbdd hmem)
+  exact le_csInf ⟨A, hmem⟩ (by rintro c ⟨z, rfl⟩; exact hAmin z)
+
+private theorem spatial_minimum_endpoint_transfer
+    (H : ObservedHistory.{u}) {X : Type u} {first₀ last j k : Fin (H.eventCount + 1)}
+    (hle : first₀ ≤ last) (heq : j = k) (hj₀ : first₀ ≤ j) (hjl : j ≤ last)
+    (hk₀ : first₀ ≤ k) (hkl : k ≤ last)
+    (f : (i : H.StageInterval first₀ last) → X → (H.stage i.val).Carrier)
+    (T B b c : ℝ) (x y : X)
+    (hmem : (c : WithTop ℝ) ∈ H.regularizedActionValues j last hjl T B 0 b
+      (f ⟨last, hle, le_rfl⟩ x) (f ⟨j, hj₀, hjl⟩ y))
+    (hcost : H.regularizedCost j last hjl T B 0 b
+      (f ⟨last, hle, le_rfl⟩ x) (f ⟨j, hj₀, hjl⟩ y) = (c : WithTop ℝ))
+    (hmin : ∀ q : (H.stage j).Carrier, (c : WithTop ℝ) ≤
+      H.regularizedCost j last hjl T B 0 b (f ⟨last, hle, le_rfl⟩ x) q) :
+    (c : WithTop ℝ) ∈ H.regularizedActionValues k last hkl T B 0 b
+      (f ⟨last, hle, le_rfl⟩ x) (f ⟨k, hk₀, hkl⟩ y) ∧
+    H.regularizedCost k last hkl T B 0 b
+      (f ⟨last, hle, le_rfl⟩ x) (f ⟨k, hk₀, hkl⟩ y) = (c : WithTop ℝ) ∧
+    ∀ q : (H.stage k).Carrier, (c : WithTop ℝ) ≤
+      H.regularizedCost k last hkl T B 0 b (f ⟨last, hle, le_rfl⟩ x) q := by
+  subst k
+  exact ⟨hmem, hcost, hmin⟩
+
+variable (H : ObservedHistory.{u}) {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+theorem exists_continuous_spatial_cost_minimum_near_pole
+    (first₀ last : Fin (H.eventCount + 1)) (hle : first₀ ≤ last)
+    (f : (j : H.StageInterval first₀ last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j))
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first₀ ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing (f ⟨i.castSucc, hi, i.castSucc_le_succ.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_le_succ, hl⟩ z))
+    {T bmax : ℝ} (hbmax : 0 < bmax)
+    (hupper : T ∈ H.stageDomain last)
+    (hlower : T - bmax ^ 2 ∈ H.stageDomain first₀)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (J : Set ℝ) (hJ : J ⊆ D.carrier)
+    (hclock : ∀ t ∈ Icc 0 bmax, T-t^2 ∈ J)
+    (hreg : ∀ t ∈ Ioo 0 bmax, T-t^2 ∈ D.regular)
+    (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
+      (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
+      (fun z : ℝ × X => (⟨z.2, (S.base.metric z.1).inner z.2⟩ :
+        Bundle.TotalSpace (ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)
+          (fun x => TangentSpace ThreeModel x →L[ℝ] TangentSpace ThreeModel x →L[ℝ] ℝ)))
+      (J ×ˢ (univ : Set X)))
+    (K : Set X) (hK : IsCompact K) (B : ℝ)
+    (hmetric : ∀ j : H.StageInterval first₀ last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T bmax j.val),
+      S.base.metric (T-t^2) = localPullMetric (H.stageMetric j.val (T-t^2)) (f j) (hf j))
+    (hscalar : ∀ j : H.StageInterval first₀ last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T 0 j.val) (H.regularizedStageEnd T bmax j.val),
+      ∀ z : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T-t^2)) z)
+    (x : X) (hx : x ∈ interior K) :
+    ∃ δ : ℝ, 0 < δ ∧ δ ≤ bmax ∧
+      ∃ (first : ℝ → Fin (H.eventCount + 1)) (hfirst : ∀ b, first₀ ≤ first b)
+        (hlast : ∀ b, first b ≤ last) (m : ℝ → ℝ),
+        (∀ b ∈ Icc 0 bmax, T-b^2 ∈ H.stageDomain (first b)) ∧
+        ContinuousOn m (Ioc 0 δ) ∧
+        ContinuousOn (fun b => 2*b*m b-6*b^2) (Ioc 0 δ) ∧
+        ∀ b ∈ Ioc 0 δ,
+          2*b*m b-6*b^2 < 0 ∧
+          sInf (Set.range (H.regularizedCost (first b) last (hlast b) T B 0 b
+            (f ⟨last, hle, le_rfl⟩ x))) = (m b : WithTop ℝ) ∧
+          ∃ η : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η ∧ η 0=x ∧ MapsTo η (Icc 0 b) K ∧
+            m b = lRegularizedAction S T η 0 b ∧
+            (m b : WithTop ℝ) ∈ H.regularizedActionValues (first b) last (hlast b) T B 0 b
+              (f ⟨last, hle, le_rfl⟩ x) (f ⟨first b, hfirst b, hlast b⟩ (η b)) ∧
+            H.regularizedCost (first b) last (hlast b) T B 0 b (f ⟨last, hle, le_rfl⟩ x)
+              (f ⟨first b, hfirst b, hlast b⟩ (η b)) = (m b : WithTop ℝ) ∧
+            ∀ q : (H.stage (first b)).Carrier, (m b : WithTop ℝ) ≤
+              H.regularizedCost (first b) last (hlast b) T B 0 b (f ⟨last, hle, le_rfl⟩ x) q := by
+  classical
+  obtain ⟨δ, hδ, hδmax, hrows⟩ := H.exists_short_negative_continuous_spatial_minimum_of_joint_history_metric
+    first₀ last hle f hf hinj hcross hbmax hupper hlower S hS J hJ hclock hreg hsmooth
+      K hK B hmetric hscalar x hx
+  choose firstRow hfirstRow hlastRow value hclockRow hLipRow hContRow hdata using hrows
+  let a₀ := δ/2
+  have ha₀ : 0 < a₀ := half_pos hδ
+  have ha₀δ : a₀ ≤ δ := by dsimp [a₀]; linarith
+  let first := firstRow a₀ ha₀ ha₀δ
+  let hfirst := hfirstRow a₀ ha₀ ha₀δ
+  let hlast := hlastRow a₀ ha₀ ha₀δ
+  have hfirstclock : ∀ b ∈ Icc 0 bmax, T-b^2 ∈ H.stageDomain (first b) :=
+    hclockRow a₀ ha₀ ha₀δ
+  let m := fun b => if hb : b ∈ Ioc 0 δ then value (b/2) (half_pos hb.1) (by linarith [hb.2]) b else 0
+  have hroweq (a b : ℝ) (ha : 0 < a) (haδ : a ≤ δ) (hb : b ∈ Icc a δ) :
+      firstRow a ha haδ b = first b := by
+    have hleft := hclockRow a ha haδ b ⟨ha.le.trans hb.1, hb.2.trans hδmax⟩
+    have hright := hfirstclock b ⟨ha.le.trans hb.1, hb.2.trans hδmax⟩
+    exact H.pairwise_disjoint_stageDomain.eq (Set.not_disjoint_iff.mpr ⟨T-b^2, hleft, hright⟩)
+  have hvaluesEq (a c b : ℝ) (ha : 0 < a) (haδ : a ≤ δ) (hc : 0 < c) (hcδ : c ≤ δ)
+      (hbA : b ∈ Icc a δ) (hbC : b ∈ Icc c δ) : value a ha haδ b = value c hc hcδ b := by
+    obtain ⟨_, ηA, _, _, _, _, _, hcostA, hminA⟩ := hdata a ha haδ b hbA
+    obtain ⟨_, ηC, _, _, _, _, _, hcostC, hminC⟩ := hdata c hc hcδ b hbC
+    exact spatial_cost_minimum_value_eq H ((hroweq a b ha haδ hbA).trans (hroweq c b hc hcδ hbC).symm)
+      _ _ T B b (f ⟨last, hle, le_rfl⟩ x) ⟨_, hcostA⟩ hminA ⟨_, hcostC⟩ hminC
+  have hmrow (a b : ℝ) (ha : 0 < a) (haδ : a ≤ δ) (hb : b ∈ Icc a δ) :
+      m b = value a ha haδ b := by
+    have hb0 : 0 < b := ha.trans_le hb.1
+    dsimp only [m]
+    rw [dif_pos ⟨hb0, hb.2⟩]
+    exact hvaluesEq (b/2) a b (half_pos hb0) (by linarith [hb.2]) ha haδ
+      ⟨by linarith, hb.2⟩ hb
+  have hmcont : ContinuousOn m (Ioc 0 δ) := by
+    intro b hb
+    let a := b/2
+    have ha : 0 < a := half_pos hb.1
+    have haδ : a ≤ δ := by dsimp [a]; linarith [hb.2]
+    obtain ⟨C, hC⟩ := hLipRow a ha haδ
+    have hbA : b ∈ Icc a δ := ⟨by dsimp [a]; linarith [hb.1], hb.2⟩
+    have hnb : Icc a δ ∈ 𝓝[Ioc 0 δ] b := by
+      filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds
+        (Ioi_mem_nhds (show a < b by dsimp [a]; linarith [hb.1]))] with c hc hca
+      exact ⟨hca.le, hc.2⟩
+    apply ((hC.continuousOn b hbA).mono_of_mem_nhdsWithin hnb).congr_of_eventuallyEq ?_
+      (hmrow a b ha haδ hbA)
+    filter_upwards [hnb] with c hc
+    exact hmrow a c ha haδ hc
+  refine ⟨δ, hδ, hδmax, first, hfirst, hlast, m, hfirstclock, hmcont, ?_, ?_⟩
+  · exact ((continuousOn_const.mul continuousOn_id).mul hmcont).sub
+      (continuousOn_const.mul (continuousOn_id.pow 2))
+  · intro b hb
+    let a := b/2
+    have ha : 0 < a := half_pos hb.1
+    have haδ : a ≤ δ := by dsimp [a]; linarith [hb.2]
+    have hbA : b ∈ Icc a δ := ⟨by dsimp [a]; linarith [hb.1], hb.2⟩
+    have heq := hroweq a b ha haδ hbA
+    obtain ⟨hneg, η, hη, hη0, hηK, hval, hmem, hcost, hmin⟩ := hdata a ha haδ b hbA
+    have hmval := hmrow a b ha haδ hbA
+    obtain ⟨hmem', hcost', hmin'⟩ := spatial_minimum_endpoint_transfer H hle heq
+      (hfirstRow a ha haδ b) (hlastRow a ha haδ b) (hfirst b) (hlast b)
+      f T B b (value a ha haδ b) x (η b) hmem hcost hmin
+    rw [← hmval] at hmem' hcost' hmin'
+    have hval' : m b = lRegularizedAction S T η 0 b := hmval.trans hval
+    exact ⟨by simpa only [hmval] using hneg,
+      spatial_cost_infimum_eq H (hlast b) T B b _ ⟨_, hcost'⟩ hmin',
+      η, hη, hη0, hηK, hval', hmem', hcost', hmin'⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
