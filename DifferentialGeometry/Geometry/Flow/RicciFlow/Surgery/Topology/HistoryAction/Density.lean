@@ -552,6 +552,125 @@ theorem exists_regularizedCost_minimum_of_joint_metric_of_action_lt_compact_barr
       (hηu.symm ▸ hx) (by simpa only [hηu] using hfront) (hηact.trans hact.le)
     simpa only [hηu, hηv] using heq
 
+theorem exists_regularizedCost_spatial_minimum_of_joint_metric_of_action_lt_compact_barrier
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j)) (K : Set X) (hK : IsCompact K)
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing (f ⟨i.castSucc, hi, i.castSucc_le_succ.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_le_succ, hl⟩ z))
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (J : Set ℝ) (hJ : J ⊆ D.carrier)
+    (hclock : ∀ t ∈ Icc u v, T - t ^ 2 ∈ J)
+    (hreg : ∀ t ∈ Ioo u v, T - t ^ 2 ∈ D.regular)
+    (hsmooth : ContMDiffOn (𝓘(ℝ, ℝ).prod ThreeModel)
+      (ThreeModel.prod 𝓘(ℝ, ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)) ∞
+      (fun z : ℝ × X => (⟨z.2, (S.base.metric z.1).inner z.2⟩ :
+        Bundle.TotalSpace (ThreeSpace →L[ℝ] ThreeSpace →L[ℝ] ℝ)
+          (fun x => TangentSpace ThreeModel x →L[ℝ] TangentSpace ThreeModel x →L[ℝ] ℝ)))
+      (J ×ˢ (univ : Set X)))
+    (g : SmoothRiemannianMetric ThreeModel X) {μ B r : ℝ} (hμ : 0 ≤ μ) (hr : 0 < r)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (hcompare : ∀ t ∈ Ioo u v, ∀ z ∈ K, ∀ w : TangentSpace ThreeModel z,
+      μ * g.inner z w w ≤ (S.base.metric (T - t ^ 2)).inner z w w)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      ∀ z : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) z)
+    (x : X) (hx : x ∈ interior K)
+    (hfront : ∀ z ∈ frontier K, ENNReal.ofReal r ≤ riemannianEDistOf g x z)
+    (γ : ℝ → X) (hγ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ)
+    (hstart : γ u = x)
+    (hact : lRegularizedAction S T γ u v <
+      μ * r ^ 2 / (2 * (v - u)) - (2 * B / 3) * (v ^ 3 - u ^ 3)) :
+    ∃ η : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η ∧ η u = x ∧
+      MapsTo η (Icc u v) K ∧ lRegularizedAction S T η u v ≤ lRegularizedAction S T γ u v ∧
+      (lRegularizedAction S T η u v : WithTop ℝ) ∈ H.regularizedActionValues first last hle T B u v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) ∧
+      H.regularizedCost first last hle T B u v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) = (lRegularizedAction S T η u v : WithTop ℝ) ∧
+      ∀ q : (H.stage first).Carrier, H.regularizedCost first last hle T B u v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) ≤
+          H.regularizedCost first last hle T B u v (f ⟨last, hle, le_rfl⟩ x) q := by
+  have htime : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.carrier := fun t ht => hJ (hclock t ht)
+  have hupper' : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) :=
+    ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩
+  let jlast : H.StageInterval first last := ⟨last, hle, le_rfl⟩
+  have hemb : _root_.Topology.IsOpenEmbedding (f jlast) :=
+    .of_continuous_injective_isOpenMap (hf jlast).contMDiff.continuous (hinj jlast) (hf jlast).isOpenMap
+  let : SecondCountableTopology (H.stage last).Carrier :=
+    ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (H.stage last).Carrier
+  let : SecondCountableTopology X := hemb.toIsEmbedding.secondCountableTopology
+  let : LocallyCompactSpace X := ChartedSpace.locallyCompactSpace ThreeSpace X
+  let : SigmaCompactSpace X := inferInstance
+  let : _root_.TopologicalSpace.MetrizableSpace X := Manifold.metrizableSpace ThreeModel X
+  have hconf : ∀ α : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α → α u = x →
+      lRegularizedAction S T α u v ≤ lRegularizedAction S T γ u v → MapsTo α (Icc u v) K := by
+    intro α hα hαu hαact
+    exact H.mapsTo_of_lRegularizedAction_lt_history_escape_barrier first last hle f hf hinj K hK hcross
+      hu huv.le hupper' hlower S hS htime g hμ hr hmetric hcompare
+      (fun j t ht z => hscalar j t ht (f j z)) x hx hfront α hα hαu (hαact.trans_lt hact)
+  obtain ⟨η, hη, hηu, hηK, hmin⟩ :=
+    exists_lRegularizedMinC1_free_endpoint_of_compact_action_sublevel_of_spatial_derivatives S hS T huv
+      J hJ hclock hreg (S.chartGram_spatial_fderiv_continuousOn_of_joint_metric J hsmooth)
+      (S.scalarOnE_spatial_fderiv_continuousOn_of_joint_metric J hsmooth) x γ hγ hstart K hK hconf
+  have hηact := hmin γ hγ hstart
+  have hglobal : ∀ q : (H.stage first).Carrier,
+      ∀ A ∈ H.regularizedC1ActionValues first last hle T u v (f ⟨last, hle, le_rfl⟩ x) q,
+        lRegularizedAction S T η u v ≤ A := by
+    intro q A hA
+    rcases hA with ⟨_, _, _, _, α, hα, hint, hstartα, _, hnode, rfl⟩
+    by_contra hnot
+    have hlow := lt_of_not_ge hnot
+    have hstayK := H.mapsTo_common_compact_set_of_sum_stageRegularizedAction_lt first last hle
+      f hf hinj K hK hcross hu huv.le hupper' hlower S g hμ hr hmetric hcompare α hα hint
+      (fun j t ht => hscalar j t ht (α j t)) x hx hfront hstartα hnode
+      (hlow.trans (hηact.trans_lt hact))
+    have hstay : ∀ j, MapsTo (α j)
+        (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) (range (f j)) := by
+      intro j t ht
+      obtain ⟨z, _, hz⟩ := hstayK j ht
+      exact ⟨z, hz⟩
+    have hbound : lRegularizedAction S T η u v ≤
+        ∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (α j)
+          (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val) := by
+      apply le_of_forall_pos_le_add
+      intro ε hε
+      obtain ⟨δ, hδ, hδstart, _, hδact⟩ :=
+        H.exists_lRegularizedAction_lt_of_confined_history_curves first last hle f hf hinj hcross
+          S hS T hu huv.le hupper' hlower htime hmetric α hα hstay hnode hε
+      have hδu : δ u = x := hinj ⟨last, hle, le_rfl⟩ (hδstart.trans hstartα)
+      exact (hmin δ hδ hδu).trans hδact.le
+    exact hlow.not_ge hbound
+  have hmemC1 : lRegularizedAction S T η u v ∈ H.regularizedC1ActionValues first last hle T u v
+      (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) := by
+    have hmem := H.action_mem_regularizedC1ActionValues_of_common_curve first last hle f hf hcross
+      S hS T hu huv.le hupper' hlower htime hmetric η hη
+    simpa only [hηu] using hmem
+  have hcost : H.regularizedCost first last hle T B u v
+      (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ (η v)) =
+        (lRegularizedAction S T η u v : WithTop ℝ) := by
+    rw [H.regularizedCost_eq_regularizedC1Cost first last hle T B u v hupper hscalar]
+    exact H.regularizedC1Cost_eq_of_minimum first last hle T u v _ _ _ hmemC1
+      (hglobal (f ⟨first, le_rfl, hle⟩ (η v)))
+  refine ⟨η, hη, hηu, hηK, hηact,
+    H.coe_mem_regularizedActionValues_of_mem_regularizedC1ActionValues first last hle hscalar _ _ hmemC1,
+    hcost, ?_⟩
+  intro q
+  rw [hcost, H.regularizedCost_eq_regularizedC1Cost first last hle T B u v hupper hscalar]
+  by_cases hne : (H.regularizedC1ActionValues first last hle T u v (f ⟨last, hle, le_rfl⟩ x) q).Nonempty
+  · apply le_csInf (hne.image (fun A : ℝ => (A : WithTop ℝ)))
+    rintro A ⟨r, hr, rfl⟩
+    exact WithTop.coe_le_coe.mpr (hglobal q r hr)
+  · rw [H.regularizedC1Cost_eq_top_of_no_competitor first last hle T u v _ q
+      (Set.not_nonempty_iff_eq_empty.mp hne)]
+    exact le_top
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end

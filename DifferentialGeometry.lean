@@ -13995,3 +13995,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryMini
 import DifferentialGeometry.Geometry.Metric.Comparison.ScalarGradient
 import DifferentialGeometry.Topology.Sequences.UniformEventually
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPoleAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.TimeRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.MinimumTime

@@ -1,6 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
+import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds
+import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 
 noncomputable section
 open Set Filter MeasureTheory
@@ -94,3 +96,92 @@ theorem exists_lRegularizedAction_const_lt_at_regular_time
   nlinarith
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
+noncomputable section
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Metric
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {D : RealTimeInterval}
+
+private theorem exists_scalar_upper_on_compact_backward_clock
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T bmax : ℝ) (x : M)
+    (hclock : ∀ s ∈ Icc 0 bmax, T - s ^ 2 ∈ D.carrier) :
+    ∃ C : ℝ, ∀ s ∈ Icc 0 bmax, S.scalar (T - s ^ 2) x ≤ C := by
+  have hcont : ContinuousOn (fun s : ℝ => S.scalar (T - s ^ 2) x) (Icc 0 bmax) := by
+    have hc : ContinuousOn (fun z : ℝ × M => S.scalar z.1 z.2) (D.carrier ×ˢ univ) :=
+      hS.scalarCont
+    have hmap : ContinuousOn (fun s : ℝ => (T - s ^ 2, x)) (Icc 0 bmax) :=
+      (continuous_const.sub (continuous_id.pow 2)).continuousOn.prodMk continuousOn_const
+    exact hc.comp (f := fun s : ℝ => (T - s ^ 2, x)) hmap
+      (fun s hs => ⟨hclock s hs, mem_univ x⟩)
+  obtain ⟨C, hC⟩ := isCompact_Icc.bddAbove_image hcont
+  exact ⟨C, fun s hs => hC ⟨s, hs, rfl⟩⟩
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedAction_const_lt_compact_barrier
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T B : ℝ) {bmax : ℝ} (hbmax : 0 < bmax)
+    (hclock : ∀ s ∈ Icc 0 bmax, T - s ^ 2 ∈ D.carrier)
+    (x : M) (K : Set M) (hK : IsCompact K) (hx : x ∈ interior K) :
+    ∃ μ r δ : ℝ, 0 < μ ∧ 0 < r ∧ 0 < δ ∧ δ ≤ bmax ∧
+      (∀ s ∈ Icc 0 bmax, ∀ z ∈ K, ∀ w : TangentSpace I z,
+        μ * (S.base.metric T).inner z w w ≤ (S.base.metric (T - s ^ 2)).inner z w w) ∧
+      (∀ z ∈ frontier K, ENNReal.ofReal r ≤ riemannianEDistOf (S.base.metric T) x z) ∧
+      ∀ b ∈ Ioc 0 δ,
+        lRegularizedAction S T (fun _ => x) 0 b <
+          μ * r ^ 2 / (2 * b) - (2 * B / 3) * b ^ 3 ∧
+        2 * b * lRegularizedAction S T (fun _ => x) 0 b - 6 * b ^ 2 < 0 := by
+  let J : Set ℝ := (fun s : ℝ => T - s ^ 2) '' Icc 0 bmax
+  have hJ : IsCompact J := isCompact_Icc.image (continuous_const.sub (continuous_id.pow 2))
+  have hJD : J ⊆ D.carrier := by rintro _ ⟨s, hs, rfl⟩; exact hclock s hs
+  obtain ⟨μ, hμ, hmetric⟩ := hS.smoothMetric.metric_lower_on_compact_time hJ hJD hK (S.base.metric T)
+  obtain ⟨r, hr, hball⟩ := exists_pos_riemannianClosedBallOf_subset_of_mem_nhds
+    (S.base.metric T) x (isOpen_interior.mem_nhds hx)
+  have hfront : ∀ z ∈ frontier K, ENNReal.ofReal r ≤ riemannianEDistOf (S.base.metric T) x z := by
+    intro z hz
+    by_contra hnot
+    exact hz.2 (hball (le_of_lt (lt_of_not_ge hnot)))
+  obtain ⟨C, hscalar⟩ := exists_scalar_upper_on_compact_backward_clock S hS T bmax x hclock
+  have hpoly : ContinuousAt (fun b : ℝ => (4 * C / 3 + 4 * B / 3) * b ^ 4) 0 := by fun_prop
+  have hpoly' : ContinuousAt (fun b : ℝ => (4 * C / 3) * b ^ 2) 0 := by fun_prop
+  have hpos : 0 < μ * r ^ 2 := mul_pos hμ (sq_pos_of_pos hr)
+  have hsmall : {b : ℝ | (4 * C / 3 + 4 * B / 3) * b ^ 4 < μ * r ^ 2 ∧
+      (4 * C / 3) * b ^ 2 < 6} ∈ 𝓝 0 :=
+    Filter.inter_mem
+      (hpoly.eventually (Iio_mem_nhds (by simpa only [zero_pow (by norm_num : 4 ≠ 0), mul_zero] using hpos)))
+      (hpoly'.eventually (Iio_mem_nhds (by norm_num)))
+  obtain ⟨ε, hε, hεsub⟩ := Metric.mem_nhds_iff.mp hsmall
+  let δ := min bmax (ε / 2)
+  have hδ : 0 < δ := lt_min hbmax (half_pos hε)
+  refine ⟨μ, r, δ, hμ, hr, hδ, min_le_left _ _,
+    (fun s hs z hz w => hmetric (T - s ^ 2) ⟨s, hs, rfl⟩ z hz w), hfront, ?_⟩
+  intro b hb
+  have hbbmax : b ≤ bmax := hb.2.trans (min_le_left _ _)
+  have hbε : b < ε := (hb.2.trans (min_le_right _ _)).trans_lt (by linarith)
+  have hpol := hεsub (show b ∈ Metric.ball 0 ε from by
+    simpa only [Metric.mem_ball, Real.dist_eq, sub_zero, abs_of_pos hb.1] using hbε)
+  have hact := lRegularizedAction_const_le_of_scalar_le S hS T x hb.1.le
+    (fun s hs => hclock s ⟨hs.1, hs.2.trans hbbmax⟩)
+    (fun s hs => hscalar s ⟨hs.1, hs.2.trans hbbmax⟩)
+  constructor
+  · apply hact.trans_lt
+    apply (lt_sub_iff_add_lt).mpr
+    apply (lt_div_iff₀ (mul_pos (by norm_num) hb.1 : 0 < 2 * b)).mpr
+    nlinarith [hpol.1]
+  · have hp := mul_lt_mul_of_pos_right hpol.2 (sq_pos_of_pos hb.1)
+    have hh := mul_le_mul_of_nonneg_left hact (mul_nonneg (by norm_num : (0 : ℝ) ≤ 2) hb.1.le)
+    nlinarith
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
