@@ -100,3 +100,43 @@ theorem lowerBoundedIntegral_Ioo_add {μ : Measure ℝ} [NullSingletonClass μ]
   exact lowerBoundedIntegral_add_measure hf hg hgf
 
 end DifferentialGeometry.Analysis
+
+end
+
+noncomputable section
+
+namespace DifferentialGeometry.Analysis
+
+open MeasureTheory
+
+variable {α : Type*} [MeasurableSpace α] {μ : Measure α} {f g h : α → ℝ}
+
+theorem integral_lower_bound_le_lowerBoundedIntegral (f g : α → ℝ) (μ : Measure α) :
+    (↑(∫ x, g x ∂μ) : WithTop ℝ) ≤ lowerBoundedIntegral f g μ := by
+  unfold lowerBoundedIntegral
+  split
+  · exact le_top
+  · rw [WithTop.coe_le_coe]
+    exact le_add_of_nonneg_left ENNReal.toReal_nonneg
+
+theorem lowerBoundedIntegral_mono
+    (hf : AEStronglyMeasurable f μ) (hh : AEStronglyMeasurable h μ)
+    (hg : Integrable g μ) (hgf : g ≤ᵐ[μ] f) (hfh : f ≤ᵐ[μ] h) :
+    lowerBoundedIntegral f g μ ≤ lowerBoundedIntegral h g μ := by
+  by_cases hi : Integrable h μ
+  · have hfi : Integrable f μ := integrable_of_le_of_le hf hgf hfh hg hi
+    rw [lowerBoundedIntegral_eq_integral hfi hg hgf,
+      lowerBoundedIntegral_eq_integral hi hg (hgf.trans hfh), WithTop.coe_le_coe]
+    exact integral_mono_ae hfi hi hfh
+  · rw [(lowerBoundedIntegral_eq_top_iff hh hg (hgf.trans hfh)).2 hi]
+    exact le_top
+
+theorem lowerBoundedIntegral_congr_ae (hfg : f =ᵐ[μ] h) (g : α → ℝ) :
+    lowerBoundedIntegral f g μ = lowerBoundedIntegral h g μ := by
+  unfold lowerBoundedIntegral
+  have heq : (∫⁻ x, ENNReal.ofReal (f x - g x) ∂μ) =
+      ∫⁻ x, ENNReal.ofReal (h x - g x) ∂μ :=
+    lintegral_congr_ae (hfg.mono fun x hx => by dsimp only; rw [hx])
+  rw [heq]
+
+end DifferentialGeometry.Analysis

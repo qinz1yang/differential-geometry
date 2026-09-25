@@ -154,6 +154,18 @@ theorem shrinkingCylinderMetric_inner {t : ℝ} (ht : t < 1)
         v.2 * w.2 := congrArg (fun a : ℝ => a + v.2 * w.2) h
     _ = _ := by rw [sphereScale, if_pos ht]
 
+theorem shrinkingCylinderMetric_eq_prod {t : ℝ} (ht : t < 1) :
+    shrinkingCylinderMetric (E := E) t =
+      (scaleMetric (2 * (1 - t)) (mul_pos (by norm_num) (sub_pos.mpr ht))
+        (roundMetric (E := E) (n := 2))).prod (euclideanMetric (E := ℝ)) := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  rw [shrinkingCylinderMetric_inner ht, SmoothRiemannianMetric.prod_inner]
+  erw [scaleMetric_inner]
+  change _ + v.2 * w.2 = _ + inner ℝ (v.2 : ℝ) (w.2 : ℝ)
+  rw [RCLike.inner_apply, conj_trivial]
+  ring
+
 @[simp] theorem shrinkingCylinderMetric_zero :
     shrinkingCylinderMetric (E := E) 0 = roundCylinderMetric (E := E) (n := 2) := by
   simp only [shrinkingCylinderMetric, sphereScale, show (0 : ℝ) < 1 by norm_num,
