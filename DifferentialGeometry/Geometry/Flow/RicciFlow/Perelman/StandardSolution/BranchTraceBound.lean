@@ -21,7 +21,6 @@ open scoped ContDiff Manifold Topology
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
-open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 
 variable {E H M : Type*}
@@ -69,16 +68,18 @@ variable [NeZero (Module.finrank ℝ E)]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lActBranch_trace_le_of_rm
+theorem lActBranch_trace_le_of_bdd
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (K T : ℝ) (x : M)
+    (T : ℝ) (x : M)
     {Z : TangentSpace I x} {sigma tau : ℝ}
     (hmin : (Z, sigma) ∈ lMinDomain S T x)
     (htau : 0 < tau) (hlt : tau < sigma)
-    (hRm : ∀ t ∈ Icc (T - sigma) T, ∀ z : M,
-      normSq0S (I := I) (S.base.metric t) z 4
-        (S.base.rm04 t z) ≤ K) :
+    (hbddSigma : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧
+        alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
     ∃ hdom : (Z, tau) ∈ lExpPosDom S T x,
       ∃ hconj : ¬ IsLConjugate S T x Z tau,
         metricTracePair0SAt (I := I) (S.base.metric (T - tau))
@@ -91,7 +92,9 @@ theorem lActBranch_trace_le_of_rm
               (2 * tau * Real.sqrt tau) := by
   classical
   obtain ⟨hdom, hconj, hHess⟩ :=
-    lActBranch_hess_le_of_rm S hS K T x hmin htau hlt hRm
+    lActBranch_hess_le_of_bdd S hS T x hmin htau hlt
+      (lRegularizedCosts_prefix_bdd_of_min S hS T x Z hmin htau hlt.le hbddSigma)
+      hbddSigma
   refine ⟨hdom, hconj, ?_⟩
   let b : ℝ := Real.sqrt tau
   let alpha : ℝ → M := lRegularizedCurve S T x Z
@@ -273,5 +276,45 @@ theorem lActBranch_trace_le_of_rm
       rw [← hb2]
       field_simp [hb.ne']
       ring
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lActBranch_trace_le_of_rm
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (K T : ℝ) (x : M)
+    {Z : TangentSpace I x} {sigma tau : ℝ}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x)
+    (htau : 0 < tau) (hlt : tau < sigma)
+    (hRm : ∀ t ∈ Icc (T - sigma) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric t) z 4
+        (S.base.rm04 t z) ≤ K) :
+    ∃ hdom : (Z, tau) ∈ lExpPosDom S T x,
+      ∃ hconj : ¬ IsLConjugate S T x Z tau,
+        metricTracePair0SAt (I := I) (S.base.metric (T - tau))
+            (hessTensorAt (I := I) (S.base.metric (T - tau))
+              (lActBranch S hS T x Z tau hdom hconj)
+              (lExp S T x Z tau)) / (2 * Real.sqrt tau) ≤
+          (Module.finrank ℝ E : ℝ) / (2 * tau) -
+            S.scalar (T - tau) (lExp S T x Z tau) -
+            lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
+              (2 * tau * Real.sqrt tau) := by
+  apply lActBranch_trace_le_of_bdd S hS T x hmin htau hlt
+  have hsigma : 0 < sigma := lMinDomain_pos S T x Z sigma hmin
+  have hdom : (Z, sigma) ∈ lExpPosDom S T x :=
+    ((mem_lMinDomain S T x Z sigma).1 hmin).1
+  have hreg : Icc (T - sigma) T ⊆ D.regular := by
+    intro t ht
+    have hnonneg : 0 ≤ T - t := sub_nonneg.mpr ht.2
+    have hback : T - t ≤ sigma := by linarith [ht.1]
+    have hclock := lExpPosDom_regularity S T x Z hdom
+      (show Real.sqrt (T - t) ∈ Icc (0 : ℝ) (Real.sqrt sigma) from
+        ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hback⟩)
+    rwa [Real.sq_sqrt hnonneg, sub_sub_cancel] at hclock
+  exact lRegularizedCosts_bdd_rm (I := I) S hS K T 0 (Real.sqrt sigma)
+    le_rfl (Real.sqrt_nonneg sigma)
+    (by simpa only [Real.sq_sqrt hsigma.le] using hreg)
+    (by simpa only [Real.sq_sqrt hsigma.le] using hRm)
+    x (lExp S T x Z sigma)
 
 end DifferentialGeometry.PDE.RicciFlow

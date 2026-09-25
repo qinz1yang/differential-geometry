@@ -28,16 +28,18 @@ variable {E H M : Type*}
   [IsManifold I ∞ M] [T2Space M]
   {D : RealTimeInterval}
 
-theorem redLength_ray_K_of_rm
+theorem redLength_ray_K_of_bdd
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
-    (K T : ℝ) (x : M)
+    (T : ℝ) (x : M)
     {Z : TangentSpace I x} {sigma tau : ℝ}
     (hmin : (Z, sigma) ∈ lMinDomain S T x)
     (htau : 0 < tau) (hsigma : tau < sigma)
-    (hRmSigma : ∀ t ∈ Icc (T - sigma) T, ∀ z : M,
-      normSq0S (I := I) (S.base.metric t) z 4
-        (S.base.rm04 t z) ≤ K) :
+    (hbddSigma : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧
+        alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
     HasDerivAt
       (fun r ↦ redLength S T x (lExp S T x Z r) r)
       (-lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
@@ -77,8 +79,9 @@ theorem redLength_ray_K_of_rm
       [eventually_gt_nhds htau, eventually_lt_nhds hsigma]
       with r hrpos hrlt
     have hminr : (Z, r) ∈ lMinDomain S T x :=
-      lMinDomain_down_of_rm (I := I) S hS K T x Z
-        hmin hrpos hrlt.le hRmSigma
+      lMinDomain_down_of_bdd (I := I) S hS T x Z
+        hmin hrpos hrlt.le (lRegularizedCosts_prefix_bdd_of_min S hS T x Z hmin hrpos hrlt.le hbddSigma)
+        hbddSigma
     have hcost := ((mem_lMinDomain S T x Z r).1 hminr).2
     calc
       lRegularizedAction S T alpha 0 (Real.sqrt r) =
@@ -124,5 +127,37 @@ theorem redLength_ray_K_of_rm
     apply hquot.congr_deriv
     simpa only [b] using hderiv
   simpa only [redLength, alpha, b] using hquot'
+
+theorem redLength_ray_K_of_rm
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (K T : ℝ) (x : M)
+    {Z : TangentSpace I x} {sigma tau : ℝ}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x)
+    (htau : 0 < tau) (hsigma : tau < sigma)
+    (hRmSigma : ∀ t ∈ Icc (T - sigma) T, ∀ z : M,
+      normSq0S (I := I) (S.base.metric t) z 4
+        (S.base.rm04 t z) ≤ K) :
+    HasDerivAt
+      (fun r ↦ redLength S T x (lExp S T x Z r) r)
+      (-lK S T (lRegularizedCurve S T x Z) (Real.sqrt tau) /
+        (2 * tau * Real.sqrt tau)) tau := by
+  apply redLength_ray_K_of_bdd S hS T x hmin htau hsigma
+  have hsigma : 0 < sigma := lMinDomain_pos S T x Z sigma hmin
+  have hdom : (Z, sigma) ∈ lExpPosDom S T x :=
+    ((mem_lMinDomain S T x Z sigma).1 hmin).1
+  have hreg : Icc (T - sigma) T ⊆ D.regular := by
+    intro t ht
+    have hnonneg : 0 ≤ T - t := sub_nonneg.mpr ht.2
+    have hback : T - t ≤ sigma := by linarith [ht.1]
+    have hclock := lExpPosDom_regularity S T x Z hdom
+      (show Real.sqrt (T - t) ∈ Icc (0 : ℝ) (Real.sqrt sigma) from
+        ⟨Real.sqrt_nonneg _, Real.sqrt_le_sqrt hback⟩)
+    rwa [Real.sq_sqrt hnonneg, sub_sub_cancel] at hclock
+  exact lRegularizedCosts_bdd_rm (I := I) S hS K T 0 (Real.sqrt sigma)
+    le_rfl (Real.sqrt_nonneg sigma)
+    (by simpa only [Real.sq_sqrt hsigma.le] using hreg)
+    (by simpa only [Real.sq_sqrt hsigma.le] using hRmSigma)
+    x (lExp S T x Z sigma)
 
 end DifferentialGeometry.PDE.RicciFlow

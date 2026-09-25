@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Integral.Comparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Coercivity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Approximation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Continuity.CarrierBaseTime
@@ -187,3 +188,62 @@ theorem lCost_ge_riemannianEDistOf_sq_div
   exact (not_lt_of_ge hbound) hact
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+end
+
+noncomputable section
+open Set MeasureTheory
+open scoped Manifold ContDiff
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : RealTimeInterval}
+
+private theorem lRegularizedAction_ge_of_scalar_lower_bound
+    (S : SolutionOn (I := I) (M := M) D) (T : ℝ) (γ : ℝ → M)
+    {a b B : ℝ} (hab : a ≤ b)
+    (hscalar : ∀ t ∈ Ioo a b, -B ≤ S.scalar (T - t ^ 2) (γ t))
+    (hint : IntervalIntegrable (lRegularizedLagrangian S T γ) volume a b) :
+    -(2 * B / 3) * (b ^ 3 - a ^ 3) ≤ lRegularizedAction S T γ a b := by
+  have hh := intervalIntegral.integral_ge_of_mul_sq_le hab hint (C := -(2 * B)) (fun t ht => ?_)
+  · simpa only [neg_div, lRegularizedAction] using hh
+  have hs := mul_le_mul_of_nonneg_left (hscalar t ht) (by positivity : 0 ≤ 2 * t ^ 2)
+  have hk := lRegularizedSpeedSq_nonneg S T γ t
+  change -(2 * B) * t ^ 2 ≤ _
+  dsimp only [lRegularizedLagrangian, lRegularizedSpeedSq] at hk ⊢
+  nlinarith
+
+
+variable [T2Space M]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lRegularizedCosts_bdd_of_scalar_lower
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
+    {a b B : ℝ} (hab : a ≤ b)
+    (htime : ∀ t ∈ Icc a b, T - t ^ 2 ∈ D.carrier)
+    (hscalar : ∀ t ∈ Ioo a b, ∀ z : M, -B ≤ S.scalar (T - t ^ 2) z)
+    (x y : M) :
+    BddBelow {r : ℝ | ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 α ∧
+      α a = x ∧ α b = y ∧ lRegularizedAction S T α a b = r} := by
+  refine ⟨-(2 * B / 3) * (b ^ 3 - a ^ 3), ?_⟩
+  rintro r ⟨α, hα, _, _, rfl⟩
+  have hint : IntervalIntegrable (lRegularizedLagrangian S T α) volume a b := by
+    have hc := lRegularizedLagrangian_continuousOn_carrier (I := I) S hS α hα
+    have hm : ContinuousOn (fun r : ℝ => (T, r)) (Icc a b) :=
+      (continuous_const.prodMk continuous_id).continuousOn
+    have hmap : MapsTo (fun r : ℝ => (T, r)) (Icc a b)
+        {q : ℝ × ℝ | q.1 - q.2 ^ 2 ∈ D.carrier} := htime
+    exact (hc.comp (f := fun r : ℝ => (T, r)) hm hmap).intervalIntegrable_of_Icc hab
+  exact lRegularizedAction_ge_of_scalar_lower_bound (I := I) (M := M) S T α hab
+    (fun t ht => hscalar t ht (α t)) hint
+
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end

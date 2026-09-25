@@ -231,4 +231,78 @@ theorem lMinDomain_down_of_rm
       (by simpa only [Real.sq_sqrt hsigma.le] using hRmSigma)
       x (lExp S T x Z sigma)
 
+theorem lRegularizedCosts_prefix_bdd_of_min
+    (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S)
+    (T : ℝ) (x : M) (Z : TangentSpace I x)
+    {sigma tau : ℝ}
+    (hmin : (Z, sigma) ∈ lMinDomain S T x)
+    (htau : 0 < tau) (hle : tau ≤ sigma)
+    (hbddSigma : BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff (modelWithCornersSelf ℝ ℝ) I 1 alpha ∧
+        alpha 0 = x ∧
+        alpha (Real.sqrt sigma) = lExp S T x Z sigma ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt sigma) = r}) :
+    BddBelow {r : ℝ | ∃ alpha : ℝ → M,
+      ContMDiff 𝓘(ℝ, ℝ) I 1 alpha ∧ alpha 0 = x ∧
+        alpha (Real.sqrt tau) = lExp S T x Z tau ∧
+        lRegularizedAction S T alpha 0 (Real.sqrt tau) = r} := by
+  classical
+  rcases lt_or_eq_of_le hle with hlt | rfl
+  · have hvec := (mem_lMinDomain S T x Z sigma).1 hmin
+    obtain ⟨hsigma, _hsigma0, hbSigma⟩ :=
+      (mem_lExpPosDom S T x Z sigma).1 hvec.1
+    let gamma : ℝ → M := lRegularizedCurve S T x Z
+    have hsqrtTau : 0 < Real.sqrt tau := Real.sqrt_pos.2 htau
+    have hsqrtLt : Real.sqrt tau < Real.sqrt sigma :=
+      Real.sqrt_lt_sqrt htau.le hlt
+    have hgammaC1 :
+        ContMDiffOn (modelWithCornersSelf ℝ ℝ) I 1 gamma
+          (Icc (0 : ℝ) (Real.sqrt sigma)) := by
+      simpa only [gamma] using
+        lRegularizedCurve_c1On S hS T x Z hbSigma
+    have hregSigma :
+        ∀ s ∈ Icc (0 : ℝ) (Real.sqrt sigma),
+          T - s ^ 2 ∈ D.regular := by
+      intro s hs
+      exact lExpPosDom_regularity S T x Z hvec.1 hs
+    have hcostSigma :
+        lRegularizedAction S T gamma 0 (Real.sqrt sigma) =
+          lRegularizedCostC1 S T 0 (Real.sqrt sigma) x
+            (gamma (Real.sqrt sigma)) := by
+      calc
+        lRegularizedAction S T gamma 0 (Real.sqrt sigma) =
+            lLength S T (squareRootReparametrization gamma) 0 sigma :=
+          (lLength_squareRootReparametrization_eq_lRegularizedAction (I := I) S T gamma sigma hsigma.le).symm
+        _ = lLength S T (fun r : ℝ ↦ lExp S T x Z r) 0 sigma := rfl
+        _ = lCost S T x (lExp S T x Z sigma) sigma := hvec.2
+        _ = lRegularizedCostC1 S T 0 (Real.sqrt sigma) x
+            (lExp S T x Z sigma) :=
+          lCost_eq_regularity (I := I) S T x
+            (lExp S T x Z sigma) sigma hsigma.le
+        _ = lRegularizedCostC1 S T 0 (Real.sqrt sigma) x
+            (gamma (Real.sqrt sigma)) := rfl
+    have hminSigma :
+        ∀ delta : ℝ → M,
+          ContMDiff (modelWithCornersSelf ℝ ℝ) I 1 delta →
+          delta 0 = gamma 0 →
+          delta (Real.sqrt sigma) = gamma (Real.sqrt sigma) →
+          lRegularizedAction S T gamma 0 (Real.sqrt sigma) ≤
+            lRegularizedAction S T delta 0 (Real.sqrt sigma) := by
+      intro delta hdelta hd0 hdb
+      rw [hcostSigma]
+      exact lRegularizedCostC1_le_bdd (I := I) S T 0
+        (Real.sqrt sigma) x (gamma (Real.sqrt sigma))
+        hbddSigma delta hdelta
+        (hd0.trans (by simp only [gamma, lRegularizedCurve_zero])) hdb
+    have hminTau :=
+      lRegularized_prefix_min (I := I) S hS.smoothMetric ⟨hS.scalarCont⟩
+        T 0 (Real.sqrt tau) (Real.sqrt sigma)
+        hsqrtTau hsqrtLt gamma hgammaC1 hregSigma hminSigma
+    refine ⟨lRegularizedAction S T gamma 0 (Real.sqrt tau), ?_⟩
+    rintro r ⟨delta, hdelta, hd0, hdb, rfl⟩
+    exact hminTau delta hdelta.contMDiffOn
+      (hd0.trans (by simp only [gamma, lRegularizedCurve_zero])) hdb
+  · exact hbddSigma
+
 end DifferentialGeometry.PDE.RicciFlow
