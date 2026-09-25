@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
@@ -307,3 +308,70 @@ theorem window_ball_subset_image_ball_of_metric_bounds
   exact hball.trans (image_mono (fun x hx => hx.trans_lt hSR))
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+end
+
+section
+
+set_option autoImplicit false
+noncomputable section
+open Set Filter
+open DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+universe u
+
+variable {E H : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : ℕ → Type u} [∀ n, TopologicalSpace (M n)] [∀ n, ChartedSpace H (M n)]
+  [∀ n, IsManifold I ∞ (M n)]
+
+theorem eventually_window_scaled_metric_bounds_of_metric_cp_convergence
+    {D R : ℝ} (hR : R < D + 1)
+    (g : ℕ → SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    (gRef : SmoothRiemannianMetric ThreeModel (standardCapWindow D))
+    {order : ℕ}
+    (hconv : MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ R} order g
+      (metric.restrictOpen (standardCapWindow D)) gRef)
+    (h : ∀ n, SmoothRiemannianMetric I (M n)) (q : ℕ → ℝ) (hq : ∀ n, 0 < q n)
+    (Φ : ∀ n, standardCapWindow D → M n)
+    (hmetric : ∀ n (x : standardCapWindow D), ‖x.val‖ ≤ R → ∀ v : TangentSpace ThreeModel x,
+      (g n).inner x v v = (scaleMetric (q n) (hq n) (h n)).inner (Φ n x)
+        (mfderiv ThreeModel I (Φ n) x v) (mfderiv ThreeModel I (Φ n) x v)) :
+    ∀ᶠ n in atTop, ∀ x : standardCapWindow D, ‖x.val‖ ≤ R → ∀ v : TangentSpace ThreeModel x,
+      metric.inner x.val v v ≤ (2 : ℝ) ^ 2 *
+          (scaleMetric (q n) (hq n) (h n)).inner (Φ n x)
+            (mfderiv ThreeModel I (Φ n) x v) (mfderiv ThreeModel I (Φ n) x v) ∧
+        (scaleMetric (q n) (hq n) (h n)).inner (Φ n x)
+          (mfderiv ThreeModel I (Φ n) x v) (mfderiv ThreeModel I (Φ n) x v) ≤
+            (2 : ℝ) ^ 2 * metric.inner x.val v v := by
+  have hcompact : IsCompact {x : standardCapWindow D | ‖x.val‖ ≤ R} := by
+    have hball : IsCompact {x : ThreeSpace | ‖x‖ ≤ R} := by
+      simpa only [Metric.closedBall, dist_zero_right] using isCompact_closedBall (0 : ThreeSpace) R
+    exact _root_.Topology.IsInducing.subtypeVal.isCompact_preimage' hball (by
+      intro x hx
+      exact ⟨⟨x, show ‖x‖ < D + 1 from hx.trans_lt hR⟩, rfl⟩)
+  have hconv0 : MetricCPConvergenceOn {x : standardCapWindow D | ‖x.val‖ ≤ R} 0 g
+      (metric.restrictOpen (standardCapWindow D)) gRef := by
+    intro ε hε
+    obtain ⟨j, hj⟩ := hconv (ε / 2) (by positivity)
+    refine ⟨j, fun n hn => ?_⟩
+    apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall _ 0 _ _ _
+      (ε / 2) (by positivity) ?_) (by linarith)
+    intro m hm x hx
+    exact (derivNorm_le_sup hcompact (hm.trans (Nat.zero_le order)) _ _ _ hx).trans (hj n hn).le
+  filter_upwards [hconv0.eventually_quadratic_bounds hcompact (show (0 : ℝ) < 1 / 2 by norm_num)]
+    with n hn
+  intro x hx v
+  have hb := hn x hx v
+  simp only [SmoothRiemannianMetric.restrictOpen_inner, hmetric n x hx] at hb
+  have hnonneg := metric_inner_self_nonneg metric x.val v
+  constructor <;> nlinarith
+
+end DifferentialGeometry.PDE.RicciFlow.StandardCap
+
+end
+end

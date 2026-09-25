@@ -6,6 +6,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.MetricConvergence
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Analysis.Integration.Measure.OpenSubtype
+import DifferentialGeometry.Geometry.Measure.BallComparison
+import DifferentialGeometry.Geometry.Metric.Distance.MetricLocality
 
 noncomputable section
 
@@ -195,3 +197,96 @@ theorem TerminalLimitMetric.volume_ball_ge_of_eventually_volume_ball_ge
   exact hsmall ρ hρ.1 hρ.2
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+noncomputable section
+open Set Filter
+open DifferentialGeometry.Integral.Measure
+open scoped Manifold ContDiff Topology ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+
+private local instance (P : OrientedThreeStage.{u}) : MeasurableSpace P.Carrier := borel P.Carrier
+private local instance (P : OrientedThreeStage.{u}) : BorelSpace P.Carrier := ⟨rfl⟩
+private local instance {P : OrientedThreeStage.{u}} {t₀ s : ℝ}
+    (G : P.IncomingSlab t₀ s) : MeasurableSpace G.terminalRegularOpen :=
+  borel G.terminalRegularOpen
+private local instance {P : OrientedThreeStage.{u}} {t₀ s : ℝ}
+    (G : P.IncomingSlab t₀ s) : BorelSpace G.terminalRegularOpen := ⟨rfl⟩
+private local instance {P : OrientedThreeStage.{u}} {t₀ s : ℝ}
+    (G : P.IncomingSlab t₀ s) : SigmaCompactSpace G.terminalRegularOpen :=
+  isSigmaCompact_iff_sigmaCompactSpace.mp
+    (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel
+      G.terminalRegularOpen.isOpen)
+
+theorem TerminalLimitMetric.normalized_volume_ball_ge_of_eventually_volume_ball_ge
+    {P : OrientedThreeStage.{u}} {t₀ s : ℝ} {G : P.IncomingSlab t₀ s}
+    (L : G.TerminalLimitMetric) (x y : G.terminalRegularOpen)
+    {Q r a R κ : ℝ} (hQ : 0 < Q) (hr : 0 ≤ r) (ha : 0 < a)
+    (hra : r + a ≤ R)
+    (hcompact : IsCompact (riemannianClosedBallOf (scaleMetric Q hQ L.metric) x R))
+    (hy : y ∈ riemannianClosedBallOf (scaleMetric Q hQ L.metric) x r)
+    (hvolume : ∀ b : ℝ, 0 < b → b < a / Real.sqrt Q → ∀ᶠ t in 𝓝[<] s,
+      ENNReal.ofReal κ * ENNReal.ofReal b ^ 3 ≤
+        riemannianVolumeMeasure ThreeModel P.Carrier (G.flow.base.metric t)
+          (riemannianBallOf (G.flow.base.metric t) y.val b)) :
+    ENNReal.ofReal (κ * a ^ 3) ≤
+      riemannianVolumeMeasure ThreeModel G.terminalRegularOpen (scaleMetric Q hQ L.metric)
+        (riemannianBallOf (scaleMetric Q hQ L.metric) y a) := by
+  have hsqrt : 0 < Real.sqrt Q := Real.sqrt_pos.mpr hQ
+  have hradius : Real.sqrt Q * (a / Real.sqrt Q) = a := by
+    field_simp
+  have hsmall : IsCompact
+      (riemannianClosedBallOf (scaleMetric Q hQ L.metric) y a) :=
+    hcompact.of_isClosed_subset
+      (isClosed_le (DifferentialGeometry.Geometry.Riemannian.continuous_riemannianEDist
+        (scaleMetric Q hQ L.metric) y) continuous_const)
+      (riemannianClosedBallOf_subset_of_add_radius_le (scaleMetric Q hQ L.metric)
+        hr ha.le hra hy)
+  have hphysical : IsCompact (riemannianClosedBallOf L.metric y (a / Real.sqrt Q)) := by
+    rw [← riemannianClosedBallOf_scaleMetric Q hQ, hradius]
+    exact hsmall
+  have hv := L.volume_ball_ge_of_eventually_volume_ball_ge y
+    (div_pos ha hsqrt) hphysical hvolume
+  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
+  have hscaled := (DifferentialGeometry.Geometry.Measure.riemannianVolumeMeasure_ball_ge_scaleMetric_iff
+    L.metric Q hQ y (a / Real.sqrt Q) (ENNReal.ofReal κ)).mpr (by simpa only [hdim] using hv)
+  rw [hradius, hdim] at hscaled
+  simpa only [ENNReal.ofReal_mul' (pow_nonneg ha.le 3), ENNReal.ofReal_pow ha.le] using hscaled
+
+theorem normalized_inner_ball_volume_lower_bound_of_eventually_volume_ball_ge
+    (P : ℕ → OrientedThreeStage.{u}) (t₀ s : ℕ → ℝ)
+    (G : ∀ n, (P n).IncomingSlab (t₀ n) (s n))
+    (L : ∀ n, (G n).TerminalLimitMetric) (x : ∀ n, (G n).terminalRegularOpen)
+    (Q : ℕ → ℝ) (hQ : ∀ n, 0 < Q n) (rho : ℝ)
+    (hcompact : ∀ R : ℝ, 0 < R → R < rho → ∀ᶠ n in atTop,
+      IsCompact (riemannianClosedBallOf (scaleMetric (Q n) (hQ n) (L n).metric) (x n) R))
+    (hvolume : ∀ r R : ℝ, 0 < r → r < R → R < rho → ∀ C : ℝ, 0 ≤ C →
+      ∃ a κ : ℝ, 0 < a ∧ 0 < κ ∧ r + a ≤ R ∧ a ^ 4 * C ^ 2 ≤ 1 ∧
+      ∀ᶠ n in atTop,
+        ∀ y ∈ riemannianClosedBallOf (scaleMetric (Q n) (hQ n) (L n).metric) (x n) r,
+        ∀ b : ℝ, 0 < b → b < a / Real.sqrt (Q n) → ∀ᶠ t in 𝓝[<] s n,
+          ENNReal.ofReal κ * ENNReal.ofReal b ^ 3 ≤
+            riemannianVolumeMeasure ThreeModel (P n).Carrier ((G n).flow.base.metric t)
+              (riemannianBallOf ((G n).flow.base.metric t) y.val b)) :
+    ∀ r R : ℝ, 0 < r → r < R → R < rho → ∀ C : ℝ, 0 ≤ C →
+      ∃ a κ : ℝ, 0 < a ∧ 0 < κ ∧ r + a ≤ R ∧ a ^ 4 * C ^ 2 ≤ 1 ∧
+      ∀ᶠ n in atTop,
+        ∀ y ∈ riemannianClosedBallOf (scaleMetric (Q n) (hQ n) (L n).metric) (x n) r,
+          ENNReal.ofReal (κ * a ^ 3) ≤
+            riemannianVolumeMeasure ThreeModel (G n).terminalRegularOpen
+              (scaleMetric (Q n) (hQ n) (L n).metric)
+              (riemannianBallOf (scaleMetric (Q n) (hQ n) (L n).metric) y a) := by
+  intro r R hr hrR hR C hC
+  obtain ⟨a, κ, ha, hκ, hra, hac, hv⟩ := hvolume r R hr hrR hR C hC
+  refine ⟨a, κ, ha, hκ, hra, hac, ?_⟩
+  filter_upwards [hv, hcompact R (hr.trans hrR) hR] with n hn hcn y hy
+  exact (L n).normalized_volume_ball_ge_of_eventually_volume_ball_ge
+    (x n) y (hQ n) hr.le ha hra hcn hy (hn y hy)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end

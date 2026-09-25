@@ -8,6 +8,8 @@ import DifferentialGeometry.Geometry.Metric.Distance.LocalCompletion
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Defs
 import DifferentialGeometry.Analysis.Calculus.Compactness.DiagonalSubsequence
 import Mathlib.Analysis.SpecificLimits.Basic
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Restriction
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ConnectedComponentVolume
 
 noncomputable section
 open Set Filter
@@ -358,3 +360,90 @@ theorem exists_pointed_convergence_with_uniform_metric_bounds_of_compact_inner_b
   exact ⟨f ∘ phi, hf.comp hphi, r, hr, hrlim, L, F', C', hC', hradial, hcompactL, hcapture, hbounds⟩
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+noncomputable section
+open Set Filter
+open scoped Manifold ContDiff Topology ENNReal
+namespace DifferentialGeometry.CheegerGromovCompactness
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+theorem exists_pointed_convergence_with_uniform_metric_bounds_on_base_components
+    (X : PointedRiemannianSeq.{u, uE, uH} I)
+    {rho : ℝ} (hrho : 0 < rho)
+    (hcompact : ∀ R : ℝ, 0 < R → R < rho →
+      ∀ᶠ n in atTop, IsCompact (riemannianClosedBallOf (X.obj n).metric (X.obj n).basepoint R))
+    (hjets : ∀ R : ℝ, 0 < R → R < rho → ∀ p : ℕ, ∃ C : ℝ, 0 ≤ C ∧
+      ∀ᶠ n in atTop, HasLocalCurvDerivBound (X.obj n) (X.obj n).basepoint R p C)
+    (hvol : ∀ r R : ℝ, 0 < r → r < R → R < rho → ∀ C : ℝ, 0 ≤ C →
+      ∃ a κ : ℝ, 0 < a ∧ 0 < κ ∧ r + a ≤ R ∧ a ^ 4 * C ^ 2 ≤ 1 ∧
+      ∀ᶠ n in atTop, ∀ x ∈ riemannianClosedBallOf (X.obj n).metric (X.obj n).basepoint r,
+        ENNReal.ofReal (κ * a ^ Module.finrank ℝ E) ≤
+          Integral.Measure.riemannianVolumeMeasure I (X.obj n).M (X.obj n).metric
+            (riemannianBallOf (X.obj n).metric x a)) :
+    ∃ (f : ℕ → ℕ), StrictMono f ∧
+      ∃ (r : ℕ → ℝ), (∀ n, 0 < r n ∧ r n < rho) ∧ Tendsto r atTop (𝓝 rho) ∧
+      ∃ (L : PointedRiemannianManifold.{u, uE, uH} I)
+        (F : PointedRiemannianConvergenceMaps X.connectedComponent L f),
+        let U := fun i => connectedComponentOpen (I := I) (X.obj i).basepoint
+        let hp := fun i => (mem_connectedComponent : (X.obj i).basepoint ∈ U i)
+        let F' := F.liftTargetOpen U hp
+        ∃ C : MetricConvergenceData F',
+        (∀ n, C.domain n = CanonicalMetricCompactness.canonicalSourceData F' n) ∧
+        (∀ x : L.M, riemannianEDistOf L.metric L.basepoint x < ENNReal.ofReal rho) ∧
+        (∀ R : ℝ, 0 ≤ R → R < rho → IsCompact (riemannianClosedBallOf L.metric L.basepoint R)) ∧
+        (∀ n, riemannianClosedBallOf (X.obj (f n)).metric (X.obj (f n)).basepoint (r n) ⊆ F'.target n) ∧
+        ∀ eps : ℝ, 0 < eps → ∀ᶠ n in atTop, ∀ x ∈ F'.source n, ∀ v : TangentSpace I x,
+          (1 - eps) * L.metric.inner x v v ≤
+            (X.obj (f n)).metric.inner (F'.map n x) (mfderiv I I (F'.map n) x v) (mfderiv I I (F'.map n) x v) ∧
+          (X.obj (f n)).metric.inner (F'.map n x) (mfderiv I I (F'.map n) x v) (mfderiv I I (F'.map n) x v) ≤
+            (1 + eps) * L.metric.inner x v v := by
+  have hcompactC : ∀ R : ℝ, 0 < R → R < rho → ∀ᶠ n in atTop,
+      IsCompact (riemannianClosedBallOf (X.connectedComponent.obj n).metric
+        (X.connectedComponent.obj n).basepoint R) := by
+    intro R hR hRrho
+    filter_upwards [hcompact R hR hRrho] with n hn
+    exact (X.obj n).isCompact_closedBall_connectedComponent R hn
+  have hjetsC : ∀ R : ℝ, 0 < R → R < rho → ∀ p : ℕ, ∃ C : ℝ, 0 ≤ C ∧
+      ∀ᶠ n in atTop, HasLocalCurvDerivBound (X.connectedComponent.obj n)
+        (X.connectedComponent.obj n).basepoint R p C := by
+    intro R hR hRrho p
+    obtain ⟨C, hC, hCn⟩ := hjets R hR hRrho p
+    refine ⟨C, hC, hCn.mono fun n hn => ?_⟩
+    exact hn.connectedComponent
+  obtain ⟨f, hf, r, hr, hrlim, L, F, C, hC, hradial, hcompactL, hcapture, hbounds⟩ :=
+    exists_pointed_convergence_with_uniform_metric_bounds_of_compact_inner_balls
+      X.connectedComponent (fun n => (X.obj n).connectedComponent_connected)
+      hrho hcompactC hjetsC (X.inner_ball_volume_lower_bound_connectedComponent rho hvol)
+  let U := fun i => connectedComponentOpen (I := I) (X.obj i).basepoint
+  let hp := fun i => (mem_connectedComponent : (X.obj i).basepoint ∈ U i)
+  let F' := F.liftTargetOpen U hp
+  obtain ⟨C', hC'⟩ := F.exists_canonical_metric_convergence_liftTargetOpen U hp C hC
+  refine ⟨f, hf, r, hr, hrlim, L, F, C', hC', hradial, hcompactL, ?_, ?_⟩
+  · exact F.liftTargetOpen_closedBall_subset_target r hcapture
+  · intro eps heps
+    filter_upwards [hbounds eps heps] with n hn
+    intro x hx v
+    have hd := DifferentialGeometry.mfderiv_subtypeVal_comp (I := I) (J := I)
+      (F.map n : L.M → U (f n)) x
+    change (1 - eps) * L.metric.inner x v v ≤
+        (X.obj (f n)).metric.inner (F.map n x).val
+          (mfderiv I I (fun z => (F.map n z).val) x v)
+          (mfderiv I I (fun z => (F.map n z).val) x v) ∧
+      (X.obj (f n)).metric.inner (F.map n x).val
+          (mfderiv I I (fun z => (F.map n z).val) x v)
+          (mfderiv I I (fun z => (F.map n z).val) x v) ≤
+        (1 + eps) * L.metric.inner x v v
+    rw [hd]
+    exact hn x hx v
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end

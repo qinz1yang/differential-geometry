@@ -610,6 +610,55 @@ theorem scalar_le_of_good_locus
 
 end ScalarBound
 
+section ThresholdGradient
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem scalar_bounds_on_ball_of_threshold_gradient_bound
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    {C Q q s : ℝ} {x y : M} (hC : 0 ≤ C) (hQ : 0 < Q) (hq : q < Q / 2)
+    (hgrad : ∀ z, q < S.scalar s z → ∀ v : TangentSpace I z,
+      |scalarDifferential (I := I) S s z v| ≤
+        C * S.scalar s z * Real.sqrt (S.scalar s z) *
+          Real.sqrt ((S.base.metric s).inner z v v))
+    (hx : S.scalar s x = Q)
+    (hy : y ∈ riemannianClosedBallOf (S.base.metric s) x
+      (localPropagationRadius (C / 2) / Real.sqrt Q)) :
+    Q / 4 ≤ S.scalar s y ∧ S.scalar s y ≤ 3 * Q := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  have hg (P : ℝ) (hP : Q / 4 ≤ P) (z : M) (hz : 2 * P ≤ S.scalar s z)
+      (v : TangentSpace I z) :
+      |scalarDifferential (I := I) S s z v| ≤
+        2 * (C / 2) * (S.scalar s z * Real.sqrt (S.scalar s z)) *
+          Real.sqrt ((S.base.metric s).inner z v v) := by
+    have hqz : q < S.scalar s z := by linarith
+    convert hgrad z hqz v using 1
+    ring
+  have hupper := scalar_le_on_ball_of_gradient_bound S (by positivity : 0 ≤ C / 2) hQ
+    (hg Q (by linarith)) hx.le hy
+  refine ⟨?_, hupper⟩
+  by_contra hlower
+  have hlow : S.scalar s y ≤ Q / 4 := (lt_of_not_ge hlower).le
+  have hrad : localPropagationRadius (C / 2) / Real.sqrt Q ≤
+      localPropagationRadius (C / 2) / Real.sqrt (Q / 4) :=
+    div_le_div_of_nonneg_left (localPropagationRadius_pos (by positivity : 0 ≤ C / 2)).le
+      (Real.sqrt_pos.mpr (by positivity)) (Real.sqrt_le_sqrt (by linarith))
+  have hyx : x ∈ riemannianClosedBallOf (S.base.metric s) y
+      (localPropagationRadius (C / 2) / Real.sqrt (Q / 4)) := by
+    change riemannianEDistOf (S.base.metric s) y x ≤ _
+    rw [riemannianEDistOf_comm]
+    exact hy.trans (ENNReal.ofReal_le_ofReal hrad)
+  have hreverse := scalar_le_on_ball_of_gradient_bound S (by positivity : 0 ≤ C / 2)
+    (by positivity : 0 < Q / 4) (hg (Q / 4) le_rfl) hlow hyx
+  rw [hx] at hreverse
+  linarith
+
+end ThresholdGradient
+
+
 
 
 section LimitClause

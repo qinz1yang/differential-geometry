@@ -13982,3 +13982,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Incoming
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryTerminalVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalTraceSequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ProspectiveNeckBackwardFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedTerminalCompactness

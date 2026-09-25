@@ -2,6 +2,8 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Restricti
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Defs
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.ConnectedComponentVolume
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.MetricExtension
 
 noncomputable section
 
@@ -169,3 +171,121 @@ theorem PointedRiemannianConverges.liftTargetOpen_metrics
     (C.liftTargetOpen U hp).metrics = C.metrics.liftTargetOpen U hp := rfl
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+noncomputable section
+open Set Filter
+open scoped Manifold ContDiff Topology
+namespace DifferentialGeometry.CheegerGromovCompactness
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
+
+private theorem canonicalSourceData_derivNormSupOn_liftTargetOpen
+    {X : PointedRiemannianSeq.{u, uE, uH} I} {L : PointedRiemannianManifold.{u, uE, uH} I} {f : ℕ → ℕ}
+    (U : ∀ n, TopologicalSpace.Opens (X.obj n).M) (hp : ∀ n, (X.obj n).basepoint ∈ U n)
+    (F : PointedRiemannianConvergenceMaps (X.restrictOpen U hp) L f)
+    (n : ℕ) (K : Set L.M) (hK : K ⊆ F.source n) (p : ℕ) :
+    (CanonicalMetricCompactness.canonicalSourceData (F.liftTargetOpen U hp) n).derivNormSupOn K p =
+      (CanonicalMetricCompactness.canonicalSourceData F n).derivNormSupOn K p := by
+  let D := CanonicalMetricCompactness.canonicalSourceData F n
+  let V : TopologicalSpace.Opens L.M := metricSourceOpenSubset F n
+  let A : SmoothRiemannianMetric I V := D.pullbackMetric
+  have hA : ∀ (x : V) (v w : TangentSpace I x),
+      A.inner x v w = ((X.restrictOpen U hp).obj (f n)).metric.inner (F.map n x)
+        (mfderiv I I (F.map n) x v) (mfderiv I I (F.map n) x w) := by
+    intro x v w
+    have hh := D.pullback_inner x v w
+    have hd (z : TangentSpace I x) :
+        mfderiv I I (fun y : V => F.map n (y : L.M)) x z = mfderiv I I (F.map n) (x : L.M) z :=
+      congrArg (fun d => d z) (DifferentialGeometry.mfderiv_restrict_open (I := I) (J := I) (F.map n) V x)
+    exact hh.trans (congrArg₂ (fun v' w' => ((X.restrictOpen U hp).obj (f n)).metric.inner (F.map n x) v' w')
+      (hd v) (hd w))
+  have hAlift : ∀ (x : V) (v w : TangentSpace I x),
+      A.inner x v w = (X.obj (f n)).metric.inner ((F.liftTargetOpen U hp).map n x)
+        (mfderiv I I ((F.liftTargetOpen U hp).map n) x v)
+        (mfderiv I I ((F.liftTargetOpen U hp).map n) x w) := by
+    intro x v w
+    have hd := DifferentialGeometry.mfderiv_subtypeVal_comp (I := I) (J := I)
+      (F.map n : L.M → U (f n)) (x : L.M)
+    change A.inner x v w = (X.obj (f n)).metric.inner (F.map n x).val
+      (mfderiv I I (fun z => (F.map n z).val) x v) (mfderiv I I (fun z => (F.map n z).val) x w)
+    rw [hd]
+    exact hA x v w
+  rw [canonicalSourceData_derivNormSupOn_eq_of_open_pullback (F.liftTargetOpen U hp) n V (Subset.refl _)
+      A K hK p hAlift,
+    canonicalSourceData_derivNormSupOn_eq_of_open_pullback F n V (Subset.refl _) A K hK p hA]
+
+theorem PointedRiemannianConvergenceMaps.exists_canonical_metric_convergence_liftTargetOpen
+    {X : PointedRiemannianSeq.{u, uE, uH} I} {L : PointedRiemannianManifold.{u, uE, uH} I} {f : ℕ → ℕ}
+    (U : ∀ n, TopologicalSpace.Opens (X.obj n).M) (hp : ∀ n, (X.obj n).basepoint ∈ U n)
+    (F : PointedRiemannianConvergenceMaps (X.restrictOpen U hp) L f)
+    (C : MetricConvergenceData F)
+    (hC : ∀ n, C.domain n = CanonicalMetricCompactness.canonicalSourceData F n) :
+    ∃ C' : MetricConvergenceData (F.liftTargetOpen U hp),
+      ∀ n, C'.domain n = CanonicalMetricCompactness.canonicalSourceData (F.liftTargetOpen U hp) n := by
+  obtain ⟨C', hC', _⟩ := exists_metricConvergenceData_canonicalSourceData (F.liftTargetOpen U hp) (by
+    intro K hK p eps heps
+    obtain ⟨N, hN⟩ := C.converges K hK p eps heps
+    refine ⟨N, fun n hn => ?_⟩
+    have hh := hN n hn
+    rw [canonicalSourceData_derivNormSupOn_liftTargetOpen U hp F n K hh.1 p, ← hC n]
+    exact hh.2)
+  refine ⟨C', hC'⟩
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end
+
+noncomputable section
+open Set Filter DifferentialGeometry
+open scoped Manifold ContDiff Topology ENNReal
+namespace DifferentialGeometry.CheegerGromovCompactness
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+  PointedRiemannianManifold.t2TangentBundle
+
+theorem PointedRiemannianConvergenceMaps.liftTargetOpen_closedBall_subset_target
+    {X : PointedRiemannianSeq.{u, uE, uH} I} {L : PointedRiemannianManifold.{u, uE, uH} I}
+    {f : ℕ → ℕ} (F : PointedRiemannianConvergenceMaps X.connectedComponent L f)
+    (r : ℕ → ℝ)
+    (hcapture : ∀ n, riemannianClosedBallOf
+        (X.connectedComponent.obj (f n)).metric
+        (X.connectedComponent.obj (f n)).basepoint (r n) ⊆ F.target n) :
+    ∀ n, riemannianClosedBallOf (X.obj (f n)).metric (X.obj (f n)).basepoint (r n) ⊆
+      (F.liftTargetOpen
+        (fun i => connectedComponentOpen (I := I) (X.obj i).basepoint)
+        (fun i => (mem_connectedComponent :
+          (X.obj i).basepoint ∈ (connectedComponentOpen (I := I) (X.obj i).basepoint :
+            Set (X.obj i).M)))).target n := by
+  intro n y hy
+  let U : TopologicalSpace.Opens (X.obj (f n)).M :=
+    connectedComponentOpen (I := I) (X.obj (f n)).basepoint
+  have hyU : y ∈ (U : Set (X.obj (f n)).M) := by
+    apply Geometry.Metric.edistOf_ball_subset_connCompOpen
+      (I := I) (X.obj (f n)).metric (X.obj (f n)).basepoint (max (r n) 0 + 1)
+    exact hy.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by positivity)).mpr
+      (by linarith [le_max_left (r n) 0]))
+  let y' : (X.connectedComponent.obj (f n)).M := ⟨y, hyU⟩
+  have hy' : y' ∈ riemannianClosedBallOf
+      (X.connectedComponent.obj (f n)).metric
+      (X.connectedComponent.obj (f n)).basepoint (r n) := by
+    exact (Set.ext_iff.mp ((X.obj (f n)).connectedComponent_closedBall (r n)) y').mpr hy
+  have hyt : y' ∈ F.target n := hcapture n hy'
+  rw [PointedRiemannianConvergenceMaps.liftTargetOpen_target
+    (U := fun i => connectedComponentOpen (I := I) (X.obj i).basepoint)
+    (hp := fun i => (mem_connectedComponent :
+      (X.obj i).basepoint ∈ (connectedComponentOpen (I := I) (X.obj i).basepoint :
+        Set (X.obj i).M))) F n]
+  exact ⟨y', hyt, rfl⟩
+
+end DifferentialGeometry.CheegerGromovCompactness
+
+end
