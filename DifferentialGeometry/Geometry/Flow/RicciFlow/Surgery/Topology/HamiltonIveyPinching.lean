@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
+import DifferentialGeometry.Geometry.Curvature.EmbeddingIsometry
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Initial
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingDatum
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
@@ -75,6 +78,16 @@ theorem inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion
     change 0 ≤ _ ∨ fixedHamiltonIveyBarrier a (-_) ≤ metricScalarAt g x
     rw [csInf_two_mul_matrix_rayleigh_eq g x B hB']
     exact h
+
+theorem exists_pos_inFixedHamiltonIveyRegion_and_scalar_lower_bound
+    [CompactSpace X] (g : SmoothRiemannianMetric ThreeModel X) :
+    ∃ a : ℝ, 0 < a ∧ (∀ x : X, InFixedHamiltonIveyRegion g a x) ∧
+      ∀ x : X, -3 / a ≤ metricScalarAt g x := by
+  obtain ⟨a,ha,hbound⟩ := DimensionThree.exists_pos_fixedHamiltonIveyRegion_of_compact
+    g (by simp [ThreeSpace])
+  exact ⟨a,ha,fun x => (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion g a x).mpr
+    (hbound x).1,fun x => (hbound x).2⟩
+
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -607,5 +620,115 @@ theorem exists_admissiblePinchingFunction_for_observedHistories
   exact ⟨Phi, hPhi, fun H parameters records hfixed hscalar =>
     hbound H (fun i => (records i).curvature_preserving)
       (fun i => (records i).scalar_preserving) hfixed hscalar⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.InitialIdentification
+
+universe u
+variable {P : OrientedThreeStage.{u}} {g : P.Metric} {H : ObservedHistory.{u}}
+
+theorem fixedHamiltonIveyRegion_and_scalar_lower_bound
+    (A : InitialIdentification P g H) {a : ℝ}
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion g a x)
+    (hlower : ∀ x, -3 / a ≤ metricScalarAt g x) :
+    (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a x) ∧
+      ∀ x, -3 / a ≤ metricScalarAt (H.initialMetric 0) x := by
+  let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
+  have hcurv (x : P.Carrier) :=
+    curvature_of_injective_local_isometry g (H.initialMetric 0) A.map
+      A.map.isLocalDiffeomorph A.map.injective (fun x v w => (A.metric_eq x v w).symm) x
+  constructor
+  · intro y
+    obtain ⟨x, rfl⟩ := A.map.surjective y
+    apply (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ a _).mpr
+    erw [← (hcurv x).1, ← (hcurv x).2]
+    exact (inFixedHamiltonIveyRegion_iff_mem_fixedHamiltonIveyRegion _ a x).mp (hfixed x)
+  · intro y
+    obtain ⟨x, rfl⟩ := A.map.surjective y
+    erw [← (hcurv x).1]
+    exact hlower x
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.InitialIdentification
+
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+theorem exists_pos_fixedHamiltonIveyRegion_for_identified_histories
+    (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    ∃ a : ℝ, 0 < a ∧
+      ∀ (H : ObservedHistory.{u}) (_ : InitialIdentification P g H),
+        (∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a x) ∧
+          ∀ x, -3 / a ≤ metricScalarAt (H.initialMetric 0) x := by
+  obtain ⟨a, ha, hfixed, hlower⟩ := exists_pos_inFixedHamiltonIveyRegion_and_scalar_lower_bound g
+  exact ⟨a, ha, fun H A => A.fixedHamiltonIveyRegion_and_scalar_lower_bound hfixed hlower⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+set_option autoImplicit false
+noncomputable section
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+open Surgery.Topology
+universe u
+
+theorem exists_admissiblePinchingFunction_for_identified_incomingSlabs
+    (P : OrientedThreeStage.{u}) (g : P.Metric) :
+    ∃ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi ∧
+      ∀ (H : ObservedHistory.{u}), InitialIdentification P g H →
+      ∀ (parameters : CutoffParameters),
+        (∀ i : Fin H.eventCount, GeometricCutoffRecord H i parameters) →
+      ∀ (last : Fin (H.eventCount + 1)) (s : ℝ)
+        (G : (H.stage last).IncomingSlab (H.time last) s),
+        G.flow.base.metric (H.time last) = H.initialMetric last →
+        PhiAlmostNonnegative G.flow (Ico (H.time last) s) Phi := by
+  obtain ⟨a₀, ha₀, hfixed, hlower⟩ := exists_pos_inFixedHamiltonIveyRegion_and_scalar_lower_bound g
+  obtain ⟨Phi, hPhi, hphi⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_of_fixedHamiltonIveyRegion.{u} ha₀
+  refine ⟨Phi, hPhi, ?_⟩
+  intro H A parameters records last s G hinit
+  have hzero := A.fixedHamiltonIveyRegion_and_scalar_lower_bound hfixed hlower
+  have hhistory := H.fixedHamiltonIveyRegion_and_scalar_lower records ha₀ hzero.1 hzero.2
+  have hstart : H.time last ∈ H.stageDomain last := by
+    cases last using Fin.lastCases with
+    | last =>
+      simpa only [ObservedHistory.stageDomain, Fin.lastCases_last] using
+        (show H.time (Fin.last H.eventCount) ∈ Icc (H.time (Fin.last H.eventCount)) H.horizon from
+          ⟨le_rfl, H.time_le_horizon⟩)
+    | cast j =>
+      simpa only [ObservedHistory.stageDomain, Fin.lastCases_castSucc] using
+        (show H.time j.castSucc ∈ Ico (H.time j.castSucc) (H.time j.succ) from
+          ⟨le_rfl, H.time_strictMono j.castSucc_lt_succ⟩)
+  have hstage (x : (H.stage last).Carrier) :
+      InFixedHamiltonIveyRegion (H.initialMetric last) (a₀ + H.time last) x ∧
+        -3 / (a₀ + H.time last) ≤ metricScalarAt (H.initialMetric last) x := by
+    simpa only [H.stageMetric_initial] using hhistory.1 last (H.time last) hstart x
+  have hfuture := G.fixedHamiltonIveyRegion_and_scalar_lower
+    (by linarith [H.time_nonneg last] : 0 < a₀ + H.time last)
+    (fun x => by rw [hinit]; exact (hstage x).1)
+    (fun x => by
+      change -3 / (a₀ + H.time last) ≤ metricScalarAt (G.flow.base.metric (H.time last)) x
+      rw [hinit]
+      exact (hstage x).2)
+  apply hphi (H.stage last).Carrier _ G.flow (Ico (H.time last) s) (fun t => a₀ + t)
+  · intro t ht
+    linarith [(H.time_nonneg last).trans ht.1]
+  · intro t ht x
+    simpa only [show a₀ + H.time last + t - H.time last = a₀ + t by ring] using
+      (hfuture t ht x).1
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

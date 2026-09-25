@@ -1,3 +1,7 @@
+import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
+import DifferentialGeometry.Geometry.Metric.Family.QuadraticBounds
+import DifferentialGeometry.Geometry.Metric.Pullback.Local
+import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
@@ -83,3 +87,88 @@ theorem MetricFamilySmoothOn.pullback
 end DifferentialGeometry.Geometry.Curvature
 
 end
+
+noncomputable section
+open Set Manifold
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+
+variable {E F H H' X Y : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [TopologicalSpace H] [TopologicalSpace H']
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
+  [TopologicalSpace X] [ChartedSpace H X] [IsManifold I ∞ X] [T2Space X]
+  [TopologicalSpace Y] [ChartedSpace H' Y] [IsManifold J ∞ Y]
+
+theorem metric_lower_on_compact_of_localPullMetric
+    {D : RealTimeInterval} {G : ℝ → SmoothRiemannianMetric I X}
+    (hG : MetricFamilySmoothOn (I := I) (M := X) D G)
+    (g : ℝ → SmoothRiemannianMetric J Y)
+    (f : X → Y) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Function.Injective f)
+    {A B : Set ℝ} (hB : IsCompact B) (hBD : B ⊆ D.carrier) (hAB : A ⊆ B)
+    {K : Set Y} (hK : IsCompact K) (hKrange : K ⊆ range f)
+    (gRef : SmoothRiemannianMetric J Y)
+    (hmetric : ∀ t ∈ A, G t = localPullMetric (g t) f hf) :
+    ∃ c : ℝ, 0 < c ∧ ∀ t ∈ A, ∀ y ∈ K, ∀ v : TangentSpace J y,
+      c * gRef.inner y v v ≤ (g t).inner y v v := by
+  have hemb : _root_.Topology.IsOpenEmbedding f :=
+    .of_continuous_injective_isOpenMap hf.contMDiff.continuous hinj hf.isOpenMap
+  have hpre : IsCompact (f ⁻¹' K) :=
+    hemb.isEmbedding.isInducing.isCompact_preimage' hK hKrange
+  obtain ⟨c, hc, hbound⟩ := hG.metric_lower_on_compact_time hB hBD hpre
+    (localPullMetric gRef f hf)
+  refine ⟨c, hc, ?_⟩
+  intro t ht y hy v
+  obtain ⟨x, rfl⟩ := hKrange hy
+  obtain ⟨w, hw⟩ := (hf.mfderivToContinuousLinearEquiv (by simp) x).surjective v
+  have hh := hbound t (hAB ht) x hy w
+  rw [hmetric t ht, localPullMetric_inner, localPullMetric_inner] at hh
+  change mfderiv I J f x w = v at hw
+  simpa only [hw] using hh
+
+end DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set Manifold
+open scoped Manifold ContDiff Topology
+
+namespace DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn
+
+variable {E F H H' X Y : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace H']
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
+  [TopologicalSpace X] [ChartedSpace H X] [IsManifold I ∞ X] [T2Space X]
+  [TopologicalSpace Y] [ChartedSpace H' Y] [IsManifold J ∞ Y] [T2Space Y]
+
+theorem exists_pos_isCompact_riemannianClosedBallOf_metric_lower_of_localPullMetric
+    {D : RealTimeInterval} {G : ℝ → SmoothRiemannianMetric I X}
+    (hG : MetricFamilySmoothOn (I := I) (M := X) D G)
+    (g : ℝ → SmoothRiemannianMetric J Y)
+    (f : X → Y) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Function.Injective f)
+    (p : Y) (hp : p ∈ range f) {A L : Set ℝ} (hL : IsCompact L) (hAL : A ⊆ L)
+    (τ : ℝ → ℝ) (hτ : ContinuousOn τ L) (hτD : MapsTo τ L D.carrier)
+    (gRef : SmoothRiemannianMetric J Y)
+    (hmetric : ∀ u ∈ A, G (τ u) = localPullMetric (g (τ u)) f hf) :
+    ∃ r c : ℝ, 0 < r ∧ 0 < c ∧ IsCompact (riemannianClosedBallOf gRef p r) ∧
+      riemannianClosedBallOf gRef p r ⊆ range f ∧
+      ∀ u ∈ A, ∀ y ∈ riemannianClosedBallOf gRef p r, ∀ v : TangentSpace J y,
+        c * gRef.inner y v v ≤ (g (τ u)).inner y v v := by
+  obtain ⟨r, hr, hcpt, hball⟩ :=
+    Geometry.Metric.exists_pos_isCompact_riemannianClosedBallOf_subset_of_mem_nhds
+      gRef p (hf.isOpenMap.isOpen_range.mem_nhds hp)
+  have hmet : ∀ t ∈ τ '' A, G t = localPullMetric (g t) f hf := by
+    rintro t ⟨u, hu, rfl⟩
+    exact hmetric u hu
+  obtain ⟨c, hc, hbound⟩ := hG.metric_lower_on_compact_of_localPullMetric g f hf hinj
+    (hL.image_of_continuousOn hτ) (by rintro t ⟨u, hu, rfl⟩; exact hτD hu)
+    (image_mono hAL) hcpt hball gRef hmet
+  exact ⟨r, c, hr, hc, hcpt, hball, fun u hu y hy v => hbound (τ u) ⟨u, hu, rfl⟩ y hy v⟩
+
+end DifferentialGeometry.Geometry.Curvature.MetricFamilySmoothOn

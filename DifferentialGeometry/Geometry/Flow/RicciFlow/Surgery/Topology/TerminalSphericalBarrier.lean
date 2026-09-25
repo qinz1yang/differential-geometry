@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
+import DifferentialGeometry.Geometry.Metric.Comparison.BoundaryDetour
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NeckRegionBall
 import DifferentialGeometry.Geometry.Neck.SphericalBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCanonicalAlternatives
@@ -191,6 +194,258 @@ theorem TerminalLimitMetric.eventually_cap_spherical_barrier
     exact ⟨hqc.trans (hmap ⟨(q.1, 1 / 2 + (q.2 : ℝ)), hz⟩).symm, hmem⟩
 
 
+private theorem neck_half_slice_edist_le
+    (L : G.TerminalLimitMetric) {δ : ℝ} {v : G.terminalRegularOpen}
+    (nk : SpatialNeck L.metric δ v) (p q : Sphere 2) :
+    riemannianEDistOf L.metric (nk.map (p, 1 / 2)) (nk.map (q, 1 / 2)) ≤
+      ENNReal.ofReal (28 / Real.sqrt (metricScalarAt L.metric v)) := by
+  have hlen : (1 : ℝ) < δ⁻¹ := by
+    apply (lt_inv_comm₀ zero_lt_one nk.eps_pos).mpr
+    simpa using nk.eps_small.trans (by norm_num : (1 : ℝ) / 11 < 1)
+  have hroot : 0 < Real.sqrt (metricScalarAt L.metric v) := Real.sqrt_pos.mpr nk.Q_pos
+  have hsqrt : Real.sqrt (1 + δ) ≤ 2 := by
+    apply (Real.sqrt_le_iff).mpr
+    constructor
+    · norm_num
+    · linarith [nk.eps_small]
+  have hb (z : Sphere 2) : riemannianEDistOf L.metric v (nk.map (z, 1 / 2)) ≤
+      ENNReal.ofReal (14 / Real.sqrt (metricScalarAt L.metric v)) := by
+    have h := nk.image_slab_subset_closedBall (by norm_num : (0 : ℝ) ≤ 1) hlen
+      ⟨(z, 1 / 2), ⟨mem_univ _, by norm_num⟩, rfl⟩
+    apply h.trans (ENNReal.ofReal_le_ofReal ?_)
+    apply div_le_div_of_nonneg_right _ hroot.le
+    norm_num
+    linarith
+  calc
+    _ ≤ riemannianEDistOf L.metric (nk.map (p, 1 / 2)) v +
+        riemannianEDistOf L.metric v (nk.map (q, 1 / 2)) :=
+      riemannianEDistOf_triangle L.metric _ _ _
+    _ ≤ ENNReal.ofReal (14 / Real.sqrt (metricScalarAt L.metric v)) +
+        ENNReal.ofReal (14 / Real.sqrt (metricScalarAt L.metric v)) := by
+      rw [riemannianEDistOf_comm L.metric (nk.map (p, 1 / 2)) v]
+      exact add_le_add (hb p) (hb q)
+    _ = ENNReal.ofReal (28 / Real.sqrt (metricScalarAt L.metric v)) := by
+      rw [← ENNReal.ofReal_add (by positivity) (by positivity)]
+      congr 1
+      ring
+
+private theorem neck_boundary_edist_le_of_scalar_comparison
+    (L : G.TerminalLimitMetric) {δ C Q : ℝ} (hC : 1 ≤ C) (hQ : 0 < Q)
+    {v : G.terminalRegularOpen} (nk : SpatialNeck L.metric δ v)
+    (hscalar : Q / (2 * C) < metricScalarAt L.metric v)
+    (K : CompactDomain G.terminalRegularOpen)
+    (hfront : frontier K.carrier = range (fun z : Sphere 2 => nk.map (z, 1 / 2))) :
+    ∀ y ∈ frontier K.carrier, ∀ z ∈ frontier K.carrier,
+      riemannianEDistOf L.metric y z ≤ ENNReal.ofReal (56 * C / Real.sqrt Q) := by
+  have hCpos : 0 < C := zero_lt_one.trans_le hC
+  have hRv := nk.Q_pos
+  have hrootQ := Real.sqrt_pos.mpr hQ
+  have hrootV := Real.sqrt_pos.mpr hRv
+  have hQR : Q < 2 * C * metricScalarAt L.metric v :=
+    by
+      simpa only [mul_comm] using
+        (div_lt_iff₀ (show 0 < 2 * C by positivity)).mp hscalar
+  have hproduct : 2 * C * metricScalarAt L.metric v ≤
+      (2 * C) ^ 2 * metricScalarAt L.metric v := by
+    apply mul_le_mul_of_nonneg_right _ hRv.le
+    nlinarith
+  have hroot : Real.sqrt Q ≤ 2 * C * Real.sqrt (metricScalarAt L.metric v) := by
+    calc
+      _ ≤ Real.sqrt ((2 * C) ^ 2 * metricScalarAt L.metric v) :=
+        Real.sqrt_le_sqrt (hQR.le.trans hproduct)
+      _ = _ := by rw [Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq (by positivity)]
+  intro y hy z hz
+  rw [hfront] at hy hz
+  obtain ⟨p, rfl⟩ := hy
+  obtain ⟨q, rfl⟩ := hz
+  refine (neck_half_slice_edist_le L nk p q).trans (ENNReal.ofReal_le_ofReal ?_)
+  apply (div_le_div_iff₀ hrootV hrootQ).mpr
+  nlinarith
+
+
+private theorem canonical_domain_edist_lt
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
+    {eps C1 C2 : ℝ} (W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n)) :
+    ∀ᶠ n in atTop, ∀ y ∈ (W n).domain.carrier,
+      riemannianEDistOf (G.flow.base.metric (τ n)) x.val y <
+        ENNReal.ofReal (4 * C1 / Real.sqrt (metricScalarAt L.metric x)) := by
+  have hlower := hτ.eventually ((L.tendsto_metricScalarAt x).eventually
+    (Ioi_mem_nhds (show metricScalarAt L.metric x / 4 < metricScalarAt L.metric x by linarith)))
+  filter_upwards [hlower] with n hn
+  change metricScalarAt L.metric x / 4 < G.flow.scalar (τ n) x.val at hn
+  have hroot := Real.sqrt_pos.mpr hx
+  have hrootn := Real.sqrt_pos.mpr (W n).Q_pos
+  have hrootle : Real.sqrt (metricScalarAt L.metric x) ≤
+      2 * Real.sqrt (G.flow.scalar (τ n) x.val) := by
+    nlinarith [Real.sq_sqrt hx.le, Real.sq_sqrt (W n).Q_pos.le,
+      Real.sqrt_nonneg (G.flow.scalar (τ n) x.val)]
+  have hC1 : 0 < C1 := by
+    have hr := (inv_pos.mpr hrootn).trans_le (W n).radius_lower
+    have hpos := hr.trans_le (W n).radius_upper
+    exact ((div_pos_iff.mp hpos).resolve_right (fun h => hrootn.not_gt h.2)).1
+  intro y hy
+  apply ((W n).inside_ball hy).trans_le
+  apply ENNReal.ofReal_le_ofReal
+  calc
+    2 * (W n).radius ≤ 2 * (C1 / Real.sqrt (G.flow.scalar (τ n) x.val)) := by
+      linarith [(W n).radius_upper]
+    _ ≤ 4 * C1 / Real.sqrt (metricScalarAt L.metric x) := by
+      apply (le_div_iff₀ hroot).mpr
+      calc
+        _ = (2 * C1 * Real.sqrt (metricScalarAt L.metric x)) /
+            Real.sqrt (G.flow.scalar (τ n) x.val) := by ring
+        _ ≤ 4 * C1 := (div_le_iff₀ hrootn).mpr (by nlinarith)
+
+private theorem eventually_canonical_domain_metric_lower
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    {K : Set G.terminalRegularOpen} (hK : IsCompact K) :
+    ∀ᶠ n in atTop, ∀ y ∈ K, ∀ v : TangentSpace ThreeModel y,
+      L.metric.inner y v v ≤ (2 : ℝ) ^ 2 * (G.flow.base.metric (τ n)).inner y.val v v := by
+  obtain ⟨d, hd, hclose⟩ := L.converges K hK 0 (1 / 2) (by norm_num)
+  filter_upwards [hτ.eventually (Ioo_mem_nhdsLT hd.2)] with n hn
+  intro y hy v
+  have hb := (DifferentialGeometry.Geometry.Metric.inner_bounds_of_metricDerivNorm_le L.metric
+    ((G.flow.base.metric (τ n)).restrictOpen G.terminalRegularOpen) y (hclose (τ n) hn y hy).le v).1
+  have hnonneg := DifferentialGeometry.metric_inner_self_nonneg L.metric y v
+  change (1 - 1 / 2 : ℝ) * L.metric.inner y v v ≤
+    (G.flow.base.metric (τ n)).inner y.val v v at hb
+  nlinarith
+
+
+private theorem eventually_canonical_region_subset_ball_of_neck_boundary
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
+    {eps C1 C2 : ℝ} (W : ∀ n, CanonicalWitness G.flow eps C1 C2 x.val (τ n))
+    {K₀ : Set G.terminalRegularOpen} (hK₀ : IsCompact K₀)
+    (hcapture : ∀ᶠ n in atTop, (W n).domain.carrier ⊆ Subtype.val '' K₀) :
+    ∀ᶠ n in atTop, ∀ {δ : ℝ} {v : G.terminalRegularOpen}
+      (nk : SpatialNeck L.metric δ v) (K : CompactDomain G.terminalRegularOpen),
+      x ∈ K.carrier → K.carrier ⊆ Subtype.val ⁻¹' (W n).domain.carrier →
+      metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric v →
+      frontier K.carrier = range (fun z : Sphere 2 => nk.map (z, 1 / 2)) →
+      K.carrier ⊆ riemannianBallOf L.metric x
+        ((8 * C1 + 56 * C2) / Real.sqrt (metricScalarAt L.metric x)) := by
+  have hdist := canonical_domain_edist_lt L hτ x hx W
+  have hmetric := eventually_canonical_domain_metric_lower L hτ hK₀
+  filter_upwards [hcapture, hdist, hmetric] with n hcap hd hm
+  intro δ v nk K hxK hKW hscalar hfront
+  have hKsub : K.carrier ⊆ K₀ := by
+    intro z hz
+    obtain ⟨w, hw, hwz⟩ := hcap (hKW hz)
+    exact (Subtype.ext hwz : w = z) ▸ hw
+  have hC2 := (W n).one_le_comparison_constant
+  have hC2pos : 0 < C2 := zero_lt_one.trans_le hC2
+  have hroot := Real.sqrt_pos.mpr hx
+  have hfrontbound := neck_boundary_edist_le_of_scalar_comparison L hC2 hx nk hscalar K hfront
+  intro y hy
+  have hbound := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_subtype_le_mul_add_of_frontier_bound
+    (G.flow.base.metric (τ n)) G.terminalRegularOpen L.metric K.compact
+    (by norm_num : (0 : ℝ) < 2)
+    (ENNReal.ofReal (56 * C2 / Real.sqrt (metricScalarAt L.metric x)))
+    (fun z hz => hm z (hKsub hz)) hfrontbound hxK hy
+  change riemannianEDistOf L.metric x y < _
+  apply hbound.trans_lt
+  calc
+    _ < ENNReal.ofReal 2 * ENNReal.ofReal (4 * C1 / Real.sqrt (metricScalarAt L.metric x)) +
+        ENNReal.ofReal (56 * C2 / Real.sqrt (metricScalarAt L.metric x)) :=
+      ENNReal.add_lt_add_right ENNReal.ofReal_ne_top
+        (ENNReal.mul_lt_mul_right (by norm_num : ENNReal.ofReal (2 : ℝ) ≠ 0)
+          ENNReal.ofReal_ne_top (hd y.val (hKW hy)))
+    _ = ENNReal.ofReal ((8 * C1 + 56 * C2) / Real.sqrt (metricScalarAt L.metric x)) := by
+      rw [← ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2), ← ENNReal.ofReal_add]
+      · congr 1
+        ring
+      · have hRn := Real.sqrt_pos.mpr (W n).Q_pos
+        have hC1 : 0 ≤ C1 := by
+          have hh := (W n).radius_lower.trans (W n).radius_upper
+          have hposit : 0 < C1 / Real.sqrt (G.flow.scalar (τ n) x.val) :=
+            (inv_pos.mpr hRn).trans_le hh
+          exact ((div_pos_iff.mp hposit).resolve_right (fun h => hRn.not_gt h.2)).1.le
+        positivity
+      · positivity
+
+
+theorem TerminalLimitMetric.spatial_neck_or_cap_of_canonical_neighborhoods
+    (L : G.TerminalLimitMetric) {eps δ q C1 C2 : ℝ}
+    (hδ : 0 < δ) (hδsmall : δ < 1 / 20000)
+    (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hq : 0 < q)
+    (x y : G.terminalRegularOpen)
+    (hcanonical : ∀ t ∈ Ioo a s, q < G.flow.scalar t x.val →
+      ∃ W : CanonicalWitness G.flow eps C1 C2 x.val t, W.capTubeHasNeckChart eps)
+    (hx : q < metricScalarAt L.metric x)
+    (hy : y.val ∈ connectedComponent x.val)
+    (hscalar : C2 * metricScalarAt L.metric y < metricScalarAt L.metric x) :
+    Nonempty (SpatialNeck L.metric δ x) ∨
+      ∃ (v : G.terminalRegularOpen) (nk : SpatialNeck L.metric δ v)
+        (K : CompactDomain G.terminalRegularOpen),
+        Nonempty (CapCore K.carrier) ∧ x ∈ interior K.carrier ∧
+        riemannianBallOf L.metric x (1000 / Real.sqrt (metricScalarAt L.metric x)) ⊆
+          interior K.carrier ∧
+        K.carrier ⊆ riemannianBallOf L.metric x
+          ((8 * C1 + 56 * C2) / Real.sqrt (metricScalarAt L.metric x)) ∧
+        (∀ w ∈ K.carrier,
+          metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric w ∧
+            metricScalarAt L.metric w < 2 * C2 * metricScalarAt L.metric x) ∧
+        (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+          metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric (nk.map z) ∧
+            metricScalarAt L.metric (nk.map z) < 2 * C2 * metricScalarAt L.metric x) ∧
+        frontier K.carrier = range (fun z : Sphere 2 => nk.map (z, 1 / 2)) ∧
+        IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => nk.map (z, 1 / 2)) ∧
+        ∃ c : DifferentialGeometry.Topology.SmoothTwoSidedCollar I2 I3
+          (fun z : Sphere 2 => nk.map (z, 1 / 2)),
+          c.radius < 1 / 4 ∧ ∀ z,
+            c.toFun z = nk.map (z.1, 1 / 2 + (z.2 : ℝ)) ∧
+              (c.toFun z ∈ K.carrier ↔ (z.2 : ℝ) ≤ 0) := by
+  have hxpos := hq.trans hx
+  have hhigh : ∀ᶠ t in 𝓝[<] s, q < G.flow.scalar t x.val :=
+    (L.tendsto_metricScalarAt x).eventually (Ioi_mem_nhds hx)
+  have hbranch := L.eventually_canonical_neck_or_cap x y hy (eps := eps) (C1 := C1) hscalar
+  obtain ⟨τ, _, _, hτ, W, hW, halt⟩ :=
+    exists_canonical_neck_or_cap_sequence_of_eventually hcanonical hhigh hbranch
+  rcases halt with hn | hc
+  · obtain ⟨neck, _⟩ := hn
+    obtain ⟨n, nk, _, _⟩ := (L.eventually_spatialNeck_of_incoming_strongNecks hτ x hxpos
+      hδ (hδsmall.trans (by norm_num)) hepsδ hfit (fun n => (neck n).strong)).exists
+    exact Or.inl ⟨nk⟩
+  · obtain ⟨cap, depth, hcap⟩ := hc
+    obtain ⟨K₀, hK₀, _, _, _, _, hcapture⟩ :=
+      L.eventually_cap_neck_compact_capture hτ x W hW cap depth hcap
+    have hupper := eventually_canonical_region_subset_ball_of_neck_boundary L hτ x hxpos W hK₀
+      (hcapture.mono fun n hn => subset_union_left.trans hn)
+    obtain ⟨n, ⟨⟨v, nk, K, hK, hxK, hKW, hscalarK, hscalarN, hfront, hemb, _, _, c, hc, hcollar⟩,
+        hball⟩, hupper⟩ :=
+      (((L.eventually_cap_spherical_barrier hτ x hxpos hδ hδsmall hepsδ hfit
+        W hW cap depth hcap).and
+          (L.eventually_ball_subset_canonical_cap_core hτ x hxpos W cap depth)).and hupper).exists
+    have hsubset : (cap n).core.carrier ∪
+        (cap n).tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ⊆ G.terminalRegularOpen := by
+      rw [← hK]
+      rintro z ⟨w, _, rfl⟩
+      exact w.property
+    have hpreimage : Subtype.val ⁻¹' ((cap n).core.carrier ∪
+        (cap n).tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2))) = K.carrier := by
+      rw [← hK, preimage_image_eq _ Subtype.val_injective]
+    have hmodel := (cap n).nonempty_capCore_truncated_core
+      (by norm_num : (1 / 2 : ℝ) ∈ Icc 0 1)
+    have hmodel' := hmodel.some.nonempty_preimage_open G.terminalRegularOpen hsubset
+    rw [hpreimage] at hmodel'
+    have hcore : (Subtype.val ⁻¹' (cap n).core.carrier : Set G.terminalRegularOpen) ⊆
+        K.carrier := by
+      intro z hz
+      rw [← hpreimage]
+      exact Or.inl hz
+    have hballK : riemannianBallOf L.metric x
+        (1000 / Real.sqrt (metricScalarAt L.metric x)) ⊆ interior K.carrier := by
+      refine hball.trans ?_
+      apply Subset.trans ?_ (interior_mono hcore)
+      exact preimage_interior_subset_interior_preimage continuous_subtype_val
+    have hscalarV : metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric v := by
+      have h := (hscalarN (nk.center, 0) ⟨mem_univ _, by norm_num⟩).1
+      simpa only [nk.center_eq] using h
+    have hupperK := hupper nk K (interior_subset hxK) hKW hscalarV hfront
+    exact Or.inr ⟨v, nk, K, hmodel', hxK, hballK, hupperK, hscalarK, hscalarN, hfront, hemb, c, hc, hcollar⟩
+
 set_option backward.isDefEq.respectTransparency false in
 theorem exists_uniform_spherical_barrier_at_level
     {δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 20000) :
@@ -305,5 +560,55 @@ theorem TerminalLimitMetric.exists_spherical_barrier_at_level
   obtain ⟨C2, hC2, hmain⟩ := exists_uniform_spherical_barrier_at_level.{u} hδ hδsmall
   obtain ⟨q, hq, hbarrier⟩ := hmain P a s G
   exact ⟨C2, q, hC2, hq, hbarrier L⟩
+
+
+theorem TerminalLimitMetric.nonempty_spatialNeck_of_canonical_along_minimizer
+    (L : G.TerminalLimitMetric) {eps δ α q C1 C2 : ℝ}
+    (hδ : 0 < δ)
+    (hα : α < 1 / 11) (hreserve : 13000 * δ ≤ α)
+    (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (hq : 0 < q) (hC2 : 0 < C2)
+    {γ : ℝ → G.terminalRegularOpen} {l t r : ℝ} (hlt : l < t) (htr : t < r)
+    (hmin : ∀ u ∈ Icc l r, ∀ v ∈ Icc l r,
+      riemannianEDistOf L.metric (γ u) (γ v) = ENNReal.ofReal |u - v|)
+    (hcanonical : ∀ u ∈ Ioo a s, q < G.flow.scalar u (γ t).val →
+      ∃ W : CanonicalWitness G.flow eps C1 C2 (γ t).val u, W.capTubeHasNeckChart eps)
+    (hx : q < metricScalarAt L.metric (γ t))
+    (hleft : 2 * C2 * metricScalarAt L.metric (γ l) < metricScalarAt L.metric (γ t))
+    (hright : 2 * C2 * metricScalarAt L.metric (γ t) ≤ metricScalarAt L.metric (γ r)) :
+    Nonempty (SpatialNeck L.metric α (γ t)) := by
+  have hδsmall : δ < 1 / 20000 := by linarith
+  have hxpos : 0 < metricScalarAt L.metric (γ t) := hq.trans hx
+  have hy : (γ l).val ∈ connectedComponent (γ t).val := by
+    have hfinite : riemannianEDistOf L.metric (γ t) (γ l) ≠ ⊤ := by
+      rw [hmin t ⟨hlt.le, htr.le⟩ l ⟨le_rfl, hlt.le.trans htr.le⟩]
+      exact ENNReal.ofReal_ne_top
+    have hmem : γ l ∈ connectedComponent (γ t) := by
+      have hball : γ l ∈ riemannianBallOf L.metric (γ t)
+          ((riemannianEDistOf L.metric (γ t) (γ l)).toReal + 1) := by
+        apply (ENNReal.lt_ofReal_iff_toReal_lt hfinite).mpr
+        exact lt_add_one _
+      exact Geometry.Metric.edistOf_ball_subset_connCompOpen L.metric (γ t) _ hball
+    exact continuous_subtype_val.mapsTo_connectedComponent (γ t) hmem
+  have hscalar : C2 * metricScalarAt L.metric (γ l) < metricScalarAt L.metric (γ t) := by
+    by_cases hnonneg : 0 ≤ metricScalarAt L.metric (γ l)
+    · nlinarith
+    · exact (mul_neg_of_pos_of_neg hC2 (lt_of_not_ge hnonneg)).trans hxpos
+  rcases L.spatial_neck_or_cap_of_canonical_neighborhoods hδ hδsmall hepsδ hfit hq
+      (γ t) (γ l) hcanonical hx hy hscalar with hneck | hcap
+  · obtain ⟨N⟩ := hneck
+    exact ⟨N.mono (by linarith) hα⟩
+  · obtain ⟨v, nk, K, hK, hxK, hball, hupper, hscalarK, hscalarN, hfront, hemb, hcollar⟩ := hcap
+    apply nk.exists_at_minimizing_point_of_frontier_eq_slice hα hreserve hfront hlt htr hmin
+    · intro hlK
+      have hh := (hscalarK (γ l) (interior_subset hlK)).1
+      have hcontra : metricScalarAt L.metric (γ l) <
+          metricScalarAt L.metric (γ t) / (2 * C2) := by
+        apply (lt_div_iff₀ (by positivity : 0 < 2 * C2)).mpr
+        nlinarith
+      exact (not_lt_of_ge hcontra.le) hh
+    · intro hrK
+      exact (not_lt_of_ge hright) (hscalarK (γ r) (interior_subset hrK)).2
+    · exact hxK
+
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

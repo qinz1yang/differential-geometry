@@ -81,3 +81,82 @@ theorem exists_tensor_quadratic_bound_on_compact
   rwa [hleft, hright] at hm
 
 end DifferentialGeometry.Geometry.Curvature
+
+end
+
+set_option autoImplicit false
+noncomputable section
+open Set Bundle
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem metric_lower_on_compact_time
+    (G : ℝ → SmoothRiemannianMetric I M) {J : Set ℝ} (hJ : IsCompact J)
+    {K : Set M} (hK : IsCompact K) (gRef : SmoothRiemannianMetric I M)
+    (hquad : Continuous (metricTimeBundleQuad G J)) :
+    ∃ c : ℝ, 0 < c ∧ ∀ t ∈ J, ∀ x ∈ K, ∀ v : TangentSpace I x,
+      c * gRef.inner x v v ≤ (G t).inner x v v := by
+  let : CompactSpace J := isCompact_iff_compactSpace.mp hJ
+  let U : Set (MetricUnitTangent gRef) := {p | MetricUnitTangent.base p ∈ K}
+  let B : Set (J × MetricUnitTangent gRef) := univ ×ˢ U
+  let F := metricUnitTimeSlabRefQuad G J gRef
+  have hF : Continuous F := metricUnitTimeSlabRefQuad_cont_of_bundle G J gRef hquad
+  have hB : IsCompact B := isCompact_univ.prod (metricUnitOn_compact gRef hK)
+  have hnormalize (t : ℝ) (x : M) (v : TangentSpace I x) (hv : v ≠ 0) :
+      ∃ p : MetricUnitTangent gRef,
+        MetricUnitTangent.base p = x ∧
+        (G t).inner x v v = gRef.inner x v v *
+          (G t).inner (MetricUnitTangent.base p) (MetricUnitTangent.vec p) (MetricUnitTangent.vec p) := by
+    let s := Real.sqrt (gRef.inner x v v)
+    have hs : 0 < s := Real.sqrt_pos.mpr (gRef.pos x v hv)
+    have hss : s * s = gRef.inner x v v := by
+      simpa only [s, sq] using Real.sq_sqrt (gRef.pos x v hv).le
+    have hunit : gRef.inner x (s⁻¹ • v) (s⁻¹ • v) = 1 := by
+      rw [metric_smul2, ← hss]
+      field_simp [hs.ne']
+    refine ⟨⟨(⟨x, s⁻¹ • v⟩ : TangentBundle I M), hunit⟩, rfl, ?_⟩
+    change (G t).inner x v v = gRef.inner x v v * (G t).inner x (s⁻¹ • v) (s⁻¹ • v)
+    rw [metric_smul2, ← hss]
+    field_simp [hs.ne']
+  by_cases hne : B.Nonempty
+  · obtain ⟨p, hp, hmin⟩ := hB.exists_isMinOn hne hF.continuousOn
+    refine ⟨F p, metricUnitTimeSlabRefQuad_pos G J gRef p, ?_⟩
+    intro t ht x hx v
+    by_cases hv : v = 0
+    · subst v
+      simp
+    obtain ⟨q, hqx, hq⟩ := hnormalize t x v hv
+    have hqB : ((⟨t, ht⟩ : J), q) ∈ B := by
+      exact ⟨mem_univ _, by change MetricUnitTangent.base q ∈ K; rw [hqx]; exact hx⟩
+    have hminq := hmin hqB
+    change F p ≤ (G t).inner (MetricUnitTangent.base q) (MetricUnitTangent.vec q) (MetricUnitTangent.vec q) at hminq
+    have hh := mul_le_mul_of_nonneg_left hminq (gRef.pos x v hv).le
+    rw [← hq] at hh
+    simpa only [mul_comm] using hh
+  · refine ⟨1, zero_lt_one, ?_⟩
+    intro t ht x hx v
+    by_cases hv : v = 0
+    · subst v
+      simp
+    obtain ⟨q, hqx, _⟩ := hnormalize t x v hv
+    exact False.elim (hne ⟨((⟨t, ht⟩ : J), q), mem_univ _, by
+      change MetricUnitTangent.base q ∈ K
+      rw [hqx]
+      exact hx⟩)
+
+theorem Geometry.Curvature.MetricFamilySmoothOn.metric_lower_on_compact_time
+    {D : RealTimeInterval} {G : ℝ → SmoothRiemannianMetric I M}
+    (hG : Geometry.Curvature.MetricFamilySmoothOn (I := I) (M := M) D G)
+    {J : Set ℝ} (hJ : IsCompact J) (hJD : J ⊆ D.carrier)
+    {K : Set M} (hK : IsCompact K) (gRef : SmoothRiemannianMetric I M) :
+    ∃ c : ℝ, 0 < c ∧ ∀ t ∈ J, ∀ x ∈ K, ∀ v : TangentSpace I x,
+      c * gRef.inner x v v ≤ (G t).inner x v v :=
+  DifferentialGeometry.metric_lower_on_compact_time G hJ hK gRef
+    (Geometry.Curvature.metricTimeBundleQuad_cont_of_metricFamilySmoothOn G hG hJD)
+
+end DifferentialGeometry

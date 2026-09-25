@@ -24,7 +24,8 @@ private theorem terminalCurvatureRescale_atTime_zero
     (hQ : ∀ i, 1 ≤ (X.term (f i)).S.scalar 0 (x i)) :
     ((X.reindex f hf).terminalCurvatureRescale x hQ).toFlowSequence.atTime 0 =
       X.terminalCurvatureRescaledSequence f x (fun i => zero_lt_one.trans_le (hQ i)) := by
-  simp only [FlowSequence.atTime, NormalizedSequence.terminalCurvatureRescale,
+  simp only [FlowSequence.atTime, NormalizedSequence.terminalCurvatureRescale_toFlowSequence,
+    FlowSequence.terminalCurvatureRescale,
     NormalizedSequence.terminalCurvatureRescaledSequence, NormalizedSequence.reindex,
     PointedFlowData.atTime, SolutionOn.family, parabolicSolution_metric, parabolicTime_zero]
 

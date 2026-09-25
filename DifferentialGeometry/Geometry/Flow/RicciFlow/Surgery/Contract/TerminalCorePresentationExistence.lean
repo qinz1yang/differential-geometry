@@ -4,6 +4,8 @@ import DifferentialGeometry.Topology.ProperMap.HalfCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalComponentEnds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.TerminalCutoffScale
 import DifferentialGeometry.Geometry.Neck.NormalizedOpen
+import DifferentialGeometry.Geometry.Neck.SpatialRestriction
+import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollarAmbient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapTransitionInstance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalScalarSublevel
@@ -13,6 +15,7 @@ noncomputable section
 open Set Manifold
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Topology
+open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
@@ -37,6 +40,8 @@ private structure ComponentEndPresentation
   Index : Type u
   finite : Finite Index
   horn : Index → NeckCylinder → M
+  base_neck : ∀ i, ∃ (p : M) (N : SpatialNeck g (1 / 156000) p) (level : ℝ),
+    |level| ≤ 3 ∧ ∀ y, horn i (y, 0) = N.map (y, level)
   horn_smooth : ∀ i, ContMDiffOn NeckCylinderModel ThreeModel ∞ (horn i) (univ ×ˢ Ici (0 : ℝ))
   horn_embedding : ∀ i,
     let U : TopologicalSpace.Opens NeckCylinder :=
@@ -93,6 +98,7 @@ private def compactComponentPresentation
     Index := PEmpty
     finite := inferInstance
     horn := fun i => isEmptyElim i
+    base_neck := fun i => isEmptyElim i
     horn_smooth := fun i => isEmptyElim i
     horn_embedding := fun i => isEmptyElim i
     horn_injOn := fun i => isEmptyElim i
@@ -157,6 +163,12 @@ private def ComponentEndPresentation.toAmbient
     Index := P.Index
     finite := P.finite
     horn := horn
+    base_neck := by
+      intro i
+      obtain ⟨p, N, level, hlevel, hmap⟩ := P.base_neck i
+      obtain ⟨Nout, _, hNout, _, _, _⟩ := N.exists_of_restrictOpen
+      exact ⟨p.val, Nout, level, hlevel, fun y =>
+        (congrArg Subtype.val (hmap y)).trans (hNout (y, level)).symm⟩
     horn_smooth := ?_
     horn_embedding := ?_
     horn_injOn := ?_
@@ -253,6 +265,8 @@ private def componentPresentationOfHalfCylinders
       ∀ x, x ∈ Θ i '' (univ ×ˢ Ici (0 : ℝ)) →
         ∃ (δ : ℝ) (k : ℕ) (N : NormalizedNeck g δ k),
           N.center = x ∧ δ ≤ ε ∧ ⌊ε⁻¹⌋₊ + 1 ≤ k)
+    (hbase : ∀ i, ∃ (p : M) (N : SpatialNeck g (1 / 156000) p) (level : ℝ),
+      |level| ≤ 3 ∧ ∀ y, Θ i (y, 0) = N.map (y, level))
     (hdisjoint : Pairwise fun i j => Disjoint (Θ i '' (univ ×ˢ Ici (0 : ℝ)))
       (Θ j '' (univ ×ˢ Ici (0 : ℝ))))
     (hfrontier : frontier K = ⋃ i, range (fun z => Θ i (z, 0)))
@@ -294,6 +308,7 @@ private def componentPresentationOfHalfCylinders
     Index := Ind
     finite := inferInstance
     horn := fun i => Θ i.down
+    base_neck := fun i => hbase i.down
     horn_smooth := fun i => (hends i.down).1
     horn_embedding := fun i => (hends i.down).2.2.2.1
     horn_injOn := fun i => (hends i.down).2.1
@@ -332,7 +347,10 @@ private def assembleTerminalCorePresentation
         metricScalarAt D.terminal.metric y ≤ (r ^ 2)⁻¹) →
       Nonempty (ComponentEndPresentation D.terminal.metric
         {x | ConnectedComponents.mk x = c} (r ^ 2)⁻¹ (Λ * (r ^ 2)⁻¹) ε)) :
-    TerminalCorePresentation D ε Λ := by
+    {P : TerminalCorePresentation D ε Λ //
+      ∀ c e, ∃ (p : D.slab.terminalRegularOpen)
+        (N : SpatialNeck D.terminal.metric (1 / 156000) p) (level : ℝ),
+        |level| ≤ 3 ∧ ∀ y, P.horn c e (y, 0) = N.map (y, level)} := by
   classical
   let component : Set (ConnectedComponents D.slab.terminalRegularOpen) :=
     {c | ∃ y : D.slab.terminalRegularOpen, ConnectedComponents.mk y = c ∧
@@ -347,7 +365,7 @@ private def assembleTerminalCorePresentation
     · rw [if_neg hc]
       exact compactComponentPresentation D.terminal.metric ∅ _ _ _
         isOpen_empty isClosed_empty isCompact_empty (fun h => h.ne_empty rfl |>.elim)
-  refine {
+  refine ⟨{
     epsilon_pos := hε
     Lambda_ge_one := hΛ
     coreRadius := r
@@ -384,7 +402,7 @@ private def assembleTerminalCorePresentation
     horn_scalar_large := fun c => (data c).scalar_large
     horn_base_scalar := fun c => (data c).scalar_base
     horn_scalar_diverges := fun c => (data c).scalar_diverges
-    horn_spatial_neck := fun c => (data c).spatial_neck }
+    horn_spatial_neck := fun c => (data c).spatial_neck }, ?_⟩
   · intro c hc
     apply (data c).connected
     obtain ⟨y, hy, _⟩ := (show c ∈ component from hc)
@@ -405,12 +423,12 @@ private def assembleTerminalCorePresentation
     exact Set.notMem_empty _ (he.subset hm)
   · intro c hc
     exact (if_pos hc).symm.trans (data c).cover
+  · intro c e
+    exact (data c).base_neck e
 
 namespace OneStepIncoming
 
-open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
-
-theorem exists_neckRadius_terminalCorePresentation_with_scale_bound {ε : ℝ} (hε : 0 < ε) :
+theorem exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_necks {ε : ℝ} (hε : 0 < ε) :
     ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
       ∃ q : ℝ, 0 < q ∧ ∀ q' : ℝ, q ≤ q' →
       ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
@@ -426,19 +444,26 @@ theorem exists_neckRadius_terminalCorePresentation_with_scale_bound {ε : ℝ} (
           (P.coreRadius ^ 2)⁻¹ ≤
             max (max ((D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)^2)⁻¹
               ((D.parameters.protectedRadius D.endTime)^2)⁻¹) (4 * (max q' 0 + 1) / C) ∧
-          ∀ x : D.slab.terminalRegularOpen,
+          (∀ x : D.slab.terminalRegularOpen,
             metricScalarAt D.terminal.metric x ≤ ((D.parameters.protectedRadius D.endTime)^2)⁻¹ →
-              ∃ c ∈ P.component, x ∈ interior (P.core c) := by
+              ∃ c ∈ P.component, x ∈ interior (P.core c)) ∧
+          ∀ c e, ∃ (p : D.slab.terminalRegularOpen)
+            (N : SpatialNeck D.terminal.metric (1 / 156000) p) (level : ℝ),
+            |level| ≤ 3 ∧ metricScalarAt D.terminal.metric p ≤ 2 * Λ * (P.coreRadius ^ 2)⁻¹ ∧
+            ∀ y, P.horn c e (y, 0) = N.map (y, level) := by
   classical
   obtain ⟨η₁, hη₁, hcutoff⟩ := exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound.{u}
   obtain ⟨η₂, hη₂, hends⟩ := exists_smooth_saved_end_decomposition_on_noncompact_component.{u,u}
-  let δ := min η₁ (min η₂ (ε / 26000))
-  have hδ : 0 < δ := lt_min hη₁ (lt_min hη₂ (by positivity))
+  let δ := min η₁ (min η₂ (min (ε / 26000) (1 / 156000)))
+  have hδ : 0 < δ := lt_min hη₁ (lt_min hη₂ (lt_min (by positivity) (by norm_num)))
   have hδ₁ : δ ≤ η₁ := min_le_left _ _
   have hδ₂ : δ ≤ η₂ := (min_le_right _ _).trans (min_le_left _ _)
   have hδε : 26000 * δ ≤ ε := by
-    have hh : δ ≤ ε / 26000 := (min_le_right _ _).trans (min_le_right _ _)
+    have hh : δ ≤ ε / 26000 := (min_le_right _ _).trans
+      ((min_le_right _ _).trans (min_le_left _ _))
     linarith
+  have hδsmall : δ ≤ 1 / 156000 := (min_le_right _ _).trans
+    ((min_le_right _ _).trans (min_le_right _ _))
   obtain ⟨C, Λ, hC, hΛ, hcutoff⟩ := hcutoff δ hδ hδ₁
   refine ⟨C, Λ, hC, hΛ, ?_⟩
   intro D
@@ -478,15 +503,38 @@ theorem exists_neckRadius_terminalCorePresentation_with_scale_bound {ε : ℝ} (
         hupper, hpair, hfront, hlevel, _, _, hexterior⟩ := hregions y hyA hcompact
       let _ := hi
       let _ := hne
-      obtain ⟨K, m, origin, Θ, charts, collar, _, hK, hconn, _, _, _, _, _,
+      obtain ⟨K, m, origin, Θ, charts, collar, _, hK, hconn, _, _, _, _, hzero,
         hlowK, _, hendsK, hdisjoint, hfrontK, hcover, hcharts, hcollar⟩ :=
         hends D' δ ε A C Λ hδ₂ hδε hA.le hC y hyA hcompact ι v neck level W hW hreg
           hlow hprotected hupper (fun i => (hlevel i).trans (by norm_num)) hpair hfront hexterior
+      have hbase : ∀ i, ∃ (p : U) (N : SpatialNeck (D'.terminal.metric.restrictOpen U)
+          (1 / 156000) p) (level : ℝ), |level| ≤ 3 ∧ ∀ z, Θ i (z, 0) = N.map (z, level) := by
+        intro i
+        exact ⟨v (origin i), (neck (origin i)).mono hδsmall (by norm_num),
+          level (origin i), hlevel (origin i), hzero i⟩
       let Q := componentPresentationOfHalfCylinders K m Θ charts collar hK hconn
-        hlowK hendsK hdisjoint hfrontK hcover hcharts hcollar
+        hlowK hendsK hbase hdisjoint hfrontK hcover hcharts hcollar
       exact ⟨hUeq ▸ Q.toAmbient hUclosed⟩
-  let P := assembleTerminalCorePresentation D' hε hΛ hr rfl hproducer
-  refine ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, P, P.coreRadius_eq, ?_, ?_, ?_⟩
+  let assembled := assembleTerminalCorePresentation D' hε hΛ hr rfl hproducer
+  let P := assembled.val
+  have hbase : ∀ c e, ∃ (p : D.slab.terminalRegularOpen)
+      (N : SpatialNeck D.terminal.metric (1 / 156000) p) (level : ℝ),
+      |level| ≤ 3 ∧ metricScalarAt D.terminal.metric p ≤ 2 * Λ * (P.coreRadius ^ 2)⁻¹ ∧
+      ∀ y, P.horn c e (y, 0) = N.map (y, level) := by
+    intro c e
+    obtain ⟨p, N, level, hlevel, hmap⟩ := assembled.property c e
+    refine ⟨p, N, level, hlevel, ?_, hmap⟩
+    have hwindow : (N.center, level) ∈ univ ×ˢ Ioo (-((1 / 156000 : ℝ)⁻¹)) ((1 / 156000 : ℝ)⁻¹) := by
+      refine ⟨mem_univ _, abs_lt.mp ?_⟩
+      exact hlevel.trans_lt (by norm_num)
+    have hlo := (N.scalar_bounds_on_image_window ⟨(N.center, level), hwindow, rfl⟩).1
+    have hupper := P.horn_base_scalar c e N.center
+    rw [hmap] at hupper
+    have hhalf : (1 / 2 : ℝ) ≤ 1 - 4323 * (1 / 156000) := by norm_num
+    have hscale := mul_le_mul_of_nonneg_right hhalf N.Q_pos.le
+    change metricScalarAt D'.terminal.metric p ≤ 2 * Λ * (P.coreRadius ^ 2)⁻¹
+    nlinarith
+  refine ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, P, P.coreRadius_eq, ?_, ?_, ?_, hbase⟩
   · rw [P.coreRadius_eq]
     exact hscale
   · rw [P.coreRadius_eq]
@@ -503,6 +551,36 @@ theorem exists_neckRadius_terminalCorePresentation_with_scale_bound {ε : ℝ} (
     have hc := (P.component_iff_meets_low (ConnectedComponents.mk x)).mpr ⟨x, rfl, hxA⟩
     exact ⟨ConnectedComponents.mk x, hc,
       P.low_mem_interior_core _ hc x rfl hxA⟩
+
+theorem exists_neckRadius_terminalCorePresentation_with_scale_bound {ε : ℝ} (hε : 0 < ε) :
+    ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},
+      ∃ q : ℝ, 0 < q ∧ ∀ q' : ℝ, q ≤ q' →
+      ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
+        (∀ t, 0 ≤ t → ρ t ≤ D.parameters.neckRadius t) ∧
+        (Antitone D.parameters.neckRadius → Antitone ρ) ∧
+        (AntitoneOn D.parameters.neckRadius (Ici 0) → AntitoneOn ρ (Ici 0)) ∧
+        (HasRecenterConstants.{u} D.parameters →
+          HasRecenterConstants.{u} (D.withNeckRadius ρ hρ).parameters) ∧
+        D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
+        ∃ P : TerminalCorePresentation (D.withNeckRadius ρ hρ) ε Λ,
+          P.coreRadius = D.parameters.delta D.endTime * ρ D.endTime ∧
+          q' < C * (P.coreRadius ^ 2)⁻¹ ∧
+          (P.coreRadius ^ 2)⁻¹ ≤
+            max (max ((D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime)^2)⁻¹
+              ((D.parameters.protectedRadius D.endTime)^2)⁻¹) (4 * (max q' 0 + 1) / C) ∧
+          ∀ x : D.slab.terminalRegularOpen,
+            metricScalarAt D.terminal.metric x ≤ ((D.parameters.protectedRadius D.endTime)^2)⁻¹ →
+              ∃ c ∈ P.component, x ∈ interior (P.core c) := by
+  obtain ⟨C, Λ, hC, hΛ, hproduce⟩ :=
+    exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_necks hε
+  refine ⟨C, Λ, hC, hΛ, ?_⟩
+  intro D
+  obtain ⟨q, hq, hproduce⟩ := hproduce D
+  refine ⟨q, hq, ?_⟩
+  intro q' hqq'
+  obtain ⟨ρ, hρ, hle, hmono, hmonoOn, hrecenter, hprotect, P, hradius,
+    hscale, hupper, hlow, _⟩ := hproduce q' hqq'
+  exact ⟨ρ, hρ, hle, hmono, hmonoOn, hrecenter, hprotect, P, hradius, hscale, hupper, hlow⟩
 
 theorem exists_neckRadius_terminalCorePresentation {ε : ℝ} (hε : 0 < ε) :
     ∃ Λ : ℝ, 1 ≤ Λ ∧ ∀ D : OneStepIncoming.{u},

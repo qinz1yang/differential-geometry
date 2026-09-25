@@ -164,8 +164,8 @@ theorem exists_terminal_rescaled_source_comparison
       (fun n => (hcompact n).image continuous_subtype_val) hQ
   refine ⟨k, hk, hq, ?_⟩
   dsimp only
-  simp only [NormalizedSequence.terminalCurvatureRescale, NormalizedSequence.reindex,
-    parabolicSolution_metric, parabolicTime_zero, Function.comp_apply]
+  simp only [NormalizedSequence.terminalCurvatureRescale, FlowSequence.terminalCurvatureRescale,
+    NormalizedSequence.reindex, parabolicSolution_metric, parabolicTime_zero, Function.comp_apply]
   refine ⟨hratio, ?_⟩
   intro n
   let q := (X.term (f (k n))).S.scalar 0 (maps.partialDiffeomorph (k n) (x n : L.M))

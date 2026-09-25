@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.EndpointMetricBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.ClosedMetricLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.TimeRegularity
@@ -6,6 +7,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open DifferentialGeometry.Geometry.Connection
 open scoped Manifold ContDiff BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -175,5 +177,100 @@ theorem exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
   have hsum : Lq q ≤ ∑ a ∈ Finset.range (N + 1), Lq a :=
     Finset.single_le_sum (fun a _ => hLq a) (Finset.mem_range.mpr (by omega))
   exact hlip.trans (mul_le_mul_of_nonneg_right hsum (abs_nonneg _))
+
+private theorem ricci_quadratic_form_bound_of_movingRicci
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (t : ℝ) (x : M)
+    {K : ℝ} (hK : Real.sqrt (normSq0S (S.base.metric t) x 2
+      (ricCovTower (S.base.metric t) (S.base.metric t) 0 x)) ≤ K)
+    (v : TangentSpace I x) :
+    |ricciTensor (S.base.metric t) x v v| ≤ K * (S.base.metric t).inner x v v := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  obtain ⟨basis, hON⟩ := exists_orthonormal_basis (S.base.metric t) x
+  have hh := abs_apply_le_sqrt_normSq0S (S.base.metric t) x 2 basis hON
+    (ricCovTower (S.base.metric t) (S.base.metric t) 0 x) (vec2 v v)
+  have he : ricCovTower (S.base.metric t) (S.base.metric t) 0 x (vec2 v v) =
+      ricciTensor (S.base.metric t) x v v := by
+    change DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection
+      (leviCivitaConnectionOfMetric (S.base.metric t))
+      (leviCivitaConnectionOfMetric_contMDiffCovariantDerivativeLocally (S.base.metric t))
+      x (vec2 v v) = _
+    rw [DifferentialGeometry.Geometry.Curvature.CovariantDerivative.ricciSection_apply]
+    exact metricRicciAt_apply_eq_ricciTensor (S.base.metric t) x v v
+  rw [he] at hh
+  have hn := metric_inner_self_nonneg (S.base.metric t) x v
+  simpa only [vec2, Fin.prod_univ_two, ite_self, Real.mul_self_sqrt hn] using
+    hh.trans (mul_le_mul_of_nonneg_right hK (by positivity))
+
+private theorem metricUniformEquivalentOn_of_initial_movingRicci_bound
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (U : Set M) (R : SmoothRiemannianMetric I M) {θ T Λ K : ℝ}
+    (hθ : 0 ≤ θ) (hθT : θ ≤ T) (hK : 0 ≤ K)
+    (hslab : Icc 0 θ ⊆ D.carrier) (hreg : Ioo 0 θ ⊆ D.regular)
+    (hinit : MetricUniformEquivalentOn U R (S.base.metric 0) Λ)
+    (hRic : ∀ t ∈ Icc 0 θ, ∀ x ∈ U,
+      Real.sqrt (normSq0S (S.base.metric t) x 2
+        (ricCovTower (S.base.metric t) (S.base.metric t) 0 x)) ≤ K) :
+    ∀ t ∈ Icc 0 θ,
+      MetricUniformEquivalentOn U R (S.base.metric t) (Λ * Real.exp (2*K*T)) := by
+  intro t ht
+  have hT : 0 ≤ T := hθ.trans hθT
+  have hexp : 1 ≤ Real.exp (2*K*T) := Real.one_le_exp (by positivity)
+  apply hinit.trans
+  refine ⟨hexp, ?_⟩
+  intro x hx v
+  have hpde := metricPDE_Icc S hS hslab hreg
+  have hh := metricEquiv_Icc_on S.base.metric U hpde
+    (fun t ht x hx v => ricci_quadratic_form_bound_of_movingRicci S t x (hRic t ht x hx) v)
+    t ht x hx v
+  have htime : t ≤ T := ht.2.trans hθT
+  have hn := metric_inner_self_nonneg (S.base.metric 0) x v
+  constructor
+  · have hscale : (Real.exp (2*K*T))⁻¹ ≤ Real.exp (-(2*K*t)) := by
+      rw [← Real.exp_neg]
+      exact Real.exp_le_exp.mpr (by nlinarith)
+    exact (mul_le_mul_of_nonneg_right hscale hn).trans (by simpa only [sub_zero] using hh.1)
+  · have hupper : (S.base.metric t).inner x v v ≤
+        Real.exp (2*K*t) * (S.base.metric 0).inner x v v := by
+      simpa only [sub_zero] using hh.2
+    exact hupper.trans
+      (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by nlinarith)) hn)
+
+theorem exists_uniform_initial_metric_derivative_stability
+    (U : Set M) (hU : IsOpen U) (R : SmoothRiemannianMetric I M)
+    (N : ℕ) (T Λ K ε : ℝ) (hT : 0 < T) (hΛ : 1 ≤ Λ) (hK : 0 ≤ K) (hε : 0 < ε)
+    (A : ℕ → ℝ) (hA : ∀ q, 1 ≤ q → q ≤ N → 0 ≤ A q) :
+    ∃ η : ℝ, 0 < η ∧ η ≤ T ∧
+      ∀ (D : RealTimeInterval) (θ : ℝ), 0 ≤ θ → θ ≤ T →
+      Icc 0 θ ⊆ D.carrier → Ioo 0 θ ⊆ D.regular →
+      ∀ S : SolutionOn (I := I) (M := M) D, IsSolutionOn S →
+        (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+          ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+            (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
+              (S.base.metric p.1) x₀ p.2 i j)
+            (Icc 0 θ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
+        MetricUniformEquivalentOn U R (S.base.metric 0) Λ →
+        (∀ q, 1 ≤ q → q ≤ N → ∀ x ∈ U,
+          metricCovDerivNorm q (S.base.metric 0) R x ≤ A q) →
+        MovingShiBoundOn U 0 θ (fun _ t => S.base.metric t) N K →
+        ∀ V : Set M, V ⊆ U → ∀ t ∈ Icc 0 (min η θ),
+          metricDerivNormSupOn V N (S.base.metric t) (S.base.metric 0) R < ε := by
+  have hΛ' : 1 ≤ Λ * Real.exp (2*K*T) := by
+    have hh : 1 ≤ Real.exp (2*K*T) := Real.one_le_exp (by positivity)
+    nlinarith
+  obtain ⟨L, hL, hbound⟩ := exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
+    U hU R N T (Λ * Real.exp (2*K*T)) K hΛ' hK A hA
+  let η := min T (ε / (2*(L+1)))
+  have hη : 0 < η := lt_min hT (div_pos hε (by positivity))
+  refine ⟨η, hη, min_le_left _ _, ?_⟩
+  intro D θ hθ hθT hslab hreg S hS hgram hinit hjet hRic V hVU t ht
+  have hequiv := metricUniformEquivalentOn_of_initial_movingRicci_bound S hS U R
+    hθ hθT hK hslab hreg hinit (fun r hr x hx => hRic 0 (Nat.zero_le N) 0 r hr x hx)
+  have htc : t ∈ Icc 0 θ := ⟨ht.1, ht.2.trans (min_le_right _ _)⟩
+  have hh := hbound D θ hθ hθT hreg S hS hgram hequiv hjet hRic V hVU
+    t htc 0 ⟨le_rfl,hθ⟩
+  rw [sub_zero, abs_of_nonneg ht.1] at hh
+  have htle : t ≤ ε / (2*(L+1)) := (ht.2.trans (min_le_left _ _)).trans (min_le_right _ _)
+  have hprod : t * (2*(L+1)) ≤ ε := (le_div_iff₀ (by positivity)).mp htle
+  nlinarith
 
 end DifferentialGeometry.PDE.RicciFlow

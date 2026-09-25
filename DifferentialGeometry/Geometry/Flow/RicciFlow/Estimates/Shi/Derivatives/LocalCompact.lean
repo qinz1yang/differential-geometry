@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Te
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.QuadraticBounds
 import DifferentialGeometry.Geometry.Metric.Comparison.BallCapture
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
 import Mathlib.Topology.MetricSpace.Thickening
 
 set_option autoImplicit false
@@ -105,5 +106,49 @@ theorem exists_eventually_curvDerivNorm_on_compact_of_terminal_convergence
     (fun s hs y hy => (hcurvi s hs y (hball x hx (hcapture x hx hy))).trans hC₀B)
     m t ht x (by rw [riemannianClosedBallOf, mem_ofPred_eq, riemannianEDistOf_self]; exact bot_le)
   exact hh
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_eventually_curvDerivNorm_on_compact_of_eventual_interval
+    {D : ℕ → RealTimeInterval} (S : (i : ℕ) → SolutionOn (I := I) (M := M) (D i))
+    (hS : ∀ i, IsSolutionOn (S i)) (R : SmoothRiemannianMetric I M)
+    {a b : ℝ} (hab : a < b)
+    (hcarrier : ∀ᶠ i in atTop, Icc a b ⊆ (D i).carrier)
+    (hregular : ∀ᶠ i in atTop, Ioo a b ⊆ (D i).regular)
+    (hterminal : ∀ K : Set M, IsCompact K → MetricCPConvergenceOn K 0
+      (fun i => (S i).base.metric b) R R)
+    (hcurv : ∀ K : Set M, IsCompact K → ∃ C : ℝ, ∀ᶠ i in atTop,
+      ∀ t ∈ Icc a b, ∀ x ∈ K, curvDerivNormSq 0 ((S i).base.metric t) x ≤ C)
+    (K : Set M) (hK : IsCompact K) :
+    ∃ C : ℕ → ℝ, (∀ m, 0 ≤ C m) ∧ ∀ᶠ i in atTop,
+      ∀ m : ℕ, ∀ t ∈ Icc ((a + b) / 2) b, ∀ x ∈ K,
+        curvDerivNorm m ((S i).base.metric t) x ≤ C m := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  obtain ⟨N, hN⟩ := eventually_atTop.mp (hcarrier.and hregular)
+  let U : ℕ → SolutionOn (I := I) (M := M) (RealTimeInterval.closed a b hab.le) :=
+    fun i => (S (max i N)).timeRestrict (RealTimeInterval.closed a b hab.le)
+  have hU (i : ℕ) : IsSolutionOn (U i) :=
+    isSolutionOn_timeRestrict (hS (max i N))
+      (hN (max i N) (le_max_right i N)).1 (hN (max i N) (le_max_right i N)).2
+  have hterminalU : ∀ L : Set M, IsCompact L → MetricCPConvergenceOn L 0
+      (fun i => (U i).base.metric b) R R := by
+    intro L hL ε hε
+    obtain ⟨J, hJ⟩ := hterminal L hL ε hε
+    exact ⟨J, fun i hi => hJ (max i N) (hi.trans (le_max_left i N))⟩
+  have hcurvU : ∀ L : Set M, IsCompact L → ∃ C : ℝ, ∀ᶠ i in atTop,
+      ∀ t ∈ Icc a b, ∀ x ∈ L, curvDerivNormSq 0 ((U i).base.metric t) x ≤ C := by
+    intro L hL
+    obtain ⟨C, hC⟩ := hcurv L hL
+    obtain ⟨J, hJ⟩ := eventually_atTop.mp hC
+    exact ⟨C, eventually_atTop.mpr ⟨J,
+      fun i hi => hJ (max i N) (hi.trans (le_max_left i N))⟩⟩
+  obtain ⟨C, hC, hb⟩ := exists_eventually_curvDerivNorm_on_compact_of_terminal_convergence
+    U hU R hab (fun _ ht => ht) (fun _ ht => ht) hterminalU hcurvU K hK
+  refine ⟨C, hC, ?_⟩
+  filter_upwards [hb, eventually_ge_atTop N] with i hi hNi
+  change ∀ m : ℕ, ∀ t ∈ Icc ((a + b) / 2) b, ∀ x ∈ K,
+    curvDerivNorm m ((S (max i N)).base.metric t) x ≤ C m at hi
+  rw [max_eq_left hNi] at hi
+  exact hi
 
 end DifferentialGeometry.PDE.RicciFlow

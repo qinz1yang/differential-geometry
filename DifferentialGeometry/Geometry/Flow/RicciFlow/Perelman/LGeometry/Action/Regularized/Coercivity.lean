@@ -2,6 +2,77 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveEnergy
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
 
+noncomputable section
+open Set MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Riemannian
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  {D : RealTimeInterval}
+
+theorem lRegularizedAction_ge_reference_energy_add_constant_of_interior_bounds
+    (S : SolutionOn (I := I) (M := M) D) (T : Real)
+    (alpha : Real → M) (gRef : SmoothRiemannianMetric I M)
+    (a b c C : Real) (hab : a ≤ b)
+    (hg : ∀ s ∈ Set.Ioo a b,
+      c * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+          (lVelocity (I := I) alpha s) ≤
+        (S.base.metric (T - s ^ 2)).inner (alpha s)
+          (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s))
+    (hpot : ∀ s ∈ Set.Ioo a b,
+      C ≤ 2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s))
+    (href : IntervalIntegrable
+      (fun s => gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+        (lVelocity (I := I) alpha s)) volume a b)
+    (hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) volume a b) :
+    (∫ s in a..b, (c / 2) *
+        gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+          (lVelocity (I := I) alpha s)) +
+      C * (b - a) ≤ lRegularizedAction S T alpha a b := by
+  have href' : IntervalIntegrable
+      (fun s => (c / 2) *
+        gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+          (lVelocity (I := I) alpha s)) volume a b :=
+    href.const_mul (c / 2)
+  have hmono :
+      (∫ s in a..b, (c / 2) *
+          gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+            (lVelocity (I := I) alpha s) + C) ≤
+        ∫ s in a..b, lRegularizedLagrangian S T alpha s := by
+    refine intervalIntegral.integral_mono_on_of_le_Ioo hab
+      (href'.add intervalIntegrable_const) hLag ?_
+    intro s hs
+    change
+      (c / 2) * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+          (lVelocity (I := I) alpha s) + C ≤
+        (1 / 2 : Real) *
+            (S.base.metric (T - s ^ 2)).inner (alpha s)
+              (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) +
+          2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)
+    calc
+      (c / 2) * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+            (lVelocity (I := I) alpha s) + C =
+          (1 / 2 : Real) *
+              (c * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
+                (lVelocity (I := I) alpha s)) + C := by ring
+      _ ≤ (1 / 2 : Real) *
+              (S.base.metric (T - s ^ 2)).inner (alpha s)
+                (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) +
+            2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s) :=
+        add_le_add (mul_le_mul_of_nonneg_left (hg s hs) (by norm_num))
+          (hpot s hs)
+  rw [intervalIntegral.integral_add href' intervalIntegrable_const,
+    intervalIntegral.integral_const] at hmono
+  simpa [lRegularizedAction, smul_eq_mul, mul_comm] using hmono
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+end
+
 set_option autoImplicit false
 
 noncomputable section
@@ -79,41 +150,10 @@ theorem lRegularizedAction_ge_reference_energy_add_constant
         gRef.inner (alpha s) (lVelocity (I := I) alpha s)
           (lVelocity (I := I) alpha s)) +
       C * (b - a) ≤ lRegularizedAction S T alpha a b := by
-  have href' : IntervalIntegrable
-      (fun s => (c / 2) *
-        gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-          (lVelocity (I := I) alpha s)) volume a b :=
-    href.const_mul (c / 2)
-  have hmono :
-      (∫ s in a..b, (c / 2) *
-          gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-            (lVelocity (I := I) alpha s) + C) ≤
-        ∫ s in a..b, lRegularizedLagrangian S T alpha s := by
-    refine intervalIntegral.integral_mono_on hab
-      (href'.add intervalIntegrable_const) hLag ?_
-    intro s hs
-    change
-      (c / 2) * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-          (lVelocity (I := I) alpha s) + C ≤
-        (1 / 2 : Real) *
-            (S.base.metric (T - s ^ 2)).inner (alpha s)
-              (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) +
-          2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s)
-    calc
-      (c / 2) * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-            (lVelocity (I := I) alpha s) + C =
-          (1 / 2 : Real) *
-              (c * gRef.inner (alpha s) (lVelocity (I := I) alpha s)
-                (lVelocity (I := I) alpha s)) + C := by ring
-      _ ≤ (1 / 2 : Real) *
-              (S.base.metric (T - s ^ 2)).inner (alpha s)
-                (lVelocity (I := I) alpha s) (lVelocity (I := I) alpha s) +
-            2 * s ^ 2 * S.scalar (T - s ^ 2) (alpha s) :=
-        add_le_add (mul_le_mul_of_nonneg_left (hg s hs) (by norm_num))
-          (hpot s hs)
-  rw [intervalIntegral.integral_add href' intervalIntegrable_const,
-    intervalIntegral.integral_const] at hmono
-  simpa [lRegularizedAction, smul_eq_mul, mul_comm] using hmono
+  exact lRegularizedAction_ge_reference_energy_add_constant_of_interior_bounds S T alpha gRef a b c C hab
+    (fun s hs => hg s (Ioo_subset_Icc_self hs))
+    (fun s hs => hpot s (Ioo_subset_Icc_self hs)) href hLag
+
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [I.Boundaryless] [SigmaCompactSpace M] in

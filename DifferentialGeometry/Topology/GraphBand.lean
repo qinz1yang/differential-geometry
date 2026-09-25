@@ -197,3 +197,74 @@ theorem exists_uniform_gap_between_disjoint_graph_bands
     exact ⟨δ, hδ, m, Or.inr hm⟩
 
 end DifferentialGeometry.Topology
+
+end
+
+set_option autoImplicit false
+open Set
+open scoped Topology
+
+namespace DifferentialGeometry.Topology
+
+variable {X : Type*} [TopologicalSpace X]
+
+private theorem isLeast_mem_frontier {s : Set ℝ} {a : ℝ}
+    (ha : IsLeast (closure s) a) : a ∈ frontier s := by
+  refine ⟨ha.1, ?_⟩
+  intro hin
+  obtain ⟨l, u, hlu, hsub⟩ := mem_nhds_iff_exists_Ioo_subset.mp (mem_interior_iff_mem_nhds.mp hin)
+  have hmid : (l + a) / 2 ∈ s := hsub ⟨by linarith [hlu.1], by linarith [hlu.1, hlu.2]⟩
+  have hm := ha.2 (subset_closure hmid)
+  linarith [hlu.1]
+
+private theorem isGreatest_mem_frontier {s : Set ℝ} {b : ℝ}
+    (hb : IsGreatest (closure s) b) : b ∈ frontier s := by
+  refine ⟨hb.1, ?_⟩
+  intro hin
+  obtain ⟨l, u, hlu, hsub⟩ := mem_nhds_iff_exists_Ioo_subset.mp (mem_interior_iff_mem_nhds.mp hin)
+  have hmid : (b + u) / 2 ∈ s := hsub ⟨by linarith [hlu.1, hlu.2], by linarith [hlu.2]⟩
+  have hm := hb.2 (subset_closure hmid)
+  linarith [hlu.2]
+
+theorem exists_vertical_frontier_bounds_of_mem_interior
+    {K : Set (X × ℝ)} (hK : IsCompact K) {x : X} {t : ℝ}
+    (ht : (x, t) ∈ interior K) :
+    ∃ a b : ℝ, a < t ∧ t < b ∧ (x, a) ∈ frontier K ∧ (x, b) ∈ frontier K := by
+  let f : ℝ → X × ℝ := fun s => (x, s)
+  have hf : Continuous f := continuous_const.prodMk continuous_id
+  let A := f ⁻¹' K
+  have hA : IsCompact (closure A) := by
+    apply (hK.image continuous_snd).of_isClosed_subset isClosed_closure
+    apply closure_minimal _ (hK.image continuous_snd).isClosed
+    intro s hs
+    exact ⟨(x, s), hs, rfl⟩
+  have htA : t ∈ interior A :=
+    preimage_interior_subset_interior_preimage hf ht
+  have hne : (closure A).Nonempty := ⟨t, subset_closure (interior_subset htA)⟩
+  obtain ⟨a, ha⟩ := hA.exists_isLeast hne
+  obtain ⟨b, hb⟩ := hA.exists_isGreatest hne
+  have haf : a ∈ frontier A := isLeast_mem_frontier ha
+  have hbf : b ∈ frontier A := isGreatest_mem_frontier hb
+  refine ⟨a, b, ?_, ?_, hf.frontier_preimage_subset K haf, hf.frontier_preimage_subset K hbf⟩
+  · have hat : a ≤ t := ha.2 (subset_closure (interior_subset htA))
+    exact lt_of_le_of_ne hat (fun he => haf.2 (he.symm ▸ htA))
+  · have htb : t ≤ b := hb.2 (subset_closure (interior_subset htA))
+    exact lt_of_le_of_ne htb (fun he => hbf.2 (he ▸ htA))
+
+theorem interior_eq_empty_of_frontier_subset_graph
+    {K : Set (X × ℝ)} (hK : IsCompact K) (f : X → ℝ)
+    (hfrontier : frontier K ⊆ range (fun x => (x, f x))) : interior K = ∅ := by
+  apply eq_empty_iff_forall_notMem.mpr
+  rintro ⟨x, t⟩ ht
+  obtain ⟨a, b, hat, htb, ha, hb⟩ := exists_vertical_frontier_bounds_of_mem_interior hK ht
+  obtain ⟨y, hy⟩ := hfrontier ha
+  obtain ⟨z, hz⟩ := hfrontier hb
+  have hyx : y = x := congrArg Prod.fst hy
+  have hzx : z = x := congrArg Prod.fst hz
+  have hay : f y = a := congrArg Prod.snd hy
+  have hbz : f z = b := congrArg Prod.snd hz
+  rw [hyx] at hay
+  rw [hzx] at hbz
+  linarith
+
+end DifferentialGeometry.Topology

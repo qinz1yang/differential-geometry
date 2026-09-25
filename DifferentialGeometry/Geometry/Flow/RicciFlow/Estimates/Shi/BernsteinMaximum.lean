@@ -129,14 +129,14 @@ theorem one_le_bernsteinMaximumBound (c C eps T : Real) :
 variable [I.Boundaryless]
 variable [VectorBundle Real E (TangentSpace I : M → Type _)]
 
-theorem bernstein_maximum_of_fixed_cutoff
+theorem bernstein_maximum_of_fixed_cutoff_of_initial_bound
     {G : MetricConnectionFamily (I := I) (M := M) Real}
-    {T eps c C : Real}
+    {T eps c C η A : Real}
     (cut : ShiFixedCutoff (I := I) G T eps)
     (F : Real → M → Real)
-    (hT : 0 < T) (hc : 0 < c) (hC : 0 ≤ C)
+    (hT : 0 < T) (hc : 0 < c) (hC : 0 ≤ C) (hη : 0 ≤ η)
     (hF_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ F t x)
-    (hF_init : ∀ x : M, F 0 x = 0)
+    (hF_init : ∀ x : M, cut.chi 0 x * F 0 x ≤ A)
     (hF_cont : ContinuousOn (fun p : Real × M => F p.1 p.2)
       (spacetimeSlab (M := M) T))
     (hF_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
@@ -149,13 +149,13 @@ theorem bernstein_maximum_of_fixed_cutoff
     (hF_evol : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M, 0 < cut.chi t x →
       parabolicOperatorWithDrift (I := I) G T
           (fun _ y => (0 : TangentSpace I y)) F t x ≤
-        -(c / t) * F t x ^ 2 + C / t) :
+        -(c / (t + η)) * F t x ^ 2 + C / (t + η)) :
     ∀ t ∈ Set.Icc 0 T, ∀ x : M,
-      cut.chi t x * F t x ≤ bernsteinMaximumBound c C eps T := by
+      cut.chi t x * F t x ≤ max A (bernsteinMaximumBound c C eps (T + η)) := by
   classical
-  have hZ1 : (1 : Real) ≤ bernsteinMaximumBound c C eps T :=
-    one_le_bernsteinMaximumBound c C eps T
-  have hZ0 : (0 : Real) ≤ bernsteinMaximumBound c C eps T := le_trans zero_le_one hZ1
+  have hZ1 : (1 : Real) ≤ max A (bernsteinMaximumBound c C eps (T + η)) :=
+    (one_le_bernsteinMaximumBound c C eps (T + η)).trans (le_max_right _ _)
+  have hZ0 : (0 : Real) ≤ max A (bernsteinMaximumBound c C eps (T + η)) := le_trans zero_le_one hZ1
   have heps : 0 ≤ eps := cut.err_nonneg
   by_cases hsupp : (cut.support).Nonempty
   · obtain ⟨x1, hx1⟩ := hsupp
@@ -171,7 +171,7 @@ theorem bernstein_maximum_of_fixed_cutoff
     have hmaxset : ∀ p ∈ Set.Icc 0 T ×ˢ cut.support,
         cut.chi p.1 p.2 * F p.1 p.2 ≤ cut.chi t0 x0 * F t0 x0 :=
       fun p hp => hp0max hp
-    have hkey : cut.chi t0 x0 * F t0 x0 ≤ bernsteinMaximumBound c C eps T := by
+    have hkey : cut.chi t0 x0 * F t0 x0 ≤ max A (bernsteinMaximumBound c C eps (T + η)) := by
       by_contra hbad
       push Not at hbad
       have hupos : 0 < cut.chi t0 x0 * F t0 x0 := lt_of_lt_of_le
@@ -188,8 +188,11 @@ theorem bernstein_maximum_of_fixed_cutoff
         rcases lt_or_eq_of_le ht0.1 with h | h
         · exact h
         · exfalso
-          rw [← h, hF_init x0, mul_zero] at hupos
-          exact lt_irrefl 0 hupos
+          have hinit := hF_init x0
+          have hbig : A < cut.chi t0 x0 * F t0 x0 :=
+            (le_max_left _ _).trans_lt hbad
+          rw [← h] at hbig
+          exact (not_lt_of_ge hinit) hbig
       have hmax_slab : ∀ p : Real × M, p ∈ spacetimeSlab (M := M) T →
           cut.chi p.1 p.2 * F p.1 p.2 ≤ cut.chi t0 x0 * F t0 x0 := by
         intro p hp
@@ -326,14 +329,18 @@ theorem bernstein_maximum_of_fixed_cutoff
                 (gradientFun (I := I) (G.metric t0) (low.phi t0) x0)) := by
               rw [map_neg, map_smul]
               simp
-      have ht0ne : t0 ≠ 0 := ne_of_gt ht0pos
-      have hPF' : t0 * parabolicOperatorWithDrift (I := I) G T
+      let w0 := t0 + η
+      have hw0 : 0 < w0 := add_pos_of_pos_of_nonneg ht0pos hη
+      have hwT : w0 ≤ T + η := by dsimp only [w0]; linarith [ht0.2]
+      have hw0ne : w0 ≠ 0 := ne_of_gt hw0
+      have hPF' : w0 * parabolicOperatorWithDrift (I := I) G T
           (fun _ y => (0 : TangentSpace I y)) F t0 x0 ≤
             -(c * F t0 x0 ^ 2) + C := by
         have h := mul_le_mul_of_nonneg_left
-          (hF_evol t0 ht0 ht0pos x0 hchipos) ht0pos.le
-        have e1 : t0 * (-(c / t0) * F t0 x0 ^ 2 + C / t0) =
+          (hF_evol t0 ht0 ht0pos x0 hchipos) hw0.le
+        have e1 : w0 * (-(c / (t0 + η)) * F t0 x0 ^ 2 + C / (t0 + η)) =
             -(c * F t0 x0 ^ 2) + C := by
+          dsimp only [w0]
           field_simp
         rw [e1] at h
         exact h
@@ -356,40 +363,41 @@ theorem bernstein_maximum_of_fixed_cutoff
         have h := low.grad_sq_le
         rw [hphi_eq] at h
         exact h
-      have t1 : cut.chi t0 x0 ^ 2 * (t0 * parabolicOperatorWithDrift (I := I) G T
+      have t1 : cut.chi t0 x0 ^ 2 * (w0 * parabolicOperatorWithDrift (I := I) G T
             (fun _ y => (0 : TangentSpace I y)) F t0 x0) ≤
           cut.chi t0 x0 ^ 2 * (-(c * F t0 x0 ^ 2) + C) :=
         mul_le_mul_of_nonneg_left hPF' (sq_nonneg _)
-      have t2 : (t0 * (cut.chi t0 x0 * F t0 x0)) *
+      have t2 : (w0 * (cut.chi t0 x0 * F t0 x0)) *
             parabolicOperatorWithDrift (I := I) G T
               (fun _ y => (0 : TangentSpace I y)) low.phi t0 x0 ≤
-          (t0 * (cut.chi t0 x0 * F t0 x0)) * eps :=
-        mul_le_mul_of_nonneg_left low.parabolic_le (mul_nonneg ht0pos.le hz0)
-      have t3 : (2 * (t0 * F t0 x0)) * (G.metric t0).inner x0
+          (w0 * (cut.chi t0 x0 * F t0 x0)) * eps :=
+        mul_le_mul_of_nonneg_left low.parabolic_le (mul_nonneg hw0.le hz0)
+      have t3 : (2 * (w0 * F t0 x0)) * (G.metric t0).inner x0
             (gradientFun (I := I) (G.metric t0) (low.phi t0) x0)
             (gradientFun (I := I) (G.metric t0) (low.phi t0) x0) ≤
-          (2 * (t0 * F t0 x0)) * (eps * cut.chi t0 x0) :=
+          (2 * (w0 * F t0 x0)) * (eps * cut.chi t0 x0) :=
         mul_le_mul_of_nonneg_left hgradsq
           (by positivity)
-      have t4 : 0 ≤ t0 * (cut.chi t0 x0 ^ 2 * parabolicOperatorWithDrift (I := I) G T
+      have t4 : 0 ≤ w0 * (cut.chi t0 x0 ^ 2 * parabolicOperatorWithDrift (I := I) G T
             (fun _ y => (0 : TangentSpace I y)) F t0 x0 +
           cut.chi t0 x0 * F t0 x0 * parabolicOperatorWithDrift (I := I) G T
             (fun _ y => (0 : TangentSpace I y)) low.phi t0 x0 +
           2 * (F t0 x0 * (G.metric t0).inner x0
             (gradientFun (I := I) (G.metric t0) (low.phi t0) x0)
             (gradientFun (I := I) (G.metric t0) (low.phi t0) x0))) :=
-        mul_nonneg ht0pos.le hmul
+        mul_nonneg hw0.le hmul
       have hquad : c * (cut.chi t0 x0 * F t0 x0) ^ 2 ≤
           0 * (cut.chi t0 x0 * F t0 x0) ^ ((3 : Real) / 2) +
-            (3 * eps * T) * (cut.chi t0 x0 * F t0 x0) + C := by
+            (3 * eps * (T + η)) * (cut.chi t0 x0 * F t0 x0) + C := by
         rw [zero_mul, zero_add]
         nlinarith [t1, t2, t3, t4,
           mul_nonneg hC (sub_nonneg.mpr hp2),
-          mul_nonneg (mul_nonneg heps (sub_nonneg.mpr ht0.2)) hz0]
-      have habsorb := polynomial_absorption (a := 0) (b := 3 * eps * T)
+          mul_nonneg (mul_nonneg heps (sub_nonneg.mpr hwT)) hz0]
+      have habsorb := polynomial_absorption (a := 0) (b := 3 * eps * (T + η))
         (c := c) (d := C) (z := cut.chi t0 x0 * F t0 x0) hz0 hc hquad
-      rw [bernsteinMaximumBound] at hbad
-      exact absurd habsorb (not_le.mpr hbad)
+      have hstrict : bernsteinMaximumBound c C eps (T + η) < cut.chi t0 x0 * F t0 x0 :=
+        (le_max_right _ _).trans_lt hbad
+      exact (not_lt_of_ge habsorb) hstrict
     intro t ht x
     by_cases hx : x ∈ cut.support
     · exact le_trans (hmaxset (t, x) ⟨ht, hx⟩) hkey
@@ -401,6 +409,36 @@ theorem bernstein_maximum_of_fixed_cutoff
       simp [hsupp]
     rw [cut.support_zero t ht x hx, zero_mul]
     exact hZ0
+
+theorem bernstein_maximum_of_fixed_cutoff
+    {G : MetricConnectionFamily (I := I) (M := M) Real}
+    {T eps c C : Real}
+    (cut : ShiFixedCutoff (I := I) G T eps)
+    (F : Real → M → Real)
+    (hT : 0 < T) (hc : 0 < c) (hC : 0 ≤ C)
+    (hF_nonneg : ∀ t ∈ Set.Icc 0 T, ∀ x : M, 0 ≤ F t x)
+    (hF_init : ∀ x : M, F 0 x = 0)
+    (hF_cont : ContinuousOn (fun p : Real × M => F p.1 p.2)
+      (spacetimeSlab (M := M) T))
+    (hF_time : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      DifferentiableWithinAt Real (fun s : Real => F s x) (Set.Icc 0 T) t)
+    (hF_space : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I 𝓘(Real, Real) (F t) x)
+    (hF_grad : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
+      MDifferentiableAt I (I.prod 𝓘(Real, E)) (T% fun y : M =>
+        gradientFun (I := I) (G.metric t) (F t) y) x)
+    (hF_evol : ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M, 0 < cut.chi t x →
+      parabolicOperatorWithDrift (I := I) G T
+          (fun _ y => (0 : TangentSpace I y)) F t x ≤
+        -(c / t) * F t x ^ 2 + C / t) :
+    ∀ t ∈ Set.Icc 0 T, ∀ x : M,
+      cut.chi t x * F t x ≤ bernsteinMaximumBound c C eps T := by
+  have h := bernstein_maximum_of_fixed_cutoff_of_initial_bound
+    (η := 0) (A := 0) cut F hT hc hC le_rfl hF_nonneg
+    (fun x => by rw [hF_init x, mul_zero]) hF_cont hF_time hF_space hF_grad
+    (fun t ht hp x hx => by simpa only [add_zero] using hF_evol t ht hp x hx)
+  simpa only [add_zero,
+    max_eq_right (zero_le_one.trans (one_le_bernsteinMaximumBound c C eps T))] using h
 
 theorem bernstein_maximum_sq_of_fixed_cutoff
     {G : MetricConnectionFamily (I := I) (M := M) Real}

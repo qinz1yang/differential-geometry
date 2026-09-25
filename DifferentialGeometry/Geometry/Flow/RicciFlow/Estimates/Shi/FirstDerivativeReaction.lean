@@ -574,18 +574,16 @@ theorem differentiableAt_shiFirstBernsteinTimeQuantity
     (differentiableAt_shiFirstBernsteinQuantity (I := I) S hS a htreg x)
 
 omit [VectorBundle Real E (TangentSpace I : M -> Type _)] in
-theorem parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le
+theorem parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le_of_mem_regular
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T a : Real} (hT : 0 < T) (ha : 32 ≤ a)
-    (hreg : Set.Icc 0 T ⊆ D.regular)
-    {t : Real} (ht : t ∈ Set.Icc 0 T) (x : M)
+    {t : Real} (ht : t ∈ Set.Icc 0 T) (htreg : t ∈ D.regular) (x : M)
     (hu : nablaKRm04NormSqIntrinsic (I := I) S 0 t x ≤ 1) :
     parabolicOperatorWithDrift (I := I) (flowG (I := I) S) T
         (fun _ y => (0 : TangentSpace I y))
         (shiFirstBernsteinQuantity (I := I) S a) t x ≤
       -shiFirstBernsteinCoeff a * shiFirstBernsteinQuantity (I := I) S a t x ^ 2 +
         shiFirstBernsteinConst (Module.finrank Real E) a := by
-  have htreg := hreg ht
   have hut := hu
   have h0 := nablaKRm04NormSqIntrinsic_nonneg (I := I) S 0 t x
   have h1 := nablaKRm04NormSqIntrinsic_nonneg (I := I) S 1 t x
@@ -663,11 +661,25 @@ theorem parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le
   rw [hconst]
   exact hmain
 
-theorem parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le
+omit [VectorBundle Real E (TangentSpace I : M -> Type _)] in
+theorem parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) {T a : Real} (hT : 0 < T) (ha : 32 ≤ a)
     (hreg : Set.Icc 0 T ⊆ D.regular)
-    {t : Real} (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M)
+    {t : Real} (ht : t ∈ Set.Icc 0 T) (x : M)
+    (hu : nablaKRm04NormSqIntrinsic (I := I) S 0 t x ≤ 1) :
+    parabolicOperatorWithDrift (I := I) (flowG (I := I) S) T
+        (fun _ y => (0 : TangentSpace I y))
+        (shiFirstBernsteinQuantity (I := I) S a) t x ≤
+      -shiFirstBernsteinCoeff a * shiFirstBernsteinQuantity (I := I) S a t x ^ 2 +
+        shiFirstBernsteinConst (Module.finrank Real E) a :=
+  parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le_of_mem_regular
+    S hS hT ha ht (hreg ht) x hu
+
+theorem parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le_of_mem_regular
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {T a : Real} (hT : 0 < T) (ha : 32 ≤ a)
+    {t : Real} (ht : t ∈ Set.Icc 0 T) (htreg : t ∈ D.regular) (htpos : 0 < t) (x : M)
     (hu : nablaKRm04NormSqIntrinsic (I := I) S 0 t x ≤ 1) :
     parabolicOperatorWithDrift (I := I) (flowG (I := I) S) T
         (fun _ y => (0 : TangentSpace I y))
@@ -675,7 +687,6 @@ theorem parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le
       -(shiFirstTimeCoeff a / t) *
           shiFirstBernsteinTimeQuantity (I := I) S a t x ^ 2 +
         shiFirstTimeConst (Module.finrank Real E) a T / t := by
-  have htreg := hreg ht
   have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
     (uniqueDiffOn_Icc hT).uniqueDiffWithinAt ht
   have hFsmooth := contMDiff_shiFirstBernsteinQuantity (I := I) S a t
@@ -688,8 +699,8 @@ theorem parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le
       |>.differentiableWithinAt)
     (fun y => hFsmooth.contMDiffAt.mdifferentiableAt (by simp))
     (gradientFun_mdiffAt (I := I) ((flowG (I := I) S).metric t) hFsmooth x)
-  have hLF := parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le
-    (I := I) S hS hT ha hreg ht x hu
+  have hLF := parabolicOperatorWithDrift_shiFirstBernsteinQuantity_le_of_mem_regular
+    (I := I) S hS hT ha ht htreg x hu
   have hcpos := shiFirstBernsteinCoeff_pos ha
   have hCnn := shiFirstBernsteinConst_nonneg (Module.finrank Real E) a
   have hX : parabolicOperatorWithDrift (I := I) (flowG (I := I) S) T
@@ -718,6 +729,21 @@ theorem parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le
       t * shiFirstBernsteinQuantity (I := I) S a t x := rfl
   rw [hquant]
   exact hkey
+
+theorem parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le
+    {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
+    (hS : IsSolutionOn (I := I) S) {T a : Real} (hT : 0 < T) (ha : 32 ≤ a)
+    (hreg : Set.Icc 0 T ⊆ D.regular)
+    {t : Real} (ht : t ∈ Set.Icc 0 T) (htpos : 0 < t) (x : M)
+    (hu : nablaKRm04NormSqIntrinsic (I := I) S 0 t x ≤ 1) :
+    parabolicOperatorWithDrift (I := I) (flowG (I := I) S) T
+        (fun _ y => (0 : TangentSpace I y))
+        (shiFirstBernsteinTimeQuantity (I := I) S a) t x ≤
+      -(shiFirstTimeCoeff a / t) *
+          shiFirstBernsteinTimeQuantity (I := I) S a t x ^ 2 +
+        shiFirstTimeConst (Module.finrank Real E) a T / t :=
+  parabolicOperatorWithDrift_shiFirstBernsteinTimeQuantity_le_of_mem_regular
+    S hS hT ha ht (hreg ht) htpos x hu
 
 end BernsteinQuantity
 

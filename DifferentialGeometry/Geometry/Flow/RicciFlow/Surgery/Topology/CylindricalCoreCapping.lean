@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
@@ -183,5 +184,26 @@ theorem isPoincareStandard_component_of_finite_cylindrical_core
       change R ((Manifold.cylinderSeamTransport η n).symm z, 1) = _
       rw [hR1, Diffeomorph.apply_symm_apply, hone]
   · exact hboundary
+
+theorem isPoincareStandard_component_of_returned_cylinder
+    (R : PartialDiffeomorph IC I3 Cylinder M.Carrier ∞)
+    (hR : univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source)
+    (b₀ b₁ : T.Boundary)
+    (hzero : range (fun z : Sphere 2 => R (z, 0)) = range (T.boundarySphere b₀))
+    (hone : range (fun z : Sphere 2 => R (z, 1)) = range (T.boundarySphere b₁))
+    (hinter : R '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+        (⋃ a, T.tube a '' {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1}) =
+      range (T.boundarySphere b₀) ∪ range (T.boundarySphere b₁))
+    (hfront : frontier ((⋃ a, T.tube a ''
+        {q : TubeDomain | (-1 : ℝ) ≤ q.2.val ∧ q.2.val ≤ 1}) ∪
+        R '' (univ ×ˢ Icc (0 : ℝ) 1)) ⊆
+      ⋃ b : {b : T.Boundary // b ≠ b₀ ∧ b ≠ b₁}, range (T.boundarySphere b.val))
+    (x : T.core) (hx : x.val ∈ R '' (univ ×ˢ Icc (0 : ℝ) 1)) :
+    isPoincareStandard (N.component (ConnectedComponents.mk (C.coreInclusion x))).Carrier := by
+  obtain ⟨_, hcomponent⟩ := T.toTopological.cylinder_eq_image_coreComponent_of_return
+    R hR b₀ b₁ hinter hfront
+  obtain ⟨hcore, hboundary⟩ := hcomponent x hx
+  exact C.isPoincareStandard_component_of_cylindrical_core_boundary_ranges
+    x R hR hcore b₀ b₁ hzero hone hboundary
 
 end DifferentialGeometry.Topology.SphericalCapping

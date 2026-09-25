@@ -1,3 +1,10 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialWindowBounds
+import DifferentialGeometry.Geometry.Metric.EmbeddingComposition
+import DifferentialGeometry.Geometry.Comparison.OpenEmbeddingBallCapture
+import DifferentialGeometry.Geometry.Measure.Area.ManifoldEuclidean
+import DifferentialGeometry.Geometry.Metric.CompactSourceEllipticity
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Euclidean
+import Mathlib.MeasureTheory.Measure.Lebesgue.VolumeOfBalls
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.CanonicalStaticWindow
 import DifferentialGeometry.Geometry.Metric.BilinearPerturbation
 import DifferentialGeometry.Geometry.Measure.MetricComparison
@@ -332,5 +339,300 @@ theorem exists_pos_le_normalized_tip_ball_volume {ρ : ℝ} (hρ : 0 < ρ) :
     _ ≤ ENNReal.ofReal (1 / 4 : ℝ) * μ (Metric.closedBall (0 : ThreeSpace) (ρ / 4)) :=
       mul_le_mul' le_rfl (hbound.le.trans (measure_mono Metric.ball_subset_closedBall))
     _ ≤ _ := w.normalized_tip_ball_volume_ge heps hρ hρD
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_uniform_standard_cap_coordinate_ball_volume_lower (R : ℝ) :
+    ∃ ν : ℝ, 0 < ν ∧ ∀ p : ThreeSpace, ‖p‖ ≤ R →
+      ∀ r : ℝ, 0 < r → r ≤ 1 →
+        ENNReal.ofReal ν * ENNReal.ofReal r ^ 3 ≤
+          riemannianVolumeMeasure ThreeModel ThreeSpace metric (Metric.closedBall p (r / 4)) := by
+  obtain ⟨c, C, hc, _, hb⟩ := Geometry.exists_compact_source_metric_ellipticity
+    (f := id) (U := univ) metric isOpen_univ contMDiff_id.contMDiffOn
+    (isCompact_closedBall (0 : ThreeSpace) (R + 1)) (subset_univ _)
+    (by intro x hx; simpa using Function.injective_id)
+  have hbound (x : ThreeSpace) (hx : ‖x‖ ≤ R + 1) (v : ThreeSpace) :
+      c * ‖v‖ ^ 2 ≤ metric.inner x v v := by
+    have hid : mfderiv ThreeModel ThreeModel (@id ThreeSpace) x v = v := by
+      rw [mfderiv_id]
+      rfl
+    simpa only [hid, id_eq] using (hb x (by simpa using hx) v).1
+  let ν := Real.sqrt c ^ 3 * (Real.pi * 4 / 3) / 4 ^ 3
+  have hν : 0 < ν := by dsimp [ν]; positivity
+  refine ⟨ν, hν, ?_⟩
+  intro p hp r hr hr1
+  let gE : SmoothRiemannianMetric ThreeModel ThreeSpace := euclideanMetric (E := ThreeSpace)
+  let gC := scaleMetric c hc gE
+  have hS : MeasurableSet (Metric.closedBall p (r / 4)) := Metric.isClosed_closedBall.measurableSet
+  have hcomp : ∀ x ∈ Metric.closedBall p (r / 4), ∀ v : TangentSpace ThreeModel x,
+      gC.inner x v v ≤ 1 * metric.inner x v v := by
+    intro x hx v
+    have hxR : ‖x‖ ≤ R + 1 := by
+      have hxp : ‖x - p‖ ≤ r / 4 := by simpa only [Metric.mem_closedBall, dist_eq_norm] using hx
+      have htri : ‖x‖ ≤ ‖x - p‖ + ‖p‖ := norm_le_norm_sub_add x p
+      linarith
+    change c * @inner ℝ ThreeSpace _ (show ThreeSpace from v) (show ThreeSpace from v) ≤
+      1 * metric.inner x v v
+    rw [real_inner_self_eq_norm_sq, one_mul]
+    exact hbound x hxR v
+  have hvol := DifferentialGeometry.Geometry.Measure.riemannianVolumeMeasure_apply_le_of_inner_le metric gC one_pos hS hcomp
+  have hlow : riemannianVolumeMeasure ThreeModel ThreeSpace gC
+      (Metric.closedBall p (r / 4)) ≤
+      riemannianVolumeMeasure ThreeModel ThreeSpace metric (Metric.closedBall p (r / 4)) := by
+    simpa only [one_pow, Real.sqrt_one, ENNReal.ofReal_one, one_mul] using hvol
+  have heq : riemannianVolumeMeasure ThreeModel ThreeSpace gC
+      (Metric.closedBall p (r / 4)) = ENNReal.ofReal ν * ENNReal.ofReal r ^ 3 := by
+    rw [volume_scale_apply]
+    rw [show gE = euclideanMetric (E := ThreeSpace) from rfl,
+      riemannianVolumeMeasure_euclideanMetric]
+    have hv : (volume : Measure ThreeSpace) (Metric.closedBall p (r / 4)) =
+        ENNReal.ofReal (r / 4) ^ 3 * ENNReal.ofReal (Real.pi * 4 / 3) := by
+      have hv := InnerProductSpace.volume_closedBall_of_dim_odd (E := ThreeSpace) (k := 1)
+        (by simp [ThreeSpace]) p (r / 4)
+      rw [hv]
+      norm_num [Nat.doubleFactorial]
+    rw [hv]
+    rw [show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace]]
+    rw [← ENNReal.ofReal_pow (Real.sqrt_nonneg c), ← ENNReal.ofReal_pow (by positivity : 0 ≤ r / 4),
+      ← ENNReal.ofReal_mul (by positivity : 0 ≤ (r / 4) ^ 3),
+      ← ENNReal.ofReal_mul (by positivity : 0 ≤ Real.sqrt c ^ 3),
+      ← ENNReal.ofReal_pow hr.le, ← ENNReal.ofReal_mul hν.le]
+    congr 1
+    dsimp only [ν]
+    ring
+  exact heq.symm.le.trans hlow
+
+
+namespace CanonicalStaticInsertionWitness
+
+variable (w : CanonicalStaticInsertionWitness d A hA D m ε)
+
+private theorem window_image_subset_normalized_ball
+    (heps : ε ≤ 1 / 2) (p : standardCapWindow D) {r : ℝ} (hr : 0 < r)
+    (hmargin : ‖p.val‖ + r < D) :
+    w.window '' {x : standardCapWindow D | dist x.val p.val ≤ r / 4} ⊆
+      riemannianBallOf (scaleMetric (metricScalarAt g x₀) d.scalar_pos w.data.outMetric)
+        (w.window p) r := by
+  let gn := scaleMetric (metricScalarAt g x₀) d.scalar_pos w.data.outMetric
+  let ge := DifferentialGeometry.Geometry.standardEuclideanMetric ThreeSpace
+  have hed (x y : ThreeSpace) : riemannianEDistOf ge x y = edist x y :=
+    DifferentialGeometry.Geometry.riemannianEDistOf_standardEuclideanMetric x y
+  obtain ⟨F, hsource, _, hmap⟩ := exists_window_partialDiffeomorph w
+  have hnorm {z : ThreeSpace} (hz : z ∈ riemannianClosedBallOf ge p.val r) : ‖z‖ < D := by
+    have hdist : dist z p.val ≤ r := by
+      change riemannianEDistOf ge p.val z ≤ ENNReal.ofReal r at hz
+      rw [hed, edist_dist, ENNReal.ofReal_le_ofReal_iff hr.le] at hz
+      rwa [dist_comm]
+    have hn : ‖z‖ ≤ ‖p.val‖ + ‖z - p.val‖ := by
+      calc
+        ‖z‖ = ‖p.val + (z - p.val)‖ := by rw [add_sub_cancel]
+        _ ≤ ‖p.val‖ + ‖z - p.val‖ := norm_add_le _ _
+    exact hn.trans_lt (by
+      rw [← dist_eq_norm]
+      linarith)
+  have hsub : riemannianClosedBallOf ge p.val r ⊆ standardCapWindow D := by
+    intro z hz
+    change ‖z‖ < D + 1
+    exact (hnorm hz).trans (by linarith)
+  have hupper : ∀ z ∈ riemannianClosedBallOf ge p.val r, ∀ v : TangentSpace ThreeModel z,
+      gn.inner (F z) (mfderiv ThreeModel ThreeModel (F : ThreeSpace → _) z v)
+        (mfderiv ThreeModel ThreeModel (F : ThreeSpace → _) z v) ≤
+      (2 : ℝ)^2 * ge.inner z v v := by
+    intro z hz v
+    let q : standardCapWindow D := ⟨z, hsub hz⟩
+    have hd : mfderiv ThreeModel ThreeModel w.window q =
+        mfderiv ThreeModel ThreeModel (F : ThreeSpace → _) z := by
+      have hfun : (fun x : standardCapWindow D => F x) = w.window := funext hmap
+      rw [← hfun]
+      exact mfderiv_restrict_open (F : ThreeSpace → _) (standardCapWindow D) q
+    have hb := (w.window_inner_bounds heps (x := q) (show ‖q.val‖ < D from hnorm hz) v).2
+    rw [w.window_inner q v v, standardCapMetric_eq_metric] at hb
+    change metricScalarAt g x₀ * w.data.outMetric.inner (w.window q)
+      (mfderiv ThreeModel ThreeModel w.window q v)
+      (mfderiv ThreeModel ThreeModel w.window q v) ≤ (3 / 2 : ℝ) * metric.inner z v v at hb
+    rw [hd, ← hmap q] at hb
+    have hmetricNorm : metric.inner z v v ≤ ‖(show ThreeSpace from v)‖ ^ 2 :=
+      metric_inner_le z v
+    apply hb.trans
+    change (3 / 2 : ℝ) * metric.inner z v v ≤
+      2 ^ 2 * @inner ℝ ThreeSpace _ (show ThreeSpace from v) (show ThreeSpace from v)
+    rw [real_inner_self_eq_norm_sq]
+    nlinarith [hmetricNorm, sq_nonneg ‖(show ThreeSpace from v)‖]
+  rintro _ ⟨x, hx, rfl⟩
+  have hy : riemannianEDistOf ge p.val x.val < ENNReal.ofReal r := by
+    rw [hed, edist_dist]
+    apply (ENNReal.ofReal_lt_ofReal_iff hr).mpr
+    rw [dist_comm]
+    exact hx.trans_lt (by linarith)
+  have hd := Perelman.KappaSolutions.edistOf_map_le_of_metric_upper_on_ball
+    ge gn F p.val x.val hr (by norm_num : (0 : ℝ) < 2)
+    (by rw [hsource]; exact hsub) hupper hy
+  rw [hmap p, hmap x] at hd
+  apply hd.trans_lt
+  calc
+    ENNReal.ofReal 2 * riemannianEDistOf ge p.val x.val ≤
+        ENNReal.ofReal 2 * ENNReal.ofReal (r / 4) := by
+      rw [hed, edist_dist, dist_comm]
+      exact mul_le_mul' le_rfl (ENNReal.ofReal_le_ofReal hx)
+    _ = ENNReal.ofReal (r / 2) := by
+      rw [← ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2)]
+      congr 1
+      ring
+    _ < ENNReal.ofReal r := (ENNReal.ofReal_lt_ofReal_iff hr).mpr (by linarith)
+
+
+
+theorem normalized_window_ball_volume_ge
+    (heps : ε ≤ 1 / 2) (p : standardCapWindow D) {r : ℝ} (hr : 0 < r)
+    (hmargin : ‖p.val‖ + r < D) :
+    ENNReal.ofReal (1 / 4 : ℝ) *
+      riemannianVolumeMeasure ThreeModel ThreeSpace metric (Metric.closedBall p.val (r / 4)) ≤
+    riemannianVolumeMeasure ThreeModel (InsertionQuotient (inv_pos.mpr d.precision_pos))
+      (scaleMetric (metricScalarAt g x₀) d.scalar_pos w.data.outMetric)
+      (riemannianBallOf (scaleMetric (metricScalarAt g x₀) d.scalar_pos w.data.outMetric)
+        (w.window p) r) := by
+  let S : Set (standardCapWindow D) := {x | dist x.val p.val ≤ r / 4}
+  have hS : MeasurableSet S := (isClosed_le (continuous_subtype_val.dist continuous_const)
+    continuous_const).measurableSet
+  have hSD : S ⊆ {x : standardCapWindow D | ‖x.val‖ < D} := by
+    intro x hx
+    have hn := norm_le_norm_sub_add x.val p.val
+    change dist x.val p.val ≤ r / 4 at hx
+    rw [dist_eq_norm] at hx
+    change ‖x.val‖ < D
+    linarith
+  have himage : Metric.closedBall p.val (r / 4) ⊆ standardCapWindow D := by
+    intro x hx
+    have hn := norm_le_norm_sub_add x p.val
+    rw [Metric.mem_closedBall, dist_eq_norm] at hx
+    change ‖x‖ < D + 1
+    linarith
+  have hvol : riemannianVolumeMeasure ThreeModel (standardCapWindow D)
+      (standardCapMetric.restrictOpen (standardCapWindow D)) S =
+      riemannianVolumeMeasure ThreeModel ThreeSpace metric (Metric.closedBall p.val (r / 4)) := by
+    rw [standardCapMetric_eq_metric]
+    exact DifferentialGeometry.Geometry.Measure.riemannianVolumeMeasure_restrictOpen_preimage_of_subset
+      metric (standardCapWindow D) Metric.isClosed_closedBall.measurableSet himage
+  rw [← hvol]
+  exact (w.volume_window_image_ge heps hS hSD).trans
+    (measure_mono (window_image_subset_normalized_ball w heps p hr hmargin))
+
+end CanonicalStaticInsertionWitness
+
+theorem exists_uniform_normalized_window_ball_volume_lower (R : ℝ) :
+    ∃ ν : ℝ, 0 < ν ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {δ : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ δ k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+        ε ≤ 1 / 2 → ∀ p : standardCapWindow D, ‖p.val‖ ≤ R →
+        ∀ r : ℝ, 0 < r → r ≤ 1 → ‖p.val‖ + r < D →
+          ENNReal.ofReal ν * ENNReal.ofReal r ^ 3 ≤
+            riemannianVolumeMeasure ThreeModel (InsertionQuotient (inv_pos.mpr d.precision_pos))
+              (scaleMetric (metricScalarAt g x₀) d.scalar_pos w.data.outMetric)
+              (riemannianBallOf (scaleMetric (metricScalarAt g x₀) d.scalar_pos w.data.outMetric)
+                (w.window p) r) := by
+  obtain ⟨v, hv, hvol⟩ := exists_uniform_standard_cap_coordinate_ball_volume_lower R
+  refine ⟨v / 4, by positivity, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ δ k d A hA D m ε w heps p hp r hr hr1 hmargin
+  have h := (mul_le_mul' (le_rfl : ENNReal.ofReal (1 / 4 : ℝ) ≤ _) (hvol p.val hp r hr hr1)).trans
+    (CanonicalStaticInsertionWitness.normalized_window_ball_volume_ge w heps p hr hmargin)
+  have heq : ENNReal.ofReal (v / 4) * ENNReal.ofReal r ^ 3 =
+      ENNReal.ofReal (1 / 4 : ℝ) * (ENNReal.ofReal v * ENNReal.ofReal r ^ 3) := by
+    rw [← mul_assoc, ← ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 1 / 4)]
+    congr 2
+    ring
+  exact heq.trans_le h
+
+
+section
+
+open DifferentialGeometry.Topology.Manifold
+
+theorem exists_uniform_window_isometric_ball_capture (R₀ : ℝ) :
+    ∃ δ : ℝ, 0 < δ ∧
+      ∀ {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+        [FiniteDimensional ℝ E] [Fact (Module.finrank ℝ E = 3)]
+        [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+        [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+        {g : SmoothRiemannianMetric I M} {x₀ : M} {η : ℝ} {k : ℕ}
+        {d : normalizedDatum g x₀ η k} {A : ℝ} {hA : 0 < A} {D : ℝ}
+        {m : ℕ} {ε : ℝ} (w : CanonicalStaticInsertionWitness d A hA D m ε),
+      ε ≤ 1 / 2 → R₀ + 1 < D →
+      ∀ {N : Type*} [TopologicalSpace N] [ChartedSpace ThreeSpace N]
+        [IsManifold ThreeModel ∞ N] [T2Space N]
+        (gN : SmoothRiemannianMetric ThreeModel N)
+        (F : InsertionQuotient (inv_pos.mpr d.precision_pos) → N),
+      IsLocalDiffeomorph ThreeModel ThreeModel ∞ F → Injective F →
+      (∀ y v z, gN.inner (F y) (mfderiv ThreeModel ThreeModel F y v)
+        (mfderiv ThreeModel ThreeModel F y z) = w.data.outMetric.inner y v z) →
+      ∀ p : standardCapWindow D, ‖p.val‖ ≤ R₀ →
+        riemannianBallOf (scaleMetric (metricScalarAt g x₀) d.scalar_pos gN)
+            (F (w.window p)) δ ⊆
+          (F ∘ w.window) '' {x : standardCapWindow D | dist x.val p.val ≤ 1} := by
+  obtain ⟨Λ, hΛ, hbound⟩ := exists_uniform_window_ellipticity (R₀ + 1)
+  have hΛpos : 0 < Λ := zero_lt_one.trans_le hΛ
+  refine ⟨1 / Λ, div_pos zero_lt_one hΛpos, ?_⟩
+  intro E H M _ _ _ _ _ I _ _ _ _ _ g x₀ η k d A hA D m ε w heps hRD
+    N _ _ _ _ gN F hF hiF hisom p hp
+  let Φ := F ∘ w.window
+  let gQ := scaleMetric (metricScalarAt g x₀) d.scalar_pos gN
+  let ge := DifferentialGeometry.Geometry.standardEuclideanMetric ThreeSpace
+  have hed (x y : ThreeSpace) : riemannianEDistOf ge x y = edist x y :=
+    DifferentialGeometry.Geometry.riemannianEDistOf_standardEuclideanMetric x y
+  have hball : riemannianClosedBallOf ge p.val 1 = Metric.closedBall p.val 1 := by
+    ext x
+    change riemannianEDistOf ge p.val x ≤ ENNReal.ofReal 1 ↔ dist x p.val ≤ 1
+    rw [hed, edist_dist, ENNReal.ofReal_le_ofReal_iff zero_le_one, dist_comm]
+  have hnorm {x : ThreeSpace} (hx : x ∈ riemannianClosedBallOf ge p.val 1) :
+      ‖x‖ ≤ R₀ + 1 := by
+    have hd : dist x p.val ≤ 1 := by simpa only [hball, Metric.mem_closedBall] using hx
+    have hn := norm_le_norm_sub_add x p.val
+    rw [← dist_eq_norm] at hn
+    linarith
+  have hcpt : IsCompact (riemannianClosedBallOf ge p.val 1) :=
+    hball ▸ isCompact_closedBall p.val 1
+  have hsub : riemannianClosedBallOf ge p.val 1 ⊆ standardCapWindow D := by
+    intro x hx
+    change ‖x‖ < D + 1
+    linarith [hnorm hx]
+  have hΦ : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Φ :=
+    fun x => (w.properties.window_local x).comp ThreeModel N (hF (w.window x))
+  have hiΦ : Injective Φ := hiF.comp w.window_smooth.isEmbedding.injective
+  have hin (x : standardCapWindow D) (v z : TangentSpace ThreeModel x) :
+      gQ.inner (Φ x) (mfderiv ThreeModel ThreeModel Φ x v)
+          (mfderiv ThreeModel ThreeModel Φ x z) = w.windowMetric.inner x v z := by
+    rw [scaleMetric_inner, w.window_inner]
+    apply congrArg (fun a => metricScalarAt g x₀ * a)
+    exact metric_inner_comp_of_isometry w.data.outMetric gN F hF.contMDiff hisom
+      w.window w.window_smooth.contMDiff x v z
+  have hlow (x : standardCapWindow D)
+      (hx : x.val ∈ riemannianClosedBallOf ge p.val 1)
+      (v : TangentSpace ThreeModel x) :
+      ge.inner x.val v v ≤ Λ ^ 2 * gQ.inner (Φ x)
+        (mfderiv ThreeModel ThreeModel Φ x v) (mfderiv ThreeModel ThreeModel Φ x v) := by
+    rw [hin]
+    have hb := (hbound w heps hRD x (hnorm hx) v).1
+    rw [← w.window_inner x v v] at hb
+    have hh : ‖(show ThreeSpace from v)‖ ^ 2 ≤ Λ * w.windowMetric.inner x v v :=
+      (inv_mul_le_iff₀ hΛpos).mp hb
+    have hΛsq : Λ ≤ Λ ^ 2 := le_self_pow₀ hΛ (by decide)
+    have hnn : 0 ≤ w.windowMetric.inner x v v := metric_inner_self_nonneg w.windowMetric x v
+    have heuc : ge.inner x.val v v = ‖(show ThreeSpace from v)‖ ^ 2 := by
+      change @inner ℝ ThreeSpace _ (show ThreeSpace from v) (show ThreeSpace from v) = _
+      exact real_inner_self_eq_norm_sq _
+    rw [heuc]
+    exact hh.trans (mul_le_mul_of_nonneg_right hΛsq hnn)
+  have hcapture := Geometry.Metric.ball_subset_image_of_metric_lower_on_opens
+    gQ ge (standardCapWindow D) Φ hΦ hiΦ p zero_lt_one hΛpos hcpt hsub hlow
+  apply hcapture.trans
+  apply image_mono
+  intro x hx
+  simpa only [hball, Metric.mem_closedBall] using hx
+
+end
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

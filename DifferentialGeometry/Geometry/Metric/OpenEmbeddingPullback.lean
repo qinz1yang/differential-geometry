@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.Construction.Immersion
+import Mathlib.Geometry.Manifold.SmoothEmbedding
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
@@ -78,5 +80,60 @@ theorem pullbackMetricOfInjectiveLocalDiffeomorph_scale_eq_chart
     SmoothRiemannianMetric.restrictOpen_inner,
     mfderiv_chart_eq_of_ambient_eq V Φ f he x, he x]
   rfl
+
+end DifferentialGeometry.Geometry.Metric
+
+open Manifold
+
+namespace DifferentialGeometry.Geometry.Metric
+
+open DifferentialGeometry.Topology.Manifold
+open DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+
+theorem pullbackMetricCross_eq_immersionInducedMetric_of_coe_eq
+    (g : SmoothRiemannianMetric J N) {f : M → N} (hf : IsImmersion I J ∞ f)
+    (V : TopologicalSpace.Opens N) (Φ : M ≃ₘ⟮I, J⟯ V)
+    (he : ∀ x, (Φ x : N) = f x) :
+    Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ = immersionInducedMetric g hf := by
+  apply SmoothRiemannianMetric.ext_inner
+  intro x v w
+  have hcomp : (fun y => (Φ y : N)) = f := funext he
+  have hd : mfderiv I J Φ x = mfderiv I J f x := by
+    rw [← hcomp]
+    exact (DifferentialGeometry.mfderiv_subtypeVal_comp Φ x).symm
+  rw [Diffeomorph.pullbackMetricCross_inner, SmoothRiemannianMetric.restrictOpen_inner,
+    immersionInducedMetric_inner, hd, he x]
+  rfl
+
+theorem pullbackMetricCross_diffeomorphOntoImage_eq_immersionInducedMetric
+    (g : SmoothRiemannianMetric J N) {f : M → N} (hf : IsImmersion I J ∞ f)
+    (hlocal : IsLocalDiffeomorph I J ∞ f) (hinj : Function.Injective f) :
+    Diffeomorph.pullbackMetricCross (g.restrictOpen hlocal.image)
+      (diffeomorphOntoImage f hlocal hinj) = immersionInducedMetric g hf :=
+  pullbackMetricCross_eq_immersionInducedMetric_of_coe_eq g hf hlocal.image
+    (diffeomorphOntoImage f hlocal hinj) (diffeomorphOntoImage_apply f hlocal hinj)
+
+theorem exists_diffeomorph_onto_range_pullback_eq_immersionInducedMetric
+    [J.Boundaryless] (g : SmoothRiemannianMetric J N)
+    {f : M → N} (hf : IsImmersion I J ∞ f) (hinj : Function.Injective f)
+    (hdim : Module.finrank ℝ E = Module.finrank ℝ F) :
+    ∃ (V : TopologicalSpace.Opens N) (Φ : M ≃ₘ⟮I, J⟯ V),
+      (V : Set N) = Set.range f ∧ (∀ x, (Φ x : N) = f x) ∧
+        (∀ y : V, f (Φ.symm y) = (y : N)) ∧
+        Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ =
+          immersionInducedMetric g hf := by
+  obtain ⟨V, Φ, hV, he, hi⟩ := exists_diffeomorph_onto_range_of_injective_immersion f
+    hf.contMDiff hinj
+    (fun x => immersionAt_mfderiv_injective (hf.isImmersionAt x)) hdim
+  exact ⟨V, Φ, hV, he, hi, pullbackMetricCross_eq_immersionInducedMetric_of_coe_eq g
+    hf V Φ he⟩
 
 end DifferentialGeometry.Geometry.Metric

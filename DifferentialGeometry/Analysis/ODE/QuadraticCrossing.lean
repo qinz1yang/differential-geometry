@@ -1,12 +1,14 @@
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Calculus.Deriv.Inv
+import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Topology.Order.IntermediateValue
 import Mathlib.Topology.Order.Compact
 import Mathlib.Tactic.Linarith
 
 set_option autoImplicit false
 
-open Set
+open Set Filter
+open scoped Topology
 
 namespace DifferentialGeometry.Analysis.ODE
 
@@ -79,5 +81,26 @@ theorem inv_sub_inv_le_mul_sub_of_deriv_le_sq
   have htime : C * (b - c) ≤ C * (b - a) :=
     mul_le_mul_of_nonneg_left (by linarith [hc.1.1]) hC
   linarith
+
+theorem inv_le_mul_sub_of_unbounded_sequence
+    {f : ℝ → ℝ} {a b A C : ℝ} {time : ℕ → ℝ}
+    (hA : 0 < A) (hC : 0 ≤ C)
+    (hf : ContinuousOn f (Ico a b)) (ha : f a ≤ A)
+    (hderiv : ∀ t ∈ Ioo a b, A < f t →
+      DifferentiableAt ℝ f t ∧ deriv f t ≤ C * f t ^ 2)
+    (htime : ∀ n, time n ∈ Ico a b)
+    (hblow : Tendsto (fun n => f (time n)) atTop atTop) :
+    A⁻¹ ≤ C * (b - a) := by
+  have hinv : Tendsto (fun n => (f (time n))⁻¹) atTop (𝓝 0) :=
+    tendsto_inv_atTop_zero.comp hblow
+  have hbound : ∀ᶠ n in atTop, A⁻¹ - (f (time n))⁻¹ ≤ C * (b - a) := by
+    filter_upwards [hblow.eventually (eventually_gt_atTop A)] with n hn
+    have hsub : Icc a (time n) ⊆ Ico a b :=
+      fun s hs => ⟨hs.1, hs.2.trans_lt (htime n).2⟩
+    exact (inv_sub_inv_le_mul_sub_of_deriv_le_sq (htime n).1 hA hn
+      (hf.mono hsub) ha le_rfl (fun t ht hAt =>
+        hderiv t ⟨ht.1, ht.2.trans (htime n).2⟩ hAt)).trans
+      (mul_le_mul_of_nonneg_left (by linarith [(htime n).2]) hC)
+  simpa only [sub_zero] using le_of_tendsto ((tendsto_const_nhds (x := A⁻¹)).sub hinv) hbound
 
 end DifferentialGeometry.Analysis.ODE

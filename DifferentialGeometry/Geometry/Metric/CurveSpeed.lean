@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Comparison.Distance.EndpointRate
+import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import Mathlib.Topology.Connected.TotallyDisconnected
 import DifferentialGeometry.Geometry.Metric.Path.Speed
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
@@ -62,3 +65,67 @@ theorem riemannian_curve_edist_le_of_speed_bound
     exact hordered y x hyx
 
 end DifferentialGeometry.Geometry
+
+noncomputable section
+open Filter
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M]
+
+theorem inner_mfderiv_self_eq_sq_of_edist_eq_on_interval
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b c t : ℝ} (hc : 0 ≤ c)
+    (hγ : ContMDiffOn 𝓘(ℝ) I 1 γ (Icc a b)) (ht : t ∈ Ioo a b)
+    (hdist : ∀ s ∈ Icc a b, ∀ u ∈ Icc a b,
+      riemannianEDistOf g (γ s) (γ u) = ENNReal.ofReal (c * |s - u|)) :
+    g.inner (γ t) (mfderiv 𝓘(ℝ) I γ t 1) (mfderiv 𝓘(ℝ) I γ t 1) = c ^ 2 := by
+  by_cases hdim : Module.finrank ℝ E = 0
+  · let _ : Subsingleton E := (Module.finrank_zero_iff (R := ℝ)).mp hdim
+    let _ : Subsingleton H := I.injective.subsingleton
+    let _ : DiscreteTopology M := ChartedSpace.discreteTopology H M
+    have hpre := isPreconnected_Icc.image γ hγ.continuousOn
+    have heq : γ t = γ b := hpre.subsingleton
+      ⟨t, ⟨ht.1.le, ht.2.le⟩, rfl⟩ ⟨b, ⟨ht.1.le.trans ht.2.le, le_rfl⟩, rfl⟩
+    have hz := hdist t ⟨ht.1.le, ht.2.le⟩ b ⟨ht.1.le.trans ht.2.le, le_rfl⟩
+    rw [heq, riemannianEDistOf_self] at hz
+    have hprod : c * |t - b| ≤ 0 := ENNReal.ofReal_eq_zero.mp hz.symm
+    have hc0 : c = 0 := by
+      have hpos : 0 < |t - b| := abs_pos.mpr (sub_ne_zero.mpr ht.2.ne)
+      nlinarith
+    let _ : Subsingleton (TangentSpace I (γ t)) := (inferInstance : Subsingleton E)
+    have hzero : mfderiv 𝓘(ℝ) I γ t (1 : ℝ) = 0 := Subsingleton.elim _ _
+    change (g.inner (γ t) : E →L[ℝ] E →L[ℝ] ℝ)
+      (mfderiv 𝓘(ℝ) I γ t 1) (mfderiv 𝓘(ℝ) I γ t 1) = c ^ 2
+    change (mfderiv 𝓘(ℝ) I γ t 1 : E) = 0 at hzero
+    simp only [hc0, hzero, map_zero, zero_pow (by norm_num : 2 ≠ 0)]
+  let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+  have hdiff : MDifferentiableAt 𝓘(ℝ) I γ t :=
+    (hγ.contMDiffAt (Icc_mem_nhds ht.1 ht.2)).mdifferentiableAt (by decide)
+  have hspeed := riemannianEDistOf_div_tendsto_speed g γ t hdiff
+  have hlimit : Tendsto
+      (fun h : ℝ => (riemannianEDistOf g (γ (t + h)) (γ t)).toReal / h)
+      (𝓝[>] (0 : ℝ)) (𝓝 c) := by
+    apply tendsto_const_nhds.congr'
+    filter_upwards [Ioc_mem_nhdsGT (sub_pos.mpr ht.2)] with h hh
+    have hmem : t + h ∈ Icc a b := ⟨by linarith [hh.1, ht.1], by linarith [hh.2]⟩
+    rw [hdist (t + h) hmem t ⟨ht.1.le, ht.2.le⟩, add_sub_cancel_left,
+      abs_of_pos hh.1, ENNReal.toReal_ofReal (mul_nonneg hc hh.1.le)]
+    field_simp [hh.1.ne']
+  have hsqrt := tendsto_nhds_unique hspeed hlimit
+  exact (Real.sq_sqrt (DifferentialGeometry.metric_inner_self_nonneg g _ _)).symm.trans
+    (congrArg (fun z : ℝ => z ^ 2) hsqrt)
+
+theorem inner_mfderiv_self_eq_one_of_edist_eq_on_interval
+    (g : SmoothRiemannianMetric I M) {γ : ℝ → M} {a b t : ℝ}
+    (hγ : ContMDiffOn 𝓘(ℝ) I 1 γ (Icc a b)) (ht : t ∈ Ioo a b)
+    (hdist : ∀ s ∈ Icc a b, ∀ u ∈ Icc a b,
+      riemannianEDistOf g (γ s) (γ u) = ENNReal.ofReal |s - u|) :
+    g.inner (γ t) (mfderiv 𝓘(ℝ) I γ t 1) (mfderiv 𝓘(ℝ) I γ t 1) = 1 := by
+  simpa only [one_pow] using inner_mfderiv_self_eq_sq_of_edist_eq_on_interval g
+    (c := 1) zero_le_one hγ ht (by simpa only [one_mul] using hdist)
+
+end DifferentialGeometry.Geometry.Riemannian

@@ -17,6 +17,27 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [T2Space M] (T : TubeSystem M)
 
+theorem isClopen_preimage_of_capCore_outward_collar
+    {K : Set M} (cap : CapCore K)
+    (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1))
+    (e : OpenPartialHomeomorph (Sphere 2 × ℝ) M)
+    {r : ℝ} (hr : 0 < r) (hsource : univ ×ˢ Ioo (-r) r ⊆ e.source)
+    (hfront : frontier K = range (T.boundarySphere b))
+    (hzero : ∀ z : Sphere 2, e (z, 0) = T.boundarySphere b z)
+    (hpos : ∀ z : Sphere 2, ∀ t ∈ Ioo (0 : ℝ) r, e (z, t) ∈ T.removedBand b.1)
+    : IsClopen ((Subtype.val : T.core → M) ⁻¹' K) := by
+  let : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (E := EuclideanSpace ℝ (Fin 3))
+      (Module.one_lt_rank_of_one_lt_finrank (by simp)) 0 zero_le_one)
+  have hfront' : frontier K = range (fun z : Sphere 2 => e (z, 0)) := by
+    simpa only [hzero] using hfront
+  apply DifferentialGeometry.Topology.isClopen_preimage_of_outward_collar
+    cap.closure_interior_carrier e hr hsource hfront'
+  intro z t ht hy
+  rcases hy with hyK | hycore
+  · exact disjoint_left.mp hdisj hyK (hpos z t ht)
+  · exact hycore (mem_iUnion.mpr ⟨b.1,hpos z t ht⟩)
+
 theorem connectedComponent_eq_preimage_of_capCore_outward_collar
     {K : Set M} (cap : CapCore K) (hcore : K ⊆ T.core)
     (b : T.Boundary) (e : OpenPartialHomeomorph (Sphere 2 × ℝ) M)
@@ -26,16 +47,14 @@ theorem connectedComponent_eq_preimage_of_capCore_outward_collar
     (hpos : ∀ z : Sphere 2, ∀ t ∈ Ioo (0 : ℝ) r, e (z, t) ∈ T.removedBand b.1)
     (x : T.core) (hx : x.val ∈ K) :
     connectedComponent x = (Subtype.val : T.core → M) ⁻¹' K := by
-  let : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
-    (isConnected_sphere (E := EuclideanSpace ℝ (Fin 3))
-      (Module.one_lt_rank_of_one_lt_finrank (by simp)) 0 zero_le_one)
-  have hfront' : frontier K = range (fun z : Sphere 2 => e (z, 0)) := by
-    simpa only [hzero] using hfront
-  apply DifferentialGeometry.Topology.connectedComponent_eq_preimage_of_outward_collar
-    cap.closure_interior_carrier cap.isConnected_carrier.isPreconnected hcore e hr hsource
-    hfront' _ x hx
-  intro z t ht hmem
-  exact hmem (mem_iUnion.mpr ⟨b.1, hpos z t ht⟩)
+  have hdisj : Disjoint K (T.removedBand b.1) := disjoint_left.mpr
+    (fun y hyK hyband => hcore hyK (mem_iUnion.mpr ⟨b.1,hyband⟩))
+  have hcl := T.isClopen_preimage_of_capCore_outward_collar cap b hdisj e hr hsource hfront hzero hpos
+  have hpre : IsPreconnected ((Subtype.val : T.core → M) ⁻¹' K) := by
+    apply _root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mp
+    rw [Subtype.image_preimage_coe,inter_eq_right.mpr hcore]
+    exact cap.isConnected_carrier.isPreconnected
+  exact Subset.antisymm (hcl.connectedComponent_subset hx) (hpre.subset_connectedComponent hx)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
 
@@ -186,12 +205,11 @@ private theorem exists_openPartialHomeomorph_tube_interior (a : T.Index)
     rfl
 
 
-theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
-    [T2Space M] {K : Set M} (cap : CapCore K) (hcore : K ⊆ T.core)
-    (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
+theorem isClopen_preimage_of_capCore_of_boundarySphere
+    [T2Space M] {K : Set M} (cap : CapCore K)
+    (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1)) (hfront : frontier K = range (T.boundarySphere b))
     (hs : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube b.1))
-    (x : T.core) (hx : x.val ∈ K) :
-    connectedComponent x = (Subtype.val : T.core → M) ⁻¹' K := by
+    : IsClopen ((Subtype.val : T.core → M) ⁻¹' K) := by
   obtain ⟨E, hEsource, hE⟩ := T.exists_openPartialHomeomorph_tube_interior b.1 hs
   let H : (Sphere 2 × ℝ) ≃ₜ (Sphere 2 × ℝ) :=
     { toFun := fun q => (q.1, if b.2 then 1 - q.2 else -1 + q.2)
@@ -209,8 +227,8 @@ theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
   let e := H.transOpenPartialHomeomorph E
   have happ (z : Sphere 2) (t : ℝ) :
       e (z, t) = E (z, if b.2 then 1 - t else -1 + t) := rfl
-  apply T.connectedComponent_eq_preimage_of_capCore_outward_collar cap hcore b e
-    (r := 1) zero_lt_one _ hfront _ _ x hx
+  apply T.isClopen_preimage_of_capCore_outward_collar cap b hdisj e
+    (r := 1) zero_lt_one _ hfront _ _
   · rintro ⟨z, t⟩ ⟨_, ht⟩
     change H (z, t) ∈ E.source
     apply hEsource
@@ -231,5 +249,30 @@ theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
     refine ⟨q, hv, ?_⟩
     rw [← hE q (by constructor <;> linarith [hv.1, hv.2])]
     rfl
+
+theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
+    [T2Space M] {K : Set M} (cap : CapCore K) (hcore : K ⊆ T.core)
+    (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
+    (hs : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube b.1))
+    (x : T.core) (hx : x.val ∈ K) :
+    connectedComponent x = (Subtype.val : T.core → M) ⁻¹' K := by
+  have hdisj : Disjoint K (T.removedBand b.1) := disjoint_left.mpr
+    (fun y hyK hyband => hcore hyK (mem_iUnion.mpr ⟨b.1,hyband⟩))
+  have hcl := T.isClopen_preimage_of_capCore_of_boundarySphere cap b hdisj hfront hs
+  have hpre : IsPreconnected ((Subtype.val : T.core → M) ⁻¹' K) := by
+    apply _root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mp
+    rw [Subtype.image_preimage_coe,inter_eq_right.mpr hcore]
+    exact cap.isConnected_carrier.isPreconnected
+  exact Subset.antisymm (hcl.connectedComponent_subset hx) (hpre.subset_connectedComponent hx)
+
+
+theorem connectedComponent_subset_preimage_of_capCore_of_boundarySphere
+    [T2Space M] {K : Set M} (cap : CapCore K)
+    (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1))
+    (hfront : frontier K = range (T.boundarySphere b))
+    (hs : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube b.1))
+    (x : T.core) (hx : x.val ∈ K) :
+    connectedComponent x ⊆ (Subtype.val : T.core → M) ⁻¹' K :=
+  (T.isClopen_preimage_of_capCore_of_boundarySphere cap b hdisj hfront hs).connectedComponent_subset hx
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem

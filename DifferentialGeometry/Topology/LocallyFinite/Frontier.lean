@@ -94,3 +94,44 @@ theorem frontier_iUnion_nat_add_subset
   · exact False.elim (hx.2 (hglued n hn))
 
 end LocallyFinite
+
+
+theorem IsClosed.closure_interior_iUnion {X ι : Type*} [TopologicalSpace X]
+    {s : ι → Set X} (hclosed : IsClosed (⋃ i, s i))
+    (hregular : ∀ i, closure (interior (s i)) = s i) :
+    closure (interior (⋃ i, s i)) = ⋃ i, s i := by
+  apply Subset.antisymm (closure_minimal interior_subset hclosed)
+  rintro x hx
+  obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+  exact closure_mono (interior_mono (subset_iUnion s i)) ((hregular i).symm ▸ hi)
+
+theorem LocallyFinite.closure_interior_iUnion {X ι : Type*} [TopologicalSpace X]
+    {s : ι → Set X} (hs : LocallyFinite s)
+    (hregular : ∀ i, closure (interior (s i)) = s i) :
+    closure (interior (⋃ i, s i)) = ⋃ i, s i :=
+  (hs.isClosed_iUnion fun i => (hregular i) ▸ isClosed_closure).closure_interior_iUnion hregular
+
+theorem LocallyFinite.frontier_iUnion_of_disjoint_closure {X ι : Type*} [TopologicalSpace X]
+    {s : ι → Set X} (hs : LocallyFinite s)
+    (hdisj : Pairwise (fun i j => Disjoint (closure (s i)) (closure (s j)))) :
+    frontier (⋃ i, s i) = ⋃ i, frontier (s i) := by
+  apply Subset.antisymm hs.frontier_iUnion_subset
+  intro x hx
+  obtain ⟨i, hi⟩ := mem_iUnion.mp hx
+  refine ⟨closure_mono (subset_iUnion s i) hi.1, ?_⟩
+  intro hint
+  apply hi.2
+  let V := ⋃ j : {j : ι // j ≠ i}, closure (s j.val)
+  have hV : IsClosed V :=
+    (hs.closure.comp_injective Subtype.val_injective).isClosed_iUnion fun _ => isClosed_closure
+  have hxV : x ∉ V := by
+    intro h
+    obtain ⟨j, hj⟩ := mem_iUnion.mp h
+    exact disjoint_left.mp (hdisj j.property) hj hi.1
+  apply mem_interior.mpr
+  refine ⟨interior (⋃ j, s j) ∩ Vᶜ, ?_, isOpen_interior.inter hV.isOpen_compl, hint, hxV⟩
+  intro y hy
+  obtain ⟨j, hj⟩ := mem_iUnion.mp (interior_subset hy.1)
+  by_cases hji : j = i
+  · exact hji ▸ hj
+  · exact False.elim (hy.2 (mem_iUnion.mpr ⟨⟨j, hji⟩, subset_closure hj⟩))

@@ -11,6 +11,103 @@ set_option autoImplicit false
 open Set Filter
 open scoped Topology
 
+namespace EMetric
+
+variable {X : Type*} [PseudoEMetricSpace X]
+
+theorem edist_lt_edist_add_edist_of_close_to_center
+    {p q x y : X} {r : ℝ} (hr : 0 ≤ r)
+    (hx : edist q x ≤ ENNReal.ofReal r) (hy : edist q y ≤ ENNReal.ofReal r)
+    (hfar : ENNReal.ofReal (2 * r) < edist q p) :
+    edist x y < edist x p + edist p y := by
+  have hxy : edist x y ≤ ENNReal.ofReal (2 * r) := by
+    calc
+      _ ≤ edist x q + edist q y := edist_triangle _ _ _
+      _ ≤ ENNReal.ofReal r + ENNReal.ofReal r := by
+        rw [edist_comm x q]
+        exact add_le_add hx hy
+      _ = ENNReal.ofReal (2 * r) := by rw [← ENNReal.ofReal_add hr hr]; congr 1; ring
+  by_cases hxp : edist x p = ⊤
+  · rw [hxp, top_add]
+    exact lt_of_le_of_lt hxy ENNReal.ofReal_lt_top
+  by_cases hpy : edist p y = ⊤
+  · rw [hpy, add_top]
+    exact lt_of_le_of_lt hxy ENNReal.ofReal_lt_top
+  have hqx : edist q x ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hx
+  have hqy : edist q y ≠ ⊤ := ne_top_of_le_ne_top ENNReal.ofReal_ne_top hy
+  have hqp : edist q p ≠ ⊤ := ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨hqx, hxp⟩)
+    (edist_triangle q x p)
+  have hfarR : 2 * r < (edist q p).toReal :=
+    (ENNReal.ofReal_lt_iff_lt_toReal (by positivity : 0 ≤ 2 * r) hqp).mp hfar
+  have hxR := ENNReal.toReal_le_of_le_ofReal hr hx
+  have hyR := ENNReal.toReal_le_of_le_ofReal hr hy
+  have htx := ENNReal.toReal_mono (ENNReal.add_ne_top.mpr ⟨hqx, hxp⟩) (edist_triangle q x p)
+  have hty := ENNReal.toReal_mono (ENNReal.add_ne_top.mpr ⟨hqy, by simpa only [edist_comm] using hpy⟩)
+    (edist_triangle q y p)
+  rw [ENNReal.toReal_add hqx hxp] at htx
+  rw [ENNReal.toReal_add hqy (by simpa only [edist_comm] using hpy), edist_comm y p] at hty
+  apply hxy.trans_lt
+  apply (ENNReal.ofReal_lt_iff_lt_toReal (by positivity : 0 ≤ 2 * r) (ENNReal.add_ne_top.mpr ⟨hxp, hpy⟩)).mpr
+  rw [ENNReal.toReal_add hxp hpy]
+  linarith
+
+end EMetric
+
+
+namespace EMetric
+
+variable {X : Type*} [PseudoEMetricSpace X]
+
+theorem not_mem_interior_of_minimizing_of_frontier_edist_lt
+    {γ : ℝ → X} {a t b : ℝ} (hat : a < t) (htb : t < b)
+    (hmin : ∀ s ∈ Icc a b, ∀ u ∈ Icc a b, edist (γ s) (γ u) = ENNReal.ofReal |s - u|)
+    {U : Set X} (ha : γ a ∉ interior U) (hb : γ b ∉ interior U)
+    (hshort : ∀ x ∈ frontier U, ∀ y ∈ frontier U,
+      edist x y < edist x (γ t) + edist (γ t) y) :
+    γ t ∉ interior U := by
+  intro htU
+  have hcont : ContinuousOn γ (Icc a b) := by
+    have hLip : LipschitzOnWith 1 γ (Icc a b) := by
+      intro s hs u hu
+      rw [hmin s hs u hu]
+      simp only [ENNReal.coe_one, one_mul, edist_dist, Real.dist_eq]
+      exact le_rfl
+    exact hLip.continuousOn
+  have hleft : ContinuousOn (fun s => γ (t - s)) (Icc 0 (t - a)) :=
+    hcont.comp (by fun_prop) (by
+      intro s hs
+      exact ⟨by linarith only [hs.2], by linarith only [hs.1, htb]⟩)
+  have hright : ContinuousOn (fun s => γ (t + s)) (Icc 0 (b - t)) :=
+    hcont.comp (by fun_prop) (by
+      intro s hs
+      exact ⟨by linarith only [hs.1, hat], by linarith only [hs.2]⟩)
+  obtain ⟨u, hu, _, huF⟩ :=
+    DifferentialGeometry.exists_first_exit_frontier_of_not_mem_interior
+      (sub_pos.mpr hat) hleft (by simpa only [sub_zero] using htU)
+      (by simpa only [sub_sub_cancel] using ha)
+  obtain ⟨v, hv, _, hvF⟩ :=
+    DifferentialGeometry.exists_first_exit_frontier_of_not_mem_interior
+      (sub_pos.mpr htb) hright (by simpa only [add_zero] using htU)
+      (by simpa only [add_sub_cancel] using hb)
+  have htu : t - u ∈ Icc a b :=
+    ⟨by linarith only [hu.2], by linarith only [hu.1, htb]⟩
+  have htv : t + v ∈ Icc a b :=
+    ⟨by linarith only [hv.1, hat], by linarith only [hv.2]⟩
+  have ht : t ∈ Icc a b := ⟨hat.le, htb.le⟩
+  have heq : edist (γ (t - u)) (γ (t + v)) =
+      edist (γ (t - u)) (γ t) + edist (γ t) (γ (t + v)) := by
+    rw [hmin _ htu _ htv, hmin _ htu _ ht, hmin _ ht _ htv,
+      abs_of_nonpos (by linarith only [hu.1, hv.1] : t - u - (t + v) ≤ 0),
+      abs_of_nonpos (by linarith only [hu.1] : t - u - t ≤ 0),
+      abs_of_nonpos (by linarith only [hv.1] : t - (t + v) ≤ 0)]
+    rw [← ENNReal.ofReal_add (by linarith only [hu.1]) (by linarith only [hv.1])]
+    congr 1
+    ring
+  exact (hshort _ huF _ hvF).ne heq
+
+end EMetric
+
+
 namespace Metric
 
 variable {X : Type*} [PseudoMetricSpace X]
@@ -35,43 +132,12 @@ theorem not_mem_interior_of_minimizing_of_frontier_dist_lt
     (hshort : ∀ x ∈ frontier U, ∀ y ∈ frontier U,
       dist x y < dist x (γ t) + dist (γ t) y) :
     γ t ∉ interior U := by
-  intro htU
-  have hcont : ContinuousOn γ (Icc a b) := by
-    have hLip : LipschitzOnWith 1 γ (Icc a b) := by
-      apply LipschitzOnWith.of_dist_le_mul
-      intro s hs u hu
-      simpa only [hmin s hs u hu, NNReal.coe_one, one_mul, Real.dist_eq] using
-        (le_rfl : |s - u| ≤ |s - u|)
-    exact hLip.continuousOn
-  have hleft : ContinuousOn (fun s => γ (t - s)) (Icc 0 (t - a)) :=
-    hcont.comp (by fun_prop) (by
-      intro s hs
-      exact ⟨by linarith only [hs.2], by linarith only [hs.1, htb]⟩)
-  have hright : ContinuousOn (fun s => γ (t + s)) (Icc 0 (b - t)) :=
-    hcont.comp (by fun_prop) (by
-      intro s hs
-      exact ⟨by linarith only [hs.1, hat], by linarith only [hs.2]⟩)
-  obtain ⟨u, hu, _, huF⟩ :=
-    DifferentialGeometry.exists_first_exit_frontier_of_not_mem_interior
-      (sub_pos.mpr hat) hleft (by simpa only [sub_zero] using htU)
-      (by simpa only [sub_sub_cancel] using ha)
-  obtain ⟨v, hv, _, hvF⟩ :=
-    DifferentialGeometry.exists_first_exit_frontier_of_not_mem_interior
-      (sub_pos.mpr htb) hright (by simpa only [add_zero] using htU)
-      (by simpa only [add_sub_cancel] using hb)
-  have htu : t - u ∈ Icc a b :=
-    ⟨by linarith only [hu.2], by linarith only [hu.1, htb]⟩
-  have htv : t + v ∈ Icc a b :=
-    ⟨by linarith only [hv.1, hat], by linarith only [hv.2]⟩
-  have ht : t ∈ Icc a b := ⟨hat.le, htb.le⟩
-  have heq : dist (γ (t - u)) (γ (t + v)) =
-      dist (γ (t - u)) (γ t) + dist (γ t) (γ (t + v)) := by
-    rw [hmin _ htu _ htv, hmin _ htu _ ht, hmin _ ht _ htv,
-      abs_of_nonpos (by linarith only [hu.1, hv.1] : t - u - (t + v) ≤ 0),
-      abs_of_nonpos (by linarith only [hu.1] : t - u - t ≤ 0),
-      abs_of_nonpos (by linarith only [hv.1] : t - (t + v) ≤ 0)]
-    ring
-  exact (hshort _ huF _ hvF).ne heq
+  apply EMetric.not_mem_interior_of_minimizing_of_frontier_edist_lt hat htb
+    (fun s hs u hu => by rw [edist_dist, hmin s hs u hu]) ha hb
+  intro x hx y hy
+  rw [edist_dist, edist_dist, edist_dist, ← ENNReal.ofReal_add dist_nonneg dist_nonneg]
+  exact ENNReal.ofReal_lt_ofReal_iff_of_nonneg dist_nonneg |>.mpr (hshort x hx y hy)
+
 
 theorem not_mem_interior_of_minimizing_of_diam_frontier_lt
     {γ : ℝ → X} {a t b : ℝ} (hat : a < t) (htb : t < b)

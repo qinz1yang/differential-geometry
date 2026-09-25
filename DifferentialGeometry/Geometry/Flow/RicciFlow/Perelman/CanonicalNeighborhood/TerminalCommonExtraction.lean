@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.CountableTerminalConvergence
 import DifferentialGeometry.Geometry.Metric.Convergence.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.AncientGluing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.FixedDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 
@@ -179,5 +180,62 @@ theorem exists_common_solution_subsequence_on_terminal_maps_of_terminal_converge
           (hslab n) (hreg n) Q.metric hK p
         exact ⟨L, fun s hs t ht q hq x hx => hb q hq s hs t ht x hx⟩)
 
+
+theorem exists_ancient_solution_subsequence_on_terminal_maps_of_terminal_convergence
+    (X : FlowSequence.{u}) (P : MetricCompactLimit (X.atTime 0))
+    (U : ℕ → TopologicalSpace.Opens P.limit.M) (hU : Monotone U)
+    (hcover : ∀ x : P.limit.M, ∃ n, x ∈ U n)
+    (hpU : ∀ n, P.limit.basepoint ∈ U n)
+    (D : ℕ → RealTimeInterval)
+    (S : ∀ n : ℕ, ℕ → SolutionOn (I := I3) (M := U n) (D n))
+    (hS : ∀ n i, IsSolutionOn (S n i))
+    (hslab : ∀ n, Icc (-((n + 1 : ℕ) : ℝ)) 0 ⊆ (D n).carrier)
+    (hreg : ∀ n, Ico (-((n + 1 : ℕ) : ℝ)) 0 ⊆ (D n).regular)
+    (hterminal : ∀ n, MetricCInfConvergenceOnCompacts
+      (fun i => (S n i).base.metric 0)
+      (P.limit.metric.restrictOpen (U n)) (P.limit.metric.restrictOpen (U n)))
+    (hcurv : ∀ n, ∀ K : Set (U n), IsCompact K → ∀ q : ℕ,
+      ∃ C : ℝ, 0 ≤ C ∧ ∀ᶠ i in atTop,
+        ∀ t ∈ Icc (-((n + 1 : ℕ) : ℝ)) 0, ∀ x ∈ K,
+          curvDerivNorm q ((S n i).base.metric t) x ≤ C)
+    (N : ℕ → ℕ)
+    (hsource : ∀ n i, (U n : Set P.limit.M) ⊆
+      (P.maps.partialDiffeomorph (i + N n)).source)
+    (hmetric : ∀ n j t (x : U n) (v w : TangentSpace I3 x),
+      t ∈ Icc (-((n + 1 : ℕ) : ℝ)) 0 →
+      (x : P.limit.M) ∈ (P.maps.partialDiffeomorph (j + N n)).source →
+      ((S n j).base.metric t).inner x v w =
+        ((X.term (P.subseq (j + N n))).S.base.metric t).inner
+          (P.maps.partialDiffeomorph (j + N n) x)
+          (mfderiv I3 I3 (P.maps.partialDiffeomorph (j + N n)) x v)
+          (mfderiv I3 I3 (P.maps.partialDiffeomorph (j + N n)) x w)) :
+    ∃ rho : ℕ → ℕ, StrictMono rho ∧ ∃ G : ℝ → SmoothRiemannianMetric I3 P.limit.M,
+      G 0 = P.limit.metric ∧
+      IsSolutionOn ({ base.metric := G } : SolutionOn (I := I3) (M := P.limit.M)
+        (RealTimeInterval.infiniteClosed 0 0 le_rfl)) ∧
+      ∀ n, ∀ K : Set (U n), IsCompact K → ∀ p : ℕ, ∀ epsilon : ℝ, 0 < epsilon →
+        ∃ j : ℕ, ∀ i ≥ j, ∀ t ∈ Icc (-((n + 1 : ℕ) : ℝ)) 0,
+          metricDerivNormSupOn K p ((S n (rho i - N n)).base.metric t)
+            ((G t).restrictOpen (U n)) (P.limit.metric.restrictOpen (U n)) < epsilon := by
+  obtain ⟨rho, hrho, g, hg0, hgsol, hconv, hoverlap⟩ :=
+    exists_common_solution_subsequence_on_terminal_maps_of_terminal_convergence X P U hpU
+      D S hS (fun n => P.limit.metric.restrictOpen (U n))
+      (fun n => -((n + 1 : ℕ) : ℝ)) (fun _ => 0)
+      (fun n => neg_neg_of_pos (Nat.cast_pos.mpr (Nat.succ_pos n)))
+      hslab hreg hterminal hcurv N hsource hmetric
+  obtain ⟨G, hGsol, hG⟩ := exists_ancient_solution_of_compatible_open_cover
+    U hU hcover g hgsol (fun n m t hn hm =>
+      hoverlap n m (U n ⊓ U m) inf_le_left inf_le_right t hn hm)
+  refine ⟨rho, hrho, G, ?_, hGsol, ?_⟩
+  · apply SmoothRiemannianMetric.ext_inner
+    intro x v w
+    obtain ⟨n, hxn⟩ := hcover x
+    have heq := (hG n 0 ⟨neg_nonpos.mpr (Nat.cast_nonneg _), le_rfl⟩).trans (hg0 n)
+    exact congrArg (fun h : SmoothRiemannianMetric I3 (U n) => h.inner ⟨x, hxn⟩ v w) heq
+  · intro n K hK p epsilon hepsilon
+    obtain ⟨j, hj⟩ := hconv n K hK p epsilon hepsilon
+    refine ⟨j, fun i hi t ht => ?_⟩
+    rw [hG n t ht]
+    exact hj i hi t ht
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

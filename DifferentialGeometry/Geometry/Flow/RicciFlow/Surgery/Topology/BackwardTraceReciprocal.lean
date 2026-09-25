@@ -101,4 +101,39 @@ theorem scalar_le_two_mul_of_time_sub_le
       (metricScalarAt (H.initialMetric first) (A.point first le_rfl hle))))).mp hlower
   exact (le_max_right _ _).trans hup
 
+section
+
+variable {first last : Fin (H.eventCount + 1)} {hle : first ≤ last} {s : ℝ}
+
+theorem inv_max_scalar_initial_sub_incoming_terminal_le
+    (G : (H.stage last).IncomingSlab (H.time last) s) (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time last) = H.initialMetric last)
+    (x : G.terminalRegularOpen) (A : BackwardPointTrace H first last hle x.val)
+    {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hderiv : ∀ j : Fin H.eventCount, ∀ hf : first ≤ j.castSucc, ∀ hl : j.succ ≤ last,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+      q < (H.event j).incoming.flow.scalar t
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) →
+      |derivWithin (fun v => (H.event j).incoming.flow.scalar v
+        (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl))) (Iic t) t| ≤
+        C * (H.event j).incoming.flow.scalar t
+          (A.point j.castSucc hf (j.castSucc_lt_succ.le.trans hl)) ^ 2)
+    (hfinal : ∀ t ∈ Ioo (H.time last) s, q < G.flow.scalar t x.val →
+      |derivWithin (fun v => G.flow.scalar v x.val) (Iic t) t| ≤
+        C * G.flow.scalar t x.val ^ 2) :
+    |(max q (metricScalarAt (H.initialMetric first) (A.point first le_rfl hle)))⁻¹ -
+      (max q (metricScalarAt L.metric x))⁻¹| ≤ C * (s - H.time first) := by
+  have hpast := A.inv_max_scalar_sub_endpoint_le last first hle x.val hq hderiv
+  have htail := L.inv_max_scalar_initial_sub_terminal_le G hq x hfinal
+  change |(max q (metricScalarAt (G.flow.base.metric (H.time last)) x.val))⁻¹ - _| ≤ _ at htail
+  rw [hinit] at htail
+  have htri := abs_sub_le
+    ((max q (metricScalarAt (H.initialMetric first) (A.point first le_rfl hle)))⁻¹)
+    ((max q (metricScalarAt (H.initialMetric last) x.val))⁻¹)
+    ((max q (metricScalarAt L.metric x))⁻¹)
+  nlinarith
+
+
+end
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace

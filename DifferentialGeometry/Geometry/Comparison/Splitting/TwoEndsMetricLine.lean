@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Ends.FiniteEnds
+import DifferentialGeometry.Topology.Ends.ProperMaps
 import DifferentialGeometry.Topology.Ends.EscapingComponent
 import DifferentialGeometry.Geometry.Comparison.Splitting.MetricLineLimit
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
@@ -188,3 +189,32 @@ theorem exists_riemannian_metric_line_of_two_ends (g : SmoothRiemannianMetric I 
 end DifferentialGeometry.Geometry.Topology
 
 end
+
+set_option autoImplicit false
+noncomputable section
+
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry.Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+  [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+  {Y : Type*} [TopologicalSpace Y] [PreconnectedSpace Y] [NoncompactSpace Y]
+
+theorem exists_riemannian_metric_line_of_proper_maps_into_separated_sets
+    (g : SmoothRiemannianMetric I M) (hcomplete : RiemannianMetricComplete (I := I) g)
+    {K A B : Set M} (hK : IsCompact K) (hA : IsOpen A) (hB : IsOpen B)
+    (hdisjoint : Disjoint A B) (hcover : A ∪ B = Kᶜ)
+    (f₀ f₁ : Y → M) (hf₀ : IsProperMap f₀) (hf₁ : IsProperMap f₁) (p₀ p₁ : Y)
+    (h₀ : range f₀ ⊆ A) (h₁ : range f₁ ⊆ B) :
+    ∃ gamma : ℝ → M, ∀ s t : ℝ,
+      riemannianEDistOf (I := I) g (gamma s) (gamma t) = ENNReal.ofReal |s - t| := by
+  exact exists_riemannian_metric_line_of_two_ends g hcomplete
+    (hasAtLeastEnds_two_of_proper_maps_into_separated_sets hK hA hB hdisjoint hcover
+      f₀ f₁ hf₀ hf₁ p₀ p₁ h₀ h₁)
+
+end DifferentialGeometry.Geometry.Topology

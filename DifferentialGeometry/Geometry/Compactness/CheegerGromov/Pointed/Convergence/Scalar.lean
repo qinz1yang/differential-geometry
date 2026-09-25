@@ -511,3 +511,47 @@ theorem exists_pointed_scalar_bound_on_compact
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
 
 end
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+
+open Set Filter DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
+open scoped Manifold ContDiff Topology
+
+universe u uE uH
+variable {E : Type uE} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {X : PointedRiemannianSeq.{u, uE, uH} I}
+  {L : PointedRiemannianManifold.{u, uE, uH} I} {subseq : ℕ → ℕ}
+
+attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianManifold.charted
+  PointedRiemannianManifold.smooth PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
+
+theorem exists_positive_pointed_scalar_bounds_on_compact
+    (Phi : PointedRiemannianConvergenceMaps X L subseq) (C : MetricConvergenceData Phi)
+    (hcanonical : ∀ i, C.domain i = CanonicalMetricCompactness.canonicalSourceData Phi i)
+    (K : Set L.M) (hK : IsCompact K) (hpositive : ∀ x ∈ K, 0 < metricScalarAt L.metric x) :
+    ∃ c B : ℝ, 0 < c ∧ 0 < B ∧ c ≤ B ∧ ∀ᶠ i in atTop,
+      K ⊆ Phi.source i ∧ ∀ x ∈ K,
+        c ≤ metricScalarAt (X.obj (subseq i)).metric (Phi.map i x) ∧
+          metricScalarAt (X.obj (subseq i)).metric (Phi.map i x) ≤ B := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  rcases K.eq_empty_or_nonempty with hKempty | hKne
+  · subst K
+    exact ⟨1,1,zero_lt_one,zero_lt_one,le_rfl,Eventually.of_forall fun _ => by simp⟩
+  obtain ⟨x,hx,hmin⟩ := hK.exists_isMinOn hKne (metricScalar_smooth L.metric).continuous.continuousOn
+  let c := metricScalarAt L.metric x / 2
+  have hc : 0 < c := half_pos (hpositive x hx)
+  obtain ⟨B,hB,hupper⟩ := exists_pointed_scalar_bound_on_compact C hcanonical K hK
+  obtain ⟨j,hj⟩ := pointedScalar_uniform_on_compact_of_canonical_domains C hcanonical K hK c hc
+  refine ⟨c,max c B,hc,lt_max_of_lt_right hB,le_max_left _ _,?_⟩
+  filter_upwards [hupper,eventually_ge_atTop j] with i hi hji
+  refine ⟨hi.1,?_⟩
+  intro y hy
+  have herr := (abs_lt.mp ((hj i hji).2 y hy)).1
+  have hlow : metricScalarAt L.metric x ≤ metricScalarAt L.metric y := hmin hy
+  refine ⟨?_,(le_abs_self _).trans ((hi.2 y hy).trans (le_max_right _ _))⟩
+  dsimp only [c] at *
+  linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

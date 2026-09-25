@@ -1,3 +1,4 @@
+import Mathlib.Topology.Instances.ENNReal.Lemmas
 import Mathlib.Topology.UniformSpace.UniformEmbedding
 import Mathlib.Topology.Order.OrderClosed
 import Mathlib.Topology.MetricSpace.Completion
@@ -219,3 +220,96 @@ theorem dist_lt_dist_add_dist_of_geodesic_avoidance
 
 
 end DifferentialGeometry.Geometry
+
+open scoped ENNReal
+
+namespace Isometry
+
+variable {X : Type*} [PseudoEMetricSpace X] {a b : ℝ} (hab : a < b)
+  {f : Ico a b → X}
+
+theorem not_tendsto_right_endpoint_of_edist_lt (hf : Isometry f) (x : X)
+    (hbound : edist (f ⟨a, le_rfl, hab⟩) x < ENNReal.ofReal (b - a)) : ¬ Tendsto f (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (𝓝 x) := by
+  let l := comap (Subtype.val : Ico a b → ℝ) (𝓝 b)
+  have hmap : NeBot (map (Subtype.val : Ico a b → ℝ) l) := by
+    change NeBot (map (Subtype.val : Ico a b → ℝ)
+      (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)))
+    rw [map_comap_setCoe_val]
+    exact right_nhdsWithin_Ico_neBot hab
+  let _ : NeBot l := hmap.of_map
+  intro ht
+  have hdist : Tendsto (fun t : Ico a b => edist (f ⟨a, le_rfl, hab⟩) (f t)) l
+      (𝓝 (edist (f ⟨a, le_rfl, hab⟩) x)) :=
+    tendsto_const_nhds.edist ht
+  have hreal : Tendsto (fun t : Ico a b => (t : ℝ) - a) l (𝓝 (b - a)) :=
+    tendsto_comap.sub_const a
+  have hdist' : Tendsto (fun t : Ico a b => edist (f ⟨a, le_rfl, hab⟩) (f t)) l
+      (𝓝 (ENNReal.ofReal (b - a))) := by
+    have h := ENNReal.tendsto_ofReal hreal
+    convert h using 1
+    funext t
+    rw [hf.edist_eq]
+    change edist a (t : ℝ) = ENNReal.ofReal ((t : ℝ) - a)
+    rw [edist_dist, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr t.property.1), neg_sub]
+  exact hbound.ne (tendsto_nhds_unique hdist hdist')
+
+end Isometry
+
+namespace Isometry
+
+variable {X : Type*} [PseudoEMetricSpace X] {a b : ℝ} (hab : a < b)
+  {f : Ico a b → X}
+
+theorem tendsto_cocompact_right_endpoint_of_edist_lt (hf : Isometry f)
+    (hbound : ∀ x : X, edist (f ⟨a, le_rfl, hab⟩) x < ENNReal.ofReal (b - a)) :
+    Tendsto f (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (cocompact X) := by
+  let l := comap (Subtype.val : Ico a b → ℝ) (𝓝 b)
+  have hdist : Tendsto (fun t : Ico a b => edist (f ⟨a, le_rfl, hab⟩) (f t)) l
+      (𝓝 (ENNReal.ofReal (b - a))) := by
+    have h := ENNReal.tendsto_ofReal (tendsto_comap.sub_const a :
+      Tendsto (fun t : Ico a b => (t : ℝ) - a) l (𝓝 (b - a)))
+    convert h using 1
+    funext t
+    rw [hf.edist_eq]
+    change edist a (t : ℝ) = ENNReal.ofReal ((t : ℝ) - a)
+    rw [edist_dist, Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr t.property.1), neg_sub]
+  intro S hS
+  change ∀ᶠ t in l, f t ∈ S
+  obtain ⟨K, hK, hKS⟩ := mem_cocompact.mp hS
+  by_cases hne : K.Nonempty
+  · obtain ⟨x, hx, hmax⟩ := hK.exists_isMaxOn hne
+      ((continuous_const.edist continuous_id).continuousOn)
+    filter_upwards [hdist.eventually (Ioi_mem_nhds (hbound x))] with t ht
+    apply hKS
+    intro hmem
+    exact ht.not_ge (hmax hmem)
+  · have hKempty : K = ∅ := not_nonempty_iff_eq_empty.mp hne
+    exact Filter.Eventually.of_forall fun t => hKS (by simp [hKempty])
+
+end Isometry
+
+
+namespace Isometry
+
+variable {X : Type*} [PseudoMetricSpace X] {a b : ℝ} (hab : a < b)
+  {f : Ico a b → X}
+
+theorem exists_completion_right_endpoint_not_mem_range (hf : Isometry f)
+    (hbound : ∀ x : X, edist (f ⟨a, le_rfl, hab⟩) x < ENNReal.ofReal (b - a)) :
+    ∃ q : UniformSpace.Completion X,
+      Tendsto (fun t => (f t : UniformSpace.Completion X))
+        (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (𝓝 q) ∧
+      (∀ t : Ico a b, dist q (f t : UniformSpace.Completion X) = b - t) ∧
+      q ∉ range (fun x : X => (x : UniformSpace.Completion X)) := by
+  obtain ⟨q, hq, hd⟩ := DifferentialGeometry.Geometry.exists_completion_endpoint_of_isometry hab hf
+  refine ⟨q, hq, hd, ?_⟩
+  rintro ⟨x, hx⟩
+  change (x : UniformSpace.Completion X) = q at hx
+  have hfend : Tendsto f (comap (Subtype.val : Ico a b → ℝ) (𝓝 b)) (𝓝 x) := by
+    apply (UniformSpace.Completion.isUniformInducing_coe X).isInducing.tendsto_nhds_iff.mpr
+    change Tendsto (fun t => (f t : UniformSpace.Completion X)) _ (𝓝 (x : UniformSpace.Completion X))
+    rw [hx]
+    exact hq
+  exact hf.not_tendsto_right_endpoint_of_edist_lt hab x (hbound x) hfend
+
+end Isometry

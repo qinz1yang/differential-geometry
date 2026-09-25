@@ -10,7 +10,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Set DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
   {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]

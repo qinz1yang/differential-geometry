@@ -146,4 +146,21 @@ theorem neg_le_max_of_mem_fixedHamiltonIveyRegion
     nlinarith
   exact (hlin.trans (hbar.trans hR)).trans (le_max_left _ _)
 
+theorem fixedHamiltonIveyRegion_antitoneOn :
+    AntitoneOn fixedHamiltonIveyRegion (Set.Ioi (0 : ℝ)) := by
+  intro a ha b _ hab p hp
+  rcases le_or_gt 0 p.2 with hν | hν
+  · exact Or.inl hν
+  have hbar : fixedHamiltonIveyBarrier b (-p.2) ≤ p.1 := by
+    rcases hp with hn | hb
+    · exact (not_le.mpr hν hn).elim
+    · exact hb
+  apply Or.inr
+  apply le_trans _ hbar
+  unfold fixedHamiltonIveyBarrier
+  apply mul_le_mul_of_nonneg_left _ (neg_pos.mpr hν).le
+  apply sub_le_sub_right
+  exact Real.log_le_log (mul_pos ha (neg_pos.mpr hν))
+    (mul_le_mul_of_nonneg_right hab (neg_pos.mpr hν).le)
+
 end DifferentialGeometry.Geometry.Curvature

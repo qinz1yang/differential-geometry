@@ -38,41 +38,20 @@ theorem isClopen_preimage_of_boundary_collar
       exact hneg (e.symm y.val) hsrc hn
     · exact False.elim ((he ▸ hpos (e.symm y.val) hsrc hp) y.property)
 
-private theorem connectedComponent_eq_preimage_of_boundary_collar
-    {K S : Set X} (hK : IsClosed K) (hc : IsPreconnected K) (hKS : K ⊆ S)
-    (e : OpenPartialHomeomorph (B × ℝ) X)
-    (hfront : frontier K ⊆ e.target)
-    (hneg : ∀ p ∈ e.source, p.2 ≤ 0 → e p ∈ K)
-    (hpos : ∀ p ∈ e.source, 0 < p.2 → e p ∉ S)
-    (x : S) (hx : x.val ∈ K) :
-    connectedComponent x = (Subtype.val : S → X) ⁻¹' K := by
-  have hcl := isClopen_preimage_of_boundary_collar hK e hfront hneg hpos
-  have hpre : IsPreconnected ((Subtype.val : S → X) ⁻¹' K) := by
-    apply _root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mp
-    rwa [Subtype.image_preimage_coe, inter_eq_right.mpr hKS]
-  exact Set.Subset.antisymm (hcl.connectedComponent_subset hx)
-    (hpre.subset_connectedComponent hx)
-
-
-theorem connectedComponent_eq_preimage_of_outward_collar
+theorem isClopen_preimage_of_outward_collar
     [PreconnectedSpace B] {K S : Set X}
-    (hregular : closure (interior K) = K) (hconn : IsPreconnected K) (hcore : K ⊆ S)
+    (hregular : closure (interior K) = K)
     (e : OpenPartialHomeomorph (B × ℝ) X)
     {r : ℝ} (hr : 0 < r) (hsource : univ ×ˢ Ioo (-r) r ⊆ e.source)
     (hfront : frontier K = range (fun z : B => e (z, 0)))
-    (hpos : ∀ z : B, ∀ t ∈ Ioo (0 : ℝ) r, e (z, t) ∉ S)
-    (x : S) (hx : x.val ∈ K) :
-    connectedComponent x = (Subtype.val : S → X) ⁻¹' K := by
+    (hpos : ∀ z : B, ∀ t ∈ Ioo (0 : ℝ) r, e (z, t) ∉ K ∪ S) :
+    IsClopen ((Subtype.val : S → X) ⁻¹' K) := by
   cases isEmpty_or_nonempty B with
   | inl h =>
     let _ : IsEmpty B := h
-    have hcl : IsClopen ((Subtype.val : S → X) ⁻¹' K) :=
-      (isClopen_iff_frontier_eq_empty.mpr (hfront.trans (by ext y; exact ⟨fun ⟨z, _⟩ => h.false z, False.elim⟩))).preimage continuous_subtype_val
-    have hpre : IsPreconnected ((Subtype.val : S → X) ⁻¹' K) := by
-      apply _root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mp
-      rwa [Subtype.image_preimage_coe, inter_eq_right.mpr hcore]
-    exact Set.Subset.antisymm (hcl.connectedComponent_subset hx)
-      (hpre.subset_connectedComponent hx)
+    exact (isClopen_iff_frontier_eq_empty.mpr
+      (hfront.trans (by ext y; exact ⟨fun ⟨z, _⟩ => h.false z, False.elim⟩))).preimage
+        continuous_subtype_val
   | inr h =>
     let _ : Nonempty B := h
     have hclosed : IsClosed K := hregular ▸ isClosed_closure
@@ -81,9 +60,9 @@ theorem connectedComponent_eq_preimage_of_outward_collar
       obtain h | h := exists_cylinder_orientation_of_frontier_eq
         e hr hsource hregular hfront
       · exact (h z t ht).2
-      · exact False.elim (hpos z t ht (hcore (interior_subset (h z t ht).2)))
+      · exact False.elim (hpos z t ht (Or.inl (interior_subset (h z t ht).2)))
     let f := e.restrOpen (univ ×ˢ Ioo (-r) r) (isOpen_univ.prod isOpen_Ioo)
-    apply connectedComponent_eq_preimage_of_boundary_collar hclosed hconn hcore f _ _ _ x hx
+    apply isClopen_preimage_of_boundary_collar hclosed f _ _ _
     · rw [hfront]
       rintro _ ⟨z, rfl⟩
       apply f.map_source
@@ -99,6 +78,23 @@ theorem connectedComponent_eq_preimage_of_outward_collar
       · exact hclosed.frontier_subset (hfront.symm ▸ mem_range_self z)
     · rintro ⟨z, t⟩ hp ht
       change (z, t) ∈ e.source ∩ (univ ×ˢ Ioo (-r) r) at hp
-      exact hpos z t ⟨ht, hp.2.2.2⟩
+      exact fun hy => hpos z t ⟨ht, hp.2.2.2⟩ (Or.inr hy)
+
+
+theorem connectedComponent_eq_preimage_of_outward_collar
+    [PreconnectedSpace B] {K S : Set X}
+    (hregular : closure (interior K) = K) (hconn : IsPreconnected K) (hcore : K ⊆ S)
+    (e : OpenPartialHomeomorph (B × ℝ) X)
+    {r : ℝ} (hr : 0 < r) (hsource : univ ×ˢ Ioo (-r) r ⊆ e.source)
+    (hfront : frontier K = range (fun z : B => e (z, 0)))
+    (hpos : ∀ z : B, ∀ t ∈ Ioo (0 : ℝ) r, e (z, t) ∉ S)
+    (x : S) (hx : x.val ∈ K) :
+    connectedComponent x = (Subtype.val : S → X) ⁻¹' K := by
+  have hcl := isClopen_preimage_of_outward_collar hregular e hr hsource hfront
+    (fun z t ht hy => hpos z t ht (hy.elim (fun h => hcore h) id))
+  have hpre : IsPreconnected ((Subtype.val : S → X) ⁻¹' K) := by
+    apply _root_.Topology.IsInducing.subtypeVal.isPreconnected_image.mp
+    rwa [Subtype.image_preimage_coe, inter_eq_right.mpr hcore]
+  exact Subset.antisymm (hcl.connectedComponent_subset hx) (hpre.subset_connectedComponent hx)
 
 end DifferentialGeometry.Topology

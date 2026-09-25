@@ -402,6 +402,25 @@ theorem congrParameters_neck_heq {p q : CutoffParameters} (R : GeometricCutoffRe
   cases hrecenter
   rfl
 
+theorem congrParameters_static_heq {p q : CutoffParameters} (R : GeometricCutoffRecord H i p)
+    (hdelta : p.delta (H.time i.succ) = q.delta (H.time i.succ))
+    (hneck : p.neckRadius (H.time i.succ) = q.neckRadius (H.time i.succ))
+    (hprotected : p.protectedRadius (H.time i.succ) = q.protectedRadius (H.time i.succ))
+    (hfixed : p.fixed = q.fixed) (hradius : p.modelRadius = q.modelRadius)
+    (horder : p.modelOrder = q.modelOrder) (haccuracy : p.modelAccuracy = q.modelAccuracy)
+    (hrecenter : p.recenterConstant = q.recenterConstant) :
+    HEq (R.congrParameters hdelta hneck hprotected hfixed hradius horder haccuracy hrecenter).static
+      R.static := by
+  cases p
+  cases q
+  cases hfixed
+  cases hradius
+  cases horder
+  cases haccuracy
+  cases hrecenter
+  rfl
+
+
 end GeometricCutoffRecord
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
@@ -459,6 +478,37 @@ def spliceParametersAt {p q : CutoffParameters} (R : GeometricCutoffRecord H i q
     (p.spliceAt_neckRadius_self q _).symm (p.spliceAt_protectedRadius_self q _).symm
     hfixed hradius horder haccuracy hrecenter
 
+
+@[simp] theorem spliceParametersOfNe_static {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i p) {s : ℝ} (hs : H.time i.succ ≠ s) :
+    (R.spliceParametersOfNe (q := q) hs).static = R.static := by
+  exact eq_of_heq (R.congrParameters_static_heq _ _ _ _ _ _ _ _)
+
+theorem spliceParametersOfNe_static_heq {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i p) {s : ℝ} (hs : H.time i.succ ≠ s) :
+    HEq (R.spliceParametersOfNe (q := q) hs).static R.static :=
+  heq_of_eq (R.spliceParametersOfNe_static hs)
+
+theorem spliceParametersAt_static_heq {p q : CutoffParameters} (R : GeometricCutoffRecord H i q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    HEq (R.spliceParametersAt hfixed hradius horder haccuracy hrecenter).static R.static := by
+  exact R.congrParameters_static_heq _ _ _ _ _ _ _ _
+
+theorem spliceParametersOfNe_neck_heq {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i p) {s : ℝ} (hs : H.time i.succ ≠ s) :
+    HEq (R.spliceParametersOfNe (q := q) hs).neck R.neck := by
+  exact R.congrParameters_neck_heq _ _ _ _ _ _ _ _
+
+theorem spliceParametersAt_neck_heq {p q : CutoffParameters} (R : GeometricCutoffRecord H i q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    HEq (R.spliceParametersAt hfixed hradius horder haccuracy hrecenter).neck R.neck := by
+  exact R.congrParameters_neck_heq _ _ _ _ _ _ _ _
+
+
 def spliceParametersAtEvent {p q : CutoffParameters} (j : Fin H.eventCount)
     (old : ∀ i : Fin H.eventCount, i ≠ j → GeometricCutoffRecord H i p)
     (new : GeometricCutoffRecord H j q)
@@ -493,3 +543,41 @@ def spliceEarlierRecords
 
 end CutoffParameters
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
+
+universe u
+
+variable {H : ObservedHistory.{u}} {i : Fin H.eventCount}
+
+@[simp] theorem spliceParametersOfNe_delta {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i p) {s : ℝ} (hs : H.time i.succ ≠ s) :
+    (R.spliceParametersOfNe (q := q) hs).delta = R.delta := by
+  unfold spliceParametersOfNe
+  apply congrParameters_delta
+
+@[simp] theorem spliceParametersOfNe_order {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i p) {s : ℝ} (hs : H.time i.succ ≠ s) :
+    (R.spliceParametersOfNe (q := q) hs).order = R.order := by
+  unfold spliceParametersOfNe
+  apply congrParameters_order
+
+@[simp] theorem spliceParametersAt_delta {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    (R.spliceParametersAt hfixed hradius horder haccuracy hrecenter).delta = R.delta := by
+  unfold spliceParametersAt
+  apply congrParameters_delta
+
+@[simp] theorem spliceParametersAt_order {p q : CutoffParameters}
+    (R : GeometricCutoffRecord H i q)
+    (hfixed : q.fixed = p.fixed) (hradius : q.modelRadius = p.modelRadius)
+    (horder : q.modelOrder = p.modelOrder) (haccuracy : q.modelAccuracy = p.modelAccuracy)
+    (hrecenter : q.recenterConstant = p.recenterConstant) :
+    (R.spliceParametersAt hfixed hradius horder haccuracy hrecenter).order = R.order := by
+  unfold spliceParametersAt
+  apply congrParameters_order
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
