@@ -390,3 +390,75 @@ theorem regularizedCost_eq_of_minimal_of_compact_barrier
   exact ⟨z, hz⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff ENNReal BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u}) {X : Type u} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
+  [IsManifold ThreeModel ∞ X] [T2Space X]
+
+theorem exists_regularizedCost_minimum_of_action_lt_compact_barrier
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (f : (j : H.StageInterval first last) → X → (H.stage j.val).Carrier)
+    (hf : ∀ j, IsLocalDiffeomorph ThreeModel ThreeModel ∞ (f j))
+    (hinj : ∀ j, Function.Injective (f j)) (K : Set X) (hK : IsCompact K)
+    (hcross : ∀ (i : Fin H.eventCount) (hi : first ≤ i.castSucc) (hl : i.succ ≤ last), ∀ z : X,
+      (H.event i).RegularCrossing (f ⟨i.castSucc, hi, i.castSucc_le_succ.trans hl⟩ z)
+        (f ⟨i.succ, hi.trans i.castSucc_le_succ, hl⟩ z))
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hlower : T - v ^ 2 ∈ H.stageDomain first)
+    {D : RealTimeInterval} (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (hreg : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.regular)
+    (g : SmoothRiemannianMetric ThreeModel X) {μ B r : ℝ} (hμ : 0 ≤ μ) (hr : 0 < r)
+    (hmetric : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      S.base.metric (T - t ^ 2) = localPullMetric (H.stageMetric j.val (T - t ^ 2)) (f j) (hf j))
+    (hcompare : ∀ t ∈ Ioo u v, ∀ z ∈ K, ∀ w : TangentSpace ThreeModel z,
+      μ * g.inner z w w ≤ (S.base.metric (T - t ^ 2)).inner z w w)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      ∀ z : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) z)
+    (x : X) (hx : x ∈ interior K)
+    (hfront : ∀ z ∈ frontier K, ENNReal.ofReal r ≤ riemannianEDistOf g x z)
+    (y : X) (γ : ℝ → X) (hγ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 γ)
+    (hstart : γ u = x) (hend : γ v = y)
+    (hact : lRegularizedAction S T γ u v <
+      μ * r ^ 2 / (2 * (v - u)) - (2 * B / 3) * (v ^ 3 - u ^ 3)) :
+    ∃ η : ℝ → X, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 η ∧ η u = x ∧ η v = y ∧
+      MapsTo η (Icc u v) K ∧ lRegularizedAction S T η u v ≤ lRegularizedAction S T γ u v ∧
+      (lRegularizedAction S T η u v : WithTop ℝ) ∈ H.regularizedActionValues first last hle T B u v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ y) ∧
+      H.regularizedCost first last hle T B u v
+        (f ⟨last, hle, le_rfl⟩ x) (f ⟨first, le_rfl, hle⟩ y) = (lRegularizedAction S T η u v : WithTop ℝ) := by
+  have hupper' : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) :=
+    ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩
+  have htime : ∀ t ∈ Icc u v, T - t ^ 2 ∈ D.carrier :=
+    fun t ht => D.regular_subset (hreg t ht)
+  obtain ⟨η, hη, hηu, hηv, hηK, hηact, hmin⟩ :=
+    H.exists_lRegularizedMinC1_of_action_lt_history_escape_barrier first last hle f hf hinj K hK hcross
+      hu huv hupper' hlower S hS hreg g hμ hr hmetric hcompare
+      (fun j t ht z => hscalar j t ht (f j z)) x hx hfront y γ hγ hstart hend hact
+  refine ⟨η, hη, hηu, hηv, hηK, hηact, ?_, ?_⟩
+  · have hmem := H.coe_mem_regularizedActionValues_of_mem_regularizedC1ActionValues first last hle hscalar
+      (f ⟨last, hle, le_rfl⟩ (η u)) (f ⟨first, le_rfl, hle⟩ (η v))
+      (H.action_mem_regularizedC1ActionValues_of_common_curve first last hle f hf hcross S hS T
+        hu huv.le hupper' hlower htime hmetric η hη)
+    simpa only [hηu, hηv] using hmem
+  · have heq := H.regularizedCost_eq_of_minimal_of_compact_barrier first last hle f hf hinj K hK hcross
+      S hS g hu huv.le hμ hr hupper hlower htime hmetric hcompare hscalar η hη
+      (fun δ hδ hδu hδv => hmin δ hδ (hδu.trans hηu) (hδv.trans hηv))
+      (hηu.symm ▸ hx) (by simpa only [hηu] using hfront) (hηact.trans hact.le)
+    simpa only [hηu, hηv] using heq
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
