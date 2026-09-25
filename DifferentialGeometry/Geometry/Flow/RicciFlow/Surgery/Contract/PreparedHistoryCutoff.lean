@@ -630,6 +630,158 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
     SigmaCompactSpace G.terminalRegularOpen := isSigmaCompact_iff_sigmaCompactSpace.mp
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
+theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
+    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
+    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
+    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
+    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
+    ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
+    ∀ q0 : ℝ, 0 < q0 →
+    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
+    ∀ Λmax coreFloor : ℝ, 1 ≤ Λmax → 0 < coreFloor → ∀ Qlower : ℝ,
+    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Qmin ≤ Q ∧ Qlower < Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
+    ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
+      ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
+    ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      H.time (Fin.last H.eventCount) = H.horizon →
+    ∀ ρold : ℝ, H.hasCanonicalCutoffRecords p₀ δold ρold →
+    ∀ (s : ℝ) (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
+      (L : G.TerminalLimitMetric) (hsing : G.SingularEndpoint)
+      (stepParameters : CutoffParameters),
+    G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount) →
+    let D : OneStepIncoming := {
+      stage := H.stage (Fin.last H.eventCount)
+      startTime := H.time (Fin.last H.eventCount)
+      endTime := s
+      startTime_nonneg := H.toHistory.time_nonneg (Fin.last H.eventCount)
+      startTime_lt_endTime := G.lt
+      slab := G
+      terminal := L
+      singular := hsing
+      parameters := stepParameters }
+    (∀ j : Fin H.eventCount, ∀ y : (H.stage j.castSucc).Carrier,
+      ∀ t ∈ Ioo (H.time j.castSucc) (H.time j.succ),
+        q0 < (H.toHistory.event j).incoming.flow.scalar t y →
+        |derivWithin (fun v => (H.toHistory.event j).incoming.flow.scalar v y) (Iic t) t| ≤
+          Ctime * (H.toHistory.event j).incoming.flow.scalar t y ^ 2) →
+    (∀ y, ∀ t ∈ Ioo (H.time (Fin.last H.eventCount)) s, q0 < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2) →
+    ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
+      Λ ≤ Λmax → coreFloor ≤ P.coreRadius →
+      ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
+        (hOld : E.old = E.transition.trace.retainedCore)
+        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (i : Fin K.eventCount) (parameters : CutoffParameters)
+        (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
+        (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
+          (δOriginal j) (kOriginal j))
+        (hδOriginal : ∀ j, δOriginal j ≤ δ)
+        (rotation : Fin n → ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)
+        (hmark : ∀ j, DifferentialGeometry.Geometry.sphereDiffeo (n := 2) (rotation j)
+          spherePoint = (NOriginal j).sphereMark)
+        (side : Fin n → Bool)
+        (horder : ∀ j, max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4) ≤ kOriginal j)
+        (hδ1 : δ < 1)
+        (Nrecord : (K.toHistory.event i).transition.trace.tubes.Index →
+          NormalizedNeck (K.toHistory.event i).terminal.metric δ
+            (max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)))
+        (eOriginal : Fin n ≃ (K.toHistory.event i).transition.trace.tubes.Index),
+        0 < Q ∧ E.incoming = D.slab ∧ HEq E.terminal D.terminal ∧
+        E.transition.boundaryFrameReversing ∧
+        initial.IsPrefixOf initialK ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
+        K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
+        HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
+        i.val = H.eventCount ∧ K.stage i.castSucc = D.stage ∧ K.time i.castSucc = D.startTime ∧
+        K.stage i.succ = Qout ∧ K.time i.succ = D.endTime ∧
+        HEq (K.coreEvent i) (E.toRetainedCoreEvent hOld) ∧
+        (∃ (Eappend : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qout
+            (H.time (Fin.last H.eventCount)) D.endTime)
+          (hOldAppend : Eappend.old = Eappend.transition.trace.retainedCore)
+          (hInitial : Eappend.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+            H.initialMetric (Fin.last H.eventCount)),
+          HEq Eappend E ∧ K = H.appendEvent Eappend.incoming.lt
+            (Eappend.toRetainedCoreEvent hOldAppend) hInitial) ∧
+        parameters.delta = (fun _ => δ) ∧ parameters.protectedRadius = (fun _ => P.coreRadius) ∧
+        parameters.neckRadius = (fun _ => D.parameters.neckRadius D.endTime) ∧
+        parameters.fixed = fixed ∧ parameters.recenterConstant = recenterConstant ∧
+        parameters.modelOrder = m ∧ parameters.modelRadius = Dbig ∧ parameters.modelAccuracy = accuracy ∧
+        (∀ x : E.incoming.terminalRegularOpen,
+          metricScalarAt E.terminal.metric x ≤ ((parameters.protectedRadius D.endTime) ^ 2)⁻¹ →
+          x.val ∈ interior (Subtype.val '' E.old)) ∧
+        (∀ c : ConnectedComponents E.transition.trace.tubes.core,
+          (∃ x : E.transition.trace.tubes.core,
+            ConnectedComponents.mk x = c ∧ x ∈ E.transition.trace.retainedCore) →
+          ∃ x : E.incoming.terminalRegularOpen,
+            ∃ hx : x.val ∈ E.transition.trace.tubes.core,
+              ConnectedComponents.mk ⟨x.val, hx⟩ = c ∧ metricScalarAt E.terminal.metric x ≤
+                ((parameters.protectedRadius D.endTime) ^ 2)⁻¹) ∧
+        (∀ j, (NOriginal j).scale = Q) ∧
+        (∀ j, δOriginal j ≤ 2 * ε ∧ ⌊ε⁻¹⌋₊ + 1 ≤ kOriginal j) ∧
+        (∀ j, Nrecord (eOriginal j) =
+          (((NOriginal j).monoDelta (hδOriginal j) hδ1).rotatedDatum
+            (rotation j) (hmark j) (side j)).oriented.toNormalizedNeck.lowerOrder (horder j)) ∧
+        (∀ j (z : TubeDomain) (hz : (z.1, z.2.val) ∈ neckBuffer δ),
+          (K.toHistory.event i).transition.trace.tubes.tube j z =
+            ((Nrecord j).chart ⟨(z.1, z.2.val), hz⟩).val) ∧
+        (∃ Record : GeometricCutoffRecord K.toHistory i parameters,
+          Record.delta = (fun _ => δ) ∧
+          Record.order = (fun _ => max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)) ∧
+          HEq Record.neck Nrecord ∧ (∀ j, (Record.neck j).scale = Q) ∧
+          (∀ b, (Record.static b).hasCanonicalWindow)) ∧
+        (∃ Kvol : Set D.slab.terminalRegularOpen, IsCompact Kvol ∧
+          riemannianVolumeMeasure ThreeModel Qout.Carrier E.outputMetric univ + ENNReal.ofReal
+            ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
+          riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
+        (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
+  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
+    exists_horn_cutoff_record_at_scale_of_initialIdentification
+      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
+  intro m accuracy haccuracy ηrecord hηrecord q0 hq0
+  obtain ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, hmake⟩ :=
+    hfactory m accuracy haccuracy ηrecord hηrecord q0 hq0
+  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
+  intro Λmax coreFloor hΛmax hcoreFloor Qlower
+  let coreBound := 2 * Λmax * (coreFloor ^ 2)⁻¹
+  let neckBound := ((δ ^ 2 * coreFloor) ^ 2)⁻¹
+  let Q := max (max Qmin Qlower) (max coreBound neckBound) + 1
+  let v := Q ^ (-3 / 2 : ℝ)
+  have hQlarge : Qmin < Q := ((le_max_left _ _).trans (le_max_left _ _)).trans_lt (lt_add_one _)
+  have hQlower : Qlower < Q := ((le_max_right _ _).trans (le_max_left _ _)).trans_lt (lt_add_one _)
+  have hQ : 0 < Q := hQmin.trans hQlarge
+  have hcoreBound : coreBound < Q :=
+    ((le_max_left _ _).trans (le_max_right _ _)).trans_lt (lt_add_one _)
+  have hneckBound : neckBound < Q :=
+    ((le_max_right _ _).trans (le_max_right _ _)).trans_lt (lt_add_one _)
+  refine ⟨Q, v, hQ, Real.rpow_pos_of_pos hQ _, hQlarge.le, hQlower, rfl, ?_⟩
+  intro p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
+    hderiv hfinal ε Λ P hε hΛ hcore
+  have hs : 0 ≤ D.endTime := D.startTime_nonneg.trans D.startTime_lt_endTime.le
+  have hneck : coreFloor ≤ D.parameters.neckRadius D.endTime := by
+    have hdelta_lt := D.parameters.delta_lt_one D.endTime hs
+    have hneckpos := D.parameters.neckRadius_pos D.endTime hs
+    have hcoreEq := P.coreRadius_eq
+    nlinarith
+  have hcoreInv : (P.coreRadius ^ 2)⁻¹ ≤ (coreFloor ^ 2)⁻¹ :=
+    inv_anti₀ (sq_pos_of_pos hcoreFloor) (by nlinarith [P.coreRadius_pos])
+  have hbase : 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q := by
+    apply lt_of_le_of_lt ?_ hcoreBound
+    apply mul_le_mul (by linarith : 2 * Λ ≤ 2 * Λmax) hcoreInv
+    · exact inv_nonneg.mpr (sq_nonneg _)
+    · linarith
+  have hproduct : 0 < δ ^ 2 * coreFloor := mul_pos (sq_pos_of_pos hδ) hcoreFloor
+  have hproduct_le : δ ^ 2 * coreFloor ≤ δ ^ 2 * D.parameters.neckRadius D.endTime :=
+    mul_le_mul_of_nonneg_left hneck (sq_nonneg δ)
+  have hnominal : ((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹ < Q := by
+    apply lt_of_le_of_lt ?_ hneckBound
+    exact inv_anti₀ (sq_pos_of_pos hproduct) (by nlinarith)
+  exact hmake p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit
+    hderiv hfinal P hε Q hbase hnominal hQlarge.le
+
+
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_core_radius_lower_bound
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
     (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
@@ -737,7 +889,7 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentifica
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
   obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
-    exists_horn_cutoff_record_at_scale_of_initialIdentification
+    exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
       P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
   refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
   intro m accuracy haccuracy ηrecord hηrecord q0 hq0
@@ -745,40 +897,8 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentifica
     hfactory m accuracy haccuracy ηrecord hηrecord q0 hq0
   refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
   intro Λmax coreFloor hΛmax hcoreFloor
-  let coreBound := 2 * Λmax * (coreFloor ^ 2)⁻¹
-  let neckBound := ((δ ^ 2 * coreFloor) ^ 2)⁻¹
-  let Q := max Qmin (max coreBound neckBound) + 1
-  let v := Q ^ (-3 / 2 : ℝ)
-  have hQlarge : Qmin < Q := (le_max_left _ _).trans_lt (lt_add_one _)
-  have hQ : 0 < Q := hQmin.trans hQlarge
-  have hcoreBound : coreBound < Q :=
-    ((le_max_left _ _).trans (le_max_right _ _)).trans_lt (lt_add_one _)
-  have hneckBound : neckBound < Q :=
-    ((le_max_right _ _).trans (le_max_right _ _)).trans_lt (lt_add_one _)
-  refine ⟨Q, v, hQ, Real.rpow_pos_of_pos hQ _, hQlarge.le, rfl, ?_⟩
-  intro p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
-    hderiv hfinal ε Λ P hε hΛ hcore
-  have hs : 0 ≤ D.endTime := D.startTime_nonneg.trans D.startTime_lt_endTime.le
-  have hneck : coreFloor ≤ D.parameters.neckRadius D.endTime := by
-    have hdelta_lt := D.parameters.delta_lt_one D.endTime hs
-    have hneckpos := D.parameters.neckRadius_pos D.endTime hs
-    have hcoreEq := P.coreRadius_eq
-    nlinarith
-  have hcoreInv : (P.coreRadius ^ 2)⁻¹ ≤ (coreFloor ^ 2)⁻¹ :=
-    inv_anti₀ (sq_pos_of_pos hcoreFloor) (by nlinarith [P.coreRadius_pos])
-  have hbase : 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q := by
-    apply lt_of_le_of_lt ?_ hcoreBound
-    apply mul_le_mul (by linarith : 2 * Λ ≤ 2 * Λmax) hcoreInv
-    · exact inv_nonneg.mpr (sq_nonneg _)
-    · linarith
-  have hproduct : 0 < δ ^ 2 * coreFloor := mul_pos (sq_pos_of_pos hδ) hcoreFloor
-  have hproduct_le : δ ^ 2 * coreFloor ≤ δ ^ 2 * D.parameters.neckRadius D.endTime :=
-    mul_le_mul_of_nonneg_left hneck (sq_nonneg δ)
-  have hnominal : ((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹ < Q := by
-    apply lt_of_le_of_lt ?_ hneckBound
-    exact inv_anti₀ (sq_pos_of_pos hproduct) (by nlinarith)
-  exact hmake p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit
-    hderiv hfinal P hε Q hbase hnominal hQlarge.le
+  obtain ⟨Q, v, hQ, hv, hQmin, _, hvQ, hmake⟩ := hmake Λmax coreFloor hΛmax hcoreFloor 0
+  exact ⟨Q, v, hQ, hv, hQmin, hvQ, hmake⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
