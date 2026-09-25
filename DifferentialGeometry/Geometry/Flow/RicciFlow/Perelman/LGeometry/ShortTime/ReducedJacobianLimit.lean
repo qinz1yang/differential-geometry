@@ -278,14 +278,14 @@ variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [Finit
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem lReducedJacobian_le_gaussian_at_minimizing_time_of_bdd
+omit [NeZero (Module.finrank ℝ E)] in
+theorem tendsto_lReducedJacobian_left_of_bdd
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
     {Z : TangentSpace I x} {tau : ℝ} (hmin : (Z, tau) ∈ lMinDomain S T x)
     (hnconj : ¬ IsLConjugate S T x Z tau)
     (hbdd : BddBelow {a : ℝ | ∃ γ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧
       γ (Real.sqrt tau) = lExp S T x Z tau ∧ lRegularizedAction S T γ 0 (Real.sqrt tau) = a}) :
-    lReducedJacobian S T x Z tau ≤ ((Real.pi : ℝ) ^ ((Module.finrank ℝ E : ℝ) / 2))⁻¹ *
-      Real.exp (-(S.base.metric T).inner x Z Z) := by
+    Tendsto (lReducedJacobian S T x Z) (𝓝[<] tau) (𝓝 (lReducedJacobian S T x Z tau)) := by
   have hdom := ((mem_lMinDomain S T x Z tau).mp hmin).1
   have htau : 0 < tau := lMinDomain_pos S T x Z tau hmin
   let F : ℝ → ℝ := fun s => Real.exp (Real.log (lExpJacobian S T x Z s) -
@@ -308,12 +308,43 @@ theorem lReducedJacobian_le_gaussian_at_minimizing_time_of_bdd
     rw [lLength_squareRootReparametrization_eq_lRegularizedAction S T _ s hs.le] at hc
     simp only [F, lReducedJacobian, lRedLog, redLength, hc]
   have hlim : Tendsto F (𝓝[<] tau) (𝓝 (F tau)) := hF.tendsto.mono_left nhdsWithin_le_nhds
-  have hbound : ∀ᶠ s in 𝓝[<] tau, F s ≤ ((Real.pi : ℝ) ^ ((Module.finrank ℝ E : ℝ) / 2))⁻¹ *
-      Real.exp (-(S.base.metric T).inner x Z Z) := by
+  have hevent : F =ᶠ[𝓝[<] tau] lReducedJacobian S T x Z := by
     filter_upwards [self_mem_nhdsWithin, (eventually_gt_nhds htau).filter_mono nhdsWithin_le_nhds] with s hs hsp
-    rw [heq s hsp hs.le]
-    exact lReducedJacobian_le_gaussian_of_bdd S hS T x hmin hsp hs hbdd
-  simpa only [heq tau htau le_rfl] using le_of_tendsto hlim hbound
+    exact heq s hsp hs.le
+  rw [heq tau htau le_rfl] at hlim
+  exact hlim.congr' hevent
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lReducedJacobian_le_of_le_minimizing_time_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {Z : TangentSpace I x} {σ τ : ℝ} (hmin : (Z, σ) ∈ lMinDomain S T x)
+    (hnconj : ¬ IsLConjugate S T x Z σ) (hτ : 0 < τ) (hτσ : τ ≤ σ)
+    (hbdd : BddBelow {a : ℝ | ∃ γ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧
+      γ (Real.sqrt σ) = lExp S T x Z σ ∧ lRegularizedAction S T γ 0 (Real.sqrt σ) = a}) :
+    lReducedJacobian S T x Z σ ≤ lReducedJacobian S T x Z τ := by
+  rcases hτσ.eq_or_lt with rfl | hlt
+  · exact le_rfl
+  have hlim := tendsto_lReducedJacobian_left_of_bdd S hS T x hmin hnconj hbdd
+  apply le_of_tendsto hlim
+  filter_upwards [self_mem_nhdsWithin, (eventually_gt_nhds hlt).filter_mono nhdsWithin_le_nhds] with s hs hts
+  exact lRedJac_antitoneOn_of_bdd S hS T x hmin hbdd ⟨hτ, hlt⟩ ⟨hτ.trans hts, hs⟩ hts.le
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem lReducedJacobian_le_gaussian_at_minimizing_time_of_bdd
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {Z : TangentSpace I x} {tau : ℝ} (hmin : (Z, tau) ∈ lMinDomain S T x)
+    (hnconj : ¬ IsLConjugate S T x Z tau)
+    (hbdd : BddBelow {a : ℝ | ∃ γ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧
+      γ (Real.sqrt tau) = lExp S T x Z tau ∧ lRegularizedAction S T γ 0 (Real.sqrt tau) = a}) :
+    lReducedJacobian S T x Z tau ≤ ((Real.pi : ℝ) ^ ((Module.finrank ℝ E : ℝ) / 2))⁻¹ *
+      Real.exp (-(S.base.metric T).inner x Z Z) := by
+  have htau : 0 < tau := lMinDomain_pos S T x Z tau hmin
+  apply le_of_tendsto (tendsto_lReducedJacobian_left_of_bdd S hS T x hmin hnconj hbdd)
+  filter_upwards [self_mem_nhdsWithin, (eventually_gt_nhds htau).filter_mono nhdsWithin_le_nhds] with s hs hsp
+  exact lReducedJacobian_le_gaussian_of_bdd S hS T x hmin hsp hs hbdd
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 end

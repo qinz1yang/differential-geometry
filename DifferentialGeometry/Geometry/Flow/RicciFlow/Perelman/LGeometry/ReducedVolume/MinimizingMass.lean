@@ -693,3 +693,96 @@ theorem lintegral_redDensity_le_one_of_compact_action_sublevel
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
 end
+
+noncomputable section
+open Set Filter Bundle MeasureTheory
+open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
+open DifferentialGeometry.PDE.RicciFlow
+open scoped Manifold ContDiff ENNReal Topology
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+ [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+ [PseudoMetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M] [SigmaCompactSpace M] {D : RealTimeInterval}
+private local instance : MeasurableSpace E := borel E
+private local instance : BorelSpace E := ⟨rfl⟩
+private local instance : MeasurableSpace M := borel M
+private local instance : BorelSpace M := ⟨rfl⟩
+
+theorem lintegral_redDensity_image_lExp_le_volume_add_gaussian_tail
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ) (x : M)
+    {σ τ : ℝ} (hτ : 0 < τ) (hτσ : τ < σ)
+    {U A : Set E} (hU : IsOpen U) (hA : MeasurableSet A) (hAU : A ⊆ U)
+    (hmin : ∀ Z ∈ U, (Z, σ) ∈ lMinDomain S T x)
+    (hnconj : ∀ Z ∈ U, ¬ IsLConjugate S T x Z σ)
+    (hinj : InjOn (fun Z : E => lExp S T x Z σ) U)
+    (hbdd : ∀ Z ∈ U, BddBelow {a : ℝ | ∃ γ : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) I 1 γ ∧ γ 0 = x ∧
+      γ (Real.sqrt σ) = lExp S T x Z σ ∧ lRegularizedAction S T γ 0 (Real.sqrt σ) = a})
+    (R : ℝ) (Q : Set M) (c : ℝ≥0∞)
+    (himage : ∀ Z ∈ A, Real.sqrt ((S.base.metric T).inner x Z Z) ≤ R → lExp S T x Z τ ∈ Q)
+    (hden : ∀ Z ∈ A, Real.sqrt ((S.base.metric T).inner x Z Z) ≤ R →
+      ENNReal.ofReal (redDensity S T x (lExp S T x Z τ) τ) ≤ c) :
+    (∫⁻ y in (fun Z : E => lExp S T x Z σ) '' A, ENNReal.ofReal (redDensity S T x y σ)
+      ∂riemannianVolumeMeasure I M (S.base.metric (T - σ))) ≤
+      c * riemannianVolumeMeasure I M (S.base.metric (T - τ)) Q +
+        ∫⁻ Z : E in {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)},
+          ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) := by
+  let small : Set E := {Z | Real.sqrt ((S.base.metric T).inner x Z Z) ≤ R}
+  have hsmall : MeasurableSet small := by
+    apply measurableSet_le _ measurable_const
+    exact (Real.continuous_sqrt.comp (((S.base.metric T).inner x).continuous.clm_apply continuous_id)).measurable
+  let low := A ∩ small
+  have hlow : MeasurableSet low := hA.inter hsmall
+  have hlowU : low ⊆ U := inter_subset_left.trans hAU
+  let J := fun (s : ℝ) (Z : E) => ENNReal.ofReal (lReducedJacobian S T x Z s * lSourceDensity S T x)
+  have hlowmono : (∫⁻ Z in low, J σ Z ∂modelHaar (E := E)) ≤ ∫⁻ Z in low, J τ Z ∂modelHaar (E := E) := by
+    apply setLIntegral_mono' hlow
+    intro Z hZ
+    apply ENNReal.ofReal_le_ofReal
+    exact mul_le_mul_of_nonneg_right
+      (lReducedJacobian_le_of_le_minimizing_time_of_bdd S hS T x (hmin Z (hlowU hZ))
+        (hnconj Z (hlowU hZ)) hτ hτσ.le (hbdd Z (hlowU hZ))) (lSourceDensity_pos S T x).le
+  have hlowbound : (∫⁻ Z in low, J τ Z ∂modelHaar (E := E)) ≤
+      c * riemannianVolumeMeasure I M (S.base.metric (T - τ)) Q := by
+    rw [lintegral_lReducedJacobian_eq_on_minimizing_family_of_bdd S hS T x hτ hτσ hU hmin hbdd hlow hlowU]
+    obtain ⟨Φ, hsource, _, hEq⟩ := exists_lExpPartial_on_open_minimizing_family_of_bdd S hS T x hτ hτσ hU hmin hbdd
+    let Ψ : PartialDiffeomorph 𝓘(ℝ, E) I E M 1 :=
+      { Φ.toPartialEquiv with
+        open_source := Φ.open_source
+        open_target := Φ.open_target
+        contMDiffOn_toFun := Φ.contMDiffOn_toFun.of_le (by norm_num)
+        contMDiffOn_invFun := Φ.contMDiffOn_invFun.of_le (by norm_num) }
+    have heqimage : Ψ '' low = (fun Z : E => lExp S T x Z τ) '' low := image_congr (fun Z hZ => hEq (hlowU hZ))
+    have himagemeas : MeasurableSet ((fun Z : E => lExp S T x Z τ) '' low) := by
+      rw [← heqimage]
+      exact measurableSet_image_param_global Ψ hlow (by change low ⊆ Φ.source; rwa [hsource])
+    have hle := setLIntegral_mono' (μ := riemannianVolumeMeasure I M (S.base.metric (T - τ))) himagemeas
+      (f := fun y => ENNReal.ofReal (redDensity S T x y τ)) (g := fun _ => c) (by
+        rintro y ⟨Z, hZ, rfl⟩
+        exact hden Z hZ.1 hZ.2)
+    rw [lintegral_const, Measure.restrict_apply_univ] at hle
+    exact hle.trans (mul_le_mul_right (measure_mono (by
+      rintro y ⟨Z, hZ, rfl⟩
+      exact himage Z hZ.1 hZ.2)) c)
+  have hhigh : (∫⁻ Z in A \ small, J σ Z ∂modelHaar (E := E)) ≤
+      ∫⁻ Z : E in {Z | R < Real.sqrt ((S.base.metric T).inner x Z Z)},
+        ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) := by
+    calc
+      _ ≤ ∫⁻ Z in A \ small, ENNReal.ofReal (lSourceGaussian S T x Z) ∂modelHaar (E := E) := by
+        apply setLIntegral_mono' (hA.diff hsmall)
+        intro Z hZ
+        apply ENNReal.ofReal_le_ofReal
+        rw [lSourceGaussian_eq_metric_norm]
+        have hh := mul_le_mul_of_nonneg_right
+          (lReducedJacobian_le_gaussian_at_minimizing_time_of_bdd S hS T x (hmin Z (hAU hZ.1))
+            (hnconj Z (hAU hZ.1)) (hbdd Z (hAU hZ.1))) (lSourceDensity_pos S T x).le
+        simpa only [J, mul_assoc, mul_left_comm, mul_comm] using hh
+      _ ≤ _ := lintegral_mono_set (fun Z hZ => by
+        exact lt_of_not_ge (show ¬ Real.sqrt ((S.base.metric T).inner x Z Z) ≤ R from hZ.2))
+  rw [← lintegral_lReducedJacobian_eq_on_nonconjugate_family S hS T x hU
+    (fun Z hZ => ((mem_lMinDomain S T x Z σ).mp (hmin Z hZ)).1) hnconj hinj hA hAU]
+  change (∫⁻ Z in A, J σ Z ∂modelHaar (E := E)) ≤ _
+  rw [← lintegral_inter_add_sdiff (J σ) A hsmall]
+  exact add_le_add (hlowmono.trans hlowbound) hhigh
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+end
