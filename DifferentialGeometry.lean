@@ -13892,3 +13892,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCur
 import DifferentialGeometry.Analysis.Asymptotics.RadiusEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardScalarEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardTerminalGeometry
+import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.OpenEmbedding
+import DifferentialGeometry.Analysis.Integration.Integral.LowerBounded
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.Extended

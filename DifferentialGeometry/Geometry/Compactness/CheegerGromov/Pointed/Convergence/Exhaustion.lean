@@ -20,7 +20,7 @@ attribute [local instance] PointedRiemannianManifold.topology
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
-theorem PointedRiemannianConvergenceMaps.exists_subsequence_of_eventually_contains_compacts
+theorem PointedRiemannianConvergenceMaps.exists_subsequence_restriction_of_eventually_contains_compacts
     {X : PointedRiemannianSeq.{u, uE, uH} I}
     {P : PointedRiemannianManifold.{u, uE, uH} I} [PreconnectedSpace P.M]
     {f : ℕ → ℕ}
@@ -30,6 +30,8 @@ theorem PointedRiemannianConvergenceMaps.exists_subsequence_of_eventually_contai
     ∃ sigma : ℕ → ℕ, StrictMono sigma ∧
       ∃ F : PointedRiemannianConvergenceMaps X P (f ∘ sigma),
         (∀ i, F.map i = Phi (sigma i)) ∧
+        (∀ i, ((F.partialDiffeomorph i).symm : (X.obj (f (sigma i))).M → P.M) = (Phi (sigma i)).symm) ∧
+        (∀ i, F.source i ⊆ (Phi (sigma i)).source) ∧
         (∀ i, IsCompact (closure (F.source i))) ∧
         ∀ i, IsConnected (F.source i) := by
   classical
@@ -63,7 +65,9 @@ theorem PointedRiemannianConvergenceMaps.exists_subsequence_of_eventually_contai
     source_exhausts := by simpa only [hPsi] using hU
     base_mem := fun i => by rw [hPsi]; exact hp i
     basepoint_map := fun i => hbase (sigma i) }
-  refine ⟨sigma, hsigma, F, fun _ => rfl, ?_, ?_⟩
+  refine ⟨sigma, hsigma, F, fun _ => rfl, fun _ => rfl, ?_, ?_, ?_⟩
+  · intro i
+    exact inter_subset_left
   · intro i
     change IsCompact (closure (Psi i).source)
     rw [hPsi]
@@ -72,5 +76,22 @@ theorem PointedRiemannianConvergenceMaps.exists_subsequence_of_eventually_contai
     change IsConnected (Psi i).source
     rw [hPsi]
     exact hconn i
+
+theorem PointedRiemannianConvergenceMaps.exists_subsequence_of_eventually_contains_compacts
+    {X : PointedRiemannianSeq.{u, uE, uH} I}
+    {P : PointedRiemannianManifold.{u, uE, uH} I} [PreconnectedSpace P.M]
+    {f : ℕ → ℕ}
+    (Phi : ∀ i, PartialDiffeomorph I I P.M (X.obj (f i)).M ∞)
+    (hbase : ∀ i, Phi i P.basepoint = (X.obj (f i)).basepoint)
+    (hsource : ∀ K : Set P.M, IsCompact K → ∀ᶠ i in atTop, K ⊆ (Phi i).source) :
+    ∃ sigma : ℕ → ℕ, StrictMono sigma ∧
+      ∃ F : PointedRiemannianConvergenceMaps X P (f ∘ sigma),
+        (∀ i, F.map i = Phi (sigma i)) ∧
+        (∀ i, IsCompact (closure (F.source i))) ∧
+        ∀ i, IsConnected (F.source i) := by
+  obtain ⟨sigma, hsigma, F, hmap, _, _, hcompact, hconnected⟩ :=
+    PointedRiemannianConvergenceMaps.exists_subsequence_restriction_of_eventually_contains_compacts
+      Phi hbase hsource
+  exact ⟨sigma, hsigma, F, hmap, hcompact, hconnected⟩
 
 end DifferentialGeometry.CheegerGromovCompactness
