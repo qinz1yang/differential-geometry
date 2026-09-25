@@ -21,16 +21,15 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section33FundamentalGroupBi
 /-!
 # Sorry-first skeleton of Moise 33.1, the tube approximation
 
-The assembly `moise331` proves the endpoint `Moise331` of `MoiseChain.lean` for real from the
-twelve leaves of this file and the named propositions `Moise323`, `Moise324` (Section 32) and
-`Moise264` (the extended loop theorem, cited on page 234 for the injectivity in Lemma 10); every
-`sorry` is a leaf and none sits inside an assembly.  The dependency chain is therefore
-`Moise323 → Moise324 → Moise264 → Moise331`, and the first review (digest AI) kept `Moise264`
-explicit on purpose: the ledger plans only a *restricted* producer of the extended loop theorem
-through the orientable loop route, so the parameter must not be deleted to hide that dependency
-inside Lemma 10; at integration it may be narrowed to the `ℝ³` local version Lemma 10 needs,
-and the proof of that leaf must then enclose the compact support of a null-homotopy in a
-finite piecewise linear three-manifold inside `Int N' − K'`.  Source: Moise, *Geometric topology in
+The assembly `moise331_of_moise323_of_moise324_of_moise264Orientable` proves the endpoint
+`Moise331` of `MoiseChain.lean` from the named propositions `Moise323`, `Moise324` (Section 32)
+and `Moise264Orientable` (the orientable extended loop theorem, cited on page 234 for the
+injectivity in Lemma 10); the unconditional `moise331` is in `Moise341Producer`.  The
+dependency chain is therefore `Moise323 → Moise324 → Moise264Orientable → Moise331`.  The loop
+theorem enters only through Lemma 10, where the compact support of a null-homotopy is enclosed
+in a finite piecewise linear three-manifold inside `Int N' − K'`; that manifold is orientable as
+a bounded polyhedron of `ℝ³`, which is why the orientable form suffices
+(`injective_fundamentalGroup_map_of_moise264Orientable`).  Source: Moise, *Geometric topology in
 dimensions 2 and 3*, printed pages 230-238, read through `consult/AA-section33-construction-digest`.
 
 The endpoint.  `Moise331` gives a finite connected one-dimensional complex `L` of `ℝ³` with no
@@ -246,14 +245,15 @@ and an axiom audit): Lemma 10 in the strictly stronger form
 `section33_fundamentalGroup_map_bijective_of_isTube` (module `Section33FundamentalGroupBijective`
 over `Section33TubeRayChart`, `Section33CollarPush`, `Section33LoopTheoremInjective`,
 `SquareCrossingChain`, `SquareHomotopyToSurface`, `SurfaceLoopDecomposition`, `SurfaceSideLoops`),
-which needs only `Moise264`, the tube, Lemma 2, the connectedness of `Bd X` and the absence of loop
-theorem disks: the frozen leaf's `h34`, `h7` and `hprod` were unused, so the leaf is not restated
-(a byte-identical restatement would carry three unused-variable warnings) and the assembly calls
-the stronger theorem; the collar of `Bd N'` in `N'` (AA question 5) comes from `IsTube` through
-`IsTube.bijective_fundamentalGroup_map_interior_sdiff`, so the page-235 product
-`section33_tube_product` has no consumer in the assembly any more and stays as a real theorem.
-With every leaf proved this file has no `sorry` and was promoted from `Skeleton/` to a real
-module on 2026-09-23: `moise331 : Moise323 → Moise324 → Moise264 → Moise331` is a real theorem.
+which needs only `Moise264Orientable`, the tube, Lemma 2, the connectedness of `Bd X` and the
+absence of loop theorem disks: the frozen leaf's `h34`, `h7` and `hprod` were unused, so the leaf is
+not restated (a byte-identical restatement would carry three unused-variable warnings) and the
+assembly calls the stronger theorem; the collar of `Bd N'` in `N'` (AA question 5) comes from
+`IsTube` through `IsTube.bijective_fundamentalGroup_map_interior_sdiff`, so the page-235 product
+`section33_tube_product` has no consumer in the assembly any more and stays as a real theorem. With
+every leaf proved this file has no `sorry` and was promoted from `Skeleton/` to a real module on
+2026-09-23: `moise331_of_moise323_of_moise324_of_moise264Orientable : Moise323 → Moise324 →
+Moise264Orientable → Moise331` is a real theorem.
 -/
 
 open Set Topology
@@ -333,7 +333,8 @@ theorem exists_section33HandleFrame (h323 : Moise323) (ht : IsTube K N C D Dbd h
     fun v hv x hx y hy => (hV v hv).2 x (hsub v hv hx) y (hsub v hv hy)⟩
 
 open Classical in
-theorem moise331 (h323 : Moise323) (h324 : Moise324) (h264 : Moise264) : Moise331 := by
+theorem moise331_of_moise323_of_moise324_of_moise264Orientable (h323 : Moise323) (h324 : Moise324)
+    (h264 : Moise264Orientable) : Moise331 := by
   intro L hfin hdim hedge hconn hend U hU hLU h hh ε hε
   obtain ⟨T, L', C, D, Dbd, hTfin, hsub, hLT, hT, hDN, hNU, hend', ht, -, hCsmall⟩ :=
     exists_section33TubeFrame L hdim hedge hend hU hLU hh hε

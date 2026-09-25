@@ -18,8 +18,9 @@ that no loop theorem disk of `Int N' - K'` has its boundary on `Bd X`.  Then the
 `Bd X → N' - K'` induces a bijection of fundamental groups at every base point
 (`section33_fundamentalGroup_map_bijective_of_isTube`).
 
-Injectivity into `W = Int N' - K'` is the extended loop theorem
-(`injective_fundamentalGroup_map_of_moise264`), and `W → N' - K'` is bijective by the collar of
+Injectivity into `W = Int N' - K'` is the orientable extended loop theorem
+(`injective_fundamentalGroup_map_of_moise264Orientable`; the enclosing manifold is a bounded
+polyhedron of `ℝ³`, hence orientable), and `W → N' - K'` is bijective by the collar of
 `Bd N'` (`IsTube.bijective_fundamentalGroup_map_interior_sdiff`).  For surjectivity onto `π₁(W)`,
 the ray chart of the tube gives a lowest level of the rays meeting `X`, which lies outside
 `Int X` and touches `Bd X`, and a highest level of the rays meeting the closure of the
@@ -40,7 +41,8 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 theorem section33_fundamentalGroup_map_bijective_of_isTube
     {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
     {D Dbd Ec Eint Ebd : Finset E3 → Set E3} {h : E3 → E3}
-    {XK : Geometry.SimplicialComplex ℝ E3} (h264 : Moise264) (ht : IsTube K N C D Dbd h N')
+    {XK : Geometry.SimplicialComplex ℝ E3} (h264 : Moise264Orientable)
+    (ht : IsTube K N C D Dbd h N')
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
     (hXc : IsConnected (frontier XK.space))
     (hnoLTD : ∀ Δ : Set E3, ¬ IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ) :
@@ -250,7 +252,7 @@ theorem section33_fundamentalGroup_map_bijective_of_isTube
     refine Eq.trans ?_ hγ
     exact (Path.Homotopic.Quotient.eq.mpr hσ).symm
   have hinjSW : Function.Injective (FundamentalGroup.map ιSW x) :=
-    injective_fundamentalGroup_map_of_moise264 h264 finrank_euclideanSpace_fin hBman
+    injective_fundamentalGroup_map_of_moise264Orientable h264 finrank_euclideanSpace_fin hBman
       (hFr ▸ hXc) hFr.symm hWo hSW (fun Δ r hr hΔ hmeet hb => by
         by_contra hnn
         exact hnoLTD Δ ⟨r, hr, hΔ, hmeet, hb, hnn⟩) x

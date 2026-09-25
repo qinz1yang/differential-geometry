@@ -28,9 +28,11 @@ from every centre and off every pseudo-cell lies in `C''_v`
 of a centre `P'_e` with `v ∉ e` is impossible: the ball of radius `2ρ` about `P'_e` misses the
 frontier of `B'_v`, hence lies in its interior, while the connected pseudo-cell `E_e` reaches
 from `P'_e` to the frontier of `N'` and so meets the sphere of radius `3ρ / 2` in a point of
-`F_e`.  `moise331OnTube` proves `Moise331OnTube` from `Moise323` (the handle pieces inside
-thickenings of `h '' C v` of radius `r_v`), `Moise324`, `Moise264` and the leaves of Section 33,
-with `δ` below every `r_v`.  `Moise331OnTube.moise331` recovers `Moise331` from the tube of
+`F_e`.  `moise331OnTube_of_moise323_of_moise324_of_moise264Orientable` proves `Moise331OnTube`
+from `Moise323` (the handle pieces inside thickenings of `h '' C v` of radius `r_v`), `Moise324`,
+`Moise264Orientable` and the theorems of Section 33, with `δ` below every `r_v`; the
+unconditional `moise331OnTube` is in `Moise341Producer`.  `Moise331OnTube.moise331` recovers
+`Moise331` from the tube of
 `exists_section33TubeFrame` and the neighbourhoods `W v` of radius `ε / 4`.
 -/
 
@@ -328,8 +330,8 @@ theorem exists_section33Extension_image_dualCell_subset (h324 : Moise324)
 
 end Extension
 
-theorem moise331OnTube (h323 : Moise323) (h324 : Moise324) (h264 : Moise264) :
-    Moise331OnTube := by
+theorem moise331OnTube_of_moise323_of_moise324_of_moise264Orientable (h323 : Moise323)
+    (h324 : Moise324) (h264 : Moise264Orientable) : Moise331OnTube := by
   intro K N N' C D Dbd h ht hconn hend W hW
   have hr : ∀ v : EuclideanSpace ℝ (Fin 3), ∃ r : ℝ, v ∈ K.vertices →
       0 < r ∧ Metric.thickening (2 * r) (h '' C v) ⊆ W v := by

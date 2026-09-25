@@ -3,6 +3,8 @@ Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: DifferentialGeometry contributors
 -/
+import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
+import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceEssentialDisk
 
 /-!
@@ -12,11 +14,15 @@ Let `L` be a connected closed combinatorial surface, with `|L| = S`, in an open 
 such that every piecewise linear disk in `U` meeting `S` exactly in its boundary has a
 nullhomotopic boundary in `S`.  If a loop class `g ≠ 1` of `|L|` died in `U`, the
 nullhomotopy would lie in a compact connected combinatorial three-manifold `N₀ ⊆ U` with `|L|` in
-its interior (`exists_connected_neighborhood_fundamentalGroup_map_eq_one`), and the extended loop
-theorem (`Moise264`, `|L|` two-sided by `IsCombinatorialManifold.isTwoSided`) would give such a
-disk in the interior of `N₀` with essential boundary.  Hence `π₁(S) → π₁(U)` is injective
-(`injective_fundamentalGroup_map_of_moise264`).  This is the injectivity half of Moise,
-Section 33, Lemma 10.
+its interior (`exists_connected_neighborhood_fundamentalGroup_map_eq_one`).  Such an `N₀` is
+orientable, being a bounded polyhedron of a three-dimensional space
+(`isOrientable_of_space_subset_convexHull`), and `|L|` is two-sided in `N₀`, since it is
+two-sided in the ambient space (`IsCombinatorialManifold.isTwoSided`) and `N₀` is a neighbourhood
+of it (`IsTwoSided.preimage_of_isInducing`).  The orientable extended loop theorem
+(`Moise264Orientable`) therefore gives such a disk in the interior of `N₀` with essential
+boundary.  Hence `π₁(S) → π₁(U)` is injective
+(`injective_fundamentalGroup_map_of_moise264Orientable`).  This is the injectivity half of Moise,
+Section 33, Lemma 10; the orientable form of the extended loop theorem suffices for it.
 -/
 
 open Set Topology
@@ -26,7 +32,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 open Classical in
-theorem injective_fundamentalGroup_map_of_moise264 (h264 : Moise264)
+theorem injective_fundamentalGroup_map_of_moise264Orientable (h264 : Moise264Orientable)
     (hdim : Module.finrank ℝ E = 3)
     {L : Geometry.SimplicialComplex ℝ E} [Finite L.faces] (hL : IsCombinatorialManifold 2 L)
     (hLc : IsConnected L.space) {S : Set E} (hLS : L.space = S) {U : Set E} (hU : IsOpen U)
@@ -50,9 +56,16 @@ theorem injective_fundamentalGroup_map_of_moise264 (h264 : Moise264)
   have hLint : L.space ⊆ N₀.space \ (boundaryComplex 3 N₀).space := by
     rw [← frontier_space_eq_boundaryComplex_space_of_finrank hdim N₀ hN₀]
     exact fun y hy => ⟨interior_subset (hLN hy), fun hz => hz.2 (hLN hy)⟩
-  have htwo := hL.isTwoSided L hdim hLc
+  obtain ⟨T, -, hTcard, hNT⟩ := exists_affineIndependent_openSimplex_superset 3 hdim
+    (isPolyhedron_space N₀).isCompact.isBounded
+  have hor : IsOrientable 3 N₀ := isOrientable_of_space_subset_convexHull N₀ hN₀ T hTcard
+    (hNT.trans (openSimplex_subset_convexHull T))
+  have htwo : IsTwoSided (((↑) : N₀.space → E) ⁻¹' L.space) := by
+    refine (hL.isTwoSided L hdim hLc).preimage_of_isInducing IsInducing.subtypeVal ?_
+    rw [Subtype.range_coe]
+    exact Filter.mem_of_superset (isOpen_interior.mem_nhdsSet.mpr hLN) interior_subset
   obtain ⟨Δ, r, hr, hΔ, hmeet, hb, hnon⟩ :=
-    h264 N₀ inferInstance hN₀ L inferInstance hL hLint htwo x g hne hnull
+    h264 N₀ inferInstance hN₀ hor L inferInstance hL hLint htwo x g hne (hnull _)
   exact hnon (hno Δ r hr (hΔ.trans (sdiff_subset.trans hN₀U)) hmeet hb)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

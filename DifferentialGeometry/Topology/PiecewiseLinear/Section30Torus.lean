@@ -14,6 +14,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ExistsCombinatorialTriangul
 import DifferentialGeometry.Topology.PiecewiseLinear.NontrivialKernelInSolidTorus
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsIsPLBallSupersetOfExteriorCompression
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsBallPairOfInteriorEssentialDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Moise252Producer
 
 /-!
 # Polyhedral interpolation in toroidal shells
@@ -103,7 +104,8 @@ Promoted out of `Skeleton/` on 2026-09-22: every former leaf is proved in an imp
 `ExistsCombinatorialTriangulation`, `NontrivialKernelInSolidTorus`,
 `ExistsIsPLBallSupersetOfExteriorCompression`, `ExistsBallPairOfInteriorEssentialDisk` from Opus
 5.5 workers), so `moise306_of_moise252` and `moise307_of_moise252` below are real proofs
-conditional only on `Moise252`.
+conditional only on `Moise252`.  With `moise252` proved (`LoopTheorem/Moise252Producer`),
+`moise306` and `moise307` hold without hypotheses.
 -/
 
 open Set Topology
@@ -201,5 +203,11 @@ theorem moise307_of_moise306_of_moise252 (h306 : Moise306) (h252 : Moise252) : M
 
 theorem moise307_of_moise252 (h252 : Moise252) : Moise307 := by
   exact moise307_of_moise306_of_moise252 (moise306_of_moise252 h252) h252
+
+theorem moise306 : Moise306 :=
+  moise306_of_moise252 moise252
+
+theorem moise307 : Moise307 :=
+  moise307_of_moise252 moise252
 
 end DifferentialGeometry.Topology.PiecewiseLinear

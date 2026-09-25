@@ -18,21 +18,25 @@ import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPositionBallPseudoCe
 import DifferentialGeometry.Topology.PiecewiseLinear.ReducedDiskPseudoCell
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalTowerExists
 import DifferentialGeometry.Topology.PiecewiseLinear.CanonicalDescentSequence
+import DifferentialGeometry.Topology.PiecewiseLinear.Section26ThreeSurfaces
+import DifferentialGeometry.Topology.PiecewiseLinear.Section28Annuli
+import DifferentialGeometry.Topology.PiecewiseLinear.Section30Separation
+import DifferentialGeometry.Topology.PiecewiseLinear.Section30Torus
+import DifferentialGeometry.Topology.PiecewiseLinear.Section31CanonicalConfiguration
 
 /-!
 # Section 32 pseudo-cells and handle decompositions of tubes
 
-The assemblies `moise322`, `moise321`, `moise323`, `moise324` below prove the four named
-propositions of `PseudoCell.lean` for real from the leaves of this file and from the named
-propositions `Moise307`, `Moise314` of the earlier sections and `Moise303`, `Moise286`,
-`Moise267`, now stated in `MoiseChain.lean` and still unproved (digest
-`AD` §5); `Moise267` carries the book's implicit premise that the common boundary of the three
-surfaces is non-empty, since its printed proof starts from an edge of `Bd M_i`.
-All leaves are proved in their imported topic modules; the assemblies remain
-conditional on the named earlier Moise inputs.  Theorem 30.1 is the proved
+The assemblies `moise322_of_moise307`, `moise321_of_moise307`, `moise323_of_moise307` and `moise324`
+below prove the four named propositions of `PseudoCell.lean` from the theorems of their imported
+topic modules, the first three from `Moise307`; the earlier inputs `Moise314`, `Moise303`,
+`Moise286` and `Moise267` are the theorems `moise314`, `moise303`, `moise286` and `moise267`, and
+`moise307` (`Section30Torus`) makes `moise322`, `moise321` and `moise323` unconditional.  `Moise267`
+carries the book's implicit premise that the common boundary of the three surfaces is non-empty,
+since its printed proof starts from an edge of `Bd M_i`.  Theorem 30.1 is the proved
 `separates_or_separates_of_union` and Theorem 30.2 the proved `exists_separates_of_finite_iUnion`;
-both are consumed inside leaves.  Book pages 223-229, in the notation of `PseudoCell.lean`;
-`P'` is the image of the edge midpoint, `I` the ambient interior of `C'₁ ∪ C'₂`.
+both are consumed inside leaves.  Book pages 223-229, in the notation of `PseudoCell.lean`; `P'` is
+the image of the edge midpoint, `I` the ambient interior of `C'₁ ∪ C'₂`.
 
 The frozen leaves in this module are proved and imported.  `separates_of_locally_eventually_eq` and
 `isTopologicalSphere_image_splitRim` are proved in the imported real modules, with their frozen
@@ -55,17 +59,16 @@ the arcs exist; here `W` stays fixed and the tower avoids the arcs, which is wha
 achieves, since the arcs are compact and disjoint from `D'` while the tori are chosen in small
 neighbourhoods of the annuli.
 
-The route of 32.3.  The three-cells `C_{e,1}, C_{e,2}` of page 228 are replaced by closed collars
-`W e` of the splitting disks, admissible for 32.2, pairwise disjoint, inside the prescribed
-neighbourhoods, and with connected complement in each adjacent dual cell
-(`exists_edgeCollarFamily`, output `IsEdgeCollarFamily`).  `moise322` is applied per edge, its
-output pinned by `SplitsDualCellsAlong`, and the handle pieces are `handlePiece`, page 228's
-closure of the component.  Clauses (7), (9), (10) are `isHandleDecomposition_of_edgeCollars`;
-clause (8), never argued in the book, is `handlePiece_subset_of_edgeCollars`, whose hypotheses
-are exactly the collar choices: its proof must show that the component of `N' - ⋃ E_e`
-containing `h v` leaves `C'_v` only through the collars `W e`, `e ∋ v`, because `C'_w \ W e` is
-connected and contains `h w`, so lies on the `h w` side of `E_e`.  The remaining fields are
-proved in the assembly.
+The route of 32.3.  The three-cells `C_{e,1}, C_{e,2}` of page 228 are replaced by closed collars `W
+e` of the splitting disks, admissible for 32.2, pairwise disjoint, inside the prescribed
+neighbourhoods, and with connected complement in each adjacent dual cell (`exists_edgeCollarFamily`,
+output `IsEdgeCollarFamily`).  `moise322_of_moise307` is applied per edge, its output pinned by
+`SplitsDualCellsAlong`, and the handle pieces are `handlePiece`, page 228's closure of the
+component.  Clauses (7), (9), (10) are `isHandleDecomposition_of_edgeCollars`; clause (8), never
+argued in the book, is `handlePiece_subset_of_edgeCollars`, whose hypotheses are exactly the collar
+choices: its proof must show that the component of `N' - ⋃ E_e` containing `h v` leaves `C'_v` only
+through the collars `W e`, `e ∋ v`, because `C'_w \ W e` is connected and contains `h w`, so lies on
+the `h w` side of `E_e`.  The remaining fields are proved in the assembly.
 
 The route of 32.4.  The missing notion "`Bd C³` in general position relative to `E`" is
 `CrossesPseudoCell`: the intersection is a finite union of disjoint polygons inside
@@ -100,10 +103,10 @@ avoidance of a closed set disjoint from `D'`, which is §7.13; the tori are chos
 `W ∩ Zᶜ`, and the proof must complete adjacent general position and the bridge from the
 cylindrical diagram to the annular chain.
 
-`separates_initialSurface` (medium, REPAIRED): Lemma 1 with §7.8's local finiteness, Lemma 3
-with the printed slip `{P}` for `{P'}`, the transport of `IsTube.splitSeparates` through `h`
-(§7.18).  It now receives `havoid`, the tower's avoidance of `{h u, h v}`, which `moise322`
-reads off the tower's avoidance of `Bu ∪ Bv`; without it an even torus may pass through `h u`.
+`separates_initialSurface` (medium, REPAIRED): Lemma 1 with §7.8's local finiteness, Lemma 3 with
+the printed slip `{P}` for `{P'}`, the transport of `IsTube.splitSeparates` through `h` (§7.18).  It
+now receives `havoid`, the tower's avoidance of `{h u, h v}`, which `moise322_of_moise307` reads off
+the tower's avoidance of `Bu ∪ Bv`; without it an even torus may pass through `h u`.
 
 `exists_descentSequence` (deep, REPAIRED): Step 1 with 30.3 and §7.9, Steps 2-4 with the
 classification `k ∈ {0, 2}` from 28.6, 30.1, 26.7 and 31.4 and §7.10, §7.8's "`L` is a
@@ -120,10 +123,10 @@ torus, contradicting `loGenerator` and `hiGenerator`.
 along the contradiction path gives a finite cover and a uniform stabilisation time, so no
 monotonicity of the `M n` is assumed.
 
-`isOpenTopologicalCell_annularChain` (deep, REPAIRED): §7.12, wholly unproved in the book, and
-the three-cell pairs of page 227.  It now receives the tube data of `exists_canonicalTower`,
-which makes `h '' Dbd {u, v}` a genuine circle carrying the upper end of the chain, and the
-separation of the chain itself, the book's route to the closure equality; `moise322` obtains that
+`isOpenTopologicalCell_annularChain` (deep, REPAIRED): §7.12, wholly unproved in the book, and the
+three-cell pairs of page 227.  It now receives the tube data of `exists_canonicalTower`, which makes
+`h '' Dbd {u, v}` a genuine circle carrying the upper end of the chain, and the separation of the
+chain itself, the book's route to the closure equality; `moise322_of_moise307` obtains that
 separation from `separates_of_locally_eventually_eq` on the descent's closedness output before
 calling this leaf, and neither depends on `IsPseudoCell`, so there is no circularity.
 
@@ -159,32 +162,32 @@ the endpoint is not closed by them.  `Moise303` is the Euclidean local form of 3
 controlling the small regular neighbourhood and the deleted part the intrinsic interior of the
 annulus, and `Moise286`'s `1 < n` is right.
 
-Untested.  `IsTube` has no inhabitant in the tree, and every leaf with a tube hypothesis is
-UNTESTED until it has one, which is not vacuity: the tower, the initial surface, the descent,
-the chain topology, the arcs, the rim, the two components, the collar family and both handle
-leaves.  Not tube-dependent: the limit lemma and both leaves of 32.4, which hold for the tame
-`isPseudoCell_planarSquare`: the boundary of a small cube around the origin meets the square in
-one polygon, crossing it everywhere, and every hypothesis of `moise324`'s chain is then
-supplied.  Inhabiting `IsTube` is not cheap: it needs a finite complex of `ℝ³` with a verified
-`IsCombinatorialManifoldWithBoundary 3` certificate, `IsPLBall 3` of its graph dual cells, which
-the tree derives only from the boundaryless case, and producers of `splitSeparates` and
+Untested.  `IsTube` has no inhabitant in the tree, and every leaf with a tube hypothesis is UNTESTED
+until it has one, which is not vacuity: the tower, the initial surface, the descent, the chain
+topology, the arcs, the rim, the two components, the collar family and both handle leaves.  Not
+tube-dependent: the limit lemma and both leaves of 32.4, which hold for the tame
+`isPseudoCell_planarSquare`: the boundary of a small cube around the origin meets the square in one
+polygon, crossing it everywhere, and every hypothesis of `moise324`'s chain is then supplied.
+Inhabiting `IsTube` is not cheap: it needs a finite complex of `ℝ³` with a verified
+`IsCombinatorialManifoldWithBoundary 3` certificate, `IsPLBall 3` of its graph dual cells, which the
+tree derives only from the boundaryless case, and producers of `splitSeparates` and
 `freeFaceConnected`, which do not exist.  No vertex-interior field is needed: the proved
-`IsTube.mem_interior_dualCell` below gives `v ∈ Int N ∖ ⋃_{w ≠ v} C_w ⊆ C_v` from
-`isNeighborhood`, `unionEq`, `dualVertex` and the closedness of the finitely many dual cells,
-and invariance of domain (`InvarianceOfDomain.lean`) transports it to
-`h v ∈ interior (h '' C v)`, so the two vertex preimages in every `Separates` clause are
-non-empty.  The new predicates `IsCanonicalTower`, `IsAnnularChain`, `IsPLAnnulusWithEnds`,
-`IsEdgeCollarFamily` and `CrossesPseudoCell` are pinned producer outputs and are untested;
-`SplitsDualCellsAlong` is inhabited by `Moise322.exists_splitsDualCellsAlong`, conditionally.
-Every hypothesis of every leaf is supplied by a named producer: the tower's avoidance set by the
-arc leaf, the vertex avoidance of the initial surface and the descent by the tower's avoidance
-of `Bu ∪ Bv`, the chain separation of the chain topology leaf by the limit lemma, the cell pairs
-by the chain leaf, the arcs' disjointness from `E` by the tower's avoidance clause, the collars
-by the collar leaf, the per-edge pseudo-cells by `moise322`, and the common open set of the
-reduced disk leaf by the ball of the general position leaf.  The `W`-hypotheses of `Moise321`
-are satisfiable because `Int D_e` lies in the ambient interior of `C_u ∪ C_v` (finitely many
-dual cells, `splitDisjoint`) and `h` preserves interiors by invariance of domain; this is a
-fact about `IsTube`, needed by the collar leaf and not carried as a field.
+`IsTube.mem_interior_dualCell` below gives `v ∈ Int N ∖ ⋃_{w ≠ v} C_w ⊆ C_v` from `isNeighborhood`,
+`unionEq`, `dualVertex` and the closedness of the finitely many dual cells, and invariance of domain
+(`InvarianceOfDomain.lean`) transports it to `h v ∈ interior (h '' C v)`, so the two vertex
+preimages in every `Separates` clause are non-empty.  The new predicates `IsCanonicalTower`,
+`IsAnnularChain`, `IsPLAnnulusWithEnds`, `IsEdgeCollarFamily` and `CrossesPseudoCell` are pinned
+producer outputs and are untested; `SplitsDualCellsAlong` is inhabited by
+`Moise322.exists_splitsDualCellsAlong`, conditionally. Every hypothesis of every leaf is supplied by
+a named producer: the tower's avoidance set by the arc leaf, the vertex avoidance of the initial
+surface and the descent by the tower's avoidance of `Bu ∪ Bv`, the chain separation of the chain
+topology leaf by the limit lemma, the cell pairs by the chain leaf, the arcs' disjointness from `E`
+by the tower's avoidance clause, the collars by the collar leaf, the per-edge pseudo-cells by
+`moise322_of_moise307`, and the common open set of the reduced disk leaf by the ball of the general
+position leaf.  The `W`-hypotheses of `Moise321` are satisfiable because `Int D_e` lies in the
+ambient interior of `C_u ∪ C_v` (finitely many dual cells, `splitDisjoint`) and `h` preserves
+interiors by invariance of domain; this is a fact about `IsTube`, needed by the collar leaf and not
+carried as a field.
 
 What Section 33 consumes (digest `AD` §8): 32.1(1) in the endgame, (2) at page 231, (3) in
 Lemmas 6 and 8, (4) in Lemmas 3, 4, 8; 32.2(5)(6) in Lemmas 6 and 8; 32.3(7)(9)(10) in Lemmas 6,
@@ -221,8 +224,8 @@ the interior through `h` and the separator is swapped inside the closed set `⋃
 
 Interface change by owner decision (2026-09-22, option A for Section 33's Lemma 8):
 `IsHandleDecompositionOfTube` gained the field `rimFrontier : Ec e ∩ frontier N' = Ebd e`, so the
-frozen `Moise323` conclusion is wider.  The assembly `moise323` supplies it from the collar clause
-`W ∩ frontier (C'_u ∪ C'_v) = h '' Dbd` of `IsEdgeCollarFamily`, `Ec ⊆ W` of
+frozen `Moise323` conclusion is wider.  The assembly `moise323_of_moise307` supplies it from the
+collar clause `W ∩ frontier (C'_u ∪ C'_v) = h '' Dbd` of `IsEdgeCollarFamily`, `Ec ⊆ W` of
 `SplitsDualCellsAlong`, and `IsTube.disjoint_image_rim_interior`; no leaf statement changed.
 
 Proved and imported (external collaborator, PR #10, lead-accepted on 2026-09-23 with zero-diagnostic
@@ -268,8 +271,7 @@ end Leaves
 section Assemblies
 
 open Classical in
-theorem moise322 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : Moise267)
-    (h314 : Moise314) : Moise322 := by
+theorem moise322_of_moise307 (h307 : Moise307) : Moise322 := by
   intro K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub hWfr hWK
   set P' : E3 := h (({u, v} : Finset E3).centroid ℝ id) with hP'
   have hcard : ({u, v} : Finset E3).card = 2 := Finset.card_pair huv
@@ -286,7 +288,8 @@ theorem moise322 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
       ⟨mem_union_left _ hBuu, singleton_subset_iff.mpr (mem_union_right _ hBvv)⟩)
   obtain ⟨hcl₁, hsep₁⟩ := separates_initialSurface ht hu hv huv he hP' htw havoid
   obtain ⟨H, B, Jlo, Jhi, M, hch, -, hMcl, hMsep, hMP, hLcl, hloc⟩ :=
-    exists_descentSequence ht hu hv huv he hP' htw havoid hcl₁ hsep₁ h303 h286 h267 h314
+    exists_descentSequence ht hu hv huv he hP' htw havoid hcl₁ hsep₁ moise303 moise286 moise267
+      moise314
   have hP'U : P' ∈ annularChain H B P' := by
     change P' ∈ (⋃ i, H i ∪ B i) ∪ {P'}
     exact mem_union_right _ (mem_singleton _)
@@ -375,17 +378,15 @@ theorem moise322 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
   exact ⟨_, _, _, U₁, U₂, hE, rfl, hUW, hsepU, hEK, hU₁, hU₂, hc₁, hc₂, hd, hcover, hpre,
     hf₁, hf₂, hF₁, hF₂⟩
 
-theorem moise321 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : Moise267)
-    (h314 : Moise314) : Moise321 := by
+theorem moise321_of_moise307 (h307 : Moise307) : Moise321 := by
   intro K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub hWfr hWK
   obtain ⟨Ec, Eint, Ebd, -, -, hpc, hbd, hsub, hsep, hK, -⟩ :=
-    moise322 h307 h303 h286 h267 h314 K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub
+    moise322_of_moise307 h307 K N C D Dbd h N' ht u hu v hv huv he W hW hWint hWsub
       hWfr hWK
   exact ⟨Ec, Eint, Ebd, hpc, hbd, hsub, hsep, hK⟩
 
 open Classical in
-theorem moise323 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : Moise267)
-    (h314 : Moise314) : Moise323 := by
+theorem moise323_of_moise307 (h307 : Moise307) : Moise323 := by
   intro K N C D Dbd h N' ht V hV
   obtain ⟨W, hW⟩ := exists_edgeCollarFamily ht V hV
   have hall : ∀ e : Finset E3, ∃ Ec Eint Ebd : Set E3, e ∈ K.faces → e.card = 2 →
@@ -406,7 +407,7 @@ theorem moise323 (h307 : Moise307) (h303 : Moise303) (h286 : Moise286) (h267 : M
       obtain ⟨hWsub, hWfr⟩ := hWpair u (Finset.mem_insert_self u {v}) v
         (Finset.mem_insert_of_mem (Finset.mem_singleton_self v)) huv
       obtain ⟨Ec, Eint, Ebd, hS⟩ :=
-        (moise322 h307 h303 h286 h267 h314).exists_splitsDualCellsAlong ht hu hv huv he hWcl
+        (moise322_of_moise307 h307).exists_splitsDualCellsAlong ht hu hv huv he hWcl
           hWint hWsub hWfr hWK
       exact ⟨Ec, Eint, Ebd, fun _ _ => ⟨u, v, hu, hv, huv, rfl, hS⟩⟩
     · exact ⟨∅, ∅, ∅, fun he hc => absurd ⟨he, hc⟩ hedge⟩
@@ -479,6 +480,15 @@ theorem moise324 : Moise324 := by
     exists_reducedDisk_of_crossesPseudoCell hE hBl hPB hDc hDcE hPDc hBE hgp
       Metric.isOpen_ball hBδ hDcδ
   exact ⟨Δ, Δbd, r, hr, hΔbd, hΔδ, hΔE, DJ, DJint, hDJ, hDJE, hDJbd, hPDJ⟩
+
+theorem moise322 : Moise322 :=
+  moise322_of_moise307 moise307
+
+theorem moise321 : Moise321 :=
+  moise321_of_moise307 moise307
+
+theorem moise323 : Moise323 :=
+  moise323_of_moise307 moise307
 
 end Assemblies
 

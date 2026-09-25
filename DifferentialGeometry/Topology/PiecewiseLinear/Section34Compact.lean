@@ -255,10 +255,10 @@ Interface change 2026-09-23 (owner decision after the lease-b worker's finding, 
 stated gives `f` only on its own derived neighbourhood with one global `ε`, which cannot place the
 images of the vertex cells inside the neighbourhoods the graph frame prescribes, while the book
 (p. 239) chooses the cut's `N` first and applies 33.1 to it.  `Moise331OnTube` is proved from the
-same three named inputs (`moise331OnTube h323 h324 h264`) and implies `Moise331`
-(`Moise331OnTube.moise331`), so the endpoint's dependency set is unchanged; a consumer holding
-`Moise323`, `Moise324` and `Moise264` calls
-`moise341_of_onNeighborhood (moise331OnTube h323 h324 h264)`.
+same three named inputs (`moise331OnTube_of_moise323_of_moise324_of_moise264Orientable`) and
+implies `Moise331` (`Moise331OnTube.moise331`), so the endpoint's dependency set is unchanged;
+`Moise341Producer` supplies the unconditional `moise341 : Moise341` as
+`moise341_of_onNeighborhood moise331OnTube`.
 
 Proved and imported (external collaborator, PR #11, lead-accepted on 2026-09-23 with zero-diagnostic
 checks and an axiom/linter audit; statement byte-identical): `exists_compactBigonSlide` (module
