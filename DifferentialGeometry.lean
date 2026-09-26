@@ -14128,6 +14128,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.MinDomain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.ExponentialSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.Truncation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.ExponentialFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.Jacobian
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.JacobianUnconditional
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.Index
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.IndexChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientLimitCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceCone
@@ -14151,3 +14156,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.ScalarLapla
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCapCurvatureJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingScalarEvolutionRate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartDerivativeBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceConstants
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitNoncollapsing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitBoundedCurvature
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornSeparationFrontierScalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutNecksLongSlab
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFactory

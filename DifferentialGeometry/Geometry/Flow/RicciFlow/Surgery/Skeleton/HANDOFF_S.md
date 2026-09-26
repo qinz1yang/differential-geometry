@@ -219,3 +219,18 @@ open; G3 (ε-monotonicity of spatial witnesses) closed by
 `IncomingSlab.spatiallyCanonicalBefore_mono_eps` (`Perelman/CanonicalNeighborhood/SpatialCanonicalWitnessMonotone.lean`);
 G4 = B14 (record bounds `δbound := min δmax δold`, `ηrecord`, `p₀`, repackaging into S's
 `∃ Q E hinit q`) running.
+
+## Update 2026-09-26 (S ⇐ `hlong`; lanes SB12/SB14, accepted by ACC7)
+
+`uniformDebitSurgeryStepStrong_of_long_slabs P₀ g₀ hlong : UniformDebitSurgeryStepStrong P₀ g₀`
+(`Contract/UniformDebitSurgeryStepOfFactory.lean`) is the final S reduction: F* fed by B12's fine
+cut necks (`TerminalCorePresentation.exists_fineCutNecks_of_long_terminal_slab`,
+`Contract/HornFineCutNecksLongSlab.lean`, `∃ eta εcone` first so that `ε := min εbar (min εF εcone)`
+is chosen before the constants), with `Λ := recenterConstant`, record bounds `min δold δmax`,
+`min ρmax 1`, and the terminal limit metric from `IncomingSlab.nonempty_terminalLimitMetric`. Its
+only hypothesis is `hlong : ∀ B θ : ℝ, 0 < B → 0 < θ → ∃ Qθ : ℝ, ∀ H : RetainedCoreHistory P₀,
+InitialIdentification P₀ g₀ H.toHistory → H.horizon < B → ∀ s (G : (H.stage last).IncomingSlab
+(H.time last) s), s ≤ B → G.flow.base.metric (H.time last) = H.initialMetric last →
+G.SingularEndpoint → ∀ Qc, Qθ ≤ Qc → 2 * θ ≤ Qc * (s - H.time last)`: every singular final slab is
+long at the fine threshold. This is G2 = B13 (short slabs), which `OPUS_FILL_LOG_SB13.md` shows is
+the Crossing X-core applied to horn points; the S leaf closes when that core is built.
