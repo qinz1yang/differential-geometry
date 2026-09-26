@@ -238,7 +238,7 @@ theorem exists_poincare_controlled_extinction_of_uniformDebitSurgeryStepStrong
 
 theorem hext_of_uniformDebitSurgeryStepStrong_of_canonicalNeighborhoodsStrong
     (hstep : ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric), UniformDebitSurgeryStepStrong P₀ g₀)
-    (hcn : ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric),
+    (hcn : ∀ (P₀ : OrientedThreeStage.{u}) [SimplyConnectedSpace P₀.Carrier] (g₀ : P₀.Metric),
       CanonicalNeighborhoodsThroughSurgeryStrong P₀ g₀) :
     ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
       [SimplyConnectedSpace M.Carrier] (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
@@ -253,7 +253,7 @@ theorem hext_of_uniformDebitSurgeryStepStrong_of_canonicalNeighborhoodsStrong
 
 theorem smoothPoincareConjecture_of_uniformDebitSurgeryStepStrong_of_canonicalNeighborhoodsStrong
     (hstep : ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric), UniformDebitSurgeryStepStrong P₀ g₀)
-    (hcn : ∀ (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric),
+    (hcn : ∀ (P₀ : OrientedThreeStage.{u}) [SimplyConnectedSpace P₀.Carrier] (g₀ : P₀.Metric),
       CanonicalNeighborhoodsThroughSurgeryStrong P₀ g₀) :
     smoothPoincareConjecture.{u} :=
   smoothPoincareConjecture_of_controlledExtinction

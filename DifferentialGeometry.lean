@@ -14221,12 +14221,15 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowPointScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowPointTimeSlack
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryHorizonExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryNoncollapsingSliceTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialLayerNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialSlabScalarWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalPullScalarGradient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckAlternativesLocalPull
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeWindowContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliceBallBoundTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliverWindowData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmallScaleNoncollapsingThroughSurgery
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageBallVolumeRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageComponentSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapSideExclusion
