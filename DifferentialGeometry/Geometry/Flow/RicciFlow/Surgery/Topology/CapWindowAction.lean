@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.EventContinuation
+import Mathlib.Topology.Order.LeftRight
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
@@ -2418,6 +2420,113 @@ theorem exists_uniform_regularCrossing_of_regularizedCost_lt_at_event_time
     hscalarInitial hderiv i hcanonical t p hball v hv hvE hstart hscalar
     gamma hgamma hint hrecent hnode hsmall
   exact ⟨x, hold ▸ hx⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Topology NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+theorem exists_uniform_continuousAt_spatial_regularizedCost_at_event
+    (A E rTerm qDeriv a₀ c ρ : ℝ) (Cderiv : ℝ≥0)
+    (hE : 0 ≤ E) (hrTerm : 0 < rTerm) (hqDeriv : 0 < qDeriv)
+    (ha₀ : 0 < a₀) (hc : 0 < c) (hρ : 0 < ρ) :
+    ∃ m₀ : ℕ, ∃ R₀ ε₀ δ₀ : ℝ, 0 < R₀ ∧ 0 < ε₀ ∧ 0 < δ₀ ∧
+      ∀ (H : ObservedHistory.{u}) (parameters : CutoffParameters),
+      m₀ ≤ parameters.modelOrder → R₀ ≤ parameters.modelRadius →
+      parameters.modelAccuracy ≤ ε₀ → parameters.recenterConstant ≤ c →
+      (∀ j : Fin H.eventCount, parameters.delta (H.time j.succ) ≤ δ₀) →
+      (∀ j : Fin H.eventCount, parameters.neckRadius (H.time j.succ) ≤ ρ) →
+      ∀ records : ∀ j, GeometricCutoffRecord H j parameters,
+      (∀ y, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ y) →
+      (∀ y, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) y) →
+      (∀ (j : Fin (H.eventCount + 1)) (y : (H.stage j).Carrier),
+        ∀ s ∈ Ioo (H.time j) (H.stageEndTime j),
+          qDeriv < metricScalarAt (H.stageMetric j s) y →
+            |derivWithin (fun z => metricScalarAt (H.stageMetric j z) y) (Iic s) s| ≤
+              Cderiv * metricScalarAt (H.stageMetric j s) y ^ 2) →
+      ∀ i : Fin H.eventCount,
+      (∀ b : (H.event i).RetainedBoundaryIndex, ((records i).static b).hasCanonicalWindow) →
+      ∀ (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier),
+      H.isParabolicallyRmControlledBall t p rTerm →
+      ∀ (v : ℝ), 0 < v → v ≤ E →
+      ∀ hstart : t.val - v ^ 2 = H.time i.succ,
+      let hle : i.succ ≤ H.activeStage t :=
+        H.le_activeStage t i.succ (by rw [← hstart]; exact sub_le_self _ (sq_nonneg v));
+      (∃ q : (H.stage i.succ).Carrier,
+        H.regularizedCost i.succ (H.activeStage t) hle t (3 / a₀) 0 v p q < (A : WithTop ℝ)) →
+      ContinuousAt (fun w : ℝ => if w ≤ v then
+          sInf (range (H.regularizedCost i.succ (H.activeStage t) hle t (3 / a₀) 0 w p)) else
+          sInf (range (H.regularizedCost i.castSucc (H.activeStage t)
+            (i.castSucc_le_succ.trans hle) t (3 / a₀) 0 w p))) v := by
+  classical
+  have hB : 0 ≤ 3 / a₀ := (div_pos (by norm_num : (0 : ℝ) < 3) ha₀).le
+  obtain ⟨m₀, R₀, ε₀, δ₀, hR₀, hε₀, hδ₀, hcross⟩ :=
+    exists_uniform_regularCrossing_of_regularizedCost_lt_at_event_time.{u}
+      A (3 / a₀) E rTerm qDeriv a₀ c ρ Cderiv hB hE hrTerm hqDeriv ha₀ hc hρ
+  refine ⟨m₀, R₀, ε₀, δ₀, hR₀, hε₀, hδ₀, ?_⟩
+  intro H parameters hm hmodelRadius herror hpc hδ hρp records hfixed hscalarInitial hderiv
+    i hcanonical t p hball v hv hvE hstart hle hlow
+  have hupper : t.val - (0 : ℝ) ^ 2 ∈ H.stageDomain (H.activeStage t) := by
+    simpa only [zero_pow (by decide : 2 ≠ 0), sub_zero] using H.activeStage_mem t
+  have hpreserve := H.fixedHamiltonIveyRegion_and_scalar_lower records ha₀ hfixed hscalarInitial
+  have hfloor (first : Fin (H.eventCount + 1)) (b : ℝ)
+      (j : H.StageInterval first (H.activeStage t))
+      (r : ℝ) (hr : r ∈ Ioo (H.regularizedStageStart t 0 j.val) (H.regularizedStageEnd t b j.val))
+      (x : (H.stage j.val).Carrier) :
+      -(3 / a₀) ≤ metricScalarAt (H.stageMetric j.val (t.val - r ^ 2)) x := by
+    have hdomain := H.mapsTo_regularizedStage_Ioo t 0 b j.val hr
+    have htime : 0 ≤ t.val - r ^ 2 := (H.stageDomain_subset j.val hdomain).1
+    have hratio : 3 / (a₀ + (t.val - r ^ 2)) ≤ 3 / a₀ :=
+      div_le_div_of_nonneg_left (by norm_num : (0 : ℝ) ≤ 3) ha₀ (le_add_of_nonneg_right htime)
+    have hneg : -(3 / a₀) ≤ -3 / (a₀ + (t.val - r ^ 2)) := by
+      simpa only [neg_div] using neg_le_neg hratio
+    exact hneg.trans (hpreserve.1 j.val (t.val - r ^ 2) hdomain x).2
+  obtain ⟨q₀, hq₀⟩ := hlow
+  have hfinite : ∃ q : (H.stage i.succ).Carrier,
+      H.regularizedCost i.succ (H.activeStage t) hle t (3 / a₀) 0 v p q ≠ ⊤ := by
+    refine ⟨q₀, ?_⟩
+    intro heq
+    rw [heq] at hq₀
+    exact not_lt_of_ge le_top hq₀
+  obtain ⟨q, m, gamma, _, _, _, _, _, _, _, hcost, hminimum⟩ :=
+    H.exists_regularizedCost_spatial_minimizer i.succ (H.activeStage t) hle t (3 / a₀) 0 v
+      hupper (hfloor i.succ v) p hfinite
+  have hmA : (m : WithTop ℝ) < (A : WithTop ℝ) := (hminimum q₀).trans_lt hq₀
+  obtain ⟨x, hx⟩ := hcross H parameters hm hmodelRadius herror hpc hδ hρp records hfixed
+    hscalarInitial hderiv i hcanonical t p hball v hvE hstart (hfloor i.succ v) q
+    (by rw [hcost]; exact hmA)
+  obtain ⟨z, _, _, hz⟩ := hx
+  have heqInf : sInf (range (H.regularizedCost i.succ (H.activeStage t) hle t (3 / a₀) 0 v p)) =
+      (m : WithTop ℝ) := by
+    apply IsLeast.csInf_eq
+    refine ⟨⟨q, hcost⟩, ?_⟩
+    rintro y ⟨q', rfl⟩
+    exact hminimum q'
+  have hleft := H.tendsto_sInf_regularizedCost_left i.succ (H.activeStage t) hle t (3 / a₀) 0 v
+    hv hupper (hfloor i.succ v) p hfinite
+  have hright := H.tendsto_sInf_regularizedCost_after_event_of_minimum i (H.activeStage t) hle
+    (b := v + 1) (by linarith : v < v + 1) hstart hupper (hfloor i.castSucc (v + 1)) p z
+    (by rw [hz]; exact hcost) hminimum
+  rw [← heqInf] at hright
+  apply continuousAt_iff_continuous_left'_right'.mpr
+  constructor
+  · change Tendsto _ (𝓝[<] v) (𝓝 _)
+    simpa only [le_refl, ite_true] using hleft.congr' (by
+      filter_upwards [self_mem_nhdsWithin] with w hw
+      exact (if_pos (show w ≤ v from le_of_lt hw)).symm)
+  · change Tendsto _ (𝓝[>] v) (𝓝 _)
+    simpa only [le_refl, ite_true] using hright.congr' (by
+      filter_upwards [self_mem_nhdsWithin] with w hw
+      exact (if_neg (show ¬ w ≤ v from not_le_of_gt hw)).symm)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
