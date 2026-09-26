@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodsThroughSurgeryStrong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmallScaleNoncollapsingThroughSurgery
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeMonotone
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeLocalUpperBound
 
 
 set_option autoImplicit false
@@ -21,12 +23,12 @@ theorem uniformDebitSurgeryStepStrong (P₀ : OrientedThreeStage.{u}) (g₀ : P�
   sorry
 
 theorem historyReducedVolumeMonotone (P₀ : OrientedThreeStage.{u}) :
-    HistoryReducedVolumeMonotone P₀ := by
-  sorry
+    HistoryReducedVolumeMonotone P₀ :=
+  historyReducedVolumeMonotone_holds P₀
 
 theorem historyReducedVolumeLocalUpperBound (P₀ : OrientedThreeStage.{u}) :
-    HistoryReducedVolumeLocalUpperBound P₀ := by
-  sorry
+    HistoryReducedVolumeLocalUpperBound P₀ :=
+  historyReducedVolumeLocalUpperBound_holds P₀
 
 theorem historyReducedVolumeInitialLowerBound (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     HistoryReducedVolumeInitialLowerBound P₀ g₀ := by
