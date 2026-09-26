@@ -186,6 +186,17 @@ running, T9/H7b+/SB3/H8/H9 pending; small-scale S1–S4/S4′/R0–R4 DONE, S0/S
 C4: G, M2 (corrected shape: comparison set with closure in the window), M3 (universe-general
 pushforward) DONE; M1a/M1b/M4/M4★ running.
 
+### Status 2026-09-26 (ACC11)
+
+None closes a leaf. C3c: B13 composed headline accepted
+(`TracedRegionAncientLimitScalarBound`, `exists_bounded_ancient_pointed_flow_limit_of_spatially_canonical_before`),
+so glue B1–B13 are DONE; the assembly design `DESIGN_CROSSING_ASSEMBLY.md` (X0–X7, W1) is DONE, X4d is under
+review H14, lane XA1 (X0/X2/X5c/X5d) is running. C2: M (lane C2M: `CostSemicontinuity`, `CurveAction`,
+`MinDomainMeasurable`) DONE; H7b finishing; H7b+/T9/SB3/H8/H9 pending; small-scale S0/S6/S7 and the leaf
+running. C4 (B): M1a/M1b/M4/M4★ (lane C4B2) accepted, so M1a/M1b/M2/M3/M4/M4★/G are DONE; M5 running.
+CP1 (the collaborator's ball-volume bounds as new files) was dropped from ACC11: the owner ordered the
+full cherry-pick of the collaborator's commits (entry 23) instead.
+
 ### Quantifier order (kept; decided 2026-09-25 evening)
 
 `τmin` stays a model constant chosen with `C1 C2 Ctime` before `κ`. An attempt to choose `τmin` after

@@ -81,3 +81,4 @@
 - Ledgers: FREE_INPUTS (ACC10 section, S row), FILL_QUEUE (C2/small-scale, Crossing, S bricks, C4 rows),
   HANDOFF_C (ACC10 status), HANDOFF_S (H12 / B13 update).
 - Commits: fc6a793cc (Crossing: BS6 + B6G3 B7 + B6G4 B8–B11), 756ec665a (C2 C9), d6b5d9076 (small-scale SS1), 356b319c2 (S: T5 + T1), 9d37f6e47 (C4 (B) C4B1); root lines staged per group. Commit 6: designs, digest, finished-lane logs, ledgers.
+- Commit 6 = 88a4eec5a; pushed 1640a9e11..88a4eec5a to liao/codex/pc-target-c-psf. This line left uncommitted.

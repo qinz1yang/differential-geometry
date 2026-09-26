@@ -263,3 +263,15 @@ supplier exists. S is now reduced to the interface `FineCutNeckSupply` (T5, acce
 supply fork (interface strengthening vs fixed-parameter X-core vs reordering F*), laid out by the
 running design lane DESIGN_S_SUPPLY. Once T4 lands the skeleton leaf is the one-liner
 `uniformDebitSurgeryStepStrong_of_fineCutNeckSupply P₀ g₀ (fineCutNeckSupply P₀ g₀)`.
+
+## Update 2026-09-26 (ACC11; DESIGN_S_SUPPLY, review H13)
+
+`Skeleton/DESIGN_S_SUPPLY.md` lays out the T4 fork and recommends option A: strengthen the class with a
+witness-level cross-event strong-neck clause (Perelman's architecture); B (fixed-parameter X-core)
+reduces to A, C (reorder F*) and D (B12 weakening) are dead. Review H13
+(`consult/H13-s-strong-neck-supply-review-digest.md`): T4′ `FineCutNeckSupplyStrong` is OK as a
+conditional theorem and the two definitions are sound; the CN → strong-class supply is FIX (C3b:
+full/truncated strong-neck dichotomy, whole-tube survival and splicing; C3c: K1 uniform in κ and history
+E3; C4: old-point embedding and a strong-compatible `W`); S is not closed by it. The interface design
+(lane SA1, one statement for review) is running; the owner decision on the interface change is pending.
+T2 is retired. B13 composed (the Crossing X-core headline) is accepted (ACC11).
