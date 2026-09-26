@@ -235,6 +235,37 @@ private theorem metricUniformEquivalentOn_of_initial_movingRicci_bound
     exact hupper.trans
       (mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr (by nlinarith)) hn)
 
+theorem exists_metricDerivNormSupOn_time_lipschitz_of_initial_bounds
+    (U : Set M) (hU : IsOpen U) (R : SmoothRiemannianMetric I M)
+    (N : ℕ) (T Λ K : ℝ) (hT : 0 ≤ T) (hΛ : 1 ≤ Λ) (hK : 0 ≤ K)
+    (A : ℕ → ℝ) (hA : ∀ q, 1 ≤ q → q ≤ N → 0 ≤ A q) :
+    ∃ L : ℝ, 0 ≤ L ∧
+      ∀ (D : RealTimeInterval) (θ : ℝ), 0 ≤ θ → θ ≤ T →
+      Icc 0 θ ⊆ D.carrier → Ioo 0 θ ⊆ D.regular →
+      ∀ S : SolutionOn (I := I) (M := M) D, IsSolutionOn S →
+        (∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
+          ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
+            (fun p : ℝ × M => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
+              (S.base.metric p.1) x₀ p.2 i j)
+            (Icc 0 θ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) →
+        MetricUniformEquivalentOn U R (S.base.metric 0) Λ →
+        (∀ q, 1 ≤ q → q ≤ N → ∀ x ∈ U,
+          metricCovDerivNorm q (S.base.metric 0) R x ≤ A q) →
+        MovingShiBoundOn U 0 θ (fun _ t => S.base.metric t) N K →
+        ∀ V : Set M, V ⊆ U → ∀ s ∈ Icc 0 θ, ∀ t ∈ Icc 0 θ,
+          metricDerivNormSupOn V N (S.base.metric s) (S.base.metric t) R ≤ L * |s - t| := by
+  have hΛ' : 1 ≤ Λ * Real.exp (2 * K * T) := by
+    have hh : 1 ≤ Real.exp (2 * K * T) := Real.one_le_exp (by positivity)
+    nlinarith
+  obtain ⟨L, hL, hbound⟩ := exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
+    U hU R N T (Λ * Real.exp (2 * K * T)) K hΛ' hK A hA
+  refine ⟨L, hL, ?_⟩
+  intro D θ hθ hθT hslab hreg S hS hgram hinit hjet hRic V hVU s hs t ht
+  have hequiv := metricUniformEquivalentOn_of_initial_movingRicci_bound S hS U R
+    hθ hθT hK hslab hreg hinit (fun r hr x hx => hRic 0 (Nat.zero_le N) 0 r hr x hx)
+  exact hbound D θ hθ hθT hreg S hS hgram hequiv hjet hRic V hVU s hs t ht
+
+
 theorem exists_uniform_initial_metric_derivative_stability
     (U : Set M) (hU : IsOpen U) (R : SmoothRiemannianMetric I M)
     (N : ℕ) (T Λ K ε : ℝ) (hT : 0 < T) (hΛ : 1 ≤ Λ) (hK : 0 ≤ K) (hε : 0 < ε)
@@ -254,19 +285,14 @@ theorem exists_uniform_initial_metric_derivative_stability
         MovingShiBoundOn U 0 θ (fun _ t => S.base.metric t) N K →
         ∀ V : Set M, V ⊆ U → ∀ t ∈ Icc 0 (min η θ),
           metricDerivNormSupOn V N (S.base.metric t) (S.base.metric 0) R < ε := by
-  have hΛ' : 1 ≤ Λ * Real.exp (2*K*T) := by
-    have hh : 1 ≤ Real.exp (2*K*T) := Real.one_le_exp (by positivity)
-    nlinarith
-  obtain ⟨L, hL, hbound⟩ := exists_metricDerivNormSupOn_time_lipschitz_of_finite_ricci_bounds
-    U hU R N T (Λ * Real.exp (2*K*T)) K hΛ' hK A hA
+  obtain ⟨L, hL, hbound⟩ := exists_metricDerivNormSupOn_time_lipschitz_of_initial_bounds
+    U hU R N T Λ K hT.le hΛ hK A hA
   let η := min T (ε / (2*(L+1)))
   have hη : 0 < η := lt_min hT (div_pos hε (by positivity))
   refine ⟨η, hη, min_le_left _ _, ?_⟩
   intro D θ hθ hθT hslab hreg S hS hgram hinit hjet hRic V hVU t ht
-  have hequiv := metricUniformEquivalentOn_of_initial_movingRicci_bound S hS U R
-    hθ hθT hK hslab hreg hinit (fun r hr x hx => hRic 0 (Nat.zero_le N) 0 r hr x hx)
   have htc : t ∈ Icc 0 θ := ⟨ht.1, ht.2.trans (min_le_right _ _)⟩
-  have hh := hbound D θ hθ hθT hreg S hS hgram hequiv hjet hRic V hVU
+  have hh := hbound D θ hθ hθT hslab hreg S hS hgram hinit hjet hRic V hVU
     t htc 0 ⟨le_rfl,hθ⟩
   rw [sub_zero, abs_of_nonneg ht.1] at hh
   have htle : t ≤ ε / (2*(L+1)) := (ht.2.trans (min_le_left _ _)).trans (min_le_right _ _)

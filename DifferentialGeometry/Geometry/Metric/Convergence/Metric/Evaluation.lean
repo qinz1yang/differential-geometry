@@ -144,4 +144,56 @@ theorem metricCPConvergenceOn_of_uniform_approximation_of_lipschitz
   have htri := metricDerivNorm_triangle q (G i (t i)) (g (t i)) (g a) R x
   nlinarith [dist_nonneg (x := t i) (y := a)]
 
+theorem metricCPConvergenceOn_at_terminal_times_of_time_lipschitz
+    {G : ℕ → ℝ → SmoothRiemannianMetric I M} {g : ℝ → SmoothRiemannianMetric I M}
+    (R : SmoothRiemannianMetric I M) {K : Set M} (hK : IsCompact K)
+    {a b : ℝ} (hab : a < b) {p : ℕ} {L L' : ℝ} (hL : 0 ≤ L) (hL' : 0 ≤ L')
+    (hconv : ∀ t ∈ Ico a b, MetricCPConvergenceOn K p (fun i => G i t) (g t) R)
+    (hlip : ∀ s ∈ Icc a b, ∀ t ∈ Icc a b, ∀ q : ℕ, q ≤ p → ∀ x ∈ K,
+      metricDerivNorm q (g s) (g t) R x ≤ L' * |s - t|)
+    {time : ℕ → ℝ} (htime : Tendsto time atTop (𝓝 b))
+    (hseq : ∀ᶠ i in atTop, ∀ s ∈ Icc a (time i), ∀ t ∈ Icc a (time i),
+      ∀ q : ℕ, q ≤ p → ∀ x ∈ K,
+        metricDerivNorm q (G i s) (G i t) R x ≤ L * |s - t|) :
+    MetricCPConvergenceOn K p (fun i => G i (time i)) (g b) R := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  intro ε hε
+  let δ := ε / (3 * (2 * L + L' + 1))
+  have hden : 0 < 3 * (2 * L + L' + 1) := by positivity
+  have hδ : 0 < δ := div_pos hε hden
+  have hbudget : (2 * L + L' + 1) * δ = ε / 3 := by
+    dsimp only [δ]
+    field_simp
+  let c := max a (b - δ)
+  have hac : a ≤ c := le_max_left _ _
+  have hcb : c < b := max_lt hab (by linarith only [hδ])
+  have hbc : b - c ≤ δ := by have := le_max_right a (b - δ); linarith only [this]
+  obtain ⟨N₀, hN₀⟩ := hconv c ⟨hac, hcb⟩ (ε / 3) (by positivity)
+  obtain ⟨N₁, hN₁⟩ := Metric.tendsto_atTop.mp htime δ hδ
+  obtain ⟨N₂, hN₂⟩ := eventually_atTop.mp
+    (hseq.and (htime.eventually (Ioi_mem_nhds hcb)))
+  refine ⟨max N₀ (max N₁ N₂), fun i hi => ?_⟩
+  have hi₀ : N₀ ≤ i := (le_max_left _ _).trans hi
+  have hi₁ : N₁ ≤ i := (le_max_left N₁ N₂).trans ((le_max_right _ _).trans hi)
+  have hi₂ : N₂ ≤ i := (le_max_right N₁ N₂).trans ((le_max_right _ _).trans hi)
+  have hdist : |time i - b| < δ := by simpa only [Real.dist_eq] using hN₁ i hi₁
+  have hci : c < time i := (hN₂ i hi₂).2
+  have hic : time i - c ≤ 2 * δ := by
+    have hh := le_abs_self (time i - b)
+    linarith only [hh, hdist, hbc]
+  apply lt_of_le_of_lt (metricDerivNormSupOn_le_of_forall K p _ _ R (2 * ε / 3)
+    (by positivity) ?_) (by linarith)
+  intro q hq x hx
+  have hmid := (derivNorm_le_sup hK hq (G i c) (g c) R hx).trans_lt (hN₀ i hi₀)
+  have hfirst := (hN₂ i hi₂).1 (time i) ⟨hac.trans hci.le, le_rfl⟩ c ⟨hac, hci.le⟩ q hq x hx
+  rw [abs_of_nonneg (sub_nonneg.mpr hci.le)] at hfirst
+  have hlast := hlip c ⟨hac, hcb.le⟩ b ⟨hab.le, le_rfl⟩ q hq x hx
+  rw [abs_of_nonpos (sub_nonpos.mpr hcb.le), neg_sub] at hlast
+  have hbfirst := hfirst.trans (mul_le_mul_of_nonneg_left hic hL)
+  have hblast := hlast.trans (mul_le_mul_of_nonneg_left hbc hL')
+  have htri := metricDerivNorm_triangle q (G i (time i)) (G i c) (g b) R x
+  have htri' := metricDerivNorm_triangle q (G i c) (g c) (g b) R x
+  nlinarith only [htri, htri', hmid, hbfirst, hblast, hbudget, hδ]
+
+
 end DifferentialGeometry.CheegerGromovCompactness

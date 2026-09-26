@@ -13923,6 +13923,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalEndComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalConeExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.InitialTimeConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.TerminalTimeConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.InitialTimeConvergence
 import DifferentialGeometry.Geometry.Metric.CurveEnergy.FiniteChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.FiniteChain
