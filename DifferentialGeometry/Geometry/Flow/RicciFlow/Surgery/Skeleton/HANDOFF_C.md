@@ -9,6 +9,21 @@ C1 is proved (`Surgery/Topology/PinchingThroughSurgery.lean`, `pinchingThroughSu
 `canonicalNeighborhoodContinuation`. Ledger: `Surgery/FREE_INPUTS.md`. Review record:
 `Surgery/consult/A-poincare-endgame-first-review-digest.md` (2026-09-25).
 
+## Skeleton path since 2026-09-26: the strong interface
+
+The skeleton consumes `CanonicalNeighborhoodsThroughSurgeryStrong`
+(`Surgery/Topology/CanonicalNeighborhoodsThroughSurgeryStrong.lean`), assembled by
+`canonicalNeighborhoodsThroughSurgeryStrong_of_leaves` from C1 `pinchingThroughSurgery` (proved), C2
+`noncollapsingThroughSurgery_of_reducedVolume_of_smallScale` on its four leaves, C3
+`canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing` with C3a `deepContinuation`
+proved (`Surgery/Topology/DeepContinuation.lean`) and C3b/C3c leaves, and C4
+`SpatialCanonicalContinuation` (leaf `spatialCanonicalContinuation`). The endpoint is
+`smoothPoincareConjecture_of_uniformDebitSurgeryStepStrong_of_canonicalNeighborhoodsStrong` with S
+the leaf `uniformDebitSurgeryStepStrong`. The strong C also outputs the gradient clause, the spatial
+clause, the initial pinching `a₀`, and `κ` with `TerminalNoncollapsedBefore`, and takes
+`p₀.recenterConstant ≤ Λ` (item 8 below is realised there). The old `CanonicalNeighborhoodsThroughSurgery`
+described below is weaker (its clauses minus the recenter constraint are the projection `canonicalNeighborhoodsThroughSurgeryOfRecenter_of_strong`) and is no longer on the skeleton path.
+
 ## What C says (after the 2026-09-25 repair)
 
 For every horizon `B > 0` and accuracy `0 < ε < 1/11` there are constants `C1 C2 ≥ 1`, a threshold

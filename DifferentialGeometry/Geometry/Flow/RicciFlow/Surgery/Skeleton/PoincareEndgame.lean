@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PinchingThroughSurgery
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodContinuationLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DeepContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodsThroughSurgeryStrong
 
 
 set_option autoImplicit false
@@ -13,8 +14,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem uniformDebitSurgeryStep (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    UniformDebitSurgeryStep P₀ g₀ := by
+theorem uniformDebitSurgeryStepStrong (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    UniformDebitSurgeryStepStrong P₀ g₀ := by
   sorry
 
 theorem historyReducedVolumeMonotone (P₀ : OrientedThreeStage.{u}) :
@@ -39,10 +40,6 @@ theorem noncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀
     (historyReducedVolumeMonotone P₀) (historyReducedVolumeLocalUpperBound P₀)
     (historyReducedVolumeInitialLowerBound P₀ g₀) (smallScaleNoncollapsingThroughSurgery P₀ g₀)
 
-theorem deepContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    DeepContinuation P₀ g₀ := by
-  sorry
-
 theorem capWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     CapWindowContinuation P₀ g₀ := by
   sorry
@@ -56,15 +53,19 @@ theorem canonicalNeighborhoodContinuation (P₀ : OrientedThreeStage.{u}) (g₀ 
   canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing P₀ g₀
     (deepContinuation P₀ g₀) (capWindowContinuation P₀ g₀) (crossingContinuation P₀ g₀)
 
-theorem canonicalNeighborhoodsThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    CanonicalNeighborhoodsThroughSurgery P₀ g₀ :=
-  canonicalNeighborhoodsThroughSurgery_of_continuation_of_noncollapsing_of_pinching P₀ g₀
+theorem spatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    SpatialCanonicalContinuation P₀ g₀ := by
+  sorry
+
+theorem canonicalNeighborhoodsThroughSurgeryStrong (P₀ : OrientedThreeStage.{u})
+    (g₀ : P₀.Metric) : CanonicalNeighborhoodsThroughSurgeryStrong P₀ g₀ :=
+  canonicalNeighborhoodsThroughSurgeryStrong_of_leaves P₀ g₀
     (pinchingThroughSurgery P₀ g₀) (noncollapsingThroughSurgery P₀ g₀)
-    (canonicalNeighborhoodContinuation P₀ g₀)
+    (canonicalNeighborhoodContinuation P₀ g₀) (spatialCanonicalContinuation P₀ g₀)
 
 theorem smoothPoincareConjecture_holds : smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_uniformDebitSurgeryStep_of_canonicalNeighborhoods
-    uniformDebitSurgeryStep canonicalNeighborhoodsThroughSurgery
+  smoothPoincareConjecture_of_uniformDebitSurgeryStepStrong_of_canonicalNeighborhoodsStrong
+    uniformDebitSurgeryStepStrong canonicalNeighborhoodsThroughSurgeryStrong
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

@@ -41,9 +41,9 @@ def LocalCap.toSpatial (c : LocalCap S eps x t U) : SpatialLocalCap (S.base.metr
   core := c.core
   core_inside := c.core_inside
   center_inside := c.center_inside
-  core_model := c.core_model
+  coreModel := c.core_model
   tube := c.tube
-  tube_map := c.tube_map
+  tubeMap := c.tube_map
   tube_domain := c.tube_domain
   tube_eq := c.tube_eq
   union_eq := c.union_eq
@@ -53,7 +53,7 @@ def LocalCap.toSpatial (c : LocalCap S eps x t U) : SpatialLocalCap (S.base.metr
   boundary_eq := c.boundary_eq
   boundaries_disjoint := c.boundaries_disjoint
   chain := c.chain.toSpatial
-  core_boundary_map := c.core_boundary_map
+  coreBoundaryMap := c.core_boundary_map
   core_boundary_eq := c.core_boundary_eq
 
 def RoundComponent.toSpatial (R : RoundComponent S eps x t U) :

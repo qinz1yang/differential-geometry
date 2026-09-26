@@ -210,8 +210,6 @@ end OrientedThreeStage.IncomingSlab
 
 open OrientedThreeStage.IncomingSlab
   (exists_uniform_canonical_threshold_of_parabolically_noncollapsed) in
-open OrientedThreeStage.IncomingSlab
-  (exists_uniform_canonical_threshold_of_parabolically_noncollapsed) in
 theorem deepContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     DeepContinuation P₀ g₀ := by
   intro B ε _ hε hε'
