@@ -234,3 +234,12 @@ InitialIdentification P₀ g₀ H.toHistory → H.horizon < B → ∀ s (G : (H.
 G.SingularEndpoint → ∀ Qc, Qθ ≤ Qc → 2 * θ ≤ Qc * (s - H.time last)`: every singular final slab is
 long at the fine threshold. This is G2 = B13 (short slabs), which `OPUS_FILL_LOG_SB13.md` shows is
 the Crossing X-core applied to horn points; the S leaf closes when that core is built.
+
+## Update 2026-09-26 (B3e on arbitrary slices; lane B3F, accepted by ACC8)
+
+The first input of B13 (`hlong`), bounded curvature at distance on arbitrary slices, is now proved on
+both slabs: `RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoint_terminal` and
+`…_event` (`Topology/BoundedCurvatureAtDistanceSlice{Terminal,Event}.lean`), for points that are not
+cap-window points. The rebased form (`hRP`), maximal traced depth, the ancient κ-limit's bounded
+curvature through the history (B6d glue, restated headline B11) and the cap-window exclusion remain
+open; `hlong` is still the only hypothesis of S.

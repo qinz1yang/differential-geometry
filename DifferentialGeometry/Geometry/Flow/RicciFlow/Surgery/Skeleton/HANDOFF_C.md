@@ -149,6 +149,21 @@ theorem plus `RetainedCoreHistory.exists_slice_bounds_at_slab_start` from
 before its own `qcan`; `ρmax` may depend on `qcan` (B5 needs `ρmax² ≤ min (Cbirth/(4 qcan)) (a₀/2)`
 with `Cbirth` fixed from `Ctime` before `Θ`, `OPUS_FILL_LOG_M6.md`).
 
+### Status 2026-09-26 (ACC8)
+
+C3c inputs accepted, none closes the leaf. B3e holds on both slabs: on the terminal slab
+`RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoint_terminal`
+(`Topology/BoundedCurvatureAtDistanceSliceTerminal.lean`) and on an event slab `…_event`
+(`BoundedCurvatureAtDistanceSliceEvent.lean`, through the prefix history `H.prefixAt j.castSucc`,
+`RetainedCoreHistoryPrefix{,Transport}.lean`), each with an `eventually_…` sequence form. Base-slice
+inputs: the witnesses at `t`, `¬CapWindowPoint`, noncollapsing up to and including `t`, pinching;
+the derivative and gradient clauses only on `Ioo a t` (`OPUS_FILL_LOG_B3F.md`, flag F-g). The
+rebased form for `hRP` (¬`CapWindowPoint` at the recentre point) is OPEN. B6d's limit-level
+transfer (`AncientPointedFlowLimitTransfer.lean`) is proved with the hypothesis `hEreg`, which the
+history consumer cannot meet at slice times exceptional for infinitely many `n`; B11 of
+`DESIGN_B6D_GLUE.md` restates it. B6b'' (`TracedRegionAncientLimitWitnesses.lean`) and the glue
+bricks B1–B3/B12 are accepted; B4–B7, NC0, X and BASESLICE are running.
+
 ### Quantifier order (kept; decided 2026-09-25 evening)
 
 `τmin` stays a model constant chosen with `C1 C2 Ctime` before `κ`. An attempt to choose `τmin` after

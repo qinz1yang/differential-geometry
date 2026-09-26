@@ -26,3 +26,4 @@
   only hypothesis.
 - Ledgers: FREE_INPUTS (S row, ACC7 commit-B section), FILL_QUEUE (S bricks, Crossing, 22 bricks,
   merges), HANDOFF_S (final S reduction and `hlong`).
+- Commit B = 9126abc30, pushed. This line left uncommitted.

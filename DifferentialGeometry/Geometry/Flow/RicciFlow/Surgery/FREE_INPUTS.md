@@ -317,6 +317,40 @@ None of these closes a leaf.
   minimizers, no conjugate points before `v`, chain existence; non-seam breakpoints only).
   H7b (Jacobian monotonicity) and H7c (Jacobian limit) running.
 
+### Accepted 2026-09-26 (ACC8; sorry-free, foundational axioms, 13 linters clean)
+
+None of these closes a leaf.
+* C3c (Crossing) / S (B13): B3e on BOTH slabs (lane B3F).
+  `RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoint_terminal`
+  (`Topology/BoundedCurvatureAtDistanceSliceTerminal.lean`) and `…_event`
+  (`BoundedCurvatureAtDistanceSliceEvent.lean`, via the prefix history `H.prefixAt j.castSucc` of
+  `RetainedCoreHistoryPrefix.lean` and the transports of `RetainedCoreHistoryPrefixTransport.lean`),
+  plus `eventually_…` sequence forms. Bounded curvature at distance at an arbitrary slice point that
+  is not a cap-window point. Suppliers: the chain-of-balls trace capture
+  (`BackwardTraceChainCapture.lean`), the scalar bound along the cone-end ray
+  (`ConeEndRayScalarBound.lean`), and the traced limit/cone/second-level/positive/buffer forms of
+  B3c/B3d (`BoundedCurvatureAtDistance{TracedLimit, TracedCone, TracedSecondLevel, TracedPositive,
+  ChainBuffers, Slice}.lean`). OPEN: the rebased form used by `hRP` (¬`CapWindowPoint` at the
+  recentre point, review G).
+* C3c: B6d's limit-level transfer (`Topology/AncientPointedFlowLimitTransfer.lean`,
+  `FiniteHorn.exists_scalar_bound_of_ancient_pointed_flow_limit_of_approximants`) is PROVED as
+  stated. Its hypothesis `hEreg` (every limit time is eventually non-exceptional) cannot be met by
+  the history consumer, so it does not discharge B6d. B11 of `Skeleton/DESIGN_B6D_GLUE.md`
+  restates the headline. B6b'' (`TracedRegionAncientLimitWitnesses.lean`) proves the local pull of
+  witnesses and the survivor-map derivative bounds. B6d-glue bricks B1
+  (`Topology/Sequences/ExceptionalSetApproximation.lean`), B2
+  (`Estimates/RicciLowerMetricComparison.lean`), B3
+  (`Geometry/Curvature/CurvatureOperator/RicciLowerBound.lean`,
+  `Perelman/CanonicalNeighborhood/PinchingRicciLowerBound.lean`) and B12
+  (`TracedRegionAncientLimitDerivativeCutoff.lean`) are accepted. B4–B7, B11, NC0, X and
+  BASESLICE are running.
+* C2 tools: CF (`Topology/HistoryParabolicBallForwardFlow.lean`,
+  `ObservedHistory.exists_common_flow_past_time_of_parabolicallyRmControlledBall`) gives the common
+  flow past the base time on `closed a t₁` with `t < t₁`, which is route (B) of G1d. H7c
+  (`Topology/HistoryLGeometry/JacobianLimit.lean`) gives the small-`v` limit of the history reduced
+  Jacobian and the Gaussian bound `exists_pos_historyReducedJacobian_le_gaussian` for history
+  minimizers, only for `v` below the window's `δ`. H7b, C2M, C2E, C2W1 and R0 are running.
+
 ### Equivalence classes (rewrites; not progress)
 
 * `HasExtinctRetainedCoreHistory M g`, `HasExtinctRetainedCoreTower`, `HasExtinctObservationTower`,

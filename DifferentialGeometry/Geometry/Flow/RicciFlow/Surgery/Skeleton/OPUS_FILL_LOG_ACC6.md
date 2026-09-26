@@ -30,3 +30,4 @@
 - Ledgers: FREE_INPUTS (ACC6 section, S row), FILL_QUEUE (22 bricks, C3b, Crossing, S bricks,
   merges), HANDOFF_S (F* paragraph with `FineCutNecks` and the binder order, checked against the
   source). Review F digest committed. `git diff --check` clean. Committing.
+- 2026-09-26T13:40Z committed 0798da941 (31 files), pushed to liao/codex/pc-target-c-psf. This line left uncommitted.
