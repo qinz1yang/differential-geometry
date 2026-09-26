@@ -13103,6 +13103,7 @@ import DifferentialGeometry.Geometry.Exponential.Intrinsic.Framed.BallImage
 import DifferentialGeometry.Topology.Manifold.BallComplement
 import DifferentialGeometry.Geometry.Neck.BallComplement
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BackwardScalarExterior
+import DifferentialGeometry.Topology.Sequences.DiagonalChoice
 import DifferentialGeometry.Topology.Sequences.DiagonalSubsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ComparisonCongruence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Gluing
@@ -14125,6 +14126,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalAlternativeComparisonTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalWitnessTimeRestrict
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.InverseSqrtScalarDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardSpatialCanonical
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowDerivativeBounds
@@ -14269,6 +14271,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupplyStrong
 import DifferentialGeometry.Topology.Sequences.ExceptionalSetApproximation
 import DifferentialGeometry.Topology.Sequences.NestedSubsequence
+import DifferentialGeometry.Topology.Sequences.RescalingFactor
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.RicciLowerMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.UniformMetricTimeLipschitz
@@ -14311,6 +14314,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEventCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEventPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAnchor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceBackwardTraces
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceSliver
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRegularCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRegularCrossingBefore
@@ -14353,7 +14357,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryStro
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryStrongNeckTrigger
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryStrongNeckUniform
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingPrefix
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornChainBackwardTraces
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornSliceSeparatedSides
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornTerminalScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialEndpointPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialLayerNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialRegularBlock
@@ -14370,6 +14376,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckAlterna
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RegularMinimizerEndpointBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryExtendAt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryExtendAtBefore
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryExtendAtTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryPrefixInvariants
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ScalarComparisonAtDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeWindowContinuity
@@ -14387,6 +14394,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorTra
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalActionCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalActionRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapSideExclusion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCoreFrontierDistance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalFineNeckOfSpatialNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalHornCanonicalNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalHornCanonicalNeckUniform
