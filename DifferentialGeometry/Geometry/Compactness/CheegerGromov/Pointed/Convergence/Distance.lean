@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Metric.Instances
 import DifferentialGeometry.Geometry.Metric.Comparison.PartialDiffeomorphDistance
 import DifferentialGeometry.Geometry.Metric.Comparison.CompactMapDistance
@@ -70,6 +71,76 @@ theorem eventually_riemannianEDistOf_map_lt_of_metric_convergence
   have h := Geometry.Riemannian.eventually_riemannianEDist_map_lt F.map hupper x y hxy'
   filter_upwards [h] with k hk
   rwa [riemannianEDistOf_eq_riemannianEDist (X.obj (subseq k)).metric (hnorms k)]
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem PointedRiemannianConvergenceMaps.exists_precompact_neighborhood_with_image_in_ball
+    {X : PointedRiemannianSeq.{u, uE, uH} I} {P : PointedRiemannianManifold.{u, uE, uH} I}
+    {f : ℕ → ℕ} (F : PointedRiemannianConvergenceMaps X P f) (C : MetricConvergenceData F)
+    (hreference : ∀ n, (C.domain n).referenceMetric = (C.domain n).limitMetric)
+    {r : ℝ} (hr : 0 < r) :
+    ∃ V : TopologicalSpace.Opens P.M, P.basepoint ∈ V ∧ PathConnectedSpace V ∧
+      IsCompact (closure (V : Set P.M)) ∧ ∀ᶠ n in atTop,
+        closure (V : Set P.M) ⊆ F.source n ∧
+        ∀ x ∈ (V : Set P.M), riemannianEDistOf (X.obj (f n)).metric
+          (X.obj (f n)).basepoint (F.map n x) < ENNReal.ofReal r := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  obtain ⟨R, hR, hcompact, _⟩ :=
+    Geometry.Metric.exists_pos_isCompact_riemannianClosedBallOf_subset_of_mem_nhds
+      P.metric P.basepoint (Filter.univ_mem : (univ : Set P.M) ∈ 𝓝 P.basepoint)
+  let d := min R (r / 4)
+  have hd : 0 < d := lt_min hR (by positivity)
+  have hdR : d ≤ R := min_le_left _ _
+  have hdr : d ≤ r / 4 := min_le_right _ _
+  have hdcompact : IsCompact (riemannianClosedBallOf P.metric P.basepoint d) :=
+    hcompact.of_isClosed_subset (Geometry.Metric.isClosed_riemannianClosedBallOf _ _ _)
+      (riemannianClosedBallOf_mono _ _ hdR)
+  let V : TopologicalSpace.Opens P.M := ⟨riemannianBallOf P.metric P.basepoint d,
+    isOpen_lt (Geometry.Riemannian.continuous_riemannianEDist P.metric P.basepoint) continuous_const⟩
+  have hclosure : closure (V : Set P.M) ⊆ riemannianClosedBallOf P.metric P.basepoint d := by
+    apply closure_minimal
+    · intro x hx
+      exact le_of_lt (show riemannianEDistOf P.metric P.basepoint x < ENNReal.ofReal d from hx)
+    · exact Geometry.Metric.isClosed_riemannianClosedBallOf _ _ _
+  refine ⟨V, ?_, ?_, hdcompact.of_isClosed_subset isClosed_closure hclosure, ?_⟩
+  · change riemannianEDistOf P.metric P.basepoint P.basepoint < ENNReal.ofReal d
+    rw [riemannianEDistOf_self]
+    exact ENNReal.ofReal_pos.mpr hd
+  · exact isPathConnected_iff_pathConnectedSpace.mp
+      (isPathConnected_riemannianBallOf P.metric P.basepoint hd)
+  · have hquadratic : ∀ᶠ n in atTop,
+        riemannianClosedBallOf P.metric P.basepoint d ⊆ F.source n ∧
+        ∀ z ∈ riemannianClosedBallOf P.metric P.basepoint d, ∀ v : TangentSpace I z,
+          (X.obj (f n)).metric.inner (F.map n z) (mfderiv I I (F.map n) z v)
+            (mfderiv I I (F.map n) z v) ≤ (2 : ℝ) ^ 2 * P.metric.inner z v v := by
+      by_cases hdim : Module.finrank ℝ E = 0
+      · obtain ⟨N, hN⟩ := F.source_subset hdcompact
+        filter_upwards [eventually_ge_atTop N] with n hn
+        refine ⟨hN n hn, ?_⟩
+        intro z _ v
+        let _ : Subsingleton (TangentSpace I z) := (Module.finrank_zero_iff (R := ℝ) (M := E)).mp hdim
+        have hv : v = 0 := Subsingleton.elim _ _
+        simp only [hv, map_zero, mul_zero, le_refl]
+      · let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+        obtain ⟨N, hN⟩ :=
+          PDE.RicciFlow.Perelman.KappaSolutions.exists_pointed_full_ambient_quadratic_control
+            C hreference _ hdcompact 3 (by norm_num)
+        filter_upwards [eventually_ge_atTop N] with n hn
+        refine ⟨(hN n hn).1, ?_⟩
+        intro z hz v
+        have hh := (abs_le.mp ((hN n hn).2 z hz v)).2
+        nlinarith only [hh]
+    filter_upwards [hquadratic] with n hn
+    refine ⟨hclosure.trans hn.1, ?_⟩
+    intro x hx
+    have hh := PDE.RicciFlow.Perelman.KappaSolutions.edistOf_map_le_of_metric_upper_on_ball
+      P.metric (X.obj (f n)).metric (F.partialDiffeomorph n) P.basepoint x hd
+      (by norm_num : (0 : ℝ) < 2) hn.1 hn.2 hx
+    rw [F.basepoint_map] at hh
+    have hb : ENNReal.ofReal (2 : ℝ) * riemannianEDistOf P.metric P.basepoint x <
+        ENNReal.ofReal (2 * d) := by
+      rw [ENNReal.ofReal_mul (by norm_num : (0 : ℝ) ≤ 2)]
+      exact ENNReal.mul_lt_mul_right (by norm_num) ENNReal.ofReal_ne_top hx
+    exact (hh.trans_lt hb).trans ((ENNReal.ofReal_lt_ofReal_iff hr).mpr (by linarith))
 
 end DifferentialGeometry.CheegerGromovCompactness
 
