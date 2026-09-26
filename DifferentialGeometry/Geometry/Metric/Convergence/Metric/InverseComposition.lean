@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Distance.LocalPullCompactness
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.MapDistance
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorphTrans
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
@@ -382,3 +383,192 @@ theorem exists_inverse_composition_distance_comparison_of_tendsto_marks
     (Eventually.of_forall fun _ => bot_le) hbound
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+
+section
+open Manifold
+
+namespace DifferentialGeometry.Geometry.Metric
+open DifferentialGeometry.Geometry.Curvature
+
+variable {E F H H' M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [TopologicalSpace H] [TopologicalSpace H']
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F H'}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace H' N] [IsManifold J ∞ N]
+
+private theorem exists_inverse_partialDiffeomorph_of_localPullMetric
+    (g : SmoothRiemannianMetric J N) (f : M → N)
+    (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Function.Injective f)
+    (h : SmoothRiemannianMetric I M) (hh : h = localPullMetric g f hf)
+    (p : M) {r : ℝ} (hr : 0 < r)
+    (hball : f '' riemannianBallOf h p (r / 4) = riemannianBallOf g (f p) (r / 4)) :
+    ∃ B : PartialDiffeomorph J I N M ∞,
+      B.source = range f ∧ B.target = univ ∧
+      (∀ z : M, B (f z) = z) ∧
+      (∀ y ∈ B.source, f (B y) = y) ∧
+      (∀ z : M, B.symm z = f z) ∧ B (f p) = p ∧
+      riemannianClosedBallOf g (f p) (r / 8) ⊆ B.source ∧
+      (∀ y ∈ B.source, ∀ v w : TangentSpace J y,
+        h.inner (B y) (mfderiv J I B y v) (mfderiv J I B y w) = g.inner y v w) ∧
+      riemannianClosedBallOf h p (r / 32) ⊆
+        B '' riemannianClosedBallOf g (f p) (r / 8) := by
+  let e := Topology.Manifold.diffeomorphOntoImage f hf hinj
+  let inc := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph J hf.image ⟨e p⟩
+  let B : PartialDiffeomorph J I N M ∞ := inc.symm.trans e.symm.toPartialDiffeomorph
+  have hsource : B.source = range f := by
+    ext y
+    change (y ∈ inc.target ∧ inc.symm y ∈ (univ : Set hf.image)) ↔ y ∈ range f
+    simp only [mem_univ, and_true]
+    rw [show inc.target = hf.image from DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_target J _ _]
+    rfl
+  have htarget : B.target = univ := by
+    ext z
+    change (z ∈ (univ : Set M) ∧ e z ∈ inc.source) ↔ z ∈ (univ : Set M)
+    simp only [show inc.source = univ from rfl, mem_univ, and_self]
+  have hBf (z : M) : B (f z) = z := by
+    change e.symm (inc.symm (f z)) = z
+    have hi : inc.symm (f z) = e z := by
+      apply Subtype.ext
+      exact inc.right_inv' (by
+        rw [show inc.target = hf.image from DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph_target J _ _]
+        exact mem_range_self z)
+    rw [hi, e.symm_apply_apply]
+  have hfB (y : N) (hy : y ∈ B.source) : f (B y) = y := by
+    rw [hsource] at hy
+    obtain ⟨z, rfl⟩ := hy
+    rw [hBf]
+  have hBsymm (z : M) : B.symm z = f z := rfl
+  have hsmall : riemannianClosedBallOf g (f p) (r / 8) ⊆ B.source := by
+    rw [hsource]
+    intro y hy
+    have hyball : y ∈ riemannianBallOf g (f p) (r / 4) :=
+      hy.trans_lt ((ENNReal.ofReal_lt_ofReal_iff (by positivity : 0 < r / 4)).mpr (by linarith))
+    rw [← hball] at hyball
+    exact image_subset_range _ _ hyball
+  refine ⟨B,hsource,htarget,hBf,hfB,hBsymm,hBf p,hsmall,?_,?_⟩
+  · intro y hy v w
+    have heq : f ∘ B =ᶠ[𝓝 y] id := by
+      filter_upwards [B.open_source.mem_nhds hy] with z hz
+      exact hfB z hz
+    have hBd : MDifferentiableAt J I B y :=
+      (B.contMDiffOn_toFun.contMDiffAt (B.open_source.mem_nhds hy)).mdifferentiableAt (by simp)
+    have hd (z : TangentSpace J y) : mfderiv I J f (B y) (mfderiv J I B y z) = z := by
+      have hc := mfderiv_comp_apply y (hf.mdifferentiable (by simp) (B y)) hBd z
+      rw [heq.mfderiv_eq, mfderiv_id] at hc
+      exact hc.symm
+    rw [hh,localPullMetric_inner,hd v,hd w,hfB y hy]
+  · intro z hz
+    have hle := edistOf_le_of_quad_of_localDiffeomorph (localPullMetric g f hf) g f hf
+      (c := 1) zero_lt_one (fun y v => by rw [localPullMetric_inner,one_mul]) p z
+    simp only [Real.sqrt_one,ENNReal.ofReal_one,one_mul] at hle
+    have hz' : f z ∈ riemannianClosedBallOf g (f p) (r / 8) := by
+      apply (hle.trans ?_).trans (ENNReal.ofReal_le_ofReal (by linarith : r / 32 ≤ r / 8))
+      change riemannianEDistOf h p z ≤ ENNReal.ofReal (r / 32) at hz
+      simpa only [hh] using hz
+    exact ⟨f z,hz',hBf z⟩
+
+section
+variable [T2Space N]
+  {Ew Hw W : Type*} [NormedAddCommGroup Ew] [NormedSpace ℝ Ew] [FiniteDimensional ℝ Ew]
+  [TopologicalSpace Hw] {Iw : ModelWithCorners ℝ Ew Hw}
+  [TopologicalSpace W] [ChartedSpace Hw W] [IsManifold Iw ∞ W] [T2Space W]
+
+theorem exists_inverse_composition_of_localPullMetric
+    (gW : SmoothRiemannianMetric Iw W) (gN : SmoothRiemannianMetric J N)
+    (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Function.Injective f)
+    (gM : SmoothRiemannianMetric I M) (hM : gM = localPullMetric gN f hf)
+    (p : M) (w : W) {r R : ℝ} (hR : 0 < R) (hRr : R ≤ r / 4)
+    (himage : f '' riemannianBallOf gM p (r / 4) = riemannianBallOf gN (f p) (r / 4))
+    (A : PartialDiffeomorph Iw J W N ∞) (hbase : A w = f p)
+    (hcpt : IsCompact (riemannianClosedBallOf gW w R))
+    (hsource : riemannianClosedBallOf gW w R ⊆ A.source)
+    (hbound : ∀ z ∈ riemannianClosedBallOf gW w R, ∀ v : TangentSpace Iw z,
+      (1 / 2 : ℝ) * gW.inner z v v ≤
+        gN.inner (A z) (mfderiv Iw J A z v) (mfderiv Iw J A z v) ∧
+      gN.inner (A z) (mfderiv Iw J A z v) (mfderiv Iw J A z v) ≤ 2 * gW.inner z v v) :
+    ∃ B : PartialDiffeomorph J I N M ∞,
+      B.source = range f ∧ B.target = univ ∧
+      (∀ z : M, B (f z) = z) ∧ (∀ y ∈ B.source, f (B y) = y) ∧
+      (∀ z : M, B.symm z = f z) ∧
+      let D := A.trans B;
+      D w = p ∧ riemannianClosedBallOf gW w (R / 4) ⊆ D.source ∧
+      (∀ z ∈ riemannianClosedBallOf gW w (R / 4), ∀ v u : TangentSpace Iw z,
+        gM.inner (D z) (mfderiv Iw I D z v) (mfderiv Iw I D z u) =
+          gN.inner (A z) (mfderiv Iw J A z v) (mfderiv Iw J A z u)) ∧
+      riemannianClosedBallOf gM p (R / 16) ⊆
+        D '' riemannianClosedBallOf gW w (R / 4) := by
+  have hr : 0 < r := by linarith
+  obtain ⟨B,hBs,hBt,hBf,hfB,hBsymm,_,hBball,hBmetric,_⟩ :=
+    exists_inverse_partialDiffeomorph_of_localPullMetric gN f hf hinj gM hM p hr himage
+  have hinner : riemannianClosedBallOf gW w (R / 4) ⊆ riemannianClosedBallOf gW w R :=
+    riemannianClosedBallOf_mono gW w (by linarith)
+  have hw : w ∈ riemannianClosedBallOf gW w (R / 4) := by
+    change riemannianEDistOf gW w w ≤ _
+    rw [riemannianEDistOf_self]
+    exact bot_le
+  have hupper : ∀ z ∈ riemannianClosedBallOf gW w R, ∀ v : TangentSpace Iw z,
+      gN.inner (A z) (mfderiv Iw J A z v) (mfderiv Iw J A z v) ≤
+        (2 : ℝ)^2 * gW.inner z v v := by
+    intro z hz v
+    have hn := metric_inner_self_nonneg gW z v
+    nlinarith [(hbound z hz v).2]
+  have hAsource (z : W) (hz : z ∈ riemannianClosedBallOf gW w (R / 4)) : A z ∈ B.source := by
+    have hd := PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn.crossModel_edist_le_of_metric_upper
+      gW gN A w (L := 2) (by norm_num) (by positivity : 0 ≤ R / 4)
+      (by linarith : 3 * (R / 4) < R) hsource hupper hw hz
+    have hAz : A z ∈ riemannianClosedBallOf gN (f p) (r / 8) := by
+      rw [hbase] at hd
+      calc
+        riemannianEDistOf gN (f p) (A z) ≤ ENNReal.ofReal 2 * riemannianEDistOf gW w z := hd
+        _ ≤ ENNReal.ofReal 2 * ENNReal.ofReal (R / 4) := mul_le_mul' le_rfl hz
+        _ = ENNReal.ofReal (R / 2) := by rw [← ENNReal.ofReal_mul (by norm_num)]; congr 1; ring
+        _ ≤ ENNReal.ofReal (r / 8) := ENNReal.ofReal_le_ofReal (by linarith)
+    exact hBball hAz
+  have hDsource : riemannianClosedBallOf gW w (R / 4) ⊆ (A.trans B).source := by
+    intro z hz
+    exact ⟨hsource (hinner hz), hAsource z hz⟩
+  have hcompact : IsCompact (riemannianClosedBallOf gW w (R / 4)) :=
+    hcpt.of_isClosed_subset (isClosed_le (Geometry.Riemannian.continuous_riemannianEDist gW w) continuous_const) hinner
+  have hlower : ∀ z ∈ riemannianClosedBallOf gW w (R / 4), ∀ v : TangentSpace Iw z,
+      gW.inner z v v ≤ (2 : ℝ)^2 *
+        gN.inner (A z) (mfderiv Iw J A z v) (mfderiv Iw J A z v) := by
+    intro z hz v
+    have hn := metric_inner_self_nonneg gW z v
+    nlinarith [(hbound z (hinner hz) v).1]
+  have hc := DifferentialGeometry.PartialDiffeomorph.closedBall_subset_image_closedBall_of_metric_lower
+    gW gN A w (by positivity : 0 < R / 4) (by norm_num : (0 : ℝ) < 2)
+    (by linarith : R / 16 < (R / 4) / 2) hcompact (fun z hz => hsource (hinner hz)) hlower
+  refine ⟨B,hBs,hBt,hBf,hfB,hBsymm,?_,hDsource,?_,?_⟩
+  · change B (A w) = p
+    rw [hbase,hBf]
+  · intro z hz v u
+    have hAd := A.mdifferentiableAt (by simp) (hsource (hinner hz))
+    have hBd := B.mdifferentiableAt (by simp) (hAsource z hz)
+    have hd : mfderiv Iw I (A.trans B) z = (mfderiv J I B (A z)).comp (mfderiv Iw J A z) :=
+      mfderiv_comp z hBd hAd
+    rw [hd]
+    exact hBmetric (A z) (hAsource z hz) _ _
+  · intro z hz
+    have hle := edistOf_le_of_quad_of_localDiffeomorph (localPullMetric gN f hf) gN f hf
+      (c := 1) zero_lt_one (fun y v => by rw [localPullMetric_inner,one_mul]) p z
+    simp only [Real.sqrt_one, ENNReal.ofReal_one, one_mul] at hle
+    have hfz : f z ∈ riemannianClosedBallOf gN (A w) (R / 16) := by
+      rw [hbase]
+      change riemannianEDistOf gN (f p) (f z) ≤ ENNReal.ofReal (R / 16)
+      apply hle.trans
+      change riemannianEDistOf gM p z ≤ ENNReal.ofReal (R / 16) at hz
+      simpa only [hM] using hz
+    obtain ⟨v,hv,hAv⟩ := hc hfz
+    refine ⟨v,hv,?_⟩
+    change B (A v) = z
+    rw [hAv,hBf]
+
+end
+
+
+end DifferentialGeometry.Geometry.Metric
+
+end

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalConeExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryTerminalVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.LocalMetricExtraction
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
@@ -370,4 +371,96 @@ theorem exists_pointed_convergence_of_tested_incomingFootprint_flows
     (fun v hv z => hcurv n v ⟨hv.1, hv.2.le⟩ z) (htested n) x (by simpa only [X, hz] using hx)
   simpa only [hdim, X, hz] using hh
 
+theorem tested_incomingFootprint_flow_rescaled_cone_exclusion
+    {R θ C σ κ : ℝ} (hR : 0 < R) (hθ : 0 < θ) (hC : 0 < C) (hσ : 0 < σ) (hκ : 0 < κ)
+    {End : Type u} [MetricSpace End] [ChartedSpace ThreeSpace End] [IsManifold ThreeModel ∞ End]
+    (gW : SmoothRiemannianMetric ThreeModel End)
+    (hWmetric : ∀ a b : End, edist a b = riemannianEDistOf gW a b)
+    {q : UniformSpace.Completion End} {d : ℝ}
+    (cone : DifferentialGeometry.Toponogov.PuncturedConeApproximation q d)
+    (x : ℕ → End) (scale : ℕ → ℝ) (hscale : ∀ n, 0 < scale n)
+    (hscaleTop : Tendsto scale atTop atTop)
+    {Rcmp lower upper : ℝ} (hRcmp : 0 < Rcmp) (hlower : 0 < lower)
+    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (s : ℕ → ℝ)
+    (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
+      ((H n).time (Fin.last (H n).eventCount)) (s n))
+    (L : ∀ n, (G n).TerminalLimitMetric)
+    (hinit : ∀ n, (G n).flow.base.metric ((H n).time (Fin.last (H n).eventCount)) =
+      (H n).initialMetric (Fin.last (H n).eventCount))
+    (hs : ∀ n, (H n).horizon < s n)
+    (first : ∀ n, Fin ((H n).eventCount + 1)) (K : ∀ n, Set (G n).terminalRegularOpen) :
+    let W := fun n => (H n).toHistory.backwardSurvivorIncomingFootprint (first n)
+      (Fin.last (H n).eventCount) (Fin.le_last (first n)) (G n) (K n)
+    ∀ (gflow : ∀ n, ℝ → SmoothRiemannianMetric ThreeModel (W n)) (p : ∀ n, W n)
+      (Q : ℕ → ℝ) (hQ : ∀ n, (1 : ℝ) ≤ Q n),
+    (∀ n (j : Fin (H n).eventCount) (hf : first n ≤ j.castSucc),
+      ∀ v ∈ Icc ((H n).time j.castSucc) ((H n).time j.succ),
+        gflow n v = (((H n).toHistory.backwardSurvivorSlabMetric (first n)
+          (Fin.last (H n).eventCount) (Fin.le_last (first n)) j hf (Fin.le_last _) v).restrictOpen
+            ((H n).toHistory.backwardSurvivorIncomingDomain (first n) (Fin.last (H n).eventCount)
+              (Fin.le_last (first n)) (G n))).restrictOpen (W n)) →
+    (∀ n, ∀ v ∈ Icc ((H n).time (Fin.last (H n).eventCount)) (s n),
+      gflow n v = ((H n).toHistory.backwardSurvivorIncomingMetric (first n)
+        (Fin.last (H n).eventCount) (Fin.le_last (first n)) (G n) (L n) v).restrictOpen (W n)) →
+    (∀ n, (H n).time (first n) ≤ s n - θ / Q n) →
+    let S := fun n => ({ base.metric := fun v => scaleMetric (Q n) (zero_lt_one.trans_le (hQ n)) (gflow n (s n + v / Q n)) } : SolutionOn (I := ThreeModel) (M := W n)
+        (RealTimeInterval.closed (-θ) 0 (neg_nonpos.mpr hθ.le)))
+    (∀ n, IsSolutionOn (S n)) →
+    (∀ n, IsCompact (riemannianClosedBallOf ((S n).base.metric 0) (p n) R)) →
+    (∀ n, ∀ v ∈ Icc (-θ) 0, ∀ z : W n,
+      normSq0S ((S n).base.metric v) z 4 (metricRm04At ((S n).base.metric v) z) ≤ C ^ 2) →
+    (∀ n (t : ℝ) (ht : (H n).horizon < t) (hts : t < s n),
+      let A := (H n).extendHorizon t ht.le
+        ((G n).closedPrefix t ((H n).time_le_horizon.trans_lt ht) hts) (hinit n)
+      let time : Icc (0 : ℝ) A.horizon := ⟨t, (H n).horizon_nonneg.trans ht.le, le_rfl⟩
+      ∀ (q : (A.toHistory.stageAt time).Carrier) (ρ : ℝ), 0 < ρ → ρ ≤ σ →
+        A.toHistory.isParabolicallyRmControlledBall time q ρ →
+          ENNReal.ofReal κ * ENNReal.ofReal ρ ^ 3 ≤
+            Integral.Measure.riemannianVolumeMeasure ThreeModel (A.toHistory.stageAt time).Carrier
+              (A.toHistory.stageMetric (A.toHistory.activeStage time) time)
+              (riemannianBallOf (A.toHistory.stageMetric (A.toHistory.activeStage time) time) q ρ)) →
+    (∀ n, metricScalarAt ((S n).base.metric 0) (p n) = 1) →
+    ∀ {Phi : ℝ → ℝ}, (Perelman.AdmissiblePinchingFunction Phi) →
+    (Tendsto Q atTop atTop) →
+    (∀ t ∈ Icc (-θ) 0, ∀ᶠ n in atTop,
+      ∀ z ∈ riemannianClosedBallOf ((S n).base.metric 0) (p n) R,
+        curvatureOperatorLowerBoundAt ((S n).base.metric t) z
+          (metricAlgebraicCurvatureTensorAt ((S n).base.metric t) z)
+          (Perelman.rescalePinchingFunction (Q n) Phi (metricScalarAt ((S n).base.metric t) z))) →
+    ∀ (Bmap : ∀ n, PartialDiffeomorph ThreeModel ThreeModel End (W n) ∞),
+    (∀ n, riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (x n) Rcmp ⊆ (Bmap n).source) →
+    (∀ n, Bmap n (x n) = (p n)) →
+    (∀ n, riemannianClosedBallOf ((S n).base.metric 0) (p n) (Rcmp/4) ⊆
+      (Bmap n) '' riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (x n) Rcmp) →
+    (∀ eta : ℝ, 0 < eta → ∀ᶠ n in atTop,
+      ∀ y ∈ riemannianClosedBallOf (scaleMetric (scale n) (hscale n) gW) (x n) Rcmp,
+      ∀ v : TangentSpace ThreeModel y,
+        (1-eta)*(scaleMetric (scale n) (hscale n) gW).inner y v v ≤
+          ((S n).base.metric 0).inner (Bmap n y) (mfderiv ThreeModel ThreeModel (Bmap n) y v) (mfderiv ThreeModel ThreeModel (Bmap n) y v) ∧
+        ((S n).base.metric 0).inner (Bmap n y) (mfderiv ThreeModel ThreeModel (Bmap n) y v) (mfderiv ThreeModel ThreeModel (Bmap n) y v) ≤
+          (1+eta)*(scaleMetric (scale n) (hscale n) gW).inner y v v) →
+    (∀ᶠ n in atTop, dist (x n : UniformSpace.Completion End) q /
+      (1 / Real.sqrt (scale n)) ∈ Icc lower upper) → False := by
+  intro W gflow p Q hQ hslabs hlast hroom S hS hcompact hcurv htested hbaseOne
+    Phi hPhi hQtop hpinching Bmap hBsource hBbase hcapture hBconv hcenter
+  let X : PointedRiemannianSeq.{u, 0, 0} ThreeModel :=
+    {obj := fun n => { M := W n, basepoint := p n, metric := (S n).base.metric 0 }}
+  obtain ⟨a₀, ha₀, hvol⟩ :=
+    RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_volume_radius_of_scaled_bound
+      hR hθ (sq_nonneg C) hσ
+  have hz (n) : (S n).base.metric 0 = scaleMetric (Q n) (zero_lt_one.trans_le (hQ n)) (gflow n (s n)) := by
+    simp only [S, zero_div, add_zero]
+  apply source_flow_rescaled_cone_exclusion_of_curvature_and_volume_lower_bounds
+    X S hS hθ Subset.rfl Subset.rfl (fun _ => rfl) hbaseOne C R hC hR hcompact
+    (fun n t ht z _ => hcurv n t ht z) ha₀ hκ _ hPhi Q
+    (fun n => zero_lt_one.trans_le (hQ n)) hQtop hpinching
+    gW hWmetric cone x scale hscale hscaleTop Bmap hRcmp hlower hBsource hBbase hcapture hBconv hcenter
+  intro a ha haa₀
+  refine Eventually.of_forall fun n x hx => ?_
+  have hh := hvol a ha haa₀ (H n) (G n) (L n) (hinit n) (hs n) (first n) (K n)
+    (gflow n) (hslabs n) (hlast n) (p n) (hQ n)
+    (by rw [← hz]; exact hcompact n) (hroom n)
+    (fun v hv z => hcurv n v ⟨hv.1, hv.2.le⟩ z) (htested n) x (by simpa only [X, hz] using hx)
+  simpa only [X, hz] using hh
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
