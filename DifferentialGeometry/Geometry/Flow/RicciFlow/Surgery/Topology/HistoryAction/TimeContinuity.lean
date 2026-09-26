@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Order.Semicontinuity
 import Mathlib.Topology.Order.LeftRight
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryActionJoin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
@@ -498,6 +499,312 @@ theorem continuousAt_regularizedSpatialCost_of_eq_sqrt
     apply H.regularizedSpatialCost_eq_of_mem_stageDomain t B p w 0 (Fin.zero_le _)
     exact (H.mem_stageDomain_iff ⟨t.val - w.val ^ 2, hrange⟩ 0).mpr (hw hrange)
   exact (continuousAt_congr heq).mpr hcont
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+
+theorem regularizedSpatialCost_le_add_cubic_of_le
+    (t : Icc (0 : ℝ) H.horizon) (B : ℝ) (p : (H.stageAt t).Carrier)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x)
+    (w v : Icc (0 : ℝ) (Real.sqrt t.val)) (hwv : w ≤ v) :
+    H.regularizedSpatialCost t B p w ≤ H.regularizedSpatialCost t B p v +
+      (((2 * B / 3) * (v.val ^ 3 - w.val ^ 3) : ℝ) : WithTop ℝ) := by
+  by_cases hvtop : H.regularizedSpatialCost t B p v = ⊤
+  · simp only [hvtop, WithTop.top_add, le_top]
+  let clock (x : Icc (0 : ℝ) (Real.sqrt t.val)) : Icc (0 : ℝ) H.horizon :=
+    ⟨t.val - x.val ^ 2, by
+      have hsquare := (Real.le_sqrt x.property.1 t.property.1).mp x.property.2
+      exact ⟨sub_nonneg.mpr hsquare, (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩⟩
+  have hclock (x : Icc (0 : ℝ) (Real.sqrt t.val)) : clock x ≤ t := by
+    change t.val - x.val ^ 2 ≤ t.val
+    exact sub_le_self _ (sq_nonneg _)
+  have hclockvw : clock v ≤ clock w := by
+    change t.val - v.val ^ 2 ≤ t.val - w.val ^ 2
+    exact sub_le_sub_left (pow_le_pow_left₀ w.property.1 hwv 2) _
+  let first := H.activeStage (clock v)
+  let last := H.activeStage t
+  let k : H.StageInterval first last :=
+    ⟨H.activeStage (clock w), H.activeStage_mono hclockvw, H.activeStage_mono (hclock w)⟩
+  have hle : first ≤ last := H.activeStage_mono (hclock v)
+  have hupper : t.val - (0 : ℝ) ^ 2 ∈ H.stageDomain last := by
+    simpa only [zero_pow (by decide : 2 ≠ 0), sub_zero] using H.activeStage_mem t
+  have hkw : t.val - w.val ^ 2 ∈ H.stageDomain k.val := H.activeStage_mem (clock w)
+  have hvclock : t.val - v.val ^ 2 ∈ H.stageDomain first := H.activeStage_mem (clock v)
+  have hscalar : ∀ j : H.StageInterval first last,
+      ∀ s ∈ Ioo (H.regularizedStageStart t 0 j.val) (H.regularizedStageEnd t v.val j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (t.val - s ^ 2)) x :=
+    fun j s hs x => hfloor j.val _ (H.mapsTo_regularizedStage_Ioo t 0 v.val j.val hs) x
+  have hscalarw : ∀ j : H.StageInterval k.val last,
+      ∀ s ∈ Ioo (H.regularizedStageStart t 0 j.val) (H.regularizedStageEnd t w.val j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (t.val - s ^ 2)) x :=
+    fun j s hs x => hfloor j.val _ (H.mapsTo_regularizedStage_Ioo t 0 w.val j.val hs) x
+  have hvEq := H.regularizedSpatialCost_eq_of_mem_stageDomain t B p v first hle hvclock
+  have hwEq := H.regularizedSpatialCost_eq_of_mem_stageDomain t B p w k.val k.property.2 hkw
+  rw [hvEq] at hvtop
+  rw [hvEq, hwEq]
+  have hnonempty : (range (H.regularizedCost first last hle t B 0 v.val p)).Nonempty := by
+    by_contra hn
+    rw [Set.not_nonempty_iff_eq_empty.mp hn, WithTop.sInf_empty] at hvtop
+    exact hvtop rfl
+  obtain ⟨_, ⟨q, rfl⟩, hq⟩ := exists_lt_of_csInf_lt hnonempty (lt_top_iff_ne_top.mpr hvtop)
+  have hsome : ¬ ∀ A ∈ H.regularizedActionValues first last hle t B 0 v.val p q, A = ⊤ :=
+    fun h => (ne_top_of_lt hq) ((H.regularizedCost_eq_top_iff first last hle t B 0 v.val p q).mpr h)
+  push Not at hsome
+  obtain ⟨A, hA, hAtop⟩ := hsome
+  obtain ⟨a, ha⟩ := WithTop.ne_top_iff_exists.mp hAtop
+  rw [← ha] at hA
+  obtain ⟨c, hc, _⟩ := H.exists_mem_regularizedC1ActionValues_lt_of_mem_regularizedActionValues
+    first last hle hupper hscalar p q hA (ε := 1) zero_lt_one
+  obtain ⟨y, d, hd, _⟩ := H.exists_regularizedC1ActionValues_prefix_le first last hle hscalar
+    p q hc k ⟨w.property.1, hwv⟩ hkw
+  have hdAC := H.coe_mem_regularizedActionValues_of_mem_regularizedC1ActionValues
+    k.val last k.property.2 hscalarw p y hd
+  have hbddw : BddBelow (range (H.regularizedCost k.val last k.property.2 t B 0 w.val p)) := by
+    refine ⟨(-(2 * B / 3) * (w.val ^ 3 - 0 ^ 3) : ℝ), ?_⟩
+    rintro _ ⟨z, rfl⟩
+    exact H.regularizedCost_ge k.val last k.property.2 t B 0 w.val p z
+  have hwfinite : sInf (range (H.regularizedCost k.val last k.property.2 t B 0 w.val p)) ≠ ⊤ :=
+    ne_top_of_le_ne_top WithTop.coe_ne_top ((csInf_le hbddw (mem_range_self y)).trans
+      (H.regularizedCost_le_of_competitor k.val last k.property.2 t B 0 w.val p y hdAC))
+  obtain ⟨m, hm⟩ := WithTop.ne_top_iff_exists.mp hwfinite
+  obtain ⟨n, hn⟩ := WithTop.ne_top_iff_exists.mp hvtop
+  have hbound : (((m - (2 * B / 3) * (v.val ^ 3 - w.val ^ 3) : ℝ)) : WithTop ℝ) ≤
+      sInf (range (H.regularizedCost first last hle t B 0 v.val p)) := by
+    apply le_csInf hnonempty
+    rintro _ ⟨z, rfl⟩
+    apply H.regularizedCost_ge_of_prefix_lower_bound first last hle hupper hscalar p z k
+      ⟨w.property.1, hwv⟩ hkw
+    intro x
+    rw [hm]
+    exact csInf_le hbddw (mem_range_self x)
+  rw [← hn, WithTop.coe_le_coe] at hbound
+  rw [← hm, ← hn, ← WithTop.coe_add, WithTop.coe_le_coe]
+  linarith only [hbound]
+
+
+theorem monotone_regularizedSpatialCost_add_cubic
+    (t : Icc (0 : ℝ) H.horizon) (B : ℝ) (p : (H.stageAt t).Carrier)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x) :
+    Monotone (fun v : Icc (0 : ℝ) (Real.sqrt t.val) =>
+      H.regularizedSpatialCost t B p v + (((2 * B / 3) * v.val ^ 3 : ℝ) : WithTop ℝ)) := by
+  intro w v hwv
+  have h := add_le_add (H.regularizedSpatialCost_le_add_cubic_of_le
+    t B p hfloor w v hwv) (le_refl (((2 * B / 3) * w.val ^ 3 : ℝ) : WithTop ℝ))
+  simpa only [add_assoc, ← WithTop.coe_add,
+    show (2 * B / 3) * (v.val ^ 3 - w.val ^ 3) + (2 * B / 3) * w.val ^ 3 =
+      (2 * B / 3) * v.val ^ 3 by ring] using h
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+theorem regularizedSpatialCost_ne_top_of_frequently_ne_top_left
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon) (B : ℝ)
+    (p : (H.stageAt t).Carrier) (v : Icc (0 : ℝ) (Real.sqrt t.val))
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x)
+    (hfinite : ∃ᶠ w in 𝓝[<] v, H.regularizedSpatialCost t B p w ≠ ⊤) :
+    H.regularizedSpatialCost t B p v ≠ ⊤ := by
+  classical
+  obtain ⟨w₀, _, hw₀⟩ := (hfinite.and_eventually self_mem_nhdsWithin).exists
+  have hv : 0 < v.val := w₀.property.1.trans_lt hw₀
+  have hphysical : t.val - v.val ^ 2 ∈ Icc 0 H.horizon := by
+    have hsq : v.val ^ 2 ≤ t.val := (Real.le_sqrt v.property.1 t.property.1).mp v.property.2
+    exact ⟨sub_nonneg.mpr hsq, (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩
+  let s : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, hphysical⟩
+  let first := H.activeStage s
+  let last := H.activeStage t
+  have hle : first ≤ last := H.activeStage_mono (by
+    change t.val - v.val ^ 2 ≤ t.val
+    exact sub_le_self _ (sq_nonneg _))
+  have hpast : t.val - v.val ^ 2 ∈ H.stageDomain first := H.activeStage_mem s
+  have hupper : t.val - (0 : ℝ) ^ 2 ∈ H.stageDomain last := by
+    simpa only [zero_pow two_ne_zero, sub_zero] using H.activeStage_mem t
+  have hstrict : t.val - v.val ^ 2 < H.stageEndTime first := by
+    cases hfirst : first using Fin.lastCases with
+    | cast i =>
+      have hpast' : t.val - v.val ^ 2 ∈ Ico (H.time i.castSucc) (H.time i.succ) := by
+        simpa only [hfirst, stageDomain, Fin.lastCases_castSucc] using hpast
+      simpa only [stageEndTime_castSucc] using hpast'.2
+    | last =>
+      have hlast : last = Fin.last H.eventCount := le_antisymm (Fin.le_last _) (by simpa only [hfirst] using hle)
+      have hbound := H.le_stageEndTime_of_mem_stageDomain hupper
+      rw [hlast] at hbound
+      have hsquare := sq_pos_of_pos hv
+      linarith
+  have hnear : ∀ᶠ w : Icc (0 : ℝ) (Real.sqrt t.val) in 𝓝 v,
+      t.val - w.val ^ 2 < H.stageEndTime first := by
+    exact ((continuous_const.sub (continuous_subtype_val.pow 2)).continuousAt).eventually
+      (Iio_mem_nhds hstrict)
+  obtain ⟨w, hwfinite, hwstrict, hwv⟩ := (hfinite.and_eventually
+    ((hnear.filter_mono nhdsWithin_le_nhds).and self_mem_nhdsWithin)).exists
+  have hwv' : w.val < v.val := hwv
+  have hclock : ∀ r ∈ Icc w.val v.val, t.val - r ^ 2 ∈ H.stageDomain first := by
+    intro r hr
+    rcases hr.2.eq_or_lt with rfl | hrv
+    · exact hpast
+    · apply H.mem_stageDomain_of_mem_Ioo
+      have hsq := (sq_lt_sq₀ (w.property.1.trans hr.1) hv.le).mpr hrv
+      have hsqw := pow_le_pow_left₀ w.property.1 hr.1 2
+      exact ⟨by linarith [H.time_le_of_mem_stageDomain hpast], by linarith⟩
+  have hscalar (j : H.StageInterval first last) (r : ℝ)
+      (hr : r ∈ Ioo (H.regularizedStageStart t 0 j.val)
+        (H.regularizedStageEnd t v.val j.val)) (x : (H.stage j.val).Carrier) :
+      -B ≤ metricScalarAt (H.stageMetric j.val (t.val - r ^ 2)) x :=
+    hfloor j.val _ (H.mapsTo_regularizedStage_Ioo t 0 v.val j.val hr) x
+  have hwclock := hclock w.val ⟨le_rfl, hwv'.le⟩
+  rw [H.regularizedSpatialCost_eq_of_mem_stageDomain t B p w first hle hwclock] at hwfinite
+  have hne : (range (H.regularizedCost first last hle t B 0 w.val p)).Nonempty := by
+    by_contra hn
+    rw [Set.not_nonempty_iff_eq_empty.mp hn, WithTop.sInf_empty] at hwfinite
+    exact hwfinite rfl
+  obtain ⟨_, ⟨q, rfl⟩, hq⟩ := exists_lt_of_csInf_lt hne (lt_top_iff_ne_top.mpr hwfinite)
+  obtain ⟨m, C, hLip, hm⟩ := H.exists_lipschitz_spatial_cost_minimum_on_stage
+    first last hle t B 0 w.val v.val hwv'.le hupper hclock hscalar p ⟨q, ne_top_of_lt hq⟩
+  rw [H.regularizedSpatialCost_eq_of_mem_stageDomain t B p v first hle hpast,
+    (hm v.val ⟨hwv'.le, le_rfl⟩).1]
+  exact WithTop.coe_ne_top
+
+
+theorem continuousWithinAt_regularizedSpatialCost_left
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon) (B : ℝ)
+    (p : (H.stageAt t).Carrier) (v : Icc (0 : ℝ) (Real.sqrt t.val))
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x) :
+    ContinuousWithinAt (H.regularizedSpatialCost t B p) (Iio v) v := by
+  classical
+  by_cases htop : H.regularizedSpatialCost t B p v = ⊤
+  · have hnot : ¬ ∃ᶠ w in 𝓝[<] v, H.regularizedSpatialCost t B p w ≠ ⊤ := by
+      intro hfinite
+      exact H.regularizedSpatialCost_ne_top_of_frequently_ne_top_left t B p v hfloor hfinite htop
+    have hevent : ∀ᶠ w in 𝓝[<] v, H.regularizedSpatialCost t B p w = ⊤ := by
+      simpa only [Filter.Frequently, not_not] using hnot
+    have heq : H.regularizedSpatialCost t B p =ᶠ[𝓝[<] v] fun _ => ⊤ := by
+      filter_upwards [hevent] with x hx
+      exact hx
+    change Tendsto (H.regularizedSpatialCost t B p) (𝓝[<] v)
+      (𝓝 (H.regularizedSpatialCost t B p v))
+    rw [htop]
+    exact tendsto_const_nhds.congr' heq.symm
+  by_cases hv : 0 < v.val
+  swap
+  · have hempty : Iio v = (∅ : Set (Icc (0 : ℝ) (Real.sqrt t.val))) := by
+      apply eq_empty_iff_forall_notMem.mpr
+      intro w hw
+      exact hv (w.property.1.trans_lt hw)
+    rw [hempty]
+    simp only [ContinuousWithinAt, nhdsWithin_empty, tendsto_bot]
+  have hphysical : t.val - v.val ^ 2 ∈ Icc 0 H.horizon := by
+    have hsq : v.val ^ 2 ≤ t.val := (Real.le_sqrt v.property.1 t.property.1).mp v.property.2
+    exact ⟨sub_nonneg.mpr hsq, (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩
+  let s : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, hphysical⟩
+  let first := H.activeStage s
+  let last := H.activeStage t
+  have hle : first ≤ last := H.activeStage_mono (by
+    change t.val - v.val ^ 2 ≤ t.val
+    exact sub_le_self _ (sq_nonneg _))
+  have hpast : t.val - v.val ^ 2 ∈ H.stageDomain first := H.activeStage_mem s
+  have hupper : t.val - (0 : ℝ) ^ 2 ∈ H.stageDomain last := by
+    simpa only [zero_pow two_ne_zero, sub_zero] using H.activeStage_mem t
+  have hstrict : t.val - v.val ^ 2 < H.stageEndTime first := by
+    cases hfirst : first using Fin.lastCases with
+    | cast i =>
+      have hpast' : t.val - v.val ^ 2 ∈ Ico (H.time i.castSucc) (H.time i.succ) := by
+        simpa only [hfirst, stageDomain, Fin.lastCases_castSucc] using hpast
+      simpa only [stageEndTime_castSucc] using hpast'.2
+    | last =>
+      have hlast : last = Fin.last H.eventCount :=
+        le_antisymm (Fin.le_last _) (by simpa only [hfirst] using hle)
+      have hbound := H.le_stageEndTime_of_mem_stageDomain hupper
+      rw [hlast] at hbound
+      have hsquare := sq_pos_of_pos hv
+      linarith
+  have hnear : ∀ᶠ w : Icc (0 : ℝ) (Real.sqrt t.val) in 𝓝 v,
+      t.val - w.val ^ 2 < H.stageEndTime first := by
+    exact ((continuous_const.sub (continuous_subtype_val.pow 2)).continuousAt).eventually
+      (Iio_mem_nhds hstrict)
+  have hscalar (j : H.StageInterval first last) (r : ℝ)
+      (hr : r ∈ Ioo (H.regularizedStageStart t 0 j.val)
+        (H.regularizedStageEnd t v.val j.val)) (x : (H.stage j.val).Carrier) :
+      -B ≤ metricScalarAt (H.stageMetric j.val (t.val - r ^ 2)) x :=
+    hfloor j.val _ (H.mapsTo_regularizedStage_Ioo t 0 v.val j.val hr) x
+  have hvalue := H.regularizedSpatialCost_eq_of_mem_stageDomain t B p v first hle hpast
+  have hfinite := htop
+  rw [hvalue] at hfinite
+  have hne : (range (H.regularizedCost first last hle t B 0 v.val p)).Nonempty := by
+    by_contra hn
+    rw [Set.not_nonempty_iff_eq_empty.mp hn, WithTop.sInf_empty] at hfinite
+    exact hfinite rfl
+  obtain ⟨_, ⟨q, rfl⟩, hq⟩ := exists_lt_of_csInf_lt hne (lt_top_iff_ne_top.mpr hfinite)
+  have hleft := H.tendsto_sInf_regularizedCost_left first last hle t B 0 v.val
+    hv hupper hscalar p ⟨q, ne_top_of_lt hq⟩
+  have hmap : Tendsto (fun w : Icc (0 : ℝ) (Real.sqrt t.val) => w.val)
+      (𝓝[<] v) (𝓝[<] v.val) := by
+    apply tendsto_nhdsWithin_iff.mpr
+    refine ⟨continuous_subtype_val.continuousAt.tendsto.mono_left nhdsWithin_le_nhds, ?_⟩
+    filter_upwards [self_mem_nhdsWithin] with w hw
+    exact hw
+  have heq : H.regularizedSpatialCost t B p =ᶠ[𝓝[<] v]
+      (fun w => sInf (range (H.regularizedCost first last hle t B 0 w.val p))) := by
+    filter_upwards [hnear.filter_mono nhdsWithin_le_nhds, self_mem_nhdsWithin] with w hw hwv
+    apply H.regularizedSpatialCost_eq_of_mem_stageDomain t B p w first hle
+    apply H.mem_stageDomain_of_mem_Ioo
+    have hsq := (sq_lt_sq₀ w.property.1 hv.le).mpr (show w.val < v.val from hwv)
+    exact ⟨by linarith [H.time_le_of_mem_stageDomain hpast], hw⟩
+  change Tendsto (H.regularizedSpatialCost t B p) (𝓝[<] v)
+    (𝓝 (H.regularizedSpatialCost t B p v))
+  rw [hvalue]
+  exact (hleft.comp hmap).congr' heq.symm
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+section
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+open scoped Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+theorem lowerSemicontinuous_regularizedSpatialCost
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon) (B : ℝ)
+    (p : (H.stageAt t).Carrier)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x) :
+    LowerSemicontinuous (H.regularizedSpatialCost t B p) := by
+  intro v
+  apply WithTop.lowerSemicontinuousAt_of_continuousWithinAt_Iic_of_monotone_add
+    (H.monotone_regularizedSpatialCost_add_cubic t B p hfloor)
+  · exact continuousWithinAt_Iio_iff_Iic.mp
+      (H.continuousWithinAt_regularizedSpatialCost_left t B p v hfloor)
+  · exact continuousAt_const.mul (continuous_subtype_val.continuousAt.pow 3)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 

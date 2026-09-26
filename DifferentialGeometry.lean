@@ -13894,6 +13894,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Restr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.UniformModelCoverage
 import DifferentialGeometry.Topology.Order.InfimumAddition
+import DifferentialGeometry.Topology.Order.Semicontinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Limits.PointedLocalFlow
 import DifferentialGeometry.Analysis.Integration.Measure.OpenSubtypeBall

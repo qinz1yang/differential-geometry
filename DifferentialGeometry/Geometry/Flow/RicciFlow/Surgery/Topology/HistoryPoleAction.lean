@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIveyPinching
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.AbsoluteContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPartition
@@ -259,3 +260,104 @@ theorem ObservedHistory.exists_short_regularizedCost_upper_bound_of_parabolicall
       t B 0 v p _ hmemAC,hbound,hred,hneg⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
+
+noncomputable section
+
+open Set
+open DifferentialGeometry.Geometry.Curvature
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+
+theorem regularizedSpatialCost_le_of_parabolicallyRmControlledBall
+    (t : Icc (0 : ℝ) H.horizon) (B : ℝ) (p : (H.stageAt t).Carrier) {r : ℝ}
+    (hball : H.isParabolicallyRmControlledBall t p r)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)), ∀ s ∈ H.stageDomain j,
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x)
+    (v : Icc (0 : ℝ) (Real.sqrt t.val)) (hvr : v.val ≤ r) :
+    H.regularizedSpatialCost t B p v ≤ ((6 * v.val ^ 3 / r ^ 2 : ℝ) : WithTop ℝ) := by
+  obtain ⟨hr, a, hat, ha, htrace⟩ := hball
+  have hp : p ∈ riemannianBallOf (H.stageMetric (H.activeStage t) t) p r := by
+    change riemannianEDistOf _ p p < ENNReal.ofReal r
+    rw [riemannianEDistOf_self]
+    exact ENNReal.ofReal_pos.mpr hr
+  obtain ⟨A, hA⟩ := htrace p hp
+  have hv2 := pow_le_pow_left₀ v.property.1 hvr 2
+  let b : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, by
+    have hsquare := (Real.le_sqrt v.property.1 t.property.1).mp v.property.2
+    exact ⟨sub_nonneg.mpr hsquare, (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩⟩
+  have hab : a ≤ b := by change a.val ≤ t.val - v.val ^ 2; rw [ha]; linarith
+  have hbt : b ≤ t := by change t.val - v.val ^ 2 ≤ t.val; exact sub_le_self _ (sq_nonneg _)
+  let A' := A.restrictFirst (H.activeStage_mono hab) (H.activeStage_mono hbt)
+  have hA' : A'.isRmControlled (hat := hbt) r := hA.restrictFirst A hr.le le_rfl hab hbt
+  obtain ⟨action, hmem, hbound⟩ :=
+    A'.exists_regularizedC1ActionValues_le_of_isRmControlled hr v.property.1 rfl hA'
+  have hmemAC := H.coe_mem_regularizedActionValues_of_mem_regularizedC1ActionValues
+    (H.activeStage b) (H.activeStage t) (H.activeStage_mono hbt)
+    (fun j s hs x => hfloor j.val (t.val - s ^ 2)
+      (H.mapsTo_regularizedStage_Ioo t 0 v.val j.val hs) x)
+    p (A'.point (H.activeStage b) le_rfl (H.activeStage_mono hbt)) hmem
+  have hcost := H.regularizedCost_le_of_competitor (H.activeStage b) (H.activeStage t)
+    (H.activeStage_mono hbt) t B 0 v.val p _ hmemAC
+  rw [H.regularizedSpatialCost_eq_of_mem_stageDomain t B p v (H.activeStage b)
+    (H.activeStage_mono hbt) (H.activeStage_mem b)]
+  have hlower : BddBelow (range (H.regularizedCost (H.activeStage b) (H.activeStage t)
+      (H.activeStage_mono hbt) t B 0 v.val p)) := by
+    refine ⟨(-(2 * B / 3) * (v.val ^ 3 - 0 ^ 3) : ℝ), ?_⟩
+    rintro _ ⟨q, rfl⟩
+    exact H.regularizedCost_ge (H.activeStage b) (H.activeStage t)
+      (H.activeStage_mono hbt) t B 0 v.val p q
+  exact (csInf_le hlower (mem_range_self _)).trans (hcost.trans (WithTop.coe_le_coe.mpr hbound))
+
+theorem regularizedSpatialCost_ne_top_and_scaled_sub_sq_neg_of_parabolicallyRmControlledBall
+    (t : Icc (0 : ℝ) H.horizon) (B : ℝ) (p : (H.stageAt t).Carrier) {r : ℝ}
+    (hball : H.isParabolicallyRmControlledBall t p r)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)), ∀ s ∈ H.stageDomain j,
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x)
+    (v : Icc (0 : ℝ) (Real.sqrt t.val)) (hv : 0 < v.val) (hvr : v.val ≤ r / 2) :
+    H.regularizedSpatialCost t B p v ≠ ⊤ ∧
+      2 * v.val * (H.regularizedSpatialCost t B p v).untopD 0 - 6 * v.val ^ 2 < 0 := by
+  have hr := hball.1
+  have hbound := H.regularizedSpatialCost_le_of_parabolicallyRmControlledBall t B p hball
+    hfloor v (by linarith : v.val ≤ r)
+  have hfinite : H.regularizedSpatialCost t B p v ≠ ⊤ :=
+    ne_top_of_le_ne_top WithTop.coe_ne_top hbound
+  refine ⟨hfinite, ?_⟩
+  lift H.regularizedSpatialCost t B p v to ℝ using hfinite with m hm
+  simp only [WithTop.untopD_coe]
+  have hmbound := WithTop.coe_le_coe.mp hbound
+  have hh := (le_div_iff₀ (sq_pos_of_pos hr)).mp hmbound
+  have hquad : 4 * v.val ^ 2 ≤ r ^ 2 := by nlinarith
+  have hmul := mul_le_mul_of_nonneg_left hquad (by positivity : 0 ≤ 3 * v.val / 2)
+  have hm : m ≤ 3 * v.val / 2 := le_of_mul_le_mul_right
+    (hh.trans (by nlinarith only [hmul])) (sq_pos_of_pos hr)
+  nlinarith [sq_pos_of_pos hv]
+
+theorem regularizedSpatialCost_ne_top_and_scaled_sub_sq_neg_of_cutoff_records
+    (parameters : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H i parameters)
+    {a₀ : ℝ} (ha₀ : 0 < a₀)
+    (hfixed : ∀ x, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ x)
+    (hscalar : ∀ x, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) x)
+    (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier) {r : ℝ}
+    (hball : H.isParabolicallyRmControlledBall t p r)
+    (v : Icc (0 : ℝ) (Real.sqrt t.val)) (hv : 0 < v.val) (hvr : v.val ≤ r / 2) :
+    H.regularizedSpatialCost t (3 / a₀) p v ≠ ⊤ ∧
+      2 * v.val * (H.regularizedSpatialCost t (3 / a₀) p v).untopD 0 - 6 * v.val ^ 2 < 0 := by
+  have hpreserve := H.fixedHamiltonIveyRegion_and_scalar_lower records ha₀ hfixed hscalar
+  apply H.regularizedSpatialCost_ne_top_and_scaled_sub_sq_neg_of_parabolicallyRmControlledBall
+    t (3 / a₀) p hball ?_ v hv hvr
+  intro j s hs x
+  have htime := (H.stageDomain_subset j hs).1
+  have hratio : 3 / (a₀ + s) ≤ 3 / a₀ :=
+    div_le_div_of_nonneg_left (by norm_num : (0 : ℝ) ≤ 3) ha₀ (le_add_of_nonneg_right htime)
+  have hneg : -(3 / a₀) ≤ -3 / (a₀ + s) := by
+    simpa only [neg_div] using neg_le_neg hratio
+  exact hneg.trans (hpreserve.1 j s hs x).2
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
