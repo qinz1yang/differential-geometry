@@ -14109,6 +14109,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SpatialBoun
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SeparatingSphereAxialArms
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedWitnessPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelLocalPull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.CoreIntegralBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.Window
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornCentralSphereSeparation
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.CompactBalls
