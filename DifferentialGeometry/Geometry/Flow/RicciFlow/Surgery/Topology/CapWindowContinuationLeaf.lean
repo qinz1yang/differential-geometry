@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowCo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardClosenessEndpointWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DerivativeBoundExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodContinuationLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartDerivativeBounds
 
 set_option autoImplicit false
 
@@ -361,5 +362,10 @@ theorem capWindowContinuation_of_slab_start_bounds (P₀ : OrientedThreeStage.{u
     obtain ⟨η, hη, -, hext⟩ := G.exists_derivativeBoundBefore_extend_of_slice hCtpos hq ht₀
       (fun _ => hreg) (fun _ => hstart) hdb
     exact ⟨η, hη, hS _ s G hG.2 hder t₀ η hext⟩
+
+theorem capWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    CapWindowContinuation P₀ g₀ :=
+  capWindowContinuation_of_slab_start_bounds P₀ g₀
+    (RetainedCoreHistory.exists_slice_bounds_at_slab_start P₀ g₀)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

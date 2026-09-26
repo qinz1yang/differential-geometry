@@ -237,9 +237,9 @@ def CrossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : 
     C1₀ ≤ C1 → C2₀ ≤ C2 → τ₀ ≤ τmin → Ctime₀ ≤ Ctime → Cgrad₀ ≤ Cgrad →
   ∀ (C1s C2s Cs : ℝ), 1 ≤ C1s → 1 ≤ C2s → 1 ≤ Cs →
   ∀ (κ : ℝ) (phi : ℝ → ℝ) (θ : ℝ), 0 < κ → Perelman.AdmissiblePinchingFunction phi → 0 < θ →
-  ∃ (Dcap θcap q₀ δmax ρmax εcap : ℝ) (mcap : ℕ),
-    0 < Dcap ∧ θcap < 1 ∧ 0 < q₀ ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧
+  ∃ (Dcap θcap q₀ : ℝ) (mcap : ℕ), 0 < Dcap ∧ θcap < 1 ∧ 0 < q₀ ∧
   ∀ qcan : ℝ, q₀ ≤ qcan →
+  ∃ (δmax ρmax εcap : ℝ), 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧
   ∀ qs : ℝ, qcan ≤ qs → qs ≤ Cs * qcan →
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
@@ -298,7 +298,7 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
   obtain ⟨θ, qd, δd, ρd, εd, Dd, md, hθ, hqd, hδd, hρd, hεd, hDd, hDstep⟩ :=
     hD _ _ _ _ _ (le_max_left _ _) (le_max_left _ _) (le_max_left _ _) (le_max_left _ _)
       (le_max_left _ _) κ phi hκ hphi
-  obtain ⟨Dx, θcap, qx, δx, ρx, εx, mx, hDx, hθcap, hqx, hδx, hρx, hεx, hXstep⟩ :=
+  obtain ⟨Dx, θcap, qx, mx, hDx, hθcap, hqx, hXq⟩ :=
     hX _ _ _ _ _ ((le_max_right _ _).trans (le_max_right _ _))
       ((le_max_right _ _).trans (le_max_right _ _)) ((le_max_right _ _).trans (le_max_right _ _))
       ((le_max_right _ _).trans (le_max_right _ _)) ((le_max_right _ _).trans (le_max_right _ _))
@@ -315,6 +315,7 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
   have hqxc : qx ≤ max qfloor (max qd (max qw qx)) :=
     ((le_max_right _ _).trans (le_max_right _ _)).trans (le_max_right _ _)
   obtain ⟨δw, ρw, εw, hδw, hρw, hεw, hWstep⟩ := hWq _ hqwc
+  obtain ⟨δx, ρx, εx, hδx, hρx, hεx, hXstep⟩ := hXq _ hqxc
   refine ⟨max qfloor (max qd (max qw qx)), min δd (min δw δx), min ρd (min ρw ρx),
     min εd (min εw εx), max Dd Rw, max md (max mw mx), le_max_left _ _, hqd.trans_le hqdc,
     lt_min hδd (lt_min hδw hδx), lt_min hρd (lt_min hρw hρx), lt_min hεd (lt_min hεw hεx),
@@ -331,7 +332,7 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
     (((le_max_left _ _).trans (le_max_right _ _)).trans hm)
     (hδ.trans ((min_le_right _ _).trans (min_le_left _ _)))
     (hρ.trans ((min_le_right _ _).trans (min_le_left _ _))) H hH p records hrec hpinch
-  have hx := hXstep _ hqxc qs hqs hqsC p₀ δbound ρbound
+  have hx := hXstep qs hqs hqsC p₀ δbound ρbound
     (hacc.trans ((min_le_right _ _).trans (min_le_right _ _)))
     ((by linarith : Dx ≤ Rw).trans ((le_max_right _ _).trans hDc))
     (((le_max_right _ _).trans (le_max_right _ _)).trans hm)

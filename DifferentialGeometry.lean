@@ -14147,3 +14147,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartSliceBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCrossingJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Scalar.ScalarLaplacianRicciTerms
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCapCurvatureJets
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingScalarEvolutionRate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabStartDerivativeBounds

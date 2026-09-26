@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PinchingThroughSurgery
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DeepContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowContinuationLeaf
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodsThroughSurgeryStrong
 
@@ -39,10 +40,6 @@ theorem noncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀
   noncollapsingThroughSurgery_of_reducedVolume_of_smallScale P₀ g₀
     (historyReducedVolumeMonotone P₀) (historyReducedVolumeLocalUpperBound P₀)
     (historyReducedVolumeInitialLowerBound P₀ g₀) (smallScaleNoncollapsingThroughSurgery P₀ g₀)
-
-theorem capWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    CapWindowContinuation P₀ g₀ := by
-  sorry
 
 theorem crossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     CrossingContinuation P₀ g₀ := by

@@ -137,6 +137,18 @@ slab `j` is canonical and derivative-bounded before `t₀ ∈ [time j, time (j+1
 witnesses on `[t₀, t₀ + η)`; (T): the same for the terminal slab, from
 `H.NoncollapsedBefore κ ε (H.time last)` and `H.TerminalNoncollapsedBefore … t₀`.
 
+### Status 2026-09-26 (ACC7)
+
+C3a `deepContinuation` and C3b `capWindowContinuation` are PROVED
+(`Topology/DeepContinuation.lean`, `Topology/CapWindowContinuationLeaf.lean`: the slab-interior
+theorem plus `RetainedCoreHistory.exists_slice_bounds_at_slab_start` from
+`Topology/SlabStartDerivativeBounds.lean`). Only C3c `crossingContinuation` remains in C3.
+`CrossingContinuation` binder order (lane M6): `∃ Dcap θcap q₀ mcap, 0 < Dcap ∧ θcap < 1 ∧ 0 < q₀ ∧
+∀ qcan ≥ q₀, ∃ δmax ρmax εcap > 0, ∀ qs ∈ [qcan, Cs·qcan], …`, the same order as
+`CapWindowContinuation`; `Dcap θcap mcap` stay before `qcan` because the cap leaf consumes them
+before its own `qcan`; `ρmax` may depend on `qcan` (B5 needs `ρmax² ≤ min (Cbirth/(4 qcan)) (a₀/2)`
+with `Cbirth` fixed from `Ctime` before `Θ`, `OPUS_FILL_LOG_M6.md`).
+
 ### Quantifier order (kept; decided 2026-09-25 evening)
 
 `τmin` stays a model constant chosen with `C1 C2 Ctime` before `κ`. An attempt to choose `τmin` after
