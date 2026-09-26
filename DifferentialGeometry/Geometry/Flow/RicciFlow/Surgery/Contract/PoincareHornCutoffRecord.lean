@@ -430,6 +430,66 @@ private theorem canonical_neighborhoods_of_incoming_heq
   cases eq_of_heq hG
   exact hcanonical
 
+theorem MetricCutCapEvent.exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
+      ∀ {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
+        {a s : ℝ} (E : MetricCutCapEvent P Q a s),
+        H.stage i.castSucc = P → H.stage i.succ = Q → H.time i.castSucc = a → H.time i.succ = s →
+      ∀ hOld : E.old = E.transition.trace.retainedCore,
+        HEq (H.coreEvent i) (E.toRetainedCoreEvent hOld) → E.transition.boundaryFrameReversing →
+      ∀ (parameters : CutoffParameters) (Record : GeometricCutoffRecord H.toHistory i parameters)
+        (C q0 q : ℝ) (Ctime : ℝ≥0), 0 ≤ C → 0 < q0 →
+        q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
+        (∀ j, C * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ < (Record.neck j).scale) →
+        (∀ j, Record.delta j ≤ eps) →
+        (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q0 < E.incoming.flow.scalar t x →
+          |derivWithin (fun v => E.incoming.flow.scalar v x) (Iic t) t| ≤
+            Ctime * E.incoming.flow.scalar t x ^ 2) →
+        (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < E.incoming.flow.scalar t x →
+          ¬ Nonempty (SpatialNeck (E.incoming.flow.base.metric t) eps x) →
+          ∃ U : Set P.Carrier,
+            (∀ y ∈ U, ∀ z ∈ U, E.incoming.flow.scalar t y ≤ C * E.incoming.flow.scalar t z) ∧
+            (U = connectedComponent x ∨
+              ∃ V : Set P.Carrier, Nonempty (CapCore V) ∧ V ⊆ U ∧
+                riemannianBallOf (E.incoming.flow.base.metric t) x
+                  (1000 / Real.sqrt (metricScalarAt (E.incoming.flow.base.metric t) x)) ⊆ interior V)) →
+        (∀ (c : ConnectedComponents P.Carrier) (t : ℝ), t ∈ Ioo a s →
+          ∀ x : (P.toClosedOrientedManifold.component c).Carrier, q < E.incoming.flow.scalar t x.val →
+          ¬ Nonempty (SpatialNeck ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) eps x) →
+          Nonempty (PositiveComponent (M := (P.toClosedOrientedManifold.component c).Carrier) univ) ∨
+          IsPositiveSpaceFormModel (P.toClosedOrientedManifold.component c) ∨
+          ∃ (K : CompactDomain (P.toClosedOrientedManifold.component c).Carrier)
+            (v : (P.toClosedOrientedManifold.component c).Carrier)
+            (nk : SpatialNeck ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) eps v)
+            (level : ℝ),
+            0 < metricScalarAt ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) x ∧
+            Nonempty (CapCore K.carrier) ∧ |level| ≤ 4 ∧
+            frontier K.carrier = range (fun z : Sphere 2 => nk.map (z, level)) ∧
+            riemannianBallOf ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) x
+              (1000 / Real.sqrt (metricScalarAt
+                ((E.incoming.flow.base.metric t).restrictOpen (P.componentOpen c)) x)) ⊆ interior K.carrier) →
+        E.poincareStandardDiscarded ∧ (H.toHistory.event i).poincareStandardDiscarded := by
+  obtain ⟨eta, heta, hclass⟩ :=
+    GeometricCutoffRecord.exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods.{u}
+  refine ⟨eta, heta, ?_⟩
+  intro eps heps P₀ P Q H i a s E hsrc hout hstart hend hOld hEvent hBoundary
+    parameters Record C q0 q Ctime hC hq0 hprotected hscale hdelta hbound hspatial hcomponents
+  cases hsrc
+  cases hout
+  cases hstart
+  cases hend
+  obtain ⟨hKincoming, _, hKstd, hKboundary⟩ :=
+    incoming_terminal_and_poincareStandardDiscarded_of_retainedEvent_heq E
+      rfl rfl rfl rfl hOld hEvent
+  have hG : (H.coreEvent i).toMetricCutCapEvent.incoming = E.incoming := eq_of_heq hKincoming
+  have hstd := hclass eps heps H.toHistory i parameters Record hdelta C q0 q Ctime hC hq0
+    hprotected hscale
+    (by rw [← hG] at hbound; exact hbound)
+    (by rw [← hG] at hspatial; exact hspatial)
+    (by rw [← hG] at hcomponents; exact hcomponents)
+    ((H.toHistory.event i).transition.toSmoothCutCapCompletion (hKboundary.mpr hBoundary))
+  exact ⟨hKstd.mp hstd, hstd⟩
+
 private theorem exists_poincareStandardDiscarded_of_retainedEvent_heq_tolerance :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
