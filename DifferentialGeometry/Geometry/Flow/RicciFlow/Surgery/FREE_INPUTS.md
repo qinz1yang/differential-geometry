@@ -109,6 +109,50 @@ statements now in the tree; the skeleton still has exactly the eight `sorry`s ab
 | **C3** | `CanonicalNeighborhoodContinuation P₀ g₀`: for `B ε` constants `C1 C2 τmin Ctime`, then for `κ phi` a threshold `qcan` and bounds, such that on an event slab (or the terminal slab) of a class history whose past slabs are canonical and derivative-bounded, if the slab is canonical (age-restricted) and derivative-bounded before `t₀` and the history is `κ`-noncollapsed up to `t₀`, then both hold on `[t₀, t₀ + η)` for some `η > 0` | **Reduced** (proved, `Surgery/Topology/CanonicalNeighborhoodContinuationLeaves.lean`, `canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing`) to C3a `DeepContinuation` (**PROVED** 2026-09-26: `Surgery/Topology/DeepContinuation.lean`, `deepContinuation`), C3b `CapWindowContinuation` (OPEN skeleton leaf; half 1 `Surgery/Topology/CapWindowStandardComparison.lean`, `exists_standard_comparison_of_cap_window_trace`) and C3c `CrossingContinuation` (OPEN skeleton leaf; room lemma `Surgery/Topology/CrossingRoom.lean`). Bricks delivered 2026-09-25 (sorry-free; the first five audited): `SlabPointPicking` (2Q picking, curvature bounds on compact slab intervals, `|Rm| ≲ max R 1` from pinching), `SlabBackwardCurvatureControl` (fixed-scale backward control), `UniformKappaCanonicalThreshold` (the tree's uniform `(ε, κ, σ, Phi)` model theorem entered with `κ` as input: witness with the `ε`-only constant from spatial noncollapsing on a backward window inside the slab), `StandardCapCanonicalTransport` (no witness at small normalized age), `Perelman/Noncollapsing/ForwardTransfer` (forward volume transfer), `SlabContinuationDeepInside` (picking with vanishing normalized age; `CanonicalOn` on `[t₀, t₀ + η)` for the points whose window `θ/R` stays inside the slab, from spatial noncollapsing), `Perelman/StandardSolution/CanonicalWitnessPositiveAge` (standard-solution witnesses wherever `τmin ≤ t · R`), `SlabSpatialNoncollapsingBridge` (parabolic to spatial noncollapsing under the derivative bound, for balls whose window lies in the slab and whose curvature scale is `≳ qcan`), `HistoryNoncollapsingToSlab` (history-wide `NoncollapsedBefore` to slab balls), `EventCapCapture` (a point of the new stage without a regular crossing lies in a retained cap; capture at the latest such event), `InitialSlabUniformBounds` and `InitialSlabUniqueness` (stage 0: uniform initial curvature bound, canonical and derivative clauses at low curvature, slab uniqueness from equal initial metrics; the stage-0 `κ` still conditional on per-slab `NoLocalCollapsing`), `Perelman/CanonicalNeighborhood/SpatialClosenessTimeJets` (a `MetricComparisonOn` with time jets from spatial closeness), `Perelman/CanonicalNeighborhood/CanonicalWitnessComparisonTransport` (neck transport at a general time under one comparison), and 2026-09-26: `Perelman/CanonicalNeighborhood/CapComparisonTransport` and `CanonicalAlternativeComparisonTransport` (the time-0 transports `StrongNeck.transport'`, `orderedNeckChainTransport`, `LocalCap.map` generalized to a general time; neck and deep-cap alternatives transported under one `MetricComparisonOn`; positive and round alternatives not transportable locally), `CapWindowDerivativeBounds` (`exists_derivative_gradient_bounds_of_cap_window_trace`: `|∂ₜR| ≤ C'R²` and `|dR| ≤ C'R^{3/2}` at a cap-window point from the standard comparison), `BackwardTraceDistortion` (room lemma `exists_parabolicallyRmControlledBall_or_capWindowPoint` on event slabs; the final-slab case is OPEN, lane X2b). Open: the machinery's noncollapsing hypothesis is spatial at curvature scale `R/θ`, which the bridge cannot supply below `qcan` (parabolic-form refactor under assessment); the crossing case (ages in `[τmin, θ(κ))` with the window through the retained core: blow-up on the common flow, absent local compactness); the scathed case (standard-cap comparison, `wt17` only); the derivative clause at young points; stage-0 connectedness. Second review: `consult/B-poincare-endgame-second-review-digest.md`. See `Skeleton/HANDOFF_C.md`. |
 | **C4** | `SpatialCanonicalContinuation P₀ g₀` (`Surgery/Topology/SpatialCanonicalContinuation.lean`): the age-free spatial canonical-neighbourhood clause (`SpatialCanonicalWitness`, `Perelman/CanonicalNeighborhood/SpatialCanonicalWitness.lean`) continued along the slabs with the C3 constants | **OPEN** (skeleton leaf `spatialCanonicalContinuation`). Delivered bricks: `HornNeckImprovement` (`exists_strongNeck_threshold_of_minimizing_arms`), `NeckRegionAxialArms`, `NeckChainAxialArms`, `ProspectiveNeckSurvivalVariableThreshold` (`exists_threshold_uniform_selected_neck_append_backward`), `SpatialCanonicalWitnessProjection`, `Geometry/Neck/SpatialSourceBounds`, `LocalNeckChainAxialArms` (`IncomingSlab.exists_strongNeck_threshold_of_localNeckChain`: horn neck threshold from a local neck chain around the point), `Perelman/StandardSolution/StandardSpatialCanonical` (standard-solution spatial witnesses on `[0, Θ]`, `StandardSolution.exists_spatialCanonicalWitness_with_cap_neck_charts_of_young`, conditional on the named hypothesis `StandardSolution.YoungSpatiallyCanonical` (points with `t·R < τmin`), OPEN, lane 27b). |
 
+### Bricks accepted 2026-09-26 (ACC3; sorry-free, foundational axioms, 13 linters clean)
+
+None of these closes a leaf; each is a proved theorem family with named hypotheses.
+* C2 (reduced volume, entry 22): `Perelman/LGeometry/Geodesic/ClosedEndExtension` (the L-geometry
+  of a solution extended past a closed right end; L-objects agree for equal metrics on the closed
+  window), `ClosedStartPhase`, `ClosedStartCurve` (closed start of the L-phase flow and of the
+  regularized L-curve family; convergence at the start is a hypothesis, `OPUS_FILL_LOG_G1C.md`),
+  `ClosedEndBase` (base time at a closed end, metric-only; partial, route (B) of the lead notes),
+  `Solution/ChartCurvatureRegularity` (chart Ricci and scalar-derivative regularity from joint
+  smoothness), `Perelman/LGeometry/Jacobian/Naturality` (L-geodesics, action and index under local
+  isometric pullback) with `Geometry/Connection/ParallelTransport/Naturality/PartialDiffeomorph`,
+  `Perelman/LGeometry/Jacobian/GramIndexBound` (trace of the Jacobian Gram derivative bounded by
+  the L-index), `Perelman/LGeometry/Index/JacobiMinimality` (index of L-Jacobi fields),
+  `Perelman/LGeometry/Ray/ParabolicBallRange`, `Analysis/Integration/Measure/Parametric/AreaInequality`
+  (area inequality for parametrized images), `Perelman/Noncollapsing/VolumeDistortion` (volume
+  distortion under `|Rm|` bounds), `Surgery/Topology/HistoryScalarFloor` (class-free per-history
+  scalar floor, reduced volume finite; the cutoff-record floor in `ReducedVolumeTruncation` is kept
+  because `HistoryScalarFloor` imports that module), `Surgery/Topology/HistoryLGeometry/Window`
+  (history L-windows: absolutely continuous curves across stages, regularized extended action).
+* C3b (cap window): `Perelman/CanonicalNeighborhood/WindowedWitnessStrictRestriction`,
+  `WindowedWitnessPerturbation` (windowed witnesses stable under uniform perturbation; recentred
+  strict witnesses from flow-time towers), `WindowedModelLocalPull` (windowed and oriented
+  witnesses through local pullback).
+* C3c (crossing): `Surgery/Topology/SliverForwardComparison` (forward curvature, scalar and metric
+  comparison on a thin slice), `TracedRegion` (traced regions, common flows with compact
+  neighbourhoods, event and terminal versions), `TracedRegionBackwardStep` (one backward step of
+  a trace with the scalar doubling bound), `BackwardTraceDistortionTerminal` (room lemma on the
+  final slab, `activeStage t = last`; moving its conclusion from `extendHorizon` to `H` is OPEN),
+  `SpatialBoundedCurvatureAtDistance` (scalar bounds along spatial canonical chains at bounded
+  distance).
+* C4 / S (horn): `SeparatingSphereAxialArms` (minimizing arms and a strong-neck threshold from a
+  separating central sphere), `HornCentralSphereSeparation` (the ball-local separation, deep horn
+  central-sphere sides; slice transfer OPEN, lane B10b), `Perelman/StandardSolution/
+  StandardInitialSpatialCanonical` and `StandardYoungSpatialCanonical` (initial-layer and young
+  spatial witnesses of the standard solution; the positive-time band is conditional on bounded
+  curvature, lane 27c), `StandardFamilyCompactness` (subsequential convergence of standard
+  solutions on compacta).
+
+Verdicts (lead notes 2026-09-26): S-brick B9 (purely spatial deep-horn ball) is FALSE and is
+folded into the crossing theorem B3; B11 takes the ball as hypotheses. Crossing B3b as first stated
+is FALSE; repair (i) (single slab, `time (activeStage t) ≤ t − Λ/R`) running, repair (ii) after B5.
+G1d: route (B) (common flow on `closed a t'`, `t' > t`; leaves needing a regular base time are
+stated for `t < horizon`). 24a/24b (initial lower bound) blocked on entry 23.
+
 ### Equivalence classes (rewrites; not progress)
 
 * `HasExtinctRetainedCoreHistory M g`, `HasExtinctRetainedCoreTower`, `HasExtinctObservationTower`,
