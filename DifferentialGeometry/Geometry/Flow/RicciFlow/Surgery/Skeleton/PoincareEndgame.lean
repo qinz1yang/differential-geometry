@@ -7,6 +7,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmallScaleN
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeLocalUpperBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingContinuationLeaf
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialRegularBlock
 
 
 set_option autoImplicit false
@@ -32,8 +33,8 @@ theorem historyReducedVolumeLocalUpperBound (P₀ : OrientedThreeStage.{u}) :
   historyReducedVolumeLocalUpperBound_holds P₀
 
 theorem historyReducedVolumeInitialLowerBound (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    HistoryReducedVolumeInitialLowerBound P₀ g₀ := by
-  sorry
+    HistoryReducedVolumeInitialLowerBound P₀ g₀ :=
+  historyReducedVolumeInitialLowerBound_holds P₀ g₀
 
 theorem smallScaleNoncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u})
     [SimplyConnectedSpace P₀.Carrier] (g₀ : P₀.Metric) :
