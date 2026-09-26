@@ -7260,6 +7260,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsTopology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTensorContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabScalarDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTerminalConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapFrameReversing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmoothCutCapTransitionInstance
