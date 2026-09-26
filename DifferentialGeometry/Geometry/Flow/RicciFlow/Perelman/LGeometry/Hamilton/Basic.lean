@@ -613,3 +613,45 @@ theorem lK_ray_energy
 end normedSpaceCompatibility
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
+
+noncomputable section
+open Set MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open scoped Manifold ContDiff
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  {D : RealTimeInterval}
+
+theorem integral_lHamSq_eq_boundary_of_geodesic
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (α : ℝ → M) {a b : ℝ} (hab : a ≤ b)
+    (hgeo : IsLRegularizedGeodesicOn S T α (Ioo a b))
+    (hcont : ContinuousOn (lRegularizedLagrangian S T α) (Icc a b))
+    (hHam : IntervalIntegrable (lHamSq S T α) volume a b) :
+    4 * ∫ r in a..b, lHamSq S T α r =
+      lRegularizedAction S T α a b -
+        (b * lRegularizedLagrangian S T α b - a * lRegularizedLagrangian S T α a) := by
+  have hLag : IntervalIntegrable (lRegularizedLagrangian S T α) volume a b :=
+    hcont.intervalIntegrable_of_Icc hab
+  have hcurve : IsLRegularizedCurveOn S T α (Ioo a b) (α 0)
+      ((1 / 2 : ℝ) • lVelocity (I := I) α 0) := by
+    refine ⟨rfl, ?_, hgeo⟩
+    rw [two_smul, ← add_smul]
+    norm_num
+  have hderiv (r : ℝ) (hr : r ∈ Ioo a b) :
+      HasDerivAt (fun s : ℝ => s * lRegularizedLagrangian S T α s)
+        (lRegularizedLagrangian S T α r - 4 * lHamSq S T α r) r :=
+    lLagMul_deriv S hS T hcurve hr
+  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le hab
+    (continuousOn_id.mul hcont) hderiv (hLag.sub (hHam.const_mul 4))
+  rw [intervalIntegral.integral_sub hLag (hHam.const_mul 4),
+    intervalIntegral.integral_const_mul] at hFTC
+  simp only [Pi.mul_apply, id_eq] at hFTC
+  dsimp only [lRegularizedAction]
+  linarith only [hFTC]
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman
+end

@@ -118,28 +118,10 @@ theorem lK_energy_eq_of_geodesic
     (hHam : IntervalIntegrable (lHamSq S T alpha) MeasureTheory.volume 0 b) :
     lK S T alpha b =
       (lRegularizedAction S T alpha 0 b - b * lRegularizedLagrangian S T alpha b) / 2 := by
-  have hLag : IntervalIntegrable (lRegularizedLagrangian S T alpha) MeasureTheory.volume 0 b :=
-    hcont.intervalIntegrable_of_Icc hb
-  have hcurve : IsLRegularizedCurveOn S T alpha (Ioo 0 b) (alpha 0)
-      ((1 / 2 : ℝ) • lVelocity (I := I) alpha 0) := by
-    refine ⟨rfl, ?_, hgeo⟩
-    rw [two_smul, ← add_smul]
-    norm_num
-  have hderiv (s : ℝ) (hs : s ∈ Ioo 0 b) :
-      HasDerivAt (fun r : ℝ => r * lRegularizedLagrangian S T alpha r)
-        (lRegularizedLagrangian S T alpha s - 4 * lHamSq S T alpha s) s :=
-    lLagMul_deriv S hS T hcurve hs
-  have hFTC := intervalIntegral.integral_eq_sub_of_hasDerivAt_of_le hb
-    (continuousOn_id.mul hcont) hderiv (hLag.sub (hHam.const_mul 4))
-  rw [intervalIntegral.integral_sub hLag (hHam.const_mul 4),
-    intervalIntegral.integral_const_mul] at hFTC
-  have hFTC' :
-      (∫ s in (0 : ℝ)..b, lRegularizedLagrangian S T alpha s) -
-          4 * ∫ s in (0 : ℝ)..b, lHamSq S T alpha s =
-        b * lRegularizedLagrangian S T alpha b := by
-    simpa only [Pi.mul_apply, id_eq, zero_mul, sub_zero] using hFTC
-  dsimp only [lK, lRegularizedAction]
-  linarith
+  have h := integral_lHamSq_eq_boundary_of_geodesic S hS T alpha hb hgeo hcont hHam
+  simp only [zero_mul, sub_zero] at h
+  dsimp only [lK]
+  linarith only [h]
 
 theorem lRegularizedLagrangian_mul_le_three_mul_action_of_ancient
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
