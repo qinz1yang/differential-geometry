@@ -24,11 +24,11 @@ variable {P : Type u} [TopologicalSpace P] [ChartedSpace ThreeSpace P] [IsManifo
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem StrongNeck.exists_transport_of_local_comparisons
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
-    {p : P} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
+    {p : P} {t₀ : ℝ} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t alpha eps : ℝ} {V : Set P} {order' : ℕ}
-    (nk : StrongNeck Sm (neckModelTolerance alpha) p 0) (hQ : 0 < S.scalar t x)
+    (nk : StrongNeck Sm (neckModelTolerance alpha) p t₀) (hQ : 0 < S.scalar t x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (rescaledMetric Sm 0 (Sm.scalar 0 p) nk.Q_pos)
+    (cmp : MetricComparisonOn (rescaledMetric Sm t₀ (Sm.scalar t₀ p) nk.Q_pos)
       (rescaledMetric S t (S.scalar t x) hQ) Fmap V (Set.Icc (-1) 0) order' eps)
     (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
     (heps : 0 ≤ eps) (heps' : eps ≤ neckSourceTolerance alpha)

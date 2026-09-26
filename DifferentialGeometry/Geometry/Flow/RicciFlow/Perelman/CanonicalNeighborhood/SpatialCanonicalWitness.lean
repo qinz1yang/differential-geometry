@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Neck.Spatial
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
 
 set_option autoImplicit false
 noncomputable section
@@ -132,5 +133,93 @@ def SpatialCanonicalWitness.capTubeHasNeckChart {g : SmoothRiemannianMetric I3 M
     (depth : ∀ y ∈ cap.tube, 10000 / Real.sqrt (metricScalarAt g x) ≤ metricDistance g x y),
     K.alternative = SpatialCanonicalAlternative.cap cap depth →
       ∃ (v : M) (nk : SpatialNeck g alpha v), ∀ z, cap.tubeMap z = nk.map z
+
+variable {g : SmoothRiemannianMetric I3 M} {eps C1 C2 alpha : ℝ} {x : M}
+
+def SpatialCanonicalAlternative.monoConstant {C C' : ℝ} {U : Set M}
+    (A : SpatialCanonicalAlternative g eps C x U) (hC : 0 < C) (hCC : C ≤ C')
+    (hQ : 0 ≤ metricScalarAt g x) : SpatialCanonicalAlternative g eps C' x U := by
+  cases A with
+  | neck data => exact .neck data
+  | cap data deep => exact .cap data deep
+  | positive whole data hsec =>
+    have hinv : C'⁻¹ ≤ C⁻¹ := (inv_le_inv₀ (hC.trans_le hCC) hC).mpr hCC
+    exact .positive whole data (hsec.mono (mul_le_mul_of_nonneg_right hinv hQ))
+  | round whole data => exact .round whole data
+
+omit [T2Space M] [SigmaCompactSpace M] in
+@[simp] theorem SpatialCanonicalAlternative.monoConstant_requiresVolume
+    {C C' : ℝ} {U : Set M} (A : SpatialCanonicalAlternative g eps C x U)
+    (hC : 0 < C) (hCC : C ≤ C') (hQ : 0 ≤ metricScalarAt g x) :
+    (A.monoConstant hC hCC hQ).requiresVolume = A.requiresVolume := by
+  cases A <;> rfl
+
+theorem SpatialCanonicalWitness.one_le_comparison_constant
+    (W : SpatialCanonicalWitness g eps C1 C2 x) : 1 ≤ C2 := by
+  have h := (W.scalar_bounds x (interior_subset W.center_inside)).2
+  by_contra hlt
+  have hlt' : C2 * metricScalarAt g x < 1 * metricScalarAt g x :=
+    mul_lt_mul_of_pos_right (lt_of_not_ge hlt) W.Q_pos
+  linarith
+
+def SpatialCanonicalWitness.enlargeConstants (W : SpatialCanonicalWitness g eps C1 C2 x)
+    {C1' C2' : ℝ} (h1 : C1 ≤ C1') (h2 : C2 ≤ C2') :
+    SpatialCanonicalWitness g eps C1' C2' x := by
+  have hC2 : 0 < C2 := zero_lt_one.trans_le W.one_le_comparison_constant
+  have hinv : C2'⁻¹ ≤ C2⁻¹ := (inv_le_inv₀ (hC2.trans_le h2) hC2).mpr h2
+  have hupper : C2 * metricScalarAt g x ≤ C2' * metricScalarAt g x :=
+    mul_le_mul_of_nonneg_right h2 W.Q_pos.le
+  refine {
+    Q_pos := W.Q_pos
+    eps_pos := W.eps_pos
+    eps_lt_one := W.eps_lt_one
+    domain := W.domain
+    center_inside := W.center_inside
+    radius := W.radius
+    radius_lower := W.radius_lower
+    radius_upper := W.radius_upper.trans (div_le_div_of_nonneg_right h1 (Real.sqrt_nonneg _))
+    ball_inside := W.ball_inside
+    inside_ball := W.inside_ball
+    scalar_bounds := fun y hy =>
+      ⟨(mul_le_mul_of_nonneg_right hinv W.Q_pos.le).trans (W.scalar_bounds y hy).1,
+        (W.scalar_bounds y hy).2.trans hupper⟩
+    rm_bound := fun y hy => (W.rm_bound y hy).trans hupper
+    alternative := W.alternative.monoConstant hC2 h2 W.Q_pos.le
+    volume := ?_
+    gradient := ?_ }
+  · intro hvolume
+    have hvolume' : W.alternative.requiresVolume := by
+      simpa only [SpatialCanonicalAlternative.monoConstant_requiresVolume] using hvolume
+    apply le_trans (ENNReal.ofReal_le_ofReal ?_) (W.volume hvolume')
+    exact div_le_div_of_nonneg_right hinv
+      (mul_nonneg W.Q_pos.le (Real.sqrt_nonneg _))
+  · intro v
+    exact (W.gradient v).trans (mul_le_mul_of_nonneg_right
+      (mul_le_mul_of_nonneg_right (mul_le_mul_of_nonneg_right h2 W.Q_pos.le)
+        (Real.sqrt_nonneg _)) (Real.sqrt_nonneg _))
+
+theorem SpatialCanonicalWitness.capTubeHasNeckChart.enlarge_constants
+    {W : SpatialCanonicalWitness g eps C1 C2 x} (h : W.capTubeHasNeckChart alpha)
+    {C1' C2' : ℝ} (h1 : C1 ≤ C1') (h2 : C2 ≤ C2') :
+    (W.enlargeConstants h1 h2).capTubeHasNeckChart alpha := by
+  intro cap depth heq
+  change W.alternative.monoConstant (zero_lt_one.trans_le W.one_le_comparison_constant) h2
+    W.Q_pos.le = SpatialCanonicalAlternative.cap cap depth at heq
+  cases halt : W.alternative with
+  | neck data =>
+    rw [halt] at heq
+    cases heq
+  | cap data deep =>
+    rw [halt] at heq
+    change SpatialCanonicalAlternative.cap data deep = SpatialCanonicalAlternative.cap cap depth
+      at heq
+    cases heq
+    exact h _ _ halt
+  | positive whole data sec =>
+    rw [halt] at heq
+    cases heq
+  | round whole data =>
+    rw [halt] at heq
+    cases heq
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

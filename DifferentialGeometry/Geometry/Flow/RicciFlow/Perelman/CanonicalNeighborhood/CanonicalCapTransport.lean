@@ -56,8 +56,8 @@ omit [T2Space P] [SigmaCompactSpace P] [T2Space Mm] [SigmaCompactSpace Mm] in
 theorem StrongNeck.axial_fderiv_eq_of_right_trans
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {ym₀ ym₁ : P} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
-    {eps t : ℝ} {x₀ x₁ : Mm}
-    {nk₀ : StrongNeck Sm eps ym₀ 0} {nk₁ : StrongNeck Sm eps ym₁ 0}
+    {eps t₀ t : ℝ} {x₀ x₁ : Mm}
+    {nk₀ : StrongNeck Sm eps ym₀ t₀} {nk₁ : StrongNeck Sm eps ym₁ t₀}
     {nk₀' : StrongNeck S eps x₀ t} {nk₁' : StrongNeck S eps x₁ t}
     (e : PartialDiffeomorph I3 I3 P Mm ∞)
     (h₁ : nk₁'.map = nk₁.map.trans e) (h₀ : nk₀'.map = nk₀.map.trans e)
@@ -91,8 +91,8 @@ theorem StrongNeck.axial_fderiv_eq_of_right_trans
 def orderedNeckChainTransport
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
-    {eps t : ℝ} {V : Set P}
-    (c : OrderedNeckChain Sm eps 0 V)
+    {eps t₀ t : ℝ} {V : Set P}
+    (c : OrderedNeckChain Sm eps t₀ V)
     (e : PartialDiffeomorph I3 I3 P Mm ∞) (hV : V ⊆ e.source)
     (necks : ∀ i, StrongNeck S eps (e (c.centers i)) t)
     (hmap : ∀ i, (necks i).map = (c.necks i).map.trans e) :
@@ -140,8 +140,8 @@ def orderedNeckChainTransport
 def LocalCap.map
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
-    {eps t : ℝ} {ym : P} {Um : Set P}
-    (L : LocalCap (M := P) Sm eps ym 0 Um)
+    {eps t₀ t : ℝ} {ym : P} {Um : Set P}
+    (L : LocalCap (M := P) Sm eps ym t₀ Um)
     (e : PartialDiffeomorph I3 I3 P Mm ∞) (hU : Um ⊆ e.source)
     (chain : OrderedNeckChain S eps t (e '' L.tube)) :
     LocalCap (M := Mm) S eps (e ym) t (e '' Um) := by

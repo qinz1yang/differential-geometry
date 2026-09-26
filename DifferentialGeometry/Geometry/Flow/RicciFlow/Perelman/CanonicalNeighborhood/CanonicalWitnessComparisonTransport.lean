@@ -82,83 +82,6 @@ private theorem StrongNeck.comparison_jet_differentiableWithinAt_of_buffer
     (uniqueDiffOn_Icc (by norm_num : (-1 : ℝ) < 0)) hs (hzero s hs)
     (fun b r hr => nk.comparison.jet_succ b r hr y hy v) q).differentiableWithinAt (by simp)
 
-variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-
-private theorem StrongNeck.exists_transport_of_local_comparisons_at
-    {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
-    {p : P} {t₀ : ℝ} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
-    {x : M} {t alpha eps : ℝ} {V : Set P} {order' : ℕ}
-    (nk : StrongNeck Sm (neckModelTolerance alpha) p t₀) (hQ : 0 < S.scalar t x)
-    (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (rescaledMetric Sm t₀ (Sm.scalar t₀ p) nk.Q_pos)
-      (rescaledMetric S t (S.scalar t x) hQ) Fmap V (Icc (-1) 0) order' eps)
-    (ha : 0 < alpha) (hsmall : 2 * alpha < 1 / 11)
-    (heps : 0 ≤ eps) (heps' : eps ≤ neckSourceTolerance alpha)
-    (horder : ⌈(2 * alpha)⁻¹⌉₊ ≤ order')
-    (hbase : Fmap p = x)
-    (houter : ∀ y ∈ univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹, nk.map y ∈ V)
-    (hVsource : V ⊆ Fmap.source)
-    (htime : Icc (t - (S.scalar t x)⁻¹) t ⊆ D.carrier)
-    (hdiff : ∀ b s, s ∈ Icc (-1 : ℝ) 0 →
-      ∀ z ∈ nk.map '' (univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹),
-      ∀ v : Fin 2 → TangentSpace I3 z,
-        DifferentiableWithinAt ℝ (fun a => cmp.jet b a z v) (Icc (-1 : ℝ) 0) s)
-    (hjet : ∀ b s, s ∈ Icc (-1 : ℝ) 0 → UniqueDiffWithinAt ℝ (Icc (-1 : ℝ) 0) s →
-      ∀ y ∈ univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹,
-        ∀ v : Fin 2 → TangentSpace IC y,
-          DifferentiableWithinAt ℝ (fun a => nk.comparison.jet b a y v)
-            (Icc (-1 : ℝ) 0) s) :
-    ∃ nk' : StrongNeck S (2 * alpha) x t,
-      nk'.map = partialDiffeomorphTransMixed nk.map Fmap := by
-  let U : TopologicalSpace.Opens Cylinder :=
-    ⟨univ ×ˢ Ioo (-alpha⁻¹) alpha⁻¹, isOpen_univ.prod isOpen_Ioo⟩
-  let W : TopologicalSpace.Opens Cylinder :=
-    ⟨univ ×ˢ Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹, isOpen_univ.prod isOpen_Ioo⟩
-  let K : Set Cylinder := univ ×ˢ Icc (-(2 * alpha)⁻¹) (2 * alpha)⁻¹
-  have hrad : (2 * alpha)⁻¹ < alpha⁻¹ := inv_strictAnti₀ ha (by linarith)
-  have hKU : K ⊆ U := by
-    intro y hy
-    exact ⟨hy.1, lt_of_lt_of_le (neg_lt_neg hrad) hy.2.1, lt_of_le_of_lt hy.2.2 hrad⟩
-  have hWK : (W : Set Cylinder) ⊆ K := prod_mono (subset_refl _) Ioo_subset_Icc_self
-  have hWU : (W : Set Cylinder) ⊆ U := hWK.trans hKU
-  have hK : IsCompact K := isCompact_univ.prod isCompact_Icc
-  obtain ⟨chi, hchi, _hcompact, hone, hsupp, _hrange⟩ :=
-    DifferentialGeometry.Analysis.exists_mfd_bump (I := IC) hK U.isOpen hKU
-  have hchiW : EqOn chi (fun _ => 1) W := fun y hy => subset_of_mem_nhdsSet hone (hWK hy)
-  have hU : (U : Set Cylinder) ⊆ nk.map.source := by
-    apply Subset.trans ?_ nk.domain
-    have hr := inv_anti₀ (neckModelTolerance_pos ha) (neckModelTolerance_le alpha)
-    exact prod_mono (subset_refl _) (Ioo_subset_Ioo (neg_le_neg hr) hr)
-  have hsub : (W : Set Cylinder) ⊆
-      univ ×ˢ Ioo (-(neckModelTolerance alpha)⁻¹) (neckModelTolerance alpha)⁻¹ :=
-    neck_window_subset_of_le (neckModelTolerance_pos ha) (neckModelTolerance_le alpha)
-  have hord : ⌈(2 * alpha)⁻¹⌉₊ ≤ ⌈(neckModelTolerance alpha)⁻¹⌉₊ :=
-    Nat.ceil_mono (inv_anti₀ (neckModelTolerance_pos ha)
-      ((neckModelTolerance_le alpha).trans (by linarith)))
-  obtain ⟨T⟩ := TransportedErrorTower.nonempty_of_partial_pullback cmp nk.cylinder.metric nk.map
-    U W hU hWU houter chi hchi hsupp hchiW (nk.comparison.mono hsub hord le_rfl)
-    horder heps (neckModelTolerance_pos ha) (neckModelTolerance_le_smallness alpha) hdiff
-  have hKeps := backgroundJetConstant_mul_le_of_le_neckSourceTolerance ha heps'
-  have hmodel := neckModelTolerance_le alpha
-  have hmapdiff : ∀ y ∈ (W : Set Cylinder), MDifferentiableAt IC I3 (nk.map : Cylinder → P) y :=
-    fun y hy => nk.map.mdifferentiableAt (by simp) (nk.domain (hsub hy))
-  refine ⟨{
-    eps_pos := by linarith
-    eps_small := hsmall
-    Q_pos := hQ
-    cylinder := nk.cylinder
-    map := partialDiffeomorphTransMixed nk.map Fmap
-    center := nk.center
-    center_eq := by
-      change Fmap (nk.map (nk.center, 0)) = x
-      rw [nk.center_eq, hbase]
-    domain := fun y hy => mem_inter (nk.domain (hsub hy)) (hVsource (houter y (hWU hy)))
-    time_domain := htime
-    comparison := ((nk.comparison.mono hsub hord le_rfl).trans cmp T
-      (fun y hy => houter y (hWU hy)) hmapdiff
-      (fun y hy => Fmap.mdifferentiableAt (by simp) (hVsource (houter y (hWU hy)))) hjet).mono
-      (subset_refl _) le_rfl (by linarith) }, rfl⟩
-
 theorem StrongNeck.exists_rescaled_transport_tolerances
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := P) D} (hS : IsSolutionOn S)
     {alpha a t : ℝ} {p : P} (nk : StrongNeck S (neckModelTolerance alpha) p t)
@@ -237,7 +160,7 @@ theorem StrongNeck.exists_rescaled_transport_tolerances
     apply hreg
     change a < t + r / S.scalar t p ∧ t + r / S.scalar t p < t
     constructor <;> linarith
-  apply nk.exists_transport_of_local_comparisons_at hQ F cmp ha hsmall htarget.le le_rfl
+  apply nk.exists_transport_of_local_comparisons hQ F cmp ha hsmall htarget.le le_rfl
     le_rfl hbase houter (hKU.trans hF) htime
   · intro q s hs z hz v
     obtain ⟨y, hy, rfl⟩ := hz
