@@ -18,8 +18,14 @@ Leaves (sorry, `PoincareEndgame.lean`): S `uniformDebitSurgeryStep`; C2 `noncoll
 | 5 | Deep leaf assembly: `deepContinuation` from `HistoryNoncollapsingToSlab` (G), the parabolic wrappers `exists_uniform_canonicalOn_of_parabolically_noncollapsed(_of_le_age)`, `SlabPointPicking`, `SlabBackwardCurvatureControl`, `ForwardTransfer`, `InitialSlabUniformBounds`; forward noncollapsing on `(t₀, t₀ + η)` by the slab's global curvature bound and forward transfer | E1 | open |
 | 6 | Stage 0: discharge `exists_uniform_kappaNoncollapsed_initial`'s per-slab `NoLocalCollapsing` hypothesis by components (`ComponentBallTransfer`, `no_local_collapsing` with `[ConnectedSpace]`) | E2 | open |
 | 7 | CapWindow half 2: transport of the cap alternative and the `gradient`/`time_derivative` fields under one `MetricComparisonOn` (generalize the time-0 sources `StrongNeck.transport'`, `orderedNeckChainTransport`, `LocalCap.map`; ball sandwich; cap depth margin) | E3 | open (after the M2 build) |
-| 8 | Class constraints: `p₀.recenterConstant ≤ Λ` and `a₀` pinching of `g₀` in `InCutoffClass` and the leaves (interface edit) | lead | open |
+| 8 | Class constraints: `p₀.recenterConstant ≤ Λ` and `a₀` pinching of `g₀` in `InCutoffClass` and the leaves (interface edit; fold into 13) | lead | open |
 | 9 | Replace the private duplicate in `SlabGradientScalarControl` by `IncomingSlab.scalar_le_two_mul_of_derivativeBoundBefore` (`BackwardTraceScalarControl`) | any | open, mechanical |
 | 10 | Crossing bricks (after entry 3's verdict) | — | blocked on 3 |
 | 11 | S port (after entry 4's verdict): factory chain, age-restricted CN, cutting scale `h/√(C·Ctime·τmin)` | — | blocked on 4 |
 | 12 | C2 leaf bricks (after entry 2) | — | blocked on 2 |
+| 13 | Interface revision (third review): `SpatialCanonicalWitness` (age-free, four alternatives on `SpatialNeck`) with `CanonicalWitness.toSpatial`; strong joint C output (gradient clause, spatial clause, κ via `TerminalNoncollapsedBefore`) with old C as projection; S restated `∀ B Ctime, ∃ ε, …` consuming the spatial clause; assembly on the strong C; Λ, a₀ class constraints | lead design (entry 15 extraction running) | open |
+| 14 | Deep-horn neck improvement (Perelman II 4.3 / KL 71): minimizing-arms hypothesis, cylinder limit, δ-neck at the point | H | running |
+| 15 | Design extraction for 13: exact shapes of `SpatialNeck`, `LocalCap`, positive/round alternatives, factory's witness field uses | — | running (analysis) |
+| 16 | `ProspectiveNeckSurvival` with a variable threshold sequence `q₀ₙ/Qₙ → 0` (output `Qmin = Λ·max q₀ 1`) | — | open, mechanical 300–500 |
+| 17 | Factory: replace the five `W.time_derivative` reads by the derivative clause | — | open, mechanical 150–300 |
+

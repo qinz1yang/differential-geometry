@@ -114,18 +114,24 @@ register in the root aggregate, update `Surgery/FREE_INPUTS.md` in the same comm
   onto this lineage (every file they touch is either new or identical to ours at their parent); the
   transitive need beyond that is 6 modules absent here, 31 changed only on `pc-sorry-free` and 2
   changed on both sides (`HistoryAction`, `HistorySurvivorIncoming`). Port bottom-up, compiling.
-* **Uniform cutting scale under the age threshold (second external review, FIX 3,
-  `consult/B-poincare-endgame-second-review-digest.md`).** S chooses the cutting scale and the debit
-  before `H`, but slabs have no uniform positive length: after a cut at scale `h` at time `a`, the
-  capped region evolves like the standard solution and can become singular near `a + h²`, and the
-  necks of the new horn at scale `h` then have normalized age `h⁻²(t − a)` of order `1 < τmin`, so
-  the age-restricted hypothesis gives them no witness. The port must therefore (i) record in the
-  class a post-surgery curvature bound `sup R(·, a⁺) ≤ C h⁻²` (everything above `h⁻²` up to
-  constants lies in the removed horns or in discarded canonical components), (ii) derive the slab
-  length bound `s − a ≥ h²/(C·Ctime)` from the derivative clause, and (iii) cut at the smaller scale
-  `h' := h / √(C·Ctime·τmin)`, whose necks have age `h'⁻²(t − a) ≥ τmin` at every `t ≥ s − o(1)`;
-  the debit `v = h'³` stays uniform. For the first slab from `g₀` the initial curvature bound gives
-  the length bound directly. Do not add a "uniform slab length" hypothesis instead.
+* **Age threshold versus the factory (second review FIX 3; third review, 2026-09-26,
+  `consult/C-debit-step-review-digest.md`).** The earlier repair "cut at `h/√(C·Ctime·τmin)`" is
+  RETRACTED: caps glued at scale `h'` have curvature `≈ h'⁻²`, the ratio is scale invariant. The
+  real state: (i) the factory consumes canonical neighbourhoods at accuracy `≤ δ/208000`, finer
+  than the record precision, so no binder order connects it to S; the missing brick is Perelman II
+  4.3 / KL 71 (deep-horn neck improvement, queue entry 14), and the factory must be split into a
+  coarse terminal decomposition at a fixed `ε̄` plus fine cutting necks; (ii) its terminal
+  classification uses witnesses at points of terminal curvature above a fixed threshold `L` at
+  times near `s`, whose normalized age `≈ L(s − a)` is not bounded below on short slabs, and such
+  young points need not lie in cap regions (counterexample: a round `S³` component dying shortly
+  after an event elsewhere); they do carry the `round`/`positive`/spatial alternatives, so S must
+  consume an AGE-FREE SPATIAL canonical clause (`SpatialCanonicalWitness`, queue entry 13) beside the
+  age-restricted strong witnesses, and the time derivative from the separate derivative clause;
+  (iii) `q₀` must be deferred by a variable-threshold sequence version of
+  `ProspectiveNeckSurvival` (`q₀ₙ/Qₙ → 0`, entry 16), `Ctime` chosen before `ε`; `m`, `accuracy`,
+  `ηrecord`, `Dcap` are genuinely tied to the cut precision. S is restated
+  `∀ B Ctime, ∃ ε, ∀ C's constants and κ, ∃ p₀ δbound ρbound v, …` with the noncollapsing input as
+  `TerminalNoncollapsedBefore` on the slab `G` attached to `H`.
 * The reorder concerns more than `q0`: `Ctime`, `m`, `accuracy` and `ηrecord` also precede `εcan`
   in the factory; `Ctime` is dimensionless and cannot be absorbed by a large scale. Record for each
   input whether its dependence is deferred to `Qmin` or removed by a uniform derivative estimate.
