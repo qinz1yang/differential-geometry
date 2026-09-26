@@ -142,3 +142,40 @@ predicate from `EventSlabsDerivative … j.castSucc` + `DerivativeBoundBefore t�
 on `extendHorizon T` (`hasCanonicalCutoffRecords_extendHorizon`, `T < s ≤ B`). The leaf's canonical,
 gradient and pinching hypotheses are unused. Edits: add `Λ`; keep `r₀ ≤ r`; `c` before `qcan r₀`
 (already); no explicit `δ ≤ δ₀(B, r₀, A)` class condition needed.
+
+## Post-relocation gap map (CP2, 2026-09-26)
+
+Entry 23 was done as a RELOCATION (owner decision; no history merge, no closure rebuild): the G0 code is in
+pc3 as 34 new untracked files (9 verbatim added modules + 25 sibling files holding the additions to committed
+modules), compiled read-only, axioms `[propext, Classical.choice, Quot.sound]`; details and provenance in
+`CP2_LOG.md`. The full cherry-pick record is branch `codex/pc-entry23` on `liao`. Collab line numbers above
+(`ac2e5266e`) now map to (paths under `Surgery/Topology/` unless stated):
+
+| Item above | Declaration | Now at |
+|---|---|---|
+| collab `CapWindowAction:1537` | `exists_uniform_canonical_cap_birth_action_lower_bound` | `CapWindowActionRegularCrossing.lean:383` |
+| `:1613` | `exists_uniform_interior_old_nodes_of_action_le` | `CapWindowActionRegularCrossing.lean:459` |
+| `:1684` | `exists_uniform_sum_stageRegularizedAction_gt_of_inserted_cap_birth_at_controlled_ball` | `CapWindowActionRegularCrossing.lean:530` |
+| `:1768` | `…_gt_of_nonregular_node_at_controlled_ball` | `CapWindowActionRegularCrossing.lean:614` |
+| `:1868` | `…_gt_of_nonregular_initial_point_at_controlled_ball` | `CapWindowActionRegularCrossing.lean:714` |
+| `:2015` | `exists_uniform_regularCrossing_of_sum_stageRegularizedAction_lt_at_controlled_ball` | `CapWindowActionRegularCrossing.lean:861` |
+| `:2120` | `exists_uniform_regularCrossing_at_initial_point_of_sum_stageRegularizedAction_lt_at_controlled_ball` | `CapWindowActionRegularCrossing.lean:966` |
+| `:2233` | `exists_uniform_regularCrossing_minimizer_of_regularizedCost_lt_at_controlled_ball` | `CapWindowActionRegularCrossing.lean:1079` |
+| `:2350` | `exists_uniform_regularCrossing_of_regularizedCost_lt_at_event_time` | `CapWindowActionRegularCrossing.lean:1196` |
+| `:2438` | `exists_uniform_continuousAt_spatial_regularizedCost_at_event` | `CapWindowActionRegularCrossing.lean:1284` |
+| (b3604787e) | `exists_uniform_prepared_survival_action_lower_bound_of_parabolicallyRmControlledBall`, `…_prepared_cap_birth_…` | `CapWindowActionRegularCrossing.lean:29`, `:173` |
+| collab `Density:806` | `exists_regularizedCost_minimizer_of_ne_top` | `HistoryAction/Attainment.lean:12` |
+| collab `Density:874` | `exists_regularizedCost_spatial_minimizer` | `HistoryAction/Attainment.lean:80` |
+| collab `TimeContinuity:278` | `continuousOn_sInf_regularizedCost_on_stage` | `HistoryAction/TimeContinuity.lean:283` |
+| collab `EventContinuation:182` | `tendsto_sInf_regularizedCost_after_event_of_minimum` | `HistoryAction/EventContinuation.lean:182` |
+| collab `AbsoluteContinuity:2413` | `exists_regularizedGeodesic_survivor_lift_of_regularizedExtendedAction_eq_regularizedCost` | `HistoryAction/AbsoluteContinuityMinimizer.lean:1566` |
+| (d1c4672a1) | `lowerSemicontinuous_regularizedCost` | `HistoryAction/EndpointContinuity.lean:100` |
+| collab `MetricCutCapScalarLower:905/:544` | `exists_retained_cap_of_not_isInteriorPoint`, `exists_regularCrossing_of_not_mem_capRegion` | already committed: `MetricCutCapScalarLower.lean:905`, `:544` |
+| (ebefde69b) | `exists_regularCrossing_or_cap`, `regularCrossing_or_cap_of_admissible_node` | `MetricCutCapRegularCrossing.lean:11`, `:27` |
+| L3 | `regularizedDensity_eq_exp_of_regularizedCost_eq`, `reducedVolume_eq_of_scalar_lower_bound_le` | already committed: `ReducedVolumeTruncation.lean:165`, `:294` |
+| ball volume | `exists_uniform_terminal_ball_volume_lower_of_cap_contact`, `…_of_initial_time_contact` | `HistoryBallVolume.lean:1775`, `:2010` |
+
+G0 is closed once these files are accepted (acceptance must also build the committed
+`StandardCap/WindowDiscarding`, `Topology/CapWindowAction`, `Topology/HistoryActionJoin`, which had no olean).
+G1 (strict cutoff `s < t` re-threading of the `:2233` family), G2 (class-to-raw glue), G3 (stage floor) and
+24b's L1/L2 are unchanged and still open; nothing relocated provides them.

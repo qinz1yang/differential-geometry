@@ -305,3 +305,14 @@ No `sorry`/`axiom`/`nolint`/heartbeat overrides. Build the changed modules and t
 into a producer module next to `CanonicalNeighborhoodInduction.lean`, aggregate registration and
 ledger update in the same commit. Intermediate bricks are separate named theorems with their own
 acceptance, one new file per brick, never `sorry`s inside a proof.
+
+## Update 2026-09-26 (ACC13)
+
+C2a `historyReducedVolumeMonotone`, C2b `historyReducedVolumeLocalUpperBound` and C2d
+`smallScaleNoncollapsingThroughSurgery` are CLOSED in the skeleton (C2d needs
+`[SimplyConnectedSpace P₀.Carrier]`, now carried by `noncollapsingThroughSurgery`,
+`canonicalNeighborhoodsThroughSurgeryStrong` and the strong assembly's `hcn`). Open C leaves: C2c
+`historyReducedVolumeInitialLowerBound` (24a accepted, 24b running in ILBB), C3c `crossingContinuation`
+(bricks XA1–XA4, XP1–XP4 accepted; XP2′ and the assembly X7 running), C4 `spatialCanonicalContinuation`
+(M5 and C4A's spatial-crossing reduction accepted; I29 not applied). Entry 23 was done by relocation
+(34 new files, credit in the commit message). No full-tree builds on this host: the collaborator builds.

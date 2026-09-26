@@ -275,3 +275,13 @@ full/truncated strong-neck dichotomy, whole-tube survival and splicing; C3c: K1 
 E3; C4: old-point embedding and a strong-compatible `W`); S is not closed by it. The interface design
 (lane SA1, one statement for review) is running; the owner decision on the interface change is pending.
 T2 is retired. B13 composed (the Crossing X-core headline) is accepted (ACC11).
+
+## Update 2026-09-26 (ACC13; A-lite)
+
+Owner decision: interface A-lite (`Skeleton/DESIGN_STRONG_INTERFACE.md` §4) approved. Accepted: SP1
+(`StrongNeckRestriction`, `TruncatedNeck`, `HistoryStrongNeck`), SP2 (strongly canonical cap windows), SC1
+(horn-half-range neck alternatives, strong-neck trigger, neck exclusion), SC2–SC6 (consumer waves of T4′),
+SL1 (`strongNecksOfCutoffClass_of_strongSpatialCrossing`), SL2 (T4′ `FineCutNeckSupplyStrong`, T5′
+`uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong`). SL2's skeleton edit is NOT
+applied; S stays a `sorry` leaf. Running: SC7 (terminal bounded curvature at distance, core frontier
+distance), SC8 (the inductive step's finite-window limit).

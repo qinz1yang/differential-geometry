@@ -70,3 +70,4 @@
   StandardSliceSpatialCanonical helpers; `SpatialNeck.exists_scale_invariant_transport_tolerance` sibling of the
   committed `SpatialNeck.exists_uniform_transport_tolerance`.
 - Commits: 2355d94f1 (Crossing B13, B6G5), e3d854792 (C4 (B) C4B2), 2431db7da (C2 M, C2M), 3163aea8e (root line for CapCoreCylinderAbsorption); root lines staged per group. CP1 not committed. Commit 5: designs, H13 digest, finished-lane logs (B6G5, C4B2, C2M, T2 retired), ledgers (FREE_INPUTS ACC11 section and S row, FILL_QUEUE C2/Crossing/S/C4/merges rows, HANDOFF_C ACC11 status, HANDOFF_S ACC11 update).
+- Commit 5 = e68bf6466; pushed 88a4eec5a..e68bf6466 to liao/codex/pc-target-c-psf. This line left uncommitted.

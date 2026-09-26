@@ -70,7 +70,10 @@ in the topology modules and is no longer on the skeleton path. Open leaves = the
 `historyReducedVolumeMonotone`, `historyReducedVolumeLocalUpperBound`,
 `historyReducedVolumeInitialLowerBound`, `smallScaleNoncollapsingThroughSurgery` (C2),
 `crossingContinuation` (C3c), `spatialCanonicalContinuation` (C4): seven leaves since ACC7 (C3b
-`capWindowContinuation` PROVED, `Surgery/Topology/CapWindowContinuationLeaf.lean`).
+`capWindowContinuation` PROVED, `Surgery/Topology/CapWindowContinuationLeaf.lean`). Since ACC13 four leaves: S, C2c
+`historyReducedVolumeInitialLowerBound`, C3c `crossingContinuation`, C4 `spatialCanonicalContinuation`
+(C2a/C2b/C2d CLOSED: `historyReducedVolumeMonotone_holds`, `historyReducedVolumeLocalUpperBound_holds`,
+`smallScaleNoncollapsingThroughSurgery_of_simplyConnectedSpace`).
 
 Interface revision (entry 28, 2026-09-26, `Skeleton/DESIGN_28.md`). The ledger's leaves are the
 statements now in the tree; the skeleton has exactly the `sorry`s above (eight until ACC7, seven since).
@@ -466,6 +469,38 @@ None of these closes a leaf.
   rebuilt on a single-neck chain as H11 allows); M4★ `exists_window_spatialCanonicalWitness_of_standard_close`
   (`StandardWindowSpatialCanonical.lean`). With ACC10: M1a/M1b/M2/M3/M4/M4★/G DONE; M5 running.
 * Root aggregate: the committed `Perelman/CanonicalNeighborhood/CapCoreCylinderAbsorption` is registered.
+
+### Accepted 2026-09-26 (ACC13; sorry-free, foundational axioms, 13 linters clean)
+
+Three leaves close; the skeleton has four `sorry`s (S, C2c, C3c, C4).
+* C2d CLOSED (lanes SS2, SS3): `smallScaleNoncollapsingThroughSurgery_of_simplyConnectedSpace`
+  (`Topology/SmallScaleNoncollapsingThroughSurgery.lean`), with `exists_noncollapsedBefore_of_regularTimes`
+  (`HistoryNoncollapsingSliceTransfer`) and `exists_initial_layer_noncollapsed` (`InitialLayerNoncollapsing`).
+  Route A of `OPUS_FILL_LOG_SS3.md`: `[SimplyConnectedSpace P₀.Carrier]` on the skeleton theorems
+  `smallScaleNoncollapsingThroughSurgery`, `noncollapsingThroughSurgery`,
+  `canonicalNeighborhoodsThroughSurgeryStrong` and on the `hcn` binders of the strong assembly; definitions
+  unchanged. Deferred merge: SS3's private general initial-layer form becomes the public primary theorem.
+* C2a/C2b CLOSED (lanes H7b, C2W, C2L): `historyReducedVolumeMonotone_holds`
+  (`Topology/HistoryReducedVolumeMonotone.lean`), `historyReducedVolumeLocalUpperBound_holds`
+  (`Topology/HistoryReducedVolumeLocalUpperBound.lean`), from the L-family chains and reduced Jacobian
+  monotonicity (`HistoryLGeometry/{FamilyChain*, Jacobian*, ActionSplit, AdaptedFieldIcc, AntitoneOffFinite}`),
+  closed-start continuity, comparison, the event-base Gaussian bound (`SeamBaseJacobian`), `JacobianGaussian`
+  and the tail estimate (`ReducedVolumeTail`).
+* C2c brick 24a (lane ILBA): `exists_uniform_regularCrossing_minimizer_of_regularizedCost_lt_of_derivative_before`,
+  `exists_uniform_regularMinimizerEndpoint_of_regularizedCost_lt`, on the relocated collaborator modules
+  (entry 23, 34 modules, commit with the provenance line). 24b + leaf running (ILBB).
+* C3c bricks (Crossing, `DESIGN_CROSSING_ASSEMBLY.md`, `DESIGN_X4D.md`): XA1 (X0/X2/X5c/X5d), XP1 (P1s), XA2
+  (X1k, bad point, clause transport), XA3 (ancient limit clauses), XP2 finished part
+  (`CapWindowSliceComparison`, `BoundedCurvatureAtDistanceAnchor`), XP3 (W1′ open-closed gluing, local
+  pointed flow limits and their noncollapsing), XP4 (`WindowScalarBound`), XA4 (X3p/F3/X3a/X3/X4ext,
+  `exists_subseq_depthExtendable_pos`; X3a/X3 carry `ε ≤ crossingNeckAccuracy`). Leaf assembly X7 running.
+* C4 bricks: M5 `exists_capWindowPoint_spatialCanonicalWitness` (C4B3); `SpatialCrossingContinuation` and
+  `spatialCanonicalContinuationWithAccuracy_of_spatialCrossing` (C4A; interface I29 not applied).
+* S bricks (interface A-lite, owner-approved, `Skeleton/DESIGN_STRONG_INTERFACE.md` §4): SP1/SP2/SC1 producers
+  (history strong necks, truncated necks, strongly canonical cap windows), SC2–SC6 consumer waves (horn
+  neck uniformity, traced regions from strong necks, line/product necks, horizon extension, depth
+  induction), SL1 `strongNecksOfCutoffClass_of_strongSpatialCrossing`, SL2 T4′ `FineCutNeckSupplyStrong` and
+  T5′ `uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong` (skeleton not rewired).
 
 ### Equivalence classes (rewrites; not progress)
 
