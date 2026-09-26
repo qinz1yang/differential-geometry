@@ -8,7 +8,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle Filter Set
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

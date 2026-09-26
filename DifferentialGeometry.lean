@@ -14048,3 +14048,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventFirstV
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.VariationPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorIndexBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.FiniteChain
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FiniteFirstVariation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Regularized.FiniteSecondVariation

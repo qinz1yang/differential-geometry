@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Existence
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
+import Mathlib.Algebra.Order.Field.Pi
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Curve
 
 open Set Filter
@@ -180,5 +182,179 @@ theorem exists_parallel_frame
   exact exists_parallel_frame_on_Icc (I := I) (a := 0) (b := L) g γ
     (hγ.of_le (by exact_mod_cast hN)).contMDiffOn isOpen_univ hL.le
     (subset_univ _) v hON0
+
+open Variation Bundle in
+theorem exists_smooth_parallel_frame_on_Ioo
+    (q : SmoothRiemannianMetric I M) (alpha : Real → M)
+    (halpha : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha)
+    {a b : Real} (hab : a ≤ b)
+    {ι : Type*} [Finite ι] [DecidableEq ι] (v : ι → TangentSpace I (alpha b))
+    (hON : ∀ i j, q.inner (alpha b) (v i) (v j) = if i = j then 1 else 0) :
+    ∃ (eps : Real) (_ : 0 < eps)
+      (F : ι → ∀ s, TangentSpace I (alpha s)),
+      (∀ i, F i b = v i) ∧
+      (∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
+        (fun s : Real ↦
+          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+            (alpha s) (F i s) : TangentBundle I M)) (Set.Ioo (a - eps) (b + eps))) ∧
+      (∀ i, ∀ s ∈ Set.Ioo (a - eps) (b + eps),
+        DifferentiableAt Real (chartRepAt (I := I) alpha (F i) s) s) ∧
+      (∀ i, ∀ s ∈ Set.Ioo (a - eps) (b + eps),
+        covDerivAlong (I := I) q alpha (F i) s = 0) ∧
+      (∀ s ∈ Set.Ioo (a - eps) (b + eps), ∀ i j,
+        q.inner (alpha s) (F i s) (F j s) = if i = j then 1 else 0) := by
+  classical
+  let L := b - a + 1
+  have hL : 0 < L := by dsimp only [L]; linarith
+  let beta : Real → M := fun r ↦ alpha (b - r)
+  have hbeta : ContMDiff (modelWithCornersSelf Real Real) I ∞ beta := by
+    exact halpha.comp (contMDiff_const.sub contMDiff_id)
+  have htransport : ∀ i, ∃ (d : Real) (_ : 0 < d)
+      (P : ∀ r, TangentSpace I (beta r)),
+      P 0 = v i ∧
+      (∀ r ∈ Set.Ioo (-d) (L + d),
+        DifferentiableAt Real (chartRepAt (I := I) beta P r) r) ∧
+      (∀ r ∈ Set.Ioo (-d) (L + d),
+        covDerivAlong (I := I) q beta P r = 0) ∧
+      ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
+        (fun r : Real ↦
+          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+            (beta r) (P r) : TangentBundle I M)) (Set.Ioo (-d) (L + d)) :=
+    fun i ↦ parallelTransport_section_contMDiffOn_Ioo
+      (I := I) q beta hbeta hL (v i)
+  choose d hd P hP0 hPdiff hPpar hPsmooth using htransport
+  obtain ⟨eps, heps, hepsd⟩ :=
+    Pi.exists_forall_pos_add_lt (x := fun _ : ι ↦ 0)
+      (y := d) (fun i ↦ hd i)
+  have heps_lt (i : ι) : eps < d i := by
+    simpa only [zero_add] using hepsd i
+  let phi : Real → Real := fun s ↦ b - s
+  let F : ι → ∀ s, TangentSpace I (alpha s) :=
+    fun i s ↦ P i (phi s)
+  have hphi : ContMDiff (modelWithCornersSelf Real Real)
+      (modelWithCornersSelf Real Real) ∞ phi :=
+    contMDiff_const.sub contMDiff_id
+  have hphiDiff : Differentiable Real phi :=
+    (contMDiff_iff_contDiff.mp hphi).differentiable (by simp)
+  have hcurve : (fun s ↦ beta (phi s)) = alpha := by
+    funext s
+    dsimp only [beta, phi]
+    congr 1
+    ring
+  have hrev (s : Real) (hs : s ∈ Set.Ioo (a - eps) (b + eps))
+      (i : ι) :
+      phi s ∈ Set.Ioo (-(d i)) (L + d i) := by
+    dsimp only [phi]
+    constructor <;> linarith [hs.1, hs.2, heps_lt i, show L = b - a + 1 from rfl]
+  have hFsmooth : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
+      (fun s : Real ↦
+        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+          (alpha s) (F i s) : TangentBundle I M)) (Set.Ioo (a - eps) (b + eps)) := by
+    intro i
+    have hcomp := (hPsmooth i).comp hphi.contMDiffOn
+      (fun s hs ↦ hrev s hs i)
+    have heq :
+        ((fun r : Real ↦
+          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+            (beta r) (P i r) : TangentBundle I M)) ∘ phi) =
+          (fun s : Real ↦
+            (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+              (alpha s) (F i s) : TangentBundle I M)) := by
+      funext s
+      simp only [Function.comp_apply, F]
+      rw [congrFun hcurve s]
+    rwa [heq] at hcomp
+  have hFdiff : ∀ i, ∀ s ∈ Set.Ioo (a - eps) (b + eps),
+      DifferentiableAt Real (chartRepAt (I := I) alpha (F i) s) s := by
+    intro i s hs
+    have hAt := (hFsmooth i s hs).contMDiffAt (isOpen_Ioo.mem_nhds hs)
+    exact (differentiableAt_chartRepAt_of_contMDiffAt_two (I := I) (hAt.of_le (by
+      change (↑(2 : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
+      exact WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))))
+  have hFpar : ∀ i, ∀ s ∈ Set.Ioo (a - eps) (b + eps),
+      covDerivAlong (I := I) q alpha (F i) s = 0 := by
+    intro i s hs
+    have hcomp := covDerivAlong_comp (I := I) q beta (P i) phi s
+      (hbeta.mdifferentiableAt (by simp)) (hPdiff i (phi s) (hrev s hs i))
+      hphiDiff.differentiableAt
+    have hzero := hPpar i (phi s) (hrev s hs i)
+    rw [hzero, smul_zero] at hcomp
+    rw [hcurve] at hcomp
+    exact hcomp
+  have hFON : ∀ s ∈ Set.Ioo (a - eps) (b + eps), ∀ i j,
+      q.inner (alpha s) (F i s) (F j s) = if i = j then 1 else 0 := by
+    intro s hs i j
+    let r := phi s
+    let lo := min 0 r
+    let hi := max 0 r
+    have hr_mem : r ∈ Set.Icc lo hi := ⟨min_le_right _ _, le_max_right _ _⟩
+    have h0_mem : (0 : Real) ∈ Set.Icc lo hi :=
+      ⟨min_le_left _ _, le_max_left _ _⟩
+    have hseg : Set.Icc lo hi ⊆ Set.Ioo (-(d i)) (L + d i) := by
+      intro z hz
+      have hrange := hrev s hs i
+      dsimp only [lo, hi] at hz
+      rcases le_total 0 r with hr | hr
+      · rw [min_eq_left hr, max_eq_right hr] at hz
+        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd i, hL]
+      · rw [min_eq_right hr, max_eq_left hr] at hz
+        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd i, hL]
+    have hsegj : Set.Icc lo hi ⊆ Set.Ioo (-(d j)) (L + d j) := by
+      intro z hz
+      have hrange := hrev s hs j
+      dsimp only [lo, hi] at hz
+      rcases le_total 0 r with hr | hr
+      · rw [min_eq_left hr, max_eq_right hr] at hz
+        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd j, hL]
+      · rw [min_eq_right hr, max_eq_left hr] at hz
+        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd j, hL]
+    have hconst := parallel_transport_preserves_inner_product (I := I) q beta
+      (N := 2) le_rfl (hbeta.of_le (by exact_mod_cast le_top)) (P i) (P j)
+      (fun z hz ↦ hPdiff i z (hseg hz))
+      (fun z hz ↦ hPdiff j z (hsegj hz))
+      (fun z hz ↦ hPpar i z (hseg hz))
+      (fun z hz ↦ hPpar j z (hsegj hz))
+    have hr_eq := hconst r hr_mem
+    have h0_eq := hconst 0 h0_mem
+    have hrbase : beta r = alpha s := by
+      dsimp only [r, beta, phi]
+      congr 1
+      ring
+    dsimp only [F]
+    rw [← hrbase]
+    rw [hr_eq, ← h0_eq, hP0 i, hP0 j]
+    have hbeta0 : beta 0 = alpha b := by
+      dsimp only [beta]
+      congr 1
+      ring
+    rw [hbeta0]
+    exact hON i j
+  refine ⟨eps, heps, F, ?_, hFsmooth, hFdiff, hFpar, hFON⟩
+  intro i
+  change P i (b - b) = v i
+  rw [sub_self]
+  exact hP0 i
+
+theorem exists_smooth_parallel_orthonormal_frame_on_Ioo
+    (q : SmoothRiemannianMetric I M) (alpha : Real → M)
+    (halpha : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha)
+    {a b : Real} (hab : a ≤ b) :
+    ∃ (eps : Real) (_ : 0 < eps)
+      (F : Fin (Module.finrank Real E) → ∀ s, TangentSpace I (alpha s)),
+      (∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
+        (fun s : Real ↦
+          (Bundle.TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+            (alpha s) (F i s) : TangentBundle I M)) (Set.Ioo (a - eps) (b + eps))) ∧
+      (∀ i, ∀ s ∈ Set.Ioo (a - eps) (b + eps),
+        DifferentiableAt Real (chartRepAt (I := I) alpha (F i) s) s) ∧
+      (∀ i, ∀ s ∈ Set.Ioo (a - eps) (b + eps),
+        covDerivAlong (I := I) q alpha (F i) s = 0) ∧
+      (∀ s ∈ Set.Ioo (a - eps) (b + eps), ∀ i j,
+        q.inner (alpha s) (F i s) (F j s) = if i = j then 1 else 0) := by
+  obtain ⟨basis, hbasis⟩ :=
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) q (alpha b)
+  obtain ⟨eps, heps, F, _, hF⟩ :=
+    exists_smooth_parallel_frame_on_Ioo q alpha halpha hab basis hbasis
+  exact ⟨eps, heps, F, hF⟩
 
 end DifferentialGeometry.Geometry.Riemannian

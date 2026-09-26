@@ -4,11 +4,12 @@ import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Regularity.Joint
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
-import DifferentialGeometry.Geometry.Connection.ParallelTransport.Construction.Smoothness
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Frame
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Parametric
 import Mathlib.Algebra.Order.Field.Pi
 import Mathlib.Analysis.Calculus.MeanValue
+import DifferentialGeometry.Topology.Compactness.TimeInterval
 
 set_option autoImplicit false
 
@@ -20,7 +21,7 @@ open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
 open Bundle Filter Set
-open scoped Bundle Manifold ContDiff Topology
+open scoped Bundle Manifold ContDiff _root_.Topology
 
 open DifferentialGeometry.Geometry.Riemannian.CovariantDerivativeAlong
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
@@ -474,210 +475,38 @@ private theorem sumField_smooth
   rw [e.continuousLinearMapAt_apply (R := Real)]
   rw [e.coe_linearMapAt_of_mem hs]
 
-omit [InnerProductSpace Real E] [T2Space M] [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-private theorem exists_parFrame
-    (q : SmoothRiemannianMetric I M) (alpha : Real → M)
-    (halpha : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha)
-    {b : Real} (hb : 0 < b) :
-    ∃ (eps : Real) (_ : 0 < eps)
-      (F : Fin (Module.finrank Real E) → ∀ s, TangentSpace I (alpha s)),
-      (∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
-        (fun s : Real ↦
-          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-            (alpha s) (F i s) : TangentBundle I M)) (Set.Ioo (-eps) (b + eps))) ∧
-      (∀ i, ∀ s ∈ Set.Ioo (-eps) (b + eps),
-        DifferentiableAt Real (chartRepAt (I := I) alpha (F i) s) s) ∧
-      (∀ i, ∀ s ∈ Set.Ioo (-eps) (b + eps),
-        covDerivAlong (I := I) q alpha (F i) s = 0) ∧
-      (∀ s ∈ Set.Ioo (-eps) (b + eps), ∀ i j,
-        q.inner (alpha s) (F i s) (F j s) = if i = j then 1 else 0) := by
-  classical
-  obtain ⟨basis, hbasis⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) q (alpha b)
-  let beta : Real → M := fun r ↦ alpha (b - r)
-  have hbeta : ContMDiff (modelWithCornersSelf Real Real) I ∞ beta := by
-    exact halpha.comp (contMDiff_const.sub contMDiff_id)
-  have htransport : ∀ i, ∃ (d : Real) (_ : 0 < d)
-      (P : ∀ r, TangentSpace I (beta r)),
-      P 0 = basis i ∧
-      (∀ r ∈ Set.Ioo (-d) (b + d),
-        DifferentiableAt Real (chartRepAt (I := I) beta P r) r) ∧
-      (∀ r ∈ Set.Ioo (-d) (b + d),
-        covDerivAlong (I := I) q beta P r = 0) ∧
-      ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
-        (fun r : Real ↦
-          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-            (beta r) (P r) : TangentBundle I M)) (Set.Ioo (-d) (b + d)) :=
-    fun i ↦ parallelTransport_section_contMDiffOn_Ioo
-      (I := I) q beta hbeta hb (basis i)
-  choose d hd P hP0 hPdiff hPpar hPsmooth using htransport
-  obtain ⟨eps, heps, hepsd⟩ :=
-    Pi.exists_forall_pos_add_lt (x := fun _ : Fin (Module.finrank Real E) ↦ 0)
-      (y := d) (fun i ↦ hd i)
-  have heps_lt (i : Fin (Module.finrank Real E)) : eps < d i := by
-    simpa only [zero_add] using hepsd i
-  let phi : Real → Real := fun s ↦ b - s
-  let F : Fin (Module.finrank Real E) → ∀ s, TangentSpace I (alpha s) :=
-    fun i s ↦ P i (phi s)
-  have hphi : ContMDiff (modelWithCornersSelf Real Real)
-      (modelWithCornersSelf Real Real) ∞ phi :=
-    contMDiff_const.sub contMDiff_id
-  have hphiDiff : Differentiable Real phi :=
-    (contMDiff_iff_contDiff.mp hphi).differentiable (by simp)
-  have hcurve : (fun s ↦ beta (phi s)) = alpha := by
-    funext s
-    dsimp only [beta, phi]
-    congr 1
-    ring
-  have hrev (s : Real) (hs : s ∈ Set.Ioo (-eps) (b + eps))
-      (i : Fin (Module.finrank Real E)) :
-      phi s ∈ Set.Ioo (-(d i)) (b + d i) := by
-    dsimp only [phi]
-    constructor <;> linarith [hs.1, hs.2, heps_lt i]
-  have hFsmooth : ∀ i, ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
-      (fun s : Real ↦
-        (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-          (alpha s) (F i s) : TangentBundle I M)) (Set.Ioo (-eps) (b + eps)) := by
-    intro i
-    have hcomp := (hPsmooth i).comp hphi.contMDiffOn
-      (fun s hs ↦ hrev s hs i)
-    have heq :
-        ((fun r : Real ↦
-          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-            (beta r) (P i r) : TangentBundle I M)) ∘ phi) =
-          (fun s : Real ↦
-            (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
-              (alpha s) (F i s) : TangentBundle I M)) := by
-      funext s
-      simp only [Function.comp_apply, F]
-      rw [congrFun hcurve s]
-    rwa [heq] at hcomp
-  have hFdiff : ∀ i, ∀ s ∈ Set.Ioo (-eps) (b + eps),
-      DifferentiableAt Real (chartRepAt (I := I) alpha (F i) s) s := by
-    intro i s hs
-    have hAt := (hFsmooth i s hs).contMDiffAt (isOpen_Ioo.mem_nhds hs)
-    exact (differentiableAt_chartRepAt_of_contMDiffAt_two (I := I) (hAt.of_le (by
-      change (↑(2 : ℕ∞) : WithTop ℕ∞) ≤ (↑(⊤ : ℕ∞) : WithTop ℕ∞)
-      exact WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ (⊤ : ℕ∞)))))
-  have hFpar : ∀ i, ∀ s ∈ Set.Ioo (-eps) (b + eps),
-      covDerivAlong (I := I) q alpha (F i) s = 0 := by
-    intro i s hs
-    have hcomp := covDerivAlong_comp (I := I) q beta (P i) phi s
-      (hbeta.mdifferentiableAt (by simp)) (hPdiff i (phi s) (hrev s hs i))
-      hphiDiff.differentiableAt
-    have hzero := hPpar i (phi s) (hrev s hs i)
-    rw [hzero, smul_zero] at hcomp
-    rw [hcurve] at hcomp
-    exact hcomp
-  have hFON : ∀ s ∈ Set.Ioo (-eps) (b + eps), ∀ i j,
-      q.inner (alpha s) (F i s) (F j s) = if i = j then 1 else 0 := by
-    intro s hs i j
-    let r := phi s
-    let lo := min 0 r
-    let hi := max 0 r
-    have hr_mem : r ∈ Set.Icc lo hi := ⟨min_le_right _ _, le_max_right _ _⟩
-    have h0_mem : (0 : Real) ∈ Set.Icc lo hi :=
-      ⟨min_le_left _ _, le_max_left _ _⟩
-    have hseg : Set.Icc lo hi ⊆ Set.Ioo (-(d i)) (b + d i) := by
-      intro z hz
-      have hrange := hrev s hs i
-      dsimp only [lo, hi] at hz
-      rcases le_total 0 r with hr | hr
-      · rw [min_eq_left hr, max_eq_right hr] at hz
-        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd i]
-      · rw [min_eq_right hr, max_eq_left hr] at hz
-        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd i]
-    have hsegj : Set.Icc lo hi ⊆ Set.Ioo (-(d j)) (b + d j) := by
-      intro z hz
-      have hrange := hrev s hs j
-      dsimp only [lo, hi] at hz
-      rcases le_total 0 r with hr | hr
-      · rw [min_eq_left hr, max_eq_right hr] at hz
-        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd j]
-      · rw [min_eq_right hr, max_eq_left hr] at hz
-        constructor <;> linarith [hz.1, hz.2, hrange.1, hrange.2, hd j]
-    have hconst := parallel_transport_preserves_inner_product (I := I) q beta
-      (N := 2) le_rfl (hbeta.of_le (by exact_mod_cast le_top)) (P i) (P j)
-      (fun z hz ↦ hPdiff i z (hseg hz))
-      (fun z hz ↦ hPdiff j z (hsegj hz))
-      (fun z hz ↦ hPpar i z (hseg hz))
-      (fun z hz ↦ hPpar j z (hsegj hz))
-    have hr_eq := hconst r hr_mem
-    have h0_eq := hconst 0 h0_mem
-    have hrbase : beta r = alpha s := by
-      dsimp only [r, beta, phi]
-      congr 1
-      ring
-    dsimp only [F]
-    rw [← hrbase]
-    rw [hr_eq, ← h0_eq, hP0 i, hP0 j]
-    have hbeta0 : beta 0 = alpha b := by
-      dsimp only [beta]
-      congr 1
-      ring
-    rw [hbeta0]
-    exact hbasis i j
-  exact ⟨eps, heps, F, hFsmooth, hFdiff, hFpar, hFON⟩
-
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
-theorem exists_lAdaptedField
+theorem exists_lAdaptedField_on_Icc
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
     (T : Real) (alpha : Real → M)
     (halpha : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha)
-    {a b c : Real} (ha : a < 0) (hb : 0 < b) (hc : b < c)
-    (hreg : ∀ s ∈ Set.Ioo a c, T - s ^ 2 ∈ D.regular)
+    {a b : Real} (hab : a ≤ b) {J : Set Real} (hJ : IsOpen J) (hseg : Set.Icc a b ⊆ J)
+    (hreg : ∀ s ∈ J, T - s ^ 2 ∈ D.regular)
     (V : TangentSpace I (alpha b)) :
     ∃ (P : ∀ s, TangentSpace I (alpha s)) (Omega' : Set Real),
-      IsOpen Omega' ∧ Set.Icc 0 b ⊆ Omega' ∧ Omega' ⊆ Set.Ioo a c ∧
+      IsOpen Omega' ∧ Set.Icc a b ⊆ Omega' ∧ Omega' ⊆ J ∧
       ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
         (fun s : Real ↦
           (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
             (alpha s) (P s) : TangentBundle I M)) Omega' ∧
-      P b = V ∧
-      IsLAdapted S T alpha P Omega' := by
+      P b = V ∧ IsLAdapted S T alpha P Omega' := by
   classical
   let q := S.base.metric (T - b ^ 2)
-  obtain ⟨eps, heps, F, hFsmooth0, hFdiff0, hFpar0, hFON0⟩ :=
-    exists_parFrame (E := E) q alpha halpha hb
-  let rho : Real := min eps (min (-a) (c - b))
-  let eta : Real := rho / 2
-  have hrho : 0 < rho := by
-    dsimp only [rho]
-    exact lt_min heps (lt_min (neg_pos.mpr ha) (sub_pos.mpr hc))
-  have heta : 0 < eta := by
-    dsimp only [eta]
-    linarith
-  have heta_eps : eta < eps := by
-    dsimp only [eta, rho]
-    have hhalf : min eps (min (-a) (c - b)) / 2 <
-        min eps (min (-a) (c - b)) := by linarith [hrho]
-    exact hhalf.trans_le (min_le_left _ _)
-  have heta_a : eta < -a := by
-    dsimp only [eta, rho]
-    have hhalf : min eps (min (-a) (c - b)) / 2 <
-        min eps (min (-a) (c - b)) := by linarith [hrho]
-    exact hhalf.trans_le (le_trans (min_le_right _ _) (min_le_left _ _))
-  have heta_c : eta < c - b := by
-    dsimp only [eta, rho]
-    have hhalf : min eps (min (-a) (c - b)) / 2 <
-        min eps (min (-a) (c - b)) := by linarith [hrho]
-    exact hhalf.trans_le (le_trans (min_le_right _ _) (min_le_right _ _))
-  let Omega' : Set Real := Set.Ioo (-eta) (b + eta)
+  obtain ⟨eps, heps, F, hFsmooth0, hFdiff0, _, hFON0⟩ :=
+    Geometry.Riemannian.exists_smooth_parallel_orthonormal_frame_on_Ioo (E := E) q alpha halpha hab
+  let U : Set Real := J ∩ Set.Ioo (a - eps) (b + eps)
+  have hU : IsOpen U := hJ.inter isOpen_Ioo
+  have hsegU : Set.Icc a b ⊆ U := by
+    intro s hs
+    exact ⟨hseg hs, by constructor <;> linarith [hs.1, hs.2]⟩
+  obtain ⟨lo, hi, hlo, hhi, hsub⟩ :=
+    DifferentialGeometry.Topology.Compactness.exists_larger_interval_subset_of_isOpen hab hU hsegU
+  let Omega' : Set Real := Set.Ioo lo hi
   have hOmega : IsOpen Omega' := isOpen_Ioo
-  have hIcc : Set.Icc (0 : Real) b ⊆ Omega' := by
-    intro s hs
-    dsimp only [Omega']
-    constructor <;> linarith [hs.1, hs.2, heta]
-  have hOmegaRegularity : Omega' ⊆ Set.Ioo a c := by
-    intro s hs
-    dsimp only [Omega'] at hs
-    constructor <;> linarith [hs.1, hs.2, heta_a, heta_c]
-  have hOmegaFrame : Omega' ⊆ Set.Ioo (-eps) (b + eps) := by
-    intro s hs
-    dsimp only [Omega'] at hs
-    constructor <;> linarith [hs.1, hs.2, heta_eps]
-  have hFsmooth (i : Fin (Module.finrank Real E)) :=
-    (hFsmooth0 i).mono hOmegaFrame
+  have hIcc : Set.Icc a b ⊆ Omega' := fun s hs => ⟨hlo.trans_le hs.1, hs.2.trans_lt hhi⟩
+  have hOmegaRegularity : Omega' ⊆ J := fun s hs => (hsub hs).1
+  have hOmegaFrame : Omega' ⊆ Set.Ioo (a - eps) (b + eps) := fun s hs => (hsub hs).2
+  have hFsmooth (i : Fin (Module.finrank Real E)) := (hFsmooth0 i).mono hOmegaFrame
   have hFdiff (i : Fin (Module.finrank Real E)) (s : Real) (hs : s ∈ Omega') :=
     hFdiff0 i s (hOmegaFrame hs)
   have hFON (s : Real) (hs : s ∈ Omega') (i j : Fin (Module.finrank Real E)) :=
@@ -708,16 +537,15 @@ theorem exists_lAdaptedField
       (fun p : Unit × Real ↦ ∑ j, aij p.2 i j * z j) (Set.univ ×ˢ Omega')
     exact ContDiffOn.sum fun j _ ↦
       ((haij i j).comp contDiffOn_snd (fun p hp ↦ hp.2)).mul contDiffOn_const
-  have hbmem : b ∈ Set.Ioo (-eta) (b + eta) := by
-    constructor <;> linarith [hb, heta]
+  have hbmem : b ∈ Set.Ioo lo hi := hIcc ⟨hab, le_rfl⟩
   let z0 : Unit → (Fin (Module.finrank Real E) → Real) := fun _ i ↦
     q.inner (alpha b) (F i b) V
   have hz0 : ContDiffOn Real ∞ z0 Set.univ := contDiffOn_const
   have hA' : ContDiffOn Real ∞ (Function.uncurry A)
-      (Set.univ ×ˢ Set.Ioo (-eta) (b + eta)) := by
+      (Set.univ ×ˢ Set.Ioo lo hi) := by
     simpa only [Omega'] using hA
   let z : Real → (Fin (Module.finrank Real E) → Real) := fun s ↦
-    linearODESolution A (-eta) (b + eta) b z0 () s
+    linearODESolution A lo hi b z0 () s
   have hzRaw := linearODESolution_contDiffOn_top hbmem isOpen_univ hA' hz0
   have hz : ContDiffOn Real ∞ z Omega' := by
     have hpair : ContDiff Real ∞ (fun s : Real ↦ ((), s)) :=
@@ -725,7 +553,7 @@ theorem exists_lAdaptedField
     have hcomp := hzRaw.comp hpair.contDiffOn
       (fun s hs ↦ ⟨Set.mem_univ (), by simpa only [Omega'] using hs⟩)
     change ContDiffOn Real ∞
-      (fun s ↦ linearODESolution A (-eta) (b + eta) b z0 () s) Omega' at hcomp
+      (fun s ↦ linearODESolution A lo hi b z0 () s) Omega' at hcomp
     exact hcomp
   let P : ∀ s, TangentSpace I (alpha s) := fun s ↦
     ∑ i : Fin (Module.finrank Real E), z s i • F i s
@@ -736,7 +564,7 @@ theorem exists_lAdaptedField
     simpa only [P] using
       sumField_smooth (E := E) alpha z F halpha hOmega hz hFsmooth
   have hzb : z b = z0 () := by
-    exact linearODESolution_initial A (-eta) (b + eta) b z0 ()
+    exact linearODESolution_initial A lo hi b z0 ()
   have hcard : Fintype.card (Fin (Module.finrank Real E)) =
       Module.finrank Real (TangentSpace I (alpha b)) := by
     rw [Fintype.card_fin]
@@ -746,14 +574,14 @@ theorem exists_lAdaptedField
     rw [hzb]
     dsimp only [z0]
     exact (Geometry.Riemannian.expand_orthonormal q (alpha b) hcard
-      (fun i ↦ F i b) (hFON b (hIcc ⟨le_of_lt hb, le_rfl⟩)) V).symm
+      (fun i ↦ F i b) (hFON b (hIcc ⟨hab, le_rfl⟩)) V).symm
   refine ⟨P, Omega', hOmega, hIcc, hOmegaRegularity, hPsmooth, hPb, ?_⟩
   intro s hs
   change covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) alpha P s =
     (-2 * s) •
       ricciSharp (I := I) (S.base.metric (T - s ^ 2)) (alpha s) (P s)
   let g := S.base.metric (T - s ^ 2)
-  have hsIoo : s ∈ Set.Ioo (-eta) (b + eta) := by
+  have hsIoo : s ∈ Set.Ioo lo hi := by
     simpa only [Omega'] using hs
   have hzDeriv : HasDerivAt z (A () s (z s)) s := by
     simpa only [z] using linearODESolution_hasDerivAt hbmem
@@ -817,5 +645,24 @@ theorem exists_lAdaptedField
   simp_rw [map_smul, Finset.smul_sum, smul_smul]
   refine Finset.sum_congr rfl fun i _ ↦ ?_
   rw [mul_comm]
+
+omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
+theorem exists_lAdaptedField
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : Real) (alpha : Real → M)
+    (halpha : ContMDiff (modelWithCornersSelf Real Real) I ∞ alpha)
+    {a b c : Real} (ha : a < 0) (hb : 0 < b) (hc : b < c)
+    (hreg : ∀ s ∈ Set.Ioo a c, T - s ^ 2 ∈ D.regular)
+    (V : TangentSpace I (alpha b)) :
+    ∃ (P : ∀ s, TangentSpace I (alpha s)) (Omega' : Set Real),
+      IsOpen Omega' ∧ Set.Icc 0 b ⊆ Omega' ∧ Omega' ⊆ Set.Ioo a c ∧
+      ContMDiffOn (modelWithCornersSelf Real Real) I.tangent ∞
+        (fun s : Real ↦
+          (TotalSpace.mk' E (E := (TangentSpace I : M → Type _))
+            (alpha s) (P s) : TangentBundle I M)) Omega' ∧
+      P b = V ∧
+      IsLAdapted S T alpha P Omega' := by
+  exact exists_lAdaptedField_on_Icc S hS T alpha halpha hb.le isOpen_Ioo
+    (fun s hs => ⟨ha.trans_le hs.1, hs.2.trans_lt hc⟩) hreg V
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman
