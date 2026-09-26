@@ -3747,6 +3747,7 @@ import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.IntrinsicLocal
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Jacobi
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.JacobiLocal
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Local
+import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.LocalBallRatio
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.LocalDoubling
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Measure
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Polar
@@ -14183,6 +14184,8 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.RicciLowerMetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.UniformMetricTimeLipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingRicciLowerBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitnessBallVolume
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialRoundComponentBallVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialRoundComponentVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceChainCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceTracedLimit
@@ -14198,10 +14201,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceSliceEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBallForwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortionThreshold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEventCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEventPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceSliver
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowPointScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowPointTimeSlack
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryHorizonExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialSlabScalarWindow
@@ -14209,6 +14214,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckAlterna
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabTimeWindowContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliceBallBoundTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliverWindowData
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageBallVolumeRatio
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageComponentSimplyConnected
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitWitnesses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitDerivativeCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitNeckAlternatives
