@@ -86,4 +86,55 @@ theorem metric_inner_eq_of_isLAdapted
     norm_eq_zero.mp (le_antisymm hnorm (norm_nonneg _))
   exact (sub_eq_zero.mp hsub).symm
 
+omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] in
+theorem IsLAdapted.eqOn_of_eq_at
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
+    (T : ℝ) (α : ℝ → M) (P Q : ∀ s, TangentSpace I (α s))
+    {K : Set ℝ} (hK : IsPreconnected K) {s₀ : ℝ} (hs₀ : s₀ ∈ K)
+    (hreg : ∀ s ∈ K, T - s ^ 2 ∈ D.regular)
+    (hα : ∀ s ∈ K, MDifferentiableAt 𝓘(ℝ, ℝ) I α s)
+    (hP : ∀ s ∈ K, DifferentiableAt ℝ (chartRepAt (I := I) α P s) s)
+    (hQ : ∀ s ∈ K, DifferentiableAt ℝ (chartRepAt (I := I) α Q s) s)
+    (hDP : IsLAdapted S T α P K) (hDQ : IsLAdapted S T α Q K)
+    (heq : P s₀ = Q s₀) :
+    ∀ s ∈ K, P s = Q s := by
+  let R : ∀ s, TangentSpace I (α s) := fun s => P s + (-1 : ℝ) • Q s
+  have hR (s : ℝ) (hs : s ∈ K) : DifferentiableAt ℝ (chartRepAt (I := I) α R s) s := by
+    change DifferentiableAt ℝ (chartRepAt (I := I) α (fun s => P s + (-1 : ℝ) • Q s) s) s
+    rw [chartRepAt_add, chartRepAt_smul]
+    exact (hP s hs).add ((hQ s hs).const_smul (-1))
+  have hDR : IsLAdapted S T α R K := by
+    intro s hs
+    unfold IsLAdaptedAt
+    dsimp only [R]
+    rw [covDerivAlong_add _ _ _ _ s (hP s hs) (by
+      rw [chartRepAt_smul]
+      exact (hQ s hs).const_smul (-1)), covDerivAlong_smul,
+      hDP s hs, hDQ s hs, map_add, map_smul, smul_add]
+    module
+  have hRzero : R s₀ = 0 := by simp only [R, heq, neg_one_smul, add_neg_cancel]
+  have hnorm {a b : ℝ} (ha : a ∈ K) (hb : b ∈ K) (hab : a ≤ b) :
+      (S.base.metric (T - a ^ 2)).inner (α a) (R a) (R a) =
+        (S.base.metric (T - b ^ 2)).inner (α b) (R b) (R b) := by
+    have hsub : Icc a b ⊆ K := hK.ordConnected.out ha hb
+    exact metric_inner_eq_of_isLAdapted S hS T α R R hab
+      (fun s hs => hreg s (hsub hs)) (fun s hs => hα s (hsub hs))
+      (fun s hs => hR s (hsub hs)) (fun s hs => hR s (hsub hs))
+      (fun s hs => hDR s (hsub hs)) (fun s hs => hDR s (hsub hs))
+  intro s hs
+  have hz : (S.base.metric (T - s ^ 2)).inner (α s) (R s) (R s) = 0 := by
+    have hh : (S.base.metric (T - s ^ 2)).inner (α s) (R s) (R s) =
+        (S.base.metric (T - s₀ ^ 2)).inner (α s₀) (R s₀) (R s₀) := by
+      rcases le_total s s₀ with h | h
+      · exact hnorm hs hs₀ h
+      · exact (hnorm hs₀ hs h).symm
+    rw [hRzero, map_zero] at hh
+    exact hh
+  have hRs : R s = 0 := by
+    by_contra hne
+    have hp := (S.base.metric (T - s ^ 2)).pos (α s) (R s) hne
+    rw [hz] at hp
+    exact (lt_irrefl _ hp)
+  simpa only [R, neg_one_smul, ← sub_eq_add_neg, sub_eq_zero] using hRs
+
 end DifferentialGeometry.PDE.RicciFlow.Perelman

@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.Bochner.OrthonormalFrameTrace
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
 
 set_option autoImplicit false
 
@@ -391,3 +392,36 @@ theorem metricScalarAt_eq_of_partialDiffeomorph_inner
 end Trace
 
 end DifferentialGeometry.Geometry.Curvature
+
+noncomputable section
+open Bundle Manifold
+open DifferentialGeometry.Tensor0SBundle
+open scoped Manifold ContDiff
+namespace DifferentialGeometry.Geometry.Curvature
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [I.Boundaryless] [J.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+
+theorem ricciSharp_localPull
+    (g : SmoothRiemannianMetric J N) (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f)
+    (x : M) (v : TangentSpace I x) :
+    mfderiv I J f x (ricciSharp (localPullMetric g f hf) x v) =
+      ricciSharp g (f x) (mfderiv I J f x v) := by
+  let e := hf.mfderivToContinuousLinearEquiv (by simp) x
+  have he (z : TangentSpace I x) : e z = mfderiv I J f x z :=
+    congrArg (fun A : TangentSpace I x →L[ℝ] TangentSpace J (f x) => A z)
+      (hf.mfderivToContinuousLinearEquiv_coe (by simp) x)
+  apply tangentFlatLinear_injective_gen (I := J) g (f x)
+  ext z
+  simp only [tangentFlatLinear_apply_gen]
+  obtain ⟨w, rfl⟩ := e.surjective z
+  rw [he, ← localPullMetric_inner, inner_ricciSharp, inner_ricciSharp]
+  exact ricciTensor_localPull g f hf x v w
+
+end DifferentialGeometry.Geometry.Curvature
+end
