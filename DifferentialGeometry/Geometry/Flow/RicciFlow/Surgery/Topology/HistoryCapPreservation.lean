@@ -370,3 +370,65 @@ theorem RetainedCoreHistory.appendEvent_boundaryFrameReversing_and_poincareStand
     exact frame_and_discard_transport _ _ _ _ _ hbfrE hctrlE
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+
+noncomputable section
+open Set
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+private theorem scalar_time_derivative_bound_transport
+    {P Q P' Q' : OrientedThreeStage.{u}} {a s a' s' q C : ℝ}
+    (hP : P = P') (hQ : Q = Q') (ha : a = a') (hs : s = s')
+    (E : RetainedCoreEvent P Q a s)
+    (hbound : ∀ t ∈ Ioo a s, ∀ x : P.Carrier, q < E.incoming.flow.scalar t x →
+      |derivWithin (fun v => E.incoming.flow.scalar v x) (Iic t) t| ≤
+        C * E.incoming.flow.scalar t x ^ 2) :
+    ∀ t ∈ Ioo a' s', ∀ x : P'.Carrier,
+      q < (RetainedCoreEvent.transport hP hQ ha hs E).incoming.flow.scalar t x →
+      |derivWithin (fun v => (RetainedCoreEvent.transport hP hQ ha hs E).incoming.flow.scalar v x)
+        (Iic t) t| ≤ C * (RetainedCoreEvent.transport hP hQ ha hs E).incoming.flow.scalar t x ^ 2 := by
+  cases hP
+  cases hQ
+  cases ha
+  cases hs
+  exact hbound
+
+theorem RetainedCoreHistory.appendEvent_scalar_time_derivative_bound
+    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (hs : H.time (Fin.last H.eventCount) < s)
+    (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
+      (H.time (Fin.last H.eventCount)) s)
+    (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
+      H.initialMetric (Fin.last H.eventCount))
+    {q C : ℝ}
+    (hbound : ∀ i : Fin H.eventCount, ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+      ∀ x : (H.stage i.castSucc).Carrier, q < (H.coreEvent i).incoming.flow.scalar t x →
+        |derivWithin (fun v => (H.coreEvent i).incoming.flow.scalar v x) (Iic t) t| ≤
+          C * (H.coreEvent i).incoming.flow.scalar t x ^ 2)
+    (hE : ∀ t ∈ Ioo (H.time (Fin.last H.eventCount)) s,
+      ∀ x : (H.stage (Fin.last H.eventCount)).Carrier, q < E.incoming.flow.scalar t x →
+        |derivWithin (fun v => E.incoming.flow.scalar v x) (Iic t) t| ≤
+          C * E.incoming.flow.scalar t x ^ 2) :
+    ∀ i : Fin (H.appendEvent hs E hinit).eventCount,
+      ∀ t ∈ Ioo ((H.appendEvent hs E hinit).time i.castSucc) ((H.appendEvent hs E hinit).time i.succ),
+      ∀ x : ((H.appendEvent hs E hinit).stage i.castSucc).Carrier,
+        q < ((H.appendEvent hs E hinit).coreEvent i).incoming.flow.scalar t x →
+        |derivWithin (fun v => ((H.appendEvent hs E hinit).coreEvent i).incoming.flow.scalar v x)
+          (Iic t) t| ≤ C * ((H.appendEvent hs E hinit).coreEvent i).incoming.flow.scalar t x ^ 2 := by
+  change ∀ i : Fin (H.eventCount + 1), _
+  intro i
+  cases i using Fin.lastCases with
+  | cast i =>
+    rw [H.appendEvent_coreEvent_castSucc]
+    exact scalar_time_derivative_bound_transport _ _ _ _ _ (hbound i)
+  | last =>
+    rw [H.appendEvent_coreEvent_last]
+    exact scalar_time_derivative_bound_transport _ _ _ _ _ hE
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end
