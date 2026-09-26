@@ -163,4 +163,43 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_canonical_caps
       hv (n - n₀ + n₀), N, hNv, hNmark, hNmap⟩
   exact heq ▸ hresult
 
+theorem TerminalLimitMetric.eventually_normalizedNeck_of_moving_spatialNecks_of_scalar_comparison
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
+    (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
+    {Cscalar : ℝ} (hCscalar : 0 < Cscalar)
+    (U : ℕ → Set P.Carrier) (v : ℕ → P.Carrier) (hv : ∀ᶠ n in atTop, v n ∈ U n)
+    (hU : ∀ᶠ n in atTop, ∀ y ∈ U n,
+      Cscalar⁻¹ * G.flow.scalar (τ n) x.val ≤ G.flow.scalar (τ n) y ∧
+        G.flow.scalar (τ n) y ≤ Cscalar * G.flow.scalar (τ n) x.val)
+    {eps δ : ℝ} (hδ : 0 < δ) (hδ1 : δ < 1) (hepsδ : eps < δ)
+    (hfit : δ⁻¹ + 1 ≤ eps⁻¹) (k : ℕ) (hk : k ≤ ⌈eps⁻¹⌉₊)
+    (neck : ∀ n, SpatialNeck (G.flow.base.metric (τ n)) eps (v n)) :
+    ∀ᶠ n in atTop, ∃ N : NormalizedNeck L.metric δ k,
+      N.center.val = v n ∧ N.sphereMark = (neck n).center ∧
+        ∀ z, (N.chart z).val = (neck n).map z.val := by
+  let qmin := metricScalarAt L.metric x / (2 * Cscalar)
+  let qmax := Cscalar * (metricScalarAt L.metric x + 1)
+  have hqmin : 0 < qmin := by dsimp only [qmin]; positivity
+  have hscale : Tendsto (fun n => G.flow.scalar (τ n) x.val) atTop
+      (𝓝 (metricScalarAt L.metric x)) := (L.tendsto_metricScalarAt x).comp hτ
+  have hlow := hscale.eventually (Ioi_mem_nhds (half_lt_self hx))
+  have hhigh := hscale.eventually_lt_const (lt_add_one _)
+  have hrange : ∀ᶠ n in atTop, qmin ≤ G.flow.scalar (τ n) (v n) ∧
+      G.flow.scalar (τ n) (v n) ≤ qmax := by
+    filter_upwards [hU,hv,hlow,hhigh] with n hn hvn hlo hhi
+    have hcomp := hn (v n) hvn
+    constructor
+    · have hmul := mul_le_mul_of_nonneg_left hlo.le (inv_pos.mpr hCscalar).le
+      have heq : Cscalar⁻¹ * (metricScalarAt L.metric x / 2) = qmin := by
+        dsimp only [qmin]
+        field_simp
+      rw [heq] at hmul
+      exact hmul.trans hcomp.1
+    · exact hcomp.2.trans (mul_le_mul_of_nonneg_left hhi.le hCscalar.le)
+  exact L.eventually_normalizedNeck_of_moving_spatialNecks_of_scalar_control
+    hτ hq hbound v hδ hδ1 hepsδ hfit k hk neck hqmin hrange
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

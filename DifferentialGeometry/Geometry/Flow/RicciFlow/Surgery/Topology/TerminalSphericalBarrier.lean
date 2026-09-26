@@ -11,7 +11,7 @@ open Set Filter Manifold
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 open DifferentialGeometry.Topology
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff Topology NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
@@ -38,18 +38,22 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_incoming_strongNecks
   exact L.eventually_normalizedNeck_of_canonical_neighborhoods hτ hq hcanonical hPhi hpinch
     x hx hδ hδ1 hepsδ hfit k hk neck
 
-theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_strongNecks
+theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    {q0 : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
+    (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2)
     (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
     {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 11) (hepsδ : eps < δ)
     (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
-    (neck : ∀ n, StrongNeck G.flow eps x.val (τ n)) :
+    (neck : ∀ n, SpatialNeck (G.flow.base.metric (τ n)) eps x.val) :
     ∀ᶠ n in atTop, ∃ nk : SpatialNeck L.metric δ x,
       nk.center = (neck n).center ∧
         ∀ z : neckBuffer δ, (nk.map z.val).val = (neck n).map z.val := by
   have hk : ⌈δ⁻¹⌉₊ ≤ ⌈eps⁻¹⌉₊ :=
     Nat.ceil_mono (inv_anti₀ (neck 0).eps_pos hepsδ.le)
-  have hevent := L.eventually_normalizedNeck_of_incoming_strongNecks hτ x hx hδ
+  have hevent := L.eventually_normalizedNeck_of_spatialNecks_of_scalar_control
+    hτ hq0 hbound x hx hδ
     (hδsmall.trans (by norm_num)) hepsδ hfit ⌈δ⁻¹⌉₊ hk neck
   filter_upwards [hevent] with n hn
   obtain ⟨N, hN, hmark, hmap⟩ := hn
@@ -63,6 +67,63 @@ theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_strongNecks
     intro z
     exact (congrArg Subtype.val (hnkmap z)).trans (hmap z)
   exact ⟨nk', hcenter, hvalues⟩
+
+theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_strongNecks
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    (x : G.terminalRegularOpen) (hx : 0 < metricScalarAt L.metric x)
+    {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 11) (hepsδ : eps < δ)
+    (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
+    (neck : ∀ n, StrongNeck G.flow eps x.val (τ n)) :
+    ∀ᶠ n in atTop, ∃ nk : SpatialNeck L.metric δ x,
+      nk.center = (neck n).center ∧
+        ∀ z : neckBuffer δ, (nk.map z.val).val = (neck n).map z.val := by
+  obtain ⟨epsCan, hepsCan, hm⟩ := G.exists_all_point_canonical_neighborhoods
+  obtain ⟨C1, C2, q0, _, hC2, hq0, hc⟩ := hm epsCan hepsCan le_rfl
+  have hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤
+        (⟨C2, zero_le_one.trans hC2⟩ : ℝ≥0) * G.flow.scalar t y ^ 2 := by
+    intro y t ht hy
+    exact (hc y t ⟨ht.1.le, ht.2⟩ hy.le).some.time_derivative
+  exact L.eventually_spatialNeck_of_incoming_spatialNecks hτ hq0 hbound x hx hδ
+    hδsmall hepsδ hfit (fun n => (neck n).toSpatialNeck)
+
+theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks
+    (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
+    {q0 : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
+    (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2)
+    (x : G.terminalRegularOpen) {eps δ : ℝ} (hδ : 0 < δ) (hδsmall : δ < 1 / 8646)
+    (hepsδ : eps < δ) (hfit : δ⁻¹ + 1 ≤ eps⁻¹)
+    (neck : ∀ n, SpatialNeck (G.flow.base.metric (τ n)) eps x.val)
+    (A C2 : ℝ) (hA : 0 < A) (hC2 : 1 ≤ C2)
+    (hscale : metricScalarAt L.metric x = 4 * C2 * A) :
+    ∃ (n : ℕ) (nk : SpatialNeck L.metric δ x) (K : CompactDomain G.terminalRegularOpen),
+      (∀ z : neckBuffer δ, (nk.map z.val).val = (neck n).map z.val) ∧
+      K.carrier = nk.map '' (univ ×ˢ Icc (-3 : ℝ) 3) ∧ x ∈ interior K.carrier ∧
+      frontier K.carrier = range (fun y : Sphere 2 => nk.map (y, -3)) ∪
+        range (fun y : Sphere 2 => nk.map (y, 3)) ∧
+      Disjoint (range (fun y : Sphere 2 => nk.map (y, -3)))
+        (range (fun y : Sphere 2 => nk.map (y, 3))) ∧
+      (∀ t ∈ ({-3, 3} : Set ℝ), IsSmoothEmbedding I2 I3 ∞ (fun y : Sphere 2 => nk.map (y, t))) ∧
+      (∀ y ∈ K.carrier, 2 * A < metricScalarAt L.metric y ∧ metricScalarAt L.metric y ≤ 8 * C2 ^ 2 * A) ∧
+      (∀ z ∈ (univ ×ˢ Icc (-101 : ℝ) 101 : Set Cylinder),
+        2 * A < metricScalarAt L.metric (nk.map z) ∧ metricScalarAt L.metric (nk.map z) ≤ 8 * C2 ^ 2 * A) ∧
+      nk.cylindricalChart.metricCloseOn L.metric δ
+        {z : nk.cylindricalChart.domain | z.val.2 ∈ Icc (-101 : ℝ) 101} ∧
+      (∀ y t, t ∈ Icc (-101 : ℝ) 101 → (y, t) ∈ nk.cylindricalChart.domain) ∧
+      ∃ (cneg : DifferentialGeometry.Topology.SmoothTwoSidedCollar I2 I3 (fun y : Sphere 2 => nk.map (y, -3)))
+        (cpos : DifferentialGeometry.Topology.SmoothTwoSidedCollar I2 I3 (fun y : Sphere 2 => nk.map (y, 3))),
+        cneg.radius < 1 ∧ cpos.radius < 1 ∧
+        (∀ q, cneg.toFun q = nk.map (q.1, -3 - (q.2 : ℝ)) ∧
+          (cneg.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0)) ∧
+        (∀ q, cpos.toFun q = nk.map (q.1, 3 + (q.2 : ℝ)) ∧
+          (cpos.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0)) := by
+  have hx : 0 < metricScalarAt L.metric x := by rw [hscale]; positivity
+  obtain ⟨n, nk, _, hmap⟩ :=
+    (L.eventually_spatialNeck_of_incoming_spatialNecks hτ hq0 hbound x hx hδ
+      (hδsmall.trans (by norm_num)) hepsδ hfit neck).exists
+  obtain ⟨K, hK⟩ := nk.exists_short_spherical_barrier hδsmall A C2 hA hC2 hscale
+  exact ⟨n, nk, K, hmap, hK⟩
 
 theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_strongNecks
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))

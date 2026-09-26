@@ -34,22 +34,41 @@ theorem TerminalLimitMetric.isCompact_scalar_sublevel
       G.lt G.flow G.equation (by simp [ThreeSpace])
   exact L.isCompact_scalar_sublevel_of_time_derivative_bound hq hbound hPhi hpinch A
 
+theorem TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact_of_time_derivative_bound
+    (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (x : G.terminalRegularOpen)
+    (hnoncompact : ¬ IsCompact (connectedComponent x)) (A : ℝ) :
+    ∃ y ∈ connectedComponent x, A < metricScalarAt L.metric y := by
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
+  by_contra! h
+  exact hnoncompact ((L.isCompact_scalar_sublevel_of_time_derivative_bound hq hbound hPhi hpinch A).of_isClosed_subset
+    isClosed_connectedComponent h)
+
 theorem TerminalLimitMetric.exists_scalar_gt_on_connectedComponent_of_not_isCompact
     (L : G.TerminalLimitMetric) (x : G.terminalRegularOpen)
     (hnoncompact : ¬ IsCompact (connectedComponent x)) (A : ℝ) :
     ∃ y ∈ connectedComponent x, A < metricScalarAt L.metric y := by
-  by_contra! h
-  exact hnoncompact ((L.isCompact_scalar_sublevel A).of_isClosed_subset
-    isClosed_connectedComponent h)
+  obtain ⟨q, hq, C, hbound⟩ := exists_scalar_time_derivative_bound G
+  exact L.exists_scalar_gt_on_connectedComponent_of_not_isCompact_of_time_derivative_bound hq hbound x hnoncompact A
 
-theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel
-    (L : G.TerminalLimitMetric) (A : ℝ) :
+theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel_of_time_derivative_bound
+    (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ C * G.flow.scalar t x ^ 2)
+    (A : ℝ) :
     {c : ConnectedComponents G.terminalRegularOpen |
       ∃ x : G.terminalRegularOpen, ConnectedComponents.mk x = c ∧
         metricScalarAt L.metric x ≤ A}.Finite := by
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
   let : LocallyConnectedSpace G.terminalRegularOpen :=
     ChartedSpace.locallyConnectedSpace ThreeSpace G.terminalRegularOpen
-  have hcompact := (L.isCompact_scalar_sublevel A).image
+  have hcompact := (L.isCompact_scalar_sublevel_of_time_derivative_bound hq hbound hPhi hpinch A).image
     ConnectedComponents.continuous_coe
   have heq : ConnectedComponents.mk '' {x : G.terminalRegularOpen |
       metricScalarAt L.metric x ≤ A} =
@@ -63,5 +82,13 @@ theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel
     · rintro ⟨x, hxc, hx⟩
       exact ⟨x, hx, hxc⟩
   exact heq ▸ hcompact.finite ⟨inferInstance⟩
+
+theorem TerminalLimitMetric.finite_components_meeting_scalar_sublevel
+    (L : G.TerminalLimitMetric) (A : ℝ) :
+    {c : ConnectedComponents G.terminalRegularOpen |
+      ∃ x : G.terminalRegularOpen, ConnectedComponents.mk x = c ∧
+        metricScalarAt L.metric x ≤ A}.Finite := by
+  obtain ⟨q, hq, C, hbound⟩ := exists_scalar_time_derivative_bound G
+  exact L.finite_components_meeting_scalar_sublevel_of_time_derivative_bound hq hbound A
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

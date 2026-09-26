@@ -20,18 +20,19 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
 
-theorem TerminalLimitMetric.exists_compact_containing_canonical_domains_and_neck_windows
+private theorem TerminalLimitMetric.exists_compact_containing_spatial_neck_windows_of_pinching
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hpinch : PhiAlmostNonnegative G.flow (Ico a s) Phi)
-    (x : G.terminalRegularOpen) {epsCanonical eps C1 C2 : ℝ} (heps : 0 ≤ eps) (hC2 : 0 ≤ C2) :
+    (x : G.terminalRegularOpen) {eps C2 : ℝ} (heps : 0 ≤ eps) (hC2 : 0 ≤ C2) :
     ∃ K : Set G.terminalRegularOpen, IsCompact K ∧
       ∃ d ∈ Ico a s, ∀ t ∈ Ioo d s,
-        ∀ W : CanonicalWitness G.flow epsCanonical C1 C2 x.val t,
-          W.domain.carrier ⊆ Subtype.val '' K ∧
-          ∀ v ∈ W.domain.carrier, ∀ nk : StrongNeck G.flow eps v t,
+        ∀ U : Set P.Carrier,
+          (∀ y ∈ U, G.flow.scalar t y ≤ C2 * G.flow.scalar t x.val) →
+          U ⊆ Subtype.val '' K ∧
+          ∀ v ∈ U, ∀ nk : SpatialNeck (G.flow.base.metric t) eps v,
             nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ Subtype.val '' K := by
   let B := (1 + 4323 * eps) * (C2 * (|metricScalarAt L.metric x| + 1))
   obtain ⟨K₀, hK₀, hKreg, d, hd, hcapture⟩ :=
@@ -55,7 +56,7 @@ theorem TerminalLimitMetric.exists_compact_containing_canonical_domains_and_neck
   obtain ⟨d', hd', hcenter'⟩ :=
     (mem_nhdsLT_iff_exists_mem_Ico_Ioo_subset G.lt).mp hcenter
   refine ⟨K, hK, max d d', ⟨hd.1.trans (le_max_left _ _), max_lt hd.2 hd'.2⟩, ?_⟩
-  intro t ht W
+  intro t ht U hU
   have ht₀ : t ∈ Ioo d s := ⟨(le_max_left _ _).trans_lt ht.1, ht.2⟩
   have ht₁ : t ∈ Ioo d' s := ⟨(le_max_right _ _).trans_lt ht.1, ht.2⟩
   have hR : G.flow.scalar t x.val ≤ |metricScalarAt L.metric x| + 1 := (hcenter' ht₁).le
@@ -66,13 +67,50 @@ theorem TerminalLimitMetric.exists_compact_containing_canonical_domains_and_neck
   · intro y hy
     rw [himage]
     apply hcapture t ht₀
-    exact ((W.scalar_bounds y hy).2.trans (mul_le_mul_of_nonneg_left hR hC2)).trans hCB
+    exact ((hU y hy).trans (mul_le_mul_of_nonneg_left hR hC2)).trans hCB
   · intro v hv nk y hy
     rw [himage]
     apply hcapture t ht₀
-    have hs := (nk.toSpatialNeck.scalar_bounds_on_image_window hy).2
+    have hs := (nk.scalar_bounds_on_image_window hy).2
     exact hs.trans (mul_le_mul_of_nonneg_left
-      ((W.scalar_bounds v hv).2.trans (mul_le_mul_of_nonneg_left hR hC2)) (by positivity))
+      ((hU v hv).trans (mul_le_mul_of_nonneg_left hR hC2)) (by positivity))
+
+theorem TerminalLimitMetric.exists_compact_containing_spatial_neck_windows
+    (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
+    (x : G.terminalRegularOpen) {eps C2 : ℝ} (heps : 0 ≤ eps) (hC2 : 0 ≤ C2) :
+    ∃ K : Set G.terminalRegularOpen, IsCompact K ∧
+      ∃ d ∈ Ico a s, ∀ t ∈ Ioo d s,
+        ∀ U : Set P.Carrier,
+          (∀ y ∈ U, G.flow.scalar t y ≤ C2 * G.flow.scalar t x.val) →
+          U ⊆ Subtype.val '' K ∧
+          ∀ v ∈ U, ∀ nk : SpatialNeck (G.flow.base.metric t) eps v,
+            nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ Subtype.val '' K := by
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      G.lt G.flow G.equation (by simp [ThreeSpace])
+  exact L.exists_compact_containing_spatial_neck_windows_of_pinching hq hbound hPhi hpinch x heps hC2
+
+theorem TerminalLimitMetric.exists_compact_containing_canonical_domains_and_neck_windows
+    (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
+    (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ C * G.flow.scalar t y ^ 2)
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    (hpinch : PhiAlmostNonnegative G.flow (Ico a s) Phi)
+    (x : G.terminalRegularOpen) {epsCanonical eps C1 C2 : ℝ} (heps : 0 ≤ eps) (hC2 : 0 ≤ C2) :
+    ∃ K : Set G.terminalRegularOpen, IsCompact K ∧
+      ∃ d ∈ Ico a s, ∀ t ∈ Ioo d s,
+        ∀ W : CanonicalWitness G.flow epsCanonical C1 C2 x.val t,
+          W.domain.carrier ⊆ Subtype.val '' K ∧
+          ∀ v ∈ W.domain.carrier, ∀ nk : StrongNeck G.flow eps v t,
+            nk.map '' (univ ×ˢ Ioo (-eps⁻¹) eps⁻¹) ⊆ Subtype.val '' K := by
+  obtain ⟨K, hK, d, hd, hcapture⟩ :=
+    L.exists_compact_containing_spatial_neck_windows_of_pinching hq hbound hPhi hpinch x heps hC2
+  refine ⟨K, hK, d, hd, ?_⟩
+  intro t ht W
+  have h := hcapture t ht W.domain.carrier (fun y hy => (W.scalar_bounds y hy).2)
+  exact ⟨h.1, fun v hv nk => h.2 v hv nk.toSpatialNeck⟩
 
 theorem TerminalLimitMetric.exists_compact_containing_cap_neck_windows
     (L : G.TerminalLimitMetric) {q : ℝ} {C : ℝ≥0} (hq : 0 < q)
