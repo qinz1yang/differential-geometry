@@ -1,3 +1,4 @@
+import Mathlib.Topology.ContinuousMap.Ordered
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.ManifoldAbsolutelyContinuous
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Compactness.CarrierDensity
@@ -1024,6 +1025,729 @@ theorem TerminalLimitMetric.absolutelyContinuousOnInterval_action_le_liminf_of_t
     simpa only [hz₁, hend₁] using hh
   have hAC := Manifold.absolutelyContinuousOnInterval_piecewise_Iic hAC₀ hAC₁ hd.1.le hd.2.le rfl
   exact ⟨by simpa only [Set.piecewise_same] using hAC, hintγ, χ, hχ, hlsc⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+noncomputable section
+open Set Filter Bundle Manifold MeasureTheory
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Riemannian
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology NNReal ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+private theorem closedSolution_lagrangian_ae_eq_of_projection
+    (L : G.TerminalLimitMetric) (W : TopologicalSpace.Opens G.terminalRegularOpen)
+    {c T u d : ℝ} (hcs : c ≤ s) (hu : 0 ≤ u) (hTu : T - u ^ 2 = s)
+    (η : ℝ → W) (γ : ℝ → P.Carrier)
+    (hproj : EqOn (fun r => (η r).val.val) γ (Icc u d)) :
+    lRegularizedLagrangian (L.closedSolution W hcs) T η =ᵐ[volume.restrict (Icc u d)]
+      lRegularizedLagrangian G.flow T γ := by
+  rw [← restrict_Ioo_eq_restrict_Icc]
+  filter_upwards [ae_restrict_mem measurableSet_Ioo] with r hr
+  exact L.lagrangian_closedSolution_eq_of_projection W hcs hu hTu η γ hproj hr
+
+private theorem metric_lower_on_terminal_compact
+    (L : G.TerminalLimitMetric) (Q : Set P.Carrier) (hQ : IsCompact Q)
+    (hQU : Q ⊆ G.terminalRegularOpen) :
+    ∃ μ : ℝ, 0 < μ ∧ ∀ t ∈ Ico a s, ∀ x ∈ Q, ∀ v : TangentSpace ThreeModel x,
+      μ * (G.flow.base.metric a).inner x v v ≤ (G.flow.base.metric t).inner x v v := by
+  let W : TopologicalSpace.Opens G.terminalRegularOpen := ⊤
+  let S := L.closedSolution W G.lt.le
+  have hS : IsSolutionOn S := L.closedSolution_isSolutionOn W le_rfl G.lt
+  let : CompactSpace Q := isCompact_iff_compactSpace.mp hQ
+  let lift : Q → W := fun x => ⟨⟨x.val, hQU x.property⟩, mem_univ _⟩
+  have hlift : Continuous lift := by fun_prop
+  let gRef := ((G.flow.base.metric a).restrictOpen G.terminalRegularOpen).restrictOpen W
+  obtain ⟨μ, hμ, hmetric⟩ := hS.smoothMetric.metric_lower_on_compact_time
+    isCompact_Icc (show Icc a s ⊆ (RealTimeInterval.closed a s G.lt.le).carrier from Subset.rfl)
+    (isCompact_range hlift) gRef
+  refine ⟨μ, hμ, ?_⟩
+  intro t ht x hx v
+  have hm := hmetric t ⟨ht.1, ht.2.le⟩ (lift ⟨x, hx⟩) ⟨⟨x, hx⟩, rfl⟩ v
+  change μ * gRef.inner (lift ⟨x, hx⟩) v v ≤
+    ((L.closedSolution W G.lt.le).base.metric t).inner (lift ⟨x, hx⟩) v v at hm
+  rw [L.closedSolution_before W G.lt.le ht.2] at hm
+  exact hm
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem exists_terminal_collar_of_compact_neighborhood
+    (L : G.TerminalLimitMetric) (K Q : Set P.Carrier) (hQ : IsCompact Q)
+    (hKQ : K ⊆ interior Q) (hQU : Q ⊆ G.terminalRegularOpen)
+    {r : ℝ} (hr : 0 < r)
+    (hfront : ∀ x ∈ K, ∀ y ∈ frontier Q,
+      ENNReal.ofReal r ≤ riemannianEDistOf (G.flow.base.metric a) x y)
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
+    (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
+    ∃ d C : ℝ, d ∈ Ioo u v ∧ 0 < C ∧
+      ∀ α : ℝ → P.Carrier, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 α (Icc u v) → α u ∈ K →
+        IntervalIntegrable (lRegularizedLagrangian G.flow T α) volume u v →
+        (∀ t ∈ Ioo u v, -B ≤ G.flow.scalar (T - t ^ 2) (α t)) →
+        lRegularizedAction G.flow T α u v ≤ A →
+        MapsTo α (Icc u d) Q ∧ curveEnergy (G.flow.base.metric a) α u d ≤ C := by
+  obtain ⟨μ, hμ, hmetric⟩ := metric_lower_on_terminal_compact L Q hQ hQU
+  let P₀ := max (A + 2 * B * v ^ 2 * (v - u)) 0 + 1
+  have hP₀ : 0 < P₀ := by dsimp only [P₀]; positivity
+  have hgap : 0 < μ * r ^ 2 / (2 * P₀) := by positivity
+  let e := min ((v - u) / 2) (μ * r ^ 2 / (2 * P₀))
+  have he : 0 < e := lt_min (half_pos (sub_pos.mpr huv)) hgap
+  let d := u + e
+  have hud : u < d := by dsimp only [d]; linarith
+  have hdv : d < v := by
+    have hh : e ≤ (v - u) / 2 := min_le_left _ _
+    dsimp only [d]
+    linarith
+  have hbudget : d - u ≤ μ * r ^ 2 / (2 * P₀) := by
+    simpa only [d, add_sub_cancel_left] using (min_le_right ((v - u) / 2) (μ * r ^ 2 / (2 * P₀)))
+  have hratio : P₀ ≤ μ * r ^ 2 / (2 * (d - u)) := by
+    apply (le_div_iff₀ (by positivity : 0 < 2 * (d - u))).mpr
+    have hh := (le_div_iff₀ (by positivity : 0 < 2 * P₀)).mp hbudget
+    nlinarith only [hh]
+  have hlarge : A + 2 * B * v ^ 2 * (v - u) < P₀ := by
+    dsimp only [P₀]
+    linarith [le_max_left (A + 2 * B * v ^ 2 * (v - u)) 0]
+  refine ⟨d, 2 * P₀ / μ, ⟨hud, hdv⟩, by positivity, ?_⟩
+  intro α hα hstart hint hscalar hact
+  have htime (t : ℝ) (ht : t ∈ Ioo u v) : T - t ^ 2 ∈ Ico a s := by
+    have htv : t ^ 2 ≤ v ^ 2 :=
+      (sq_le_sq₀ (hu.trans ht.1.le) (hu.trans huv.le)).mpr ht.2.le
+    have hut : u ^ 2 < t ^ 2 := (sq_lt_sq₀ hu (hu.trans ht.1.le)).mpr ht.1
+    constructor <;> nlinarith only [ha, hTu, htv, hut]
+  have hpre : uIcc u d ⊆ uIcc u v := by
+    rw [uIcc_of_le hud.le, uIcc_of_le huv.le]
+    exact Icc_subset_Icc le_rfl hdv.le
+  have htail : uIcc d v ⊆ uIcc u v := by
+    rw [uIcc_of_le hdv.le, uIcc_of_le huv.le]
+    exact Icc_subset_Icc hud.le le_rfl
+  have hintpre := hint.mono_set hpre
+  have hinttail := hint.mono_set htail
+  have htailLower := lRegularizedAction_ge_of_scalar_lower_on_interior G.flow T α
+    (hu.trans hud.le) hdv.le le_rfl hB
+    (fun t ht => hscalar t ⟨hud.trans ht.1, ht.2⟩) hinttail
+  have hadd := lRegularizedAction_add G.flow T α u d v hintpre hinttail
+  have hstay : MapsTo α (Icc u d) Q := by
+    by_contra hn
+    have hprefix := lRegularizedAction_ge_of_leaves_closed_set G.flow T α hu hdv.le hμ.le hB hr.le
+      (G.flow.base.metric a) hQ.isClosed (hα.mono (Icc_subset_Icc le_rfl hdv.le))
+      (hKQ hstart) (fun t ht hQt =>
+        hmetric (T - t ^ 2) (htime t ⟨ht.1, ht.2.trans hdv⟩) (α t) hQt (lVelocity α t))
+      (fun t ht => hscalar t ⟨ht.1, ht.2.trans hdv⟩) hintpre
+      (hfront (α u) hstart) hn
+    nlinarith only [hprefix, htailLower, hadd, hact, hlarge, hratio]
+  refine ⟨hstay, ?_⟩
+  have href : IntervalIntegrable (fun t => (G.flow.base.metric a).inner (α t)
+      (lVelocity α t) (lVelocity α t)) volume u d := by
+    apply IntegrableOn.intervalIntegrable
+    simpa only [uIcc_of_le hud.le, lVelocity] using
+      integrableOn_inner_mfderiv_self_of_contMDiffOn (G.flow.base.metric a)
+        (hα.mono (Icc_subset_Icc le_rfl hdv.le))
+  have henergy := lRegularizedAction_ge_reference_energy_add_constant_of_interior_bounds
+    G.flow T α (G.flow.base.metric a) u d μ (-2 * B * v ^ 2) hud.le
+    (fun t ht => hmetric (T - t ^ 2) (htime t ⟨ht.1, ht.2.trans hdv⟩)
+      (α t) (hstay ⟨ht.1.le, ht.2.le⟩) (lVelocity α t))
+    (fun t ht => by
+      have htv : t ^ 2 ≤ v ^ 2 :=
+        (sq_le_sq₀ (hu.trans ht.1.le) (hu.trans huv.le)).mpr (ht.2.trans hdv).le
+      have hb := mul_le_mul_of_nonneg_left htv hB
+      have hs := mul_le_mul_of_nonneg_left (hscalar t ⟨ht.1, ht.2.trans hdv⟩) (sq_nonneg t)
+      nlinarith only [hb, hs]) href hintpre
+  rw [intervalIntegral.integral_const_mul] at henergy
+  change μ / 2 * curveEnergy (G.flow.base.metric a) α u d +
+    (-2 * B * v ^ 2) * (d - u) ≤ lRegularizedAction G.flow T α u d at henergy
+  apply (le_div_iff₀ hμ).mpr
+  nlinarith only [henergy, htailLower, hadd, hact, hlarge]
+
+private theorem exists_uniform_incoming_tail_energy_bound
+    {T u d v : ℝ} (hu : 0 ≤ u) (hud : u < d) (hdv : d ≤ v)
+    (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
+    ∃ C : ℝ, 0 < C ∧
+      ∀ α : ℝ → P.Carrier, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 α (Icc u v) →
+        IntervalIntegrable (lRegularizedLagrangian G.flow T α) volume u v →
+        (∀ t ∈ Ioo u v, -B ≤ G.flow.scalar (T - t ^ 2) (α t)) →
+        lRegularizedAction G.flow T α u v ≤ A →
+        curveEnergy (G.flow.base.metric a) α d v ≤ C := by
+  have hd : 0 ≤ d := hu.trans hud.le
+  have hv : 0 ≤ v := hd.trans hdv
+  have htime : Icc a (T - d ^ 2) ⊆ (RealTimeInterval.closedOpen a s G.lt).carrier := by
+    have hsq : u ^ 2 < d ^ 2 := (sq_lt_sq₀ hu hd).mpr hud
+    intro t ht
+    exact ⟨ht.1, by nlinarith only [ht.2, hTu, hsq]⟩
+  have hback (t : ℝ) (ht : t ∈ Icc d v) : T - t ^ 2 ∈ Icc a (T - d ^ 2) := by
+    have ht0 : 0 ≤ t := hd.trans ht.1
+    have hdt : d ^ 2 ≤ t ^ 2 := (sq_le_sq₀ hd ht0).mpr ht.1
+    have htv : t ^ 2 ≤ v ^ 2 := (sq_le_sq₀ ht0 hv).mpr ht.2
+    constructor <;> nlinarith only [ha, hdt, htv]
+  obtain ⟨c, C₀, hc, henergy⟩ := exists_curveEnergy_le_of_lRegularizedAction_le
+    G.flow G.equation T a (T - d ^ 2) (G.flow.base.metric a) d v
+    (A + 2 * B * v ^ 2 * (d - u)) hdv htime hback
+  let C := max ((2 / c) * (A + 2 * B * v ^ 2 * (d - u) - C₀ * (v - d))) 0 + 1
+  refine ⟨C, by dsimp only [C]; positivity, ?_⟩
+  intro α hα hint hscalar hact
+  have hpre : uIcc u d ⊆ uIcc u v := by
+    rw [uIcc_of_le hud.le, uIcc_of_le (hud.le.trans hdv)]
+    exact Icc_subset_Icc le_rfl hdv
+  have htail : uIcc d v ⊆ uIcc u v := by
+    rw [uIcc_of_le hdv, uIcc_of_le (hud.le.trans hdv)]
+    exact Icc_subset_Icc hud.le le_rfl
+  have hintpre := hint.mono_set hpre
+  have hinttail := hint.mono_set htail
+  have hpreLower := lRegularizedAction_ge_of_scalar_lower_on_interior G.flow T α
+    hu hud.le hdv hB (fun t ht => hscalar t ⟨ht.1, ht.2.trans_le hdv⟩) hintpre
+  have hadd := lRegularizedAction_add G.flow T α u d v hintpre hinttail
+  have htailAction : lRegularizedAction G.flow T α d v ≤
+      A + 2 * B * v ^ 2 * (d - u) := by
+    linarith only [hpreLower, hadd, hact]
+  have href : IntervalIntegrable (fun t => (G.flow.base.metric a).inner (α t)
+      (lVelocity α t) (lVelocity α t)) volume d v := by
+    apply IntegrableOn.intervalIntegrable
+    simpa only [uIcc_of_le hdv, lVelocity] using
+      integrableOn_inner_mfderiv_self_of_contMDiffOn (G.flow.base.metric a)
+        (hα.mono (Icc_subset_Icc hud.le le_rfl))
+  exact (henergy α href hinttail htailAction).trans
+    ((le_max_left _ 0).trans (le_add_of_nonneg_right zero_le_one))
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem TerminalLimitMetric.exists_uniform_terminal_collar_of_action_le
+    (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen) (hK : IsCompact K)
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
+    (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
+    ∃ (Q : Set P.Carrier) (d C : ℝ), IsCompact Q ∧
+      Subtype.val '' K ⊆ interior Q ∧ Q ⊆ G.terminalRegularOpen ∧ d ∈ Ioo u v ∧ 0 < C ∧
+      ∀ α : ℝ → P.Carrier, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 α (Icc u v) →
+        α u ∈ Subtype.val '' K →
+        IntervalIntegrable (lRegularizedLagrangian G.flow T α) volume u v →
+        (∀ t ∈ Ioo u v, -B ≤ G.flow.scalar (T - t ^ 2) (α t)) →
+        lRegularizedAction G.flow T α u v ≤ A →
+        MapsTo α (Icc u d) Q ∧ curveEnergy (G.flow.base.metric a) α u v ≤ C := by
+  have hKc : IsCompact (Subtype.val '' K : Set P.Carrier) := hK.image continuous_subtype_val
+  have hKU : (Subtype.val '' K : Set P.Carrier) ⊆ G.terminalRegularOpen := by
+    rintro x ⟨y, _, rfl⟩
+    exact y.property
+  have hbuffer : ∃ (Q : Set P.Carrier) (r : ℝ), IsCompact Q ∧
+      Subtype.val '' K ⊆ interior Q ∧ Q ⊆ G.terminalRegularOpen ∧ 0 < r ∧
+      ∀ x ∈ Subtype.val '' K, ∀ y ∈ frontier Q,
+        ENNReal.ofReal r ≤ riemannianEDistOf (G.flow.base.metric a) x y := by
+    let g := G.flow.base.metric a
+    let : RiemannianBundle (TangentSpace ThreeModel : P.Carrier → Type _) :=
+      ⟨g.toRiemannianMetric⟩
+    let : IsContinuousRiemannianBundle ThreeSpace (TangentSpace ThreeModel : P.Carrier → Type _) :=
+      ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
+    let : LocallyCompactSpace P.Carrier := Manifold.locallyCompact_of_finiteDimensional
+      (M := P.Carrier) ThreeModel
+    let : RegularSpace P.Carrier := inferInstance
+    let : PseudoEMetricSpace P.Carrier := PseudoEMetricSpace.ofRiemannianMetric ThreeModel P.Carrier
+    have hed : ∀ x y : P.Carrier, edist x y = riemannianEDistOf g x y := fun _ _ => rfl
+    obtain ⟨Q, hQ, hKQ, hQU⟩ := exists_compact_between hKc G.terminalRegularOpen.isOpen hKU
+    have hdisjoint : Disjoint (Subtype.val '' K) (frontier Q) :=
+      disjoint_left.mpr fun x hx hy => hy.2 (hKQ hx)
+    obtain ⟨r, hr, hgap⟩ :=
+      _root_.Metric.exists_pos_forall_lt_edist hKc isClosed_frontier hdisjoint
+    refine ⟨Q, r, hQ, hKQ, hQU, NNReal.coe_pos.mpr hr, ?_⟩
+    intro x hx y hy
+    simpa only [ENNReal.ofReal_coe_nnreal, hed] using (hgap x hx y hy).le
+  obtain ⟨Q, r, hQ, hKQ, hQU, hr, hfront⟩ := hbuffer
+  obtain ⟨d, C, hd, hC, hcollar⟩ := exists_terminal_collar_of_compact_neighborhood
+    L (Subtype.val '' K) Q hQ hKQ hQU hr hfront hu huv hTu ha A B hB
+  obtain ⟨Ctail, hCtail, htail⟩ := exists_uniform_incoming_tail_energy_bound
+    (G := G) hu hd.1 hd.2.le hTu ha A B hB
+  refine ⟨Q, d, C + Ctail, hQ, hKQ, hQU, hd, add_pos hC hCtail, ?_⟩
+  intro α hα hstart hint hscalar hact
+  obtain ⟨hstay, hprefixEnergy⟩ := hcollar α hα hstart hint hscalar hact
+  have htailEnergy := htail α hα hint hscalar hact
+  have href : IntervalIntegrable (fun t => (G.flow.base.metric a).inner (α t)
+      (lVelocity α t) (lVelocity α t)) volume u v := by
+    apply IntegrableOn.intervalIntegrable
+    simpa only [uIcc_of_le huv.le, lVelocity] using
+      integrableOn_inner_mfderiv_self_of_contMDiffOn (G.flow.base.metric a) hα
+  have hrefpre := href.mono_set (show uIcc u d ⊆ uIcc u v by
+    rw [uIcc_of_le hd.1.le, uIcc_of_le huv.le]
+    exact Icc_subset_Icc le_rfl hd.2.le)
+  have hreftail := href.mono_set (show uIcc d v ⊆ uIcc u v by
+    rw [uIcc_of_le hd.2.le, uIcc_of_le huv.le]
+    exact Icc_subset_Icc hd.1.le le_rfl)
+  have henergyAdd : curveEnergy (G.flow.base.metric a) α u d +
+      curveEnergy (G.flow.base.metric a) α d v = curveEnergy (G.flow.base.metric a) α u v :=
+    intervalIntegral.integral_add_adjacent_intervals hrefpre hreftail
+  exact ⟨hstay, henergyAdd ▸ add_le_add hprefixEnergy htailEnergy⟩
+
+theorem TerminalLimitMetric.exists_subsequence_tendsto_of_action_le
+    (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen) (hK : IsCompact K)
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
+    (ha : a ≤ T - v ^ 2) (A B : ℝ) (hB : 0 ≤ B) :
+    ∃ (Q : Set P.Carrier) (d : ℝ), IsCompact Q ∧
+      Subtype.val '' K ⊆ interior Q ∧ Q ⊆ G.terminalRegularOpen ∧ d ∈ Ioo u v ∧
+      ∀ (α : ℕ → ℝ → P.Carrier)
+        (hα : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (α n) (Icc u v)),
+        (∀ n, α n u ∈ Subtype.val '' K) →
+        (∀ n, IntervalIntegrable (lRegularizedLagrangian G.flow T (α n)) volume u v) →
+        (∀ n, ∀ t ∈ Ioo u v, -B ≤ G.flow.scalar (T - t ^ 2) (α n t)) →
+        (∀ n, lRegularizedAction G.flow T (α n) u v ≤ A) →
+        (∀ n, MapsTo (α n) (Icc u d) Q) ∧
+        ∃ (φ : ℕ → ℕ) (γ : C(Icc u v, P.Carrier)), StrictMono φ ∧
+          Tendsto (fun n => (⟨fun t => α (φ n) t.val,
+            (hα (φ n)).continuousOn.domRestrict⟩ : C(Icc u v, P.Carrier))) atTop (𝓝 γ) ∧
+          γ ⟨u, le_rfl, huv.le⟩ ∈ Subtype.val '' K ∧
+          MapsTo γ {t : Icc u v | t.val ≤ d} Q := by
+  obtain ⟨Q, d, C, hQ, hKQ, hQU, hd, _, hcollar⟩ :=
+    L.exists_uniform_terminal_collar_of_action_le K hK hu huv hTu ha A B hB
+  refine ⟨Q, d, hQ, hKQ, hQU, hd, ?_⟩
+  intro α hα hstart hint hscalar hact
+  have hbounds (n : ℕ) := hcollar (α n) (hα n) (hstart n) (hint n) (hscalar n) (hact n)
+  refine ⟨fun n => (hbounds n).1, ?_⟩
+  let : TopologicalSpace.MetrizableSpace P.Carrier := Manifold.metrizableSpace ThreeModel P.Carrier
+  let : MetricSpace P.Carrier := TopologicalSpace.metrizableSpaceMetric P.Carrier
+  obtain ⟨φ, γ, hφ, hconv⟩ := exists_strictMono_tendstoUniformly_of_curveEnergy_le
+    (G.flow.base.metric a) u v C α hα (fun n => (hbounds n).2)
+    univ isCompact_univ (fun _ _ => mem_univ _)
+  refine ⟨φ, γ, hφ, ContinuousMap.tendsto_iff_tendstoUniformly.mpr hconv, ?_, ?_⟩
+  · apply (hK.image continuous_subtype_val).isClosed.mem_of_tendsto
+      (hconv.tendsto_at ⟨u, le_rfl, huv.le⟩)
+    exact Eventually.of_forall fun n => hstart (φ n)
+  · intro t ht
+    apply hQ.isClosed.mem_of_tendsto (hconv.tendsto_at t)
+    exact Eventually.of_forall fun n => (hbounds (φ n)).1 ⟨t.property.1, ht⟩
+
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+noncomputable section
+
+open Set Filter Manifold MeasureTheory TopologicalSpace
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open scoped Manifold ContDiff Topology Interval
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+private theorem exists_open_subtype_lifts_of_tendstoUniformlyOn
+    {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [TopologicalSpace H] [UniformSpace M] [ChartedSpace H M]
+    (I : ModelWithCorners ℝ E H) (U : Opens M) (u d : ℝ) (hud : u ≤ d)
+    (alpha : ℕ → ℝ → M) (gamma : ℝ → M)
+    (halpha : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (alpha n) (Icc u d))
+    (hmap : ∀ n, MapsTo (alpha n) (Icc u d) U)
+    (hgamma : MapsTo gamma (Icc u d) U)
+    (hconv : TendstoUniformlyOn alpha gamma atTop (Icc u d)) :
+    ∃ (etaSeq : ℕ → ℝ → U) (eta : ℝ → U),
+      (∀ n, EqOn (Subtype.val ∘ etaSeq n) (alpha n) (Icc u d)) ∧
+      EqOn (Subtype.val ∘ eta) gamma (Icc u d) ∧
+      (∀ n, ContMDiffOn 𝓘(ℝ, ℝ) I 1 (etaSeq n) (Icc u d)) ∧
+      TendstoUniformlyOn etaSeq eta atTop (Icc u d) ∧
+      (∀ n t, t ∉ Icc u d → etaSeq n t = etaSeq n u) ∧
+      (∀ t, t ∉ Icc u d → eta t = eta u) := by
+  classical
+  have hu : u ∈ Icc u d := ⟨le_rfl, hud⟩
+  let etaSeq (n : ℕ) (t : ℝ) : U :=
+    if ht : t ∈ Icc u d then ⟨alpha n t, hmap n ht⟩ else ⟨alpha n u, hmap n hu⟩
+  let eta (t : ℝ) : U :=
+    if ht : t ∈ Icc u d then ⟨gamma t, hgamma ht⟩ else ⟨gamma u, hgamma hu⟩
+  have hseq : ∀ n, EqOn (Subtype.val ∘ etaSeq n) (alpha n) (Icc u d) := by
+    intro n t ht
+    simp only [Function.comp_apply, etaSeq, dif_pos ht]
+  have heta : EqOn (Subtype.val ∘ eta) gamma (Icc u d) := by
+    intro t ht
+    simp only [Function.comp_apply, eta, dif_pos ht]
+  refine ⟨etaSeq, eta, hseq, heta, ?_, ?_, ?_, ?_⟩
+  · intro n r hr
+    apply (DifferentialGeometry.Topology.contMDiffWithinAt_subtypeVal_comp_iff U (etaSeq n) (Icc u d) r).mp
+    exact ((halpha n).congr (hseq n)) r hr
+  · intro V hV
+    rw [uniformity_subtype] at hV
+    obtain ⟨W, hW, hWV⟩ := Filter.mem_comap.mp hV
+    filter_upwards [hconv W hW] with n hn t ht
+    apply hWV
+    change ((Subtype.val ∘ eta) t, (Subtype.val ∘ etaSeq n) t) ∈ W
+    rw [heta ht, hseq n ht]
+    exact hn t ht
+  · intro n t ht
+    simp only [etaSeq, dif_neg ht, dif_pos hu]
+  · intro t ht
+    simp only [eta, dif_neg ht, dif_pos hu]
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+theorem TerminalLimitMetric.exists_subsequence_action_liminf_of_tendsto_on_terminal_compact
+    (L : G.TerminalLimitMetric) {T u d : ℝ} (hu : 0 ≤ u) (hud : u < d)
+    (hTu : T - u ^ 2 = s) (ha : a ≤ T - d ^ 2)
+    (Q : Set P.Carrier) (hQ : IsCompact Q) (hQU : Q ⊆ G.terminalRegularOpen)
+    (A : ℝ) (α : ℕ → ℝ → P.Carrier)
+    (hα : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (α n) (Icc u d))
+    (hval : ∀ n, MapsTo (α n) (Icc u d) Q)
+    (hact : ∀ n, lRegularizedAction G.flow T (α n) u d ≤ A)
+    (γ : ℝ → P.Carrier) (hγ : ContinuousOn γ (Icc u d))
+    (hconv : Tendsto (fun n => (⟨fun t => α n t.val,
+        (hα n).continuousOn.domRestrict⟩ : C(Icc u d, P.Carrier))) atTop
+      (𝓝 (⟨fun t => γ t.val, hγ.domRestrict⟩ : C(Icc u d, P.Carrier)))) :
+    Manifold.absolutelyContinuousOnInterval ThreeModel γ u d ∧
+      IntervalIntegrable (lRegularizedLagrangian G.flow T γ) volume u d ∧
+      ∃ χ : ℕ → ℕ, StrictMono χ ∧ lRegularizedAction G.flow T γ u d ≤
+        liminf (fun n => lRegularizedAction G.flow T (α (χ n)) u d) atTop := by
+  let : TopologicalSpace.MetrizableSpace P.Carrier := Manifold.metrizableSpace ThreeModel P.Carrier
+  let : MetricSpace P.Carrier := TopologicalSpace.metrizableSpaceMetric P.Carrier
+  have hconvU := ContinuousMap.tendsto_iff_tendstoUniformly.mp hconv
+  have hγQ : MapsTo γ (Icc u d) Q := by
+    intro r hr
+    apply hQ.isClosed.mem_of_tendsto (hconvU.tendsto_at ⟨r, hr⟩)
+    exact Eventually.of_forall fun n => hval n hr
+  have hconvOn : TendstoUniformlyOn α γ atTop (Icc u d) :=
+    tendstoUniformlyOn_iff_tendstoUniformly_comp_coe.mpr hconvU
+  obtain ⟨βseq, β, hβseq, hβ, hβC1, hβconv, _, _⟩ :=
+    exists_open_subtype_lifts_of_tendstoUniformlyOn ThreeModel G.terminalRegularOpen u d hud.le
+      α γ hα (fun n => (hval n).mono_right hQU) (hγQ.mono_right hQU) hconvOn
+  let W : Opens G.terminalRegularOpen := ⊤
+  obtain ⟨ηseq, η, hηseq, hη, hηC1, hηconv, _, _⟩ :=
+    exists_open_subtype_lifts_of_tendstoUniformlyOn ThreeModel W u d hud.le βseq β hβC1
+      (fun _ _ _ => mem_univ _) (fun _ _ => mem_univ _) hβconv
+  let p : W → P.Carrier := fun z => z.val.val
+  have hprojSeq (n : ℕ) : EqOn (p ∘ ηseq n) (α n) (Icc u d) := by
+    intro r hr
+    exact (congrArg Subtype.val (hηseq n hr)).trans (hβseq n hr)
+  have hproj : EqOn (p ∘ η) γ (Icc u d) := by
+    intro r hr
+    exact (congrArg Subtype.val (hη hr)).trans (hβ hr)
+  have hds : T - d ^ 2 < s := by
+    nlinarith [sq_lt_sq₀ hu (hu.trans hud.le) |>.2 hud]
+  let S := L.closedSolution W hds.le
+  have hS : IsSolutionOn S := L.closedSolution_isSolutionOn W ha hds
+  have hclock : ∀ r ∈ Icc u d,
+      T - r ^ 2 ∈ (RealTimeInterval.closed (T - d ^ 2) s hds.le).carrier := by
+    intro r hr
+    change T - d ^ 2 ≤ T - r ^ 2 ∧ T - r ^ 2 ≤ s
+    constructor
+    · nlinarith [sq_le_sq₀ (hu.trans hr.1) (hu.trans hud.le) |>.2 hr.2]
+    · nlinarith [sq_le_sq₀ hu (hu.trans hr.1) |>.2 hr.1]
+  have hQLift : IsCompact (p ⁻¹' Q) := by
+    apply (Topology.IsInducing.subtypeVal.comp Topology.IsInducing.subtypeVal).isCompact_preimage' hQ
+    intro x hx
+    exact ⟨⟨⟨x, hQU hx⟩, mem_univ _⟩, rfl⟩
+  have hvalLift (n : ℕ) (r : ℝ) (hr : r ∈ Icc u d) : ηseq n r ∈ p ⁻¹' Q := by
+    change p (ηseq n r) ∈ Q
+    rw [show p (ηseq n r) = α n r from hprojSeq n hr]
+    exact hval n hr
+  let : IsManifold ThreeModel 1 W := IsManifold.of_le (n := ∞) (by decide)
+  have hseqLag (n : ℕ) : lRegularizedLagrangian S T (ηseq n) =ᵐ[volume.restrict (Ι u d)]
+      lRegularizedLagrangian G.flow T (α n) := by
+    have hh := closedSolution_lagrangian_ae_eq_of_projection L W hds.le hu hTu
+      (ηseq n) (α n) (hprojSeq n)
+    rw [uIoc_of_le hud.le]
+    exact ae_mono (Measure.restrict_mono_set volume Ioc_subset_Icc_self) hh
+  have hseqAction (n : ℕ) : lRegularizedAction S T (ηseq n) u d =
+      lRegularizedAction G.flow T (α n) u d :=
+    intervalIntegral.integral_congr_ae_restrict (hseqLag n)
+  obtain ⟨m, t, z, uLim, htmono, ht0, htlast, hsrc, hrep, hint, χ, hχ, hlsc⟩ :=
+    exists_chartH1_representation_of_tendstoUniformly_of_lRegularizedAction_le_on_carrier
+      S hS.smoothMetric ⟨hS.scalarCont⟩ T u d A hud.le ηseq hηC1 (p ⁻¹' Q) hQLift hvalLift
+      (fun n => (hseqAction n).trans_le (hact n)) η
+      (tendstoUniformlyOn_iff_tendstoUniformly_comp_coe.mp hηconv) hclock
+  have hγAC : Manifold.absolutelyContinuousOnInterval ThreeModel γ u d := by
+    rw [← ht0, ← htlast]
+    apply Manifold.absolutelyContinuousOnInterval_of_finite_partition t htmono
+    intro i
+    have hseg : t i.castSucc ≤ t i.succ := htmono i.castSucc_le_succ
+    have hlen : 0 ≤ partitionIntervalLength t i := sub_nonneg.mpr hseg
+    have hfull : Icc (t i.castSucc) (t i.succ) ⊆ Icc u d := by
+      apply Icc_subset_Icc
+      · rw [← ht0]
+        exact htmono (Fin.zero_le _)
+      · rw [← htlast]
+        exact htmono (Fin.le_last _)
+    have hsrcAmbient : MapsTo γ (uIcc (t i.castSucc) (t i.succ))
+        (chartAt ThreeSpace (z i).val.val).source := by
+      rw [uIcc_of_le hseg]
+      intro r hr
+      rw [← hproj (hfull hr)]
+      simpa only [Opens.chartAt_eq, OpenPartialHomeomorph.subtypeRestr_source,
+        mem_preimage, Function.comp_apply] using hsrc i hr
+    have hmap : MapsTo (fun r => r - t i.castSucc) (uIcc (t i.castSucc) (t i.succ))
+        (uIcc 0 (partitionIntervalLength t i)) := by
+      rw [uIcc_of_le hseg, uIcc_of_le hlen]
+      intro r hr
+      exact ⟨sub_nonneg.mpr hr.1, sub_le_sub_right hr.2 _⟩
+    have hLip : LipschitzWith 1 (fun r : ℝ => r - t i.castSucc) := by
+      apply LipschitzWith.of_dist_le_mul
+      intro x y
+      have heq : (x - t i.castSucc) - (y - t i.castSucc) = x - y := by ring
+      simp only [NNReal.coe_one, one_mul, Real.dist_eq, heq, le_refl]
+    have hshift := ((uLim i).absolutelyContinuousOnInterval_toFun hlen).comp_monotone_lipschitzOn
+      hLip.lipschitzOnWith (fun _ _ _ _ hrs => sub_le_sub_right hrs _) hmap
+    apply Manifold.absolutelyContinuousOnInterval_of_extChartAt (z i).val.val
+      hsrcAmbient (hshift.congr ?_)
+    intro r hr
+    have hcoord := hrep i (by simpa only [uIcc_of_le hlen] using hmap hr)
+    change (uLim i).toFun (r - t i.castSucc) =
+      extChartAt ThreeModel (z i).val.val (p (η (t i.castSucc + (r - t i.castSucc)))) at hcoord
+    rw [add_sub_cancel, show p (η r) = γ r from hproj
+      (hfull (by simpa only [uIcc_of_le hseg] using hr))] at hcoord
+    exact hcoord
+  have hlag := closedSolution_lagrangian_ae_eq_of_projection L W hds.le hu hTu η γ hproj
+  have hlag' : lRegularizedLagrangian S T η =ᵐ[volume.restrict (Ι u d)]
+      lRegularizedLagrangian G.flow T γ := by
+    rw [uIoc_of_le hud.le]
+    exact ae_mono (Measure.restrict_mono_set volume Ioc_subset_Icc_self) hlag
+  have haction : lRegularizedAction S T η u d = lRegularizedAction G.flow T γ u d :=
+    intervalIntegral.integral_congr_ae_restrict hlag'
+  refine ⟨hγAC, (intervalIntegrable_congr_ae hlag').mp hint, χ, hχ, ?_⟩
+  simpa only [haction, hseqAction] using hlsc
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+noncomputable section
+open Set Filter Manifold MeasureTheory TopologicalSpace
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
+open scoped Manifold ContDiff Topology Interval
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+private theorem exists_split_action_subsequence
+    (f p q : ℕ → ℝ) (A cp cq ell : ℝ)
+    (hsplit : ∀ n, p n + q n = f n)
+    (hf : ∀ n, f n ≤ A) (hp : ∀ n, cp ≤ p n) (hq : ∀ n, cq ≤ q n)
+    (hconv : Tendsto f atTop (𝓝 ell)) :
+    ∃ (l : ℝ) (phi : ℕ → ℕ), StrictMono phi ∧
+      Tendsto (p ∘ phi) atTop (𝓝 l) ∧ Tendsto (q ∘ phi) atTop (𝓝 (ell - l)) := by
+  have hmem (n : ℕ) : p n ∈ Icc cp (A - cq) := by
+    constructor
+    · exact hp n
+    · linarith only [hsplit n, hf n, hq n]
+  obtain ⟨l, _, phi, hphi, hpre⟩ := isCompact_Icc.tendsto_subseq hmem
+  refine ⟨l, phi, hphi, hpre, ?_⟩
+  have htail := (hconv.comp hphi.tendsto_atTop).sub hpre
+  apply htail.congr'
+  exact Eventually.of_forall fun n => by
+    simp only [Function.comp_apply]
+    linarith only [hsplit (phi n)]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe uLimit
+variable {P : OrientedThreeStage.{uLimit}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+theorem TerminalLimitMetric.exists_subsequence_action_le_of_tendsto_action
+    (L : G.TerminalLimitMetric) (K : Set G.terminalRegularOpen) (hK : IsCompact K)
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s)
+    (ha : a ≤ T - v ^ 2) (A B ell : ℝ) (hB : 0 ≤ B)
+    (alpha : ℕ → ℝ → P.Carrier)
+    (halpha : ∀ n, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (alpha n) (Icc u v))
+    (hstart : ∀ n, alpha n u ∈ Subtype.val '' K)
+    (hint : ∀ n, IntervalIntegrable (lRegularizedLagrangian G.flow T (alpha n)) volume u v)
+    (hscalar : ∀ n, ∀ r ∈ Ioo u v, -B ≤ G.flow.scalar (T - r ^ 2) (alpha n r))
+    (hact : ∀ n, lRegularizedAction G.flow T (alpha n) u v ≤ A)
+    (haction : Tendsto (fun n => lRegularizedAction G.flow T (alpha n) u v) atTop (𝓝 ell)) :
+    ∃ (phi : ℕ → ℕ) (gamma : ℝ → P.Carrier) (hgamma : Continuous gamma),
+      StrictMono phi ∧
+      Tendsto (fun n => (⟨fun r => alpha (phi n) r.val,
+        (halpha (phi n)).continuousOn.domRestrict⟩ : C(Icc u v, P.Carrier))) atTop
+        (𝓝 ⟨fun r => gamma r.val, hgamma.comp continuous_subtype_val⟩) ∧
+      gamma u ∈ Subtype.val '' K ∧
+      Manifold.absolutelyContinuousOnInterval ThreeModel gamma u v ∧
+      IntervalIntegrable (lRegularizedLagrangian G.flow T gamma) volume u v ∧
+      lRegularizedAction G.flow T gamma u v ≤ ell := by
+  let : TopologicalSpace.MetrizableSpace P.Carrier := Manifold.metrizableSpace ThreeModel P.Carrier
+  let : MetricSpace P.Carrier := TopologicalSpace.metrizableSpaceMetric P.Carrier
+  obtain ⟨Q, d, hQ, _, hQU, hd, hfamily⟩ :=
+    L.exists_subsequence_tendsto_of_action_le K hK hu huv hTu ha A B hB
+  obtain ⟨hstay, psi, hmap, hpsi, hconv, hmapStart, _⟩ :=
+    hfamily alpha halpha hstart hint hscalar hact
+  let gamma : ℝ → P.Carrier := Set.IccExtend huv.le hmap
+  have hgamma : Continuous gamma := hmap.continuous.Icc_extend'
+  have hgammaEq (r : ℝ) (hr : r ∈ Icc u v) : gamma r = hmap ⟨r, hr⟩ :=
+    Set.IccExtend_of_mem huv.le hmap hr
+  have hmapEq : (⟨fun r : Icc u v => gamma r.val,
+      hgamma.comp continuous_subtype_val⟩ : C(Icc u v, P.Carrier)) = hmap := by
+    ext r
+    exact hgammaEq r.val r.property
+  have hpre : uIcc u d ⊆ uIcc u v := by
+    rw [uIcc_of_le hd.1.le, uIcc_of_le huv.le]
+    exact Icc_subset_Icc le_rfl hd.2.le
+  have htail : uIcc d v ⊆ uIcc u v := by
+    rw [uIcc_of_le hd.2.le, uIcc_of_le huv.le]
+    exact Icc_subset_Icc hd.1.le le_rfl
+  have hintPre (n : ℕ) := (hint n).mono_set hpre
+  have hintTail (n : ℕ) := (hint n).mono_set htail
+  have hsplit (n : ℕ) := lRegularizedAction_add G.flow T (alpha n) u d v (hintPre n) (hintTail n)
+  let cp := -(2 * B * v ^ 2) * (d - u)
+  let cq := -(2 * B * v ^ 2) * (v - d)
+  have hlowerPre (n : ℕ) : cp ≤ lRegularizedAction G.flow T (alpha n) u d :=
+    lRegularizedAction_ge_of_scalar_lower_on_interior G.flow T (alpha n) hu hd.1.le hd.2.le hB
+      (fun r hr => hscalar n r ⟨hr.1, hr.2.trans hd.2⟩) (hintPre n)
+  have hlowerTail (n : ℕ) : cq ≤ lRegularizedAction G.flow T (alpha n) d v :=
+    lRegularizedAction_ge_of_scalar_lower_on_interior G.flow T (alpha n)
+      (hu.trans hd.1.le) hd.2.le le_rfl hB
+      (fun r hr => hscalar n r ⟨hd.1.trans hr.1, hr.2⟩) (hintTail n)
+  have hupperPre (n : ℕ) : lRegularizedAction G.flow T (alpha n) u d ≤ A - cq := by
+    linarith only [hsplit n, hact n, hlowerTail n]
+  have hupperTail (n : ℕ) : lRegularizedAction G.flow T (alpha n) d v ≤ A - cp := by
+    linarith only [hsplit n, hact n, hlowerPre n]
+  obtain ⟨l, rho, hrho, hlimitPre, hlimitTail⟩ := exists_split_action_subsequence
+    (fun n => lRegularizedAction G.flow T (alpha (psi n)) u v)
+    (fun n => lRegularizedAction G.flow T (alpha (psi n)) u d)
+    (fun n => lRegularizedAction G.flow T (alpha (psi n)) d v)
+    A cp cq ell (fun n => hsplit (psi n)) (fun n => hact (psi n))
+    (fun n => hlowerPre (psi n)) (fun n => hlowerTail (psi n))
+    (haction.comp hpsi.tendsto_atTop)
+  let phi := psi ∘ rho
+  have hphi : StrictMono phi := hpsi.comp hrho
+  let beta : ℕ → ℝ → P.Carrier := fun n => alpha (phi n)
+  have hbeta (n : ℕ) : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (beta n) (Icc u v) := halpha (phi n)
+  have hconvFull : Tendsto (fun n => (⟨fun r => beta n r.val,
+      (hbeta n).continuousOn.domRestrict⟩ : C(Icc u v, P.Carrier))) atTop
+      (𝓝 ⟨fun r => gamma r.val, hgamma.comp continuous_subtype_val⟩) := by
+    rw [hmapEq]
+    exact hconv.comp hrho.tendsto_atTop
+  have hconvUniform := ContinuousMap.tendsto_iff_tendstoUniformly.mp hconvFull
+  have hbetaPre (n : ℕ) : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (beta n) (Icc u d) :=
+    (hbeta n).mono (Icc_subset_Icc le_rfl hd.2.le)
+  have hbetaTail (n : ℕ) : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (beta n) (Icc d v) :=
+    (hbeta n).mono (Icc_subset_Icc hd.1.le le_rfl)
+  have hconvPre : Tendsto (fun n => (⟨fun r => beta n r.val,
+      (hbetaPre n).continuousOn.domRestrict⟩ : C(Icc u d, P.Carrier))) atTop
+      (𝓝 ⟨fun r => gamma r.val, hgamma.comp continuous_subtype_val⟩) := by
+    apply ContinuousMap.tendsto_iff_tendstoUniformly.mpr
+    exact hconvUniform.comp (fun r : Icc u d => (⟨r.val, r.property.1,
+      r.property.2.trans hd.2.le⟩ : Icc u v))
+  have hconvTail : TendstoUniformly (fun n (r : Icc d v) => beta n r.val)
+      (fun r => gamma r.val) atTop :=
+    hconvUniform.comp (fun r : Icc d v => (⟨r.val, hd.1.le.trans r.property.1,
+      r.property.2⟩ : Icc u v))
+  have haPre : a ≤ T - d ^ 2 := by
+    have hsq := (sq_le_sq₀ (hu.trans hd.1.le) (hu.trans huv.le)).mpr hd.2.le
+    linarith only [ha, hsq]
+  have hclockTail (r : ℝ) (hr : r ∈ Icc d v) :
+      T - r ^ 2 ∈ (RealTimeInterval.closedOpen a s G.lt).carrier := by
+    change a ≤ T - r ^ 2 ∧ T - r ^ 2 < s
+    have hr0 := (hu.trans hd.1.le).trans hr.1
+    have hsqv := (sq_le_sq₀ hr0 (hu.trans huv.le)).mpr hr.2
+    have hsqu := (sq_lt_sq₀ hu hr0).mpr (hd.1.trans_le hr.1)
+    constructor <;> nlinarith only [ha, hTu, hsqv, hsqu]
+  obtain ⟨hACPre, hIntPre, chiPre, hchiPre, hactionPre⟩ :=
+    L.exists_subsequence_action_liminf_of_tendsto_on_terminal_compact
+      hu hd.1 hTu haPre Q hQ hQU (A - cq) beta hbetaPre
+      (fun n r hr => hstay (phi n) hr) (fun n => hupperPre (phi n))
+      gamma hgamma.continuousOn hconvPre
+  have hboundPre : lRegularizedAction G.flow T gamma u d ≤ l := by
+    have hlim := hlimitPre.comp hchiPre.tendsto_atTop
+    rw [show liminf (fun n => lRegularizedAction G.flow T (beta (chiPre n)) u d) atTop = l from
+      hlim.liminf_eq] at hactionPre
+    exact hactionPre
+  obtain ⟨m, times, centers, coord, htimes, htimes0, htimeslast, hsrcTail, hrepTail,
+      hIntTail, chiTail, hchiTail, hactionTail⟩ :=
+    exists_chartH1_representation_of_tendstoUniformly_of_lRegularizedAction_le_on_carrier
+      G.flow G.equation.smoothMetric ⟨G.equation.scalarCont⟩ T d v (A - cp) hd.2.le beta hbetaTail
+      univ isCompact_univ (fun _ _ _ => mem_univ _) (fun n => hupperTail (phi n))
+      gamma hconvTail hclockTail
+  have hACTail : Manifold.absolutelyContinuousOnInterval ThreeModel gamma d v := by
+    have hh := Manifold.absolutelyContinuousOnInterval_of_timeH1_chart_partition
+      times htimes centers coord hsrcTail hrepTail
+    simpa only [htimes0, htimeslast] using hh
+  have hboundTail : lRegularizedAction G.flow T gamma d v ≤ ell - l := by
+    have hlim := hlimitTail.comp hchiTail.tendsto_atTop
+    rw [show liminf (fun n => lRegularizedAction G.flow T (beta (chiTail n)) d v) atTop = ell - l from
+      hlim.liminf_eq] at hactionTail
+    exact hactionTail
+  have hAC : Manifold.absolutelyContinuousOnInterval ThreeModel gamma u v := by
+    simpa only [Set.piecewise_same] using
+      Manifold.absolutelyContinuousOnInterval_piecewise_Iic hACPre hACTail hd.1.le hd.2.le rfl
+  refine ⟨phi, gamma, hgamma, hphi, hconvFull, ?_, hAC, hIntPre.trans hIntTail, ?_⟩
+  · rw [hgammaEq u ⟨le_rfl, huv.le⟩]
+    exact hmapStart
+  · have hadd := lRegularizedAction_add G.flow T gamma u d v hIntPre hIntTail
+    linarith only [hadd, hboundPre, hboundTail]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe u
+variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+theorem TerminalLimitMetric.exists_lRegularizedAction_minimizer
+    (L : G.TerminalLimitMetric) {T u v : ℝ}
+    (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
+    (x : G.terminalRegularOpen) (y : P.Carrier) (B : ℝ) (hB : 0 ≤ B)
+    (hscalar : ∀ r ∈ Ioo u v, ∀ z : P.Carrier, -B ≤ G.flow.scalar (T - r ^ 2) z)
+    (alpha₀ : ℝ → P.Carrier)
+    (halpha₀ : Manifold.absolutelyContinuousOnInterval ThreeModel alpha₀ u v)
+    (hstart₀ : alpha₀ u = x.val) (hend₀ : alpha₀ v = y)
+    (hint₀ : IntervalIntegrable (lRegularizedLagrangian G.flow T alpha₀) volume u v) :
+    ∃ gamma : ℝ → P.Carrier, gamma u = x.val ∧ gamma v = y ∧
+      Manifold.absolutelyContinuousOnInterval ThreeModel gamma u v ∧
+      IntervalIntegrable (lRegularizedLagrangian G.flow T gamma) volume u v ∧
+      ∀ delta : ℝ → P.Carrier, Manifold.absolutelyContinuousOnInterval ThreeModel delta u v →
+        delta u = x.val → delta v = y →
+        IntervalIntegrable (lRegularizedLagrangian G.flow T delta) volume u v →
+        lRegularizedAction G.flow T gamma u v ≤ lRegularizedAction G.flow T delta u v := by
+  classical
+  obtain ⟨beta₀, hbeta₀, hbeta₀U, hbeta₀V, hbeta₀Int, _⟩ :=
+    L.exists_contMDiff_action_lt_of_terminal_curve hu huv hTu ha halpha₀
+      (by rw [hstart₀]; exact x.property) hint₀ (by norm_num : (0 : ℝ) < 1)
+  let A₀ := lRegularizedAction G.flow T beta₀ u v
+  let costs : Set ℝ := {r | ∃ alpha : ℝ → P.Carrier,
+    ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 alpha (Icc u v) ∧ alpha u = x.val ∧ alpha v = y ∧
+      IntervalIntegrable (lRegularizedLagrangian G.flow T alpha) volume u v ∧
+      lRegularizedAction G.flow T alpha u v = r ∧ r ≤ A₀}
+  have hseed : A₀ ∈ costs := ⟨beta₀, hbeta₀.contMDiffOn, hbeta₀U.trans hstart₀,
+    hbeta₀V.trans hend₀, hbeta₀Int, rfl, le_rfl⟩
+  have hcosts : costs.Nonempty := ⟨A₀, hseed⟩
+  have hbdd : BddBelow costs := by
+    refine ⟨-(2 * B * v ^ 2) * (v - u), ?_⟩
+    rintro r ⟨alpha, _, _, _, hint, rfl, _⟩
+    exact lRegularizedAction_ge_of_scalar_lower_on_interior G.flow T alpha hu huv.le le_rfl
+      hB (fun r hr => hscalar r hr (alpha r)) hint
+  have hbelow (alpha : ℝ → P.Carrier)
+      (halpha : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 alpha (Icc u v))
+      (hstart : alpha u = x.val) (hend : alpha v = y)
+      (hint : IntervalIntegrable (lRegularizedLagrangian G.flow T alpha) volume u v) :
+      sInf costs ≤ lRegularizedAction G.flow T alpha u v := by
+    by_cases hact : lRegularizedAction G.flow T alpha u v ≤ A₀
+    · exact csInf_le hbdd ⟨alpha, halpha, hstart, hend, hint, rfl, hact⟩
+    · exact (csInf_le hbdd hseed).trans (le_of_not_ge hact)
+  obtain ⟨values, _, hlim, hvalues⟩ := exists_seq_tendsto_sInf hcosts hbdd
+  choose alpha halpha hstart hend hint hvalue hbound using hvalues
+  have haction : Tendsto (fun n => lRegularizedAction G.flow T (alpha n) u v) atTop
+      (𝓝 (sInf costs)) := by
+    simpa only [hvalue] using hlim
+  obtain ⟨phi, gamma, hgamma, _, hconv, hgammaStart, hgammaAC, hgammaInt, hgammaAct⟩ :=
+    L.exists_subsequence_action_le_of_tendsto_action {x} isCompact_singleton hu huv hTu ha
+      A₀ B (sInf costs) hB alpha halpha
+      (fun n => ⟨x, mem_singleton x, (hstart n).symm⟩) hint
+      (fun n r hr => hscalar r hr (alpha n r))
+      (fun n => by rw [hvalue n]; exact hbound n) haction
+  have hgammaU : gamma u = x.val := by
+    simpa only [image_singleton, mem_singleton_iff] using hgammaStart
+  have hendlim : Tendsto (fun n => alpha (phi n) v) atTop (𝓝 (gamma v)) :=
+    (continuous_eval_const (⟨v, huv.le, le_rfl⟩ : Icc u v)).continuousAt.tendsto.comp hconv
+  have hgammaV : gamma v = y := tendsto_nhds_unique hendlim (by
+    simpa only [hend] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => y) atTop (𝓝 y)))
+  refine ⟨gamma, hgammaU, hgammaV, hgammaAC, hgammaInt, ?_⟩
+  intro delta hdelta hdeltaU hdeltaV hdeltaInt
+  by_contra hn
+  have hgap : 0 < lRegularizedAction G.flow T gamma u v -
+      lRegularizedAction G.flow T delta u v := sub_pos.mpr (lt_of_not_ge hn)
+  obtain ⟨beta, hbeta, hbetaU, hbetaV, hbetaInt, hbetaAct⟩ :=
+    L.exists_contMDiff_action_lt_of_terminal_curve hu huv hTu ha hdelta
+      (by rw [hdeltaU]; exact x.property) hdeltaInt (half_pos hgap)
+  have hbetaLower := hbelow beta hbeta.contMDiffOn (hbetaU.trans hdeltaU)
+    (hbetaV.trans hdeltaV) hbetaInt
+  linarith only [hgap, hgammaAct, hbetaLower, hbetaAct]
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 
