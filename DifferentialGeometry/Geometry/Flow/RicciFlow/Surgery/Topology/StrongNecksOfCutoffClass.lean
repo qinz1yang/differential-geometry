@@ -1,0 +1,155 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StrongSpatialCrossingContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowCapWitness
+
+set_option autoImplicit false
+
+noncomputable section
+
+open Set
+open scoped NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+universe u
+
+def StrongNecksOfCutoffClass (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Prop :=
+  ∀ ε₁ : ℝ, 0 < ε₁ → ε₁ < 1 / 11 →
+  ∃ εbar : ℝ, 0 < εbar ∧ εbar ≤ ε₁ ∧
+  ∀ (B ε : ℝ), 0 < B → 0 < ε → ε ≤ εbar →
+  ∀ (C1 C2 C1s C2s qcan τmin : ℝ) (Ctime Cgrad : ℝ≥0) (κ : ℝ) (phi : ℝ → ℝ),
+    1 ≤ C1 → 1 ≤ C2 → 1 ≤ C1s → 1 ≤ C2s → 0 < qcan → 0 < τmin → 0 < κ →
+    Perelman.AdmissiblePinchingFunction phi →
+  ∃ (C1h C2h qh δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
+    1 ≤ C1h ∧ 1 ≤ C2h ∧ qcan ≤ qh ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧ 0 < Dcap ∧
+  ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
+    p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
+    δbound ≤ δmax → ρbound ≤ ρmax →
+  ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound),
+    H.EventSlabsPinched phi →
+    H.EventSlabsCanonical ε C1 C2 qcan τmin (Fin.last H.eventCount) →
+    H.EventSlabsDerivative Ctime qcan (Fin.last H.eventCount) →
+    H.EventSlabsGradient Cgrad qcan (Fin.last H.eventCount) →
+    H.EventSlabsSpatiallyCanonical ε C1s C2s qcan (Fin.last H.eventCount) →
+    H.NoncollapsedBefore κ ε (H.time (Fin.last H.eventCount)) →
+    H.EventSlabsStronglyCanonical ε ε₁ C1h C2h qh (Fin.last H.eventCount) ∧
+    ∀ (s : ℝ)
+      (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
+      (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
+      Perelman.PhiAlmostNonnegative G.flow (Ico (H.time (Fin.last H.eventCount)) s) phi →
+      G.CanonicalBefore ε C1 C2 qcan τmin s → G.DerivativeBoundBefore Ctime qcan s →
+      G.GradientBoundBefore Cgrad qcan s → G.SpatiallyCanonicalBefore ε C1s C2s qcan s →
+      (∀ t₀ ∈ Ioo (H.time (Fin.last H.eventCount)) s,
+        H.TerminalNoncollapsedBefore hH.2.1 G hG.2 κ ε t₀) →
+      H.StronglyCanonicalBefore (Fin.last H.eventCount) G ε ε₁ C1h C2h qh s
+
+theorem strongNecksOfCutoffClass_of_strongSpatialCrossing (P₀ : OrientedThreeStage.{u})
+    (g₀ : P₀.Metric) (hcross : StrongSpatialCrossingContinuation P₀ g₀) :
+    StrongNecksOfCutoffClass P₀ g₀ := by
+  intro ε₁ hε₁ hε₁'
+  obtain ⟨εbar, hεbar, -, hεbar₁, hX⟩ := hcross ε₁ hε₁ hε₁'
+  refine ⟨εbar, hεbar, hεbar₁, fun B ε hB hε hεb => ?_⟩
+  have hεε₁ : ε ≤ ε₁ := hεb.trans hεbar₁
+  have hε' : ε < 1 / 11 := hεε₁.trans_lt hε₁'
+  obtain ⟨Cx, hCx, hXB⟩ := hX ε hε hε' hεb
+  intro C1 C2 C1s C2s qcan τmin Ctime Cgrad κ phi hC1 hC2 hC1s hC2s hqcan hτ hκ hphi
+  obtain ⟨Dcap, θcap, q₀, mcap, hDcap, hθcap, -, hXq⟩ :=
+    hXB B hB C1 C2 τmin Ctime Cgrad hC1 hC2 hτ C1s C2s 1 hC1s hC2s le_rfl κ phi τmin hκ hphi hτ
+  obtain ⟨Cs, Rcap, mw, hCs, hRcap, hW⟩ :=
+    RetainedCoreHistory.exists_capWindow_stronglyCanonicalWhere P₀ g₀ hε hε' Ctime Cgrad Dcap θcap
+      hDcap hθcap
+  set qh := max qcan q₀ with hqhdef
+  have hqh : qcan ≤ qh := le_max_left _ _
+  obtain ⟨δX, ρX, εX, hδX, hρX, hεX, hXp⟩ := hXq qh (le_max_right _ _)
+  obtain ⟨δW, ρW, εW, hδW, hρW, hεW, hWp⟩ := hW qh (hqcan.trans_le hqh)
+  set C1h := max C1 (max Cs Cx) with hC1hdef
+  set C2h := max C2 (max (max Cs (Cgrad : ℝ)) Cx) with hC2hdef
+  refine ⟨C1h, C2h, qh, min δX δW, min ρX ρW, min εX εW, Rcap, max mcap mw,
+    le_max_of_le_left hC1, le_max_of_le_left hC2, hqh, lt_min hδX hδW, lt_min hρX hρW,
+    lt_min hεX hεW, by linarith, ?_⟩
+  intro p₀ δbound ρbound hacc hrad hord hδb hρb H hH hpinch hcan hder hgrad hspat hnon
+  obtain ⟨p, records, hrec⟩ :=
+    (H.hasCanonicalCutoffRecords_iff_exists_isCanonicalCutoffRecordFamily p₀ δbound ρbound).mp
+      hH.2.2.2.1
+  have hcanq : ∀ j : Fin H.eventCount,
+      (H.toHistory.event j).incoming.CanonicalBefore ε C1 C2 qh τmin (H.time j.succ) :=
+    fun j y t ht hR hτ' => hcan j (Fin.castSucc_lt_last j) y t ht (hqh.trans_lt hR) hτ'
+  have hderq : ∀ j : Fin H.eventCount,
+      (H.toHistory.event j).incoming.DerivativeBoundBefore Ctime qh (H.time j.succ) :=
+    fun j y t ht hR => hder j (Fin.castSucc_lt_last j) y t ht (hqh.trans_lt hR)
+  have hgradq : ∀ j : Fin H.eventCount,
+      (H.toHistory.event j).incoming.GradientBoundBefore Cgrad qh (H.time j.succ) :=
+    fun j y t ht hR => hgrad j (Fin.castSucc_lt_last j) y t ht (hqh.trans_lt hR)
+  have hspatq : ∀ j : Fin H.eventCount,
+      (H.toHistory.event j).incoming.SpatiallyCanonicalBefore ε C1s C2s qh (H.time j.succ) :=
+    fun j y t ht hR => hspat j (Fin.castSucc_lt_last j) y t ht (hqh.trans_lt hR)
+  obtain ⟨hXev, hXterm⟩ := hXp qh le_rfl (one_mul qh).ge p₀ δbound ρbound
+    (hacc.trans (min_le_left _ _)) ((show Dcap ≤ Rcap by linarith).trans hrad)
+    ((le_max_left _ _).trans hord) (hδb.trans (min_le_left _ _)) (hρb.trans (min_le_left _ _))
+    H hH p records hrec hpinch
+  have hWH := hWp p₀ δbound ρbound (hacc.trans (min_le_right _ _)) hrad
+    ((le_max_right _ _).trans hord) (hδb.trans (min_le_right _ _)) (hρb.trans (min_le_right _ _))
+    H hH.1 hH.2.2.2.2 p records hrec
+  have key : ∀ (k : Fin (H.eventCount + 1)) (s : ℝ) (G : (H.stage k).IncomingSlab (H.time k) s),
+      G.flow.base.metric (H.time k) = H.initialMetric k →
+      G.CanonicalBefore ε C1 C2 qh τmin s → G.DerivativeBoundBefore Ctime qh s →
+      G.GradientBoundBefore Cgrad qh s →
+      H.StronglyCanonicalWhere k G ε ε₁ Cx Cx qh
+        (fun y t => G.flow.scalar t y * (t - H.time k) < τmin ∧
+          ¬ H.CapWindowPoint records k y t Dcap θcap) →
+      H.StronglyCanonicalBefore k G ε ε₁ C1h C2h qh s := by
+    intro k s G hinit hcanG hderG hgradG hyoung
+    have h₁ := (RetainedCoreHistory.stronglyCanonicalWhere_of_canonicalBefore (H := H) k G hεε₁
+      hε₁' hcanG).mono_constants
+      (le_max_left C1 (max Cs Cx)) (le_max_left C2 (max (max Cs (Cgrad : ℝ)) Cx))
+    have h₂ := (hWH k s G hinit (fun j _ => hderq j) hderG hgradG ε₁).mono_constants
+      ((le_max_left Cs Cx).trans (le_max_right C1 _))
+      ((le_max_left (max Cs (Cgrad : ℝ)) Cx).trans (le_max_right C2 _))
+    have h₃ := hyoung.mono_constants ((le_max_right Cs Cx).trans (le_max_right C1 _))
+      ((le_max_right (max Cs (Cgrad : ℝ)) Cx).trans (le_max_right C2 _))
+    refine RetainedCoreHistory.stronglyCanonicalBefore_of_where_cover h₁ h₂ h₃ fun y t => ?_
+    rcases le_or_gt τmin (G.flow.scalar t y * (t - H.time k)) with hold | hyng
+    · exact Or.inl hold
+    · by_cases hcw : H.CapWindowPoint records k y t Dcap θcap
+      · exact Or.inr (Or.inl hcw)
+      · exact Or.inr (Or.inr ⟨hyng, hcw⟩)
+  refine ⟨fun j _ => ?_, fun s G hG hphiG hcanG hderG hgradG hspatG hnonG => ?_⟩
+  · refine key j.castSucc (H.time j.succ) (H.toHistory.event j).incoming (H.event_initial j)
+      (hcanq j) (hderq j) (hgradq j) ?_
+    rintro y t ht hR ⟨hyng, hcw⟩
+    have hjl : H.time j.succ ≤ H.time (Fin.last H.eventCount) :=
+      H.time_strictMono.monotone (Fin.le_last _)
+    obtain ⟨η, hη, -, -, hwin⟩ := hXev j (fun i _ => hcanq i) (fun i _ => hderq i)
+      (fun i _ => hgradq i) (fun i _ => hspatq i) t ⟨ht.1.le, ht.2⟩
+      ((H.toHistory.event j).incoming.canonicalBefore_mono ht.2.le (hcanq j))
+      ((H.toHistory.event j).incoming.derivativeBoundBefore_mono ht.2.le (hderq j))
+      ((H.toHistory.event j).incoming.gradientBoundBefore_mono ht.2.le (hgradq j))
+      ((H.toHistory.event j).incoming.spatiallyCanonicalBefore_mono ht.2.le (hspatq j))
+      (H.noncollapsedBefore_mono (ht.2.le.trans hjl) hnon) (H.time j.succ - t)
+      (sub_pos.mpr ht.2)
+      (fun y' t' ha _ _ hts hR' => hderq j y' t' ⟨ha, hts⟩ hR')
+      (fun y' t' ha _ _ hts hR' => hgradq j y' t' ⟨ha, hts⟩ hR')
+      (fun y' t' ha _ _ hts hR' hτ' => hcanq j y' t' ⟨ha, hts⟩ hR' hτ')
+    exact hwin y t ht.1 le_rfl (by linarith) ht.2 hR hyng hcw
+  · have hcanG' : G.CanonicalBefore ε C1 C2 qh τmin s :=
+      fun y t ht hR hτ' => hcanG y t ht (hqh.trans_lt hR) hτ'
+    have hderG' : G.DerivativeBoundBefore Ctime qh s :=
+      fun y t ht hR => hderG y t ht (hqh.trans_lt hR)
+    have hgradG' : G.GradientBoundBefore Cgrad qh s :=
+      fun y t ht hR => hgradG y t ht (hqh.trans_lt hR)
+    have hspatG' : G.SpatiallyCanonicalBefore ε C1s C2s qh s :=
+      fun y t ht hR => hspatG y t ht (hqh.trans_lt hR)
+    refine key (Fin.last H.eventCount) s G hG.2 hcanG' hderG' hgradG' ?_
+    rintro y t ht hR ⟨hyng, hcw⟩
+    obtain ⟨η, hη, -, -, hwin⟩ := hXterm s G hG hphiG (fun i _ => hcanq i) (fun i _ => hderq i)
+      (fun i _ => hgradq i) (fun i _ => hspatq i) hnon t ⟨ht.1.le, ht.2⟩
+      (G.canonicalBefore_mono ht.2.le hcanG') (G.derivativeBoundBefore_mono ht.2.le hderG')
+      (G.gradientBoundBefore_mono ht.2.le hgradG') (G.spatiallyCanonicalBefore_mono ht.2.le hspatG')
+      (hnonG t ht) (s - t) (sub_pos.mpr ht.2)
+      (fun y' t' ha _ _ hts hR' => hderG' y' t' ⟨ha, hts⟩ hR')
+      (fun y' t' ha _ _ hts hR' => hgradG' y' t' ⟨ha, hts⟩ hR')
+      (fun y' t' ha _ _ hts hR' hτ' => hcanG' y' t' ⟨ha, hts⟩ hR' hτ')
+    exact hwin y t ht.1 le_rfl (by linarith) ht.2 hR hyng hcw
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+end

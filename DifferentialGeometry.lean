@@ -13755,6 +13755,7 @@ import DifferentialGeometry.Topology.Manifold.SmoothTwoSidedCollarRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornBaseCoordinates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornParameterRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.BaseHornMetricEvent
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyStrong
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyTolerances
 import DifferentialGeometry.Topology.OpenPartialHomeomorph.OutwardGraphBand
 import DifferentialGeometry.Geometry.Neck.SpatialFrontierRecentering
@@ -14223,6 +14224,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornSeparat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutNecksLongSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFactory
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupply
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupplyStrong
 import DifferentialGeometry.Topology.Sequences.ExceptionalSetApproximation
 import DifferentialGeometry.Topology.Sequences.NestedSubsequence
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciLowerBound
@@ -14314,6 +14316,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SpatialCano
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SpatialCrossingContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageBallVolumeRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageComponentSimplyConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StrongNecksOfCutoffClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StrongSpatialCrossingContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorTraceScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapSideExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalFineNeckOfSpatialNecks
