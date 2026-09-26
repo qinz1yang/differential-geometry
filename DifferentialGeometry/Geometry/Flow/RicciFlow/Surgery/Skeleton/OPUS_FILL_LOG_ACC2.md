@@ -12,3 +12,4 @@
 - 2026-09-26T09:36:31Z build5 (944s): 2 host-OOM failures (DiagonalCapMetric olean read, WindowedCapLimit INTERNAL PANIC out of memory), not source errors; build6 relaunched with LEAN_NUM_THREADS=6
 - 2026-09-26T09:51:28Z build6: exit 0, 881s, 0 errors/warnings/infos
 - 2026-09-26T09:56:42Z re-audit NeckTransportDecoupled: 23 decls, 0 failures. git diff --check clean. Committing.
+- 2026-09-26T09:56:55Z committed f70ac201d, pushed to liao/codex/pc-target-c-psf. Log line left uncommitted.

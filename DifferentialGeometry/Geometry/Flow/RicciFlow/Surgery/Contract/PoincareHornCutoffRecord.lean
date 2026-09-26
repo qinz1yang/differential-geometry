@@ -467,14 +467,13 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
-    ∀ q0 : ℝ, 0 < q0 →
-    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
+    ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
     ∃ εcan : ℝ, 0 < εcan ∧ εcan < 1 / 11 ∧
     ∀ C1 C2 : ℝ, 1 ≤ C2 →
     ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧
-    ∀ qcan originalCoreFloor protectedFloor : ℝ,
-      0 < qcan → 0 < originalCoreFloor → 0 < protectedFloor →
-    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Qmin ≤ Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
+    ∀ q0 qcan originalCoreFloor protectedFloor : ℝ,
+      0 < q0 → 0 < qcan → 0 < originalCoreFloor → 0 < protectedFloor →
+    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Λq * max q0 1 ≤ Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
     ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
@@ -605,12 +604,12 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
   have hTop : 0 < epsTop := lt_min heta (by norm_num)
   have hTopSmall : epsTop < 1 / 11 := (min_le_right _ _).trans_lt (by norm_num)
   refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
-  intro m accuracy haccuracy ηrecord hηrecord q0 hq0
-  obtain ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, hmake⟩ :=
-    hfactory m accuracy haccuracy (min ηrecord epsTop) (lt_min hηrecord hTop) q0 hq0
+  intro m accuracy haccuracy ηrecord hηrecord
+  obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
+    hfactory m accuracy haccuracy (min ηrecord epsTop) (lt_min hηrecord hTop)
   have hδrecord : δ ≤ ηrecord := hδη.trans (min_le_left _ _)
   have hδTop : δ ≤ epsTop := hδη.trans (min_le_right _ _)
-  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδrecord, hε₀, hQmin, ?_⟩
+  refine ⟨δ, ε₀, Λq, hδ, hδ1, hδrecord, hε₀, hΛq, ?_⟩
   obtain ⟨epsGeometry, hGeom, hGeomSmall, hgeometry⟩ :=
     OneStepIncoming.exists_neckRadius_terminalCorePresentation_with_radius_lower_bound_of_canonical_neighborhoods.{u} hε₀
   let epsCan := min epsGeometry epsTop
@@ -618,12 +617,12 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
   intro C1 C2 hC2
   obtain ⟨C, Λ, hC, hΛ, hgeometry⟩ := hgeometry C1 C2 hC2
   refine ⟨C, Λ, hC, hΛ, ?_⟩
-  intro qcan originalCoreFloor protectedFloor hqcan hcoreFloor hprotectedFloor
+  intro q0 qcan originalCoreFloor protectedFloor hq0 hqcan hcoreFloor hprotectedFloor
   obtain ⟨radiusFloor, hradiusFloor, hgeometry⟩ :=
     hgeometry (C * qcan) originalCoreFloor protectedFloor
       (mul_pos (zero_lt_one.trans_le hC) hqcan) hcoreFloor hprotectedFloor
   obtain ⟨Q, v, hQ, hv, hQmin, hQtopFloor, hvQ, hmake⟩ :=
-    hmake Λ radiusFloor hΛ hradiusFloor (C2 ^ 2 * (radiusFloor ^ 2)⁻¹)
+    hmake q0 hq0 Λ radiusFloor hΛ hradiusFloor (C2 ^ 2 * (radiusFloor ^ 2)⁻¹)
   refine ⟨Q, v, hQ, hv, hQmin, hvQ, ?_⟩
   intro p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
     hderiv hfinal hcore hprotected hcanonical

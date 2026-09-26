@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialCanonicalWitness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodInduction
 
 set_option autoImplicit false
@@ -16,23 +15,6 @@ universe u
 namespace OrientedThreeStage.IncomingSlab
 
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingSlab a s)
-
-def SpatiallyCanonicalBefore (ε C1 C2 qcan t₀ : ℝ) : Prop :=
-  ∀ (y : P.Carrier) (t : ℝ), t ∈ Ioo a t₀ → qcan < G.flow.scalar t y →
-    ∃ W : SpatialCanonicalWitness (G.flow.base.metric t) ε C1 C2 y, W.capTubeHasNeckChart ε
-
-def SpatiallyCanonicalOn (ε C1 C2 qcan t₀ η : ℝ) : Prop :=
-  ∀ (y : P.Carrier) (t : ℝ), a < t → t₀ ≤ t → t < t₀ + η → t < s → qcan < G.flow.scalar t y →
-    ∃ W : SpatialCanonicalWitness (G.flow.base.metric t) ε C1 C2 y, W.capTubeHasNeckChart ε
-
-theorem spatiallyCanonicalBefore_mono {ε C1 C2 qcan t₀ t₁ : ℝ} (h : t₀ ≤ t₁)
-    (hG : G.SpatiallyCanonicalBefore ε C1 C2 qcan t₁) :
-    G.SpatiallyCanonicalBefore ε C1 C2 qcan t₀ :=
-  fun y t ht hR => hG y t ⟨ht.1, ht.2.trans_le h⟩ hR
-
-theorem spatiallyCanonicalBefore_start (ε C1 C2 qcan : ℝ) :
-    G.SpatiallyCanonicalBefore ε C1 C2 qcan a :=
-  fun _ _ ht _ => absurd ht.1 (not_lt.mpr ht.2.le)
 
 theorem canonicalBefore_of_threshold_le {ε C1 C2 q q' τmin t₀ : ℝ} (hq : q ≤ q')
     (hG : G.CanonicalBefore ε C1 C2 q τmin t₀) : G.CanonicalBefore ε C1 C2 q' τmin t₀ :=
@@ -159,24 +141,15 @@ theorem canonicalBefore_end_of_continuation_spatial {ε C1 C2 C1s C2s qcan qs τ
 
 end OrientedThreeStage.IncomingSlab
 
-namespace RetainedCoreHistory
-
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
-
-def EventSlabsSpatiallyCanonical (ε C1 C2 qcan : ℝ) (k : Fin (H.eventCount + 1)) : Prop :=
-  ∀ j : Fin H.eventCount, j.castSucc < k →
-    (H.toHistory.event j).incoming.SpatiallyCanonicalBefore ε C1 C2 qcan (H.time j.succ)
-
-end RetainedCoreHistory
-
 def SpatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Prop :=
   ∀ (B ε : ℝ), 0 < B → 0 < ε → ε < 1 / 11 →
   ∀ (C1 C2 τmin : ℝ) (Ctime Cgrad : ℝ≥0), 1 ≤ C1 → 1 ≤ C2 → 0 < τmin →
-  ∃ C1s C2s : ℝ, 1 ≤ C1s ∧ 1 ≤ C2s ∧
+  ∃ C1s C2s Cs : ℝ, 1 ≤ C1s ∧ 1 ≤ C2s ∧ 1 ≤ Cs ∧
   ∀ (κ : ℝ) (phi : ℝ → ℝ), 0 < κ → Perelman.AdmissiblePinchingFunction phi →
-  ∀ qcan : ℝ, 0 < qcan →
+  ∃ q₄ : ℝ, 0 < q₄ ∧
+  ∀ qcan : ℝ, q₄ ≤ qcan →
   ∃ (qs δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
-    qcan ≤ qs ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧ 0 < Dcap ∧
+    qcan ≤ qs ∧ qs ≤ Cs * qcan ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧ 0 < Dcap ∧
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →

@@ -146,11 +146,11 @@ def HistoryReducedVolumeInitialLowerBound (P₀ : OrientedThreeStage.{u}) (g₀ 
 
 def SmallScaleNoncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     Prop :=
-  ∀ (B ε C1 C2 τmin : ℝ) (Ctime Cgrad : ℝ≥0) (phi : ℝ → ℝ) (κ₁ : ℝ),
-    0 < B → 0 < ε → ε < 1 / 11 → 1 ≤ C1 → 1 ≤ C2 → 0 < τmin →
+  ∀ (B ε C1 C2 C1s C2s τmin : ℝ) (Ctime Cgrad : ℝ≥0) (phi : ℝ → ℝ) (κ₁ : ℝ),
+    0 < B → 0 < ε → ε < 1 / 11 → 1 ≤ C1 → 1 ≤ C2 → 1 ≤ C1s → 1 ≤ C2s → 0 < τmin →
     Perelman.AdmissiblePinchingFunction phi → 0 < κ₁ →
   ∃ κ : ℝ, 0 < κ ∧
-  ∀ qcan : ℝ, 0 < qcan →
+  ∀ qcan qs : ℝ, 0 < qcan → qcan ≤ qs →
   ∃ (r₀ δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
     0 < r₀ ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧ 0 < Dcap ∧
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
@@ -162,10 +162,12 @@ def SmallScaleNoncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ 
         H.EventSlabsCanonical ε C1 C2 qcan τmin j.castSucc →
         H.EventSlabsDerivative Ctime qcan j.castSucc →
         H.EventSlabsGradient Cgrad qcan j.castSucc →
+        H.EventSlabsSpatiallyCanonical ε C1s C2s qs j.castSucc →
         ∀ t₀ : ℝ, t₀ ∈ Ioc (H.time j.castSucc) (H.time j.succ) →
           (H.toHistory.event j).incoming.CanonicalBefore ε C1 C2 qcan τmin t₀ →
           (H.toHistory.event j).incoming.DerivativeBoundBefore Ctime qcan t₀ →
           (H.toHistory.event j).incoming.GradientBoundBefore Cgrad qcan t₀ →
+          (H.toHistory.event j).incoming.SpatiallyCanonicalBefore ε C1s C2s qs t₀ →
           H.NoncollapsedAboveBefore κ₁ r₀ ε t₀ →
           H.NoncollapsedBefore κ r₀ t₀) ∧
       ∀ (s : ℝ)
@@ -175,9 +177,10 @@ def SmallScaleNoncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ 
         H.EventSlabsCanonical ε C1 C2 qcan τmin (Fin.last H.eventCount) →
         H.EventSlabsDerivative Ctime qcan (Fin.last H.eventCount) →
         H.EventSlabsGradient Cgrad qcan (Fin.last H.eventCount) →
+        H.EventSlabsSpatiallyCanonical ε C1s C2s qs (Fin.last H.eventCount) →
         ∀ t₀ : ℝ, t₀ ∈ Ioo (H.time (Fin.last H.eventCount)) s →
           G.CanonicalBefore ε C1 C2 qcan τmin t₀ → G.DerivativeBoundBefore Ctime qcan t₀ →
-          G.GradientBoundBefore Cgrad qcan t₀ →
+          G.GradientBoundBefore Cgrad qcan t₀ → G.SpatiallyCanonicalBefore ε C1s C2s qs t₀ →
           H.TerminalNoncollapsedAboveBefore hH.2.1 G hG.2 κ₁ r₀ ε t₀ →
           H.TerminalNoncollapsedBefore hH.2.1 G hG.2 κ r₀ t₀
 
@@ -242,16 +245,16 @@ theorem noncollapsingThroughSurgery_of_reducedVolume_of_smallScale
     (hlower : HistoryReducedVolumeInitialLowerBound P₀ g₀)
     (hsmall : SmallScaleNoncollapsingThroughSurgery P₀ g₀) :
     NoncollapsingThroughSurgery P₀ g₀ := by
-  intro B ε C1 C2 τmin Ctime Cgrad phi hB hε hε' hC1 hC2 hτ hphi
+  intro B ε C1 C2 C1s C2s τmin Ctime Cgrad phi hB hε hε' hC1 hC2 hC1s hC2s hτ hphi
   obtain ⟨C₀, hC₀, hU⟩ := hupper
   obtain ⟨c, hc, hL⟩ := hlower B ε C1 C2 τmin Ctime Cgrad phi hB hε hε' hC1 hC2 hτ hphi
   obtain ⟨σ, hσ, hσ1, hUσ⟩ := hU (c / 2) (by positivity)
   have hκ₁ : 0 < c * σ ^ 3 / (2 * C₀) := by positivity
   obtain ⟨κ₂, hκ₂, hS⟩ :=
-    hsmall B ε C1 C2 τmin Ctime Cgrad phi _ hB hε hε' hC1 hC2 hτ hphi hκ₁
+    hsmall B ε C1 C2 C1s C2s τmin Ctime Cgrad phi _ hB hε hε' hC1 hC2 hC1s hC2s hτ hphi hκ₁
   refine ⟨min (c * σ ^ 3 / (2 * C₀)) κ₂, lt_min hκ₁ hκ₂, ?_⟩
-  intro qcan hqcan
-  obtain ⟨r₀, δS, ρS, εS, DS, mS, hr₀, hδS, hρS, hεS, hDS, hSstep⟩ := hS qcan hqcan
+  intro qcan qs hqcan hqs
+  obtain ⟨r₀, δS, ρS, εS, DS, mS, hr₀, hδS, hρS, hεS, hDS, hSstep⟩ := hS qcan qs hqcan hqs
   obtain ⟨δL, ρL, εL, DL, mL, hδL, hρL, hεL, hDL, hLstep⟩ := hL qcan r₀ hqcan hr₀
   refine ⟨min δS δL, min ρS ρL, min εS εL, max DS DL, max mS mL, lt_min hδS hδL,
     lt_min hρS hρL, lt_min hεS hεL, lt_max_of_lt_left hDS, ?_⟩
@@ -263,17 +266,17 @@ theorem noncollapsingThroughSurgery_of_reducedVolume_of_smallScale
     ((le_max_right _ _).trans hD) ((le_max_right _ _).trans hm) (hδ.trans (min_le_right _ _))
     (hρ.trans (min_le_right _ _)) H hH hpinch
   refine ⟨?_, ?_⟩
-  · intro j hcan hder hgrad t₀ ht₀ hcb hdb hgb
+  · intro j hcan hder hgrad hspat t₀ ht₀ hcb hdb hgb hsb
     have habove := H.noncollapsedAboveBefore_of_reducedVolume_bounds hc hC₀ hσ hσ1 hmono
       (hUσ H) (hl.1 j hcan hder hgrad t₀ ht₀ hcb hdb hgb)
     exact H.noncollapsedBefore_min_of_noncollapsedAboveBefore habove
-      (hs.1 j hcan hder hgrad t₀ ht₀ hcb hdb hgb habove)
-  · intro s G hG hpG hcan hder hgrad t₀ ht₀ hcb hdb hgb
+      (hs.1 j hcan hder hgrad hspat t₀ ht₀ hcb hdb hgb hsb habove)
+  · intro s G hG hpG hcan hder hgrad hspat t₀ ht₀ hcb hdb hgb hsb
     have habove : H.TerminalNoncollapsedAboveBefore hH.2.1 G hG.2
         (c * σ ^ 3 / (2 * C₀)) r₀ ε t₀ := fun T hT hTs hTt =>
       RetainedCoreHistory.noncollapsedAboveBefore_of_reducedVolume_bounds _ hc hC₀ hσ hσ1
         hmono (hUσ _) (hl.2 s G hG hpG hcan hder hgrad t₀ ht₀ hcb hdb hgb T hT hTs hTt)
-    have hbelow := hs.2 s G hG hpG hcan hder hgrad t₀ ht₀ hcb hdb hgb habove
+    have hbelow := hs.2 s G hG hpG hcan hder hgrad hspat t₀ ht₀ hcb hdb hgb hsb habove
     exact fun T hT hTs hTt =>
       RetainedCoreHistory.noncollapsedBefore_min_of_noncollapsedAboveBefore _
         (habove T hT hTs hTt) (hbelow T hT hTs hTt)

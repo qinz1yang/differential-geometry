@@ -3,6 +3,32 @@
 Statement: `Surgery/Topology/CanonicalNeighborhoodsThroughSurgery.lean`, `def UniformDebitSurgeryStep`.
 Leaf: `Surgery/Skeleton/PoincareEndgame.lean`, `uniformDebitSurgeryStep`. Ledger: `Surgery/FREE_INPUTS.md`.
 
+## Binder order after the interface revision (entry 28, accepted 2026-09-26)
+
+S takes the accuracy ceiling `εbar` of C and returns `ε ≤ εbar`; the cap parameters, record
+bounds and debit are chosen after every constant of C
+(`Topology/CanonicalNeighborhoodsThroughSurgeryStrong.lean:124`). The factory contracts are
+threshold-ordered (`∃ δ ε₀ Λq …, 0 < Λq ∧ ∀ q0, 0 < q0 → …` with `Λq * max q0 1 ≤ Q`, on
+`exists_threshold_uniform_selected_neck_append_backward`), so `εcan` no longer depends on `q0`.
+The class clause `p₀.recenterConstant * δbound ≤ 1 / 2` is derived from S's output
+`p₀.recenterConstant ≤ Λ` inside C's assembly; it adds nothing to S's statement.
+
+```lean
+def UniformDebitSurgeryStepStrong (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Prop :=
+  ∀ (B εbar : ℝ), 0 < B → 0 < εbar →
+  ∃ Λ : ℝ, 0 < Λ ∧
+  ∀ Ctime : ℝ≥0,
+  ∃ ε : ℝ, 0 < ε ∧ ε < 1 / 11 ∧ ε ≤ εbar ∧
+  ∀ (C1 C2 C1s C2s qcan τmin δmax ρmax εcap Dcap : ℝ) (mcap : ℕ) (Cgrad : ℝ≥0) (κ a₀ : ℝ),
+    1 ≤ C1 → 1 ≤ C2 → 1 ≤ C1s → 1 ≤ C2s → 0 < qcan → 0 < τmin → 0 < δmax → 0 < ρmax →
+    0 < εcap → 0 < Dcap → 0 < κ → 0 < a₀ →
+  ∃ (p₀ : CutoffParameters) (δbound ρbound v : ℝ),
+    p₀.modelAccuracy ≤ εcap ∧ Dcap ≤ p₀.modelRadius ∧ mcap ≤ p₀.modelOrder ∧
+    0 < δbound ∧ δbound ≤ δmax ∧ 0 < ρbound ∧ ρbound ≤ ρmax ∧ p₀.recenterConstant ≤ Λ ∧
+    0 < v ∧
+    ...
+```
+
 ## What it says
 
 Given a horizon `B`, choose an accuracy `ε < 1/11` (the accuracy of the canonical neighbourhoods

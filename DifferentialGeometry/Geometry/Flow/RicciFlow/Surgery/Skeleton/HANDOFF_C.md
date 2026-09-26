@@ -24,6 +24,35 @@ clause, the initial pinching `a₀`, and `κ` with `TerminalNoncollapsedBefore`,
 `p₀.recenterConstant ≤ Λ` (item 8 below is realised there). The old `CanonicalNeighborhoodsThroughSurgery`
 described below is weaker (its clauses minus the recenter constraint are the projection `canonicalNeighborhoodsThroughSurgeryOfRecenter_of_strong`) and is no longer on the skeleton path.
 
+## Binder order after the interface revision (entry 28, accepted 2026-09-26)
+
+C is now an `∃ εbar` statement whose body is `CanonicalNeighborhoodsThroughSurgeryStrongAt`
+(`Topology/CanonicalNeighborhoodsThroughSurgeryStrong.lean:69` and `:24`); the constants
+`C1 C2 C1s C2s qcan τmin δmax ρmax εcap Dcap mcap Ctime Cgrad κ a₀` are chosen after `B ε Λ`, and
+the class is `InCutoffClass` with the new last conjunct `p₀.recenterConstant * δbound ≤ 1 / 2`
+(from `p₀.recenterConstant ≤ Λ`, `CutoffParameters.recenterConstant_mul_le_half`). C3 and C3c also
+begin `∃ εbar`; C4 outputs `C1s C2s Cs` before `κ` and a floor `q₄` after `κ phi`, with
+`qcan ≤ qs ≤ Cs * qcan`; C3 takes `C1s C2s Cs` and `∀ qfloor` and returns `qfloor ≤ qcan`. The old
+assembly `canonicalNeighborhoodsThroughSurgery_of_continuation_of_noncollapsing_of_pinching` is
+deleted.
+
+```lean
+def CanonicalNeighborhoodsThroughSurgeryStrong (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    Prop :=
+  ∃ εbar : ℝ, 0 < εbar ∧
+  ∀ (B ε Λ : ℝ), 0 < B → 0 < ε → ε < 1 / 11 → ε ≤ εbar → 0 < Λ →
+    CanonicalNeighborhoodsThroughSurgeryStrongAt P₀ g₀ B ε Λ
+
+def CanonicalNeighborhoodsThroughSurgeryStrongAt (P₀ : OrientedThreeStage.{u})
+    (g₀ : P₀.Metric) (B ε Λ : ℝ) : Prop :=
+  ∃ (C1 C2 C1s C2s qcan τmin δmax ρmax εcap Dcap : ℝ) (mcap : ℕ) (Ctime Cgrad : ℝ≥0)
+    (κ a₀ : ℝ),
+    1 ≤ C1 ∧ 1 ≤ C2 ∧ 1 ≤ C1s ∧ 1 ≤ C2s ∧ 0 < qcan ∧ 0 < τmin ∧ 0 < δmax ∧ 0 < ρmax ∧
+    0 < εcap ∧ 0 < Dcap ∧ 0 < κ ∧ 0 < a₀ ∧
+    ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
+      ...
+```
+
 ## What C says (after the 2026-09-25 repair)
 
 For every horizon `B > 0` and accuracy `0 < ε < 1/11` there are constants `C1 C2 ≥ 1`, a threshold

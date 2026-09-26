@@ -45,7 +45,7 @@ C2 `historyReducedVolumeMonotone`, `historyReducedVolumeLocalUpperBound`,
 | 26 | Reduced-volume truncation: stage scalar floor, independence of the truncation `B`, finiteness, measurability of `regularizedDensity` from closed cost sublevels | RV | done (`Topology/ReducedVolumeTruncation.lean`); measurability of `regularMinimizerEndpoints` open |
 | 27a | Standard solution's spatial canonical witnesses on `[0, Θ]`: old region by projection, young region as the named hypothesis `StandardSolution.YoungSpatiallyCanonical` | SW | done (`StandardSolution/StandardSpatialCanonical.lean`; general constant enlargement in `SpatialCanonicalWitness`) |
 | 27b | `StandardSolution.YoungSpatiallyCanonical`: far necks at positive time, tip caps at every `t ≤ Θ`, uniform witness fields | 27b | running |
-| 28 | Interface revision (`DESIGN_28.md`): class supply, `ρmax` after `qcan`, spatial clause into the small-scale and crossing leaves, fixed core `D*`, variable threshold | 28 | implementation running |
+| 28 | Interface revision (`DESIGN_28.md`): class supply, `ρmax` after `qcan`, spatial clause into the small-scale and crossing leaves, fixed core `D*`, variable threshold | I28 | done (accepted by ACC3: `InCutoffClass` conjunct `recenterConstant * δbound ≤ 1/2`; S takes `εbar`, C is `∃ εbar`; C4 outputs `Cs`, floor `q₄`; contracts threshold-ordered; old C assembly deleted; 8 sorry leaves) |
 | 23 | Cherry-pick Ziyang's 31 commits (286e17a8c..ac2e5266e; closure 56 files, aggregate union) | — | LAST, after 22 |
 
 Priority order (owner, 2026-09-26): C first (C3a–c, C4, S chain), then entry 22, then entry 23.
