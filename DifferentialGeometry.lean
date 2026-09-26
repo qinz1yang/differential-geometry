@@ -11954,6 +11954,7 @@ import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Differentiability
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.EndpointGradient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.GradientIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.AdaptedCutoffTrace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Index.FiniteChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Hamilton.LinearCutoffIndex
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.HamiltonGradientTrace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.UpperSupport.GradientEnergy
