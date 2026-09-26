@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Calculus.ContDiff.RCLike
+import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
 import Mathlib.MeasureTheory.Function.AbsolutelyContinuous
 import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
@@ -277,5 +279,80 @@ theorem exists_absolutelyContinuousOnInterval_openSubtype
   refine ⟨eta, ?_, heq⟩
   apply absolutelyContinuousOnInterval_subtype_of_val U
   exact absolutelyContinuousOnInterval_congr h heq.symm
+
+end Manifold
+
+namespace Manifold
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I 1 M]
+
+theorem absolutelyContinuousOnInterval_of_extChartAt
+    {γ : ℝ → M} {a b : ℝ} (p : M)
+    (hsrc : MapsTo γ (uIcc a b) (chartAt H p).source)
+    (hAC : AbsolutelyContinuousOnInterval ((extChartAt I p) ∘ γ) a b) :
+    absolutelyContinuousOnInterval I γ a b := by
+  have hsrc' : MapsTo γ (uIcc a b) (extChartAt I p).source := by
+    simpa only [extChartAt_source] using hsrc
+  have hcont : ContinuousOn γ (uIcc a b) := by
+    have hmaps : MapsTo ((extChartAt I p) ∘ γ) (uIcc a b) (extChartAt I p).target :=
+      fun r hr => (extChartAt I p).map_source (hsrc' hr)
+    have hc := (continuousOn_extChartAt_symm p).comp hAC.continuousOn hmaps
+    apply hc.congr
+    intro r hr
+    exact ((extChartAt I p).left_inv (hsrc' hr)).symm
+  refine ⟨hcont, ?_⟩
+  intro q c d hsub hqsrc
+  let F : E → E := extChartAt I q ∘ (extChartAt I p).symm
+  let K : Set E := ((extChartAt I p) ∘ γ) '' uIcc c d
+  have hK : IsCompact K := isCompact_uIcc.image_of_continuousOn (hAC.continuousOn.mono hsub)
+  have hKcoord : K ⊆ ((extChartAt I p).symm ≫ extChartAt I q).source := by
+    rintro x ⟨r, hr, rfl⟩
+    refine ⟨(extChartAt I p).map_source (hsrc' (hsub hr)), ?_⟩
+    change (extChartAt I p).symm ((extChartAt I p) (γ r)) ∈ (extChartAt I q).source
+    rw [(extChartAt I p).left_inv (hsrc' (hsub hr))]
+    simpa only [extChartAt_source] using hqsrc hr
+  have hlocal : LocallyLipschitzOn K F := by
+    intro x hx
+    have hcoord := contDiffWithinAt_ext_coord_change (I := I) (n := (1 : WithTop ℕ∞)) q p (hKcoord hx)
+    have hcd : ContDiffAt ℝ 1 F x := by
+      apply hcoord.contDiffAt
+      simp only [ModelWithCorners.range_eq_univ, univ_mem]
+    obtain ⟨C, V, hV, hCV⟩ := hcd.exists_lipschitzOnWith
+    exact ⟨C, V, mem_nhdsWithin_of_mem_nhds hV, hCV⟩
+  obtain ⟨C, hC⟩ := hlocal.exists_lipschitzOnWith_of_compact hK
+  have hh := hC.comp_absolutelyContinuousOnInterval (hAC.mono hsub)
+    (fun r hr => mem_image_of_mem _ hr)
+  apply hh.congr
+  intro r hr
+  change (extChartAt I q) ((extChartAt I p).symm ((extChartAt I p) (γ r))) =
+    (extChartAt I q) (γ r)
+  rw [(extChartAt I p).left_inv (hsrc' (hsub hr))]
+
+
+omit [I.Boundaryless] [IsManifold I 1 M] in
+theorem absolutelyContinuousOnInterval_of_finite_partition
+    {γ : ℝ → M} {m : ℕ} (t : Fin (m + 1) → ℝ) (ht : Monotone t)
+    (hpiece : ∀ i : Fin m, absolutelyContinuousOnInterval I γ (t i.castSucc) (t i.succ)) :
+    absolutelyContinuousOnInterval I γ (t 0) (t (Fin.last m)) := by
+  have hprefix (k : Fin (m + 1)) : absolutelyContinuousOnInterval I γ (t 0) (t k) := by
+    induction k using Fin.induction with
+    | zero =>
+      have hconst : absolutelyContinuousOnInterval I (fun _ : ℝ => γ (t 0)) (t 0) (t 0) := by
+        refine ⟨continuousOn_const, ?_⟩
+        intro p c d _ _
+        exact (contDiff_const.contDiffOn.absolutelyContinuousOnInterval :
+          AbsolutelyContinuousOnInterval (fun _ : ℝ => extChartAt I p (γ (t 0))) c d)
+      apply absolutelyContinuousOnInterval_congr hconst
+      intro r hr
+      have heq : r = t 0 := by simpa only [uIcc_self, mem_singleton_iff] using hr
+      subst r
+      rfl
+    | succ k ih =>
+      have hh := absolutelyContinuousOnInterval_piecewise_Iic ih (hpiece k)
+        (ht (Fin.zero_le _)) (ht k.castSucc_le_succ) rfl
+      simpa only [Set.piecewise_same] using hh
+  exact hprefix (Fin.last m)
 
 end Manifold
