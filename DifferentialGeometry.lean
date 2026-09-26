@@ -14044,3 +14044,6 @@ import DifferentialGeometry.Geometry.Curve.VelocityFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorGeodesicFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.FamilyLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventFirstVariation
+import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.VariationPairing
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorIndexBoundary
