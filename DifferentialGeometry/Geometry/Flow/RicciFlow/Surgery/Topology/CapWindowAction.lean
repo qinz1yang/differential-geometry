@@ -2333,3 +2333,92 @@ theorem exists_uniform_regularCrossing_minimizer_of_regularizedCost_lt_at_contro
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+noncomputable section
+
+open Set Filter Manifold MeasureTheory
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology NNReal BigOperators
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+theorem exists_uniform_regularCrossing_of_regularizedCost_lt_at_event_time
+    (A B E rTerm qDeriv a₀ c ρ : ℝ) (Cderiv : ℝ≥0)
+    (hB : 0 ≤ B) (hE : 0 ≤ E) (hrTerm : 0 < rTerm) (hqDeriv : 0 < qDeriv)
+    (ha₀ : 0 < a₀) (hc : 0 < c) (hρ : 0 < ρ) :
+    ∃ m₀ : ℕ, ∃ R₀ ε₀ δ₀ : ℝ, 0 < R₀ ∧ 0 < ε₀ ∧ 0 < δ₀ ∧
+      ∀ (H : ObservedHistory.{u}) (parameters : CutoffParameters),
+      m₀ ≤ parameters.modelOrder → R₀ ≤ parameters.modelRadius →
+      parameters.modelAccuracy ≤ ε₀ → parameters.recenterConstant ≤ c →
+      (∀ j : Fin H.eventCount, parameters.delta (H.time j.succ) ≤ δ₀) →
+      (∀ j : Fin H.eventCount, parameters.neckRadius (H.time j.succ) ≤ ρ) →
+      ∀ records : ∀ j, GeometricCutoffRecord H j parameters,
+      (∀ y, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ y) →
+      (∀ y, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) y) →
+      (∀ (j : Fin (H.eventCount + 1)) (y : (H.stage j).Carrier),
+        ∀ s ∈ Ioo (H.time j) (H.stageEndTime j),
+          qDeriv < metricScalarAt (H.stageMetric j s) y →
+            |derivWithin (fun z => metricScalarAt (H.stageMetric j z) y) (Iic s) s| ≤
+              Cderiv * metricScalarAt (H.stageMetric j s) y ^ 2) →
+      ∀ i : Fin H.eventCount,
+      (∀ b : (H.event i).RetainedBoundaryIndex, ((records i).static b).hasCanonicalWindow) →
+      ∀ (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier),
+      H.isParabolicallyRmControlledBall t p rTerm →
+      ∀ (v : ℝ), v ≤ E →
+      ∀ hstart : t.val - v ^ 2 = H.time i.succ,
+      let hle : i.succ ≤ H.activeStage t :=
+        H.le_activeStage t i.succ (by rw [← hstart]; exact sub_le_self _ (sq_nonneg v))
+      (∀ j : H.StageInterval i.succ (H.activeStage t),
+        ∀ r ∈ Ioo (H.regularizedStageStart t 0 j.val) (H.regularizedStageEnd t v j.val),
+        ∀ x : (H.stage j.val).Carrier,
+          -B ≤ metricScalarAt (H.stageMetric j.val (t.val - r ^ 2)) x) →
+      ∀ q : (H.stage i.succ).Carrier,
+        H.regularizedCost i.succ (H.activeStage t) hle t B 0 v p q < (A : WithTop ℝ) →
+        ∃ x : (H.event i).incoming.terminalRegularOpen,
+          (H.event i).RegularCrossing x.val q := by
+  obtain ⟨m₀, R₀, ε₀, δ₀, hR₀, hε₀, hδ₀, hcross⟩ :=
+    exists_uniform_regularCrossing_at_initial_point_of_sum_stageRegularizedAction_lt_at_controlled_ball.{u}
+      A B E rTerm qDeriv a₀ c ρ Cderiv hB hE hrTerm hqDeriv ha₀ hc hρ
+  refine ⟨m₀, R₀, ε₀, δ₀, hR₀, hε₀, hδ₀, ?_⟩
+  intro H parameters hm hmodelRadius herror hpc hδ hρp records hfixed hscalarInitial hderiv
+    i hcanonical t p hball v hvE hstart hle hscalar q hcost
+  have hfinite : H.regularizedCost i.succ (H.activeStage t) hle t B 0 v p q ≠ ⊤ := by
+    intro htop
+    rw [htop] at hcost
+    exact not_lt_of_ge le_top hcost
+  have hne : (H.regularizedActionValues i.succ (H.activeStage t) hle t B 0 v p q).Nonempty := by
+    by_contra hn
+    exact hfinite (H.regularizedCost_eq_top_of_no_competitor i.succ (H.activeStage t) hle
+      t B 0 v p q (Set.not_nonempty_iff_eq_empty.mp hn))
+  obtain ⟨value, hvalue⟩ := hne
+  have hv : 0 ≤ v := hvalue.2.1
+  have hpast : t.val - v ^ 2 ∈ H.stageDomain i.succ := hstart ▸ H.time_mem_stageDomain i.succ
+  have hupper : t.val - (0 : ℝ) ^ 2 ∈ H.stageDomain (H.activeStage t) := by
+    simpa only [zero_pow (by decide : 2 ≠ 0), sub_zero] using H.activeStage_mem t
+  have hupperIcc : t.val - (0 : ℝ) ^ 2 ∈
+      Icc (H.time (H.activeStage t)) (H.stageEndTime (H.activeStage t)) :=
+    ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩
+  obtain ⟨gamma, hgamma, hint, hrecent, hold, hnode, hmin⟩ :=
+    H.exists_regularizedCost_minimizer_of_ne_top i.succ (H.activeStage t) hle t B 0 v hB
+      hupper hscalar p q hfinite
+  have hext := H.regularizedExtendedAction_eq_sum_action i.succ (H.activeStage t)
+    (le_refl 0) hv hupperIcc hpast gamma hint (fun j => by
+      filter_upwards [ae_restrict_mem measurableSet_Ioo] with r hr
+      exact hscalar j r hr (gamma j r))
+  have hsmall : (∑ j : H.StageInterval i.succ (H.activeStage t),
+      H.stageRegularizedAction j.val t (gamma j)
+        (H.regularizedStageStart t 0 j.val) (H.regularizedStageEnd t v j.val)) < A := by
+    apply WithTop.coe_lt_coe.mp
+    rw [← hext, hmin]
+    exact hcost
+  obtain ⟨x, hx⟩ := hcross H parameters hm hmodelRadius herror hpc hδ hρp records hfixed
+    hscalarInitial hderiv i hcanonical t p hball v hv hvE hstart hscalar
+    gamma hgamma hint hrecent hnode hsmall
+  exact ⟨x, hold ▸ hx⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
