@@ -102,7 +102,7 @@ statements now in the tree; the skeleton still has exactly the eight `sorry`s ab
 
 | ID | Item | Status |
 |---|---|---|
-| **S** | `UniformDebitSurgeryStep P₀ g₀` for every closed oriented three-manifold: the horn cutoff in Perelman's parameter order (for each horizon `B` an accuracy `ε < 1/11` first; then, given the constants `C1 C2 qcan τmin Ctime` and bounds `δmax ρmax εcap Dcap mcap` of the canonical neighbourhood assumption at that accuracy, cap parameters `p₀` with `modelAccuracy ≤ εcap`, `Dcap ≤ modelRadius`, `mcap ≤ modelOrder`, record bounds `δbound ≤ δmax`, `ρbound ≤ ρmax` and one debit `v`; then, for every class history and singular slab satisfying the derivative bound above `qcan` and the age-restricted canonical neighbourhood assumption, the next event with a record at `p₀`, class closure, boundary-frame-reversing capping, Poincaré-standard discarded components and debit `v` per cut) | **OPEN**; the skeleton leaf is now the strong form `uniformDebitSurgeryStepStrong` (`UniformDebitSurgeryStepStrong`). Content on `origin/codex/pc-sorry-free`: `exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandardDiscarded_of_canonical_neighborhoods` (`Contract/PoincareHornCutoffRecord.lean:461`) proves every conclusion of S except the binder order (its cutting accuracy `εcan` follows `∀ accuracy` and `∀ q0`; `Ctime`, `m`, `ηrecord` also precede it) and with the unrestricted (unsatisfiable after a cut) canonical-neighbourhood hypothesis. The chain `c0f94726d a23551e62 e556f139e 95fb763bb 4fe90864a` cherry-picks cleanly onto this lineage (closure needs 6 absent, 31 collaborator-only and 2 both-sides modules). See `Skeleton/HANDOFF_S.md`. Factory bricks B1/B2 (entry 17, accepted 2026-09-26 by ACC4): `fixed` and `recenterConstant` are now chosen before every other input (universal in `Dtrace Dbig r tol Ctime`), and the factory takes the derivative clause `D.slab.DerivativeBoundBefore Ctime qcan D.endTime` as its own hypothesis and reads no `CanonicalWitness.time_derivative`. |
+| **S** | `UniformDebitSurgeryStep P₀ g₀` for every closed oriented three-manifold: the horn cutoff in Perelman's parameter order (for each horizon `B` an accuracy `ε < 1/11` first; then, given the constants `C1 C2 qcan τmin Ctime` and bounds `δmax ρmax εcap Dcap mcap` of the canonical neighbourhood assumption at that accuracy, cap parameters `p₀` with `modelAccuracy ≤ εcap`, `Dcap ≤ modelRadius`, `mcap ≤ modelOrder`, record bounds `δbound ≤ δmax`, `ρbound ≤ ρmax` and one debit `v`; then, for every class history and singular slab satisfying the derivative bound above `qcan` and the age-restricted canonical neighbourhood assumption, the next event with a record at `p₀`, class closure, boundary-frame-reversing capping, Poincaré-standard discarded components and debit `v` per cut) | **OPEN**; the skeleton leaf is now the strong form `uniformDebitSurgeryStepStrong` (`UniformDebitSurgeryStepStrong`). Content on `origin/codex/pc-sorry-free`: `exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandardDiscarded_of_canonical_neighborhoods` (`Contract/PoincareHornCutoffRecord.lean:461`) proves every conclusion of S except the binder order (its cutting accuracy `εcan` follows `∀ accuracy` and `∀ q0`; `Ctime`, `m`, `ηrecord` also precede it) and with the unrestricted (unsatisfiable after a cut) canonical-neighbourhood hypothesis. The chain `c0f94726d a23551e62 e556f139e 95fb763bb 4fe90864a` cherry-picks cleanly onto this lineage (closure needs 6 absent, 31 collaborator-only and 2 both-sides modules). See `Skeleton/HANDOFF_S.md`. Factory bricks B1/B2 (entry 17, accepted 2026-09-26 by ACC4): `fixed` and `recenterConstant` are now chosen before every other input (universal in `Dtrace Dbig r tol Ctime`), and the factory takes the derivative clause `D.slab.DerivativeBoundBefore Ctime qcan D.endTime` as its own hypothesis and reads no `CanonicalWitness.time_derivative`. ACC6: coarse+fine factory F* on spatial witnesses with the `FineCutNecks` premise; gaps G1 (B12) running, G2 (B13) open, G3 closed, G4 (B14) running (section ACC6). |
 | **C** | `CanonicalNeighborhoodsThroughSurgery P₀ g₀` for every closed oriented three-manifold: Perelman II Proposition 5.1 with the derivative estimate for the class of histories with canonical cutoff records | **Reduced**: the skeleton consumes the strong form `CanonicalNeighborhoodsThroughSurgeryStrong`, reduced (proved, `canonicalNeighborhoodsThroughSurgeryStrong_of_leaves`) to C1–C4; the old form is the induction over the event slabs and, on each slab, the continuation argument up to the supremum of the times before which the assumption holds, live in `Surgery/Topology/CanonicalNeighborhoodInduction.lean` (the old-form assembly was deleted in entry 28); C1 is proved. |
 | **C1** | `PinchingThroughSurgery P₀ g₀` | **PROVED** 2026-09-25: `Surgery/Topology/PinchingThroughSurgery.lean`, `pinchingThroughSurgery`, a corollary of `exists_admissiblePinchingFunction_for_identified_incomingSlabs` (`Surgery/Topology/HamiltonIveyPinching.lean`); `phi` independent of `B`, bounds `1`. |
 | **C2** | `NoncollapsingThroughSurgery P₀ g₀`: Perelman II 5.2 for the class, history-wide and parabolic: for `B ε C1 C2 τmin Ctime phi` a constant `κ`, then for every threshold `qcan` admissibility bounds, such that for every class history whose past event slabs are canonical (age-restricted) and derivative-bounded, every history parabolic ball (`ObservedHistory.isParabolicallyRmControlledBall`, tracing back through the retained cores) at a time `≤ t₀` of radius `≤ ε` is `κ`-noncollapsed, on an event slab before `t₀ ∈ (start, end]` and on the terminal slab attached by `extendHorizon` before `t₀ ∈ (start, s)` | **Reduced** (proved, `Surgery/Topology/NoncollapsingThroughSurgeryLeaves.lean`, `noncollapsingThroughSurgery_of_reducedVolume_of_smallScale`) to four OPEN skeleton leaves `historyReducedVolumeMonotone`, `historyReducedVolumeLocalUpperBound`, `historyReducedVolumeInitialLowerBound`, `smallScaleNoncollapsingThroughSurgery`. Bricks delivered 2026-09-26: `Surgery/Topology/ReducedVolumeTruncation.lean` (stage scalar floor `exists_stageMetric_scalar_lower_bound` from the cutoff records; `reducedVolume_eq_of_scalar_lower_bound_le`, the reduced volume is independent of the truncation `B ≥ b`; `reducedVolume_lt_top_of_inCutoffClass`; `measurable_regularizedDensity_of_isClosed_regularizedCost_le`). Remaining named hypothesis there: measurability of `regularMinimizerEndpoints` (closed cost sublevel sets; needs compactness of minimizing curves and closedness of `RegularCrossing`), OPEN. KL 78–80: reduced length avoiding the surgery regions, the volume of the surgery caps at scale `h`; tree assets `Perelman/Noncollapsing`, `Perelman/LGeometry`, `Surgery/Topology/HistoryAction*`, `HistoryParabolicBall`, `BackwardPointTrace`; the collaborator's `CapWindowAction` and the action barriers on `origin/codex/wt17-pc-build-warning`. |
@@ -226,6 +226,46 @@ None of these closes a leaf.
   theorem: canonical, derivative and gradient clauses at cap-window points with a time room
   `t + 2ρmax²μ < s` and a derivative clause up to `t + 2ρmax²μ`). The leaf is NOT closed: blocked on
   the L6 endpoint form (`μ = 0`) and the current-slab derivative clause (L10a/L10b).
+
+### Bricks accepted 2026-09-26 (ACC6; sorry-free, foundational axioms, 13 linters clean)
+
+None of these closes a leaf.
+* C3b: `Surgery/Topology/CapWindowContinuationLeaf` proves the cap-window leaf for slab-interior
+  points (`capWindowContinuation_of_slab_interior`) and the full leaf
+  `capWindowContinuation_of_slab_start_bounds` from ONE hypothesis `hslice` (proposed name
+  `exists_slice_bounds_at_slab_start`: the regularity and the right-derivative bound of `R` at the
+  slab start `t₀ = a`). Its inputs: L4e `Perelman/CanonicalNeighborhood/WindowedWitnessEndpointPerturbation`
+  and L6e `Perelman/StandardSolution/StandardClosenessEndpointWitness` (endpoint forms, `μ = 0`), L10
+  `Surgery/Topology/DerivativeBoundExtension` (derivative/gradient clauses extended past `t₀` from the
+  slice), L10b `Surgery/Topology/SlabStartSliceBounds` (the regularity half of `hslice` from
+  `smoothUpTo`; `IncomingSlab.exists_slice_bounds_at_slab_start`: both halves on one slab from
+  scale-invariant curvature jets at the start, one constant uniform in the slab) and
+  `RetainedCrossingJets` (jets of the terminal metric carried through a regular crossing). The bound
+  half of `hslice` still needs scale-invariant jet bounds `|∇ᵏRm|² ≤ K R^(k+2)` (k ≤ 2) on the
+  post-event slice above the threshold: at retained-core points given the old slab's jet clause near
+  its end, on caps/collars OPEN; lane L10c.
+* S: the coarse+fine factory F* (lane SFR, `Surgery/Contract/HornFineCutNecks`,
+  `HornFineCutoffRecord`, `PoincareHornCutoffRecordOfFineCutNecks`,
+  `exists_horn_cutoff_record_with_uniform_volume_debit_of_spatiallyCanonical_of_fineCutNecks`) consumes
+  `SpatiallyCanonicalBefore` and a fine-neck premise `TerminalCorePresentation.FineCutNecks εcut Q`
+  (`Skeleton/HANDOFF_S.md`). Remaining gaps F* → S: G1 (B12, the fine-neck supply on long slabs)
+  running; G2 (B13, short slabs through the history window) OPEN; G3 (ε-monotonicity of spatial
+  witnesses) CLOSED by `Perelman/CanonicalNeighborhood/SpatialCanonicalWitnessMonotone`
+  (`IncomingSlab.spatiallyCanonicalBefore_mono_eps`); G4 (B14, record bounds and repackaging into S)
+  running.
+* C3c (Crossing): B3d `Surgery/Topology/BoundedCurvatureAtDistanceBoundedThreshold`
+  (`RetainedCoreHistory.exists_scalar_bound_at_distance_of_bounded_threshold`: the single-slab
+  headline with the threshold ratio `q ≤ Cq·R(y,t)` in place of `q/Q → 0`; four generalized copies of
+  committed helpers, to replace the `q/Q → 0` versions later); B6b'
+  `Surgery/Topology/TracedRegionAncientLimitData` (the ancient limit with its survivor maps,
+  injectivity, per-time metric identities, `IsSolutionOn`, and the κ volume tests); B7
+  `Surgery/Topology/TracedRegionDepthInduction` (B5's `hscal` on the final slab for bounded depth
+  `T ≤ 1/(2·Ctime·Q(A))` only; arbitrary depth needs the maximal-window structure, design pending).
+  Sixth external review digested: `consult/F-crossing-core-review-digest.md` (B6c-κ by uniform
+  reference conversion; B6d and B7 by the maximal-window structure; C3b endpoint route confirmed).
+* C2 tools: H3b `Surgery/Topology/HistoryLGeometry/ExponentialSmooth` (openness of the history
+  L-exponential domain and smoothness of `historyLExp` near a point, base time interior; event-time
+  `T − v²` not covered).
 
 ### Equivalence classes (rewrites; not progress)
 

@@ -185,3 +185,37 @@ StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace �
 prepared-history version takes `(Dtrace r tol a₀) (Ctime)` with `0 < a₀`). So `fixed` and
 `recenterConstant` are fixed before `Λ` and every constant of C; the old shape follows by
 instantiation. `Dbig := max Dcap (Dtrace + 1)` is S's choice (`le_max_right`).
+
+## Update 2026-09-26 (coarse+fine factory F*; lane SFR, accepted by ACC6)
+
+F* = `exists_horn_cutoff_record_with_uniform_volume_debit_of_spatiallyCanonical_of_fineCutNecks`
+(`Contract/PoincareHornCutoffRecordOfFineCutNecks.lean`; the fine records in `Contract/HornFineCutNecks`
+and `Contract/HornFineCutoffRecord`) is the factory on spatial witnesses with a fine-neck premise at the
+cut. The premise, on the presentation (`TerminalCorePresentation` namespace):
+```
+def FineCutNecks (εc Qc : ℝ) : Prop :=
+  ∀ (c : ConnectedComponents D.slab.terminalRegularOpen) (e : P.hornIndex c)
+    (x : D.slab.terminalRegularOpen),
+    x ∈ interior (range fun p : HalfNeckCylinder => P.horn c e p.1) →
+    Qc ≤ metricScalarAt D.terminal.metric x →
+    ∃ (δ : ℝ) (k : ℕ) (N : NormalizedNeck D.terminal.metric δ k),
+      N.center = x ∧ δ ≤ εc ∧ ⌊εc⁻¹⌋₊ + 1 ≤ k
+```
+Binder order of F* (`OPUS_FILL_LOG_SFR.md` (2)):
+`(P₀) (g₀) : ∃ fixed recenterConstant, 4 ≤ recenterConstant ∧ ∃ εP εbar, 0 < εP ∧ 0 < εbar ∧ εbar < 1/11 ∧
+∀ Dtrace Dbig r tol Ctime, (margins) → ∃ εold δold, … ∧ ∀ m accuracy (0 <) ηrecord (0 <), ∃ δ εcut,
+0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < εcut ∧ εcut ≤ εP ∧ ∀ C1 C2, 1 ≤ C2 → ∃ C Λ, 1 ≤ C ∧ 1 ≤ Λ ∧
+∀ qcan originalCoreFloor protectedFloor Kfine, (positivity, 0 ≤ Kfine) → ∃ Q v, 0 < Q ∧ 0 < v ∧
+v = Q ^ (-3/2) ∧ ∀ p₀ (class of p₀ at Dbig, tol, εold) H initial, … → ∀ ρold,
+H.hasCanonicalCutoffRecords p₀ δold ρold → ∀ s G L hsing stepParameters, … → (history and slab
+derivative clauses above qcan) → (floors) → G.SpatiallyCanonicalBefore εbar C1 C2 qcan s →
+(∀ ρ hρ (P : TerminalCorePresentation (D.withNeckRadius ρ hρ) εP Λ),
+  Kfine * max (Λ * (P.coreRadius ^ 2)⁻¹) (max qcan 1) ≤ Q → P.FineCutNecks εcut Q) →
+∃ ρ hρ, … (the existing factory conclusion)`.
+F* takes no `κ`, no noncollapsing and no long-slab hypothesis: they belong to the supplier of the
+fine premise. Remaining gaps F* → S (`OPUS_FILL_LOG_SFR.md` (5)): G1 = B12 (fine-neck supply on long
+slabs, constant `Kfine` passed to F*) running; G2 = B13 (short slabs through the history window)
+open; G3 (ε-monotonicity of spatial witnesses) closed by
+`IncomingSlab.spatiallyCanonicalBefore_mono_eps` (`Perelman/CanonicalNeighborhood/SpatialCanonicalWitnessMonotone.lean`);
+G4 = B14 (record bounds `δbound := min δmax δold`, `ηrecord`, `p₀`, repackaging into S's
+`∃ Q E hinit q`) running.
