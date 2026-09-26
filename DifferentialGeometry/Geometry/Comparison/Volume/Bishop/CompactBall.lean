@@ -1,4 +1,6 @@
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
+import DifferentialGeometry.Geometry.Comparison.Volume.Segment.Count
 import DifferentialGeometry.Geometry.Comparison.Volume.Bishop.Exponential
 import DifferentialGeometry.Geometry.Exponential.Radial
 import DifferentialGeometry.Geometry.Exponential.ConjugatePoint.MinimizingGeodesic
@@ -681,5 +683,68 @@ theorem riemannianVolumeMeasure_ball_le_hyperbolic_of_isCompact_closedEBall
         (E := F) q hq hR
 
 end Absolute
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem volume_mul_pow_le_of_local_ricci_lower_bound
+    [NeZero (Module.finrank ℝ E)]
+    (g : SmoothRiemannianMetric I M) (p : M) {q r R : ℝ}
+    (hq : 0 ≤ q) (hr : 0 < r) (hrR : r ≤ R)
+    (hcpt : IsCompact (riemannianClosedBallOf g p R))
+    (hRic : ∀ y ∈ riemannianBallOf g p R, ∀ v : TangentSpace I y,
+      -(((Module.finrank ℝ E - 1 : ℕ) : ℝ) * q ^ 2) * g.inner y v v ≤
+        ricciTensor g y v v) :
+    riemannianVolumeMeasure I M g (riemannianBallOf g p R) *
+        ENNReal.ofReal (r ^ Module.finrank ℝ E) ≤
+      ENNReal.ofReal (2 ^ Module.finrank ℝ E *
+        Real.exp (q * ((Module.finrank ℝ E - 1 : ℕ) : ℝ) * R) *
+          R ^ Module.finrank ℝ E) *
+        riemannianVolumeMeasure I M g (riemannianBallOf g p r) := by
+  have hR : 0 < R := hr.trans_le hrR
+  let _ : TopologicalSpace.MetrizableSpace M := Manifold.metrizableSpace I M
+  let _ : T3Space M := inferInstance
+  let _ : RiemannianBundle (fun x : M => TangentSpace I x) := ⟨g.toRiemannianMetric⟩
+  let _ : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
+    ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let _ : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
+  let _ : IsRiemannianManifold I M := ⟨fun _ _ => rfl⟩
+  have hEnorm : IsMetricNorm (I := I) g :=
+    fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
+  have hcompact : IsCompact (Metric.closedEBall p (ENNReal.ofReal R)) := by
+    convert hcpt using 1
+    ext x
+    rw [Metric.mem_closedEBall', IsRiemannianManifold.out (I := I) p x]
+    rfl
+  have hbg := bishop_gromov_of_isCompact_closedEBall g hEnorm p hq hr hrR hcompact
+    (fun y v hy => hRic y hy v)
+  let n := Module.finrank ℝ E
+  have hn : n - 1 + 1 = n := Nat.sub_add_cancel (Nat.one_le_iff_ne_zero.mpr (NeZero.ne n))
+  have hlow : (r / 2) ^ n ≤ hyperbolicRadialVolume q (n - 1) r := by
+    simpa only [hn] using hyperbolicRadialVolume_ge (n - 1) hq hr
+  have hupp : hyperbolicRadialVolume q (n - 1) R ≤
+      R ^ n * Real.exp (q * ((n - 1 : ℕ) : ℝ) * R) := by
+    simpa only [hn] using hyperbolicRadialVolume_le (n - 1) hq (hr.le.trans hrR)
+  have hcross : riemannianVolumeMeasure I M g (riemannianBallOf g p R) *
+      ENNReal.ofReal ((r / 2) ^ n) ≤
+      ENNReal.ofReal (R ^ n * Real.exp (q * ((n - 1 : ℕ) : ℝ) * R)) *
+        riemannianVolumeMeasure I M g (riemannianBallOf g p r) :=
+    (mul_le_mul' le_rfl (ENNReal.ofReal_le_ofReal hlow)).trans
+      (hbg.trans (mul_le_mul' (ENNReal.ofReal_le_ofReal hupp) le_rfl))
+  have hmul := mul_le_mul' hcross (le_refl (ENNReal.ofReal ((2 : ℝ) ^ n)))
+  have hleft : ENNReal.ofReal ((r / 2) ^ n) * ENNReal.ofReal ((2 : ℝ) ^ n) =
+      ENNReal.ofReal (r ^ n) := by
+    rw [← ENNReal.ofReal_mul (by positivity), ← mul_pow]
+    congr 1
+    ring
+  calc
+    _ = (riemannianVolumeMeasure I M g (riemannianBallOf g p R) *
+        ENNReal.ofReal ((r / 2) ^ n)) * ENNReal.ofReal ((2 : ℝ) ^ n) := by
+          rw [mul_assoc, hleft]
+    _ ≤ _ := hmul
+    _ = _ := by
+      rw [mul_right_comm, ← ENNReal.ofReal_mul (by positivity)]
+      congr 2
+      ring
+
 
 end DifferentialGeometry.Geometry.Riemannian.VolumeComparison
