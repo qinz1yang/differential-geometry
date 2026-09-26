@@ -37,7 +37,7 @@ def TerminalLimit.ofMetricCompactLimit {eps kappa sigma : ℝ} {Phi : ℝ → �
         PreservesTangentOrientationAt orientation (X.orientation (P.subseq i))
           (P.maps.partialDiffeomorph i) y hf)
     (scalar_bound : ∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C)
-    (noncollapse : MetricNoncollapsed P.limit kappa Set.univ)
+    (noncollapse : ∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))
     (hconnected : ConnectedSpace P.limit.M) :
     TerminalLimit X := by
   have hscalar_one : metricScalarAt P.limit.metric P.limit.basepoint = 1 :=
@@ -84,7 +84,7 @@ theorem terminal_limit_of_metric_compact_limit {eps kappa sigma : ℝ} {Phi : �
         PreservesTangentOrientationAt orientation (X.orientation (P.subseq i))
           (P.maps.partialDiffeomorph i) y hf)
     (scalar_bound : ∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C)
-    (noncollapse : MetricNoncollapsed P.limit kappa Set.univ)
+    (noncollapse : ∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))
     (hconnected : ConnectedSpace P.limit.M) :
     Nonempty (TerminalLimit X) :=
   ⟨TerminalLimit.ofMetricCompactLimit hPhi P hcanonical capture precompact connected_domains nested
@@ -110,7 +110,7 @@ theorem terminal_limit_global_bound_of_frontier {kappa sigma : ℝ} {Phi : ℝ �
                 PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                   (P.maps.partialDiffeomorph i) y hf) ∧
           (∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C) ∧
-          MetricNoncollapsed P.limit kappa Set.univ) :
+          (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))) :
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
         BoundedAtDistance X → TerminalDerivativeBounds X → Nonempty (TerminalLimit X) := by

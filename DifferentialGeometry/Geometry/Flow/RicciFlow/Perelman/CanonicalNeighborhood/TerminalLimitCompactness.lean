@@ -39,8 +39,8 @@ theorem NormalizedSequence.localCurvatureJetBound_atTime_zero
 
 theorem NormalizedSequence.exists_oriented_metric_compact_limit
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (X : NormalizedSequence.{u} eps kappa sigma Phi) (hkappa : 0 < kappa)
-    (hd : TerminalDerivativeBounds X) :
+    (X : NormalizedSequence.{u} eps kappa sigma Phi) {kappa' : ℝ}
+    (hnc : X.TerminalSliceNoncollapsed kappa') (hd : TerminalDerivativeBounds X) :
     ∃ P : MetricCompactLimit.{u, 0, 0} (I := I3) (X.toFlowSequence.atTime 0),
       (∀ k, P.convergence.metrics.domain k =
         CanonicalMetricCompactness.canonicalSourceData P.maps k) ∧
@@ -54,7 +54,7 @@ theorem NormalizedSequence.exists_oriented_metric_compact_limit
           ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
             PreservesTangentOrientationAt o (X.orientation (P.subseq i))
               (P.maps.partialDiffeomorph i) y hf) ∧
-      MetricNoncollapsed P.limit kappa Set.univ := by
+      MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1) := by
   let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
   have hcomplete : SeqMetricComplete (X.toFlowSequence.atTime 0) := by
     refine ⟨fun i => X.complete i 0 ?_⟩
@@ -64,7 +64,7 @@ theorem NormalizedSequence.exists_oriented_metric_compact_limit
     exists_canonical_metric_compact_limit_with_source_geometry_of_local_curvature_injectivity
       (X.toFlowSequence.atTime 0) hcomplete X.connected
       (X.localCurvatureJetBound_atTime_zero hd)
-      (terminalLimitBallInjectivity_of_curvatureAndNoncollapse X hkappa hd)
+      (terminalLimitBallInjectivity_of_curvatureAndNoncollapse X hnc hd)
   have hcapture := metricSourceCapture_of_metricConvergenceData P.convergence.metrics
     hreference P.limit_complete
   obtain ⟨σ, hσ, o, _, hcanonical', hcapture', hprecompact', hsourceConnected', hnested',
@@ -74,12 +74,17 @@ theorem NormalizedSequence.exists_oriented_metric_compact_limit
   let Q := P.compSubseq σ hσ
   refine ⟨Q, hcanonical', hconnected, hcapture', hprecompact', hsourceConnected', hnested',
     ⟨o, horientation⟩, ?_⟩
-  exact X.metric_noncollapsed_of_canonical_convergence Q.limit Q.subseq Q.strictMono
+  exact X.metric_noncollapsed_of_canonical_convergence hnc Q.limit Q.subseq Q.strictMono
     Q.maps Q.convergence.metrics hcanonical' Q.limit_complete
 
 theorem terminal_limit_compactness_frontier {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hkappa : 0 < kappa) : TerminalLimitCompactnessFrontier.{u} kappa sigma Phi := by
-  refine ⟨1, zero_lt_one, fun eps _ _ X _ hd => ?_⟩
-  exact X.exists_oriented_metric_compact_limit hkappa hd
+    (hkappa : 0 < kappa) (hPhi : AdmissiblePinchingFunction Phi) :
+    TerminalLimitCompactnessFrontier.{u} kappa sigma Phi := by
+  obtain ⟨epsNC, hepsNC, hnc⟩ := exists_terminalSliceNoncollapsed.{u} hkappa
+  obtain ⟨kappa', hkappa', hncX⟩ := hnc Phi hPhi
+  refine ⟨epsNC, hepsNC, fun eps heps hle X _ hd => ?_⟩
+  obtain ⟨P, h1, h2, h3, h4, h5, h6, h7, h8⟩ :=
+    X.exists_oriented_metric_compact_limit (hncX eps heps hle sigma X) hd
+  exact ⟨P, h1, h2, h3, h4, h5, h6, h7, kappa', hkappa', h8⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

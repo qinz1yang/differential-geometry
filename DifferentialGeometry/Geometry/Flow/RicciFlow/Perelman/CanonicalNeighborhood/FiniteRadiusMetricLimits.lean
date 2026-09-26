@@ -98,10 +98,14 @@ theorem exists_subsequence_compatible_metric_limits_below_controlled_radius
                                   S.MetricCocycle gInf := by
   classical
   let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
-  obtain ⟨epsStar, hepsStar, hcurv⟩ :=
+  obtain ⟨epsCurv, hepsCurv, hcurv⟩ :=
     exists_eventually_curvDerivNorm_bound_below_controlled_radius hmod
-  refine ⟨epsStar, hepsStar, ?_⟩
-  intro eps heps hsmall sigma Phi hPhi X F ε hε
+  obtain ⟨epsNC, hepsNC, hnc⟩ := exists_terminalSliceNoncollapsed.{u} hkappa
+  refine ⟨min epsCurv epsNC, lt_min hepsCurv hepsNC, ?_⟩
+  intro eps heps hle sigma Phi hPhi X F ε hε
+  have hsmall : eps ≤ epsCurv := hle.trans (min_le_left _ _)
+  obtain ⟨kappa', -, hncX⟩ := hnc Phi hPhi
+  have hncX := hncX eps heps (hle.trans (min_le_right _ _)) sigma X
   let Y := X.toFlowSequence.atTime 0
   have hcomplete : SeqMetricComplete Y := by
     refine ⟨fun i => X.complete i 0 ?_⟩
@@ -123,7 +127,7 @@ theorem exists_subsequence_compatible_metric_limits_below_controlled_radius
           ENNReal.ofReal (finiteComparisonRadius F.radius n) →
             HasInjRadiusAt (Y.obj i) y eta := by
     intro n
-    exact F.exists_eventually_hasInjRadiusAt_on_closedBall hkappa hPhi
+    exact F.exists_eventually_hasInjRadiusAt_on_closedBall hncX hPhi
       (finiteComparisonRadius_pos F.radius_pos n).le
       (finiteComparisonRadius_lt F.radius_pos n)
   obtain ⟨σ, hσ, δ, hδ, hsum, Ψ, hbase, hstep, N, D0, hsource, hmaps, Dhi⟩ :=

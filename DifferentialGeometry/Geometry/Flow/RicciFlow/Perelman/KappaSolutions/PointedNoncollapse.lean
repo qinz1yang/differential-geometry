@@ -567,23 +567,23 @@ theorem exists_pointed_ball_curvature_control
   convert hsq using 1
   ring
 
-theorem tensor_noncollapsed_of_eventually_pointed_canonical_convergence_at_mapped_centers
+theorem tensor_noncollapsed_below_scale_of_pointed_canonical_convergence_at_mapped_centers
     (C : MetricConvergenceData Φ)
     (hcanonical : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Φ k)
-    (hcomplete : MetricComplete (I := I) L) (kappa : ℝ)
-    (hsource : ∀ (z : L.M) (r : ℝ), 0 < r → ∀ᶠ i in atTop,
+    (hcomplete : MetricComplete (I := I) L) (kappa R : ℝ)
+    (hsource : ∀ (z : L.M) (r : ℝ), 0 < r → r ≤ R → ∀ᶠ i in atTop,
       (∀ y ∈ riemannianBallOf (X.obj (subseq i)).metric (Φ.map i z) r,
         r ^ 4 * normSq0S (X.obj (subseq i)).metric y 4
           (metricRm04At (X.obj (subseq i)).metric y) ≤ 1) →
       ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ E ≤
         riemannianVolumeMeasure (I := I) (M := (X.obj (subseq i)).M) (X.obj (subseq i)).metric
           (riemannianBallOf (X.obj (subseq i)).metric (Φ.map i z) r)) :
-    ∀ (z : L.M) (r : ℝ), 0 < r →
+    ∀ (z : L.M) (r : ℝ), 0 < r → r ≤ R →
       (∀ x ∈ riemannianBallOf L.metric z r,
         r ^ 4 * normSq0S L.metric x 4 (metricRm04At L.metric x) ≤ 1) →
       ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ E ≤
         riemannianVolumeMeasure (I := I) (M := L.M) L.metric (riemannianBallOf L.metric z r) := by
-  intro z r hr hcurvature
+  intro z r hr hrR hcurvature
   have hreference (k : ℕ) : (C.domain k).referenceMetric = (C.domain k).limitMetric := by
     rw [hcanonical k]
     rfl
@@ -634,12 +634,35 @@ theorem tensor_noncollapsed_of_eventually_pointed_canonical_convergence_at_mappe
     C hreference hcomplete z hsj he hbuffer he
   obtain ⟨kc, hkc⟩ := exists_pointed_ball_curvature_control
     C hcanonical hcomplete z hsj he hbuffer hcurvature
-  obtain ⟨kn, hkn⟩ := eventually_atTop.1 (hsource z (s j) hsj)
+  have hsjR : s j ≤ R := by
+    have hsr : s j ≤ r := div_le_self hr.le (one_le_pow₀ (by linarith))
+    linarith
+  obtain ⟨kn, hkn⟩ := eventually_atTop.1 (hsource z (s j) hsj hsjR)
   let k := max kv (max kc kn)
   have hkvk : kv ≤ k := Nat.le_max_left _ _
   have hkck : kc ≤ k := (Nat.le_max_left kc kn).trans (Nat.le_max_right _ _)
   have hknk : kn ≤ k := (Nat.le_max_right kc kn).trans (Nat.le_max_right _ _)
   exact (hkn k hknk (hkc k hkck)).trans (hkv k hkvk)
+
+theorem tensor_noncollapsed_of_eventually_pointed_canonical_convergence_at_mapped_centers
+    (C : MetricConvergenceData Φ)
+    (hcanonical : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Φ k)
+    (hcomplete : MetricComplete (I := I) L) (kappa : ℝ)
+    (hsource : ∀ (z : L.M) (r : ℝ), 0 < r → ∀ᶠ i in atTop,
+      (∀ y ∈ riemannianBallOf (X.obj (subseq i)).metric (Φ.map i z) r,
+        r ^ 4 * normSq0S (X.obj (subseq i)).metric y 4
+          (metricRm04At (X.obj (subseq i)).metric y) ≤ 1) →
+      ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ E ≤
+        riemannianVolumeMeasure (I := I) (M := (X.obj (subseq i)).M) (X.obj (subseq i)).metric
+          (riemannianBallOf (X.obj (subseq i)).metric (Φ.map i z) r)) :
+    ∀ (z : L.M) (r : ℝ), 0 < r →
+      (∀ x ∈ riemannianBallOf L.metric z r,
+        r ^ 4 * normSq0S L.metric x 4 (metricRm04At L.metric x) ≤ 1) →
+      ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ E ≤
+        riemannianVolumeMeasure (I := I) (M := L.M) L.metric (riemannianBallOf L.metric z r) := by
+  intro z r hr hcurvature
+  exact tensor_noncollapsed_below_scale_of_pointed_canonical_convergence_at_mapped_centers
+    C hcanonical hcomplete kappa r (fun z' r' hr' _ => hsource z' r' hr') z r hr le_rfl hcurvature
 
 theorem tensor_noncollapsed_of_eventually_pointed_canonical_convergence
     (C : MetricConvergenceData Φ)
@@ -661,6 +684,28 @@ theorem tensor_noncollapsed_of_eventually_pointed_canonical_convergence
     C hcanonical hcomplete kappa
   intro z r hr
   filter_upwards [hsource r hr] with i hi
+  exact hi (Φ.map i z)
+
+theorem tensor_noncollapsed_below_scale_of_eventually_pointed_canonical_convergence
+    (C : MetricConvergenceData Φ)
+    (hcanonical : ∀ k, C.domain k = CanonicalMetricCompactness.canonicalSourceData Φ k)
+    (hcomplete : MetricComplete (I := I) L) (kappa R : ℝ)
+    (hsource : ∀ (r : ℝ), 0 < r → r ≤ R → ∀ᶠ i in atTop, ∀ (p : (X.obj (subseq i)).M),
+      (∀ y ∈ riemannianBallOf (X.obj (subseq i)).metric p r,
+        r ^ 4 * normSq0S (X.obj (subseq i)).metric y 4
+          (metricRm04At (X.obj (subseq i)).metric y) ≤ 1) →
+      ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ E ≤
+        riemannianVolumeMeasure (I := I) (M := (X.obj (subseq i)).M) (X.obj (subseq i)).metric
+          (riemannianBallOf (X.obj (subseq i)).metric p r)) :
+    ∀ (z : L.M) (r : ℝ), 0 < r → r ≤ R →
+      (∀ x ∈ riemannianBallOf L.metric z r,
+        r ^ 4 * normSq0S L.metric x 4 (metricRm04At L.metric x) ≤ 1) →
+      ENNReal.ofReal kappa * ENNReal.ofReal r ^ Module.finrank ℝ E ≤
+        riemannianVolumeMeasure (I := I) (M := L.M) L.metric (riemannianBallOf L.metric z r) := by
+  apply tensor_noncollapsed_below_scale_of_pointed_canonical_convergence_at_mapped_centers
+    C hcanonical hcomplete kappa R
+  intro z r hr hrR
+  filter_upwards [hsource r hr hrR] with i hi
   exact hi (Φ.map i z)
 
 theorem tensor_noncollapsed_of_pointed_canonical_convergence

@@ -117,7 +117,7 @@ theorem exists_aged_noncanonical_point_scaled_elapsed_lt {ε C1 C2 q τmin T β 
     exact hbad' fun h' => absurd h' h
   exact ⟨x', t', hTt', ht', hs', hq', hage, fun h => hbad' fun _ => h, hβ', habove⟩
 
-theorem exists_uniform_canonicalOn_of_spatially_noncollapsed {eps : ℝ} (heps : 0 < eps)
+theorem exists_uniform_canonicalOn_of_parabolically_noncollapsed {eps : ℝ} (heps : 0 < eps)
     (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ kappa : ℝ, 0 < kappa → ∀ rho : ℝ, 0 < rho → ∀ Phi : ℝ → ℝ,
@@ -128,13 +128,13 @@ theorem exists_uniform_canonicalOn_of_spatially_noncollapsed {eps : ℝ} (heps :
             Perelman.PhiAlmostNonnegative G.flow (Ico a s) Phi →
             (∀ (τ : (RealTimeInterval.closedOpen a s G.lt).FlowTime)
               (B : Perelman.FlowMetricBall G.flow τ), (τ : ℝ) < t₀ + η → B.radius ≤ rho →
-                B.IsSpatiallyKappaNoncollapsed kappa) →
+                B.IsParabolicallyRmControlled → B.IsKappaNoncollapsed kappa) →
             (∀ (x : P.Carrier) (t : ℝ), t₀ ≤ t → t < t₀ + η → t < s →
               qcan < G.flow.scalar t x → τmin ≤ G.flow.scalar t x * (t - a) →
                 a ≤ t - theta / G.flow.scalar t x) →
             G.CanonicalOn eps C C qcan τmin t₀ η := by
   obtain ⟨C, hC, -, hU⟩ :=
-    exists_uniform_canonical_threshold_of_spatially_noncollapsed.{u} heps hsmall
+    exists_uniform_canonical_threshold_of_parabolically_noncollapsed.{u} heps hsmall
   refine ⟨C, hC, fun kappa hk rho hr Phi hPhi => ?_⟩
   obtain ⟨Q₀, theta, hQ, hθ, h⟩ := hU kappa hk rho hr Phi hPhi
   refine ⟨Q₀, theta, hQ, hθ, fun P a s G qcan τmin t₀ η hq hpinch hnc hwin => ?_⟩
@@ -142,9 +142,9 @@ theorem exists_uniform_canonicalOn_of_spatially_noncollapsed {eps : ℝ} (heps :
   have hw := hwin y t ht₀ htη hts hR hage
   exact h P a s G y t hts (hq.trans hR.le) hw
     (fun v hv z => hpinch v ⟨hw.trans hv.1, hv.2.trans_lt hts⟩ z)
-    (fun τ B _ h2 h3 => hnc τ B (h2.trans_lt htη) h3)
+    (fun τ B _ h2 h3 h4 => hnc τ B (h2.trans_lt htη) h3 h4)
 
-theorem exists_uniform_canonicalOn_of_spatially_noncollapsed_of_le_age {eps : ℝ}
+theorem exists_uniform_canonicalOn_of_parabolically_noncollapsed_of_le_age {eps : ℝ}
     (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧
       ∀ kappa : ℝ, 0 < kappa → ∀ rho : ℝ, 0 < rho → ∀ Phi : ℝ → ℝ,
@@ -155,9 +155,9 @@ theorem exists_uniform_canonicalOn_of_spatially_noncollapsed_of_le_age {eps : �
             Perelman.PhiAlmostNonnegative G.flow (Ico a s) Phi →
             (∀ (τ : (RealTimeInterval.closedOpen a s G.lt).FlowTime)
               (B : Perelman.FlowMetricBall G.flow τ), (τ : ℝ) < t₀ + η → B.radius ≤ rho →
-                B.IsSpatiallyKappaNoncollapsed kappa) →
+                B.IsParabolicallyRmControlled → B.IsKappaNoncollapsed kappa) →
             G.CanonicalOn eps C C qcan τmin t₀ η := by
-  obtain ⟨C, hC, hmain⟩ := exists_uniform_canonicalOn_of_spatially_noncollapsed.{u} heps hsmall
+  obtain ⟨C, hC, hmain⟩ := exists_uniform_canonicalOn_of_parabolically_noncollapsed.{u} heps hsmall
   refine ⟨C, hC, fun kappa hk rho hr Phi hPhi => ?_⟩
   obtain ⟨Q₀, theta, hQ, hθ, h⟩ := hmain kappa hk rho hr Phi hPhi
   refine ⟨Q₀, theta, hQ, hθ, fun P a s G qcan τmin t₀ η hq hθτ hpinch hnc => ?_⟩

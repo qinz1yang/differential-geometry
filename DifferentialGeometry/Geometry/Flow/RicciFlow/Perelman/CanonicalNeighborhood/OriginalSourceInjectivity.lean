@@ -54,18 +54,18 @@ theorem RealizedFiniteHorn.exists_original_source_curvature_derivative_bounds_an
                       { (X.term (H.subseq j)).atTime 0 with
                         basepoint := H.maps j (x n)
                         metric := S.base.metric 0 }
-                    MetricNoncollapsed P kappa (Ioc 0
-                      (Real.sqrt (metricScalarAt H.metric (x n)) *
-                        (Real.sqrt (X.scale (H.subseq j)) * sigma))) ∧
                     ∀ y ∈ riemannianClosedBallOf P.metric P.basepoint
                       (c / (2 * Real.sqrt 3)), HasInjRadiusAt P y eta := by
   let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
-  obtain ⟨epsStar, c, C, hc, hepsStar, hC, hsolutions⟩ :=
+  obtain ⟨epsSrc, c, C, hc, hepsSrc, hC, hsolutions⟩ :=
     RealizedFiniteHorn.exists_original_source_curvature_derivative_bounds hmod
-  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa
-  refine ⟨epsStar, c, C, hc, hepsStar, hC, ?_⟩
+  obtain ⟨epsNC, hepsNC, hncAll⟩ := exists_terminalSliceNoncollapsed.{u} hkappa
+  refine ⟨min epsSrc epsNC, c, C, hc, lt_min hepsSrc hepsNC, hC, ?_⟩
   intro eps heps hepsStar' sigma hsigma Phi hPhi
-  obtain ⟨B, hB, hsolutions'⟩ := hsolutions eps heps hepsStar' sigma hsigma Phi hPhi
+  obtain ⟨B, hB, hsolutions'⟩ := hsolutions eps heps (hepsStar'.trans (min_le_left _ _)) sigma
+    hsigma Phi hPhi
+  obtain ⟨kappa', hkappa', hncX⟩ := hncAll Phi hPhi
+  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa'
   let K : ℝ := C * (3 + 13 * Phi 1)
   have hK : 0 < K := mul_pos hC (by linarith [hPhi.pos 1])
   let r : ℝ := c / Real.sqrt 3
@@ -89,11 +89,9 @@ theorem RealizedFiniteHorn.exists_original_source_curvature_derivative_bounds_an
   refine ⟨B, iota * rho, hB, mul_pos hiota hrho, ?_⟩
   intro X H x hQ
   obtain ⟨threshold, hthreshold⟩ := hsolutions' X H x hQ
-  have hscale : Tendsto (fun j => Real.sqrt (X.scale (H.subseq j)) * sigma)
-      atTop atTop :=
-    ((Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma).comp
-      H.strictMono.tendsto_atTop
-  obtain ⟨j0, hj0⟩ := eventually_atTop.1 (hscale.eventually_ge_atTop rho)
+  have hnc := (hncX eps heps (hepsStar'.trans (min_le_right _ _)) sigma
+    X).eventually_metricNoncollapsed_scaleMetric
+  obtain ⟨j0, hj0⟩ := eventually_atTop.1 (H.strictMono.tendsto_atTop.eventually hnc)
   refine ⟨fun n => max (threshold n) j0, ?_⟩
   intro n j hj
   obtain ⟨S, hS, hmetric, hcomplete, hcenter, hcurv, hderiv⟩ :=
@@ -108,14 +106,10 @@ theorem RealizedFiniteHorn.exists_original_source_curvature_derivative_bounds_an
       scaleMetric (metricScalarAt H.metric (x n)) (zero_lt_one.trans_le (hQ n))
         ((X.term (H.subseq j)).S.base.metric 0) := by
     simpa only [zero_div] using hmetric 0
-  have hnc : MetricNoncollapsed P kappa (Ioc 0
-      (Real.sqrt (metricScalarAt H.metric (x n)) *
-        (Real.sqrt (X.scale (H.subseq j)) * sigma))) := by
+  have hnc : MetricNoncollapsed P kappa' (Ioc 0 (Real.sqrt (metricScalarAt H.metric (x n)))) := by
     dsimp only [P]
     rw [hmetric0]
-    exact X.metric_noncollapsed_scaleMetric (H.subseq j)
-      (zero_lt_one.trans_le (hQ n)) (H.maps j (x n))
-  refine ⟨hnc, ?_⟩
+    exact hj0 j ((le_max_right _ _).trans hj) _ (zero_lt_one.trans_le (hQ n)) (H.maps j (x n))
   intro y hy
   change HasInjRadiusAt P y (iota * rho)
   have hcontrol : ∀ z ∈ riemannianBallOf P.metric y rho,
@@ -142,14 +136,12 @@ theorem RealizedFiniteHorn.exists_original_source_curvature_derivative_bounds_an
     have hnorm := (sq_le_sq₀ (Real.sqrt_nonneg _) hK.le).2 hbound
     rw [Real.sq_sqrt hnonneg] at hnorm
     exact (mul_le_mul_of_nonneg_left hnorm (pow_nonneg hrho.le 4)).trans hscaled
-  have hscalej : rho ≤ Real.sqrt (metricScalarAt H.metric (x n)) *
-      (Real.sqrt (X.scale (H.subseq j)) * sigma) := by
-    have hbase := hj0 j ((le_max_right _ _).trans hj)
+  have hscalej : rho ≤ Real.sqrt (metricScalarAt H.metric (x n)) := by
     have hsqrt : 1 ≤ Real.sqrt (metricScalarAt H.metric (x n)) := by
       simpa only [Real.sqrt_one] using Real.sqrt_le_sqrt (hQ n)
-    exact hbase.trans (le_mul_of_one_le_left (by positivity) hsqrt)
+    exact hrhoone.trans hsqrt
   have hvol := hnc y rho ⟨hrho, hscalej⟩ hrho hcontrol
-  have hvol' : ENNReal.ofReal (kappa * rho ^ Module.finrank ℝ ThreeSpace) ≤
+  have hvol' : ENNReal.ofReal (kappa' * rho ^ Module.finrank ℝ ThreeSpace) ≤
       DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I3 P.M P.metric
         (riemannianBallOf P.metric y rho) := by
     simpa only [show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace]] using hvol

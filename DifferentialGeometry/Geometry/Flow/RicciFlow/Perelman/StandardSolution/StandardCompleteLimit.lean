@@ -65,7 +65,7 @@ theorem standard_complete_pointed_limit_scalar_bounded
   have ha : 0 < alpha := half_pos (neckModelTolerance_pos ha0)
   have hsmall : alpha < 1 / 32 := by dsimp [alpha]; linarith
   have hnktol : 2 * alpha = neckModelTolerance alpha0 := by dsimp [alpha]; ring
-  let kappa := standardParabolicNoncollapseCoeff / 1000000
+  let kappa := standardModelKappa
   obtain ⟨epsStar, r, D, hepsStar, hr, hD, hwindow⟩ :=
     exists_windowed_scalar_comparison_or_spatial_neck kappa ha hsmall
   let eps := min (epsStar / 2) (1 / 2)

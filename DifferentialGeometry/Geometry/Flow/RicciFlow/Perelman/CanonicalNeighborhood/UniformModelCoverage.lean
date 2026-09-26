@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.HighCurvatureModelBounds
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Restriction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ParabolicBallOfCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedModelRestriction
 import DifferentialGeometry.Topology.Manifold.ConnectedComponent
 import DifferentialGeometry.Geometry.Curvature.OperatorNaturality
@@ -27,7 +27,7 @@ private theorem high_curvature_model_threshold_of_connected
         ∀ (o : TangentOrientationSection M) (a b : ℝ),
         Icc a b ⊆ D.carrier → Ioo a b ⊆ D.regular →
         PhiAlmostNonnegative S (Icc a b) Phi →
-        SpatiallyKappaNoncollapsedBelowScale S kappa sigma →
+        ParabolicallyKappaNoncollapsedBelowScale S (modelNoncollapseFactor * kappa) sigma →
         ∀ x t, t ∈ Icc (a+eta) b → Q₀ ≤ S.scalar t x →
           OrientedWitness S o eps kappa x t := by
   let A := eta⁻¹
@@ -63,9 +63,10 @@ private theorem high_curvature_model_threshold_of_connected
     linarith
   have hL : IsSolutionOn L :=
     isSolutionOn_timeRestrict (parabolicSolution_isSolutionOn S hS a A hA ha) hsub hreg
-  have hnoncol : SpatiallyKappaNoncollapsedBelowScale L kappa (Real.sqrt A*sigma) :=
-    spatiallyKappaNoncollapsed_timeRestrict hsub
-      (parabolic_spatial_noncollapse S a A hA ha kappa sigma hnoncollapse)
+  have hnoncol : ParabolicallyKappaNoncollapsedBelowScale L (modelNoncollapseFactor * kappa)
+      (Real.sqrt A*sigma) :=
+    parabolicallyKappaNoncollapsedBelowScale_timeRestrict hsub
+      (parabolicallyKappaNoncollapsedBelowScale_parabolicSolution S a A hA ha _ sigma hnoncollapse)
   have hpin := phiAlmostNonnegative_paraSolution S hA ha hpinch
   have hpinL : PhiAlmostNonnegative L D'.carrier (rescalePinchingFunction A Phi) := by
     intro s hs y
@@ -131,7 +132,7 @@ theorem exists_uniform_high_curvature_model_threshold
         ∀ (o : TangentOrientationSection M) (a b : ℝ),
         Icc a b ⊆ D.carrier → Ioo a b ⊆ D.regular →
         PhiAlmostNonnegative S (Icc a b) Phi →
-        SpatiallyKappaNoncollapsedBelowScale S kappa sigma →
+        ParabolicallyKappaNoncollapsedBelowScale S (modelNoncollapseFactor * kappa) sigma →
         ∀ x t, t ∈ Icc (a+eta) b → Q₀ ≤ S.scalar t x →
           OrientedWitness S o eps kappa x t := by
   obtain ⟨Q₀,hQ₀,hmodel⟩ := high_curvature_model_threshold_of_connected
@@ -145,7 +146,8 @@ theorem exists_uniform_high_curvature_model_threshold
   have hU : IsClosed (U : Set M) := isClosed_connectedComponent
   let L := solutionOnRestrictOpen S U
   have hL : IsSolutionOn L := isSolutionOn_restrictOpen S hS U
-  have hncL : SpatiallyKappaNoncollapsedBelowScale L kappa sigma := hnc.restrictOpen U hU
+  have hncL : ParabolicallyKappaNoncollapsedBelowScale L (modelNoncollapseFactor * kappa) sigma :=
+    parabolicallyKappaNoncollapsedBelowScale_restrictOpen_of_isClosed hnc U hU
   have hpinL : PhiAlmostNonnegative L (Icc a b) Phi := pinching_restrict_open hpin U
   have hhighL : Q₀ ≤ L.scalar t y := by rw [scalar_restrictOpen]; exact hhigh
   have hw := hmodel U _ L hL (o.restrictOpen U) a b hcarrier hregular hpinL hncL y t ht hhighL
@@ -161,7 +163,7 @@ theorem exists_uniform_incoming_high_curvature_model_threshold
         ∀ S : SolutionOn (I := I3) (M := M) (RealTimeInterval.closedOpen a b hab),
         IsSolutionOn S → ∀ o : TangentOrientationSection M,
         PhiAlmostNonnegative S (Ico a b) Phi →
-        SpatiallyKappaNoncollapsedBelowScale S kappa sigma →
+        ParabolicallyKappaNoncollapsedBelowScale S (modelNoncollapseFactor * kappa) sigma →
         ∀ x t, t ∈ Ico (a+eta) b → Q₀ ≤ S.scalar t x →
           OrientedWitness S o eps kappa x t := by
   obtain ⟨Q₀,hQ₀,hmodel⟩ := exists_uniform_high_curvature_model_threshold

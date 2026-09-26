@@ -28,7 +28,7 @@ theorem exists_uniform_pathConnected_ball_complement_of_metricNoncollapsed
     {kappa K : ℝ} (hkappa : 0 < kappa) (hK : 0 ≤ K)
     (P : PointedRiemannianManifold.{u, 0, 0} I3)
     (hcomplete : MetricComplete P) (hconnected : ConnectedSpace P.M)
-    (hnc : MetricNoncollapsed P kappa univ)
+    (hnc : MetricNoncollapsed P kappa (Ioc 0 1))
     (hcurv : ∀ x : P.M, Tensor0SBundle.normSq0S P.metric x 4 (metricRm04At P.metric x) ≤ K) :
     ∃ r : ℝ, 0 < r ∧ ∀ p : P.M,
       IsPathConnected (riemannianBallOf P.metric p r)ᶜ := by

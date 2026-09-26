@@ -108,8 +108,7 @@ theorem exists_standard_parabolic_sequence_model_threshold
           ∃ orientation : ∀ i, Surgery.Topology.TangentOrientationSection (X.term i).M,
             ∀ i s, s ∈ Icc (-(B / 4)) 0 → ∀ x,
               2 ≤ (X.term i).S.scalar s x →
-                OrientedWitness (X.term i).S (orientation i) eps
-                  (standardParabolicNoncollapseCoeff / 1000000) x s := by
+                OrientedWitness (X.term i).S (orientation i) eps standardModelKappa x s := by
   obtain ⟨Q₀, hQ₀, hmodel⟩ := exists_standard_high_scalar_model_threshold heps heps1
     (by norm_num : (0 : ℝ) < 1 / 2)
   let B₀ := max Q₀ (2 / eps) + 1
@@ -186,7 +185,7 @@ theorem exists_standard_parabolic_sequence_model_threshold
       linarith
     have hw := hmodel (S i) o x (time i + s / B) (hdom i s hsfull) hst hst1 hhigh
     have hp := (orientedWitness_paraSolution_iff (S i).toSolutionOn o hB (htime i).1
-      s x eps (standardParabolicNoncollapseCoeff / 1000000)).mpr hw
+      s x eps standardModelKappa).mpr hw
     apply orientedWitness_timeRestrict (RealTimeInterval.closed (-(B / 2)) 0 (by linarith)) hsfull ?_ hp
     intro u hu
     have hsc : 0 < (X.term i).S.scalar s x := lt_of_lt_of_le (by norm_num) hx

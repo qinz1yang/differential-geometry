@@ -41,7 +41,7 @@ theorem exists_standard_high_scalar_small_volume
         riemannianVolumeMeasure (𝓡 3) E3 (S.metric t)
           (riemannianBallOf (S.metric t) x (A / Real.sqrt (metricScalarAt (S.metric t) x))) ≤
             ENNReal.ofReal ε * ENNReal.ofReal ((A / Real.sqrt (metricScalarAt (S.metric t) x)) ^ 3) := by
-  let κ := standardParabolicNoncollapseCoeff / 1000000
+  let κ := standardModelKappa
   obtain ⟨B, hB, hcollapse⟩ := KappaSolutions.exists_normalized_ancient_kappa_volume_collapse_radius
     κ (ε / 81) (by positivity)
   let A := B / 3

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingModelCoverage
-import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
-import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ParabolicBallOfCylinder
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PinchingPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PositiveSectionalLowerBound
 
@@ -53,61 +52,7 @@ private theorem rescalePinchingFunction_antitone_scale {Phi : ℝ → ℝ}
     rw [e1, e2]
     exact mul_le_mul_of_nonneg_left hq hv.le
 
-open _root_.MeasureTheory DifferentialGeometry.Tensor0SBundle in
-private theorem spatiallyKappaNoncollapsedBelowScale_restrict_closed_open {M : Type u}
-    [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] [T2Space M]
-    [SigmaCompactSpace M] {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
-    {kappa rho : ℝ} (h : Perelman.SpatiallyKappaNoncollapsedBelowScale S kappa rho)
-    (U : TopologicalSpace.Opens M) (hU : IsClosed (U : Set M)) [SigmaCompactSpace U] :
-    Perelman.SpatiallyKappaNoncollapsedBelowScale (solutionOnRestrictOpen S U) kappa rho := by
-  let _ : MeasurableSpace M := borel M
-  have _ : BorelSpace M := ⟨rfl⟩
-  refine ⟨h.1, ?_⟩
-  intro t B hr hRm
-  let B' : Perelman.FlowMetricBall S t := ⟨B.center.val, B.radius, B.radius_pos⟩
-  have hset : B'.set = (Subtype.val : U → M) '' B.set :=
-    riemannianBallOf_eq_image_restrictOpen_of_isClosed (S.base.metric t) U hU B.center B.radius
-  have hpre : B.set = (Subtype.val : U → M) ⁻¹' B'.set := by
-    rw [hset, preimage_image_eq _ Subtype.val_injective]
-  have hsubset : B'.set ⊆ U := by
-    rw [hset]
-    rintro y ⟨x, _, rfl⟩
-    exact x.property
-  have hRm' : B'.IsSpatiallyRmControlled := by
-    intro y hy
-    rw [hset] at hy
-    obtain ⟨x, hx, rfl⟩ := hy
-    have hsec : metricRm04 (I := I3) (M := U) ((S.base.metric t).restrictOpen U) x =
-        metricRm04 (I := I3) (M := M) (S.base.metric t) x.val := by
-      ext slots
-      have heq := metricRm04_restrictOpen_eval (I := I3) (S.base.metric t) U x slots
-      simp only [mfderiv_subtype_val_apply] at heq
-      exact heq
-    have hnorm : Perelman.FlowMetricBall.rmNormSq (solutionOnRestrictOpen S U) t x =
-        Perelman.FlowMetricBall.rmNormSq S t x.val := by
-      change normSq0S ((S.base.metric t).restrictOpen U) x 4
-          (metricRm04 ((S.base.metric t).restrictOpen U) x) =
-        normSq0S (S.base.metric t) x.val 4 (metricRm04 (S.base.metric t) x.val)
-      rw [normSq0S_restrictOpen_apply, hsec]
-    simpa only [hnorm] using hRm x hx
-  have hvol : B.volume = B'.volume := by
-    have hmeas : MeasurableSet B'.set := by
-      have hd : Continuous (fun y : M ↦
-          riemannianEDistOf (S.base.metric t) B'.center y) := by
-        simpa only [riemannianEDistOf] using
-          Geometry.Riemannian.continuous_riemannianEDist (S.base.metric t) B'.center
-      exact (isOpen_lt hd continuous_const).measurableSet
-    change DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I3) (M := U)
-        ((S.base.metric t).restrictOpen U) B.set =
-      DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure (I := I3) (M := M)
-        (S.base.metric t) B'.set
-    rw [hpre]
-    exact Geometry.Measure.riemannianVolumeMeasure_restrictOpen_preimage_of_subset
-      (S.base.metric t) U hmeas hsubset
-  have hnc := h.2 t B' hr hRm'
-  exact ⟨hnc.1, hvol ▸ hnc.2⟩
-
-theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
+theorem exists_uniform_canonical_threshold_of_parabolically_noncollapsed
     {eps : ℝ} (heps : 0 < eps) (hsmall : eps < 1 / 11) :
     ∃ C : ℝ, 1 ≤ C ∧
       (∀ (P : OrientedThreeStage.{u}) (a s : ℝ) (G : P.IncomingSlab a s), ∃ Q : ℝ, 0 < Q ∧
@@ -123,7 +68,7 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
             (∀ (τ : (RealTimeInterval.closedOpen a s G.lt).FlowTime)
               (B : Perelman.FlowMetricBall G.flow τ),
               t - theta / G.flow.scalar t x ≤ τ → (τ : ℝ) ≤ t → B.radius ≤ rho →
-                B.IsSpatiallyKappaNoncollapsed kappa) →
+                B.IsParabolicallyRmControlled → B.IsKappaNoncollapsed kappa) →
             ∃ K : CanonicalWitness G.flow eps C C x t, K.capTubeHasNeckChart eps := by
   obtain ⟨C, delta, hC, hd, hd1, htransfer⟩ :=
     exists_uniform_windowed_bufferedCanonical_with_cap_neck_charts.{u} heps hsmall 1
@@ -145,8 +90,12 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
       hB.mono_eps B.tolerance_lt.le hsmall⟩
   intro kappa hkappa rho hrho Phi hPhi
   have hA₀ : 0 < (rho ^ 2)⁻¹ := by positivity
-  obtain ⟨r, hr, -, hmodel⟩ := abstract_model_theorem.{u} (eps := delta) (kappa := kappa)
-    (sigma := 1) (Phi := Perelman.rescalePinchingFunction (rho ^ 2)⁻¹ Phi) hd hd1 hkappa
+  obtain ⟨kappa', hkappa', hkeq⟩ : ∃ kappa' : ℝ, 0 < kappa' ∧
+      modelNoncollapseFactor * kappa' = kappa :=
+    ⟨kappa / modelNoncollapseFactor, div_pos hkappa modelNoncollapseFactor_pos,
+      mul_div_cancel₀ _ modelNoncollapseFactor_pos.ne'⟩
+  obtain ⟨r, hr, -, hmodel⟩ := abstract_model_theorem.{u} (eps := delta) (kappa := kappa')
+    (sigma := 1) (Phi := Perelman.rescalePinchingFunction (rho ^ 2)⁻¹ Phi) hd hd1 hkappa'
     one_pos (hPhi.rescale hA₀)
   refine ⟨(rho ^ 2)⁻¹ * (r ^ 2)⁻¹, (r ^ 2)⁻¹, by positivity, by positivity, ?_⟩
   intro P a s G x t hts hQ hwin hpinch hnc
@@ -233,10 +182,10 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
     intro v hv y
     exact curvatureOperatorLowerBoundAt_mono_three _ _ _ (hpin2 v (h3car hv) y)
       (rescalePinchingFunction_antitone_scale hPhi hA₀ hA0A _)
-  have hncAux : Perelman.SpatiallyKappaNoncollapsedBelowScale
+  have hncAux : Perelman.ParabolicallyKappaNoncollapsedBelowScale
       ((G.flow.timeShift a).timeRestrict W) kappa rho := by
     refine ⟨hrho, ?_⟩
-    intro v B hB
+    intro v B hB hctrl
     have hv : (v : ℝ) ∈ Icc (t - a - A⁻¹) (t - a) := v.2
     have hva : (v : ℝ) + a ∈ (RealTimeInterval.closedOpen a s G.lt).carrier := by
       change (v : ℝ) + a ∈ Ico a s
@@ -244,20 +193,35 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
     have hlo : t - (r ^ 2)⁻¹ / G.flow.scalar t x ≤ (v : ℝ) + a := by
       rw [← hAinv]
       linarith [hv.1]
-    exact hnc ⟨(v : ℝ) + a, hva⟩ ⟨B.center, B.radius, B.radius_pos⟩ hlo
-      (by linarith [hv.2]) hB
-  have hncW : Perelman.SpatiallyKappaNoncollapsedBelowScale Sw kappa rho :=
-    spatiallyKappaNoncollapsedBelowScale_restrict_closed_open hncAux U
+    let B' : Perelman.FlowMetricBall G.flow ⟨(v : ℝ) + a, hva⟩ :=
+      ⟨B.center, B.radius, B.radius_pos⟩
+    have hctrl' : B'.IsParabolicallyRmControlled := by
+      refine ⟨fun q hq => ?_, fun q hq y hy => ?_⟩
+      · have hq' : q - a ∈ W.carrier :=
+          hctrl.1 ⟨by linarith [hq.1], by linarith [hq.2]⟩
+        change q - a ∈ Icc (t - a - A⁻¹) (t - a) at hq'
+        change q ∈ Ico a s
+        exact ⟨by linarith [hq'.1], by linarith [hq'.2]⟩
+      · have h := hctrl.2 (q - a) ⟨by linarith [hq.1], by linarith [hq.2]⟩ y hy
+        change B.radius ^ 4 * Perelman.FlowMetricBall.rmNormSq G.flow (q - a + a) y ≤ 1 at h
+        rwa [sub_add_cancel] at h
+    exact hnc ⟨(v : ℝ) + a, hva⟩ B' hlo (by linarith [hv.2]) hB hctrl'
+  have hncW : Perelman.ParabolicallyKappaNoncollapsedBelowScale Sw kappa rho :=
+    parabolicallyKappaNoncollapsedBelowScale_restrictOpen_of_isClosed hncAux U
       (P.componentOpen_isClosed c)
-  have hnc2 := Perelman.parabolic_spatial_noncollapse Sw (t - a - A⁻¹) A hA hτW kappa rho hncW
+  have hnc2 := Perelman.parabolicallyKappaNoncollapsedBelowScale_parabolicSolution Sw
+    (t - a - A⁻¹) A hA hτW kappa rho hncW
   have hle : 1 ≤ Real.sqrt A * rho := by
     have h1 : Real.sqrt ((rho ^ 2)⁻¹) = rho⁻¹ := by
       rw [Real.sqrt_inv, Real.sqrt_sq hrho.le]
     have h2 : rho⁻¹ ≤ Real.sqrt A := h1 ▸ Real.sqrt_le_sqrt hA0A
     calc (1 : ℝ) = rho⁻¹ * rho := (inv_mul_cancel₀ hrho.ne').symm
       _ ≤ Real.sqrt A * rho := mul_le_mul_of_nonneg_right h2 hrho.le
-  have hnc3 : Perelman.SpatiallyKappaNoncollapsedBelowScale S3 kappa 1 := by
-    have hres := spatiallyKappaNoncollapsed_timeRestrict (S := S2) (D' := D3) h3car hnc2
+  have hnc3 : Perelman.ParabolicallyKappaNoncollapsedBelowScale S3
+      (modelNoncollapseFactor * kappa') 1 := by
+    have hres := parabolicallyKappaNoncollapsedBelowScale_timeRestrict (S := S2) (D' := D3) h3car
+      hnc2
+    rw [hkeq]
     exact ⟨one_pos, fun v B hB => hres.2 v B (le_trans hB hle)⟩
   have hcurv : ∀ a' b' : ℝ, a' ≤ b' → Icc a' b' ⊆ D3.carrier → ∃ K : ℝ,
       ∀ v ∈ Icc a' b', ∀ y, Perelman.FlowMetricBall.rmNormSq S3 v y ≤ K := by
@@ -268,7 +232,7 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
     have h := hK v hv y
     simpa only [Perelman.FlowMetricBall.rmNormSq, SolutionFamily.rm04, metricRm04_apply,
       SolutionOn.family_metric] using h
-  have hhyp : ClosedModelHypotheses S3 kappa 1
+  have hhyp : ClosedModelHypotheses S3 kappa' 1
       (Perelman.rescalePinchingFunction (rho ^ 2)⁻¹ Phi) :=
     { isSolution := hS3
       complete := fun v _ => RiemannianMetricComplete.of_compact (I := I3) (M := U)
@@ -286,18 +250,18 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
       field_simp
     rw [h1, G.componentTimeShift_scalar c, htime]
     exact h2.ge
-  have hw3 : OrientedWitness S3 (P.componentOrientation c) delta kappa xU 1 :=
+  have hw3 : OrientedWitness S3 (P.componentOrientation c) delta kappa' xU 1 :=
     hmodel U (P.componentOrientation c) 1 le_rfl S3 hhyp xU 1 ⟨le_rfl, le_rfl⟩ hthr
-  have hw2 : OrientedWitness S2 (P.componentOrientation c) delta kappa xU 1 :=
+  have hw2 : OrientedWitness S2 (P.componentOrientation c) delta kappa' xU 1 :=
     orientedWitness_of_timeRestrict h3car hw3
-  have hwW : OrientedWitness Sw (P.componentOrientation c) delta kappa xU
+  have hwW : OrientedWitness Sw (P.componentOrientation c) delta kappa' xU
       (parabolicTime (t - a - A⁻¹) A 1) :=
     (orientedWitness_paraSolution_iff Sw (P.componentOrientation c) hA hτW 1 xU
-      delta kappa).mp hw2
-  have hw1 : OrientedWitness S1 (P.componentOrientation c) delta kappa xU
+      delta kappa').mp hw2
+  have hw1 : OrientedWitness S1 (P.componentOrientation c) delta kappa' xU
       (parabolicTime (t - a - A⁻¹) A 1) :=
     orientedWitness_of_timeRestrict hWcar hwW
-  have hwG : OrientedWitness G.flow P.orientation delta kappa x
+  have hwG : OrientedWitness G.flow P.orientation delta kappa' x
       (parabolicTime (t - a - A⁻¹) A 1 + a) :=
     hw1.ofComponentTimeShift
   rw [htime] at hwG
@@ -306,7 +270,7 @@ theorem exists_uniform_canonical_threshold_of_spatially_noncollapsed
     obtain ⟨W', _⟩ := hwG
     simpa only [RealTimeInterval.closedOpen, interior_Icc, interior_Ico] using
       interior_mono W'.window_mem
-  obtain ⟨B, hB⟩ := htransfer kappa P.Carrier _ G.flow G.equation delta
+  obtain ⟨B, hB⟩ := htransfer kappa' P.Carrier _ G.flow G.equation delta
     P.orientation x t le_rfl hreg hwG
   exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
     hB.mono_eps B.tolerance_lt.le hsmall⟩

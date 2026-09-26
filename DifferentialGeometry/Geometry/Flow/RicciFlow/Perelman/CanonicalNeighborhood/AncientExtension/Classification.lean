@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedNoncollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ParabolicNoncollapseLimit
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.ParabolicOfSpatialAncient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SlabRicciCoefficientLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.HamiltonHarnack.TerminalScalar
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Nonnegative
@@ -25,38 +26,16 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.t2 PointedRiemannianManifold.sigmaCompact
   PointedRiemannianManifold.t2TangentBundle
 
-theorem BackwardExtension.metric_noncollapsed
+theorem BackwardExtension.parabolicallyKappaNoncollapsedBelowScale
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
-    {J : RealTimeInterval} (B : BackwardExtension L J) {t : ℝ} (ht : t ∈ J.carrier) :
-    MetricNoncollapsed { L.space with metric := B.solution.base.metric t } kappa univ := by
-  let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
-  let f := L.subseq ∘ B.subseq
-  let F := X.toFlowSequence.sliceMaps (subsequenceMaps L.maps B.subseq B.strictMono)
-    B.solution.base.metric t
-  obtain ⟨C, hcanonical⟩ := B.convergence.exists_canonical_metric_convergence ht
-  have hsigma : 0 < sigma := by
-    nlinarith [Real.sqrt_nonneg (X.scale 0), (X.noncollapse 0).1]
-  have hradii : Tendsto (fun i => Real.sqrt (X.scale (f i)) * sigma) atTop atTop :=
-    ((Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma).comp
-      (L.strictMono.comp B.strictMono).tendsto_atTop
-  have htime : ∀ᶠ i in atTop, t ∈ (X.interval (f i)).carrier := by
-    have hconv := B.convergence (∅ : Set L.space.M) isCompact_empty t t le_rfl
-      (by simpa only [Icc_self, singleton_subset_iff] using ht) 0 1 one_pos
-    exact hconv.mono fun i hi => hi.1 ⟨le_rfl, le_rfl⟩
-  have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-  have hnc := KappaSolutions.tensor_noncollapsed_of_eventually_pointed_canonical_convergence
-    (Φ := F) C hcanonical (B.complete t ht) kappa (by
-      intro r hr
-      filter_upwards [htime, hradii.eventually_ge_atTop r] with i hi hir
-      intro p hcurv
-      have h := X.metric_noncollapsed_atTime (f i) t hi p r ⟨hr, hir⟩ hr hcurv
-      rw [ENNReal.ofReal_mul' (pow_nonneg hr.le 3), ENNReal.ofReal_pow hr.le] at h
-      simp only [hdim]
-      with_unfolding_all exact h)
-  intro p r _ hr hcurv
-  simpa only [hdim, ENNReal.ofReal_mul' (pow_nonneg hr.le 3),
-    ENNReal.ofReal_pow hr.le] using hnc p r hr hcurv
+    {J : RealTimeInterval} (B : BackwardExtension L J) {rho : ℝ} (hrho : 0 < rho) :
+    ParabolicallyKappaNoncollapsedBelowScale B.solution (modelNoncollapseFactor * kappa / 250)
+      rho := by
+  have hsigma : 0 < sigma := pos_of_mul_pos_right (X.noncollapse 0).1 (Real.sqrt_nonneg _)
+  exact B.convergence.parabolicallyKappaNoncollapsedBelowScale
+    (fun t ht => ⟨(B.complete t ht).complete⟩) (L.strictMono.comp B.strictMono)
+    ((Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma) X.noncollapse hrho
 
 theorem BackwardExtension.isAncientKappaSolution
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -104,16 +83,14 @@ theorem BackwardExtension.isAncientKappaSolution
     have h := (mem_algebraicCurvatureOperatorNonnegativeCone.mp (hop t ht x)) n c v w
     with_unfolding_all exact h
   have hnc : PointedFlowNoncollapsedAllScales B.pointed kappa := by
-    intro time ball hcontrol
-    have h := B.metric_noncollapsed time.property ball.center ball.radius (mem_univ _)
-      ball.radius_pos hcontrol
-    refine ⟨hkappa, ?_⟩
-    have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-    change ENNReal.ofReal kappa * ENNReal.ofReal ball.radius ^ Module.finrank ℝ ThreeSpace ≤
-      riemannianVolumeMeasure I3 L.space.M (B.solution.base.metric time)
-        (riemannianBallOf (B.solution.base.metric time) ball.center ball.radius)
-    simpa only [hdim, ENNReal.ofReal_mul hkappa.le,
-      ENNReal.ofReal_pow ball.radius_pos.le] using h
+    have h := pointedFlowNoncollapsedAllScales_of_parabolic_of_curvatureOperator_nonnegative
+      B.pointed (kappa := modelNoncollapseFactor * kappa / 250) (by simp [ThreeSpace]) rfl rfl
+      (fun t ht => B.complete t ht) hnonneg ⟨Q, hscalar⟩
+      (fun rho hrho => B.parabolicallyKappaNoncollapsedBelowScale hrho)
+    have hk : modelNoncollapseFactor * kappa / 250 / 30 ^ 3 = kappa := by
+      unfold modelNoncollapseFactor
+      ring
+    rwa [hk] at h
   apply isAncientKappaSolution_of_limit B.pointed hkappa rfl rfl L.connected
     (fun t ht => B.complete t ht) hnonneg hscalar hnc
   change metricScalarAt (B.solution.base.metric 0) L.space.basepoint = 1

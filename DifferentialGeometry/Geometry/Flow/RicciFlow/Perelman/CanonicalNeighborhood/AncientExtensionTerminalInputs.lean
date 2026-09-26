@@ -41,7 +41,7 @@ def TerminalCompactnessInput (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
               PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                 (P.maps.partialDiffeomorph i) y hf) ∧
         (∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C) ∧
-        MetricNoncollapsed P.limit kappa Set.univ
+        (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))
 
 theorem terminal_limit_global_bound_of_compactnessInput {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hkappa : 0 < kappa) (hsigma : 0 < sigma) (hPhi : AdmissiblePinchingFunction Phi)

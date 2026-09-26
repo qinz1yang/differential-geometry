@@ -126,7 +126,7 @@ theorem RealizedFiniteHorn.exists_original_source_local_metric_limit
   have hinj : ∀ n, ∀ y ∈ riemannianClosedBallOf (Y.obj n).metric (Y.obj n).basepoint
       (c / (2 * Real.sqrt 3)), HasInjRadiusAt (Y.obj n) y eta := by
     intro n
-    have h := (hterminal n).2
+    have h := hterminal n
     dsimp only at h
     rw [hmetric0 n] at h
     exact h

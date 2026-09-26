@@ -31,7 +31,7 @@ structure ClosedModelHypotheses (S : SolutionOn (I := I3) (M := M) D)
   curvature : ∀ a b : ℝ, a ≤ b → Set.Icc a b ⊆ D.carrier →
     ∃ C : ℝ, ∀ s ∈ Set.Icc a b, ∀ x, FlowMetricBall.rmNormSq S s x ≤ C
   pinching : PhiAlmostNonnegative S D.carrier Phi
-  noncollapse : SpatiallyKappaNoncollapsedBelowScale S kappa sigma
+  noncollapse : ParabolicallyKappaNoncollapsedBelowScale S (modelNoncollapseFactor * kappa) sigma
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem closed_bad_point_selection
@@ -260,6 +260,15 @@ theorem spatiallyKappaNoncollapsed_timeRestrict {S : SolutionOn (I := I3) (M := 
   refine ⟨h.1, ?_⟩
   intro t B hradius
   exact h.2 ⟨(t : ℝ), hsub t.2⟩ ⟨B.center, B.radius, B.radius_pos⟩ hradius
+
+theorem parabolicallyKappaNoncollapsedBelowScale_timeRestrict
+    {S : SolutionOn (I := I3) (M := M) D}
+    {D' : RealTimeInterval} {kappa rho : ℝ} (hsub : D'.carrier ⊆ D.carrier)
+    (h : ParabolicallyKappaNoncollapsedBelowScale S kappa rho) :
+    ParabolicallyKappaNoncollapsedBelowScale (S.timeRestrict D') kappa rho := by
+  refine ⟨h.1, fun t B hradius hB => ?_⟩
+  exact h.2 ⟨(t : ℝ), hsub t.2⟩ ⟨B.center, B.radius, B.radius_pos⟩ hradius
+    ⟨hB.1.trans hsub, hB.2⟩
 
 end Upstream
 
@@ -528,9 +537,9 @@ theorem selected_countersequence_of_radius_failure' {eps small kappa sigma : ℝ
       exact inv_mul_cancel₀ (ne_of_gt (hQpos n))
     exact hbase
   · intro n
-    exact spatiallyKappaNoncollapsed_timeRestrict (fun s hs => hcarSub n s hs)
-      (Perelman.parabolic_spatial_noncollapse (CE n).S (tsel n) (Q n) (hQpos n) (htcar n)
-        kappa sigma (CE n).hyp.noncollapse)
+    exact parabolicallyKappaNoncollapsedBelowScale_timeRestrict (fun s hs => hcarSub n s hs)
+      (parabolicallyKappaNoncollapsedBelowScale_parabolicSolution (CE n).S (tsel n) (Q n)
+        (hQpos n) (htcar n) _ sigma (CE n).hyp.noncollapse)
   · intro n s hs y
     exact phiAlmostNonnegative_paraSolution (CE n).S (hQpos n) (htcar n)
       (CE n).hyp.pinching s (hcarSub n s hs) y

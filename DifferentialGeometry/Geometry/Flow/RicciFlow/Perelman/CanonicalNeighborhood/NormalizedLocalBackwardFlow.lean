@@ -147,12 +147,15 @@ theorem exists_nonnegative_local_backward_limit {kappa : ℝ} (hkappa : 0 < kapp
                 ∃ N : ℕ, ∀ i ≥ N, ∀ t ∈ Icc (-tau / 2) 0,
                   metricDerivNormSupOn K p ((S (rho i)).base.metric t) (g t)
                     (L.metric.restrictOpen V) < eta := by
-  obtain ⟨epsStar, tau, r, hepsStar, htau, hr, B, hB, hprop⟩ :=
+  obtain ⟨epsCyl, tau, r, hepsCyl, htau, hr, B, hB, hprop⟩ :=
     exists_curvDerivNorm_bound_on_terminal_cylinder.{u} hkappa
-  refine ⟨epsStar, tau, r, hepsStar, htau, hr, ?_⟩
+  obtain ⟨epsNC, hepsNC, hnc⟩ := exists_terminalSliceNoncollapsed.{u} hkappa
+  refine ⟨min epsCyl epsNC, tau, r, lt_min hepsCyl hepsNC, htau, hr, ?_⟩
   intro eps heps hle sigma hsigma Phi hPhi X
   let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
-  have hb := hprop eps heps hle sigma hsigma Phi hPhi X
+  have hb := hprop eps heps (hle.trans (min_le_left _ _)) sigma hsigma Phi hPhi X
+  obtain ⟨kappa', -, hncX⟩ := hnc Phi hPhi
+  have hncX := hncX eps heps (hle.trans (min_le_right _ _)) sigma X
   have hcomplete : SeqMetricComplete (X.toFlowSequence.atTime 0) := by
     constructor
     intro i
@@ -168,7 +171,7 @@ theorem exists_nonnegative_local_backward_limit {kappa : ℝ} (hkappa : 0 < kapp
       (X.term i).basepoint y
     exact (ENNReal.le_ofReal_iff_toReal_le hfinite hr.le).mpr hy.le
   obtain ⟨eta, heta, hinj⟩ := X.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
-    hkappa hsigma (r := r / 2) (by positivity) (by linarith) hbound
+    hncX (r := r / 2) (by positivity) (by linarith) hbound
   obtain ⟨phi, hphi, Q, top, chart, hman, hT2, hsecond, gQ, V, U, q, F, G,
     hV, hVU, hq, hG, hconv, hF⟩ :=
     exists_finite_pointed_metric_comparison_of_local_curvature_injectivity

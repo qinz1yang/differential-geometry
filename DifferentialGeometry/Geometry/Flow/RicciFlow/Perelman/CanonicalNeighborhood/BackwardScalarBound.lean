@@ -27,7 +27,7 @@ theorem exists_uniform_backward_scalar_bound_on_finite_horizon
         ∃ C : ℝ, ∀ (a : ℝ) (ha : a < 0), T ≤ a →
           ∀ B : BackwardExtension L (RealTimeInterval.closed a 0 ha.le),
             ∀ t ∈ Icc a 0, ∀ x : L.space.M, B.solution.scalar t x ≤ C := by
-  obtain ⟨epsF, hepsF, hfar⟩ := exists_uniform_scalar_bound_outside_terminal_ball.{u} hkappa
+  obtain ⟨epsF, hepsF, hfar⟩ := exists_uniform_scalar_bound_outside_terminal_ball.{u} kappa
   obtain ⟨epsS, hepsS, hprop⟩ := uniform_moving_slice_propagation_of_recenteredSourceBound
     (recentered_source_bound hkappa hsigma hPhi)
   refine ⟨min epsF epsS, lt_min hepsF hepsS, ?_⟩
