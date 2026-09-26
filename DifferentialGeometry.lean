@@ -14269,6 +14269,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TruncatedNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TruncatedNeckScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowScalarBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowScalarBoundNeckAlternatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WindowedLineNeckTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceChainCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceTracedLimit
@@ -14284,6 +14285,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceSliceEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBallForwardFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPointedFlowLimitWindowNeckAlternatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceConcat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BackwardTraceDistortionThreshold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceAfterEvent
@@ -14304,9 +14306,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingBad
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingBaseSliceBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingClauseTransport
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingDepthExtension
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingMaximalWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingPersistenceInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingTimeZeroBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingTracedRegion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingWindowAnchorBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventActionCompetitor
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventParametricDensity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryActionBackwardClock
@@ -14333,10 +14337,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialLaye
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialSlabScalarWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialWindowScalarBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalFlowLimitShiftedConvergence
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalFlowLimitWindowTransfer
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalPointedFlowLimitNoncollapsing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalPullScalarGradient
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MetricCutCapRegularCrossing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckAlternativesLocalPull
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NeckAlternativesLocalPullCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RegularMinimizerEndpointBarrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryExtendAt
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreHistoryExtendAtBefore
@@ -14369,4 +14375,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionLineNeck
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionLocalLimitDepthSchedule
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionMaximalDepth
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionNeckAlternativesCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionTimeZeroScalarBound
