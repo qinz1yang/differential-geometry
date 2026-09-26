@@ -13,7 +13,7 @@ open DifferentialGeometry.Topology
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
@@ -24,38 +24,41 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
       ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount) (parameters : CutoffParameters)
         (G : GeometricCutoffRecord H i parameters),
         (∀ j, G.delta j ≤ eps) →
-        ∀ (C1 C Q : ℝ), 1 ≤ C → 0 < Q →
-          Q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
-          (∀ j, C ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+        ∀ (C q0 q : ℝ) (Ctime : ℝ≥0), 0 ≤ C → 0 < q0 →
+          q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
+          (∀ j, C * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
             (G.neck j).scale) →
-          (∀ x : (H.stage i.castSucc).Carrier,
-            ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
-              Q < (H.event i).incoming.flow.scalar t x →
-                ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C x t,
-                  W.capTubeHasNeckChart eps) →
-          ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
-            PhiAlmostNonnegative (H.event i).incoming.flow
-              (Ico (H.time i.castSucc) (H.time i.succ)) Phi →
-            ∀ _ : SmoothCutCapCompletion (H.event i).transition,
-              ∀ (b : (H.event i).transition.trace.tubes.Boundary) (q : Sphere 2)
+          (∀ x : (H.stage i.castSucc).Carrier, ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), q0 < (H.event i).incoming.flow.scalar t x →
+            |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+              Ctime * (H.event i).incoming.flow.scalar t x ^ 2) →
+          (∀ x : (H.stage i.castSucc).Carrier, ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), q < (H.event i).incoming.flow.scalar t x →
+            ¬ Nonempty (SpatialNeck ((H.event i).incoming.flow.base.metric t) eps x) →
+            ∃ U : Set (H.stage i.castSucc).Carrier,
+              (∀ y ∈ U, ∀ z ∈ U, (H.event i).incoming.flow.scalar t y ≤ C * (H.event i).incoming.flow.scalar t z) ∧
+              (U = connectedComponent x ∨
+                ∃ V : Set (H.stage i.castSucc).Carrier, Nonempty (CapCore V) ∧ V ⊆ U ∧
+                  riemannianBallOf ((H.event i).incoming.flow.base.metric t) x
+                    (1000 / Real.sqrt (metricScalarAt ((H.event i).incoming.flow.base.metric t) x)) ⊆ interior V)) →
+          ∀ _ : SmoothCutCapCompletion (H.event i).transition,
+              ∀ (b : (H.event i).transition.trace.tubes.Boundary) (z : Sphere 2)
                 (d : (H.event i).discarded.Carrier),
                 (H.event i).transition.trace.presentation
                   ((H.event i).transition.trace.capping.coreInclusion
-                    ((H.event i).transition.trace.tubes.coreBoundarySphere b q)) = Sum.inr d →
+                    ((H.event i).transition.trace.tubes.coreBoundarySphere b z)) = Sum.inr d →
                   isPoincareStandard ((H.event i).discarded.toClosedOrientedManifold.component
                     (ConnectedComponents.mk d)).Carrier := by
   obtain ⟨eta, heta, hpath⟩ := SphericalCapping.exists_cut_neck_standard_or_stopped_tolerance.{u}
   refine ⟨min eta (1 / 8646), lt_min heta (by norm_num), ?_⟩
-  intro eps heps H i parameters G hdelta C1 C Q hC hQ hprotected hscale hcanonical
-    Phi hPhi hpinch hc b q d hd
+  intro eps heps H i parameters G hdelta C q0 q Ctime hC hq0 hprotected hscale hbound hspatial
+    hc b sphereMark d hd
   have hepspath : eps ≤ eta := heps.trans (min_le_left _ _)
   have hepscap : eps ≤ 1 / 8646 := heps.trans (min_le_right _ _)
   obtain ⟨d₀, hd₀, hneck⟩ := G.exists_late_spatialNecks
     (hepscap.trans_lt (by norm_num)) hdelta
-  obtain ⟨d₁, hd₁, hcan⟩ := G.exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods
-    hQ (zero_le_one.trans hC) hcanonical hPhi hpinch hprotected
+  obtain ⟨d₁, hd₁, hhigh⟩ := G.exists_late_scalar_gt_on_discarded_core
+    hq0 hbound hprotected
   obtain ⟨d₂, hd₂, hcap⟩ :=
-    G.exists_late_capCore_cutting_side_of_stopped_cylinder_of_cutting_scale hC hscale
+    G.exists_late_capCore_cutting_side_of_spatial_cap_of_cutting_scale hC hscale
   obtain ⟨t, htlow, htend⟩ := exists_between (max_lt hd₀.2 (max_lt hd₁.2 hd₂.2))
   have ht₀ : t ∈ Ioo d₀ (H.time i.succ) := ⟨(le_max_left _ _).trans_lt htlow, htend⟩
   have ht₁ : t ∈ Ioo d₁ (H.time i.succ) :=
@@ -64,37 +67,37 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
     ⟨((le_max_right _ _).trans (le_max_right _ _)).trans_lt htlow, htend⟩
   choose neck _ hmap using hneck t ht₀
   let X := SphericalCutCapTransition.ofSmoothCutCapTransition (H.event i).transition hc
-  have hdx : X.presentation (X.capping.coreInclusion (X.tubes.coreBoundarySphere b q)) =
+  have hdx : X.presentation (X.capping.coreInclusion (X.tubes.coreBoundarySphere b sphereMark)) =
       Sum.inr d :=
     (congrArg (H.event i).transition.presentation
       (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion (H.event i).transition hc _)).trans
         ((congrFun (H.event i).transition.presentation_eq _).trans hd)
-  have hbq : (H.event i).transition.trace.tubes.coreBoundarySphere b q ∉
+  have hbq : (H.event i).transition.trace.tubes.coreBoundarySphere b sphereMark ∉
       (H.event i).transition.trace.retainedCore := by
     rintro ⟨z, hz⟩
     exact Sum.inr_ne_inl (hd.symm.trans hz)
-  have hb : ¬ (H.event i).RetainedBoundary b := fun h => hbq (h q)
+  have hb : ¬ (H.event i).RetainedBoundary b := fun h => hbq (h sphereMark)
   rcases hpath eps hepspath (H.stage i.castSucc).toClosedOrientedManifold X.capped
       X.tubes X.capping ((H.event i).incoming.flow.base.metric t)
       (fun j => (G.neck j).center.val) neck (fun j z => (hmap j z).symm) b with hstd | hstop
-  · obtain ⟨e⟩ := X.cappedDiscardedPresentationRealization (X.tubes.coreBoundarySphere b q) d hdx
-    exact isPoincareStandard_of_diffeomorph e.val.symm (hstd q)
+  · obtain ⟨e⟩ := X.cappedDiscardedPresentationRealization (X.tubes.coreBoundarySphere b sphereMark) d hdx
+    exact isPoincareStandard_of_diffeomorph e.val.symm (hstd sphereMark)
   · obtain ⟨R, p, nk, a, κ, hR, ha, hRzero, hRone, hinter, _, _, _, hstopped⟩ := hstop
     have hdiscard := (H.event i).transition.trace.cylinder_subset_image_compl_retainedCore
-      b q hbq R hR hRzero hinter
+      b sphereMark hbq R hR hRzero hinter
     have hpdiscard : nk.map (nk.center, a) ∈
         Subtype.val '' (H.event i).transition.trace.retainedCoreᶜ := by
       apply hdiscard
       refine ⟨(κ.symm nk.center, 1), ⟨mem_univ _, by norm_num⟩, ?_⟩
       rw [hRone, κ.apply_symm_apply]
     obtain ⟨z, hz, hzp⟩ := hpdiscard
-    obtain ⟨_, W, hW⟩ := hcan t ht₁ z hz
-    have hwitness : ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C
-        (nk.map (nk.center, a)) t, W.capTubeHasNeckChart eps := hzp ▸ ⟨W, hW⟩
-    obtain ⟨W', hW'⟩ := hwitness
-    obtain ⟨K, hK, hfront, hdis⟩ := hcap t ht₂ eps C1 C hepscap le_rfl b hb R hR
-      hRzero hinter p nk a ha κ hRone W' hW' hstopped
-    exact X.isPoincareStandard_discardedComponent_of_capCore_cutting_side hK.some b hfront hdis q d hdx
+    have hscalar : q < (H.event i).incoming.flow.scalar t (nk.map (nk.center, a)) :=
+      hzp ▸ hhigh t ht₁ z hz
+    have ht : t ∈ Ioo (H.time i.castSucc) (H.time i.succ) := ⟨hd₁.1.trans_lt ht₁.1, ht₁.2⟩
+    obtain ⟨U, hcomparison, hmodels⟩ := hspatial (nk.map (nk.center, a)) t ht hscalar hstopped
+    obtain ⟨K, hK, hfront, hdis⟩ := hcap t ht₂ eps hepscap b hb R hR
+      hRzero hinter p nk a ha κ hRone U hcomparison hmodels
+    exact X.isPoincareStandard_discardedComponent_of_capCore_cutting_side hK.some b hfront hdis sphereMark d hdx
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
@@ -103,31 +106,46 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRec
 universe u
 
 
-theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
+theorem exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount) (parameters : CutoffParameters)
         (G : GeometricCutoffRecord H i parameters),
         (∀ j, G.delta j ≤ eps) →
-        ∀ C1 C2 q : ℝ, 1 ≤ C2 → 0 < q →
+        ∀ (C q0 q : ℝ) (Ctime : ℝ≥0), 0 ≤ C → 0 < q0 →
           q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
-          (∀ j, C2 ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+          (∀ j, C * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
             (G.neck j).scale) →
-          (∀ x : (H.stage i.castSucc).Carrier,
-            ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
-              q < (H.event i).incoming.flow.scalar t x →
-                ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
-                  W.capTubeHasNeckChart eps) →
+          (∀ x : (H.stage i.castSucc).Carrier, ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), q0 < (H.event i).incoming.flow.scalar t x →
+            |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+              Ctime * (H.event i).incoming.flow.scalar t x ^ 2) →
+          (∀ x : (H.stage i.castSucc).Carrier, ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), q < (H.event i).incoming.flow.scalar t x →
+            ¬ Nonempty (SpatialNeck ((H.event i).incoming.flow.base.metric t) eps x) →
+            ∃ U : Set (H.stage i.castSucc).Carrier,
+              (∀ y ∈ U, ∀ z ∈ U, (H.event i).incoming.flow.scalar t y ≤ C * (H.event i).incoming.flow.scalar t z) ∧
+              (U = connectedComponent x ∨
+                ∃ V : Set (H.stage i.castSucc).Carrier, Nonempty (CapCore V) ∧ V ⊆ U ∧
+                  riemannianBallOf ((H.event i).incoming.flow.base.metric t) x
+                    (1000 / Real.sqrt (metricScalarAt ((H.event i).incoming.flow.base.metric t) x)) ⊆ interior V)) →
+          (∀ (c : ConnectedComponents (H.stage i.castSucc).Carrier) (t : ℝ), t ∈ Ioo (H.time i.castSucc) (H.time i.succ) →
+            ∀ x : ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier, q < (H.event i).incoming.flow.scalar t x.val →
+            ¬ Nonempty (SpatialNeck (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) eps x) →
+            Nonempty (PositiveComponent (M := ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier) univ) ∨
+            IsPositiveSpaceFormModel ((H.stage i.castSucc).toClosedOrientedManifold.component c) ∨
+            ∃ (K : CompactDomain ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier) (v : ((H.stage i.castSucc).toClosedOrientedManifold.component c).Carrier)
+              (nk : SpatialNeck (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) eps v) (level : ℝ),
+              0 < metricScalarAt (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) x ∧
+              Nonempty (CapCore K.carrier) ∧ |level| ≤ 4 ∧
+              frontier K.carrier = range (fun z : Sphere 2 => nk.map (z, level)) ∧
+              riemannianBallOf (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) x
+                (1000 / Real.sqrt (metricScalarAt (((H.event i).incoming.flow.base.metric t).restrictOpen ((H.stage i.castSucc).componentOpen c)) x)) ⊆ interior K.carrier) →
           SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
   obtain ⟨eta₀, heta₀, hboundary⟩ := exists_isPoincareStandard_discarded_boundary_tolerance.{u}
   obtain ⟨eta₁, heta₁, hcomponent⟩ :=
-    OrientedThreeStage.IncomingSlab.exists_component_poincareStandard_tolerance_of_canonical_neighborhoods.{u}
+    OrientedThreeStage.IncomingSlab.exists_component_poincareStandard_tolerance_of_spatial_neighborhoods.{u}
   refine ⟨min eta₀ eta₁, lt_min heta₀ heta₁, ?_⟩
-  intro eps heps H i parameters G hdelta C1 C2 q hC2 hq hprotected hscale hcanonical hc D
+  intro eps heps H i parameters G hdelta C q0 q Ctime hC hq0 hprotected hscale hbound hspatial hcomponentSpatial hc D
   have hep : eps ≤ eta₀ := heps.trans (min_le_left _ _)
   have hepc : eps ≤ eta₁ := heps.trans (min_le_right _ _)
-  obtain ⟨Phi, hPhi, hpinch⟩ :=
-    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
-      (H.event i).incoming.lt (H.event i).incoming.flow (H.event i).incoming.equation (by simp [ThreeSpace])
   let X := SphericalCutCapTransition.ofSmoothCutCapTransition (H.event i).transition hc
   obtain ⟨x, d, hd, hxd⟩ := X.exists_core_presentation_eq_inr_component D
   have hxd' : (H.event i).transition.trace.presentation
@@ -162,8 +180,8 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
           ((congrArg (H.event i).transition.presentation
             (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion
               (H.event i).transition hc y)).symm.trans hd'.symm)
-      have hbound := hboundary eps hep H i parameters G hdelta C1 C2 q hC2 hq
-        hprotected hscale hcanonical Phi hPhi hpinch hc b sphereMark d' hdy
+      have hbound := hboundary eps hep H i parameters G hdelta C q0 q Ctime hC hq0
+        hprotected hscale hbound hspatial hc b sphereMark d' hdy
       let r : (H.stage i.succ).toClosedOrientedManifold.Carrier ⊕ X.discarded.Carrier →
           X.discarded.Carrier := Sum.elim (fun _ => d) id
       have hr : Continuous r := continuous_const.sumElim continuous_id
@@ -178,9 +196,9 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
       have hx : x ∈ X.coreComponentSet (ConnectedComponents.mk x.val) :=
         (ClosedOrientedManifold.mem_componentSet _ _ _).mpr rfl
       have hambient := hcomponent eps hepc (H.stage i.castSucc) (H.time i.castSucc)
-        (H.time i.succ) (H.event i).incoming (H.event i).terminal C1 C2 q
-        ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ hq hprotected hcanonical
-        (ConnectedComponents.mk x.val) (by
+        (H.time i.succ) (H.event i).incoming (H.event i).terminal q0 q
+        ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ Ctime hq0 hprotected hbound
+        (ConnectedComponents.mk x.val) (hcomponentSpatial (ConnectedComponents.mk x.val)) (by
         intro y hy
         have hyC : y.val ∈ (H.stage i.castSucc).toClosedOrientedManifold.componentSet
             (ConnectedComponents.mk x.val) := (ClosedOrientedManifold.mem_componentSet _ _ _).mpr hy
@@ -193,6 +211,71 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
       exact X.isPoincareStandard_discardedComponent_of_cutIndices_eq_empty _ hlocal x hx d hxd hambient
   change ConnectedComponents.mk (α := (H.event i).discarded.Carrier) d = D at hd
   exact hd ▸ hstd
+
+
+theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
+    ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
+      ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount) (parameters : CutoffParameters)
+        (G : GeometricCutoffRecord H i parameters),
+        (∀ j, G.delta j ≤ eps) →
+        ∀ C1 C2 q : ℝ, 1 ≤ C2 → 0 < q →
+          q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ →
+          (∀ j, C2 ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+            (G.neck j).scale) →
+          (∀ x : (H.stage i.castSucc).Carrier,
+            ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+              q < (H.event i).incoming.flow.scalar t x →
+                ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
+                  W.capTubeHasNeckChart eps) →
+          SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
+  obtain ⟨eta, heta, hclass⟩ := exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods.{u}
+  refine ⟨eta, heta, ?_⟩
+  intro eps heps H i parameters G hdelta C1 C2 q hC2 hq hprotected hscale hcanonical hc
+  apply hclass eps heps H i parameters G hdelta (C2 ^ 2) q q
+    ⟨C2, zero_le_one.trans hC2⟩ (sq_nonneg C2) hq hprotected hscale ?_ ?_ ?_ hc
+  · intro x t ht hx
+    obtain ⟨W, _⟩ := hcanonical x t ht hx
+    exact W.time_derivative
+  · intro x t ht hx hstop
+    obtain ⟨W, _⟩ := hcanonical x t ht hx
+    refine ⟨W.domain.carrier, (fun y hy z hz => W.scalar_le_sq_mul_at_mem_domain hz y hy), ?_⟩
+    cases htag : W.alternative with
+    | neck data => exact (hstop ⟨data.strong.toSpatialNeck⟩).elim
+    | positive whole data sec => exact Or.inl whole
+    | round whole data => exact Or.inl whole
+    | cap data depth =>
+      refine Or.inr ⟨data.core.carrier, ⟨data.core_model⟩, data.core_inside.trans interior_subset, ?_⟩
+      have hball := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_ball_subset_of_le_frontier_distance
+        ((H.event i).incoming.flow.base.metric t) data.center_inside
+        (r := ENNReal.ofReal (10000 / Real.sqrt ((H.event i).incoming.flow.scalar t x))) (by
+          intro z hz
+          have hztube : z ∈ data.tube := (data.overlap_eq.symm ▸ hz).2
+          exact (ENNReal.ofReal_le_ofReal (depth z hztube)).trans ENNReal.ofReal_toReal_le)
+      intro z hz
+      exact hball (hz.trans_le (ENNReal.ofReal_le_ofReal
+        (div_le_div_of_nonneg_right (by norm_num) (Real.sqrt_nonneg _))))
+  · intro c t ht x hqx hx
+    let U := (H.stage i.castSucc).componentOpen c
+    let xU : U := ⟨x.val, x.property⟩
+    let _ : CompactSpace U := ((H.stage i.castSucc).toClosedOrientedManifold.component c).compact
+    let _ : SigmaCompactSpace U := inferInstance
+    have hU : (U : Set (H.stage i.castSucc).Carrier) = connectedComponent (xU : (H.stage i.castSucc).Carrier) := by
+      ext y
+      change ConnectedComponents.mk y = c ↔ y ∈ connectedComponent (xU : (H.stage i.castSucc).Carrier)
+      constructor
+      · intro hy
+        exact ConnectedComponents.coe_eq_coe'.mp (hy.trans xU.property.symm)
+      · intro hy
+        exact (ConnectedComponents.coe_eq_coe'.mpr hy).trans xU.property
+    obtain ⟨W, hchart⟩ := hcanonical x.val t ht hqx
+    rcases W.spatial_cap_or_whole_on_connectedComponent_of_not_spatial_neck
+        U xU hU hchart hx with hp | hr | hc
+    · exact Or.inl hp
+    · obtain ⟨z, hr⟩ := hr
+      exact Or.inr (Or.inl
+        (isPositiveSpaceFormModel_of_roundComponent
+          ((H.stage i.castSucc).toClosedOrientedManifold.component c) hr.some))
+    · exact Or.inr (Or.inr hc)
 
 
 theorem exists_poincareStandardDiscarded_cutting_scale_of_incoming :

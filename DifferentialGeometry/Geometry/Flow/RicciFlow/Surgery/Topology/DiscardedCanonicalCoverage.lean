@@ -119,6 +119,60 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   (G : GeometricCutoffRecord H i parameters)
 
 include G in
+private theorem exists_late_scalar_gt_on_discarded_core_of_pinching
+    {q0 Q : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
+    (hbound : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), q0 < (H.event i).incoming.flow.scalar t x →
+        |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+          Ctime * (H.event i).incoming.flow.scalar t x ^ 2)
+    {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
+    (hpinch : PhiAlmostNonnegative (H.event i).incoming.flow
+      (Ico (H.time i.castSucc) (H.time i.succ)) Phi)
+    (hprotected : Q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ),
+        ∀ z : (H.event i).transition.trace.tubes.core,
+          z ∉ (H.event i).transition.trace.retainedCore →
+            Q < (H.event i).incoming.flow.scalar t z.val := by
+  let _ := (H.event i).transition.core_compact
+  let F := Subtype.val '' (H.event i).transition.trace.retainedCoreᶜ
+  have hF : IsCompact F := (H.event i).transition.trace.isClopen_retainedCore.compl.isClosed.isCompact.image
+    continuous_subtype_val
+  have hlow : ∀ x : (H.event i).incoming.terminalRegularOpen,
+      x.val ∈ F → ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+        metricScalarAt (H.event i).terminal.metric x := by
+    intro x hx
+    obtain ⟨z, hz, hzx⟩ := hx
+    have hxcore : x.val ∈ (H.event i).transition.trace.tubes.core := hzx ▸ z.property
+    apply G.scalar_gt_protected_of_not_mem_retainedCore x hxcore
+    exact (Subtype.ext hzx : z = ⟨x.val, hxcore⟩) ▸ hz
+  obtain ⟨d, hd, hhigh⟩ := (H.event i).terminal.eventually_scalar_gt_on_closed_set
+    hq0 hbound hPhi hpinch hF.isClosed hprotected hlow
+  refine ⟨d, hd, ?_⟩
+  intro t ht z hz
+  exact hhigh t ht z.val ⟨z, hz, rfl⟩
+
+include G in
+theorem exists_late_scalar_gt_on_discarded_core
+    {q0 Q : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
+    (hbound : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), q0 < (H.event i).incoming.flow.scalar t x →
+        |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+          Ctime * (H.event i).incoming.flow.scalar t x ^ 2)
+    (hprotected : Q < ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ),
+        ∀ z : (H.event i).transition.trace.tubes.core,
+          z ∉ (H.event i).transition.trace.retainedCore →
+            Q < (H.event i).incoming.flow.scalar t z.val := by
+  obtain ⟨Phi, hPhi, hpinch⟩ :=
+    exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
+      (H.event i).incoming.lt (H.event i).incoming.flow (H.event i).incoming.equation
+      (by simp [ThreeSpace])
+  exact G.exists_late_scalar_gt_on_discarded_core_of_pinching hq0 hbound hPhi hpinch hprotected
+
+
+include G in
 theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods
     {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
     (hcanonical : ∀ x : (H.stage i.castSucc).Carrier,
@@ -136,10 +190,6 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonica
             Q < (H.event i).incoming.flow.scalar t z.val ∧
               ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 z.val t,
                 W.capTubeHasNeckChart eps := by
-  let _ := (H.event i).transition.core_compact
-  let F := Subtype.val '' (H.event i).transition.trace.retainedCoreᶜ
-  have hF : IsCompact F := (H.event i).transition.trace.isClopen_retainedCore.compl.isClosed.isCompact.image
-    continuous_subtype_val
   have hbound : ∀ x : (H.stage i.castSucc).Carrier,
       ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), Q < (H.event i).incoming.flow.scalar t x →
         |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
@@ -147,19 +197,11 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonica
     intro x t ht hhigh
     obtain ⟨W, _⟩ := hcanonical x t ht hhigh
     exact W.time_derivative
-  have hlow : ∀ x : (H.event i).incoming.terminalRegularOpen,
-      x.val ∈ F → ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
-        metricScalarAt (H.event i).terminal.metric x := by
-    intro x hx
-    obtain ⟨z, hz, hzx⟩ := hx
-    have hxcore : x.val ∈ (H.event i).transition.trace.tubes.core := hzx ▸ z.property
-    apply G.scalar_gt_protected_of_not_mem_retainedCore x hxcore
-    exact (Subtype.ext hzx : z = ⟨x.val, hxcore⟩) ▸ hz
-  obtain ⟨d, hd, hhigh⟩ := (H.event i).terminal.eventually_scalar_gt_on_closed_set
-    hQ hbound hPhi hpinch hF.isClosed hprotected hlow
+  obtain ⟨d, hd, hhigh⟩ :=
+    G.exists_late_scalar_gt_on_discarded_core_of_pinching hQ hbound hPhi hpinch hprotected
   refine ⟨d, hd, ?_⟩
   intro t ht z hz
-  have h := hhigh t ht z.val ⟨z, hz, rfl⟩
+  have h := hhigh t ht z hz
   exact ⟨h, hcanonical z.val t ⟨hd.1.trans_lt ht.1, ht.2⟩ h⟩
 
 include G in

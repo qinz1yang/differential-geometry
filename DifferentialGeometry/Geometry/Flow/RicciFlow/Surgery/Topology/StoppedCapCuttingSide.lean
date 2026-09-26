@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCoreGeometry
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalStrictBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CanonicalRegionBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutBandCapCapture
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoreCylinderAbsorption
 import DifferentialGeometry.Geometry.Neck.StaticSlabCapture
@@ -382,6 +382,62 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   (G : GeometricCutoffRecord H i parameters)
 
 include G in
+theorem exists_late_not_closedBand_subset_of_scalar_comparison
+    {C : ℝ} (hC : 0 ≤ C)
+    (hscale : ∀ j, C * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+      (G.neck j).scale) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ), ∀ K : Set (H.stage i.castSucc).Carrier,
+        (∀ x ∈ K, ∀ y ∈ K,
+          (H.event i).incoming.flow.scalar t x ≤ C * (H.event i).incoming.flow.scalar t y) →
+        frontier K ⊆ Subtype.val '' (H.event i).transition.trace.retainedCoreᶜ →
+        ∀ j : (H.event i).transition.trace.tubes.Index,
+          ¬ (H.event i).transition.trace.tubes.tube j ''
+            {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ⊆ K := by
+  classical
+  let A := ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹
+  have hmarg (j : (H.event i).transition.trace.tubes.Index) :
+      ∀ᶠ η : ℝ in 𝓝 (0 : ℝ), C * (A + η) < (G.neck j).scale := by
+    have ht : Tendsto (fun η : ℝ => C * (A + η)) (𝓝 0) (𝓝 (C * A)) := by
+      have ht₀ := (tendsto_const_nhds (x := A)).add (tendsto_id (x := (𝓝 (0 : ℝ))))
+      have ht₁ := ht₀.const_mul C
+      simpa only [id_eq, add_zero] using ht₁
+    exact ht.eventually_lt_const (hscale j)
+  have hall : ∀ᶠ η : ℝ in 𝓝[>] (0 : ℝ),
+      ∀ j, C * (A + η) < (G.neck j).scale :=
+    (eventually_all.mpr hmarg).filter_mono nhdsWithin_le_nhds
+  obtain ⟨η, hηscale, hη⟩ := (hall.and self_mem_nhdsWithin).exists
+  have hηpos : 0 < η := hη
+  obtain ⟨d₀, hd₀, hanchors⟩ := G.exists_late_retained_component_scalar_anchors hηpos
+  have hseed (j : (H.event i).transition.trace.tubes.Index) :
+      ∀ᶠ t in 𝓝[<] H.time i.succ,
+        C * (A + η) < (H.event i).incoming.flow.scalar t (G.neck j).center.val := by
+    have hh : Tendsto (fun t => metricScalarAt ((H.event i).incoming.flow.base.metric t) (G.neck j).center.val)
+        (𝓝[<] H.time i.succ) (𝓝 (G.neck j).scale) := by
+      simpa only [(G.neck j).scale_scalar] using
+        (H.event i).terminal.tendsto_metricScalarAt (G.neck j).center
+    exact hh.eventually_const_lt (hηscale j)
+  obtain ⟨d₁, hd₁, hseeds⟩ :=
+    (mem_nhdsLT_iff_exists_mem_Ico_Ioo_subset (H.event i).incoming.lt).mp (eventually_all.mpr hseed)
+  refine ⟨max d₀ d₁, ⟨hd₀.1.trans (le_max_left _ _), max_lt hd₀.2 hd₁.2⟩, ?_⟩
+  intro t ht K hcomparison hfront j hband
+  obtain ⟨z, hz, hinside⟩ :=
+    G.exists_retained_coreComponent_subset_interior_of_closedBand_subset j hband hfront
+  obtain ⟨y, hycore, hymk, _, hyscalar⟩ := hanchors z hz
+  have hyK : y.val ∈ K := interior_subset
+    (hinside ⟨⟨y.val, hycore⟩, ConnectedComponents.coe_eq_coe'.mp hymk, rfl⟩)
+  have hcut : (G.neck j).center.val ∈ K := by
+    apply hband
+    let q : TubeDomain := ((G.neck j).sphereMark, ⟨0, by norm_num⟩)
+    refine ⟨q, by norm_num [q], ?_⟩
+    rw [G.tube_eq j q (G.tube_in_buffer j q)]
+    exact congrArg Subtype.val (G.neck j).marked
+  have htwice := hcomparison (G.neck j).center.val hcut y.val hyK
+  have hylt := hyscalar t ⟨(le_max_left _ _).trans_lt ht.1, ht.2⟩
+  have hh := htwice.trans (mul_le_mul_of_nonneg_left hylt.le hC)
+  exact (not_lt_of_ge hh) (hseeds ⟨(le_max_right _ _).trans_lt ht.1, ht.2⟩ j)
+
+include G in
 theorem exists_late_not_closedBand_subset_canonical_of_cutting_scale
     {C : ℝ} (hC : 1 ≤ C)
     (hscale : ∀ j, C ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
@@ -395,66 +451,19 @@ theorem exists_late_not_closedBand_subset_canonical_of_cutting_scale
             ∀ j : (H.event i).transition.trace.tubes.Index,
               ¬ (H.event i).transition.trace.tubes.tube j ''
                 {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ⊆ K := by
-  classical
-  let A := ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹
+  obtain ⟨d, hd, hexclude⟩ :=
+    G.exists_late_not_closedBand_subset_of_scalar_comparison (sq_nonneg C) hscale
+  refine ⟨d, hd, ?_⟩
+  intro t ht eps C1 C2 hC2 x W K hKW hfront j
+  apply hexclude t ht K ?_ hfront j
+  intro y hy z hz
   have hCpos : 0 < C := zero_lt_one.trans_le hC
-  have hmarg (j : (H.event i).transition.trace.tubes.Index) :
-      ∀ᶠ η : ℝ in 𝓝 (0 : ℝ), C ^ 2 * (A + η) < (G.neck j).scale := by
-    have ht : Tendsto (fun η : ℝ => C ^ 2 * (A + η)) (𝓝 0) (𝓝 (C ^ 2 * A)) := by
-      have ht₀ := (tendsto_const_nhds (x := A)).add (tendsto_id (x := (𝓝 (0 : ℝ))))
-      have ht₁ := ht₀.const_mul (C ^ 2)
-      simpa only [id_eq, add_zero] using ht₁
-    exact ht.eventually_lt_const (hscale j)
-  have hall : ∀ᶠ η : ℝ in 𝓝[>] (0 : ℝ),
-      ∀ j, C ^ 2 * (A + η) < (G.neck j).scale :=
-    (eventually_all.mpr hmarg).filter_mono nhdsWithin_le_nhds
-  obtain ⟨η, hηscale, hη⟩ := (hall.and self_mem_nhdsWithin).exists
-  have hηpos : 0 < η := hη
-  obtain ⟨d₀, hd₀, hanchors⟩ := G.exists_late_retained_component_scalar_anchors hηpos
-  have hseed (j : (H.event i).transition.trace.tubes.Index) :
-      ∀ᶠ t in 𝓝[<] H.time i.succ,
-        C ^ 2 * (A + η) < (H.event i).incoming.flow.scalar t (G.neck j).center.val := by
-    have hh : Tendsto (fun t => metricScalarAt ((H.event i).incoming.flow.base.metric t) (G.neck j).center.val)
-        (𝓝[<] H.time i.succ) (𝓝 (G.neck j).scale) := by
-      simpa only [(G.neck j).scale_scalar] using
-        (H.event i).terminal.tendsto_metricScalarAt (G.neck j).center
-    exact hh.eventually_const_lt (hηscale j)
-  obtain ⟨d₁, hd₁, hseeds⟩ :=
-    (mem_nhdsLT_iff_exists_mem_Ico_Ioo_subset (H.event i).incoming.lt).mp (eventually_all.mpr hseed)
-  refine ⟨max d₀ d₁, ⟨hd₀.1.trans (le_max_left _ _), max_lt hd₀.2 hd₁.2⟩, ?_⟩
-  intro t ht eps C1 C2 hC2 x W K hKW hfront j hband
-  obtain ⟨z, hz, hinside⟩ :=
-    G.exists_retained_coreComponent_subset_interior_of_closedBand_subset j hband hfront
-  obtain ⟨y, hycore, hymk, _, hyscalar⟩ := hanchors z hz
-  have hyK : y.val ∈ K := interior_subset
-    (hinside ⟨⟨y.val, hycore⟩, ConnectedComponents.coe_eq_coe'.mp hymk, rfl⟩)
-  have hcut : (G.neck j).center.val ∈ K := by
-    apply hband
-    let q : TubeDomain := ((G.neck j).sphereMark, ⟨0, by norm_num⟩)
-    refine ⟨q, by norm_num [q], ?_⟩
-    rw [G.tube_eq j q (G.tube_in_buffer j q)]
-    exact congrArg Subtype.val (G.neck j).marked
   have hC2pos : 0 < C2 := zero_lt_one.trans_le W.one_le_comparison_constant
-  have hxupper : (H.event i).incoming.flow.scalar t x ≤
-      C2 * (H.event i).incoming.flow.scalar t y.val := by
-    have hh := mul_le_mul_of_nonneg_left (W.scalar_bounds y.val (hKW hyK)).1 hC2pos.le
-    rwa [← mul_assoc, mul_inv_cancel₀ hC2pos.ne', one_mul] at hh
-  have hypos : 0 < (H.event i).incoming.flow.scalar t y.val := by
-    have hh := (mul_pos (inv_pos.mpr hC2pos) W.Q_pos).trans_le (W.scalar_bounds y.val (hKW hyK)).1
-    exact hh
-  have htwice : (H.event i).incoming.flow.scalar t (G.neck j).center.val ≤
-      C ^ 2 * (H.event i).incoming.flow.scalar t y.val := by
-    have hupper := (W.scalar_bounds (G.neck j).center.val (hKW hcut)).2
-    have hC2square : C2 ^ 2 ≤ C ^ 2 := sq_le_sq₀ hC2pos.le hCpos.le |>.mpr hC2
-    calc
-      _ ≤ C2 * (C2 * (H.event i).incoming.flow.scalar t y.val) :=
-        hupper.trans (mul_le_mul_of_nonneg_left hxupper hC2pos.le)
-      _ = C2 ^ 2 * (H.event i).incoming.flow.scalar t y.val := by ring
-      _ ≤ C ^ 2 * (H.event i).incoming.flow.scalar t y.val :=
-        mul_le_mul_of_nonneg_right hC2square hypos.le
-  have hylt := hyscalar t ⟨(le_max_left _ _).trans_lt ht.1, ht.2⟩
-  have hh := htwice.trans_lt (mul_lt_mul_of_pos_left hylt (sq_pos_of_pos hCpos))
-  exact (not_lt_of_ge hh.le) (hseeds ⟨(le_max_right _ _).trans_lt ht.1, ht.2⟩ j)
+  have hzpos : 0 < (H.event i).incoming.flow.scalar t z :=
+    (mul_pos (inv_pos.mpr hC2pos) W.Q_pos).trans_le (W.scalar_bounds z (hKW hz)).1
+  have hC2square : C2 ^ 2 ≤ C ^ 2 := sq_le_sq₀ hC2pos.le hCpos.le |>.mpr hC2
+  exact (W.scalar_le_sq_mul_at_mem_domain (hKW hz) y (hKW hy)).trans
+    (mul_le_mul_of_nonneg_right hC2square hzpos.le)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
@@ -528,6 +537,88 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   (G : GeometricCutoffRecord H i parameters)
 
 include G in
+theorem exists_late_capCore_cutting_side_of_spatial_cap_of_cutting_scale
+    {C : ℝ} (hC : 0 ≤ C)
+    (hscale : ∀ j, C * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
+      (G.neck j).scale) :
+    ∃ d ∈ Ico (H.time i.castSucc) (H.time i.succ),
+      ∀ t ∈ Ioo d (H.time i.succ), ∀ eps : ℝ, eps ≤ 1 / 8646 →
+        ∀ b : (H.event i).transition.trace.tubes.Boundary,
+          ¬ (H.event i).RetainedBoundary b →
+          ∀ R : PartialDiffeomorph IC I3 Cylinder (H.stage i.castSucc).Carrier ∞,
+            univ ×ˢ Icc (0 : ℝ) 1 ⊆ R.source →
+            (∀ q : Sphere 2, R (q, 0) = (H.event i).transition.trace.tubes.boundarySphere b q) →
+            R '' (univ ×ˢ Icc (0 : ℝ) 1) ∩
+              (⋃ j, (H.event i).transition.trace.tubes.tube j ''
+                {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1}) =
+              range ((H.event i).transition.trace.tubes.boundarySphere b) →
+            ∀ (p : (H.stage i.castSucc).Carrier)
+              (nk : SpatialNeck ((H.event i).incoming.flow.base.metric t) eps p)
+              (a : ℝ), |a| ≤ 4 →
+              ∀ κ : Sphere 2 ≃ₘ⟮I2, I2⟯ Sphere 2,
+                (∀ q : Sphere 2, R (q, 1) = nk.map (κ q, a)) →
+                ∀ U : Set (H.stage i.castSucc).Carrier,
+                  (∀ x ∈ U, ∀ y ∈ U,
+                    (H.event i).incoming.flow.scalar t x ≤ C * (H.event i).incoming.flow.scalar t y) →
+                  (U = connectedComponent (nk.map (nk.center, a)) ∨
+                    ∃ V : Set (H.stage i.castSucc).Carrier, Nonempty (CapCore V) ∧ V ⊆ U ∧
+                      riemannianBallOf ((H.event i).incoming.flow.base.metric t) (nk.map (nk.center, a))
+                        (1000 / Real.sqrt (metricScalarAt ((H.event i).incoming.flow.base.metric t)
+                          (nk.map (nk.center, a)))) ⊆ interior V) →
+                  ∃ K : Set (H.stage i.castSucc).Carrier, Nonempty (CapCore K) ∧
+                      frontier K = range ((H.event i).transition.trace.tubes.boundarySphere b) ∧
+                      Disjoint K ((H.event i).transition.trace.tubes.removedBand b.1) := by
+  obtain ⟨d, hd, hexclude⟩ := G.exists_late_not_closedBand_subset_of_scalar_comparison hC hscale
+  refine ⟨d, hd, ?_⟩
+  intro t ht eps heps b hb R hR hRzero hinter p nk a ha κ hRone U hcomparison hmodels
+  obtain ⟨q₀, hq₀⟩ := not_forall.mp hb
+  have hdiscard := (H.event i).transition.trace.cylinder_subset_image_compl_retainedCore
+    b q₀ hq₀ R hR hRzero hinter
+  let _ : LocallyConnectedSpace (H.stage i.castSucc).Carrier :=
+    ChartedSpace.locallyConnectedSpace ThreeSpace (H.stage i.castSucc).Carrier
+  have hwhole : U ≠ connectedComponent (nk.map (nk.center, a)) := by
+    intro heq
+    apply hexclude t ht U hcomparison _ b.1
+    · rw [heq]
+      have hpoint : R (κ.symm nk.center, 1) = nk.map (nk.center, a) := by
+        rw [hRone, κ.apply_symm_apply]
+      rw [← hpoint]
+      exact (H.event i).transition.trace.tubes.closedBand_subset_connectedComponent_of_cylinder
+        b R (R.contMDiffOn_toFun.continuousOn.mono hR) hRzero (κ.symm nk.center)
+    · rw [heq, isClopen_connectedComponent.frontier_eq]
+      exact empty_subset _
+  obtain ⟨V, hV, hVU, hball⟩ := hmodels.resolve_left hwhole
+  have hslab := nk.image_slab_subset_of_ball_subset heps nk.center ha rfl hball
+  have hlevel : |a| < eps⁻¹ := ha.trans_lt
+    ((lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr (by linarith [nk.eps_small]))
+  obtain ⟨K, hK, _, _, hKfront, hKV⟩ :=
+    hV.some.exists_capCore_side_of_sphere_embedding (fun q : Sphere 2 => nk.map (q, a))
+      (nk.isSmoothEmbedding_level hlevel)
+      (by
+        rintro z ⟨q, rfl⟩
+        exact hslab ⟨(q, a), ⟨mem_univ _, abs_le.mp ha⟩, rfl⟩)
+  have hupperRange : range (fun q : Sphere 2 => R (q, 1)) =
+      range (fun q : Sphere 2 => nk.map (q, a)) := by
+    ext y
+    constructor
+    · rintro ⟨q, rfl⟩
+      exact ⟨κ q, (hRone q).symm⟩
+    · rintro ⟨q, rfl⟩
+      refine ⟨κ.symm q, ?_⟩
+      change R (κ.symm q, 1) = nk.map (q, a)
+      rw [hRone, κ.apply_symm_apply]
+  rcases (H.event i).transition.trace.tubes.closedBand_subset_or_capCore_union_cylinder_cutting_side
+      hK.some b R hR hRzero hinter (hKfront.trans hupperRange.symm) with hcaptured | hside
+  · exfalso
+    apply hexclude t ht K (fun x hx y hy =>
+      hcomparison x (hVU (interior_subset (hKV hx))) y (hVU (interior_subset (hKV hy)))) _
+      b.1 (hcaptured.2.trans interior_subset)
+    rw [hKfront, ← hupperRange]
+    rintro z ⟨q, rfl⟩
+    exact hdiscard ⟨(q, 1), ⟨mem_univ _, by norm_num⟩, rfl⟩
+  · exact ⟨_, hside⟩
+
+include G in
 theorem exists_late_capCore_cutting_side_of_stopped_cylinder_of_cutting_scale
     {C : ℝ} (hC : 1 ≤ C)
     (hscale : ∀ j, C ^ 2 * ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
@@ -556,78 +647,39 @@ theorem exists_late_capCore_cutting_side_of_stopped_cylinder_of_cutting_scale
                   ∃ K : Set (H.stage i.castSucc).Carrier, Nonempty (CapCore K) ∧
                       frontier K = range ((H.event i).transition.trace.tubes.boundarySphere b) ∧
                       Disjoint K ((H.event i).transition.trace.tubes.removedBand b.1) := by
-  obtain ⟨d, hd, hexclude⟩ :=
-    G.exists_late_not_closedBand_subset_canonical_of_cutting_scale hC hscale
+  obtain ⟨d, hd, hside⟩ :=
+    G.exists_late_capCore_cutting_side_of_spatial_cap_of_cutting_scale (sq_nonneg C) hscale
   refine ⟨d, hd, ?_⟩
   intro t ht eps C1 C2 heps hC2 b hb R hR hRzero hinter p nk a ha κ hRone W hchart hstop
-  obtain ⟨q₀, hq₀⟩ := not_forall.mp hb
-  have hdiscard := (H.event i).transition.trace.cylinder_subset_image_compl_retainedCore
-    b q₀ hq₀ R hR hRzero hinter
-  let _ : LocallyConnectedSpace (H.stage i.castSucc).Carrier :=
-    ChartedSpace.locallyConnectedSpace ThreeSpace (H.stage i.castSucc).Carrier
-  have hwhole : W.domain.carrier ≠ connectedComponent (nk.map (nk.center, a)) := by
-    intro heq
-    apply hexclude t ht eps C1 C2 hC2 _ W W.domain.carrier subset_rfl _ b.1
-    · rw [heq]
-      have hpoint : R (κ.symm nk.center, 1) = nk.map (nk.center, a) := by
-        rw [hRone, κ.apply_symm_apply]
-      rw [← hpoint]
-      exact (H.event i).transition.trace.tubes.closedBand_subset_connectedComponent_of_cylinder
-        b R (R.contMDiffOn_toFun.continuousOn.mono hR) hRzero (κ.symm nk.center)
-    · rw [heq, isClopen_connectedComponent.frontier_eq]
-      exact empty_subset _
-  have hcapdata : ∃ (U : Set (H.stage i.castSucc).Carrier), Nonempty (CapCore U) ∧
-      U ⊆ W.domain.carrier ∧
-      riemannianBallOf ((H.event i).incoming.flow.base.metric t) (nk.map (nk.center, a))
-        (1000 / Real.sqrt (metricScalarAt ((H.event i).incoming.flow.base.metric t)
-          (nk.map (nk.center, a)))) ⊆ interior U := by
-    cases htag : W.alternative with
-    | neck data => exact (hstop ⟨data.strong.toSpatialNeck⟩).elim
-    | positive whole data sec => exact (hwhole whole).elim
-    | round whole data => exact (hwhole whole).elim
-    | cap data depth =>
-      obtain ⟨U, _, _, hU, hUeq, _, hUW, _, _, _⟩ :=
-        CanonicalWitness.exists_cap_core_with_spatial_neck_frontier W hchart data depth htag
-      refine ⟨U.carrier, hU, hUW, ?_⟩
-      have hcore : data.core.carrier ⊆ U.carrier := by rw [hUeq]; exact subset_union_left
-      have hball := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_ball_subset_of_le_frontier_distance
-        ((H.event i).incoming.flow.base.metric t) data.center_inside
-        (r := ENNReal.ofReal (10000 / Real.sqrt ((H.event i).incoming.flow.scalar t (nk.map (nk.center, a))))) (by
-          intro z hz
-          have hztube : z ∈ data.tube := (data.overlap_eq.symm ▸ hz).2
-          exact (ENNReal.ofReal_le_ofReal (depth z hztube)).trans ENNReal.ofReal_toReal_le)
-      intro z hz
-      apply interior_mono hcore (hball ?_)
-      exact hz.trans_le (ENNReal.ofReal_le_ofReal
-        (div_le_div_of_nonneg_right (by norm_num) (Real.sqrt_nonneg _)))
-  obtain ⟨U, hU, hUW, hball⟩ := hcapdata
-  have hslab := nk.image_slab_subset_of_ball_subset heps nk.center ha rfl hball
-  have hlevel : |a| < eps⁻¹ := ha.trans_lt
-    ((lt_inv_comm₀ (by norm_num) nk.eps_pos).mpr (by linarith [nk.eps_small]))
-  obtain ⟨K, hK, _, _, hKfront, hKU⟩ :=
-    hU.some.exists_capCore_side_of_sphere_embedding (fun q : Sphere 2 => nk.map (q, a))
-      (nk.isSmoothEmbedding_level hlevel)
-      (by
-        rintro z ⟨q, rfl⟩
-        exact hslab ⟨(q, a), ⟨mem_univ _, abs_le.mp ha⟩, rfl⟩)
-  have hupperRange : range (fun q : Sphere 2 => R (q, 1)) =
-      range (fun q : Sphere 2 => nk.map (q, a)) := by
-    ext y
-    constructor
-    · rintro ⟨q, rfl⟩
-      exact ⟨κ q, (hRone q).symm⟩
-    · rintro ⟨q, rfl⟩
-      refine ⟨κ.symm q, ?_⟩
-      change R (κ.symm q, 1) = nk.map (q, a)
-      rw [hRone, κ.apply_symm_apply]
-  rcases (H.event i).transition.trace.tubes.closedBand_subset_or_capCore_union_cylinder_cutting_side
-      hK.some b R hR hRzero hinter (hKfront.trans hupperRange.symm) with hcaptured | hside
-  · exfalso
-    apply hexclude t ht eps C1 C2 hC2 _ W K (hKU.trans (interior_subset.trans hUW)) _
-      b.1 (hcaptured.2.trans interior_subset)
-    rw [hKfront, ← hupperRange]
-    rintro z ⟨q, rfl⟩
-    exact hdiscard ⟨(q, 1), ⟨mem_univ _, by norm_num⟩, rfl⟩
-  · exact ⟨_, hside⟩
+  apply hside t ht eps heps b hb R hR hRzero hinter p nk a ha κ hRone W.domain.carrier
+  · intro x hx y hy
+    have hC2pos : 0 < C2 := zero_lt_one.trans_le W.one_le_comparison_constant
+    have hCpos : 0 < C := zero_lt_one.trans_le hC
+    have hypos : 0 < (H.event i).incoming.flow.scalar t y :=
+      (mul_pos (inv_pos.mpr hC2pos) W.Q_pos).trans_le (W.scalar_bounds y hy).1
+    exact (W.scalar_le_sq_mul_at_mem_domain hy x hx).trans
+      (mul_le_mul_of_nonneg_right ((sq_le_sq₀ hC2pos.le hCpos.le).mpr hC2) hypos.le)
+  · by_cases hwhole : W.domain.carrier = connectedComponent (nk.map (nk.center, a))
+    · exact Or.inl hwhole
+    · right
+      cases htag : W.alternative with
+      | neck data => exact (hstop ⟨data.strong.toSpatialNeck⟩).elim
+      | positive whole data sec => exact (hwhole whole).elim
+      | round whole data => exact (hwhole whole).elim
+      | cap data depth =>
+        obtain ⟨U, _, _, hU, hUeq, _, hUW, _, _, _⟩ :=
+          CanonicalWitness.exists_cap_core_with_spatial_neck_frontier W hchart data depth htag
+        refine ⟨U.carrier, hU, hUW, ?_⟩
+        have hcore : data.core.carrier ⊆ U.carrier := by rw [hUeq]; exact subset_union_left
+        have hball := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_ball_subset_of_le_frontier_distance
+          ((H.event i).incoming.flow.base.metric t) data.center_inside
+          (r := ENNReal.ofReal (10000 / Real.sqrt ((H.event i).incoming.flow.scalar t (nk.map (nk.center, a))))) (by
+            intro z hz
+            have hztube : z ∈ data.tube := (data.overlap_eq.symm ▸ hz).2
+            exact (ENNReal.ofReal_le_ofReal (depth z hztube)).trans ENNReal.ofReal_toReal_le)
+        intro z hz
+        apply interior_mono hcore (hball ?_)
+        exact hz.trans_le (ENNReal.ofReal_le_ofReal
+          (div_le_div_of_nonneg_right (by norm_num) (Real.sqrt_nonneg _)))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
