@@ -28,4 +28,12 @@ Leaves (sorry, `PoincareEndgame.lean`): S `uniformDebitSurgeryStep`; C2 `noncoll
 | 15 | Design extraction for 13: exact shapes of `SpatialNeck`, `LocalCap`, positive/round alternatives, factory's witness field uses | — | running (analysis) |
 | 16 | `ProspectiveNeckSurvival` with a variable threshold sequence `q₀ₙ/Qₙ → 0` (output `Qmin = Λ·max q₀ 1`) | — | open, mechanical 300–500 |
 | 17 | Factory: replace the five `W.time_derivative` reads by the derivative clause | — | open, mechanical 150–300 |
+| 18 | Deep-horn arms: single-neck version delivered (`NeckRegionAxialArms`); chain version at fixed accuracy (18b `NeckChainAxialArms`) | A / A2 | 18b running |
+| 19 | `CapWindowPoint` margin `‖x‖ < Dcap + 1`, cap-window leaf outputs `Rcap` | W19 | done (uncommitted) |
+| 20 | CapWindow D2: derivative and gradient bounds at the cap point from `C^N` closeness (jets → bounds, scaling transport) | — | open |
+| 21 | Crossing room lemma: `¬ CapWindowPoint` ⇒ parabolically controlled ball of radius `c/√R` | X1 | 10a running |
+| 22 | C2 tools (OURS, after C): history L-exponential map for regular-crossing minimizers; Jacobian monotonicity of `regularizedDensity` through events; local upper bound / Gaussian tail (12a's bricks 1–3) | — | open, after C |
+| 23 | Cherry-pick Ziyang's 31 commits (286e17a8c..ac2e5266e; closure 56 files, aggregate union) | — | LAST, after 22 |
+
+Priority order (owner, 2026-09-26): C first (C3a–c, C4, S chain), then entry 22, then entry 23.
 

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PinchingThroughSurgery
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNeighborhoodContinuationLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
 
 
 set_option autoImplicit false
@@ -16,9 +17,27 @@ theorem uniformDebitSurgeryStep (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Met
     UniformDebitSurgeryStep P₀ g₀ := by
   sorry
 
-theorem noncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    NoncollapsingThroughSurgery P₀ g₀ := by
+theorem historyReducedVolumeMonotone (P₀ : OrientedThreeStage.{u}) :
+    HistoryReducedVolumeMonotone P₀ := by
   sorry
+
+theorem historyReducedVolumeLocalUpperBound (P₀ : OrientedThreeStage.{u}) :
+    HistoryReducedVolumeLocalUpperBound P₀ := by
+  sorry
+
+theorem historyReducedVolumeInitialLowerBound (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    HistoryReducedVolumeInitialLowerBound P₀ g₀ := by
+  sorry
+
+theorem smallScaleNoncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    SmallScaleNoncollapsingThroughSurgery P₀ g₀ := by
+  sorry
+
+theorem noncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    NoncollapsingThroughSurgery P₀ g₀ :=
+  noncollapsingThroughSurgery_of_reducedVolume_of_smallScale P₀ g₀
+    (historyReducedVolumeMonotone P₀) (historyReducedVolumeLocalUpperBound P₀)
+    (historyReducedVolumeInitialLowerBound P₀ g₀) (smallScaleNoncollapsingThroughSurgery P₀ g₀)
 
 theorem deepContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     DeepContinuation P₀ g₀ := by

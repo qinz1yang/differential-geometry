@@ -87,10 +87,10 @@ theorem hasCanonicalCutoffRecords_iff_exists_isCanonicalCutoffRecordFamily
 
 def CapWindowPoint {p : CutoffParameters}
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p)
-    (k : Fin (H.eventCount + 1)) (y : (H.stage k).Carrier) (t θcap : ℝ) : Prop :=
+    (k : Fin (H.eventCount + 1)) (y : (H.stage k).Carrier) (t Dcap θcap : ℝ) : Prop :=
   ∃ (j : Fin H.eventCount) (hl : j.succ ≤ k) (A : BackwardPointTrace H.toHistory j.succ k hl y)
     (b : (H.toHistory.event j).RetainedBoundaryIndex) (x : standardCapWindow p.modelRadius),
-    A.point j.succ le_rfl hl = ((records j).static b).window x ∧
+    A.point j.succ le_rfl hl = ((records j).static b).window x ∧ ‖x.val‖ < Dcap + 1 ∧
       t - H.time j.succ ≤ θcap * (((records j).static b).neck.scale)⁻¹
 
 end RetainedCoreHistory
@@ -144,10 +144,11 @@ def CapWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     C1₀ ≤ C1 → C2₀ ≤ C2 → τ₀ ≤ τmin → Ctime₀ ≤ Ctime → Cgrad₀ ≤ Cgrad →
   ∀ (κ : ℝ) (phi : ℝ → ℝ) (θ Dcap θcap : ℝ), 0 < κ → Perelman.AdmissiblePinchingFunction phi →
     0 < θ → 0 < Dcap → θcap < 1 →
-  ∃ (q₀ δmax ρmax εcap : ℝ) (mcap : ℕ), 0 < q₀ ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧
+  ∃ (Rcap q₀ δmax ρmax εcap : ℝ) (mcap : ℕ),
+    Dcap + 1 < Rcap ∧ 0 < q₀ ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧
   ∀ qcan : ℝ, q₀ ≤ qcan →
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
-      p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
+      p₀.modelAccuracy ≤ εcap → Rcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
     ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound)
       (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
@@ -164,7 +165,7 @@ def CapWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
           H.NoncollapsedBefore κ ε t₀ →
           ∃ η : ℝ, 0 < η ∧
             (H.toHistory.event j).incoming.CanonicalBoundsOn ε C1 C2 qcan τmin Ctime Cgrad t₀ η
-              fun y t => H.CapWindowPoint records j.castSucc y t θcap) ∧
+              fun y t => H.CapWindowPoint records j.castSucc y t Dcap θcap) ∧
       ∀ (s : ℝ)
         (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
         (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
@@ -178,7 +179,7 @@ def CapWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
           G.GradientBoundBefore Cgrad qcan t₀ →
           H.TerminalNoncollapsedBefore hH.2.1 G hG.2 κ ε t₀ →
           ∃ η : ℝ, 0 < η ∧ G.CanonicalBoundsOn ε C1 C2 qcan τmin Ctime Cgrad t₀ η
-            fun y t => H.CapWindowPoint records (Fin.last H.eventCount) y t θcap
+            fun y t => H.CapWindowPoint records (Fin.last H.eventCount) y t Dcap θcap
 
 def CrossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Prop :=
   ∀ (B ε : ℝ), 0 < B → 0 < ε → ε < 1 / 11 →
@@ -209,7 +210,7 @@ def CrossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : 
             (H.toHistory.event j).incoming.CanonicalBoundsOn ε C1 C2 qcan τmin Ctime Cgrad t₀ η
               fun y t => (H.toHistory.event j).incoming.flow.scalar t y *
                   (t - H.time j.castSucc) < θ ∧
-                ¬ H.CapWindowPoint records j.castSucc y t θcap) ∧
+                ¬ H.CapWindowPoint records j.castSucc y t Dcap θcap) ∧
       ∀ (s : ℝ)
         (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
         (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
@@ -224,7 +225,7 @@ def CrossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : 
           H.TerminalNoncollapsedBefore hH.2.1 G hG.2 κ ε t₀ →
           ∃ η : ℝ, 0 < η ∧ G.CanonicalBoundsOn ε C1 C2 qcan τmin Ctime Cgrad t₀ η
             fun y t => G.flow.scalar t y * (t - H.time (Fin.last H.eventCount)) < θ ∧
-              ¬ H.CapWindowPoint records (Fin.last H.eventCount) y t θcap
+              ¬ H.CapWindowPoint records (Fin.last H.eventCount) y t Dcap θcap
 
 theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) (hdeep : DeepContinuation P₀ g₀)
@@ -246,13 +247,13 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
       ((le_max_right _ _).trans (le_max_right _ _)) ((le_max_right _ _).trans (le_max_right _ _))
       ((le_max_right _ _).trans (le_max_right _ _)) ((le_max_right _ _).trans (le_max_right _ _))
       κ phi θ hκ hphi hθ
-  obtain ⟨qw, δw, ρw, εw, mw, hqw, hδw, hρw, hεw, hWstep⟩ :=
+  obtain ⟨Rw, qw, δw, ρw, εw, mw, hRw, hqw, hδw, hρw, hεw, hWstep⟩ :=
     hW _ _ _ _ _ ((le_max_left _ _).trans (le_max_right _ _))
       ((le_max_left _ _).trans (le_max_right _ _)) ((le_max_left _ _).trans (le_max_right _ _))
       ((le_max_left _ _).trans (le_max_right _ _)) ((le_max_left _ _).trans (le_max_right _ _))
       κ phi θ Dx θcap hκ hphi hθ hDx hθcap
   refine ⟨max qd (max qw qx), min δd (min δw δx), min ρd (min ρw ρx), min εd (min εw εx),
-    max Dd Dx, max md (max mw mx), lt_max_of_lt_left hqd, lt_min hδd (lt_min hδw hδx),
+    max Dd Rw, max md (max mw mx), lt_max_of_lt_left hqd, lt_min hδd (lt_min hδw hδx),
     lt_min hρd (lt_min hρw hρx), lt_min hεd (lt_min hεw hεx), lt_max_of_lt_left hDd, ?_⟩
   intro p₀ δbound ρbound hacc hDc hm hδ hρ H hH hpinch
   obtain ⟨p, records, hrec⟩ :=
@@ -270,7 +271,8 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
     (hρ.trans ((min_le_right _ _).trans (min_le_left _ _))) H hH p records hrec hpinch
   have hx := hXstep (max qd (max qw qx)) ((le_max_right _ _).trans (le_max_right _ _))
     p₀ δbound ρbound
-    (hacc.trans ((min_le_right _ _).trans (min_le_right _ _))) ((le_max_right _ _).trans hDc)
+    (hacc.trans ((min_le_right _ _).trans (min_le_right _ _)))
+    ((by linarith : Dx ≤ Rw).trans ((le_max_right _ _).trans hDc))
     (((le_max_right _ _).trans (le_max_right _ _)).trans hm)
     (hδ.trans ((min_le_right _ _).trans (min_le_right _ _)))
     (hρ.trans ((min_le_right _ _).trans (min_le_right _ _))) H hH p records hrec hpinch
@@ -284,7 +286,7 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
     rcases le_or_gt θ ((H.toHistory.event j).incoming.flow.scalar t y *
       (t - H.time j.castSucc)) with h | h
     · exact Or.inl h
-    · by_cases hc : H.CapWindowPoint records j.castSucc y t θcap
+    · by_cases hc : H.CapWindowPoint records j.castSucc y t Dx θcap
       · exact Or.inr (Or.inl hc)
       · exact Or.inr (Or.inr ⟨h, hc⟩)
   · intro s G hG hpG hcan hder hgrad hncL t₀ ht₀ hcb hdb hgb hnc
@@ -295,7 +297,7 @@ theorem canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing
       G.canonicalBoundsOn_of_cover h₁ h₂ h₃ fun y t => ?_⟩
     rcases le_or_gt θ (G.flow.scalar t y * (t - H.time (Fin.last H.eventCount))) with h | h
     · exact Or.inl h
-    · by_cases hc : H.CapWindowPoint records (Fin.last H.eventCount) y t θcap
+    · by_cases hc : H.CapWindowPoint records (Fin.last H.eventCount) y t Dx θcap
       · exact Or.inr (Or.inl hc)
       · exact Or.inr (Or.inr ⟨h, hc⟩)
 
