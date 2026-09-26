@@ -351,6 +351,43 @@ None of these closes a leaf.
   Jacobian and the Gaussian bound `exists_pos_historyReducedJacobian_le_gaussian` for history
   minimizers, only for `v` below the window's `δ`. H7b, C2M, C2E, C2W1 and R0 are running.
 
+### Accepted 2026-09-26 (ACC9; sorry-free, foundational axioms, 13 linters clean)
+
+None of these closes a leaf.
+* C2 small-scale (R0, `Skeleton/DESIGN_SMALLSCALE.md` §6.3): a compact simply connected manifold of
+  constant positive sectional curvature is isometric to a round sphere
+  (`Geometry/Metric/Sphere/Quotient/SimplyConnectedSpaceForm.lean`,
+  `exists_isometry_round_sphere_of_constant_positive_sectional_curvature`); the round `n`-sphere has
+  volume at least that of the unit `n`-ball (`Geometry/Metric/Sphere/Round/BallVolumeBound.lean`);
+  R1 `FiniteHorn.SpatialRoundComponent.volume_lower_of_simplyConnected`
+  (`Perelman/CanonicalNeighborhood/SpatialRoundComponentVolume.lean`) with the constant
+  `4 * Real.sqrt 3 * Real.pi` (a lower bound, not the exact `6√3π²` of §6.3).
+* NC0 (`Perelman/Noncollapsing/TerminalTime.lean`): parabolic κ-noncollapsing below a scale passes to
+  the terminal time (`parabolicallyKappaNoncollapsedBelowScale_of_forall_time_lt`); applies to the
+  ancient limit's `ancientTimeInterval` with no adapter.
+* C2 wave 1 (`Skeleton/DESIGN_C2_ASSEMBLY.md` §5.1–§5.4): G7′ injective area inequality
+  (`Analysis/Integration/Measure/Parametric/InjectiveAreaInequality.lean`,
+  `lintegral_paramDensity_mul_le_lintegral_image`); TailG uniform Gaussian tail for a bare metric
+  (`Perelman/LGeometry/Jacobian/MetricGaussianTail.lean`, `exists_uniform_tail_gaussian_metric`);
+  SB1/SB2 at a seam base time (`Topology/HistoryLGeometry/SeamBase.lean`, `…_of_mem_Ico` forms);
+  X1–X3 horizon extension (`Topology/HistoryHorizonExtension.lean`, `exists_extendHorizon_gt`,
+  `reducedVolume_extendHorizon`; the design's primed `mem_Icc_of_mem_stageDomain'` is
+  `mem_Icc_zero_horizon_of_mem_stageDomain`); E2a closed-start velocity limit
+  (`Perelman/LGeometry/Geodesic/ClosedStartVelocity.lean`) and E
+  (`Topology/HistoryLGeometry/ExponentialClosedStart.lean`,
+  `exists_isOpen_superset_historyMinDomain_subset_historyLExpDomain`). C2M (wave 1 M) is running.
+* C3c base slice (`Skeleton/DESIGN_BASESLICE.md`, lane BS1): BS1 `SlabTimeWindowContinuity`, BS2
+  `SliverWindowData`, BS3/BS4 `CapWindowPointTimeSlack`, BS5 event and terminal forms
+  `BoundedCurvatureAtDistanceSliver` (with `SliceBallBoundTransfer`), BS7
+  `InitialSlabScalarWindow`. BS6 (post-surgery stage start) is running.
+* C3c B6d glue (`Skeleton/DESIGN_B6D_GLUE.md`, lane B6G2): B4 short paths through a local pullback
+  (`Geometry/Metric/Pullback/LocalDistance.lean`), B5
+  `FiniteHorn.exists_neckAlternatives_localPull_of_metric_lower`
+  (`Topology/NeckAlternativesLocalPull.lean`), B6
+  `ObservedHistory.exists_neckAlternatives_of_survivor_maps`
+  (`Topology/TracedRegionAncientLimitNeckAlternatives.lean`, the producer of B6d's `hW`). B7 is
+  delivered (lane B6G3, not yet accepted); its κ-variant is running.
+
 ### Equivalence classes (rewrites; not progress)
 
 * `HasExtinctRetainedCoreHistory M g`, `HasExtinctRetainedCoreTower`, `HasExtinctObservationTower`,

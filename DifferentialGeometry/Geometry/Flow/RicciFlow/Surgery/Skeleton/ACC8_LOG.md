@@ -80,3 +80,4 @@
 - Ledgers: FREE_INPUTS (ACC8 section), FILL_QUEUE (22 bricks, Crossing rows), HANDOFF_C (ACC8
   status), HANDOFF_S (B3e update).
 - Commits: edc2b74b0 (B3e both slabs, 12 modules), fbd83ebcb (CF + H7c), eee792ac9 (B6d transfer, B6b'', B6d-glue B1–B3/B12); root lines staged per group. Commit 4: designs, digests, finished-lane logs, ledgers.
+- Commit 4 = 481017246; pushed edc2b74b0..481017246 to liao/codex/pc-target-c-psf (9126abc30..481017246). This line left uncommitted.

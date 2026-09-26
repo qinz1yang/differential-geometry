@@ -243,3 +243,11 @@ both slabs: `RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindo
 cap-window points. The rebased form (`hRP`), maximal traced depth, the ancient κ-limit's bounded
 curvature through the history (B6d glue, restated headline B11) and the cap-window exclusion remain
 open; `hlong` is still the only hypothesis of S.
+
+## Update 2026-09-26 (ACC9)
+
+B13 (`hlong`) is the Crossing X-core applied to horn points. ACC9 accepted the Crossing base-slice
+bricks BS1–BS5/BS7 (bounded curvature at distance on the sliver `[t₀, t]`, event and terminal forms,
+`Topology/BoundedCurvatureAtDistanceSliver.lean`) and the B6d glue B4–B6 (neck alternatives of the
+ancient limit from the survivor maps). BS6, B7's κ-variant and B11 remain; `hlong` is still the only
+hypothesis of S.

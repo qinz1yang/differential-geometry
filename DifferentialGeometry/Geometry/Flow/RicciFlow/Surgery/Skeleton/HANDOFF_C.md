@@ -164,6 +164,16 @@ history consumer cannot meet at slice times exceptional for infinitely many `n`;
 `DESIGN_B6D_GLUE.md` restates it. B6b'' (`TracedRegionAncientLimitWitnesses.lean`) and the glue
 bricks B1–B3/B12 are accepted; B4–B7, NC0, X and BASESLICE are running.
 
+### Status 2026-09-26 (ACC9)
+
+C3c inputs accepted, none closes the leaf. Base slice (`DESIGN_BASESLICE.md`): BS1–BS5 and BS7
+(`SlabTimeWindowContinuity`, `SliverWindowData`, `CapWindowPointTimeSlack`, `SliceBallBoundTransfer`,
+`BoundedCurvatureAtDistanceSliver` event and terminal, `InitialSlabScalarWindow`); BS6 (ball bound at
+a post-surgery stage start) is running. B6d glue B4–B6 (`Metric/Pullback/LocalDistance`,
+`NeckAlternativesLocalPull`, `TracedRegionAncientLimitNeckAlternatives`: the neck alternatives `hW`
+from the survivor maps) accepted; B7 delivered, its κ-variant running; B11 open. NC0
+(`Perelman/Noncollapsing/TerminalTime`) gives κ-noncollapsing at the terminal time of the limit.
+
 ### Quantifier order (kept; decided 2026-09-25 evening)
 
 `τmin` stays a model constant chosen with `C1 C2 Ctime` before `κ`. An attempt to choose `τmin` after
