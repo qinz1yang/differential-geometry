@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
 import DifferentialGeometry.Topology.FirstExit
 import DifferentialGeometry.Topology.Manifold.OpenEmbedding
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Clamp.Smooth
@@ -190,6 +191,41 @@ theorem exists_contMDiffOn_lifts_tendstoUniformly_on_interval
   apply hWV
   change ((γU r.val).val, (β n r.val).val) ∈ W
   simpa only [hγeq r.property, hβeq n r.property] using hn r
+
+end DifferentialGeometry.Topology.Manifold
+
+end
+
+noncomputable section
+open Set Manifold TopologicalSpace
+open scoped Manifold ContDiff
+namespace DifferentialGeometry.Topology.Manifold
+
+open Function
+
+variable {E F H G X Y : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [TopologicalSpace X] [ChartedSpace H X] [IsManifold I 1 X]
+  [TopologicalSpace Y] [ChartedSpace G Y] [IsManifold J 1 Y]
+
+theorem exists_absolutelyContinuousOnInterval_lift_of_injective_localDiffeomorph
+    (f : X → Y) (hf : IsLocalDiffeomorph I J ∞ f) (hinj : Injective f)
+    (gamma : ℝ → Y) {a b : ℝ}
+    (hgamma : _root_.Manifold.absolutelyContinuousOnInterval J gamma a b)
+    (hstay : MapsTo gamma (uIcc a b) (range f)) :
+    ∃ beta : ℝ → X, _root_.Manifold.absolutelyContinuousOnInterval I beta a b ∧
+      EqOn (f ∘ beta) gamma (uIcc a b) := by
+  let U := hf.image
+  let e := diffeomorphOntoImage f hf hinj
+  obtain ⟨eta, heta, heq⟩ := _root_.Manifold.exists_absolutelyContinuousOnInterval_openSubtype
+    U hgamma hstay
+  refine ⟨e.symm ∘ eta,
+    _root_.Manifold.absolutelyContinuousOnInterval_comp_contMDiff heta
+      (e.symm.contMDiff.of_le (by norm_num)), ?_⟩
+  intro r hr
+  exact (diffeomorphOntoImage_symm_apply f hf hinj (eta r)).trans (heq hr)
 
 end DifferentialGeometry.Topology.Manifold
 

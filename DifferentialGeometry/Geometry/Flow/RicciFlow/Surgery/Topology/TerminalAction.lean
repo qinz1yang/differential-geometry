@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.PrefixMinimality
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Minimizer.CarrierC1Regularity
 import Mathlib.Topology.ContinuousMap.Ordered
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.Curve.ManifoldAbsolutelyContinuous
 import DifferentialGeometry.Geometry.Metric.Comparison.CurveCompactness
@@ -1748,6 +1750,105 @@ theorem TerminalLimitMetric.exists_lRegularizedAction_minimizer
   have hbetaLower := hbelow beta hbeta.contMDiffOn (hbetaU.trans hdeltaU)
     (hbetaV.trans hdeltaV) hbetaInt
   linarith only [hgap, hgammaAct, hbetaLower, hbetaAct]
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+end
+
+
+noncomputable section
+
+open Set Filter Manifold MeasureTheory Bundle
+open DifferentialGeometry DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Tensor.Coordinates
+open DifferentialGeometry.PDE.RicciFlow.Perelman
+open scoped Manifold ContDiff Topology Interval
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
+
+universe uIncomingC1
+variable {P : OrientedThreeStage.{uIncomingC1}} {a s : ℝ} {G : P.IncomingSlab a s}
+
+theorem TerminalLimitMetric.exists_contMDiffOn_one_collar_of_action_minimal
+    (L : G.TerminalLimitMetric) {T u v : ℝ} {α : ℝ → P.Carrier}
+    (hu : 0 ≤ u) (huv : u < v) (hTu : T - u ^ 2 = s) (ha : a ≤ T - v ^ 2)
+    (hα : Manifold.absolutelyContinuousOnInterval ThreeModel α u v)
+    (hint : IntervalIntegrable (lRegularizedLagrangian G.flow T α) volume u v)
+    (hterminal : α u ∈ G.terminalRegularOpen)
+    (hmin : ∀ β : ℝ → P.Carrier,
+      Manifold.absolutelyContinuousOnInterval ThreeModel β u v →
+      IntervalIntegrable (lRegularizedLagrangian G.flow T β) volume u v →
+      β u = α u → β v = α v →
+      lRegularizedAction G.flow T α u v ≤ lRegularizedAction G.flow T β u v) :
+    ∃ d ∈ Ioo u v, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 α (Icc u d) := by
+  obtain ⟨d, hd, hds, η, hη, hproj, had, hS, hclock, _, hact, _, hηint⟩ :=
+    L.exists_absolutelyContinuous_closedSolution_collar hu huv hTu ha hα hterminal
+  let W : TopologicalSpace.Opens G.terminalRegularOpen := ⊤
+  let S := L.closedSolution W hds.le
+  let : SigmaCompactSpace G.terminalRegularOpen :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
+  let : SigmaCompactSpace W :=
+    isSigmaCompact_iff_sigmaCompactSpace.mp
+      (Geometry.isSigmaCompact_of_isOpen ThreeModel W.isOpen)
+  let : TopologicalSpace.MetrizableSpace W := Manifold.metrizableSpace ThreeModel W
+  have hreg (r : ℝ) (hr : r ∈ Ioo u d) :
+      T - r ^ 2 ∈ (RealTimeInterval.closed (T - d ^ 2) s hds.le).regular := by
+    change T - d ^ 2 < T - r ^ 2 ∧ T - r ^ 2 < s
+    have hr0 := hu.trans hr.1.le
+    constructor
+    · nlinarith [sq_lt_sq₀ hr0 (hr0.trans hr.2.le) |>.2 hr.2]
+    · nlinarith [sq_lt_sq₀ hu hr0 |>.2 hr.1]
+  have hGramFd (p : W) : ContinuousOn (fun z : ℝ × ThreeSpace => fderiv ℝ
+      (fun y : ThreeSpace => chartGramOp (I := ThreeModel) S.family p (z.1, y)) z.2)
+      (Icc (T - d ^ 2) s ×ˢ interior (extChartAt ThreeModel p).target) :=
+    L.closedSolution_chartGram_spatial_fderiv_continuousOn W had hds p
+  have hScalFd (p : W) : ContinuousOn (fun z : ℝ × ThreeSpace => fderiv ℝ
+      (scalarOnE (I := ThreeModel) p (S.scalar z.1)) z.2)
+      (Icc (T - d ^ 2) s ×ˢ interior (extChartAt ThreeModel p).target) :=
+    L.closedSolution_scalarOnE_spatial_fderiv_continuousOn W had hds p
+  have hminη : ∀ δ : ℝ → W, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 δ →
+      δ u = η u → δ d = η d →
+      lRegularizedAction S T η u d ≤ lRegularizedAction S T δ u d := by
+    intro δ hδ hδu hδd
+    let β : ℝ → P.Carrier := fun r => (δ r).val.val
+    have hβ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 β :=
+      contMDiff_subtype_val.comp (contMDiff_subtype_val.comp hδ)
+    have hδint : IntervalIntegrable (lRegularizedLagrangian S T δ) volume u d := by
+      have hc := lRegularizedLagrangian_continuousOn_carrier S hS δ hδ
+      exact (hc.comp (f := fun r : ℝ => (T, r))
+        (continuous_const.prodMk continuous_id).continuousOn hclock).intervalIntegrable_of_Icc hd.1.le
+    have hlag := closedSolution_lagrangian_ae_eq_of_projection L W (d := d) hds.le hu hTu δ β
+      (fun _ _ => rfl)
+    have hlag' : lRegularizedLagrangian S T δ =ᵐ[volume.restrict (Ι u d)]
+        lRegularizedLagrangian G.flow T β := by
+      rw [uIoc_of_le hd.1.le]
+      exact ae_mono (Measure.restrict_mono_set volume Ioc_subset_Icc_self) hlag
+    have hβint := (intervalIntegrable_congr_ae hlag').mp hδint
+    have hδact : lRegularizedAction S T δ u d = lRegularizedAction G.flow T β u d :=
+      intervalIntegral.integral_congr_ae_restrict hlag'
+    have hβu : β u = α u := by
+      dsimp only [β]
+      rw [hδu]
+      exact hproj ⟨le_rfl, hd.1.le⟩
+    have hβd : β d = α d := by
+      dsimp only [β]
+      rw [hδd]
+      exact hproj ⟨hd.1.le, le_rfl⟩
+    rw [hact, hδact]
+    exact lRegularizedAction_minimal_on_subinterval_of_absolutelyContinuousOnInterval
+      G.flow T u u d v le_rfl hd.1.le hd.2.le α hα hint hmin β
+      (Manifold.absolutelyContinuousOnInterval_of_contMDiffOn hβ.contMDiffOn)
+      hβint hβu hβd
+  have hηC1 := lMinCurve_c1_of_absolutelyContinuousOnInterval_of_spatial_derivatives
+    S hS T u d hd.1 η hη (hηint hint) (Icc (T - d ^ 2) s)
+    Subset.rfl hclock hreg hGramFd hScalFd hminη
+  have hprojC1 : ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1
+      (fun r => (η r).val.val) (Icc u d) :=
+    contMDiff_subtype_val.comp_contMDiffOn
+      (contMDiff_subtype_val.comp_contMDiffOn hηC1)
+  exact ⟨d, hd, hprojC1.congr hproj.symm⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab
 

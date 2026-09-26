@@ -3717,3 +3717,30 @@ theorem exists_uniform_time_sum_stageRegularizedAction_gt_of_point_outside_contr
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+noncomputable section
+open Set
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+universe u
+variable (H : ObservedHistory.{u})
+
+theorem mapsTo_regularizedStage_Ioo_Ioo (T u v : ℝ) (j : Fin (H.eventCount + 1)) :
+    MapsTo (fun t : ℝ => T - t ^ 2)
+      (Ioo (H.regularizedStageStart T u j) (H.regularizedStageEnd T v j))
+      (Ioo (H.time j) (H.stageEndTime j)) := by
+  intro t ht
+  have ht0 : 0 ≤ t := (Real.sqrt_nonneg _).trans ht.1.le
+  have hlo : T - min (T - u ^ 2) (H.stageEndTime j) < t ^ 2 := by
+    have hnn : 0 ≤ T - min (T - u ^ 2) (H.stageEndTime j) := by
+      have hh := min_le_left (T - u ^ 2) (H.stageEndTime j)
+      linarith [sq_nonneg u]
+    exact (Real.sqrt_lt hnn ht0).mp ht.1
+  have hhi : t ^ 2 < T - max (T - v ^ 2) (H.time j) := (Real.lt_sqrt ht0).mp ht.2
+  constructor
+  · have hjmax := le_max_right (T - v ^ 2) (H.time j)
+    linarith
+  · have hminend := min_le_right (T - u ^ 2) (H.stageEndTime j)
+    linarith
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+end
