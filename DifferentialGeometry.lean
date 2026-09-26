@@ -14041,12 +14041,14 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowEv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.TimeContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.PhaseFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.EventContinuation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.GeodesicFamily
 import DifferentialGeometry.Geometry.Curve.EndpointDerivative
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.FamilyLift
 import DifferentialGeometry.Geometry.Curve.VelocityFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorGeodesicFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.FamilyLift
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.FamilyContinuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventFirstVariation
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.Naturality.VariationPairing
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorIndexBoundary

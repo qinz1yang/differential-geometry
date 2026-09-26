@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Family
 import DifferentialGeometry.Topology.Manifold.SmoothInterval
+import DifferentialGeometry.Topology.Manifold.CurveIntervalExtension
 import DifferentialGeometry.Analysis.ODE.Uniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.Congruence
 
@@ -56,13 +57,13 @@ private theorem continuousAt_lPhaseState_of_contMDiffAt_one
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-theorem exists_lRegularizedGeodesic_smooth_tail_of_contMDiffAt_one
+theorem exists_lRegularizedGeodesic_smooth_tail_Ioo_of_contMDiffAt_one
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
-    (T : ℝ) {alpha : ℝ → M} {b : ℝ} (hb : 0 < b)
+    (T : ℝ) {alpha : ℝ → M} {a b : ℝ} (hab : a < b)
     (hC1 : ContMDiffAt 𝓘(ℝ, ℝ) I 1 alpha b)
     (hregb : T - b ^ 2 ∈ D.regular)
-    (halpha : IsLRegularizedGeodesicOn S T alpha (Ioo 0 b)) :
-    ∃ c ∈ Ioo 0 b, ∃ U : Set ℝ, IsOpen U ∧ Icc c b ⊆ U ∧
+    (halpha : IsLRegularizedGeodesicOn S T alpha (Ioo a b)) :
+    ∃ c ∈ Ioo a b, ∃ U : Set ℝ, IsOpen U ∧ Icc c b ⊆ U ∧
       ∃ beta : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I ∞ beta U ∧
         IsLRegularizedGeodesicOn S T beta U ∧ EqOn beta alpha (Icc c b) ∧
         lVelocity (I := I) beta b = lVelocity (I := I) alpha b := by
@@ -88,28 +89,28 @@ theorem exists_lRegularizedGeodesic_smooth_tail_of_contMDiffAt_one
     rw [hbeta.1]
     exact (chartAt H x).open_source.mem_nhds (mem_chart_source H x)
   have hnb : ∀ᶠ r in 𝓝 b,
-      r ∈ U ∧ 0 < r ∧ alpha r ∈ (chartAt H x).source ∧
+      r ∈ U ∧ a < r ∧ alpha r ∈ (chartAt H x).source ∧
         beta r ∈ (chartAt H x).source := by
-    filter_upwards [isOpen_Ioo.mem_nhds hbU, Ioi_mem_nhds hb, hasrc, hbsrc]
+    filter_upwards [isOpen_Ioo.mem_nhds hbU, Ioi_mem_nhds hab, hasrc, hbsrc]
       with r hrU hr0 hra hrb
     exact ⟨hrU, hr0, hra, hrb⟩
-  obtain ⟨a, hab, ha⟩ := mem_nhdsLE_iff_exists_Icc_subset.mp
+  obtain ⟨d, hdb, hd⟩ := mem_nhdsLE_iff_exists_Icc_subset.mp
     (nhdsWithin_le_nhds hnb)
-  have ha0 : 0 < a := (ha ⟨le_rfl, hab.le⟩).2.1
+  have had : a < d := (hd ⟨le_rfl, hdb.le⟩).2.1
   let za : ℝ → E × E := fun r =>
     (chartCurve (I := I) x alpha r,
       chartRepAtBase (I := I) x alpha (fun t => lVelocity (I := I) alpha t) r)
   let zb : ℝ → E × E := fun r =>
     (chartCurve (I := I) x beta r,
       chartRepAtBase (I := I) x beta (fun t => lVelocity (I := I) beta t) r)
-  have hza : ∀ r ∈ Ioo a b, HasDerivAt za (lPhaseField S T x r (za r)) r := by
+  have hza : ∀ r ∈ Ioo d b, HasDerivAt za (lPhaseField S T x r (za r)) r := by
     intro r hr
-    have hr' := ha (Ioo_subset_Icc_self hr)
+    have hr' := hd (Ioo_subset_Icc_self hr)
     have h := halpha r ⟨hr'.2.1, hr.2⟩
     exact lRegularizedCurve_phase S T x alpha r h.2.1 hr'.2.2.1 h.2.2.1 h.2.2.2
-  have hzb : ∀ r ∈ Ioo a b, HasDerivAt zb (lPhaseField S T x r (zb r)) r := by
+  have hzb : ∀ r ∈ Ioo d b, HasDerivAt zb (lPhaseField S T x r (zb r)) r := by
     intro r hr
-    have hr' := ha (Ioo_subset_Icc_self hr)
+    have hr' := hd (Ioo_subset_Icc_self hr)
     have h := hbeta.2.2 r hr'.1
     exact lRegularizedCurve_phase S T x beta r h.2.1 hr'.2.2.2 h.2.2.1 h.2.2.2
   have hphase0 : za b = zb b := by
@@ -128,19 +129,57 @@ theorem exists_lRegularizedGeodesic_smooth_tail_of_contMDiffAt_one
     exact (lRegularizedCurve_phase S T x beta b h.2.1 hsrcb
       h.2.2.1 h.2.2.2).continuousAt.continuousWithinAt
   obtain ⟨c, hc, heq⟩ :=
-    DifferentialGeometry.Analysis.ODE.exists_eqOn_Icc_of_hasDerivAt_of_contDiffAt hab
+    DifferentialGeometry.Analysis.ODE.exists_eqOn_Icc_of_hasDerivAt_of_contDiffAt hdb
       ((lPhaseField_smoothAt S hS T x hregb htarget).of_le
         (by norm_num)) hza hzb hzab hzbb hphase0
-  have hca : Icc c b ⊆ Icc a b := Icc_subset_Icc_left hc.1.le
-  refine ⟨c, ⟨ha0.trans hc.1, hc.2⟩, U, isOpen_Ioo,
-    (fun r hr => (ha (hca hr)).1), beta, hbetaSmooth, hbeta.2.2, ?_, hbeta.2.1⟩
+  have hcd : Icc c b ⊆ Icc d b := Icc_subset_Icc_left hc.1.le
+  refine ⟨c, ⟨had.trans hc.1, hc.2⟩, U, isOpen_Ioo,
+    (fun r hr => (hd (hcd hr)).1), beta, hbetaSmooth, hbeta.2.2, ?_, hbeta.2.1⟩
   intro r hr
   apply (extChartAt I x).injOn
   · rw [DifferentialGeometry.Tensor.Coordinates.extChartAt_source_eq_chartAt_source]
-    exact (ha (hca hr)).2.2.2
+    exact (hd (hcd hr)).2.2.2
   · rw [DifferentialGeometry.Tensor.Coordinates.extChartAt_source_eq_chartAt_source]
-    exact (ha (hca hr)).2.2.1
+    exact (hd (hcd hr)).2.2.1
   · exact (congrArg Prod.fst (heq hr)).symm
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedGeodesic_smooth_tail_of_contMDiffAt_one
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : ℝ) {alpha : ℝ → M} {b : ℝ} (hb : 0 < b)
+    (hC1 : ContMDiffAt 𝓘(ℝ, ℝ) I 1 alpha b)
+    (hregb : T - b ^ 2 ∈ D.regular)
+    (halpha : IsLRegularizedGeodesicOn S T alpha (Ioo 0 b)) :
+    ∃ c ∈ Ioo 0 b, ∃ U : Set ℝ, IsOpen U ∧ Icc c b ⊆ U ∧
+      ∃ beta : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I ∞ beta U ∧
+        IsLRegularizedGeodesicOn S T beta U ∧ EqOn beta alpha (Icc c b) ∧
+        lVelocity (I := I) beta b = lVelocity (I := I) alpha b := by
+  exact exists_lRegularizedGeodesic_smooth_tail_Ioo_of_contMDiffAt_one
+    S hS T hb hC1 hregb halpha
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_lRegularizedGeodesic_smooth_tail_of_contMDiffOn_one
+    (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn (I := I) S)
+    (T : ℝ) {alpha : ℝ → M} {a b : ℝ} (hab : a < b)
+    (hC1 : ContMDiffOn 𝓘(ℝ, ℝ) I 1 alpha (Icc a b))
+    (hregb : T - b ^ 2 ∈ D.regular)
+    (halpha : IsLRegularizedGeodesicOn S T alpha (Ioo a b)) :
+    ∃ c ∈ Ioo a b, ∃ U : Set ℝ, IsOpen U ∧ Icc c b ⊆ U ∧
+      ∃ beta : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I ∞ beta U ∧
+        IsLRegularizedGeodesicOn S T beta U ∧ EqOn beta alpha (Icc c b) := by
+  obtain ⟨sigma, hsigma, heq⟩ :=
+    DifferentialGeometry.Topology.exists_contMDiff_extension_Icc hC1
+  have hsigmaGeo : IsLRegularizedGeodesicOn S T sigma (Ioo a b) :=
+    halpha.congr_of_eventuallyEq (fun r hr =>
+      heq.eventuallyEq_of_mem (Icc_mem_nhds hr.1 hr.2))
+  obtain ⟨c, hc, U, hU, hsub, beta, hbeta, hgeo, hbetaEq, _⟩ :=
+    exists_lRegularizedGeodesic_smooth_tail_Ioo_of_contMDiffAt_one
+      S hS T hab hsigma.contMDiffAt hregb hsigmaGeo
+  refine ⟨c, hc, U, hU, hsub, beta, hbeta, hgeo, ?_⟩
+  intro r hr
+  exact (hbetaEq hr).trans (heq ⟨hc.1.le.trans hr.1, hr.2⟩)
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
