@@ -14037,3 +14037,5 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventParame
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.TimeContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.PhaseFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.EventContinuation
+import DifferentialGeometry.Geometry.Curve.EndpointDerivative
