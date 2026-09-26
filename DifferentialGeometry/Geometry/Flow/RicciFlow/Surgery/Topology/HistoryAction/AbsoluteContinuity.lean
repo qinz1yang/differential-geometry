@@ -2641,3 +2641,40 @@ theorem exists_regularizedGeodesic_survivor_lift_of_regularizedExtendedAction_eq
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+noncomputable section
+
+open Set
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+variable (H : ObservedHistory.{u})
+
+def regularizedSpatialCost (t : Icc (0 : ℝ) H.horizon) (B : ℝ)
+    (p : (H.stageAt t).Carrier) (v : Icc (0 : ℝ) (Real.sqrt t.val)) : WithTop ℝ :=
+  let s : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, by
+    constructor
+    · have hsq : v.val ^ 2 ≤ t.val := (Real.le_sqrt v.property.1 t.property.1).mp v.property.2
+      exact sub_nonneg.mpr hsq
+    · exact (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩
+  sInf (range (H.regularizedCost (H.activeStage s) (H.activeStage t)
+    (H.activeStage_mono (by change t.val - v.val ^ 2 ≤ t.val; exact sub_le_self _ (sq_nonneg _))) t B 0 v.val p))
+
+theorem regularizedSpatialCost_eq_of_mem_stageDomain
+    (t : Icc (0 : ℝ) H.horizon) (B : ℝ) (p : (H.stageAt t).Carrier)
+    (v : Icc (0 : ℝ) (Real.sqrt t.val)) (first : Fin (H.eventCount + 1))
+    (hle : first ≤ H.activeStage t) (hclock : t.val - v.val ^ 2 ∈ H.stageDomain first) :
+    H.regularizedSpatialCost t B p v =
+      sInf (range (H.regularizedCost first (H.activeStage t) hle t B 0 v.val p)) := by
+  let s : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, H.stageDomain_subset first hclock⟩
+  have hs : s ≤ t := by change t.val - v.val ^ 2 ≤ t.val; exact sub_le_self _ (sq_nonneg _)
+  have he : H.activeStage s = first := (H.mem_stageDomain_iff s first).mp hclock
+  have hj : (⟨H.activeStage s, H.activeStage_mono hs⟩ :
+      {j : Fin (H.eventCount + 1) // j ≤ H.activeStage t}) = ⟨first, hle⟩ := Subtype.ext he
+  exact congrArg (fun j : {j : Fin (H.eventCount + 1) // j ≤ H.activeStage t} =>
+    sInf (range (H.regularizedCost j.val (H.activeStage t) j.property t B 0 v.val p))) hj
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end

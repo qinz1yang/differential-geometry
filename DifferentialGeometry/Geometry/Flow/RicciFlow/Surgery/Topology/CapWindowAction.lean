@@ -2531,3 +2531,146 @@ theorem exists_uniform_continuousAt_spatial_regularizedCost_at_event
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end
+
+noncomputable section
+
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Topology NNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+theorem exists_uniform_continuousAt_regularizedSpatialCost
+    (A E rTerm qDeriv a₀ c ρ : ℝ) (Cderiv : ℝ≥0)
+    (hE : 0 ≤ E) (hrTerm : 0 < rTerm) (hqDeriv : 0 < qDeriv)
+    (ha₀ : 0 < a₀) (hc : 0 < c) (hρ : 0 < ρ) :
+    ∃ m₀ : ℕ, ∃ R₀ ε₀ δ₀ : ℝ, 0 < R₀ ∧ 0 < ε₀ ∧ 0 < δ₀ ∧
+      ∀ (H : ObservedHistory.{u}) (parameters : CutoffParameters),
+      m₀ ≤ parameters.modelOrder → R₀ ≤ parameters.modelRadius →
+      parameters.modelAccuracy ≤ ε₀ → parameters.recenterConstant ≤ c →
+      (∀ j : Fin H.eventCount, parameters.delta (H.time j.succ) ≤ δ₀) →
+      (∀ j : Fin H.eventCount, parameters.neckRadius (H.time j.succ) ≤ ρ) →
+      ∀ records : ∀ j, GeometricCutoffRecord H j parameters,
+      (∀ y, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ y) →
+      (∀ y, -3 / a₀ ≤ metricScalarAt (H.initialMetric 0) y) →
+      (∀ (j : Fin (H.eventCount + 1)) (y : (H.stage j).Carrier),
+        ∀ s ∈ Ioo (H.time j) (H.stageEndTime j),
+          qDeriv < metricScalarAt (H.stageMetric j s) y →
+            |derivWithin (fun z => metricScalarAt (H.stageMetric j z) y) (Iic s) s| ≤
+              Cderiv * metricScalarAt (H.stageMetric j s) y ^ 2) →
+      (∀ (i : Fin H.eventCount) (b : (H.event i).RetainedBoundaryIndex),
+        ((records i).static b).hasCanonicalWindow) →
+      ∀ (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier),
+      H.isParabolicallyRmControlledBall t p rTerm →
+      ∀ v : Icc (0 : ℝ) (Real.sqrt t.val), 0 < v.val → v.val ≤ E →
+      H.regularizedSpatialCost t (3 / a₀) p v < (A : WithTop ℝ) →
+      ContinuousAt (H.regularizedSpatialCost t (3 / a₀) p) v := by
+  classical
+  obtain ⟨m₀, R₀, ε₀, δ₀, hR₀, hε₀, hδ₀, hevents⟩ :=
+    exists_uniform_continuousAt_spatial_regularizedCost_at_event.{u}
+      A E rTerm qDeriv a₀ c ρ Cderiv hE hrTerm hqDeriv ha₀ hc hρ
+  refine ⟨m₀, R₀, ε₀, δ₀, hR₀, hε₀, hδ₀, ?_⟩
+  intro H parameters hm hmodelRadius herror hpc hδ hρp records hfixed hscalarInitial hderiv
+    hcanonical t p hball v hv hvE hlow
+  have hphysical (w : Icc (0 : ℝ) (Real.sqrt t.val)) :
+      t.val - w.val ^ 2 ∈ Icc 0 H.horizon := by
+    have hsq : w.val ^ 2 ≤ t.val := (Real.le_sqrt w.property.1 t.property.1).mp w.property.2
+    exact ⟨sub_nonneg.mpr hsq, (sub_le_self _ (sq_nonneg _)).trans t.property.2⟩
+  have hupper : t.val - (0 : ℝ) ^ 2 ∈ H.stageDomain (H.activeStage t) := by
+    simpa only [zero_pow (by decide : 2 ≠ 0), sub_zero] using H.activeStage_mem t
+  have hlowAt (first : Fin (H.eventCount + 1)) (hle : first ≤ H.activeStage t)
+      (hclock : t.val - v.val ^ 2 ∈ H.stageDomain first) :
+      ∃ q : (H.stage first).Carrier,
+        H.regularizedCost first (H.activeStage t) hle t (3 / a₀) 0 v.val p q < (A : WithTop ℝ) := by
+    have hh := hlow
+    rw [H.regularizedSpatialCost_eq_of_mem_stageDomain t (3 / a₀) p v first hle hclock] at hh
+    have hne : (range (H.regularizedCost first (H.activeStage t) hle t (3 / a₀) 0 v.val p)).Nonempty := by
+      by_contra hn
+      rw [Set.not_nonempty_iff_eq_empty.mp hn, WithTop.sInf_empty] at hh
+      exact not_lt_of_ge le_top hh
+    obtain ⟨_, ⟨q, rfl⟩, hq⟩ := exists_lt_of_csInf_lt hne hh
+    exact ⟨q, hq⟩
+  have hpreserve := H.fixedHamiltonIveyRegion_and_scalar_lower records ha₀ hfixed hscalarInitial
+  have hfloor (j : Fin (H.eventCount + 1)) (r : ℝ) (hr : r ∈ H.stageDomain j)
+      (x : (H.stage j).Carrier) : -(3 / a₀) ≤ metricScalarAt (H.stageMetric j r) x := by
+    have htime := (H.stageDomain_subset j hr).1
+    have hratio : 3 / (a₀ + r) ≤ 3 / a₀ :=
+      div_le_div_of_nonneg_left (by norm_num : (0 : ℝ) ≤ 3) ha₀ (le_add_of_nonneg_right htime)
+    have hneg : -(3 / a₀) ≤ -3 / (a₀ + r) := by
+      simpa only [neg_div] using neg_le_neg hratio
+    exact hneg.trans (hpreserve.1 j r hr x).2
+  by_cases hvmax : v.val = Real.sqrt t.val
+  · have hclock : t.val - v.val ^ 2 ∈ H.stageDomain 0 := by
+      rw [hvmax, Real.sq_sqrt t.property.1, sub_self, ← H.time_zero]
+      exact H.time_mem_stageDomain 0
+    obtain ⟨q, hq⟩ := hlowAt 0 (Fin.zero_le _) hclock
+    apply H.continuousAt_regularizedSpatialCost_of_eq_sqrt t (3 / a₀) p v hvmax hfloor
+    refine ⟨q, ?_⟩
+    intro he
+    rw [he] at hq
+    exact not_lt_of_ge le_top hq
+  have hvT : v.val < Real.sqrt t.val := lt_of_le_of_ne v.property.2 hvmax
+  by_cases hevent : ∃ i : Fin H.eventCount, t.val - v.val ^ 2 = H.time i.succ
+  · obtain ⟨i, hi⟩ := hevent
+    have hle : i.succ ≤ H.activeStage t :=
+      H.le_activeStage t i.succ (by rw [← hi]; exact sub_le_self _ (sq_nonneg _))
+    have hclock : t.val - v.val ^ 2 ∈ H.stageDomain i.succ := hi ▸ H.time_mem_stageDomain i.succ
+    have hcont := hevents H parameters hm hmodelRadius herror hpc hδ hρp records hfixed
+      hscalarInitial hderiv i (hcanonical i) t p hball v.val hv hvE hi (hlowAt i.succ hle hclock)
+    have hswitch := H.eventually_activeStage_eq_of_backward_clock_event i hv hi
+    have heq : H.regularizedSpatialCost t (3 / a₀) p =ᶠ[𝓝 v]
+        (fun w : Icc (0 : ℝ) (Real.sqrt t.val) => if w.val ≤ v.val then
+          sInf (range (H.regularizedCost i.succ (H.activeStage t) hle t (3 / a₀) 0 w.val p)) else
+          sInf (range (H.regularizedCost i.castSucc (H.activeStage t)
+            (i.castSucc_le_succ.trans hle) t (3 / a₀) 0 w.val p))) := by
+      filter_upwards [continuous_subtype_val.continuousAt.eventually hswitch] with w hw
+      have hh := hw (hphysical w)
+      split_ifs with hwv
+      · apply H.regularizedSpatialCost_eq_of_mem_stageDomain
+        apply (H.mem_stageDomain_iff ⟨t.val - w.val ^ 2, hphysical w⟩ i.succ).mpr
+        simpa only [if_pos hwv] using hh
+      · apply H.regularizedSpatialCost_eq_of_mem_stageDomain
+        apply (H.mem_stageDomain_iff ⟨t.val - w.val ^ 2, hphysical w⟩ i.castSucc).mpr
+        simpa only [if_neg hwv] using hh
+    exact (continuousAt_congr heq).mpr (hcont.comp continuous_subtype_val.continuousAt)
+  · let s : Icc (0 : ℝ) H.horizon := ⟨t.val - v.val ^ 2, hphysical v⟩
+    let first := H.activeStage s
+    have hle : first ≤ H.activeStage t :=
+      H.activeStage_mono (by change t.val - v.val ^ 2 ≤ t.val; exact sub_le_self _ (sq_nonneg _))
+    have hclock : t.val - v.val ^ 2 ∈ H.stageDomain first := H.activeStage_mem s
+    have hstart : H.time first < t.val - v.val ^ 2 := by
+      have hbase := H.activeStage_time_le s
+      change H.time first ≤ t.val - v.val ^ 2 at hbase
+      refine lt_of_le_of_ne hbase ?_
+      intro he
+      rcases Fin.eq_zero_or_eq_succ first with hf | ⟨i, hf⟩
+      · rw [hf, H.time_zero] at he
+        have hsq : v.val ^ 2 < t.val := (Real.lt_sqrt v.property.1).mp hvT
+        linarith
+      · exact hevent ⟨i, by rw [← hf]; exact he.symm⟩
+    have hend : t.val - v.val ^ 2 < H.stageEndTime first := by
+      rcases Fin.eq_castSucc_or_eq_last first with ⟨i, hi⟩ | hi
+      · rw [hi, stageDomain, Fin.lastCases_castSucc] at hclock
+        simpa only [hi, H.stageEndTime_castSucc] using hclock.2
+      · rw [hi, H.stageEndTime_last]
+        exact (sub_lt_self _ (sq_pos_of_pos hv)).trans_le t.property.2
+    obtain ⟨q, hq⟩ := hlowAt first hle hclock
+    have hfinite : H.regularizedCost first (H.activeStage t) hle t (3 / a₀) 0 v.val p q ≠ ⊤ := by
+      intro he
+      rw [he] at hq
+      exact not_lt_of_ge le_top hq
+    have hcont := H.continuousAt_sInf_regularizedCost_of_mem_stage_interior first (H.activeStage t)
+      hle t (3 / a₀) 0 v.val hv hupper ⟨hstart, hend⟩ hfloor p ⟨q, hfinite⟩
+    have hnear := H.eventually_mem_stageDomain_of_backward_clock_mem_Ioo first ⟨hstart, hend⟩
+    have heq : H.regularizedSpatialCost t (3 / a₀) p =ᶠ[𝓝 v]
+        (fun w : Icc (0 : ℝ) (Real.sqrt t.val) =>
+          sInf (range (H.regularizedCost first (H.activeStage t) hle t (3 / a₀) 0 w.val p))) := by
+      filter_upwards [continuous_subtype_val.continuousAt.eventually hnear] with w hw
+      exact H.regularizedSpatialCost_eq_of_mem_stageDomain t (3 / a₀) p w first hle hw
+    exact (continuousAt_congr heq).mpr (hcont.comp continuous_subtype_val.continuousAt)
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end

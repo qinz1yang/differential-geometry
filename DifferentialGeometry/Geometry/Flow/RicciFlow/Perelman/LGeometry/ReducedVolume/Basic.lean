@@ -34,7 +34,7 @@ theorem redDensity_le_of_redLength_ge
 end DensityBound
 
 open Bundle Set
-open scoped ContDiff Manifold Topology
+open scoped ContDiff Manifold _root_.Topology
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
