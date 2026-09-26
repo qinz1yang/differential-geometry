@@ -14031,3 +14031,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowSu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowPersistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowDiscarding
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCommonFlow
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.EndpointContinuity
+import DifferentialGeometry.Geometry.Measure.ParametricIsometry
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventParametricDensity

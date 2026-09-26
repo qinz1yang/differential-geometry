@@ -1297,13 +1297,13 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 universe uHistoryLimit
 
-theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action
+theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action_free_endpoint
     (H : ObservedHistory.{uHistoryLimit})
     (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
     {T u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
     (hupper : T - u ^ 2 ∈ H.stageDomain last)
     (hpast : T - v ^ 2 ∈ H.stageDomain first)
-    (p : (H.stage last).Carrier) (q : (H.stage first).Carrier)
+    (p : (H.stage last).Carrier)
     (A B ell : ℝ) (hB : 0 ≤ B)
     (alpha : ℕ → (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
     (halpha : ∀ n j, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (alpha n j)
@@ -1311,7 +1311,6 @@ theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action
     (hint : ∀ n j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (alpha n j))
       volume (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val))
     (hstart : ∀ n, alpha n ⟨last, hle, le_rfl⟩ u = p)
-    (hend : ∀ n, alpha n ⟨first, le_rfl, hle⟩ v = q)
     (hnodes : ∀ n (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
       ∃ z : (H.event i).old,
         z.val.val = alpha n ⟨i.castSucc, hf, i.castSucc_lt_succ.le.trans hl⟩
@@ -1340,7 +1339,7 @@ theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action
         (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ∧
       (∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (gamma j)) volume
         (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ∧
-      gamma ⟨last, hle, le_rfl⟩ u = p ∧ gamma ⟨first, le_rfl, hle⟩ v = q ∧
+      gamma ⟨last, hle, le_rfl⟩ u = p ∧
       (∀ (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
         ∃ z : (H.event i).old,
           z.val.val = gamma ⟨i.castSucc, hf, i.castSucc_lt_succ.le.trans hl⟩
@@ -1407,18 +1406,12 @@ theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action
       Tendsto (fun n => alpha (phi n) j r) atTop (𝓝 (gamma j r)) :=
     (continuous_eval_const (⟨r, hr⟩ : Icc (a j) (b j))).continuousAt.tendsto.comp (hconv j)
   let jlast : H.StageInterval first last := ⟨last, hle, le_rfl⟩
-  let jfirst : H.StageInterval first last := ⟨first, le_rfl, hle⟩
   have haLast : a jlast = u := H.regularizedStageStart_eq_of_mem_Icc hu hupperIcc
-  have hbFirst : b jfirst = v := H.regularizedStageEnd_eq_of_mem_stageDomain (hu.trans huv) hpast
   have huLast : u ∈ Icc (a jlast) (b jlast) :=
     ⟨haLast.le, haLast.symm.trans_le (H.regularizedStage_bounds hu huv hupperIcc hpast jlast).2.1⟩
-  have hvFirst : v ∈ Icc (a jfirst) (b jfirst) :=
-    ⟨(H.regularizedStage_bounds hu huv hupperIcc hpast jfirst).2.1.trans_eq hbFirst, hbFirst.ge⟩
-  refine ⟨phi, gamma, hgamma, hpsi.comp hchi, hconv, hgammaAC, hgammaInt, ?_, ?_, ?_, ?_⟩
+  refine ⟨phi, gamma, hgamma, hpsi.comp hchi, hconv, hgammaAC, hgammaInt, ?_, ?_, ?_⟩
   · apply tendsto_nhds_unique (heval jlast u huLast)
     simpa only [jlast, hstart] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => p) atTop (𝓝 p))
-  · apply tendsto_nhds_unique (heval jfirst v hvFirst)
-    simpa only [jfirst, hend] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => q) atTop (𝓝 q))
   · intro i hf hl
     let jo : H.StageInterval first last := ⟨i.castSucc, hf, i.castSucc_lt_succ.le.trans hl⟩
     let jn : H.StageInterval first last := ⟨i.succ, hf.trans i.castSucc_lt_succ.le, hl⟩
@@ -1438,6 +1431,77 @@ theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action
           (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ≤
           ∑ j, values j := Finset.sum_le_sum (fun j _ => hgammaAction j)
       _ = ell := hvaluesSum
+
+theorem exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action
+    (H : ObservedHistory.{uHistoryLimit})
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    {T u v : ℝ} (hu : 0 ≤ u) (huv : u ≤ v)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hpast : T - v ^ 2 ∈ H.stageDomain first)
+    (p : (H.stage last).Carrier) (q : (H.stage first).Carrier)
+    (A B ell : ℝ) (hB : 0 ≤ B)
+    (alpha : ℕ → (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+    (halpha : ∀ n j, ContMDiffOn 𝓘(ℝ, ℝ) ThreeModel 1 (alpha n j)
+      (Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)))
+    (hint : ∀ n j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (alpha n j))
+      volume (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val))
+    (hstart : ∀ n, alpha n ⟨last, hle, le_rfl⟩ u = p)
+    (hend : ∀ n, alpha n ⟨first, le_rfl, hle⟩ v = q)
+    (hnodes : ∀ n (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
+      ∃ z : (H.event i).old,
+        z.val.val = alpha n ⟨i.castSucc, hf, i.castSucc_lt_succ.le.trans hl⟩
+          (Real.sqrt (T - H.time i.succ)) ∧
+        (H.event i).oldOutput z = alpha n ⟨i.succ, hf.trans i.castSucc_lt_succ.le, hl⟩
+          (Real.sqrt (T - H.time i.succ)))
+    (hscalar : ∀ n j, ∀ r ∈ Ioo (H.regularizedStageStart T u j.val)
+      (H.regularizedStageEnd T v j.val),
+      -B ≤ metricScalarAt (H.stageMetric j.val (T - r ^ 2)) (alpha n j r))
+    (hact : ∀ n, (∑ j : H.StageInterval first last,
+      H.stageRegularizedAction j.val T (alpha n j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ≤ A)
+    (haction : Tendsto (fun n => ∑ j : H.StageInterval first last,
+      H.stageRegularizedAction j.val T (alpha n j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val))
+      atTop (𝓝 ell)) :
+    ∃ (phi : ℕ → ℕ) (gamma : (j : H.StageInterval first last) → ℝ → (H.stage j.val).Carrier)
+      (hgamma : ∀ j, Continuous (gamma j)),
+      StrictMono phi ∧
+      (∀ j, Tendsto (fun n => (⟨fun r => alpha (phi n) j r.val,
+        (halpha (phi n) j).continuousOn.domRestrict⟩ :
+        C(Icc (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+          (H.stage j.val).Carrier))) atTop
+        (𝓝 ⟨fun r => gamma j r.val, (hgamma j).comp continuous_subtype_val⟩)) ∧
+      (∀ j, Manifold.absolutelyContinuousOnInterval ThreeModel (gamma j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ∧
+      (∀ j, IntervalIntegrable (H.stageRegularizedLagrangian j.val T (gamma j)) volume
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ∧
+      gamma ⟨last, hle, le_rfl⟩ u = p ∧ gamma ⟨first, le_rfl, hle⟩ v = q ∧
+      (∀ (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last),
+        ∃ z : (H.event i).old,
+          z.val.val = gamma ⟨i.castSucc, hf, i.castSucc_lt_succ.le.trans hl⟩
+            (Real.sqrt (T - H.time i.succ)) ∧
+          (H.event i).oldOutput z = gamma ⟨i.succ, hf.trans i.castSucc_lt_succ.le, hl⟩
+            (Real.sqrt (T - H.time i.succ))) ∧
+      (∑ j : H.StageInterval first last, H.stageRegularizedAction j.val T (gamma j)
+        (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val)) ≤ ell := by
+  obtain ⟨phi, gamma, hgamma, hphi, hconv, hAC, hInt, hstart', hnodes', hact'⟩ :=
+    H.exists_subsequence_sum_stageRegularizedAction_le_of_tendsto_action_free_endpoint
+      first last hle hu huv hupper hpast p A B ell hB alpha halpha hint hstart hnodes
+      hscalar hact haction
+  have hupperIcc : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last) :=
+    ⟨H.time_le_of_mem_stageDomain hupper, H.le_stageEndTime_of_mem_stageDomain hupper⟩
+  let jfirst : H.StageInterval first last := ⟨first, le_rfl, hle⟩
+  have hbFirst : H.regularizedStageEnd T v jfirst.val = v :=
+    H.regularizedStageEnd_eq_of_mem_stageDomain (hu.trans huv) hpast
+  have hvFirst : v ∈ Icc (H.regularizedStageStart T u jfirst.val)
+      (H.regularizedStageEnd T v jfirst.val) :=
+    ⟨(H.regularizedStage_bounds hu huv hupperIcc hpast jfirst).2.1.trans_eq hbFirst, hbFirst.ge⟩
+  have heval : Tendsto (fun n => alpha (phi n) jfirst v) atTop (𝓝 (gamma jfirst v)) :=
+    (continuous_eval_const (⟨v, hvFirst⟩ : Icc (H.regularizedStageStart T u jfirst.val)
+      (H.regularizedStageEnd T v jfirst.val))).continuousAt.tendsto.comp (hconv jfirst)
+  refine ⟨phi, gamma, hgamma, hphi, hconv, hAC, hInt, hstart', ?_, hnodes', hact'⟩
+  apply tendsto_nhds_unique heval
+  simpa only [jfirst, hend] using (tendsto_const_nhds : Tendsto (fun _ : ℕ => q) atTop (𝓝 q))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
