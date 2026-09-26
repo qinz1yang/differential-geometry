@@ -1,4 +1,5 @@
 import Mathlib.Analysis.Calculus.MeanValue
+import Mathlib.Topology.Semicontinuity.Basic
 
 namespace DifferentialGeometry
 
@@ -128,5 +129,88 @@ theorem monotoneOn_of_deriv_upper_support_nonneg
   have hnx : -x ∈ Icc (-b) (-a) := ⟨neg_le_neg hx.2, neg_le_neg hx.1⟩
   have hny : -y ∈ Icc (-b) (-a) := ⟨neg_le_neg hy.2, neg_le_neg hy.1⟩
   simpa only [neg_neg] using hanti hny hnx (neg_le_neg hxy)
+
+end DifferentialGeometry
+
+open Set Filter
+open scoped Topology
+
+namespace DifferentialGeometry
+
+theorem le_initial_of_lowerSemicontinuousOn_of_liminf_slope_right_nonpos
+    {f : ℝ → ℝ} {a b c : ℝ}
+    (hf : LowerSemicontinuousOn f (Icc a b)) (ha : f a < c)
+    (hslope : ∀ t ∈ Ico a b, f t < c → ∀ ε : ℝ, 0 < ε →
+      ∃ᶠ z in 𝓝[>] t, slope f t z < ε) :
+    ∀ t ∈ Icc a b, f t ≤ f a := by
+  intro t ht
+  have hab : a ≤ b := ht.1.trans ht.2
+  refine le_of_forall_pos_le_add fun δ hδ => ?_
+  let L := b - a + 1
+  have hL : 0 < L := by dsimp [L]; linarith
+  let ε := min (δ / L) ((c - f a) / (2 * L))
+  have hε : 0 < ε := lt_min (div_pos hδ hL) (div_pos (sub_pos.mpr ha) (by positivity))
+  have hεδ : ε * L ≤ δ := (le_div_iff₀ hL).mp (min_le_left _ _)
+  have hεc : ε * L ≤ (c - f a) / 2 := by
+    have hh := (le_div_iff₀ (show 0 < 2 * L by positivity)).mp (min_le_right (δ / L) ((c - f a) / (2 * L)))
+    change ε * (2 * L) ≤ c - f a at hh
+    nlinarith
+  let B := fun x : ℝ => f a + ε * (x - a)
+  let s := {x : ℝ | f x ≤ B x}
+  have hB : ContinuousOn B (Icc a b) := by dsimp [B]; fun_prop
+  have hclosed : IsClosed (s ∩ Icc a b) := by
+    have hsub : LowerSemicontinuousOn (fun x => f x - B x) (Icc a b) := by
+      simpa only [sub_eq_add_neg, Pi.neg_apply] using hf.add hB.neg.lowerSemicontinuousOn
+    have hh := (hsub.isCompact_inter_preimage_Iic isCompact_Icc 0).isClosed
+    convert hh using 1
+    ext x
+    simp only [s, mem_inter_iff, mem_ofPred_eq, mem_preimage, mem_Iic, sub_nonpos]
+    exact and_comm
+  have hinitial : a ∈ s := by simp only [s, mem_ofPred_eq, B, sub_self, mul_zero, add_zero, le_refl]
+  have hall : Icc a b ⊆ s := by
+    apply hclosed.Icc_subset_of_forall_exists_gt hinitial
+    rintro x ⟨hx, hxab⟩ y hxy
+    have hxB : f x ≤ B x := hx
+    have hxL : x - a ≤ L := by dsimp [L]; linarith [hxab.2]
+    have hnegative : f x < c := by
+      have hh := mul_le_mul_of_nonneg_left hxL hε.le
+      dsimp only [B] at hxB
+      linarith
+    obtain ⟨z, hz, hzy⟩ := ((hslope x hxab hnegative ε hε).and_eventually
+      (Ioc_mem_nhdsGT hxy)).exists
+    refine ⟨z, ?_, hzy⟩
+    have hzbound : f z - f x < ε * (z - x) := by
+      rw [slope_def_field] at hz
+      exact (div_lt_iff₀ (sub_pos.mpr hzy.1)).mp hz
+    change f z ≤ B z
+    dsimp only [B] at hxB ⊢
+    nlinarith
+  have hh := hall ht
+  have htL : t - a ≤ L := by dsimp [L]; linarith [ht.2]
+  have hterm := (mul_le_mul_of_nonneg_left htL hε.le).trans hεδ
+  change f t ≤ B t at hh
+  dsimp only [B] at hh
+  linarith
+
+
+theorem le_initial_of_lowerSemicontinuousOn_of_upper_support
+    {f : ℝ → ℝ} {a b c : ℝ}
+    (hf : LowerSemicontinuousOn f (Icc a b)) (ha : f a < c)
+    (hsupport : ∀ t ∈ Ico a b, f t < c → ∀ ε : ℝ, 0 < ε →
+      ∃ φ : ℝ → ℝ, ∃ d : ℝ,
+        φ t = f t ∧ f ≤ᶠ[𝓝[>] t] φ ∧ HasDerivAt φ d t ∧ d ≤ ε) :
+    ∀ t ∈ Icc a b, f t ≤ f a := by
+  apply le_initial_of_lowerSemicontinuousOn_of_liminf_slope_right_nonpos hf ha
+  intro t ht htc ε hε
+  obtain ⟨φ, d, hφ, hupper, hderiv, hd⟩ := hsupport t ht htc (ε / 2) (by linarith)
+  have hds : d < ε := lt_of_le_of_lt hd (by linarith)
+  have hslope : ∀ᶠ z in 𝓝[>] t, slope φ t z < ε :=
+    (hderiv.tendsto_slope.mono_left (nhdsGT_le_nhdsNE t)).eventually_lt_const hds
+  apply Filter.Eventually.frequently
+  filter_upwards [hupper, hslope, self_mem_nhdsWithin] with z hz hzs hzt
+  have hle : slope f t z ≤ slope φ t z := by
+    rw [slope_def_field, slope_def_field, hφ]
+    exact div_le_div_of_nonneg_right (sub_le_sub_right hz _) (sub_pos.mpr hzt).le
+  exact hle.trans_lt hzs
 
 end DifferentialGeometry

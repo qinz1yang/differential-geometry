@@ -1,3 +1,6 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPoleAction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.TimeContinuity
+import Mathlib.Topology.Order.ProjIcc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Minimum.Continuation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Estimates.TimeExtension
@@ -1021,6 +1024,119 @@ theorem exists_regularizedCost_spatial_minimum_of_uniform_history_escape_barrier
     apply linear_le_inverse_cubic_barrier (by norm_num : (0 : ℝ) ≤ 3) hB hb.1 hb.2
     simpa only [show (2 : ℝ) * 3 = 6 by norm_num] using hguard
   simpa only [sub_zero, zero_pow (by norm_num : 3 ≠ 0)] using hact.trans_le hbarrier
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+end
+
+noncomputable section
+open Set Filter
+open DifferentialGeometry.Geometry.Curvature
+open scoped Topology
+
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
+
+universe u
+
+private theorem lowerSemicontinuous_truncated_regularizedSpatialCost
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon) (B A : ℝ)
+    (p : (H.stageAt t).Carrier)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x) :
+    LowerSemicontinuous (fun v => (min (H.regularizedSpatialCost t B p v) (A : WithTop ℝ)).untopD 0) := by
+  let f : WithTop ℝ → ℝ := fun x => (min x (A : WithTop ℝ)).untopD 0
+  have hfcont : Continuous f := by
+    apply continuous_iff_continuousAt.mpr
+    intro x
+    have hmin : min x (A : WithTop ℝ) ≠ ⊤ :=
+      ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_right _ _)
+    exact (WithTop.tendsto_untopD 0 hmin).comp
+      (continuousAt_id.min continuousAt_const)
+  have hfmono : Monotone f := by
+    intro x y hxy
+    have hminx : min x (A : WithTop ℝ) ≠ ⊤ :=
+      ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_right _ _)
+    have hminy : min y (A : WithTop ℝ) ≠ ⊤ :=
+      ne_top_of_le_ne_top WithTop.coe_ne_top (min_le_right _ _)
+    change (min x (A : WithTop ℝ)).untopD 0 ≤ (min y (A : WithTop ℝ)).untopD 0
+    have hbound := min_le_min_right (A : WithTop ℝ) hxy
+    lift min x (A : WithTop ℝ) to ℝ using hminx with xx hxx
+    lift min y (A : WithTop ℝ) to ℝ using hminy with yy hyy
+    simp only [WithTop.untopD_coe]
+    exact WithTop.coe_le_coe.mp hbound
+  exact hfcont.comp_lowerSemicontinuous (H.lowerSemicontinuous_regularizedSpatialCost t B p hfloor) hfmono
+
+
+theorem regularizedSpatialCost_scaled_sub_sq_le_initial_of_liminf_slope_right_nonpos
+    (H : ObservedHistory.{u}) (t : Icc (0 : ℝ) H.horizon) (B A : ℝ)
+    (p : (H.stageAt t).Carrier)
+    (hfloor : ∀ (j : Fin (H.eventCount + 1)) (s : ℝ), s ∈ H.stageDomain j →
+      ∀ x : (H.stage j).Carrier, -B ≤ metricScalarAt (H.stageMetric j s) x)
+    {r a b : ℝ} (hball : H.isParabolicallyRmControlledBall t p r)
+    (ha : 0 < a) (hab : a ≤ b) (hb : b ≤ Real.sqrt t.val) (har : a ≤ r / 2)
+    (hA : 3 * b ≤ A)
+    (hslope :
+      let C : ℝ → WithTop ℝ := fun v => H.regularizedSpatialCost t B p
+        (Set.projIcc 0 (Real.sqrt t.val) (Real.sqrt_nonneg _) v)
+      let F : ℝ → ℝ := fun v => 2 * v * (min (C v) (A : WithTop ℝ)).untopD 0 - 6 * v ^ 2
+      ∀ v ∈ Ico a b, F v < 0 → ∀ ε : ℝ, 0 < ε → ∃ᶠ z in 𝓝[>] v, slope F v z < ε) :
+    ∀ v : Icc (0 : ℝ) (Real.sqrt t.val), v.val ∈ Icc a b →
+      H.regularizedSpatialCost t B p v ≠ ⊤ ∧
+        2 * v.val * (H.regularizedSpatialCost t B p v).untopD 0 - 6 * v.val ^ 2 ≤
+          2 * a * (H.regularizedSpatialCost t B p ⟨a, ha.le, hab.trans hb⟩).untopD 0 - 6 * a ^ 2 ∧
+        2 * v.val * (H.regularizedSpatialCost t B p v).untopD 0 - 6 * v.val ^ 2 < 0 := by
+  let C : ℝ → WithTop ℝ := fun v => H.regularizedSpatialCost t B p
+    (Set.projIcc 0 (Real.sqrt t.val) (Real.sqrt_nonneg _) v)
+  let F : ℝ → ℝ := fun v => 2 * v * (min (C v) (A : WithTop ℝ)).untopD 0 - 6 * v ^ 2
+  have hC (v : Icc (0 : ℝ) (Real.sqrt t.val)) : C v.val = H.regularizedSpatialCost t B p v := by
+    dsimp only [C]
+    rw [Set.projIcc_of_mem _ v.property]
+  have hcap : LowerSemicontinuous (fun v : ℝ => (min (C v) (A : WithTop ℝ)).untopD 0) :=
+    (H.lowerSemicontinuous_truncated_regularizedSpatialCost t B A p hfloor).comp continuous_projIcc
+  have hFlsc : LowerSemicontinuousOn F (Icc a b) := by
+    intro v hv
+    have hp : 0 < 2 * v := by linarith [hv.1]
+    have hprod := LowerSemicontinuousAt.mul_continuousAt_of_pos (hcap v)
+      (continuousAt_const.mul continuousAt_id) hp
+    have hpoly : ContinuousAt (fun v : ℝ => -(6 * v ^ 2)) v := by fun_prop
+    simpa only [F, sub_eq_add_neg, Pi.mul_apply, id_eq, mul_comm] using
+      (hprod.add hpoly.lowerSemicontinuousAt).lowerSemicontinuousWithinAt (Icc a b)
+  let va : Icc (0 : ℝ) (Real.sqrt t.val) := ⟨a, ha.le, hab.trans hb⟩
+  obtain ⟨hafinite, haneg⟩ := H.regularizedSpatialCost_ne_top_and_scaled_sub_sq_neg_of_parabolicallyRmControlledBall
+    t B p hball hfloor va ha har
+  have hFneg : F a < 0 := by
+    have hCa : C a = H.regularizedSpatialCost t B p va := hC va
+    dsimp only [F]
+    rw [hCa]
+    lift H.regularizedSpatialCost t B p va to ℝ using hafinite with m hm
+    simp only [WithTop.untopD_coe] at haneg
+    simp only [← WithTop.coe_min, WithTop.untopD_coe]
+    have hmul := mul_le_mul_of_nonneg_left (min_le_left m A) (by positivity : 0 ≤ 2 * a)
+    change 2 * a * m - 6 * a ^ 2 < 0 at haneg
+    linarith
+  have hcostA (v : ℝ) (hv : 0 < v) (hvb : v ≤ b) (hFv : F v < 0) :
+      C v < (A : WithTop ℝ) := by
+    by_contra hn
+    have hge : (A : WithTop ℝ) ≤ C v := le_of_not_gt hn
+    dsimp only [F] at hFv
+    rw [min_eq_right hge, WithTop.untopD_coe] at hFv
+    have hAv : 3 * v ≤ A := (mul_le_mul_of_nonneg_left hvb (by norm_num : (0 : ℝ) ≤ 3)).trans hA
+    nlinarith
+  have hmon := DifferentialGeometry.le_initial_of_lowerSemicontinuousOn_of_liminf_slope_right_nonpos
+    hFlsc hFneg hslope
+  have hFa : F a = 2 * a * (H.regularizedSpatialCost t B p va).untopD 0 - 6 * a ^ 2 := by
+    dsimp only [F]
+    rw [min_eq_left (hcostA a ha hab hFneg).le, hC va]
+  intro v hv
+  have hvpos : 0 < v.val := ha.trans_le hv.1
+  have hFv : F v.val < 0 := (hmon v.val hv).trans_lt hFneg
+  have hvA := hcostA v.val hvpos hv.2 hFv
+  have hfinite : C v.val ≠ ⊤ := ne_top_of_lt hvA
+  have hFvalue : F v.val = 2 * v.val * (H.regularizedSpatialCost t B p v).untopD 0 - 6 * v.val ^ 2 := by
+    dsimp only [F]
+    rw [min_eq_left hvA.le, hC v]
+  refine ⟨by rwa [hC v] at hfinite, ?_, by rwa [hFvalue] at hFv⟩
+  simpa only [hFvalue, hFa] using hmon v.val hv
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 

@@ -1,3 +1,4 @@
+import Mathlib.Topology.Algebra.Order.Field
 import Mathlib.Topology.Semicontinuity.Basic
 import Mathlib.Topology.Order.LeftRight
 import Mathlib.Topology.Order.WithTop
@@ -47,3 +48,17 @@ theorem lowerSemicontinuousAt_of_continuousWithinAt_Iic_of_monotone_add
   exact Filter.eventually_sup.mpr ⟨hleft', hright⟩
 
 end WithTop
+
+variable {X K : Type*} [TopologicalSpace X] [Field K] [LinearOrder K]
+  [IsStrictOrderedRing K] [TopologicalSpace K] [OrderTopology K] {f g : X → K} {x : X}
+
+theorem LowerSemicontinuousAt.mul_continuousAt_of_pos
+    (hf : LowerSemicontinuousAt f x) (hg : ContinuousAt g x) (hpos : 0 < g x) :
+    LowerSemicontinuousAt (fun y => f y * g y) x := by
+  intro a ha
+  obtain ⟨c, hac, hcf⟩ := exists_between ((div_lt_iff₀ hpos).mpr ha)
+  have hacg : a < c * g x := (div_lt_iff₀ hpos).mp hac
+  have hcg : ContinuousAt (fun y => c * g y) x := continuousAt_const.mul hg
+  filter_upwards [hf c hcf, hg.eventually (Ioi_mem_nhds hpos),
+    hcg.eventually (Ioi_mem_nhds hacg)] with y hfy hgy hcy
+  exact hcy.trans (mul_lt_mul_of_pos_right hfy hgy)
