@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalNe
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SmallScaleNoncollapsingThroughSurgery
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeMonotone
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeLocalUpperBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingContinuationLeaf
 
 
 set_option autoImplicit false
@@ -47,8 +48,8 @@ theorem noncollapsingThroughSurgery (P₀ : OrientedThreeStage.{u}) [SimplyConne
     (historyReducedVolumeInitialLowerBound P₀ g₀) (smallScaleNoncollapsingThroughSurgery P₀ g₀)
 
 theorem crossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    CrossingContinuation P₀ g₀ := by
-  sorry
+    CrossingContinuation P₀ g₀ :=
+  crossingContinuation_holds P₀ g₀
 
 theorem canonicalNeighborhoodContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     CanonicalNeighborhoodContinuation P₀ g₀ :=
