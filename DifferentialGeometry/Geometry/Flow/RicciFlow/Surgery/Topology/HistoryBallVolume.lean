@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Comparison.Volume.CompactSmallBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapScalar
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowVolumeComparison
@@ -1932,5 +1933,105 @@ theorem ObservedHistory.exists_uniform_terminal_ball_volume_lower_of_cap_contact
   have hseed := he ▸ hbound
   intro radius hradius hradiusσ
   exact H.volume_lower_bound_of_smaller_controlled_radii t p hradius hradiusσ hsmall hseed
+
+private theorem terminal_ball_volume_lower_of_initial_time_contact
+    (H : ObservedHistory) (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier)
+    {σ ρ κ : ℝ} (hσ : 0 < σ) (hσρ : σ ≤ ρ) (htime : t.val = σ ^ 2)
+    (hsmall : ∀ q : ℝ, 0 < q → q < σ → H.isParabolicallyRmControlledBall t p q)
+    (hvolume : ∀ x : (H.stage 0).Carrier, ∀ r : ℝ, 0 < r → r ≤ ρ →
+      ENNReal.ofReal κ * ENNReal.ofReal r ^ 3 ≤
+        riemannianVolumeMeasure ThreeModel (H.stage 0).Carrier (H.initialMetric 0)
+          (riemannianBallOf (H.initialMetric 0) x r)) :
+    ∀ r : ℝ, 0 < r → r ≤ σ →
+      ENNReal.ofReal
+          ((Real.exp (-27) * κ * (Real.exp (-9) / 8) ^ 3) / (8 * Real.exp 6)) *
+          ENNReal.ofReal r ^ 3 ≤
+        riemannianVolumeMeasure ThreeModel (H.stageAt t).Carrier
+          (H.stageMetric (H.activeStage t) t.val)
+          (riemannianBallOf (H.stageMetric (H.activeStage t) t.val) p r) := by
+  have hbirth : t.val - σ ^ 2 ≤ H.time 0 := by rw [htime, sub_self, H.time_zero]
+  have hkt : H.time 0 ≤ t.val := by rw [H.time_zero]; exact t.property.1
+  have hprotect :
+      riemannianClosedBallOf (H.stageMetric (H.activeStage t) t.val) p (σ / 2) ⊆
+        riemannianBallOf (H.stageMetric (H.activeStage t) t.val) p σ := by
+    intro x hx
+    exact hx.trans_lt ((ENNReal.ofReal_lt_ofReal_iff hσ).mpr (by linarith))
+  let tb := H.stageTime 0
+  have hstage : H.activeStage tb = 0 := H.activeStage_stageTime 0
+  have htransport (j : Fin (H.eventCount + 1)) (hj : j = H.activeStage tb)
+      (hjt : j ≤ H.activeStage t) :
+      ∃ hz : p ∈ H.backwardSurvivorDomain j (H.activeStage t) hjt,
+        ENNReal.ofReal (Real.exp (-27)) *
+          riemannianVolumeMeasure ThreeModel (H.stage j).Carrier (H.stageMetric j tb.val)
+            (riemannianBallOf (H.stageMetric j tb.val)
+              (H.backwardSurvivorMap j (H.activeStage t) hjt j le_rfl hjt ⟨p, hz⟩)
+              (Real.exp (-9) * σ / 8)) ≤
+          riemannianVolumeMeasure ThreeModel (H.stageAt t).Carrier
+            (H.stageMetric (H.activeStage t) t.val)
+            (riemannianBallOf (H.stageMetric (H.activeStage t) t.val) p (σ / 2)) := by
+    subst j
+    obtain ⟨hz, _, hv⟩ := birth_ball_survives_and_volume_le_exp_of_protected_terminal_ball
+      H t p 0 hσ hσ hbirth hkt hsmall p hprotect
+    exact ⟨hz, hv⟩
+  obtain ⟨hz, hv⟩ := htransport 0 hstage.symm (Fin.zero_le _)
+  have htb : tb.val = H.time 0 := rfl
+  rw [htb, H.stageMetric_initial] at hv
+  have hr : 0 < Real.exp (-9) * σ / 8 := by positivity
+  have hrρ : Real.exp (-9) * σ / 8 ≤ ρ := by
+    have he : Real.exp (-9) ≤ 1 := Real.exp_le_one_iff.mpr (by norm_num)
+    have heσ := mul_le_mul_of_nonneg_right he hσ.le
+    linarith
+  have hinit := hvolume
+    (H.backwardSurvivorMap 0 (H.activeStage t) (Fin.zero_le _) 0 le_rfl (Fin.zero_le _) ⟨p, hz⟩)
+    _ hr hrρ
+  have hsub : riemannianBallOf (H.stageMetric (H.activeStage t) t.val) p (σ / 2) ⊆
+      riemannianBallOf (H.stageMetric (H.activeStage t) t.val) p σ :=
+    riemannianBallOf_mono _ _ (by linarith)
+  have hbound := (mul_le_mul_right hinit (ENNReal.ofReal (Real.exp (-27)))).trans
+    (hv.trans (MeasureTheory.measure_mono hsub))
+  have he :
+      ENNReal.ofReal (Real.exp (-27) * κ * (Real.exp (-9) / 8) ^ 3) *
+        ENNReal.ofReal σ ^ 3 =
+      ENNReal.ofReal (Real.exp (-27)) *
+        (ENNReal.ofReal κ * ENNReal.ofReal (Real.exp (-9) * σ / 8) ^ 3) := by
+    rw [ENNReal.ofReal_mul' (by positivity : 0 ≤ (Real.exp (-9) / 8) ^ 3),
+      ENNReal.ofReal_mul (Real.exp_pos _).le,
+      ENNReal.ofReal_pow (by positivity : 0 ≤ Real.exp (-9) / 8),
+      show Real.exp (-9) * σ / 8 = (Real.exp (-9) / 8) * σ by ring,
+      ENNReal.ofReal_mul (by positivity : 0 ≤ Real.exp (-9) / 8), mul_pow]
+    ring
+  have hseed := he ▸ hbound
+  intro r hr hrσ
+  exact H.volume_lower_bound_of_smaller_controlled_radii t p hr hrσ hsmall hseed
+
+theorem ObservedHistory.exists_uniform_terminal_ball_volume_lower_of_initial_time_contact
+    (P : OrientedThreeStage) (g : P.Metric) :
+    ∃ ρ κ : ℝ, 0 < ρ ∧ 0 < κ ∧
+      ∀ (H : ObservedHistory) (_ : InitialIdentification P g H)
+        (t : Icc (0 : ℝ) H.horizon) (p : (H.stageAt t).Carrier) {σ : ℝ},
+        0 < σ → σ ≤ ρ → t.val = σ ^ 2 →
+        (∀ q : ℝ, 0 < q → q < σ → H.isParabolicallyRmControlledBall t p q) →
+        ∀ r : ℝ, 0 < r → r ≤ σ →
+          ENNReal.ofReal κ * ENNReal.ofReal r ^ 3 ≤
+            riemannianVolumeMeasure ThreeModel (H.stageAt t).Carrier
+              (H.stageMetric (H.activeStage t) t.val)
+              (riemannianBallOf (H.stageMetric (H.activeStage t) t.val) p r) := by
+  obtain ⟨ρ, κ, hρ, hκ, hbound⟩ :=
+    Geometry.Riemannian.VolumeComparison.exists_uniform_small_ball_volume_lower_bound g
+  refine ⟨ρ, (Real.exp (-27) * κ * (Real.exp (-9) / 8) ^ 3) / (8 * Real.exp 6),
+    hρ, by positivity, ?_⟩
+  intro H A t p σ hσ hσρ htime hsmall
+  apply terminal_ball_volume_lower_of_initial_time_contact H t p hσ hσρ htime hsmall
+  intro x r hr hrρ
+  have hmap := Geometry.Measure.riemannianVolumeMeasure_ball_le_of_injective_local_isometry
+    g (H.initialMetric 0) A.map A.map.isLocalDiffeomorph A.map.injective
+    (fun y v w => (A.metric_eq y v w).symm) (A.map.symm x) r
+  rw [A.map.apply_symm_apply] at hmap
+  have hbound' : ENNReal.ofReal κ * ENNReal.ofReal r ^ 3 ≤
+      riemannianVolumeMeasure ThreeModel P.Carrier g
+        (riemannianBallOf g (A.map.symm x) r) := by
+    simpa only [show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace]] using
+      hbound (A.map.symm x) r hr hrρ
+  exact hbound'.trans hmap
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
