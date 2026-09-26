@@ -132,6 +132,25 @@ theorem regularizedStage_bounds
       linarith
     exact (Real.sqrt_le_sqrt hh).trans_eq (Real.sqrt_sq (hu.trans huv))
 
+theorem regularizedStage_endpoint_clocks
+    {first last : Fin (H.eventCount + 1)} {T u v : ℝ}
+    (hupper : T - u ^ 2 ∈ Icc (H.time last) (H.stageEndTime last))
+    (huv : u ≤ v) (hu : 0 ≤ u)
+    (j : H.StageInterval first last) :
+    T - (H.regularizedStageStart T u j.val) ^ 2 = min (T - u ^ 2) (H.stageEndTime j.val) ∧
+    T - (H.regularizedStageEnd T v j.val) ^ 2 = max (T - v ^ 2) (H.time j.val) := by
+  have htime : H.time j.val ≤ T - u ^ 2 :=
+    (H.time_strictMono.monotone j.property.2).trans hupper.1
+  have hstart : 0 ≤ T - min (T - u ^ 2) (H.stageEndTime j.val) := by
+    have := min_le_left (T - u ^ 2) (H.stageEndTime j.val)
+    linarith [sq_nonneg u]
+  have hend : 0 ≤ T - max (T - v ^ 2) (H.time j.val) := by
+    have : max (T - v ^ 2) (H.time j.val) ≤ T - u ^ 2 :=
+      max_le (sub_le_sub_left (sq_le_sq₀ hu (hu.trans huv) |>.2 huv) T) htime
+    linarith [sq_nonneg u]
+  simp only [regularizedStageStart, regularizedStageEnd, Real.sq_sqrt hstart, Real.sq_sqrt hend,
+    sub_sub_cancel, and_self]
+
 theorem mapsTo_regularizedStage_Ioo (T u v : ℝ) (j : Fin (H.eventCount + 1)) :
     MapsTo (fun t : ℝ => T - t ^ 2)
       (Ioo (H.regularizedStageStart T u j) (H.regularizedStageEnd T v j))
