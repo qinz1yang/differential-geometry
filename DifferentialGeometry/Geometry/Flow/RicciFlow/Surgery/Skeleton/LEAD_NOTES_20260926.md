@@ -47,6 +47,25 @@ Decisions taken while the owner is away; the acceptance lane applies the queue/l
 - H2b delivered (seam C¹ matching; base-at-event case excluded, needs a glued base window).
 - G1c helper `isLRegularizedGeodesicOn_lPhaseCurve` made public (used by G1d, G3).
 
+## Additions 11:15Z
+
+- ACC3 commit 1 = 06a347488 (interface revision + skeleton, 8 leaves). Commit 2 (27 brick modules)
+  built clean; audit running.
+- L6 delivered with a time margin `μ` (`exists_uniform_orientedWitness_of_standard_close`): the
+  witness time must be interior to the window flow's interval. Decision (b): the C3b leaf assembly
+  calls the bridge at a slightly later time `t' = t + μ'` inside the slab (normalized age `≤ Θ' < 1`
+  with `θcap < Θ'`), so no one-sided L4 is needed. Duplicates to clean at acceptance:
+  `CanonicalWitnessPositiveAge.lean:66` argument, a private `HighCurvatureModels` orientation lemma.
+- B6a delivered (generic all-radii ancient pointed limit, `CompactBalls.lean` +
+  `AncientPointedFlowLimit.lean`; the latter belongs in `Compactness/Limits/`). B6c delivered (1)
+  `Rm ≥ 0`, (2) slice completeness, (5) κ-solution packaging; OPEN: B6c-κ (κ transfer for local
+  approximants, needs uniform-in-time curvature comparison, 1.5–3k) and B6d (bounded curvature of the
+  limit: two-sided derivative clause gives no sign; needs the approximants' spatial necks, the same
+  mechanism as B3c). B6b+B7 running.
+- C3b status: L1–L9 delivered; remaining: L7a (`Φ := (Ξ ·).val.val` as a `PartialDiffeomorph` with
+  `source = univ`), the metric check of the bridge's window flow, and the leaf assembly (brick 11),
+  after ACC3 commit 2 provides oleans.
+
 ## Acceptance-3 checklist (after ACC2's commit)
 
 1. Interface commit: I28's files (`CanonicalNeighborhoodInduction`, `SpatialCanonicalContinuation`,

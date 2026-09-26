@@ -166,6 +166,10 @@ def SpatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Me
           (H.toHistory.event j).incoming.GradientBoundBefore Cgrad qcan t₀ →
           (H.toHistory.event j).incoming.SpatiallyCanonicalBefore ε C1s C2s qs t₀ →
           H.NoncollapsedBefore κ ε t₀ →
+          (∃ η : ℝ, 0 < η ∧
+            (H.toHistory.event j).incoming.DerivativeBoundOn Ctime qcan t₀ η ∧
+            (H.toHistory.event j).incoming.GradientBoundOn Cgrad qcan t₀ η ∧
+            (H.toHistory.event j).incoming.CanonicalOn ε C1 C2 qcan τmin t₀ η) →
           ∃ η : ℝ, 0 < η ∧
             (H.toHistory.event j).incoming.SpatiallyCanonicalOn ε C1s C2s qs t₀ η) ∧
       ∀ (s : ℝ)
@@ -182,6 +186,8 @@ def SpatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Me
           G.GradientBoundBefore Cgrad qcan t₀ →
           G.SpatiallyCanonicalBefore ε C1s C2s qs t₀ →
           H.TerminalNoncollapsedBefore hH.2.1 G hG.2 κ ε t₀ →
+          (∃ η : ℝ, 0 < η ∧ G.DerivativeBoundOn Ctime qcan t₀ η ∧
+            G.GradientBoundOn Cgrad qcan t₀ η ∧ G.CanonicalOn ε C1 C2 qcan τmin t₀ η) →
           ∃ η : ℝ, 0 < η ∧ G.SpatiallyCanonicalOn ε C1s C2s qs t₀ η
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

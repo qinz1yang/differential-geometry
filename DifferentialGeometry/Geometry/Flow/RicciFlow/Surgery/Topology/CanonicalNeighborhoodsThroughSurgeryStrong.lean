@@ -327,9 +327,9 @@ theorem canonicalNeighborhoodsThroughSurgeryStrong_of_leaves
           hN'.1 j hcanP hderP hgradP hspatP t₀ ⟨ht₀.1, ht₀.2.le⟩ hc hd hg hs)
         hncP
         (fun t₀ ht₀ hc hd hg hs hn =>
-          (H.toHistory.event j).incoming.exists_boundsOn_spatiallyCanonicalOn
-            (hF'.1 j hcanP hderP hgradP hspatP t₀ ht₀ hc hd hg hs hn)
-            (hS'.1 j hcanP hderP hgradP hspatP t₀ ht₀ hc hd hg hs hn))
+          have hF₀ := hF'.1 j hcanP hderP hgradP hspatP t₀ ht₀ hc hd hg hs hn
+          (H.toHistory.event j).incoming.exists_boundsOn_spatiallyCanonicalOn hF₀
+            (hS'.1 j hcanP hderP hgradP hspatP t₀ ht₀ hc hd hg hs hn hF₀))
       refine ⟨?_, ?_, ?_, ?_, ?_⟩
       · intro j' hj'
         rcases (Fin.castSucc_lt_succ_iff.mp hj').lt_or_eq with h | rfl
@@ -364,9 +364,10 @@ theorem canonicalNeighborhoodsThroughSurgeryStrong_of_leaves
     (fun t₀ ht₀ hc hd hg hsp =>
       hN'.2 s G hG hpinchG hcanL hderL hgradL hspatL t₀ ht₀ hc hd hg hsp)
     (H.terminalNoncollapsedBefore_start htime G hinitG κ ε)
-    (fun t₀ ht₀ hc hd hg hsp hn => G.exists_boundsOn_spatiallyCanonicalOn
-      (hF'.2 s G hG hpinchG hcanL hderL hgradL hspatL hncL t₀ ht₀ hc hd hg hsp hn)
-      (hS'.2 s G hG hpinchG hcanL hderL hgradL hspatL hncL t₀ ht₀ hc hd hg hsp hn))
+    (fun t₀ ht₀ hc hd hg hsp hn =>
+      have hF₀ := hF'.2 s G hG hpinchG hcanL hderL hgradL hspatL hncL t₀ ht₀ hc hd hg hsp hn
+      G.exists_boundsOn_spatiallyCanonicalOn hF₀
+        (hS'.2 s G hG hpinchG hcanL hderL hgradL hspatL hncL t₀ ht₀ hc hd hg hsp hn hF₀))
   refine ⟨fun y t ht hR => hcl.2.1 y t ht (hqs.trans_lt hR),
     G.gradientBoundBefore_of_threshold_le hqs hcl.2.2.1,
     fun y t ht hR hτ => hcl.1 y t ht (hqs.trans_lt hR) hτ, hcl.2.2.2, ?_⟩

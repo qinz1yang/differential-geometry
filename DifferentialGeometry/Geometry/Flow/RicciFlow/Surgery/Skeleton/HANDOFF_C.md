@@ -24,6 +24,16 @@ clause, the initial pinching `a₀`, and `κ` with `TerminalNoncollapsedBefore`,
 `p₀.recenterConstant ≤ Λ` (item 8 below is realised there). The old `CanonicalNeighborhoodsThroughSurgery`
 described below is weaker (its clauses minus the recenter constraint are the projection `canonicalNeighborhoodsThroughSurgeryOfRecenter_of_strong`) and is no longer on the skeleton path.
 
+C4 interface (I28c, accepted by ACC5): both branches of `SpatialCanonicalContinuation` (event slab
+and terminal slab) now take, after the noncollapsing hypothesis, C3's own output on the same slab,
+`∃ η > 0, DerivativeBoundOn Ctime qcan t₀ η ∧ GradientBoundOn Cgrad qcan t₀ η ∧
+CanonicalOn ε C1 C2 qcan τmin t₀ η`, verbatim from `CanonicalNeighborhoodContinuation`'s
+conclusion (`DESIGN_C4.md` failure 1). The strong assembly obtains it from the C3 leaf (`hF'`) at the
+same `t₀` and passes it both to the combiner and to the C4 leaf, so C4 is proved knowing that the
+age-restricted canonical, derivative and gradient clauses already continue past `t₀`; it still
+concludes only `SpatiallyCanonicalOn` on its own `[t₀, t₀ + η)`. `PoincareEndgame` is unchanged
+(the leaf names the predicate).
+
 ## Binder order after the interface revision (entry 28, accepted 2026-09-26)
 
 C is now an `∃ εbar` statement whose body is `CanonicalNeighborhoodsThroughSurgeryStrongAt`
