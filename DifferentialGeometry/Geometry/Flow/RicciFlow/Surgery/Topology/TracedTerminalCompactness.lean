@@ -15,6 +15,8 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVol
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryTerminalVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ParabolicTerminalBallFlow
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Scalar
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurvivorIncomingPinching
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.MetricPinchingLimit
 
 noncomputable section
 open Set Filter
@@ -2548,9 +2550,12 @@ theorem RetainedCoreHistory.exists_compatible_historical_solution_limits_at_scal
           ∃ j : ℕ, ∀ i ≥ j, ∀ t ∈ Icc (-(θ n / 4)) 0,
             metricDerivNormSupOn K k ((S n (ψ i - N n)).base.metric t)
               (g n t) (P.metric.restrictOpen (V n)) < ε) ∧
-        ∀ n m t, t ∈ Icc (-(θ n / 4)) 0 → t ∈ Icc (-(θ m / 4)) 0 →
+        (∀ n m t, t ∈ Icc (-(θ n / 4)) 0 → t ∈ Icc (-(θ m / 4)) 0 →
           (g n t).restrictOpenOfSubset (inf_le_left : V n ⊓ V m ≤ V n) =
-            (g m t).restrictOpenOfSubset (inf_le_right : V n ⊓ V m ≤ V m)
+            (g m t).restrictOpenOfSubset (inf_le_right : V n ⊓ V m ≤ V m)) ∧
+        ∀ n t, t ∈ Icc (-(θ n / 4)) 0 → ∀ y : V n,
+          metricAlgebraicCurvatureTensorAt (g n t) y ∈
+            algebraicCurvatureOperatorNonnegativeCone (I := ThreeModel)
  := by
   obtain ⟨C, hC, hbase⟩ := ObservedHistory.exists_tested_pointed_convergence_with_backward_traces_at_scalar_escape_of_contacts
   refine ⟨C, hC, ?_⟩
@@ -2565,19 +2570,50 @@ theorem RetainedCoreHistory.exists_compatible_historical_solution_limits_at_scal
   refine ⟨rho, hrho, ind, hind, z, hbuffer, f, hf, r, hr, hrlim, P, F, M, hscalarOne,
     hdomains, hradial, hcompact, hcapture, hmetric, hfinite, hdist, hescape, ?_⟩
   intro V hV
-  apply ObservedHistory.exists_compatible_historical_solution_limits_of_pointed_convergence
+  have hrows := ObservedHistory.exists_compatible_historical_solution_limits_of_pointed_convergence
     (fun i => (H (ind i)).toHistory) (fun i => Fin.last (H (ind i)).eventCount)
     (fun i => G (ind i)) (fun i => x (ind i)) (fun i => L (ind i)) (fun i => hinit (ind i))
     (fun _ => q₀) (fun i => Q (ind i)) (fun _ => hq₀) (fun i => hqQ (ind i)) (fun i => hQ (ind i))
     _ M hdomains hrho hradial hcompact Phi hPhi
     (fun i j _ => hderiv (ind i) j (Fin.le_last _)) (fun i => hfinal (ind i))
-    (fun i j _ => hpinch (ind i) j) (fun i => hpinchFinal (ind i)) ?_ V hV
-  intro R hR hRrho
-  obtain ⟨r, Amax, θ, hr, hRr, hA, hθ, hbudget, hevent⟩ := hbuffer R hR hRrho
-  refine ⟨r, Amax, θ, hr, hRr, hA, hθ, hbudget, ?_⟩
-  filter_upwards [(hind.comp hf).tendsto_atTop.eventually hevent] with i hi
-  obtain ⟨first, htrace, hstart⟩ := hi.2.2
-  exact ⟨hi.1, hi.2.1, first, Fin.le_last _, htrace, hstart⟩
+    (fun i j _ => hpinch (ind i) j) (fun i => hpinchFinal (ind i))
+    (by
+      intro R hR hRrho
+      obtain ⟨r, Amax, θ, hr, hRr, hA, hθ, hbudget, hevent⟩ := hbuffer R hR hRrho
+      refine ⟨r, Amax, θ, hr, hRr, hA, hθ, hbudget, ?_⟩
+      filter_upwards [(hind.comp hf).tendsto_atTop.eventually hevent] with i hi
+      obtain ⟨first, htrace, hstart⟩ := hi.2.2
+      exact ⟨hi.1, hi.2.1, first, Fin.le_last _, htrace, hstart⟩) V hV
+  obtain ⟨Rrow, rrow, Arow, θ, hθ, B, N, S, hconstants, hsource, ψ, hψ,
+    g, hgzero, hgsol, hgconv, hgcompat⟩ := hrows
+  refine ⟨Rrow, rrow, Arow, θ, hθ, B, N, S, hconstants, hsource, ψ, hψ,
+    g, hgzero, hgsol, hgconv, hgcompat, ?_⟩
+  intro n t ht
+  let _ : SigmaCompactSpace (V n) := isSigmaCompact_iff_sigmaCompactSpace.mp
+    (Geometry.isSigmaCompact_of_isOpen ThreeModel (V n).isOpen)
+  have hscale : Tendsto (fun i => Q (ind (f (ψ i - N n + N n)))) atTop atTop := by
+    apply ((hhigh.comp hind.tendsto_atTop).comp (hf.comp hψ).tendsto_atTop).congr'
+    filter_upwards [hψ.tendsto_atTop.eventually (eventually_ge_atTop (N n))] with i hi
+    simp only [Function.comp_apply, Nat.sub_add_cancel hi]
+    rfl
+  refine Perelman.CanonicalNeighborhood.FiniteHorn.curvatureOperator_nonnegative_of_metricCInf_admissible_pinching
+    (fun i => (S n (ψ i - N n)).base.metric t) (g n t) (P.metric.restrictOpen (V n))
+    ?_ hPhi (fun i => Q (ind (f (ψ i - N n + N n))))
+    (fun i => zero_lt_one.trans_le (hQ (ind (f (ψ i - N n + N n))))) hscale ?_
+  · intro K hK m ε hε
+    obtain ⟨j, hj⟩ := hgconv n K hK m ε hε
+    exact ⟨j, fun i hi => hj i hi t ht⟩
+  · apply Eventually.of_forall
+    intro i y
+    obtain ⟨first, hle, Ψ, hΨ, hFv, gflow, _, _, _, _, hstart, _, _, _, _,
+      hmetric, hslabs, hlast, _, _⟩ := hsource n (ψ i - N n)
+    have hp := (H (ind (f (ψ i - N n + N n)))).toHistory.phiAlmostNonnegative_parabolic_backwardSurvivorIncomingFootprint_localPullback
+      first (Fin.last _) hle _ _ _ gflow hslabs hlast hPhi.contDiff.continuous
+      (fun j _ _ => hpinch (ind (f (ψ i - N n + N n))) j)
+      (hpinchFinal (ind (f (ψ i - N n + N n))))
+      (zero_lt_one.trans_le (hQ (ind (f (ψ i - N n + N n))))) hstart
+      Ψ hΨ (S n (ψ i - N n)) (fun v _ => hmetric v)
+    exact hp t ⟨by linarith [ht.1, hθ n], ht.2⟩ y
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
