@@ -133,3 +133,4 @@
   (H7B, C2W, C2L, C4B3, C4A, XA1, XP1, XA2, XA3, XA4, XP3, XP4, SS2, SS3, SP1, SP2, SC1–SC6, SL1, SL2, CP1, CP2,
   ILBA), ACC11_LOG, ACC12_LOG, ACC13_LOG, ANALYSIS_ILB, ledgers. Left untracked (running lanes): OPUS_FILL_LOG_{XP2,
   SC7, X7, ILBB}.md and the 19 excluded Lean files.
+- 2026-09-26T23:05:28Z docs commit 6eb8d9343; pushed to `liao` codex/pc-target-c-psf e68bf6466..6eb8d9343 (fast-forward, 13 commits). DONE.

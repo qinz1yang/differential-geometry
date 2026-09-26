@@ -73,7 +73,9 @@ in the topology modules and is no longer on the skeleton path. Open leaves = the
 `capWindowContinuation` PROVED, `Surgery/Topology/CapWindowContinuationLeaf.lean`). Since ACC13 four leaves: S, C2c
 `historyReducedVolumeInitialLowerBound`, C3c `crossingContinuation`, C4 `spatialCanonicalContinuation`
 (C2a/C2b/C2d CLOSED: `historyReducedVolumeMonotone_holds`, `historyReducedVolumeLocalUpperBound_holds`,
-`smallScaleNoncollapsingThroughSurgery_of_simplyConnectedSpace`).
+`smallScaleNoncollapsingThroughSurgery_of_simplyConnectedSpace`). Since ACC14 two leaves: S
+`uniformDebitSurgeryStepStrong`, C4 `spatialCanonicalContinuation` (C2c, C3c CLOSED:
+`historyReducedVolumeInitialLowerBound_holds`, `crossingContinuation_holds`).
 
 Interface revision (entry 28, 2026-09-26, `Skeleton/DESIGN_28.md`). The ledger's leaves are the
 statements now in the tree; the skeleton has exactly the `sorry`s above (eight until ACC7, seven since).
@@ -501,6 +503,23 @@ Three leaves close; the skeleton has four `sorry`s (S, C2c, C3c, C4).
   neck uniformity, traced regions from strong necks, line/product necks, horizon extension, depth
   induction), SL1 `strongNecksOfCutoffClass_of_strongSpatialCrossing`, SL2 T4′ `FineCutNeckSupplyStrong` and
   T5′ `uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong` (skeleton not rewired).
+
+### Accepted 2026-09-26 (ACC14; sorry-free, foundational axioms, 13 linters clean)
+
+Two leaves close; the skeleton has two `sorry`s (S, C4). `noncollapsingThroughSurgery` and
+`canonicalNeighborhoodContinuation` are now sorry-free; `smoothPoincareConjecture_holds` depends on `sorryAx` only
+through S and C4.
+* C3c CLOSED (lanes XP2′, X7): `crossingContinuation_holds` (`Topology/CrossingContinuationLeaf.lean`) from the
+  Crossing bricks and XP2′'s `NeckAlternativesLocalPullCompact`, `TracedRegionNeckAlternativesCompact`,
+  `LocalFlowLimitWindowTransfer`, `AncientPointedFlowLimitWindowNeckAlternatives`,
+  `WindowScalarBoundNeckAlternatives`, `CrossingMaximalWindow`, `CrossingWindowAnchorBound` (X4).
+* C2c CLOSED (lane ILBB): `historyReducedVolumeInitialLowerBound_holds` (`Topology/InitialRegularBlock.lean`), with
+  `exists_uniform_initial_regular_block` (24b), `regularizedCost_le_of_initial_tail_replacement` (L2),
+  `exists_uniform_initial_spatial_regularizedCost_minimum_lt_three_mul` (L1 at the initial time), the recenter-budget
+  barrier chain, and 20 modules relocated from `origin/codex/wt17-pc-build-warning` (author Bennett Chow; L1
+  `exists_spatial_regularizedCost_minimum_lt_three_mul`, the index estimate `sum_action_scalar_bound_of_spatial_minimum`).
+* S bricks: SC7 (terminal scalar bound at distance along horns `exists_eventually_terminal_scalar_bound_at_distance_of_mem_hornHalfRange`,
+  core frontier distance, chain backward traces, extendAt transport, diagonal choice, rescaling normalization).
 
 ### Equivalence classes (rewrites; not progress)
 

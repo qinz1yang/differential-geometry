@@ -316,3 +316,8 @@ C2a `historyReducedVolumeMonotone`, C2b `historyReducedVolumeLocalUpperBound` an
 (bricks XA1–XA4, XP1–XP4 accepted; XP2′ and the assembly X7 running), C4 `spatialCanonicalContinuation`
 (M5 and C4A's spatial-crossing reduction accepted; I29 not applied). Entry 23 was done by relocation
 (34 new files, credit in the commit message). No full-tree builds on this host: the collaborator builds.
+
+ACC14 update (2026-09-26): C2c and C3c CLOSED and wired into the skeleton (`historyReducedVolumeInitialLowerBound_holds`,
+lane ILBB, on 20 modules relocated from `origin/codex/wt17-pc-build-warning`, author Bennett Chow;
+`crossingContinuation_holds`, lanes XP2′/X7). Open C leaf: C4 `spatialCanonicalContinuation` (lane SX running;
+I29 not applied). With S, two skeleton `sorry`s remain.
