@@ -14179,6 +14179,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.AncientPoin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HornSeparationFrontierScalar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornFineCutNecksLongSlab
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFactory
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupply
 import DifferentialGeometry.Topology.Sequences.ExceptionalSetApproximation
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.RicciLowerBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.RicciLowerMetricComparison
@@ -14216,6 +14217,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliceBallBo
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SliverWindowData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageBallVolumeRatio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StageComponentSimplyConnected
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalCapSideExclusion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitWitnesses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitDerivativeCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TracedRegionAncientLimitNeckAlternatives
