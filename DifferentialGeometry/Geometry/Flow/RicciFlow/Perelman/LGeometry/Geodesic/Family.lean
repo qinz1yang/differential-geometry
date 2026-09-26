@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.PhaseFamily
+import DifferentialGeometry.Bundle.TangentSpace
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Jacobi.Regularized
 
 set_option autoImplicit false
@@ -45,143 +47,13 @@ theorem exists_lRegularizedGeodesicFamily
                 lVelocity (I := I) (fun s ↦ alpha (A, s)) s0 = A ∧
                 IsLRegularizedGeodesicOn S T (fun s ↦ alpha (A, s))
                   (Ioo (s0 - epsilon) (s0 + epsilon)) := by
-  let seed : E → E × E := fun A ↦
-    (extChartAt I x x, A)
-  let z0 : E × E := seed A0
-  have hz0pos : z0.1 ∈ interior (extChartAt I x).target := by
-    apply mem_interior_iff_mem_nhds.mpr
-    simpa only [z0, seed] using extChartAt_target_mem_nhds (I := I) x
-  obtain ⟨epsilon, hepsilon, U, hUopen, hz0U, Phi,
-      hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
-    exists_lPhaseAt S hS T x s0 z0 hT hz0pos
-  let V : Set E := seed ⁻¹' U
-  have hseed : ContDiff Real ∞ seed :=
-    contDiff_const.prodMk contDiff_id
-  have hVopen : IsOpen V := hUopen.preimage hseed.continuous
-  have hA0V : A0 ∈ V := by
-    change seed A0 ∈ U
-    exact hz0U
-  let input : E × Real → (E × E) × Real := fun p ↦ (seed p.1, p.2)
-  let phase : E × Real → E × E := fun p ↦ Phi (input p)
-  let alpha : E × Real → M := fun p ↦
-    (extChartAt I x).symm (phase p).1
-  have hinput : ContDiff Real ∞ input :=
-    (hseed.comp contDiff_fst).prodMk contDiff_snd
-  have hinputMap : MapsTo input
-      (V ×ˢ Ioo (s0 - epsilon) (s0 + epsilon))
-      (U ×ˢ Ioo (s0 - epsilon) (s0 + epsilon)) := by
-    rintro ⟨A, s⟩ ⟨hA, hs⟩
-    exact ⟨hA, hs⟩
-  have hphase : ContDiffOn Real ∞ phase
-      (V ×ˢ Ioo (s0 - epsilon) (s0 + epsilon)) := by
-    have hraw := hPhiSmooth.comp hinput.contDiffOn hinputMap
-    have hfun : Phi ∘ input = phase := by
-      rfl
-    rw [hfun] at hraw
-    exact hraw
-  have hphaseMap : MapsTo (fun p : E × Real ↦ (phase p).1)
-      (V ×ˢ Ioo (s0 - epsilon) (s0 + epsilon))
-      (extChartAt I x).target := by
-    intro p hp
-    exact interior_subset (hPhiMap (hinputMap hp)).2
-  have halpha : ContMDiffOn
-      (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha
-      (V ×ˢ Ioo (s0 - epsilon) (s0 + epsilon)) := by
-    have hphaseMD : ContMDiffOn 𝓘(Real, E × Real) 𝓘(Real, E) ∞
-        (fun p ↦ (phase p).1)
-        (V ×ˢ Ioo (s0 - epsilon) (s0 + epsilon)) :=
-      hphase.fst.contMDiffOn
-    rw [modelWithCornersSelf_prod, ← chartedSpaceSelf_prod] at hphaseMD
-    exact (contMDiffOn_extChartAt_symm (I := I) (n := ∞) x).comp
-      hphaseMD hphaseMap
-  refine ⟨epsilon, hepsilon, V, hVopen, hA0V, alpha, halpha, ?_⟩
-  intro A hA
-  let z : Real → E × E := fun s ↦ phase (A, s)
-  let gamma : Real → M := lPhaseCurve (I := I) x z
-  let W : ∀ s, TangentSpace I (gamma s) := lPhaseVelocity (I := I) x z
-  have hzU : seed A ∈ U := by
-    exact hA
-  have hsol : ∀ s ∈ Ioo (s0 - epsilon) (s0 + epsilon),
-      HasDerivAt z (lPhaseField S T x s (z s)) s := by
-    intro s hs
-    simpa only [z, phase, input] using hPhiDeriv (seed A) hzU s hs
-  have hdata : ∀ s ∈ Ioo (s0 - epsilon) (s0 + epsilon),
-      T - s ^ 2 ∈ D.regular ∧
-        (z s).1 ∈ interior (extChartAt I x).target := by
-    intro s hs
-    have hmem : ((seed A, s) : (E × E) × Real) ∈
-        U ×ˢ Ioo (s0 - epsilon) (s0 + epsilon) := ⟨hzU, hs⟩
-    have hmap := hPhiMap hmem
-    change T - s ^ 2 ∈ D.regular ∧
-      (Phi (seed A, s)).1 ∈ interior (extChartAt I x).target at hmap
-    exact hmap
-  have hzs0 : z s0 = seed A := by
-    simpa only [z, phase, input] using hPhi0 (seed A) hzU
-  have hvel : Set.EqOn (fun s ↦ lVelocity (I := I) gamma s) W
-      (Ioo (s0 - epsilon) (s0 + epsilon)) := by
-    intro s hs
-    have hzs := hsol s hs
-    have hq : HasDerivAt (fun r : Real ↦ (z r).1) (z s).2 s := by
-      have h := hasFDerivAt_fst.comp_hasDerivAt s hzs
-      simpa [lPhaseField, Function.comp_def] using h
-    with_unfolding_all exact
-      (lPhase_velocity (I := I) x z s hq (hdata s hs).2)
-  have hs0 : s0 ∈ Ioo (s0 - epsilon) (s0 + epsilon) := by
-    constructor <;> linarith
-  have hgamma0 : gamma s0 = x := by
-    simp only [gamma, lPhaseCurve, hzs0, seed]
-    exact (extChartAt I x).left_inv (mem_extChartAt_source (I := I) x)
-  have hvel0 : lVelocity (I := I) gamma s0 = A := by
-    have hv := hvel hs0
-    change lVelocity (I := I) gamma s0 =
-      trivFromE (I := I) x (gamma s0) (z s0).2 at hv
-    rw [hgamma0, hzs0] at hv
-    exact hv.trans (by
-      change trivFromE (I := I) x x A = A
-      rw [trivFromE_self_apply]
-      exact DifferentialGeometry.Tensor.Coordinates.centeredChartTangentEquiv_symm_apply (I := I) x A)
-  have halpha_eq : (fun s ↦ alpha (A, s)) = gamma := by
-    funext s
-    rfl
-  rw [halpha_eq]
-  refine ⟨hgamma0, hvel0, ?_⟩
-  intro s hs
-  have hzs := hsol s hs
-  have hsdata := hdata s hs
-  have hq : HasDerivAt (fun r : Real ↦ (z r).1) (z s).2 s := by
-    have h := hasFDerivAt_fst.comp_hasDerivAt s hzs
-    simpa [lPhaseField, Function.comp_def] using h
-  have hv : HasDerivAt (fun r : Real ↦ (z r).2)
-      (lPhaseField S T x s (z s)).2 s := by
-    have h := hasFDerivAt_snd.comp_hasDerivAt s hzs
-    simpa [Function.comp_def] using h
-  have hfield : (fun r ↦ lVelocity (I := I) gamma r) =ᶠ[nhds s] W :=
-    hvel.eventuallyEq_of_mem (isOpen_Ioo.mem_nhds hs)
-  have hgamma : MDifferentiableAt 𝓘(Real, Real) I gamma s := by
-    simpa only [gamma] using
-      lPhaseCurve_mdiff (I := I) x z s hq.differentiableAt hsdata.2
-  have hWdiff : DifferentiableAt Real
-      (chartRepAt (I := I) gamma W s) s := by
-    simpa only [gamma, W] using lPhaseVelocity_diff (I := I) x z s
-      hq.differentiableAt hv.differentiableAt hsdata.2
-  have hveldiff : DifferentiableAt Real
-      (chartRepAt (I := I) gamma
-        (fun r : Real ↦ lVelocity (I := I) gamma r) s) s :=
-    hWdiff.congr_of_eventuallyEq
-      (chartRepAt_eventuallyEq_of_eventuallyEq (I := I) gamma hfield)
-  refine ⟨hsdata.1, hgamma, hveldiff, ?_⟩
-  calc
-    covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma
-        (fun r : Real ↦ lVelocity (I := I) gamma r) s =
-      covDerivAlong (I := I) (S.base.metric (T - s ^ 2)) gamma W s :=
-        covDerivAlong_congr_of_eventuallyEq
-          (I := I) (S.base.metric (T - s ^ 2)) gamma hfield
-    _ = lRegularizedAccel S T s (gamma s) (W s) := by
-      simpa only [gamma, W] using
-        lPhase_accel S T x z s hzs hsdata.2
-    _ = lRegularizedAccel S T s (gamma s)
-        (lVelocity (I := I) gamma s) := by
-      rw [hfield.eq_of_nhds]
+  let : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  obtain ⟨epsilon, hepsilon, V, hVopen, hA0V, _, alpha, halpha, hcurves⟩ :=
+    exists_lRegularizedGeodesicFamily_of_smooth_phase (A := E) S hS T s0
+      (isOpen_univ : IsOpen (univ : Set E)) (mem_univ (A0 : E))
+      (fun A : E => (⟨x, A⟩ : TangentBundle I M))
+      (DifferentialGeometry.contMDiff_tangentFiber (I := I) (n := ∞) x).contMDiffOn hT
+  exact ⟨epsilon, hepsilon, V, hVopen, hA0V, alpha, halpha, hcurves⟩
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] in
@@ -626,160 +498,14 @@ theorem exists_lRegularizedGeodesicFamily_to_time
               alpha (A, s0) = x ∧
                 lVelocity (I := I) (fun r ↦ alpha (A, r)) s0 = A ∧
                 IsLRegularizedGeodesicOn S T (fun r ↦ alpha (A, r)) K := by
-  classical
-  let Good : Set Real := {r | ∃ V : Set E, IsOpen V ∧ A0 ∈ V ∧
-    ∃ K : Set Real, IsOpen K ∧ IsPreconnected K ∧
-      s0 ∈ K ∧ r ∈ K ∧
-      ∃ alpha : E × Real → M,
-        ContMDiffOn (𝓘(Real, E).prod 𝓘(Real, Real)) I ∞ alpha
-            (V ×ˢ K) ∧
-          ∀ A ∈ V,
-            alpha (A, s0) = x ∧
-              lVelocity (I := I) (fun q ↦ alpha (A, q)) s0 = A ∧
-              IsLRegularizedGeodesicOn S T (fun q ↦ alpha (A, q)) K}
-  have hGood0 : s0 ∈ Good := by
-    obtain ⟨epsilon, hepsilon, V, hVopen, hA0V, alpha, halpha, hcurves⟩ :=
-      exists_lRegularizedGeodesicFamily S hS T s0 x A0 (hgamma s0 hs0J).1
-    have hs0I : s0 ∈ Ioo (s0 - epsilon) (s0 + epsilon) :=
-      ⟨by linarith, by linarith⟩
-    exact ⟨V, hVopen, hA0V, Ioo (s0 - epsilon) (s0 + epsilon),
-      isOpen_Ioo, isPreconnected_Ioo, hs0I, hs0I, alpha, halpha, hcurves⟩
-  have hGoodOpen : IsOpen Good := by
-    rw [isOpen_iff_mem_nhds]
-    intro r hr
-    obtain ⟨V, hVopen, hA0V, K, hKopen, hKconn, hs0K, hrK,
-      alpha, halpha, hcurves⟩ := hr
-    obtain ⟨epsilon, hepsilon, W, hWopen, hA0W, _hWV,
-      beta, hbeta, hcurves'⟩ :=
-      exists_lRegularizedGeodesicFamily_extension S hS T x hVopen hA0V hKopen hKconn hs0K hrK
-        halpha hcurves
-    have hrI : r ∈ Ioo (r - epsilon) (r + epsilon) :=
-      ⟨by linarith, by linarith⟩
-    apply Filter.mem_of_superset (isOpen_Ioo.mem_nhds hrI)
-    intro q hq
-    have hUnionOpen : IsOpen (K ∪ Ioo (r - epsilon) (r + epsilon)) :=
-      hKopen.union isOpen_Ioo
-    have hUnionConn : IsPreconnected
-        (K ∪ Ioo (r - epsilon) (r + epsilon)) :=
-      hKconn.union r hrK hrI isPreconnected_Ioo
-    exact ⟨W, hWopen, hA0W, K ∪ Ioo (r - epsilon) (r + epsilon),
-      hUnionOpen, hUnionConn, Or.inl hs0K, Or.inr hq,
-      beta, hbeta, hcurves'⟩
-  have hseg : uIcc s0 b ⊆ J :=
-    hJconn.ordConnected.uIcc_subset hs0J hbJ
-  have hclosed : closure Good ∩ uIcc s0 b ⊆ Good := by
-    rintro s ⟨hscl, hsseg⟩
-    have hsJ : s ∈ J := hseg hsseg
-    let x0 : M := gamma s
-    have hgammaCont : ContinuousOn gamma J := by
-      intro r hr
-      exact (hgamma r hr).2.1.continuousAt.continuousWithinAt
-    have hgammaAt : ContinuousAt gamma s :=
-      (hgammaCont s hsJ).continuousAt (hJopen.mem_nhds hsJ)
-    have hsrcNhds : gamma ⁻¹' (chartAt H x0).source ∈ nhds s := by
-      apply hgammaAt.preimage_mem_nhds
-      apply (chartAt H x0).open_source.mem_nhds
-      simpa only [x0] using mem_chart_source H (gamma s)
-    have hlocalNhds : J ∩ gamma ⁻¹' (chartAt H x0).source ∈ nhds s :=
-      inter_mem (hJopen.mem_nhds hsJ) hsrcNhds
-    obtain ⟨a, c, hsQ, hQnhds, hQsub⟩ :=
-      exists_Icc_mem_subset_of_mem_nhds hlocalNhds
-    let Q : Set Real := Icc a c
-    let X : ∀ r, TangentSpace I (gamma r) :=
-      fun r ↦ lVelocity (I := I) gamma r
-    let zref : Real → E × E := fun r ↦
-      (chartCurve (I := I) x0 gamma r,
-        chartRepAtBase (I := I) x0 gamma X r)
-    have hzrefCont : ContinuousOn zref Q := by
-      intro r hr
-      have hrlocal : r ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub hr
-      have hrdata := hgamma r hrlocal.1
-      have hphase := lRegularizedCurve_phase S T x0 gamma r hrdata.2.1
-        hrlocal.2 hrdata.2.2.1 hrdata.2.2.2
-      simpa only [zref, X] using hphase.continuousAt.continuousWithinAt
-    let C : Set (Real × (E × E)) := (fun r ↦ (r, zref r)) '' Q
-    have hC : IsCompact C :=
-      isCompact_Icc.image_of_continuousOn
-        (continuousOn_id.prodMk hzrefCont)
-    have hCreg : C ⊆ {p : Real × (E × E) |
-        T - p.1 ^ 2 ∈ D.regular ∧
-          p.2.1 ∈ interior (extChartAt I x0).target} := by
-      rintro p ⟨r, hrQ, rfl⟩
-      have hrlocal : r ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub hrQ
-      refine ⟨(hgamma r hrlocal.1).1, ?_⟩
-      change extChartAt I x0 (gamma r) ∈ interior (extChartAt I x0).target
-      rw [(isOpen_extChartAt_target (I := I) x0).interior_eq]
-      apply (extChartAt I x0).map_source
-      rw [extChartAt_source]
-      exact hrlocal.2
-    obtain ⟨epsilon, hepsilon, hphaseLocal⟩ :=
-      exists_lPhaseComp S hS T x0 hC hCreg
-    have hball : Ioo (s - epsilon) (s + epsilon) ∈ nhds s :=
-      Ioo_mem_nhds (sub_lt_self _ hepsilon) (lt_add_of_pos_right _ hepsilon)
-    have hnear : Q ∩ Ioo (s - epsilon) (s + epsilon) ∈ nhds s :=
-      inter_mem (by simpa only [Q] using hQnhds) hball
-    obtain ⟨t, ⟨htQ, htball⟩, htGood⟩ :=
-      mem_closure_iff_nhds.mp hscl _ hnear
-    obtain ⟨V, hVopen, hA0V, K, hKopen, hKconn, hs0K, htK,
-      alpha, halpha, hcurves⟩ := htGood
-    have htlocal : t ∈ J ∩ gamma ⁻¹' (chartAt H x0).source := hQsub htQ
-    have hEq : Set.EqOn (fun r ↦ alpha (A0, r)) gamma (K ∩ J) :=
-      lRegularizedSolution_eqOn S hS T hKopen hKconn hs0K hJopen hJconn hs0J
-        (hcurves A0 hA0V).2.2 hgamma
-        (by rw [(hcurves A0 hA0V).1, hstart])
-        (by rw [(hcurves A0 hA0V).2.1, hvel])
-    have hpos : alpha (A0, t) = gamma t := hEq ⟨htK, htlocal.1⟩
-    have heqGerm : (fun r ↦ alpha (A0, r)) =ᶠ[nhds t] gamma :=
-      hEq.eventuallyEq_of_mem
-        ((hKopen.inter hJopen).mem_nhds ⟨htK, htlocal.1⟩)
-    have hvelEq : lVelocity (I := I) (fun r ↦ alpha (A0, r)) t =
-        lVelocity (I := I) gamma t := by
-      with_unfolding_all exact
-        (congrArg (fun L ↦ L (1 : Real))
-          (heqGerm.mfderiv_eq (I := 𝓘(Real, Real)) (I' := I)))
-    have hptC : (t, zref t) ∈ C := ⟨t, htQ, rfl⟩
-    obtain ⟨U, hUopen, hzrefU, Phi,
-      hPhi0, hPhiSmooth, hPhiDeriv, hPhiMap⟩ :=
-      hphaseLocal (t, zref t) hptC
-    have halphaSource : alpha (A0, t) ∈ (chartAt H x0).source := by
-      rw [hpos]
-      exact htlocal.2
-    have hseedEq :
-        (extChartAt I x0 (alpha (A0, t)),
-          fderiv Real
-            (fun r : Real ↦ extChartAt I x0 (alpha (A0, r))) t
-            (1 : Real)) = zref t := by
-      apply Prod.ext
-      · simp only [zref, chartCurve]
-        rw [hpos]
-      · have hseedVelocity := lPhaseSeed_velocity (I := I) x0
-          ((hcurves A0 hA0V).2.2 t htK).2.1 halphaSource
-        calc
-          fderiv Real
-              (fun r : Real ↦ extChartAt I x0 (alpha (A0, r))) t
-              (1 : Real) =
-            trivToE (I := I) x0 (alpha (A0, t))
-              (lVelocity (I := I) (fun r ↦ alpha (A0, r)) t) := hseedVelocity
-          _ = trivToE (I := I) x0 (gamma t)
-              (lVelocity (I := I) gamma t) := by rw [hpos, hvelEq]
-          _ = (zref t).2 := by rfl
-    obtain ⟨W, hWopen, hA0W, _hWV, beta, hbeta, hcurves'⟩ :=
-      extend_lRegularizedGeodesicFamily_of_phaseFlow S hS T x x0 hVopen hA0V hKopen hKconn
-        hs0K htK halpha hcurves halphaSource epsilon hepsilon hUopen
-        (by rw [hseedEq]; exact hzrefU) Phi hPhi0 hPhiSmooth hPhiDeriv hPhiMap
-    have hsNew : s ∈ K ∪ Ioo (t - epsilon) (t + epsilon) := by
-      right
-      exact ⟨by linarith [htball.2], by linarith [htball.1]⟩
-    have htI : t ∈ Ioo (t - epsilon) (t + epsilon) :=
-      ⟨by linarith, by linarith⟩
-    exact ⟨W, hWopen, hA0W, K ∪ Ioo (t - epsilon) (t + epsilon),
-      hKopen.union isOpen_Ioo,
-      hKconn.union t htK htI isPreconnected_Ioo,
-      Or.inl hs0K, hsNew, beta, hbeta, hcurves'⟩
-  have hall : uIcc s0 b ⊆ Good :=
-    isPreconnected_uIcc.subset_of_closure_inter_subset hGoodOpen
-      ⟨s0, Set.left_mem_uIcc, hGood0⟩ hclosed
-  exact hall Set.right_mem_uIcc
+  let : IsManifold I 1 M := IsManifold.of_le (n := ∞) (by decide)
+  obtain ⟨V, hV, hA0V, _, K, hK, hKconn, hs0K, hbK, alpha, halpha, hcurves, _⟩ :=
+    exists_lRegularizedGeodesicFamily_to_time_of_smooth_phase (A := E) S hS T
+      (isOpen_univ : IsOpen (univ : Set E)) (mem_univ (A0 : E))
+      (fun A : E => (⟨x, A⟩ : TangentBundle I M))
+      (DifferentialGeometry.contMDiff_tangentFiber (I := I) (n := ∞) x).contMDiffOn
+      hJopen hJconn hs0J hbJ hstart hvel hgamma
+  exact ⟨V, hV, hA0V, K, hK, hKconn, hs0K, hbK, alpha, halpha, hcurves⟩
 
 omit [InnerProductSpace Real E] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -764,4 +764,83 @@ theorem RetainedCoreHistory.normalized_incomingFootprint_volume_ball_ge_of_teste
   rw [hscale, show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace]] at hscaled
   simpa only [ENNReal.ofReal_mul' (pow_nonneg ha.le 3), ENNReal.ofReal_pow ha.le] using hscaled
 
+theorem RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_volume_radius
+    {R θ C σ : ℝ} (hR : 0 < R) (hθ : 0 < θ) (hC : 0 ≤ C) (hσ : 0 < σ) :
+    ∃ a₀ : ℝ, 0 < a₀ ∧ ∀ a : ℝ, 0 < a → a ≤ a₀ →
+    ∀ {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
+    (L : G.TerminalLimitMetric)
+    (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
+    , H.horizon < s → ∀ (first : Fin (H.eventCount + 1)) (K : Set G.terminalRegularOpen)
+    (gflow : ℝ → SmoothRiemannianMetric ThreeModel
+      (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
+        (Fin.le_last first) G K))
+    , (∀ (j : Fin H.eventCount) (hf : first ≤ j.castSucc),
+      ∀ v ∈ Icc (H.time j.castSucc) (H.time j.succ),
+        gflow v = ((H.toHistory.backwardSurvivorSlabMetric first (Fin.last H.eventCount)
+          (Fin.le_last first) j hf (Fin.le_last _) v).restrictOpen
+            (H.toHistory.backwardSurvivorIncomingDomain first (Fin.last H.eventCount)
+              (Fin.le_last first) G)).restrictOpen
+                (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
+                  (Fin.le_last first) G K))
+    → (∀ v ∈ Icc (H.time (Fin.last H.eventCount)) s,
+      gflow v = (H.toHistory.backwardSurvivorIncomingMetric first (Fin.last H.eventCount)
+        (Fin.le_last first) G L v).restrictOpen
+          (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
+            (Fin.le_last first) G K))
+    → ∀ (p : H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
+      (Fin.le_last first) G K) {Q κ : ℝ} (hQ : 1 ≤ Q),
+    IsCompact (riemannianClosedBallOf (scaleMetric Q (zero_lt_one.trans_le hQ) (gflow s)) p R) →
+    H.time first ≤ s - θ / Q →
+    (∀ v ∈ Ico (s - θ / Q) s, ∀ z : H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
+      (Fin.le_last first) G K,
+      normSq0S (gflow v) z 4 (metricRm04At (gflow v) z) ≤ C * Q ^ 2) →
+     (∀ (t : ℝ) (ht : H.horizon < t) (hts : t < s),
+      let A := H.extendHorizon t ht.le
+        (G.closedPrefix t (H.time_le_horizon.trans_lt ht) hts) hinit;
+      let time : Icc (0 : ℝ) A.horizon := ⟨t, H.horizon_nonneg.trans ht.le, le_rfl⟩;
+      ∀ (q : (A.toHistory.stageAt time).Carrier) (ρ : ℝ), 0 < ρ → ρ ≤ σ →
+        A.toHistory.isParabolicallyRmControlledBall time q ρ →
+          ENNReal.ofReal κ * ENNReal.ofReal ρ ^ 3 ≤
+            riemannianVolumeMeasure ThreeModel (A.toHistory.stageAt time).Carrier
+              (A.toHistory.stageMetric (A.toHistory.activeStage time) time)
+              (riemannianBallOf (A.toHistory.stageMetric (A.toHistory.activeStage time) time) q ρ)) →
+    ∀ x ∈ riemannianClosedBallOf (scaleMetric Q (zero_lt_one.trans_le hQ) (gflow s)) p (R / 4),
+      ENNReal.ofReal (κ * a ^ 3) ≤
+        riemannianVolumeMeasure ThreeModel (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
+      (Fin.le_last first) G K) (scaleMetric Q (zero_lt_one.trans_le hQ) (gflow s))
+          (riemannianBallOf (scaleMetric Q (zero_lt_one.trans_le hQ) (gflow s)) x a) := by
+  let a₀ := min (R / 8) (min (Real.sqrt θ / 2) (min (1 / (C + 1)) σ))
+  have ha₀ : 0 < a₀ := by dsimp only [a₀]; positivity
+  refine ⟨a₀, ha₀, ?_⟩
+  intro a ha haa₀ P H s G L hinit hs first K gflow hslabs hlast p Q κ hQ hcpt hroom hbound htested x hx
+  have haR : a ≤ R / 8 := haa₀.trans (min_le_left _ _)
+  have hatheta : a ≤ Real.sqrt θ / 2 :=
+    haa₀.trans ((min_le_right _ _).trans (min_le_left _ _))
+  have haC : a ≤ 1 / (C + 1) :=
+    haa₀.trans ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_left _ _)))
+  have haσ : a ≤ σ :=
+    haa₀.trans ((min_le_right _ _).trans ((min_le_right _ _).trans (min_le_right _ _)))
+  have hatime : a ^ 2 ≤ θ := by nlinarith [Real.sq_sqrt hθ.le, Real.sqrt_nonneg θ]
+  have haone : a ≤ 1 := by
+    have hh := (le_div_iff₀ (by positivity)).mp haC
+    nlinarith [mul_nonneg ha.le hC]
+  have haCbound : a * C ≤ 1 := by
+    have hh := (le_div_iff₀ (by positivity)).mp haC
+    nlinarith
+  have hac : a ^ 4 * C ≤ 1 := by
+    have hh := mul_le_mul (pow_le_one₀ (n := 3) ha.le haone) haCbound (mul_nonneg ha.le hC) zero_le_one
+    nlinarith only [hh]
+  have hQpos : 0 < Q := zero_lt_one.trans_le hQ
+  have hroot : 1 ≤ Real.sqrt Q := (Real.one_le_sqrt).mpr hQ
+  have haroot : a / Real.sqrt Q ≤ σ :=
+    (div_le_self ha.le hroot).trans haσ
+  have hcptx : IsCompact (riemannianClosedBallOf (scaleMetric Q hQpos (gflow s)) x (R / 2)) :=
+    hcpt.of_isClosed_subset (Geometry.Metric.isClosed_riemannianClosedBallOf _ _ _)
+      (riemannianClosedBallOf_subset_of_add_radius_le _ (by positivity : 0 ≤ R / 4)
+        (by positivity : 0 ≤ R / 2) (by linarith : R / 4 + R / 2 ≤ R) hx)
+  exact H.normalized_incomingFootprint_volume_ball_ge_of_tested_history_and_curvature_bound
+    G L hinit hs first K gflow hslabs hlast x hQpos ha (by linarith : a < R / 2) haroot
+    hatime hac hcptx hroom (fun v hv z _ => hbound v hv z) htested
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
