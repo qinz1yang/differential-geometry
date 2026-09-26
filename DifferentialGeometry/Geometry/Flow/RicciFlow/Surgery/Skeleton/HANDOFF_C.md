@@ -174,6 +174,18 @@ a post-surgery stage start) is running. B6d glue B4–B6 (`Metric/Pullback/Local
 from the survivor maps) accepted; B7 delivered, its κ-variant running; B11 open. NC0
 (`Perelman/Noncollapsing/TerminalTime`) gives κ-noncollapsing at the terminal time of the limit.
 
+### Status 2026-09-26 (ACC10)
+
+C3c inputs accepted, none closes the leaf. Base slice: BS6 (post-surgery stage start,
+`BoundedCurvatureAtDistanceAfterEvent`) accepted, so BS1–BS7 are DONE. B6d glue: B7 (lane B6G3: uniform
+time-Lipschitz bounds, the B6b′ limit with time control and κ only before the sliver,
+`TracedRegionAncientLimitTimeControl`, `AncientPointedFlowLimitTerminalNoncollapsing`) and B8–B11 (lane
+B6G4: `AncientPointedFlowLimitShiftedTransfer`, restated B6d headline) accepted, so glue B1–B12 are DONE;
+B13 (composed) and the Crossing assembly design are running. C2: C9 (`CoreIntegralBound`) DONE, M
+running, T9/H7b+/SB3/H8/H9 pending; small-scale S1–S4/S4′/R0–R4 DONE, S0/S6/S7 and the leaf running.
+C4: G, M2 (corrected shape: comparison set with closure in the window), M3 (universe-general
+pushforward) DONE; M1a/M1b/M4/M4★ running.
+
 ### Quantifier order (kept; decided 2026-09-25 evening)
 
 `τmin` stays a model constant chosen with `C1 C2 Ctime` before `κ`. An attempt to choose `τmin` after

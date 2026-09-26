@@ -251,3 +251,15 @@ bricks BS1–BS5/BS7 (bounded curvature at distance on the sliver `[t₀, t]`, e
 `Topology/BoundedCurvatureAtDistanceSliver.lean`) and the B6d glue B4–B6 (neck alternatives of the
 ancient limit from the survivor maps). BS6, B7's κ-variant and B11 remain; `hlong` is still the only
 hypothesis of S.
+
+## Update 2026-09-26 (ACC10; review H12, DESIGN_B13)
+
+Review H12 (`consult/H12-s-fineCutNeckSupply-review-digest.md`): `hlong` is NOT a supplied input. The
+reduction `uniformDebitSurgeryStepStrong_of_long_slabs` is correct and `hlong` is not refuted, but no
+supplier exists. S is now reduced to the interface `FineCutNeckSupply` (T5, accepted:
+`Contract/UniformDebitSurgeryStepOfFineCutNeckSupply.lean`,
+`uniformDebitSurgeryStepStrong_of_fineCutNeckSupply`). T1 (terminal cap-side obstruction,
+`Topology/TerminalCapSideExclusion.lean`) is DONE; T2 is running; T4 (the supply) is blocked on the
+supply fork (interface strengthening vs fixed-parameter X-core vs reordering F*), laid out by the
+running design lane DESIGN_S_SUPPLY. Once T4 lands the skeleton leaf is the one-liner
+`uniformDebitSurgeryStepStrong_of_fineCutNeckSupply P₀ g₀ (fineCutNeckSupply P₀ g₀)`.

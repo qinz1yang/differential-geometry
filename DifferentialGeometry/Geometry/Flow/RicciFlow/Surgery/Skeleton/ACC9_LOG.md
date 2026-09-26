@@ -63,3 +63,4 @@
   `SlabTimeWindowContinuity` belongs in `Topology/`; STRUCTURE.md: the `n`-sphere volume bound and the
   space-form isometry are correctly placed; R0a's `RoundSphereThree` specialisation stays in the flow file.
 - Commits: e87e6d62f (R0 + NC0), 2c47e2482 (C2 wave 1 C2W1 + X + E), adc86324c (base slice BS1–BS5/BS7 + B6d glue B4–B6); root lines staged per group. Commit 4: designs, digests, finished-lane logs, ledgers.
+- Commit 4 = 1640a9e11; pushed 481017246..1640a9e11 to liao/codex/pc-target-c-psf. This line left uncommitted.
