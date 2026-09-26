@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryActionJoin
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.Density
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.TimeContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalClosedSolution
 
 noncomputable section
@@ -177,6 +178,78 @@ theorem exists_regularizedCost_lt_after_event
   apply WithTop.coe_lt_coe.mpr
   have hCA' := WithTop.coe_lt_coe.mp hCA
   linarith only [hsmall, hCA']
+
+theorem tendsto_sInf_regularizedCost_after_event_of_minimum
+    (i : Fin H.eventCount) (last : Fin (H.eventCount + 1)) (hl : i.succ ≤ last)
+    {T B u w b A : ℝ} (hwb : w < b)
+    (hevent : T - w ^ 2 = H.time i.succ)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hscalar : ∀ j : H.StageInterval i.castSucc last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T b j.val),
+      ∀ z : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) z)
+    (p : (H.stage last).Carrier) (z : (H.event i).old)
+    (hcost : H.regularizedCost i.succ last hl T B u w p ((H.event i).oldOutput z) = (A : WithTop ℝ))
+    (hmin : ∀ q : (H.stage i.succ).Carrier,
+      (A : WithTop ℝ) ≤ H.regularizedCost i.succ last hl T B u w p q) :
+    Tendsto (fun v : ℝ => sInf (range (H.regularizedCost i.castSucc last
+      (i.castSucc_le_succ.trans hl) T B u v p))) (𝓝[>] w) (𝓝 (A : WithTop ℝ)) := by
+  have hne : (H.regularizedActionValues i.succ last hl T B u w p ((H.event i).oldOutput z)).Nonempty := by
+    by_contra h
+    have htop := H.regularizedCost_eq_top_of_no_competitor i.succ last hl T B u w p ((H.event i).oldOutput z)
+      (Set.not_nonempty_iff_eq_empty.mp h)
+    exact WithTop.coe_ne_top (hcost.symm.trans htop)
+  obtain ⟨_, hvalue⟩ := hne
+  have hu : 0 ≤ u := hvalue.1
+  have huw : u ≤ w := hvalue.2.1
+  have hw : 0 ≤ w := hu.trans huw
+  have hb : 0 ≤ b := hw.trans hwb.le
+  have hkw : T - w ^ 2 ∈ H.stageDomain i.succ := hevent ▸ H.time_mem_stageDomain i.succ
+  let value := fun v : ℝ => sInf (range (H.regularizedCost i.castSucc last
+    (i.castSucc_le_succ.trans hl) T B u v p))
+  have hvalue_le (v : ℝ) (q : (H.stage i.castSucc).Carrier) : value v ≤
+      H.regularizedCost i.castSucc last (i.castSucc_le_succ.trans hl) T B u v p q := by
+    apply csInf_le ?_ (mem_range_self q)
+    refine ⟨((-(2 * B / 3) * (v ^ 3 - u ^ 3) : ℝ) : WithTop ℝ), ?_⟩
+    rintro c ⟨y, rfl⟩
+    exact H.regularizedCost_ge i.castSucc last (i.castSucc_le_succ.trans hl) T B u v p y
+  have hvalue_lower {v : ℝ} (hv : v ∈ Ioo w b) :
+      ((A - (2 * B / 3) * (v ^ 3 - w ^ 3) : ℝ) : WithTop ℝ) ≤ value v := by
+    apply le_csInf ⟨_, mem_range_self z.val.val⟩
+    rintro c ⟨q, rfl⟩
+    apply H.regularizedCost_ge_of_prefix_lower_bound i.castSucc last
+      (i.castSucc_le_succ.trans hl) hupper ?_ p q
+      ⟨i.succ, i.castSucc_le_succ, hl⟩ ⟨huw, hv.1.le⟩ hkw hmin
+    intro j t ht x
+    exact hscalar j t ⟨ht.1, ht.2.trans_le
+      (H.regularizedStageEnd_monotoneOn T j.val (hw.trans hv.1.le) hb hv.2.le)⟩ x
+  change Tendsto value (𝓝[>] w) (𝓝 (A : WithTop ℝ))
+  apply tendsto_order.2
+  constructor
+  · intro C hC
+    cases C using WithTop.recTopCoe with
+    | top => exact False.elim (not_lt_of_ge le_top hC)
+    | coe C =>
+      have hCA : C < A := WithTop.coe_lt_coe.mp hC
+      have hc : ContinuousAt (fun v : ℝ => A - (2 * B / 3) * (v ^ 3 - w ^ 3)) w := by fun_prop
+      have heventually : ∀ᶠ v in 𝓝[>] w, C < A - (2 * B / 3) * (v ^ 3 - w ^ 3) := by
+        apply (hc.eventually (Ioi_mem_nhds (by simpa only [sub_self, mul_zero, sub_zero] using hCA))).filter_mono
+        exact nhdsWithin_le_nhds
+      filter_upwards [heventually, Ioo_mem_nhdsGT hwb] with v hv hvb
+      exact (WithTop.coe_lt_coe.mpr hv).trans_le (hvalue_lower hvb)
+  · intro C hC
+    obtain ⟨r, hrA, hrC⟩ : ∃ r : ℝ, A < r ∧ (r : WithTop ℝ) < C := by
+      cases C using WithTop.recTopCoe with
+      | top => exact ⟨A + 1, by linarith, WithTop.coe_lt_top _⟩
+      | coe C =>
+        obtain ⟨r, hrA, hrC⟩ := exists_between (WithTop.coe_lt_coe.mp hC)
+        exact ⟨r, hrA, WithTop.coe_lt_coe.mpr hrC⟩
+    obtain ⟨d, hwd, _, hd⟩ := H.exists_regularizedCost_lt_after_event i last hl hwb hevent
+      hupper hscalar p z hcost (r - A) (sub_pos.mpr hrA)
+    filter_upwards [Ioo_mem_nhdsGT hwd] with v hv
+    have hc := (hvalue_le v z.val.val).trans_lt (hd v hv)
+    have hr : A + (r - A) = r := by ring
+    rw [hr] at hc
+    exact hc.trans hrC
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 

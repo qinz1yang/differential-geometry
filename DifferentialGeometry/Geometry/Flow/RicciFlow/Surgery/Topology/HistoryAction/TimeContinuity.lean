@@ -275,6 +275,108 @@ theorem exists_lipschitz_spatial_cost_minimum_on_stage
     apply IsLeast.csInf_eq
     exact ⟨⟨q v hv, hcost v hv⟩, by rintro z ⟨y, rfl⟩; exact hmin v hv y⟩
 
+theorem continuousOn_sInf_regularizedCost_on_stage
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (T B u a b : ℝ) (hab : a ≤ b)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hclock : ∀ s ∈ Icc a b, T - s ^ 2 ∈ H.stageDomain first)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T b j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x)
+    (p : (H.stage last).Carrier)
+    (hfinite : ∃ q : (H.stage first).Carrier, H.regularizedCost first last hle T B u a p q ≠ ⊤) :
+    ContinuousOn (fun v : ℝ => sInf (range (H.regularizedCost first last hle T B u v p))) (Icc a b) := by
+  obtain ⟨m, C, hLip, hm⟩ := H.exists_lipschitz_spatial_cost_minimum_on_stage first last hle
+    T B u a b hab hupper hclock hscalar p hfinite
+  exact (WithTop.continuous_coe.comp_continuousOn hLip.continuousOn).congr (fun v hv => (hm v hv).1)
+
+theorem continuousOn_sInf_regularizedCost_on_stage_of_terminal_ne_top
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (T B u a b : ℝ) (hua : u ≤ a) (hab : a ≤ b)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hclock : ∀ s ∈ Icc a b, T - s ^ 2 ∈ H.stageDomain first)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T b j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x)
+    (p : (H.stage last).Carrier)
+    (hfinite : ∃ q : (H.stage first).Carrier, H.regularizedCost first last hle T B u b p q ≠ ⊤) :
+    ContinuousOn (fun v : ℝ => sInf (range (H.regularizedCost first last hle T B u v p))) (Icc a b) := by
+  obtain ⟨q, hq⟩ := hfinite
+  have hsome : ¬ ∀ A ∈ H.regularizedActionValues first last hle T B u b p q, A = ⊤ :=
+    fun h => hq ((H.regularizedCost_eq_top_iff first last hle T B u b p q).mpr h)
+  push Not at hsome
+  obtain ⟨A, hA, hAtop⟩ := hsome
+  obtain ⟨r, hr⟩ := WithTop.ne_top_iff_exists.mp hAtop
+  rw [← hr] at hA
+  have hu : 0 ≤ u := hA.1
+  obtain ⟨c, hc, _⟩ := H.exists_mem_regularizedC1ActionValues_lt_of_mem_regularizedActionValues
+    first last hle hupper hscalar p q hA (ε := 1) zero_lt_one
+  obtain ⟨y, C, hC, _⟩ := H.exists_regularizedC1ActionValues_prefix_le first last hle
+    hscalar p q hc ⟨first, le_rfl, hle⟩ ⟨hua, hab⟩ (hclock a ⟨le_rfl, hab⟩)
+  have hfloor : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T a j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x := by
+    intro j t ht x
+    exact hscalar j t ⟨ht.1, ht.2.trans_le
+      (H.regularizedStageEnd_monotoneOn T j.val (hu.trans hua) (hu.trans hA.2.1) hab)⟩ x
+  apply H.continuousOn_sInf_regularizedCost_on_stage first last hle T B u a b hab hupper hclock hscalar p
+  refine ⟨y, ne_top_of_le_ne_top (b := (C : WithTop ℝ)) WithTop.coe_ne_top ?_⟩
+  exact H.regularizedCost_le_of_competitor first last hle T B u a p y
+    (H.coe_mem_regularizedActionValues_of_mem_regularizedC1ActionValues first last hle hfloor p y hC)
+
+theorem tendsto_sInf_regularizedCost_left
+    (first last : Fin (H.eventCount + 1)) (hle : first ≤ last)
+    (T B u v : ℝ) (huv : u < v)
+    (hupper : T - u ^ 2 ∈ H.stageDomain last)
+    (hscalar : ∀ j : H.StageInterval first last,
+      ∀ t ∈ Ioo (H.regularizedStageStart T u j.val) (H.regularizedStageEnd T v j.val),
+      ∀ x : (H.stage j.val).Carrier, -B ≤ metricScalarAt (H.stageMetric j.val (T - t ^ 2)) x)
+    (p : (H.stage last).Carrier)
+    (hfinite : ∃ q : (H.stage first).Carrier, H.regularizedCost first last hle T B u v p q ≠ ⊤) :
+    Tendsto (fun w : ℝ => sInf (range (H.regularizedCost first last hle T B u w p)))
+      (𝓝[<] v) (𝓝 (sInf (range (H.regularizedCost first last hle T B u v p)))) := by
+  obtain ⟨q, hq⟩ := hfinite
+  have hne : (H.regularizedActionValues first last hle T B u v p q).Nonempty := by
+    by_contra h
+    exact hq (H.regularizedCost_eq_top_of_no_competitor first last hle T B u v p q
+      (Set.not_nonempty_iff_eq_empty.mp h))
+  obtain ⟨_, hvalue⟩ := hne
+  have hu : 0 ≤ u := hvalue.1
+  have hv : 0 ≤ v := hu.trans huv.le
+  have hpast : T - v ^ 2 ∈ H.stageDomain first := hvalue.2.2.2.1
+  have hstrict : T - v ^ 2 < H.stageEndTime first := by
+    cases first using Fin.lastCases with
+    | cast i =>
+      have hpast' : T - v ^ 2 ∈ Ico (H.time i.castSucc) (H.time i.succ) := by
+        simpa only [stageDomain, Fin.lastCases_castSucc] using hpast
+      simpa only [stageEndTime_castSucc] using hpast'.2
+    | last =>
+      have hlast : last = Fin.last H.eventCount := le_antisymm (Fin.le_last _) hle
+      subst last
+      have hbound := H.le_stageEndTime_of_mem_stageDomain hupper
+      have hsq := (sq_lt_sq₀ hu hv).mpr huv
+      linarith
+  have hnear : ∀ᶠ w in 𝓝 v, T - w ^ 2 < H.stageEndTime first :=
+    ((continuous_const.sub (continuous_id.pow 2)).continuousAt).eventually (Iio_mem_nhds hstrict)
+  have hnearLT : ∀ᶠ w in 𝓝[<] v, u < w ∧ T - w ^ 2 < H.stageEndTime first :=
+    (Filter.Eventually.and (Ioi_mem_nhds huv) hnear).filter_mono nhdsWithin_le_nhds
+  obtain ⟨a, hav, ha⟩ := mem_nhdsLT_iff_exists_Ioo_subset.mp hnearLT
+  change a < v at hav
+  obtain ⟨a', haa', ha'v⟩ := exists_between hav
+  have hua' : u < a' := (ha ⟨haa', ha'v⟩).1
+  have hclock : ∀ r ∈ Icc a' v, T - r ^ 2 ∈ H.stageDomain first := by
+    intro r hr
+    rcases hr.2.eq_or_lt with rfl | hrv
+    · exact hpast
+    · apply H.mem_stageDomain_of_mem_Ioo
+      have hsq := (sq_lt_sq₀ ((hu.trans hua'.le).trans hr.1) hv).mpr hrv
+      exact ⟨by linarith [H.time_le_of_mem_stageDomain hpast],
+        (ha ⟨haa'.trans_le hr.1, hrv⟩).2⟩
+  have hc := H.continuousOn_sInf_regularizedCost_on_stage_of_terminal_ne_top first last hle
+    T B u a' v hua'.le ha'v.le hupper hclock hscalar p ⟨q, hq⟩
+  exact (hc v ⟨ha'v.le, le_rfl⟩).mono_left
+    (le_inf nhdsWithin_le_nhds (le_principal_iff.mpr (Icc_mem_nhdsLT ha'v)))
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.ObservedHistory
 
 end

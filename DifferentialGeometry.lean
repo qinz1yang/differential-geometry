@@ -14039,3 +14039,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryActi
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.PhaseFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.EventContinuation
 import DifferentialGeometry.Geometry.Curve.EndpointDerivative
+import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.FamilyLift
+import DifferentialGeometry.Geometry.Curve.VelocityFamily
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.LocalPullback
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorGeodesicFamily
