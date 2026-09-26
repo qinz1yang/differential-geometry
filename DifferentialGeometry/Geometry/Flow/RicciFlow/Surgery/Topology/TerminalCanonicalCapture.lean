@@ -89,9 +89,11 @@ theorem TerminalLimitMetric.isCompact_scalar_sublevel_of_time_derivative_bound
   exact hcapture t ht x.val hscalar.le
 
 theorem TerminalLimitMetric.exists_compact_containing_canonical_domains
-    (L : G.TerminalLimitMetric) {q eps C1 C2 : ℝ} (hq : 0 < q)
+    (L : G.TerminalLimitMetric) {q eps C1 C2 : ℝ} {Ctime : ℝ≥0} (hq : 0 < q)
     (hcanonical : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
       Nonempty (CanonicalWitness G.flow eps C1 C2 x t))
+    (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
+      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hpinch : PhiAlmostNonnegative G.flow (Ico a s) Phi)
     (x : G.terminalRegularOpen) (hx : q < metricScalarAt L.metric x) :
@@ -109,11 +111,6 @@ theorem TerminalLimitMetric.exists_compact_containing_canonical_domains
     have hcomparison := (W.scalar_bounds x.1 (interior_subset W.center_inside)).2
     have hpositive := W.Q_pos
     nlinarith
-  have hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t y →
-      |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤
-        (⟨C2, hC2⟩ : ℝ≥0) * G.flow.scalar t y ^ 2 := by
-    intro y t ht hy
-    exact (hcanonical y t ht hy).some.time_derivative
   let A := C2 * (metricScalarAt L.metric x + 1)
   obtain ⟨K, hK, hKregular, d, hd, hcapture⟩ :=
     G.exists_compact_subset_terminalRegularRegion_containing_scalar_sublevels

@@ -430,6 +430,20 @@ private theorem canonical_neighborhoods_of_incoming_heq
   cases eq_of_heq hG
   exact hcanonical
 
+private theorem derivative_bound_of_incoming_heq
+    {P Q : OrientedThreeStage.{u}} {a b s t : ℝ}
+    {G : P.IncomingSlab a s} {F : Q.IncomingSlab b t}
+    (hP : P = Q) (ha : a = b) (hs : s = t) (hG : HEq G F) {Ctime : ℝ≥0} {q : ℝ}
+    (hbound : ∀ x : Q.Carrier, ∀ v ∈ Ioo b t, q < F.flow.scalar v x →
+      |derivWithin (fun w => F.flow.scalar w x) (Iic v) v| ≤ Ctime * F.flow.scalar v x ^ 2) :
+    ∀ x : P.Carrier, ∀ v ∈ Ioo a s, q < G.flow.scalar v x →
+      |derivWithin (fun w => G.flow.scalar w x) (Iic v) v| ≤ Ctime * G.flow.scalar v x ^ 2 := by
+  cases hP
+  cases ha
+  cases hs
+  cases eq_of_heq hG
+  exact hbound
+
 private theorem exists_poincareStandardDiscarded_of_retainedEvent_heq_tolerance :
     ∃ eta : ℝ, 0 < eta ∧ ∀ eps : ℝ, eps ≤ eta →
       ∀ {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
@@ -443,28 +457,30 @@ private theorem exists_poincareStandardDiscarded_of_retainedEvent_heq_tolerance 
         (∀ j, Record.delta j ≤ eps) → (∀ j, (Record.neck j).scale = Qscale) →
         (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < E.incoming.flow.scalar t x →
           ∃ W : CanonicalWitness E.incoming.flow eps C1 C2 x t, W.capTubeHasNeckChart eps) →
+        ∀ Ctime : ℝ≥0, (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < E.incoming.flow.scalar t x →
+          |derivWithin (fun v => E.incoming.flow.scalar v x) (Iic t) t| ≤
+            Ctime * E.incoming.flow.scalar t x ^ 2) →
         E.poincareStandardDiscarded ∧ (H.toHistory.event i).poincareStandardDiscarded := by
   obtain ⟨eta, heta, hclass⟩ :=
     GeometricCutoffRecord.exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods.{u}
   refine ⟨eta, heta, ?_⟩
   intro eps heps P₀ P Q H i a s E hsrc hout hstart hend hOld hEvent hBoundary
-    parameters Record C1 C2 q A Qscale hC2 hq hqA hscale hA hdelta hneck hcanonical
+    parameters Record C1 C2 q A Qscale hC2 hq hqA hscale hA hdelta hneck hcanonical Ctime hderiv
   obtain ⟨hKincoming, _, hKstd, hKboundary⟩ :=
     incoming_terminal_and_poincareStandardDiscarded_of_retainedEvent_heq E
       hsrc hout hstart hend hOld hEvent
   have hcanonicalK := canonical_neighborhoods_of_incoming_heq hsrc hstart hend hKincoming hcanonical
+  have hderivK := derivative_bound_of_incoming_heq hsrc hstart hend hKincoming hderiv
   have hstd := hclass eps heps H.toHistory i parameters Record hdelta C1 C2 q hC2 hq
-    (hA.symm ▸ hqA) (fun j => by rw [hA, hneck]; exact hscale) hcanonicalK
+    (hA.symm ▸ hqA) (fun j => by rw [hA, hneck]; exact hscale) hcanonicalK Ctime hderivK
     ((H.toHistory.event i).transition.toSmoothCutCapCompletion (hKboundary.mpr hBoundary))
   exact ⟨hKstd.mp hstd, hstd⟩
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandardDiscarded_of_canonical_neighborhoods
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
     ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
@@ -502,6 +518,9 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2) →
     originalCoreFloor ≤ D.parameters.delta D.endTime * D.parameters.neckRadius D.endTime →
     protectedFloor ≤ D.parameters.protectedRadius D.endTime →
+    (∀ y, ∀ t ∈ Ioo D.startTime D.endTime, qcan < D.slab.flow.scalar t y →
+      |derivWithin (fun v => D.slab.flow.scalar v y) (Iic t) t| ≤
+        Ctime * D.slab.flow.scalar t y ^ 2) →
     (∀ x t, t ∈ Ioo D.startTime D.endTime → qcan < D.slab.flow.scalar t x →
       ∃ W : CanonicalWitness D.slab.flow εcan C1 C2 x t, W.capTubeHasNeckChart εcan) →
     ∃ (ρ : ℝ → ℝ) (hρ : ∀ t, 0 ≤ t → 0 < ρ t),
@@ -595,15 +614,19 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D'.slab.terminalRegularOpen D'.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+      P₀ g₀
   obtain ⟨eta, heta, htopology⟩ :=
     exists_poincareStandardDiscarded_of_retainedEvent_heq_tolerance.{u}
   let epsTop := min eta (1 / 22)
   have hTop : 0 < epsTop := lt_min heta (by norm_num)
   have hTopSmall : epsTop < 1 / 11 := (min_le_right _ _).trans_lt (by norm_num)
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
   intro m accuracy haccuracy ηrecord hηrecord
   obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
     hfactory m accuracy haccuracy (min ηrecord epsTop) (lt_min hηrecord hTop)
@@ -625,7 +648,7 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
     hmake q0 hq0 Λ radiusFloor hΛ hradiusFloor (C2 ^ 2 * (radiusFloor ^ 2)⁻¹)
   refine ⟨Q, v, hQ, hv, hQmin, hvQ, ?_⟩
   intro p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
-    hderiv hfinal hcore hprotected hcanonical
+    hderiv hfinal hcore hprotected hderivCan hcanonical
   have hgeo : ∀ x t, t ∈ Ioo D.startTime D.endTime → C * qcan < D.slab.flow.scalar t x →
       ∃ W : CanonicalWitness D.slab.flow epsGeometry C1 C2 x t, W.capTubeHasNeckChart epsGeometry := by
     intro x t ht hx
@@ -662,10 +685,15 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandard
       ∃ W : CanonicalWitness E.incoming.flow epsTop C1 C2 x t, W.capTubeHasNeckChart epsTop := by
     rw [hG]
     exact htop
+  have hderivE : ∀ x, ∀ t ∈ Ioo D.startTime D.endTime, qcan < E.incoming.flow.scalar t x →
+      |derivWithin (fun v => E.incoming.flow.scalar v x) (Iic t) t| ≤
+        Ctime * E.incoming.flow.scalar t x ^ 2 := by
+    rw [hG]
+    exact hderivCan
   obtain ⟨hstdE, hstdK⟩ := htopology epsTop (min_le_left _ _) E
     hsrc hout hsrcTime houtTime hOld hEvent hBoundary parameters Record C1 C2 qcan
     (P.coreRadius ^ 2)⁻¹ Q hC2 hqcan hqcore hQtop
-    (by rw [hpR]) (by intro j; rw [hRecordDelta]; exact hδTop) hRecordScale htopE
+    (by rw [hpR]) (by intro j; rw [hRecordDelta]; exact hδTop) hRecordScale htopE Ctime hderivE
   refine ⟨Qout, E, hOld, K, initialK, i, parameters, n, δOriginal, kOriginal, NOriginal,
     hδOriginal, rotation, hmark, side, horder, hδ1', Nrecord, eOriginal,
     hQpos, hG, hL, hBoundary, hprefix, hhor, hcount, hlasttime, hlaststage, hlastmetric,

@@ -76,23 +76,18 @@ theorem exists_component_poincareStandard_tolerance_of_canonical_neighborhoods :
       0 < q → q < R →
       (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
         ∃ W : CanonicalWitness G.flow eps C1 C2 x t, W.capTubeHasNeckChart eps) →
+      ∀ Ctime : ℝ≥0, (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ Ctime * G.flow.scalar t x ^ 2) →
       ∀ c : ConnectedComponents P.Carrier,
         (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
           R < metricScalarAt g.metric x) →
         isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_compact_component_canonical_poincareStandard_tolerance.{u}
   refine ⟨eta, heta, ?_⟩
-  intro eps heps P a s G g C1 C2 q R hq hqR hcanonical c hterminal
+  intro eps heps P a s G g C1 C2 q R hq hqR hcanonical Ctime hbound c hterminal
   obtain ⟨Phi, hPhi, hpinch⟩ :=
     exists_admissiblePinchingFunction_phiAlmostNonnegative_closedOpen
       G.lt G.flow G.equation (by simp [ThreeSpace])
-  have hbound : ∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
-      |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤
-        (⟨max C2 0, le_max_right _ _⟩ : ℝ≥0) * G.flow.scalar t x ^ 2 := by
-    intro x t ht hx
-    obtain ⟨W, _⟩ := hcanonical x t ht hx
-    exact W.time_derivative.trans
-      (mul_le_mul_of_nonneg_right (le_max_left C2 0) (sq_nonneg _))
   obtain ⟨d, hd, hhigh⟩ := g.eventually_scalar_gt_on_closed_set hq hbound hPhi hpinch
     (P.componentOpen_isClosed c) hqR hterminal
   obtain ⟨t, ht⟩ := exists_between hd.2

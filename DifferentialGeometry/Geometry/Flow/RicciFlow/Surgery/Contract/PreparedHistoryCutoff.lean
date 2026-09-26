@@ -238,12 +238,10 @@ private theorem exists_uniform_selected_neck_retained_append_backward
     hcap center precision order d w Jbig hJbig hzero hmark η m O0 hη hm hlarge
 
 
-theorem exists_horn_cutoff_record_at_scale_of_prepared_history
-    (Dtrace r tol a₀ : ℝ) (Ctime : ℝ≥0) (ha₀ : 0 < a₀)
-    (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+theorem exists_horn_cutoff_record_at_scale_of_prepared_history :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace r tol a₀ : ℝ) (Ctime : ℝ≥0), 0 < a₀ → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ Dcap : ℝ, 0 < Dcap → StandardCap.transitionEnd < Dcap + 1 → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∀ ηrecord : ℝ, 0 < ηrecord →
@@ -377,9 +375,11 @@ theorem exists_horn_cutoff_record_at_scale_of_prepared_history
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
   obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck_bounds_and_canonical_windows.{u}
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
   obtain ⟨εold, δold, hεold, hδold, hthreshold⟩ :=
     exists_uniform_selected_neck_retained_append_backward Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
   intro Dcap hDcap hDfit m accuracy haccuracy ηrecord hηrecord a ha phi hphi
   obtain ⟨δ, εfactory, hδ, hδ1, hδη, hεfactory, hmake⟩ := hfactory Dcap hDcap hDfit m accuracy haccuracy ηrecord hηrecord
   let k := max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)
@@ -462,12 +462,10 @@ private local instance {Q : OrientedThreeStage.{u}} {a s : ℝ} (G : Q.IncomingS
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem exists_horn_cutoff_record_at_scale_of_initialIdentification
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
     ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
@@ -570,14 +568,17 @@ theorem exists_horn_cutoff_record_at_scale_of_initialIdentification
   obtain ⟨a₀, ha₀, hinitial⟩ := exists_pos_fixedHamiltonIveyRegion_for_identified_histories P₀ g₀
   obtain ⟨Phi, hPhi, hpinch⟩ := Perelman.exists_admissiblePinchingFunction_for_identified_incomingSlabs P₀ g₀
   obtain ⟨a, ha, htimeFloor⟩ := exists_pos_le_singular_incoming_time_of_initialIdentification P₀ g₀
-  obtain ⟨fixed, c, hc, εback, δold, hεback, hδold, hfactory⟩ :=
-    exists_horn_cutoff_record_at_scale_of_prepared_history Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
+  obtain ⟨fixed, c, hc, hfactory⟩ := exists_horn_cutoff_record_at_scale_of_prepared_history.{u}
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εback, δold, hεback, hδold, hfactory⟩ :=
+    hfactory Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
   have hDbig : StandardCap.transitionEnd < Dbig := by
     have := StandardCap.transitionEnd_pos
     have := inv_pos.mpr htol
     linarith
   obtain ⟨εscalar, hεscalar, hscalar⟩ := exists_presented_cap_scalar_lower_bound_of_canonical_window Dbig hDbig
-  refine ⟨fixed, c, hc, min εback εscalar, δold, lt_min hεback hεscalar, hδold, ?_⟩
+  refine ⟨min εback εscalar, δold, lt_min hεback hεscalar, hδold, ?_⟩
   intro m accuracy haccuracy ηrecord hηrecord
   obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
     hfactory Dbig (StandardCap.transitionEnd_pos.trans hDbig) (by linarith) m accuracy haccuracy
@@ -637,12 +638,10 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
     ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
@@ -743,10 +742,13 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initi
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
-    exists_horn_cutoff_record_at_scale_of_initialIdentification
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
+    exists_horn_cutoff_record_at_scale_of_initialIdentification P₀ g₀
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
   intro m accuracy haccuracy ηrecord hηrecord
   obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
     hfactory m accuracy haccuracy ηrecord hηrecord
@@ -791,12 +793,10 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initi
 
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_core_radius_lower_bound
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
     ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
@@ -896,10 +896,14 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentifica
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
+      P₀ g₀
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
   intro m accuracy haccuracy ηrecord hηrecord
   obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
     hfactory m accuracy haccuracy ηrecord hηrecord
@@ -929,12 +933,10 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_canonical_neighborhoods_and_canonical_records
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
     ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
@@ -1064,10 +1066,14 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentifica
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D'.slab.terminalRegularOpen D'.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_core_radius_lower_bound
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
+      P₀ g₀
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
   intro m accuracy haccuracy ηrecord hηrecord
   obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
     hfactory m accuracy haccuracy ηrecord hηrecord

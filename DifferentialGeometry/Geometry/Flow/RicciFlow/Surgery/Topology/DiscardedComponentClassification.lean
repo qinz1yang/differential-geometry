@@ -13,7 +13,7 @@ open DifferentialGeometry.Topology
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff NNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
 
@@ -33,6 +33,11 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
               Q < (H.event i).incoming.flow.scalar t x →
                 ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C x t,
                   W.capTubeHasNeckChart eps) →
+          ∀ Ctime : ℝ≥0, (∀ x : (H.stage i.castSucc).Carrier,
+            ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+              Q < (H.event i).incoming.flow.scalar t x →
+                |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+                  Ctime * (H.event i).incoming.flow.scalar t x ^ 2) →
           ∀ Phi : ℝ → ℝ, AdmissiblePinchingFunction Phi →
             PhiAlmostNonnegative (H.event i).incoming.flow
               (Ico (H.time i.castSucc) (H.time i.succ)) Phi →
@@ -47,13 +52,13 @@ private theorem exists_isPoincareStandard_discarded_boundary_tolerance :
   obtain ⟨eta, heta, hpath⟩ := SphericalCapping.exists_cut_neck_standard_or_stopped_tolerance.{u}
   refine ⟨min eta (1 / 8646), lt_min heta (by norm_num), ?_⟩
   intro eps heps H i parameters G hdelta C1 C Q hC hQ hprotected hscale hcanonical
-    Phi hPhi hpinch hc b q d hd
+    Ctime hbound Phi hPhi hpinch hc b q d hd
   have hepspath : eps ≤ eta := heps.trans (min_le_left _ _)
   have hepscap : eps ≤ 1 / 8646 := heps.trans (min_le_right _ _)
   obtain ⟨d₀, hd₀, hneck⟩ := G.exists_late_spatialNecks
     (hepscap.trans_lt (by norm_num)) hdelta
   obtain ⟨d₁, hd₁, hcan⟩ := G.exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods
-    hQ (zero_le_one.trans hC) hcanonical hPhi hpinch hprotected
+    hQ hcanonical hbound hPhi hpinch hprotected
   obtain ⟨d₂, hd₂, hcap⟩ :=
     G.exists_late_capCore_cutting_side_of_stopped_cylinder_of_cutting_scale hC hscale
   obtain ⟨t, htlow, htend⟩ := exists_between (max_lt hd₀.2 (max_lt hd₁.2 hd₂.2))
@@ -117,12 +122,18 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
               q < (H.event i).incoming.flow.scalar t x →
                 ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
                   W.capTubeHasNeckChart eps) →
+          ∀ Ctime : ℝ≥0, (∀ x : (H.stage i.castSucc).Carrier,
+            ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+              q < (H.event i).incoming.flow.scalar t x →
+                |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+                  Ctime * (H.event i).incoming.flow.scalar t x ^ 2) →
           SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
   obtain ⟨eta₀, heta₀, hboundary⟩ := exists_isPoincareStandard_discarded_boundary_tolerance.{u}
   obtain ⟨eta₁, heta₁, hcomponent⟩ :=
     OrientedThreeStage.IncomingSlab.exists_component_poincareStandard_tolerance_of_canonical_neighborhoods.{u}
   refine ⟨min eta₀ eta₁, lt_min heta₀ heta₁, ?_⟩
-  intro eps heps H i parameters G hdelta C1 C2 q hC2 hq hprotected hscale hcanonical hc D
+  intro eps heps H i parameters G hdelta C1 C2 q hC2 hq hprotected hscale hcanonical
+    Ctime hbound hc D
   have hep : eps ≤ eta₀ := heps.trans (min_le_left _ _)
   have hepc : eps ≤ eta₁ := heps.trans (min_le_right _ _)
   obtain ⟨Phi, hPhi, hpinch⟩ :=
@@ -163,7 +174,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
             (SphericalCutCapTransition.ofSmoothCutCapTransition_coreInclusion
               (H.event i).transition hc y)).symm.trans hd'.symm)
       have hbound := hboundary eps hep H i parameters G hdelta C1 C2 q hC2 hq
-        hprotected hscale hcanonical Phi hPhi hpinch hc b sphereMark d' hdy
+        hprotected hscale hcanonical Ctime hbound Phi hPhi hpinch hc b sphereMark d' hdy
       let r : (H.stage i.succ).toClosedOrientedManifold.Carrier ⊕ X.discarded.Carrier →
           X.discarded.Carrier := Sum.elim (fun _ => d) id
       have hr : Continuous r := continuous_const.sumElim continuous_id
@@ -180,6 +191,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
       have hambient := hcomponent eps hepc (H.stage i.castSucc) (H.time i.castSucc)
         (H.time i.succ) (H.event i).incoming (H.event i).terminal C1 C2 q
         ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ hq hprotected hcanonical
+        Ctime hbound
         (ConnectedComponents.mk x.val) (by
         intro y hy
         have hyC : y.val ∈ (H.stage i.castSucc).toClosedOrientedManifold.componentSet
@@ -226,7 +238,9 @@ theorem exists_poincareStandardDiscarded_cutting_scale_of_incoming :
   cases eq_of_heq hL
   intro parameters G hdelta hprotected hscale hc
   exact hclass eps (hsmall.trans (min_le_left _ _)) H i parameters G hdelta C C Q hC hQ
-    (by linarith) hscale (fun x t ht hx => hcan x t ⟨ht.1.le, ht.2⟩ hx.le) hc
+    (by linarith) hscale (fun x t ht hx => hcan x t ⟨ht.1.le, ht.2⟩ hx.le)
+    ⟨C, zero_le_one.trans hC⟩
+    (fun x t ht hx => (hcan x t ⟨ht.1.le, ht.2⟩ hx.le).choose.time_derivative) hc
 
 
 theorem exists_poincareStandardDiscarded_cutting_scale :

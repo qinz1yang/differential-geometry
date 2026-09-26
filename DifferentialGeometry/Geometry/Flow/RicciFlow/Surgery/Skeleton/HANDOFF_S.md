@@ -165,3 +165,23 @@ register in the root aggregate, update `Surgery/FREE_INPUTS.md` in the same comm
   cap accuracy; the honest alternative, if the reorder fails, is a joint compatibility statement for
   each horizon (one tuple `ε C1 C2 qcan τmin Ctime p₀ δbound ρbound v` with the class closed under the
   step), which the assembly can consume as well.
+
+## Update 2026-09-26 (factory derivative clause and binder order; lane SFM, accepted by ACC4)
+
+The factory `exists_horn_cutoff_record_with_uniform_volume_debit_and_poincareStandardDiscarded_of_canonical_neighborhoods`
+(`Contract/PoincareHornCutoffRecord.lean`) now reads no `CanonicalWitness.time_derivative`: it takes
+the derivative clause as its own hypothesis, placed right before the witness hypothesis,
+`(∀ y, ∀ t ∈ Ioo D.startTime D.endTime, qcan < D.slab.flow.scalar t y → |derivWithin (fun v =>
+D.slab.flow.scalar v y) (Iic t) t| ≤ Ctime * D.slab.flow.scalar t y ^ 2) →`, i.e.
+`D.slab.DerivativeBoundBefore Ctime qcan D.endTime` unfolded, with the same `Ctime` as the history
+clauses (S supplies it from its own derivative hypothesis). The binder order changed from
+`theorem X (P₀) (g₀) (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0) (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol)
+(htolsmall : tol ≤ 1 / 1000) (hr : transitionEnd + tol⁻¹ + 1 < r) (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧ ∃ εold δold : ℝ, …` to
+`theorem X (P₀) (g₀) : ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace → ∃ εold δold : ℝ, …`
+(same change in the four `PreparedHistoryCutoff` initial-identification theorems; the
+prepared-history version takes `(Dtrace r tol a₀) (Ctime)` with `0 < a₀`). So `fixed` and
+`recenterConstant` are fixed before `Λ` and every constant of C; the old shape follows by
+instantiation. `Dbig := max Dcap (Dtrace + 1)` is S's choice (`le_max_right`).

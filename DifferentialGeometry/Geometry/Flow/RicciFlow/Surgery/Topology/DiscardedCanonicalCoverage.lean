@@ -120,11 +120,16 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 include G in
 theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods
-    {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
+    {eps C1 C2 Q : ℝ} {Ctime : ℝ≥0} (hQ : 0 < Q)
     (hcanonical : ∀ x : (H.stage i.castSucc).Carrier,
       ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), Q < (H.event i).incoming.flow.scalar t x →
         ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
           W.capTubeHasNeckChart eps)
+    (hbound : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+        Q < (H.event i).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+            Ctime * (H.event i).incoming.flow.scalar t x ^ 2)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hpinch : PhiAlmostNonnegative (H.event i).incoming.flow
       (Ico (H.time i.castSucc) (H.time i.succ)) Phi)
@@ -140,13 +145,6 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonica
   let F := Subtype.val '' (H.event i).transition.trace.retainedCoreᶜ
   have hF : IsCompact F := (H.event i).transition.trace.isClopen_retainedCore.compl.isClosed.isCompact.image
     continuous_subtype_val
-  have hbound : ∀ x : (H.stage i.castSucc).Carrier,
-      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ), Q < (H.event i).incoming.flow.scalar t x →
-        |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
-          (⟨C2, hC2⟩ : ℝ≥0) * (H.event i).incoming.flow.scalar t x ^ 2 := by
-    intro x t ht hhigh
-    obtain ⟨W, _⟩ := hcanonical x t ht hhigh
-    exact W.time_derivative
   have hlow : ∀ x : (H.event i).incoming.terminalRegularOpen,
       x.val ∈ F → ((parameters.protectedRadius (H.time i.succ)) ^ 2)⁻¹ <
         metricScalarAt (H.event i).terminal.metric x := by
@@ -164,11 +162,16 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonica
 
 include G in
 theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
-    {eps C1 C2 Q : ℝ} (hQ : 0 < Q) (hC2 : 0 ≤ C2)
+    {eps C1 C2 Q : ℝ} {Ctime : ℝ≥0} (hQ : 0 < Q)
     (hcanonical : ∀ x : (H.stage i.castSucc).Carrier,
       ∀ t ∈ Ico (H.time i.castSucc) (H.time i.succ), Q ≤ (H.event i).incoming.flow.scalar t x →
         ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
           W.capTubeHasNeckChart eps)
+    (hbound : ∀ x : (H.stage i.castSucc).Carrier,
+      ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+        Q < (H.event i).incoming.flow.scalar t x →
+          |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+            Ctime * (H.event i).incoming.flow.scalar t x ^ 2)
     {Phi : ℝ → ℝ} (hPhi : AdmissiblePinchingFunction Phi)
     (hpinch : PhiAlmostNonnegative (H.event i).incoming.flow
       (Ico (H.time i.castSucc) (H.time i.succ)) Phi)
@@ -181,7 +184,7 @@ theorem exists_late_canonical_on_discarded_core_with_cap_neck_charts
               ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 z.val t,
                 W.capTubeHasNeckChart eps := by
   exact exists_late_canonical_on_discarded_core_with_cap_neck_charts_of_canonical_neighborhoods G
-    hQ hC2 (fun x t ht hscalar => hcanonical x t ⟨ht.1.le, ht.2⟩ hscalar.le)
+    hQ (fun x t ht hscalar => hcanonical x t ⟨ht.1.le, ht.2⟩ hscalar.le) hbound
       hPhi hpinch hprotected
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord
