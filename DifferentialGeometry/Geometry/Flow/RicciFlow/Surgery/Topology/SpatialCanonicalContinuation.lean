@@ -142,7 +142,8 @@ theorem canonicalBefore_end_of_continuation_spatial {ε C1 C2 C1s C2s qcan qs τ
 end OrientedThreeStage.IncomingSlab
 
 def SpatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Prop :=
-  ∀ (B ε : ℝ), 0 < B → 0 < ε → ε < 1 / 11 →
+  ∃ εbar : ℝ, 0 < εbar ∧
+  ∀ (B ε : ℝ), 0 < B → 0 < ε → ε < 1 / 11 → ε ≤ εbar →
   ∀ (C1 C2 τmin : ℝ) (Ctime Cgrad : ℝ≥0), 1 ≤ C1 → 1 ≤ C2 → 0 < τmin →
   ∃ C1s C2s Cs : ℝ, 1 ≤ C1s ∧ 1 ≤ C2s ∧ 1 ≤ Cs ∧
   ∀ (κ : ℝ) (phi : ℝ → ℝ), 0 < κ → Perelman.AdmissiblePinchingFunction phi →

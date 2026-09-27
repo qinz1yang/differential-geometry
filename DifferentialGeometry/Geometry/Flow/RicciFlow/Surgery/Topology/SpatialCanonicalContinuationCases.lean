@@ -38,60 +38,9 @@ theorem exists_spatialCanonicalWitness_of_canonicalOn {ε C1 C2 C1s C2s qcan qs 
 
 end OrientedThreeStage.IncomingSlab
 
-def SpatialCanonicalContinuationWithAccuracy (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    Prop :=
-  ∃ εbar : ℝ, 0 < εbar ∧
-  ∀ (B ε : ℝ), 0 < B → 0 < ε → ε < 1 / 11 → ε ≤ εbar →
-  ∀ (C1 C2 τmin : ℝ) (Ctime Cgrad : ℝ≥0), 1 ≤ C1 → 1 ≤ C2 → 0 < τmin →
-  ∃ C1s C2s Cs : ℝ, 1 ≤ C1s ∧ 1 ≤ C2s ∧ 1 ≤ Cs ∧
-  ∀ (κ : ℝ) (phi : ℝ → ℝ), 0 < κ → Perelman.AdmissiblePinchingFunction phi →
-  ∃ q₄ : ℝ, 0 < q₄ ∧
-  ∀ qcan : ℝ, q₄ ≤ qcan →
-  ∃ (qs δmax ρmax εcap Dcap : ℝ) (mcap : ℕ),
-    qcan ≤ qs ∧ qs ≤ Cs * qcan ∧ 0 < δmax ∧ 0 < ρmax ∧ 0 < εcap ∧ 0 < Dcap ∧
-    ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
-      p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
-      δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound),
-      H.EventSlabsPinched phi →
-      (∀ j : Fin H.eventCount,
-        H.EventSlabsCanonical ε C1 C2 qcan τmin j.castSucc →
-        H.EventSlabsDerivative Ctime qcan j.castSucc →
-        H.EventSlabsGradient Cgrad qcan j.castSucc →
-        H.EventSlabsSpatiallyCanonical ε C1s C2s qs j.castSucc →
-        ∀ t₀ : ℝ, t₀ ∈ Ico (H.time j.castSucc) (H.time j.succ) →
-          (H.toHistory.event j).incoming.CanonicalBefore ε C1 C2 qcan τmin t₀ →
-          (H.toHistory.event j).incoming.DerivativeBoundBefore Ctime qcan t₀ →
-          (H.toHistory.event j).incoming.GradientBoundBefore Cgrad qcan t₀ →
-          (H.toHistory.event j).incoming.SpatiallyCanonicalBefore ε C1s C2s qs t₀ →
-          H.NoncollapsedBefore κ ε t₀ →
-          (∃ η : ℝ, 0 < η ∧
-            (H.toHistory.event j).incoming.DerivativeBoundOn Ctime qcan t₀ η ∧
-            (H.toHistory.event j).incoming.GradientBoundOn Cgrad qcan t₀ η ∧
-            (H.toHistory.event j).incoming.CanonicalOn ε C1 C2 qcan τmin t₀ η) →
-          ∃ η : ℝ, 0 < η ∧
-            (H.toHistory.event j).incoming.SpatiallyCanonicalOn ε C1s C2s qs t₀ η) ∧
-      ∀ (s : ℝ)
-        (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
-        (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
-        Perelman.PhiAlmostNonnegative G.flow (Ico (H.time (Fin.last H.eventCount)) s) phi →
-        H.EventSlabsCanonical ε C1 C2 qcan τmin (Fin.last H.eventCount) →
-        H.EventSlabsDerivative Ctime qcan (Fin.last H.eventCount) →
-        H.EventSlabsGradient Cgrad qcan (Fin.last H.eventCount) →
-        H.EventSlabsSpatiallyCanonical ε C1s C2s qs (Fin.last H.eventCount) →
-        H.NoncollapsedBefore κ ε (H.time (Fin.last H.eventCount)) →
-        ∀ t₀ : ℝ, t₀ ∈ Ico (H.time (Fin.last H.eventCount)) s →
-          G.CanonicalBefore ε C1 C2 qcan τmin t₀ → G.DerivativeBoundBefore Ctime qcan t₀ →
-          G.GradientBoundBefore Cgrad qcan t₀ →
-          G.SpatiallyCanonicalBefore ε C1s C2s qs t₀ →
-          H.TerminalNoncollapsedBefore hH.2.1 G hG.2 κ ε t₀ →
-          (∃ η : ℝ, 0 < η ∧ G.DerivativeBoundOn Ctime qcan t₀ η ∧
-            G.GradientBoundOn Cgrad qcan t₀ η ∧ G.CanonicalOn ε C1 C2 qcan τmin t₀ η) →
-          ∃ η : ℝ, 0 < η ∧ G.SpatiallyCanonicalOn ε C1s C2s qs t₀ η
-
-theorem spatialCanonicalContinuationWithAccuracy_of_spatialCrossing
+theorem spatialCanonicalContinuation_of_spatialCrossing
     (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) (hX : SpatialCrossingContinuation P₀ g₀) :
-    SpatialCanonicalContinuationWithAccuracy P₀ g₀ := by
+    SpatialCanonicalContinuation P₀ g₀ := by
   obtain ⟨εbar, hεbar, -, hX⟩ := hX
   refine ⟨εbar, hεbar, ?_⟩
   intro B ε hB hε hε' hεb C1 C2 τmin Ctime Cgrad hC1 hC2 hτ

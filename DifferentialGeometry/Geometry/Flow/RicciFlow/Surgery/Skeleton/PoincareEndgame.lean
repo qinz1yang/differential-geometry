@@ -8,6 +8,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRedu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryReducedVolumeLocalUpperBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CrossingContinuationLeaf
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialRegularBlock
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SpatialCanonicalContinuationCases
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SpatialCrossingContinuationLeaf
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.UniformDebitSurgeryStepOfFineCutNeckSupplyStrong
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.FineCutNeckSupplyStrongLeaf
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StrongNecksOfCutoffClass
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StrongSpatialCrossingContinuationLeaf
 
 
 set_option autoImplicit false
@@ -20,9 +26,19 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
+theorem fineCutNeckSupplyStrong (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    FineCutNeckSupplyStrong P₀ g₀ :=
+  fineCutNeckSupplyStrong_holds P₀ g₀
+
+theorem strongNecksOfCutoffClass (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    StrongNecksOfCutoffClass P₀ g₀ :=
+  strongNecksOfCutoffClass_of_strongSpatialCrossing P₀ g₀
+    (strongSpatialCrossingContinuation_holds P₀ g₀)
+
 theorem uniformDebitSurgeryStepStrong (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    UniformDebitSurgeryStepStrong P₀ g₀ := by
-  sorry
+    UniformDebitSurgeryStepStrong P₀ g₀ :=
+  uniformDebitSurgeryStepStrong_of_strongNecks_of_fineCutNeckSupplyStrong P₀ g₀
+    (pinchingThroughSurgery P₀ g₀) (strongNecksOfCutoffClass P₀ g₀) (fineCutNeckSupplyStrong P₀ g₀)
 
 theorem historyReducedVolumeMonotone (P₀ : OrientedThreeStage.{u}) :
     HistoryReducedVolumeMonotone P₀ :=
@@ -57,9 +73,13 @@ theorem canonicalNeighborhoodContinuation (P₀ : OrientedThreeStage.{u}) (g₀ 
   canonicalNeighborhoodContinuation_of_deep_of_capWindow_of_crossing P₀ g₀
     (deepContinuation P₀ g₀) (capWindowContinuation P₀ g₀) (crossingContinuation P₀ g₀)
 
+theorem spatialCrossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
+    SpatialCrossingContinuation P₀ g₀ :=
+  spatialCrossingContinuation_holds P₀ g₀
+
 theorem spatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
-    SpatialCanonicalContinuation P₀ g₀ := by
-  sorry
+    SpatialCanonicalContinuation P₀ g₀ :=
+  spatialCanonicalContinuation_of_spatialCrossing P₀ g₀ (spatialCrossingContinuation P₀ g₀)
 
 theorem canonicalNeighborhoodsThroughSurgeryStrong (P₀ : OrientedThreeStage.{u})
     [SimplyConnectedSpace P₀.Carrier] (g₀ : P₀.Metric) :

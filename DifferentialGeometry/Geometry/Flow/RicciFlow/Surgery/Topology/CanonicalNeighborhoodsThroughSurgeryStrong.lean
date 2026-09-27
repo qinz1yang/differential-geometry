@@ -276,12 +276,14 @@ theorem canonicalNeighborhoodsThroughSurgeryStrong_of_leaves
     (hspat : SpatialCanonicalContinuation P₀ g₀) :
     CanonicalNeighborhoodsThroughSurgeryStrong P₀ g₀ := by
   obtain ⟨εbar, hεbar, hcont⟩ := hcont
-  refine ⟨εbar, hεbar, ?_⟩
+  obtain ⟨εs, hεs, hspat⟩ := hspat
+  refine ⟨min εbar εs, lt_min hεbar hεs, ?_⟩
   intro B ε Λ hB hε hε' hεbar' hΛ
   obtain ⟨phi, δP, ρP, εP, hphi, hδP, hρP, hεP, hP⟩ := hpinch B hB
-  obtain ⟨C1, C2, τmin, Ctime, Cgrad, hC1, hC2, hτ, hF⟩ := hcont B ε hB hε hε' hεbar'
+  obtain ⟨C1, C2, τmin, Ctime, Cgrad, hC1, hC2, hτ, hF⟩ :=
+    hcont B ε hB hε hε' (hεbar'.trans (min_le_left _ _))
   obtain ⟨C1s, C2s, Cs, hC1s, hC2s, hCs, hS⟩ :=
-    hspat B ε hB hε hε' C1 C2 τmin Ctime Cgrad hC1 hC2 hτ
+    hspat B ε hB hε hε' (hεbar'.trans (min_le_right _ _)) C1 C2 τmin Ctime Cgrad hC1 hC2 hτ
   obtain ⟨κ, hκ, hN⟩ :=
     hnon B ε C1 C2 C1s C2s τmin Ctime Cgrad phi hB hε hε' hC1 hC2 hC1s hC2s hτ hphi
   obtain ⟨q₄, -, hS₄⟩ := hS κ phi hκ hphi
