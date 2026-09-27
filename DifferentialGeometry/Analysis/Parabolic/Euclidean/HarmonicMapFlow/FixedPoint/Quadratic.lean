@@ -1,0 +1,203 @@
+import DifferentialGeometry.Analysis.FunctionalAnalysis.Contraction.ClosedBall
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.HarmonicMapFlow.State.Quadratic
+
+noncomputable section
+
+open MeasureTheory
+open scoped ENNReal NNReal RealInnerProductSpace
+
+namespace DifferentialGeometry
+namespace Analysis
+namespace Parabolic
+namespace Euclidean
+
+variable {X E V Y G F : Type*}
+  [NormedAddCommGroup X] [NormedSpace ℝ X] [CompleteSpace X]
+  [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [NormedAddCommGroup V] [InnerProductSpace ℝ V] [FiniteDimensional ℝ V]
+  [MeasurableSpace V] [BorelSpace V]
+  [NormedAddCommGroup Y] [NormedSpace ℝ Y]
+  [NormedAddCommGroup G] [NormedSpace ℝ G]
+  [NormedAddCommGroup F] [NormedSpace ℝ F]
+
+structure HarmonicMapFlowQuadraticHeatBounds (T : ℝ) (tr : X →L[ℝ] E)
+    (fluxPot sourcePot : (ℝ × V → F) → X) : Prop where
+  flux_zero : fluxPot 0 = 0
+  source_zero : sourcePot 0 = 0
+  flux_sub : ∀ p q, fluxPot (fun z ↦ p z - q z) = fluxPot p - fluxPot q
+  source_sub : ∀ p q, sourcePot (fun z ↦ p z - q z) = sourcePot p - sourcePot q
+  flux_norm : ∀ {A : ℝ} {C : ℝ≥0∞} {p : ℝ × V → F},
+    GradientWeightedBound T A p → GradientCarlesonBound T C p → ‖fluxPot p‖ ≤ 4 * A
+  source_norm : ∀ {A : ℝ} {C : ℝ≥0∞} {s : ℝ × V → F},
+    SourceWeightedBound T A s → SourceCarlesonBound T C s → ‖sourcePot s‖ ≤ A
+  trace_flux : ∀ p, tr (fluxPot p) = 0
+  trace_source : ∀ s, tr (sourcePot s) = 0
+
+structure HarmonicMapFlowQuadraticModel (T R : ℝ) (C : ℝ≥0∞)
+    (path : X → ℝ × V → Y) (grad : X → ℝ × V → G) : Prop where
+  R0 : 0 ≤ R
+  grad_zero : grad 0 = 0
+  path_ball : ∀ u, u ∈ Metric.closedBall (0 : X) R → PathUniformBound T R (path u)
+  path_diff : ∀ u v,
+    PathUniformBound T ‖u - v‖ (fun z ↦ path u z - path v z)
+  grad_ball : ∀ u, u ∈ Metric.closedBall (0 : X) R → GradientWeightedBound T R (grad u)
+  carleson_ball : ∀ u, u ∈ Metric.closedBall (0 : X) R → GradientCarlesonBound T C (grad u)
+  grad_diff : ∀ u v,
+    GradientWeightedBound T ‖u - v‖ (fun z ↦ grad u z - grad v z)
+  carleson_diff : ∀ u v,
+    GradientCarlesonBound T (ENNReal.ofReal (‖u - v‖ ^ 2))
+      (fun z ↦ grad u z - grad v z)
+
+structure HarmonicMapFlowQuadraticMeasurability
+    (A : ℝ × V → G →L[ℝ] F)
+    (Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F)
+    (path : X → ℝ × V → Y) (grad : X → ℝ × V → G) : Prop where
+  principal : ∀ u v, AEStronglyMeasurable
+    (fun z ↦ A z (grad u z - grad v z)) (spaceTimeVolume : Measure (ℝ × V))
+  quad_left : ∀ u v, AEStronglyMeasurable
+    (fun z ↦ Q z (path u z) (grad u z - grad v z) (grad u z))
+      (spaceTimeVolume : Measure (ℝ × V))
+  quad_right : ∀ u v, AEStronglyMeasurable
+    (fun z ↦ Q z (path u z) (grad v z) (grad u z - grad v z))
+      (spaceTimeVolume : Measure (ℝ × V))
+  quad_state : ∀ u v, AEStronglyMeasurable
+    (fun z ↦ (Q z (path u z) - Q z (path v z))
+      (grad v z) (grad v z)) (spaceTimeVolume : Measure (ℝ × V))
+
+def harmonicMapFlowQuadraticFlux (A : ℝ × V → G →L[ℝ] F)
+    (grad : X → ℝ × V → G) (u : X) (z : ℝ × V) : F :=
+  A z (grad u z)
+
+def harmonicMapFlowQuadraticContractionRate (eps K L R : ℝ) : ℝ :=
+  4 * eps + K * R + 3 * L * R ^ 2
+
+omit [NormedSpace ℝ Y] in
+theorem existsUnique_harmonicMapFlow_quadratic_fixedPoint
+    {T eps K L R eta : ℝ} {C : ℝ≥0∞}
+    {tr : X →L[ℝ] E}
+    {fluxPot sourcePot : (ℝ × V → F) → X}
+    {path : X → ℝ × V → Y} {grad : X → ℝ × V → G}
+    {A : ℝ × V → G →L[ℝ] F}
+    {Q : ℝ × V → Y → G →L[ℝ] G →L[ℝ] F}
+    (H : HarmonicMapFlowQuadraticHeatBounds T tr fluxPot sourcePot)
+    (M : HarmonicMapFlowQuadraticModel T R C path grad)
+    (heps0 : 0 ≤ eps) (hA : ∀ z, ‖A z‖ ≤ eps)
+    (hQ : HarmonicMapFlowStateQuadraticCoefficients (K / 2) L Q)
+    (hmeas : HarmonicMapFlowQuadraticMeasurability A Q path grad)
+    (seed : X) (hseed : ‖seed‖ ≤ eta)
+    (htrace : tr seed = 0)
+    (hrate : harmonicMapFlowQuadraticContractionRate eps K L R < 1)
+    (hsmall : eta ≤ (1 - harmonicMapFlowQuadraticContractionRate eps K L R) * R) :
+    ∃! u : X,
+      u ∈ Metric.closedBall (0 : X) R ∧
+      tr u = 0 ∧
+      seed + fluxPot (harmonicMapFlowQuadraticFlux A grad u) +
+        sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z) = u ∧
+      PathUniformBound T R (path u) ∧ GradientWeightedBound T R (grad u) ∧
+        GradientCarlesonBound T C (grad u) := by
+  have hK0 : 0 ≤ K := by nlinarith [hQ.K0]
+  have hrate0 : 0 ≤ harmonicMapFlowQuadraticContractionRate eps K L R := by
+    unfold harmonicMapFlowQuadraticContractionRate
+    exact add_nonneg
+      (add_nonneg (mul_nonneg (by norm_num) heps0) (mul_nonneg hK0 M.R0))
+      (mul_nonneg (mul_nonneg (by norm_num) hQ.L0) (sq_nonneg R))
+  let κ : ℝ≥0 := ⟨harmonicMapFlowQuadraticContractionRate eps K L R, hrate0⟩
+  have hκ : κ < 1 := by
+    rw [← NNReal.coe_lt_coe]
+    exact hrate
+  let Φ : X → X := fun u ↦
+    seed + fluxPot (harmonicMapFlowQuadraticFlux A grad u) +
+      sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z)
+  have hΦzero : Φ 0 = seed := by
+    have hflux : harmonicMapFlowQuadraticFlux A grad (0 : X) = 0 := by
+      funext z
+      simp only [harmonicMapFlowQuadraticFlux, M.grad_zero, Pi.zero_apply, map_zero]
+    have hsource :
+        (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path (0 : X)) (grad 0) z) = 0 := by
+      funext z
+      simp only [harmonicMapFlowStateQuadraticSource, M.grad_zero, Pi.zero_apply, map_zero]
+    simp only [Φ, hflux, hsource, H.flux_zero, H.source_zero, add_zero]
+  have hΦ0 : ‖Φ 0‖ ≤ (1 - (κ : ℝ)) * R := by
+    rw [hΦzero]
+    exact hseed.trans hsmall
+  have hΦ : LipschitzOnWith κ Φ (Metric.closedBall (0 : X) R) := by
+    apply LipschitzOnWith.of_dist_le_mul
+    intro u hu v hv
+    rw [dist_eq_norm]
+    let D : ℝ := ‖u - v‖
+    have hpWt := linear_weighted_bound A hA heps0 (M.grad_diff u v)
+    have hpCarleson := linear_carleson_bound A hA heps0
+      (hmeas.principal u v) (M.carleson_diff u v)
+    have hpEq :
+        (fun z ↦ harmonicMapFlowQuadraticFlux A grad u z - harmonicMapFlowQuadraticFlux A grad v z) =
+          (fun z ↦ A z (grad u z - grad v z)) := by
+      funext z
+      exact (map_sub (A z) (grad u z) (grad v z)).symm
+    have hflux :
+        ‖fluxPot (harmonicMapFlowQuadraticFlux A grad u) - fluxPot (harmonicMapFlowQuadraticFlux A grad v)‖ ≤
+          4 * eps * D := by
+      rw [← H.flux_sub, hpEq]
+      exact (H.flux_norm hpWt hpCarleson).trans_eq (by
+        simp only [D]
+        ring)
+    have hsWt := harmonicMapFlowStateQuadraticSourceWeightedBound hQ M.R0 (norm_nonneg (u - v))
+      M.R0 (norm_nonneg (u - v))
+      (M.path_ball u hu) (M.path_diff u v)
+      (M.grad_ball u hu) (M.grad_ball v hv) (M.grad_diff u v)
+    have hsCarleson := harmonicMapFlowStateQuadraticSourceCarlesonBound hQ M.R0 (norm_nonneg (u - v))
+      (M.path_ball u hu) (M.path_diff u v)
+      (hmeas.quad_left u v) (hmeas.quad_right u v) (hmeas.quad_state u v)
+      (M.carleson_ball u hu) (M.carleson_ball v hv) (M.carleson_diff u v)
+    have hsource :
+        ‖sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z) -
+          sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path v) (grad v) z)‖ ≤
+            (K * R + 3 * L * R ^ 2) * D := by
+      rw [← H.source_sub]
+      exact (H.source_norm hsWt hsCarleson).trans_eq (by
+        simp only [D]
+        ring)
+    have hsplit : Φ u - Φ v =
+        (fluxPot (harmonicMapFlowQuadraticFlux A grad u) - fluxPot (harmonicMapFlowQuadraticFlux A grad v)) +
+          (sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z) -
+            sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path v) (grad v) z)) := by
+      simp only [Φ]
+      abel
+    rw [hsplit]
+    calc
+      ‖(fluxPot (harmonicMapFlowQuadraticFlux A grad u) - fluxPot (harmonicMapFlowQuadraticFlux A grad v)) +
+          (sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z) -
+            sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path v) (grad v) z))‖
+          ≤ ‖fluxPot (harmonicMapFlowQuadraticFlux A grad u) - fluxPot (harmonicMapFlowQuadraticFlux A grad v)‖ +
+              ‖sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z) -
+                sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path v) (grad v) z)‖ :=
+        norm_add_le _ _
+      _ ≤ 4 * eps * D + (K * R + 3 * L * R ^ 2) * D :=
+        add_le_add hflux hsource
+      _ = (κ : ℝ) * dist u v := by
+        rw [show (κ : ℝ) = harmonicMapFlowQuadraticContractionRate eps K L R from rfl, dist_eq_norm]
+        simp only [harmonicMapFlowQuadraticContractionRate, D]
+        ring
+  obtain ⟨u, hu, huniq⟩ :=
+    DifferentialGeometry.Analysis.exists_unique_fixedPoint_mem_closedBall
+      M.R0 hκ hΦ0 hΦ
+  have huTrace : tr u = 0 := by
+    rw [← hu.2]
+    simp only [Φ, map_add, htrace, H.trace_flux, H.trace_source, add_zero]
+  have huFixed : Φ u = u := hu.2
+  have heq : seed + fluxPot (harmonicMapFlowQuadraticFlux A grad u) +
+      sourcePot (fun z ↦ harmonicMapFlowStateQuadraticSource Q (path u) (grad u) z) = u := by
+    simpa only [Φ] using huFixed
+  refine ⟨u, ⟨hu.1, huTrace, heq, M.path_ball u hu.1,
+    M.grad_ball u hu.1, M.carleson_ball u hu.1⟩, ?_⟩
+  intro v hv
+  apply huniq v
+  refine ⟨hv.1, ?_⟩
+  change Φ v = v
+  simpa only [Φ] using hv.2.2.1
+
+end Euclidean
+end Parabolic
+end Analysis
+end DifferentialGeometry
+
+end

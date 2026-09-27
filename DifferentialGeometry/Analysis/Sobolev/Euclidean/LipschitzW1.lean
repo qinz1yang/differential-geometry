@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Integration.Integral.LocalIntegrationByParts
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import Mathlib.Analysis.Calculus.Rademacher
 import Mathlib.Topology.Algebra.MetricSpace.Lipschitz
@@ -5,8 +6,8 @@ import Mathlib.Topology.MetricSpace.Thickening
 
 noncomputable section
 
-open MeasureTheory Metric Set
-open scoped ENNReal NNReal BigOperators
+open MeasureTheory Metric Set Filter
+open scoped ENNReal NNReal BigOperators Topology
 
 namespace DifferentialGeometry.Analysis.Sobolev.Euclidean
 
@@ -16,13 +17,13 @@ local notation "E" => EuclideanSpace ℝ (Fin d)
 
 theorem lip_of_local_comp
     {f : E → ℝ} {B : ℝ≥0}
-    (hf : LocallyLipschitz f) (hf_supp : HasCompactSupport f)
+    (hf : LocallyLipschitz f) (hf_support : HasCompactSupport f)
     (hB : ∀ x, edist (f x) 0 ≤ B) :
     ∃ C : ℝ≥0, LipschitzWith C f := by
   let K : Set E := tsupport f
   let U : Set E := Metric.cthickening 1 K
   have hU_compact : IsCompact U := by
-    exact hf_supp.cthickening
+    exact hf_support.cthickening
   obtain ⟨C, hC⟩ :=
     hf.locallyLipschitzOn.exists_lipschitzOnWith_of_compact hU_compact
   refine ⟨max C B, ?_⟩
@@ -70,57 +71,43 @@ theorem lip_of_local_comp
     · rw [hzero hxK, hzero (fun hyK ↦ hyU (hK_sub hyK)), edist_self]
       exact bot_le
 
+theorem hasWeakPartialDeriv_of_locallyLipschitzOn
+    {f : E → ℝ} {Ω : Set E} (hf : LocallyLipschitzOn Ω f) (i : Fin d) :
+    DeGiorgi.HasWeakPartialDeriv i
+      (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Ω := by
+  intro φ hφ hφc hφs
+  exact DifferentialGeometry.Analysis.integral_mul_fderiv_eq_neg_lineDeriv_mul_of_locallyLipschitzOn
+    hf (hφ.of_le (by simp)) hφc hφs (EuclideanSpace.single i 1)
+
 theorem hasWeakPart_of_lip
     {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
     (hf : LipschitzWith C f) (i : Fin d) :
     DeGiorgi.HasWeakPartialDeriv i
-      (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Omega := by
-  intro phi hphi hphi_supp hphi_sub
-  obtain ⟨D, hphi_lip⟩ : ∃ D, LipschitzWith D phi :=
-    ContDiff.lipschitzWith_of_hasCompactSupport hphi_supp hphi (by simp)
-  let ei : E := EuclideanSpace.single i 1
-  have hline_phi : ∀ x, lineDeriv ℝ phi x (-ei) = -fderiv ℝ phi x ei := by
-    intro x
-    rw [(hphi.differentiable (by simp) x).lineDeriv_eq_fderiv]
-    simp only [map_neg]
-  have hderiv_sub : tsupport (fun x => fderiv ℝ phi x ei) ⊆ Omega :=
-    (tsupport_fderiv_apply_subset ℝ ei).trans hphi_sub
-  have hibp :=
-    LipschitzWith.integral_lineDeriv_mul_eq
-      (μ := volume) hf hphi_lip hphi_supp ei
-  simp_rw [hline_phi] at hibp
-  have hleft_zero :
-      ∀ x, x ∉ Omega → lineDeriv ℝ f x ei * phi x = 0 := by
-    intro x hx
-    have hphi_x : phi x = 0 := by
-      by_contra hne
-      exact hx (hphi_sub (subset_tsupport _ hne))
-    simp only [hphi_x, mul_zero]
-  have hright_zero :
-      ∀ x, x ∉ Omega → (-fderiv ℝ phi x ei) * f x = 0 := by
-    intro x hx
-    have hderiv_x : fderiv ℝ phi x ei = 0 := by
-      by_contra hne
-      exact hx (hderiv_sub (subset_tsupport _ hne))
-    simp only [hderiv_x, neg_zero, zero_mul]
-  rw [← setIntegral_eq_integral_of_forall_compl_eq_zero hleft_zero,
-      ← setIntegral_eq_integral_of_forall_compl_eq_zero hright_zero] at hibp
-  have hibp' :
-      ∫ x in Omega, lineDeriv ℝ f x ei * phi x =
-        -∫ x in Omega, f x * fderiv ℝ phi x ei := by
-    rw [show (∫ x in Omega, (-fderiv ℝ phi x ei) * f x) =
-        -∫ x in Omega, f x * fderiv ℝ phi x ei by
-      simp_rw [neg_mul, mul_comm]
-      rw [integral_neg]] at hibp
-    exact hibp
-  have hneg := congrArg Neg.neg hibp'
-  simpa only [ei, neg_neg] using hneg.symm
+      (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Omega :=
+  hasWeakPartialDeriv_of_locallyLipschitzOn hf.locallyLipschitz.locallyLipschitzOn i
+
+theorem hasWeakGrad_prodMk_left_of_locallyLipschitzOn
+    {Z : Type*} [PseudoEMetricSpace Z]
+    {U : Z × E → ℝ} {J : Set Z} {Ω : Set E}
+    (hU : LocallyLipschitzOn (J ×ˢ Ω) U) {t : Z} (ht : t ∈ J) :
+    DeGiorgi.HasWeakGrad
+      (fun x => WithLp.toLp 2 (fun i => lineDeriv ℝ (fun y => U (t, y)) x (EuclideanSpace.single i 1)))
+      (fun x => U (t, x)) Ω := by
+  have hslice : LocallyLipschitzOn Ω (fun x => U (t, x)) := by
+    apply locallyLipschitzOn_iff_restrict.mpr
+    have hmap : LipschitzWith 1 (fun x : Ω => (⟨(t, x.1), ht, x.2⟩ : J ×ˢ Ω)) := by
+      simpa only [one_mul, Function.comp_apply] using
+        ((LipschitzWith.prodMk_left t).comp (LipschitzWith.subtype_val Ω)).subtype_mk
+          (fun x => ⟨ht, x.2⟩)
+    exact hU.restrict.comp hmap.locallyLipschitz
+  intro i
+  exact hasWeakPartialDeriv_of_locallyLipschitzOn hslice i
 
 theorem memW1p_of_lip
     {p : ℝ≥0∞} {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
-    (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) :
+    (hf : LipschitzWith C f) (hf_support : HasCompactSupport f) :
     DeGiorgi.MemW1p p f Omega := by
-  refine ⟨(hf.continuous.memLp_of_hasCompactSupport hf_supp).restrict Omega, ?_⟩
+  refine ⟨(hf.continuous.memLp_of_hasCompactSupport hf_support).restrict Omega, ?_⟩
   intro i
   let ei : E := EuclideanSpace.single i 1
   let gi : E → ℝ := fun x => lineDeriv ℝ f x ei
@@ -133,37 +120,37 @@ theorem memW1p_of_lip
     simpa only [gi, zero_apply] using hline
   have hgi_mem : MemLp gi p volume :=
     hgi_top.mono_exponent_of_measure_support_ne_top
-      hgi_zero hf_supp.measure_lt_top.ne le_top
+      hgi_zero hf_support.measure_lt_top.ne le_top
   refine ⟨gi, hgi_mem.restrict Omega, ?_⟩
   simpa only [gi, ei] using hasWeakPart_of_lip (Omega := Omega) hf i
 
 theorem fderiv_ae_chosen
     {p : ℝ≥0∞} (hp : 1 ≤ p) {Omega : Set E} (hOmega : IsOpen Omega)
     {C : ℝ≥0} {f : E → ℝ}
-    (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) (i : Fin d) :
+    (hf : LipschitzWith C f) (hf_support : HasCompactSupport f) (i : Fin d) :
     (fun x => fderiv ℝ f x (EuclideanSpace.single i 1)) =ᵐ[volume.restrict Omega]
-      chosenWeakPartial' p i f Omega := by
+      chosenWeakPartialOrZero p i f Omega := by
   have hf_mem : DeGiorgi.MemW1p p f Omega :=
-    memW1p_of_lip hf hf_supp
+    memW1p_of_lip hf hf_support
   have hline : DeGiorgi.HasWeakPartialDeriv i
       (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) f Omega :=
     hasWeakPart_of_lip hf i
   have hchosen : DeGiorgi.HasWeakPartialDeriv i
-      (chosenWeakPartial' p i f Omega) f Omega :=
-    chosenWeakPartial'_isWeakPartial_of_mem hf_mem i
-  have hline_loc : LocallyIntegrable
+      (chosenWeakPartialOrZero p i f Omega) f Omega :=
+    chosenWeakPartialOrZero_isWeakPartial_of_mem hf_mem i
+  have hline_local : LocallyIntegrable
       (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1))
       (volume.restrict Omega) :=
     (hf.locallyIntegrable_lineDeriv (EuclideanSpace.single i 1)).mono_measure
       Measure.restrict_le_self
-  have hchosen_loc : LocallyIntegrable
-      (chosenWeakPartial' p i f Omega) (volume.restrict Omega) :=
-    (chosenWeakPartial'_memLp_of_mem hf_mem i).locallyIntegrable hp
+  have hchosen_local : LocallyIntegrable
+      (chosenWeakPartialOrZero p i f Omega) (volume.restrict Omega) :=
+    (chosenWeakPartialOrZero_memLp_of_mem hf_mem i).locallyIntegrable hp
   have hline_eq :
       (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) =ᵐ[volume.restrict Omega]
-        chosenWeakPartial' p i f Omega :=
+        chosenWeakPartialOrZero p i f Omega :=
     DeGiorgi.HasWeakPartialDeriv.ae_eq hOmega
-      hline hchosen hline_loc hchosen_loc
+      hline hchosen hline_local hchosen_local
   have hfderiv_eq :
       (fun x => fderiv ℝ f x (EuclideanSpace.single i 1)) =ᵐ[volume.restrict Omega]
         (fun x => lineDeriv ℝ f x (EuclideanSpace.single i 1)) := by
@@ -173,7 +160,7 @@ theorem fderiv_ae_chosen
 
 theorem partials_l2_le_wkp
     {Omega : Set E} (hOmega : IsOpen Omega) {C : ℝ≥0} {f : E → ℝ}
-    (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) :
+    (hf : LipschitzWith C f) (hf_support : HasCompactSupport f) :
     eLpNorm (fun x : E => Real.sqrt (∑ i : Fin d,
         ((fderiv ℝ f x) (EuclideanSpace.single i 1)) ^ 2)) 2
         (volume.restrict Omega) ≤
@@ -232,16 +219,16 @@ theorem partials_l2_le_wkp
       eLpNorm (fun x : E =>
           ‖(fderiv ℝ f x) (EuclideanSpace.single i 1)‖) 2
           (volume.restrict Omega) =
-        eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i f Omega) 2
+        eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i f Omega) 2
           (volume.restrict Omega) := by
     rw [eLpNorm_norm]
-    exact eLpNorm_congr_ae (fderiv_ae_chosen hp hOmega hf hf_supp i)
+    exact eLpNorm_congr_ae (fderiv_ae_chosen hp hOmega hf hf_support i)
   calc
     (∑ i : Fin d, eLpNorm (fun x : E =>
         ‖(fderiv ℝ f x) (EuclideanSpace.single i 1)‖) 2
         (volume.restrict Omega)) =
       ∑ i : Fin d,
-        eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i f Omega) 2
+        eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i f Omega) 2
           (volume.restrict Omega) :=
         Finset.sum_congr rfl (fun i _ => heach i)
     _ ≤ iteratedWeakSobolevNorm (d := d) 1 2 f Omega := by
@@ -250,7 +237,7 @@ theorem partials_l2_le_wkp
               eLpNorm (iterWeakPartial (d := d) (2 : ℝ≥0∞) 1 β f Omega) 2
                 (volume.restrict Omega)) =
             ∑ i : Fin d,
-              eLpNorm (chosenWeakPartial' (d := d) (2 : ℝ≥0∞) i f Omega) 2
+              eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i f Omega) 2
                 (volume.restrict Omega) := by
         let e : (Fin 1 → Fin d) ≃ Fin d :=
           { toFun := fun β => β 0
@@ -268,8 +255,8 @@ theorem partials_l2_le_wkp
 
 theorem memWkp_one_of_lip
     {p : ℝ≥0∞} {C : ℝ≥0} {f : E → ℝ} {Omega : Set E}
-    (hf : LipschitzWith C f) (hf_supp : HasCompactSupport f) :
+    (hf : LipschitzWith C f) (hf_support : HasCompactSupport f) :
     MemWkp (d := d) 1 p f Omega :=
-  MemWkp.one_iff_memW1p.mpr (memW1p_of_lip hf hf_supp)
+  MemWkp.one_iff_memW1p.mpr (memW1p_of_lip hf hf_support)
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

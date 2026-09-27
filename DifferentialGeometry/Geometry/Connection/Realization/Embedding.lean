@@ -415,7 +415,7 @@ theorem embedDeriv_mlieBracket
   set y₀ := φ x₀ with hy₀
   set s := Set.range I with hs
   have hmem : x₀ ∈ φ.source := mem_extChartAt_source x₀
-  have hmem_tgt : y₀ ∈ φ.target := φ.map_source hmem
+  have hmem_target : y₀ ∈ φ.target := φ.map_source hmem
   have huniq : UniqueDiffOn ℝ s := I.uniqueDiffOn
   have hy₀s : y₀ ∈ s := ⟨_, rfl⟩
   set g := (f : M → ℝ) ∘ φ.symm
@@ -492,7 +492,7 @@ theorem embedDeriv_mlieBracket
     have hφ_open : IsOpen φ.source := isOpen_extChartAt_source x₀
     have hz_chart : z ∈ (chartAt H x₀).source := by
       rwa [extChartAt_source (I := I)] at hz
-    have hφz_tgt : φ z ∈ φ.target := φ.map_source hz
+    have hφz_target : φ z ∈ φ.target := φ.map_source hz
     have hf_eq : (f : M → ℝ) =ᶠ[𝓝 z] g ∘ φ := by
       filter_upwards [hφ_open.mem_nhds hz] with w hw
       simp only [Function.comp_def, g, φ.left_inv hw]
@@ -504,7 +504,7 @@ theorem embedDeriv_mlieBracket
     have hg_diffWithin : DifferentiableWithinAt ℝ g s (φ z) := by
       have hf_at_z := f.contMDiff.contMDiffAt (x := z)
       have hφsymm : ContMDiffWithinAt 𝓘(ℝ, E) I ∞ φ.symm s (φ z) :=
-        contMDiffWithinAt_extChartAt_symm_range x₀ hφz_tgt
+        contMDiffWithinAt_extChartAt_symm_range x₀ hφz_target
       have hg_cmd : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ, ℝ) ∞ g s (φ z) := by
         have h_eq : φ.symm (φ z) = z := φ.left_inv hz
         exact hf_at_z.comp_contMDiffWithinAt_of_eq hφsymm h_eq
@@ -568,19 +568,19 @@ theorem embedDeriv_mlieBracket
     rfl
   have hYf_eq : (↑(vectorFieldActionSmooth I M Y f) ∘ ↑φ.symm) =ᶠ[𝓝[s] y₀]
       (fun y => fderivWithin ℝ g s y (W y)) := by
-    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hmem_tgt] with y hy
+    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hmem_target] with y hy
     simp only [Function.comp_def, vectorFieldActionSmooth, ContMDiffMap.coeFn_mk,
       vectorFieldAction]
-    have hy_src : φ.symm y ∈ φ.source := φ.map_target hy
-    rw [mvfderiv_fderivWithin_chain (φ.symm y) hy_src,
+    have hy_source : φ.symm y ∈ φ.source := φ.map_target hy
+    rw [mvfderiv_fderivWithin_chain (φ.symm y) hy_source,
       ContinuousLinearMap.comp_apply, φ.right_inv hy, ← W_eq y hy]
   have hXf_eq : (↑(vectorFieldActionSmooth I M X f) ∘ ↑φ.symm) =ᶠ[𝓝[s] y₀]
       (fun y => fderivWithin ℝ g s y (V y)) := by
-    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hmem_tgt] with y hy
+    filter_upwards [extChartAt_target_mem_nhdsWithin_of_mem hmem_target] with y hy
     simp only [Function.comp_def, vectorFieldActionSmooth, ContMDiffMap.coeFn_mk,
       vectorFieldAction]
-    have hy_src : φ.symm y ∈ φ.source := φ.map_target hy
-    rw [mvfderiv_fderivWithin_chain (φ.symm y) hy_src,
+    have hy_source : φ.symm y ∈ φ.source := φ.map_target hy
+    rw [mvfderiv_fderivWithin_chain (φ.symm y) hy_source,
       ContinuousLinearMap.comp_apply, φ.right_inv hy, ← V_eq y hy]
   rw [hYf_eq.fderivWithin_eq (hYf_eq.self_of_nhdsWithin hy₀s),
       hXf_eq.fderivWithin_eq (hXf_eq.self_of_nhdsWithin hy₀s)]

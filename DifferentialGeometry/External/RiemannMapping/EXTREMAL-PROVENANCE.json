@@ -1,0 +1,13 @@
+{
+  "upstream_repository": "https://github.com/leanprover-community/mathlib4",
+  "upstream_pull_request": "https://github.com/leanprover-community/mathlib4/pull/33505",
+  "upstream_local_source": "/private/tmp/pc-riemann-mapping-onto-20260920/upstream/Mathlib/Analysis/Complex/RiemannMapping.lean",
+  "upstream_source_sha256": "335a97ee3cf41c2f56581b80176decde8de8bb60491a342d3b7eec2146aa8caa",
+  "extracted_upstream_lines": "608-778",
+  "author": "Yury Kudryashov",
+  "copyright": "Copyright (c) 2026 Yury Kudryashov. All rights reserved.",
+  "license": "Apache-2.0",
+  "upstream_commit": "d43061d911b1aeae0788591da437a3b115098962",
+  "upstream_commit_evidence": "/private/tmp/pc-riemann-mapping-onto-20260920/UPSTREAM.json",
+  "upstream_raw_url": "https://raw.githubusercontent.com/urkud/mathlib4/d43061d911b1aeae0788591da437a3b115098962/Mathlib/Analysis/Complex/RiemannMapping.lean"
+}

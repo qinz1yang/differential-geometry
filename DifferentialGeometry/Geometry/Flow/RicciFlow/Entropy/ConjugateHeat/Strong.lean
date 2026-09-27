@@ -1,8 +1,8 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffMeas
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nonautonomous
-import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.SolutionFieldLink
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactSAResolventIntrinsic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential.Basic
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLaplacianDifference.Measurability
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Nonautonomous.Basic
+import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.TensorMaximalRegularity.Solution.FieldIdentification
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -43,9 +43,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 noncomputable def conjA2MR
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (t : Real) :
-    tensorHs (I := I) (M := M) (S.family.metric (T : Real))
+    TensorHs (I := I) (M := M) (S.family.metric (T : Real))
         0 0 ((0 : Real) + 2) →L[Real]
-      tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
+      TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
   (lapDiffA20 (I := I) (M := M) S.family.metric T t).comp
     (tensorHsInclusion (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0)
@@ -54,15 +54,15 @@ noncomputable def conjA2MR
 noncomputable def conjA1MR
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (T : D.RegularTime) (t : Real) :
-    tensorHs (I := I) (M := M) (S.family.metric (T : Real))
+    TensorHs (I := I) (M := M) (S.family.metric (T : Real))
         0 0 ((0 : Real) + 1) →L[Real]
-      tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
+      TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0 :=
   (conjA1 (I := I) (M := M) S T t).comp
     (tensorHsInclusion (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0)
       (show (1 : Real) ≤ 0 + 1 by norm_num))
 
-theorem conj_inputs
+theorem exists_conjugate_heat_coefficient_control
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime) :
     ∃ (tau : Real) (C2 C1 : NNReal),
@@ -80,7 +80,7 @@ theorem conj_inputs
       (C2 : Real) * (1 + tau) +
           (C1 : Real) * (2 * Real.sqrt tau) < 1 ∧
       ∀ᵐ s ∂timeMeasure tau,
-        ∀ u : tensorHs (I := I) (M := M)
+        ∀ u : TensorHs (I := I) (M := M)
             (S.family.metric (T : Real)) 0 0 2,
           (u,
               tensorHsZeroEquivL2 (I := I) (M := M)
@@ -91,20 +91,20 @@ theorem conj_inputs
               (Set.range fun
                 v : ScalarH2Core (I := I) (M := M)
                     (S.family.metric (T : Real)) =>
-                  ((v.1 : tensorHs (I := I) (M := M)
+                  ((v.1 : TensorHs (I := I) (M := M)
                       (S.family.metric (T : Real)) 0 0 2),
                     lapDiffCore (I := I) (M := M)
                       (S.family.metric (T : Real))
                       (S.family.metric ((T : Real) - s)) v)) := by
   let _ : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (S.family.metric (T : Real))
+      (TensorHs (I := I) (M := M) (S.family.metric (T : Real))
           0 0 (0 + 2) →L[Real]
-        tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
+        TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   let _ : SeminormedAddCommGroup
-      (tensorHs (I := I) (M := M) (S.family.metric (T : Real))
+      (TensorHs (I := I) (M := M) (S.family.metric (T : Real))
           0 0 (0 + 1) →L[Real]
-        tensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
+        TensorHs (I := I) (M := M) (S.family.metric (T : Real)) 0 0 0) :=
     ContinuousLinearMap.toSeminormedAddCommGroup
   let C2 : NNReal := ⟨(1 / 4 : Real), by norm_num⟩
   have hC2pos : 0 < (C2 : Real) := by
@@ -126,7 +126,7 @@ theorem conj_inputs
   have hfsmall : {t : Real | f t < 1} ∈ 𝓝 0 := by
     exact hfcont.eventually_lt_const hfzero
   let graphGood : Set Real := {s |
-    ∀ u : tensorHs (I := I) (M := M)
+    ∀ u : TensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 2,
       (u,
           tensorHsZeroEquivL2 (I := I) (M := M)
@@ -137,7 +137,7 @@ theorem conj_inputs
           (Set.range fun
             v : ScalarH2Core (I := I) (M := M)
                 (S.family.metric (T : Real)) =>
-              ((v.1 : tensorHs (I := I) (M := M)
+              ((v.1 : TensorHs (I := I) (M := M)
                   (S.family.metric (T : Real)) 0 0 2),
                 lapDiffCore (I := I) (M := M)
                   (S.family.metric (T : Real))
@@ -252,17 +252,17 @@ theorem conj_inputs
   exact ⟨tau, C2, C1, htau, htauone, hmeas2', hbound2', hmeas1',
     hbound1', hf_tau, hgraphAE⟩
 
-theorem conj_strong_exists
+theorem exists_strong_conjugate_heat_solution
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)
-    (u0 : tensorHs (I := I) (M := M)
+    (u0 : TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 ((0 : Real) + 2)) :
     let q := S.family.metric (T : Real)
-    let A2 : Real → tensorHs (I := I) (M := M) q 0 0 (0 + 2) →L[Real]
-        tensorHs (I := I) (M := M) q 0 0 0 :=
+    let A2 : Real → TensorHs (I := I) (M := M) q 0 0 (0 + 2) →L[Real]
+        TensorHs (I := I) (M := M) q 0 0 0 :=
       fun t => conjA2MR (I := I) (M := M) S T t
-    let A1 : Real → tensorHs (I := I) (M := M) q 0 0 (0 + 1) →L[Real]
-        tensorHs (I := I) (M := M) q 0 0 0 :=
+    let A1 : Real → TensorHs (I := I) (M := M) q 0 0 (0 + 1) →L[Real]
+        TensorHs (I := I) (M := M) q 0 0 0 :=
       fun t => conjA1MR (I := I) (M := M) S T t
     ∃ (tau : Real) (htau : 0 < tau) (_htau1 : tau ≤ 1)
       (C2 C1 : NNReal)
@@ -270,32 +270,32 @@ theorem conj_strong_exists
       (hC2 : ∀ᵐ t ∂timeMeasure tau, ‖A2 t‖ ≤ (C2 : Real))
       (hA1 : AEStronglyMeasurable A1 (timeMeasure tau))
       (hC1 : ∀ᵐ t ∂timeMeasure tau, ‖A1 t‖ ≤ (C1 : Real))
-      (u : MaxRegSolutionSpace (I := I) (M := M)
+      (u : MaximalRegularitySolutionSpace (I := I) (M := M)
         (g := q) (r := 0) (s := 0) 0 tau)
-      (force : timeL2 (tensorHs (I := I) (M := M) q 0 0 0) tau),
-      u = maxRegDuhamelMap (I := I) (M := M) 0 htau u0 force ∧
+      (force : timeL2 (TensorHs (I := I) (M := M) q 0 0 0) tau),
+      u = maximalRegularityDuhamelMap (I := I) (M := M) 0 htau u0 force ∧
       force =
         timeOp A2 hA2 C2 hC2
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               0 htau u0 force) +
           timeOp A1 hA1 C1 hC1
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
               0 htau u0 force) ∧
       timeH1.trace0 _ tau u =
         tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
           (show (0 : Real) ≤ 0 + 2 by norm_num) u0 ∧
       timeH1.timeDeriv _ tau u =
         timeScaleLaplacian (I := I) (M := M) 0
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               0 htau u0 force) +
           (timeOp A2 hA2 C2 hC2
-              (maxRegDuhamelSolField (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionField (I := I) (M := M)
                 0 htau u0 force) +
             timeOp A1 hA1 C1 hC1
-              (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+              (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
                 0 htau u0 force)) ∧
       (∀ᵐ s ∂timeMeasure tau,
-          ∀ w : tensorHs (I := I) (M := M) q 0 0 2,
+          ∀ w : TensorHs (I := I) (M := M) q 0 0 2,
             (w,
                 tensorHsZeroEquivL2 (I := I) (M := M)
                   (tensorResolventL2_isCompactOperator
@@ -303,35 +303,35 @@ theorem conj_strong_exists
                   (lapDiffA20 (I := I) (M := M) S.family.metric T s w)) ∈
               closure
                 (Set.range fun v : ScalarH2Core (I := I) (M := M) q =>
-                  ((v.1 : tensorHs (I := I) (M := M) q 0 0 2),
+                  ((v.1 : TensorHs (I := I) (M := M) q 0 0 2),
                     lapDiffCore (I := I) (M := M) q
                       (S.family.metric ((T : Real) - s)) v))) ∧
       (fun s =>
           tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 2 by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun ∧
       (fun s =>
           tensorHsInclusion (I := I) (M := M)
             (g := q) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 1 by norm_num)
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
               0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun := by
   dsimp only
   obtain ⟨tau, C2, C1, htau, htau1, hA2, hC2, hA1, hC1, hsmall,
       hgraph⟩ :=
-    conj_inputs (I := I) (M := M) S hS T
-  let A2 : Real → tensorHs (I := I) (M := M)
+    exists_conjugate_heat_coefficient_control (I := I) (M := M) S hS T
+  let A2 : Real → TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 2) →L[Real]
-        tensorHs (I := I) (M := M)
+        TensorHs (I := I) (M := M)
           (S.family.metric (T : Real)) 0 0 0 :=
     fun t => conjA2MR (I := I) (M := M) S T t
-  let A1 : Real → tensorHs (I := I) (M := M)
+  let A1 : Real → TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 1) →L[Real]
-        tensorHs (I := I) (M := M)
+        TensorHs (I := I) (M := M)
           (S.family.metric (T : Real)) 0 0 0 :=
     fun t => conjA1MR (I := I) (M := M) S T t
   have hA2' : AEStronglyMeasurable A2 (timeMeasure tau) := by
@@ -343,12 +343,12 @@ theorem conj_strong_exists
   have hC1' : ∀ᵐ t ∂timeMeasure tau, ‖A1 t‖ ≤ (C1 : Real) := by
     simpa only [A1] using hC1
   obtain ⟨u, force, hu, hforce, htrace, hderiv⟩ :=
-    nonaut_strong_exists (I := I) (M := M)
+    exists_nonautonomous_strong_solution (I := I) (M := M)
       (g := S.family.metric (T : Real)) (r := 0) (s := 0) (a := 0)
       (tensorResolventL2_isCompactOperator (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0)
       htau htau1 u0 A2 hA2' C2 hC2' A1 hA1' C1 hC1' hsmall
-  have hfield2 := solField_toFun_ae (I := I) (M := M)
+  have hfield2 := solutionField_toFun_ae (I := I) (M := M)
     (g := S.family.metric (T : Real)) (r := 0) (s := 0) (a := 0)
     htau
     (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -359,11 +359,11 @@ theorem conj_strong_exists
           tensorHsInclusion (I := I) (M := M)
             (g := S.family.metric (T : Real)) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 2 by norm_num)
-            (maxRegDuhamelSolField (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionField (I := I) (M := M)
               0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun := by
     simpa only [hu] using hfield2
-  have hfield1 := solFieldHa1_toFun_ae (I := I) (M := M)
+  have hfield1 := solutionFieldHa1_toFun_ae (I := I) (M := M)
     (g := S.family.metric (T : Real)) (r := 0) (s := 0) (a := 0)
     htau htau1
     (tensorResolventL2_isCompactOperator (I := I) (M := M)
@@ -374,7 +374,7 @@ theorem conj_strong_exists
           tensorHsInclusion (I := I) (M := M)
             (g := S.family.metric (T : Real)) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 1 by norm_num)
-            (maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+            (maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
               0 htau u0 force s))
         =ᵐ[timeMeasure tau] u.toFun := by
     simpa only [hu] using hfield1
@@ -384,22 +384,22 @@ theorem conj_strong_exists
 theorem conj_weak_ae
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S) (T : D.RegularTime)
-    (u0 : tensorHs (I := I) (M := M)
+    (u0 : TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 ((0 : Real) + 2)) :
     let q := S.family.metric (T : Real)
     let J := tensorHsZeroEquivL2 (I := I) (M := M)
       (tensorResolventL2_isCompactOperator (I := I) (M := M) q 0 0)
     ∃ (tau : Real) (htau : 0 < tau) (_htau1 : tau ≤ 1)
-      (u : MaxRegSolutionSpace (I := I) (M := M)
+      (u : MaximalRegularitySolutionSpace (I := I) (M := M)
         (g := q) (r := 0) (s := 0) 0 tau)
-      (force : timeL2 (tensorHs (I := I) (M := M) q 0 0 0) tau),
+      (force : timeL2 (TensorHs (I := I) (M := M) q 0 0 0) tau),
       timeH1.trace0 _ tau u =
           tensorHsInclusion (I := I) (M := M) (g := q) (r := 0) (s := 0)
             (show (0 : Real) ≤ 0 + 2 by norm_num) u0 ∧
       ∀ᵐ t ∂timeMeasure tau,
-        let U2 := maxRegDuhamelSolField (I := I) (M := M)
+        let U2 := maximalRegularityDuhamelSolutionField (I := I) (M := M)
           0 htau u0 force t
-        let U1 := maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+        let U1 := maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
           0 htau u0 force t
         let V2 := tensorHsInclusion (I := I) (M := M)
           (g := q) (r := 0) (s := 0)
@@ -431,7 +431,7 @@ theorem conj_weak_ae
                   (tensorHsSmoothRepr (I := I) (M := M) w.1 w.2))) ∈
             closure
               (Set.range fun v : ScalarH2Core (I := I) (M := M) q =>
-                ((v.1 : tensorHs (I := I) (M := M) q 0 0 2),
+                ((v.1 : TensorHs (I := I) (M := M) q 0 0 2),
                   ∫ x, (ΔG (I := I) (S.family.metric ((T : Real) - t))
                           ⟨reprScalar0 (I := I) (M := M) v.1 v.2,
                             reprScalar0_smooth (I := I) (M := M) v.1 v.2⟩ x -
@@ -454,23 +454,23 @@ theorem conj_weak_ae
   dsimp only
   obtain ⟨tau, htau, htau1, C2, C1, hA2, hC2, hA1, hC1, u,
       force, _hu, _hforce, htrace, hderiv, hgraph, hfield2, hfield1⟩ :=
-    conj_strong_exists (I := I) (M := M) S hS T u0
-  let U2 : timeL2 (tensorHs (I := I) (M := M)
+    exists_strong_conjugate_heat_solution (I := I) (M := M) S hS T u0
+  let U2 : timeL2 (TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 2)) tau :=
-    maxRegDuhamelSolField (I := I) (M := M)
+    maximalRegularityDuhamelSolutionField (I := I) (M := M)
       0 htau u0 force
-  let U1 : timeL2 (tensorHs (I := I) (M := M)
+  let U1 : timeL2 (TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 (0 + 1)) tau :=
-    maxRegDuhamelSolFieldHa1 (I := I) (M := M)
+    maximalRegularityDuhamelSolutionFieldHa1 (I := I) (M := M)
       0 htau u0 force
-  let base : timeL2 (tensorHs (I := I) (M := M)
+  let base : timeL2 (TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 0) tau :=
     timeScaleLaplacian (I := I) (M := M) 0 U2
-  let rhs2 : timeL2 (tensorHs (I := I) (M := M)
+  let rhs2 : timeL2 (TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 0) tau :=
     timeOp (fun t => conjA2MR (I := I) (M := M) S T t)
       hA2 C2 hC2 U2
-  let rhs1 : timeL2 (tensorHs (I := I) (M := M)
+  let rhs1 : timeL2 (TensorHs (I := I) (M := M)
       (S.family.metric (T : Real)) 0 0 0) tau :=
     timeOp (fun t => conjA1MR (I := I) (M := M) S T t)
       hA1 C1 hC1 U1
@@ -505,19 +505,19 @@ theorem conj_weak_ae
     let test : TensorL2 0 0 (S.family.metric (T : Real)) :=
       SmoothCcTensor.toL2
         (tensorHsSmoothRepr (I := I) (M := M) w.1 w.2)
-    let L : tensorHs (I := I) (M := M)
+    let L : TensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 0 →L[Real] Real :=
       ((innerSL Real).flip test).comp
         J.toLinearIsometry.toContinuousLinearMap
-    let V2 : tensorHs (I := I) (M := M)
+    let V2 : TensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 2 :=
       tensorHsInclusion (I := I) (M := M)
         (g := S.family.metric (T : Real)) (r := 0) (s := 0)
         (show (2 : Real) ≤ 0 + 2 by norm_num) (U2 t)
-    have hJ_apply (v : tensorHs (I := I) (M := M)
+    have hJ_apply (v : TensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 0) :
         J.toLinearIsometry.toContinuousLinearMap v = J v := rfl
-    have hL_apply (v : tensorHs (I := I) (M := M)
+    have hL_apply (v : TensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 0) :
         L v = inner Real (J v) test := by
       simp only [L, ContinuousLinearMap.comp_apply, ContinuousLinearMap.flip_apply,
@@ -537,16 +537,16 @@ theorem conj_weak_ae
         abel
       rw [hres]
       simpa only [V2, U2] using
-        (lapDiffA20_test (I := I) (M := M) S.family.metric T t V2 w
+        (lapDiffA20_pairing_mem_closure (I := I) (M := M) S.family.metric T t V2 w
           (htgraph V2))
   · intro v
-    let V1 : tensorHs (I := I) (M := M)
+    let V1 : TensorHs (I := I) (M := M)
         (S.family.metric (T : Real)) 0 0 1 :=
       tensorHsInclusion (I := I) (M := M)
         (g := S.family.metric (T : Real)) (r := 0) (s := 0)
         (show (1 : Real) ≤ 0 + 1 by norm_num) (U1 t)
     simpa only [conjA1MR, conjA1, ContinuousLinearMap.comp_apply, V1, U1] using
-      (scalarPotH0_test (I := I) (M := M)
+      (scalarPotH0_inner_eq_smoothCore (I := I) (M := M)
         (S.family.metric (T : Real))
         (conjCoeff (I := I) (M := M) S ((T : Real) - t)) V1 v)
 

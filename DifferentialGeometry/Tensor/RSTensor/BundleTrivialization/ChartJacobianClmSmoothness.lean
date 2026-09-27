@@ -32,13 +32,13 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
             : E →L[ℝ] E))
       b₀ := by
   classical
-  have hα_src : b₀ ∈ (chartAt H α).source := hb₀
+  have hα_source : b₀ ∈ (chartAt H α).source := hb₀
   set u := (extChartAt I α).target with hu_def
   have hf_on : ContMDiffOn 𝓘(ℝ, E) I ∞ (extChartAt I α).symm u :=
     contMDiffOn_extChartAt_symm α
   have hyb₀ : extChartAt I α b₀ ∈ u := by
     have : extChartAt I α b₀ ∈ (extChartAt I α).target :=
-      (extChartAt I α).map_source (by simpa [extChartAt_source] using hα_src)
+      (extChartAt I α).map_source (by simpa [extChartAt_source] using hα_source)
     simpa [u] using this
   have hf_at : ContMDiffWithinAt 𝓘(ℝ, E) I ∞
       (extChartAt I α).symm u (extChartAt I α b₀) := hf_on _ hyb₀
@@ -64,10 +64,10 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
   have hg : ContMDiffOn I 𝓘(ℝ, E) ∞ (extChartAt I α) (chartAt H α).source :=
     contMDiffOn_extChartAt
   have hg_at : ContMDiffWithinAt I 𝓘(ℝ, E) ∞
-      (extChartAt I α) (chartAt H α).source b₀ := hg _ hα_src
+      (extChartAt I α) (chartAt H α).source b₀ := hg _ hα_source
   have hg_at' : ContMDiffAt I 𝓘(ℝ, E) ∞
       (extChartAt I α) b₀ :=
-    hg_at.contMDiffAt ((chartAt H α).open_source.mem_nhds hα_src)
+    hg_at.contMDiffAt ((chartAt H α).open_source.mem_nhds hα_source)
   have hg_maps : MapsTo (extChartAt I α) (chartAt H α).source u := by
     intro x hx
     have : extChartAt I α x ∈ (extChartAt I α).target :=
@@ -87,25 +87,25 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
           (mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm u)
           (extChartAt I α b₀) (extChartAt I α b))
       b₀ :=
-    hcomp_within.contMDiffAt ((chartAt H α).open_source.mem_nhds hα_src)
+    hcomp_within.contMDiffAt ((chartAt H α).open_source.mem_nhds hα_source)
   refine hcomp.congr_of_eventuallyEq ?_
   have hα_open : IsOpen (chartAt H α).source := (chartAt H α).open_source
   have hb₀_open : IsOpen (chartAt H b₀).source := (chartAt H b₀).open_source
-  filter_upwards [hα_open.mem_nhds hα_src,
+  filter_upwards [hα_open.mem_nhds hα_source,
     hb₀_open.mem_nhds (mem_chart_source H b₀)] with b hb hb₀'
-  have hb_src : b ∈ (chartAt H α).source := hb
-  have hb_src_b₀ : b ∈ (chartAt H b₀).source := hb₀'
+  have hb_source : b ∈ (chartAt H α).source := hb
+  have hb_source_b₀ : b ∈ (chartAt H b₀).source := hb₀'
   have hxs : (id (extChartAt I α b)) ∈
       (chartAt (H := E) (id ((extChartAt I α b₀) : E))).source := by
     simp [chartAt_self_eq]
   have hys : (extChartAt I α).symm (extChartAt I α b) ∈
       (chartAt H ((extChartAt I α).symm (extChartAt I α b₀))).source := by
     have hb' : (extChartAt I α).symm (extChartAt I α b) = b :=
-      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hb_src)
+      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hb_source)
     have hb₀' : (extChartAt I α).symm (extChartAt I α b₀) = b₀ :=
-      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hα_src)
+      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hα_source)
     rw [hb', hb₀']
-    exact hb_src_b₀
+    exact hb_source_b₀
   erw [inTangentCoordinates_eq (I := 𝓘(ℝ, E)) (I' := I) id
     (extChartAt I α).symm _ hxs hys]
   have hsrc_id :
@@ -120,24 +120,24 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_alpha_to_b0
           ((extChartAt I α).symm (extChartAt I α b)) =
         (trivializationAt E (TangentSpace I) b₀).continuousLinearMapAt ℝ b := by
     have hb' : (extChartAt I α).symm (extChartAt I α b) = b :=
-      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hb_src)
+      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hb_source)
     have hb₀' : (extChartAt I α).symm (extChartAt I α b₀) = b₀ :=
-      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hα_src)
+      (extChartAt I α).left_inv (by simpa [extChartAt_source] using hα_source)
     rw [hb', hb₀']
     exact (TangentBundle.continuousLinearMapAt_trivializationAt_eq_core
-      (b₀ := b₀) (b := b) hb_src_b₀).symm
+      (b₀ := b₀) (b := b) hb_source_b₀).symm
   have hmfderiv_eq :
       mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm u (extChartAt I α b) =
         (trivializationAt E (TangentSpace I) α).symmL ℝ b := by
     have h1 : (trivializationAt E (TangentSpace I) α).symmL ℝ b =
         mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (range I)
           (extChartAt I α b) :=
-      TangentBundle.symmL_trivializationAt hb_src
+      TangentBundle.symmL_trivializationAt hb_source
     have h2 : mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm u
           (extChartAt I α b) =
         mfderivWithin 𝓘(ℝ, E) I (extChartAt I α).symm (range I)
           (extChartAt I α b) := by
-      have hb_target : extChartAt I α b ∈ u := hg_maps hb_src
+      have hb_target : extChartAt I α b ∈ u := hg_maps hb_source
       have hb_target' : extChartAt I α b ∈ (extChartAt I α).target := by
         simpa [u] using hb_target
       have hsubset : u ⊆ range I := by
@@ -165,9 +165,9 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha
             : E →L[ℝ] E))
       b₀ := by
   classical
-  have hα_src : b₀ ∈ (chartAt H α).source := hb₀
+  have hα_source : b₀ ∈ (chartAt H α).source := hb₀
   have hf_at : ContMDiffAt I 𝓘(ℝ, E) ∞ (extChartAt I α) b₀ :=
-    contMDiffAt_extChartAt' hα_src
+    contMDiffAt_extChartAt' hα_source
   have hmfderiv :
       ContMDiffAt I 𝓘(ℝ, E →L[ℝ] E) ∞
         (inTangentCoordinates I 𝓘(ℝ, E) id (extChartAt I α)
@@ -176,11 +176,11 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha
   refine hmfderiv.congr_of_eventuallyEq ?_
   have hα_open : IsOpen (chartAt H α).source := (chartAt H α).open_source
   have hb₀_open : IsOpen (chartAt H b₀).source := (chartAt H b₀).open_source
-  filter_upwards [hα_open.mem_nhds hα_src,
+  filter_upwards [hα_open.mem_nhds hα_source,
     hb₀_open.mem_nhds (mem_chart_source H b₀)] with b hb hb₀'
-  have hb_src : b ∈ (chartAt H α).source := hb
-  have hb_src_b₀ : b ∈ (chartAt H b₀).source := hb₀'
-  have hxs : (id b) ∈ (chartAt H ((id) b₀)).source := hb_src_b₀
+  have hb_source : b ∈ (chartAt H α).source := hb
+  have hb_source_b₀ : b ∈ (chartAt H b₀).source := hb₀'
+  have hxs : (id b) ∈ (chartAt H ((id) b₀)).source := hb_source_b₀
   have hys : (extChartAt I α b) ∈
       (chartAt (H := E) ((extChartAt I α b₀) : E)).source := by
     simp [chartAt_self_eq]
@@ -189,7 +189,7 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha
   have hsrc_eq :
       (tangentBundleCore I M).coordChange (achart H (id b₀)) (achart H (id b)) (id b) =
         (trivializationAt E (TangentSpace I) b₀).symmL ℝ b :=
-    (TangentBundle.symmL_trivializationAt_eq_core hb_src_b₀).symm
+    (TangentBundle.symmL_trivializationAt_eq_core hb_source_b₀).symm
   have htarget_id :
       (tangentBundleCore 𝓘(ℝ, E) E).coordChange
           (achart E ((extChartAt I α) b)) (achart E ((extChartAt I α) b₀))
@@ -198,7 +198,7 @@ theorem contMDiffAt_tangentTrivialization_coordChangeL_b0_to_alpha
   have hmfd_eq :
       mfderiv I 𝓘(ℝ, E) (extChartAt I α) b =
         (trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ b :=
-    (TangentBundle.continuousLinearMapAt_trivializationAt hb_src).symm
+    (TangentBundle.continuousLinearMapAt_trivializationAt hb_source).symm
   rw [htarget_id, hmfd_eq, hsrc_eq]
   ext v
   rfl

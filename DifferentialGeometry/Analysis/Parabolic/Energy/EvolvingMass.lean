@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.FamilyContinuity
+import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 
 
 noncomputable section

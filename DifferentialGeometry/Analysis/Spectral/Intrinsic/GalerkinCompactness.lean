@@ -134,7 +134,7 @@ theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
     have hcoord : Tendsto (fun n => f i (φ n)) atTop (𝓝 (g i)) := by
       rw [tendsto_pi_nhds] at hg
       simpa only [Function.comp_apply, F] using hg i
-    have hunif : TendstoUniformly (fun (n : ℕ) (t : J) => u (φ n) t i)
+    have huniform : TendstoUniformly (fun (n : ℕ) (t : J) => u (φ n) t i)
         (fun t : J => g i t) atTop := by
       have h := BoundedContinuousFunction.tendsto_iff_tendstoUniformly.mp hcoord
       change TendstoUniformly (fun (n : ℕ) (t : J) => u (φ n) t i)
@@ -146,7 +146,7 @@ theorem galerkin_subseq {ι : Type*} [Countable ι] {τ : ℝ} (hτ : 0 ≤ τ)
       change ulim (t : ℝ) i = g i t
       exact IccExtend_val hτ (fun x : J => g i x) t
     rw [hlim]
-    exact hunif
+    exact huniform
 
 end Spectral
 end Analysis

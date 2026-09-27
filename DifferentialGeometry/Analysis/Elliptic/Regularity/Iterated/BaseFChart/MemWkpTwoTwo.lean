@@ -69,48 +69,48 @@ lemma smoothFChartResidual_memWkp_two_two
         (gradInnerPiece (I := I) (M := M) g α v.toFun))
       (chartTargetEuclid (I := I) (M := M) α) := by
     have h_smooth := gradInnerPiece_smooth (I := I) (M := M) g α v
-    have h_supp := tsupport_gradInnerPiece_subset_source
+    have h_support := tsupport_gradInnerPiece_subset_source
       (I := I) (M := M) g α v.toFun
     have hCP_smooth : ContDiff ℝ ∞
         (chartPushedRaw (I := I) (M := M) α
           (gradInnerPiece (I := I) (M := M) g α v.toFun)) :=
-      chartPushedRaw_contDiff (I := I) (M := M) h_smooth h_supp
-    have hCP_cpt : HasCompactSupport
+      chartPushedRaw_contDiff (I := I) (M := M) h_smooth h_support
+    have hCP_compact : HasCompactSupport
         (chartPushedRaw (I := I) (M := M) α
           (gradInnerPiece (I := I) (M := M) g α v.toFun)) :=
-      chartPushedRaw_smooth_hasCompactSupport_local (I := I) (M := M) h_supp
+      chartPushedRaw_smooth_hasCompactSupport_local (I := I) (M := M) h_support
     have hCP_tsupp : tsupport (chartPushedRaw (I := I) (M := M) α
           (gradInnerPiece (I := I) (M := M) g α v.toFun)) ⊆
         chartTargetEuclid (I := I) (M := M) α :=
-      tsupport_chartPushedRaw_subset_chartTargetEuclid (I := I) (M := M) h_supp
+      tsupport_chartPushedRaw_subset_chartTargetEuclid (I := I) (M := M) h_support
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E)
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
-      hCP_smooth hCP_cpt hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
+      hCP_smooth hCP_compact hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
   have hP_lap : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
       (chartPushedRaw (I := I) (M := M) α
         (lapPiece (I := I) (M := M) g α v.toFun))
       (chartTargetEuclid (I := I) (M := M) α) := by
     have h_smooth := lapPiece_smooth (I := I) (M := M) g α v
-    have h_supp := tsupport_lapPiece_subset_source
+    have h_support := tsupport_lapPiece_subset_source
       (I := I) (M := M) g α v.toFun
     have hCP_smooth : ContDiff ℝ ∞
         (chartPushedRaw (I := I) (M := M) α
           (lapPiece (I := I) (M := M) g α v.toFun)) :=
-      chartPushedRaw_contDiff (I := I) (M := M) h_smooth h_supp
-    have hCP_cpt : HasCompactSupport
+      chartPushedRaw_contDiff (I := I) (M := M) h_smooth h_support
+    have hCP_compact : HasCompactSupport
         (chartPushedRaw (I := I) (M := M) α
           (lapPiece (I := I) (M := M) g α v.toFun)) :=
-      chartPushedRaw_smooth_hasCompactSupport_local (I := I) (M := M) h_supp
+      chartPushedRaw_smooth_hasCompactSupport_local (I := I) (M := M) h_support
     have hCP_tsupp : tsupport (chartPushedRaw (I := I) (M := M) α
           (lapPiece (I := I) (M := M) g α v.toFun)) ⊆
         chartTargetEuclid (I := I) (M := M) α :=
-      tsupport_chartPushedRaw_subset_chartTargetEuclid (I := I) (M := M) h_supp
+      tsupport_chartPushedRaw_subset_chartTargetEuclid (I := I) (M := M) h_support
     exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_of_smooth_compactSupport
       (d := Module.finrank ℝ E)
       (chartTargetEuclid_isOpen (I := I) (M := M) α)
-      hCP_smooth hCP_cpt hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
+      hCP_smooth hCP_compact hCP_tsupp (by norm_num : (1 : ℝ≥0∞) ≤ 2) 2
   have hΩ_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
     chartTargetEuclid_isOpen (I := I) (M := M) α
   have hp_one : (1 : ℝ≥0∞) ≤ 2 := by norm_num

@@ -365,7 +365,7 @@ private lemma chartAtlasPOU_tsupport_eq_empty_of_notMem_finset
     tsupport (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
   classical
-  have h_supp_empty :
+  have h_support_empty :
       Function.support (fun x : M =>
         ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) = ∅ := by
     ext x
@@ -374,7 +374,7 @@ private lemma chartAtlasPOU_tsupport_eq_empty_of_notMem_finset
     exact DifferentialGeometry.Integral.Measure.chartAtlasPOU_weight_zero_of_notMem
       (I := I) (M := M) hγ x
   unfold tsupport
-  rw [h_supp_empty, closure_empty]
+  rw [h_support_empty, closure_empty]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma pouTsupport_inter_eq_empty_of_left_notMem_finset
@@ -557,10 +557,10 @@ private lemma extChartAt_mem_extCoordChange_source
     (hbγ : b ∈ (chartAt H γ).source) (hbα : b ∈ (chartAt H α).source) :
     extChartAt I γ b ∈ ((extChartAt I γ).symm ≫ extChartAt I α).source := by
   classical
-  have h_img := OpenPartialHomeomorph.extend_image_source_inter
+  have h_image := OpenPartialHomeomorph.extend_image_source_inter
     (I := I) (f := chartAt H γ) (f' := chartAt H α)
   change extChartAt I γ b ∈ (I.extendCoordChange (chartAt H γ) (chartAt H α)).source
-  rw [← h_img]
+  rw [← h_image]
   exact ⟨b, ⟨hbγ, hbα⟩, rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
@@ -633,29 +633,29 @@ private lemma exists_fderiv_chartTransition_bound_on_pouTsupport_pair
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_fderiv_chartTransition_uniform_bound_on_pouTsupport :
-    ∃ K_jac : ℝ, 0 ≤ K_jac ∧
+    ∃ K_jacobian : ℝ, 0 ≤ K_jacobian ∧
       ∀ γ α : M, ∀ b : M,
         b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
           tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ‖fderiv ℝ (extChartAt I α ∘ (extChartAt I γ).symm)
-            (extChartAt I γ b)‖ ≤ K_jac := by
+            (extChartAt I γ b)‖ ≤ K_jacobian := by
   classical
   suffices h_aux :
       ∀ S : Finset (M × M),
-        ∃ K_jac : ℝ, 0 ≤ K_jac ∧
+        ∃ K_jacobian : ℝ, 0 ≤ K_jacobian ∧
           ∀ γα ∈ S, ∀ b : M,
             b ∈ tsupport (fun x : M =>
                 ((chartAtlasPOU I M γα.1 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
               tsupport (fun x : M =>
                 ((chartAtlasPOU I M γα.2 : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
             ‖fderiv ℝ (extChartAt I γα.2 ∘ (extChartAt I γα.1).symm)
-                (extChartAt I γα.1 b)‖ ≤ K_jac by
-    obtain ⟨K_jac, hK_nn, hK_le⟩ := h_aux
+                (extChartAt I γα.1 b)‖ ≤ K_jacobian by
+    obtain ⟨K_jacobian, hK_nn, hK_le⟩ := h_aux
       (chartAtlasPOUFinset (I := I) (M := M) ×ˢ
         chartAtlasPOUFinset (I := I) (M := M))
-    refine ⟨K_jac, hK_nn, ?_⟩
+    refine ⟨K_jacobian, hK_nn, ?_⟩
     intro γ α b hb
     by_cases hγ : γ ∈ chartAtlasPOUFinset (I := I) (M := M)
     · by_cases hα : α ∈ chartAtlasPOUFinset (I := I) (M := M)
@@ -692,14 +692,14 @@ private lemma exists_fderiv_chartTransition_uniform_bound_on_pouTsupport :
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartTransition_fderiv_le_uniform_on_pouTsupport :
-    ∃ K_jac : ℝ, 0 ≤ K_jac ∧
+    ∃ K_jacobian : ℝ, 0 ≤ K_jacobian ∧
       ∀ γ α : M, ∀ b : M,
         b ∈ tsupport (fun x : M =>
             ((chartAtlasPOU I M γ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) ∩
           tsupport (fun x : M =>
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
         ‖fderiv ℝ (extChartAt I α ∘ (extChartAt I γ).symm)
-            (extChartAt I γ b)‖ ≤ K_jac :=
+            (extChartAt I γ b)‖ ≤ K_jacobian :=
   exists_fderiv_chartTransition_uniform_bound_on_pouTsupport
     (E := E) (I := I) (M := M)
 

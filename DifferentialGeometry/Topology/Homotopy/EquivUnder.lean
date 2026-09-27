@@ -196,6 +196,66 @@ theorem toHomotopyEquiv_trans {X₁ Y₁ Z₁ W : Type*} [TopologicalSpace X₁]
     (e₁.trans e₂ h).toHomotopyEquiv = e₁.toHomotopyEquiv.trans e₂.toHomotopyEquiv := by
   rfl
 
+noncomputable def precomp {A B X Y : Type*} [TopologicalSpace A] [TopologicalSpace B]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    {j : C(A, X)} {k : C(A, Y)} (e : HomotopyEquivUnder j k) (h : C(B, A)) :
+    HomotopyEquivUnder (j.comp h) (k.comp h) where
+  toFun := e.toFun
+  invFun := e.invFun
+  map_toBase := by rw [← ContinuousMap.comp_assoc, e.map_toBase]
+  map_fromBase := by rw [← ContinuousMap.comp_assoc, e.map_fromBase]
+  leftInv := { e.leftInv with
+    prop' := by
+      rintro t _ ⟨x, rfl⟩
+      exact e.leftInv.prop t (j (h x)) ⟨h x, rfl⟩ }
+  rightInv := { e.rightInv with
+    prop' := by
+      rintro t _ ⟨x, rfl⟩
+      exact e.rightInv.prop t (k (h x)) ⟨h x, rfl⟩ }
+
+@[simp]
+theorem precomp_toFun {A B X Y : Type*} [TopologicalSpace A] [TopologicalSpace B]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    {j : C(A, X)} {k : C(A, Y)} (e : HomotopyEquivUnder j k) (h : C(B, A)) :
+    (precomp e h).toFun = e.toFun := rfl
+
+@[simp]
+theorem precomp_invFun {A B X Y : Type*} [TopologicalSpace A] [TopologicalSpace B]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    {j : C(A, X)} {k : C(A, Y)} (e : HomotopyEquivUnder j k) (h : C(B, A)) :
+    (precomp e h).invFun = e.invFun := rfl
+
+noncomputable def ofHomeomorph {A X Y : Type*} [TopologicalSpace A]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    (j : C(A, X)) (k : C(A, Y)) (e : X ≃ₜ Y)
+    (he : (⟨e, e.continuous_toFun⟩ : C(X, Y)).comp j = k) :
+    HomotopyEquivUnder j k where
+  toFun := ⟨e, e.continuous_toFun⟩
+  invFun := ⟨e.symm, e.symm.continuous_toFun⟩
+  map_toBase := he
+  map_fromBase := by
+    rw [← he]
+    ext x
+    exact e.left_inv (j x)
+  leftInv := (ContinuousMap.HomotopyRel.refl (ContinuousMap.id X) (Set.range j)).cast
+    (by ext x; exact (e.left_inv x).symm) rfl
+  rightInv := (ContinuousMap.HomotopyRel.refl (ContinuousMap.id Y) (Set.range k)).cast
+    (by ext y; exact (e.right_inv y).symm) rfl
+
+@[simp]
+theorem ofHomeomorph_toFun {A X Y : Type*} [TopologicalSpace A]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    (j : C(A, X)) (k : C(A, Y)) (e : X ≃ₜ Y)
+    (he : (⟨e, e.continuous_toFun⟩ : C(X, Y)).comp j = k) :
+    (ofHomeomorph j k e he).toFun = (⟨e, e.continuous_toFun⟩ : C(X, Y)) := rfl
+
+@[simp]
+theorem ofHomeomorph_invFun {A X Y : Type*} [TopologicalSpace A]
+    [TopologicalSpace X] [TopologicalSpace Y]
+    (j : C(A, X)) (k : C(A, Y)) (e : X ≃ₜ Y)
+    (he : (⟨e, e.continuous_toFun⟩ : C(X, Y)).comp j = k) :
+    (ofHomeomorph j k e he).invFun = (⟨e.symm, e.symm.continuous_toFun⟩ : C(Y, X)) := rfl
+
 end HomotopyEquivUnder
 
 end DifferentialGeometry.Topology.Homotopy

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.LieDerivative.Cartan
 import DifferentialGeometry.Geometry.Metric.DeTurck.VectorField
-import DifferentialGeometry.Bundle.VectorFieldPushforward
+import DifferentialGeometry.Bundle.VectorField.Pushforward
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
 import Mathlib.Analysis.Calculus.Deriv.Basic
 import Mathlib.Analysis.Calculus.Deriv.Add

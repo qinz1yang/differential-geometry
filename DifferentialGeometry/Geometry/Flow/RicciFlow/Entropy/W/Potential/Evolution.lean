@@ -1,7 +1,8 @@
-import DifferentialGeometry.Analysis.Parabolic.ScalarTimeDependent
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.FirstVariation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Geometry
+import DifferentialGeometry.Analysis.Parabolic.ScalarHeat.TimeDependent
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Variation.First
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.GradientIdentities
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.W.Potential.Smoothness
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -179,74 +180,10 @@ theorem potential_joint
       ((modelWithCornersSelf Real Real).prod I)
       (modelWithCornersSelf Real Real) ∞
       (fun p : Real × M => perelmanPotential n p.1 (u p.1) p.2)
-      ((D.regular ∩ Set.Ioi (0 : Real)) ×ˢ Set.univ) := by
-  intro p hp
-  have hpreg : p.1 ∈ D.regular := hp.1.1
-  have huAt :
-      ContMDiffAt
-        ((modelWithCornersSelf Real Real).prod I)
-        (modelWithCornersSelf Real Real) ∞
-        (fun q : Real × M => u q.1 q.2) p := by
-    exact
-      (hu.jointSmooth p ⟨hpreg, Set.mem_univ p.2⟩).contMDiffAt
-        ((D.regular_isOpen.prod isOpen_univ).mem_nhds
-          ⟨hpreg, Set.mem_univ p.2⟩)
-  have hbase :
-      ContMDiffAt
-        ((modelWithCornersSelf Real Real).prod I)
-        (modelWithCornersSelf Real Real) ∞
-        (fun q : Real × M => 4 * Real.pi * q.1) p := by
-    exact contMDiffAt_const.mul contMDiffAt_fst
-  have hbase_pos : 0 < 4 * Real.pi * p.1 :=
-    mul_pos (mul_pos (by norm_num) Real.pi_pos) hp.1.2
-  have hprefAt :
-      ContMDiffAt
-        ((modelWithCornersSelf Real Real).prod I)
-        (modelWithCornersSelf Real Real) ∞
-        (fun q : Real × M => perelmanDensityPrefactor n q.1) p := by
-    unfold perelmanDensityPrefactor
-    have hpow :
-        ContDiffAt Real ∞ (fun z : Real => z ^ (-(n : Real) / 2))
-          (4 * Real.pi * p.1) :=
-      Real.contDiffAt_rpow_const_of_ne hbase_pos.ne'
-    have h := hpow.comp_contMDiffAt
-      (I := (modelWithCornersSelf Real Real).prod I)
-      (f := fun q : Real × M => 4 * Real.pi * q.1) (x := p) hbase
-    change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) ∞
-      (fun q : Real × M => (4 * Real.pi * q.1) ^ (-(n : Real) / 2)) p at h
-    exact h
-  have hpref_pos : 0 < perelmanDensityPrefactor n p.1 := by
-    unfold perelmanDensityPrefactor
-    exact Real.rpow_pos_of_pos hbase_pos _
-  have hquot :
-      ContMDiffAt
-        ((modelWithCornersSelf Real Real).prod I)
-        (modelWithCornersSelf Real Real) ∞
-        (fun q : Real × M =>
-          u q.1 q.2 / perelmanDensityPrefactor n q.1) p :=
-    huAt.div₀ hprefAt hpref_pos.ne'
-  have hlogAt :
-      ContDiffAt Real ∞ Real.log
-        (u p.1 p.2 / perelmanDensityPrefactor n p.1) :=
-    Real.contDiffAt_log.2
-      (div_ne_zero (hpos p.1 hp.1 p.2).ne' hpref_pos.ne')
-  have hlog :
-      ContMDiffAt
-        ((modelWithCornersSelf Real Real).prod I)
-        (modelWithCornersSelf Real Real) ∞
-        (fun q : Real × M =>
-          Real.log (u q.1 q.2 / perelmanDensityPrefactor n q.1)) p := by
-    have h := hlogAt.comp_contMDiffAt
-      (I := (modelWithCornersSelf Real Real).prod I)
-      (f := fun q : Real × M =>
-        u q.1 q.2 / perelmanDensityPrefactor n q.1) (x := p) hquot
-    change ContMDiffAt ((modelWithCornersSelf Real Real).prod I)
-      (modelWithCornersSelf Real Real) ∞
-      (fun q : Real × M =>
-        Real.log (u q.1 q.2 / perelmanDensityPrefactor n q.1)) p at h
-    exact h
-  simpa only [perelmanPotential] using hlog.neg.contMDiffWithinAt
+      ((D.regular ∩ Set.Ioi (0 : Real)) ×ˢ Set.univ) :=
+  contMDiffOn_perelmanPotential n
+    (hu.jointSmooth.mono (fun _ hp => ⟨hp.1.1, hp.2⟩))
+    (fun _ hp => hp.1.2) (fun p hp => hpos p.1 hp.1 p.2)
 
 theorem potential_df_time
     [I.Boundaryless]
@@ -282,7 +219,7 @@ theorem potential_df_time
       FixedBaseExtDerivTimeDerivativeOnRegular (I := I)
         D.carrier (D.regular ∩ Set.Ioi (0 : Real)) Set.univ
         (fun t : Real => perelmanPotential n t (u t)) velocity := by
-    apply fixedBaseOnRegSmooth (I := I) isOpen_univ
+    apply fixedBaseOnRegularitySmooth (I := I) isOpen_univ
       (D.regular_isOpen.inter isOpen_Ioi)
     · intro t ht
       exact D.regular_mem_nhds ht.1

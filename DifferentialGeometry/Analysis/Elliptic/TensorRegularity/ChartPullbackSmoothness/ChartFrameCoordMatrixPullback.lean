@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Defs
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.CovApplyFrameToCoordExpansion
-import DifferentialGeometry.Analysis.Integration.Measure.MeasureBridge
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
+import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.LocalizedFrame.CovariantDerivative
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -59,13 +59,13 @@ theorem chartFrameNormGlobalSmoothCoordMatrix_pullback_contDiffOn_chartTarget
         (chartTargetEuclid (I := I) (M := M) α)
         (trivializationAt E (TangentSpace I) α).baseSet := by
     intro y hy
-    have h_src : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
+    have h_source : (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
         (chartAt H α).source :=
       DifferentialGeometry.Analysis.Sobolev.Chart.symm_toEuclidean_symm_mem_chartAtSource (I := I)
         (M := M) α hy
     change (extChartAt I α).symm ((toEuclidean (E := E)).symm y) ∈
       (chartAt H α).source
-    exact h_src
+    exact h_source
   have h_comp :
       ContMDiffOn 𝓘(ℝ, EuclideanSpace ℝ (Fin (Module.finrank ℝ E))) 𝓘(ℝ, ℝ) ∞
         (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
@@ -117,7 +117,7 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial_pulled
     (f : M → ℝ) (α : M) (m : Fin (Module.finrank ℝ E))
     {y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E))}
     (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
-    partialDeriv (E := E) m (scalarOnE (I := I) α f)
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (scalarOnE (I := I) α f)
         (extChartAt I α ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
       euclidPartial (E := E) m (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α f)
         y := by
@@ -146,9 +146,9 @@ private lemma partialDeriv_scalarOnE_eq_euclidPartial_pulled
     (f := scalarOnE (I := I) α f) (x := y)]
   rw [ContinuousLinearMap.comp_apply]
   rw [show (toEuclidean (E := E)).symm.toContinuousLinearMap
-      (EuclideanSpace.single m (1 : ℝ)) = (chartModelBasis E) m from by
-    rw [chartModelBasis_apply]; rfl]
-  rw [partialDeriv]
+      (EuclideanSpace.single m (1 : ℝ)) = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m from by
+    rw [DifferentialGeometry.Tensor.Coordinates.chartModelBasis_apply]; rfl]
+  rw [DifferentialGeometry.Tensor.Coordinates.partialDeriv]
   rw [show (toEuclidean (E := E)).symm y = extChartAt I α b from hphi_b.symm]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -161,7 +161,7 @@ private lemma mvfderiv_chartBasisVecFiber_eq_euclidPartial_of_mdiff
       ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) :
     mvfderiv (I := I) f
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-        (chartBasisVecFiber (I := I) α m
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) =
       euclidPartial (E := E) m (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α f)
         y := by
@@ -179,7 +179,7 @@ private lemma mvfderiv_chartBasisVecFiber_eq_euclidPartial_of_mdiff
     rw [hphi_b, (isOpen_extChartAt_target (I := I) α).interior_eq]
     exact hy_pre
   rw [mvfderiv_apply_scalar (I := I) f (x := b)
-    (chartBasisVecFiber (I := I) α m b)]
+    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b)]
   rw [mfderiv_chartBasisVecFiber_of_mdifferentiableAt
     (I := I) α hf hb_chart hb_int m]
   exact partialDeriv_scalarOnE_eq_euclidPartial_pulled
@@ -194,7 +194,7 @@ private lemma mvfderiv_pull_eq_euclidPartial_on_target
         mvfderiv I
           (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-          (chartBasisVecFiber (I := I) α l
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))
       (euclidPartial (E := E) l
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
@@ -296,7 +296,7 @@ theorem chartFrameNormGlobalSmoothCoordMatrix_dirDeriv_pullback_contDiffOn_chart
         mvfderiv I
           (chartFrameNormGlobalSmoothCoordMatrix (I := I) g α i k)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-          (chartBasisVecFiber (I := I) α l
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α l
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical

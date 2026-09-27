@@ -24,7 +24,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 omit [SigmaCompactSpace M] in
 omit [CompactSpace M] in
-theorem hmf_inverse_DT
+theorem harmonic_map_flow_inverse_metric_has_deTurck_derivative
     (g_RF : ℝ → SmoothRiemannianMetric I M)
     (g_bg : SmoothRiemannianMetric I M)
     (T : ℝ) (Ψ_fam : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -47,7 +47,7 @@ theorem hmf_inverse_DT
     (hgram_RF : ∀ (x₀ : M) (i j : Fin (Module.finrank ℝ E)),
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_RF p.1) x₀ p.2 i j)
         (Set.Ioo (0 : ℝ) T ×ˢ
           (trivializationAt E (TangentSpace I) x₀).baseSet)) :
     ∀ t ∈ Set.Ioo (0 : ℝ) T, ∀ x : M, ∀ v w : TangentSpace I x,
@@ -66,7 +66,7 @@ theorem hmf_inverse_DT
         ((1 : ℝ →L[ℝ] ℝ).smulRight
           (-(W t ((Ψ_fam t : M → M) y)))) := by
     intro y t ht
-    have hneg := hmf_target_gauge (I := I) g_RF g_bg T Ψ_fam hHMF y t ht
+    have hneg := harmonic_map_flow_has_negative_deTurck_velocity (I := I) g_RF g_bg T Ψ_fam hHMF y t ht
     simpa only [W] using hneg
   have hInvOde : ∀ x : M, ∀ t ∈ Set.Ioo (0 : ℝ) T,
       HasMFDerivWithinAt 𝓘(ℝ, ℝ) I
@@ -76,7 +76,7 @@ theorem hmf_inverse_DT
           (Diffeomorph.pushforward (Ψ_fam t).symm (W t)
             (((Ψ_fam t).symm : M → M) x))) := by
     intro x t ht
-    exact symm_gauge_vel (I := I) Ψ_fam W T hΨneg hjoint hsymm_joint t ht x
+    exact symm_gauge_velocity (I := I) Ψ_fam W T hΨneg hjoint hsymm_joint t ht x
   apply ricci_pullback_DT (I := I) g_RF g_bg T (fun s => (Ψ_fam s).symm)
     hRF_deriv
   · intro x t ht

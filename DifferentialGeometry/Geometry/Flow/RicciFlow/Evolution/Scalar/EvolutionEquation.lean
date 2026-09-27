@@ -122,7 +122,7 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution
       scalar_metricInverseInBasis_of_solution_frame
         (I := I) S gInv frame hframe hinv s hy
     simpa using
-      invMetric_symm (I := I) (M := M) (S.family.metric s) y
+      MetricInverseInBasis.symmetric (I := I) (M := M) (S.family.metric s) y
         (hframe.toBasisAt hy) (fun i j : Idx => gInv s y i j) hinvAt i j
   exact htrace.congr_deriv
     (scalarTraceDerivRHSInFrame_eq_scalarEvolutionRHS
@@ -176,7 +176,7 @@ theorem scalarEvolutionEquationOn_of_ricciEvolution_regular
       scalar_metricInverseInBasis_of_solution_frame
         (I := I) S gInv frame hframe hinv (τ : Real) hy
     simpa using
-      invMetric_symm (I := I) (M := M) (S.family.metric (τ : Real)) y
+      MetricInverseInBasis.symmetric (I := I) (M := M) (S.family.metric (τ : Real)) y
         (hframe.toBasisAt hy) (fun i j : Idx => gInv (τ : Real) y i j) hinvAt i j
   exact htrace.congr_deriv
     (scalarTraceDerivRHSInFrame_eq_scalarEvolutionRHS_regular

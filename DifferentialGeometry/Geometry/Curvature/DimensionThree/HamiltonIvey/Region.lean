@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorReaction
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperator.Reaction
 import DifferentialGeometry.Analysis.Convex.MatrixRayleigh
 import DifferentialGeometry.Analysis.InnerProductSpace.MatrixEuclidean
 import Mathlib.Analysis.Convex.Function
@@ -421,6 +421,78 @@ theorem hamiltonIveyBarrier_initial_le_sectionalSum
   · norm_num
   · simpa using hXK
 
+theorem mem_hamiltonIveyConvexMatrixRegion_initial_iff
+    {A : Matrix (Fin 3) (Fin 3) Real} {K : Real} (hK : 0 < K) :
+    A ∈ hamiltonIveyConvexMatrixRegion K 0 ↔
+      A.IsHermitian ∧ -3 * K ≤ A.trace ∧
+        (minimumRayleighQuotient3 A ≤ -K →
+          (-minimumRayleighQuotient3 A) *
+            (Real.log ((-minimumRayleighQuotient3 A) / K) - 3) ≤ A.trace) := by
+  constructor
+  · rintro ⟨hA, hbound⟩
+    have hparts := max_le_iff.mp hbound
+    refine ⟨hA, by simpa [scalarSectionalLowerBarrier3] using hparts.1, ?_⟩
+    intro hmin
+    have hneg : 0 ≤ -minimumRayleighQuotient3 A := by linarith
+    simpa only [max_eq_left hneg, hamiltonIveyBarrier, mul_zero,
+      add_zero, Real.log_one] using hparts.2
+  · rintro ⟨hA, htrace, hbound⟩
+    refine ⟨hA, max_le ?_ ?_⟩
+    · simpa [scalarSectionalLowerBarrier3] using htrace
+    · by_cases hmin : minimumRayleighQuotient3 A ≤ -K
+      · have hneg : 0 ≤ -minimumRayleighQuotient3 A := by linarith
+        simpa only [max_eq_left hneg, hamiltonIveyBarrier, mul_zero,
+          add_zero, Real.log_one] using hbound hmin
+      · apply hamiltonIveyBarrier_initial_le_sectionalSum
+          (neg_three_mul_neg_part_minimumRayleighQuotient3_le_trace hA) hK
+          (le_max_right _ _)
+        exact max_le (by linarith) hK.le
+
+theorem smul_mem_hamiltonIveyConvexMatrixRegion_initial
+    {K t : Real} (hK : 0 < K) (ht : 0 ≤ t)
+    {A : Matrix (Fin 3) (Fin 3) Real}
+    (hA : A ∈ hamiltonIveyConvexMatrixRegion K t) :
+    (1 + 2 * K * t) • A ∈ hamiltonIveyConvexMatrixRegion K 0 := by
+  let c := 1 + 2 * K * t
+  have hc : 0 < c := by dsimp [c]; positivity
+  have hscale : minimumRayleighQuotient3 (c • A) =
+      c * minimumRayleighQuotient3 A := by
+    have hAs := hA.1.smul (show star c = c from rfl)
+    rw [minimumRayleighQuotient3_eq_min_eigenvalue hAs,
+      minimumRayleighQuotient3_eq_min_eigenvalue hA.1,
+      eigenvalues₀_smul_of_nonneg hA.1 hc.le hAs]
+    rfl
+  have hmax : max (-minimumRayleighQuotient3 (c • A)) 0 =
+      c * max (-minimumRayleighQuotient3 A) 0 := by
+    rw [hscale, ← mul_neg, mul_max_of_nonneg _ _ hc.le, mul_zero]
+  have hbar : ∀ X : Real,
+      hamiltonIveyBarrier K 0 (c * X) = c * hamiltonIveyBarrier K t X := by
+    intro X
+    by_cases hX : X = 0
+    · simp [hX, hamiltonIveyBarrier]
+    · have harg : c * X / K = c * (X / K) := by ring
+      simp only [hamiltonIveyBarrier, mul_zero, add_zero, Real.log_one]
+      rw [harg, Real.log_mul hc.ne' (div_ne_zero hX hK.ne')]
+      dsimp [c]
+      ring
+  refine ⟨hA.1.smul (by rfl), max_le ?_ ?_⟩
+  · rw [Matrix.trace_smul]
+    change scalarSectionalLowerBarrier3 K 0 ≤ c * A.trace
+    have htr := (max_le_iff.mp hA.2).1
+    have hden : 0 < 1 + 4 * K * t := by positivity
+    have hbound : scalarSectionalLowerBarrier3 K 0 ≤
+        c * scalarSectionalLowerBarrier3 K t := by
+      simp only [scalarSectionalLowerBarrier3, mul_zero, add_zero, div_one]
+      rw [← mul_div_assoc]
+      apply (le_div_iff₀ hden).mpr
+      dsimp [c]
+      nlinarith [mul_nonneg (sq_nonneg K) ht]
+    exact hbound.trans (mul_le_mul_of_nonneg_left htr hc.le)
+  · change hamiltonIveyBarrier K 0 (max (-minimumRayleighQuotient3 (c • A)) 0) ≤
+        (c • A).trace
+    rw [hmax, hbar, Matrix.trace_smul]
+    exact mul_le_mul_of_nonneg_left (max_le_iff.mp hA.2).2 hc.le
+
 theorem hamiltonIveyBarrier_initial_le_sectionalSum_of_ordered
     {l1 l2 l3 K : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hpinch : -K ≤ l3) (hK : 0 < K) :
     hamiltonIveyBarrier K 0 (pinchHeight3 l3) ≤ sectionalSum3 l1 l2 l3 := by
@@ -522,52 +594,36 @@ theorem hamiltonIveyBarrier_le_sectionalSum_of_ordered_subregion
     exact le_max_right _ _
   exact hamiltonIveyBarrier_le_sectionalSum_of_subregion hS hK hden hX hsub
 
+theorem hamilton_ivey_algebraic_inequality
+    {R : Type*} [CommRing R] [LinearOrder R] [IsOrderedRing R]
+    {l m n : R} (hnl : n ≤ l) (hnm : n ≤ m) (hn : n ≤ 0) :
+    0 ≤ -n * (l ^ 2 + m ^ 2 + l * m) + (l + m) * l * m := by
+  have hquad : 0 ≤ l ^ 2 + m ^ 2 + l * m := by
+    rcases le_total 0 (l * m) with hprod | hprod
+    · exact add_nonneg (add_nonneg (sq_nonneg l) (sq_nonneg m)) hprod
+    · have heq : l ^ 2 + m ^ 2 + l * m = (l + m) ^ 2 - l * m := by ring
+      rw [heq]
+      exact sub_nonneg.mpr (hprod.trans (sq_nonneg (l + m)))
+  rcases le_total m 0 with hm | hm
+  · have heq : -n * (l ^ 2 + m ^ 2 + l * m) + (l + m) * l * m =
+        (m - n) * (l ^ 2 + m ^ 2 + l * m) + (-m) * m ^ 2 := by ring
+    rw [heq]
+    exact add_nonneg (mul_nonneg (sub_nonneg.mpr hnm) hquad)
+      (mul_nonneg (neg_nonneg.mpr hm) (sq_nonneg m))
+  · rcases le_total l 0 with hl | hl
+    · have heq : -n * (l ^ 2 + m ^ 2 + l * m) + (l + m) * l * m =
+          (l - n) * (l ^ 2 + m ^ 2 + l * m) + (-l) * l ^ 2 := by ring
+      rw [heq]
+      exact add_nonneg (mul_nonneg (sub_nonneg.mpr hnl) hquad)
+        (mul_nonneg (neg_nonneg.mpr hl) (sq_nonneg l))
+    · exact add_nonneg (mul_nonneg (neg_nonneg.mpr hn) hquad)
+        (mul_nonneg (mul_nonneg (add_nonneg hl hm) hl) hm)
+
 private theorem pinchingRatioLog_core_nonneg
     {l1 l2 l3 : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0) :
     0 ≤ l1 * l2 * (l1 + l2 - l3) - l3 * (l1 ^ 2 + l2 ^ 2) := by
-  let X : Real := -l3
-  let a : Real := l1 - l3
-  let b : Real := l2 - l3
-  have hX : 0 ≤ X := by
-    dsimp [X]
-    exact neg_nonneg.mpr (le_of_lt hl3)
-  have ha : 0 ≤ a := by
-    dsimp [a]
-    linarith
-  have hb : 0 ≤ b := by
-    dsimp [b]
-    linarith
-  have hX3 : 0 ≤ X ^ 3 := pow_nonneg hX 3
-  have hp2 : 0 ≤ a ^ 2 * b := mul_nonneg (sq_nonneg a) hb
-  have hp3 : 0 ≤ a * b ^ 2 := mul_nonneg ha (sq_nonneg b)
-  have hsum : (3 : Real)⁻¹ + (3 : Real)⁻¹ + (3 : Real)⁻¹ = 1 := by norm_num
-  have hamgm := Real.geom_mean_le_arith_mean3_weighted
-    (w₁ := (3 : Real)⁻¹) (w₂ := (3 : Real)⁻¹) (w₃ := (3 : Real)⁻¹)
-    (p₁ := X ^ 3) (p₂ := a ^ 2 * b) (p₃ := a * b ^ 2)
-    (by norm_num) (by norm_num) (by norm_num) hX3 hp2 hp3 hsum
-  have hpow1 : (X ^ 3) ^ ((3 : Real)⁻¹) = X :=
-    Real.pow_rpow_inv_natCast hX (by norm_num : (3 : ℕ) ≠ 0)
-  have hpow2 : (a ^ 2 * b) ^ ((3 : Real)⁻¹) * (a * b ^ 2) ^ ((3 : Real)⁻¹) = a * b := by
-    rw [← Real.mul_rpow hp2 hp3]
-    rw [show a ^ 2 * b * (a * b ^ 2) = (a * b) ^ 3 by ring]
-    exact Real.pow_rpow_inv_natCast (mul_nonneg ha hb) (by norm_num : (3 : ℕ) ≠ 0)
-  have hle : X * (a * b) ≤ (3 : Real)⁻¹ * (X ^ 3 + a ^ 2 * b + a * b ^ 2) := by
-    have h1 := hamgm
-    rw [hpow1] at h1
-    rw [mul_assoc, hpow2] at h1
-    convert h1 using 1
-    ring
-  have h3 : 3 * X * (a * b) ≤ X ^ 3 + a ^ 2 * b + a * b ^ 2 := by
-    have hmul := mul_le_mul_of_nonneg_right hle (by norm_num : (0 : Real) ≤ 3)
-    nlinarith
-  have hcore : 0 ≤ X ^ 3 - 3 * a * b * X + a * b * (a + b) := by
-    nlinarith
-  have heq : l1 * l2 * (l1 + l2 - l3) - l3 * (l1 ^ 2 + l2 ^ 2) =
-      X ^ 3 - 3 * a * b * X + a * b * (a + b) := by
-    dsimp [X, a, b]
-    ring
-  rw [heq]
-  exact hcore
+  have h := hamilton_ivey_algebraic_inequality (R := Real) (h32.trans h21) h32 hl3.le
+  nlinarith only [h]
 
 theorem pinchingRatioLog_reaction_derivative_eq
     (l1 l2 l3 : Real) :
@@ -590,6 +646,51 @@ theorem pinchingRatioLog_reaction_derivative_ge
   have hcore := pinchingRatioLog_core_nonneg h21 h32 hl3
   have heq := pinchingRatioLog_reaction_derivative_eq l1 l2 l3
   nlinarith
+
+theorem two_lt_log_of_hamiltonIvey_violation
+    {r q : ℝ} (hq : 0 < q) (heigen : -3 * q ≤ r) (hscalar : -3 ≤ r)
+    (hviolation : r < q * (Real.log q - 3)) :
+    2 < Real.log q := by
+  have hone : 1 < q := by
+    by_contra! hq1
+    have hlog := Real.log_nonpos hq.le hq1
+    have hmul := mul_nonpos_of_nonneg_of_nonpos hq.le hlog
+    nlinarith
+  by_contra! hlog
+  have hupper : q < 3 := by
+    have hmul := mul_nonneg hq.le (sub_nonneg.mpr hlog)
+    nlinarith
+  have hlog' := Real.log_le_sub_one_of_pos hq
+  have hmul := mul_le_mul_of_nonneg_left hlog' hq.le
+  have hpoly := mul_nonpos_of_nonneg_of_nonpos (sub_nonneg.mpr hone.le)
+    (sub_nonpos.mpr hupper.le)
+  nlinarith
+
+theorem two_lt_log_mul_of_hamiltonIvey_violation
+    {t r q : ℝ} (ht : 0 < t) (hq : 0 < q)
+    (heigen : -3 * q ≤ r) (hscalar : -3 ≤ t * r)
+    (hviolation : r < q * (Real.log (t * q) - 3)) :
+    2 < Real.log (t * q) := by
+  apply two_lt_log_of_hamiltonIvey_violation (r := t * r) (mul_pos ht hq)
+  · have h := mul_le_mul_of_nonneg_left heigen ht.le
+    nlinarith
+  · linarith
+  · have h := mul_lt_mul_of_pos_left hviolation ht
+    nlinarith
+
+theorem hamilton_ivey_reaction_ge_at_logarithmic_boundary
+    {l1 l2 l3 c : ℝ} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
+    (hboundary : sectionalSum3 l1 l2 l3 = (-l3) * (c - 1)) :
+    2 * (-l3) ^ 2 ≤ reactionSectionalSum3 l1 l2 l3 - c * reactionPinchHeight3 l1 l2 l3 := by
+  have h := pinchingRatioLog_reaction_derivative_ge h21 h32 hl3
+  have hq : 0 < -l3 := neg_pos.mpr hl3
+  rw [hboundary] at h
+  have hmul : (2 * (-l3) ^ 2) * (-l3) ≤
+      (reactionSectionalSum3 l1 l2 l3 - c * reactionPinchHeight3 l1 l2 l3) * (-l3) := by
+    nlinarith
+  exact (mul_le_mul_iff_left₀ hq).mp hmul
+
+
 
 theorem hamiltonIveyBarrier_reaction_derivative_ge_on_boundary
     {l1 l2 l3 K τ : Real} (h21 : l2 ≤ l1) (h32 : l3 ≤ l2) (hl3 : l3 < 0)
@@ -1519,14 +1620,14 @@ theorem convex_hamiltonIveyConvexMatrixRegion
     have hB' : B.transpose = B := by simpa [Matrix.IsHermitian] using hBh
     change (a • A + b • B).conjTranspose = a • A + b • B
     simp [hA', hB']
-  have hx_conv : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤
+  have hx_convergence : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤
       a * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0 := by
     have hconv :=
       (DifferentialGeometry.Analysis.Convex.convex_neg_part_minimumRayleighQuotient3.2)
         (x := A) (y := B)
       (by trivial) (by trivial) (a := a) (b := b) ha.le hb.le hab
     simpa [C, smul_eq_mul] using hconv
-  have hbar_conv : hamiltonIveyConvexBarrier K τ
+  have hbar_convergence : hamiltonIveyConvexBarrier K τ
       (a * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0 + b * max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 B) 0) ≤ C.trace := by
     have hbarA : hamiltonIveyConvexBarrier K τ (max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 A) 0) ≤ A.trace := by
       simpa [DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3_eq_min_eigenvalue hAh] using hAbar
@@ -1549,8 +1650,8 @@ theorem convex_hamiltonIveyConvexMatrixRegion
       nlinarith [mul_nonneg (mul_pos two_pos hK).le hτ]
     by_cases hx0_le : x0 ≤ max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0
     · have hmono := hamiltonIveyConvexBarrier_monotoneOn_of_ge_subregion hK hτ
-      have hle1 := hmono hx0_le (le_trans hx0_le hx_conv) hx_conv
-      exact le_trans hle1 hbar_conv
+      have hle1 := hmono hx0_le (le_trans hx0_le hx_convergence) hx_convergence
+      exact le_trans hle1 hbar_convergence
     · have hlt : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 < x0 := lt_of_not_ge hx0_le
       have hC0x : 0 ≤ max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 := le_max_right _ _
       have hsub : max (-DifferentialGeometry.Analysis.Convex.minimumRayleighQuotient3 C) 0 ≤ K / (1 + 2 * K * τ) := le_of_lt hlt
@@ -1692,5 +1793,24 @@ lemma continuousOn_hamiltonIveyConvexBarrier_time_nonneg
       nlinarith [mul_nonneg (mul_pos (by norm_num : (0:ℝ) < 4) hK).le hτ]
     exact ne_of_gt hpos
   · exact continuousOn_hamiltonIveyBarrier_nonneg_time hK
+
+
+theorem hamilton_ivey_perturbed_boundary_slope_pos
+    {r z η : ℝ} (hz : 0 < z) (hη : 0 < η)
+    (heigen : -3 * z ≤ r) (hscalar : -3 ≤ r)
+    (hboundary : r = z * (Real.log z - 3 - η)) :
+    3 < z ∧ 0 < Real.log z - 2 - η := by
+  have hviolation : r < z * (Real.log z - 3) := by
+    nlinarith [mul_pos hz hη]
+  have hlog := two_lt_log_of_hamiltonIvey_violation hz heigen hscalar hviolation
+  have hz3 : 3 < z := by linarith [Real.log_le_sub_one_of_pos hz]
+  have hprod : 0 < z * (Real.log z - 2 - η) := by nlinarith [hboundary]
+  exact ⟨hz3, (mul_pos_iff_of_pos_left hz).mp hprod⟩
+
+theorem hamilton_ivey_perturbed_defect_nonneg_of_le_one
+    {r z η : ℝ} (hz : 0 ≤ z) (hz1 : z ≤ 1) (hη : 0 ≤ η) (heigen : -3 * z ≤ r) :
+    0 ≤ r - z * (Real.log z - 3 - η) := by
+  have hlog := Real.log_nonpos hz hz1
+  nlinarith [mul_nonpos_of_nonneg_of_nonpos hz hlog, mul_nonneg hz hη]
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree

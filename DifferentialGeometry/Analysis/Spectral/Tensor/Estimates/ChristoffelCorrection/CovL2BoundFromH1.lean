@@ -40,7 +40,7 @@ private lemma
     {K_M : Set M} (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hw_supp : tsupport w ⊆ K_M) :
+    (hw_support : tsupport w ⊆ K_M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensor g r s) (b : M),
         w b ^ 2 *
@@ -48,7 +48,7 @@ private lemma
               ‖chartRSTwistInv (I := I) (M := M) α b r s
                   (TensorRSSpace.toModel
                     (tensorCovDerivAt (I := I) (M := M) g r s S b
-                      (chartBasisVecFiber (I := I) α i b)))‖ ^ 2) ≤
+                      (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2) ≤
           C * tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S b := by
   classical
   obtain ⟨C, hC_nn, h_sum⟩ :=
@@ -61,7 +61,7 @@ private lemma
       ‖chartRSTwistInv (I := I) (M := M) α b r s
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S b
-              (chartBasisVecFiber (I := I) α i b)))‖ ^ 2 with hSqSum_def
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2 with hSqSum_def
   set Q : ℝ :=
     tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S b with hQ_def
   have hSqSum_nn : 0 ≤ SqSum := by
@@ -90,7 +90,7 @@ private lemma
       _ = C * Q := one_mul _
   · have hw_zero : w b = 0 := by
       by_contra hne
-      exact hb (hw_supp (subset_tsupport _ hne))
+      exact hb (hw_support (subset_tsupport _ hne))
     have hLHS_zero : w b ^ 2 * SqSum = 0 := by
       rw [hw_zero]; ring
     rw [hLHS_zero]
@@ -177,7 +177,7 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
     {K_M : Set M} (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hw_supp : tsupport w ⊆ K_M) :
+    (hw_support : tsupport w ⊆ K_M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s),
         (eLpNorm
@@ -189,14 +189,14 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
                         (TensorRSSpace.toModel
                           (tensorCovDerivAt (I := I) (M := M) g r s
                             S.toCcTensor b
-                            (chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
+                            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
             2 (riemannianVolumeMeasure (I := I) (M := M) g)) ^ 2 ≤
           ENNReal.ofReal (C * ‖S‖ ^ 2) := by
   classical
   obtain ⟨C, hC_nn, h_pt⟩ :=
     chartWeight_mul_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointwiseInner
       (I := I) (M := M) g r s α w hw_nn hw_le_one hK_M_compact hK_M_sub_baseSet
-      hw_supp
+      hw_support
   refine ⟨C, hC_nn, ?_⟩
   intro S
   set ρ : M → ℝ := w with hρ_def
@@ -205,7 +205,7 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
       ‖chartRSTwistInv (I := I) (M := M) α b r s
           (TensorRSSpace.toModel
             (tensorCovDerivAt (I := I) (M := M) g r s S.toCcTensor b
-              (chartBasisVecFiber (I := I) α i b)))‖ ^ 2 with hSqSum_def
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2 with hSqSum_def
   set f : M → ℝ := fun b : M => ρ b * Real.sqrt (SqSum b) with hf_def
   set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g with hμ_def
   have hSqSum_nn : ∀ b : M, 0 ≤ SqSum b := by
@@ -295,7 +295,7 @@ theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_c
     {K_M : Set M} (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
-    (hw_supp : tsupport w ⊆ K_M) :
+    (hw_support : tsupport w ⊆ K_M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (S : SmoothCcTensorH1 g r s),
         eLpNorm
@@ -307,14 +307,14 @@ theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_c
                         (TensorRSSpace.toModel
                           (tensorCovDerivAt (I := I) (M := M) g r s
                             S.toCcTensor b
-                            (chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
+                            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
             2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) := by
   classical
   obtain ⟨C, hC_nn, h_sq⟩ :=
     sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
       (I := I) (M := M) g r s α w hw_nn hw_le_one hK_M_compact hK_M_sub_baseSet
-      hw_supp
+      hw_support
   refine ⟨Real.sqrt C, Real.sqrt_nonneg _, ?_⟩
   intro S
   set T : ℝ := C * ‖S‖ ^ 2 with hT_def
@@ -347,7 +347,7 @@ theorem exists_eLpNorm_chartPou_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_cons
                         (TensorRSSpace.toModel
                           (tensorCovDerivAt (I := I) (M := M) g r s
                             S.toCcTensor b
-                            (chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
+                            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2))
             2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
           ENNReal.ofReal C * (‖S‖₊ : ℝ≥0∞) :=
   exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_const_mul_h1Norm

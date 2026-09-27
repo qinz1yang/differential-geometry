@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
-import DifferentialGeometry.Tensor.RSTensor.Pullback
+import DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback
 
 set_option autoImplicit false
 

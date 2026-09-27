@@ -1,13 +1,13 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Linearization
-import DifferentialGeometry.Analysis.Sobolev.Embedding.TensorSobolevEmbeddingCm
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.HilbertSpace
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHS
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckRHSSection
+import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.Cm
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.Defs
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Defs
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.RHS.Section
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
-import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartFiberTrivialisationOpNorm.SmoothBilinearSectionBddAbove
+import DifferentialGeometry.Analysis.FunctionalAnalysis.BilinearOperatorNorm
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.Analysis.Spectral
 

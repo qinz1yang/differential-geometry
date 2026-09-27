@@ -1,0 +1,29 @@
+{
+  "source_commit": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "source_repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "archive": "upstream/selected-topology_e3c7230.tar.gz",
+  "archive_sha256": "4c3ee10109f88c9878c60ed9ef3171203fb997271ab289c43f63af26160afdd1",
+  "modules": [
+    {
+      "source": "ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean",
+      "source_sha256": "d75eafa147b4a9bd9eca4c847636278c305fcaa3c1d13ddda628799ac67ce846",
+      "previous": "DifferentialGeometry/Topology/InvarianceOfDomain.lean",
+      "previous_sha256": "b6430f62de4a083b04421671490b54ee702bbe6f00de37a0a1a7b0634011710f",
+      "external": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean",
+      "external_sha256": "d105ad944b8399bed72abf542dbc8e1a57c6ea2e63d8080f174657e9de08233a",
+      "patch": "migration-ClassificationOfSurfaces/InvarianceOfDomain.patch"
+    },
+    {
+      "source": "ClassificationOfSurfaces/Moise/Brouwer.lean",
+      "source_sha256": "edb39f07609cefde882196306cbe572631c0a9eba45d8548e7ceaaefa7dd62b8",
+      "previous": "DifferentialGeometry/Topology/FixedPoint/Brouwer.lean",
+      "previous_sha256": "8f347d036b629879ddfd55e3aa094b7fa07cb6605512bd9419416ef0c759edae",
+      "external": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+      "external_sha256": "4b43afff2897718ea8714b0681b4416346a133cd6e070204bdaa9f755fb25a29",
+      "patch": "migration-ClassificationOfSurfaces/Brouwer.patch",
+      "native_patch": "migration-ClassificationOfSurfaces/Brouwer_native.patch",
+      "native_sha256": "59aa8c75c413995032ee25370aceaee148407a87c770daa057d8797b0bea7fd0"
+    }
+  ],
+  "consumer_patches": []
+}

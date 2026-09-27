@@ -308,4 +308,26 @@ theorem mvfderiv_model_apply_eq_fderiv
   rw [← mvfderivWithin_univ, mvfderivWithin_model_apply_eq_fderivWithin,
     fderivWithin_univ]
 
+open Bundle Manifold in
+open scoped ContDiff in
+theorem contMDiff_tangentFiber [IsManifold I 1 M] {n : ℕ∞ω} (p : M) :
+    ContMDiff 𝓘(𝕜, E) I.tangent n (fun v : E => (⟨p, v⟩ : TangentBundle I M)) := by
+  intro v
+  rw [contMDiffAt_totalSpace]
+  refine ⟨contMDiffAt_const, ?_⟩
+  have hp : p ∈ (trivializationAt E (TangentSpace I) p).baseSet := by
+    rw [TangentBundle.trivializationAt_baseSet]
+    exact mem_chart_source H p
+  have heq : (fun w : E => (trivializationAt E (TangentSpace I) p
+      (⟨p, w⟩ : TangentBundle I M)).2) =
+      (trivializationAt E (TangentSpace I) p).continuousLinearMapAt 𝕜 p := by
+    funext w
+    exact (congrFun ((trivializationAt E (TangentSpace I) p).coe_linearMapAt_of_mem
+      (R := 𝕜) hp) w).symm
+  change ContMDiffAt 𝓘(𝕜, E) 𝓘(𝕜, E) n (fun w : E =>
+    (trivializationAt E (TangentSpace I) p (⟨p, w⟩ : TangentBundle I M)).2) v
+  rw [heq]
+  exact (show E →L[𝕜] E from
+    (trivializationAt E (TangentSpace I) p).continuousLinearMapAt 𝕜 p).contMDiff.contMDiffAt
+
 end DifferentialGeometry

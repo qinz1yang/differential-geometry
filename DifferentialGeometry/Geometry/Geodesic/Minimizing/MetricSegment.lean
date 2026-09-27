@@ -1,0 +1,9 @@
+import DifferentialGeometry.Geometry.Comparison.Toponogov.CompleteMetricSegment
+import DifferentialGeometry.Geometry.Geodesic.Minimizing.TriangleEquality
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+export DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
+  (exists_intrinsicGeodesic_eq_metric_segment)
+
+end DifferentialGeometry.Geometry.Riemannian

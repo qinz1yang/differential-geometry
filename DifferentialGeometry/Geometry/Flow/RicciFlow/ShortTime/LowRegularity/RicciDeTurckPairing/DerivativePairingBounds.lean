@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Ricc
 section
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -16,7 +16,7 @@ open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev (covariantJetNormSq
-  covariantJetNormSq_add_le covariantJetNormSq_sum_six_le reindexCoeffGen_sub)
+  covariantJetNormSq_add_le covariantJetNormSq_sum_six_le reindexCoefficientInputSlots_sub)
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
@@ -59,10 +59,10 @@ private theorem ricciQuadraticKernelDerivativeCoefficient_sub_eq_six_terms
         ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationSwapZeroOne ricciQuadraticPermutationSwapBlocks) +
       (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo -
         ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationCycleZeroThreeTwo) +
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) +
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) +
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) +
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) +
       (ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gT T ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo -
         ricciQuadraticKernelDerivativeNestedTerm (I := I) (M := M) g gU U ricciQuadraticPermutationRotateInputs ricciQuadraticPermutationSwapZeroTwo) := by
   simp only [ricciQuadraticKernelDerivativeCoefficient]
@@ -392,15 +392,15 @@ theorem exists_ricciQuadraticKernelDerivativeCoefficient_pairing_secondOrder_bou
         (hmidB ricciQuadraticPermutationRotateInputs (Or.inr rfl))
         (hmidD ricciQuadraticPermutationRotateInputs (Or.inr rfl))
   have hx3 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) ≤ Q := by
-    simpa only [ricciQuadraticKernelDerivativeBareTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneThreeTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneThreeTwo) ≤ Q := by
+    simpa only [ricciQuadraticKernelDerivativeDirectTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
       hblkFin ricciQuadraticPermutationCycleZeroOneThreeTwo
         (Or.inr (Or.inr (Or.inr (Or.inl rfl)))) IT IU hbareB hbareD
   have hx4 : covariantJetNormSq (I := I) (M := M) g 2
-      (ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
-        ricciQuadraticKernelDerivativeBareTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) ≤ Q := by
-    simpa only [ricciQuadraticKernelDerivativeBareTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
+      (ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gT T ricciQuadraticPermutationCycleZeroOneTwo -
+        ricciQuadraticKernelDerivativeDirectTerm (I := I) (M := M) g gU U ricciQuadraticPermutationCycleZeroOneTwo) ≤ Q := by
+    simpa only [ricciQuadraticKernelDerivativeDirectTerm, ricciQuadraticKernelDerivativeBlock, IT, IU] using
       hblkFin ricciQuadraticPermutationCycleZeroOneTwo
         (Or.inr (Or.inr (Or.inr (Or.inr (Or.inl rfl)))))
         IT IU hbareB hbareD
@@ -462,17 +462,17 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
       ricciCometricFourTraceCastG0 (I := I) g gT -
           ricciCometricFourTraceCastG0 (I := I) g gU =
         ((1 : ℝ) / 2) •
-          (reindexCoeffGen (I := I) (M := M) g 4 2
+          (reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0231 +
-            reindexCoeffGen (I := I) (M := M) g 4 2
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm0321 -
             (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
               cometricDoubleTraceCoefficient (I := I) (M := M) g gU) -
-            reindexCoeffGen (I := I) (M := M) g 4 2
+            reindexCoefficientInputSlots (I := I) (M := M) g 4 2
                 (cometricDoubleTraceCoefficient (I := I) (M := M) g gT -
                   cometricDoubleTraceCoefficient (I := I) (M := M) g gU)
                 fourTraceArgPerm2301) := by
@@ -480,7 +480,7 @@ theorem exists_ricciCometricFourTraceCastG0_pairing_secondOrder_bound
         (I := I) (M := M) g gT,
       ricciCometricFourTraceCastG0_eq_reindex_combination
         (I := I) (M := M) g gU,
-      reindexCoeffGen_sub, reindexCoeffGen_sub, reindexCoeffGen_sub]
+      reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub, reindexCoefficientInputSlots_sub]
     module
   rw [heq]
   refine (covariantJetNormSq_ricciFourTraceCombination_le (I := I) (M := M) g _).trans ?_
@@ -705,7 +705,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -785,7 +784,7 @@ theorem exists_ricciConnectionDifferenceDerivativeMetricWeight_pairing_secondOrd
             RicciDeTurckLowOrder.ricciConnectionDifferenceDerivativeMetricWeight (I := I) (M := M) g gU U) ≤
         (B R * D2) ^ 2 := by
   obtain ⟨Be, hBe, hslotB⟩ :=
-    RicciDeTurckLowOrder.full_slot_sobolev_two_bound (I := I) (M := M) g
+    RicciDeTurckLowOrder.exists_metricComparisonEndomorphism_slot_one_covariantJetNormSq_two_bound (I := I) (M := M) g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨Bed, hBed, hslotD⟩ :=
     exists_slotInsertEndoCc_metricComparisonEndomorphismField_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
@@ -1067,14 +1066,14 @@ theorem exists_ricciConnectionDerivativeTransposedCoefficient_pairing_secondOrde
       ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x u v =
         ccTensorBilin (I := I) g (0 : SmoothCcTensor g 0 2) x v u := by
     intro x u v
-    rw [ccTensorBilin_zero_weight, ccTensorBilin_zero_weight]
+    rw [ccTensorBilin_zero, ccTensorBilin_zero]
   have hzeroTie : ∀ (x : M) (u v : TangentSpace I x),
       g.inner x u v =
         g.inner x u v + ccTensorBilinSymm (I := I) g
           (0 : SmoothCcTensor g 0 2) x u v := by
     intro x u v
-    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero_weight,
-      ccTensorBilin_zero_weight]
+    rw [ccTensorBilinSymm_apply, ccTensorBilin_zero,
+      ccTensorBilin_zero]
     ring
   have h02 :
       covariantJetNormSq (I := I) (M := M) g 2
@@ -1216,7 +1215,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -1234,7 +1232,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Spectral
-  (ccTensorToHs symmS_eq_self_of_ccTensorBilin_symm)
+  (ccTensorToHs ccTensor02Symm_eq_self)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -1313,10 +1311,10 @@ theorem exists_ricciConnectionDifferenceDerivativeCoefficient_pairing_secondOrde
   have h1A : 0 ≤ 1 + A := add_nonneg (by norm_num) hA
   have hx0 : 0 ≤ x := mul_nonneg (mul_nonneg (hBa R hR) h1A) hD
   have hy0 : 0 ≤ y := mul_nonneg (mul_nonneg (hBd R hR) h1A) hD
-  have hsymmT : symmS (I := I) (M := M) g T = T :=
-    symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g T hT
-  have hsymmU : symmS (I := I) (M := M) g U = U :=
-    symmS_eq_self_of_ccTensorBilin_symm (I := I) (M := M) g U hU
+  have hsymmT : ccTensor02Symm (I := I) (M := M) g T = T :=
+    ccTensor02Symm_eq_self (I := I) (M := M) g T hT
+  have hsymmU : ccTensor02Symm (I := I) (M := M) g U = U :=
+    ccTensor02Symm_eq_self (I := I) (M := M) g U hU
   have haa' : covariantJetNormSq (I := I) (M := M) g 2
       (ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gT T -
         ricciConnectionDifferenceQuadraticDerivativeCoefficient (I := I) (M := M) g gU U) ≤ x ^ 2 := by
@@ -1368,7 +1366,6 @@ end
 section
 
 noncomputable section
-
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
@@ -1763,7 +1760,6 @@ section
 
 noncomputable section
 
-
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal BigOperators
 
@@ -1869,7 +1865,7 @@ theorem lowerScalePathIntegral_apply_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+    change linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Ψ
       (δ := δ) (δ' := δ)
     simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
@@ -1913,7 +1909,8 @@ theorem lowerScalePathIntegral_apply_decomposition
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 Ψ T S
       metricPerturbationPathDomain_isOpen hSI hjΨ hcΨ x v]
-  rw [unitModel_add (I := I) (M := M) g]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply]
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 L T S
       metricPerturbationPathDomain_isOpen hSI hjL hcL x v]
@@ -1944,8 +1941,8 @@ theorem lowerScalePathIntegral_apply_decomposition
           (operatorFieldApply (I := I) (M := M) g 3 2
             (lowOrderFirstDerivativeCoefficientPath (I := I) (M := M) g T hδ hδZ s)
             (iteratedCovGrad (I := I) g 0 2 1 T)) x v
-  rw [hone, unitModel_add (I := I) (M := M) g,
-    iteratedCovGrad_succ, iteratedCovGrad_zero]
+  rw [hone, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply, iteratedCovGrad_succ, iteratedCovGrad_zero]
 
 omit [SigmaCompactSpace M] in
 theorem lowerScalePathIntegral_apply_affine_decomposition
@@ -1981,7 +1978,7 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
     rw [Set.uIcc_of_le zero_le_one]
     exact Icc_subset_metricPerturbationPathDomain hδ_lt hδ_lt
   have hjΨ : JointlySmoothCcTensorFamily (I := I) g 2 2 S Ψ := by
-    change linearizedRicciThreeArmHjoint (I := I) (M := M) g 2 Ψ
+    change linearizedRicciCovariantJetJointSmoothness (I := I) (M := M) g 2 Ψ
       (δ := δ) (δ' := δ)
     simpa only [S, Ψ] using
       RicciDeTurckLowOrder.selfLow_joint (I := I) (M := M)
@@ -2026,7 +2023,8 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 Ψ T S
       metricPerturbationPathDomain_isOpen hSI hjΨ hcΨ x v]
-  rw [unitModel_add (I := I) (M := M) g]
+  rw [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply]
   rw [pathIntegralCoeffField_operatorFieldApplication_eq
       (I := I) (M := M) g 2 2 L T S
       metricPerturbationPathDomain_isOpen hSI hjL hcL x v]
@@ -2057,8 +2055,8 @@ theorem lowerScalePathIntegral_apply_affine_decomposition
           (operatorFieldApply (I := I) (M := M) g 3 2
             (affineLowOrderFirstDerivativeCoefficientPath (I := I) (M := M) g T hδ hδZ s)
             (iteratedCovGrad (I := I) g 0 2 1 T)) x v
-  rw [hone, unitModel_add (I := I) (M := M) g,
-    iteratedCovGrad_succ, iteratedCovGrad_zero]
+  rw [hone, DifferentialGeometry.Analysis.Parabolic.TensorSpectral.unitModel_add
+    (I := I) (M := M) g, add_apply, iteratedCovGrad_succ, iteratedCovGrad_zero]
 
 end RicciDeTurckPairing
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

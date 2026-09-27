@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartTensor0SCovariantDerivative
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.PartialEvaluation
 
 
 noncomputable section

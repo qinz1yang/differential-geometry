@@ -201,14 +201,6 @@ theorem laplacianOp_smoothToH1Compl_eq_smoothToLp_laplacian
   rw [laplacianOp_smoothToH1Compl]
   rw [← map_sub, SmoothScalar.sub_oneSubLapClassical]
 
-example (g : SmoothRiemannianMetric I M) :
-    Submodule ℝ (H1Compl g) := laplacianDomain (I := I) (M := M) g
-
-example (g : SmoothRiemannianMetric I M) :
-    laplacianDomain (I := I) (M := M) g →ₗ[ℝ]
-      Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
-  laplacianOp (I := I) (M := M) g
-
 private lemma h1Inner_eq_lpInner_with_preimage
     (g : SmoothRiemannianMetric I M)
     (u v : laplacianDomain (I := I) (M := M) g) :
@@ -256,14 +248,6 @@ theorem h1Inner_symmetric_on_laplacianDomain
     ⟪(u : H1Compl g), (v : H1Compl g)⟫_ℝ =
       ⟪(v : H1Compl g), (u : H1Compl g)⟫_ℝ :=
   real_inner_comm _ _
-
-example (g : SmoothRiemannianMetric I M)
-    (u v : laplacianDomain (I := I) (M := M) g) :
-    ⟪H1ComplToLp (I := I) (M := M) g (u : H1Compl g),
-        laplacianOp (I := I) (M := M) g v⟫_ℝ =
-      ⟪laplacianOp (I := I) (M := M) g u,
-        H1ComplToLp (I := I) (M := M) g (v : H1Compl g)⟫_ℝ :=
-  laplacianOp_symmetric (I := I) (M := M) g u v
 
 end Laplacian
 end Analysis

@@ -26,18 +26,6 @@ variable
   (M : Type*) [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [SigmaCompactSpace M] [T2Space M]
 
-section InstanceVerification
-
-example : CommRing C^∞⟮I, M; ℝ⟯ := inferInstance
-example : Algebra ℝ C^∞⟮I, M; ℝ⟯ := inferInstance
-example : Module C^∞⟮I, M; ℝ⟯ Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := inferInstance
-example : Module ℝ Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ := inferInstance
-example (x : M) : Module.Free ℝ (TangentSpace I x) := inferInstance
-example (x : M) : FiniteDimensional ℝ (TangentSpace I x) := inferInstance
-example : ContMDiffVectorBundle ∞ E (TangentSpace I : M → Type _) I := inferInstance
-
-end InstanceVerification
-
 instance smoothSectionScalarTower :
     IsScalarTower ℝ C^∞⟮I, M; ℝ⟯ Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯ where
   smul_assoc r f s := by ext x; exact mul_smul (r : ℝ) (f x : ℝ) (s x)

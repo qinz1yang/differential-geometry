@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.DensityIdentification
 import DifferentialGeometry.Analysis.Elliptic.Regularity.SmoothApproxSeq.H1ComplTendsto
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplResidual
 
@@ -28,7 +28,7 @@ open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplResidual
-open DifferentialGeometry.Analysis.Laplacian.MemW1pFChartResidualFull
+open DifferentialGeometry.Analysis.Laplacian.FChartResidualDensityIdentification
 open DifferentialGeometry.Analysis.Laplacian.SmoothApproxSeqH1ComplTendsto
 open DifferentialGeometry.Analysis.Sobolev.Chart
 

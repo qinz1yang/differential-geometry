@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Operator.Gradient
-import DifferentialGeometry.Geometry.Operator.Laplacian
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 open DifferentialGeometry.Geometry.Operator
 
 

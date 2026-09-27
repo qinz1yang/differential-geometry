@@ -45,7 +45,7 @@ private lemma le_sum_of_mem_finset_nonneg
   linarith
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+theorem exists_const_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) (α β : M)
     (k : Fin (Module.finrank ℝ E)) :
@@ -53,7 +53,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
       ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 k
               (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                 (tensorChartComponentScalar (I := I) (M := M)
@@ -66,7 +66,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
                       (Fin s → Fin (Module.finrank ℝ E))),
       ∃ C : ℝ, 0 ≤ C ∧
         eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 k
               (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                 (tensorChartComponentScalar (I := I) (M := M)
@@ -74,7 +74,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
               (chartTargetEuclid (I := I) (M := M) β)) 2
             (volume.restrict (chartTargetEuclid (I := I) (M := M) β)) ≤
           ENNReal.ofReal C * (‖S‖₊ + 1) := fun IJ =>
-    eLpNorm_chosenWeakPartial'_chartPushed_tensorChartComponentScalar_le_per_section
+    eLpNorm_chosenWeakPartialOrZero_chartPushed_tensorChartComponentScalar_le_per_section
       (I := I) (M := M) g r s S α β IJ.1 IJ.2 k
   choose CIJ hCIJ_nn hCIJ_le using hper
   set Csum : ℝ := ∑ IJ : (Fin r → Fin (Module.finrank ℝ E)) ×
@@ -96,7 +96,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
   exact (hCIJ_le (Idx, Jdx)).trans h_envelope_le
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) (α β : M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -104,7 +104,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         ∑ k : Fin (Module.finrank ℝ E),
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k
                 (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                   (tensorChartComponentScalar (I := I) (M := M)
@@ -118,7 +118,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k
                 (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                   (tensorChartComponentScalar (I := I) (M := M)
@@ -126,7 +126,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
                 (chartTargetEuclid (I := I) (M := M) β)) 2
               (volume.restrict (chartTargetEuclid (I := I) (M := M) β)) ≤
             ENNReal.ofReal C * (‖S‖₊ + 1) := fun k =>
-    exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+    exists_const_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
       (I := I) (M := M) g r s S α β k
   choose Ck hCk_nn hCk_le using hper
   set Ctot : ℝ := ∑ k : Fin (Module.finrank ℝ E), Ck k with hCtot_def
@@ -135,7 +135,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
   have h_sum_le :
       ∑ k : Fin (Module.finrank ℝ E),
         eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 k
               (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                 (tensorChartComponentScalar (I := I) (M := M)
@@ -161,7 +161,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
   exact mul_le_mul_of_nonneg_right h_ofReal_sum (by exact zero_le)
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_S
+theorem exists_const_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices_S
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α β : M)
     (k : Fin (Module.finrank ℝ E)) :
     ∀ S : SmoothCcTensorH1 g r s,
@@ -169,7 +169,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_S
         ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k
                 (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                   (tensorChartComponentScalar (I := I) (M := M)
@@ -177,11 +177,11 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_S
                 (chartTargetEuclid (I := I) (M := M) β)) 2
               (volume.restrict (chartTargetEuclid (I := I) (M := M) β)) ≤
             ENNReal.ofReal C * (‖S‖₊ + 1) := fun S =>
-  exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+  exists_const_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
     (I := I) (M := M) g r s S α β k
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_S
+theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices_S
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α β : M) :
     ∀ S : SmoothCcTensorH1 g r s,
       ∃ C : ℝ, 0 ≤ C ∧
@@ -189,7 +189,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
           (Jdx : Fin s → Fin (Module.finrank ℝ E)),
           ∑ k : Fin (Module.finrank ℝ E),
             eLpNorm
-                (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+                (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                   (d := Module.finrank ℝ E) 2 k
                   (chartPushed (I := I) (M := M) (chartAtlasPOU I M) β
                     (tensorChartComponentScalar (I := I) (M := M)
@@ -197,11 +197,11 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
                   (chartTargetEuclid (I := I) (M := M) β)) 2
                 (volume.restrict (chartTargetEuclid (I := I) (M := M) β)) ≤
             ENNReal.ofReal C * (‖S‖₊ + 1) := fun S =>
-  exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+  exists_const_sum_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
     (I := I) (M := M) g r s S α β
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_single_chart
+theorem exists_const_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices_single_chart
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) (α : M)
     (k : Fin (Module.finrank ℝ E)) :
@@ -209,7 +209,7 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_s
       ∀ (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         eLpNorm
-            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+            (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
               (d := Module.finrank ℝ E) 2 k
               (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
                 (tensorChartComponentScalar (I := I) (M := M)
@@ -217,11 +217,11 @@ theorem exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_s
               (chartTargetEuclid (I := I) (M := M) α)) 2
             (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) ≤
           ENNReal.ofReal C * (‖S‖₊ + 1) :=
-  exists_const_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+  exists_const_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
     (I := I) (M := M) g r s S α α k
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices_single_chart
+theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices_single_chart
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensorH1 g r s) (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
@@ -229,7 +229,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         ∑ k : Fin (Module.finrank ℝ E),
           eLpNorm
-              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+              (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
                 (d := Module.finrank ℝ E) 2 k
                 (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
                   (tensorChartComponentScalar (I := I) (M := M)
@@ -237,7 +237,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indic
                 (chartTargetEuclid (I := I) (M := M) α)) 2
               (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) ≤
           ENNReal.ofReal C * (‖S‖₊ + 1) :=
-  exists_const_sum_eLpNorm_chosenWeakPartial'_chartPushed_le_uniform_indices
+  exists_const_sum_eLpNorm_chosenWeakPartialOrZero_chartPushed_le_uniform_indices
     (I := I) (M := M) g r s S α α
 
 end TensorSpectral

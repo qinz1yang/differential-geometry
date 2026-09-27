@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Compactness.CheegerGromov.ApproximateIsometry.PullbackCovariantNaturality
-import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNormArity
+import DifferentialGeometry.Geometry.Metric.Pullback.CovariantDerivative
+import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
 
 
 open DifferentialGeometry.Geometry.Curvature
@@ -12,7 +12,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle
 open scoped Manifold ContDiff
@@ -69,87 +69,18 @@ end PartialTrans
 section TowerZero
 
 omit [SigmaCompactSpace M] in
-theorem covStep_zero (gRef : SmoothRiemannianMetric I M) (s : Nat)
-    :
-    covStep (I := I) gRef s
-        (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-          (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) s)
-      = 0 := by
-  have h := (covStep_add (I := I) gRef s 0 0).symm
-  rw [add_zero] at h
-  have h2 : covStep (I := I) gRef s 0 + covStep (I := I) gRef s 0
-      = covStep (I := I) gRef s 0 + 0 := by rw [add_zero]; exact h
-  exact add_left_cancel h2
-
-
-omit [SigmaCompactSpace M] in
-theorem iterCov_metric_zero (g : SmoothRiemannianMetric I M) (a : Nat) :
-    iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1) = 0 := by
-  induction a with
-  | zero =>
-      refine DFunLike.ext _ _ (fun x => ?_)
-      refine Tensor0SBundle.tensor0SSpace_ext (I := I) 3 x (fun slots => ?_)
-      change Tensor0SBundle.Tensor0SSpace.eval
-          (iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) 1 x) slots =
-        Tensor0SBundle.Tensor0SSpace.eval
-          ((0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-            (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 3) x) slots
-      obtain ⟨X, hX⟩ := ContMDiffSection.exists_eq_at_gen (I := I) (F := E)
-        (V := TangentSpace I) (n := (⊤ : ℕ∞)) x (slots 0)
-      have hslots : slots = Fin.cons (X x) (Fin.tail slots) := by
-        rw [hX]
-        exact (Fin.cons_self_tail slots).symm
-      rw [show iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) 1
-          = covStep (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) from rfl]
-      rw [covStep_apply, hslots,
-        Tensor0SBundle.totalNabla0SFun_eval_section (𝕜 := Real) (E := E) (H := H)
-          (I := I) (M := M) 2 _ X (Tensor0SBundle.metricTensorField (I := I) g) x _,
-        Tensor0SBundle.nabla_metric_zero (I := I) _ g
-          (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
-            (I := I) g) X x]
-      simp
-  | succ a ih =>
-      rw [show iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1 + 1)
-          = covStep (I := I) g (2 + (a + 1))
-              (iterCov (I := I) g 2 (Tensor0SBundle.metricTensorField (I := I) g) (a + 1))
-          from rfl]
-      rw [ih, covStep_zero]
-
-omit [SigmaCompactSpace M] in
-theorem iterCov_sub (gRef : SmoothRiemannianMetric I M) (r : Nat)
-    (A0 B0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-      (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) r)
-    (a : Nat) :
-    iterCov (I := I) gRef r (A0 - B0) a
-      = iterCov (I := I) gRef r A0 a - iterCov (I := I) gRef r B0 a := by
-  have h := iterCov_add (I := I) gRef r (A0 - B0) B0 a
-  rw [sub_add_cancel] at h
-  rw [h]
-  abel
-
-omit [SigmaCompactSpace M] in
-theorem covDOF_zero (gRef : SmoothRiemannianMetric I M) (a : Nat) :
-    covDerivOfField (I := I) gRef
-        (0 : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
-          (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2) a
-      = 0 := by
-  have h := covDerivOfField_sub (I := I) gRef 0 0 a
-  simpa using h
-
-
-omit [SigmaCompactSpace M] in
 theorem t02Norm_eq_iterCov {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (A : Tensor0SBundle.Tensor0SField (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (n := (∞ : WithTop ℕ∞)) 2)
     (gRef : SmoothRiemannianMetric I M) (a : ℕ) {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : Tensor0SBundle.MetricInverseInBasisGen (I := I) gRef x basis
+    (hinv : Tensor0SBundle.MetricInverseInBasis (I := I) gRef x basis
       (Tensor0SBundle.identityInvMetric (Idx := Idx))) :
     tensor02CovDerivNormWith (I := I) a A gRef gRef x
       = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)
           (iterCov (I := I) gRef 2 A a x)) := by
   unfold tensor02CovDerivNormWith
-  rw [tensor02_eq_covDOF, covDerivOfField_eq_iterCov]
+  rw [tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_eq_iterCov]
   change Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (a + 2)
       ((iterCov (I := I) gRef 2 A a x).domDomCongr (acEquiv a)))
     = Real.sqrt (Tensor0SBundle.normSq0S (I := I) gRef x (2 + a)
@@ -172,7 +103,7 @@ theorem inner_le_of_c0
   classical
   intro x hx v
   obtain ⟨basis, hON⟩ :=
-    DifferentialGeometry.Geometry.Curvature.exists_gOrthonormalBasis (I := I) g x
+    DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) g x
   have hCS := Tensor0SBundle.abs_apply_le_sqrt_normSq0S (I := I)
     g x 2 basis (fun i j => hON i j)
     ((Tensor0SBundle.metricTensorField (I := I) Gm) x
@@ -241,5 +172,5 @@ theorem sqrt_normSq_two_le
 
 end C0Equiv
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

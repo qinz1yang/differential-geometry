@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.PartialDerivWithin
-import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
+import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 
@@ -27,6 +27,16 @@ def boundaryHyperplane : Set E := {y : E | y 0 = 0}
 
 @[simp] lemma closedHalfSpace_def :
     closedHalfSpace (d := d) = {y : E | 0 ≤ y 0} := rfl
+
+omit [NeZero d] in
+theorem measurableSet_closedHalfSpace [NeZero d] :
+    MeasurableSet (closedHalfSpace (d := d)) := by
+  have hcont : Continuous (fun y : E => y 0) :=
+    PiLp.continuous_apply 2 _ 0
+  have heq : closedHalfSpace (d := d) =
+      (fun y : E => y 0) ⁻¹' Set.Ici 0 := rfl
+  rw [heq]
+  exact hcont.measurable measurableSet_Ici
 
 @[simp] lemma openHalfSpace_def :
     openHalfSpace (d := d) = {y : E | 0 < y 0} := rfl
@@ -389,7 +399,7 @@ theorem fderiv_isWeakPartialDeriv_of_smooth_interiorHalfSpace [NeZero d]
 theorem fderiv_memLp_of_smooth_compactSupport
     {p : ℝ≥0∞} {Ω : Set E}
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_supp : HasCompactSupport u) (i : Fin d) :
+    (hu_support : HasCompactSupport u) (i : Fin d) :
     MemLp (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) p
       ((volume : Measure E).restrict (interiorHalfSpace Ω)) := by
   have h_smooth : ContDiff ℝ ∞
@@ -398,32 +408,32 @@ theorem fderiv_memLp_of_smooth_compactSupport
       hu_smooth.fderiv_right (m := (∞ : WithTop ℕ∞)) (by
         rw [ENat.coe_top_add_one])
     exact h_fderiv.clm_apply contDiff_const
-  have h_supp : HasCompactSupport
+  have h_support : HasCompactSupport
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) :=
-    hu_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+    hu_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
   have h_global : MemLp
       (fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1)) p volume :=
-    h_smooth.continuous.memLp_of_hasCompactSupport h_supp
+    h_smooth.continuous.memLp_of_hasCompactSupport h_support
   exact h_global.restrict (interiorHalfSpace Ω)
 
 theorem memLp_of_smooth_compactSupport
     {p : ℝ≥0∞} {Ω : Set E}
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_supp : HasCompactSupport u) :
+    (hu_support : HasCompactSupport u) :
     MemLp u p ((volume : Measure E).restrict (interiorHalfSpace Ω)) := by
   have h_global : MemLp u p (volume : Measure E) :=
-    hu_smooth.continuous.memLp_of_hasCompactSupport hu_supp
+    hu_smooth.continuous.memLp_of_hasCompactSupport hu_support
   exact h_global.restrict (interiorHalfSpace Ω)
 
 theorem memW1p_of_smooth_compactSupport_interiorHalfSpace
     {p : ℝ≥0∞} {Ω : Set E} (hΩ : IsHalfSpaceRelOpen (d := d) Ω)
     {u : E → ℝ} (hu_smooth : ContDiff ℝ ∞ u)
-    (hu_supp : HasCompactSupport u) :
+    (hu_support : HasCompactSupport u) :
     DeGiorgi.MemW1p p u (interiorHalfSpace Ω) := by
-  refine ⟨memLp_of_smooth_compactSupport hu_smooth hu_supp, ?_⟩
+  refine ⟨memLp_of_smooth_compactSupport hu_smooth hu_support, ?_⟩
   intro i
   refine ⟨fun x => (fderiv ℝ u x) (EuclideanSpace.single i 1),
-    fderiv_memLp_of_smooth_compactSupport hu_smooth hu_supp i, ?_⟩
+    fderiv_memLp_of_smooth_compactSupport hu_smooth hu_support i, ?_⟩
   exact fderiv_isWeakPartialDeriv_of_smooth_interiorHalfSpace hΩ
     (hu_smooth.of_le (by norm_cast)) i
 
@@ -433,7 +443,7 @@ theorem partialDerivWithin_interiorHalfSpace_eq_partialDeriv
     (hy : y ∈ interiorHalfSpace Ω) :
     DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary.partialDerivWithin
         (interiorHalfSpace Ω) i u y =
-      DifferentialGeometry.Integral.DivergenceTheorem.partialDeriv
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv
         i u y :=
   Integral.DivergenceTheorem.WithBoundary.partialDerivWithin_eq_partialDeriv_of_isOpen
     (interiorHalfSpace_isOpen hΩ) hy
@@ -464,47 +474,6 @@ theorem extChartAt_target_isHalfSpaceRelOpen
       range_modelWithCornersEuclideanHalfSpace_eq_closedHalfSpace]
 
 end EuclideanHalfSpaceChartTargets
-
-section UsabilityCheck
-
-variable {n : ℕ} [NeZero n]
-
-example {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    (α : M) (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p) :
-    MemWkpHalfSpace (d := n) k p (fun _ : EuclideanSpace ℝ (Fin n) => (0 : ℝ))
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target :=
-  MemWkpHalfSpace_zero_fun (d := n) hp
-    (extChartAt_target_isHalfSpaceRelOpen α)
-
-example {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    (α : M) (k : ℕ) {p : ℝ≥0∞} (hp : 1 ≤ p)
-    {u v : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hu : MemWkpHalfSpace (d := n) k p u
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target)
-    (hv : MemWkpHalfSpace (d := n) k p v
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target) :
-    MemWkpHalfSpace (d := n) k p (fun x => u x + v x)
-      (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target :=
-  MemWkpHalfSpace.add (d := n) hp
-    (extChartAt_target_isHalfSpaceRelOpen α) hu hv
-
-example {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace n) M]
-    [IsManifold (modelWithCornersEuclideanHalfSpace n) ∞ M]
-    (α : M) {p : ℝ≥0∞}
-    {u : EuclideanSpace ℝ (Fin n) → ℝ}
-    (hu_smooth : ContDiff ℝ ∞ u) (hu_supp : HasCompactSupport u) :
-    DeGiorgi.MemW1p p u
-      (interiorHalfSpace (d := n)
-        (extChartAt (modelWithCornersEuclideanHalfSpace n) α).target) :=
-  memW1p_of_smooth_compactSupport_interiorHalfSpace
-    (extChartAt_target_isHalfSpaceRelOpen α) hu_smooth hu_supp
-
-end UsabilityCheck
 
 end Euclidean
 end Sobolev

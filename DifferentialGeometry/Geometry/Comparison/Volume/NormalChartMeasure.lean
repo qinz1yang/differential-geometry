@@ -1,6 +1,7 @@
-import DifferentialGeometry.Analysis.Integration.Measure.ParamEvaluation
-import DifferentialGeometry.Geometry.Comparison.NormalCoordinates
-import DifferentialGeometry.Geometry.Exponential.JacobiVariation
+import DifferentialGeometry.Analysis.Integration.Measure.Parametric.Evaluation
+import DifferentialGeometry.Geometry.Comparison.NormalCoordinates.Basic
+import DifferentialGeometry.Geometry.Exponential.Variation.Jacobi
+
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -55,8 +56,8 @@ omit [NeZero (Module.finrank ℝ E)] in
     (i j : Fin (Module.finrank ℝ E)) :
     normalGramMatrix (I := I) g p w i j =
       g.inner (expMapDiffeo (I := I) g p w)
-        (mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) w ((chartModelBasis E) i))
-        (mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) w ((chartModelBasis E) j)) :=
+        (mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+        (mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) w ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) :=
   rfl
 
 omit [T2Space M] [SigmaCompactSpace M] in
@@ -78,10 +79,10 @@ lemma normalGram_contAt
     dsimp only [U]
     exact Ψ.contMDiffOn_toFun.continuousOn.isOpen_inter_preimage
       Ψ.open_source (trivializationAt E (TangentSpace I) p).open_baseSet
-  have hzero_src : (0 : E) ∈ Ψ.source := by
+  have hzero_source : (0 : E) ∈ Ψ.source := by
     simpa only [Ψ] using zero_mem_expMapDiffeo_source (I := I) g p
   have hzeroU : (0 : E) ∈ U := by
-    refine ⟨hzero_src, ?_⟩
+    refine ⟨hzero_source, ?_⟩
     change Ψ (0 : E) ∈ (trivializationAt E (TangentSpace I) p).baseSet
     rw [show Ψ (0 : E) = p by
       simpa only [Ψ] using expMapDiffeo_zero (I := I) g p]
@@ -91,50 +92,6 @@ lemma normalGram_contAt
       paramGram_contOn (I := I) g p Ψ hUopen
         Set.inter_subset_left (fun w hw => hw.2)
   exact hcont.continuousAt (hUopen.mem_nhds hzeroU)
-
-def radialJacobiField (g : SmoothRiemannianMetric I M) (p : M)
-    (x w : E) (t : ℝ) :
-    TangentSpace I
-      ((expMap (I := I) g p (show TangentSpace I p from (t • x)) : M)) :=
-  (tangentSpaceModelContinuousLinearEquiv (I := I)
-      (expMap (I := I) g p (show TangentSpace I p from (t • x)))).symm
-    (tangentSpaceModelContinuousLinearEquiv (I := I)
-      (expMap (I := I) g p
-        (show TangentSpace I p from (t • (x + (0 : ℝ) • w))))
-      (mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-        (expMap (I := I) g p
-          (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)))
-
-omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
-    [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
-lemma radialJacobiField_eq
-    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) (t : ℝ) :
-    radialJacobiField (I := I) g p x w t =
-      (show TangentSpace I
-          (expMap (I := I) g p (show TangentSpace I p from (t • x))) from
-        mfderiv 𝓘(ℝ, ℝ) I (fun s : ℝ =>
-          (expMap (I := I) g p
-            (show TangentSpace I p from (t • (x + s • w))) : M)) 0 (1 : ℝ)) := by
-  apply (tangentSpaceModelContinuousLinearEquiv (I := I)
-    (expMap (I := I) g p (show TangentSpace I p from (t • x)))).injective
-  rw [radialJacobiField, ContinuousLinearEquiv.apply_symm_apply]
-  have hbase :
-      (expMap (I := I) g p
-          (show TangentSpace I p from (t • (x + (0 : ℝ) • w))) : M) =
-        expMap (I := I) g p (show TangentSpace I p from (t • x)) := by
-    apply congrArg (fun z : E =>
-      (expMap (I := I) g p (show TangentSpace I p from z) : M))
-    module
-  rw [hbase]
-
-omit [T2Space M] [SigmaCompactSpace M] in
-omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
-lemma radialJacobi_zero
-    (g : SmoothRiemannianMetric I M) (p : M) (x w : E) :
-    radialJacobiField (I := I) g p x w 0 = 0 := by
-  rw [radialJacobiField_eq (I := I)]
-  exact DifferentialGeometry.Geometry.Riemannian.radial_jacobi_zero (I := I) g p x w
 
 omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_radialJacobi_radius
@@ -157,21 +114,16 @@ theorem exists_radialJacobi_radius
     exact radialJacobiField_eq (I := I) g p x w v]
   exact h x w hx hw t₀ ht₀
 
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace in
+omit [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem exists_radialJacobi_zero_radius
-    [PseudoEMetricSpace M] [RiemannianBundle (fun x : M => TangentSpace I x)]
-    [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
-    (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) :
     ∃ r : ℝ, 0 < r ∧ ∀ x w : E, ‖x‖ < r → ‖w‖ < r →
       IsJacobiAt (I := I) g
         (fun v : ℝ => (expMap (I := I) g p (show TangentSpace I p from (v • x)) : M))
         (radialJacobiField (I := I) g p x w) 0 := by
   obtain ⟨r, hr, h⟩ :=
-    DifferentialGeometry.Geometry.Riemannian.exists_jacobi_zero (I := I) g hEnorm p
+    DifferentialGeometry.Geometry.Riemannian.exists_jacobi_zero (I := I) g p
   refine ⟨r, hr, ?_⟩
   intro x w hx hw
   rw [show radialJacobiField (I := I) g p x w = fun v =>
@@ -210,8 +162,8 @@ def radialJacobiGram (g : SmoothRiemannianMetric I M) (p : M) (x : E) :
     Matrix (Fin (Module.finrank ℝ E)) (Fin (Module.finrank ℝ E)) ℝ :=
   Matrix.of fun i j =>
     g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-      (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-      (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1)
+      (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+      (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]
     [SigmaCompactSpace M] [T2Space (TangentBundle I M)] in
@@ -220,8 +172,8 @@ omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space
     (i j : Fin (Module.finrank ℝ E)) :
     radialJacobiGram (I := I) g p x i j =
       g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1) :=
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1) :=
   rfl
 
 omit [T2Space M] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)] in
@@ -351,9 +303,9 @@ lemma radialJacobi_one_sum
     (c : Fin (Module.finrank ℝ E) → ℝ)
     (hx : ‖x‖ < expMapC2Radius (I := I) g p) :
     radialJacobiField (I := I) g p x
-        (∑ i, c i • (chartModelBasis E) i) 1 =
-      ∑ i, c i • radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1 := by
-  exact radialJacobi_sum (I := I) g p x (chartModelBasis E) c hx
+        (∑ i, c i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1 =
+      ∑ i, c i • radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1 := by
+  exact radialJacobi_sum (I := I) g p x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) c hx
 
 omit [T2Space M] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -380,37 +332,37 @@ lemma normalGram_radial
     (i j : Fin (Module.finrank ℝ E)) :
     normalGramMatrix (I := I) g p x i j =
       g.inner (expMap (I := I) g p (show TangentSpace I p from x))
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1)
-        (radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1) := by
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1)
+        (radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1) := by
   rw [normalGram_apply]
   have hbase := expMapDiffeo_apply_eq (I := I) g p hxsrc
   have hderiv := expDiffeo_mfderiv (I := I) g p hxsrc
   have hi :
-      mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) x ((chartModelBasis E) i) =
+      mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
         mfderiv 𝓘(ℝ, E) I
           (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-          x ((chartModelBasis E) i) :=
-    congrArg (fun L => L ((chartModelBasis E) i)) hderiv
+          x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
+    congrArg (fun L => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)) hderiv
   have hj :
-      mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) x ((chartModelBasis E) j) =
+      mfderiv 𝓘(ℝ, E) I (expMapDiffeo (I := I) g p) x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
         mfderiv 𝓘(ℝ, E) I
           (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-          x ((chartModelBasis E) j) :=
-    congrArg (fun L => L ((chartModelBasis E) j)) hderiv
+          x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) :=
+    congrArg (fun L => L ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) hderiv
   have hiRadial :
       mfderiv 𝓘(ℝ, E) I
           (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-          x ((chartModelBasis E) i) =
-        radialJacobiField (I := I) g p x ((chartModelBasis E) i) 1 := by
+          x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
+        radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) 1 := by
     with_unfolding_all exact
-      (radialJacobi_one (I := I) g p x ((chartModelBasis E) i) hxrad).symm
+      (radialJacobi_one (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) hxrad).symm
   have hjRadial :
       mfderiv 𝓘(ℝ, E) I
           (fun b : E => (expMap (I := I) g p (show TangentSpace I p from b) : M))
-          x ((chartModelBasis E) j) =
-        radialJacobiField (I := I) g p x ((chartModelBasis E) j) 1 := by
+          x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
+        radialJacobiField (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) 1 := by
     with_unfolding_all exact
-      (radialJacobi_one (I := I) g p x ((chartModelBasis E) j) hxrad).symm
+      (radialJacobi_one (I := I) g p x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) hxrad).symm
   rw [hi, hj, hbase]
   rw [hiRadial, hjRadial]
 

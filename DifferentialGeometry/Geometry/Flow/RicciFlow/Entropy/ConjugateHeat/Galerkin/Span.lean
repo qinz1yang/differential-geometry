@@ -1,8 +1,8 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLapDiffSpan
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.CriticalSpan
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Limit
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.MetricLaplacianDifference.FiniteSpan
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Critical.Span
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Subsequence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Galerkin.Local
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.PotentialSpan
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Entropy.ConjugateHeat.Potential.Span
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -30,7 +30,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete Real E
 
-theorem gal_span
+theorem galerkin_span
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
     {a b : Real} (hab : Set.Icc a b ⊆ D.regular) :
@@ -45,7 +45,7 @@ theorem gal_span
             ∃ phi : Nat → Nat,
             ∃ ulim : Real → TensorEigenIdx (I := I) (M := M)
                 (S.family.metric (T : Real)) 0 0 → Real,
-              IsConjGalSubseq (I := I) (M := M) S T h u0 V phi ulim := by
+              IsConjGalerkinSubseq (I := I) (M := M) S T h u0 V phi ulim := by
   classical
   obtain ⟨ρ2, hρ2, hρ2one, hA2⟩ :=
     lapA20_span (I := I) (M := M) S.family.metric hS.smoothMetric hab
@@ -65,24 +65,24 @@ theorem gal_span
   obtain ⟨_C1, hcont1, _hbound1⟩ :=
     conjA1_on (I := I) (M := M) S hS T hreg
   let q : SmoothRiemannianMetric I M := S.family.metric (T : Real)
-  let Inc : tensorHs (I := I) (M := M) q 0 0 2 →L[Real]
-      tensorHs (I := I) (M := M) q 0 0 1 :=
+  let Inc : TensorHs (I := I) (M := M) q 0 0 2 →L[Real]
+      TensorHs (I := I) (M := M) q 0 0 1 :=
     tensorHsInclusion (I := I) (M := M)
       (g := q) (r := 0) (s := 0) (show (1 : Real) ≤ 2 by norm_num)
   have hPot := hcont1.clm_comp
     (continuousOn_const : ContinuousOn (fun _ : Real => Inc) (Set.Icc 0 h))
   have hpert : ContinuousOn
-      (fun s : Real ↦ scalarGalPert (I := I) (M := M) S T s)
+      (fun s : Real ↦ scalarGalerkinPert (I := I) (M := M) S T s)
       (Set.Icc (0 : Real) h) := by
     change ContinuousOn (fun s : Real =>
       lapDiffA20 (I := I) (M := M) S.family.metric T s +
         (conjA1 (I := I) (M := M) S T s).comp Inc) (Set.Icc 0 h)
     exact hcont2.add hPot
-  have hG : IsConjGalTime (I := I) (M := M) S T ⟨h⟩ :=
-    gal_exists_on (I := I) (M := M) S T hh (hhρ.trans hρone) hpert
-  have hbound := gal_bound_on (I := I) (M := M) S T hG
+  have hG : IsConjGalerkinTime (I := I) (M := M) S T ⟨h⟩ :=
+    exists_galerkin_solution_on (I := I) (M := M) S T hh (hhρ.trans hρone) hpert
+  have hbound := galerkin_bound_on (I := I) (M := M) S T hG
     Cmid hCmid hcrit hcore
-  have hsub := gal_subseq_on (I := I) (M := M) S T hh hbound hpert
+  have hsub := galerkin_subseq_on (I := I) (M := M) S T hh hbound hpert
   exact ⟨hreg, hsub⟩
 
 theorem gallim_span
@@ -99,7 +99,7 @@ theorem gallim_span
             ∃ phi : Nat → Nat,
             ∃ ulim : Real → TensorEigenIdx (I := I) (M := M)
                 (S.family.metric (T : Real)) 0 0 → Real,
-              IsConjGalSubseq (I := I) (M := M) S T h u0 V phi ulim ∧
+              IsConjGalerkinSubseq (I := I) (M := M) S T h u0 V phi ulim ∧
               DifferentialGeometry.Analysis.Parabolic.IsHeatPotOn
                 (RealTimeInterval.closed 0 h hh.le)
                 (reverseFamily (I := I) (M := M)
@@ -113,7 +113,7 @@ theorem gallim_span
                     (fun i r => ulim r i) s x) := by
   classical
   obtain ⟨ρg, hρg, hρgone, hgal⟩ :=
-    gal_span (I := I) (M := M) S hS hab
+    galerkin_span (I := I) (M := M) S hS hab
   obtain ⟨ρa, hρa, hρaone, hA20⟩ :=
     lapA20_span (I := I) (M := M) S.family.metric hS.smoothMetric hab
   let ρ : Real := min ρg ρa
@@ -162,7 +162,7 @@ theorem gallim_unit_span
       gallim_span (I := I) (M := M) S hS hab
     refine ⟨ρ, hρ, hρone, ?_⟩
     intro T hT h hh hhρ hleft
-    rcases unit_init_or_empty (I := I) (M := M)
+    rcases unit_initial_or_empty (I := I) (M := M)
         (S.family.metric (T : Real)) with hEmpty | ⟨u0, hinit, hunit⟩
     · exact (hEmpty.false (Classical.choice hM)).elim
     · obtain ⟨V, phi, ulim, hlim, hpot⟩ :=
@@ -186,7 +186,7 @@ theorem gallim_unit_span
             (reverseFamily (I := I) (M := M)
               (flowG (I := I) S) (T : Real)) 0)) = 1 := by
         dsimp only [u]
-        rw [galLim_initial (I := I) (M := M) hlim]
+        rw [galerkinLim_initial (I := I) (M := M) hlim]
         simpa only [volumeMeasureFamily, metricFamilyForMeasure,
           riemannianMeasureFamily, reverseFamily, flowG, sub_zero,
           SolutionOn.family_metric] using hunit

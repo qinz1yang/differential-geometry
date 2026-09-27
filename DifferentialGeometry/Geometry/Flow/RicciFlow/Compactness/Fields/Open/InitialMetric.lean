@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -11,7 +11,7 @@ open Set Bundle Manifold
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -24,7 +24,7 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat → Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 omit [NeZero (Module.finrank ℝ E)]
   [I.Boundaryless] in
@@ -33,8 +33,8 @@ theorem gInf_zero_eq
       letI : ChartedSpace H P.M := P.charted;
       letI : IsManifold I ∞ P.M := P.smooth;
       SmoothRiemannianMetric I P.M)
-    (bf : BumpFamily (I := I) Φ) (hsrc : SrcSigma Φ) (htgt : TgtSigma Φ)
-    {a b t₀ : Real} (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (bf : BumpFamily (I := I) Φ) (hsrc : SourceIsSigmaCompact Φ) (htgt : TargetIsSigmaCompact Φ)
+    {a b t₀ : Real} (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (hzero : (0 : Real) ∈ Set.Ioo a b)
     (g₀ : letI : TopologicalSpace P.M := P.topology;
       letI : ChartedSpace H P.M := P.charted;
@@ -53,7 +53,7 @@ theorem gInf_zero_eq
                 sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
                 sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k 0).inner ⟨x, hx⟩ v w) -
+            (sourceMetric (I := I) Φ hsrc htgt k 0).inner ⟨x, hx⟩ v w) -
               g₀.inner x v w| < ε) :
     letI : TopologicalSpace P.M := P.topology
     letI : ChartedSpace H P.M := P.charted
@@ -65,11 +65,11 @@ theorem gInf_zero_eq
   let : IsManifold I ∞ P.M := P.smooth
   let : SigmaCompactSpace P.M := P.sigmaCompact
   obtain ⟨n, hzeroN⟩ := RealTimeInterval.mem_openWindow (t₀ := t₀) hzero
-  exact DifferentialGeometry.HCGCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
+  exact DifferentialGeometry.CheegerGromovCompactness.gInf_zero_eq (I := I) Φ R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n)
-    (OpenConvOut.atWindow Φ co n) hzeroN g₀ hconv₀
+    (OpenMetricConvergenceData.atWindow Φ co n) hzeroN g₀ hconv₀
 
-end OpenConvOut
-end HCGCompactness
+end OpenMetricConvergenceData
+end CheegerGromovCompactness
 end DifferentialGeometry

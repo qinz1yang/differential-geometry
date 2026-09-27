@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Definitions
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciHeat
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.QuotientEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.HamiltonReaction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicciEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.SolutionEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.IntrinsicEvolution
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Estimate
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.HeatEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Quotient.Evolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Reaction.Hamilton
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.TraceFreeRicci.Evolution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Evolution.Solution
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Evolution.Intrinsic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.Pinching.Estimate.Pinching
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 

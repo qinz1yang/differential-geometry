@@ -304,21 +304,6 @@ theorem exists_const_fderiv_tensorChartComponentRaw_pullback_norm_sq_le
   exact fderiv_tensorChartComponentRaw_pullback_norm_sq_le_uniform
     (I := I) (M := M) g r s α S Idx Jdx hb w
 
-example (g : SmoothRiemannianMetric I M) (α : M) (S : SmoothCcTensor g 1 2)
-    (Idx : Fin 1 → Fin (Module.finrank ℝ E))
-    (Jdx : Fin 2 → Fin (Module.finrank ℝ E))
-    {b : M} (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) (w : E) :
-    (fderiv ℝ
-        (tensorChartComponentRaw (I := I) (M := M) g 1 2 S α Idx Jdx ∘
-          (extChartAt I α).symm)
-        (extChartAt I α b) w) ^ 2 ≤
-      ‖tensorChartComponentProjection (E := E) 1 2 Idx Jdx‖ ^ 2 *
-        ‖fderiv ℝ
-            (tensorTrivProj (I := I) (M := M) g 1 2 S α ∘ (extChartAt I α).symm)
-            (extChartAt I α b)‖ ^ 2 * ‖w‖ ^ 2 :=
-  fderiv_tensorChartComponentRaw_pullback_norm_sq_le
-    (I := I) (M := M) g 1 2 α S Idx Jdx hb w
-
 end TensorSpectral
 end Parabolic
 end Analysis

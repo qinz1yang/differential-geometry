@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.MemW1pResidualFull
+import DifferentialGeometry.Analysis.Elliptic.Regularity.FChartResidual.DensityIdentification
 
 noncomputable section
 
@@ -26,7 +26,7 @@ open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainSmoothMul
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplResidualMemW1p
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplResidual
-open DifferentialGeometry.Analysis.Laplacian.MemW1pFChartResidualFull
+open DifferentialGeometry.Analysis.Laplacian.FChartResidualDensityIdentification
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
 private local instance : MeasurableSpace E := borel E

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYau
 import DifferentialGeometry.Analysis.Parabolic.Harnack.PathIntegration
-import DifferentialGeometry.Analysis.Calculus.CurveDerivative
+import DifferentialGeometry.Analysis.Calculus.Derivative.Curve
 import DifferentialGeometry.Geometry.Exponential.MinimizingGeodesic
-import DifferentialGeometry.Geometry.Comparison.HopfRinowProper
+import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
 
 
 noncomputable section
@@ -37,7 +37,7 @@ private theorem chartLaplacianValue_jointContDiffAt
     ∀ α : M, x₀ ∈ (chartAt H α).source →
       ContDiffAt ℝ ∞ (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
         (t₀, (extChartAt I α) x₀) := by
   classical
@@ -54,7 +54,7 @@ private theorem chartLaplacianValue_jointContDiffAt
   have hpd : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, y) := by
     intro i y hy
@@ -69,9 +69,9 @@ private theorem chartLaplacianValue_jointContDiffAt
       (f := fun (p : ℝ × E) => fun (z : E) => scalarOnE (I := I) α (f p.1) z)
       (g := fun p : ℝ × E => p.2) hf' hg (by simp)
     have hcomp :=
-      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
+      (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).contDiff.contDiffAt.comp
         (t₀, y) hfd
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     refine hcomp.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun _ => rfl
   have hgram : ∀ (i j : Fin (Module.finrank ℝ E)) (y : E),
@@ -92,14 +92,14 @@ private theorem chartLaplacianValue_jointContDiffAt
     have hsum_cd : ContDiffAt ℝ ∞
         (fun p : ℝ × E => ∑ j : Fin (Module.finrank ℝ E),
           chartInvGramOnE (I := I) g α i j p.2 *
-            partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (fun z : E => scalarOnE (I := I) α (f p.1) z) p.2)
         (t₀, y) := by
       exact ContDiffAt.sum (s := Finset.univ) (fun j _ => (hgram i j y hy).mul (hpd j y hy))
     refine hsum_cd.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun p => by
       change gradChartCoeffOnE (I := I) g α (f p.1) i p.2 =
         ∑ j, chartInvGramOnE (I := I) g α i j p.2 *
-          partialDeriv (E := E) j (scalarOnE (I := I) α (f p.1)) p.2
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (scalarOnE (I := I) α (f p.1)) p.2
       exact gradChartCoeffOnE_def (I := I) g α (f p.1) i p.2
   have hρ : ∀ y : E, y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞ (fun p : ℝ × E => chartDensityOnE (I := I) g α p.2) (t₀, y) := by
@@ -119,7 +119,7 @@ private theorem chartLaplacianValue_jointContDiffAt
   have hpdI : ∀ (i : Fin (Module.finrank ℝ E)) (y : E),
       y ∈ (extChartAt I α).target →
       ContDiffAt ℝ ∞
-        (fun p : ℝ × E => partialDeriv (E := E) i
+        (fun p : ℝ × E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
           (fun z : E => chartVossWeylIntegrand (I := I) g α (f p.1) i z) p.2) (t₀, y) := by
     intro i y hy
     have hproj : ContDiffAt ℝ ∞ (fun q : (ℝ × E) × E => (q.1.1, q.2)) ((t₀, y), y) := by
@@ -133,21 +133,21 @@ private theorem chartLaplacianValue_jointContDiffAt
       (f := fun (p : ℝ × E) => fun (z : E) => chartVossWeylIntegrand (I := I) g α (f p.1) i z)
       (g := fun p : ℝ × E => p.2) hf' hg (by simp)
     have hcomp :=
-      (ContinuousLinearMap.apply ℝ ℝ (chartModelBasis E i)).contDiff.contDiffAt.comp
+      (ContinuousLinearMap.apply ℝ ℝ (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)).contDiff.contDiffAt.comp
         (t₀, y) hfd
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     refine hcomp.congr_of_eventuallyEq ?_
     exact Filter.Eventually.of_forall fun _ => rfl
   have hsum : ContDiffAt ℝ ∞
       (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
       (t₀, (extChartAt I α) x₀) := by
     have hsum0 : ContDiffAt ℝ ∞
         (fun p : ℝ × E =>
           ∑ i : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (f p.1) i) p.2)
         (t₀, (extChartAt I α) x₀) := by
       exact ContDiffAt.sum (s := Finset.univ) (fun i _ => hpdI i ((extChartAt I α) x₀) hxtarget)
     have hdens : ContDiffAt ℝ ∞
@@ -187,21 +187,30 @@ private theorem laplacianAt_time_contDiffAt_on
   have hcd : ContDiffAt ℝ ∞
       (fun p : ℝ × E =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u p.1) i) p.2) /
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u p.1) i) p.2) /
           chartDensityOnE (I := I) g α p.2)
       (t₀, (extChartAt I α) x) :=
-    chartLaplacianValue_jointContDiffAt (I := I) (M := M) (D := D) g u hu ht₀ x α hxsrc
+    by
+      have hy : extChartAt I α x ∈ interior (extChartAt I α).target := by
+        rwa [(isOpen_extChartAt_target (I := I) α).interior_eq]
+      have h := (scalarOnE_chartVossWeylLaplacian_contDiffOn_prod g u
+        D.regular_isOpen hu α).contDiffAt (x := (t₀, extChartAt I α x))
+          ((D.regular_isOpen.prod isOpen_interior).mem_nhds ⟨ht₀, hy⟩)
+      apply h.congr_of_eventuallyEq
+      filter_upwards [continuousAt_snd.eventually (isOpen_interior.mem_nhds hy)] with p hp
+      simp only [scalarOnE_def, chartVossWeylLaplacian_def, chartDensityOnE,
+        (extChartAt I α).right_inv (interior_subset hp)]
   have hsliceAt : ContDiffAt ℝ ∞
       (fun t : ℝ =>
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
             ((extChartAt I α) x)) /
           chartDensityOnE (I := I) g α ((extChartAt I α) x)) t₀ := by
     exact hcd.comp (x := t₀) (contDiffAt_id.prodMk contDiffAt_const)
   have hbridge : ∀ᶠ t in 𝓝 t₀,
       laplacianAt (I := I) G t (u t) x =
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
             ((extChartAt I α) x)) /
           chartDensityOnE (I := I) g α ((extChartAt I α) x) := by
     filter_upwards [IsOpen.mem_nhds D.regular_isOpen ht₀] with t ht
@@ -212,7 +221,7 @@ private theorem laplacianAt_time_contDiffAt_on
       rw [hGmetric t (D.regular_subset ht)]
     have hvw : ΔG (I := I) g ⟨u t, hslice t (D.regular_subset ht)⟩ x =
         (∑ i : Fin (Module.finrank ℝ E),
-          partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
+          DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartVossWeylIntegrand (I := I) g α (u t) i)
             ((extChartAt I α) x)) /
           chartDensityOnE (I := I) g α ((extChartAt I α) x) := by
       have hvw0 : ΔG (I := I) g ⟨u t, hslice t (D.regular_subset ht)⟩ x =
@@ -681,7 +690,7 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
     let speedSq : ℝ → ℝ := fun _ => (d / (b - a)) ^ 2
     let derivative : ℝ → ℝ := fun t => deriv (fun s => u s (τ s)) t
     have hhu : ∀ t ∈ Icc a b, 0 < u t (τ t) := fun t ht => hpos t (D.regular_subset (hreg ht)) (τ t)
-    have huc_reg : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => u s (τ s)) D.regular := by
+    have huc_regularity : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun s : ℝ => u s (τ s)) D.regular := by
       have hJ : ContMDiffOn 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) ∞
           (fun s : ℝ => (s, τ s)) D.regular := by
         have hJ0 : ContMDiffOn 𝓘(ℝ, ℝ) ((𝓘(ℝ, ℝ)).prod I) ∞
@@ -691,12 +700,12 @@ theorem heat_solution_harnack_of_nonnegative_ricci_on
         exact hJ0.mono (by intro s hs; trivial)
       exact hu.jointSmooth.comp hJ (by intro s hs; exact ⟨hs, trivial⟩)
     have huc_cd : ContDiffOn ℝ ∞ (fun s : ℝ => u s (τ s)) D.regular :=
-      contMDiffOn_iff_contDiffOn.mp huc_reg
+      contMDiffOn_iff_contDiffOn.mp huc_regularity
     have hderiv_cont : ContinuousOn derivative (Icc a b) := by
-      have hcont_reg : ContinuousOn
+      have hcont_regularity : ContinuousOn
           (iteratedDerivWithin 1 (fun s : ℝ => u s (τ s)) D.regular) D.regular :=
         huc_cd.continuousOn_iteratedDerivWithin (by norm_num) (D.regular_isOpen.uniqueDiffOn)
-      refine (hcont_reg.mono (by intro t ht; exact hreg ht)).congr ?_
+      refine (hcont_regularity.mono (by intro t ht; exact hreg ht)).congr ?_
       intro t ht
       rw [iteratedDerivWithin_one]
       simpa [derivative] using (derivWithin_of_mem_nhds (D.regular_isOpen.mem_nhds (hreg ht))).symm

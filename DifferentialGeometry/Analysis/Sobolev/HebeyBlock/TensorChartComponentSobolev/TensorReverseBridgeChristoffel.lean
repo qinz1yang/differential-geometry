@@ -1,16 +1,16 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentL2BoundUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentWkpNormBoundFromH1
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.GradNormChartBoundPouWeighted
-import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorChartComponentSobolevBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.Gradient.PartitionOfUnityWeightedBound
+import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.SobolevBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrection.ChristoffelBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
-import DifferentialGeometry.Analysis.Sobolev.Intrinsic.EquivalenceReverse
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.ComponentNormBound
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.TensorChartComponentSobolev.TensorComponentScalarWkpBound
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOpNorm.ChristoffelCkBound
 open DifferentialGeometry.Geometry.Operator
 
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators

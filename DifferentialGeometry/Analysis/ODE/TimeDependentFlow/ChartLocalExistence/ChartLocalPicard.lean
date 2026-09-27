@@ -193,29 +193,11 @@ theorem time_dependent_vf_chart_local_picard_with_lipschitz
   have hy' : y ∈ Metric.closedBall x₀ rN := by
     rw [Metric.mem_closedBall] at hy ⊢
     rw [hrN]; exact hy
-  obtain ⟨h_init, h_flow⟩ := hflow y hy'
+  obtain ⟨h_initial, h_flow⟩ := hflow y hy'
   refine ⟨?_, ?_⟩
-  · have : flow y (t₀_set : ℝ) = y := h_init
+  · have : flow y (t₀_set : ℝ) = y := h_initial
     simpa [t₀_set] using this
   · intro t ht
     have hd := h_flow t ht
     exact hd
-omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem time_dependent_vf_chart_local_picard
-    (X : ℝ → ∀ x : M, TangentSpace I x) (α : M)
-    (h : ∃ T : ℝ, 0 < T ∧ ∃ U : Set M, IsOpen U ∧ α ∈ U ∧ U ⊆ (chartAt H α).source ∧
-      ∃ φ : ℝ → M → M,
-        (∀ x ∈ U, φ 0 x = x) ∧
-        ∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x ∈ U,
-          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => φ s x) (Set.Ici 0) t
-            ((ContinuousLinearMap.id ℝ ℝ).smulRight (X t (φ t x)))) :
-    ∃ T : ℝ, 0 < T ∧ ∃ U : Set M, IsOpen U ∧ α ∈ U ∧ U ⊆ (chartAt H α).source ∧
-      ∃ φ : ℝ → M → M,
-        (∀ x ∈ U, φ 0 x = x) ∧
-        ∀ t ∈ Set.Ico (0 : ℝ) T, ∀ x ∈ U,
-          HasMFDerivWithinAt 𝓘(ℝ, ℝ) I (fun s : ℝ => φ s x) (Set.Ici 0) t
-            ((ContinuousLinearMap.id ℝ ℝ).smulRight (X t (φ t x))) := h
-
-
 end DifferentialGeometry.Analysis.ODE

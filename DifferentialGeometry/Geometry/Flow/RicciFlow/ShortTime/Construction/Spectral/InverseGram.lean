@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.GramBounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.GramInvUniformEigenvalueLowerBound
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.ChristoffelPerturbation
+import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -10,12 +10,12 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Analysis.Calculus.DeTurckCoefficients
+open DifferentialGeometry.Analysis.Calculus
     DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
 
 variable
@@ -49,7 +49,7 @@ theorem invGram_buffer_bnd
           |chartInvGramOnE (I := I) (gSeq k) α i j
             (extChartAt I α b)| ≤ M_b := by
   have hbufferCpt : IsCompact (chartBuffer (extChartAt I α) K r₀) :=
-    chartBuffer_cpt_of_continuousOn (extChartAt I α) r₀
+    chartBuffer_compact_of_continuousOn (extChartAt I α) r₀
       (continuousOn_extChartAt α) (continuousOn_extChartAt_symm α)
       hK hKsrc hcollar
   have hbufferBase :
@@ -58,15 +58,15 @@ theorem invGram_buffer_bnd
     intro b hb
     rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
     have hbsrc : b ∈ (extChartAt I α).source :=
-      chartBuffer_src (extChartAt I α) K r₀ hcollar hb
+      chartBuffer_source (extChartAt I α) K r₀ hcollar hb
     simpa only [extChartAt_source] using hbsrc
   obtain ⟨M_b, hM_b, hquad⟩ :=
-    chartInvGram_unif_ub (I := I) (M := M) gBase gSeq α
+    chartInvGram_uniform_ub (I := I) (M := M) gBase gSeq α
       hbufferCpt hbufferBase Λ hΛ hequiv
   refine ⟨M_b, hM_b, ?_⟩
   intro k b hb i j
   have hbsrc : b ∈ (extChartAt I α).source :=
-    chartBuffer_src (extChartAt I α) K r₀ hcollar hb
+    chartBuffer_source (extChartAt I α) K r₀ hcollar hb
   have hentry := chartInvGram_ent_le (I := I) (gSeq k) α
     (hbufferBase hb) (hquad k b hb) i j
   simpa only [chartInvGramOnE_def,
@@ -89,36 +89,36 @@ theorem gramD_buffer_bnd
               (extChartAt I α b)‖ ≤ C) :
     ∀ k : ι, ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
       ∀ m i j : Fin (Module.finrank ℝ E),
-        |partialDeriv (E := E) m
+        |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (chartGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α b)| ≤
           C * ∑ a : Fin (Module.finrank ℝ E),
-            ‖(chartModelBasis E) a‖ := by
+            ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a‖ := by
   classical
   let CE : ℝ := ∑ a : Fin (Module.finrank ℝ E),
-    ‖(chartModelBasis E) a‖
+    ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a‖
   intro k b hb m i j
-  have hm_le : ‖(chartModelBasis E) m‖ ≤ CE :=
+  have hm_le : ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ ≤ CE :=
     Finset.single_le_sum
-      (fun a _ => norm_nonneg ((chartModelBasis E) a))
+      (fun a _ => norm_nonneg ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) a))
       (Finset.mem_univ m)
-  rw [partial_eq_iter1, ← Real.norm_eq_abs]
+  rw [partialDeriv_eq_iteratedFDeriv_one, ← Real.norm_eq_abs]
   change ‖iteratedFDeriv ℝ 1
       (chartGramOnE (I := I) (gSeq k) α i j)
-        (extChartAt I α b) ![(chartModelBasis E) m]‖ ≤ C * CE
+        (extChartAt I α b) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖ ≤ C * CE
   calc
     ‖iteratedFDeriv ℝ 1
         (chartGramOnE (I := I) (gSeq k) α i j)
-          (extChartAt I α b) ![(chartModelBasis E) m]‖
+          (extChartAt I α b) ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m]‖
         ≤ ‖iteratedFDeriv ℝ 1
             (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)‖ *
             ∏ a : Fin 1,
-              ‖(![(chartModelBasis E) m] : Fin 1 → E) a‖ :=
+              ‖(![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m] : Fin 1 → E) a‖ :=
       ContinuousMultilinearMap.le_opNorm _ _
     _ = ‖iteratedFDeriv ℝ 1
           (chartGramOnE (I := I) (gSeq k) α i j)
-            (extChartAt I α b)‖ * ‖(chartModelBasis E) m‖ := by simp
+            (extChartAt I α b)‖ * ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m‖ := by simp
     _ ≤ C * CE :=
       mul_le_mul (hgram k b hb i j) hm_le (norm_nonneg _) hC
 
@@ -141,18 +141,18 @@ theorem invGramD_buffer_bnd
     (hQ : ∀ k : ι,
       ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (chartGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ Q) :
     ∀ k : ι, ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
       ∀ m i j : Fin (Module.finrank ℝ E),
-        |partialDeriv (E := E) m
+        |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (chartInvGramOnE (I := I) (gSeq k) α i j)
             (extChartAt I α b)| ≤
           (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 * Q := by
   intro k b hb m i j
   have hbsrc : b ∈ (extChartAt I α).source :=
-    chartBuffer_src (extChartAt I α) K r₀ hcollar hb
+    chartBuffer_source (extChartAt I α) K r₀ hcollar hb
   have hbint : extChartAt I α b ∈ interior (extChartAt I α).target :=
     extChartAt_target_subset_interior_of_boundaryless (I := I) α
       ((extChartAt I α).map_source hbsrc)
@@ -171,7 +171,7 @@ theorem invGram_fderiv_bnd
     (hD : ∀ k : ι,
       ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
         ∀ m i j : Fin (Module.finrank ℝ E),
-          |partialDeriv (E := E) m
+          |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
             (chartInvGramOnE (I := I) (gSeq k) α i j)
               (extChartAt I α b)| ≤ D) :
     ∀ k : ι, ∀ b ∈ chartBuffer (extChartAt I α) K r₀,
@@ -180,27 +180,27 @@ theorem invGram_fderiv_bnd
           (extChartAt I α b)‖ ≤
           (∑ m : Fin (Module.finrank ℝ E),
             ‖LinearMap.toContinuousLinearMap
-              ((chartModelBasis E).coord m)‖) * D := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖) * D := by
   classical
   intro k b hb i j
-  refine (opNorm_le_sum_coord (chartModelBasis E)
+  refine (opNorm_le_sum_coord (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
     (fderiv ℝ (chartInvGramOnE (I := I) (gSeq k) α i j)
       (extChartAt I α b))).trans ?_
   calc
     ∑ m : Fin (Module.finrank ℝ E),
-        ‖LinearMap.toContinuousLinearMap ((chartModelBasis E).coord m)‖ *
+        ‖LinearMap.toContinuousLinearMap ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖ *
           |fderiv ℝ (chartInvGramOnE (I := I) (gSeq k) α i j)
-            (extChartAt I α b) ((chartModelBasis E) m)|
+            (extChartAt I α b) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) m)|
         ≤ ∑ m : Fin (Module.finrank ℝ E),
             ‖LinearMap.toContinuousLinearMap
-              ((chartModelBasis E).coord m)‖ * D := by
+              ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖ * D := by
       refine Finset.sum_le_sum fun m _ => ?_
       apply mul_le_mul_of_nonneg_left
-      · simpa only [partialDeriv] using hD k b hb m i j
+      · simpa only [DifferentialGeometry.Tensor.Coordinates.partialDeriv] using hD k b hb m i j
       · exact norm_nonneg _
     _ = (∑ m : Fin (Module.finrank ℝ E),
           ‖LinearMap.toContinuousLinearMap
-            ((chartModelBasis E).coord m)‖) * D := by
+            ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord m)‖) * D := by
       rw [Finset.sum_mul]
 
 omit [NeZero (Module.finrank ℝ E)]

@@ -8,7 +8,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.BaseFChart.Pol
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.DifferentiatedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.InductiveSuccessor
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.MixedPartials
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH2kBridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2Regularity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Defs
@@ -40,7 +40,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
 open DifferentialGeometry.Analysis.Laplacian.IteratedMixedPartials
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrap
-open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapFinal
+open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapPolymorphic
 open DifferentialGeometry.Analysis.Laplacian.IteratedChartHmBootstrapCanonical
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpFour
@@ -189,7 +189,7 @@ theorem chartPushed_memWkp_two_k_of_le_two
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
         (I := I) (M := M) α) := by
   have h_bridge :=
-    IteratedChartHmBootstrapFinal.chartSideH2kBridge_of_laplacianDomainPow_le_two
+    IteratedChartHmBootstrapPolymorphic.chartSideH2kBridge_of_laplacianDomainPow_le_two
       (I := I) (M := M) g hk hu_h
   exact chartPushed_memWkp_two_k_of_laplacianDomainPow_bridge
     (I := I) (M := M) g α k hu_h h_bridge

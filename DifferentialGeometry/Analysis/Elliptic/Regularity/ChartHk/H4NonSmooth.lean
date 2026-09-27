@@ -33,7 +33,7 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem chart_loc_of_iterated_diff_data_and_uniform_bound
+theorem chart_local_of_iterated_diff_data_and_uniform_bound
     [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
     {g : SmoothRiemannianMetric I M} {α : M}
     (D₂ : ChartBilinearH1ComplData (I := I) (M := M) g α)
@@ -100,7 +100,7 @@ theorem exists_weak_second_partial_of_iterated_diff_data_explicit
   let _ := D₀_l
   let _ := D₁
   let _ := D₁_m
-  exact chart_loc_of_iterated_diff_data_and_uniform_bound
+  exact chart_local_of_iterated_diff_data_and_uniform_bound
     (I := I) (M := M) (g := g) (α := α) D₂
     hΩ''_open hΩ''_compact_closure hh₀ h_room hM_nn h_uniform_bd
 

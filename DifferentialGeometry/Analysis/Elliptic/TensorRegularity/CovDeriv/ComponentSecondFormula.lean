@@ -74,7 +74,7 @@ noncomputable def covDerivComponentEuclid
           (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-          (chartBasisVecFiber (I := I) α m)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))))
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
@@ -92,7 +92,7 @@ lemma covDerivComponentEuclid_def
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))) := rfl
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [T2Space M]

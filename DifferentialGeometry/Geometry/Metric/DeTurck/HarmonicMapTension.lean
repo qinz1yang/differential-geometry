@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.DeTurck.Naturality
-import DifferentialGeometry.Geometry.Metric.Pullback
-import DifferentialGeometry.Bundle.VectorFieldPushforward
+import DifferentialGeometry.Geometry.Metric.Pullback.Basic
+import DifferentialGeometry.Bundle.VectorField.Pushforward
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -101,7 +101,7 @@ theorem tension_eq_DT (g h : SmoothRiemannianMetric I M)
   rw [tension_eq_push, push_deTurckVF]
 
 omit [SigmaCompactSpace M] in
-theorem hmf_neg_gauge
+theorem harmonic_map_flow_has_negative_pushforward_deTurck_velocity
     (g : ℝ → SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric I M) (T : ℝ)
     (Φ : ℝ → (M ≃ₘ⟮I, I⟯ M))
@@ -122,7 +122,7 @@ theorem hmf_neg_gauge
   simpa only [tension_eq_push] using hHMF x t ht
 
 omit [SigmaCompactSpace M] in
-theorem hmf_target_gauge
+theorem harmonic_map_flow_has_negative_deTurck_velocity
     (g : ℝ → SmoothRiemannianMetric I M)
     (h : SmoothRiemannianMetric I M) (T : ℝ)
     (Φ : ℝ → (M ≃ₘ⟮I, I⟯ M))

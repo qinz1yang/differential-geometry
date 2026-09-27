@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.ChartTensor0SCovariantDerivativeAgreementSucc
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SNabla
-import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0SPartialEval
-import DifferentialGeometry.Tensor.RSTensor.NablaOnTensors.Regularity.Tensor0S
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Basic
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.PartialEvaluation
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Regularity.Tensor0S
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -106,7 +106,7 @@ private lemma cmlm_cons_eq_curry (s : ℕ) {x : M}
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in
-theorem abstractDerivEval_aux
+theorem tensor0SCovariantDerivative_eval
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))
     [CovariantDerivative.ContMDiffCovariantDerivative cov ∞] :
     ∀ (s : ℕ) (T : Π b : M, Tensor0SSpace s I b)
@@ -181,40 +181,40 @@ theorem abstractDerivEval_aux
         (cov_TM := cov) (cov_s := tensor0SCovariantDerivative I M s cov) T x (X x)]
     have hcurry : Tensor0SSpace.eval
         ((tensor0SCurry (I := I) (M := M) s x).symm
-          (HomConnection.homBundleCovariantDerivativeFun I M
+          (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
           (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
             (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) =
-          HomConnection.homBundleCovariantDerivativeFun I M
+          HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
             (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)
               (V 0 x) (fun i : Fin s => V i.succ x) := by
       calc
         Tensor0SSpace.eval
             ((tensor0SCurry (I := I) (M := M) s x).symm
-              (HomConnection.homBundleCovariantDerivativeFun I M
+              (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
                 (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
                 (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
               (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) =
           ((tensor0SCurry (I := I) (M := M) s x).symm
-            (HomConnection.homBundleCovariantDerivativeFun I M
+            (HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
               (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
               (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x)))
                 (Fin.cons (V 0 x) (fun i : Fin s => V i.succ x)) :=
           Tensor0SSpace.eval_eq _ _
         _ = _ := curry_symm_cons (I := I) (M := M) s
-          (Φ := HomConnection.homBundleCovariantDerivativeFun I M
+          (Φ := HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
             (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
             (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x))
           (V 0 x) (fun i : Fin s => V i.succ x)
     rw [hcurry]
     have hPsi := HomConnection.homBundleCovariantDerivativeFun_apply_eq
-      (I := I) (M := M) (F := Tensor0SModel s ℝ E)
+      (I := I) (M := M) (E_U := E) (U := TangentSpace I) (F := Tensor0SModel s ℝ E)
       (V := fun x : M => Tensor0SSpace s I x)
-      (cov_TM := cov) (cov_V := tensor0SCovariantDerivative I M s cov)
+      (cov_U := cov) (cov_V := tensor0SCovariantDerivative I M s cov)
       (τ := curriedSection I M T) (x := x) hτ_at
       (V_field := X) (Y := V 0) hX_at hV0_at
-    rw [show HomConnection.homBundleCovariantDerivativeFun I M
+    rw [show HomConnection.homBundleCovariantDerivativeFun I M E (TangentSpace I)
           (Tensor0SModel s ℝ E) (fun x : M => Tensor0SSpace s I x) cov
           (tensor0SCovariantDerivative I M s cov) (curriedSection I M T) x (X x) (V 0 x) =
         (tensor0SCovariantDerivative I M s cov)
@@ -358,7 +358,7 @@ theorem nabla0SFun_eq_tensor0SCovariantDerivative
           funext p
           exact (Tensor0SSpace.eval_eq _ _).symm]
         congr 1
-  have ha := abstractDerivEval_aux
+  have ha := tensor0SCovariantDerivative_eval
     (I := I) (M := M) (LeviCivita (I := I) g) s
     (fun y : M => α y) (fun a => (V a : Π b : M, TangentSpace I b)) X
     α.contMDiff (fun a => (V a).contMDiff) X.contMDiff x

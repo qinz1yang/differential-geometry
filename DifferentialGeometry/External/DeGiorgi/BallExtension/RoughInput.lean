@@ -598,7 +598,7 @@ theorem aestronglyMeasurable_euclidean_of_components_local
     simp
   exact (h_toLp_meas.comp_aemeasurable h_ofLp).aestronglyMeasurable.congr <| EventuallyEq.of_eq h_id
 
-private theorem eLpNorm_le_of_lintegral_rpow_ofReal_le_generic
+private theorem eLpNorm_le_of_lintegral_rpow_ofReal_le
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
     {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} {A : ℝ≥0∞}
     (hA : ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ ≤ A) :
@@ -748,7 +748,7 @@ theorem eLpNorm_unitBallExtension_sub_le_local
       ≤ ((1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) *
           ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x - v x|) ^ p ∂volume) ^ (1 / p) := by
             simpa [Real.norm_eq_abs] using
-              (eLpNorm_le_of_lintegral_rpow_ofReal_le_generic (α := E) (F := ℝ)
+              (eLpNorm_le_of_lintegral_rpow_ofReal_le (α := E) (F := ℝ)
                 (f := fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
                 hp0 hInt)
     _ = (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *

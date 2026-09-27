@@ -617,7 +617,7 @@ theorem ricciNormSq_basis
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {t : Real} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen
+    (hinv : MetricInverseInBasis
       (I := I) (M := M) (S.family.metric t) x basis
       (fun i j : Idx => gInv t x i j))
     (hbasis : ∀ i : Idx, basis i = frame i x) :
@@ -825,7 +825,7 @@ private theorem nablaRicciNorm_basis
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {t : Real} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen
+    (hinv : MetricInverseInBasis
       (I := I) (M := M) (S.family.metric t) x basis
       (fun i j : Idx => gInv t x i j))
     (hbasis : ∀ i : Idx, basis i = frame i x)
@@ -868,7 +868,7 @@ theorem nabla_ricci_norm_sq_in_frame_eq_gradient_norm_sq
     (frame : Idx -> (x : M) -> TangentSpace I x)
     {t : Real} {x : M}
     (basis : Module.Basis Idx Real (TangentSpace I x))
-    (hinv : MetricInverseInBasisGen
+    (hinv : MetricInverseInBasis
       (I := I) (M := M) (S.family.metric t) x basis
       (fun i j : Idx => gInv t x i j))
     (hbasis : ∀ i : Idx, basis i = frame i x) :

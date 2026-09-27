@@ -32,7 +32,7 @@ open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplResidual
 open DifferentialGeometry.Analysis.Laplacian.SmoothApproxSeqCauchyW22
 open DifferentialGeometry.Analysis.Laplacian.SmoothApproxSeqH1ComplTendsto
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open Analysis.Sobolev.EquivalenceFull
+open Analysis.Sobolev.Equivalence
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩

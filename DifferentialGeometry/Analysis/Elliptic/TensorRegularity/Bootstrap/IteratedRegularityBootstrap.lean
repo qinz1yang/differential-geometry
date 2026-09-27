@@ -51,7 +51,7 @@ private theorem wkpNorm_assembly_le
   classical
   induction m with
   | zero =>
-      refine ⟨0, by norm_num, fun {u} _hu_cd _hu_cpt => ?_⟩
+      refine ⟨0, by norm_num, fun {u} _hu_cd _hu_compact => ?_⟩
       have hUniq : ∀ idx : Fin 0 → Fin d, idx = (fun i : Fin 0 => i.elim0) :=
         fun idx => by funext i; exact i.elim0
       have : Unique (Fin 0 → Fin d) :=
@@ -68,13 +68,13 @@ private theorem wkpNorm_assembly_le
       rw [h_sum, zero_mul, add_zero]
   | succ m ih =>
       obtain ⟨N, hN_ne_top, hN⟩ := ih
-      refine ⟨(d : ℝ≥0∞) * N + 1, ?_, fun {u} hu_cd hu_cpt => ?_⟩
+      refine ⟨(d : ℝ≥0∞) * N + 1, ?_, fun {u} hu_cd hu_compact => ?_⟩
       · refine (ENNReal.add_ne_top).mpr ⟨?_, by norm_num⟩
         exact ENNReal.mul_ne_top (by norm_num) hN_ne_top
       rw [show m + 1 + 2 = (m + 2) + 1 from by ring,
         wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) (m + 2) 2 Ω u]
       have hu_W1 : DeGiorgi.MemW1p (d := d) 2 u Ω :=
-        (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ hu_cd hu_cpt
+        (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ hu_cd hu_compact
           (by norm_num : (1 : ℝ≥0∞) ≤ 2) 1).memW1p
       have h_partial_cd : ∀ i : Fin d, ContDiff ℝ (⊤ : ℕ∞)
           (fun x : EE => (fderiv ℝ u x) (EuclideanSpace.single i 1)) := by
@@ -83,12 +83,12 @@ private theorem wkpNorm_assembly_le
           hu_cd.fderiv_right (m := (⊤ : ℕ∞)) (by simp)
         exact (ContinuousLinearMap.apply ℝ ℝ
           (EuclideanSpace.single i (1 : ℝ))).contDiff.comp h_fderiv
-      have h_partial_cpt : ∀ i : Fin d, HasCompactSupport
+      have h_partial_compact : ∀ i : Fin d, HasCompactSupport
           (fun x : EE => (fderiv ℝ u x) (EuclideanSpace.single i 1)) :=
-        fun i => hu_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
+        fun i => hu_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single i 1)
       have h_chosen_norm : ∀ i : Fin d,
           iteratedWeakSobolevNorm (d := d) (m + 2) 2
-              (chosenWeakPartial' (d := d) 2 i u Ω) Ω =
+              (chosenWeakPartialOrZero (d := d) 2 i u Ω) Ω =
             iteratedWeakSobolevNorm (d := d) (m + 2) 2
               (fun x : EE => (fderiv ℝ u x) (EuclideanSpace.single i 1)) Ω := by
         intro i
@@ -105,7 +105,7 @@ private theorem wkpNorm_assembly_le
                     (EuclideanSpace.single i 1))) Ω) +
             N * iteratedWeakSobolevNorm (d := d) (m + 1) 2
               (fun x : EE => (fderiv ℝ u x) (EuclideanSpace.single i 1)) Ω :=
-        fun i => hN (h_partial_cd i) (h_partial_cpt i)
+        fun i => hN (h_partial_cd i) (h_partial_compact i)
       have h_iter_cons : ∀ (i : Fin d) (idx : Fin m → Fin d),
           iterClassicalPartial (d := d) m idx
               (fun x : EE => (fderiv ℝ u x) (EuclideanSpace.single i 1)) =
@@ -124,7 +124,7 @@ private theorem wkpNorm_assembly_le
               (fun x : EE => (fderiv ℝ u x) (EuclideanSpace.single i 1)) Ω ≤
             iteratedWeakSobolevNorm (d := d) (m + 2) 2 u Ω :=
         fun i => wkpNorm_classicalPartial_le (d := d) hΩ hu_cd
-          (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ hu_cd hu_cpt
+          (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ hu_cd hu_compact
             (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 2)) i
       have h_reindex :
           ∑ β : Fin (m + 1) → Fin d,
@@ -153,14 +153,14 @@ private theorem wkpNorm_assembly_le
       have h_main :
           eLpNorm u 2 (volume.restrict Ω) +
             ∑ i : Fin d, iteratedWeakSobolevNorm (d := d) (m + 2) 2
-              (chosenWeakPartial' (d := d) 2 i u Ω) Ω ≤
+              (chosenWeakPartialOrZero (d := d) 2 i u Ω) Ω ≤
             (∑ β : Fin (m + 1) → Fin d,
               iteratedWeakSobolevNorm (d := d) 2 2
                 (iterClassicalPartial (d := d) (m + 1) β u) Ω) +
             ((d : ℝ≥0∞) * N + 1) * iteratedWeakSobolevNorm (d := d) (m + 1 + 1) 2 u Ω := by
         have h_sum_eq :
             ∑ i : Fin d, iteratedWeakSobolevNorm (d := d) (m + 2) 2
-                (chosenWeakPartial' (d := d) 2 i u Ω) Ω =
+                (chosenWeakPartialOrZero (d := d) 2 i u Ω) Ω =
               ∑ i : Fin d, iteratedWeakSobolevNorm (d := d) (m + 2) 2
                 (fun x : EE => (fderiv ℝ u x)
                   (EuclideanSpace.single i 1)) Ω :=
@@ -342,7 +342,7 @@ theorem contDiff_iteratedPerturbedSource
           hu.fderiv_right (m := (⊤ : ℕ∞)) (by simp)
         exact (ContinuousLinearMap.apply ℝ ℝ
           (EuclideanSpace.single (idx 0) (1 : ℝ))).contDiff.comp h_fderiv
-      exact ih h_du (contDiff_perturbedSource' (d := d) B hu hf (idx 0))
+      exact ih h_du (contDiff_perturbedSource (d := d) B hu hf (idx 0))
         (fun i : Fin m => idx i.succ)
 
 private theorem wkpNorm_iteratedPerturbedSource_zero_le
@@ -361,7 +361,7 @@ private theorem wkpNorm_iteratedPerturbedSource_zero_le
   classical
   induction m with
   | zero =>
-      refine ⟨1, by norm_num, fun {u f} _hu_cd _hu_cpt _hf_cd _hf_cpt idx => ?_⟩
+      refine ⟨1, by norm_num, fun {u f} _hu_cd _hu_compact _hf_cd _hf_compact idx => ?_⟩
       rw [iteratedPerturbedSource_zero, ENNReal.ofReal_one, one_mul]
       exact le_self_add
   | succ m ih =>
@@ -387,7 +387,7 @@ private theorem wkpNorm_iteratedPerturbedSource_zero_le
       have hK_step_le_Kmax : ∀ l : Fin d, K_step l ≤ Kmax :=
         fun l => Finset.le_sup' K_step (Finset.mem_univ l)
       refine ⟨C * (Kmax + 1), by positivity,
-        fun {u f} hu_cd hu_cpt hf_cd hf_cpt idx => ?_⟩
+        fun {u f} hu_cd hu_compact hf_cd hf_compact idx => ?_⟩
       rw [iteratedPerturbedSource_succ]
       set u' : EE → ℝ :=
         fun x => (fderiv ℝ u x) (EuclideanSpace.single (idx 0) 1) with hu'_def
@@ -396,28 +396,28 @@ private theorem wkpNorm_iteratedPerturbedSource_zero_le
           hu_cd.fderiv_right (m := (⊤ : ℕ∞)) (by simp)
         exact (ContinuousLinearMap.apply ℝ ℝ
           (EuclideanSpace.single (idx 0) (1 : ℝ))).contDiff.comp h_fderiv
-      have hu'_cpt : HasCompactSupport u' :=
-        hu_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (idx 0) 1)
+      have hu'_compact : HasCompactSupport u' :=
+        hu_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (idx 0) 1)
       set f' : EE → ℝ := perturbedSource (d := d) B u f (idx 0) with hf'_def
       have hf'_cd : ContDiff ℝ (⊤ : ℕ∞) f' :=
-        contDiff_perturbedSource' (d := d) B hu_cd hf_cd (idx 0)
-      have hf'_cpt : HasCompactSupport f' := by
+        contDiff_perturbedSource (d := d) B hu_cd hf_cd (idx 0)
+      have hf'_compact : HasCompactSupport f' := by
         rw [hf'_def]
         refine HasCompactSupport.of_support_subset_isCompact
-          (hu_cpt.union hf_cpt) ?_
+          (hu_compact.union hf_compact) ?_
         refine subset_trans (subset_tsupport _) ?_
         exact tsupport_perturbedSource_subset (d := d) B
           (isClosed_tsupport u |>.union (isClosed_tsupport f))
           (subset_union_left) (subset_union_right) (idx 0)
-      have h_ih := hC hu'_cd hu'_cpt hf'_cd hf'_cpt (fun i : Fin m => idx i.succ)
+      have h_ih := hC hu'_cd hu'_compact hf'_cd hf'_compact (fun i : Fin m => idx i.succ)
       have hu_mem_succ2 : MemWkp (d := d) (m + 2) 2 u Ω :=
-        memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hu_cd hu_cpt
+        memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hu_cd hu_compact
           (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 2)
       have hf_mem_succ : MemWkp (d := d) (m + 1) 2 f Ω :=
-        memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hf_cd hf_cpt
+        memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ_open hf_cd hf_compact
           (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + 1)
       have hf'_norm :=
-        (hK_step_bound (idx 0) hu_cd hu_cpt hf_cd hu_mem_succ2 hf_mem_succ).2
+        (hK_step_bound (idx 0) hu_cd hu_compact hf_cd hu_mem_succ2 hf_mem_succ).2
       have hf'_le :
           iteratedWeakSobolevNorm (d := d) m 2 f' Ω ≤
             ENNReal.ofReal Kmax *
@@ -482,11 +482,11 @@ private theorem wkpNorm_iterClassicalPartial_le
   intro m
   induction m with
   | zero =>
-      intro idx u _hu_cd _hu_cpt
+      intro idx u _hu_cd _hu_compact
       rw [iterClassicalPartial_zero]
       exact le_of_eq (by rw [Nat.zero_add])
   | succ m ih =>
-      intro idx u hu_cd hu_cpt
+      intro idx u hu_cd hu_compact
       rw [iterClassicalPartial_succ]
       set u' : EE → ℝ :=
         fun x => (fderiv ℝ u x) (EuclideanSpace.single (idx 0) 1) with hu'_def
@@ -495,13 +495,13 @@ private theorem wkpNorm_iterClassicalPartial_le
           hu_cd.fderiv_right (m := (⊤ : ℕ∞)) (by simp)
         exact (ContinuousLinearMap.apply ℝ ℝ
           (EuclideanSpace.single (idx 0) (1 : ℝ))).contDiff.comp h_fderiv
-      have hu'_cpt : HasCompactSupport u' :=
-        hu_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (idx 0) 1)
-      refine (ih (fun i : Fin m => idx i.succ) hu'_cd hu'_cpt).trans ?_
+      have hu'_compact : HasCompactSupport u' :=
+        hu_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single (idx 0) 1)
+      refine (ih (fun i : Fin m => idx i.succ) hu'_cd hu'_compact).trans ?_
       have h_drop : iteratedWeakSobolevNorm (d := d) (m + k) 2 u' Ω ≤
           iteratedWeakSobolevNorm (d := d) (m + k + 1) 2 u Ω :=
         wkpNorm_classicalPartial_le (d := d) hΩ hu_cd
-          (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ hu_cd hu_cpt
+          (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ hu_cd hu_compact
             (by norm_num : (1 : ℝ≥0∞) ≤ 2) (m + k + 1)) (idx 0)
       refine h_drop.trans (le_of_eq ?_)
       congr 1
@@ -528,14 +528,14 @@ private lemma rpow_half_sq_add_sq_le {a b : ℝ≥0∞} :
 omit [NeZero d] in
 private lemma eLpNorm_two_sq_eq_ofReal_integral_sq_univ
     {Ω : Set EE} {h : EE → ℝ}
-    (hh_cd : ContDiff ℝ (⊤ : ℕ∞) h) (hh_cpt : HasCompactSupport h)
+    (hh_cd : ContDiff ℝ (⊤ : ℕ∞) h) (hh_compact : HasCompactSupport h)
     (hh_S : tsupport h ⊆ Ω) :
     (eLpNorm h 2 (volume.restrict Ω)) ^ 2 =
       ENNReal.ofReal (∫ x, h x ^ 2 ∂(volume : Measure EE)) := by
   classical
   have hh_l2 : MemLp h 2 (volume.restrict Ω) :=
     (hh_cd.continuous.memLp_of_hasCompactSupport
-      (μ := (volume : Measure EE)) (p := 2) hh_cpt).restrict _
+      (μ := (volume : Measure EE)) (p := 2) hh_compact).restrict _
   have h_sq : (eLpNorm h 2 (volume.restrict Ω)) ^ 2 =
       ENNReal.ofReal (∫ x in Ω, h x ^ 2 ∂(volume : Measure EE)) := by
     have h_sq_lintegral :
@@ -567,8 +567,8 @@ private lemma eLpNorm_two_sq_eq_ofReal_integral_sq_univ
   rw [h_sq]
   congr 1
   refine setIntegral_eq_integral_of_forall_compl_eq_zero (fun x hx => ?_)
-  have hx_supp : x ∉ tsupport h := fun h' => hx (hh_S h')
-  rw [image_eq_zero_of_notMem_tsupport hx_supp]; ring
+  have hx_support : x ∉ tsupport h := fun h' => hx (hh_S h')
+  rw [image_eq_zero_of_notMem_tsupport hx_support]; ring
 
 private theorem smooth_cc_wkp2_wkpNorm_le
     (B : SmoothEllipticBilinearForm d (Set.univ : Set EE))
@@ -583,10 +583,10 @@ private theorem smooth_cc_wkp2_wkpNorm_le
             Ω'') := by
   classical
   obtain ⟨C, hC_nn, hC⟩ :=
-    smooth_cc_h2_loc_memWkp_two (d := d) B hΩ'' hΩ''_compact_closure
-  refine ⟨C, hC_nn, fun {w s} h_weak hw_cpt hs_cd hs_cpt hw_S hs_S => ?_⟩
+    smooth_cc_h2_local_memWkp_two (d := d) B hΩ'' hΩ''_compact_closure
+  refine ⟨C, hC_nn, fun {w s} h_weak hw_compact hs_cd hs_compact hw_S hs_S => ?_⟩
   have hw_cd : ContDiff ℝ (⊤ : ℕ∞) w := h_weak.1
-  obtain ⟨_h_memWkp, h_engine_le⟩ := hC h_weak hw_cpt hs_cd hs_cpt
+  obtain ⟨_h_memWkp, h_engine_le⟩ := hC h_weak hw_compact hs_cd hs_compact
   have hw_partial_cd : ∀ j : Fin d, ContDiff ℝ (⊤ : ℕ∞)
       (fun x : EE => (fderiv ℝ w x) (EuclideanSpace.single j 1)) := by
     intro j
@@ -594,21 +594,21 @@ private theorem smooth_cc_wkp2_wkpNorm_le
       hw_cd.fderiv_right (m := (⊤ : ℕ∞)) (by simp)
     exact (ContinuousLinearMap.apply ℝ ℝ
       (EuclideanSpace.single j (1 : ℝ))).contDiff.comp h_fderiv
-  have hw_partial_cpt : ∀ j : Fin d, HasCompactSupport
+  have hw_partial_compact : ∀ j : Fin d, HasCompactSupport
       (fun x : EE => (fderiv ℝ w x) (EuclideanSpace.single j 1)) :=
-    fun j => hw_cpt.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+    fun j => hw_compact.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
   have hw_partial_S : ∀ j : Fin d, tsupport
       (fun x : EE => (fderiv ℝ w x) (EuclideanSpace.single j 1)) ⊆ Ω'' :=
     fun j => (tsupport_fderiv_apply_subset ℝ
       (EuclideanSpace.single j 1)).trans hw_S
   have hw_W1 : DeGiorgi.MemW1p (d := d) 2 w Ω'' :=
-    (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ'' hw_cd hw_cpt
+    (memWkp_of_smooth_compactSupport_anyOpen (d := d) hΩ'' hw_cd hw_compact
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) 1).memW1p
   have hw_eLp_sq : (eLpNorm w 2 (volume.restrict Ω'')) ^ 2 =
       ENNReal.ofReal (∫ x, w x ^ 2 ∂(volume : Measure EE)) :=
-    eLpNorm_two_sq_eq_ofReal_integral_sq_univ (d := d) hw_cd hw_cpt hw_S
+    eLpNorm_two_sq_eq_ofReal_integral_sq_univ (d := d) hw_cd hw_compact hw_S
   have hw_partial_eLp_sq : ∀ j : Fin d,
-      (eLpNorm (chosenWeakPartial' (d := d) 2 j w Ω'') 2
+      (eLpNorm (chosenWeakPartialOrZero (d := d) 2 j w Ω'') 2
           (volume.restrict Ω'')) ^ 2 =
         ENNReal.ofReal (∫ x,
           ((fderiv ℝ w x) (EuclideanSpace.single j 1)) ^ 2
@@ -617,10 +617,10 @@ private theorem smooth_cc_wkp2_wkpNorm_le
     rw [eLpNorm_congr_ae (chosenWeakPartial_smooth_ae_eq (d := d)
       (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ'' hw_cd hw_W1 j)]
     exact eLpNorm_two_sq_eq_ofReal_integral_sq_univ (d := d)
-      (hw_partial_cd j) (hw_partial_cpt j) (hw_partial_S j)
+      (hw_partial_cd j) (hw_partial_compact j) (hw_partial_S j)
   have hs_eLp_sq : (eLpNorm s 2 (volume.restrict Ω'')) ^ 2 =
       ENNReal.ofReal (∫ x, s x ^ 2 ∂(volume : Measure EE)) :=
-    eLpNorm_two_sq_eq_ofReal_integral_sq_univ (d := d) hs_cd hs_cpt hs_S
+    eLpNorm_two_sq_eq_ofReal_integral_sq_univ (d := d) hs_cd hs_compact hs_S
   set D : ℝ :=
     (∫ x, ∑ j : Fin d, ((fderiv ℝ w x) (EuclideanSpace.single j 1)) ^ 2
       ∂(volume : Measure EE)) +
@@ -651,14 +651,14 @@ private theorem smooth_cc_wkp2_wkpNorm_le
       rw [integral_finsetSum]
       intro j _
       exact (((hw_partial_cd j).continuous).pow 2).integrable_of_hasCompactSupport
-        (hasCompactSupport_sq (d := d) (hw_partial_cpt j))
+        (hasCompactSupport_sq (d := d) (hw_partial_compact j))
     rw [h_int_swap]
     have h_ofReal_eq : ENNReal.ofReal
         ((∑ j : Fin d, ∫ x,
             ((fderiv ℝ w x) (EuclideanSpace.single j 1)) ^ 2
             ∂(volume : Measure EE)) +
           (∫ x, (w x) ^ 2 ∂(volume : Measure EE))) =
-        (∑ j : Fin d, (eLpNorm (chosenWeakPartial' (d := d) 2 j w Ω'') 2
+        (∑ j : Fin d, (eLpNorm (chosenWeakPartialOrZero (d := d) 2 j w Ω'') 2
             (volume.restrict Ω'')) ^ 2) +
           (eLpNorm w 2 (volume.restrict Ω'')) ^ 2 := by
       rw [ENNReal.ofReal_add
@@ -672,7 +672,7 @@ private theorem smooth_cc_wkp2_wkpNorm_le
     rw [h_ofReal_eq]
     have h_wkp1 : iteratedWeakSobolevNorm (d := d) 1 2 w Ω'' =
         eLpNorm w 2 (volume.restrict Ω'') +
-          ∑ j : Fin d, eLpNorm (chosenWeakPartial' (d := d) 2 j w Ω'') 2
+          ∑ j : Fin d, eLpNorm (chosenWeakPartialOrZero (d := d) 2 j w Ω'') 2
             (volume.restrict Ω'') := by
       rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) 0 2 Ω'' w]
       refine congrArg (_ + ·) (Finset.sum_congr rfl (fun j _ => ?_))
@@ -680,7 +680,7 @@ private theorem smooth_cc_wkp2_wkpNorm_le
     rw [h_wkp1]
     set b : ℝ≥0∞ := eLpNorm w 2 (volume.restrict Ω'') with hb_def
     set aj : Fin d → ℝ≥0∞ :=
-      fun j => eLpNorm (chosenWeakPartial' (d := d) 2 j w Ω'') 2
+      fun j => eLpNorm (chosenWeakPartialOrZero (d := d) 2 j w Ω'') 2
         (volume.restrict Ω'') with haj_def
     have h_sumsq_le : (∑ j : Fin d, (aj j) ^ 2) ≤ (∑ j : Fin d, aj j) ^ 2 :=
       Finset.sum_sq_le_sq_sum_of_nonneg (fun j _ => zero_le)
@@ -781,27 +781,27 @@ private theorem tensorComponent_aPriori_succ
     wkpNorm_iteratedPerturbedSource_zero_le (d := dimE) B m hΩ''_open
       hΩ''_compact_closure
   refine ⟨((dimE : ℝ) ^ m) * Cw * (Cs + 1) + N.toReal, by positivity, ?_⟩
-  intro T F hT_supp hF_supp hT_K hF_K hweak
+  intro T F hT_support hF_support hT_K hF_K hweak
   set u := tensorComponentEuclid (I := I) (M := M) g r s T α P₀ with hu_def
   set RHS := tensorComponentWeakRHS (I := I) (M := M)
     g r s T F α P₀ with hRHS_def
   have hu_cd : ContDiff ℝ (⊤ : ℕ∞) u :=
-    tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_supp
-  have hu_cpt : HasCompactSupport u :=
+    tensorComponentEuclid_contDiff (I := I) (M := M) g r s T α P₀ hT_support
+  have hu_compact : HasCompactSupport u :=
     tensorComponentEuclid_hasCompactSupport (I := I) (M := M)
-      g r s T α P₀ hT_supp
+      g r s T α P₀ hT_support
   have hu_K : tsupport u ⊆ K := hT_K P₀
   have hu_Ω'' : tsupport u ⊆ Ω'' := hu_K.trans hK_Ω''
   have hRHS_cd : ContDiff ℝ (⊤ : ℕ∞) RHS :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_support hF_support
   have hRHS_u : tsupport RHS ⊆ tsupport u :=
     tensorComponentWeakRHS_tsupport_subset (I := I) (M := M) g r s T F α hK
-      hK_target P₀ hT_supp hF_supp hu_K hweak
-  have hRHS_cpt : HasCompactSupport RHS :=
-    HasCompactSupport.of_support_subset_isCompact hu_cpt.isCompact
+      hK_target P₀ hT_support hF_support hu_K hweak
+  have hRHS_compact : HasCompactSupport RHS :=
+    HasCompactSupport.of_support_subset_isCompact hu_compact.isCompact
       (fun x hx => hRHS_u (subset_tsupport _ hx))
-  have h_assembly := hN hu_cd hu_cpt
+  have h_assembly := hN hu_cd hu_compact
   have h_partial_le : ∀ idx : Fin m → Fin dimE,
       iteratedWeakSobolevNorm (d := dimE) 2 2
           (iterClassicalPartial (d := dimE) m idx u) Ω'' ≤
@@ -810,14 +810,14 @@ private theorem tensorComponent_aPriori_succ
             (iteratedWeakSobolevNorm (d := dimE) m 2 RHS Ω'' +
               iteratedWeakSobolevNorm (d := dimE) (m + 1) 2 u Ω'')) := by
     intro idx
-    have h_weak_sol :
+    have h_weak_solution :
         B.IsSmoothWeakSolution
           (iterClassicalPartial (d := dimE) m idx u)
           (iteratedPerturbedSource (d := dimE) B m u RHS idx) :=
       tensorComponent_iterated_partial_isSmoothWeakSolution (I := I) (M := M)
-        g r s T F α hK hK_target P₀ hT_supp hF_supp hu_K hweak m idx
-    have h_w_cpt : HasCompactSupport (iterClassicalPartial (d := dimE) m idx u) :=
-      hasCompactSupport_iterClassicalPartial (d := dimE) m idx hu_cpt
+        g r s T F α hK hK_target P₀ hT_support hF_support hu_K hweak m idx
+    have h_w_compact : HasCompactSupport (iterClassicalPartial (d := dimE) m idx u) :=
+      hasCompactSupport_iterClassicalPartial (d := dimE) m idx hu_compact
     have h_w_Ω'' : tsupport (iterClassicalPartial (d := dimE) m idx u) ⊆ Ω'' :=
       (tsupport_iterClassicalPartial_subset (d := dimE) m idx
         (isClosed_tsupport u) (subset_refl _)).trans hu_Ω''
@@ -830,24 +830,24 @@ private theorem tensorComponent_aPriori_succ
         ((isClosed_tsupport u).union (isClosed_tsupport RHS))
         subset_union_left subset_union_right idx).trans
         (Set.union_subset hu_Ω'' (hRHS_u.trans hu_Ω''))
-    have h_s_cpt : HasCompactSupport
+    have h_s_compact : HasCompactSupport
         (iteratedPerturbedSource (d := dimE) B m u RHS idx) :=
       HasCompactSupport.of_support_subset_isCompact
         hΩ''_compact_closure
         (fun x hx => subset_closure (h_s_Ω'' (subset_tsupport _ hx)))
-    have h_wrap := hCw h_weak_sol h_w_cpt h_s_cd h_s_cpt h_w_Ω'' h_s_Ω''
+    have h_wrap := hCw h_weak_solution h_w_compact h_s_cd h_s_compact h_w_Ω'' h_s_Ω''
     have h_w1_le : iteratedWeakSobolevNorm (d := dimE) 1 2
         (iterClassicalPartial (d := dimE) m idx u) Ω'' ≤
         iteratedWeakSobolevNorm (d := dimE) (m + 1) 2 u Ω'' := by
       have h := wkpNorm_iterClassicalPartial_le (d := dimE) hΩ''_open 1 m idx
-        hu_cd hu_cpt
+        hu_cd hu_compact
       rwa [show m + 1 = m + 1 from rfl] at h
     have h_s0_le : iteratedWeakSobolevNorm (d := dimE) 0 2
         (iteratedPerturbedSource (d := dimE) B m u RHS idx) Ω'' ≤
         ENNReal.ofReal Cs *
           (iteratedWeakSobolevNorm (d := dimE) m 2 RHS Ω'' +
             iteratedWeakSobolevNorm (d := dimE) (m + 1) 2 u Ω'') :=
-      hCs hu_cd hu_cpt hRHS_cd hRHS_cpt idx
+      hCs hu_cd hu_compact hRHS_cd hRHS_compact idx
     refine h_wrap.trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     calc iteratedWeakSobolevNorm (d := dimE) 1 2 (iterClassicalPartial (d := dimE) m idx u) Ω'' +
@@ -973,7 +973,7 @@ theorem tensorComponent_aPriori_succ_sum
     fun P₀ => tensorComponent_aPriori_succ (I := I) (M := M) g r s α hK
       hK_target m P₀ hΩ''_open hΩ''_compact_closure hK_Ω''
   choose Cstep hCstep_nn hCstep using h_succ
-  have h_src : ∀ P₀ : CompIdx E r s, ∃ Kc : ℝ, 0 ≤ Kc ∧
+  have h_source : ∀ P₀ : CompIdx E r s, ∃ Kc : ℝ, 0 ≤ Kc ∧
       ∀ (T F : SmoothCcTensor g r s),
         tsupport T.toFun ⊆ (chartAt H α).source →
         tsupport F.toFun ⊆ (chartAt H α).source →
@@ -995,13 +995,13 @@ theorem tensorComponent_aPriori_succ_sum
     obtain ⟨Kc, hKc_nn, hKc⟩ :=
       tensorComponentWeakRHS_wkpNorm_le (I := I) (M := M) g r s α hK hK_target
         m P₀
-    refine ⟨Kc, hKc_nn, fun T F hT_supp hF_supp hT_K hF_K => ?_⟩
-    exact hKc T F hT_supp hF_supp hT_K hF_K hΩ''_open hΩ''_target
-  choose Ksrc hKsrc_nn hKsrc using h_src
+    refine ⟨Kc, hKc_nn, fun T F hT_support hF_support hT_K hF_K => ?_⟩
+    exact hKc T F hT_support hF_support hT_K hF_K hΩ''_open hΩ''_target
+  choose Ksrc hKsrc_nn hKsrc using h_source
   refine ⟨∑ P₀ : CompIdx E r s, (Cstep P₀) * (Ksrc P₀ + 1),
     Finset.sum_nonneg (fun P₀ _ =>
       mul_nonneg (hCstep_nn P₀) (by linarith [hKsrc_nn P₀])), ?_⟩
-  intro T F hT_supp hF_supp hT_K hF_K hweak
+  intro T F hT_support hF_support hT_K hF_K hweak
   set SF : ℝ≥0∞ := ∑ Q : CompIdx E r s, iteratedWeakSobolevNorm (d := dimE) m 2
     (tensorComponentEuclid (I := I) (M := M) g r s F α Q) Ω'' with hSF_def
   set ST : ℝ≥0∞ := ∑ P : CompIdx E r s, iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
@@ -1011,8 +1011,8 @@ theorem tensorComponent_aPriori_succ_sum
           (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) Ω'' ≤
         ENNReal.ofReal ((Cstep P₀) * (Ksrc P₀ + 1)) * (SF + ST) := by
     intro P₀
-    have h_step := hCstep P₀ T F hT_supp hF_supp hT_K hF_K hweak
-    have h_source := hKsrc P₀ T F hT_supp hF_supp hT_K hF_K
+    have h_step := hCstep P₀ T F hT_support hF_support hT_K hF_K hweak
+    have h_source := hKsrc P₀ T F hT_support hF_support hT_K hF_K
     rw [← hSF_def, ← hST_def] at h_source
     have h_u_le_ST : iteratedWeakSobolevNorm (d := dimE) (m + 1) 2
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) Ω'' ≤ ST :=

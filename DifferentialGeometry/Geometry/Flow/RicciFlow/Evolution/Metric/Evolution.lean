@@ -108,7 +108,7 @@ theorem coordInvLocal
       DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt_basis_apply] using (hbasis i j).2
 
 omit [SigmaCompactSpace M] in
-theorem coordInvEvol
+theorem coordInvEvolution
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSolutionOn (I := I) S)
@@ -256,7 +256,7 @@ theorem coordInvEvol
       hEq |>.symm
 
 omit [SigmaCompactSpace M] in
-theorem evol_inverse_metric_inFrame
+theorem evolution_inverse_metric_inFrame
     [DecidableEq Idx]
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)

@@ -157,6 +157,37 @@ declaration was added, removed or weakened:
 
 The original `LICENSE`, `README.md` and `CITATION.cff` remain unmodified.
 
+### 2026-07-28 — heartbeat-free elaboration
+
+**Files**:
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `BallExtensionEstimates.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `FiniteCover.lean`
+- `Harnack.lean`
+- `Localization.lean`
+- `LpFunctionToolkit.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/CutoffPrep/WitnessConstruction.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `SobolevChainRule.lean`
+- `SobolevPoincare.lean`
+- `SobolevSpace/Approximation.lean`
+- `Supersolutions/Caccioppoli.lean`
+- `Supersolutions/ForwardIteration/Energy.lean`
+- `Supersolutions/InverseEnergy.lean`
+- `Supersolutions/StageOne.lean`
+- `WeakFormulation/ExistenceTheory.lean`
+- `WeakFormulation/WeightedEstimates.lean`
+- `WeakHarnack.lean`
+
+**Change**: removed the remaining heartbeat-budget overrides and refactored the affected proof
+bodies into explicit integrability, measurability, nonnegativity, monotonicity, and witness-
+construction steps that elaborate under the project defaults.
+
 ### 2026-08-12 — isolated tactic-bullet cleanup
 
 **Files**:
@@ -236,68 +267,23 @@ semantic-preserving source-style change; no statement, proof term or declaration
 retaining each opening whose removal prevented elaboration. This is a semantic-preserving lexical
 scope cleanup; no declaration, statement, or proof was changed.
 
-### 2026-08-29 — definition-name normalization
+### 2026-08-18 — explicit weak-Harnack chain estimates
 
 **Files**:
-- `BallExtension/RoughInput.lean`
-- `BallExtension/SmoothApproximation.lean`
-- `BallExtensionEstimates.lean`
-- `BallScaling.lean`
-- `Crossover/ExponentialIntegrability.lean`
-- `Crossover/LocalIntegrability.lean`
-- `Crossover/LogGradient.lean`
-- `Crossover/ProductBound.lean`
-- `Crossover/PublicEstimate.lean`
-- `DeGiorgiIteration/CutoffAdmissibility.lean`
-- `DeGiorgiIteration/Energy.lean`
-- `DeGiorgiIteration/Linfty.lean`
-- `DeGiorgiIteration/PreIteration.lean`
-- `Harnack.lean`
-- `Holder/LocalBounds.lean`
-- `Holder/OscillationDecay.lean`
-- `Holder/PublicEstimate.lean`
-- `Holder/Representative.lean`
-- `Localization.lean`
-- `MoserIteration/Constants.lean`
-- `MoserIteration/CutoffPrep/Basics.lean`
-- `MoserIteration/CutoffPrep/ExactRegularization.lean`
-- `MoserIteration/CutoffPrep/PreEstimate.lean`
-- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
-- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
-- `MoserIteration/Iteration.lean`
-- `MoserIteration/Linfty.lean`
-- `Oscillation/BMO.lean`
-- `Oscillation/Campanato.lean`
-- `Oscillation/LocalJohnNirenberg.lean`
-- `Poincare.lean`
-- `PositivePart.lean`
-- `ScaledBallEstimates.lean`
-- `SobolevChainRule.lean`
-- `SobolevPoincare.lean`
-- `SobolevSpace/Approximation.lean`
-- `SobolevSpace/Witnesses.lean`
-- `Supersolutions/Caccioppoli.lean`
-- `Supersolutions/ForwardIteration/Iteration.lean`
-- `Supersolutions/ForwardIteration/OneStep.lean`
-- `Supersolutions/InverseIteration.lean`
-- `Supersolutions/InverseOneStep.lean`
-- `Supersolutions/StageOne.lean`
-- `Supersolutions/TestFunctions.lean`
-- `Support/IterationConstants.lean`
-- `UnitBallApproximationCore/Approximation.lean`
-- `UnitBallApproximationCore/Dilation.lean`
-- `UnitBallApproximationCore/Rescaling.lean`
-- `WeakFormulation/WeightedEstimates.lean`
 - `WeakHarnack.lean`
-- `WholeSpaceSobolev.lean`
 
-**Change**: renamed definition, abbreviation, and structure-field identifiers from theorem-style
-snake case to Mathlib camel case, and updated every internal reference. Two witness constructors
-whose short source names also name Mathlib declarations were migrated only at their project-owned
-declarations and qualified references. This is an API-only, semantic-preserving migration; theorem
-statements and proof bodies are unchanged.
+**Change**: replaced broad simplification and nonlinear arithmetic in the weak-Harnack chain
+constant estimates with explicit ring equalities, multiplication monotonicity, and a precise
+simplification set. The theorem statements and mathematical inequalities are unchanged.
 
-<!-- Add entries below as modifications occur. -->
+### 2026-08-18 — explicit crossover measurability
+
+**Files**:
+- `Crossover/ExponentialIntegrability.lean`
+
+**Change**: supplied the measurable real exponential integrand and its almost-everywhere
+measurability explicitly before applying the constant-multiple lintegral identity, and made a
+nearby additive simplification precise. The theorem statements are unchanged.
 
 ### 2026-08-20 — explicit small-ball average estimate
 
@@ -478,3 +464,124 @@ findings by removing genuinely unused assumptions, and make dependent casts and 
 where the newer elaborator no longer infers them. The affected conclusions and mathematical
 arguments are unchanged or generalized. The original `LICENSE`, `README.md`, and `CITATION.cff`
 remain unmodified.
+
+### 2026-08-29 — definition-name normalization
+
+**Files**:
+- `BallExtension/RoughInput.lean`
+- `BallExtension/SmoothApproximation.lean`
+- `BallExtensionEstimates.lean`
+- `BallScaling.lean`
+- `Crossover/ExponentialIntegrability.lean`
+- `Crossover/LocalIntegrability.lean`
+- `Crossover/LogGradient.lean`
+- `Crossover/ProductBound.lean`
+- `Crossover/PublicEstimate.lean`
+- `DeGiorgiIteration/CutoffAdmissibility.lean`
+- `DeGiorgiIteration/Energy.lean`
+- `DeGiorgiIteration/Linfty.lean`
+- `DeGiorgiIteration/PreIteration.lean`
+- `Harnack.lean`
+- `Holder/LocalBounds.lean`
+- `Holder/OscillationDecay.lean`
+- `Holder/PublicEstimate.lean`
+- `Holder/Representative.lean`
+- `Localization.lean`
+- `MoserIteration/Constants.lean`
+- `MoserIteration/CutoffPrep/Basics.lean`
+- `MoserIteration/CutoffPrep/ExactRegularization.lean`
+- `MoserIteration/CutoffPrep/PreEstimate.lean`
+- `MoserIteration/CutoffPrep/RegularizedEnergy.lean`
+- `MoserIteration/CutoffPrep/RegularizedWitnesses.lean`
+- `MoserIteration/Iteration.lean`
+- `MoserIteration/Linfty.lean`
+- `Oscillation/BMO.lean`
+- `Oscillation/Campanato.lean`
+- `Oscillation/LocalJohnNirenberg.lean`
+- `Poincare.lean`
+- `PositivePart.lean`
+- `ScaledBallEstimates.lean`
+- `SobolevChainRule.lean`
+- `SobolevPoincare.lean`
+- `SobolevSpace/Approximation.lean`
+- `SobolevSpace/Witnesses.lean`
+- `Supersolutions/Caccioppoli.lean`
+- `Supersolutions/ForwardIteration/Iteration.lean`
+- `Supersolutions/ForwardIteration/OneStep.lean`
+- `Supersolutions/InverseIteration.lean`
+- `Supersolutions/InverseOneStep.lean`
+- `Supersolutions/StageOne.lean`
+- `Supersolutions/TestFunctions.lean`
+- `Support/IterationConstants.lean`
+- `UnitBallApproximationCore/Approximation.lean`
+- `UnitBallApproximationCore/Dilation.lean`
+- `UnitBallApproximationCore/Rescaling.lean`
+- `WeakFormulation/WeightedEstimates.lean`
+- `WeakHarnack.lean`
+- `WholeSpaceSobolev.lean`
+
+**Change**: renamed definition, abbreviation, and structure-field identifiers from theorem-style
+snake case to Mathlib camel case, and updated every internal reference. Two witness constructors
+whose short source names also name Mathlib declarations were migrated only at their project-owned
+declarations and qualified references. This is an API-only, semantic-preserving migration; theorem
+statements and proof bodies are unchanged.
+
+<!-- Add entries below as modifications occur. -->
+
+### 2026-09-04 — theorem-name normalization
+
+**Files**:
+- `BallExtension/ApproximationControl.lean`
+- `BallExtension/RoughInput.lean`
+
+**Change**: renamed the equality theorem for `exactUnitBallExtensionGradApply` so that its
+declaration name identifies the `smoothUnitBallExtensionGradCandidate` on its right-hand side.
+Also removed the redundant `generic` suffix from a private norm-bound helper. The theorem
+statements and proofs are unchanged.
+
+### 2026-09-07 — positive-test density extension
+
+**Files**:
+- `SobolevSpace/PositiveTestDensity.lean`
+
+**Change**: added the nonnegative smooth density theorem for pointwise nonnegative `H₀¹`
+functions and the resulting smooth-test criterion for weak supersolutions, and adapted their
+proofs to Mathlib 4.33 elaboration and indicator APIs. The density construction uses exact-support
+smooth positive-part regularizations and preserves the limit witness's weak gradient.
+
+### 2026-09-07 — strong minimum principle extension
+
+**Files**:
+- `StrongMinimum.lean`
+
+**Change**: added the strong minimum principle on Euclidean balls from the weak Harnack
+inequality, migrated renamed definitions and coefficient-rescaling elaboration to Mathlib 4.33,
+and placed the two public conclusions in the `IsSupersolution` namespace with descriptive names.
+
+### 2026-09-07 — homogeneous weak-solution equivalence
+
+**Files**:
+- `WeakFormulation/ExistenceTheory.lean`
+
+**Change**: proved that a function which is simultaneously a weak subsolution and weak
+supersolution satisfies the equality-form homogeneous weak identity against arbitrary signed
+`H₀¹` tests. The proof decomposes smooth compactly supported tests into nonnegative tests and then
+uses the existing Sobolev approximation and bilinear-continuity argument. Exposed that shared
+extension as `bilinFormOfCoeff_eq_of_isSmoothTestOn`, the conversion in the `IsSolution` namespace,
+the equivalence of the two solution interfaces, and vanishing of the bilinear form on signed
+`H₀¹` tests. These additions migrate the source branch's smooth-test and homogeneous-solution
+APIs without changing the established existence and uniqueness conclusions.
+
+### 2026-09-07 — weak divergence pairing extension
+
+**Files**:
+- `WeakFormulation/BilinearForm.lean`
+- `WeakFormulation/WeakDivergence.lean`
+
+**Change**: added assembly of weak divergence from the componentwise weak partial derivatives
+and the equality of the divergence-form functional with its scalar `L²` pairing on `H₀¹` tests.
+Migrated finite-sum names and function-space elaboration to Mathlib 4.33, clarified the public
+declaration names, and removed the redundant supplied Sobolev witness from the pairing theorem.
+The witness-independence identity and the new pairing theorem hold in every finite dimension,
+including dimension zero; removed their unnecessary `NeZero` assumption. The weak gradient used
+in the proof remains the witness tied to the `H₀¹` approximation.

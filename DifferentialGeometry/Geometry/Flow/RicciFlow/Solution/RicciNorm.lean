@@ -147,7 +147,7 @@ theorem coordInvReal
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (x0 : M) (t : Real) :
-    Tensor0SBundle.MetricInverseInBasisGen
+    Tensor0SBundle.MetricInverseInBasis
       (I := I) (M := M) (S.family.metric t) x0
       (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAtToBasis (I := I) x0)
       (fun i j => coordInv (I := I) S x0 t x0 i j) := by
@@ -270,13 +270,13 @@ structure IsSmoothSolutionOn
               (S.ricci (t : Real) x))
           D.carrier
           (t : Real)
-  invEvol :
+  invEvolution :
     ∀ x0 : M,
       InverseMetricEvolutionEquationInFrame
         (I := I) S (coordInv (I := I) S x0)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x0)
         (DifferentialGeometry.Tensor.Coordinates.coordinateFrameSet (I := I) x0)
-  ricciEvol :
+  ricciEvolution :
     ∀ x0 : M, ∀ (t : DifferentialGeometry.Geometry.Curvature.RealTimeInterval.RegularTime D)
       (i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E),
       HasDerivWithinAt
@@ -329,7 +329,7 @@ theorem scalarCont
   hS.scalarSTCont
 
 omit [SigmaCompactSpace M] in
-theorem scalarReg
+theorem scalarRegularity
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSmoothSolutionOn (I := I) (M := M) S) :
@@ -442,7 +442,7 @@ theorem ricci_heat_mc
         ricciCompInFrame (I := I) S frame t x j i)
     (hframe : forall x i, basis x i = frame i x)
     (hinv : forall t x,
-      Tensor0SBundle.MetricInverseInBasisGen (I := I) (M := M) (S.base.metric t) x
+      Tensor0SBundle.MetricInverseInBasis (I := I) (M := M) (S.base.metric t) x
         (basis x) (gInv t x))
     (hfields : forall x, DifferentialGeometry.Geometry.Operator.SmoothBasisFieldsAt (I := I)
       (basis x) (X x))

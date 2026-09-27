@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.ODE.Flow.Variational
+import DifferentialGeometry.Analysis.ODE.Flow.LinearODE.Variational
 
 
 noncomputable section
@@ -15,8 +15,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [CompleteSpace E
 
 structure IsLocalFlow (f : ℝ → E → E) (t₀ : ℝ) (x₀ : E) (r : ℝ≥0) (tmin tmax : ℝ)
     (Φ : E × ℝ → E) : Prop where
-  htmin_le : tmin ≤ t₀
-  ht₀_le : t₀ ≤ tmax
+  minTime_le_initial : tmin ≤ t₀
+  initial_le_maxTime : t₀ ≤ tmax
   apply_initial : ∀ x ∈ closedBall x₀ r, Φ ⟨x, t₀⟩ = x
   hasDerivWithinAt : ∀ x ∈ closedBall x₀ r, ∀ t ∈ Icc tmin tmax,
     HasDerivWithinAt (fun s => Φ ⟨x, s⟩) (f t (Φ ⟨x, t⟩)) (Icc tmin tmax) t
@@ -30,7 +30,7 @@ variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax 
 
 omit [CompleteSpace E] in
 lemma t₀_mem_Icc (h : IsLocalFlow f t₀ x₀ r tmin tmax Φ) : t₀ ∈ Icc tmin tmax :=
-  ⟨h.htmin_le, h.ht₀_le⟩
+  ⟨h.minTime_le_initial, h.initial_le_maxTime⟩
 
 omit [CompleteSpace E] in
 lemma orbit_continuousOn (h : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -41,15 +41,13 @@ lemma orbit_continuousOn (h : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
 end IsLocalFlow
 
 omit [CompleteSpace E] in
-lemma exists_isPicardLindelof_of_contDiffOn_univ
-    (f : ℝ → E → E) (hf : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
-    (t₀ : ℝ) (x₀ : E) :
+lemma exists_isPicardLindelof_of_contDiffAt
+    (f : ℝ → E → E) {t₀ : ℝ} {x₀ : E}
+    (hf : ContDiffAt ℝ 1 (uncurry f) (t₀, x₀)) :
     ∃ (ε : ℝ) (hε : 0 < ε) (a r L K : ℝ≥0) (_ : 0 < r),
       IsPicardLindelof f (tmin := t₀ - ε) (tmax := t₀ + ε)
         ⟨t₀, by simp [le_of_lt hε]⟩ x₀ a r L K := by
-  have hcd_at : ContDiffAt ℝ 1 (uncurry f) (t₀, x₀) :=
-    hf.contDiffAt (IsOpen.mem_nhds isOpen_univ (mem_univ _))
-  obtain ⟨K₀, sNhd, hsNhd, hl⟩ := hcd_at.exists_lipschitzOnWith
+  obtain ⟨K₀, sNhd, hsNhd, hl⟩ := hf.exists_lipschitzOnWith
   obtain ⟨ρ, hρ_pos, hρ_sub⟩ := Metric.mem_nhds_iff.mp hsNhd
   set Lf := K₀ * ρ + ‖uncurry f (t₀, x₀)‖ + 1 with hLf_def
   have hLf_pos : 0 < Lf := by positivity
@@ -129,11 +127,11 @@ lemma exists_isPicardLindelof_of_contDiffOn_univ
       have : dist x x₀ ≤ (aN : ℝ) := mem_closedBall.mp hx
       change dist x x₀ ≤ a₀ at this
       exact this
-    have h_cont : ContinuousOn (uncurry f) (Set.univ : Set (ℝ × E)) := hf.continuousOn
+    have h_cont : ContinuousOn (uncurry f) sNhd := hl.continuousOn
     have hcomp : ContinuousOn (fun t : ℝ => (t, x)) (Icc (t₀ - a₀) (t₀ + a₀)) :=
       continuousOn_id.prodMk continuousOn_const
     have hmaps : MapsTo (fun t : ℝ => (t, x)) (Icc (t₀ - a₀) (t₀ + a₀))
-        (Set.univ : Set (ℝ × E)) := fun _ _ => mem_univ _
+        sNhd := fun t ht => hpair_in_sNhd _ (hpair_in_iff t x ht hxd)
     exact h_cont.comp hcomp hmaps
   set ε := min a₀ (a₀ / (2 * (Lf + 1))) with hε_def
   have hε_pos : 0 < ε := by
@@ -181,12 +179,22 @@ lemma exists_isPicardLindelof_of_contDiffOn_univ
     change Lf * ε ≤ a₀ / 2
     exact hLf_eps
 
-theorem exists_isLocalFlow_of_contDiffOn_univ
+omit [CompleteSpace E] in
+lemma exists_isPicardLindelof_of_contDiffOn_univ
     (f : ℝ → E → E) (hf : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
     (t₀ : ℝ) (x₀ : E) :
+    ∃ (ε : ℝ) (hε : 0 < ε) (a r L K : ℝ≥0) (_ : 0 < r),
+      IsPicardLindelof f (tmin := t₀ - ε) (tmax := t₀ + ε)
+        ⟨t₀, by simp [le_of_lt hε]⟩ x₀ a r L K :=
+  exists_isPicardLindelof_of_contDiffAt f
+    (hf.contDiffAt (IsOpen.mem_nhds isOpen_univ (mem_univ _)))
+
+theorem exists_isLocalFlow_of_contDiffAt
+    (f : ℝ → E → E) {t₀ : ℝ} {x₀ : E}
+    (hf : ContDiffAt ℝ 1 (uncurry f) (t₀, x₀)) :
     ∃ (r : ℝ≥0) (ε : ℝ) (_ : 0 < r) (_ : 0 < ε) (Φ : E × ℝ → E),
       IsLocalFlow f t₀ x₀ r (t₀ - ε) (t₀ + ε) Φ := by
-  obtain ⟨ε, hε, a, r, _, _, hr, hpl⟩ := exists_isPicardLindelof_of_contDiffOn_univ f hf t₀ x₀
+  obtain ⟨ε, hε, a, r, _, _, hr, hpl⟩ := exists_isPicardLindelof_of_contDiffAt f hf
   obtain ⟨Φlip, hΦ₁, L', hΦ_lip⟩ :=
     hpl.exists_forall_mem_closedBall_eq_hasDerivWithinAt_lipschitzOnWith
   set Φ : E × ℝ → E := uncurry Φlip with hΦ_def
@@ -195,12 +203,30 @@ theorem exists_isLocalFlow_of_contDiffOn_univ
     exact fun x hx => HasDerivWithinAt.continuousOn (hΦ₁ x hx).2
   refine ⟨r, ε, hr, hε, Φ, ?_⟩
   refine
-  { htmin_le := by linarith,
-    ht₀_le := by linarith,
+  { minTime_le_initial := by linarith,
+    initial_le_maxTime := by linarith,
     apply_initial := fun x hx => (hΦ₁ x hx).1,
     hasDerivWithinAt := fun x hx t ht => (hΦ₁ x hx).2 t ht,
     continuousOn := hΦ_cont,
     exists_lipschitz := ⟨L', hΦ_lip⟩ }
+
+theorem exists_isLocalFlow_of_contDiffOn_univ
+    (f : ℝ → E → E) (hf : ContDiffOn ℝ 1 (uncurry f) (Set.univ : Set (ℝ × E)))
+    (t₀ : ℝ) (x₀ : E) :
+    ∃ (r : ℝ≥0) (ε : ℝ) (_ : 0 < r) (_ : 0 < ε) (Φ : E × ℝ → E),
+      IsLocalFlow f t₀ x₀ r (t₀ - ε) (t₀ + ε) Φ :=
+  exists_isLocalFlow_of_contDiffAt f
+    (hf.contDiffAt (IsOpen.mem_nhds isOpen_univ (mem_univ _)))
+
+theorem exists_isIntegralCurveAt_of_contDiffAt
+    {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E}
+    (hf : ContDiffAt ℝ 1 (uncurry f) (t₀, x₀)) :
+    ∃ γ : ℝ → E, IsIntegralCurveAt γ f t₀ ∧ γ t₀ = x₀ := by
+  obtain ⟨r, ε, hr, hε, Φ, hΦ⟩ := exists_isLocalFlow_of_contDiffAt f hf
+  refine ⟨fun t => Φ (x₀, t), ?_, hΦ.apply_initial x₀ (mem_closedBall_self hr.le)⟩
+  apply IsIntegralCurveOn.isIntegralCurveAt (s := Icc (t₀ - ε) (t₀ + ε))
+  · exact hΦ.hasDerivWithinAt x₀ (mem_closedBall_self hr.le)
+  · exact Icc_mem_nhds (by linarith) (by linarith)
 
 namespace IsLocalFlow
 

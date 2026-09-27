@@ -1,9 +1,9 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplW22ViaH3
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFirstPartialW2p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PerChart
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.LocalRegularity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.UniformDiffQuotBoundFromDomain.WeakPartialDerivativeBound
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartHk.H2NonSmooth
-import DifferentialGeometry.Analysis.Sobolev.Approximation.SmoothDensity
+import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Smooth
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 
 
@@ -31,8 +31,8 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedWeakPartialOnVolume
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3Direct
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartialW2p
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThree
 open DifferentialGeometry.Analysis.Sobolev.Chart
 
@@ -49,7 +49,7 @@ noncomputable def chosenMixedSecondPartial
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g)
     (l i : Fin (Module.finrank ℝ E)) : EuclN → ℝ :=
-  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+  DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
     (d := Module.finrank ℝ E) 2 i
     (chartPushedChosenFirstPartial (I := I) (M := M) g α u_h l)
     (chartTargetEuclid (I := I) (M := M) α)
@@ -154,7 +154,7 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two_of_laplacianDomainPow_two
     (l : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 l
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α

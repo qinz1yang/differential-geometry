@@ -106,7 +106,7 @@ def RawVariationalIdentity
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem variational_flow_feeds_cartan_witness
+theorem hasDerivAt_metric_inner_of_rawVariationalIdentity
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)

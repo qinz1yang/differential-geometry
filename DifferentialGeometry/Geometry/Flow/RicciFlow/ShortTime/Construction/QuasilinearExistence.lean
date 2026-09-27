@@ -1,9 +1,9 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.QuasilinearMetricShortTimeExistence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckQuasilinearExistence
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.MaxRegSolutionRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.DeTurck.MetricTensorIdentities
-import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.DeTurckChartRegularityFromJoint
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.HeatSemigroup.Regularity.Solution
+import DifferentialGeometry.Geometry.Metric.Basic
+import DifferentialGeometry.Analysis.Parabolic.DeTurckRicci.Regularity.JointChart
 open DifferentialGeometry.Analysis.Elliptic
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -28,16 +28,16 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M]
 
-theorem quasilinear_metric_short_time_existence_of_nemytskii_data
+theorem quasilinear_metric_short_time_existence_of_nemytskii
     (F : SmoothRiemannianMetric I M → (∀ x : M, TangentSpace I x →L[ℝ] TangentSpace I x →L[ℝ] ℝ))
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_eq : a = 4 * Module.finrank ℝ E + 10)
-    (Nfun : tensorHs (I := I) (M := M) g₀ 0 2 ((a:ℝ)+2) → tensorHs (I := I) (M := M) g₀ 0 2 (a:ℝ))
+    (Nfun : TensorHs (I := I) (M := M) g₀ 0 2 ((a:ℝ)+2) → TensorHs (I := I) (M := M) g₀ 0 2 (a:ℝ))
     (Nsec : ∀ (S : SmoothCcTensor g₀ 0 2) {δ : ℝ} (_hδ_lt : δ < 1)
         (_hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ),
           SmoothCcTensor g₀ 0 2)
     {L : ℝ≥0} (hLipN : LipschitzWith L Nfun)
-    (H2 : ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    (H2 : ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun u - Nfun u'‖ ≤
         (C₁ : ℝ) * max ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) u‖
@@ -54,13 +54,13 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
         = F (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ) x v w)
     (hForce : ∀ {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
         (hTT₀ : T ≤ (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose)
-        (u : MaxRegSolutionSpace (I := I) (M := M) (a : ℝ) T)
-        (gforce : timeL2 (tensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
-        (hduh : u = maxRegDuhamelMap (I := I) (M := M) (a : ℝ) hT
-          (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce)
+        (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
+        (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
+        (hduh : u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
+          (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce)
         (hforce : gforce =ᵐ[timeMeasure T]
-          (fun t => Nfun (maxRegDuhamelSolField (I := I) (M := M) (a : ℝ) hT
-            (0 : tensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
+          (fun t => Nfun (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
+            (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
         (hgforce : ‖gforce‖ ≤ 1 / (16 * ((H2.choose : ℝ) + 1)))
         (htrace : timeH1.trace0 _ T u = 0),
       ∃ (d₂F : ℝ), 0 < d₂F ∧ d₂F ≤ T ∧
@@ -77,7 +77,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
                 (tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
                   (Nat.cast_nonneg a) (timeH1.toFun u t)) i =
-              perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
+              perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
           ∃ (R₀ : ℝ), 0 < R₀ ∧
             (∃ d₂ : ℝ, 0 < d₂ ∧ d₂ ≤ T ∧
               ∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ S : SmoothCcTensor g₀ 0 2,
@@ -131,7 +131,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
                 (tensorHsToL2 (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                   (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
                   (Nat.cast_nonneg a) (timeH1.toFun u t)) i =
-              perModeConv (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
+              perModeConvolution (TensorEigenIdx.lambda (I := I) (M := M) i) (f i) t) ∧
           ∃ (R₀ : ℝ), 0 < R₀ ∧
             (∃ d₂ : ℝ, 0 < d₂ ∧ d₂ ≤ T ∧
               ∀ t ∈ Set.Icc (0 : ℝ) d₂, ∀ S : SmoothCcTensor g₀ 0 2,
@@ -167,7 +167,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii_data
         hForceRepr_fam
   refine ⟨T₁, fun t : ℝ => tensorSectionRealizeMetric (I := I) g₀ (F_fam t) hδ_lt (hδ t),
     ⟨hT₁pos, ?_, ?_⟩, hF_joint⟩
-  · refine smoothRiemannianMetric_ext_inner (fun x v w => ?_)
+  · refine SmoothRiemannianMetric.ext_inner (fun x v w => ?_)
     rw [tensorSectionRealizeMetric_inner, hF_zero, ccTensorBilinSymm_zero_apply, add_zero]
   · intro t ht x v w
     have hcongr : (fun s : ℝ =>

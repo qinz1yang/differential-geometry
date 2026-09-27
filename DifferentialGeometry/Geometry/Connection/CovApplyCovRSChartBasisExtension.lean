@@ -47,19 +47,19 @@ lemma bumpedChartBasis_contMDiff
     (hχ_tsupp : tsupport (fun y : M => (χ : M → ℝ) y) ⊆
       chartLeviCivitaGoodSet (I := I) α) :
     ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun y : M => (χ : M → ℝ) y • chartBasisVecFiber (I := I) α k y)) := by
+      (T% (fun y : M => (χ : M → ℝ) y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y)) := by
   classical
   have hChart_baseSet : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (chartBasisVec (I := I) α k)
+      (DifferentialGeometry.Tensor.Coordinates.chartBasisVec (I := I) α k)
       (trivializationAt E (TangentSpace I) α).baseSet :=
-    chartBasisVec_contMDiffOn (I := I) α k
+    DifferentialGeometry.Tensor.Coordinates.chartBasisVec_contMDiffOn (I := I) α k
   have hGood_sub_baseSet :
       chartLeviCivitaGoodSet (I := I) α ⊆
         (trivializationAt E (TangentSpace I) α).baseSet := by
     intro x hx
     exact chartLeviCivitaGoodSet_mem_baseSet (I := I) hx
   have hChart_on_good : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun y : M => chartBasisVecFiber (I := I) α k y))
+      (T% (fun y : M => DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y))
       (chartLeviCivitaGoodSet (I := I) α) :=
     hChart_baseSet.mono hGood_sub_baseSet
   have hχ_global : ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => (χ : M → ℝ) y) :=
@@ -85,7 +85,7 @@ theorem covApply_covRS_chartBasis_globalSmoothExtension
           (S_k_ext : Π b : M, TensorRSSpace r s I b) y =
             covApply (TensorRSNabla.tensorRSCovariantDerivative I M r s
                 (LeviCivita (I := I) g))
-              (chartBasisVecFiber (I := I) α k) T₀.toSection y := by
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k) T₀.toSection y := by
   classical
   let _h_top : TopologicalSpace
       (TotalSpace (TensorRSModel r s ℝ E)
@@ -97,7 +97,7 @@ theorem covApply_covRS_chartBasis_globalSmoothExtension
   obtain ⟨χ, hχ_tsupp⟩ :=
     exists_bump_tsupport_in_goodSet (I := I) α (b₀ := b₀) hb₀
   have hX_ext_smooth : ContMDiff I (I.prod 𝓘(ℝ, E)) ∞
-      (T% (fun y : M => (χ : M → ℝ) y • chartBasisVecFiber (I := I) α k y)) :=
+      (T% (fun y : M => (χ : M → ℝ) y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y)) :=
     bumpedChartBasis_contMDiff (I := I) α (b₀ := b₀) k χ hχ_tsupp
   set cov := TensorRSNabla.tensorRSCovariantDerivative I M r s
     (LeviCivita (I := I) g) with hcov_def
@@ -112,14 +112,14 @@ theorem covApply_covRS_chartBasis_globalSmoothExtension
   have hSk_on : ContMDiffOn I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (T% (fun y : M =>
         covApply cov
-          (fun z : M => (χ : M → ℝ) z • chartBasisVecFiber (I := I) α k z)
+          (fun z : M => (χ : M → ℝ) z • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
           T₀.toSection y))
       Set.univ :=
     covApply_contMDiffOn (cov := cov) hX_ext_smooth hT_plus
   have hSk_global : ContMDiff I (I.prod 𝓘(ℝ, TensorRSModel r s ℝ E)) ∞
       (T% (fun y : M =>
         covApply cov
-          (fun z : M => (χ : M → ℝ) z • chartBasisVecFiber (I := I) α k z)
+          (fun z : M => (χ : M → ℝ) z • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
           T₀.toSection y)) := by
     intro y
     exact (hSk_on y (by trivial)).contMDiffAt (Filter.univ_mem)
@@ -127,7 +127,7 @@ theorem covApply_covRS_chartBasis_globalSmoothExtension
       fun b : M => TensorRSSpace r s I b⟯ :=
     { toFun := fun y : M =>
         covApply cov
-          (fun z : M => (χ : M → ℝ) z • chartBasisVecFiber (I := I) α k z)
+          (fun z : M => (χ : M → ℝ) z • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
           T₀.toSection y
       contMDiff_toFun := hSk_global } with hSk_def
   have hχ_eq_one_nhds : ∀ᶠ y in 𝓝 b₀, (χ : M → ℝ) y = 1 := χ.eventuallyEq_one
@@ -151,17 +151,17 @@ theorem covApply_covRS_chartBasis_globalSmoothExtension
   have hS_k_val :
       (S_k_ext : Π b : M, TensorRSSpace r s I b) y =
         covApply cov
-          (fun z : M => (χ : M → ℝ) z • chartBasisVecFiber (I := I) α k z)
+          (fun z : M => (χ : M → ℝ) z • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z)
           T₀.toSection y := rfl
   rw [hS_k_val]
   change cov.toFun T₀.toSection y
-      ((fun z : M => (χ : M → ℝ) z • chartBasisVecFiber (I := I) α k z) y)
-    = cov.toFun T₀.toSection y (chartBasisVecFiber (I := I) α k y)
+      ((fun z : M => (χ : M → ℝ) z • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) y)
+    = cov.toFun T₀.toSection y (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y)
   have hinner :
-      (fun z : M => (χ : M → ℝ) z • chartBasisVecFiber (I := I) α k z) y
-        = chartBasisVecFiber (I := I) α k y := by
-    change (χ : M → ℝ) y • chartBasisVecFiber (I := I) α k y
-        = chartBasisVecFiber (I := I) α k y
+      (fun z : M => (χ : M → ℝ) z • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k z) y
+        = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y := by
+    change (χ : M → ℝ) y • DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y
+        = DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α k y
     rw [hχ_one_y, one_smul]
   rw [hinner]
 

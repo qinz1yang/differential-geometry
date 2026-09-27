@@ -172,7 +172,7 @@ theorem classicalPartial_memWkp_of_memWkp_succ
   have hψ_W1 : DeGiorgi.MemW1p (d := d) 2 ψ Ω := hψ.memW1p
   have h_ae := chosenWeakPartial_smooth_ae_eq (d := d)
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ hψ_smooth hψ_W1 l
-  have h_chosen_mem : MemWkp (d := d) k 2 (chosenWeakPartial' 2 l ψ Ω) Ω :=
+  have h_chosen_mem : MemWkp (d := d) k 2 (chosenWeakPartialOrZero 2 l ψ Ω) Ω :=
     hψ.chosenWeakPartial_mem l
   exact (MemWkp_congr_ae (d := d) (by norm_num : (1 : ℝ≥0∞) ≤ 2) hΩ h_ae).mp
     h_chosen_mem
@@ -262,7 +262,7 @@ theorem perturbedSource_memWkp_of_source_memWkp
     Finset.sum_nonneg
       (fun i _ => Finset.sum_nonneg (fun j _ => hK_pair_nn i j))
   refine ⟨K_c + K_div + 1, by positivity, ?_⟩
-  intro u f hu_smooth _hu_cpt hf_smooth hu_memWkp hf_memWkp
+  intro u f hu_smooth _hu_compact hf_smooth hu_memWkp hf_memWkp
   set D : ℝ≥0∞ :=
     iteratedWeakSobolevNorm (d := d) (m + 1) 2 f Ω + iteratedWeakSobolevNorm (d := d) (m + 2) 2 u Ω
       with hD_def
@@ -461,7 +461,7 @@ theorem iteratedPerturbedSource_succ
         (perturbedSource (d := d) B u f (idx 0))
         (fun i : Fin m => idx i.succ) := rfl
 
-theorem contDiff_perturbedSource'
+theorem contDiff_perturbedSource
     (B : SmoothEllipticBilinearForm d (Set.univ : Set EE))
     {u f : EE → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (hf : ContDiff ℝ (⊤ : ℕ∞) f)
     (l : Fin d) :
@@ -510,10 +510,10 @@ theorem iterated_partial_isSmoothWeakSolution
             (perturbedSource (d := d) B u f (idx 0)) :=
         partial_smooth_weak_solution (d := d) (Ω := (Set.univ : Set EE))
           isOpen_univ B h_weak hf (idx 0)
-      have h_step_src_smooth :
+      have h_step_source_smooth :
           ContDiff ℝ (⊤ : ℕ∞) (perturbedSource (d := d) B u f (idx 0)) :=
-        contDiff_perturbedSource' (d := d) B h_weak.1 hf (idx 0)
-      have h_rec := ih h_step h_step_src_smooth (fun i : Fin m => idx i.succ)
+        contDiff_perturbedSource (d := d) B h_weak.1 hf (idx 0)
+      have h_rec := ih h_step h_step_source_smooth (fun i : Fin m => idx i.succ)
       rw [iterClassicalPartial_succ, iteratedPerturbedSource_succ]
       exact h_rec
 
@@ -529,8 +529,8 @@ theorem tensorComponent_iterated_partial_isSmoothWeakSolution
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     (P₀ : CompIdx E r s)
-    (hT_supp : tsupport T.toFun ⊆ (chartAt H α).source)
-    (hF_supp : tsupport F.toFun ⊆ (chartAt H α).source)
+    (hT_support : tsupport T.toFun ⊆ (chartAt H α).source)
+    (hF_support : tsupport F.toFun ⊆ (chartAt H α).source)
     (hT_K : tsupport (tensorComponentEuclid (I := I) (M := M) g r s T α P₀) ⊆ K)
     (hweak : ∀ v : SmoothCcTensor g r s,
       ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r s T v x
@@ -551,15 +551,15 @@ theorem tensorComponent_iterated_partial_isSmoothWeakSolution
         (tensorComponentEuclid (I := I) (M := M) g r s T α P₀)
         (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponent_isSmoothWeakSolution (I := I) (M := M)
-      g r s T F α hK hK_target P₀ hT_supp hF_supp hT_K hweak
-  have h_base_src_smooth :
+      g r s T F α hK hK_target P₀ hT_support hF_support hT_K hweak
+  have h_base_source_smooth :
       ContDiff ℝ (⊤ : ℕ∞)
         (tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀) :=
     tensorComponentWeakRHS_contDiff (I := I) (M := M)
-      g r s T F α P₀ hT_supp hF_supp
+      g r s T F α P₀ hT_support hF_support
   exact iterated_partial_isSmoothWeakSolution (d := Module.finrank ℝ E)
     (tensorPrincipalForm (I := I) (M := M) g α hK hK_target) m h_base
-    h_base_src_smooth idx
+    h_base_source_smooth idx
 
 end TensorMixed
 

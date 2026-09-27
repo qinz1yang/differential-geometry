@@ -130,11 +130,11 @@ omit [NeZero d] in
 private theorem shift_in_omega'
     (η : E → ℝ) (k : Fin d) {h h₀ : ℝ}
     {Ω' : Set E}
-    (hh_supp_in_Ω' : Metric.cthickening h₀ (tsupport η) ⊆ Ω')
+    (hh_support_in_Ω' : Metric.cthickening h₀ (tsupport η) ⊆ Ω')
     (h_abs : |h| ≤ h₀)
     {x : E} (hx : x ∈ tsupport η) :
     x + h • EuclideanSpace.single k 1 ∈ Ω' := by
-  refine hh_supp_in_Ω' ?_
+  refine hh_support_in_Ω' ?_
   refine Metric.mem_cthickening_of_dist_le _ x h₀ (tsupport η) hx ?_
   have hsing_norm : ‖(EuclideanSpace.single k (1 : ℝ) : E)‖ = 1 := by simp
   have hdist_eq :
@@ -148,13 +148,13 @@ omit [NeZero d] in
 theorem singleton_cthick_subset
     (η : E → ℝ) {h h₀ : ℝ}
     {Ω' : Set E}
-    (hh_supp_in_Ω' : Metric.cthickening h₀ (tsupport η) ⊆ Ω')
+    (hh_support_in_Ω' : Metric.cthickening h₀ (tsupport η) ⊆ Ω')
     (h_abs : |h| ≤ h₀)
     {x : E} (hx : x ∈ tsupport η) :
     Metric.cthickening |h| ({x} : Set E) ⊆ Ω' := by
   intro y hy
   rw [Metric.mem_cthickening_iff] at hy
-  refine hh_supp_in_Ω' ?_
+  refine hh_support_in_Ω' ?_
   rw [Metric.mem_cthickening_iff]
   have hsub : ({x} : Set E) ⊆ tsupport η := by
     intro z hz
@@ -195,7 +195,7 @@ theorem translated_coeff_cutoff_gradient_pointwise_bound
     {Ω' : Set E} {Λ : ℝ}
     (h_Λ : ∀ i j : Fin d, ∀ x ∈ closure Ω', |B.a x i j| ≤ Λ)
     (i j k : Fin d) {h : ℝ}
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω')
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω')
     {ε : ℝ} (hε : 0 < ε) (x : E) :
     |2 * translate k h (fun y => B.a y i j) x * (η x) *
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
@@ -211,7 +211,7 @@ theorem translated_coeff_cutoff_gradient_pointwise_bound
   by_cases hx : x ∈ tsupport η
   · have h_shift_in : x + h • EuclideanSpace.single k 1 ∈ closure Ω' := by
       have h_shift_in_Ω' : x + h • EuclideanSpace.single k 1 ∈ Ω' :=
-        shift_in_omega' (d := d) η k hh_supp_in_Ω' (le_refl _) hx
+        shift_in_omega' (d := d) η k hh_support_in_Ω' (le_refl _) hx
       exact subset_closure h_shift_in_Ω'
     have h_τa_bound : |translate k h (fun y => B.a y i j) x| ≤ Λ := by
       unfold translate
@@ -306,7 +306,7 @@ theorem translated_coeff_cutoff_gradient_pointwise_bound
         rw [← sq_abs]; exact pow_le_pow_left₀ (abs_nonneg _) h_dη_bound 2
       have hΛ_nn : 0 ≤ Λ := by
         have h_x_in_Ω' : x ∈ Ω' :=
-          hh_supp_in_Ω' (self_subset_cthickening _ hx)
+          hh_support_in_Ω' (self_subset_cthickening _ hx)
         have h_x_in : x ∈ closure Ω' := subset_closure h_x_in_Ω'
         exact le_trans (abs_nonneg _) (h_Λ i j x h_x_in)
       have hN_nn : 0 ≤ N := le_trans (norm_nonneg _) (h_fderiv_eta x)
@@ -382,7 +382,7 @@ theorem diffQuot_coeff_cutoff_squared_pointwise_bound
     (h_M : ∀ i j : Fin d, ∀ x ∈ closure Ω',
       |(fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single k 1)| ≤ M)
     {h : ℝ}
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω')
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω')
     {ε : ℝ} (hε : 0 < ε) (x : E) :
     |diffQuot k h (fun y => B.a y i j) x * (η x)^2 *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -398,7 +398,7 @@ theorem diffQuot_coeff_cutoff_squared_pointwise_bound
   by_cases hx : x ∈ tsupport η
   · have h_dq_a_bound : |diffQuot k h (fun y => B.a y i j) x| ≤ M :=
       abs_diffQuot_a_le_of_bound_on_set (d := d) (B.contDiff_a i j |>.of_le (by norm_cast)) k h
-        (h_M i j) ((singleton_cthick_subset (d := d) η hh_supp_in_Ω' (le_refl _) hx).trans
+        (h_M i j) ((singleton_cthick_subset (d := d) η hh_support_in_Ω' (le_refl _) hx).trans
           subset_closure)
     have h_η_in : η x ∈ Set.Icc (0 : ℝ) 1 := hη_range ⟨x, rfl⟩
     have h_η_nn : 0 ≤ η x := h_η_in.1
@@ -519,7 +519,7 @@ theorem diffQuot_coeff_cutoff_gradient_pointwise_bound
     (h_M : ∀ i j : Fin d, ∀ x ∈ closure Ω',
       |(fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single k 1)| ≤ M)
     {h : ℝ}
-    (hh_supp_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') (x : E) :
+    (hh_support_in_Ω' : Metric.cthickening |h| (tsupport η) ⊆ Ω') (x : E) :
     |2 * diffQuot k h (fun y => B.a y i j) x * (η x) *
         ((fderiv ℝ η x) (EuclideanSpace.single j 1)) *
         ((fderiv ℝ u x) (EuclideanSpace.single i 1)) *
@@ -536,7 +536,7 @@ theorem diffQuot_coeff_cutoff_gradient_pointwise_bound
       have hCD : ContDiff ℝ 1 (fun y : E => B.a y i j) :=
         (B.contDiff_a i j).of_le (by norm_cast)
       exact abs_diffQuot_a_le_of_bound_on_set (d := d) hCD k h
-        (h_M i j) ((singleton_cthick_subset (d := d) η hh_supp_in_Ω' (le_refl _) hx).trans
+        (h_M i j) ((singleton_cthick_subset (d := d) η hh_support_in_Ω' (le_refl _) hx).trans
           subset_closure)
     have h_dη_bound : |(fderiv ℝ η x) (EuclideanSpace.single j 1)| ≤ N := by
       have hsing_norm :

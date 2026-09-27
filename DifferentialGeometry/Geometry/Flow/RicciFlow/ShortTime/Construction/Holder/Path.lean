@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.HolderPath
+import DifferentialGeometry.Analysis.Parabolic.Euclidean.Holder.Path
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Holder.Defs
 
 
@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Analysis.Parabolic.Euclidean
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Sobolev.Tensor
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.Measure
 
 variable
@@ -66,7 +66,7 @@ theorem metricConst_ball
       MetricInHolderBall (I := I) (M := M) gBase τ C (fun _ => gSeq k) := by
   classical
   obtain ⟨C₀, hC₀, Cα, hdata⟩ :=
-    metricDiff_c2half (I := I) (M := M) gBase gSeq B hbdd
+    metricDifference_c2half (I := I) (M := M) gBase gSeq B hbdd
   let C₀n : ℝ≥0 := ⟨C₀, hC₀⟩
   let Ce : ℝ≥0 := 3 * C₀n + Cα
   let A := metricChartIdx (I := I) (M := M)

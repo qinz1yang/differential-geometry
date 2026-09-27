@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Add
@@ -20,6 +20,37 @@ namespace Integral
 namespace L2
 
 open DifferentialGeometry.Integral.Measure
+
+theorem abs_integral_mul_le_eLpNorm_two
+    {α : Type*} [MeasurableSpace α] {μ : Measure α} {f g : α → ℝ}
+    (hf : MemLp f 2 μ) (hg : MemLp g 2 μ) :
+    |∫ x, f x * g x ∂μ| ≤ (eLpNorm f 2 μ).toReal * (eLpNorm g 2 μ).toReal := by
+  have habs :
+      ENNReal.ofReal |∫ x, f x * g x ∂μ| ≤ eLpNorm f 2 μ * eLpNorm g 2 μ := by
+    calc
+      ENNReal.ofReal |∫ x, f x * g x ∂μ| ≤ ∫⁻ x, ‖f x * g x‖ₑ ∂μ := by
+        rw [← Real.norm_eq_abs, ofReal_norm]
+        exact enorm_integral_le_lintegral_enorm _
+      _ = eLpNorm (fun x => g x * f x) 1 μ := by
+        rw [eLpNorm_one_eq_lintegral_enorm]
+        refine lintegral_congr fun x => ?_
+        simp [enorm_mul, mul_comm]
+      _ ≤ eLpNorm g 2 μ * eLpNorm f 2 μ := by
+        have hmul : (fun x => g x * f x) = (g : α → ℝ) • (f : α → ℝ) := by
+          funext x
+          simp [smul_eq_mul]
+        rw [hmul]
+        let _ : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
+          constructor
+          rw [show (1 : ℝ≥0∞)⁻¹ = 1 by simp, ENNReal.inv_two_add_inv_two]
+        exact eLpNorm_smul_le_mul_eLpNorm
+          hf.aestronglyMeasurable hg.aestronglyMeasurable
+      _ = eLpNorm f 2 μ * eLpNorm g 2 μ := mul_comm _ _
+  have hfinite : eLpNorm f 2 μ * eLpNorm g 2 μ ≠ (⊤ : ℝ≥0∞) :=
+    ENNReal.mul_ne_top hf.eLpNorm_lt_top.ne hg.eLpNorm_lt_top.ne
+  have hreal := ENNReal.toReal_mono hfinite habs
+  rw [ENNReal.toReal_ofReal (abs_nonneg _), ENNReal.toReal_mul] at hreal
+  exact hreal
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]

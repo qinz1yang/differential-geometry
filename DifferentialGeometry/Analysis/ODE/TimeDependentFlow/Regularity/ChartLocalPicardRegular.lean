@@ -22,10 +22,10 @@ def ChartCoordPicardRegular (X : ℝ → ∀ x : M, TangentSpace I x) : Prop :=
 
 noncomputable def chartLocalPicardDataOfRegular
     (X : ℝ → ∀ x : M, TangentSpace I x)
-    (hReg : ChartCoordPicardRegular X) (α : M) :
+    (hRegularity : ChartCoordPicardRegular X) (α : M) :
     ChartLocalPicardData X α :=
   let h := time_dependent_vf_chart_local_picard_with_lipschitz X α
-    hReg.1 (hReg.2 α)
+    hRegularity.1 (hRegularity.2 α)
   { T := h.choose
     T_pos := h.choose_spec.1
     r := h.choose_spec.2.choose

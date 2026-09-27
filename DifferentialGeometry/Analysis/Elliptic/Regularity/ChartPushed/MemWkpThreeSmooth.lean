@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedH2Interior
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplViaH3
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFirstPartialW1p
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
@@ -29,10 +29,10 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplDataCanonical
+open DifferentialGeometry.Analysis.Laplacian.CanonicalDerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH2Interior
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThree
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.H1ComplWeakPartialLimit
 open DifferentialGeometry.Analysis.Laplacian.H1ComplGradientH1LipschitzBound
@@ -149,7 +149,7 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two
     (i : Fin (Module.finrank ℝ E)) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
       (d := Module.finrank ℝ E) 2 2
-      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartial'
+      (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
         (d := Module.finrank ℝ E) 2 i
         (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
           (I := I) (M := M) (chartAtlasPOU I M) α
@@ -159,7 +159,7 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two
       (chartTargetEuclid (I := I) (M := M) α) := by
   classical
   set D : ChartBilinearH1ComplData (I := I) (M := M) g α :=
-    derivedChartBilinearH1ComplDataUnconditional (I := I) (M := M) g α i hu_h
+    canonicalDerivedChartBilinearH1ComplData (I := I) (M := M) g α i hu_h
     with hD_def
   obtain ⟨Ω'', hΩ''_open, hΩ''_compact_closure, hΩ''_in_chart, hK_in_Ω'',
     h_D_uChart_memWkp22_Ω''⟩ :=
@@ -184,7 +184,7 @@ theorem chartPushed_chosenFirstPartial_memWkp_two_two
         (chartTargetEuclid (I := I) (M := M) α \ K_α)),
         D.uChart y = 0 := by
     rw [h_D_uChart_eq_base]
-    exact base_weak_partial_ae_zero_off_K_α (I := I) (M := M) g α
+    exact base_weak_partial_ae_zero_off_chart_image_pou_tsupport (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h) i
   have h_D_uChart_memWkp22_chart :
@@ -237,21 +237,6 @@ theorem chartPushed_memWkp_three_two_of_laplacianDomainPow_two
   intro i
   exact chartPushed_chosenFirstPartial_memWkp_two_two
     (I := I) (M := M) g α hu_h i
-
-theorem chartPushed_memWkp_three_two_of_laplacianDomainPow_two'
-    (g : SmoothRiemannianMetric I M) (α : M)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) 3 2
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed
-        (I := I) (M := M) (chartAtlasPOU I M) α
-        ((H1ComplToLp (I := I) (M := M) g u_h :
-          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
-      (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
-        (I := I) (M := M) α) :=
-  chartPushed_memWkp_three_two_of_laplacianDomainPow_two
-    (I := I) (M := M) g α hu_h
 
 end ChartPushedMemWkpThreeSmooth
 end Laplacian

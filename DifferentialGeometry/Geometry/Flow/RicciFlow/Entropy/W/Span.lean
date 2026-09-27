@@ -157,7 +157,7 @@ theorem w_span_uniform
       ring
     have hu0eq : u 0 = v := by
       dsimp only [u]
-      rw [galLim_initial (I := I) (M := M) hlim]
+      rw [galerkinLim_initial (I := I) (M := M) hlim]
       exact hu₀
     have hmass0 :
         (∫ x, u 0 x ∂(volumeMeasureFamily (I := I) (M := M)
@@ -185,7 +185,7 @@ theorem w_span_uniform
     have hlower : L ≤ flowW (I := I) (M := M) S s (theta + q) (u q) :=
       hgood (theta + q) hthetaq hbudgetq (u q) hsmoothq hposq hmassq
     have hW := gallim_w_lt (I := I) (M := M)
-      hS hDim hr hlim hpot href htheta hposPath q hqIco
+      hS hr hlim hpot href htheta hposPath q hqIco
     have hWflow :
         flowW (I := I) (M := M) S s (theta + q) (u q) ≤
           flowW (I := I) (M := M) S t theta v := by

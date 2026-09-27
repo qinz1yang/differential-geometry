@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.Reaction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.FrameInvariant
-import DifferentialGeometry.Tensor.RSTensor.ProductNablaLeibniz
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Frame.Invariant
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ProductLeibniz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureEvolution
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
@@ -33,7 +33,7 @@ omit [I.Boundaryless] [IsManifold I 2 M] in
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem stMetricCompat
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I)
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I)
       (S.family.connection t) (S.family.metric t) := by
   simpa [SolutionFamily.connection, SolutionOn.family_metric] using
     DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
@@ -217,7 +217,7 @@ def stNabla (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : ℕ}
       (n := (∞ : WithTop ℕ∞)) (4 + (k + 1)) :=
   totalNabla0S (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (4 + k) (S.family.connection t) T
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t) T)
 
 omit [I.Boundaryless] in
@@ -229,7 +229,7 @@ theorem stNabla_realizes (S : SolutionOn (I := I) (M := M) D) (t : Real) {k : �
       (4 + k) (S.family.connection t) T (stNabla (I := I) S t T) :=
   totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     (4 + k) (S.family.connection t) T
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       (4 + k) (S.family.connection t) (connSmoothInf (I := I) S t) T)
 
 omit [Module.Finite ℝ E] in
@@ -321,7 +321,7 @@ omit [SigmaCompactSpace M] in
 theorem stNablaMtIter
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     {s : ℕ} (τ : ℕ) :
     ∀ (A : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (n := (∞ : WithTop ℕ∞)) (s + 2 * τ))
@@ -349,7 +349,7 @@ theorem stNablaMtIter
         (metricTraceFirstTwoField (I := I) (M := M) (s := (s + 2 * τ) + 1) g
           (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
             (traceNablaShuffle (s + 2 * τ)) nablaA)) h1
-      rw [← metricTraceFirstTwoField_domDomCongr (I := I) (M := M) g ρ'
+      rw [← metricTraceFirstTwoField_domDomCongr_frontExtendEquiv (I := I) (M := M) g ρ'
             (Tensor0SField.domDomCongr (𝕜 := Real) (E := E) (I := I) (∞ : WithTop ℕ∞)
               (traceNablaShuffle (s + 2 * τ)) nablaA),
           Tensor0SField.domDomCongr_trans] at h2

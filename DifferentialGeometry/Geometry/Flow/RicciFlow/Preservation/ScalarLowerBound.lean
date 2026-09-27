@@ -244,7 +244,7 @@ theorem exists_initialScalarMinimum_of_continuous
   exact ⟨scalar 0 x0,
     initialScalarMinimum_of_isMinOn (M := M) scalar rfl hmin⟩
 
-structure ScalarLowerBoundWMPRegularity
+structure ScalarLowerBoundWeakMaximumPrincipleRegularity
     (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
     (T n c0 : Real) (scalar : Real -> M -> Real) (K : NNReal) : Prop where
   weighted_cont : ContinuousOn
@@ -276,7 +276,7 @@ structure ScalarLowerBoundWMPRegularity
         (fun z : M => scalar t z - scalarLowerBarrier n c0 t) y) x
 
 omit [SigmaCompactSpace M] in
-theorem scalarRegOfSmooth
+theorem scalarRegularityOfSmooth
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D)
     (hS : IsSmoothSolutionOn (I := I) (M := M) S)
@@ -287,7 +287,7 @@ theorem scalarRegOfSmooth
       G.metric t = S.family.metric t)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       1 - (2 / n) * c0 * t ≠ 0) :
-    ScalarLowerBoundWMPRegularity (I := I) G T n c0 S.scalar K := by
+    ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T n c0 S.scalar K := by
   classical
   let hreg := hS.scalarRegular
   have hscalar_cont : ContinuousOn
@@ -620,7 +620,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_of_regularity
     (hregular : ∀ t : Real, t ∈ Set.Icc 0 T -> 0 < t -> t ∈ D.regular)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       0 < 1 - (2 / n) * c0 * t)
-    (hreg : ScalarLowerBoundWMPRegularity (I := I) G T n c0 scalar K)
+    (hreg : ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T n c0 scalar K)
     (hevol : ScalarEvolutionEquationOn (D := D) scalar scalarLap ricciNormSq)
     (hlap : ScalarLaplacianRealizesHeatOperatorOn (I := I) G T scalar scalarLap)
     (hricci : ∀ t : Real, t ∈ Set.Icc 0 T -> ∀ x : M,
@@ -651,7 +651,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_closedOpen
     (scalar scalarLap ricciNormSq : Real -> M -> Real) (K : NNReal)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       0 < 1 - (2 / n) * c0 * t)
-    (hreg : ScalarLowerBoundWMPRegularity (I := I) G T n c0 scalar K)
+    (hreg : ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T n c0 scalar K)
     (hevol : ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)
       scalar scalarLap ricciNormSq)
@@ -867,7 +867,7 @@ theorem scalar_curvature_lower_bound_of_scalarEvolution_inFrame_closedOpen
     (K : NNReal)
     (hden : ∀ t : Real, t ∈ Set.Icc 0 T ->
       0 < 1 - (2 / n) * c0 * t)
-    (hreg : ScalarLowerBoundWMPRegularity (I := I) G T n c0
+    (hreg : ScalarLowerBoundWeakMaximumPrincipleRegularity (I := I) G T n c0
       (scalarTraceInFrame (I := I) S gInv frame) K)
     (hevol : ScalarEvolutionEquationOn
       (D := DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen 0 omega h0ω)

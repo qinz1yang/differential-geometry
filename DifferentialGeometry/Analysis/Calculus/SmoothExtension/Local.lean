@@ -11,8 +11,8 @@ open scoped ContDiff
 
 noncomputable section
 
-theorem exists_contDiff_extension {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] {F : Type} [NormedAddCommGroup F] [NormedSpace ℝ F]
+theorem exists_contDiff_extension {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    [FiniteDimensional ℝ E] {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     (n : ℕ∞) (f : E → F) (c : E)
     (hf : ∃ r : ℝ, 0 < r ∧ ContDiffOn ℝ n f (Metric.ball c r)) :
     ∃ g : E → F, ContDiff ℝ n g ∧ g =ᶠ[nhds c] f := by

@@ -1,10 +1,10 @@
-import DifferentialGeometry.Geometry.Operator.Laplacian
+import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Gradient
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.GradientLaplacian.Green
 import DifferentialGeometry.Geometry.Operator.WithBoundary.Laplacian
-import DifferentialGeometry.Geometry.Boundary.EuclideanHalfSpaceInstance
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
-import DifferentialGeometry.Geometry.Metric.TensorInner.TangentRiemannian
+import DifferentialGeometry.Geometry.Boundary.Model.EuclideanHalfSpace
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.Riemannian
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 open DifferentialGeometry.Geometry.Operator
@@ -97,13 +97,13 @@ instance : SMul ℝ (InteriorSmoothScalar g) where
         rw [h]
         exact contMDiff_const.mul f.smooth
       interior_support := by
-        have h_supp : Function.support (c • f.toFun) ⊆ Function.support f.toFun := by
+        have h_support : Function.support (c • f.toFun) ⊆ Function.support f.toFun := by
           intro x hx hx_zero
           apply hx
           change c * f.toFun x = 0
           rw [hx_zero, mul_zero]
         have h_tsupp : tsupport (c • f.toFun) ⊆ tsupport f.toFun :=
-          closure_mono h_supp
+          closure_mono h_support
         exact h_tsupp.trans f.interior_support }
 
 @[simp] lemma toFun_zero : (0 : InteriorSmoothScalar g).toFun = (fun _ : M => 0) := rfl
@@ -324,7 +324,7 @@ lemma interiorSmoothScalarH1Inner_nonneg
 
 omit [CompactSpace M] in
 omit [T2Space M] in
-@[simp] lemma grad_g_with_boundary_section_apply'
+@[simp] lemma InteriorSmoothScalar.grad_g_with_boundary_section_apply
     {g : SmoothRiemannianMetric (I_half n) M}
     (f : InteriorSmoothScalar g) (x : M) :
     (gradGWithBoundarySection
@@ -350,8 +350,9 @@ lemma InteriorSmoothScalar.grad_g_with_boundary_section_add_apply
             (I := I_half n) g f₂.smooth f₂.interior_support :
           Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
             (TangentSpace (I_half n) : M → Type _)⟯) x) := by
-  rw [grad_g_with_boundary_section_apply', grad_g_with_boundary_section_apply',
-    grad_g_with_boundary_section_apply']
+  rw [InteriorSmoothScalar.grad_g_with_boundary_section_apply,
+    InteriorSmoothScalar.grad_g_with_boundary_section_apply,
+    InteriorSmoothScalar.grad_g_with_boundary_section_apply]
   have hfun : (f₁ + f₂).toFun = f₁.toFun + f₂.toFun := rfl
   rw [hfun]
   exact gradFun_add (I := I_half n) g
@@ -489,7 +490,8 @@ lemma InteriorSmoothScalar.grad_g_with_boundary_section_smul_apply
         (I := I_half n) g f.smooth f.interior_support :
       Cₛ^∞⟮I_half n; EuclideanSpace ℝ (Fin n),
         (TangentSpace (I_half n) : M → Type _)⟯) x) := by
-  rw [grad_g_with_boundary_section_apply', grad_g_with_boundary_section_apply']
+  rw [InteriorSmoothScalar.grad_g_with_boundary_section_apply,
+    InteriorSmoothScalar.grad_g_with_boundary_section_apply]
   apply metricFlatLinear_injective (I := I_half n) g x
   ext v
   change g.inner x (gradFun (I := I_half n) g (c • f.toFun) x) v =

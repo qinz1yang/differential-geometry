@@ -4,14 +4,14 @@ import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.MFDeriv.Basic
 import Mathlib.Analysis.InnerProductSpace.Basic
 import Mathlib.Analysis.Normed.Operator.LinearIsometry
-import DifferentialGeometry.Analysis.Integration.Measure.ChartDensity
-import DifferentialGeometry.Topology.Covering.Manifold
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Topology.Covering.Smooth.Manifold
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import Mathlib.Topology.VectorBundle.Riemannian
 
 open Set Function Filter Bundle
 open scoped Topology ContDiff
-open DifferentialGeometry.Integral.Measure (SmoothRiemannianMetric)
+open DifferentialGeometry (SmoothRiemannianMetric)
 
 noncomputable section
 
@@ -101,6 +101,18 @@ theorem liftedMetric_inner_eq (g : SmoothRiemannianMetric I M)
       g.inner (proj x') v w =
         (liftedMetric (I := I) g).inner x' v w :=
   fun _ _ => rfl
+
+omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
+    [SigmaCompactSpace M] in
+theorem liftedMetric_injective :
+    Function.Injective (liftedMetric (I := I) (M := M)) := by
+  let _ : PathConnectedSpace M := PathConnectedSpace.of_locallyPathConnectedSpace
+  intro g h heq
+  apply DifferentialGeometry.SmoothRiemannianMetric.ext_inner
+  intro x v w
+  let x' : UniversalCover M := ⟨x, ⟦PathConnectedSpace.somePath default x⟧⟩
+  exact congrArg (fun k : DifferentialGeometry.SmoothRiemannianMetric I (UniversalCover M) =>
+    k.inner x' v w) heq
 
 end UniversalCover
 end Topology

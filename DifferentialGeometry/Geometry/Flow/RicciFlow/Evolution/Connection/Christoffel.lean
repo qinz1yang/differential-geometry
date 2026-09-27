@@ -151,7 +151,7 @@ theorem frameCoeff_eq_sum_inv_metricPairing
     hframe.coeff k x V =
       ∑ l : Idx, gInv t x k l * (S.family.metric t).inner x (frame l x) V := by
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
     intro i j
@@ -180,7 +180,7 @@ theorem frameCoeffLocal
     hframe.coeff k x V =
       ∑ l : Idx, gInv t x k l * (S.family.metric t).inner x (frame l x) V := by
   have hinvAt :
-      Tensor0SBundle.MetricInverseInBasisGen
+      Tensor0SBundle.MetricInverseInBasis
         (I := I) (M := M) (S.family.metric t) x
         (hframe.toBasisAt hx) (fun i j : Idx => gInv t x i j) := by
     intro i j

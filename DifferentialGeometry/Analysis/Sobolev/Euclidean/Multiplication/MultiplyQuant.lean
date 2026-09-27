@@ -62,7 +62,7 @@ lemma eLpNorm_partial_eta_mul_le
           gcongr
           exact hη_grad_bound x hx
 
-lemma eLpNorm_chosenWeakPartial'_smul_smooth_bounded_le
+lemma eLpNorm_chosenWeakPartialOrZero_smul_smooth_bounded_le
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
     {η : E → ℝ}
     (hη_smooth : ContDiff ℝ (⊤ : ℕ∞) η)
@@ -70,19 +70,19 @@ lemma eLpNorm_chosenWeakPartial'_smul_smooth_bounded_le
     (hη_bound : ∀ x ∈ Ω, ‖η x‖ ≤ C)
     (hη_grad_bound : ∀ x ∈ Ω, ‖fderiv ℝ η x‖ ≤ C)
     {u : E → ℝ} (hu : DeGiorgi.MemW1p (d := d) p u Ω) (i : Fin d) :
-    eLpNorm (chosenWeakPartial' (d := d) p i (fun x => η x * u x) Ω) p
+    eLpNorm (chosenWeakPartialOrZero (d := d) p i (fun x => η x * u x) Ω) p
         (volume.restrict Ω) ≤
       ENNReal.ofReal C *
-        eLpNorm (chosenWeakPartial' (d := d) p i u Ω) p (volume.restrict Ω) +
+        eLpNorm (chosenWeakPartialOrZero (d := d) p i u Ω) p (volume.restrict Ω) +
       ENNReal.ofReal C * eLpNorm u p (volume.restrict Ω) := by
   classical
-  have hae := chosenWeakPartial'_smul_smooth_bounded_ae (d := d) hp_one hΩ
+  have hae := chosenWeakPartialOrZero_smul_smooth_bounded_ae (d := d) hp_one hΩ
     hη_smooth hη_bound hη_grad_bound hu i
   have hηcwp_meas : AEStronglyMeasurable
-      (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x)
+      (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x)
       (volume.restrict Ω) :=
     hη_smooth.continuous.aestronglyMeasurable.mul
-      (chosenWeakPartial'_memLp_of_mem hu i).aestronglyMeasurable
+      (chosenWeakPartialOrZero_memLp_of_mem hu i).aestronglyMeasurable
   have hderiv_cont : Continuous
       (fun x : E => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))) :=
     (hη_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
@@ -93,19 +93,19 @@ lemma eLpNorm_chosenWeakPartial'_smul_smooth_bounded_le
     hderiv_cont.aestronglyMeasurable.mul hu.1.aestronglyMeasurable
   rw [eLpNorm_congr_ae hae]
   have hSumEq :
-      (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x +
+      (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x +
         (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x) =
-      (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x) +
+      (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x) +
       (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x) := by
     funext x
     simp [Pi.add_apply]
   rw [hSumEq]
   have htriangle :
       eLpNorm
-          ((fun x => η x * chosenWeakPartial' (d := d) p i u Ω x) +
+          ((fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x) +
             fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
           p (volume.restrict Ω)
-        ≤ eLpNorm (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x)
+        ≤ eLpNorm (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x)
             p (volume.restrict Ω) +
           eLpNorm
             (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
@@ -113,11 +113,11 @@ lemma eLpNorm_chosenWeakPartial'_smul_smooth_bounded_le
     eLpNorm_add_le hηcwp_meas hdηu_meas hp_one
   refine htriangle.trans ?_
   have hbnd1 :
-      eLpNorm (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x)
+      eLpNorm (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x)
           p (volume.restrict Ω)
         ≤ ENNReal.ofReal C *
-          eLpNorm (chosenWeakPartial' (d := d) p i u Ω) p (volume.restrict Ω) :=
-    eLpNorm_eta_mul_le (d := d) hΩ hη_bound (chosenWeakPartial' p i u Ω)
+          eLpNorm (chosenWeakPartialOrZero (d := d) p i u Ω) p (volume.restrict Ω) :=
+    eLpNorm_eta_mul_le (d := d) hΩ hη_bound (chosenWeakPartialOrZero p i u Ω)
   have hbnd2 :
       eLpNorm (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
           p (volume.restrict Ω)
@@ -200,7 +200,7 @@ theorem wkpNorm_smul_smooth_bounded_le_one
     have hv_W1p : DeGiorgi.MemW1p (d := d) p v Ω := hv.memW1p
     set Au : ℝ≥0∞ := eLpNorm v p (volume.restrict Ω) with hAu_def
     set Bu : Fin d → ℝ≥0∞ :=
-      fun i => eLpNorm (chosenWeakPartial' p i v Ω) p (volume.restrict Ω)
+      fun i => eLpNorm (chosenWeakPartialOrZero p i v Ω) p (volume.restrict Ω)
       with hBu_def
     set OC : ℝ≥0∞ := ENNReal.ofReal C with hOC_def
     set OK : ℝ≥0∞ := ENNReal.ofReal K with hOK_def
@@ -208,10 +208,10 @@ theorem wkpNorm_smul_smooth_bounded_le_one
         eLpNorm (fun x => η x * v x) p (volume.restrict Ω) ≤ OC * Au :=
       eLpNorm_eta_mul_le (d := d) hΩ_open h_eta0 v
     have h_chosen_bnd : ∀ i : Fin d,
-        eLpNorm (chosenWeakPartial' p i (fun x => η x * v x) Ω) p
+        eLpNorm (chosenWeakPartialOrZero p i (fun x => η x * v x) Ω) p
             (volume.restrict Ω)
           ≤ OC * Bu i + OC * Au := fun i =>
-      eLpNorm_chosenWeakPartial'_smul_smooth_bounded_le (d := d) hp_one hΩ_open
+      eLpNorm_chosenWeakPartialOrZero_smul_smooth_bounded_le (d := d) hp_one hΩ_open
         hη_smooth h_eta0 h_eta1 hv_W1p i
     have hLHS_unfold : iteratedWeakSobolevNorm (d := d) 1 p (fun x => η x * v x) Ω =
         eLpNorm (fun x => η x * v x) p (volume.restrict Ω) +
@@ -249,16 +249,16 @@ theorem wkpNorm_smul_smooth_bounded_le_one
       simp [iterWeakPartial_zero, hAu_def]
     have hIter1_eta_v : ∀ α : Fin 1 → Fin d,
         iterWeakPartial (d := d) p 1 α (fun x => η x * v x) Ω =
-          chosenWeakPartial' (d := d) p (α 0) (fun x => η x * v x) Ω := by
+          chosenWeakPartialOrZero (d := d) p (α 0) (fun x => η x * v x) Ω := by
       intro α; rw [iterWeakPartial_succ]; rfl
     have hIter1_v : ∀ α : Fin 1 → Fin d,
         iterWeakPartial (d := d) p 1 α v Ω =
-          chosenWeakPartial' (d := d) p (α 0) v Ω := by
+          chosenWeakPartialOrZero (d := d) p (α 0) v Ω := by
       intro α; rw [iterWeakPartial_succ]; rfl
     have hLHS_unfold' : iteratedWeakSobolevNorm (d := d) 1 p (fun x => η x * v x) Ω =
         eLpNorm (fun x => η x * v x) p (volume.restrict Ω) +
         ∑ α : Fin 1 → Fin d,
-          eLpNorm (chosenWeakPartial' (d := d) p (α 0) (fun x => η x * v x) Ω) p
+          eLpNorm (chosenWeakPartialOrZero (d := d) p (α 0) (fun x => η x * v x) Ω) p
             (volume.restrict Ω) := by
       rw [hLHS_unfold]
       refine congrArg (eLpNorm (fun x => η x * v x) p (volume.restrict Ω) + ·) ?_
@@ -267,14 +267,14 @@ theorem wkpNorm_smul_smooth_bounded_le_one
     have hRHS_unfold' : iteratedWeakSobolevNorm (d := d) 1 p v Ω =
         Au +
         ∑ α : Fin 1 → Fin d,
-          eLpNorm (chosenWeakPartial' (d := d) p (α 0) v Ω) p (volume.restrict Ω) := by
+          eLpNorm (chosenWeakPartialOrZero (d := d) p (α 0) v Ω) p (volume.restrict Ω) := by
       rw [hRHS_unfold]
       refine congrArg (Au + ·) ?_
       refine Finset.sum_congr rfl (fun α _ => ?_)
       rw [hIter1_v α]
     have hSumBu :
         ∑ α : Fin 1 → Fin d,
-            eLpNorm (chosenWeakPartial' (d := d) p (α 0) v Ω) p
+            eLpNorm (chosenWeakPartialOrZero (d := d) p (α 0) v Ω) p
               (volume.restrict Ω) =
           ∑ α : Fin 1 → Fin d, Bu (α 0) := by
       refine Finset.sum_congr rfl (fun α _ => ?_)
@@ -282,7 +282,7 @@ theorem wkpNorm_smul_smooth_bounded_le_one
     rw [hLHS_unfold', hRHS_unfold', hSumBu]
     have hSum_chosen_bnd :
         ∑ α : Fin 1 → Fin d,
-            eLpNorm (chosenWeakPartial' (d := d) p (α 0) (fun x => η x * v x) Ω) p
+            eLpNorm (chosenWeakPartialOrZero (d := d) p (α 0) (fun x => η x * v x) Ω) p
               (volume.restrict Ω)
           ≤ ∑ α : Fin 1 → Fin d, (OC * Bu (α 0) + OC * Au) :=
       Finset.sum_le_sum (fun α _ => h_chosen_bnd (α 0))

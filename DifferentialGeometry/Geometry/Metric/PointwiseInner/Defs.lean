@@ -12,7 +12,6 @@ namespace DifferentialGeometry
 namespace Integral
 namespace L2
 
-open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -29,8 +28,8 @@ noncomputable def covariantTensorInnerPointwise :
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           covariantTensorInnerPointwise s g x
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j))
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j))
 
 lemma tensorInnerPointwise_0s_zero_arity
     (g : SmoothRiemannianMetric I M) (x : M)
@@ -45,8 +44,8 @@ lemma tensorInnerPointwise_0s_succ
       ∑ i : Fin (Module.finrank ℝ E), ∑ j : Fin (Module.finrank ℝ E),
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ i j *
           covariantTensorInnerPointwise (I := I) (M := M) s g x
-            (S.curryLeft ((chartModelBasis E) i))
-            (T.curryLeft ((chartModelBasis E) j)) := rfl
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)) := rfl
 
 noncomputable def tensorInnerPointwise
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)

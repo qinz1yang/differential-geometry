@@ -83,7 +83,7 @@ theorem exists_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointw
             ‖chartRSTwistInv (I := I) (M := M) α b r s
                 (TensorRSSpace.toModel
                   (tensorCovDerivAt (I := I) (M := M) g r s S b
-                    (chartBasisVecFiber (I := I) α i b)))‖ ^ 2 ≤
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2 ≤
           C * tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S b := by
   classical
   obtain ⟨K, hK_nn, h_per⟩ :=
@@ -97,7 +97,7 @@ theorem exists_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointw
   set cov : Fin (Module.finrank ℝ E) → TensorRSModel r s ℝ E := fun i =>
     TensorRSSpace.toModel
       (tensorCovDerivAt (I := I) (M := M) g r s S b
-        (chartBasisVecFiber (I := I) α i b)) with hcov_def
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)) with hcov_def
   set D : ℝ :=
     ∑ i : Fin (Module.finrank ℝ E),
       tensorInnerPointwise (I := I) (M := M) g r s b (cov i) (cov i) with hD_def
@@ -156,7 +156,7 @@ theorem
             ‖chartRSTwistInv (I := I) (M := M) α b r s
                 (TensorRSSpace.toModel
                   (tensorCovDerivAt (I := I) (M := M) g r s S b
-                    (chartBasisVecFiber (I := I) α i b)))‖ ^ 2 ≤
+                    (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b)))‖ ^ 2 ≤
           C * tensorCovDerivPointwiseInner (I := I) (M := M) g r s S S b :=
   exists_sum_chartRSTwistInv_cov_sq_norm_le_const_mul_tensorCovDerivPointwiseInner_on_compact
     (I := I) (M := M) g r s α

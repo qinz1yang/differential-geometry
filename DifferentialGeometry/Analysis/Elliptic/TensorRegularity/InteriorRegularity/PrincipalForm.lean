@@ -118,7 +118,7 @@ theorem tensorPrincipalForm_lam_pos
     {K : Set EuclN} (hK : IsCompact K)
     (hK_target : K ⊆ chartTargetEuclid (I := I) (M := M) α) :
     0 < (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).lam :=
-  (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).hlam_pos
+  (tensorPrincipalForm (I := I) (M := M) g α hK hK_target).ellipticity_pos
 
 theorem tensorPrincipalForm_coercive
     [I.Boundaryless] (g : SmoothRiemannianMetric I M) (α : M)

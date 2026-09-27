@@ -2,8 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0SRiemannian
-import DifferentialGeometry.Tensor.Multilinear.Bundle
+import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Defs
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.VectorBundle.Basic
 open DifferentialGeometry.Geometry.Curvature
@@ -72,7 +72,7 @@ private lemma tensor0S_trivialization_symmL_apply
       (fun y : M => Tensor0SSpace r I y) α).baseSet := by
     change b ∈ (trivializationAt E (TangentSpace I) α).baseSet
     exact hb
-  have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply'
+  have h := _root_.Pretrivialization.continuousMultilinearMap_symm_apply_of_mem
     (𝕜 := ℝ) (s := r) (F := E) (E := (TangentSpace I : M → Type _))
     (e := trivializationAt E (TangentSpace I) α) (b := b) hb V
   rw [(trivializationAt (Tensor0SModel r ℝ E)

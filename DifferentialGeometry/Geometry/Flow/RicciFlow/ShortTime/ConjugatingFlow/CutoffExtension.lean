@@ -1,11 +1,10 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RemainderShortTimeExistence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.DeTurckNonlinearity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
@@ -21,8 +20,6 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 variable
@@ -33,7 +30,7 @@ variable
       [IsManifold I ∞ M] [CompactSpace M] [BoundarylessManifold I M]
       [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-namespace CutoffExtensionAux
+namespace CutoffExtension
 
 noncomputable def cutoffEta (a b δ : ℝ) (s : ℝ) : ℝ :=
   Real.smoothTransition ((s - (a - 2 * δ)) / δ) *
@@ -147,9 +144,9 @@ theorem smul_tangentMap_global
     · exact Or.inr h
   exact contMDiff_of_contMDiffOn_union_of_isOpen honU honV hcover hUopen hVopen
 
-end CutoffExtensionAux
+end CutoffExtension
 
-open CutoffExtensionAux in
+open CutoffExtension in
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
     [BoundarylessManifold I M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
 theorem interior_field_global_cutoff_extension

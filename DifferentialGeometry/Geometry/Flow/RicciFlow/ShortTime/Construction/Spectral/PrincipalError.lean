@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.InverseGram
-import DifferentialGeometry.Analysis.Parabolic.Euclidean.RetractionParametrix
-import DifferentialGeometry.Geometry.Operator.VossWeyl
+import DifferentialGeometry.Analysis.FunctionalAnalysis.Parametrix.Basic
+import DifferentialGeometry.Geometry.Operator.Laplacian.VossWeylFormula
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -10,7 +10,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open scoped ContDiff Manifold Topology BigOperators
-open DifferentialGeometry.HCGCompactness
+open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
@@ -265,7 +265,7 @@ end PrincipalArray
 
 section PrincipalOperator
 
-open DifferentialGeometry.Analysis.Parabolic.Euclidean
+open DifferentialGeometry.Analysis.Parametrix
 
 variable
     {Y U V J₂ : Type*}

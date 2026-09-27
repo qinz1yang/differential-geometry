@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Heat.Smoothing.SmoothingSpectralLift
+import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.Lift
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

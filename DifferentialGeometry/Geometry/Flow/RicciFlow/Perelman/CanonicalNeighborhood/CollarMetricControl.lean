@@ -1,0 +1,370 @@
+import DifferentialGeometry.Geometry.Comparison.MetricDistanceTransfer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
+import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
+import DifferentialGeometry.Geometry.Metric.Distance.Basic
+import Mathlib.Analysis.Normed.Module.Connected
+
+set_option autoImplicit false
+noncomputable section
+open Bundle Filter Manifold MeasureTheory Set
+open scoped Topology Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+local instance : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CylinderReference.height_edist_le (C : CylinderReference) (x y : Cylinder) :
+    ENNReal.ofReal |x.2 - y.2| ≤ riemannianEDistOf (C.metric 0) x y := by
+  apply ofReal_abs_sub_le_riemannianEDistOf (C.metric 0) Prod.snd contMDiff_snd
+  intro z v
+  change (show ℝ from mfderiv IC 𝓘(ℝ, ℝ) Prod.snd z v) *
+    (show ℝ from mfderiv IC 𝓘(ℝ, ℝ) Prod.snd z v) ≤ _
+  rw [mfderiv_snd, C.inner_eq 0 le_rfl]
+  change v.2 * v.2 ≤ 2 * (1 - 0) * inner ℝ
+    (show ThreeSpace from mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) z.1 v.1)
+    (show ThreeSpace from mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) z.1 v.1) + v.2 * v.2
+  nlinarith [real_inner_self_nonneg (x :=
+    (show ThreeSpace from mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) z.1 v.1))]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CylinderReference.axial_metricPathELength_le (C : CylinderReference) (p : Sphere 2)
+    (a b : ℝ) :
+    metricPathELength (C.metric 0) (fun u : ℝ => ((p, u) : Cylinder)) a b ≤
+      ENNReal.ofReal (b - a) := by
+  have hderiv : ∀ u : ℝ,
+      mfderiv 𝓘(ℝ, ℝ) IC (fun v : ℝ => ((p, v) : Cylinder)) u 1 =
+        ((0, 1) : TangentSpace IC ((p, u) : Cylinder)) := by
+    intro u
+    rw [mfderiv_prod_right (x₀ := p) (y₀ := u)]
+    rfl
+  have hinner : ∀ u : ℝ, (C.metric 0).inner ((p, u) : Cylinder)
+      (mfderiv 𝓘(ℝ, ℝ) IC (fun v : ℝ => ((p, v) : Cylinder)) u 1)
+      (mfderiv 𝓘(ℝ, ℝ) IC (fun v : ℝ => ((p, v) : Cylinder)) u 1) = 1 := by
+    intro u
+    have h := C.inner_eq 0 le_rfl ((p, u) : Cylinder)
+      (((0, 1)) : TangentSpace IC ((p, u) : Cylinder))
+      (((0, 1)) : TangentSpace IC ((p, u) : Cylinder))
+    rw [hderiv u]
+    rw [h]
+    change 2 * (1 - 0) * inner ℝ
+        ((mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) p)
+          (0 : TangentSpace I2 p))
+        ((mfderiv I2 I3 (fun z : Sphere 2 => (z : ThreeSpace)) p)
+          (0 : TangentSpace I2 p)) + (1 : ℝ) * 1 = 1
+    rw [map_zero]
+    simp
+  rw [metricPathELength_eq]
+  refine le_of_eq ?_
+  calc ∫⁻ u in Set.Ioo a b, ENNReal.ofReal (Real.sqrt
+        ((C.metric 0).inner ((p, u) : Cylinder)
+          (mfderiv 𝓘(ℝ, ℝ) IC (fun v : ℝ => ((p, v) : Cylinder)) u 1)
+          (mfderiv 𝓘(ℝ, ℝ) IC (fun v : ℝ => ((p, v) : Cylinder)) u 1)))
+      = ∫⁻ _u in Set.Ioo a b, ENNReal.ofReal 1 := by
+        refine setLIntegral_congr_fun measurableSet_Ioo fun u _ => ?_
+        rw [hinner u, Real.sqrt_one]
+    _ = ENNReal.ofReal (b - a) := by
+        rw [setLIntegral_const, Real.volume_Ioo]
+        simp
+
+universe u
+variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+  [IsManifold I3 ∞ M]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+private theorem collar_metric_edist_comm (g : SmoothRiemannianMetric I3 M) (x y : M) :
+    riemannianEDistOf (I := I3) g x y = riemannianEDistOf (I := I3) g y x := by
+  let : Bundle.RiemannianBundle (TangentSpace I3 : M → Type _) := ⟨g.toRiemannianMetric⟩
+  exact Manifold.riemannianEDist_comm
+
+theorem collar_axial_segment_edist_le (C : CylinderReference)
+    (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    {U : Set Cylinder} {times : Set ℝ}
+    {order : ℕ} {eps : ℝ} {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
+    (heps : 0 ≤ eps) (hzero : 0 ∈ times) (hsource : U ⊆ F.source)
+    (p : Sphere 2) {a b : ℝ} (hsegment : ∀ u ∈ uIcc a b, (p, u) ∈ U) :
+    riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+      ENNReal.ofReal (Real.sqrt (1 + eps) * |a - b|) := by
+  have key : ∀ {a b : ℝ}, a ≤ b → (∀ u ∈ Icc a b, (p, u) ∈ U) →
+      riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+        ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) := by
+    intro a b hab hU
+    have hconst : ContMDiffOn 𝓘(ℝ, ℝ) I2 1 (fun _ : ℝ => p) (Set.Icc a b) :=
+      contMDiffOn_const
+    have hid : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun u : ℝ => u) (Set.Icc a b) :=
+      contMDiffOn_id
+    have hgamma : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun u : ℝ => ((p, u) : Cylinder))
+        (Set.Icc a b) :=
+      hconst.prodMk hid
+    have hFgamma : ContMDiffOn 𝓘(ℝ, ℝ) I3 1
+        ((F : Cylinder → M) ∘ (fun u : ℝ => ((p, u) : Cylinder))) (Set.Icc a b) :=
+      (F.contMDiffOn_toFun.of_le (by simp)).comp hgamma fun u hu => hsource (hU u hu)
+    have hedge := edistOf_le_metricPathELength (g 0) hab hFgamma
+    have hlen := metricPathELength_map_le (C.metric 0) (g 0) (F : Cylinder → M)
+      (Real.sqrt_nonneg (1 + eps)) hgamma
+      (fun u hu => F.mdifferentiableAt (by simp) (hsource (hU u ⟨hu.1.le, hu.2.le⟩)))
+      (by
+        intro u hu v
+        rw [Real.sq_sqrt (by linarith : 0 ≤ 1 + eps)]
+        have hh := (cmp.equivalence 0 hzero _ (hU u ⟨hu.1.le, hu.2.le⟩) v).2
+        rwa [hmetric, cmp.pullback_eq 0 _ (hU u ⟨hu.1.le, hu.2.le⟩)] at hh)
+    have hmodel := CylinderReference.axial_metricPathELength_le C p a b
+    calc riemannianEDistOf (g 0) (F (p, a)) (F (p, b))
+        ≤ metricPathELength (g 0) ((F : Cylinder → M) ∘
+            (fun u : ℝ => ((p, u) : Cylinder))) a b := hedge
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + eps)) *
+            metricPathELength (C.metric 0) (fun u : ℝ => ((p, u) : Cylinder)) a b := hlen
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + eps)) * ENNReal.ofReal (b - a) :=
+            mul_le_mul' le_rfl hmodel
+      _ = ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) :=
+            (ENNReal.ofReal_mul (Real.sqrt_nonneg _)).symm
+  rcases le_total a b with hab | hba
+  · have hh := key hab (fun u hu => hsegment u (by rwa [uIcc_of_le hab]))
+    simpa only [abs_of_nonpos (sub_nonpos.mpr hab), neg_sub] using hh
+  · have hh := key hba (fun u hu => hsegment u (by rwa [uIcc_of_ge hba]))
+    rw [riemannianEDistOf_comm] at hh
+    simpa only [abs_of_nonneg (sub_nonneg.mpr hba)] using hh
+
+theorem collar_axial_edist_le (C : CylinderReference)
+    (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    {U : Set Cylinder} {times : Set ℝ}
+    {order : ℕ} {eps R : ℝ} {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
+    (heps : 0 ≤ eps) (hzero : 0 ∈ times) (hsource : U ⊆ F.source)
+    (hslab : Set.univ ×ˢ Set.Icc (-R) R ⊆ U) (p : Sphere 2) {k : ℝ}
+    (hk : k ∈ Set.Icc (-R) R) :
+    riemannianEDistOf (g 0) (F (p, k)) (F (p, 0)) ≤
+      ENNReal.ofReal (Real.sqrt (1 + eps) * |k|) := by
+  have hR : 0 ≤ R := by linarith [hk.1, hk.2]
+  have key : ∀ {a b : ℝ}, a ≤ b → a ∈ Set.Icc (-R) R →
+      b ∈ Set.Icc (-R) R →
+        riemannianEDistOf (g 0) (F (p, a)) (F (p, b)) ≤
+          ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) := by
+    intro a b hab ha hb
+    have hmem : ∀ u ∈ Set.Icc a b, u ∈ Set.Icc (-R) R :=
+      fun u hu => ⟨ha.1.trans hu.1, hu.2.trans hb.2⟩
+    have hconst : ContMDiffOn 𝓘(ℝ, ℝ) I2 1 (fun _ : ℝ => p) (Set.Icc a b) :=
+      contMDiffOn_const
+    have hid : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 1 (fun u : ℝ => u) (Set.Icc a b) :=
+      contMDiffOn_id
+    have hgamma : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun u : ℝ => ((p, u) : Cylinder))
+        (Set.Icc a b) :=
+      hconst.prodMk hid
+    have hU : ∀ u ∈ Set.Icc a b, ((p, u) : Cylinder) ∈ U :=
+      fun u hu => hslab ⟨mem_univ _, hmem u hu⟩
+    have hFgamma : ContMDiffOn 𝓘(ℝ, ℝ) I3 1
+        ((F : Cylinder → M) ∘ (fun u : ℝ => ((p, u) : Cylinder))) (Set.Icc a b) :=
+      (F.contMDiffOn_toFun.of_le (by simp)).comp hgamma fun u hu => hsource (hU u hu)
+    have hedge := edistOf_le_metricPathELength (g 0) hab hFgamma
+    have hlen := metricPathELength_map_le (C.metric 0) (g 0) (F : Cylinder → M)
+      (Real.sqrt_nonneg (1 + eps)) hgamma
+      (fun u hu => F.mdifferentiableAt (by simp) (hsource (hU u ⟨hu.1.le, hu.2.le⟩)))
+      (by
+        intro u hu v
+        rw [Real.sq_sqrt (by linarith : 0 ≤ 1 + eps)]
+        have hh := (cmp.equivalence 0 hzero _ (hU u ⟨hu.1.le, hu.2.le⟩) v).2
+        rwa [hmetric, cmp.pullback_eq 0 _ (hU u ⟨hu.1.le, hu.2.le⟩)] at hh)
+    have hmodel := CylinderReference.axial_metricPathELength_le C p a b
+    calc riemannianEDistOf (g 0) (F (p, a)) (F (p, b))
+        ≤ metricPathELength (g 0) ((F : Cylinder → M) ∘
+            (fun u : ℝ => ((p, u) : Cylinder))) a b := hedge
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + eps)) *
+            metricPathELength (C.metric 0) (fun u : ℝ => ((p, u) : Cylinder)) a b := hlen
+      _ ≤ ENNReal.ofReal (Real.sqrt (1 + eps)) * ENNReal.ofReal (b - a) :=
+            mul_le_mul' le_rfl hmodel
+      _ = ENNReal.ofReal (Real.sqrt (1 + eps) * (b - a)) :=
+            (ENNReal.ofReal_mul (Real.sqrt_nonneg _)).symm
+  rcases le_total 0 k with h0 | hk0
+  · have h1 := key (a := 0) (b := k) h0 ⟨by linarith, by linarith⟩ hk
+    rw [collar_metric_edist_comm (g 0) (F (p, 0)) (F (p, k))] at h1
+    simpa [abs_of_nonneg h0] using h1
+  · have h1 := key (a := k) (b := 0) hk0 hk ⟨by linarith, by linarith⟩
+    simpa [abs_of_nonpos hk0] using h1
+
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem collar_pathELength_bounds (C : CylinderReference)
+    (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    {U : Set Cylinder} {times : Set ℝ} {order : ℕ} {eps : ℝ}
+    {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
+    (heps : 0 ≤ eps) (heps1 : eps ≤ 1) (hzero : 0 ∈ times)
+    (hsource : U ⊆ F.source) {gamma : ℝ → Cylinder} {a b : ℝ}
+    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 gamma (Icc a b))
+    (hU : ∀ s ∈ Icc a b, gamma s ∈ U) :
+    ENNReal.ofReal (Real.sqrt (1 - eps)) * metricPathELength (C.metric 0) gamma a b ≤
+        metricPathELength (g 0) ((F : Cylinder → M) ∘ gamma) a b ∧
+      metricPathELength (g 0) ((F : Cylinder → M) ∘ gamma) a b ≤
+        ENNReal.ofReal (Real.sqrt (1 + eps)) * metricPathELength (C.metric 0) gamma a b := by
+  have hFd : ∀ s ∈ Ioo a b, MDifferentiableAt IC I3 F (gamma s) := by
+    intro s hs
+    exact (F.contMDiffOn_toFun.contMDiffAt
+      (F.open_source.mem_nhds (hsource (hU s ⟨hs.1.le, hs.2.le⟩)))).mdifferentiableAt
+        (by simp : (∞ : WithTop ℕ∞) ≠ 0)
+  constructor
+  · apply metricPathELength_map_ge (C.metric 0) (g 0) (F : Cylinder → M)
+      (Real.sqrt_nonneg _) hgamma hFd
+    intro s hs v
+    rw [Real.sq_sqrt (sub_nonneg.mpr heps1)]
+    have hh := (cmp.equivalence 0 hzero (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩) v).1
+    rwa [hmetric, cmp.pullback_eq 0 (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩)] at hh
+  · apply metricPathELength_map_le (C.metric 0) (g 0) (F : Cylinder → M)
+      (Real.sqrt_nonneg _) hgamma hFd
+    intro s hs v
+    rw [Real.sq_sqrt (by linarith : 0 ≤ 1 + eps)]
+    have hh := (cmp.equivalence 0 hzero (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩) v).2
+    rwa [hmetric, cmp.pullback_eq 0 (gamma s) (hU s ⟨hs.1.le, hs.2.le⟩)] at hh
+
+theorem collar_crossing_length_lower (C : CylinderReference)
+    (g : ℝ → SmoothRiemannianMetric I3 M) (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+    {U : Set Cylinder} {times : Set ℝ} {order : ℕ} {eps : ℝ}
+    {h : ℝ → SmoothRiemannianMetric IC Cylinder}
+    (cmp : MetricComparisonOn h g F U times order eps) (hmetric : h 0 = C.metric 0)
+    (heps : 0 ≤ eps) (heps1 : eps ≤ 1) (hzero : 0 ∈ times)
+    (hsource : U ⊆ F.source) {gamma : ℝ → Cylinder} {a b : ℝ} (hab : a ≤ b)
+    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 gamma (Icc a b))
+    (hU : ∀ s ∈ Icc a b, gamma s ∈ U) :
+    ENNReal.ofReal (Real.sqrt (1 - eps) * |(gamma a).2 - (gamma b).2|) ≤
+      metricPathELength (g 0) ((F : Cylinder → M) ∘ gamma) a b := by
+  rw [ENNReal.ofReal_mul (Real.sqrt_nonneg _)]
+  exact (mul_le_mul' le_rfl ((C.height_edist_le (gamma a) (gamma b)).trans
+    (edistOf_le_metricPathELength (C.metric 0) hab hgamma))).trans
+      (collar_pathELength_bounds C g F cmp hmetric heps heps1 hzero hsource hgamma hU).1
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem CylinderReference.transverse_length_le (C : CylinderReference)
+    (z : ℝ) {gamma : ℝ → Sphere 2} {a b : ℝ}
+    (hgamma : ContMDiffOn 𝓘(ℝ, ℝ) I2 1 gamma (Icc a b)) :
+    metricPathELength (C.metric 0) (fun s => (gamma s, z)) a b ≤
+      ENNReal.ofReal (Real.sqrt 2) *
+        metricPathELength (Geometry.roundMetric (E := ThreeSpace) (n := 2)) gamma a b := by
+  apply metricPathELength_map_le
+    (Geometry.roundMetric (E := ThreeSpace) (n := 2)) (C.metric 0)
+    (fun y : Sphere 2 => (y, z)) (Real.sqrt_nonneg _) hgamma
+    (fun _ _ => mdifferentiableAt_id.prodMk mdifferentiableAt_const)
+  intro s _hs v
+  let w : TangentSpace IC (gamma s, z) := (v, (0 : ℝ))
+  have hder : mfderiv I2 IC (fun y : Sphere 2 => (y, z)) (gamma s) v = w := by
+    rw [mfderiv_prod_left]
+    rfl
+  have hinner : (C.metric 0).inner (gamma s, z) w w =
+      2 * (Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner (gamma s) v v := by
+    rw [C.inner_eq 0 le_rfl, Geometry.roundMetric_inner]
+    change 2 * (1 - 0) * inner ℝ (Geometry.dIncl (E := ThreeSpace) (n := 2) (gamma s) v)
+      (Geometry.dIncl (E := ThreeSpace) (n := 2) (gamma s) v) + (0 : ℝ) * 0 =
+      2 * inner ℝ (Geometry.dIncl (E := ThreeSpace) (n := 2) (gamma s) v)
+        (Geometry.dIncl (E := ThreeSpace) (n := 2) (gamma s) v)
+    ring
+  rw [hder, hinner,
+    Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2)]
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem exists_roundSphere_path_length_bound :
+    ∃ B : ℝ, 0 < B ∧ ∀ x y : Sphere 2,
+      ∃ gamma : ℝ → Sphere 2, gamma 0 = x ∧ gamma 1 = y ∧
+        ContMDiffOn 𝓘(ℝ, ℝ) I2 1 gamma (Icc (0 : ℝ) 1) ∧
+        metricPathELength (Geometry.roundMetric (E := ThreeSpace) (n := 2)) gamma 0 1 <
+          ENNReal.ofReal B := by
+  let h := Geometry.roundMetric (E := ThreeSpace) (n := 2)
+  let : RiemannianBundle (fun x : Sphere 2 => TangentSpace I2 x) :=
+    ⟨h.toRiemannianMetric⟩
+  let : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin 2))
+      (fun x : Sphere 2 => TangentSpace I2 x) :=
+    ⟨⟨h.inner, h.contMDiff.continuous, by intro x v w; rfl⟩⟩
+  let : ConnectedSpace (Sphere 2) := isConnected_iff_connectedSpace.mp
+    (isConnected_sphere (Module.one_lt_rank_of_one_lt_finrank
+      (by simp [ThreeSpace] : 1 < Module.finrank ℝ ThreeSpace)) (0 : ThreeSpace)
+      (by norm_num : (0 : ℝ) ≤ 1))
+  let p : Sphere 2 := Classical.arbitrary _
+  have hfinite (x y : Sphere 2) : Manifold.riemannianEDist I2 x y ≠ ⊤ :=
+    Geometry.Riemannian.Exponential.riemannianEDist_ne_top (I := I2) x y
+  have hcont : Continuous (fun x : Sphere 2 => (Manifold.riemannianEDist I2 p x).toReal) := by
+    have hc : Continuous (fun x : Sphere 2 => Manifold.riemannianEDist I2 p x) :=
+      (Geometry.Riemannian.Exponential.continuous_riemannianEDist_to (I := I2) p).congr
+        (fun _ => Manifold.riemannianEDist_comm)
+    apply continuous_iff_continuousAt.mpr
+    intro x
+    exact (ENNReal.continuousAt_toReal (hfinite p x)).comp hc.continuousAt
+  obtain ⟨B, hB⟩ := (isCompact_univ : IsCompact (univ : Set (Sphere 2))).bddAbove_image hcont.continuousOn
+  have hradial (x : Sphere 2) : Manifold.riemannianEDist I2 p x ≤ ENNReal.ofReal (max B 0) := by
+    rw [← ENNReal.ofReal_toReal (hfinite p x)]
+    exact ENNReal.ofReal_le_ofReal ((hB ⟨x, mem_univ _, rfl⟩).trans (le_max_left B 0))
+  refine ⟨2 * max B 0 + 1, by positivity, ?_⟩
+  intro x y
+  apply exists_lt_of_edistOf_lt h
+  change Manifold.riemannianEDist I2 x y < _
+  calc
+    _ ≤ Manifold.riemannianEDist I2 x p + Manifold.riemannianEDist I2 p y :=
+      Manifold.riemannianEDist_triangle
+    _ = Manifold.riemannianEDist I2 p x + Manifold.riemannianEDist I2 p y := by
+      rw [Manifold.riemannianEDist_comm (I := I2) (x := x) (y := p)]
+    _ ≤ ENNReal.ofReal (max B 0) + ENNReal.ofReal (max B 0) := add_le_add (hradial x) (hradial y)
+    _ = ENNReal.ofReal (2 * max B 0) := by
+      rw [two_mul, ENNReal.ofReal_add (le_max_right _ _) (le_max_right _ _)]
+    _ < _ := (ENNReal.ofReal_lt_ofReal_iff (by positivity)).2 (by linarith)
+
+omit [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M] in
+theorem exists_transverse_shortcuts_uniform_in_manifold :
+    ∃ D : ℝ, 0 < D ∧ ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace ThreeSpace M]
+      [IsManifold I3 ∞ M], ∀ (C : CylinderReference) (h : ℝ → SmoothRiemannianMetric IC Cylinder)
+      (g : ℝ → SmoothRiemannianMetric I3 M)
+      (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+      (U : Set Cylinder) (times : Set ℝ) (order : ℕ) (eps z : ℝ),
+      MetricComparisonOn h g F U times order eps → h 0 = C.metric 0 →
+      0 ≤ eps → eps ≤ 1 → 0 ∈ times → U ⊆ F.source →
+      (∀ y : Sphere 2, (y, z) ∈ U) → ∀ x y : Sphere 2,
+      ∃ gamma : ℝ → M, gamma 0 = F (x, z) ∧ gamma 1 = F (y, z) ∧
+        ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc (0 : ℝ) 1) ∧
+        (∀ s ∈ Icc (0 : ℝ) 1, gamma s ∈ F '' (univ ×ˢ ({z} : Set ℝ))) ∧
+        metricPathELength (g 0) gamma 0 1 ≤ ENNReal.ofReal D := by
+  obtain ⟨B, hB, hpaths⟩ := exists_roundSphere_path_length_bound
+  refine ⟨2 * B, by positivity, ?_⟩
+  intro M _ _ _ C h g F U times order eps z cmp hmetric heps heps1 hzero hsource hlevel x y
+  obtain ⟨gamma, hstart, hend, hgamma, hlength⟩ := hpaths x y
+  have hcyl : ContMDiffOn 𝓘(ℝ, ℝ) IC 1 (fun s => (gamma s, z)) (Icc (0 : ℝ) 1) :=
+    hgamma.prodMk contMDiffOn_const
+  have hinside : ∀ s ∈ Icc (0 : ℝ) 1, (gamma s, z) ∈ U := fun _ _ => hlevel _
+  refine ⟨fun s => F (gamma s, z), by dsimp; rw [hstart], by dsimp; rw [hend], ?_, ?_, ?_⟩
+  · exact (F.contMDiffOn_toFun.of_le (show (1 : WithTop ℕ∞) ≤ (∞ : WithTop ℕ∞) by decide)).comp hcyl
+      (fun s hs => hsource (hinside s hs))
+  · intro s _hs
+    exact ⟨(gamma s, z), ⟨mem_univ _, rfl⟩, rfl⟩
+  · have hupper := (collar_pathELength_bounds C g F cmp hmetric heps heps1 hzero hsource hcyl hinside).2
+    have htransverse := C.transverse_length_le z hgamma
+    have hsqrt : ENNReal.ofReal (Real.sqrt (1 + eps)) ≤ ENNReal.ofReal (Real.sqrt 2) :=
+      ENNReal.ofReal_le_ofReal (Real.sqrt_le_sqrt (by linarith))
+    calc
+      _ ≤ _ := hupper
+      _ ≤ ENNReal.ofReal (Real.sqrt 2) *
+          (ENNReal.ofReal (Real.sqrt 2) * ENNReal.ofReal B) :=
+        mul_le_mul' hsqrt (htransverse.trans (mul_le_mul' le_rfl hlength.le))
+      _ = ENNReal.ofReal (2 * B) := by
+        rw [← mul_assoc, ← ENNReal.ofReal_mul (Real.sqrt_nonneg _), ← pow_two,
+          Real.sq_sqrt (by norm_num : (0 : ℝ) ≤ 2), ← ENNReal.ofReal_mul (by norm_num)]
+
+theorem exists_uniform_transverse_shortcuts :
+    ∃ D : ℝ, 0 < D ∧ ∀ (C : CylinderReference) (h : ℝ → SmoothRiemannianMetric IC Cylinder)
+      (g : ℝ → SmoothRiemannianMetric I3 M)
+      (F : PartialDiffeomorph IC I3 Cylinder M ∞)
+      (U : Set Cylinder) (times : Set ℝ) (order : ℕ) (eps z : ℝ),
+      MetricComparisonOn h g F U times order eps → h 0 = C.metric 0 →
+      0 ≤ eps → eps ≤ 1 → 0 ∈ times → U ⊆ F.source →
+      (∀ y : Sphere 2, (y, z) ∈ U) → ∀ x y : Sphere 2,
+      ∃ gamma : ℝ → M, gamma 0 = F (x, z) ∧ gamma 1 = F (y, z) ∧
+        ContMDiffOn 𝓘(ℝ, ℝ) I3 1 gamma (Icc (0 : ℝ) 1) ∧
+        (∀ s ∈ Icc (0 : ℝ) 1, gamma s ∈ F '' (univ ×ˢ ({z} : Set ℝ))) ∧
+        metricPathELength (g 0) gamma 0 1 ≤ ENNReal.ofReal D := by
+  obtain ⟨D, hD, hshortcuts⟩ := exists_transverse_shortcuts_uniform_in_manifold
+  exact ⟨D, hD, hshortcuts M⟩
+
+end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -21,7 +21,7 @@ private lemma sum_fin_succ_to_iterWeakPartial_succ
       ∑ i : Fin d, ∑ α' : Fin j → Fin d,
         eLpNorm
           (iterWeakPartial (d := d) q j α'
-            (chosenWeakPartial' (d := d) q i u Ω) Ω) q (volume.restrict Ω) := by
+            (chosenWeakPartialOrZero (d := d) q i u Ω) Ω) q (volume.restrict Ω) := by
   classical
   rw [← Fintype.sum_equiv
         (Fin.consEquiv (fun _ : Fin (j + 1) => Fin d))
@@ -46,7 +46,7 @@ theorem wkpNorm_succ_eq_eLpNorm_add_sum_partial
     iteratedWeakSobolevNorm (d := d) (k + 1) p u Ω =
       eLpNorm u p (volume.restrict Ω) +
       ∑ i : Fin d,
-        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω := by
+        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω := by
   classical
   unfold iteratedWeakSobolevNorm
   have h_split :
@@ -103,7 +103,7 @@ theorem wkpNorm_succ_eq_eLpNorm_add_sum_partial
           ∑ α' : Fin j' → Fin d,
             eLpNorm
               (iterWeakPartial (d := d) p j' α'
-                (chosenWeakPartial' (d := d) p i u Ω) Ω) p
+                (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) p
               (volume.restrict Ω) := by
     have h_rewrite : ∀ j' ∈ Finset.range (k + 1),
         (∑ α : Fin (j' + 1) → Fin d,
@@ -112,7 +112,7 @@ theorem wkpNorm_succ_eq_eLpNorm_add_sum_partial
         (∑ i : Fin d, ∑ α' : Fin j' → Fin d,
           eLpNorm
             (iterWeakPartial (d := d) p j' α'
-              (chosenWeakPartial' (d := d) p i u Ω) Ω) p
+              (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) p
             (volume.restrict Ω)) :=
       fun j' _ => sum_fin_succ_to_iterWeakPartial_succ (d := d) j' p u Ω
     rw [Finset.sum_congr rfl h_rewrite]
@@ -121,22 +121,22 @@ theorem wkpNorm_succ_eq_eLpNorm_add_sum_partial
 
 lemma wkpNorm_chosenWeakPartial_le_wkpNorm_succ
     (k : ℕ) {p : ℝ≥0∞} {Ω : Set E} (u : E → ℝ) (i : Fin d) :
-    iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω ≤
+    iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω ≤
       iteratedWeakSobolevNorm (d := d) (k + 1) p u Ω := by
   classical
   rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) k p Ω u]
   have h_one_term :
-      iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω ≤
+      iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω ≤
         ∑ i' : Fin d,
-          iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω := by
+          iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i' u Ω) Ω := by
     refine Finset.single_le_sum (f := fun i' : Fin d =>
-        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω)
+        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i' u Ω) Ω)
       (fun _ _ => bot_le) (Finset.mem_univ i)
   have h_left_le : (∑ i' : Fin d,
-      iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω) ≤
+      iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i' u Ω) Ω) ≤
       eLpNorm u p (volume.restrict Ω) +
       ∑ i' : Fin d,
-        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i' u Ω) Ω := by
+        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i' u Ω) Ω := by
     exact le_add_self
   exact h_one_term.trans h_left_le
 
@@ -239,9 +239,9 @@ theorem wkpNorm_smul_smooth_bounded_le
         eLpNorm_eta_mul_le (d := d) hΩ_open h0 u
       have h_partial_bound : ∀ i : Fin d,
           iteratedWeakSobolevNorm (d := d) k p
-            (chosenWeakPartial' (d := d) p i (fun x => η x * u x) Ω) Ω ≤
+            (chosenWeakPartialOrZero (d := d) p i (fun x => η x * u x) Ω) Ω ≤
           ENNReal.ofReal K_eta *
-            iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω +
+            iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω +
           ENNReal.ofReal (K_pi i) * iteratedWeakSobolevNorm (d := d) k p u Ω := by
         intro i
         have h0' : ∀ x ∈ Ω, ‖η x‖ ≤ C := h0
@@ -250,13 +250,13 @@ theorem wkpNorm_smul_smooth_bounded_le
           have h := hη_bound 1 (Nat.succ_le_succ (Nat.zero_le _)) x hx
           rwa [norm_iteratedFDeriv_one] at h
         have hu_W1p : DeGiorgi.MemW1p (d := d) p u Ω := hu.memW1p
-        have hae := chosenWeakPartial'_smul_smooth_bounded_ae (d := d) hp_one hΩ_open
+        have hae := chosenWeakPartialOrZero_smul_smooth_bounded_ae (d := d) hp_one hΩ_open
           hη_smooth h0' h1' hu_W1p i
         rw [wkpNorm_congr_ae (d := d) hp_one hΩ_open hae]
-        have h_du_mem : MemWkp (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω :=
+        have h_du_mem : MemWkp (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω :=
           hu.chosenWeakPartial_mem i
         have h_eta_du_mem : MemWkp (d := d) k p
-            (fun x => η x * chosenWeakPartial' (d := d) p i u Ω x) Ω :=
+            (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x) Ω :=
           MemWkp.smul_smooth_bounded (d := d) k hp_one hΩ_open hη_smooth hη_bound_k h_du_mem
         have hu_at_k : MemWkp (d := d) k p u Ω := hu.le_succ
         have h_dei_u_mem : MemWkp (d := d) k p
@@ -271,33 +271,33 @@ theorem wkpNorm_smul_smooth_bounded_le
       have h_sum_bound :
           (∑ i : Fin d,
             iteratedWeakSobolevNorm (d := d) k p
-              (chosenWeakPartial' (d := d) p i (fun x => η x * u x) Ω) Ω) ≤
+              (chosenWeakPartialOrZero (d := d) p i (fun x => η x * u x) Ω) Ω) ≤
           ENNReal.ofReal K_eta *
             (∑ i : Fin d,
-              iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω) +
+              iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) +
           ENNReal.ofReal K_partial_sum * iteratedWeakSobolevNorm (d := d) k p u Ω := by
         calc
           (∑ i : Fin d,
             iteratedWeakSobolevNorm (d := d) k p
-              (chosenWeakPartial' (d := d) p i (fun x => η x * u x) Ω) Ω)
+              (chosenWeakPartialOrZero (d := d) p i (fun x => η x * u x) Ω) Ω)
               ≤ ∑ i : Fin d,
                 (ENNReal.ofReal K_eta *
-                  iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω +
+                  iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω +
                 ENNReal.ofReal (K_pi i) * iteratedWeakSobolevNorm (d := d) k p u Ω) :=
               Finset.sum_le_sum (fun i _ => h_partial_bound i)
           _ = (∑ i : Fin d, ENNReal.ofReal K_eta *
-                iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω) +
+                iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) +
               ∑ i : Fin d, ENNReal.ofReal (K_pi i) * iteratedWeakSobolevNorm (d := d) k p u Ω := by
               rw [Finset.sum_add_distrib]
           _ = ENNReal.ofReal K_eta *
                 (∑ i : Fin d,
-                  iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω) +
+                  iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) +
               (∑ i : Fin d, ENNReal.ofReal (K_pi i)) *
                 iteratedWeakSobolevNorm (d := d) k p u Ω := by
               rw [Finset.mul_sum, ← Finset.sum_mul]
           _ = ENNReal.ofReal K_eta *
                 (∑ i : Fin d,
-                  iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω) +
+                  iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) +
               ENNReal.ofReal K_partial_sum * iteratedWeakSobolevNorm (d := d) k p u Ω := by
               congr 1
               rw [hKPS_def]
@@ -306,23 +306,23 @@ theorem wkpNorm_smul_smooth_bounded_le
           eLpNorm (fun x => η x * u x) p (volume.restrict Ω) +
           ∑ i : Fin d,
             iteratedWeakSobolevNorm (d := d) k p
-              (chosenWeakPartial' (d := d) p i (fun x => η x * u x) Ω) Ω ≤
+              (chosenWeakPartialOrZero (d := d) p i (fun x => η x * u x) Ω) Ω ≤
           ENNReal.ofReal C * eLpNorm u p (volume.restrict Ω) +
           (ENNReal.ofReal K_eta *
             (∑ i : Fin d,
-              iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω) +
+              iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω) +
           ENNReal.ofReal K_partial_sum * iteratedWeakSobolevNorm (d := d) k p u Ω) :=
         add_le_add h_eta_u_eLp_le h_sum_bound
       refine h_lhs_bound.trans ?_
       set S_lp : ℝ≥0∞ := eLpNorm u p (volume.restrict Ω) with hSlp_def
       set S_part : ℝ≥0∞ := ∑ i : Fin d,
-        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartial' (d := d) p i u Ω) Ω with hSpart_def
+        iteratedWeakSobolevNorm (d := d) k p (chosenWeakPartialOrZero (d := d) p i u Ω) Ω with hSpart_def
       have hu_at_k_norm_le_succ :
           iteratedWeakSobolevNorm (d := d) k p u Ω ≤ S_lp + S_part := by
         rw [hSlp_def, hSpart_def]
         rw [show S_lp + S_part = eLpNorm u p (volume.restrict Ω) +
             ∑ i : Fin d, iteratedWeakSobolevNorm (d := d) k p
-              (chosenWeakPartial' (d := d) p i u Ω) Ω from rfl]
+              (chosenWeakPartialOrZero (d := d) p i u Ω) Ω from rfl]
         rw [← wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) k p Ω u]
         unfold iteratedWeakSobolevNorm
         refine Finset.sum_le_sum_of_subset_of_nonneg ?_ ?_
@@ -397,9 +397,9 @@ theorem exists_uniform_iteratedFDeriv_bound_of_smooth_compactSupport
     have h_smooth : ContDiff ℝ (⊤ : ℕ∞) (fun x => iteratedFDeriv ℝ j η x) := by
       have h := hη.iteratedFDeriv_right' (m := (⊤ : ℕ∞)) (i := j)
       simpa using h
-    have h_supp : HasCompactSupport (fun x => iteratedFDeriv ℝ j η x) :=
+    have h_support : HasCompactSupport (fun x => iteratedFDeriv ℝ j η x) :=
       hη_compact.iteratedFDeriv (𝕜 := ℝ) j
-    obtain ⟨M, hM⟩ := h_supp.exists_bound_of_continuous h_smooth.continuous
+    obtain ⟨M, hM⟩ := h_support.exists_bound_of_continuous h_smooth.continuous
     refine ⟨max 0 M, le_max_left _ _, ?_⟩
     intro x
     exact (hM x).trans (le_max_right _ _)

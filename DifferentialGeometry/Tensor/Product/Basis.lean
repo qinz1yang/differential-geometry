@@ -20,11 +20,6 @@ noncomputable instance tensorProduct_finiteDimensional :
     FiniteDimensional 𝕜 (F₁ ⊗[𝕜] F₂) :=
   Module.Finite.tensorProduct 𝕜 F₁ F₂
 
-omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F₁] [FiniteDimensional 𝕜 F₂] in
-theorem finrank_tensorProduct' :
-    Module.finrank 𝕜 (F₁ ⊗[𝕜] F₂) = Module.finrank 𝕜 F₁ * Module.finrank 𝕜 F₂ :=
-  Module.finrank_tensorProduct
-
 noncomputable def tensorProductBasis {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁) (b₂ : Module.Basis (Fin d₂) 𝕜 F₂) :
     Module.Basis (Fin d₁ × Fin d₂) 𝕜 (F₁ ⊗[𝕜] F₂) :=
@@ -39,7 +34,7 @@ theorem tensorProduct_basis_apply {d₁ d₂ : ℕ}
   Module.Basis.tensorProduct_apply b₁ b₂ i j
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 F₁] [FiniteDimensional 𝕜 F₂] in
-theorem tensorProduct_basis_apply' {d₁ d₂ : ℕ}
+theorem tensorProduct_basis_apply_pair {d₁ d₂ : ℕ}
     (b₁ : Module.Basis (Fin d₁) 𝕜 F₁) (b₂ : Module.Basis (Fin d₂) 𝕜 F₂)
     (p : Fin d₁ × Fin d₂) :
     tensorProductBasis b₁ b₂ p = b₁ p.1 ⊗ₜ b₂ p.2 :=

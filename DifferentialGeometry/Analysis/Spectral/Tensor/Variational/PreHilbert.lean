@@ -5,14 +5,14 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.Continuity
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
-import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRSNabla
+import DifferentialGeometry.Geometry.Connection.TensorNabla.TensorRS.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Defs
-import DifferentialGeometry.Analysis.Integration.Measure.Properties
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.MetricLowering
-import DifferentialGeometry.Tensor.Multilinear.BundleSmoothEval
-import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRSRiemannian
-import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Evaluation
+import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.Riemannian
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Function.L1Space.Integrable
@@ -288,16 +288,6 @@ theorem SmoothCcTensorH1.norm_def
     (S : SmoothCcTensorH1 g r s) :
     ‖S‖ = Real.sqrt (tensorH1Inner
         (I := I) (M := M) g r s S.toCcTensor S.toCcTensor) := rfl
-
-section InstanceTests
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    SeminormedAddCommGroup (SmoothCcTensorH1 g r s) := inferInstance
-
-example (g : SmoothRiemannianMetric I M) (r s : ℕ) :
-    InnerProductSpace ℝ (SmoothCcTensorH1 g r s) := inferInstance
-
-end InstanceTests
 
 end TensorSpectral
 end Parabolic

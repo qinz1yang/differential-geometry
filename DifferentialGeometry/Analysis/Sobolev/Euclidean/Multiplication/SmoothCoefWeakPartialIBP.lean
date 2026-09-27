@@ -1,3 +1,5 @@
+import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
+import DifferentialGeometry.Analysis.Calculus.ContDiff.Support
 import DifferentialGeometry.External.DeGiorgi.SobolevSpace.WeakDerivatives
 
 
@@ -22,10 +24,10 @@ theorem integral_smul_weak_partial_eq
     (hφ_smooth : ContDiff ℝ (⊤ : ℕ∞) φ)
     {v : E → ℝ}
     {w : Fin d → E → ℝ}
-    (hv_locMemLp : ∀ K : Set E, IsCompact K → K ⊆ Ω →
+    (hv_localMemLp : ∀ K : Set E, IsCompact K → K ⊆ Ω →
       MeasureTheory.MemLp v 2
         ((MeasureTheory.volume : MeasureTheory.Measure E).restrict K))
-    (hw_locMemLp : ∀ (j : Fin d) (K : Set E), IsCompact K → K ⊆ Ω →
+    (hw_localMemLp : ∀ (j : Fin d) (K : Set E), IsCompact K → K ⊆ Ω →
       MeasureTheory.MemLp (w j) 2
         ((MeasureTheory.volume : MeasureTheory.Measure E).restrict K))
     (hw_isWeakPartial : ∀ j : Fin d,
@@ -34,7 +36,7 @@ theorem integral_smul_weak_partial_eq
     {ψ : E → ℝ}
     (hψ_smooth : ContDiff ℝ (⊤ : ℕ∞) ψ)
     (hψ_cs : HasCompactSupport ψ)
-    (hψ_supp : tsupport ψ ⊆ Ω) :
+    (hψ_support : tsupport ψ ⊆ Ω) :
     (∫ y in Ω, φ y * v y *
       (fderiv ℝ ψ y) (EuclideanSpace.single j 1)
       ∂(MeasureTheory.volume : MeasureTheory.Measure E))
@@ -47,7 +49,7 @@ theorem integral_smul_weak_partial_eq
   set K : Set E := tsupport ψ with hK_def
   have hK_compact : IsCompact K := hψ_cs
   have hK_meas : MeasurableSet K := (isClosed_tsupport ψ).measurableSet
-  have hK_sub : K ⊆ Ω := hψ_supp
+  have hK_sub : K ⊆ Ω := hψ_support
   set ξ : E → ℝ := fun y => φ y * ψ y with hξ_def
   have hξ_smooth : ContDiff ℝ (⊤ : ℕ∞) ξ := hφ_smooth.mul hψ_smooth
   have hξ_cs : HasCompactSupport ξ := hψ_cs.mul_left
@@ -60,7 +62,7 @@ theorem integral_smul_weak_partial_eq
     have h_sub_tsupport : tsupport ξ ⊆ tsupport ψ :=
       closure_mono h_sub_support
     exact h_sub_tsupport
-  have hξ_supp : tsupport ξ ⊆ Ω := hξ_tsupport.trans hK_sub
+  have hξ_support : tsupport ξ ⊆ Ω := hξ_tsupport.trans hK_sub
   have hφ_diff : Differentiable ℝ φ := hφ_smooth.differentiable (by simp)
   have hψ_diff : Differentiable ℝ ψ := hψ_smooth.differentiable (by simp)
   let ej : E := EuclideanSpace.single j (1 : ℝ)
@@ -87,11 +89,11 @@ theorem integral_smul_weak_partial_eq
         ∂(MeasureTheory.volume : MeasureTheory.Measure E) =
       -∫ y in Ω, w j y * ξ y
         ∂(MeasureTheory.volume : MeasureTheory.Measure E) := by
-    simpa [ej] using hw_isWeakPartial j ξ hξ_smooth hξ_cs hξ_supp
+    simpa [ej] using hw_isWeakPartial j ξ hξ_smooth hξ_cs hξ_support
   have hvK_memLp : MemLp v 2 ((volume : Measure E).restrict K) :=
-    hv_locMemLp K hK_compact hK_sub
+    hv_localMemLp K hK_compact hK_sub
   have hwK_memLp : MemLp (w j) 2 ((volume : Measure E).restrict K) :=
-    hw_locMemLp j K hK_compact hK_sub
+    hw_localMemLp j K hK_compact hK_sub
   have hvolK_finite : (volume : Measure E) K < ∞ := hK_compact.measure_lt_top
   have hvolK_finite' : (volume.restrict K : Measure E) Set.univ < ∞ := by
     rw [Measure.restrict_apply MeasurableSet.univ, Set.univ_inter]
@@ -104,14 +106,14 @@ theorem integral_smul_weak_partial_eq
   have integrable_mul_compact :
       ∀ {h : E → ℝ}, Continuous h → tsupport h ⊆ K →
         Integrable (fun y => v y * h y) (volume.restrict Ω) := by
-    intro h hh_cont hh_supp
+    intro h hh_cont hh_support
     have hh_contOn : ContinuousOn h K := hh_cont.continuousOn
     have step_K : IntegrableOn (fun y => v y * h y) K (volume : Measure E) :=
       hv_int_K.mul_continuousOn hh_contOn hK_compact
     have h_vanish : ∀ y, y ∉ K → v y * h y = 0 := by
       intro y hy
       have : h y = 0 := image_eq_zero_of_notMem_tsupport
-        (fun hy_supp => hy (hh_supp hy_supp))
+        (fun hy_support => hy (hh_support hy_support))
       simp [this]
     have h_eq_ind :
         (fun y => v y * h y) = K.indicator (fun y => v y * h y) := by
@@ -128,14 +130,14 @@ theorem integral_smul_weak_partial_eq
   have integrable_mul_compact_w :
       ∀ {h : E → ℝ}, Continuous h → tsupport h ⊆ K →
         Integrable (fun y => w j y * h y) (volume.restrict Ω) := by
-    intro h hh_cont hh_supp
+    intro h hh_cont hh_support
     have hh_contOn : ContinuousOn h K := hh_cont.continuousOn
     have step_K : IntegrableOn (fun y => w j y * h y) K (volume : Measure E) :=
       hw_int_K.mul_continuousOn hh_contOn hK_compact
     have h_vanish : ∀ y, y ∉ K → w j y * h y = 0 := by
       intro y hy
       have : h y = 0 := image_eq_zero_of_notMem_tsupport
-        (fun hy_supp => hy (hh_supp hy_supp))
+        (fun hy_support => hy (hh_support hy_support))
       simp [this]
     have h_eq_ind :
         (fun y => w j y * h y) = K.indicator (fun y => w j y * h y) := by
@@ -151,7 +153,7 @@ theorem integral_smul_weak_partial_eq
     exact full_int.restrict
   have h_dφ_ψ_cont : Continuous (fun y : E => (fderiv ℝ φ y) ej * ψ y) :=
     hφ_deriv_cont.mul hψ_cont
-  have h_dφ_ψ_supp : tsupport (fun y : E => (fderiv ℝ φ y) ej * ψ y) ⊆ K := by
+  have h_dφ_ψ_support : tsupport (fun y : E => (fderiv ℝ φ y) ej * ψ y) ⊆ K := by
     have h_sub : Function.support (fun y : E => (fderiv ℝ φ y) ej * ψ y) ⊆
         Function.support ψ := by
       intro y hy
@@ -161,7 +163,7 @@ theorem integral_smul_weak_partial_eq
     exact closure_mono h_sub
   have h_φ_dψ_cont : Continuous (fun y : E => φ y * (fderiv ℝ ψ y) ej) :=
     hφ_cont.mul hψ_deriv_cont
-  have h_φ_dψ_supp : tsupport (fun y : E => φ y * (fderiv ℝ ψ y) ej) ⊆ K := by
+  have h_φ_dψ_support : tsupport (fun y : E => φ y * (fderiv ℝ ψ y) ej) ⊆ K := by
     have h1 : Function.support (fun y : E => (fderiv ℝ ψ y) ej) ⊆
         tsupport ψ := by
       intro y hy
@@ -190,15 +192,15 @@ theorem integral_smul_weak_partial_eq
           rw [closure_eq_iff_isClosed.mpr (isClosed_tsupport ψ)]))
     exact this
   have h_ψ_cont : Continuous ψ := hψ_cont
-  have h_ψ_supp : tsupport ψ ⊆ K := by rw [hK_def]
+  have h_ψ_support : tsupport ψ ⊆ K := by rw [hK_def]
   have int_v_dφ_ψ :
       Integrable (fun y => v y * ((fderiv ℝ φ y) ej * ψ y))
         (volume.restrict Ω) :=
-    integrable_mul_compact h_dφ_ψ_cont h_dφ_ψ_supp
+    integrable_mul_compact h_dφ_ψ_cont h_dφ_ψ_support
   have int_v_φ_dψ :
       Integrable (fun y => v y * (φ y * (fderiv ℝ ψ y) ej))
         (volume.restrict Ω) :=
-    integrable_mul_compact h_φ_dψ_cont h_φ_dψ_supp
+    integrable_mul_compact h_φ_dψ_cont h_φ_dψ_support
   have int_w_ξ :
       Integrable (fun y => w j y * ξ y) (volume.restrict Ω) := by
     have h_ξ_cont : Continuous ξ := hφ_cont.mul hψ_cont
@@ -258,3 +260,60 @@ end Euclidean
 end Sobolev
 end Analysis
 end DifferentialGeometry
+
+namespace DeGiorgi
+
+open Metric
+
+variable {d : ℕ}
+local notation "E" => EuclideanSpace ℝ (Fin d)
+
+theorem HasWeakPartialDeriv.mul_contDiffOn {Ω : Set E} (hΩ : IsOpen Ω)
+    {i : Fin d} {g f η : E → ℝ}
+    (hf : HasWeakPartialDeriv i g f Ω)
+    (hη : ContDiffOn ℝ (⊤ : ℕ∞) η Ω)
+    (hf_int : LocallyIntegrable f (volume.restrict Ω))
+    (hg_int : LocallyIntegrable g (volume.restrict Ω)) :
+    HasWeakPartialDeriv i
+      (fun x => η x * g x + fderiv ℝ η x (EuclideanSpace.single i 1) * f x)
+      (fun x => η x * f x) Ω := by
+  intro φ hφ hφc hφs
+  obtain ⟨δ, χ, hδ, _, hχ, hχc, _, hχone, hχs⟩ :=
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.exists_smooth_cutoff_with_neighborhood
+      hφc hΩ hφs
+  let η' := fun x => χ x * η x
+  have hη's : tsupport η' ⊆ Ω := (tsupport_mul_subset_left (f := χ) (g := η)).trans hχs
+  have hη' : ContDiff ℝ (⊤ : ℕ∞) η' :=
+    (hχ.contDiffOn.mul hη).contDiff_of_tsupport_subset hΩ hη's
+  have hlocal : ∀ x ∈ tsupport φ, η' =ᶠ[𝓝 x] η := by
+    intro x hx
+    have hχloc : χ =ᶠ[𝓝 x] fun _ => (1 : ℝ) := by
+      filter_upwards [ball_mem_nhds x hδ] with y hy
+      apply hχone
+      exact closedBall_subset_cthickening hx δ (mem_closedBall.mpr (le_of_lt hy))
+    filter_upwards [hχloc] with y hy
+    change χ y * η y = η y
+    rw [hy, one_mul]
+  have htest := (hf.mul_smooth hΩ hη' hf_int hg_int) φ hφ hφc hφs
+  have hl : (∫ x in Ω, η' x * f x * fderiv ℝ φ x (EuclideanSpace.single i 1)) =
+      ∫ x in Ω, η x * f x * fderiv ℝ φ x (EuclideanSpace.single i 1) := by
+    apply integral_congr_ae
+    filter_upwards [] with x
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hlocal x hx).eq_of_nhds]
+    · have hz : fderiv ℝ φ x (EuclideanSpace.single i 1) = 0 :=
+        image_eq_zero_of_notMem_tsupport
+          (f := fun y => fderiv ℝ φ y (EuclideanSpace.single i 1))
+          (fun hs => hx ((tsupport_fderiv_apply_subset (f := φ) ℝ (EuclideanSpace.single i 1)) hs))
+      simp only [hz, mul_zero]
+  have hr : (∫ x in Ω,
+        (η' x * g x + fderiv ℝ η' x (EuclideanSpace.single i 1) * f x) * φ x) =
+      ∫ x in Ω, (η x * g x + fderiv ℝ η x (EuclideanSpace.single i 1) * f x) * φ x := by
+    apply integral_congr_ae
+    filter_upwards [] with x
+    by_cases hx : x ∈ tsupport φ
+    · rw [(hlocal x hx).eq_of_nhds, (hlocal x hx).fderiv_eq]
+    · rw [image_eq_zero_of_notMem_tsupport hx, mul_zero, mul_zero]
+  exact hl.symm.trans (htest.trans (congrArg Neg.neg hr))
+
+end DeGiorgi

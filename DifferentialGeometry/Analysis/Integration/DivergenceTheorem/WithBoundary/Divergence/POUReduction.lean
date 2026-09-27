@@ -1,10 +1,10 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.LocalFormula
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.PartialDerivWithin
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.Global
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.POUReduction
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.TangentAction
-import DifferentialGeometry.Analysis.Integration.Measure.RiemannianMeasure
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.PartitionOfUnity
+import DifferentialGeometry.Geometry.Operator.DirectionalDerivative
+import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Mul
 import Mathlib.Analysis.Calculus.FDeriv.Basic
 import Mathlib.Analysis.Calculus.FDeriv.Congr
@@ -33,11 +33,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 open DifferentialGeometry.Integral.Measure
 
-example (φ : M → ℝ) (hφ : ContMDiff I 𝓘(ℝ) ∞ φ)
-    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) (x : M) :
-    (smoothSmul
-        (I := I) φ hφ X) x = φ x • X x := rfl
-
 omit [Module.Finite ℝ E] in
 private lemma scalarOnE_mdifferentiableWithinAt_target
     (α : M) {f : M → ℝ} (hf : ContMDiff I 𝓘(ℝ) ∞ f)
@@ -65,8 +60,8 @@ private lemma mfderiv_extChartAt_chartBasisVecFiber
     (α : M) {x : M} (hx : x ∈ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ, E) (extChartAt I α) x
-        (chartBasisVecFiber (I := I) α i x)
-      = (chartModelBasis E) i := by
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)
+      = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i := by
   classical
   let T : Bundle.Trivialization E (π E (TangentSpace I : M → Type _)) :=
     trivializationAt E (TangentSpace I) α
@@ -83,10 +78,10 @@ private lemma mfderiv_extChartAt_chartBasisVecFiber
     exact (TangentBundle.continuousLinearMapAt_trivializationAt (𝕜 := ℝ) (I := I)
       (x₀ := α) (x := x) hx).symm
   rw [hmfderiv_eq]
-  change T.continuousLinearMapAt ℝ x (T.symmL ℝ x ((chartModelBasis E) i))
-    = (chartModelBasis E) i
+  change T.continuousLinearMapAt ℝ x (T.symmL ℝ x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
+    = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i
   exact Trivialization.continuousLinearMapAt_symmL (R := ℝ) T (b := x) hbase
-    ((chartModelBasis E) i)
+    ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
 
 omit [Module.Finite ℝ E] [IsManifold I ∞ M] in
 private lemma mfderivWithin_extChartAt_chart_source
@@ -182,12 +177,12 @@ private lemma mfderiv_chartBasisVecFiber_within
     {x : M} (hx : x ∈ (chartAt H α).source)
     (i : Fin (Module.finrank ℝ E)) :
     mfderiv I 𝓘(ℝ) f x
-        (chartBasisVecFiber (I := I) α i x) =
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x) =
       partialDerivWithin (E := E) (extChartAt I α).target i
         (scalarOnE (I := I) α f) ((extChartAt I α) x) := by
   classical
   rw [mfderiv_factor_through_extChartAt (I := I) α hf hx
-        (chartBasisVecFiber (I := I) α i x)]
+        (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x)]
   rw [mfderiv_extChartAt_chartBasisVecFiber (I := I) α hx i]
   rfl
 
@@ -205,7 +200,7 @@ theorem tangentSectionAction_chartLocal_within
   have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
     rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx
   have hXrecomp : X x = ∑ i, chartCoeff (I := I) α X i x •
-        chartBasisVecFiber (I := I) α i x :=
+        DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i x :=
     chartCoeff_recompose (I := I) α X hbase
   rw [tangentSectionAction_def, hXrecomp]
   rw [map_sum]
@@ -432,11 +427,11 @@ theorem divergence_g_with_boundary_add
         chartCoeffOnE (I := I) x (X + Y) i y =
           chartCoeffOnE (I := I) x X i y + chartCoeffOnE (I := I) x Y i y := by
     intro y hy i
-    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+    have hsymm_source : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
       (extChartAt I x).map_target hy
     have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hsymm_base : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]
@@ -526,11 +521,11 @@ theorem divergence_g_with_boundary_zero
         chartCoeffOnE (I := I) x
           (0 : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) i y = 0 := by
     intro y hy i
-    have hsymm_src : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
+    have hsymm_source : (extChartAt I x).symm y ∈ (extChartAt I x).source :=
       (extChartAt I x).map_target hy
     have hsymm_chart : (extChartAt I x).symm y ∈ (chartAt H x).source := by
-      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_src
-      exact hsymm_src
+      rw [extChartAt_source_eq_chartAt_source (I := I)] at hsymm_source
+      exact hsymm_source
     have hsymm_base : (extChartAt I x).symm y ∈
         (trivializationAt E (TangentSpace I) x).baseSet := by
       rw [trivializationAt_baseSet_eq_chartAt_source]
@@ -629,25 +624,8 @@ theorem divergence_g_with_boundary_pou_tsum (g : SmoothRiemannianMetric I M)
         (ρ.finsupport_subset_fintsupport x)]
   rw [one_mul]
   have hsum_action : ∑ α ∈ S,
-      tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 := by
-    have hMDiff_each : ∀ α ∈ S,
-        MDifferentiableAt I 𝓘(ℝ) ((ρ α : M → ℝ)) x :=
-      fun α _ => (ρ α).contMDiff.mdifferentiable (by simp) x
-    have hcomm := tangentSectionAction_finset_sum
-      (I := I) X S (fun α => ((ρ α : M → ℝ))) x hMDiff_each
-    rw [← hcomm]
-    have h_finset_eq_one : (fun y : M => ∑ α ∈ S, (ρ α : M → ℝ) y) =ᶠ[𝓝 x]
-        (fun _ : M => (1 : ℝ)) := by
-      filter_upwards [ρ.eventually_finsupport_subset x] with y hy
-      exact ρ.sum_finsupport' y (mem_univ y) hy
-    unfold tangentSectionAction
-    have h_fun_eq : (∑ α ∈ S, (ρ α : M → ℝ)) = fun y : M => ∑ α ∈ S, (ρ α : M → ℝ) y := by
-      funext y
-      rw [Finset.sum_apply]
-    rw [h_fun_eq]
-    rw [Filter.EventuallyEq.mfderiv_eq h_finset_eq_one]
-    rw [mfderiv_const]
-    rfl
+      tangentSectionAction (I := I) X (ρ α : M → ℝ) x = 0 :=
+    sum_tangentSectionAction_partitionOfUnity_eq_zero ρ X (by simp)
   rw [hsum_action]
   ring
 

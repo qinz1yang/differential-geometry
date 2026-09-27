@@ -1,0 +1,12 @@
+import DifferentialGeometry.Topology.Manifold.ImmersionRange
+
+namespace DifferentialGeometry.Topology.SphereSeparation.Manifold
+
+alias isOpen_range_of_isImmersionOfComplement_punit :=
+  _root_.Manifold.isOpen_range_of_isImmersionOfComplement_punit
+
+alias isOpen_range_of_isImmersion := _root_.Manifold.isOpen_range_of_isImmersion
+
+alias isOpen_range_of_isSmoothEmbedding := _root_.Manifold.isOpen_range_of_isSmoothEmbedding
+
+end DifferentialGeometry.Topology.SphereSeparation.Manifold

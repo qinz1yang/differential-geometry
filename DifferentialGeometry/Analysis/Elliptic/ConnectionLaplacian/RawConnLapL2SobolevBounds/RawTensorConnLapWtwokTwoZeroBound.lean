@@ -1,9 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.RawConnLapL2SobolevBounds.RawTensorConnLapWtwokTwoZeroSquaredAggregate
 open DifferentialGeometry.Analysis.Elliptic
 
-
 noncomputable section
-
+set_option backward.isDefEq.respectTransparency false
 
 open Bundle Manifold Set IsManifold ContinuousLinearMap Filter
 open MeasureTheory

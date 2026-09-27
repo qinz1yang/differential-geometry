@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.CurvatureContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.InverseMetric
 
@@ -28,40 +29,15 @@ theorem ricciAt_continuousOn_time
     (hS : IsSolutionOn (I := I) S)
     (x : M) (v w : TangentSpace I x) :
     ContinuousOn (fun t : ℝ => S.ricciAt t x (vec2 v w)) (Set.Icc 0 T) := by
-  classical
-  let K : Set Real := Set.Icc 0 T
-  have hA : tensor0SFamilyContinuousOnSet (I := I) (M := M) 2 K
-      (fun t x => S.ricci t x) := by
-    exact DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.mono
-      (I := I) (M := M) hS.ricciCont (by intro s hs; exact hs)
-  have hcont : Continuous (fun p : K =>
-      (S.ricci p.1 x) (fun i : Fin 2 => if i = 0 then v else w)) := by
-    have heval :=
-      DifferentialGeometry.Geometry.Curvature.tensor0SFamilyContinuousOnSet.eval_continuous
-        (I := I) (M := M) (s := 2) (K := K) (A := fun t x => S.ricci t x) hA
-        (P := K)
-        (τ := fun p : K => p.1)
-        (b := fun p : K => x)
-        continuous_subtype_val (fun p : K => p.2) continuous_const
-        (v := fun a : Fin 2 => fun p : K => if a = 0 then v else w)
-        (by
-          intro a
-          fin_cases a
-          · simpa using (continuous_const : Continuous (fun p : K =>
-              (⟨x, v⟩ : TangentBundle I M)))
-          · simpa using (continuous_const : Continuous (fun p : K =>
-              (⟨x, w⟩ : TangentBundle I M))))
-    simpa [K, vec2] using heval
-  rw [continuousOn_iff_continuous_domRestrict]
-  change Continuous (fun p : K => S.ricciAt p.1 x (vec2 v w))
-  exact hcont.congr fun _ => rfl
+  exact hS.continuousOn_ricciAt x v w
 
 noncomputable def solutionUhlenbeckIota
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
-    MatrixComp M (Fin 3) :=
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x)) :
+    MatrixComp M Idx :=
   Classical.choose (uhlenbeckIota_isometry (I := I) (M := M) hT S hS
     (solutionInverseMetricComponents (I := I) (M := M) S basisAt)
     (fun x i j => solutionInverseMetricComponents_entry_continuousOn
@@ -79,14 +55,25 @@ theorem solutionUhlenbeckIota_spec
     {T : ℝ} (hT : 0 < T) [I.Boundaryless]
     (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
     (hS : IsSolutionOn (I := I) S)
-    (basisAt : ∀ x : M, Module.Basis (Fin 3) Real (TangentSpace I x)) :
-    (∀ x : M, ∀ a k : Fin 3,
+    {Idx : Type*} [Fintype Idx] [DecidableEq Idx] [Nonempty Idx]
+    (basisAt : ∀ x : M, Module.Basis Idx Real (TangentSpace I x)) :
+    (∀ x : M, ∀ a k : Idx,
       solutionUhlenbeckIota hT S hS basisAt 0 x a k = if a = k then 1 else 0) ∧
+    (∀ x : M, ContinuousOn
+      (fun t : ℝ => solutionUhlenbeckIota hT S hS basisAt t x) (Set.Icc 0 T)) ∧
+    (∀ t : ℝ, t ∈ Set.Ico 0 T → ∀ x : M, ∀ a k : Idx,
+      HasDerivWithinAt
+        (fun s : ℝ => solutionUhlenbeckIota hT S hS basisAt s x a k)
+        (∑ l : Idx,
+          uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
+              (fun a x => basisAt x a) t x l k *
+            solutionUhlenbeckIota hT S hS basisAt t x a l)
+        (Set.Ici 0) t) ∧
     FrameRicciODEInFrameOn (D := RealTimeInterval.closed 0 T hT.le)
       (solutionUhlenbeckIota hT S hS basisAt)
       (uhlenbeckRupOfSolution (I := I) S (solutionInverseMetricComponents S basisAt)
         (fun a x => basisAt x a)) ∧
-    (∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Fin 3,
+    (∀ t : ℝ, t ∈ Set.Icc 0 T → ∀ x : M, ∀ a b : Idx,
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
         (solutionUhlenbeckIota hT S hS basisAt) t x a b =
       movingFrameGramInFrame (metricCompInFrame (I := I) S (fun a x => basisAt x a))
@@ -116,7 +103,7 @@ theorem solutionUhlenbeckIota_identity_initial_gram
       (solutionUhlenbeckIota hT S hS basisAt) t x a b = if a = b then 1 else 0 := by
   classical
   have hspec := solutionUhlenbeckIota_spec (I := I) (M := M) hT S hS basisAt
-  have hgram := hspec.2.2 t ht x a b
+  have hgram := hspec.2.2.2.2 t ht x a b
   rw [hgram]
   have hiota0 := hspec.1 x
   have horth : ∀ i j : Fin 3,
@@ -154,7 +141,7 @@ theorem exists_uhlenbeckFrame_of_finrank
     dsimp [iota]
     exact hspec.1 x a k
   · dsimp [iota]
-    exact hspec.2.1
+    exact hspec.2.2.2.1
   · intro t ht x a b
     dsimp [iota]
     exact solutionUhlenbeckIota_identity_initial_gram

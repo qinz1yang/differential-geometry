@@ -1,11 +1,12 @@
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
+import DifferentialGeometry.Analysis.Calculus.Trace
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.WithBoundary.Divergence.PartialDerivWithin
 import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 
 noncomputable section
 
-open Bundle Manifold Set
+open Bundle Manifold Set DifferentialGeometry.Tensor.Coordinates
 open scoped Manifold Topology ContDiff
 
 namespace DifferentialGeometry
@@ -44,26 +45,26 @@ def localDivergenceWithin (g : SmoothRiemannianMetric I M)
 
 omit [Module.Finite ℝ E] in
 lemma extChartAt_mem_interior_target_of_isInteriorPoint
-    (α : M) {x : M} (hx_src : x ∈ (chartAt H α).source)
+    (α : M) {x : M} (hx_source : x ∈ (chartAt H α).source)
     (hx_int : x ∈ I.interior M) :
     extChartAt I α x ∈ interior (extChartAt I α).target := by
   have h := (I.isInteriorPoint_iff_of_mem_atlas (M := M) (n := ∞)
       (e := chartAt H α) (x := x)
       (by exact (by decide : (∞ : WithTop ℕ∞) ≠ 0))
-      (chart_mem_atlas H α) hx_src).1 hx_int
+      (chart_mem_atlas H α) hx_source).1 hx_int
   exact h
 
 theorem localDivergenceWithin_eq_localDivergence_of_isInteriorPoint
     (g : SmoothRiemannianMetric I M) (α : M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
-    {x : M} (hx_src : x ∈ (chartAt H α).source)
+    {x : M} (hx_source : x ∈ (chartAt H α).source)
     (hx_int : x ∈ I.interior M) :
     localDivergenceWithin (I := I) g α X x =
       localDivergence (I := I) g α X x := by
   classical
   have hy_int : extChartAt I α x ∈ interior (extChartAt I α).target :=
     extChartAt_mem_interior_target_of_isInteriorPoint
-      (I := I) α hx_src hx_int
+      (I := I) α hx_source hx_int
   have hsum :
       (∑ i : Fin (Module.finrank ℝ E),
           partialDerivWithin (E := E) (extChartAt I α).target i
@@ -72,7 +73,7 @@ theorem localDivergenceWithin_eq_localDivergence_of_isInteriorPoint
                 chartDensityOnE (I := I) g α y)
             (extChartAt I α x))
         = ∑ i : Fin (Module.finrank ℝ E),
-            partialDeriv (E := E) i
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i
               (fun y : E =>
                 chartCoeffOnE (I := I) α X i y *
                   chartDensityOnE (I := I) g α y)
@@ -206,6 +207,54 @@ theorem localDivergenceWithin_continuousOn
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯) :
     ContinuousOn (localDivergenceWithin (I := I) g α X) (chartAt H α).source :=
   (localDivergenceWithin_contMDiffOn (I := I) g α X).continuousOn
+
+theorem localDivergenceWithin_eq_trace_fderivWithin
+    (g : SmoothRiemannianMetric I M) (alpha : M)
+    (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
+    {x : M} (hx : x ∈ (chartAt H alpha).source) :
+    localDivergenceWithin (I := I) g alpha X x =
+      LinearMap.trace Real E
+        (fderivWithin Real
+          (fun y : E => chartDensityOnE (I := I) g alpha y •
+            ((trivializationAt E (TangentSpace I) alpha)
+              ⟨(extChartAt I alpha).symm y, X ((extChartAt I alpha).symm y)⟩).2)
+          (extChartAt I alpha).target (extChartAt I alpha x)).toLinearMap /
+        chartDensity (I := I) g alpha x := by
+  let b := chartModelBasis E
+  let u : E → E := fun y => chartDensityOnE (I := I) g alpha y •
+    ((trivializationAt E (TangentSpace I) alpha)
+      ⟨(extChartAt I alpha).symm y, X ((extChartAt I alpha).symm y)⟩).2
+  have hu_eq : u = fun y => ∑ i, (chartCoeffOnE (I := I) alpha X i y *
+      chartDensityOnE (I := I) g alpha y) • b i := by
+    funext y
+    rw [← b.sum_repr (u y)]
+    apply Finset.sum_congr rfl
+    intro i _
+    congr 1
+    simp only [u, map_smul, Finsupp.smul_apply, smul_eq_mul]
+    exact mul_comm _ _
+  have hu : ContDiffOn Real ∞ u (extChartAt I alpha).target := by
+    rw [hu_eq]
+    exact ContDiffOn.sum fun i _ =>
+      (chartCoeffOnE_mul_chartDensityOnE_contDiffOn g alpha X i).smul contDiffOn_const
+  have hxy : extChartAt I alpha x ∈ (extChartAt I alpha).target := by
+    apply (extChartAt I alpha).map_source
+    simpa only [extChartAt_source_eq_chartAt_source] using hx
+  have htrace := DifferentialGeometry.Analysis.trace_fderivWithin_eq_sum b
+    (uniqueDiffOn_extChartAt_target (I := I) alpha _ hxy)
+    (hu.differentiableOn (by simp) _ hxy)
+  rw [localDivergenceWithin_def]
+  change _ = LinearMap.trace Real E
+    (fderivWithin Real u (extChartAt I alpha).target (extChartAt I alpha x)).toLinearMap / _
+  rw [htrace]
+  congr 1
+  apply Finset.sum_congr rfl
+  intro i _
+  unfold partialDerivWithin
+  congr 2
+  funext y
+  simp only [u, map_smul, Finsupp.smul_apply, smul_eq_mul]
+  exact mul_comm _ _
 
 end WithBoundary
 end DivergenceTheorem

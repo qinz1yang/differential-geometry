@@ -115,7 +115,7 @@ omit [FiniteDimensional ℝ E] in
 theorem metricCompForMetricInFrame_mvfderiv_eq_christoffel
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
@@ -130,12 +130,11 @@ theorem metricCompForMetricInFrame_mvfderiv_eq_christoffel
         christoffelSymbolInFrame cov frame hframe x d b p *
           metricCompForMetricInFrame (I := I) g frame x a p) := by
   classical
-  have hd := metric_localFrame_mdiffAt (I := I) frame hframe hu hx d
   have ha := metric_localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hb := metric_localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmetric :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-      (I := I) hmc (frame d) (frame a) (frame b) hd ha hb
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+      (I := I) hmc (frame d x) ha hb
   have hmetric' :
       mvfderiv (I := I)
           (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
@@ -152,7 +151,7 @@ omit [FiniteDimensional ℝ E] in
 theorem metricComp_extDeriv_tangent
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
@@ -268,7 +267,7 @@ omit [FiniteDimensional ℝ E] in
 theorem metricCompForMetricInFrame_mvfderiv_eq_christoffelAlong
     (g : SmoothRiemannianMetric I M)
     (cov : CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (X : ContMDiffSection I E (∞ : WithTop ℕ∞) (TangentSpace I : M -> Type _))
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
@@ -284,13 +283,11 @@ theorem metricCompForMetricInFrame_mvfderiv_eq_christoffelAlong
         christoffelAlongInFrame cov frame hframe x (X x) b p *
           metricCompForMetricInFrame (I := I) g frame x a p) := by
   classical
-  have hX : MDiffAt (T% (fun y : M => X y)) x :=
-    X.contMDiff.contMDiffAt.mdifferentiableAt (by simp)
   have ha := metric_localFrame_mdiffAt (I := I) frame hframe hu hx a
   have hb := metric_localFrame_mdiffAt (I := I) frame hframe hu hx b
   have hmetric :=
-    DifferentialGeometry.Geometry.Connection.metric_compatible_apply
-      (I := I) hmc (fun y : M => X y) (frame a) (frame b) hX ha hb
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible.mvfderiv_inner
+      (I := I) hmc (X x) ha hb
   have hmetric' :
       mvfderiv (I := I)
           (fun y : M => metricCompForMetricInFrame (I := I) g frame y a b)
@@ -515,7 +512,7 @@ theorem inverseMetricCovDerivForMetricCompInFrame_eq_zero
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InverseMetricComponentsForMetricInFrameOn (I := I) g gInv frame)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y a b) x)
@@ -800,7 +797,7 @@ theorem inverseMetricCovDerivForMetricCompAlongInFrame_eq_zero
     (frame : Idx -> (x : M) -> TangentSpace I x)
     (hframe : IsLocalFrameOn I E 1 frame u)
     (hinv : InverseMetricComponentsForMetricInFrameOn (I := I) g gInv frame)
-    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen (I := I) cov g)
+    (hmc : DifferentialGeometry.Geometry.Connection.IsMetricCompatible (I := I) cov g)
     (hu : IsOpen u) {x : M} (hx : x ∈ u)
     (hginv_mdiff : ∀ a b : Idx,
       MDifferentiableAt I 𝓘(Real, Real) (fun y : M => gInv y a b) x)

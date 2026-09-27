@@ -185,7 +185,7 @@ private lemma continuous_translate_of_continuous
 theorem nirenberg_principal_decomposition
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin d) {h : ℝ} (hh : h ≠ 0) :
     ∑ i : Fin d, ∑ j : Fin d, ∫ x,
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -229,11 +229,11 @@ theorem nirenberg_principal_decomposition
   classical
   have hu_C1 : ContDiff ℝ 1 u := hu.of_le (by norm_cast)
   have hη_C1 : ContDiff ℝ 1 η := hη.of_le (by norm_cast)
-  have h_eta_sq_supp : HasCompactSupport (fun y : E => η y ^ 2) := by
+  have h_eta_sq_support : HasCompactSupport (fun y : E => η y ^ 2) := by
     have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
       funext y; ring
     rw [heq]
-    exact hη_supp.mul_right
+    exact hη_support.mul_right
   have h_pair : ∀ i j : Fin d, ∀ x : E,
       DifferentialGeometry.Analysis.Sobolev.diffQuot k h
             (fun y : E => B.a y i j *
@@ -366,9 +366,9 @@ theorem nirenberg_principal_decomposition
     rw [heq_fun]
     exact (((hT1_cont i j).add (hT2_cont i j)).add (hT3_cont i j)).add
       (hT4_cont i j)
-  have hT1_supp : ∀ i j : Fin d, HasCompactSupport (T1 i j) := by
+  have hT1_support : ∀ i j : Fin d, HasCompactSupport (T1 i j) := by
     intro i j
-    have h_factor_supp : HasCompactSupport (fun x : E => (η x)^2) := h_eta_sq_supp
+    have h_factor_support : HasCompactSupport (fun x : E => (η x)^2) := h_eta_sq_support
     change HasCompactSupport (fun x : E =>
       DifferentialGeometry.Analysis.Sobolev.translate k h
           (fun y : E => B.a y i j) x * (η x)^2 *
@@ -379,7 +379,7 @@ theorem nirenberg_principal_decomposition
     have h_step1 : HasCompactSupport (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : E => B.a y i j) x * (η x)^2) :=
-      h_eta_sq_supp.mul_left
+      h_eta_sq_support.mul_left
     have h_step2 : HasCompactSupport (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : E => B.a y i j) x * (η x)^2 *
@@ -387,7 +387,7 @@ theorem nirenberg_principal_decomposition
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x) :=
       h_step1.mul_right
     exact h_step2.mul_right
-  have hT2_supp : ∀ i j : Fin d, HasCompactSupport (T2 i j) := by
+  have hT2_support : ∀ i j : Fin d, HasCompactSupport (T2 i j) := by
     intro i j
     change HasCompactSupport (fun x : E =>
       2 * DifferentialGeometry.Analysis.Sobolev.translate k h
@@ -398,7 +398,7 @@ theorem nirenberg_principal_decomposition
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x)
     have h_step1 : HasCompactSupport (fun x : E =>
         2 * DifferentialGeometry.Analysis.Sobolev.translate k h
-            (fun y : E => B.a y i j) x * (η x)) := hη_supp.mul_left
+            (fun y : E => B.a y i j) x * (η x)) := hη_support.mul_left
     have h_step2 : HasCompactSupport (fun x : E =>
         2 * DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : E => B.a y i j) x * (η x) *
@@ -411,7 +411,7 @@ theorem nirenberg_principal_decomposition
             (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x) :=
       h_step2.mul_right
     exact h_step3.mul_right
-  have hT3_supp : ∀ i j : Fin d, HasCompactSupport (T3 i j) := by
+  have hT3_support : ∀ i j : Fin d, HasCompactSupport (T3 i j) := by
     intro i j
     change HasCompactSupport (fun x : E =>
       DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -422,14 +422,14 @@ theorem nirenberg_principal_decomposition
     have h_step1 : HasCompactSupport (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
             (fun y : E => B.a y i j) x * (η x)^2) :=
-      h_eta_sq_supp.mul_left
+      h_eta_sq_support.mul_left
     have h_step2 : HasCompactSupport (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
             (fun y : E => B.a y i j) x * (η x)^2 *
           ((fderiv ℝ u x) (EuclideanSpace.single i 1))) :=
       h_step1.mul_right
     exact h_step2.mul_right
-  have hT4_supp : ∀ i j : Fin d, HasCompactSupport (T4 i j) := by
+  have hT4_support : ∀ i j : Fin d, HasCompactSupport (T4 i j) := by
     intro i j
     change HasCompactSupport (fun x : E =>
       2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -439,7 +439,7 @@ theorem nirenberg_principal_decomposition
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x)
     have h_step1 : HasCompactSupport (fun x : E =>
         2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
-            (fun y : E => B.a y i j) x * (η x)) := hη_supp.mul_left
+            (fun y : E => B.a y i j) x * (η x)) := hη_support.mul_left
     have h_step2 : HasCompactSupport (fun x : E =>
         2 * DifferentialGeometry.Analysis.Sobolev.diffQuot k h
             (fun y : E => B.a y i j) x * (η x) *
@@ -451,22 +451,22 @@ theorem nirenberg_principal_decomposition
           ((fderiv ℝ u x) (EuclideanSpace.single i 1))) :=
       h_step2.mul_right
     exact h_step3.mul_right
-  have hLHS_supp : ∀ i j : Fin d, HasCompactSupport (LHSint i j) := by
+  have hLHS_support : ∀ i j : Fin d, HasCompactSupport (LHSint i j) := by
     intro i j
     have heq_fun : LHSint i j = (fun x => T1 i j x + T2 i j x + T3 i j x + T4 i j x) := by
       funext x
       exact h_LHS_eq i j x
     rw [heq_fun]
-    exact (((hT1_supp i j).add (hT2_supp i j)).add (hT3_supp i j)).add
-      (hT4_supp i j)
+    exact (((hT1_support i j).add (hT2_support i j)).add (hT3_support i j)).add
+      (hT4_support i j)
   have hT1_int : ∀ i j : Fin d, Integrable (T1 i j) volume := fun i j =>
-    (hT1_cont i j).integrable_of_hasCompactSupport (hT1_supp i j)
+    (hT1_cont i j).integrable_of_hasCompactSupport (hT1_support i j)
   have hT2_int : ∀ i j : Fin d, Integrable (T2 i j) volume := fun i j =>
-    (hT2_cont i j).integrable_of_hasCompactSupport (hT2_supp i j)
+    (hT2_cont i j).integrable_of_hasCompactSupport (hT2_support i j)
   have hT3_int : ∀ i j : Fin d, Integrable (T3 i j) volume := fun i j =>
-    (hT3_cont i j).integrable_of_hasCompactSupport (hT3_supp i j)
+    (hT3_cont i j).integrable_of_hasCompactSupport (hT3_support i j)
   have hT4_int : ∀ i j : Fin d, Integrable (T4 i j) volume := fun i j =>
-    (hT4_cont i j).integrable_of_hasCompactSupport (hT4_supp i j)
+    (hT4_cont i j).integrable_of_hasCompactSupport (hT4_support i j)
   have h_pair_int : ∀ i j : Fin d,
       ∫ x, LHSint i j x ∂(volume : Measure E) =
         ∫ x, T1 i j x ∂(volume : Measure E) +
@@ -564,14 +564,14 @@ private theorem principal_pointwise_bound
     (u : E → ℝ)
     {η : E → ℝ}
     (k : Fin d) {h : ℝ}
-    (hh_supp : Metric.cthickening |h| (tsupport η) ⊆ Ω) (x : E) :
+    (hh_support : Metric.cthickening |h| (tsupport η) ⊆ Ω) (x : E) :
     B.lam * (η x)^2 *
       ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2 ≤
       (η x)^2 * shiftedPrincipal B u k h x := by
   by_cases hx : x ∈ tsupport η
   · have hx_translate : x + h • EuclideanSpace.single k 1 ∈ Ω := by
-      apply hh_supp
+      apply hh_support
       refine Metric.mem_cthickening_of_dist_le _ x |h| (tsupport η) hx ?_
       have hsing_norm :
           ‖(EuclideanSpace.single k (1 : ℝ) : E)‖ = 1 := by simp
@@ -611,9 +611,9 @@ private theorem principal_pointwise_bound
 theorem principal_term_ge_lambda_norm_sq
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin d) {h : ℝ}
-    (hh_supp : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
+    (hh_support : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
     B.lam * ∫ x, (η x)^2 * (∑ i : Fin d,
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2)
@@ -628,11 +628,11 @@ theorem principal_term_ge_lambda_norm_sq
         ∂(volume : Measure E) := by
   classical
   have hu_C1 : ContDiff ℝ 1 u := hu.of_le (by norm_cast)
-  have h_eta_sq_supp : HasCompactSupport (fun y : E => η y ^ 2) := by
+  have h_eta_sq_support : HasCompactSupport (fun y : E => η y ^ 2) := by
     have heq : (fun y : E => η y ^ 2) = (fun y : E => η y * η y) := by
       funext y; ring
     rw [heq]
-    exact hη_supp.mul_right
+    exact hη_support.mul_right
   have h_diffQuot_partial_u_cont : ∀ i : Fin d,
       Continuous (DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1))) := by
@@ -661,15 +661,15 @@ theorem principal_term_ge_lambda_norm_sq
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2) := by
     refine (hη.continuous.pow 2).mul ?_
     exact continuous_finsetSum _ (fun i _ => (h_diffQuot_partial_u_cont i).pow 2)
-  have h_LHS_supp : HasCompactSupport (fun x : E =>
+  have h_LHS_support : HasCompactSupport (fun x : E =>
       (η x)^2 * ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2) :=
-    h_eta_sq_supp.mul_right
+    h_eta_sq_support.mul_right
   have h_LHS_int : Integrable (fun x : E =>
       (η x)^2 * ∑ i : Fin d, DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2)
         volume :=
-    h_LHS_cont.integrable_of_hasCompactSupport h_LHS_supp
+    h_LHS_cont.integrable_of_hasCompactSupport h_LHS_support
   have hT1_cont : ∀ i j : Fin d, Continuous (fun x : E =>
       DifferentialGeometry.Analysis.Sobolev.translate k h
           (fun y : E => B.a y i j) x * (η x)^2 *
@@ -680,7 +680,7 @@ theorem principal_term_ge_lambda_norm_sq
     intro i j
     refine ((((h_translate_a_cont i j).mul (hη.continuous.pow 2)).mul
       (h_diffQuot_partial_u_cont i)).mul (h_diffQuot_partial_u_cont j))
-  have hT1_supp : ∀ i j : Fin d, HasCompactSupport (fun x : E =>
+  have hT1_support : ∀ i j : Fin d, HasCompactSupport (fun x : E =>
       DifferentialGeometry.Analysis.Sobolev.translate k h
           (fun y : E => B.a y i j) x * (η x)^2 *
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -691,7 +691,7 @@ theorem principal_term_ge_lambda_norm_sq
     have h_step1 : HasCompactSupport (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : E => B.a y i j) x * (η x)^2) :=
-      h_eta_sq_supp.mul_left
+      h_eta_sq_support.mul_left
     have h_step2 : HasCompactSupport (fun x : E =>
         DifferentialGeometry.Analysis.Sobolev.translate k h
             (fun y : E => B.a y i j) x * (η x)^2 *
@@ -707,7 +707,7 @@ theorem principal_term_ge_lambda_norm_sq
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single j 1)) x)
         volume := fun i j =>
-    (hT1_cont i j).integrable_of_hasCompactSupport (hT1_supp i j)
+    (hT1_cont i j).integrable_of_hasCompactSupport (hT1_support i j)
   have h_shiftedPrincipal_cont :
       Continuous (fun x : E => (η x)^2 * shiftedPrincipal B u k h x) := by
     refine (hη.continuous.pow 2).mul ?_
@@ -718,20 +718,20 @@ theorem principal_term_ge_lambda_norm_sq
     intro j _
     refine ((h_translate_a_cont i j).mul (h_diffQuot_partial_u_cont i)).mul
       (h_diffQuot_partial_u_cont j)
-  have h_shiftedPrincipal_supp :
+  have h_shiftedPrincipal_support :
       HasCompactSupport (fun x : E => (η x)^2 * shiftedPrincipal B u k h x) :=
-    h_eta_sq_supp.mul_right
+    h_eta_sq_support.mul_right
   have h_shiftedPrincipal_int :
       Integrable (fun x : E => (η x)^2 * shiftedPrincipal B u k h x) volume :=
     h_shiftedPrincipal_cont.integrable_of_hasCompactSupport
-      h_shiftedPrincipal_supp
+      h_shiftedPrincipal_support
   have h_pointwise_ineq : ∀ x : E,
       B.lam * ((η x)^2 * (∑ i : Fin d,
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2)) ≤
         (η x)^2 * shiftedPrincipal B u k h x := by
     intro x
-    have hpw := principal_pointwise_bound (d := d) B u (η := η) k hh_supp x
+    have hpw := principal_pointwise_bound (d := d) B u (η := η) k hh_support x
     have h_lhs_eq :
         B.lam * ((η x)^2 * (∑ i : Fin d,
           DifferentialGeometry.Analysis.Sobolev.diffQuot k h
@@ -846,9 +846,9 @@ theorem nirenberg_master_inequality
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ}
     (h_weak : B.IsSmoothWeakSolution u f)
-    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_supp : HasCompactSupport η)
+    {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hη_support : HasCompactSupport η)
     (k : Fin d) {h : ℝ} (hh : h ≠ 0)
-    (hh_supp : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
+    (hh_support : Metric.cthickening |h| (tsupport η) ⊆ Ω) :
     B.lam * ∫ x, (η x)^2 * (∑ i : Fin d,
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2)
@@ -880,7 +880,7 @@ theorem nirenberg_master_inequality
   classical
   have hu : ContDiff ℝ (⊤ : ℕ∞) u := h_weak.1
   have h_sub :=
-    nirenberg_substitution_identity (d := d) B h_weak hη hη_supp k hh hh_supp
+    nirenberg_substitution_identity (d := d) B h_weak hη hη_support k hh hh_support
   set S : ℝ := ∑ i : Fin d, ∑ j : Fin d, ∫ x,
       DifferentialGeometry.Analysis.Sobolev.diffQuot k h
           (fun y : E => B.a y i j *
@@ -926,13 +926,13 @@ theorem nirenberg_master_inequality
         DifferentialGeometry.Analysis.Sobolev.diffQuot k h u x
     ∂(volume : Measure E) with hC3_def
   have h_decomp : S = P + C1 + C2 + C3 :=
-    nirenberg_principal_decomposition (d := d) B hu hη hη_supp k hh
+    nirenberg_principal_decomposition (d := d) B hu hη hη_support k hh
   set L : ℝ := B.lam * ∫ x, (η x)^2 * (∑ i : Fin d,
       DifferentialGeometry.Analysis.Sobolev.diffQuot k h
         (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1)) x ^ 2)
     ∂(volume : Measure E) with hL_def
   have h_coerc : L ≤ P :=
-    principal_term_ge_lambda_norm_sq (d := d) B hu hη hη_supp k hh_supp
+    principal_term_ge_lambda_norm_sq (d := d) B hu hη hη_support k hh_support
   have h_S_eq : S = Q - R := by
     have := h_sub_S
     linarith

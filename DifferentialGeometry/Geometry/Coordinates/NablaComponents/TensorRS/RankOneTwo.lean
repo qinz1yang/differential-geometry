@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Coordinates.Tensor
+import DifferentialGeometry.Geometry.Coordinates.Fields.Tensor
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TensorRS.Formula
 
 set_option autoImplicit false

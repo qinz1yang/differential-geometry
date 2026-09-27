@@ -1,0 +1,32 @@
+--- before
++++ after
+@@ -6,0 +7 @@
++import DifferentialGeometry.External.TauCeti.Geometry.Manifold.LocallyFlat.Smooth
+@@ -239,2 +240 @@
+-    (h.equiv.symm.contDiff.contMDiff.comp_contMDiffOn
+-      (h.codChart.contMDiffOn_extend h.codChart_mem_maximalAtlas)).contDiffOn
++    h.contMDiffOn_equiv_symm_extend_codChart.contDiffOn
+@@ -243,8 +243 @@
+-    have hy' : y ∈ (h.domChart.extend I).source := by rwa [h.domChart.extend_source]
+-    have hwritten := h.writtenInCharts ((h.domChart.extend I).map_source hy')
+-    change (h.codChart.extend 𝓘(ℝ, V))
+-      (f ((h.domChart.extend I).symm ((h.domChart.extend I) y))) =
+-        h.equiv ((h.domChart.extend I) y, 0) at hwritten
+-    rw [(h.domChart.extend I).left_inv hy'] at hwritten
+-    change h.equiv.symm ((h.codChart.extend 𝓘(ℝ, V)) (f y)) = _
+-    rw [hwritten, ContinuousLinearEquiv.symm_apply_apply]
++    exact h.equiv_symm_extend_codChart_apply hy
+@@ -435,2 +428 @@
+-    (h.equiv.symm.contDiff.contMDiff.comp_contMDiffOn
+-      (h.codChart.contMDiffOn_extend h.codChart_mem_maximalAtlas)).contDiffOn
++    h.contMDiffOn_equiv_symm_extend_codChart.contDiffOn
+@@ -439,8 +431 @@
+-    have hy' : y ∈ (h.domChart.extend I).source := by rwa [h.domChart.extend_source]
+-    have hwritten := h.writtenInCharts ((h.domChart.extend I).map_source hy')
+-    change (h.codChart.extend 𝓘(ℝ, V))
+-      (e (p, (h.domChart.extend I).symm ((h.domChart.extend I) y))) =
+-        h.equiv ((h.domChart.extend I) y, 0) at hwritten
+-    rw [(h.domChart.extend I).left_inv hy'] at hwritten
+-    change h.equiv.symm ((h.codChart.extend 𝓘(ℝ, V)) (e (p, y))) = _
+-    rw [hwritten, ContinuousLinearEquiv.symm_apply_apply]
++    exact h.equiv_symm_extend_codChart_apply hy

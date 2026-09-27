@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Metric.Basic
-import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol
-import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.RicciSecondOrderPart
-import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.DeTurckCorrectionPrincipalSymbolRemainder
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.LocalFormula
+import DifferentialGeometry.Analysis.Parabolic.PrincipalSymbol.Defs
+import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Symbol.SecondOrderPart
+import DifferentialGeometry.Analysis.Parabolic.DeTurckLinearization.PrincipalSymbol.Remainder
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Local.Formula
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 
@@ -28,7 +28,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 def chartPushforwardFrameVec (α : M) (i : Fin (Module.finrank ℝ E)) (x : M) :
     TangentSpace I x :=
-  (trivializationAt E (TangentSpace I) α).symmL ℝ x (chartModelBasis E i)
+  (trivializationAt E (TangentSpace I) α).symmL ℝ x (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)
 
 def chartFComponentOnE
     (F : SmoothRiemannianMetric I M →
@@ -52,15 +52,15 @@ def IsMetricPerturbationFamily
     (∀ (i j p : Fin (Module.finrank ℝ E)) {y : E},
         y ∈ interior (extChartAt I α).target →
         HasDerivAt
-          (fun s : ℝ => partialDeriv (E := E) p (chartGramOnE (I := I) (gfam s) α i j) y)
-          (partialDeriv (E := E) p (h i j) y) 0) ∧
+          (fun s : ℝ => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (chartGramOnE (I := I) (gfam s) α i j) y)
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h i j) y) 0) ∧
     (∀ (i j p q : Fin (Module.finrank ℝ E)) {y : E},
         y ∈ interior (extChartAt I α).target →
         HasDerivAt
           (fun s : ℝ =>
-            partialDeriv (E := E) p
-              (partialDeriv (E := E) q (chartGramOnE (I := I) (gfam s) α i j)) y)
-          (partialDeriv (E := E) p (partialDeriv (E := E) q (h i j)) y) 0)
+            DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
+              (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (chartGramOnE (I := I) (gfam s) α i j)) y)
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q (h i j)) y) 0)
 
 def IsFirstOrderInPerturbation
     (R : ChartMetricPerturbation E → M → Fin (Module.finrank ℝ E) →
@@ -68,7 +68,7 @@ def IsFirstOrderInPerturbation
   ∀ (α : M) (h : ChartMetricPerturbation E) (i j : Fin (Module.finrank ℝ E))
       {y : E}, y ∈ interior (extChartAt I α).target →
       (∀ a b, h a b y = 0) →
-      (∀ p a b, partialDeriv (E := E) p (h a b) y = 0) →
+      (∀ p a b, DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p (h a b) y = 0) →
       R h α i j y = 0
 
 def IsChartLinearizationSecondOrderPart
@@ -94,28 +94,28 @@ def symbolTestPerturbation (x : M) (α : M) (ξ : E)
   toFun c d := fun y =>
     (1 / 2 : ℝ) *
       ((∑ a : Fin (Module.finrank ℝ E),
-          (chartModelBasis E).repr ξ a *
-            (chartModelBasis E).repr (y - extChartAt I α x) a)) ^ 2 *
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (y - extChartAt I α x) a)) ^ 2 *
       formComp (I := I) x t c d
-  symm' c d y := by rw [formComp_symm (I := I) x t ht c d]
-  smooth' c d := by
+  symmetric c d y := by rw [formComp_symm (I := I) x t ht c d]
+  contDiff c d := by
     have hsum : ContDiff ℝ ∞ (fun y : E =>
         ∑ a : Fin (Module.finrank ℝ E),
-          (chartModelBasis E).repr ξ a *
-            (chartModelBasis E).repr (y - extChartAt I α x) a) := by
+          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a *
+            (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (y - extChartAt I α x) a) := by
       refine ContDiff.sum (fun a _ => ?_)
       refine contDiff_const.mul ?_
-      have hlin : (fun y : E => (chartModelBasis E).repr (y - extChartAt I α x) a) =
-          fun y : E => (chartModelBasis E).coord a (y - extChartAt I α x) := by
+      have hlin : (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (y - extChartAt I α x) a) =
+          fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a (y - extChartAt I α x) := by
         funext y; rw [Module.Basis.coord_apply]
       rw [hlin]
-      exact (((chartModelBasis E).coord a).toContinuousLinearMap.contDiff).comp
+      exact (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a).toContinuousLinearMap.contDiff).comp
         (contDiff_id.sub contDiff_const)
     exact ContDiff.mul (ContDiff.mul contDiff_const (hsum.pow 2)) contDiff_const
 
 private def testLinear (x α : M) (ξ : E) (y : E) : ℝ :=
   ∑ a : Fin (Module.finrank ℝ E),
-    (chartModelBasis E).repr ξ a * (chartModelBasis E).repr (y - extChartAt I α x) a
+    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr ξ a * (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (y - extChartAt I α x) a
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
     [BoundarylessManifold I M] in
@@ -145,11 +145,11 @@ private lemma testLinear_differentiableAt (x α : M) (ξ : E) (y : E) :
     DifferentiableAt ℝ (testLinear (I := I) x α ξ) y := by
   refine DifferentiableAt.fun_sum (fun a _ => ?_)
   refine (differentiableAt_const _).mul ?_
-  have hlin : (fun y : E => (chartModelBasis E).repr (y - extChartAt I α x) a) =
-      fun y : E => (chartModelBasis E).coord a (y - extChartAt I α x) := by
+  have hlin : (fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).repr (y - extChartAt I α x) a) =
+      fun y : E => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a (y - extChartAt I α x) := by
     funext z; rw [Module.Basis.coord_apply]
   rw [hlin]
-  exact (((chartModelBasis E).coord a).toContinuousLinearMap.differentiableAt).comp y
+  exact (((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).coord a).toContinuousLinearMap.differentiableAt).comp y
     ((differentiableAt_id).sub (differentiableAt_const _))
 
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
@@ -157,7 +157,7 @@ omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
 lemma partialDeriv_symbolTestPerturbation_self (x α : M) (ξ : E)
     (t : TangentSpace I x →ₗ[ℝ] TangentSpace I x →ₗ[ℝ] ℝ) (ht : ∀ v w, t v w = t w v)
     (p c d : Fin (Module.finrank ℝ E)) :
-    partialDeriv (E := E) p
+    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p
         (symbolTestPerturbation (I := I) x α ξ t ht c d) (extChartAt I α x) = 0 := by
   have hfun : (symbolTestPerturbation (I := I) x α ξ t ht c d) =
       fun y => ((1 / 2 : ℝ) * formComp (I := I) x t c d) *
@@ -188,8 +188,8 @@ def IsPrincipalSymbolOfSecondOrderPart
       (∀ v w, t v w = t w v) →
         (∀ ht : ∀ v w, t v w = t w v, ∀ i j : Fin (Module.finrank ℝ E),
             P (symbolTestPerturbation (I := I) x x ξ t ht) x i j (extChartAt I x x) =
-              - (σ x ξ t) (centeredChartTangentBasis (I := I) x i)
-                (centeredChartTangentBasis (I := I) x j)) ∧
+              - (σ x ξ t) (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+                (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j)) ∧
           σ x ξ t =
               (- DifferentialGeometry.PDE.DeTurck.metricCovectorNormSq (I := I) g₀ x ξ) •
                 t ∧
@@ -257,14 +257,14 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
   rintro ⟨σ, P, ⟨R, hR_first, hsplit⟩, hσ⟩
   set hξt : ChartMetricPerturbation E := symbolTestPerturbation (I := I) x x ξ t ht with hξt_def
   have hy_int : extChartAt I x x ∈ interior (extChartAt I x).target := by
-    have hx_src : x ∈ (extChartAt I x).source := by
+    have hx_source : x ∈ (extChartAt I x).source := by
       rw [extChartAt_source_eq_chartAt_source (I := I)]; exact mem_chart_source H x
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) x
-      ((extChartAt I x).map_source hx_src)
+      ((extChartAt I x).map_source hx_source)
   obtain ⟨gfam, hfam0, hfam_deriv, hfam_smooth, hfam_jet1, hfam_jet2⟩ := hfam hξt
   have hσ_zero : ∀ i j : Fin (Module.finrank ℝ E),
-      (σ x ξ t) (centeredChartTangentBasis (I := I) x i)
-        (centeredChartTangentBasis (I := I) x j) = 0 := by
+      (σ x ξ t) (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x i)
+        (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x j) = 0 := by
     intro i j
     have hsymbol := (hσ x ξ hξ t ht).1 ht i j
     have hderiv0 :
@@ -288,8 +288,8 @@ theorem not_hasPrincipalSymbol_zero_operator [I.Boundaryless]
     rw [hP0] at hsymbol
     linarith [hsymbol]
   have hσt_zero : σ x ξ t = 0 := by
-    refine LinearMap.ext_basis (centeredChartTangentBasis (I := I) x)
-      (centeredChartTangentBasis (I := I) x) (fun i j => ?_)
+    refine LinearMap.ext_basis (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x)
+      (DifferentialGeometry.Tensor.Coordinates.centeredChartTangentBasis (I := I) x) (fun i j => ?_)
     exact hσ_zero i j
   have hσt_isotropic := (hσ x ξ hξ t ht).2.1
   rw [hσt_zero] at hσt_isotropic

@@ -292,6 +292,24 @@ def openInterval (a b t₀ : Real) (ht₀ : t₀ ∈ Set.Ioo a b) : RealTimeInte
     intro t ht
     exact Ioo_mem_nhds ht.1 ht.2
 
+def ancient (T : Real) : RealTimeInterval :=
+  ofEndpoints TimeEndpoint.negInf (TimeEndpoint.finite T) false false (T - 1) (by
+    simp [TimeEndpoint.lowerMem, TimeEndpoint.upperMem])
+
+@[simp] theorem ancient_carrier (T : Real) :
+    (ancient T).carrier = Set.Iio T := by
+  ext t
+  simp [ancient, ofEndpoints, TimeEndpoint.lowerMem, TimeEndpoint.upperMem]
+
+@[simp] theorem ancient_regular (T : Real) :
+    (ancient T).regular = Set.Iio T := by
+  ext t
+  simp [ancient, ofEndpoints, TimeEndpoint.lowerLt, TimeEndpoint.upperLt]
+
+@[simp] theorem ancient_initial (T : Real) :
+    (ancient T).initial = T - 1 := by
+  rfl
+
 noncomputable def openWindowLeft (a t₀ : Real) (n : Nat) : Real :=
   a + (t₀ - a) / ((n : Real) + 2)
 

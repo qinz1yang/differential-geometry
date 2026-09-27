@@ -1,14 +1,14 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.SolutionHeatEquation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.SolutionHeatEquation
 
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Complete
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.NormRegularity
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.QuadraticBound
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Regularity.Norm
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Estimate.QuadraticForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Foundations.Defs
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.RicciTowerTrace
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CurvatureTowerBridge
-import DifferentialGeometry.Geometry.Operator.GradientRegularity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Ricci.Trace
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Curvature.TowerBridge
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -21,7 +21,7 @@ noncomputable section
 universe u uE uH
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open Bundle Set DifferentialGeometry.Tensor0SBundle
 
@@ -337,21 +337,21 @@ private theorem exists_trunc_tower
       K := K
       α := aScale
       T := T
-      hT := hT
-      hc := hc
-      hK := hK
-      hα := haScale
-      hslab := hslab
-      hregular := hregular
-      hw_nonneg := by
+      time_pos := hT
+      reactionConstant_nonneg := hc
+      curvatureBound_pos := hK
+      scale_nonneg := haScale
+      time_window_subset := hslab
+      regular_on_positive_time := hregular
+      quantity_nonneg := by
         intro k s _hs y
         exact hw'_nonneg k s y
-      hw0_bound := by
+      initial_order_bound := by
         intro s hs y
         rw [hw'_val_le 0 (Nat.zero_le top)]
         exact hw0_bound s hs y
-      hTK := hTK
-      hheat := by
+      time_le_scale_div_curvatureBound := hTK
+      towerHeatBound := by
         intro k tau y
         rcases lt_trichotomy k top with hlt | heq | hgt
         · have hk : k ≤ top := hlt.le
@@ -388,7 +388,7 @@ private theorem exists_trunc_tower
               simp
             rw [hzero]
             norm_num
-      hLap := by
+      heatOperator_eq := by
         intro k s hs hspos y
         by_cases hk : k ≤ top
         · have hfun : w' k s = w k s := by
@@ -403,7 +403,7 @@ private theorem exists_trunc_tower
             heatOperatorWithDrift_zero_drift, heatOperator_eq_laplacianAt,
             laplacianAt_eq]
           exact laplacian_const (I := I) (G.connection s) (G.metric s) 0 y
-      hw_cont := by
+      continuous := by
         intro k
         by_cases hk : k ≤ top
         · have hfun : (fun p : Real × M ↦ w' k p.1 p.2) =
@@ -418,7 +418,7 @@ private theorem exists_trunc_tower
             rw [hw'_val_gt k hk]
           rw [hfun]
           exact continuousOn_const
-      hw_space := by
+      spatial_differentiable := by
         intro k s hs hspos y
         by_cases hk : k ≤ top
         · have hfun : w' k s = w k s := by
@@ -431,7 +431,7 @@ private theorem exists_trunc_tower
             rw [hw'_val_gt k hk]
           rw [hfun]
           exact mdifferentiableAt_const
-      hw_grad := by
+      gradient_differentiable := by
         intro k s hs hspos y
         by_cases hk : k ≤ top
         · have hfun : w' k s = w k s := by
@@ -674,31 +674,31 @@ theorem movingRm_of_bound
     dsimp only [t0]
     linarith
   have hT0Psi : t0 < psi := hT0Beta.trans_le hbetaPsi
-  have hpsiReg : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
-  obtain ⟨a, omega, hpsiWin, hwinReg⟩ := D.exists_Icc_regular hpsiReg
+  have hpsiRegularity : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
+  obtain ⟨a, omega, hpsiWin, hwinRegularity⟩ := D.exists_Icc_regular hpsiRegularity
   have hpsiOmega : psi < omega := hpsiWin.2
   have halphaOmega : alpha < omega := halphaPsi.trans hpsiOmega
   let Dco := RealTimeInterval.closedOpen alpha omega halphaOmega
   let Sco : SolutionOn (I := I) (M := F.M) Dco := F.S.timeRestrict Dco
   have hSco : IsSolutionOn (I := I) Sco := by
-    apply isSoln_timeRestrict (I := I) F.isSolution
+    apply isSolutionOn_timeRestrict (I := I) F.isSolution
     · intro s hs
       change s ∈ Set.Ico alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hslab ⟨hs.1, hspsi⟩
-      · exact D.regular_subset (hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩)
+      · exact D.regular_subset (hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩)
     · intro s hs
       change s ∈ Set.Ioo alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hreg ⟨hs.1, hspsi⟩
-      · exact hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩
+      · exact hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩
   have hT0Omega : t0 < omega := hT0Psi.trans hpsiOmega
   have hShift : alpha - t0 < omega - t0 := sub_lt_sub_right halphaOmega t0
   let DShift := RealTimeInterval.closedOpen (alpha - t0) (omega - t0) hShift
   let SShift : SolutionOn (I := I) (M := F.M) DShift :=
     (Sco.timeShift t0).timeRestrict DShift
   have hSShift : IsSolutionOn (I := I) SShift := by
-    apply isSoln_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
+    apply isSolutionOn_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
     · intro s hs
       change s + t0 ∈ Set.Ico alpha omega
       change s ∈ Set.Ico (alpha - t0) (omega - t0) at hs
@@ -712,7 +712,7 @@ theorem movingRm_of_bound
   let S0 : SolutionOn (I := I) (M := F.M) D0 := SShift.timeRestrict D0
   have hS0 : IsSolutionOn (I := I) S0 := by
     simpa only [S0, D0, DShift] using
-      (isSoln_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
+      (isSolutionOn_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
   let d : Nat := Module.finrank Real E
   let levelC : Nat → Real := fun k ↦ rmTowerCost d k
   have hHeat (k : Nat) :
@@ -720,7 +720,7 @@ theorem movingRm_of_bound
         (nablaKRm04NormSqIntrinsic (I := I) S0)
         (nablaKNormLap (I := I) S0) (levelC k) k := by
     simpa only [S0, D0, DShift, levelC, d] using
-      (towerHeatSol_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
+      (towerHeatSolution_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
   let delta : Real := (beta - alpha) / 2
   have hdeltaEq : delta = beta - t0 := by
     dsimp only [delta, t0]
@@ -934,7 +934,7 @@ theorem movingRm_of_bound
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
-    exact exists_shi_barrier_cutoff_data_of_solution
+    exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
   intro k hk t ht x
@@ -1041,31 +1041,31 @@ theorem movingShi_of_bound
     dsimp only [t0]
     linarith
   have hT0Psi : t0 < psi := hT0Beta.trans_le hbetaPsi
-  have hpsiReg : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
-  obtain ⟨a, omega, hpsiWin, hwinReg⟩ := D.exists_Icc_regular hpsiReg
+  have hpsiRegularity : psi ∈ D.regular := hreg ⟨halphaPsi, le_rfl⟩
+  obtain ⟨a, omega, hpsiWin, hwinRegularity⟩ := D.exists_Icc_regular hpsiRegularity
   have hpsiOmega : psi < omega := hpsiWin.2
   have halphaOmega : alpha < omega := halphaPsi.trans hpsiOmega
   let Dco := RealTimeInterval.closedOpen alpha omega halphaOmega
   let Sco : SolutionOn (I := I) (M := F.M) Dco := F.S.timeRestrict Dco
   have hSco : IsSolutionOn (I := I) Sco := by
-    apply isSoln_timeRestrict (I := I) F.isSolution
+    apply isSolutionOn_timeRestrict (I := I) F.isSolution
     · intro s hs
       change s ∈ Set.Ico alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hslab ⟨hs.1, hspsi⟩
-      · exact D.regular_subset (hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩)
+      · exact D.regular_subset (hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩)
     · intro s hs
       change s ∈ Set.Ioo alpha omega at hs
       by_cases hspsi : s ≤ psi
       · exact hreg ⟨hs.1, hspsi⟩
-      · exact hwinReg ⟨by linarith [hpsiWin.1], hs.2.le⟩
+      · exact hwinRegularity ⟨by linarith [hpsiWin.1], hs.2.le⟩
   have hT0Omega : t0 < omega := hT0Psi.trans hpsiOmega
   have hShift : alpha - t0 < omega - t0 := sub_lt_sub_right halphaOmega t0
   let DShift := RealTimeInterval.closedOpen (alpha - t0) (omega - t0) hShift
   let SShift : SolutionOn (I := I) (M := F.M) DShift :=
     (Sco.timeShift t0).timeRestrict DShift
   have hSShift : IsSolutionOn (I := I) SShift := by
-    apply isSoln_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
+    apply isSolutionOn_timeRestrict (I := I) (isSolutionOn_timeShift (I := I) hSco t0)
     · intro s hs
       change s + t0 ∈ Set.Ico alpha omega
       change s ∈ Set.Ico (alpha - t0) (omega - t0) at hs
@@ -1079,7 +1079,7 @@ theorem movingShi_of_bound
   let S0 : SolutionOn (I := I) (M := F.M) D0 := SShift.timeRestrict D0
   have hS0 : IsSolutionOn (I := I) S0 := by
     simpa only [S0, D0, DShift] using
-      (isSoln_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
+      (isSolutionOn_tailRestrict (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega)
   let d : Nat := Module.finrank Real E
   let levelC : Nat → Real := fun k ↦ rmTowerCost d k
   have hHeat (k : Nat) :
@@ -1087,7 +1087,7 @@ theorem movingShi_of_bound
         (nablaKRm04NormSqIntrinsic (I := I) S0)
         (nablaKNormLap (I := I) S0) (levelC k) k := by
     simpa only [S0, D0, DShift, levelC, d] using
-      (towerHeatSol_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
+      (towerHeatSolution_any (I := I) hSShift (sub_neg.mpr halphaT0) hZeroOmega k)
   let delta : Real := (beta - alpha) / 2
   have hdeltaEq : delta = beta - t0 := by
     dsimp only [delta, t0]
@@ -1301,7 +1301,7 @@ theorem movingShi_of_bound
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
       Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
-    exact exists_shi_barrier_cutoff_data_of_solution
+    exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
   intro k hk _i t ht x _hx
@@ -1412,14 +1412,14 @@ theorem movingShi_complete
   exact movingShi_of_bound (I := I) F halphaBeta hbetaPsi hslab hreg
     hcomplete hC hcurv N
 
-namespace CurvBoundInput
+namespace FlowCurvatureBoundedOnCompactWindows
 
 theorem movingShi_open
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = RealTimeInterval.openInterval a b 0 h0)
-    (hcomplete : CompleteInput (I := I) X)
-    (hcurv : CurvBoundInput (I := I) X) :
+    (hcomplete : FlowMetricComplete (I := I) X)
+    (hcurv : FlowCurvatureBoundedOnCompactWindows (I := I) X) :
     ∀ n N : Nat, ∃ KShi : Real, 0 <= KShi ∧
       ∀ k : Nat,
         letI : TopologicalSpace (X.term k).M := (X.term k).topology
@@ -1485,8 +1485,8 @@ noncomputable def atZeroGeomOpen
     {a b : Real} (h0 : (0 : Real) ∈ Set.Ioo a b)
     (X : PointedFlowSeq.{u, uE, uH} (I := I))
     (hD : X.D = RealTimeInterval.openInterval a b 0 h0)
-    (hcomplete : CompleteInput (I := I) X)
-    (hcurv : CurvBoundInput (I := I) X) :
+    (hcomplete : FlowMetricComplete (I := I) X)
+    (hcurv : FlowCurvatureBoundedOnCompactWindows (I := I) X) :
     SeqBoundedGeometry (I := I) (X.atZero (I := I)) := by
   classical
   let alpha := RealTimeInterval.openWindowLeft a 0 1
@@ -1570,6 +1570,6 @@ noncomputable def atZeroGeomOpen
   with_unfolding_all
     exact hbound
 
-end CurvBoundInput
-end HCGCompactness
+end FlowCurvatureBoundedOnCompactWindows
+end CheegerGromovCompactness
 end DifferentialGeometry

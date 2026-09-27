@@ -1,0 +1,1 @@
+import DifferentialGeometry.Geometry.Metric.Distance.CompactMinimizer

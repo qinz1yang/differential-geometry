@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Basic
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Open.Convergence
 
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Equation
 open DifferentialGeometry.PDE.RicciFlow
@@ -12,7 +12,7 @@ open Set Function Filter Bundle Manifold TopologicalSpace
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
   [FiniteDimensional Real E]
@@ -24,17 +24,17 @@ variable {P : PointedRiemannianManifold (I := I)}
 variable {subseq : Nat -> Nat}
 variable (Φ : PointedCGHMaps (I := I) X P subseq)
 
-namespace OpenConvOut
+namespace OpenMetricConvergenceData
 
 theorem gInf_pde
     {R : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
       letI : IsManifold I ∞ P.M := P.smooth
       SmoothRiemannianMetric I P.M}
-    {bf : BumpFamily (I := I) Φ} {hsrc : SrcSigma Φ} {htgt : TgtSigma Φ}
+    {bf : BumpFamily (I := I) Φ} {hsrc : SourceIsSigmaCompact Φ} {htgt : TargetIsSigmaCompact Φ}
     {a b t₀ : Real} (ht₀ : t₀ ∈ Set.Ioo a b)
     (hD : X.D = RealTimeInterval.openInterval a b t₀ ht₀)
-    (co : OpenConvOut (I := I) Φ R bf hsrc htgt a b t₀)
+    (co : OpenMetricConvergenceData (I := I) Φ R bf hsrc htgt a b t₀)
     (cLow : Nat -> Real) (hcLow : ∀ n, 0 < cLow n)
     (hbound : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
@@ -54,7 +54,7 @@ theorem gInf_pde
               sourceDomCharted (I := I) Φ k
             letI : IsManifold I ∞ (SourceDomain (I := I) Φ k) :=
               sourceDomSmooth (I := I) Φ k
-            (srcMetric (I := I) Φ hsrc htgt k t).inner y v v)
+            (sourceMetric (I := I) Φ hsrc htgt k t).inner y v v)
     (hcovTail : letI : TopologicalSpace P.M := P.topology
         letI : ChartedSpace H P.M := P.charted
         letI : T2Space P.M := P.t2
@@ -90,14 +90,14 @@ theorem gInf_pde
     intro s hs
     have hsOpen := RealTimeInterval.openWindow_subset ht₀ n hs
     simpa only [hD, RealTimeInterval.openInterval] using hsOpen
-  have hd := ConvOut.gInf_pde (I := I) (Φ := Φ) R bf hsrc htgt
+  have hd := FlowMetricConvergenceData.gInf_pde (I := I) (Φ := Φ) R bf hsrc htgt
     (RealTimeInterval.openWindowLeft a t₀ n)
     (RealTimeInterval.openWindowRight b t₀ n) hwin (cLow n) (hcLow n)
     (fun k s hs => hbound n k s hs) (fun q => hcovTail n q)
-    (OpenConvOut.atWindow Φ co n) x v w htWin
+    (OpenMetricConvergenceData.atWindow Φ co n) x v w htWin
   exact hd.hasDerivAt hn
 
-end OpenConvOut
+end OpenMetricConvergenceData
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

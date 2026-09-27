@@ -86,7 +86,7 @@ theorem nonzeroLaplacianEigenvalueSet_finite_below
       rcases h_lam_S with ⟨μ, hμ_lt, hlam_eq⟩
       have hμ_pos : 0 < μ.val := nonzeroResolventEigenvalue_pos μ
       have hμ_le_one : μ.val ≤ 1 := nonzeroResolventEigenvalue_le_one μ
-      have hlam_pos : 0 < lam := by
+      have ellipticity_pos : 0 < lam := by
         rw [← hlam_eq]
         unfold laplacianEigenvalueOf
         have h_num_pos : 0 < 1 - μ.val := by linarith
@@ -359,9 +359,6 @@ theorem laplacianEigenvalueAscending_tendsto_atTop_of_infinite
     simp only [Fintype.card_fin, Fintype.card_coe] at h_card
     exact h_card
   omega
-
-example (g : SmoothRiemannianMetric I M) : ℕ → ℝ :=
-  laplacianEigenvalueAscending (I := I) (M := M) g
 
 end Laplacian
 end Analysis

@@ -15,7 +15,6 @@ namespace DifferentialGeometry
 namespace Integral
 namespace L2
 
-open DifferentialGeometry.Integral.Measure
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [Module.Finite ℝ E]
@@ -43,8 +42,8 @@ theorem tensorInnerPointwise_0s_eq_sum
         ∑ j : Fin s → Fin (Module.finrank ℝ E),
           (∏ a : Fin s,
               (gramMatrixAt (I := I) (M := M) g x)⁻¹ (i a) (j a)) *
-            S (fun a => (chartModelBasis E) (i a)) *
-              T (fun a => (chartModelBasis E) (j a)) := by
+            S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a)) *
+              T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a)) := by
   classical
   induction s with
   | zero =>
@@ -52,7 +51,7 @@ theorem tensorInnerPointwise_0s_eq_sum
       rw [Finset.sum_eq_single (fun a => Fin.elim0 a)]
       · rw [Finset.sum_eq_single (fun a => Fin.elim0 a)]
         · have hSarg :
-              (fun a => (chartModelBasis E)
+              (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                   ((fun a : Fin 0 => Fin.elim0 a) a)) =
                 (fun i : Fin 0 => Fin.elim0 i) :=
             funext fun a => Fin.elim0 a
@@ -78,17 +77,17 @@ theorem tensorInnerPointwise_0s_eq_sum
           ∀ p q : Fin n,
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ p q *
                 covariantTensorInnerPointwise (I := I) (M := M) s g x
-                  (S.curryLeft ((chartModelBasis E) p))
-                  (T.curryLeft ((chartModelBasis E) q))
+                  (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p))
+                  (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q))
               = ∑ i : Fin s → Fin n,
                   ∑ j : Fin s → Fin n,
                     (∏ a : Fin (s + 1),
                         (gramMatrixAt (I := I) (M := M) g x)⁻¹
                           ((Fin.cons p i : Fin (s + 1) → Fin n) a)
                           ((Fin.cons q j : Fin (s + 1) → Fin n) a)) *
-                      S (fun a => (chartModelBasis E)
+                      S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                           ((Fin.cons p i : Fin (s + 1) → Fin n) a)) *
-                        T (fun a => (chartModelBasis E)
+                        T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                             ((Fin.cons q j : Fin (s + 1) → Fin n) a)) := by
         intro p q
         rw [ih, Finset.mul_sum]
@@ -98,9 +97,9 @@ theorem tensorInnerPointwise_0s_eq_sum
         refine Finset.sum_congr rfl ?_
         intro j _
         have hS :
-            (S.curryLeft ((chartModelBasis E) p))
-                (fun a => (chartModelBasis E) (i a))
-              = S (fun a => (chartModelBasis E)
+            (S.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) p))
+                (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a))
+              = S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                   ((Fin.cons p i : Fin (s + 1) → Fin n) a)) := by
           rw [ContinuousMultilinearMap.curryLeft_apply]
           congr 1
@@ -109,9 +108,9 @@ theorem tensorInnerPointwise_0s_eq_sum
           · simp
           · intro k; simp
         have hT :
-            (T.curryLeft ((chartModelBasis E) q))
-                (fun a => (chartModelBasis E) (j a))
-              = T (fun a => (chartModelBasis E)
+            (T.curryLeft ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) q))
+                (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a))
+              = T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                   ((Fin.cons q j : Fin (s + 1) → Fin n) a)) := by
           rw [ContinuousMultilinearMap.curryLeft_apply]
           congr 1
@@ -142,17 +141,17 @@ theorem tensorInnerPointwise_0s_eq_sum
                     (gramMatrixAt (I := I) (M := M) g x)⁻¹
                       ((Fin.cons p i : Fin (s + 1) → Fin n) a)
                       ((Fin.cons q j : Fin (s + 1) → Fin n) a)) *
-                  S (fun a => (chartModelBasis E)
+                  S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                       ((Fin.cons p i : Fin (s + 1) → Fin n) a)) *
-                    T (fun a => (chartModelBasis E)
+                    T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                         ((Fin.cons q j : Fin (s + 1) → Fin n) a))
               = ∑ J : Fin (s + 1) → Fin n,
                   (∏ a : Fin (s + 1),
                       (gramMatrixAt (I := I) (M := M) g x)⁻¹
                         ((Fin.cons p i : Fin (s + 1) → Fin n) a) (J a)) *
-                    S (fun a => (chartModelBasis E)
+                    S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                         ((Fin.cons p i : Fin (s + 1) → Fin n) a)) *
-                      T (fun a => (chartModelBasis E) (J a)) := by
+                      T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J a)) := by
         intro p i
         refine sum_cons_collapse
           (fun q j =>
@@ -160,9 +159,9 @@ theorem tensorInnerPointwise_0s_eq_sum
                 (gramMatrixAt (I := I) (M := M) g x)⁻¹
                   ((Fin.cons p i : Fin (s + 1) → Fin n) a)
                   ((Fin.cons q j : Fin (s + 1) → Fin n) a)) *
-              S (fun a => (chartModelBasis E)
+              S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                   ((Fin.cons p i : Fin (s + 1) → Fin n) a)) *
-                T (fun a => (chartModelBasis E)
+                T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                     ((Fin.cons q j : Fin (s + 1) → Fin n) a)))
           _ ?_
         intro q j
@@ -176,24 +175,24 @@ theorem tensorInnerPointwise_0s_eq_sum
                 (∏ a : Fin (s + 1),
                     (gramMatrixAt (I := I) (M := M) g x)⁻¹
                       ((Fin.cons p i : Fin (s + 1) → Fin n) a) (J a)) *
-                  S (fun a => (chartModelBasis E)
+                  S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                       ((Fin.cons p i : Fin (s + 1) → Fin n) a)) *
-                    T (fun a => (chartModelBasis E) (J a))
+                    T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J a))
               = ∑ K : Fin (s + 1) → Fin n,
                   ∑ J : Fin (s + 1) → Fin n,
                     (∏ a : Fin (s + 1),
                         (gramMatrixAt (I := I) (M := M) g x)⁻¹ (K a) (J a)) *
-                      S (fun a => (chartModelBasis E) (K a)) *
-                        T (fun a => (chartModelBasis E) (J a)) := by
+                      S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (K a)) *
+                        T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J a)) := by
         refine sum_cons_collapse
           (fun p i =>
             ∑ J : Fin (s + 1) → Fin n,
               (∏ a : Fin (s + 1),
                   (gramMatrixAt (I := I) (M := M) g x)⁻¹
                     ((Fin.cons p i : Fin (s + 1) → Fin n) a) (J a)) *
-                S (fun a => (chartModelBasis E)
+                S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E)
                     ((Fin.cons p i : Fin (s + 1) → Fin n) a)) *
-                  T (fun a => (chartModelBasis E) (J a)))
+                  T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (J a)))
           _ ?_
         intro p i
         rfl
@@ -213,13 +212,13 @@ theorem tensorInnerPointwise_0s_domDomCongr
       ∀ i j : Fin s → Fin n,
         (∏ a : Fin s,
             (gramMatrixAt (I := I) (M := M) g x)⁻¹ (i a) (j a)) *
-          (S.domDomCongr σ) (fun a => (chartModelBasis E) (i a)) *
-            (T.domDomCongr σ) (fun a => (chartModelBasis E) (j a))
+          (S.domDomCongr σ) (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a)) *
+            (T.domDomCongr σ) (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a))
           = (∏ a : Fin s,
               (gramMatrixAt (I := I) (M := M) g x)⁻¹
                 ((i ∘ σ) a) ((j ∘ σ) a)) *
-            S (fun a => (chartModelBasis E) ((i ∘ σ) a)) *
-              T (fun a => (chartModelBasis E) ((j ∘ σ) a)) := by
+            S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((i ∘ σ) a)) *
+              T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((j ∘ σ) a)) := by
     intro i j
     have hprod :
         (∏ a : Fin s,
@@ -231,13 +230,13 @@ theorem tensorInnerPointwise_0s_domDomCongr
       exact Equiv.prod_comp σ
         (fun a => (gramMatrixAt (I := I) (M := M) g x)⁻¹ (i a) (j a))
     have hS :
-        (S.domDomCongr σ) (fun a => (chartModelBasis E) (i a))
-          = S (fun a => (chartModelBasis E) ((i ∘ σ) a)) := by
+        (S.domDomCongr σ) (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a))
+          = S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((i ∘ σ) a)) := by
       rw [ContinuousMultilinearMap.domDomCongr_apply]
       rfl
     have hT :
-        (T.domDomCongr σ) (fun a => (chartModelBasis E) (j a))
-          = T (fun a => (chartModelBasis E) ((j ∘ σ) a)) := by
+        (T.domDomCongr σ) (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a))
+          = T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((j ∘ σ) a)) := by
       rw [ContinuousMultilinearMap.domDomCongr_apply]
       rfl
     rw [hprod, hS, hT]
@@ -253,29 +252,29 @@ theorem tensorInnerPointwise_0s_domDomCongr
               (∏ a : Fin s,
                   (gramMatrixAt (I := I) (M := M) g x)⁻¹
                     ((i ∘ σ) a) ((j ∘ σ) a)) *
-                S (fun a => (chartModelBasis E) ((i ∘ σ) a)) *
-                  T (fun a => (chartModelBasis E) ((j ∘ σ) a)))
+                S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((i ∘ σ) a)) *
+                  T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((j ∘ σ) a)))
         = ∑ i : Fin s → Fin n,
             (fun i' => ∑ j : Fin s → Fin n,
                 (∏ a : Fin s,
                     (gramMatrixAt (I := I) (M := M) g x)⁻¹
                       (i' a) ((j ∘ σ) a)) *
-                  S (fun a => (chartModelBasis E) (i' a)) *
-                    T (fun a => (chartModelBasis E) ((j ∘ σ) a)))
+                  S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i' a)) *
+                    T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((j ∘ σ) a)))
               (i ∘ σ) from rfl]
   rw [hreindex
         (fun i' => ∑ j : Fin s → Fin n,
             (∏ a : Fin s,
                 (gramMatrixAt (I := I) (M := M) g x)⁻¹
                   (i' a) ((j ∘ σ) a)) *
-              S (fun a => (chartModelBasis E) (i' a)) *
-                T (fun a => (chartModelBasis E) ((j ∘ σ) a)))]
+              S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i' a)) *
+                T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) ((j ∘ σ) a)))]
   refine Finset.sum_congr rfl (fun i _ => ?_)
   exact hreindex
     (fun j => (∏ a : Fin s,
         (gramMatrixAt (I := I) (M := M) g x)⁻¹ (i a) (j a)) *
-      S (fun a => (chartModelBasis E) (i a)) *
-        T (fun a => (chartModelBasis E) (j a)))
+      S (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (i a)) *
+        T (fun a => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (j a)))
 
 theorem tensorInnerPointwise_0s_domDomCongr_swap
     (g : SmoothRiemannianMetric I M) (x : M) (s : ℕ) (a b : Fin s)

@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInter
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.InteriorH2
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.ChartHm
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.Bootstrap.H2RegularitySuccessor
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.PowH2kBridge
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpFour
 
 
@@ -15,7 +15,7 @@ open scoped Manifold Topology ContDiff Matrix InnerProductSpace BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Laplacian
-namespace IteratedChartHmBootstrapFinal
+namespace IteratedChartHmBootstrapPolymorphic
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -198,23 +198,7 @@ theorem chartPushed_memWkp_two_sided_succ_le_two
       rw [h_eq]
       exact h.2 α
 
-omit [NeZero (Module.finrank ℝ E)] in
-theorem chartPushed_memWkp_of_laplacianDomainPow_via_bridge
-    (g : SmoothRiemannianMetric I M) (α : M) (k : ℕ)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (h_bridge : ChartSideH2kBridge (I := I) (M := M) k
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))) :
-    DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
-      (d := Module.finrank ℝ E) (2 * k) 2
-      (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
-        ((H1ComplToLp (I := I) (M := M) g u_h :
-          Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ))
-      (chartTargetEuclid (I := I) (M := M) α) :=
-  chartPushed_memWkp_of_laplacianDomainPow
-    (I := I) (M := M) g α k h_bridge
-
-end IteratedChartHmBootstrapFinal
+end IteratedChartHmBootstrapPolymorphic
 end Laplacian
 end Analysis
 end DifferentialGeometry

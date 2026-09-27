@@ -1,3 +1,5 @@
+import Mathlib.Analysis.Calculus.ContDiff.RCLike
+import Mathlib.MeasureTheory.Function.LpSeminorm.Basic
 import Mathlib.Analysis.InnerProductSpace.Calculus
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.SpecialFunctions.SmoothTransition
@@ -687,6 +689,61 @@ theorem weight_mul_norm_sq_energy_inequality
   rw [intervalIntegral.integral_add hleft_int hdiss_int, ← hidentity] at hmono
   exact hmono
 
-end DifferentialGeometry.Analysis.Parabolic.Energy
+
+section
+
+open scoped ENNReal NNReal
+
+theorem exists_smooth_timeCutoff_eq_one_on_Icc {a b T : ℝ}
+    (ha : 0 < a) (hb : b < T) :
+    ∃ (ζ : ℝ → ℝ) (K : ℝ≥0),
+      ContDiff ℝ (⊤ : ℕ∞) ζ ∧ HasCompactSupport ζ ∧
+      (∀ t, 0 ≤ ζ t) ∧ (∀ t, ζ t ≤ 1) ∧ LipschitzWith K ζ ∧
+      ζ 0 = 0 ∧ ζ T = 0 ∧ ∀ t ∈ Icc a b, ζ t = 1 := by
+  let ζ : ℝ → ℝ := fun t => timeCutoff 0 a t * backwardTimeCutoff b T t
+  have hζ : ContDiff ℝ (⊤ : ℕ∞) ζ :=
+    (contDiff_timeCutoff 0 a).mul (contDiff_backwardTimeCutoff b T)
+  have hζc : HasCompactSupport ζ := by
+    refine HasCompactSupport.intro' (K := Icc (0 : ℝ) T) isCompact_Icc isClosed_Icc ?_
+    intro t ht
+    change timeCutoff 0 a t * backwardTimeCutoff b T t = 0
+    by_cases ht0 : t < 0
+    · rw [timeCutoff_eq_zero_of_le ha ht0.le, zero_mul]
+    · have htT : T < t := by
+        by_contra hn
+        exact ht ⟨le_of_not_gt ht0, le_of_not_gt hn⟩
+      rw [backwardTimeCutoff_eq_zero_of_le hb htT.le, mul_zero]
+  obtain ⟨K, hK⟩ := ContDiff.lipschitzWith_of_hasCompactSupport hζc hζ (by simp)
+  refine ⟨ζ, K, hζ, hζc, ?_, ?_, hK, ?_, ?_, ?_⟩
+  · intro t
+    exact mul_nonneg (timeCutoff_mem_Icc 0 a t).1 (backwardTimeCutoff_mem_Icc b T t).1
+  · intro t
+    exact mul_le_one₀ (timeCutoff_mem_Icc 0 a t).2
+      (backwardTimeCutoff_mem_Icc b T t).1 (backwardTimeCutoff_mem_Icc b T t).2
+  · change timeCutoff 0 a 0 * backwardTimeCutoff b T 0 = 0
+    rw [timeCutoff_eq_zero 0 ha, zero_mul]
+  · change timeCutoff 0 a T * backwardTimeCutoff b T T = 0
+    rw [backwardTimeCutoff_eq_zero T hb, mul_zero]
+  · intro t ht
+    change timeCutoff 0 a t * backwardTimeCutoff b T t = 1
+    rw [timeCutoff_eq_one_of_le ha ht.1, backwardTimeCutoff_eq_one_of_le hb ht.2, one_mul]
+
+theorem integral_Icc_le_integral_mul_cutoff {a b : ℝ} {μ : Measure ℝ}
+    {E ζ : ℝ → ℝ} (hE : Integrable E μ) (hEpos : ∀ t, 0 ≤ E t)
+    (hζ : MemLp ζ ∞ μ) (hζpos : ∀ t, 0 ≤ ζ t)
+    (hζone : ∀ t ∈ Icc a b, ζ t = 1) :
+    (∫ t in Icc a b, E t ∂μ) ≤ ∫ t, ζ t * E t ∂μ := by
+  have hI : Integrable (fun t => ζ t * E t) μ :=
+    (hE.mul_of_top_right hζ).congr (Filter.Eventually.of_forall fun _ => rfl)
+  calc
+    _ = ∫ t in Icc a b, ζ t * E t ∂μ := by
+      apply setIntegral_congr_fun measurableSet_Icc
+      intro t ht
+      change E t = ζ t * E t
+      rw [hζone t ht, one_mul]
+    _ ≤ _ := setIntegral_le_integral hI
+      (Filter.Eventually.of_forall fun t => mul_nonneg (hζpos t) (hEpos t))
 
 end
+
+end DifferentialGeometry.Analysis.Parabolic.Energy

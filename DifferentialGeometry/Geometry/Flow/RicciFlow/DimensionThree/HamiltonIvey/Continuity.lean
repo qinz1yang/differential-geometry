@@ -1,3 +1,7 @@
+import DifferentialGeometry.Analysis.FiniteDimensional.Rank
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.ExteriorRank
+import DifferentialGeometry.Analysis.InnerProductSpace.SpectralBounds
+import Mathlib.Analysis.Matrix.Hermitian
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.Isometry
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.HamiltonIvey.Transport
@@ -43,8 +47,10 @@ private theorem pulledRm_normSq_eq_rm_normSq
       normSq0S (I := I) (S.base.metric t) x 4 (S.base.rm04 t x) := by
   have hinner := fiberInner_compUhlenbeck_isometry (I := I) (M := M) hT S basisAt iota hiota0
     hgram horth0 ht x
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩
-    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩
+    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric
+      t) x⟩
+    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric
+      t) x⟩
   unfold normSq0S
   exact hinner
 
@@ -101,7 +107,7 @@ private theorem normSq0S_eq_four_mul_matrixNormSq_of_frame
     (A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x) :
     normSq0S (I := I) g x 4 (A : Tensor04At (I := I) (M := M) x) =
       4 * ‖matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (e (bivectorIndex3 i).1) (e (bivectorIndex3 i).2)
           (e (bivectorIndex3 j).2) (e (bivectorIndex3 j).1))‖ ^ 2 := by
   classical
@@ -137,7 +143,7 @@ private theorem normSq0S_eq_four_mul_matrixNormSq_of_frame
   have hmat : tensor04CurvatureOperatorMatrixAt (I := I) basis
         (A : Tensor04At (I := I) (M := M) x) =
       fun i j : Fin 3 =>
-      tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+      tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
         (e (bivectorIndex3 i).1) (e (bivectorIndex3 i).2)
         (e (bivectorIndex3 j).2) (e (bivectorIndex3 j).1) := by
     ext i j
@@ -146,19 +152,19 @@ private theorem normSq0S_eq_four_mul_matrixNormSq_of_frame
   rw [hmain]
   rw [hmat]
   rw [show inner ℝ (matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (e (bivectorIndex3 i).1) (e (bivectorIndex3 i).2)
           (e (bivectorIndex3 j).2) (e (bivectorIndex3 j).1)))
       (matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (e (bivectorIndex3 i).1) (e (bivectorIndex3 i).2)
           (e (bivectorIndex3 j).2) (e (bivectorIndex3 j).1))) =
       ‖matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (e (bivectorIndex3 i).1) (e (bivectorIndex3 i).2)
           (e (bivectorIndex3 j).2) (e (bivectorIndex3 j).1))‖ ^ 2 by
     rw [norm_sq_eq_re_inner (𝕜 := ℝ) (matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
+        tensor04StandardAt (I := I) (M := M) (A : Tensor04At (I := I) (M := M) x)
           (e (bivectorIndex3 i).1) (e (bivectorIndex3 i).2)
           (e (bivectorIndex3 j).2) (e (bivectorIndex3 j).1)))]
     simp]
@@ -229,7 +235,7 @@ private lemma normSq0S_rm04_continuousOn_local
     · rw [if_neg hab, if_neg (fun h => hab (hidx.mp h))]
   have hentry4 : ∀ a b c d : Fin 3,
       ContinuousOn (fun q : ℝ × M =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e a q) (e b q) (e c q) (e d q))
         (Set.Icc 0 T ×ˢ U) := by
     intro a b c d
@@ -267,28 +273,30 @@ private lemma normSq0S_rm04_continuousOn_local
           exact continuousOn_iff_continuous_domRestrict.mp (he_cont d))
     refine heval.congr (fun p => ?_)
     change (S.base.rm04 p.1.1 p.1.2)
-        (fun i : Fin 4 => if i = 0 then e a p.1 else if i = 1 then e b p.1 else if i = 2 then e c p.1 else e d p.1) =
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1.1 p.1.2)
+        (fun i : Fin 4 => if i = 0 then e a p.1 else if i = 1 then e b p.1 else if i = 2 then e c
+          p.1 else e d p.1) =
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 p.1.1 p.1.2)
         (e a p.1) (e b p.1) (e c p.1) (e d p.1)
-    rw [tensor04StdAt]
+    rw [tensor04StandardAt]
     congr 1
   have hentry : ∀ a b : Fin 3,
       ContinuousOn (fun q : ℝ × M =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 a).1 q) (e (bivectorIndex3 a).2 q)
           (e (bivectorIndex3 b).2 q) (e (bivectorIndex3 b).1 q))
         (Set.Icc 0 T ×ˢ U) := by
     intro a b
-    exact hentry4 (bivectorIndex3 a).1 (bivectorIndex3 a).2 (bivectorIndex3 b).2 (bivectorIndex3 b).1
+    exact hentry4 (bivectorIndex3 a).1 (bivectorIndex3 a).2 (bivectorIndex3 b).2 (bivectorIndex3
+      b).1
   have hsum_cont : ContinuousOn (fun q : ℝ × M =>
       4 * (∑ a : Fin 3, ∑ b : Fin 3,
-        (tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        (tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 a).1 q) (e (bivectorIndex3 a).2 q)
           (e (bivectorIndex3 b).2 q) (e (bivectorIndex3 b).1 q)) ^ 2))
       (Set.Icc 0 T ×ˢ U) := by
     have hsum : ContinuousOn (fun q : ℝ × M =>
         ∑ a : Fin 3, ∑ b : Fin 3,
-          (tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+          (tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
             (e (bivectorIndex3 a).1 q) (e (bivectorIndex3 a).2 q)
             (e (bivectorIndex3 b).2 q) (e (bivectorIndex3 b).1 q)) ^ 2)
         (Set.Icc 0 T ×ˢ U) := by
@@ -306,7 +314,7 @@ private lemma normSq0S_rm04_continuousOn_local
         algebraicCurvatureTensorSubmodule (I := I) (M := M) q.2) :
         Tensor04At (I := I) (M := M) q.2) =
     4 * (∑ a : Fin 3, ∑ b : Fin 3,
-        (tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        (tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 a).1 q) (e (bivectorIndex3 a).2 q)
           (e (bivectorIndex3 b).2 q) (e (bivectorIndex3 b).1 q)) ^ 2)
   have hframe := normSq0S_eq_four_mul_matrixNormSq_of_frame (I := I) (M := M)
@@ -315,41 +323,41 @@ private lemma normSq0S_rm04_continuousOn_local
     ⟨S.base.rm04 q.1 q.2, metricRm04At_mem_algebraicCurvatureTensorSubmodule
       (I := I) (S.base.metric q.1) q.2⟩
   have hnorm : ‖matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
           (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q))‖ ^ 2 =
       ∑ a : Fin 3, ∑ b : Fin 3,
-        (tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        (tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 a).1 q) (e (bivectorIndex3 a).2 q)
           (e (bivectorIndex3 b).2 q) (e (bivectorIndex3 b).1 q)) ^ 2 := by
     have hsum := inner_matrixToEuclidean
       (matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
           (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q)))
-      (fun i j : Fin 3 => tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+      (fun i j : Fin 3 => tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
         (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
         (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q))
     calc
       ‖matrixToEuclidean (fun i j : Fin 3 =>
-          tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+          tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
             (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
             (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q))‖ ^ 2
           = inner ℝ (matrixToEuclidean (fun i j : Fin 3 =>
-              tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+              tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
                 (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
                 (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q)))
               (matrixToEuclidean (fun i j : Fin 3 =>
-              tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+              tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
                 (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
                 (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q))) := by
             rw [norm_sq_eq_re_inner (𝕜 := ℝ) (matrixToEuclidean (fun i j : Fin 3 =>
-              tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+              tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
                 (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
                 (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q)))]
             simp
       _ = ∑ a : Fin 3, ∑ b : Fin 3,
-            (tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+            (tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
               (e (bivectorIndex3 a).1 q) (e (bivectorIndex3 a).2 q)
               (e (bivectorIndex3 b).2 q) (e (bivectorIndex3 b).1 q)) ^ 2 := by
             rw [hsum, Fintype.sum_prod_type]
@@ -376,7 +384,8 @@ private theorem tensor04FiberNorm_rm04_continuousOn
   have hqL : q ∈ Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α := by
     exact ⟨hq.1, mem_smoothOrthoOpen (I := I) (M := M) α⟩
   have hL : ContinuousWithinAt
-      (fun r : ℝ × M => Real.sqrt (normSq0S (I := I) (S.base.metric r.1) r.2 4 (S.base.rm04 r.1 r.2)))
+      (fun r : ℝ × M => Real.sqrt (normSq0S (I := I) (S.base.metric r.1) r.2 4 (S.base.rm04 r.1
+        r.2)))
       (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) q :=
     hsq.continuousWithinAt hqL
   have hmem_nhds : (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) ∈
@@ -401,7 +410,8 @@ private theorem tensor04FiberNorm_rm04_continuousOn
     · exact (nhdsWithin_le_iff (s := (Set.Icc 0 T ×ˢ (Set.univ : Set M)))
         (t := (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α)) (x := q)).mpr hmem_nhds
   have hT' : ContinuousWithinAt
-      (fun r : ℝ × M => Real.sqrt (normSq0S (I := I) (S.base.metric r.1) r.2 4 (S.base.rm04 r.1 r.2)))
+      (fun r : ℝ × M => Real.sqrt (normSq0S (I := I) (S.base.metric r.1) r.2 4 (S.base.rm04 r.1
+        r.2)))
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)) q := by
     change Tendsto (fun r : ℝ × M =>
         Real.sqrt (normSq0S (I := I) (S.base.metric r.1) r.2 4 (S.base.rm04 r.1 r.2)))
@@ -434,10 +444,12 @@ theorem exists_pulledRm_norm_bound
         (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
       letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
         @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
-          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0)
+            x 4).toCore
       letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
         @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
-          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0)
+            x 4).toCore.toCore
       ‖uhlenbeckPulledRm04At S basisAt iota t x‖ ≤ R := by
   classical
   let s : Set (ℝ × M) := Set.Icc 0 T ×ˢ (Set.univ : Set M)
@@ -460,10 +472,12 @@ theorem exists_pulledRm_norm_bound
       (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
     let : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
       @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
-        inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+        inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x
+          4).toCore
     let : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
       @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
-        inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+        inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x
+          4).toCore.toCore
     have heq : ‖uhlenbeckPulledRm04At S basisAt iota t x‖ = f (t, x) := by
       have h1 := tensor0SFiberNorm_eq_norm (I := I) (S.base.metric 0) x
         (uhlenbeckPulledRm04At S basisAt iota t x)
@@ -484,10 +498,12 @@ private noncomputable def intrinsicFiberInfDist
     (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
   letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) x)
-      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x
+        4).toCore
   letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) x) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) x)
-      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x 4).toCore.toCore
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) x
+        4).toCore.toCore
   Metric.infDist (uhlenbeckPulledRm04At S basisAt iota τ x)
     (fiberHamiltonIveyRegion basisAt K τ x)
 
@@ -502,7 +518,7 @@ private theorem intrinsicFiberInfDist_eq_two_mul_matrixInfDist
     (hK : 0 < K) :
     intrinsicFiberInfDist hT S basisAt iota K q.1 q.2 =
       2 * Metric.infDist (matrixToEuclidean (fun i j : Fin 3 =>
-          tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
+          tensor04StandardAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
             (basisAt q.2 (bivectorIndex3 i).1) (basisAt q.2 (bivectorIndex3 i).2)
             (basisAt q.2 (bivectorIndex3 j).2) (basisAt q.2 (bivectorIndex3 j).1)))
         (hamiltonIveyConvexMatrixRegionEuclidean K q.1) := by
@@ -510,21 +526,24 @@ private theorem intrinsicFiberInfDist_eq_two_mul_matrixInfDist
     (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore
   let : NormedAddCommGroup (Tensor04At (I := I) (M := M) q.2) :=
     @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) q.2)
-      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2
+        4).toCore
   let : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) q.2) :=
     @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) q.2)
-      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore.toCore
+      inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2
+        4).toCore.toCore
   change Metric.infDist (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
       (fiberHamiltonIveyRegion basisAt K q.1 q.2) =
     2 * Metric.infDist (matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
           (basisAt q.2 (bivectorIndex3 i).1) (basisAt q.2 (bivectorIndex3 i).2)
           (basisAt q.2 (bivectorIndex3 j).2) (basisAt q.2 (bivectorIndex3 j).1)))
       (hamiltonIveyConvexMatrixRegionEuclidean K q.1)
   have hqτ : 0 ≤ q.1 := hq.1.1
   have hm : uhlenbeckPulledRm04At S basisAt iota q.1 q.2 ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) q.2 :=
-    uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) S basisAt iota q.1 q.2
+    uhlenbeckPulledRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (M := M) S basisAt iota
+      q.1 q.2
   exact infDist_fiberHamiltonIveyRegion_eq_two_mul_matrixInfDist_of_orthonormal (I := I) (M := M)
     (S.base.metric 0) q.2 basisAt (horth0 q.2) hK hqτ
     (uhlenbeckPulledRm04At S basisAt iota q.1 q.2) hm
@@ -557,7 +576,7 @@ private noncomputable def flowFrameOperatorMatrix
     (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
     (α : M) (q : ℝ × M) : Matrix (Fin 3) (Fin 3) ℝ :=
   fun i j =>
-    tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+    tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
       (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 i).1)
       (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 i).2)
       (intrinsicFlowFrame (I := I) (S.base.metric q.1) hdim α q (bivectorIndex3 j).2)
@@ -645,7 +664,7 @@ private theorem intrinsicFiberInfDist_eq_two_mul_flowFrameMatrixInfDist
     have hdist := intrinsicFiberInfDist_eq_two_mul_matrixInfDist (I := I) (M := M)
       hT S basisAt iota K (q := q) (by exact ⟨hq.1, trivial⟩) horth0 hK
     have hmatrix : (fun i j =>
-        tensor04StdAt (I := I) (M := M)
+        tensor04StandardAt (I := I) (M := M)
           (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
           ((basisAt q.2) (bivectorIndex3 i).1)
             ((basisAt q.2) (bivectorIndex3 i).2)
@@ -690,10 +709,12 @@ private theorem intrinsicFiberInfDist_eq_two_mul_flowFrameMatrixInfDist
               (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)))
             (hamiltonIveyConvexMatrixRegionEuclidean K q.1) := hstep1
     _ = 2 * Metric.infDist
-            (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) mov (S.base.rm04 q.1 q.2)))
+            (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) mov (S.base.rm04 q.1
+              q.2)))
             (hamiltonIveyConvexMatrixRegionEuclidean K q.1) := by rw [hstep2]
     _ = 2 * Metric.infDist
-            (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) gsb (S.base.rm04 q.1 q.2)))
+            (matrixToEuclidean (tensor04CurvatureOperatorMatrixAt (I := I) gsb (S.base.rm04 q.1
+              q.2)))
             (hamiltonIveyConvexMatrixRegionEuclidean K q.1) := by rw [hstep3]
     _ = 2 * Metric.infDist (matrixToEuclidean (flowFrameOperatorMatrix (I := I) hT S hdim α q))
             (hamiltonIveyConvexMatrixRegionEuclidean K q.1) := by rw [hstep4]
@@ -738,7 +759,7 @@ private lemma flowFrameOperatorMatrix_continuousOn_local
     rfl
   have hentry4 : ∀ a b c d : Fin 3,
       ContinuousOn (fun q : ℝ × M =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e a q) (e b q) (e c q) (e d q))
         (Set.Icc 0 T ×ˢ U) := by
     intro a b c d
@@ -776,20 +797,21 @@ private lemma flowFrameOperatorMatrix_continuousOn_local
           exact continuousOn_iff_continuous_domRestrict.mp (he_cont d))
     refine heval.congr (fun p => ?_)
     change (S.base.rm04 p.1.1 p.1.2)
-        (fun n : Fin 4 => if n = 0 then e a p.1 else if n = 1 then e b p.1 else if n = 2 then e c p.1 else e d p.1) =
-      tensor04StdAt (I := I) (M := M) (S.base.rm04 p.1.1 p.1.2)
+        (fun n : Fin 4 => if n = 0 then e a p.1 else if n = 1 then e b p.1 else if n = 2 then e c
+          p.1 else e d p.1) =
+      tensor04StandardAt (I := I) (M := M) (S.base.rm04 p.1.1 p.1.2)
         (e a p.1) (e b p.1) (e c p.1) (e d p.1)
-    rw [tensor04StdAt]
+    rw [tensor04StandardAt]
     congr 1
   have hmat_local : ContinuousOn (fun q : ℝ × M =>
       matrixToEuclidean (fun i j : Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 i).1 q) (e (bivectorIndex3 i).2 q)
           (e (bivectorIndex3 j).2 q) (e (bivectorIndex3 j).1 q)))
       (Set.Icc 0 T ×ˢ U) := by
     have hfun : ContinuousOn (fun q : ℝ × M =>
         fun ij : Fin 3 × Fin 3 =>
-        tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+        tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
           (e (bivectorIndex3 ij.1).1 q) (e (bivectorIndex3 ij.1).2 q)
           (e (bivectorIndex3 ij.2).2 q) (e (bivectorIndex3 ij.2).1 q))
         (Set.Icc 0 T ×ˢ U) := by
@@ -798,7 +820,7 @@ private lemma flowFrameOperatorMatrix_continuousOn_local
       exact continuous_pi (by
         intro ij
         change Continuous ((Set.Icc 0 T ×ˢ U).domRestrict fun q : ℝ × M =>
-          tensor04StdAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
+          tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
             (e (bivectorIndex3 ij.1).1 q) (e (bivectorIndex3 ij.1).2 q)
             (e (bivectorIndex3 ij.2).2 q) (e (bivectorIndex3 ij.2).1 q))
         exact continuousOn_iff_continuous_domRestrict.mp
@@ -931,10 +953,12 @@ theorem continuousOn_infDist_uhlenbeckPulledRm04At_fiberHamiltonIveyRegion
         (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore
       letI : NormedAddCommGroup (Tensor04At (I := I) (M := M) q.2) :=
         @InnerProductSpace.Core.toNormedAddCommGroup ℝ (Tensor04At (I := I) (M := M) q.2)
-          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0)
+            q.2 4).toCore
       letI : InnerProductSpace ℝ (Tensor04At (I := I) (M := M) q.2) :=
         @InnerProductSpace.ofCore ℝ (Tensor04At (I := I) (M := M) q.2)
-          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0) q.2 4).toCore.toCore
+          inferInstance inferInstance inferInstance (tensor0SMetricData (I := I) (S.base.metric 0)
+            q.2 4).toCore.toCore
       Metric.infDist (uhlenbeckPulledRm04At S basisAt iota q.1 q.2)
         (fiberHamiltonIveyRegion basisAt K q.1 q.2))
       (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
@@ -944,6 +968,266 @@ theorem continuousOn_infDist_uhlenbeckPulledRm04At_fiberHamiltonIveyRegion
   refine h.congr ?_
   intro q hq
   simp [intrinsicFiberInfDist]
+
+omit [SigmaCompactSpace M] in
+private theorem exists_orthonormalBasis_flowFrameOperatorMatrix
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (t : ℝ) (α x : M) (hx : x ∈ smoothOrthoOpen (I := I) (M := M) α) :
+    ∃ basis : Module.Basis (Fin 3) ℝ (TangentSpace I x),
+      OrthonormalBasisAt (I := I) (S.base.metric t) x basis ∧
+        flowFrameOperatorMatrix (I := I) hT S hdim α (t, x) =
+          curvatureOperatorMatrixAt (I := I) x basis
+            (metricAlgebraicCurvatureTensorAt (S.base.metric t) x) := by
+  classical
+  let gτ := S.base.metric t
+  let e : Fin 3 → TangentSpace I x :=
+    fun a => intrinsicFlowFrame (I := I) gτ hdim α (t, x) a
+  have hidx_inj : Function.Injective (intrinsicFrameIndex (I := I) hdim x) := by
+    intro a b h
+    apply Fin.ext
+    simpa only [intrinsicFrameIndex] using
+      congrArg (fun i : Fin (Module.finrank ℝ E) => i.val) h
+  have horth_e : ∀ a b : Fin 3, gτ.inner x (e a) (e b) = if a = b then 1 else 0 := by
+    intro a b
+    have hbase : x ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
+      smoothOrthoOpen_subset_baseSet (I := I) (M := M) α hx
+    have horth := chartFrameNorm_orthonormal (I := I) gτ α hbase
+      (intrinsicFrameIndex (I := I) hdim x a) (intrinsicFrameIndex (I := I) hdim x b)
+    change gτ.inner x
+        (chartFrameNorm (I := I) gτ α (intrinsicFrameIndex (I := I) hdim x a) x)
+        (chartFrameNorm (I := I) gτ α (intrinsicFrameIndex (I := I) hdim x b) x) = _
+    rw [horth]
+    by_cases hab : a = b
+    · rw [if_pos hab, if_pos (by rw [hab])]
+    · rw [if_neg hab, if_neg (fun h => hab (hidx_inj h))]
+  have hli : LinearIndependent ℝ e := by
+    rw [Fintype.linearIndependent_iff]
+    intro c hc i
+    have hpair : gτ.inner x (∑ j, c j • e j) (e i) = 0 := by rw [hc]; simp
+    rw [map_sum, sum_apply] at hpair
+    rw [Finset.sum_eq_single i] at hpair
+    · rw [ContinuousLinearMap.map_smul, smul_apply,
+        horth_e i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
+      exact hpair
+    · intro j _ hji
+      rw [ContinuousLinearMap.map_smul, smul_apply,
+        horth_e j i, if_neg hji, smul_zero]
+    · intro hi
+      exact absurd (Finset.mem_univ i) hi
+  have hsp : Submodule.span ℝ (Set.range e) = ⊤ :=
+    hli.span_eq_top_of_card_eq_finrank (by simp only [Fintype.card_fin, hdim x])
+  let basis : Module.Basis (Fin 3) ℝ (TangentSpace I x) := Module.Basis.mk hli hsp.symm.le
+  have hbasis : (basis : Fin 3 → TangentSpace I x) = e := by
+    funext a
+    exact Module.Basis.mk_apply hli hsp.symm.le a
+  have horth : OrthonormalBasisAt (I := I) gτ x basis := by
+    intro i j
+    rw [hbasis]
+    exact horth_e i j
+  let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) gτ x⟩
+  have hmat : flowFrameOperatorMatrix (I := I) hT S hdim α (t, x) =
+      curvatureOperatorMatrixAt (I := I) x basis A := by
+    ext i j
+    simp only [curvatureOperatorMatrixAt, hbasis, e, gτ, A, flowFrameOperatorMatrix]
+  exact ⟨basis, horth, hmat⟩
+
+omit [SigmaCompactSpace M] in
+private theorem leastCurvatureOperatorEigenvalueAt_eq_flowFrame_rayleigh
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (t : ℝ) (α x : M) (hx : x ∈ smoothOrthoOpen (I := I) (M := M) α) :
+    leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x
+      ⟨S.base.rm04 t x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩ =
+      ⨅ v : {v : EuclideanSpace ℝ (Fin 3) // v ≠ 0},
+        (Matrix.toEuclideanLin (flowFrameOperatorMatrix (I := I) hT S hdim α (t,
+          x))).toContinuousLinearMap.rayleighQuotient v := by
+  obtain ⟨basis, horth, hmat⟩ :=
+    exists_orthonormalBasis_flowFrameOperatorMatrix hT S hdim t α x hx
+  let gτ := S.base.metric t
+  let A : algebraicCurvatureTensorSubmodule (I := I) (M := M) x :=
+    ⟨S.base.rm04 t x, metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) gτ x⟩
+  change leastCurvatureOperatorEigenvalueAt (I := I) gτ x A = _
+  rw [leastCurvatureOperatorEigenvalueAt_eq_sectionalMin gτ x basis horth A, hmat]
+  let B := (Matrix.toEuclideanLin (curvatureOperatorMatrixAt (I := I) x basis
+    A)).toContinuousLinearMap
+  have hsym : B.toLinearMap.IsSymmetric := Matrix.isSymmetric_toEuclideanLin_iff.mpr
+    (curvatureOperatorMatrixAt_isHermitian (I := I) x basis A)
+  have hmin := hsym.iInf_rayleighQuotient_eq_eigenvalues_last
+    (n := 2) (by simp only [finrank_euclideanSpace, Fintype.card_fin])
+  exact hmin.symm
+
+end DifferentialGeometry.PDE.RicciFlow
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Connection
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem continuousOn_leastCurvatureOperatorEigenvalueAt_rm04
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3) :
+    ContinuousOn (fun q : ℝ × M =>
+      leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric q.1) q.2
+        ⟨S.base.rm04 q.1 q.2,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric q.1) q.2⟩)
+      (Set.Icc 0 T ×ˢ (Set.univ : Set M)) := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  apply continuousOn_of_locally_continuousOn
+  intro q _
+  let : NeZero (Module.finrank ℝ E) := by
+    have heq := ((trivializationAt E (TangentSpace I) q.2).linearEquivAt ℝ q.2
+      (mem_baseSet_trivializationAt E (TangentSpace I) q.2)).finrank_eq
+    exact ⟨by rw [← heq, hdim q.2]; decide⟩
+  let α : M := q.2
+  let L : Matrix (Fin 3) (Fin 3) ℝ →ₗ[ℝ]
+      (EuclideanSpace ℝ (Fin 3) →L[ℝ] EuclideanSpace ℝ (Fin 3)) :=
+    LinearMap.toContinuousLinearMap.toLinearMap.comp Matrix.toEuclideanLin.toLinearMap
+  have hmatrix := flowFrameOperatorMatrix_continuousOn_local hT S hS hdim α
+  have hm : ContinuousOn (fun r : ℝ × M => flowFrameOperatorMatrix (I := I) hT S hdim α r)
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+    apply continuousOn_pi.2
+    intro i
+    apply continuousOn_pi.2
+    intro j
+    exact (PiLp.continuous_apply 2 (fun _ : Fin 3 × Fin 3 => ℝ) (i, j)).comp_continuousOn hmatrix
+  have hL : ContinuousOn (fun r => L (flowFrameOperatorMatrix (I := I) hT S hdim α r))
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) :=
+    L.continuous_of_finiteDimensional.comp_continuousOn hm
+  have hmin := ContinuousLinearMap.continuous_iInf_rayleighQuotient.comp_continuousOn hL
+  have hlocal : ContinuousOn (fun r : ℝ × M =>
+      leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric r.1) r.2
+        ⟨S.base.rm04 r.1 r.2,
+          metricRm04At_mem_algebraicCurvatureTensorSubmodule
+            (I := I) (S.base.metric r.1) r.2⟩)
+      (Set.Icc 0 T ×ˢ smoothOrthoOpen (I := I) (M := M) α) := by
+    refine hmin.congr ?_
+    intro r hr
+    exact leastCurvatureOperatorEigenvalueAt_eq_flowFrame_rayleigh hT S hdim r.1 α r.2 hr.2
+  refine ⟨Set.univ ×ˢ smoothOrthoOpen (I := I) (M := M) α,
+    isOpen_univ.prod (smoothOrthoOpen_open (I := I) (M := M) α),
+    ⟨Set.mem_univ q.1, mem_smoothOrthoOpen (I := I) (M := M) α⟩, ?_⟩
+  simpa only [Set.prod_inter_prod, Set.inter_univ, Set.univ_inter] using hlocal
+
+theorem continuousOn_leastCurvatureOperatorEigenvalueAt_rm04_time
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn (I := I) S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3) (x : M) :
+    ContinuousOn (fun t : ℝ => leastCurvatureOperatorEigenvalueAt (I := I) (S.base.metric t) x
+      ⟨S.base.rm04 t x,
+        metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) (S.base.metric t) x⟩)
+      (Set.Icc 0 T) := by
+  let : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let : NeZero (Module.finrank ℝ E) := by
+    have heq := ((trivializationAt E (TangentSpace I) x).linearEquivAt ℝ x
+      (mem_baseSet_trivializationAt E (TangentSpace I) x)).finrank_eq
+    exact ⟨by rw [← heq, hdim x]; decide⟩
+  let L : Matrix (Fin 3) (Fin 3) ℝ →ₗ[ℝ]
+      (EuclideanSpace ℝ (Fin 3) →L[ℝ] EuclideanSpace ℝ (Fin 3)) :=
+    LinearMap.toContinuousLinearMap.toLinearMap.comp Matrix.toEuclideanLin.toLinearMap
+  have hmatrix := (flowFrameOperatorMatrix_continuousOn_local hT S hS hdim x).comp
+    (continuous_id.prodMk continuous_const).continuousOn
+    (fun t ht => ⟨ht, mem_smoothOrthoOpen (I := I) (M := M) x⟩)
+  have hm : ContinuousOn (fun t => flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))
+      (Set.Icc 0 T) := by
+    apply continuousOn_pi.2
+    intro i
+    apply continuousOn_pi.2
+    intro j
+    exact (PiLp.continuous_apply 2 (fun _ : Fin 3 × Fin 3 => ℝ) (i, j)).comp_continuousOn hmatrix
+  have hL : ContinuousOn (fun t => L (flowFrameOperatorMatrix (I := I) hT S hdim x (t, x)))
+      (Set.Icc 0 T) := L.continuous_of_finiteDimensional.comp_continuousOn hm
+  have hmin := ContinuousLinearMap.continuous_iInf_rayleighQuotient.comp_continuousOn hL
+  refine hmin.congr ?_
+  intro t ht
+  exact leastCurvatureOperatorEigenvalueAt_eq_flowFrame_rayleigh hT S hdim t x x
+    (mem_smoothOrthoOpen (I := I) (M := M) x)
+
 end DifferentialGeometry.PDE.RicciFlow
 
 end
+
+namespace DifferentialGeometry.PDE.RicciFlow
+
+open Bundle Filter Set
+open DifferentialGeometry.Geometry.Curvature
+open DifferentialGeometry.Geometry.Curvature.DimensionThree
+open DifferentialGeometry.Geometry.Connection
+open scoped Manifold ContDiff Topology
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+
+theorem curvatureOperatorImageAt_finrank_le_at_terminal
+    {T : ℝ} (hT : 0 < T)
+    (S : SolutionOn (I := I) (M := M) (RealTimeInterval.closed 0 T hT.le))
+    (hS : IsSolutionOn S)
+    (hdim : ∀ x : M, Module.finrank ℝ (TangentSpace I x) = 3)
+    (x : M) {q : ℕ}
+    (hbound : ∀ t ∈ Ioo 0 T,
+      Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric t) x
+        (metricAlgebraicCurvatureTensorAt (S.base.metric t) x)) ≤ q) :
+    Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric T) x
+      (metricAlgebraicCurvatureTensorAt (S.base.metric T) x)) ≤ q := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
+  let _ : NeZero (Module.finrank ℝ E) := by
+    have heq := ((trivializationAt E (TangentSpace I) x).linearEquivAt ℝ x
+      (mem_baseSet_trivializationAt E (TangentSpace I) x)).finrank_eq
+    exact ⟨by rw [← heq, hdim x]; decide⟩
+  let L : Matrix (Fin 3) (Fin 3) ℝ →ₗ[ℝ]
+      (EuclideanSpace ℝ (Fin 3) →L[ℝ] EuclideanSpace ℝ (Fin 3)) :=
+    LinearMap.toContinuousLinearMap.toLinearMap.comp Matrix.toEuclideanLin.toLinearMap
+  let A := fun t : ℝ => L (flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))
+  have hmatrix := (flowFrameOperatorMatrix_continuousOn_local hT S hS hdim x).comp
+    (continuous_id.prodMk continuous_const).continuousOn
+    (fun t ht => ⟨ht, mem_smoothOrthoOpen (I := I) (M := M) x⟩)
+  have hm : ContinuousOn (fun t => flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))
+      (Icc 0 T) := by
+    apply continuousOn_pi.2
+    intro i
+    apply continuousOn_pi.2
+    intro j
+    exact (PiLp.continuous_apply 2 (fun _ : Fin 3 × Fin 3 => ℝ) (i, j)).comp_continuousOn hmatrix
+  have hcont : ContinuousOn A (Icc 0 T) := L.continuous_of_finiteDimensional.comp_continuousOn hm
+  have hrank (t : ℝ) : Module.finrank ℝ (A t).range =
+      Module.finrank ℝ (curvatureOperatorImageAt (S.base.metric t) x
+        (metricAlgebraicCurvatureTensorAt (S.base.metric t) x)) := by
+    obtain ⟨basis, horth, heq⟩ :=
+      exists_orthonormalBasis_flowFrameOperatorMatrix hT S hdim t x x
+        (mem_smoothOrthoOpen (I := I) (M := M) x)
+    change Module.finrank ℝ
+      (Matrix.toEuclideanLin (flowFrameOperatorMatrix (I := I) hT S hdim x (t, x))).range = _
+    have hmatrixRank (B : Matrix (Fin 3) (Fin 3) ℝ) :
+        B.rank = Module.finrank ℝ B.toEuclideanLin.range :=
+      Matrix.rank_eq_finrank_range_toLin B
+        (PiLp.basisFun 2 ℝ (Fin 3)) (PiLp.basisFun 2 ℝ (Fin 3))
+    rw [← hmatrixRank, heq]
+    rw [← metricCurvatureOperatorRankAt_eq_matrix_rank_of_orthonormal
+      (S.base.metric t) x (hdim x) basis horth]
+    exact metricCurvatureOperatorRankAt_eq_curvatureOperatorImageAt_finrank
+      (S.base.metric t) x (hdim x)
+  have hend : ContinuousWithinAt A (Iio T) T := by
+    have h := hcont T ⟨hT.le, le_rfl⟩
+    rw [ContinuousWithinAt, nhdsWithin_Icc_eq_nhdsLE hT] at h
+    exact h.mono_left (nhdsWithin_mono T Iio_subset_Iic_self)
+  have hev := hend.eventually_finrank_range_ge
+  obtain ⟨t, ht, hle⟩ := (Filter.eventually_and.2 ⟨Ioo_mem_nhdsLT hT, hev⟩).exists
+  rw [hrank T, hrank t] at hle
+  exact hle.trans (hbound t ht)
+
+end DifferentialGeometry.PDE.RicciFlow

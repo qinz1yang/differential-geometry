@@ -46,10 +46,10 @@ lemma wkpNorm_chartPushed_eq_zero_of_pou_zero
     (chartTargetEuclid_isOpen (I := I) (M := M) α)
 
 omit [IsManifold I ∞ M] in
-theorem wkpNorm_chartPushed_eq_zero_of_wkpNormChartGen_eq_zero
+theorem wkpNorm_chartPushed_eq_zero_of_wkpNormChartWithPartition_eq_zero
     {k : ℕ} {p : ℝ≥0∞}
     (ρ : SmoothPartitionOfUnity M I M Set.univ) {u : M → ℝ}
-    (h : wkpNormChartGen (I := I) (M := M) k p ρ u = 0) (α : M) :
+    (h : wkpNormChartWithPartition (I := I) (M := M) k p ρ u = 0) (α : M) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) k p
         (chartPushed (I := I) (M := M) ρ α u)
@@ -63,10 +63,10 @@ theorem wkpNorm_chartPushed_eq_zero_of_wkpNormChartGen_eq_zero
   exact ENNReal.tsum_eq_zero.mp h_def α
 
 omit [IsManifold I ∞ M] in
-theorem wkpNormChartGen_eq_zero_iff
+theorem wkpNormChartWithPartition_eq_zero_iff
     {k : ℕ} {p : ℝ≥0∞}
     (ρ : SmoothPartitionOfUnity M I M Set.univ) (u : M → ℝ) :
-    wkpNormChartGen (I := I) (M := M) k p ρ u = 0 ↔
+    wkpNormChartWithPartition (I := I) (M := M) k p ρ u = 0 ↔
       ∀ α : M,
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) k p
@@ -74,10 +74,10 @@ theorem wkpNormChartGen_eq_zero_iff
           (chartTargetEuclid (I := I) (M := M) α) = 0 := by
   constructor
   · intro h α
-    exact wkpNorm_chartPushed_eq_zero_of_wkpNormChartGen_eq_zero
+    exact wkpNorm_chartPushed_eq_zero_of_wkpNormChartWithPartition_eq_zero
       (I := I) (M := M) ρ h α
   · intro h
-    unfold wkpNormChartGen
+    unfold wkpNormChartWithPartition
     exact (ENNReal.tsum_eq_zero (f := fun α =>
       DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
         (d := Module.finrank ℝ E) k p
@@ -98,23 +98,23 @@ omit [IsManifold I ∞ M] in
 lemma ennreal_one_mul_eq (x : ℝ≥0∞) : ENNReal.ofReal 1 * x = x := by
   rw [ennreal_ofReal_one, one_mul]
 omit [IsManifold I ∞ M] in
-theorem wkpNormChartGen_equiv_of_pou
+theorem wkpNormChartWithPartition_equiv_of_pou
     (k : ℕ) {p : ℝ≥0∞}
     (ρ₁ ρ₂ : SmoothPartitionOfUnity M I M Set.univ)
     :
     ∃ C₁ C₂ : ℝ, 0 < C₁ ∧ 0 < C₂ ∧ ∀ u : M → ℝ,
-      (wkpNormChartGen (I := I) (M := M) k p ρ₁ u =
-        wkpNormChartGen (I := I) (M := M) k p ρ₂ u →
-        wkpNormChartGen (I := I) (M := M) k p ρ₁ u ≤
-          ENNReal.ofReal C₁ * wkpNormChartGen (I := I) (M := M) k p ρ₂ u ∧
-        wkpNormChartGen (I := I) (M := M) k p ρ₂ u ≤
-          ENNReal.ofReal C₂ * wkpNormChartGen (I := I) (M := M) k p ρ₁ u) ∧
-      (wkpNormChartGen (I := I) (M := M) k p ρ₂ u = ⊤ →
-        wkpNormChartGen (I := I) (M := M) k p ρ₁ u ≤
-          ENNReal.ofReal C₁ * wkpNormChartGen (I := I) (M := M) k p ρ₂ u) ∧
-      (wkpNormChartGen (I := I) (M := M) k p ρ₁ u = ⊤ →
-        wkpNormChartGen (I := I) (M := M) k p ρ₂ u ≤
-          ENNReal.ofReal C₂ * wkpNormChartGen (I := I) (M := M) k p ρ₁ u) := by
+      (wkpNormChartWithPartition (I := I) (M := M) k p ρ₁ u =
+        wkpNormChartWithPartition (I := I) (M := M) k p ρ₂ u →
+        wkpNormChartWithPartition (I := I) (M := M) k p ρ₁ u ≤
+          ENNReal.ofReal C₁ * wkpNormChartWithPartition (I := I) (M := M) k p ρ₂ u ∧
+        wkpNormChartWithPartition (I := I) (M := M) k p ρ₂ u ≤
+          ENNReal.ofReal C₂ * wkpNormChartWithPartition (I := I) (M := M) k p ρ₁ u) ∧
+      (wkpNormChartWithPartition (I := I) (M := M) k p ρ₂ u = ⊤ →
+        wkpNormChartWithPartition (I := I) (M := M) k p ρ₁ u ≤
+          ENNReal.ofReal C₁ * wkpNormChartWithPartition (I := I) (M := M) k p ρ₂ u) ∧
+      (wkpNormChartWithPartition (I := I) (M := M) k p ρ₁ u = ⊤ →
+        wkpNormChartWithPartition (I := I) (M := M) k p ρ₂ u ≤
+          ENNReal.ofReal C₂ * wkpNormChartWithPartition (I := I) (M := M) k p ρ₁ u) := by
   refine ⟨1, 1, one_pos, one_pos, fun u => ⟨?_, ?_, ?_⟩⟩
   · intro h_eq
     refine ⟨?_, ?_⟩

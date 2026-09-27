@@ -1,24 +1,25 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Preservation.PositiveRicciReaction
-import DifferentialGeometry.Geometry.Operator.TensorHeat
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Lichnerowicz
+import DifferentialGeometry.Geometry.Operator.Heat.Tensor
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Ricci.Equation.Lichnerowicz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.MetricVariation
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Basic
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Reaction
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Compactness
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Limit
-import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Certification
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.Basic
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Reaction.Realization
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull.Basic
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull.Compactness
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.FirstNull.Signs
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Regularity
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Barrier.Certification
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Tensor.Weak
 import DifferentialGeometry.Geometry.Curvature.Sections.Connection
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.RicciNorm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Regularity
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.TwoTensor
-import DifferentialGeometry.Geometry.Connection.LeviCivita.KoszulFormula
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.Unit
-import DifferentialGeometry.Tensor.RSTensor.QuadraticBounds.TimeSlab
-import DifferentialGeometry.Tensor.RSTensor.Product
-import DifferentialGeometry.Tensor.RSTensor.ContractionLeibniz
+import DifferentialGeometry.Geometry.Connection.LeviCivita.Koszul.Formula
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
+import DifferentialGeometry.Geometry.Metric.QuadraticBounds.TimeSlab
+import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
+import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.PDE.RicciFlow
@@ -123,11 +124,11 @@ def pinchTensor
     TwoTensorFamily (I := I) (M := M) :=
   fun t x v w => Ric t x v w - delta * scalar t x * (G t).inner x v w
 
-def RicciPosInit
+def RicciPosInitial
     (Ric : TwoTensorFamily (I := I) (M := M)) : Prop :=
   ∀ x, TwoTensorPositiveDefiniteAt (I := I) (M := M) (Ric 0) x
 
-def PinchInit
+def PinchInitial
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) : Prop :=
@@ -136,7 +137,7 @@ def PinchInit
       TwoTensorFamilyNonnegativeAtTime (I := I) (M := M)
         (pinchTensor (I := I) (M := M) G Ric scalar delta) 0
 
-def PinchInitLt
+def PinchInitialLt
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) : Prop :=
@@ -146,16 +147,16 @@ def PinchInitLt
         (pinchTensor (I := I) (M := M) G Ric scalar delta) 0
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInit_of_lt
+theorem pinchInitial_of_lt
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
-    (hinit : PinchInitLt (I := I) (M := M) G Ric scalar) :
-    PinchInit (I := I) (M := M) G Ric scalar := by
+    (hinit : PinchInitialLt (I := I) (M := M) G Ric scalar) :
+    PinchInitial (I := I) (M := M) G Ric scalar := by
   rcases hinit with ⟨delta, hdelta0, hdelta13, hpinch⟩
   exact ⟨delta, hdelta0, le_of_lt hdelta13, hpinch⟩
 
-def InitBounds
+def InitialBounds
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) : Prop :=
@@ -164,7 +165,7 @@ def InitBounds
       (∀ x v, c * (G 0).inner x v v <= Ric 0 x v v) ∧
       (∀ x, scalar 0 x <= C)
 
-def RicMinData
+def HasPositiveRicciLowerBound
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (ricMin : M -> Real) : Prop :=
@@ -361,7 +362,7 @@ theorem metricMin_unit
     ring
   rwa [hcancel, hleft] at hmul
 
-theorem unitLower_raw
+theorem unitLower_of_compact_continuous
     [SigmaCompactSpace M] [T2Space M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -424,7 +425,7 @@ theorem unitLower_pos
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hpos : MetricRicciPos (I := I) (M := M) D) :
     ∃ c : Real, UnitRicciLower (I := I) (M := M) D c := by
-  exact unitLower_raw (I := I) (M := M) D hpos
+  exact unitLower_of_compact_continuous (I := I) (M := M) D hpos
     (unitTan_compact (I := I) (M := M) (G 0))
     (unitRic_cont (I := I) (M := M) D)
 
@@ -445,7 +446,7 @@ theorem ricciPos_metric
     {Ric : TwoTensorFamily (I := I) (M := M)}
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hpos : MetricRicciPos (I := I) (M := M) D) :
-    RicciPosInit (I := I) (M := M) Ric := by
+    RicciPosInitial (I := I) (M := M) Ric := by
   intro x v hv
   rw [D.ricci_eq x v v]
   exact hpos x v hv
@@ -457,7 +458,7 @@ theorem ricMin_of_metric
     {ricMin : M -> Real}
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hmin : MetricRicciMin (I := I) (M := M) D ricMin) :
-    RicMinData (I := I) (M := M) G Ric ricMin := by
+    HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin := by
   rcases hmin with ⟨hcont, hpos, hlower⟩
   refine ⟨hcont, hpos, ?_⟩
   intro x v
@@ -468,16 +469,16 @@ def BoundsOfPosRic
     (G : Real -> SmoothRiemannianMetric I M)
     (Ric : TwoTensorFamily (I := I) (M := M))
     (scalar : Real -> M -> Real) : Prop :=
-  RicciPosInit (I := I) (M := M) Ric ->
-    InitBounds (I := I) (M := M) G Ric scalar
+  RicciPosInitial (I := I) (M := M) Ric ->
+    InitialBounds (I := I) (M := M) G Ric scalar
 
 omit [FiniteDimensional ℝ E] in
 theorem ricPos_ricMin
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {ricMin : M -> Real}
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin) :
-    RicciPosInit (I := I) (M := M) Ric := by
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin) :
+    RicciPosInitial (I := I) (M := M) Ric := by
   rcases hmin with ⟨_hcont, hpos, hlower⟩
   intro x v hv
   have hgpos : 0 < (G 0).inner x v v := (G 0).pos x v hv
@@ -505,9 +506,9 @@ theorem bounds_ricMin
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {ricMin : M -> Real}
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin)
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin)
     (hscalar : ∃ C : Real, 0 < C ∧ ∀ x, scalar 0 x <= C) :
-    InitBounds (I := I) (M := M) G Ric scalar := by
+    InitialBounds (I := I) (M := M) G Ric scalar := by
   rcases hmin with ⟨hcont, hpos, hRicLower⟩
   rcases hscalar with ⟨C, hC, hScalarUpper⟩
   have hcompact : IsCompact (Set.univ : Set M) := isCompact_univ
@@ -538,7 +539,7 @@ theorem boundsPos_ricMin
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {ricMin : M -> Real}
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin)
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
     BoundsOfPosRic (I := I) (M := M) G Ric scalar := by
   intro _hpos
@@ -547,12 +548,12 @@ theorem boundsPos_ricMin
     (scalarUpper_cont (M := M) hscalar)
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInitLt_bounds
+theorem pinchInitialLt_bounds
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
-    (hbounds : InitBounds (I := I) (M := M) G Ric scalar) :
-    PinchInitLt (I := I) (M := M) G Ric scalar := by
+    (hbounds : InitialBounds (I := I) (M := M) G Ric scalar) :
+    PinchInitialLt (I := I) (M := M) G Ric scalar := by
   rcases hbounds with ⟨c, C, hc, hC, hRicLower, hScalarUpper⟩
   let delta : Real := min ((1 : Real) / 6) (c / C)
   have hsix_pos : 0 < (1 : Real) / 6 := by norm_num
@@ -596,70 +597,70 @@ theorem pinchInitLt_bounds
   simpa [pinchTensor, sub_nonneg] using hpinch_le
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInit_of_bounds
+theorem pinchInitial_of_bounds
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
-    (hbounds : InitBounds (I := I) (M := M) G Ric scalar) :
-    PinchInit (I := I) (M := M) G Ric scalar := by
-  exact pinchInit_of_lt (I := I) (M := M)
-    (pinchInitLt_bounds (I := I) (M := M) (G := G) (Ric := Ric)
+    (hbounds : InitialBounds (I := I) (M := M) G Ric scalar) :
+    PinchInitial (I := I) (M := M) G Ric scalar := by
+  exact pinchInitial_of_lt (I := I) (M := M)
+    (pinchInitialLt_bounds (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) hbounds)
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInitLt_of_pos
+theorem pinchInitialLt_of_pos
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
-    (hpos : RicciPosInit (I := I) (M := M) Ric)
+    (hpos : RicciPosInitial (I := I) (M := M) Ric)
     (hbounds : BoundsOfPosRic (I := I) (M := M) G Ric scalar) :
-    PinchInitLt (I := I) (M := M) G Ric scalar := by
-  exact pinchInitLt_bounds (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitialLt (I := I) (M := M) G Ric scalar := by
+  exact pinchInitialLt_bounds (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (hbounds hpos)
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInit_of_pos
+theorem pinchInitial_of_pos
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
-    (hpos : RicciPosInit (I := I) (M := M) Ric)
+    (hpos : RicciPosInitial (I := I) (M := M) Ric)
     (hbounds : BoundsOfPosRic (I := I) (M := M) G Ric scalar) :
-    PinchInit (I := I) (M := M) G Ric scalar := by
-  exact pinchInit_of_lt (I := I) (M := M)
-    (pinchInitLt_of_pos (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitial (I := I) (M := M) G Ric scalar := by
+  exact pinchInitial_of_lt (I := I) (M := M)
+    (pinchInitialLt_of_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) hpos hbounds)
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInitLt_ricMin
+theorem pinchInitialLt_ricMin
     [CompactSpace M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {ricMin : M -> Real}
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin)
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
-    PinchInitLt (I := I) (M := M) G Ric scalar :=
-  pinchInitLt_bounds (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitialLt (I := I) (M := M) G Ric scalar :=
+  pinchInitialLt_bounds (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar)
     (bounds_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) hmin
       (scalarUpper_cont (M := M) hscalar))
 
 omit [FiniteDimensional ℝ E] in
-theorem pinchInit_ricMin
+theorem pinchInitial_ricMin
     [CompactSpace M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
     {scalar : Real -> M -> Real}
     {ricMin : M -> Real}
-    (hmin : RicMinData (I := I) (M := M) G Ric ricMin)
+    (hmin : HasPositiveRicciLowerBound (I := I) (M := M) G Ric ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
-    PinchInit (I := I) (M := M) G Ric scalar :=
-  pinchInit_of_lt (I := I) (M := M)
-    (pinchInitLt_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitial (I := I) (M := M) G Ric scalar :=
+  pinchInitial_of_lt (I := I) (M := M)
+    (pinchInitialLt_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) hmin hscalar)
 
-theorem pinchInitLt_metric
+theorem pinchInitialLt_metric
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -668,12 +669,12 @@ theorem pinchInitLt_metric
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hmin : MetricRicciMin (I := I) (M := M) D ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
-    PinchInitLt (I := I) (M := M) G Ric scalar :=
-  pinchInitLt_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitialLt (I := I) (M := M) G Ric scalar :=
+  pinchInitialLt_ricMin (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (ricMin := ricMin)
     (ricMin_of_metric (I := I) (M := M) D hmin) hscalar
 
-theorem pinchInit_metric
+theorem pinchInitial_metric
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -682,12 +683,12 @@ theorem pinchInit_metric
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hmin : MetricRicciMin (I := I) (M := M) D ricMin)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
-    PinchInit (I := I) (M := M) G Ric scalar :=
-  pinchInit_of_lt (I := I) (M := M)
-    (pinchInitLt_metric (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitial (I := I) (M := M) G Ric scalar :=
+  pinchInitial_of_lt (I := I) (M := M)
+    (pinchInitialLt_metric (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) (ricMin := ricMin) D hmin hscalar)
 
-theorem pinchInitLt_pos
+theorem pinchInitialLt_pos
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -695,12 +696,12 @@ theorem pinchInitLt_pos
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hpos : MetricRicciPos (I := I) (M := M) D)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
-    PinchInitLt (I := I) (M := M) G Ric scalar := by
+    PinchInitialLt (I := I) (M := M) G Ric scalar := by
   rcases metricMin_pos (I := I) (M := M) D hpos with ⟨ricMin, hmin⟩
-  exact pinchInitLt_metric (I := I) (M := M) (G := G) (Ric := Ric)
+  exact pinchInitialLt_metric (I := I) (M := M) (G := G) (Ric := Ric)
     (scalar := scalar) (ricMin := ricMin) D hmin hscalar
 
-theorem pinchInit_pos
+theorem pinchInitial_pos
     [CompactSpace M] [SigmaCompactSpace M] [T2Space M] [Nonempty M]
     {G : Real -> SmoothRiemannianMetric I M}
     {Ric : TwoTensorFamily (I := I) (M := M)}
@@ -708,9 +709,9 @@ theorem pinchInit_pos
     (D : MetricRicciData (I := I) (M := M) G Ric)
     (hpos : MetricRicciPos (I := I) (M := M) D)
     (hscalar : Continuous (fun x : M => scalar 0 x)) :
-    PinchInit (I := I) (M := M) G Ric scalar := by
-  exact pinchInit_of_lt (I := I) (M := M)
-    (pinchInitLt_pos (I := I) (M := M) (G := G) (Ric := Ric)
+    PinchInitial (I := I) (M := M) G Ric scalar := by
+  exact pinchInitial_of_lt (I := I) (M := M)
+    (pinchInitialLt_pos (I := I) (M := M) (G := G) (Ric := Ric)
       (scalar := scalar) D hpos hscalar)
 
 noncomputable def initialMetricRicciDataOfSolution
@@ -720,17 +721,17 @@ noncomputable def initialMetricRicciDataOfSolution
     MetricRicciData (I := I) (M := M)
       (fun t : Real => S.base.metric t)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci) where
-  K := metricCurvData (I := I) (M := M) (S.base.metric 0)
+  K := metricCurvatureSections (I := I) (M := M) (S.base.metric 0)
   ricci_eq := by
     intro x v w
     simp [twoTensorSecToFamily, SolutionOn.ricci, SolutionFamily.ricci,
-      metricCurvData, DifferentialGeometry.Geometry.Curvature.metricCurvData]
+      metricCurvatureSections, DifferentialGeometry.Geometry.Curvature.metricCurvatureSections]
 
-theorem initial_metric_ricci_data_positive
+theorem initialMetricRicciDataOfSolution_positive
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [SigmaCompactSpace M] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D)
-    (hpos : RicciPosInit (I := I) (M := M)
+    (hpos : RicciPosInitial (I := I) (M := M)
       (twoTensorSecToFamily (I := I) (M := M) S.ricci)) :
     MetricRicciPos (I := I) (M := M)
       (initialMetricRicciDataOfSolution (I := I) (M := M) S) := by
@@ -786,13 +787,13 @@ theorem ricciMetricComp
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
-    DifferentialGeometry.Geometry.Connection.IsMetricCompatibleGen
+    DifferentialGeometry.Geometry.Connection.IsMetricCompatible
       (I := I) (S.base.connection t) (S.base.metric t) := by
   simpa [SolutionFamily.connection] using
     (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric_isMetricCompatible
       (I := I) (S.base.metric t))
 
-noncomputable def ricciDerivsWMP
+noncomputable def ricciDerivsWeakMaximumPrinciple
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (t : Real) :
@@ -802,34 +803,34 @@ noncomputable def ricciDerivsWMP
     (E := E) (H := H) (I := I) (M := M)
     (S.base.connection t) (ricciCovInf (I := I) S t) (S.ricci t)
 
-noncomputable def ricciNablaWMP
+noncomputable def ricciNablaWeakMaximumPrinciple
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorNabla1SecFamily (I := I) (M := M) :=
-  fun t => (ricciDerivsWMP (I := I) S t).nablaA
+  fun t => (ricciDerivsWeakMaximumPrinciple (I := I) S t).nablaA
 
-noncomputable def ricciNabla2WMP
+noncomputable def ricciNabla2WeakMaximumPrinciple
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorNabla2SecFamily (I := I) (M := M) :=
-  fun t => (ricciDerivsWMP (I := I) S t).nabla2A
+  fun t => (ricciDerivsWeakMaximumPrinciple (I := I) S t).nabla2A
 
-theorem ricciSpatialWMP
+theorem ricciSpatialWeakMaximumPrinciple
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) :
     TensorSpatialDerivs (I := I) (M := M)
       (fun t : Real => S.base.connection t) S.ricci
-      (ricciNablaWMP (I := I) S) (ricciNabla2WMP (I := I) S) := by
+      (ricciNablaWeakMaximumPrinciple (I := I) S) (ricciNabla2WeakMaximumPrinciple (I := I) S) := by
   constructor
   · intro t
-    simpa [ricciNablaWMP, ricciDerivsWMP] using
-      (ricciDerivsWMP (I := I) S t).first
+    simpa [ricciNablaWeakMaximumPrinciple, ricciDerivsWeakMaximumPrinciple] using
+      (ricciDerivsWeakMaximumPrinciple (I := I) S t).first
   · intro t
-    simpa [ricciNablaWMP, ricciNabla2WMP, ricciDerivsWMP] using
-      (ricciDerivsWMP (I := I) S t).second
+    simpa [ricciNablaWeakMaximumPrinciple, ricciNabla2WeakMaximumPrinciple, ricciDerivsWeakMaximumPrinciple] using
+      (ricciDerivsWeakMaximumPrinciple (I := I) S t).second
 
 noncomputable def pinchSec
     {D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
@@ -973,7 +974,7 @@ theorem ricciAt_symm
     DifferentialGeometry.Tensor.Coordinates.inverseMetricFlatModelInChartComponent
       (I := I) (S.base.metric t) x k l (extChartAt I x x)
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv := by
+      MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv := by
     simpa [basis, gInv] using
       Tensor.Coordinates.inverseMetricFlatModelInChart_metricInverseInBasis_center
         (I := I) (S.base.metric t) x
@@ -1245,7 +1246,7 @@ private theorem ricciEnd_repr_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (i k : Idx) :
     basis.repr (DifferentialGeometry.Geometry.Curvature.ricciEndAt (I := I) g Ric (basis i)) k =
@@ -1258,7 +1259,7 @@ private theorem ricciQuadAt_comp_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (Ric : Tensor02At (I := I) (M := M) x)
     (i j : Idx) :
     ricciQuadAt (I := I) (M := M) g Ric
@@ -1316,7 +1317,7 @@ private theorem rm04ContrAt_comp_basis
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     (Rm04 : Tensor04At (I := I) (M := M) x)
     (Ric : Tensor02At (I := I) (M := M) x)
     (i j : Idx) :
@@ -1325,7 +1326,7 @@ private theorem rm04ContrAt_comp_basis
       DifferentialGeometry.Geometry.Curvature.rm04RicciContractionAt (I := I) basis Rm04 gInv Ric i
         j := by
   have hInv : ∀ a b : Idx, gInv a b = gInv b a :=
-    Tensor0SBundle.invMetric_symm (I := I) (M := M) g x basis gInv hinv
+    Tensor0SBundle.MetricInverseInBasis.symmetric (I := I) (M := M) g x basis gInv hinv
   rw [rm04RicciContrAt_apply]
   rw [inner0S_two_eq_coord (I := I) g x basis gInv hinv]
   unfold DifferentialGeometry.Geometry.Curvature.rm04RicciContractionAt
@@ -1436,15 +1437,15 @@ private theorem sum_coord_react_cancel
   simp_rw [Finset.sum_neg_distrib]
   abel
 
-private theorem stdRmOfRic3_signed_contr
+private theorem standardRmOfRic3_signed_contr
     (Ric : Fin 3 -> Fin 3 -> Real)
     (i j : Fin 3) :
     (∑ k : Fin 3, ∑ l : Fin 3,
-        stdRmOfRic3 (fun a b : Fin 3 => -Ric a b) i k j l * Ric k l) =
+        standardRmOfRic3 (fun a b : Fin 3 => -Ric a b) i k j l * Ric k l) =
       -∑ k : Fin 3, ∑ l : Fin 3,
-        stdRmOfRic3 Ric i k j l * Ric k l := by
+        standardRmOfRic3 Ric i k j l * Ric k l := by
   fin_cases i <;> fin_cases j <;>
-    simp [stdRmOfRic3, ricciScal3, DifferentialGeometry.Geometry.Curvature.delta3,
+    simp [standardRmOfRic3, ricciScal3, DifferentialGeometry.Geometry.Curvature.delta3,
       Fin.sum_univ_three] <;>
     ring
 
@@ -1460,7 +1461,7 @@ private theorem actualRm04_comp_signed
         Rm04 basis)
     (i k j l : Fin 3) :
     Rm04 (vec4 (I := I) (basis i) (basis k) (basis j) (basis l)) =
-      stdRmOfRic3
+      standardRmOfRic3
         (fun a b : Fin 3 =>
           -Ric (vec2 (I := I) (basis a) (basis b))) i k j l := by
   have hformula :=
@@ -1475,7 +1476,7 @@ private theorem actualRm04_comp_signed
   rw [rm04CompAt_apply] at hformula
   rw [hformula, htraceRic]
   simp only [ricciCompAt_apply, Tensor0SSpace.neg_apply,
-    stdRmOfRic3, ricciScal3, Finset.sum_neg_distrib]
+    standardRmOfRic3, ricciScal3, Finset.sum_neg_distrib]
   ring
 
 private theorem actualRm04Contr_eq_canonical
@@ -1503,7 +1504,7 @@ private theorem actualRm04Contr_eq_canonical
         Rm04 (vec4 (I := I) (basis i) (basis k) (basis j) (basis l)) *
           Ric (vec2 (I := I) (basis k) (basis l))) =
       ∑ k : Fin 3, ∑ l : Fin 3,
-        stdRmOfRic3 (fun a b : Fin 3 => -RicC a b) i k j l *
+        standardRmOfRic3 (fun a b : Fin 3 => -RicC a b) i k j l *
           RicC k l := by
         refine Finset.sum_congr rfl fun k _ => ?_
         refine Finset.sum_congr rfl fun l _ => ?_
@@ -1511,8 +1512,8 @@ private theorem actualRm04Contr_eq_canonical
           (actualRm04_comp_signed (I := I) (M := M) horth htrace i k j l)
     _ =
       -∑ k : Fin 3, ∑ l : Fin 3,
-        stdRmOfRic3 RicC i k j l * RicC k l := by
-        exact stdRmOfRic3_signed_contr RicC i j
+        standardRmOfRic3 RicC i k j l * RicC k l := by
+        exact standardRmOfRic3_signed_contr RicC i j
     _ =
       -∑ k : Fin 3, ∑ l : Fin 3,
         rm04OfRic3At (I := I) (M := M) g Ric
@@ -1552,8 +1553,8 @@ theorem traceData_metricTrace
     change DifferentialGeometry.Geometry.Curvature.rm13RealizesConnection (I := I)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t))
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm13Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13Realizes
   have hRm04 :
       DifferentialGeometry.Geometry.Curvature.rm04RealizesConnection (I := I) (S.base.metric t)
         (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
@@ -1562,16 +1563,16 @@ theorem traceData_metricTrace
       (S.base.metric t)
       (DifferentialGeometry.Geometry.Connection.leviCivitaConnectionOfMetric (I := I)
         (S.base.metric t))
-      (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).rm04Realizes
+      (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm04Realizes
   have hRic13 :
       S.ricci t x =
         DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
           (S.base.rm13 t x) := by
-    change (metricCurvData (I := I) (M := M) (S.base.metric t)).ricci x =
+    change (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricci x =
       DifferentialGeometry.Geometry.Curvature.ricciFromRm13At (I := I) (M := M)
-        ((metricCurvData (I := I) (M := M) (S.base.metric t)).rm13 x)
-    exact (metricCurvData (I := I) (M := M) (S.base.metric t)).ricciRealizes x
+        ((metricCurvatureSections (I := I) (M := M) (S.base.metric t)).rm13 x)
+    exact (metricCurvatureSections (I := I) (M := M) (S.base.metric t)).ricciRealizes x
   have hLowerAt :
       DifferentialGeometry.Geometry.Curvature.Rm04LowersRm13At (I := I) (S.base.metric t) x
         (S.base.rm13 t x) (S.base.rm04 t x) :=
@@ -1592,7 +1593,7 @@ theorem traceData_metricTrace
       DifferentialGeometry.Geometry.Curvature.RicciRealizesRm04FirstTraceAt (I := I) (S.ricci t x)
         (S.base.rm04 t x) DifferentialGeometry.Geometry.Curvature.delta3 basis := by
     have hinv :
-        MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+        MetricInverseInBasis (I := I) (S.base.metric t) x basis
           DifferentialGeometry.Geometry.Curvature.delta3 :=
       DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
         basis horth
@@ -1605,7 +1606,7 @@ theorem traceData_metricTrace
         (metricTracePair0SAt (I := I) (S.base.metric t) (S.ricci t x))
         (S.ricci t x) DifferentialGeometry.Geometry.Curvature.delta3 basis := by
     have hinv :
-        MetricInverseInBasisGen (I := I) (S.base.metric t) x basis
+        MetricInverseInBasis (I := I) (S.base.metric t) x basis
           DifferentialGeometry.Geometry.Curvature.delta3 :=
       DifferentialGeometry.Geometry.Curvature.orthonormal_invBasis3 (I := I) (S.base.metric t)
         basis horth
@@ -1776,7 +1777,7 @@ theorem ricciQuadDeriv_coord
               (s := D.carrier) (x := (t : Real))
               (fun j _hj => by
                 simpa [rhs, b, frame, mul_assoc] using
-                  ((hS.ricciEvol x t i j).const_mul
+                  ((hS.ricciEvolution x t i j).const_mul
                     (b.coord i v * b.coord j v))))))
   refine hsum_deriv.congr_of_eventuallyEq ?_ ?_
   · filter_upwards with s
@@ -1877,7 +1878,7 @@ theorem pinchRough_smulMetric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv)
     (f : Real)
     (df : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 1 x)
     (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
@@ -1914,7 +1915,7 @@ theorem pinchRough_hessMetric
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv)
     (hessF : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 2 x)
     (tail : Fin 2 -> TangentSpace I x) :
     roughLap0STensor (I := I) (S.base.metric t)
@@ -2061,7 +2062,7 @@ theorem ricciRoughTrace_coord
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (x : M) (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-        (ricciNabla2WMP (I := I) S t x)
+        (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) =
       ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2076,9 +2077,9 @@ theorem ricciRoughTrace_coord
   let roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 x :=
     roughLap0STensor (I := I) (S.base.metric t)
-      (ricciNabla2WMP (I := I) S t x)
+      (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
   have hnabla : ∀ y a i j,
-      ricciNablaWMP (I := I) S t y
+      ricciNablaWeakMaximumPrinciple (I := I) S t y
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I)
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x a y)
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x i y)
@@ -2086,15 +2087,15 @@ theorem ricciRoughTrace_coord
         nablaRicComp (I := I) S
           (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t y a i j := by
     intro y a i j
-    simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
+    simp [ricciNablaWeakMaximumPrinciple, ricciDerivsWeakMaximumPrinciple, nablaRicComp,
       CanonicalSpatialDerivs0S.ofSmoothConnection]
   have hnab2 :=
     coordinate_second_ricci_covariant_derivative_of_realization (I := I) S t x
-      (ricciNablaWMP (I := I) S t)
-      (ricciNabla2WMP (I := I) S t)
+      (ricciNablaWeakMaximumPrinciple (I := I) S t)
+      (ricciNabla2WeakMaximumPrinciple (I := I) S t)
       (by
-        simpa [SolutionOn.family, ricciNablaWMP, ricciNabla2WMP] using
-          (ricciSpatialWMP (I := I) S).second t)
+        simpa [SolutionOn.family, ricciNablaWeakMaximumPrinciple, ricciNabla2WeakMaximumPrinciple] using
+          (ricciSpatialWeakMaximumPrinciple (I := I) S).second t)
       hnabla
   have hcomp :
       ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2105,7 +2106,7 @@ theorem ricciRoughTrace_coord
     intro i j
     simpa [roughA, frame, SolutionOn.family] using
       rough_laplacian_ricci_component_of_coordinate_realization (I := I) S t x
-        (ricciNabla2WMP (I := I) S t) hnab2 i j
+        (ricciNabla2WeakMaximumPrinciple (I := I) S t) hnab2 i j
   have hcomp_if :
       ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         roughA
@@ -2120,7 +2121,7 @@ theorem ricciRoughTrace_coord
     DifferentialGeometry.Tensor.Coordinates.tensor0S_two_eval_coordFrame_sum (I := I)
       (M := M) (x₀ := x) (Ax := roughA) v v
   rw [← roughLap0STensor_apply (I := I) (S.base.metric t)
-      (ricciNabla2WMP (I := I) S t x) (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)]
+      (ricciNabla2WeakMaximumPrinciple (I := I) S t x) (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)]
   rw [vec2_self_eq_const (I := I) (M := M) v]
   change roughA (fun _ : Fin 2 => v) =
     ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2135,7 +2136,7 @@ theorem ricciRoughPair
     (S : SolutionOn (I := I) (M := M) D) (t : Real)
     (x : M) (v w : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-        (ricciNabla2WMP (I := I) S t x)
+        (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) =
       ∑ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         ∑ j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2150,9 +2151,9 @@ theorem ricciRoughPair
   let roughA : Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 2 x :=
     roughLap0STensor (I := I) (S.base.metric t)
-      (ricciNabla2WMP (I := I) S t x)
+      (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
   have hnabla : ∀ y a i j,
-      ricciNablaWMP (I := I) S t y
+      ricciNablaWeakMaximumPrinciple (I := I) S t y
           (DifferentialGeometry.Geometry.Curvature.vec3 (I := I)
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x a y)
             (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x i y)
@@ -2160,15 +2161,15 @@ theorem ricciRoughPair
         nablaRicComp (I := I) S
           (DifferentialGeometry.Tensor.Coordinates.coordinateFrameAt (I := I) x) t y a i j := by
     intro y a i j
-    simp [ricciNablaWMP, ricciDerivsWMP, nablaRicComp,
+    simp [ricciNablaWeakMaximumPrinciple, ricciDerivsWeakMaximumPrinciple, nablaRicComp,
       CanonicalSpatialDerivs0S.ofSmoothConnection]
   have hnab2 :=
     coordinate_second_ricci_covariant_derivative_of_realization (I := I) S t x
-      (ricciNablaWMP (I := I) S t)
-      (ricciNabla2WMP (I := I) S t)
+      (ricciNablaWeakMaximumPrinciple (I := I) S t)
+      (ricciNabla2WeakMaximumPrinciple (I := I) S t)
       (by
-        simpa [SolutionOn.family, ricciNablaWMP, ricciNabla2WMP] using
-          (ricciSpatialWMP (I := I) S).second t)
+        simpa [SolutionOn.family, ricciNablaWeakMaximumPrinciple, ricciNabla2WeakMaximumPrinciple] using
+          (ricciSpatialWeakMaximumPrinciple (I := I) S).second t)
       hnabla
   have hcomp :
       ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -2179,7 +2180,7 @@ theorem ricciRoughPair
     intro i j
     simpa [roughA, frame, SolutionOn.family] using
       rough_laplacian_ricci_component_of_coordinate_realization (I := I) S t x
-        (ricciNabla2WMP (I := I) S t) hnab2 i j
+        (ricciNabla2WeakMaximumPrinciple (I := I) S t) hnab2 i j
   have hcomp_if :
       ∀ i j : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
         roughA
@@ -2194,7 +2195,7 @@ theorem ricciRoughPair
     DifferentialGeometry.Tensor.Coordinates.tensor0S_two_eval_coordFrame_sum (I := I)
       (M := M) (x₀ := x) (Ax := roughA) v w
   rw [← roughLap0STensor_apply (I := I) (S.base.metric t)
-      (ricciNabla2WMP (I := I) S t x)
+      (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
       (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w)]
   change roughA (fun q : Fin 2 => if q = 0 then v else w) = _
   simpa [b, frame, hcomp_if] using hsum
@@ -2206,7 +2207,7 @@ theorem scalarMetric_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv)
     (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
         (scalarMetric2Sec (I := I) S t x)
@@ -2227,7 +2228,7 @@ private theorem trace_sub_smul
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) g x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
     {s : ℕ}
     (A B : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (s + 2) x)
@@ -2256,7 +2257,7 @@ def pinchNab2Model
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M) 4 x :=
-  ricciNabla2WMP (I := I) S t x -
+  ricciNabla2WeakMaximumPrinciple (I := I) S t x -
     delta • scalarMetric2Sec (I := I) S t x
 
 theorem pinchNab2Model_trace
@@ -2266,13 +2267,13 @@ theorem pinchNab2Model_trace
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {x : M} (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv)
     (v : TangentSpace I x) :
     metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
         (pinchNab2Model (I := I) S delta t x)
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) =
       metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
-          (ricciNabla2WMP (I := I) S t x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
             (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v) -
         delta *
           (metricTraceFirstTwo0SAt (I := I) (S.base.metric t)
@@ -2280,7 +2281,7 @@ theorem pinchNab2Model_trace
             (S.base.metric t).inner x v v) := by
   rw [pinchNab2Model]
   rw [trace_sub_smul (I := I) (M := M) (S.base.metric t) basis gInv hinv
-    (ricciNabla2WMP (I := I) S t x)
+    (ricciNabla2WeakMaximumPrinciple (I := I) S t x)
     (scalarMetric2Sec (I := I) S t x)
     delta (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v v)]
   rw [scalarMetric_trace (I := I) S t basis gInv hinv v]
@@ -2295,7 +2296,7 @@ theorem scalarHessSec_realizes
   unfold scalarHessSec hessianSec
   exact totalNabla0S_realizes (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
     1 (S.base.connection t) (scalarDuSec (I := I) S t)
-    (totalNabla0S_reg (E := E) (H := H) (I := I) (M := M)
+    (totalNabla0S_regularity (E := E) (H := H) (I := I) (M := M)
       1 (S.base.connection t) (ricciCovInf (I := I) S t)
       (scalarDuSec (I := I) S t))
 
@@ -2315,13 +2316,13 @@ theorem scalarMetric1Sec_realizes
   let V : Fin 2 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin 2, V a x = slots a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose_spec
   let metricSec : Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -2438,13 +2439,13 @@ theorem scalarMetric2Sec_realizes
   let V : Fin 3 -> ContMDiffSection I E (∞ : WithTop ℕ∞)
       (TangentSpace I : M -> Type _) :=
     fun a =>
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose
   have hV : ∀ a : Fin 3, V a x = slots a := by
     intro a
     exact
-      (ContMDiffSection.exists_eq_at_gen
+      (ContMDiffSection.exists_eq_at
         (I := I) (F := E) (V := TangentSpace I) (n := (⊤ : ℕ∞))
         x (slots a)).choose_spec
   let alphaSec : Tensor0SField (𝕜 := Real) (E := E) (H := H)
@@ -2638,7 +2639,7 @@ noncomputable def pinchNablaModel
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TensorNabla1SecFamily (I := I) (M := M) :=
-  fun t => ricciNablaWMP (I := I) S t -
+  fun t => ricciNablaWeakMaximumPrinciple (I := I) S t -
     delta • scalarMetric1Sec (I := I) S t
 
 noncomputable def pinchNab2ModelSec
@@ -2646,7 +2647,7 @@ noncomputable def pinchNab2ModelSec
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta : Real) :
     TensorNabla2SecFamily (I := I) (M := M) :=
-  fun t => ricciNabla2WMP (I := I) S t -
+  fun t => ricciNabla2WeakMaximumPrinciple (I := I) S t -
     delta • scalarMetric2Sec (I := I) S t
 
 @[simp]
@@ -2655,7 +2656,7 @@ theorem pinchNablaModel_apply
     [CompleteSpace E] [T2Space M]
     (S : SolutionOn (I := I) (M := M) D) (delta t : Real) (x : M) :
     pinchNablaModel (I := I) S delta t x =
-      ricciNablaWMP (I := I) S t x -
+      ricciNablaWeakMaximumPrinciple (I := I) S t x -
         delta • scalarMetric1Sec (I := I) S t x := by
   simp [pinchNablaModel]
 
@@ -2805,7 +2806,7 @@ theorem actualReact_comp
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (basis : Module.Basis Idx Real (TangentSpace I x))
     (gInv : Idx → Idx → Real)
-    (hinv : MetricInverseInBasisGen (I := I) (S.base.metric t) x basis gInv)
+    (hinv : MetricInverseInBasis (I := I) (S.base.metric t) x basis gInv)
     (i j : Idx) :
     ricciActualReactAt (I := I) S t x
         (vec2 (I := I) (basis i) (basis j)) =
@@ -2910,7 +2911,7 @@ theorem ricciCoordReact_eq_actual
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E -> Real :=
     fun i j => coordInv (I := I) S x t x i j
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x b gInvAt := by
+      MetricInverseInBasis (I := I) (S.base.metric t) x b gInvAt := by
     simpa [b, gInvAt] using coordInvReal (I := I) S x t
   have hbasis :
       ∀ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -3072,7 +3073,7 @@ theorem pairReact_eq_actual
       DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E → Real :=
     fun i j => coordInv (I := I) S x t x i j
   have hinv :
-      MetricInverseInBasisGen (I := I) (S.base.metric t) x b gInvAt := by
+      MetricInverseInBasis (I := I) (S.base.metric t) x b gInvAt := by
     simpa [b, gInvAt] using coordInvReal (I := I) S x t
   have hbasis :
       ∀ i : DifferentialGeometry.Tensor.Coordinates.CoordinateIdx (𝕜 := Real) E,
@@ -3187,7 +3188,7 @@ theorem ricciPairDeriv
       (fun s : Real => S.ricci s x
         (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w))
       (metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
-          (ricciNabla2WMP (I := I) S (t : Real) x)
+          (ricciNabla2WeakMaximumPrinciple (I := I) S (t : Real) x)
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) +
         ricciActualReactAt (I := I) S (t : Real) x
           (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w))
@@ -3198,7 +3199,7 @@ theorem ricciPairDeriv
   have hvalue :
       ricciPairRHS (I := I) S (t : Real) x v w =
         metricTraceFirstTwo0SAt (I := I) (S.base.metric (t : Real))
-            (ricciNabla2WMP (I := I) S (t : Real) x)
+            (ricciNabla2WeakMaximumPrinciple (I := I) S (t : Real) x)
             (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) +
           ricciActualReactAt (I := I) S (t : Real) x
             (DifferentialGeometry.Geometry.Curvature.vec2 (I := I) v w) := by

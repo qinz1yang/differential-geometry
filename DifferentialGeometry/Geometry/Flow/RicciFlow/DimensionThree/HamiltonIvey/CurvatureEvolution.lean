@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.HamiltonIvey.Reaction
-import DifferentialGeometry.Geometry.Curvature.DimensionThree.UhlReaction3
+import DifferentialGeometry.Geometry.Curvature.DimensionThree.Algebra.UhlenbeckReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Uhlenbeck.CurvatureOperatorHeatReaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Curvature.NormHeatEquation
 

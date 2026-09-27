@@ -753,10 +753,10 @@ lemma cutoffChartKernel_subset_target (α : M) :
     cutoffChartKernel (I := I) (M := M) α ⊆ (extChartAt I α).target := by
   classical
   rintro y ⟨x, hx, rfl⟩
-  have hx_src : x ∈ (extChartAt I α).source := by
+  have hx_source : x ∈ (extChartAt I α).source := by
     rw [extChartAt_source]
     exact chartKernelCutoff_tsupport_subset_source (I := I) (M := M) α hx
-  exact (extChartAt I α).map_source hx_src
+  exact (extChartAt I α).map_source hx_source
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma cutoffComponentScalar_chartImage_subset_kernel
@@ -785,7 +785,7 @@ lemma cutoffComponentEuclid_eLpNorm_le_uniform
         (Idx : Fin r → Fin (Module.finrank ℝ E))
         (Jdx : Fin s → Fin (Module.finrank ℝ E)),
         eLpNorm (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx) 2
-            (chartL2Measure (I := I) (M := M) α) ≤
+            (chartLebesgueMeasure (I := I) (M := M) α) ≤
           ENNReal.ofReal C * ENNReal.ofReal ‖S‖ := by
   classical
   obtain ⟨C₁, hC₁_nn, h_scalar⟩ :=
@@ -820,11 +820,11 @@ lemma cutoffComponentEuclid_eLpNorm_le_uniform
       refine h1.trans ?_
       gcongr
       rwa [SmoothCcTensor.norm_def (I := I) (M := M)]
-    rw [chartL2Measure, ENNReal.ofReal_mul hC₂_pos.le, mul_assoc]
+    rw [chartLebesgueMeasure, ENNReal.ofReal_mul hC₂_pos.le, mul_assoc]
     exact h_chain
   · refine ⟨0, le_refl 0, ?_⟩
     intro S Idx Jdx
-    have h_supp_empty :
+    have h_support_empty :
         ¬ (tsupport (cutoffComponentScalar (I := I) (M := M)
           g r s S α Idx Jdx)).Nonempty := by
       intro h_ne
@@ -837,7 +837,7 @@ lemma cutoffComponentEuclid_eLpNorm_le_uniform
           (fun _ : M => (0 : ℝ)) := by
       funext x
       exact image_eq_zero_of_notMem_tsupport
-        (fun hxs => h_supp_empty ⟨x, hxs⟩)
+        (fun hxs => h_support_empty ⟨x, hxs⟩)
     have h_comp_zero :
         cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx =
           (fun _ : EuclN => (0 : ℝ)) := by
@@ -858,12 +858,12 @@ private lemma cutoffComponentEuclid_memLp
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     MemLp (cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx) 2
-      (chartL2Measure (I := I) (M := M) α) := by
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   obtain ⟨C, hC_nn, h_bound⟩ :=
     cutoffComponentEuclid_eLpNorm_le_uniform (I := I) (M := M) g r s α
   refine ⟨?_, ?_⟩
-  · rw [chartL2Measure]
+  · rw [chartLebesgueMeasure]
     exact ContinuousOn.aestronglyMeasurable
       (cutoffComponentEuclid_continuousOn (I := I) (M := M) g r s S α Idx Jdx)
       (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
@@ -958,7 +958,7 @@ private def cutoffComponentLp
     (S : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (cutoffComponentEuclid_memLp (I := I) (M := M) g r s S α Idx Jdx).toLp _
 
 omit [CompleteSpace E] in
@@ -969,8 +969,8 @@ private lemma cutoffComponentLp_coeFn
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
     ((cutoffComponentLp (I := I) (M := M) g r s S α Idx Jdx :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       cutoffComponentEuclid (I := I) (M := M) g r s S α Idx Jdx := by
   unfold cutoffComponentLp
   exact MemLp.coeFn_toLp _
@@ -1016,7 +1016,7 @@ private lemma cutoffComponentLp_smul
 private def cutoffComponentLpLin
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
-    SmoothCcTensor g r s →ₗ[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) where
+    SmoothCcTensor g r s →ₗ[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) where
   toFun S := cutoffComponentLp (I := I) (M := M) g r s S α P₀.1 P₀.2
   map_add' S₁ S₂ :=
     cutoffComponentLp_add (I := I) (M := M) g r s S₁ S₂ α P₀.1 P₀.2
@@ -1048,7 +1048,7 @@ private lemma cutoffComponentLpLin_norm_le
   have h_norm_eq :
       ‖cutoffComponentLpLin (I := I) (M := M) g r s α P₀ S‖ =
         (eLpNorm (cutoffComponentEuclid (I := I) (M := M)
-          g r s S α P₀.1 P₀.2) 2 (chartL2Measure (I := I) (M := M) α)).toReal := by
+          g r s S α P₀.1 P₀.2) 2 (chartLebesgueMeasure (I := I) (M := M) α)).toReal := by
     rw [cutoffComponentLpLin_apply]
     unfold cutoffComponentLp
     exact MeasureTheory.Lp.norm_toLp _ _
@@ -1059,7 +1059,7 @@ private lemma cutoffComponentLpLin_norm_le
     (ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top).ne
   have h_toReal_le :
       (eLpNorm (cutoffComponentEuclid (I := I) (M := M)
-        g r s S α P₀.1 P₀.2) 2 (chartL2Measure (I := I) (M := M) α)).toReal ≤
+        g r s S α P₀.1 P₀.2) 2 (chartLebesgueMeasure (I := I) (M := M) α)).toReal ≤
         (ENNReal.ofReal C * ENNReal.ofReal ‖S‖).toReal :=
     ENNReal.toReal_mono h_rhs_lt_top h_eLp
   refine h_toReal_le.trans ?_
@@ -1069,7 +1069,7 @@ private lemma cutoffComponentLpLin_norm_le
 private def cutoffComponentLpCLM
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
-    SmoothCcTensor g r s →L[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    SmoothCcTensor g r s →L[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (cutoffComponentLpLin (I := I) (M := M) g r s α P₀).mkContinuous
     (cutoffComponentLpLin_norm_le (I := I) (M := M) g r s α P₀).choose
     (cutoffComponentLpLin_norm_le (I := I) (M := M) g r s α P₀).choose_spec.2
@@ -1119,7 +1119,7 @@ def tensorL2ChartComponentCutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   ContinuousLinearMap.extend
     (cutoffComponentLpCLM (I := I) (M := M) g r s α P₀)
     (smoothToTensorL2Cutoff (I := I) (M := M) g r s) u
@@ -1127,7 +1127,7 @@ def tensorL2ChartComponentCutoff
 def tensorL2ChartComponentCutoffCLM
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
-    TensorL2 r s g →L[ℝ] Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    TensorL2 r s g →L[ℝ] Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   ContinuousLinearMap.extend
     (cutoffComponentLpCLM (I := I) (M := M) g r s α P₀)
     (smoothToTensorL2Cutoff (I := I) (M := M) g r s)
@@ -1175,8 +1175,8 @@ lemma tensorL2ChartComponentCutoff_smoothToTensorL2_coeFn
     (P₀ : TensorCompIdx (E := E) r s) :
     ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
         (S : TensorL2 r s g) α P₀ :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       cutoffComponentEuclid (I := I) (M := M) g r s S α P₀.1 P₀.2 := by
   rw [tensorL2ChartComponentCutoff_smoothToTensorL2_eq (I := I) (M := M)
     g r s S α P₀]
@@ -1197,7 +1197,7 @@ private lemma cutoffComponentEuclid_eq_cutoff_mul_tensorComponentEuclid
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-private lemma cutoff_chartPull_integrand_eq_raw
+private lemma cutoff_chartPull_integrand_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg T : SmoothCcTensor g r s)
     (hSg : tsupport Sg.toFun ⊆
@@ -1233,7 +1233,7 @@ private lemma cutoff_chartPull_integrand_eq_raw
   rw [covChartMetricGram_symm (I := I) (M := M) g r s α Q P y]
   by_cases hSg_zero : tensorComponentEuclid (I := I) (M := M) g r s Sg α P y = 0
   · rw [hSg_zero]; ring
-  · have hb_supp : b ∈ tsupport Sg.toFun := by
+  · have hb_support : b ∈ tsupport Sg.toFun := by
       have hraw_ne :
           tensorChartComponentRaw (I := I) (M := M) g r s Sg α P.1 P.2 b ≠ 0 := by
         intro hzero
@@ -1243,7 +1243,7 @@ private lemma cutoff_chartPull_integrand_eq_raw
       exact tensorChartComponentRaw_tsupport_subset
         (I := I) (M := M) g r s Sg α P.1 P.2 (subset_tsupport _ hraw_ne)
     have hχb_one : χb = 1 :=
-      chartKernelCutoff_eqOn_one (I := I) (M := M) α (hSg hb_supp)
+      chartKernelCutoff_eqOn_one (I := I) (M := M) α (hSg hb_support)
     rw [hχb_one]; ring
 
 private noncomputable def chartPullCoeffCutoff
@@ -1363,9 +1363,9 @@ private lemma chartPullCoeffCutoff_memLp
     (Sg : SmoothCcTensor g r s) (P : CompIdx E r s)
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
     MemLp (chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P) 2
-      (chartL2Measure (I := I) (M := M) α) := by
-  have : IsFiniteMeasureOnCompacts (chartL2Measure (I := I) (M := M) α) := by
-    rw [chartL2Measure]; infer_instance
+      (chartLebesgueMeasure (I := I) (M := M) α) := by
+  have : IsFiniteMeasureOnCompacts (chartLebesgueMeasure (I := I) (M := M) α) := by
+    rw [chartLebesgueMeasure]; infer_instance
   exact (chartPullCoeffCutoff_continuous (I := I) (M := M) g r s α Sg P
       hSg).memLp_of_hasCompactSupport
     (chartPullCoeffCutoff_hasCompactSupport (I := I) (M := M) g r s α Sg P hSg)
@@ -1374,7 +1374,7 @@ private noncomputable def chartPullCoeffCutoffLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg : SmoothCcTensor g r s) (P : CompIdx E r s)
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
+    Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (chartPullCoeffCutoff_memLp (I := I) (M := M) g r s α Sg P hSg).toLp _
 
 omit [CompleteSpace E] in
@@ -1383,17 +1383,17 @@ private lemma inner_chartPullCoeffCutoffLp_eq_integral
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg : SmoothCcTensor g r s) (P : CompIdx E r s)
     (hSg : tsupport Sg.toFun ⊆ (chartAt H α).source)
-    (w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) :
+    (w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
     (⟪chartPullCoeffCutoffLp (I := I) (M := M) g r s α Sg P hSg, w⟫_ℝ : ℝ) =
       ∫ y, chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P y *
           (w : EuclN → ℝ) y
-        ∂(chartL2Measure (I := I) (M := M) α) := by
+        ∂(chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
   rw [MeasureTheory.L2.inner_def]
   refine MeasureTheory.integral_congr_ae ?_
   have hcoe : ((chartPullCoeffCutoffLp (I := I) (M := M) g r s α Sg P hSg :
-        Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
-        chartL2Measure (I := I) (M := M) α]
+        Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) =ᵐ[
+        chartLebesgueMeasure (I := I) (M := M) α]
       chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P := by
     unfold chartPullCoeffCutoffLp
     exact MemLp.coeFn_toLp _
@@ -1413,7 +1413,7 @@ private lemma continuous_chartPullCoeffCutoff_pairing
   have hfun : (fun u : TensorL2 r s g =>
       (⟪chartPullCoeffCutoffLp (I := I) (M := M) g r s α Sg P hSg,
           tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P⟫_ℝ : ℝ)) =
-      (fun w : Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) =>
+      (fun w : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) =>
         (⟪chartPullCoeffCutoffLp (I := I) (M := M) g r s α Sg P hSg, w⟫_ℝ : ℝ)) ∘
         (fun u : TensorL2 r s g =>
           tensorL2ChartComponentCutoffCLM (I := I) (M := M) g r s α P u) := by
@@ -1434,12 +1434,12 @@ private lemma cutoff_chartPull_integrand_eq_coeff_mul
         (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
           covChartMetricGram (I := I) (M := M) g r s α P Q y *
             ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
             tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y) =
       ∑ P : CompIdx E r s,
         chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P y *
           ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y := by
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y := by
   classical
   rw [Finset.mul_sum]
   refine Finset.sum_congr rfl (fun P _ => ?_)
@@ -1457,8 +1457,8 @@ private lemma cutoff_chartPull_summand_integrable
     Integrable (fun y : EuclN =>
         chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P y *
           ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y)
-      (chartL2Measure (I := I) (M := M) α) :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
   MemLp.integrable_mul
     (chartPullCoeffCutoff_memLp (I := I) (M := M) g r s α Sg P hSg)
     (Lp.memLp _)
@@ -1474,7 +1474,7 @@ private lemma cutoff_chartPull_integral_eq_sum_inner
           (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)
         ∂(volume : Measure EuclN) =
       ∑ P : CompIdx E r s,
@@ -1486,7 +1486,7 @@ private lemma cutoff_chartPull_integral_eq_sum_inner
           (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)
         ∂(volume : Measure EuclN)) =
       ∫ y,
@@ -1494,21 +1494,21 @@ private lemma cutoff_chartPull_integral_eq_sum_inner
           (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)
-        ∂(chartL2Measure (I := I) (M := M) α) from rfl]
+        ∂(chartLebesgueMeasure (I := I) (M := M) α) from rfl]
   rw [show (fun y : EuclN =>
         densityOnEuclid (I := I) g α y *
           (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)) =
       (fun y : EuclN =>
         ∑ P : CompIdx E r s,
           chartPullCoeffCutoff (I := I) (M := M) g r s α Sg P y *
             ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) from by
     funext y
     exact cutoff_chartPull_integrand_eq_coeff_mul (I := I) (M := M) g r s α Sg u y]
   rw [MeasureTheory.integral_finsetSum (Finset.univ : Finset (CompIdx E r s))
@@ -1570,7 +1570,7 @@ private lemma cutoff_headline_on_smooth
     (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
       (I := I) (M := M) α).measurableSet
   rw [setIntegral_congr_fun hctE_meas (fun y hy => by
-    rw [← (cutoff_chartPull_integrand_eq_raw (I := I) (M := M) g r s α Sg T
+    rw [← (cutoff_chartPull_integrand_eq (I := I) (M := M) g r s α Sg T
       hSg_pou hy)])]
   have h_ae :
       (fun y : EuclN => densityOnEuclid (I := I) g α y *
@@ -1585,7 +1585,7 @@ private lemma cutoff_headline_on_smooth
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
                   (T : TensorL2 r s g) α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)) := by
     have hae : ∀ P : CompIdx E r s,
         cutoffComponentEuclid (I := I) (M := M) g r s T α P.1 P.2 =ᵐ[
@@ -1593,7 +1593,7 @@ private lemma cutoff_headline_on_smooth
               (chartTargetEuclid (I := I) (M := M) α)]
           ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
               (T : TensorL2 r s g) α P :
-              Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) :=
+              Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) :=
       fun P => (tensorL2ChartComponentCutoff_smoothToTensorL2_coeFn
         (I := I) (M := M) g r s T α P).symm
     have hall : ∀ᵐ y ∂((volume : Measure EuclN).restrict
@@ -1602,7 +1602,7 @@ private lemma cutoff_headline_on_smooth
           cutoffComponentEuclid (I := I) (M := M) g r s T α P.1 P.2 y =
             ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s
                 (T : TensorL2 r s g) α P :
-                Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y := by
+                Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y := by
       rw [MeasureTheory.ae_all_iff]
       exact hae
     filter_upwards [hall] with y hy
@@ -1653,7 +1653,7 @@ theorem tensorL2Inner_cutoff_chartKernelSupported_pull
           (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
             covChartMetricGram (I := I) (M := M) g r s α P Q y *
               ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
+                  Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y *
               tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)
         ∂(volume : Measure EuclN) := by
   classical
@@ -1665,33 +1665,6 @@ theorem tensorL2Inner_cutoff_chartKernelSupported_pull
   rw [hu]
   exact (cutoff_chartPull_integral_eq_sum_inner (I := I) (M := M) g r s α Sg u
     hSg_chart).symm
-
-section ElaborationTests
-
-variable (g : SmoothRiemannianMetric I M) (r s : ℕ)
-
-example (α : M) : C^∞⟮I, M; ℝ⟯ := chartKernelCutoff (I := I) (M := M) α
-
-example (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
-    Lp ℝ 2 (chartL2Measure (I := I) (M := M) α) :=
-  tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P₀
-
-example (u : TensorL2 r s g) (Sg : SmoothCcTensor g r s) (α : M)
-    (hSg : tsupport Sg.toFun ⊆
-      tsupport ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)) :
-    (⟪u, (Sg : TensorL2 r s g)⟫_ℝ : ℝ) =
-      ∫ y in chartTargetEuclid (I := I) (M := M) α,
-        densityOnEuclid (I := I) g α y *
-          (∑ P : CompIdx E r s, ∑ Q : CompIdx E r s,
-            covChartMetricGram (I := I) (M := M) g r s α P Q y *
-              ((tensorL2ChartComponentCutoff (I := I) (M := M) g r s u α P :
-                  Lp ℝ 2 (chartL2Measure (I := I) (M := M) α)) : EuclN → ℝ) y *
-              tensorComponentEuclid (I := I) (M := M) g r s Sg α Q y)
-        ∂(volume : Measure EuclN) :=
-  tensorL2Inner_cutoff_chartKernelSupported_pull
-    (I := I) (M := M) g r s α u Sg hSg
-
-end ElaborationTests
 
 end TensorSpectral
 end Parabolic

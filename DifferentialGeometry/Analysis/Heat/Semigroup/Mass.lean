@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Heat.Semigroup.Duhamel
-import DifferentialGeometry.Analysis.Heat.Smoothing.SmoothingOfClosed
+import DifferentialGeometry.Analysis.Heat.Semigroup.Solution.Duhamel
+import DifferentialGeometry.Analysis.Heat.Smoothing.Regularity.ClosedManifold
 import DifferentialGeometry.Analysis.Elliptic.Operator.SmoothBridge
-import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green
+import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.Identities
 import Mathlib.Analysis.Calculus.MeanValue
 
 noncomputable section

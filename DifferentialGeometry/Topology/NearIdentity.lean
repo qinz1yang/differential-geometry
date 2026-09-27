@@ -5,12 +5,12 @@ import Mathlib.Topology.UniformSpace.UniformConvergence
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.Pullback
+namespace DifferentialGeometry
 
 open Filter Set Uniformity UniformSpace
 open scoped SetRel Topology
 
-theorem inj_of_unif_close
+theorem inj_of_uniform_close
     {α : Type*} [UniformSpace α] [CompactSpace α]
     (U : α → Set α) (hU : ∀ x, U x ∈ 𝓝 x) :
     ∃ V ∈ 𝓤 α, ∀ (f : α → α),
@@ -33,7 +33,7 @@ theorem inj_of_unif_close
     exact (mem_ball_symmetry (V := V)).mp (hclose y)
   · exact hxy
 
-theorem surj_of_unif_close
+theorem surj_of_uniform_close
     {α : Type*} [UniformSpace α] [CompactSpace α]
     [LocallyConnectedSpace α] :
     ∃ V ∈ 𝓤 α, ∀ (f : α → α),
@@ -57,7 +57,7 @@ theorem surj_of_unif_close
   have hx' : x ∈ connectedComponent (f x) := hsame ▸ hx
   exact hrange.connectedComponent_subset (Set.mem_range_self x) hx'
 
-theorem bij_of_unif_close
+theorem bij_of_uniform_close
     {α : Type*} [UniformSpace α] [CompactSpace α]
     [LocallyConnectedSpace α]
     (U : α → Set α) (hU : ∀ x, U x ∈ 𝓝 x) :
@@ -65,8 +65,8 @@ theorem bij_of_unif_close
       (∀ x, f x ∈ ball x V) →
       (∀ z, Set.InjOn f (U z)) →
       IsClopen (Set.range f) → Function.Bijective f := by
-  obtain ⟨Vinj, hVinj, hinj⟩ := inj_of_unif_close U hU
-  obtain ⟨Vsurj, hVsurj, hsurj⟩ := surj_of_unif_close (α := α)
+  obtain ⟨Vinj, hVinj, hinj⟩ := inj_of_uniform_close U hU
+  obtain ⟨Vsurj, hVsurj, hsurj⟩ := surj_of_uniform_close (α := α)
   refine ⟨Vinj ∩ Vsurj, inter_mem hVinj hVsurj, ?_⟩
   intro f hclose hlocal hrange
   have hclose_inj : ∀ x, f x ∈ ball x Vinj := fun x =>
@@ -84,7 +84,7 @@ theorem eventually_bijective
     (hlocal : ∀ᶠ i in l, ∀ z, Set.InjOn (F i) (U z))
     (hrange : ∀ᶠ i in l, IsClopen (Set.range (F i))) :
     ∀ᶠ i in l, Function.Bijective (F i) := by
-  obtain ⟨V, hV, hbij⟩ := bij_of_unif_close U hU
+  obtain ⟨V, hV, hbij⟩ := bij_of_uniform_close U hU
   filter_upwards [hconv V hV, hlocal, hrange] with i hclose hlocal_i hrange_i
   apply hbij (F i)
   · intro x
@@ -103,4 +103,36 @@ theorem localDiff_clopen
   ⟨(isCompact_range hf.isLocalHomeomorph.continuous).isClosed,
     hf.isOpen_range⟩
 
-end DifferentialGeometry.PDE.RicciFlow.Pullback
+open scoped Manifold ContDiff
+
+theorem eventually_bijective_of_local_diffeomorph
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {M : Type*} [UniformSpace M] [ChartedSpace H M]
+    [CompactSpace M] [T2Space M] [LocallyConnectedSpace M]
+    {ι : Type*} {F : ι → M → M} {l : Filter ι}
+    (U : M → Set M) (hU : ∀ x, U x ∈ nhds x)
+    (hconv : TendstoUniformly F id l)
+    (hinj : ∀ᶠ i in l, ∀ z, Set.InjOn (F i) (U z))
+    (hdiff : ∀ᶠ i in l, IsLocalDiffeomorph I I ∞ (F i)) :
+    ∀ᶠ i in l, Function.Bijective (F i) := by
+  have hrange : ∀ᶠ i in l, IsClopen (Set.range (F i)) :=
+    hdiff.mono fun _ hi ↦ localDiff_clopen I hi
+  exact eventually_bijective F U hU hconv hinj hrange
+
+theorem eventually_exists_diffeomorph_of_local_diffeomorph
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+    {H : Type*} [TopologicalSpace H] (I : ModelWithCorners ℝ E H)
+    {M : Type*} [UniformSpace M] [ChartedSpace H M]
+    [CompactSpace M] [T2Space M] [LocallyConnectedSpace M]
+    {ι : Type*} {F : ι → M → M} {l : Filter ι}
+    (U : M → Set M) (hU : ∀ x, U x ∈ nhds x)
+    (hconv : TendstoUniformly F id l)
+    (hinj : ∀ᶠ i in l, ∀ z, Set.InjOn (F i) (U z))
+    (hdiff : ∀ᶠ i in l, IsLocalDiffeomorph I I ∞ (F i)) :
+    ∀ᶠ i in l, ∃ Φ : M ≃ₘ⟮I, I⟯ M, (Φ : M → M) = F i := by
+  filter_upwards [hdiff,
+    eventually_bijective_of_local_diffeomorph I U hU hconv hinj hdiff] with i hlocal hbij
+  exact ⟨IsLocalDiffeomorph.diffeomorphOfBijective hlocal hbij, rfl⟩
+
+end DifferentialGeometry

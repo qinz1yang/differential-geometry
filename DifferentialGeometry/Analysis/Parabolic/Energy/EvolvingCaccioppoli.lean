@@ -126,7 +126,7 @@ theorem evolvingLocalizedDirichletEnergy_continuousOn
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hu : ContMDiff ((modelWithCornersSelf ℝ ℝ).prod I)
@@ -164,7 +164,7 @@ theorem evolvingCutoffGradientError_continuousOn
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hu : ContMDiff ((modelWithCornersSelf ℝ ℝ).prod I)
@@ -206,7 +206,7 @@ theorem evolvingCutoffGradientError_continuous
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff : ContMDiff I (modelWithCornersSelf ℝ ℝ) ∞ cutoff)
     (hu : ContMDiff ((modelWithCornersSelf ℝ ℝ).prod I)
@@ -237,7 +237,7 @@ theorem intervalIntegral_evolvingCutoffGradientError_le_evolvingLocalizedL2Mass
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hgrad : ∀ t ∈ Icc a b, ∀ x : M,
       (g t).inner x
@@ -290,7 +290,7 @@ theorem timeCutoff_caccioppoli_evolving_rhs_le
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     (hcutoff_le : ∀ x : M, cutoff x ^ 2 ≤ outer x ^ 2)
     (hgrad : ∀ s ∈ Icc a t₁, ∀ x : M,
@@ -712,7 +712,7 @@ private theorem caccioppoli_evolving_of_differential
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {weight dweight : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
@@ -815,7 +815,7 @@ theorem caccioppoli_evolving
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {weight dweight : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
@@ -869,7 +869,7 @@ theorem caccioppoli_evolving_of_subsolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {weight dweight : ℝ → ℝ} {a b : ℝ}
     (hab : a ≤ b)
@@ -924,7 +924,7 @@ theorem caccioppoli_evolving_inner_energy_of_subsolution
       ContMDiffOn ((modelWithCornersSelf ℝ ℝ).prod I)
         (modelWithCornersSelf ℝ ℝ) ∞
         (fun p : ℝ × M =>
-          chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
+          DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g p.1) x₀ p.2 i j)
         (Set.univ ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet))
     {weight dweight : ℝ → ℝ} {a t₀ t₁ A : ℝ}
     (hat₀ : a ≤ t₀) (ht₀t₁ : t₀ ≤ t₁)

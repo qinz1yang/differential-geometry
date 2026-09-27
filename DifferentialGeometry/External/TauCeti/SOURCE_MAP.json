@@ -1,0 +1,71 @@
+{
+  "source_commit": "3358033ba2fd35f321356dceaf2372a0fd6c0bfd",
+  "source_repository": "https://github.com/TauCetiProject/TauCeti",
+  "archive": "upstream/selected-3358033.tar.gz",
+  "archive_sha256": "758624ee35cb3372d129398f54843251ab645f58dbb608d68a37290aa6426131",
+  "selected_sources": [
+    {
+      "source": "TauCeti/Analysis/Calculus/Sard/EqualDimension.lean",
+      "sha256": "b836fb0a153fd8aad0f1e06075f1bcb115255dcdb42ea6c1f827c5b5ba2a67a4"
+    },
+    {
+      "source": "TauCeti/Analysis/Calculus/Morse/Generic.lean",
+      "sha256": "3386342907333501cb3a2df76d1ca1a9399ef01279bcb79a7e1a058bc263d78e"
+    },
+    {
+      "source": "TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean",
+      "sha256": "49f3a3760d1e65cb0a04c8653105426c17b7a98643105369b60928a2075907ca"
+    },
+    {
+      "source": "TauCeti/MeasureTheory/Measure/Haar/NormedSpace.lean",
+      "sha256": "f3bb700d10ab353acc6fe55fea76909ff1a27d0001d50b574e75a4157652d960"
+    },
+    {
+      "source": "TauCeti/Analysis/Normed/Module/FiniteDimension.lean",
+      "sha256": "ed6b826687e50149c00c1f10a6c865d8d422a1222f28d88b28328383285f60fe"
+    }
+  ],
+  "modules": [
+    {
+      "source": "TauCeti/Analysis/Calculus/Sard/EqualDimension.lean",
+      "source_sha256": "b836fb0a153fd8aad0f1e06075f1bcb115255dcdb42ea6c1f827c5b5ba2a67a4",
+      "previous": "DifferentialGeometry/Analysis/Calculus/Sard.lean",
+      "previous_sha256": "0fa0051ad2bbc315bef7ee9ec7aeaff6b0ea036b5b415a5ef74b03aa7e38bcf1",
+      "external": "DifferentialGeometry/External/TauCeti/Analysis/Calculus/Sard/EqualDimension.lean",
+      "external_sha256": "017bcd26385931152c8919a37cb5cfa33860c02d0c65dc5cea4e1d86ea4fe6c2",
+      "patch": "migration/EqualDimension_Sard.patch",
+      "native_patch": "migration/EqualDimension_Sard_native.patch",
+      "native_sha256": "446b392395ac25d9974f4a68b809ca228fd8d0dee3834c011e0a0b290be95f1c"
+    },
+    {
+      "source": "TauCeti/Analysis/Calculus/Morse/Generic.lean",
+      "source_sha256": "3386342907333501cb3a2df76d1ca1a9399ef01279bcb79a7e1a058bc263d78e",
+      "previous": "DifferentialGeometry/Topology/Morse/Generic.lean",
+      "previous_sha256": "be53bcd4bf61a0dc0fe161fde2ff3196eb829d9268d09c454f92b83995e47272",
+      "external": "DifferentialGeometry/External/TauCeti/Analysis/Calculus/Morse/Generic.lean",
+      "external_sha256": "d031cbededf64dd2d6ce131d25a39fa1da08ba639b550c8776058ecfa5b0dece",
+      "patch": "migration/Generic_Morse.patch",
+      "native_patch": "migration/Generic_Morse_native.patch",
+      "native_sha256": "45213403c6eb84717de5c5f1789d406fd44f91eb3ab54b4692ff929d23f13588"
+    },
+    {
+      "source": "TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean",
+      "source_sha256": "49f3a3760d1e65cb0a04c8653105426c17b7a98643105369b60928a2075907ca",
+      "previous": "DifferentialGeometry/Topology/Embedding/SliceChart.lean",
+      "previous_sha256": "7222831a2438f495fa570f401a8284953f44d004a3ff67724d46092a998fcb0a",
+      "external": "DifferentialGeometry/External/TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean",
+      "external_sha256": "27a6be84f6c3ff3bc7aa7186ab834489ec2041ae528cef9a60e5dfbfdc96f44c",
+      "patch": "migration/Smooth_LocallyFlat.patch",
+      "native_patch": "migration/Smooth_LocallyFlat_native.patch",
+      "native_sha256": "8360476dd12a96f37c572f1e1208db47c90328ad839f42af514f16defc05065e"
+    }
+  ],
+  "consumer_patches": [
+    {
+      "path": "DifferentialGeometry/Topology/Embedding/Extension.lean",
+      "before_sha256": "a665d53d1d0ce0878f812677dd12964716c231b57ffd17cd861e040751961dcd",
+      "after_sha256": "8009b8e8ced005a2fa8d1933d113f87f3a73c384c83eb8277bcea938dcf450e1",
+      "patch": "migration/Extension_native.patch"
+    }
+  ]
+}

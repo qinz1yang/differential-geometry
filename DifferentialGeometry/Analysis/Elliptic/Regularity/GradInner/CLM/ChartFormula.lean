@@ -1,8 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.CLM.Defs
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartBilinear.Smooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.VariationalData
 import DifferentialGeometry.Analysis.Elliptic.MetricExtension
-import DifferentialGeometry.Geometry.Operator.Gradient
+import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 open DifferentialGeometry.Geometry.Operator
 
@@ -43,21 +43,20 @@ variable [I.Boundaryless] [T2Space M] [CompactSpace M]
 
 def partialDerivOnEuclid (α : M) (i : Fin (Module.finrank ℝ E)) (u : M → ℝ) :
     EuclN → ℝ := fun y =>
-  partialDeriv (E := E) i (scalarOnE (I := I) α u) ((toEuclidean (E := E)).symm y)
+  DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α u) ((toEuclidean (E := E)).symm y)
 
 omit [NeZero (Module.finrank ℝ E)] [IsManifold I ∞ M] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
 @[simp] lemma partialDerivOnEuclid_def (α : M) (i : Fin (Module.finrank ℝ E))
     (u : M → ℝ) (y : EuclN) :
     partialDerivOnEuclid (I := I) (M := M) α i u y =
-      partialDeriv (E := E) i (scalarOnE (I := I) α u)
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α u)
         ((toEuclidean (E := E)).symm y) := rfl
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 theorem gradInner_eq_chart_formula
     (g : SmoothRiemannianMetric I M) (α : M)
     {ρα u : M → ℝ}
-    (hρα : ContMDiff I 𝓘(ℝ, ℝ) ∞ ρα) (hu : ContMDiff I 𝓘(ℝ, ℝ) ∞ u)
     {y : EuclN} (hy : y ∈ chartTargetEuclid (I := I) (M := M) α) :
     g.inner ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         (gradFun (I := I) g ρα
@@ -74,17 +73,17 @@ theorem gradInner_eq_chart_formula
     toEuclidean_symm_mem_target (I := I) hy
   have hx_source : x ∈ (extChartAt I α).source :=
     (extChartAt I α).map_target h_target
-  have hx_chart_src : x ∈ (chartAt H α).source := by
+  have hx_chart_source : x ∈ (chartAt H α).source := by
     rwa [extChartAt_source_eq_chartAt_source (I := I)] at hx_source
   have hx_base : x ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
-    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_chart_src
+    rw [trivializationAt_baseSet_eq_chartAt_source]; exact hx_chart_source
   have hx_int : extChartAt I α x ∈ interior (extChartAt I α).target := by
     have h_φx : extChartAt I α x = (toEuclidean (E := E)).symm y := by
       rw [hx_def]; exact (extChartAt I α).right_inv h_target
     rw [h_φx]
     exact extChartAt_target_subset_interior_of_boundaryless (I := I) α h_target
-  have h_step1 := gradInner_eq_invGramMatrix_partials_smooth
-    (I := I) g α hρα hu hx_base hx_int
+  have h_step1 := inner_gradFun_eq_chartInvGram_sum
+    (I := I) g α ρα u hx_base hx_int
   have hφx_eq : extChartAt I α x = (toEuclidean (E := E)).symm y := by
     rw [hx_def]; exact (extChartAt I α).right_inv h_target
   have h_invGram : ∀ i j : Fin (Module.finrank ℝ E),
@@ -94,7 +93,7 @@ theorem gradInner_eq_chart_formula
     unfold invGramOnEuclid; rfl
   have h_partial : ∀ k : Fin (Module.finrank ℝ E),
       ∀ u' : M → ℝ,
-        partialDeriv (E := E) k (scalarOnE (I := I) α u') (extChartAt I α x) =
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) k (scalarOnE (I := I) α u') (extChartAt I α x) =
           partialDerivOnEuclid (I := I) (M := M) α k u' y := by
     intro k u'
     rw [hφx_eq]
@@ -120,7 +119,7 @@ theorem chartPushedRaw_gradInnerSmooth_pointwise
         invGramOnEuclid (I := I) g α i j y *
           partialDerivOnEuclid (I := I) (M := M) α i ρα y *
           partialDerivOnEuclid (I := I) (M := M) α j v.toFun y :=
-  gradInner_eq_chart_formula (I := I) (M := M) g α ρα.contMDiff v.smooth hy
+  gradInner_eq_chart_formula (I := I) (M := M) g α hy
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 lemma partialDerivOnEuclid_contDiffOn (α : M) (i : Fin (Module.finrank ℝ E))
@@ -133,9 +132,9 @@ lemma partialDerivOnEuclid_contDiffOn (α : M) (i : Fin (Module.finrank ℝ E))
   have h_open_target : IsOpen ((extChartAt I α).target) :=
     isOpen_extChartAt_target (I := I) α
   have h_pd : ContDiffOn ℝ ∞
-      (fun y : E => partialDeriv (E := E) i (scalarOnE (I := I) α u) y)
+      (fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α u) y)
       (extChartAt I α).target := by
-    unfold partialDeriv
+    unfold DifferentialGeometry.Tensor.Coordinates.partialDeriv
     have h_fderiv_smooth :
         ContDiffOn ℝ ∞ (fun y : E => fderiv ℝ (scalarOnE (I := I) α u) y)
           (extChartAt I α).target := by
@@ -151,7 +150,7 @@ lemma partialDerivOnEuclid_contDiffOn (α : M) (i : Fin (Module.finrank ℝ E))
     intro y hy
     exact toEuclidean_symm_mem_target (I := I) hy
   have h_comp : ContDiffOn ℝ ∞
-      ((fun y : E => partialDeriv (E := E) i (scalarOnE (I := I) α u) y) ∘
+      ((fun y : E => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (scalarOnE (I := I) α u) y) ∘
         ((toEuclidean (E := E)).symm))
       (chartTargetEuclid (I := I) (M := M) α) :=
     h_pd.comp h_symm_smooth.contDiffOn h_maps

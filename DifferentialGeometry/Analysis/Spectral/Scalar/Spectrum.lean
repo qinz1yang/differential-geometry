@@ -417,12 +417,6 @@ theorem resolvent_eigenvalues_finite_above
     dist_eq_norm _ _] at h_dist
   linarith [h_sep_specific, h_dist]
 
-example (g : SmoothRiemannianMetric I M) (μ : ℝ) :
-    Submodule ℝ (Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :=
-  resolventEigenspace (I := I) (M := M) g μ
-
-example (μ : ℝ) : ℝ := laplacianEigenvalueOf μ
-
 end Laplacian
 end Analysis
 end DifferentialGeometry

@@ -128,7 +128,7 @@ private lemma wrappedComponentProj_intrinsic_eq
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
         (tensorRSIntrinsicChartCLM (I := I) r s α S.toSection
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-          (chartBasisVecFiber (I := I) α m
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))) =
       euclidPartial (E := E) m
         (chartPushedRaw I α
@@ -150,7 +150,7 @@ private lemma wrappedComponentProj_inputSlot_eq
     wrappedComponentProj (I := I) (M := M) r s α
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
         (chartTensorRSInputSlotCorrection (I := I) r s g α S.toSection
-          (chartBasisVecFiber (I := I) α m)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) k) =
       ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
         inputSlotCoeff (I := I) (M := M) g r α m k Idx Idx' y *
@@ -173,7 +173,7 @@ private lemma wrappedComponentProj_outputSlot_eq
     wrappedComponentProj (I := I) (M := M) r s α
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
         (chartTensorRSOutputSlotCorrection (I := I) r s g α S.toSection
-          (chartBasisVecFiber (I := I) α m)
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) l) =
       ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
         outputSlotCoeff (I := I) (M := M) g s α m l Jdx Jdx' y *
@@ -284,7 +284,7 @@ private lemma sum_inputSlot_eq
         wrappedComponentProj (I := I) (M := M) r s α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
           (chartTensorRSInputSlotCorrection (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) k)) =
       ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
@@ -298,7 +298,7 @@ private lemma sum_inputSlot_eq
   have hstep : (∑ k : Fin r,
         wrappedComponentProj (I := I) (M := M) r s α b Idx Jdx
           (chartTensorRSInputSlotCorrection (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m) b k)) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b k)) =
       ∑ k : Fin r,
         ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
@@ -327,7 +327,7 @@ private lemma sum_outputSlot_eq
         wrappedComponentProj (I := I) (M := M) r s α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
           (chartTensorRSOutputSlotCorrection (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) l)) =
       ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin s → Fin (Module.finrank ℝ E)),
@@ -341,7 +341,7 @@ private lemma sum_outputSlot_eq
   have hstep : (∑ l : Fin s,
         wrappedComponentProj (I := I) (M := M) r s α b Idx Jdx
           (chartTensorRSOutputSlotCorrection (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m) b l)) =
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b l)) =
       ∑ l : Fin s,
         ∑ p : (Fin r → Fin (Module.finrank ℝ E)) ×
               (Fin s → Fin (Module.finrank ℝ E)),
@@ -370,13 +370,13 @@ private lemma inputSlot_sub_outputSlot_eq_lowerOrderTerm
         wrappedComponentProj (I := I) (M := M) r s α
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
           (chartTensorRSInputSlotCorrection (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) k))
       - (∑ l : Fin s,
           wrappedComponentProj (I := I) (M := M) r s α
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) Idx Jdx
             (chartTensorRSOutputSlotCorrection (I := I) r s g α S.toSection
-              (chartBasisVecFiber (I := I) α m)
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) l)) =
       covDerivLowerOrderTerm (I := I) (M := M) g r s S α m Idx Jdx y := by
   classical
@@ -397,18 +397,18 @@ private lemma wrappedComponentProj_covDeriv_split
     (b : M) :
     wrappedComponentProj (I := I) (M := M) r s α b Idx Jdx
         (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-          (chartBasisVecFiber (I := I) α m) b) =
+          (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b) =
       wrappedComponentProj (I := I) (M := M) r s α b Idx Jdx
           (tensorRSIntrinsicChartCLM (I := I) r s α S.toSection b
-            (chartBasisVecFiber (I := I) α m b))
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m b))
         + (∑ k : Fin r,
             wrappedComponentProj (I := I) (M := M) r s α b Idx Jdx
               (chartTensorRSInputSlotCorrection (I := I) r s g α S.toSection
-                (chartBasisVecFiber (I := I) α m) b k))
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b k))
         - (∑ l : Fin s,
             wrappedComponentProj (I := I) (M := M) r s α b Idx Jdx
               (chartTensorRSOutputSlotCorrection (I := I) r s g α S.toSection
-                (chartBasisVecFiber (I := I) α m) b l)) := by
+                (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m) b l)) := by
   classical
   rw [chartTensorRSCovariantDerivative_def]
   rw [map_sub, map_add, map_sum, map_sum]
@@ -428,7 +428,7 @@ theorem covDerivComponent_eq_euclidPartial_add_lowerOrder
             (fun z : M => TensorRSSpace r s I z) α).continuousLinearMapAt ℝ
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           (chartTensorRSCovariantDerivative (I := I) r s g α S.toSection
-            (chartBasisVecFiber (I := I) α m)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α m)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))) =
       euclidPartial (E := E) m
           (chartPushedRaw I α

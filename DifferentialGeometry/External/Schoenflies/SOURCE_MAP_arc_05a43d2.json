@@ -1,0 +1,20 @@
+{
+  "source_commit": "05a43d29cde026618777db3d4e4316204ccca237",
+  "source_repository": "https://github.com/alonamaloh/schoenflies-lean",
+  "archive": "upstream/selected-arc_05a43d2.tar.gz",
+  "archive_sha256": "be70392f505016f5df246f2cf4a1349eeb3f278f5e6811ff23c14410204ee13a",
+  "modules": [
+    {
+      "source": "Schoenflies/ArcComplement.lean",
+      "source_sha256": "c1de694e5d318c5223e8b8778d24721a1e7b772dd570e4ab960635150f20d5a8",
+      "previous": "DifferentialGeometry/Topology/PlanarJordan/ArcDiskNeighborhood.lean",
+      "previous_sha256": "2e0b272389011deeb2f528c0163a95dc322b0d8fd52f930d544f27a906522310",
+      "external": "DifferentialGeometry/External/Schoenflies/ArcSquareChain.lean",
+      "external_sha256": "9939bd11ef3bf023c95d9a4e008cd4730851c56af36d0dc293e8e377116f2032",
+      "patch": "migration-Schoenflies/ArcDiskNeighborhood.patch",
+      "native_patch": "migration-Schoenflies/ArcDiskNeighborhood_native.patch",
+      "native_sha256": "4dfd7cea1102b63dc150d5e608932c754ab0a86833eca0ed79d0fc563015b570"
+    }
+  ],
+  "consumer_patches": []
+}

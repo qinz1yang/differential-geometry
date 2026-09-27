@@ -1,12 +1,12 @@
-import DifferentialGeometry.Geometry.Connection.MetricCompatibility
-import DifferentialGeometry.Geometry.Coordinates.Christoffel
-import DifferentialGeometry.Geometry.Coordinates.CoordinateFrame
-import DifferentialGeometry.Geometry.Curvature.Basic
-import DifferentialGeometry.Geometry.Operator.Operators
-import DifferentialGeometry.Tensor.RSTensor.CotangentRiemannian
+import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
+import DifferentialGeometry.Geometry.Coordinates.Connection.Christoffel
+import DifferentialGeometry.Geometry.Coordinates.Frame.Coordinate
+import DifferentialGeometry.Geometry.Curvature.Riemann.RawFields
+import DifferentialGeometry.Geometry.Operator.Scalar.Calculus
+import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
-import DifferentialGeometry.Bundle.PartialMfderiv.FixedBase
+import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -110,11 +110,11 @@ theorem flatChart_apply
       g.inner x
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x v)
         ((trivializationAt E (TangentSpace I : M -> Type _) x₀).symmL Real x w) := by
-  have hx_src : x ∈ (extChartAt I x₀).source := by
+  have hx_source : x ∈ (extChartAt I x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt, extChartAt_source] using hx
   have hcenter :
       (extChartAt I x₀).symm (extChartAt I x₀ x) = x :=
-    (extChartAt I x₀).left_inv hx_src
+    (extChartAt I x₀).left_inv hx_source
   simp only [metricFlatModelInChart]
   rw [hom_trivializationAt_apply]
   rw [hcenter]
@@ -213,11 +213,11 @@ theorem coordBasis_model
         ((Module.finBasis Real E) i) := by
   rw [coordinateFrameAt_basis_apply]
   rw [coordinateFrameAt_apply_of_mem (I := I) hx i]
-  have hx_src : x ∈ (chartAt H x₀).source := by
+  have hx_source : x ∈ (chartAt H x₀).source := by
     simpa [coordinateFrameSet, coordinateTrivializationAt] using hx
   exact (congrArg
     (fun L : E →L[Real] TangentSpace I x => L ((Module.finBasis Real E) i))
-    (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_src)).symm
+    (TangentBundle.symmL_trivializationAt (I := I) (𝕜 := Real) hx_source)).symm
 
 theorem metricFlatModelInChart_center_isInvertible
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
@@ -440,7 +440,7 @@ theorem gInvChart_symm
 theorem gInvBasisAt
     (g : SmoothRiemannianMetric I M) (x₀ : M) {x : M}
     (hx : x ∈ coordinateFrameSet (I := I) x₀) :
-    MetricInverseInBasisGen (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
+    MetricInverseInBasis (I := I) g x (coordinateFrameAtBasis (I := I) x₀ hx)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ x)) := by
@@ -564,7 +564,7 @@ theorem gInvBasisAt
 
 theorem inverseMetricFlatModelInChart_metricInverseInBasis_center
     (g : SmoothRiemannianMetric I M) (x₀ : M) :
-    MetricInverseInBasisGen (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
+    MetricInverseInBasis (I := I) g x₀ (coordinateFrameAtToBasis (I := I) x₀)
       (fun k l : CoordinateIdx (𝕜 := Real) E =>
         inverseMetricFlatModelInChartComponent (I := I) g x₀ k l
           (extChartAt I x₀ x₀)) := by

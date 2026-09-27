@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.CenterOfMass.Existence
 
 
-import DifferentialGeometry.Geometry.Exponential.DiagExpDerivative
-import DifferentialGeometry.Geometry.Exponential.DiagInvReadout
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.LocalInverse
+import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.InverseCoordinates
 import Mathlib.Analysis.Calculus.Implicit
 open DifferentialGeometry.Geometry.Curvature
 
@@ -13,11 +13,11 @@ noncomputable section
 namespace DifferentialGeometry
 
 attribute [local instance] Fintype.ofFinite Classical.propDecidable
-namespace HCGCompactness
+namespace CheegerGromovCompactness
 
 open scoped Topology
 
-theorem cmSolution_hasStrictFDerivAt
+theorem implicitFunction_firstComponent_hasStrictFDerivAt
     {𝕜 : Type*} [NontriviallyNormedField 𝕜]
     {Ey : Type*} [NormedAddCommGroup Ey] [NormedSpace 𝕜 Ey] [CompleteSpace Ey]
     {F : Type*} [NormedAddCommGroup F] [NormedSpace 𝕜 F] [CompleteSpace F]
@@ -45,37 +45,37 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [T2Space (TangentBundle I M)] [SigmaCompactSpace M]
   [ConnectedSpace M] [T3Space M]
 
-noncomputable def chartCmEqn (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
+noncomputable def normalChartCenterOfMassEquation (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (p : M) (z : E) (params : (ι → ℝ) × (ι → E)) : E :=
   ∑ i : ι, params.1 i •
     (NormalCoordinates.normalChartAt (I := I) g
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) : E)
 
-theorem chartCmEqn_center (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
-    (μ : ι → ℝ) (pts : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ pts join p r)
-    (hcm : (centerOfMass (I := I) g μ pts join p r h) ∈
+theorem normalChartCenterOfMassEquation_center (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
+    (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
+    (h : CenterOfMassConditions (I := I) g μ points join p r)
+    (hcm : (centerOfMass (I := I) g μ points join p r h) ∈
       (NormalCoordinates.normalChartAt (I := I) g p).source)
-    (hpts : ∀ i : ι, pts i ∈ (NormalCoordinates.normalChartAt (I := I) g p).source) :
-    chartCmEqn (I := I) g p
-        (NormalCoordinates.normalChartAt (I := I) g p (centerOfMass (I := I) g μ pts join p r h))
-        (μ, fun i => NormalCoordinates.normalChartAt (I := I) g p (pts i))
+    (hpts : ∀ i : ι, points i ∈ (NormalCoordinates.normalChartAt (I := I) g p).source) :
+    normalChartCenterOfMassEquation (I := I) g p
+        (NormalCoordinates.normalChartAt (I := I) g p (centerOfMass (I := I) g μ points join p r h))
+        (μ, fun i => NormalCoordinates.normalChartAt (I := I) g p (points i))
       = ∑ i : ι, μ i •
           (NormalCoordinates.normalChartAt (I := I) g
-            (centerOfMass (I := I) g μ pts join p r h) (pts i) : E) := by
-  unfold chartCmEqn
+            (centerOfMass (I := I) g μ points join p r h) (points i) : E) := by
+  unfold normalChartCenterOfMassEquation
   refine Finset.sum_congr rfl (fun i _ => ?_)
   simp only [NormalCoordinates.normalChartAt_left_inv (I := I) g p hcm,
     NormalCoordinates.normalChartAt_left_inv (I := I) g p (hpts i)]
 
-def CmHessianInput (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
+def CenterOfMassEquationHasInvertibleDerivative (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (p : M) (z₀ : E) (params : (ι → ℝ) × (ι → E)) : Prop :=
   ∃ L : E ≃L[ℝ] E,
-    HasFDerivAt (fun z : E => chartCmEqn (I := I) g p z params) (L : E →L[ℝ] E) z₀
+    HasFDerivAt (fun z : E => normalChartCenterOfMassEquation (I := I) g p z params) (L : E →L[ℝ] E) z₀
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem implicitSol_hasStrictFDerivAt
+theorem implicitSolution_hasStrictFDerivAt
     {ι : Type} [Finite ι]
     (G : E → ((ι → ℝ) × (ι → E)) → E) (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (D : (E × ((ι → ℝ) × (ι → E))) →L[ℝ] E)
@@ -150,7 +150,7 @@ theorem implicitSol_hasStrictFDerivAt
   refine ⟨fun params => (φ.implicitFunction (φ.leftFun φ.pt) params).1,
     (ContinuousLinearMap.fst ℝ E ((ι → ℝ) × (ι → E))).comp
       (fderiv ℝ (φ.implicitFunction (φ.leftFun φ.pt)) (φ.rightFun φ.pt)),
-    hf0, cmSolution_hasStrictFDerivAt φ, ?_, ?_⟩
+    hf0, implicitFunction_firstComponent_hasStrictFDerivAt φ, ?_, ?_⟩
   · have htend : Filter.Tendsto
         (fun params : (ι → ℝ) × (ι → E) => (φ.leftFun φ.pt, params))
         (nhds params₀) (nhds (φ.prodFun φ.pt)) :=
@@ -277,7 +277,7 @@ theorem existsPinnedLocal
   exact ⟨hΦ.toOpenPartialHomeomorph _, hΦ.mem_toOpenPartialHomeomorph_source, rfl⟩
 
 omit [NeZero (Module.finrank ℝ E)] in
-theorem implicitSol_contDiffAt
+theorem implicitSolution_contDiffAt
     {ι : Type} [Fintype ι]
     (G : E → ((ι → ℝ) × (ι → E)) → E) (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ) (hn : 1 ≤ n)
@@ -336,20 +336,20 @@ theorem implicitSol_contDiffAt
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
     [T3Space M] in
-theorem chartCm_hasStrictFDerivAt
+theorem normalChartCenterOfMass_hasStrictFDerivAt
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
     (p : M) (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (D : (E × ((ι → ℝ) × (ι → E))) →L[ℝ] E)
     (hjoint : HasStrictFDerivAt
-      (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn (I := I) g p w.1 w.2) D (z₀, params₀))
-    (hinv : CmHessianInput (I := I) g p z₀ params₀)
-    (hz₀ : chartCmEqn (I := I) g p z₀ params₀ = 0) :
+      (fun w : E × ((ι → ℝ) × (ι → E)) => normalChartCenterOfMassEquation (I := I) g p w.1 w.2) D (z₀, params₀))
+    (hinv : CenterOfMassEquationHasInvertibleDerivative (I := I) g p z₀ params₀)
+    (hz₀ : normalChartCenterOfMassEquation (I := I) g p z₀ params₀ = 0) :
     ∃ (f : ((ι → ℝ) × (ι → E)) → E) (Df : ((ι → ℝ) × (ι → E)) →L[ℝ] E),
       f params₀ = z₀ ∧ HasStrictFDerivAt f Df params₀ ∧
-        (∀ᶠ params in nhds params₀, chartCmEqn (I := I) g p (f params) params = 0) ∧
+        (∀ᶠ params in nhds params₀, normalChartCenterOfMassEquation (I := I) g p (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqn (I := I) g p zp.1 zp.2 = 0 → zp.1 = f zp.2) :=
-  implicitSol_hasStrictFDerivAt (fun z params => chartCmEqn (I := I) g p z params)
+          normalChartCenterOfMassEquation (I := I) g p zp.1 zp.2 = 0 → zp.1 = f zp.2) :=
+  implicitSolution_hasStrictFDerivAt (fun z params => normalChartCenterOfMassEquation (I := I) g p z params)
     z₀ params₀ D hjoint hinv hz₀
 
 end ChartEquation
@@ -441,7 +441,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem diagExpReadout_contMDiffAt
+theorem trivialized_diagExpInv_contMDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -460,7 +460,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem diagExpReadout_contMDiffAt_order
+theorem trivialized_diagExpInv_contMDiffAt_order
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -479,7 +479,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem diagReadout_of_md
+theorem diagonalInverseCoordinates_of_md
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -499,7 +499,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem exists_readoutDom
+theorem exists_trivialized_diagExpInv_contMDiffAt_neighborhood
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -526,14 +526,14 @@ theorem exists_readoutDom
   have hbase : (diagExpInv (I := I) g hEnorm p y).proj ∈ e.baseSet := by
     rw [hbranch.2.2.1]
     exact hy.2
-  exact ⟨diagReadout_of_md (I := I) g hEnorm p y n hbranch.1 hbase,
+  exact ⟨diagonalInverseCoordinates_of_md (I := I) g hEnorm p y n hbranch.1 hbase,
     hbranch.2⟩
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem exists_readoutDom_inf
+theorem exists_trivialized_diagExpInv_contMDiffOn_neighborhood
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -549,7 +549,7 @@ theorem exists_readoutDom_inf
         expMapIntrinsic (I := I) g hEnorm y.1
           (diagExpInv (I := I) g hEnorm p y).snd = y.2 := by
   obtain ⟨U, hUopen, hpU, hUsmooth, hU⟩ :=
-    exists_diagInvDom_inf (I := I) g hEnorm p
+    exists_diagonalInverse_smooth_domain (I := I) g hEnorm p
   let e := trivializationAt E (TangentSpace I) p
   let V := U ∩ Prod.fst ⁻¹' e.baseSet
   have hVopen : IsOpen V := hUopen.inter (e.open_baseSet.preimage continuous_fst)
@@ -580,7 +580,7 @@ theorem exists_readoutDom_inf
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [ConnectedSpace M] in
-theorem exists_readoutEBall
+theorem exists_trivialized_diagExpInv_smooth_eball
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -599,7 +599,7 @@ theorem exists_readoutEBall
         expMapIntrinsic (I := I) g hEnorm y.1
           (diagExpInv (I := I) g hEnorm p y).snd = y.2 := by
   obtain ⟨U, hUopen, hpU, hUsmooth, hU⟩ :=
-    exists_readoutDom_inf (I := I) g hEnorm p
+    exists_trivialized_diagExpInv_contMDiffOn_neighborhood (I := I) g hEnorm p
   have hextract : ∃ δ : ℝ≥0∞, 0 < δ ∧ δ < ⊤ ∧
       {y : M × M |
         max (riemannianEDist I y.1 p) (riemannianEDist I y.2 p) < δ} ⊆ U := by
@@ -630,8 +630,8 @@ omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem centerPairs_lt_of
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
-    (μ : ι → ℝ) (pts : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ pts join p r) (q : M) {δ : ℝ≥0∞}
+    (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
+    (h : CenterOfMassConditions (I := I) g μ points join p r) (q : M) {δ : ℝ≥0∞}
     (hδ :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -645,8 +645,8 @@ theorem centerPairs_lt_of
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     ∀ i : ι,
       max
-        (riemannianEDist I (centerOfMass (I := I) g μ pts join p r h) q)
-        (riemannianEDist I (pts i) q) < δ := by
+        (riemannianEDist I (centerOfMass (I := I) g μ points join p r h) q)
+        (riemannianEDist I (points i) q) < δ := by
   let : RiemannianBundle (fun x : M => TangentSpace I x) :=
     ⟨g.toRiemannianMetric⟩
   let : IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x) :=
@@ -657,27 +657,27 @@ theorem centerPairs_lt_of
     rw [HopfRinow.riemMetric_dist_eq (I := I) x y]
     exact (ENNReal.ofReal_toReal (riemannianEDist_ne_top (I := I) x y)).symm
   have hcm :
-      dist (centerOfMass (I := I) g μ pts join p r h) p ≤ 2 * r := by
+      dist (centerOfMass (I := I) g μ points join p r h) p ≤ 2 * r := by
     simpa [Metric.mem_closedBall, dist_comm] using
-      (centerOfMass.mem (I := I) (g := g) (μ := μ) (pts := pts)
+      (centerOfMass.mem (I := I) (g := g) (μ := μ) (points := points)
         (join := join) (p := p) (r := r) h)
   intro i
   apply max_lt
   · rw [hriem]
     apply lt_of_le_of_lt (ENNReal.ofReal_le_ofReal ?_) hδ
     calc
-      dist (centerOfMass (I := I) g μ pts join p r h) q
-          ≤ dist (centerOfMass (I := I) g μ pts join p r h) p + dist p q :=
+      dist (centerOfMass (I := I) g μ points join p r h) q
+          ≤ dist (centerOfMass (I := I) g μ points join p r h) p + dist p q :=
         dist_triangle _ _ _
       _ ≤ 2 * r + dist p q := add_le_add_left hcm _
       _ = dist p q + 2 * r := add_comm _ _
   · rw [hriem]
     apply lt_of_le_of_lt (ENNReal.ofReal_le_ofReal ?_) hδ
     calc
-      dist (pts i) q ≤ dist (pts i) p + dist p q := dist_triangle _ _ _
+      dist (points i) q ≤ dist (points i) p + dist p q := dist_triangle _ _ _
       _ ≤ r + dist p q := by
         apply add_le_add_left
-        simpa [dist_comm] using (h.pts_mem i).le
+        simpa [dist_comm] using (h.points_mem i).le
       _ ≤ 2 * r + dist p q := by linarith [h.r_pos]
       _ = dist p q + 2 * r := add_comm _ _
 
@@ -687,8 +687,8 @@ omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem centerPairs_lt_le
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
-    (μ : ι → ℝ) (pts : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ pts join p r) (q : M) (R : ℝ) {δ : ℝ≥0∞}
+    (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
+    (h : CenterOfMassConditions (I := I) g μ points join p r) (q : M) (R : ℝ) {δ : ℝ≥0∞}
     (hpq :
       letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
         ⟨g.toRiemannianMetric⟩
@@ -703,9 +703,9 @@ theorem centerPairs_lt_le
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     ∀ i : ι,
       max
-        (riemannianEDist I (centerOfMass (I := I) g μ pts join p r h) q)
-        (riemannianEDist I (pts i) q) < δ := by
-  apply centerPairs_lt_of (I := I) g μ pts join p r h q
+        (riemannianEDist I (centerOfMass (I := I) g μ points join p r h) q)
+        (riemannianEDist I (points i) q) < δ := by
+  apply centerPairs_lt_of (I := I) g μ points join p r h q
   exact lt_of_le_of_lt (ENNReal.ofReal_le_ofReal (add_le_add_left hpq _)) hδ
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -714,8 +714,8 @@ omit [RiemannianBundle (fun x : M => TangentSpace I x)] [PseudoEMetricSpace M]
     [IsRiemannianManifold I M] [CompleteSpace M] in
 theorem centerPairs_lt
     (g : SmoothRiemannianMetric I M) {ι : Type} [Fintype ι]
-    (μ : ι → ℝ) (pts : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
-    (h : CenterInput (I := I) g μ pts join p r) {δ : ℝ≥0∞}
+    (μ : ι → ℝ) (points : ι → M) (join : M → M → ℝ → M) (p : M) (r : ℝ)
+    (h : CenterOfMassConditions (I := I) g μ points join p r) {δ : ℝ≥0∞}
     (hδ : ENNReal.ofReal (2 * r) < δ) :
     letI : RiemannianBundle (fun x : M => TangentSpace I x) :=
       ⟨g.toRiemannianMetric⟩
@@ -723,27 +723,27 @@ theorem centerPairs_lt
       ⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩
     ∀ i : ι,
       max
-        (riemannianEDist I (centerOfMass (I := I) g μ pts join p r h) p)
-        (riemannianEDist I (pts i) p) < δ := by
+        (riemannianEDist I (centerOfMass (I := I) g μ points join p r h) p)
+        (riemannianEDist I (points i) p) < δ := by
   simpa using
-    (centerPairs_lt_of (I := I) g μ pts join p r h p (by simpa using hδ))
+    (centerPairs_lt_of (I := I) g μ points join p r h p (by simpa using hδ))
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def chartCmEqnB
+noncomputable def normalChartCenterOfMassEquationWithBranch
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z : E) (params : (ι → ℝ) × (ι → E)) : E :=
   ∑ i : ι, params.1 i •
-    B.diagReadout
+    B.diagonalInverseCoordinates
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
-noncomputable def chartCmEqn'
+noncomputable def normalChartCenterOfMassEquationStandard
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -758,25 +758,25 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem chartCmEqnB_std
+theorem normalChartCenterOfMassEquationWithBranch_standard
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
     (p : M) {ι : Type} [Fintype ι] (z : E) (params : (ι → ℝ) × (ι → E)) :
-    chartCmEqnB (I := I) g hEnorm p (stdBranch (I := I) g hEnorm p) z params =
-      chartCmEqn' (I := I) g hEnorm p z params := by
-  unfold chartCmEqnB chartCmEqn' DiagInvBranch.diagReadout
-  rw [std_inv_eq (I := I) g hEnorm p]
+    normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p (standardDiagonalInverseBranch (I := I) g hEnorm p) z params =
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params := by
+  unfold normalChartCenterOfMassEquationWithBranch normalChartCenterOfMassEquationStandard DiagonalInverseBranch.diagonalInverseCoordinates
+  rw [standardDiagonalInverseBranch_inv (I := I) g hEnorm p]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem chartCmEqnB_cdAt
+theorem normalChartCenterOfMassEquationWithBranch_cdAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ∞)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I n
@@ -784,13 +784,13 @@ theorem chartCmEqnB_cdAt
     (hchξ : ∀ i, ContMDiffAt 𝓘(ℝ, E) I n
       (fun ξ : E => (NormalCoordinates.normalChartAt (I := I) g p).symm ξ) (params₀.2 i))
     (hsm : ∀ i, ContMDiffAt (I.prod I) 𝓘(ℝ, E) n
-      (fun yq : M × M => B.diagReadout yq)
+      (fun yq : M × M => B.diagonalInverseCoordinates yq)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i))) :
     ContDiffAt ℝ n
       (fun w : E × ((ι → ℝ) × (ι → E)) =>
-        chartCmEqnB (I := I) g hEnorm p B w.1 w.2) (z₀, params₀) := by
-  unfold chartCmEqnB
+        normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B w.1 w.2) (z₀, params₀) := by
+  unfold normalChartCenterOfMassEquationWithBranch
   apply ContDiffAt.sum
   intro i _
   apply ContDiffAt.smul
@@ -814,7 +814,7 @@ theorem chartCmEqnB_cdAt
     have hcomp : ContMDiffAt
         𝓘(ℝ, E × ((ι → ℝ) × (ι → E))) 𝓘(ℝ, E) n
         (fun w : E × ((ι → ℝ) × (ι → E)) =>
-          B.diagReadout
+          B.diagonalInverseCoordinates
             ((NormalCoordinates.normalChartAt (I := I) g p).symm w.1,
               (NormalCoordinates.normalChartAt (I := I) g p).symm (w.2.2 i)))
         (z₀, params₀) :=
@@ -824,7 +824,7 @@ theorem chartCmEqnB_cdAt
         (f := fun w : E × ((ι → ℝ) × (ι → E)) =>
           ((NormalCoordinates.normalChartAt (I := I) g p).symm w.1,
             (NormalCoordinates.normalChartAt (I := I) g p).symm (w.2.2 i)))
-        (g := fun yq : M × M => B.diagReadout yq)
+        (g := fun yq : M × M => B.diagonalInverseCoordinates yq)
         (z₀, params₀) (hsm i) hinner
     exact hcomp
 
@@ -832,26 +832,26 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readoutB_sum_eq
+theorem weighted_diagonalInverseCoordinates_sum_eq
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, B.inv (y, qs i) =
       (⟨y, (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
         (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)⟩ : TangentBundle I M)) :
-    (∑ i, μ i • B.diagReadout (y, qs i)) =
+    (∑ i, μ i • B.diagonalInverseCoordinates (y, qs i)) =
       (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy
         ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
           (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E))) := by
-  have hterm : ∀ i, B.diagReadout (y, qs i) =
+  have hterm : ∀ i, B.diagonalInverseCoordinates (y, qs i) =
       (trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy
         ((tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
           (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) := by
     intro i
-    unfold DiagInvBranch.diagReadout
+    unfold DiagonalInverseBranch.diagonalInverseCoordinates
     rw [hpt i]
     exact congrArg Prod.snd
       ((trivializationAt E (TangentSpace I) p).apply_eq_prod_continuousLinearEquivAt ℝ y hy _)
@@ -865,19 +865,19 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readoutB_zero_iff
+theorem weighted_diagonalInverseCoordinates_sum_eq_zero_iff
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (μ : ι → ℝ) (y : M) (qs : ι → M)
     (hy : y ∈ (trivializationAt E (TangentSpace I) p).baseSet)
     (hpt : ∀ i, B.inv (y, qs i) =
       (⟨y, (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm
         (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)⟩ : TangentBundle I M)) :
-    (∑ i, μ i • B.diagReadout (y, qs i)) = 0 ↔
+    (∑ i, μ i • B.diagonalInverseCoordinates (y, qs i)) = 0 ↔
       (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) = 0 := by
-  rw [readoutB_sum_eq (I := I) g hEnorm p B μ y qs hy hpt]
+  rw [weighted_diagonalInverseCoordinates_sum_eq (I := I) g hEnorm p B μ y qs hy hpt]
   rw [(trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff]
   exact (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm.map_eq_zero_iff
 
@@ -885,52 +885,52 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readoutSolB_strict
+theorem normalChartCenterOfMassEquationWithBranch_implicitFunction_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
     (hchξ : ∀ i, ContMDiffAt 𝓘(ℝ, E) I 1
       (fun ξ : E => (NormalCoordinates.normalChartAt (I := I) g p).symm ξ) (params₀.2 i))
     (hsm : ∀ i, ContMDiffAt (I.prod I) 𝓘(ℝ, E) 1
-      (fun yq : M × M => B.diagReadout yq)
+      (fun yq : M × M => B.diagonalInverseCoordinates yq)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqnB (I := I) g hEnorm p B z params₀)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z params₀)
         (L : E →L[ℝ] E) z₀)
-    (hzero : chartCmEqnB (I := I) g hEnorm p B z₀ params₀ = 0) :
+    (hzero : normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z₀ params₀ = 0) :
     ∃ (f : ((ι → ℝ) × (ι → E)) → E)
       (Df : ((ι → ℝ) × (ι → E)) →L[ℝ] E),
       f params₀ = z₀ ∧ HasStrictFDerivAt f Df params₀ ∧
         (∀ᶠ params in nhds params₀,
-          chartCmEqnB (I := I) g hEnorm p B (f params) params = 0) ∧
+          normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqnB (I := I) g hEnorm p B zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
+          normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
   have hjoint : HasStrictFDerivAt
       (fun w : E × ((ι → ℝ) × (ι → E)) =>
-        chartCmEqnB (I := I) g hEnorm p B w.1 w.2)
+        normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B w.1 w.2)
       (fderiv ℝ (fun w : E × ((ι → ℝ) × (ι → E)) =>
-        chartCmEqnB (I := I) g hEnorm p B w.1 w.2) (z₀, params₀))
+        normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B w.1 w.2) (z₀, params₀))
       (z₀, params₀) :=
-    (chartCmEqnB_cdAt (I := I) g hEnorm p B z₀ params₀ 1 hchz hchξ hsm).hasStrictFDerivAt
+    (normalChartCenterOfMassEquationWithBranch_cdAt (I := I) g hEnorm p B z₀ params₀ 1 hchz hchξ hsm).hasStrictFDerivAt
       one_ne_zero
-  exact implicitSol_hasStrictFDerivAt
-    (fun z params => chartCmEqnB (I := I) g hEnorm p B z params)
+  exact implicitSolution_hasStrictFDerivAt
+    (fun z params => normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z params)
     z₀ params₀ _ hjoint hinv hzero
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readoutSolB_cdAt
+theorem normalChartCenterOfMassEquationWithBranch_implicitFunction_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ) (hn : 1 ≤ n)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
@@ -938,32 +938,32 @@ theorem readoutSolB_cdAt
     (hchξ : ∀ i, ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun ξ : E => (NormalCoordinates.normalChartAt (I := I) g p).symm ξ) (params₀.2 i))
     (hsm : ∀ i, ContMDiffAt (I.prod I) 𝓘(ℝ, E) (n : ℕ∞)
-      (fun yq : M × M => B.diagReadout yq)
+      (fun yq : M × M => B.diagonalInverseCoordinates yq)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqnB (I := I) g hEnorm p B z params₀)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z params₀)
         (L : E →L[ℝ] E) z₀)
-    (hzero : chartCmEqnB (I := I) g hEnorm p B z₀ params₀ = 0) :
+    (hzero : normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z₀ params₀ = 0) :
     ∃ f : ((ι → ℝ) × (ι → E)) → E,
       f params₀ = z₀ ∧ ContDiffAt ℝ (n : ℕ∞) f params₀ ∧
         (∀ᶠ params in nhds params₀,
-          chartCmEqnB (I := I) g hEnorm p B (f params) params = 0) ∧
+          normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqnB (I := I) g hEnorm p B zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
+          normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
   have hjoint : ContDiffAt ℝ (n : ℕ∞)
       (fun w : E × ((ι → ℝ) × (ι → E)) =>
-        chartCmEqnB (I := I) g hEnorm p B w.1 w.2) (z₀, params₀) :=
-    chartCmEqnB_cdAt (I := I) g hEnorm p B z₀ params₀ n hchz hchξ hsm
-  exact implicitSol_contDiffAt
-    (fun z params => chartCmEqnB (I := I) g hEnorm p B z params)
+        normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B w.1 w.2) (z₀, params₀) :=
+    normalChartCenterOfMassEquationWithBranch_cdAt (I := I) g hEnorm p B z₀ params₀ n hchz hchξ hsm
+  exact implicitSolution_contDiffAt
+    (fun z params => normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z params)
     z₀ params₀ n hn hjoint hinv hzero
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readout_sum_eq_clm
+theorem weighted_trivialized_diagExpInv_sum_eq
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -996,7 +996,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readout_sum_eq_zero_iff
+theorem weighted_trivialized_diagExpInv_sum_eq_zero_iff
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1008,7 +1008,7 @@ theorem readout_sum_eq_zero_iff
     (∑ i, μ i • (trivializationAt E (TangentSpace I) p
         (diagExpInv (I := I) g hEnorm p (y, qs i))).2) = 0
       ↔ (∑ i, μ i • (NormalCoordinates.normalChartAt (I := I) g y (qs i) : E)) = 0 := by
-  rw [readout_sum_eq_clm (I := I) g hEnorm p μ y qs hy hpt]
+  rw [weighted_trivialized_diagExpInv_sum_eq (I := I) g hEnorm p μ y qs hy hpt]
   rw [(trivializationAt E (TangentSpace I) p).continuousLinearEquivAt ℝ y hy |>.map_eq_zero_iff]
   exact (tangentSpaceModelContinuousLinearEquiv (I := I) y).symm.map_eq_zero_iff
 
@@ -1016,7 +1016,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem chartCmEqn'_contDiffAt
+theorem normalChartCenterOfMassEquationStandard_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1031,9 +1031,9 @@ theorem chartCmEqn'_contDiffAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i))) :
     ContDiffAt ℝ 1
-      (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn' (I := I) g hEnorm p w.1 w.2)
+      (fun w : E × ((ι → ℝ) × (ι → E)) => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p w.1 w.2)
         (z₀, params₀) := by
-  unfold chartCmEqn'
+  unfold normalChartCenterOfMassEquationStandard
   apply ContDiffAt.sum
   intro i _
   apply ContDiffAt.smul
@@ -1058,7 +1058,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem chartCmEqn'_contDiffAt_order
+theorem normalChartCenterOfMassEquationStandard_contDiffAt_order
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1073,9 +1073,9 @@ theorem chartCmEqn'_contDiffAt_order
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i))) :
     ContDiffAt ℝ (n : ℕ∞)
-      (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn' (I := I) g hEnorm p w.1 w.2)
+      (fun w : E × ((ι → ℝ) × (ι → E)) => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p w.1 w.2)
       (z₀, params₀) := by
-  unfold chartCmEqn'
+  unfold normalChartCenterOfMassEquationStandard
   apply ContDiffAt.sum
   intro i _
   apply ContDiffAt.smul
@@ -1100,7 +1100,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readoutSol_hasStrictFDerivAt
+theorem normalChartCenterOfMassEquationStandard_implicitFunction_hasStrictFDerivAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1115,27 +1115,27 @@ theorem readoutSol_hasStrictFDerivAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
-    (hz₀' : chartCmEqn' (I := I) g hEnorm p z₀ params₀ = 0) :
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
+    (hz₀' : normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z₀ params₀ = 0) :
     ∃ (f : ((ι → ℝ) × (ι → E)) → E) (Df : ((ι → ℝ) × (ι → E)) →L[ℝ] E),
       f params₀ = z₀ ∧ HasStrictFDerivAt f Df params₀ ∧
-        (∀ᶠ params in nhds params₀, chartCmEqn' (I := I) g hEnorm p (f params) params = 0) ∧
+        (∀ᶠ params in nhds params₀, normalChartCenterOfMassEquationStandard (I := I) g hEnorm p (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqn' (I := I) g hEnorm p zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
+          normalChartCenterOfMassEquationStandard (I := I) g hEnorm p zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
   have hjoint' : HasStrictFDerivAt
-      (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn' (I := I) g hEnorm p w.1 w.2)
-      (fderiv ℝ (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn' (I := I) g hEnorm p w.1 w.2)
+      (fun w : E × ((ι → ℝ) × (ι → E)) => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p w.1 w.2)
+      (fderiv ℝ (fun w : E × ((ι → ℝ) × (ι → E)) => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p w.1 w.2)
         (z₀, params₀)) (z₀, params₀) :=
-    (chartCmEqn'_contDiffAt (I := I) g hEnorm p z₀ params₀ hchz hchξ hsm).hasStrictFDerivAt
+    (normalChartCenterOfMassEquationStandard_contDiffAt (I := I) g hEnorm p z₀ params₀ hchz hchξ hsm).hasStrictFDerivAt
       one_ne_zero
-  exact implicitSol_hasStrictFDerivAt
-    (fun z params => chartCmEqn' (I := I) g hEnorm p z params) z₀ params₀ _ hjoint' hinv' hz₀'
+  exact implicitSolution_hasStrictFDerivAt
+    (fun z params => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params) z₀ params₀ _ hjoint' hinv' hz₀'
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 omit [T3Space M] in
 omit [ConnectedSpace M] in
-theorem readoutSol_contDiffAt
+theorem normalChartCenterOfMassEquationStandard_implicitFunction_contDiffAt
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
@@ -1150,18 +1150,18 @@ theorem readoutSol_contDiffAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
-    (hz₀' : chartCmEqn' (I := I) g hEnorm p z₀ params₀ = 0) :
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
+    (hz₀' : normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z₀ params₀ = 0) :
     ∃ f : ((ι → ℝ) × (ι → E)) → E,
       f params₀ = z₀ ∧ ContDiffAt ℝ (n : ℕ∞) f params₀ ∧
-        (∀ᶠ params in nhds params₀, chartCmEqn' (I := I) g hEnorm p (f params) params = 0) ∧
+        (∀ᶠ params in nhds params₀, normalChartCenterOfMassEquationStandard (I := I) g hEnorm p (f params) params = 0) ∧
         (∀ᶠ zp in nhds (z₀, params₀),
-          chartCmEqn' (I := I) g hEnorm p zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
+          normalChartCenterOfMassEquationStandard (I := I) g hEnorm p zp.1 zp.2 = 0 → zp.1 = f zp.2) := by
   have hjoint_cd : ContDiffAt ℝ (n : ℕ∞)
-      (fun w : E × ((ι → ℝ) × (ι → E)) => chartCmEqn' (I := I) g hEnorm p w.1 w.2) (z₀, params₀) :=
-    chartCmEqn'_contDiffAt_order (I := I) g hEnorm p z₀ params₀ n hchz hchξ hsm
-  exact implicitSol_contDiffAt
-    (fun z params => chartCmEqn' (I := I) g hEnorm p z params) z₀ params₀ n hn hjoint_cd hinv' hz₀'
+      (fun w : E × ((ι → ℝ) × (ι → E)) => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p w.1 w.2) (z₀, params₀) :=
+    normalChartCenterOfMassEquationStandard_contDiffAt_order (I := I) g hEnorm p z₀ params₀ n hchz hchξ hsm
+  exact implicitSolution_contDiffAt
+    (fun z params => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params) z₀ params₀ n hn hjoint_cd hinv' hz₀'
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1171,23 +1171,23 @@ theorem centerB_hasStrict
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
     (hchξ : ∀ i, ContMDiffAt 𝓘(ℝ, E) I 1
       (fun ξ : E => (NormalCoordinates.normalChartAt (I := I) g p).symm ξ) (params₀.2 i))
     (hsm : ∀ i, ContMDiffAt (I.prod I) 𝓘(ℝ, E) 1
-      (fun yq : M × M => B.diagReadout yq)
+      (fun yq : M × M => B.diagonalInverseCoordinates yq)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqnB (I := I) g hEnorm p B z params₀)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z params₀)
         (L : E →L[ℝ] E) z₀)
-    (hzero : chartCmEqnB (I := I) g hEnorm p B z₀ params₀ = 0)
+    (hzero : normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z₀ params₀ = 0)
     (c : ((ι → ℝ) × (ι → E)) → M)
     (hc_solves : ∀ᶠ params in nhds params₀,
-      chartCmEqnB (I := I) g hEnorm p B
+      normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B
         (NormalCoordinates.normalChartAt (I := I) g p (c params)) params = 0)
     (hc_cont : Filter.Tendsto
       (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
@@ -1197,7 +1197,7 @@ theorem centerB_hasStrict
         (fun params => (NormalCoordinates.normalChartAt (I := I) g p
           (c params) : E)) Df params₀ := by
   obtain ⟨f, Df, hf0, hfderiv, hsolves, huniq⟩ :=
-    readoutSolB_strict (I := I) g hEnorm p B z₀ params₀ hchz hchξ hsm hinv hzero
+    normalChartCenterOfMassEquationWithBranch_implicitFunction_hasStrictFDerivAt (I := I) g hEnorm p B z₀ params₀ hchz hchξ hsm hinv hzero
   refine ⟨Df, ?_⟩
   have huniq' := (hc_cont.prodMk_nhds Filter.tendsto_id).eventually huniq
   have hid : (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
@@ -1214,7 +1214,7 @@ theorem centerB_contDiff
     [IsContinuousRiemannianBundle E (fun x : M => TangentSpace I x)]
     (g : SmoothRiemannianMetric I M)
     (hEnorm : IsMetricNorm (I := I) (M := M) g)
-    (p : M) (B : DiagInvBranch (I := I) g hEnorm p)
+    (p : M) (B : DiagonalInverseBranch (I := I) g hEnorm p)
     {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (n : ℕ) (hn : 1 ≤ n)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
@@ -1222,16 +1222,16 @@ theorem centerB_contDiff
     (hchξ : ∀ i, ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun ξ : E => (NormalCoordinates.normalChartAt (I := I) g p).symm ξ) (params₀.2 i))
     (hsm : ∀ i, ContMDiffAt (I.prod I) 𝓘(ℝ, E) (n : ℕ∞)
-      (fun yq : M × M => B.diagReadout yq)
+      (fun yq : M × M => B.diagonalInverseCoordinates yq)
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqnB (I := I) g hEnorm p B z params₀)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z params₀)
         (L : E →L[ℝ] E) z₀)
-    (hzero : chartCmEqnB (I := I) g hEnorm p B z₀ params₀ = 0)
+    (hzero : normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B z₀ params₀ = 0)
     (c : ((ι → ℝ) × (ι → E)) → M)
     (hc_solves : ∀ᶠ params in nhds params₀,
-      chartCmEqnB (I := I) g hEnorm p B
+      normalChartCenterOfMassEquationWithBranch (I := I) g hEnorm p B
         (NormalCoordinates.normalChartAt (I := I) g p (c params)) params = 0)
     (hc_cont : Filter.Tendsto
       (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
@@ -1239,7 +1239,7 @@ theorem centerB_contDiff
     ContDiffAt ℝ (n : ℕ∞)
       (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E)) params₀ := by
   obtain ⟨f, hf0, hfcd, hsolves, huniq⟩ :=
-    readoutSolB_cdAt (I := I) g hEnorm p B z₀ params₀ n hn hchz hchξ hsm hinv hzero
+    normalChartCenterOfMassEquationWithBranch_implicitFunction_contDiffAt (I := I) g hEnorm p B z₀ params₀ n hn hchz hchξ hsm hinv hzero
   have huniq' := (hc_cont.prodMk_nhds Filter.tendsto_id).eventually huniq
   have hid : (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
       =ᶠ[nhds params₀] f := by
@@ -1266,11 +1266,11 @@ theorem center_hasStrictFDerivAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
-    (hz₀' : chartCmEqn' (I := I) g hEnorm p z₀ params₀ = 0)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
+    (hz₀' : normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z₀ params₀ = 0)
     (c : ((ι → ℝ) × (ι → E)) → M)
     (hc_solves : ∀ᶠ params in nhds params₀,
-      chartCmEqn' (I := I) g hEnorm p
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p
         (NormalCoordinates.normalChartAt (I := I) g p (c params)) params = 0)
     (hc_cont : Filter.Tendsto
       (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
@@ -1280,7 +1280,7 @@ theorem center_hasStrictFDerivAt
         (fun params => (NormalCoordinates.normalChartAt (I := I) g p
           (c params) : E)) Df params₀ := by
   obtain ⟨f, Df, hf0, hfderiv, hsolves, huniq⟩ :=
-    readoutSol_hasStrictFDerivAt (I := I) g hEnorm p z₀ params₀ hchz hchξ hsm hinv' hz₀'
+    normalChartCenterOfMassEquationStandard_implicitFunction_hasStrictFDerivAt (I := I) g hEnorm p z₀ params₀ hchz hchξ hsm hinv' hz₀'
   refine ⟨Df, ?_⟩
   have huniq' := (hc_cont.prodMk_nhds Filter.tendsto_id).eventually huniq
   have hid : (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
@@ -1308,11 +1308,11 @@ theorem center_contDiffAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
-    (hz₀' : chartCmEqn' (I := I) g hEnorm p z₀ params₀ = 0)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
+    (hz₀' : normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z₀ params₀ = 0)
     (c : ((ι → ℝ) × (ι → E)) → M)
     (hc_solves : ∀ᶠ params in nhds params₀,
-      chartCmEqn' (I := I) g hEnorm p
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p
         (NormalCoordinates.normalChartAt (I := I) g p (c params)) params = 0)
     (hc_cont : Filter.Tendsto
       (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
@@ -1320,7 +1320,7 @@ theorem center_contDiffAt
     ContDiffAt ℝ (n : ℕ∞)
       (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E)) params₀ := by
   obtain ⟨f, hf0, hfcd, hsolves, huniq⟩ :=
-    readoutSol_contDiffAt (I := I) g hEnorm p z₀ params₀ n hn hchz hchξ hsm hinv' hz₀'
+    normalChartCenterOfMassEquationStandard_implicitFunction_contDiffAt (I := I) g hEnorm p z₀ params₀ n hn hchz hchξ hsm hinv' hz₀'
   have huniq' := (hc_cont.prodMk_nhds Filter.tendsto_id).eventually huniq
   have hid : (fun params => (NormalCoordinates.normalChartAt (I := I) g p (c params) : E))
       =ᶠ[nhds params₀] f := by
@@ -1337,7 +1337,7 @@ theorem centerOfMass_hasStrictFDerivAt
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E))
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I 1
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1349,10 +1349,10 @@ theorem centerOfMass_hasStrictFDerivAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
-    (hz₀' : chartCmEqn' (I := I) g hEnorm p z₀ params₀ = 0)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
+    (hz₀' : normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z₀ params₀ = 0)
     (hc_solves : ∀ᶠ params in nhds params₀,
-      chartCmEqn' (I := I) g hEnorm p
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p
         (NormalCoordinates.normalChartAt (I := I) g p
           (centerOfMass (I := I) g params.1
             (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
@@ -1384,7 +1384,7 @@ theorem centerOfMass_contDiffAt
     (p : M) {ι : Type} [Fintype ι] (z₀ : E) (params₀ : (ι → ℝ) × (ι → E)) (n : ℕ) (hn : 1 ≤ n)
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     (hchz : ContMDiffAt 𝓘(ℝ, E) I (n : ℕ∞)
       (fun z : E => (NormalCoordinates.normalChartAt (I := I) g p).symm z) z₀)
@@ -1396,10 +1396,10 @@ theorem centerOfMass_contDiffAt
       ((NormalCoordinates.normalChartAt (I := I) g p).symm z₀,
         (NormalCoordinates.normalChartAt (I := I) g p).symm (params₀.2 i)))
     (hinv' : ∃ L : E ≃L[ℝ] E,
-      HasFDerivAt (fun z : E => chartCmEqn' (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
-    (hz₀' : chartCmEqn' (I := I) g hEnorm p z₀ params₀ = 0)
+      HasFDerivAt (fun z : E => normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z params₀) (L : E →L[ℝ] E) z₀)
+    (hz₀' : normalChartCenterOfMassEquationStandard (I := I) g hEnorm p z₀ params₀ = 0)
     (hc_solves : ∀ᶠ params in nhds params₀,
-      chartCmEqn' (I := I) g hEnorm p
+      normalChartCenterOfMassEquationStandard (I := I) g hEnorm p
         (NormalCoordinates.normalChartAt (I := I) g p
           (centerOfMass (I := I) g params.1
             (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i))
@@ -1430,7 +1430,7 @@ theorem centerOfMassChart_cont
     (p : M) {ι : Type} [Fintype ι] (params₀ : (ι → ℝ) × (ι → E))
     (join : M → M → ℝ → M) (r : ℝ)
     (H : ∀ params : (ι → ℝ) × (ι → E),
-      CenterInput (I := I) g params.1
+      CenterOfMassConditions (I := I) g params.1
         (fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)) join p r)
     (hpts : Continuous (fun params : (ι → ℝ) × (ι → E) =>
       fun i => (NormalCoordinates.normalChartAt (I := I) g p).symm (params.2 i)))
@@ -1460,5 +1460,5 @@ theorem centerOfMassChart_cont
 
 end DiagExpIdentification
 
-end HCGCompactness
+end CheegerGromovCompactness
 end DifferentialGeometry

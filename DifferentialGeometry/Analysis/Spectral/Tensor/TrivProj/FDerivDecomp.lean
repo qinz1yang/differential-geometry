@@ -205,19 +205,6 @@ theorem mfderiv_tensorTrivProj_apply_eq_chart_pushforward_cov
   rw [tensorRSIntrinsicChartCLM_apply_eq_cov
     (I := I) r s g α (fun b' => S.toSection b') X b]
 
-example (g : SmoothRiemannianMetric I M) (α : M)
-    (S : SmoothCcTensor g 1 2) (b : M)
-    (hb : b ∈ chartLeviCivitaGoodSet (I := I) α) (w : E) :
-    fderiv ℝ
-        (tensorTrivProj (I := I) (M := M) g 1 2 S α ∘ (extChartAt I α).symm)
-        (extChartAt I α b) w =
-      (trivializationAt (TensorRSModel 1 2 ℝ E)
-          (fun y : M => TensorRSSpace 1 2 I y) α).continuousLinearMapAt ℝ b
-        (tensorRSIntrinsicChartCLM (I := I) 1 2 α (fun b' => S.toSection b') b
-          (trivFromE (I := I) α b w)) :=
-  fderiv_tensorTrivProj_pullback_apply_eq_triv_intrinsic
-    (I := I) (M := M) g 1 2 α S hb w
-
 end TensorSpectral
 end Parabolic
 end Analysis

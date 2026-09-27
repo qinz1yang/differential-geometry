@@ -193,10 +193,10 @@ theorem crossChartAeJoint
     (DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp_congr_ae
       (d := Module.finrank ℝ E) hp_one
       (chartTargetEuclid_isOpen (I := I) (M := M) α) hvK_ae).mpr hv
-  have hvK_supp : tsupport vK ⊆
+  have hvK_support : tsupport vK ⊆
       (fun x : M => (toEuclidean (E := E)) (extChartAt I α x)) '' K_α := by
     exact compactRep_support hKE_closed v
-  have hj := hjoint hvK_mem hvK_supp
+  have hj := hjoint hvK_mem hvK_support
   have hout_ae := crossPullback_ae (I := I) (M := M)
     (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) γ α hvK_ae
   have hout_mem : DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp

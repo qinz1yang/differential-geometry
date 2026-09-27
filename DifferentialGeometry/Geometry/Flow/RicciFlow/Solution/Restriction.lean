@@ -44,7 +44,7 @@ omit [SigmaCompactSpace M] [T2Space M] in
 end SolutionOn
 
 omit [SigmaCompactSpace M] in
-theorem isSoln_timeRestrict
+theorem isSolutionOn_timeRestrict
     {D D' : DifferentialGeometry.Geometry.Curvature.RealTimeInterval}
     {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSolutionOn (I := I) S)
@@ -105,7 +105,7 @@ theorem isSoln_timeRestrict
     exact h.congr_of_eventuallyEq (Filter.Eventually.of_forall fun _ => rfl)
 
 omit [SigmaCompactSpace M] in
-theorem isSoln_tailRestrict
+theorem isSolutionOn_tailRestrict
     {alpha t₀ omega : Real} {hαω : alpha < omega}
     {S : SolutionOn (I := I) (M := M)
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen alpha omega hαω)}
@@ -114,14 +114,14 @@ theorem isSoln_tailRestrict
     IsSolutionOn (I := I)
       (S.timeRestrict
         (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen t₀ omega ht₀ω)) := by
-  apply isSoln_timeRestrict (I := I) hS
+  apply isSolutionOn_timeRestrict (I := I) hS
   · intro t ht
     exact ⟨le_of_lt (lt_of_lt_of_le hαt₀ ht.1), ht.2⟩
   · intro t ht
     exact ⟨lt_trans hαt₀ ht.1, ht.2⟩
 
 omit [SigmaCompactSpace M] in
-theorem tailFrameTimeReg
+theorem tailFrameTimeRegularity
     [IsManifold I 1 M] {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     {n : WithTop ℕ∞} {u : Set M}
     {alpha t₀ omega : Real} {hαω : alpha < omega}
@@ -144,7 +144,7 @@ theorem tailFrameTimeReg
           (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen t₀ omega ht₀ω))
         frame hframe)
       frame u := by
-  apply localFrameTimeReg (I := I)
+  apply localFrameTimeRegularity (I := I)
   · intro x _hx i j
     have hsmooth := hS.smoothMetric.coeff x (frame i x) (frame j x)
     have hsub :

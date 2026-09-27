@@ -1,0 +1,39 @@
+import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
+import DifferentialGeometry.Analysis.Integration.L2.Hilbert.DenseSubset
+open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
+open DifferentialGeometry.Geometry.Curvature
+
+noncomputable section
+
+open Bundle
+open scoped Manifold Topology ContDiff
+
+namespace DifferentialGeometry.Analysis.Spectral
+
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
+open DifferentialGeometry.Integral.L2
+
+variable
+    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+      [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
+      [IsManifold I ∞ M] [CompactSpace M] [I.Boundaryless]
+      [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M]
+
+theorem ccToHs_injective (g : SmoothRiemannianMetric I M) (s : ℕ) (σ : ℝ) :
+    Function.Injective (ccTensorToHs (I := I) (M := M) g s σ) := by
+  intro S T hST
+  apply SmoothCcTensor.smoothCcTensor_eq_of_toL2_eq S T
+  let hcompact := tensorResolventL2_isCompactOperator
+    (I := I) (M := M) g 0 s
+  apply (tensorResolventHilbertEigenbasisSigma
+    (I := I) (M := M) hcompact).repr.injective
+  ext i
+  have hi := congrArg (fun u => u.coeff i) hST
+  simpa only [ccTensorToHs_coeff, tensorL2Coeff] using hi
+
+end DifferentialGeometry.Analysis.Spectral
+
+end

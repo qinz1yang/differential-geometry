@@ -1,13 +1,13 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.NirenbergInterior.MixedPartials
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.VariationalIdentity.LeibnizCoefficients
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.DerivedDataConstructor
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.CanonicalDerivedData
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFChartDerivMemW1p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.BaseFChart.MemWkpTwoTwo
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.FChartEffDef
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.FChartEffDef
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.ChartData
-import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.BilinearH1ComplViaH3
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiated.EffectiveSource
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.EffectiveSource
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Chart.VariationalData
+import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFirstPartialW1p
 
 
 noncomputable section
@@ -34,13 +34,13 @@ open DifferentialGeometry.Analysis.Laplacian.ChartBilinearH1Compl
 open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainChartData
 open DifferentialGeometry.Analysis.Laplacian.IteratedMixedPartials
 open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl
-open DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1ComplH3
-open DifferentialGeometry.Analysis.Laplacian.DerivedChartBilinearH1ComplDataCanonical
+open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
+open DifferentialGeometry.Analysis.Laplacian.CanonicalDerivedChartBilinearH1ComplData
 open DifferentialGeometry.Analysis.Laplacian.TwiceDifferentiatedVariationalIdentity
 open DifferentialGeometry.Analysis.Laplacian.ChosenFChartDerivMemW1p
 open DifferentialGeometry.Analysis.Laplacian.BaseFChartMemW22
-open DifferentialGeometry.Analysis.Laplacian.FChartEffDef
-open DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef
+open DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource
+open DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource
 open DifferentialGeometry.Analysis.Laplacian.ChosenThirdMixedPartialChartPushed
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Sobolev.Euclidean
@@ -59,7 +59,7 @@ structure IteratedDiffChartBilinearData
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ) where
   directions : Fin m → Fin (Module.finrank ℝ E)
   diffChartForcing : EuclN → ℝ
-  fChartEff_memLp_weighted :
+  fChartEffective_memLp_weighted :
     MemLp diffChartForcing 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))
@@ -88,7 +88,7 @@ def IteratedDiffChartBilinearData.mkFromHypotheses
     {u_h : H1Compl (I := I) (M := M) g} {m : ℕ}
     (directions : Fin m → Fin (Module.finrank ℝ E))
     (diffChartForcing : EuclN → ℝ)
-    (fChartEff_memLp_weighted :
+    (fChartEffective_memLp_weighted :
       MemLp diffChartForcing 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)))
@@ -114,7 +114,7 @@ def IteratedDiffChartBilinearData.mkFromHypotheses
     IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m :=
   { directions := directions
     diffChartForcing := diffChartForcing
-    fChartEff_memLp_weighted := fChartEff_memLp_weighted
+    fChartEffective_memLp_weighted := fChartEffective_memLp_weighted
     m_diff_variational_identity := m_diff_variational_identity }
 
 namespace IteratedDiffChartBilinearData
@@ -225,19 +225,19 @@ def ofBase
     (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h)).fChart
-  fChartEff_memLp_weighted :=
+  fChartEffective_memLp_weighted :=
     (chartBilinearH1ComplDataOfLaplacianDomain (I := I) (M := M) g α
       (laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h)).f_chart_memLp_weighted
   m_diff_variational_identity := by
     classical
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     set hu_h_lap : u_h ∈ laplacianDomain (I := I) (M := M) g :=
       laplacianDomainPow_succ_subset_laplacianDomain
         (I := I) (M := M) g 1 hu_h
     set D := chartBilinearH1ComplDataOfLaplacianDomain
       (I := I) (M := M) g α hu_h_lap with hD_def
-    have h_base := D.variational_identity ψ hψ_smooth hψ_cs hψ_supp
+    have h_base := D.variational_identity ψ hψ_smooth hψ_cs hψ_support
     have h_wp_ae := base_weak_partial_ae_eq_chartPushedChosenFirstPartial_aux
       (I := I) (M := M) g α hu_h
     have h_u_ae := base_u_chart_ae_eq_chartPushed
@@ -342,16 +342,16 @@ def ofDiff
     IteratedDiffChartBilinearData (I := I) (M := M) g α u_h 1 where
   directions := fun _ => l
   diffChartForcing :=
-    DifferentialGeometry.Analysis.Laplacian.FChartEffDef.diffChartForcing
+    DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource.diffChartForcing
       (I := I) (M := M) g α l hu_h
-  fChartEff_memLp_weighted :=
-    DifferentialGeometry.Analysis.Laplacian.FChartEffDef.diffChartForcing_memLp_two_weighted
+  fChartEffective_memLp_weighted :=
+    DifferentialGeometry.Analysis.Laplacian.DiffChartEffectiveSource.diffChartForcing_memLp_two_weighted
       (I := I) (M := M) (g := g) (α := α) (l := l) (hu_h := hu_h)
   m_diff_variational_identity := by
     classical
-    intro ψ hψ_smooth hψ_cs hψ_supp
-    have h_once := derived_variational_identity_holds
-      (I := I) (M := M) g α l hu_h hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
+    have h_once := derived_chart_variational_identity
+      (I := I) (M := M) g α l hu_h hψ_smooth hψ_cs hψ_support
     have h_principal_eq :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           (∑ i : Fin (Module.finrank ℝ E),
@@ -437,14 +437,14 @@ def ofDiffTwice
     IteratedDiffChartBilinearData (I := I) (M := M) g α u_h 2 where
   directions := ![l₁, l₂]
   diffChartForcing :=
-    DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef.effectiveSourceChartSecondOrder
+    DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource.effectiveSourceChartSecondOrder
       (I := I) (M := M) g α l₁ l₂ hu_h
-  fChartEff_memLp_weighted :=
-    DifferentialGeometry.Analysis.Laplacian.FChartEffTwiceDef.fChartEffTwice_memLp_two_weighted
+  fChartEffective_memLp_weighted :=
+    DifferentialGeometry.Analysis.Laplacian.DiffChartSecondOrderEffectiveSource.fChartEffectiveTwice_memLp_two_weighted
       (I := I) (M := M) (g := g) (α := α) (l₁ := l₁) (l₂ := l₂) (hu_h := hu_h)
   m_diff_variational_identity := by
     classical
-    intro ψ hψ_smooth hψ_cs hψ_supp
+    intro ψ hψ_smooth hψ_cs hψ_support
     have h_base_f_chart_memWkp22 :=
       base_f_chart_memWkp_two_two
         (I := I) (M := M) g α hu_h
@@ -453,7 +453,7 @@ def ofDiffTwice
         (I := I) (M := M) g α hu_h l₁ h_base_f_chart_memWkp22
     have h_twice := twice_differentiated_variational_identity_holds
       (I := I) (M := M) g α hu_h l₁ l₂ h_chosenFChartDeriv_memW1p
-      hψ_smooth hψ_cs hψ_supp
+      hψ_smooth hψ_cs hψ_support
     have h_principal_eq :
         ∫ y in chartTargetEuclid (I := I) (M := M) α,
           (∑ i : Fin (Module.finrank ℝ E),

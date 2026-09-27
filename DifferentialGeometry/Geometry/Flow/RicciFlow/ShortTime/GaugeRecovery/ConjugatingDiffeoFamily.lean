@@ -1,11 +1,11 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackFlat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DeTurck.PullbackEvaluationChainRule
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.DeTurckGeometricNonlinearity
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.EigenCombination
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.TensorHsRealize
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.DeTurckNonlinearity
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Reconstruction.TensorHilbertSobolev
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartLocalPicard
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.ChartLocalExistence.ChartOverlapUniqueness
-import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.BareFlowFromJointC1
+import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.Regularity.IntegralCurveFromJointC1
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.FlatIdentity
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothDependence.GlobalClosedManifold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.ConjugatingFlow.ForwardFlow
@@ -24,8 +24,6 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
-open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 
 variable
@@ -87,7 +85,7 @@ theorem conjugating_diffeo_family_jointsmooth
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
             (mfderiv I I (Φ_fam p.1 : M → M) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) ∧
       ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞
         (fun p : ℝ × M => (Φ_fam p.1 : M → M) p.2) (Set.Ico (0 : ℝ) T ×ˢ Set.univ) := by
@@ -103,7 +101,7 @@ theorem conjugating_diffeo_family_jointsmooth
     forward_flow_existence_smooth_neighborhood_of_jointsmooth_field
       (I := I) X_DT T_DT hDT hsmooth0_X
   obtain ⟨Φ_fam, hfam0, hfameq, hfamode⟩ :=
-    time_dependent_vf_bare_flow_family (I := I) X_DT T_DT Φ
+    exists_diffeomorphism_family_of_integral_curves (I := I) X_DT T_DT Φ
       (fun t ht htT => hdiffeo t ⟨ht, htT⟩)
       (fun t ht htT x => hflow t ⟨ht, htT⟩ x)
   have hfun_eqOn : ∀ s ∈ Set.Ico (0 : ℝ) T_DT, (Φ_fam s : M → M) = fun y : M => Φ s y := by
@@ -149,11 +147,11 @@ theorem conjugating_diffeo_family_jointsmooth
     refine (hΦsection_joint x₀ i).congr ?_
     rintro ⟨s, x⟩ ⟨hs, hx⟩
     change (TotalSpace.mk' E ((Φ_fam s : M → M) x)
-        (mfderiv I I (Φ_fam s : M → M) x (Integral.Measure.chartBasisVecFiber (I := I) x₀ i x))
+        (mfderiv I I (Φ_fam s : M → M) x (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x))
         : TangentBundle I M)
       = (TotalSpace.mk' E (Φ s x)
           (mfderiv I I (fun y : M => Φ s y) x
-            (Integral.Measure.chartBasisVecFiber (I := I) x₀ i x)) : TangentBundle I M)
+            (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i x)) : TangentBundle I M)
     rw [hfun_eqOn s hs]
   · have hIcoSub : Set.Ico (0 : ℝ) T_DT ⊆ Set.Ioo lo hi := fun t ht =>
       ⟨lt_of_lt_of_le hlo ht.1, lt_trans ht.2 hhi⟩
@@ -190,7 +188,7 @@ theorem conjugating_diffeo_family
         ContinuousOn (fun p : ℝ × M =>
           (TotalSpace.mk' E ((Φ_fam p.1 : M → M) p.2)
             (mfderiv I I (Φ_fam p.1 : M → M) p.2
-              (Integral.Measure.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
+              (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) x₀ i p.2)) : TangentBundle I M))
           (Set.Ico 0 T ×ˢ (trivializationAt E (TangentSpace I) x₀).baseSet)) := by
   obtain ⟨T, hT0, hT_le, Φ_fam, h0, hode, hcont0, hbundle0, horbit, hsection, -⟩ :=
     conjugating_diffeo_family_jointsmooth (I := I) g_DT g_bg T_DT hDT h_smooth0

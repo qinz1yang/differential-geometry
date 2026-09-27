@@ -24,7 +24,7 @@ variable [SigmaCompactSpace M] [T2Space M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rm04EvolTail_at
+theorem rm04EvolutionTail_at
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega} {hT0Omega : t0 < omega}
     {S : SolutionOn (I := I) (M := M)
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -54,13 +54,13 @@ theorem rm04EvolTail_at
             (rmComp (I := I) St x₀) (t : Real) x₀ (m 0) (m 1) (m 2) (m 3))
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen t0 omega hT0Omega).carrier (t : Real) := by
   subst hSt
-  exact rm04Evol_at (I := I) _ (isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega) x₀
+  exact rm04Evolution_at (I := I) _ (isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega) x₀
     (coordInvDt (I := I) _ x₀)
-    (tailCoordFrameReg (I := I) hS hAlphaT0 hT0Omega x₀) t m
+    (tailCoordFrameRegularity (I := I) hS hAlphaT0 hT0Omega x₀) t m
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rm04EvolFamTail
+theorem rm04EvolutionFamTail
     {alpha t0 omega : Real} {hAlphaOmega : alpha < omega} {hT0Omega : t0 < omega}
     {S : SolutionOn (I := I) (M := M)
       (DifferentialGeometry.Geometry.Curvature.RealTimeInterval.closedOpen alpha omega hAlphaOmega)}
@@ -74,8 +74,8 @@ theorem rm04EvolFamTail
       (rm04Fam (I := I) St) (rm04LapFam (I := I) St) (rm04BFam (I := I) St)
       (ricUpFam (I := I) St) := by
   subst hSt
-  exact rm04EvolFam (I := I) _ (isSoln_tailRestrict (I := I) hS hAlphaT0 hT0Omega)
+  exact rm04EvolutionFam (I := I) _ (isSolutionOn_tailRestrict (I := I) hS hAlphaT0 hT0Omega)
     (fun y => coordInvDt (I := I) _ y)
-    (fun y => tailCoordFrameReg (I := I) hS hAlphaT0 hT0Omega y)
+    (fun y => tailCoordFrameRegularity (I := I) hS hAlphaT0 hT0Omega y)
 
 end DifferentialGeometry.PDE.RicciFlow

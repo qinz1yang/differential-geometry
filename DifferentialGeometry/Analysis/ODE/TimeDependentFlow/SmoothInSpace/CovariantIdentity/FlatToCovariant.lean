@@ -127,7 +127,7 @@ variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
-theorem rawVariationalIdentity_of_flatChartFderiv_witness
+theorem rawVariationalIdentity_of_flatChartFderiv_eventuallyEq
     (g : SmoothRiemannianMetric I M)
     (X : Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     (Φ_fam : ℝ → M ≃ₘ⟮I, I⟯ M)
@@ -171,7 +171,7 @@ theorem rawVariationalIdentity_of_flatChartFderiv_witness
               (mfderiv I I (Φ_fam t : M → M) x v)) :=
     hQinner_of_flat_value_and_corrections (I := I) g X Φ_fam t x v Q Dchart' d
       hRdiff hCdiff hcov
-  exact rawVariationalIdentity_of_chartFderiv_witness (I := I) g X Φ_fam t x v Q d
+  exact rawVariationalIdentity_of_chartFderiv_eventuallyEq (I := I) g X Φ_fam t x v Q d
     hDchart hcontAt hwitness hQinner
 
 end Producer

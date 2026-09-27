@@ -39,7 +39,7 @@ private lemma contDiff_partial_partial
 
 omit [NeZero d] in
 private lemma integral_partial_eq_zero_of_compactSupport
-    {F : E → ℝ} (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hF_supp : HasCompactSupport F)
+    {F : E → ℝ} (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hF_support : HasCompactSupport F)
     (l : Fin d) :
     ∫ x, (fderiv ℝ F x) (EuclideanSpace.single l 1) = 0 := by
   have hF_diff : Differentiable ℝ F := hF.differentiable (by simp)
@@ -48,24 +48,24 @@ private lemma integral_partial_eq_zero_of_compactSupport
   have h_F_partial_cont : Continuous
       (fun x : E => (fderiv ℝ F x) (EuclideanSpace.single l 1)) :=
     (hF.continuous_fderiv (by simp)).clm_apply continuous_const
-  have h_F_partial_supp : HasCompactSupport
+  have h_F_partial_support : HasCompactSupport
       (fun x : E => (fderiv ℝ F x) (EuclideanSpace.single l 1)) :=
-    hF_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
+    hF_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
   have h_F_cont : Continuous F := hF.continuous
   have h_fg_int : Integrable (fun x : E => F x * (1 : ℝ)) := by
-    have h_supp : HasCompactSupport (fun x : E => F x * (1 : ℝ)) := by
+    have h_support : HasCompactSupport (fun x : E => F x * (1 : ℝ)) := by
       have : (fun x : E => F x * (1 : ℝ)) = F := by funext x; ring
-      rw [this]; exact hF_supp
-    exact (h_F_cont.mul continuous_const).integrable_of_hasCompactSupport h_supp
+      rw [this]; exact hF_support
+    exact (h_F_cont.mul continuous_const).integrable_of_hasCompactSupport h_support
   have h_f'g_int : Integrable
       (fun x : E => (fderiv ℝ F x) (EuclideanSpace.single l 1) * (1 : ℝ)) := by
-    have h_supp : HasCompactSupport
+    have h_support : HasCompactSupport
         (fun x : E => (fderiv ℝ F x) (EuclideanSpace.single l 1) * (1 : ℝ)) := by
       have : (fun x : E => (fderiv ℝ F x) (EuclideanSpace.single l 1) * (1 : ℝ)) =
           (fun x : E => (fderiv ℝ F x) (EuclideanSpace.single l 1)) := by
         funext x; ring
-      rw [this]; exact h_F_partial_supp
-    exact (h_F_partial_cont.mul continuous_const).integrable_of_hasCompactSupport h_supp
+      rw [this]; exact h_F_partial_support
+    exact (h_F_partial_cont.mul continuous_const).integrable_of_hasCompactSupport h_support
   have h_fg'_int : Integrable
       (fun x : E => F x * (fderiv ℝ (fun _ : E => (1 : ℝ)) x) (EuclideanSpace.single l 1))
         := by
@@ -105,13 +105,13 @@ private lemma integral_partial_eq_zero_of_compactSupport
 
 omit [NeZero d] in
 private lemma setIntegral_partial_eq_zero_of_compactSupport_subset
-    {F : E → ℝ} (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hF_supp : HasCompactSupport F)
-    {Ω : Set E} (h_supp_Ω : tsupport F ⊆ Ω) (l : Fin d) :
+    {F : E → ℝ} (hF : ContDiff ℝ (⊤ : ℕ∞) F) (hF_support : HasCompactSupport F)
+    {Ω : Set E} (h_support_Ω : tsupport F ⊆ Ω) (l : Fin d) :
     ∫ x in Ω, (fderiv ℝ F x) (EuclideanSpace.single l 1) = 0 := by
   have h_partial_tsupp : tsupport (fun x : E =>
       (fderiv ℝ F x) (EuclideanSpace.single l 1)) ⊆ Ω :=
     (tsupport_fderiv_apply_subset (𝕜 := ℝ) (EuclideanSpace.single l 1)).trans
-      h_supp_Ω
+      h_support_Ω
   have h_outside_zero : ∀ x, x ∉ Ω →
       (fderiv ℝ F x) (EuclideanSpace.single l 1) = 0 := by
     intro x hx
@@ -121,7 +121,7 @@ private lemma setIntegral_partial_eq_zero_of_compactSupport_subset
     exact image_eq_zero_of_notMem_tsupport (f := fun y : E =>
       (fderiv ℝ F y) (EuclideanSpace.single l 1)) hx_notin
   rw [setIntegral_eq_integral_of_forall_compl_eq_zero h_outside_zero]
-  exact integral_partial_eq_zero_of_compactSupport hF hF_supp l
+  exact integral_partial_eq_zero_of_compactSupport hF hF_support l
 
 omit [NeZero d] in
 private lemma fderiv_triple_mul_apply_diff
@@ -201,14 +201,14 @@ private lemma contDiff_principal_summand
 private lemma hasCompactSupport_principal_summand
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u ψ : E → ℝ}
-    (hψ_supp : HasCompactSupport ψ) (i j : Fin d) :
+    (hψ_support : HasCompactSupport ψ) (i j : Fin d) :
     HasCompactSupport (fun y : E =>
       B.a y i j * (fderiv ℝ u y) (EuclideanSpace.single i 1) *
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) := by
-  have h_dψ_supp : HasCompactSupport (fun y : E =>
+  have h_dψ_support : HasCompactSupport (fun y : E =>
       (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) :=
-    hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-  exact h_dψ_supp.mul_left
+    hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+  exact h_dψ_support.mul_left
 
 private lemma tsupport_principal_summand_subset_tsupport_ψ
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
@@ -259,7 +259,7 @@ private lemma principal_summand_partial_decomp
 private lemma principal_summand_integral_zero
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u ψ : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (i j l : Fin d) :
     (∫ x in Ω, (fderiv ℝ (fun y : E => B.a y i j) x)
             (EuclideanSpace.single l 1) *
@@ -280,13 +280,13 @@ private lemma principal_summand_integral_zero
       (fderiv ℝ ψ y) (EuclideanSpace.single j 1) with hF_def
   have hF_smooth : ContDiff ℝ (⊤ : ℕ∞) F :=
     contDiff_principal_summand B hu hψ i j
-  have hF_supp : HasCompactSupport F :=
-    hasCompactSupport_principal_summand B hψ_supp i j
+  have hF_support : HasCompactSupport F :=
+    hasCompactSupport_principal_summand B hψ_support i j
   have hF_tsub : tsupport F ⊆ Ω :=
     (tsupport_principal_summand_subset_tsupport_ψ B (u := u) (ψ := ψ) i j).trans
       hψ_tsub
   have hzero := setIntegral_partial_eq_zero_of_compactSupport_subset
-    (F := F) (l := l) hF_smooth hF_supp hF_tsub
+    (F := F) (l := l) hF_smooth hF_support hF_tsub
   have h_pointwise : ∀ x : E,
       (fderiv ℝ F x) (EuclideanSpace.single l 1) =
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
@@ -367,45 +367,45 @@ private lemma principal_summand_integral_zero
           (EuclideanSpace.single l 1)) :=
       contDiff_partial (contDiff_partial hψ j) l
     exact (h_a.mul h_du).mul h_dlψ_dψ
-  have h_supp_T1 : HasCompactSupport (fun x : E =>
+  have h_support_T1 : HasCompactSupport (fun x : E =>
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
             (fderiv ℝ u x) (EuclideanSpace.single i 1) *
             (fderiv ℝ ψ x) (EuclideanSpace.single j 1)) := by
-    have h_dψ_supp : HasCompactSupport (fun y : E =>
+    have h_dψ_support : HasCompactSupport (fun y : E =>
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) :=
-      hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-    exact h_dψ_supp.mul_left
-  have h_supp_T2 : HasCompactSupport (fun x : E =>
+      hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+    exact h_dψ_support.mul_left
+  have h_support_T2 : HasCompactSupport (fun x : E =>
         B.a x i j *
             (fderiv ℝ (fun y : E =>
               (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
               (EuclideanSpace.single l 1) *
             (fderiv ℝ ψ x) (EuclideanSpace.single j 1)) := by
-    have h_dψ_supp : HasCompactSupport (fun y : E =>
+    have h_dψ_support : HasCompactSupport (fun y : E =>
         (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) :=
-      hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-    exact h_dψ_supp.mul_left
-  have h_supp_T3 : HasCompactSupport (fun x : E =>
+      hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+    exact h_dψ_support.mul_left
+  have h_support_T3 : HasCompactSupport (fun x : E =>
         B.a x i j *
             (fderiv ℝ u x) (EuclideanSpace.single i 1) *
             (fderiv ℝ (fun y : E =>
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) x)
               (EuclideanSpace.single l 1)) := by
-    have h_dlψ_supp : HasCompactSupport (fun y : E =>
+    have h_dlψ_support : HasCompactSupport (fun y : E =>
         (fderiv ℝ (fun y' : E =>
           (fderiv ℝ ψ y') (EuclideanSpace.single j 1)) y)
           (EuclideanSpace.single l 1)) := by
-      have hψ_dj_supp : HasCompactSupport (fun y : E =>
+      have hψ_dj_support : HasCompactSupport (fun y : E =>
           (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) :=
-        hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-      exact hψ_dj_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
-    exact h_dlψ_supp.mul_left
+        hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+      exact hψ_dj_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
+    exact h_dlψ_support.mul_left
   have h_int_T1 : Integrable (fun x : E =>
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
             (fderiv ℝ u x) (EuclideanSpace.single i 1) *
             (fderiv ℝ ψ x) (EuclideanSpace.single j 1))
       (volume.restrict Ω) :=
-    (h_smooth_T1.continuous.integrable_of_hasCompactSupport h_supp_T1).restrict
+    (h_smooth_T1.continuous.integrable_of_hasCompactSupport h_support_T1).restrict
   have h_int_T2 : Integrable (fun x : E =>
         B.a x i j *
             (fderiv ℝ (fun y : E =>
@@ -413,7 +413,7 @@ private lemma principal_summand_integral_zero
               (EuclideanSpace.single l 1) *
             (fderiv ℝ ψ x) (EuclideanSpace.single j 1))
       (volume.restrict Ω) :=
-    (h_smooth_T2.continuous.integrable_of_hasCompactSupport h_supp_T2).restrict
+    (h_smooth_T2.continuous.integrable_of_hasCompactSupport h_support_T2).restrict
   have h_int_T3 : Integrable (fun x : E =>
         B.a x i j *
             (fderiv ℝ u x) (EuclideanSpace.single i 1) *
@@ -421,7 +421,7 @@ private lemma principal_summand_integral_zero
               (fderiv ℝ ψ y) (EuclideanSpace.single j 1)) x)
               (EuclideanSpace.single l 1))
       (volume.restrict Ω) :=
-    (h_smooth_T3.continuous.integrable_of_hasCompactSupport h_supp_T3).restrict
+    (h_smooth_T3.continuous.integrable_of_hasCompactSupport h_support_T3).restrict
   have hsplit_outer : ∫ x in Ω,
       ((fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
           (fderiv ℝ u x) (EuclideanSpace.single i 1) *
@@ -459,7 +459,7 @@ private lemma principal_summand_integral_zero
 private lemma zeroth_summand_integral_zero
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u ψ : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (l : Fin d) :
     (∫ x in Ω, (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x) +
       (∫ x in Ω, B.c x *
@@ -469,8 +469,8 @@ private lemma zeroth_summand_integral_zero
   set F : E → ℝ := fun y => B.c y * u y * ψ y with hF_def
   have hF_smooth : ContDiff ℝ (⊤ : ℕ∞) F :=
     (B.smooth_c.mul hu).mul hψ
-  have hF_supp : HasCompactSupport F := by
-    exact hψ_supp.mul_left
+  have hF_support : HasCompactSupport F := by
+    exact hψ_support.mul_left
   have hF_tsub : tsupport F ⊆ Ω := by
     refine subset_trans ?_ hψ_tsub
     refine subset_trans (closure_mono ?_) (subset_refl _)
@@ -481,7 +481,7 @@ private lemma zeroth_summand_integral_zero
     change B.c x * u x * ψ x = 0
     rw [h0]; ring
   have hzero := setIntegral_partial_eq_zero_of_compactSupport_subset
-    (F := F) (l := l) hF_smooth hF_supp hF_tsub
+    (F := F) (l := l) hF_smooth hF_support hF_tsub
   have h_pointwise : ∀ x : E,
       (fderiv ℝ F x) (EuclideanSpace.single l 1) =
         (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x +
@@ -516,30 +516,30 @@ private lemma zeroth_summand_integral_zero
         (fderiv ℝ ψ x) (EuclideanSpace.single l 1)) :=
       contDiff_partial hψ l
     exact (B.smooth_c.mul hu).mul h_dlψ
-  have h_supp_T1 : HasCompactSupport (fun x : E =>
+  have h_support_T1 : HasCompactSupport (fun x : E =>
         (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x) :=
-    hψ_supp.mul_left
-  have h_supp_T2 : HasCompactSupport (fun x : E =>
+    hψ_support.mul_left
+  have h_support_T2 : HasCompactSupport (fun x : E =>
         B.c x * (fderiv ℝ u x) (EuclideanSpace.single l 1) * ψ x) :=
-    hψ_supp.mul_left
-  have h_supp_T3 : HasCompactSupport (fun x : E =>
+    hψ_support.mul_left
+  have h_support_T3 : HasCompactSupport (fun x : E =>
         B.c x * u x * (fderiv ℝ ψ x) (EuclideanSpace.single l 1)) := by
-    have h_dlψ_supp : HasCompactSupport (fun x : E =>
+    have h_dlψ_support : HasCompactSupport (fun x : E =>
         (fderiv ℝ ψ x) (EuclideanSpace.single l 1)) :=
-      hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
-    exact h_dlψ_supp.mul_left
+      hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
+    exact h_dlψ_support.mul_left
   have h_int_T1 : Integrable (fun x : E =>
         (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x)
       (volume.restrict Ω) :=
-    (h_smooth_T1.continuous.integrable_of_hasCompactSupport h_supp_T1).restrict
+    (h_smooth_T1.continuous.integrable_of_hasCompactSupport h_support_T1).restrict
   have h_int_T2 : Integrable (fun x : E =>
         B.c x * (fderiv ℝ u x) (EuclideanSpace.single l 1) * ψ x)
       (volume.restrict Ω) :=
-    (h_smooth_T2.continuous.integrable_of_hasCompactSupport h_supp_T2).restrict
+    (h_smooth_T2.continuous.integrable_of_hasCompactSupport h_support_T2).restrict
   have h_int_T3 : Integrable (fun x : E =>
         B.c x * u x * (fderiv ℝ ψ x) (EuclideanSpace.single l 1))
       (volume.restrict Ω) :=
-    (h_smooth_T3.continuous.integrable_of_hasCompactSupport h_supp_T3).restrict
+    (h_smooth_T3.continuous.integrable_of_hasCompactSupport h_support_T3).restrict
   have hsplit_outer : ∫ x in Ω,
       ((fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x +
         B.c x * (fderiv ℝ u x) (EuclideanSpace.single l 1) * ψ x) +
@@ -598,20 +598,20 @@ private lemma ibp_smooth_against_test
     {f : E → ℝ} (hf : ContDiff ℝ (⊤ : ℕ∞) f)
     {Ω : Set E} (hΩ : IsOpen Ω)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (l : Fin d) :
     ∫ x in Ω, f x * (fderiv ℝ ψ x) (EuclideanSpace.single l 1) =
       -∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x := by
   have hf_C1 : ContDiff ℝ 1 f := hf.of_le (by norm_cast)
   have h_weak := DeGiorgi.HasWeakPartialDeriv.of_contDiff (d := d) hΩ
     (i := l) (f := f) hf_C1
-  exact h_weak ψ hψ hψ_supp hψ_tsub
+  exact h_weak ψ hψ hψ_support hψ_tsub
 
 private lemma ibp_principal_correction
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {u : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (l i j : Fin d) :
     ∫ x in Ω,
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
@@ -630,12 +630,12 @@ private lemma ibp_principal_correction
   have hg_smooth : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
       (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
         (fderiv ℝ u y) (EuclideanSpace.single i 1)) := h_deTurckLieConnectionDifferenceDerivative.mul h_diu
-  exact ibp_smooth_against_test (l := j) hg_smooth hΩ hψ hψ_supp hψ_tsub
+  exact ibp_smooth_against_test (l := j) hg_smooth hΩ hψ hψ_support hψ_tsub
 
 private lemma bilin_integrand_pieces_integrable
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u v : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (hv : ContDiff ℝ (⊤ : ℕ∞) v)
-    (hv_supp : HasCompactSupport v) :
+    (hv_support : HasCompactSupport v) :
     (Integrable (fun x => B.principalIntegrand u v x) (volume.restrict Ω)) ∧
     (Integrable (fun x => B.c x * u x * v x) (volume.restrict Ω)) ∧
     (∀ i j : Fin d, Integrable (fun x => B.a x i j *
@@ -644,12 +644,12 @@ private lemma bilin_integrand_pieces_integrable
   refine ⟨?_, ?_, ?_⟩
   · have h_cont : Continuous (B.principalIntegrand u v) :=
       B.continuous_principalIntegrand (hu.of_le (by norm_cast)) (hv.of_le (by norm_cast))
-    have h_supp : HasCompactSupport (B.principalIntegrand u v) := by
+    have h_support : HasCompactSupport (B.principalIntegrand u v) := by
       unfold SmoothEllipticBilinearForm.principalIntegrand
-      have h_dv_supp : ∀ j : Fin d, HasCompactSupport (fun x : E =>
+      have h_dv_support : ∀ j : Fin d, HasCompactSupport (fun x : E =>
           (fderiv ℝ v x) (EuclideanSpace.single j 1)) :=
-        fun j => hv_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-      apply HasCompactSupport.intro' hv_supp (isClosed_tsupport _)
+        fun j => hv_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+      apply HasCompactSupport.intro' hv_support (isClosed_tsupport _)
       intro x hx
       have hx_eq : v =ᶠ[𝓝 x] 0 :=
         (isClosed_tsupport (f := v)).isOpen_compl.eventually_mem hx |>.mono
@@ -665,12 +665,12 @@ private lemma bilin_integrand_pieces_integrable
       intro j _
       rw [h_dv_zero j]
       ring
-    exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+    exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
   · have h_cont : Continuous (fun x => B.c x * u x * v x) :=
       (B.continuous_c.mul hu.continuous).mul hv.continuous
-    have h_supp : HasCompactSupport (fun x => B.c x * u x * v x) :=
-      hv_supp.mul_left
-    exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+    have h_support : HasCompactSupport (fun x => B.c x * u x * v x) :=
+      hv_support.mul_left
+    exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
   · intro i j
     have h_cont : Continuous (fun x : E =>
         B.a x i j *
@@ -679,20 +679,20 @@ private lemma bilin_integrand_pieces_integrable
       refine ((B.continuous_a i j).mul ?_).mul ?_
       · exact (hu.continuous_fderiv (by simp)).clm_apply continuous_const
       · exact (hv.continuous_fderiv (by simp)).clm_apply continuous_const
-    have h_supp : HasCompactSupport (fun x : E =>
+    have h_support : HasCompactSupport (fun x : E =>
         B.a x i j *
             (fderiv ℝ u x) (EuclideanSpace.single i 1) *
             (fderiv ℝ v x) (EuclideanSpace.single j 1)) := by
-      have h_dv_supp : HasCompactSupport (fun x : E =>
+      have h_dv_support : HasCompactSupport (fun x : E =>
           (fderiv ℝ v x) (EuclideanSpace.single j 1)) :=
-        hv_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
-      exact h_dv_supp.mul_left
-    exact (h_cont.integrable_of_hasCompactSupport h_supp).restrict
+        hv_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single j 1)
+      exact h_dv_support.mul_left
+    exact (h_cont.integrable_of_hasCompactSupport h_support).restrict
 
 private lemma bilin_decomp
     {Ω : Set E} (B : SmoothEllipticBilinearForm d Ω)
     {u v : E → ℝ} (hu : ContDiff ℝ (⊤ : ℕ∞) u) (hv : ContDiff ℝ (⊤ : ℕ∞) v)
-    (hv_supp : HasCompactSupport v) :
+    (hv_support : HasCompactSupport v) :
     B.bilin u v =
       (∑ i : Fin d, ∑ j : Fin d, ∫ x in Ω, B.a x i j *
         (fderiv ℝ u x) (EuclideanSpace.single i 1) *
@@ -700,7 +700,7 @@ private lemma bilin_decomp
       ∫ x in Ω, B.c x * u x * v x := by
   classical
   obtain ⟨h_princ_int, h_zero_int, h_summand_int⟩ :=
-    bilin_integrand_pieces_integrable B hu hv hv_supp
+    bilin_integrand_pieces_integrable B hu hv hv_support
   unfold SmoothEllipticBilinearForm.bilin
   rw [integral_add h_princ_int h_zero_int]
   congr 1
@@ -771,7 +771,7 @@ private theorem bilin_partial_eq_integral_perturbed
     {u f : E → ℝ} (h_weak : B.IsSmoothWeakSolution u f)
     (hf : ContDiff ℝ (⊤ : ℕ∞) f)
     {ψ : E → ℝ} (hψ : ContDiff ℝ (⊤ : ℕ∞) ψ)
-    (hψ_supp : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
+    (hψ_support : HasCompactSupport ψ) (hψ_tsub : tsupport ψ ⊆ Ω)
     (l : Fin d) :
     B.bilin (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single l 1)) ψ =
       ∫ x in Ω, perturbedSource B u f l x * ψ x := by
@@ -781,24 +781,24 @@ private theorem bilin_partial_eq_integral_perturbed
       (fderiv ℝ u y) (EuclideanSpace.single l 1)) := contDiff_partial hu l
   have hψ_l : ContDiff ℝ (⊤ : ℕ∞) (fun y : E =>
       (fderiv ℝ ψ y) (EuclideanSpace.single l 1)) := contDiff_partial hψ l
-  have hψ_l_supp : HasCompactSupport (fun y : E =>
+  have hψ_l_support : HasCompactSupport (fun y : E =>
       (fderiv ℝ ψ y) (EuclideanSpace.single l 1)) :=
-    hψ_supp.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
+    hψ_support.fderiv_apply (𝕜 := ℝ) (EuclideanSpace.single l 1)
   have hψ_l_tsub : tsupport (fun y : E =>
       (fderiv ℝ ψ y) (EuclideanSpace.single l 1)) ⊆ Ω :=
     (tsupport_fderiv_apply_subset (𝕜 := ℝ) (EuclideanSpace.single l 1)).trans
       hψ_tsub
-  have h_lhs := bilin_decomp B hu_l hψ hψ_supp
-  have h_orig := bilin_decomp B hu hψ_l hψ_l_supp
+  have h_lhs := bilin_decomp B hu_l hψ hψ_support
+  have h_orig := bilin_decomp B hu hψ_l hψ_l_support
   have h_orig_eq : B.bilin u (fun y : E =>
         (fderiv ℝ ψ y) (EuclideanSpace.single l 1)) =
       ∫ x in Ω, f x * (fderiv ℝ ψ x) (EuclideanSpace.single l 1) :=
     hu_test (fun y : E => (fderiv ℝ ψ y) (EuclideanSpace.single l 1))
-      hψ_l hψ_l_supp hψ_l_tsub
+      hψ_l hψ_l_support hψ_l_tsub
   have h_ibp_f : ∫ x in Ω, f x * (fderiv ℝ ψ x) (EuclideanSpace.single l 1) =
       -∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x :=
-    ibp_smooth_against_test hf hΩ hψ hψ_supp hψ_tsub l
-  have h_ibp_corr : ∀ i j : Fin d,
+    ibp_smooth_against_test hf hΩ hψ hψ_support hψ_tsub l
+  have h_ibp_correction : ∀ i j : Fin d,
       ∫ x in Ω,
         (fderiv ℝ (fun y : E => B.a y i j) x) (EuclideanSpace.single l 1) *
           (fderiv ℝ u x) (EuclideanSpace.single i 1) *
@@ -807,10 +807,10 @@ private theorem bilin_partial_eq_integral_perturbed
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
             (EuclideanSpace.single j 1) * ψ x :=
-    fun i j => ibp_principal_correction hΩ B hu hψ hψ_supp hψ_tsub l i j
+    fun i j => ibp_principal_correction hΩ B hu hψ hψ_support hψ_tsub l i j
   have h_princ_zero := fun i j =>
-    principal_summand_integral_zero B hu hψ hψ_supp hψ_tsub i j l
-  have h_zero_zero := zeroth_summand_integral_zero B hu hψ hψ_supp hψ_tsub l
+    principal_summand_integral_zero B hu hψ hψ_support hψ_tsub i j l
+  have h_zero_zero := zeroth_summand_integral_zero B hu hψ hψ_support hψ_tsub l
   rw [h_lhs]
   have h_princ_substitute : ∀ i j : Fin d, ∫ x in Ω, B.a x i j *
         (fderiv ℝ (fun y : E =>
@@ -948,7 +948,7 @@ private theorem bilin_partial_eq_integral_perturbed
   have h_S₂_Z₂ : S₂ + Z₂ =
       -∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x := by
     rw [h_orig_combined, h_ibp_f]
-  have h_S₁_eq_neg_corr : S₁ = -(∑ i : Fin d, ∑ j : Fin d,
+  have h_S₁_eq_neg_correction : S₁ = -(∑ i : Fin d, ∑ j : Fin d,
       ∫ x in Ω, (fderiv ℝ (fun y : E =>
         (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
           (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
@@ -976,10 +976,10 @@ private theorem bilin_partial_eq_integral_perturbed
       intro i _
       refine Finset.sum_congr rfl ?_
       intro j _
-      have h := h_ibp_corr i j
+      have h := h_ibp_correction i j
       linarith]
     simp only [Finset.sum_neg_distrib]
-  rw [h_S₁_eq_neg_corr]
+  rw [h_S₁_eq_neg_correction]
   have h_dlf : ContDiff ℝ (⊤ : ℕ∞) (fun x : E =>
       (fderiv ℝ f x) (EuclideanSpace.single l 1)) :=
     contDiff_partial hf l
@@ -991,10 +991,10 @@ private theorem bilin_partial_eq_integral_perturbed
         (volume.restrict Ω) := by
     have h_pert_smooth : ContDiff ℝ (⊤ : ℕ∞) (perturbedSource B u f l) :=
       contDiff_perturbedSource B hu hf l
-    have h_supp : HasCompactSupport (fun x : E =>
-        perturbedSource B u f l x * ψ x) := hψ_supp.mul_left
+    have h_support : HasCompactSupport (fun x : E =>
+        perturbedSource B u f l x * ψ x) := hψ_support.mul_left
     exact ((h_pert_smooth.continuous.mul hψ.continuous).integrable_of_hasCompactSupport
-      h_supp).restrict
+      h_support).restrict
   have h_pert_decomp : ∫ x in Ω, perturbedSource B u f l x * ψ x =
       (∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x) -
       (∫ x in Ω, (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x) +
@@ -1027,13 +1027,13 @@ private theorem bilin_partial_eq_integral_perturbed
         (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x)
         (volume.restrict Ω) :=
       ((h_dlf.continuous.mul hψ.continuous).integrable_of_hasCompactSupport
-        hψ_supp.mul_left).restrict
+        hψ_support.mul_left).restrict
     have h_T2_int : Integrable (fun x : E =>
         (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x)
         (volume.restrict Ω) :=
       ((h_dlc_u.continuous.mul hψ.continuous).integrable_of_hasCompactSupport
-        hψ_supp.mul_left).restrict
-    have h_corr_smooth : ∀ i j : Fin d, ContDiff ℝ (⊤ : ℕ∞) (fun x : E =>
+        hψ_support.mul_left).restrict
+    have h_correction_smooth : ∀ i j : Fin d, ContDiff ℝ (⊤ : ℕ∞) (fun x : E =>
         (fderiv ℝ (fun y : E =>
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
@@ -1052,14 +1052,14 @@ private theorem bilin_partial_eq_integral_perturbed
             (EuclideanSpace.single j 1)) :=
         contDiff_partial (h_deTurckLieConnectionDifferenceDerivative.mul h_diu) j
       exact h_pj.mul hψ
-    have h_corr_int : ∀ i j : Fin d, Integrable (fun x : E =>
+    have h_correction_int : ∀ i j : Fin d, Integrable (fun x : E =>
         (fderiv ℝ (fun y : E =>
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
           (EuclideanSpace.single j 1) * ψ x) (volume.restrict Ω) := by
       intro i j
-      exact (((h_corr_smooth i j).continuous).integrable_of_hasCompactSupport
-        hψ_supp.mul_left).restrict
+      exact (((h_correction_smooth i j).continuous).integrable_of_hasCompactSupport
+        hψ_support.mul_left).restrict
     have h_sum_int : Integrable (fun x : E =>
         (∑ i : Fin d, ∑ j : Fin d, (fderiv ℝ (fun y : E =>
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
@@ -1080,7 +1080,7 @@ private theorem bilin_partial_eq_integral_perturbed
         rw [Finset.sum_mul]
       rw [heq]
       exact integrable_finsetSum _
-        (fun i _ => integrable_finsetSum _ (fun j _ => h_corr_int i j))
+        (fun i _ => integrable_finsetSum _ (fun j _ => h_correction_int i j))
     have h_form_eq : (fun x : E =>
           (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x -
           (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x +
@@ -1124,13 +1124,13 @@ private theorem bilin_partial_eq_integral_perturbed
       intro x
       have := congr_fun h_form_eq x
       exact this]
-    have h_corr_sum_int : Integrable (fun x : E => ∑ i : Fin d, ∑ j : Fin d,
+    have h_correction_sum_int : Integrable (fun x : E => ∑ i : Fin d, ∑ j : Fin d,
         (fderiv ℝ (fun y : E =>
           (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
             (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
           (EuclideanSpace.single j 1) * ψ x) (volume.restrict Ω) :=
       integrable_finsetSum _
-        (fun i _ => integrable_finsetSum _ (fun j _ => h_corr_int i j))
+        (fun i _ => integrable_finsetSum _ (fun j _ => h_correction_int i j))
     have hLHS : ∫ x in Ω,
           (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x -
           (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x +
@@ -1147,18 +1147,18 @@ private theorem bilin_partial_eq_integral_perturbed
               (fderiv ℝ (fun z : E => B.a z i j) y) (EuclideanSpace.single l 1) *
                 (fderiv ℝ u y) (EuclideanSpace.single i 1)) x)
               (EuclideanSpace.single j 1) * ψ x) :=
-      integral_add (h_T1_int.sub h_T2_int) h_corr_sum_int
+      integral_add (h_T1_int.sub h_T2_int) h_correction_sum_int
     rw [hLHS]
     rw [integral_sub h_T1_int h_T2_int]
     rw [integral_finsetSum _ (fun i _ => integrable_finsetSum _
-        (fun j _ => h_corr_int i j))]
+        (fun j _ => h_correction_int i j))]
     refine congrArg (fun e =>
         ((∫ x in Ω, (fderiv ℝ f x) (EuclideanSpace.single l 1) * ψ x) -
           ∫ x in Ω, (fderiv ℝ B.c x) (EuclideanSpace.single l 1) * u x * ψ x) + e)
       ?_
     refine Finset.sum_congr rfl ?_
     intro i _
-    rw [integral_finsetSum _ (fun j _ => h_corr_int i j)]
+    rw [integral_finsetSum _ (fun j _ => h_correction_int i j)]
   rw [h_pert_decomp]
   change -(-(∑ i : Fin d, ∑ j : Fin d, ∫ x in Ω,
         (fderiv ℝ (fun y : E =>
@@ -1186,10 +1186,10 @@ theorem partial_smooth_weak_solution
       (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single l 1))
       (perturbedSource B u f l) := by
   refine ⟨contDiff_partial h_weak.1 l, ?_⟩
-  intro ψ hψ hψ_supp hψ_tsub
-  exact bilin_partial_eq_integral_perturbed hΩ B h_weak hf hψ hψ_supp hψ_tsub l
+  intro ψ hψ hψ_support hψ_tsub
+  exact bilin_partial_eq_integral_perturbed hΩ B h_weak hf hψ hψ_support hψ_tsub l
 
-theorem partial_u_in_h2_loc
+theorem partial_u_in_h2_local
     {Ω : Set E} (hΩ : IsOpen Ω) (B : SmoothEllipticBilinearForm d Ω)
     {u f : E → ℝ} (h_weak : B.IsSmoothWeakSolution u f)
     (hf : ContDiff ℝ (⊤ : ℕ∞) f)
@@ -1241,7 +1241,7 @@ theorem partial_u_in_h2_loc
     have h := hM (Set.mem_image_of_mem _ hx_closure)
     rw [Real.norm_eq_abs]
     exact h.trans (le_max_left _ _)
-  obtain ⟨C, hC_nn, h_eng⟩ := loc_smooth_solution (d := d) B
+  obtain ⟨C, hC_nn, h_eng⟩ := local_smooth_solution (d := d) B
     hΩ'' hΩ''_compact_closure h_room
   intro i k
   obtain ⟨g, hg_memLp, hg_weak, Ω', hΩ'_open, hΩ''_in_Ω', hΩ'_in,

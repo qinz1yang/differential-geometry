@@ -1,0 +1,180 @@
+[
+  {
+    "source_commit": "3358033ba2fd35f321356dceaf2372a0fd6c0bfd",
+    "native": "DifferentialGeometry/Analysis/Calculus/Sard.lean",
+    "external": "DifferentialGeometry/External/TauCeti/Analysis/Calculus/Sard/EqualDimension.lean",
+    "native_before_sha256": "0fa0051ad2bbc315bef7ee9ec7aeaff6b0ea036b5b415a5ef74b03aa7e38bcf1",
+    "external_declarations": [
+      "MeasureTheory.addHaar_image_eq_zero_of_not_surjective_fderivWithin"
+    ],
+    "sources": [
+      "TauCeti/Analysis/Calculus/Sard/EqualDimension.lean",
+      "TauCeti/MeasureTheory/Measure/Haar/NormedSpace.lean"
+    ],
+    "modifications": [
+      "Preserve existing MeasureTheory public namespace and exact current signature.",
+      "Construct the source Borel measurable space locally, retaining independent source/target universes.",
+      "Inline the adapted Haar quasi-measure-preserving proof from NormedSpace instead of introducing an unused declaration.",
+      "Retain all native full Sard and locally Lipschitz regular-value results in Analysis/Calculus/Sard."
+    ]
+  },
+  {
+    "upstream_commit": "3358033ba2fd35f321356dceaf2372a0fd6c0bfd",
+    "sources": [
+      {
+        "path": "TauCeti/Analysis/Calculus/Morse/Generic.lean",
+        "sha256": "3386342907333501cb3a2df76d1ca1a9399ef01279bcb79a7e1a058bc263d78e"
+      },
+      {
+        "path": "TauCeti/Analysis/Normed/Module/FiniteDimension.lean",
+        "sha256": "ed6b826687e50149c00c1f10a6c865d8d422a1222f28d88b28328383285f60fe"
+      }
+    ],
+    "native_original": {
+      "path": "DifferentialGeometry/Topology/Morse/Generic.lean",
+      "sha256": "be53bcd4bf61a0dc0fe161fde2ff3196eb829d9268d09c454f92b83995e47272"
+    },
+    "outputs": [
+      {
+        "path": "DifferentialGeometry/Topology/Morse/Generic.lean",
+        "sha256": "45213403c6eb84717de5c5f1789d406fd44f91eb3ab54b4692ff929d23f13588"
+      },
+      {
+        "path": "DifferentialGeometry/External/TauCeti/Analysis/Calculus/Morse/Generic.lean",
+        "sha256": "d031cbededf64dd2d6ce131d25a39fa1da08ba639b550c8776058ecfa5b0dece"
+      }
+    ],
+    "declaration_mapping": [
+      {
+        "upstream": "ContinuousLinearMap.dual_finrank_eq",
+        "current": "private finrank_continuousLinearMap_real",
+        "external": "private TauCeti.finrank_continuousLinearMap_real",
+        "changes": "Keep existing real-specialized inverse finrank equality proof; helper moved out of native file."
+      },
+      {
+        "upstream": "TauCeti.isNondegenerateCriticalPoint_sub_iff",
+        "current": "derivative identities inside ae_forall_isNondegenerateCriticalPointAt_sub",
+        "external": "derivative identities inside TauCeti.ae_forall_bijective_fderiv_fderiv_sub",
+        "changes": "Selected first and second derivative identities; no Tau critical-point predicates imported."
+      },
+      {
+        "upstream": "TauCeti.ae_hasNondegenerateCriticalPointsOn_sub",
+        "current": "DifferentialGeometry.Topology.Morse.ae_forall_isNondegenerateCriticalPointAt_sub",
+        "external": "TauCeti.ae_forall_bijective_fderiv_fderiv_sub",
+        "changes": "Native public signature unchanged, proof now bridge to explicit derivative-bijectivity engine; reused genericity proof lives only External."
+      },
+      {
+        "upstream": "TauCeti.dense_setOfPred_hasNondegenerateCriticalPointsOn_sub",
+        "current": "DifferentialGeometry.Topology.Morse.dense_forall_isNondegenerateCriticalPointAt_sub",
+        "external": "TauCeti.dense_forall_bijective_fderiv_fderiv_sub",
+        "changes": "Native public signature unchanged, proof now bridge to explicit derivative-bijectivity engine; reused genericity proof lives only External."
+      },
+      {
+        "upstream": "TauCeti.exists_norm_lt_hasNondegenerateCriticalPointsOn_sub",
+        "current": "DifferentialGeometry.Topology.Morse.exists_norm_lt_forall_isNondegenerateCriticalPointAt_sub",
+        "external": "TauCeti.exists_norm_lt_forall_bijective_fderiv_fderiv_sub",
+        "changes": "Native public signature unchanged, proof now bridge to explicit derivative-bijectivity engine; reused genericity proof lives only External."
+      }
+    ],
+    "native_extensions_retained": [
+      "private isNondegenerateCriticalPointAt_of_injective_fderiv (original quadratic-Hessian bridge, adapted to accept injectivity directly)",
+      "private forall_isNondegenerateCriticalPointAt_sub_of_bijective (new shared bridge from explicit fderiv result to existing manifold critical-point API)",
+      "All three previous public theorem names/signatures retained as wrappers"
+    ],
+    "deletions": [],
+    "modifications": [
+      "Select only genericity, density, small perturbations and required derivative identities; omit unused gradient/finiteness APIs and all Tau Morse.Basic predicates.",
+      "State adapted external engines in terms of ordinary fderiv and Function.Bijective; no competing critical-point vocabulary.",
+      "Use existing pinned adapted Sard lemma in MeasureTheory namespace, with no source-domain measurable instance in signature.",
+      "Remove module/public import/public section syntax for local build compatibility.",
+      "Retain original Tau header and relevant declaration docstrings in External; native retains required original header.",
+      "Move continuous-dual dimension helper to External; record finite-dimension upstream source as reused.",
+      "No repository edits or compilation performed; root must compile and audit.",
+      "External raw-derivative engines use Type*; existing native public signatures are unchanged. Native private bridges no longer need finite dimensionality because they consume injectivity directly."
+    ],
+    "imports": [
+      "DifferentialGeometry.External.TauCeti.Analysis.Calculus.Sard.EqualDimension"
+    ],
+    "expected_cycles": false,
+    "compiler_verified": false
+  },
+  {
+    "upstream_commit": "3358033ba2fd35f321356dceaf2372a0fd6c0bfd",
+    "selected_upstream_source": {
+      "path": "TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean",
+      "sha256": "49f3a3760d1e65cb0a04c8653105426c17b7a98643105369b60928a2075907ca",
+      "declaration": "TauCeti.exists_isSliceChart_of_isEmbedding_of_isImmersionAtOfComplement",
+      "lines": [
+        124,
+        179
+      ]
+    },
+    "base_files": {
+      "DifferentialGeometry/Topology/Embedding/SliceChart.lean": "7222831a2438f495fa570f401a8284953f44d004a3ff67724d46092a998fcb0a",
+      "DifferentialGeometry/Topology/Embedding/Extension.lean": "a665d53d1d0ce0878f812677dd12964716c231b57ffd17cd861e040751961dcd"
+    },
+    "outputs": [
+      {
+        "path": "DifferentialGeometry/External/TauCeti/Geometry/Manifold/LocallyFlat/Smooth.lean",
+        "sha256": "27a6be84f6c3ff3bc7aa7186ab834489ec2041ae528cef9a60e5dfbfdc96f44c"
+      },
+      {
+        "path": "DifferentialGeometry/Topology/Embedding/SliceChart.lean",
+        "sha256": "8360476dd12a96f37c572f1e1208db47c90328ad839f42af514f16defc05065e"
+      },
+      {
+        "path": "DifferentialGeometry/Topology/Embedding/Extension.lean",
+        "sha256": "8009b8e8ced005a2fa8d1933d113f87f3a73c384c83eb8277bcea938dcf450e1"
+      }
+    ],
+    "external_declarations": [
+      {
+        "name": "Manifold.IsImmersionAtOfComplement.equiv_symm_extend_codChart_apply",
+        "provenance": "Extracted upstream coordinate calculation (original local key proof, lines 138-143); general ambient model and public helper supporting both native extension consumers."
+      },
+      {
+        "name": "Manifold.IsImmersionAtOfComplement.contMDiffOn_equiv_symm_extend_codChart",
+        "provenance": "Local smoothness addition to upstream chart construction, kept with the adapted external implementation."
+      },
+      {
+        "name": "Manifold.IsImmersionAtOfComplement.exists_contMDiffOn_slice_chart",
+        "provenance": "Existing local adaptation of upstream slice-chart shrinking theorem. Public name/signature preserved; IsEmbedding weakened to IsInducing, smoothness and inverse smoothness added, explicit image equality replaces IsSliceChart. Calls shared external coordinate helpers."
+      }
+    ],
+    "native_declarations_retained": [
+      "Manifold.IsSmoothEmbedding.exists_contMDiffOn_slice_chart",
+      "All declarations from Topology/Embedding/Extension.lean including private exists_contDiffOn_local_extension_of_model_extension and public exists_contDiffOn_parametric_extension_halfspace"
+    ],
+    "modifications": [
+      "Preserve Manifold namespace and existing public slice-chart name.",
+      "Select one source theorem and its coordinate calculation, not the complete Tau Ceti module or library.",
+      "Retain adapted implementation and added coordinate smoothness API in External.",
+      "Retain original relevant theorem documentation and copyright header in adapted external module. Root should separately preserve selected pinned original module, license and notice.",
+      "Replace both copied coordinate calculations in native Extension with external API calls; all extension statements/proofs and halfspace/globalization logic remain native.",
+      "Native SliceChart now contains only its pre-existing smooth-embedding corollary; no duplicate implementation."
+    ],
+    "deletions": [],
+    "required_import_changes": {
+      "DifferentialGeometry.lean": [
+        "import DifferentialGeometry.External.TauCeti.Geometry.Manifold.LocallyFlat.Smooth"
+      ]
+    },
+    "external_imports": [
+      "Mathlib.Geometry.Manifold.SmoothEmbedding",
+      "Mathlib.Geometry.Manifold.ContMDiff.Atlas",
+      "Mathlib.Geometry.Manifold.ContMDiff.NormedSpace"
+    ],
+    "verification": "Scratch-only; no lake/Lean build executed; no main worktree/cache/index changed.",
+    "name_collision_search": {
+      "scopes": [
+        "DifferentialGeometry/Topology/Embedding",
+        ".lake/packages/mathlib/Mathlib/Geometry/Manifold"
+      ],
+      "patterns": [
+        "equiv_symm_extend_codChart_apply",
+        "contMDiffOn_equiv_symm_extend_codChart"
+      ],
+      "result": "No matches in current main worktree; bounded by these two directory trees."
+    }
+  }
+]

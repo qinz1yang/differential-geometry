@@ -2,7 +2,7 @@
 Authors: Jack McCarthy
 -/
 import DifferentialGeometry.Tensor.Mixed.Fiber
-import DifferentialGeometry.Tensor.Multilinear.Dual
+import DifferentialGeometry.Tensor.Multilinear.Bundle.Dual
 import Mathlib.LinearAlgebra.Contraction
 open DifferentialGeometry.Tensor.Multilinear
 
