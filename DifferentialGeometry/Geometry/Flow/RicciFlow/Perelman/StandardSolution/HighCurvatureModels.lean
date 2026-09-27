@@ -114,18 +114,27 @@ private theorem standard_late_slab_scaled_properties
     exact spatiallyKappaNoncollapsed_timeRestrict hsub hpara
 
 
+def standardModelKappa : ℝ := standardParabolicNoncollapseCoeff / 1000000 / modelNoncollapseFactor
+
+theorem standardModelKappa_pos : 0 < standardModelKappa :=
+  div_pos (div_pos standardParabolicNoncollapseCoeff_pos (by norm_num)) modelNoncollapseFactor_pos
+
+theorem modelNoncollapseFactor_mul_standardModelKappa :
+    modelNoncollapseFactor * standardModelKappa = standardParabolicNoncollapseCoeff / 1000000 :=
+  mul_div_cancel₀ _ modelNoncollapseFactor_pos.ne'
+
 theorem exists_standard_high_scalar_model_threshold
     {ε : ℝ} (hε : 0 < ε) (hε1 : ε < 1) {τ : ℝ} (hτ : 0 < τ) :
     ∃ Q₀ : ℝ, 0 < Q₀ ∧ ∀ (S : PartialStandardSolution)
       (o : Surgery.Topology.TangentOrientationSection E3) (x : E3) (t : ℝ),
       t ∈ S.domain → τ ≤ t → t < 1 → Q₀ ≤ metricScalarAt (S.metric t) x →
-      OrientedWitness S.toSolutionOn o ε (standardParabolicNoncollapseCoeff / 1000000) x t := by
+      OrientedWitness S.toSolutionOn o ε standardModelKappa x t := by
   let a := τ / 2
   let A := 2 / τ
   have ha : 0 < a := half_pos hτ
   have hA : 0 < A := div_pos (by norm_num) hτ
-  let κ := standardParabolicNoncollapseCoeff / 1000000
-  have hκ : 0 < κ := div_pos standardParabolicNoncollapseCoeff_pos (by norm_num)
+  let κ := standardModelKappa
+  have hκ : 0 < κ := standardModelKappa_pos
   let σ := Real.sqrt A * Real.sqrt (5000 * a)
   have hσ : 0 < σ := mul_pos (Real.sqrt_pos.mpr hA) (Real.sqrt_pos.mpr (by positivity))
   let Φ := rescalePinchingFunction A (fun _ : ℝ => (1 : ℝ))
@@ -167,7 +176,11 @@ theorem exists_standard_high_scalar_model_threshold
       complete := hcomplete
       curvature := hcurv
       pinching := hpin
-      noncollapse := hnoncollapse }
+      noncollapse := by
+        change ParabolicallyKappaNoncollapsedBelowScale Z
+          (modelNoncollapseFactor * standardModelKappa) σ
+        rw [modelNoncollapseFactor_mul_standardModelKappa]
+        exact parabolicallyKappaNoncollapsedBelowScale_of_spatially hnoncollapse }
   have htimeU : parabolicTime a A U = t := by
     dsimp only [parabolicTime, U]
     field_simp
@@ -270,8 +283,7 @@ theorem exists_standard_high_scalar_model
     ∃ Q₀ : ℝ, 0 < Q₀ ∧ ∀ (S : PartialStandardSolution)
       (x : EuclideanSpace ℝ (Fin 3)) (t : ℝ),
       t ∈ S.domain → τ ≤ t → t < 1 → Q₀ ≤ metricScalarAt (S.metric t) x →
-      Nonempty (WindowedModelWitness ε (standardParabolicNoncollapseCoeff / 1000000)
-        S.toSolutionOn x t) := by
+      Nonempty (WindowedModelWitness ε standardModelKappa S.toSolutionOn x t) := by
   obtain ⟨Q₀, hQ₀, hmodel⟩ := exists_standard_high_scalar_model_threshold hε hε1 hτ
   refine ⟨Q₀, hQ₀, ?_⟩
   intro S x t ht hτt ht1 hQ

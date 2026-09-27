@@ -96,7 +96,7 @@ theorem terminal_limit_exists {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
       ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
         BoundedAtDistance X → TerminalDerivativeBounds X → Nonempty (TerminalLimit X) :=
-  terminal_limit_global_bound_of_frontiers hPhi (terminal_limit_compactness_frontier hkappa)
+  terminal_limit_global_bound_of_frontiers hPhi (terminal_limit_compactness_frontier hkappa hPhi)
     (terminal_limit_scalar_bound_frontier hPhi)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

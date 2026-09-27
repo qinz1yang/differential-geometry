@@ -12,7 +12,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle Filter Set
-open scoped ContDiff Manifold Topology
+open scoped ContDiff Manifold _root_.Topology
 
 open DifferentialGeometry.Geometry.Curvature
 
@@ -270,7 +270,7 @@ noncomputable section
 open Set Filter Bundle
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow
-open scoped Manifold ContDiff Topology
+open scoped Manifold ContDiff _root_.Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 variable {E H M : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
  [NeZero (Module.finrank ℝ E)] [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]

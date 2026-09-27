@@ -12,7 +12,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle Filter Function Manifold Matrix MeasureTheory Set
-open scoped ContDiff ENNReal Manifold Matrix Topology
+open scoped ContDiff ENNReal Manifold Matrix _root_.Topology
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

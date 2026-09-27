@@ -113,7 +113,7 @@ theorem exists_survivor_geodesic_family_across_event_of_germ
   have htimeconn : IsPreconnected (C ∩ K ∩ Ioo c w) :=
     ((hCconn.ordConnected.inter hKconn.ordConnected).inter ordConnected_Ioo).isPreconnected
   have ht₀time : t₀ ∈ C ∩ K ∩ Ioo c w := ⟨⟨ht₀C, ht₀K⟩, ht₀⟩
-  have heq := lRegularizedGeodesicFamily_eqOn_of_localPullMetric S hS G.flow G.equation
+  have heq := lRegularizedGeodesicFamily_eqOn_of_localPullMetric S G.flow G.equation
     (fun z : W => F z.val) hg T htime htimeconn ht₀time
     (fun z hz r hr => (hphase z hz).2.2 r hr.1.1)
     (fun z hz r hr => hαgeo z (hUV hz) r hr.1.2)
@@ -123,9 +123,11 @@ theorem exists_survivor_geodesic_family_across_event_of_germ
     (fun z hz => (hphase z hz).2.2), hβcenter, heq, (fun z _ => hcross _), ?_⟩
   intro z hz
   exact (show IsLRegularizedGeodesicOn S T (fun r => β (z, r)) (C ∩ Ioo w d) from
-    fun r hr => (hphase z hz).2.2 r hr.1).comp_of_localPullMetric S hS E.incoming.flow
-      (fun z : W => z.val.val) hf (hC.inter isOpen_Ioo) (fun r hr => holdMetric r hr.2)
-      (fun r hr => holdClock r hr.2)
+    fun r hr => (hphase z hz).2.2 r hr.1).comp_of_localPullMetric
+      (S' := E.incoming.flow) hf (fun r hr => holdMetric r hr.2)
+      (fun r hr _ => holdClock r hr.2) (fun r hr => by
+        filter_upwards [hC.mem_nhds hr.1] with v hv
+        exact ((hphase z hz).2.2 v hv).2.1)
 
 theorem exists_survivor_geodesic_family_across_event
     (G : Q.IncomingSlab s b)

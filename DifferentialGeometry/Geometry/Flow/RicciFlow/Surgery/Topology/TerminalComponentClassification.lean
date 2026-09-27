@@ -117,38 +117,36 @@ theorem exists_component_poincareStandard_tolerance_of_canonical_neighborhoods :
       0 < q → q < R →
       (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
         ∃ W : CanonicalWitness G.flow eps C1 C2 x t, W.capTubeHasNeckChart eps) →
+      ∀ Ctime : ℝ≥0, (∀ x : P.Carrier, ∀ t ∈ Ioo a s, q < G.flow.scalar t x →
+        |derivWithin (fun v => G.flow.scalar v x) (Iic t) t| ≤ Ctime * G.flow.scalar t x ^ 2) →
       ∀ c : ConnectedComponents P.Carrier,
         (∀ x : G.terminalRegularOpen, ConnectedComponents.mk x.val = c →
           R < metricScalarAt g.metric x) →
         isPoincareStandard (P.toClosedOrientedManifold.component c).Carrier := by
   obtain ⟨eta, heta, hclass⟩ := exists_component_poincareStandard_tolerance_of_spatial_neighborhoods.{u}
   refine ⟨eta, heta, ?_⟩
-  intro eps heps P a s G g C1 C2 q R hq hqR hcanonical c hterminal
-  apply hclass eps heps P a s G g q q R ⟨max C2 0, le_max_right _ _⟩ hq hqR ?_ c ?_ hterminal
-  · intro x t ht hx
-    obtain ⟨W, _⟩ := hcanonical x t ht hx
-    exact W.time_derivative.trans
-      (mul_le_mul_of_nonneg_right (le_max_left C2 0) (sq_nonneg _))
-  · intro t ht x hqx hx
-    let U := P.componentOpen c
-    let xU : U := ⟨x.val, x.property⟩
-    let _ : CompactSpace U := (P.toClosedOrientedManifold.component c).compact
-    let _ : SigmaCompactSpace U := inferInstance
-    have hU : (U : Set P.Carrier) = connectedComponent (xU : P.Carrier) := by
-      ext y
-      change ConnectedComponents.mk y = c ↔ y ∈ connectedComponent (xU : P.Carrier)
-      constructor
-      · intro hy
-        exact ConnectedComponents.coe_eq_coe'.mp (hy.trans xU.property.symm)
-      · intro hy
-        exact (ConnectedComponents.coe_eq_coe'.mpr hy).trans xU.property
-    obtain ⟨W, hchart⟩ := hcanonical x.val t ht hqx
-    rcases W.spatial_cap_or_whole_on_connectedComponent_of_not_spatial_neck
-        U xU hU hchart hx with hp | hr | hc
-    · exact Or.inl hp
-    · obtain ⟨z, hr⟩ := hr
-      exact Or.inr (Or.inl
-        (isPositiveSpaceFormModel_of_roundComponent (P.toClosedOrientedManifold.component c) hr.some))
-    · exact Or.inr (Or.inr hc)
+  intro eps heps P a s G g C1 C2 q R hq hqR hcanonical Ctime hbound c hterminal
+  apply hclass eps heps P a s G g q q R Ctime hq hqR hbound c ?_ hterminal
+  intro t ht x hqx hx
+  let U := P.componentOpen c
+  let xU : U := ⟨x.val, x.property⟩
+  let _ : CompactSpace U := (P.toClosedOrientedManifold.component c).compact
+  let _ : SigmaCompactSpace U := inferInstance
+  have hU : (U : Set P.Carrier) = connectedComponent (xU : P.Carrier) := by
+    ext y
+    change ConnectedComponents.mk y = c ↔ y ∈ connectedComponent (xU : P.Carrier)
+    constructor
+    · intro hy
+      exact ConnectedComponents.coe_eq_coe'.mp (hy.trans xU.property.symm)
+    · intro hy
+      exact (ConnectedComponents.coe_eq_coe'.mpr hy).trans xU.property
+  obtain ⟨W, hchart⟩ := hcanonical x.val t ht hqx
+  rcases W.spatial_cap_or_whole_on_connectedComponent_of_not_spatial_neck
+      U xU hU hchart hx with hp | hr | hc
+  · exact Or.inl hp
+  · obtain ⟨z, hr⟩ := hr
+    exact Or.inr (Or.inl
+      (isPositiveSpaceFormModel_of_roundComponent (P.toClosedOrientedManifold.component c) hr.some))
+  · exact Or.inr (Or.inr hc)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

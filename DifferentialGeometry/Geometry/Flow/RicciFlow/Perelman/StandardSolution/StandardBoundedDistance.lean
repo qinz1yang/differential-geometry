@@ -73,8 +73,8 @@ theorem exists_standard_scalar_bound_at_bounded_distance (A D : ℝ) (hD : 0 ≤
         riemannianEDistOf (S.metric t) p y ≤ ENNReal.ofReal D →
         metricScalarAt (S.metric t) y ≤ C := by
   classical
-  let kappa := standardParabolicNoncollapseCoeff / 1000000
-  have hkappa : 0 < kappa := div_pos standardParabolicNoncollapseCoeff_pos (by norm_num)
+  let kappa := standardModelKappa
+  have hkappa : 0 < kappa := standardModelKappa_pos
   obtain ⟨epsStar, hepsStar, hexclude⟩ :=
     finite_ray_exclusion_of_minimizing_segment_convergence hkappa
   let eps := min (epsStar / 2) (1 / 2)
@@ -107,7 +107,12 @@ theorem exists_standard_scalar_bound_at_bounded_distance (A D : ℝ) (hD : 0 ≤
   apply hexclude eps heps hepsStar' (Real.sqrt 1250) (by positivity) (fun _ => 1)
     hPhi X (fun _ => B / 4) (fun _ => B) (B / 4) B hdepth hB
     (fun _ => le_rfl) (fun _ => le_rfl) ?_ ?_ hconnected orientation hcomplete hsource
-    hnc hpinch hgood f L maps C.metrics hcanonical hL (Real.sqrt B * rho)
+    (fun i => by
+      change ParabolicallyKappaNoncollapsedBelowScale _
+        (modelNoncollapseFactor * standardModelKappa) _
+      rw [modelNoncollapseFactor_mul_standardModelKappa]
+      exact parabolicallyKappaNoncollapsedBelowScale_of_spatially (hnc i))
+    hpinch hgood f L maps C.metrics hcanonical hL (Real.sqrt B * rho)
     (mul_pos (Real.sqrt_pos.mpr hB) hrho) ell hell hcompact gamma
     (fun n => (hgamma n).2.1) (fun n => (hgamma n).2.2.2.2) hsec g hg hconv
     hendpoint hscalar q hq

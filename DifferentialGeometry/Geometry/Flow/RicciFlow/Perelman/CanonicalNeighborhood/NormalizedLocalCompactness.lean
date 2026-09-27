@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.NormalizedTerminalDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalSliceNoncollapse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.LocalCurvatureInjectivity
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Local
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.LocalProperness
@@ -22,14 +23,13 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 
 theorem NormalizedSequence.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
-    (hkappa : 0 < kappa) (hsigma : 0 < sigma)
-    {r R C : ℝ} (hr : 0 ≤ r) (hrR : r < R)
+    {kappa' : ℝ} (hnc : X.TerminalSliceNoncollapsed kappa') {r R C : ℝ} (hr : 0 ≤ r) (hrR : r < R)
     (hbound : ∀ᶠ i in atTop, ∀ y, metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < R →
       curvDerivNorm 0 ((X.term i).S.base.metric 0) y ≤ C) :
     ∃ eta : ℝ, 0 < eta ∧ ∀ᶠ i in atTop, ∀ y : (X.term i).M,
       riemannianEDistOf ((X.term i).S.base.metric 0) (X.term i).basepoint y ≤ ENNReal.ofReal r →
         HasInjRadiusAt ((X.term i).atTime 0) y eta := by
-  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa
+  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hnc.1
   let a : ℝ := min ((C ^ 2 + 1)⁻¹) (R - r)
   have ha : 0 < a := lt_min (by positivity) (sub_pos.mpr hrR)
   have haC : a ≤ (C ^ 2 + 1)⁻¹ := min_le_left _ _
@@ -47,9 +47,8 @@ theorem NormalizedSequence.eventually_hasInjRadiusAt_on_closed_ball_of_curvature
       _ ≤ 1 ^ 3 * 1 := mul_le_mul (pow_le_pow_left₀ ha.le haone 3) hac
         (by positivity) (by norm_num)
       _ = 1 := by norm_num
-  have hscale := (Real.tendsto_sqrt_atTop.comp X.scale_tendsto).atTop_mul_const hsigma
   refine ⟨iota * a, mul_pos hiota ha, ?_⟩
-  filter_upwards [hscale.eventually_ge_atTop 1, hbound] with i hi hbi y hy
+  filter_upwards [hnc.2, hbound] with i hi hbi y hy
   have hzero : (0 : ℝ) ∈ (X.interval i).carrier := by
     rw [X.carrier_eq]
     exact ⟨by linarith [X.depth_pos i], le_rfl⟩
@@ -79,11 +78,11 @@ theorem NormalizedSequence.eventually_hasInjRadiusAt_on_closed_ball_of_curvature
       rwa [metricRm04_apply] at hj
     exact (mul_le_mul_of_nonneg_left hsq (pow_nonneg ha.le 4)).trans hascaled
   let B : FlowMetricBall (X.term i).S ⟨0, hzero⟩ := ⟨y, a, ha⟩
-  have hvol := ((X.noncollapse i).2 _ B (haone.trans hi) hcurv).2
-  have hvol' : ENNReal.ofReal (kappa * a ^ Module.finrank ℝ ThreeSpace) ≤
+  have hvol := (hi _ rfl B haone hcurv).2
+  have hvol' : ENNReal.ofReal (kappa' * a ^ Module.finrank ℝ ThreeSpace) ≤
       riemannianVolumeMeasure I3 (X.term i).M ((X.term i).S.base.metric 0)
         (riemannianBallOf ((X.term i).S.base.metric 0) y a) := by
-    rw [ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow ha.le]
+    rw [ENNReal.ofReal_mul hnc.1.le, ENNReal.ofReal_pow ha.le]
     exact hvol
   exact hasInjRadiusAt_of_expMap_injOn ((X.term i).atTime 0) y (mul_pos hiota ha)
     (hinj _ _ ⟨X.complete i 0 hzero⟩ y a ha hcurv hvol')
@@ -111,9 +110,13 @@ theorem exists_terminal_bidirectional_pairwise_metric_approximation_within_radiu
                           (X.term (f l)).basepoint r)
                         eta p Ψ.symm ((X.term (f l)).S.base.metric 0)
                           ((X.term (f k)).S.base.metric 0)) := by
-  obtain ⟨epsStar, hepsStar, hsublevel⟩ := exists_curvDerivNorm_le_on_scalar_sublevel hkappa
-  refine ⟨epsStar, hepsStar, ?_⟩
-  intro eps heps hle sigma hsigma Phi hPhi X rho hrho hinner
+  obtain ⟨epsSub, hepsSub, hsublevel⟩ := exists_curvDerivNorm_le_on_scalar_sublevel hkappa
+  obtain ⟨epsNC, hepsNC, hnc⟩ := exists_terminalSliceNoncollapsed.{u} hkappa
+  refine ⟨min epsSub epsNC, lt_min hepsSub hepsNC, ?_⟩
+  intro eps heps hle' sigma hsigma Phi hPhi X rho hrho hinner
+  have hle : eps ≤ epsSub := hle'.trans (min_le_left _ _)
+  obtain ⟨kappa', -, hncX⟩ := hnc Phi hPhi
+  have hncX := hncX eps heps (hle'.trans (min_le_right _ _)) sigma X
   have hb : ∀ r : ℝ, 0 < r → r < rho → ∀ m : ℕ, ∃ C : ℝ, 0 ≤ C ∧
       ∀ i y, metricDistance ((X.term i).S.base.metric 0) (X.term i).basepoint y < r →
         curvDerivNorm m ((X.term i).S.base.metric 0) y ≤ C := by
@@ -137,7 +140,7 @@ theorem exists_terminal_bidirectional_pairwise_metric_approximation_within_radiu
   · intro r hr hrrho
     obtain ⟨C, _, hc⟩ := hb ((r + rho) / 2) (by linarith) (by linarith) 0
     exact X.eventually_hasInjRadiusAt_on_closed_ball_of_curvature_bound
-      hkappa hsigma hr.le (by linarith) (Eventually.of_forall hc)
+      hncX hr.le (by linarith) (Eventually.of_forall hc)
 
 theorem exists_terminal_pairwise_metric_approximation_within_radius
     {kappa : ℝ} (hkappa : 0 < kappa) :

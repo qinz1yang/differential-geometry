@@ -1,5 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowCommonFlow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.WindowDiscarding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.FirstCapDiscarding
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.PreparedCapCommonFlow
 
 set_option autoImplicit false
 noncomputable section

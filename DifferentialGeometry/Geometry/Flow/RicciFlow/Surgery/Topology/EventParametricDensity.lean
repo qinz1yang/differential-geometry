@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.ParametricIsometry
 import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityCongruence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorChartMetric
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorChartMetricInner
 
 noncomputable section
 

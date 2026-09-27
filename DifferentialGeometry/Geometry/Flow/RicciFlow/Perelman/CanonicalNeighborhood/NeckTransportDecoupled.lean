@@ -221,11 +221,11 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifo
 
 
 def StrongNeck.transport' {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
-    {p : P} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} {x : M} {t : ℝ}
-    {alpha beta eps K : ℝ} {V : Set P} {times' : Set ℝ} {order' : ℕ}
-    (nk : StrongNeck Sm beta p 0) (hQ : 0 < S.scalar t x)
+    {p : P} {t₀ : ℝ} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} {x : M}
+    {t : ℝ} {alpha beta eps K : ℝ} {V : Set P} {times' : Set ℝ} {order' : ℕ}
+    (nk : StrongNeck Sm beta p t₀) (hQ : 0 < S.scalar t x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
-    (cmp : MetricComparisonOn (rescaledMetric Sm 0 (Sm.scalar 0 p) nk.Q_pos)
+    (cmp : MetricComparisonOn (rescaledMetric Sm t₀ (Sm.scalar t₀ p) nk.Q_pos)
       (rescaledMetric S t (S.scalar t x) hQ) Fmap V times' order' eps)
     (T : TransportedErrorTower cmp nk.cylinder.metric nk.map
       (Set.univ ×ˢ Set.Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹) (Set.Icc (-1) 0)
@@ -309,7 +309,7 @@ def SpatialNeck.transport' {gm : SmoothRiemannianMetric I3 P} {p : P}
       (subset_refl _) le_rfl (by linarith)
 
 
-def StrongNeck.transport_of_comparisons' {Dm : RealTimeInterval}
+def StrongNeck.transportOfComparisons' {Dm : RealTimeInterval}
     {Sm : SolutionOn (I := I3) (M := P) Dm} {p : P} {D : RealTimeInterval}
     {S : SolutionOn (I := I3) (M := M) D} {x : M} {t : ℝ} {alpha beta eps : ℝ} {V : Set P}
     {order' : ℕ}
@@ -358,7 +358,7 @@ def StrongNeck.transport_of_comparisons' {Dm : RealTimeInterval}
     hsmall hbeta_le hKeps hbase hcore hVsource htime hjet
 
 
-def SpatialNeck.transport_of_comparisons' {gm : SmoothRiemannianMetric I3 P} {p : P}
+def SpatialNeck.transportOfComparisons' {gm : SmoothRiemannianMetric I3 P} {p : P}
     {g : SmoothRiemannianMetric I3 M} {x : M} {alpha beta eps : ℝ} {V : Set P} {order' : ℕ}
     (nk : SpatialNeck gm beta p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
@@ -394,7 +394,7 @@ def SpatialNeck.transport_of_comparisons' {gm : SmoothRiemannianMetric I3 P} {p 
     hsmall hbeta_le hKeps hbase hcore hVsource
 
 
-def StrongNeck.transport_of_comparisons_of_tolerances {Dm : RealTimeInterval}
+def StrongNeck.transportOfComparisonsOfTolerances {Dm : RealTimeInterval}
     {Sm : SolutionOn (I := I3) (M := P) Dm} {p : P} {D : RealTimeInterval}
     {S : SolutionOn (I := I3) (M := M) D} {x : M} {t : ℝ} {alpha eps : ℝ} {V : Set P}
     {order' : ℕ}
@@ -422,14 +422,14 @@ def StrongNeck.transport_of_comparisons_of_tolerances {Dm : RealTimeInterval}
           DifferentiableWithinAt ℝ (fun a => nk.comparison.jet b a y v)
             (Set.Icc (-1 : ℝ) 0) s) :
     StrongNeck S (2 * alpha) x t :=
-  StrongNeck.transport_of_comparisons' nk hQ Fmap cmp Phi hPhi hsmall heps
+  StrongNeck.transportOfComparisons' nk hQ Fmap cmp Phi hPhi hsmall heps
     (neckModelTolerance_pos ha) (neckModelTolerance_le alpha)
     (neckModelTolerance_le_smallness alpha)
     (backgroundJetConstant_mul_le_of_le_neckSourceTolerance ha heps') horder hbase hcore hVsource
     htime hdiff hjet
 
 
-def SpatialNeck.transport_of_comparisons_of_tolerances {gm : SmoothRiemannianMetric I3 P} {p : P}
+def SpatialNeck.transportOfComparisonsOfTolerances {gm : SmoothRiemannianMetric I3 P} {p : P}
     {g : SmoothRiemannianMetric I3 M} {x : M} {alpha eps : ℝ} {V : Set P} {order' : ℕ}
     (nk : SpatialNeck gm (neckModelTolerance alpha) p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
@@ -443,7 +443,7 @@ def SpatialNeck.transport_of_comparisons_of_tolerances {gm : SmoothRiemannianMet
     (hcore : ∀ y ∈ Set.univ ×ˢ Set.Ioo (-(2 * alpha)⁻¹) (2 * alpha)⁻¹, nk.map y ∈ V)
     (hVsource : V ⊆ Fmap.source) :
     SpatialNeck g (2 * alpha) x :=
-  SpatialNeck.transport_of_comparisons' nk hQ Fmap cmp Phi hPhi hsmall heps
+  SpatialNeck.transportOfComparisons' nk hQ Fmap cmp Phi hPhi hsmall heps
     (neckModelTolerance_pos ha) (neckModelTolerance_le alpha)
     (neckModelTolerance_le_smallness alpha)
     (backgroundJetConstant_mul_le_of_le_neckSourceTolerance ha heps') horder hbase hcore hVsource

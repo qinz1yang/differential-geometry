@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Scaling
+import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.LocalCross
 
 noncomputable section
 
@@ -23,6 +24,13 @@ theorem curvDerivNormSq_localPullMetric
     (curvDerivNorm_localPullMetric g f hf j z)
   simpa only [curvDerivNorm, curvDerivNormSq,
     Real.sq_sqrt (Tensor0SBundle.normSq0S_nonneg _ _ _ _)] using heq
+
+theorem curvDerivNormSq_localPullMetric_scaleMetric
+    (h : SmoothRiemannianMetric J N) (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f)
+    {q : ℝ} (hq : 0 < q) (j : ℕ) (z : M) :
+    curvDerivNormSq j (localPullMetric (scaleMetric q hq h) f hf) z =
+      q⁻¹ ^ (j + 2) * curvDerivNormSq j h (f z) := by
+  rw [curvDerivNormSq_localPullMetric, curvDerivNormSq_scaleMetric]
 
 theorem curvDerivNormSq_eq_of_scaled_local_isometry
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
@@ -53,3 +61,25 @@ theorem curvDerivNormSq_le_of_scaled_local_isometry
   exact mul_le_mul_of_nonneg_left hbound (pow_nonneg hq.le _)
 
 end DifferentialGeometry.CheegerGromovCompactness
+
+namespace DifferentialGeometry.Geometry.Curvature
+
+open DifferentialGeometry.CheegerGromovCompactness
+open scoped Manifold ContDiff
+
+variable {E F H G M N : Type*}
+  [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
+  [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
+  [TopologicalSpace H] [TopologicalSpace G]
+  {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
+  [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N] [T2Space N]
+
+theorem metricScalarAt_localPullMetric_scaleMetric [I.Boundaryless] [J.Boundaryless]
+    (h : SmoothRiemannianMetric J N) (f : M → N) (hf : IsLocalDiffeomorph I J ∞ f)
+    {q : ℝ} (hq : 0 < q) (z : M) :
+    metricScalarAt (localPullMetric (scaleMetric q hq h) f hf) z =
+      q⁻¹ * metricScalarAt h (f z) := by
+  rw [metricScalarAt_localPull, metricScalarAt_scaleMetric]
+
+end DifferentialGeometry.Geometry.Curvature

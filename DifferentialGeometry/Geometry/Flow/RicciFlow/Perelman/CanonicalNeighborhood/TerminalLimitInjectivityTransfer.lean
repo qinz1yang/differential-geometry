@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalLimitFrontierInputs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalSliceNoncollapse
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.LocalInjectivityRadiusDecay
 import DifferentialGeometry.Geometry.Metric.Comparison.DistanceScaling
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
@@ -87,7 +88,8 @@ private theorem riemannianMetricComplete_of_metricComplete
 
 theorem terminalLimitBallInjectivity_of_curvatureAndNoncollapse
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ} (X : NormalizedSequence.{u} eps kappa sigma Phi)
-    (hkappa : 0 < kappa) (hcurv : TerminalDerivativeBounds X) :
+    {kappa' : ℝ} (hnc : X.TerminalSliceNoncollapsed kappa')
+    (hcurv : TerminalDerivativeBounds X) :
     ∀ r : ℝ, 0 < r → ∃ η : ℝ, 0 < η ∧ ∀ᶠ i in Filter.atTop,
       ∀ x : ((X.toFlowSequence.atTime 0).obj i).M,
         riemannianEDistOf (I := I3) ((X.toFlowSequence.atTime 0).obj i).metric
@@ -96,10 +98,6 @@ theorem terminalLimitBallInjectivity_of_curvatureAndNoncollapse
   classical
   intro r hr
   obtain ⟨C₀, hC₀⟩ := hcurv (r + 1) (by linarith) 0
-  have hsigma : 0 < sigma := by
-    have h := (X.noncollapse 0).1
-    have hs : 0 < Real.sqrt (X.scale 0) := Real.sqrt_pos.mpr (X.scale_pos 0)
-    exact pos_of_mul_pos_right h hs.le
   let C : ℝ := max C₀ 1
   have hCpos : 0 < C := lt_of_lt_of_le zero_lt_one (le_max_right C₀ 1)
   have hC₀le : C₀ ≤ C := le_max_left C₀ 1
@@ -113,16 +111,9 @@ theorem terminalLimitBallInjectivity_of_curvatureAndNoncollapse
       _ ≤ rho * 1 := mul_le_mul_of_nonneg_left hrhoC hrho_pos.le
       _ = rho := mul_one rho
       _ ≤ 1 := hrho_one
-  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa
-  have hscale : ∀ᶠ i in Filter.atTop, rho ≤ Real.sqrt (X.scale i) * sigma := by
-    have hsqrt : Filter.Tendsto (fun i : ℕ => Real.sqrt (X.scale i))
-        Filter.atTop Filter.atTop :=
-      Real.tendsto_sqrt_atTop.comp X.scale_tendsto
-    have h := hsqrt.eventually_ge_atTop (rho / sigma)
-    filter_upwards [h] with i hi
-    exact (div_le_iff₀ hsigma).mp hi
+  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hnc.1
   refine ⟨iota * rho, mul_pos hiota hrho_pos, ?_⟩
-  filter_upwards [hscale] with i hscale_i
+  filter_upwards [hnc.2] with i hnc_i
   intro x hx
   have hzero : (0 : ℝ) ∈ (X.interval i).carrier := by
     rw [X.carrier_eq i]
@@ -209,12 +200,12 @@ theorem terminalLimitBallInjectivity_of_curvatureAndNoncollapse
         _ = (rho ^ 2 * C) ^ 2 := h2
         _ ≤ 1 := h3
     exact hmain
-  have hvol : ENNReal.ofReal (kappa * rho ^ Module.finrank ℝ ThreeSpace) ≤
+  have hvol : ENNReal.ofReal (kappa' * rho ^ Module.finrank ℝ ThreeSpace) ≤
       riemannianVolumeMeasure (I := I3) (M := (X.term i).M) ((X.term i).S.base.metric 0)
         (riemannianBallOf (I := I3) ((X.term i).S.base.metric 0) x₀ rho) := by
-    have hnc := (X.noncollapse i).2 ⟨0, hzero⟩ B hscale_i hBctrl
-    rw [ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow hrho_pos.le]
-    convert hnc.2 using 1
+    have hB := hnc_i ⟨0, hzero⟩ rfl B hrho_one hBctrl
+    rw [ENNReal.ofReal_mul hnc.1.le, ENNReal.ofReal_pow hrho_pos.le]
+    convert hB.2 using 1
     rfl
   have hrmc : DifferentialGeometry.RiemannianMetricComplete (I := I3)
       ((X.term i).S.base.metric 0) :=

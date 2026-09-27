@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle MeasureTheory Set
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Integral.Measure
-open scoped ContDiff ENNReal Manifold Topology
+open scoped ContDiff ENNReal Manifold _root_.Topology
 
 universe u uE uH
 

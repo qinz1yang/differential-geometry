@@ -268,8 +268,11 @@ theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
         OrientedWitness S o eps kappa x t := by
   classical
   have hdim : Module.finrank ℝ ThreeSpace = 3 := by simp [ThreeSpace]
-  obtain ⟨kappa, hkappa, hbelow⟩ :=
+  obtain ⟨kappa₀, hkappa₀, hbelow⟩ :=
     spatial_no_local_collapsing (I := I3) (M := M) hT S hS hdim (rho := 1) one_pos
+  obtain ⟨kappa, hkappa, hkeq⟩ : ∃ kappa : ℝ, 0 < kappa ∧ modelNoncollapseFactor * kappa = kappa₀ :=
+    ⟨kappa₀ / modelNoncollapseFactor, div_pos hkappa₀ modelNoncollapseFactor_pos,
+      mul_div_cancel₀ _ modelNoncollapseFactor_pos.ne'⟩
   refine ⟨kappa, hkappa, fun eps heps heps1 => ?_⟩
   obtain ⟨K, hKpos, hKinit⟩ :=
     DifferentialGeometry.Geometry.Curvature.DimensionThree.exists_curvatureOperatorLowerBoundAt_metricRm04
@@ -423,8 +426,12 @@ theorem closed_flow_models [CompactSpace M] [ConnectedSpace M]
   have hpin_para : PhiAlmostNonnegative (I := I3) (M := M) SI
       {s : ℝ | parabolicTime 0 A s ∈ Set.Icc 0 T3} Phi' :=
     phiAlmostNonnegative_paraSolution (I := I3) (M := M) S hA hbase0 himpinch
-  have hnoncollapse : SpatiallyKappaNoncollapsedBelowScale S'' kappa sigma := by
-    have hpara := parabolic_spatial_noncollapse (I := I3) (M := M) S 0 A hA hbase0 kappa 1 hbelow
+  have hnoncollapse : ParabolicallyKappaNoncollapsedBelowScale S''
+      (modelNoncollapseFactor * kappa) sigma := by
+    rw [hkeq]
+    apply parabolicallyKappaNoncollapsedBelowScale_of_spatially
+    have hpara := parabolic_spatial_noncollapse (I := I3) (M := M) S 0 A hA hbase0 kappa₀ 1
+      hbelow
     have hres := spatiallyKappaNoncollapsed_timeRestrict (S := SI) (D' := D'') hsub'' hpara
     have hle : sigma ≤ Real.sqrt A * 1 := by
       have hsA : 0 < Real.sqrt A := Real.sqrt_pos.mpr hA

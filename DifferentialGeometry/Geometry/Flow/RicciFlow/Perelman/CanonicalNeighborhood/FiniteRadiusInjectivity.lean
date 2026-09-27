@@ -1,6 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteRadiusCurvature
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalParabolicScalarBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.TerminalSliceNoncollapse
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
 
 set_option autoImplicit false
@@ -28,7 +29,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
 theorem FiniteControlledRadius.exists_eventually_hasInjRadiusAt_on_closedBall
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
     {X : NormalizedSequence.{u} eps kappa sigma Phi}
-    (F : FiniteControlledRadius X) (hkappa : 0 < kappa)
+    (F : FiniteControlledRadius X) {kappa' : ℝ} (hnc : X.TerminalSliceNoncollapsed kappa')
     (hPhi : AdmissiblePinchingFunction Phi) {r : ℝ} (hr : 0 ≤ r)
     (hrF : r < F.radius) :
     ∃ eta : ℝ, 0 < eta ∧ ∀ᶠ i in atTop,
@@ -75,16 +76,10 @@ theorem FiniteControlledRadius.exists_eventually_hasInjRadiusAt_on_closedBall
       _ ≤ 1 ^ 3 * 1 := mul_le_mul (pow_le_pow_left₀ hrho.le hrho1 3) hrho_mul
         (mul_nonneg hrho.le hK.le) (by norm_num)
       _ = 1 := by norm_num
-  have hsigma : 0 < sigma :=
-    pos_of_mul_pos_right (X.noncollapse 0).1 (Real.sqrt_nonneg _)
-  have hscale : ∀ᶠ i in atTop, rho ≤ Real.sqrt (X.scale i) * sigma := by
-    have hsqrt := Real.tendsto_sqrt_atTop.comp X.scale_tendsto
-    filter_upwards [hsqrt.eventually_ge_atTop (rho / sigma)] with i hi
-    exact (div_le_iff₀ hsigma).mp hi
   let : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
-  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa
+  obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hnc.1
   refine ⟨iota * rho, mul_pos hiota hrho, ?_⟩
-  filter_upwards [hscale] with i hscale_i
+  filter_upwards [hnc.2] with i hnc_i
   intro y hy
   let B : FlowMetricBall (X.term i).S ⟨0, hzero i⟩ := ⟨y, rho, hrho⟩
   have hcurv : ∀ z ∈ riemannianBallOf ((X.term i).S.base.metric 0) y rho,
@@ -105,11 +100,11 @@ theorem FiniteControlledRadius.exists_eventually_hasInjRadiusAt_on_closedBall
       hcurvature i 0 ⟨le_rfl, le_rfl⟩ z hzs
     exact (mul_le_mul_of_nonneg_left hbound (pow_nonneg hrho.le 4)).trans hscaled
   have hcontrol : B.IsSpatiallyRmControlled := hcurv
-  have hvol := ((X.noncollapse i).2 ⟨0, hzero i⟩ B hscale_i hcontrol).2
-  have hvol' : ENNReal.ofReal (kappa * rho ^ Module.finrank ℝ ThreeSpace) ≤
+  have hvol := (hnc_i ⟨0, hzero i⟩ rfl B hrho1 hcontrol).2
+  have hvol' : ENNReal.ofReal (kappa' * rho ^ Module.finrank ℝ ThreeSpace) ≤
       riemannianVolumeMeasure I3 (X.term i).M ((X.term i).S.base.metric 0)
         (riemannianBallOf ((X.term i).S.base.metric 0) y rho) := by
-    rw [ENNReal.ofReal_mul hkappa.le, ENNReal.ofReal_pow hrho.le]
+    rw [ENNReal.ofReal_mul hnc.1.le, ENNReal.ofReal_pow hrho.le]
     exact hvol
   have hcomplete : RiemannianMetricComplete ((X.term i).S.base.metric 0) :=
     ⟨X.complete i 0 (hzero i)⟩

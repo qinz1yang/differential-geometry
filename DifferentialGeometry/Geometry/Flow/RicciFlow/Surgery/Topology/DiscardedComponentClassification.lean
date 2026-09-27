@@ -227,15 +227,17 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
               q < (H.event i).incoming.flow.scalar t x →
                 ∃ W : CanonicalWitness (H.event i).incoming.flow eps C1 C2 x t,
                   W.capTubeHasNeckChart eps) →
+          ∀ Ctime : ℝ≥0, (∀ x : (H.stage i.castSucc).Carrier,
+            ∀ t ∈ Ioo (H.time i.castSucc) (H.time i.succ),
+              q < (H.event i).incoming.flow.scalar t x →
+                |derivWithin (fun v => (H.event i).incoming.flow.scalar v x) (Iic t) t| ≤
+                  Ctime * (H.event i).incoming.flow.scalar t x ^ 2) →
           SmoothCutCapCompletion (H.event i).transition → (H.event i).poincareStandardDiscarded := by
   obtain ⟨eta, heta, hclass⟩ := exists_poincareStandardDiscarded_tolerance_of_spatial_neighborhoods.{u}
   refine ⟨eta, heta, ?_⟩
-  intro eps heps H i parameters G hdelta C1 C2 q hC2 hq hprotected hscale hcanonical hc
+  intro eps heps H i parameters G hdelta C1 C2 q hC2 hq hprotected hscale hcanonical Ctime hbound hc
   apply hclass eps heps H i parameters G hdelta (C2 ^ 2) q q
-    ⟨C2, zero_le_one.trans hC2⟩ (sq_nonneg C2) hq hprotected hscale ?_ ?_ ?_ hc
-  · intro x t ht hx
-    obtain ⟨W, _⟩ := hcanonical x t ht hx
-    exact W.time_derivative
+    Ctime (sq_nonneg C2) hq hprotected hscale hbound ?_ ?_ hc
   · intro x t ht hx hstop
     obtain ⟨W, _⟩ := hcanonical x t ht hx
     refine ⟨W.domain.carrier, (fun y hy z hz => W.scalar_le_sq_mul_at_mem_domain hz y hy), ?_⟩
@@ -309,7 +311,9 @@ theorem exists_poincareStandardDiscarded_cutting_scale_of_incoming :
   cases eq_of_heq hL
   intro parameters G hdelta hprotected hscale hc
   exact hclass eps (hsmall.trans (min_le_left _ _)) H i parameters G hdelta C C Q hC hQ
-    (by linarith) hscale (fun x t ht hx => hcan x t ⟨ht.1.le, ht.2⟩ hx.le) hc
+    (by linarith) hscale (fun x t ht hx => hcan x t ⟨ht.1.le, ht.2⟩ hx.le)
+    ⟨C, zero_le_one.trans hC⟩
+    (fun x t ht hx => (hcan x t ⟨ht.1.le, ht.2⟩ hx.le).choose.time_derivative) hc
 
 
 theorem exists_poincareStandardDiscarded_cutting_scale :

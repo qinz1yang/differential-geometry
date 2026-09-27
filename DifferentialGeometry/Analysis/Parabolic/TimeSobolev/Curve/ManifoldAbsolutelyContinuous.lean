@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuous
 import DifferentialGeometry.Analysis.Parabolic.TimeSobolev.TimeH1Energy
+import DifferentialGeometry.Analysis.Calculus.Manifold.AbsolutelyContinuousPartition
 
 open Set
 open scoped Manifold

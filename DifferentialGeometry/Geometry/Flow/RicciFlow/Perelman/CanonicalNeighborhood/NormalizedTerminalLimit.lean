@@ -64,7 +64,7 @@ theorem exists_noncompact_terminalLimit_of_not_boundedAtDistance
       (∀ i, IsConnected (P.maps.source i)) ∧
       (∀ i, closure (P.maps.source i) ⊆ P.maps.source (i + 1)) ∧
       (∀ y : P.limit.M, metricScalarAt P.limit.metric y ≤ 2) ∧
-      MetricNoncollapsed P.limit kappa univ := by
+      ∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' univ := by
     dsimp only [Y]
     rw [terminalCurvatureRescale_atTime_zero X f hf x hQ]
     exact ⟨P, hcanonical, hconnected, hnoncompact, hcompact, hsourceconn, hnested, hupper, hnc⟩
@@ -75,8 +75,10 @@ theorem exists_noncompact_terminalLimit_of_not_boundedAtDistance
     exists_oriented_subsequence_with_canonical_domains P.strictMono P.maps P.convergence.metrics
       hcanonical hcapture hcompact hsourceconn hnested Y.orientation
   let Q := P.compSubseq s hs
+  obtain ⟨kappa', hkappa', hnc⟩ := hnc
   let L := TerminalLimit.ofMetricCompactLimit hPhi Q hcanonical' hcapture' hcompact'
-    hsourceconn' hnested' o horientation ⟨2, hupper⟩ hnc hconnected
+    hsourceconn' hnested' o horientation ⟨2, hupper⟩
+    ⟨kappa', hkappa', fun y r _ => hnc y r (mem_univ r)⟩ hconnected
   exact ⟨D, hD, f, hf, x, r, hQ, hr, hlarge, hQr, hcontrol, L, hnoncompact, hupper⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

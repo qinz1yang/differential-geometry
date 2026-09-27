@@ -27,8 +27,8 @@ theorem exists_terminal_rescaled_local_backward_limit_of_pos_depth_scale_lower_b
       ∀ orientation : ∀ i, TangentOrientationSection (X.term i).M,
       (∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t)) →
       (∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C) →
-      (∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-        (Real.sqrt (scale i) * sigma)) →
+      (∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+        (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma)) →
       (∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
         (rescalePinchingFunction (scale i) Phi)) →
       (∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,
@@ -161,8 +161,8 @@ theorem exists_local_backward_limit_on_end_of_pos_depth_scale_lower_bounds {kapp
       ∀ orientation : ∀ i, TangentOrientationSection (X.term i).M,
       (∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t)) →
       (∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C) →
-      (∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-        (Real.sqrt (scale i) * sigma)) →
+      (∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+        (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma)) →
       (∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
         (rescalePinchingFunction (scale i) Phi)) →
       (∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,

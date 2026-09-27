@@ -3,6 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Compactness.Construction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.PointedPinchingLimit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.PointedNoncollapse
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.Parabolic
 
 set_option autoImplicit false
 noncomputable section
@@ -29,6 +30,12 @@ structure FlowSequence where
   interval : ℕ → RealTimeInterval
   term : ∀ i, PointedFlowData.{u, 0, 0} I3 (interval i)
 
+def modelNoncollapseFactor : ℝ := 250 * 30 ^ 3
+
+theorem modelNoncollapseFactor_pos : 0 < modelNoncollapseFactor := by
+  unfold modelNoncollapseFactor
+  norm_num
+
 def FlowSequence.atTime (X : FlowSequence.{u}) (t : ℝ) : PointedRiemannianSeq I3 :=
   ⟨fun i => (X.term i).atTime t⟩
 
@@ -48,8 +55,8 @@ structure NormalizedSequence (eps kappa sigma : ℝ) (Phi : ℝ → ℝ)
   complete : ∀ i t, t ∈ (interval i).carrier → MetricComplete ((term i).atTime t)
   source_bound : ∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (term i) C
   base_one : ∀ i, PointedFlowScalarAtBase (term i) 1
-  noncollapse : ∀ i, SpatiallyKappaNoncollapsedBelowScale
-    (term i).S kappa (Real.sqrt (scale i) * sigma)
+  noncollapse : ∀ i, ParabolicallyKappaNoncollapsedBelowScale
+    (term i).S (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma)
   pinching : ∀ i, PhiAlmostNonnegative (term i).S (interval i).carrier
     (rescalePinchingFunction (scale i) Phi)
   higher_good : ∀ i t, t ∈ Set.Icc (-depth i) 0 → ∀ x,
@@ -279,7 +286,7 @@ structure TerminalLimit {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
   nonnegative : SecLower space.metric 0 Set.univ
   scalar_one : metricScalarAt space.metric space.basepoint = 1
   scalar_bound : ∃ C : ℝ, ∀ x, metricScalarAt space.metric x ≤ C
-  noncollapse : MetricNoncollapsed space kappa Set.univ
+  noncollapse : ∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed space kappa' (Set.Ioc 0 1)
 
 def ConvergesOn {X : FlowSequence.{u}} {P : PointedRiemannianManifold.{u, 0, 0} I3}
     {f : ℕ → ℕ} (F : PointedRiemannianConvergenceMaps (X.atTime 0) P f)

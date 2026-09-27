@@ -25,8 +25,7 @@ attribute [local instance] PointedRiemannianManifold.topology
 
 theorem TerminalLimit.exists_uniform_pathConnected_ball_complement
     {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    {X : NormalizedSequence.{u} eps kappa sigma Phi} (L : TerminalLimit X)
-    (hkappa : 0 < kappa) :
+    {X : NormalizedSequence.{u} eps kappa sigma Phi} (L : TerminalLimit X) :
     ∃ r : ℝ, 0 < r ∧ ∀ p : L.space.M,
       IsPathConnected (riemannianBallOf L.space.metric p r)ᶜ := by
   obtain ⟨Q₀, hQ₀⟩ := L.scalar_bound
@@ -51,8 +50,9 @@ theorem TerminalLimit.exists_uniform_pathConnected_ball_complement
     have hRQ : metricScalarAt L.space.metric x ≤ Q := (hQ₀ x).trans (le_max_left _ _)
     exact hnorm.trans (mul_le_mul_of_nonneg_left
       (pow_le_pow_left₀ hR0 hRQ 2) (by positivity))
-  exact exists_uniform_pathConnected_ball_complement_of_metricNoncollapsed hkappa (by positivity)
-    L.space L.complete L.connected L.noncollapse hbound
+  obtain ⟨kappa', hkappa', hnc⟩ := L.noncollapse
+  exact exists_uniform_pathConnected_ball_complement_of_metricNoncollapsed hkappa' (by positivity)
+    L.space L.complete L.connected hnc hbound
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 
@@ -86,8 +86,7 @@ private theorem sectional_nonnegative_of_secLower_zero
     fin_cases i <;> simp [vec4]
   simpa only [zero_mul, metricRm04StandardAt_apply, hvec] using h x (mem_univ x) v w
 
-theorem exists_uniform_scalar_bound_outside_terminal_ball
-    {kappa : ℝ} (hkappa : 0 < kappa) :
+theorem exists_uniform_scalar_bound_outside_terminal_ball (kappa : ℝ) :
     ∃ epsStar : ℝ, 0 < epsStar ∧
       ∀ {eps sigma : ℝ} {Phi : ℝ → ℝ}, eps ≤ epsStar →
         ∀ (X : NormalizedSequence.{u} eps kappa sigma Phi) (L : TerminalLimit X),
@@ -117,7 +116,7 @@ theorem exists_uniform_scalar_bound_outside_terminal_ball
   have hfinite (x y : L.space.M) : edist x y ≠ ⊤ := riemannianEDistOf_ne_top L.space.metric x y
   let _ : MetricSpace L.space.M := EMetricSpace.toMetricSpace hfinite
   have hdist (x y : L.space.M) : dist x y = metricDistance L.space.metric x y := rfl
-  obtain ⟨r, hr, hball⟩ := L.exists_uniform_pathConnected_ball_complement hkappa
+  obtain ⟨r, hr, hball⟩ := L.exists_uniform_pathConnected_ball_complement
   have hcomplete0 : RiemannianMetricComplete L.space.metric := ⟨L.complete.complete⟩
   have hsec0 := sectional_nonnegative_of_secLower_zero L.space.metric L.nonnegative
   obtain ⟨Rn, hRn, hcenter⟩ := hneck heps X L hnoncompact A hA p

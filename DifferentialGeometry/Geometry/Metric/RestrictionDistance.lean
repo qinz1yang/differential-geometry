@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Completeness
 import DifferentialGeometry.Geometry.Metric.LocalChartDistance
+import DifferentialGeometry.Geometry.Metric.Distance.Ball
 
 set_option autoImplicit false
 
@@ -61,6 +62,21 @@ private theorem riemannianEDistOf_restrictOpen_le_pathELength
   intro t ht
   simp only [Function.comp_apply, projIcc_of_mem, ht]
   rfl
+
+attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
+  Tensor0SBundle.tangentSpaceNormedSpace in
+theorem riemannianEDistOf_restrictOpen_lt_of_riemannianBallOf_subset
+    (g : SmoothRiemannianMetric I M) (U : TopologicalSpace.Opens M) [T2Space U]
+    (p q : U) {r : ℝ} (hball : riemannianBallOf g p.val r ⊆ U)
+    (hq : riemannianEDistOf g p q < ENNReal.ofReal r) :
+    riemannianEDistOf (g.restrictOpen U) p q < ENNReal.ofReal r := by
+  let : RiemannianBundle (TangentSpace I : M → Type _) := ⟨g.toRiemannianMetric⟩
+  obtain ⟨γ, hγ0, hγ1, hγ, hlen⟩ := exists_lt_of_riemannianEDist_lt hq
+  have hmaps : MapsTo γ (Icc 0 1) U :=
+    mapsTo_of_riemannianEDistOf_add_pathELength_lt g p U (ENNReal.ofReal r) hball γ hγ
+      (by rw [hγ0, riemannianEDistOf_self, zero_add]; exact hlen)
+  exact (riemannianEDistOf_restrictOpen_le_pathELength g U hγ hmaps hγ0 hγ1).trans_lt
+    hlen
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

@@ -97,7 +97,7 @@ def TerminalLimitMetricCompactnessInput (kappa sigma : ℝ) (Phi : ℝ → ℝ) 
               PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                 (P.maps.partialDiffeomorph i) y hf) ∧
         (∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C) ∧
-        MetricNoncollapsed P.limit kappa Set.univ
+        (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))
 
 theorem terminalLimitMetricCompactnessInput_of_terminalCompactnessInput {kappa sigma : ℝ}
     {Phi : ℝ → ℝ} (h : TerminalCompactnessInput.{u} kappa sigma Phi) :

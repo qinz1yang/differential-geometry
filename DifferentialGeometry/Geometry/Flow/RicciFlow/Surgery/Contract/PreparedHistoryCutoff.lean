@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HamiltonIve
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurvatureLifespan
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCutoffRecord
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardNeckIsometries
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ProspectiveNeckSurvival
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ProspectiveNeckSurvivalVariableThreshold
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutoffRecordEventExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardNeckAppend
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingBackwardNeckRestriction
@@ -160,11 +160,12 @@ private theorem exists_uniform_selected_neck_retained_append_backward
     (hfit : 64 * (r + tol⁻¹) < D) :
     ∃ ε₀ δ₀ : ℝ, 0 < ε₀ ∧ 0 < δ₀ ∧
     ∀ {δ : ℝ}, 0 < δ → ∀ hδ1 : δ < 1, ∀ k : ℕ,
-    ∀ (a q₀ : ℝ), 0 < a → 0 < q₀ →
+    ∀ a : ℝ, 0 < a →
     ∀ phi : ℝ → ℝ, Perelman.AdmissiblePinchingFunction phi →
-    ∃ (ηstar : ℝ) (mstar : ℕ) (Qmin : ℝ)
+    ∃ (ηstar : ℝ) (mstar : ℕ) (Λq : ℝ)
       (hηδ : ηstar ≤ δ) (hkm : k ≤ mstar),
-      0 < ηstar ∧ 0 < Qmin ∧
+      0 < ηstar ∧ 0 < Λq ∧
+    ∀ q₀ : ℝ, 0 < q₀ →
     ∀ {Pbase : OrientedThreeStage.{u}} (H : RetainedCoreHistory Pbase) (s : ℝ) (Qstage : OrientedThreeStage.{u})
       (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qstage
         (H.time (Fin.last H.eventCount)) s)
@@ -212,40 +213,42 @@ private theorem exists_uniform_selected_neck_retained_append_backward
       Jbig j b u = ((records j).static b).inclusion (((records j).static b).witness.cap z)) →
     ∀ (η : ℝ) (m : ℕ) (O : NormalizedNeck (((H.appendEvent E.incoming.lt (E.toRetainedCoreEvent hOld) hinit).toHistory).event
       (Fin.last H.eventCount)).terminal.metric η m),
-    ∀ (hη : η ≤ ηstar) (hm : mstar ≤ m), Qmin ≤ O.scale →
+    ∀ (hη : η ≤ ηstar) (hm : mstar ≤ m), Λq * max q₀ 1 ≤ O.scale →
     let N := (O.monoDelta (hη.trans hηδ) hδ1).lowerOrder (hkm.trans hm)
     Nonempty (IncomingBackwardNeck
       (H.appendEvent E.incoming.lt (E.toRetainedCoreEvent hOld) hinit).toHistory
       (Fin.last H.eventCount) N (Real.sqrt N.scale⁻¹)) := by
   obtain ⟨ε₀, δ₀, hε₀, hδ₀, hthreshold⟩ :=
-    exists_uniform_selected_neck_append_backward D r tol a₀ Ctime ha₀ htol htolsmall hr hfit
+    exists_threshold_uniform_selected_neck_append_backward D r tol a₀ Ctime ha₀ htol htolsmall
+      hr hfit
   refine ⟨ε₀, δ₀, hε₀, hδ₀, ?_⟩
-  intro δ hδ hδ1 k a q0 ha hq0 phi hphi
-  obtain ⟨ηstar, mstar, Qmin, hηδ, hkm, hηstar, hQmin, hmain⟩ := hthreshold hδ hδ1 k a q0 ha hq0 phi hphi
-  refine ⟨ηstar, mstar, Qmin, hηδ, hkm, hηstar, hQmin, ?_⟩
-  intro Pbase H s Qstage E hOld hinit hsa parameters records hfixed hlower hdelta haccuracy hmargin horder
+  intro δ hδ hδ1 k a ha phi hphi
+  obtain ⟨ηstar, mstar, Λq, hηδ, hkm, hηstar, hΛq, hmain⟩ :=
+    hthreshold hδ hδ1 k a ha phi hphi
+  refine ⟨ηstar, mstar, Λq, hηδ, hkm, hηstar, hΛq, ?_⟩
+  intro q0 hq0 Pbase H s Qstage E hOld hinit hsa parameters records hfixed hlower hdelta haccuracy
+    hmargin horder
     hderiv hfinal hpinch hpinchFinal hcap center precision order d w Jbig hJbig hzero hmark
     η m O hη hm hscale
   apply nonempty_selected_restriction_retained_append H E hOld hinit O (hη.trans hηδ) hδ1 (hkm.trans hm)
   intro O0 hO0 hOscale
-  have hlarge : Qmin ≤ O0.scale := by rw [hOscale]; exact hscale
-  exact hmain H.toHistory s Qstage (E.toRetainedCoreEvent hOld).toMetricCutCapEvent hinit hsa
+  have hlarge : Λq * max q0 1 ≤ O0.scale := by rw [hOscale]; exact hscale
+  exact hmain q0 hq0 H.toHistory s Qstage (E.toRetainedCoreEvent hOld).toMetricCutCapEvent hinit hsa
     parameters records hfixed hlower hdelta haccuracy hmargin horder hderiv hfinal hpinch hpinchFinal
     hcap center precision order d w Jbig hJbig hzero hmark η m O0 hη hm hlarge
 
 
-theorem exists_horn_cutoff_record_at_scale_of_prepared_history
-    (Dtrace r tol a₀ : ℝ) (Ctime : ℝ≥0) (ha₀ : 0 < a₀)
-    (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+theorem exists_horn_cutoff_record_at_scale_of_prepared_history :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace r tol a₀ : ℝ) (Ctime : ℝ≥0), 0 < a₀ → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ Dcap : ℝ, 0 < Dcap → StandardCap.transitionEnd < Dcap + 1 → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∀ ηrecord : ℝ, 0 < ηrecord →
-    ∀ (a q0 : ℝ), 0 < a → 0 < q0 →
+    ∀ a : ℝ, 0 < a →
     ∀ phi : ℝ → ℝ, Perelman.AdmissiblePinchingFunction phi →
-    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
+    ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
+    ∀ q0 : ℝ, 0 < q0 →
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
       (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
@@ -304,7 +307,7 @@ theorem exists_horn_cutoff_record_at_scale_of_prepared_history
       Jbig j b u = ((records j).static b).inclusion (((records j).static b).witness.cap z)) →
       ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
       ∀ Q : ℝ, 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q →
-      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q → Qmin ≤ Q →
+      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q → Λq * max q0 1 ≤ Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
         (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
@@ -372,18 +375,20 @@ theorem exists_horn_cutoff_record_at_scale_of_prepared_history
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
   obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck_bounds_and_canonical_windows.{u}
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
   obtain ⟨εold, δold, hεold, hδold, hthreshold⟩ :=
     exists_uniform_selected_neck_retained_append_backward Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
-  intro Dcap hDcap hDfit m accuracy haccuracy ηrecord hηrecord a q0 ha hq0 phi hphi
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
+  intro Dcap hDcap hDfit m accuracy haccuracy ηrecord hηrecord a ha phi hphi
   obtain ⟨δ, εfactory, hδ, hδ1, hδη, hεfactory, hmake⟩ := hfactory Dcap hDcap hDfit m accuracy haccuracy ηrecord hηrecord
   let k := max (m + 6) (2 * ⌊δ⁻¹⌋₊ + 4)
-  obtain ⟨ηstar, mstar, Qmin, hηδ, hkm, hηstar, hQmin, hback⟩ :=
-    hthreshold hδ hδ1 k a q0 ha hq0 phi hphi
+  obtain ⟨ηstar, mstar, Λq, hηδ, hkm, hηstar, hΛq, hback⟩ :=
+    hthreshold hδ hδ1 k a ha phi hphi
   let ε₀ := min εfactory (min (ηstar / 2) (((mstar : ℝ) + 1)⁻¹))
   have hε₀ : 0 < ε₀ := lt_min hεfactory (lt_min (half_pos hηstar) (by positivity))
-  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
-  intro P₀ g₀ H initial htime s G L hsing stepParameters hinit hsa D
+  refine ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, ?_⟩
+  intro q0 hq0 P₀ g₀ H initial htime s G L hsing stepParameters hinit hsa D
     pold records hfixed hlower hdelta hacc hmargin hm hderiv hfinal hpinch hpinchFinal hcap
     center precision order d w Jbig hJbig hzero hmark ε Λ P hε Q hQscale hQnominal hQlarge
   have hεfactory' : ε ≤ εfactory := hε.trans (min_le_left _ _)
@@ -411,7 +416,7 @@ theorem exists_horn_cutoff_record_at_scale_of_prepared_history
     intro j
     have hηj : δOriginal j ≤ ηstar := (hsource j).1.trans hεη
     have hmj : mstar ≤ kOriginal j := hmFloor.trans (hsource j).2
-    have hQj : Qmin ≤ (NOriginal j).scale := hQlarge.trans_eq (hscale j).symm
+    have hQj : Λq * max q0 1 ≤ (NOriginal j).scale := hQlarge.trans_eq (hscale j).symm
     have hfinalE : ∀ y, ∀ t ∈ Set.Ioo (H.time (Fin.last H.eventCount)) s,
         q0 < E.incoming.flow.scalar t y →
         |derivWithin (fun v => E.incoming.flow.scalar v y) (Set.Iic t) t| ≤
@@ -424,8 +429,9 @@ theorem exists_horn_cutoff_record_at_scale_of_prepared_history
       have hGE : E.incoming = G := hG
       rw [hGE]
       exact hpinchFinal
-    have hb := hback H s Qout E hOldAppend hInitial hsa pold records hfixed hlower hdelta hacc hmargin hm
-      hderiv hfinalE hpinch hpinchE hcap center precision order d w Jbig hJbig hzero hmark
+    have hb := hback q0 hq0 H s Qout E hOldAppend hInitial hsa pold records hfixed hlower hdelta
+      hacc hmargin hm hderiv hfinalE hpinch hpinchE hcap center precision order d w Jbig hJbig hzero
+      hmark
       (δOriginal j) (kOriginal j) (NOriginal j) hηj hmj hQj
     have hsc : (((NOriginal j).monoDelta (hδOriginal j) hδ1').lowerOrder (horderN j)).scale = Q := hscale j
     simpa only [hsc] using hb
@@ -456,16 +462,14 @@ private local instance {Q : OrientedThreeStage.{u}} {a s : ℝ} (G : Q.IncomingS
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem exists_horn_cutoff_record_at_scale_of_initialIdentification
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
+    ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
     ∀ q0 : ℝ, 0 < q0 →
-    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
     ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
@@ -494,7 +498,7 @@ theorem exists_horn_cutoff_record_at_scale_of_initialIdentification
       |derivWithin (fun v => G.flow.scalar v y) (Iic t) t| ≤ Ctime * G.flow.scalar t y ^ 2) →
     ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
       ∀ Q : ℝ, 2 * Λ * (P.coreRadius ^ 2)⁻¹ < Q →
-      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q → Qmin ≤ Q →
+      (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q → Λq * max q0 1 ≤ Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
         (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
@@ -564,20 +568,23 @@ theorem exists_horn_cutoff_record_at_scale_of_initialIdentification
   obtain ⟨a₀, ha₀, hinitial⟩ := exists_pos_fixedHamiltonIveyRegion_for_identified_histories P₀ g₀
   obtain ⟨Phi, hPhi, hpinch⟩ := Perelman.exists_admissiblePinchingFunction_for_identified_incomingSlabs P₀ g₀
   obtain ⟨a, ha, htimeFloor⟩ := exists_pos_le_singular_incoming_time_of_initialIdentification P₀ g₀
-  obtain ⟨fixed, c, hc, εback, δold, hεback, hδold, hfactory⟩ :=
-    exists_horn_cutoff_record_at_scale_of_prepared_history Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
+  obtain ⟨fixed, c, hc, hfactory⟩ := exists_horn_cutoff_record_at_scale_of_prepared_history.{u}
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εback, δold, hεback, hδold, hfactory⟩ :=
+    hfactory Dtrace r tol a₀ Ctime ha₀ htol htolsmall hr hfit
   have hDbig : StandardCap.transitionEnd < Dbig := by
     have := StandardCap.transitionEnd_pos
     have := inv_pos.mpr htol
     linarith
   obtain ⟨εscalar, hεscalar, hscalar⟩ := exists_presented_cap_scalar_lower_bound_of_canonical_window Dbig hDbig
-  refine ⟨fixed, c, hc, min εback εscalar, δold, lt_min hεback hεscalar, hδold, ?_⟩
-  intro m accuracy haccuracy ηrecord hηrecord q0 hq0
-  obtain ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, hmake⟩ :=
+  refine ⟨min εback εscalar, δold, lt_min hεback hεscalar, hδold, ?_⟩
+  intro m accuracy haccuracy ηrecord hηrecord
+  obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
     hfactory Dbig (StandardCap.transitionEnd_pos.trans hDbig) (by linarith) m accuracy haccuracy
-      ηrecord hηrecord a q0 ha hq0 Phi hPhi
-  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
-  intro p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
+      ηrecord hηrecord a ha Phi hPhi
+  refine ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, ?_⟩
+  intro q0 hq0 p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
     hderiv hfinal ε Λ P hε Q hQscale hQnominal hQlarge
   obtain ⟨p, _, hmodel, horder, haccuracyOld, _, records, hcanonical, hδpast, _⟩ := hInv
   have hstart := hinitial H.toHistory initial
@@ -602,7 +609,7 @@ theorem exists_horn_cutoff_record_at_scale_of_initialIdentification
     have hh := hmetric j b y v z
     rw [he] at hh
     exact hh
-  exact hmake H initial htime s G L hsing stepParameters hinit hs
+  exact hmake q0 hq0 H initial htime s G L hsing stepParameters hinit hs
     p records hstart.1 hstart.2 (fun j b => ((records j).delta_le b).trans (hδpast j))
     (haccuracyOld.trans_le (hpε.trans (min_le_left _ _)))
     (by rw [hmodel, hpD]; exact hmargin) (by omega) hderiv hfinal
@@ -631,18 +638,17 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
+    ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
     ∀ q0 : ℝ, 0 < q0 →
-    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
     ∀ Λmax coreFloor : ℝ, 1 ≤ Λmax → 0 < coreFloor → ∀ Qlower : ℝ,
-    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Qmin ≤ Q ∧ Qlower < Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
+    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Λq * max q0 1 ≤ Q ∧ Qlower < Q ∧
+      v = Q ^ (-3 / 2 : ℝ) ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
     ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
@@ -736,22 +742,26 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initi
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
-    exists_horn_cutoff_record_at_scale_of_initialIdentification
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
-  intro m accuracy haccuracy ηrecord hηrecord q0 hq0
-  obtain ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, hmake⟩ :=
-    hfactory m accuracy haccuracy ηrecord hηrecord q0 hq0
-  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
-  intro Λmax coreFloor hΛmax hcoreFloor Qlower
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
+    exists_horn_cutoff_record_at_scale_of_initialIdentification P₀ g₀
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
+  intro m accuracy haccuracy ηrecord hηrecord
+  obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
+    hfactory m accuracy haccuracy ηrecord hηrecord
+  refine ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, ?_⟩
+  intro q0 hq0 Λmax coreFloor hΛmax hcoreFloor Qlower
   let coreBound := 2 * Λmax * (coreFloor ^ 2)⁻¹
   let neckBound := ((δ ^ 2 * coreFloor) ^ 2)⁻¹
-  let Q := max (max Qmin Qlower) (max coreBound neckBound) + 1
+  let Q := max (max (Λq * max q0 1) Qlower) (max coreBound neckBound) + 1
   let v := Q ^ (-3 / 2 : ℝ)
-  have hQlarge : Qmin < Q := ((le_max_left _ _).trans (le_max_left _ _)).trans_lt (lt_add_one _)
+  have hQlarge : Λq * max q0 1 < Q :=
+    ((le_max_left _ _).trans (le_max_left _ _)).trans_lt (lt_add_one _)
   have hQlower : Qlower < Q := ((le_max_right _ _).trans (le_max_left _ _)).trans_lt (lt_add_one _)
-  have hQ : 0 < Q := hQmin.trans hQlarge
+  have hQ : 0 < Q := (mul_pos hΛq (lt_max_of_lt_right one_pos)).trans hQlarge
   have hcoreBound : coreBound < Q :=
     ((le_max_left _ _).trans (le_max_right _ _)).trans_lt (lt_add_one _)
   have hneckBound : neckBound < Q :=
@@ -778,23 +788,21 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initi
   have hnominal : ((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹ < Q := by
     apply lt_of_le_of_lt ?_ hneckBound
     exact inv_anti₀ (sq_pos_of_pos hproduct) (by nlinarith)
-  exact hmake p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit
+  exact hmake q0 hq0 p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit
     hderiv hfinal P hε Q hbase hnominal hQlarge.le
 
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_core_radius_lower_bound
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
+    ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
     ∀ q0 : ℝ, 0 < q0 →
-    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
     ∀ Λmax coreFloor : ℝ, 1 ≤ Λmax → 0 < coreFloor →
-    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Qmin ≤ Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
+    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Λq * max q0 1 ≤ Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
     ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
@@ -888,16 +896,21 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentifica
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_horn_cutoff_record_with_uniform_volume_debit_above_scale_of_initialIdentification_and_core_radius_lower_bound
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
-  intro m accuracy haccuracy ηrecord hηrecord q0 hq0
-  obtain ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, hmake⟩ :=
-    hfactory m accuracy haccuracy ηrecord hηrecord q0 hq0
-  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
-  intro Λmax coreFloor hΛmax hcoreFloor
-  obtain ⟨Q, v, hQ, hv, hQmin, _, hvQ, hmake⟩ := hmake Λmax coreFloor hΛmax hcoreFloor 0
+      P₀ g₀
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
+  intro m accuracy haccuracy ηrecord hηrecord
+  obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
+    hfactory m accuracy haccuracy ηrecord hηrecord
+  refine ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, ?_⟩
+  intro q0 hq0 Λmax coreFloor hΛmax hcoreFloor
+  obtain ⟨Q, v, hQ, hv, hQmin, _, hvQ, hmake⟩ :=
+    hmake q0 hq0 Λmax coreFloor hΛmax hcoreFloor 0
   exact ⟨Q, v, hQ, hv, hQmin, hvQ, hmake⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
@@ -920,22 +933,19 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
       (Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_canonical_neighborhoods_and_canonical_records
-    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric)
-    (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0)
-    (hmargin : Dtrace + 1 ≤ Dbig) (htol : 0 < tol) (htolsmall : tol ≤ 1 / 1000)
-    (hr : StandardCap.transitionEnd + tol⁻¹ + 1 < r)
-    (hfit : 64 * (r + tol⁻¹) < Dtrace) :
+    (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ), 4 ≤ recenterConstant ∧
+    ∀ (Dtrace Dbig r tol : ℝ) (Ctime : ℝ≥0), Dtrace + 1 ≤ Dbig → 0 < tol → tol ≤ 1 / 1000 →
+      StandardCap.transitionEnd + tol⁻¹ + 1 < r → 64 * (r + tol⁻¹) < Dtrace →
     ∃ εold δold : ℝ, 0 < εold ∧ 0 < δold ∧
     ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy → ∀ ηrecord : ℝ, 0 < ηrecord →
-    ∀ q0 : ℝ, 0 < q0 →
-    ∃ δ ε₀ Qmin : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Qmin ∧
+    ∃ δ ε₀ Λq : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ ηrecord ∧ 0 < ε₀ ∧ 0 < Λq ∧
     ∃ εcan : ℝ, 0 < εcan ∧ εcan < 1 / 11 ∧
     ∀ C1 C2 : ℝ, 1 ≤ C2 →
     ∃ C Λ : ℝ, 1 ≤ C ∧ 1 ≤ Λ ∧
-    ∀ qcan originalCoreFloor protectedFloor : ℝ,
-      0 < qcan → 0 < originalCoreFloor → 0 < protectedFloor →
-    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Qmin ≤ Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
+    ∀ q0 qcan originalCoreFloor protectedFloor : ℝ,
+      0 < q0 → 0 < qcan → 0 < originalCoreFloor → 0 < protectedFloor →
+    ∃ Q v : ℝ, 0 < Q ∧ 0 < v ∧ Λq * max q0 1 ≤ Q ∧ v = Q ^ (-3 / 2 : ℝ) ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ εold →
     ∀ (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
@@ -1056,24 +1066,28 @@ theorem exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentifica
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * v) ≤
           riemannianVolumeMeasure ThreeModel D'.slab.terminalRegularOpen D'.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, εold, δold, hεold, hδold, hfactory⟩ :=
+  obtain ⟨fixed, c, hc, hfactory⟩ :=
     exists_horn_cutoff_record_with_uniform_volume_debit_of_initialIdentification_and_core_radius_lower_bound
-      P₀ g₀ Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
-  refine ⟨fixed, c, hc, εold, δold, hεold, hδold, ?_⟩
-  intro m accuracy haccuracy ηrecord hηrecord q0 hq0
-  obtain ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, hmake⟩ :=
-    hfactory m accuracy haccuracy ηrecord hηrecord q0 hq0
-  refine ⟨δ, ε₀, Qmin, hδ, hδ1, hδη, hε₀, hQmin, ?_⟩
+      P₀ g₀
+  refine ⟨fixed, c, hc, ?_⟩
+  intro Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  obtain ⟨εold, δold, hεold, hδold, hfactory⟩ :=
+    hfactory Dtrace Dbig r tol Ctime hmargin htol htolsmall hr hfit
+  refine ⟨εold, δold, hεold, hδold, ?_⟩
+  intro m accuracy haccuracy ηrecord hηrecord
+  obtain ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, hmake⟩ :=
+    hfactory m accuracy haccuracy ηrecord hηrecord
+  refine ⟨δ, ε₀, Λq, hδ, hδ1, hδη, hε₀, hΛq, ?_⟩
   obtain ⟨εcan, hεcan, hεsmall, hgeometry⟩ :=
     OneStepIncoming.exists_neckRadius_terminalCorePresentation_with_radius_lower_bound_of_canonical_neighborhoods.{u} hε₀
   refine ⟨εcan, hεcan, hεsmall, ?_⟩
   intro C1 C2 hC2
   obtain ⟨C, Λ, hC, hΛ, hgeometry⟩ := hgeometry C1 C2 hC2
   refine ⟨C, Λ, hC, hΛ, ?_⟩
-  intro qcan originalCoreFloor protectedFloor hqcan hcoreFloor hprotectedFloor
+  intro q0 qcan originalCoreFloor protectedFloor hq0 hqcan hcoreFloor hprotectedFloor
   obtain ⟨radiusFloor, hradiusFloor, hgeometry⟩ :=
     hgeometry qcan originalCoreFloor protectedFloor hqcan hcoreFloor hprotectedFloor
-  obtain ⟨Q, v, hQ, hv, hQmin, hvQ, hmake⟩ := hmake Λ radiusFloor hΛ hradiusFloor
+  obtain ⟨Q, v, hQ, hv, hQmin, hvQ, hmake⟩ := hmake q0 hq0 Λ radiusFloor hΛ hradiusFloor
   refine ⟨Q, v, hQ, hv, hQmin, hvQ, ?_⟩
   intro p₀ hpD hpm hpε H initial htime ρold hInv s G L hsing stepParameters hinit D
     hderiv hfinal hcore hprotected hcanonical

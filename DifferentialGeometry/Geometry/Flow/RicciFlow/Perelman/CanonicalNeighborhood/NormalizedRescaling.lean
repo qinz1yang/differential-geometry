@@ -28,8 +28,8 @@ private abbrev normalizedTerminalCurvatureRescale
     (orientation : ∀ i, TangentOrientationSection (X.term i).M)
     (hcomplete : ∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t))
     (hsource : ∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C)
-    (hnoncollapse : ∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-      (Real.sqrt (scale i) * sigma))
+    (hnoncollapse : ∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+      (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma))
     (hpinching : ∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
       (rescalePinchingFunction (scale i) Phi))
     (hgood : ∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,
@@ -85,8 +85,8 @@ private abbrev normalizedTerminalCurvatureRescale
       inv_mul_cancel₀ (ne_of_gt (lt_of_lt_of_le zero_lt_one (hQ i)))]
   noncollapse i := by
     rw [← recentered_noncollapse_scale (lt_of_lt_of_le zero_lt_one (hQ i)).le]
-    exact parabolic_spatial_noncollapse (X.term i).S 0 ((X.term i).S.scalar 0 (x i))
-      (lt_of_lt_of_le zero_lt_one (hQ i)) (hzero i) kappa
+    exact parabolicallyKappaNoncollapsedBelowScale_parabolicSolution (X.term i).S 0
+      ((X.term i).S.scalar 0 (x i)) (lt_of_lt_of_le zero_lt_one (hQ i)) (hzero i) _
       (Real.sqrt (scale i) * sigma) (hnoncollapse i)
   pinching i := by
     rw [← rescalePinchingFunction_rescale]
@@ -118,8 +118,8 @@ theorem FlowSequence.exists_normalized_terminalCurvatureRescale_of_pos_lower_bou
     (orientation : ∀ i, TangentOrientationSection (X.term i).M)
     (hcomplete : ∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t))
     (hsource : ∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C)
-    (hnoncollapse : ∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-      (Real.sqrt (scale i) * sigma))
+    (hnoncollapse : ∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+      (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma))
     (hpinching : ∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
       (rescalePinchingFunction (scale i) Phi))
     (hgood : ∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,

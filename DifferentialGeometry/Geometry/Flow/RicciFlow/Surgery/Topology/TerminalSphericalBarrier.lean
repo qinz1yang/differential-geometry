@@ -38,7 +38,7 @@ theorem TerminalLimitMetric.eventually_normalizedNeck_of_incoming_strongNecks
   exact L.eventually_normalizedNeck_of_canonical_neighborhoods hτ hq hcanonical hPhi hpinch
     x hx hδ hδ1 hepsδ hfit k hk neck
 
-theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks
+theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_spatialNecks_of_scalar_derivative_bound
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q0 : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
@@ -84,10 +84,10 @@ theorem TerminalLimitMetric.eventually_spatialNeck_of_incoming_strongNecks
         (⟨C2, zero_le_one.trans hC2⟩ : ℝ≥0) * G.flow.scalar t y ^ 2 := by
     intro y t ht hy
     exact (hc y t ⟨ht.1.le, ht.2⟩ hy.le).some.time_derivative
-  exact L.eventually_spatialNeck_of_incoming_spatialNecks hτ hq0 hbound x hx hδ
+  exact L.eventually_spatialNeck_of_incoming_spatialNecks_of_scalar_derivative_bound hτ hq0 hbound x hx hδ
     hδsmall hepsδ hfit (fun n => (neck n).toSpatialNeck)
 
-theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks
+theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNecks_of_scalar_derivative_bound
     (L : G.TerminalLimitMetric) {τ : ℕ → ℝ} (hτ : Tendsto τ atTop (𝓝[<] s))
     {q0 : ℝ} {Ctime : ℝ≥0} (hq0 : 0 < q0)
     (hbound : ∀ y : P.Carrier, ∀ t ∈ Ioo a s, q0 < G.flow.scalar t y →
@@ -120,7 +120,7 @@ theorem TerminalLimitMetric.exists_neck_spherical_barrier_of_incoming_spatialNec
           (cpos.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0)) := by
   have hx : 0 < metricScalarAt L.metric x := by rw [hscale]; positivity
   obtain ⟨n, nk, _, hmap⟩ :=
-    (L.eventually_spatialNeck_of_incoming_spatialNecks hτ hq0 hbound x hx hδ
+    (L.eventually_spatialNeck_of_incoming_spatialNecks_of_scalar_derivative_bound hτ hq0 hbound x hx hδ
       (hδsmall.trans (by norm_num)) hepsδ hfit neck).exists
   obtain ⟨K, hK⟩ := nk.exists_short_spherical_barrier hδsmall A C2 hA hC2 hscale
   exact ⟨n, nk, K, hmap, hK⟩

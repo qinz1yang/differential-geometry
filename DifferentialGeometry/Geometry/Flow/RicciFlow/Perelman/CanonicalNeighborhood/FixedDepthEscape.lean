@@ -38,8 +38,8 @@ theorem end_cone_exclusion_of_pos_depth_scale_lower_bounds {kappa : ℝ} (hkappa
       ∀ orientation : ∀ i, TangentOrientationSection (X.term i).M,
       (∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t)) →
       (∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C) →
-      (∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-        (Real.sqrt (scale i) * sigma)) →
+      (∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+        (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma)) →
       (∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
         (rescalePinchingFunction (scale i) Phi)) →
       (∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,
@@ -102,8 +102,8 @@ theorem finite_ray_exclusion_of_pos_depth_scale_lower_bounds {kappa : ℝ} (hkap
       ∀ orientation : ∀ i, TangentOrientationSection (X.term i).M,
       (∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t)) →
       (∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C) →
-      (∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-        (Real.sqrt (scale i) * sigma)) →
+      (∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+        (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma)) →
       (∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
         (rescalePinchingFunction (scale i) Phi)) →
       (∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,
@@ -186,8 +186,8 @@ theorem finite_ray_exclusion_of_minimizing_segment_convergence {kappa : ℝ} (hk
       ∀ orientation : ∀ i, TangentOrientationSection (X.term i).M,
       (∀ i t, t ∈ (X.interval i).carrier → MetricComplete ((X.term i).atTime t)) →
       (∀ i, ∃ C : ℝ, PointedFlowRmNormSqBounded (X.term i) C) →
-      (∀ i, SpatiallyKappaNoncollapsedBelowScale (X.term i).S kappa
-        (Real.sqrt (scale i) * sigma)) →
+      (∀ i, ParabolicallyKappaNoncollapsedBelowScale (X.term i).S
+        (modelNoncollapseFactor * kappa) (Real.sqrt (scale i) * sigma)) →
       (∀ i, PhiAlmostNonnegative (X.term i).S (X.interval i).carrier
         (rescalePinchingFunction (scale i) Phi)) →
       (∀ i t, t ∈ Icc (-depth i) 0 → ∀ x,

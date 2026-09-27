@@ -69,7 +69,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
 theorem exists_scalar_eq_of_metricDistance_le {M : Type u}
     [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-    [T2Space M] [SigmaCompactSpace M] [PreconnectedSpace M]
+    [T2Space M] [PreconnectedSpace M]
     {D : RealTimeInterval}
     {S : DifferentialGeometry.PDE.RicciFlow.SolutionOn (I := I3) (M := M) D}
     {s : ℝ} {z y : M} {A B D₀ : ℝ}
@@ -295,10 +295,11 @@ theorem recenteredAnchorEscape {kappa sigma : ℝ} {Phi : ℝ → ℝ} :
       simp only [DifferentialGeometry.PDE.RicciFlow.parabolicTime_zero, hw n]
       exact inv_mul_cancel₀ hBpos.ne'
     noncollapse := fun n => by
-      have hpara := DifferentialGeometry.PDE.RicciFlow.Perelman.parabolic_spatial_noncollapse
-        (((X n).term (i n)).S) (s n) B hBpos (hmem n) kappa
+      have hpara := parabolicallyKappaNoncollapsedBelowScale_parabolicSolution
+        (((X n).term (i n)).S) (s n) B hBpos (hmem n) _
         (Real.sqrt ((X n).scale (i n)) * sigma) ((X n).noncollapse (i n))
-      have hres := spatiallyKappaNoncollapsed_timeRestrict (S := _) (D' := Dfun n) (hcarSub n) hpara
+      have hres := parabolicallyKappaNoncollapsedBelowScale_timeRestrict (S := _) (D' := Dfun n)
+        (hcarSub n) hpara
       rw [← sqrt_mul_renormalizedScale hBpos.le] at hres
       exact hres
     pinching := fun n u hu x => by

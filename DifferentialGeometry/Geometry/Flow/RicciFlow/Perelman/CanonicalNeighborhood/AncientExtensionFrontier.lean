@@ -169,7 +169,7 @@ def TerminalLimitSourceCompactness (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Pro
                   ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
                     PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                       (P.maps.partialDiffeomorph i) y hf) ∧
-              MetricNoncollapsed P.limit kappa Set.univ
+              (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))
 
 theorem terminalLimitCompactnessFrontier_of_sourceCompactness {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hprod : TerminalLimitSourceCompactness.{u} kappa sigma Phi)

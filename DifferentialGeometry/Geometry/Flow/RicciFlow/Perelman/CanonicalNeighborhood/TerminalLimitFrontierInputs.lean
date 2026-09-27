@@ -40,7 +40,7 @@ def TerminalLimitCompactnessFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : P
               ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
                 PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                   (P.maps.partialDiffeomorph i) y hf) ∧
-          MetricNoncollapsed P.limit kappa Set.univ
+          (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1))
 
 def TerminalLimitScalarBoundFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
   ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
@@ -59,7 +59,7 @@ def TerminalLimitScalarBoundFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : P
               ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
                 PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                   (P.maps.partialDiffeomorph i) y hf) →
-          MetricNoncollapsed P.limit kappa Set.univ →
+          (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1)) →
             ∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C
 
 theorem terminal_limit_global_bound_of_frontiers {kappa sigma : ℝ} {Phi : ℝ → ℝ}
@@ -123,7 +123,7 @@ def TerminalLimitCompactLimitSpaceFrontier (kappa sigma : ℝ) (Phi : ℝ → �
               ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
                 PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                   (P.maps.partialDiffeomorph i) y hf) →
-          MetricNoncollapsed P.limit kappa Set.univ →
+          (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1)) →
             CompactSpace P.limit.M
 
 def TerminalLimitNoncompactScalarBoundFrontier (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
@@ -143,7 +143,7 @@ def TerminalLimitNoncompactScalarBoundFrontier (kappa sigma : ℝ) (Phi : ℝ �
               ∃ hf : Function.Bijective (mfderiv I3 I3 (P.maps.partialDiffeomorph i) y),
                 PreservesTangentOrientationAt o (X.orientation (P.subseq i))
                   (P.maps.partialDiffeomorph i) y hf) →
-          MetricNoncollapsed P.limit kappa Set.univ →
+          (∃ kappa' : ℝ, 0 < kappa' ∧ MetricNoncollapsed P.limit kappa' (Set.Ioc 0 1)) →
           ¬ CompactSpace P.limit.M →
             ∃ C : ℝ, ∀ x, metricScalarAt P.limit.metric x ≤ C
 

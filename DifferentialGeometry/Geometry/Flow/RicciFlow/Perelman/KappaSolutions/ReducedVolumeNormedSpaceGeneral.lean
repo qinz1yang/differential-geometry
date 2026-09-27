@@ -10,7 +10,7 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman
 
 open Bundle Set
-open scoped ContDiff Manifold Topology
+open scoped ContDiff Manifold _root_.Topology
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Tensor0SBundle

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.AncientExtension.Classification
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.EntropyBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
 
@@ -23,44 +23,28 @@ attribute [local instance] PointedRiemannianManifold.topology
 theorem exists_uniform_injectivity_of_metricNoncollapsed
     {kappa : ℝ} (hkappa : 0 < kappa) :
     ∃ iota : ℝ, 0 < iota ∧
-      ∀ P : PointedRiemannianManifold.{u, 0, 0} I3,
-        MetricComplete P → MetricNoncollapsed P kappa univ →
-        ∀ (p : P.M) (r : ℝ), 0 < r →
+      ∀ (P : PointedRiemannianManifold.{u, 0, 0} I3) (scales : Set ℝ),
+        MetricComplete P → MetricNoncollapsed P kappa scales →
+        ∀ (p : P.M) (r : ℝ), r ∈ scales → 0 < r →
           (∀ y ∈ riemannianBallOf P.metric p r,
             r ^ 4 * Tensor0SBundle.normSq0S P.metric y 4 (metricRm04At P.metric y) ≤ 1) →
           HasInjRadiusAt P p (iota * r) := by
   let _ : NeZero (Module.finrank ℝ ThreeSpace) := ⟨by simp [ThreeSpace]⟩
   obtain ⟨iota, hiota, hinj⟩ := local_metric_injectivity (I := I3) hkappa
   refine ⟨iota, hiota, ?_⟩
-  intro P hcomplete hnc p r hr hcurv
-  have hvol := hnc p r (mem_univ _) hr hcurv
+  intro P scales hcomplete hnc p r hrs hr hcurv
+  have hvol := hnc p r hrs hr hcurv
   have hvol' : ENNReal.ofReal (kappa * r ^ Module.finrank ℝ ThreeSpace) ≤
       riemannianVolumeMeasure I3 P.M P.metric (riemannianBallOf P.metric p r) := by
     simpa only [show Module.finrank ℝ ThreeSpace = 3 by simp [ThreeSpace]] using hvol
   exact hasInjRadiusAt_of_expMap_injOn P p (mul_pos hiota hr)
     (hinj P.M P.metric ⟨hcomplete.complete⟩ p r hr hcurv hvol')
 
-theorem exists_uniform_injectivity_of_backwardExtension_curvature_control
-    {kappa : ℝ} (hkappa : 0 < kappa) :
-    ∃ iota : ℝ, 0 < iota ∧
-      ∀ {eps sigma : ℝ} {Phi : ℝ → ℝ}
-        {X : NormalizedSequence.{u} eps kappa sigma Phi} {L : TerminalLimit X}
-        {J : RealTimeInterval} (B : BackwardExtension L J),
-        ∀ t ∈ J.carrier, ∀ (p : L.space.M) (r : ℝ), 0 < r →
-          (∀ y ∈ riemannianBallOf (B.solution.base.metric t) p r,
-            r ^ 4 * FlowMetricBall.rmNormSq B.solution t y ≤ 1) →
-          HasInjRadiusAt { L.space with metric := B.solution.base.metric t } p (iota * r) := by
-  obtain ⟨iota, hiota, hinj⟩ := exists_uniform_injectivity_of_metricNoncollapsed.{u} hkappa
-  refine ⟨iota, hiota, ?_⟩
-  intro eps sigma Phi X L J B t ht p r hr hcurv
-  exact hinj { L.space with metric := B.solution.base.metric t }
-    (B.complete t ht) (B.metric_noncollapsed ht) p r hr hcurv
-
 theorem exists_uniform_injectivity_of_metricNoncollapsed_curvature_bound
     {kappa K : ℝ} (hkappa : 0 < kappa) (hK : 0 ≤ K) :
     ∃ eta : ℝ, 0 < eta ∧
       ∀ P : PointedRiemannianManifold.{u, 0, 0} I3,
-        MetricComplete P → MetricNoncollapsed P kappa univ →
+        MetricComplete P → MetricNoncollapsed P kappa (Ioc 0 1) →
         (∀ x : P.M, Tensor0SBundle.normSq0S P.metric x 4 (metricRm04At P.metric x) ≤ K) →
         ∀ p : P.M, HasInjRadiusAt P p eta := by
   obtain ⟨iota, hiota, hinj⟩ := exists_uniform_injectivity_of_metricNoncollapsed.{u} hkappa
@@ -80,7 +64,7 @@ theorem exists_uniform_injectivity_of_metricNoncollapsed_curvature_bound
       _ ≤ 1 := hrK
   refine ⟨iota * r, mul_pos hiota hr, ?_⟩
   intro P hcomplete hnc hbound p
-  exact hinj P hcomplete hnc p r hr (fun y _ =>
+  exact hinj P (Ioc 0 1) hcomplete hnc p r ⟨hr, hr1⟩ hr (fun y _ =>
     (mul_le_mul_of_nonneg_left (hbound y) (pow_nonneg hr.le 4)).trans hscale)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

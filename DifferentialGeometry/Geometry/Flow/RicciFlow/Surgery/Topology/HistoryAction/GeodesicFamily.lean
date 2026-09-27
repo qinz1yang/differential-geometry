@@ -330,7 +330,7 @@ variable {Q : OrientedThreeStage.{u}} {s b : ℝ}
 private theorem exists_recent_family_patch
     (G : Q.IncomingSlab s b) {X : Type*} [TopologicalSpace X] [ChartedSpace ThreeSpace X]
     [IsManifold ThreeModel ∞ X] [T2Space X] {D : RealTimeInterval}
-    (S : SolutionOn (I := ThreeModel) (M := X) D) (hS : IsSolutionOn S)
+    (S : SolutionOn (I := ThreeModel) (M := X) D)
     (g : X → Q.Carrier) (hg : IsLocalDiffeomorph ThreeModel ThreeModel ∞ g)
     (T : ℝ) {r c w d t₀ : ℝ} (hrc : r < c) (ht₀ : t₀ ∈ Ioo c w) (hwd : w < d)
     (hclock : ∀ q ∈ Ioo c w, T - q ^ 2 ∈ (RealTimeInterval.closedOpen s b G.lt).regular)
@@ -386,8 +386,10 @@ private theorem exists_recent_family_patch
         exact hδα ⟨hz, hx⟩
       exact lRegularizedData_congr G.flow T q hgerm (hαgeo z (hUV hz) q ⟨hqK.1, hq.2⟩)
     · have hgeo := (show IsLRegularizedGeodesicOn S T (fun x => θ (z, x)) (L ∩ Ioo c w) from
-          fun x hx => hθgeo z hz x hx.1).comp_of_localPullMetric S hS G.flow g hg
-          (hL.inter isOpen_Ioo) (fun x hx => hmetric x hx.2) (fun x hx => hclock x hx.2)
+          fun x hx => hθgeo z hz x hx.1).comp_of_localPullMetric (S' := G.flow) hg
+          (fun x hx => hmetric x hx.2) (fun x hx _ => hclock x hx.2) (fun x hx => by
+            filter_upwards [hL.mem_nhds hx.1] with v hv
+            exact (hθgeo z hz v hv).2.1)
       have hgerm : (fun x => δ (z, x)) =ᶠ[𝓝 q] (fun x => g (θ (z, x))) := by
         filter_upwards [hC.mem_nhds hqC] with x hx
         exact hδθ ⟨hz, hx⟩
@@ -815,7 +817,7 @@ private theorem exists_stage_family_step
     intro r hr
     exact (congrArg (fun z : W => F z.val) (hθcenter hr.1)).trans (hηnew hr.2)
   obtain ⟨Kδ, hKδ, hKδconn, hrKδ, hwKδ, δ, hδ, hδeq, hδw, hδgeo, hδcenter, hδθ⟩ :=
-    exists_recent_family_patch G₁ S hS
+    exists_recent_family_patch G₁ S
       (fun z : W => F z.val) hlocalNew T hnc ht₀ hwd hnewClock hnewMetric hU hUU₀ haU
       hK hKconn hrK ht₀J hL₁ hL₁conn ht₀L₁ hwL₁ hα
       (hθ.mono (prod_mono hUU₁ inter_subset_left))
