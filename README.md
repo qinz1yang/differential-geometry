@@ -38,13 +38,20 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 - [Poincaré conjecture](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean#L12) — every compact, Hausdorff, simply connected topological three-manifold without boundary is homeomorphic to the unit sphere $S^3 \subset \mathbb{R}^4$. The final statement uses only Lean/Mathlib concepts. The [smooth version](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Skeleton/PoincareEndgame.lean#L103) gives a diffeomorphism for smooth three-manifolds.
 - [Finite-time extinction with surgery, simply connected case](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Skeleton/PoincareEndgame.lean#L91) — every simply connected closed oriented smooth three-manifold, with any initial smooth Riemannian metric, admits a controlled finite surgery history ending in the empty manifold at a positive finite time. The [extinction structure](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Topology/ControlledExtinction.lean#L14) records the initial metric identification and the empty terminal stage.
 - [Moise's theorem: compatible smooth structures in dimension three](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L33) — every compact Hausdorff topological three-manifold admits a smooth atlas compatible with its given topology. The development supplies [PL approximation](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L27) and [compact PL smoothing](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L30), providing the bridge from smooth to topological Poincaré.
+- [Perelman's canonical neighborhood theorem](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L539) — in a Ricci flow on a closed connected oriented three-manifold over a finite time interval, every point of sufficiently large scalar curvature lies in a controlled neck, cap, positively curved compact component, or nearly round component. The development also gives [curvature-scale bounds for all mixed space-time curvature derivatives](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L586).
+- [Compactness of ancient κ-solutions](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L566) — three-dimensional ancient κ-solutions with fixed κ and basepoint scalar curvature normalized to one admit smoothly convergent pointed subsequences with an ancient κ-solution limit, together with [universal mixed curvature-derivative estimates](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L579).
+- [Hamilton's compactness theorem](DifferentialGeometry/Geometry/Flow/RicciFlow/Compactness/Limits/Hamilton.lean#L27) — complete connected pointed Ricci flows on a common open time interval, with uniform curvature bounds on compact time intervals and a uniform positive basepoint injectivity-radius bound at time zero, admit a smooth pointed Cheeger–Gromov–Hamilton convergent subsequence with a complete limit.
 - [Hamilton's theorem (1982)](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/PositiveRicci/Hamilton.lean#L29) — a closed three-manifold admitting a positive-Ricci metric admits a constant-positive-sectional-curvature metric and is a spherical space form.
 - [Ricci flow short-time existence](DifferentialGeometry/Geometry/Flow/RicciFlow/ShortTime/Existence.lean#L34) — on every closed Riemannian manifold $(M, g_0)$ the Ricci flow $\partial_t g = -2\,\mathrm{Ric}_{g(t)}$ has a solution on some $[0, T)$ with $g(0) = g_0$, jointly smooth in $(t, x)$ up to and including the initial time. Proved via the DeTurck's trick and a conjugating flow of the DeTurck vector field.
 - [Perelman's reduced-volume monotonicity](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/LGeometry/ReducedVolume/Basic.lean#L384) — along a Ricci flow on a closed connected manifold, the reduced volume is nonincreasing in backward time, built on the L-length minimizer, L-cut-locus, and reduced-Jacobian theory.
+- [Perelman's no local collapsing theorem](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/Noncollapsing/FiniteTime.lean#L33) — every smooth Ricci flow on a closed connected manifold over a finite time interval is uniformly κ-noncollapsed below any prescribed scale on curvature-controlled spacetime balls.
+- [Perelman's W-entropy monotonicity](DifferentialGeometry/Geometry/Flow/RicciFlow/Entropy/W/Variation/Monotonicity.lean#L726) — along Ricci flow on a closed manifold, a positive conjugate-heat solution determines a W-entropy that is nonincreasing in backward time, with the [exact integral-square derivative formula](DifferentialGeometry/Geometry/Flow/RicciFlow/Entropy/W/Variation/Monotonicity.lean#L281).
 - [Ricci–DeTurck flow short-time existence](DifferentialGeometry/Geometry/Flow/RicciFlow/ShortTime/DeTurck/InitialData.lean#L143) — the gauge-fixed, strictly parabolic flow behind the reduction: a solution whose chart-Gram entries are jointly smooth on the closed time slab, together with joint smoothness of the DeTurck vector field.
 - [Ricci-tensor naturality under diffeomorphisms](DifferentialGeometry/Geometry/Curvature/CurvatureOperator/Ricci/Naturality.lean#L250) — $\mathrm{Ric}_{\Phi^* g}(v, w) = \mathrm{Ric}_g(d\Phi\, v, d\Phi\, w)$, the equivariance that transports the DeTurck solution back to a Ricci flow.
 - [Scalar-curvature evolution under Ricci flow](DifferentialGeometry/Geometry/Flow/RicciFlow/Evolution/Scalar/IntrinsicDerivation.lean#L736).
 - [Hamilton–Ivey pinching estimate](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/HamiltonIvey/MaximumPrinciple.lean#L5324) — the scalar-curvature lower bound and logarithmic pinching estimate for closed three-dimensional Ricci flows with an initial curvature-operator lower bound, together with an [asymptotic pinching estimate](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/HamiltonIvey/MaximumPrinciple.lean#L5395).
+- [Shi's derivative estimates](DifferentialGeometry/Geometry/Flow/RicciFlow/Estimates/Shi/TimeWeighted.lean#L20) — uniform curvature bounds and completeness of the initial metric give time-weighted bounds for every covariant derivative of curvature along Ricci flow.
+- [Hamilton's matrix Harnack inequality for Ricci flow](DifferentialGeometry/Geometry/Flow/RicciFlow/HamiltonHarnack/MatrixHarnack.lean#L10209) — the matrix Harnack quadratic is nonnegative on closed Ricci flows with nonnegative curvature operator. In dimension three, [nonnegative initial curvature operator suffices](DifferentialGeometry/Geometry/Flow/RicciFlow/HamiltonHarnack/MatrixHarnack.lean#L10247).
 - [Bonnet–Myers diameter bound](DifferentialGeometry/Geometry/Comparison/BonnetMyers/Diameter.lean#L506) — a positive Ricci lower bound forces a bounded diameter.
 - [Bochner formula](DifferentialGeometry/Analysis/Elliptic/Regularity/Bochner/PolarisedLpSmooth.lean#L66) — the polarised, pointwise form.
 - [Weitzenböck identity](DifferentialGeometry/Analysis/Elliptic/ConnectionLaplacian/Weitzenbock/IntegratedCovariantTensor.lean#L98) — the integrated $L^2$ form.
@@ -62,19 +69,19 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 ```bash
 git clone https://github.com/qinz1yang/differential-geometry.git
 cd differential-geometry
-lake build DifferentialGeometry
+lake build DifferentialGeometry.Topology.ThreeManifold.Poincare
 ```
 
-To inspect Hamilton's transitive axioms, temporarily add
+To inspect the Poincaré theorem's transitive axioms, temporarily add
 
 ```lean
-#print axioms DifferentialGeometry.PDE.RicciFlow.HamiltonPositiveRicci.hamilton_positive_ricci
+#print axioms DifferentialGeometry.Topology.poincare_conjecture
 ```
 
-to [`Hamilton.lean`](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/PositiveRicci/Hamilton.lean), then run
+to [`Poincare.lean`](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean), then run
 
 ```bash
-lake build DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.PositiveRicci.Hamilton
+lake build DifferentialGeometry.Topology.ThreeManifold.Poincare
 ```
 
 ## PDE infrastructure
