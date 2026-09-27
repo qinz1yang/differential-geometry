@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: The Tau Ceti contributors
 -/
 import DifferentialGeometry.Topology.Embedding.Retraction
+import DifferentialGeometry.External.TauCeti.Geometry.Manifold.LocallyFlat.Smooth
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.HalfSpace
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Closed
@@ -236,18 +237,10 @@ private theorem IsImmersionAtOfComplement.exists_contDiffOn_local_extension_of_m
   let Ψ : V → E × C :=
     h.equiv.symm ∘ h.codChart.extend 𝓘(ℝ, V)
   have hΨ : ContDiffOn ℝ ∞ Ψ h.codChart.source :=
-    (h.equiv.symm.contDiff.contMDiff.comp_contMDiffOn
-      (h.codChart.contMDiffOn_extend h.codChart_mem_maximalAtlas)).contDiffOn
+    h.contMDiffOn_equiv_symm_extend_codChart.contDiffOn
   have hkey (y : M) (hy : y ∈ h.domChart.source) :
       Ψ (f y) = ((h.domChart.extend I) y, 0) := by
-    have hy' : y ∈ (h.domChart.extend I).source := by rwa [h.domChart.extend_source]
-    have hwritten := h.writtenInCharts ((h.domChart.extend I).map_source hy')
-    change (h.codChart.extend 𝓘(ℝ, V))
-      (f ((h.domChart.extend I).symm ((h.domChart.extend I) y))) =
-        h.equiv ((h.domChart.extend I) y, 0) at hwritten
-    rw [(h.domChart.extend I).left_inv hy'] at hwritten
-    change h.equiv.symm ((h.codChart.extend 𝓘(ℝ, V)) (f y)) = _
-    rw [hwritten, ContinuousLinearEquiv.symm_apply_apply]
+    exact h.equiv_symm_extend_codChart_apply hy
   let G : V → F := fun z => G₀ (Ψ z).1
   have hG : ContDiffOn ℝ ∞ G h.codChart.source := hG₀.comp_contDiffOn hΨ.fst
   have ht : Tendsto (h.domChart.extend I) (𝓝 x)
@@ -432,18 +425,10 @@ theorem IsImmersionAtOfComplement.exists_contDiffOn_parametric_extension_halfspa
   let Ψ : V → EuclideanSpace ℝ (Fin (d + 1)) × C :=
     h.equiv.symm ∘ h.codChart.extend 𝓘(ℝ, V)
   have hΨ : ContDiffOn ℝ ∞ Ψ h.codChart.source :=
-    (h.equiv.symm.contDiff.contMDiff.comp_contMDiffOn
-      (h.codChart.contMDiffOn_extend h.codChart_mem_maximalAtlas)).contDiffOn
+    h.contMDiffOn_equiv_symm_extend_codChart.contDiffOn
   have hkey (y : M) (hy : y ∈ h.domChart.source) :
       Ψ (e (p, y)) = ((h.domChart.extend I) y, 0) := by
-    have hy' : y ∈ (h.domChart.extend I).source := by rwa [h.domChart.extend_source]
-    have hwritten := h.writtenInCharts ((h.domChart.extend I).map_source hy')
-    change (h.codChart.extend 𝓘(ℝ, V))
-      (e (p, (h.domChart.extend I).symm ((h.domChart.extend I) y))) =
-        h.equiv ((h.domChart.extend I) y, 0) at hwritten
-    rw [(h.domChart.extend I).left_inv hy'] at hwritten
-    change h.equiv.symm ((h.codChart.extend 𝓘(ℝ, V)) (e (p, y))) = _
-    rw [hwritten, ContinuousLinearEquiv.symm_apply_apply]
+    exact h.equiv_symm_extend_codChart_apply hy
   let A : P × V → V := fun q => q.2 + H (q.1, (Ψ q.2).1) - H (p, (Ψ q.2).1)
   have hproj : ContDiffOn ℝ ∞ (fun q : P × V => (Ψ q.2).1)
       (univ ×ˢ h.codChart.source) :=

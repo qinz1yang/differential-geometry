@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-def RfsHurewiczFrontier (M : Type u) [TopologicalSpace M] [SimplyConnectedSpace M] : Prop :=
+def RfsHurewiczFrontier (M : Type u) [TopologicalSpace M] : Prop :=
   Subsingleton (DifferentialGeometry.Topology.integralSingularHomology 2 M) ∧
     DifferentialGeometry.Topology.SphereHurewiczTwoCanonical M ∧
       DifferentialGeometry.Topology.SphereHurewiczThreeCanonical M
@@ -42,7 +42,7 @@ theorem exists_isSphereHomologyGenerator_one_liftedHomotopySphere :
   ⟨DifferentialGeometry.Topology.integralLiftedSphereGenerator.{u} 1,
     DifferentialGeometry.Topology.integralLiftedSphereGenerator_isGenerator 1⟩
 
-variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
+variable {M : Type u} [TopologicalSpace M]
 
 theorem subsingleton_homotopyGroup_two_of_hurewiczFrontier (h : RfsHurewiczFrontier M)
     (hdeg : cubeSphereCollapseClassIsUnit.{u}) :
@@ -75,7 +75,7 @@ theorem rfsHurewiczFrontier_punit : RfsHurewiczFrontier PUnit.{u + 1} :=
     DifferentialGeometry.Topology.hurewiczLowDegreeFrontier_punit.2⟩
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [SimplyConnectedSpace M]
+    [IsManifold ThreeModel ∞ M]
 
 theorem rfs_homotopy_groups_of_hurewiczFrontier (h : RfsHurewiczFrontier M)
     (hdeg : cubeSphereCollapseClassIsUnit.{u}) (o : TangentOrientationSection M) (q : M) :

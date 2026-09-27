@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Homotopy.RayComplement
 import Mathlib.Topology.Clopen
 import DifferentialGeometry.Topology.Homology.LiftedSphere
-import DifferentialGeometry.Topology.Homology.SubspaceCarriers
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SubspaceCarriers
 
 noncomputable section
 

@@ -47,10 +47,10 @@ theorem surjective_sphereHurewicz_iff_surjective_freeSphereHomologyImage
     change freeSphereHomologyImage (X := X) n c (homotopyGroupToFreeSphere n x a) = y
     rw [ha, hb]
 
-def HurewiczTwoBijective (X : Type u) [TopologicalSpace X] [SimplyConnectedSpace X] : Prop :=
+def HurewiczTwoBijective (X : Type u) [TopologicalSpace X] : Prop :=
   ∀ x : X, Function.Bijective (sphereHurewicz 1 x (integralLiftedSphereGenerator.{u} 1))
 
-def HurewiczThreeBijective (X : Type u) [TopologicalSpace X] [SimplyConnectedSpace X] : Prop :=
+def HurewiczThreeBijective (X : Type u) [TopologicalSpace X] : Prop :=
   ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x) →
     Function.Bijective (sphereHurewicz 2 x (integralLiftedSphereGenerator.{u} 2))
 
@@ -85,27 +85,27 @@ def HurewiczThreeSphereNullhomotopic (X : Type u) [TopologicalSpace X] : Prop :=
     freeSphereHomologyImage 2 (integralLiftedSphereGenerator.{u} 2) (ZerothHomotopy.mk f) = 0 →
       f.Nullhomotopic
 
-theorem hurewiczTwoBijective_of_sphereHurewiczTwoCanonical [SimplyConnectedSpace X]
+theorem hurewiczTwoBijective_of_sphereHurewiczTwoCanonical
     (h : SphereHurewiczTwoCanonical X) : HurewiczTwoBijective X :=
   fun x => (h x).1
 
-theorem hurewiczThreeBijective_of_sphereHurewiczThreeCanonical [SimplyConnectedSpace X]
+theorem hurewiczThreeBijective_of_sphereHurewiczThreeCanonical
     (h : SphereHurewiczThreeCanonical X) : HurewiczThreeBijective X :=
   fun x hπ => (h x hπ).1
 
-theorem sphereHurewiczTwoCanonical_of_hurewiczTwoFrontier [SimplyConnectedSpace X]
+theorem sphereHurewiczTwoCanonical_of_hurewiczTwoFrontier
     (h : HurewiczTwoBijective X ∧ HurewiczTwoMultiplicative X) :
     SphereHurewiczTwoCanonical X :=
   fun x => ⟨h.1 x, h.2 x (integralLiftedSphereGenerator.{u} 1)
     (integralLiftedSphereGenerator_isGenerator 1)⟩
 
-theorem sphereHurewiczThreeCanonical_of_hurewiczThreeFrontier [SimplyConnectedSpace X]
+theorem sphereHurewiczThreeCanonical_of_hurewiczThreeFrontier
     (h : HurewiczThreeBijective X ∧ HurewiczThreeMultiplicative X) :
     SphereHurewiczThreeCanonical X :=
   fun x hπ => ⟨h.1 x hπ, h.2 x hπ (integralLiftedSphereGenerator.{u} 2)
     (integralLiftedSphereGenerator_isGenerator 2)⟩
 
-theorem hurewiczTwoFrontier_iff_sphereHurewiczTwoCanonical [SimplyConnectedSpace X] :
+theorem hurewiczTwoFrontier_iff_sphereHurewiczTwoCanonical :
     (HurewiczTwoBijective X ∧ HurewiczTwoMultiplicative X) ↔
       SphereHurewiczTwoCanonical X :=
   ⟨sphereHurewiczTwoCanonical_of_hurewiczTwoFrontier,
@@ -113,7 +113,7 @@ theorem hurewiczTwoFrontier_iff_sphereHurewiczTwoCanonical [SimplyConnectedSpace
       fun x c hc => (IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 1 (c := c) x hc
         (h x)).2⟩⟩
 
-theorem hurewiczThreeFrontier_iff_sphereHurewiczThreeCanonical [SimplyConnectedSpace X] :
+theorem hurewiczThreeFrontier_iff_sphereHurewiczThreeCanonical :
     (HurewiczThreeBijective X ∧ HurewiczThreeMultiplicative X) ↔
       SphereHurewiczThreeCanonical X :=
   ⟨sphereHurewiczThreeCanonical_of_hurewiczThreeFrontier,
@@ -121,17 +121,17 @@ theorem hurewiczThreeFrontier_iff_sphereHurewiczThreeCanonical [SimplyConnectedS
       fun x hπ c hc => (IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 2 (c := c) x hc
         (h x hπ)).2⟩⟩
 
-theorem hurewicz_two_isomorphism_of_frontier [SimplyConnectedSpace X]
+theorem hurewicz_two_isomorphism_of_frontier
     (h : HurewiczTwoBijective X ∧ HurewiczTwoMultiplicative X)
     (x : X) (c : integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
     (hc : IsSphereHomologyGenerator 1 c) :
     Function.Bijective (sphereHurewicz 1 x c) ∧
       ∀ a b : HomotopyGroup (Fin 2) X x,
         sphereHurewicz 1 x c (a * b) = sphereHurewicz 1 x c a + sphereHurewicz 1 x c b :=
-  ⟨(bijective_sphereHurewicz_iff_bijective_integralLiftedSphereGenerator 1 x c hc).mpr (h.1 x),
-    h.2 x c hc⟩
+  sphereHurewicz_two_isomorphism_of_canonical_generator
+    (sphereHurewiczTwoCanonical_of_hurewiczTwoFrontier h) x c hc
 
-theorem hurewicz_three_isomorphism_of_frontier [SimplyConnectedSpace X]
+theorem hurewicz_three_isomorphism_of_frontier
     (h : HurewiczThreeBijective X ∧ HurewiczThreeMultiplicative X)
     (x : X) (hπ₂ : Subsingleton (HomotopyGroup (Fin 2) X x))
     (c : integralSingularHomology 3 (liftedHomotopySphere.{u} 2))
@@ -139,10 +139,10 @@ theorem hurewicz_three_isomorphism_of_frontier [SimplyConnectedSpace X]
     Function.Bijective (sphereHurewicz 2 x c) ∧
       ∀ a b : HomotopyGroup (Fin 3) X x,
         sphereHurewicz 2 x c (a * b) = sphereHurewicz 2 x c a + sphereHurewicz 2 x c b :=
-  ⟨(bijective_sphereHurewicz_iff_bijective_integralLiftedSphereGenerator 2 x c hc).mpr (h.1 x hπ₂),
-    h.2 x hπ₂ c hc⟩
+  sphereHurewicz_three_isomorphism_of_canonical_generator
+    (sphereHurewiczThreeCanonical_of_hurewiczThreeFrontier h) x hπ₂ c hc
 
-theorem hurewicz_two_isomorphism_iff_frontier [SimplyConnectedSpace X] :
+theorem hurewicz_two_isomorphism_iff_frontier :
     (∀ (x : X) (c : integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
       (_ : IsSphereHomologyGenerator 1 c),
         Function.Bijective (sphereHurewicz 1 x c) ∧
@@ -154,7 +154,7 @@ theorem hurewicz_two_isomorphism_iff_frontier [SimplyConnectedSpace X] :
     fun x c hc => (h x c hc).2⟩,
     fun h x c hc => hurewicz_two_isomorphism_of_frontier h x c hc⟩
 
-theorem hurewicz_three_isomorphism_iff_frontier [SimplyConnectedSpace X] :
+theorem hurewicz_three_isomorphism_iff_frontier :
     (∀ (x : X) (_ : Subsingleton (HomotopyGroup (Fin 2) X x))
       (c : integralSingularHomology 3 (liftedHomotopySphere.{u} 2))
       (_ : IsSphereHomologyGenerator 2 c),
@@ -175,7 +175,7 @@ theorem hurewiczTwoMultiplicative_of_liftedSquareCollapse_bijective
     HurewiczTwoMultiplicative X :=
   fun x c hc => hurewicz_two_mul_of_liftedSquareCollapse_bijective hT hrel x c hc
 
-theorem hurewiczTwoSphereGeneration_of_hurewiczTwoBijective [SimplyConnectedSpace X]
+theorem hurewiczTwoSphereGeneration_of_hurewiczTwoBijective [PathConnectedSpace X]
     (h : HurewiczTwoBijective X) (x : X) : HurewiczTwoSphereGeneration X := by
   change ∀ y : integralSingularHomology 2 X,
     ∃ f : C(Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, X),
@@ -187,19 +187,24 @@ theorem hurewiczTwoSphereGeneration_of_hurewiczTwoBijective [SimplyConnectedSpac
   have hout : ZerothHomotopy.mk (Quotient.out a) = a := Quotient.out_eq a
   exact ⟨Quotient.out a, by rw [hout]; exact ha⟩
 
-theorem hurewiczTwoSphereNullhomotopic_of_hurewiczTwoBijective [SimplyConnectedSpace X]
+theorem hurewiczTwoSphereNullhomotopic_of_hurewiczTwoBijective [PathConnectedSpace X]
     (h : HurewiczTwoBijective X) (x : X) : HurewiczTwoSphereNullhomotopic X := by
   change ∀ f : C(Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1, X),
     freeSphereHomologyImage 1 (integralLiftedSphereGenerator.{u} 1) (ZerothHomotopy.mk f) = 0 →
       f.Nullhomotopic
   intro f hf
-  have hker := forall_sphereHurewicz_eq_zero_of_injective 1 x
-    (integralLiftedSphereGenerator.{u} 1) (h x).1
-  have hmk := (forall_sphereHurewicz_eq_zero_iff_forall_freeSphereHomologyImage_eq_zero 1 x
-    (integralLiftedSphereGenerator.{u} 1)).mp hker f hf
+  obtain ⟨a, ha⟩ := homotopyGroupToFreeSphere_surjective 1 x (ZerothHomotopy.mk f)
+  have hzero : sphereHurewicz 1 x (integralLiftedSphereGenerator.{u} 1) a = 0 := by
+    change freeSphereHomologyImage 1 (integralLiftedSphereGenerator.{u} 1)
+      (homotopyGroupToFreeSphere 1 x a) = 0
+    rw [ha, hf]
+  have hone := forall_sphereHurewicz_eq_zero_of_injective 1 x
+    (integralLiftedSphereGenerator.{u} 1) (h x).1 a hzero
+  have hmk : ZerothHomotopy.mk f = ZerothHomotopy.mk (ContinuousMap.const _ x) := by
+    rw [← ha, hone, homotopyGroupToFreeSphere_one]
   exact (zerothHomotopy_mk_eq_const_iff_nullhomotopic 1 x f).mp hmk
 
-theorem hurewiczThreeSphereGeneration_of_hurewiczThreeBijective [SimplyConnectedSpace X]
+theorem hurewiczThreeSphereGeneration_of_hurewiczThreeBijective [PathConnectedSpace X]
     (h : HurewiczThreeBijective X) (x : X)
     (hπ : Subsingleton (HomotopyGroup (Fin 2) X x)) : HurewiczThreeSphereGeneration X := by
   change ∀ y : integralSingularHomology 3 X,
@@ -212,7 +217,7 @@ theorem hurewiczThreeSphereGeneration_of_hurewiczThreeBijective [SimplyConnected
   have hout : ZerothHomotopy.mk (Quotient.out a) = a := Quotient.out_eq a
   exact ⟨Quotient.out a, by rw [hout]; exact ha⟩
 
-theorem hurewiczThreeSphereNullhomotopic_of_hurewiczThreeBijective [SimplyConnectedSpace X]
+theorem hurewiczThreeSphereNullhomotopic_of_hurewiczThreeBijective [PathConnectedSpace X]
     (h : HurewiczThreeBijective X) (x : X)
     (hπ : Subsingleton (HomotopyGroup (Fin 2) X x)) :
     HurewiczThreeSphereNullhomotopic X := by
@@ -220,10 +225,15 @@ theorem hurewiczThreeSphereNullhomotopic_of_hurewiczThreeBijective [SimplyConnec
     freeSphereHomologyImage 2 (integralLiftedSphereGenerator.{u} 2) (ZerothHomotopy.mk f) = 0 →
       f.Nullhomotopic
   intro f hf
-  have hker := forall_sphereHurewicz_eq_zero_of_injective 2 x
-    (integralLiftedSphereGenerator.{u} 2) (h x hπ).1
-  have hmk := (forall_sphereHurewicz_eq_zero_iff_forall_freeSphereHomologyImage_eq_zero 2 x
-    (integralLiftedSphereGenerator.{u} 2)).mp hker f hf
+  obtain ⟨a, ha⟩ := homotopyGroupToFreeSphere_surjective 2 x (ZerothHomotopy.mk f)
+  have hzero : sphereHurewicz 2 x (integralLiftedSphereGenerator.{u} 2) a = 0 := by
+    change freeSphereHomologyImage 2 (integralLiftedSphereGenerator.{u} 2)
+      (homotopyGroupToFreeSphere 2 x a) = 0
+    rw [ha, hf]
+  have hone := forall_sphereHurewicz_eq_zero_of_injective 2 x
+    (integralLiftedSphereGenerator.{u} 2) (h x hπ).1 a hzero
+  have hmk : ZerothHomotopy.mk f = ZerothHomotopy.mk (ContinuousMap.const _ x) := by
+    rw [← ha, hone, homotopyGroupToFreeSphere_one]
   exact (zerothHomotopy_mk_eq_const_iff_nullhomotopic 2 x f).mp hmk
 
 theorem hurewiczTwoBijective_iff_sphereCriterion_of_multiplicative [SimplyConnectedSpace X]
@@ -303,7 +313,7 @@ theorem hurewiczThreeMultiplicative_punit : HurewiczThreeMultiplicative PUnit.{u
   fun x hπ c hc => (IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 2 (c := c) x hc
     (sphereHurewiczThreeCanonical_punit x hπ)).2
 
-theorem hurewiczTwoBijective_of_subsingleton [SimplyConnectedSpace X]
+theorem hurewiczTwoBijective_of_subsingleton
     (hπ : ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x))
     (hH : Subsingleton (integralSingularHomology 2 X)) : HurewiczTwoBijective X := by
   refine fun x => ?_
@@ -312,7 +322,7 @@ theorem hurewiczTwoBijective_of_subsingleton [SimplyConnectedSpace X]
   exact (IsSphereHurewiczIsomorphism.of_subsingleton 1 x
     (integralLiftedSphereGenerator.{u} 1)).1
 
-theorem hurewiczTwoMultiplicative_of_subsingleton [SimplyConnectedSpace X]
+theorem hurewiczTwoMultiplicative_of_subsingleton
     (hπ : ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x))
     (hH : Subsingleton (integralSingularHomology 2 X)) : HurewiczTwoMultiplicative X := by
   refine fun x c hc => ?_

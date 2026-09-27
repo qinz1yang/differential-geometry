@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Cap
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CompactlySupportedCohomology.Cap
 
 open Set TopologicalSpace
 

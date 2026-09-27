@@ -16,7 +16,7 @@ theorem bijective_hurewiczThree_of_cubeSphereFundamentalClass (x : X)
   rw [← sphereHurewicz_cubeSphereFundamentalClass x]
   exact h.1
 
-variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
+variable {M : Type u} [TopologicalSpace M]
 
 theorem rfs_homotopy_groups_of_cubeSphereHurewiczCanonical (q : M)
     (hH₂ : Subsingleton (integralSingularHomology 2 M))

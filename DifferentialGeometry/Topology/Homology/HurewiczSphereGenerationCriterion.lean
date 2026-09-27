@@ -1,9 +1,10 @@
+import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Topology.Homology.ChainSupportCompact
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeFrontierInstances
 import DifferentialGeometry.Topology.Homology.HurewiczSphereCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczThreeWitness
-import DifferentialGeometry.Topology.Homology.OpenExcision
-import DifferentialGeometry.Topology.Homology.RelativeMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.OpenExcision
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeMaps
 
 noncomputable section
 

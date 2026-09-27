@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.SpherePuncture
-import DifferentialGeometry.Topology.Homology.ContractiblePair
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ContractiblePair
 import DifferentialGeometry.Topology.Homology.LiftedSphere
 
 noncomputable section

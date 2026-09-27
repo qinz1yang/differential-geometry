@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.Cochains
-import DifferentialGeometry.Topology.Homology.Cycles
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Cochains
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Cycles
 
 noncomputable section
 

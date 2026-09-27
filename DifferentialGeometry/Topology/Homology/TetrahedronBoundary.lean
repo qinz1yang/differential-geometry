@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Homotopy.RayComplement
 import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
-import DifferentialGeometry.Topology.Homology.ChainSupport
-import DifferentialGeometry.Topology.Homology.AffineSimplex
-import DifferentialGeometry.Topology.Homology.SubspaceCarriers
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ChainSupport
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.AffineSimplex
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SubspaceCarriers
 
 noncomputable section
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.ChartLocalOrientation
 import DifferentialGeometry.Topology.ThreeManifold.OrientedChartNeighborhood
-import DifferentialGeometry.Topology.Homology.LocalCompactHomology
-import DifferentialGeometry.Topology.Homology.ManifoldFundamentalClass
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalCompactHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ManifoldFundamentalClass
 
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set ContinuousMap

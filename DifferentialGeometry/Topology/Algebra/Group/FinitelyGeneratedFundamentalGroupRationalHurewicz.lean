@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Algebra.Group.FinitelyGeneratedFundamentalGroup
 import DifferentialGeometry.Topology.Homology.ClosedManifold
-import DifferentialGeometry.Topology.Homology.Integral
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
 import DifferentialGeometry.Topology.ThreeManifold.CutCapSummandCountAbelianizationRank
 
 set_option autoImplicit false

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.ManifoldCompactHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ManifoldCompactHomology
 import DifferentialGeometry.Topology.Homology.LocalOrientation
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import Mathlib.Topology.Sets.Compacts

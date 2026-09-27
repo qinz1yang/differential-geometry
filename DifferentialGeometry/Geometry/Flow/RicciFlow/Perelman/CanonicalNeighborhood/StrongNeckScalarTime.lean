@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedInter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.WitnessTimeRegularity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalPullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Scaling.ClosedWindow
+import DifferentialGeometry.Geometry.Operator.Laplacian.MetricTraceComparison
 
 set_option autoImplicit false
 noncomputable section

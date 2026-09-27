@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeHypothesis
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homotopy.BasedMap
 
 noncomputable section
@@ -127,8 +127,7 @@ theorem hurewiczLowDegreeHypothesis_iff_of_homeomorph (e : X ≃ₜ Y) :
       exact isSphereHurewiczIsomorphism_of_homeomorph 2 e.symm (e.symm_apply_apply x)
         (h.2 (e x) hsub)
 
-theorem sphereHurewiczTwoCanonical_iff_of_homeomorph [SimplyConnectedSpace X]
-    [SimplyConnectedSpace Y] (e : X ≃ₜ Y) :
+theorem sphereHurewiczTwoCanonical_iff_of_homeomorph (e : X ≃ₜ Y) :
     SphereHurewiczTwoCanonical X ↔ SphereHurewiczTwoCanonical Y := by
   constructor
   · intro h y
@@ -136,8 +135,7 @@ theorem sphereHurewiczTwoCanonical_iff_of_homeomorph [SimplyConnectedSpace X]
   · intro h x
     exact isSphereHurewiczIsomorphism_of_homeomorph 1 e.symm (e.symm_apply_apply x) (h (e x))
 
-theorem sphereHurewiczThreeCanonical_iff_of_homeomorph [SimplyConnectedSpace X]
-    [SimplyConnectedSpace Y] (e : X ≃ₜ Y) :
+theorem sphereHurewiczThreeCanonical_iff_of_homeomorph (e : X ≃ₜ Y) :
     SphereHurewiczThreeCanonical X ↔ SphereHurewiczThreeCanonical Y := by
   constructor
   · intro h y hy
@@ -154,7 +152,7 @@ theorem sphereHurewiczThreeCanonical_iff_of_homeomorph [SimplyConnectedSpace X]
     exact isSphereHurewiczIsomorphism_of_homeomorph 2 e.symm (e.symm_apply_apply x)
       (h (e x) hsub)
 
-theorem hurewiczTwoBijective_iff_of_homeomorph [SimplyConnectedSpace X] [SimplyConnectedSpace Y]
+theorem hurewiczTwoBijective_iff_of_homeomorph
     (e : X ≃ₜ Y) : HurewiczTwoBijective X ↔ HurewiczTwoBijective Y := by
   constructor
   · intro h y
@@ -164,7 +162,7 @@ theorem hurewiczTwoBijective_iff_of_homeomorph [SimplyConnectedSpace X] [SimplyC
     exact bijective_sphereHurewicz_of_homeomorph 1 e.symm (e.symm_apply_apply x)
       (integralLiftedSphereGenerator.{u} 1) (h (e x))
 
-theorem hurewiczThreeBijective_iff_of_homeomorph [SimplyConnectedSpace X] [SimplyConnectedSpace Y]
+theorem hurewiczThreeBijective_iff_of_homeomorph
     (e : X ≃ₜ Y) : HurewiczThreeBijective X ↔ HurewiczThreeBijective Y := by
   constructor
   · intro h y hy
@@ -206,8 +204,7 @@ theorem hurewicz_three_isomorphism_of_homeomorph (e : X ≃ₜ Y)
   exact isSphereHurewiczIsomorphism_of_homeomorph 2 e (e.apply_symm_apply y)
     (hurewicz_three_isomorphism_of_hypothesis h (e.symm y) hsub c hc)
 
-theorem hurewiczLowDegreeFrontier_iff_of_homeomorph [SimplyConnectedSpace X]
-    [SimplyConnectedSpace Y] (e : X ≃ₜ Y) :
+theorem hurewiczLowDegreeFrontier_iff_of_homeomorph (e : X ≃ₜ Y) :
     HurewiczLowDegreeFrontier X ↔ HurewiczLowDegreeFrontier Y :=
   (hurewiczLowDegreeHypothesis_iff_frontier (X := X)).symm.trans
     ((hurewiczLowDegreeHypothesis_iff_of_homeomorph e).trans

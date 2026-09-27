@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.RelativeReducedCollapse
-import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 import DifferentialGeometry.Topology.Homology.GoodPairQuotientIsomorphism
 
 set_option autoImplicit false

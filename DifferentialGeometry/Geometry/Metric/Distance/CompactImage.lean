@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.EMetricSpace.CompactImage
 import DifferentialGeometry.Geometry.Metric.Distance.Basic
-import DifferentialGeometry.Topology.LoopSpace.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 
 section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.ManifoldCapDuality
-import DifferentialGeometry.Topology.Homology.ManifoldHomologyGenerator
-import DifferentialGeometry.Topology.Homology.CochainCones
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ManifoldHomologyGenerator
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CochainCones
 
 noncomputable section
 

@@ -2,8 +2,8 @@ import Mathlib.Topology.Compactification.OnePoint.Basic
 import DifferentialGeometry.Topology.Homology.CohomologyHomeomorphInvariance
 import DifferentialGeometry.Topology.Homology.HomologyTwoFrontier
 import DifferentialGeometry.Topology.Homology.SpherePuncture
-import DifferentialGeometry.Topology.Homology.SphereHomologyVanishing
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 
 noncomputable section

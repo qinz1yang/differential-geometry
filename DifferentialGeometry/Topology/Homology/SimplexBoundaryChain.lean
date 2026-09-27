@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Simplex.BoundaryGluing
 import DifferentialGeometry.Topology.Homology.UniversalCoefficientsOne
-import DifferentialGeometry.Topology.Homology.SimplexMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SimplexMaps
 import DifferentialGeometry.Topology.Homology.LiftedSphere
 
 noncomputable section

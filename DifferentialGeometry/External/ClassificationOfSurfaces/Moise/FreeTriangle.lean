@@ -2,9 +2,8 @@
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors
-Modified for this project; see ../MODIFICATIONS.md for the local changes.
 -/
-import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.ElementaryMove
 import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 import Mathlib.Analysis.Normed.Module.Connected
 import Mathlib.LinearAlgebra.Dimension.Finrank

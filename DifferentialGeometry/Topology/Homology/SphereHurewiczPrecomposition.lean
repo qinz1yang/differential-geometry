@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SphereGenerator
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homotopy.SpherePrecomposition
 
 noncomputable section

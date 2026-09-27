@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import Mathlib.Topology.Homotopy.HomotopyGroup
 
 

@@ -1,15 +1,9 @@
-import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangle
-import DifferentialGeometry.External.Schoenflies.JordanSeparates
-import Mathlib.Analysis.LocallyConvex.Separation
-import Mathlib.Topology.Separation.Connected
-import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle
-import DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut
-import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonTriangulation
-
 /-
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors
+-/
+/-
 Adapted from PolygonalSchoenflies.lean at e3c7230fe78d7b056a415d9ecae6f77887046b32.
 See MODIFICATIONS.md and GEOMETRIC_FREE_EXISTENCE.json for the selected proofs and local changes.
 -/
@@ -17,9 +11,23 @@ See MODIFICATIONS.md and GEOMETRIC_FREE_EXISTENCE.json for the selected proofs a
 Copyright (c) 2026 Álvaro Begué. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Álvaro Begué
+-/
+/-
 The finite-exclusion density proof is retained privately from FreshDenseSelection.lean.
 See GEOMETRIC_FREE_EXISTENCE.json for the exact native source and provenance.
 -/
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangle
+import DifferentialGeometry.External.Schoenflies.JordanSeparates
+import Mathlib.Analysis.LocallyConvex.Separation
+import Mathlib.Topology.Separation.Connected
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangleMove
+import DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut
+import DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonTriangulation
+
+/-! Triangle Mesh Geometric Free. -/
+
+
+
 
 open LeanEval.Topology.ClassificationOfSurfaces.Moise (TriangleMesh)
 
@@ -577,7 +585,8 @@ private theorem isGeometricallyFreeTriangle_of_crosscut_side
         inside (A₁ ∪ segment ℝ (M.position a) (M.position b))).Nonempty)).Triangle)
     (hfree : (M.restrictTriangles (fun u =>
       (interior (M.triangleCarrier u) ∩
-        inside (A₁ ∪ segment ℝ (M.position a) (M.position b))).Nonempty)).IsGeometricallyFreeTriangle T)
+        inside (A₁ ∪
+          segment ℝ (M.position a) (M.position b))).Nonempty)).IsGeometricallyFreeTriangle T)
     (hchord : ¬({a, b} : Finset M.Vertex) ⊆ T.1) :
     M.IsGeometricallyFreeTriangle
       ⟨T.1, ((M.mem_restrictTriangles_triangles _).mp T.2).1⟩ := by
@@ -636,7 +645,8 @@ private theorem exists_geometricallyFreeTriangle_of_crosscut_side_card_one
     (hcarrier : convexHull ℝ (M.position '' (e : Set M.Vertex)) = segment ℝ p q)
     (h : IsCrosscut C (segment ℝ p q) p q) (hcut : IsCutPair C p q A₁ A₂)
     (hcard : (M.restrictTriangles (fun t =>
-      (interior (M.triangleCarrier t) ∩ inside (A₁ ∪ segment ℝ p q)).Nonempty)).triangles.card = 1) :
+      (interior (M.triangleCarrier t) ∩
+        inside (A₁ ∪ segment ℝ p q)).Nonempty)).triangles.card = 1) :
     ∃ T : (M.restrictTriangles (fun t =>
       (interior (M.triangleCarrier t) ∩ inside (A₁ ∪ segment ℝ p q)).Nonempty)).Triangle,
       M.IsGeometricallyFreeTriangle
@@ -750,8 +760,13 @@ private theorem exists_geometrically_free_triangle_not_containing_edge
     exact hne (congrArg Subtype.val ((hX T heT).trans (hX U heU).symm))
   · exact ⟨T, hT, heT⟩
 
-theorem _root_.LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exists_two_geometrically_free_triangles_of_jordan_support
-    (M : TriangleMesh) (C : Set Plane) (hC : IsJordanCurve C)
+end Schoenflies
+
+namespace LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh
+
+open Schoenflies in
+theorem exists_two_geometrically_free_triangles_of_jordan_support
+    (M : TriangleMesh) (C : Set Schoenflies.Plane) (hC : IsJordanCurve C)
     (hsupport : M.toPlaneComplex.support = closure (inside C))
     (hmore : 1 < M.triangles.card) :
     ∃ T U : M.Triangle, T.1 ≠ U.1 ∧
@@ -834,7 +849,7 @@ theorem _root_.LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh.exi
       · exact hardCase U NU hUfree hUNU hUneighbor hUvertices
     · exact hardCase T NT hTfree hTNT hTneighbor hTvertices
 
-end Schoenflies
+end LeanEval.Topology.ClassificationOfSurfaces.Moise.TriangleMesh
 
 namespace Schoenflies
 

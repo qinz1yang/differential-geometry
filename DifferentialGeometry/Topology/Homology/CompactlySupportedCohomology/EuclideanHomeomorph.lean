@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Euclidean
-import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.CapNaturality
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CompactlySupportedCohomology.Euclidean
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CompactlySupportedCohomology.CapNaturality
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Homeomorph
 import DifferentialGeometry.Topology.Homology.CompactHomologyOpenEmbedding
 

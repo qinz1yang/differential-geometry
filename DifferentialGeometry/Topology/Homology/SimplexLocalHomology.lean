@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Simplex.BallCoordinates
 import DifferentialGeometry.Topology.Simplex.RelativeHomology
-import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 
 noncomputable section
 

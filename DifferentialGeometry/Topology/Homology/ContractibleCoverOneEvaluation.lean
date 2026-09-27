@@ -1,9 +1,9 @@
-import DifferentialGeometry.Topology.Homology.ContractibleCoverOne
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ContractibleCoverOne
 import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
-import DifferentialGeometry.Topology.Homology.RelativeFunctoriality
-import DifferentialGeometry.Topology.Homology.TwoSetSmallChains
-import DifferentialGeometry.Topology.Homology.SphereHomologyShift
-import DifferentialGeometry.Topology.Homology.SphereHomologyOne
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeFunctoriality
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TwoSetSmallChains
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyShift
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyOne
 
 noncomputable section
 

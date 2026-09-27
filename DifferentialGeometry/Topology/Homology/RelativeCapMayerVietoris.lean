@@ -1,9 +1,9 @@
 import DifferentialGeometry.Topology.Homology.MayerVietorisCap
-import DifferentialGeometry.Topology.Homology.RelativeCapToAbsoluteHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeCapToAbsoluteHomology
 import DifferentialGeometry.Topology.Homology.RelativeCochainMayerVietorisRepresentatives
 import DifferentialGeometry.Topology.Homology.SmallRelativeRepresentatives
 import DifferentialGeometry.Topology.Homology.ModuleHomologyDegree
-import DifferentialGeometry.Topology.Homology.OpenExcision
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.OpenExcision
 import DifferentialGeometry.Topology.Homology.TwoSetCoverSubdivision
 
 noncomputable section

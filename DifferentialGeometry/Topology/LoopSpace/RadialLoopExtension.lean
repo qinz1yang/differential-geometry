@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 

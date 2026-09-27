@@ -1,0 +1,239 @@
+/-
+Copyright (c) 2026 Yuan Liao. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Yuan Liao
+-/
+import DifferentialGeometry.Topology.Morse.CompactDescent
+import DifferentialGeometry.Topology.Manifold.CompactCutoff
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
+import DifferentialGeometry.Analysis.ODE.Flow.Uniqueness
+import Mathlib.Analysis.SpecialFunctions.ExpDeriv
+
+open Set Filter Function
+open scoped ContDiff Manifold Topology
+open DifferentialGeometry.Topology.Morse (IsCriticalPointAt)
+
+namespace DifferentialGeometry.Morse
+
+variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [TopologicalSpace H] [TopologicalSpace M] [ChartedSpace H M]
+  {I : ModelWithCorners ℝ E H} [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
+
+private theorem compactSupportFlow_eq_radial_curve
+    {w : (x : M) → TangentSpace I x}
+    (hw : ContMDiff I I.tangent ∞ (fun x => (w x : TangentBundle I M)))
+    (hwc : HasCompactSupport w)
+    (χ : PartialDiffeomorph 𝓘(ℝ, E) I E M ∞) {a : E} {κ : ℝ} (hκ : 0 < κ)
+    (hline : ∀ s ∈ Icc (0 : ℝ) 2, s • a ∈ χ.source)
+    (hfield : ∀ s ∈ Ioo (0 : ℝ) 2,
+      (mfderiv 𝓘(ℝ, E) I χ (s • a)) (κ • (s • a)) = w (χ (s • a))) :
+    (∀ t ≤ 0, Diffeomorph.compactSupportFlow w hw hwc t (χ a) =
+      χ (Real.exp (κ * t) • a)) ∧
+      Tendsto (fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ a))
+        atBot (𝓝 (χ 0)) := by
+  let δ := Real.log 2 / κ
+  have hδ : 0 < δ := div_pos (Real.log_pos (by norm_num)) hκ
+  let c : ℝ → E := fun t => Real.exp (κ * t) • a
+  have hc (t : ℝ) (ht : t < δ) : Real.exp (κ * t) ∈ Ioo (0 : ℝ) 2 := by
+    refine ⟨Real.exp_pos _, ?_⟩
+    rw [← Real.exp_log (by norm_num : (0 : ℝ) < 2), Real.exp_lt_exp]
+    simpa only [mul_comm] using (lt_div_iff₀ hκ).mp ht
+  have hcsource (t : ℝ) (ht : t < δ) : c t ∈ χ.source :=
+    hline _ (Ioo_subset_Icc_self (hc t ht))
+  have hcurve : IsMIntegralCurveOn (fun t => χ (c t)) w (Iio δ) := by
+    intro t ht
+    have hd : HasDerivAt c (κ • c t) t := by
+      convert! (((hasDerivAt_id t).const_mul κ).exp.smul_const a) using 1
+      simp only [c, id_eq, smul_smul]
+      congr 1
+      ring
+    have hcomp := (χ.mdifferentiableAt (by simp) (hcsource t ht)).hasMFDerivAt.comp t
+      hd.hasFDerivAt.hasMFDerivAt
+    have heq : (mfderiv 𝓘(ℝ, E) I χ (c t)).comp
+        (ContinuousLinearMap.toSpanSingleton ℝ (κ • c t)) =
+        (1 : ℝ →L[ℝ] ℝ).smulRight (w (χ (c t))) := by
+      apply ContinuousLinearMap.ext
+      intro z
+      change (mfderiv 𝓘(ℝ, E) I χ (c t)) (z • (κ • c t)) = z • w (χ (c t))
+      let L : E →L[ℝ] TangentSpace I (χ (c t)) := mfderiv 𝓘(ℝ, E) I χ (c t)
+      exact (L.map_smul z (κ • c t)).trans (congrArg (z • ·) (hfield _ (hc t ht)))
+    exact heq ▸ hcomp.hasMFDerivWithinAt
+  have heq : EqOn (fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ a))
+      (fun t => χ (c t)) (Iio δ) := by
+    apply isMIntegralCurveOn_eqOn_of_contMDiff_boundaryless isOpen_Iio
+      (convex_Iio δ).isPreconnected hδ (hw.of_le (by simp))
+      ((Diffeomorph.isMIntegralCurve_compactSupportFlow w hw hwc (χ a)).isMIntegralCurveOn _)
+      hcurve
+    have hz : Diffeomorph.compactSupportFlow w hw hwc 0 (χ a) = χ a :=
+      DFunLike.congr_fun (Diffeomorph.compactSupportFlow_zero w hw hwc) (χ a)
+    simpa only [c, mul_zero, Real.exp_zero, one_smul] using hz
+  refine ⟨fun t ht => heq (ht.trans_lt hδ), ?_⟩
+  have hexp : Tendsto (fun t : ℝ => Real.exp (κ * t)) atBot (𝓝 0) :=
+    Real.tendsto_exp_atBot.comp ((tendsto_const_mul_atBot_of_pos hκ).mpr tendsto_id)
+  have hc0 : Tendsto c atBot (𝓝 (0 : E)) := by
+    simpa only [zero_smul] using hexp.smul_const a
+  have hzero : (0 : E) ∈ χ.source := by simpa only [zero_smul] using hline 0 (by norm_num)
+  apply ((χ.mdifferentiableAt (by simp) hzero).continuousAt.tendsto.comp hc0).congr'
+  filter_upwards [eventually_le_atBot (0 : ℝ)] with t ht
+  exact (heq (ht.trans_lt hδ)).symm
+
+theorem exists_backward_branch_off_integralCurve
+    {w : (x : M) → TangentSpace I x}
+    (hw : ContMDiff I I.tangent ∞ (fun x => (w x : TangentBundle I M)))
+    (hwc : HasCompactSupport w)
+    (χ : PartialDiffeomorph 𝓘(ℝ, E) I E M ∞) {a : E} (ha : a ≠ 0)
+    {κ : ℝ} (hκ : 0 < κ)
+    (hline : ∀ s ∈ Icc (-2 : ℝ) 2, s • a ∈ χ.source)
+    (hfield : ∀ s ∈ Ioo (-2 : ℝ) 2,
+      (mfderiv 𝓘(ℝ, E) I χ (s • a)) (κ • (s • a)) = w (χ (s • a)))
+    {γ : ℝ → M} (hγ : IsMIntegralCurve γ w) :
+    ∃ z : E, (z = a ∨ z = -a) ∧ χ z ∉ range γ ∧
+      (∀ t ≤ 0, Diffeomorph.compactSupportFlow w hw hwc t (χ z) =
+        χ (Real.exp (κ * t) • z)) ∧
+      Tendsto (fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z))
+        atBot (𝓝 (χ 0)) := by
+  have hplus := compactSupportFlow_eq_radial_curve hw hwc χ hκ
+    (fun s hs => hline s ⟨by linarith [hs.1], hs.2⟩)
+    (fun s hs => hfield s ⟨by linarith [hs.1], hs.2⟩)
+  have hminus := compactSupportFlow_eq_radial_curve hw hwc χ (a := -a) hκ
+    (fun s hs => by
+      simpa only [smul_neg, neg_smul] using hline (-s) ⟨by linarith [hs.2], by linarith [hs.1]⟩)
+    (fun s hs => by
+      have he : s • -a = -s • a := by simp only [smul_neg, neg_smul]
+      rw [he]
+      exact hfield (-s) ⟨by linarith [hs.2], by linarith [hs.1]⟩)
+  by_cases hp : χ a ∈ range γ
+  · refine ⟨-a, Or.inr rfl, ?_, hminus⟩
+    rintro ⟨v, hv⟩
+    obtain ⟨u, hu⟩ := hp
+    let Φ := Diffeomorph.compactSupportFlow w hw hwc
+    have htransport (s t : ℝ) : Φ t (γ s) = γ (t + s) := by
+      have hz : Φ 0 (γ s) = γ s :=
+        DFunLike.congr_fun (Diffeomorph.compactSupportFlow_zero w hw hwc) (γ s)
+      have heq := isMIntegralCurve_Ioo_eq_of_contMDiff_boundaryless (t₀ := 0)
+        (hw.of_le (by simp))
+        (Diffeomorph.isMIntegralCurve_compactSupportFlow w hw hwc (γ s))
+        (hγ.comp_add s) (by simpa only [comp_apply, zero_add] using hz)
+      exact congr_fun heq t
+    let m := min u v
+    have hmu : m - u ≤ 0 := sub_nonpos.mpr (min_le_left _ _)
+    have hmv : m - v ≤ 0 := sub_nonpos.mpr (min_le_right _ _)
+    have hequal : χ (Real.exp (κ * (m - u)) • a) =
+        χ (Real.exp (κ * (m - v)) • -a) := by
+      calc
+        _ = Φ (m - u) (χ a) := (hplus.1 _ hmu).symm
+        _ = γ m := by rw [← hu, htransport, sub_add_cancel]
+        _ = Φ (m - v) (χ (-a)) := by rw [← hv, htransport, sub_add_cancel]
+        _ = _ := hminus.1 _ hmv
+    have hsmall {t : ℝ} (ht : t ≤ 0) : Real.exp (κ * t) ∈ Icc (0 : ℝ) 1 :=
+      ⟨(Real.exp_pos _).le, Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hκ.le ht)⟩
+    have hsource₁ : Real.exp (κ * (m - u)) • a ∈ χ.source :=
+      hline _ ⟨by linarith [(hsmall hmu).1], by linarith [(hsmall hmu).2]⟩
+    have hsource₂ : Real.exp (κ * (m - v)) • -a ∈ χ.source := by
+      simpa only [neg_smul, smul_neg] using hline (-Real.exp (κ * (m - v)))
+        ⟨by linarith [(hsmall hmv).2], by linarith [(hsmall hmv).1]⟩
+    have he := χ.toPartialEquiv.injOn hsource₁ hsource₂ hequal
+    have hs : Real.exp (κ * (m - u)) = -Real.exp (κ * (m - v)) :=
+      smul_left_injective ℝ ha (by simpa only [neg_smul, smul_neg] using he)
+    linarith [Real.exp_pos (κ * (m - u)), Real.exp_pos (κ * (m - v))]
+  · exact ⟨a, Or.inl rfl, hp, hplus⟩
+
+theorem exists_descending_branch_to_lower_level
+    {f B : M → ℝ} (hf : ContMDiff I 𝓘(ℝ, ℝ) ∞ f)
+    (hB : ContMDiff I 𝓘(ℝ, ℝ) ∞ B) {v : (x : M) → TangentSpace I x}
+    (hv : ContMDiff I I.tangent ∞ (fun x => (v x : TangentBundle I M)))
+    {p q : M} (hvp : v p = 0) (hvq : v q = 0) {a c : ℝ} (ha : a < f q)
+    (hK : IsCompact {y | a ≤ f y ∧ B y ≤ c})
+    (hinward : ∀ y, a ≤ f y → B y = c → mvfderiv I B y (v y) < 0)
+    (hdesc : ∀ y, a ≤ f y → B y ≤ c →
+      ¬ IsCriticalPointAt I f y → mvfderiv I f y (v y) < 0)
+    (hcrit : ∀ y, a ≤ f y → B y ≤ c → IsCriticalPointAt I f y → y = p ∨ y = q)
+    {γ : ℝ → M} (hγ : IsDescendingConnection I f v p q γ)
+    (hγK : ∀ t, B (γ t) ≤ c)
+    (hunique : ∀ η, IsDescendingConnection I f v p q η → ∃ d : ℝ, η = γ ∘ (· + d))
+    (χ : PartialDiffeomorph 𝓘(ℝ, E) I E M ∞) (hχ0 : χ 0 = p)
+    {u : E} (hu : u ≠ 0) {κ : ℝ} (hκ : 0 < κ)
+    (hline : ∀ s ∈ Icc (-2 : ℝ) 2, s • u ∈ χ.source ∧
+      a ≤ f (χ (s • u)) ∧ B (χ (s • u)) ≤ c)
+    (hfield : ∀ s ∈ Ioo (-2 : ℝ) 2,
+      (mfderiv 𝓘(ℝ, E) I χ (s • u)) (κ • (s • u)) = v (χ (s • u)))
+    (hseed : ∀ z, z = u ∨ z = -u → f q < f (χ z) ∧ f (χ z) < f p)
+    {O : Set M} (hO : IsOpen O) (hKO : {y | a ≤ f y ∧ B y ≤ c} ⊆ O) :
+    ∃ (w : (x : M) → TangentSpace I x)
+      (hw : ContMDiff I I.tangent ∞ (fun x => (w x : TangentBundle I M)))
+      (hwc : HasCompactSupport w), tsupport w ⊆ O ∧ w =ᶠ[𝓝ˢ {y | a ≤ f y ∧ B y ≤ c}] v ∧
+      (∀ t y, y ∉ O → Diffeomorph.compactSupportFlow w hw hwc t y = y) ∧
+      ∃ z : E, (z = u ∨ z = -u) ∧ χ z ∉ range γ ∧
+        Tendsto (fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z)) atBot (𝓝 p) ∧
+        (∀ t ≤ 0, Diffeomorph.compactSupportFlow w hw hwc t (χ z) =
+          χ (Real.exp (κ * t) • z)) ∧
+        ∃ T : ℝ, 0 < T ∧ f (Diffeomorph.compactSupportFlow w hw hwc T (χ z)) = a ∧
+          (∀ t ≤ T, a ≤ f (Diffeomorph.compactSupportFlow w hw hwc t (χ z)) ∧
+            B (Diffeomorph.compactSupportFlow w hw hwc t (χ z)) ≤ c) ∧
+          IsMIntegralCurveOn (fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z))
+            v (Iic T) ∧
+          StrictAntiOn (fun t => f (Diffeomorph.compactSupportFlow w hw hwc t (χ z)))
+            (Icc 0 T) ∧
+          IsCompact (closure ((fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z)) ''
+            Iic T)) ∧
+          closure ((fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z)) '' Iic T) ⊆ O := by
+  let K := {y | a ≤ f y ∧ B y ≤ c}
+  obtain ⟨w, hw, hwc, hwO, hnear, hscale⟩ :=
+    DifferentialGeometry.Topology.exists_compactSupport_vectorField_eq_near hv hK hO hKO
+  have hagree (y : M) (hy : y ∈ K) : w y = v y :=
+    (eventually_nhdsSet_iff_forall.mp hnear y hy).self_of_nhds
+  have hwp : w p = 0 := by
+    obtain ⟨b, _, hb⟩ := hscale p
+    rw [hb, hvp, smul_zero]
+  have hwq : w q = 0 := by
+    obtain ⟨b, _, hb⟩ := hscale q
+    rw [hb, hvq, smul_zero]
+  have hγw : IsMIntegralCurve γ w := by
+    intro t
+    have ht : γ t ∈ K := ⟨(ha.trans (hγ.value_mem_Ioo hf t).1).le, hγK t⟩
+    rw [hagree _ ht]
+    exact hγ.1 t
+  obtain ⟨z, hz, hzγ, hray, hback⟩ := exists_backward_branch_off_integralCurve hw hwc χ hu hκ
+    (fun s hs => (hline s hs).1) (fun s hs => by
+      rw [hagree _ (hline s (Ioo_subset_Icc_self hs)).2]
+      exact hfield s hs) hγw
+  have hzline (s : ℝ) (hs : s ∈ Icc (0 : ℝ) 1) :
+      a ≤ f (χ (s • z)) ∧ B (χ (s • z)) ≤ c := by
+    rcases hz with rfl | rfl
+    · exact (hline s ⟨by linarith [hs.1], by linarith [hs.2]⟩).2
+    · have he : s • -u = -s • u := by simp only [smul_neg, neg_smul]
+      rw [he]
+      exact (hline (-s) ⟨by linarith [hs.2], by linarith [hs.1]⟩).2
+  have hpast (t : ℝ) (ht : t ≤ 0) :
+      Diffeomorph.compactSupportFlow w hw hwc t (χ z) ∈ K := by
+    rw [hray t ht]
+    exact hzline _ ⟨(Real.exp_pos _).le,
+      Real.exp_le_one_iff.mpr (mul_nonpos_of_nonneg_of_nonpos hκ.le ht)⟩
+  have hzp := hzline 1 (by norm_num)
+  simp only [one_smul] at hzp
+  have hbackp : Tendsto (fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z))
+      atBot (𝓝 p) := hχ0 ▸ hback
+  obtain ⟨T, hT, hTa, hstay, hcurve, hanti⟩ :=
+    exists_first_level_time_in_compact_sublevel hf hB hw hwc ha hK hwp hwq
+      (fun y hf' hB' => hagree y ⟨hf', hB'⟩) hinward hdesc hcrit hunique
+      (hseed z hz) hzp.2 hzγ hbackp hpast
+  have hall (t : ℝ) (ht : t ≤ T) :
+      Diffeomorph.compactSupportFlow w hw hwc t (χ z) ∈ K := by
+    rcases le_total t 0 with ht' | ht'
+    · exact hpast t ht'
+    · exact hstay t ⟨ht', ht⟩
+  have hclosure : closure ((fun t => Diffeomorph.compactSupportFlow w hw hwc t (χ z)) ''
+      Iic T) ⊆ K := hK.isClosed.closure_subset_iff.mpr (by
+    rintro y ⟨t, ht, rfl⟩
+    exact hall t ht)
+  refine ⟨w, hw, hwc, hwO, hnear, ?_, z, hz, hzγ, hbackp, hray, T, hT, hTa, hall, ?_,
+    hanti, hK.of_isClosed_subset isClosed_closure hclosure, hclosure.trans hKO⟩
+  · intro t y hy
+    exact (Diffeomorph.compactSupportFlow_eqOn_compl_tsupport w hw hwc t).1
+      (fun h => hy (hwO h))
+  · intro t ht
+    have hd := Diffeomorph.isMIntegralCurve_compactSupportFlow w hw hwc (χ z) t
+    rw [hagree _ (hall t ht)] at hd
+    exact hd.hasMFDerivWithinAt
+
+end DifferentialGeometry.Morse

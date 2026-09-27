@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homotopy.Connectivity
 import DifferentialGeometry.Topology.LoopSpace.FreeAdjunction
-import DifferentialGeometry.Topology.LoopSpace.SimplyConnectedTarget
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SimplyConnectedTarget
 
 
 

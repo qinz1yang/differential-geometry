@@ -98,5 +98,3 @@ theorem range_interior_left_right_union_seamChartX_source :
       simp
 
 end OrientationAssembly
-
-

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import DifferentialGeometry.Topology.Manifold.AddCircle
 import Mathlib.Geometry.Manifold.ContMDiff.Basic
 import DifferentialGeometry.Topology.Manifold.Coincidences

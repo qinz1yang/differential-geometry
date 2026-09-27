@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.Homology.RelativeZero
-import DifferentialGeometry.Topology.Homology.RelativeFunctoriality
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeZero
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeFunctoriality
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import Mathlib.Analysis.Convex.Contractible
 
 noncomputable section

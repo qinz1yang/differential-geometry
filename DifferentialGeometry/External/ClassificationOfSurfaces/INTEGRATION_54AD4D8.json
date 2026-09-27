@@ -1,0 +1,169 @@
+{
+  "source_revision": "54ad4d8ec0408e71da2247daed5ecee2a574f7ec",
+  "target_base_revision": "712480db4447d42ca5e9cdd38ab575353b24feb9",
+  "upstream_repository": "https://github.com/mccorvie/classification-of-surfaces",
+  "upstream_revision": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+  "import_remapping": {
+    "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.PlaneComplex": "External.ClassificationOfSurfaces.Moise.PlaneComplex",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.LineSubdivision": "External.ClassificationOfSurfaces.Moise.LineSubdivision",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.FreeTriangle": "External.ClassificationOfSurfaces.Moise.FreeTriangle",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.OneEdgeAttachment": "External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricFreeTriangle": "External.ClassificationOfSurfaces.Moise.FreeTriangleMove",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonTriangulation": "External.ClassificationOfSurfaces.PrePolygonTriangulation",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.PrePolygonDeletion": "External.ClassificationOfSurfaces.PrePolygonDeletion",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshCrosscut": "External.ClassificationOfSurfaces.TriangleMeshCrosscut",
+    "DifferentialGeometry.External.ClassificationOfSurfaces.TriangleMeshGeometricFree": "External.ClassificationOfSurfaces.TriangleMeshGeometricFree"
+  },
+  "staged_modules": [
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonTriangulation.lean",
+      "source_git_blob": "8790d7139a24b7fa3073df53e41dbef5e1eb83ef",
+      "source_sha256": "d4d7556c8e5bff2bcade9eb081ef97719fbc51ba1c7dc084dac05bde57bac44e",
+      "target_path": "External/ClassificationOfSurfaces/PrePolygonTriangulation.lean",
+      "target_sha256": "17f68b191dea414fdceddc681edc63d1fdb39225f55e56c6c069167453e69ba8",
+      "only_import_lines_changed": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/PrePolygonDeletion.lean",
+      "source_git_blob": "8714ba74cedd247cf022352fc6104cf412b3bc3d",
+      "source_sha256": "5a655aaba60d6af5bd1de7aabdd2731670001fff4fa0a8bb77166cb504d89ec2",
+      "target_path": "External/ClassificationOfSurfaces/PrePolygonDeletion.lean",
+      "target_sha256": "0b52f138d0195ff1dab7a757eae4979a3467957321d0573533950d29732195de",
+      "only_import_lines_changed": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/TriangleMeshCrosscut.lean",
+      "source_git_blob": "e4b5a19228a9a4d97c274b87d9dd97f9b38b0cb8",
+      "source_sha256": "a5b3178cd0bec5c550dc49a3a7b1c6c58a06a41992e6a934414e790630793752",
+      "target_path": "External/ClassificationOfSurfaces/TriangleMeshCrosscut.lean",
+      "target_sha256": "ffc240ceaa7282ab0fd64171d8204a222ec64e1eab4b4ac67d7336530521403b",
+      "only_import_lines_changed": false,
+      "previous_import_only_target_sha256": "40c636a6afdd5e80cc4c2c4ab6cc4ead2877f9662e6d219a2f7c9facc3ce4b5e",
+      "formatting_note": "Wrap the private restrict_triangles_crosscut_support conclusion; whitespace only, unchanged binders and proof."
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/TriangleMeshGeometricFree.lean",
+      "source_git_blob": "e19fa22e0160c37f43b2d72394208651c972b947",
+      "source_sha256": "5add0faade44a34ec2812e1a18cba8a04429caa18247c66ed69a465947e76377",
+      "target_path": "External/ClassificationOfSurfaces/TriangleMeshGeometricFree.lean",
+      "target_sha256": "693a9d0961a7246d7ffd3c86a50a8d305a4b731ce25191bc345c6b8cb0fa1656",
+      "only_import_lines_changed": false,
+      "previous_import_only_target_sha256": "37535b55180d73a493e6d7e7570129837a507d80503ee8dc86553ef28ec66e8a",
+      "formatting_note": "Wrap two private theorem hypotheses; move the long fully qualified public exists_two_geometrically_free_triangles_of_jordan_support declaration into its exact canonical namespace, using declaration-scoped open Schoenflies in and explicit Schoenflies.Plane to retain source name resolution; unchanged full public name, binder/conclusion block, and proof body."
+    }
+  ],
+  "preserved_source_metadata": [
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/CROSSCUT_ADAPTATION.patch",
+      "source_git_blob": "b15f56c973972d68d282753e092b4b89061303ec",
+      "source_sha256": "26a2f2fe5ac5943872ddc363084098910ba2832e9a4e925b2f6ebbdb4bccc9c0",
+      "target_path": "External/ClassificationOfSurfaces/CROSSCUT_ADAPTATION.patch",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/CROSSCUT_PROVENANCE.json",
+      "source_git_blob": "7851bf52a3d80c0ab67bbf718ed73dd192223b83",
+      "source_sha256": "d1560bff82ce905276ca2390bfc5ed878e05d9dad978c6b6025f0cb26f68242f",
+      "target_path": "External/ClassificationOfSurfaces/CROSSCUT_PROVENANCE.json",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/CROSSCUT_UPSTREAM_SELECTED.lean.txt",
+      "source_git_blob": "0d7f54229e730f31aa1fc2c8098e767deede0d20",
+      "source_sha256": "1d47ca0fb78b37335531b8009f0471c92eef7ebd40c26a80debd9e00c0c578ba",
+      "target_path": "External/ClassificationOfSurfaces/CROSSCUT_UPSTREAM_SELECTED.lean.txt",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/DELETION_PROVENANCE.json",
+      "source_git_blob": "6ad4bdf586bc724efa7896c4f913df04462b11c9",
+      "source_sha256": "0d947cf2c359d35d9523616ed73545d5703e809e6b93da90e1ab2edc13fa9cf9",
+      "target_path": "External/ClassificationOfSurfaces/DELETION_PROVENANCE.json",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/DELETION_RECOGNITION.patch",
+      "source_git_blob": "b06ca388f25c4e5000ccd2ef5ddb35436947f119",
+      "source_sha256": "658619dbb1ae5aa7522980cec0dbcb7a8c6e44f25219b384f2e70c13bd810364",
+      "target_path": "External/ClassificationOfSurfaces/DELETION_RECOGNITION.patch",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/GEOMETRIC_FREE_EXISTENCE.json",
+      "source_git_blob": "232642b17fe46cb02f162c777b8996a6342e2fd6",
+      "source_sha256": "df434dbc59dfe69f43faec0b5287ed58374315de42cb0aa3682a34af1a1c28e8",
+      "target_path": "External/ClassificationOfSurfaces/GEOMETRIC_FREE_EXISTENCE.json",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/GEOMETRIC_FREE_SELECTION.json",
+      "source_git_blob": "477cf492dc775524d4d060b1851c1f1a026d2cc6",
+      "source_sha256": "622a8ff97680344e44a70c21ad4808f4e5b60fce3cf49677f35acd047b090aa9",
+      "target_path": "External/ClassificationOfSurfaces/GEOMETRIC_FREE_SELECTION.json",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/ONE_EDGE_SELECTION.json",
+      "source_git_blob": "eb9a5af64d3747a15952978885040b23299a36e2",
+      "source_sha256": "59ce2c1a4ee3d9f3c88b919d4e2af4df46fd3d70c1427bd611f0a43665d181df",
+      "target_path": "External/ClassificationOfSurfaces/ONE_EDGE_SELECTION.json",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/PROVENANCE.json",
+      "source_git_blob": "5676f8bf462da64594ddc78ca361b925f76298f5",
+      "source_sha256": "20ac060f62c02b7e5c86904833884298c14f1993385150778bb69fdc1feadd58",
+      "target_path": "External/ClassificationOfSurfaces/PROVENANCE.json",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/TWO_EDGE_ADDITION.patch",
+      "source_git_blob": "316d10a1d63c7e71144d9fe3910c1fa94046c9ea",
+      "source_sha256": "f1beb54cda49d8b73b765a3defe3da89501c17d7f5485aef1c5cd86a07236bd2",
+      "target_path": "External/ClassificationOfSurfaces/TWO_EDGE_ADDITION.patch",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/UPSTREAM.patch",
+      "source_git_blob": "219a0fd0a8ba7a339a825ab89db9782d5d53b54a",
+      "source_sha256": "f7c18dfddf7f6b406914be6f0b83d18a547354faf0e851c709ab6457cb7c2a99",
+      "target_path": "External/ClassificationOfSurfaces/UPSTREAM.patch",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/MODIFICATIONS.md",
+      "source_git_blob": "4ee4ffd883025490a999c230395c550bc9a6a90d",
+      "source_sha256": "b648ee34517377c61109ed57ac6aa020261c181d886d58100a15731f6a0836c3",
+      "target_path": "External/ClassificationOfSurfaces/SOURCE_54AD4D8_MODIFICATIONS.md",
+      "verbatim_historical_copy": true
+    },
+    {
+      "source_path": "DifferentialGeometry/External/ClassificationOfSurfaces/PORTING.md",
+      "source_git_blob": "a8412b00c09037bd19ead53ff66a8fa172774746",
+      "source_sha256": "d874d8b1604de0a925774e59faf245d52c7e1f161cc6cf93e7e34ea88bc36b0e",
+      "target_path": "External/ClassificationOfSurfaces/SOURCE_54AD4D8_PORTING.md",
+      "verbatim_historical_copy": true
+    }
+  ],
+  "no_duplicate_base_or_selection_modules": true,
+  "source_top_level_manifest_stale_entries": [
+    "PrePolygonDeletion: historical target 8606d495..., actual source 5a655aaba...; DELETION_PROVENANCE.json matches actual",
+    "TriangleMeshCrosscut: historical target 274fcedb..., actual source a5b3178c...; CROSSCUT_PROVENANCE.json matches actual"
+  ],
+  "verification": "Read-only source/provenance/collision review, initial import-only staging, then recorded prepared-variant line-length normalization; no compiler, axiom, linter, or aggregate acceptance asserted by this metadata.",
+  "per_module_import_override": {
+    "External.ClassificationOfSurfaces.PrePolygonDeletion": "Import External.ClassificationOfSurfaces.Moise.PolygonalSchoenflies instead of the generic FreeTriangleMove remap, because the existing one-edge deletion frontier/support theorems are defined there."
+  },
+  "retained_identical_metadata": [
+    {
+      "byte_identical": true,
+      "target": "External/ClassificationOfSurfaces/LICENSE",
+      "source": "DifferentialGeometry/External/ClassificationOfSurfaces/LICENSE"
+    },
+    {
+      "byte_identical": true,
+      "target": "External/ClassificationOfSurfaces/UPSTREAM_README.md",
+      "source": "DifferentialGeometry/External/ClassificationOfSurfaces/README.md"
+    }
+  ]
+}

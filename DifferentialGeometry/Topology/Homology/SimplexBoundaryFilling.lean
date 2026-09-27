@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.ModuleHomologyClasses
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyClasses
 import DifferentialGeometry.Topology.Homology.EuclideanSimplexGeneratorComputation
 
 noncomputable section

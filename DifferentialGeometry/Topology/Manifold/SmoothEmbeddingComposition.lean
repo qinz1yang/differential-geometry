@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import Mathlib.Geometry.Manifold.Immersion
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.SmoothEmbedding
@@ -166,7 +171,6 @@ theorem IsImmersionAtOfComplement.hasFDerivWithinAt_writtenInCharts_comp
   · simpa only [Function.comp_apply] using
       (hf.writtenInCharts_comp hg hsopen hsub (v := v₀) hvT)
 
-
 theorem IsImmersionAtOfComplement.contMDiffOn_domChart
     (hf : IsImmersionAtOfComplement F I J n f x) :
     ContMDiffOn I J n f hf.domChart.source := by
@@ -236,11 +240,8 @@ theorem StructureGroupoid.trans_mem_maximalAtlas {H : Type*} [TopologicalSpace H
   · rw [← OpenPartialHomeomorph.trans_assoc]
     exact G.trans h2 hφ
 
-
-
-
 theorem completeSpace_of_continuousLinearEquiv_prod {𝕜 : Type*} [RCLike 𝕜] {E F E' : Type*}
-    [NormedAddCommGroup E] [NormedSpace 𝕜 E] [CompleteSpace E]
+    [NormedAddCommGroup E] [NormedSpace 𝕜 E]
     [NormedAddCommGroup F] [NormedSpace 𝕜 F]
     [NormedAddCommGroup E'] [NormedSpace 𝕜 E'] [CompleteSpace E']
     (e : (E × F) ≃L[𝕜] E') : CompleteSpace F := by
@@ -355,16 +356,19 @@ theorem IsImmersionAtOfComplement.comp
   set τ : PartialEquiv E' E' := J.extendCoordChange B C with hτ
   have hcoord : (B.extend J) (f x) = ef (v₀, 0) := by
     have hxT : (A.extend I) x ∈ (A.extend I).target :=
-      (A.extend I).map_source (by rw [OpenPartialHomeomorph.extend_source]; exact hf.mem_domChart_source)
+      (A.extend I).map_source (by rw [OpenPartialHomeomorph.extend_source]; exact
+        hf.mem_domChart_source)
     have h := hf.writtenInCharts hxT
     simp only [Function.comp_apply] at h
-    rw [(A.extend I).left_inv (by rw [OpenPartialHomeomorph.extend_source]; exact hf.mem_domChart_source)] at h
+    rw [(A.extend I).left_inv (by rw [OpenPartialHomeomorph.extend_source]; exact
+      hf.mem_domChart_source)] at h
     rw [hAx] at h
     rw [hef]
     exact h
   have hp₀mem : ef (v₀, 0) ∈ τ.source := by
     rw [← hcoord, hτ, hB, hC,
-      ← OpenPartialHomeomorph.extend_image_source_inter (I := J) (f := hf.codChart) (f' := hg.domChart)]
+      ← OpenPartialHomeomorph.extend_image_source_inter (I := J) (f := hf.codChart) (f' :=
+        hg.domChart)]
     exact mem_image_of_mem _ ⟨hf.source_subset_preimage_source hf.mem_domChart_source,
       hg.mem_domChart_source⟩
   set Dτ : E' →L[𝕜] E' := fderivWithin 𝕜 τ τ.source (ef (v₀, 0)) with hDτ
@@ -421,7 +425,8 @@ theorem IsImmersionAtOfComplement.comp
         ((((eg.toContinuousLinearMap.comp (ContinuousLinearMap.inl 𝕜 E' F')).comp Dτ).comp
           (ef.toContinuousLinearMap.comp (ContinuousLinearMap.inl 𝕜 E F))).comp
             (ContinuousLinearMap.fst 𝕜 E (F × F'))) (v₀, 0) :=
-      (hΦderiv.comp (v₀, 0) (ContinuousLinearMap.fst 𝕜 E (F × F')).hasFDerivAt).congr_of_eventuallyEq
+      (hΦderiv.comp (v₀, 0) (ContinuousLinearMap.fst 𝕜 E (F ×
+        F')).hasFDerivAt).congr_of_eventuallyEq
         (Filter.EventuallyEq.of_eq (funext fun p => rfl))
     have hpair : HasFDerivAt (fun p : E × (F × F') => ((0 : E), p.2))
         ((ContinuousLinearMap.inr 𝕜 E (F × F')).comp
@@ -496,7 +501,8 @@ theorem IsImmersionAtOfComplement.comp
     ext g
     simp only [Set.mem_preimage, Set.mem_ofPred_eq, Set.mem_inter_iff, Set.mem_univ, true_and,
       hJop_apply]
-  have himg : Y.target = Y '' Y.source := (PartialEquiv.image_source_eq_target Y.toPartialEquiv).symm
+  have himg : Y.target = Y '' Y.source := (PartialEquiv.image_source_eq_target
+    Y.toPartialEquiv).symm
   have hYsymm_apply : ∀ g ∈ Y.target, J' (Y.symm g) = e (e_comp.symm (J' g)) := by
     intro g hg
     have hgS : Y.symm g ∈ Y.source := Y.map_target hg
@@ -552,7 +558,8 @@ theorem IsImmersionAtOfComplement.comp
       · simpa only [Function.comp_apply, hJ'right] using hYsymm_apply (J'.symm u) hu.1
   have hSigMem : Sig ∈ IsManifold.maximalAtlas J' n N' := by
     rw [IsManifold.mem_maximalAtlas_iff]
-    exact StructureGroupoid.trans_mem_maximalAtlas (contDiffGroupoid n J') hg.codChart_mem_maximalAtlas hYmem
+    exact StructureGroupoid.trans_mem_maximalAtlas (contDiffGroupoid n J')
+      hg.codChart_mem_maximalAtlas hYmem
   have hSigext : ∀ n ∈ Sig.source, (Sig.extend J') n = e_comp (e.symm ((D.extend J') n)) := by
     intro n hn
     have hn' : D n ∈ Y.source := hn.2
@@ -709,6 +716,5 @@ theorem IsSmoothEmbedding.comp (hg : IsSmoothEmbedding J J' n g) (hf : IsSmoothE
   ⟨IsImmersion.comp hf.isImmersion hg.isImmersion hn, hg.isEmbedding.comp hf.isEmbedding⟩
 
 end CompSameUniverse
-
 
 end Manifold

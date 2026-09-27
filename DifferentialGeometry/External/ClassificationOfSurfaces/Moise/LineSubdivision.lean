@@ -2,7 +2,6 @@
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors
-Modified for this project; see ../MODIFICATIONS.md for the local changes.
 -/
 import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.PlaneComplex
 import Mathlib.Analysis.Convex.Segment
@@ -272,7 +271,7 @@ theorem convexHull_inter_of_affine_separation (s t u : Finset Plane)
 /-- Vertex-indexed form of `convexHull_inter_of_affine_separation`.  This is the form used when
 checking the maximal triangles of a mesh. -/
 theorem convexHull_image_inter_of_affine_separation {V : Type*} [DecidableEq V]
-    (position : V → Plane) (s t : Finset V)
+    (position : V → Plane) (_ : Function.Injective position) (s t : Finset V)
     (f : Plane →ᵃ[ℝ] ℝ) (hs : ∀ v ∈ s, 0 ≤ f (position v))
     (ht : ∀ v ∈ t, f (position v) ≤ 0)
     (hszero : ∀ v ∈ s, f (position v) = 0 ↔ v ∈ (s ∩ t))
@@ -444,122 +443,6 @@ private theorem affineIndependent_referenceTriangle2 {a b : ℝ} (ha0 : 0 < a)
   rw [heq]
   exact h
 
-private theorem reference_split_origin_outer_inter {a b : ℝ} (ha0 : 0 < a) (ha1 : a < 1)
-    (hb0 : 0 < b) (hb1 : b < 1) :
-    convexHull ℝ (referenceSplitPosition a b '' (({0, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) ∩
-      convexHull ℝ (referenceSplitPosition a b '' (({1, 2, 3} : Finset (Fin 5)) : Set (Fin 5))) =
-      convexHull ℝ (referenceSplitPosition a b '' ((({0, 3, 4} : Finset (Fin 5)) ∩
-        ({1, 2, 3} : Finset (Fin 5)) : Finset (Fin 5)) : Set (Fin 5))) := by
-  apply convexHull_image_inter_of_affine_separation (referenceSplitPosition a b)
-    ({0, 3, 4} : Finset (Fin 5)) ({1, 2, 3} : Finset (Fin 5)) (-referenceVertexAffine a b)
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_zero, AffineMap.coe_neg,
-        Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero, zero_sub, neg_neg,
-        Matrix.cons_val, sub_self, neg_zero, Std.le_refl, zero_add, neg_sub, sub_nonneg] <;>
-      (try field_simp) <;> nlinarith
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_one,
-        Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
-        referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, tsub_le_iff_right,
-        zero_add, Matrix.cons_val, mul_one, sub_self, neg_zero, Std.le_refl] <;>
-      (try field_simp) <;> nlinarith
-  · intro x hx
-    fin_cases x <;>
-      simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, Fin.reduceEq,
-        Finset.mem_singleton, or_self, or_false, referenceSplitPosition, Matrix.cons_val_zero,
-        AffineMap.coe_neg, Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero,
-        zero_sub, neg_neg, one_ne_zero, not_false_eq_true, Finset.inter_insert_of_notMem,
-        or_true, Finset.inter_singleton_of_mem, iff_false, Fin.mk_one, Fin.reduceFinMk,
-        Matrix.cons_val, sub_self, neg_zero, zero_add, neg_sub] at hx ⊢ <;>
-      (try field_simp) <;> nlinarith
-  · intro x hx
-    fin_cases x <;>
-      simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, zero_ne_one, Fin.reduceEq,
-        Finset.mem_singleton, or_self, Fin.mk_one, or_false, referenceSplitPosition,
-        Matrix.cons_val_one, Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
-        referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, one_ne_zero,
-        not_false_eq_true, Finset.inter_insert_of_notMem, or_true,
-        Finset.inter_singleton_of_mem, iff_false, Fin.reduceFinMk, Matrix.cons_val, mul_one,
-        zero_add, sub_self, neg_zero] at hx ⊢ <;>
-      (try field_simp) <;> nlinarith
-
-private theorem reference_split_origin_edge_inter {a b : ℝ} (ha0 : 0 < a)
-    (hb0 : 0 < b) (hb1 : b < 1) :
-    convexHull ℝ (referenceSplitPosition a b '' (({0, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) ∩
-      convexHull ℝ (referenceSplitPosition a b '' (({2, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) =
-      convexHull ℝ (referenceSplitPosition a b '' ((({0, 3, 4} : Finset (Fin 5)) ∩
-        ({2, 3, 4} : Finset (Fin 5)) : Finset (Fin 5)) : Set (Fin 5))) := by
-  apply convexHull_image_inter_of_affine_separation (referenceSplitPosition a b)
-    ({0, 3, 4} : Finset (Fin 5)) ({2, 3, 4} : Finset (Fin 5)) (-referenceOuterAffine a b)
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne']
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val, AffineMap.coe_neg,
-        Pi.neg_apply, referenceOuterAffine_planePoint, mul_zero, mul_one, zero_add, neg_sub,
-        tsub_le_iff_right, ne_eq, ha0.ne', not_false_eq_true, inv_mul_cancel₀, add_zero,
-        sub_self, neg_zero, Std.le_refl, hb0.ne'];
-      (try field_simp); nlinarith
-  · intro x hx
-    fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
-      ha0.ne', hb0.ne'] at hx ⊢
-  · intro x hx
-    fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
-      ha0.ne', hb0.ne'] at hx ⊢; field_simp; nlinarith
-
-private theorem reference_split_outer_edge_inter {a b : ℝ} (ha0 : 0 < a)
-    (ha1 : a < 1) (hb1 : b < 1) :
-    convexHull ℝ (referenceSplitPosition a b '' (({1, 2, 3} : Finset (Fin 5)) : Set (Fin 5))) ∩
-      convexHull ℝ (referenceSplitPosition a b '' (({2, 3, 4} : Finset (Fin 5)) : Set (Fin 5))) =
-      convexHull ℝ (referenceSplitPosition a b '' ((({1, 2, 3} : Finset (Fin 5)) ∩
-        ({2, 3, 4} : Finset (Fin 5)) : Finset (Fin 5)) : Set (Fin 5))) := by
-  apply convexHull_image_inter_of_affine_separation (referenceSplitPosition a b)
-    ({1, 2, 3} : Finset (Fin 5)) ({2, 3, 4} : Finset (Fin 5)) (referenceDiagonalAffine a)
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
-  · intro x hx
-    fin_cases x <;>
-      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
-      nlinarith
-  · intro x hx
-    fin_cases x <;>
-      simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
-      nlinarith
-
-private theorem reference_split_triangles_inter {a b : ℝ} (ha0 : 0 < a) (ha1 : a < 1)
-    (hb0 : 0 < b) (hb1 : b < 1) (s : Finset (Fin 5)) (hs : s ∈ referenceSplitTriangles)
-    (t : Finset (Fin 5)) (ht : t ∈ referenceSplitTriangles) :
-    convexHull ℝ (referenceSplitPosition a b '' (s : Set (Fin 5))) ∩
-      convexHull ℝ (referenceSplitPosition a b '' (t : Set (Fin 5))) =
-      convexHull ℝ (referenceSplitPosition a b '' ((s ∩ t : Finset (Fin 5)) : Set (Fin 5))) := by
-  simp only [referenceSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
-  rcases hs with rfl | rfl | rfl <;> rcases ht with rfl | rfl | rfl
-  · simp
-  · exact reference_split_origin_outer_inter ha0 ha1 hb0 hb1
-  · exact reference_split_origin_edge_inter ha0 hb0 hb1
-  · simpa only [Set.inter_comm, Finset.inter_comm] using
-      reference_split_origin_outer_inter ha0 ha1 hb0 hb1
-  · simp
-  · exact reference_split_outer_edge_inter ha0 ha1 hb1
-  · simpa only [Set.inter_comm, Finset.inter_comm] using
-      reference_split_origin_edge_inter ha0 hb0 hb1
-  · simpa only [Set.inter_comm, Finset.inter_comm] using
-      reference_split_outer_edge_inter ha0 ha1 hb1
-  · simp
-
 /-- The three triangles produced when a line meets the two edges issuing from the origin of the
 standard triangle. -/
 noncomputable def referenceSplitMesh (a b : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
@@ -579,7 +462,161 @@ noncomputable def referenceSplitMesh (a b : ℝ) (ha0 : 0 < a) (ha1 : a < 1)
     · exact affineIndependent_referenceTriangle0 ha0 hb0
     · exact affineIndependent_referenceTriangle1 ha1
     · exact affineIndependent_referenceTriangle2 ha0 hb1
-  triangle_inter := reference_split_triangles_inter ha0 ha1 hb0 hb1
+  triangle_inter := by
+    intro s hs t ht
+    simp only [referenceSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
+    rcases hs with rfl | rfl | rfl <;> rcases ht with rfl | rfl | rfl
+    · simp
+    · apply convexHull_image_inter_of_affine_separation _
+        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceVertexAffine a b)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_zero, AffineMap.coe_neg,
+            Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero, zero_sub, neg_neg,
+            Matrix.cons_val, sub_self, neg_zero, Std.le_refl, zero_add, neg_sub, sub_nonneg] <;>
+          (try field_simp) <;> nlinarith
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_one,
+            Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, tsub_le_iff_right,
+            zero_add, Matrix.cons_val, mul_one, sub_self, neg_zero, Std.le_refl] <;>
+          (try field_simp) <;> nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, Fin.reduceEq,
+            Finset.mem_singleton, or_self, or_false, referenceSplitPosition, Matrix.cons_val_zero,
+            AffineMap.coe_neg, Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero,
+            zero_sub, neg_neg, one_ne_zero, not_false_eq_true, Finset.inter_insert_of_notMem,
+            or_true, Finset.inter_singleton_of_mem, iff_false, Fin.mk_one, Fin.reduceFinMk,
+            Matrix.cons_val, sub_self, neg_zero, zero_add, neg_sub] at hx ⊢ <;>
+          (try field_simp) <;> nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, zero_ne_one, Fin.reduceEq,
+            Finset.mem_singleton, or_self, Fin.mk_one, or_false, referenceSplitPosition,
+            Matrix.cons_val_one, Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, one_ne_zero,
+            not_false_eq_true, Finset.inter_insert_of_notMem, or_true,
+            Finset.inter_singleton_of_mem, iff_false, Fin.reduceFinMk, Matrix.cons_val, mul_one,
+            zero_add, sub_self, neg_zero] at hx ⊢ <;>
+          (try field_simp) <;> nlinarith
+    · apply convexHull_image_inter_of_affine_separation _
+        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceOuterAffine a b)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne']
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val, AffineMap.coe_neg,
+            Pi.neg_apply, referenceOuterAffine_planePoint, mul_zero, mul_one, zero_add, neg_sub,
+            tsub_le_iff_right, ne_eq, ha0.ne', not_false_eq_true, inv_mul_cancel₀, add_zero,
+            sub_self, neg_zero, Std.le_refl, hb0.ne'];
+          (try field_simp); nlinarith
+      · intro x hx
+        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+          ha0.ne', hb0.ne'] at hx ⊢
+      · intro x hx
+        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+          ha0.ne', hb0.ne'] at hx ⊢; field_simp; nlinarith
+    · rw [Set.inter_comm]
+      apply convexHull_image_inter_of_affine_separation _
+        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceVertexAffine a b)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_zero, AffineMap.coe_neg,
+            Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero, zero_sub, neg_neg,
+            Matrix.cons_val, sub_self, neg_zero, Std.le_refl, zero_add, neg_sub, sub_nonneg] <;>
+          (try field_simp) <;> nlinarith
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp only [referenceSplitPosition, Fin.isValue, Matrix.cons_val_one,
+            Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, tsub_le_iff_right,
+            zero_add, Matrix.cons_val, mul_one, sub_self, neg_zero, Std.le_refl] <;>
+          (try field_simp) <;> nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, Fin.reduceEq,
+            Finset.mem_singleton, or_self, or_false, referenceSplitPosition, Matrix.cons_val_zero,
+            AffineMap.coe_neg, Pi.neg_apply, referenceVertexAffine_planePoint, mul_zero, add_zero,
+            zero_sub, neg_neg, one_ne_zero, not_false_eq_true, Finset.inter_insert_of_notMem,
+            or_true, Finset.inter_singleton_of_mem, iff_false, Fin.mk_one, Fin.reduceFinMk,
+            Matrix.cons_val, sub_self, neg_zero, zero_add, neg_sub] at hx ⊢ <;>
+          (try field_simp) <;> nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp only [Fin.isValue, Fin.zero_eta, Finset.mem_insert, zero_ne_one, Fin.reduceEq,
+            Finset.mem_singleton, or_self, Fin.mk_one, or_false, referenceSplitPosition,
+            Matrix.cons_val_one, Matrix.cons_val_zero, AffineMap.coe_neg, Pi.neg_apply,
+            referenceVertexAffine_planePoint, mul_zero, add_zero, neg_sub, one_ne_zero,
+            not_false_eq_true, Finset.inter_insert_of_notMem, or_true,
+            Finset.inter_singleton_of_mem, iff_false, Fin.reduceFinMk, Matrix.cons_val, mul_one,
+            zero_add, sub_self, neg_zero] at hx ⊢ <;>
+          (try field_simp) <;> nlinarith
+    · simp
+    · apply convexHull_image_inter_of_affine_separation _
+        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (referenceDiagonalAffine a)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+    · rw [Set.inter_comm]
+      apply convexHull_image_inter_of_affine_separation _
+        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (-referenceOuterAffine a b)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne']
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceOuterAffine_planePoint, ha0.ne', hb0.ne'];
+          field_simp; nlinarith
+      · intro x hx
+        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+          ha0.ne', hb0.ne'] at hx ⊢
+      · intro x hx
+        fin_cases x <;> simp [referenceSplitPosition, referenceOuterAffine_planePoint,
+          ha0.ne', hb0.ne'] at hx ⊢; field_simp; nlinarith
+    · rw [Set.inter_comm]
+      apply convexHull_image_inter_of_affine_separation _
+        (referenceSplitPosition_injective ha0 ha1 hb0 hb1) _ _ (referenceDiagonalAffine a)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+    · simp
 
 /-- A three-term nonnegative affine combination belongs to the corresponding triangle. -/
 theorem mem_convexHull_range_fin3_of_weights (p : Fin 3 → Plane) (x : Plane)
@@ -808,43 +845,6 @@ private theorem affineIndependent_referenceEdgeTriangle1 {c : ℝ} (hc1 : c < 1)
   rw [heq]
   exact h
 
-private theorem reference_edge_split_inter {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1) :
-    convexHull ℝ (referenceEdgeSplitPosition c '' (({0, 2, 3} : Finset (Fin 4)) : Set (Fin 4))) ∩
-      convexHull ℝ (referenceEdgeSplitPosition c '' (({1, 2, 3} : Finset (Fin 4)) : Set (Fin 4))) =
-      convexHull ℝ (referenceEdgeSplitPosition c '' ((({0, 2, 3} : Finset (Fin 4)) ∩
-        ({1, 2, 3} : Finset (Fin 4)) : Finset (Fin 4)) : Set (Fin 4))) := by
-  apply convexHull_image_inter_of_affine_separation (referenceEdgeSplitPosition c)
-    ({0, 2, 3} : Finset (Fin 4)) ({1, 2, 3} : Finset (Fin 4)) (-referenceDiagonalAffine c)
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
-  · intro x hx
-    simp only [Finset.mem_insert, Finset.mem_singleton] at hx
-    rcases hx with rfl | rfl | rfl <;>
-      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
-  · intro x hx
-    fin_cases x <;>
-      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
-      nlinarith
-  · intro x hx
-    fin_cases x <;>
-      simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
-      nlinarith
-
-private theorem reference_edge_split_triangles_inter {c : ℝ} (hc0 : 0 < c) (hc1 : c < 1)
-    (s : Finset (Fin 4)) (hs : s ∈ referenceEdgeSplitTriangles)
-    (t : Finset (Fin 4)) (ht : t ∈ referenceEdgeSplitTriangles) :
-    convexHull ℝ (referenceEdgeSplitPosition c '' (s : Set (Fin 4))) ∩
-      convexHull ℝ (referenceEdgeSplitPosition c '' (t : Set (Fin 4))) =
-      convexHull ℝ (referenceEdgeSplitPosition c '' ((s ∩ t : Finset (Fin 4)) : Set (Fin 4))) := by
-  simp only [referenceEdgeSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
-  rcases hs with rfl | rfl <;> rcases ht with rfl | rfl
-  · simp
-  · exact reference_edge_split_inter hc0 hc1
-  · simpa only [Set.inter_comm, Finset.inter_comm] using reference_edge_split_inter hc0 hc1
-  · simp
-
 /-- The two-triangle reference mesh used when the cutting line passes through vertex `2`. -/
 noncomputable def referenceEdgeSplitMesh (c : ℝ) (hc0 : 0 < c) (hc1 : c < 1) :
     TriangleMesh where
@@ -862,7 +862,49 @@ noncomputable def referenceEdgeSplitMesh (c : ℝ) (hc0 : 0 < c) (hc1 : c < 1) :
     rcases ht with rfl | rfl
     · exact affineIndependent_referenceEdgeTriangle0 hc0
     · exact affineIndependent_referenceEdgeTriangle1 hc1
-  triangle_inter := reference_edge_split_triangles_inter hc0 hc1
+  triangle_inter := by
+    intro s hs t ht
+    simp only [referenceEdgeSplitTriangles, Finset.mem_insert, Finset.mem_singleton] at hs ht
+    rcases hs with rfl | rfl <;> rcases ht with rfl | rfl
+    · simp
+    · apply convexHull_image_inter_of_affine_separation _
+        (referenceEdgeSplitPosition_injective hc0 hc1) _ _ (-referenceDiagonalAffine c)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+    · rw [Set.inter_comm]
+      apply convexHull_image_inter_of_affine_separation _
+        (referenceEdgeSplitPosition_injective hc0 hc1) _ _ (-referenceDiagonalAffine c)
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        simp only [Finset.mem_insert, Finset.mem_singleton] at hx
+        rcases hx with rfl | rfl | rfl <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint]; nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+      · intro x hx
+        fin_cases x <;>
+          simp [referenceEdgeSplitPosition, referenceDiagonalAffine_planePoint] at hx ⊢;
+          nlinarith
+    · simp
 
 private theorem referenceEdgeTriangle0_carrier (c : ℝ) :
     referenceEdgeSplitPosition c '' (({0, 2, 3} : Finset (Fin 4)) : Set (Fin 4)) =
@@ -1359,9 +1401,8 @@ theorem strictLocalMesh_support (t : M.Triangle)
     (affineCutPoint.parameter_lt_one f _ _ h0 h2)
   let e := triangleAffineEquiv standardTrianglePosition (M.position ∘ M.orderedVertex t)
     standardTrianglePosition_affineIndependent (M.orderedVertex_affineIndependent t)
-  have hsupport : (M.strictLocalMesh f t h0 h1 h2).toPlaneComplex.support =
-      (R.mapAffineEquiv e).toPlaneComplex.support :=
-    (R.mapAffineEquiv e).reindex_support ((↑) : M.RefinedVertex f → Plane)
+  rw [show M.strictLocalMesh f t h0 h1 h2 =
+      (R.mapAffineEquiv e).reindex ((↑) : M.RefinedVertex f → Plane)
         Subtype.val_injective (M.strictLocalEmbedding f t h0 h1 h2) (by
           intro i
           calc
@@ -1371,15 +1412,9 @@ theorem strictLocalMesh_support (t : M.Triangle)
             _ = e (referenceSplitPosition a b i) :=
               strictModelPosition_eq_affineReference f _
                 (M.orderedVertex_affineIndependent t) h0 h1 h2 i
-            _ = (R.mapAffineEquiv e).position i := rfl)
-  have hreference : R.toPlaneComplex.support =
-      convexHull ℝ (Set.range standardTrianglePosition) :=
-    referenceSplitMesh_support a b
-      (affineCutPoint.parameter_pos f _ _ h0 h1)
-      (affineCutPoint.parameter_lt_one f _ _ h0 h1)
-      (affineCutPoint.parameter_pos f _ _ h0 h2)
-      (affineCutPoint.parameter_lt_one f _ _ h0 h2)
-  rw [hsupport, TriangleMesh.mapAffineEquiv_support, hreference]
+            _ = (R.mapAffineEquiv e).position i := rfl) by rfl]
+  erw [TriangleMesh.reindex_support, TriangleMesh.mapAffineEquiv_support,
+    referenceSplitMesh_support]
   change e '' convexHull ℝ (Set.range standardTrianglePosition) =
     convexHull ℝ (M.position '' (t.1 : Set M.Vertex))
   have hrange : Set.range (M.position ∘ M.orderedVertex t) =
@@ -1406,12 +1441,11 @@ theorem strictNegativeLocalMesh_support (t : M.Triangle)
     (h2 : 0 < f (M.position (M.orderedVertex t 2))) :
     (M.strictNegativeLocalMesh f t h0 h1 h2).toPlaneComplex.support =
       convexHull ℝ (M.position '' (t.1 : Set M.Vertex)) := by
-  have hsupport : (M.strictNegativeLocalMesh f t h0 h1 h2).toPlaneComplex.support =
-      (M.strictLocalMesh (-f) t (by simpa) (by simpa) (by simpa)).toPlaneComplex.support :=
-    (M.strictLocalMesh (-f) t (by simpa) (by simpa) (by simpa)).reindex_support
-      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
-        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl)
-  rw [hsupport]
+  rw [show M.strictNegativeLocalMesh f t h0 h1 h2 =
+      (M.strictLocalMesh (-f) t (by simpa) (by simpa) (by simpa)).reindex
+        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl) by rfl]
+  erw [TriangleMesh.reindex_support]
   exact M.strictLocalMesh_support (-f) t (by simpa) (by simpa) (by simpa)
 
 /-! The same strict model for an arbitrary ordering of three vertices. -/
@@ -1489,9 +1523,8 @@ theorem strictMeshFor_support (v : Fin 3 → M.Vertex)
     (affineCutPoint.parameter_lt_one f _ _ h0 h2)
   let e := triangleAffineEquiv standardTrianglePosition (M.position ∘ v)
     standardTrianglePosition_affineIndependent hv
-  have hsupport : (M.strictMeshFor f v hv h0 h1 h2).toPlaneComplex.support =
-      (R.mapAffineEquiv e).toPlaneComplex.support :=
-    (R.mapAffineEquiv e).reindex_support ((↑) : M.RefinedVertex f → Plane)
+  rw [show M.strictMeshFor f v hv h0 h1 h2 =
+      (R.mapAffineEquiv e).reindex ((↑) : M.RefinedVertex f → Plane)
         Subtype.val_injective (M.strictVerticesEmbedding f v hv h0 h1 h2) (by
           intro i
           calc
@@ -1500,15 +1533,9 @@ theorem strictMeshFor_support (v : Fin 3 → M.Vertex)
               M.strictVertices_val f v h0 h1 h2 i
             _ = e (referenceSplitPosition a b i) :=
               strictModelPosition_eq_affineReference f _ hv h0 h1 h2 i
-            _ = (R.mapAffineEquiv e).position i := rfl)
-  have hreference : R.toPlaneComplex.support =
-      convexHull ℝ (Set.range standardTrianglePosition) :=
-    referenceSplitMesh_support a b
-      (affineCutPoint.parameter_pos f _ _ h0 h1)
-      (affineCutPoint.parameter_lt_one f _ _ h0 h1)
-      (affineCutPoint.parameter_pos f _ _ h0 h2)
-      (affineCutPoint.parameter_lt_one f _ _ h0 h2)
-  rw [hsupport, TriangleMesh.mapAffineEquiv_support, hreference]
+            _ = (R.mapAffineEquiv e).position i := rfl) by rfl]
+  erw [TriangleMesh.reindex_support, TriangleMesh.mapAffineEquiv_support,
+    referenceSplitMesh_support]
   change e '' convexHull ℝ (Set.range standardTrianglePosition) =
     convexHull ℝ (Set.range (M.position ∘ v))
   exact triangleAffineEquiv_image_convexHull standardTrianglePosition (M.position ∘ v)
@@ -1529,12 +1556,11 @@ theorem strictNegativeMeshFor_support (v : Fin 3 → M.Vertex)
     (h2 : 0 < f (M.position (v 2))) :
     (M.strictNegativeMeshFor f v hv h0 h1 h2).toPlaneComplex.support =
       convexHull ℝ (Set.range (M.position ∘ v)) := by
-  have hsupport : (M.strictNegativeMeshFor f v hv h0 h1 h2).toPlaneComplex.support =
-      (M.strictMeshFor (-f) v hv (by simpa) (by simpa) (by simpa)).toPlaneComplex.support :=
-    (M.strictMeshFor (-f) v hv (by simpa) (by simpa) (by simpa)).reindex_support
-      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
-        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl)
-  rw [hsupport]
+  rw [show M.strictNegativeMeshFor f v hv h0 h1 h2 =
+      (M.strictMeshFor (-f) v hv (by simpa) (by simpa) (by simpa)).reindex
+        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl) by rfl]
+  erw [TriangleMesh.reindex_support]
   exact M.strictMeshFor_support (-f) v hv (by simpa) (by simpa) (by simpa)
 
 /-! The two-triangle model when vertex `2` lies on the cutting line. -/
@@ -1634,9 +1660,8 @@ theorem edgeMeshFor_support (v : Fin 3 → M.Vertex)
     (affineCutPoint.parameter_lt_one f _ _ h0 h1)
   let e := triangleAffineEquiv standardTrianglePosition (M.position ∘ v)
     standardTrianglePosition_affineIndependent hv
-  have hsupport : (M.edgeMeshFor f v hv h0 h1).toPlaneComplex.support =
-      (R.mapAffineEquiv e).toPlaneComplex.support :=
-    (R.mapAffineEquiv e).reindex_support ((↑) : M.RefinedVertex f → Plane)
+  rw [show M.edgeMeshFor f v hv h0 h1 =
+      (R.mapAffineEquiv e).reindex ((↑) : M.RefinedVertex f → Plane)
         Subtype.val_injective (M.edgeVerticesEmbedding f v hv h0 h1) (by
           intro i
           calc
@@ -1644,13 +1669,9 @@ theorem edgeMeshFor_support (v : Fin 3 → M.Vertex)
                 edgeModelPosition (M.position ∘ v) f i := M.edgeVertices_val f v h0 h1 i
             _ = e (referenceEdgeSplitPosition c i) :=
               edgeModelPosition_eq_affineReference f _ hv h0 h1 i
-            _ = (R.mapAffineEquiv e).position i := rfl)
-  have hreference : R.toPlaneComplex.support =
-      convexHull ℝ (Set.range standardTrianglePosition) :=
-    referenceEdgeSplitMesh_support c
-      (affineCutPoint.parameter_pos f _ _ h0 h1)
-      (affineCutPoint.parameter_lt_one f _ _ h0 h1)
-  rw [hsupport, TriangleMesh.mapAffineEquiv_support, hreference]
+            _ = (R.mapAffineEquiv e).position i := rfl) by rfl]
+  erw [TriangleMesh.reindex_support, TriangleMesh.mapAffineEquiv_support,
+    referenceEdgeSplitMesh_support]
   change e '' convexHull ℝ (Set.range standardTrianglePosition) =
     convexHull ℝ (Set.range (M.position ∘ v))
   exact triangleAffineEquiv_image_convexHull standardTrianglePosition (M.position ∘ v)
@@ -1669,12 +1690,11 @@ theorem edgeNegativeMeshFor_support (v : Fin 3 → M.Vertex)
     (h0 : f (M.position (v 0)) < 0) (h1 : 0 < f (M.position (v 1))) :
     (M.edgeNegativeMeshFor f v hv h0 h1).toPlaneComplex.support =
       convexHull ℝ (Set.range (M.position ∘ v)) := by
-  have hsupport : (M.edgeNegativeMeshFor f v hv h0 h1).toPlaneComplex.support =
-      (M.edgeMeshFor (-f) v hv (by simpa) (by simpa)).toPlaneComplex.support :=
-    (M.edgeMeshFor (-f) v hv (by simpa) (by simpa)).reindex_support
-      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
-        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl)
-  rw [hsupport]
+  rw [show M.edgeNegativeMeshFor f v hv h0 h1 =
+      (M.edgeMeshFor (-f) v hv (by simpa) (by simpa)).reindex
+        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+        (M.refinedVertexNegEquiv f).toEmbedding (fun _ => rfl) by rfl]
+  erw [TriangleMesh.reindex_support]
   exact M.edgeMeshFor_support (-f) v hv (by simpa) (by simpa)
 
 /-! ## Choosing the local model from the signs -/
@@ -1753,12 +1773,11 @@ theorem unchangedMeshFor_support (v : Fin 3 → M.Vertex)
     (hv : AffineIndependent ℝ (M.position ∘ v)) :
     (M.unchangedMeshFor f v hv).toPlaneComplex.support =
       convexHull ℝ (Set.range (M.position ∘ v)) := by
-  have hsupport : (M.unchangedMeshFor f v hv).toPlaneComplex.support =
-      (TriangleMesh.single (M.position ∘ v) hv).toPlaneComplex.support :=
-    (TriangleMesh.single (M.position ∘ v) hv).reindex_support
-      ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
-          (M.oldVerticesEmbedding f v hv) (fun _ => rfl)
-  rw [hsupport, TriangleMesh.single_support]
+  rw [show M.unchangedMeshFor f v hv =
+      (TriangleMesh.single (M.position ∘ v) hv).reindex
+        ((↑) : M.RefinedVertex f → Plane) Subtype.val_injective
+          (M.oldVerticesEmbedding f v hv) (fun _ => rfl) by rfl]
+  erw [TriangleMesh.reindex_support, TriangleMesh.single_support]
 
 /-- The canonical local refinement mesh for one old triangle. -/
 noncomputable def localRefinementMesh (t : M.Triangle) : TriangleMesh := by
@@ -2017,10 +2036,10 @@ theorem strictMeshFor_triangles (v : Fin 3 → M.Vertex)
     (h2 : f (M.position (v 2)) < 0) :
     (M.strictMeshFor f v hv h0 h1 h2).triangles =
       strictPatternTriangles (M.strictVertices f v h0 h1 h2) := by
-  change referenceSplitTriangles.image (fun t => t.map (M.strictVerticesEmbedding f v hv h0 h1 h2)) =
-    strictPatternTriangles (M.strictVertices f v h0 h1 h2)
-  simp only [referenceSplitTriangles, Finset.image_insert, Finset.image_singleton,
-    Finset.map_insert, Finset.map_singleton]
+  ext s
+  simp [strictMeshFor, strictPatternTriangles, referenceSplitMesh,
+    referenceSplitTriangles, TriangleMesh.reindex, TriangleMesh.mapAffineEquiv,
+    strictVerticesEmbedding]
   rfl
 
 theorem edgeMeshFor_triangles (v : Fin 3 → M.Vertex)
@@ -2028,10 +2047,9 @@ theorem edgeMeshFor_triangles (v : Fin 3 → M.Vertex)
     (h0 : 0 < f (M.position (v 0))) (h1 : f (M.position (v 1)) < 0) :
     (M.edgeMeshFor f v hv h0 h1).triangles =
       edgePatternTriangles (M.edgeVertices f v h0 h1) := by
-  change referenceEdgeSplitTriangles.image (fun t => t.map (M.edgeVerticesEmbedding f v hv h0 h1)) =
-    edgePatternTriangles (M.edgeVertices f v h0 h1)
-  simp only [referenceEdgeSplitTriangles, Finset.image_insert, Finset.image_singleton,
-    Finset.map_insert, Finset.map_singleton]
+  simp [edgeMeshFor, edgePatternTriangles, referenceEdgeSplitMesh,
+    referenceEdgeSplitTriangles, TriangleMesh.reindex, TriangleMesh.mapAffineEquiv,
+    edgeVerticesEmbedding]
   rfl
 
 theorem strictNegativeMeshFor_monochromatic (v : Fin 3 → M.Vertex)
@@ -2507,161 +2525,113 @@ noncomputable def localMeshTriangles (t : M.Triangle) :
     (M.unchangedMeshFor f (M.orderedVertex t)
       (M.orderedVertex_affineIndependent t)).triangles
 
-private theorem local_mesh_triangles_induction (t : M.Triangle)
-    (Q : Finset (Finset (M.RefinedVertex f)) → Prop)
-    (hpositive : ∀ o : M.PositiveStrictOrdering f t,
-      Q (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).triangles)
-    (hnegative : ∀ o : M.NegativeStrictOrdering f t,
-      Q (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).triangles)
-    (hpositiveEdge : ∀ o : M.PositiveEdgeOrdering f t,
-      Q (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).triangles)
-    (hnegativeEdge : ∀ o : M.NegativeEdgeOrdering f t,
-      Q (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).triangles)
-    (hunchanged : ¬ Nonempty (M.PositiveStrictOrdering f t) →
-      ¬ Nonempty (M.NegativeStrictOrdering f t) →
-      ¬ Nonempty (M.PositiveEdgeOrdering f t) →
-      ¬ Nonempty (M.NegativeEdgeOrdering f t) →
-      Q (M.unchangedMeshFor f (M.orderedVertex t) (M.orderedVertex_affineIndependent t)).triangles) :
-    Q (M.localMeshTriangles f t) := by
-  classical
-  let positive : M.PositiveStrictOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
-    fun o => (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).triangles
-  let negative : M.NegativeStrictOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
-    fun o => (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).triangles
-  let positiveEdge : M.PositiveEdgeOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
-    fun o => (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).triangles
-  let negativeEdge : M.NegativeEdgeOrdering f t → Finset (Finset (M.RefinedVertex f)) :=
-    fun o => (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-        (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).triangles
-  let unchanged : Finset (Finset (M.RefinedVertex f)) :=
-    (M.unchangedMeshFor f (M.orderedVertex t) (M.orderedVertex_affineIndependent t)).triangles
-  change Q (if hp : Nonempty (M.PositiveStrictOrdering f t) then positive (Classical.choice hp)
-    else if hn : Nonempty (M.NegativeStrictOrdering f t) then negative (Classical.choice hn)
-    else if hep : Nonempty (M.PositiveEdgeOrdering f t) then positiveEdge (Classical.choice hep)
-    else if hen : Nonempty (M.NegativeEdgeOrdering f t) then negativeEdge (Classical.choice hen)
-    else unchanged)
-  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · rw [dif_pos hp]
-    exact hpositive (Classical.choice hp)
-  · rw [dif_neg hp]
-    by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-    · rw [dif_pos hn]
-      exact hnegative (Classical.choice hn)
-    · rw [dif_neg hn]
-      by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-      · rw [dif_pos hep]
-        exact hpositiveEdge (Classical.choice hep)
-      · rw [dif_neg hep]
-        by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-        · rw [dif_pos hen]
-          exact hnegativeEdge (Classical.choice hen)
-        · rw [dif_neg hen]
-          exact hunchanged hp hn hep hen
-
 theorem card_of_mem_localMeshTriangles (t : M.Triangle)
     {s : Finset (M.RefinedVertex f)} (hs : s ∈ M.localMeshTriangles f t) : s.card = 3 := by
   classical
-  revert hs
-  refine M.local_mesh_triangles_induction f t
-    (fun triangles => s ∈ triangles → s.card = 3) ?_ ?_ ?_ ?_ ?_
-  · intro o hs
-    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).card_triangle s hs
-  · intro o hs
-    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).card_triangle s hs
-  · intro o hs
-    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).card_triangle s hs
-  · intro o hs
-    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).card_triangle s hs
-  · intro _ _ _ _ hs
-    exact (M.unchangedMeshFor f (M.orderedVertex t)
-      (M.orderedVertex_affineIndependent t)).card_triangle s hs
+  unfold localMeshTriangles at hs
+  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
+  · erw [dif_pos hp] at hs
+    exact (M.strictMeshFor f _ _ _ _ _).card_triangle s hs
+  erw [dif_neg hp] at hs
+  by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
+  · erw [dif_pos hn] at hs
+    exact (M.strictNegativeMeshFor f _ _ _ _ _).card_triangle s hs
+  erw [dif_neg hn] at hs
+  by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
+  · erw [dif_pos hep] at hs
+    exact (M.edgeMeshFor f _ _ _ _).card_triangle s hs
+  erw [dif_neg hep] at hs
+  by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
+  · erw [dif_pos hen] at hs
+    exact (M.edgeNegativeMeshFor f _ _ _ _).card_triangle s hs
+  erw [dif_neg hen] at hs
+  exact (M.unchangedMeshFor f _ _).card_triangle s hs
 
 theorem affineIndependent_of_mem_localMeshTriangles (t : M.Triangle)
     {s : Finset (M.RefinedVertex f)} (hs : s ∈ M.localMeshTriangles f t) :
     AffineIndependent ℝ fun v : s => (v.1 : Plane) := by
   classical
-  revert hs
-  refine M.local_mesh_triangles_induction f t
-    (fun triangles => s ∈ triangles → AffineIndependent ℝ fun v : s => (v.1 : Plane)) ?_ ?_ ?_ ?_ ?_
-  · intro o hs
-    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).affineIndependent_triangle s hs
-  · intro o hs
-    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).affineIndependent_triangle s hs
-  · intro o hs
-    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).affineIndependent_triangle s hs
-  · intro o hs
-    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).affineIndependent_triangle s hs
-  · intro _ _ _ _ hs
-    exact (M.unchangedMeshFor f (M.orderedVertex t)
-      (M.orderedVertex_affineIndependent t)).affineIndependent_triangle s hs
+  unfold localMeshTriangles at hs
+  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
+  · erw [dif_pos hp] at hs
+    exact (M.strictMeshFor f _ _ _ _ _).affineIndependent_triangle s hs
+  erw [dif_neg hp] at hs
+  by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
+  · erw [dif_pos hn] at hs
+    exact (M.strictNegativeMeshFor f _ _ _ _ _).affineIndependent_triangle s hs
+  erw [dif_neg hn] at hs
+  by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
+  · erw [dif_pos hep] at hs
+    exact (M.edgeMeshFor f _ _ _ _).affineIndependent_triangle s hs
+  erw [dif_neg hep] at hs
+  by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
+  · erw [dif_pos hen] at hs
+    exact (M.edgeNegativeMeshFor f _ _ _ _).affineIndependent_triangle s hs
+  erw [dif_neg hen] at hs
+  exact (M.unchangedMeshFor f _ _).affineIndependent_triangle s hs
 
 theorem localMeshTriangles_monochromatic (t : M.Triangle) :
     M.RefinedTrianglesMonochromatic f (M.localMeshTriangles f t) := by
   classical
-  refine M.local_mesh_triangles_induction f t (M.RefinedTrianglesMonochromatic f)
-    ?_ ?_ ?_ ?_ ?_
-  · intro o
+  unfold localMeshTriangles
+  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
+  · erw [dif_pos hp]
+    let o := Classical.choice hp
     rw [M.strictMeshFor_triangles]
     apply M.strictPattern_monochromatic_positive
-    · simpa [strictVertices, Function.comp_apply] using o.positive.le
-    · simpa [strictVertices, Function.comp_apply] using o.negative_one.le
-    · simpa [strictVertices, Function.comp_apply] using o.negative_two.le
+    · simpa [o, strictVertices, Function.comp_apply] using o.positive.le
+    · simpa [o, strictVertices, Function.comp_apply] using o.negative_one.le
+    · simpa [o, strictVertices, Function.comp_apply] using o.negative_two.le
     · rw [M.strictVertices_f]
       simp
     · rw [M.strictVertices_f]
       simp
-  · intro o
+  erw [dif_neg hp]
+  by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
+  · erw [dif_pos hn]
+    let o := Classical.choice hn
     exact M.strictNegativeMeshFor_monochromatic f _ _
       o.negative o.positive_one o.positive_two
-  · intro o
+  erw [dif_neg hn]
+  by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
+  · erw [dif_pos hep]
+    let o := Classical.choice hep
     rw [M.edgeMeshFor_triangles]
     apply M.edgePattern_monochromatic_positive
-    · simpa [edgeVertices, Function.comp_apply] using o.positive.le
-    · simpa [edgeVertices, Function.comp_apply] using o.negative.le
+    · simpa [o, edgeVertices, Function.comp_apply] using o.positive.le
+    · simpa [o, edgeVertices, Function.comp_apply] using o.negative.le
     · rw [M.edgeVertices_f f _ o.positive o.negative o.zero]
       rfl
     · rw [M.edgeVertices_f f _ o.positive o.negative o.zero]
       rfl
-  · intro o
+  erw [dif_neg hep]
+  by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
+  · erw [dif_pos hen]
+    let o := Classical.choice hen
     exact M.edgeNegativeMeshFor_monochromatic f _ _ o.negative o.positive o.zero
-  · intro hp hn hep hen
-    have hpair := pairwise_nonnegative_of_no_orderings M f t hp hn hep hen
-    have hsign := same_closed_side_of_pairwise_products hpair.1 hpair.2.1 hpair.2.2
-    intro s hs
-    unfold unchangedMeshFor at hs
-    obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
-    have hr : r = Finset.univ := Finset.mem_singleton.mp hr
-    subst r
-    rcases hsign with h | h
-    · left
-      intro x hx
-      obtain ⟨i, -, rfl⟩ := Finset.mem_map.mp hx
-      fin_cases i
-      · change 0 ≤ f (M.position (M.orderedVertex t 0)); exact h.1
-      · change 0 ≤ f (M.position (M.orderedVertex t 1)); exact h.2.1
-      · change 0 ≤ f (M.position (M.orderedVertex t 2)); exact h.2.2
-    · right
-      intro x hx
-      obtain ⟨i, -, rfl⟩ := Finset.mem_map.mp hx
-      fin_cases i
-      · change f (M.position (M.orderedVertex t 0)) ≤ 0; exact h.1
-      · change f (M.position (M.orderedVertex t 1)) ≤ 0; exact h.2.1
-      · change f (M.position (M.orderedVertex t 2)) ≤ 0; exact h.2.2
+  erw [dif_neg hen]
+  have hpair := pairwise_nonnegative_of_no_orderings M f t hp hn hep hen
+  have hsign := same_closed_side_of_pairwise_products hpair.1 hpair.2.1 hpair.2.2
+  intro s hs
+  unfold unchangedMeshFor at hs
+  obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
+  have hr : r = Finset.univ := Finset.mem_singleton.mp hr
+  subst r
+  rcases hsign with h | h
+  · left
+    intro x hx
+    obtain ⟨i, -, rfl⟩ := Finset.mem_map.mp hx
+    fin_cases i
+    · change 0 ≤ f (M.position (M.orderedVertex t 0)); exact h.1
+    · change 0 ≤ f (M.position (M.orderedVertex t 1)); exact h.2.1
+    · change 0 ≤ f (M.position (M.orderedVertex t 2)); exact h.2.2
+  · right
+    intro x hx
+    obtain ⟨i, -, rfl⟩ := Finset.mem_map.mp hx
+    fin_cases i
+    · change f (M.position (M.orderedVertex t 0)) ≤ 0; exact h.1
+    · change f (M.position (M.orderedVertex t 1)) ≤ 0; exact h.2.1
+    · change f (M.position (M.orderedVertex t 2)) ≤ 0; exact h.2.2
 
 /-- A vertex used by a local line refinement is either an old vertex of its parent triangle or
 lies on the cutting line. -/
@@ -2670,11 +2640,10 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
     {x : M.RefinedVertex f} (hx : x ∈ s) :
     (∃ v ∈ t.1, (x : Plane) = M.position v) ∨ f (x : Plane) = 0 := by
   classical
-  revert hs
-  refine M.local_mesh_triangles_induction f t
-    (fun triangles => s ∈ triangles →
-      (∃ v ∈ t.1, (x : Plane) = M.position v) ∨ f (x : Plane) = 0) ?_ ?_ ?_ ?_ ?_
-  · intro o hs
+  unfold localMeshTriangles at hs
+  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
+  · erw [dif_pos hp] at hs
+    let o := Classical.choice hp
     rw [M.strictMeshFor_triangles] at hs
     obtain ⟨i, rfl⟩ := exists_index_of_mem_strictPattern _ hs hx
     fin_cases i
@@ -2687,7 +2656,10 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
     · right
       rw [M.strictVertices_f]
       rfl
-  · intro o hs
+  erw [dif_neg hp] at hs
+  by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
+  · erw [dif_pos hn] at hs
+    let o := Classical.choice hn
     unfold strictNegativeMeshFor at hs
     obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
     obtain ⟨y, hy, rfl⟩ := Finset.mem_map.mp hx
@@ -2713,7 +2685,10 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
         (by simpa using o.negative) (by simpa using o.positive_one)
         (by simpa using o.positive_two) 4
       simpa using h
-  · intro o hs
+  erw [dif_neg hn] at hs
+  by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
+  · erw [dif_pos hep] at hs
+    let o := Classical.choice hep
     rw [M.edgeMeshFor_triangles] at hs
     obtain ⟨i, rfl⟩ := exists_index_of_mem_edgePattern _ hs hx
     fin_cases i
@@ -2723,7 +2698,10 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
     · right
       rw [M.edgeVertices_f f _ o.positive o.negative o.zero]
       rfl
-  · intro o hs
+  erw [dif_neg hep] at hs
+  by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
+  · erw [dif_pos hen] at hs
+    let o := Classical.choice hen
     unfold edgeNegativeMeshFor at hs
     obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
     obtain ⟨y, hy, rfl⟩ := Finset.mem_map.mp hx
@@ -2739,60 +2717,74 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
       have h := M.edgeVertices_f (-f) (M.orderedVertex t ∘ o.perm)
         (by simpa using o.negative) (by simpa using o.positive) (by simpa using o.zero) 3
       simpa using h
-  · intro _ _ _ _ hs
-    unfold unchangedMeshFor at hs
-    obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
-    have hr : r = Finset.univ := Finset.mem_singleton.mp hr
-    subst r
-    obtain ⟨i, -, rfl⟩ := Finset.mem_map.mp hx
-    left
-    exact ⟨_, M.orderedVertex_mem t i, rfl⟩
+  erw [dif_neg hen] at hs
+  unfold unchangedMeshFor at hs
+  obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
+  have hr : r = Finset.univ := Finset.mem_singleton.mp hr
+  subst r
+  obtain ⟨i, -, rfl⟩ := Finset.mem_map.mp hx
+  left
+  exact ⟨_, M.orderedVertex_mem t i, rfl⟩
 
 theorem localMeshTriangles_support (t : M.Triangle) :
     (⋃ s ∈ M.localMeshTriangles f t,
       convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (s : Set (M.RefinedVertex f)))) =
       convexHull ℝ (M.position '' (t.1 : Set M.Vertex)) := by
   classical
-  refine M.local_mesh_triangles_induction f t
-    (fun triangles => (⋃ s ∈ triangles,
-      convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (s : Set (M.RefinedVertex f)))) =
-      convexHull ℝ (M.position '' (t.1 : Set M.Vertex))) ?_ ?_ ?_ ?_ ?_
-  · intro o
+  unfold localMeshTriangles
+  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
+  · erw [dif_pos hp]
+    let o := Classical.choice hp
+    dsimp only [Function.comp_apply]
     have h := M.strictMeshFor_support f (M.orderedVertex t ∘ o.perm)
       (M.orderedVertex_perm_affineIndependent t o.perm)
       o.positive o.negative_one o.negative_two
-    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm)
-      o.positive o.negative_one o.negative_two).toPlaneComplex_support.symm.trans
-        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
-  · intro o
+    rw [(M.strictMeshFor f (M.orderedVertex t ∘ o.perm) _
+      o.positive o.negative_one o.negative_two).toPlaneComplex_support] at h
+    rw [M.range_orderedVertex_perm t o.perm] at h
+    exact h
+  erw [dif_neg hp]
+  by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
+  · erw [dif_pos hn]
+    let o := Classical.choice hn
+    dsimp only [Function.comp_apply]
     have h := M.strictNegativeMeshFor_support f (M.orderedVertex t ∘ o.perm)
       (M.orderedVertex_perm_affineIndependent t o.perm)
       o.negative o.positive_one o.positive_two
-    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm)
-      o.negative o.positive_one o.positive_two).toPlaneComplex_support.symm.trans
-        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
-  · intro o
+    rw [(M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm) _
+      o.negative o.positive_one o.positive_two).toPlaneComplex_support] at h
+    rw [M.range_orderedVertex_perm t o.perm] at h
+    exact h
+  erw [dif_neg hn]
+  by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
+  · erw [dif_pos hep]
+    let o := Classical.choice hep
+    dsimp only [Function.comp_apply]
     have h := M.edgeMeshFor_support f (M.orderedVertex t ∘ o.perm)
       (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative
-    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm)
-      o.positive o.negative).toPlaneComplex_support.symm.trans
-        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
-  · intro o
+    rw [(M.edgeMeshFor f (M.orderedVertex t ∘ o.perm) _
+      o.positive o.negative).toPlaneComplex_support] at h
+    rw [M.range_orderedVertex_perm t o.perm] at h
+    exact h
+  erw [dif_neg hep]
+  by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
+  · erw [dif_pos hen]
+    let o := Classical.choice hen
+    dsimp only [Function.comp_apply]
     have h := M.edgeNegativeMeshFor_support f (M.orderedVertex t ∘ o.perm)
       (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive
-    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm)
-      o.negative o.positive).toPlaneComplex_support.symm.trans
-        (h.trans (congrArg (convexHull ℝ) (M.range_orderedVertex_perm t o.perm)))
-  · intro _ _ _ _
-    have h := M.unchangedMeshFor_support f (M.orderedVertex t)
-      (M.orderedVertex_affineIndependent t)
-    rw [(M.unchangedMeshFor f (M.orderedVertex t) _).toPlaneComplex_support] at h
-    rw [Set.range_comp, M.range_orderedVertex t] at h
+    rw [(M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm) _
+      o.negative o.positive).toPlaneComplex_support] at h
+    rw [M.range_orderedVertex_perm t o.perm] at h
     exact h
+  erw [dif_neg hen]
+  simp only [unchangedMeshFor, TriangleMesh.reindex, TriangleMesh.single,
+    oldVerticesEmbedding]
+  have h := M.unchangedMeshFor_support f (M.orderedVertex t)
+    (M.orderedVertex_affineIndependent t)
+  rw [(M.unchangedMeshFor f (M.orderedVertex t) _).toPlaneComplex_support] at h
+  rw [Set.range_comp, M.range_orderedVertex t] at h
+  exact h
 
 theorem localMeshTriangles_inter (t : M.Triangle)
     {s u : Finset (M.RefinedVertex f)} (hs : s ∈ M.localMeshTriangles f t)
@@ -2802,28 +2794,24 @@ theorem localMeshTriangles_inter (t : M.Triangle)
       convexHull ℝ (((↑) : M.RefinedVertex f → Plane) ''
         ((s ∩ u : Finset (M.RefinedVertex f)) : Set (M.RefinedVertex f))) := by
   classical
-  revert hs hu
-  refine M.local_mesh_triangles_induction f t
-    (fun triangles => s ∈ triangles → u ∈ triangles →
-      convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (s : Set (M.RefinedVertex f))) ∩
-          convexHull ℝ (((↑) : M.RefinedVertex f → Plane) '' (u : Set (M.RefinedVertex f))) =
-        convexHull ℝ (((↑) : M.RefinedVertex f → Plane) ''
-          ((s ∩ u : Finset (M.RefinedVertex f)) : Set (M.RefinedVertex f)))) ?_ ?_ ?_ ?_ ?_
-  · intro o hs hu
-    exact (M.strictMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative_one o.negative_two).triangle_inter s hs u hu
-  · intro o hs hu
-    exact (M.strictNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive_one o.positive_two).triangle_inter s hs u hu
-  · intro o hs hu
-    exact (M.edgeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.positive o.negative).triangle_inter s hs u hu
-  · intro o hs hu
-    exact (M.edgeNegativeMeshFor f (M.orderedVertex t ∘ o.perm)
-      (M.orderedVertex_perm_affineIndependent t o.perm) o.negative o.positive).triangle_inter s hs u hu
-  · intro _ _ _ _ hs hu
-    exact (M.unchangedMeshFor f (M.orderedVertex t)
-      (M.orderedVertex_affineIndependent t)).triangle_inter s hs u hu
+  unfold localMeshTriangles at hs hu
+  by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
+  · erw [dif_pos hp] at hs hu
+    exact (M.strictMeshFor f _ _ _ _ _).triangle_inter s hs u hu
+  erw [dif_neg hp] at hs hu
+  by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
+  · erw [dif_pos hn] at hs hu
+    exact (M.strictNegativeMeshFor f _ _ _ _ _).triangle_inter s hs u hu
+  erw [dif_neg hn] at hs hu
+  by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
+  · erw [dif_pos hep] at hs hu
+    exact (M.edgeMeshFor f _ _ _ _).triangle_inter s hs u hu
+  erw [dif_neg hep] at hs hu
+  by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
+  · erw [dif_pos hen] at hs hu
+    exact (M.edgeNegativeMeshFor f _ _ _ _).triangle_inter s hs u hu
+  erw [dif_neg hen] at hs hu
+  exact (M.unchangedMeshFor f _ _).triangle_inter s hs u hu
 
 theorem convexHull_child_subset_parent (t : M.Triangle)
     {s : Finset (M.RefinedVertex f)} (hs : s ∈ M.localMeshTriangles f t) :

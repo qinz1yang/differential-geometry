@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.AddCircle.Circle
 import DifferentialGeometry.Topology.Manifold.AddCircle.DiffeomorphLift
 import DifferentialGeometry.Topology.Embedding.PeriodicCurveIsotopy
@@ -12,6 +17,8 @@ open scoped ContDiff Manifold
 
 namespace Circle
 
+open DifferentialGeometry.Topology.PeriodicCurve
+  (exists_compactly_supported_ambient_isotopy_of_increasing_lift) in
 theorem exists_diffeomorph_extension
     (Q : Diffeomorph (𝓡 1) (𝓡 1) Circle Circle ∞) :
     ∃ D : ℂ ≃ₘ[ℝ] ℂ, (∀ x : Circle, D x = Q x) ∧ D 0 = 0 ∧
@@ -27,7 +34,7 @@ theorem exists_diffeomorph_extension
   have hf : Manifold.IsSmoothEmbedding 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ) ∞ f := by
     exact (isSmoothEmbedding_coe_sphere (E := ℂ) (n := 1)).comp_of_boundarylessManifold hA (by simp)
   obtain ⟨Φ, _, _, _, htrack, K, _, hK, hfix⟩ :=
-    DifferentialGeometry.Topology.PeriodicCurve.exists_compactly_supported_ambient_isotopy_of_increasing_lift
+    exists_compactly_supported_ambient_isotopy_of_increasing_lift
       hf g.contMDiff.contDiff hgp hgd isOpen_compl_singleton
       (show range f ⊆ ({0} : Set ℂ)ᶜ from by
         rintro _ ⟨θ, rfl⟩
@@ -62,7 +69,8 @@ theorem exists_diffeomorph_extension
       rw [htrack1, h]
       change starRingEnd ℂ (AddCircle.homeomorphCircle one_ne_zero (g t : AddCircle (1 : ℝ)) : ℂ) =
         (AddCircle.homeomorphCircle one_ne_zero (-(g t : AddCircle (1 : ℝ))) : ℂ)
-      rw [AddCircle.homeomorphCircle_apply, AddCircle.homeomorphCircle_apply, AddCircle.toCircle_neg]
+      rw [AddCircle.homeomorphCircle_apply, AddCircle.homeomorphCircle_apply,
+        AddCircle.toCircle_neg]
       exact (Circle.coe_inv_eq_conj _).symm
   obtain ⟨D, hD, hD0⟩ := hext
   refine ⟨D, hD, hD0, ?_⟩
@@ -95,7 +103,8 @@ theorem exists_diffeomorph_extension_circle
     ((stdOrthonormalBasis ℝ E).reindex (finCongr (Fact.out : Module.finrank ℝ E = 1 + 1)))
   let f : Circle → E := fun x => A x
   have hf : Manifold.IsSmoothEmbedding (𝓡 1) 𝓘(ℝ, E) ∞ f :=
-    ⟨(isSmoothEmbedding_coe_sphere (E := ℂ) (n := 1)).isImmersion.isLocalDiffeomorphOn_comp_of_ne_zero
+    ⟨(isSmoothEmbedding_coe_sphere (E := ℂ) (n :=
+      1)).isImmersion.isLocalDiffeomorphOn_comp_of_ne_zero
       (fun y => A.toContinuousLinearEquiv.toDiffeomorph.isLocalDiffeomorph y.val) (by simp),
       A.toHomeomorph.isEmbedding.comp .subtypeVal⟩
   have hg := isSmoothEmbedding_coe_sphere (E := E) (n := 1)

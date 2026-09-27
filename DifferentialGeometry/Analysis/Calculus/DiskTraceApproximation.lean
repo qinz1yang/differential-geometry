@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 import Mathlib.Analysis.SpecificLimits.Basic
 import Mathlib.Analysis.SpecialFunctions.Complex.Circle
 import Mathlib.Topology.Order.OrderClosed

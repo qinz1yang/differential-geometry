@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Complex.BoundaryLens.Geometry
 import DifferentialGeometry.Analysis.Integration.PlaneRotation
 import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
-import DifferentialGeometry.Topology.LoopSpace.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 
 noncomputable section
 

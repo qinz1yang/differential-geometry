@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.UniversalCoefficientsOneLinearEquiv
-import DifferentialGeometry.Topology.Homology.SphereRank
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereRank
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 import DifferentialGeometry.Topology.ThreeManifold.StandardFactors
 
 noncomputable section

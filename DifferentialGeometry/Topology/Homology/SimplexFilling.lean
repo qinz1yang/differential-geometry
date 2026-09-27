@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Simplex.BoundaryGluing
 import DifferentialGeometry.Topology.Homotopy.SphereFilling
 import DifferentialGeometry.Topology.Homotopy.SphereClasses
-import DifferentialGeometry.Topology.Homology.SimplexMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SimplexMaps
 
 noncomputable section
 

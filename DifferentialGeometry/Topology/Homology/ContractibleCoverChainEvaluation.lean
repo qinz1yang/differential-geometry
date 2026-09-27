@@ -1,6 +1,7 @@
-import DifferentialGeometry.Topology.Homology.ContractiblePair
-import DifferentialGeometry.Topology.Homology.RelativeFunctoriality
-import DifferentialGeometry.Topology.Homology.SubdivisionIterationHomotopy
+import DifferentialGeometry.Topology.Homology.Relative.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ContractiblePair
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeFunctoriality
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SubdivisionIterationHomotopy
 
 noncomputable section
 

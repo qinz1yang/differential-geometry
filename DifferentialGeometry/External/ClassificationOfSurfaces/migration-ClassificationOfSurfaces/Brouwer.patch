@@ -1,0 +1,96 @@
+--- before
++++ after
+@@ -6,2 +5,0 @@
+-import ClassificationOfSurfaces.Moise.NoRetraction
+-import ClassificationOfSurfaces.Topology.InvarianceOfDomain
+@@ -18,17 +16 @@
+-/-!
+-# Brouwer's fixed-point theorem for the plane disk
+-
+-This file derives Brouwer's fixed-point theorem for the closed unit disk in `Plane` from
+-`no_retraction_planeClosedUnitBall`.
+-
+-If a continuous self-map `f` of the disk had no fixed point, the ray starting at `f x` and
+-passing through `x` would meet the unit sphere in a continuously varying point.  The positive
+-root of the resulting quadratic equation gives this intersection explicitly.  On the unit
+-sphere that root is `1`, so the construction would be a retraction of the disk onto its boundary,
+-contradicting `no_retraction_planeClosedUnitBall`.
+--/
+-
+-namespace LeanEval
+-namespace Topology
+-namespace ClassificationOfSurfaces
+-namespace Moise
++namespace DifferentialGeometry.Topology.FixedPoint
+@@ -36,0 +19,2 @@
++
++variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
+@@ -40 +24 @@
+-noncomputable def fixedPointRayScale (p x : Plane) : ℝ :=
++noncomputable def fixedPointRayScale (p x : E) : ℝ :=
+@@ -46 +30 @@
+-private lemma fixedPointRayScale_mul_inner (p x : Plane) (hpx : p ≠ x) :
++private lemma fixedPointRayScale_mul_inner (p x : E) (hpx : p ≠ x) :
+@@ -80 +64 @@
+-private lemma fixedPointRayScale_quadratic (p x : Plane) (hpx : p ≠ x)
++private lemma fixedPointRayScale_quadratic (p x : E) (hpx : p ≠ x)
+@@ -92 +76 @@
+-private lemma fixedPointRayEndpoint_mem_sphere (p x : Plane) (hpx : p ≠ x)
++private lemma fixedPointRayEndpoint_mem_sphere (p x : E) (hpx : p ≠ x)
+@@ -94 +78 @@
+-    p + fixedPointRayScale p x • (x - p) ∈ Metric.sphere (0 : Plane) 1 := by
++    p + fixedPointRayScale p x • (x - p) ∈ Metric.sphere (0 : E) 1 := by
+@@ -105 +89 @@
+-private lemma fixedPointRayScale_eq_one_of_mem_sphere (p x : Plane) (hpx : p ≠ x)
++private lemma fixedPointRayScale_eq_one_of_mem_sphere (p x : E) (hpx : p ≠ x)
+@@ -123 +107 @@
+-  let s : EuclideanGeometry.Sphere Plane := ⟨0, 1⟩
++  let s : EuclideanGeometry.Sphere E := ⟨0, 1⟩
+@@ -125 +109 @@
+-    change dist x (0 : Plane) = 1
++    change dist x (0 : E) = 1
+@@ -154 +138 @@
+-    (f : Metric.closedBall (0 : Plane) 1 → Metric.closedBall (0 : Plane) 1)
++    (f : Metric.closedBall (0 : E) 1 → Metric.closedBall (0 : E) 1)
+@@ -158 +142 @@
+-  have hxv : Continuous fun x : Metric.closedBall (0 : Plane) 1 ↦ x.1 :=
++  have hxv : Continuous fun x : Metric.closedBall (0 : E) 1 ↦ x.1 :=
+@@ -188,10 +172,8 @@
+-/-- Brouwer's fixed-point theorem for the closed unit disk in the Euclidean plane. -/
+-theorem brouwer_fixed_point_planeClosedUnitBall
+-    (f : Metric.closedBall (0 : Plane) 1 → Metric.closedBall (0 : Plane) 1)
+-    (hf : Continuous f) :
+-    ∃ x, f x = x := by
+-  by_contra hfixed
+-  have hne : ∀ x, f x ≠ x := by
+-    intro x hx
+-    exact hfixed ⟨x, hx⟩
+-  let r : Metric.closedBall (0 : Plane) 1 → Metric.sphere (0 : Plane) 1 := fun x ↦
++/-- A fixed-point-free continuous self-map of the unit ball determines a retraction onto its sphere. -/
++theorem exists_retraction_closedBall_sphere_of_continuous_of_no_fixedPoint
++    (f : Metric.closedBall (0 : E) 1 → Metric.closedBall (0 : E) 1)
++    (hf : Continuous f) (hne : ∀ x, f x ≠ x) :
++    ∃ r : Metric.closedBall (0 : E) 1 → Metric.sphere (0 : E) 1,
++      Continuous r ∧ ∀ x : Metric.sphere (0 : E) 1,
++        r ⟨x.1, Metric.sphere_subset_closedBall x.2⟩ = x := by
++  let r : Metric.closedBall (0 : E) 1 → Metric.sphere (0 : E) 1 := fun x ↦
+@@ -206 +187,0 @@
+-  apply no_retraction_planeClosedUnitBall
+@@ -210 +191 @@
+-    have hxv : Continuous fun x : Metric.closedBall (0 : Plane) 1 ↦ x.1 :=
++    have hxv : Continuous fun x : Metric.closedBall (0 : E) 1 ↦ x.1 :=
+@@ -215,2 +196,2 @@
+-    let x : Metric.closedBall (0 : Plane) 1 :=
+-      ⟨z.1, Metric.mem_closedBall.mpr z.2.le⟩
++    let x : Metric.closedBall (0 : E) 1 :=
++      ⟨z.1, Metric.sphere_subset_closedBall z.2⟩
+@@ -232,8 +213 @@
+-instance :
+-    LeanEval.Topology.ClassificationOfSurfaces.InvarianceOfDomain.BrouwerFixedPoint Plane where
+-  brouwer_fixed_point := brouwer_fixed_point_planeClosedUnitBall
+-
+-end Moise
+-end ClassificationOfSurfaces
+-end Topology
+-end LeanEval
++end DifferentialGeometry.Topology.FixedPoint

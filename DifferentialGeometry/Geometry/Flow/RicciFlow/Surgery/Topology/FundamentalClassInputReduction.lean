@@ -1,5 +1,6 @@
+import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassRealizationCriterion
-import DifferentialGeometry.Topology.Homology.EuclideanLocalVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.EuclideanLocalVanishing
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 
 noncomputable section

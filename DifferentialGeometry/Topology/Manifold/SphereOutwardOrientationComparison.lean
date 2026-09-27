@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SphereOutwardOrientation
+import DifferentialGeometry.External.CanonicalTopology.Topology.Manifold.SphereOutwardOrientation
 import DifferentialGeometry.Topology.Manifold.SphereOutwardFrameDictionary
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.TetrahedronBoundary
 import DifferentialGeometry.Topology.Homology.TriangleRayComplement
-import DifferentialGeometry.Topology.Homology.ZeroHomologyMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ZeroHomologyMaps
 
 noncomputable section
 

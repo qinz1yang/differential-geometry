@@ -1,5 +1,5 @@
 import Mathlib.Algebra.Homology.HomologicalComplexBiprod
-import DifferentialGeometry.Topology.Homology.ModuleHomologyConnecting
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyConnecting
 import DifferentialGeometry.Topology.Homology.SmallChains.Union
 import DifferentialGeometry.Topology.Homology.SmallChains.QuasiIso
 

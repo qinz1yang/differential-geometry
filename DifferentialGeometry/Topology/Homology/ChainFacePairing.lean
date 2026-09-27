@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.SimplexBoundary
-import DifferentialGeometry.Topology.Homology.Cycles
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SimplexBoundary
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Cycles
 import Mathlib.Data.Fintype.EquivFin
 import Mathlib.Algebra.BigOperators.Ring.Finset
 

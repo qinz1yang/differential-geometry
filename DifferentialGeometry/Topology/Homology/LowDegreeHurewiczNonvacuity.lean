@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.SphereGeneratorCriterion
-import DifferentialGeometry.Topology.Homology.SphereHomologyVanishing
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 
 noncomputable section
 

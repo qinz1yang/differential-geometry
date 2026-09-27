@@ -1,0 +1,39 @@
+--- before
++++ after
+@@ -49,5 +49,5 @@
+-namespace LeanEval.Topology.ClassificationOfSurfaces.InvarianceOfDomain
+-
+-open MeasureTheory Metric Set ContinuousLinearMap LinearMap Topology Polynomial
+-
+-variable {E} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
++namespace DifferentialGeometry.Topology
++
++open MeasureTheory Metric Set ContinuousLinearMap LinearMap _root_.Topology Polynomial
++
++variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+@@ -110 +110 @@
+-      haveI : Nonempty (Fin n) := Fin.pos_iff_nonempty.mp Module.finrank_pos
++      have : Nonempty (Fin n) := Fin.pos_iff_nonempty.mp Module.finrank_pos
+@@ -224 +224 @@
+-    ContinuousOn.restrict hf_cont)⟩
++    ContinuousOn.domRestrict hf_cont)⟩
+@@ -295 +295 @@
+-      ext y; simp only [Set.mem_compl_iff, Set.mem_setOf_eq, not_le, mem_ball_iff_norm]
++      ext y; simp only [Set.mem_compl_iff, Set.mem_ofPred_eq, not_le, mem_ball_iff_norm]
+@@ -314 +314 @@
+-    rw [continuousOn_iff_continuous_restrict]
++    rw [continuousOn_iff_continuous_domRestrict]
+@@ -365,2 +365,2 @@
+-  letI : MeasurableSpace E := borel E
+-  haveI : BorelSpace E := ⟨rfl⟩
++  let : MeasurableSpace E := borel E
++  have : BorelSpace E := ⟨rfl⟩
+@@ -662 +662 @@
+-    rw [continuousOn_iff_continuous_restrict]
++    rw [continuousOn_iff_continuous_domRestrict]
+@@ -770 +770 @@
+-    apply ContinuousOn.restrict
++    apply ContinuousOn.domRestrict
+@@ -813 +813 @@
+-end LeanEval.Topology.ClassificationOfSurfaces.InvarianceOfDomain
++end DifferentialGeometry.Topology

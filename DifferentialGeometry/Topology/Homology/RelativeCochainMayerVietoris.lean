@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.CochainExcision
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CochainExcision
 import Mathlib.Algebra.Homology.HomologicalComplexBiprod
 
 

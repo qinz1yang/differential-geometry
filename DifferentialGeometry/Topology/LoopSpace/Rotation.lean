@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.BasedCircle
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.BasedCircle
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.Basic
 
 

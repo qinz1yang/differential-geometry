@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CollapseDegree
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrierCoreCapCoverFrontier
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.SphereGeneratorCriterion
 
 noncomputable section

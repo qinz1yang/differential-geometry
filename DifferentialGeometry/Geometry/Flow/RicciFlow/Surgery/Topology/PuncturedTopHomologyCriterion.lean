@@ -2,11 +2,11 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassNoncompactDuality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassInputReduction
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
-import DifferentialGeometry.Topology.Homology.EuclideanLocalVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.EuclideanLocalVanishing
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.SpherePuncture
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 
 noncomputable section
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.ContractibleCoverSignFunctional
 import DifferentialGeometry.Topology.Homology.TriangleRayComplement
-import DifferentialGeometry.Topology.Homology.EuclideanLocalVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.EuclideanLocalVanishing
 import DifferentialGeometry.Topology.Homology.TriangleBoundary
 
 noncomputable section

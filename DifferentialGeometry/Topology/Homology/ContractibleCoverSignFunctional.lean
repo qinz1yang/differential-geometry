@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.RayComplementCoverEvaluation
-import DifferentialGeometry.Topology.Homology.TwoPointReducedZero
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TwoPointReducedZero
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
 
 noncomputable section

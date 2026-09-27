@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 
 noncomputable section
 

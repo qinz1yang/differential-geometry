@@ -1,8 +1,8 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassFrontier
 import DifferentialGeometry.Topology.Homology.ChainSupportCompact
-import DifferentialGeometry.Topology.Homology.RadialHomotopy
-import DifferentialGeometry.Topology.Homology.SphereHomologyVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RadialHomotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyVanishing
 import DifferentialGeometry.Topology.Homology.SpherePuncture
 
 noncomputable section

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
 import DifferentialGeometry.Topology.Homology.SphereGenerator
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.PathCones
 
 noncomputable section
@@ -84,16 +84,14 @@ theorem IsSphereHurewiczIsomorphism.of_subsingleton (n : ℕ) (x : X)
       fun y => ⟨1, (sphereHurewicz_one n x c).trans (Subsingleton.elim 0 y)⟩⟩,
     fun _ _ => Subsingleton.elim _ _⟩
 
-def SphereHurewiczTwoCanonical (X : Type u) [TopologicalSpace X]
-    [SimplyConnectedSpace X] : Prop :=
+def SphereHurewiczTwoCanonical (X : Type u) [TopologicalSpace X] : Prop :=
   ∀ x : X, IsSphereHurewiczIsomorphism 1 X x (integralLiftedSphereGenerator.{u} 1)
 
-def SphereHurewiczThreeCanonical (X : Type u) [TopologicalSpace X]
-    [SimplyConnectedSpace X] : Prop :=
+def SphereHurewiczThreeCanonical (X : Type u) [TopologicalSpace X] : Prop :=
   ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x) →
     IsSphereHurewiczIsomorphism 2 X x (integralLiftedSphereGenerator.{u} 2)
 
-theorem sphereHurewicz_two_isomorphism_iff_canonical_generator [SimplyConnectedSpace X] :
+theorem sphereHurewicz_two_isomorphism_iff_canonical_generator :
     (∀ (x : X) (c : integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
       (_ : IsSphereHomologyGenerator 1 c), IsSphereHurewiczIsomorphism 1 X x c) ↔
       SphereHurewiczTwoCanonical X := by
@@ -104,7 +102,7 @@ theorem sphereHurewicz_two_isomorphism_iff_canonical_generator [SimplyConnectedS
   · intro h x c hc
     exact IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 1 x hc (h x)
 
-theorem sphereHurewicz_three_isomorphism_iff_canonical_generator [SimplyConnectedSpace X] :
+theorem sphereHurewicz_three_isomorphism_iff_canonical_generator :
     (∀ (x : X) (_ : Subsingleton (HomotopyGroup (Fin 2) X x))
       (c : integralSingularHomology 3 (liftedHomotopySphere.{u} 2))
       (_ : IsSphereHomologyGenerator 2 c), IsSphereHurewiczIsomorphism 2 X x c) ↔
@@ -116,7 +114,7 @@ theorem sphereHurewicz_three_isomorphism_iff_canonical_generator [SimplyConnecte
   · intro h x hπ₂ c hc
     exact IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 2 x hc (h x hπ₂)
 
-theorem sphereHurewicz_two_isomorphism_of_canonical_generator [SimplyConnectedSpace X]
+theorem sphereHurewicz_two_isomorphism_of_canonical_generator
     (h : SphereHurewiczTwoCanonical X) (x : X)
     (c : integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
     (hc : IsSphereHomologyGenerator 1 c) :
@@ -125,7 +123,7 @@ theorem sphereHurewicz_two_isomorphism_of_canonical_generator [SimplyConnectedSp
         sphereHurewicz 1 x c (a * b) = sphereHurewicz 1 x c a + sphereHurewicz 1 x c b :=
   IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 1 x hc (h x)
 
-theorem sphereHurewicz_three_isomorphism_of_canonical_generator [SimplyConnectedSpace X]
+theorem sphereHurewicz_three_isomorphism_of_canonical_generator
     (h : SphereHurewiczThreeCanonical X) (x : X)
     (hπ₂ : Subsingleton (HomotopyGroup (Fin 2) X x))
     (c : integralSingularHomology 3 (liftedHomotopySphere.{u} 2))

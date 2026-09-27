@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyMaps
 import DifferentialGeometry.Topology.Homology.UniversalCoefficientsOne
 
 noncomputable section

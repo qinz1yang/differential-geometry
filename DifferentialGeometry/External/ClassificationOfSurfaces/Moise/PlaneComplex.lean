@@ -2,7 +2,6 @@
 Copyright (c) 2026 ClassificationOfSurfaces contributors. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: ClassificationOfSurfaces contributors
-Modified for this project; see ../MODIFICATIONS.md for the local changes.
 -/
 import Mathlib.Analysis.Convex.Topology
 import Mathlib.Analysis.Convex.Between
@@ -10,6 +9,7 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Normed.Affine.AddTorsor
 import Mathlib.LinearAlgebra.AffineSpace.Independent
 import Mathlib.Topology.LocallyFinite
+import DifferentialGeometry.External.ClassificationOfSurfaces.Moise.GeometricTriangulation
 
 /-!
 # Finite simplicial complexes in the plane
@@ -53,8 +53,18 @@ theorem plane_ext {p q : Plane} (h0 : p 0 = q 0) (h1 : p 1 = q 1) : p = q := by
 range of the independent family. -/
 theorem affineIndependent_finset_coe {ι : Type*} {f : ι → Plane}
     (hf : AffineIndependent ℝ f) {S : Finset Plane} (hS : ∀ a ∈ S, a ∈ Set.range f) :
-    AffineIndependent ℝ ((↑) : S → Plane) :=
-  hf.range.mono (fun a ha => hS a ha)
+    AffineIndependent ℝ ((↑) : S → Plane) := by
+  classical
+  choose g hg using fun a : S => hS a.1 a.2
+  have hinj : Function.Injective g := by
+    intro a b hab
+    apply Subtype.ext
+    rw [← hg a, ← hg b, hab]
+  have heq : ((↑) : S → Plane) = f ∘ g := by
+    funext a
+    exact (hg a).symm
+  rw [heq]
+  exact hf.comp_embedding ⟨g, hinj⟩
 
 /-- Every finite set of at most two distinct plane points is affinely independent. -/
 theorem affineIndependent_finset_of_card_le_two (A : Finset Plane) (hcard : A.card ≤ 2) :
@@ -258,10 +268,10 @@ theorem segment_subset_of_midpoint_mem_openSegment
     rw [segment_symm] at hp hq
     exact (convex_segment A B).segment_subset hp hq
 
-/-- If a segment contains two distinct points on the horizontal axis, then both
+/-- If a nondegenerate segment contains two distinct points on the horizontal axis, then both
 endpoints lie on that axis. -/
 theorem endpoint_secondCoords_eq_zero_of_two_axis_points {a b x y : Plane}
-    (hxy : x ≠ y) (hx : x ∈ segment ℝ a b)
+    (_ : a ≠ b) (hxy : x ≠ y) (hx : x ∈ segment ℝ a b)
     (hy : y ∈ segment ℝ a b) (hx0 : x 1 = 0) (hy0 : y 1 = 0) :
     a 1 = 0 ∧ b 1 = 0 := by
   rw [segment_eq_image_lineMap] at hx hy
@@ -560,16 +570,32 @@ noncomputable def toPlaneComplex : PlaneComplex where
       rw [hparent] at hxparent
       have hSI : AffineIndependent ℝ
           ((↑) : (S.image M.position) → Plane) := by
-        apply affineIndependent_finset_coe (M.affineIndependent_triangle S hS)
-        intro x hx
-        obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
-        exact ⟨⟨v, hv⟩, rfl⟩
+        let e : S ≃ S.image M.position := Equiv.ofBijective
+          (fun v => ⟨M.position v, Finset.mem_image.mpr ⟨v, v.2, rfl⟩⟩)
+          ⟨fun a b hab => Subtype.ext (M.position_injective (congrArg Subtype.val hab)), by
+            rintro ⟨p, hp⟩
+            obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hp
+            exact ⟨⟨v, hv⟩, rfl⟩⟩
+        have heq : ((↑) : (S.image M.position) → Plane) ∘ e =
+            (fun v : S => M.position v) := by rfl
+        have hmono : AffineIndependent ℝ (((↑) : (S.image M.position) → Plane) ∘ e) := by
+          rw [heq]
+          exact M.affineIndependent_triangle S hS
+        exact (affineIndependent_equiv e).mp hmono
       have hTI : AffineIndependent ℝ
           ((↑) : (T.image M.position) → Plane) := by
-        apply affineIndependent_finset_coe (M.affineIndependent_triangle T hT)
-        intro x hx
-        obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hx
-        exact ⟨⟨v, hv⟩, rfl⟩
+        let e : T ≃ T.image M.position := Equiv.ofBijective
+          (fun v => ⟨M.position v, Finset.mem_image.mpr ⟨v, v.2, rfl⟩⟩)
+          ⟨fun a b hab => Subtype.ext (M.position_injective (congrArg Subtype.val hab)), by
+            rintro ⟨p, hp⟩
+            obtain ⟨v, hv, rfl⟩ := Finset.mem_image.mp hp
+            exact ⟨⟨v, hv⟩, rfl⟩⟩
+        have heq : ((↑) : (T.image M.position) → Plane) ∘ e =
+            (fun v : T => M.position v) := by rfl
+        have hmono : AffineIndependent ℝ (((↑) : (T.image M.position) → Plane) ∘ e) := by
+          rw [heq]
+          exact M.affineIndependent_triangle T hT
+        exact (affineIndependent_equiv e).mp hmono
       have hsImage : s.image M.position ⊆ S.image M.position :=
         Finset.image_subset_image hsS
       have hSTImage : (S ∩ T).image M.position ⊆ S.image M.position :=
@@ -667,23 +693,9 @@ theorem mapAffineEquiv_cellCarrier (e : Plane ≃ᵃ[ℝ] Plane)
 
 theorem mapAffineEquiv_support (e : Plane ≃ᵃ[ℝ] Plane) :
     (K.mapAffineEquiv e).support = e '' K.support := by
-  change (⋃ s ∈ K.simplexes,
-      convexHull ℝ ((e ∘ K.position) '' (s : Set K.Vertex))) = e '' K.support
-  have hcarrier (s : Finset K.Vertex) :
-      convexHull ℝ ((e ∘ K.position) '' (s : Set K.Vertex)) = e '' K.cellCarrier s :=
-    K.mapAffineEquiv_cellCarrier e s
-  apply Set.Subset.antisymm
-  · intro x hx
-    obtain ⟨s, hs, hxs⟩ := Set.mem_iUnion₂.mp hx
-    rw [hcarrier] at hxs
-    obtain ⟨y, hy, rfl⟩ := hxs
-    exact ⟨y, K.cellCarrier_subset_support hs hy, rfl⟩
-  · rintro x ⟨y, hy, rfl⟩
-    change y ∈ ⋃ s ∈ K.simplexes, K.cellCarrier s at hy
-    obtain ⟨s, hs, hys⟩ := Set.mem_iUnion₂.mp hy
-    refine Set.mem_iUnion₂.mpr ⟨s, hs, ?_⟩
-    rw [hcarrier]
-    exact Set.mem_image_of_mem e hys
+  change (⋃ s ∈ K.simplexes, (K.mapAffineEquiv e).cellCarrier s) =
+    e '' ⋃ s ∈ K.simplexes, K.cellCarrier s
+  simp only [K.mapAffineEquiv_cellCarrier e, Set.image_iUnion]
 
 /-- The two-dimensional faces. -/
 def cells : Finset (Finset K.Vertex) :=
@@ -1025,18 +1037,12 @@ theorem Subdivides.mapAffineEquiv {K' K : PlaneComplex} (h : K'.Subdivides K)
     (K'.mapAffineEquiv e).Subdivides (K.mapAffineEquiv e) := by
   constructor
   · rw [K'.mapAffineEquiv_support, K.mapAffineEquiv_support, h.1]
-  · change ∀ s ∈ K'.simplexes, ∃ t ∈ K.simplexes,
-      convexHull ℝ ((e ∘ K'.position) '' (s : Set K'.Vertex)) ⊆
-        convexHull ℝ ((e ∘ K.position) '' (t : Set K.Vertex))
-    intro s hs
+  · intro s hs
+    change s ∈ K'.simplexes at hs
     obtain ⟨t, ht, hst⟩ := h.2 s hs
-    have hsource : convexHull ℝ ((e ∘ K'.position) '' (s : Set K'.Vertex)) =
-        e '' K'.cellCarrier s := K'.mapAffineEquiv_cellCarrier e s
-    have htarget : convexHull ℝ ((e ∘ K.position) '' (t : Set K.Vertex)) =
-        e '' K.cellCarrier t := K.mapAffineEquiv_cellCarrier e t
     refine ⟨t, ht, ?_⟩
-    rw [hsource, htarget]
-    exact Set.image_mono hst
+    exact (K'.mapAffineEquiv_cellCarrier e s).trans_le
+      ((Set.image_mono hst).trans_eq (K.mapAffineEquiv_cellCarrier e t).symm)
 
 theorem subordinateTo_subdivides (L K : PlaneComplex)
     (hsupport : (L.subordinateTo K).support = K.support) :
@@ -1157,17 +1163,14 @@ theorem affineConjugate {K : PlaneComplex} {f : Plane → Plane} (hf : IsPLOn K 
     IsPLOn (K.mapAffineEquiv source) (fun x => target (f (source.symm x))) := by
   obtain ⟨K', hsubdivision, haffine⟩ := hf
   refine ⟨K'.mapAffineEquiv source, hsubdivision.mapAffineEquiv source, ?_⟩
-  change ∀ s ∈ K'.simplexes,
-    IsAffineOn (fun x => target (f (source.symm x)))
-      (convexHull ℝ ((source ∘ K'.position) '' (s : Set K'.Vertex)))
   intro s hs
+  change s ∈ K'.simplexes at hs
   obtain ⟨g, hfg⟩ := haffine s hs
   refine ⟨target.toAffineMap.comp (g.comp source.symm.toAffineMap), ?_⟩
   intro x hx
-  have hcarrier : convexHull ℝ ((source ∘ K'.position) '' (s : Set K'.Vertex)) =
-      source '' K'.cellCarrier s := K'.mapAffineEquiv_cellCarrier source s
-  rw [hcarrier] at hx
-  obtain ⟨y, hy, rfl⟩ := hx
+  have hx' : x ∈ source '' K'.cellCarrier s :=
+    (K'.mapAffineEquiv_cellCarrier source s).le hx
+  obtain ⟨y, hy, rfl⟩ := hx'
   change target (f (source.symm (source y))) =
     target (g (source.symm (source y)))
   rw [source.symm_apply_apply]
@@ -1175,6 +1178,176 @@ theorem affineConjugate {K : PlaneComplex} {f : Plane → Plane} (hf : IsPLOn K 
 
 end IsPLOn
 
+namespace PlaneComplex
+
+variable (K : PlaneComplex)
+
+theorem mem_simplexes_of_mem_cells {t : Finset K.Vertex} (ht : t ∈ K.cells) :
+    t ∈ K.simplexes :=
+  (Finset.mem_filter.mp ht).1
+
+theorem card_of_mem_cells {t : Finset K.Vertex} (ht : t ∈ K.cells) : t.card = 3 :=
+  (Finset.mem_filter.mp ht).2
+
+/-- Barycentric evaluation: the point of the plane with the given barycentric weights. -/
+noncomputable def baryEval (x : K.Vertex → ℝ) : Plane :=
+  ∑ v, x v • K.position v
+
+theorem continuous_baryEval :
+    Continuous fun x : K.Vertex → ℝ => K.baryEval x := by
+  unfold baryEval
+  exact continuous_finsetSum _ fun v _ => (continuous_apply v).smul continuous_const
+
+theorem baryEval_eq_sum_of_support {x : K.Vertex → ℝ} {t : Finset K.Vertex}
+    (hsupp : ∀ v ∉ t, x v = 0) :
+    K.baryEval x = ∑ v ∈ t, x v • K.position v :=
+  (Finset.sum_subset (Finset.subset_univ t)
+    (fun v _ hv => by rw [hsupp v hv, zero_smul])).symm
+
+theorem sum_eq_sum_of_support {x : K.Vertex → ℝ} {t : Finset K.Vertex}
+    (hsupp : ∀ v ∉ t, x v = 0) :
+    ∑ v, x v = ∑ v ∈ t, x v :=
+  (Finset.sum_subset (Finset.subset_univ t) (fun v _ hv => hsupp v hv)).symm
+
+/-- Barycentric evaluation of weights supported on a face lands in that face's carrier. -/
+theorem baryEval_mem_cellCarrier {x : K.Vertex → ℝ} {t : Finset K.Vertex}
+    (hsupp : ∀ v ∉ t, x v = 0) (h0 : ∀ v, 0 ≤ x v) (h1 : ∑ v, x v = 1) :
+    K.baryEval x ∈ K.cellCarrier t := by
+  have hsum_t : ∑ v ∈ t, x v = 1 := by
+    rw [← K.sum_eq_sum_of_support hsupp]
+    exact h1
+  rw [K.baryEval_eq_sum_of_support hsupp, cellCarrier,
+    ← Finset.centerMass_eq_of_sum_1 _ _ hsum_t]
+  exact Finset.centerMass_mem_convexHull t (fun v _ => h0 v) (by rw [hsum_t]; norm_num)
+    (fun v hv => Set.mem_image_of_mem _ hv)
+
+/-- Every point of a face carrier has barycentric weights supported on that face. -/
+theorem exists_weights_of_mem_cellCarrier {p : Plane} {t : Finset K.Vertex}
+    (hp : p ∈ K.cellCarrier t) :
+    ∃ x : K.Vertex → ℝ, (∀ v ∉ t, x v = 0) ∧ (∀ v, 0 ≤ x v) ∧ (∑ v, x v = 1) ∧
+      K.baryEval x = p := by
+  classical
+  rw [cellCarrier, ← Finset.coe_image, Finset.convexHull_eq] at hp
+  obtain ⟨w, hw0, hw1, hwp⟩ := hp
+  have himg : ∀ g : Plane → ℝ, ∑ q ∈ t.image K.position, g q = ∑ v ∈ t, g (K.position v) :=
+    fun g => Finset.sum_image fun v _ v' _ h => K.position_injective h
+  refine ⟨fun v => if v ∈ t then w (K.position v) else 0, fun v hv => by simp [hv], ?_, ?_, ?_⟩
+  · intro v
+    by_cases hv : v ∈ t
+    · simpa [hv] using hw0 _ (Finset.mem_image_of_mem _ hv)
+    · simp [hv]
+  · rw [Finset.sum_ite_mem, Finset.univ_inter, ← himg]
+    exact hw1
+  · have hsupp : ∀ v ∉ t, (fun v => if v ∈ t then w (K.position v) else 0) v = 0 :=
+      fun v hv => by simp [hv]
+    rw [K.baryEval_eq_sum_of_support hsupp]
+    have hite : ∑ v ∈ t, (if v ∈ t then w (K.position v) else 0) • K.position v =
+        ∑ v ∈ t, w (K.position v) • K.position v :=
+      Finset.sum_congr rfl fun v hv => by rw [if_pos hv]
+    have himg2 : ∑ q ∈ t.image K.position, w q • q =
+        ∑ v ∈ t, w (K.position v) • K.position v :=
+      Finset.sum_image fun v _ v' _ h => K.position_injective h
+    rw [Finset.centerMass_eq_of_sum_1 _ id hw1] at hwp
+    simp only [id_eq] at hwp
+    rw [hite, ← himg2]
+    exact hwp
+
+/-- Barycentric weights on an affinely independent face are unique. -/
+theorem baryEval_injOn_face {t : Finset K.Vertex} (ht : t ∈ K.simplexes)
+    {x y : K.Vertex → ℝ}
+    (hx : ∀ v ∉ t, x v = 0) (hy : ∀ v ∉ t, y v = 0)
+    (hx1 : ∑ v, x v = 1) (hy1 : ∑ v, y v = 1)
+    (heq : K.baryEval x = K.baryEval y) : x = y := by
+  classical
+  have hAI := K.affineIndependent t ht
+  have hx1' : ∑ v : ↥t, x v.1 = 1 := by
+    rw [Finset.sum_coe_sort t (fun v => x v), ← K.sum_eq_sum_of_support hx]
+    exact hx1
+  have hy1' : ∑ v : ↥t, y v.1 = 1 := by
+    rw [Finset.sum_coe_sort t (fun v => y v), ← K.sum_eq_sum_of_support hy]
+    exact hy1
+  have hxcomb : Finset.univ.affineCombination ℝ (fun v : ↥t => K.position v)
+      (fun v : ↥t => x v.1) = K.baryEval x := by
+    rw [Finset.univ.affineCombination_eq_linear_combination _ _ hx1',
+      K.baryEval_eq_sum_of_support hx, ← Finset.sum_coe_sort t (fun v => x v • K.position v)]
+  have hycomb : Finset.univ.affineCombination ℝ (fun v : ↥t => K.position v)
+      (fun v : ↥t => y v.1) = K.baryEval y := by
+    rw [Finset.univ.affineCombination_eq_linear_combination _ _ hy1',
+      K.baryEval_eq_sum_of_support hy, ← Finset.sum_coe_sort t (fun v => y v • K.position v)]
+  have hind := hAI.indicator_eq_of_affineCombination_eq Finset.univ Finset.univ _ _ hx1' hy1'
+    (by rw [hxcomb, hycomb, heq])
+  funext v
+  by_cases hv : v ∈ t
+  · have := congrFun hind ⟨v, hv⟩
+    simpa using this
+  · rw [hx v hv, hy v hv]
+
+end PlaneComplex
+
+/-- The canonical barycentric homeomorphism from the abstract realization of a pure plane
+complex to its geometric support. -/
+noncomputable def PlaneComplex.realizationHomeomorph (K : PlaneComplex) (hpure : K.IsPure2) :
+    GeometricRealization K.Vertex K.cells ≃ₜ K.support := by
+  classical
+  have hmem : ∀ x : GeometricRealization K.Vertex K.cells, K.baryEval x.1 ∈ K.support := by
+    rintro ⟨x, ⟨h0, h1⟩, t, ht, hsupp⟩
+    exact Set.mem_biUnion (K.mem_simplexes_of_mem_cells ht)
+      (K.baryEval_mem_cellCarrier hsupp h0 h1)
+  let φ : GeometricRealization K.Vertex K.cells → K.support :=
+    fun x => ⟨K.baryEval x.1, hmem x⟩
+  have hcont : Continuous φ :=
+    Continuous.subtype_mk (K.continuous_baryEval.comp continuous_subtype_val) _
+  have hinj : Function.Injective φ := by
+    rintro ⟨x, ⟨hx0, hx1⟩, t, ht, hxsupp⟩ ⟨y, ⟨hy0, hy1⟩, u, hu, hysupp⟩ heqφ
+    have heval : K.baryEval x = K.baryEval y := congrArg Subtype.val heqφ
+    have hpx := K.baryEval_mem_cellCarrier hxsupp hx0 hx1
+    have hpy := K.baryEval_mem_cellCarrier hysupp hy0 hy1
+    have hpint : K.baryEval x ∈ K.cellCarrier (t ∩ u) := by
+      have hfi := K.face_inter t (K.mem_simplexes_of_mem_cells ht) u
+        (K.mem_simplexes_of_mem_cells hu)
+      have : K.baryEval x ∈
+          convexHull ℝ (K.position '' t) ∩ convexHull ℝ (K.position '' u) :=
+        ⟨hpx, by rw [heval]; exact hpy⟩
+      rw [hfi] at this
+      exact this
+    obtain ⟨z, hzsupp, hz0, hz1, hzeval⟩ := K.exists_weights_of_mem_cellCarrier hpint
+    have hzt : ∀ v ∉ t, z v = 0 := fun v hv =>
+      hzsupp v fun hmem => hv (Finset.mem_of_mem_inter_left hmem)
+    have hzu : ∀ v ∉ u, z v = 0 := fun v hv =>
+      hzsupp v fun hmem => hv (Finset.mem_of_mem_inter_right hmem)
+    have hxz : x = z := K.baryEval_injOn_face (K.mem_simplexes_of_mem_cells ht)
+      hxsupp hzt hx1 hz1 (by rw [hzeval])
+    have hyz : y = z := K.baryEval_injOn_face (K.mem_simplexes_of_mem_cells hu)
+      hysupp hzu hy1 hz1 (by rw [hzeval, ← heval])
+    exact Subtype.ext (hxz.trans hyz.symm)
+  have hsurj : Function.Surjective φ := by
+    rintro ⟨p, hp⟩
+    rw [PlaneComplex.support, Set.mem_iUnion₂] at hp
+    obtain ⟨σ, hσ, hpσ⟩ := hp
+    obtain ⟨t, ht, hσt, htcard⟩ := hpure σ hσ
+    have hpt : p ∈ K.cellCarrier t := by
+      rw [PlaneComplex.cellCarrier] at hpσ ⊢
+      exact convexHull_mono (Set.image_mono (Finset.coe_subset.mpr hσt)) hpσ
+    have htcells : t ∈ K.cells := Finset.mem_filter.mpr ⟨ht, htcard⟩
+    obtain ⟨x, hxsupp, hx0, hx1, hxeval⟩ := K.exists_weights_of_mem_cellCarrier hpt
+    exact ⟨⟨x, ⟨hx0, hx1⟩, t, htcells, hxsupp⟩, Subtype.ext hxeval⟩
+  exact Continuous.homeoOfEquivCompactToT2
+    (f := Equiv.ofBijective φ ⟨hinj, hsurj⟩) hcont
+
+@[simp] theorem PlaneComplex.realizationHomeomorph_apply (K : PlaneComplex)
+    (hpure : K.IsPure2) (x : GeometricRealization K.Vertex K.cells) :
+    ((K.realizationHomeomorph hpure) x).1 = K.baryEval x.1 := rfl
+
+/-- **Realization bridge** (elementary): a purely two-dimensional plane complex induces a
+geometric triangulation of its support, by barycentric coordinates in the face containing each
+point.  Injectivity is the uniqueness of barycentric coordinates on each affinely independent
+face, glued across faces by the face-to-face intersection condition. -/
+theorem PlaneComplex.toGeometricTriangulation (K : PlaneComplex) (hpure : K.IsPure2) :
+    Nonempty (GeometricTriangulation K.support) := by
+  exact ⟨{ Vertex := K.Vertex
+           faces := K.cells
+           faces_card := fun t ht => K.card_of_mem_cells ht
+           homeo := K.realizationHomeomorph hpure }⟩
 
 end Moise
 end ClassificationOfSurfaces

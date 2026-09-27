@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.Homology.Cochains
-import DifferentialGeometry.Topology.Homology.PathChains
-import DifferentialGeometry.Topology.Homology.SimplexBoundary
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Cochains
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.PathChains
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SimplexBoundary
 
 noncomputable section
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.LoopSpace.PolarAnnulus
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Complex
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Metric
 

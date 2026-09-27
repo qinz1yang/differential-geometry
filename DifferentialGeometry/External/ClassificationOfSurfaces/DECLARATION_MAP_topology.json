@@ -1,0 +1,308 @@
+[
+  {
+    "source_repository": "https://github.com/mccorvie/classification-of-surfaces",
+    "source_pin": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+    "source_path": "ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean",
+    "source_sha256": "d75eafa147b4a9bd9eca4c847636278c305fcaa3c1d13ddda628799ac67ce846",
+    "current_path": "DifferentialGeometry/Topology/InvarianceOfDomain.lean",
+    "current_sha256": "b6430f62de4a083b04421671490b54ee702bbe6f00de37a0a1a7b0634011710f",
+    "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean",
+    "target_sha256": "d105ad944b8399bed72abf542dbc8e1a57c6ea2e63d8080f174657e9de08233a",
+    "declaration_count": 16,
+    "declarations": [
+      {
+        "source_line": 59,
+        "private": null,
+        "kind": "class",
+        "name": "BrouwerFixedPoint",
+        "current_full_name": "DifferentialGeometry.Topology.BrouwerFixedPoint",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 64,
+        "private": null,
+        "kind": "theorem",
+        "name": "differentiable_approx_of_continuous",
+        "current_full_name": "DifferentialGeometry.Topology.differentiable_approx_of_continuous",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 171,
+        "private": null,
+        "kind": "lemma",
+        "name": "stability_of_zero",
+        "current_full_name": "DifferentialGeometry.Topology.stability_of_zero",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 191,
+        "private": "private ",
+        "kind": "theorem",
+        "name": "radialProjection_mem_sep_union_sphere",
+        "current_full_name": "DifferentialGeometry.Topology.radialProjection_mem_sep_union_sphere",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 209,
+        "private": null,
+        "kind": "theorem",
+        "name": "invariance_of_domain_interior",
+        "current_full_name": "DifferentialGeometry.Topology.invariance_of_domain_interior",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 464,
+        "private": null,
+        "kind": "theorem",
+        "name": "invariance_of_domain_open_map",
+        "current_full_name": "DifferentialGeometry.Topology.invariance_of_domain_open_map",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 501,
+        "private": null,
+        "kind": "theorem",
+        "name": "invariance_of_domain_partial_equiv",
+        "current_full_name": "DifferentialGeometry.Topology.invariance_of_domain_partial_equiv",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 514,
+        "private": null,
+        "kind": "class",
+        "name": "HasInvarianceOfDomain",
+        "current_full_name": "DifferentialGeometry.Topology.HasInvarianceOfDomain",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 520,
+        "private": null,
+        "kind": "theorem",
+        "name": "maps_nhds_to_nhds",
+        "current_full_name": "DifferentialGeometry.Topology.maps_nhds_to_nhds",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 528,
+        "private": null,
+        "kind": "instance",
+        "name": "instHasInvarianceOfDomainOfBrouwerFixedPoint",
+        "current_full_name": "DifferentialGeometry.Topology.instHasInvarianceOfDomainOfBrouwerFixedPoint",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 541,
+        "private": null,
+        "kind": "theorem",
+        "name": "independence_of_interior",
+        "current_full_name": "DifferentialGeometry.Topology.independence_of_interior",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 615,
+        "private": null,
+        "kind": "theorem",
+        "name": "isInteriorPoint_iff_any_chart",
+        "current_full_name": "DifferentialGeometry.Topology.isInteriorPoint_iff_any_chart",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 630,
+        "private": null,
+        "kind": "theorem",
+        "name": "isBoundaryPoint_iff_any_chart",
+        "current_full_name": "DifferentialGeometry.Topology.isBoundaryPoint_iff_any_chart",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 648,
+        "private": null,
+        "kind": "theorem",
+        "name": "isOpen_range_of_isOpen_of_continuous_injective",
+        "current_full_name": "DifferentialGeometry.Topology.isOpen_range_of_isOpen_of_continuous_injective",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 731,
+        "private": null,
+        "kind": "theorem",
+        "name": "isOpen_range_of_isOpen_of_isEmbedding",
+        "current_full_name": "DifferentialGeometry.Topology.isOpen_range_of_isOpen_of_isEmbedding",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      },
+      {
+        "source_line": 744,
+        "private": null,
+        "kind": "theorem",
+        "name": "mem_interior_range_of_eq_of_mem_interior_range_of_isInteriorPoint",
+        "current_full_name": "DifferentialGeometry.Topology.mem_interior_range_of_eq_of_mem_interior_range_of_isInteriorPoint",
+        "target": "DifferentialGeometry/External/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean"
+      }
+    ],
+    "mixed": false,
+    "native_only_declarations": [],
+    "delete_native": "DifferentialGeometry/Topology/InvarianceOfDomain.lean",
+    "all_public_names_preserved": true,
+    "normalized_current_code_unchanged": true,
+    "root_import_replacement": {
+      "from": "DifferentialGeometry.Topology.InvarianceOfDomain",
+      "to": "DifferentialGeometry.External.ClassificationOfSurfaces.Topology.InvarianceOfDomain"
+    },
+    "modifications": [
+      {
+        "from": "LeanEval.Topology.ClassificationOfSurfaces.InvarianceOfDomain",
+        "to": "DifferentialGeometry.Topology"
+      },
+      {
+        "from": "open MeasureTheory Metric Set ContinuousLinearMap LinearMap Topology Polynomial",
+        "to": "open MeasureTheory Metric Set ContinuousLinearMap LinearMap _root_.Topology Polynomial"
+      },
+      {
+        "from": "variable {E} [NormedAddCommGroup E]",
+        "to": "variable {E : Type*} [NormedAddCommGroup E]"
+      },
+      {
+        "from": "haveI : Nonempty (Fin n)",
+        "to": "have : Nonempty (Fin n)"
+      },
+      {
+        "from": "ContinuousOn.restrict",
+        "to": "ContinuousOn.domRestrict"
+      },
+      {
+        "from": "Set.mem_setOf_eq",
+        "to": "Set.mem_ofPred_eq"
+      },
+      {
+        "from": "continuousOn_iff_continuous_restrict",
+        "to": "continuousOn_iff_continuous_domRestrict"
+      },
+      {
+        "from": "letI : MeasurableSpace E",
+        "to": "let : MeasurableSpace E"
+      },
+      {
+        "from": "haveI : BorelSpace E",
+        "to": "have : BorelSpace E"
+      }
+    ],
+    "documentation": "All original source documentation, comments, copyright and author header restored verbatim; local code equals current source after comment/whitespace normalization.",
+    "license": "Apache-2.0",
+    "nested_provenance": [
+      {
+        "author": "Kai Lam",
+        "source": "mathlib4 PR36770",
+        "pin": "230d75acb32d80e7d7c4f4cd028b139f3dc28be7"
+      },
+      {
+        "author": "Steven Sivek",
+        "source": "stevensivek/TopologicalManifolds",
+        "pin": "05f80330d5a41b05376ae90eb8aa32c0166721db"
+      }
+    ],
+    "scratch_only": true,
+    "compiled": false,
+    "source_patch": "/tmp/ayush-invariance-split/InvarianceOfDomain.patch",
+    "source_snapshot": "/tmp/ayush-invariance-split/Upstream/ClassificationOfSurfaces/Topology/InvarianceOfDomain.lean.txt",
+    "migration_script": "/tmp/ayush-invariance-split/apply_split.py"
+  },
+  {
+    "repository": "https://github.com/mccorvie/classification-of-surfaces",
+    "commit": "e3c7230fe78d7b056a415d9ecae6f77887046b32",
+    "upstream_path": "ClassificationOfSurfaces/Moise/Brouwer.lean",
+    "upstream_sha256": "edb39f07609cefde882196306cbe572631c0a9eba45d8548e7ceaaefa7dd62b8",
+    "current_before_sha256": "8f347d036b629879ddfd55e3aa094b7fa07cb6605512bd9419416ef0c759edae",
+    "upstream_snapshot": "Upstream/ClassificationOfSurfaces/Moise/Brouwer.lean.txt",
+    "declarations": [
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.fixedPointRayScale",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.fixedPointRayScale",
+        "visibility": "public",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.fixedPointRayScale_mul_inner",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.fixedPointRayScale_mul_inner",
+        "visibility": "private",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.quadratic_root",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.quadratic_root",
+        "visibility": "private",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.fixedPointRayScale_quadratic",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.fixedPointRayScale_quadratic",
+        "visibility": "private",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.fixedPointRayEndpoint_mem_sphere",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.fixedPointRayEndpoint_mem_sphere",
+        "visibility": "private",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.fixedPointRayScale_eq_one_of_mem_sphere",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.fixedPointRayScale_eq_one_of_mem_sphere",
+        "visibility": "private",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.continuous_fixedPointRayScale",
+        "current_name": "DifferentialGeometry.Topology.FixedPoint.continuous_fixedPointRayScale",
+        "visibility": "private",
+        "destination": "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+        "changes": [
+          "Generalized Plane to arbitrary real inner-product space E",
+          "Preserved existing adapted namespace/name"
+        ]
+      },
+      {
+        "upstream_name": "LeanEval.Topology.ClassificationOfSurfaces.Moise.brouwer_fixed_point_planeClosedUnitBall",
+        "current_names": [
+          "DifferentialGeometry.Topology.FixedPoint.exists_retraction_closedBall_sphere_of_continuous_of_no_fixedPoint",
+          "DifferentialGeometry.Topology.FixedPoint.exists_fixedPoint_closedBall_of_continuous"
+        ],
+        "destinations": [
+          "DifferentialGeometry/External/ClassificationOfSurfaces/Moise/Brouwer.lean",
+          "DifferentialGeometry/Topology/FixedPoint/Brouwer.lean"
+        ],
+        "split": "Ray-based retraction construction remains third-party-derived in External; dimension-zero case and homological no-retraction assembly stay native."
+      },
+      {
+        "destination": "DifferentialGeometry/Topology/FixedPoint/Brouwer.lean",
+        "kind": "New arbitrary-finite-dimensional instance assembled from proved native theorem.",
+        "upstream_declaration": "Anonymous BrouwerFixedPoint Plane instance",
+        "current_declaration": "Anonymous BrouwerFixedPoint E instance under FiniteDimensional ℝ E"
+      }
+    ],
+    "build_status": "Not compiled; scratch-only proposal, root owns compilation."
+  }
+]

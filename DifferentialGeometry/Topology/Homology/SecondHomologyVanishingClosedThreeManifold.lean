@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.EuclideanLocalVanishing
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.EuclideanLocalVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.Homology.LowDegreeHurewiczNormalization
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleHomology
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
@@ -55,7 +55,7 @@ theorem subsingleton_integralSingularHomology_of_homotopyEquiv {X Y : Type u}
 
 theorem subsingleton_integralSingularHomology_two_of_noncompactPoincareDuality_punctured
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [SimplyConnectedSpace M] (x : M)
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M] (x : M)
     (h : noncompactPoincareDualityTwoOne ({x}ᶜ : Set M)) :
     Subsingleton (integralSingularHomology 2 M) :=
   haveI : Subsingleton (integralSingularCohomology 1 M) :=
@@ -65,8 +65,8 @@ theorem subsingleton_integralSingularHomology_two_of_noncompactPoincareDuality_p
 
 theorem
     noncompactPoincareDualityTwoOne_iff_subsingleton_integralSingularHomology_two_compl_singleton
-    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [SimplyConnectedSpace M] (x : M) :
+    {M : Type u} [TopologicalSpace M]
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M] (x : M) :
     noncompactPoincareDualityTwoOne ({x}ᶜ : Set M) ↔
       Subsingleton (integralSingularHomology 2 ({x}ᶜ : Set M)) := by
   have : Subsingleton (integralSingularCohomology 1 M) :=

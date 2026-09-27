@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Integration.BallBoundary
 import DifferentialGeometry.Geometry.Measure.Area.Euclidean
 import DifferentialGeometry.Geometry.Metric.ConvexProjection
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 import Mathlib.Analysis.Calculus.FDeriv.Congr
 import Mathlib.MeasureTheory.Measure.Lebesgue.EqHaar
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Manifold
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.CompactCap
-import DifferentialGeometry.Topology.Homology.ManifoldHomologyGenerator
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ManifoldHomologyGenerator
 
 noncomputable section
 

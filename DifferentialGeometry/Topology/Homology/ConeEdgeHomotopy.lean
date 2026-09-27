@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
 import DifferentialGeometry.Topology.Homology.PathCones
-import DifferentialGeometry.Topology.Homology.PathEvaluation
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.PathEvaluation
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 

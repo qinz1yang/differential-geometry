@@ -63,7 +63,7 @@ theorem cubeSphereHurewiczThreeFrontier_iff_bijective_hurewiczThree
       (cubeSphereHurewiczThreeGeneration_iff_surjective_hurewiczThree q)
 
 theorem sphereHurewiczTwoCanonical_iff_forall_subsingleton_homotopyGroup
-    [SimplyConnectedSpace M] (hH₂ : Subsingleton (integralSingularHomology 2 M)) :
+    (hH₂ : Subsingleton (integralSingularHomology 2 M)) :
     SphereHurewiczTwoCanonical M ↔ ∀ q : M, Subsingleton (HomotopyGroup (Fin 2) M q) := by
   constructor
   · intro h q
@@ -74,7 +74,6 @@ theorem sphereHurewiczTwoCanonical_iff_forall_subsingleton_homotopyGroup
     exact IsSphereHurewiczIsomorphism.of_subsingleton 1 q (integralLiftedSphereGenerator.{u} 1)
 
 theorem sphereHurewiczThreeCanonical_iff_forall_bijective_hurewiczThree
-    [SimplyConnectedSpace M]
     (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass) :
     SphereHurewiczThreeCanonical M ↔
       ∀ q : M, Subsingleton (HomotopyGroup (Fin 2) M q) →
@@ -86,8 +85,8 @@ theorem sphereHurewiczThreeCanonical_iff_forall_bijective_hurewiczThree
   · intro h q hq
     refine ⟨(bijective_sphereHurewicz_iff_bijective_integralLiftedSphereGenerator 2 q
         cubeSphereFundamentalClass hgen).mp ?_,
-      hurewiczThreeMultiplicative_of_cubeSphereFundamentalClass_isSphereHomologyGenerator hgen
-        q hq (integralLiftedSphereGenerator.{u} 2)
+      sphereHurewicz_mul_of_cubeSphereFundamentalClass_isSphereHomologyGenerator hgen
+        q (integralLiftedSphereGenerator.{u} 2)
         (integralLiftedSphereGenerator_isGenerator 2)⟩
     rw [sphereHurewicz_cubeSphereFundamentalClass q]
     exact h q hq

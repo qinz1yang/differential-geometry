@@ -106,7 +106,7 @@ theorem bijective_sphereHurewicz_iff_forall_exists_map_eq_and_nullhomotopic_of_a
       (surjective_sphereHurewicz_iff_forall_exists_map_eq n x c).mpr hs⟩
 
 theorem bijective_sphereHurewicz_iff_bijective_integralLiftedSphereGenerator
-    [SimplyConnectedSpace X] (n : ℕ) (x : X)
+    (n : ℕ) (x : X)
     (c : integralSingularHomology (n + 1) (liftedHomotopySphere.{u} n))
     (hc : IsSphereHomologyGenerator n c) :
     Function.Bijective (sphereHurewicz n x c) ↔

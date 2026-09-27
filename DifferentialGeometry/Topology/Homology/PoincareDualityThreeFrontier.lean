@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Homology.HomologyTwoFrontier
-import DifferentialGeometry.Topology.Homology.RadialHomotopy
-import DifferentialGeometry.Topology.Homology.SphereHomologyVanishing
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RadialHomotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 import DifferentialGeometry.Topology.Homology.UniversalCoefficientsOneLinearEquiv
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 

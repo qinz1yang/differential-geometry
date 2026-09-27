@@ -1,7 +1,7 @@
 import Mathlib.Topology.UniformSpace.UniformEmbedding
 import Mathlib.Topology.MetricSpace.Isometry
 import Mathlib.Topology.ContinuousMap.Basic
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 import Mathlib.Analysis.Normed.Module.RCLike.Real
 
 noncomputable section

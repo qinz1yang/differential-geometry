@@ -1,5 +1,6 @@
+import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
-import DifferentialGeometry.Topology.Homology.RelativeMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeMaps
 
 noncomputable section
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.HurewiczOneAbelianization
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
-import DifferentialGeometry.Topology.Homology.PathEvaluation
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.PathEvaluation
 import DifferentialGeometry.Topology.Homology.SimplexBoundaryFilling
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
 
@@ -81,7 +81,7 @@ theorem integralPathSimplex_map (f : C(X, Y)) {x y : X} (p : Path x y) :
     integralPathSimplex_apply]
   rfl
 
-theorem integralPathChain_map (f : C(X, Y)) {x y : X} (p : Path x y) :
+theorem integralPathChain_map_eq_singularChainImageGen (f : C(X, Y)) {x y : X} (p : Path x y) :
     integralPathChain (p.map f.continuous) =
       singularChainImageGen 1 f (integralPathChain p) := by
   rw [integralPathChain, integralPathChain, integralPathSimplex_map, singularChainImageGen_simplex]
@@ -150,7 +150,7 @@ theorem sphereHurewicz_circleSphereFundamentalClass_mk (x : X) (Γ : GenLoop (Fi
     integralPathLoopClass_eq_integralHomologyClass, integralSingularHomologyMap_integralHomologyClass]
   apply integralHomologyClass_congr
   rw [integralSingularChainMap_apply_eq_singularChainImageGen, circleSphereFundamentalChain,
-    ← integralPathChain_map, circleSphereLoop_map_pathChain]
+    ← integralPathChain_map_eq_singularChainImageGen, circleSphereLoop_map_pathChain]
 
 theorem sphereHurewicz_circleSphereFundamentalClass_transAt (x : X)
     (Γ Δ : GenLoop (Fin 1) X x) :

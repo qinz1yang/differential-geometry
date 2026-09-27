@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 import Mathlib.Geometry.Manifold.ChartedSpace
 import Mathlib.Analysis.LocallyConvex.WithSeminorms
 

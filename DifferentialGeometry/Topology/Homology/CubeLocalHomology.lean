@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homotopy.CubeInterior
-import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 
 noncomputable section
 

@@ -6,11 +6,10 @@ universe u
 
 namespace DifferentialGeometry.Topology
 
-def HurewiczLowDegreeFrontier (X : Type u) [TopologicalSpace X]
-    [SimplyConnectedSpace X] : Prop :=
+def HurewiczLowDegreeFrontier (X : Type u) [TopologicalSpace X] : Prop :=
   SphereHurewiczTwoCanonical X ∧ SphereHurewiczThreeCanonical X
 
-variable {X : Type u} [TopologicalSpace X] [SimplyConnectedSpace X]
+variable {X : Type u} [TopologicalSpace X]
 
 theorem hurewiczLowDegreeFrontier_iff_canonical_isomorphism :
     HurewiczLowDegreeFrontier X ↔

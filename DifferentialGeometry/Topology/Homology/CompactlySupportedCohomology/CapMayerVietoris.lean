@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Relat
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.MayerVietoris
 import DifferentialGeometry.Topology.Homology.RelativeCapMayerVietoris
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.SupportPairRepresentatives
-import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.Cap
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CompactlySupportedCohomology.Cap
 
 noncomputable section
 

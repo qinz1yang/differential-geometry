@@ -1,3 +1,8 @@
+/-
+Copyright (c) 2026 DifferentialGeometry contributors. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: DifferentialGeometry contributors
+-/
 import DifferentialGeometry.Topology.Manifold.ChartSupportedExtension
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
 
@@ -30,7 +35,7 @@ variable {E F EP H G HP M N P : Type*}
   [TopologicalSpace N] [ChartedSpace G N]
   [TopologicalSpace P] [ChartedSpace HP P]
 
-theorem contMDiff_extendChartById_of_mapsTo [T2Space M]
+theorem contMDiff_extendById_of_contMDiff_of_mapsTo [T2Space M]
     (e : OpenPartialHomeomorph M N)
     (he : ContMDiffOn I J ∞ e e.source)
     (hei : ContMDiffOn J I ∞ e.symm e.target)
@@ -39,7 +44,7 @@ theorem contMDiff_extendChartById_of_mapsTo [T2Space M]
     {K : Set N} (hK : IsCompact K) (hKt : K ⊆ e.target)
     (hfix : ∀ p z, z ∉ K → f (p, z) = z) :
     ContMDiff (IP.prod I) I ∞
-      (fun q : P × M ↦ extendChartById e (fun z ↦ f (q.1, z)) q.2) := by
+      (fun q : P × M ↦ OpenPartialHomeomorph.extendById e (fun z ↦ f (q.1, z)) q.2) := by
   have hKi : IsCompact (e.symm '' K) :=
     hK.image_of_continuousOn (hei.continuousOn.mono hKt)
   intro q
@@ -58,23 +63,24 @@ theorem contMDiff_extendChartById_of_mapsTo [T2Space M]
     apply contMDiffAt_snd.congr_of_eventuallyEq
     filter_upwards [continuous_snd.continuousAt.preimage_mem_nhds
       (hKi.isClosed.isOpen_compl.mem_nhds hqK)] with r hr
-    exact extendChartById_eq_of_notMem_image e _ (hfix r.1) hr
+    exact OpenPartialHomeomorph.extendById_eq_of_notMem_image e _ (hfix r.1) hr
 
 end Smooth
 
-theorem leftInverse_extendChartById_of_mapsTo
+theorem leftInverse_extendById_of_mapsTo
     {M N : Type*} [TopologicalSpace M] [TopologicalSpace N]
     (e : OpenPartialHomeomorph M N) {f g : N → N}
     (hgf : Function.LeftInverse g f) (hf : MapsTo f e.target e.target) :
-    Function.LeftInverse (extendChartById e g) (extendChartById e f) := by
+    Function.LeftInverse (OpenPartialHomeomorph.extendById e g)
+      (OpenPartialHomeomorph.extendById e f) := by
   intro x
   by_cases hx : x ∈ e.source
   · have hfx := hf (e.map_source hx)
-    rw [show extendChartById e f x = e.symm (f (e x)) from if_pos hx,
-      show extendChartById e g (e.symm (f (e x))) =
+    rw [show OpenPartialHomeomorph.extendById e f x = e.symm (f (e x)) from if_pos hx,
+      show OpenPartialHomeomorph.extendById e g (e.symm (f (e x))) =
         e.symm (g (e (e.symm (f (e x))))) from if_pos (e.map_target hfx),
       e.right_inv hfx, hgf, e.left_inv hx]
-  · rw [show extendChartById e f x = x from if_neg hx]
+  · rw [show OpenPartialHomeomorph.extendById e f x = x from if_neg hx]
     exact if_neg hx
 
 end DifferentialGeometry.Topology.Manifold
@@ -104,8 +110,9 @@ theorem exists_diffeomorph_family_extension [T2Space M]
     ∃ F : P → Diffeomorph I I M M ∞,
       ContMDiff (IP.prod I) I ∞ (fun q : P × M ↦ F q.1 q.2) ∧
       ContMDiff (IP.prod I) I ∞ (fun q : P × M ↦ (F q.1).symm q.2) ∧
-      (∀ p x, F p x = extendChartById e.symm.toOpenPartialHomeomorph (D p) x ∧
-        (F p).symm x = extendChartById e.symm.toOpenPartialHomeomorph (D p).symm x) ∧
+      (∀ p x, F p x = OpenPartialHomeomorph.extendById e.symm.toOpenPartialHomeomorph (D p) x ∧
+        (F p).symm x =
+          OpenPartialHomeomorph.extendById e.symm.toOpenPartialHomeomorph (D p).symm x) ∧
       IsCompact (e '' K) ∧ e '' K ⊆ e.target ∧
       ∀ p x, x ∉ e '' K → F p x = x ∧ (F p).symm x = x := by
   let c := e.symm.toOpenPartialHomeomorph
@@ -115,16 +122,16 @@ theorem exists_diffeomorph_family_extension [T2Space M]
     mapsTo_of_injective_of_fix_compl (D p).injective hKs (fun z hz ↦ hfix p z hz)
   have hmapi (p : P) : MapsTo (D p).symm c.target c.target :=
     mapsTo_of_injective_of_fix_compl (D p).symm.injective hKs (fun z hz ↦ hfixi p z hz)
-  have hF := contMDiff_extendChartById_of_mapsTo c e.contMDiffOn_invFun
+  have hF := contMDiff_extendById_of_contMDiff_of_mapsTo c e.contMDiffOn_invFun
     e.contMDiffOn_toFun hD hmap hK hKs (fun p z hz ↦ hfix p z hz)
-  have hG := contMDiff_extendChartById_of_mapsTo c e.contMDiffOn_invFun
+  have hG := contMDiff_extendById_of_contMDiff_of_mapsTo c e.contMDiffOn_invFun
     e.contMDiffOn_toFun hDi hmapi hK hKs (fun p z hz ↦ hfixi p z hz)
   let F (p : P) : Diffeomorph I I M M ∞ :=
     { toEquiv :=
-        { toFun := extendChartById c (D p)
-          invFun := extendChartById c (D p).symm
-          left_inv := leftInverse_extendChartById_of_mapsTo c (D p).symm_apply_apply (hmap p)
-          right_inv := leftInverse_extendChartById_of_mapsTo c (D p).apply_symm_apply (hmapi p) }
+        { toFun := OpenPartialHomeomorph.extendById c (D p)
+          invFun := OpenPartialHomeomorph.extendById c (D p).symm
+          left_inv := leftInverse_extendById_of_mapsTo c (D p).symm_apply_apply (hmap p)
+          right_inv := leftInverse_extendById_of_mapsTo c (D p).apply_symm_apply (hmapi p) }
       contMDiff_toFun := hF.comp (contMDiff_const.prodMk contMDiff_id)
       contMDiff_invFun := hG.comp (contMDiff_const.prodMk contMDiff_id) }
   refine ⟨F, hF, hG, fun _ _ ↦ ⟨rfl, rfl⟩, ?_, ?_, ?_⟩
@@ -132,7 +139,7 @@ theorem exists_diffeomorph_family_extension [T2Space M]
   · rintro x ⟨z, hz, rfl⟩
     exact e.map_source (hKs hz)
   · intro p x hx
-    exact ⟨extendChartById_eq_of_notMem_image c _ (fun z hz ↦ hfix p z hz) hx,
-      extendChartById_eq_of_notMem_image c _ (fun z hz ↦ hfixi p z hz) hx⟩
+    exact ⟨OpenPartialHomeomorph.extendById_eq_of_notMem_image c _ (fun z hz ↦ hfix p z hz) hx,
+      OpenPartialHomeomorph.extendById_eq_of_notMem_image c _ (fun z hz ↦ hfixi p z hz) hx⟩
 
 end PartialDiffeomorph

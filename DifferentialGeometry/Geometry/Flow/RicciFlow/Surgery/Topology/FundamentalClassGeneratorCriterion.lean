@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Fundamental
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FundamentalClassMinimalHypotheses
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedOrientedStage
 import DifferentialGeometry.Topology.Manifold.SphereOrientation
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 
 noncomputable section
 
@@ -66,7 +66,7 @@ def ClosedThreeManifoldTopHomologyInfiniteCyclic : Prop :=
     [T2Space M] [CompactSpace M] [ConnectedSpace M], Nonempty (IntegralHomology M 3 ≃ₗ[ℤ] ℤ)
 
 theorem exists_unique_fundamentalClass_of_exists_of_localOrientationClass_generator_of_nonempty_linearEquiv_int
-    [T2Space M] [CompactSpace M] (o : TangentOrientationSection M) (x : M)
+    (o : TangentOrientationSection M) (x : M)
     (hexists : ∃ z : IntegralHomology M 3, ∀ y : M,
       absoluteToRelative M ({y}ᶜ) 3 z = localOrientationClass o y)
     (hlocal : Function.Bijective (fun k : ℤ => k • localOrientationClass o x))

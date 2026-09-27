@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.SimplexBoundary
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SimplexBoundary
 import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
 
 noncomputable section

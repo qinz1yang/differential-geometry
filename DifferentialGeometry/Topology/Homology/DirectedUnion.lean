@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.ChainSupportCompact
-import DifferentialGeometry.Topology.Homology.RelativeMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeMaps
 
 noncomputable section
 

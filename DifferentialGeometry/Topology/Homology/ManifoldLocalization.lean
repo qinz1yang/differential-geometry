@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.ManifoldCompactHomology
-import DifferentialGeometry.Topology.Homology.RelativeEmpty
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ManifoldCompactHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeEmpty
 
 noncomputable section
 open Set Module

@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Homology.ChainSupportCompact
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
-import DifferentialGeometry.Topology.Homology.SphereHomologyVanishing
-import DifferentialGeometry.Topology.Homology.RadialHomotopy
-import DifferentialGeometry.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereHomologyVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RadialHomotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 
 noncomputable section

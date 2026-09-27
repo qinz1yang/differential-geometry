@@ -1,0 +1,19 @@
+name = "PoincareLean"
+version = "0.1.0"
+keywords = ["math", "geometry", "topology"]
+defaultTargets = ["Poincare"]
+
+[leanOptions]
+autoImplicit = false
+pp.unicode.fun = true
+weak.linter.mathlibStandardSet = true
+weak.linter.style.header = false
+weak.linter.style.longLine = false
+
+[[require]]
+name = "DifferentialGeometry"
+git = "https://github.com/qinz1yang/differential-geometry.git"
+rev = "v0.1.2"
+
+[[lean_lib]]
+name = "Poincare"

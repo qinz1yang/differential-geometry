@@ -1,7 +1,7 @@
-import DifferentialGeometry.Topology.Homology.CarrierRestriction
-import DifferentialGeometry.Topology.Homology.ChainSupport
-import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
-import DifferentialGeometry.Topology.Homology.SubdivisionNaturality
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CarrierRestriction
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ChainSupport
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SubdivisionNaturality
 import Mathlib.Topology.Compactness.Compact
 
 

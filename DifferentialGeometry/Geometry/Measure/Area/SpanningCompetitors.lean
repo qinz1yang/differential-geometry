@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Measure.Area.GeodesicAnnulus
 import DifferentialGeometry.Topology.LoopSpace.AttachAnnulus
-import DifferentialGeometry.Topology.LoopSpace.ContinuousFilling
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.ContinuousFilling
 import DifferentialGeometry.Geometry.Metric.ManifoldApproximation
 
 

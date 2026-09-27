@@ -11,7 +11,7 @@ open DifferentialGeometry.Topology (cubeSphereFundamentalClass HurewiczLowDegree
   hurewiczLowDegreeHypothesis_iff_frontier homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical
   integralSingularHomology IsSphereHomologyGenerator)
 
-variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
+variable {M : Type u} [TopologicalSpace M]
 
 theorem hurewiczLowDegreeHypothesis_iff_forall_homotopyGroup_two_and_hurewiczThree_bijective
     (hH₂ : Subsingleton (integralSingularHomology 2 M))
@@ -49,6 +49,8 @@ theorem rfs_homotopy_groups_hypothesis_iff_forall_homotopyGroup_two_and_hurewicz
     exact ⟨hH₂, hgen,
       (hurewiczLowDegreeHypothesis_iff_forall_homotopyGroup_two_and_hurewiczThree_bijective
         hH₂ hgen).mpr h⟩
+
+variable [SimplyConnectedSpace M]
 
 theorem subsingleton_homotopyGroup_two_of_forall_hurewiczLowDegree
     (hHLD : ∀ (X : Type u) [TopologicalSpace X] [SimplyConnectedSpace X],

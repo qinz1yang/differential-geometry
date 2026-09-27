@@ -197,7 +197,7 @@ theorem isSphereHomologyGenerator_cubeSphereFundamentalClass_iff_coordinate :
       rw [LinearEquiv.trans_apply, h]
       simp
 
-variable {M : Type u} [TopologicalSpace M] [SimplyConnectedSpace M]
+variable {M : Type u} [TopologicalSpace M]
 
 theorem homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical
     (h : SphereHurewiczTwoCanonical M)

@@ -3,7 +3,7 @@ import Mathlib.Analysis.Complex.Basic
 import Mathlib.Topology.Algebra.ConstMulAction
 import DifferentialGeometry.Analysis.Complex.CircleArc
 import Mathlib.Analysis.Normed.Module.Normalize
-import DifferentialGeometry.Topology.LoopSpace.SpanningDisk
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.SpanningDisk
 
 noncomputable section
 

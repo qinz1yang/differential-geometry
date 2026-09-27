@@ -139,14 +139,14 @@ theorem injective_hurewiczThree_of_freeSphereNullhomotopic [SimplyConnectedSpace
   exact mul_inv_eq_one.mp (hker (a * b⁻¹) h0)
 
 theorem sphereHurewiczTwoCanonical_iff_hurewiczTwoBijective_of_multiplicative
-    [SimplyConnectedSpace X] (hmul : HurewiczTwoMultiplicative X) :
+    (hmul : HurewiczTwoMultiplicative X) :
     SphereHurewiczTwoCanonical X ↔ HurewiczTwoBijective X :=
   ⟨hurewiczTwoBijective_of_sphereHurewiczTwoCanonical,
     fun h x => ⟨h x, hmul x (integralLiftedSphereGenerator.{u} 1)
       (integralLiftedSphereGenerator_isGenerator 1)⟩⟩
 
 theorem sphereHurewiczThreeCanonical_iff_hurewiczThreeBijective_of_multiplicative
-    [SimplyConnectedSpace X] (hmul : HurewiczThreeMultiplicative X) :
+    (hmul : HurewiczThreeMultiplicative X) :
     SphereHurewiczThreeCanonical X ↔ HurewiczThreeBijective X :=
   ⟨hurewiczThreeBijective_of_sphereHurewiczThreeCanonical,
     fun h x hπ => ⟨h x hπ, hmul x hπ (integralLiftedSphereGenerator.{u} 2)

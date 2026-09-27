@@ -13,11 +13,11 @@ def HurewiczLowDegreeHypothesis (X : Type u) [TopologicalSpace X] : Prop :=
     ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x) →
       IsSphereHurewiczIsomorphism 2 X x (integralLiftedSphereGenerator.{u} 2)
 
-theorem hurewiczLowDegreeHypothesis_iff_frontier [SimplyConnectedSpace X] :
+theorem hurewiczLowDegreeHypothesis_iff_frontier :
     HurewiczLowDegreeHypothesis X ↔ HurewiczLowDegreeFrontier X :=
   Iff.rfl
 
-theorem hurewiczLowDegreeHypothesis_iff_canonical_isomorphism [SimplyConnectedSpace X] :
+theorem hurewiczLowDegreeHypothesis_iff_canonical_isomorphism :
     HurewiczLowDegreeHypothesis X ↔
       (∀ (x : X) (c : integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
         (_ : IsSphereHomologyGenerator 1 c), IsSphereHurewiczIsomorphism 1 X x c) ∧

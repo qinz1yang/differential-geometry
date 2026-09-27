@@ -1,7 +1,8 @@
+import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Topology.Homology.EuclideanLocalTop
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
-import DifferentialGeometry.Topology.Homology.ModuleHomologyClasses
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyClasses
 import DifferentialGeometry.Topology.Homology.SphereGeneratorCriterion
 
 noncomputable section

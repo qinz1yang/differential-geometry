@@ -8,7 +8,7 @@ import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 import DifferentialGeometry.Topology.Homology.SphereHurewicz
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 
 noncomputable section
 
@@ -184,7 +184,7 @@ theorem nonempty_linearEquiv_int_of_isSphereHurewiczIsomorphism (x₀ : M)
     ⟨0, z, fun h => hz h.symm⟩
 
 theorem hasTopHomologyDegreeFunctional_of_surjective_sphereMap
-    (M : Type) [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
+    (M : Type) [TopologicalSpace M]
     (φ : C(M, SphereThree))
     (h : Function.Surjective (integralHomologyMap 3 φ)) :
     HasTopHomologyDegreeFunctional M := by

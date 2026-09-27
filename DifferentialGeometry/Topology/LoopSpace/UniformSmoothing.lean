@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import DifferentialGeometry.Analysis.Calculus.Periodic.SmoothingFamilies
 import Mathlib.Topology.ContinuousMap.Compact
 import Mathlib.Topology.UniformSpace.HeineCantor

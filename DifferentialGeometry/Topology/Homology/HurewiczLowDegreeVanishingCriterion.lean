@@ -6,7 +6,7 @@ universe u
 
 namespace DifferentialGeometry.Topology
 
-variable {X : Type u} [TopologicalSpace X] [SimplyConnectedSpace X]
+variable {X : Type u} [TopologicalSpace X]
 
 theorem sphereHurewiczTwoCanonical_iff_subsingleton_integralSingularHomology_two
     (x₀ : X) (hπ₂ : ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x)) :

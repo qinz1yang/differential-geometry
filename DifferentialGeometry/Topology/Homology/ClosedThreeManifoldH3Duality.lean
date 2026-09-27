@@ -6,7 +6,7 @@ import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.NoncompactPoincareDualityFrontier
 import DifferentialGeometry.Topology.Homology.NoncompactTopHomologyVanishing
 import DifferentialGeometry.Topology.Homology.SecondHomologyVanishingClosedThreeManifold
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 
 noncomputable section
 
@@ -150,7 +150,7 @@ theorem nonempty_linearEquiv_int_of_subsingleton_punctured_of_injective_singular
 
 omit [IsManifold ThreeModel ∞ M] in
 theorem subsingleton_integralHomology_compl_singleton_three_iff_noncompactPoincareDualityThreeZero
-    [T2Space M] [CompactSpace M] [ConnectedSpace M] (x₀ : M) :
+    [T2Space M] [ConnectedSpace M] (x₀ : M) :
     Subsingleton (IntegralHomology ({x₀}ᶜ : Set M) 3) ↔
       noncompactPoincareDualityThreeZero ({x₀}ᶜ : Set M) := by
   have hconn : ConnectedSpace ↥({x₀}ᶜ : Set M) := connectedSpace_compl_singleton (M := M) x₀
@@ -202,7 +202,7 @@ theorem closedThreeManifoldPuncturedVanishing_iff_noncompactPoincareDuality
 omit [IsManifold ThreeModel ∞ M] in
 theorem
     nonempty_linearEquiv_int_of_noncompactPoincareDualityThreeZero_of_injective_homologyMap
-    [T2Space M] [CompactSpace M] [ConnectedSpace M] (x₀ : M)
+    [T2Space M] [ConnectedSpace M] (x₀ : M)
     (h : noncompactPoincareDualityThreeZero ({x₀}ᶜ : Set M))
     (hinj : Function.Injective
       (integralSingularHomologyMap 2 (singularSubspaceInclusion ({x₀}ᶜ : Set M)))) :

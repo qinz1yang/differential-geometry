@@ -11,7 +11,7 @@ open DifferentialGeometry.Topology (integralSingularHomology)
 open scoped ContDiff
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [SimplyConnectedSpace M]
+    [IsManifold ThreeModel ∞ M]
 
 theorem rfs_homotopy_groups_of_canonical_inputs (o : TangentOrientationSection M) (q : M)
     (hH₂ : Subsingleton (integralSingularHomology 2 M))

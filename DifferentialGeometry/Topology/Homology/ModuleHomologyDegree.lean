@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyMaps
 import Mathlib.Algebra.Homology.HomologicalComplexAbelian
 import Mathlib.Algebra.Homology.ShortComplex.HomologicalComplex
 

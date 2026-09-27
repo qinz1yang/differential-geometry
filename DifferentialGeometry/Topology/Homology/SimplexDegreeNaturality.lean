@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.SimplexDegreeChainLevel
-import DifferentialGeometry.Topology.Homology.LocalCharts
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalCharts
 
 noncomputable section
 open CategoryTheory CategoryTheory.Limits Set AlgebraicTopology

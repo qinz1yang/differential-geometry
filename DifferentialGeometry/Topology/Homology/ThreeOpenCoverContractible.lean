@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
-import DifferentialGeometry.Topology.Homology.ContractiblePair
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ContractiblePair
 import DifferentialGeometry.Topology.Homology.NoncompactTopHomologyVanishing
 import DifferentialGeometry.Topology.Homology.SecondHomologyVanishingClosedThreeManifold
 import DifferentialGeometry.Topology.Homology.SpherePuncture

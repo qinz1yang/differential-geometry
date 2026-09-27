@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.RelativeCochainMayerVietoris
-import DifferentialGeometry.Topology.Homology.ModuleHomologyConnecting
-import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyConnecting
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyMaps
 
 noncomputable section
 

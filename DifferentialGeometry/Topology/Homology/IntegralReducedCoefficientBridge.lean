@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.Reduced
 import DifferentialGeometry.Topology.Homology.Reduced.Comparison
-import DifferentialGeometry.Topology.Homology.Integral
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
 import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
 import DifferentialGeometry.Topology.LocalDegree.SphereDegree
 import DifferentialGeometry.Topology.Homology.SphereGeneratorCriterion

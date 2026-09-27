@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.Homology.HurewiczBijectionFrontier
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeTransport
 import DifferentialGeometry.Topology.Homology.HurewiczSphereCriterion
 import DifferentialGeometry.Topology.Homology.HurewiczThreeReduction
-import DifferentialGeometry.Topology.Homology.SphereRank
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereRank
 import DifferentialGeometry.Topology.ThreeManifold.StandardSphere
 
 noncomputable section

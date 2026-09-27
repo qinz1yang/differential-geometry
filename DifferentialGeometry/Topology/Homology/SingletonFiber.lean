@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.RelativeMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeMaps
 
 namespace DifferentialGeometry.Topology
 

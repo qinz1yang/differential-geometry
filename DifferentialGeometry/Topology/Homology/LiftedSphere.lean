@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.SphereTopHomology
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereTopHomology
 
 
 
@@ -16,7 +16,7 @@ abbrev liftedSphereSpace (n : ℕ) := ULift.{u} (EuclideanSpace ℝ (Fin (n + 2)
 
 
 
-instance liftedSphereSpace_innerProductSpace (n : ℕ) :
+instance liftedSphereSpaceInnerProductSpace (n : ℕ) :
     InnerProductSpace ℝ (liftedSphereSpace.{u} n) where
   inner x y := inner ℝ x.down y.down
   norm_sq_eq_re_inner x := norm_sq_eq_re_inner x.down

@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Homology.Relative.Basic
 import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
 import DifferentialGeometry.Topology.Homotopy.CubeCompactification
 

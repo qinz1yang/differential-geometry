@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homology.ContractibleCoverOneEvaluation
-import DifferentialGeometry.Topology.Homology.TotallyDisconnectedZero
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TotallyDisconnectedZero
 
 noncomputable section
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology ContinuousMap Set Metric Module

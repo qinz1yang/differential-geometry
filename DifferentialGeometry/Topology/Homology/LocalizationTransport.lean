@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.Homology.RelativeFunctoriality
-import DifferentialGeometry.Topology.Homology.Integral
-import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeFunctoriality
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 import Mathlib.Topology.Homotopy.Basic
 import Mathlib.Analysis.InnerProductSpace.PiL2
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.CochainCones
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CochainCones
 import DifferentialGeometry.Topology.Homology.HurewiczFrontier
 
 noncomputable section
@@ -12,7 +12,7 @@ namespace DifferentialGeometry.Topology
 variable {X : Type u} [TopologicalSpace X]
 
 theorem subsingleton_integralSingularHomology_two_of_subsingleton_homotopyGroup_two
-    [SimplyConnectedSpace X] (h : SphereHurewiczTwoCanonical X)
+    [Nonempty X] (h : SphereHurewiczTwoCanonical X)
     (hpi : ∀ x : X, Subsingleton (HomotopyGroup (Fin 2) X x)) :
     Subsingleton (integralSingularHomology 2 X) := by
   refine ⟨fun a b => ?_⟩

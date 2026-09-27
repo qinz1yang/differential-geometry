@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CompactlySupportedCohomology.OpenEmbedding
 
 noncomputable section
 

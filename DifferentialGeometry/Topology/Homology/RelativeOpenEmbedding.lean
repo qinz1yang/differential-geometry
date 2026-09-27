@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.OpenExcision
-import DifferentialGeometry.Topology.Homology.RelativeHomeomorphism
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.OpenExcision
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeHomeomorphism
 import Mathlib.Topology.Sets.Compacts
 
 noncomputable section

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.Basic
+import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.Basic
 import DifferentialGeometry.Geometry.Metric.ShortGeodesic
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import Mathlib.Analysis.Calculus.ContDiff.FTaylorSeries

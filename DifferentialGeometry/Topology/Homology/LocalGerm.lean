@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Homology.LocalCharts
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.LocalCharts
 
 namespace DifferentialGeometry.Topology
 

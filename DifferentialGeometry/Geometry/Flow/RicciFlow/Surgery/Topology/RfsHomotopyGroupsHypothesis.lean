@@ -18,7 +18,6 @@ class RfsHomotopyGroupsHypothesis (M : Type u) [TopologicalSpace M] : Prop where
   hurewiczLowDegree : DifferentialGeometry.Topology.HurewiczLowDegreeHypothesis M
 
 theorem rfs_homotopy_groups_hypothesis_of_canonical {M : Type u} [TopologicalSpace M]
-    [SimplyConnectedSpace M]
     (hH₂ : Subsingleton (integralSingularHomology 2 M))
     (hgen : DifferentialGeometry.Topology.IsSphereHomologyGenerator.{u} 2
       DifferentialGeometry.Topology.cubeSphereFundamentalClass)
@@ -31,7 +30,7 @@ theorem rfs_homotopy_groups_hypothesis_of_canonical {M : Type u} [TopologicalSpa
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] [hT2 : T2Space M] [hCompact : CompactSpace M]
-    [hConnected : ConnectedSpace M] [hSimplyConnected : SimplyConnectedSpace M]
+    [hConnected : ConnectedSpace M]
 
 omit hT2 hCompact hConnected in
 theorem rfs_homotopy_groups_of_hypothesis [h : RfsHomotopyGroupsHypothesis M]

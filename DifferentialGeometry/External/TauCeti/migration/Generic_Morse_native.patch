@@ -1,0 +1,92 @@
+--- before
++++ after
+@@ -6 +6 @@
+-import DifferentialGeometry.Analysis.Calculus.Sard
++import DifferentialGeometry.External.TauCeti.Analysis.Calculus.Morse.Generic
+@@ -16,11 +16,2 @@
+-private theorem finrank_continuousLinearMap_real
+-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] :
+-    Module.finrank ℝ E = Module.finrank ℝ (E →L[ℝ] ℝ) := by
+-  calc
+-    Module.finrank ℝ E = Module.finrank ℝ (Module.Dual ℝ E) :=
+-      Subspace.dual_finrank_eq.symm
+-    _ = Module.finrank ℝ (E →L[ℝ] ℝ) :=
+-      (LinearMap.toContinuousLinearMap : (E →ₗ[ℝ] ℝ) ≃ₗ[ℝ] (E →L[ℝ] ℝ)).finrank_eq
+-
+-private theorem isNondegenerateCriticalPointAt_of_surjective_fderiv
+-    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
++private theorem isNondegenerateCriticalPointAt_of_injective_fderiv
++    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
+@@ -28 +19 @@
+-    (hsurj : Surjective (fderiv ℝ (fderiv ℝ f) x)) :
++    (hinj : Injective (fderiv ℝ (fderiv ℝ f) x)) :
+@@ -35,3 +25,0 @@
+-  have hinj : Injective (fderiv ℝ (fderiv ℝ f) x) :=
+-    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank
+-      finrank_continuousLinearMap_real).2 hsurj
+@@ -51,0 +40,16 @@
++private theorem forall_isNondegenerateCriticalPointAt_sub_of_bijective
++    {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E]
++    {f : E → ℝ} {U : Set E} (hU : IsOpen U) (hf : ContDiffOn ℝ 2 f U)
++    (a : E →L[ℝ] ℝ)
++    (ha : ∀ x ∈ U, fderiv ℝ (fun y => f y - a y) x = 0 →
++      Bijective (fderiv ℝ (fderiv ℝ fun y => f y - a y) x)) :
++    ∀ x ∈ U, IsCriticalPointAt 𝓘(ℝ, E) (fun y => f y - a y) x →
++      IsNondegenerateCriticalPointAt 𝓘(ℝ, E) (fun y => f y - a y) x := by
++  intro x hx hcrit
++  have hc : fderiv ℝ (fun y => f y - a y) x = 0 := by
++    change mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ) (fun y => f y - a y) x = 0 at hcrit
++    rw [mfderiv_eq_fderiv] at hcrit
++    exact hcrit
++  exact isNondegenerateCriticalPointAt_of_injective_fderiv
++    ((hf.contDiffAt (hU.mem_nhds hx)).sub a.contDiff.contDiffAt) hc (ha x hx hc).1
++
+@@ -59,32 +63,2 @@
+-  have hdf : DifferentiableOn ℝ (fderiv ℝ f) U :=
+-    (hf.fderiv_of_isOpen (m := 1) hU (by norm_num)).differentiableOn one_ne_zero
+-  have hnull : ν (fderiv ℝ f '' {x ∈ U | ¬ Surjective (fderiv ℝ (fderiv ℝ f) x)}) = 0 := by
+-    refine addHaar_image_eq_zero_of_not_surjective_fderivWithin ν finrank_continuousLinearMap_real
+-      (fun y hy => ?_) (fun _ hy => hy.2)
+-    exact ((hdf y hy.1).differentiableAt (hU.mem_nhds hy.1)).hasFDerivAt.hasFDerivWithinAt
+-  have hgood : ∀ᵐ a ∂ν,
+-      a ∉ fderiv ℝ f '' {x ∈ U | ¬ Surjective (fderiv ℝ (fderiv ℝ f) x)} := by
+-    rw [ae_iff]
+-    simpa only [not_not, Set.ofPred_mem_eq] using hnull
+-  filter_upwards [hgood] with a ha
+-  intro x hx hcrit
+-  have hfx : ContDiffAt ℝ 2 f x := hf.contDiffAt (hU.mem_nhds hx)
+-  have h1 : fderiv ℝ (fun y => f y - a y) x = fderiv ℝ f x - a := by
+-    simpa using fderiv_fun_sub (hfx.differentiableAt (by norm_num)) a.differentiableAt
+-  have hc : fderiv ℝ (fun y => f y - a y) x = 0 := by
+-    change mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ) (fun y => f y - a y) x = 0 at hcrit
+-    rw [mfderiv_eq_fderiv] at hcrit
+-    change fderiv ℝ (fun y => f y - a y) x = (0 : E →L[ℝ] ℝ) at hcrit
+-    exact hcrit
+-  have hfa : fderiv ℝ f x = a := sub_eq_zero.mp (h1.symm.trans hc)
+-  have hsurj : Surjective (fderiv ℝ (fderiv ℝ f) x) := by
+-    by_contra hn
+-    exact ha ⟨x, ⟨hx, hn⟩, hfa⟩
+-  have heq : (fderiv ℝ fun y => f y - a y) =ᶠ[nhds x] fun y => fderiv ℝ f y - a := by
+-    filter_upwards [hfx.eventually (by norm_num)] with y hy using by
+-      simpa using fderiv_fun_sub (hy.differentiableAt (by norm_num)) a.differentiableAt
+-  have h2 : fderiv ℝ (fderiv ℝ fun y => f y - a y) x = fderiv ℝ (fderiv ℝ f) x := by
+-    rw [heq.fderiv_eq, fderiv_sub_const]
+-  apply isNondegenerateCriticalPointAt_of_surjective_fderiv
+-    (hfx.sub a.contDiff.contDiffAt) hc
+-  rwa [h2]
++  filter_upwards [TauCeti.ae_forall_bijective_fderiv_fderiv_sub ν hU hf] with a ha
++  exact forall_isNondegenerateCriticalPointAt_sub_of_bijective hU hf a ha
+@@ -98,3 +72,3 @@
+-  borelize (E →L[ℝ] ℝ)
+-  exact Measure.dense_of_ae
+-    (ae_forall_isNondegenerateCriticalPointAt_sub (addHaar : Measure (E →L[ℝ] ℝ)) hU hf)
++  apply (TauCeti.dense_forall_bijective_fderiv_fderiv_sub hU hf).mono
++  intro a ha
++  exact forall_isNondegenerateCriticalPointAt_sub_of_bijective hU hf a ha
+@@ -109,4 +83,2 @@
+-  obtain ⟨a, ha, hball⟩ :=
+-    (dense_forall_isNondegenerateCriticalPointAt_sub hU hf).exists_mem_open
+-      Metric.isOpen_ball ⟨0, Metric.mem_ball_self hε⟩
+-  exact ⟨a, by simpa only [Metric.mem_ball, dist_zero_right] using hball, ha⟩
++  obtain ⟨a, ha, hgood⟩ := TauCeti.exists_norm_lt_forall_bijective_fderiv_fderiv_sub hU hf hε
++  exact ⟨a, ha, forall_isNondegenerateCriticalPointAt_sub_of_bijective hU hf a hgood⟩

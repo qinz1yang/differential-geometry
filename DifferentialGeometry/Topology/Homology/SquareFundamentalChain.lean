@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.Homotopy
-import DifferentialGeometry.Topology.Homology.SimplexBoundary
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Homotopy
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SimplexBoundary
 import DifferentialGeometry.Topology.Simplex.VertexMap
 import Mathlib.Data.Fin.VecNotation
 import Mathlib.Analysis.Convex.Contractible

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.ContractibleCoverOneEvaluation
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
-import DifferentialGeometry.Topology.Homology.SphereRank
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SphereRank
 import Mathlib.Data.Fin.VecNotation
 
 noncomputable section

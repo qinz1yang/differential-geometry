@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.MayerVietoris
 import DifferentialGeometry.Topology.Homology.CompactlySupportedCohomology.DirectedUnion
-import DifferentialGeometry.Topology.Homology.CohomologyVanishing
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CohomologyVanishing
 
 noncomputable section
 

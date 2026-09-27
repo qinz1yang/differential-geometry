@@ -10,7 +10,7 @@ namespace DifferentialGeometry.Topology
 
 variable {X : Type u} [TopologicalSpace X]
 
-theorem hurewiczThreeSphereGeneration_of_exists [SimplyConnectedSpace X] (x : X)
+theorem hurewiczThreeSphereGeneration_of_exists (x : X)
     (hmul : ∀ a b : HomotopyGroup (Fin 3) X x,
       sphereHurewicz (X := X) 2 x (integralLiftedSphereGenerator.{u} 2) (a * b) =
         sphereHurewicz (X := X) 2 x (integralLiftedSphereGenerator.{u} 2) a +
@@ -40,19 +40,19 @@ def HurewiczThreeHypothesis (X : Type u) [TopologicalSpace X] : Prop :=
         sphereHurewicz (X := X) 2 x (integralLiftedSphereGenerator.{u} 2) a +
           sphereHurewicz (X := X) 2 x (integralLiftedSphereGenerator.{u} 2) b
 
-theorem hurewiczThreeHypothesis_of_sphereHurewiczThreeCanonical [SimplyConnectedSpace X]
+theorem hurewiczThreeHypothesis_of_sphereHurewiczThreeCanonical
     (h : SphereHurewiczThreeCanonical X) : HurewiczThreeHypothesis X :=
   fun x hπ => h x hπ
 
 theorem hurewiczThreeHypothesis_punit : HurewiczThreeHypothesis PUnit.{u + 1} :=
   hurewiczThreeHypothesis_of_sphereHurewiczThreeCanonical sphereHurewiczThreeCanonical_punit
 
-theorem sphereHurewiczThreeCanonical_of_hurewiczThreeHypothesis [SimplyConnectedSpace X]
+theorem sphereHurewiczThreeCanonical_of_hurewiczThreeHypothesis
     (h : HurewiczThreeHypothesis X) :
     SphereHurewiczThreeCanonical X :=
   fun x hπ => h x hπ
 
-theorem hurewiczThreeHypothesis_iff_sphereHurewiczThreeCanonical [SimplyConnectedSpace X] :
+theorem hurewiczThreeHypothesis_iff_sphereHurewiczThreeCanonical :
     HurewiczThreeHypothesis X ↔ SphereHurewiczThreeCanonical X :=
   ⟨fun h => sphereHurewiczThreeCanonical_of_hurewiczThreeHypothesis h,
     hurewiczThreeHypothesis_of_sphereHurewiczThreeCanonical⟩

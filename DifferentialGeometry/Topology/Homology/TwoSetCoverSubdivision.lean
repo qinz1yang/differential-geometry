@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Homology.ContractibleCoverChainEvaluation
-import DifferentialGeometry.Topology.Homology.TwoSetSmallChains
-import DifferentialGeometry.Topology.Homology.SubdivisionSmallness
-import DifferentialGeometry.Topology.Homology.CarrierRestriction
-import DifferentialGeometry.Topology.Homology.SubspaceCarriers
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TwoSetSmallChains
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SubdivisionSmallness
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CarrierRestriction
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.SubspaceCarriers
 
 noncomputable section
 

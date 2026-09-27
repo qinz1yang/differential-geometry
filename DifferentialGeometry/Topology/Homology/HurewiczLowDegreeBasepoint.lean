@@ -37,14 +37,14 @@ theorem IsSphereHurewiczIsomorphism.of_transport (n : ℕ) {x y : X} (p : Path x
       sphereHurewicz_transport n p c (a' * b'), h.2 a' b',
       sphereHurewicz_transport n p c a', sphereHurewicz_transport n p c b']
 
-theorem sphereHurewiczTwoCanonical_iff_isSphereHurewiczIsomorphism [SimplyConnectedSpace X]
+theorem sphereHurewiczTwoCanonical_iff_isSphereHurewiczIsomorphism [PathConnectedSpace X]
     (x₀ : X) :
     SphereHurewiczTwoCanonical X ↔
       IsSphereHurewiczIsomorphism 1 X x₀ (integralLiftedSphereGenerator.{u} 1) :=
   ⟨fun h => h x₀, fun h x =>
     IsSphereHurewiczIsomorphism.of_transport 1 (PathConnectedSpace.somePath x₀ x) h⟩
 
-theorem sphereHurewiczThreeCanonical_iff_isSphereHurewiczIsomorphism [SimplyConnectedSpace X]
+theorem sphereHurewiczThreeCanonical_iff_isSphereHurewiczIsomorphism [PathConnectedSpace X]
     (x₀ : X) :
     SphereHurewiczThreeCanonical X ↔
       (Subsingleton (HomotopyGroup (Fin 2) X x₀) →
@@ -56,7 +56,7 @@ theorem sphereHurewiczThreeCanonical_iff_isSphereHurewiczIsomorphism [SimplyConn
   exact IsSphereHurewiczIsomorphism.of_transport 2 (PathConnectedSpace.somePath x₀ x)
     (h hπ)
 
-theorem hurewicz_two_isomorphism_of_isSphereHurewiczIsomorphism [SimplyConnectedSpace X]
+theorem hurewicz_two_isomorphism_of_isSphereHurewiczIsomorphism [PathConnectedSpace X]
     (x₀ : X)
     (h : IsSphereHurewiczIsomorphism 1 X x₀ (integralLiftedSphereGenerator.{u} 1))
     (x : X) (c : integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
@@ -67,7 +67,7 @@ theorem hurewicz_two_isomorphism_of_isSphereHurewiczIsomorphism [SimplyConnected
   IsSphereHurewiczIsomorphism.of_isSphereHomologyGenerator 1 x hc
     (IsSphereHurewiczIsomorphism.of_transport 1 (PathConnectedSpace.somePath x₀ x) h)
 
-theorem hurewicz_three_isomorphism_of_isSphereHurewiczIsomorphism [SimplyConnectedSpace X]
+theorem hurewicz_three_isomorphism_of_isSphereHurewiczIsomorphism [PathConnectedSpace X]
     (x₀ : X)
     (h : Subsingleton (HomotopyGroup (Fin 2) X x₀) →
       IsSphereHurewiczIsomorphism 2 X x₀ (integralLiftedSphereGenerator.{u} 2))

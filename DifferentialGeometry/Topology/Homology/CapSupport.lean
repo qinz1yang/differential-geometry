@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.Homology.CapProduct
-import DifferentialGeometry.Topology.Homology.TwoSetSmallChains
-import DifferentialGeometry.Topology.Homology.ModuleHomologyMaps
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.CapProduct
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.TwoSetSmallChains
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.ModuleHomologyMaps
 
 noncomputable section
 

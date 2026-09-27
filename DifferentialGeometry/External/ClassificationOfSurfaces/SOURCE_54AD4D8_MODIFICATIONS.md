@@ -1,0 +1,271 @@
+# Local modifications
+
+Upstream: https://github.com/mccorvie/classification-of-surfaces, revision e3c7230fe78d7b056a415d9ecae6f77887046b32. The original Apache license, README, source copyright/authors and retained declaration documentation are preserved. UPSTREAM.patch records full-module source changes against the pinned originals. ONE_EDGE_SELECTION.json records the exact immutable sources, declaration locations and unchanged body hashes for the selected attachment layer.
+
+## Selected scope and imports
+
+Only Moise/PlaneComplex, Moise/LineSubdivision and Moise/FreeTriangle are included. The original declaration namespaces remain unchanged. Internal imports now use DifferentialGeometry.External.ClassificationOfSurfaces. No upstream Lake project or dependency configuration is activated.
+
+PlaneComplex omits its unused final barycentric-realization aspect, from mem_simplexes_of_mem_cells through toGeometricTriangulation, and the resulting unused GeometricTriangulation import. Existing mesh, support, intersection, pure-dimensional, affine transport, subdivision and piecewise-linear APIs are retained. FreeTriangle imports LineSubdivision directly instead of the unused ElementaryMove/AmbientHomeomorph chain.
+
+## Lean 4.33.1 compatibility and generality
+
+PlaneComplex reuses Mathlib AffineIndependent.range/mono for finite subfamilies and two subface intersection arguments. The unused point-distinctness input to endpoint_secondCoords_eq_zero_of_two_axis_points is removed, with its documentation adjusted. Three affine transport proofs use explicit carrier/image equalities before transporting unions or dependent vertex indices.
+
+LineSubdivision removes the unused Function.Injective position input from convexHull_image_inter_of_affine_separation and its eight supplied arguments. Six private reference-mesh intersection helpers retain the actual finite vertex and position types and commute both set and finite-set intersections in reversed cases. The reference mesh constructors reuse those helpers, resolving elaboration timeouts without resource overrides.
+
+Seven reindex-support proofs use typed support equalities. Two triangle-enumeration proofs expose the finite-set image before reducing projections. A private typed case eliminator preserves the original localMeshTriangles branch/choice order; six cardinality, independence, monochromaticity, vertex-origin, support and intersection proofs consume it. Three local reference support equalities and four support branches use explicitly typed equations and their compositions. All remaining public constructor/statement headers are preserved.
+
+FreeTriangle retains all 75 mathematical declarations and proof bodies unchanged from upstream. Only its dependency import and modification notice change.
+
+## Module placement
+
+Relative to the already checked scratch sources, production preparation changes only internal import prefixes and the header's modification-record path. No mathematical body, namespace, variable scope, source option, linter or dependency pin changes in this step.
+
+## Native polygon triangulation and geometric attachment
+
+PrePolygonTriangulation adapts PolygonalPolyhedron.lean at the same upstream
+revision to the existing Schoenflies.PrePolygon, inside/outside and separation
+APIs. It imports no duplicate PolygonalJordan development. All arrangement,
+refinement, finite image conversion, support and boundary construction mechanics
+remain private. The public exists_simplicial_complex_inside exposes the native
+Mathlib finite pure two-dimensional complex with its exact support equation.
+The public exists_triangle_mesh_inside derives an actual TriangleMesh with
+support equal to closure (inside P.carrier) and frontier equal to P.carrier
+from the same private construction. No triangulation assumption is introduced.
+
+The native adapter repairs finite-face transport using the verified
+affineIndependent_finset_coe helper, explicit convex-hull image equations and
+mem_iUnion₂. AddTorsorBases supplies the pinned convex interior theorem. The
+unused Plane simp argument is removed. Relative to checked private source,
+production changes only import/header paths, exposes the existing simplicial
+result and adds the eight-line mesh existence corollary. UPSTREAM.patch records
+the complete zero-context delta from PolygonalPolyhedron.
+
+Moise/OneEdgeAttachment selects 22 ordered-triangle and edge declarations from
+FreeTriangleMove and six incidence/intersection/frontier declarations from
+PolygonalSchoenflies. All 28 selected declaration bodies, their documentation,
+namespace scopes and original attribution are retained unchanged. Unrelated
+declarations and dependencies are omitted; only the already ported FreeTriangle
+is imported. ONE_EDGE_SELECTION.json records immutable source hashes, exact
+upstream declaration locations and selected body hashes. Relative to checked
+scratch, only the import prefix and modification-notice path change.
+
+The two new production leaves passed fresh module/import consumer gate
+1789231441425991048-schoenflies-788bbe3d. The earlier three-module gate is
+preserved separately; exact final evidence is recorded in PROVENANCE.json. There is no claim of geometric free-triangle selection, remaining
+polygonal-disk recognition, compatible rounding, or smooth disk filling.
+
+## Native polygon after one-edge deletion
+
+PrePolygonDeletion combines the checked native complementary-arc, Jordan-frontier,
+polygonal-frontier and compact-region recognition proofs in one coherent leaf.
+Nine declaration statements and proof bodies are preserved; the unused private
+edge specialization is omitted. Only
+Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free
+is public. Namespace and open scopes remain unchanged. The final engine assumes
+only the original mesh frontier equation and actual geometric one-edge freeness;
+no original support, remaining-disk or surviving-triangle assumption is added.
+It returns an actual remaining PrePolygon with support/frontier, oriented arcs,
+endpoint coordinates and exact attaching-set equations.
+
+The compact-region recognition proof adapts PolygonalCircle.eq_closedRegion_of_isCompact_frontier_eq
+from PolygonalSchoenflies.lean:2410 at the pinned revision to native IsSeparating
+and inside/outside. Its original documentation and Apache notice are preserved.
+DELETION_RECOGNITION.patch records the exact zero-context selected-declaration
+delta; DELETION_PROVENANCE.json records immutable upstream hashes, the four
+checked native source hashes and final module hash. Other new private proofs
+use the already integrated native Jordan/polygonal APIs and checked mesh
+attachment equations. Consolidation changes only imports, legal notice paths,
+the final theorem's visibility and restored upstream recognition documentation,
+plus removal of that unused private specialization.
+
+The combined private source passed 1789232885714420646-schoenflies-24adbd8c
+with stock declaration linters and standard-only axiom readbacks. The new
+production module freshly compiled and its imported public consumer gate passed
+1789233891983857661-schoenflies-42a7b73c. Root matched all92 source guards, read
+all three type/axiom pairs and verified the exact upstream recognition delta. Geometric free-triangle existence,
+the two-edge branch, compatible rounding and smooth disk filling remain open.
+
+## Geometric free-triangle classification
+
+Moise/GeometricFreeTriangle retains seven declarations and their attached
+upstream documentation/scopes from FreeTriangleMove. GEOMETRIC_FREE_SELECTION.json
+records exact original body hashes and source locations. The import uses the
+previously selected OneEdgeAttachment layer; only the modification-notice path
+changes locally. The one- and two-boundary-edge cases produce the actual
+geometric frontier configurations. The contrary case identifies an actual
+isolated boundary vertex and cutting diagonals. It does not assert geometric
+freeness exists for every polygonal mesh.
+
+The unchanged bodies and a concrete midpoint two-triangle mesh consumer pass
+1789233897698956242-schoenflies-ff473eb1, with stock declaration linters and
+standard-only axioms. Final production gate
+1789234647397384846-schoenflies-3ad41b77 passed in73.49s, freshly compiling
+only the new module. Root matched all nine source guards, read all eight
+signature/axiom pairs, and independently matched all seven upstream bodies.
+All imported vendor and consumer declaration linters and standard-only axioms
+pass. This is not a full DifferentialGeometry aggregate build.
+
+## Mesh partition along a native crosscut
+
+TriangleMeshCrosscut adapts the PolygonalCrosscut mesh-side proofs from the same
+pinned upstream revision. It uses the existing native IsCrosscut, IsCutPair,
+inside and crosscut_theorem APIs. The chord remains tied to an actual mesh edge
+by its convex-hull/segment equality. Canonical restrictTriangles gives both
+actual submeshes; no additional mesh alias is introduced. Four proof helpers
+remain private, and only restrict_triangles_crosscut_partition is public.
+It returns both exact closed-region supports, the finite partition, disjointness,
+nonemptiness and both strict triangle-count decreases.
+
+CROSSCUT_PROVENANCE.json records the original locations and hashes.
+CROSSCUT_UPSTREAM_SELECTED.lean.txt preserves all ten selected original bodies
+and documentation; CROSSCUT_ADAPTATION.patch records their exact adaptation.
+Root independently matched those originals against the immutable source and
+retained all five checked native proof bodies/scopes. Private source gate
+1789235209202169419-schoenflies-6e17e677 passed. Final production gate
+1789235455742746297-schoenflies-fb8bd5a2 passed in76.89s, freshly compiling only
+the new module. All86 source guards, both public/consumer type-axiom pairs,
+all-vendor/current declaration linters and standard-only axioms pass.
+The consumer obtains the original mesh from an actual PrePolygon and supplies
+an actual boundary-to-boundary mesh edge. Geometric free-triangle existence,
+smooth rounding and disk filling remain separate obligations.
+
+## Native polygon after two-edge deletion
+
+Moise/GeometricFreeTriangle adds the unchanged upstream
+frontier_triangleCarrier_subset_freeTriangleEdges declaration from
+FreeTriangleMove:402–473, preserving its attached documentation, finite-case
+comment and TriangleMesh variable scope. GEOMETRIC_FREE_SELECTION.json records
+all eight selected declarations. The separately checked old-frontier split is
+unused by this proof and is omitted from production.
+
+PrePolygonDeletion adds six exact native declarations from the strict source
+gate1789236092448851439-schoenflies-e77176ea. Only
+Schoenflies.PrePolygon.exists_prePolygon_closed_region_erase_triangle_of_two_edge_free
+becomes public. It reuses the existing complementary-arc, apex-arc and compact
+frontier recognition helpers; none is duplicated. All nine previous statements
+and proof bodies remain unchanged. The proper base crosscut follows the exact
+source geometry of PolygonalSchoenflies:1416, with the native support equation
+derived from the original frontier. The actual survivor region corresponds to
+PolygonalSchoenflies:2282, using native crosscut closed-side identities and the
+existing closure-of-difference erasure theorem instead of its PolygonalTheta
+mesh stack. No duplicate Jordan proof, PL move or shelling import is added.
+
+The new engine retains the actual erased frontier/support, oriented old
+complementary arc, oriented attaching base arc, endpoint positions and exact
+survivor/triangle intersection. It assumes no original support equation,
+survivor-disk conclusion, shelling or dual tree. TWO_EDGE_ADDITION.patch is the
+exact zero-context addition relative to the previous checked native module;
+DELETION_RECOGNITION.patch continues to record the upstream recognition delta.
+DELETION_PROVENANCE.json retains both the earlier one-edge production evidence
+and the new source gate. Final production request
+1789237030840224641-schoenflies-8667db40 passed in95.18s after freshly compiling
+both changed leaves. All107guards, all14signature/axiom pairs, stock3over all
+imported vendor/current declarations and standard-only axioms pass. Both full
+oriented deletion consumers and the actual count-decrease consumer passed.
+Both edited leaves were already registered in the flat aggregate.
+
+## Geometrically free triangles in native Jordan meshes
+
+`TriangleMeshGeometricFree.lean` retains the finite induction from
+ClassificationOfSurfaces at e3c7230fe78d7b056a415d9ecae6f77887046b32. Its
+public TriangleMesh primary starts with a native Jordan curve, the exact
+closed-inside support equation, and more than one maximal triangle. It
+produces two distinct actual maximal triangles whose frontier trace is
+one of the one-edge/two-edge geometric-free configurations. The PrePolygon
+producer retains the actual mesh support/frontier and explicitly separates
+the singleton case from the two-geometric-free case.
+
+The separate leaf consumes the existing crosscut partition and geometric
+classification interfaces. It adds no public cut package, disk-recognition
+premise, dual-tree premise, shelling, or assumed geometric-free triangle.
+All sixteen proof mechanics are private. The finite-exclusion density proof
+is retained from the existing native FreshDenseSelection declaration with
+its Álvaro Begué/Apache attribution, below that file's later mesh-transfer
+imports; no public duplicate density declaration is added. The existing
+FreshDenseSelection file and its public API are unchanged.
+
+GEOMETRIC_FREE_EXISTENCE.json records the eight selected checked source fragments
+and all eighteen retained declarations:
+seventeen proof bodies are byte-identical, including the induction; only
+the polygon producer's call changes to the promoted primary's name. The
+induction becomes public in the original TriangleMesh namespace and the
+producer becomes public in PrePolygon. The scratch-only bad-free-crosscut
+consumer is omitted. The existing crosscut partition, freeness definitions,
+deletions, and unrelated sources are untouched.
+
+Full staged source gate1789240426642358604-schoenflies-9a0efddc passes
+in36.35s. Final production request1789240536150541849-schoenflies-21a0cb81
+passes in78.73s after freshly compiling the new862-line module. All98current
+source guards, three exact public/consumer signature-axiom pairs, stock3over
+all imported vendor/current declarations and standard-only axioms pass.
+Root independently matched all18 binder/conclusion blocks against the checked
+private sources,17 unchanged proof bodies and the sole producer-call rename.
+The deletion consumer retains actual survivor support/frontier and count
+decrease. The new leaf is registered in the flat aggregate. This is a fresh
+leaf/imported REPL gate, not a full DifferentialGeometry aggregate build.
+
+
+## Shared region interior for polygon vertex charts
+
+`Schoenflies.interior_closure_inside_of_separating` in `TriangleMeshCrosscut`
+is now public. Its exact body, surrounding scopes, vendor header and existing
+crosscut consumer are unchanged. The native `PolygonVertexCharts` development
+imports this one provider to identify the actual interior of the closed bounded
+polygon region. No second proof body or alternate region object is introduced.
+
+The new chart theorem produces an affine equivalence at any native polygon
+vertex, with the exact incoming/outgoing vertex images and a slope that is zero
+exactly for a straight subdivision. One sign simultaneously identifies the
+actual closed region, interior, frontier and carrier. Consumers check a genuine
+unit-triangle corner, an inserted straight midpoint with unchanged carrier,
+and actual points on both sides in the same produced neighborhood.
+
+Source f31dbe47 passed in26.62s with138 guards and21 readback pairs. Imported
+c9fd3e0b passed in105.49s with142 guards and6 pairs in Slurm13846673. Both changed
+leaves freshly compiled in1:07.27, maximum RSS1712316KiB, with zero diagnostics.
+All five shared source/imported pairs and the original public crosscut partition
+pair match byte-for-byte. Stock declaration linters and standard-only transitive
+axioms pass. The new leaf is registered in the flat aggregate. This is not an
+aggregate DifferentialGeometry build, compact global rounding, or smooth disk
+filling. CROSSCUT_PROVENANCE.json preserves the previous validation record.
+
+
+## Public compact-frontier recognition
+
+`Schoenflies.eq_closure_inside_of_isCompact_frontier_eq` in
+`PrePolygonDeletion.lean` is public. The only Lean source change is removal of
+`private` from its declaration. Its name, complete type, 70-line proof body,
+original documentation, Apache notice, imports and lexical scopes are unchanged;
+all fourteen other declarations are unchanged. The existing one- and two-edge
+deletion engines continue to use this same provider.
+
+The theorem recognizes any compact planar set with nonempty interior and a
+separating frontier as the closure of the canonical bounded complementary
+region. It requires no polygonal presentation or supplied support equation.
+Native prescribed-region preparation can now import the existing recognition
+proof directly. No second production proof, wrapper, alias or module is added.
+
+DELETION_PROVENANCE.json retains the earlier one- and two-edge validation
+records and distinguishes this visibility change and its validation.
+DELETION_RECOGNITION.patch remains the historical upstream-to-private-native
+adaptation; the later single-token visibility change is recorded separately.
+
+Source df7d5553 passes in 27.41 seconds; imported574d6ec8 passes in 202.03
+seconds, with three fresh affected artifacts in 2:34.62 and peak RSS 2179376
+KiB. All ten source/imported pairs, six earlier deletion pairs and three PG/PI
+pairs are byte-identical. Strict source and declaration linters and standard-only
+transitive axioms pass. The stored response classifier was reviewed with the
+strict multiline-command parser; original responses remain unchanged. This is
+not an aggregate DifferentialGeometry build or a smooth disk theorem.
+
+
+## Integration metadata correction
+
+During integration of Ayush commit 4ca15d0de, the top-level provenance manifest
+was synchronized with the already recorded public visibility of
+PrePolygonDeletion.eq_closure_inside_of_isCompact_frontier_eq and
+TriangleMeshCrosscut.interior_closure_inside_of_separating. The two source hashes
+and the deletion-provenance hash were refreshed; historical validation records
+were preserved. No additional vendored proof-body change was made.
