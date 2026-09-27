@@ -7,6 +7,7 @@
 !/canonical-topology/
 !/DifferentialGeometry.lean
 !/lakefile.toml
+!/lake-manifest.json
 !/lean-toolchain
 !/README.md
 !/docs/
