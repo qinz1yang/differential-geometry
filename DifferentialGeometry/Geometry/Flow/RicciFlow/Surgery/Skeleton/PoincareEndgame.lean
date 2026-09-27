@@ -100,9 +100,14 @@ theorem exists_poincare_controlled_extinction
     (uniformDebitSurgeryStepStrong (OrientedThreeStage.ofClosedOrientedManifold M) g)
     (canonicalNeighborhoodsThroughSurgeryStrong (OrientedThreeStage.ofClosedOrientedManifold M) g)
 
-theorem smoothPoincareConjecture_holds : smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_controlledExtinction
-    (fun M _ g => exists_poincare_controlled_extinction M.toClosedOrientedManifold g)
+theorem smoothPoincareConjecture_holds
+    (M : Type u) [TopologicalSpace M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
+    [T2Space M] [CompactSpace M] [ConnectedSpace M] [SimplyConnectedSpace M] :
+    Nonempty (M ≃ₘ⟮𝓡 3, 𝓡 3⟯ Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1) := by
+  obtain ⟨f⟩ := smoothPoincareConjecture_of_controlledExtinction
+    (fun N _ g => exists_poincare_controlled_extinction N.toClosedOrientedManifold g) M
+  exact ⟨f.trans DifferentialGeometry.Topology.standardThreeSphereLiftDiffeomorph.symm⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
