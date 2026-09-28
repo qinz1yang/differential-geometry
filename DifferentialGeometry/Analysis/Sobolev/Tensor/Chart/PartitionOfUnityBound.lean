@@ -1201,20 +1201,6 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
             have hconst := eLpNorm_const_smul (c := Real.sqrt (m + 1 : ℝ) * Km)
               (f := fun y : EuclN => ∑ l ∈ Finset.range (m + 1), ‖iteratedFDeriv ℝ l v y‖)
               (p := 2) (μ := volume.restrict K)
-            have hcont_der : ∀ l : ℕ, ContinuousOn
-                (fun y : EuclN => iteratedFDeriv ℝ l v y) Ω := by
-              intro l
-              have hw : ContinuousOn
-                  (fun y : EuclN => iteratedFDerivWithin ℝ l v Ω y) Ω :=
-                hv_smooth_Ω.continuousOn_iteratedFDerivWithin (m := l) (by
-                  exact_mod_cast (le_top : (l : ℕ∞) ≤ (⊤ : ℕ∞)))
-                  hΩ_open.uniqueDiffOn
-              refine hw.congr ?_
-              intro y hy
-              have hcont_at : ContDiffAt ℝ l v y :=
-                (hv_smooth_Ω.contDiffAt (hΩ_open.mem_nhds hy)).of_le (by
-                  exact_mod_cast (le_top : (l : ℕ∞) ≤ (⊤ : ℕ∞)))
-              exact (iteratedFDerivWithin_eq_iteratedFDeriv hΩ_open.uniqueDiffOn hcont_at hy).symm
             have hsum := eLpNorm_sum_le
               (s := Finset.range (m + 1))
               (f := fun l => fun y : EuclN => ‖iteratedFDeriv ℝ l v y‖)
