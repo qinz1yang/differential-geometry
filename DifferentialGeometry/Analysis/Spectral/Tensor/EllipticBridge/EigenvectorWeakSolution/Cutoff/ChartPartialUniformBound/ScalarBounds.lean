@@ -44,12 +44,15 @@ lemma eLpNorm_add_add_sub_le
     (hc : AEStronglyMeasurable c ν) :
     eLpNorm (fun y => a y + b y - c y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν + eLpNorm c 2 ν := by
+  let _ := ha
+  let _ := hb
+  let _ := hc
   have h_ab : eLpNorm (fun y => a y + b y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν :=
-    eLpNorm_add_le ha hb (by norm_num)
+    eLpNorm_add_le (by norm_num)
   have h_full : eLpNorm (fun y => (a y + b y) - c y) 2 ν ≤
       eLpNorm (fun y => a y + b y) 2 ν + eLpNorm c 2 ν :=
-    eLpNorm_sub_le (ha.add hb) hc (by norm_num)
+    eLpNorm_sub_le (by norm_num)
   exact h_full.trans (by gcongr)
 
 lemma abs_prod_kronecker_le_one

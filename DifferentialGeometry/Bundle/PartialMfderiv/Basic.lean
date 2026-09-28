@@ -360,8 +360,27 @@ theorem contMDiff_partial_deriv_fst
       contMDiffAt_id
       contMDiffAt_const
       le_rfl
-  simpa only [inTangentCoordinates, inCoordinates_tangent_bundle_core_model_space,
-    mfderiv_eq_fderiv, fderiv_apply_one_eq_deriv] using! h_apply
+  convert h_apply using 1
+  · funext p
+    simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+    dsimp only [ContinuousLinearMap.inCoordinates]
+    simp only [Prod.mk.eta, TangentBundle.continuousLinearMapAt_model_space,
+      TangentBundle.symmL_model_space]
+    change deriv (fun t => F (t, p.2)) p.1 =
+      fderiv ℝ (fun t => F (t, p.2)) p.1 1
+    have hcast :
+        (NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1) = (1 : ℝ) :=
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).apply_symm_apply 1
+    have hderiv :
+        fderiv ℝ (fun t => F (t, p.2)) p.1
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+              ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1)) =
+          deriv (fun t => F (t, p.2)) p.1 := by
+      simpa only [hcast] using
+        (fderiv_apply_one_eq_deriv (𝕜 := ℝ)
+          (f := fun t => F (t, p.2)) (x := p.1))
+    simpa only [hcast] using hderiv.symm
 
 theorem timeDeriv_smoothAt
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -399,8 +418,27 @@ theorem timeDeriv_smoothAt
       (g₂ := fun _ : Real × M => (1 : Real))
       (x₀ := p0) (m := m) (n := n)
       hF' contMDiffAt_fst contMDiffAt_id contMDiffAt_const hmn
-  simpa only [inTangentCoordinates, inCoordinates_tangent_bundle_core_model_space,
-    mfderiv_eq_fderiv, fderiv_apply_one_eq_deriv] using! h_apply
+  convert h_apply using 1
+  · funext p
+    simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+    dsimp only [ContinuousLinearMap.inCoordinates]
+    simp only [Prod.mk.eta, TangentBundle.continuousLinearMapAt_model_space,
+      TangentBundle.symmL_model_space]
+    change deriv (fun t => F (t, p.2)) p.1 =
+      fderiv ℝ (fun t => F (t, p.2)) p.1 1
+    have hcast :
+        (NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1) = (1 : ℝ) :=
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).apply_symm_apply 1
+    have hderiv :
+        fderiv ℝ (fun t => F (t, p.2)) p.1
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+              ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1)) =
+          deriv (fun t => F (t, p.2)) p.1 := by
+      simpa only [hcast] using
+        (fderiv_apply_one_eq_deriv (𝕜 := ℝ)
+          (f := fun t => F (t, p.2)) (x := p.1))
+    simpa only [hcast] using hderiv.symm
 
 theorem mvfderiv_const_mul
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

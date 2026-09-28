@@ -745,17 +745,28 @@ private theorem exists_const_eLpNorm_cutoffLeibnizCrossTerm_le_uniform
     rw [Pi.smul_apply, smul_eq_mul, hnormCut_def]
     exact cutoffLeibnizCrossTerm_le_const_mul_chartPushedRaw_cutoff
       (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx hCχ_nn hCχ y
+  have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_measurableSet (I := I) (M := M) α
+  have h_cross_meas : AEStronglyMeasurable
+      (cutoffLeibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α
+        k Idx Jdx) μ := by
+    rw [hμ_def]
+    exact (cutoffLeibnizCrossTerm_continuousOn (I := I) (M := M)
+      g r s S.toCcTensor α k Idx Jdx).aestronglyMeasurable hμ_meas
   have h_mono :
       eLpNorm (cutoffLeibnizCrossTerm (I := I) (M := M) g r s S.toCcTensor α
           k Idx Jdx) 2 μ ≤
         eLpNorm (Cχ • normCut) 2 μ :=
-    eLpNorm_mono_real h_ptwise
+    eLpNorm_mono_real h_cross_meas h_ptwise
   have h_smul :
       eLpNorm (Cχ • normCut) 2 μ =
         ‖Cχ‖ₑ * eLpNorm (chartPushedRaw (I := I) (M := M) α
           (rawComponentCutoffM (I := I) (M := M) g r s S.toCcTensor α
             Idx Jdx)) 2 μ := by
-    rw [eLpNorm_const_smul Cχ normCut 2 μ, hnormCut_def, eLpNorm_norm]
+    rw [eLpNorm_const_smul Cχ normCut 2 μ, hnormCut_def,
+      eLpNorm_norm _ ((chartPushedRaw_measurable (I := I) (M := M) α
+        (rawComponentCutoffM_measurable (I := I) (M := M)
+          g r s S.toCcTensor α Idx Jdx)).aestronglyMeasurable)]
   have hCχ_enorm : ‖Cχ‖ₑ = ENNReal.ofReal Cχ := by
     rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg hCχ_nn]
   have h_bridge :
@@ -898,11 +909,19 @@ private lemma exists_const_eLpNorm_cutoffCovDerivComponent_le_uniform
     rw [hv_def, hC_proj_def]
     exact cutoffCovDerivComponent_le_chartPushedRaw (I := I) (M := M)
       g r s S.toCcTensor α m Idx Jdx y
+  have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_measurableSet (I := I) (M := M) α
+  have h_cov_meas : AEStronglyMeasurable
+      (cutoffCovDerivComponent (I := I) (M := M) g r s S.toCcTensor α
+        m Idx Jdx) μ := by
+    rw [hμ_def]
+    exact (cutoffCovDerivComponent_continuousOn (I := I) (M := M)
+      g r s S.toCcTensor α m Idx Jdx).aestronglyMeasurable hμ_meas
   have h_mono :
       eLpNorm (cutoffCovDerivComponent (I := I) (M := M) g r s S.toCcTensor α
           m Idx Jdx) 2 μ ≤
         eLpNorm (C_proj • chartPushedRaw (I := I) (M := M) α v) 2 μ :=
-    eLpNorm_mono_real h_ptwise
+    eLpNorm_mono_real h_cov_meas h_ptwise
   have h_smul :
       eLpNorm (C_proj • chartPushedRaw (I := I) (M := M) α v) 2 μ =
         ‖C_proj‖ₑ * eLpNorm (chartPushedRaw (I := I) (M := M) α v) 2 μ :=
@@ -1168,11 +1187,30 @@ private lemma eLpNorm_coeff_mul_cutoffComponent_le
         mem_cutoffKernelM_image_of_cutoffComponentEuclid_ne_zero
           (I := I) (M := M) g r s S α Idx' Jdx' (by rw [← hcomp_def]; exact hcz)
       exact mul_le_mul_of_nonneg_right (hCcoeff hy hb) (abs_nonneg _)
+  have hμ_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
+    chartTargetEuclid_measurableSet (I := I) (M := M) α
+  have hprod_meas : AEStronglyMeasurable
+      (fun y : EuclN =>
+        covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx'
+            Jdx Jdx' y * comp y) μ := by
+    rw [hμ_def]
+    have hcont_on : ContinuousOn
+        (fun y : EuclN =>
+          covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx'
+              Jdx Jdx' y * cutoffComponentEuclid (I := I) (M := M)
+                g r s S α Idx' Jdx' y)
+        (chartTargetEuclid (I := I) (M := M) α) := by
+      refine ContinuousOn.mul ?_ ?_
+      · exact (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
+          g r s α m Idx Idx' Jdx Jdx').continuousOn
+      · exact (cutoffComponentEuclid_continuous (I := I) (M := M)
+          g r s S α Idx' Jdx').continuousOn
+    simpa [hcomp_def] using hcont_on.aestronglyMeasurable hμ_meas
   calc eLpNorm
           (fun y : EuclN =>
             covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx Idx'
                 Jdx Jdx' y * comp y) 2 μ
-      ≤ eLpNorm ((Ccoeff : ℝ) • comp) 2 μ := eLpNorm_mono hpt
+      ≤ eLpNorm ((Ccoeff : ℝ) • comp) 2 μ := eLpNorm_mono hprod_meas hpt
     _ = ‖(Ccoeff : ℝ)‖ₑ * eLpNorm comp 2 μ :=
         eLpNorm_const_smul (Ccoeff : ℝ) comp 2 _
     _ = ENNReal.ofReal Ccoeff * eLpNorm comp 2 μ := by
@@ -1229,28 +1267,6 @@ private theorem exists_const_sum_eLpNorm_cutoffLowerOrderTerm_le_uniform
       exact cutoffLowerOrderTerm_eq_linearCombination
         (I := I) (M := M) g r s S.toCcTensor α m Idx Jdx hy
     rw [eLpNorm_congr_ae hae]
-    have hmeas : ∀ p : (Fin r → Fin n) × (Fin s → Fin n),
-        AEStronglyMeasurable
-          (fun y : EuclN =>
-            covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx p.1
-                Jdx p.2 y *
-              cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α
-                p.1 p.2 y) μ := by
-      intro p
-      rw [hμ_def]
-      have hcont_on : ContinuousOn
-          (fun y : EuclN =>
-            covDerivLowerOrderCoeff (I := I) (M := M) g r s α m Idx p.1
-                Jdx p.2 y *
-              cutoffComponentEuclid (I := I) (M := M) g r s S.toCcTensor α
-                p.1 p.2 y)
-          (chartTargetEuclid (I := I) (M := M) α) := by
-        refine ContinuousOn.mul ?_ ?_
-        · exact (covDerivLowerOrderCoeff_contDiffOn (I := I) (M := M)
-            g r s α m Idx p.1 Jdx p.2).continuousOn
-        · exact (cutoffComponentEuclid_continuous (I := I) (M := M)
-            g r s S.toCcTensor α p.1 p.2).continuousOn
-      exact hcont_on.aestronglyMeasurable hμ_meas
     have hcomp_h1 : ∀ p : (Fin r → Fin n) × (Fin s → Fin n),
         eLpNorm (cutoffComponentEuclid (I := I) (M := M)
             g r s S.toCcTensor α p.1 p.2) 2 μ ≤
@@ -1291,7 +1307,7 @@ private theorem exists_const_sum_eLpNorm_cutoffLowerOrderTerm_le_uniform
       refine (h1.trans
         (mul_le_mul_of_nonneg_left (hcomp_h1 p) (zero_le))).trans_eq ?_
       rw [ENNReal.ofReal_mul hCcoeff_nn, mul_assoc]
-    refine (eLpNorm_sum_le (fun p _ => hmeas p) (by norm_num)).trans ?_
+    refine (eLpNorm_sum_le (by norm_num)).trans ?_
     refine (Finset.sum_le_sum (fun p _ => hsummand p)).trans ?_
     rw [Finset.sum_const, Finset.card_univ, ← hNpair_def, nsmul_eq_mul]
     rw [show ((Npair : ℝ≥0∞)) = ENNReal.ofReal (Npair : ℝ) from by

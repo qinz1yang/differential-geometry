@@ -295,8 +295,7 @@ theorem mvfderivWithin_model_apply_eq_fderivWithin
     mvfderivWithin 𝓘(𝕜, E) f s x v =
       fderivWithin 𝕜 f s x
         (tangentSpaceModelContinuousLinearEquiv (I := 𝓘(𝕜, E)) x v) := by
-  unfold mvfderivWithin
-  rw [mfderivWithin_eq_fderivWithin]
+  rw [mvfderivWithin_eq_fderivWithin]
   rfl
 
 theorem mvfderiv_model_apply_eq_fderiv

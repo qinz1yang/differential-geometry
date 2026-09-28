@@ -102,7 +102,7 @@ private lemma eLpNorm_finsetSum_le
     funext y
     exact (Finset.sum_apply y s F).symm
   rw [h_fun]
-  exact eLpNorm_sum_le (fun j hj => (hF j hj).1) (by norm_num)
+  exact eLpNorm_sum_le (by norm_num)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M]
   [I.Boundaryless] [T2Space M] [SigmaCompactSpace M] in
@@ -601,15 +601,6 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
             μw := by
     refine h_comp_bound.trans ?_
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal (le_max_right _ _)) _
-  have h_part_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
-      × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
-      × Fin (Module.finrank ℝ E), Fpart x y) 2 μw :=
-    memLp_finsetSum _ (fun x _ => (h_part_data x).1)
-  have h_comp_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
-      × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
-      × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,
-      Fcomp x y) 2 μw :=
-    memLp_finsetSum _ (fun x _ => (h_comp_data x).1)
   unfold covLowerOrderRotationValueCoeffLimit
   have h_bridge : (fun y => (∑ P : TensorCompIdx (E := E) r s,
           ∑ Q : TensorCompIdx (E := E) r s,
@@ -653,7 +644,7 @@ theorem eLpNorm_covLowerOrderRotationValueCoeffLimit_le_uniform
               × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
               × Fin (Module.finrank ℝ E) × TensorCompIdx (E := E) r s,
               Fcomp x y) 2 μw :=
-        eLpNorm_add_le h_part_memLp.1 h_comp_memLp.1 (by norm_num)
+        eLpNorm_add_le (by norm_num)
     _ ≤ ENNReal.ofReal Cmax *
           (∑ P : TensorCompIdx (E := E) r s,
             ∑ k : Fin (Module.finrank ℝ E),
@@ -924,14 +915,6 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
     rw [← h_part_atom_eq]
     refine h_part_bound.trans ?_
     exact mul_le_mul_left (ENNReal.ofReal_le_ofReal (le_max_right _ _)) _
-  have h_comp_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
-      × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
-      × TensorCompIdx (E := E) r s, Fcomp x y) 2 μw :=
-    memLp_finsetSum _ (fun x _ => (h_comp_data x).1)
-  have h_part_memLp : MemLp (fun y => ∑ x : TensorCompIdx (E := E) r s
-      × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
-      × TensorCompIdx (E := E) r s, Fpart x y) 2 μw :=
-    memLp_finsetSum _ (fun x _ => (h_part_data x).1)
   unfold weightedGradCoeffDivLimit
   have h_bridge : (fun y => (∑ P : TensorCompIdx (E := E) r s,
           ∑ Q : TensorCompIdx (E := E) r s,
@@ -974,7 +957,7 @@ theorem eLpNorm_weightedGradCoeffDivLimit_le_uniform
           + eLpNorm (fun y => ∑ x : TensorCompIdx (E := E) r s
               × TensorCompIdx (E := E) r s × Fin (Module.finrank ℝ E)
               × TensorCompIdx (E := E) r s, Fpart x y) 2 μw :=
-        eLpNorm_add_le h_comp_memLp.1 h_part_memLp.1 (by norm_num)
+        eLpNorm_add_le (by norm_num)
     _ ≤ ENNReal.ofReal Cmax *
           (∑ p : TensorCompIdx (E := E) r s,
             eLpNorm ((componentLpLimit (I := I) (M := M)

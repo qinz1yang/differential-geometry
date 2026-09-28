@@ -527,6 +527,8 @@ theorem chartCoord_source_mfderivWithin {U : V → M} {z : V} {s : Set V}
   rw [TangentBundle.continuousLinearMapAt_trivializationAt hp,
     ← mfderiv_comp_mfderivWithin z (mdifferentiableAt_extChartAt hp) hU
       hs.uniqueMDiffWithinAt, mfderivWithin_eq_fderivWithin]
+  ext v
+  rfl
 
 end TangentBundle
 
