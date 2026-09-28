@@ -29,7 +29,7 @@ theorem edgeIntoTetrahedronOneSkeleton_eq_of_not_mem_boundary
       coordinateMap (k.succAbove ∘ l.succAbove) q := by
     rw [← coordinateMap_comp_apply, ← coordinateMap_comp_apply]
     exact congrArg (fun r : tetrahedronOneSkeleton => r.val) h
-  obtain ⟨hf, hpq⟩ := stdSimplex.eq_and_eq_of_map_eq_of_strictMono
+  obtain ⟨hf, hpq⟩ := Convexity.StdSimplex.eq_and_eq_of_map_eq_of_strictMono
     ((Fin.strictMono_succAbove i).comp (Fin.strictMono_succAbove j))
     ((Fin.strictMono_succAbove k).comp (Fin.strictMono_succAbove l))
     (fun a ha => hp ⟨a, ha⟩) hmap

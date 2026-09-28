@@ -16,7 +16,7 @@ theorem reindexHomeomorph_eq_map (e : ι ≃ κ) (p : coordinateSet ℝ ι) :
     reindexHomeomorph e p = coordinateMap e p := by
   ext j
   change p.val (e.symm j) = (coordinateMap e p).val j
-  have h := stdSimplex.map_apply_of_injective e.injective p (e.symm j)
+  have h := Convexity.StdSimplex.map_apply_of_injective e.injective p (e.symm j)
   change p (e.symm j) = (coordinateMap e p) j
   rw [e.apply_symm_apply] at h
   exact h.symm

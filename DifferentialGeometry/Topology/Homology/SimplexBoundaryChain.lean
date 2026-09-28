@@ -111,7 +111,7 @@ private def simplexBoundaryAmbientInclusion (n : ℕ) :
 private theorem simplexBoundaryAmbientInclusion_injective (n : ℕ) :
     Function.Injective (simplexBoundaryAmbientInclusion.{u} n) := by
   intro p q h
-  exact ULift.ext _ _ (Subtype.ext (ULift.up_inj.mp h))
+  exact ULift.ext (Subtype.ext (ULift.up_inj.mp h))
 
 private theorem simplexBoundaryChain_inclusion (n : ℕ) :
     (integralSingularChainMap (simplexBoundaryAmbientInclusion n)).f (n + 1)

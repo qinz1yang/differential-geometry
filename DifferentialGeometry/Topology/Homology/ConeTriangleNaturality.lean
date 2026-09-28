@@ -64,10 +64,10 @@ private theorem eq_or_boundary_of_map_eq {n : ℕ} {f g : Fin (n + 1) → ι}
   by_cases hp : p ∈ Simplex.boundary (Fin (n + 1))
   · by_cases hq : q ∈ Simplex.boundary (Fin (n + 1))
     · exact Or.inr ⟨hp, hq⟩
-    · obtain ⟨hgf, hqp⟩ := stdSimplex.eq_and_eq_of_map_eq_of_strictMono hg hf
+    · obtain ⟨hgf, hqp⟩ := Convexity.StdSimplex.eq_and_eq_of_map_eq_of_strictMono hg hf
         (fun j hj => hq ⟨j, hj⟩) h.symm
       exact Or.inl ⟨hgf.symm, hqp.symm⟩
-  · exact Or.inl (stdSimplex.eq_and_eq_of_map_eq_of_strictMono hf hg
+  · exact Or.inl (Convexity.StdSimplex.eq_and_eq_of_map_eq_of_strictMono hf hg
       (fun j hj => hp ⟨j, hj⟩) h)
 
 private theorem edge_overlap (x : X) (τ : C(coordinateSet ℝ ι, X))

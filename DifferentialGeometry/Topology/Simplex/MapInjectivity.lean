@@ -1,9 +1,7 @@
 import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.Order.WellFounded
-open Convexity.StdSimplex
-
-namespace stdSimplex
+namespace Convexity.StdSimplex
 
 variable {S : Type*} [Semiring S] [PartialOrder S] [IsOrderedRing S]
 
@@ -64,4 +62,4 @@ lemma eq_and_eq_of_map_eq_of_strictMono
   subst g
   exact map_injective hf.injective h
 
-end stdSimplex
+end Convexity.StdSimplex

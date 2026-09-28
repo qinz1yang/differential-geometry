@@ -36,7 +36,7 @@ theorem faceBoundaryIntoTetrahedronOneSkeleton_edge (i : Fin 4) (j : Fin 3)
       faceBoundaryIntoTetrahedronOneSkeleton (i.succAbove j)
         ⟨coordinateMap (j.predAbove i).succAbove p,
           ⟨j.predAbove i, map_succAbove_apply_pivot (j.predAbove i) p⟩⟩ :=
-  Subtype.ext (stdSimplex.map_succAbove_map_succAbove i j p)
+  Subtype.ext (Convexity.StdSimplex.map_succAbove_map_succAbove i j p)
 
 theorem tetrahedronOneSkeleton_restriction_compatibility {X : Type*}
     (f : Fin 4 → coordinateSet ℝ (Fin 3) → X) (g : tetrahedronOneSkeleton → X)

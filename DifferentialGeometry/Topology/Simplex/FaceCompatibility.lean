@@ -2,9 +2,7 @@ import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Face
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 
-open Convexity.StdSimplex
-
-namespace stdSimplex
+namespace Convexity.StdSimplex
 
 variable {S : Type*} [Semiring S] [PartialOrder S] [IsOrderedRing S] {n : ℕ}
 
@@ -17,7 +15,9 @@ theorem map_succAbove_map_succAbove (i : Fin (n + 2)) (j : Fin (n + 1))
   funext k
   exact (Fin.succAbove_succAbove_succAbove_predAbove i j k).symm
 
-end stdSimplex
+end Convexity.StdSimplex
+
+open Convexity.StdSimplex (coordinateSet coordinateMap)
 
 namespace DifferentialGeometry.Simplex
 
@@ -27,7 +27,7 @@ theorem faceInsert_faceInsert_val (i : Fin (n + 3)) (j : Fin (n + 2))
     (p : coordinateSet ℝ (Fin (n + 1))) :
     (faceInsert i (faceInsert j p).val).val =
       (faceInsert (i.succAbove j) (faceInsert (j.predAbove i) p).val).val :=
-  stdSimplex.map_succAbove_map_succAbove i j p
+  Convexity.StdSimplex.map_succAbove_map_succAbove i j p
 
 theorem boundary_face_point_eq (i : Fin (n + 3)) (j : Fin (n + 2))
     (p : coordinateSet ℝ (Fin (n + 1))) :
@@ -36,7 +36,7 @@ theorem boundary_face_point_eq (i : Fin (n + 3)) (j : Fin (n + 2))
     ⟨coordinateMap (i.succAbove j).succAbove
       (coordinateMap (j.predAbove i).succAbove p),
       ⟨i.succAbove j, map_succAbove_apply_pivot (i.succAbove j) _⟩⟩ :=
-  Subtype.ext (stdSimplex.map_succAbove_map_succAbove i j p)
+  Subtype.ext (Convexity.StdSimplex.map_succAbove_map_succAbove i j p)
 
 theorem face_restriction_compatibility {X : Type*}
     (f : Fin (n + 3) → coordinateSet ℝ (Fin (n + 2)) → X)
