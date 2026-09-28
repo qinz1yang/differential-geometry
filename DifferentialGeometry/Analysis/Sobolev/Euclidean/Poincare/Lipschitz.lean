@@ -86,7 +86,7 @@ theorem exists_integral_sq_le_mul_integral_norm_fderiv_sq_complex_ball_of_lipsch
   refine ⟨C, hC, ?_⟩
   intro f K hf hcompact hsupport
   have hfe : LipschitzWith K (f ∘ e) := by
-    simpa only [mul_one] using hf.comp e.lipschitz
+    simpa only [mul_one] using hf.comp e.lipschitzWith
   have hcompacte : HasCompactSupport (f ∘ e) := hcompact.comp_homeomorph e.toHomeomorph
   have hsupporte : tsupport (f ∘ e) ⊆ ball (0 : EuclideanSpace ℝ (Fin 2)) 1 := by
     rw [← hball]

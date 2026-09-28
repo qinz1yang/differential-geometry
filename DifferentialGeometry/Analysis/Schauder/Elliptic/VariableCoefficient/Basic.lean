@@ -1064,7 +1064,7 @@ theorem variable_coefficient_schauder_estimate_of_interpolation_scale_on
       simpa only [Cspatial] using hd2unorm0 x
   have hiterHolder : HolderWith Kd2u alpha
       (iteratedFDeriv Real 2 (u : Euc n → F)) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hd2uHolder
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hd2uHolder
     have hfun : e.symm ∘ (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) =
         iteratedFDeriv Real 2 (u : Euc n → F) := by
       funext x
@@ -1089,7 +1089,7 @@ theorem variable_coefficient_schauder_estimate_of_interpolation_scale_on
   have hd2uRestrict : HolderWith X alpha
       ((Set.univ : Set (Euc n)).domRestrict
         (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F)) := by
-    have hcomp := e.lipschitz.holderWith.comp hiterRestrict
+    have hcomp := e.lipschitzWith.holderWith.comp hiterRestrict
     have hfun : e ∘ ((Set.univ : Set (Euc n)).domRestrict
         (iteratedFDeriv Real 2 (u : Euc n → F))) =
       (Set.univ : Set (Euc n)).domRestrict
@@ -1292,7 +1292,7 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_on
       simpa only [Cspatial] using hd2unorm0 x
   have hiterHolder : HolderWith Kd2u alpha
       (iteratedFDeriv Real 2 (u : Euc n → F)) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hd2uHolder
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hd2uHolder
     have hfun : e.symm ∘ (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F) =
         iteratedFDeriv Real 2 (u : Euc n → F) := by
       funext x
@@ -1324,7 +1324,7 @@ theorem variable_coefficient_schauder_estimate_of_small_oscillation_on
   have hd2uRestrict : HolderWith X alpha
       ((Set.univ : Set (Euc n)).domRestrict
         (d2u : Euc n → Euc n →L[Real] Euc n →L[Real] F)) := by
-    have hcomp := e.lipschitz.holderWith.comp hiterRestrict
+    have hcomp := e.lipschitzWith.holderWith.comp hiterRestrict
     have hfun : e ∘ ((Set.univ : Set (Euc n)).domRestrict
         (iteratedFDeriv Real 2 (u : Euc n → F))) =
       (Set.univ : Set (Euc n)).domRestrict

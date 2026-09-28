@@ -64,7 +64,7 @@ theorem exists_solution_of_coercive_mass_ode
   have hlip_f : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith K (f t) := by
     intro t ht
     have hsharp : LipschitzWith ‖(hco t ht).sharpCLM‖₊
-        (hco t ht).sharpCLM := (hco t ht).sharpCLM.lipschitz
+        (hco t ht).sharpCLM := (hco t ht).sharpCLM.lipschitzWith
     have hcomp := hsharp.comp (hlip t ht)
     have hnorm_nn : ‖(hco t ht).sharpCLM‖₊ ≤ cinv := by
       exact_mod_cast hsharp_norm t ht

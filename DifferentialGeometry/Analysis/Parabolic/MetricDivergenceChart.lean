@@ -104,7 +104,7 @@ theorem contDiffOn_of_chart_weak_equation
     exact ⟨ht, by simpa only [ep, ContinuousLinearEquiv.prodCongr_symm,
       ContinuousLinearEquiv.prodCongr_apply, ContinuousLinearEquiv.symm_apply_apply] using hz⟩
   have hUl : LocallyLipschitzOn (Ioo a b ×ˢ Ω) (U ∘ ep.symm) :=
-    hU.comp ep.symm.lipschitz.locallyLipschitz.locallyLipschitzOn hmaps
+    hU.comp ep.symm.lipschitzWith.locallyLipschitz.locallyLipschitzOn hmaps
   have hw := weak_divergence_eq_comp_toEuclidean hweak
   have hsm := (contDiffOn_and_metric_divergence_eq_of_locallyLipschitzOn hG hreg α hΩ hΩs
     (U ∘ ep.symm) hUl (fun φ hφ hφc hφs => ?_)).1

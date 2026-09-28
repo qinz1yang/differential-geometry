@@ -87,7 +87,7 @@ theorem exists_coordinate_weak_gradients_comp_diskExtension_of_ae_tendsto
       _ = ((K * L n : ℝ≥0) : ℝ≥0∞) * edist z w := by
         rw [ENNReal.coe_mul, mul_assoc]
   have hLipE (i : Fin m) (n : ℕ) : LipschitzWith (K * L n) (f i n) := by
-    simpa only [f, Function.comp_def, mul_one] using (hLipC i n).comp e.lipschitz
+    simpa only [f, Function.comp_def, mul_one] using (hLipC i n).comp e.lipschitzWith
   have hint (q : ℂ → ℝ) :
       (∫ x in ball (0 : EuclideanSpace ℝ (Fin 2)) 1, q (e x)) =
         ∫ z in closedBall (0 : ℂ) 1, q z := by

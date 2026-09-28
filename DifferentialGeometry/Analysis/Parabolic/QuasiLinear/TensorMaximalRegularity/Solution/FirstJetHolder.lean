@@ -67,7 +67,7 @@ private theorem exists_holderOnWith_time_realization
     (u : timeH1 (PiLp 2 (fun _ : ι => TensorHs g 0 0 1)) T) :
     ∃ C : ℝ≥0, HolderOnWith C (1 / 4)
       (fun t => scalarH1PiToContinuous g (u.toFun t)) (Icc 0 T) := by
-  have h := (scalarH1PiToContinuous (ι := ι) g).lipschitz.holderWith.comp_holderOnWith
+  have h := (scalarH1PiToContinuous (ι := ι) g).lipschitzWith.holderWith.comp_holderOnWith
     u.holderOnWith_toFun
   have hhalf : ∃ C : ℝ≥0, HolderOnWith C (1 / 2)
       (fun t => scalarH1PiToContinuous g (u.toFun t)) (Icc 0 T) := by

@@ -554,7 +554,7 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le
       (cutoffJet2HolderConst Kchi Kdchi Kd2chi Ku Kdu Kd2u
         Mchi Mdchi Md2chi Mu Mdu Md2u) alpha
       (Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u))) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hjet2
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hjet2
     have hfun : e.symm ∘ Q.domRestrict
         (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u) =
         Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u)) := by
@@ -726,7 +726,7 @@ theorem eParabolicC2HolderGaugeOn_parabolicCutoffValue_le_of_eq_zero_outside
       (cutoffJet2HolderConst Kchi Kdchi Kd2chi Ku Kdu Kd2u
         Mchi Mdchi Md2chi Mu Mdu Md2u) alpha
       (Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u))) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hjet2
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hjet2
     have hfun : e.symm ∘ Q.domRestrict
         (parabolicCutoffSpatialJet2 chi dchi d2chi u du d2u) =
         Q.domRestrict (parabolicSpatialJet 2 (parabolicCutoffValue chi u)) := by

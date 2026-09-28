@@ -195,7 +195,7 @@ private theorem differentiableOn_of_lipschitzWith_of_ae_differentiableAt
   have hCR := hae'.mono fun x hx => cauchy_riemann_repr hx
   have hFc : ∀ x ∈ Ω', ContDiffAt ℝ ∞ (H ∘ e) x :=
     fun x hx => contDiffAt_of_lipschitz_of_ae_cauchy_riemann
-      (by simpa only [mul_one] using! hH.comp e.lipschitz) hΩ' hCR hx
+      (by simpa only [mul_one] using! hH.comp e.lipschitzWith) hΩ' hCR hx
   have hc : ContDiffOn ℝ ∞ H Ω := by
     intro z hz
     have hx : Complex.orthonormalBasisOneI.repr z ∈ Ω' := by

@@ -792,7 +792,7 @@ theorem exists_parabolic_nondivergence_schauder_estimate_of_interpolation
   have hduHolder : HolderWith
       (parabolicSpatialGradientInterpolationConst epsilon alpha C M) alpha
       (Q.domRestrict (fun p ↦ du p.time p.space)) := by
-    have hcomp := e1.lipschitz.holderWith.comp hjetHolder
+    have hcomp := e1.lipschitzWith.holderWith.comp hjetHolder
     have hfun : e1 ∘ Q.domRestrict
         (parabolicSpatialJet 1 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ du p.time p.space) := by
@@ -812,7 +812,7 @@ theorem exists_parabolic_nondivergence_schauder_estimate_of_interpolation
   have hd2uHolder : HolderWith C alpha
       (Q.domRestrict (fun p ↦ d2u p.time p.space)) := by
     have hbase := parabolicSpatialJet_holderWith_restrict hgauge
-    have hcomp := e2.lipschitz.holderWith.comp hbase
+    have hcomp := e2.lipschitzWith.holderWith.comp hbase
     have hfun : e2 ∘ Q.domRestrict
         (parabolicSpatialJet 2 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ d2u p.time p.space) := by

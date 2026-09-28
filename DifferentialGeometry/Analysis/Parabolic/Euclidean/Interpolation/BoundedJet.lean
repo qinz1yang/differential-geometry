@@ -128,7 +128,7 @@ theorem parabolicSpatialDerivative_holderWith_restrict_of_interpolation
   let e := continuousMultilinearCurryFin1 Real (Euc n) F
   have hjet := parabolicSpatialJet_one_holderWith_restrict_of_interpolation
     hJ epsilon hepsilon halpha huC2 hgauge huNorm
-  have hcomp := e.lipschitz.holderWith.comp hjet
+  have hcomp := e.lipschitzWith.holderWith.comp hjet
   have hfun : e ∘ (parabolicCylinder J Set.univ).domRestrict
       (parabolicSpatialJet 1 (fun t x ↦ u t x)) =
         (parabolicCylinder J Set.univ).domRestrict
@@ -176,7 +176,7 @@ theorem parabolicSpatialSecondDerivative_holderWith_restrict
         (fun p ↦ d2u p.time p.space)) := by
   let e := hessianCurryEquiv (Euc n) F
   have hbase := parabolicSpatialJet_holderWith_restrict hgauge
-  have hcomp := e.lipschitz.holderWith.comp hbase
+  have hcomp := e.lipschitzWith.holderWith.comp hbase
   have hfun : e ∘ (parabolicCylinder J Set.univ).domRestrict
       (parabolicSpatialJet 2 (fun t x ↦ u t x)) =
         (parabolicCylinder J Set.univ).domRestrict

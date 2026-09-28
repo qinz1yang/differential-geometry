@@ -205,15 +205,15 @@ theorem galerkinCoordField_lipschitzWith
       ‖galerkinCoordEmbed (I := I) (M := M) g₀ a S‖₊, ?_⟩
   have hdiag : LipschitzWith ‖galerkinCoordDiag (I := I) (M := M) g₀ S‖₊
       (galerkinCoordDiag (I := I) (M := M) g₀ S) :=
-    (galerkinCoordDiag (I := I) (M := M) g₀ S).lipschitz
+    (galerkinCoordDiag (I := I) (M := M) g₀ S).lipschitzWith
   have hnonlin : LipschitzWith
       (‖galerkinCoordRestrict (I := I) (M := M) g₀ a S‖₊ * K₀ *
         ‖galerkinCoordEmbed (I := I) (M := M) g₀ a S‖₊)
       (fun w => galerkinCoordRestrict (I := I) (M := M) g₀ a S
         (deTurckSobolevNonlinearity (I := I) (M := M) g₀ g_bg a
           (galerkinCoordEmbed (I := I) (M := M) g₀ a S w))) :=
-    ((galerkinCoordRestrict (I := I) (M := M) g₀ a S).lipschitz.comp hK₀).comp
-      (galerkinCoordEmbed (I := I) (M := M) g₀ a S).lipschitz
+    ((galerkinCoordRestrict (I := I) (M := M) g₀ a S).lipschitzWith.comp hK₀).comp
+      (galerkinCoordEmbed (I := I) (M := M) g₀ a S).lipschitzWith
   exact hdiag.add hnonlin
 
 theorem galerkinCoordField_affineBound
@@ -575,15 +575,15 @@ private lemma galerkinCoordFieldSymm_lipschitzWith
       ‖galerkinCoordEmbed (I := I) (M := M) g₀ a S‖₊, ?_⟩
   have hdiag : LipschitzWith ‖galerkinCoordDiag (I := I) (M := M) g₀ S‖₊
       (galerkinCoordDiag (I := I) (M := M) g₀ S) :=
-    (galerkinCoordDiag (I := I) (M := M) g₀ S).lipschitz
+    (galerkinCoordDiag (I := I) (M := M) g₀ S).lipschitzWith
   have hnonlin : LipschitzWith
       (‖galerkinCoordRestrict (I := I) (M := M) g₀ a S‖₊ * K₀ *
         ‖galerkinCoordEmbed (I := I) (M := M) g₀ a S‖₊)
       (fun w => galerkinCoordRestrict (I := I) (M := M) g₀ a S
         (deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a
           (galerkinCoordEmbed (I := I) (M := M) g₀ a S w))) :=
-    ((galerkinCoordRestrict (I := I) (M := M) g₀ a S).lipschitz.comp hK₀).comp
-      (galerkinCoordEmbed (I := I) (M := M) g₀ a S).lipschitz
+    ((galerkinCoordRestrict (I := I) (M := M) g₀ a S).lipschitzWith.comp hK₀).comp
+      (galerkinCoordEmbed (I := I) (M := M) g₀ a S).lipschitzWith
   exact hdiag.add hnonlin
 
 private lemma galerkinCoordFieldSymm_affineBound

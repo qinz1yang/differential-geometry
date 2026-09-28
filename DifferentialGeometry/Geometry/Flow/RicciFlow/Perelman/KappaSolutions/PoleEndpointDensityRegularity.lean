@@ -394,7 +394,7 @@ theorem contDiffOn_poleEndpoint_redDensity_limit_time_chart_of_chartResidual_eq_
   have hT : LipschitzWith (max 1 ‖(toEuclidean (E := E)).symm.toContinuousLinearMap‖₊) T := by
     simpa only [mul_one, T, Function.comp_def] using
       (LipschitzWith.prod_fst : LipschitzWith 1 (Prod.fst : ℝ × EuStd → ℝ)).prodMk
-        ((toEuclidean (E := E)).symm.lipschitz.comp
+        ((toEuclidean (E := E)).symm.lipschitzWith.comp
           (LipschitzWith.prod_snd : LipschitzWith 1 (Prod.snd : ℝ × EuStd → EuStd)))
   have hmaps : MapsTo T (Icc a c ×ˢ closure Ω)
       (Icc a c ×ˢ ((toEuclidean (E := E)).symm '' closure Ω)) :=

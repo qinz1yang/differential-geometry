@@ -849,7 +849,7 @@ theorem parabolic_ball_schauder_estimate_of_buffered_gauge_bound_of_small_defect
       (bufferedParabolicSpatialGradientInterpolationConst
         epsilon delta alpha C M) alpha
       (Q.domRestrict (fun p ↦ du p.time p.space)) := by
-    have hcomp := e1.lipschitz.holderWith.comp hjetHolder
+    have hcomp := e1.lipschitzWith.holderWith.comp hjetHolder
     have hfun : e1 ∘ Q.domRestrict
         (parabolicSpatialJet 1 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ du p.time p.space) := by
@@ -868,7 +868,7 @@ theorem parabolic_ball_schauder_estimate_of_buffered_gauge_bound_of_small_defect
   have hd2uHolder : HolderWith C alpha
       (Q.domRestrict (fun p ↦ d2u p.time p.space)) := by
     have hbase := parabolicSpatialJet_holderWith_restrict hgaugeQ
-    have hcomp := e2.lipschitz.holderWith.comp hbase
+    have hcomp := e2.lipschitzWith.holderWith.comp hbase
     have hfun : e2 ∘ Q.domRestrict
         (parabolicSpatialJet 2 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ d2u p.time p.space) := by
@@ -1215,7 +1215,7 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate_of_local_source_
     ((HolderWith.restrict_iff.mp huHolder).mono hQlocalQ).holderWith
   have hjetHolder : HolderWith Kdu alpha
       (Qlocal.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x))) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hduHolderLocal
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hduHolderLocal
     have hfun : e.symm ∘ Qlocal.domRestrict (fun p ↦ du p.time p.space) =
         Qlocal.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x)) := by
       funext p
@@ -1465,7 +1465,7 @@ theorem nondivergence_ball_schauder_estimate_of_local_source_bounds_of_small_def
     ((HolderWith.restrict_iff.mp huHolder).mono hQlocalQ).holderWith
   have hjetHolder : HolderWith Kdu alpha
       (Qlocal.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x))) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hduHolderLocal
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hduHolderLocal
     have hfun : e.symm ∘ Qlocal.domRestrict (fun p ↦ du p.time p.space) =
         Qlocal.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x)) := by
       funext p
@@ -2331,7 +2331,7 @@ theorem nondivergence_ball_schauder_estimate_of_global_gauge_bound_of_small_defe
   have hduHolder : HolderWith
       (parabolicSpatialGradientInterpolationConst epsilon alpha C M) alpha
       (Q.domRestrict (fun p ↦ du p.time p.space)) := by
-    have hcomp := e1.lipschitz.holderWith.comp hjetHolder
+    have hcomp := e1.lipschitzWith.holderWith.comp hjetHolder
     have hfun : e1 ∘ Q.domRestrict
         (parabolicSpatialJet 1 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ du p.time p.space) := by
@@ -2351,7 +2351,7 @@ theorem nondivergence_ball_schauder_estimate_of_global_gauge_bound_of_small_defe
   have hd2uHolder : HolderWith C alpha
       (Q.domRestrict (fun p ↦ d2u p.time p.space)) := by
     have hbase := parabolicSpatialJet_holderWith_restrict hgauge
-    have hcomp := e2.lipschitz.holderWith.comp hbase
+    have hcomp := e2.lipschitzWith.holderWith.comp hbase
     have hfun : e2 ∘ Q.domRestrict
         (parabolicSpatialJet 2 (fun t x ↦ u t x)) =
           Q.domRestrict (fun p ↦ d2u p.time p.space) := by

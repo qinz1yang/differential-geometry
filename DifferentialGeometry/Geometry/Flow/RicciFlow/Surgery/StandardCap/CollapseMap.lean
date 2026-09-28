@@ -344,7 +344,7 @@ private theorem collapseMap_coordinate_lipschitz {A B : ℝ} (hA : 0 < A) (hAB :
   have hcomp : LipschitzOnWith (CG * Ce) (ambientClamp A ∘ e) s :=
     hLG.comp (hLe.mono inter_subset_left)
       ((mapsTo_preimage e tG).mono_left inter_subset_right)
-  have hD := D.toContinuousLinearMap.lipschitz.comp_lipschitzOnWith hcomp
+  have hD := D.toContinuousLinearMap.lipschitzWith.comp_lipschitzOnWith hcomp
   refine ⟨‖D.toContinuousLinearMap‖₊ * (CG * Ce), s, hs, ?_⟩
   have heq : euclideanChartExpression g k (collapseMap hA hAB) p
       (collapseMap hA hAB p) = D ∘ ambientClamp A ∘ e := by

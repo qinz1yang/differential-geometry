@@ -310,7 +310,7 @@ theorem exists_weighted_chart_energy_le_liminf_of_cutoffs
         simpa only [ENNReal.coe_mul, mul_assoc] using
           mul_le_mul_right (diskExtension_riemannian_lipschitz g (hu (k n)) z w)
             (KP : ℝ≥0∞))
-    simpa only [f, Function.comp_def, mul_one] using hfc.comp e.lipschitz
+    simpa only [f, Function.comp_def, mul_one] using hfc.comp e.lipschitzWith
   let Bn := fun n x => B (U (k n) (e x))
   let Bv := fun x => B (v (e x))
   have hBn (n : ℕ) : AEStronglyMeasurable (Bn n) μ :=

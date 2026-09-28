@@ -199,7 +199,7 @@ theorem parabolic_nondivergence_ball_interior_schauder_estimate
     rfl
   have hjetHolder : HolderWith Kdu alpha
       (Q.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x))) := by
-    have hcomp := e.symm.lipschitz.holderWith.comp hduHolder
+    have hcomp := e.symm.lipschitzWith.holderWith.comp hduHolder
     have hfun : e.symm ∘ Q.domRestrict (fun p ↦ du p.time p.space) =
         Q.domRestrict (parabolicSpatialJet 1 (fun t x ↦ u t x)) := by
       funext p

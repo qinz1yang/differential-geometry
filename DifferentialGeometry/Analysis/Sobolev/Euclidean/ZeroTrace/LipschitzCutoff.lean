@@ -179,7 +179,7 @@ theorem exists_memW01p_complex_cutoff_bounds_of_lipschitz
   refine ⟨C, hC, ?_⟩
   intro f K A B hf hA hB
   have hfe : LipschitzWith K (f ∘ e) := by
-    simpa only [mul_one] using hf.comp e.lipschitz
+    simpa only [mul_one] using hf.comp e.lipschitzWith
   have hAe : (∫ x in ball (0 : EuclideanSpace ℝ (Fin 2)) 1, (f ∘ e) x ^ 2) ≤ A := by
     change (∫ x in ball (0 : EuclideanSpace ℝ (Fin 2)) 1, f (e x) ^ 2) ≤ A
     rw [hint (fun z => f z ^ 2)]

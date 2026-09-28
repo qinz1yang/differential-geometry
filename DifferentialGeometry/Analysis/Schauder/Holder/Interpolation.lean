@@ -171,7 +171,7 @@ theorem norm_iteratedFDeriv_succ_le_at_scale
       (fderiv Real (iteratedFDeriv Real k f)) := by
     rw [fderiv_iteratedFDeriv]
     simpa only [curryEquiv, one_mul, NNReal.rpow_one, NNReal.coe_one] using
-      (curryEquiv.lipschitz.holderWith.comp hjet)
+      (curryEquiv.lipschitzWith.holderWith.comp hjet)
   have hbound := norm_fderiv_le_at_scale
     (hf.differentiable_iteratedFDeriv (mod_cast Nat.lt_succ_self k))
     hderivHolder hfnorm hepsilon x
