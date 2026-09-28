@@ -85,7 +85,8 @@ lemma memLp_volume_compact_contDiffOn_mul
       rw [Real.norm_of_nonneg hC_nn]; exact hy
     exact mul_le_mul_of_nonneg_right hC_norm (norm_nonneg _)
   exact lt_of_le_of_lt
-    (eLpNorm_mono_ae (μ := (volume : Measure EuclN).restrict K) hpt)
+    (eLpNorm_mono_ae (μ := (volume : Measure EuclN).restrict K)
+      (hc_meas.mul hw.1) hpt)
     (hw.const_smul (C : ℝ)).2
 
 open DifferentialGeometry.Analysis.Spectral in

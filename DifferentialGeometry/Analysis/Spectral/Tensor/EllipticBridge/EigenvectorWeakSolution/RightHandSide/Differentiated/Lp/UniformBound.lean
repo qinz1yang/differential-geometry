@@ -630,17 +630,13 @@ theorem eigenvectorChartRHSDiffNumerator_eLpNorm_le_uniform
     have hABC_mem : MemLp (layerA + layerB - layerC) 2 μ := hAB_mem.sub hC_mem
     have hABCD_mem : MemLp (layerA + layerB - layerC + layerD) 2 μ :=
       hABC_mem.add hD_mem
-    refine le_trans (eLpNorm_add_le hABCD_mem.aestronglyMeasurable
-      hE_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hABC_mem.aestronglyMeasurable
-      hD_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hAB_mem.aestronglyMeasurable
-      hC_mem.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    exact eLpNorm_add_le hA_mem.aestronglyMeasurable
-      hB_mem.aestronglyMeasurable (by norm_num)
+    exact eLpNorm_add_le (by norm_num)
   refine le_trans h_tri ?_
   have h_five :
       eLpNorm layerA 2 μ + eLpNorm layerB 2 μ + eLpNorm layerC 2 μ

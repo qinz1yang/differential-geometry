@@ -75,7 +75,11 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le
     exact mul_le_mul_of_nonneg_right (hC_bd y hyK) (norm_nonneg _)
   have h_mono :
       eLpNorm (fun y => c y * w y) 2 μ ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μ :=
-    eLpNorm_mono_ae (μ := μ) h_dom
+    by
+      by_cases h_meas : AEStronglyMeasurable (fun y => c y * w y) μ
+      · exact eLpNorm_mono_ae h_meas h_dom
+      · rw [eLpNorm_of_not_aestronglyMeasurable h_meas]
+        exact bot_le
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μ
         = ENNReal.ofReal C * eLpNorm w 2 μ := by
@@ -108,7 +112,7 @@ lemma eLpNorm_sum_le_const_mul_aggregate
     exact (Finset.sum_apply y Finset.univ F).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j) 2 μ ≤ ∑ j : ι, eLpNorm (F j) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A := by
     refine Finset.sum_le_sum (fun j _ => ?_)
@@ -169,7 +173,11 @@ lemma eLpNorm_volume_restrict_contDiffOn_mul_le_uniform
     exact mul_le_mul_of_nonneg_right (hC_bd y hyK) (norm_nonneg _)
   have h_mono :
       eLpNorm (fun y => c y * w y) 2 μ ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μ :=
-    eLpNorm_mono_ae (μ := μ) h_dom
+    by
+      by_cases h_meas : AEStronglyMeasurable (fun y => c y * w y) μ
+      · exact eLpNorm_mono_ae h_meas h_dom
+      · rw [eLpNorm_of_not_aestronglyMeasurable h_meas]
+        exact bot_le
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μ
         = ENNReal.ofReal C * eLpNorm w 2 μ := by
@@ -204,7 +212,7 @@ lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     exact (Finset.sum_apply y Finset.univ (fun j => F j n)).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j n) 2 μ ≤ ∑ j : ι, eLpNorm (F j n) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j n).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j n) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A n := by
     refine Finset.sum_le_sum (fun j _ => ?_)

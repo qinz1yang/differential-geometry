@@ -59,7 +59,7 @@ private lemma eLpNorm_sum_le_const_mul_aggregate
     exact (Finset.sum_apply y Finset.univ F).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j) 2 μ ≤ ∑ j : ι, eLpNorm (F j) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A := by
     refine Finset.sum_le_sum (fun j _ => ?_)
@@ -156,7 +156,7 @@ private lemma eLpNorm_sum_le_const_mul_aggregate_uniform
     exact (Finset.sum_apply y Finset.univ (fun j => F j n)).symm
   rw [h_fun]
   have h_tri : eLpNorm (∑ j : ι, F j n) 2 μ ≤ ∑ j : ι, eLpNorm (F j n) 2 μ :=
-    eLpNorm_sum_le (fun j _ => (hF j n).aestronglyMeasurable) (by norm_num)
+    eLpNorm_sum_le (by norm_num)
   have h_step : ∑ j : ι, eLpNorm (F j n) 2 μ
       ≤ ∑ _j : ι, ENNReal.ofReal (∑ k : ι, Cf k) * A n := by
     refine Finset.sum_le_sum (fun j _ => ?_)
@@ -1082,23 +1082,17 @@ private lemma eigenvectorChartRHSNumerator_eLpNorm_le_uniform_unconditional :
           + eLpNorm (eigenvectorChartCrossRightDivergence (I := I) (M := M)
               g r s i α P₀) 2 μw := by
     rw [eigenvectorChartRHSNumerator]
-    refine le_trans (eLpNorm_sub_le hB123456.aestronglyMeasurable
-      hM7.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hB12345.aestronglyMeasurable
-      hM6.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hB1234.aestronglyMeasurable
-      hM5.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_sub_le hB123.aestronglyMeasurable
-      hM4.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_sub_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    refine le_trans (eLpNorm_add_le hB12.aestronglyMeasurable
-      hM3.aestronglyMeasurable (by norm_num)) ?_
+    refine le_trans (eLpNorm_add_le (by norm_num)) ?_
     refine add_le_add ?_ (le_refl _)
-    exact eLpNorm_sub_le hM1.aestronglyMeasurable
-      hM2.aestronglyMeasurable (by norm_num)
+    exact eLpNorm_sub_le (by norm_num)
   refine le_trans h_tri ?_
   have h_seven :
       eLpNorm (eigenvectorChartComponentFun (I := I) (M := M) g r s i α P₀) 2 μw
