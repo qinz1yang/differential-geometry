@@ -91,16 +91,6 @@ theorem secCompLimit_ae_zero
     intro h
     rw [h] at hp
     exact absurd hp (by norm_num : ¬ ((1 : ℝ≥0∞) ≤ 0))
-  have h_aesm_seq : ∀ n, AEStronglyMeasurable
-      (secChartComp (I := I) (M := M) r s (u n).1 α Idx Jdx)
-      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) :=
-    fun n => ((u n).2 α Idx Jdx).memLp.aestronglyMeasurable
-  have h_aesm_lim : AEStronglyMeasurable
-      (secCompLimit (I := I) (M := M) r s k hp u
-        h_cauchy α Idx Jdx)
-      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) :=
-    (secCompLimit_mem (I := I) (M := M) r s k hp u
-      h_cauchy α Idx Jdx).memLp.aestronglyMeasurable
   have h_meas : TendstoInMeasure
       (volume.restrict (chartTargetEuclid (I := I) (M := M) α))
       (fun n => secChartComp (I := I) (M := M)
@@ -108,8 +98,7 @@ theorem secCompLimit_ae_zero
       atTop
       (secCompLimit (I := I) (M := M) r s k hp u
         h_cauchy α Idx Jdx) :=
-    tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top
-      h_aesm_seq h_aesm_lim h_eLp
+    tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top h_eLp
   obtain ⟨ns, _hns, h_ae⟩ := h_meas.exists_seq_tendsto_ae
   have h_off_meas : MeasurableSet
       (chartTargetEuclid (I := I) (M := M) α \
