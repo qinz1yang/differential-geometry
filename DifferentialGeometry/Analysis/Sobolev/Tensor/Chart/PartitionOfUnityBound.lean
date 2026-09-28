@@ -931,7 +931,8 @@ lemma eLpNorm_iterWeakPartial_le_basis
     filter_upwards [hpt] with y hy
     simpa [Real.norm_eq_abs, abs_mul,
       abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg (norm_nonneg _)] using hy
-  exact eLpNorm_mono_ae hpt'
+  exact eLpNorm_mono_ae
+    (contDiff_iterClassicalPartial m β hu_smooth).continuous.aestronglyMeasurable hpt'
 
 lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -1142,6 +1143,11 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
           intro hz
           exact hder (by simp [hz])
         simpa [Function.support] using hder0)
+    have hleft_cont : Continuous (fun y : EuclN =>
+        Real.sqrt (m + 1 : ℝ) * ‖iteratedFDeriv ℝ m f y‖) :=
+      continuous_const.mul
+        (hf_smooth.continuous_iteratedFDeriv (m := m) (by
+          exact_mod_cast (le_top : (m : ℕ∞) ≤ (⊤ : ℕ∞)))).norm
     have hrest : eLpNorm (fun y : EuclN =>
         Real.sqrt (m + 1 : ℝ) * ‖iteratedFDeriv ℝ m f y‖) 2
           (volume.restrict Ω) =
@@ -1149,7 +1155,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
           Real.sqrt (m + 1 : ℝ) * ‖iteratedFDeriv ℝ m f y‖) 2
           (volume.restrict K) := by
       have h := eLpNorm_restrict_eq_of_support_subset (p := 2) (μ := volume.restrict Ω)
-        (s := K) hg_support_K
+        (s := K) hleft_cont.aestronglyMeasurable hg_support_K
       rw [← h]
       congr 1
       exact Measure.restrict_restrict_of_subset hK_sub_Ω
@@ -1187,7 +1193,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
               simpa [Real.norm_eq_abs, abs_mul,
                 abs_of_nonneg (Real.sqrt_nonneg _), abs_of_nonneg (norm_nonneg _),
                 abs_of_nonneg hKm_nn, abs_of_nonneg hsum_nn] using hy
-            exact eLpNorm_mono_ae hpt'
+            exact eLpNorm_mono_ae hleft_cont.aestronglyMeasurable.restrict hpt'
       _ ≤ ENNReal.ofReal (Real.sqrt (m + 1 : ℝ) * Km) *
               (∑ l ∈ Finset.range (m + 1),
                 eLpNorm (fun y => ‖iteratedFDeriv ℝ l v y‖) 2
@@ -1209,16 +1215,10 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
                 (hv_smooth_Ω.contDiffAt (hΩ_open.mem_nhds hy)).of_le (by
                   exact_mod_cast (le_top : (l : ℕ∞) ≤ (⊤ : ℕ∞)))
               exact (iteratedFDerivWithin_eq_iteratedFDeriv hΩ_open.uniqueDiffOn hcont_at hy).symm
-            have hfs : ∀ i, i ∈ Finset.range (m + 1) → AEStronglyMeasurable
-                (fun y : EuclN => ‖iteratedFDeriv ℝ i v y‖)
-                (volume.restrict K) := by
-              intro i hi
-              exact ContinuousOn.aestronglyMeasurable
-                ((hcont_der i).norm.mono (by intro y hy; exact hK_sub_Ω hy)) hK_meas
             have hsum := eLpNorm_sum_le
               (s := Finset.range (m + 1))
               (f := fun l => fun y : EuclN => ‖iteratedFDeriv ℝ l v y‖)
-              hfs (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+              (by norm_num : (1 : ℝ≥0∞) ≤ 2)
             have hc_nn : 0 ≤ Real.sqrt (m + 1 : ℝ) * Km :=
               mul_nonneg (Real.sqrt_nonneg _) hKm_nn
             have henorm : ‖(Real.sqrt (m + 1 : ℝ) * Km : ℝ)‖ₑ =
