@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 import DifferentialGeometry.Topology.Manifold.Attachment.AdjunctionSeparation
 
 set_option autoImplicit false
@@ -159,8 +159,7 @@ theorem coreInclusion_injective : Injective (coreInclusion c d hdisj a) :=
   Manifold.Attachment.adjunctionLower_injective _ _ boundaryInclusion_injective
 
 theorem bandInclusion_injective : Injective (bandInclusion c d hdisj a) :=
-  Manifold.Attachment.adjunctionCell_injective _ _ boundaryInclusion_injective
-    (attachingMap_injective c d hdisj a)
+  Manifold.Attachment.adjunctionCell_injective _ _ (attachingMap_injective c d hdisj a)
 
 theorem bandInclusion_eq_coreInclusion_iff (q : Band (n := n)) (x : c.DoublePunctured d) :
     bandInclusion c d hdisj a q = coreInclusion c d hdisj a x ↔

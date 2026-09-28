@@ -51,7 +51,7 @@ theorem exists_eventually_pullback_metric_restrict_open
   have hk := PartialDiffeomorph.isLocalDiffeomorph_restrict_open_of_eqOn Φ hW hΦ
   refine ⟨hk.contMDiff, ?_⟩
   intro x v w
-  simp only [Gseq, dif_pos hk, SmoothRiemannianMetric.pullback_inner,
+  simp only [Gseq, dite_eq_left hk, SmoothRiemannianMetric.pullback_inner,
     mfderiv_restrict_open]
   rfl
 

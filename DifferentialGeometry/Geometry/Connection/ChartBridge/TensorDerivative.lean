@@ -11,7 +11,6 @@ open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.Diverge
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow
-open DifferentialGeometry.CheegerGromovCompactness
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}

@@ -304,12 +304,13 @@ private lemma denseRange_smoothCompactlySupportedInToLp
           (((volume : Measure E).restrict Ω'') (Ω'' \ K)) ^ ((1 : ℝ) / 2) := by
       have hp_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
       have hp_ne_top : (2 : ℝ≥0∞) ≠ ⊤ := by norm_num
-      rw [eLpNorm_indicator_const h_meas_diff hp_ne_zero hp_ne_top]
+      rw [eLpNorm_indicator_const h_meas_diff.nullMeasurableSet hp_ne_zero hp_ne_top]
       have h_two_toReal : ((2 : ℝ≥0∞) : ℝ≥0∞).toReal = 2 := by simp
       rw [h_two_toReal]
       rw [Real.enorm_eq_ofReal hBp_nn]
     refine le_trans ?_ (le_of_eq h_indicator_eLpNorm)
-    refine eLpNorm_mono_ae ?_
+    refine eLpNorm_mono_ae
+      (hg_smooth.continuous.sub hg₀_smooth.continuous).aestronglyMeasurable ?_
     refine h_pt_bd.mono ?_
     intro x hx
     have h_sub_apply : ((g : E → ℝ) - g₀) x = g x - g₀ x := rfl
@@ -360,14 +361,7 @@ private lemma denseRange_smoothCompactlySupportedInToLp
         change g x - (⇑f) x = (g x - g₀ x) + (g₀ x - (⇑f) x)
         ring
       rw [h_split]
-      have h_aesm₁ : AEStronglyMeasurable ((g : E → ℝ) - g₀)
-          ((volume : Measure E).restrict Ω'') :=
-        (hg_smooth.continuous.sub hg₀_smooth.continuous).aestronglyMeasurable
-      have h_aesm₂ : AEStronglyMeasurable ((g₀ : E → ℝ) - ⇑f)
-          ((volume : Measure E).restrict Ω'') := by
-        refine hg₀_smooth.continuous.aestronglyMeasurable.sub ?_
-        exact (Lp.aestronglyMeasurable f)
-      exact eLpNorm_add_le h_aesm₁ h_aesm₂ (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+      exact eLpNorm_add_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     have h_meas_le :
         (((volume : Measure E).restrict Ω'') (Ω'' \ K)) ^ ((1 : ℝ) / 2) ≤
           (ENNReal.ofReal δ) ^ ((1 : ℝ) / 2) := by
@@ -742,7 +736,9 @@ private lemma abs_integral_mul_le_eLpNorm_two_local
     rw [hofreal]; exact hint
   have h_lintegral_eq :
       ∫⁻ x, ‖f x * g x‖ₑ ∂μ = eLpNorm (fun x => g x * f x) 1 μ := by
-    rw [eLpNorm_one_eq_lintegral_enorm]
+    rw [eLpNorm_one_eq_lintegral_enorm
+      (show AEStronglyMeasurable (fun x => g x * f x) μ from
+        hg.aestronglyMeasurable.mul hf.aestronglyMeasurable)]
     refine lintegral_congr (fun x => ?_)
     simp [enorm_mul, mul_comm]
   have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
@@ -756,7 +752,7 @@ private lemma abs_integral_mul_le_eLpNorm_two_local
       funext x; simp [smul_eq_mul]
     rw [h_mul_eq]
     have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := inferInstance
-    exact eLpNorm_smul_le_mul_eLpNorm hf.aestronglyMeasurable hg.aestronglyMeasurable
+    exact eLpNorm_smul_le_mul_eLpNorm hg.aestronglyMeasurable hf.aestronglyMeasurable
   calc
     ENNReal.ofReal |∫ x, f x * g x ∂μ|
         ≤ ∫⁻ x, ‖f x * g x‖ₑ ∂μ := h_abs_le_lintegral
@@ -847,20 +843,7 @@ private lemma abs_smoothTestFunctional_local_le
     intro x hx
     simp only [w_ext, Set.indicator_of_notMem hx]
   have hw_ext_memLp : MemLp w_ext 2 (volume : Measure E) := by
-    have h_aesm : AEStronglyMeasurable w_ext (volume : Measure E) := by
-      have h_w_aesm : AEStronglyMeasurable w ((volume : Measure E).restrict Ω) :=
-        hw_l2.aestronglyMeasurable
-      exact (aestronglyMeasurable_indicator_iff hΩ_open.measurableSet).mpr h_w_aesm
-    refine ⟨h_aesm, ?_⟩
-    have h_eLpNorm_eq :
-        eLpNorm w_ext 2 (volume : Measure E) =
-          eLpNorm w 2 ((volume : Measure E).restrict Ω) := by
-      rw [show w_ext = fun x => Ω.indicator w x from rfl]
-      rw [show eLpNorm w 2 ((volume : Measure E).restrict Ω) =
-          eLpNorm (Ω.indicator w) 2 (volume : Measure E) from
-        (eLpNorm_indicator_eq_eLpNorm_restrict hΩ_open.measurableSet).symm]
-    rw [h_eLpNorm_eq]
-    exact hw_l2.eLpNorm_lt_top
+    exact (memLp_indicator_iff_restrict hΩ_open.measurableSet).mpr hw_l2
   have h_dq_eq_on_tsupport : ∀ n : ℕ, ∀ x ∈ tsupport φ.1,
       diffQuot k (hₙ n) w_ext x = diffQuot k (hₙ n) w x := by
     intro n x hx
@@ -967,52 +950,9 @@ private lemma abs_smoothTestFunctional_local_le
       · have hφx : φ.1 x = 0 := image_eq_zero_of_notMem_tsupport hxt
         rw [hφx, mul_zero, mul_zero]
     exact h_ae
-  have h_dq_aesm_global : ∀ n, AEStronglyMeasurable (diffQuot k (hₙ n) w_ext)
-      (volume : Measure E) :=
-    fun n => aestronglyMeasurable_diffQuot (d := d) k _ hw_ext_memLp.aestronglyMeasurable
-  have h_dq_aesm_restrict : ∀ n, AEStronglyMeasurable (diffQuot k (hₙ n) w_ext)
-      ((volume : Measure E).restrict Ω'') :=
-    fun n => (h_dq_aesm_global n).restrict
-  have h_dq_eq_on_Ω'' : ∀ n : ℕ, ∀ x ∈ Ω'',
-      diffQuot k (hₙ n) w_ext x = diffQuot k (hₙ n) w x := by
-    intro n x hx_Ω''
-    have hx_closure : x ∈ closure Ω'' := subset_closure hx_Ω''
-    have hx_in_Ω : x ∈ Ω :=
-      h_room (Metric.self_subset_cthickening _ hx_closure)
-    have hx_he_in_Ω : x + (hₙ n) • EuclideanSpace.single k 1 ∈ Ω := by
-      have h_dist : dist x (x + (hₙ n) • EuclideanSpace.single k 1) = |hₙ n| := by
-        rw [dist_eq_norm]
-        have heq : x - (x + (hₙ n) • EuclideanSpace.single k 1) =
-            -((hₙ n) • EuclideanSpace.single k 1) := by abel
-        rw [heq, norm_neg, norm_smul]
-        rw [show ‖(EuclideanSpace.single k (1 : ℝ) : E)‖ = 1 by simp]
-        rw [Real.norm_eq_abs, mul_one]
-      have h_in_thick : x + (hₙ n) • EuclideanSpace.single k 1 ∈
-          Metric.cthickening h₀ (closure Ω'') := by
-        refine Metric.mem_cthickening_of_dist_le _ x h₀ (closure Ω'') hx_closure ?_
-        rw [dist_comm]; rw [h_dist]; exact hₙ_bd n
-      exact h_room h_in_thick
-    have h_dq_apply : diffQuot k (hₙ n) w_ext x =
-        (w_ext (x + (hₙ n) • EuclideanSpace.single k 1) - w_ext x) / (hₙ n) := by
-      rw [diffQuot_apply_of_ne (d := d) k (hₙ_ne n) w_ext x]
-    have h_dq_w_apply : diffQuot k (hₙ n) w x =
-        (w (x + (hₙ n) • EuclideanSpace.single k 1) - w x) / (hₙ n) := by
-      rw [diffQuot_apply_of_ne (d := d) k (hₙ_ne n) w x]
-    rw [h_dq_apply, h_dq_w_apply]
-    rw [hw_ext_eq_w_on_Ω _ hx_in_Ω, hw_ext_eq_w_on_Ω _ hx_he_in_Ω]
-  have h_dq_ae_eq_restrict : ∀ n, diffQuot k (hₙ n) w_ext =ᵐ[
-        (volume : Measure E).restrict Ω''] diffQuot k (hₙ n) w := by
-    intro n
-    rw [Filter.EventuallyEq, ae_restrict_iff' hΩ''_open.measurableSet]
-    refine Filter.Eventually.of_forall ?_
-    intro x hx
-    exact h_dq_eq_on_Ω'' n x hx
-  have h_dq_aesm_restrict_w : ∀ n, AEStronglyMeasurable (diffQuot k (hₙ n) w)
-      ((volume : Measure E).restrict Ω'') := fun n =>
-    (h_dq_aesm_restrict n).congr (h_dq_ae_eq_restrict n)
   have h_dq_memLp_restrict_w : ∀ n, MemLp (diffQuot k (hₙ n) w) 2
       ((volume : Measure E).restrict Ω'') := fun n =>
-    ⟨h_dq_aesm_restrict_w n, lt_of_le_of_lt (h_dq_l2_bound n) ENNReal.ofReal_lt_top⟩
+    lt_of_le_of_lt (h_dq_l2_bound n) ENNReal.ofReal_lt_top
   have h_CS_bound : ∀ n,
       |∫ x in Ω'', diffQuot k (hₙ n) w x * φ.1 x ∂(volume : Measure E)| ≤
         M * (eLpNorm φ.1 2 ((volume : Measure E).restrict Ω'')).toReal := by

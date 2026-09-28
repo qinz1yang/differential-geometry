@@ -220,7 +220,7 @@ theorem tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph
           (covDerivOfField (I := I) (Diffeomorph.pullbackMetric (I := I)
             (g'.restrictOpen (I := I) W) F) δMV a xV) := by
     rw [hT1, ← hswap]
-    exact (normSq0S_restrictOpen_apply (I := I) G V (a + 2) xV _).symm
+    exact (Tensor0SBundle.normSq0S_restrictOpen_apply (I := I) G V (a + 2) xV _).symm
   have hnorm2 : Tensor0SBundle.normSq0S (I := I)
         (Diffeomorph.pullbackMetric (I := I) (g'.restrictOpen (I := I) W) F) xV (a + 2)
         (covDerivOfField (I := I) (Diffeomorph.pullbackMetric (I := I)
@@ -234,7 +234,7 @@ theorem tensor02_cov_deriv_norm_with_eq_of_partial_diffeomorph
       = Tensor0SBundle.normSq0S (I := I) g' ((Φ : M → N) x) (a + 2)
           (covDerivOfField (I := I) g' δN a ((Φ : M → N) x)) := by
     rw [hT2]
-    exact normSq0S_restrictOpen_apply (I := I) g' W (a + 2) (F xV) _
+    exact Tensor0SBundle.normSq0S_restrictOpen_apply (I := I) g' W (a + 2) (F xV) _
   rw [hnorm1, hnorm2, hnorm3]
 
 end PartialCovNaturality

@@ -314,18 +314,17 @@ theorem squareLeftScaling_comp_squareAffineMap (n : ℕ) (v : Fin (n + 1) → Sq
   rw [ContinuousMap.comp_apply]
   fin_cases i
   · dsimp only
-    rw [squareLeftScaling_apply_zero, squareAffineMap_apply_coe, Finset.sum_div]
+    rw [squareLeftScaling_apply_zero, squareAffineMap_apply_coe, squareAffineMap_apply_coe,
+      Finset.sum_div]
     apply Finset.sum_congr rfl
     intro j _
-    dsimp only
     rw [squareLeftScaling_apply_zero]
     ring
   · dsimp only
-    rw [squareLeftScaling_apply_one, squareAffineMap_apply_coe]
+    rw [squareLeftScaling_apply_one, squareAffineMap_apply_coe, squareAffineMap_apply_coe]
     apply Finset.sum_congr rfl
     intro j _
-    dsimp only
-    rw [squareLeftScaling_apply_one, smul_eq_mul]
+    rw [squareLeftScaling_apply_one]
 
 theorem squareRightScaling_comp_squareAffineMap (n : ℕ) (v : Fin (n + 1) → Square) :
     squareRightScaling.comp (squareAffineMap n v) =
@@ -340,22 +339,22 @@ theorem squareRightScaling_comp_squareAffineMap (n : ℕ) (v : Fin (n + 1) → S
   · dsimp only
     rw [squareRightScaling_apply_zero, squareAffineMap_apply_coe, squareAffineMap_apply_coe]
     simp only [squareRightScaling_apply_zero]
-    have hterm : ∀ j : Fin (n + 1), (t.val j) * ((v j 0 : ℝ) / 2 + 1 / 2) =
-        (t.val j * (v j 0 : ℝ)) / 2 + (t.val j) * (1 / 2) := by
+    have hterm : ∀ j : Fin (n + 1), (t.weights j) * ((v j 0 : ℝ) / 2 + 1 / 2) =
+        (t.weights j * (v j 0 : ℝ)) / 2 + (t.weights j) * (1 / 2) := by
       intro j
       ring
-    have hR : (∑ j : Fin (n + 1), (t.val j) * ((v j 0 : ℝ) / 2 + 1 / 2)) =
-        (∑ j : Fin (n + 1), t.val j * (v j 0 : ℝ)) / 2 + 1 / 2 := by
-      calc (∑ j : Fin (n + 1), (t.val j) * ((v j 0 : ℝ) / 2 + 1 / 2))
-          = ∑ j : Fin (n + 1), ((t.val j * (v j 0 : ℝ)) / 2 + (t.val j) * (1 / 2)) :=
+    have hR : (∑ j : Fin (n + 1), (t.weights j) * ((v j 0 : ℝ) / 2 + 1 / 2)) =
+        (∑ j : Fin (n + 1), t.weights j * (v j 0 : ℝ)) / 2 + 1 / 2 := by
+      calc (∑ j : Fin (n + 1), (t.weights j) * ((v j 0 : ℝ) / 2 + 1 / 2))
+          = ∑ j : Fin (n + 1), ((t.weights j * (v j 0 : ℝ)) / 2 + (t.weights j) * (1 / 2)) :=
               Finset.sum_congr rfl (fun j _ => hterm j)
-        _ = (∑ j : Fin (n + 1), t.val j * (v j 0 : ℝ) / 2) +
-              (∑ j : Fin (n + 1), (t.val j) * (1 / 2)) := Finset.sum_add_distrib
-        _ = (∑ j : Fin (n + 1), t.val j * (v j 0 : ℝ)) / 2 +
-              (∑ j : Fin (n + 1), t.val j) * (1 / 2) := by
+        _ = (∑ j : Fin (n + 1), t.weights j * (v j 0 : ℝ) / 2) +
+              (∑ j : Fin (n + 1), (t.weights j) * (1 / 2)) := Finset.sum_add_distrib
+        _ = (∑ j : Fin (n + 1), t.weights j * (v j 0 : ℝ)) / 2 +
+              (∑ j : Fin (n + 1), t.weights j) * (1 / 2) := by
               rw [Finset.sum_div, Finset.sum_mul]
-        _ = (∑ j : Fin (n + 1), t.val j * (v j 0 : ℝ)) / 2 + 1 / 2 := by
-              rw [t.property.2]
+        _ = (∑ j : Fin (n + 1), t.weights j * (v j 0 : ℝ)) / 2 + 1 / 2 := by
+              rw [t.total_of_fintype]
               ring
     rw [hR]
   · dsimp only
@@ -495,7 +494,8 @@ namespace DifferentialGeometry.Topology
 variable {Y : Type v} [TopologicalSpace Y]
 
 def integralConstSimplex (n : ℕ) (y : Y) : integralSingularSimplex n Y :=
-  (integralSingularSimplexEquiv n Y).symm (ContinuousMap.const (stdSimplex ℝ (Fin (n + 1))) y)
+  (integralSingularSimplexEquiv n Y).symm
+    (ContinuousMap.const (Convexity.StdSimplex ℝ (Fin (n + 1))) y)
 
 def integralConstChain (n : ℕ) (y : Y) : (integralSingularChains Y).X n :=
   integralSimplexChain n (integralConstSimplex n y)
@@ -510,15 +510,15 @@ theorem squareAffineSimplex_coe (n : ℕ) (v : Fin (n + 1) → Square) :
 
 theorem squareAffineMap_mem_boundary_of_coord (n : ℕ) {v : Fin (n + 1) → Square} {i : Fin 2}
     {c : unitInterval} (hc : c = 0 ∨ c = 1) (hv : ∀ j, v j i = c)
-    (t : stdSimplex ℝ (Fin (n + 1))) :
+    (t : Convexity.StdSimplex ℝ (Fin (n + 1))) :
     squareAffineMap n v t ∈ Cube.boundary (Fin 2) := by
   have hcoord : ((squareAffineMap n v t i : unitInterval) : ℝ) = (c : ℝ) := by
     rw [squareAffineMap_apply_coe]
-    calc (∑ j, (t.val j) * (v j i : ℝ)) = ∑ j, (t.val j) * (c : ℝ) :=
+    calc (∑ j, (t.weights j) * (v j i : ℝ)) = ∑ j, (t.weights j) * (c : ℝ) :=
           Finset.sum_congr rfl (fun j _ => by rw [hv j])
-      _ = (∑ j, t.val j) * (c : ℝ) :=
-          (Finset.sum_mul Finset.univ (fun j => (t.val j : ℝ)) (c : ℝ)).symm
-      _ = 1 * (c : ℝ) := by rw [t.property.2]
+      _ = (∑ j, t.weights j) * (c : ℝ) :=
+          (Finset.sum_mul Finset.univ (fun j => (t.weights j : ℝ)) (c : ℝ)).symm
+      _ = 1 * (c : ℝ) := by rw [t.total_of_fintype]
       _ = (c : ℝ) := one_mul _
   refine ⟨i, ?_⟩
   rcases hc with h | h
@@ -531,7 +531,8 @@ theorem squareAffineMap_mem_boundary_of_coord (n : ℕ) {v : Fin (n + 1) → Squ
 
 theorem singularChainImageGen_squareTriangleChain_eq_const (f : C(Square, Y)) (y : Y)
     (hf : ∀ t : Square, t ∈ Cube.boundary (Fin 2) → f t = y) {P Q R : Square}
-    (hv : ∀ t : stdSimplex ℝ (Fin 3), squareAffineMap 2 ![P, Q, R] t ∈ Cube.boundary (Fin 2)) :
+    (hv : ∀ t : Convexity.StdSimplex ℝ (Fin 3),
+      squareAffineMap 2 ![P, Q, R] t ∈ Cube.boundary (Fin 2)) :
     singularChainImageGen 2 f (squareTriangleChain P Q R) = integralConstChain 2 y := by
   rw [squareTriangleChain, singularChainImageGen_simplex]
   congr 1
@@ -542,7 +543,8 @@ theorem singularChainImageGen_squareTriangleChain_eq_const (f : C(Square, Y)) (y
 
 theorem singularChainImageGen_squareSegmentChain_eq_const (f : C(Square, Y)) (y : Y)
     (hf : ∀ t : Square, t ∈ Cube.boundary (Fin 2) → f t = y) {P Q : Square}
-    (hv : ∀ t : stdSimplex ℝ (Fin 2), squareAffineMap 1 ![P, Q] t ∈ Cube.boundary (Fin 2)) :
+    (hv : ∀ t : Convexity.StdSimplex ℝ (Fin 2),
+      squareAffineMap 1 ![P, Q] t ∈ Cube.boundary (Fin 2)) :
     singularChainImageGen 1 f (squareSegmentChain P Q) = integralConstChain 1 y := by
   rw [squareSegmentChain, singularChainImageGen_simplex]
   congr 1
@@ -551,22 +553,22 @@ theorem singularChainImageGen_squareSegmentChain_eq_const (f : C(Square, Y)) (y 
     Equiv.apply_symm_apply]
   exact ContinuousMap.ext (fun t => hf _ (hv t))
 
-theorem squareAffineMap_boundary_east_northEast (t : stdSimplex ℝ (Fin 2)) :
+theorem squareAffineMap_boundary_east_northEast (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareAffineMap 1 ![squareEast, squareNorthEast] t ∈ Cube.boundary (Fin 2) :=
   squareAffineMap_mem_boundary_of_coord 1 (i := 0) (c := 1) (Or.inr rfl)
     (fun j => by fin_cases j <;> rfl) t
 
-theorem squareAffineMap_boundary_origin_east (t : stdSimplex ℝ (Fin 2)) :
+theorem squareAffineMap_boundary_origin_east (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareAffineMap 1 ![squareOrigin, squareEast] t ∈ Cube.boundary (Fin 2) :=
   squareAffineMap_mem_boundary_of_coord 1 (i := 1) (c := 0) (Or.inl rfl)
     (fun j => by fin_cases j <;> rfl) t
 
-theorem squareAffineMap_boundary_north_northEast (t : stdSimplex ℝ (Fin 2)) :
+theorem squareAffineMap_boundary_north_northEast (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareAffineMap 1 ![squareNorth, squareNorthEast] t ∈ Cube.boundary (Fin 2) :=
   squareAffineMap_mem_boundary_of_coord 1 (i := 1) (c := 1) (Or.inr rfl)
     (fun j => by fin_cases j <;> rfl) t
 
-theorem squareAffineMap_boundary_origin_north (t : stdSimplex ℝ (Fin 2)) :
+theorem squareAffineMap_boundary_origin_north (t : Convexity.StdSimplex ℝ (Fin 2)) :
     squareAffineMap 1 ![squareOrigin, squareNorth] t ∈ Cube.boundary (Fin 2) :=
   squareAffineMap_mem_boundary_of_coord 1 (i := 0) (c := 0) (Or.inl rfl)
     (fun j => by fin_cases j <;> rfl) t
@@ -634,12 +636,12 @@ theorem squareLeftScaling_transAt (Γ Δ : GenLoop (Fin 2) X x) :
     funext i
     rw [Function.update_apply]
     by_cases hi : i = 0
-    · rw [if_pos hi, hproj, hi]
-    · rw [if_neg hi]
+    · rw [ite_eq_left hi, hproj, hi]
+    · rw [ite_eq_right hi]
       have h1 : i = 1 := by fin_cases i <;> simp_all
       rw [h1, ho]
   simp only [GenLoop.transAt, GenLoop.coe_copy]
-  rw [if_pos hle, hupd]
+  rw [ite_eq_left hle, hupd]
 
 theorem squareRightScaling_transAt (Γ Δ : GenLoop (Fin 2) X x) :
     (GenLoop.transAt 0 Γ Δ).val.comp squareRightScaling = Δ.val := by
@@ -663,10 +665,10 @@ theorem squareRightScaling_transAt (Γ Δ : GenLoop (Fin 2) X x) :
         (by norm_num : (1 : ℝ) ∈ Set.Icc (0:ℝ) 1)
     have hbound : Function.update (squareRightScaling u) 0 (1 : unitInterval) ∈
         Cube.boundary (Fin 2) :=
-      ⟨0, Or.inr (by rw [Function.update_apply, if_pos rfl])⟩
+      ⟨0, Or.inr (by rw [Function.update_apply, ite_eq_left rfl])⟩
     have hbu : u ∈ Cube.boundary (Fin 2) := ⟨0, Or.inl (Subtype.ext hu)⟩
     simp only [GenLoop.transAt, GenLoop.coe_copy]
-    rw [if_pos hle, hproj]
+    rw [ite_eq_left hle, hproj]
     change Γ.val (Function.update (squareRightScaling u) 0 (1 : unitInterval)) = Δ.val u
     rw [Γ.property _ hbound, Δ.property _ hbu]
   · have hlt : 1 / 2 < ((squareRightScaling u) 0 : ℝ) := by
@@ -687,12 +689,12 @@ theorem squareRightScaling_transAt (Γ Δ : GenLoop (Fin 2) X x) :
       funext i
       rw [Function.update_apply]
       by_cases hi : i = 0
-      · rw [if_pos hi, hproj, hi]
-      · rw [if_neg hi]
+      · rw [ite_eq_left hi, hproj, hi]
+      · rw [ite_eq_right hi]
         have h1 : i = 1 := by fin_cases i <;> simp_all
         rw [h1, ho]
     simp only [GenLoop.transAt, GenLoop.coe_copy]
-    rw [if_neg hnle, hupd]
+    rw [ite_eq_right hnle, hupd]
 
 end DifferentialGeometry.Topology
 

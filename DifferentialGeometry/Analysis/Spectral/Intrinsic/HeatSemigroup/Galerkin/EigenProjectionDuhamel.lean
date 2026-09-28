@@ -71,16 +71,16 @@ theorem timeProj_modeCoeff (σ T : ℝ) (N : ℕ)
       fun t => spatialEigenProj (I := I) (M := M) g σ N (f t) :=
     ContinuousLinearMap.coeFn_compLpL _ f
   by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     refine MeasureTheory.Lp.ext ?_
     filter_upwards [hL, hP, timeModeCoeff_coeFn (I := I) (M := M) f i]
       with t h1 h2 h3
-    rw [h1, h2, spatialProj_coeff, if_pos hi, h3]
-  · rw [if_neg hi]
+    rw [h1, h2, spatialProj_coeff, ite_eq_left hi, h3]
+  · rw [ite_eq_right hi]
     refine MeasureTheory.Lp.ext ?_
     filter_upwards [hL, hP, MeasureTheory.Lp.coeFn_zero ℝ 2 (timeMeasure T)]
       with t h1 h2 h3
-    rw [h1, h2, spatialProj_coeff, if_neg hi, h3, Pi.zero_apply]
+    rw [h1, h2, spatialProj_coeff, ite_eq_right hi, h3, Pi.zero_apply]
 
 open scoped Classical in
 omit [BoundarylessManifold I M] in
@@ -94,8 +94,8 @@ theorem proj_solutionModeCoeff {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
   classical
   rw [solutionModeCoeff, timeProj_modeCoeff]
   by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
-  · rw [if_pos hi, if_pos hi, solutionModeCoeff]
-  · rw [if_neg hi, if_neg hi, map_zero]
+  · rw [ite_eq_left hi, ite_eq_left hi, solutionModeCoeff]
+  · rw [ite_eq_right hi, ite_eq_right hi, map_zero]
 
 open scoped Classical in
 omit [BoundarylessManifold I M] in
@@ -109,8 +109,8 @@ theorem proj_derivModeCoeff {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
   classical
   rw [derivModeCoeff, timeProj_modeCoeff]
   by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
-  · rw [if_pos hi, if_pos hi, derivModeCoeff]
-  · rw [if_neg hi, if_neg hi, map_zero]
+  · rw [ite_eq_left hi, ite_eq_left hi, derivModeCoeff]
+  · rw [ite_eq_right hi, ite_eq_right hi, map_zero]
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -135,16 +135,16 @@ theorem proj_homModeCoeff {a T : ℝ} (N : ℕ)
   have hL := homModeCoeFn (I := I) (M := M) (a := a) (T := T) g
     (spatialEigenProj (I := I) (M := M) g (a + 2) N u₀) i
   by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
-  · rw [if_pos hi]
+  · rw [ite_eq_left hi]
     refine MeasureTheory.Lp.ext ?_
     filter_upwards [hL, homModeCoeFn (I := I) (M := M) (a := a) (T := T) g u₀ i]
       with t h1 h2
-    rw [h1, h2, spatialProj_coeff, if_pos hi]
-  · rw [if_neg hi]
+    rw [h1, h2, spatialProj_coeff, ite_eq_left hi]
+  · rw [ite_eq_right hi]
     refine MeasureTheory.Lp.ext ?_
     filter_upwards [hL, MeasureTheory.Lp.coeFn_zero ℝ 2 (timeMeasure T)]
       with t h1 h2
-    rw [h1, h2, spatialProj_coeff, if_neg hi, mul_zero, Pi.zero_apply]
+    rw [h1, h2, spatialProj_coeff, ite_eq_right hi, mul_zero, Pi.zero_apply]
 
 omit [BoundarylessManifold I M] in
 theorem proj_solutionField_comm {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
@@ -252,7 +252,7 @@ theorem projSolution_mode_zero {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
         (timeL2EigenProj (I := I) (M := M) g a T N f)) i = 0 := by
   rw [maximalRegularitySolutionField_timeModeCoeff (I := I) (M := M) (a := a) hT
       h_compact (timeL2EigenProj (I := I) (M := M) g a T N f) i,
-    proj_solutionModeCoeff (I := I) (M := M) g hT N f i, if_neg hi]
+    proj_solutionModeCoeff (I := I) (M := M) g hT N f i, ite_eq_right hi]
 
 omit [BoundarylessManifold I M] in
 theorem projSolution_fixed {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
@@ -269,8 +269,8 @@ theorem projSolution_fixed {a T : ℝ} (hT : 0 ≤ T) (N : ℕ)
       (maximalRegularitySolutionField (I := I) (M := M) a hT
         (timeL2EigenProj (I := I) (M := M) g a T N f)) i]
   by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
-  · rw [if_pos hi]
-  · rw [if_neg hi,
+  · rw [ite_eq_left hi]
+  · rw [ite_eq_right hi,
       projSolution_mode_zero (I := I) (M := M) g hT N h_compact f hi]
 
 end DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral

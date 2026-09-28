@@ -532,7 +532,7 @@ attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianM
 
 private theorem RetainedCoreHistory.normalized_inner_ball_volume_lower_bound_of_tested_backward_traces
     (Phi : ℝ → ℝ) (hPhi : Perelman.AdmissiblePinchingFunction Phi) {C : ℝ≥0}
-    (P : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -672,7 +672,7 @@ private theorem RetainedCoreHistory.normalized_inner_ball_volume_lower_bound_of_
 
 theorem RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_tested_backward_traces
     (Phi : ℝ → ℝ) (hPhi : Perelman.AdmissiblePinchingFunction Phi) {C : ℝ≥0}
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab ((H n).time (Fin.last (H n).eventCount)) (s n))
     (L : ∀ n, (G n).TerminalLimitMetric)
@@ -766,7 +766,7 @@ theorem RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_te
     obtain ⟨first, htrace, hstart⟩ := hn.2.2
     exact ⟨hn.1, hn.2.1, first, Fin.le_last first, htrace, hstart⟩
   have hvol := RetainedCoreHistory.normalized_inner_ball_volume_lower_bound_of_tested_backward_traces
-    Phi hPhi P₀ H s G L hinit hs x q Q hq hqQ hQ hderiv hfinal hpinch hpinchFinal
+    Phi hPhi H s G L hinit hs x q Q hq hqQ hQ hderiv hfinal hpinch hpinchFinal
       hbuffer hκ hσ htested
   obtain ⟨f, hf, r, hr, hrlim, P, F, M, hM, hradial, hcompactP, hcapture, hbounds⟩ :=
     ObservedHistory.exists_terminal_pointed_convergence_of_buffered_backward_traces
@@ -1161,7 +1161,7 @@ private theorem endpoint_scalar_eq {P : OrientedThreeStage.{u}} {a s : ℝ}
 
 theorem RetainedCoreHistory.exists_normalized_pointed_convergence_at_scalar_escape_of_scalar_derivative_contact :
     ∃ C : ℝ≥0, 0 < C ∧ ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
-      ∀ (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i))
+      ∀ (H : ℕ → RetainedCoreHistory.{u})
         (time : ℕ → ℝ)
         (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
           ((H i).time (Fin.last (H i).eventCount)) (time i)),
@@ -1264,7 +1264,7 @@ theorem RetainedCoreHistory.exists_normalized_pointed_convergence_at_scalar_esca
                 (A (ind (f n))).flow.scalar (time (ind (f n))) (x (ind (f n))).val) atTop atTop := by
   obtain ⟨C, hC, hbase⟩ := ObservedHistory.exists_scalar_escape_radius_with_buffered_backward_traces_of_contacts
   refine ⟨C, hC, ?_⟩
-  intro eps heps hepssmall P₀ H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
+  intro eps heps hepssmall H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
     q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ hinterior hqQ hfailure hfail
     Phi hPhi hpinch hpinchFinal hs κ σ hκ hσ htested
   obtain ⟨rho, hrho, ind, hind, hbuf, z, hfinite, hdist, hscalarEscape⟩ :=
@@ -1276,7 +1276,7 @@ theorem RetainedCoreHistory.exists_normalized_pointed_convergence_at_scalar_esca
   dsimp only
   obtain ⟨f, hf, r, hr, hrlim, P, F, M, hscalarOne, hcanonicalDomain, hradial, hcompact, hcapture, hmetric⟩ :=
     RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_tested_backward_traces
-      Phi hPhi (fun i => P₀ (ind i)) (fun i => H (ind i)) (fun i => time (ind i))
+      Phi hPhi (fun i => H (ind i)) (fun i => time (ind i))
       (fun i => G (ind i)) (fun i => L (ind i)) (fun i => hinit (ind i))
       (fun i => hs (ind i)) (fun i => x (ind i)) (fun _ => q₀)
       (fun i => (A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (fun i => (endpoint_scalar_eq (A (ind i)) (x (ind i))).symm) (fun _ => hq₀) (fun i => hqQ (ind i)) (fun i => hQ (ind i))
@@ -2188,7 +2188,7 @@ private theorem endpoint_scalar_eq {P : OrientedThreeStage.{u}} {a s : ℝ}
 
 private theorem exists_tested_pointed_convergence_with_backward_traces_at_scalar_escape_of_contacts :
     ∃ C : ℝ≥0, 0 < C ∧ ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
-      ∀ (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i))
+      ∀ (H : ℕ → RetainedCoreHistory.{u})
         (time : ℕ → ℝ)
         (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
           ((H i).time (Fin.last (H i).eventCount)) (time i)),
@@ -2306,7 +2306,7 @@ private theorem exists_tested_pointed_convergence_with_backward_traces_at_scalar
                 (A (ind (f n))).flow.scalar (time (ind (f n))) (x (ind (f n))).val) atTop atTop := by
   obtain ⟨C, hC, hbase⟩ := exists_scalar_escape_radius_with_buffered_backward_traces_of_contacts
   refine ⟨C, hC, ?_⟩
-  intro eps heps hepssmall P₀ H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
+  intro eps heps hepssmall H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
     q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ hinterior hqQ hfailure hfail
     Phi hPhi hpinch hpinchFinal hs κ σ hκ hσ htested
   obtain ⟨rho, hrho, ind, hind, hbuf, z, hfinite, hdist, hscalarEscape⟩ :=
@@ -2324,7 +2324,7 @@ private theorem exists_tested_pointed_convergence_with_backward_traces_at_scalar
   · dsimp only
     obtain ⟨f, hf, r, hr, hrlim, P, F, M, hscalarOne, hcanonicalDomain, hradial, hcompact, hcapture, hmetric⟩ :=
       RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_tested_backward_traces
-        Phi hPhi (fun i => P₀ (ind i)) (fun i => H (ind i)) (fun i => time (ind i))
+        Phi hPhi (fun i => H (ind i)) (fun i => time (ind i))
         (fun i => G (ind i)) (fun i => L (ind i)) (fun i => hinit (ind i))
         (fun i => hs (ind i)) (fun i => x (ind i)) (fun _ => q₀)
         (fun i => (A (ind i)).flow.scalar (time (ind i)) (x (ind i)).val) (fun i => (endpoint_scalar_eq (A (ind i)) (x (ind i))).symm) (fun _ => hq₀) (fun i => hqQ (ind i)) (fun i => hQ (ind i))
@@ -2363,7 +2363,7 @@ attribute [local instance] PointedRiemannianManifold.topology PointedRiemannianM
 
 theorem RetainedCoreHistory.exists_compatible_historical_solution_limits_at_scalar_escape_of_scalar_derivative_contact :
     ∃ C : ℝ≥0, 0 < C ∧ ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 1000 →
-      ∀ (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i))
+      ∀ (H : ℕ → RetainedCoreHistory.{u})
         (time : ℕ → ℝ)
         (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
           ((H i).time (Fin.last (H i).eventCount)) (time i)),
@@ -2559,12 +2559,12 @@ theorem RetainedCoreHistory.exists_compatible_historical_solution_limits_at_scal
  := by
   obtain ⟨C, hC, hbase⟩ := ObservedHistory.exists_tested_pointed_convergence_with_backward_traces_at_scalar_escape_of_contacts
   refine ⟨C, hC, ?_⟩
-  intro eps heps hepssmall P₀ H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
+  intro eps heps hepssmall H time A G L hinit parameters records hcanonical hmargin hm herrorlim hcap
     q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x Q hhigh hgradient hQ hinterior hqQ hfailure hfail
     Phi hPhi hpinch hpinchFinal hs κ σ hκ hσ htested
   obtain ⟨rho, hrho, ind, hind, z, hbuffer, f, hf, r, hr, hrlim, P, F, M, hscalarOne,
     hdomains, hradial, hcompact, hcapture, hmetric, hfinite, hdist, hescape⟩ :=
-    hbase eps heps hepssmall P₀ H time A hinit parameters records hcanonical hmargin hm herrorlim hcap
+    hbase eps heps hepssmall H time A hinit parameters records hcanonical hmargin hm herrorlim hcap
       q₀ a₀ a hq₀ ha₀ ha htime hfixed hlower hδ hderiv hfinal x hhigh hgradient hQ hinterior hqQ hfailure hfail
       Phi hPhi hpinch hpinchFinal hs κ σ hκ hσ htested
   refine ⟨rho, hrho, ind, hind, z, hbuffer, f, hf, r, hr, hrlim, P, F, M, hscalarOne,

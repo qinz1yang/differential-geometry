@@ -111,7 +111,7 @@ theorem exists_section34_current_simultaneous_empty_bands
   let q (r : ℕ) : Fin (n - 1) :=
     if hr : r < n - 1 then ⟨r, hr⟩ else ⟨0, by omega⟩
   have hq (r : ℕ) (hr : r + 1 < n) : (q r).val = r := by
-    simp only [q, dif_pos (show r < n - 1 by omega)]
+    simp only [q, dite_eq_left (show r < n - 1 by omega)]
   let p := σB.trans σA.symm
   have hp (i : Fin n) : σA (p i) = σB i := σA.apply_symm_apply _
   let fB := fun r => u (q r) ∘ g (q r)

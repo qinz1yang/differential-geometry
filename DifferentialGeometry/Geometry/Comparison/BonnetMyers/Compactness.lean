@@ -80,7 +80,10 @@ theorem expMapIntrinsic_surjective_on_closedBall_of_ediam_le
     rw [← ofReal_norm] at hz
     exact (ENNReal.ofReal_eq_ofReal_iff (norm_nonneg v) (Real.sqrt_nonneg _)).mp hz
   have hedist : edist p y ≤ ENNReal.ofReal R :=
-    le_trans (Metric.edist_le_ediam_of_mem (Set.mem_univ p) (Set.mem_univ y)) hdiam
+    le_trans
+      (@Metric.edist_le_ediam_of_mem M Set.univ p y
+        PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance
+        (Set.mem_univ p) (Set.mem_univ y)) hdiam
   have hre : riemannianEDist I p y = edist p y := (IsRiemannianManifold.out (I := I) p y).symm
   rw [hnorm, hv_len, hre]
   calc (edist p y).toReal

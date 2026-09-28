@@ -75,15 +75,15 @@ theorem exists_local_product_from_common_parallel_unit_section
   refine ⟨K, O, phi, hPhi, H, hK₀, hO₀, hconnected, hsource, hzero,
     htarget, ?_, ?_, ?_, hvertical⟩
   · intro a ha
-    simpa only [H, dif_pos ha] using hmetric ⟨a, ha⟩
+    simpa only [H, dite_eq_left ha] using hmetric ⟨a, ha⟩
   · intro a ha k u v
-    simpa only [H, dif_pos ha] using hinner ⟨a, ha⟩ k u v
+    simpa only [H, dite_eq_left ha] using hinner ⟨a, ha⟩ k u v
   · intro a ha k u v
     apply metric_hasDerivWithinAt_fst_of_local_product S hS
       (fun y : K × O => phi (y.1.1, y.2.1)) hPhi H
       (fun _ => (euclideanMetric (E := ℝ)).restrictOpen O) ha (hT ha) ?_ k ⟨0, hO₀⟩ u v
     intro b hb
-    simpa only [H, dif_pos hb] using hmetric ⟨b, hb⟩
+    simpa only [H, dite_eq_left hb] using hmetric ⟨b, hb⟩
 
 end DifferentialGeometry.PDE.RicciFlow
 

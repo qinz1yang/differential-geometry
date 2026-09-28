@@ -81,12 +81,12 @@ theorem exists_isPLHomeomorphInto_boundary_disk_family
     have hxy : x = y := by rw [← hx', ← hy', hyx]
     exact disjoint_left.mp (hdis' hij) hx (hxy ▸ hy)
   have hqExists : ∀ i, ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (DA i) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (DA i) ∧
       Function.invFunOn u A '' J i = q '' stdSimplexBoundary 2 :=
     fun i => (hD i).exists_isPLHomeomorphOn_invFunOn hu (hDA i)
   choose q hq hqJ using hqExists
   have hq'Exists : ∀ i, ∃ q' : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) (DB i) ∧
+      IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (DB i) ∧
       Function.invFunOn v B '' J' i = q' '' stdSimplexBoundary 2 :=
     fun i => (hD' i).exists_isPLHomeomorphOn_invFunOn hv (hDB i)
   choose q' hq' hq'J using hq'Exists

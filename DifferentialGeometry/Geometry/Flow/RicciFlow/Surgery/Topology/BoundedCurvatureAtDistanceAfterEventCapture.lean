@@ -73,7 +73,7 @@ theorem OrientedThreeStage.exists_first_touch_of_not_subset (P : OrientedThreeSt
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem exists_window_point_of_edist_le {p : CutoffParameters}
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p)

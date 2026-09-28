@@ -70,8 +70,8 @@ private lemma ite_finsetSum_eq_finsetSum_ite
     {ι : Type*} (t : Finset ι) (p : Prop) [Decidable p] (f : ι → ℝ) :
     (if p then ∑ a ∈ t, f a else 0) = ∑ a ∈ t, (if p then f a else 0) := by
   by_cases hp : p
-  · simp only [if_pos hp]
-  · simp only [if_neg hp, Finset.sum_const_zero]
+  · simp only [ite_eq_left hp]
+  · simp only [ite_eq_right hp, Finset.sum_const_zero]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma chartPushedPouWeight_toEuclidean_extChartAt
@@ -230,9 +230,9 @@ private lemma eigenvectorChartComponentFun_ite_chartPushedPouWeight_zero_ae_zero
   filter_upwards [eigenvectorChartComponentFun_ae_zero_where_chartPushedPouWeight_zero
     (I := I) (M := M) g r s i α Q] with y hy
   by_cases hw : chartPushedPouWeight (I := I) (M := M) α y = 0
-  · rw [if_pos hw]
+  · rw [ite_eq_left hw]
     exact hy hw
-  · rw [if_neg hw]
+  · rw [ite_eq_right hw]
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in
@@ -342,7 +342,7 @@ private lemma chartTransitionTransportCLM_eigenvector_ae_zero_of_notMem
           eigenvectorChartComponentFun (I := I) (M := M) g r s i α Q
             (chartTransitionEuclid (I := I) (M := M) β α y)
         else 0) = 0 := hy_gate
-      rw [if_pos hw_zero] at hy_gate'
+      rw [ite_eq_left hw_zero] at hy_gate'
       rw [hy_gate', mul_zero]
   have h_off_overlap : ∀ y, y ∉ chartOverlapEuclid (I := I) (M := M) β α →
       chartPushedRaw (I := I) (M := M) β

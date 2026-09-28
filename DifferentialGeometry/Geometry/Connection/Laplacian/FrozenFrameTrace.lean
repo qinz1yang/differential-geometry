@@ -101,12 +101,12 @@ theorem frozenFrameTrace_eq_gWeighted_of_mem_neighborhood
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [smoothOrthoFrame_orthonormal (I := I) g x hy i j]
     by_cases hij : i = j
-    · rw [if_pos hij, if_pos hij, one_smul]
-    · rw [if_neg hij, if_neg hij, zero_smul]]
+    · rw [ite_eq_left hij, ite_eq_left hij, one_smul]
+    · rw [ite_eq_right hij, ite_eq_right hij, zero_smul]]
   rw [Finset.sum_ite_eq (Finset.univ) i
     (fun j => firstSlotHessMap (I := I) g r s (smoothOrthoFrame (I := I) g x i) T y
       (smoothOrthoFrame (I := I) g x j y))]
-  rw [if_pos (Finset.mem_univ i)]
+  rw [ite_eq_left (Finset.mem_univ i)]
 
 end Elliptic
 end Analysis

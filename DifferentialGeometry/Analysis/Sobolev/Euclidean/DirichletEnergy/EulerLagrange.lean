@@ -51,7 +51,8 @@ private theorem inner_eq_zero_of_norm_sq_min {H : Type*}
   have hderiv : HasDerivAt q (2 * inner ℝ U V) 0 := by
     convert ((hasDerivAt_const (0 : ℝ) (‖U‖ ^ 2)).add
       (((hasDerivAt_id (0 : ℝ)).const_mul 2).mul_const (inner ℝ U V))).add
-      (((hasDerivAt_id (0 : ℝ)).pow 2).mul_const (‖V‖ ^ 2)) using 1 <;> norm_num [q] <;> rfl
+      (((hasDerivAt_id (0 : ℝ)).pow 2).mul_const (‖V‖ ^ 2)) using 1 <;> norm_num [q]
+    rfl
   have hz := hloc.hasDerivAt_eq_zero hderiv
   linarith
 
@@ -126,15 +127,15 @@ theorem integral_inner_weakGrad_smoothGrad_eq_zero_of_dirichlet_minimizer
       isWeakGrad := by
         by_cases hji : j = i
         · subst j
-          simpa only [if_pos rfl, if_true, w, PiLp.toLp_apply, Function.update_self]
+          simpa only [ite_eq_left rfl, ite_true, w, PiLp.toLp_apply, Function.update_self]
             using hv.isWeakGrad
-        · simpa only [if_neg hji, w, PiLp.toLp_apply, Function.update_of_ne hji]
+        · simpa only [ite_eq_right hji, w, PiLp.toLp_apply, Function.update_of_ne hji]
             using (hu j).isWeakGrad }
   have hm := hmin w hw0 hw
   have heq (j : ι) : (∫ x in Ω, ‖(hw j).weakGrad x‖ ^ 2) =
       if j = i then ∫ x in Ω, ‖hv.weakGrad x‖ ^ 2
       else ∫ x in Ω, ‖(hu j).weakGrad x‖ ^ 2 := by
-    by_cases hji : j = i <;> simp only [hw, hji, if_true, if_false]
+    by_cases hji : j = i <;> simp only [hw, hji, ite_true, ite_false]
   simp_rw [heq] at hm
   have hsum : (∑ j, if j = i then ∫ x in Ω, ‖hv.weakGrad x‖ ^ 2
       else ∫ x in Ω, ‖(hu j).weakGrad x‖ ^ 2) =
@@ -142,10 +143,10 @@ theorem integral_inner_weakGrad_smoothGrad_eq_zero_of_dirichlet_minimizer
         ∑ j ∈ Finset.univ.erase i, ∫ x in Ω, ‖(hu j).weakGrad x‖ ^ 2 := by
     rw [← Finset.add_sum_erase _ _ (Finset.mem_univ i)]
     congr 1
-    · exact if_pos rfl
+    · exact ite_eq_left rfl
     · apply Finset.sum_congr rfl
       intro j hj
-      rw [if_neg (Finset.mem_erase.mp hj).1]
+      rw [ite_eq_right (Finset.mem_erase.mp hj).1]
   rw [hsum] at hm
   have hsumU := Finset.add_sum_erase Finset.univ
     (fun j => ∫ x in Ω, ‖(hu j).weakGrad x‖ ^ 2) (Finset.mem_univ i)

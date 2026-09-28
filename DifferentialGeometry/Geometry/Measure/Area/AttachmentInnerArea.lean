@@ -41,7 +41,7 @@ theorem riemannianArea_half_disk_dilation (g : SmoothRiemannianMetric 𝓘(ℝ, 
         linarith
       · simp [φ, ψ]
   have h := riemannianArea_precomp g (s := closedBall (0 : ℂ) (1 / 2)) hu
-    φ.lipschitz ψ.lipschitz measurableSet_closedBall
+    φ.lipschitzWith ψ.lipschitzWith measurableSet_closedBall
     (fun z _ => hinv z)
   rw [himage] at h
   exact h

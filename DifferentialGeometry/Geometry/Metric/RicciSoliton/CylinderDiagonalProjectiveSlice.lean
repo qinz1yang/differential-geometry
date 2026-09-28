@@ -1,12 +1,7 @@
 import DifferentialGeometry.Topology.ProjectiveSpace.SmoothNonembedding
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderProjectiveSlice
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Embedding
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingComposition
-
-section
-open private exists_diffeomorph_orbitQuotient from DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 
 set_option autoImplicit false
 
@@ -38,17 +33,14 @@ theorem exists_projective_slice_diagonal_image
         (univ ×ˢ ({0} : Set ℝ)))) ∧
       range e ⊆ Phi '' (d '' (Geometry.cylinderDiagonalQuotientMap ''
         (univ ×ˢ Icc (-L) L))) := by
-  obtain ⟨D, hD⟩ := exists_diffeomorph_orbitQuotient
   let f : SphereAntipodalQuotient → M :=
-    (D.trans d) ∘ CylinderDiagonalQuotient.projectiveSlice
+    d ∘ CylinderDiagonalQuotient.projectiveSlice
   have hf : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ f :=
-    (diffeomorph_isSmoothEmbedding (D.trans d)).comp
+    (diffeomorph_isSmoothEmbedding d).comp
       CylinderDiagonalQuotient.isSmoothEmbedding_projectiveSlice (by simp)
   have hfproj (z : SphereTwo) : f (SphereAntipodalQuotient.proj z) =
       d (Geometry.cylinderDiagonalQuotientMap (z, 0)) := by
-    change d (D (CylinderDiagonalQuotient.projectiveSlice
-      (SphereAntipodalQuotient.proj z))) = _
-    rw [CylinderDiagonalQuotient.projectiveSlice_proj, hD]
+    exact congrArg d (CylinderDiagonalQuotient.projectiveSlice_proj z)
   have hfrange : range f = d '' (Geometry.cylinderDiagonalQuotientMap ''
       (univ ×ˢ ({0} : Set ℝ))) := by
     ext y
@@ -112,7 +104,5 @@ theorem not_diagonal_slab_image_subset_partialDiffeomorph_image
   exact chart.map_source (hA hz)
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
-
-end
 
 end

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalSign
-import DifferentialGeometry.Geometry.Metric.CylinderAxial
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalExtension
+import DifferentialGeometry.Topology.Diffeomorph.FiberwiseAffine
 
 set_option autoImplicit false
 noncomputable section
@@ -24,8 +25,10 @@ theorem exists_signed_supported_collar_extension
         ∃ K : Set SphereCylinder, IsCompact K ∧ K ⊆ univ ×ˢ Ioo l u ∧
           EqOn F id Kᶜ ∧ EqOn F.symm id Kᶜ := by
   obtain ⟨σ, hσ, hpos⟩ := exists_constant_axial_sign A hsource (fun p => congrArg Prod.snd (hzero p))
-  have hσsq : σ ^ 2 = 1 := by rcases hσ with h | h <;> rw [h] <;> norm_num
-  let D := DifferentialGeometry.Geometry.Metric.cylinderAxialDiffeomorph (I := 𝓡 2) (M := S2) 0 σ hσsq
+  have hσne : σ ≠ 0 := by rcases hσ with h | h <;> simp [h]
+  let D : SphereCylinder ≃ₘ⟮SphereCylinderModel, SphereCylinderModel⟯ SphereCylinder :=
+    Diffeomorph.fiberwiseAffine (fun _ => 0) (fun _ => σ)
+      contMDiff_const contMDiff_const (fun _ => hσne)
   let B := D.toPartialDiffeomorph.trans A
   have hBs (p : S2) : (p, (0 : ℝ)) ∈ B.source := by
     refine ⟨mem_univ _, ?_⟩
@@ -76,10 +79,12 @@ theorem exists_signed_supported_compact_collar_extension
   have hR : 0 < R := hr.trans hrR
   have hz (p : S2) : (p,(0 : ℝ)) ∈ A.source :=
     hsource ⟨mem_univ _,by constructor <;> linarith⟩
-  obtain ⟨σ,hσ,ε,hε,G,hG,hGzero,K₀,hK₀,hK₀band,hGfix,hGfixi⟩ :=
+  obtain ⟨σ,hσ,ε,hε,G,hG,hGzero,K₀,hK₀,hK₀band,hGfix,_⟩ :=
     exists_signed_supported_collar_extension A η hη hz hzero l u (by linarith) (by linarith)
-  have hσsq : σ ^ 2 = 1 := by rcases hσ with h | h <;> rw [h] <;> norm_num
-  let D := DifferentialGeometry.Geometry.Metric.cylinderAxialDiffeomorph (I := 𝓡 2) (M := S2) 0 σ hσsq
+  have hσne : σ ≠ 0 := by rcases hσ with h | h <;> simp [h]
+  let D : SphereCylinder ≃ₘ⟮SphereCylinderModel, SphereCylinderModel⟯ SphereCylinder :=
+    Diffeomorph.fiberwiseAffine (fun _ => 0) (fun _ => σ)
+      contMDiff_const contMDiff_const (fun _ => hσne)
   let B := D.toPartialDiffeomorph.trans A
   have hDq (q : SphereCylinder) : D q = (q.1,σ * q.2) := by
     change (q.1,0 + σ * q.2) = _
@@ -104,7 +109,7 @@ theorem exists_signed_supported_compact_collar_extension
   obtain ⟨F,hF,K,hK,hKU,hfix,hfixi⟩ :=
     exists_supported_diffeomorph_eq_on_compact_cylinder_collar_of_germ B hr hrR hε hBs G hGB
       (univ ×ˢ Ioo l u) (fun q hq => ⟨mem_univ _,hlR.trans_le hq.2.1,hq.2.2.trans_lt hRu⟩)
-      hBi K₀ hK₀ hK₀band hGfix hGfixi
+      hBi K₀ hK₀ hK₀band hGfix
   have hFexact (q : SphereCylinder) (hq : |q.2| ≤ r) : F q = A (q.1,σ * q.2) := by
     rw [hF q hq]
     exact congrArg A (hDq q)

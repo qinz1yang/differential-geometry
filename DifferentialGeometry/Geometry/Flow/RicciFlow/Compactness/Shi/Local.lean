@@ -267,16 +267,16 @@ private theorem exists_trunc_tower
     if k ≤ top then wLap k else fun _ _ ↦ 0
   have hw'_le : ∀ k : Nat, k ≤ top → w' k = w k := by
     intro k hk
-    simp only [w', if_pos hk]
+    simp only [w', ite_eq_left hk]
   have hw'_gt : ∀ k : Nat, ¬ k ≤ top → w' k = fun _ _ ↦ 0 := by
     intro k hk
-    simp only [w', if_neg hk]
+    simp only [w', ite_eq_right hk]
   have hwLap'_le : ∀ k : Nat, k ≤ top → wLap' k = wLap k := by
     intro k hk
-    simp only [wLap', if_pos hk]
+    simp only [wLap', ite_eq_left hk]
   have hwLap'_gt : ∀ k : Nat, ¬ k ≤ top → wLap' k = fun _ _ ↦ 0 := by
     intro k hk
-    simp only [wLap', if_neg hk]
+    simp only [wLap', ite_eq_right hk]
   have hw'_val_le : ∀ k : Nat, k ≤ top → ∀ s : Real, ∀ y : M,
       w' k s y = w k s y := by
     intro k hk s y

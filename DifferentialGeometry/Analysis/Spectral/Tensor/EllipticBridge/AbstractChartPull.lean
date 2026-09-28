@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Component.PartitionOfUnityBridge
 import Mathlib.MeasureTheory.Function.L2Space
 import Mathlib.Analysis.InnerProductSpace.Completion
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_zero_left)
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -122,7 +125,7 @@ private lemma pairingIntegrand_tsupport_subset
     exact tensorInnerPointwise_zero_left (I := I) (M := M) g r s x (T.toFun x))
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2Inner_chartSupported_chart_pull
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (Sg T : SmoothCcTensor g r s) (α : M)
@@ -152,8 +155,8 @@ theorem tensorL2Inner_chartSupported_chart_pull
     (I := I) (M := M) g α hcont hsupp]
   rw [map_toEuclidean_modelHaar_eq_volume (E := E)]
   have hctE_meas : MeasurableSet (chartTargetEuclid (I := I) (M := M) α) :=
-    (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
-      (I := I) (M := M) α).measurableSet
+    DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_measurableSet
+      (I := I) (M := M) α
   refine setIntegral_congr_fun hctE_meas (fun y hy => ?_)
   rw [tensorInnerPointwise_chart_eq_component_sum (I := I) (M := M)
     g r s Sg T α hy]
@@ -208,7 +211,7 @@ private lemma componentSum_pouSmul_reassoc
   ring
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma tensorChartComponent_aeEq_tensorL2ChartComponent
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (T : SmoothCcTensor g r s) (α : M) (Q : CompIdx E r s) :
@@ -228,7 +231,7 @@ private lemma chartLebesgueMeasure_eq_volume_restrict (α : M) :
         (chartTargetEuclid (I := I) (M := M) α) := rfl
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPull_integrand_aeEq_abstract
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg T : SmoothCcTensor g r s) :
@@ -488,7 +491,7 @@ private lemma continuous_chartPullCoeff_pairing
     (chartPullCoeffLp (I := I) (M := M) g r s α Sg Q hSg)).continuous
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma chartPull_integrand_eq_coeff_mul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (Sg : SmoothCcTensor g r s) (u : TensorL2 r s g) (y : EuclN) :

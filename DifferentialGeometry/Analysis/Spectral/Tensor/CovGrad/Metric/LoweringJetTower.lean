@@ -6,6 +6,9 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lower
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.MixedCompatibility
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices_apply riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise)
+
 set_option autoImplicit false
 
 noncomputable section

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Exponential.NormalCoordinates.Framed
-import Mathlib.Data.ENNReal.Real
+import Mathlib.Basic.ENNReal.Real
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

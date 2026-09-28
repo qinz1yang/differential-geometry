@@ -176,14 +176,14 @@ private theorem narrowCoord_of_mem_pos {r : ℝ} (hr1 : r ≤ 1)
     (hx : x ∈ seamWitnessPlane '' narrowBand r (3 / 2)) :
     narrowCoord r x = (true, narrowSheetPos r (seamWitnessPlane.symm x)) := by
   have h := narrowBand_subset_pos hr1 (mem_image_seamWitnessPlane.mp hx)
-  exact if_pos (by linarith [h.1.2])
+  exact ite_eq_left (by linarith [h.1.2])
 
 private theorem narrowCoord_of_mem_neg {r : ℝ} (hr1 : r ≤ 1)
     {x : EuclideanSpace ℝ (Fin 2)}
     (hx : x ∈ seamWitnessPlane '' narrowBand r (7 / 2)) :
     narrowCoord r x = (false, narrowSheetNeg r (seamWitnessPlane.symm x)) := by
   have h := narrowBand_subset_neg hr1 (mem_image_seamWitnessPlane.mp hx)
-  exact if_neg (by linarith [h.1.1])
+  exact ite_eq_right (by linarith [h.1.1])
 
 private theorem product_reglued_eq_pos {r : ℝ} (hr : 0 < r)
     {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ seamWitnessReading.sourcePos) :

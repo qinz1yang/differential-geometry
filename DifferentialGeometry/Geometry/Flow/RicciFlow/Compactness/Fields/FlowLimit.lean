@@ -44,8 +44,6 @@ theorem FlowMetricConvergenceData.metric_convergence
   simp only [Function.comp_apply, PointedCGHMaps.compSubseq_map]
   convert FlowMetricConvergenceData.metric_convergence_at (I := I) Φ R bf hsrc htgt β ψ co
     (hcarrier ht) x v w using 1
-  funext k
-  rfl
 
 
 theorem FlowMetricConvergenceData.scalar_convergence

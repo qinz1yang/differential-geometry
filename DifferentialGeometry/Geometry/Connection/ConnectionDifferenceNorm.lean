@@ -25,7 +25,7 @@ theorem connOut_norm_le
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _))
     {x : M} (alpha : Tensor0SSpace 1 I x) :
     Real.sqrt (normSq0S (I := I) g x 2
-      (connectionDifferenceOutput (I := I)
+      (bilinearCovectorComp (I := I)
         (CovariantDerivative.difference cov cov' x) alpha)) <=
       Real.sqrt (normSqRS (I := I) (g := g) (x := x) 1 2
         (connectionDifferenceTensorAt (I := I) cov cov' x)) *
@@ -61,10 +61,10 @@ theorem connectionDifferenceVec_norm_le
       connectionDifferenceTensorAt (I := I) cov cov' x α
           (fun q : Fin 2 => if q = 0 then X else Y) = g.inner x w w := by
     change Tensor0SSpace.eval
-        (connectionDifferenceOutput (I := I)
+        (bilinearCovectorComp (I := I)
           (CovariantDerivative.difference cov cov' x) α)
         (fun q : Fin 2 => if q = 0 then X else Y) = g.inner x w w
-    rw [connectionDifferenceOutput_apply_slots, hα, ← hw]
+    rw [bilinearCovectorComp_apply_slots, hα, ← hw]
     change tangentFlatLinear (I := I) g x w w = g.inner x w w
     exact tangentFlatLinear_apply (I := I) g x w w
   let D := (tangentMetricData (I := I) g x).metric

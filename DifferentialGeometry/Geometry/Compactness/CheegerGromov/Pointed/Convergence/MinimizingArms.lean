@@ -81,7 +81,7 @@ theorem eventually_exists_minimizingArms_comparisonAngle_lt
     let a := Classical.choose hi
     have hs := Classical.choose_spec (Classical.choose_spec hi)
     have hri : r ∈ Icc (0 : ℝ) a.length := ⟨hr.le, hs.2.2.2.2.1.le⟩
-    have hu' : u i = a.point r := dif_pos hi
+    have hu' : u i = a.point r := dite_eq_left hi
     rw [hu']
     constructor
     · exact a.edistOf_start hri
@@ -96,7 +96,7 @@ theorem eventually_exists_minimizingArms_comparisonAngle_lt
     let b := Classical.choose (Classical.choose_spec hi)
     have hs := Classical.choose_spec (Classical.choose_spec hi)
     have hri : r ∈ Icc (0 : ℝ) b.length := ⟨hr.le, hs.2.2.2.2.2.le⟩
-    have hv' : v i = b.point r := dif_pos hi
+    have hv' : v i = b.point r := dite_eq_left hi
     rw [hv']
     constructor
     · exact b.edistOf_start hri
@@ -109,6 +109,6 @@ theorem eventually_exists_minimizingArms_comparisonAngle_lt
   refine ⟨Classical.choose hi, Classical.choose (Classical.choose_spec hi), ?_⟩
   have hs := Classical.choose_spec (Classical.choose_spec hi)
   exact ⟨hs.1, hs.2.1, hs.2.2.1, hs.2.2.2.1, hs.2.2.2.2.1, hs.2.2.2.2.2,
-    by simpa only [u, v, dif_pos hi] using hanglei⟩
+    by simpa only [u, v, dite_eq_left hi] using hanglei⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

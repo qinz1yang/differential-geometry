@@ -79,7 +79,7 @@ theorem DoubleCoverDiagram.exists_projected_singular_two_cell_in_double
   obtain ⟨a, ha⟩ := D.isPLBall_domain.nonempty
   let U := combinatorialPLPieceIn L hL ⟨g a, hgcopy ha⟩
   have hval (y : E × E × ℝ) (hy : y ∈ L.space) : (U.map y : E × E × ℝ) = y := by
-    simp only [U, combinatorialPLPieceIn, dif_pos hy]
+    simp only [U, combinatorialPLPieceIn, dite_eq_left hy]
   let G : SingularTwoCell L.space :=
     { domain := D.domain
       isPLBall_domain := D.isPLBall_domain

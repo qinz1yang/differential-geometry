@@ -101,13 +101,13 @@ theorem weights_centroid_of_mem {T : Finset E} (hT : AffineIndependent ℝ ((↑
     {f : Finset E} (hfT : f ⊆ T) (hf : f.Nonempty) {v : E} (hv : v ∈ f) :
     weights T (f.centroid ℝ id) v = (f.card : ℝ)⁻¹ := by
   classical
-  rw [weights_centroid hT hfT hf (hfT hv), if_pos hv]
+  rw [weights_centroid hT hfT hf (hfT hv), ite_eq_left hv]
 
 theorem weights_centroid_of_notMem {T : Finset E} (hT : AffineIndependent ℝ ((↑) : T → E))
     {f : Finset E} (hfT : f ⊆ T) (hf : f.Nonempty) {v : E} (hv : v ∈ T) (hvf : v ∉ f) :
     weights T (f.centroid ℝ id) v = 0 := by
   classical
-  rw [weights_centroid hT hfT hf hv, if_neg hvf]
+  rw [weights_centroid hT hfT hf hv, ite_eq_right hvf]
 
 theorem exists_weights_of_mem_convexHull_image [DecidableEq E] {T : Finset E}
     (hT : AffineIndependent ℝ ((↑) : T → E)) {d : Finset (Finset E)}
@@ -143,7 +143,7 @@ theorem weights_eq_zero_of_mem_convexHull_image [DecidableEq E] {T : Finset E}
     (hv : v ∈ T) (hvd : ∀ s ∈ d, v ∉ s) : weights T x v = 0 := by
   obtain ⟨μ, hμ₀, hμ₁, hμx⟩ := exists_weights_of_mem_convexHull_image hT hd hx
   rw [← hμx, weights_sum_centroid hT hd hμ₀ hμ₁ hv]
-  exact Finset.sum_eq_zero fun s hs => if_neg (hvd s hs)
+  exact Finset.sum_eq_zero fun s hs => ite_eq_right (hvd s hs)
 
 theorem exists_of_mem_faceRadialFrontier_space [DecidableEq E] {T : Finset E}
     (hT : AffineIndependent ℝ ((↑) : T → E)) {f : Finset E} (hfT : f ⊆ T) {x : E}
@@ -275,13 +275,13 @@ theorem affineIndependent_insert_centroid [DecidableEq E] {T f : Finset E}
     have g₁ := hw v (hfT hv.2)
     have g₂ := hw w hwm.2.1
     rw [weights_centroid_of_mem hT hfT hf hv.2,
-      Finset.sum_congr rfl fun s hs => if_pos (hmin s hs hv.1)] at g₁
+      Finset.sum_congr rfl fun s hs => ite_eq_left (hmin s hs hv.1)] at g₁
     rw [weights_centroid_of_notMem hT hfT hf hwm.2.1 hwm.2.2,
-      Finset.sum_congr rfl fun s hs => if_pos (hmin s hs hwm.1)] at g₂
+      Finset.sum_congr rfl fun s hs => ite_eq_left (hmin s hs hwm.1)] at g₂
     exact (inv_pos.mpr hk).ne' (g₁.trans g₂.symm)
   · have g₁ := hw v (hfT hvf)
     rw [weights_centroid_of_mem hT hfT hf hvf,
-      Finset.sum_congr rfl fun s hs => if_neg (hvd s hs), Finset.sum_const_zero] at g₁
+      Finset.sum_congr rfl fun s hs => ite_eq_right (hvd s hs), Finset.sum_const_zero] at g₁
     exact (inv_pos.mpr hk).ne' g₁
 
 theorem isConeBase_faceRadialFrontier [DecidableEq E] {T : Finset E}
@@ -470,7 +470,7 @@ theorem mem_faceRadialFrontier_space_of_frontier [DecidableEq E] {T : Finset E}
       · split_ifs
         · exact mul_nonneg (hμ₀ t ht).le (inv_nonneg.mpr (Nat.cast_nonneg _))
         · exact le_rfl
-      · rw [if_pos hvs]
+      · rw [ite_eq_left hvs]
         exact mul_pos (hμ₀ s hs) (inv_pos.mpr (Nat.cast_pos.mpr (Finset.card_pos.mpr (hd s hs).1)))
     exact absurd hv0 hpos.ne'
   · rw [Finset.mem_sdiff] at hw

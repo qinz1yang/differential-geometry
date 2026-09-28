@@ -83,10 +83,10 @@ private lemma GlobalCorrection_eu_contDiffOn
         else 0)
       (chartTargetEuclid (I := I) (M := M) α) := by
     by_cases h : m = l
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       exact secondCovDerivLO_gradCoeff_contDiffOn
         (I := I) (M := M) g r s α k Idx I' Jdx J'
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       exact contDiffOn_const
   have h2 : ContDiffOn ℝ ∞
       (fun y : EuclideanSpace ℝ (Fin (Module.finrank ℝ E)) =>
@@ -95,10 +95,10 @@ private lemma GlobalCorrection_eu_contDiffOn
         else 0)
       (chartTargetEuclid (I := I) (M := M) α) := by
     by_cases h : m = k
-    · simp only [h, if_true]
+    · simp only [h, ite_true]
       exact covDerivLowerOrderCoeff_contDiffOn
         (I := I) (M := M) g r s α l Idx I' Jdx J'
-    · simp only [h, if_false]
+    · simp only [h, ite_false]
       exact contDiffOn_const
   exact h1.add h2
 

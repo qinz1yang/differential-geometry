@@ -32,8 +32,8 @@ variable {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensio
 
 open Classical in
 theorem isPLSphere_union_of_inter_eq_image_stdSimplexBoundary {P Q : Set E}
-    {p q : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) P)
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q)
+    {p q : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q)
     (hPQ : P ∩ Q = p '' stdSimplexBoundary 2)
     (hpq : q '' stdSimplexBoundary 2 = p '' stdSimplexBoundary 2) :
     IsPLSphere 2 (P ∪ Q) := by
@@ -54,8 +54,8 @@ theorem isPLSphere_union_of_inter_eq_image_stdSimplexBoundary {P Q : Set E}
 open Classical in
 theorem IsPLHomeomorphOn.image_image_stdSimplexBoundary {P : Set E} {Q : Set F}
     {p : (Fin 3 → ℝ) → E} {q : (Fin 3 → ℝ) → F}
-    (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) P)
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q) {f : E → F}
+    (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q) {f : E → F}
     (hf : IsPLHomeomorphOn f P Q) :
     f '' (p '' stdSimplexBoundary 2) = q '' stdSimplexBoundary 2 := by
   have hP : IsPLBall 2 P := ⟨p, hp⟩
@@ -77,7 +77,7 @@ theorem IsPLHomeomorphOn.image_image_stdSimplexBoundary {P : Set E} {Q : Set F}
 
 open Classical in
 theorem IsPLBall.exists_prism_of_disjoint_frontier_disks (hdim : Module.finrank ℝ F = 3)
-    {P : Set E} {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) P)
+    {P : Set E} {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     {W D₀ D₁ : Set F} (hW : IsPLBall 3 W) (hD₀W : D₀ ⊆ frontier W) (hD₁ : IsPLBall 2 D₁)
     (hD₁W : D₁ ⊆ frontier W) (hdis : Disjoint D₀ D₁) {g : E → F}
     (hg : IsPLHomeomorphOn g P D₀) :
@@ -113,9 +113,9 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 theorem exists_annular_split_ball
     (M C Δ D₁ D₂ Ω : Set E3) (r r₁ r₂ : (Fin 3 → ℝ) → E3)
     (hM : IsOpen M) (hCM : C ⊆ M) (hC : IsClosed (((↑) : M → E3) ⁻¹' C))
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔC : Δ ⊆ C)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔC : Δ ⊆ C)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hmeet : D₁ ∩ D₂ = Δ) (hDC : D₁ ∪ D₂ ⊆ C)
     (hnear : D₁ ∪ D₂ ∈ 𝓝ˢ[C] Δ)
     (hΔ₁ : Δ ⊆ D₁ \ r₁ '' stdSimplexBoundary 2)
@@ -124,7 +124,7 @@ theorem exists_annular_split_ball
     ∃ (A₁ Δ₁ J₁ Q O J S : Set E3) (r' : (Fin 3 → ℝ) → E3) (ψ : E3 × ℝ → E3),
       IsPLAnnulusWithEnds A₁ (r '' stdSimplexBoundary 2) J₁ ∧
       A₁ ⊆ D₁ ∩ Ω ∧ A₁ ∩ Δ = r '' stdSimplexBoundary 2 ∧
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ₁ ∧
+      IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁ ∧
       J₁ = r' '' stdSimplexBoundary 2 ∧ Δ₁ ⊆ Ω ∧ Δ₁ ∩ C = J₁ ∧
       IsPLBall 3 Q ∧ Q ⊆ Ω ∧ A₁ ⊆ Q ∧ Δ₁ ⊆ Q ∧
       IsOpen O ∧ C ∩ O = A₁ \ (r '' stdSimplexBoundary 2 ∪ J₁) ∧

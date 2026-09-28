@@ -16,7 +16,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 def IsCircleCapping (L L' T B : Set E3) : Prop :=
   ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3) (f : E3 → E3),
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
+    IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
     L ∩ Δ = r '' stdSimplexBoundary 2 ∧ r '' stdSimplexBoundary 2 ∈ traceCircles L T ∧
     HasPLCircleCollar L (r '' stdSimplexBoundary 2) ∧ IsPLHomeomorphOn f (L ∪ Δ) L' ∧
     EqOn f id (B \ r '' stdSimplexBoundary 2)

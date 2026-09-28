@@ -9,6 +9,8 @@ import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFr
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PerturbedInnerProductBound
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

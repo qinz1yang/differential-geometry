@@ -1,7 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
-open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 

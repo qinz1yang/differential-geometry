@@ -1470,10 +1470,7 @@ theorem ricciNormSqInFrame_hasDerivWithinAt
                       (I := I) S Rm04 gInv frame roughLapRic h_inv h_ricci t x hx i j
                   have hprod := hRic.smul hRaised
                   convert hprod using 1
-                  · funext s
-                    rfl
-                  · simp [smul_eq_mul]
-                    ring))))
+                  simp only [smul_eq_mul, add_comm]))))
 
 omit [SigmaCompactSpace M] [T2Space M] in
 theorem ricciNormSqDerivAt
@@ -1541,10 +1538,7 @@ theorem ricciNormSqDerivAt
                       h_ricci i j
                   have hprod := hRic.smul hRaised
                   convert hprod using 1
-                  · funext s
-                    rfl
-                  · simp [smul_eq_mul]
-                    ring))))
+                  simp only [smul_eq_mul, add_comm]))))
 
 end Components
 

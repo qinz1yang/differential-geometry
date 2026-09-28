@@ -19,8 +19,8 @@ theorem IsPLSphere.exists_solid_torus_neighborhood {J : Set E} (hJ : IsPLSphere 
     ∃ (N : Geometry.SimplicialComplex ℝ E) (f : (Fin 3 → ℝ) × ℝ → E),
       N.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 N ∧ J ⊆ interior N.space ∧
       IsTopologicalSolidTorus N.space ∧
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) N.space ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1) := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N.space ∧
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1) := by
   obtain ⟨L, hLfin, hLsp⟩ := hJ.isPolyhedron.exists_simplicialComplex
   let _ : Finite L.faces := hLfin.to_subtype
   obtain ⟨T, hT, hTcard, hJT⟩ := exists_affineIndependent_openSimplex_superset 3 hdim

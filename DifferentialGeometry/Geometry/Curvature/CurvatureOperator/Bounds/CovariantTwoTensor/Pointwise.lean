@@ -1,7 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.PointwiseBound
 import Mathlib.Topology.Order.Compact
-open DifferentialGeometry.Analysis.Elliptic
+
+open DifferentialGeometry.TensorMetric
+  (exists_riemannianFiberNormSq_pointwise_bound
+    riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Curvature
 
 
@@ -16,7 +19,6 @@ namespace Analysis
 namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

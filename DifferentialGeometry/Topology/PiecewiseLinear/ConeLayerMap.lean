@@ -44,11 +44,11 @@ theorem exists_isPiecewiseAffineOn_layer {σ' σ : ℝ} (hσ' : 0 < σ') (hσ : 
   have hmem : ∀ z ∈ stdConeLayerLow σ' σ, Ψ z = layerLowMap σ' σ v₀ v₁ v₂ z := by
     intro z hz
     rw [hΨdef]
-    exact if_pos hz
+    exact ite_eq_left hz
   have hnot : ∀ z ∉ stdConeLayerLow σ' σ, Ψ z = layerHighMap σ' σ v₁ v₂ v₃ z := by
     intro z hz
     rw [hΨdef]
-    exact if_neg hz
+    exact ite_eq_right hz
   refine ⟨Ψ, ?_, hmem, ?_⟩
   · rw [← stdConeLayer_union_split]
     exact (isPiecewiseAffineOn_of_affine_of_isHPolytope _

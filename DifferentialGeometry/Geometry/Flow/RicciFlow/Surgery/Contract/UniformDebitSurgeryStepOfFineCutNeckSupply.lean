@@ -34,7 +34,7 @@ def FineCutNeckSupply (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Pro
   ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
     Rrad ≤ p₀.modelRadius → m₀ ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ζ₀ →
     δbound ≤ δ₀ → ρbound ≤ ρ₀ →
-  ∀ H : RetainedCoreHistory P₀, InitialIdentification P₀ g₀ H.toHistory →
+  ∀ H : RetainedCoreHistory.{u}, InitialIdentification P₀ g₀ H.toHistory →
   ∀ hend : H.time (Fin.last H.eventCount) = H.horizon,
     H.hasCanonicalCutoffRecords p₀ δbound ρbound →
     (∀ y, InFixedHamiltonIveyRegion (H.initialMetric 0) a₀ y) →

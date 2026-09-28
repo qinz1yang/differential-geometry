@@ -60,7 +60,7 @@ theorem exists_bicollar_glued₂_space_in_double
   let q : L.space := ⟨ι p, hAK (hι.bijOn.mapsTo p.property)⟩
   let P := combinatorialPLPieceIn L hL q
   have hPval (x : E × E × ℝ) (hx : x ∈ L.space) : (P.map x : E × E × ℝ) = x := by
-    simp only [P, combinatorialPLPieceIn, dif_pos hx]
+    simp only [P, combinatorialPLPieceIn, dite_eq_left hx]
   have himage : P.map '' A.space = C := by
     ext x
     constructor

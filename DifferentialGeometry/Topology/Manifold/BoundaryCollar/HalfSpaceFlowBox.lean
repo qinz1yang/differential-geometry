@@ -10,7 +10,7 @@ namespace DifferentialGeometry.Manifold.BoundaryCollar
 
 theorem exists_inward_halfSpace_flowBox
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     {U : Set (ℝ × E)} (hU : IsOpen U) {z : E} (hz : (0, z) ∈ U)
     {f : ℝ × E → ℝ × E}
     (hf : ContDiffOn ℝ ∞ f ((Ici (0 : ℝ) ×ˢ (univ : Set E)) ∩ U))
@@ -27,6 +27,7 @@ theorem exists_inward_halfSpace_flowBox
         ∀ p ∈ e.source, ∀ t ∈ Icc (0 : ℝ) p.1,
           Φ ((0, p.2), t) ∈ U ∧ 0 ≤ (Φ ((0, p.2), t)).1 ∧
           HasDerivAt (fun s => Φ ((0, p.2), s)) (f (Φ ((0, p.2), t))) t := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨g, hg, hgK, hgf⟩ := exists_contDiff_halfSpace_extension hU hz hf
   obtain ⟨Φ, hΦ, hzero, hadd, hinj, hder⟩ := exists_complete_smooth_flow g hg hgK
   have hgpos : 0 < (g (0, z)).1 := by

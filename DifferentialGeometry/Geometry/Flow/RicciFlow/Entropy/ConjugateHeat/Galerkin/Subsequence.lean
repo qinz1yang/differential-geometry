@@ -167,17 +167,17 @@ private theorem support_right_lip
   apply right_lipschitz (f' := f') hc
   · intro t ht
     by_cases hi : i ∈ F N
-    · simpa only [f', if_pos hi] using hderiv N t ht i hi
+    · simpa only [f', ite_eq_left hi] using hderiv N t ht i hi
     · have hz : (fun r : Real => u N r i) = fun _ => 0 := by
         funext r
         exact hsupp N r i hi
       rw [hz]
-      simpa only [f', if_neg hi] using
+      simpa only [f', ite_eq_right hi] using
         (hasDerivWithinAt_const t (Ici t) (0 : Real))
   · intro t ht
     by_cases hi : i ∈ F N
-    · simpa only [f', if_pos hi] using hdu N t ht i hi
-    · simp only [f', if_neg hi, norm_zero]
+    · simpa only [f', ite_eq_left hi] using hdu N t ht i hi
+    · simp only [f', ite_eq_right hi, norm_zero]
       positivity
 
 private lemma real_abs_neg_mul_add_le {lam v c A K : ℝ} (hlam : 0 ≤ lam)
@@ -627,7 +627,7 @@ theorem galerkinLim_tendsto
       Tendsto (fun n => (u n).coeff i) atTop (𝓝 (ulim t i)) := by
     refine ((hlim.convergence i).tendsto_at ht).congr' ?_
     filter_upwards [hmem i] with n hn
-    rw [hu_def, scalarGalerkinVec_coeff, if_pos hn]
+    rw [hu_def, scalarGalerkinVec_coeff, ite_eq_left hn]
   have hsub_coeff
       (a b : TensorHs (I := I) (M := M) q 0 0 ((m + 1 : Nat) : Real))
       (i : TensorEigenIdx (I := I) (M := M) q 0 0) :

@@ -240,10 +240,10 @@ private theorem exists_insertedMetric_error_bound_of_lt (A : ℝ) (hA : 0 < A) (
   by_cases hinner : ‖(x : E3)‖ < conformalRadius (-7 * A / 4)
   · rw [inner_norm hA hAB hη h j x hinner]
     by_cases hj0 : j = 0
-    · rw [if_pos hj0, ENNReal.ofReal_mul (abs_nonneg _), mul_comm]
+    · rw [ite_eq_left hj0, ENNReal.ofReal_mul (abs_nonneg _), mul_comm]
       exact mul_le_mul' (ENNReal.ofReal_le_ofReal (le_max_right _ _))
         (le_add_of_nonneg_left (by positivity))
-    · rw [if_neg hj0, ENNReal.ofReal_zero]
+    · rw [ite_eq_right hj0, ENNReal.ofReal_zero]
       exact bot_le
   · have hxlow : conformalRadius (-2 * A) < ‖(x : E3)‖ :=
       (strictMono_conformalRadius (by linarith : -2 * A < -7 * A / 4)).trans_le (not_lt.mp hinner)

@@ -27,7 +27,7 @@ theorem curvDerivNormSq_restrictOpen (g : SmoothRiemannianMetric I M) (U : Opens
     ext slots
     exact curvCovDeriv_restrictOpen g U k x slots
   unfold curvDerivNormSq
-  rw [normSq0S_restrictOpen_apply, h]
+  rw [Tensor0SBundle.normSq0S_restrictOpen_apply, h]
 
 end DifferentialGeometry.CheegerGromovCompactness
 

@@ -10,7 +10,6 @@ set_option backward.isDefEq.respectTransparency false
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

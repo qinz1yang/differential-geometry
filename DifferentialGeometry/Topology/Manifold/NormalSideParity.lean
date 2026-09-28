@@ -37,7 +37,7 @@ noncomputable def extendedNormalParity (q : e.source) : Bool :=
 theorem extendedNormalParity_of_ne_zero (q : e.source) (ht : q.val.2 ≠ 0) :
     extendedNormalParity e hzero q =
       Bool.xor (realNormalSide q.val.2) (realNormalSide (e q.val).2) := by
-  simp only [extendedNormalParity, dif_neg ht]
+  simp only [extendedNormalParity, dite_eq_right ht]
 
 theorem extendedNormalParity_zero (x : X) (hx : (x, 0) ∈ e.source) :
     extendedNormalParity e hzero ⟨(x, 0), hx⟩ =

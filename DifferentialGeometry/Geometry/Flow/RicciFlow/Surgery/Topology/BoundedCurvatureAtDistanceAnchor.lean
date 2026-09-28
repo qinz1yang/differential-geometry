@@ -149,7 +149,7 @@ private theorem scalar_le_of_rebase_capWindow_dichotomy {M : Type*} [Topological
 variable {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
   {B ε C1 C2 τmin θ κ C1s C2s Cs : ℝ} {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ}
   {D θcap qcan qs η t₀ t s : ℕ → ℝ} {p₀ p : ℕ → CutoffParameters} {δb ρb : ℕ → ℝ}
-  {H : ℕ → RetainedCoreHistory P₀}
+  {H : ℕ → RetainedCoreHistory.{u}}
   {records : ∀ n i, GeometricCutoffRecord (H n).toHistory i (p n)}
   {G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
     ((H n).time (Fin.last (H n).eventCount)) (s n)}
@@ -158,7 +158,7 @@ variable {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
 private theorem eventually_slab_scalar_le_at_normalized_distance
     (hε : 0 < ε) (hεcone : ε ≤ coneAccuracy) (hκ : 0 < κ)
     (hphi : Perelman.AdmissiblePinchingFunction phi)
-    (hH : ∀ n, (H n).InCutoffClass g₀ B (p₀ n) (δb n) (ρb n))
+    (hH : ∀ n, (H n).InCutoffClass (P₀ := P₀) g₀ B (p₀ n) (δb n) (ρb n))
     (hG : ∀ n, (H n).IsContinuationSlab B (Fin.last (H n).eventCount) (G n))
     (hrec : ∀ n, (H n).IsCanonicalCutoffRecordFamily (p₀ n) (δb n) (ρb n) (records n))
     (hq : ∀ n : ℕ, (n : ℝ) + 1 ≤ qcan n ∧ qcan n ≤ qs n ∧ qs n ≤ Cs * qcan n)
@@ -281,7 +281,7 @@ private theorem eventually_slab_scalar_le_at_normalized_distance
       (by linarith) le_rfl ?_ ?_ hP3 z x hz hzx
     · intro w hnot hRw x' hx'
       obtain ⟨g1, g2, g3, g4⟩ := hgates _ τ hRw hΛτ
-      exact hB3e P₀ (H n) (hH n).2.1 (G n) (hG n).2 (p₀ n) (δb n) (ρb n) (records n) (hrec n)
+      exact hB3e (H n) (hH n).2.1 (G n) (hG n).2 (p₀ n) (δb n) (ρb n) (records n) (hrec n)
         hrad hord hacc hτ hτs w (qs n) ε hqs0 g1 g2 g3
         (fun x'' hx'' => (hbefore n).2.2.2.2.1 x'' τ ⟨hτ, hτ₀⟩ hx'') (hslabq _)
         (hderq _ _ _ hτ₀.le (hbefore n).2.2.1) (hgradq _ _ _ hτ₀.le (hbefore n).2.2.2.1)
@@ -302,7 +302,7 @@ private theorem eventually_slab_scalar_le_at_normalized_distance
       (by linarith) le_rfl ?_ ?_ hP3 z x hz hzx
     · intro w hnot hRw x' hx'
       obtain ⟨g1, g2, g3, g4⟩ := hgates _ τ hRw hΛτ
-      exact hB3e P₀ ((H n).prefixAt j.castSucc) rfl ((H n).toHistory.event j).incoming
+      exact hB3e ((H n).prefixAt j.castSucc) rfl ((H n).toHistory.event j).incoming
         ((H n).event_initial j) (p₀ n) (δb n) (ρb n) ((H n).prefixRecords j.castSucc (records n))
         ((H n).isCanonicalCutoffRecordFamily_prefixAt _ (hrec n)) hrad hord hacc hτ hτj w
         (qs n) ε hqs0 g1 g2 g3
@@ -375,7 +375,7 @@ private theorem scalar_le_of_right_shift {P : OrientedThreeStage.{u}} {a b : ℝ
 theorem eventually_scalar_le_at_normalized_distance_of_anchor
     (hε : 0 < ε) (hεcone : ε ≤ coneAccuracy) (hκ : 0 < κ)
     (hphi : Perelman.AdmissiblePinchingFunction phi)
-    (hH : ∀ n, (H n).InCutoffClass g₀ B (p₀ n) (δb n) (ρb n))
+    (hH : ∀ n, (H n).InCutoffClass (P₀ := P₀) g₀ B (p₀ n) (δb n) (ρb n))
     (hG : ∀ n, (H n).IsContinuationSlab B (Fin.last (H n).eventCount) (G n))
     (hrec : ∀ n, (H n).IsCanonicalCutoffRecordFamily (p₀ n) (δb n) (ρb n) (records n))
     (hq : ∀ n : ℕ, (n : ℝ) + 1 ≤ qcan n ∧ qcan n ≤ qs n ∧ qs n ≤ Cs * qcan n)
@@ -411,7 +411,7 @@ theorem eventually_scalar_le_at_normalized_distance_of_anchor
       t n < t₀ n + η n ∧ qcan n < (G n).flow.scalar (t n) (y n) ∧
       (G n).flow.scalar (t n) (y n) * (t n - (H n).time (Fin.last (H n).eventCount)) < θ ∧
       ¬ (H n).CapWindowPoint (records n) (Fin.last (H n).eventCount) (y n) (t n) (D n) (θcap n)) :
-    let K : ℕ → RetainedCoreHistory P₀ := fun n => (H n).extendAt (hH n).2.1 (G n) (hG n).2
+    let K : ℕ → RetainedCoreHistory.{u} := fun n => (H n).extendAt (hH n).2.1 (G n) (hG n).2
       (hbad n).1 ((hbad n).2.2.1.trans (hsliver n).2.1)
     ∀ A Dd : ℝ, 0 < A → 0 < Dd → ∃ C : ℝ, 1 ≤ C ∧ ∀ σ : ℝ, σ < 0 → ∀ᶠ n in atTop,
       ∀ v : Icc (0 : ℝ) (K n).toHistory.horizon,

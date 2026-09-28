@@ -172,9 +172,9 @@ theorem cometricLmodel_covectorOfCLM_cDualBasis_eq_chartBasis_sum
         (R := ℝ) hxbase) u]
   rw [hc]
   rw [Finset.sum_eq_single k]
-  · simp only [if_pos, mul_one]
+  · simp only [ite_eq_left, mul_one]
   · intro m _ hmk
-    rw [if_neg hmk.symm, mul_zero]
+    rw [ite_eq_right hmk.symm, mul_zero]
   · simp only [Finset.mem_univ, not_true_eq_false, IsEmpty.forall_iff]
 
 end TensorSpectral

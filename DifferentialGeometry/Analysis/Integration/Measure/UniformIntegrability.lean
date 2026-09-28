@@ -13,10 +13,15 @@ private theorem integral_norm_small_sets {X F : Type*} [MeasurableSpace X]
     ∃ δ > 0, ∀ s, MeasurableSet s → μ s ≤ ENNReal.ofReal δ →
       (∫ x in s, ‖f x‖ ∂μ) < ε := by
   obtain ⟨δ, hδ, hbound⟩ := (memLp_one_iff_integrable.2 hf).eLpNorm_indicator_le
-    (by norm_num) (by norm_num) (half_pos hε)
-  refine ⟨δ, hδ, fun s hs hμs => ?_⟩
-  have h := hbound s hs hμs
-  rw [eLpNorm_indicator_eq_eLpNorm_restrict hs, eLpNorm_one_eq_lintegral_enorm,
+    (by norm_num) (by norm_num) (ENNReal.ofReal_pos.2 (half_pos hε))
+  have hδpos : 0 < min δ 1 := lt_min hδ (by norm_num)
+  have hδtop : min δ 1 < ⊤ := lt_of_le_of_lt (min_le_right _ _) (by simp)
+  refine ⟨(min δ 1).toReal, ENNReal.toReal_pos hδpos.ne' hδtop.ne, fun s hs hμs => ?_⟩
+  have h := hbound s hs (hμs.trans (by
+    rw [ENNReal.ofReal_toReal hδtop.ne]
+    exact min_le_left _ _))
+  rw [eLpNorm_indicator_eq_eLpNorm_restrict hs,
+    eLpNorm_one_eq_lintegral_enorm hf.aestronglyMeasurable.restrict,
     ← ofReal_integral_norm_eq_lintegral_enorm hf.integrableOn] at h
   exact (ENNReal.ofReal_le_ofReal_iff (half_pos hε).le).mp h |>.trans_lt (half_lt_self hε)
 

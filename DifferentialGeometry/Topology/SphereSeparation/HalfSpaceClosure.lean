@@ -1542,9 +1542,9 @@ theorem mem_sideChartAt_source
     p ∈ (sideChartAt hBopen hclosure normalChart p).source := by
   classical
   by_cases hpB : p.1 ∈ B
-  · simp only [sideChartAt, dif_pos hpB]
+  · simp only [sideChartAt, dite_eq_left hpB]
     exact SideInteriorChart.mem_chart_source hBopen p hpB
-  · simp only [sideChartAt, dif_neg hpB]
+  · simp only [sideChartAt, dite_eq_right hpB]
     have hpClosure : p.1 ∈ closure B := p.property
     have hpRange : p.1 ∈ Set.range e := by
       exact (hclosure.le hpClosure).resolve_left hpB
@@ -1581,10 +1581,10 @@ theorem sideChartAt_transition_mem_contDiffGroupoid
   classical
   by_cases hpB : p.1 ∈ B
   · by_cases hqB : q.1 ∈ B
-    · simp only [sideChartAt, dif_pos hpB, dif_pos hqB]
+    · simp only [sideChartAt, dite_eq_left hpB, dite_eq_left hqB]
       exact SideInteriorChart.chart_transition_mem_contDiffGroupoid
         hBopen p q hpB hqB
-    · simp only [sideChartAt, dif_pos hpB, dif_neg hqB]
+    · simp only [sideChartAt, dite_eq_left hpB, dite_eq_right hqB]
       have hqRange : q.1 ∈ Set.range e :=
         (hclosure.le q.property).resolve_left hqB
       let x : SphereTwo := Classical.choose hqRange
@@ -1595,7 +1595,7 @@ theorem sideChartAt_transition_mem_contDiffGroupoid
           hBopen p hpB
       exact (contDiffGroupoid ∞ (𝓡∂ 3)).symm hmix
   · by_cases hqB : q.1 ∈ B
-    · simp only [sideChartAt, dif_neg hpB, dif_pos hqB]
+    · simp only [sideChartAt, dite_eq_right hpB, dite_eq_left hqB]
       have hpRange : p.1 ∈ Set.range e :=
         (hclosure.le p.property).resolve_left hpB
       let x : SphereTwo := Classical.choose hpRange
@@ -1604,7 +1604,7 @@ theorem sideChartAt_transition_mem_contDiffGroupoid
       exact
         c.closureHalfSpaceChart_sideInteriorChart_transition_mem_contDiffGroupoid
           hBopen q hqB
-    · simp only [sideChartAt, dif_neg hpB, dif_neg hqB]
+    · simp only [sideChartAt, dite_eq_right hpB, dite_eq_right hqB]
       have hpRange : p.1 ∈ Set.range e :=
         (hclosure.le p.property).resolve_left hpB
       have hqRange : q.1 ∈ Set.range e :=
@@ -1667,7 +1667,7 @@ theorem sideClosure_inclusion_isSmoothEmbedding
     · have hdom : sideChartAt hBopen hclosure normalChart p ∈
           IsManifold.maximalAtlas (𝓡∂ 3) ∞ (closure B) :=
         IsManifold.chart_mem_maximalAtlas p
-      simpa only [sideChartAt, dif_pos hpB, dom] using hdom
+      simpa only [sideChartAt, dite_eq_left hpB, dom] using hdom
     · apply InteriorHalfSpace.trans_mem_maximalAtlas
       · exact IsManifold.chart_mem_maximalAtlas p.1
       · exact InteriorHalfSpace.ambientChart_mem_contDiffGroupoid
@@ -1718,7 +1718,7 @@ theorem sideClosure_inclusion_isSmoothEmbedding
     · have hdom : sideChartAt hBopen hclosure normalChart p ∈
           IsManifold.maximalAtlas (𝓡∂ 3) ∞ (closure B) :=
         IsManifold.chart_mem_maximalAtlas p
-      simpa only [sideChartAt, dif_neg hpB, c, x] using hdom
+      simpa only [sideChartAt, dite_eq_right hpB, c, x] using hdom
     · exact c.base.normalForm.codChart_mem_maximalAtlas
     · intro z hz
       rw [dom.extend_target_eq_image_source] at hz
@@ -1756,10 +1756,10 @@ theorem sideClosure_isInteriorPoint_iff
     · intro _
       exact hpB
     · intro _
-      simpa only [sideChartAt, dif_pos hpB] using
+      simpa only [sideChartAt, dite_eq_left hpB] using
         SideInteriorChart.chart_apply_zero_pos hBopen p hpB
   · constructor
-    · simp only [sideChartAt, dif_neg hpB]
+    · simp only [sideChartAt, dite_eq_right hpB]
       intro hpos
       have hpRange : p.1 ∈ Set.range e :=
         (hclosure.le p.property).resolve_left hpB

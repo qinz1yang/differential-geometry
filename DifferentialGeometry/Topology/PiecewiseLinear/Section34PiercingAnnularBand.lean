@@ -54,7 +54,7 @@ theorem IsPLCellOn.exists_annular_band_of_essential_pair {M : Type*}
       (hXess : ¬ ∃ D : Set M, IsPLCellOn 2 D X ∧ D ⊆ A) :
       ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
         (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
           q '' stdSimplexBoundary 2 = τ '' X := by
     rintro ⟨D, q, hq, hDA, hqb⟩
     have hDP := (hDA.trans hA'S).trans hfront

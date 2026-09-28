@@ -86,13 +86,13 @@ theorem chartPushed_pou_eq_smoothExt_mul_smoothExt_on_target
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
     change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
         _ else (0 : ℝ)) = _
-    rw [if_pos h_symm_target]
+    rw [ite_eq_left h_symm_target]
   have hU :
       chartSmoothExt (I := I) (M := M) α u y =
         u ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
     change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
         _ else (0 : ℝ)) = _
-    rw [if_pos h_symm_target]
+    rw [ite_eq_left h_symm_target]
   rw [hPOU, hU]
 
 omit [CompactSpace M] in
@@ -145,7 +145,7 @@ theorem contDiffAt_chartSmoothExt_of_chartTarget
   change (if (toEuclidean (E := E)).symm z ∈ (extChartAt I α).target then
       u ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))
     else (0 : ℝ)) = _
-  rw [if_pos h_symm_target]
+  rw [ite_eq_left h_symm_target]
 
 omit [CompactSpace M] [T2Space M] [SigmaCompactSpace M] in
 theorem differentiableAt_chartSmoothExt_of_chartTarget

@@ -54,10 +54,10 @@ theorem exists_isPLHomeomorphOn_ball_pair_of_disk_inter
     exact hIQ
   obtain ⟨u, hu⟩ := hD
   obtain ⟨v, hv⟩ := hI
-  have hu' : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) (K.space ∩ L.space) := by
+  have hu' : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (K.space ∩ L.space) := by
     rw [hKspace, hLspace]
     exact hu
-  have hv' : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) (M.space ∩ N.space) := by
+  have hv' : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (M.space ∩ N.space) := by
     rw [hMspace, hNspace]
     exact hv
   have hIM' : M.space ∩ N.space ⊆ (boundaryComplex 3 M).space := by
@@ -65,7 +65,7 @@ theorem exists_isPLHomeomorphOn_ball_pair_of_disk_inter
   have hIN' : M.space ∩ N.space ⊆ (boundaryComplex 3 N).space := by
     rwa [hMspace, hNspace]
   have hg : IsPLHomeomorphOn
-      (v ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3)))
+      (v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)))
       (K.space ∩ L.space) (M.space ∩ N.space) := hu'.symm.trans hv'
   obtain ⟨f₁, hf₁, hf₁g⟩ :=
     exists_isPLHomeomorphOn_eqOn_disk_of_boundaryComplex K M hK hM

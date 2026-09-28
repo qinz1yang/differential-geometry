@@ -67,7 +67,7 @@ theorem weights_sum_centroid_le_of_mem_min {T : Finset E}
   rw [weights_sum_centroid hT hd hμ₀ hμ₁ hv,
     weights_sum_centroid hT hd hμ₀ hμ₁ ((hd m hm).2 hv₀)]
   refine Finset.sum_le_sum fun s hs => ?_
-  rw [if_pos (hmin s hs hv₀)]
+  rw [ite_eq_left (hmin s hs hv₀)]
   split_ifs
   · exact le_rfl
   · exact mul_nonneg (hμ₀ s hs) (inv_nonneg.mpr (Nat.cast_nonneg _))
@@ -83,11 +83,11 @@ theorem weights_sum_centroid_lt_of_notMem_min {T : Finset E}
   rw [weights_sum_centroid hT hd hμ₀ hμ₁ hv,
     weights_sum_centroid hT hd hμ₀ hμ₁ ((hd m hm).2 hv₀)]
   refine Finset.sum_lt_sum (fun s hs => ?_) ⟨m, hm, ?_⟩
-  · rw [if_pos (hmin s hs hv₀)]
+  · rw [ite_eq_left (hmin s hs hv₀)]
     split_ifs
     · exact le_rfl
     · exact mul_nonneg (hμ₀ s hs) (inv_nonneg.mpr (Nat.cast_nonneg _))
-  · rw [if_neg hvm, if_pos hv₀]
+  · rw [ite_eq_right hvm, ite_eq_left hv₀]
     exact mul_pos hμm (inv_pos.mpr (Nat.cast_pos.mpr (Finset.card_pos.mpr (hd m hm).1)))
 
 theorem exists_weights_of_mem_openSimplex_image [DecidableEq E] {T : Finset E}
@@ -125,7 +125,8 @@ theorem weights_eq_of_mem_min [DecidableEq E] {T : Finset E}
   intro v hv v₀ hv₀
   rw [← hμx, weights_sum_centroid hT hd (fun s hs => (hμ₀ s hs).le) hμ₁ ((hd m hm).2 hv),
     weights_sum_centroid hT hd (fun s hs => (hμ₀ s hs).le) hμ₁ ((hd m hm).2 hv₀)]
-  exact Finset.sum_congr rfl fun s hs => by rw [if_pos (hmin s hs hv), if_pos (hmin s hs hv₀)]
+  exact Finset.sum_congr rfl fun s hs => by
+    rw [ite_eq_left (hmin s hs hv), ite_eq_left (hmin s hs hv₀)]
 
 def faceNeighborhoodFaces [DecidableEq E] (T : Finset E) (f : Finset E) : Set (Finset E) :=
   {u | ∃ d : Finset (Finset E), (∀ s ∈ d, s.Nonempty ∧ s ⊆ T) ∧

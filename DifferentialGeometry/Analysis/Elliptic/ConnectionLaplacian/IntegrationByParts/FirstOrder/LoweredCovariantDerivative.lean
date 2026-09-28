@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.CovariantDerivative
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.InnerSectionSmoothness
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

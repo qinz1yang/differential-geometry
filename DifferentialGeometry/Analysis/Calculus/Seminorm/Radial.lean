@@ -213,8 +213,7 @@ theorem _root_.ContDiffOn.norm_sub_le_integral_of_inner_deriv_le
     apply ContDiffOn.absolutelyContinuousOnInterval
     simpa only [uIcc_of_le hab] using hη
   have hρac : AbsolutelyContinuousOnInterval (fun t => ‖η t‖) a b :=
-    lipschitzWith_one_norm.lipschitzOnWith.comp_absolutelyContinuousOnInterval
-      hηac (fun _ _ => mem_univ _)
+    lipschitzWith_one_norm.comp_absolutelyContinuousOnInterval hηac
   have hderiv : ∀ t ∈ Ioo a b, deriv (fun s => ‖η s‖) t ≤ φ t := by
     intro t ht
     by_cases hη0 : η t = 0

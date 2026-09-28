@@ -34,11 +34,11 @@ theorem ballChartIsotopic_of_modelIsotopy {M : Type*} [TopologicalSpace M]
     · have h1 : extendChartById c'.chart.symm.toOpenPartialHomeomorph (D 0) y
           = c'.chart.symm.toOpenPartialHomeomorph.symm
             (c'.chart.symm.toOpenPartialHomeomorph y) := by
-        rw [extendChartById, if_pos hy, hD0]
+        rw [extendChartById, ite_eq_left hy, hD0]
         rfl
       rw [h1, OpenPartialHomeomorph.left_inv _ hy]
       simp only [Diffeomorph.coe_refl, id_eq]
-    · rw [extendChartById, if_neg hy]
+    · rw [extendChartById, ite_eq_right hy]
       simp only [Diffeomorph.coe_refl, id_eq]
   · intro x hx
     rw [(hJe 1 (c.chart x)).1, extendChartById_chartSymm_of_target c' (D 1) (hover x hx),

@@ -27,7 +27,6 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}}
 
 private theorem derivativeBoundBefore_double {P : OrientedThreeStage.{u}} {a s : ℝ}
     {G : P.IncomingSlab a s} {Ctime : ℝ≥0} {q t₀ : ℝ} (hq : 0 ≤ q)
@@ -38,7 +37,7 @@ private theorem derivativeBoundBefore_double {P : OrientedThreeStage.{u}} {a s :
   push_cast
   nlinarith [Ctime.coe_nonneg, sq_nonneg (G.flow.scalar t y)]
 
-private theorem exists_spatial_crossing_bad_point (H : RetainedCoreHistory P₀) {s : ℝ}
+private theorem exists_spatial_crossing_bad_point (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     {p : CutoffParameters} (records : ∀ i, GeometricCutoffRecord H.toHistory i p)
     (Φ : (H.stage (Fin.last H.eventCount)).Carrier → ℝ → Prop)
@@ -95,7 +94,7 @@ private theorem exists_spatial_crossing_bad_point (H : RetainedCoreHistory P₀)
   · have := (le_div_iff₀ hS).mp hηS
     linarith
 
-private theorem le_static_scale_of_neckRadius_le {H : RetainedCoreHistory P₀}
+private theorem le_static_scale_of_neckRadius_le {H : RetainedCoreHistory.{u}}
     {p₀ p : CutoffParameters} {δ₀ ρ₀ : ℝ}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     (hrec : H.IsCanonicalCutoffRecordFamily p₀ δ₀ ρ₀ records)
@@ -116,7 +115,7 @@ private theorem le_static_scale_of_neckRadius_le {H : RetainedCoreHistory P₀}
   rw [inv_inv] at h3
   exact h3.trans hlt.le
 
-private theorem metricScalarAt_extendAt_eq (H : RetainedCoreHistory P₀)
+private theorem metricScalarAt_extendAt_eq (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -149,7 +148,7 @@ private theorem metricScalarAt_extendAt_eq (H : RetainedCoreHistory P₀)
   rw [hmet]
   rfl
 
-private theorem exists_spatialCanonicalWitness_of_extendAt (H : RetainedCoreHistory P₀)
+private theorem exists_spatialCanonicalWitness_of_extendAt (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -216,11 +215,11 @@ theorem spatialCrossingContinuation_holds (P₀ : OrientedThreeStage.{u}) (g₀ 
         linarith) (by positivity)
   have hq0 : ∀ n : ℕ, 0 < qcan n := fun n =>
     (by positivity : (0 : ℝ) < (n : ℝ) + 1).trans_le (hqcan n)
-  have hpack : ∀ n : ℕ, ∃ (H : RetainedCoreHistory P₀) (s : ℝ)
+  have hpack : ∀ n : ℕ, ∃ (H : RetainedCoreHistory.{u}) (s : ℝ)
       (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
       (p p₀ : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p)
       (δb ρb qs t₀ η t : ℝ) (y : (H.stage (Fin.last H.eventCount)).Carrier)
-      (hH : H.InCutoffClass g₀ B p₀ δb ρb) (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
+      (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δb ρb) (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
       H.IsCanonicalCutoffRecordFamily p₀ δb ρb records ∧
       ((n : ℝ) + 1 ≤ qcan n ∧ qcan n ≤ qs ∧ qs ≤ Cs * qcan n) ∧
       (p₀.modelAccuracy ≤ 1 / ((n : ℝ) + 1) ∧ (n : ℝ) + 1 ≤ (n : ℝ) + 1 ∧
@@ -343,7 +342,7 @@ theorem spatialCrossingContinuation_holds (P₀ : OrientedThreeStage.{u}) (g₀ 
       mul_nonneg (hRpos n).le (sub_nonneg.mpr (hbad n).2.1)
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
       tendsto_one_div_add_atTop_nhds_zero_nat hlow hup
-  let K : ℕ → RetainedCoreHistory P₀ := fun n =>
+  let K : ℕ → RetainedCoreHistory.{u} := fun n =>
     (H n).extendAt (hH n).2.1 (G n) (hG n).2 (hbad n).1 (hts n)
   let τ : ∀ n, Icc (0 : ℝ) (K n).toHistory.horizon := fun n =>
     (H n).extendAtTime (hH n).2.1 (G n) (hG n).2 (hbad n).1 (hts n)

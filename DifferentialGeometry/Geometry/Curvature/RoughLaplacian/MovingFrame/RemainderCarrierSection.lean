@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.CurvatureTraceSmoothness
+
+open DifferentialGeometry.TensorMetric
+  (tensor0S_uncurry_cons_eval_orthonormal)
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection
@@ -53,8 +56,8 @@ theorem orthonormalFrame_parseval_expand
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin n) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]; exact hn
   set bse : Module.Basis (Fin n) ℝ (TangentSpace I x) :=
@@ -74,8 +77,8 @@ theorem orthonormalFrame_parseval_expand
     refine Finset.sum_congr rfl (fun b _ => ?_)
     rw [(g.inner x (e a)).map_smul (bse.repr u b) (bse b), smul_eq_mul, hbse_eq b]
   rw [hrepr, Finset.sum_eq_single a]
-  · rw [horth a a, if_pos rfl, mul_one]
-  · intro b _ hba; rw [horth a b, if_neg (fun h => hba h.symm), mul_zero]
+  · rw [horth a a, ite_eq_left rfl, mul_one]
+  · intro b _ hba; rw [horth a b, ite_eq_right (fun h => hba h.symm), mul_zero]
   · intro h; exact absurd (Finset.mem_univ a) h
 
 omit [CompactSpace M] in

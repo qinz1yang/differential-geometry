@@ -481,7 +481,7 @@ lemma inner_gradChartLocal_chartBasis
   rw [Finset.sum_eq_single k]
   · simp
   · intro j _ hjk
-    rw [if_neg (Ne.symm hjk), zero_mul]
+    rw [ite_eq_right (Ne.symm hjk), zero_mul]
   · intro hk
     exact absurd (Finset.mem_univ k) hk
 
@@ -758,7 +758,7 @@ theorem g_inner_gradFun_le_chartInvGramMatrix_l1Sum_mul_sum_sq_partials
       rw [Finset.sum_eq_single j]
       · simp
       · intro k _ hjk
-        rw [if_neg (Ne.symm hjk), mul_zero]
+        rw [ite_eq_right (Ne.symm hjk), mul_zero]
       · intro hk
         exact absurd (Finset.mem_univ j) hk
     have hstep2 :

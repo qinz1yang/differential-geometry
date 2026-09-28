@@ -349,7 +349,7 @@ theorem exists_normalizedEllipticCoeff_eq_smul_weightedInvGramOnEuclid
     intro y hy xi
     have hraw := hlam_bound y (subset_closure hy) xi
     have hpiece : aFun y = s • weightedMatrix (I := I) g alpha y := by
-      simp only [aFun, Set.piecewise, hy, if_pos]
+      simp only [aFun, Set.piecewise, hy, ite_eq_left]
     rw [hpiece, matrixQuad_smul]
     change lam * ‖xi‖ ^ 2 ≤ matrixQuad (E := E) (weightedMatrix (I := I) g alpha y) xi
       at hraw
@@ -365,7 +365,7 @@ theorem exists_normalizedEllipticCoeff_eq_smul_weightedInvGramOnEuclid
     intro y hy xi
     have hdual := hmu_bound y (subset_closure hy) xi
     have hpiece : aFun y = s • weightedMatrix (I := I) g alpha y := by
-      simp only [aFun, Set.piecewise, hy, if_pos]
+      simp only [aFun, Set.piecewise, hy, ite_eq_left]
     rw [hpiece, inv_smul_weighted (I := I) g alpha (h_target (subset_closure hy)) hs,
       matrixQuad_smul]
     have hs_inv : s⁻¹ = lam := by simp [s]
@@ -399,7 +399,7 @@ theorem exists_normalizedEllipticCoeff_eq_smul_weightedInvGramOnEuclid
   refine ⟨⟨coeff, rfl⟩, s, hs, ?_⟩
   intro y hy i j
   change aFun y i j = s * weightedInvGramOnEuclid (I := I) g alpha i j y
-  simp only [aFun, Set.piecewise, hy, if_pos, Matrix.smul_apply, weightedMatrix,
+  simp only [aFun, Set.piecewise, hy, ite_eq_left, Matrix.smul_apply, weightedMatrix,
     Matrix.of_apply, smul_eq_mul]
 
 end MetricExtension

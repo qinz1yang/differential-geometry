@@ -98,7 +98,7 @@ private theorem locally_preconnected_inter_interior (p : M) :
     · rintro ⟨v, hv, rfl⟩
       have hvt := hsub ⟨hv.1, interior_subset hv.2⟩
       have hvi : v ∈ interior (extChartAt I p).target :=
-        (extChartAt_target_eventuallyEq_of_mem hvt).symm.mem_interior hv.2
+        (extChartAt_target_eventuallyEqSet_of_mem hvt).symm.mem_interior hv.2
       refine ⟨⟨(extChartAt I p).map_target hvt, ?_⟩, chart_inverse_interior I p hvi⟩
       simpa only [mem_preimage, (extChartAt I p).right_inv hvt] using hv.1
   rw [he]

@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.PairTrace
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -36,7 +39,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
@@ -56,7 +59,7 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 
-theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDerivCoeffField_diagonalProductGrid_le
+theorem deTurckLieConnectionDifferenceDerivCoeffField_covariant_pointwise_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ i, 0 ≤ C i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -76,7 +79,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDeri
                   riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
                     ((iteratedCovGrad (I := I) g₀ 0 2 (e m) T).toSection x) := by
   classical
-  obtain ⟨CPT, hCPT_nn, hCPT⟩ := exists_deTurckLieConnectionDifferenceDerivativePairTraceOperator_fiberNormSq_antidiagonalTupleGrid_bound (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CPT, hCPT_nn, hCPT⟩ := deTurckLieConnectionDifferenceDerivativePairTraceOperator_covariant_antidiagonal_sum_bound (I := I) (M := M) g₀ hδ₀
   obtain ⟨CX, hCX_nn, hCX⟩ := exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeSym_tgrid (I := I) (M := M) g₀ g_bg hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : 0 ≤ fr := Nat.cast_nonneg _
@@ -293,7 +296,7 @@ theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_jet
   have hδ₁_nn : 0 ≤ δ₁ := le_max_right _ _
   have hδ₁_lt : δ₁ < 1 := max_lt hδ₀ one_pos
   obtain ⟨C, hC_nn, hC⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDerivCoeffField_diagonalProductGrid_le
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_pointwise_bound
       (I := I) (M := M) g₀ g_bg hδ₁_lt
   obtain ⟨K, hK_nn, hK⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR

@@ -63,9 +63,9 @@ theorem exists_contDiff_boundary_tangent_vector_field
     hL.clm_apply contDiff_const
   have hw (i : Fin (n + 1)) : ContDiff ℝ ∞ (fun p : ℝ × (Fin (n + 1) → ℝ) => w p.2 i) := by
     by_cases hi : i = 0
-    · simp only [w, if_pos hi]
+    · simp only [w, ite_eq_left hi]
       fun_prop
-    · simp only [w, if_neg hi]
+    · simp only [w, ite_eq_right hi]
       exact contDiff_const
   have hQ : ContDiff ℝ ∞ Q :=
     ContDiff.sum (fun i _ => (hw i).mul ((hd i).pow 2))
@@ -103,7 +103,7 @@ theorem exists_contDiff_boundary_tangent_vector_field
       have hdi : d p i.succ ≠ 0 := by
         simpa only [ContinuousLinearMap.comp_apply, hsingle] using hi
       refine ⟨i.succ, Finset.mem_univ _, ?_⟩
-      simpa only [w, Fin.succ_ne_zero, if_false, one_mul] using sq_pos_of_ne_zero hdi
+      simpa only [w, Fin.succ_ne_zero, ite_false, one_mul] using sq_pos_of_ne_zero hdi
     · obtain ⟨i, hi⟩ := exists_coordinate_ne_zero (L p) (hregular p hp hz)
       refine ⟨i, Finset.mem_univ _, mul_pos ?_ (sq_pos_of_ne_zero hi)⟩
       dsimp [w]

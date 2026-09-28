@@ -50,7 +50,7 @@ theorem exists_cylindricalDiagram_of_disk_pair {a b : ℝ} (hab : a < b)
     isCylindricalDiagram_piecewise hP.isPolyhedron hf hg hfzero hg₁ hfm hfg hinter, ?_⟩
   intro x hx
   simp only [Set.piecewise,
-    if_pos (show (x, (0 : ℝ)) ∈ Icc a b ×ˢ Icc 0 (1 / 2) from ⟨hx, by norm_num⟩)]
+    ite_eq_left (show (x, (0 : ℝ)) ∈ Icc a b ×ˢ Icc 0 (1 / 2) from ⟨hx, by norm_num⟩)]
   exact hf₀ x hx
 
 end DifferentialGeometry.Topology.PiecewiseLinear

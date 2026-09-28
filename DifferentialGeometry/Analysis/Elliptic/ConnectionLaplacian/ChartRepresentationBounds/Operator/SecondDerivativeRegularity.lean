@@ -95,7 +95,7 @@ private lemma raw_reprT_contDiffOn_goodSet
     change (trivializationAt (TensorRSModel r s ℝ E)
         (fun y : M => TensorRSSpace r s I y) α).linearMapAt ℝ x
         (S.toSection x) = _
-    rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
+    rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hx_base]
   have h_good_eq_source :
       chartLeviCivitaGoodSet (I := I) α = (chartAt H α).source := by
     rw [chartLeviCivitaGoodSet_eq_extChartAt_source (I := I) α,

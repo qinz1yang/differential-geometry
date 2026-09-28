@@ -26,7 +26,7 @@ theorem map_withDensity_paramDensity
       (fun x => ENNReal.ofReal (paramDensity (I := I) g f x))) =
       (riemannianVolumeMeasure (I := I) (M := M) g).restrict (f '' K) := by
   have hfm := (hf.continuousOn.mono hKU).aemeasurable (μ := modelHaar (E := E)) hK
-  have hfw := hfm.mono' (withDensity_absolutelyContinuous
+  have hfw := hfm.mono_ac (withDensity_absolutelyContinuous
     ((modelHaar (E := E)).restrict K)
     (fun x => ENNReal.ofReal (paramDensity (I := I) g f x)))
   refine Measure.ext fun A hA => ?_
@@ -60,7 +60,7 @@ theorem lintegral_image_eq_lintegral_paramDensity_mul
       ∫⁻ x in K, ENNReal.ofReal (paramDensity (I := I) g f x) * φ (f x)
         ∂(modelHaar (E := E)) := by
   have hfm := (hf.continuousOn.mono hKU).aemeasurable (μ := modelHaar (E := E)) hK
-  have hfw := hfm.mono' (withDensity_absolutelyContinuous
+  have hfw := hfm.mono_ac (withDensity_absolutelyContinuous
     ((modelHaar (E := E)).restrict K)
     (fun x => ENNReal.ofReal (paramDensity (I := I) g f x)))
   have hJ := ((continuousOn_paramDensity g hU hf).mono hKU).aemeasurable
@@ -82,7 +82,7 @@ theorem integrableOn_image_iff_paramDensity_smul
       IntegrableOn (fun x => paramDensity (I := I) g f x • φ (f x))
         K (modelHaar (E := E)) := by
   have hfm := (hf.continuousOn.mono hKU).aemeasurable (μ := modelHaar (E := E)) hK
-  have hfw := hfm.mono' (withDensity_absolutelyContinuous
+  have hfw := hfm.mono_ac (withDensity_absolutelyContinuous
     ((modelHaar (E := E)).restrict K)
     (fun x => ENNReal.ofReal (paramDensity (I := I) g f x)))
   have hJ := ((continuousOn_paramDensity g hU hf).mono hKU).aemeasurable
@@ -106,7 +106,7 @@ theorem integral_image_eq_integral_paramDensity_smul
       ∫ x in K, paramDensity (I := I) g f x • φ (f x)
         ∂(modelHaar (E := E)) := by
   have hfm := (hf.continuousOn.mono hKU).aemeasurable (μ := modelHaar (E := E)) hK
-  have hfw := hfm.mono' (withDensity_absolutelyContinuous
+  have hfw := hfm.mono_ac (withDensity_absolutelyContinuous
     ((modelHaar (E := E)).restrict K)
     (fun x => ENNReal.ofReal (paramDensity (I := I) g f x)))
   have hJ := ((continuousOn_paramDensity g hU hf).mono hKU).aemeasurable

@@ -46,12 +46,12 @@ theorem exists_crosscut_pair_with_parameterized_arcs {D A : Set Plane}
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem exists_disk_pair_with_boundary_arcs_of_proper_arc {D A : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {η : ℝ → E} (hη : IsPLHomeomorphOn η (Icc 0 1) A) (hAD : A ⊆ D)
     (hmeet : A ∩ (r '' stdSimplexBoundary 2) = {η 0, η 1}) :
     ∃ (U V R S : Set E) (u v : (Fin 3 → ℝ) → E) (γ δ : ℝ → E),
-      IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) U ∧
-      IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) V ∧
+      IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) U ∧
+      IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) V ∧
       IsPLHomeomorphOn γ (Icc 0 1) R ∧ IsPLHomeomorphOn δ (Icc 0 1) S ∧
       γ 0 = η 0 ∧ γ 1 = η 1 ∧ δ 0 = η 0 ∧ δ 1 = η 1 ∧
       U ∪ V = D ∧ U ∩ V = A ∧ u '' stdSimplexBoundary 2 = A ∪ R ∧

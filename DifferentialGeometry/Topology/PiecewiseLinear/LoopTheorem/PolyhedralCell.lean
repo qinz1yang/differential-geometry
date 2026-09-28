@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem PLPieceIn.exists_nonsingular_two_cell_of_isPLBall
     {Y : Set X} (T : PLPieceIn E 3 X Y) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hD : D ⊆ T.complex.space) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hD : D ⊆ T.complex.space) :
     ∃ A : SingularTwoCell X, A.IsNonsingular ∧ A '' A.domain = T.map '' D ∧
       Set.range A.boundary = T.map '' (r '' stdSimplexBoundary 2) := by
   classical
@@ -28,7 +28,7 @@ theorem PLPieceIn.exists_nonsingular_two_cell_of_isPLBall
     isPLBall_convexHull_of_affineIndependent V hV hcard
   obtain ⟨p, hp⟩ := hP
   let P := convexHull ℝ (V : Set (EuclideanSpace ℝ (Fin 2)))
-  let f := r ∘ Function.invFunOn p (stdSimplex ℝ (Fin 3))
+  let f := r ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hf : IsPLHomeomorphOn f P D := hp.symm.trans hr
   have hfK : MapsTo f P T.complex.space := fun x hx => hD (hf.bijOn.mapsTo hx)
   let A : SingularTwoCell X :=
@@ -45,13 +45,13 @@ theorem PLPieceIn.exists_nonsingular_two_cell_of_isPLBall
     rw [range_comp, Subtype.range_coe, ← hfront, image_image, image_image]
     apply Set.EqOn.image_eq
     intro x hx
-    change T.map (r (Function.invFunOn p (stdSimplex ℝ (Fin 3)) (p x))) = T.map (r x)
+    change T.map (r (Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (p x))) = T.map (r x)
     rw [hp.bijOn.invOn_invFunOn.1 hx.1]
 
 theorem exists_nonsingular_two_cell_of_isPLBall_in_combinatorial_manifold
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 3 K) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hD : D ⊆ K.space) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hD : D ⊆ K.space) :
     letI := combinatorialChartedSpace K hK
     ∃ A : SingularTwoCell K.space, A.IsNonsingular ∧
       Subtype.val '' (A '' A.domain) = D ∧
@@ -61,7 +61,7 @@ theorem exists_nonsingular_two_cell_of_isPLBall_in_combinatorial_manifold
   obtain ⟨p, hp⟩ := (show IsPLBall 2 D from ⟨r, hr⟩).nonempty
   let T := combinatorialPLPieceIn K hK ⟨p, hD hp⟩
   have hval (x : E) (hx : x ∈ K.space) : (T.map x : E) = x := by
-    simp only [T, combinatorialPLPieceIn, dif_pos hx]
+    simp only [T, combinatorialPLPieceIn, dite_eq_left hx]
   have himage (S : Set E) (hS : S ⊆ K.space) : Subtype.val '' (T.map '' S) = S := by
     rw [image_image]
     have h : EqOn ((Subtype.val : K.space → E) ∘ T.map) id S :=

@@ -16,6 +16,8 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.LieCovariantDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le)
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -66,7 +68,7 @@ lemma riemannianFiberNormSq_addsub4_le (g : SmoothRiemannianMetric I M)
   have houter := riemannianFiberNormSq_add_le (I := I) (M := M) g r s x (u + v) (-(w + z))
   have hneg : riemannianFiberNormSq (I := I) (M := M) g r s x (-(w + z)) =
       riemannianFiberNormSq (I := I) (M := M) g r s x (w + z) := by
-    rw [← neg_one_smul ℝ (w + z), DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [← neg_one_smul ℝ (w + z), DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     norm_num
   rw [hneg] at houter
   have huv := riemannianFiberNormSq_add_le (I := I) (M := M) g r s x u v
@@ -368,9 +370,9 @@ private theorem palatiniOrthoFrameBasis_at_center (g₀ : SmoothRiemannianMetric
       rw [(g₀.inner x (smoothOrthoFrame (I := I) g₀ x k x)).map_smul (c j),
         smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E :=
     Fintype.card_fin _
   exact ⟨basisOfLinearIndependentOfCardEqFinrank he_li hcard,
@@ -398,9 +400,9 @@ private theorem palatiniOrthoFrame_expansion_at_center (g₀ : SmoothRiemannianM
       rw [(g₀.inner x (smoothOrthoFrame (I := I) g₀ x j x)).map_smul (bse.repr u i),
         smul_eq_mul, hbse i, horth j i])]
     rw [Finset.sum_eq_single_of_mem j (Finset.mem_univ j)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro i _ hij
-      rw [if_neg (fun h => hij h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hij h.symm), mul_zero]
   calc u = ∑ i : Fin (Module.finrank ℝ E), bse.repr u i • bse i := (bse.sum_repr u).symm
     _ = ∑ i : Fin (Module.finrank ℝ E),
         g₀.inner x u (smoothOrthoFrame (I := I) g₀ x i x) •

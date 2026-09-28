@@ -17,8 +17,8 @@ theorem exists_lipschitz_extension {f : X → F} {s : Set X} {K : ℝ≥0}
     ∃ (g : X → F) (L : ℝ≥0), LipschitzWith L g ∧ EqOn f g s := by
   let e : F ≃L[ℝ] (Fin (Module.finrank ℝ F) → ℝ) := (Module.finBasis ℝ F).equivFunL
   obtain ⟨g, hg, hfg⟩ :=
-    (e.toContinuousLinearMap.lipschitz.comp_lipschitzOnWith hf).extend_pi
-  refine ⟨e.symm ∘ g, _, e.symm.toContinuousLinearMap.lipschitz.comp hg, ?_⟩
+    (e.toContinuousLinearMap.lipschitzWith.comp_lipschitzOnWith hf).extend_pi
+  refine ⟨e.symm ∘ g, _, e.symm.toContinuousLinearMap.lipschitzWith.comp hg, ?_⟩
   intro x hx
   exact (e.symm_apply_apply (f x)).symm.trans (congrArg e.symm (hfg hx))
 

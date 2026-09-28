@@ -162,7 +162,7 @@ theorem exists_smoothScalar_sup_close (g : SmoothRiemannianMetric I M)
 
 omit [I.Boundaryless] [CompactSpace M] in
 private lemma eLpNorm_two_le_of_norm_le [CompactSpace M]
-    (g : SmoothRiemannianMetric I M) (φ : M → ℝ) (_hφ : Continuous φ) (K : ℝ)
+    (g : SmoothRiemannianMetric I M) (φ : M → ℝ) (hφ : Continuous φ) (K : ℝ)
     (hK : ∀ x, ‖φ x‖ ≤ K) :
     eLpNorm φ 2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
       (riemannianVolumeMeasure (I := I) (M := M) g
@@ -171,7 +171,7 @@ private lemma eLpNorm_two_le_of_norm_le [CompactSpace M]
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace (I := I) (M := M) g
   exact MeasureTheory.eLpNorm_le_of_ae_bound (μ := riemannianVolumeMeasure (I := I) (M := M) g)
-    (f := φ) (C := K) (Filter.Eventually.of_forall hK)
+    (f := φ) (C := K) hφ.aestronglyMeasurable (Filter.Eventually.of_forall hK)
 
 omit [I.Boundaryless] in
 private lemma eLpNorm_smooth_sub_bc_le

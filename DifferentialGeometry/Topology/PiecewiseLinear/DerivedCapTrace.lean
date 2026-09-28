@@ -17,7 +17,7 @@ theorem pair_centroid_not_mem_derived_cap_boundary
     (R : Geometry.SimplicialComplex ℝ E) [Finite R.faces] (hR : IsCombinatorialManifold 3 R)
     {s t : Finset E} (hs : s ∈ R.faces) (ht : t ∈ R.faces)
     (hne : s ≠ t) (hcomp : s ⊆ t ∨ t ⊆ s) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       ((derivedNeighborhoodCell R s).space ∩ (derivedNeighborhoodCell R t).space)) :
     ({s.centroid ℝ id, t.centroid ℝ id} : Finset E).centroid ℝ id ∉
       q '' stdSimplexBoundary 2 := by
@@ -45,7 +45,7 @@ theorem exists_derived_cap_surface_segment
     (hAR : A.faces ⊆ R.faces) {s t : Finset E}
     (hs : s ∈ (boundaryComplex 2 A).faces) (ht : t ∈ (boundaryComplex 2 A).faces)
     (hne : s ≠ t) (hcomp : s ⊆ t ∨ t ⊆ s) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       ((derivedNeighborhoodCell R s).space ∩ (derivedNeighborhoodCell R t).space)) :
     ∃ x : E,
       q '' stdSimplexBoundary 2 ∩ ((derivedNeighborhoodCellBase R s).space ∩ A.space) = {x} ∧

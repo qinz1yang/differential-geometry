@@ -14,10 +14,10 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensi
 
 theorem exists_isPLHomeomorphOn_disk_arc_pair_of_boundary_singleton
     {D A : Set E} {D' A' : Set F}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {η : ℝ → E} (hη : IsPLHomeomorphOn η (Icc 0 1) A) (hAD : A ⊆ D)
     (hmeet : A ∩ (r '' stdSimplexBoundary 2) = {η 0})
-    {r' : (Fin 3 → ℝ) → F} (hr' : IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) D')
+    {r' : (Fin 3 → ℝ) → F} (hr' : IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D')
     {η' : ℝ → F} (hη' : IsPLHomeomorphOn η' (Icc 0 1) A') (hAD' : A' ⊆ D')
     (hmeet' : A' ∩ (r' '' stdSimplexBoundary 2) = {η' 0}) :
     ∃ f : E → F, IsPLHomeomorphOn f D D' ∧ f '' A = A' ∧

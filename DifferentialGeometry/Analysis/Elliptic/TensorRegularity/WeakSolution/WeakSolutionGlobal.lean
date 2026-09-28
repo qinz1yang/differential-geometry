@@ -647,7 +647,7 @@ lemma tensorComponentWeakRHS_apply_of_mem
           euclidPartial (E := E) l
             (weightedGradCoeff (I := I) (M := M) g r s T α P₀ l) y := by
   unfold tensorComponentWeakRHS
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -658,7 +658,7 @@ lemma tensorComponentWeakRHS_apply_of_notMem
     {y : EuclN} (hy : y ∉ chartTargetEuclid (I := I) (M := M) α) :
     tensorComponentWeakRHS (I := I) (M := M) g r s T F α P₀ y = 0 := by
   unfold tensorComponentWeakRHS
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma contDiff_of_contDiffOn_zero_off_closed_local

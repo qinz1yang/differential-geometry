@@ -102,7 +102,7 @@ theorem exists_bound_christoffel_evolution_rhs_by_nablaRic_on_compact
             (coordinateFrameAt (I := I) x₀ u x) q))) ≤ V ^ 3 := by
         calc
           _ ≤ ∏ _q : Fin 3, V := by
-            apply Finset.prod_le_prod
+            apply Finset.prod_le_prod₀
             · intro q _; exact Real.sqrt_nonneg _
             · intro q _; fin_cases q <;> exact hF _
           _ = V ^ 3 := by simp

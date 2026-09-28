@@ -36,7 +36,7 @@ theorem historyWidth_final (H : ObservedHistory.{u})
       ((rfs_finite_ancestor_chain H terminal).component (historyStageAt H t))
       (rfs_simply_connected_history H h0 (historyStageAt H t) _) = _
   rw [historyStageAt_eq_last H t ht]
-  simp only [historyStageMetric, Fin.lastCases_last, dif_pos hfin]
+  simp only [historyStageMetric, Fin.lastCases_last, dite_eq_left hfin]
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Width
 
@@ -132,7 +132,7 @@ theorem componentHalfScalar_le_of_scalarLowerBound_final {H : ObservedHistory.{u
     ((rfs_finite_ancestor_chain H terminal).component (Fin.last H.eventCount))
     (↑(⟨t, htIcc⟩ : Icc (0 : ℝ) H.horizon)) ?_).symm
   intro s
-  simp only [historyStageMetric, Fin.lastCases_last, dif_pos hfin]
+  simp only [historyStageMetric, Fin.lastCases_last, dite_eq_left hfin]
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.Families
 

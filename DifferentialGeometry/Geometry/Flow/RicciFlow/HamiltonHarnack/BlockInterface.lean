@@ -575,8 +575,8 @@ theorem hamiltonQuadraticAt_eq_hamiltonBlockQuadratic
         (fun a b => U ![basis a, basis b])
         (fun a => W ![basis a]) := by
   rw [hamiltonQuadraticAt, curvatureBlock_eq_sum g R U U basis hinv,
-    Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv,
-    Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
+    DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 3 basis hinv,
+    DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis hinv]
   rw [sum_fin_four_fun]
   rw [hamiltonBlockQuadratic_eq_hamiltonQuadraticForm]
   unfold hamiltonQuadraticForm

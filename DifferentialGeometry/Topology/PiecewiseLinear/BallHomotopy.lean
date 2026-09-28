@@ -15,9 +15,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem IsPLBall.contractibleSpace {n : ℕ} {D : Set E} (hD : IsPLBall n D) :
     ContractibleSpace D := by
   obtain ⟨r, hr⟩ := hD
-  let _ : ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
-    (convex_stdSimplex ℝ (Fin (n + 1))).contractibleSpace
-      ⟨_, single_mem_stdSimplex ℝ (0 : Fin (n + 1))⟩
+  let _ : ContractibleSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :=
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))).contractibleSpace
+      ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (n + 1))⟩
   exact hr.homeomorph.symm.contractibleSpace
 
 theorem IsPLBall.nullhomotopic_inclusion {n : ℕ} {D A S : Set E} (hD : IsPLBall n D)

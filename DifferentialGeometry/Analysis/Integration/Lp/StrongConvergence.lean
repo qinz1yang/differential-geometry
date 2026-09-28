@@ -13,8 +13,6 @@ variable {P X : Type*} [MeasurableSpace P] [NormedAddCommGroup X]
 
 private theorem tendsto_eLpNorm_sub_of_tendsto_eLpNorm_sub_of_ae_eq
     (u v : ℕ → P → X) (f g : P → X)
-    (hu : ∀ n, AEStronglyMeasurable (fun x => u n x - f x) μ)
-    (hv : ∀ n, AEStronglyMeasurable (fun x => v n x - g x) μ)
     (huf : Tendsto (fun n => eLpNorm (fun x => u n x - f x) 2 μ) atTop (𝓝 0))
     (hvg : Tendsto (fun n => eLpNorm (fun x => v n x - g x) 2 μ) atTop (𝓝 0))
     (hfg : f =ᵐ[μ] g) :
@@ -28,7 +26,7 @@ private theorem tendsto_eLpNorm_sub_of_tendsto_eLpNorm_sub_of_ae_eq
       abel
     rw [eLpNorm_congr_ae heq]
     exact eLpNorm_sub_le (f := fun x => u n x - f x) (g := fun x => v n x - g x)
-      (p := 2) (μ := μ) (hu n) (hv n) (by norm_num)
+      (p := 2) (μ := μ) (by norm_num)
   have hsum : Tendsto
       (fun n => eLpNorm (fun x => u n x - f x) 2 μ +
         eLpNorm (fun x => v n x - g x) 2 μ) atTop (𝓝 0) := by
@@ -39,14 +37,12 @@ private theorem tendsto_eLpNorm_sub_of_tendsto_eLpNorm_sub_of_ae_eq
 private theorem integral_norm_sub_sq_tendsto_zero
     (u v : ℕ → P → X) (f g : P → X)
     (hu : ∀ n, MemLp (u n) 2 μ) (hv : ∀ n, MemLp (v n) 2 μ)
-    (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ)
     (huf : Tendsto (fun n => eLpNorm (fun x => u n x - f x) 2 μ) atTop (𝓝 0))
     (hvg : Tendsto (fun n => eLpNorm (fun x => v n x - g x) 2 μ) atTop (𝓝 0))
     (hfg : f =ᵐ[μ] g) :
     Tendsto (fun n => ∫ x, ‖u n x - v n x‖ ^ 2 ∂μ) atTop (𝓝 0) := by
   have h := tendsto_eLpNorm_sub_of_tendsto_eLpNorm_sub_of_ae_eq u v f g
-    (fun n => (hu n).aestronglyMeasurable.sub hf)
-    (fun n => (hv n).aestronglyMeasurable.sub hg) huf hvg hfg
+    huf hvg hfg
   have hr := (ENNReal.tendsto_toReal (by simp : (0 : ℝ≥0∞) ≠ ∞)).comp h
   have heq (n : ℕ) : (∫ x, ‖u n x - v n x‖ ^ 2 ∂μ) =
       (eLpNorm (fun x => u n x - v n x) 2 μ).toReal ^ 2 := by
@@ -54,21 +50,19 @@ private theorem integral_norm_sub_sq_tendsto_zero
       (hu n).sub (hv n)
     have hm : MemLp (fun x => ‖u n x - v n x‖) 2 μ := hsub.norm
     rw [DifferentialGeometry.Analysis.Integration.integral_sq_eq_l2 hm]
-    rw [eLpNorm_norm]
+    rw [eLpNorm_norm _ hsub.aestronglyMeasurable]
   simpa only [heq, Function.comp_def, ENNReal.toReal_zero, zero_pow (by decide : 2 ≠ 0)]
     using hr.pow 2
 
 theorem tendsto_integral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq_of_measure_le
     (hν : ν ≤ μ) (u v : ℕ → P → X) (f g : P → X)
     (hu : ∀ n, MemLp (u n) 2 μ) (hv : ∀ n, MemLp (v n) 2 μ)
-    (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ)
     (huf : Tendsto (fun n => eLpNorm (fun x => u n x - f x) 2 μ) atTop (𝓝 0))
     (hvg : Tendsto (fun n => eLpNorm (fun x => v n x - g x) 2 μ) atTop (𝓝 0))
     (hfg : f =ᵐ[ν] g) :
     Tendsto (fun n => ∫ x, ‖u n x - v n x‖ ^ 2 ∂ν) atTop (𝓝 0) := by
   apply integral_norm_sub_sq_tendsto_zero u v f g
-    (fun n => (hu n).mono_measure hν) (fun n => (hv n).mono_measure hν)
-    (hf.mono_measure hν) (hg.mono_measure hν) _ _ hfg
+    (fun n => (hu n).mono_measure hν) (fun n => (hv n).mono_measure hν) _ _ hfg
   · exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds huf
       (fun _ => zero_le) (fun n => eLpNorm_mono_measure _ hν)
   · exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hvg
@@ -77,24 +71,22 @@ theorem tendsto_integral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq_of_measure_
 theorem tendsto_integral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq
     (u v : ℕ → P → X) (f g : P → X)
     (hu : ∀ n, MemLp (u n) 2 μ) (hv : ∀ n, MemLp (v n) 2 μ)
-    (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ)
     (huf : Tendsto (fun n => eLpNorm (fun x => u n x - f x) 2 μ) atTop (𝓝 0))
     (hvg : Tendsto (fun n => eLpNorm (fun x => v n x - g x) 2 μ) atTop (𝓝 0))
     (hfg : f =ᵐ[μ] g) :
     Tendsto (fun n => ∫ x, ‖u n x - v n x‖ ^ 2 ∂μ) atTop (𝓝 0) :=
   tendsto_integral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq_of_measure_le
-    le_rfl u v f g hu hv hf hg huf hvg hfg
+    le_rfl u v f g hu hv huf hvg hfg
 
 theorem tendsto_setIntegral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq
     (S : Set P) (u v : ℕ → P → X) (f g : P → X)
     (hu : ∀ n, MemLp (u n) 2 μ) (hv : ∀ n, MemLp (v n) 2 μ)
-    (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ)
     (huf : Tendsto (fun n => eLpNorm (fun x => u n x - f x) 2 μ) atTop (𝓝 0))
     (hvg : Tendsto (fun n => eLpNorm (fun x => v n x - g x) 2 μ) atTop (𝓝 0))
     (hfg : f =ᵐ[μ.restrict S] g) :
     Tendsto (fun n => ∫ x in S, ‖u n x - v n x‖ ^ 2 ∂μ) atTop (𝓝 0) :=
   tendsto_integral_norm_sub_sq_of_tendsto_eLpNorm_sub_of_ae_eq_of_measure_le
-    Measure.restrict_le_self u v f g hu hv hf hg huf hvg hfg
+    Measure.restrict_le_self u v f g hu hv huf hvg hfg
 
 end MeasureTheory
 

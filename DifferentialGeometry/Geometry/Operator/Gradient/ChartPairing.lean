@@ -58,7 +58,7 @@ theorem abs_chartGradientBilin_fderiv_le
       Real.sqrt (g.inner x (gradientFun g f x) (gradientFun g f x)) *
         Real.sqrt (g.inner x (gradientFun g h x) (gradientFun g h x)) := by
   rw [← inner_gradientFun_eq_chartGradientBilin g alpha hf hh hx]
-  exact DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  exact DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     g x _ _
 
 end DifferentialGeometry.Geometry.Operator

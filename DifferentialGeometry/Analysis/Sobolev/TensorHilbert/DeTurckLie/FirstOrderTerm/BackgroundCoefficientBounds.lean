@@ -12,6 +12,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.Symmetr
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.ConnectionDifferenceBounds
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -89,7 +92,7 @@ lemma lieFirstOrder_kappa_unitModel_apply (g₀ g₁ g_bg : SmoothRiemannianMetr
   rw [show (deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg).toSection x
       (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (metricLoweredConnectionDifferenceField (I := I) g₁ g_bg x)
+          (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g₁ g_bg x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
@@ -110,7 +113,7 @@ private lemma lieFirstOrder_connectionDifferenceLowered_unitModel_apply (g₀ g�
   rw [unitModel]
   rw [show (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
+          (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,

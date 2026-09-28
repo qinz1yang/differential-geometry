@@ -18,7 +18,7 @@ variable {E F : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensio
 open Classical in
 theorem IsCylindricalDiagram.exists_capped_surface
     (D : Geometry.SimplicialComplex ℝ E) [Finite D.faces]
-    {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) D.space)
+    {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D.space)
     {f : E × ℝ → F} {S : Set F} (hf : IsCylindricalDiagram f D.space S)
     (hdim : Module.finrank ℝ F = 3) {a : ℝ} (ha : a ∈ Ioo (0 : ℝ) 1) :
     let J := (boundaryComplex 2 D).space
@@ -36,8 +36,8 @@ theorem IsCylindricalDiagram.exists_capped_surface
       f '' (J ×ˢ Icc 0 a) ∪ R.space = K.space ∧
       f '' (J ×ˢ Icc 0 a) ∩ R.space = f '' (J ×ˢ {0, a}) ∧
       (boundaryComplex 2 R).space = f '' (J ×ˢ {0, a}) ∧
-      IsPLHomeomorphOn (fun x => f (p x, 0)) (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn (fun x => f (p x, a)) (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn (fun x => f (p x, 0)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn (fun x => f (p x, a)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       Disjoint D₀ D₁ ∧
       K.space ∩ D₀ = (fun x => f (p x, 0)) '' stdSimplexBoundary 2 ∧
       K.space ∩ D₁ = (fun x => f (p x, a)) '' stdSimplexBoundary 2 ∧
@@ -65,7 +65,7 @@ theorem IsCylindricalDiagram.exists_capped_surface
   have hleft := hf.isPLHomeomorphOn_strip hD.isPolyhedron le_rfl ha.2.le (Or.inr ha.2)
   have hright := hf.isPLHomeomorphOn_strip hD.isPolyhedron ha.1.le le_rfl (Or.inl ha.1)
   have hcap (t : ℝ) (ht : t ∈ Icc (0 : ℝ) a) :
-      IsPLHomeomorphOn (fun x => f (p x, t)) (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn (fun x => f (p x, t)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (f '' (D.space ×ˢ {t})) := by
     have hPt := hD.isPolyhedron.isPLHomeomorphOn_prod_const t
     have hrest := hleft.restrict

@@ -19,7 +19,7 @@ theorem exists_isPLHomeomorphOn_iUnion {ι : Type*} [Finite ι]
     intro i x hx
     have hex : ∃ j, x ∈ P j := ⟨i, hx⟩
     dsimp only [g]
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     exact hcompat _ i ⟨Classical.choose_spec hex, hx⟩
   have hgP : ∀ s : Finset ι, IsPiecewiseAffineOn g (⋃ i ∈ s, P i) := by
     intro s

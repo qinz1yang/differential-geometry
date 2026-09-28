@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.Parametr
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.GalerkinPairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev

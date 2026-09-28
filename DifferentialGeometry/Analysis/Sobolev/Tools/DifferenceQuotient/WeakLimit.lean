@@ -351,7 +351,9 @@ private lemma abs_integral_mul_le_eLpNorm_two
     rw [hofreal]; exact hint
   have h_lintegral_eq :
       ∫⁻ x, ‖f x * g x‖ₑ ∂μ = eLpNorm (fun x => g x * f x) 1 μ := by
-    rw [eLpNorm_one_eq_lintegral_enorm]
+    rw [eLpNorm_one_eq_lintegral_enorm
+      (show AEStronglyMeasurable (fun x => g x * f x) μ from
+        hg.aestronglyMeasurable.mul hf.aestronglyMeasurable)]
     refine lintegral_congr (fun x => ?_)
     simp [enorm_mul, mul_comm]
   have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := by
@@ -365,7 +367,7 @@ private lemma abs_integral_mul_le_eLpNorm_two
       funext x; simp [smul_eq_mul]
     rw [h_mul_eq]
     have : ENNReal.HolderTriple (2 : ℝ≥0∞) (2 : ℝ≥0∞) 1 := inferInstance
-    exact eLpNorm_smul_le_mul_eLpNorm hf.aestronglyMeasurable hg.aestronglyMeasurable
+    exact eLpNorm_smul_le_mul_eLpNorm hg.aestronglyMeasurable hf.aestronglyMeasurable
   calc
     ENNReal.ofReal |∫ x, f x * g x ∂μ|
         ≤ ∫⁻ x, ‖f x * g x‖ₑ ∂μ := h_abs_le_lintegral
@@ -564,7 +566,6 @@ private lemma abs_smoothTestFunctional_le
     h_bdd (hₙ n) (hₙ_pos_abs n) (hₙ_bd n)
   have h_dq_memLp : ∀ n, MemLp (diffQuot k (hₙ n) w) 2 (volume : Measure E) := by
     intro n
-    refine ⟨aestronglyMeasurable_diffQuot k (hₙ n) hw_l2.aestronglyMeasurable, ?_⟩
     calc eLpNorm (diffQuot k (hₙ n) w) 2 (volume : Measure E)
         ≤ ENNReal.ofReal M := h_dq_l2_bound n
       _ < ∞ := ENNReal.ofReal_lt_top

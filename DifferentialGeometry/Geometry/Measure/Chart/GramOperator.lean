@@ -49,7 +49,7 @@ theorem tendstoUniformly_chartDensity_of_chartGramOp
         (ContinuousLinearMap.apply ℝ E (chartModelBasis E i))
   have hL := L.uniformContinuous.comp_tendstoUniformly h
   have hbL : Bornology.IsBounded (range (fun x => L (chartGramOp G' alpha (q x)))) := by
-    exact (L.lipschitz.isBounded_image hb).subset (by
+    exact (L.lipschitzWith.isBounded_image hb).subset (by
       rintro A ⟨x, rfl⟩
       exact ⟨chartGramOp G' alpha (q x), mem_range_self x, rfl⟩)
   have hsqrt := hL.sqrt_det hbL

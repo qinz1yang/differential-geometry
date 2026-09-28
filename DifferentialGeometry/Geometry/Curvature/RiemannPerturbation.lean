@@ -8,6 +8,9 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
@@ -239,7 +242,7 @@ theorem sqrt_normSq_metricRm04At_le_of_metricDerivNorm_le
   have hnorm := sqrt_normSq0S_le_of_metric_equiv g h x 4 (by norm_num : (1 : ℝ) ≤ 2)
     (hequiv.2 x (Set.mem_singleton x)) (metricRm04At h x)
   norm_num at hnorm
-  have htri := _root_.Tensor0SBundle.sqrt_normSq0S_add_le g x 4
+  have htri := _root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le g x 4
     (metricRm04At h x - metricRm04At g x) (metricRm04At g x)
   rw [sub_add_cancel] at htri
   have hdiff := metricRm04_difference_norm_le_of_metricDerivNorm_le

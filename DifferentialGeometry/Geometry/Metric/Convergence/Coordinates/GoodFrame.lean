@@ -223,14 +223,14 @@ private theorem exists_orthonormalBasis_of_posDef
   rw [hreduce]
   by_cases hij : i = j
   · subst hij
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have hd : 0 < B (v i) (v i) := hdpos i
     have hroot :
         Real.sqrt (B (v i) (v i)) * Real.sqrt (B (v i) (v i)) = B (v i) (v i) :=
       Real.mul_self_sqrt hd.le
     simp only [hw]
     rw [← mul_inv, hroot, inv_mul_cancel₀ hd.ne']
-  · rw [if_neg hij]
+  · rw [ite_eq_right hij]
     have horth : B (v i) (v j) = 0 := (LinearMap.isOrthoᵢ_def.mp hv) i j hij
     rw [horth, mul_zero]
 
@@ -332,7 +332,7 @@ theorem exists_goodFrame_compBound
   refine ⟨basisE, u', ε, hopen, hxu', hsub, hε.le, hsmall,
     (fun z hz i j => (hnear z hz i j).2), hONraw, ?_, ?_⟩
   · intro z hz hzu' s A
-    have hQlb := quad_lb_of_near_id
+    have hQlb := Matrix.quad_lb_of_near_id
       (fun i j => (gramE (I := I) e₀ gRef basisE z)⁻¹ i j) ε hε.le
       (fun i j => (hnear z hzu' i j).1) hsmall
     have hkey := Tensor0SBundle.sum_comp_sq_le_pow_normSq0S (I := I) gRef z s
@@ -693,7 +693,7 @@ theorem chrInFrame_mono
     christoffelSymbolInFrame cov frame (hframe.mono hsub) z d i j =
       christoffelSymbolInFrame cov frame hframe z d i j := by
   unfold christoffelSymbolInFrame
-  simp only [IsLocalFrameOn.coeff, dif_pos hz, dif_pos (hsub hz)]
+  simp only [IsLocalFrameOn.coeff, dite_eq_left hz, dite_eq_left (hsub hz)]
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I 2 M] [CompleteSpace E]
@@ -718,7 +718,7 @@ theorem movingGinv_le
     simp only [dotProduct, Matrix.mulVec, Finset.mul_sum]
     exact Finset.sum_congr rfl fun i _ =>
       Finset.sum_congr rfl fun j _ => by ring
-  have hquadRef := DifferentialGeometry.CheegerGromovCompactness.quad_lb_of_near_id
+  have hquadRef := Matrix.quad_lb_of_near_id
     (fun i j => gramE (I := I) e₀ gRef basisE z i j) ε hε0 hGnear hsmall
   have hquadG : ∀ v : Idx → Real,
       (1 / (2 * Beq)) * (v ⬝ᵥ v) ≤

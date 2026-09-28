@@ -14,11 +14,11 @@ def extendRectangleById {P : Type*} (a b c d : ℝ) (f : P × ℂ → ℂ) (q : 
 
 private theorem extendRectangleById_of_mem {P : Type*} {a b c d : ℝ}
     (f : P × ℂ → ℂ) {q : P × ℂ} (hq : q.2 ∈ Complex.reProdIm (Icc a b) (Icc c d)) :
-    extendRectangleById a b c d f q = f q := if_pos hq
+    extendRectangleById a b c d f q = f q := ite_eq_left hq
 
 private theorem extendRectangleById_of_notMem {P : Type*} {a b c d : ℝ}
     (f : P × ℂ → ℂ) {q : P × ℂ} (hq : q.2 ∉ Complex.reProdIm (Icc a b) (Icc c d)) :
-    extendRectangleById a b c d f q = q.2 := if_neg hq
+    extendRectangleById a b c d f q = q.2 := ite_eq_right hq
 
 theorem contDiffOn_extendRectangleById
     {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]

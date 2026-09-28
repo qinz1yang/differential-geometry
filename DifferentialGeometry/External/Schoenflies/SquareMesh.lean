@@ -278,9 +278,9 @@ theorem splitAt_end_of_mem (p : Plane) (P : Piece) (hmem : p ∈ P.seg) :
     ∃ R ∈ splitAt p P, R.seg ⊆ P.seg ∧ (p = R.1 ∨ p = R.2) := by
   classical
   by_cases hp : p ∈ P.interior
-  · refine ⟨(P.1, p), by rw [splitAt, if_pos hp]; simp, ?_, Or.inr rfl⟩
+  · refine ⟨(P.1, p), by rw [splitAt, ite_eq_left hp]; simp, ?_, Or.inr rfl⟩
     exact (convex_segment P.1 P.2).segment_subset (left_mem_segment ℝ _ _) hmem
-  · refine ⟨P, by rw [splitAt, if_neg hp]; simp, subset_rfl, ?_⟩
+  · refine ⟨P, by rw [splitAt, ite_eq_right hp]; simp, subset_rfl, ?_⟩
     by_contra hcon
     push Not at hcon
     exact hp (mem_openSegment_of_ne_left_right (Ne.symm hcon.1) (Ne.symm hcon.2) hmem)
@@ -292,11 +292,11 @@ theorem splitAt_preserves_end (q : Plane) {p : Plane} {P : Piece} (h : p = P.1 �
   by_cases hq : q ∈ P.interior
   · have hqseg : q ∈ P.seg := openSegment_subset_segment ℝ _ _ hq
     rcases h with rfl | rfl
-    · refine ⟨(P.1, q), by rw [splitAt, if_pos hq]; simp, ?_, Or.inl rfl⟩
+    · refine ⟨(P.1, q), by rw [splitAt, ite_eq_left hq]; simp, ?_, Or.inl rfl⟩
       exact (convex_segment P.1 P.2).segment_subset (left_mem_segment ℝ _ _) hqseg
-    · refine ⟨(q, P.2), by rw [splitAt, if_pos hq]; simp, ?_, Or.inr rfl⟩
+    · refine ⟨(q, P.2), by rw [splitAt, ite_eq_left hq]; simp, ?_, Or.inr rfl⟩
       exact (convex_segment P.1 P.2).segment_subset hqseg (right_mem_segment ℝ _ _)
-  · exact ⟨P, by rw [splitAt, if_neg hq]; simp, subset_rfl, h⟩
+  · exact ⟨P, by rw [splitAt, ite_eq_right hq]; simp, subset_rfl, h⟩
 
 theorem splitAllAt_preserves_end (q : Plane) {p : Plane} {P : Piece} {pieces : List Piece}
     (h : ∃ R ∈ pieces, R.seg ⊆ P.seg ∧ (p = R.1 ∨ p = R.2)) :

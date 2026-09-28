@@ -93,13 +93,13 @@ theorem exists_continuousOn_contractibleRegularLoop_family
         (Width.continuous_regularLoop_iff (I := I) (Q := M) e _).mpr ⟨hval, hder⟩
       rw [continuousOn_iff_continuous_domRestrict]
       exact (hslice.subtype_mk (fun τ => hctr τ.1 τ.2)).congr fun τ => by
-        simp only [Γ, Set.domRestrict_apply, dif_pos τ.2]
+        simp only [Γ, Set.domRestrict_apply, dite_eq_left τ.2]
     · rw [not_lt] at hab
       refine (continuousOn_singleton Γ a).mono fun x hx => ?_
       simp only [mem_singleton_iff]
       linarith [hx.1, hx.2, hab]
   · intro t ht
-    simp only [Γ, dif_pos ht]
+    simp only [Γ, dite_eq_left ht]
     rfl
 
 omit [SigmaCompactSpace M] in

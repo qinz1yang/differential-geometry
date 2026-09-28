@@ -105,15 +105,18 @@ theorem exists_relative_isotopy_of_square_flow
     intro z
     rw [hHformula]
     by_cases hz : z ∈ Q
-    · exact (show extendRectangleById 0 1 0 1 F (0, z) = F (0, z) from if_pos hz).trans (hFzero z hz)
-    · exact (show extendRectangleById 0 1 0 1 F (0, z) = z from if_neg hz).trans (hout z hz).symm
+    · exact (show extendRectangleById 0 1 0 1 F (0, z) = F (0, z) from
+        ite_eq_left hz).trans (hFzero z hz)
+    · exact (show extendRectangleById 0 1 0 1 F (0, z) = z from
+        ite_eq_right hz).trans (hout z hz).symm
   · apply Diffeomorph.ext
     intro z
     rw [hHformula]
     change extendRectangleById 0 1 0 1 F (1, z) = z
     by_cases hz : z ∈ Q
-    · exact (show extendRectangleById 0 1 0 1 F (1, z) = F (1, z) from if_pos hz).trans (hFone z hz)
-    · exact if_neg hz
+    · exact (show extendRectangleById 0 1 0 1 F (1, z) = F (1, z) from
+        ite_eq_left hz).trans (hFone z hz)
+    · exact ite_eq_right hz
   · exact ((hHprop p (mem_univ _)).2.2.2.2 z (by simpa only [zero_add] using hz)).1
 
 end DifferentialGeometry.Topology.Manifold

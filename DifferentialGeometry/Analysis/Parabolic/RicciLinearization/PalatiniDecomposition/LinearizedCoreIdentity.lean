@@ -168,7 +168,7 @@ private lemma linearizedDecompositionMetricPerturbationPath_zero (g₀ : SmoothR
       rw [ccTensorBilinSymm_apply, ccTensorBilin_zero, ccTensorBilin_zero]
       ring
     rw [hz, add_zero]
-  · rw [metricPerturbationPath, dif_neg h]
+  · rw [metricPerturbationPath, dite_eq_right h]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M]
     [SigmaCompactSpace M] in

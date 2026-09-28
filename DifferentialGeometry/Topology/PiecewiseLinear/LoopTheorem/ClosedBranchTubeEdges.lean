@@ -92,7 +92,7 @@ def tubeEdge (k : Fin 4) (h : ℝ) : Set ((ℝ × ℝ) × ℝ) := tubeEdgeParam 
 
 theorem tubeEdgeCoeff_of_le {t : ℝ} (ht : t ≤ 1 / 2) :
     tubeEdgeCoeffA t = 1 ∧ tubeEdgeCoeffB t = 2 * t :=
-  ⟨if_pos ht, if_pos ht⟩
+  ⟨ite_eq_left ht, ite_eq_left ht⟩
 
 theorem tubeEdgeCoeff_of_ge {t : ℝ} (ht : 1 / 2 ≤ t) :
     tubeEdgeCoeffA t = 2 - 2 * t ∧ tubeEdgeCoeffB t = 1 := by

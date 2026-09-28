@@ -1,9 +1,11 @@
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.BilinearForm.Orthogonal
+import Mathlib.LinearAlgebra.QuadraticForm.Basic
 import Mathlib.Analysis.InnerProductSpace.Defs
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.InnerProductSpace.Positive
+import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.Analysis.InnerProductSpace.Projection.FiniteDimensional
 
 namespace DifferentialGeometry.Tensor0SBundle
@@ -35,8 +37,20 @@ def ofFlat
   symm := hsymm
   nonneg := hnonneg
 
+def ofBilinForm (B : LinearMap.BilinForm ℝ V) (hsymm : B.IsSymm)
+    (hpos : B.toQuadraticMap.PosDef) : MetricFiberData V :=
+  ofFlat B
+    (LinearMap.ker_eq_bot.mp
+      (LinearMap.separatingLeft_iff_ker_eq_bot.mp
+        (LinearMap.BilinForm.separatingLeft_of_anisotropic hpos.anisotropic)))
+    hsymm.eq hpos.nonneg
+
 def inner (D : MetricFiberData V) (v w : V) : Real :=
   D.flat v w
+
+@[simp] theorem ofBilinForm_inner (B : LinearMap.BilinForm ℝ V) (hsymm : B.IsSymm)
+    (hpos : B.toQuadraticMap.PosDef) (v w : V) :
+    (ofBilinForm B hsymm hpos).inner v w = B v w := rfl
 
 def sharp (D : MetricFiberData V) : Module.Dual Real V ≃ₗ[Real] V :=
   D.flat.symm

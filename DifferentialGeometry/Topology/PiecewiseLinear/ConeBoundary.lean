@@ -78,7 +78,7 @@ theorem frontier_coneComplex [FiniteDimensional ℝ E] [dE : DecidableEq E] {n :
   let B := boundaryComplex (n + 1) L
   let hpB := hp.of_faces_subset (boundaryComplex_faces_subset (n + 1) L)
   let haB := haM.of_faces_subset (simplexBoundary_faces_subset_simplexComplex F hF)
-  have hBimage : (v ∘ Function.invFunOn u (stdSimplex ℝ (Fin (n + 2)))) '' B.space =
+  have hBimage : (v ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))) '' B.space =
       (simplexBoundary F hF).space := by
     have h := boundaryComplex_space_of_isPLHomeomorphOn L M
       (IsPLBall.isCombinatorialManifoldWithBoundary (n := n) (K := L) ⟨u, hu⟩) hf

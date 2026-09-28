@@ -394,10 +394,10 @@ theorem moserRepresentative_ae_eq
   filter_upwards [hinner_eq_ae] with x hx hx_outer
   by_cases hx_half : x ∈ inner
   · unfold moserRepresentative
-    rw [if_pos hx_half]
+    rw [ite_eq_left hx_half]
     exact hx hx_half
   · unfold moserRepresentative
-    rw [if_neg hx_half]
+    rw [ite_eq_right hx_half]
 
 theorem pointwise_abs_le_moserRepresentative_on_halfBall
     (hd : 2 < (d : ℝ))
@@ -448,14 +448,14 @@ theorem pointwise_abs_le_moserRepresentative_on_halfBall
       moserRepresentative u x ≤ (CHolderMoser d / 64) * moserHolderNorm A u p₀ := by
     have hvx : moserRepresentative u x = dyadicBallAverageLimit u x (1 / 4 : ℝ) := by
       unfold moserRepresentative
-      rw [if_pos hx]
+      rw [ite_eq_left hx]
     rw [hvx]
     exact le_trans hx_hi hsup
   have hge :
       -((CHolderMoser d / 64) * moserHolderNorm A u p₀) ≤ moserRepresentative u x := by
     have hvx : moserRepresentative u x = dyadicBallAverageLimit u x (1 / 4 : ℝ) := by
       unfold moserRepresentative
-      rw [if_pos hx]
+      rw [ite_eq_left hx]
     rw [hvx]
     exact le_trans hinf hx_lo
   exact abs_le.mpr ⟨hge, hle⟩
@@ -618,10 +618,10 @@ theorem moserRepresentative_small_distance_bound
           abs_le.mpr ⟨hlo, hup⟩
         have hvx : moserRepresentative u x = dyadicBallAverageLimit u x (1 / 4 : ℝ) := by
           unfold moserRepresentative
-          rw [if_pos hx]
+          rw [ite_eq_left hx]
         have hvy : moserRepresentative u y = dyadicBallAverageLimit u y (1 / 4 : ℝ) := by
           unfold moserRepresentative
-          rw [if_pos hy]
+          rw [ite_eq_left hy]
         rw [hvx, hvy]
         exact habs
       have hosc :

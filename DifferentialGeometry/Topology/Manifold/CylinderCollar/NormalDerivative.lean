@@ -1,6 +1,5 @@
-import DifferentialGeometry.Topology.Manifold.CylinderCollar.Matching
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Coordinates
 import DifferentialGeometry.Topology.Diffeomorph.Collar
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
 
 set_option autoImplicit false
 noncomputable section

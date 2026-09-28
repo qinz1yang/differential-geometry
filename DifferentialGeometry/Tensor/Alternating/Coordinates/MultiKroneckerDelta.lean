@@ -53,7 +53,7 @@ theorem multiKroneckerDelta_eq_zero
           ((Fintype.bijective_iff_injective_and_card f).mpr
             ⟨hf_inj, rfl⟩)) (funext hf)
       unfold multiKroneckerDelta
-      exact Matrix.det_eq_zero_of_row_eq_zero i (fun j => if_neg (hi j))
+      exact Matrix.det_eq_zero_of_row_eq_zero i (fun j => ite_eq_right (hi j))
     · exact multiKroneckerDelta_eq_zero_of_not_injective_right hJ
   · exact multiKroneckerDelta_eq_zero_of_not_injective_left hI
 
@@ -65,8 +65,8 @@ theorem multiKroneckerDelta_symm (I J : Fin k → Fin n) :
   change (if I j = J i then (1 : R) else 0) =
     (if J i = I j then 1 else 0)
   by_cases h : I j = J i
-  · rw [if_pos h, if_pos h.symm]
-  · rw [if_neg h, if_neg (mt Eq.symm h)]
+  · rw [ite_eq_left h, ite_eq_left h.symm]
+  · rw [ite_eq_right h, ite_eq_right (mt Eq.symm h)]
 
 theorem multiKroneckerDelta_comp_perm_left
     (I : Fin k → Fin n) (J : Fin k → Fin n) (σ : Equiv.Perm (Fin k)) :

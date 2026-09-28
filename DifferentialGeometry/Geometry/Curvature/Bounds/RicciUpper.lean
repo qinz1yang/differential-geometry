@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Curvature.Algebraic.CurvatureOperatorConeMe
 import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Metric.Defs
 import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Unit
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import Mathlib.Analysis.InnerProductSpace.PiL2
 
 set_option autoImplicit false
@@ -32,7 +32,7 @@ private theorem metricRicciAt_le_half_scalar_of_unit
       metricRicciAt (I := I) (M := M) g x (vec2 u u) ≤
         metricScalarAt (I := I) (M := M) g x / 2 := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
@@ -44,8 +44,8 @@ private theorem metricRicciAt_le_half_scalar_of_unit
       Inner.inner Real u u = D.inner u u :=
         MetricFiberData.toCore_inner D u u
       _ = g.inner x u u :=
-        TangentMetricDataGen.inner_eq_gen
-          (tangentMetricDataGen (I := I) g x) u u
+        TangentMetricData.inner_eq
+          (tangentMetricData (I := I) g x) u u
       _ = 1 := hu
   have huON : Orthonormal Real ((↑) : ({u} : Set (TangentSpace I x)) →
       TangentSpace I x) := by
@@ -54,7 +54,7 @@ private theorem metricRicciAt_le_half_scalar_of_unit
     have hi : (i : TangentSpace I x) = u := i.2
     have hj : (j : TangentSpace I x) = u := j.2
     have hij : i = j := Subtype.ext (hi.trans hj.symm)
-    rw [hi, hj, huInner, if_pos hij]
+    rw [hi, hj, huInner, ite_eq_left hij]
   obtain ⟨s, orthBasis, hus, horthBasis⟩ := huON.exists_orthonormalBasis_extension
   let basis := orthBasis.toBasis
   let iu : s := ⟨u, hus (Set.mem_singleton u)⟩
@@ -64,7 +64,7 @@ private theorem metricRicciAt_le_half_scalar_of_unit
   have hON : ∀ i j, g.inner x (basis i) (basis j) =
       if i = j then (1 : Real) else 0 := by
     intro i j
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)]
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)]
     change D.inner (basis i) (basis j) = _
     rw [← MetricFiberData.toCore_inner D]
     exact orthonormal_iff_ite.mp orthBasis.orthonormal i j
@@ -295,7 +295,7 @@ theorem metricScalarAt_nonnegative_of_curvatureOperator_nonnegative
       algebraicCurvatureOperatorNonnegativeCone (I := I) (M := M)) :
     0 ≤ metricScalarAt (I := I) (M := M) g x := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x)
@@ -307,7 +307,7 @@ theorem metricScalarAt_nonnegative_of_curvatureOperator_nonnegative
   have hON : ∀ i j, g.inner x (basis i) (basis j) =
       if i = j then (1 : Real) else 0 := by
     intro i j
-    rw [← TangentMetricDataGen.inner_eq_gen (tangentMetricDataGen (I := I) g x)]
+    rw [← TangentMetricData.inner_eq (tangentMetricData (I := I) g x)]
     change D.inner (orthBasis i) (orthBasis j) = if i = j then (1 : Real) else 0
     rw [← MetricFiberData.toCore_inner D]
     exact orthBasis.inner_eq_ite i j

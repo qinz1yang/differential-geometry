@@ -17,7 +17,7 @@ variable {E F H M : Type*}
   [TopologicalSpace H] {I : ModelWithCorners Real E H}
   [TopologicalSpace M] [ChartedSpace H M]
 
-theorem isParabolicC2On_parabolicEuclideanChartRepresentation_of_tendsto_locally_uniformly_on_of_lower_jets_gauge
+theorem isParabolicC2On_chart_limit_of_bounded_holder_jets
     [FiniteDimensional Real E] [FiniteDimensional Real F]
     (center : M) {Q : Set (ParabolicPoint (EuclN E))} (hQ : IsOpen Q)
     (uApprox : Nat → Real → M → F)
@@ -87,7 +87,7 @@ theorem isParabolicC2InEuclideanChartsOn_of_tendsto_locally_uniformly_on_of_char
   intro i
   obtain ⟨C, hC⟩ := hgauge i
   exact
-    isParabolicC2On_parabolicEuclideanChartRepresentation_of_tendsto_locally_uniformly_on_of_lower_jets_gauge
+    isParabolicC2On_chart_limit_of_bounded_holder_jets
       (center i) (hQ i) uApprox (dtimeUApprox i) (duApprox i)
       (d2uApprox i) u halpha C hC (hrealize i) (hu i)
 

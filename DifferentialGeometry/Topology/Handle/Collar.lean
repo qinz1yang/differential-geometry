@@ -462,19 +462,19 @@ theorem attachingCollar_zero (k l : ℕ) (a : AttachingRegion k l) :
     ((attachingCollar k l) (a, ⟨0, by norm_num⟩) : StandardHandle k l) =
       attachingInclusion k l a := by
   rcases a with ⟨u, y⟩
-  simp [attachingCollar, attachingInclusion, icoToI]
+  simp [attachingCollar, attachingInclusion, icoToI, Set.inclusion, radialStep]
 
 theorem beltCollar_zero (k l : ℕ) (a : BeltRegion k l) :
     ((beltCollar k l) (a, ⟨0, by norm_num⟩) : StandardHandle k l) =
       beltInclusion k l a := by
   rcases a with ⟨x, v⟩
-  simp [beltCollar, beltInclusion, icoToI]
+  simp [beltCollar, beltInclusion, icoToI, Set.inclusion, radialStep]
 
 theorem bicollar_zero (k l : ℕ) (c : Corner k l) :
     ((bicollar k l) (c, (⟨0, by norm_num⟩, ⟨0, by norm_num⟩)) : StandardHandle k l) =
       cornerInclusion k l c := by
   rcases c with ⟨u, v⟩
-  simp [bicollar, cornerInclusion, icoToI]
+  simp [bicollar, cornerInclusion, icoToI, Set.inclusion, radialStep]
 
 theorem attachingCollar_apply (k l : ℕ) (a : AttachingRegion k l) (t : Set.Ico (0 : ℝ) 1) :
     ((attachingCollar k l) (a, t) : StandardHandle k l) =

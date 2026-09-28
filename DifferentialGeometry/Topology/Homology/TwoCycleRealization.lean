@@ -8,6 +8,7 @@ import DifferentialGeometry.Topology.Homology.SphereGenerator
 noncomputable section
 
 open CategoryTheory AlgebraicTopology ContinuousMap Module
+open Convexity.StdSimplex (coordinateSet coordinateEquiv coordinateHomeomorph coordinateMap)
 open scoped Simplicial Topology
 
 namespace DifferentialGeometry.Topology
@@ -137,7 +138,9 @@ private theorem integralSingularTwoCycleProjection_simplex (x : X) (σ : integra
 private def integralSingularConeBoundaryMap (x : X) (σ : integralSingularSimplex 2 X) :
     C(DifferentialGeometry.Simplex.boundary (Fin 4), X) :=
   DifferentialGeometry.Simplex.boundaryDesc
-    (fun i => integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i)) fun i j p => by
+    (fun i => (integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i)).comp
+      ⟨(coordinateEquiv ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) fun i j p => by
+      obtain ⟨p, rfl⟩ := (coordinateEquiv ℝ _).surjective p
       have h := congrArg (fun s => integralSingularSimplexEquiv 1 X s p)
         (integralSingularConeFaces_compatible x σ i j)
       change (TopCat.of X).toSSetObjEquiv _
@@ -146,6 +149,13 @@ private def integralSingularConeBoundaryMap (x : X) (σ : integralSingularSimple
           ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)
             (integralSingularConeFaces x σ (i.succAbove j))) p at h
       rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at h
+      change integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i)
+          ((coordinateEquiv ℝ _).symm (coordinateMap j.succAbove (coordinateEquiv ℝ _ p))) =
+        integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ (i.succAbove j))
+          ((coordinateEquiv ℝ _).symm
+            (coordinateMap (j.predAbove i).succAbove (coordinateEquiv ℝ _ p)))
+      rw [← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply,
+        ← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply]
       exact h
 
 def integralSingularConeSphereMap (x : X) (σ : integralSingularSimplex 2 X) :
@@ -162,28 +172,43 @@ theorem integralSingularConeSphereMap_simplexBoundarySphereChain
       ((integralSingularConeSphereMap x σ).comp ⟨ULift.down, continuous_uliftDown⟩)).f 2
       (simplexBoundarySphereChain.{u} 1) =
         (integralSingularTwoCycleProjection x (integralSimplexChain 2 σ)).val := by
-  have h := integralSingularChainMap_boundarySphereDesc_simplexBoundarySphereChain 1
-    (fun i => integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i))
-    (show ∀ (i : Fin 4) (j : Fin 3) (p : stdSimplex ℝ (Fin 2)),
-      integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i)
-          (stdSimplex.map j.succAbove p) =
-        integralSingularSimplexEquiv 2 X
-          (integralSingularConeFaces x σ (i.succAbove j))
-          (stdSimplex.map (j.predAbove i).succAbove p) from by
-      intro i j p
-      have he := congrArg (fun s => integralSingularSimplexEquiv 1 X s p)
-        (integralSingularConeFaces_compatible x σ i j)
-      change (TopCat.of X).toSSetObjEquiv _
-        ((TopCat.toSSet.obj (TopCat.of X)).δ j (integralSingularConeFaces x σ i)) p =
-        (TopCat.of X).toSSetObjEquiv _
-          ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)
-            (integralSingularConeFaces x σ (i.succAbove j))) p at he
-      rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at he
-      exact he)
+  let F : Fin 4 → C(coordinateSet ℝ (Fin 3), X) :=
+    fun i => (integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i)).comp
+      ⟨(coordinateEquiv ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
+  have hF : ∀ (i : Fin 4) (j : Fin 3) (p : coordinateSet ℝ (Fin 2)),
+      F i (coordinateMap j.succAbove p) =
+        F (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p) := by
+    intro i j p
+    obtain ⟨p, rfl⟩ := (coordinateEquiv ℝ _).surjective p
+    have he := congrArg (fun s => integralSingularSimplexEquiv 1 X s p)
+      (integralSingularConeFaces_compatible x σ i j)
+    change (TopCat.of X).toSSetObjEquiv _
+      ((TopCat.toSSet.obj (TopCat.of X)).δ j (integralSingularConeFaces x σ i)) p =
+      (TopCat.of X).toSSetObjEquiv _
+        ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)
+          (integralSingularConeFaces x σ (i.succAbove j))) p at he
+    rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at he
+    change integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i)
+        ((coordinateEquiv ℝ _).symm (coordinateMap j.succAbove (coordinateEquiv ℝ _ p))) =
+      integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ (i.succAbove j))
+        ((coordinateEquiv ℝ _).symm
+          (coordinateMap (j.predAbove i).succAbove (coordinateEquiv ℝ _ p)))
+    rw [← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply,
+      ← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply]
+    exact he
+  have h := integralSingularChainMap_boundarySphereDesc_simplexBoundarySphereChain 1 F hF
   change (integralSingularChainMap
       ((integralSingularConeSphereMap x σ).comp ⟨ULift.down, continuous_uliftDown⟩)).f 2
       (simplexBoundarySphereChain 1) = _ at h
+  have hF_comp (i : Fin 4) :
+      (F i).comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ =
+        integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i) := by
+    apply ContinuousMap.ext
+    intro p
+    exact congrArg (integralSingularSimplexEquiv 2 X (integralSingularConeFaces x σ i))
+      ((coordinateEquiv ℝ _).symm_apply_apply p)
   rw [h, integralSingularTwoCycleProjection_simplex]
+  simp only [hF_comp, Equiv.symm_apply_apply]
   change (∑ i : Fin 4, (-1 : ℤ) ^ i.val • integralSimplexChain 2
     (integralSingularConeFaces x σ i)) = _
   rw [Fin.sum_univ_four]

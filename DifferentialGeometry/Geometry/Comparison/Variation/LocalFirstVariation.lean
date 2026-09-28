@@ -64,6 +64,7 @@ theorem firstVariation_curveEnergy_geodesic_of_smooth_near_slice
       (hjoint t ht).comp_tendsto (continuous_id.prodMk continuous_const).continuousAt
     have hw := hparam.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I)
     rw [(hjoint t ht).eq_of_nhds, hv, hw]
+    rfl
   have hE : (fun s => curveEnergy (I := I) g (fun t => d (s, t)) 0 L) =ᶠ[𝓝 (0 : ℝ)]
       (fun s => curveEnergy (I := I) g (fun t => f (s, t)) 0 L) := by
     filter_upwards [heq] with s hs

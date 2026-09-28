@@ -62,14 +62,14 @@ private lemma chartPouEucl_apply_of_mem (α : M) {y : EuclN}
       ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
           ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)) := by
   classical
-  unfold chartPouEucl; exact if_pos hy
+  unfold chartPouEucl; exact ite_eq_left hy
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
 private lemma chartPouEucl_apply_of_notMem (α : M) {y : EuclN}
     (hy : y ∉ chartTargetEuclid (I := I) (M := M) α) :
     chartPouEucl (I := I) (M := M) α y = 0 := by
   classical
-  unfold chartPouEucl; exact if_neg hy
+  unfold chartPouEucl; exact ite_eq_right hy
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 lemma chartPouEucl_contDiff (α : M) :

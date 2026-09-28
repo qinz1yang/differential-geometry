@@ -398,7 +398,7 @@ theorem prod_coordScaleM (l : List (Fin n)) (hl : l.Nodup) (c d : Fin n → ℝ)
       · by_cases hkl : k ∈ l
         · simp only [Function.update_of_ne hki, hkl, ↓reduceIte, List.mem_cons_of_mem i hkl]
         · simp only [Function.update_of_ne hki, hkl, ↓reduceIte,
-            if_neg (fun h => (List.mem_cons.mp h).elim (fun h' => hki h') hkl)]
+            ite_eq_right (fun h => (List.mem_cons.mp h).elim (fun h' => hki h') hkl)]
 
 theorem prod_coordScaleM_finRange (c : Fin n → ℝ) :
     ((List.finRange n).map (fun i => coordScaleM i (c i))).prod = Matrix.diagonal c := by
@@ -406,7 +406,7 @@ theorem prod_coordScaleM_finRange (c : Fin n → ℝ) :
   have h1 : Matrix.diagonal (fun _ : Fin n => (1 : ℝ)) = 1 := Matrix.diagonal_one'
   have h' : (fun k => if k ∈ List.finRange n then c k * 1 else 1) = c := by
     funext k
-    rw [if_pos (List.mem_finRange ..), mul_one]
+    rw [ite_eq_left (List.mem_finRange ..), mul_one]
   rw [h1, Matrix.mul_one, h'] at h
   exact h
 

@@ -90,12 +90,12 @@ theorem tetraDepth_tetraRadialPoint {b : Fin 4 → ℝ} (hb : b ∈ stdSimplexBo
     have := mul_nonneg ht (hbΔ.1 j)
     nlinarith
 
-theorem tetraRadialPoint_mem_stdSimplex {b : Fin 4 → ℝ} (hb : b ∈ stdSimplex ℝ (Fin 4)) {t : ℝ}
-    (ht0 : 0 ≤ t) (ht1 : t ≤ 1) : tetraRadialPoint b t ∈ stdSimplex ℝ (Fin 4) :=
-  (convex_stdSimplex ℝ (Fin 4)).add_smul_sub_mem
+theorem tetraRadialPoint_mem_stdSimplex {b : Fin 4 → ℝ} (hb : b ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) {t : ℝ}
+    (ht0 : 0 ≤ t) (ht1 : t ≤ 1) : tetraRadialPoint b t ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
+  (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 4)).add_smul_sub_mem
     (openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 2)) hb ⟨ht0, ht1⟩
 
-theorem tetraRadialPoint_mem_openSimplex {b : Fin 4 → ℝ} (hb : b ∈ stdSimplex ℝ (Fin 4)) {t : ℝ}
+theorem tetraRadialPoint_mem_openSimplex {b : Fin 4 → ℝ} (hb : b ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) {t : ℝ}
     (ht0 : 0 ≤ t) (ht1 : t < 1) : tetraRadialPoint b t ∈ openSimplex (stdVertices 2) := by
   refine (mem_openSimplex_stdVertices_iff 2).mpr
     ⟨fun i => ?_, (tetraRadialPoint_mem_stdSimplex hb ht0 ht1.le).2⟩
@@ -120,7 +120,7 @@ theorem eq_of_tetraRadialPoint_eq {b b' : Fin 4 → ℝ} (hb : b ∈ stdSimplexB
   · linarith
   · linarith
 
-theorem dist_tetraRadialPoint_le {b : Fin 4 → ℝ} (hb : b ∈ stdSimplex ℝ (Fin 4)) {t : ℝ}
+theorem dist_tetraRadialPoint_le {b : Fin 4 → ℝ} (hb : b ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) {t : ℝ}
     (ht : t ≤ 1) : dist (tetraRadialPoint b t) b ≤ 1 - t := by
   rw [dist_eq_norm]
   refine (pi_norm_le_iff_of_nonneg (by linarith)).mpr fun i => ?_
@@ -133,7 +133,7 @@ theorem dist_tetraRadialPoint_le {b : Fin 4 → ℝ} (hb : b ∈ stdSimplex ℝ 
   have h2 := mul_nonneg hs (sub_nonneg.mpr hb1)
   constructor <;> nlinarith
 
-theorem tetraRadialProjection_mem {z : Fin 4 → ℝ} (hz : z ∈ stdSimplex ℝ (Fin 4))
+theorem tetraRadialProjection_mem {z : Fin 4 → ℝ} (hz : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4))
     (hd : tetraDepth z < 1 / 4) : tetraRadialProjection z ∈ stdSimplexBoundary 3 := by
   have hs : 0 < 1 - 4 * tetraDepth z := by linarith
   have hsne : 1 - 4 * tetraDepth z ≠ 0 := hs.ne'
@@ -191,7 +191,7 @@ section Collar
 variable {B : Set (Fin 4 → ℝ)} {τ : (Fin 4 → ℝ) → ℝ}
 
 theorem tetraRadialCollar_subset_stdSimplex (hB : B ⊆ stdSimplexBoundary 3)
-    (hτ1 : ∀ b, τ b ≤ 1 / 2) : tetraRadialCollar B τ ⊆ stdSimplex ℝ (Fin 4) := by
+    (hτ1 : ∀ b, τ b ≤ 1 / 2) : tetraRadialCollar B τ ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := by
   rintro _ ⟨b, hb, t, ht1, ht2, rfl⟩
   exact tetraRadialPoint_mem_stdSimplex (hB hb).1 (by linarith [hτ1 b]) ht2
 
@@ -277,11 +277,11 @@ theorem disjoint_tetraRadialCollar {B' : Set (Fin 4 → ℝ)} {τ' : (Fin 4 → 
 
 theorem starConvex_sdiff_tetraRadialCollar (hB : B ⊆ stdSimplexBoundary 3)
     (hτ1 : ∀ b, τ b ≤ 1 / 2) :
-    StarConvex ℝ (stdCenter 2) (stdSimplex ℝ (Fin 4) \ tetraRadialCollar B τ) := by
-  have hcΔ : stdCenter 2 ∈ stdSimplex ℝ (Fin 4) :=
+    StarConvex ℝ (stdCenter 2) (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) \ tetraRadialCollar B τ) := by
+  have hcΔ : stdCenter 2 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
     openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 2)
   intro y ⟨hyΔ, hyM⟩ a b ha hb hab
-  refine ⟨(convex_stdSimplex ℝ (Fin 4)) hcΔ hyΔ ha hb hab, fun hw => ?_⟩
+  refine ⟨(Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 4)) hcΔ hyΔ ha hb hab, fun hw => ?_⟩
   have hwd := tetraDepth_le_of_mem_tetraRadialCollar hB hτ1 hw
   have ha' : a = 1 - b := by linarith
   subst ha'
@@ -320,7 +320,7 @@ theorem starConvex_sdiff_tetraRadialCollar (hB : B ⊆ stdSimplexBoundary 3)
 theorem exists_ball_inter_subset_tetraRadialCollar {β : Fin 4 → ℝ}
     (hβ : β ∈ stdSimplexBoundary 3) (hτ : ContinuousAt τ β) (hτβ : 0 < τ β)
     (hBβ : ∀ᶠ b in 𝓝[stdSimplexBoundary 3] β, b ∈ B) :
-    ∃ r > 0, Metric.ball β r ∩ stdSimplex ℝ (Fin 4) ⊆ tetraRadialCollar B τ := by
+    ∃ r > 0, Metric.ball β r ∩ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ⊆ tetraRadialCollar B τ := by
   have hd0 : tetraDepth β = 0 := tetraDepth_eq_zero hβ
   have hdlt : tetraDepth β < 1 / 4 := by
     rw [hd0]
@@ -329,15 +329,15 @@ theorem exists_ball_inter_subset_tetraRadialCollar {β : Fin 4 → ℝ}
   have hπc : ContinuousAt tetraRadialProjection β := continuousAt_tetraRadialProjection hdlt
   have hU : {z | tetraDepth z < 1 / 4} ∈ 𝓝 β :=
     (isOpen_lt continuous_tetraDepth continuous_const).mem_nhds hdlt
-  have hπ : Tendsto tetraRadialProjection (𝓝[stdSimplex ℝ (Fin 4)] β)
+  have hπ : Tendsto tetraRadialProjection (𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 4)] β)
       (𝓝[stdSimplexBoundary 3] β) := by
     refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
-    · have h : Tendsto tetraRadialProjection (𝓝[stdSimplex ℝ (Fin 4)] β)
+    · have h : Tendsto tetraRadialProjection (𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 4)] β)
           (𝓝 (tetraRadialProjection β)) := hπc.tendsto.mono_left nhdsWithin_le_nhds
       rwa [hπβ] at h
     · filter_upwards [self_mem_nhdsWithin, mem_nhdsWithin_of_mem_nhds hU] with z hz hzd
       exact tetraRadialProjection_mem hz hzd
-  have h1 : ∀ᶠ z in 𝓝[stdSimplex ℝ (Fin 4)] β, tetraRadialProjection z ∈ B := hπ.eventually hBβ
+  have h1 : ∀ᶠ z in 𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 4)] β, tetraRadialProjection z ∈ B := hπ.eventually hBβ
   have hτπ : ContinuousAt (fun z => τ (tetraRadialProjection z)) β := hτ.comp_of_eq hπc hπβ
   have hlt : 1 - τ (tetraRadialProjection β) < 1 - 4 * tetraDepth β := by
     rw [hπβ, hd0]
@@ -345,7 +345,7 @@ theorem exists_ball_inter_subset_tetraRadialCollar {β : Fin 4 → ℝ}
   have h2 : ∀ᶠ z in 𝓝 β, 1 - τ (tetraRadialProjection z) < 1 - 4 * tetraDepth z :=
     (continuousAt_const.sub hτπ).eventually_lt
       (continuousAt_const.sub (continuousAt_const.mul continuous_tetraDepth.continuousAt)) hlt
-  have hall : ∀ᶠ z in 𝓝[stdSimplex ℝ (Fin 4)] β, z ∈ tetraRadialCollar B τ := by
+  have hall : ∀ᶠ z in 𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 4)] β, z ∈ tetraRadialCollar B τ := by
     filter_upwards [self_mem_nhdsWithin, h1, mem_nhdsWithin_of_mem_nhds hU,
       mem_nhdsWithin_of_mem_nhds h2] with z hz hzB hzd hzτ
     have hz0 : 0 ≤ tetraDepth z := le_tetraDepth hz.1
@@ -391,21 +391,21 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
       (((eventually_all_finite hVfin).mpr hev).and self_mem_nhdsWithin).exists
     exact ⟨ε, hε2, hε1⟩
   have hmodel : ∀ a : E3, ∃ g : (Fin 4 → ℝ) → E3, ∃ δ : ℝ, a ∈ K.vertices →
-      ContinuousOn g (stdSimplex ℝ (Fin 4)) ∧ InjOn g (stdSimplex ℝ (Fin 4)) ∧
-      g '' stdSimplex ℝ (Fin 4) = h '' C a ∧ g '' stdSimplexBoundary 3 = frontier (h '' C a) ∧
+      ContinuousOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ∧ InjOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ∧
+      g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) = h '' C a ∧ g '' stdSimplexBoundary 3 = frontier (h '' C a) ∧
       g '' openSimplex (stdVertices 2) = interior (h '' C a) ∧ 0 < δ ∧
-      ∀ x ∈ stdSimplex ℝ (Fin 4), ∀ y ∈ stdSimplex ℝ (Fin 4), dist x y < δ →
+      ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4), ∀ y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4), dist x y < δ →
         dist (g x) (g y) < ε := by
     intro a
     by_cases ha : a ∈ K.vertices
     · obtain ⟨g, hgc, hgi, hgim, hgbd, hgint⟩ := ht.exists_dualCell_model ha
       obtain ⟨δ, hδ, hδg⟩ := Metric.uniformContinuousOn_iff.mp
-        ((isCompact_stdSimplex ℝ (Fin 4)).uniformContinuousOn_of_continuous hgc) ε hε
+        ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 4)).uniformContinuousOn_of_continuous hgc) ε hε
       exact ⟨g, δ, fun _ => ⟨hgc, hgi, hgim, hgbd, hgint, hδ, hδg⟩⟩
     · exact ⟨fun _ => 0, 0, fun h' => absurd h' ha⟩
   choose g δ hg using hmodel
   obtain ⟨τ, hτdef⟩ : ∃ τ : E3 → (Fin 4 → ℝ) → ℝ, τ = fun a b => min (1 / 2) (min (δ a / 2)
-      (Metric.infDist b (stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)) / 2)) := ⟨_, rfl⟩
+      (Metric.infDist b (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)) / 2)) := ⟨_, rfl⟩
   have hτ1 : ∀ a b, τ a b ≤ 1 / 2 := fun a b => by
     rw [hτdef]
     exact min_le_left _ _
@@ -413,13 +413,13 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
     rw [hτdef]
     exact (min_le_right _ _).trans (min_le_left _ _)
   have hτZ : ∀ a b, τ a b ≤
-      Metric.infDist b (stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)) / 2 := fun a b => by
+      Metric.infDist b (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)) / 2 := fun a b => by
     rw [hτdef]
     exact (min_le_right _ _).trans (min_le_right _ _)
   have hτ0 : ∀ a ∈ K.vertices, ∀ b, 0 ≤ τ a b := fun a ha b => by
     have hδ := (hg a ha).2.2.2.2.2.1
     have hinf := Metric.infDist_nonneg (x := b)
-      (s := stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space))
+      (s := Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space))
     rw [hτdef]
     exact le_min (by norm_num) (le_min (by linarith) (by linarith))
   have hτc : ∀ a, Continuous (τ a) := fun a => by
@@ -427,8 +427,8 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
     exact continuous_const.min (continuous_const.min
       ((Metric.continuous_infDist_pt _).div_const 2))
   obtain ⟨Bs, hBdef⟩ : ∃ Bs : E3 → Finset E3 → Set (Fin 4 → ℝ),
-      Bs = fun a e => stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' D e) := ⟨_, rfl⟩
-  have hBmem : ∀ a e b, b ∈ Bs a e ↔ b ∈ stdSimplex ℝ (Fin 4) ∧ g a b ∈ h '' D e := by
+      Bs = fun a e => Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' D e) := ⟨_, rfl⟩
+  have hBmem : ∀ a e b, b ∈ Bs a e ↔ b ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∧ g a b ∈ h '' D e := by
     intro a e b
     rw [hBdef]
     exact Iff.rfl
@@ -467,11 +467,11 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
     have ha := hvert e he a hae
     have hcl : IsClosed (Bs a e) := by
       rw [hBdef]
-      exact (hg a ha).1.preimage_isClosed_of_isClosed (isClosed_stdSimplex ℝ _)
+      exact (hg a ha).1.preimage_isClosed_of_isClosed (Convexity.StdSimplex.isCompact_coordinateSet ℝ _).isClosed
         ((hDc e he hc).image_of_continuousOn (hcont.mono (hDN e he hc))).isClosed
-    exact (isCompact_stdSimplex ℝ (Fin 4)).of_isClosed_subset hcl
+    exact (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 4)).of_isClosed_subset hcl
       fun b hb => ((hBmem a e b).mp hb).1
-  have hMsubΔ : ∀ e ∈ K.faces, e.card = 2 → ∀ a ∈ e, M a e ⊆ stdSimplex ℝ (Fin 4) :=
+  have hMsubΔ : ∀ e ∈ K.faces, e.card = 2 → ∀ a ∈ e, M a e ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
     fun e he hc a hae => by
       rw [hMeq]
       exact tetraRadialCollar_subset_stdSimplex (hBbd e he hc a hae) (hτ1 a)
@@ -558,7 +558,7 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
       obtain ⟨a, hae, hza⟩ := mem_iUnion₂.mp hzW
       have ha := hvert e he a hae
       obtain ⟨w, hw, rfl⟩ := hza
-      have hwZ : w ∈ stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space) :=
+      have hwZ : w ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space) :=
         ⟨hMsubΔ e he hc a hae hw, hzK⟩
       rw [hMeq] at hw
       have hwB := mem_of_mem_tetraRadialCollar_of_mem (hBbd e he hc a hae) (hτ0 a ha) (hτZ a)
@@ -606,7 +606,7 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
       have hyI' : g a β ∈ interior (h '' C a ∪ h '' C a') := by
         rw [hgβ]
         exact hyI
-      have h1 : g a ⁻¹' interior (h '' C a ∪ h '' C a') ∈ 𝓝[stdSimplex ℝ (Fin 4)] β :=
+      have h1 : g a ⁻¹' interior (h '' C a ∪ h '' C a') ∈ 𝓝[Convexity.StdSimplex.coordinateSet ℝ (Fin 4)] β :=
         (hgc β hβ.1).preimage_mem_nhdsWithin (isOpen_interior.mem_nhds hyI')
       have h2 : g a ⁻¹' interior (h '' C a ∪ h '' C a') ∈ 𝓝[stdSimplexBoundary 3] β :=
         nhdsWithin_mono _ (fun b hb => hb.1) h1
@@ -614,15 +614,15 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
       refine (hBmem a e b).mpr ⟨hb.1, hkey _ ?_ hbI⟩
       rw [← hgbd]
       exact ⟨b, hb, rfl⟩
-    have hZcl : IsClosed (stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)) :=
-      hgc.preimage_isClosed_of_isClosed (isClosed_stdSimplex ℝ _) hKcl
-    have hZne : (stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)).Nonempty := by
-      have hha : h a ∈ g a '' stdSimplex ℝ (Fin 4) := by
+    have hZcl : IsClosed (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)) :=
+      hgc.preimage_isClosed_of_isClosed (Convexity.StdSimplex.isCompact_coordinateSet ℝ _).isClosed hKcl
+    have hZne : (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space)).Nonempty := by
+      have hha : h a ∈ g a '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := by
         rw [hgim]
         exact ⟨a, ht.mem_dualCell ha, rfl⟩
       obtain ⟨w, hw, hwa⟩ := hha
       exact ⟨w, hw, a, Geometry.SimplicialComplex.vertices_subset_space ha, hwa.symm⟩
-    have hβZ : β ∉ stdSimplex ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space) := by
+    have hβZ : β ∉ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ∩ g a ⁻¹' (h '' K.space) := by
       rintro ⟨-, hβK⟩
       have hyK : y ∈ h '' K.space := by
         rw [← hgβ]
@@ -637,9 +637,9 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
     obtain ⟨r, hr, hball⟩ := exists_ball_inter_subset_tetraRadialCollar hβ
       (hτc a).continuousAt hτβ hBβ
     obtain ⟨T, hT, hTeq⟩ := exists_isOpen_inter_image_eq_of_isCompact
-      (isCompact_stdSimplex ℝ (Fin 4)) hgc hgi (Metric.isOpen_ball (x := β) (ε := r))
+      (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 4)) hgc hgi (Metric.isOpen_ball (x := β) (ε := r))
     refine ⟨T, hT, ?_, ?_⟩
-    · have hmem : g a β ∈ g a '' (Metric.ball β r ∩ stdSimplex ℝ (Fin 4)) :=
+    · have hmem : g a β ∈ g a '' (Metric.ball β r ∩ Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) :=
         ⟨β, ⟨Metric.mem_ball_self hr, hβ.1⟩, rfl⟩
       rw [← hTeq, hgβ] at hmem
       exact hmem.1
@@ -716,7 +716,7 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
               hinj.image_inter (hCN c hc') (hCN a ha)]
             exact ⟨hGsub e he hc c hce hzc, hzC⟩
           exact hDG e he hc a hae hzD
-      have heq : h '' C a \ Wf e = g a '' (stdSimplex ℝ (Fin 4) \ M a e) := by
+      have heq : h '' C a \ Wf e = g a '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) \ M a e) := by
         rw [hgi.image_sdiff_subset (hMsubΔ e he hc a hae), hgim]
         apply Subset.antisymm
         · rintro z ⟨hzC, hzW⟩
@@ -727,7 +727,7 @@ theorem exists_edgeCollarFamily (ht : IsTube K N C D Dbd h N') (V : E3 → Set E
           exact ⟨hzC, fun hzW => hzG (hWC ⟨hzW, hzC⟩)⟩
       rw [heq, hMeq]
       have hsc := starConvex_sdiff_tetraRadialCollar (hBbd e he hc a hae) (hτ1 a)
-      have hcM : stdCenter 2 ∈ stdSimplex ℝ (Fin 4) \ tetraRadialCollar (Bs a e) (τ a) :=
+      have hcM : stdCenter 2 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) \ tetraRadialCollar (Bs a e) (τ a) :=
         ⟨openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 2),
           stdCenter_notMem_tetraRadialCollar (hBbd e he hc a hae) (hτ1 a)⟩
       exact ((hsc.isPathConnected hcM).isConnected).image _ (hgc.mono sdiff_subset)

@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq)
 
 noncomputable section
 

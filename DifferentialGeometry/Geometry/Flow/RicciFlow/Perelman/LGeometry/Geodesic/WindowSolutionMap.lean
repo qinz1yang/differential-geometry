@@ -290,14 +290,14 @@ theorem exists_lPhaseFlow_union (S : SolutionOn (I := I) (M := M) D)
       (hΨ₁sm.comp (contDiffOn_id.prodMk contDiffOn_const) fun p hp => ⟨hp, hs₁.1⟩)
   have hWo : IsOpen W := ha.continuousOn.isOpen_inter_preimage hW₁ hW₂
   let Ψ : (ℝ × (E × E)) × ℝ → E × E := fun q => if q.2 ∈ L₁ then Ψ₁ q else Ψ₂ (a q.1, q.2)
-  have h1 : ∀ q : (ℝ × (E × E)) × ℝ, q.2 ∈ L₁ → Ψ q = Ψ₁ q := fun q hq => if_pos hq
+  have h1 : ∀ q : (ℝ × (E × E)) × ℝ, q.2 ∈ L₁ → Ψ q = Ψ₁ q := fun q hq => ite_eq_left hq
   have h2 : ∀ q : (ℝ × (E × E)) × ℝ, q.1 ∈ W → q.2 ∈ L₂ → Ψ q = Ψ₂ (a q.1, q.2) := by
     intro q hq hq2
     by_cases h : q.2 ∈ L₁
     · rw [h1 q h]
       exact (lPhaseFlow_comp_eqOn S hS T x0 hL₁ hL₁c hL₂ hL₂c hΨ₁d hΨ₂0 hΨ₂d hq.1 hs₁ hq.2
         ⟨h, hq2⟩).symm
-    · exact if_neg h
+    · exact ite_eq_right h
   have hG : ContDiffOn ℝ ∞ (fun q : (ℝ × (E × E)) × ℝ => Ψ₂ (a q.1, q.2)) (W ×ˢ L₂) :=
     hΨ₂sm.comp ((ha.comp contDiffOn_fst fun q hq => hq.1.1).prodMk contDiffOn_snd)
       fun q hq => ⟨hq.1.2, hq.2⟩

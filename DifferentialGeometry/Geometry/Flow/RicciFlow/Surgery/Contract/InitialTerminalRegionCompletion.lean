@@ -46,9 +46,9 @@ theorem exists_terminalCorePresentation_of_isEmpty_boundary
     fun c => if hc : c ∈ R.component then Subtype.val ⁻¹' (R.core ⟨c, hc⟩).region else ∅
   have hcore (c) (hc : c ∈ R.component) : core c =
       (Subtype.val ⁻¹' (R.core ⟨c, hc⟩).region : Set D.slab.terminalRegularOpen) := by
-    simp only [core, dif_pos hc]
+    simp only [core, dite_eq_left hc]
   have hempty (c) (hc : c ∉ R.component) : core c = ∅ := by
-    simp only [core, dif_neg hc]
+    simp only [core, dite_eq_right hc]
   have hcomp (c) (hc : c ∈ R.component) :
       core c = {x | ConnectedComponents.mk x = c} := by
     let _ := hboundary ⟨c, hc⟩

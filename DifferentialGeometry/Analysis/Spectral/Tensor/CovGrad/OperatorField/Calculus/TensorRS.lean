@@ -1,6 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.DifferentiatedTower
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
 
+open DifferentialGeometry.TensorMetric (coframeS fiberNormSqComponent fiberNormSqSummand
+  riemannianFiberNormSq riemannianFiberNormSq_eq_sum_componentRS_sq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sum_le_card_mul tensorS_coframe_expansion)
+
 
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
@@ -743,9 +747,9 @@ theorem normalFormRS_succ (g : SmoothRiemannianMetric I M) (r : ℕ)
           (covGrad (I := I) (M := M) g (rr + (k + 1)) (rr + p) (Ψr (k + 1)))
           (iteratedCovGrad g r rr (k + 1) W) from by
     rw [Finset.sum_range_succ]
-    rw [if_neg (by omega : ¬ (p + 1 < p + 1)), operatorFieldComposition_zero_left, add_zero]
+    rw [ite_eq_right (by omega : ¬ (p + 1 < p + 1)), operatorFieldComposition_zero_left, add_zero]
     refine Finset.sum_congr rfl (fun k hk => ?_)
-    rw [if_pos (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
+    rw [ite_eq_left (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
   rw [Finset.sum_range_succ' (fun k =>
     ccOperatorFieldComp (I := I) (M := M) g r (rr + k) (rr + (p + 1))
       (covGrad (I := I) (M := M) g (rr + k) (rr + p) (Ψr k)) (iteratedCovGrad g r rr k W)) p]

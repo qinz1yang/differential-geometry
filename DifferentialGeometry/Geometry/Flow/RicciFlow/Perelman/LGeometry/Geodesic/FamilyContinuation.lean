@@ -47,7 +47,7 @@ theorem exists_lRegularizedGeodesicFamily_extension_to_time
   let β : A × ℝ → M := fun p => if p.2 ∈ J₀ then α p else η p
   have hβα (p : A × ℝ) (hp : p.2 ∈ J₀) : β =ᶠ[𝓝 p] α := by
     filter_upwards [(hJ₀.preimage continuous_snd).mem_nhds hp] with q hq
-    exact if_pos hq
+    exact ite_eq_left hq
   have hβη (p : A × ℝ) (hp : p ∈ U ×ˢ K) : β =ᶠ[𝓝 p] η := by
     filter_upwards [(hU.preimage continuous_fst).mem_nhds hp.1,
       (hK.preimage continuous_snd).mem_nhds hp.2] with q hqU hqK
@@ -67,7 +67,7 @@ theorem exists_lRegularizedGeodesicFamily_extension_to_time
     rcases hs with hsJ | hsK
     · have heq : (fun r => β (a, r)) =ᶠ[𝓝 s] (fun r => α (a, r)) := by
         filter_upwards [hJ₀.mem_nhds hsJ] with r hr
-        exact if_pos hr
+        exact ite_eq_left hr
       exact lRegularizedData_congr S T s heq (hcurves a (hUV ha) s hsJ)
     · have heq : (fun r => β (a, r)) =ᶠ[𝓝 s] (fun r => η (a, r)) := by
         filter_upwards [hK.mem_nhds hsK] with r hr
@@ -78,13 +78,13 @@ theorem exists_lRegularizedGeodesicFamily_extension_to_time
       exact lRegularizedData_congr S T s heq ((hηdata a ha).2.2 s hsK)
   refine ⟨U, hU, haU, hUV, J₀ ∪ K, hJ₀.union hK,
     hconn₀.union s0 hs0J₀ hsK hKconn, subset_union_left, Or.inr hbK, β, hβ,
-    (fun p hp => if_pos hp.2), hβgeo, ?_⟩
+    (fun p hp => ite_eq_left hp.2), hβgeo, ?_⟩
   apply lRegularizedSolution_eqOn S hS T (hJ₀.union hK)
     (hconn₀.union s0 hs0J₀ hsK hKconn) (Or.inl hs0J₀) hJ hconn hs0J (hβgeo a0 haU) hγ
-  · exact (show β (a0, s0) = α (a0, s0) from if_pos hs0J₀).trans hcenter.self_of_nhds
+  · exact (show β (a0, s0) = α (a0, s0) from ite_eq_left hs0J₀).trans hcenter.self_of_nhds
   · have heq : (fun r => β (a0, r)) =ᶠ[𝓝 s0] γ := by
       filter_upwards [hJ₀.mem_nhds hs0J₀, hcenter] with r hr hrc
-      exact (if_pos hr).trans hrc
+      exact (ite_eq_left hr).trans hrc
     exact congrArg (fun L : ℝ →L[ℝ] E => L (1 : ℝ))
       (heq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I))
 
@@ -129,7 +129,7 @@ theorem exists_lRegularizedGeodesicFamily_extension_from_boundary
   let β : A × ℝ → M := fun p => if p.2 ∈ O then α p else η p
   have hβα (p : A × ℝ) (hp : p.2 ∈ O) : β =ᶠ[𝓝 p] α := by
     filter_upwards [(hO.preimage continuous_snd).mem_nhds hp] with q hq
-    exact if_pos hq
+    exact ite_eq_left hq
   have hβη (p : A × ℝ) (hp : p ∈ U ×ˢ C₁) : β =ᶠ[𝓝 p] η := by
     filter_upwards [(hU.preimage continuous_fst).mem_nhds hp.1,
       (hC₁.preimage continuous_snd).mem_nhds hp.2] with q hqU hqC
@@ -146,12 +146,12 @@ theorem exists_lRegularizedGeodesicFamily_extension_from_boundary
         ((hU.prod hC).mem_nhds ⟨hp.1, hpC.1⟩)).congr_of_eventuallyEq (hβη p ⟨hp.1, hpC⟩)).contMDiffWithinAt
   refine ⟨U, hU, haU, hUV, O ∪ C₁, hO.union hC₁,
     hconnO.union s0 hsO hsC₁ hconnC₁, Or.inl ⟨hwJ₀, hs0.1.trans hs0.2⟩,
-    Or.inr ⟨hbC, hb⟩, β, hβ, (fun p hp => if_pos hp.2), ?_, ?_⟩
+    Or.inr ⟨hbC, hb⟩, β, hβ, (fun p hp => ite_eq_left hp.2), ?_, ?_⟩
   · intro a ha r hr
     rcases hr.1 with hrO | hrC
     · have heq : (fun s => β (a, s)) =ᶠ[𝓝 r] (fun s => α (a, s)) := by
         filter_upwards [hO.mem_nhds hrO] with q hq
-        exact if_pos hq
+        exact ite_eq_left hq
       exact lRegularizedData_congr S T r heq (hcurves a (hUV ha) r ⟨hrO.1, hr.2⟩)
     · have heq : (fun s => β (a, s)) =ᶠ[𝓝 r] (fun s => η (a, s)) := by
         filter_upwards [hC₁.mem_nhds hrC] with q hq
@@ -162,9 +162,9 @@ theorem exists_lRegularizedGeodesicFamily_extension_from_boundary
       exact lRegularizedData_congr S T r heq (hηgeo a ha r hrC.1)
   · intro r hr
     by_cases hrO : r ∈ O
-    · exact (show β (a0, r) = α (a0, r) from if_pos hrO).trans (hcenter ⟨hrO.1, hr.2⟩)
+    · exact (show β (a0, r) = α (a0, r) from ite_eq_left hrO).trans (hcenter ⟨hrO.1, hr.2⟩)
     · have hrC : r ∈ C₁ := hr.1.resolve_left hrO
-      exact (show β (a0, r) = η (a0, r) from if_neg hrO).trans (hηcenter ⟨hrC.1, hrC.2⟩)
+      exact (show β (a0, r) = η (a0, r) from ite_eq_right hrO).trans (hηcenter ⟨hrC.1, hrC.2⟩)
 
 theorem exists_lRegularizedGeodesicFamily_extension_to_boundary
     (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S) (T : ℝ)
@@ -219,7 +219,7 @@ theorem exists_lRegularizedGeodesicFamily_extension_to_boundary
   let β : A × ℝ → M := fun p => if p.2 ∈ O then α p else η p
   have hβα (p : A × ℝ) (hp : p.2 ∈ O) : β =ᶠ[𝓝 p] α := by
     filter_upwards [(hO.preimage continuous_snd).mem_nhds hp] with q hq
-    exact if_pos hq
+    exact ite_eq_left hq
   have hβη (p : A × ℝ) (hp : p ∈ U ×ˢ C₁) : β =ᶠ[𝓝 p] η := by
     filter_upwards [(hU.preimage continuous_fst).mem_nhds hp.1,
       (hC₁.preimage continuous_snd).mem_nhds hp.2] with q hqU hqC
@@ -236,12 +236,12 @@ theorem exists_lRegularizedGeodesicFamily_extension_to_boundary
         ((hU.prod hC).mem_nhds ⟨hp.1, hpC.1⟩)).congr_of_eventuallyEq (hβη p ⟨hp.1, hpC⟩)).contMDiffWithinAt
   refine ⟨U, hU, haU, hUV, O ∪ C₁, hO.union hC₁,
     hconnO.union s0 hsO hsC₁ hconnC₁, Or.inl ⟨hwJ₀, hs0.1.trans hs0.2⟩,
-    Or.inr ⟨heC, hce, heI.2⟩, β, hβ, (fun p hp => if_pos hp.2), ?_, ?_⟩
+    Or.inr ⟨heC, hce, heI.2⟩, β, hβ, (fun p hp => ite_eq_left hp.2), ?_, ?_⟩
   · intro a ha r hr
     rcases hr.1 with hrO | hrC
     · have heq : (fun s => β (a, s)) =ᶠ[𝓝 r] (fun s => α (a, s)) := by
         filter_upwards [hO.mem_nhds hrO] with q hq
-        exact if_pos hq
+        exact ite_eq_left hq
       exact lRegularizedData_congr S T r heq (hcurves a (hUV ha) r ⟨hrO.1, hr.2, hrO.2⟩)
     · have heq : (fun s => β (a, s)) =ᶠ[𝓝 r] (fun s => η (a, s)) := by
         filter_upwards [hC₁.mem_nhds hrC] with q hq
@@ -252,9 +252,9 @@ theorem exists_lRegularizedGeodesicFamily_extension_to_boundary
       exact lRegularizedData_congr S T r heq (hηgeo a ha r hrC.1)
   · intro r hr
     by_cases hrO : r ∈ O
-    · exact (show β (a0, r) = α (a0, r) from if_pos hrO).trans (hcenter ⟨hrO.1, hr.2⟩)
+    · exact (show β (a0, r) = α (a0, r) from ite_eq_left hrO).trans (hcenter ⟨hrO.1, hr.2⟩)
     · have hrC : r ∈ C₁ := hr.1.resolve_left hrO
-      exact (show β (a0, r) = η (a0, r) from if_neg hrO).trans
+      exact (show β (a0, r) = η (a0, r) from ite_eq_right hrO).trans
         ((hηcenter ⟨hrC.1, hrC.2⟩).trans (hτγ ⟨hrC.2.1.le, hr.2.2⟩))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

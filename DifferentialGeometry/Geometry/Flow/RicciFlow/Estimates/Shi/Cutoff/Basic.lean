@@ -5,6 +5,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSup
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
+
+open DifferentialGeometry.SmoothRiemannianMetric
+  (metric_inner_smul_self)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -19,7 +22,6 @@ namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.Analysis.Laplacian
 
 open DifferentialGeometry.Geometry.Riemannian
 open scoped Manifold ContDiff Topology Bundle
@@ -174,7 +176,6 @@ def DistanceBarrier.ScaledDistanceSupport.cutoffLowerSupport
       ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(Real, Real) (u t) y := by
     filter_upwards [hρ.space_diff_nhds] with y hy
     convert hy.const_smul a using 1
-    rfl
   have hu_grad : MDifferentiableAt I (I.prod 𝓘(Real, E))
       (T% fun y : M => gradientFun (I := I) (S.base.metric t) (u t) y) x := by
     exact mdifferentiableAt_gradientFun_const_mul (S.base.metric t) a
@@ -193,7 +194,7 @@ def DistanceBarrier.ScaledDistanceSupport.cutoffLowerSupport
     exact (hvalueC2.deriv' (n := 1)).differentiable (by simp) (u t x)
   have hphi_time :
       DifferentiableWithinAt Real (fun s => phi s x) (Set.Icc 0 T) t := by
-    convert (hvalue (u t x)).comp_differentiableWithinAt t hu_time using 1 <;> rfl
+    convert (hvalue (u t x)).comp_differentiableWithinAt t hu_time using 1; rfl
   have hphi_space :
       ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(Real, Real) (phi t) y := by
     filter_upwards [hu_space] with y hy

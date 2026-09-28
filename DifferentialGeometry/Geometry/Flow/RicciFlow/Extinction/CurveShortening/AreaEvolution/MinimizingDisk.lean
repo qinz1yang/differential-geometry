@@ -38,7 +38,7 @@ theorem SmoothDisk.integrableOn_scalar_mul_conformalFactor
   filter_upwards [ae_restrict_mem measurableSet_closedBall] with z hz
   rw [show diskExtension (fun w : Disk => metricScalarAt (I := 𝓘(ℝ, E)) g (u.map w) *
       u.conformalFactor g w) z = metricScalarAt (I := 𝓘(ℝ, E)) g (u.map ⟨z, hz⟩) *
-      u.conformalFactor g ⟨z, hz⟩ from dif_pos hz]
+      u.conformalFactor g ⟨z, hz⟩ from dite_eq_left hz]
   rw [SmoothDisk.conformalFactor_eq_diskMapConformalCoefficient u g ⟨hUeq, N, hN, hDN, hUN⟩,
     hUeq ⟨z, hz⟩]
 
@@ -329,7 +329,7 @@ private theorem leastArea_slope_le_of_conformal_minimizing_disk_standardModel
   let gamma : ℝ → Width.RegularLoop 𝓘(ℝ, E) M := fun s =>
     if hs : s ∈ Icc a b then regularLoopSlice γ hγ s hs else regularLoopSlice γ hγ t htcc
   have hGamma (s : ℝ) (hs : s ∈ Icc a b) : (gamma s).toContinuousLoop = γ s := by
-    simp only [gamma, dif_pos hs, regularLoopSlice]
+    simp only [gamma, dite_eq_left hs, regularLoopSlice]
   have hgamma : (curveOfLoopFamily (fun s => (gamma s).toContinuousLoop)).SmoothOn
       (I := 𝓘(ℝ, E)) (Icc a b) := by
     apply hγ.congr

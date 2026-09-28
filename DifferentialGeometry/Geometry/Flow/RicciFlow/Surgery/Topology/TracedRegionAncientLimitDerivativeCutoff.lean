@@ -81,7 +81,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem abs_derivWithin_stageMetric_scalar_le_of_derivative_bounds_of_lt {Ctime : NNReal}
     {qcan t₀ : ℝ} {t : Icc (0 : ℝ) H.toHistory.horizon} (ht₀ : t₀ ≤ t)

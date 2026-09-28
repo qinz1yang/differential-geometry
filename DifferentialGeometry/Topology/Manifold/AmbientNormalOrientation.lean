@@ -75,12 +75,12 @@ private theorem ambientParity_apply_some
     C.ambientParity (some i) (some j) (f x) = C.transitionParity i j x := by
   have hx : f x ∈ Set.range f := ⟨x, rfl⟩
   have hchoose : Classical.choose hx = x := hf (Classical.choose_spec hx)
-  simp only [ambientParity, dif_pos hx, hchoose]
+  simp only [ambientParity, dite_eq_left hx, hchoose]
 
 private theorem ambientParity_of_not_mem_range
     (i j : Option B) {a : A} (ha : a ∉ Set.range f) :
     C.ambientParity i j a = Bool.xor (C.ambientSide i a) (C.ambientSide j a) := by
-  simp only [ambientParity, dif_neg ha]
+  simp only [ambientParity, dite_eq_right ha]
 
 private theorem ambientParity_self
     (hf : Function.Injective f) (i : Option B) (a : A)

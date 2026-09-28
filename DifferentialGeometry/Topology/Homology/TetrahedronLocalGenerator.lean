@@ -7,18 +7,20 @@ noncomputable section
 namespace DifferentialGeometry.Topology.SimplexDegree
 
 open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open Convexity.StdSimplex (coordinateSet coordinateBarycenter coordinateBarycenter_apply
+  coordinateHomeomorph)
 
 universe u
 
-def liftedTetrahedronBarycenter : ULift.{u} (stdSimplex ℝ (Fin 4)) :=
-  ULift.up stdSimplex.barycenter
+def liftedTetrahedronBarycenter : ULift.{u} (coordinateSet ℝ (Fin 4)) :=
+  ULift.up coordinateBarycenter
 
 def tetrahedronIdentitySimplex :
-    C(stdSimplex ℝ (Fin 4), ULift.{u} (stdSimplex ℝ (Fin 4))) :=
+    C(coordinateSet ℝ (Fin 4), ULift.{u} (coordinateSet ℝ (Fin 4))) :=
   ⟨ULift.up, continuous_uliftUp⟩
 
 theorem tetrahedronIdentitySimplex_face_ne_barycenter (i : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : coordinateSet ℝ (Fin 3)) :
     tetrahedronIdentitySimplex.{u} (orientedSimplexFace i q) ≠
       liftedTetrahedronBarycenter := by
   intro h
@@ -26,9 +28,10 @@ theorem tetrahedronIdentitySimplex_face_ne_barycenter (i : Fin 4)
   apply ULift.ext
   apply (positiveTetrahedron_zero_iff _).mpr
   intro j
-  have he := congrArg (fun v : ULift.{u} (stdSimplex ℝ (Fin 4)) => v.down.val j) h
+  have he := congrArg (fun v : ULift.{u} (coordinateSet ℝ (Fin 4)) => v.down.val j) h
+  change (orientedSimplexFace i q).val j = 1 / 4
   simpa [tetrahedronIdentitySimplex, liftedTetrahedronBarycenter,
-    stdSimplex.barycenter_apply] using he
+    coordinateBarycenter_apply] using he
 
 private def tetrahedronCoordinateHomeomorph :
     liftedSphereSpace.{u} 1 ≃ₜ ULift.{u} (Fin 3 → ℝ) where
@@ -50,7 +53,7 @@ private def tetrahedronCoordinateHomeomorph :
   continuous_invFun := by fun_prop
 
 private def tetrahedronCoordinateSimplex :
-    C(stdSimplex ℝ (Fin 4), ULift.{u} (Fin 3 → ℝ)) :=
+    C(coordinateSet ℝ (Fin 4), ULift.{u} (Fin 3 → ℝ)) :=
   ⟨fun q => ULift.up (fun i => q.val i.succ),
     continuous_uliftUp.comp (continuous_pi fun i =>
       (continuous_apply i.succ).comp continuous_subtype_val)⟩
@@ -68,13 +71,14 @@ private theorem tetrahedronCoordinateHomeomorph_standardTetrahedronSimplex :
   ext q i
   have hq := q.property.2
   simp [Fin.sum_univ_succ] at hq
-  change (tetrahedronCoordinateHomeomorph.{u} (ULift.up (positiveTetrahedron q))).down i =
+  change (tetrahedronCoordinateHomeomorph.{u} (ULift.up (positiveTetrahedron ((coordinateHomeomorph ℝ _).symm q)))).down i =
     q.val i.succ
+  have hw (j : Fin 4) : ((coordinateHomeomorph ℝ _).symm q).weights j = q.val j := rfl
   fin_cases i <;>
-    simp [tetrahedronCoordinateHomeomorph, positiveTetrahedron_coordinate] <;> linarith
+    simp [tetrahedronCoordinateHomeomorph, positiveTetrahedron_coordinate, hw] <;> linarith
 
 private theorem tetrahedronCoordinateSimplex_face_ne_center (i : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : coordinateSet ℝ (Fin 3)) :
     tetrahedronCoordinateSimplex.{u} (orientedSimplexFace i q) ≠
       ULift.up (fun _ => (1 / 4 : ℝ)) := by
   rw [← tetrahedronCoordinateHomeomorph_standardTetrahedronSimplex,
@@ -123,7 +127,7 @@ private theorem liftedSimplexCoordinateInclusion_barycenter :
   apply ULift.ext
   funext i
   norm_num [liftedSimplexCoordinateInclusion, simplexCoordinateInclusion,
-    liftedTetrahedronBarycenter, stdSimplex.barycenter_apply]
+    liftedTetrahedronBarycenter, coordinateBarycenter_apply]
 
 theorem simplexIdentityLocalClass_generator :
     Function.Bijective (fun z : ℤ => z • simplexLocalClass
@@ -137,7 +141,7 @@ theorem simplexIdentityLocalClass_generator :
   have hf : Function.Bijective f :=
     integralRelativeHomologyMap_liftedSimplexCoordinateInclusion_bijective 3 3 p
       Simplex.barycenter_mem_openCell
-  have hfaces (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
+  have hfaces (i : Fin 4) (q : coordinateSet ℝ (Fin 3)) :
       tetrahedronCoordinateSimplex.{u} (orientedSimplexFace i q) ≠
         liftedSimplexCoordinateInclusion 3 p := by
     rw [show p = liftedTetrahedronBarycenter from rfl,

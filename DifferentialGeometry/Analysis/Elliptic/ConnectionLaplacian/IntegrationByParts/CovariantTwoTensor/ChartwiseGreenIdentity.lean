@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByP
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.FrameTrace
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
 
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

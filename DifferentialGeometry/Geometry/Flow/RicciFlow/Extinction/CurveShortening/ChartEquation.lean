@@ -147,13 +147,13 @@ private theorem chartGramBilin_trivToE
     (g : SmoothRiemannianMetric I M) (β b : M)
     (hb : b ∈ (trivializationAt E (TangentSpace I) β).baseSet)
     (V W : TangentSpace I b) :
-    Analysis.Parabolic.TensorSpectral.chartGramBilin g β b
+    Tensor.Coordinates.chartGramBilin g β b
       (trivToE I β b V) (trivToE I β b W) = g.inner b V W := by
   have hV := (trivializationAt E (TangentSpace I) β).symmL_continuousLinearMapAt
     (R := ℝ) hb V
   have hW := (trivializationAt E (TangentSpace I) β).symmL_continuousLinearMapAt
     (R := ℝ) hb W
-  rw [Analysis.Parabolic.TensorSpectral.chartGramBilin_apply]
+  rw [Tensor.Coordinates.chartGramBilin_apply]
   change (∑ i, ∑ j, DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g β b i j *
     chartCoord (E := E) i (trivToE I β b V) * chartCoord (E := E) j (trivToE I β b W)) = _
   rw [← inner_eq_chartGramOnE_bilinear_on_baseSet g β (trivToE I β b V) (trivToE I β b W)]
@@ -169,7 +169,7 @@ theorem trivToE_curvatureVector_eq_chart
     (hchart : c.lift x t ∈ (extChartAt I β).source) :
     let u := fun y => extChartAt I β (c.lift y t)
     let p := deriv u x
-    let G := Analysis.Parabolic.TensorSpectral.chartGramBilin (g t) β
+    let G := Tensor.Coordinates.chartGramBilin (g t) β
       ((extChartAt I β).symm (u x))
     let σ := G p p
     let A := deriv (deriv u) x + chartChristoffelContraction (I := I) (g t) β p p (u x)
@@ -177,7 +177,7 @@ theorem trivToE_curvatureVector_eq_chart
       σ⁻¹ • A - ((σ ^ 2)⁻¹ * G A p) • p := by
   let u := fun y => extChartAt I β (c.lift y t)
   let p := deriv u x
-  let G := Analysis.Parabolic.TensorSpectral.chartGramBilin (g t) β
+  let G := Tensor.Coordinates.chartGramBilin (g t) β
     ((extChartAt I β).symm (u x))
   let σ := G p p
   let A := deriv (deriv u) x + chartChristoffelContraction (I := I) (g t) β p p (u x)
@@ -226,7 +226,7 @@ open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Tensor.Coordinates (chartGramBilin chartCoordCLM)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 
@@ -396,7 +396,7 @@ theorem IsSolutionOn.hasDerivWithinAt_chart
     (hJ : UniqueDiffWithinAt ℝ J t) (hchart : c.lift x t ∈ (extChartAt I β).source) :
     let u := fun y => extChartAt I β (c.lift y t)
     let p := deriv u x
-    let G := Analysis.Parabolic.TensorSpectral.chartGramBilin (g t) β
+    let G := Tensor.Coordinates.chartGramBilin (g t) β
       ((extChartAt I β).symm (u x))
     let σ := G p p
     let A := deriv (deriv u) x + chartChristoffelContraction (I := I) (g t) β p p (u x)
@@ -497,7 +497,7 @@ open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
 open scoped Manifold ContDiff Topology BigOperators
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Tensor.Coordinates (chartGramBilin)
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E]
@@ -562,7 +562,7 @@ open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Riemannian.AlongCurve
 open DifferentialGeometry.Geometry.Riemannian.Geodesic
 open DifferentialGeometry.Geometry.Riemannian.MFDerivAlongCurve
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
+open DifferentialGeometry.Tensor.Coordinates (chartGramBilin)
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening
 

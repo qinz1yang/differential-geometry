@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Sphere
 import DifferentialGeometry.Topology.Simplex.InactiveFaceContraction
 import DifferentialGeometry.Topology.Simplex.VertexContraction
@@ -7,6 +8,8 @@ noncomputable section
 
 open ContinuousMap
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {n : ℕ} {S : Type*} [TopologicalSpace S]
@@ -14,36 +17,36 @@ variable {n : ℕ} {S : Type*} [TopologicalSpace S]
 private abbrev B (n : ℕ) := boundary (Fin (n + 3))
 
 private def vertexZero (n : ℕ) : B n :=
-  ⟨stdSimplex.vertex (S := ℝ) 0, ⟨1, by simp⟩⟩
+  ⟨coordinateSingle (S := ℝ) 0, ⟨1, by simp⟩⟩
 
 private def inactive (n : ℕ) : Set (B n) :=
   {p | ∃ j : Fin (n + 3), j ≠ 0 ∧ p.val.val j = 0}
 
-private def faceB (i : Fin (n + 3)) : C(stdSimplex ℝ (Fin (n + 2)), B n) where
-  toFun p := ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
-  continuous_toFun := (stdSimplex.continuous_map i.succAbove).subtype_mk _
+private def faceB (i : Fin (n + 3)) : C(coordinateSet ℝ (Fin (n + 2)), B n) where
+  toFun p := ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
+  continuous_toFun := (continuous_coordinateMap i.succAbove).subtype_mk _
 
-private theorem face_zero_boundary (p : stdSimplex ℝ (Fin (n + 2)))
+private theorem face_zero_boundary (p : coordinateSet ℝ (Fin (n + 2)))
     (hp : p ∈ boundary (Fin (n + 2))) : faceB 0 p ∈ inactive n := by
   obtain ⟨j, hj⟩ := hp
   exact ⟨(0 : Fin (n + 3)).succAbove j, Fin.succAbove_ne _ _, by
     simpa only [faceB, ContinuousMap.coe_mk, map_succAbove_apply_image] using hj⟩
 
 private theorem face_inactive (i : Fin (n + 3)) (hi : i ≠ 0)
-    (p : stdSimplex ℝ (Fin (n + 2))) : faceB i p ∈ inactive n :=
+    (p : coordinateSet ℝ (Fin (n + 2))) : faceB i p ∈ inactive n :=
   ⟨i, hi, map_succAbove_apply_pivot i p⟩
 
-private def collapseBoundary (q : C(stdSimplex ℝ (Fin (n + 2)), S)) (b : S)
+private def collapseBoundary (q : C(coordinateSet ℝ (Fin (n + 2)), S)) (b : S)
     (hb : ∀ p ∈ boundary (Fin (n + 2)), q p = b) : C(B n, S) :=
   boundaryDesc (simplexSphereFaces q b) (simplexSphereFaces_compatible q b hb)
 
-private theorem collapseBoundary_face (q : C(stdSimplex ℝ (Fin (n + 2)), S)) (b : S)
+private theorem collapseBoundary_face (q : C(coordinateSet ℝ (Fin (n + 2)), S)) (b : S)
     (hb : ∀ p ∈ boundary (Fin (n + 2)), q p = b)
-    (i : Fin (n + 3)) (p : stdSimplex ℝ (Fin (n + 2))) :
+    (i : Fin (n + 3)) (p : coordinateSet ℝ (Fin (n + 2))) :
     collapseBoundary q b hb (faceB i p) = simplexSphereFaces q b i p :=
   boundaryDesc_face _ _ i p
 
-private theorem collapseBoundary_inactive (q : C(stdSimplex ℝ (Fin (n + 2)), S)) (b : S)
+private theorem collapseBoundary_inactive (q : C(coordinateSet ℝ (Fin (n + 2)), S)) (b : S)
     (hb : ∀ p ∈ boundary (Fin (n + 2)), q p = b)
     (p : B n) (hp : p ∈ inactive n) : collapseBoundary q b hb p = b := by
   obtain ⟨i, hi, hpi⟩ := hp
@@ -55,13 +58,13 @@ private theorem collapseBoundary_inactive (q : C(stdSimplex ℝ (Fin (n + 2)), S
   | zero => exact (hi rfl).elim
   | succ i => rfl
 
-private theorem collapseBoundary_zero (q : C(stdSimplex ℝ (Fin (n + 2)), S)) (b : S)
+private theorem collapseBoundary_zero (q : C(coordinateSet ℝ (Fin (n + 2)), S)) (b : S)
     (hb : ∀ p ∈ boundary (Fin (n + 2)), q p = b)
-    (p : stdSimplex ℝ (Fin (n + 2))) : collapseBoundary q b hb (faceB 0 p) = q p :=
+    (p : coordinateSet ℝ (Fin (n + 2))) : collapseBoundary q b hb (faceB 0 p) = q p :=
   collapseBoundary_face q b hb 0 p
 
 private theorem exists_collapseBoundary_homotopyEquiv
-    (q : C(stdSimplex ℝ (Fin (n + 2)), S)) (b : S)
+    (q : C(coordinateSet ℝ (Fin (n + 2)), S)) (b : S)
     (hb : ∀ p ∈ boundary (Fin (n + 2)), q p = b)
     (hquot : _root_.Topology.IsQuotientMap q)
     (hfiber : ∀ p r, q p = q r → p = r ∨ p ∈ boundary (Fin (n + 2)) ∧ r ∈ boundary (Fin (n + 2)))
@@ -70,7 +73,7 @@ private theorem exists_collapseBoundary_homotopyEquiv
     (hone : ∀ p ∈ inactive n, K (1, p) = vertexZero n)
     (hpres : ∀ t p, p ∈ inactive n → K (t, p) ∈ inactive n) :
     ∃ e : HomotopyEquiv (B n) S, e.toFun = collapseBoundary q b hb := by
-  let g : C(stdSimplex ℝ (Fin (n + 2)), B n) :=
+  let g : C(coordinateSet ℝ (Fin (n + 2)), B n) :=
     K.comp ⟨fun p => (1, faceB 0 p), continuous_const.prodMk (faceB 0).continuous⟩
   have hg : ∀ p ∈ boundary (Fin (n + 2)), g p = vertexZero n :=
     fun p hp => hone (faceB 0 p) (face_zero_boundary p hp)
@@ -82,7 +85,7 @@ private theorem exists_collapseBoundary_homotopyEquiv
   let R := hquot.lift g hgf
   have hRg : R.comp q = g := hquot.lift_comp g hgf
   have hRb : R b = vertexZero n := by
-    let v : stdSimplex ℝ (Fin (n + 2)) := stdSimplex.vertex 0
+    let v : coordinateSet ℝ (Fin (n + 2)) := coordinateSingle 0
     have hv : v ∈ boundary (Fin (n + 2)) := ⟨1, by simp [v]⟩
     rw [← hb v hv]
     exact (ContinuousMap.congr_fun hRg v).trans (hg v hv)
@@ -101,13 +104,13 @@ private theorem exists_collapseBoundary_homotopyEquiv
   have hleft : (R.comp (collapseBoundary q b hb)).Homotopic (ContinuousMap.id (B n)) := by
     refine ⟨(show (ContinuousMap.id (B n)).Homotopy (R.comp (collapseBoundary q b hb)) from ?_).symm⟩
     exact ⟨K, hzero, fun p => (hRK p).symm⟩
-  let F : C(unitInterval × stdSimplex ℝ (Fin (n + 2)), S) :=
+  let F : C(unitInterval × coordinateSet ℝ (Fin (n + 2)), S) :=
     (collapseBoundary q b hb).comp (K.comp
       (ContinuousMap.prodMap (ContinuousMap.id _) (faceB 0)))
   have hF : ∀ t p, p ∈ boundary (Fin (n + 2)) → F (t, p) = b := by
     intro t p hp
     exact collapseBoundary_inactive q b hb _ (hpres t _ (face_zero_boundary p hp))
-  let L : C(stdSimplex ℝ (Fin (n + 2)), C(unitInterval, S)) :=
+  let L : C(coordinateSet ℝ (Fin (n + 2)), C(unitInterval, S)) :=
     (F.comp ContinuousMap.prodSwap).curry
   have hLq : Function.FactorsThrough L q := by
     intro p r h
@@ -118,7 +121,7 @@ private theorem exists_collapseBoundary_homotopyEquiv
       rw [hF t p hp, hF t r hr]
   let J : C(unitInterval × S, S) :=
     (hquot.lift L hLq).uncurry.comp ContinuousMap.prodSwap
-  have hJ (t : unitInterval) (p : stdSimplex ℝ (Fin (n + 2))) :
+  have hJ (t : unitInterval) (p : coordinateSet ℝ (Fin (n + 2))) :
       J (t, q p) = F (t, p) := by
     exact ContinuousMap.congr_fun (ContinuousMap.congr_fun (hquot.lift_comp L hLq) p) t
   have hright : ((collapseBoundary q b hb).comp R).Homotopic (ContinuousMap.id S) := by
@@ -139,7 +142,7 @@ private theorem exists_collapseBoundary_homotopyEquiv
   exact ⟨⟨collapseBoundary q b hb, R, hleft, hright⟩, rfl⟩
 
 theorem simplexSphereMap_homotopyEquiv_of_isQuotientMap
-    (q : C(stdSimplex ℝ (Fin (n + 2)), S)) (b : S)
+    (q : C(coordinateSet ℝ (Fin (n + 2)), S)) (b : S)
     (hb : ∀ p ∈ boundary (Fin (n + 2)), q p = b)
     (hquot : _root_.Topology.IsQuotientMap q)
     (hfiber : ∀ p r, q p = q r →

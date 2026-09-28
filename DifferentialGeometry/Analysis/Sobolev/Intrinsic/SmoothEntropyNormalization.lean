@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakEntropyApprox
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakEmbedding
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (metric_inner_smul_self)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -14,7 +17,6 @@ namespace DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Laplacian
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -134,7 +136,7 @@ theorem HasWeakRiemannianGradLp.exists_smooth_normalized_wform_le
     tau * R x * f n x ^ 2 - f n x ^ 2 * Real.log (f n x ^ 2) ∂μ
   have hRtop : MemLp R ⊤ μ := hR.memLp_top_of_hasCompactSupport (isClosed_tsupport _).isCompact μ
   have hRu : Integrable (fun x => R x * u x ^ 2) μ := by
-    have hRu₂ : MemLp (fun x => R x * u x) 2 μ := hu.mul' hRtop
+    have hRu₂ : MemLp (fun x => R x * u x) 2 μ := hRtop.fun_mul hu
     convert hRu₂.integrable_mul hu using 1
     funext x
     simp only [Pi.mul_apply, pow_two, mul_assoc]

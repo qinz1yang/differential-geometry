@@ -28,7 +28,7 @@ theorem exists_isPLHomeomorphOn_union_of_eqOn_id {P Q X : Set E} (hP : IsPolyhed
   · exact (hhg hp).trans (hgX ⟨hp, hpX⟩)
 
 theorem eq_of_isPLHomeomorphOn_of_separated {S X F J U₁ U₂ : Set E} (hS : IsPLSphere 2 S)
-    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) X) (hXS : X ⊆ S)
+    {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X) (hXS : X ⊆ S)
     (hqJ : q '' stdSimplexBoundary 2 = J) (hJF : J ⊆ F) (hFS : F ⊆ S) (hU₁ : IsOpen U₁)
     (hU₂ : IsOpen U₂) (hcover : S \ J ⊆ U₁ ∪ U₂) (hdisj : S ∩ (U₁ ∩ U₂) = ∅)
     (hF₁ : F \ J ⊆ U₁) (hF₂ : S \ F ⊆ U₂) {a b : E} (ha : a ∈ X \ J) (haU : a ∈ U₁)
@@ -110,7 +110,7 @@ theorem isOpen_tubeCellOpenSquare (P : ℝ → Prop) (hP : IsOpen {z : ℝ | P z
       (hP.preimage continuous_snd))))
 
 theorem eq_bottom_face_of_isPLHomeomorphOn {X : Set ((ℝ × ℝ) × ℝ)}
-    {q : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) X)
+    {q : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X)
     (hXS : X ⊆ tubeCellSphere)
     (hqJ : q '' stdSimplexBoundary 2 = spliceSquareBoundary ×ˢ ({0} : Set ℝ))
     (h0 : ((0 : ℝ × ℝ), (0 : ℝ)) ∈ X) (h1 : ((0 : ℝ × ℝ), (1 : ℝ)) ∉ X) :
@@ -146,7 +146,7 @@ theorem eq_bottom_face_of_isPLHomeomorphOn {X : Set ((ℝ × ℝ) × ℝ)}
     · exact absurd ⟨hsq, hz.symm⟩ hpF
 
 theorem eq_top_face_of_isPLHomeomorphOn {X : Set ((ℝ × ℝ) × ℝ)}
-    {q : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) X)
+    {q : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X)
     (hXS : X ⊆ tubeCellSphere)
     (hqJ : q '' stdSimplexBoundary 2 = spliceSquareBoundary ×ˢ ({1} : Set ℝ))
     (h1 : ((0 : ℝ × ℝ), (1 : ℝ)) ∈ X) (h0 : ((0 : ℝ × ℝ), (0 : ℝ)) ∉ X) :
@@ -376,8 +376,8 @@ theorem exists_tubeCellSphere_glue {M : Fin 4 → (ℝ × ℝ) × ℝ → (ℝ �
 
 theorem exists_tubeCellSphere_capFix {Δ₀ Δ₁ : Set ((ℝ × ℝ) × ℝ)}
     {q₀ q₁ : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ}
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) Δ₀)
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) Δ₁)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₀)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁)
     (hΔ₀ : Δ₀ ⊆ tubeCellSphere) (hΔ₁ : Δ₁ ⊆ tubeCellSphere) (hdis : Disjoint Δ₀ Δ₁)
     (hb₀ : ∀ k, q₀ '' stdSimplexBoundary 2 ∩ tubeCellArc k = {(fourSpokeModelLeaf k, 0)})
     (hb₁ : ∀ k, q₁ '' stdSimplexBoundary 2 ∩ tubeCellArc k = {(fourSpokeModelLeaf k, 1)})
@@ -386,7 +386,7 @@ theorem exists_tubeCellSphere_capFix {Δ₀ Δ₁ : Set ((ℝ × ℝ) × ℝ)}
       (∀ k, EqOn h id (tubeCellArc k)) ∧ h '' Δ₀ = spliceSquare ×ˢ ({0} : Set ℝ) ∧
         h '' Δ₁ = spliceSquare ×ˢ ({1} : Set ℝ) := by
   have hsub : ∀ {q : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ} {Δ : Set ((ℝ × ℝ) × ℝ)},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ → q '' stdSimplexBoundary 2 ⊆ Δ := by
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → q '' stdSimplexBoundary 2 ⊆ Δ := by
     intro q Δ hq
     rw [← hq.image_eq]
     exact image_mono fun x hx => hx.1
@@ -421,8 +421,8 @@ theorem exists_tubeCellSphere_capFix {Δ₀ Δ₁ : Set ((ℝ × ℝ) × ℝ)}
       rw [← hMB k, ← ((hhM k).mono (hBS k)).image_eq]
       exact image_mono (hBC k)
   have hpoly : ∀ {q : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ} {Δ : Set ((ℝ × ℝ) × ℝ)},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ tubeCellSphere →
-        IsPLHomeomorphOn (h ∘ q) (stdSimplex ℝ (Fin 3)) (h '' Δ) := fun hq hΔ =>
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → Δ ⊆ tubeCellSphere →
+        IsPLHomeomorphOn (h ∘ q) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (h '' Δ) := fun hq hΔ =>
     hq.trans (hh.restrict (IsPLBall.isPolyhedron ⟨_, hq⟩) hΔ)
   have hsphere : ∀ {Δ : Set ((ℝ × ℝ) × ℝ)}, Δ ⊆ tubeCellSphere → h '' Δ ⊆ tubeCellSphere :=
     fun hΔ => (image_mono hΔ).trans hh.image_eq.subset

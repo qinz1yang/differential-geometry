@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
 import Mathlib.Topology.ContinuousMap.Basic
 import Mathlib.Topology.Separation.Hausdorff
@@ -5,6 +6,8 @@ import Mathlib.Topology.Separation.Hausdorff
 noncomputable section
 
 open scoped unitInterval
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -62,15 +65,15 @@ theorem tetrahedronJoin_factorsThrough (G : C(unitInterval × unitInterval × un
     (hone : ∀ t u v, G (1, t, u) = G (1, v, u)) :
     Function.FactorsThrough G tetrahedronJoin := by
   rintro ⟨s, t, u⟩ ⟨r, v, w⟩ h
-  have h2 := congrArg (fun p : stdSimplex ℝ (Fin 4) => p.val 2) h
-  have h3 := congrArg (fun p : stdSimplex ℝ (Fin 4) => p.val 3) h
+  have h2 := congrArg (fun p : coordinateSet ℝ (Fin 4) => p.val 2) h
+  have h3 := congrArg (fun p : coordinateSet ℝ (Fin 4) => p.val 3) h
   change (s : ℝ) * (1 - (u : ℝ)) = (r : ℝ) * (1 - (w : ℝ)) at h2
   change (s : ℝ) * (u : ℝ) = (r : ℝ) * (w : ℝ) at h3
   have hsr : s = r := Subtype.ext (by nlinarith [h2, h3])
   subst r
   by_cases hs0 : s = 0
   · subst s
-    have h1 := congrArg (fun p : stdSimplex ℝ (Fin 4) => p.val 1) h
+    have h1 := congrArg (fun p : coordinateSet ℝ (Fin 4) => p.val 1) h
     change (1 - (0 : ℝ)) * (t : ℝ) = (1 - (0 : ℝ)) * (v : ℝ) at h1
     have htv : t = v := Subtype.ext (by simpa using h1)
     subst v
@@ -88,7 +91,7 @@ theorem tetrahedronJoin_factorsThrough (G : C(unitInterval × unitInterval × un
     dsimp
     linarith
   have huw : u = w := Subtype.ext (mul_left_cancel₀ hs0' h3)
-  have h1 := congrArg (fun p : stdSimplex ℝ (Fin 4) => p.val 1) h
+  have h1 := congrArg (fun p : coordinateSet ℝ (Fin 4) => p.val 1) h
   change (1 - (s : ℝ)) * (t : ℝ) = (1 - (s : ℝ)) * (v : ℝ) at h1
   have htv : t = v := Subtype.ext (mul_left_cancel₀ hs1' h1)
   subst v
@@ -98,7 +101,7 @@ theorem tetrahedronJoin_factorsThrough (G : C(unitInterval × unitInterval × un
 def tetrahedronJoinDesc (G : C(unitInterval × unitInterval × unitInterval, X))
     (hzero : ∀ t u v, G (0, t, u) = G (0, t, v))
     (hone : ∀ t u v, G (1, t, u) = G (1, v, u)) :
-    C(stdSimplex ℝ (Fin 4), X) :=
+    C(coordinateSet ℝ (Fin 4), X) :=
   tetrahedronJoin_isQuotientMap.lift G (tetrahedronJoin_factorsThrough G hzero hone)
 
 @[simp] theorem tetrahedronJoinDesc_comp (G : C(unitInterval × unitInterval × unitInterval, X))

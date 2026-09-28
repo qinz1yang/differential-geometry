@@ -1,8 +1,11 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.BallCoordinates
 
 set_option autoImplicit false
 noncomputable section
 open Set Metric Topology
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 variable {n : ℕ} {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (e : (Fin n → ℝ) ≃L[ℝ] E)
@@ -38,7 +41,7 @@ theorem normedSimplexBallAmbientHomeomorph_image_frontier :
     ((isCompact_coordinateSimplex n).image e.continuous).isBounded).choose_spec.2.2
 
 
-def stdSimplexNormedBallHomeomorph : stdSimplex ℝ (Fin (n + 1)) ≃ₜ closedBall (0 : E) 1 :=
+def stdSimplexNormedBallHomeomorph : coordinateSet ℝ (Fin (n + 1)) ≃ₜ closedBall (0 : E) 1 :=
   (stdSimplexCoordinateHomeomorph n).trans
     ((e.toHomeomorph.trans (normedSimplexBallAmbientHomeomorph e)).sets (by
       ext x
@@ -47,7 +50,7 @@ def stdSimplexNormedBallHomeomorph : stdSimplex ℝ (Fin (n + 1)) ≃ₜ closedB
         e.injective.mem_set_image]))
 
 
-theorem stdSimplexNormedBallHomeomorph_mem_sphere_iff (x : stdSimplex ℝ (Fin (n + 1))) :
+theorem stdSimplexNormedBallHomeomorph_mem_sphere_iff (x : coordinateSet ℝ (Fin (n + 1))) :
     (stdSimplexNormedBallHomeomorph e x).val ∈ sphere (0 : E) 1 ↔ x ∈ boundary (Fin (n + 1)) := by
   change normedSimplexBallAmbientHomeomorph e (e (stdSimplexCoordinateHomeomorph n x).val) ∈
     sphere (0 : E) 1 ↔ _

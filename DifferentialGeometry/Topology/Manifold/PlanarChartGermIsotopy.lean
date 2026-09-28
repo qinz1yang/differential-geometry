@@ -48,8 +48,8 @@ theorem exists_isotopy_realizing_positive_chart_germ
     rw [(hBe 0 y).1, hD0]
     change extendChartById e (id : ℂ → ℂ) y = y
     by_cases hy : y ∈ e.source
-    · exact (show extendChartById e id y = e.symm (e y) from if_pos hy).trans (e.left_inv hy)
-    · exact if_neg hy
+    · exact (show extendChartById e id y = e.symm (e y) from ite_eq_left hy).trans (e.left_inv hy)
+    · exact ite_eq_right hy
   · have hte : Tendsto e (𝓝 x) (𝓝 0) := by
       rw [← hex]
       exact (he.contMDiffAt (e.open_source.mem_nhds hx)).continuousAt
@@ -59,7 +59,7 @@ theorem exists_isotopy_realizing_positive_chart_germ
     change D 1 (e y) = e (f (e.symm (e y))) at hy
     rw [e.left_inv hys] at hy
     rw [(hBe 1 y).1]
-    have hext : extendChartById e (D 1) y = e.symm (D 1 (e y)) := if_pos hys
+    have hext : extendChartById e (D 1) y = e.symm (D 1 (e y)) := ite_eq_left hys
     rw [hext, hy, e.left_inv hyfs]
 
 end DifferentialGeometry.Topology.Manifold

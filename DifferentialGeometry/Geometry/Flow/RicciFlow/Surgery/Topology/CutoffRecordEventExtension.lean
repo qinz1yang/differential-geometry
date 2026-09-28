@@ -175,7 +175,7 @@ def IncomingBackwardNeck.ofInitialEmbedding
 
 
 def IncomingBackwardNeck.appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -419,7 +419,7 @@ private def GeometricCutoffRecord.ofEventHEq
     hP hQ ha hs hE (fun hNN => fun N => hback hNN N) (CutoffFields.ofRecord R)).toRecord
 
 protected def GeometricCutoffRecord.appendEvent
-    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    {Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -439,7 +439,7 @@ protected def GeometricCutoffRecord.appendEvent
   exact H.toHistory.appendEvent_event_castSucc_heq hs E.toMetricCutCapEvent hinit i
 
 theorem GeometricCutoffRecord.appendEvent_neck_heq
-    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    {Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -451,7 +451,7 @@ theorem GeometricCutoffRecord.appendEvent_neck_heq
   exact CutoffFields.transport_neck_heq _ _ _ _ _ _ _
 
 theorem GeometricCutoffRecord.appendEvent_static_heq
-    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    {Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -489,7 +489,7 @@ private theorem CutoffFields.transport_delta_heq
   rfl
 
 theorem GeometricCutoffRecord.appendEvent_delta_heq
-    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    {Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -519,7 +519,7 @@ private theorem CutoffFields.transport_order_heq
   rfl
 
 theorem GeometricCutoffRecord.appendEvent_order_heq
-    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P} {s : ℝ}
+    {Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -538,7 +538,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.exists_cutoff_records_at_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)

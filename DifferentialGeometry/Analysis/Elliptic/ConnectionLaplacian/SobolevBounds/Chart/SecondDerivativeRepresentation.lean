@@ -99,12 +99,13 @@ private lemma lintegral_fintype_sum_two
   exact lintegral_finsetSum' Finset.univ fun j _ => hf i j
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α) :
+    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ := by
   classical
   have h_rpow : eLpNorm f 2 μ = (∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ≥0∞).toReal ∂μ) ^
       (1 / (2 : ℝ≥0∞).toReal) :=
-    eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)
+    eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num) hf
   have h_two_toReal : ((2 : ℝ≥0∞)).toReal = (2 : ℝ) := by norm_num
   rw [h_rpow, h_two_toReal]
   set I : ℝ≥0∞ := ∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ) ∂μ with hI_def
@@ -1594,7 +1595,13 @@ private lemma wkpNorm_zero_sq_le_wtwokTwoNorm_sq
                     (chartTargetEuclid (I := I) (M := M) α))
               (fun _ _ => zero_le) (Finset.mem_univ Idx)
     refine h_term.trans ?_
-    exact ENNReal.le_tsum α
+    exact ENNReal.le_tsum
+      (f := fun α : M =>
+        ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
+          ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
+            iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
+              (tensorChartComp (I := I) (M := M) g r s T α Idx' Jdx')
+              (chartTargetEuclid (I := I) (M := M) α)) α
   have h_combined : iteratedWeakSobolevNorm (d := Module.finrank ℝ E) 0 2
       (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx)
       (chartTargetEuclid (I := I) (M := M) α) ≤
@@ -1726,7 +1733,13 @@ private lemma wkpNorm_one_sq_le_wtwokTwoNorm_sq
                     (chartTargetEuclid (I := I) (M := M) α))
               (fun _ _ => zero_le) (Finset.mem_univ Idx)
     refine h_term.trans ?_
-    exact ENNReal.le_tsum α
+    exact ENNReal.le_tsum
+      (f := fun α : M =>
+        ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
+          ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
+            iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
+              (tensorChartComp (I := I) (M := M) g r s T α Idx' Jdx')
+              (chartTargetEuclid (I := I) (M := M) α)) α
   exact pow_le_pow_left' (h12.trans h_α) 2
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] in
@@ -1780,7 +1793,13 @@ private lemma wkpNorm_two_sq_le_wtwokTwoNorm_sq
                     (chartTargetEuclid (I := I) (M := M) α))
               (fun _ _ => zero_le) (Finset.mem_univ Idx)
     refine h_term.trans ?_
-    exact ENNReal.le_tsum α
+    exact ENNReal.le_tsum
+      (f := fun α : M =>
+        ∑ Idx' : Fin r → Fin (Module.finrank ℝ E),
+          ∑ Jdx' : Fin s → Fin (Module.finrank ℝ E),
+            iteratedWeakSobolevNorm (d := Module.finrank ℝ E) (2 * 1) 2
+              (tensorChartComp (I := I) (M := M) g r s T α Idx' Jdx')
+              (chartTargetEuclid (I := I) (M := M) α)) α
   exact pow_le_pow_left' h_α 2
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
@@ -2123,7 +2142,17 @@ private lemma int_fderiv_tensorChartComp_β_sq_le_wkpNorm_two_sq
         (chartTargetEuclid (I := I) (M := M) β))) ^ 2 =
       ∫⁻ y in chartTargetEuclid (I := I) (M := M) β,
           ENNReal.ofReal (fd y ^ 2) ∂(volume : Measure EuclN) := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq]
+    have h_smooth : ContDiff ℝ (⊤ : ℕ∞)
+        (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx) :=
+      tensorChartComp_contDiff (I := I) (M := M) g r s T β Idx Jdx
+    have h_fd_meas : AEStronglyMeasurable fd
+        ((volume : Measure EuclN).restrict
+          (chartTargetEuclid (I := I) (M := M) β)) := by
+      have h_fd_cont : Continuous fd := by
+        rw [hfd_def]
+        exact (h_smooth.continuous_fderiv (by norm_num)).norm
+      exact h_fd_cont.measurable.aestronglyMeasurable
+    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq _ _ h_fd_meas]
     refine lintegral_congr_ae (Filter.Eventually.of_forall (fun y => ?_))
     change ‖fd y‖ₑ ^ 2 = ENNReal.ofReal (fd y ^ 2)
     rw [show (fd y ^ 2) = ‖fd y‖ ^ 2 from by rw [Real.norm_eq_abs, sq_abs]]
@@ -2216,7 +2245,17 @@ private lemma int_iteratedFDeriv_two_tensorChartComp_β_sq_le_wkpNorm_two_sq
         (chartTargetEuclid (I := I) (M := M) β))) ^ 2 =
       ∫⁻ y in chartTargetEuclid (I := I) (M := M) β,
           ENNReal.ofReal (fd y ^ 2) ∂(volume : Measure EuclN) := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq]
+    have h_smooth : ContDiff ℝ ∞
+        (tensorChartComp (I := I) (M := M) g r s T β Idx Jdx) :=
+      tensorChartComp_contDiff (I := I) (M := M) g r s T β Idx Jdx
+    have h_fd_meas : AEStronglyMeasurable fd
+        ((volume : Measure EuclN).restrict
+          (chartTargetEuclid (I := I) (M := M) β)) := by
+      have h_fd_cont : Continuous fd := by
+        rw [hfd_def]
+        exact (h_smooth.continuous_iteratedFDeriv (m := 2) (by norm_num)).norm
+      exact h_fd_cont.measurable.aestronglyMeasurable
+    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq _ _ h_fd_meas]
     refine lintegral_congr_ae (Filter.Eventually.of_forall (fun y => ?_))
     change ‖fd y‖ₑ ^ 2 = ENNReal.ofReal (fd y ^ 2)
     rw [show (fd y ^ 2) = ‖fd y‖ ^ 2 from by rw [Real.norm_eq_abs, sq_abs]]

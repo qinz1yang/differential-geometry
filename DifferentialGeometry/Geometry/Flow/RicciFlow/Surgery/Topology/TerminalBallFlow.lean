@@ -12,7 +12,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem RetainedCoreHistory.exists_terminal_ball_flow
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+    (H : RetainedCoreHistory.{u}) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
     (x : (H.toHistory.event i).incoming.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
     (hcompact : IsCompact (riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r))
     {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)

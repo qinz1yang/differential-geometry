@@ -19,7 +19,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLBall_neighborhood_of_prop
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hdim : Module.finrank ℝ E = 3)
     {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hproper : D ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2)
     (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (B : Geometry.SimplicialComplex ℝ E) (hBfin : B.faces.Finite),
@@ -96,7 +96,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLBall_neighborhood_of_span
     (hSK : S.space ⊆ K.space \ (boundaryComplex 3 K).space)
     (hKc : IsPreconnected K.space) (hSc : IsConnected S.space)
     {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2)
     (hDK : D ⊆ interior K.space) (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (B : Geometry.SimplicialComplex ℝ E) (hBfin : B.faces.Finite),

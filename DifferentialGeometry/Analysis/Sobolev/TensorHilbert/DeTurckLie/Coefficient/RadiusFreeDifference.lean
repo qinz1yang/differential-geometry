@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficien
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.RadiusFree
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -34,7 +37,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
-theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound
+theorem deTurckLieConnectionDifferenceDerivCoeffField_covariant_l2_tame_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1)
     {Λ₀ : ℝ} (hΛ₀0 : 0 ≤ Λ₀) :
     ∃ Ktop : ℕ → ℝ, (∀ i, 0 ≤ Ktop i) ∧ ∃ Flow : ℕ → ℝ, (∀ i, 0 ≤ Flow i) ∧
@@ -51,7 +54,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGr
             ‖iteratedCovGrad (I := I) g₀ 0 2 j P‖ ^ 2) := by
   classical
   obtain ⟨Ktop_a, hKtop_a_nn, Kc_a, hKc_a_nn, hfield⟩ :=
-    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_fiberNormSq_topOrderSeparated_bound (I := I) (M := M) g₀ g_bg hδ₀
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_pointwise_tame_bound (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨K_rf, hK_rf_nn, hK_rf⟩ :=
     antidiagonalTupleGrid_integral_radiusFree (I := I) (M := M) g₀ hΛ₀0
   refine ⟨fun i => Ktop_a * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i,
@@ -203,7 +206,7 @@ theorem exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_per
     fun i => mul_nonneg h4fr_nn (hKb_flow_nn i), ?_⟩
   intro g₁ P htie δ hδ_le hδ0 hδ hsup i hi
   have hdlb := normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionField_le (I := I) (M := M) g₀ g₁ g_bg i
-  rw [norm_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g_bg i] at hdlb
+  rw [deTurckVectorFieldCovariantDerivativeEndomorphismInsert_iteratedCovGrad_norm_eq_lowered (I := I) (M := M) g₀ g₁ g_bg i] at hdlb
   have hwa := hwalpha g₁ P htie hδ_le hδ0 hδ hsup i hi
   calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g_bg)‖ ^ 2
       ≤ 4 * (Module.finrank ℝ E : ℝ) *
@@ -239,7 +242,7 @@ theorem deTurckLieCoeffField_perOrder_l2_radiusFree
             ‖iteratedCovGrad (I := I) g₀ 0 2 j (ccTensor02Symm (I := I) (M := M) g₀ T)‖ ^ 2) := by
   classical
   obtain ⟨Ka_top, hKa_top_nn, Ka_low, hKa_low_nn, hDLa⟩ :=
-    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_l2_tame_bound (I := I) (M := M) g₀ g_bg hδ₀ hΛ₀0
   obtain ⟨Kb_top, hKb_top_nn, Kb_low, hKb_low_nn, hDLb⟩ :=
     exists_deTurckLieCovariantDerivativeInsertion_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g₀ g_bg a hδ₀ hΛ₀0
   refine ⟨fun i => 2 * Ka_top i + 2 * Kb_top + (2 * Ka_low i + 2 * Kb_low i),

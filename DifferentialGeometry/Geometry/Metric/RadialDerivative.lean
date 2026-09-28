@@ -31,7 +31,8 @@ theorem differentiableAt_radialBilinearField {a : ℝ → ℝ} {x : E}
   have he : DifferentiableAt ℝ (NormedSpace.normalize : E → E) x :=
     (hn.inv (norm_ne_zero_iff.mpr hx)).smul differentiableAt_id
   have hc : DifferentiableAt ℝ (fun y : E => (a ‖y‖ / ‖y‖) ^ 2) x := by
-    convert ((ha.comp x hn).mul (hn.inv (norm_ne_zero_iff.mpr hx))).pow 2 using 1 <;> rfl
+    convert ((ha.comp x hn).mul (hn.inv (norm_ne_zero_iff.mpr hx))).pow 2 using 1
+    rfl
   exact (contDiff_radialBilinearForm (n := 1)).contDiffAt.differentiableAt one_ne_zero |>.comp x
     (he.prodMk hc)
 

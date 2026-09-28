@@ -65,22 +65,22 @@ theorem isConnected_sdiff_of_isPLBall_inter {Q₁ Q₂ DQ : Set E3} (h₁ : IsPL
       _ ⊆ closure (Q₁ \ DQ) := closure_mono hint
 
 theorem image_stdSimplex_subset_closure_image_openSimplex {g : (Fin 4 → ℝ) → E3}
-    (hgc : ContinuousOn g (stdSimplex ℝ (Fin 4))) :
-    g '' stdSimplex ℝ (Fin 4) ⊆ closure (g '' openSimplex (stdVertices 2)) := by
-  have hcl : closure (openSimplex (stdVertices 2)) ⊆ stdSimplex ℝ (Fin 4) :=
-    closure_minimal openSimplex_stdVertices_subset_stdSimplex (isClosed_stdSimplex ℝ _)
+    (hgc : ContinuousOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4))) :
+    g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ⊆ closure (g '' openSimplex (stdVertices 2)) := by
+  have hcl : closure (openSimplex (stdVertices 2)) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
+    closure_minimal openSimplex_stdVertices_subset_stdSimplex (Convexity.StdSimplex.isCompact_coordinateSet ℝ _).isClosed
   exact (image_mono (stdSimplex_subset_closure_openSimplex 2)).trans (hgc.mono hcl).image_closure
 
 theorem exists_preconnected_local_interior {g : (Fin 4 → ℝ) → E3}
-    (hgc : ContinuousOn g (stdSimplex ℝ (Fin 4))) (hgi : InjOn g (stdSimplex ℝ (Fin 4)))
-    {y : E3} (hy : y ∈ g '' stdSimplex ℝ (Fin 4)) {O : Set E3} (hO : O ∈ 𝓝 y) :
+    (hgc : ContinuousOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4))) (hgi : InjOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)))
+    {y : E3} (hy : y ∈ g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) {O : Set E3} (hO : O ∈ 𝓝 y) :
     ∃ L : Set E3, L ⊆ O ∧ L ⊆ g '' openSimplex (stdVertices 2) ∧ IsPreconnected L ∧
       y ∈ closure L ∧ ∃ O' ∈ 𝓝 y, O' ∩ g '' openSimplex (stdVertices 2) ⊆ L := by
   obtain ⟨β, hβ, rfl⟩ := hy
   obtain ⟨r, hr, hball⟩ := Metric.mem_nhdsWithin_iff.mp ((hgc β hβ).preimage_mem_nhdsWithin hO)
   obtain ⟨T, hT, hTeq⟩ := exists_isOpen_inter_image_eq_of_isCompact
-    (isCompact_stdSimplex ℝ (Fin 4)) hgc hgi (Metric.isOpen_ball (x := β) (ε := r))
-  have hsubΔ : Metric.ball β r ∩ openSimplex (stdVertices 2) ⊆ stdSimplex ℝ (Fin 4) :=
+    (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 4)) hgc hgi (Metric.isOpen_ball (x := β) (ε := r))
+  have hsubΔ : Metric.ball β r ∩ openSimplex (stdVertices 2) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
     inter_subset_right.trans openSimplex_stdVertices_subset_stdSimplex
   refine ⟨g '' (Metric.ball β r ∩ openSimplex (stdVertices 2)), ?_, image_mono inter_subset_right,
     ?_, ?_, T, hT.mem_nhds ?_, ?_⟩
@@ -91,15 +91,15 @@ theorem exists_preconnected_local_interior {g : (Fin 4 → ℝ) → E3}
       Metric.isOpen_ball.inter_closure
         ⟨Metric.mem_ball_self hr, stdSimplex_subset_closure_openSimplex 2 hβ⟩
     have hsub : closure (Metric.ball β r ∩ openSimplex (stdVertices 2)) ⊆
-        stdSimplex ℝ (Fin 4) := closure_minimal hsubΔ (isClosed_stdSimplex ℝ _)
+        Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := closure_minimal hsubΔ (Convexity.StdSimplex.isCompact_coordinateSet ℝ _).isClosed
     exact (hgc.mono hsub).image_closure ⟨β, hβcl, rfl⟩
-  · have hmem : g β ∈ g '' (Metric.ball β r ∩ stdSimplex ℝ (Fin 4)) :=
+  · have hmem : g β ∈ g '' (Metric.ball β r ∩ Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) :=
       ⟨β, ⟨Metric.mem_ball_self hr, hβ⟩, rfl⟩
     rw [← hTeq] at hmem
     exact hmem.1
   · rintro _ ⟨hyT, z, hzo, rfl⟩
-    have hzΔ : z ∈ stdSimplex ℝ (Fin 4) := openSimplex_stdVertices_subset_stdSimplex hzo
-    have hmem : g z ∈ T ∩ g '' stdSimplex ℝ (Fin 4) := ⟨hyT, z, hzΔ, rfl⟩
+    have hzΔ : z ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := openSimplex_stdVertices_subset_stdSimplex hzo
+    have hmem : g z ∈ T ∩ g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := ⟨hyT, z, hzΔ, rfl⟩
     rw [hTeq] at hmem
     obtain ⟨w, ⟨hwr, hwΔ⟩, hwz⟩ := hmem
     have hwz' : w = z := hgi hwΔ hzΔ hwz
@@ -577,14 +577,14 @@ theorem exists_twoComponents_of_pseudoCell (ht : IsTube K N C D Dbd h N') (hu : 
     rintro z ⟨hzY, hzE⟩ hzI
     have hzF : z ∈ frontier Y := ⟨subset_closure hzY, hzI⟩
     have hzD : z ∉ h '' D {u, v} := fun hzD => hzE (hEbdEc (hDfr ⟨hzD, hzF⟩))
-    have key : ∀ (a b : E3) (g : (Fin 4 → ℝ) → E3), ContinuousOn g (stdSimplex ℝ (Fin 4)) →
-        InjOn g (stdSimplex ℝ (Fin 4)) → g '' stdSimplex ℝ (Fin 4) = h '' C a →
+    have key : ∀ (a b : E3) (g : (Fin 4 → ℝ) → E3), ContinuousOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) →
+        InjOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) → g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) = h '' C a →
         g '' openSimplex (stdVertices 2) = interior (h '' C a) → IsClosed (h '' C b) →
         (Y ⊆ h '' C a ∪ h '' C b) → interior (h '' C a) ⊆ I → z ∈ h '' C a → z ∉ h '' C b →
         ∃ L : Set E3, L ⊆ O ∧ IsPreconnected L ∧ L.Nonempty ∧ z ∈ closure L ∧
           ∃ O' ∈ 𝓝 z, O' ∩ I ⊆ L := by
       intro a b g hgc hgi hgim hgint hbcl hYab haI hza hzb
-      have hzg : z ∈ g '' stdSimplex ℝ (Fin 4) := by
+      have hzg : z ∈ g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := by
         rw [hgim]
         exact hza
       obtain ⟨L, hLO, hLint, hLpc, hzL, O', hO', hO'L⟩ := exists_preconnected_local_interior hgc

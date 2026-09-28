@@ -5,7 +5,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-open DifferentialGeometry.Analysis
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle
@@ -15,26 +14,9 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-variable {A Time : Type*} [CommRing A] [Algebra Real A]
 
 abbrev RicciTensorField (Time : Type*) :=
   Time -> (x : M) -> TangentSpace I x -> TangentSpace I x -> Real
-
-def MetricVariationEquation
-    (td : TimeDerivativeData Real A Time)
-    (G : MetricConnectionFamily (I := I) (M := M) Time)
-    (Ric : RicciTensorField (I := I) (M := M) Time) : Prop :=
-  forall (t : Time) (x : M) (X Y : TangentSpace I x),
-    metricTimeDerivative td G t x X Y = (-2 : Real) * Ric t x X Y
-
-theorem metric_dt_eq_neg_two_ricci_of_metricVariationEquation
-    (td : TimeDerivativeData Real A Time)
-    (G : MetricConnectionFamily (I := I) (M := M) Time)
-    (Ric : RicciTensorField (I := I) (M := M) Time)
-    (hEq : MetricVariationEquation td G Ric)
-    (t : Time) (x : M) (X Y : TangentSpace I x) :
-    metricTimeDerivative td G t x X Y = (-2 : Real) * Ric t x X Y :=
-  hEq t x X Y
 
 def MetricVariationEquationDerivAt
     (G : MetricConnectionFamily (I := I) (M := M) Real)

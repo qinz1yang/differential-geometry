@@ -45,7 +45,7 @@ theorem boundaryComplex_simplexComplex {n : ℕ} {T : Finset E}
 
 theorem simplexBoundary_stdVertices_space_subset (n : ℕ) :
     (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space ⊆
-      stdSimplex ℝ (Fin (n + 2)) := by
+      Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
   intro y hy
   obtain ⟨s, hs, hys⟩ := (simplexBoundary _ _).mem_space_iff.mp hy
   rw [← convexHull_stdVertices]
@@ -71,7 +71,7 @@ theorem starAvoiding_eq_simplexBoundary_of_card (K : Geometry.SimplicialComplex 
 
 theorem boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex {n : ℕ}
     (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] {f : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) L.space) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) L.space) :
     (boundaryComplex (n + 1) L).space =
       f '' (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space := by
   classical
@@ -88,7 +88,7 @@ theorem boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex {n : ℕ}
       (IsPLBall n (SimplicialComplex.geometricLink L' {x}).space ↔
         x ∈ f '' (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space) := by
     intro x _ L' _ hL' hx'
-    have hf' : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) L'.space := by
+    have hf' : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) L'.space := by
       rwa [hL'.space_eq]
     exact isPLBall_geometricLink_iff_of_isPLHomeomorphOn_stdSimplex L' hf' hx'
   apply Subset.antisymm

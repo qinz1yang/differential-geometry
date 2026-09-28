@@ -62,7 +62,7 @@ private theorem isIntegralCurveGraph_sUnion {f : ℝ → E → E} {J : Set ℝ}
   let γ : ℝ → E := fun t => if ht : t ∈ D then Classical.choose ht else 0
   have hmem (t : ℝ) (ht : t ∈ D) : (t, γ t) ∈ U := by
     dsimp only [γ]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     exact Classical.choose_spec ht
   have heqGraph : U = integralCurveGraph γ D := by
     ext ⟨t, v⟩
@@ -187,14 +187,14 @@ private theorem integralCurveOn_piecewise_Iic
     (hη : IsIntegralCurveOn η f (I ∩ Ici t₀)) (hinit : γ t₀ = η t₀) :
     IsIntegralCurveOn (fun t => if t ≤ t₀ then γ t else η t) f I := by
   let ζ : ℝ → E := fun t => if t ≤ t₀ then γ t else η t
-  have heqγ : EqOn ζ γ (Iic t₀) := fun t ht => if_pos ht
+  have heqγ : EqOn ζ γ (Iic t₀) := fun t ht => ite_eq_left ht
   have heqη : EqOn ζ η (Ici t₀) := by
     intro t ht
     by_cases h : t ≤ t₀
     · have he : t = t₀ := le_antisymm h ht
       subst t
-      exact (if_pos le_rfl).trans hinit
-    · exact if_neg h
+      exact (ite_eq_left le_rfl).trans hinit
+    · exact ite_eq_right h
   intro t ht
   change HasDerivWithinAt ζ (f t (ζ t)) I t
   rcases lt_trichotomy t t₀ with hlt | he | hgt
@@ -253,8 +253,8 @@ private theorem maximalIntegralCurveOn_subset_of_eqOn
       (hη.mono hright) hinit
     have hDsub := hγ.maximal hD hDJ subset_union_left hζ (fun s hs => by
       by_cases h : s ≤ t₀
-      · exact (if_pos h).symm
-      · rw [if_neg h]
+      · exact (ite_eq_left h).symm
+      · rw [ite_eq_right h]
         exact heq ⟨hs, hL.out ht₀.2 ht ⟨(not_le.mp h).le, hbound s hs⟩⟩)
     exact hn (hDsub (Or.inr (right_mem_Icc.mpr hle)))
   · let D := I ∪ Icc t t₀
@@ -278,9 +278,9 @@ private theorem maximalIntegralCurveOn_subset_of_eqOn
       (hγ.isIntegralCurveOn.mono hright) hinit.symm
     have hDsub := hγ.maximal hD hDJ subset_union_left hζ (fun s hs => by
       by_cases h : s ≤ t₀
-      · rw [if_pos h]
+      · rw [ite_eq_left h]
         exact heq ⟨hs, hL.out ht ht₀.2 ⟨hbound s hs, h⟩⟩
-      · exact (if_neg h).symm)
+      · exact (ite_eq_right h).symm)
     exact hn (hDsub (Or.inr (left_mem_Icc.mpr hle)))
 
 theorem IsMaximalIntegralCurveOn.extends_of_locallyLipschitzOn

@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionL
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.TensorRSContRiemannianBundle
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.OrderZero
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise)
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

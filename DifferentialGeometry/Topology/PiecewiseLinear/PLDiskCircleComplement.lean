@@ -12,10 +12,10 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem IsPLHomeomorphOn.exists_disk_complement_of_circle {Δ J : Set E}
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hJ : IsPLSphere 1 J) (hJΔ : J ⊆ Δ) (hJbd : Disjoint J (r '' stdSimplexBoundary 2)) :
     ∃ (R Q : Set E) (q : (Fin 3 → ℝ) → E), IsPolyhedron R ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ R ∪ Q = Δ ∧ R ∩ Q = J ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ R ∪ Q = Δ ∧ R ∩ Q = J ∧
       q '' stdSimplexBoundary 2 = J ∧ r '' stdSimplexBoundary 2 ⊆ R := by
   obtain ⟨Pl, ρ, hPl, hρ, hρb⟩ := hr.exists_planarModel
   let σ := Function.invFunOn ρ Pl
@@ -85,12 +85,12 @@ theorem IsPLHomeomorphOn.exists_disk_complement_of_circle {Δ J : Set E}
     exact image_mono hfrR
 
 theorem IsPLHomeomorphOn.exists_replace_disk_of_interior_circle {Δ D J : Set E}
-    {r q : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    {r q : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hqb : q '' stdSimplexBoundary 2 = J) (hDΔ : D ∩ Δ = J)
     (hJbd : Disjoint J (r '' stdSimplexBoundary 2)) :
     ∃ (Γ R : Set E) (p : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) Γ ∧
+      IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ ∧
       p '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
       IsPolyhedron R ∧ R ⊆ Δ ∧ Γ = R ∪ D ∧ R ∩ D = J := by
   have hJ : IsPLSphere 1 J := hqb ▸ hq.isPLSphere_image_stdSimplexBoundary

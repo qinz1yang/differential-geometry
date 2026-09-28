@@ -384,8 +384,8 @@ theorem exists_lp_weak_deriv_weighted_divergence [IsLocallyFiniteMeasure μ]
     (fderiv ℝ ρ x v * R x + fderiv ℝ (fun y => fderiv ℝ ρ y v) x w * U x)
   have hS : MemLp S p μ :=
     (hDF.add (memLp_finsetSum s fun i hi =>
-      ((hJ i hi).mul (hDA i hi)).add ((hV i hi).mul (hDDA i hi)))).sub
-      ((hR.mul hDρ).add (hU.mul hTDρ))
+      ((hDA i hi).mul (hJ i hi)).add ((hDDA i hi).mul (hV i hi)))).sub
+      ((hDρ.mul hR).add (hTDρ.mul hU))
   refine ⟨hS.toLp S, hS.coeFn_toLp, ?_⟩
   intro φ hφ hφc hφs
   have heq := integral_weak_deriv_weighted_divergence_eq_source s hΩ v w e

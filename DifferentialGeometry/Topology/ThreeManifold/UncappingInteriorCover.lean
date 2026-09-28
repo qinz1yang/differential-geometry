@@ -23,7 +23,7 @@ private theorem cap_mem_chart_closedBall_of_norm_le (b : T.Boundary) (x : Closed
   have habs : |r| = 4 := by dsimp [r]; cases b.2 <;> norm_num
   have heq : (if b.2 then (1 / 4 : ℝ) else -(1 / 4)) • (r • x.val) = x.val := by
     dsimp [r]
-    cases b.2 <;> simp only [Bool.false_eq_true, if_false, if_true, smul_smul] <;> norm_num
+    cases b.2 <;> simp only [Bool.false_eq_true, ite_false, ite_true, smul_smul] <;> norm_num
   have hnorm : ‖r • x.val‖ ≤ 1 := by rw [norm_smul,Real.norm_eq_abs,habs]; linarith
   refine ⟨r • x.val, mem_closedBall_zero_iff.mpr hnorm, ?_⟩
   rw [C.capBallChart_apply b _ (by rw [heq]; linarith)]

@@ -11,7 +11,7 @@ import DifferentialGeometry.Geometry.Operator.Gradient.NormSquared
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Composition
 import DifferentialGeometry.Analysis.TimeInterval
-import Mathlib.Data.ENNReal.Basic
+import Mathlib.Basic.ENNReal.Basic
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 import Mathlib.Topology.Algebra.Order.LiminfLimsup
@@ -320,41 +320,6 @@ noncomputable def reducedLength {H : ObservedHistory.{u}} (S : VariationalStrip 
 
 end VariationalStrip
 
-def isSurgeryVariationalInput : Prop :=
-  ∀ (H : ObservedHistory.{u}) (S : VariationalStrip H),
-    (∀ u ∈ Ioo S.start S.finish,
-      LowerSemicontinuousOn (fun x => S.reducedLength u x)
-        (univ : Set (H.stage 0).Carrier) ∧
-      (∃ x : (H.stage 0).Carrier,
-        IsLeast (range (fun y => S.reducedLength u y)) (S.reducedLength u x)) ∧
-      (∀ x : (H.stage 0).Carrier,
-        IsLeast (range (fun y => S.reducedLength u y)) (S.reducedLength u x) →
-          ∃ γ : ℝ → (H.stage 0).Carrier,
-            S.admissible γ ∧ γ 0 = S.pole ∧ γ (S.finish - u) = x ∧
-              reducedAction S.metricAt S.finish (S.finish - u) γ = S.reducedLength u x)) ∧
-    (∀ u ∈ Ioo S.start S.finish, ∀ x : (H.stage 0).Carrier,
-      IsLeast (range (fun y => S.reducedLength u y)) (S.reducedLength u x) →
-      (∀ γ : ℝ → (H.stage 0).Carrier, S.admissible γ → γ 0 = S.pole →
-        γ (S.finish - u) = x →
-        reducedAction S.metricAt S.finish (S.finish - u) γ = S.reducedLength u x →
-        S.regular γ) →
-      ∀ η : ℝ, 0 < η →
-        ∃ (U : TopologicalSpace.Opens (H.stage 0).Carrier) (hxU : x ∈ U)
-          (F : ℝ → ↥U → ℝ) (hF : ∀ σ : ℝ, ContMDiff ThreeModel 𝓘(ℝ, ℝ) ∞ (F σ)),
-          F u ⟨x, hxU⟩ = S.reducedLength u x ∧
-          (∀ y : ↥U, y ≠ ⟨x, hxU⟩ →
-            F u y < S.reducedLength u (y : (H.stage 0).Carrier)) ∧
-          deriv (fun σ : ℝ => F σ ⟨x, hxU⟩) u +
-            DifferentialGeometry.Geometry.Operator.ΔG (I := ThreeModel) (M := ↥U)
-              ((S.metricAt u).restrictOpen U) (⟨F u, hF u⟩ : C^∞⟮ThreeModel, ↥U; ℝ⟯) ⟨x, hxU⟩
-            ≤ 6 + η ∧
-          Real.sqrt (DifferentialGeometry.Geometry.Operator.normGradSqFun (I := ThreeModel)
-            (M := ↥U) ((S.metricAt u).restrictOpen U) (F u) ⟨x, hxU⟩) ≤ η) ∧
-    (∀ u ∈ Ioo S.start S.finish,
-      LowerSemicontinuousWithinAt
-        (fun τ : ℝ => sInf (range (fun x => S.reducedLength (S.finish - τ) x)) - 6 * τ)
-        (Ioo S.start S.finish) (S.finish - u))
-
 structure JacobianStrip (H : ObservedHistory.{u}) where
   pole : (H.stage 0).Carrier
   start : ℝ
@@ -405,51 +370,6 @@ def isOldTubeInput (d : OldData) : Prop :=
           Nonempty (BackwardRealization
             (fun u => (H.event i).incoming.flow.base.metric u) t s)
 
-structure EnlargementStrip (H : ObservedHistory.{u}) where
-  pole : (H.stage 0).Carrier
-  poleTime : ℝ
-  poleTime_nonneg : 0 ≤ poleTime
-  poleTime_le_horizon : poleTime ≤ H.horizon
-  radius : ℝ
-  radius_pos : 0 < radius
-
-structure SourceGeometry where
-  carrier : Type u
-  [topology : TopologicalSpace carrier]
-  [charts : ChartedSpace ThreeSpace carrier]
-  [smooth : IsManifold ThreeModel ∞ carrier]
-  metric : SmoothRiemannianMetric ThreeModel carrier
-
-attribute [instance] SourceGeometry.topology SourceGeometry.charts SourceGeometry.smooth
-
-structure SourcePatch {H : ObservedHistory.{u}}
-    (S : EnlargementStrip H) where
-  geometry : SourceGeometry.{u}
-  embedding : geometry.carrier → (H.stage 0).Carrier
-  embedding_injective : Function.Injective embedding
-  metric_bound : ∀ x : geometry.carrier, ∀ v : TangentSpace ThreeModel x,
-    2 * geometry.metric.inner x v v
-      ≤ (H.initialMetric 0).inner (embedding x)
-        (mfderiv ThreeModel ThreeModel embedding x v)
-        (mfderiv ThreeModel ThreeModel embedding x v)
-
-inductive SourceCause where
-  | frontier
-  | curvatureContact
-
-structure EnlargementConclusion {H : ObservedHistory.{u}}
-    (S : EnlargementStrip H) where
-  patch : SourcePatch S
-  cause : SourceCause
-
-def isEnlargementInput : Prop :=
-  ∀ d : OldData, 0 < d.noncollapsing →
-    ∃ α : ℝ, 0 < α ∧ α ≤ 1 / 100 ∧ ∃ sstar : ℝ, 0 < sstar ∧
-      sstar ≤ d.epsilon / 2 ∧
-        ∀ (H : ObservedHistory.{u}) (S : EnlargementStrip H),
-          S.radius < min (α * d.scaleLower) (sstar / 4) →
-          Nonempty (EnlargementConclusion S)
-
 structure RoundCovering (Z : Type u) [TopologicalSpace Z] [ChartedSpace ThreeSpace Z]
     [IsManifold ThreeModel ∞ Z] (k : SmoothRiemannianMetric ThreeModel Z) where
   cover : C(Sphere 3, Z)
@@ -478,18 +398,5 @@ theorem RoundCovering.degree_eq_one_of_injective {Z : Type u} [TopologicalSpace 
   refine ⟨rfl, ?_⟩
   intro y hy
   exact h hy
-
-def isRoundDegreeInput : Prop :=
-  ∀ _d : OldData, ∃ Nold : ℕ, 1 ≤ Nold ∧
-    ∀ (H : ObservedHistory.{u}) (_S : EnlargementStrip H), ∀ Z : Type u,
-      ∀ [TopologicalSpace Z] [ChartedSpace ThreeSpace Z] [IsManifold ThreeModel ∞ Z],
-        ∀ k : SmoothRiemannianMetric ThreeModel Z,
-          Nonempty (RoundCovering Z k) →
-            ∃ C : RoundCovering Z k, 1 ≤ C.degree ∧ C.degree ≤ Nold
-
-def isCommonLocalRealization : Prop :=
-  isLocalStabilityInput ∧ isBufferedControlInput.{u} ∧ isSurgeryVariationalInput.{u} ∧
-    isJacobianInput.{u} ∧ (∃ d : OldData, isOldTubeInput.{u} d) ∧
-      isEnlargementInput.{u} ∧ isRoundDegreeInput.{u}
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

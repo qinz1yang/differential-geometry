@@ -79,7 +79,7 @@ theorem tail_h1_uniform
             (B0 R + B1 R * A) ^ 2 := by
   classical
   obtain ⟨BD, hBD, hD⟩ :=
-    exists_uniform_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covariantJetNormSq_one_bound (I := I) (M := M) hDim gBase hΛ hδ₀
+    exists_uniform_deTurckLieCovariantDerivativeInsertionField_background_difference_jet_one_bound (I := I) (M := M) hDim gBase hΛ hδ₀
   obtain ⟨BI, hBI, hI⟩ :=
     insert_h1_uniform (I := I) (M := M) hDim gBase hΛ hδ₀
   obtain ⟨BV0, BV1, hBV0, hBV1, hV⟩ :=

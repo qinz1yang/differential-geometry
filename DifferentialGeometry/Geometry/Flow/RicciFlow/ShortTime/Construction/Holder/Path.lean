@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.Euclidean.Holder.Path
-import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Holder.Defs
+import DifferentialGeometry.Analysis.Schauder.MetricDifference
 
 
 open DifferentialGeometry.PDE.RicciFlow
@@ -66,7 +66,7 @@ theorem metricConst_ball
       MetricInHolderBall (I := I) (M := M) gBase τ C (fun _ => gSeq k) := by
   classical
   obtain ⟨C₀, hC₀, Cα, hdata⟩ :=
-    metricDifference_c2half (I := I) (M := M) gBase gSeq B hbdd
+    metricDifference_c2_holder_half_uniform_bound (I := I) (M := M) gBase gSeq B hbdd
   let C₀n : ℝ≥0 := ⟨C₀, hC₀⟩
   let Ce : ℝ≥0 := 3 * C₀n + Cα
   let A := metricChartIdx (I := I) (M := M)
@@ -77,10 +77,8 @@ theorem metricConst_ball
       eParC2Half τ
         (metricCompPath (I := I) (M := M) gBase (fun _ => gSeq k) a) ≤
         (Ce : ℝ≥0∞) := by
-    intro a ha
-    have ha' : a ∈ metricChartIdx (I := I) (M := M) := by simpa only [A] using ha
-    rcases Finset.mem_product.mp ha' with ⟨ha_chart, _ha_comp⟩
-    obtain ⟨hjet, hhalf⟩ := hdata a.1 ha_chart k a.2
+    intro a _ha
+    obtain ⟨hjet, hhalf⟩ := hdata a.1 k a.2
     let u : EuclN → ℝ :=
       tensorChartComp (I := I) (M := M) gBase 0 2
         (metricDifferenceCcTensor (I := I) (M := M) gBase (gSeq k))

@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperato
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.EndomorphismInsertion.TopOrderSeparation
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 
 

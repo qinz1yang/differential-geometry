@@ -338,11 +338,8 @@ theorem IsCovDerivAlongChart.add
               (chartCurve (I := I) α γ t) :=
     ChartChristoffel.contraction_add_right (uPrime t) (Y₁ t) (Y₂ t)
   convert hadd using 1
-  · funext s
-    change Y₁ s + Y₂ s = Y₁ s + Y₂ s
-    rfl
-  · rw [hΓadd]
-    module
+  rw [hΓadd]
+  module
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem IsCovDerivAlongChart.smul
@@ -362,10 +359,7 @@ theorem IsCovDerivAlongChart.smul
               (chartCurve (I := I) α γ t) :=
     ChartChristoffel.contraction_smul_right c (uPrime t) (Y t)
   convert hcY using 1
-  · funext s
-    change c • Y s = c • Y s
-    rfl
-  · rw [hΓsmul, smul_sub]
+  rw [hΓsmul, smul_sub]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem IsCovDerivAlongChart.neg
@@ -416,11 +410,8 @@ theorem IsCovDerivAlongChart.smulFun
               (chartCurve (I := I) α γ t) :=
     ChartChristoffel.contraction_smul_right (f t) (uPrime t) (Y t)
   convert hfY using 1
-  · funext s
-    change f s • Y s = f s • Y s
-    rfl
-  · rw [hΓsmul, smul_sub]
-    module
+  rw [hΓsmul, smul_sub]
+  module
 
 def IsParallelChart (g : SmoothRiemannianMetric I M) (α : M) (γ : ℝ → M)
     (uPrime : ℝ → E) (Y : ℝ → E) (s : Set ℝ) : Prop :=
@@ -495,7 +486,7 @@ theorem IsParallelChart.unique_of_initial
         (chartChristoffelContractionRightCLM (I := I) g α (uPrime t)
           (chartCurve (I := I) α γ t)) :=
       (chartChristoffelContractionRightCLM (I := I) g α (uPrime t)
-          (chartCurve (I := I) α γ t)).lipschitz
+          (chartCurve (I := I) α γ t)).lipschitzWith
     have hclm_neg : LipschitzWith ‖chartChristoffelContractionRightCLM (I := I) g α
         (uPrime t) (chartCurve (I := I) α γ t)‖₊
         (fun Y => - chartChristoffelContractionRightCLM (I := I) g α (uPrime t)
@@ -855,7 +846,7 @@ lemma chartCoord_chartChristoffelContraction
             chartCoord (E := E) i v * chartCoord (E := E) j w := by
         rw [Finset.sum_eq_single l]
         · rw [hbasis l]; simp
-        · intro k _ hkl; rw [hbasis k, if_neg hkl]; ring
+        · intro k _ hkl; rw [hbasis k, ite_eq_right hkl]; ring
         · intro hl; exact absurd (Finset.mem_univ l) hl
 
 private lemma sum4_swap_outer_inner {ι : Type*} [Fintype ι]

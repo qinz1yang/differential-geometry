@@ -59,7 +59,7 @@ private theorem lRegularizedAction_minimizer_contMDiffOn_one_of_chart_partition_
   let tn : Nat → Real := fun k ↦
     if hk : k < m + 3 then t ⟨k, hk⟩ else b
   have htn (k : Nat) (hk : k < m + 3) : tn k = t ⟨k, hk⟩ := by
-    simp only [tn, dif_pos hk]
+    simp only [tn, dite_eq_left hk]
   have htNat : ∀ k, k < m + 2 → tn k < tn (k + 1) := by
     intro k hk
     let i : Fin (m + 2) := ⟨k, hk⟩

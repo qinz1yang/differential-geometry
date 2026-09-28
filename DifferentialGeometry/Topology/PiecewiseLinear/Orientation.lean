@@ -99,10 +99,10 @@ theorem doubleFaceTerm_swap (r : LinearOrder E) {s u : Finset E} {p : E × E}
     Finset.erase_right_comm
   by_cases h : (s.erase p.1).erase p.2 = u
   · have h' : (s.erase p.2).erase p.1 = u := herase.trans h
-    rw [if_pos h, if_pos h', incidenceSign_pair r hp₁ hp₂ hne]
+    rw [ite_eq_left h, ite_eq_left h', incidenceSign_pair r hp₁ hp₂ hne]
     ring
   · have h' : (s.erase p.2).erase p.1 ≠ u := fun he => h (herase.symm.trans he)
-    rw [if_neg h, if_neg h', zero_add]
+    rw [ite_eq_right h, ite_eq_right h', zero_add]
 
 theorem sum_doubleFaceTerm_eq_zero (r : LinearOrder E) (s u : Finset E) :
     ∑ p ∈ s.offDiag, doubleFaceTerm r s u p = 0 := by
@@ -126,9 +126,9 @@ theorem simplexBoundaryCoefficient_erase (r : LinearOrder E) {s : Finset E} {v :
     (hv : v ∈ s) : simplexBoundaryCoefficient r s (s.erase v) = incidenceSign r s v := by
   classical
   rw [simplexBoundaryCoefficient, Finset.sum_eq_single v]
-  · rw [if_pos rfl]
+  · rw [ite_eq_left rfl]
   · intro w hw hwv
-    rw [if_neg]
+    rw [ite_eq_right]
     exact fun he => hwv ((Finset.erase_inj s hw).mp he)
   · exact fun h => False.elim (h hv)
 
@@ -556,14 +556,14 @@ theorem orderAmalgamCode_lt_of_mem_left {X : Type*}
     (hxV : x ∈ V₁) (hyV : y ∈ V₁) (hxy : @LT.lt X r₁.toLT x y) :
     orderAmalgamCode r₁ r₂ V₁ V₂ A x < orderAmalgamCode r₁ r₂ V₁ V₂ A y := by
   by_cases hxA : x ∈ A <;> by_cases hyA : y ∈ A
-  · rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_pos hyA,
+  · rw [orderAmalgamCode, ite_eq_left hxA, orderAmalgamCode, ite_eq_left hyA,
       Prod.Lex.toLex_lt_toLex]
     exact Or.inl (finiteOrderRank_lt_of_mem r₁ A hxA hxy)
-  · rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_neg hyA, if_pos hyV,
+  · rw [orderAmalgamCode, ite_eq_left hxA, orderAmalgamCode, ite_eq_right hyA, ite_eq_left hyV,
       Prod.Lex.toLex_lt_toLex]
     exact Or.inl (finiteOrderRank_lt_of_mem r₁ A hxA hxy)
   · have hmono := finiteOrderRank_mono r₁ A hxy
-    rw [orderAmalgamCode, if_neg hxA, if_pos hxV, orderAmalgamCode, if_pos hyA,
+    rw [orderAmalgamCode, ite_eq_right hxA, ite_eq_left hxV, orderAmalgamCode, ite_eq_left hyA,
       Prod.Lex.toLex_lt_toLex]
     rcases hmono.lt_or_eq with hlt | heq
     · exact Or.inl hlt
@@ -571,8 +571,8 @@ theorem orderAmalgamCode_lt_of_mem_left {X : Type*}
       rw [Prod.Lex.toLex_lt_toLex]
       exact Or.inl (by omega)
   · have hmono := finiteOrderRank_mono r₁ A hxy
-    rw [orderAmalgamCode, if_neg hxA, if_pos hxV, orderAmalgamCode, if_neg hyA,
-      if_pos hyV, Prod.Lex.toLex_lt_toLex]
+    rw [orderAmalgamCode, ite_eq_right hxA, ite_eq_left hxV, orderAmalgamCode, ite_eq_right hyA,
+      ite_eq_left hyV, Prod.Lex.toLex_lt_toLex]
     rcases hmono.lt_or_eq with hlt | heq
     · exact Or.inl hlt
     · refine Or.inr ⟨heq, ?_⟩
@@ -593,22 +593,22 @@ theorem orderAmalgamCode_lt_of_mem_right {X : Type*}
     finiteOrderRank_eq_of_lt_iff r₁ r₂ A z (fun a ha => hagree a ha z hz)
   by_cases hxA : x ∈ A <;> by_cases hyA : y ∈ A
   · have hxy₁ : @LT.lt X r₁.toLT x y := (hagree x hxA y hyA).mpr hxy
-    rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_pos hyA,
+    rw [orderAmalgamCode, ite_eq_left hxA, orderAmalgamCode, ite_eq_left hyA,
       Prod.Lex.toLex_lt_toLex]
     exact Or.inl (finiteOrderRank_lt_of_mem r₁ A hxA hxy₁)
   · have hyNotV₁ : y ∉ V₁ := by
       intro hyV₁
       exact hyA (hinter (Finset.mem_inter.mpr ⟨hyV₁, hyV⟩))
     have hlt := finiteOrderRank_lt_of_mem r₂ A hxA hxy
-    rw [orderAmalgamCode, if_pos hxA, orderAmalgamCode, if_neg hyA,
-      if_neg hyNotV₁, if_pos hyV, Prod.Lex.toLex_lt_toLex, hArank x hxA]
+    rw [orderAmalgamCode, ite_eq_left hxA, orderAmalgamCode, ite_eq_right hyA,
+      ite_eq_right hyNotV₁, ite_eq_left hyV, Prod.Lex.toLex_lt_toLex, hArank x hxA]
     exact Or.inl hlt
   · have hxNotV₁ : x ∉ V₁ := by
       intro hxV₁
       exact hxA (hinter (Finset.mem_inter.mpr ⟨hxV₁, hxV⟩))
     have hmono := finiteOrderRank_mono r₂ A hxy
-    rw [orderAmalgamCode, if_neg hxA, if_neg hxNotV₁, if_pos hxV,
-      orderAmalgamCode, if_pos hyA, Prod.Lex.toLex_lt_toLex, hArank y hyA]
+    rw [orderAmalgamCode, ite_eq_right hxA, ite_eq_right hxNotV₁, ite_eq_left hxV,
+      orderAmalgamCode, ite_eq_left hyA, Prod.Lex.toLex_lt_toLex, hArank y hyA]
     rcases hmono.lt_or_eq with hlt | heq
     · exact Or.inl hlt
     · refine Or.inr ⟨heq, ?_⟩
@@ -621,8 +621,8 @@ theorem orderAmalgamCode_lt_of_mem_right {X : Type*}
       intro hyV₁
       exact hyA (hinter (Finset.mem_inter.mpr ⟨hyV₁, hyV⟩))
     have hmono := finiteOrderRank_mono r₂ A hxy
-    rw [orderAmalgamCode, if_neg hxA, if_neg hxNotV₁, if_pos hxV,
-      orderAmalgamCode, if_neg hyA, if_neg hyNotV₁, if_pos hyV,
+    rw [orderAmalgamCode, ite_eq_right hxA, ite_eq_right hxNotV₁, ite_eq_left hxV,
+      orderAmalgamCode, ite_eq_right hyA, ite_eq_right hyNotV₁, ite_eq_left hyV,
       Prod.Lex.toLex_lt_toLex]
     rcases hmono.lt_or_eq with hlt | heq
     · exact Or.inl hlt
@@ -942,7 +942,7 @@ theorem orientedBoundary_eq_of_cofaces_eq_singleton
     rw [simplexBoundaryCoefficient]
     apply Finset.sum_eq_zero
     intro v hv
-    rw [if_neg]
+    rw [ite_eq_right]
     intro herase
     have hts : t ⊆ s := by
       rw [← herase]
@@ -980,7 +980,7 @@ theorem orientedBoundary_eq_sum_faceCofaces
     rw [simplexBoundaryCoefficient]
     apply Finset.sum_eq_zero
     intro v hv
-    rw [if_neg]
+    rw [ite_eq_right]
     intro herase
     apply hst
     apply (mem_faceCofaces K).mpr
@@ -1183,7 +1183,7 @@ theorem relativeVertexRank_centroid
     (K L : Geometry.SimplicialComplex ℝ E) {s : Finset E}
     (hsK : s ∈ K.faces) (hsL : s ∉ L.faces) :
     relativeVertexRank K L (s.centroid ℝ id) = some s.card := by
-  rw [relativeVertexRank, dif_pos ⟨s, hsK, hsL, rfl⟩]
+  rw [relativeVertexRank, dite_eq_left ⟨s, hsK, hsL, rfl⟩]
   congr 2
   apply injOn_faces_of_mem_openSimplex K (centroid_mem_openSimplex_of_mem_faces K)
     (show Classical.choose (show ∃ t ∈ K.faces,
@@ -1199,7 +1199,7 @@ theorem relativeVertexRank_eq_none_of_mem_space
     [NormedAddCommGroup E] [NormedSpace ℝ E]
     {K L : Geometry.SimplicialComplex ℝ E} (hLK : L.faces ⊆ K.faces)
     {x : E} (hx : x ∈ L.space) : relativeVertexRank K L x = none := by
-  rw [relativeVertexRank, dif_neg]
+  rw [relativeVertexRank, dite_eq_right]
   rintro ⟨s, hsK, hsL, hsx⟩
   exact c_notMem_space hLK (centroid_mem_openSimplex_of_mem_faces K) hsK hsL (hsx ▸ hx)
 
@@ -1757,11 +1757,11 @@ theorem relativeLowerBoundaryProduct_eq_of_unique
     relativeLowerBoundaryProduct r τ d m = simplexBoundaryCoefficient r m a := by
   unfold relativeLowerBoundaryProduct
   rw [Finset.prod_eq_single a]
-  · rw [if_pos hacard]
+  · rw [ite_eq_left hacard]
   · intro t ht hta
     by_cases htcard : t.card + 1 = m.card
     · exact False.elim (hta (hunique t ht htcard))
-    · rw [if_neg htcard]
+    · rw [ite_eq_right htcard]
   · exact fun hnot => False.elim (hnot ha)
 
 open Classical in
@@ -1772,11 +1772,11 @@ theorem relativeUpperBoundaryProduct_eq_of_unique
     relativeUpperBoundaryProduct r d m = simplexBoundaryCoefficient r b m := by
   unfold relativeUpperBoundaryProduct
   rw [Finset.prod_eq_single b]
-  · rw [if_pos hbcard]
+  · rw [ite_eq_left hbcard]
   · intro s hs hsb
     by_cases hscard : m.card + 1 = s.card
     · exact False.elim (hsb (hunique s hs hscard))
-    · rw [if_neg hscard]
+    · rw [ite_eq_right hscard]
   · exact fun hnot => False.elim (hnot hb)
 
 open Classical in
@@ -1787,7 +1787,7 @@ theorem relativeUpperBoundaryProduct_eq_one
   unfold relativeUpperBoundaryProduct
   apply Finset.prod_eq_one
   intro s hs
-  rw [if_neg]
+  rw [ite_eq_right]
   have := hcard s hs
   omega
 
@@ -2252,7 +2252,7 @@ theorem relativeFaceData_spec
     IsRelFace K L L (relativeFaceBase K L hLK f) (relativeFaceFlag K L hLK f) ∧
       f = relativeFaceBase K L hLK f ∪
         (relativeFaceFlag K L hLK f).image (fun s => s.centroid ℝ id) := by
-  rw [relativeFaceBase, relativeFaceFlag, dif_pos hf, dif_pos hf]
+  rw [relativeFaceBase, relativeFaceFlag, dite_eq_left hf, dite_eq_left hf]
   exact hf.choose_spec.choose_spec
 
 open Classical in
@@ -2308,7 +2308,7 @@ theorem relativeCofaceCarrier_eq_of_flag_insert
     simp [hm]
   rw [hdiff]
   by_cases hne : ({m} : Finset (Finset E)).Nonempty
-  · rw [dif_pos hne]
+  · rw [dite_eq_left hne]
     exact Finset.mem_singleton.mp hne.choose_spec
   · exact False.elim (hne (Finset.singleton_nonempty m))
 
@@ -3319,10 +3319,10 @@ theorem boundaryComplex_simplexComplex_std (n : ℕ)
   let hKfinite : Finite K.faces :=
     (simplexComplex_faces_finite (stdVertices n) (stdVertices_affineIndependent n)).to_subtype
   have hTne : (stdVertices n).Nonempty := Finset.card_pos.mp (by rw [card_stdVertices]; omega)
-  have hKspace : K.space = stdSimplex ℝ (Fin (n + 2)) := by
+  have hKspace : K.space = Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
     rw [show K = simplexComplex (stdVertices n) (stdVertices_affineIndependent n) from rfl,
       simplexComplex_space _ _ hTne, convexHull_stdVertices]
-  have hKid : IsPLHomeomorphOn id (stdSimplex ℝ (Fin (n + 2))) K.space := by
+  have hKid : IsPLHomeomorphOn id (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) K.space := by
     rw [hKspace]
     exact isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_stdSimplex _)
   have hspace : (boundaryComplex (n + 1) K).space = B.space := by
@@ -3633,7 +3633,7 @@ theorem simplicialMap_glueEmbed_id_eq
   intro v hv
   have hvA : {v} ∈ A.faces := A.down_closed hs
     (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v)
-  rw [glueEmbed₁, glueEmbed₂, if_pos hvA, if_pos hvA]
+  rw [glueEmbed₁, glueEmbed₂, ite_eq_left hvA, ite_eq_left hvA]
   rfl
 
 open Classical in
@@ -3827,7 +3827,7 @@ theorem isPLSphere_double_of_isPLBall
   let hSfinite : Finite S.faces :=
     (simplexComplex_faces_finite (stdVertices n) (stdVertices_affineIndependent n)).to_subtype
   have hTne : (stdVertices n).Nonempty := Finset.card_pos.mp (by rw [card_stdVertices]; omega)
-  have hSspace : S.space = stdSimplex ℝ (Fin (n + 2)) := by
+  have hSspace : S.space = Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
     rw [simplexComplex_space _ _ hTne, convexHull_stdVertices]
   have hSball : IsPLBall (n + 1) S.space := by
     rw [hSspace]
@@ -4331,7 +4331,7 @@ theorem geometricLink_glued₁_space_inter_glued₂_space
   have hvK₁ : {v} ∈ K₁.faces := hA₁ hvA
   have hvK₂ : {v} ∈ K₂.faces := hA₂ hvA
   have hz : ι₂ v = ι₁ v := by
-    simp only [ι₁, ι₂, glueEmbed₁, glueEmbed₂, if_pos hvA, id_eq]
+    simp only [ι₁, ι₂, glueEmbed₁, glueEmbed₂, ite_eq_left hvA, id_eq]
   have hLA₁ : LA.faces ⊆ L₁.faces := by
     intro s hs
     change s ∈ (SimplicialComplex.geometricLink A {v}).faces at hs
@@ -4492,7 +4492,7 @@ theorem isPLSphere_geometricLink_gluedComplex_of_isPLBall
   have hvK₁ : {v} ∈ K₁.faces := hA₁ hvA
   have hvK₂ : {v} ∈ K₂.faces := hA₂ hvA
   have hz : glueEmbed₂ A id v = z := by
-    simp only [z, glueEmbed₁, glueEmbed₂, if_pos hvA, id_eq]
+    simp only [z, glueEmbed₁, glueEmbed₂, ite_eq_left hvA, id_eq]
   have hLA₁ : LA.faces ⊆ L₁.faces := by
     intro s hs
     change s ∈ (SimplicialComplex.geometricLink A {v}).faces at hs
@@ -4840,7 +4840,7 @@ private theorem orientedBoundary_orientationUnionSign
     have hsK :=
       (SimplicialComplex.mem_facesOfCard K.toPreAbstractSimplicialComplex).mp hs
     have hsK' : s ∈ K.faces := hsK.1
-    rw [orientationUnionSign, if_pos hsK']
+    rw [orientationUnionSign, ite_eq_left hsK']
   have hright :
       (∑ s ∈ F₂, orientationUnionSign K c₁ c₂ s *
         simplexBoundaryCoefficient r s t) =
@@ -4854,7 +4854,7 @@ private theorem orientedBoundary_orientationUnionSign
         have hsK : s ∉ K.faces := by
           intro hsK
           exact htop s hsK hsL.1 hsL.2
-        rw [orientationUnionSign, if_neg hsK, neg_mul]
+        rw [orientationUnionSign, ite_eq_right hsK, neg_mul]
       _ = _ := by rw [Finset.sum_neg_distrib]
   rw [hleft, hright]
   rfl
@@ -4992,9 +4992,9 @@ theorem CoherentOrientation.map_orders_agree_on_double_overlap
     by_contra huB
     exact glueEmbed₁_not_mem_glued₂_of_not_mem K B huB hw₂
   have hvEq : glueEmbed₁ B id v = glueEmbed₂ B id v := by
-    simp only [glueEmbed₁, glueEmbed₂, if_pos hvB, id_eq]
+    simp only [glueEmbed₁, glueEmbed₂, ite_eq_left hvB, id_eq]
   have huEq : glueEmbed₁ B id u = glueEmbed₂ B id u := by
-    simp only [glueEmbed₁, glueEmbed₂, if_pos huB, id_eq]
+    simp only [glueEmbed₁, glueEmbed₂, ite_eq_left huB, id_eq]
   have hleft :
       @LT.lt (E × E × ℝ)
           (oR.mapGlued₁ R B).vertexOrder.toLT
@@ -5162,7 +5162,7 @@ theorem isCombinatorialManifold_double_succ_succ
       have hsphere := isPLSphere_geometricLink_gluedComplex_of_isPLBall R K B
         hBRfaces hBKfaces hfull hvB hballR hballK hboundaryR hboundaryK
       have hz : glueEmbed₂ B id v = glueEmbed₁ B id v := by
-        simp only [glueEmbed₁, glueEmbed₂, if_pos hvB, id_eq]
+        simp only [glueEmbed₁, glueEmbed₂, ite_eq_left hvB, id_eq]
       simpa only [D, hz] using hsphere
     · have hsphereK := hK.isPLSphere_geometricLink_of_not_mem_boundary K hvK hvB
       let hLKfinite : Finite (SimplicialComplex.geometricLink K {v}).faces :=
@@ -5277,10 +5277,10 @@ theorem IsOrientable.double
       rw [hDfaces] at hsD
       exact hsD
     by_cases hs₁ : s ∈ G₁.faces
-    · rw [orientationUnionSign, if_pos hs₁]
+    · rw [orientationUnionSign, ite_eq_left hs₁]
       exact o₁.sign_top s hs₁ hscard
     · have hs₂ : s ∈ G₂.faces := hsSides.resolve_left hs₁
-      rw [orientationUnionSign, if_neg hs₁]
+      rw [orientationUnionSign, ite_eq_right hs₁]
       rcases o₂.sign_top s hs₂ hscard with hsone | hsneg
       · right
         rw [hsone]
@@ -5673,7 +5673,7 @@ theorem isOrientable_iff_forall_simplicialComponent
       have hrank := finiteOrderRank_lt_of_mem (chosen c).vertexOrder
         (complexVertexFinset K) hxV hxy
       dsimp only [key]
-      rw [dif_pos hxK, dif_pos hyK]
+      rw [dite_eq_left hxK, dite_eq_left hyK]
       apply Sum.Lex.inl
       apply Prod.Lex.toLex_lt_toLex.mpr
       refine Or.inr ⟨hxc.trans hyc.symm, ?_⟩
@@ -5727,7 +5727,7 @@ theorem isOrientable_iff_forall_simplicialComponent
       sign_top := ?_
       coherent := ?_ }⟩
     · intro s hs hscard
-      simp only [sign, dif_pos hs]
+      simp only [sign, dite_eq_left hs]
       exact (oriented (simplicialComponentOfFace K hs)).sign_top s
         (mem_simplicialComponentOfFace K hs) hscard
     · intro t ht htcard hne
@@ -5756,7 +5756,7 @@ theorem isOrientable_iff_forall_simplicialComponent
           have hsign : (oriented (simplicialComponentOfFace K hsK)).sign s =
               (oriented c).sign s :=
             congrArg (fun d => (oriented d).sign s) hc
-          simp only [sign, dif_pos hsK]
+          simp only [sign, dite_eq_left hsK]
           rw [hsign]
         _ = 0 := hzero
 
@@ -7421,7 +7421,7 @@ noncomputable def CoherentOrientation.ofBarycentricSubdivision
   sign := barycentricRecoveredOrientationSign r o
   sign_top := by
     intro s hsK hscard
-    rw [barycentricRecoveredOrientationSign, dif_pos hscard]
+    rw [barycentricRecoveredOrientationSign, dite_eq_left hscard]
     let oB := o.changeVertexOrder (barycentricOrientationVertexOrder K r)
     have hface := permutedBarycentricFace_mem K r hsK hscard
       (1 : Equiv.Perm (Fin (n + 2)))
@@ -7449,8 +7449,8 @@ noncomputable def CoherentOrientation.ofBarycentricSubdivision
     rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
     simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
       hsp, not_false_eq_true]
-    rw [barycentricRecoveredOrientationSign, dif_pos hscard,
-      barycentricRecoveredOrientationSign, dif_pos hpcard]
+    rw [barycentricRecoveredOrientationSign, dite_eq_left hscard,
+      barycentricRecoveredOrientationSign, dite_eq_left hpcard]
     exact hcancel
 
 open Classical in
@@ -7857,7 +7857,7 @@ noncomputable def CoherentOrientation.ofConvexHull
   sign s := if hs : s.card = n + 2 then affineSimplexOrientationSign r hs hTcard else 0
   sign_top := by
     intro s hs hscard
-    simp only [dif_pos hscard]
+    simp only [dite_eq_left hscard]
     exact affineSimplexOrientationSign_eq_one_or_neg_one r hscard hTcard (K.indep hs)
       ((K.convexHull_subset_space hs).trans hsub)
   coherent := by
@@ -7875,7 +7875,7 @@ noncomputable def CoherentOrientation.ofConvexHull
     obtain ⟨ht, htcard, hft⟩ := (mem_faceCofaces K).mp htco
     rw [orientedBoundary_eq_sum_faceCofaces, hcofaces]
     simp only [Finset.sum_insert, Finset.sum_singleton, Finset.mem_singleton,
-      hst, not_false_eq_true, dif_pos hscard, dif_pos htcard]
+      hst, not_false_eq_true, dite_eq_left hscard, dite_eq_left htcard]
     exact affineSimplexOrientationSign_pair_cancel r K hs ht hst hfs hft hfcard hscard htcard
       hTcard ((K.convexHull_subset_space hs).trans hsub) ((K.convexHull_subset_space ht).trans hsub)
 
@@ -8110,7 +8110,7 @@ theorem subdivisionOrientationSign_eq
     subdivisionOrientationSign o s =
       affineSimplexOrientationSign o.vertexOrder hs ht * o.sign (carrierFace K (s.centroid ℝ id)) :=
           by
-  simp only [subdivisionOrientationSign, dif_pos hs, dif_pos ht]
+  simp only [subdivisionOrientationSign, dite_eq_left hs, dite_eq_left ht]
 
 open Classical in
 theorem subdivisionOrientationSign_eq_one_or_neg_one
@@ -8328,7 +8328,7 @@ private theorem exists_orientationSign_on_subdivision_face
     change o.sign s * (if hs : s.card = n + 2 then
       affineSimplexOrientationSign o.vertexOrder hs hScard else 0) =
         q.sign s₀ * c.sign s₀ at hratio
-    rw [dif_pos hscard] at hratio
+    rw [dite_eq_left hscard] at hratio
     rcases affineSimplexOrientationSign_eq_one_or_neg_one o.vertexOrder hscard hScard
       (K'.indep hs) hsub with hsign | hsign <;> rw [hsign] at hratio ⊢ <;> linarith
 
@@ -8399,7 +8399,7 @@ noncomputable def CoherentOrientation.ofSubdivision
         convexHull ℝ (s : Set E) ⊆ convexHull ℝ (S : Set E) →
           o.sign s = affineSimplexOrientationSign o.vertexOrder hs hScard * g S := by
     dsimp only [g]
-    rw [dif_pos ⟨hS, hScard⟩]
+    rw [dite_eq_left ⟨hS, hScard⟩]
     exact (exists_orientationSign_on_subdivision_face hK' o h hS hScard).choose_spec
   refine {
     vertexOrder := o.vertexOrder
@@ -8503,7 +8503,7 @@ theorem isOrientable_of_isPLBall
   | succ n =>
     let S := simplexComplex (stdVertices n) (stdVertices_affineIndependent n)
     let _ : Finite S.faces := (simplexComplex_faces_finite _ _).to_subtype
-    have hspace : S.space = stdSimplex ℝ (Fin (n + 2)) := by
+    have hspace : S.space = Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
       rw [simplexComplex_space _ _ (Finset.card_pos.mp (by rw [card_stdVertices]; omega)),
         convexHull_stdVertices]
     have hS : IsPLBall (n + 1) S.space := by

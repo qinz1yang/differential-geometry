@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 set_option autoImplicit false
@@ -293,7 +293,7 @@ theorem oneForm_coordinateFrame_coeff_at_base_eq_coord
     rw [IsLocalFrameOn.toBasisAt_coe]
     rw [coordinateFrameAt_toBasis_apply]
   unfold IsLocalFrameOn.coeff
-  rw [dif_pos (coordinateFrameAt_mem (I := I) x₀)]
+  rw [dite_eq_left (coordinateFrameAt_mem (I := I) x₀)]
   rw [hbasis]
 
 omit [CompleteSpace 𝕜] [FiniteDimensional 𝕜 E] [IsManifold I 1 M] [IsManifold I 2 M] in
@@ -306,4 +306,5 @@ theorem oneForm_mvfderiv_congr_eventually
   have hx : f x = g x := h.eq_of_nhds
   unfold mvfderiv
   rw [hmf, hx]
+  rfl
 end DifferentialGeometry.Tensor.Coordinates

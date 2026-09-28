@@ -438,8 +438,6 @@ theorem tensor0SFieldProduct_hasDerivAt
     (hAt (v ∘ Fin.castAdd q)).mul (hBt (v ∘ Fin.natAdd p))
   have hslope := hasDerivAt_iff_tendsto_slope.mp hmul
   convert hslope using 1
-  funext r
-  rfl
 
 
 end Tensor0SBundle

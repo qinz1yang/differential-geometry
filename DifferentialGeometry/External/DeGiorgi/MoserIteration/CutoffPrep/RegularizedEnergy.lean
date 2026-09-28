@@ -551,9 +551,6 @@ private theorem moserExactReg_grad_split
       Integrable (fun x => 2 * termAfun x + 2 * termBfun x) μ := by
     convert (hTermA_int.const_mul (2 : ℝ)).add
       (hTermB_int.const_mul (2 : ℝ)) using 1
-    · congr
-    · funext x
-      rfl
   have hmono :
       ∫ x, ‖hwRegρ.weakGrad x‖ ^ 2 ∂μ ≤
         ∫ x, 2 * termAfun x + 2 * termBfun x ∂μ := by
@@ -829,7 +826,8 @@ private theorem moserExactReg_energyPrep
     have htmp :
         Integrable (fun x => 2 * (Aρ.1.Λ * boundTerm x) + (1 / 2 : ℝ) * leftTerm x) μ := by
       convert (hbound_int.const_mul (2 * Aρ.1.Λ)).add
-        (hleft_int.const_mul (1 / 2 : ℝ)) using 1 <;> try rfl
+        (hleft_int.const_mul (1 / 2 : ℝ)) using 1
+      try rfl
       ring_nf
       funext x
       rfl

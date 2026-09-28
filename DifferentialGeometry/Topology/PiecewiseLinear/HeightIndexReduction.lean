@@ -47,10 +47,10 @@ theorem heightIndex_lt_of_singular_comparison
     if hx : (x : E) = q then ⟨p, hp⟩ else ⟨x, (hother ⟨x.property, hx⟩).1⟩
   have heq : ∀ x : heightSingularPoints R.space f, (x : E) = q → (e x : E) = p := by
     intro x hx
-    simp only [e, dif_pos hx]
+    simp only [e, dite_eq_left hx]
   have hne : ∀ x : heightSingularPoints R.space f, (x : E) ≠ q → (e x : E) = x := by
     intro x hx
-    simp only [e, dif_neg hx]
+    simp only [e, dite_eq_right hx]
   have heinj : Function.Injective e := by
     intro x y hxy
     have hval := congrArg Subtype.val hxy
@@ -102,7 +102,7 @@ theorem exists_cap_pair_heightIndex_lt_of_pos
       heightIndex R₁.space f₁ < heightIndex K.space ℓ ∧
       heightIndex R₂.space f₂ < heightIndex K.space ℓ ∧
       IsPLHomeomorphOn H univ univ ∧ EqOn H id Wᶜ ∧ H '' K.space ⊆ W ∧
-      IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ {x | ℓ x = r} ∧
+      IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ {x | ℓ x = r} ∧
       R₁.space ∩ R₂.space = D ∧
       (R₁.space ∪ R₂.space) \ (D \ (u '' stdSimplexBoundary 2)) = H '' K.space := by
   classical
@@ -147,7 +147,7 @@ theorem exists_cap_pair_heightIndex_lt_of_pos
     by_contra hnot
     have heq : H x = x := H.injective (hfixW hnot)
     exact hnot (heq.symm ▸ hKW hx)
-  have hu : IsPLHomeomorphOn (H ∘ g) (stdSimplex ℝ (Fin 3)) (H '' D) :=
+  have hu : IsPLHomeomorphOn (H ∘ g) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H '' D) :=
     hg.trans (hH.restrict (IsPLBall.isPolyhedron ⟨g, hg⟩) (subset_univ D))
   have hub : (H ∘ g) '' stdSimplexBoundary 2 = H '' J := by rw [image_comp, hgJ]
   refine ⟨R₁, R₂, H, f₁, f₂, H '' D, H ∘ g, ℓ (H p), hR₁fin, hR₂fin, hR₁, hR₂,

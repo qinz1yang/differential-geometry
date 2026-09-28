@@ -29,13 +29,15 @@ theorem exists_signed_supported_collar_matching_of_sphere
         (∀ q : SphereCylinder, |q.2| ≤ r → F (q.1,a + q.2) = φ (q.1,σ * q.2)) ∧
         ∃ K : Set SphereCylinder, IsCompact K ∧ K ⊆ univ ×ˢ Ioi ρ ∧
           EqOn F id Kᶜ ∧ EqOn F.symm id Kᶜ := by
-  let T := DifferentialGeometry.Geometry.Metric.cylinderAxialDiffeomorph (I := 𝓡 2) (M := S2) a 1 (by norm_num)
+  let T : SphereCylinder ≃ₘ⟮SphereCylinderModel, SphereCylinderModel⟯ SphereCylinder :=
+    Diffeomorph.fiberwiseAffine (fun _ => a) (fun _ => 1)
+      contMDiff_const contMDiff_const (fun _ => one_ne_zero)
   let A := (φ.trans F₀.symm.toPartialDiffeomorph).trans T.symm.toPartialDiffeomorph
   have hAs : univ ×ˢ Icc (-R) R ⊆ A.source :=
     fun q hq => ⟨⟨hsource hq,mem_univ _⟩,mem_univ _⟩
   have hAq (q : SphereCylinder) : A q = ((F₀.symm (φ q)).1,(F₀.symm (φ q)).2-a) := by
-    change ((F₀.symm (φ q)).1,1 * ((F₀.symm (φ q)).2-a)) = _
-    rw [one_mul]
+    change ((F₀.symm (φ q)).1,((F₀.symm (φ q)).2-a) / 1) = _
+    rw [div_one]
   have hA0 (p : S2) : A (p,0) = (η p,0) := by
     rw [hAq,← hzero,F₀.symm_apply_apply,sub_self]
   have hlow (q : SphereCylinder) (hq : q ∈ univ ×ˢ Icc (-R) R) : ρ-a < (A q).2 := by
@@ -63,8 +65,8 @@ theorem exists_signed_supported_collar_matching_of_sphere
   let F := ((T.symm.trans G).trans T).trans F₀
   have hF (q : SphereCylinder) (hq : |q.2| ≤ r) : F (q.1,a+q.2) = φ (q.1,σ*q.2) := by
     have hTq : T.symm (q.1,a+q.2) = q := by
-      change (q.1,1 * (a+q.2-a)) = q
-      simp only [one_mul,add_sub_cancel_left,Prod.mk.eta]
+      change (q.1,(a+q.2-a) / 1) = q
+      simp only [div_one,add_sub_cancel_left,Prod.mk.eta]
     change F₀ (T (G (T.symm (q.1,a+q.2)))) = _
     rw [hTq,hG q hq]
     change F₀ (T (T.symm (F₀.symm (φ (q.1,σ*q.2))))) = _
@@ -83,8 +85,7 @@ theorem exists_signed_supported_collar_matching_of_sphere
     rfl
   refine ⟨σ,hσ,F,hF,K₀ ∪ T '' K,hK₀.union (hK.image T.continuous),union_subset hK₀ρ hKT,hFfix,?_⟩
   intro q hq
-  apply F.injective
-  exact (F.apply_symm_apply q).trans (hFfix q hq).symm
+  exact (F.toEquiv.symm_apply_eq).2 (hFfix q hq).symm
 
 
 private theorem exists_partialDiffeomorph_of_open_cylinder_embedding

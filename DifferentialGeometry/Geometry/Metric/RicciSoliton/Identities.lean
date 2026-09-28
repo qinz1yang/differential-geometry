@@ -534,8 +534,8 @@ theorem gradientRicciSoliton_weightedLaplacian_scalar
       (σ / 2) * metricScalarAt (I := I) g x -
         Tensor0SBundle.normSq0S (I := I) g x 2 Ric := by
     change Tensor0SBundle.inner0S (I := I) g x 2 Ric Hess = _
-    rw [hTensor, Tensor0SBundle.inner0S_sub_right,
-      Tensor0SBundle.inner0S_smul_right]
+    rw [hTensor, DifferentialGeometry.Tensor0SBundle.inner0S_sub_right,
+      DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
     change (σ / 2) * inner02 (I := I) g x Ric (metricTensor0S (I := I) g x) -
         inner02 (I := I) g x Ric Ric = _
     rw [htrace, hnorm]

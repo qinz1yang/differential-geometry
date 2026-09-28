@@ -1,5 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HextDiscardedSideReduction
+import DifferentialGeometry.Topology.ThreeManifold.CutCapGluing
 import DifferentialGeometry.Topology.VanKampen.Pi1FiniteConnectedSum
 
 set_option autoImplicit false
@@ -9,30 +8,6 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.Topology
 
 universe u
-
-def simplyConnectedPoincareStandard : Prop :=
-  ∀ (M : Type u) [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [ConnectedSpace M]
-    [SimplyConnectedSpace M], isPoincareStandard M
-
-theorem simplyConnectedPoincareStandard_of_smoothPoincareConjecture
-    (h : DifferentialGeometry.PDE.RicciFlow.Surgery.smoothPoincareConjecture.{u}) :
-    simplyConnectedPoincareStandard.{u} := by
-  intro M _ _ _ _ _ _ _
-  obtain ⟨e⟩ := h M
-  exact isPoincareStandard_of_diffeomorph e isPoincareStandard_sphere
-
-theorem smoothPoincareConjecture_of_simplyConnectedPoincareStandard
-    (h : simplyConnectedPoincareStandard.{u}) :
-    DifferentialGeometry.PDE.RicciFlow.Surgery.smoothPoincareConjecture.{u} := by
-  intro M _ _ _ _ _ _ _
-  exact exists_diffeomorph_standardThreeSphere_of_isPoincareStandard (h M)
-
-theorem smoothPoincareConjecture_iff_simplyConnectedPoincareStandard :
-    DifferentialGeometry.PDE.RicciFlow.Surgery.smoothPoincareConjecture.{u} ↔
-      simplyConnectedPoincareStandard.{u} :=
-  ⟨simplyConnectedPoincareStandard_of_smoothPoincareConjecture,
-    smoothPoincareConjecture_of_simplyConnectedPoincareStandard⟩
 
 namespace SphericalCutCapTransition
 
@@ -73,48 +48,6 @@ theorem subsingleton_fundamentalGroup_discardedComponent
   exact subsingleton_fundamentalGroup_factor_of_subsingleton_finiteConnectedSum (L ++ K) _
     (List.mem_append_left _ hFmem) (fun _ => Classical.choice inferInstance) y hsumSub q
 
-theorem isPoincareStandard_discardedComponent_of_smoothPoincareConjecture
-    (h : DifferentialGeometry.PDE.RicciFlow.Surgery.smoothPoincareConjecture.{u})
-    (hsum : E.componentConnectedSumDecomposition)
-    (C : ConnectedComponents M.Carrier) {p : (M.component C).Carrier}
-    (hsc : Subsingleton (FundamentalGroup (M.component C).Carrier p))
-    (x : E.tubes.core) (d : E.discarded.Carrier) (hxC : ConnectedComponents.mk x.1 = C)
-    (hd : E.presentation (E.capping.coreInclusion x) = Sum.inr d) :
-    isPoincareStandard (E.outgoingFactor (Sum.inr d)).Carrier := by
-  refine @simplyConnectedPoincareStandard_of_smoothPoincareConjecture.{u} h _ _ _ _ _ _ _ ?_
-  refine simply_connected_iff_loops_nullhomotopic.mpr ⟨inferInstance, fun q γ => ?_⟩
-  refine Quotient.exact
-    (@Subsingleton.elim _
-      (E.subsingleton_fundamentalGroup_discardedComponent hsum C hsc x d hxC hd q) _ _)
-
 end SphericalCutCapTransition
 
 end DifferentialGeometry.Topology
-
-namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-
-universe u
-
-namespace RetainedCoreObservationTower
-
-variable {P : OrientedThreeStage.{u}} {g : P.Metric}
-
-def discardedSideStandardRealization (T : RetainedCoreObservationTower P g) : Prop :=
-  ∀ (n : ℕ) (j : Fin (T.history n).eventCount),
-    DiscardedSideStandardRealization
-      ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold
-
-theorem hasPoincareStandardDiscarded_of_discardedSideStandardRealization
-    (T : RetainedCoreObservationTower P g) (h : T.discardedSideStandardRealization) :
-    T.hasPoincareStandardDiscarded :=
-  fun n j =>
-    MetricCutCapEvent.poincareStandardDiscarded_of_discardedSideStandardRealization _ (h n j)
-
-theorem discardedSideStandardRealization_empty
-    (P : OrientedThreeStage.{u}) [IsEmpty P.Carrier] (g : P.Metric) :
-    (RetainedCoreObservationTower.empty P g).discardedSideStandardRealization :=
-  fun n j => Fin.elim0 (Fin.cast (RetainedCoreObservationTower.empty_eventCount P g n) j)
-
-end RetainedCoreObservationTower
-
-end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

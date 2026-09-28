@@ -245,17 +245,17 @@ private theorem roundThreeCylinder_product_basis_ricciDiag
           hbasisSum_inl, hbasisSum_inl]
         rw [hroundRicci, hM i j]
         fin_cases i <;> fin_cases j <;>
-          norm_num [ricciDiag3, delta3, eSum, finSumFinEquiv] <;> decide
+          norm_num [ricciDiag3, delta3, eSum, finSumFinEquiv]
       · rw [roundThreeCylinderShrinkerMetric, ricciCompAt_apply,
           metricRicciAt_apply_eq_ricciTensor, Curvature.ricciTensor_productMetric,
           hbasisSum_inl, hbasisSum_inr]
         fin_cases i <;> fin_cases j <;>
-          norm_num [ricciDiag3, delta3, eSum, finSumFinEquiv] <;> decide
+          norm_num [ricciDiag3, delta3, eSum, finSumFinEquiv]
       · rw [roundThreeCylinderShrinkerMetric, ricciCompAt_apply,
           metricRicciAt_apply_eq_ricciTensor, Curvature.ricciTensor_productMetric,
           hbasisSum_inr, hbasisSum_inl]
         fin_cases i; fin_cases j <;>
-          norm_num [ricciDiag3, delta3, eSum, finSumFinEquiv] <;> decide
+          norm_num [ricciDiag3, delta3, eSum, finSumFinEquiv]
       · rw [roundThreeCylinderShrinkerMetric, ricciCompAt_apply,
           metricRicciAt_apply_eq_ricciTensor, Curvature.ricciTensor_productMetric,
           hbasisSum_inr, hbasisSum_inr]

@@ -806,7 +806,7 @@ theorem hamiltonHarnackQuadraticAt_eq_unshifted_add
             (W.product W) / (2 * clock.elapsed) := by
   unfold hamiltonHarnackQuadraticAt hamiltonUnshiftedHarnackQuadraticAt
   unfold hamiltonQuadraticAt hamiltonMAt
-  rw [inner0S_add_left, _root_.Tensor0SBundle.inner0S_smul_left]
+  rw [inner0S_add_left, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left]
   ring
 
 omit [SigmaCompactSpace M] in
@@ -1061,7 +1061,7 @@ theorem hamiltonHarnackQuadraticAt_smul
     ring
   unfold hamiltonHarnackQuadraticAt hamiltonQuadraticAt curvatureBlock
   rw [hUU, hUW, hWW]
-  simp only [Tensor0SBundle.inner0S_smul_right]
+  simp only [DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
   ring
 
 omit [SigmaCompactSpace M] in
@@ -1097,7 +1097,7 @@ theorem normalizeHarnackCarrier_ne_zero
     (z : HarnackCarrierFiber (E := E) (I := I) (M := M) x)
     (hz : z ≠ 0) :
     normalizeHarnackCarrier (E := E) (I := I) (M := M) gRef x z ≠ 0 := by
-  rw [normalizeHarnackCarrier, if_neg hz]
+  rw [normalizeHarnackCarrier, ite_eq_right hz]
   have hq := harnackCarrierNormSq_pos (E := E) (I := I) (M := M) gRef
     (Bundle.TotalSpace.mk' (HarnackCarrierModel (E := E)) x z) hz
   exact smul_ne_zero (inv_ne_zero (ne_of_gt (Real.sqrt_pos.2 hq))) hz
@@ -1116,7 +1116,7 @@ theorem normalizeHarnackCarrier_normSq
     harnackCarrierNormSq_pos (E := E) (I := I) (M := M) gRef
       (Bundle.TotalSpace.mk' (HarnackCarrierModel (E := E)) x z) hz
   have hsqrt : 0 < Real.sqrt q := Real.sqrt_pos.2 hq
-  rw [normalizeHarnackCarrier, if_neg hz]
+  rw [normalizeHarnackCarrier, ite_eq_right hz]
   rw [harnackCarrierNormSq_smul]
   change (Real.sqrt q)⁻¹ ^ 2 * q = 1
   field_simp [ne_of_gt hsqrt]
@@ -1177,7 +1177,7 @@ private theorem hamiltonPerturbedHarnackQuadraticValue_of_ne_zero
       hamiltonPerturbedHarnackQuadraticAt (I := I) S ⟨origin, t, ht⟩
         (phi t x) (psi t) x z.1 z.2 := by
   classical
-  simp only [hamiltonPerturbedHarnackQuadraticValue, dif_pos ht, if_neg hz]
+  simp only [hamiltonPerturbedHarnackQuadraticValue, dite_eq_left ht, ite_eq_right hz]
 
 omit [SigmaCompactSpace M] in
 private theorem hamiltonPerturbedHarnackRayleigh_zero
@@ -1213,12 +1213,12 @@ private theorem hamiltonPerturbedHarnackRayleigh_normalize
   have hc : c ≠ 0 := inv_ne_zero (ne_of_gt (Real.sqrt_pos.2 hq))
   have hnorm :
       normalizeHarnackCarrier (E := E) (I := I) (M := M) gRef x z = c • z := by
-    rw [normalizeHarnackCarrier, if_neg hz]
+    rw [normalizeHarnackCarrier, ite_eq_right hz]
   have hcz : c • z ≠ 0 := smul_ne_zero hc hz
   classical
-  simp only [hamiltonPerturbedHarnackRayleigh, dif_pos ht]
-  rw [if_neg (normalizeHarnackCarrier_ne_zero
-    (E := E) (I := I) (M := M) gRef x z hz), if_neg hz, hnorm]
+  simp only [hamiltonPerturbedHarnackRayleigh, dite_eq_left ht]
+  rw [ite_eq_right (normalizeHarnackCarrier_ne_zero
+    (E := E) (I := I) (M := M) gRef x z hz), ite_eq_right hz, hnorm]
   change
     hamiltonPerturbedHarnackQuadraticAt (I := I) S ⟨origin, t, ht⟩
           (phi t x) (psi t) x (c • z.1) (c • z.2) /
@@ -1635,7 +1635,7 @@ private theorem ricciEnd_repr_orthonormal_matrix
   rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
     (fun i j => if i = j then (1 : Real) else 0) hinv]
   simp only [ricciEnd_inner, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 omit [SigmaCompactSpace M] in
 private theorem hamiltonK_fixedHeat_component
@@ -1747,7 +1747,7 @@ private theorem hamiltonK_fixedHeat_component
         (covariantEndomorphismAction0S (I := I)
           (hamiltonKField (I := I) S (t : Real) x) RicEnd) basis slots = _
     rw [tensor0SComponent_covariantEndomorphismAction0S]
-    unfold ricStarArray
+    unfold covariantEndomorphismActionArray
     rw [Fin.sum_univ_four]
     simp only [RicEnd, LinearMap.coe_toContinuousLinearMap']
     simp_rw [ricciEnd_repr_orthonormal_matrix
@@ -1978,7 +1978,7 @@ private theorem inner0S_product_comm_two_of_finAddFlip
     (hT : T.domDomCongr (finAddFlip (m := 2) (n := 2)) = T) :
     inner0S (I := I) g x 4 T (A.product B) =
       inner0S (I := I) g x 4 T (B.product A) := by
-  have h := Tensor0SBundle.inner0S_domDomCongr
+  have h := DifferentialGeometry.Tensor0SBundle.inner0S_domDomCongr
     (I := I) g x basis hinv (finAddFlip (m := 2) (n := 2))
       T (A.product B)
   rw [hT, tensor0SSpace_product_finAddFlip_two] at h
@@ -1995,7 +1995,7 @@ private theorem inner0S_product_comm_one_of_finAddFlip
     (hT : T.domDomCongr (finAddFlip (m := 1) (n := 1)) = T) :
     inner0S (I := I) g x 2 T (A.product B) =
       inner0S (I := I) g x 2 T (B.product A) := by
-  have h := Tensor0SBundle.inner0S_domDomCongr
+  have h := DifferentialGeometry.Tensor0SBundle.inner0S_domDomCongr
     (I := I) g x basis hinv (finAddFlip (m := 1) (n := 1))
       T (A.product B)
   rw [hT, tensor0SSpace_product_finAddFlip_one] at h
@@ -2166,7 +2166,7 @@ private theorem hamilton_contracted_curvature_derivative_components
     (metricNablaRic (I := I) (M := M) (S.base.metric t) x)
     hcore.1 hcore.2.1 hcore.2.2 (basis r) (basis q) (basis p)
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, hamiltonP_apply] at hDiv
+    Finset.mem_univ, ite_true, hamiltonP_apply] at hDiv
   rw [metricNablaRic_last_two_symm (I := I) (M := M)
       (S.base.metric t) x (basis q) (basis r) (basis p),
     metricNablaRic_last_two_symm (I := I) (M := M)
@@ -2615,7 +2615,7 @@ private theorem inner0S_square_time_deriv_sub_laplacianAt_of_fixed_heat_zero
           ((tensor0SCurry (I := I) (M := M) s x
             (nablaA x) (basis e)).product (A t x)) := by
     intro e
-    have h := Tensor0SBundle.inner0S_domDomCongr
+    have h := DifferentialGeometry.Tensor0SBundle.inner0S_domDomCongr
       (I := I) (G.metric t) x basis hinv (finAddFlip (m := s) (n := s))
       (tensor0SCurry (I := I) (M := M) (s + s) x (nablaT x) (basis e))
       ((tensor0SCurry (I := I) (M := M) s x
@@ -2704,7 +2704,7 @@ private theorem normSq0S_time_deriv_sub_laplacianAt_of_fixed_heat
   have hsymm : inner0S (I := I) (G.metric t) x s (A t x) fixedHeat =
       inner0S (I := I) (G.metric t) x s fixedHeat (A t x) :=
     inner0S_symm (I := I) (G.metric t) x (A t x) fixedHeat
-  let d := ricciReaction0S (I := I) (G.metric t) x s Q (A t x) (A t x) +
+  let d := metricVariationPairing0S (I := I) (G.metric t) x s Q (A t x) (A t x) +
     inner0S (I := I) (G.metric t) x s Adot (A t x) +
       inner0S (I := I) (G.metric t) x s (A t x) Adot
   refine ⟨d, ?_, ?_⟩
@@ -4187,7 +4187,7 @@ theorem hamilton_harnack_block_exact_evolution_of_tensor_test_jet
             (I := I) (S.base.metric clock.time) basis
               (identityInvMetric (Idx := Fin n)) hinv (basis a) (basis b)
           simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul,
-            zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at h
+            zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at h
           simpa only [nablaP] using h
         have hdivfun :
             (fun a b => ∑ e, nablaP e e a b) =
@@ -6456,9 +6456,9 @@ private theorem hamiltonPerturbedCurvatureBlock_coordinates_symmetries
     have heq (i j : A) : (if i = j then (1 : Real) else 0) =
         if j = i then 1 else 0 := by
       by_cases h : i = j
-      · rw [if_pos h, if_pos h.symm]
+      · rw [ite_eq_left h, ite_eq_left h.symm]
       · have h' : j ≠ i := fun hij : j = i => h hij.symm
-        rw [if_neg h, if_neg h']
+        rw [ite_eq_right h, ite_eq_right h']
     unfold hamiltonMetricCurvatureBlockPerturbation
     rw [heq c a, heq d b, heq c b, heq d a]
     ring
@@ -6534,7 +6534,7 @@ private theorem hamiltonPerturbedMBlock_coordinates_symm
   · subst b
     rfl
   · have h' : b ≠ a := fun hba' : b = a => h hba'.symm
-    rw [if_neg h, if_neg h', mul_zero, add_zero]
+    rw [ite_eq_right h, ite_eq_right h', mul_zero, add_zero]
     simpa using hM
 
 omit [SigmaCompactSpace M] in
@@ -6826,7 +6826,7 @@ private theorem hamilton_perturbed_harnack_exact_rhs_pos_of_null
       (I := I) (S.base.metric clock.time) basis
         (identityInvMetric (Idx := Fin n)) hinvTrace (basis a) (basis b)
     simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul,
-      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at htrace
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at htrace
     symm
     simpa only [nablaP, hamiltonNablaPField_apply] using htrace
   have hMcomp : hamiltonMComponent clock R Ric
@@ -8449,7 +8449,7 @@ private theorem hamiltonPerturbedHarnackRayleigh_compact_representatives
         harnackCarrierNormSq_pos (E := E) (I := I) (M := M) gRef
           (Bundle.TotalSpace.mk' (HarnackCarrierModel (E := E)) x z) hz
       classical
-      simp only [hamiltonPerturbedHarnackRayleigh, dif_pos ht.1, if_neg hz]
+      simp only [hamiltonPerturbedHarnackRayleigh, dite_eq_left ht.1, ite_eq_right hz]
       exact div_pos hQ hnorm
   · intro t ht z hzq
     have horiginT : origin < t :=
@@ -8474,7 +8474,7 @@ private theorem hamiltonPerturbedHarnackRayleigh_compact_representatives
             t z.proj z.2 := by
         classical
         simp only [hamiltonPerturbedHarnackRayleigh,
-          dif_pos horiginT, if_neg hz]
+          dite_eq_left horiginT, ite_eq_right hz]
         exact div_pos hQ hnorm
       exact (not_lt_of_ge hzq) hqpos
     let zn := normalizeHarnackCarrier
@@ -8585,7 +8585,7 @@ private theorem hamiltonPerturbedHarnackQuadraticValue_compact_representatives
     let zn := normalizeHarnackCarrier
       (E := E) (I := I) (M := M) gRef z.proj z.2
     have hzn : zn = c • z.2 := by
-      simp only [zn, normalizeHarnackCarrier, if_neg hz, c, qnorm]
+      simp only [zn, normalizeHarnackCarrier, ite_eq_right hz, c, qnorm]
     have hznne : zn ≠ 0 := by
       rw [hzn]
       exact smul_ne_zero hc hz
@@ -9175,8 +9175,8 @@ private theorem hamiltonPerturbedHarnackRayleigh_continuousOn_level
     norm_num at hlevel
   classical
   simp only [hamiltonPerturbedHarnackRayleigh,
-    dif_pos (horigin q.1.1 q.1.2)]
-  rw [if_neg hz, hlevel, div_one]
+    dite_eq_left (horigin q.1.1 q.1.2)]
+  rw [ite_eq_right hz, hlevel, div_one]
 
 omit [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
 private theorem hamiltonBarrierPhi_continuous
@@ -9298,7 +9298,7 @@ private theorem hamiltonPerturbedHarnackQuadraticValue_continuousOn_compact_leve
     S origin phi psi q.1 (horigin q.1 hq.1) q.2.proj q.2.2 hz]
   classical
   simp only [hamiltonPerturbedHarnackRayleigh,
-    dif_pos (horigin q.1 hq.1), if_neg hz, hlevel, div_one]
+    dite_eq_left (horigin q.1 hq.1), ite_eq_right hz, hlevel, div_one]
 
 private theorem exists_hamiltonPerturbedHarnackQuadraticAt_pos_on_connected_slab
     [I.Boundaryless] [NeZero (Module.finrank Real E)]
@@ -10038,7 +10038,7 @@ private theorem hamiltonHarnackQuadraticAt_nonneg_on_slab
     change normSq0S (I := I) ((S.base.metric s).restrictOpen (I := I) O)
       y 4 (metricRm04 (I := I) (M := O)
         ((S.base.metric s).restrictOpen (I := I) O) y) ≤ C
-    rw [DifferentialGeometry.CheegerGromovCompactness.normSq0S_restrictOpen_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.normSq0S_restrictOpen_apply]
     have htensor : metricRm04 (I := I) (M := O)
           ((S.base.metric s).restrictOpen (I := I) O) y =
         metricRm04 (I := I) (M := M) (S.base.metric s) (y : M) := by

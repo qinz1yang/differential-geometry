@@ -72,13 +72,13 @@ def fromRepresentative (p : Cylinder) : Space f :=
 private theorem fromRepresentative_of_le (p : Cylinder) (hp : p.2.val ≤ 1 / 2) :
     fromRepresentative f p = core f (p.1, ⟨2 * p.2.val,
       by constructor <;> nlinarith [p.2.property.1]⟩) := by
-  simp only [fromRepresentative, if_pos hp, coreClamp,
+  simp only [fromRepresentative, ite_eq_left hp, coreClamp,
     min_eq_right (by linarith : 2 * p.2.val ≤ 1)]
 
 private theorem fromRepresentative_of_gt (p : Cylinder) (hp : 1 / 2 < p.2.val) :
     fromRepresentative f p = band f (f p.1, ⟨2 - 2 * p.2.val,
       by constructor <;> nlinarith [p.2.property.2]⟩) := by
-  simp only [fromRepresentative, if_neg (not_le.mpr hp), bandClamp,
+  simp only [fromRepresentative, ite_eq_right (not_le.mpr hp), bandClamp,
     min_eq_right (by linarith : 2 - 2 * p.2.val ≤ 1)]
 
 theorem continuous_fromRepresentative : Continuous (fromRepresentative f) := by
@@ -220,10 +220,10 @@ theorem toMappingTorus_lowerSeam (p : seamDomain) :
   unfold lowerSeam
   split_ifs with ht
   · change Quotient.mk (sphereMappingTorusSetoid f) (p.val.1, ⟨p.val.2 / 2, _⟩) = _
-    rw [sphereMappingTorusSeam, dif_pos (by change 0 ≤ p.val.2 / 2; linarith)]
+    rw [sphereMappingTorusSeam, dite_eq_left (by change 0 ≤ p.val.2 / 2; linarith)]
     rfl
   · change Quotient.mk (sphereMappingTorusSetoid f) (f.symm p.val.1, ⟨1 - -p.val.2 / 2, _⟩) = _
-    rw [sphereMappingTorusSeam, dif_neg (by change ¬ 0 ≤ p.val.2 / 2; linarith)]
+    rw [sphereMappingTorusSeam, dite_eq_right (by change ¬ 0 ≤ p.val.2 / 2; linarith)]
     congr 1
     exact Prod.ext rfl (Subtype.ext (by dsimp [halfSeam]; ring))
 

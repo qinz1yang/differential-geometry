@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Banach
 import DifferentialGeometry.Analysis.Sobolev.Chart.BanachCompleteness.Completeness
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
 import Mathlib.MeasureTheory.Function.LpSpace.Complete

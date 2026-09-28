@@ -9,8 +9,8 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensi
   [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
 
 theorem exists_isPLHomeomorphOn_extension_marked_stdSimplexBoundary {m : ℕ} {A : Set E} {A' : Set F}
-    {f : (Fin (m + 2) → ℝ) → E} (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (m + 2))) A)
-    {f' : (Fin (m + 2) → ℝ) → F} (hf' : IsPLHomeomorphOn f' (stdSimplex ℝ (Fin (m + 2))) A')
+    {f : (Fin (m + 2) → ℝ) → E} (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (m + 2))) A)
+    {f' : (Fin (m + 2) → ℝ) → F} (hf' : IsPLHomeomorphOn f' (Convexity.StdSimplex.coordinateSet ℝ (Fin (m + 2))) A')
     {φ : E → F}
     (hφ : IsPLHomeomorphOn φ (f '' stdSimplexBoundary (m + 1)) (f' '' stdSimplexBoundary (m + 1))) :
     ∃ G : E → F, IsPLHomeomorphOn G A A' ∧ EqOn G φ (f '' stdSimplexBoundary (m + 1)) ∧

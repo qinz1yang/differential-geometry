@@ -1,6 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientHomeomorph
 import DifferentialGeometry.Topology.ProjectiveSpace.CylinderQuotientSmoothModels
-import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Descent
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Topology.ProjectiveSpace.PuncturedThreeManifold
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.Open
@@ -108,7 +106,8 @@ noncomputable def cylinderDiagonalQuotientDiffeomorph :
       rw [hz] at hl
       exact hl.comp y hv
     have hsmooth := cylinderDiagonalQuotientMap_isLocalDiffeomorph.contMDiff.contMDiffAt.comp y
-      (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture.symm.contMDiff.contMDiffAt.comp y hi)
+      (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture.symm.contMDiff
+        |>.contMDiffAt.comp y hi)
     apply hsmooth.congr_of_eventuallyEq
     have hevent := hlocal.localInverse_eventuallyEq_right
     change (fun q => realProjectiveSpaceQuotientMap (hlocal.localInverse q).1) =ᶠ[
@@ -153,7 +152,8 @@ theorem cylinderDiagonalQuotientDiffeomorph_potential
     cylinderDiagonalQuotientPotential
         (cylinderDiagonalQuotientDiffeomorph.symm
           ⟨realProjectiveSpaceQuotientMap z.1, z.2⟩) =
-      1 + (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture.symm z).2 ^ 2 / 4 := by
+      1 + (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture.symm z).2 ^ 2 /
+        4 := by
   rw [cylinderDiagonalQuotientDiffeomorph_symm_apply,
     cylinderDiagonalQuotientPotential_apply, roundThreeCylinderShrinkerPotential_apply]
 
@@ -260,19 +260,6 @@ open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.CylinderDiagonalQuotient
 
-private theorem exists_diffeomorph_orbitQuotient
-    : ∃ e : CylinderDiagonalQuotient ≃ₘ⟮
-        (𝓡 2).prod 𝓘(Real, Real), (𝓡 2).prod 𝓘(Real, Real)⟯
-        DifferentialGeometry.Geometry.CylinderDiagonalQuotient, ∀ p,
-      e (proj p) = DifferentialGeometry.Geometry.cylinderDiagonalQuotientMap p := by
-  obtain ⟨e, he⟩ := exists_homeomorph_orbitQuotient
-  obtain ⟨D, hD⟩ := exists_diffeomorph_of_homeomorph_comp_localDiffeomorph
-    proj isLocalDiffeomorph_proj surjective_proj
-    DifferentialGeometry.Geometry.cylinderDiagonalQuotientMap
-    DifferentialGeometry.Geometry.cylinderDiagonalQuotientMap_isLocalDiffeomorph
-    e he
-  exact ⟨D, fun p => (congrFun hD (proj p)).trans (he p)⟩
-
 theorem exists_diffeomorph_puncturedRealProjectiveThreeSpace :
     ∃ e : CylinderDiagonalQuotient ≃ₘ⟮(𝓡 2).prod 𝓘(Real, Real), 𝓡 3⟯
         PuncturedRealProjectiveThreeSpace,
@@ -281,13 +268,8 @@ theorem exists_diffeomorph_puncturedRealProjectiveThreeSpace :
           ⟨realProjectiveSpaceQuotientMap
             (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture p).1,
             (twoSphereProdRealDiffeomorphThreeSphereAwayFromRealProjectivePuncture p).2⟩ := by
-  obtain ⟨e, he⟩ := exists_diffeomorph_orbitQuotient
-  refine ⟨e.trans DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph, ?_⟩
-  intro p
-  change DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph
-    (e (proj p)) = _
-  rw [he p]
-  exact DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph_apply p
+  exact ⟨DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph,
+    DifferentialGeometry.Geometry.cylinderDiagonalQuotientDiffeomorph_apply⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions.CylinderDiagonalQuotient
 

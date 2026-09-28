@@ -409,6 +409,8 @@ theorem expMapIntrinsic_isLocalDiffeomorph_of_riemannOp_eq_zero
         (extChartAt (modelWithCornersSelf Real E) u u) =
         mfderiv (modelWithCornersSelf Real E) I F u := by
     rw [hmdiff.mfderiv, ModelWithCorners.range_eq_univ, fderivWithin_univ]
+    ext v
+    rfl
   exact hderiv ▸ hmf
 
 theorem expMapIntrinsic_mfderiv_inner_of_riemannOp_eq_zero

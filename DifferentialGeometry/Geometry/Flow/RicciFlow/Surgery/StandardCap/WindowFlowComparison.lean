@@ -417,7 +417,7 @@ private theorem exists_uniform_window_flow_metric_time_lipschitz
     change ‖y.val‖ < r at hy
     have hh := w.window_metricCovDerivNorm_le (by omega : j ≤ m) (by linarith : ‖y.val‖ < D)
     rw [standardCapMetric_eq_metric] at hh
-    simp only [if_neg (by omega : j ≠ 0), zero_add] at hh
+    simp only [ite_eq_right (by omega : j ≠ 0), zero_add] at hh
     exact hh.trans hζ
   have hequiv : ∀ t ∈ Icc 0 θ, MetricUniformEquivalentOn U gRef (S.base.metric t) Λ := by
     intro t ht

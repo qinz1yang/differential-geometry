@@ -530,13 +530,13 @@ theorem seamWitnessCoord_of_mem_pos {x : EuclideanSpace ℝ (Fin 2)}
     (hx : x ∈ ⇑seamWitnessPlane '' seamRectPos) :
     seamWitnessCoord x = (true, seamSheetPos (seamWitnessPlane.symm x)) := by
   have h := mem_image_seamWitnessPlane.mp hx
-  exact if_pos h.1.2
+  exact ite_eq_left h.1.2
 
 theorem seamWitnessCoord_of_mem_neg {x : EuclideanSpace ℝ (Fin 2)}
     (hx : x ∈ ⇑seamWitnessPlane '' seamRectNeg) :
     seamWitnessCoord x = (false, seamSheetNeg (seamWitnessPlane.symm x)) := by
   have h := mem_image_seamWitnessPlane.mp hx
-  exact if_neg (by linarith [h.1.1] : ¬(seamWitnessPlane.symm x).1 ≤ 2)
+  exact ite_eq_right (by linarith [h.1.1] : ¬(seamWitnessPlane.symm x).1 ≤ 2)
 
 theorem frontier_seamSourceRect :
     frontier seamSourceRect = seamSourceRect \ Ioo (0 : ℝ) 5 ×ˢ Ioo (0 : ℝ) 1 := by

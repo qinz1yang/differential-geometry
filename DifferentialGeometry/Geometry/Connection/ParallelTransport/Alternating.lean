@@ -81,7 +81,7 @@ private theorem parallelTransportFamilyOnIcc_apply
   · subst t
     simp [parallelTransportFamilyOnIcc, hL.le]
   · have htpos : 0 < t := lt_of_le_of_ne ht.1 (Ne.symm ht₀)
-    simp only [parallelTransportFamilyOnIcc, dif_pos ht, dif_neg ht₀]
+    simp only [parallelTransportFamilyOnIcc, dite_eq_left ht, dite_eq_right ht₀]
     exact parallelTransportSectionOnIcc_eq_of_mem g γ hγ htpos hL v
       (right_mem_Icc.mpr htpos.le) ht
 

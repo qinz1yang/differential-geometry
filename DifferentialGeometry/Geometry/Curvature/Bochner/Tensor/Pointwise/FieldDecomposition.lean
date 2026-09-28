@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.TraceDiscrepancy
+
+open DifferentialGeometry.TensorMetric
+  (tensor0S_eq_sum_slot0_uncurry)
 open DifferentialGeometry.Geometry.Curvature
 
 open DifferentialGeometry.Geometry.Connection

@@ -43,7 +43,7 @@ theorem exists_isPLHomeomorphOn_union_of_locallyFinite_pieces
     by_cases hxA : x ∈ A
     · rw [show G x = F₀ x by simp [G, hxA], hbase i ⟨hxA, hx⟩]
     · have hx' : ∃ j, x ∈ P j := ⟨i, hx⟩
-      simp only [G, dif_neg hxA, dif_pos hx']
+      simp only [G, dite_eq_right hxA, dite_eq_left hx']
       exact hcompat _ i ⟨Classical.choose_spec hx', hx⟩
   have hGmaps : MapsTo G K Y := by
     intro x hx

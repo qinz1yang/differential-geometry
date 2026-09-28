@@ -297,7 +297,7 @@ theorem euclideanMetric_scalarCurvature (x : E) :
   rw [show (0 : Tensor0SBundle.Tensor0SSpace 2 𝓘(Real, E) x) =
       (0 : Real) • metricTensor0S (I := 𝓘(Real, E))
         (euclideanMetric (E := E)) x by simp,
-    Tensor0SBundle.inner0S_smul_right]
+    DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
   ring
 
 theorem gradientRicciSoliton_gaussian :

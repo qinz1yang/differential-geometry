@@ -39,7 +39,7 @@ private theorem exists_pos_boundary_oscillation_lt_of_energy_bound_at
   let e : ℂ ≃ₗᵢ[ℝ] ℂ := rotation (Circle.exp (2 * Real.pi * d))
   let F : ℂ → E := f ∘ e
   have hF : LipschitzWith K F := by
-    simpa only [mul_one] using hf.comp e.isometry.lipschitz
+    simpa only [mul_one] using hf.comp e.isometry.lipschitzWith
   have hFenergy : (∫ z in Metric.closedBall (0 : ℂ) 1, ‖fderiv ℝ F z‖ ^ 2) ≤ B := by
     rw [e.integral_norm_fderiv_sq_comp_closedBall f 1]
     exact henergy
@@ -88,7 +88,8 @@ private theorem exists_pos_boundary_oscillation_lt_of_energy_bound_at
     change ‖F (circleMap (-1) ρ (-Real.arccos (ρ / 2))) -
       F (circleMap (-1) ρ (Real.arccos (ρ / 2)))‖ < η at hcl
     rw [he1, he2] at hcl
-    convert hcl using 2 <;> congr 1 <;> dsimp only [a] <;> field_simp
+    convert hcl using 2
+    congr 1 <;> dsimp only [a] <;> field_simp
   have hsin : s ∈ Icc (d + a / Real.pi) (d + (1 - a / Real.pi)) := by
     have hs' : s - d ∈ Icc (1 / 2 - r / (2 * Real.pi)) (1 / 2 + r / (2 * Real.pi)) := by
       constructor <;> dsimp only [d] <;> linarith [hs.1, hs.2]

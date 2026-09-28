@@ -30,7 +30,7 @@ theorem exists_lp_lift_of_weak_partials
     filter_upwards [hP] with t ht
     exact hlift (P t) ht
   obtain ⟨v, hv, _⟩ := MeasureTheory.exists_lp_lift_of_ae_exists_norm_le hj hinj
-    (L.continuous.comp_aestronglyMeasurable (Lp.memLp P).1) hb hex
+    (L.continuous.comp_aestronglyMeasurable (Lp.memLp P).aestronglyMeasurable) hb hex
   exact ⟨v, hv⟩
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

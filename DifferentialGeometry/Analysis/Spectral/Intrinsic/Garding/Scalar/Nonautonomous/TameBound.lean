@@ -10,6 +10,7 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Pairing.SlotTransport
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.ConnectionDifference.CovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Spectral

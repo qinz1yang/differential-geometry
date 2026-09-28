@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Point
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Principal.H2H3
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometric.Extraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -433,7 +437,7 @@ theorem exists_deTurckPrincipalCometricCoefficient_secondOrder_bound
     exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound
       (I := I) (M := M) hDim g₀
   obtain ⟨Cpt, hCpt, hpt⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound
       (I := I) (M := M) g₀
   obtain ⟨Cl2, hCl2, hl2⟩ :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.coeff_jet_l2_sq

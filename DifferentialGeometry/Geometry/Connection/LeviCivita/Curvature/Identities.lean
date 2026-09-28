@@ -29,7 +29,7 @@ import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantFourTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantTwoTensor
 import DifferentialGeometry.Geometry.Connection.MetricTrace.Higher
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 open DifferentialGeometry.Tensor.RSTensor
@@ -65,6 +65,7 @@ private theorem directionalDeriv_congr_nhds
   unfold directionalDerivAlong mvfderiv
   rw [hfh.mfderiv_eq]
   rw [hx]
+  rfl
 
 omit [CompleteSpace E] [IsManifold I ∞ M] [IsManifold I 1 M] [IsManifold I 2 M] [IsManifold I 3 M]
     [SigmaCompactSpace M] [T2Space M] in
@@ -385,10 +386,7 @@ private theorem coordinateFrame_coeff_mdiffAt_of_contMDiffAt_one
         (b := Module.finBasis Real E) (s := Z)
         (k := (1 : WithTop ℕ∞)) hx hZ j
     convert hraw using 1
-    · rfl
-    · rfl
-    · funext y
-      rfl
+    rfl
   exact hcoeff.mdifferentiableAt (by norm_num : (1 : WithTop ℕ∞) ≠ 0)
 
 omit [CompleteSpace E] [IsManifold I 3 M] [SigmaCompactSpace M] [T2Space M] in
@@ -846,9 +844,7 @@ private theorem connectionRiemannCurvatureField_metric_skew_at_of_metricCompatib
     simpa [Wc] using contMDiffAt_tangentConstAt_self_minTwo (I := I) x W
   have hf2 : ContMDiffAt I 𝓘(Real, Real) (minSmoothness Real 2) f x := by
     simpa [f] using contMDiffAt_metric_inner (I := I) g hZ2 hW2
-      (by
-        simpa [minSmoothness_of_isRCLikeNormedField] using
-          (by decide : (2 : WithTop ℕ∞) <= ∞))
+      (by simp [minSmoothness_of_isRCLikeNormedField])
   let _ : IsManifold I (minSmoothness Real 2) M := by
     rw [minSmoothness_of_isRCLikeNormedField]
     exact (inferInstance : IsManifold I 2 M)

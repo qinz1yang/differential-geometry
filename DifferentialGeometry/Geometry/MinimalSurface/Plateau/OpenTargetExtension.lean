@@ -42,7 +42,7 @@ theorem SmoothDiskExtension.exists_open_corestriction
   have heq : EqOn (Subtype.val ∘ V) U T := by
     intro z hz
     dsimp only [Function.comp_apply, V]
-    rw [dif_pos (show U z ∈ N from hz.2)]
+    rw [dite_eq_left (show U z ∈ N from hz.2)]
   refine ⟨V, ⟨?_, T, hT, hDT, ?_⟩, ?_⟩
   · intro z
     apply Subtype.ext

@@ -21,7 +21,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     (Cq θ : ℝ) (hθ : 0 < θ) :
     ∃ Q Λ Dcap Rrad ζ₀ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧ StandardCap.transitionEnd < Dcap ∧ Dcap ≤ Rrad ∧
     0 < ζ₀ ∧
-    ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+    ∀ (H : RetainedCoreHistory.{u})
       (p₀ : CutoffParameters) (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -48,9 +48,9 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoint_terminal.{u} hεle κ
       C1 C2 hκ Ctime Cgrad hphi A hA Cq θ hθ
   refine ⟨Q, Λ, Dcap, Rrad, ζ₀, hQ, hΛ, hD, hDR, hζ, ?_⟩
-  intro P₀ H p₀ δb ρb p records hrec hR hord hacc j t htj htj' y q ρ hq hqy hΛy hΛt hW hslabs hder
+  intro H p₀ δb ρb p records hrec hR hord hacc j t htj htj' y q ρ hq hqy hΛy hΛt hW hslabs hder
     hgrad hpinch hnc hρ hnot z hz
-  exact hmain P₀ (H.prefixAt j.castSucc) rfl (H.toHistory.event j).incoming (H.event_initial j) p₀
+  exact hmain (H.prefixAt j.castSucc) rfl (H.toHistory.event j).incoming (H.event_initial j) p₀
     δb ρb (H.prefixRecords j.castSucc records) (H.isCanonicalCutoffRecordFamily_prefixAt _ hrec)
     hR hord hacc htj htj' y q ρ hq hqy hΛy hΛt hW (H.eventSlabsDerivative_prefixAt _ hslabs) hder
     hgrad (H.eventSlabsPinched_prefixAt _ hpinch) (hpinch j)
@@ -60,7 +60,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
 theorem RetainedCoreHistory.eventually_scalar_bound_at_distance_of_not_capWindowPoint_event
     {ε : ℝ} (hεle : ε ≤ coneAccuracy) {κ C1 C2 : ℝ} (hκ : 0 < κ) {Ctime Cgrad : ℝ≥0}
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) {Cq θ₀ : ℝ} (hθ₀ : 0 < θ₀)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (p₀ : ℕ → CutoffParameters) (δbound ρbound : ℕ → ℝ) {p : ℕ → CutoffParameters}
     (records : ∀ n (i : Fin (H n).eventCount), GeometricCutoffRecord (H n).toHistory i (p n))
     (hrec : ∀ n, (H n).IsCanonicalCutoffRecordFamily (p₀ n) (δbound n) (ρbound n) (records n))
@@ -101,7 +101,7 @@ theorem RetainedCoreHistory.eventually_scalar_bound_at_distance_of_not_capWindow
   filter_upwards [hradius.eventually_ge_atTop Rrad, haccuracy ζ₀ hζ₀, hR.eventually_ge_atTop Λ,
     hRt.eventually_ge_atTop Λ, hρ.eventually_ge_atTop Λ, hD.eventually_ge_atTop Dcap]
     with n hn1 hn2 hn3 hn4 hn5 hn6
-  exact hmain (P₀ n) (H n) (p₀ n) (δbound n) (ρbound n) (records n) (hrec n) hn1 (horder n) hn2
+  exact hmain (H n) (p₀ n) (δbound n) (ρbound n) (records n) (hrec n) hn1 (horder n) hn2
     (j n) (ht n) (hts n) (y n) (q n) (ρ n) (hq n) (hqy n) hn3 hn4 (hW n) (hslabs n) (hder n)
     (hgrad n) (hpinch n) (hnc n) hn5 (fun hcw => hnot n (hcw.mono hn6 (hθ n)))
 

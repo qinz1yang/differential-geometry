@@ -107,7 +107,7 @@ private theorem isCompact_closedBall_of_lt_dist_puncture {W : Type*} [MetricSpac
 
 theorem RetainedCoreHistory.normalized_terminal_ball_volume_lower_bound_of_scaled_tests
     (Phi : ℝ → ℝ) (hPhi : Perelman.AdmissiblePinchingFunction Phi) {C : ℝ≥0}
-    (P : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -257,7 +257,7 @@ theorem RetainedCoreHistory.normalized_terminal_ball_volume_lower_bound_of_scale
 
 theorem RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_scaled_tests
     (Phi : ℝ → ℝ) (hPhi : Perelman.AdmissiblePinchingFunction Phi) {C : ℝ≥0}
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -340,7 +340,7 @@ theorem RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_sc
               (mfderiv ThreeModel ThreeModel (F'.map n) z v) ≤
             (1 + eps) * P.metric.inner z v v := by
   have hvol := RetainedCoreHistory.normalized_terminal_ball_volume_lower_bound_of_scaled_tests
-    Phi hPhi P₀ H s G L hinit hs x q Q hq hqQ hQ hderiv hfinal hpinch hpinchFinal
+    Phi hPhi H s G L hinit hs x q Q hq hqQ hQ hderiv hfinal hpinch hpinchFinal
       hbuffer σ hκ hσ₀ hσQ htested
   obtain ⟨f, hf, r, hr, hrlim, P, F, M, hM, hradial, hcompactP, hcapture, hbounds⟩ :=
     ObservedHistory.exists_terminal_pointed_convergence_of_buffered_backward_traces
@@ -363,7 +363,7 @@ theorem RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_sc
   exact ⟨f, hf, r, hr, hrlim, P, F, M, hbase, hM, hradial, hcompactP, hcapture, hbounds⟩
 
 theorem RetainedCoreHistory.exists_nonnegative_local_flow_with_comparison_of_final_slab_window
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n)) (s : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (s : ℕ → ℝ)
     (A : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).ClosedSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
     (hinit : ∀ n, (A n).flow.base.metric ((H n).time (Fin.last (H n).eventCount)) =
@@ -465,7 +465,7 @@ theorem RetainedCoreHistory.exists_nonnegative_local_flow_with_comparison_of_fin
   let G := fun n => (A n).restrictIncoming le_rfl (A n).lt le_rfl
   let L := fun n => (A n).endpointTerminalLimitMetric ((H n).stage (Fin.last (H n).eventCount))
   have hconv := RetainedCoreHistory.exists_normalized_terminal_pointed_convergence_of_scaled_tests
-    Phi hPhi P₀ H s G L hinit hs x q Q hscale hq hqQ hQ hderiv hfinal hpinch hpinchFinal one_pos
+    Phi hPhi H s G L hinit hs x q Q hscale hq hqQ hQ hderiv hfinal hpinch hpinchFinal one_pos
     hbuffer σ hκ hσ₀ hσQ htested
   dsimp only at hconv
   obtain ⟨f₂, hf₂, _, _, _, P₂, F₂, M, hbase₂, hcanonical, hradial, hcompact, _, _⟩ := hconv
@@ -601,7 +601,7 @@ theorem RetainedCoreHistory.exists_nonnegative_local_flow_with_comparison_of_fin
     hbase₂, hsol, hnonneg, _, hcenter, r, hr, hcpt, hcap, hdist⟩
 
 theorem RetainedCoreHistory.final_slab_scalar_buffer_of_spatialCanonicalWitness
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ m, RetainedCoreHistory (P₀ m)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ m, ((H m).stage (Fin.last (H m).eventCount)).ClosedSlab
       ((H m).time (Fin.last (H m).eventCount)) (time m))
     (Ctime : ℝ≥0) (q : ℕ → ℝ)
@@ -684,7 +684,7 @@ theorem RetainedCoreHistory.final_slab_scalar_buffer_of_spatialCanonicalWitness
       linarith [hwindow m]
 
 theorem RetainedCoreHistory.exists_local_backward_limit_with_comparison_at_final_slab_end
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -821,7 +821,7 @@ theorem RetainedCoreHistory.exists_local_backward_limit_with_comparison_at_final
   obtain ⟨W₀, _⟩ := hW _ _ hm₀
   have hC2 : 1 ≤ C2 := W₀.one_le_comparison_constant
   have hbuffer₂ := RetainedCoreHistory.final_slab_scalar_buffer_of_spatialCanonicalWitness
-    (fun m => P₀ (f (k m))) (fun m => H (f (k m))) (fun m => time (f (k m)))
+    (fun m => H (f (k m))) (fun m => time (f (k m)))
     (fun m => A (f (k m))) Ctime (fun m => q (f (k m))) y Q₂ hQ₂ (fun m => hLscalar _ _) hC2
     (fun m => hW (f (k m))) hqy hθ₀ (fun m => (hwindow (f (k m))).trans
       (sub_le_sub_left (div_le_div_of_nonneg_left hθ₀.le (hQpos _) (hQQ₂ m)) _))
@@ -866,7 +866,7 @@ theorem RetainedCoreHistory.exists_local_backward_limit_with_comparison_at_final
   obtain ⟨j, hj, P₂, V, hp, hpath, tau, htau, g, hgb, hbase₂, hsol, hnonneg, C, hcenter, r, hr,
       hcpt, hcap, hdist⟩ :=
     RetainedCoreHistory.exists_nonnegative_local_flow_with_comparison_of_final_slab_window
-      (fun m => P₀ (f (k m))) (fun m => H (f (k m))) (fun m => time (f (k m)))
+      (fun m => H (f (k m))) (fun m => time (f (k m)))
       (fun m => A (f (k m))) (fun m => hinit _) Ctime (fun m => q (f (k m))) (fun m => hq _)
       (fun m => hderiv _) (fun m => hfinal _) y Q₂ hQ₂ hqQ₂ hQ₂lim hPhi (fun m => hpinch _)
       (fun m => hpinchFinal _) hbuffer₂ (fun m => hs _) (fun m => rfl) (fun m => σ (f (k m)))
@@ -878,7 +878,7 @@ theorem RetainedCoreHistory.exists_local_backward_limit_with_comparison_at_final
     hcenter, r, hr, hcpt, hcap, hdist⟩
 
 theorem RetainedCoreHistory.final_slab_punctured_cone_end_exclusion
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -1011,7 +1011,7 @@ theorem RetainedCoreHistory.final_slab_punctured_cone_end_exclusion
     hQW.comp (tendsto_add_atTop_nat N)
   obtain ⟨j, hj, A₂, hA₂, hratio, P₂, V, hp, hpath, tau, htau, g, hgb, hsol, hnonneg, hbase₂,
       C, hcenter, r, hr, hcpt, hcap, hdist⟩ :=
-    RetainedCoreHistory.exists_local_backward_limit_with_comparison_at_final_slab_end P₀ H time A
+    RetainedCoreHistory.exists_local_backward_limit_with_comparison_at_final_slab_end H time A
       hinit hs Ctime q hq hderiv hfinal x hQ hqQ hqlim hθ₀ hwindow hPhi hpinch hpinchFinal σ hκ
       hσ₀ hσQ htested hW hf Pl F M hcanonical W xW' hR₀ (fun n => (hN' n).1) hQW' hcompactW
   let _ : PseudoMetricSpace V := (P₂.metric.restrictOpen V).toPseudoMetricSpace

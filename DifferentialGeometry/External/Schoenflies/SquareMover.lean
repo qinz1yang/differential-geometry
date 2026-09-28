@@ -99,10 +99,10 @@ theorem tent_right (h₁ : -r < p) (h₂ : p < r) : tent r p r = 0 := by
 noncomputable def bend (r p q u : ℝ) : ℝ :=
   if u ≤ p then -r + (u + r) * (q + r) / (p + r) else r - (r - u) * (r - q) / (r - p)
 
-theorem bend_of_le (h : u ≤ p) : bend r p q u = -r + (u + r) * (q + r) / (p + r) := if_pos h
+theorem bend_of_le (h : u ≤ p) : bend r p q u = -r + (u + r) * (q + r) / (p + r) := ite_eq_left h
 
 theorem bend_of_gt (h : p < u) : bend r p q u = r - (r - u) * (r - q) / (r - p) :=
-  if_neg (not_le.2 h)
+  ite_eq_right (not_le.2 h)
 
 theorem bend_left (h : -r ≤ p) : bend r p q (-r) = -r := by
   rw [bend_of_le h]; simp
@@ -282,7 +282,7 @@ theorem shear_apply_same :
       c i + bend r (a + k * shearWeight c r b j z) (a + (k + k') * shearWeight c r b j z)
         (z i - c i) := by
   simp only [shear, PiLp.add_apply, PiLp.smul_apply, PiLp.single_apply, smul_eq_mul,
-    if_true, mul_one]
+    ite_true, mul_one]
   ring
 
 theorem shear_apply_ne (h : l ≠ i) : shear c r a b k k' i j z l = z l := by

@@ -1,4 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Decomposition
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq)
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev

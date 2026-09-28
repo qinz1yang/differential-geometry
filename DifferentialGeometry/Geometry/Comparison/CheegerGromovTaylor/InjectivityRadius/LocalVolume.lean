@@ -171,9 +171,9 @@ theorem intrInj_ge_vol_of_local_ball
     refine intrinsicFrame_rm04_bound_of_ball (I := I) g hEnorm p (ρ := 3 * R / 4) ?_ ?_
     · intro y hy
       apply hRmBall
-      exact Metric.mem_eball'.mpr (by
-        rw [IsRiemannianManifold.out (I := I) p y]
-        exact hy)
+      change edist y p < ENNReal.ofReal (3 * R / 4)
+      rw [edist_comm, IsRiemannianManifold.out (I := I) p y]
+      exact hy
     · linarith
   have hno : ∀ z, z ∈ Metric.ball (0 : E) (r₀ + s) → z ≠ 0 →
       ∀ t, t ∈ Ioo (0 : Real) 1 →
@@ -252,8 +252,10 @@ theorem intrInj_ge_vol_of_ball
         (metricRm04At (I := I) g y)) ≤ K := by
     intro y hy
     apply hRm
-    have hy' : edist p y < ENNReal.ofReal (3 * R / 4) := Metric.mem_eball'.mp hy
-    rw [IsRiemannianManifold.out (I := I) p y] at hy'
+    have hy' : edist y p < ENNReal.ofReal (3 * R / 4) := by
+      change edist y p < ENNReal.ofReal (3 * R / 4) at hy
+      exact hy
+    rw [edist_comm, IsRiemannianManifold.out (I := I) p y] at hy'
     exact hy'.trans_le (ENNReal.ofReal_le_ofReal (by linarith))
   exact intrinsicInj_ge_vol (I := I) g hEnorm p hK hR hRpi hball
     (intrinsicFrame_localOn_of_local_curvature (I := I) g hEnorm p hK.le hRρ hRm herror)

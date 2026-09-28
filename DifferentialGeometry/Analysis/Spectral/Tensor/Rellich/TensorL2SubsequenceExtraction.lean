@@ -55,26 +55,12 @@ lemma tensorChartComponentScalar_sub
   ring
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
-private lemma tensorChartComponentScalar_aestronglyMeasurable
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (S : SmoothCcTensor g r s) (α : M)
-    (Idx : Fin r → Fin (Module.finrank ℝ E))
-    (Jdx : Fin s → Fin (Module.finrank ℝ E)) :
-    AEStronglyMeasurable
-      (tensorChartComponentScalar (I := I) (M := M) g r s S α Idx Jdx)
-      (riemannianVolumeMeasure (I := I) (M := M) g) :=
-  (tensorChartComponentScalar_contMDiff (I := I) (M := M)
-    g r s S α Idx Jdx).continuous.aestronglyMeasurable
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma eLpNorm_diff_le_via_common_limit
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (α : M)
     (Idx : Fin r → Fin (Module.finrank ℝ E))
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
-    {u_lim : M → ℝ}
-    (h_lim_memLp :
-      MemLp u_lim 2 (riemannianVolumeMeasure (I := I) (M := M) g)) :
+    {u_lim : M → ℝ} :
     eLpNorm
         (fun b => tensorChartComponentScalar (I := I) (M := M)
             g r s S₁ α Idx Jdx b -
@@ -89,18 +75,10 @@ private lemma eLpNorm_diff_le_via_common_limit
             (fun b => tensorChartComponentScalar (I := I) (M := M)
                 g r s S₂ α Idx Jdx b - u_lim b)
             2 (riemannianVolumeMeasure (I := I) (M := M) g) := by
-  set μ : Measure M := riemannianVolumeMeasure (I := I) (M := M) g
   set f₁ : M → ℝ := tensorChartComponentScalar (I := I) (M := M)
     g r s S₁ α Idx Jdx
   set f₂ : M → ℝ := tensorChartComponentScalar (I := I) (M := M)
     g r s S₂ α Idx Jdx
-  have hf₁ : AEStronglyMeasurable f₁ μ :=
-    tensorChartComponentScalar_aestronglyMeasurable
-      (I := I) (M := M) g r s S₁ α Idx Jdx
-  have hf₂ : AEStronglyMeasurable f₂ μ :=
-    tensorChartComponentScalar_aestronglyMeasurable
-      (I := I) (M := M) g r s S₂ α Idx Jdx
-  have h_u : AEStronglyMeasurable u_lim μ := h_lim_memLp.1
   have h_eq : (fun b => f₁ b - f₂ b) =
       (fun b => f₁ b - u_lim b) - (fun b => f₂ b - u_lim b) := by
     funext b
@@ -108,7 +86,7 @@ private lemma eLpNorm_diff_le_via_common_limit
     ring
   rw [h_eq]
   have hp : (1 : ℝ≥0∞) ≤ 2 := by norm_num
-  exact eLpNorm_sub_le (hf₁.sub h_u) (hf₂.sub h_u) hp
+  exact eLpNorm_sub_le hp
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma eLpNorm_diff_tendsto_zero_of_tendsto_zero
@@ -119,8 +97,6 @@ private lemma eLpNorm_diff_tendsto_zero_of_tendsto_zero
     (Jdx : Fin s → Fin (Module.finrank ℝ E))
     {φ : ℕ → ℕ}
     {u_lim : M → ℝ}
-    (h_lim_memLp :
-      MemLp u_lim 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (h_tendsto :
       Filter.Tendsto
         (fun j => eLpNorm
@@ -150,7 +126,7 @@ private lemma eLpNorm_diff_tendsto_zero_of_tendsto_zero
   intro i hi j hj
   have h_tri := eLpNorm_diff_le_via_common_limit
     (I := I) (M := M) g r s (S (φ i)).toCcTensor (S (φ j)).toCcTensor
-    α Idx Jdx h_lim_memLp
+    α Idx Jdx (u_lim := u_lim)
   have h_i_le : eLpNorm
       (fun b => tensorChartComponentScalar (I := I) (M := M)
           g r s (S (φ i)).toCcTensor α Idx Jdx b - u_lim b)
@@ -256,11 +232,11 @@ private lemma cauchySeq_tensorL2_of_componentBounded
               2 (riemannianVolumeMeasure (I := I) (M := M) g) ≤
             ENNReal.ofReal δ := by
     intro α hα Idx Jdx
-    obtain ⟨u_lim, hu_lim_memLp, h_tendsto⟩ :=
+    obtain ⟨u_lim, _, h_tendsto⟩ :=
       h_per_triple α hα Idx Jdx
     exact eLpNorm_diff_tendsto_zero_of_tendsto_zero
       (I := I) (M := M) g r s (S := S) α Idx Jdx (φ := φ)
-      (u_lim := u_lim) hu_lim_memLp h_tendsto
+      (u_lim := u_lim) h_tendsto
       (ENNReal.ofReal δ) hδ_ennreal_pos
   let triples : Finset (M × (Fin r → Fin (Module.finrank ℝ E)) ×
       (Fin s → Fin (Module.finrank ℝ E))) :=

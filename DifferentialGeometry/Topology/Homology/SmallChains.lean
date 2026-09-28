@@ -22,7 +22,7 @@ def smallSingularSimplices : (TopCat.toSSet.obj X).Subcomplex where
     obtain ⟨i, hi⟩ := h
     refine ⟨i, ?_⟩
     rintro _ ⟨z, rfl⟩
-    exact hi ⟨stdSimplex.map f.unop z, rfl⟩
+    exact hi ⟨Convexity.StdSimplex.map f.unop z, rfl⟩
 
 
 theorem mem_smallSingularSimplices_iff {n : SimplexCategoryᵒᵖ}
@@ -40,7 +40,7 @@ theorem smallSingularSimplices_eq_iSup_range :
     Set.mem_range, mem_smallSingularSimplices_iff]
   constructor
   · rintro ⟨i, hi⟩
-    let τ : C(stdSimplex ℝ (Fin (n.unop.len + 1)), U i) :=
+    let τ : C(Convexity.StdSimplex ℝ (Fin (n.unop.len + 1)), U i) :=
       ⟨fun z ↦ ⟨X.toSSetObjEquiv n σ z, hi ⟨z, rfl⟩⟩,
         (X.toSSetObjEquiv n σ).continuous.subtype_mk _⟩
     refine ⟨i, ((TopCat.of (U i)).toSSetObjEquiv n).symm τ, ?_⟩
@@ -132,8 +132,8 @@ private theorem smallChainMap_projection (n : ℕ) :
   intro σ
   rw [← Category.assoc, ι_smallChainMap_f]
   change Sigma.ι _ σ.val ≫ Sigma.desc _ = _
-  rw [Sigma.ι_desc]
-  simp only [dif_pos σ.property, Category.comp_id]
+  rw [Sigma.ι_comp_desc]
+  simp only [dite_eq_left σ.property, Category.comp_id]
   rfl
 
 
@@ -156,8 +156,8 @@ theorem isIso_smallChainMap_f_zero (hU : ∀ x : X, ∃ i, x ∈ U i) :
     rw [smallSingularSimplices_obj_zero X U hU]
     exact Set.mem_univ _
   change Sigma.ι _ σ ≫ (Sigma.desc _ ≫ _) = _
-  rw [← Category.assoc, Sigma.ι_desc]
-  simp only [dif_pos hσ]
+  rw [← Category.assoc, Sigma.ι_comp_desc]
+  simp only [dite_eq_left hσ]
   exact (ι_smallChainMap_f X U R ⟨σ, hσ⟩).trans (Category.comp_id _).symm
 
 

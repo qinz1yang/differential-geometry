@@ -300,11 +300,11 @@ theorem transportedAreaFirstVariation_refl
     · have h1 : diskExtension (u.metricVariationDensity W.family.metric D.regular t₀) z =
           u.metricVariationDensity W.family.metric D.regular t₀ diskCenter := by
         rw [diskExtension]
-        exact dif_neg hz
+        exact dite_eq_right hz
       have h2 : diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z =
           u.metricVariationDensity W.family.metric (Icc a b) t₀ diskCenter := by
         rw [diskExtension]
-        exact dif_neg hz
+        exact dite_eq_right hz
       rw [h1, h2]
       exact hdens diskCenter
   have hderivAt' : HasDerivAt (fun t : ℝ => diskArea (W.family.metric t) u.map)

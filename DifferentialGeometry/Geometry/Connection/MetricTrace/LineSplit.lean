@@ -97,7 +97,7 @@ theorem trace_eq_line_add
       q none none * g.inner x Z Z = 1 := by
     have h := (hq none none).1
     simpa only [Fintype.sum_option, hb0, hbs, hperp', mul_zero,
-      Finset.sum_const_zero, add_zero, if_pos] using h
+      Finset.sum_const_zero, add_zero, ite_eq_left] using h
   have hq00 :
       q none none = (g.inner x Z Z)⁻¹ :=
     eq_inv_of_mul_eq_one_left hq00mul
@@ -106,7 +106,7 @@ theorem trace_eq_line_add
     have hne : (none : Option ι) ≠ some j := by simp
     have hmul : g.inner x Z Z * q none (some j) = 0 := by
       simpa only [Fintype.sum_option, hb0, hbs, hperp, zero_mul,
-        Finset.sum_const_zero, add_zero, if_neg hne] using h
+        Finset.sum_const_zero, add_zero, ite_eq_right hne] using h
     exact (mul_eq_zero.mp hmul).resolve_left hZ.ne'
   have hqs0 (i : ι) : q (some i) none = 0 := by
     rw [hqsymm (some i) none, hq0s]

@@ -122,7 +122,7 @@ theorem hornRadialPosition_iff_hornRadialOuterPosition {g : SmoothRiemannianMetr
     refine ⟨?_, ?_⟩
     · intro x hx
       have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-        rw [neckTube, dif_pos hgood]
+        rw [neckTube, dite_eq_left hgood]
       rw [htube]
       exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
     · intro x hx
@@ -143,7 +143,7 @@ theorem hornRadialOuterPosition_of_subendRadialNesting {g : SmoothRiemannianMetr
     with i hnest_i hgood hbig
   obtain ⟨j1, hsub1, hsup1⟩ := hnest_i
   set E := endChart g H (ray.point (d i)) hgood with hE
-  have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+  have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
   have hdpos : 0 < d i := (hd i).1
   have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
     le_trans (le_max_left _ _) hbig

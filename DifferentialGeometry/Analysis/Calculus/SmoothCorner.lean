@@ -72,9 +72,9 @@ theorem norm_sub_le {ε : ℝ} (hε : 0 < ε) (p v w : E) (t : ℝ) :
       (if t ≤ 0 then p + t • v else p + t • w) =
       (Real.smoothMax ε t 0 - max t 0) • (w - v) := by
     by_cases ht : t ≤ 0
-    · rw [if_pos ht, max_eq_right ht, sub_zero, smoothCorner]
+    · rw [ite_eq_left ht, max_eq_right ht, sub_zero, smoothCorner]
       abel
-    · rw [if_neg ht, max_eq_left (le_of_not_ge ht), smoothCorner]
+    · rw [ite_eq_right ht, max_eq_left (le_of_not_ge ht), smoothCorner]
       simp only [sub_smul, smul_sub]
       abel
   rw [hid, norm_smul, Real.norm_eq_abs,

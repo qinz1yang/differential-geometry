@@ -570,9 +570,9 @@ theorem metricTraceInput_apply {x : M} {s : ℕ} (X Y : TangentSpace I x)
   · simp
   · refine Fin.cases ?_ (fun r => ?_) i1
     · rw [Fin.cases_succ, Fin.cases_zero,
-        dif_neg (by simp), dif_pos (by simp)]
+        dite_eq_right (by simp), dite_eq_left (by simp)]
     · rw [Fin.cases_succ, Fin.cases_succ,
-        dif_neg (by simp [Fin.val_succ]), dif_neg (by simp [Fin.val_succ])]
+        dite_eq_right (by simp [Fin.val_succ]), dite_eq_right (by simp [Fin.val_succ])]
       apply congrArg tail
       apply Fin.ext
       simp [Fin.val_succ]
@@ -765,7 +765,7 @@ theorem metricTraceFirstTwoField_product {k q : ℕ}
     · simp [h0]
     · by_cases h1 : (p : ℕ) = 1
       · simp [h1]
-      · rw [dif_neg h0, dif_neg h1, dif_neg h0, dif_neg h1]
+      · rw [dite_eq_right h0, dite_eq_right h1, dite_eq_right h0, dite_eq_right h1]
         apply congrArg tail
         apply Fin.ext
         simp
@@ -779,7 +779,7 @@ theorem metricTraceFirstTwoField_product {k q : ℕ}
       simp [finCongr_apply, Fin.val_cast, Fin.val_natAdd]
     rw [metricTraceInput_apply]
     simp only [hv]
-    rw [dif_neg (by omega), dif_neg (by omega)]
+    rw [dite_eq_right (by omega), dite_eq_right (by omega)]
     apply congrArg tail
     apply Fin.ext
     simp only [Fin.val_natAdd]
@@ -859,14 +859,14 @@ theorem traceNablaShuffle_val (s : ℕ) (p : Fin (s + 2 + 1)) :
         else (p : ℕ) := by
   rcases eq_or_ne (p : ℕ) 0 with h0 | h0
   · rw [show p = 0 from Fin.ext (by rw [Fin.val_zero]; exact h0), traceNablaShuffle_zero, tns_c2,
-      Fin.val_zero, if_pos rfl]
+      Fin.val_zero, ite_eq_left rfl]
   · rcases eq_or_ne (p : ℕ) 1 with h1 | h1
     · rw [show p = 1 from Fin.ext (by rw [tns_c1]; exact h1), traceNablaShuffle_one, Fin.val_zero,
-        tns_c1, if_neg (by omega), if_pos rfl]
+        tns_c1, ite_eq_right (by omega), ite_eq_left rfl]
     · rcases eq_or_ne (p : ℕ) 2 with h2 | h2
       · rw [show p = 2 from Fin.ext (by rw [tns_c2]; exact h2), traceNablaShuffle_two, tns_c1,
-          tns_c2, if_neg (by omega), if_neg (by omega), if_pos rfl]
-      · rw [traceNablaShuffle_val_ge s p (by omega), if_neg h0, if_neg h1, if_neg h2]
+          tns_c2, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left rfl]
+      · rw [traceNablaShuffle_val_ge s p (by omega), ite_eq_right h0, ite_eq_right h1, ite_eq_right h2]
 
 private theorem consPredVal {V : Type*} {n : ℕ} (c : V) (f : Fin n → V) (q : Fin (n + 1))
     (hq : q ≠ 0) : @Fin.cons n (fun _ => V) c f q = f (q.pred hq) := by
@@ -888,27 +888,27 @@ theorem traceNablaShuffle_metricTraceInput {x : M} {s : ℕ}
   rcases eq_or_ne (p : ℕ) 0 with h0 | h0
   · have hp : p = 0 := Fin.ext (by rw [Fin.val_zero]; exact h0)
     have hs : traceNablaShuffle s p ≠ 0 := by
-      rw [Ne, Fin.ext_iff, Fin.val_zero, hv, if_pos h0]; omega
+      rw [Ne, Fin.ext_iff, Fin.val_zero, hv, ite_eq_left h0]; omega
     rw [consPredVal a _ _ hs]
     have hs1 : (traceNablaShuffle s p).pred hs ≠ 0 := by
-      rw [Ne, Fin.ext_iff, Fin.val_zero, Fin.val_pred, hv, if_pos h0]; omega
+      rw [Ne, Fin.ext_iff, Fin.val_zero, Fin.val_pred, hv, ite_eq_left h0]; omega
     rw [consPredVal b _ _ hs1]
     rw [show ((traceNablaShuffle s p).pred hs).pred hs1 = 0 from
-      Fin.ext (by rw [Fin.val_zero, Fin.val_pred, Fin.val_pred, hv, if_pos h0]), Fin.cons_zero]
+      Fin.ext (by rw [Fin.val_zero, Fin.val_pred, Fin.val_pred, hv, ite_eq_left h0]), Fin.cons_zero]
     rw [hp, Fin.cons_zero]
   · have hp0 : p ≠ 0 := by rw [Ne, Fin.ext_iff, Fin.val_zero]; exact h0
     rw [consPredVal Z _ _ hp0]
     rcases eq_or_ne (p : ℕ) 1 with h1 | h1
     · rw [show traceNablaShuffle s p = 0 from
-        Fin.ext (by rw [Fin.val_zero, hv, if_neg h0, if_pos h1]), Fin.cons_zero]
+        Fin.ext (by rw [Fin.val_zero, hv, ite_eq_right h0, ite_eq_left h1]), Fin.cons_zero]
       rw [show p.pred hp0 = 0 from Fin.ext (by rw [Fin.val_zero, Fin.val_pred]; omega),
         Fin.cons_zero]
     · rcases eq_or_ne (p : ℕ) 2 with h2 | h2
       · have hs : traceNablaShuffle s p ≠ 0 := by
-          rw [Ne, Fin.ext_iff, Fin.val_zero, hv, if_neg h0, if_neg h1, if_pos h2]; omega
+          rw [Ne, Fin.ext_iff, Fin.val_zero, hv, ite_eq_right h0, ite_eq_right h1, ite_eq_left h2]; omega
         rw [consPredVal a _ _ hs]
         rw [show (traceNablaShuffle s p).pred hs = 0 from
-          Fin.ext (by rw [Fin.val_zero, Fin.val_pred, hv, if_neg h0, if_neg h1, if_pos h2]),
+          Fin.ext (by rw [Fin.val_zero, Fin.val_pred, hv, ite_eq_right h0, ite_eq_right h1, ite_eq_left h2]),
           Fin.cons_zero]
         have hp1 : p.pred hp0 ≠ 0 := by rw [Ne, Fin.ext_iff, Fin.val_zero, Fin.val_pred]; omega
         rw [consPredVal a _ _ hp1]

@@ -94,7 +94,8 @@ theorem hasDerivAt_deriv_graphDiffusionCoefficient {p : ℝ → E} {x : ℝ}
   have hd := (((ha.pow 2).const_mul (-2)).mul hi).congr_of_eventuallyEq heq
   rw [real_inner_self_eq_norm_sq] at hd
   simp only [Pi.pow_apply] at hd
-  convert hd using 1 <;> first | rfl | ring
+  convert hd using 1
+  ring
 
 theorem graph_second_derivative_norm_sq_parabolic_eq {f : ℝ → ℝ → E} {U V : Set ℝ}
     (hU : IsOpen U) (hV : IsOpen V)

@@ -43,19 +43,19 @@ private def spliceEndRay {E : UniformSpace.Completion W}
     intro s hs r hr
     by_cases hst : s ≤ t
     · by_cases hrt : r ≤ t
-      · simp only [if_pos hst, if_pos hrt]
+      · simp only [ite_eq_left hst, ite_eq_left hrt]
         exact b.minimizing s ⟨hs.1, hst.trans htb⟩ r ⟨hr.1, hrt.trans htb⟩
-      · simp only [if_pos hst, if_neg hrt]
+      · simp only [ite_eq_left hst, ite_eq_right hrt]
         rw [dist_comm, endRay_cross_distance a b ht htb hcontact hr
           ⟨hs.1, hst.trans htb⟩ hst (not_le.mp hrt).le,
           abs_of_nonpos (by linarith : s - r ≤ 0)]
         ring
     · by_cases hrt : r ≤ t
-      · simp only [if_neg hst, if_pos hrt]
+      · simp only [ite_eq_right hst, ite_eq_left hrt]
         rw [endRay_cross_distance a b ht htb hcontact hs
           ⟨hr.1, hrt.trans htb⟩ hrt (not_le.mp hst).le,
           abs_of_nonneg (by linarith : 0 ≤ s - r)]
-      · simp only [if_neg hst, if_neg hrt]
+      · simp only [ite_eq_right hst, ite_eq_right hrt]
         exact a.minimizing s hs r hr
 
 variable [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
@@ -120,13 +120,13 @@ theorem finiteHorn_endRay_unique_inward
   have hgerm : c.point =ᶠ[𝓝 q] a.point := by
     filter_upwards [isOpen_Ioi.mem_nhds htq] with s hs
     change (if s ≤ t then b.point s else a.point s) = a.point s
-    exact if_neg (not_le_of_gt hs)
+    exact ite_eq_right (not_le_of_gt hs)
   have heq : EqOn c.point a.point (Ioo 0 L) :=
     geodesics_eqOn_of_common_germ g hq hcGeo haGeo hcSmooth.continuousOn haSmooth.continuousOn hgerm
   intro s hs
   have hsL : s ∈ Ioo 0 L := ⟨hs.1, hs.2.trans_lt htd⟩
   have h := heq hsL
   change (if s ≤ t then b.point s else a.point s) = a.point s at h
-  simpa only [if_pos hs.2] using h.symm
+  simpa only [ite_eq_left hs.2] using h.symm
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

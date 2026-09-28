@@ -1,10 +1,9 @@
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
+import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotients
 import DifferentialGeometry.Geometry.Metric.Pullback.LocalComposition
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderCoverScalarNormalization
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.ShrinkingCylinderMetric
 
 section
-open private exists_diffeomorph_orbitQuotient from DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientDiffeomorph
 
 set_option autoImplicit false
 
@@ -37,14 +36,9 @@ theorem ShrinkingCylinderCover.exists_diagonal_shrinking_model
         localPullMetric (Diffeomorph.pullbackMetricCross (P.S.base.metric t) d)
           cylinderDiagonalQuotientMap cylinderDiagonalQuotientMap_isLocalDiffeomorph =
             scalarOneShrinkingCylinderMetric t (ht.trans_lt (by norm_num)) := by
-  obtain ⟨d0, hd0⟩ := hdiagonal.1
-  obtain ⟨e, he⟩ := exists_diffeomorph_orbitQuotient
-  let d := e.symm.trans d0
+  obtain ⟨d, hd⟩ := hdiagonal.1
   have hprojection (p : SpatialNeckCylinder) :
-      d (cylinderDiagonalQuotientMap p) = C.projection p := by
-    change d0 (e.symm (cylinderDiagonalQuotientMap p)) = C.projection p
-    rw [← he p, e.symm_apply_apply]
-    exact hd0 p
+      d (cylinderDiagonalQuotientMap p) = C.projection p := hd p
   have hcomp : (d : Geometry.CylinderDiagonalQuotient → P.M) ∘
       cylinderDiagonalQuotientMap = C.projection := funext hprojection
   refine ⟨d, hprojection, ?_⟩

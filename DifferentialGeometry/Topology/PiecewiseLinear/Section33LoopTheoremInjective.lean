@@ -20,7 +20,7 @@ theorem injective_fundamentalGroup_map_of_moise264Orientable (h264 : Moise264Ori
     (hLc : IsConnected L.space) {S : Set E} (hLS : L.space = S) {U : Set E} (hU : IsOpen U)
     (hLU : S ⊆ U)
     (hno : ∀ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ U →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → Δ ⊆ U →
         Δ ∩ S = r '' stdSimplexBoundary 2 → ∀ hb : r '' stdSimplexBoundary 2 ⊆ S,
           (⟨Set.inclusion hb, continuous_inclusion hb⟩ :
             C(r '' stdSimplexBoundary 2, S)).Nullhomotopic)

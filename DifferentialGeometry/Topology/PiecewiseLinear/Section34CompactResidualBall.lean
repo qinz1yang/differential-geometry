@@ -73,7 +73,7 @@ theorem section34CompactSimplexIndex_eq_of_incident {t : Finset E3} (ht : t ∈ 
     · simp
 
 theorem exists_mem_frontier_of_mem_boundary_disk {B P R : Set E3} (hB : IsPLBall 3 B)
-    (hRc : IsClosed R) {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P)
+    (hRc : IsClosed R) {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hPB : P ⊆ frontier B) (hPR : P ⊆ frontier R) (hRB : frontier R ∩ B ⊆ P)
     (hint : Disjoint (interior R) B) {y : E3} (hy : y ∈ q '' stdSimplexBoundary 2)
     {U : Set E3} (hU : U ∈ 𝓝 y) :
@@ -220,7 +220,7 @@ theorem Section34CompactCutFrame.exists_residualBall
     · exact ⟨hqAb 2, hqΩb 2⟩
     · exact ⟨hqAb 3, hqΩb 3⟩
   have hbd : ∀ {P : Set E3} {q : (Fin 3 → ℝ) → E3},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
     fun hq => by
       rw [← hq.image_eq]
       exact image_mono fun x hx => hx.1

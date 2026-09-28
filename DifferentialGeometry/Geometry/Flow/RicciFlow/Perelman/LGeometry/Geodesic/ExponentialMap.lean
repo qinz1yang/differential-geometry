@@ -1273,7 +1273,7 @@ theorem lRegularizedFamily_step_of
         filter_upwards [(hJopen.preimage continuous_snd).mem_nhds hpJ] with q hq
         change q.2 ∈ J at hq
         simp only [beta]
-        rw [if_pos hq]
+        rw [ite_eq_left hq]
       exact (halphaAt.congr_of_eventuallyEq heq).contMDiffWithinAt
     · have hpK : p.2 ∈ K := hp.2.resolve_left hpJ
       have hWKopen : IsOpen (W ×ˢ K) := hWopen.prod isOpen_Ioo
@@ -1288,9 +1288,9 @@ theorem lRegularizedFamily_step_of
         change q.2 ∈ K at hqK
         simp only [beta]
         by_cases hqJ : q.2 ∈ J
-        · rw [if_pos hqJ]
+        · rw [ite_eq_left hqJ]
           exact hmatch q.1 hqW ⟨hqJ, hqK⟩
-        · rw [if_neg hqJ]
+        · rw [ite_eq_right hqJ]
       exact (hetaAt.congr_of_eventuallyEq heq).contMDiffWithinAt
   refine ⟨W, hWopen, hZ0W, hWV, beta, hbetaSmooth, ?_⟩
   intro Z hZ
@@ -1299,18 +1299,18 @@ theorem lRegularizedFamily_step_of
     intro s hs
     filter_upwards [hJopen.mem_nhds hs] with r hr
     simp only [beta]
-    rw [if_pos hr]
+    rw [ite_eq_left hr]
   have hbetaEta : ∀ s ∈ K,
       (fun r => beta (Z, r)) =ᶠ[𝓝 s] (fun r => eta (Z, r)) := by
     intro s hs
     filter_upwards [isOpen_Ioo.mem_nhds hs] with r hr
     simp only [beta]
     by_cases hrJ : r ∈ J
-    · rw [if_pos hrJ]
+    · rw [ite_eq_left hrJ]
       exact hmatch Z hZ ⟨hrJ, hr⟩
-    · rw [if_neg hrJ]
+    · rw [ite_eq_right hrJ]
   have hbeta0 : beta (Z, 0) = x := by
-    simpa only [beta, if_pos h0J] using (hcurves Z (hWV hZ)).1
+    simpa only [beta, ite_eq_left h0J] using (hcurves Z (hWV hZ)).1
   have hbetaVelocity : lVelocity (I := I) (fun s => beta (Z, s)) 0 = 2 • Z := by
     have heq := hbetaAlpha 0 h0J
     simp only [lVelocity]
@@ -1647,7 +1647,7 @@ theorem lRegularizedCurve_of_mem
     lRegularizedCurve S T x Z s = lRegularizedChosen S T x Z hs s := by
   change HasLRegularizedCurveAt S T x Z s at hs
   unfold lRegularizedCurve
-  rw [dif_pos hs]
+  rw [dite_eq_left hs]
 
 omit [InnerProductSpace Real E] [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -1791,7 +1791,7 @@ theorem lRegularizedCurve_of_not_mem
     lRegularizedCurve S T x Z s = x := by
   change ¬HasLRegularizedCurveAt S T x Z s at hs
   unfold lRegularizedCurve
-  rw [dif_neg hs]
+  rw [dite_eq_right hs]
 
 omit [InnerProductSpace Real E] [NeZero (Module.finrank Real E)]
   [SigmaCompactSpace M] in

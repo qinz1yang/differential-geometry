@@ -2,6 +2,10 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.SummandBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqSummand
+    fiberNormSqSummand_nonneg
+    riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -595,7 +599,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
     intro i
     have h_one : g.inner b (e i) (e i) = 1 := by
       have := he_orth i i
-      rw [if_pos rfl] at this
+      rw [ite_eq_left rfl] at this
       exact this
     have h_expand_inner :
         g.inner b (e i) (e i) =
@@ -661,7 +665,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
       have h_prod_le :
           ∏ k : Fin r, ∑ l : Fin (Module.finrank ℝ E), A (K k) l ^ 2 ≤
             ∏ _k : Fin r, ((1 : ℝ) / c) :=
-        Finset.prod_le_prod (fun k _ => h_nn_k k) (fun k _ => h_per_k k)
+        Finset.prod_le_prod₀ (fun k _ => h_nn_k k) (fun k _ => h_per_k k)
       have h_const_prod : (∏ _k : Fin r, ((1 : ℝ) / c)) = ((1 : ℝ) / c) ^ r := by
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
       rw [h_const_prod] at h_prod_le
@@ -678,7 +682,7 @@ theorem riemannianFiberNormSq_le_chartAlpha_summand_sum_on_pouTsupport
       have h_prod_le :
           ∏ l : Fin s, ∑ m : Fin (Module.finrank ℝ E), A (J l) m ^ 2 ≤
             ∏ _l : Fin s, ((1 : ℝ) / c) :=
-        Finset.prod_le_prod (fun l _ => h_nn_l l) (fun l _ => h_per_l l)
+        Finset.prod_le_prod₀ (fun l _ => h_nn_l l) (fun l _ => h_per_l l)
       have h_const_prod : (∏ _l : Fin s, ((1 : ℝ) / c)) = ((1 : ℝ) / c) ^ s := by
         rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
       rw [h_const_prod] at h_prod_le

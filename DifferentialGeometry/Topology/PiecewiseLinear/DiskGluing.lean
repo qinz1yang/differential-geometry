@@ -16,7 +16,7 @@ theorem exists_isPLHomeomorphOn_push_union_sdiff_diskInterior
     {C S₁ S₂ D : Set (EuclideanSpace ℝ (Fin 3))}
     (hC : HasPushProperty C) (hCfront : frontier C = S₁) (hS₂ : IsPLSphere 2 S₂)
     {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hD : S₁ ∩ S₂ = D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hD : S₁ ∩ S₂ = D)
     (hout : S₂ \ D ⊆ Cᶜ) {W : Set (EuclideanSpace ℝ (Fin 3))}
     (hW : IsOpen W) (hCW : C ⊆ W) :
     ∃ h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3),
@@ -74,7 +74,7 @@ theorem exists_isPLHomeomorphOn_straighten_union_sdiff_diskInterior
     {S₁ S₂ D : Set (EuclideanSpace ℝ (Fin 3))}
     (hS₁ : IsSimplyEmbedded S₁) (hS₂ : IsSimplyEmbedded S₂)
     {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hD : S₁ ∩ S₂ = D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hD : S₁ ∩ S₂ = D)
     {W : Set (EuclideanSpace ℝ (Fin 3))} (hW : Convex ℝ W) (hWo : IsOpen W) (hSW : S₁ ∪ S₂ ⊆ W) :
     ∃ (T : Finset (EuclideanSpace ℝ (Fin 3)))
       (h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3)),

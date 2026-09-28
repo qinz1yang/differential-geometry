@@ -64,7 +64,7 @@ theorem covDerivComp_joint
         (J ×ˢ u) (t, x) := by
   classical
   intro n
-  have hext := prodExtDeriv_joint (I := I) hu ht hx
+  have hext := contMDiffWithinAt_partial_mvfderiv_apply (I := I) hu ht hx
     (hF := hA (Fin.tail n))
     (hX := hframe.contMDiffAt hu hx (n 0))
   have hsum :

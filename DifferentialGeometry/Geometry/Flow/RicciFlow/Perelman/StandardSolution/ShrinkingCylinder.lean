@@ -152,7 +152,7 @@ theorem shrinkingCylinderMetric_inner {t : ℝ} (ht : t < 1)
   calc
     _ = sphereScale t * (roundMetric (E := E) (n := 2)).inner x.1 v.1 w.1 +
         v.2 * w.2 := congrArg (fun a : ℝ => a + v.2 * w.2) h
-    _ = _ := by rw [sphereScale, if_pos ht]
+    _ = _ := by rw [sphereScale, ite_eq_left ht]
 
 theorem shrinkingCylinderMetric_eq_prod {t : ℝ} (ht : t < 1) :
     shrinkingCylinderMetric (E := E) t =
@@ -169,7 +169,7 @@ theorem shrinkingCylinderMetric_eq_prod {t : ℝ} (ht : t < 1) :
 @[simp] theorem shrinkingCylinderMetric_zero :
     shrinkingCylinderMetric (E := E) 0 = roundCylinderMetric (E := E) (n := 2) := by
   simp only [shrinkingCylinderMetric, sphereScale, show (0 : ℝ) < 1 by norm_num,
-    if_true, sub_zero, mul_one, roundCylinderMetric]
+    ite_true, sub_zero, mul_one, roundCylinderMetric]
 
 theorem ricciTensor_shrinkingCylinderMetric (t : ℝ)
     (x : Metric.sphere (0 : E) 1 × ℝ)

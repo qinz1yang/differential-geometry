@@ -27,19 +27,23 @@ theorem memWkp_mul_of_finite_weak_partial_trees
       DeGiorgi.HasWeakPartialDeriv i (Y (n + 1) (Fin.cons i α)) (Y n α) Ω) :
     MemWkp K p (fun x => A 0 (fun i => Fin.elim0 i) x *
       Y 0 (fun i => Fin.elim0 i) x) Ω := by
+  let _ : ENNReal.HolderTriple p ∞ p := ENNReal.HolderTriple.instInfty p
   have hnode : ∀ k n m α β, n + k ≤ K → m + k ≤ K →
       MemWkp k p (fun x => A n α x * Y m β x) Ω := by
     intro k
     induction k with
     | zero =>
         intro n m α β hn hm
-        exact (hY m (by omega) β).mul (hA n (by omega) α)
+        exact ((hY m (by omega) β).mul (hA n (by omega) α)).ae_eq
+          (Filter.Eventually.of_forall (fun x => by simp [Pi.mul_apply, mul_comm]))
     | succ k ih =>
         intro n m α β hn hm
         have hnK : n < K := by omega
         have hmK : m < K := by omega
-        apply memWkp_succ_of_hasWeakPartialDeriv hp hΩ
-          ((hY m (by omega) β).mul (hA n (by omega) α))
+        have hAY : MemLp (fun x => A n α x * Y m β x) p (volume.restrict Ω) := by
+          exact ((hY m (by omega) β).mul (hA n (by omega) α)).ae_eq
+            (Filter.Eventually.of_forall (fun x => by simp [Pi.mul_apply, mul_comm]))
+        apply memWkp_succ_of_hasWeakPartialDeriv hp hΩ hAY
           (g := fun i x => A n α x * Y (m + 1) (Fin.cons i β) x +
             A (n + 1) (Fin.cons i α) x * Y m β x)
         · intro i
@@ -78,6 +82,7 @@ theorem ae_memWkp_of_finite_sum_weak_partial_trees
       A j 0 (fun i => Fin.elim0 i) q * Y j 0 (fun i => Fin.elim0 i) q) :
     ∀ᵐ t ∂μ, MemWkp K p (fun x => f (t, x)) Ω := by
   classical
+  let _ : ENNReal.HolderTriple p ∞ p := ENNReal.HolderTriple.instInfty p
   have hAslice : ∀ j n (hn : n ≤ K) α, ∀ᵐ t ∂μ,
       MemLp (fun x => A j n α (t, x)) ∞ (volume.restrict Ω) :=
     fun j n hn α => (hA j n hn α).prodMk_left_top
@@ -180,10 +185,16 @@ theorem exists_lp_weak_partial_tree_of_finite_sum
         A j 1 (Fin.cons i e) q * Y j 0 e q
       let W := fun i q => ∑ j, D i j q
       have hV j : MemLp (V j) p (μ.prod (volume.restrict Ω)) :=
-        (hY j 0 (by omega) e).mul (hA j 0 (by omega) e)
+        by
+          exact ((hY j 0 (by omega) e).mul (hA j 0 (by omega) e)).ae_eq
+            (Filter.Eventually.of_forall (fun q => by simp [V, Pi.mul_apply, mul_comm]))
       have hD i j : MemLp (D i j) p (μ.prod (volume.restrict Ω)) :=
-        ((hY j 1 (by omega) (Fin.cons i e)).mul (hA j 0 (by omega) e)).add
-          ((hY j 0 (by omega) e).mul (hA j 1 (by omega) (Fin.cons i e)))
+        by
+          have hD' :=
+            ((hY j 1 (by omega) (Fin.cons i e)).mul (r := p) (hA j 0 (by omega) e)).add
+              ((hY j 0 (by omega) e).mul (r := p) (hA j 1 (by omega) (Fin.cons i e)))
+          exact hD'.ae_eq
+            (Filter.Eventually.of_forall (fun q => by simp [D, Pi.add_apply, Pi.mul_apply, mul_comm]))
       have hW i : MemLp (W i) p (μ.prod (volume.restrict Ω)) :=
         memLp_finsetSum Finset.univ fun j _ => hD i j
       let w := fun i => (hW i).toLp (W i)
@@ -307,10 +318,14 @@ theorem ae_memWkp_and_memLp_wkpNorm_of_finite_sum_weak_partial_trees
       A j 0 (fun i => Fin.elim0 i) q * Y j 0 (fun i => Fin.elim0 i) q) :
     (∀ᵐ t ∂μ, MemWkp K p (fun x => f (t, x)) Ω) ∧
       MemLp (fun t => (iteratedWeakSobolevNorm K p (fun x => f (t, x)) Ω).toReal) p μ := by
+  let _ : ENNReal.HolderTriple p ∞ p := ENNReal.HolderTriple.instInfty p
   have hfLp : MemLp f p (μ.prod (volume.restrict Ω)) :=
-    (memLp_finsetSum Finset.univ fun j _ =>
-      (hY j 0 (by omega) (fun i => Fin.elim0 i)).mul
-        (hA j 0 (by omega) (fun i => Fin.elim0 i))).ae_eq hf.symm
+    (have hsum := memLp_finsetSum Finset.univ fun j _ =>
+      (hY j 0 (by omega) (fun i => Fin.elim0 i)).mul (r := p)
+        (hA j 0 (by omega) (fun i => Fin.elim0 i))
+    have hsum' := hsum.ae_eq
+      (Filter.Eventually.of_forall (fun q => by simp [Pi.mul_apply, mul_comm]))
+    hsum'.ae_eq hf.symm)
   obtain ⟨F, hF, hFW⟩ := exists_lp_weak_partial_tree_of_finite_sum hp hΩ K
     (hfLp.toLp f) A Y hA hY hAsmooth hDA hYweak (hfLp.coeFn_toLp.trans hf)
   have heq : ∀ᵐ t ∂μ, (fun x => F 0 (fun i => Fin.elim0 i) (t, x)) =ᵐ[volume.restrict Ω]

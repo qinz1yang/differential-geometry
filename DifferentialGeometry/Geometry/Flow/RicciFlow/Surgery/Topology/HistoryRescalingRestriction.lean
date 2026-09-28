@@ -44,14 +44,14 @@ theorem rescale_stageMetric (H : ObservedHistory.{u}) (r : ℝ) (hr : 0 < r)
     · have hs : (H.rescale r hr).time (Fin.last (H.rescale r hr).eventCount) <
           (H.rescale r hr).horizon :=
         (div_lt_div_iff_of_pos_right hr).mpr h
-      rw [dif_pos hs, dif_pos h]
+      rw [dite_eq_left hs, dite_eq_left h]
       change ((H.finalSlab h).rescale r hr).flow.base.metric t =
         scaleMetric r⁻¹ (inv_pos.mpr hr) ((H.finalSlab h).flow.base.metric (r * t))
       exact OrientedThreeStage.ClosedSlab.rescale_metric (H.finalSlab h) r hr t
     · have hs : ¬(H.rescale r hr).time (Fin.last (H.rescale r hr).eventCount) <
           (H.rescale r hr).horizon :=
         fun hh => h ((div_lt_div_iff_of_pos_right hr).mp hh)
-      rw [dif_neg hs, dif_neg h]
+      rw [dite_eq_right hs, dite_eq_right h]
       rfl
   | cast i =>
     let i' : Fin (H.rescale r hr).eventCount := i

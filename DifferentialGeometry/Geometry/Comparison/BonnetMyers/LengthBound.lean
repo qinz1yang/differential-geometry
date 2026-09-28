@@ -84,7 +84,7 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
       by_cases hj : j.val = 0
       · have hj_eq : j = ⟨0, hn_pos⟩ := Fin.ext hj
         rw [hi_eq, hj_eq, hB_zero, hUnit]
-        rw [if_pos rfl]
+        rw [ite_eq_left rfl]
       · have hj_pos : 0 < j.val := Nat.pos_of_ne_zero hj
         let k : Fin (Module.finrank ℝ E - 1) :=
           ⟨j.val - 1, by have := j.isLt; omega⟩
@@ -97,7 +97,7 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
           rw [g.symm x X (e k)]
           exact hPerp k
         rw [h_inner]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         have hval := congrArg Fin.val h
         change 0 = k.val + 1 at hval
@@ -114,7 +114,7 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
         rw [hi_eq, hj_eq, hB_succ, hB_zero]
         have h_inner : g.inner x (e k) X = 0 := hPerp k
         rw [h_inner]
-        rw [if_neg]
+        rw [ite_eq_right]
         intro h
         have hval := congrArg Fin.val h
         change k.val + 1 = 0 at hval
@@ -132,7 +132,7 @@ theorem ricci_eq_sum_sectional_curvature_of_orthonormal_perp_frame
         by_cases hkl : k = l
         · rw [hkl]
           simp
-        · rw [if_neg hkl, if_neg]
+        · rw [ite_eq_right hkl, ite_eq_right]
           intro hσ_eq
           apply hkl
           apply Fin.ext

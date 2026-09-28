@@ -261,16 +261,16 @@ theorem halfBallShear_image_halfspace_union_halfBall [NormedSpace ℝ E] :
   constructor
   · rintro (hp | hp)
     · exact hp.trans (halfBallShearRoof_nonneg p.1)
-    · simpa only [mem_ofPred_eq, halfBallShearRoof, if_pos hp.1] using hp.2.2
+    · simpa only [mem_ofPred_eq, halfBallShearRoof, ite_eq_left hp.1] using hp.2.2
   · intro hp
     by_cases ht : p.2 ≤ 0
     · exact Or.inl ht
     · have hx : ‖p.1‖ ^ 2 ≤ 1 := by
         by_contra hh
-        simp only [mem_ofPred_eq, halfBallShearRoof, if_neg hh] at hp
+        simp only [mem_ofPred_eq, halfBallShearRoof, ite_eq_right hh] at hp
         exact ht hp
       exact Or.inr ⟨hx, (lt_of_not_ge ht).le,
-        by simpa only [mem_ofPred_eq, halfBallShearRoof, if_pos hx] using hp⟩
+        by simpa only [mem_ofPred_eq, halfBallShearRoof, ite_eq_left hx] using hp⟩
 
 theorem halfBallShearRoof_le_apply_iff [NormedSpace ℝ E] {p : E × ℝ} (hp : p.2 < 2) :
     halfBallShearRoof (PartialDiffeomorph.halfBallShear p).1 ≤ p.2 ↔
@@ -291,7 +291,7 @@ theorem halfBallShearRoof_le_apply_iff [NormedSpace ℝ E] {p : E × ℝ} (hp : 
           (halfBallShearHeight_mem_Ioo hsi)
         rw [halfBallShearRadiusSq_height hsi] at hh
         change (if s ≤ 1 then halfBallShearHeight s else 0) ≤ p.2 ↔ _
-        rw [if_pos hs1, ← hh, halfBallShearRadiusSq, hseq,
+        rw [ite_eq_left hs1, ← hh, halfBallShearRadiusSq, hseq,
           mul_le_mul_iff_right₀ hscale]
         exact ⟨fun h => by linarith, fun h => by linarith⟩
       · have hnorm : 1 ≤ ‖p.1‖ ^ 2 + p.2 ^ 2 := by
@@ -299,7 +299,7 @@ theorem halfBallShearRoof_le_apply_iff [NormedSpace ℝ E] {p : E × ℝ} (hp : 
           have hmul := mul_le_mul_of_nonneg_right hsc (sq_nonneg ‖p.1‖)
           nlinarith
         simp only [halfBallShearRoof, show ¬ ‖(PartialDiffeomorph.halfBallShear p).1‖ ^ 2 ≤ 1 from hs1,
-          if_false, ht, hnorm]
+          ite_false, ht, hnorm]
     · have hroof : halfBallShearRoof (PartialDiffeomorph.halfBallShear p).1 ≤ 1 := by
         unfold halfBallShearRoof
         split_ifs with h
@@ -371,13 +371,13 @@ theorem halfBallShearRoof_eq_max {x : E} (hx : ‖x‖ ^ 2 < 9 / 8) :
     halfBallShearRoof x = max (halfBallShearHeight (‖x‖ ^ 2)) 0 := by
   have hs := mem_halfBallShearHeight_domain_of_nonneg_lt (sq_nonneg ‖x‖) hx
   by_cases hle : ‖x‖ ^ 2 ≤ 1
-  · rw [halfBallShearRoof, if_pos hle,
+  · rw [halfBallShearRoof, ite_eq_left hle,
       max_eq_left (halfBallShearHeight_mem_Icc ⟨sq_nonneg _, hle⟩).1]
   · have hneg := strictAntiOn_halfBallShearHeight.antitoneOn
       (Icc_subset_halfBallShearHeight_domain (by norm_num : (1 : ℝ) ∈ Icc (0 : ℝ) 1))
       hs (le_of_not_ge hle)
     rw [halfBallShearHeight_one] at hneg
-    rw [halfBallShearRoof, if_neg hle, max_eq_right hneg]
+    rw [halfBallShearRoof, ite_eq_right hle, max_eq_right hneg]
 
 theorem continuous_halfBallShearRoof : Continuous (halfBallShearRoof (E := E)) := by
   apply continuous_iff_continuousAt.mpr
@@ -396,7 +396,7 @@ theorem continuous_halfBallShearRoof : Continuous (halfBallShearRoof (E := E)) :
   · apply (show ContinuousAt (fun _ : E => (0 : ℝ)) x from continuousAt_const).congr_of_eventuallyEq
     have hlow : 1 < ‖x‖ ^ 2 := by linarith
     filter_upwards [(isOpen_lt continuous_const hn).mem_nhds hlow] with y hy
-    exact if_neg (not_le_of_gt hy)
+    exact ite_eq_right (not_le_of_gt hy)
 
 noncomputable def roundedHalfBallShearRoof (ε : ℝ) (x : E) : ℝ :=
   if ‖x‖ ^ 2 < 9 / 8 then Real.smoothMax ε (halfBallShearHeight (‖x‖ ^ 2)) 0 else 0
@@ -405,10 +405,10 @@ theorem roundedHalfBallShearRoof_bounds {ε : ℝ} (hε : 0 < ε) (x : E) :
     halfBallShearRoof x ≤ roundedHalfBallShearRoof ε x ∧
       roundedHalfBallShearRoof ε x ≤ halfBallShearRoof x + ε := by
   by_cases hx : ‖x‖ ^ 2 < 9 / 8
-  · rw [roundedHalfBallShearRoof, if_pos hx, halfBallShearRoof_eq_max hx]
+  · rw [roundedHalfBallShearRoof, ite_eq_left hx, halfBallShearRoof_eq_max hx]
     exact ⟨Real.smoothMax.max_le hε _ _, Real.smoothMax.le_max_add hε _ _⟩
   · have hle : ¬ ‖x‖ ^ 2 ≤ 1 := by linarith
-    rw [roundedHalfBallShearRoof, if_neg hx, halfBallShearRoof, if_neg hle]
+    rw [roundedHalfBallShearRoof, ite_eq_right hx, halfBallShearRoof, ite_eq_right hle]
     exact ⟨le_rfl, by linarith⟩
 
 theorem roundedHalfBallShearRoof_nonneg {ε : ℝ} (hε : 0 < ε) (x : E) :
@@ -451,7 +451,7 @@ theorem contDiff_roundedHalfBallShearRoof [InnerProductSpace ℝ E]
         ((hg.comp x (contDiff_norm_sq ℝ).contDiffAt).prodMk contDiffAt_const)
     apply hh.congr_of_eventuallyEq
     filter_upwards [(isOpen_lt hn continuous_const).mem_nhds hx] with y hy
-    exact if_pos hy
+    exact ite_eq_left hy
   · apply (contDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq
     have hlow : 17 / 16 < ‖x‖ ^ 2 := by linarith
     filter_upwards [(isOpen_lt continuous_const hn).mem_nhds hlow] with y hy
@@ -464,7 +464,7 @@ theorem hasCompactSupport_roundedHalfBallShearRoof [ProperSpace E] {ε : ℝ} :
   intro x hx
   have hn : 2 < ‖x‖ := lt_of_not_ge (fun h => hx (mem_closedBall_zero_iff.mpr h))
   have hcut : ¬ ‖x‖ ^ 2 < (9 / 8 : ℝ) := by nlinarith [sq_nonneg (‖x‖ - 2)]
-  rw [roundedHalfBallShearRoof, if_neg hcut]
+  rw [roundedHalfBallShearRoof, ite_eq_right hcut]
 
 private theorem one_lt_halfBallShearRadiusSq_neg {ε : ℝ} (hε : 0 < ε) (hsmall : ε < 1 / 4) :
     1 < halfBallShearRadiusSq (-ε) := by
@@ -491,12 +491,12 @@ theorem roundedHalfBallShearRoof_eq_halfBallShearRoof {ε : ℝ}
     have hg : ε ≤ halfBallShearHeight (‖x‖ ^ 2) := by
       apply (strictAntiOn_halfBallShearRadiusSq.le_iff_ge (halfBallShearHeight_mem_Ioo hs) he).mp
       rwa [halfBallShearRadiusSq_height hs]
-    rw [roundedHalfBallShearRoof, if_pos hxcut, halfBallShearRoof_eq_max hxcut,
+    rw [roundedHalfBallShearRoof, ite_eq_left hxcut, halfBallShearRoof_eq_max hxcut,
       Real.smoothMax.eq_max_of_le hε]
     simpa only [sub_zero, abs_of_nonneg (hε.le.trans hg)] using hg
   · rw [roundedHalfBallShearRoof_eq_zero hε hsmall hx]
     have hnot : ¬ ‖x‖ ^ 2 ≤ 1 := not_le_of_gt ((one_lt_halfBallShearRadiusSq_neg hε hsmall).trans_le hx)
-    exact (if_neg hnot).symm
+    exact (ite_eq_right hnot).symm
 
 theorem exists_halfBallShearRoof_band_subset
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [ProperSpace E]
@@ -523,7 +523,7 @@ theorem exists_halfBallShearRoof_band_subset
       have hh := mem_closedBall_zero_iff.mp hq.1
       nlinarith [norm_nonneg q.1]
     have hg := halfBallShearHeight_mem_Icc ⟨sq_nonneg ‖q.1‖, hn⟩
-    simp only [T, hρzero, one_smul, add_zero, halfBallShearRoof, if_pos hn, mem_ofPred_eq]
+    simp only [T, hρzero, one_smul, add_zero, halfBallShearRoof, ite_eq_left hn, mem_ofPred_eq]
     refine ⟨hn, mul_nonneg hq.2.1 hg.1, ?_⟩
     nlinarith [hq.2.2, hg.1]
   have hnear : ∀ᶠ η in 𝓝 (0 : ℝ), ∀ q ∈ Q, T (η, q) ∈ O := by

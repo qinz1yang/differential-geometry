@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.OrderPeeling
 import DifferentialGeometry.Analysis.Spectral.Tensor.SmoothSection.SmoothTensorAllOrderCompleteness
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.NormComparison
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -357,7 +360,7 @@ lemma exists_zeroContentR_le_fiberNorm_on_compact
       Real.sqrt (tensorInnerPointwise (I := I) (M := M) g r s b
         (S.toFun b) (S.toFun b)) := by
     rw [show S.toFun b = TensorRSSpace.toModel (𝕜 := ℝ) (I := I) (S.toSection b) from rfl]
-    exact DifferentialGeometry.Analysis.Elliptic.norm_eq_sqrt_tensorInnerPointwise
+    exact DifferentialGeometry.TensorMetric.norm_eq_sqrt_tensorInnerPointwise
       (I := I) (M := M) g r s b (S.toSection b)
   have hInner_nn : 0 ≤ tensorInnerPointwise (I := I) (M := M) g r s b
       (S.toFun b) (S.toFun b) :=

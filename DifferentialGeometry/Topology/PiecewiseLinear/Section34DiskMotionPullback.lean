@@ -8,16 +8,16 @@ theorem IsPLHomeomorphOn.exists_pullback_disk_of_not_bounding
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {Φ : E → E} (hΦ : IsPLHomeomorphOn Φ univ univ)
     {K U Q : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q) (hQU : Q ⊆ Φ '' U)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q) (hQU : Q ⊆ Φ '' U)
     (htrace : Q ∩ Φ '' K = q '' stdSimplexBoundary 2)
     (hnot : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ Φ '' K ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ Φ '' K ∧
         r '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2) :
     ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ U ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ U ∧
       D ∩ K = r '' stdSimplexBoundary 2 ∧
       (¬ ∃ (A : Set E) (a : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn a (stdSimplex ℝ (Fin 3)) A ∧ A ⊆ K ∧
+        IsPLHomeomorphOn a (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧ A ⊆ K ∧
           a '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2) ∧
       Φ '' D = Q ∧ ∀ x, Φ (r x) = q x := by
   let ψ := Function.invFunOn Φ univ
@@ -31,7 +31,7 @@ theorem IsPLHomeomorphOn.exists_pullback_disk_of_not_bounding
   have hforward (S : Set E) : Φ '' (ψ '' S) = S := by
     rw [image_image, show (fun x => Φ (ψ x)) = id from funext hright, image_id]
   have hQ : IsPLBall 2 Q := ⟨q, hq⟩
-  have hr : IsPLHomeomorphOn (ψ ∘ q) (stdSimplex ℝ (Fin 3)) (ψ '' Q) :=
+  have hr : IsPLHomeomorphOn (ψ ∘ q) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ψ '' Q) :=
     hq.trans (hψ.restrict hQ.isPolyhedron (subset_univ _))
   have hsupport : ψ '' Q ⊆ U := by
     exact (image_mono hQU).trans (hback U).subset

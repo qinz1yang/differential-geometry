@@ -343,16 +343,14 @@ theorem flow_cov_variation
     intro r
     have hbase : Gg t r = (Φ_fam t : M → M) (cc r) :=
       (horbit_nhds r).eq_of_nhds
-    rw [hbase]
     rw [(horbit_nhds r).mfderiv_eq]
     have hmf : HasMFDerivAt 𝓘(ℝ, ℝ) I (fun w : ℝ => (Φ_fam w : M → M) (cc r)) t
         ((tangentSpaceModelContinuousLinearEquiv
           (I := 𝓘(ℝ, ℝ)) t).toContinuousLinearMap.smulRight
             (-(X t ((Φ_fam t : M → M) (cc r))))) :=
       (hΦode (cc r) t ⟨ht0, htT⟩).hasMFDerivAt (Ici_mem_nhds ht0)
-    rw [hmf.mfderiv]
-    rw [ContinuousLinearMap.smulRight_apply]
-    simp [constantModelVectorField]
+    rw [hmf.mfderiv, hbase, ContinuousLinearMap.comp_apply, ContinuousLinearMap.smulRight_apply]
+    simp [constantModelVectorField, tangentSpaceCast]
   have hGg0 : ∀ s : ℝ, Gg s 0 = (Φ_fam (ρ s) : M → M) x := by
     intro s; simp only [hGg_def]; rw [hcc0]
   have hbundle : ∀ u : ℝ,

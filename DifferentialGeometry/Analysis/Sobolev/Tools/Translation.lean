@@ -417,12 +417,16 @@ theorem eLpNorm_translate_sub_le_smul_eLpNorm_fderiv
   have hLHS :
       eLpNorm (fun x => φ x - φ (x - h)) p volume =
         (∫⁻ x : E, (‖φ x - φ (x - h)‖ₑ : ℝ≥0∞) ^ pr) ^ (1 / pr) := by
-    rw [hp_eq, eLpNorm_eq_lintegral_rpow_enorm_toReal hp0_pr hp_top_pr]
+    have hmeas : AEStronglyMeasurable (fun x : E => φ x - φ (x - h)) volume :=
+      (hφ.continuous.sub
+        (hφ.continuous.comp (continuous_id.sub (continuous_const (y := h))))).aestronglyMeasurable
+    rw [hp_eq, eLpNorm_eq_lintegral_rpow_enorm_toReal hp0_pr hp_top_pr hmeas]
     simp [hpr_toReal]
   have hRHS :
       eLpNorm (fun x => ‖fderiv ℝ φ x‖) p volume =
         (∫⁻ x : E, (‖fderiv ℝ φ x‖ₑ : ℝ≥0∞) ^ pr) ^ (1 / pr) := by
-    rw [hp_eq, eLpNorm_eq_lintegral_rpow_enorm_toReal hp0_pr hp_top_pr]
+    rw [hp_eq, eLpNorm_eq_lintegral_rpow_enorm_toReal hp0_pr hp_top_pr
+      (hφ.continuous_fderiv (by simp)).norm.aestronglyMeasurable]
     have hcongr :
         ∀ x : E, (‖‖fderiv ℝ φ x‖‖ₑ : ℝ≥0∞) = (‖fderiv ℝ φ x‖ₑ : ℝ≥0∞) := by
       intro x

@@ -1,15 +1,18 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.VertexMap
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 
 set_option autoImplicit false
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {ι κ : Type*} [Fintype ι] [Fintype κ]
 
 
-def reindexHomeomorph (e : ι ≃ κ) : stdSimplex ℝ ι ≃ₜ stdSimplex ℝ κ where
+def reindexHomeomorph (e : ι ≃ κ) : coordinateSet ℝ ι ≃ₜ coordinateSet ℝ κ where
   toFun x := ⟨fun j ↦ x.val (e.symm j), ⟨fun j ↦ x.prop.1 (e.symm j),
     (e.symm.sum_comp x.val).trans x.prop.2⟩⟩
   invFun y := ⟨fun i ↦ y.val (e i), ⟨fun i ↦ y.prop.1 (e i),
@@ -31,16 +34,16 @@ def reindexHomeomorph (e : ι ≃ κ) : stdSimplex ℝ ι ≃ₜ stdSimplex ℝ 
 
 
 @[simp]
-theorem reindexHomeomorph_apply (e : ι ≃ κ) (x : stdSimplex ℝ ι) (j : κ) :
+theorem reindexHomeomorph_apply (e : ι ≃ κ) (x : coordinateSet ℝ ι) (j : κ) :
     (reindexHomeomorph e x).val j = x.val (e.symm j) := rfl
 
 
 @[simp]
-theorem reindexHomeomorph_symm_apply (e : ι ≃ κ) (y : stdSimplex ℝ κ) (i : ι) :
+theorem reindexHomeomorph_symm_apply (e : ι ≃ κ) (y : coordinateSet ℝ κ) (i : ι) :
     ((reindexHomeomorph e).symm y).val i = y.val (e i) := rfl
 
 
-theorem reindexHomeomorph_mem_boundary (e : ι ≃ κ) (x : stdSimplex ℝ ι) :
+theorem reindexHomeomorph_mem_boundary (e : ι ≃ κ) (x : coordinateSet ℝ ι) :
     reindexHomeomorph e x ∈ boundary κ ↔ x ∈ boundary ι := by
   constructor
   · rintro ⟨j, hj⟩
@@ -50,7 +53,7 @@ theorem reindexHomeomorph_mem_boundary (e : ι ≃ κ) (x : stdSimplex ℝ ι) :
 
 
 theorem vertexMap_reindex {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    (e : ι ≃ κ) (v : κ → E) (x : stdSimplex ℝ ι) :
+    (e : ι ≃ κ) (v : κ → E) (x : coordinateSet ℝ ι) :
     vertexMap v (reindexHomeomorph e x) = vertexMap (v ∘ e) x := by
   change (∑ j, x.val (e.symm j) • v j) = ∑ i, x.val i • v (e i)
   simpa only [e.symm_apply_apply] using

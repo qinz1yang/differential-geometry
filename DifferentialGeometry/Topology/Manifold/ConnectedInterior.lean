@@ -64,7 +64,7 @@ theorem isPreconnected_manifold_interior [PreconnectedSpace M] :
           (chart_mem_atlas H x) (by simpa only [c, extChartAt_source] using hs)).mpr
         change c (c.symm z) ∈ interior c.target
         rw [c.right_inv ht]
-        exact (extChartAt_target_eventuallyEq_of_mem ht).symm.mem_interior hz.2
+        exact (extChartAt_target_eventuallyEqSet_of_mem ht).symm.mem_interior hz.2
   rw [heq]
   exact ((convex_ball (c x) r).inter I.convex_range.interior).isPreconnected.image c.symm
     ((continuousOn_extChartAt_symm (I := I) x).mono htarget)

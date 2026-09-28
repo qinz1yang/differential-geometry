@@ -60,7 +60,7 @@ theorem exists_gluing_of_pairwise_disjoint_of_tendstoUniformly
     intro x hx
     have hex : ∃ j, x ∈ U j := ⟨i, hx⟩
     dsimp only [F]
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     have heq : hex.choose = i := by
       by_contra hne
       exact disjoint_left.mp (hdis hne) hex.choose_spec hx
@@ -68,7 +68,7 @@ theorem exists_gluing_of_pairwise_disjoint_of_tendstoUniformly
   have hFfix (a : ι → X → X) : EqOn (F a) id (⋃ i, U i)ᶜ := by
     intro x hx
     dsimp only [F]
-    rw [dif_neg (fun hex => hx (mem_iUnion.mpr hex))]
+    rw [dite_eq_right (fun hex => hx (mem_iUnion.mpr hex))]
     rfl
   have hfixsymm (i : ι) : EqOn (f i).symm id (U i)ᶜ := by
     intro x hx

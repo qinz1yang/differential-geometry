@@ -10,6 +10,7 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -83,17 +84,17 @@ theorem h2_tame_uniform
     intro R hR i
     exact Finset.sum_nonneg fun k _ ↦ by
       by_cases hk : k = 3
-      · simp only [hk, if_pos]
+      · simp only [hk, ite_eq_left]
         exact le_rfl
-      · simp only [if_neg hk]
+      · simp only [ite_eq_right hk]
         exact hK0 R hR k
   have hT : ∀ R : ℝ, 0 ≤ R → ∀ i, 0 ≤ T R i := by
     intro R hR i
     exact Finset.sum_nonneg fun k _ ↦ by
       by_cases hk : k = 3
-      · simp only [hk, if_pos]
+      · simp only [hk, ite_eq_left]
         exact hK3 R hR
-      · simp only [if_neg hk]
+      · simp only [ite_eq_right hk]
         exact le_rfl
   have hQ0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ Q0 R := by
     intro R hR
@@ -114,9 +115,9 @@ theorem h2_tame_uniform
   have hKm : ∀ k, 0 ≤ Km k := by
     intro k
     by_cases hk : k = 3
-    · simp only [Km, hk, if_pos]
+    · simp only [Km, hk, ite_eq_left]
       exact mul_nonneg (hK3 R hR) (sq_nonneg A)
-    · simp only [Km, if_neg hk]
+    · simp only [Km, ite_eq_right hk]
       exact hK0 R hR k
   have hgr : ∀ k : ℕ, k ≤ 3 →
       MeasureTheory.Integrable (lowJetGrid (I := I) (M := M) g P k)
@@ -134,9 +135,9 @@ theorem h2_tame_uniform
     rw [hlow]
     by_cases hk3 : k = 3
     · subst k
-      simpa only [Km, if_pos, K3, Nat.reduceAdd] using hgrid3
+      simpa only [Km, ite_eq_left, K3, Nat.reduceAdd] using hgrid3
     · have hk2 : k ≤ 2 := by omega
-      simpa only [Km, if_neg hk3, K0] using hgrid0 k hk2
+      simpa only [Km, ite_eq_right hk3, K0] using hgrid0 k hk2
   have hle := grid_h2_le (I := I) (M := M) g P Km C
     hgr hC Φ hΦ
   have hsplit : ∀ i : ℕ,
@@ -150,8 +151,8 @@ theorem h2_tame_uniform
         apply Finset.sum_congr rfl
         intro k _
         by_cases hk : k = 3
-        · simp only [Km, hk, if_pos, zero_add]
-        · simp only [Km, if_neg hk, zero_mul, add_zero]
+        · simp only [Km, hk, ite_eq_left, zero_add]
+        · simp only [Km, ite_eq_right hk, zero_mul, add_zero]
       _ = (∑ k ∈ Finset.range (i + 2), if k = 3 then 0 else K0 R k) +
           ∑ k ∈ Finset.range (i + 2),
             (if k = 3 then K3 R else 0) * A ^ 2 := by

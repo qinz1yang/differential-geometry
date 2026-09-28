@@ -119,19 +119,6 @@ theorem hasExtinctObservationNucleusOfCutCapCompletion_of_retainedCoreTower_unif
   exact hasExtinctObservationNucleusOfCutCapCompletion_of_retainedCoreTower_extinctByLevelWithin
     P g T hbfr hctrl hB
 
-theorem smoothPoincareConjecture_of_hasExtinctObservationNucleusOfCutCapCompletion
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      HasExtinctObservationNucleusOfCutCapCompletion
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_poincareControlledExtinction hsum
-    (hext_of_hasExtinctObservationNucleusOfCutCapCompletion h)
-
 theorem exists_extinctionThreshold_ge (B : ℝ) :
     ∃ c A : ℝ, 0 < c ∧ 0 ≤ A ∧ B ≤ extinctionThreshold c A := by
   by_cases hB : B ≤ 0

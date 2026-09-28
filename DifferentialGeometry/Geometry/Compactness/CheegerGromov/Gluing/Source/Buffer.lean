@@ -221,6 +221,7 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
       filter_upwards [hnear] with q hq
       change chi.symm (chi (gamma q)) = gamma q
       exact chi.left_inv hq
+    have hbase : e (eta s) = gamma s := heq.self_of_nhds
     have hcomp :
         (mfderiv 𝓘(Real, E) I e (eta s)).comp
             (mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s) =
@@ -228,7 +229,9 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
       have hderiv := Filter.EventuallyEq.mfderiv_eq
         (I := 𝓘(Real, Real)) (I' := I) heq
       rw [mfderiv_comp s heDiff hetaDiff] at hderiv
-      simpa only using hderiv
+      refine hderiv.trans ?_
+      ext
+      rfl
     have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1 =
         deriv eta s := by
       rw [mfderiv_eq_fderiv]
@@ -263,7 +266,6 @@ private theorem NormalCoordMetricEquivOn.chart_join_le
                 Y.metric.inner x w w
           exact intrinsicGeodesic_speedSq_eq (I := I) Y.metric hEnorm x w s
         _ = d ^ 2 := hlaunch
-    have hbase : e (eta s) = gamma s := heq.self_of_nhds
     have hmetric : normalCoordMetric (I := I) Y c (eta s)
           (deriv eta s) (deriv eta s) = d ^ 2 := by
       rw [normal_coord_metric_apply (I := I), hbase]

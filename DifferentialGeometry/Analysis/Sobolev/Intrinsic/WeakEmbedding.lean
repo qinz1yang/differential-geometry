@@ -43,7 +43,6 @@ theorem MemW1pIntrinsicLp.memLp_subcritical [NeZero (Module.finrank ℝ E)]
   have hvLp : MemLp v (ENNReal.ofReal
       ((Module.finrank ℝ E : ℝ) * p / ((Module.finrank ℝ E : ℝ) - p)))
       (riemannianVolumeMeasure I M g) := by
-    refine ⟨hvmeas.aestronglyMeasurable, ?_⟩
     exact (hbound hvmeas hchart).trans_lt
       (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (Chart.wkpNormChart_lt_top_of_memWkpChart hpE hchart))
   exact hvLp.ae_eq huv.symm

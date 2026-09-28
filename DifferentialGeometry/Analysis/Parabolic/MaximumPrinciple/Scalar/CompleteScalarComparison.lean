@@ -1,11 +1,12 @@
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Parabolic.Energy.CutoffEnergy
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 
 set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Analysis

@@ -542,7 +542,8 @@ private lemma eLpNorm_two_sq_eq_ofReal_integral_sq_univ
         (eLpNorm h 2 (volume.restrict Ω)) ^ 2 =
           ∫⁻ x, (‖h x‖ₑ : ℝ≥0∞) ^ 2 ∂(volume.restrict Ω) := by
       rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
-        (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))]
+        (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))
+        hh_l2.aestronglyMeasurable]
       have h2 : (2 : ℝ≥0∞).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
       rw [h2]
       have h_inner_eq : ∫⁻ x, (‖h x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂(volume.restrict Ω) =

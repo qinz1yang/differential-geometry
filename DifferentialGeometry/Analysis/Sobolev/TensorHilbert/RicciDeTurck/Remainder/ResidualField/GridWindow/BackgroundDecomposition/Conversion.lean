@@ -7,6 +7,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.MultilinearIdentities
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.FibreNormBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.DoubleTraceContraction
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -1509,7 +1512,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 variable (g₀ : SmoothRiemannianMetric I M)
 
-lemma exists_riemannianFiberNormSq_iteratedCovGrad_koszulConnectionDifferenceContractionWeight_gridWindow_le
+lemma koszulConnectionDifferenceContractionWeight_jet_norm_sq_le_gridWindow
     (σ : Equiv.Perm (Fin 6))
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ w, 0 ≤ C w) ∧

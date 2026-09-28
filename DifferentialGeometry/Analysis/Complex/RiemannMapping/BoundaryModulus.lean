@@ -66,7 +66,7 @@ theorem continuousAt_piecewise_log_norm_of_unit_disk_homeomorph
   have ht := (tendsto_log_norm_at_frontier_of_unit_disk_homeomorph e htarget hp).piecewise
     (s := e.source)
     (tendsto_const_nhds : Tendsto (fun _ : ℂ => (0 : ℝ)) (𝓝 p ⊓ 𝓟 e.sourceᶜ) (𝓝 0))
-  simpa only [ContinuousAt, Set.piecewise, if_neg hps] using ht
+  simpa only [ContinuousAt, Set.piecewise, ite_eq_right hps] using ht
 
 end Complex
 

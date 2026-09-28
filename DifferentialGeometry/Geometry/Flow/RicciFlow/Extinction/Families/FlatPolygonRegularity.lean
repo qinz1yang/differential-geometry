@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.Preparation
-import DifferentialGeometry.Bundle.PartialMfderiv.IteratedDeriv
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.IteratedDeriv
 
 section
 

@@ -54,8 +54,8 @@ private theorem perturbed_m_block_sub_abs_le
   unfold hamiltonPerturbedMBlock
   rw [add_sub_cancel_left]
   by_cases hab : a = b
-  · rw [if_pos hab, mul_one, abs_of_nonneg hquot]
-  · rw [if_neg hab, mul_zero, abs_zero]
+  · rw [ite_eq_left hab, mul_one, abs_of_nonneg hquot]
+  · rw [ite_eq_right hab, mul_zero, abs_zero]
     exact hquot
 
 private theorem metric_curvature_block_perturbation_quadratic
@@ -1213,7 +1213,7 @@ theorem hamiltonPerturbedBlock_heat_product_ge
           (cPsiJ + cSigmaW + cJet) *
             (psi / clock.elapsed ^ 2) * W2 +
           (cUJ + cSigmaU) * psi * U2 := by
-    convert htotal using 1 <;> first | rfl | ring
+    convert htotal using 1; first | rfl | ring
   have hCphi' : cPhi <= C := by
     simpa only [cPhi, N] using hCphi
   have hCpsiW' : cPsiJ + cSigmaW + cJet <= C := by

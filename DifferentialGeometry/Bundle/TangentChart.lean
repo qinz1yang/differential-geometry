@@ -1,4 +1,4 @@
-import Mathlib.Geometry.Manifold.MFDeriv.FDeriv
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
 
@@ -11,7 +11,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
+namespace TangentBundle
 
 def chartFiberCoord (α : M) (p : TangentBundle I M) : E :=
   (trivializationAt E (TangentSpace I) α p).2
@@ -32,12 +32,6 @@ lemma chartFiberCoord_self_zero (α : M) :
   change (trivializationAt E (TangentSpace I) α
       (⟨α, (0 : TangentSpace I α)⟩ : TangentBundle I M)).2 = 0
   rw [hzero']
-
-end DifferentialGeometry.Geometry.Riemannian.Geodesic
-
-namespace DifferentialGeometry.Geometry.Riemannian.Exponential
-
-open DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 theorem extChartAt_tangent_apply_snd
     (q : TangentBundle I M) {p : TangentBundle I M}
@@ -116,12 +110,6 @@ theorem extChartAt_tangent_eq_at_proj
       extChartAt I.tangent (⟨q.proj, (0 : E)⟩ : TangentBundle I M) := by
   classical
   rw [FiberBundle.extChartAt, FiberBundle.extChartAt]
-
-end DifferentialGeometry.Geometry.Riemannian.Exponential
-
-namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
-
-open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 lemma chartFiberCoord_eq_tangentCoordChange
     (α : M) {p : TangentBundle I M}
@@ -511,7 +499,7 @@ lemma snd_continuousLinearMapAt_secondaryTriv
   rw [hfderivWithin_eq]
   rfl
 
-end DifferentialGeometry.Geometry.Riemannian.Geodesic
+end TangentBundle
 
 end
 
@@ -522,7 +510,7 @@ noncomputable section
 open Set Function Bundle Manifold
 open scoped Topology ContDiff Bundle Manifold
 
-namespace DifferentialGeometry.Geometry
+namespace TangentBundle
 
 variable {E V : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup V] [NormedSpace ℝ V]
@@ -540,7 +528,7 @@ theorem chartCoord_source_mfderivWithin {U : V → M} {z : V} {s : Set V}
     ← mfderiv_comp_mfderivWithin z (mdifferentiableAt_extChartAt hp) hU
       hs.uniqueMDiffWithinAt, mfderivWithin_eq_fderivWithin]
 
-end DifferentialGeometry.Geometry
+end TangentBundle
 
 end
 

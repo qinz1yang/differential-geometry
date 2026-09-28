@@ -40,7 +40,7 @@ theorem attachDiskAnnulus_sector_area (g : SmoothRiemannianMetric 𝓘(ℝ, E) M
   apply riemannianArea_congr_on_open g (isOpen_annulusSector a)
   intro z hz
   change attachDiskAnnulus u H (annulusPolarMap z) = H (z.re, (z.im : loopCircle))
-  rw [attachDiskAnnulus, if_neg (by
+  rw [attachDiskAnnulus, ite_eq_right (by
     rw [norm_annulusPolarMap (Ioo_subset_Icc_self hz.1)]
     linarith [hz.1.1]), polarAnnulusCoordinates_annulusPolarMap (Ioo_subset_Icc_self hz.1)]
 

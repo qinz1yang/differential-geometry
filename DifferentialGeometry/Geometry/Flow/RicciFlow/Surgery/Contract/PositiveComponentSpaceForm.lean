@@ -6,8 +6,6 @@ import DifferentialGeometry.Geometry.Curvature.ProjectiveSpace
 
 open private diffeomorphOfPartialDiffeomorphUniv from
   DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareStandardGeometricFrontier
-open private isConstantPositiveSectionalCurvature_of_metric from
-  DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 
 noncomputable section
 
@@ -22,19 +20,19 @@ universe u
 
 private local instance : Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 4)) = 3 + 1) := ⟨by simp⟩
 
-theorem isPositiveSpaceFormModel_of_positiveComponent
+theorem admitsConstantPositiveSectionalCurvature_of_positiveComponent
     (M : ConnectedClosedOrientedManifold.{u} 3)
     (R : PositiveComponent (M := M.Carrier) Set.univ) :
-    IsPositiveSpaceFormModel M := by
+    admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := M.Carrier) := by
   cases R with
-  | sphere F hs ht => exact isPositiveSpaceFormModel_of_positiveComponent_sphere M hs ht
+  | sphere F hs ht =>
+    exact admitsConstantPositiveSectionalCurvature_of_positiveComponent_sphere M hs ht
   | projective Z presentation F hs ht =>
     obtain ⟨e, he⟩ := presentation.exists_realProjectiveThree_diffeomorph
     let d := e.trans (diffeomorphOfPartialDiffeomorphUniv F hs ht)
     exact ⟨Diffeomorph.pullbackMetric roundProjectiveMetric d.symm,
-      isConstantPositiveSectionalCurvature_of_pullbackMetric roundProjectiveMetric
-        (isConstantPositiveSectionalCurvature_of_metric _
-          constantPositiveSectionalCurvatureMetric_roundProjectiveMetric) d.symm⟩
+      constantPositiveSectionalCurvatureMetric_pullback roundProjectiveMetric
+        constantPositiveSectionalCurvatureMetric_roundProjectiveMetric d.symm⟩
 
 theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRoundComponent
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
@@ -47,7 +45,7 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRo
         (ε : ℝ) (x : (E.discarded.toClosedOrientedManifold.component C).Carrier) (t : ℝ),
         Nonempty (RoundComponent S ε x t Set.univ)) : E.poincareStandardDiscarded := by
   apply MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
-    sphericalSpaceFormCovering_holds E
+    E
   intro C
   refine ⟨[E.discarded.toClosedOrientedManifold.component C], ?_,
     ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
@@ -57,9 +55,9 @@ theorem MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveOrRo
   apply Or.inl
   rcases h C with hpositive | hround
   · obtain ⟨R⟩ := hpositive
-    exact isPositiveSpaceFormModel_of_positiveComponent _ R
+    exact admitsConstantPositiveSectionalCurvature_of_positiveComponent _ R
   · obtain ⟨D', S, ε, x, t, ⟨R⟩⟩ := hround
-    exact isPositiveSpaceFormModel_of_roundComponent _ R
+    exact admitsConstantPositiveSectionalCurvature_of_roundComponent _ R
 
 open Set in
 theorem isPoincareStandard_of_ball_cap_cover
@@ -71,8 +69,8 @@ theorem isPoincareStandard_of_ball_cap_cover
     isPoincareStandard M.Carrier := by
   obtain ⟨W⟩ := nonempty_positiveComponent_of_ball_cap_cover B hB cap hcover
   exact isPoincareStandard_of_standard_factor M
-    (isStandardFactor_of_isPositiveSpaceFormModel sphericalSpaceFormCovering_holds
-      (isPositiveSpaceFormModel_of_positiveComponent M W))
+    (isStandardFactor_of_admitsConstantPositiveSectionalCurvature (M := M)
+      (admitsConstantPositiveSectionalCurvature_of_positiveComponent M W))
 
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

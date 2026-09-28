@@ -7,8 +7,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -142,6 +141,5 @@ theorem exists_riemannianFiberNormSq_slot0Curry_le
   exact riemannianFiberNormSq_slot0Curry_le_of_frame (I := I) (M := M) g s x e K₀
     hreprS hreprSucc T a
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry

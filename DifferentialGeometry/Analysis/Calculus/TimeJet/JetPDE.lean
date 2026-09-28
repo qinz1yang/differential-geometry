@@ -7,9 +7,8 @@ noncomputable section
 open Set
 open scoped ContDiff
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+namespace DifferentialGeometry.Analysis
 
-open DifferentialGeometry.Analysis
 
 variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace F]
@@ -89,4 +88,4 @@ theorem contDiffOn_of_closed_jet_pde
     rcases p with ⟨t, x⟩
     rfl
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
+end DifferentialGeometry.Analysis

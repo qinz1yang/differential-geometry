@@ -6,6 +6,8 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.ConnectionDifferen
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantDerivativeFibreExtraction
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -90,8 +92,8 @@ private theorem exists_norm_covGrad_connectionDifferenceSection_le_of_jetEnvelop
     intro l
     simp only [hSf_def]
     by_cases hl : l = 0
-    · rw [if_pos hl]; exact hs0_nn
-    · rw [if_neg hl]; exact hs1_nn
+    · rw [ite_eq_left hl]; exact hs0_nn
+    · rw [ite_eq_right hl]; exact hs1_nn
   refine ⟨Real.sqrt (diagonalGridGrowthFactor (E := E) 1 *
       ∑ i ∈ Finset.range 2, Bf i * ∑ l ∈ Finset.range (2 - i), Sf l), Real.sqrt_nonneg _, ?_⟩
   intro g₁ P δ hδ_le hδ0 hδ htie x henv

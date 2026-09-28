@@ -517,7 +517,7 @@ theorem dirichletFinWeakForm_exists
     exact (hC₀ ⟨t, ht, rfl⟩).trans (le_max_left C₀ 0)
   have hlip : ∀ t ∈ Icc (0 : ℝ) T, LipschitzWith L (resid t) := by
     intro t ht
-    exact (B t).lipschitz.weaken (by
+    exact (B t).lipschitzWith.weaken (by
       exact_mod_cast hbound t ht)
   have htime : ∀ v : V, ContinuousOn (fun t => resid t v) (Icc (0 : ℝ) T) := by
     intro v

@@ -39,9 +39,9 @@ theorem exists_homeomorph_extending_two_vertex_arcs
   let φ : Plane → Plane := fun x => if hx : x ∈ A ∪ B then (d ⟨x, hx⟩ : Plane) else x
   let ψ : Plane → Plane := fun y => if hy : y ∈ A' ∪ B' then (d.symm ⟨y, hy⟩ : Plane) else y
   have hφ (x : Plane) (hx : x ∈ A ∪ B) : φ x = (d ⟨x, hx⟩ : Plane) := by
-    simp only [φ, dif_pos hx]
+    simp only [φ, dite_eq_left hx]
   have hψ (y : Plane) (hy : y ∈ A' ∪ B') : ψ y = (d.symm ⟨y, hy⟩ : Plane) := by
-    simp only [ψ, dif_pos hy]
+    simp only [ψ, dite_eq_left hy]
   have hφcont : ContinuousOn φ (A ∪ B) := by
     rw [continuousOn_iff_continuous_domRestrict]
     exact (continuous_subtype_val.comp d.continuous).congr (fun x => (hφ x x.property).symm)

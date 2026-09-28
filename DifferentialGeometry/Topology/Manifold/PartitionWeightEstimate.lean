@@ -36,7 +36,7 @@ theorem abs_mvfderiv_prod_le_sum (s : Finset ι) (f : ι → M → ℝ) (x : M)
   rw [abs_mul]
   have hp : |∏ j ∈ s.erase i, f j x| ≤ 1 := by
     rw [Finset.abs_prod]
-    exact Finset.prod_le_one (fun _ _ ↦ abs_nonneg _)
+    exact Finset.prod_le_one₀ (fun _ _ ↦ abs_nonneg _)
       (fun j hj ↦ hbound j (Finset.mem_of_mem_erase hj))
   exact mul_le_of_le_one_left (abs_nonneg _) hp
 
@@ -55,12 +55,12 @@ theorem abs_mvfderiv_bump_partition_le_sum [Fintype ι]
   have hg : MDifferentiableAt I 𝓘(ℝ) g x := by
     convert MDifferentiableAt.prod (fun j (_ : j ∈ s) ↦
       (show MDifferentiableAt I 𝓘(ℝ) (fun _ : M ↦ (1 : ℝ)) x from
-        mdifferentiableAt_const).sub (hf j)) using 1 <;>
-      first | rfl | (funext y; simp only [g, Finset.prod_apply, Pi.sub_apply])
+        mdifferentiableAt_const).sub (hf j)) using 1
+    first | rfl | (funext y; simp only [g, Finset.prod_apply, Pi.sub_apply])
   have hgb : |g x| ≤ 1 := by
     change |∏ j ∈ s, (1 - f j x)| ≤ 1
     rw [Finset.abs_prod]
-    apply Finset.prod_le_one (fun _ _ ↦ abs_nonneg _)
+    apply Finset.prod_le_one₀ (fun _ _ ↦ abs_nonneg _)
     intro j _
     rw [abs_of_nonneg (sub_nonneg.mpr (f.le_one j x))]
     linarith [f.nonneg j x]

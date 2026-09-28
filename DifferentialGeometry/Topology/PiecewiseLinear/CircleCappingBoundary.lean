@@ -46,7 +46,7 @@ theorem IsCircleCapping.exists_boundary_preserving_map [d : DecidableEq E3]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) {T : Set E3}
     (hcap : IsCircleCapping K.space Q.space T (boundaryComplex 2 K).space) :
     ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3) (f : E3 → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
       K.space ∩ Δ = r '' stdSimplexBoundary 2 ∧
       r '' stdSimplexBoundary 2 ∈ traceCircles K.space T ∧
       r '' stdSimplexBoundary 2 ⊆ (boundaryComplex 2 K).space ∧

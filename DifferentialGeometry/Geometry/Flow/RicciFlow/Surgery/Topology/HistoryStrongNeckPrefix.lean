@@ -40,7 +40,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (k : Fin (H.eventCount + 1))
+variable (H : RetainedCoreHistory.{u}) (k : Fin (H.eventCount + 1))
 
 private def backwardPointTraceToPrefix {first : Fin ((H.prefixAt k).eventCount + 1)}
     (hle : first ≤ Fin.last (H.prefixAt k).eventCount) {x : (H.stage k).Carrier}

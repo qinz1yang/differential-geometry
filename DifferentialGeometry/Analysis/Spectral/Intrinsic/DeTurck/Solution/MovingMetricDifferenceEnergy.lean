@@ -259,7 +259,7 @@ def ricciReactionContractInBasis {Idx : Type*} [Fintype Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
     (Q W : Tensor0SSpace 2 I x)
     (basis : Module.Basis Idx Real (TangentSpace I x)) : Real :=
-  ricReactionContract
+  metricVariationContract
     (basisInvMetric (I := I) g x basis)
     (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
     (fun I₀ => tensor0SComponent (I := I) W (fun i => basis i) I₀)
@@ -307,7 +307,7 @@ theorem ricciReactionContractInBasis_deriv
   have hgInv (i j : Idx) :
       HasDerivWithinAt (fun r : Real => gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using
-      (basisInv_time (I := I) g
+      (hasDerivAt_basisInvMetric (I := I) g
         (fun p q => (-2 : Real) * ric p q) basis
         (fun p q => by simpa [ric] using hg (basis p) (basis q)) i j)
   have hT (I₀ : Fin 2 → Idx) :
@@ -345,7 +345,7 @@ theorem ricciReactionContractInBasis_deriv
     simp only [gInvDt]
     rw [hterm, hfactor]
     ring
-  have hbase := hasDerivWithinAt_normSq0S_ricciFlow
+  have hbase := hasDerivWithinAt_normSq0S_of_metric_variation
     (I := I) (s := 2) (u := Set.univ) (t := t)
     g gInv gInvDt ric (fun _ => W) Tdt (0 : Tensor0SSpace 2 I x)
     basis hinvAll hgInv hT hTdot hflow
@@ -463,7 +463,7 @@ theorem movingMetricReaction_eq_in_orthonormal_basis
     movingMetricReaction (I := I) (M := M) (g t) x Q W =
       2 * ∑ I₀ : Fin 2 → Idx,
         tensor0SComponent (I := I) W (fun i => basis i) I₀ *
-          ricStarArray
+          covariantEndomorphismActionArray
             (fun i j => Q
               (fun a : Fin 2 => if a = 0 then basis i else basis j))
             (fun J₀ => tensor0SComponent (I := I) W (fun i => basis i) J₀) I₀ := by
@@ -477,7 +477,7 @@ theorem movingMetricReaction_eq_in_orthonormal_basis
       identityInvMetric (Idx := Idx) :=
     metricInv_unique (I := I) (M := M) (g t) x basis _ _ hcanon hid
   rw [heq]
-  exact ricReactionContract_delta_eq_compContract
+  exact metricVariationContract_identityInvMetric
     (Idx := Idx)
     (fun i j => Q (fun a : Fin 2 => if a = 0 then basis i else basis j))
     (fun I₀ => tensor0SComponent (I := I) W (fun i => basis i) I₀)
@@ -487,7 +487,7 @@ theorem ricciReactionCoordinateArray_bound
     {Idx : Type*} [Fintype Idx]
     (q : Idx → Idx → Real) (Wc : (Fin 2 → Idx) → Real)
     {B : Real} (hB : 0 ≤ B) (hq : ∀ i j : Idx, |q i j| ≤ B) :
-    |2 * ∑ I₀ : Fin 2 → Idx, Wc I₀ * ricStarArray q Wc I₀| ≤
+    |2 * ∑ I₀ : Fin 2 → Idx, Wc I₀ * covariantEndomorphismActionArray q Wc I₀| ≤
       2 * (Fintype.card (Fin 2 → Idx) : Real) *
         ((2 : Real) * (Fintype.card Idx : Real) * B) * compNormSqMulti Wc := by
   classical
@@ -496,7 +496,7 @@ theorem ricciReactionCoordinateArray_bound
     simpa only [N] using compNormSqMulti_nonneg Wc
   have hsqrt : 0 ≤ Real.sqrt N := Real.sqrt_nonneg _
   have hinner :
-      |∑ I₀ : Fin 2 → Idx, Wc I₀ * ricStarArray q Wc I₀| ≤
+      |∑ I₀ : Fin 2 → Idx, Wc I₀ * covariantEndomorphismActionArray q Wc I₀| ≤
         ∑ _I₀ : Fin 2 → Idx,
           Real.sqrt N *
             ((2 : Real) * (Fintype.card Idx : Real) * B * Real.sqrt N) := by
@@ -505,9 +505,9 @@ theorem ricciReactionCoordinateArray_bound
     rw [abs_mul]
     have hW : |Wc I₀| ≤ Real.sqrt N := by
       simpa only [N] using abs_le_sqrt_compNormSqMulti Wc I₀
-    have hstar : |ricStarArray q Wc I₀| ≤
+    have hstar : |covariantEndomorphismActionArray q Wc I₀| ≤
         (2 : Real) * (Fintype.card Idx : Real) * B * Real.sqrt N := by
-      have hstar0 := abs_ricStarArray_le q Wc B hB hq I₀
+      have hstar0 := abs_covariantEndomorphismActionArray_le q Wc B hB hq I₀
       norm_num at hstar0
       simpa only [N] using hstar0
     exact mul_le_mul hW hstar (abs_nonneg _) hsqrt
@@ -522,7 +522,7 @@ theorem ricciReactionCoordinateArray_bound
   have hsqrt_sq : Real.sqrt N * Real.sqrt N = N := Real.mul_self_sqrt hN
   rw [abs_mul, show |(2 : Real)| = 2 by norm_num]
   calc
-    2 * |∑ I₀ : Fin 2 → Idx, Wc I₀ * ricStarArray q Wc I₀| ≤
+    2 * |∑ I₀ : Fin 2 → Idx, Wc I₀ * covariantEndomorphismActionArray q Wc I₀| ≤
         2 * ((Fintype.card (Fin 2 → Idx) : Real) *
           (Real.sqrt N *
             ((2 : Real) * (Fintype.card Idx : Real) * B * Real.sqrt N))) := by
@@ -583,7 +583,7 @@ theorem movingMetricReaction_bound
   have harray' :
       |2 * ∑ I₀ : Fin 2 → Fin (Module.finrank Real E),
           tensor0SComponent (I := I) W (fun i => basis i) I₀ *
-            ricStarArray
+            covariantEndomorphismActionArray
               (fun i j => Q
                 (fun a : Fin 2 => if a = 0 then basis i else basis j))
               (fun J₀ => tensor0SComponent (I := I) W (fun i => basis i) J₀) I₀| ≤
@@ -1118,7 +1118,7 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
   have hgInv (i j : Fin (Module.finrank Real (TangentSpace I x))) :
       HasDerivWithinAt (fun r : Real ↦ gInv r i j) (gInvDt i j) Set.univ t := by
     simpa [gInv, gInvDt, ric] using
-      (basisInv_time (I := I) g₀
+      (hasDerivAt_basisInvMetric (I := I) g₀
         (fun p q ↦ (-2 : Real) * ric p q) basis
         (fun p q ↦ by simpa [ric] using hg (basis p) (basis q)) i j)
   have hT (I₀ : Fin 2 → Fin (Module.finrank Real (TangentSpace I x))) :
@@ -1163,7 +1163,7 @@ theorem movingMetricDifferenceNormSq_time_deriv {x : M} {t : Real}
     rw [hterm, hfactor]
     ring
   have hbase :=
-    hasDerivWithinAt_normSq0S_ricciFlow
+    hasDerivWithinAt_normSq0S_of_metric_variation
       (I := I) (s := 2) (u := Set.univ) (t := t)
       g₀ gInv gInvDt ric T Tdt Wdot basis hinvAll hgInv hT hTdot hflow
   have hat := hbase.hasDerivAt (by simp)

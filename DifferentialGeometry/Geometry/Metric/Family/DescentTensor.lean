@@ -121,6 +121,7 @@ theorem of_surjective_localPullMetric
         have hid : mfderiv J J (f ∘ (Y : N → M)) r.2 =
             ContinuousLinearMap.id ℝ (TangentSpace J r.2) := by
           rw [heveq.mfderiv_eq, mfderiv_id]
+          rfl
         rw [hid] at hc
         exact congrArg (fun L : TangentSpace J r.2 →L[ℝ] TangentSpace J r.2 => L (w i r.2))
           hc.symm

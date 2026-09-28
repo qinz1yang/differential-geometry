@@ -18,7 +18,7 @@ theorem IsCombinatorialManifold.exists_capped_pair_of_separating_circle
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     (hconn : IsPreconnected K.space) {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ K.space = r '' stdSimplexBoundary 2)
     (hsep : ¬ IsPreconnected (K.space \ r '' stdSimplexBoundary 2)) :
     ∃ (P Q : Geometry.SimplicialComplex ℝ E) (hPfin : P.faces.Finite) (hQfin : Q.faces.Finite),

@@ -26,6 +26,7 @@ open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 variable
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

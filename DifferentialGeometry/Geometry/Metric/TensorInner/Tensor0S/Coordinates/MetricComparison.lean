@@ -1,7 +1,7 @@
 import Mathlib.Analysis.InnerProductSpace.Spectrum
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.KroneckerQuadraticForm
-open DifferentialGeometry.Geometry.Curvature
+import DifferentialGeometry.Tensor.RSTensor.Coordinates.CoordinateBasis
 
 set_option autoImplicit false
 
@@ -65,7 +65,7 @@ private theorem prod_mu_le_pow
     (∏ a : Fin s, μ (I0 a)) <= C ^ s := by
   calc
     (∏ a : Fin s, μ (I0 a)) <= ∏ _a : Fin s, C := by
-          apply Finset.prod_le_prod
+          apply Finset.prod_le_prod₀
           · intro a _
             exact hμ_nonneg (I0 a)
           · intro a _
@@ -366,7 +366,7 @@ theorem coordInner0S_identity_le_pow_diagonal
   have hprod : m ^ s <= ∏ a : Fin s, μ (I0 a) := by
     calc m ^ s = ∏ _a : Fin s, m := by simp
       _ <= ∏ a : Fin s, μ (I0 a) :=
-          Finset.prod_le_prod (fun a _ => hm.le) (fun a _ => hμ_lb (I0 a))
+          Finset.prod_le_prod₀ (fun a _ => hm.le) (fun a _ => hμ_lb (I0 a))
   have hge1 : (1 : Real) <= (1 / m) ^ s * ∏ a : Fin s, μ (I0 a) := by
     have hms : (1 / m) ^ s * m ^ s = 1 := by
       rw [← mul_pow, one_div, inv_mul_cancel₀ hm.ne', one_pow]
@@ -402,7 +402,7 @@ theorem coordInner0S_identity_le_pow_quad
     coordInner0S (I := I) (x := x) s identityInvMetric A A basis <=
       C ^ s * coordInner0S (I := I) (x := x) s Q A A basis := by
   classical
-  have hkey := DifferentialGeometry.CheegerGromovCompactness.quadForm_id_le_pow Q C hC hQsymm hQlb s
+  have hkey := Matrix.quadForm_id_le_pow Q C hC hQsymm hQlb s
     (fun I0 => tensor0SComponent (I := I) A (fun i => basis i) I0)
   have hQform : coordInner0S (I := I) (x := x) s Q A A basis
       = ∑ I0 : Fin s -> Idx, ∑ J0 : Fin s -> Idx,
@@ -464,7 +464,7 @@ theorem normSq0S_le_pow_sum_comp_sq
     exact Finset.sum_congr rfl fun I0 _ => Finset.sum_congr rfl fun J0 _ =>
       mul_assoc _ _ _
   rw [hQform]
-  exact DifferentialGeometry.CheegerGromovCompactness.quad_ub_of_near_id Q ε hε0 hnear s
+  exact Matrix.quad_ub_of_near_id Q ε hε0 hnear s
     (fun I0 => tensor0SComponent (I := I) A (fun i => basis i) I0)
 
 end DiagonalCoordinate

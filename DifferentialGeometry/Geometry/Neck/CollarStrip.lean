@@ -115,7 +115,7 @@ theorem cylindricalChart.exists_strip_containing_full_collar_of_gradient_close
       v (ψ x).2 ≤ H ((ψ x).1, ⟨b, hab, le_rfl⟩) at hx
     rcases hτ with hτ | hτ
     · simpa only [t₀, t₂, hτ, ite_true, one_mul] using hx
-    · simpa only [t₀, t₂, hτ, show (-1 : ℝ) ≠ 1 by norm_num, if_false, neg_one_mul]
+    · simpa only [t₀, t₂, hτ, show (-1 : ℝ) ≠ 1 by norm_num, ite_false, neg_one_mul]
         using And.intro (neg_le_neg hx.2) (neg_le_neg hx.1)
   have hne (p : S) : (ψ (p, t₀)).2 ≠ t₁ := by
     have hlt := (hbetween (p, t₀)).2.trans_lt (hotherBound (ψ (p, t₀)).1)

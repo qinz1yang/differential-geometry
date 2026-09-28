@@ -47,12 +47,6 @@ structure RetainedCoreEvent (P Q : OrientedThreeStage.{u}) (a s : ℝ) where
         outputMetric.inner (oldOutput x)
           (mfderiv (𝓡∂ 3) ThreeModel oldOutput x v)
           (mfderiv (𝓡∂ 3) ThreeModel oldOutput x w)
-  old_contains_outside : ∀ x : transition.trace.tubes.core,
-    x ∈ transition.trace.retainedCore →
-    (∀ b : transition.trace.tubes.Index,
-      x.1 ∉ transition.trace.tubes.tube b ''
-        {z : TubeDomain | (-2 : ℝ) < z.2.1 ∧ z.2.1 < 2}) →
-      x ∈ transition.trace.retainedCore
   every_child_meets_old : ∀ c : ConnectedComponents Q.Carrier,
     ∃ x : transition.retainedCoreOpens, ConnectedComponents.mk (oldOutput x) = c
 
@@ -101,7 +95,7 @@ theorem coreInclusion_isSmoothEmbedding (E : RetainedCoreEvent P Q a s) :
 
 end RetainedCoreEvent
 
-structure RetainedCoreHistory (P : OrientedThreeStage.{u}) where
+structure RetainedCoreHistory where
   horizon : ℝ
   horizon_nonneg : 0 ≤ horizon
   eventCount : ℕ
@@ -126,9 +120,7 @@ structure RetainedCoreHistory (P : OrientedThreeStage.{u}) where
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-abbrev toHistory (H : RetainedCoreHistory P) : ObservedHistory.{u} where
+abbrev toHistory (H : RetainedCoreHistory.{u}) : ObservedHistory.{u} where
   horizon := H.horizon
   horizon_nonneg := H.horizon_nonneg
   eventCount := H.eventCount
@@ -144,16 +136,16 @@ abbrev toHistory (H : RetainedCoreHistory P) : ObservedHistory.{u} where
   finalSlab := H.finalSlab
   final_initial := H.final_initial
 
-@[simp] theorem toHistory_eventCount (H : RetainedCoreHistory P) :
+@[simp] theorem toHistory_eventCount (H : RetainedCoreHistory.{u}) :
     H.toHistory.eventCount = H.eventCount := rfl
 
-@[simp] theorem toHistory_event (H : RetainedCoreHistory P) (i : Fin H.eventCount) :
+@[simp] theorem toHistory_event (H : RetainedCoreHistory.{u}) (i : Fin H.eventCount) :
     H.toHistory.event i = (H.coreEvent i).toMetricCutCapEvent := rfl
 
 end RetainedCoreHistory
 
 structure RetainedCoreObservationTower (P : OrientedThreeStage.{u}) (g : P.Metric) where
-  history : ℕ → RetainedCoreHistory P
+  history : ℕ → RetainedCoreHistory.{u}
   horizon_eq : ∀ n : ℕ, (history n).horizon = (n : ℝ)
   initial : ∀ n : ℕ, InitialIdentification P g (history n).toHistory
   successor : ∀ n : ℕ, ObservedHistory.SamePresentation
@@ -225,9 +217,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-abbrev atZero (P : OrientedThreeStage.{u}) (g : P.Metric) : RetainedCoreHistory P where
+abbrev atZero (P : OrientedThreeStage.{u}) (g : P.Metric) : RetainedCoreHistory.{u} where
   horizon := 0
   horizon_nonneg := le_rfl
   eventCount := 0
@@ -248,9 +238,9 @@ abbrev atZero (P : OrientedThreeStage.{u}) (g : P.Metric) : RetainedCoreHistory 
   finalSlab := fun h => False.elim ((lt_irrefl (0 : ℝ)) h)
   final_initial := fun h => False.elim ((lt_irrefl (0 : ℝ)) h)
 
-def emptyExtension (H : RetainedCoreHistory P)
+def emptyExtension (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
-    (B : ℝ) (hB : H.horizon ≤ B) : RetainedCoreHistory P where
+    (B : ℝ) (hB : H.horizon ≤ B) : RetainedCoreHistory.{u} where
   horizon := B
   horizon_nonneg := H.horizon_nonneg.trans hB
   eventCount := H.eventCount
@@ -267,11 +257,11 @@ def emptyExtension (H : RetainedCoreHistory P)
     (H.initialMetric (Fin.last H.eventCount)) h
   final_initial := fun _ => rfl
 
-@[simp] theorem emptyExtension_horizon (H : RetainedCoreHistory P)
+@[simp] theorem emptyExtension_horizon (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (B : ℝ) (hB : H.horizon ≤ B) : (H.emptyExtension B hB).horizon = B := rfl
 
-theorem toHistory_emptyExtension (H : RetainedCoreHistory P)
+theorem toHistory_emptyExtension (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (B : ℝ) (hB : H.horizon ≤ B) :
     (H.emptyExtension B hB).toHistory = (H.toHistory).emptyExtension B hB := rfl

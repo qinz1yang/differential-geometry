@@ -43,7 +43,7 @@ lemma evenReflectFun_apply_ne {n : ℕ} [NeZero n]
   change ((WithLp.toLp 2 (fun k : Fin n => if k = 0 then |y 0| else y k) :
       EuclideanSpace ℝ (Fin n)) : Fin n → ℝ) j = y j
   rw [PiLp.toLp_apply]
-  simp [if_neg hj]
+  simp [ite_eq_right hj]
 
 lemma evenReflectFun_mem_closedHalfSpace {n : ℕ} [NeZero n]
     (y : EuclideanSpace ℝ (Fin n)) :
@@ -225,7 +225,7 @@ def signFlipFun (n : ℕ) [NeZero n] :
   change ((WithLp.toLp 2 (fun k : Fin n => if k = 0 then -y 0 else y k) :
       EuclideanSpace ℝ (Fin n)) : Fin n → ℝ) j = y j
   rw [PiLp.toLp_apply]
-  simp [if_neg hj]
+  simp [ite_eq_right hj]
 
 @[simp] lemma signFlipFun_signFlipFun {n : ℕ} [NeZero n]
     (y : EuclideanSpace ℝ (Fin n)) :
@@ -427,7 +427,7 @@ lemma evenReflectGrad_apply_upper
     {y : EuclideanSpace ℝ (Fin n)} (hy : 0 ≤ y 0) :
     evenReflectGrad n f y = fderivVec f y := by
   unfold evenReflectGrad
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 lemma evenReflectGrad_apply_lower_component_zero
     {n : ℕ} [NeZero n] (f : EuclideanSpace ℝ (Fin n) → ℝ)
@@ -435,7 +435,7 @@ lemma evenReflectGrad_apply_lower_component_zero
     evenReflectGrad n f y 0 = -(fderiv ℝ f (signFlipFun n y)) (EuclideanSpace.single 0 1) := by
   classical
   unfold evenReflectGrad
-  rw [if_neg (not_le.mpr hy)]
+  rw [ite_eq_right (not_le.mpr hy)]
   rw [PiLp.toLp_apply]
   simp
 
@@ -446,9 +446,9 @@ lemma evenReflectGrad_apply_lower_component_ne
     evenReflectGrad n f y i = (fderiv ℝ f (signFlipFun n y)) (EuclideanSpace.single i 1) := by
   classical
   unfold evenReflectGrad
-  rw [if_neg (not_le.mpr hy)]
+  rw [ite_eq_right (not_le.mpr hy)]
   rw [PiLp.toLp_apply]
-  simp [if_neg hi]
+  simp [ite_eq_right hi]
 
 lemma evenReflectGrad_apply_component_upper
     {n : ℕ} [NeZero n] (f : EuclideanSpace ℝ (Fin n) → ℝ)

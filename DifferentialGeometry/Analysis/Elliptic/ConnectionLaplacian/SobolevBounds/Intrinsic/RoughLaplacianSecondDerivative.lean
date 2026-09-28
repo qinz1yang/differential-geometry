@@ -2,6 +2,10 @@ import DifferentialGeometry.Geometry.Curvature.SecondOrderDefect.MetricTraceFram
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 import Mathlib.Algebra.Order.BigOperators.Ring.Finset
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply fiberNormSqComponent
+  fiberNormSqSummand riemannianFiberNormSq riemannianFiberNormSq_eq_sum_componentS_sq
+  riemannianFiberNormSq_sum_le_card_mul tensor0S_uncurry_cons_eval_of_expansion)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

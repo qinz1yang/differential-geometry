@@ -157,7 +157,7 @@ private theorem hamiltonMOrigin_time_differentiableAt
     (fun m => by
     have hm := (hamiltonMAt_hasDerivWithinAt_of_ricci_flow S hS clock ht x basis
       horth (m 0) (m 1)).hasDerivAt (D.regular_mem_nhds ht)
-    convert hm.differentiableAt using 1 <;> try rfl
+    convert hm.differentiableAt using 1; try rfl
     funext s
     change hamiltonMOriginField clock.origin s (S.base.metric s) x
       (fun q => A s (basis (m q))) = _
@@ -230,7 +230,7 @@ theorem hamiltonMOrigin_pullback_components_hasDerivWithinAt_of_ricci_ode
         (B (![a, b] q))) (R (B (![a, b] q))) clock.time := by
     convert (hasDerivAt_const clock.time (B (![a, b] q))).add
       (((hasDerivAt_id clock.time).sub_const clock.time).smul_const (R (B (![a, b] q)))) using 1 <;>
-      (try simp only [zero_add, one_smul]) <;> rfl
+      (try simp only [zero_add, one_smul]); rfl
   have hjetT := hT.hasDerivAt.continuousMultilinearMap_apply hjet
   have hm := (hamiltonMAt_hasDerivWithinAt_of_ricci_flow S hS clock ht x B hB a b).hasDerivAt
     (D.regular_mem_nhds ht)

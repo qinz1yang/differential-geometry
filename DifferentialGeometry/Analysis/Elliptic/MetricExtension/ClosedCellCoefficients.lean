@@ -71,5 +71,6 @@ theorem gramOnEuclid_closedCellPullbackMetricFamily
   change pullbackMetricCoefficients (g t) A y _ _ = pullbackMetricCoefficients (g t) B y _ _
   simp only [pullbackMetricCoefficients_apply]
   rw [hderiv, hvalue]
+  rfl
 
 end DifferentialGeometry.Analysis.Laplacian.MetricExtension

@@ -43,7 +43,7 @@ theorem IsPLSphere.exists_periodic_prism_lateral_level
     {K : Set ((Fin 3 → ℝ) × ℝ)} (hK : IsPLSphere 1 K)
     (hKA : K ⊆ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)
     (hess : ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧ r '' stdSimplexBoundary 2 = K) :
     ∃ φ : (Fin 3 → ℝ) × ℝ → (Fin 3 → ℝ) × ℝ,
       IsPLHomeomorphOn φ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)
@@ -71,7 +71,7 @@ theorem IsPLSphere.exists_periodic_lateral_level
     {K : Set (E × ℝ)} (hK : IsPLSphere 1 K)
     (hKA : K ⊆ (boundaryComplex 2 D).space ×ˢ Ioo (0 : ℝ) 1)
     (hess : ¬ ∃ (Q : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ (boundaryComplex 2 D).space ×ˢ Icc (0 : ℝ) 1 ∧
         q '' stdSimplexBoundary 2 = K) :
     ∃ φ : E × ℝ → E × ℝ,
@@ -112,7 +112,7 @@ theorem IsPLSphere.exists_periodic_lateral_level
     exact ⟨hτy.1, heq.symm ▸ (hKA hy).2⟩
   have hess' : ¬ ∃ (Q : Set ((Fin 3 → ℝ) × ℝ))
       (q : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧ Q ⊆ A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧ Q ⊆ A ∧
         q '' stdSimplexBoundary 2 = K' := by
     rintro ⟨Q, q, hq, hQA, hqK⟩
     apply hess
@@ -154,7 +154,7 @@ theorem IsCylindricalDiagram.exists_volume_meridian_alignment
     {K : Set (E × ℝ)} (hK : IsPLSphere 1 K)
     (hKA : K ⊆ (boundaryComplex 2 D).space ×ˢ Ioo (0 : ℝ) 1)
     (hess : ¬ ∃ (Q : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ (boundaryComplex 2 D).space ×ˢ Icc (0 : ℝ) 1 ∧
         q '' stdSimplexBoundary 2 = K) :
     ∃ H : F → F, IsPLHomeomorphOn H S S ∧
@@ -184,14 +184,14 @@ theorem IsCylindricalDiagram.exists_aligned_meridian_disk
     {K : Set (E × ℝ)} (hK : IsPLSphere 1 K)
     (hKA : K ⊆ (boundaryComplex 2 D).space ×ˢ Ioo (0 : ℝ) 1)
     (hess : ¬ ∃ (Q : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ (boundaryComplex 2 D).space ×ˢ Icc (0 : ℝ) 1 ∧
         q '' stdSimplexBoundary 2 = K) :
     ∃ (H : F → F) (q : (Fin 3 → ℝ) → F), IsPLHomeomorphOn H S S ∧
       EqOn H id (f '' ((boundaryComplex 2 D).space ×ˢ {0})) ∧
       IsCylindricalDiagram (H ∘ f) D.space S ∧
       (∀ x ∈ D.space, (H ∘ f) (x, 0) = (H ∘ f) (x, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ∧
       q '' stdSimplexBoundary 2 = f '' K ∧ ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ⊆ S := by
   obtain ⟨H, hH, hfix, hmid⟩ := hf.exists_volume_meridian_alignment D hD hends hK hKA hess
   have hg := hf.postcomp_equivalence hH
@@ -200,7 +200,7 @@ theorem IsCylindricalDiagram.exists_aligned_meridian_disk
   have hslice := hg.isPLHomeomorphOn_slice (isPolyhedron_space D)
     (show (1 / 2 : ℝ) ∈ Icc 0 1 by norm_num)
   let q : (Fin 3 → ℝ) → F := fun x => H (f (a x, 1 / 2))
-  have hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+  have hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       ((H ∘ f) '' (D.space ×ˢ {1 / 2})) := ha.trans hslice
   refine ⟨H, q, hH, hfix, hg, fun x hx => congrArg H (hends x hx), hq, ?_, ?_⟩
   · have hqimg : q '' stdSimplexBoundary 2 =

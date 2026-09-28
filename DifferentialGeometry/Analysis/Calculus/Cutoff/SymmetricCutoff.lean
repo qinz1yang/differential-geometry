@@ -15,7 +15,7 @@ theorem smoothTransition_one_sub (x : ℝ) :
 
 private theorem expNegInvGlue_lt_of_pos {x y : ℝ} (hx : 0 < x) (hxy : x < y) :
     expNegInvGlue x < expNegInvGlue y := by
-  simp only [expNegInvGlue, if_neg hx.not_ge, if_neg (hx.trans hxy).not_ge]
+  simp only [expNegInvGlue, ite_eq_right hx.not_ge, ite_eq_right (hx.trans hxy).not_ge]
   apply Real.exp_lt_exp.mpr
   simpa only [neg_div, one_div] using neg_lt_neg (one_div_lt_one_div_of_lt hx hxy)
 

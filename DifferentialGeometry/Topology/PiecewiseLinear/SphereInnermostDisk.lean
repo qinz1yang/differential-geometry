@@ -15,11 +15,11 @@ theorem IsPLSphere.exists_innermost_disk {S : Set E} (hS : IsPLSphere 2 S) {ι :
     [Finite ι] [Nonempty ι] {J : ι → Set E} (hJ : ∀ i, IsPLSphere 1 (J i))
     (hJS : ∀ i, J i ⊆ S) (hdisj : Pairwise fun i j => Disjoint (J i) (J j)) :
     ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ S ∧ q '' stdSimplexBoundary 2 = J i ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ S ∧ q '' stdSimplexBoundary 2 = J i ∧
         ∀ j, j ≠ i → Disjoint D (J j) := by
   classical
   have hside : ∀ {D Y : Set E} {q : (Fin 3 → ℝ) → E} {i : ι},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D → D ⊆ S → q '' stdSimplexBoundary 2 = J i →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ S → q '' stdSimplexBoundary 2 = J i →
       IsPreconnected Y → Y ⊆ S → Disjoint Y (J i) → Y ⊆ D ∨ Disjoint D Y := by
     intro D Y q i hq hDS hqJ hY hYS hYJ
     have hD : IsPLBall 2 D := ⟨q, hq⟩
@@ -40,7 +40,7 @@ theorem IsPLSphere.exists_innermost_disk {S : Set E} (hS : IsPLSphere 2 S) {ι :
       rw [hmeet] at hy
       exact Set.disjoint_left.mp hYJ hyY hy
   have hex : ∃ n, ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ S ∧ q '' stdSimplexBoundary 2 = J i ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ S ∧ q '' stdSimplexBoundary 2 = J i ∧
         {j | j ≠ i ∧ J j ⊆ D}.ncard = n := by
     obtain ⟨i₀⟩ := ‹Nonempty ι›
     obtain ⟨D₀, _, q₀, _, hq₀, -, hq₀J, -, hcover, -⟩ :=

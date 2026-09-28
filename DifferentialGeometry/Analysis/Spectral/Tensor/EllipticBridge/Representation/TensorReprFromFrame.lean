@@ -235,7 +235,7 @@ theorem tensorChartComponent_eLpNorm_le_uniform
     rw [h_comp_zero, ENNReal.ofReal_zero, zero_mul]
     rw [show (fun _ : EuclN => (0 : ℝ)) = (0 : EuclN → ℝ) from rfl, eLpNorm_zero]
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorChartComponent_memLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -246,11 +246,8 @@ theorem tensorChartComponent_memLp
   classical
   obtain ⟨C, hC_nn, h_bound⟩ :=
     tensorChartComponent_eLpNorm_le_uniform (I := I) (M := M) g r s α
-  refine ⟨?_, ?_⟩
-  · exact (tensorChartComponent_continuous (I := I) (M := M)
-      g r s S α Idx Jdx).aestronglyMeasurable
-  · refine lt_of_le_of_lt (h_bound S Idx Jdx) ?_
-    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
+  refine lt_of_le_of_lt (h_bound S Idx Jdx) ?_
+  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top ENNReal.ofReal_lt_top
 
 private def smoothChartComponentLp
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -260,7 +257,7 @@ private def smoothChartComponentLp
     Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
   (tensorChartComponent_memLp (I := I) (M := M) g r s S α Idx Jdx).toLp _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma smoothChartComponentLp_coeFn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -273,7 +270,7 @@ private lemma smoothChartComponentLp_coeFn
   unfold smoothChartComponentLp
   exact MemLp.coeFn_toLp _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma smoothChartComponentLp_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S₁ S₂ : SmoothCcTensor g r s) (α : M)
@@ -300,7 +297,7 @@ private lemma smoothChartComponentLp_add
     (smoothChartComponentLp_coeFn (I := I) (M := M) g r s S₂ α Idx Jdx)).symm.trans
     h_add.symm
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma smoothChartComponentLp_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (S : SmoothCcTensor g r s) (α : M)
@@ -332,7 +329,7 @@ private def smoothChartComponentLpLin
   map_smul' c S :=
     smoothChartComponentLp_smul (I := I) (M := M) g r s c S α P₀.1 P₀.2
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] private lemma smoothChartComponentLpLin_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
@@ -340,7 +337,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     smoothChartComponentLpLin (I := I) (M := M) g r s α P₀ S =
       smoothChartComponentLp (I := I) (M := M) g r s S α P₀.1 P₀.2 := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma smoothChartComponentLpLin_norm_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
@@ -381,7 +378,7 @@ private def smoothChartComponentLpCLM
     (smoothChartComponentLpLin_norm_le (I := I) (M := M) g r s α P₀).choose
     (smoothChartComponentLpLin_norm_le (I := I) (M := M) g r s α P₀).choose_spec.2
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] private lemma smoothChartComponentLpCLM_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
@@ -438,7 +435,7 @@ def tensorL2ChartComponentCLM
     (smoothChartComponentLpCLM (I := I) (M := M) g r s α P₀)
     (smoothToTensorL2 (I := I) (M := M) g r s)
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] lemma tensorL2ChartComponentCLM_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s)
@@ -446,7 +443,7 @@ omit [NeZero (Module.finrank ℝ E)] in
     tensorL2ChartComponentCLM (I := I) (M := M) g r s α P₀ u =
       tensorL2ChartComponent (I := I) (M := M) g r s u α P₀ := rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2ChartComponent_smoothToTensorL2_eq
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -471,7 +468,7 @@ theorem tensorL2ChartComponent_smoothToTensorL2_eq
   rw [h_extend, smoothChartComponentLpCLM_apply]
   rfl
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2ChartComponent_smoothToTensorL2_coeFn
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -485,7 +482,7 @@ theorem tensorL2ChartComponent_smoothToTensorL2_coeFn
     g r s S α P₀]
   exact MemLp.coeFn_toLp _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 @[simp] theorem tensorL2ChartComponent_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
@@ -494,7 +491,7 @@ omit [NeZero (Module.finrank ℝ E)] in
   rw [← tensorL2ChartComponentCLM_apply (I := I) (M := M) g r s α P₀]
   exact map_zero _
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2ChartComponent_add
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u v : TensorL2 r s g) (α : M)
@@ -507,7 +504,7 @@ theorem tensorL2ChartComponent_add
     ← tensorL2ChartComponentCLM_apply (I := I) (M := M) g r s α P₀ v]
   exact map_add _ u v
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2ChartComponent_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (c : ℝ) (u : TensorL2 r s g) (α : M)
@@ -518,7 +515,7 @@ theorem tensorL2ChartComponent_smul
     ← tensorL2ChartComponentCLM_apply (I := I) (M := M) g r s α P₀ u]
   exact map_smul _ c u
 
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem continuous_tensorL2ChartComponent
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :

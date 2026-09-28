@@ -205,10 +205,10 @@ theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
     have hg : IsPLOn 2 3 (⇑D) A₂ := D.isPLOn.mono_of_isPolyhedron hA₂poly hA₂dom
     have hfg : EqOn (⇑D ∘ k) (⇑D) (E ∩ A₂) := fun x hx => (hkcompat (hEA₂ hx)).symm
     refine ⟨_, hf.piecewise_of_isClosed hg hEclosed hA₂poly.isClosed hfg,
-      fun x hx => if_pos hx, fun x hx => ?_⟩
+      fun x hx => ite_eq_left hx, fun x hx => ?_⟩
     by_cases hxE : x ∈ E
-    · exact (if_pos hxE).trans (hfg ⟨hxE, hx⟩)
-    · exact if_neg hxE
+    · exact (ite_eq_left hxE).trans (hfg ⟨hxE, hx⟩)
+    · exact ite_eq_right hxE
   have hβT : ∀ t ∈ T, β t = ⇑D t := fun t ht => (hβE (hTE ht)).trans (hkcompat ht).symm
   have hβk : ∀ t ∈ E, β t = ⇑D (k t) := fun t ht => hβE ht
   have hβEinj : InjOn β E := by
@@ -248,11 +248,11 @@ theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
       exact hs₀V t ht u ⟨hu.1, by linarith [hu.2]⟩
   obtain ⟨prism, b, hPcont, hPinj, hPV, hPnhds, hPcenter, hbmaps, hbpa, hbβ, hPpl⟩ :=
     exists_centeredPrism_of_isPLOn hE'ball hE₂ball hE'E₂ hβpl hβinj hV hβV
-  set N := prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) with hNdef
-  set Lo := prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) with hLodef
-  set Up := prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) with hUpdef
-  set Ce := prism '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) with hCedef
-  have hstdc : IsCompact (stdSimplex ℝ (Fin 3)) := isCompact_stdSimplex ℝ (Fin 3)
+  set N := prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) with hNdef
+  set Lo := prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) with hLodef
+  set Up := prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) with hUpdef
+  set Ce := prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) with hCedef
+  have hstdc : IsCompact (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)
   have hLoclosed : IsClosed Lo :=
     ((hstdc.prod isCompact_Icc).image_of_continuousOn
       (hPcont.mono (prod_mono Subset.rfl (Icc_subset_Icc le_rfl (by norm_num))))).isClosed
@@ -409,8 +409,8 @@ theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
     obtain ⟨s, hs, hsO⟩ := hgermB ε hε
     exact ⟨_, ⟨(b₀, s), ⟨hb₀, hs.1, hs.2.le⟩, rfl⟩, hsO⟩
   obtain ⟨σ, hσ, hσA₁, hσAin⟩ : ∃ σ : ℝ, (σ = 1 ∨ σ = -1) ∧
-      (∀ p ∈ stdSimplex ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (p, σ * t) ∉ A₁) ∧
-        ∀ p ∈ stdSimplex ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (p, σ * t) ∉ Ain := by
+      (∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (p, σ * t) ∉ A₁) ∧
+        ∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ∀ t ∈ Ioc (0 : ℝ) 1, prism (p, σ * t) ∉ Ain := by
     rcases hOside with hO | hO
     · refine ⟨1, Or.inl rfl, fun p hp t ht hmem => ?_, fun p hp t ht hmem => ?_⟩
       · exact (hsame A₁ hA₁pc hA₁N hA₁Ce O hON hA₁O).1 hO hmem
@@ -516,7 +516,7 @@ theorem exists_adaptedCleanCap_of_disjoint_innermost_cleanDisk [T2Space M]
       linarith [hu.1]
   have hKc : IsCompact (b '' (E ∪ A')) :=
     hE'ball.isPolyhedron.isCompact.image_of_continuousOn hbpa.continuousOn
-  have hKstd : b '' (E ∪ A') ⊆ stdSimplex ℝ (Fin 3) := by
+  have hKstd : b '' (E ∪ A') ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     rintro _ ⟨x, hx, rfl⟩
     exact hbmaps hx
   obtain ⟨h₀, hh₀, hh₀1, hh₀F⟩ := exists_pos_forall_prod_Icc_mem_of_isCompact hKc

@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckVectorField.Ra
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.L2JetBound
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.TermJets
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -124,7 +127,7 @@ private theorem alphaDiffAntidiagonalTupleGridWindow
         Kcd j * Combinatorics.antidiagonalTupleGridWindow
           (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P y) (j + 2) := by
     intro j y
-    rw [riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceRaisedEndomorphism_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ j y]
+    rw [connectionDifferenceRaisedEndomorphism_iteratedCovGrad_fiber_norm_sq_eq_section (I := I) (M := M) g₀ g₁ j y]
     exact hcd g₁ P htie hδ_le hδ0 hδ j y
   have hfold := operatorFieldComposition_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ 1 0
     (connectionDifferenceRaisedEndomorphism (I := I) (M := M) g₀ g₁)

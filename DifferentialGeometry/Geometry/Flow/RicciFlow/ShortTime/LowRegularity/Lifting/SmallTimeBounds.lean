@@ -89,7 +89,7 @@ theorem norm_toLp_le_bd {T : ℝ} {Z : Type*} [NormedAddCommGroup Z]
     (hbd : ∀ᵐ t ∂timeMeasure T, ‖A t‖ ≤ M) :
     ‖hA.toLp A‖ ≤ M * Real.sqrt T := by
   rw [Lp.norm_toLp]
-  have hle := eLpNorm_le_of_ae_bound (μ := timeMeasure T) (p := 2) hbd
+  have hle := eLpNorm_le_of_ae_bound (μ := timeMeasure T) (p := 2) hA.aestronglyMeasurable hbd
   refine le_trans (ENNReal.toReal_mono ?_ hle) ?_
   · exact ENNReal.mul_ne_top
       (by rw [timeMeasure_univ]

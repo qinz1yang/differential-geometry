@@ -76,7 +76,8 @@ theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_
           solitonModelQuotientMetric roundThreeSphereShrinkerMetric hmetric ∧
         (∀ x : N, Fpot x = (3 / 2 : ℝ))
     let cylinder := ∃ cover : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) → N,
-      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential h Fpot cover ∧
+      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential
+        h Fpot cover ∧
       ((coveringDeckGroup cover = ⊥ ∧
       ∃ e : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) ≃ₘ⟮
           (𝓡 2).prod 𝓘(Real, Real), J⟯ N,
@@ -183,7 +184,8 @@ theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_
           solitonModelQuotientMetric roundThreeSphereShrinkerMetric hmetric ∧
         (∀ x : N, Fpot x = (3 / 2 : ℝ))
     let cylinder := ∃ cover : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) → N,
-      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential h Fpot cover ∧
+      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential
+        h Fpot cover ∧
       ((coveringDeckGroup cover = ⊥ ∧
       ∃ e : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) ≃ₘ⟮
           (𝓡 2).prod 𝓘(Real, Real), J⟯ N,
@@ -228,10 +230,11 @@ theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_
     exact (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
       (L.S.family.metric 0) (Phi x)).mp (hcone (Phi x)) n c
       (fun i => mfderiv J I Phi x (v i)) (fun i => mfderiv J I Phi x (w i))
-  exact normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of_nonflat hsol hdim hpull hnonflat
+  exact normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of_nonflat
+    hsol hdim hpull hnonflat
 
 
-theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_limit_of_exists_nonvanishing_top_form
+theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_limit_of_orientable
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
     {T : Real} (hT : 0 < T)
@@ -289,7 +292,8 @@ theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_
           solitonModelQuotientMetric roundThreeSphereShrinkerMetric hmetric ∧
         (∀ x : N, Fpot x = (3 / 2 : ℝ))
     let cylinder := ∃ cover : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) → N,
-      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential h Fpot cover ∧
+      solitonModelCovering roundThreeCylinderShrinkerMetric roundThreeCylinderShrinkerPotential
+        h Fpot cover ∧
       ((coveringDeckGroup cover = ⊥ ∧
       ∃ e : (Metric.sphere (0 : EuclideanSpace Real (Fin 3)) 1 × Real) ≃ₘ⟮
           (𝓡 2).prod 𝓘(Real, Real), J⟯ N,
@@ -328,7 +332,9 @@ theorem normalizedGradientRicciSoliton_isometry_classification_of_closed_blowup_
     exact (metricAlgebraicCurvatureTensorAt_mem_curvatureOperatorNonnegativeCone_iff
       (L.S.family.metric 0) (Phi x)).mp (hcone (Phi x)) n c
       (fun i => mfderiv J I Phi x (v i)) (fun i => mfderiv J I Phi x (w i))
-  exact normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of_exists_nonvanishing_top_form hsol hdim hpull hΩ
+  exact
+    normalizedGradientRicciSoliton_isometry_classification_of_nonnegative_of_nonvanishing_top_form
+      hsol hdim hpull hΩ
 
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman

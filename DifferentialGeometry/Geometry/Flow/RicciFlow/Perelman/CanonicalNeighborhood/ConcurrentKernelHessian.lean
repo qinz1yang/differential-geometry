@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeRadialCurvature
+import DifferentialGeometry.Geometry.Curvature.Metric.ConcurrentField
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeRealization
 import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita

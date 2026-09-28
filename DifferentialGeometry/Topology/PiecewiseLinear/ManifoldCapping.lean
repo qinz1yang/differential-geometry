@@ -17,7 +17,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isCombinatorialManifold_union
     {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
     {D : Set E} {r : (Fin (n + 2) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D)
     (hmeet : K.space ∩ D = r '' stdSimplexBoundary (n + 1))
     (hboundary : (boundaryComplex (n + 1) K).space = r '' stdSimplexBoundary (n + 1)) :
     ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧
@@ -26,7 +26,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isCombinatorialManifold_union
   obtain ⟨L, hLfin, hLspace⟩ := hD.isPolyhedron.exists_simplicialComplex
   let _ : Finite L.faces := hLfin.to_subtype
   have hL : IsPLBall (n + 1) L.space := hLspace.symm ▸ hD
-  have hrL : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) L.space := hLspace.symm ▸ hr
+  have hrL : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) L.space := hLspace.symm ▸ hr
   have hLboundary : (boundaryComplex (n + 1) L).space = r '' stdSimplexBoundary (n + 1) := by
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hrL,
       simplexBoundary_stdVertices_space]
@@ -40,8 +40,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isCombinatorialManifold_union
     {n : ℕ} (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin (n + 2) → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin (n + 2))) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin (n + 2))) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : K.space ∩ D₀ = r₀ '' stdSimplexBoundary (n + 1))
     (hmeet₁ : K.space ∩ D₁ = r₁ '' stdSimplexBoundary (n + 1))
     (hboundary : (boundaryComplex (n + 1) K).space =

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Coordinates.QuadraticBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvature.RiemannTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.GramUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.ChartGeometry.GoodSetMeasure
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import Mathlib.Algebra.Order.Chebyshev
 import Mathlib.Topology.Order.Compact
 open DifferentialGeometry.Analysis.Elliptic

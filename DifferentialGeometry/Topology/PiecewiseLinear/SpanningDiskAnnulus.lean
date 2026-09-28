@@ -17,7 +17,7 @@ theorem IsCombinatorialManifold.exists_annulus_complement_of_spanning_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hor : IsOrientable 2 K)
     {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ K.space = r '' stdSimplexBoundary 2)
     (hU : U ∈ 𝓝ˢ[K.space] (r '' stdSimplexBoundary 2)) :
     ∃ (R : Geometry.SimplicialComplex ℝ E) (hRfin : R.faces.Finite),
@@ -30,8 +30,8 @@ theorem IsCombinatorialManifold.exists_annulus_complement_of_spanning_disk
         (∀ x ∈ r '' stdSimplexBoundary 2, ρ (x, 0) = x) ∧
         R.space = closure (K.space \ W) ∧ R.space ⊆ K.space \ r '' stdSimplexBoundary 2 ∧
         Disjoint R.space D ∧
-        IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-        IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+        IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+        IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
         D ⊆ q₀ '' openSimplex (stdVertices 1) ∧ D ⊆ q₁ '' openSimplex (stdVertices 1) ∧
         D₀ ∩ D₁ = D ∧
         D₀ = D ∪ ρ '' ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 : ℝ) 0) ∧

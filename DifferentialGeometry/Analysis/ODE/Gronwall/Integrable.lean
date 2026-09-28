@@ -82,26 +82,26 @@ theorem eq_zero_of_nonneg_of_sub_le_mul_integral_of_tendsto
     apply (hint t ht).congr
     intro s hs
     rw [uIoc_of_le ht.1.le] at hs
-    simp only [F, if_neg (ne_of_gt hs.1)]
+    simp only [F, ite_eq_right (ne_of_gt hs.1)]
   have hFeq (s : ℝ) (hs : a ≤ s) : (∫ u in a..s, F u) = ∫ u in a..s, f u := by
     apply intervalIntegral.integral_congr_ae'
     · filter_upwards [] with u hu
-      simp only [F, if_neg (ne_of_gt hu.1)]
+      simp only [F, ite_eq_right (ne_of_gt hu.1)]
     · filter_upwards [] with u hu
       exact False.elim (not_lt_of_ge (hu.2.trans hs) hu.1)
   have hFzero := eq_zero_of_nonneg_of_le_mul_integral ht.1.le hFint
     (fun s hs => by
       by_cases hsa : s = a
-      · simp only [F, if_pos hsa, le_refl]
-      · simpa only [F, if_neg hsa] using hnonneg s ⟨lt_of_le_of_ne hs.1 (Ne.symm hsa), hs.2.trans_lt ht.2⟩)
+      · simp only [F, ite_eq_left hsa, le_refl]
+      · simpa only [F, ite_eq_right hsa] using hnonneg s ⟨lt_of_le_of_ne hs.1 (Ne.symm hsa), hs.2.trans_lt ht.2⟩)
     (fun s hs => by
       rw [hFeq s hs.1]
       by_cases hsa : s = a
       · subst s
         simp [F]
-      · simpa only [F, if_neg hsa] using hbound₀ s
+      · simpa only [F, ite_eq_right hsa] using hbound₀ s
           ⟨lt_of_le_of_ne hs.1 (Ne.symm hsa), hs.2.trans_lt ht.2⟩)
     t ⟨ht.1.le, le_rfl⟩
-  simpa only [F, if_neg (ne_of_gt ht.1)] using hFzero
+  simpa only [F, ite_eq_right (ne_of_gt ht.1)] using hFzero
 
 end DifferentialGeometry.Analysis.ODE

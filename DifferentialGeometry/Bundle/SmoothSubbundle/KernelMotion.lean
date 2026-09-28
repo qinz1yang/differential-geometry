@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import Mathlib.Analysis.Calculus.Deriv.Mul
 import Mathlib.Analysis.InnerProductSpace.Positive
 

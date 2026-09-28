@@ -332,7 +332,8 @@ theorem exists_diffeomorph_of_outer_caps_cylinder_collar_equations
     simpa only [sub_zero,zero_div] using hh
   have ho (z : S2) : t (z,1) = f₁ (outerRightBoundary d a z) := by
     have hh := (hone z).eq_of_nhds
-    convert hh using 1 <;> norm_num [t,f₁,outerRightBoundary,outerLeftBoundary,BallChart.radialMap]
+    convert hh using 1
+    norm_num [t,f₁,outerRightBoundary,outerLeftBoundary,BallChart.radialMap]
   obtain ⟨H,hHT,hHL,hHR,_,_,_⟩ :=
     exists_homeomorph_of_outer_caps_cylinder_cover c d a f₀ f₁ t hf₀ hf₁ ht hdisj hz ho
       hcross₀ hcross₁ hcover

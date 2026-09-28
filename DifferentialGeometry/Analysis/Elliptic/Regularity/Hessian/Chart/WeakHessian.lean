@@ -312,7 +312,7 @@ private lemma chartChristoffelCorrectionWeak_summand_memLp
     refine ContinuousOn.aestronglyMeasurable_of_isCompact h_chris_contOn_K
       hK_compact hK_meas
   refine MemLp.of_le_mul (c := C) h_partial_memLp
-    (h_chris_aemeas.mul (h_partial_memLp.1)) ?_
+    (h_chris_aemeas.mul h_partial_memLp.aestronglyMeasurable) ?_
   refine (MeasureTheory.ae_restrict_iff' hK_meas).mpr ?_
   refine Filter.Eventually.of_forall (fun y hy => ?_)
   simp only [Real.norm_eq_abs, abs_mul]

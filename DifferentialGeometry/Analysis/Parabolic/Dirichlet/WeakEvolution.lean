@@ -287,7 +287,7 @@ private theorem dirichletMassComplOnIcc_riesz_eq_resolvent_of_metric_eq
         (dirichletMassComplOnIcc g hCg hequiv
           Cv hCv0 hCvtop hvol t u) =
       resolventDirichlet q (H1ComplDirichletToLp q u) := by
-  rw [dirichletMassComplOnIcc, dif_pos ht]
+  rw [dirichletMassComplOnIcc, dite_eq_left ht]
   cases hgt
   exact dirichletMassCompl_self_riesz_eq_resolventDirichlet
     hCg (hequiv t ht) Cv hCv0 hCvtop (hvol t ht) u

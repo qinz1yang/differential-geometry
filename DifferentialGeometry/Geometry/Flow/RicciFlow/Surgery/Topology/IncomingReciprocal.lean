@@ -32,7 +32,7 @@ theorem lipschitzOnWith_inv_max_scalar
   · intro t ht
     exact (G.equation.scalarTime (K := Ioo a s) ht Ioo_subset_Ico_self x).continuousWithinAt
   · intro t ht _
-    exact hasDerivWithinAt_left_of_mem_nhdsLE
+    exact DifferentialGeometry.Analysis.hasDerivWithinAt_left_of_mem_nhdsLE
       (G.equation.scalarTime (K := Ioo a s) ht Ioo_subset_Ico_self x)
       (mem_nhdsWithin_of_mem_nhds (Ioo_mem_nhds ht.1 ht.2))
   · exact hbound x

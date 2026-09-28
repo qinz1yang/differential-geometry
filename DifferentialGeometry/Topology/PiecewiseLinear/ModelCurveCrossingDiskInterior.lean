@@ -56,7 +56,7 @@ theorem HasPLCurveCrossingOnAt.mem_closure_inter_model_diskInterior_in_chart
     (hc : HasPLCurveCrossingOnAt (c '' ((u '' S) ∩ c.source))
       (c '' ((u '' A) ∩ c.source)) (c '' ((u '' B) ∩ c.source)) (c (u x)))
     {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S)
     (hboundary : ∀ᶠ y in 𝓝 x, y ∈ q '' stdSimplexBoundary 2 ↔ y ∈ B) :
     x ∈ closure (A ∩ (D \ q '' stdSimplexBoundary 2)) := by
   have hDP : D ⊆ P := hDS.trans hSP

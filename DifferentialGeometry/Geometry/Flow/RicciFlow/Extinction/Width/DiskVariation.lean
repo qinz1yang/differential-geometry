@@ -337,7 +337,7 @@ theorem SmoothDisk.exists_smoothExtension (u : SmoothDisk (I := I) (Q := Q)) :
   have hUcov : ∀ x ∈ Metric.closedBall (0 : ℂ) 1, Ucov x ∈ 𝓝 x := by
     intro x hx
     dsimp only [Ucov]
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     exact (ext ⟨x, hx⟩).isOpen_domain.mem_nhds (ext ⟨x, hx⟩).mem_domain
   obtain ⟨ι, f, hfsub⟩ :=
     SmoothBumpCovering.exists_isSubordinate (I := 𝓘(ℝ, ℂ)) (M := ℂ)
@@ -351,7 +351,7 @@ theorem SmoothDisk.exists_smoothExtension (u : SmoothDisk (I := I) (Q := Q)) :
   have hUci : ∀ i, Ucov (f.c i) = D i := by
     intro i
     dsimp only [Ucov, D, Fl]
-    rw [dif_pos (f.c_mem' i)]
+    rw [dite_eq_left (f.c_mem' i)]
   have hsubD : ρ.IsSubordinate D := fun i => (hUci i) ▸ hsub i
   let g : ι → ℂ → EuclideanSpace ℝ (Fin n) :=
     fun i z => if z ∈ D i then e ((Fl i).map z) else 0
@@ -363,7 +363,7 @@ theorem SmoothDisk.exists_smoothExtension (u : SmoothDisk (I := I) (Q := Q)) :
     refine hcomp.congr ?_
     intro z hz
     dsimp only [g]
-    rw [if_pos hz]
+    rw [ite_eq_left hz]
   let V : ℂ → EuclideanSpace ℝ (Fin n) := fun z => ∑ᶠ i, ρ i z • g i z
   have hVsm : ContMDiff 𝓘(ℝ, ℂ) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ V :=
     hsubD.contMDiff_finsum_smul (fun i => (Fl i).isOpen_domain) hg
@@ -378,7 +378,7 @@ theorem SmoothDisk.exists_smoothExtension (u : SmoothDisk (I := I) (Q := Q)) :
       · have hmem : z ∈ D i :=
           hsubD i (subset_tsupport (ρ i) (Function.mem_support.mpr h))
         dsimp only [g]
-        rw [if_pos hmem, ((Fl i).agrees ⟨hmem, hz⟩).trans (diskExtension_coe u.map ⟨z, hz⟩)]
+        rw [ite_eq_left hmem, ((Fl i).agrees ⟨hmem, hz⟩).trans (diskExtension_coe u.map ⟨z, hz⟩)]
     calc V z = ∑ᶠ i, ρ i z • g i z := rfl
       _ = ∑ᶠ i, ρ i z • e (u.map ⟨z, hz⟩) := finsum_congr hterm
       _ = (∑ᶠ i, ρ i z) • e (u.map ⟨z, hz⟩) := (finsum_smul' hfin _).symm
@@ -436,15 +436,15 @@ theorem SmoothDisk.sectionalDensity_eq (u : SmoothDisk (I := 𝓘(ℝ, E)) (Q :=
   simp only [DifferentialGeometry.Geometry.diskMapSectionalDensity,
     DifferentialGeometry.Geometry.diskMapConformalCoefficient,
     DifferentialGeometry.Geometry.diskMapPartial, SmoothDisk.sectionalDensity,
-    SmoothDisk.conformalFactor, diskExtension, dif_pos hzcb]
+    SmoothDisk.conformalFactor, diskExtension, dite_eq_left hzcb]
   rw [hUz, hmf]
   simp only [← hwin, hd1, hdI]
   rw [← diskExtension_coe u.map ⟨z, hzcb⟩]
   by_cases hpos : 0 < g.inner (diskExtension u.map z)
       (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ))
       (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ))
-  · rw [if_pos hpos]
-  · rw [if_neg hpos]
+  · rw [ite_eq_left hpos]
+  · rw [ite_eq_right hpos]
     have hnn : 0 ≤ g.inner (diskExtension u.map z)
         (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ))
         (mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension u.map) (Metric.closedBall (0 : ℂ) 1) z (1 : ℂ)) := by

@@ -316,9 +316,9 @@ lemma totallyDisconnectedComparison_hom_f_zero_ι
     AlgebraicTopology.singularChainComplexFunctor]
   change Sigma.ι _ sigma ≫
       Limits.Sigma.map'
-        (f := fun _ : (TopCat.toSSet.obj X).obj
+        (f := fun _ : X => ModuleCat.of ℤ ℤ)
+        (g := fun _ : (TopCat.toSSet.obj X).obj
           (Opposite.op (SimplexCategory.mk 0)) => ModuleCat.of ℤ ℤ)
-        (g := fun _ : X => ModuleCat.of ℤ ℤ)
         (fun x => (TopCat.toSSetIsoConst X).hom.app
           (Opposite.op (SimplexCategory.mk 0)) x)
         (fun _ => 𝟙 (ModuleCat.of ℤ ℤ)) ≫
@@ -1130,7 +1130,7 @@ lemma extendDownNatHomotopyCofiberXIsoAtEmbedding_zero_snd
   have hup : (ComplexShape.up ℤ).Rel
       (ComplexShape.embeddingDownNat.f 0) 1 := by
     norm_num [ComplexShape.up_Rel, ComplexShape.embeddingDownNat_f]
-  simp only [HomologicalComplex.homotopyCofiber.inrX, dif_neg hrel]
+  simp only [HomologicalComplex.homotopyCofiber.inrX, dite_eq_right hrel]
   rw [Iso.inv_hom_id_assoc]
   rw [HomologicalComplex.homotopyCofiber.inr_XIsoBiprod_inv_assoc
     (HomologicalComplex.extendMap φ ComplexShape.embeddingDownNat)

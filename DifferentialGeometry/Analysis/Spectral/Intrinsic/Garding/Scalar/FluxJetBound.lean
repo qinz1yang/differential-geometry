@@ -10,6 +10,7 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoeffi
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Perturbation.GramDifference
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Metric.RiemannianMetricTensor
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Spectral
@@ -435,7 +436,7 @@ theorem scalarFlux_jet_grid
             (fun j => riemannianFiberNormSq (I := I) (M := M) q 0 (2 + j) x
               ((iteratedCovGrad (I := I) q 0 2 j T).toSection x)) i := by
   obtain ⟨C, hC, hjet⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) q hδ₀
   refine ⟨C, hC, ?_⟩
   intro h T htie δ hδ_le hδ0 hbound i x

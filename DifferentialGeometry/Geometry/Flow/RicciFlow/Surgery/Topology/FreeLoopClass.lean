@@ -33,7 +33,7 @@ theorem sphereCubeVector_norm (x : I^(Fin 2)) : ‖sphereCubeVector x‖ = 1 := 
   let v : ℝ := (2 * (x 1 : ℝ) - 1) / ((x 1 : ℝ) * (1 - (x 1 : ℝ)))
   have hd : 1 + u^2 + v^2 ≠ 0 := by nlinarith [sq_nonneg u, sq_nonneg v]
   have hsq : ‖sphereCubeVector x‖^2 = 1 := by
-    simp only [sphereCubeVector, if_neg hb]
+    simp only [sphereCubeVector, ite_eq_right hb]
     change ‖(WithLp.toLp 2 ![2*u / (1+u^2+v^2), -2*v / (1+u^2+v^2),
       (u^2+v^2-1) / (1+u^2+v^2)] : ThreeSpace)‖^2 = 1
     rw [EuclideanSpace.real_norm_sq_eq]
@@ -52,7 +52,7 @@ private lemma sphereCubeVector_eq_param (x : I^(Fin 2)) (hx : x ∉ Cube.boundar
     sphereCubeVector x = sphereCubeInteriorParam
       (openCubeCoordinate ((x 0 : I) : ℝ), openCubeCoordinate ((x 1 : I) : ℝ)) := by
   classical
-  simp only [sphereCubeVector, if_neg hx, sphereCubeInteriorParam, openCubeCoordinate]
+  simp only [sphereCubeVector, ite_eq_right hx, sphereCubeInteriorParam, openCubeCoordinate]
 
 private lemma vec3_two (a b c : ℝ) : (![a, b, c] : Fin 3 → ℝ) 2 = c := by
   rw [Matrix.cons_val_two]
@@ -222,7 +222,7 @@ private lemma tendsto_sphereCubeVector_of_boundary (x : I^(Fin 2)) (i : Fin 2)
     filter_upwards [hU] with x' hx'i
     by_cases hb' : x' ∈ Cube.boundary (Fin 2)
     · have hbval : sphereCubeVector x' = EuclideanSpace.single 2 1 := by
-        simp only [sphereCubeVector, hb', if_true]
+        simp only [sphereCubeVector, hb', ite_true]
       rw [hbval, dist_self]
       exact hε
     · refine core x' hb' ?_
@@ -242,7 +242,7 @@ private lemma tendsto_sphereCubeVector_of_boundary (x : I^(Fin 2)) (i : Fin 2)
     filter_upwards [hU] with x' hx'i
     by_cases hb' : x' ∈ Cube.boundary (Fin 2)
     · have hbval : sphereCubeVector x' = EuclideanSpace.single 2 1 := by
-        simp only [sphereCubeVector, hb', if_true]
+        simp only [sphereCubeVector, hb', ite_true]
       rw [hbval, dist_self]
       exact hε
     · refine core x' hb' ?_
@@ -260,7 +260,7 @@ theorem sphereCubeVector_continuous : Continuous sphereCubeVector := by
   intro x
   by_cases hx : x ∈ Cube.boundary (Fin 2)
   · have hxval : sphereCubeVector x = EuclideanSpace.single 2 1 := by
-      simp only [sphereCubeVector, hx, if_true]
+      simp only [sphereCubeVector, hx, ite_true]
     rw [ContinuousAt, hxval]
     obtain ⟨i, hi | hi⟩ := hx
     · exact tendsto_sphereCubeVector_of_boundary x i (Or.inl (by rw [hi]; rfl))
@@ -300,20 +300,20 @@ private lemma sf_coe (x : I^(Fin 2)) :
 private lemma sf_sphereCubeVector_eq_param (x : I^(Fin 2)) (hx : x ∉ Cube.boundary (Fin 2)) :
     sphereCubeVector x = sfParam (sfMap ((x 0 : I) : ℝ), sfMap ((x 1 : I) : ℝ)) := by
   classical
-  simp only [sphereCubeVector, if_neg hx, sfParam, sfMap]
+  simp only [sphereCubeVector, ite_eq_right hx, sfParam, sfMap]
 
 private lemma sf_sphereCubeVector_eq_north (x : I^(Fin 2)) (hx : x ∈ Cube.boundary (Fin 2)) :
     sphereCubeVector x = EuclideanSpace.single 2 1 := by
   classical
-  simp only [sphereCubeVector, if_pos hx]
+  simp only [sphereCubeVector, ite_eq_left hx]
 
 private lemma sf_north_zero : ((EuclideanSpace.single 2 1 : ThreeSpace)) 0 = 0 := by
   have h : ¬ ((0 : Fin 3) = 2) := by decide
-  simp only [sf_single_eq, PiLp.single_apply, h, if_false]
+  simp only [sf_single_eq, PiLp.single_apply, h, ite_false]
 
 private lemma sf_north_one : ((EuclideanSpace.single 2 1 : ThreeSpace)) 1 = 0 := by
   have h : ¬ ((1 : Fin 3) = 2) := by decide
-  simp only [sf_single_eq, PiLp.single_apply, h, if_false]
+  simp only [sf_single_eq, PiLp.single_apply, h, ite_false]
 
 private lemma sf_north_two : ((EuclideanSpace.single 2 1 : ThreeSpace)) 2 = 1 := by
   simp only [sf_single_eq, PiLp.single_apply]
@@ -1274,7 +1274,7 @@ private theorem cubeAdjunct_transAt_left (c d : GenLoop (Fin 3) X x) (p : I^(Fin
     (GenLoop.transAt (0 : Fin 2) (cubeAdjunct d) (cubeAdjunct c) p).1
         ((t : ℝ) : Circle) =
       d ![Set.projIcc 0 1 zero_le_one (2 * (p 0 : ℝ)), p 1, ⟨t, subinterval_mem_I ht⟩] := by
-  rw [GenLoop.transAt, GenLoop.coe_copy, if_pos hP,
+  rw [GenLoop.transAt, GenLoop.coe_copy, ite_eq_left hP,
     cubeAdjunct_apply d (Function.update p 0 (Set.projIcc 0 1 zero_le_one (2 * (p 0 : ℝ))))
       ⟨t, subinterval_mem_I ht⟩, update_fin_two]
   rfl
@@ -1285,7 +1285,7 @@ private theorem cubeAdjunct_transAt_right (c d : GenLoop (Fin 3) X x) (p : I^(Fi
         ((t : ℝ) : Circle) =
       c ![Set.projIcc 0 1 zero_le_one (2 * (p 0 : ℝ) - 1), p 1,
         ⟨t, subinterval_mem_I ht⟩] := by
-  rw [GenLoop.transAt, GenLoop.coe_copy, if_neg hP,
+  rw [GenLoop.transAt, GenLoop.coe_copy, ite_eq_right hP,
     cubeAdjunct_apply c
       (Function.update p 0 (Set.projIcc 0 1 zero_le_one (2 * (p 0 : ℝ) - 1)))
       ⟨t, subinterval_mem_I ht⟩, update_fin_two]
@@ -1295,7 +1295,7 @@ private theorem cubeTransAt_left (c d : GenLoop (Fin 3) X x) (p : I^(Fin 2)) {t 
     (ht : t ∈ Ico (0 : ℝ) 1) (hP : (p 0 : ℝ) ≤ 1 / 2) :
     (GenLoop.transAt (0 : Fin 3) d c) ![p 0, p 1, ⟨t, subinterval_mem_I ht⟩] =
       d ![Set.projIcc 0 1 zero_le_one (2 * (p 0 : ℝ)), p 1, ⟨t, subinterval_mem_I ht⟩] := by
-  rw [GenLoop.transAt, GenLoop.coe_copy, vecThree_zero p ⟨t, subinterval_mem_I ht⟩, if_pos hP,
+  rw [GenLoop.transAt, GenLoop.coe_copy, vecThree_zero p ⟨t, subinterval_mem_I ht⟩, ite_eq_left hP,
     update_fin_three]
 
 private theorem cubeTransAt_right (c d : GenLoop (Fin 3) X x) (p : I^(Fin 2)) {t : ℝ}
@@ -1303,7 +1303,7 @@ private theorem cubeTransAt_right (c d : GenLoop (Fin 3) X x) (p : I^(Fin 2)) {t
     (GenLoop.transAt (0 : Fin 3) d c) ![p 0, p 1, ⟨t, subinterval_mem_I ht⟩] =
       c ![Set.projIcc 0 1 zero_le_one (2 * (p 0 : ℝ) - 1), p 1,
         ⟨t, subinterval_mem_I ht⟩] := by
-  rw [GenLoop.transAt, GenLoop.coe_copy, vecThree_zero p ⟨t, subinterval_mem_I ht⟩, if_neg hP,
+  rw [GenLoop.transAt, GenLoop.coe_copy, vecThree_zero p ⟨t, subinterval_mem_I ht⟩, ite_eq_right hP,
     update_fin_three]
 
 private theorem cubeAdjunct_transAt (c d : GenLoop (Fin 3) X x) :

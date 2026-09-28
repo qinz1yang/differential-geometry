@@ -134,7 +134,7 @@ theorem exists_gSeqExt_chartGramMatrix_deriv_bound
         funext s
         exact gSeqExt_inner_of_mem Φ R bf hsrc htgt k s x hs _ _
       rw [heq]
-      simpa only [d, dif_pos hs] using
+      simpa only [d, dite_eq_left hs] using
         (hd.const_mul (bf.chi k x)).add_const
           ((1 - bf.chi k x) * R.inner x (chartBasisVecFiber (I := I) x₀ i x)
             (chartBasisVecFiber (I := I) x₀ j x))
@@ -145,7 +145,7 @@ theorem exists_gSeqExt_chartGramMatrix_deriv_bound
         funext s
         exact gSeqExt_inner_of_notMem Φ R bf hsrc htgt k s x hsupp _ _
       rw [heq]
-      simpa only [d, dif_neg hs] using hasDerivWithinAt_const t (Icc a b)
+      simpa only [d, dite_eq_right hs] using hasDerivWithinAt_const t (Icc a b)
         (R.inner x (chartBasisVecFiber (I := I) x₀ i x) (chartBasisVecFiber (I := I) x₀ j x))
   · intro k x hx t ht
     let : TopologicalSpace (SourceDomain (I := I) Φ k) := sourceDomTop (I := I) Φ k
@@ -158,12 +158,12 @@ theorem exists_gSeqExt_chartGramMatrix_deriv_bound
         Φ hsrc htgt hab hcarrier hregular R hmetric hShiT k t ht ⟨x, hs⟩
         (chartBasisVecFiber (I := I) x₀ i x) (chartBasisVecFiber (I := I) x₀ j x)
         (hframe x hx i) (hframe x hx j)
-      simp only [d, dif_pos hs, norm_mul, Real.norm_eq_abs,
+      simp only [d, dite_eq_left hs, norm_mul, Real.norm_eq_abs,
         abs_of_nonneg (bf.chi01 k x).1]
       simpa only [abs_mul] using
         ((mul_le_of_le_one_left (abs_nonneg _) (bf.chi01 k x).2).trans hbound).trans
           (le_max_right 0 _)
-    · simp only [d, dif_neg hs, norm_zero]
+    · simp only [d, dite_eq_right hs, norm_zero]
       exact le_max_left _ _
 
 

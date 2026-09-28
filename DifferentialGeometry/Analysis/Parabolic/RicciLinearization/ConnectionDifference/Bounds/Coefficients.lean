@@ -10,6 +10,10 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.SlotPermutations
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.JointSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.FibrePointwise
+
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric (coframeS exists_tangent_orthonormalBasis_with_norm_sum
+  fiberNormSqComponent riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

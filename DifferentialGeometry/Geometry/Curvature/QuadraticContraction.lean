@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Data.Fintype.BigOperators
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Tactic.Linarith
@@ -299,7 +299,7 @@ private theorem lowerGamma (g gInv : ι → ι → Real) (n2Ric : ι → ι → 
         Finset.sum_congr rfl fun q _ => (Finset.sum_mul _ _ _).symm
     _ = -n2Ric d a b l - n2Ric d b a l + n2Ric d l a b := by
         simp only [hcon, ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-          Finset.mem_univ, if_true]
+          Finset.mem_univ, ite_true]
 
 theorem rmVar_eq_hess (g gInv : ι → ι → Real) (Ric : ι → ι → Real)
     (Rm13 : ι → ι → ι → ι → Real) (n2Ric : ι → ι → ι → ι → Real)

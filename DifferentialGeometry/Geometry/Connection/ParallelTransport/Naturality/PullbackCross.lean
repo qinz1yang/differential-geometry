@@ -6,7 +6,6 @@ import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

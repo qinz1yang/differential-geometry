@@ -176,10 +176,8 @@ theorem tensorChartComp_eqOn_zero_of_wtwokTwoNorm_zero
           eLpNorm (iterWeakPartial (d := Module.finrank ℝ E) 2 0 a u Ω) 2
             (volume.restrict Ω))] at hj0
     rwa [iterWeakPartial_zero] at hj0
-  have hu_aem : AEStronglyMeasurable u (volume.restrict Ω) :=
-    hu_cont.aestronglyMeasurable
   have hu_ae : u =ᵐ[volume.restrict Ω] (fun _ => (0 : ℝ)) := by
-    have := (eLpNorm_eq_zero_iff hu_aem (by norm_num)).mp heLp_zero
+    have := (eLpNorm_eq_zero_iff (by norm_num)).mp heLp_zero
     simpa [Pi.zero_def] using this
   exact MeasureTheory.Measure.eqOn_open_of_ae_eq hu_ae hΩ_open
     hu_cont.continuousOn continuousOn_const

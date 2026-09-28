@@ -30,9 +30,9 @@ theorem exists_embedding_heightSingularPoints_of_sdiff_subset
       · have hrange := hsub
           ⟨r.property, by simpa only [mem_singleton_iff] using hr⟩
         have hv : b = (r : E) := calc
-          b = (φ q : E) := by simp only [φ, dif_pos hq]
+          b = (φ q : E) := by simp only [φ, dite_eq_left hq]
           _ = (φ r : E) := congrArg Subtype.val hqr
-          _ = r := by simp only [φ, dif_neg hr]
+          _ = r := by simp only [φ, dite_eq_right hr]
         exfalso
         apply hrange.2
         rw [mem_singleton_iff]
@@ -41,24 +41,24 @@ theorem exists_embedding_heightSingularPoints_of_sdiff_subset
       · have hqrange := hsub
           ⟨q.property, by simpa only [mem_singleton_iff] using hq⟩
         have hv : (q : E) = b := calc
-          (q : E) = (φ q : E) := by simp only [φ, dif_neg hq]
+          (q : E) = (φ q : E) := by simp only [φ, dite_eq_right hq]
           _ = (φ r : E) := congrArg Subtype.val hqr
-          _ = b := by simp only [φ, dif_pos hr]
+          _ = b := by simp only [φ, dite_eq_left hr]
         exfalso
         apply hqrange.2
         rw [mem_singleton_iff]
         exact hv
       · calc
-          (q : E) = (φ q : E) := by simp only [φ, dif_neg hq]
+          (q : E) = (φ q : E) := by simp only [φ, dite_eq_right hq]
           _ = (φ r : E) := congrArg Subtype.val hqr
-          _ = r := by simp only [φ, dif_neg hr]
+          _ = r := by simp only [φ, dite_eq_right hr]
   let e : heightSingularPoints S f ↪ heightSingularPoints T g := ⟨φ, hφ⟩
   refine ⟨e, ?_, ?_⟩
   · intro q hq
     change (φ q : E) = b
-    simp only [φ, dif_pos hq]
+    simp only [φ, dite_eq_left hq]
   · intro q hq
     change (φ q : E) = q
-    simp only [φ, dif_neg hq]
+    simp only [φ, dite_eq_right hq]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

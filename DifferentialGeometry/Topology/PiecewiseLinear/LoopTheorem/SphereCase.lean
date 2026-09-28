@@ -23,7 +23,7 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary_map
     {M BdM B : Set E} (ι : X → E)
     (hB : IsPLSphere 2 B) (hBBdM : B ⊆ BdM) {k : ℕ}
     (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]
@@ -33,7 +33,7 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary_map
     (L : freeLoop (sphereWithDiskInteriorsRemoved B D))
     (hL : ¬loopClassMeets L P₀ N)
     (hpush : ∀ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ →
         Δ ⊆ BdM →
         ∃ D₁ : SingularTwoCell X,
           D₁.IsNonsingular ∧
@@ -83,7 +83,7 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary_double
     {B : Set E} (hB : IsPLSphere 2 B)
     (hBBdM : B ⊆ (boundaryComplex 3 K).space) {k : ℕ}
     (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]
@@ -95,7 +95,7 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary_double
     let _ := combinatorialChartedSpace (double 3 K)
       (isCombinatorialManifold_double_succ_succ K (n := 1) hK)
     (∀ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ →
         Δ ⊆ (boundaryComplex 3 K).space →
         ∃ D₁ : SingularTwoCell (double 3 K).space,
           D₁.IsNonsingular ∧
@@ -131,7 +131,7 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary
     {B : Set E} (hB : IsPLSphere 2 B)
     (hBBdM : B ⊆ (boundaryComplex 3 K).space) {k : ℕ}
     (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]
@@ -141,7 +141,7 @@ theorem exists_nonsingular_two_cell_of_sphere_boundary
     (L : freeLoop (sphereWithDiskInteriorsRemoved B D))
     (hL : ¬loopClassMeets L P₀ N)
     (hpush : ∀ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ →
         Δ ⊆ (boundaryComplex 3 K).space →
         ∃ D₁ : SingularTwoCell K.space,
           D₁.IsNonsingular ∧
@@ -170,15 +170,15 @@ theorem exists_isPLHomeomorphOn_boundaryLoop_of_sphere_disks
     {B V : Set E} (hB : IsPLSphere 2 B)
     (hBBdM : B ⊆ (boundaryComplex 3 K).space) {k : ℕ}
     (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B) (hdisj : Pairwise (Function.onFun Disjoint D))
     (hV : V = sphereWithDiskInteriorsRemoved B D) [PathConnectedSpace V]
     (P₀ : V) (N : Subgroup (FundamentalGroup V P₀)) [N.Normal] (hN : N ≠ ⊤) :
     ∃ (g : (Fin 3 → ℝ) → E) (γ : freeLoop V),
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (g '' stdSimplex ℝ (Fin 3)) ∧
-      MapsTo g (stdSimplex ℝ (Fin 3)) K.space ∧
-      stdSimplex ℝ (Fin 3) ∩ g ⁻¹' (boundaryComplex 3 K).space = stdSimplexBoundary 2 ∧
-      g '' stdSimplex ℝ (Fin 3) ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2 ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧
+      MapsTo g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space ∧
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∩ g ⁻¹' (boundaryComplex 3 K).space = stdSimplexBoundary 2 ∧
+      g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2 ∧
       range (fun θ => (γ θ : E)) = g '' stdSimplexBoundary 2 ∧ ¬loopClassMeets γ P₀ N := by
   subst V
   have hi : ∃ i, ¬loopClassMeets (sphereBoundaryLoop q hB hq hDB hdisj i) P₀ N := by
@@ -192,7 +192,7 @@ theorem exists_isPLHomeomorphOn_boundaryLoop_of_sphere_disks
   have hboundary : IsPolyhedron (stdSimplexBoundary 2) := by
     have h := (isPLSphere_simplexBoundary_std 1).isPolyhedron
     rwa [simplexBoundary_stdVertices_space] at h
-  have hmap : MapsTo (q i) (stdSimplex ℝ (Fin 3)) K.space :=
+  have hmap : MapsTo (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space :=
     (hq i).bijOn.mapsTo.mono_right
       ((hDB i).trans (hBBdM.trans (boundaryComplex_space_subset 3 K)))
   have hbdmap : MapsTo (q i) (stdSimplexBoundary 2) (boundaryComplex 3 K).space :=
@@ -212,10 +212,10 @@ theorem exists_isPLHomeomorphOn_boundaryLoop_of_isPLSphere_boundaryComponent
     (S : NormalSystem E) (hB : IsPLSphere 2 S.boundaryComponent) :
     ∃ (g : (Fin 3 → ℝ) → E) (γ : freeLoop S.boundaryNeighborhoodSpace)
       (r : Path S.basepoint (γ 0)),
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (g '' stdSimplex ℝ (Fin 3)) ∧
-      MapsTo g (stdSimplex ℝ (Fin 3)) S.manifoldComplex.space ∧
-      stdSimplex ℝ (Fin 3) ∩ g ⁻¹' S.boundaryComplex.space = stdSimplexBoundary 2 ∧
-      g '' stdSimplex ℝ (Fin 3) ∩ S.boundaryComplex.space = g '' stdSimplexBoundary 2 ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧
+      MapsTo g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) S.manifoldComplex.space ∧
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∩ g ⁻¹' S.boundaryComplex.space = stdSimplexBoundary 2 ∧
+      g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∩ S.boundaryComplex.space = g '' stdSimplexBoundary 2 ∧
       range (fun θ => (γ θ : E)) = g '' stdSimplexBoundary 2 ∧
       ¬conjugacyClassMeets (normalSystemLoopConjugacyClass S.basepoint γ r) S.normalSubgroup := by
   let _ : Finite S.manifoldComplex.faces := S.manifoldComplex_faces_finite.to_subtype
@@ -253,8 +253,8 @@ theorem nonempty_embeddedDisk_of_isPLSphere_boundaryComponent
   let P := convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))
   have hP : IsPLBall 2 P := isPLBall_convexHull_of_affineIndependent T hT hcard
   obtain ⟨p, hp⟩ := hP
-  let f := g ∘ Function.invFunOn p (stdSimplex ℝ (Fin 3))
-  have hf : IsPLHomeomorphOn f P (g '' stdSimplex ℝ (Fin 3)) := hp.symm.trans hg
+  let f := g ∘ Function.invFunOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+  have hf : IsPLHomeomorphOn f P (g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hp.symm.trans hg
   have hfront : p '' stdSimplexBoundary 2 = frontier P :=
     hp.image_stdSimplexBoundary_eq_frontier
   have hboundary : f '' frontier P = g '' stdSimplexBoundary 2 := by

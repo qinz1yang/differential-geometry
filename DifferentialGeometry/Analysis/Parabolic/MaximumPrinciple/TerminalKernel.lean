@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Reaction
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
-import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.SubbundleInvariance
 import Mathlib.Analysis.Calculus.Deriv.Slope
 

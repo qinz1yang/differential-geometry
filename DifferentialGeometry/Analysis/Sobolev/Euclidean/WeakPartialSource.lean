@@ -82,7 +82,7 @@ theorem exists_lp_sum_product_weakPartial_norm_le
   choose W hW hWweak hWnorm using fun i => exists_lp_product_weakPartial_norm_le hΩ k
     (V i) (H i) (hA i) (hDA i) (hAsmooth i) (hweak i) (C i) (D i) (hC i) (hD i)
   have hS : MemLp (fun p => ∑ i, A i p * V i p) 2 ν :=
-    memLp_finsetSum Finset.univ fun i _ => (Lp.memLp (V i)).mul (hA i)
+    memLp_finsetSum Finset.univ fun i _ => (hA i).mul (Lp.memLp (V i))
   let S := hS.toLp (fun p => ∑ i, A i p * V i p)
   let F : Lp ℝ 2 ν := ∑ i, W i
   have hF : F =ᵐ[ν] fun p => ∑ i, W i p := by
@@ -96,7 +96,7 @@ theorem exists_lp_sum_product_weakPartial_norm_le
     exact Finset.sum_congr rfl fun i _ => hWp i
   refine ⟨S, F, hS.coeFn_toLp, hFformula, ?_, ?_⟩
   · have hVI := ae_all_iff.mpr (fun i =>
-      (((Lp.memLp (V i)).mul (r := 2) (hA i)).prodMk_left (by norm_num)))
+      (((hA i).mul (r := 2) (Lp.memLp (V i))).prodMk_left (by norm_num)))
     have hWI := ae_all_iff.mpr (fun i => (Lp.memLp (W i)).prodMk_left (by norm_num))
     filter_upwards [ae_all_iff.mpr hWweak, hVI, hWI,
       Measure.ae_ae_of_ae_prod hS.coeFn_toLp, Measure.ae_ae_of_ae_prod hF]

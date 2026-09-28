@@ -43,13 +43,13 @@ theorem ballChartIsotopicAwayFromCompact_of_modelIsotopy {U : Type u} [Topologic
           = b'.chart.symm.toOpenPartialHomeomorph.symm
             (b'.chart.symm.toOpenPartialHomeomorph y) := by
         rw [hD0]
-        exact if_pos hy
+        exact ite_eq_left hy
       rw [h1, OpenPartialHomeomorph.left_inv _ hy]
       simp only [Diffeomorph.coe_refl, id_eq]
     · have h2 : DifferentialGeometry.Topology.Manifold.extendChartById
             b'.chart.symm.toOpenPartialHomeomorph (D 0) y = y := by
         rw [hD0]
-        exact if_neg hy
+        exact ite_eq_right hy
       rw [h2]
       rfl
   refine ⟨J, b'.chart.symm.toOpenPartialHomeomorph.symm '' K, hKc, ?_, hJ0, hJc, hJi, ?_, ?_,

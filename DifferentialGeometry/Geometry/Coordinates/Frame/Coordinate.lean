@@ -330,7 +330,7 @@ theorem coordinateFrameAt_coeff_eq_toBasis_coord
     rw [IsLocalFrameOn.toBasisAt_coe]
     rw [coordinateFrameAt_toBasis_apply]
   unfold IsLocalFrameOn.coeff
-  rw [dif_pos (coordinateFrameAt_mem (I := I) x₀)]
+  rw [dite_eq_left (coordinateFrameAt_mem (I := I) x₀)]
   rw [hbasis]
 
 omit [CompleteSpace 𝕜] in
@@ -522,7 +522,7 @@ theorem coordCoeff_eq_chart {x₀ x : M}
       (coordinateFrameAt_isLocalFrame_one (I := I) x₀).coeff i x v =
         (coordinateFrameAtBasis (I := I) x₀ hx).repr v i := by
     unfold IsLocalFrameOn.coeff
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     rw [hbasis]
     rfl
   have hx_chart : x ∈ (chartAt H x₀).source := by

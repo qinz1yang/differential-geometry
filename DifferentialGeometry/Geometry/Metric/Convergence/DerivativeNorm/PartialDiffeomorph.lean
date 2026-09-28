@@ -44,7 +44,7 @@ private theorem metricDerivNorm_restrict_open
   unfold metricDerivNorm
   rw [hdiff]
   exact congrArg Real.sqrt
-    (normSq0S_restrictOpen_apply (I := I) gRef U (a + 2) x _)
+    (Tensor0SBundle.normSq0S_restrictOpen_apply (I := I) gRef U (a + 2) x _)
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
   {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}

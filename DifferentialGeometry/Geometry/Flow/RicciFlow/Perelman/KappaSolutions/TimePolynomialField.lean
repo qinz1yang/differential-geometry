@@ -84,7 +84,7 @@ theorem exists_time_polynomial_field
   let b := chartModelBasis E
   refine (contMDiff_multilinearSection_iff_coord (TangentSpace I) ∞ b T).mpr ?_
   intro slots x₀
-  have hpoly := polynomial_eval_contMDiffAt_of_variables (I := I)
+  have hpoly := DifferentialGeometry.Analysis.polynomial_eval_contMDiffAt_of_variables (I := I)
     (timePolynomialChartValues_contMDiffAt g A t x₀) (P slots)
   refine hpoly.congr_of_eventuallyEq ?_
   let e := trivializationAt E (TangentSpace I : M → Type _) x₀

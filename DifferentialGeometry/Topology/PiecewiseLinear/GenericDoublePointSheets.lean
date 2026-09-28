@@ -46,7 +46,7 @@ theorem exists_sum_eq_one_apply_eq_sum_smul {σ : Finset E}
     exact AffineSubspace.mem_top _ _ _
   obtain ⟨w', hw', hzw⟩ := eq_affineCombination_of_mem_affineSpan_of_fintype hz
   let w : E → ℝ := fun v => if h : v ∈ σ then w' ⟨v, h⟩ else 0
-  have hww : ∀ i : σ, w i = w' i := fun i => dif_pos i.2
+  have hww : ∀ i : σ, w i = w' i := fun i => dite_eq_left i.2
   refine ⟨w, ?_, ?_⟩
   · rw [← Finset.sum_coe_sort σ w]
     simp only [hww]
@@ -74,9 +74,9 @@ theorem not_affineIndependent_insert_of_eq_lineMap [DecidableEq E] {a b c : E} (
     exact ⟨hca, hcb⟩
   refine not_affineIndependent_insert_of_eq_sum (w := fun u => if u = a then 1 - s else s) hv
     ?_ ?_
-  · rw [Finset.sum_pair hab, if_pos rfl, if_neg hab.symm]
+  · rw [Finset.sum_pair hab, ite_eq_left rfl, ite_eq_right hab.symm]
     ring
-  · rw [Finset.sum_pair hab, if_pos rfl, if_neg hab.symm, hc, AffineMap.lineMap_apply_module]
+  · rw [Finset.sum_pair hab, ite_eq_left rfl, ite_eq_right hab.symm, hc, AffineMap.lineMap_apply_module]
 
 end Affine
 
@@ -111,7 +111,7 @@ theorem regionGluedMap_of_mem (D : SingularTwoCell M)
     {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∈ Rc.space) :
     regionGluedMap D ec Rs φ Rc x = ec.symm (simplicialMap Rs φ x) := by
   classical
-  simp only [regionGluedMap, if_pos hx]
+  simp only [regionGluedMap, ite_eq_left hx]
 
 end Glued
 

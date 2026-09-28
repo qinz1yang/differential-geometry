@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Parabolic.Energy.CutoffEnergy
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointTower
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 
 set_option autoImplicit false
 noncomputable section

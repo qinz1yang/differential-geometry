@@ -18,7 +18,8 @@ theorem exists_compact_spatial_poincareStandard_tolerance :
       ∀ (M : ConnectedClosedOrientedManifold.{u} 3)
         (g : SmoothRiemannianMetric I3 M.Carrier),
         (∀ x : M.Carrier, ¬ Nonempty (SpatialNeck g eps x) →
-          Nonempty (PositiveComponent (M := M.Carrier) univ) ∨ IsPositiveSpaceFormModel M ∨
+          Nonempty (PositiveComponent (M := M.Carrier) univ) ∨
+          admitsConstantPositiveSectionalCurvature (I := I3) (M := M.Carrier) ∨
           ∃ (K : CompactDomain M.Carrier) (v : M.Carrier) (nk : SpatialNeck g eps v) (a : ℝ),
             0 < metricScalarAt g x ∧ Nonempty (CapCore K.carrier) ∧ |a| ≤ 4 ∧
             frontier K.carrier = range (fun q : Sphere 2 => nk.map (q, a)) ∧
@@ -31,9 +32,9 @@ theorem exists_compact_spatial_poincareStandard_tolerance :
   classical
   by_cases hpositive : Nonempty (PositiveComponent (M := M.Carrier) univ)
   · exact isPoincareStandard_of_positiveComponent hpositive.some
-  by_cases hround : IsPositiveSpaceFormModel M
+  by_cases hround : admitsConstantPositiveSectionalCurvature (I := I3) (M := M.Carrier)
   · exact isPoincareStandard_of_standard_factor M
-      (isStandardFactor_of_isPositiveSpaceFormModel sphericalSpaceFormCovering_holds hround)
+      (isStandardFactor_of_admitsConstantPositiveSectionalCurvature (M := M) hround)
   have hcap : ∀ x : M.Carrier, ¬ Nonempty (SpatialNeck g eps x) →
       ∃ (K : CompactDomain M.Carrier) (v : M.Carrier) (nk : SpatialNeck g eps v) (a : ℝ),
         0 < metricScalarAt g x ∧ Nonempty (CapCore K.carrier) ∧ |a| ≤ 4 ∧

@@ -1,4 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.JetTower
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply coframeS_zero_eq_unitZeroSec
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq
+  riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -329,9 +333,9 @@ private lemma flatTermVec_self_eq_zero (g₀ : SmoothRiemannianMetric I M) (kind
     rw [PDE.DeTurck.connectionDifference_self]; rfl
   cases kind with
   | true =>
-      simp only [flatTermVec, if_true, hcd, zero_apply, neg_zero]
+      simp only [flatTermVec, ite_true, hcd, zero_apply, neg_zero]
   | false =>
-      simp only [flatTermVec, if_neg (by decide : ¬ (false = true)), hcd]
+      simp only [flatTermVec, ite_eq_right (by decide : ¬ (false = true)), hcd]
       simp
 
 omit [CompactSpace M] [I.Boundaryless] in

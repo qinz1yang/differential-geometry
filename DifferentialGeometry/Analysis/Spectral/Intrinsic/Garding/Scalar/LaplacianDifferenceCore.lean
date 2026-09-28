@@ -110,12 +110,12 @@ private theorem lapTrace_diag
       Finset.sum_eq_single j] at hp
     · rw [ContinuousLinearMap.map_smul,
         smul_apply, horth j j,
-        if_pos rfl, smul_eq_mul, mul_one] at hp
+        ite_eq_left rfl, smul_eq_mul, mul_one] at hp
       exact hp
     · intro i _ hij
       rw [ContinuousLinearMap.map_smul,
         smul_apply, horth i j,
-        if_neg (by simpa using hij), smul_zero]
+        ite_eq_right (by simpa using hij), smul_zero]
     · intro hj
       exact absurd (Finset.mem_univ j) hj
   let basis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
@@ -384,7 +384,7 @@ theorem scalarLapDiff_eq
     (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 2 I x from
       connectionDifferenceFib (I := I) h q x) D1
   let Correction : Tensor0SSpace 2 I x :=
-    connectionDifferenceOutput (I := I)
+    bilinearCovectorComp (I := I)
       (CovariantDerivative.difference
         (LeviCivita (I := I) h) (LeviCivita (I := I) q) x)
       (duSec (I := I) f hf x)
@@ -416,7 +416,7 @@ theorem scalarLapDiff_eq
         (vec2 (I := I)
           (smoothOrthoFrame (I := I) h x i x)
           (smoothOrthoFrame (I := I) h x i x)) =
-        Tensor0SSpace.eval (connectionDifferenceOutput (I := I)
+        Tensor0SSpace.eval (bilinearCovectorComp (I := I)
           (CovariantDerivative.difference
             (LeviCivita (I := I) h) (LeviCivita (I := I) q) x)
           (duSec (I := I) f hf x))
@@ -442,7 +442,7 @@ theorem scalarLapDiff_eq
         (smoothOrthoFrame (I := I) h x i x)
         (smoothOrthoFrame (I := I) h x i x))]
     rw [← connectionDifference_eq_difference (I := I) q h]
-    rw [connectionDifferenceOutput_apply]
+    rw [bilinearCovectorComp_apply]
     rw [duSec_apply]
     conv_rhs => rw [Tensor0SSpace.eval_eq]
     rw [differential1FormFun_apply_eq_mvfderiv]

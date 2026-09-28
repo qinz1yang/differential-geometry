@@ -25,7 +25,7 @@ theorem DenseRange.exists_ae_tendsto_of_ae_tendsto_dist
   let v : A → X := fun z => if h : P z then h.choose else u 0 z
   refine ⟨v, ?_⟩
   filter_upwards [hP] with z hz
-  simpa only [v, dif_pos hz] using hz.choose_spec
+  simpa only [v, dite_eq_left hz] using hz.choose_spec
 
 theorem DenseRange.exists_aemeasurable_ae_tendsto_of_ae_tendsto_dist
     {A I X : Type*} [MeasurableSpace A] [Countable I]

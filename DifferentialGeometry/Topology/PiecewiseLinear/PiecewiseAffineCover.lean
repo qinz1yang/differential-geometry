@@ -18,7 +18,7 @@ theorem exists_eqOn_of_affine_cover {ι : Type*} (C : ι → Set E) (A : ι → 
   classical
   refine ⟨fun x => if h : ∃ i, x ∈ C i then A h.choose x else 0, fun i x hx => ?_⟩
   have h : ∃ j, x ∈ C j := ⟨i, hx⟩
-  simp only [dif_pos h]
+  simp only [dite_eq_left h]
   exact hcompat h.choose i ⟨h.choose_spec, hx⟩
 
 theorem exists_isPiecewiseAffineOn_of_affine_cover {ι : Type*} [Finite ι] (C : ι → Set E)

@@ -28,7 +28,7 @@ theorem IsBridgeDisk.exists_conical_endpoint_model
     ∃ (S : Geometry.SimplicialComplex ℝ E) (D J : Set E)
       (r : (Fin 3 → ℝ) → E) (η : ℝ → E),
       S.faces.Finite ∧ IsConeBase x S ∧ IsPLSphere 2 S.space ∧ coneSet x S.space ∈ 𝓝 x ∧
-      D ⊆ S.space ∧ IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+      D ⊆ S.space ∧ IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       IsPLHomeomorphOn η (Icc 0 1) J ∧ J ⊆ D ∧
       J ∩ (r '' stdSimplexBoundary 2) = {η 0} ∧
       (∀ᶠ z in 𝓝 x, z ∈ coneSet x D ↔ z ∈ C) ∧

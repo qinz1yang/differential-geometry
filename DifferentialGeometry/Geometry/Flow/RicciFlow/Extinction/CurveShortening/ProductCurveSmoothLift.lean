@@ -54,7 +54,7 @@ private theorem isLocalDiffeomorphAt_addCircle_coe (t : ℝ) :
             (fun s : ℝ => (s : AddCircle (1 : ℝ))))
           (extChartAt 𝓘(ℝ, ℝ) y y) =
         mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => (s : AddCircle (1 : ℝ))) y := by
-      rw [hmd.mfderiv, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
+      rw [hmd.mfderiv_abuse, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
     rw [hderiv]
     exact isInvertible_of_injective_realLine _
       (AddCircle.bijective_mfderiv_coe y).1
@@ -198,8 +198,8 @@ def circleHeightJumpCurve : ProductCurve ℝ where
     intro x t
     have hk : (((if 0 ≤ t then (1 : ℝ) else 0) : ℝ) : Surgery.Topology.Circle) = 0 := by
       by_cases h : 0 ≤ t
-      · rw [if_pos h, AddCircle.coe_period]
-      · rw [if_neg h, AddCircle.coe_zero]
+      · rw [ite_eq_left h, AddCircle.coe_period]
+      · rw [ite_eq_right h, AddCircle.coe_zero]
     rw [AddCircle.coe_add, hk, add_zero]
   increment := by
     intro x t
@@ -230,7 +230,7 @@ private theorem circleHeightJump_not_continuousAt_zero :
   have hgt : (1 : ℝ) / 2 < circleHeightJump (0, -(ε / 2)) := hε ht
   have hval : circleHeightJump (0, -(ε / 2)) = -(ε / 2) := by
     simp only [circleHeightJump, circleHeightJumpCurve]
-    rw [if_neg (by linarith : ¬ ((0 : ℝ) ≤ -(ε / 2))), add_zero]
+    rw [ite_eq_right (by linarith : ¬ ((0 : ℝ) ≤ -(ε / 2))), add_zero]
   linarith
 
 theorem not_contDiffOn_height_circleHeightJumpCurve :

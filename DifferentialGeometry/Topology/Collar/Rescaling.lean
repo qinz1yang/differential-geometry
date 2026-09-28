@@ -21,12 +21,12 @@ def rescale (c : B × Icc (0 : ℝ) ε → X) (hc : IsEmbedding c)
 theorem rescale_apply (c : B × Icc (0 : ℝ) ε → X) (hc : IsEmbedding c)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε)) (q : B × Icc (0 : ℝ) ε) :
     rescale c hc σ (c q) = c (q.1, σ q.2) := by
-  simp only [rescale, dif_pos (mem_range_self q), hc.toHomeomorph_symm_apply]
+  simp only [rescale, dite_eq_left (mem_range_self q), hc.toHomeomorph_symm_apply]
 
 
 theorem rescale_of_not_mem (c : B × Icc (0 : ℝ) ε → X) (hc : IsEmbedding c)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε)) {x : X} (hx : x ∉ range c) :
-    rescale c hc σ x = x := dif_neg hx
+    rescale c hc σ x = x := dite_eq_right hx
 
 private theorem continuousOn_rescale_range (c : B × Icc (0 : ℝ) ε → X) (hc : IsEmbedding c)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε)) :
@@ -34,7 +34,8 @@ private theorem continuousOn_rescale_range (c : B × Icc (0 : ℝ) ε → X) (hc
   rw [continuousOn_iff_continuous_domRestrict]
   have hh := hc.toHomeomorph.symm.continuous
   have h := hc.continuous.comp (hh.fst.prodMk (σ.continuous.comp hh.snd))
-  exact h.congr (fun x => by simp only [Set.domRestrict, rescale, dif_pos x.property, Function.comp_apply])
+  exact h.congr (fun x => by
+    simp only [Set.domRestrict, rescale, dite_eq_left x.property, Function.comp_apply])
 
 private theorem rescale_eq_self_off_core (c : B × Icc (0 : ℝ) ε → X) (hc : IsEmbedding c)
     (σ : C(Icc (0 : ℝ) ε, Icc (0 : ℝ) ε)) {k : ℝ}

@@ -1,6 +1,6 @@
 import Mathlib.LinearAlgebra.Matrix.Transvection
 import Mathlib.Data.Matrix.Basis
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Topology.Instances.Matrix
 import Mathlib.Topology.Homotopy.Path
 import Mathlib.Topology.Order.IntermediateValue
@@ -22,12 +22,12 @@ private theorem continuous_single (i j : Fin n) :
     have hfun : (fun x : ℝ => Matrix.single i j x i j) = fun x : ℝ => x := by
       funext x
       rw [Matrix.single_apply]
-      simp only [and_self, if_true]
+      simp only [and_self, ite_true]
     rw [hfun]
     exact continuous_id
   · have hfun : (fun x : ℝ => Matrix.single i j x k l) = fun _ : ℝ => 0 := by
       funext x
-      rw [Matrix.single_apply, if_neg h]
+      rw [Matrix.single_apply, ite_eq_right h]
     rw [hfun]
     exact continuous_const
 
@@ -148,11 +148,13 @@ private theorem diagonal_mul_negFlipMatrix (D : Fin n → ℝ) (i j : Fin n) :
   rw [Matrix.diagonal_mul]
   by_cases hkl : k = l
   · subst hkl
-    rw [negFlipMatrix, Matrix.diagonal_apply, if_pos rfl, Matrix.diagonal_apply, if_pos rfl]
+    rw [negFlipMatrix, Matrix.diagonal_apply, ite_eq_left rfl,
+      Matrix.diagonal_apply, ite_eq_left rfl]
     by_cases h : k = i ∨ k = j
-    · simp only [if_pos h, mul_neg, mul_one]
-    · simp only [if_neg h, mul_one]
-  · rw [negFlipMatrix, Matrix.diagonal_apply, Matrix.diagonal_apply, if_neg hkl, if_neg hkl,
+    · simp only [ite_eq_left h, mul_neg, mul_one]
+    · simp only [ite_eq_right h, mul_one]
+  · rw [negFlipMatrix, Matrix.diagonal_apply, Matrix.diagonal_apply,
+      ite_eq_right hkl, ite_eq_right hkl,
       mul_zero]
 
 private theorem det_negFlipMatrix (i j : Fin n) (hij : i ≠ j) :
@@ -202,14 +204,14 @@ private theorem exists_path_diagonal_of_prod_pos (D : Fin n → ℝ) (hD : ∀ i
       congr 1
       funext i
       by_cases h : i = a ∨ i = b
-      · rw [if_pos h, if_pos h, neg_neg]
-      · rw [if_neg h, if_neg h]
+      · rw [ite_eq_left h, ite_eq_left h, neg_neg]
+      · rw [ite_eq_right h, ite_eq_right h]
     have hE' : ∀ i, (fun i => if i = a ∨ i = b then -E i else E i) i ≠ 0 := by
       intro i
       by_cases h : i = a ∨ i = b
-      · simp only [if_pos h, neg_ne_zero]
+      · simp only [ite_eq_left h, neg_ne_zero]
         exact hE i
-      · simp only [if_neg h]
+      · simp only [ite_eq_right h]
         exact hE i
     have hcard' : (Finset.univ.filter
         (fun i => (fun i => if i = a ∨ i = b then -E i else E i) i < 0)).card < m := by
@@ -221,16 +223,16 @@ private theorem exists_path_diagonal_of_prod_pos (D : Fin n → ℝ) (hD : ∀ i
           simpa only [Finset.mem_filter, Finset.mem_univ, true_and] using hi
         have hne : i ≠ a := by
           intro hia
-          rw [hia, if_pos (Or.inl rfl)] at hfl
+          rw [hia, ite_eq_left (Or.inl rfl)] at hfl
           exact absurd hfl (not_lt.mpr (by linarith))
         refine Finset.mem_erase.mpr ⟨hne, ?_⟩
         refine Finset.mem_filter.mpr ⟨Finset.mem_univ i, ?_⟩
         by_cases h : i = a ∨ i = b
         · obtain hia | hib := h
           · exact absurd hia hne
-          · rw [hib, if_pos (Or.inr rfl)] at hfl
+          · rw [hib, ite_eq_left (Or.inr rfl)] at hfl
             linarith
-        · rw [if_neg h] at hfl
+        · rw [ite_eq_right h] at hfl
           exact hfl
       calc (Finset.univ.filter
             (fun i => (fun i => if i = a ∨ i = b then -E i else E i) i < 0)).card

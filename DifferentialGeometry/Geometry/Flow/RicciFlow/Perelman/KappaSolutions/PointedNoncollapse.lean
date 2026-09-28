@@ -170,7 +170,7 @@ theorem metricRmNorm_le_of_relative_two_jets
     have hs : n ^ 4 * B ^ 2 = (n ^ 2 * B) ^ 2 := by ring
     rw [hs] at hdiff
     exact (Real.sqrt_le_sqrt hdiff).trans_eq (Real.sqrt_sq (by positivity))
-  have hsum := Tensor0SBundle.sqrt_normSq0S_add_le g x 4 A (metricRm04At g x)
+  have hsum := DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le g x 4 A (metricRm04At g x)
   have hadd : A + metricRm04At g x = metricRm04At h x := sub_add_cancel _ _
   rw [hadd] at hsum
   have hfixed : Real.sqrt (normSq0S g x 4 (metricRm04At h x)) ≤

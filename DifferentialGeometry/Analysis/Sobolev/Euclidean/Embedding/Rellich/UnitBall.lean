@@ -14,10 +14,11 @@ namespace DifferentialGeometry.Analysis.Sobolev
 private theorem eLpNorm_two_le_of_lintegral_le
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
     {μ : Measure α} {f : α → F} {A : ℝ≥0∞}
+    (hf : AEStronglyMeasurable f μ)
     (hA : ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ (2 : ℝ) ∂μ ≤ A) :
     eLpNorm f 2 μ ≤ A ^ (1 / 2 : ℝ) := by
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-    (by norm_num : (2 : ℝ≥0∞) ≠ ∞)]
+    (by norm_num : (2 : ℝ≥0∞) ≠ ∞) hf]
   simpa using ENNReal.rpow_le_rpow hA (by norm_num : (0 : ℝ) ≤ 1 / 2)
 
 theorem rellich_kondrachov_W12_seq_unitBall
@@ -90,6 +91,7 @@ theorem rellich_kondrachov_W12_seq_unitBall
       (∫⁻ x in B, (ENNReal.ofReal |u n x|) ^ (2 : ℝ)) ≤ A := by
     have hn := DeGiorgi.lintegral_rpow_norm_eq_eLpNorm_pow
       (μ := volume.restrict B) (f := u n) (by norm_num : (0 : ℝ) < 2)
+      (hu n).memLp.aestronglyMeasurable
     norm_num only [ENNReal.ofReal_ofNat] at hn
     simpa only [Real.norm_eq_abs] using
       hn.le.trans (ENNReal.rpow_le_rpow (hfun n) (by norm_num : (0 : ℝ) ≤ 2))
@@ -97,14 +99,17 @@ theorem rellich_kondrachov_W12_seq_unitBall
       (∫⁻ x in B, (ENNReal.ofReal ‖(hu n).weakGrad x‖) ^ (2 : ℝ)) ≤ A := by
     have hn := DeGiorgi.lintegral_rpow_norm_eq_eLpNorm_pow
       (μ := volume.restrict B) (f := (hu n).weakGrad) (by norm_num : (0 : ℝ) < 2)
+      (hu n).weakGrad_memLp.aestronglyMeasurable
     norm_num only [ENNReal.ofReal_ofNat] at hn
     exact hn.le.trans (ENNReal.rpow_le_rpow (hgrad n) (by norm_num : (0 : ℝ) ≤ 2))
   have hUF (n : ℕ) : eLpNorm (U n) 2 volume ≤ F ^ (1 / 2 : ℝ) := by
     apply eLpNorm_two_le_of_lintegral_le
+      (by simpa only [Measure.restrict_univ] using (hw n).memLp.aestronglyMeasurable)
     simp only [Real.norm_eq_abs]
     exact (hfb n).trans (mul_le_mul' le_rfl (hfunpow n))
   have hWG (n : ℕ) : eLpNorm (hw n).weakGrad 2 volume ≤ G ^ (1 / 2 : ℝ) := by
     apply eLpNorm_two_le_of_lintegral_le
+      (by simpa only [Measure.restrict_univ] using (hw n).weakGrad_memLp.aestronglyMeasurable)
     exact (hgb n).trans (add_le_add (hgradpow n)
       (mul_le_mul' le_rfl (add_le_add (hfunpow n) (hgradpow n))))
   have hboundfun (n : ℕ) : eLpNorm (U n) 2 (volume.restrict Ω) ≤ ENNReal.ofReal S.toReal := by
@@ -122,7 +127,8 @@ theorem rellich_kondrachov_W12_seq_unitBall
     have hi (i : Fin d) : eLpNorm (fun x => (Classical.choose (hU n).2).weakGrad x i)
         2 (volume.restrict Ω) ≤ G ^ (1 / 2 : ℝ) := by
       rw [eLpNorm_congr_ae (heqgrad.mono fun x hx => congrArg (fun z => z i) hx)]
-      exact ((eLpNorm_mono_ae (Eventually.of_forall fun x =>
+      exact ((eLpNorm_mono_ae ((hwΩ n).weakGrad_component_memLp i).aestronglyMeasurable
+        (Eventually.of_forall fun x =>
         PiLp.norm_apply_le ((hw n).weakGrad x) i)).trans
         (eLpNorm_mono_measure _ Measure.restrict_le_self)).trans (hWG n)
     have hsum := Finset.sum_le_sum (fun i (_ : i ∈ (Finset.univ : Finset (Fin d))) => hi i)
@@ -243,19 +249,23 @@ theorem rellich_kondrachov_W12_seq_unitBall_euclidean
       eLpNorm (fun x => u (φ n) x - v x) 2 (volume.restrict (Metric.ball 0 1)) ≤
         ∑ i, eLpNorm (fun x => u (φ n) x i - w i x) 2
           (volume.restrict (Metric.ball 0 1)) := by
+    have hum : MemLp (u (φ n)) 2 (volume.restrict (Metric.ball 0 1)) :=
+      MemLp.of_eval_piLp (fun i => (hu i (φ n)).memLp)
+    have hdiff (i : ι) : AEStronglyMeasurable
+        (fun x => u (φ n) x i - w i x) (volume.restrict (Metric.ball 0 1)) :=
+      ((hu i (φ n)).memLp.sub (hw i)).aestronglyMeasurable
     calc
       eLpNorm (fun x => u (φ n) x - v x) 2 (volume.restrict (Metric.ball 0 1)) ≤
           eLpNorm (∑ i, fun x => ‖u (φ n) x i - w i x‖) 2
             (volume.restrict (Metric.ball 0 1)) := by
-        apply eLpNorm_mono_real
+        apply eLpNorm_mono_real (hum.sub hv).aestronglyMeasurable
         intro x
-        simpa only [Finset.sum_apply, PiLp.sub_apply, v, PiLp.toLp_apply] using
+        simpa only [Finset.sum_apply, Pi.sub_apply, PiLp.sub_apply, v, PiLp.toLp_apply] using
           euclidean_norm_le_sum_norm (u (φ n) x - v x)
       _ ≤ ∑ i, eLpNorm (fun x => ‖u (φ n) x i - w i x‖) 2
           (volume.restrict (Metric.ball 0 1)) :=
-        eLpNorm_sum_le (fun i _ => ((hu i (φ n)).memLp.sub (hw i)).aestronglyMeasurable.norm)
-          (by norm_num)
-      _ = _ := by simp only [eLpNorm_norm]
+        eLpNorm_sum_le (by norm_num)
+      _ = _ := by simp only [eLpNorm_norm _ (hdiff _)]
   have hsum : Tendsto (fun n => ∑ i, eLpNorm (fun x => u (φ n) x i - w i x) 2
       (volume.restrict (Metric.ball 0 1))) atTop (𝓝 0) := by
     simpa only [Finset.sum_const_zero] using tendsto_finsetSum Finset.univ (fun i _ => ht i)
@@ -282,10 +292,7 @@ theorem rellich_kondrachov_W12_seq_unitBall_euclidean_closed_image
       ∀ᵐ x ∂volume.restrict (Metric.ball 0 1), v x ∈ K := by
   obtain ⟨φ, v, hφ, hv, hlim⟩ := rellich_kondrachov_W12_seq_unitBall_euclidean
     u hu R hfun hgrad
-  have hum (n : ℕ) : MemLp (u n) 2 (volume.restrict (Metric.ball 0 1)) :=
-    MemLp.of_eval_piLp (fun i => (hu i n).memLp)
-  have hmeasure := tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-    (fun n => (hum (φ n)).aestronglyMeasurable) hv.aestronglyMeasurable hlim
+  have hmeasure := tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0) hlim
   obtain ⟨ψ, hψ, hae⟩ := hmeasure.exists_seq_tendsto_ae
   refine ⟨φ ∘ ψ, v, hφ.comp hψ, hv, hlim.comp hψ.tendsto_atTop, hae, ?_⟩
   filter_upwards [hae, ae_all_iff.mpr huK] with x hx hKx

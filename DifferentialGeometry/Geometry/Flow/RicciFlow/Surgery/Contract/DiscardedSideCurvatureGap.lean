@@ -15,6 +15,8 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 open DifferentialGeometry.Topology
+open DifferentialGeometry.Geometry.Curvature (admitsConstantPositiveSectionalCurvature
+  constantPositiveSectionalCurvatureMetric)
 
 universe u
 
@@ -59,50 +61,59 @@ private noncomputable def componentDiffeomorph
     exact codRestr_contMDiffAt (V := D.componentOpen C)
       (componentMap_inv_mem e C) ((e.1.symm.contMDiff.comp contMDiff_subtype_val).contMDiffAt)
 
-theorem isPositiveSpaceFormModel_component_of_orientedDiffeomorph
+theorem admitsConstantPositiveSectionalCurvature_component_of_orientedDiffeomorph
     {D D' : ClosedOrientedManifold.{u} 3}
     (e : ClosedOrientedManifold.OrientedDiffeomorph D D')
     (C : ConnectedComponents D.Carrier)
-    (h : IsPositiveSpaceFormModel (D.component C)) :
-    IsPositiveSpaceFormModel (D'.component (e.1.continuous.connectedComponentsMap C)) :=
-  isPositiveSpaceFormModel_of_diffeomorph (componentDiffeomorph e C).symm h
+    (h : admitsConstantPositiveSectionalCurvature
+      (I := ThreeModel) (M := (D.component C).Carrier)) :
+    admitsConstantPositiveSectionalCurvature (I := ThreeModel)
+      (M := (D'.component (e.1.continuous.connectedComponentsMap C)).Carrier) :=
+  admitsConstantPositiveSectionalCurvature_of_diffeomorph
+    (M := D'.component (e.1.continuous.connectedComponentsMap C)) (N := D.component C)
+    (componentDiffeomorph e C).symm h
 
-theorem isPositiveSpaceFormModel_componentwise_of_orientedDiffeomorph
+theorem admitsConstantPositiveSectionalCurvature_componentwise_of_orientedDiffeomorph
     {D D' : ClosedOrientedManifold.{u} 3}
     (e : ClosedOrientedManifold.OrientedDiffeomorph D D')
-    (h : ∀ C : ConnectedComponents D.Carrier, IsPositiveSpaceFormModel (D.component C))
+    (h : ∀ C : ConnectedComponents D.Carrier,
+      admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := (D.component C).Carrier))
     (C' : ConnectedComponents D'.Carrier) :
-    IsPositiveSpaceFormModel (D'.component C') := by
+    admitsConstantPositiveSectionalCurvature
+      (I := ThreeModel) (M := (D'.component C').Carrier) := by
   obtain ⟨C, rfl⟩ := Continuous.connectedComponentsMap_surjective e.1.continuous
     (fun y => ⟨e.1.symm y, e.1.apply_symm_apply y⟩) C'
-  exact isPositiveSpaceFormModel_component_of_orientedDiffeomorph e C (h C)
+  exact admitsConstantPositiveSectionalCurvature_component_of_orientedDiffeomorph e C (h C)
 
-theorem isPositiveSpaceFormModel_of_orientedDiffeomorph
+theorem admitsConstantPositiveSectionalCurvature_of_orientedDiffeomorph
     {M N : ConnectedClosedOrientedManifold.{u} 3}
     (e : ClosedOrientedManifold.OrientedDiffeomorph M.toClosedOrientedManifold
       N.toClosedOrientedManifold)
-    (h : IsPositiveSpaceFormModel N) : IsPositiveSpaceFormModel M :=
-  isPositiveSpaceFormModel_of_diffeomorph e.1 h
+    (h : admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := N.Carrier)) :
+    admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := M.Carrier) :=
+  admitsConstantPositiveSectionalCurvature_of_diffeomorph (M := M) (N := N) e.1 h
 
-theorem isPositiveSpaceFormModel_of_orientedDiffeomorph_trans
+theorem admitsConstantPositiveSectionalCurvature_of_orientedDiffeomorph_trans
     {M N L : ConnectedClosedOrientedManifold.{u} 3}
     (e : ClosedOrientedManifold.OrientedDiffeomorph M.toClosedOrientedManifold
       N.toClosedOrientedManifold)
     (f : ClosedOrientedManifold.OrientedDiffeomorph N.toClosedOrientedManifold
       L.toClosedOrientedManifold)
-    (h : IsPositiveSpaceFormModel L) : IsPositiveSpaceFormModel M :=
-  isPositiveSpaceFormModel_of_orientedDiffeomorph (e.trans f) h
+    (h : admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := L.Carrier)) :
+    admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := M.Carrier) :=
+  admitsConstantPositiveSectionalCurvature_of_orientedDiffeomorph
+    (M := M) (N := L) (e.trans f) h
 
 theorem isStandardFactor_of_constantPositiveSectionalCurvature
     {M : ConnectedClosedOrientedManifold.{u} 3} {g : SmoothRiemannianMetric ThreeModel M.Carrier}
-    (hg : IsConstantPositiveSectionalCurvature g) : isStandardFactor M :=
-  isStandardFactor_of_isPositiveSpaceFormModel sphericalSpaceFormCovering_holds ⟨g, hg⟩
+    (hg : constantPositiveSectionalCurvatureMetric g) : isStandardFactor M :=
+  isStandardFactor_of_admitsConstantPositiveSectionalCurvature (M := M) ⟨g, hg⟩
 
 theorem isStandardFactor_component_of_discardedComponentsRoundOrSphereProduct
     (D : ClosedOrientedManifold.{u} 3) (h : DiscardedComponentsRoundOrSphereProduct D)
     (C : ConnectedComponents D.Carrier) : isStandardFactor (D.component C) :=
   (h C).elim
-    (fun hp => isStandardFactor_of_isPositiveSpaceFormModel sphericalSpaceFormCovering_holds hp)
+    (fun hp => isStandardFactor_of_admitsConstantPositiveSectionalCurvature (M := D.component C) hp)
     isStandardFactor_of_isSphereTwoTimesCircleFactor
 
 theorem componentwiseStandardFactor_of_discardedComponentsRoundOrSphereProduct
@@ -123,7 +134,7 @@ theorem RetainedCoreObservationTower.hasPoincareStandardDiscarded_of_componentwi
     (h : T.discardedSideGeometry) : T.hasPoincareStandardDiscarded :=
   fun n j =>
     MetricCutCapEvent.poincareStandardDiscarded_of_discardedComponentsRoundOrSphereProduct
-      sphericalSpaceFormCovering_holds _ (h n j)
+      _ (h n j)
 
 theorem ClosedOrientedManifold.disjoint_componentSet_of_ne (D : ClosedOrientedManifold.{u} 3)
     {C C' : ConnectedComponents D.Carrier} (h : C ≠ C') :

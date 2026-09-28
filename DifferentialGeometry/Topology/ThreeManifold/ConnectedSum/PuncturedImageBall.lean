@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PuncturedConnected
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 import Mathlib.Analysis.Normed.Module.RCLike.Real
 import Mathlib.Topology.Piecewise
 

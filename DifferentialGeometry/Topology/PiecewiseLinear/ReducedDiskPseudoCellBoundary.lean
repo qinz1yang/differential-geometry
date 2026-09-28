@@ -19,7 +19,7 @@ theorem IsPseudoCell.exists_disk_on_frontier_of_crosses
     (hBl : IsPLBall 3 Bl) (hP : P ∈ interior Bl) (hBE : Bl ∩ Ec ⊆ Eint)
     (hgp : CrossesPseudoCell (frontier Bl) Ec Eint P) :
     ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
       Δ ⊆ frontier Bl ∧ r '' stdSimplexBoundary 2 = Δ ∩ Ec := by
   classical
   have hEint : Eint ⊆ Ec := by

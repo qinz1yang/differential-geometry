@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Parabolic.Moser.Core.Cutoff
 
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_smul_self)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -442,8 +444,6 @@ theorem reciprocalLocalizer_le_bombieriGiustiSpatialCutoff_succ
       apply spatialCutoffBetween_eq_one_of_outer_le
       · exact bombieriGiustiDescendingLevel_strictAnti hlowerUpper (by omega)
       · convert hrho.le using 1
-        · rfl
-        · congr
     rw [hone, one_pow]
     have hmem := spatialMoserCutoff_mem_Icc localizer 0 x
     simpa only [localizer, one_pow] using

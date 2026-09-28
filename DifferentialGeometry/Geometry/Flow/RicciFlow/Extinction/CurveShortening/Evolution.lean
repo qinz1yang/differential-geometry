@@ -421,8 +421,7 @@ private theorem derivWithin_deriv_eq_deriv_derivWithin {a b : ℝ} (F : ℝ × �
       closure_Ioo (ne_of_lt hab)]
     exact ⟨mem_univ x, ht⟩
   have hmin : minSmoothness ℝ 2 ≤ (∞ : ℕ∞ω) := by
-    simpa using (WithTop.coe_le_coe.mpr (le_top : (2 : ℕ∞) ≤ ⊤) :
-      ((2 : ℕ∞) : ℕ∞ω) ≤ ((⊤ : ℕ∞) : ℕ∞ω))
+    simp
   have hsymm := (hF (x, t) hmem).isSymmSndFDerivWithinAt hmin hSunique hclos hmem
   have htwo : (1 : ℕ∞ω) + 1 ≤ ∞ := by
     have hone : (1 : ℕ∞ω) + 1 = (2 : ℕ∞ω) := by norm_num
@@ -1716,7 +1715,7 @@ theorem CurveMap.ds_curvatureSq_sq_le_mul_normSq_normalCurvatureDerivative
     (c.ds g (c.curvatureSq g) x t) ^ 2 ≤
       4 * c.curvatureSq g x t * c.normSq g (c.normalCurvatureDerivative g) x t := by
   have hkey := CurveMap.inner_normalCurvatureDerivative_curvatureVector_sq g c J hc hi x t ht
-  have hcs := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+  have hcs := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
     (I := I) (M := M) (g t) (c.lift x t)
     (c.normalCurvatureDerivative g x t) (c.curvatureVector g x t)
   have hnn : c.normSq g (c.normalCurvatureDerivative g) x t =

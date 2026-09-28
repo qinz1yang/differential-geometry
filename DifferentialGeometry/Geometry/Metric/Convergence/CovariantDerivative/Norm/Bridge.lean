@@ -134,13 +134,13 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
 private lemma lowerAllUpper_zero_eq_unit
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (W : SmoothCcTensor gBase 0 s) (w : Fin (0 + s) → TangentSpace I x) :
-    lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
+    TensorMetric.lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
         (TensorRSSpace.toModel
           (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x))
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
         (unitZeroSec (I := I) (M := M) x) (fun j : Fin s => w (Fin.natAdd 0 j)) := by
-  rw [lowerAllUpperIndices_apply, separableFormAt_zero]
+  rw [TensorMetric.lowerAllUpperIndices_apply, separableFormAt_zero]
   rw [show (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => E) (1 : ℝ)) =
       Tensor0SSpace.toModel (unitZeroSec (I := I) (M := M) x) from rfl]
   rw [← toModel_tensorRS_apply (I := I) (M := M) 0 s x (W.toSection x)
@@ -151,22 +151,22 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
   [T2Space M] in
 private lemma riemannianFiberNormSq_eq_normSq0S_unit
     (gBase : SmoothRiemannianMetric I M) (s : ℕ) (x : M) (W : SmoothCcTensor gBase 0 s) :
-    riemannianFiberNormSq (I := I) (M := M) gBase 0 s x (W.toSection x) =
+    TensorMetric.riemannianFiberNormSq (I := I) (M := M) gBase 0 s x (W.toSection x) =
       Tensor0SBundle.normSq0S (I := I) gBase x s
         ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace s I x from W.toSection x)
           (unitZeroSec (I := I) (M := M) x)) := by
   classical
   obtain ⟨basis, hON⟩ := DifferentialGeometry.Tensor0SBundle.exists_orthonormal_basis (I := I) gBase x
-  rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) gBase 0 s x
+  rw [TensorMetric.riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) gBase 0 s x
     (W.toSection x)]
-  rw [show tensorInnerPointwise (I := I) (M := M) gBase 0 s x
+  rw [show TensorMetric.tensorInnerPointwise (I := I) (M := M) gBase 0 s x
         (TensorRSSpace.toModel (W.toSection x)) (TensorRSSpace.toModel (W.toSection x)) =
-      covariantTensorInnerPointwise (I := I) (M := M) (0 + s) gBase x
-        (lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
+      TensorMetric.covariantTensorInnerPointwise (I := I) (M := M) (0 + s) gBase x
+        (TensorMetric.lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
           (TensorRSSpace.toModel (W.toSection x)))
-        (lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
+        (TensorMetric.lowerAllUpperIndices (I := I) (M := M) gBase 0 s x
           (TensorRSSpace.toModel (W.toSection x))) from rfl]
-  rw [tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) gBase x (0 + s)
+  rw [TensorMetric.tensorInnerPointwise_0s_eq_diag_sum_orthoFrame (I := I) (M := M) gBase x (0 + s)
     basis hON _ _]
   rw [Tensor0SBundle.normSq0S_identity_eq_sum_sq (I := I) gBase x s basis
     (DifferentialGeometry.Tensor0SBundle.metricInverseInBasis_of_orthonormal (I := I) gBase basis hON) _]

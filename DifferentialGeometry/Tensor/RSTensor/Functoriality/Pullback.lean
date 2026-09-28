@@ -1,4 +1,5 @@
-import DifferentialGeometry.Tensor.RSTensor.Defs
+import DifferentialGeometry.Tensor.RSTensor.Evaluation
+import Mathlib.Tactic.FinCases
 
 set_option autoImplicit false
 
@@ -15,24 +16,6 @@ variable {H : Type*} [TopologicalSpace H]
 variable {I : ModelWithCorners Real E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
 variable [IsManifold I 1 M]
-
-noncomputable def tensor0SEvalCLM {s : ℕ} {x : M}
-    (v : Fin s → TangentSpace I x) :
-    Tensor0SSpace s I x →L[Real] Real :=
-  LinearMap.toContinuousLinearMap {
-    toFun := fun A ↦ A v
-    map_add' := by
-      intro A B
-      rfl
-    map_smul' := by
-      intro c A
-      rfl }
-
-@[simp]
-theorem tensor0SEvalCLM_apply {s : ℕ} {x : M}
-    (v : Fin s → TangentSpace I x) (A : Tensor0SSpace s I x) :
-    tensor0SEvalCLM (I := I) (M := M) v A = A v :=
-  rfl
 
 private noncomputable def tensor0SPullbackValue {s : ℕ} {x y : M}
     (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
@@ -111,5 +94,55 @@ theorem tensor0SPullbackCLE_symm_apply (s : ℕ) {x y : M}
     (tensor0SPullbackCLE (I := I) (M := M) s e).symm A =
       tensor0SPullbackCLM (I := I) (M := M) s e.symm A :=
   rfl
+
+noncomputable def tensor02PullbackCLM {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y) :
+    Tensor0SSpace 2 I y →L[Real] Tensor0SSpace 2 I x :=
+  tensor0SPullbackCLM (I := I) (M := M) 2 e
+
+@[simp]
+theorem tensor02PullbackCLM_eval {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
+    (A : Tensor0SSpace 2 I y) (v w : TangentSpace I x) :
+    eval02 (I := I) (M := M) (tensor02PullbackCLM (I := I) (M := M) e A) v w =
+      eval02 (I := I) (M := M) A (e v) (e w) := by
+  unfold tensor02PullbackCLM eval02
+  rw [tensor0SPullbackCLM_apply]
+  change A (fun i : Fin 2 ↦ e (if i = 0 then v else w)) = _
+  congr 1
+  funext i
+  fin_cases i <;> simp
+
+@[simp]
+theorem tensor02PullbackCLM_quad {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y)
+    (A : Tensor0SSpace 2 I y) (v : TangentSpace I x) :
+    quad02 (I := I) (M := M) (tensor02PullbackCLM (I := I) (M := M) e A) v =
+      quad02 (I := I) (M := M) A (e v) := by
+  rw [← eval02_self, tensor02PullbackCLM_eval, eval02_self]
+
+noncomputable def tensor02PullbackCLE {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y) :
+    Tensor0SSpace 2 I y ≃L[Real] Tensor0SSpace 2 I x :=
+  tensor0SPullbackCLE (I := I) (M := M) 2 e
+
+@[simp]
+theorem tensor02PullbackCLE_apply {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y) (A : Tensor0SSpace 2 I y) :
+    tensor02PullbackCLE (I := I) (M := M) e A =
+      tensor02PullbackCLM (I := I) (M := M) e A := by
+  apply tensor0SSpace_ext 2 x
+  intro m
+  rfl
+
+@[simp]
+theorem tensor02PullbackCLE_symm_apply {x y : M}
+    (e : TangentSpace I x ≃ₗ[Real] TangentSpace I y) (A : Tensor0SSpace 2 I x) :
+    (tensor02PullbackCLE (I := I) (M := M) e).symm A =
+      tensor02PullbackCLM (I := I) (M := M) e.symm A := by
+  apply tensor0SSpace_ext 2 y
+  intro m
+  rfl
+
 
 end DifferentialGeometry

@@ -188,7 +188,8 @@ private theorem exists_unitBallDilate_close_of_continuous
       eLpNorm (fun x => DeGiorgi.unitBallDilate (d := d) lam g x - g x)
         (ENNReal.ofReal p) μB ≤
         eLpNorm (fun _ : E => η) (ENNReal.ofReal p) μB := by
-    exact eLpNorm_mono_ae_real hbound_ae
+    exact eLpNorm_mono_ae_real
+      ((hg_cont.comp (continuous_const_smul lam⁻¹)).sub hg_cont).aestronglyMeasurable hbound_ae
   refine ⟨lam, hlam_gt_one, hlam_lt_two, ?_⟩
   exact lt_of_le_of_lt hnorm_le hconst_lt
 
@@ -250,7 +251,7 @@ private theorem exists_unitBallDilate_close_of_memLp
         (MeasureTheory.Measure.quasiMeasurePreserving_smul (μ := volume) (r := lam⁻¹)
           (inv_ne_zero (ne_of_gt hlam_pos))).mono_left
           Measure.restrict_le_self.absolutelyContinuous
-    exact (hfg_mem.1.comp_quasiMeasurePreserving hqmp).congr
+    exact (hfg_mem.aestronglyMeasurable.comp_quasiMeasurePreserving hqmp).congr
       (Filter.Eventually.of_forall fun _ => rfl)
   have hb_aesm : AEStronglyMeasurable b μB := by
     dsimp [b, DeGiorgi.unitBallDilate]
@@ -259,7 +260,7 @@ private theorem exists_unitBallDilate_close_of_memLp
     exact hdil_cont.aestronglyMeasurable.sub hg_cont.aestronglyMeasurable
   have hc_aesm : AEStronglyMeasurable c μB := by
     dsimp [c]
-    exact hg_cont.aestronglyMeasurable.sub hf.1
+    exact hg_cont.aestronglyMeasurable.sub hf.aestronglyMeasurable
   have hsum_ae :
       (fun x => DeGiorgi.unitBallDilate (d := d) lam f x - f x) =ᵐ[μB]
         (fun x => a0 x + (b x + c x)) := by
@@ -280,10 +281,10 @@ private theorem exists_unitBallDilate_close_of_memLp
     calc
       eLpNorm (fun x => a0 x + (b x + c x)) q μB ≤
           eLpNorm a0 q μB + eLpNorm (fun x => b x + c x) q μB := by
-            exact eLpNorm_add_le ha0_aesm hbc_aesm hq_ge_one
+            exact eLpNorm_add_le hq_ge_one
       _ ≤ eLpNorm a0 q μB + (eLpNorm b q μB + eLpNorm c q μB) := by
             gcongr
-            exact eLpNorm_add_le hb_aesm hc_aesm hq_ge_one
+            exact eLpNorm_add_le hq_ge_one
   have hfirst_le :
       eLpNorm a0 q μB ≤ ENNReal.ofReal (C * δr) := by
     calc
@@ -309,8 +310,7 @@ private theorem exists_unitBallDilate_close_of_memLp
     calc
       eLpNorm c q μB = eLpNorm (fun x => g x - f0 x) q μB := eLpNorm_congr_ae hEqAe
       _ = eLpNorm (fun x => f0 x - g x) q μB := by
-            refine eLpNorm_congr_norm_ae ?_
-            exact Eventually.of_forall (by intro x; simp [norm_sub_rev])
+            exact eLpNorm_sub_comm g f0 q μB
       _ ≤ eLpNorm (fun x => f0 x - g x) q volume := by
             exact eLpNorm_mono_measure _ Measure.restrict_le_self
       _ ≤ ENNReal.ofReal δr := le_of_lt hfg
@@ -475,7 +475,8 @@ private theorem exists_delta_unitBallDilate_close_of_continuous
       eLpNorm (fun x => DeGiorgi.unitBallDilate (d := d) lam g x - g x)
         (ENNReal.ofReal p) μB ≤
         eLpNorm (fun _ : E => η) (ENNReal.ofReal p) μB := by
-    exact eLpNorm_mono_ae_real hbound_ae
+    exact eLpNorm_mono_ae_real
+      ((hg_cont.comp (continuous_const_smul lam⁻¹)).sub hg_cont).aestronglyMeasurable hbound_ae
   exact lt_of_le_of_lt hnorm_le hconst_lt
 
 omit [NeZero d] in
@@ -556,7 +557,7 @@ private theorem exists_delta_unitBallDilate_close_of_memLp
         (MeasureTheory.Measure.quasiMeasurePreserving_smul (μ := volume) (r := lam⁻¹)
           (inv_ne_zero (ne_of_gt hlam_pos))).mono_left
           Measure.restrict_le_self.absolutelyContinuous
-    exact (hfg_mem.1.comp_quasiMeasurePreserving hqmp).congr
+    exact (hfg_mem.aestronglyMeasurable.comp_quasiMeasurePreserving hqmp).congr
       (Filter.Eventually.of_forall fun _ => rfl)
   have hb_aesm : AEStronglyMeasurable b μB := by
     dsimp [b, DeGiorgi.unitBallDilate]
@@ -565,7 +566,7 @@ private theorem exists_delta_unitBallDilate_close_of_memLp
     exact hdil_cont.aestronglyMeasurable.sub hg_cont.aestronglyMeasurable
   have hc_aesm : AEStronglyMeasurable c μB := by
     dsimp [c]
-    exact hg_cont.aestronglyMeasurable.sub hf.1
+    exact hg_cont.aestronglyMeasurable.sub hf.aestronglyMeasurable
   have hsum_ae :
       (fun x => DeGiorgi.unitBallDilate (d := d) lam f x - f x) =ᵐ[μB]
         (fun x => a0 x + (b x + c x)) := by
@@ -586,10 +587,10 @@ private theorem exists_delta_unitBallDilate_close_of_memLp
     calc
       eLpNorm (fun x => a0 x + (b x + c x)) q μB ≤
           eLpNorm a0 q μB + eLpNorm (fun x => b x + c x) q μB := by
-            exact eLpNorm_add_le ha0_aesm hbc_aesm hq_ge_one
+            exact eLpNorm_add_le hq_ge_one
       _ ≤ eLpNorm a0 q μB + (eLpNorm b q μB + eLpNorm c q μB) := by
             gcongr
-            exact eLpNorm_add_le hb_aesm hc_aesm hq_ge_one
+            exact eLpNorm_add_le hq_ge_one
   have hfirst_le :
       eLpNorm a0 q μB ≤ ENNReal.ofReal (C * δr) := by
     calc
@@ -615,8 +616,7 @@ private theorem exists_delta_unitBallDilate_close_of_memLp
     calc
       eLpNorm c q μB = eLpNorm (fun x => g x - f0 x) q μB := eLpNorm_congr_ae hEqAe
       _ = eLpNorm (fun x => f0 x - g x) q μB := by
-            refine eLpNorm_congr_norm_ae ?_
-            exact Eventually.of_forall (by intro x; simp [norm_sub_rev])
+            exact eLpNorm_sub_comm g f0 q μB
       _ ≤ eLpNorm (fun x => f0 x - g x) q volume := by
             exact eLpNorm_mono_measure _ Measure.restrict_le_self
       _ ≤ ENNReal.ofReal δr := le_of_lt hfg
@@ -870,8 +870,7 @@ private theorem exists_delta_unitBallDilate_scaled_close_of_memLp
               exact eLpNorm_congr_ae hsum_ae
     _ ≤ eLpNorm (fun x => lam⁻¹ * (DeGiorgi.unitBallDilate (d := d) lam f x - f x)) q μB +
           eLpNorm (fun x => (lam⁻¹ - 1) * f x) q μB := by
-            exact eLpNorm_add_le (hdiff_aesm.const_mul lam⁻¹)
-              (hf.aestronglyMeasurable.const_mul (lam⁻¹ - 1)) hq_ge_one
+            exact eLpNorm_add_le hq_ge_one
     _ < ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) := by
           exact ENNReal.add_lt_add hfirst_lt hscale_err_lt
     _ = ENNReal.ofReal ε := by
@@ -1227,7 +1226,7 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
               exact eLpNorm_congr_ae hψ_sub_sum_ae
       _ ≤ eLpNorm (fun x => ψ x - v x) q (volume.restrict B) +
             eLpNorm (fun x => v x - u x) q (volume.restrict B) := by
-              exact eLpNorm_add_le hψ_minus_v_aesm hv_minus_u_aesm hq_ge_one
+              exact eLpNorm_add_le hq_ge_one
       _ < ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) := by
             exact ENNReal.add_lt_add hψ_fun_half hv_minus_u_lt
       _ = ENNReal.ofReal ε := hhalf_add
@@ -1273,9 +1272,7 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
           MemLp (fun x => hwLoc.weakGrad x i) q (volume.restrict B) := by
         exact (hwLoc.weakGrad_component_memLp i).mono_measure
           (Measure.restrict_mono_set volume hB_sub_Ω)
-      refine ⟨?_, ?_⟩
-      · exact htmp.1.congr hgiLoc_eq.symm
-      · simpa [eLpNorm_congr_ae hgiLoc_eq.symm] using htmp.2
+      exact (memLp_congr_ae hgiLoc_eq).2 htmp
     let ei : E := EuclideanSpace.single i (1 : ℝ)
     have hderiv_cont : Continuous (fun x => (fderiv ℝ ψ x) ei) := by
       simpa [ei] using
@@ -1313,7 +1310,7 @@ theorem exists_smooth_W1p_oneShot_on_unitBall
                 exact eLpNorm_congr_ae hsum_ae
       _ ≤ eLpNorm (fun x => (fderiv ℝ ψ x) ei - giLoc x) q (volume.restrict B) +
             eLpNorm (fun x => giLoc x - hw.weakGrad x i) q (volume.restrict B) := by
-              exact eLpNorm_add_le hderiv_minus_loc_aesm hloc_minus_grad_aesm hq_ge_one
+              exact eLpNorm_add_le hq_ge_one
       _ < ENNReal.ofReal (ε / 2) + ENNReal.ofReal (ε / 2) := by
             exact ENNReal.add_lt_add (hψ_grad_half i) hloc_minus_grad_lt
       _ = ENNReal.ofReal ε := hhalf_add

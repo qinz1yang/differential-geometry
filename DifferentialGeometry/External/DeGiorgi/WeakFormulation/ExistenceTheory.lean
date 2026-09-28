@@ -62,7 +62,7 @@ private theorem smoothFunToLp_norm_le
             simpa [μ] using (norm_smoothGradToLp_eq hΩ hu)
       _ = (eLpNorm (smoothGradField u) 2 μ).toReal := by
             symm
-            rw [MeasureTheory.toReal_eLpNorm hgrad_memLp.aestronglyMeasurable]
+            rw [MeasureTheory.toReal_eLpNorm]
             simpa using
               (MeasureTheory.lpNorm_eq_integral_norm_rpow_toReal
                 (μ := μ) (f := smoothGradField u) (p := (2 : ENNReal))
@@ -72,7 +72,7 @@ private theorem smoothFunToLp_norm_le
         calc
           eLpNorm (smoothGradField u) 2 μ = eLpNorm (fun x => ‖smoothGradField u x‖) 2 μ := by
             symm
-            exact eLpNorm_norm (μ := μ) (p := (2 : ENNReal)) (smoothGradField u)
+            exact eLpNorm_norm (μ := μ) (p := (2 : ENNReal)) (smoothGradField u) hgrad_memLp.aestronglyMeasurable
           _ = eLpNorm (smoothGradNorm u) 2 μ := by
                 simp [norm_smoothGradField_eq_smoothGradNorm]
   rw [hfunEq, hgradEq]
@@ -327,7 +327,7 @@ private theorem exists_h01Representative_of_smoothGradLimit
               2 μ ≤
             eLpNorm (fun x => (smoothTestWitness hΩ (hψ n)).weakGrad x - Gsol x) 2 μ := by
       intro n
-      exact eLpNorm_mono_ae <|
+      exact eLpNorm_mono_ae (hψ_grad_comp_memLp n i).aestronglyMeasurable <|
         Filter.Eventually.of_forall fun x => by
           simpa [PiLp.toLp_apply] using
             (PiLp.norm_apply_le ((smoothTestWitness hΩ (hψ n)).weakGrad x - Gsol x) i)
@@ -1290,7 +1290,7 @@ theorem ae_eq_zero_of_memH01_of_gradLpOfWitness_eq_zero
                 simpa [μ] using norm_smoothGradToLp_eq hΩ (hφtest n)
         _ = (eLpNorm (smoothGradField (φ n)) 2 μ).toReal := by
               symm
-              rw [MeasureTheory.toReal_eLpNorm hgrad_memLp.aestronglyMeasurable]
+              rw [MeasureTheory.toReal_eLpNorm]
               simpa using
                 (MeasureTheory.lpNorm_eq_integral_norm_rpow_toReal
                   (μ := μ) (f := smoothGradField (φ n)) (p := (2 : ENNReal))
@@ -1302,6 +1302,7 @@ theorem ae_eq_zero_of_memH01_of_gradLpOfWitness_eq_zero
                     eLpNorm (fun x => ‖smoothGradField (φ n) x‖) 2 μ := by
                       symm
                       exact eLpNorm_norm (μ := μ) (p := (2 : ENNReal)) (smoothGradField (φ n))
+                        hgrad_memLp.aestronglyMeasurable
                 _ = eLpNorm (smoothGradNorm (φ n)) 2 μ := by
                       simp [norm_smoothGradField_eq_smoothGradNorm]
     rw [hfunEq, hgradEq]

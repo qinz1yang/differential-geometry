@@ -177,15 +177,15 @@ def flip (G : BoundaryGluing X ι) (i : ι) : X → X := fun x =>
 
 theorem flip_of_mem_left (G : BoundaryGluing X ι) {i : ι} {x : X} (hx : x ∈ G.left i) :
     G.flip i x = G.attaching i ⟨x, hx⟩ := by
-  rw [flip, dif_pos hx]
+  rw [flip, dite_eq_left hx]
 
 theorem flip_of_mem_right (G : BoundaryGluing X ι) {i : ι} {x : X} (hx : x ∈ G.right i) :
     G.flip i x = (G.attaching i).symm ⟨x, hx⟩ := by
-  rw [flip, dif_neg (fun h => (G.disjoint_left_right i).le_bot ⟨h, hx⟩), dif_pos hx]
+  rw [flip, dite_eq_right (fun h => (G.disjoint_left_right i).le_bot ⟨h, hx⟩), dite_eq_left hx]
 
 theorem flip_of_notMem (G : BoundaryGluing X ι) {i : ι} {x : X} (hx : x ∉ G.block i) :
     G.flip i x = x := by
-  rw [flip, dif_neg (fun h => hx (Or.inl h)), dif_neg (fun h => hx (Or.inr h))]
+  rw [flip, dite_eq_right (fun h => hx (Or.inl h)), dite_eq_right (fun h => hx (Or.inr h))]
 
 theorem flip_mem_block (G : BoundaryGluing X ι) {i : ι} {x : X} (hx : x ∈ G.block i) :
     G.flip i x ∈ G.block i := by

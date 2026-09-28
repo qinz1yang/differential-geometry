@@ -350,7 +350,7 @@ theorem riemannianEDist_eq_zero_imp_eq
   have : T3Space M := inferInstance
   let em : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
   have hedist : @edist M em.toEDist a b = 0 := h
-  exact (@edist_eq_zero M em a b).mp hedist
+  exact em.eq_of_edist_eq_zero hedist
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in
@@ -1709,28 +1709,28 @@ theorem broken_minimizer_velocity_match
       with hFσ_def
     have hFγ_in : ∀ s t, t ∈ Wγ → Fγ s t
         = (extChartAt I c).symm (extChartAt I c (γ t) + ηf s • (βγ t • w)) := by
-      intro s t ht; simp only [hFγ_def]; exact if_pos ht
+      intro s t ht; simp only [hFγ_def]; exact ite_eq_left ht
     have hFγ_out : ∀ s t, t ∉ tsupport βγ → Fγ s t = γ t := by
       intro s t ht
       have hβ0 : βγ t = 0 := image_eq_zero_of_notMem_tsupport ht
       simp only [hFγ_def]
       by_cases htW : t ∈ Wγ
-      · rw [if_pos htW, hβ0, zero_smul, smul_zero, add_zero]
+      · rw [ite_eq_left htW, hβ0, zero_smul, smul_zero, add_zero]
         apply PartialEquiv.left_inv
         rw [extChartAt_source]; exact hWγsub t htW
-      · rw [if_neg htW]
+      · rw [ite_eq_right htW]
     have hFσ_in : ∀ s t, t ∈ Wσ → Fσ s t
         = (extChartAt I c).symm (extChartAt I c (σ t) + ηf s • (βσ t • w)) := by
-      intro s t ht; simp only [hFσ_def]; exact if_pos ht
+      intro s t ht; simp only [hFσ_def]; exact ite_eq_left ht
     have hFσ_out : ∀ s t, t ∉ tsupport βσ → Fσ s t = σ t := by
       intro s t ht
       have hβ0 : βσ t = 0 := image_eq_zero_of_notMem_tsupport ht
       simp only [hFσ_def]
       by_cases htW : t ∈ Wσ
-      · rw [if_pos htW, hβ0, zero_smul, smul_zero, add_zero]
+      · rw [ite_eq_left htW, hβ0, zero_smul, smul_zero, add_zero]
         apply PartialEquiv.left_inv
         rw [extChartAt_source]; exact hWσsub t htW
-      · rw [if_neg htW]
+      · rw [ite_eq_right htW]
     obtain ⟨hbdryγ, harcγ, hedistγ⟩ :=
       broken_piece_firstVariation (I := I) g hEnorm c w hℓ₁ hγsmooth hγgeo hγunit
         ηf βγ hη_smooth hη0 hη'0 hβγsmooth Wγ hWγopen hWγsub hβγsupport

@@ -129,7 +129,7 @@ theorem exists_orthonormal_basis
     · intro i
       simpa only [Module.Basis.reindex_apply, Equiv.symm_symm, ite_true] using horth x hx (a i) (a i)
     · intro i j hij
-      simpa only [Module.Basis.reindex_apply, Equiv.symm_symm, a.injective.eq_iff, if_neg hij]
+      simpa only [Module.Basis.reindex_apply, Equiv.symm_symm, a.injective.eq_iff, ite_eq_right hij]
         using horth x hx (a i) (a j)
 
 end ContDiffOn

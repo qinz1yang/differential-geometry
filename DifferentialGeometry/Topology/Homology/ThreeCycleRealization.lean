@@ -3,6 +3,7 @@ import DifferentialGeometry.Topology.Homology.SimplexFilling
 noncomputable section
 
 open CategoryTheory AlgebraicTopology ContinuousMap Module
+open Convexity.StdSimplex (coordinateSet coordinateEquiv coordinateHomeomorph coordinateMap)
 open scoped Simplicial Topology
 
 namespace DifferentialGeometry.Topology
@@ -211,8 +212,9 @@ theorem integralSingularConeThreeFaces_compatible (σ : integralSingularSimplex 
 private def integralSingularConeThreeBoundaryMap (σ : integralSingularSimplex 3 X) :
     C(DifferentialGeometry.Simplex.boundary (Fin 5), X) :=
   DifferentialGeometry.Simplex.boundaryDesc
-    (fun i => integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i))
-    (fun i j p => by
+    (fun i => (integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i)).comp
+      ⟨(coordinateEquiv ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) fun i j p => by
+      obtain ⟨p, rfl⟩ := (coordinateEquiv ℝ _).surjective p
       have h := congrArg (fun s => integralSingularSimplexEquiv 2 X s p)
         (integralSingularConeThreeFaces_compatible x σ i j)
       change (TopCat.of X).toSSetObjEquiv _
@@ -222,7 +224,14 @@ private def integralSingularConeThreeBoundaryMap (σ : integralSingularSimplex 3
           ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)
             (integralSingularConeThreeFaces x σ (i.succAbove j))) p at h
       rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at h
-      exact h)
+      change integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i)
+          ((coordinateEquiv ℝ _).symm (coordinateMap j.succAbove (coordinateEquiv ℝ _ p))) =
+        integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ (i.succAbove j))
+          ((coordinateEquiv ℝ _).symm
+            (coordinateMap (j.predAbove i).succAbove (coordinateEquiv ℝ _ p)))
+      rw [← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply,
+        ← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply]
+      exact h
 
 def integralSingularConeThreeSphereMap (σ : integralSingularSimplex 3 X) :
     C(Metric.sphere (0 : EuclideanSpace ℝ (Fin 4)) 1, X) :=
@@ -238,24 +247,44 @@ theorem integralSingularConeThreeSphereMap_simplexBoundarySphereChain
       ((integralSingularConeThreeSphereMap x σ).comp ⟨ULift.down, continuous_uliftDown⟩)).f 3
       (simplexBoundarySphereChain.{u} 2) =
         (integralSingularThreeCycleProjection x (integralSimplexChain 3 σ)).val := by
-  have h := integralSingularChainMap_boundarySphereDesc_simplexBoundarySphereChain 2
-    (fun i => integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i))
-    (by
-      intro i j p
-      have he := congrArg (fun s => integralSingularSimplexEquiv 2 X s p)
-        (integralSingularConeThreeFaces_compatible x σ i j)
-      change (TopCat.of X).toSSetObjEquiv _
-        ((TopCat.toSSet.obj (TopCat.of X)).δ j
-          (integralSingularConeThreeFaces x σ i)) p =
-        (TopCat.of X).toSSetObjEquiv _
-          ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)
-            (integralSingularConeThreeFaces x σ (i.succAbove j))) p at he
-      rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at he
-      exact he)
+  let F : Fin 5 → C(coordinateSet ℝ (Fin 4), X) :=
+    fun i => (integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i)).comp
+      ⟨(coordinateEquiv ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
+  have hF : ∀ (i : Fin 5) (j : Fin 4) (p : coordinateSet ℝ (Fin 3)),
+      F i (coordinateMap j.succAbove p) =
+        F (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p) := by
+    intro i j p
+    obtain ⟨p, rfl⟩ := (coordinateEquiv ℝ _).surjective p
+    have he := congrArg (fun s => integralSingularSimplexEquiv 2 X s p)
+      (integralSingularConeThreeFaces_compatible x σ i j)
+    change (TopCat.of X).toSSetObjEquiv _
+      ((TopCat.toSSet.obj (TopCat.of X)).δ j
+        (integralSingularConeThreeFaces x σ i)) p =
+      (TopCat.of X).toSSetObjEquiv _
+        ((TopCat.toSSet.obj (TopCat.of X)).δ (j.predAbove i)
+          (integralSingularConeThreeFaces x σ (i.succAbove j))) p at he
+    rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply] at he
+    change integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i)
+        ((coordinateEquiv ℝ _).symm (coordinateMap j.succAbove (coordinateEquiv ℝ _ p))) =
+      integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ (i.succAbove j))
+        ((coordinateEquiv ℝ _).symm
+          (coordinateMap (j.predAbove i).succAbove (coordinateEquiv ℝ _ p)))
+    rw [← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply,
+      ← Convexity.StdSimplex.coordinateEquiv_map, Equiv.symm_apply_apply]
+    exact he
+  have h := integralSingularChainMap_boundarySphereDesc_simplexBoundarySphereChain 2 F hF
   change (integralSingularChainMap
       ((integralSingularConeThreeSphereMap x σ).comp ⟨ULift.down, continuous_uliftDown⟩)).f 3
       (simplexBoundarySphereChain 2) = _ at h
+  have hF_comp (i : Fin 5) :
+      (F i).comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ =
+        integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i) := by
+    apply ContinuousMap.ext
+    intro p
+    exact congrArg (integralSingularSimplexEquiv 3 X (integralSingularConeThreeFaces x σ i))
+      ((coordinateEquiv ℝ _).symm_apply_apply p)
   rw [h]
+  simp only [hF_comp, Equiv.symm_apply_apply]
   change (∑ i : Fin 5, (-1 : ℤ) ^ i.val • integralSimplexChain 3
     (integralSingularConeThreeFaces x σ i)) = _
   rw [integralSingularThreeCycleProjection_val, integralSimplexChain_boundary,

@@ -1,7 +1,7 @@
 import Mathlib.LinearAlgebra.Orientation
 import Mathlib.LinearAlgebra.Basis.Prod
 import Mathlib.LinearAlgebra.Alternating.Curry
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.FinCases
 
 set_option autoImplicit false

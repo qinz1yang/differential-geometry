@@ -85,7 +85,7 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
   have hqn₁ : ∀ᶠ n in atTop, qn₁ n ∈ C (τn n) ∧ dist (qn₁ n) q₀ < ε / 3 := by
     filter_upwards [happ₁] with n hn
     dsimp [qn₁]
-    rw [dif_pos hn]
+    rw [dite_eq_left hn]
     exact Classical.choose_spec hn
   have husc : ∀ᶠ n in atTop, Metric.infDist (pn n) (C (τn n)) < d₀ + ε := by
     filter_upwards [hpnear₁, hqn₁] with n hpn₁ hqni
@@ -119,7 +119,7 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
     have hqnC : ∀ᶠ m in atTop, qn m ∈ C (τn (ns m)) := by
       filter_upwards [hmemSub] with m hm
       dsimp [qn]
-      rw [dif_pos hm]
+      rw [dite_eq_left hm]
       exact (Classical.choose_spec ((Metric.infDist_lt_iff
         (s := C (τn (ns m))) (x := pn (ns m))
         (r := Metric.infDist (pn (ns m)) (C (τn (ns m))) + ε / 2)
@@ -131,7 +131,7 @@ theorem continuousWithinAt_infDist_of_seqClosedGraph_of_approx
           (r := Metric.infDist (pn (ns m)) (C (τn (ns m))) + ε / 2)
           (hCne (τn (ns m)) hm)).mp (hq₀' m)) := by
         dsimp [qn]
-        rw [dif_pos hm]
+        rw [dite_eq_left hm]
       have hspec := Classical.choose_spec ((Metric.infDist_lt_iff
         (s := C (τn (ns m))) (x := pn (ns m))
         (r := Metric.infDist (pn (ns m)) (C (τn (ns m))) + ε / 2)

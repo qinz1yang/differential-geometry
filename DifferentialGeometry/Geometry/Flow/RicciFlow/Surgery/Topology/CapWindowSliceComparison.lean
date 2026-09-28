@@ -18,7 +18,7 @@ theorem exists_capWindow_embedding_standard_close (C : ℝ≥0) :
     ∃ Cbirth : ℝ, 0 < Cbirth ∧
     ∀ (Dw D₂ ε : ℝ), 0 < Dw → Dw < D₂ → 0 < ε →
     ∃ R : ℝ, D₂ + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧ ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -51,7 +51,7 @@ theorem exists_capWindow_embedding_standard_close (C : ℝ≥0) :
   obtain ⟨R, hR, m₀, hm₀, ζ₀, δ₀, hζ₀, -, hδ₀, hwin⟩ :=
     hbridge D₂ ε ε (hDw.trans hD₂) hε hε 2
   refine ⟨R, hR, m₀, hm₀, ζ₀, δ₀, hζ₀, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hrec hδb hRp hmp hζp qcan a₀ hqcan hHI hlow hbirth
+  intro H p₀ δbound ρbound p records hrec hδb hRp hmp hζp qcan a₀ hqcan hHI hlow hbirth
     k s Gk hGk hderiv t hkt hts hcur w hcap
   obtain ⟨j, hl, A, b, x, hanchor, hxD, hage⟩ := hcap
   obtain ⟨hb1, hb2⟩ := hbirth j b

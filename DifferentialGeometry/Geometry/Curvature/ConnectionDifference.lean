@@ -1,5 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
-import DifferentialGeometry.Tensor.Metric.TraceDerivativeBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.TraceDerivativeBounds
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.ConnectionDifference.Curvature
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.Riemannian
@@ -88,7 +88,7 @@ private theorem trace_orthonormal (G : SmoothRiemannianMetric I M)
   erw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis G b (identityInvMetric (Idx := ι)) hi]
   simp only [metricTrace0S2InBasis, identityInvMetric, diagonalInvMetric,
-    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 omit [CompleteSpace E] in
 private theorem quadratic_product_eval (G g : SmoothRiemannianMetric I M)
@@ -123,7 +123,7 @@ theorem connectionDifferenceQuadraticField_apply (G g : SmoothRiemannianMetric I
     rw [basis_repr_eq_sum_inv_inner G x b
       (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) hi Z i]
     simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have he : (∑ i, G.inner x Z (b i) • b i) = Z := by
     simpa only [hrepr] using b.sum_repr Z
   calc

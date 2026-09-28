@@ -26,24 +26,24 @@ private theorem periodic_nonneg_on_interval
   have heq (x t : ℝ) (ht : t ∈ Ioo s v) :
       (fun τ => W x τ) =ᶠ[𝓝 t] fun τ => w x τ := by
     filter_upwards [Icc_mem_nhds ht.1 ht.2] with τ hτ
-    exact if_pos hτ
+    exact ite_eq_left hτ
   have h := periodic_nonneg_of_nonnegative_minimum_derivative hsv
     (w := W) (fun x t => by
       dsimp only [W]
       split_ifs with ht
       · exact hper x t ht
       · exact hper x s ⟨le_rfl, hsv.le⟩)
-    (hcont.congr (fun p hp => if_pos hp.2))
-    (fun x => by simpa only [W, if_pos (show s ∈ Icc s v from ⟨le_rfl, hsv.le⟩)]
+    (hcont.congr (fun p hp => ite_eq_left hp.2))
+    (fun x => by simpa only [W, ite_eq_left (show s ∈ Icc s v from ⟨le_rfl, hsv.le⟩)]
       using hinit x)
     (fun x t ht => (htdiff x t ht).congr_of_eventuallyEq (heq x t ht))
     (fun x t ht hm => by
       have hm' : IsLocalMin (fun y => w y t) x := by
-        simpa only [W, if_pos (show t ∈ Icc s v from ⟨ht.1.le, ht.2.le⟩)] using hm
+        simpa only [W, ite_eq_left (show t ∈ Icc s v from ⟨ht.1.le, ht.2.le⟩)] using hm
       rw [(heq x t ht).deriv_eq]
       exact hmin x t ht hm')
   intro x t ht
-  simpa only [W, if_pos ht] using h x t ht
+  simpa only [W, ite_eq_left ht] using h x t ht
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]

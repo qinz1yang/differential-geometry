@@ -5,10 +5,13 @@ Authors: DifferentialGeometry contributors
 -/
 import DifferentialGeometry.Topology.PiecewiseLinear.Groupoid
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricLink
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 
 open Set Topology
 open scoped Manifold
+
+open Convexity.StdSimplex (coordinateSet isCompact_coordinateSet single_mem_coordinateSet)
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -18,16 +21,16 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 def IsPLHomeomorphOn (f : E → F) (P : Set E) (Q : Set F) : Prop :=
   BijOn f P Q ∧ IsPiecewiseAffineOn f P ∧ IsPiecewiseAffineOn (Function.invFunOn f P) Q
 
-theorem isHPolytope_stdSimplex (ι : Type) [Fintype ι] : IsHPolytope (stdSimplex ℝ ι) := by
-  refine ⟨isCompact_stdSimplex ℝ ι, ι ⊕ Bool, inferInstance,
+theorem isHPolytope_stdSimplex (ι : Type) [Fintype ι] : IsHPolytope (coordinateSet ℝ ι) := by
+  refine ⟨isCompact_coordinateSet ℝ ι, ι ⊕ Bool, inferInstance,
     Sum.elim (fun i => -(LinearMap.proj i : (ι → ℝ) →ₗ[ℝ] ℝ))
       (fun b => if b then ∑ i, (LinearMap.proj i : (ι → ℝ) →ₗ[ℝ] ℝ)
         else -∑ i, (LinearMap.proj i : (ι → ℝ) →ₗ[ℝ] ℝ)),
     Sum.elim (fun _ => 0) (fun b => if b then 1 else -1), ?_⟩
   ext x
-  simp only [stdSimplex, mem_ofPred_eq, Sum.forall, Sum.elim_inl, Sum.elim_inr,
-    LinearMap.neg_apply, LinearMap.proj_apply, Bool.forall_bool, Bool.false_eq_true, if_false,
-    if_true, LinearMap.sum_apply, neg_le_neg_iff]
+  simp only [coordinateSet, mem_ofPred_eq, Sum.forall, Sum.elim_inl, Sum.elim_inr,
+    LinearMap.neg_apply, LinearMap.proj_apply, Bool.forall_bool, Bool.false_eq_true, ite_false,
+    ite_true, LinearMap.sum_apply, neg_le_neg_iff]
   constructor
   · rintro ⟨h0, h1⟩
     exact ⟨fun i => by linarith [h0 i], h1.ge, h1.le⟩
@@ -41,24 +44,24 @@ theorem isPLHomeomorphOn_id_of_isHPolytope {P : Set E} (hP : IsHPolytope P) :
       fun _ hy => (bijOn_id P).invOn_invFunOn.1 hy⟩
 
 def stdSimplexBoundary (n : ℕ) : Set (Fin (n + 1) → ℝ) :=
-  {x | x ∈ stdSimplex ℝ (Fin (n + 1)) ∧ ∃ i, x i = 0}
+  {x | x ∈ coordinateSet ℝ (Fin (n + 1)) ∧ ∃ i, x i = 0}
 
 def IsPLBall (n : ℕ) (P : Set E) : Prop :=
-  ∃ f : (Fin (n + 1) → ℝ) → E, IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 1))) P
+  ∃ f : (Fin (n + 1) → ℝ) → E, IsPLHomeomorphOn f (coordinateSet ℝ (Fin (n + 1))) P
 
 def IsPLSphere (n : ℕ) (P : Set E) : Prop :=
   ∃ f : (Fin (n + 2) → ℝ) → E, IsPLHomeomorphOn f (stdSimplexBoundary (n + 1)) P
 
 theorem IsPLBall.nonempty {n : ℕ} {P : Set E} (hP : IsPLBall n P) : P.Nonempty := by
   obtain ⟨f, hf⟩ := hP
-  exact ⟨f (Pi.single (0 : Fin (n + 1)) 1), hf.1.mapsTo (single_mem_stdSimplex ℝ _)⟩
+  exact ⟨f (Pi.single (0 : Fin (n + 1)) 1), hf.1.mapsTo (single_mem_coordinateSet ℝ _)⟩
 
 theorem IsPLSphere.nonempty {n : ℕ} {P : Set E} (hP : IsPLSphere n P) : P.Nonempty := by
   obtain ⟨f, hf⟩ := hP
-  refine ⟨f (Pi.single (0 : Fin (n + 2)) 1), hf.1.mapsTo ⟨single_mem_stdSimplex ℝ _, 1, ?_⟩⟩
+  refine ⟨f (Pi.single (0 : Fin (n + 2)) 1), hf.1.mapsTo ⟨single_mem_coordinateSet ℝ _, 1, ?_⟩⟩
   simp
 
-theorem isPLBall_stdSimplex (n : ℕ) : IsPLBall n (stdSimplex ℝ (Fin (n + 1))) :=
+theorem isPLBall_stdSimplex (n : ℕ) : IsPLBall n (coordinateSet ℝ (Fin (n + 1))) :=
   ⟨id, isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_stdSimplex _)⟩
 
 open Classical in

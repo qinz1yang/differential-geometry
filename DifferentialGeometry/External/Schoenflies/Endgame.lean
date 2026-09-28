@@ -115,28 +115,28 @@ theorem exists_isHomeoOn_of_homeomorph {S T : Set Plane} (e : ↥S ≃ₜ ↥T) 
   classical
   refine ⟨fun z => if hz : z ∈ S then (e ⟨z, hz⟩ : Plane) else z,
     fun w => if hw : w ∈ T then (e.symm ⟨w, hw⟩ : Plane) else w,
-    ⟨?_, ?_, ?_, ?_, ?_, ?_⟩, fun z hz => dif_pos hz⟩
-  · exact fun z hz => by simp only [dif_pos hz]; exact (e ⟨z, hz⟩).2
-  · exact fun w hw => by simp only [dif_pos hw]; exact (e.symm ⟨w, hw⟩).2
+    ⟨?_, ?_, ?_, ?_, ?_, ?_⟩, fun z hz => dite_eq_left hz⟩
+  · exact fun z hz => by simp only [dite_eq_left hz]; exact (e ⟨z, hz⟩).2
+  · exact fun w hw => by simp only [dite_eq_left hw]; exact (e.symm ⟨w, hw⟩).2
   · rw [continuousOn_iff_continuous_domRestrict]
     have heq : (S.domRestrict fun z => if hz : z ∈ S then (e ⟨z, hz⟩ : Plane) else z) =
         fun z : ↥S => (e z : Plane) := by
       funext z
-      simp only [Set.domRestrict_apply, dif_pos z.2]
+      simp only [Set.domRestrict_apply, dite_eq_left z.2]
     rw [heq]
     exact continuous_subtype_val.comp e.continuous
   · rw [continuousOn_iff_continuous_domRestrict]
     have heq : (T.domRestrict fun w => if hw : w ∈ T then (e.symm ⟨w, hw⟩ : Plane) else w) =
         fun w : ↥T => (e.symm w : Plane) := by
       funext w
-      simp only [Set.domRestrict_apply, dif_pos w.2]
+      simp only [Set.domRestrict_apply, dite_eq_left w.2]
     rw [heq]
     exact continuous_subtype_val.comp e.symm.continuous
   · intro z hz
-    simp only [dif_pos hz, dif_pos (e ⟨z, hz⟩).2]
+    simp only [dite_eq_left hz, dite_eq_left (e ⟨z, hz⟩).2]
     exact congrArg Subtype.val (e.symm_apply_apply ⟨z, hz⟩)
   · intro w hw
-    simp only [dif_pos hw, dif_pos (e.symm ⟨w, hw⟩).2]
+    simp only [dite_eq_left hw, dite_eq_left (e.symm ⟨w, hw⟩).2]
     exact congrArg Subtype.val (e.apply_symm_apply ⟨w, hw⟩)
 
 namespace IsHomeoOn
@@ -199,11 +199,11 @@ noncomputable def paste (S : Set Plane) (f₁ f₂ : Plane → Plane) : Plane �
 
 theorem paste_of_mem {S : Set Plane} {f₁ f₂ : Plane → Plane} {z : Plane} (hz : z ∈ S) :
     paste S f₁ f₂ z = f₁ z := by
-  classical exact if_pos hz
+  classical exact ite_eq_left hz
 
 theorem paste_of_notMem {S : Set Plane} {f₁ f₂ : Plane → Plane} {z : Plane} (hz : z ∉ S) :
     paste S f₁ f₂ z = f₂ z := by
-  classical exact if_neg hz
+  classical exact ite_eq_right hz
 
 /-! ### The square `Q` and its boundary `S`
 

@@ -38,7 +38,7 @@ theorem exists_capWindowPoint_bounds (P₀ : OrientedThreeStage.{u}) (g₀ : P�
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Rcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ H : RetainedCoreHistory P₀, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+    ∀ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
       p₀.recenterConstant * δbound ≤ 1 / 2 →
     ∀ (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -214,7 +214,7 @@ theorem exists_capWindow_canonicalBoundsOn (P₀ : OrientedThreeStage.{u}) (g₀
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Rcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ H : RetainedCoreHistory P₀, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+    ∀ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
       p₀.recenterConstant * δbound ≤ 1 / 2 →
     ∀ (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -252,7 +252,7 @@ theorem capWindowContinuation_of_slab_interior (P₀ : OrientedThreeStage.{u}) (
       ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
         p₀.modelAccuracy ≤ εcap → Rcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
         δbound ≤ δmax → ρbound ≤ ρmax →
-      ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound)
+      ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound)
         (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
         H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
         H.EventSlabsPinched phi →
@@ -312,7 +312,7 @@ theorem capWindowContinuation_of_slab_start_bounds (P₀ : OrientedThreeStage.{u
       ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
         p₀.modelAccuracy ≤ εs → Rs ≤ p₀.modelRadius → ms ≤ p₀.modelOrder →
         δbound ≤ δs → ρbound ≤ ρs →
-      ∀ H : RetainedCoreHistory P₀, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+      ∀ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
         p₀.recenterConstant * δbound ≤ 1 / 2 →
       ∀ (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
         H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →

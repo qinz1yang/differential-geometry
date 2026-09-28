@@ -60,7 +60,8 @@ theorem exists_eventually_poincareStandard_of_canonical_and_cap_windows_toleranc
   · rcases W.spatial_cap_or_whole_of_not_spatial_neck hchart hx with hp | hr | hc
     · exact Or.inl hp
     · obtain ⟨z, hz⟩ := hr
-      exact Or.inr (Or.inl (isPositiveSpaceFormModel_of_roundComponent (M n) hz.some))
+      exact Or.inr (Or.inl
+        (admitsConstantPositiveSectionalCurvature_of_roundComponent (M n) hz.some))
     · exact Or.inr (Or.inr hc)
   · obtain ⟨p, nk, K, _, hcore, hmarks, hfront, _⟩ := hcap j
     obtain ⟨hR, _, hball⟩ := hmarks y hy

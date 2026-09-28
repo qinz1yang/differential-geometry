@@ -18,7 +18,7 @@ private theorem memLp_mul_cutoff
     (hη : Continuous η) (hηc : HasCompactSupport η) (hηs : tsupport η ⊆ Ω) :
     MemLp (fun x => η x * u x) 2 volume := by
   have hm : MemLp (fun x => η x * u x) 2 (volume.restrict Ω) :=
-    hu.mul' ((hη.memLp_of_hasCompactSupport hηc : MemLp η ∞ volume).restrict Ω)
+    ((hη.memLp_of_hasCompactSupport hηc : MemLp η ∞ volume).restrict Ω).fun_mul hu
   have hi := (memLp_indicator_iff_restrict hΩ).mpr hm
   have heq : Ω.indicator (fun x => η x * u x) = fun x => η x * u x := by
     funext x

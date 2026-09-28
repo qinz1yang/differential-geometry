@@ -3,6 +3,11 @@ import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Bridge.Cross
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Naturality.LocalCongruence
 
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices modelInnerAt modelInnerAt_apply
+  tensorInnerPointwise tensorInnerPointwise_add_left tensorInnerPointwise_add_right
+  tensorInnerPointwise_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right
+  tensorInnerPointwise_symm tensorInnerPointwise_zero_right)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -469,10 +474,10 @@ private lemma tensorCovDerivPointwiseInnerRS_eq_smoothOrthoFrame_diag
       rw [hB_orth k j]
     rw [Finset.sum_congr rfl h_pull2] at h_zero
     rw [Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rw [if_pos rfl, mul_one] at h_zero
+    · rw [ite_eq_left rfl, mul_one] at h_zero
       exact h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I b) := by
     rw [Fintype.card_fin]
@@ -820,7 +825,8 @@ theorem integral_weighted_rawTensorConnLap_eq_neg_covDeriv_of_hasCompactSupport
           notMem_tsupport_iff_eventuallyEq.mp hx
         have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (ρ : M → ℝ) x = 0 := by
           rw [hev.mfderiv_eq]
-          exact mfderiv_const
+          rw [mfderiv_const]
+          rfl
         simp [mvfderiv, hmfd_zero]
       simp only [hzero, ContinuousLinearMap.zero_smulRight, map_zero,
         TensorRSSpace.toModel_zero, tensorInnerPointwise_zero_right]
@@ -973,7 +979,8 @@ theorem integral_sq_weighted_rawTensorConnLap_le_of_hasCompactSupport
           notMem_tsupport_iff_eventuallyEq.mp hx
         have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (χ : M → ℝ) x = 0 := by
           rw [hev.mfderiv_eq]
-          exact mfderiv_const
+          rw [mfderiv_const]
+          rfl
         simp [mvfderiv, hmfd_zero]
       simp only [hzero, ContinuousLinearMap.zero_smulRight, map_zero]
   have hestimate := integral_sq_weighted_rawTensorConnLapSmooth_le g r s χ T₀ hε

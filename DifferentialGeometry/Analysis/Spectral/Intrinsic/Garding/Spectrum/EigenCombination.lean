@@ -140,11 +140,11 @@ theorem finiteEigenCombo_tensorL2Coeff
   · rw [Finset.sum_eq_single i]
     · simp [hiF]
     · intro j _ hji
-      rw [if_neg (fun h => hji h.symm)]
+      rw [ite_eq_right (fun h => hji h.symm)]
     · intro h; exact absurd hiF h
-  · rw [if_neg hiF, Finset.sum_eq_zero]
+  · rw [ite_eq_right hiF, Finset.sum_eq_zero]
     intro j hj
-    rw [if_neg (fun h => hiF (by rw [h]; exact hj))]
+    rw [ite_eq_right (fun h => hiF (by rw [h]; exact hj))]
 
 theorem finiteEigenCombo_weakSolution
     (F : Finset (Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx (I := I) (M := M) g 0 2))
@@ -243,12 +243,12 @@ theorem finiteEigenCombo_iterRawConnLap_l2NormSq
             (finiteEigenCombo (I := I) (M := M) g F c))) i) ^ 2) ?_]
   · refine Finset.sum_congr rfl (fun i hi => ?_)
     rw [finiteEigenCombo_iterRawConnLap_tensorL2Coeff (I := I) (M := M) g F c j i,
-      if_pos hi, mul_pow, ← pow_mul, mul_comm j 2]
+      ite_eq_left hi, mul_pow, ← pow_mul, mul_comm j 2]
     rw [(even_two_mul j).neg_pow (TensorEigenIdx.lambda (I := I) (M := M) i)]
   · intro b hb
     simp only [finiteEigenCombo_iterRawConnLap_tensorL2Coeff
       (I := I) (M := M) g F c j b]
-    rw [if_neg hb]
+    rw [ite_eq_right hb]
     ring
 
 theorem finiteEigenCombo_l2NormSq
@@ -272,7 +272,7 @@ def finiteEigenComboHs
     classical
     refine summable_of_ne_finset_zero (s := F) ?_
     intro i hiF
-    rw [if_neg hiF]
+    rw [ite_eq_right hiF]
     ring
 
 open scoped Classical in
@@ -310,12 +310,12 @@ theorem finiteEigenCombo_spectral_normSq
       tensorSobolevWeight (I := I) (M := M) i σ *
         ((finiteEigenComboHs (I := I) (M := M) g F c σ).coeff i) ^ 2) ?_]
   · refine Finset.sum_congr rfl (fun i hi => ?_)
-    rw [finiteEigenComboHs_coeff, if_pos hi]
+    rw [finiteEigenComboHs_coeff, ite_eq_left hi]
     unfold tensorSobolevWeight
     rfl
   · intro b hb
     simp only [finiteEigenComboHs_coeff]
-    rw [if_neg hb]
+    rw [ite_eq_right hb]
     ring
 
 end Spectral

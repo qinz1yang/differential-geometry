@@ -24,11 +24,11 @@ theorem IsPolyhedralBall.closure_interior {P : Set X}
   obtain ⟨f, hf⟩ := hT
   have hint := T.piece.interior_eq_image_openSimplex
     (⟨f, hf⟩ : IsPLBall (n + 1) T.piece.complex.space) hf
-  have hstdclosed : IsClosed (stdSimplex ℝ (Fin (n + 2))) :=
+  have hstdclosed : IsClosed (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) :=
     (isHPolytope_stdSimplex (Fin (n + 2))).isPolyhedron.isClosed
-  have hclsub : closure (openSimplex (stdVertices n)) ⊆ stdSimplex ℝ (Fin (n + 2)) :=
+  have hclsub : closure (openSimplex (stdVertices n)) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) :=
     closure_minimal (openSimplex_stdVertices_subset_stdSimplex (n := n)) hstdclosed
-  have hsubcl : stdSimplex ℝ (Fin (n + 2)) ⊆ closure (openSimplex (stdVertices n)) := by
+  have hsubcl : Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) ⊆ closure (openSimplex (stdVertices n)) := by
     rw [← convexHull_stdVertices]
     exact convexHull_subset_closure_openSimplex (by simp [stdVertices])
   have hcont : ContinuousOn (T.piece.map ∘ f) (closure (openSimplex (stdVertices n))) :=

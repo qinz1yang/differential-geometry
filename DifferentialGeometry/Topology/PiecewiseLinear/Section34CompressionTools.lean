@@ -20,7 +20,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 section Chart
 
 theorem IsPLBall.exists_compression_trace {P D Θ Sph O E K : Set E3} (hP : IsPLBall 3 P)
-    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ P)
+    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ P)
     (htrace : D ∩ frontier P = q '' stdSimplexBoundary 2) (hSph : IsPLSphere 2 Sph)
     (hDSph : D ⊆ Sph) (hO : IsOpen O) (hDO : D ⊆ O) (hOΘ : O ∩ Θ = O ∩ Sph)
     (hcross : ∀ x ∈ q '' stdSimplexBoundary 2, HasPLCrossingAt (frontier P) Θ x)

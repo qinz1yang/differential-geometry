@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.PointwiseBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -173,7 +176,7 @@ theorem exists_lieCorrectionZeroVectorBundle_antidiagonalTupleGridWindow_bound (
     DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
       (I := I) (M := M) g₀ 2 2 i (2 : ℝ) _,
     SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x (2 : ℝ) _]
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x (2 : ℝ) _]
   have h4 : ((2 : ℝ) ^ 2) = 4 := by norm_num
   rw [h4, mul_assoc]
   exact mul_le_mul_of_nonneg_left houter (by norm_num)

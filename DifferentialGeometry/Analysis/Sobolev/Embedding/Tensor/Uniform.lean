@@ -6,6 +6,11 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciTrace
 import DifferentialGeometry.Geometry.Curvature.Bounds.RicciOperatorNorm
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise lowerAllUpperIndices lowerAllUpperIndices_apply
+    riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise tensorInnerPointwise
+    tensorInnerPointwise_0s_eq_diag_sum_orthoFrame)
+
 set_option autoImplicit false
 
 noncomputable section

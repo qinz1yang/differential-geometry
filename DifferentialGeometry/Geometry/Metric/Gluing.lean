@@ -21,10 +21,10 @@ private theorem contMDiffAt_of_inclusion {U V : TopologicalSpace.Opens M}
   have hFU : (fun y : U => F (y : M)) =
       (fun y : U => f (TopologicalSpace.Opens.inclusion hUV y)) := by
     funext y
-    simp only [F, dif_pos (hUV y.property)]
+    simp only [F, dite_eq_left (hUV y.property)]
   have hFV : (fun y : V => F (y : M)) = f := by
     funext y
-    simp only [F, dif_pos y.property]
+    simp only [F, dite_eq_left y.property]
   have hF : ContMDiffAt I 𝓘(ℝ) ∞ F (x : M) := by
     apply contMDiffAt_subtype_iff.mp
     rw [hFU]
@@ -69,7 +69,7 @@ private theorem gluedInner_of_left (U V : TopologicalSpace.Opens M)
     (x : ↥(U ⊔ V)) (hx : (x : M) ∈ U) :
     gluedInner U V gU gV x = gU.inner ⟨x, hx⟩ := by
   classical
-  exact dif_pos hx
+  exact dite_eq_left hx
 
 omit [FiniteDimensional ℝ E] [T2Space M] in
 private theorem gluedInner_of_not_left (U V : TopologicalSpace.Opens M)
@@ -77,7 +77,7 @@ private theorem gluedInner_of_not_left (U V : TopologicalSpace.Opens M)
     (x : ↥(U ⊔ V)) (hx : (x : M) ∉ U) :
     gluedInner U V gU gV x = gV.inner ⟨x, x.property.resolve_left hx⟩ := by
   classical
-  exact dif_neg hx
+  exact dite_eq_right hx
 
 omit [FiniteDimensional ℝ E] [T2Space M] in
 private theorem gluedInner_left (U V : TopologicalSpace.Opens M)

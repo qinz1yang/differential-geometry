@@ -6,7 +6,6 @@ noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff Topology
@@ -66,7 +65,8 @@ theorem nonpositive_of_heat_subsolution_and_cutoffs
       ContMDiff I 𝓘(ℝ, ℝ) ∞ (u t) := by
     intro t ht hp
     have hh := (Real.contDiff_exp.contMDiff.comp (hspace t ht hp)).sub (contMDiff_const (c := (1 : ℝ)))
-    convert hh using 1 <;> rfl
+    convert hh using 1
+    rfl
   have huinit : ∀ x : M, u 0 x ≤ 0 := by
     intro x
     change Real.exp (q 0 x) - 1 ≤ 0

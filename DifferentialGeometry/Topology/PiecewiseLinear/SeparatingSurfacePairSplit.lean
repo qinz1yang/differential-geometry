@@ -50,7 +50,7 @@ theorem exists_separating_surface_pair_split [d : DecidableEq E3]
       nullTraceCount (Q₀.space ∪ Q₁.space) T < nullTraceCount (X₀.space ∪ X₁.space) T ∧
       eulerChar Q₀ + eulerChar Q₁ = eulerChar X₀ + eulerChar X₁ + 1 ∧
       ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3) (f : E3 → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ r '' stdSimplexBoundary 2 = G ∧ Δ ⊆ T ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ r '' stdSimplexBoundary 2 = G ∧ Δ ⊆ T ∧
         (X₀.space ∪ X₁.space) ∩ Δ = G ∧
         EqOn f id ((boundaryComplex 2 X₀).space \ G) ∧
         EqOn f id ((boundaryComplex 2 X₁).space \ G) ∧

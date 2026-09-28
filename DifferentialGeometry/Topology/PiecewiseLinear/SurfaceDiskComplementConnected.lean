@@ -18,7 +18,7 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 open Classical in
 private theorem exists_manifold_disjoint_disk_union {ι : Type*} [Finite ι]
     {D : ι → Set E} {r : ι → (Fin 3 → ℝ) → E}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hdisj : Pairwise fun i j => Disjoint (D i) (D j)) :
     ∃ A : Geometry.SimplicialComplex ℝ E, A.faces.Finite ∧
       IsCombinatorialManifoldWithBoundary 2 A ∧ A.space = ⋃ i, D i ∧

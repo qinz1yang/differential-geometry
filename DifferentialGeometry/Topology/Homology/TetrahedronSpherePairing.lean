@@ -30,7 +30,7 @@ theorem homotopyGroupSpherePrecompose_integralSingularTetrahedronSphereClass
 theorem integralSingularTetrahedronSphereClass_eq_tetrahedronGenLoop
     (x : X) [Subsingleton (HomotopyGroup (Fin 2) X x)]
     (σ : integralSingularSimplex 3 X)
-    (g : C(stdSimplex ℝ (Fin 4), X))
+    (g : C(Convexity.StdSimplex.coordinateSet ℝ (Fin 4), X))
     (hg : ∀ p ∈ Simplex.boundary (Fin 4), g p = x)
     (h : (integralSingularConeThreeSphereMap x σ).Homotopic
       (Simplex.tetrahedronSphereMap g x hg)) :

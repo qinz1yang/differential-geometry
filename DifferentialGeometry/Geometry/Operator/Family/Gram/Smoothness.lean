@@ -37,7 +37,7 @@ theorem chartGramOp_smooth {D : RealTimeInterval}
       (prod_mono_right hK)
   have hbilin : ContDiffOn Real ∞
       (fun p : Real × E =>
-        chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
+        DifferentialGeometry.Tensor.Coordinates.chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
           ((extChartAt I alpha).symm p.2))
       (D.regular ×ˢ K) := by
     rw [contDiffOn_clm_apply]
@@ -53,7 +53,7 @@ theorem chartGramOp_smooth {D : RealTimeInterval}
         (D.regular ×ˢ K) := by
       exact ContDiffOn.sum fun j _ => ContDiffOn.sum fun k _ =>
         ((hentry j k).mul contDiffOn_const).mul contDiffOn_const
-    simpa only [chartGramBilin_apply, chartGramOnE_def] using hscalar
+    simpa only [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_apply, chartGramOnE_def] using hscalar
   exact (IsCoercive.gramCLM (F := E)).contDiff.comp_contDiffOn hbilin
 
 end DifferentialGeometry.Geometry.Curvature
@@ -79,7 +79,7 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
   {D : RealTimeInterval}
 
 private def gramBasisOp (i j : Fin (Module.finrank ℝ E)) : E →L[ℝ] E :=
-  IsCoercive.gramCLM ((chartCoordCLM E i).smulRight (chartCoordCLM E j))
+  IsCoercive.gramCLM ((DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E i).smulRight (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E j))
 
 omit [I.Boundaryless] in
 private theorem chartGramOp_eq_sum_basis (G : MetricConnectionFamilyOn (I := I) (M := M) D)
@@ -90,7 +90,7 @@ private theorem chartGramOp_eq_sum_basis (G : MetricConnectionFamilyOn (I := I) 
   change IsCoercive.gramCLM (∑ i : Fin (Module.finrank ℝ E),
       ∑ j : Fin (Module.finrank ℝ E),
         chartGramOnE (I := I) (G.metric z.1) p i j z.2 •
-          (chartCoordCLM E i).smulRight (chartCoordCLM E j)) = _
+          (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E i).smulRight (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E j)) = _
   simp only [map_sum, map_smul, gramBasisOp]
 
 private theorem chartGramOp_spatial_hasFDerivAt

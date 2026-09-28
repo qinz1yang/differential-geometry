@@ -159,9 +159,9 @@ theorem w1pNormIntrinsicLp_lt_top_of_MemWkpChart_smooth
   obtain ⟨hu_p, G, hG_weak, hG_p⟩ := hsmooth_mem
   unfold DifferentialGeometry.Analysis.Sobolev.IntrinsicLp.w1pNormIntrinsicLp
   rw [ENNReal.add_lt_top]
-  refine ⟨hu_p.2, ?_⟩
+  refine ⟨hu_p, ?_⟩
   refine lt_of_le_of_lt (iInf_le_of_le G (iInf_le _ hG_weak)) ?_
-  exact hG_p.2
+  exact hG_p
 
 theorem MemW1pIntrinsicLp_of_MemWkpChart
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -366,7 +366,7 @@ private lemma eLpNorm_g_norm_gradFun_chart_local_lt_top_smooth
     apply Measurable.indicator
     · exact hcont.measurable
     · exact ((chartAt H α).open_source).measurableSet
-  exact (MemLp.of_bound hmeas.aestronglyMeasurable C h_ae_bound).2
+  exact MemLp.of_bound hmeas.aestronglyMeasurable C h_ae_bound
 
 theorem eLpNorm_g_norm_gradFun_chart_local_le_const_mul_wkpNormChart_smooth
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

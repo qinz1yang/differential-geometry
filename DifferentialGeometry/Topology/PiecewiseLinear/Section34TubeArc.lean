@@ -146,7 +146,7 @@ theorem exists_crossing_params {X W : Set E3} (hXc : IsClosed X) (hWc : IsClosed
   refine ⟨j, k, ta, tb, hjk, hkN, hta0, hta1, by linarith, htb1', fun hkj => ?_, hafr,
     fun s hs1 hs2 => hafter s ⟨hs1, hs2⟩, hlater, hbfr, fun s hs1 hs2 => hbefore s ⟨hs1, hs2⟩,
     hmin⟩
-  rw [if_pos hkj] at htbl
+  rw [ite_eq_left hkj] at htbl
   exact htbl
 
 theorem inner_bisector_pos {x y : E3} (hx : x ≠ 0) (hy : y ≠ 0)

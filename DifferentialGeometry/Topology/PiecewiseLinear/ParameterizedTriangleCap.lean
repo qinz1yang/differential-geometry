@@ -45,8 +45,8 @@ theorem exists_triangulation_triangle_cap_with_nonsingular_boundary
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [dE : DecidableEq E] (hdimE : Module.finrank ℝ E = 3)
     {Q D J : Set E} {u v : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) Q)
-    (hv : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) D)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q)
+    (hv : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (huJ : u '' stdSimplexBoundary 2 = J) (hvJ : v '' stdSimplexBoundary 2 = J)
     (hQD : IsPLSphere 2 (Q ∪ D)) (H : E ≃ₜ E) (hH : IsPLHomeomorphOn H univ univ)
     (ℓ : E →L[ℝ] ℝ) (hheight : ∀ x, ℓ (H x) = ℓ x)
@@ -87,9 +87,9 @@ theorem exists_triangulation_triangle_cap_with_nonsingular_boundary
     hH.restrict hQ.isPolyhedron (subset_univ Q)
   have hHD : IsPLHomeomorphOn H D (H '' D) :=
     hH.restrict hD.isPolyhedron (subset_univ D)
-  have huH : IsPLHomeomorphOn (H ∘ u) (stdSimplex ℝ (Fin 3)) (H '' Q) :=
+  have huH : IsPLHomeomorphOn (H ∘ u) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H '' Q) :=
     hu.trans hHQ
-  have hvH : IsPLHomeomorphOn (H ∘ v) (stdSimplex ℝ (Fin 3)) (H '' D) :=
+  have hvH : IsPLHomeomorphOn (H ∘ v) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H '' D) :=
     hv.trans hHD
   have huHJ : (H ∘ u) '' stdSimplexBoundary 2 = H '' J := by
     rw [image_comp, huJ]

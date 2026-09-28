@@ -334,8 +334,8 @@ theorem exists_isTwoSidedBranchCollar_of_branchPreimage_eq_union [T2Space M]
       (hTpoly.prod isHPolytope_Icc.isPolyhedron) (by rw [hPQ]; exact eqOn_empty _ _)
       (by rw [hPQ, image_empty]; exact (Set.disjoint_iff_inter_eq_empty.mp hWJWT).symm)
     rw [← union_prod] at hpw
-    exact ⟨_, hpw, fun p hp => if_pos hp,
-      fun p hp => if_neg fun h => Set.disjoint_left.mp hJT h.1 hp.1⟩
+    exact ⟨_, hpw, fun p hp => ite_eq_left hp,
+      fun p hp => ite_eq_right fun h => Set.disjoint_left.mp hJT h.1 hp.1⟩
   have himage : ∀ S : Set ℝ, S ⊆ Icc (-1 : ℝ) 1 →
       ρ '' ((frontier Q ∪ frontier E) ×ˢ S) =
         ρJ '' (frontier Q ×ˢ S) ∪ ρT '' (frontier E ×ˢ S) := by

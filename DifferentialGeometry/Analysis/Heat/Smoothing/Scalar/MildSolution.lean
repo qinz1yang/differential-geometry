@@ -20,8 +20,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Sobolev.Chart
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
-open DifferentialGeometry.Analysis.Laplacian.ChartSideH2kBridge
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 
 private local instance : MeasurableSpace E := borel E

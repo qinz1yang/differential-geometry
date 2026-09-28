@@ -3,7 +3,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorCompone
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChartTwistIdentity
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.ChartTwistBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.Gradient.ChartBound
+import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.GradientProduct
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 
 open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
 open DifferentialGeometry.Analysis.Elliptic
@@ -516,6 +520,8 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
   have h_sq_to_lint : (eLpNorm TinnerSqrt 2 μ) ^ 2 =
       ∫⁻ b, (‖TinnerSqrt b‖ₑ : ℝ≥0∞) ^ 2 ∂μ :=
     DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq TinnerSqrt
+      (Sobolev.EquivalenceReverse.continuous_sqrt_g_inner_gradFun_self g
+        (tensorChartComponentScalar_contMDiff g r s S.toCcTensor α Idx Jdx)).aestronglyMeasurable
   have h_sq_bound : (eLpNorm TinnerSqrt 2 μ) ^ 2 ≤
       ENNReal.ofReal (C_sq * ‖S‖ ^ 2) := by
     rw [h_sq_to_lint]
@@ -730,7 +736,9 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
       have h_G4_sq_lint :
           ∫⁻ b, (‖rawInd b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
             ENNReal.ofReal (C₄ ^ 2 * ‖S‖ ^ 2) := by
-        rw [← DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq];
+        rw [← DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq
+          rawInd (aestronglyMeasurable_of_eLpNorm_ne_top
+            (h_G4_S.trans_lt (by finiteness)).ne)]
         exact h_G4_sq
       calc ∫⁻ b, f1 b ∂μ
           = ENNReal.ofReal A * ∫⁻ b, (‖rawInd b‖ₑ : ℝ≥0∞) ^ 2 ∂μ := h_int_eq
@@ -787,7 +795,8 @@ theorem exists_eLpNorm_sqrt_g_inner_gradFun_tensorChartComponentScalar_le_const_
       have h_G2_sq_lint :
           ∫⁻ b, (‖h2 b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
             ENNReal.ofReal (C₂ ^ 2 * ‖S‖ ^ 2) := by
-        rw [← DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq];
+        rw [← DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq
+          h2 h_atom1]
         exact h_G2_sq
       calc ∫⁻ b, f2 b ∂μ
           = ENNReal.ofReal B * ∫⁻ b, (‖h2 b‖ₑ : ℝ≥0∞) ^ 2 ∂μ := h_int_eq

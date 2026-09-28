@@ -44,7 +44,8 @@ theorem hasAdmissibleCurve_of_admissible_eq {H : ObservedHistory.{u}}
     exact hA⟩
 
 theorem hasAdmissibleCurve_of_admissible_eq_tower {H : ObservedHistory.{u}}
-    {S : VariationalStrip H} (h : S.admissible = IsTowerAdmissiblePath S.pole (S.finish - S.start)) :
+    {S : VariationalStrip H}
+    (h : S.admissible = IsTowerAdmissiblePath S.pole (S.finish - S.start)) :
     HasAdmissibleCurve S :=
   hasAdmissibleCurve_of_admissible_eq h (isTowerAdmissiblePath_const S.pole (S.finish - S.start))
 
@@ -145,40 +146,5 @@ theorem reducedLength_le_reducedAction_of_bddBelow {H : ObservedHistory.{u}}
     (hb : BddBelow (reducedActionValueSet S u x)) :
     S.reducedLength u x ≤ reducedAction S.metricAt S.finish (S.finish - u) γ :=
   csInf_le hb ⟨γ, hγ, h0, hτ, rfl⟩
-
-def isPinnedReducedLengthRealizationInput : Prop :=
-  ∀ (H : ObservedHistory.{u}) (S : VariationalStrip H),
-    IsTowerPinnedStrip S → IsReducedLengthRealization S
-
-def isPinnedReducedLengthRealizationOnAdmissibleStripsInput : Prop :=
-  ∀ (H : ObservedHistory.{u}) (S : VariationalStrip H),
-    IsTowerPinnedStrip S → HasAdmissibleCurve S → IsReducedLengthRealization S
-
-theorem isPinnedReducedLengthRealizationOnAdmissibleStripsInput_of_input
-    (h : isPinnedReducedLengthRealizationInput.{u}) :
-    isPinnedReducedLengthRealizationOnAdmissibleStripsInput.{u} :=
-  fun H S hS _ => h H S hS
-
-theorem isPinnedReducedLengthRealizationInput_of_onAdmissibleStrips
-    (h : isPinnedReducedLengthRealizationOnAdmissibleStripsInput.{u}) :
-    isPinnedReducedLengthRealizationInput.{u} :=
-  fun H S hS => h H S hS (hasAdmissibleCurve_of_isTowerPinnedStrip hS)
-
-theorem isPinnedReducedLengthRealizationInput_iff_onAdmissibleStrips :
-    isPinnedReducedLengthRealizationInput.{u} ↔
-      isPinnedReducedLengthRealizationOnAdmissibleStripsInput.{u} :=
-  ⟨isPinnedReducedLengthRealizationOnAdmissibleStripsInput_of_input,
-    isPinnedReducedLengthRealizationInput_of_onAdmissibleStrips⟩
-
-theorem isPinnedReducedLengthRealizationOnAdmissibleStripsInput_of_isReducedLengthRealizationInput
-    (h : isReducedLengthRealizationInput.{u}) :
-    isPinnedReducedLengthRealizationOnAdmissibleStripsInput.{u} :=
-  fun H S _ hγ => h H S hγ
-
-theorem isPinnedReducedLengthRealizationOnAdmissibleStripsInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) :
-    isPinnedReducedLengthRealizationOnAdmissibleStripsInput.{u} :=
-  isPinnedReducedLengthRealizationOnAdmissibleStripsInput_of_isReducedLengthRealizationInput
-    (isReducedLengthRealizationInput_of_isCommonLocalRealizationOnAdmissibleStrips h)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

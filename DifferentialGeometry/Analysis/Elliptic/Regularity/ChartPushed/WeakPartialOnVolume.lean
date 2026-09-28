@@ -162,17 +162,6 @@ theorem eLpNorm_volume_restrict_le_eLpNorm_chartPulledWeighted_compact
         eLpNorm f 2 (ENNReal.ofReal (c⁻¹) •
           (chartPulledWeightedMeasure (I := I) g α).restrict K) :=
     eLpNorm_mono_measure f h_vol_le
-  have h_smul_eq :
-      eLpNorm f 2 (ENNReal.ofReal (c⁻¹) •
-          (chartPulledWeightedMeasure (I := I) g α).restrict K) =
-        ENNReal.ofReal (c⁻¹) ^ ((1 : ℝ) / 2) •
-          eLpNorm f 2 ((chartPulledWeightedMeasure (I := I) g α).restrict K) := by
-    have h_toReal : ((1 / 2 : ℝ≥0∞).toReal : ℝ) = (1 : ℝ) / 2 := by
-      rw [show (1 / 2 : ℝ≥0∞) = (1 : ℝ≥0∞) / 2 from rfl]
-      simp
-    rw [eLpNorm_smul_measure_of_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
-    rw [h_toReal]
-  rw [h_smul_eq] at h_step1
   have hK_in_open :
       (chartPulledWeightedMeasure (I := I) g α).restrict K ≤
         (chartPulledWeightedMeasure (I := I) g α).restrict
@@ -183,14 +172,42 @@ theorem eLpNorm_volume_restrict_le_eLpNorm_chartPulledWeighted_compact
         eLpNorm f 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) :=
     eLpNorm_mono_measure f hK_in_open
-  have h_pow_eq : ENNReal.ofReal (c⁻¹) ^ ((1 : ℝ) / 2) =
-      ENNReal.ofReal (Real.sqrt (c⁻¹)) := by
-    rw [Real.sqrt_eq_rpow]
-    rw [← ENNReal.ofReal_rpow_of_nonneg (le_of_lt (inv_pos.mpr hc_pos))
-      (by positivity)]
-  refine h_step1.trans ?_
-  rw [h_pow_eq, smul_eq_mul]
-  exact mul_le_mul' (le_refl _) h_mono_target
+  by_cases hK_top : eLpNorm f 2
+      ((chartPulledWeightedMeasure (I := I) g α).restrict K) = ⊤
+  · have htarget_top : eLpNorm f 2
+        ((chartPulledWeightedMeasure (I := I) g α).restrict
+          (chartTargetEuclid (I := I) (M := M) α)) = ⊤ := by
+      apply top_unique
+      simpa [hK_top] using h_mono_target
+    rw [htarget_top]
+    have hcoef : ENNReal.ofReal (Real.sqrt (c⁻¹)) ≠ 0 :=
+      ne_of_gt (ENNReal.ofReal_pos.mpr
+        (Real.sqrt_pos.mpr (inv_pos.mpr hc_pos)))
+    rw [ENNReal.mul_top hcoef]
+    exact le_top
+  · have hf_meas_K : AEStronglyMeasurable f
+        ((chartPulledWeightedMeasure (I := I) g α).restrict K) :=
+      aestronglyMeasurable_of_eLpNorm_ne_top hK_top
+    have h_smul_eq :
+        eLpNorm f 2 (ENNReal.ofReal (c⁻¹) •
+            (chartPulledWeightedMeasure (I := I) g α).restrict K) =
+          ENNReal.ofReal (c⁻¹) ^ ((1 : ℝ) / 2) •
+            eLpNorm f 2 ((chartPulledWeightedMeasure (I := I) g α).restrict K) := by
+      have h_toReal : ((1 / 2 : ℝ≥0∞).toReal : ℝ) = (1 : ℝ) / 2 := by
+        rw [show (1 / 2 : ℝ≥0∞) = (1 : ℝ≥0∞) / 2 from rfl]
+        simp
+      rw [eLpNorm_smul_measure_of_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+        f (ENNReal.ofReal (c⁻¹)) hf_meas_K]
+      rw [h_toReal]
+    rw [h_smul_eq] at h_step1
+    have h_pow_eq : ENNReal.ofReal (c⁻¹) ^ ((1 : ℝ) / 2) =
+        ENNReal.ofReal (Real.sqrt (c⁻¹)) := by
+      rw [Real.sqrt_eq_rpow]
+      rw [← ENNReal.ofReal_rpow_of_nonneg (le_of_lt (inv_pos.mpr hc_pos))
+        (by positivity)]
+    refine h_step1.trans ?_
+    rw [h_pow_eq, smul_eq_mul]
+    exact mul_le_mul' (le_refl _) h_mono_target
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushedWeakPartialLp_smoothToH1Compl_eq_partial
@@ -217,8 +234,6 @@ private lemma memLp_of_chartPulledWeighted_on_compact
     {K : Set EuclN} (hK_compact : IsCompact K)
     (hK_in : K ⊆ chartTargetEuclid (I := I) (M := M) α)
     {f : EuclN → ℝ}
-    (hf_aestrong : AEStronglyMeasurable f
-      ((volume : Measure EuclN).restrict K))
     (hf_memLp : MemLp f 2
       ((chartPulledWeightedMeasure (I := I) g α).restrict
         (chartTargetEuclid (I := I) (M := M) α))) :
@@ -226,9 +241,8 @@ private lemma memLp_of_chartPulledWeighted_on_compact
   obtain ⟨C, _hC_pos, hC_bd⟩ :=
     eLpNorm_volume_restrict_le_eLpNorm_chartPulledWeighted_compact
       (I := I) (M := M) g α hK_compact hK_in
-  refine ⟨hf_aestrong, ?_⟩
   refine lt_of_le_of_lt (hC_bd f) ?_
-  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hf_memLp.2
+  exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hf_memLp
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem chartPushedWeakPartialLp_locally_memLp
@@ -245,13 +259,8 @@ theorem chartPushedWeakPartialLp_locally_memLp
   have hf_memLp_weighted := MeasureTheory.Lp.memLp
     (chartPushedWeakPartialLp (I := I) (M := M) g α j
       (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h)
-  have hf_strong : StronglyMeasurable
-      (((chartPushedWeakPartialLp (I := I) (M := M) g α j
-        (chartPushedPartialLipschitzCanonical (I := I) (M := M) g α j) u_h
-       ) : EuclN → ℝ)) :=
-    Lp.stronglyMeasurable _
   exact memLp_of_chartPulledWeighted_on_compact (I := I) (M := M) g α
-    hK_compact hK_in hf_strong.aestronglyMeasurable hf_memLp_weighted
+    hK_compact hK_in hf_memLp_weighted
 
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma exists_smoothApprox_seq
@@ -792,16 +801,18 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
     intro n
-    refine (chartPushed_memLp_chartPulledWeightedMeasure_restrict_of_memLp
-      (I := I) (M := M) g α (v n).smooth.continuous.measurable
-      (v n).memLp_two).1
+    exact aestronglyMeasurable_of_eLpNorm_ne_top
+      (ne_of_lt (chartPushed_memLp_chartPulledWeightedMeasure_restrict_of_memLp
+        (I := I) (M := M) g α (v n).smooth.continuous.measurable
+        (v n).memLp_two))
   have hu_lim_aestrong_w :
       AEStronglyMeasurable u_lim_chart
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) := by
-    refine (chartPushed_memLp_chartPulledWeightedMeasure_restrict_of_memLp
-      (I := I) (M := M) g α ((Lp.stronglyMeasurable _).measurable)
-      (Lp.memLp _)).1
+    exact aestronglyMeasurable_of_eLpNorm_ne_top
+      (ne_of_lt (chartPushed_memLp_chartPulledWeightedMeasure_restrict_of_memLp
+        (I := I) (M := M) g α ((Lp.stronglyMeasurable _).measurable)
+        (Lp.memLp _)))
   have hu_n_memLp_w : ∀ n,
       MemLp (u_n_chart n) 2
         ((chartPulledWeightedMeasure (I := I) g α).restrict
@@ -830,7 +841,8 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
     intro n
     have h_w : AEStronglyMeasurable (u_n_chart n)
         ((chartPulledWeightedMeasure (I := I) g α).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) := (hu_n_memLp_w n).1
+          (chartTargetEuclid (I := I) (M := M) α)) :=
+      aestronglyMeasurable_of_eLpNorm_ne_top (ne_of_lt (hu_n_memLp_w n))
     set ψ : EuclN → ℝ := fun y =>
         ((chartAtlasPOU I M α : M → ℝ)
           (extChartAtSymmExt (I := I) (M := M) α ((toEuclidean (E := E)).symm y))) *
@@ -919,22 +931,18 @@ theorem hasWeakPartialDeriv_chartPushedWeakPartialLp_on_compact
     (Lp.stronglyMeasurable _).aestronglyMeasurable
   have hu_n_memLp : ∀ n, MemLp (u_n_chart n) 2 ((volume : Measure EuclN).restrict Ω) := by
     intro n
-    refine ⟨hu_n_aestrong n, ?_⟩
     refine lt_of_le_of_lt (hC_vol_Ω _) ?_
-    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hu_n_memLp_w n).2
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hu_n_memLp_w n)
   have hu_lim_memLp : MemLp u_lim_chart 2 ((volume : Measure EuclN).restrict Ω) := by
-    refine ⟨hu_lim_aestrong, ?_⟩
     refine lt_of_le_of_lt (hC_vol_Ω _) ?_
-    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hu_lim_memLp_w.2
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hu_lim_memLp_w
   have hg_n_memLp : ∀ n, MemLp (g_n_chart n) 2 ((volume : Measure EuclN).restrict Ω) := by
     intro n
-    refine ⟨hg_n_aestrong n, ?_⟩
     refine lt_of_le_of_lt (hC_vol_Ω _) ?_
-    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hg_n_memLp_w n).2
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top (hg_n_memLp_w n)
   have hg_lim_memLp : MemLp g_lim_chart 2 ((volume : Measure EuclN).restrict Ω) := by
-    refine ⟨hg_lim_aestrong, ?_⟩
     refine lt_of_le_of_lt (hC_vol_Ω _) ?_
-    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hg_lim_memLp_w.2
+    exact ENNReal.mul_lt_top ENNReal.ofReal_lt_top hg_lim_memLp_w
   have h_weak_n : ∀ n,
       DeGiorgi.HasWeakPartialDeriv (d := Module.finrank ℝ E) j
         (g_n_chart n) (u_n_chart n) Ω := by

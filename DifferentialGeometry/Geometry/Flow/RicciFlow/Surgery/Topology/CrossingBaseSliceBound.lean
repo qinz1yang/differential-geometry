@@ -19,7 +19,7 @@ namespace RetainedCoreHistory
 variable {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
   {B ε C1 C2 τmin θ κ C1s C2s Cs : ℝ} {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ}
   {D θcap qcan qs η t₀ t s : ℕ → ℝ} {p₀ p : ℕ → CutoffParameters} {δb ρb : ℕ → ℝ}
-  {H : ℕ → RetainedCoreHistory P₀}
+  {H : ℕ → RetainedCoreHistory.{u}}
   {records : ∀ n i, GeometricCutoffRecord (H n).toHistory i (p n)}
   {G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
     ((H n).time (Fin.last (H n).eventCount)) (s n)}
@@ -27,7 +27,7 @@ variable {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
   (hε : 0 < ε) (hεcone : ε ≤ coneAccuracy)
   (hκ : 0 < κ) (hphi : Perelman.AdmissiblePinchingFunction phi) (hθ : 0 < θ)
   (hCs : 1 ≤ Cs) (hCt : 0 < Ctime)
-  (hH : ∀ n, (H n).InCutoffClass g₀ B (p₀ n) (δb n) (ρb n))
+  (hH : ∀ n, (H n).InCutoffClass (P₀ := P₀) g₀ B (p₀ n) (δb n) (ρb n))
   (hG : ∀ n, (H n).IsContinuationSlab B (Fin.last (H n).eventCount) (G n))
   (hrec : ∀ n, (H n).IsCanonicalCutoffRecordFamily (p₀ n) (δb n) (ρb n) (records n))
   (hq : ∀ n : ℕ, (n : ℝ) + 1 ≤ qcan n ∧ qcan n ≤ qs n ∧ qs n ≤ Cs * qcan n)
@@ -173,7 +173,7 @@ theorem eventually_scalar_le_on_normalized_ball_at_base :
   have hslab' := (hslabs n).2.1
   rcases (hbefore n).1.1.lt_or_eq with hlt | heq
   · intro z hz
-    refine (h₁ P₀ (H n) (hH n).2.1 (G n) (hG n).2 (p₀ n) (δb n) (ρb n) (records n) (hrec n)
+    refine (h₁ (H n) (hH n).2.1 (G n) (hG n).2 (p₀ n) (δb n) (ρb n) (records n) (hrec n)
       ((le_max_left _ _).trans (hRr.trans (hD1.trans hDrad))) (by omega)
       (hacc.trans (hζn.trans (min_le_left _ _))) hlt ht₀t hts (y n) (qs n) ε hqpos hqsR
       ((le_max_left _ _).trans hRn) ((le_max_left _ _).trans hRtn) hclose hmet
@@ -213,7 +213,7 @@ theorem eventually_scalar_le_on_normalized_ball_at_base :
       intro k hk
       subst hk
       intro Gk hGk yk hkt hqk hΛk hΛkt hck hmk hspk hdk hgk hnck hρk hnotk
-      exact h₂ P₀ (H n) (p₀ n) (δb n) (ρb n) (records n) (hrec n)
+      exact h₂ (H n) (p₀ n) (δb n) (ρb n) (records n) (hrec n)
         ((le_max_right _ _).trans (hRr.trans (hD1.trans hDrad))) (by omega)
         (hacc.trans (hζn.trans (min_le_right _ _))) j Gk hGk hkt hts yk (qs n) ε hqpos hqk hΛk
         hΛkt hck hmk hspk hdk hgk (hpinch n).1 hnck hρk hnotk

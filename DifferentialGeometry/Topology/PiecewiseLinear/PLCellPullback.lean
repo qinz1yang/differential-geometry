@@ -20,7 +20,7 @@ theorem IsPLCellOn.exists_isPLHomeomorphOn_invFunOn
     {d : ℕ} (hD : IsPLCellOn d D J)
     (hu : IsPLHomeomorphInto 3 u Q) (hDQ : D ⊆ u '' Q) :
     ∃ q : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin (d + 1)))
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
         (Function.invFunOn u Q '' D) ∧
       Function.invFunOn u Q '' J = q '' stdSimplexBoundary d := by
   obtain ⟨R, r, v, hr, hv, rfl, rfl⟩ := hD
@@ -43,7 +43,7 @@ theorem IsPLCellOn.exists_isPLHomeomorphOn_invFunOn
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hR hpa hinj.bijOn_image
   refine ⟨g ∘ r, ?_, ?_⟩
   · rw [← image_comp]
-    change IsPLHomeomorphOn (g ∘ r) (stdSimplex ℝ (Fin (d + 1)))
+    change IsPLHomeomorphOn (g ∘ r) (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)))
       (g '' R)
     exact hr.trans hg
   · simp only [g, image_comp]

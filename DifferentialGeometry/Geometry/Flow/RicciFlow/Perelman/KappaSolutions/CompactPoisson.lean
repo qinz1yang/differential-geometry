@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import DifferentialGeometry.Geometry.Operator.Laplacian.Basic
-import DifferentialGeometry.Analysis.Spectral.Scalar.PoissonExistence
+import DifferentialGeometry.Analysis.Elliptic.Poisson
 
 set_option autoImplicit false
 

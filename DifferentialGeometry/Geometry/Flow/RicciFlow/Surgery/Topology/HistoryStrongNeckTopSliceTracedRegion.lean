@@ -13,7 +13,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistor
 universe u
 
 theorem exists_eventually_isTracedRegion_of_forall_neckAlternative_at_top
-    {P₀ : ℕ → OrientedThreeStage.{u}} (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (t : ∀ n, Icc (0 : ℝ) (H n).toHistory.horizon)
     (y : ∀ n, ((H n).toHistory.stageAt (t n)).Carrier) (R : ℕ → ℝ)
     (hRlim : Tendsto R atTop atTop)

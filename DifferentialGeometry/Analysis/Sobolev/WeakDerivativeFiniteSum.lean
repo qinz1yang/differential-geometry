@@ -27,14 +27,14 @@ theorem exists_lp_weak_deriv_of_ae_eq_finite_sum
         (∫ x, U x * fderiv ℝ φ x v ∂μ) = -∫ x, DU x * φ x ∂μ := by
   let Q := fun i x => A i x * DY i x + fderiv ℝ (A i) x v * Y i x
   have hQ (i) (hi : i ∈ s) : MemLp (Q i) p μ :=
-    ((Lp.memLp (DY i)).mul (hA i hi)).add ((Lp.memLp (Y i)).mul (hDA i hi))
+    ((hA i hi).mul (Lp.memLp (DY i))).add ((hDA i hi).mul (Lp.memLp (Y i)))
   have hsum : MemLp (fun x => ∑ i ∈ s, Q i x) p μ :=
     memLp_finsetSum s hQ
   let DU := hsum.toLp (fun x => ∑ i ∈ s, Q i x)
   refine ⟨DU, hsum.coeFn_toLp, ?_⟩
   intro φ hφ hφc hφs
   have hI (i) (hi : i ∈ s) : Integrable (fun x => A i x * Y i x * fderiv ℝ φ x v) μ :=
-    ((Lp.memLp (Y i)).mul (r := p) (hA i hi)).locallyIntegrable hp
+    ((hA i hi).mul (r := p) (Lp.memLp (Y i))).locallyIntegrable hp
       |>.integrable_smul_right_of_hasCompactSupport
         ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const) (hφc.fderiv_apply ℝ v)
   have hJ (i) (hi : i ∈ s) : Integrable (fun x => Q i x * φ x) μ :=

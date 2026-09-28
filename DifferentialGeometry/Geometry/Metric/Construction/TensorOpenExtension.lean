@@ -25,7 +25,7 @@ theorem exists_tensor0SField_eqOn_openSubtype (s : ℕ)
   let l (x : M) : Tensor0SSpace s I x :=
     if hx : x ∈ U then A ⟨x, hx⟩ else 0
   have hl (x : U) : l (x : M) = A x := by
-    exact dif_pos x.property
+    exact dite_eq_left x.property
   let _ := tensor0SBundleTopology (I := I) (M := M) s
   have hlocal : ContMDiffOn I (I.prod (modelWithCornersSelf ℝ (Tensor0SModel s ℝ E))) ∞
       (fun x => (⟨x, l x⟩ : TotalSpace (Tensor0SModel s ℝ E) (Tensor0SSpace s I))) U := by

@@ -8,6 +8,7 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev
@@ -224,7 +225,7 @@ theorem secondOrderAction_perIndex_jet_bound (hDim : Module.finrank ℝ E = 3)
       simpa only [iteratedCovGrad_zero] using hfib x
     · have hne : i ≠ 0 := by omega
       rw [hΛ]
-      simp only [if_neg hne]
+      simp only [ite_eq_right hne]
       rw [Real.sq_sqrt (mul_nonneg (hKs_nn i) (by linarith only [hJ_nn (i + 2)]))]
       exact hsup T hT hδ0 hδ_le hδg hδZ i x
   have hshape : A.secondOrderAction (I := I) (M := M) T =
@@ -261,7 +262,7 @@ theorem secondOrderAction_perIndex_jet_bound (hDim : Module.finrank ℝ E = 3)
     rw [Finset.mem_Icc] at hi
     have hne : i ≠ 0 := by omega
     have hΛi : Λ i ^ 2 = Ks i * (1 + J (i + 2)) := by
-      simp only [hΛ, if_neg hne]
+      simp only [hΛ, ite_eq_right hne]
       exact Real.sq_sqrt (mul_nonneg (hKs_nn i) (by linarith only [hJ_nn (i + 2)]))
     have hd := hdata i (Finset.mem_range.mpr (by omega))
     simp only [hJ] at hΛi hd

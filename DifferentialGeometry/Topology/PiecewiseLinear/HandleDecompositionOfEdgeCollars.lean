@@ -326,16 +326,16 @@ theorem isHandleDecomposition_of_edgeCollars (ht : IsTube K N C D Dbd h N')
       pt = fun w e => if w = ea e then eb e else ea e := ⟨_, rfl⟩
   have hsda : ∀ e, sd (ea e) e = U₁ e := fun e => by
     rw [hsd_def]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   have hsdb : ∀ e ∈ K.faces, e.card = 2 → sd (eb e) e = U₂ e := fun e he hc => by
     rw [hsd_def]
-    exact if_neg fun h' => (hU e he hc).2.2.1 h'.symm
+    exact ite_eq_right fun h' => (hU e he hc).2.2.1 h'.symm
   have hpta : ∀ e, pt (ea e) e = eb e := fun e => by
     rw [hpt_def]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   have hptb : ∀ e ∈ K.faces, e.card = 2 → pt (eb e) e = ea e := fun e he hc => by
     rw [hpt_def]
-    exact if_neg fun h' => (hU e he hc).2.2.1 h'.symm
+    exact ite_eq_right fun h' => (hU e he hc).2.2.1 h'.symm
   have hsd : ∀ e ∈ K.faces, e.card = 2 → ∀ w ∈ e, pt w e ∈ K.vertices ∧ pt w e ∈ e ∧
       pt w e ≠ w ∧ w ∈ K.vertices ∧ h w ∈ sd w e ∧ IsConnected (sd w e) ∧
       Disjoint (sd w e) (sd (pt w e) e) ∧

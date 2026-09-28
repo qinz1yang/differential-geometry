@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem IsPLHomeomorphOn.exists_crosscut_between_boundary_points
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {A : Set E} {a : (Fin 3 → ℝ) → E}
-    (ha : IsPLHomeomorphOn a (stdSimplex ℝ (Fin 3)) A) {x y : E}
+    (ha : IsPLHomeomorphOn a (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A) {x y : E}
     (hx : x ∈ a '' stdSimplexBoundary 2) (hy : y ∈ a '' stdSimplexBoundary 2)
     (hxy : x ≠ y) :
     ∃ (P : Set E) (γ : ℝ → E), IsPLHomeomorphOn γ (Icc 0 1) P ∧ P ⊆ A ∧
@@ -26,7 +26,7 @@ theorem IsPLHomeomorphOn.exists_crosscut_between_boundary_points
   have hS : IsPLBall 2 S := ⟨s, hs⟩
   obtain ⟨T, hTfin, hTspace⟩ := hS.isPolyhedron.exists_simplicialComplex
   let _ : Finite T.faces := hTfin.to_subtype
-  have hsT : IsPLHomeomorphOn s (stdSimplex ℝ (Fin 3)) T.space := hTspace.symm ▸ hs
+  have hsT : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) T.space := hTspace.symm ▸ hs
   have hsbd : s '' stdSimplexBoundary 2 = frontier S := by
     have h := frontier_space_eq_boundaryComplex_space_of_finrank
       (by simp [Module.finrank_prod]) T
@@ -73,11 +73,11 @@ theorem IsCombinatorialManifold.exists_crosscut_slide_of_side_disk
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) {N A J L : Set E}
-    {n a : (Fin 3 → ℝ) → E} (hn : IsPLHomeomorphOn n (stdSimplex ℝ (Fin 3)) N)
+    {n a : (Fin 3 → ℝ) → E} (hn : IsPLHomeomorphOn n (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N)
     (hNK : N ⊆ K.space) (hJK : J ⊆ K.space) {γ : ℝ → E}
     (hγ : IsPLHomeomorphOn γ (Icc 0 1) (J ∩ N))
     (hends : (J ∩ N) ∩ n '' stdSimplexBoundary 2 = {γ 0, γ 1})
-    (ha : IsPLHomeomorphOn a (stdSimplex ℝ (Fin 3)) A) (hAN : A ⊆ N)
+    (ha : IsPLHomeomorphOn a (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A) (hAN : A ⊆ N)
     (hside : A ∩ (L ∪ n '' stdSimplexBoundary 2) ⊆ a '' stdSimplexBoundary 2)
     (h₀ : γ 0 ∈ a '' stdSimplexBoundary 2) (h₁ : γ 1 ∈ a '' stdSimplexBoundary 2)
     (h₀L : γ 0 ∉ L) (h₁L : γ 1 ∉ L) :

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34PairedCornerCollarExterior
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FillingExteriorModel
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34SeamCollarExtensionSupport
+import DifferentialGeometry.Topology.PiecewiseLinear.Collar.RelativeExtension
 
 open Set Topology
 

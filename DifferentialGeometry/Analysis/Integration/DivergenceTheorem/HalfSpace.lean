@@ -144,7 +144,6 @@ theorem integral_smul_fderivWithin_normal_add_fderivWithin_smul_half_space_of_ha
     rw [fderivWithin_smul (uniqueDiffOn_univ.prod (uniqueDiffOn_Ici a) p hps)
       (hphi.differentiableOn one_ne_zero p hps) (hu.differentiableOn one_ne_zero p hps)]
     rfl
-  · rfl
 
 omit [SFinite mu] [CompleteSpace F] in
 theorem integral_fderivWithin_tangent_half_space_eq_zero_of_hasCompactSupport
@@ -278,7 +277,6 @@ theorem integral_mul_trace_fderivWithin_add_fderivWithin_half_space_of_hasCompac
         (fderivWithin Real phi (univ ×ˢ Ici a) p).toLinearMap.smulRight (u p))
     rw [map_add, map_smul, LinearMap.trace_smulRight]
     rfl
-  · rfl
 
 theorem integral_fderiv_normal_half_space_of_hasCompactSupport
     [IsFiniteMeasureOnCompacts mu]

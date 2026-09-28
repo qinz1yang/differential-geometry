@@ -325,9 +325,7 @@ private lemma tendsto_integral_mul_of_eLpNorm_tendsto_zero_p
         (fun n => (eLpNorm (g n) (ENNReal.ofReal p) μ).toReal) =
           (fun n => MeasureTheory.lpNorm (g n) (ENNReal.ofReal p) μ) := by
       funext n
-      simpa using
-        (MeasureTheory.toReal_eLpNorm
-          (μ := μ) (p := ENNReal.ofReal p) (f := g n) (hg n).aestronglyMeasurable)
+      exact MeasureTheory.toReal_eLpNorm
     simpa [hEq] using hlim_toReal
   have hbound :
       ∀ n, |∫ x, f x * g n x ∂μ| ≤ C * MeasureTheory.lpNorm (g n) (ENNReal.ofReal p) μ := by
@@ -601,20 +599,22 @@ theorem aestronglyMeasurable_euclidean_of_components_local
 private theorem eLpNorm_le_of_lintegral_rpow_ofReal_le
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
     {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} {A : ℝ≥0∞}
+    (hf : AEStronglyMeasurable f μ)
     (hA : ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ ≤ A) :
     eLpNorm f (ENNReal.ofReal p) μ ≤ A ^ (1 / p) := by
   have hp0 : (ENNReal.ofReal p) ≠ 0 := by
     exact ne_of_gt (ENNReal.ofReal_pos.mpr hp)
   have hptop : (ENNReal.ofReal p) ≠ ∞ := by
     simp
-  rw [MeasureTheory.eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hptop]
+  rw [MeasureTheory.eLpNorm_eq_lintegral_rpow_enorm_toReal hp0 hptop hf]
   have hp_nonneg : 0 ≤ 1 / p := by
     positivity
   simpa [ENNReal.toReal_ofReal (le_of_lt hp)] using ENNReal.rpow_le_rpow hA hp_nonneg
 
 theorem lintegral_rpow_norm_eq_eLpNorm_pow
     {α F : Type*} [MeasurableSpace α] [NormedAddCommGroup F]
-    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F} :
+    {μ : Measure α} {p : ℝ} (hp : 0 < p) {f : α → F}
+    (hf : AEStronglyMeasurable f μ) :
     ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ p ∂μ = eLpNorm f (ENNReal.ofReal p) μ ^ p := by
   let pnn : ℝ≥0 := Real.toNNReal p
   have hpnn0 : pnn ≠ 0 := by
@@ -631,7 +631,7 @@ theorem lintegral_rpow_norm_eq_eLpNorm_pow
       = ∫⁻ x, (ENNReal.ofReal ‖f x‖) ^ (pnn : ℝ) ∂μ := by simp [hpnn_real]
     _ = eLpNorm f (pnn : ℝ≥0∞) μ ^ (pnn : ℝ) := by
       simpa using
-        (MeasureTheory.eLpNorm_nnreal_pow_eq_lintegral (μ := μ) (f := f) (p := pnn) hpnn0).symm
+        (MeasureTheory.eLpNorm_nnreal_pow_eq_lintegral (μ := μ) (f := f) (p := pnn) hpnn0 hf).symm
     _ = eLpNorm f (ENNReal.ofReal p) μ ^ p := by simp [hpnn_real, hpnn_enn]
 
 private lemma lintegral_rpow_abs_unitBallExtension_ball_two_le_local
@@ -731,56 +731,6 @@ theorem tendsto_zero_of_le_pair_sum
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
     (tendsto_pair_sum_atTop_zero ha) (fun _ => bot_le) hb
 
-theorem eLpNorm_unitBallExtension_sub_le_local
-    {p : ℝ} (hp : 1 < p) {u v : E → ℝ} :
-    eLpNorm (fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
-      (ENNReal.ofReal p) volume
-      ≤
-    (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *
-      eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
-        (volume.restrict (Metric.ball (0 : E) 1)) := by
-  have hp0 : 0 < p := by linarith
-  have hInt :=
-    lintegral_rpow_abs_unitBallExtension_sub_le_local (d := d) (p := p) hp0 (u := u) (v := v)
-  calc
-    eLpNorm (fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
-        (ENNReal.ofReal p) volume
-      ≤ ((1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) *
-          ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x - v x|) ^ p ∂volume) ^ (1 / p) := by
-            simpa [Real.norm_eq_abs] using
-              (eLpNorm_le_of_lintegral_rpow_ofReal_le (α := E) (F := ℝ)
-                (f := fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
-                hp0 hInt)
-    _ = (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *
-          eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
-            (volume.restrict (Metric.ball (0 : E) 1)) := by
-          have hAbs :
-              (fun x => (ENNReal.ofReal |u x - v x|) ^ p) =
-                (fun x => (ENNReal.ofReal ‖u x - v x‖) ^ p) := by
-            funext x
-            simp [Real.norm_eq_abs]
-          have hPow :=
-            lintegral_rpow_norm_eq_eLpNorm_pow (μ := volume.restrict (Metric.ball (0 : E) 1))
-              (p := p) hp0 (f := fun x => u x - v x)
-          rw [hAbs, hPow]
-          have hMul :
-              ((1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) *
-                  eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
-                    (volume.restrict (Metric.ball (0 : E) 1)) ^ p) ^ (1 / p) =
-                (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *
-                  (eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
-                    (volume.restrict (Metric.ball (0 : E) 1)) ^ p) ^ (1 / p) := by
-            exact ENNReal.mul_rpow_of_nonneg _ _ (by positivity)
-          rw [hMul]
-          have hPowCancel :
-              (eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
-                (volume.restrict (Metric.ball (0 : E) 1)) ^ p) ^ (1 / p) =
-                eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
-                  (volume.restrict (Metric.ball (0 : E) 1)) := by
-            rw [← ENNReal.rpow_mul, mul_comm, one_div, inv_mul_cancel₀ hp0.ne',
-              ENNReal.rpow_one]
-          rw [hPowCancel]
-
 omit [NeZero d] in
 private theorem measurable_unitBallRetraction :
     Measurable (unitBallRetraction (d := d)) := by
@@ -804,13 +754,166 @@ theorem measurable_unitBallExtension
   unfold unitBallExtension
   exact (measurable_unitBallCutoff (d := d)).mul (hu.comp (measurable_unitBallRetraction (d := d)))
 
+/-- AEStronglyMeasurable for unitBallExtension of rough u.
+Uses measurable representative + ae_eq transfer. -/
+theorem aestronglyMeasurable_unitBallExtension_of_memLp
+    {p : ℝ≥0∞} {u : E → ℝ}
+    (hu : MemLp u p (volume.restrict (Metric.ball (0 : E) 1))) :
+    AEStronglyMeasurable (unitBallExtension (d := d) u) volume := by
+  -- Get measurable representative
+  let u' := hu.aestronglyMeasurable.mk u
+  have hu'_meas : Measurable u' := hu.aestronglyMeasurable.stronglyMeasurable_mk.measurable
+  have hu'_ae : u =ᵐ[volume.restrict (Metric.ball (0 : E) 1)] u' :=
+    hu.aestronglyMeasurable.ae_eq_mk
+  -- unitBallExtension u' is measurable
+  have hext_meas : Measurable (unitBallExtension (d := d) u') :=
+    measurable_unitBallExtension (d := d) hu'_meas
+  -- unitBallExtension u =ᵐ unitBallExtension u'
+  -- because the retraction maps into closedBall(0,1) and u =ᵐ u' on ball(0,1)
+  have hae_ext : unitBallExtension (d := d) u =ᵐ[volume] unitBallExtension (d := d) u' := by
+    -- On the annulus {1 < ‖x‖ < 2}, retraction is inversion x ↦ x/‖x‖² which is
+    -- a smooth diffeomorphism onto {1/2 < ‖y‖ < 1}. Preimage of null set under
+    -- smooth diffeomorphism is null. Combined with: ball case (retract = id),
+    -- sphere case (measure 0), and {‖x‖ ≥ 2} case (cutoff = 0).
+    have hN : ∀ᵐ x ∂(volume : Measure E), x ∈ Metric.ball (0 : E) 1 → u x = u' x := by
+      rwa [Filter.EventuallyEq, ae_restrict_iff' measurableSet_ball] at hu'_ae
+    have hSph : ∀ᵐ x ∂(volume : Measure E), x ∉ Metric.sphere (0 : E) 1 := by
+      have h0 : (volume : Measure E) (Metric.sphere (0 : E) 1) = 0 :=
+        MeasureTheory.Measure.addHaar_sphere _ _ _
+      exact ae_iff.mpr (by convert h0 using 1; simp only [not_not, Set.ofPred_mem_eq])
+    -- This follows from inversion being a smooth diffeomorphism (Lipschitz on compact subsets).
+    have hAnn : ∀ᵐ x ∂(volume : Measure E),
+        1 < ‖x‖ → ‖x‖ < 2 →
+          u (unitBallRetraction (d := d) x) = u' (unitBallRetraction (d := d) x) := by
+      let badInner : Set E := {y | y ∈ unitBallInnerShell (d := d) ∧ u y ≠ u' y}
+      have hbadInner_ae : ∀ᵐ y ∂(volume : Measure E), y ∉ badInner := by
+        filter_upwards [hN] with y hy
+        intro hy_bad
+        exact hy_bad.2 (hy <| by
+          rcases hy_bad.1 with ⟨_hy_half, hy_lt_one⟩
+          exact Metric.mem_ball.mpr (by rwa [dist_zero_right]))
+      have hbadInner_zero : (volume : Measure E) badInner = 0 := by
+        simpa [badInner] using (ae_iff.mp hbadInner_ae)
+      have hdiff_badInner :
+          DifferentiableOn ℝ (EuclideanGeometry.inversion (0 : E) 1) badInner := by
+        intro y hy
+        have hy0 : y ≠ (0 : E) := by
+          intro hy0
+          rcases hy.1 with ⟨hy_half, _hy_lt_one⟩
+          have : (0 : ℝ) < ‖y‖ := by linarith
+          simp [hy0] at this
+        have hInv :=
+          EuclideanGeometry.hasFDerivAt_inversion (c := (0 : E)) (R := (1 : ℝ)) hy0
+        exact hInv.differentiableAt.differentiableWithinAt
+      have himage_badInner_zero :
+          (volume : Measure E) (EuclideanGeometry.inversion (0 : E) 1 '' badInner) = 0 := by
+        exact addHaar_image_eq_zero_of_differentiableOn_of_addHaar_eq_zero
+          (μ := (volume : Measure E)) hdiff_badInner hbadInner_zero
+      let badOuter : Set E := {x |
+        x ∈ unitBallOuterShell (d := d) ∧
+        u (unitBallRetraction (d := d) x) ≠ u' (unitBallRetraction (d := d) x)}
+      have hbadOuter_subset :
+          badOuter ⊆ EuclideanGeometry.inversion (0 : E) 1 '' badInner := by
+        intro x hx
+        rcases hx with ⟨hx_shell, hx_bad⟩
+        refine ⟨EuclideanGeometry.inversion (0 : E) 1 x, ?_, ?_⟩
+        · refine ⟨inversion_mem_unitBallInnerShell_of_mem_outerShell (d := d) hx_shell, ?_⟩
+          simpa [unitBallRetraction_eq_inversion_of_mem_outerShell (d := d) hx_shell] using hx_bad
+        · exact EuclideanGeometry.inversion_inversion (c := (0 : E)) (R := (1 : ℝ)) one_ne_zero x
+      have hbadOuter_zero : (volume : Measure E) badOuter = 0 := by
+        exact measure_mono_null hbadOuter_subset himage_badInner_zero
+      have hbadOuter_ae : ∀ᵐ x ∂(volume : Measure E), x ∉ badOuter := by
+        exact ae_iff.mpr (by simpa [badOuter, Set.ofPred_mem_eq] using hbadOuter_zero)
+      filter_upwards [hbadOuter_ae] with x hxBad
+      intro hx1 hx2
+      by_contra hneq
+      exact hxBad ⟨⟨hx1, hx2⟩, hneq⟩
+    filter_upwards [hN, hSph, hAnn] with x hx_ball hx_sph hx_ann
+    simp only [unitBallExtension]
+    by_cases h2 : 2 ≤ ‖x‖
+    · simp [unitBallCutoff_eq_zero_of_two_le_norm (d := d) h2]
+    · push Not at h2
+      rw [Metric.mem_sphere, dist_zero_right] at hx_sph
+      rcases lt_or_gt_of_ne hx_sph with h1 | h1
+      · -- ‖x‖ < 1: retraction = identity, x ∈ ball(0,1)
+        rw [unitBallRetraction_eq_self_of_norm_le_one (d := d) h1.le]
+        congr 1; exact hx_ball (Metric.mem_ball.mpr (by rwa [dist_zero_right]))
+      · -- 1 < ‖x‖ < 2: use the annulus lemma
+        congr 1; exact hx_ann h1 h2
+  exact hext_meas.aestronglyMeasurable.congr hae_ext.symm
+
+theorem eLpNorm_unitBallExtension_sub_le_local
+    {p : ℝ} (hp : 1 < p) {u v : E → ℝ} :
+    eLpNorm (fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
+      (ENNReal.ofReal p) volume
+      ≤
+    (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *
+      eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+        (volume.restrict (Metric.ball (0 : E) 1)) := by
+  by_cases hf : MemLp (fun x => u x - v x) (ENNReal.ofReal p)
+      (volume.restrict (Metric.ball (0 : E) 1))
+  · have hext : AEStronglyMeasurable
+        (fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x) volume := by
+      simpa only [unitBallExtension_sub] using
+        aestronglyMeasurable_unitBallExtension_of_memLp hf
+    have hp0 : 0 < p := by linarith
+    have hInt :=
+      lintegral_rpow_abs_unitBallExtension_sub_le_local (d := d) (p := p) hp0 (u := u) (v := v)
+    calc
+      eLpNorm (fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
+          (ENNReal.ofReal p) volume
+        ≤ ((1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) *
+            ∫⁻ x in Metric.ball (0 : E) 1, (ENNReal.ofReal |u x - v x|) ^ p ∂volume) ^ (1 / p) := by
+              simpa [Real.norm_eq_abs] using
+                (eLpNorm_le_of_lintegral_rpow_ofReal_le (α := E) (F := ℝ)
+                  (f := fun x => unitBallExtension (d := d) u x - unitBallExtension (d := d) v x)
+                  hp0 hext hInt)
+      _ = (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *
+            eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+              (volume.restrict (Metric.ball (0 : E) 1)) := by
+            have hAbs :
+                (fun x => (ENNReal.ofReal |u x - v x|) ^ p) =
+                  (fun x => (ENNReal.ofReal ‖u x - v x‖) ^ p) := by
+              funext x
+              simp [Real.norm_eq_abs]
+            have hPow :=
+              lintegral_rpow_norm_eq_eLpNorm_pow (μ := volume.restrict (Metric.ball (0 : E) 1))
+                (p := p) hp0 hf.aestronglyMeasurable
+            rw [hAbs, hPow]
+            have hMul :
+                ((1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) *
+                    eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+                      (volume.restrict (Metric.ball (0 : E) 1)) ^ p) ^ (1 / p) =
+                  (1 + ENNReal.ofReal ((2 : ℝ) ^ (2 * d))) ^ (1 / p) *
+                    (eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+                      (volume.restrict (Metric.ball (0 : E) 1)) ^ p) ^ (1 / p) := by
+              exact ENNReal.mul_rpow_of_nonneg _ _ (by positivity)
+            rw [hMul]
+            have hPowCancel :
+                (eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+                  (volume.restrict (Metric.ball (0 : E) 1)) ^ p) ^ (1 / p) =
+                  eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+                    (volume.restrict (Metric.ball (0 : E) 1)) := by
+              rw [← ENNReal.rpow_mul, mul_comm, one_div, inv_mul_cancel₀ hp0.ne',
+                ENNReal.rpow_one]
+            rw [hPowCancel]
+  · have htop : eLpNorm (fun x => u x - v x) (ENNReal.ofReal p)
+        (volume.restrict (Metric.ball (0 : E) 1)) = ∞ := not_lt_top_iff.mp hf
+    rw [htop, ENNReal.mul_top]
+    · exact le_top
+    · positivity
+
 omit [NeZero d] in
 theorem eLpNorm_component_le
     {p : ℝ} {F : E → E} {i : Fin d} {μ : Measure E} :
     eLpNorm (fun x => F x i) (ENNReal.ofReal p) μ ≤ eLpNorm F (ENNReal.ofReal p) μ := by
-  refine eLpNorm_mono ?_
-  intro x
-  simpa using (PiLp.norm_apply_le (p := (2 : ℝ≥0∞)) (x := F x) (i := i))
+  by_cases hF : AEStronglyMeasurable F μ
+  · refine eLpNorm_mono
+      ((PiLp.continuous_apply 2 (fun _ : Fin d => ℝ) i).comp_aestronglyMeasurable hF) ?_
+    intro x
+    simpa using (PiLp.norm_apply_le (p := (2 : ℝ≥0∞)) (x := F x) (i := i))
+  · rw [eLpNorm_of_not_aestronglyMeasurable hF]
+    exact le_top
 
 omit [NeZero d] in
 private theorem gradVec_eLpNorm_le_sum_local
@@ -841,7 +944,7 @@ private theorem gradVec_eLpNorm_le_sum_local
         eLpNorm (fun x => ‖δ i x‖) (ENNReal.ofReal p) μ =
           eLpNorm (δ i) (ENNReal.ofReal p) μ := by
     intro i
-    simpa using (eLpNorm_norm (f := δ i) (p := ENNReal.ofReal p) (μ := μ))
+    exact eLpNorm_norm (δ i) (hδ_aesm i)
   have hPointwise :
       ∀ᵐ x ∂μ,
         ‖WithLp.toLp 2 (fun i => (fderiv ℝ φ x) (EuclideanSpace.single i 1)) - G x‖ ≤
@@ -872,13 +975,24 @@ private theorem gradVec_eLpNorm_le_sum_local
       eLpNorm
         (fun x => ∑ i : Fin d, ‖δ i x‖)
         (ENNReal.ofReal p) μ := by
-          exact eLpNorm_mono_ae_real hPointwise
+          have hδ_pi : AEStronglyMeasurable (fun x => fun i => δ i x) μ := by
+            exact (aemeasurable_pi_iff.mpr fun i => (hδ_aesm i).aemeasurable).aestronglyMeasurable
+          have hδ_vec : AEMeasurable
+              (fun x => WithLp.toLp 2 (fun i => δ i x)) μ :=
+            (PiLp.continuous_toLp 2 (fun _ : Fin d => ℝ)).measurable.comp_aemeasurable
+              hδ_pi.aemeasurable
+          exact eLpNorm_mono_ae_real (by
+            apply AEMeasurable.aestronglyMeasurable
+            refine hδ_vec.congr ?_
+            filter_upwards with x
+            ext i
+            simp [δ]) hPointwise
     _ ≤ ∑ i : Fin d,
           eLpNorm (fun x => ‖δ i x‖) (ENNReal.ofReal p) μ := by
         have hp_enn : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
           rwa [← ENNReal.ofReal_one, ENNReal.ofReal_le_ofReal_iff (by linarith)]
         convert eLpNorm_sum_le (s := Finset.univ) (f := fun i => fun x => ‖δ i x‖)
-          (fun i _ => (hδ_aesm i).norm) hp_enn using 1
+          hp_enn using 1
         congr 1
         ext x
         simp [Finset.sum_apply]

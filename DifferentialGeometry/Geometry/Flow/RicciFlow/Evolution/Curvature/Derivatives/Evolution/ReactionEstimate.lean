@@ -35,7 +35,7 @@ def combinedStarArray {s : ℕ}
     (ric : Idx → Idx → Real)
     (rmComp residualComp : (Fin s → Idx) → Real) :
     (Fin s → Idx) → Real :=
-  fun m => ricStarArray ric rmComp m + residualComp m
+  fun m => covariantEndomorphismActionArray ric rmComp m + residualComp m
 
 omit [Module.Finite ℝ E] in
 omit [I.Boundaryless] in
@@ -81,11 +81,11 @@ theorem nablaKRm04Reaction_orthoBasis_eq_compContract
   set residC : (Fin (4 + k) → Idx) → Real :=
     fun m => tensor0SComponent (I := I) resid (fun i => basis x i) m with hresidC
   rw [hgInv]
-  rw [ricReactionContract_delta_eq_compContract (Idx := Idx) (ric t x) rmC rmC]
+  rw [metricVariationContract_identityInvMetric (Idx := Idx) (ric t x) rmC rmC]
   rw [inner0S_orthoBasis_eq_compContract (I := I) (S.base.metric t) (basis x) horth
     resid (nablaKRm04Field (I := I) S t k x)]
   have hcombine :
-      (∑ I0 : Fin (4 + k) → Idx, rmC I0 * ricStarArray (ric t x) rmC I0) +
+      (∑ I0 : Fin (4 + k) → Idx, rmC I0 * covariantEndomorphismActionArray (ric t x) rmC I0) +
           (∑ m : Fin (4 + k) → Idx, residC m * rmC m) =
         ∑ m : Fin (4 + k) → Idx,
           rmC m * combinedStarArray (ric t x) rmC residC m := by
@@ -94,9 +94,10 @@ theorem nablaKRm04Reaction_orthoBasis_eq_compContract
     unfold combinedStarArray
     ring
   rw [show
-      2 * (∑ I0 : Fin (4 + k) → Idx, rmC I0 * ricStarArray (ric t x) rmC I0) +
+      2 * (∑ I0 : Fin (4 + k) → Idx, rmC I0 * covariantEndomorphismActionArray (ric t x) rmC I0) +
           2 * (∑ m : Fin (4 + k) → Idx, residC m * rmC m) =
-        2 * ((∑ I0 : Fin (4 + k) → Idx, rmC I0 * ricStarArray (ric t x) rmC I0) +
+        2 * ((∑ I0 : Fin (4 + k) → Idx,
+              rmC I0 * covariantEndomorphismActionArray (ric t x) rmC I0) +
               (∑ m : Fin (4 + k) → Idx, residC m * rmC m)) from by ring]
   rw [hcombine]
 
@@ -141,11 +142,11 @@ theorem nablaKReactionAt_eq
   set residC : (Fin (4 + k) → Idx) → Real :=
     fun m => tensor0SComponent (I := I) resid (fun i => basis i) m with hresidC
   rw [hgInv]
-  rw [ricReactionContract_delta_eq_compContract (Idx := Idx) ric rmC rmC]
+  rw [metricVariationContract_identityInvMetric (Idx := Idx) ric rmC rmC]
   rw [inner0S_orthoBasis_eq_compContract (I := I) (S.base.metric t) basis horth
     resid (nablaKRm04Field (I := I) S t k x)]
   have hcombine :
-      (∑ I0 : Fin (4 + k) → Idx, rmC I0 * ricStarArray ric rmC I0) +
+      (∑ I0 : Fin (4 + k) → Idx, rmC I0 * covariantEndomorphismActionArray ric rmC I0) +
           (∑ m : Fin (4 + k) → Idx, residC m * rmC m) =
         ∑ m : Fin (4 + k) → Idx,
           rmC m * combinedStarArray ric rmC residC m := by
@@ -154,9 +155,9 @@ theorem nablaKReactionAt_eq
     unfold combinedStarArray
     ring
   rw [show
-      2 * (∑ I0 : Fin (4 + k) → Idx, rmC I0 * ricStarArray ric rmC I0) +
+      2 * (∑ I0 : Fin (4 + k) → Idx, rmC I0 * covariantEndomorphismActionArray ric rmC I0) +
           2 * (∑ m : Fin (4 + k) → Idx, residC m * rmC m) =
-        2 * ((∑ I0 : Fin (4 + k) → Idx, rmC I0 * ricStarArray ric rmC I0) +
+        2 * ((∑ I0 : Fin (4 + k) → Idx, rmC I0 * covariantEndomorphismActionArray ric rmC I0) +
               (∑ m : Fin (4 + k) → Idx, residC m * rmC m)) from by ring]
   rw [hcombine]
 

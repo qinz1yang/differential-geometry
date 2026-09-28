@@ -1,6 +1,6 @@
 import Mathlib.LinearAlgebra.Determinant
 import Mathlib.LinearAlgebra.FreeModule.Finite.Basic
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.RelativeZero
 import Mathlib.Analysis.Convex.Contractible
 import Mathlib.Analysis.Normed.Module.Basic

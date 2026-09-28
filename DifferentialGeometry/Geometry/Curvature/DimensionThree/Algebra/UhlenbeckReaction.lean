@@ -1,5 +1,5 @@
 import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.FinCases
 import Mathlib.Tactic.LinearCombination
 import Mathlib.Tactic.Ring
@@ -98,7 +98,7 @@ theorem kd_comm (i j : Fin 3) : kd i j = kd j i := by
   unfold kd
   rcases eq_or_ne i j with h | h
   · simp [h]
-  · rw [if_neg h, if_neg (Ne.symm h)]
+  · rw [ite_eq_right h, ite_eq_right (Ne.symm h)]
 
 
 theorem rsq_comm (hR : ∀ i j, R i j = R j i) (i j : Fin 3) :

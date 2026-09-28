@@ -96,8 +96,8 @@ theorem memLp_nondivergence_cutoff
   refine ⟨hv, hvt, hvx, hvxx, ?_⟩
   have hη1 : ContDiff ℝ 1 η := hη.of_le (by norm_num)
   have htime := memLp_mul_cutoff_derivative hu hη1 hηc hηs et
-  have haCross := (memLp_mul_cutoff_derivative (hdu.mul' (r := p) ha) hη1 hηc hηs ex).const_mul 2
-  have haSecond := memLp_mul_cutoff_second_derivative (hu.mul' (r := p) ha) hη hηc hηs ex ex
+  have haCross := (memLp_mul_cutoff_derivative (hdu.fun_mul (r := p) ha) hη1 hηc hηs ex).const_mul 2
+  have haSecond := memLp_mul_cutoff_second_derivative (hu.fun_mul (r := p) ha) hη hηc hηs ex ex
   have hres := ((memLp_mul_cutoff hf hη.continuous hηc hηs).add htime).sub (haCross.add haSecond)
   convert hres using 1
   ext x

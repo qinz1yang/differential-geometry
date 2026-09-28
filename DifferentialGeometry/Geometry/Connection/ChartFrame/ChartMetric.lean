@@ -138,7 +138,7 @@ private lemma sum_chartInvGramOnE_chartGramOnE_left
   rw [hprod_eq, chartInvGramMatrix_mul_chartGramMatrix (I := I) g α hz_base]
   by_cases hmj : m = j
   · subst hmj; simp
-  · rw [if_neg hmj]
+  · rw [ite_eq_right hmj]
     exact Matrix.one_apply_ne hmj
 
 omit [NeZero (Module.finrank ℝ E)] in

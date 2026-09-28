@@ -354,10 +354,25 @@ theorem NormalBallChart.MetricEquivOn.inv_dist_le
         (mfderiv 𝓘(Real, F) J chi.hom (eta t)).comp
             (mfderiv 𝓘(Real, Real) 𝓘(Real, F) eta t) =
           mfderiv 𝓘(Real, Real) J gamma t := by
+      have hpoint : chi.hom (eta t) = gamma t := by
+        change chi.hom (chi.hom.symm (gamma t)) = gamma t
+        exact chi.hom.right_inv (hjoin ht).1
+      have hpointComp : ((chi.hom : F → Y.M) ∘ eta) t = gamma t := by
+        simpa only [Function.comp_apply] using hpoint
       have hderiv := Filter.EventuallyEq.mfderiv_eq
         (I := 𝓘(Real, Real)) (I' := J) heq
       rw [mfderiv_comp t hhomDiff hetaDiff] at hderiv
-      simpa only using hderiv
+      rw [hpointComp] at hderiv
+      rw [hpoint] at hderiv ⊢
+      have hcast :
+          (tangentSpaceCast J (gamma t) (gamma t) :
+            TangentSpace J (gamma t) →L[Real] TangentSpace J (gamma t)) =
+          ContinuousLinearMap.id Real _ := by
+        apply ContinuousLinearMap.ext
+        intro v
+        rfl
+      rw [hcast] at hderiv
+      simpa only [ContinuousLinearMap.id_comp] using hderiv
     have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, F) eta t 1 =
         deriv eta t := by
       rw [mfderiv_eq_fderiv]
@@ -686,10 +701,25 @@ theorem NormalCoordMetricEquivOn.chart_dist_le
         (mfderiv 𝓘(Real, E) I e (eta t)).comp
             (mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta t) =
           mfderiv 𝓘(Real, Real) I gamma t := by
+      have hpoint : e (eta t) = gamma t := by
+        change chi.symm (chi (gamma t)) = gamma t
+        exact chi.left_inv (hjoin ht).1
+      have hpointComp : ((e : E → Y.M) ∘ eta) t = gamma t := by
+        simpa only [Function.comp_apply] using hpoint
       have hderiv := Filter.EventuallyEq.mfderiv_eq
         (I := 𝓘(Real, Real)) (I' := I) heq
       rw [mfderiv_comp t heDiff hetaDiff] at hderiv
-      simpa only using hderiv
+      rw [hpointComp] at hderiv
+      rw [hpoint] at hderiv ⊢
+      have hcast :
+          (tangentSpaceCast I (gamma t) (gamma t) :
+            TangentSpace I (gamma t) →L[Real] TangentSpace I (gamma t)) =
+          ContinuousLinearMap.id Real _ := by
+        apply ContinuousLinearMap.ext
+        intro v
+        rfl
+      rw [hcast] at hderiv
+      simpa only [ContinuousLinearMap.id_comp] using hderiv
     have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta t 1 =
         deriv eta t := by
       rw [mfderiv_eq_fderiv]

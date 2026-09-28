@@ -33,10 +33,10 @@ theorem christoffelSymbolInFrame_chartBasisVecFiber
   have hcoeff (r : Fin (Module.finrank ℝ E)) :
       hframe.coeff k x (chartBasisVecFiber (I := I) α r x) =
         if r = k then 1 else 0 := by
-    rw [IsLocalFrameOn.coeff, dif_pos hx', ← hframe.toBasisAt_coe hx' r]
+    rw [IsLocalFrameOn.coeff, dite_eq_left hx', ← hframe.toBasisAt_coe hx' r]
     simp only [Module.Basis.coord_apply, Module.Basis.repr_self, Finsupp.single_apply]
   simp only [map_sum, map_smul, smul_eq_mul, hcoeff, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 theorem chartChristoffel_eq_sum_coordinateFrame
     (g : SmoothRiemannianMetric I M) (α : M) {x : M}

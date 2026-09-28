@@ -282,7 +282,7 @@ theorem exists_uniform_galerkin_energy_four_dissipation_five_bound_at_background
       intro i hi
       dsimp only [force, arm, seed]
       rw [galerkinForceTermBackground (I := I) (M := M) g gBase hδ hδ0 hδ3 hCtop hB1 hρ hP
-        hreal hcore F (U N t) i, if_pos hi]
+        hreal hcore F (U N t) i, ite_eq_left hi]
       simp only [galerkinActionVectorBackground]
       module
     have harm := hpair F (U N t) (by

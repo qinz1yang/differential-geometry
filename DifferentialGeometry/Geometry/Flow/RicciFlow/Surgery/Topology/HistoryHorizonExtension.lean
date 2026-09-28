@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.ReducedVolumeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Geodesic.ClosedEndExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabJointSmoothness
 
@@ -15,7 +15,7 @@ universe u
 private local instance (P : OrientedThreeStage.{u}) : MeasurableSpace P.Carrier :=
   borel P.Carrier
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem mem_Icc_zero_horizon_of_mem_stageDomain {k : Fin (H.eventCount + 1)} {T : ℝ}
     (hT : T ∈ H.toHistory.stageDomain k) : T ∈ Icc 0 H.horizon :=
@@ -161,7 +161,7 @@ theorem exists_extendHorizon_gt :
     have hmet : ∀ τ ∈ H.toHistory.stageDomain (Fin.last H.eventCount),
         H.toHistory.stageMetric (Fin.last H.eventCount) τ = S.flow.base.metric τ := by
       intro τ _
-      simp only [ObservedHistory.stageMetric, Fin.lastCases_last, dif_pos hlt]
+      simp only [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_left hlt]
       rfl
     refine ⟨T', h1, G, ?_, ?_⟩
     · change S'.base.metric _ = _
@@ -183,7 +183,7 @@ theorem exists_extendHorizon_gt :
     subst he
     rw [hG]
     simp only [ObservedHistory.stageMetric, Fin.lastCases_last]
-    rw [dif_neg hlt]
+    rw [dite_eq_right hlt]
 
 section ReducedVolume
 
@@ -332,7 +332,7 @@ private theorem regularizedDensity_eq_zero_of_not_mem_stageDomain
 
 end ReducedVolume
 
-private theorem reducedVolume_eq_limsup (K : RetainedCoreHistory P₀)
+private theorem reducedVolume_eq_limsup (K : RetainedCoreHistory.{u})
     (k : Fin (K.eventCount + 1)) (p : (K.stage k).Carrier) (T v : ℝ)
     (first : Fin (K.eventCount + 1))
     (hfirst : K.toHistory.activeStage (projIcc 0 K.horizon K.horizon_nonneg (T - v ^ 2)) = first)
@@ -344,15 +344,15 @@ private theorem reducedVolume_eq_limsup (K : RetainedCoreHistory P₀)
           ∂Integral.Measure.riemannianVolumeMeasure ThreeModel (K.stage first).Carrier
             (K.toHistory.stageMetric first (T - v ^ 2))) Filter.atTop := by
   subst hfirst
-  exact dif_pos hle
+  exact dite_eq_left hle
 
-private theorem reducedVolume_eq_zero (K : RetainedCoreHistory P₀)
+private theorem reducedVolume_eq_zero (K : RetainedCoreHistory.{u})
     (k : Fin (K.eventCount + 1)) (p : (K.stage k).Carrier) (T v : ℝ)
     (first : Fin (K.eventCount + 1))
     (hfirst : K.toHistory.activeStage (projIcc 0 K.horizon K.horizon_nonneg (T - v ^ 2)) = first)
     (hle : ¬ first ≤ k) : K.reducedVolume k p T v = 0 := by
   subst hfirst
-  exact dif_neg hle
+  exact dite_eq_right hle
 
 theorem reducedVolume_extendHorizon {T' : ℝ} (hT' : H.horizon ≤ T')
     (G : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T')

@@ -365,11 +365,11 @@ theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_dist_le
   have hwle : ∀ k ≤ N, ∀ j, w k j = f (σ k * (1 - u j), σ k * u j) := by
     intro k hk j
     simp only [hwdef]
-    rw [if_pos hk]
+    rw [ite_eq_left hk]
   have hwtop : ∀ j, w (N + 1) j = g j := by
     intro j
     simp only [hwdef]
-    rw [if_neg (by omega)]
+    rw [ite_eq_right (by omega)]
   have hw0 : ∀ j, w 0 j = w 0 0 := by
     intro j
     rw [hwle 0 (Nat.zero_le N) j, hwle 0 (Nat.zero_le N) 0, hσ0]

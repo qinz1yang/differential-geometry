@@ -106,7 +106,7 @@ lemma slotInsertEndoFib_apply_eval (s : ℕ) (k : Fin s) (x : M)
     by_cases h : i = k
     · subst h
       simp
-    · rw [if_neg h, Function.update_of_ne h]
+    · rw [ite_eq_right h, Function.update_of_ne h]
       rfl
   exact congrArg (fun t => Tensor0SSpace.toModel A t) hfam
 
@@ -124,9 +124,9 @@ lemma slotInsertEndoFib_apply_natural (s : ℕ) (k : Fin s) (x : M)
   funext i
   by_cases h : i = k
   · subst h
-    simp only [if_pos, Function.update_self, tangentLinearMapToModel_apply,
+    simp only [ite_eq_left, Function.update_self, tangentLinearMapToModel_apply,
       ContinuousLinearEquiv.symm_apply_apply]
-  · rw [if_neg h, ContinuousLinearMap.id_apply, Function.update_of_ne h,
+  · rw [ite_eq_right h, ContinuousLinearMap.id_apply, Function.update_of_ne h,
       ContinuousLinearEquiv.symm_apply_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]

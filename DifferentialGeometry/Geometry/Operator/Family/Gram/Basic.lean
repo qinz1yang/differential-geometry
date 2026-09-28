@@ -30,7 +30,7 @@ noncomputable def chartGramOp {D : RealTimeInterval}
     (G : MetricConnectionFamilyOn (I := I) (M := M) D) (alpha : M)
     (p : Real × E) : E →L[Real] E :=
   IsCoercive.gramCLM (F := E)
-    (chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
+    (DifferentialGeometry.Tensor.Coordinates.chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
     ((extChartAt I alpha).symm p.2))
 
 theorem chartGramOp_inner {D : RealTimeInterval}
@@ -44,7 +44,7 @@ theorem chartGramOp_inner {D : RealTimeInterval}
           (I := I) (M := M) alpha ((extChartAt I alpha).symm p.2) w) := by
   rw [chartGramOp, IsCoercive.gramCLM_apply,
     InnerProductSpace.continuousLinearMapOfBilin_apply]
-  exact chartGramBilin_eq_innerJinv (I := I) (M := M)
+  exact DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv (I := I) (M := M)
     (G.metric p.1) alpha ((extChartAt I alpha).symm p.2) v w
 
 theorem chartGramOp_change {D : RealTimeInterval}
@@ -101,13 +101,13 @@ theorem continuousOn_chartGramOp {D : RealTimeInterval}
   classical
   have hbilin : ContinuousOn
       (fun p : Real × E =>
-        chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
+        DifferentialGeometry.Tensor.Coordinates.chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
           ((extChartAt I alpha).symm p.2)) S := by
     change ContinuousOn
       (fun p : Real × E =>
         ∑ j : Fin (Module.finrank Real E), ∑ k : Fin (Module.finrank Real E),
           chartGramOnE (I := I) (G.metric p.1) alpha j k p.2 •
-            (chartCoordCLM E j).smulRight (chartCoordCLM E k)) S
+            (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E j).smulRight (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E k)) S
     exact continuousOn_finsetSum _ fun j _ =>
       continuousOn_finsetSum _ fun k _ => (hentry j k).smul continuousOn_const
   exact (IsCoercive.gramCLM (F := E)).continuous.comp_continuousOn hbilin

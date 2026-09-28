@@ -55,7 +55,7 @@ private lemma chartPushedExt_apply_of_mem_target
   change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
       f ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0) = f ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 omit [IsManifold I ∞ M] in
 private lemma chartPushedExt_apply_of_notMem_target
@@ -66,7 +66,7 @@ private lemma chartPushedExt_apply_of_notMem_target
   change (if (toEuclidean (E := E)).symm y ∈ (extChartAt I α).target then
       f ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
     else 0) = 0
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 omit [IsManifold I ∞ M] in
 private lemma chartPushedExt_apply_of_mem_chartTargetEuclid

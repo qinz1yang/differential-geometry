@@ -333,7 +333,7 @@ theorem exists_timeDerivCc
       ((Set.univ : Set M) ×ˢ S) := by
     refine hraw.congr ?_
     intro p hp
-    simp only [dΦ, dif_pos hp.2, dSlice]
+    simp only [dΦ, dite_eq_left hp.2, dSlice]
     rfl
   refine ⟨dΦ, hdjoint, ?_⟩
   intro t ht x W slots
@@ -350,7 +350,7 @@ theorem exists_timeDerivCc
     rw [toModel_tensorRS_apply (I := I) b c x ((Φ τ).toSection x) W]
     rfl
   have hdΦ : dΦ t = dSlice t ht := by
-    simp only [dΦ, dif_pos ht]
+    simp only [dΦ, dite_eq_left ht]
   have hvalue :
       Tensor0SSpace.toModel (((dΦ t).toSection x) W) slots =
         Q (deriv (fun τ => TensorRSSpace.toModel ((Φ τ).toSection x)) t) := by

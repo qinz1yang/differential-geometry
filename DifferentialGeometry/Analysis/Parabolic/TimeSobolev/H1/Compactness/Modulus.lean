@@ -32,7 +32,7 @@ theorem integral_norm_Icc_le (f : timeL2 X T) {t : ℝ} (ht : t ∈ Set.Icc (0 :
   have hint : ∫ s in Set.Icc (0 : ℝ) t, ‖f s‖
       = (eLpNorm (fun s => f s) 1 (timeMeasure t)).toReal := by
     rw [show (∫ s in Set.Icc (0 : ℝ) t, ‖f s‖) = ∫ s, ‖f s‖ ∂(timeMeasure t) from rfl,
-      integral_norm_eq_lintegral_enorm haem, eLpNorm_one_eq_lintegral_enorm]
+      integral_norm_eq_lintegral_enorm haem, eLpNorm_one_eq_lintegral_enorm haem]
   have hholder := eLpNorm_le_eLpNorm_mul_rpow_measure_univ
     (μ := timeMeasure t) (p := 1) (q := 2) (by norm_num) haem
   have hfin : eLpNorm (fun s => f s) 2 (timeMeasure t)

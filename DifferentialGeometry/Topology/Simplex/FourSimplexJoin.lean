@@ -1,12 +1,15 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
 
 noncomputable section
 
 open scoped unitInterval
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
-def tetrahedronCone : C(unitInterval × unitInterval × unitInterval, stdSimplex ℝ (Fin 4)) where
+def tetrahedronCone : C(unitInterval × unitInterval × unitInterval, coordinateSet ℝ (Fin 4)) where
   toFun x := ⟨![1 - (x.1 : ℝ), (x.1 : ℝ) * (1 - (x.2.1 : ℝ)),
     (x.1 : ℝ) * (x.2.1 : ℝ) * (1 - (x.2.2 : ℝ)),
     (x.1 : ℝ) * (x.2.1 : ℝ) * (x.2.2 : ℝ)], by
@@ -27,7 +30,7 @@ def tetrahedronCone : C(unitInterval × unitInterval × unitInterval, stdSimplex
     intro i
     fin_cases i <;> dsimp <;> fun_prop
 
-def fourSimplexJoin : C(unitInterval × unitInterval × unitInterval × unitInterval, stdSimplex ℝ (Fin 5)) where
+def fourSimplexJoin : C(unitInterval × unitInterval × unitInterval × unitInterval, coordinateSet ℝ (Fin 5)) where
   toFun x := ⟨![(1 - (x.1 : ℝ)) * (1 - (x.2.1 : ℝ)),
     (1 - (x.1 : ℝ)) * (x.2.1 : ℝ),
     (x.1 : ℝ) * (1 - (x.2.2.1 : ℝ)),
@@ -71,7 +74,7 @@ theorem fourSimplexJoin_val (s t u v : unitInterval) :
   fin_cases i <;> simp [fourSimplexJoin]
 
 @[simp] theorem fourSimplexJoin_second_zero (s u v : unitInterval) :
-    fourSimplexJoin (s, 0, u, v) = stdSimplex.map (1 : Fin 5).succAbove (tetrahedronCone (s, u, v)) := by
+    fourSimplexJoin (s, 0, u, v) = coordinateMap (1 : Fin 5).succAbove (tetrahedronCone (s, u, v)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 1
@@ -83,7 +86,7 @@ theorem fourSimplexJoin_val (s t u v : unitInterval) :
     fin_cases j <;> simp [fourSimplexJoin, tetrahedronCone, Fin.succAbove]
 
 @[simp] theorem fourSimplexJoin_second_one (s u v : unitInterval) :
-    fourSimplexJoin (s, 1, u, v) = stdSimplex.map (0 : Fin 5).succAbove (tetrahedronCone (s, u, v)) := by
+    fourSimplexJoin (s, 1, u, v) = coordinateMap (0 : Fin 5).succAbove (tetrahedronCone (s, u, v)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 0
@@ -101,7 +104,7 @@ theorem fourSimplexJoin_val (s t u v : unitInterval) :
   fin_cases i <;> simp [fourSimplexJoin]
 
 @[simp] theorem fourSimplexJoin_third_one (s t v : unitInterval) :
-    fourSimplexJoin (s, t, 1, v) = stdSimplex.map (2 : Fin 5).succAbove (tetrahedronJoin (s, t, v)) := by
+    fourSimplexJoin (s, t, 1, v) = coordinateMap (2 : Fin 5).succAbove (tetrahedronJoin (s, t, v)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 2
@@ -113,7 +116,7 @@ theorem fourSimplexJoin_val (s t u v : unitInterval) :
     fin_cases j <;> simp [fourSimplexJoin, tetrahedronJoin, Fin.succAbove]
 
 @[simp] theorem fourSimplexJoin_fourth_zero (s t u : unitInterval) :
-    fourSimplexJoin (s, t, u, 0) = stdSimplex.map (4 : Fin 5).succAbove (tetrahedronJoin (s, t, u)) := by
+    fourSimplexJoin (s, t, u, 0) = coordinateMap (4 : Fin 5).succAbove (tetrahedronJoin (s, t, u)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 4
@@ -125,7 +128,7 @@ theorem fourSimplexJoin_val (s t u v : unitInterval) :
     fin_cases j <;> simp [fourSimplexJoin, tetrahedronJoin, Fin.succAbove]
 
 @[simp] theorem fourSimplexJoin_fourth_one (s t u : unitInterval) :
-    fourSimplexJoin (s, t, u, 1) = stdSimplex.map (3 : Fin 5).succAbove (tetrahedronJoin (s, t, u)) := by
+    fourSimplexJoin (s, t, u, 1) = coordinateMap (3 : Fin 5).succAbove (tetrahedronJoin (s, t, u)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 3

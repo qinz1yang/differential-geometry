@@ -6,6 +6,10 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Agreement.Tensor0SRSCovariantDerivativeAgreement
 import Mathlib.GroupTheory.Perm.Fin
 
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise lowerAllUpperIndices
+  lowerAllUpperIndices_apply riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise
+  tensorInnerPointwise_0s_domDomCongr)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

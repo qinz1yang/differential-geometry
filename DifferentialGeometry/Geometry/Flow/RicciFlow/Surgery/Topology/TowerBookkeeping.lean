@@ -82,12 +82,12 @@ namespace ObservedHistory
 private theorem stageMetric_last_of_lt' (H : ObservedHistory.{u})
     (h : H.time (Fin.last H.eventCount) < H.horizon) (τ : ℝ) :
     H.stageMetric (Fin.last H.eventCount) τ = (H.finalSlab h).flow.base.metric τ := by
-  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dif_pos h]
+  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_left h]
 
 private theorem stageMetric_last_of_le' (H : ObservedHistory.{u})
     (h : H.horizon ≤ H.time (Fin.last H.eventCount)) (τ : ℝ) :
     H.stageMetric (Fin.last H.eventCount) τ = H.initialMetric (Fin.last H.eventCount) := by
-  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dif_neg (not_lt.mpr h)]
+  rw [ObservedHistory.stageMetric, Fin.lastCases_last, dite_eq_right (not_lt.mpr h)]
 
 private theorem mem_stageDomain_last' (H : ObservedHistory.{u}) (τ : ℝ) :
     τ ∈ H.stageDomain (Fin.last H.eventCount) ↔
@@ -104,9 +104,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-private theorem appendEvent_toHistory_stage_zero (H : RetainedCoreHistory P)
+private theorem appendEvent_toHistory_stage_zero (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -115,7 +113,7 @@ private theorem appendEvent_toHistory_stage_zero (H : RetainedCoreHistory P)
     (H.appendEvent hs E hinit).toHistory.stage 0 = H.toHistory.stage 0 :=
   appendEvent_stage_castSucc H hs E hinit 0
 
-private theorem appendEvent_toHistory_initialMetric_zero_heq (H : RetainedCoreHistory P)
+private theorem appendEvent_toHistory_initialMetric_zero_heq (H : RetainedCoreHistory.{u})
     {Q : OrientedThreeStage.{u}} {s : ℝ} (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -125,7 +123,7 @@ private theorem appendEvent_toHistory_initialMetric_zero_heq (H : RetainedCoreHi
   appendEvent_initialMetric_castSucc_heq H hs E hinit 0
 
 private theorem extendHorizon_restrict_samePresentation_of_time_eq_horizon
-    (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+    (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount))
@@ -217,7 +215,7 @@ private theorem extendHorizon_restrict_samePresentation_of_time_eq_horizon
       rw [hL, hR]
       rfl
 
-theorem extendHorizon_isPrefixOf_of_time_eq_horizon (H : RetainedCoreHistory P) (T : ℝ)
+theorem extendHorizon_isPrefixOf_of_time_eq_horizon (H : RetainedCoreHistory.{u}) (T : ℝ)
     (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -247,7 +245,7 @@ namespace RetainedCoreEventChain
 variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 
 private structure AlignedLayer (C : RetainedCoreEventChain P g) (n : ℕ) where
-  history : RetainedCoreHistory P
+  history : RetainedCoreHistory.{u}
   eventCount_eq : history.eventCount = n
   horizon_eq : history.horizon = (n : ℝ)
   time_last_eq : history.time (Fin.last history.eventCount) = (n : ℝ)
@@ -284,7 +282,7 @@ private theorem nextInit (C : RetainedCoreEventChain P g) (n : ℕ) (L : Aligned
   eq_of_heq ((C.nextEvent_incoming_heq n L).trans L.metric_last_heq.symm)
 
 private def nextHistory (C : RetainedCoreEventChain P g) (n : ℕ) (L : AlignedLayer C n) :
-    RetainedCoreHistory P :=
+    RetainedCoreHistory.{u} :=
   L.history.appendEvent (C.nextTimeLt n L) (C.nextEvent n L) (C.nextInit n L)
 
 private theorem nextEventCountEq (C : RetainedCoreEventChain P g) (n : ℕ) (L : AlignedLayer C n) :

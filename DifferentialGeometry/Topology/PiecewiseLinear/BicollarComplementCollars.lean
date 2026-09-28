@@ -350,14 +350,14 @@ theorem exists_half_collar_of_eq_image_connectedComponentIn
     have hqα : ∀ x, (q x : E) ∈ Lα := by
       intro x
       by_cases hx : x ∈ S
-      · simp only [q, if_pos hx]
+      · simp only [q, ite_eq_left hx]
         exact (hSα x).mp hx
-      · simp only [q, if_neg hx]
+      · simp only [q, ite_eq_right hx]
         rw [hLαdef]
         exact mem_connectedComponentIn hy₀
     have hqid : ∀ x : L.space, (x : E) ∈ Lα → q x = x := by
       intro x hx
-      simp only [q, if_pos ((hSα x).mpr hx)]
+      simp only [q, ite_eq_left ((hSα x).mpr hx)]
     have hpB : ∀ x : L.space, ρ ((q x : E), e) ∈ B := by
       intro x
       rw [hB]

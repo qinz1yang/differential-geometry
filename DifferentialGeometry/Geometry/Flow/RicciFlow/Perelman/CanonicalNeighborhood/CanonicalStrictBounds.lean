@@ -89,25 +89,25 @@ omit [T2Space M] [SigmaCompactSpace M] in
 private theorem sectional_area_nonneg (g : SmoothRiemannianMetric I3 M) (y : M)
     (v w : TangentSpace I3 y) :
     0 ≤ g.inner y v v * g.inner y w w - (g.inner y v w) ^ 2 := by
-  let G := (Tensor0SBundle.tangentMetricDataGen (I := I3) g y).metric
+  let G := (Tensor0SBundle.tangentMetricData (I := I3) g y).metric
   let : PreInnerProductSpace.Core ℝ (TangentSpace I3 y) := G.toCore.toCore
   let : Inner ℝ (TangentSpace I3 y) := G.toCore.toCore.toInner
   have hcs := InnerProductSpace.Core.inner_mul_inner_self_le
     (𝕜 := ℝ) (F := TangentSpace I3 y) v w
   have hvw : Inner.inner ℝ v w = g.inner y v w :=
-    Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-      (Tensor0SBundle.tangentMetricDataGen (I := I3) g y) v w
+    Tensor0SBundle.TangentMetricData.inner_eq
+      (Tensor0SBundle.tangentMetricData (I := I3) g y) v w
   have hwv : Inner.inner ℝ w v = g.inner y v w := by
     calc
-      _ = g.inner y w v := Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-        (Tensor0SBundle.tangentMetricDataGen (I := I3) g y) w v
+      _ = g.inner y w v := Tensor0SBundle.TangentMetricData.inner_eq
+        (Tensor0SBundle.tangentMetricData (I := I3) g y) w v
       _ = _ := g.symm y w v
   have hvv : Inner.inner ℝ v v = g.inner y v v :=
-    Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-      (Tensor0SBundle.tangentMetricDataGen (I := I3) g y) v v
+    Tensor0SBundle.TangentMetricData.inner_eq
+      (Tensor0SBundle.tangentMetricData (I := I3) g y) v v
   have hww : Inner.inner ℝ w w = g.inner y w w :=
-    Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-      (Tensor0SBundle.tangentMetricDataGen (I := I3) g y) w w
+    Tensor0SBundle.TangentMetricData.inner_eq
+      (Tensor0SBundle.tangentMetricData (I := I3) g y) w w
   rw [hvw, hwv, hvv, hww] at hcs
   apply sub_nonneg.mpr
   simpa [Real.norm_eq_abs, pow_two] using hcs

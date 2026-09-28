@@ -76,13 +76,13 @@ private theorem simplexBoundaryCoefficient_mod_two
     (simplexBoundaryCoefficient r s t : ZMod 2) = if t ⊆ s then 1 else 0 := by
   classical
   by_cases hts : t ⊆ s
-  · rw [if_pos hts]
+  · rw [ite_eq_left hts]
     rcases simplexBoundaryCoefficient_eq_one_or_neg_one r hts hcard with h | h
     · simp [h]
     · rw [h]
       simpa only [Int.cast_neg, Int.cast_one] using
         ZMod.neg_eq_self_mod_two (1 : ZMod 2)
-  · rw [if_neg hts]
+  · rw [ite_eq_right hts]
     have hzero : simplexBoundaryCoefficient r s t = 0 := by
       rw [simplexBoundaryCoefficient]
       apply Finset.sum_eq_zero
@@ -201,7 +201,7 @@ private theorem orderedNormalizedBoundary_triangle_mod_two
     dsimp
     simp [hab, hbc, hac])]
   by_cases hsub : t.1 ⊆ {a, b, c}
-  · rw [if_pos hsub]
+  · rw [ite_eq_left hsub]
     rcases eq_pair_or_pair_or_pair_of_card_two_subset_triple t.2.2 hsub with h | h | h
     · have ht : t = eab := Subtype.ext h
       subst t
@@ -212,7 +212,7 @@ private theorem orderedNormalizedBoundary_triangle_mod_two
     · have ht : t = eac := Subtype.ext h
       subst t
       simp [eabNeEac, ebcNeEac]
-  · rw [if_neg hsub]
+  · rw [ite_eq_right hsub]
     have habNe : t ≠ eab := by
       intro h
       apply hsub
@@ -326,7 +326,7 @@ private theorem orderedNormalizedBoundary_pair_mod_two
     dsimp
     simp [hab])]
   by_cases hsub : t.1 ⊆ {a, b}
-  · rw [if_pos hsub]
+  · rw [ite_eq_left hsub]
     rcases eq_singleton_or_singleton_of_card_one_subset_pair t.2.2 hsub with h | h
     · have ht : t = va := Subtype.ext h
       subst t
@@ -334,7 +334,7 @@ private theorem orderedNormalizedBoundary_pair_mod_two
     · have ht : t = vb := Subtype.ext h
       subst t
       simp [vaNeVb]
-  · rw [if_neg hsub]
+  · rw [ite_eq_right hsub]
     have hva : t ≠ va := by
       intro h
       apply hsub

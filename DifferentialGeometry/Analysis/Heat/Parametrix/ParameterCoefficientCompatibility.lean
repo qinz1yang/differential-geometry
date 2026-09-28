@@ -150,6 +150,7 @@ theorem gradientFun_heatParametrixCoefficientInTrivialization_eventuallyEq
   have hD := hq.mfderiv_eq (I := I) (I' := 𝓘(ℝ, ℝ))
   unfold gradientFun metricSharp mvfderiv
   rw [hD, hq.eq_of_nhds]
+  rfl
 
 theorem laplacian_heatParametrixCoefficientInTrivialization_eventuallyEq
     {g : SmoothRiemannianMetric I M} {hEnorm : IsMetricNorm g} {c p : M}

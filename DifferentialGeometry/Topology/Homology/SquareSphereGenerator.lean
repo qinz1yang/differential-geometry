@@ -69,21 +69,24 @@ private theorem squareTriangleCenter_mem_cubeInterior :
 private theorem squareTriangleCoordinate_lower :
     (squareTriangleCoordinate.{u}.comp liftedSquareUp).comp
       (squareAffineMap 2 ![squareOrigin, squareEast, squareNorthEast]) =
-        SimplexDegree.standardTriangleSimplex := by
+        SimplexDegree.standardTriangleSimplex.comp
+          ⟨Convexity.StdSimplex.coordinateEquiv ℝ _,
+            (Convexity.StdSimplex.coordinateHomeomorph ℝ _).continuous⟩ := by
   apply ContinuousMap.ext
   intro t
   apply ULift.ext
   apply PiLp.ext
   intro i
-  have hs := t.property.2
+  have hs := t.total_of_fintype
   rw [Fin.sum_univ_three] at hs
   fin_cases i <;>
     simp [squareTriangleCoordinate, liftedSquareUp, squareAffineMap_apply_coe,
-      SimplexDegree.standardTriangleSimplex, affineSimplexMap, SimplexDegree.standardTriangleVertex,
+      SimplexDegree.standardTriangleSimplex, Convexity.StdSimplex.coordinateHomeomorph,
+      Convexity.StdSimplex.coordinateEquiv, affineSimplexMap, SimplexDegree.standardTriangleVertex,
       squareOrigin, squareEast, squareNorthEast, squarePoint, Fin.sum_univ_three] <;>
     linarith
 
-private theorem squareTriangleCoordinate_upper_ne_zero (t : stdSimplex ℝ (Fin 3)) :
+private theorem squareTriangleCoordinate_upper_ne_zero (t : Convexity.StdSimplex ℝ (Fin 3)) :
     (squareTriangleCoordinate.{u}.comp liftedSquareUp)
       (squareAffineMap 2 ![squareOrigin, squareNorth, squareNorthEast] t) ≠ 0 := by
   intro h
@@ -92,7 +95,7 @@ private theorem squareTriangleCoordinate_upper_ne_zero (t : stdSimplex ℝ (Fin 
   have h1 := congrArg (fun z : liftedSquare.{u} => (z.down 1 : ℝ)) ht
   simp [liftedSquareUp, squareAffineMap_apply_coe, squareTriangleCenter,
     squareOrigin, squareNorth, squareNorthEast, squarePoint, Fin.sum_univ_three] at h0 h1
-  linarith [t.property.1 1]
+  linarith [t.weights_nonneg 1]
 
 private theorem squareTriangleCoordinate_lower_chain :
     singularChainImageGen 2 (squareTriangleCoordinate.{u}.comp liftedSquareUp)

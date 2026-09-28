@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.SelfLowCap
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.InsertionDifferenceWindow
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.SelfBounds
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 noncomputable section
 
 
@@ -372,7 +375,7 @@ theorem selfLow_jet
       rw [hPeq, DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
         (I := I) (M := M) g 0 2 1 s T,
         SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-        DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g 0 (2 + 1) x s _]
+        DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g 0 (2 + 1) x s _]
     have hT1 := hΛ₁ T hball x
     have hnn : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g 0 (2 + 1) x
         ((iteratedCovGrad (I := I) g 0 2 1 T).toSection x) :=

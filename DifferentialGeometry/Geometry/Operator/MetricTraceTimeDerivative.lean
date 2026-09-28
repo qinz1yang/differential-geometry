@@ -45,7 +45,7 @@ theorem hasDerivWithinAt_metricTracePair0SAt
     (fun r => metricTracePair0SAt (I := I) (g r) (T r)) from funext fun r => (he r).symm] at h
   apply h.congr_deriv
   rw [inner0S_symm (g t) x gdot (T t),
-    inner0S_two_eq_coord_direct (g t) x basis _ (basisInvMetric_isInverse (g t) x basis),
+    inner0S_two_eq_coord (g t) x basis _ (basisInvMetric_isInverse (g t) x basis),
     metricTracePair0SAt_eq_sum_basis (g t) basis _ (basisInvMetric_isInverse (g t) x basis)]
   simp only [Finset.sum_add_distrib]
   congr 1

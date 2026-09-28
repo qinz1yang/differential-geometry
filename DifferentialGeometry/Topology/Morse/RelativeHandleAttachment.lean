@@ -25,7 +25,7 @@ private theorem morseCapRoundedLowerRound_mem_iff {m k : ℕ} (hk : k ≤ m + 1)
   · exact iff_of_true
       (hD (morseCapRoundedLowerRound_mem_ballImage hk c ε r δ θ R₀ data
         hε hδ hθ hδr hR0 hR0lt hbig hx hb)) (hD hb)
-  · simp only [morseCapRoundedLowerRound, dif_neg hb]
+  · simp only [morseCapRoundedLowerRound, dite_eq_right hb]
 
 private def morseAttachingMapOnSet {m k : ℕ} (hk : k ≤ m + 1)
     (c ε r : ℝ) {H : Type} [TopologicalSpace H]
@@ -188,7 +188,7 @@ private theorem exists_morseHandleAdjunction_homeomorph_on_set {m k : ℕ} (hk :
           hR₁big hR₁₂R hf ⟨x.1.1, x.2⟩).symm
   · intro x hx
     rw [hlower]
-    simp only [morseCapRoundedLowerRound, dif_neg hx]
+    simp only [morseCapRoundedLowerRound, dite_eq_right hx]
 
 
 theorem exists_morseHandleAdjunction_homeomorph_roundedSublevel_on_set

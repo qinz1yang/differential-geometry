@@ -164,7 +164,7 @@ theorem IsWeakEvolutionSolution.integral_timeH1_test_eq_integral
     apply integral_congr_ae
     filter_upwards [hwd, hmem] with t ht htm
     have htc : t ∈ Icc (0 : ℝ) T := ⟨htm.1, htm.2.le⟩
-    rw [dirichletMassComplOnIcc, dif_pos htc, dirichletMassCompl_apply_eq_integral]
+    rw [dirichletMassComplOnIcc, dite_eq_left htc, dirichletMassCompl_apply_eq_integral]
     apply integral_congr_ae
     filter_upwards [(hac t htc).ae_eq ht] with x hx
     rw [hx]
@@ -184,8 +184,8 @@ theorem IsWeakEvolutionSolution.integral_timeH1_test_eq_integral
           ∂(riemannianVolumeMeasure (I := I_hs) (M := M) (G.metric t)) ∂timeMeasure T) := by
     apply integral_congr_ae
     filter_upwards [hv, hmem] with t ht htm
-    rw [ht, dirichletMassVariationComplOnIco, dif_pos htm,
-      dirichletWeakFormComplOnIco, dif_pos htm,
+    rw [ht, dirichletMassVariationComplOnIco, dite_eq_left htm,
+      dirichletWeakFormComplOnIco, dite_eq_left htm,
       dirichletMassVariationCompl_apply_eq_integral,
       dirichletWeakFormCompl_apply_eq_integral_adjoint]
   have hin : dirichletMassLp (G.metric 0) Cv hCvtop (hvol 0 ⟨le_rfl, hT⟩)

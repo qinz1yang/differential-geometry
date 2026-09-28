@@ -36,13 +36,13 @@ private theorem integral_fin_partition
   have hNat (k : ℕ) (hk : k < m) :
       IntervalIntegrable f volume (tNat k) (tNat (k + 1)) := by
     dsimp only [tNat]
-    rw [dif_pos (Nat.lt_trans hk (Nat.lt_succ_self m)), dif_pos (Nat.succ_lt_succ hk)]
+    rw [dite_eq_left (Nat.lt_trans hk (Nat.lt_succ_self m)), dite_eq_left (Nat.succ_lt_succ hk)]
     convert hint ⟨k, hk⟩ using 1 <;> rfl
   have hwhole := IntervalIntegrable.trans_iterate hNat
   have hsum := intervalIntegral.sum_integral_adjacent_intervals hNat
   have hends : tNat 0 = t 0 ∧ tNat m = t (Fin.last m) := by
-    constructor <;> simp only [tNat, dif_pos (Nat.succ_pos m),
-      dif_pos (Nat.lt_succ_self m)] <;> rfl
+    constructor <;> simp only [tNat, dite_eq_left (Nat.succ_pos m),
+      dite_eq_left (Nat.lt_succ_self m)] <;> rfl
   refine ⟨by simpa only [hends.1, hends.2] using hwhole, ?_⟩
   calc
     (∑ i : Fin m, ∫ s in t i.castSucc..t i.succ, f s) =
@@ -53,8 +53,8 @@ private theorem integral_fin_partition
       have hk' : k < m := Finset.mem_range.mp hk
       have hk0 : k ≤ m := Nat.le_of_lt hk'
       have hk1 : k + 1 ≤ m := Nat.succ_le_of_lt hk'
-      rw [dif_pos hk']
-      simp only [tNat, Nat.lt_succ_iff, dif_pos hk0, dif_pos hk1]
+      rw [dite_eq_left hk']
+      simp only [tNat, Nat.lt_succ_iff, dite_eq_left hk0, dite_eq_left hk1]
       congr 2
     _ = ∫ s in t 0..t (Fin.last m), f s := by
       simpa only [hends.1, hends.2] using hsum

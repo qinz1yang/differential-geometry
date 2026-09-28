@@ -29,7 +29,7 @@ theorem HasFiniteCollaredTrace.exists_split_reducing_nullTraceCount_with_cap
       L' \ O = L \ O ∧ traceCircles L' T ⊆ traceCircles L T ∧
       nullTraceCount L' T < nullTraceCount L T ∧
       ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3) (f : E3 → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
         L ∩ Δ = r '' stdSimplexBoundary 2 ∧ r '' stdSimplexBoundary 2 ∈ traceCircles L T ∧
         IsPLHomeomorphOn f (L ∪ Δ) L' ∧
         EqOn f id ((L \ O) ∪ ((L ∩ T) \ r '' stdSimplexBoundary 2)) ∧

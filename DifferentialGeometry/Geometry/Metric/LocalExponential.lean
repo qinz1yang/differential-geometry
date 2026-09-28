@@ -52,7 +52,7 @@ private theorem geoEq_map_partialIso (g : SmoothRiemannianMetric I M)
     hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds hγt)
   have hval : (fun s => (γU s : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
-    simp only [γU, dif_pos hs]
+    simp only [γU, dite_eq_left hs]
   have hγU : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γU t := by
     have h := codRestr_contMDiffAt (V := U) (fun s => (γU s).property)
       (hγ.congr_of_eventuallyEq hval)

@@ -258,7 +258,7 @@ theorem eventually_neck_alternative_of_mem_hornHalfRange :
         exact hfr.2 hqint
   have hconn : IsConnected (interior K.carrier) :=
     ⟨⟨x, hxK⟩, DifferentialGeometry.Topology.isPreconnected_interior_of_frontier_nhds
-      K.connected.isPreconnected hKclosed K.regular_closed hCpre hCK hloc⟩
+      K.connected.isPreconnected K.regular_closed hCpre hCK hloc⟩
   exact hT1 (P.monoEpsilon hεT) le_rfl c hc e' N hα2 le_rfl hNcenter (interior K.carrier)
     isOpen_interior hconn hfrint hcQ (U := 2 * C2 * metricScalarAt D.terminal.metric x)
     (fun z hz => by

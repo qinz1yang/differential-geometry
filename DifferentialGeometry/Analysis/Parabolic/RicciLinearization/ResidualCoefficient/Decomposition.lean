@@ -173,7 +173,7 @@ private theorem halfRiemannBackgroundDifference_eq_residualFieldSum_add_kernelCo
   rw [hP]
   refine ccTensor22_ext_of_operatorFieldApply (I := I) (M := M) g₀ _ _ (fun W => ?_)
   have hprim :=
-    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricci_curvature_coefficient_difference_apply_eq_residual_add_hessian
       (I := I) (M := M) g₀ g₁ P htie hPsymm W
   rw [hP] at hprim
   rw [operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2, operatorFieldApplication_sub_left (I := I) (M := M) g₀ 2 2]

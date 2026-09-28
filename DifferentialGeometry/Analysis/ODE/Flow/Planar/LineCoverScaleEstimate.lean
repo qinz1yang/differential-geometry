@@ -73,7 +73,7 @@ theorem exists_overlap_error_bound_of_line_cover
     have h : ∃ k, P x k := ⟨j, hj⟩
     have heq : h.choose = j := hedge h.choose_spec hj
     dsimp only [Δ]
-    rw [dif_pos h, heq]
+    rw [dite_eq_left h, heq]
     exact he j x hx hy
   · intro x i hi
     dsimp only [Δ]

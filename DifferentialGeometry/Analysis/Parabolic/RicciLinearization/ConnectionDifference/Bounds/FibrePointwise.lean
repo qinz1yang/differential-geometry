@@ -8,6 +8,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.In
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Lowering
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ConnectionDifference.Bounds.SlotPermutations
+
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

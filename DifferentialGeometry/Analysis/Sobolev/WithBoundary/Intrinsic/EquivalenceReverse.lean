@@ -3,6 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.WithBoundary.Intrinsic.Algebra
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.IntrinsicToChart.GradientProduct
 import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity
+import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientGlobalSection
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
 
 noncomputable section
@@ -56,16 +57,16 @@ private lemma chartPushedRaw_eq_chartSmoothExt_comp_toEuclidean_symm
   · rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_mem
       (I := I_hs) (M := M) α f (hy_iff.mpr hy)]
     unfold chartSmoothExt
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
   · rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
       (I := I_hs) (M := M) α f (hy_iff.not.mpr hy)]
     unfold chartSmoothExt
-    rw [if_neg hy]
+    rw [ite_eq_right hy]
 
 omit [IsManifold I_hs ∞ M] [T2Space M] [CompactSpace M] in
 private lemma exists_eLpNorm_chartSmoothExt_le_const_mul_chartPushedRaw
     (α : M) (p : ℝ≥0∞) :
-    ∃ A : ℝ, 0 < A ∧ ∀ f : M → ℝ,
+    ∃ A : ℝ, 0 < A ∧ ∀ (f : M → ℝ), Measurable f →
       eLpNorm (chartSmoothExt (n := n) (M := M) α f) p
           (volume.restrict
             (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
@@ -90,7 +91,7 @@ private lemma exists_eLpNorm_chartSmoothExt_le_const_mul_chartPushedRaw
     simp only [a]
     positivity
   refine ⟨((a : ℝ)⁻¹), inv_pos.mpr (by exact_mod_cast ha_pos), ?_⟩
-  intro f
+  intro f hf
   let raw : EuN' → ℝ :=
     DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw
       (I := I_hs) (M := M) α f
@@ -122,7 +123,9 @@ private lemma exists_eLpNorm_chartSmoothExt_le_const_mul_chartPushedRaw
         ((volume : Measure EuN').restrict
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I_hs) (M := M) α)) := by
-    exact (eLpNorm_restrict_eq_of_support_subset hraw_support).symm
+    exact (eLpNorm_restrict_eq_of_support_subset
+      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_measurable
+        (I := I_hs) (M := M) α hf).aestronglyMeasurable hraw_support).symm
   have hext_le : eLpNorm ext p
       (volume.restrict
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
@@ -496,7 +499,7 @@ private lemma fderiv_chartSmoothExt_apply_eq_inner_gradFun
         (I := I_hs) α f := by
     filter_upwards [isOpen_interior.mem_nhds hy] with z hz
     unfold chartSmoothExt DifferentialGeometry.Integral.DivergenceTheorem.scalarOnE
-    rw [if_pos (interior_subset hz)]
+    rw [ite_eq_left (interior_subset hz)]
   rw [heq.fderiv_eq]
   rw [DifferentialGeometry.Geometry.Operator.inner_gradFun
     (I := I_hs) g f x
@@ -592,7 +595,7 @@ private lemma exists_abs_fderiv_chartSmoothExt_pou_mul_le_indicator
         mul_le_mul_of_nonneg_left hframe (mul_nonneg hKgrad_nonneg hv_nonneg)
       _ = Kgrad * Real.sqrt B *
           chartSmoothExt (n := n) (M := M) α (Set.indicator Kα v) y := by
-        simp only [chartSmoothExt, if_pos (interior_subset hy),
+        simp only [chartSmoothExt, ite_eq_left (interior_subset hy),
           Set.indicator_of_mem hxK, x]
         ring
   · have hf_supp : tsupport f ⊆ Kα := by
@@ -608,7 +611,7 @@ private lemma exists_abs_fderiv_chartSmoothExt_pou_mul_le_indicator
       exact image_eq_zero_of_notMem_tsupport hz
     have hmfd : mfderiv I_hs 𝓘(ℝ, ℝ) f x = 0 := by
       rw [heqz.mfderiv_eq]
-      exact mfderiv_const
+      exact mfderiv_const (I := I_hs) (I' := 𝓘(ℝ, ℝ)) (x := x) (c := (0 : ℝ))
     have hgrad_zero : DifferentialGeometry.Geometry.Operator.gradFun
         (I := I_hs) g f x = 0 :=
       DifferentialGeometry.Geometry.Operator.gradFun_eq_zero_of_mfderiv_eq_zero
@@ -616,7 +619,7 @@ private lemma exists_abs_fderiv_chartSmoothExt_pou_mul_le_indicator
     rw [hgrad_zero, (g.inner x).map_zero]
     rw [zero_apply, abs_zero]
     refine mul_nonneg (mul_nonneg hKgrad_nonneg (Real.sqrt_nonneg _)) ?_
-    rw [chartSmoothExt, if_pos (interior_subset hy), Set.indicator_of_notMem hxK]
+    rw [chartSmoothExt, ite_eq_left (interior_subset hy), Set.indicator_of_notMem hxK]
 
 private lemma exists_eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
     (g : DifferentialGeometry.SmoothRiemannianMetric I_hs M) (α : M) :
@@ -721,7 +724,76 @@ private lemma exists_eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
         eLpNorm
           (fun y : EuN => K * chartSmoothExt (n := n) (M := M) α vα y)
           2 (volume.restrict IntΩ) :=
-    eLpNorm_mono_ae_real hpoint
+    eLpNorm_mono_ae_real (by
+      have hf_smooth : ContMDiff I_hs 𝓘(ℝ, ℝ) ∞
+          (fun z : M => (ρ : M → ℝ) z * u z) := ρ.contMDiff.mul hu
+      have hgrad_section : ContMDiffOn I_hs
+          ((modelWithCornersEuclideanHalfSpace n).prod 𝓘(ℝ, EuN)) ∞
+          (fun x : M => TotalSpace.mk' EuN x
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I_hs) g
+              (fun z : M => (ρ : M → ℝ) z * u z) x))
+          (trivializationAt EuN (TangentSpace I_hs) α).baseSet := by
+        rw [DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source]
+        exact DifferentialGeometry.Geometry.Operator.WithBoundary.gradFun_contMDiffOn_chart_source
+          (I := I_hs) (M := M) g α hf_smooth
+      have hg : ContMDiffOn I_hs
+          ((modelWithCornersEuclideanHalfSpace n).prod
+            𝓘(ℝ, EuN →L[ℝ] EuN →L[ℝ] ℝ)) ∞
+          (fun b : M => TotalSpace.mk' (EuN →L[ℝ] EuN →L[ℝ] ℝ)
+            (E := fun y => TangentSpace I_hs y →L[ℝ] TangentSpace I_hs y →L[ℝ] ℝ)
+            b (g.inner b))
+          (trivializationAt EuN (TangentSpace I_hs) α).baseSet :=
+        g.contMDiff.contMDiffOn
+      have hv := chartTargetUnitFiber_smoothOn (n := n) (M := M) α i
+      have happ : ContMDiffOn I_hs
+          ((modelWithCornersEuclideanHalfSpace n).prod 𝓘(ℝ, ℝ)) ∞
+          (fun x : M =>
+            (⟨x, g.inner x
+              (DifferentialGeometry.Geometry.Operator.gradFun (I := I_hs) g
+                (fun z : M => (ρ : M → ℝ) z * u z) x)
+              (chartTargetUnitFiber (n := n) (M := M) α i x)⟩ :
+              TotalSpace ℝ (Bundle.Trivial M ℝ)))
+          (trivializationAt EuN (TangentSpace I_hs) α).baseSet :=
+        ContMDiffOn.clm_bundle_apply₂ (F₁ := EuN) (F₂ := EuN) (F₃ := ℝ)
+          (b := fun x : M => x) hg hgrad_section hv
+      have hinner : ContinuousOn
+          (fun x : M => g.inner x
+            (DifferentialGeometry.Geometry.Operator.gradFun (I := I_hs) g
+              (fun z : M => (ρ : M → ℝ) z * u z) x)
+            (chartTargetUnitFiber (n := n) (M := M) α i x))
+          (trivializationAt EuN (TangentSpace I_hs) α).baseSet := by
+        intro x hx
+        have hpx := happ x hx
+        rw [Bundle.contMDiffWithinAt_totalSpace] at hpx
+        exact hpx.2.continuousWithinAt
+      have hxy : ContinuousOn
+          (fun y : EuN => (extChartAt I_hs α).symm y) IntΩ := by
+        exact (continuousOn_extChartAt_symm (I := I_hs) α).mono (fun y hy =>
+          interior_subset (hIntΩ_sub hy))
+      have hmap : ∀ y ∈ IntΩ,
+          (extChartAt I_hs α).symm y ∈
+            (trivializationAt EuN (TangentSpace I_hs) α).baseSet := by
+        intro y hy
+        rw [DifferentialGeometry.Integral.Measure.trivializationAt_baseSet_eq_chartAt_source]
+        have hy' := hIntΩ_sub hy
+        rw [← DifferentialGeometry.Integral.Measure.extChartAt_source_eq_chartAt_source
+          (I := I_hs) (M := M)]
+        exact (extChartAt I_hs α).map_target (interior_subset hy')
+      have hcomp := hinner.comp hxy hmap
+      have hleft_cont : ContinuousOn
+          (fun y : EuN =>
+            (fderiv ℝ
+              (chartSmoothExt (n := n) (M := M) α
+                (fun z : M => (ρ : M → ℝ) z * u z)) y)
+              (EuclideanSpace.single i 1)) IntΩ := by
+        refine hcomp.congr ?_
+        intro y hy
+        have hform := fderiv_chartSmoothExt_apply_eq_inner_gradFun
+          (n := n) (M := M) g α hf_smooth (hIntΩ_sub hy) i
+        dsimp only at hform
+        exact hform
+      exact (hleft_cont.aemeasurable hIntΩ_open.measurableSet).aestronglyMeasurable)
+      hpoint
   refine hmono.trans ?_
   have hpull :
       eLpNorm
@@ -738,7 +810,7 @@ private lemma exists_eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
     rw [heq, eLpNorm_const_smul]
     rw [Real.enorm_eq_ofReal hK_nonneg]
   rw [hpull]
-  have hext := hA_bound vα
+  have hext := hA_bound vα hvα_meas
   have hraw := hD_bound hvα_meas hvα_supp
   rw [← DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def
     (I := I_hs) (M := M) g] at hraw
@@ -764,7 +836,7 @@ private lemma exists_eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
               (DifferentialGeometry.Geometry.Operator.gradFun (I := I_hs) g u x)))
           2
           (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I_hs M g) := by
-    refine (eLpNorm_mono_real hvα_point).trans ?_
+    refine (eLpNorm_mono_real hvα_meas.aestronglyMeasurable hvα_point).trans ?_
     have hu_abs_aesm : AEStronglyMeasurable (fun x : M => |u x|)
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I_hs M g) :=
       hu.continuous.measurable.abs.aestronglyMeasurable
@@ -777,7 +849,7 @@ private lemma exists_eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
       (Real.continuous_sqrt.comp
         (DifferentialGeometry.Geometry.Operator.WithBoundary.continuous_g_inner_gradFun_gradFun
           (M := M) g hu hu)).aestronglyMeasurable
-    refine (eLpNorm_add_le hu_abs_aesm hgrad_aesm (by norm_num)).trans ?_
+    refine (eLpNorm_add_le (by norm_num)).trans ?_
     have habs : eLpNorm (fun x : M => |u x|) 2
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I_hs M g) =
         eLpNorm u 2
@@ -785,7 +857,7 @@ private lemma exists_eLpNorm_fderiv_chartSmoothExt_apply_le_const_mul
       rw [show (fun x : M => |u x|) = fun x : M => ‖u x‖ from by
         funext x
         exact (Real.norm_eq_abs _).symm]
-      exact eLpNorm_norm u
+      exact eLpNorm_norm u hu.continuous.measurable.aestronglyMeasurable
     rw [habs]
   calc
     ENNReal.ofReal K *
@@ -874,7 +946,7 @@ theorem exists_eLpNorm_chartPushed_le_const_mul
     rw [heq]
     exact tsupport_smul_subset_left
       (f := fun z : M => (ρ : M → ℝ) z) (g := u)
-  have hext := hA_bound f
+  have hext := hA_bound f hf_meas
   have hraw := hD_bound hf_meas hf_supp
   rw [← DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure_def
     (I := I_hs) (M := M) g] at hraw
@@ -882,7 +954,7 @@ theorem exists_eLpNorm_chartPushed_le_const_mul
       (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I_hs M g) ≤
       eLpNorm u p
         (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I_hs M g) := by
-    apply eLpNorm_mono
+    apply eLpNorm_mono hf_meas.aestronglyMeasurable
     intro x
     rw [Real.norm_eq_abs, Real.norm_eq_abs, hf_def, abs_mul]
     calc
@@ -904,7 +976,7 @@ theorem exists_eLpNorm_chartPushed_le_const_mul
       (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace_isOpen
         (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)).measurableSet] with y hy
     have hyt : y ∈ (extChartAt I_hs α).target := hy.1
-    simp only [chartSmoothExt, if_pos hyt, chartPushed, f, ρ]
+    simp only [chartSmoothExt, ite_eq_left hyt, chartPushed, f, ρ]
   rw [hnorm]
   calc
     eLpNorm (chartSmoothExt (n := n) (M := M) α f) p
@@ -964,7 +1036,7 @@ theorem tendstoInMeasure_chartPushed_of_tendsto_eLpNorm
           (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)).measurableSet
     exact (((DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α).contMDiff.continuous.measurable.mul hv).comp_aemeasurable hsymm).aestronglyMeasurable
   apply tendstoInMeasure_of_tendsto_eLpNorm
-    (ne_of_gt (lt_of_lt_of_le zero_lt_one hp_one)) (fun i => hmeas (hf i)) (hmeas hu)
+    (p := p) (ne_of_gt (lt_of_lt_of_le zero_lt_one hp_one))
   obtain ⟨C, _, hbound⟩ := exists_eLpNorm_chartPushed_le_const_mul
     (n := n) (M := M) g α hp_one hp_top
   have hmul := ENNReal.Tendsto.const_mul (a := ENNReal.ofReal C) hlim
@@ -1018,7 +1090,7 @@ private lemma exists_eLpNorm_chartSmoothExt_pou_mul_le_const_mul
       (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace_isOpen
         (chartTargetEuclid_isHalfSpaceRelOpen (n := n) (M := M) α)).measurableSet] with y hy
     have hyt : y ∈ (extChartAt I_hs α).target := hy.1
-    simp only [chartSmoothExt, if_pos hyt, chartPushed]
+    simp only [chartSmoothExt, ite_eq_left hyt, chartPushed]
   rw [heq]
   exact hbound hu.continuous.measurable
 

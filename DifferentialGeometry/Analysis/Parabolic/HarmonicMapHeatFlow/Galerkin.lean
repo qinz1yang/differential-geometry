@@ -72,7 +72,7 @@ theorem exists_solution_of_coercive_mass_ode
       simpa only [K, mul_comm] using mul_le_mul_left hnorm_nn L
     rw [show f t = (hco t ht).sharpCLM ∘ resid t by
       funext v
-      simp only [f, dif_pos ht, Function.comp_apply]]
+      simp only [f, dite_eq_left ht, Function.comp_apply]]
     exact hcomp.weaken hKL
   have hsharp_cont : Continuous
       (fun t : Icc (0 : ℝ) T => (hco t t.2).sharpCLM) := by
@@ -85,7 +85,7 @@ theorem exists_solution_of_coercive_mass_ode
     have happ := hsharp_cont.clm_apply hres
     convert happ using 1
     ext t
-    simp only [f, Set.domRestrict_apply, dif_pos t.property]
+    simp only [f, Set.domRestrict_apply, dite_eq_left t.property]
   have haff_f : ∀ t ∈ Icc (0 : ℝ) T, ∀ v : V,
       ‖f t v‖ ≤ c⁻¹ * A + (K : ℝ) * ‖v‖ := by
     intro t ht v
@@ -94,7 +94,7 @@ theorem exists_solution_of_coercive_mass_ode
     have hcnn : 0 ≤ c⁻¹ := inv_nonneg.mpr hc.le
     calc
       ‖f t v‖ = ‖(hco t ht).sharpCLM (resid t v)‖ := by
-        simp only [f, dif_pos ht]
+        simp only [f, dite_eq_left ht]
       _ ≤ ‖(hco t ht).sharpCLM‖ * ‖resid t v‖ := hop
       _ ≤ c⁻¹ * (A + (L : ℝ) * ‖v‖) :=
         mul_le_mul (hsharp_norm t ht) (haff t ht v) (norm_nonneg _) hcnn
@@ -108,7 +108,7 @@ theorem exists_solution_of_coercive_mass_ode
   refine ⟨γ, hγ0, hγcont, ?_⟩
   intro t ht
   have ht' : t ∈ Icc (0 : ℝ) T := ⟨ht.1, le_of_lt ht.2⟩
-  simpa only [f, dif_pos ht'] using hγderiv t ht
+  simpa only [f, dite_eq_left ht'] using hγderiv t ht
 
 theorem exists_ballRetraction_lipschitz_continuous_affine_bound
     {V W : Type*} [NormedAddCommGroup V] [NormedSpace ℝ V]

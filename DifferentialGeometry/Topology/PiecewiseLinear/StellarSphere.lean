@@ -60,7 +60,7 @@ def swapVertex (a c v : α) : α := if v = a then c else v
 
 theorem swapVertex_self (a c : α) : swapVertex a c a = c := by simp [swapVertex]
 
-theorem swapVertex_of_ne {a c v : α} (h : v ≠ a) : swapVertex a c v = v := if_neg h
+theorem swapVertex_of_ne {a c v : α} (h : v ≠ a) : swapVertex a c v = v := ite_eq_right h
 
 theorem swapVertex_swapVertex {a c v : α} (h : v ≠ c) :
     swapVertex c a (swapVertex a c v) = v := by

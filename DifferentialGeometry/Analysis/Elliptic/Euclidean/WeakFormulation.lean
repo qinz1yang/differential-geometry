@@ -29,7 +29,7 @@ theorem EllipticCoeff.memLp_matMulE
   refine MemLp.of_eval_piLp ?_
   intro i
   simpa only [matMulE_apply, Matrix.mulVec, dotProduct] using
-    memLp_finsetSum Finset.univ (fun j _ => (hcomp j).mul' (p := ⊤) (r := p) (hentry i j))
+    memLp_finsetSum Finset.univ (fun j _ => (hentry i j).fun_mul (hcomp j))
 
 theorem bilinFormOfCoeff_eq_integral_iff_hasWeakDiv
     {Omega : Set E} (hOmega : IsOpen Omega)

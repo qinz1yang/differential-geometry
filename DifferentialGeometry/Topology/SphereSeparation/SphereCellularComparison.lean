@@ -74,9 +74,6 @@ theorem mono_integerSimplicialChainMap
   dsimp [SSet.chainComplexMap, SSet.chainComplexFunctor,
     AlgebraicTopology.singularChainComplexFunctor]
   apply +allowSynthFailures Functor.map_mono
-  apply +allowSynthFailures Functor.map_mono
-  dsimp [SSet, SimplicialObject.whiskering, SimplicialObject]
-  infer_instance
 
 theorem integerChains_mayerVietoris_shortExact
     {X : SSet} (A B : X.Subcomplex) :
@@ -150,7 +147,7 @@ theorem mem_range_toSSet_subspace_iff
   · rintro ⟨t, rfl⟩ x ⟨z, rfl⟩
     exact (TopCat.toSSetObjEquiv (TopCat.of A) n t z).2
   · intro hs
-    let t : C(stdSimplex ℝ (Fin (n.unop.len + 1)), A) :=
+    let t : C(Convexity.StdSimplex ℝ (Fin (n.unop.len + 1)), A) :=
       ⟨fun z ↦ ⟨TopCat.toSSetObjEquiv (TopCat.of X) n s z,
           hs ⟨z, rfl⟩⟩,
         (TopCat.toSSetObjEquiv (TopCat.of X) n s).continuous.subtype_mk _⟩

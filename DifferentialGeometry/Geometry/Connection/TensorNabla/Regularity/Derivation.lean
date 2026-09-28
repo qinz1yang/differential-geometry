@@ -23,7 +23,7 @@ import Mathlib.LinearAlgebra.FiniteDimensional.Lemmas
 import Mathlib.LinearAlgebra.Dimension.Free
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 import DifferentialGeometry.Bundle.TangentSpace
 

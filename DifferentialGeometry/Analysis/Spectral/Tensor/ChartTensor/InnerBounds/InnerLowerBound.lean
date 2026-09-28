@@ -4,6 +4,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChristoffelCorrec
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Topology.MetricSpace.ProperSpace
 import Mathlib.Topology.Order.Compact
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_eq_zero_iff
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Connection
 
 
@@ -103,7 +107,7 @@ lemma chartRSTwist_chartRSTwistInv
         ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext k
-    exact chartJinv_chartJ_self (I := I) (M := M) α hb (v k)
+    exact chartJinv_chartJ (I := I) (M := M) α hb (v k)
   rw [hinner]
   refine ContinuousMultilinearMap.ext ?_
   intro w
@@ -111,7 +115,7 @@ lemma chartRSTwist_chartRSTwistInv
       ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   funext k
-  exact chartJinv_chartJ_self (I := I) (M := M) α hb (w k)
+  exact chartJinv_chartJ (I := I) (M := M) α hb (w k)
 
 lemma chartRSTwist_injective
     (α : M) {b : M}

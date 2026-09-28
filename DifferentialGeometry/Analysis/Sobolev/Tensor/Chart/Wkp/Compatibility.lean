@@ -193,7 +193,7 @@ theorem secPullLimitEq
   · have hpull : secModelPull (I := I) (M := M) r s β
         (secModelLimit (I := I) (M := M) r s k hp u h_cauchy β) x = 0 := by
       unfold secModelPull
-      rw [dif_neg hxβ]
+      rw [dite_eq_right hxβ]
     have htriv :
         secTriv (I := I) (M := M) r s
             (secModelPull (I := I) (M := M) r s β

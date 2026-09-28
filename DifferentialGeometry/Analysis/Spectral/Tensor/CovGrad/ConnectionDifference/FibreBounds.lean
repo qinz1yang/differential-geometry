@@ -4,6 +4,11 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.Linear
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
+
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_cauchy_schwarz_sq)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_zero_eq_unitZeroSec
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent fiberNormSqSummand
+  fiberNormSqSummand_eq_component_sq riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

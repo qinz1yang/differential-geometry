@@ -31,7 +31,7 @@ theorem manifoldSublevel_isBoundaryPoint_iff (f : M → ℝ) (a : ℝ)
       change (if h : f x.1 = a then manifoldSublevelBoundaryChart I f a x h hf hreg
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) = _
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
     rw [hchart]
     exact iff_of_true (manifoldSublevelBoundaryChart_extend_last_zero I f a hf hreg x hx) hx
   · have hlt : f x.1 < a := lt_of_le_of_ne x.2 hx
@@ -40,7 +40,7 @@ theorem manifoldSublevel_isBoundaryPoint_iff (f : M → ℝ) (a : ℝ)
       change (if h : f x.1 = a then manifoldSublevelBoundaryChart I f a x h hf hreg
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) = _
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
     rw [hchart]
     exact iff_of_false (ne_of_gt
       (manifoldSublevelInteriorChart_extend_last_pos I f a hf x hlt)) hx

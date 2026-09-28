@@ -101,7 +101,7 @@ theorem norm_lt_one_of_closedBall_homeomorph
   let U := ball (0 : EuclideanSpace ℝ (Fin 2)) 1
   have hmem : ∀ y ∈ U, y ∈ closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 :=
     fun y hy => ball_subset_closedBall hy
-  have hGU : ∀ y (hy : y ∈ U), G y = (γ ⟨y, hmem y hy⟩).val := fun y hy => dif_pos _
+  have hGU : ∀ y (hy : y ∈ U), G y = (γ ⟨y, hmem y hy⟩).val := fun y hy => dite_eq_left _
   have hcont : ContinuousOn G U := by
     rw [continuousOn_iff_continuous_domRestrict]
     have hc : Continuous (fun y : U => (γ ⟨y.val, hmem y.val y.2⟩).val) :=
@@ -271,20 +271,20 @@ theorem exists_homeomorph_extension_of_ends
   let gb : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 2) := fun w =>
     if h : w ∈ closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 then (γb ⟨w, h⟩).val else w
   have hga : ∀ w (h : w ∈ closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1),
-      ga w = (γa ⟨w, h⟩).val := fun w h => dif_pos h
+      ga w = (γa ⟨w, h⟩).val := fun w h => dite_eq_left h
   have hgb : ∀ w (h : w ∈ closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1),
-      gb w = (γb ⟨w, h⟩).val := fun w h => dif_pos h
+      gb w = (γb ⟨w, h⟩).val := fun w h => dite_eq_left h
   let B0 : EuclideanSpace ℝ (Fin 2) × ℝ → EuclideanSpace ℝ (Fin 2) × ℝ := fun q =>
     if h : q ∈ cylinderSide then (S ⟨q, h⟩).val
     else if 0 < q.2 then (gb q.1, 1) else (ga q.1, -1)
   let Sph := sphere (0 : EuclideanSpace ℝ (Fin 2) × ℝ) 1
-  have hside : ∀ q (h : q ∈ cylinderSide), B0 q = (S ⟨q, h⟩).val := fun q h => dif_pos h
+  have hside : ∀ q (h : q ∈ cylinderSide), B0 q = (S ⟨q, h⟩).val := fun q h => dite_eq_left h
   have hcapP : ∀ q, q ∉ cylinderSide → 0 < q.2 → B0 q = (gb q.1, 1) := by
     intro q h hp
-    simp only [B0, dif_neg h, if_pos hp]
+    simp only [B0, dite_eq_right h, ite_eq_left hp]
   have hcapN : ∀ q, q ∉ cylinderSide → ¬ 0 < q.2 → B0 q = (ga q.1, -1) := by
     intro q h hp
-    simp only [B0, dif_neg h, if_neg hp]
+    simp only [B0, dite_eq_right h, ite_eq_right hp]
   have hrimb : ∀ q (h : q ∈ cylinderSide), q.2 = 1 → (S ⟨q, h⟩).val = (gb q.1, 1) := by
     intro q h h2
     have hu : q.1 ∈ sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 := mem_sphere_zero_iff_norm.mpr h.1

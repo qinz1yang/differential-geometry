@@ -16,15 +16,15 @@ open Classical in
 theorem exists_centered_prism_of_ball_pair_inter_disk
     {C₁ C₂ D : Set E3} (h₁ : IsPLBall 3 C₁) (h₂ : IsPLBall 3 C₂)
     {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : C₁ ∩ C₂ = D)
     (hD₁ : D ⊆ frontier C₁) (hD₂ : D ⊆ frontier C₂) :
     ∃ ρ : (Fin 3 → ℝ) × ℝ → E3,
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (C₁ ∪ C₂) ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = r x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = C₁ ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = C₂ := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (C₁ ∪ C₂) ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = r x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = C₁ ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = C₂ := by
   classical
   let _ : DecidableEq E3 := Classical.decEq _
   obtain ⟨K, hKfin, hKspace⟩ := h₁.isPolyhedron.exists_simplicialComplex

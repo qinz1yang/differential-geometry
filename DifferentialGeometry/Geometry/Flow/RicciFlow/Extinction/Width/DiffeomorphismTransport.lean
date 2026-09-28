@@ -219,9 +219,9 @@ theorem diskExtension_comp_diffeomorph (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
       fun z => Φ (diskExtension u.map z) := by
   funext z
   by_cases hz : z ∈ Metric.closedBall (0 : ℂ) 1
-  · rw [diskExtension, dif_pos hz, diskExtension, dif_pos hz]
+  · rw [diskExtension, dite_eq_left hz, diskExtension, dite_eq_left hz]
     rfl
-  · rw [diskExtension, dif_neg hz, diskExtension, dif_neg hz]
+  · rw [diskExtension, dite_eq_right hz, diskExtension, dite_eq_right hz]
     rfl
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] [IsManifold 𝓘(ℝ, E) ∞ A] in
@@ -327,12 +327,12 @@ theorem SmoothDisk.sectionalDensity_comp_diffeomorph [I.Boundaryless] [T2Space Q
   rw [SmoothDisk.sectionalDensity, SmoothDisk.sectionalDensity,
     SmoothDisk.conformalFactor_comp_diffeomorph]
   by_cases hpos : 0 < u.conformalFactor g z
-  · rw [if_pos hpos, if_pos hpos]
+  · rw [ite_eq_left hpos, ite_eq_left hpos]
     congr 1
     rw [SmoothDisk.differential_comp_diffeomorph, SmoothDisk.differential_comp_diffeomorph]
     exact sectionalCurvature_pullbackMetricCross_comp g Φ (u.map z)
       (u.differential z 1) (u.differential z Complex.I)
-  · rw [if_neg hpos, if_neg hpos]
+  · rw [ite_eq_right hpos, ite_eq_right hpos]
 
 
 theorem SmoothDisk.inwardConormal_comp_diffeomorph [T2Space Q] [T2Space A]
@@ -344,8 +344,8 @@ theorem SmoothDisk.inwardConormal_comp_diffeomorph [T2Space Q] [T2Space A]
   have hcf := SmoothDisk.conformalFactor_comp_diffeomorph Φ g u z
   rw [SmoothDisk.inwardConormal, SmoothDisk.inwardConormal, SmoothDisk.comp_diffeomorph_map, hcf]
   by_cases h : 0 < u.conformalFactor g z
-  · rw [if_pos h, if_pos h, SmoothDisk.differential_comp_diffeomorph, map_smul]
-  · rw [if_neg h, if_neg h, map_zero]
+  · rw [ite_eq_left h, ite_eq_left h, SmoothDisk.differential_comp_diffeomorph, map_smul]
+  · rw [ite_eq_right h, ite_eq_right h, map_zero]
 
 theorem SmoothDisk.boundarySpeed_comp_diffeomorph [T2Space Q] [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
@@ -388,9 +388,9 @@ theorem disk_curvature_inequality_of_standardModelCopy
   have hsd : diskExtension (u'.sectionalDensity g') = diskExtension (u.sectionalDensity g) := by
     funext z
     by_cases hz : z ∈ Metric.closedBall (0 : ℂ) 1
-    · rw [diskExtension, dif_pos hz, diskExtension, dif_pos hz]
+    · rw [diskExtension, dite_eq_left hz, diskExtension, dite_eq_left hz]
       exact SmoothDisk.sectionalDensity_comp_diffeomorph c.equiv g u ⟨z, hz⟩
-    · rw [diskExtension, dif_neg hz, diskExtension, dif_neg hz]
+    · rw [diskExtension, dite_eq_right hz, diskExtension, dite_eq_right hz]
       exact SmoothDisk.sectionalDensity_comp_diffeomorph c.equiv g u diskCenter
   refine ⟨?_, ?_, ?_⟩
   · rw [← hsd]
@@ -580,7 +580,7 @@ theorem SmoothDisk.isHarmonic_comp_diffeomorph [I.Boundaryless] [T2Space Q] [T2S
     have hFw : F.map w = Φ (u.map ⟨w, hwb⟩) := by
       have h1 : F.map w = diskExtension (SmoothDisk.comp_diffeomorph Φ u).map w :=
         F.agrees ⟨hwd, hwb⟩
-      rw [h1, diskExtension, dif_pos hwb, SmoothDisk.comp_diffeomorph_map]
+      rw [h1, diskExtension, dite_eq_left hwb, SmoothDisk.comp_diffeomorph_map]
     change Φ.symm (F.map w) = diskExtension u.map w
     rw [hFw, Φ.symm_apply_apply]
     exact (diskExtension_coe u.map ⟨w, hwb⟩).symm

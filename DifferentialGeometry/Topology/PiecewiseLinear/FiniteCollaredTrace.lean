@@ -23,14 +23,14 @@ theorem HasFiniteCollaredTrace.exists_innermost_disk_neighborhood {L T O : Set E
     (hO : IsOpen O) (hTO : T ⊆ O)
     (hnull : ∃ G ∈ traceCircles L T, boundsDiskIn G T) :
     ∃ (G Δ Ω : Set E3) (r : (Fin 3 → ℝ) → E3),
-      G ∈ traceCircles L T ∧ IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+      G ∈ traceCircles L T ∧ IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
       Δ ⊆ T ∧ r '' stdSimplexBoundary 2 = G ∧ IsOpen Ω ∧ Δ ⊆ Ω ∧ Ω ⊆ O ∧
       Δ ∩ L = G ∧ Ω ∩ L ∩ T ⊆ G ∧
       ∀ J ∈ traceCircles L T, J ≠ G → Disjoint Ω J := by
   classical
   let _ : Finite (traceCircles L T) := h.finiteTrace.to_subtype
   have hseed : ∃ (G : traceCircles L T) (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
         r '' stdSimplexBoundary 2 = (G : Set E3) := by
     obtain ⟨G, hG, Δ, r, hr, hΔT, hGr⟩ := hnull
     exact ⟨⟨G, hG⟩, Δ, r, hr, hΔT, hGr.symm⟩

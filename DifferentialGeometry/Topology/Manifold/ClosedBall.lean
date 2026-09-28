@@ -25,7 +25,7 @@ theorem closedCell_boundary_eq_sphere (m : ℕ) :
     frontier (range (𝓡∂ (m + 1)))) ↔ ‖x.val‖ = 1
   rw [frontier_range_modelWithCornersEuclideanHalfSpace]
   by_cases hx : ‖x.val‖ < 1
-  · rw [closedCellChartAt, dif_pos hx]
+  · rw [closedCellChartAt, dite_eq_left hx]
     change (0 = (closedCellShiftSucc m 1 x.val) 0) ↔ ‖x.val‖ = 1
     rw [closedCellShiftSucc_apply_zero]
     have hcoord := closedCellCoord_norm_le_norm x.val
@@ -33,7 +33,7 @@ theorem closedCell_boundary_eq_sphere (m : ℕ) :
       have := (abs_le.mp (show |x.val 0| ≤ ‖x.val‖ from hcoord)).1
       exact this
     constructor <;> intro h <;> linarith
-  · rw [closedCellChartAt, dif_neg hx]
+  · rw [closedCellChartAt, dite_eq_right hx]
     change (0 = 1 - ‖x.val‖ ^ 2) ↔ ‖x.val‖ = 1
     constructor <;> intro h <;> nlinarith [norm_nonneg x.val, x.property]
 
@@ -146,7 +146,7 @@ private theorem closedCell_inclusion_isImmersionOfComplement (m : ℕ) :
   by_cases hx : ‖x.val‖ < 1
   · have hchart : chartAt (EuclideanHalfSpace (m + 1)) x = closedCellInteriorChart m := by
       change closedCellChartAt x = _
-      rw [closedCellChartAt, dif_pos hx]
+      rw [closedCellChartAt, dite_eq_left hx]
     apply IsImmersionAtOfComplement.mk_of_continuousAt continuous_subtype_val.continuousAt φ
       (chartAt (EuclideanHalfSpace (m + 1)) x) (interiorAmbientChart m)
       (mem_chart_source _ x) (mem_univ _) (chart_mem_maximalAtlas _)
@@ -164,7 +164,7 @@ private theorem closedCell_inclusion_isImmersionOfComplement (m : ℕ) :
     let σ : Bool := decide (0 < x.val i)
     have hchart : chartAt (EuclideanHalfSpace (m + 1)) x = closedCellBoundaryChart m i σ := by
       change closedCellChartAt x = _
-      rw [closedCellChartAt, dif_neg hx]
+      rw [closedCellChartAt, dite_eq_right hx]
     have hsource : x.val ∈ (boundaryAmbientChart m i σ).source := by
       have h := mem_chart_source (EuclideanHalfSpace (m + 1)) x
       rw [hchart] at h

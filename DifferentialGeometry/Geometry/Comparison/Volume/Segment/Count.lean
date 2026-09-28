@@ -38,7 +38,7 @@ theorem hyperbolicSn_le_mul_exp {q τ : ℝ} (hq : 0 ≤ q) :
   by_cases hq0 : q = 0
   · subst hq0; simp [hyperbolicSn]
   · have hqpos : 0 < q := hq.lt_of_ne (Ne.symm hq0)
-    rw [hyperbolicSn, if_neg hq0, div_le_iff₀ hqpos]
+    rw [hyperbolicSn, ite_eq_right hq0, div_le_iff₀ hqpos]
     calc Real.sinh (q * τ) ≤ (q * τ) * Real.exp (q * τ) := sinh_le_mul_exp (q * τ)
       _ = τ * Real.exp (q * τ) * q := by ring
 
@@ -46,7 +46,7 @@ theorem hyperbolicSn_ge_self {q τ : ℝ} (hq : 0 ≤ q) (hτ : 0 ≤ τ) : τ �
   by_cases hq0 : q = 0
   · subst hq0; simp [hyperbolicSn]
   · have hqpos : 0 < q := hq.lt_of_ne (Ne.symm hq0)
-    rw [hyperbolicSn, if_neg hq0, le_div_iff₀ hqpos]
+    rw [hyperbolicSn, ite_eq_right hq0, le_div_iff₀ hqpos]
     calc τ * q = q * τ := by ring
       _ ≤ Real.sinh (q * τ) := Real.self_le_sinh_iff.mpr (mul_nonneg hq hτ)
 

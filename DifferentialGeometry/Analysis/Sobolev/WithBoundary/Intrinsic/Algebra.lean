@@ -135,7 +135,11 @@ theorem chartPushed_mul_norm_le_uMax_chartPushed
 theorem eLpNorm_chartPushed_mul_le_uMax_mul
     (α : M) {u v : M → ℝ} {uMax : ℝ}
     (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax)
-    (q : ℝ≥0∞) (μ : Measure EuN) :
+    (q : ℝ≥0∞) (μ : Measure EuN)
+    (hf : AEStronglyMeasurable
+      (chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
+        (fun x => u x * v x)) μ) :
     eLpNorm (chartPushed (n := n) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
         (fun x => u x * v x)) q μ ≤
@@ -144,13 +148,20 @@ theorem eLpNorm_chartPushed_mul_le_uMax_mul
           (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α v) q μ := by
   refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := chartPushed (n := n) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α v)
-    (c := uMax) ?_ q
+    (c := uMax) hf ?_ q
   refine Filter.Eventually.of_forall (fun y => ?_)
   exact chartPushed_mul_norm_le_uMax_chartPushed (n := n) (M := M) α hu_bound y
 
 theorem wkpNormHalfSpace_zero_chartPushed_mul_le
     (α : M) {u v : M → ℝ} {uMax : ℝ}
     (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax)
+    (hf : AEStronglyMeasurable
+      (chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
+        (fun x => u x * v x))
+      (volume.restrict
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
+          (chartTargetEuclid (n := n) (M := M) α))))
     (p : ℝ≥0∞) :
     DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
         (d := n) 0 p
@@ -168,11 +179,19 @@ theorem wkpNormHalfSpace_zero_chartPushed_mul_le
         (d := n) p _ _,
       DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace_zero
         (d := n) p _ _]
-  exact eLpNorm_chartPushed_mul_le_uMax_mul (n := n) (M := M) α hu_bound p _
+  exact eLpNorm_chartPushed_mul_le_uMax_mul (n := n) (M := M) α hu_bound p _ hf
 
 theorem wkpNormChart_zero_mul_le_const_mul_wkpNormChart_withBoundary
     {u v : M → ℝ} {uMax : ℝ}
-    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax) (p : ℝ≥0∞) :
+    (hu_bound : ∀ x : M, ‖u x‖ ≤ uMax)
+    (hf : ∀ α : M, AEStronglyMeasurable
+      (chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
+        (fun x => u x * v x))
+      (volume.restrict
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
+          (chartTargetEuclid (n := n) (M := M) α))))
+    (p : ℝ≥0∞) :
     wkpNormChart (n := n) (M := M) 0 p (fun x => u x * v x) ≤
       ENNReal.ofReal uMax *
         wkpNormChart (n := n) (M := M) 0 p v := by
@@ -180,7 +199,7 @@ theorem wkpNormChart_zero_mul_le_const_mul_wkpNormChart_withBoundary
   unfold wkpNormChart
   rw [← ENNReal.tsum_mul_left]
   refine ENNReal.tsum_le_tsum (fun α => ?_)
-  exact wkpNormHalfSpace_zero_chartPushed_mul_le (n := n) (M := M) α hu_bound p
+  exact wkpNormHalfSpace_zero_chartPushed_mul_le (n := n) (M := M) α hu_bound (hf α) p
 
 private noncomputable def chartPullbackZeroExtend (α : M) (f : M → ℝ) :
     EuclideanSpace ℝ (Fin n) → ℝ := by
@@ -200,7 +219,7 @@ private lemma chartSmoothExt_local_apply_of_mem_target
   change (if y ∈ (extChartAt I_hs α).target then
       f ((extChartAt I_hs α).symm y)
     else 0) = f ((extChartAt I_hs α).symm y)
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 omit [IsManifold (𝓡∂ n) ∞ M] [T2Space M] [SigmaCompactSpace M] in
 private lemma chartSmoothExt_local_apply_of_notMem_target
@@ -211,7 +230,7 @@ private lemma chartSmoothExt_local_apply_of_notMem_target
   change (if y ∈ (extChartAt I_hs α).target then
       f ((extChartAt I_hs α).symm y)
     else 0) = 0
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 private lemma chartSmoothExt_local_eq_chartPushed_on_target
     (α : M) (u : M → ℝ) {y : EuclideanSpace ℝ (Fin n)}
@@ -868,7 +887,7 @@ private lemma chartLifted_local_apply_of_mem_target
   classical
   change (if y ∈ (extChartAt I_hs α).target then v ((extChartAt I_hs α).symm y)
     else 0) = v ((extChartAt I_hs α).symm y)
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 omit [IsManifold (𝓡∂ n) ∞ M] [T2Space M] [SigmaCompactSpace M] [CompactSpace M] in
 private lemma chartLifted_local_apply_of_notMem_target
@@ -878,7 +897,7 @@ private lemma chartLifted_local_apply_of_notMem_target
   classical
   change (if y ∈ (extChartAt I_hs α).target then v ((extChartAt I_hs α).symm y)
     else 0) = 0
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 omit [CompactSpace M] in
 private lemma chartPushed_eq_chartPushed_mul_chartLifted_local
@@ -942,6 +961,13 @@ omit [CompactSpace M] in
 private lemma eLpNorm_chartPushed_mul_le_vMax_eLpNorm_chartPushed_u
     (α : M) {u v : M → ℝ} {vMax : ℝ}
     (hv_bound : ∀ x : M, ‖v x‖ ≤ vMax) (_hvMax_nn : 0 ≤ vMax)
+    (hf : AEStronglyMeasurable
+      (chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
+        (fun x => u x * v x))
+      (volume.restrict
+        (DifferentialGeometry.Analysis.Sobolev.Euclidean.interiorHalfSpace
+          (chartTargetEuclid (n := n) (M := M) α))))
     (q : ℝ≥0∞) :
     eLpNorm (chartPushed (n := n) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α
@@ -958,7 +984,7 @@ private lemma eLpNorm_chartPushed_mul_le_vMax_eLpNorm_chartPushed_u
   classical
   refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := chartPushed (n := n) (M := M)
       (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) α u)
-    (c := vMax) ?_ q
+    (c := vMax) hf ?_ q
   refine Filter.Eventually.of_forall (fun y => ?_)
   unfold chartPushed
   set ρy : ℝ := ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M α

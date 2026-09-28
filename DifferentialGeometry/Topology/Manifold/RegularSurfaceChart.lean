@@ -3,6 +3,7 @@ Copyright (c) 2026 Yuan Liao. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yuan Liao
 -/
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import DifferentialGeometry.Analysis.Calculus.Inverse.LocalInverse
 import DifferentialGeometry.Topology.Manifold.RegularZero.Coordinates
 import Mathlib.Analysis.Complex.Basic

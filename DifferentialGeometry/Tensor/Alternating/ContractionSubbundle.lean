@@ -1,4 +1,4 @@
-import DifferentialGeometry.Bundle.SmoothSubbundle.KernelAPI
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import DifferentialGeometry.Tensor.Alternating.Coordinates.Basis
 import DifferentialGeometry.Tensor.Alternating.Bundle.Defs
 import DifferentialGeometry.Tensor.Alternating.Contraction

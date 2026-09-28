@@ -4,6 +4,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffAt_apply metricDiffSq metricDiffSq_def)
+
 open MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral.Measure

@@ -23,7 +23,7 @@ private theorem bufferedJetNorm_add_le (epsilon : ℝ)
         tensor02CovDerivNormWith a B gCov gNorm x := by
   simp only [tensor02CovDerivNormWith, tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_add,
     ContMDiffSection.coe_add, Pi.add_apply]
-  exact Tensor0SBundle.sqrt_normSq0S_add_le gNorm x (a + 2) _ _
+  exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le gNorm x (a + 2) _ _
 
 
 def backwardForwardErrorJet (epsilon c : ℝ)

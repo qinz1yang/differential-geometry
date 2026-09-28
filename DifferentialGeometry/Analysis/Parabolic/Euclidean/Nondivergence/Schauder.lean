@@ -293,7 +293,7 @@ theorem parabolic_nondivergence_rescaled_interior_schauder_estimate
     simpa only [d2v, NNReal.coe_mul, NNReal.coe_pow] using
       hd2uNormV p hp
   have hlocal :=
-    parabolic_nondivergence_centered_ball_schauder_estimate_of_local_source_estimates_of_small_freeze_defect
+    nondivergence_centered_ball_schauder_estimate_of_small_defect
       (alpha := alpha)
       (Ksource := Ksource * rho ^ (alpha : Real) * rho ^ 2)
       (Kc := Kc * rho ^ (alpha : Real) * rho ^ 2)

@@ -86,7 +86,7 @@ theorem exists_stageMetric_scalar_ge :
       by_cases hfin : H.time (Fin.last H.eventCount) < H.horizon
       · have hmetric : H.stageMetric (Fin.last H.eventCount) t =
             (H.finalSlab hfin).flow.base.metric t := by
-          simp only [stageMetric, Fin.lastCases_last, dif_pos hfin]
+          simp only [stageMetric, Fin.lastCases_last, dite_eq_left hfin]
         rw [hmetric]
         exact scalar_ge_of_initial_scalar_ge_on_closed_slab hfin (hcpos _)
           (H.finalSlab hfin).flow (H.finalSlab hfin).equation (fun _ hu => hu) (fun _ hu => hu)
@@ -95,7 +95,7 @@ theorem exists_stageMetric_scalar_ge :
           le_antisymm (ht.2.trans (le_of_not_gt hfin)) ht.1
         have hmetric : H.stageMetric (Fin.last H.eventCount) t =
             H.initialMetric (Fin.last H.eventCount) := by
-          simp only [stageMetric, Fin.lastCases_last, dif_neg hfin]
+          simp only [stageMetric, Fin.lastCases_last, dite_eq_right hfin]
         rw [hmetric]
         exact hcinit _ x
     | cast i =>
@@ -122,7 +122,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem exists_stageMetric_scalar_lower_bound :
     ∃ b : ℝ, 0 < b ∧ ∀ (j : Fin (H.eventCount + 1)), ∀ t ∈ H.toHistory.stageDomain j,

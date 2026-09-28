@@ -1,13 +1,16 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Cone
 import DifferentialGeometry.Topology.Simplex.VertexContraction
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 theorem vertexContraction_zero_face_eq_simplexCone (n : ℕ) (t : unitInterval)
-    (p : stdSimplex ℝ (Fin (n + 1))) :
-    vertexContraction (0 : Fin (n + 2)) (t, stdSimplex.map (0 : Fin (n + 2)).succAbove p) =
+    (p : coordinateSet ℝ (Fin (n + 1))) :
+    vertexContraction (0 : Fin (n + 2)) (t, coordinateMap (0 : Fin (n + 2)).succAbove p) =
       simplexCone n (t, p) := by
   apply Subtype.ext
   funext i
@@ -21,9 +24,9 @@ theorem vertexContraction_zero_face_eq_simplexCone (n : ℕ) (t : unitInterval)
     simp [eq_comm]
 
 theorem vertexContraction_zero_face_succ (n : ℕ) (i : Fin (n + 1)) (t : unitInterval)
-    (p : stdSimplex ℝ (Fin (n + 1))) :
-    vertexContraction (0 : Fin (n + 2)) (t, stdSimplex.map i.succ.succAbove p) =
-      stdSimplex.map i.succ.succAbove (vertexContraction (0 : Fin (n + 1)) (t, p)) := by
+    (p : coordinateSet ℝ (Fin (n + 1))) :
+    vertexContraction (0 : Fin (n + 2)) (t, coordinateMap i.succ.succAbove p) =
+      coordinateMap i.succ.succAbove (vertexContraction (0 : Fin (n + 1)) (t, p)) := by
   simpa only [Fin.succ_succAbove_zero] using
     vertexContraction_map i.succ.succAbove (0 : Fin (n + 1)) t p
 

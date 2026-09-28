@@ -14,8 +14,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem RetainedCoreHistory.exists_crossing_bad_point_terminal {P₀ : OrientedThreeStage.{u}}
-    (H : RetainedCoreHistory P₀) {s : ℝ}
+theorem RetainedCoreHistory.exists_crossing_bad_point_terminal
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     {p : CutoffParameters} (records : ∀ i, GeometricCutoffRecord H.toHistory i p)
     {ε C1 C2 qcan τmin θ Dcap θcap ζ ζ' ς : ℝ} {Ctime Cgrad : ℝ≥0}

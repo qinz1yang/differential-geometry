@@ -179,7 +179,7 @@ theorem exists_chartCentral_disjoint_not_chartTail_disjoint :
     obtain ⟨z', hz', hzx⟩ := hx'
     have hz1 : |z.1.2| ≤ 2 := hz
     have hz2 : |z'.1.2| ≤ 2 := hz'
-    simp only [bridgeTestChart, if_pos hz1, if_pos hz2] at hzx
+    simp only [bridgeTestChart, ite_eq_left hz1, ite_eq_left hz2] at hzx
     norm_num at hzx
   · let z₀ : neckBuffer (1 / 2) := ⟨(sphereNorth, 5 / 2), by
       rw [mem_neckBuffer_iff]
@@ -192,9 +192,9 @@ theorem exists_chartCentral_disjoint_not_chartTail_disjoint :
       rw [show z₀.1.2 = 5 / 2 from rfl, abs_of_pos (show (0 : ℝ) < 5 / 2 by norm_num)]
       norm_num
     have hf : bridgeTestChart 0 z₀ = 5 / 2 := by
-      rw [bridgeTestChart, if_neg hzle]
+      rw [bridgeTestChart, ite_eq_right hzle]
     have hg : bridgeTestChart 1 z₀ = 5 / 2 := by
-      rw [bridgeTestChart, if_neg hzle]
+      rw [bridgeTestChart, ite_eq_right hzle]
     intro hd
     exact (Set.disjoint_left.mp hd ⟨z₀, hzt, hf⟩) ⟨z₀, hzt, hg⟩
 

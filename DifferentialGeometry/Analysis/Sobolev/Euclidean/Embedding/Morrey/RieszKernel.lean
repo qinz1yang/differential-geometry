@@ -34,7 +34,7 @@ theorem riesz_kernel_integrable_of_gt_neg_dim
       (fun x : E => ‖x‖ ^ α) =ᵐ[volume.restrict (Metric.ball (0 : E) R)] (g ∘ (‖·‖)) := by
     filter_upwards [ae_restrict_mem measurableSet_ball] with x hx
     simp only [Function.comp_apply, g, Metric.mem_ball, dist_zero_right] at hx ⊢
-    rw [if_pos hx]
+    rw [ite_eq_left hx]
   rw [IntegrableOn, integrable_congr hag]
   suffices h : Integrable (fun x : E => g ‖x‖) volume from h.integrableOn
   have hd_one : 1 ≤ d := Nat.one_le_iff_ne_zero.mpr (NeZero.ne d)
@@ -48,14 +48,14 @@ theorem riesz_kernel_integrable_of_gt_neg_dim
       simp only [g, smul_eq_mul, h_ind, Set.indicator, Set.mem_Ioo]
       by_cases h1 : r < R
       · have h_in : 0 < r ∧ r < R := ⟨hr, h1⟩
-        simp only [if_pos h1, if_pos h_in]
+        simp only [ite_eq_left h1, ite_eq_left h_in]
         rw [← Real.rpow_natCast r (d - 1), ← Real.rpow_add hr,
           Nat.cast_sub hd_one]
         push_cast
         ring_nf
-      · simp only [if_neg h1, mul_zero]
+      · simp only [ite_eq_right h1, mul_zero]
         have h_not : ¬ (0 < r ∧ r < R) := fun ⟨_, h2⟩ => h1 h2
-        simp only [if_neg h_not]
+        simp only [ite_eq_right h_not]
     have hα_finite : -1 < (d : ℝ) - 1 + α := by linarith
     have h_ind_int : IntegrableOn h_ind (Set.Ioi 0) := by
       apply Integrable.integrableOn
@@ -113,7 +113,7 @@ private theorem integral_norm_rpow_ball_of_gt_neg_dim
         have hf_y : f y = 0 := by
           simp only [f]
           have h_not : ¬ (0 < y ∧ y < R) := fun ⟨_, h2⟩ => hlt h2
-          rw [if_neg h_not]
+          rw [ite_eq_right h_not]
         rw [hf_y]
         simp
     rw [setIntegral_congr_fun measurableSet_Ioi hsupp]
@@ -348,9 +348,6 @@ theorem riesz_kernel_memLp
     rw [h_rhs_eq]
     rw [show α = (1 - (d : ℝ)) * p / (p - 1) from by simp [hα_def, hq_def]; ring]
     exact (div_lt_div_iff_of_pos_right hpm1_pos).mpr h_lhs
-  have h_aesm : AEStronglyMeasurable (fun y : E => ‖x - y‖ ^ (1 - (d : ℝ)))
-      (volume.restrict (Metric.ball z R)) :=
-    (measurable_norm_sub_rpow (1 - (d : ℝ)) x).restrict
   have hα_int : IntegrableOn (fun y : E => ‖x - y‖ ^ α) (Metric.ball z R) volume := by
     have hsub : Metric.ball z R ⊆ Metric.ball x (R + dist x z) := by
       intro y hy
@@ -388,6 +385,9 @@ theorem riesz_kernel_memLp
       rw [hcomp_eq, hpre]
       exact hint_translated
     exact hint_at_x.mono_set hsub
+  have h_aesm : AEStronglyMeasurable (fun y : E => ‖x - y‖ ^ (1 - (d : ℝ)))
+      (volume.restrict (Metric.ball z R)) :=
+    (measurable_norm_sub_rpow (1 - (d : ℝ)) x).restrict
   have h_lintegral_finite :
       ∫⁻ y in Metric.ball z R, ‖‖x - y‖ ^ (1 - (d : ℝ))‖ₑ ^ q ∂volume ≠ ⊤ := by
     have h_lintegral_eq :
@@ -403,11 +403,12 @@ theorem riesz_kernel_memLp
     rw [← ofReal_integral_eq_lintegral_ofReal hα_int (ae_of_all _ fun y =>
       Real.rpow_nonneg (norm_nonneg _) _)]
     exact ENNReal.ofReal_ne_top
-  refine ⟨h_aesm, ?_⟩
   have hq_enn_ne_zero : ENNReal.ofReal q ≠ 0 := by
     rw [Ne, ENNReal.ofReal_eq_zero]
     exact not_le.mpr hq_pos
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hq_enn_ne_zero ENNReal.ofReal_ne_top]
+  change eLpNorm (fun y : E => ‖x - y‖ ^ (1 - (d : ℝ))) (ENNReal.ofReal q)
+      (volume.restrict (Metric.ball z R)) < ⊤
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal hq_enn_ne_zero ENNReal.ofReal_ne_top h_aesm]
   rw [ENNReal.toReal_ofReal hq_pos.le]
   refine ENNReal.rpow_lt_top_of_nonneg ?_ ?_
   · positivity

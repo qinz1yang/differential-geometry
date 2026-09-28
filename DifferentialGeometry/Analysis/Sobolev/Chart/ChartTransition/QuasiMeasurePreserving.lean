@@ -189,7 +189,7 @@ theorem chartTransitionEuclidRestr_comp_ae_eq_restrict
         exact ⟨hy_eq ▸ hys, hyΩ⟩
     rw [h_inter_eq]
     exact chartTransitionEuclid_preimage_overlap_null (I := I) (M := M) γ α hs_zero
-  exact h_qmp_into.ae_eq hfh
+  exact h_qmp_into.ae_eq_comp hfh
 
 theorem chartTransitionEuclid_comp_ae_eq_restrict
     [I.Boundaryless] (γ α : M)

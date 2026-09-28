@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Face
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import DifferentialGeometry.Topology.Simplex.NormedBall
@@ -6,22 +7,24 @@ import Mathlib.Analysis.InnerProductSpace.PiL2
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {n : ℕ} {X : Type*} [TopologicalSpace X]
 
 private theorem face_delete_map (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 2))) (hi : p.val i = 0) :
-    stdSimplex.map i.succAbove (faceDelete i ⟨p, hi⟩) = p :=
+    (p : coordinateSet ℝ (Fin (n + 2))) (hi : p.val i = 0) :
+    coordinateMap i.succAbove (faceDelete i ⟨p, hi⟩) = p :=
   congrArg Subtype.val (faceInsert_faceDelete i ⟨p, hi⟩)
 
 private theorem face_values_eq
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p))
-    (i j : Fin (n + 3)) (p : stdSimplex ℝ (Fin (n + 3)))
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p))
+    (i j : Fin (n + 3)) (p : coordinateSet ℝ (Fin (n + 3)))
     (hi : p.val i = 0) (hj : p.val j = 0) :
     f i (faceDelete i ⟨p, hi⟩) = f j (faceDelete j ⟨p, hj⟩) := by
   by_cases hji : j = i
@@ -31,20 +34,20 @@ private theorem face_values_eq
   let q := faceDelete i ⟨p, hi⟩
   have hq : q.val j = 0 := hj
   let z := faceDelete j ⟨q, hq⟩
-  have hz : stdSimplex.map j.succAbove z = q := face_delete_map j q hq
+  have hz : coordinateMap j.succAbove z = q := face_delete_map j q hq
   have hother : faceDelete (i.succAbove j) ⟨p, hj⟩ =
-      stdSimplex.map (j.predAbove i).succAbove z := by
+      coordinateMap (j.predAbove i).succAbove z := by
     apply (faceHomeomorph (i.succAbove j)).injective
     apply Subtype.ext
-    change stdSimplex.map (i.succAbove j).succAbove
+    change coordinateMap (i.succAbove j).succAbove
       (faceDelete (i.succAbove j) ⟨p, hj⟩) =
-        stdSimplex.map (i.succAbove j).succAbove (stdSimplex.map (j.predAbove i).succAbove z)
+        coordinateMap (i.succAbove j).succAbove (coordinateMap (j.predAbove i).succAbove z)
     rw [face_delete_map]
     calc
-      p = stdSimplex.map i.succAbove q := (face_delete_map i p hi).symm
-      _ = stdSimplex.map i.succAbove (stdSimplex.map j.succAbove z) := congrArg _ hz.symm
+      p = coordinateMap i.succAbove q := (face_delete_map i p hi).symm
+      _ = coordinateMap i.succAbove (coordinateMap j.succAbove z) := congrArg _ hz.symm
       _ = _ := by
-        rw [stdSimplex.map_comp_apply, stdSimplex.map_comp_apply]
+        rw [coordinateMap_comp_apply, coordinateMap_comp_apply]
         congr 1
         funext k
         exact (Fin.succAbove_succAbove_succAbove_predAbove i j k).symm
@@ -54,26 +57,26 @@ private theorem face_values_eq
   exact h i j z
 
 private def boundaryDescFun
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (p : boundary (Fin (n + 3))) : X :=
   f p.property.choose (faceDelete p.property.choose ⟨p.val, p.property.choose_spec⟩)
 
 private theorem boundaryDescFun_face
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p))
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p))
     (p : boundary (Fin (n + 3))) (i : Fin (n + 3)) (hi : p.val.val i = 0) :
     boundaryDescFun f p = f i (faceDelete i ⟨p.val, hi⟩) :=
   face_values_eq f h _ _ _ _ _
 
 def boundaryDesc
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p)) :
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p)) :
     C(boundary (Fin (n + 3)), X) where
   toFun := boundaryDescFun f
   continuous_toFun := by
@@ -99,13 +102,13 @@ def boundaryDesc
       ((continuous_subtype_val.comp continuous_subtype_val).subtype_mk _))
 
 theorem boundaryDesc_face
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p))
-    (i : Fin (n + 3)) (p : stdSimplex ℝ (Fin (n + 2))) :
-    boundaryDesc f h ⟨stdSimplex.map i.succAbove p,
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p))
+    (i : Fin (n + 3)) (p : coordinateSet ℝ (Fin (n + 2))) :
+    boundaryDesc f h ⟨coordinateMap i.succAbove p,
       ⟨i, map_succAbove_apply_pivot i p⟩⟩ = f i p := by
   change boundaryDescFun f _ = f i p
   rw [boundaryDescFun_face f h _ i (map_succAbove_apply_pivot i p)]
@@ -113,28 +116,28 @@ theorem boundaryDesc_face
 
 
 theorem boundaryDesc_unique
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p))
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p))
     (g : C(boundary (Fin (n + 3)), X))
-    (hg : ∀ (i : Fin (n + 3)) (p : stdSimplex ℝ (Fin (n + 2))),
-      g ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩ = f i p) :
+    (hg : ∀ (i : Fin (n + 3)) (p : coordinateSet ℝ (Fin (n + 2))),
+      g ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩ = f i p) :
     g = boundaryDesc f h := by
   ext p
   obtain ⟨i, hi⟩ := p.property
   let q := faceDelete i ⟨p.val, hi⟩
-  have he : p = ⟨stdSimplex.map i.succAbove q, ⟨i, map_succAbove_apply_pivot i q⟩⟩ :=
+  have he : p = ⟨coordinateMap i.succAbove q, ⟨i, map_succAbove_apply_pivot i q⟩⟩ :=
     Subtype.ext (face_delete_map i p.val hi).symm
   rw [he, hg, boundaryDesc_face]
 
 def boundarySphereDesc
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p)) :
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p)) :
     C(Metric.sphere (0 : EuclideanSpace ℝ (Fin (n + 2))) 1, X) :=
   (boundaryDesc f h).comp
     ⟨(stdSimplexNormedBoundarySphereHomeomorph
@@ -143,16 +146,16 @@ def boundarySphereDesc
         (EuclideanSpace.equiv (Fin (n + 2)) ℝ).symm).symm.continuous⟩
 
 theorem boundarySphereDesc_face
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p))
-    (i : Fin (n + 3)) (p : stdSimplex ℝ (Fin (n + 2))) :
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p))
+    (i : Fin (n + 3)) (p : coordinateSet ℝ (Fin (n + 2))) :
     boundarySphereDesc f h
       (stdSimplexNormedBoundarySphereHomeomorph
         (EuclideanSpace.equiv (Fin (n + 2)) ℝ).symm
-        ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩) = f i p := by
+        ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩) = f i p := by
   simp only [boundarySphereDesc, ContinuousMap.comp_apply, ContinuousMap.coe_mk,
     Homeomorph.symm_apply_apply]
   exact boundaryDesc_face f h i p

@@ -23,7 +23,6 @@ open DifferentialGeometry.Integral.Measure
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Integration
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicLp
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -231,10 +230,7 @@ theorem exists_l2_normalized_cutoff_with_energy_bound
     exact hmass_pos.trans_le hφlower
   let gp : M → ℝ := fun x => Real.sqrt (g.inner x
     (gradFun (I := I) g φ x) (gradFun (I := I) g φ x))
-  have hφdiff : ∀ᵐ x ∂μ, MDifferentiableAt I 𝓘(ℝ, ℝ) φ x :=
-    Filter.Eventually.of_forall fun x => hφ.mdifferentiableAt (by norm_num)
   have hgpmem : MemLp gp 2 μ := by
-    refine ⟨grad_norm_aesm (I := I) g hφdiff, ?_⟩
     exact hφgrad.trans_lt (lt_top_iff_ne_top.mpr hgrad_top)
   obtain ⟨v, hv, hvsupp, hvmass, hvgradi, hvenergy⟩ :=
     normalize_cutoff (I := I) (M := M) g hφ hφpos hgpmem

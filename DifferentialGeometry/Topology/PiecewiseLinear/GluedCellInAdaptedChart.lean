@@ -61,7 +61,7 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart {M : Type u} [TopologicalS
     have hxAc : x ∈ Ac.space := hNbA hx
     have hxV : D x ∈ V := hRV hx.1
     have hxsrc : D x ∈ ec.source := hVec hxV
-    simp only [g, if_pos hx.1]
+    simp only [g, ite_eq_left hx.1]
     have h_hx : h x = simplicialMap Rs φ x := rfl
     rw [h_hx, hfrozen hxAc, ec.left_inv hxsrc]
   let W₂ := Rc.spaceᶜ ∪ Nb
@@ -70,10 +70,10 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart {M : Type u} [TopologicalS
   have hg_eq_D_on_U₂ : EqOn g D U₂ := by
     rintro x ⟨hxW₂, hxD⟩
     rcases hxW₂ with hxRcompl | hxNb
-    · simp only [g, if_neg hxRcompl]
+    · simp only [g, ite_eq_right hxRcompl]
     · by_cases hxR : x ∈ Rc.space
       · exact hg_eq_D_on_Nb x ⟨hxR, hxNb⟩
-      · simp only [g, if_neg hxR]
+      · simp only [g, ite_eq_right hxR]
   have hcover : D.domain ⊆ (Ω ∩ D.domain) ∪ U₂ := by
     intro x hx
     by_cases hxR : x ∈ Rc.space
@@ -90,7 +90,7 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart {M : Type u} [TopologicalS
       have hxR : x ∈ Rc.space := hΩR ⟨hx, hxΩ⟩
       have hxhtgt : h x ∈ ec.target := hhtarget hxR
       have hgx_src : g x ∈ ec.source := by
-        simp only [g, if_pos hxR]
+        simp only [g, ite_eq_left hxR]
         exact ec.map_target hxhtgt
       have hProp := piecewiseAffineProperty_localInvariantProp (n := 2) (m := 3)
       have hlift := hProp.liftPropWithinAt_indep_chart_target
@@ -99,7 +99,7 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart {M : Type u} [TopologicalS
         intro y hy
         have hyR : y ∈ Rc.space := hΩR ⟨hy.2, hy.1⟩
         have hytgt : h y ∈ ec.target := hhtarget hyR
-        simp only [Function.comp_apply, g, if_pos hyR]
+        simp only [Function.comp_apply, g, ite_eq_left hyR]
         exact ec.right_inv hytgt
       have hxnhds : Ω ∈ 𝓝 x := hΩ.mem_nhds hxΩ
       have hpa_x : IsPiecewiseAffineWithinAt h (Rc.space ∩ Ω) x :=
@@ -118,8 +118,8 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart {M : Type u} [TopologicalS
         have hcont_comp : ContinuousWithinAt (ec.symm ∘ h) (Ω ∩ D.domain) x :=
           ec.continuousOn_symm.continuousWithinAt hxhtgt |>.comp hcont_h hmap_h
         refine hcont_comp.congr (fun y hy => ?_)
-          (by simp only [Function.comp_apply, g, if_pos hxR])
-        simp only [Function.comp_apply, g, if_pos (hΩR ⟨hy.2, hy.1⟩)]
+          (by simp only [Function.comp_apply, g, ite_eq_left hxR])
+        simp only [Function.comp_apply, g, ite_eq_left (hΩR ⟨hy.2, hy.1⟩)]
       have hPL_U1 : IsPLWithinAt 2 3 g (Ω ∩ D.domain) x :=
         hlift.mpr ⟨hcont_g, hlift_ecg⟩
       have h_inter := hProp.liftPropWithinAt_inter' (g := g) (s := D.domain) hU1_nhds
@@ -143,9 +143,9 @@ theorem exists_gluedCell_of_vertexMap_in_adaptedChart {M : Type u} [TopologicalS
       isPLOn := hg_pl }
   refine ⟨D', rfl, ?_, ?_⟩
   · intro x hx
-    simp only [D', g, if_pos hx]
+    simp only [D', g, ite_eq_left hx]
     rfl
   · intro x hx
-    simp only [D', g, if_neg hx]
+    simp only [D', g, ite_eq_right hx]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

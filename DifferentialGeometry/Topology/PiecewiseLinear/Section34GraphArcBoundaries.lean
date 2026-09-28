@@ -21,7 +21,7 @@ theorem LocallyFinitePLPieceIn.isPLCellOn_image_of_isPLHomeomorphOn_Icc
     (hsub : P ⊆ T.complex.space) (hγ : IsPLHomeomorphOn γ (Icc 0 1) P) :
     IsPLCellOn 1 (T.map '' P) {T.map (γ 0), T.map (γ 1)} := by
   let f : (Fin 2 → ℝ) →ₗ[ℝ] ℝ := LinearMap.proj 1
-  have hbij : BijOn f (stdSimplex ℝ (Fin 2)) (Icc 0 1) := by
+  have hbij : BijOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (Icc 0 1) := by
     refine ⟨fun x hx => ?_, fun x hx y hy hxy => ?_, fun t ht => ?_⟩
     · have hsum : x 0 + x 1 = 1 := by simpa [Fin.sum_univ_two] using hx.2
       exact ⟨hx.1 1, by change x 1 ≤ 1; linarith [hx.1 0]⟩
@@ -40,7 +40,7 @@ theorem LocallyFinitePLPieceIn.isPLCellOn_image_of_isPLHomeomorphOn_Icc
           linarith [ht.2]
         · exact ht.1
       · simp [Fin.sum_univ_two]
-  have hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 2)) (Icc 0 1) :=
+  have hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (Icc 0 1) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn (isHPolytope_stdSimplex (Fin 2)).isPolyhedron
       ((isPiecewiseAffineOn_of_affine f.toAffineMap isOpen_univ).mono_of_isPolyhedron
         (isHPolytope_stdSimplex (Fin 2)).isPolyhedron (subset_univ _)) hbij

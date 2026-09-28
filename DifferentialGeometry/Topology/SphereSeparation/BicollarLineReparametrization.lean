@@ -41,7 +41,7 @@ theorem bicollarLineHomeomorph_center {A : Type*} [TopologicalSpace A]
 private theorem bicollar_line_formula (a : ℝ) (ha : 0 < a) (z : ℝ) :
     OpenPartialHomeomorph.univBall (0 : ℝ) a z =
       (a * (Real.sqrt (1 + ‖z‖ ^ 2))⁻¹) * z := by
-  rw [OpenPartialHomeomorph.univBall, dif_pos ha]
+  rw [OpenPartialHomeomorph.univBall, dite_eq_left ha]
   change a * ((Real.sqrt (1 + ‖z‖ ^ 2))⁻¹ * z) + 0 = _
   simp only [add_zero, mul_assoc]
 

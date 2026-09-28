@@ -33,7 +33,7 @@ theorem mem_boundaryComplex_iff_of_delete_facet [dE : DecidableEq E] {n : ℕ}
       · rintro ⟨hws, hw, hwt⟩
         exact ⟨hws, (hdelete _ hw (by rw [Finset.card_insert_of_notMem hws, hscard])).mpr hwt⟩
     by_cases hst : s ⊆ t
-    · rw [if_pos hst]
+    · rw [ite_eq_left hst]
       obtain ⟨a, has, hat⟩ := Finset.exists_eq_insert_iff.mpr ⟨hst, by omega⟩
       have haV : a ∈ {w | w ∉ s ∧ insert w s ∈ K.faces} := ⟨has, hat.symm ▸ ht⟩
       have heq : {w | w ∉ s ∧ insert w s ∈ L.faces} =
@@ -74,7 +74,7 @@ theorem mem_boundaryComplex_iff_of_delete_facet [dE : DecidableEq E] {n : ℕ}
           ext x
           simp only [mem_sdiff, mem_insert_iff, mem_singleton_iff]
           aesop
-    · rw [if_neg hst]
+    · rw [ite_eq_right hst]
       have heq : {w | w ∉ s ∧ insert w s ∈ L.faces} =
           {w | w ∉ s ∧ insert w s ∈ K.faces} := by
         ext w
@@ -136,20 +136,20 @@ theorem boundaryComplex_space_of_delete_facet [dE : DecidableEq E] {n : ℕ}
         omega⟩
       exact Or.inr (mem_iUnion₂.mpr ⟨u, ⟨huT, by
         change u ∉ B.faces
-        simpa only [if_pos hut] using huB⟩, hxu⟩)
-    · exact Or.inl (mem_iUnion₂.mpr ⟨u, ⟨by simpa only [if_neg hut] using huB, hut⟩, hxu⟩)
+        simpa only [ite_eq_left hut] using huB⟩, hxu⟩)
+    · exact Or.inl (mem_iUnion₂.mpr ⟨u, ⟨by simpa only [ite_eq_right hut] using huB, hut⟩, hxu⟩)
   · rintro x (hx | hx)
     · obtain ⟨s, hs, hxs⟩ := mem_iUnion₂.mp hx
       obtain ⟨u, hu, hsu, hucard⟩ := exists_face_superset_card_eq_of_isPLSphere B hB hs.1
       have hut : ¬u ⊆ t := fun h => hs.2 (hsu.trans h)
       have huL : u ∈ B'.faces := (hmem hucard).mpr
-        ⟨boundaryComplex_faces_subset (n + 1) K hu, by simpa only [if_neg hut] using hu⟩
+        ⟨boundaryComplex_faces_subset (n + 1) K hu, by simpa only [ite_eq_right hut] using hu⟩
       exact B'.convexHull_subset_space huL (convexHull_mono (Finset.coe_subset.mpr hsu) hxs)
     · obtain ⟨s, hs, hxs⟩ := mem_iUnion₂.mp hx
       obtain ⟨u, hu, hsu, hucard⟩ := exists_face_superset_card_eq_of_isPLSphere T hT hs.1
       have huB : u ∉ B.faces := fun h => hs.2 (B.down_closed h hsu (T.nonempty_of_mem_faces hs.1))
       have huL : u ∈ B'.faces := (hmem hucard).mpr
-        ⟨hTK hu, by simpa only [if_pos hu.1] using huB⟩
+        ⟨hTK hu, by simpa only [ite_eq_left hu.1] using huB⟩
       exact B'.convexHull_subset_space huL (convexHull_mono (Finset.coe_subset.mpr hsu) hxs)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

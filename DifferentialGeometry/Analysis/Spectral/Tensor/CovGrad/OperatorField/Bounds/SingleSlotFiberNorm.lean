@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.Covariant
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 

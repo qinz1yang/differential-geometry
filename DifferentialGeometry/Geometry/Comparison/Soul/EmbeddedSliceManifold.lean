@@ -81,7 +81,7 @@ private def subtypeInverse (z : Fin d → ℝ) : S := by
 
 private theorem subtypeInverse_val (z : Fin d → ℝ) (hz : D.lift z ∈ D.chart.target) :
     (D.subtypeInverse z).1 = D.inverse z := by
-  simp only [subtypeInverse, dif_pos hz]
+  simp only [subtypeInverse, dite_eq_left hz]
 
 private theorem lift_contMDiff : ContMDiff 𝓘(ℝ, Fin d → ℝ) 𝓘(ℝ, E) ∞ D.lift :=
   (D.plane.direction.subtypeL.contMDiff.comp D.equiv.symm.toContinuousLinearMap.contMDiff).add

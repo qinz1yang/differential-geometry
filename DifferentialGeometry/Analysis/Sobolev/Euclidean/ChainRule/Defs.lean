@@ -149,10 +149,10 @@ theorem MemLp.comp_smoothDiffeoBounded
       (fun x => u (Φ.toFun x)) (volume.restrict Ω) := by
     have hqmp := Φ.toFun_quasiMeasurePreserving
     exact hu.aestronglyMeasurable.comp_quasiMeasurePreserving hqmp
-  refine ⟨h_aestrong, ?_⟩
+  rw [memLp_iff]
   by_cases hp_zero : p = 0
-  · simp [hp_zero]
-  rw [eLpNorm_lt_top_iff_lintegral_rpow_enorm_lt_top hp_zero hp_top]
+  · simp [hp_zero, h_aestrong]
+  rw [eLpNorm_lt_top_iff_lintegral_rpow_enorm_lt_top hp_zero hp_top h_aestrong]
   set q := p.toReal with hq_def
   set jLB := Φ.jacobianLowerBound with hjLB_def
   have hjLB_pos : 0 < jLB := Φ.jacobian_lower_bound_pos
@@ -186,7 +186,7 @@ theorem MemLp.comp_smoothDiffeoBounded
             ∂(volume.restrict Ω)
           = ∫⁻ y, ‖u y‖ₑ ^ q ∂(volume.restrict Ω') := hchg.symm
     rw [h_RHS_eq]
-    exact lintegral_rpow_enorm_lt_top_of_eLpNorm_lt_top hp_zero hp_top hu.2
+    exact lintegral_rpow_enorm_lt_top_of_eLpNorm_lt_top hp_zero hp_top hu.eLpNorm_lt_top
   have h_LHS_lt :
       ENNReal.ofReal jLB * ∫⁻ x, ‖u (Φ.toFun x)‖ₑ ^ q ∂(volume.restrict Ω) < ⊤ :=
     lt_of_le_of_lt hint_le h_RHS_lt

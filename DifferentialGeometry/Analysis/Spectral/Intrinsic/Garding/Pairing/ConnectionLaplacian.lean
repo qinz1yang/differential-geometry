@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.SobolevScaleSummability
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.CovariantDivergence
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_left tensorInnerPointwise_add_right tensorInnerPointwise_zero_left tensorInnerPointwise_zero_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

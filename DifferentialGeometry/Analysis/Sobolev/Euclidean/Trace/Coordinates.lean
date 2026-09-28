@@ -147,7 +147,7 @@ theorem integral_weakGrad_snd_mul_add_eq_boundary_of_tendsto_disk
   let v' := v ∘ euclideanPlaneProdEquiv.symm
   let G' := fun p : ℝ × ℝ => hv.weakGrad (euclideanPlaneProdEquiv.symm p) 1
   have hfLip (n : ℕ) : LipschitzWith (K n * ‖euclideanPlaneProdEquiv.symm.toContinuousLinearMap‖₊)
-      (f' n) := (hLip n).comp euclideanPlaneProdEquiv.symm.lipschitz
+      (f' n) := (hLip n).comp euclideanPlaneProdEquiv.symm.lipschitzWith
   have hv' : MemLp v' 2 (volume.restrict graphDisk) := by
     rw [graphDisk_eq_planarDisk]
     exact hv.memLp.comp_measurePreserving measurePreserving_euclideanPlaneProdEquiv_symm_unit_disk

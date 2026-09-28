@@ -24,7 +24,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_disjoint_of_decomp
     (h34 : HasSinglePolygonTraces K h Ec XK.space)
     (h8 : ∀ v₁ ∈ K.vertices, ∀ e₁ ∈ K.faces, e₁.card = 2 →
       ∀ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
         Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2 →
         (∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
           IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e₁ ∧
@@ -35,7 +35,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_disjoint_of_decomp
     {Cs : Set (Set E3)} (hfin : Cs.Finite) (hn : Cs.ncard = n) (hdisj : Cs.PairwiseDisjoint id)
     (hA : Δ ∩ (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) = ⋃₀ Cs)
     (hCs : ∀ S ∈ Cs, (IsPLSphere 1 S ∧ Disjoint S (frontier XK.space)) ∨
-      ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) S ∧
+      ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) S ∧
         q '' stdSimplexBoundary 1 = S ∩ frontier XK.space) :
     ∃ Δ' : Set E3, IsLoopTheoremDisk (h '' K.space) N' (frontier XK.space) Δ' ∧
       Disjoint Δ' (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) := by
@@ -77,7 +77,7 @@ theorem section33_not_isLoopTheoremDisk
     (h7 : HasNoHandleLoopTheoremDisk K h N' Cpp XK.space)
     (h8 : ∀ v₁ ∈ K.vertices, ∀ e₁ ∈ K.faces, e₁.card = 2 →
       ∀ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
         Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2 →
         (∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
           IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e₁ ∧

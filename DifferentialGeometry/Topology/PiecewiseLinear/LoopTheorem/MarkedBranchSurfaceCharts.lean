@@ -41,7 +41,7 @@ theorem exists_marked_branchSurface_disks
             (∀ x ∈ D.domain, ((D x : L.space) : E) ∈ W → x ∈ A false ∪ A true) ∧
             (∀ b, ∀ y ∈ hD.singularSet.branchCarrier c,
               (y : E) ∈ W → y ∈ D '' (A b ∩ J)) ∧
-            (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i) ∧
+            (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i) ∧
               P i ⊆ L.space ∩ Subtype.val '' (D '' D.domain)) ∧
             (∀ x ∈ L.space ∩ W, ∀ i,
               x ∈ P i ↔ Function.invFunOn ψ V x ∈ crossHalfPlane i) ∧

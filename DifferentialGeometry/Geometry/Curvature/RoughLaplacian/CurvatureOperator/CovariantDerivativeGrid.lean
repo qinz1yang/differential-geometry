@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.CurvatureOperator.OperatorField
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

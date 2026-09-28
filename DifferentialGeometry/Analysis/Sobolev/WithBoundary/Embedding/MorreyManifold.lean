@@ -47,7 +47,7 @@ private lemma chartSmoothExt_apply_of_mem_target
   change (if y ∈ (extChartAt I_hs α).target then
       f ((extChartAt I_hs α).symm y)
     else 0) = f ((extChartAt I_hs α).symm y)
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 omit [IsManifold I_hs ∞ M] in
 private lemma chartSmoothExt_apply_of_notMem_target
@@ -58,7 +58,7 @@ private lemma chartSmoothExt_apply_of_notMem_target
   change (if y ∈ (extChartAt I_hs α).target then
       f ((extChartAt I_hs α).symm y)
     else 0) = 0
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 omit [IsManifold I_hs ∞ M] in
 private lemma chartSmoothExt_eq_chartPushed_on_target
@@ -874,6 +874,14 @@ private lemma eLpNorm_chartSmoothExt_ball_le_wkpNormChart
   refine h_le_succ.trans ?_
   let _ := g
   unfold wkpNormChart
+  rw [hΩ_def]
+  let F : M → ℝ≥0∞ := fun β : M =>
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
+      (d := n) 1 q
+      (chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) β u)
+      (chartTargetEuclid (n := n) (M := M) β)
+  change F α ≤ ∑' β : M, F β
   exact ENNReal.le_tsum α
 
 omit [NeZero n] in
@@ -951,11 +959,16 @@ private lemma eLpNorm_norm_fderiv_le_sum_eLpNorm_partials
       ‖fderiv ℝ f z‖ ≤ ∑ i : Fin n,
         ‖(fderiv ℝ f z) (EuclideanSpace.single i 1)‖ :=
     fun z => norm_fderiv_le_sum_partials_local f z
+  have h_aesm_norm : AEStronglyMeasurable
+      (fun z : EuN => ‖fderiv ℝ f z‖) μ := by
+    have h_cont : Continuous (fun z : EuN => ‖fderiv ℝ f z‖) :=
+      (hf_smooth.continuous_fderiv (by simp)).norm
+    exact h_cont.aestronglyMeasurable
   have h_step1 : eLpNorm (fun z : EuN => ‖fderiv ℝ f z‖) q μ ≤
       eLpNorm (fun z : EuN =>
         ∑ i : Fin n,
           ‖(fderiv ℝ f z) (EuclideanSpace.single i 1)‖) q μ := by
-    apply eLpNorm_mono_real
+    apply eLpNorm_mono_real h_aesm_norm
     intro z
     have hh := h_pt z
     have h_norm : ‖‖fderiv ℝ f z‖‖ = ‖fderiv ℝ f z‖ :=
@@ -966,7 +979,7 @@ private lemma eLpNorm_norm_fderiv_le_sum_eLpNorm_partials
   have h_sum_le := eLpNorm_sum_le (μ := μ) (p := q)
     (s := (Finset.univ : Finset (Fin n)))
     (f := fun i => fun z : EuN => ‖(fderiv ℝ f z) (EuclideanSpace.single i 1)‖)
-    (fun i _ => (h_aesm_comp i).norm) hq_one
+    hq_one
   have h_lhs_eq :
       (fun z : EuN =>
         ∑ i : Fin n,
@@ -979,7 +992,7 @@ private lemma eLpNorm_norm_fderiv_le_sum_eLpNorm_partials
   refine h_sum_le.trans ?_
   apply Finset.sum_le_sum
   intro i _
-  rw [eLpNorm_norm]
+  rw [eLpNorm_norm _ (h_aesm_comp i)]
 
 omit [NeZero n] in
 private lemma classical_partial_ae_eq_chosenWeakPartial_local
@@ -1229,6 +1242,13 @@ private lemma wkpNormHalfSpace_chartPushed_target_le_wkpNormChart
   classical
   let _ := g
   unfold wkpNormChart
+  let F : M → ℝ≥0∞ := fun β : M =>
+    DifferentialGeometry.Analysis.Sobolev.Euclidean.wkpNormHalfSpace
+      (d := n) 1 q
+      (chartPushed (n := n) (M := M)
+        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I_hs M) β u)
+      (chartTargetEuclid (n := n) (M := M) β)
+  change F α ≤ ∑' β : M, F β
   exact ENNReal.le_tsum α
 
 private lemma sum_eLpNorm_fderiv_apply_chartSmoothExt_ball_le_wkpNormChart

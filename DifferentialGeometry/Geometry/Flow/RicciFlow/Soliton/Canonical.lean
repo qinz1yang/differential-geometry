@@ -323,7 +323,7 @@ theorem canonicalMetricFamily_eq
     canonicalMetricFamily (I := I) g f sigma hcomplete hsol t =
       canonicalMetric (I := I) g f sigma hcomplete hsol ht := by
   classical
-  simp only [canonicalMetricFamily, dif_pos ht]
+  simp only [canonicalMetricFamily, dite_eq_left ht]
 
 noncomputable def canonicalPotential
     (g : SmoothRiemannianMetric I M) (f : C^∞⟮I, M; Real⟯)

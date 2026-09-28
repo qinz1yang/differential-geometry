@@ -115,7 +115,7 @@ theorem isCoboundary_of_forall_walkMonodromy_eq_zero (v₀ : K.vertices)
   apply boolZMod2_injective
   rw [boolZMod2_xor]
   dsimp only
-  rw [dif_pos ha, dif_pos hb, boolZMod2_zmod2Bool, boolZMod2_zmod2Bool]
+  rw [dite_eq_left ha, dite_eq_left hb, boolZMod2_zmod2Bool, boolZMod2_zmod2Bool]
   by_cases hne : a = b
   · subst hne
     rw [ε.self a ha]

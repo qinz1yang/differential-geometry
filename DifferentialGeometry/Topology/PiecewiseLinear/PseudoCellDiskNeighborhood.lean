@@ -16,7 +16,7 @@ theorem IsPseudoCell.exists_disk_neighborhood {Ec Eint Ebd D Ω : Set E3} {P : E
     (hpc : IsPseudoCell Ec Eint Ebd P) (hD : IsPLBall 2 D) (hDM : D ⊆ Eint \ {P})
     (hΩ : IsOpen Ω) (hDΩ : D ⊆ Ω) :
     ∃ (M : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) M ∧ M ⊆ Eint \ {P} ∧ M ⊆ Ω ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M ∧ M ⊆ Eint \ {P} ∧ M ⊆ Ω ∧
       D ⊆ r '' openSimplex (stdVertices 1) ∧
       ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ M ↔ y ∈ Ec := by
   classical

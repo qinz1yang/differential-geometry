@@ -199,7 +199,7 @@ private theorem basis_coord_update_sum_comm {d r : ℕ}
             (if upper = Function.update lower a k then (1 : 𝕜) else 0)) =
           basis.coord (upper a) (ΓX (basis (lower a))) := by
       rw [Finset.sum_eq_single (upper a)]
-      · rw [if_pos hleft_update]
+      · rw [ite_eq_left hleft_update]
         simp
       · intro k _ hk
         have hne : upper ≠ Function.update lower a k := by
@@ -207,7 +207,7 @@ private theorem basis_coord_update_sum_comm {d r : ℕ}
           have ha := congrFun h a
           simp at ha
           exact hk ha.symm
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
         simp
       · intro hnot
         exact False.elim (hnot (Finset.mem_univ _))
@@ -217,7 +217,7 @@ private theorem basis_coord_update_sum_comm {d r : ℕ}
             (if Function.update upper a k = lower then (1 : 𝕜) else 0)) =
           basis.coord (upper a) (ΓX (basis (lower a))) := by
       rw [Finset.sum_eq_single (lower a)]
-      · rw [if_pos hright_update]
+      · rw [ite_eq_left hright_update]
         simp
       · intro k _ hk
         have hne : Function.update upper a k ≠ lower := by
@@ -225,7 +225,7 @@ private theorem basis_coord_update_sum_comm {d r : ℕ}
           have ha : k = lower a := by
             simpa using congrFun h a
           exact hk ha
-        rw [if_neg hne]
+        rw [ite_eq_right hne]
         simp
       · intro hnot
         exact False.elim (hnot (Finset.mem_univ _))

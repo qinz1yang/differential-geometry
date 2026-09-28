@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Connection.MetricTrace.CovariantDerivative
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
@@ -62,20 +62,20 @@ theorem reLowerPermutationWithTwoInputs_first_block {s : ℕ} {x : M} (a b : Tan
   rw [metricTraceInput_apply]
   by_cases h1 : (k : ℕ) < s
   · have hv : ((reLowerPermutationWithTwoInputs s (Fin.castAdd 2 k) : Fin (s + 1 + 2)) : ℕ) = (k : ℕ) + 2 := by
-      rw [reLowerPermutationWithTwoInputs_value, hcast, if_pos h1]
+      rw [reLowerPermutationWithTwoInputs_value, hcast, ite_eq_left h1]
     have hne : k ≠ Fin.last s := by
       intro hcon
       rw [hcon] at h1
       simp at h1
     simp only [hv, Function.update_of_ne hne]
-    rw [dif_neg (by omega : ¬((k : ℕ) + 2 = 0)), dif_neg (by omega : ¬((k : ℕ) + 2 = 1))]
+    rw [dite_eq_right (by omega : ¬((k : ℕ) + 2 = 0)), dite_eq_right (by omega : ¬((k : ℕ) + 2 = 1))]
     exact congrArg tail (Fin.ext (by simp))
   · have hks : (k : ℕ) = s := by omega
     have hv : ((reLowerPermutationWithTwoInputs s (Fin.castAdd 2 k) : Fin (s + 1 + 2)) : ℕ) = 0 := by
-      rw [reLowerPermutationWithTwoInputs_value, hcast, if_neg h1, if_pos hks]
+      rw [reLowerPermutationWithTwoInputs_value, hcast, ite_eq_right h1, ite_eq_left hks]
     have hlast : k = Fin.last s := Fin.ext (by simp [hks])
     simp only [hv]
-    rw [dif_pos (trivial : True), hlast, Function.update_self]
+    rw [dite_eq_left (trivial : True), hlast, Function.update_self]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem reLowerPermutationWithTwoInputs_tail_zero {s : ℕ} {x : M} (a b : TangentSpace I x)
@@ -84,10 +84,10 @@ theorem reLowerPermutationWithTwoInputs_tail_zero {s : ℕ} {x : M} (a b : Tange
   have hcast : ((Fin.natAdd (s + 1) (0 : Fin 2) : Fin (s + 1 + 2)) : ℕ) = s + 1 := by
     simp [Fin.natAdd]
   have hv : ((reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (0 : Fin 2)) : Fin (s + 1 + 2)) : ℕ) = 1 := by
-    rw [reLowerPermutationWithTwoInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_pos rfl]
+    rw [reLowerPermutationWithTwoInputs_value, hcast, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left rfl]
   rw [metricTraceInput_apply]
   simp only [hv]
-  rw [dif_neg (by omega : ¬((1 : ℕ) = 0)), dif_pos (trivial : True)]
+  rw [dite_eq_right (by omega : ¬((1 : ℕ) = 0)), dite_eq_left (trivial : True)]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem reLowerPermutationWithTwoInputs_tail_one {s : ℕ} {x : M} (a b : TangentSpace I x)
@@ -97,10 +97,10 @@ theorem reLowerPermutationWithTwoInputs_tail_one {s : ℕ} {x : M} (a b : Tangen
   have hcast : ((Fin.natAdd (s + 1) (1 : Fin 2) : Fin (s + 1 + 2)) : ℕ) = s + 2 := by
     simp [Fin.natAdd]
   have hv : ((reLowerPermutationWithTwoInputs s (Fin.natAdd (s + 1) (1 : Fin 2)) : Fin (s + 1 + 2)) : ℕ) = s + 2 := by
-    rw [reLowerPermutationWithTwoInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega)]
+    rw [reLowerPermutationWithTwoInputs_value, hcast, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
   rw [metricTraceInput_apply]
   simp only [hv]
-  rw [dif_neg (by omega : ¬(s + 2 = 0)), dif_neg (by omega : ¬(s + 2 = 1))]
+  rw [dite_eq_right (by omega : ¬(s + 2 = 0)), dite_eq_right (by omega : ¬(s + 2 = 1))]
   exact congrArg tail (Fin.ext (by simp))
 
 end Perm
@@ -287,20 +287,20 @@ theorem reLowerPermutationWithThreeInputs_first_block {s : ℕ} {x : M} (a b : T
   rw [metricTraceInput_apply]
   by_cases h1 : (k : ℕ) < s
   · have hv : ((reLowerPermutationWithThreeInputs s (Fin.castAdd 3 k) : Fin (s + 1 + 3)) : ℕ) = (k : ℕ) + 3 := by
-      rw [reLowerPermutationWithThreeInputs_value, hcast, if_pos h1]
+      rw [reLowerPermutationWithThreeInputs_value, hcast, ite_eq_left h1]
     have hne : k ≠ Fin.last s := by
       intro hcon
       rw [hcon] at h1
       simp at h1
     simp only [hv, Function.update_of_ne hne]
-    rw [dif_neg (by omega : ¬((k : ℕ) + 3 = 0)), dif_neg (by omega : ¬((k : ℕ) + 3 = 1))]
+    rw [dite_eq_right (by omega : ¬((k : ℕ) + 3 = 0)), dite_eq_right (by omega : ¬((k : ℕ) + 3 = 1))]
     exact congrArg u (Fin.ext (by simp))
   · have hks : (k : ℕ) = s := by omega
     have hv : ((reLowerPermutationWithThreeInputs s (Fin.castAdd 3 k) : Fin (s + 1 + 3)) : ℕ) = 0 := by
-      rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg h1, if_pos hks]
+      rw [reLowerPermutationWithThreeInputs_value, hcast, ite_eq_right h1, ite_eq_left hks]
     have hlast : k = Fin.last s := Fin.ext (by simp [hks])
     simp only [hv]
-    rw [dif_pos (trivial : True), hlast, Function.update_self]
+    rw [dite_eq_left (trivial : True), hlast, Function.update_self]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem reLowerPermutationWithThreeInputs_tail_zero {s : ℕ} {x : M} (a b : TangentSpace I x)
@@ -309,10 +309,10 @@ theorem reLowerPermutationWithThreeInputs_tail_zero {s : ℕ} {x : M} (a b : Tan
   have hcast : ((Fin.natAdd (s + 1) (0 : Fin 3) : Fin (s + 1 + 3)) : ℕ) = s + 1 := by
     simp [Fin.natAdd]
   have hv : ((reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (0 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = 2 := by
-    rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_pos rfl]
+    rw [reLowerPermutationWithThreeInputs_value, hcast, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_left rfl]
   rw [metricTraceInput_apply]
   simp only [hv]
-  rw [dif_neg (by omega : ¬((2 : ℕ) = 0)), dif_neg (by omega : ¬((2 : ℕ) = 1))]
+  rw [dite_eq_right (by omega : ¬((2 : ℕ) = 0)), dite_eq_right (by omega : ¬((2 : ℕ) = 1))]
   exact congrArg u (Fin.ext (by simp))
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
@@ -322,11 +322,11 @@ theorem reLowerPermutationWithThreeInputs_tail_one {s : ℕ} {x : M} (a b : Tang
   have hcast : ((Fin.natAdd (s + 1) (1 : Fin 3) : Fin (s + 1 + 3)) : ℕ) = s + 2 := by
     simp [Fin.natAdd]
   have hv : ((reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (1 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = 1 := by
-    rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega),
-      if_pos rfl]
+    rw [reLowerPermutationWithThreeInputs_value, hcast, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+      ite_eq_left rfl]
   rw [metricTraceInput_apply]
   simp only [hv]
-  rw [dif_neg (by omega : ¬((1 : ℕ) = 0)), dif_pos (trivial : True)]
+  rw [dite_eq_right (by omega : ¬((1 : ℕ) = 0)), dite_eq_left (trivial : True)]
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ M] [SigmaCompactSpace M] [T2Space M] [I.Boundaryless] in
 theorem reLowerPermutationWithThreeInputs_tail_two {s : ℕ} {x : M} (a b : TangentSpace I x)
@@ -336,11 +336,11 @@ theorem reLowerPermutationWithThreeInputs_tail_two {s : ℕ} {x : M} (a b : Tang
   have hcast : ((Fin.natAdd (s + 1) (2 : Fin 3) : Fin (s + 1 + 3)) : ℕ) = s + 3 := by
     simp [Fin.natAdd]
   have hv : ((reLowerPermutationWithThreeInputs s (Fin.natAdd (s + 1) (2 : Fin 3)) : Fin (s + 1 + 3)) : ℕ) = s + 3 := by
-    rw [reLowerPermutationWithThreeInputs_value, hcast, if_neg (by omega), if_neg (by omega), if_neg (by omega),
-      if_neg (by omega)]
+    rw [reLowerPermutationWithThreeInputs_value, hcast, ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega),
+      ite_eq_right (by omega)]
   rw [metricTraceInput_apply]
   simp only [hv]
-  rw [dif_neg (by omega : ¬(s + 3 = 0)), dif_neg (by omega : ¬(s + 3 = 1))]
+  rw [dite_eq_right (by omega : ¬(s + 3 = 0)), dite_eq_right (by omega : ¬(s + 3 = 1))]
   exact congrArg u (Fin.ext (by simp))
 
 def reLowerPair (g₂ : SmoothRiemannianMetric I M) {s : ℕ}
@@ -419,4 +419,4 @@ theorem reLower_eq_trace (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
             (∞ : WithTop ℕ∞) T (metricTensorField (I := I) g₁))) := rfl
 
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric

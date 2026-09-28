@@ -46,7 +46,7 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_maximal
     (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
     ∃ g : (Fin (n + 3) → ℝ) → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 3)))
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3)))
         (derivedNeighborhoodCell K s).space ∧
       IsPLHomeomorphOn g (stdSimplexBoundary (n + 2))
         ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhood K L).space) := by

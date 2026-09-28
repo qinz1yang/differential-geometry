@@ -1,5 +1,7 @@
 import Mathlib.Topology.Connected.LocallyConnected
 import Mathlib.Topology.Maps.Basic
+import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.Connected.Frontier
 
 set_option autoImplicit false
 
@@ -14,21 +16,10 @@ theorem isPreconnected_subset_interior_of_meets_of_disjoint_frontier
     {X : Type*} [TopologicalSpace X] {R H : Set X} (hH : IsPreconnected H)
     (hne : (H ∩ R).Nonempty) (hdisj : Disjoint H (frontier R)) :
     H ⊆ interior R := by
-  have hsub : H ⊆ interior R ∪ (closure R)ᶜ := by
-    intro z hz
-    by_cases hzi : z ∈ interior R
-    · exact Or.inl hzi
-    · refine Or.inr fun hzcl => ?_
-      exact hdisj.le_bot ⟨hz, hzcl, hzi⟩
-  have h1 : IsOpen (interior R) := isOpen_interior
-  have h2 : IsOpen ((closure R)ᶜ) := isClosed_closure.isOpen_compl
-  have h3 : Disjoint (interior R) ((closure R)ᶜ) :=
-    Set.disjoint_left.mpr fun z hz1 hz2 =>
-      hz2 (subset_closure (interior_subset hz1))
-  rcases hH.subset_or_subset h1 h2 h3 hsub with h | h
-  · exact h
-  · obtain ⟨w, hwH, hwR⟩ := hne
-    exact absurd (h hwH) fun hwc => hwc (subset_closure hwR)
+  apply subset_interior_of_isPreconnected_of_disjoint_frontier hH hdisj
+  obtain ⟨x, hxH, hxR⟩ := hne
+  exact ⟨x, hxH, (mem_interior_iff_notMem_frontier hxR).mpr
+    (fun hxF => disjoint_left.mp hdisj hxH hxF)⟩
 
 theorem union_iUnion_closure_eq_univ_of_local_side
     {X : Type*} [TopologicalSpace X] [ConnectedSpace X] [LocallyConnectedSpace X]
@@ -64,17 +55,7 @@ theorem union_iUnion_closure_eq_univ_of_local_side
     have hEopen : IsOpen E := by
       rw [hE]
       exact hRcopen.connectedComponentIn
-    have hEcl : closure E ∩ Rᶜ = E := by
-      rw [hEim]
-      apply Subset.antisymm
-      · rintro z ⟨hzcl, hzR⟩
-        have hmem2 : (⟨z, hzR⟩ : ↥(Rᶜ)) ∈
-            Subtype.val ⁻¹' closure (Subtype.val '' connectedComponent y) := hzcl
-        rw [← Topology.IsEmbedding.subtypeVal.closure_eq_preimage_closure_image] at hmem2
-        rw [isClosed_connectedComponent.closure_eq] at hmem2
-        exact ⟨⟨z, hzR⟩, hmem2, rfl⟩
-      · rintro z ⟨w, hw, rfl⟩
-        exact ⟨subset_closure ⟨w, hw, rfl⟩, w.2⟩
+    have hEcl : closure E ∩ Rᶜ = E := _root_.closure_connectedComponentIn_inter Rᶜ x
     have hfrontE_sub : frontier E ⊆ R := by
       intro p hp
       have hpcl : p ∈ closure E := hp.1

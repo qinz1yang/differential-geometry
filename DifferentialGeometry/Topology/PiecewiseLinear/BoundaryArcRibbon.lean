@@ -17,7 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private theorem exists_isPLHomeomorphOn_square_map_boundary_arc
     {B β : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) B)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (hβ : IsPLBall 1 β) (hβbd : β ⊆ q '' stdSimplexBoundary 2) :
     ∃ f : ℝ × ℝ → E,
       IsPLHomeomorphOn f (Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) 1) B ∧
@@ -53,7 +53,7 @@ private theorem exists_isPLHomeomorphOn_square_map_boundary_arc
 
 theorem IsPLHomeomorphOn.exists_isPLBall_neighborhood_boundary_arc
     {B β U : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) B)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (hβ : IsPLBall 1 β) (hβbd : β ⊆ q '' stdSimplexBoundary 2)
     (hU : IsOpen U) (hβU : β ⊆ U) :
     ∃ D : Set E, IsPLBall 2 D ∧ D ⊆ B ∩ U ∧ β ⊆ D ∧ D ∈ 𝓝ˢ[B] β := by

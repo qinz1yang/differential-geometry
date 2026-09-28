@@ -261,14 +261,14 @@ theorem chartReconstruct_cut
   by_cases hx : x ∈
       (chartAt H (canonicalFlatBase (I := I) (M := M) rFine hr z)).source
   · unfold chartReconstruct secModelPull
-    simp only [dif_pos hx]
+    simp only [dite_eq_left hx]
     unfold canonicalCutMul
     rw [modelReconstruct_mul (E := E) r s
       (canonicalCutE (I := I) (M := M) rFine hr z) u,
       canonicalCut_coord (I := I) (M := M) rFine hr z hx,
       ContinuousLinearMap.map_smul]
   · unfold chartReconstruct secModelPull
-    simp only [dif_neg hx, smul_zero]
+    simp only [dite_eq_right hx, smul_zero]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem canonicalEuclideanReconstruct_eq
@@ -774,7 +774,7 @@ theorem finePullEq
         chartReconstruct (I := I) (M := M) r s
           (canonicalFlatBase (I := I) (M := M) rFine hr z) u x = 0 := by
       unfold chartReconstruct secModelPull
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
     unfold secCompRaw secTriv
     rw [hpull, ContinuousLinearMap.map_zero,
       ContinuousLinearMap.map_zero, mul_zero]

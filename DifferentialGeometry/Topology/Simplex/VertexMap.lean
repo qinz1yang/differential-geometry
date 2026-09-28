@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.LinearAlgebra.AffineSpace.Independent
 import Mathlib.Analysis.Normed.Module.Basic
@@ -6,29 +7,31 @@ import Mathlib.Topology.ContinuousMap.Basic
 set_option autoImplicit false
 noncomputable section
 open Finset
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 variable {ι κ E : Type*} [Fintype ι] [Fintype κ]
   [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 
-def vertexMap (v : ι → E) : C(stdSimplex ℝ ι, E) where
+def vertexMap (v : ι → E) : C(coordinateSet ℝ ι, E) where
   toFun x := ∑ i, x.val i • v i
   continuous_toFun := continuous_finsetSum _ (fun i _ =>
     ((continuous_apply i).comp continuous_subtype_val).smul continuous_const)
 
 
 @[simp]
-theorem vertexMap_apply (v : ι → E) (x : stdSimplex ℝ ι) :
+theorem vertexMap_apply (v : ι → E) (x : coordinateSet ℝ ι) :
     vertexMap v x = ∑ i, x.val i • v i := rfl
 
 
-theorem vertexMap_mem_convexHull (v : ι → E) (x : stdSimplex ℝ ι) :
+theorem vertexMap_mem_convexHull (v : ι → E) (x : coordinateSet ℝ ι) :
     vertexMap v x ∈ convexHull ℝ (Set.range v) :=
   (convex_convexHull ℝ _).sum_mem (fun i _ => x.prop.1 i) x.prop.2
     (fun i _ => subset_convexHull ℝ _ (Set.mem_range_self i))
 
-theorem vertexMap_map (v : κ → E) (f : ι → κ) (x : stdSimplex ℝ ι) :
-    vertexMap v (stdSimplex.map f x) = vertexMap (v ∘ f) x := by
+theorem vertexMap_map (v : κ → E) (f : ι → κ) (x : coordinateSet ℝ ι) :
+    vertexMap v (coordinateMap f x) = vertexMap (v ∘ f) x := by
   classical
   change (∑ j, FunOnFinite.linearMap ℝ ℝ f x.val j • v j) =
     ∑ i, x.val i • (v ∘ f) i
@@ -50,14 +53,14 @@ theorem range_vertexMap (v : ι → E) :
   have hL : ∀ x : ι → ℝ, L x = ∑ i, x i • v i := by
     intro x
     simp [L, LinearMap.sum_apply]
-  have hr : Set.range (vertexMap v) = L '' stdSimplex ℝ ι := by
+  have hr : Set.range (vertexMap v) = L '' coordinateSet ℝ ι := by
     ext y
     constructor
     · rintro ⟨x, rfl⟩
       exact ⟨x.val, x.prop, hL x.val⟩
     · rintro ⟨x, hx, rfl⟩
       exact ⟨⟨x, hx⟩, (hL x).symm⟩
-  rw [hr, ← convexHull_rangle_single_eq_stdSimplex, LinearMap.image_convexHull, ← Set.range_comp]
+  rw [hr, ← convexHull_range_single_eq_coordinateSet, LinearMap.image_convexHull, ← Set.range_comp]
   congr 2
   funext i
   simp [hL, Pi.single_apply, eq_comm]

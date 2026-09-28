@@ -6,7 +6,7 @@ import Mathlib.Analysis.InnerProductSpace.Symmetric
 set_option autoImplicit false
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+namespace LinearMap
 
 open scoped RealInnerProductSpace
 
@@ -24,7 +24,7 @@ theorem comp_self_eq_trace_smul_of_rank_one (A : V →ₗ[ℝ] V)
     have hfactor : R.subtype.comp A.rangeRestrict = A := rfl
     rw [hfactor] at hcyclic
     change LinearMap.trace ℝ V A = LinearMap.trace ℝ R B at hcyclic
-    rw [hcyclic, hc, map_smul, LinearMap.trace_id, hr, Nat.cast_one, smul_eq_mul, mul_one]
+    rw [hcyclic, hc, _root_.map_smul, LinearMap.trace_id, hr, Nat.cast_one, smul_eq_mul, mul_one]
   rw [htrace]
   ext v
   have hv := congrArg (fun F : R →ₗ[ℝ] R => (F (A.rangeRestrict v) : V)) hc
@@ -42,7 +42,7 @@ private theorem projection_mem_ker (A : V →ₗ[ℝ] V)
     (comp_self_eq_trace_smul_of_rank_one A hr)
   change A (A v) = LinearMap.trace ℝ V A • A v at hsq
   change A (v - (LinearMap.trace ℝ V A)⁻¹ • A v) = 0
-  rw [map_sub, map_smul, hsq, smul_smul, inv_mul_cancel₀ hτ, one_smul, sub_self]
+  rw [_root_.map_sub, _root_.map_smul, hsq, smul_smul, inv_mul_cancel₀ hτ, one_smul, sub_self]
 
 omit [FiniteDimensional ℝ V] in
 private theorem projection_eq_self (A : V →ₗ[ℝ] V) {v : V}
@@ -104,4 +104,4 @@ theorem rankOneKernelProjection_eq_starProjection (A : E →ₗ[ℝ] E)
     inner_zero_right, mul_zero]
 
 end InnerProduct
-end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+end LinearMap

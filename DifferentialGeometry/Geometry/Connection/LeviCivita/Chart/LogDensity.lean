@@ -1,6 +1,5 @@
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Green.GradientFormula
-import DifferentialGeometry.Geometry.Operator.Hessian.Basic
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
 open DifferentialGeometry.Geometry.Operator
 
 set_option autoImplicit false

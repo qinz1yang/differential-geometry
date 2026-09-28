@@ -8,6 +8,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
 
 open Set
 
+open Convexity.StdSimplex (coordinateSet)
+
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -127,7 +129,7 @@ theorem IsConeBase.isPLBall_of_isPLBall [FiniteDimensional ℝ E] [DecidableEq E
       rcases exists_combo_of_mem_convexHull_insert hqT₀ hx with h | ⟨z, hz, s, hs0, hs1, h⟩
       · exact Or.inl h
       · exact Or.inr ⟨z, hz, s, hs0, hs1, h⟩
-  have hspace : (coneComplex hcone).space = stdSimplex ℝ (Fin (n + 2)) := by
+  have hspace : (coneComplex hcone).space = coordinateSet ℝ (Fin (n + 2)) := by
     rw [hspace', hins, convexHull_stdVertices]
   rw [hspace] at hg
   exact ⟨_, hg.symm⟩

@@ -18,7 +18,7 @@ open Classical in
 theorem IsPLSphere.isClosed_holed_disk_family
     {ι : Type*} [Finite ι] {S : Set E} (hS : IsPLSphere 2 S)
     {D : ι → Set E} {q : ι → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDS : ∀ i, D i ⊆ S)
     (hdis : Pairwise fun i j => Disjoint (D i) (D j))
     (i₀ : ι) :

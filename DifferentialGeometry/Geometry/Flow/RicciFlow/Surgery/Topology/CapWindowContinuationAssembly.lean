@@ -151,8 +151,8 @@ theorem le_mul_of_half_standard_scalar_lower {τQ c₀ T RS RQ : ℝ} (hτQ : 0 
 
 namespace RetainedCoreHistory
 
-theorem IsCanonicalCutoffRecordFamily.birth_scale_bounds {P₀ : OrientedThreeStage.{u}}
-    {H : RetainedCoreHistory P₀} {p₀ p : CutoffParameters} {δ₀ ρ₀ : ℝ}
+theorem IsCanonicalCutoffRecordFamily.birth_scale_bounds
+    {H : RetainedCoreHistory.{u}} {p₀ p : CutoffParameters} {δ₀ ρ₀ : ℝ}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     (hrec : H.IsCanonicalCutoffRecordFamily p₀ δ₀ ρ₀ records)
     (hΛδ : p₀.recenterConstant * δ₀ ≤ 1 / 2) (i : Fin H.eventCount)
@@ -183,7 +183,7 @@ namespace RetainedCoreHistory
 
 section WindowFlow
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
   {k : Fin (H.eventCount + 1)} {s : ℝ} (Gk : (H.stage k).IncomingSlab (H.time k) s)
   {j : Fin H.eventCount} (hl : j.succ ≤ k) {t' : ℝ}
   {G : (H.stage k).IncomingSlab (H.time k) t'} {L : G.TerminalLimitMetric}
@@ -247,7 +247,7 @@ end RetainedCoreHistory
 
 namespace RetainedCoreHistory
 
-theorem eventSlabsDerivative_two_mul {P₀ : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀}
+theorem eventSlabsDerivative_two_mul {H : RetainedCoreHistory.{u}}
     {k : Fin (H.eventCount + 1)} {Ctime : ℝ≥0} {qcan : ℝ} (hq : 0 < qcan)
     (h : H.EventSlabsDerivative Ctime qcan k) :
     H.EventSlabsDerivative (2 * Ctime) (2 * qcan) k := by
@@ -269,7 +269,7 @@ theorem exists_capWindowPoint_bounds_of_room (P₀ : OrientedThreeStage.{u}) (g�
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Rcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ H : RetainedCoreHistory P₀, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+    ∀ H : RetainedCoreHistory.{u}, Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
       p₀.recenterConstant * δbound ≤ 1 / 2 →
     ∀ (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →

@@ -15,6 +15,8 @@ import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.Bootstrap.Bootstr
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.DirichletForm.RotatedTestSection
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Scalar
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.VariationalIdentity.PartitionOfUnityApproximation
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Curvature
 
@@ -293,9 +295,9 @@ lemma eigenvectorMainDir_tendsto
       rw [covChartMetricGram_mul_inv_collapse (I := I) (M := M) g r s α hy Q P₀]
     rw [Finset.sum_congr rfl (fun Q _ => hstep Q),
       Finset.sum_eq_single P₀]
-    · rw [if_pos rfl, one_mul]
+    · rw [ite_eq_left rfl, one_mul]
     · intro Q _ hQ
-      rw [if_neg hQ, zero_mul]
+      rw [ite_eq_right hQ, zero_mul]
     · intro hP₀
       exact absurd (Finset.mem_univ P₀) hP₀
   have h_eq : (1 - i.fst.val) *

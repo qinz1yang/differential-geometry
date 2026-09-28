@@ -15,13 +15,13 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsCombinatorialManifold.inter_closure_sdiff_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 2 K)
-    {D : Set E} {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    {D : Set E} {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDK : D ⊆ K.space) : D ∩ closure (K.space \ D) = q '' stdSimplexBoundary 2 := by
   classical
   let _ : DecidableEq E := fun a b => Classical.propDecidable (a = b)
   obtain ⟨A, hAfin, hAD⟩ := (IsPLBall.isPolyhedron ⟨q, hq⟩).exists_simplicialComplex
   have : Finite A.faces := hAfin.to_subtype
-  have hqA : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) A.space := hAD.symm ▸ hq
+  have hqA : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A.space := hAD.symm ▸ hq
   have hA : IsPLBall 2 A.space := ⟨q, hqA⟩
   have hKA : A.space ⊆ K.space := hAD.subset.trans hDK
   have hKb : (boundaryComplex 2 K).space = ∅ := by
@@ -38,7 +38,7 @@ theorem IsCombinatorialManifold.inter_closure_sdiff_disk
 theorem IsCombinatorialManifold.subset_or_disjoint_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 2 K)
     {D Y : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hY : IsPreconnected Y) (hYK : Y ⊆ K.space)
     (hYJ : Disjoint Y (q '' stdSimplexBoundary 2)) : Y ⊆ D ∨ Disjoint D Y := by
   have hD : IsPLBall 2 D := ⟨q, hq⟩
@@ -61,11 +61,11 @@ theorem IsCombinatorialManifold.subset_or_disjoint_disk
 theorem IsCombinatorialManifold.disjoint_disk_of_essential_circle
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsCombinatorialManifold 2 K)
     {D G : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hG : IsPLSphere 1 G) (hGK : G ⊆ K.space)
     (hGJ : Disjoint G (q '' stdSimplexBoundary 2))
     (hess : ¬ ∃ (D' : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∧
         G = r '' stdSimplexBoundary 2) : Disjoint D G := by
   rcases hK.subset_or_disjoint_disk K hq hDK hG.isConnected.isPreconnected hGK hGJ with hGD | hd
   · obtain ⟨R, Q, r, -, hr, hcover, -, hbd, -⟩ :=
@@ -76,11 +76,11 @@ theorem IsCombinatorialManifold.disjoint_disk_of_essential_circle
 theorem IsPLTorus.disjoint_disk_of_essential_circle
     {T D G : Set (EuclideanSpace ℝ (Fin 3))} (hT : IsPLTorus T)
     {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDT : D ⊆ T)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDT : D ⊆ T)
     (hG : IsPLSphere 1 G) (hGT : G ⊆ T) (hGJ : Disjoint G (q '' stdSimplexBoundary 2))
     (hess : ¬ ∃ (D' : Set (EuclideanSpace ℝ (Fin 3)))
       (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ T ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ T ∧
         G = r '' stdSimplexBoundary 2) : Disjoint D G := by
   obtain ⟨K, hKfin, hK, -, hKT⟩ := hT.exists_combinatorial_triangulation
   have : Finite K.faces := hKfin.to_subtype

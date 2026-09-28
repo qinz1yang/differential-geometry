@@ -9,6 +9,9 @@ import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleProductGrid
+
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

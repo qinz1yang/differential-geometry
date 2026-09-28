@@ -1,4 +1,6 @@
-import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pullback
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Product
+import DifferentialGeometry.Geometry.Metric.UniversalCover.CurvatureDerivatives
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.TerminalSurfaceProduct
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NormalizedKLimSpatialJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.KLimNormalization

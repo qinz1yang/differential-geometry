@@ -139,7 +139,7 @@ theorem exists_isPLHomeomorphInto_union_of_locallyFinite_pieces {ι : Type*} {A 
       by_cases hxA : x ∈ A
       · rw [show G x = F₀ x by simp [hGdef, hxA], hbase i ⟨hxA, hx⟩]
       · have hx' : ∃ j, x ∈ S j := ⟨i, hx⟩
-        simp only [hGdef, dif_neg hxA, dif_pos hx']
+        simp only [hGdef, dite_eq_right hxA, dite_eq_left hx']
         exact hcompat _ i ⟨Classical.choose_spec hx', hx⟩
     have hGmaps : MapsTo G K Y := by
       rintro x (hxA | hxS)

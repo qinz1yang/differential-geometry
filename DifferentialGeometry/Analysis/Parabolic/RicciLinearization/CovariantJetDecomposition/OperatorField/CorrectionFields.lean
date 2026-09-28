@@ -19,6 +19,8 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Char
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.FibreNorm
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CovariantDerivativeComponents
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.CoefficientBounds
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_sub_le)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -338,7 +340,7 @@ theorem exists_correctionFieldChristoffelConst (g₀ : SmoothRiemannianMetric I 
             + Real.sqrt (Classical.choose (exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform
               (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)) := by
         unfold correctionFieldChristoffelBound
-        rw [dif_pos hcond]
+        rw [dite_eq_left hcond]
       have hconn := (Classical.choose_spec
           (exists_uniformBound_sqrt_riemannianFiberNormSq_linRicciConnectionDifferenceCoeff_of_jetEnvelope
             (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)).2
@@ -460,7 +462,7 @@ theorem exists_correctionFieldChristoffelConst (g₀ : SmoothRiemannianMetric I 
             + 2 * Classical.choose (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope
               (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2) i := by
         unfold correctionFieldTameJetBound
-        rw [dif_pos hcond]
+        rw [dite_eq_left hcond]
       have hK0_nn := (Classical.choose_spec (exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
           (I := I) (M := M) g₀ a hcond.1 hcond.2.1 hcond.2.2)).1 i
       have hK1_nn := (Classical.choose_spec (exists_correctionTerm1Field_metricPerturbationPath_jetL2_tameEnvelope

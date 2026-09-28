@@ -61,11 +61,11 @@ private theorem cap_mfderiv_signed_scale_orientation (b : T.Boundary)
   erw [Topology.orientation_map_trans]
   cases hb : b.2 with
   | true =>
-    simp only [hb, if_true, one_smul] at h ⊢
+    simp only [hb, ite_true, one_smul] at h ⊢
     rw [Topology.orientation_map_smulOfNeZero_pos r hr]
     exact h
   | false =>
-    simp only [hb, Bool.false_eq_true, if_false] at h ⊢
+    simp only [hb, Bool.false_eq_true, ite_false] at h ⊢
     erw [Module.Ray.neg_units_smul, one_smul] at h
     have hs : Orientation.map (Fin 3)
         (LinearEquiv.smulOfNeZero ℝ E3 (-r) (neg_ne_zero.mpr (ne_of_gt hr)))

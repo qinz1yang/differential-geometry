@@ -643,7 +643,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem activeStage_extendHorizon_eq_last {T : ℝ} (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
@@ -797,7 +797,7 @@ end RetainedCoreHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 theorem isRmBoundedBy_of_backwardPointTrace_of_derivative_bounds
     {Ctime : ℝ≥0} {qcan M : ℝ} {phi : ℝ → ℝ}

@@ -65,8 +65,8 @@ theorem curvatureOperatorImageAt_finrank_eq_of_unit_curvature_nullity
   · have hz : Matrix.diagonal (![metricScalarAt g x, 0, 0] : Fin 3 → ℝ) = 0 := by
       ext i j
       fin_cases i <;> fin_cases j <;> simp [hs, Matrix.diagonal]
-    rw [hz, Matrix.rank_zero, if_pos hs]
-  · rw [Matrix.rank_diagonal, if_neg hs]
+    rw [hz, Matrix.rank_zero, ite_eq_left hs]
+  · rw [Matrix.rank_diagonal, ite_eq_right hs]
     let _ : Unique {i : Fin 3 // ![metricScalarAt g x, 0, 0] i ≠ 0} :=
       ⟨⟨⟨0, by simpa using hs⟩⟩, by
         rintro ⟨i, hi⟩

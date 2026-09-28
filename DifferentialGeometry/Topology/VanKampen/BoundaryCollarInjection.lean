@@ -90,7 +90,7 @@ private theorem continuous_domainRetractionValue {K : Set X}
       change c.toFun ((c.homeomorphRange.symm (j x)).1,
         min (c.homeomorphRange.symm (j x)).2 0) = c.domainRetractionValue K x.val
       unfold domainRetractionValue
-      rw [dif_pos (show x.val.val ∈ c.range from x.property)])
+      rw [dite_eq_left (show x.val.val ∈ c.range from x.property)])
 
 def domainRetraction {K : Set X}
     (hside : ∀ p : B × ℝ, c.toFun p ∈ K ↔ p.2 ≤ 0) :

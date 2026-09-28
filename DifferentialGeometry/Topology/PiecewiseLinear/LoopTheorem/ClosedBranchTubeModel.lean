@@ -58,10 +58,10 @@ def tubeMeridian (v : ℝ × ℝ) : Set ((ℝ × ℝ) × ℝ) := tubeMeridianPar
 def tubeCellArc (k : Fin 4) : Set ((ℝ × ℝ) × ℝ) := tubeMeridian (fourSpokeModelLeaf k)
 
 theorem tubeMeridianCoeff_of_le {t : ℝ} (h : t ≤ 1 / 4) : tubeMeridianCoeff t = 4 * t :=
-  if_pos h
+  ite_eq_left h
 
 theorem tubeMeridianHeight_of_le {t : ℝ} (h : t ≤ 1 / 4) : tubeMeridianHeight t = 0 :=
-  if_pos h
+  ite_eq_left h
 
 theorem tubeMeridianCoeff_of_mem {t : ℝ} (h1 : 1 / 4 ≤ t) (h2 : t ≤ 3 / 4) :
     tubeMeridianCoeff t = 1 := by

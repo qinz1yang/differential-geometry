@@ -89,11 +89,11 @@ def radialLoopExtension (γ : freeLoop M) (z : ℂ) : M := by
 
 theorem radialLoopExtension_zero (γ : freeLoop M) :
     radialLoopExtension γ 0 = γ ((1 : ℝ) : loopCircle) := by
-  rw [radialLoopExtension, if_neg (by simp [Complex.slitPlane]), if_pos rfl]
+  rw [radialLoopExtension, ite_eq_right (by simp [Complex.slitPlane]), ite_eq_left rfl]
 
 theorem radialLoopExtension_eq₀ (γ : freeLoop M) {z : ℂ} (hz : z ∈ Complex.slitPlane) :
     radialLoopExtension γ z = radialLoopExtension₀ γ z := by
-  rw [radialLoopExtension, if_pos hz]
+  rw [radialLoopExtension, ite_eq_left hz]
 
 theorem radialLoopExtension_eq₁ (γ : freeLoop M) {z : ℂ} (hz : -z ∈ Complex.slitPlane) :
     radialLoopExtension γ z = radialLoopExtension₁ γ z := by
@@ -102,7 +102,7 @@ theorem radialLoopExtension_eq₁ (γ : freeLoop M) {z : ℂ} (hz : -z ∈ Compl
     simp [Complex.slitPlane] at hz
   rw [radialLoopExtension]
   by_cases h : z ∈ Complex.slitPlane
-  · rw [if_pos h]
+  · rw [ite_eq_left h]
     have him : z.im ≠ 0 := by
       intro him
       rcases Complex.mem_slitPlane_iff.mp h with h' | h'
@@ -113,7 +113,7 @@ theorem radialLoopExtension_eq₁ (γ : freeLoop M) {z : ℂ} (hz : -z ∈ Compl
       · exact h' him
     rw [radialLoopExtension₀, radialLoopExtension₁]
     exact congrArg γ (arg_neg_twoPi_add_half_eq z him)
-  · rw [if_neg h, if_neg hz0]
+  · rw [ite_eq_right h, ite_eq_right hz0]
 
 theorem isOpen_radialSlitPlane : IsOpen {z : ℂ | -z ∈ Complex.slitPlane} :=
   Complex.isOpen_slitPlane.preimage continuous_neg

@@ -1,5 +1,6 @@
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.LocalDiffeomorph
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Topology.LocallyClosed
@@ -169,8 +170,9 @@ theorem isOpen [FiniteDimensional ℝ E] {S : Set M}
 
 theorem isLocallyClosed {S : Set M} {d : ℕ} (hS : IsEmbeddedSlice I d S) :
     IsLocallyClosed S := by
-  apply ((isLocallyClosed_tfae S).out 2 0).mp
+  apply isLocallyClosed_iff_isLocallyClosedAt.mpr
   intro x hx
+  apply isLocallyClosedAt_iff_exists_isClosed_preimage_val.mpr
   obtain ⟨c, A, hA, hxc, hdim, himage⟩ := hS x hx
   let : FiniteDimensional ℝ A.direction := hA
   refine ⟨c.source, c.open_source.mem_nhds hxc, ?_⟩

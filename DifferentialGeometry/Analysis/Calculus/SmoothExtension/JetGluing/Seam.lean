@@ -42,33 +42,33 @@ theorem contDiffOn_Icc_ite_of_jet_match {fL fR : ℝ → F} {a b x₀ : ℝ} (ha
     simpa only [hpL_def, hpR_def, ftaylorSeriesWithin] using hLR
   have hEqL : ∀ m : ℕ, Set.EqOn (fun y => p y m) (fun y => pL y m) (Icc a x₀) := by
     intro m y hy
-    simp only [hp_def, if_pos hy.2]
+    simp only [hp_def, ite_eq_left hy.2]
   have hEqR : ∀ m : ℕ, Set.EqOn (fun y => p y m) (fun y => pR y m) (Icc x₀ b) := by
     intro m y hy
     rcases eq_or_lt_of_le hy.1 with hy0 | hy0
     · subst hy0
-      simp only [hp_def, if_pos (le_refl x₀), hjetF]
-    · simp only [hp_def, if_neg (not_le.mpr hy0)]
+      simp only [hp_def, ite_eq_left (le_refl x₀), hjetF]
+    · simp only [hp_def, ite_eq_right (not_le.mpr hy0)]
   have hzero : ∀ x ∈ Icc a b, (p x 0).curry0 = f x := by
     intro x hx
     by_cases hx' : x ≤ x₀
     · have hval : (pL x 0).curry0 = fL x := hTL.zero_eq x ⟨hx.1, hx'⟩
-      simp only [hp_def, hf_def, if_pos hx', hval]
+      simp only [hp_def, hf_def, ite_eq_left hx', hval]
     · have hx'' : x₀ ≤ x := le_of_lt (not_le.mp hx')
       have hval : (pR x 0).curry0 = fR x := hTR.zero_eq x ⟨hx'', hx.2⟩
-      simp only [hp_def, hf_def, if_neg hx', hval]
+      simp only [hp_def, hf_def, ite_eq_right hx', hval]
   have hm_lt : ∀ m : ℕ, (m : WithTop ℕ∞) < ∞ := fun m => by
     exact_mod_cast (Nat.cast_lt.mpr m.lt_succ_self).trans_le le_top
   have hderiv : ∀ m : ℕ, ∀ x ∈ Icc a b,
       HasFDerivWithinAt (fun y => p y m) (p x m.succ).curryLeft (Icc a b) x := by
     intro m x hx
     have hpL_succ : ∀ y : ℝ, y ≤ x₀ → p y m.succ = pL y m.succ := fun y hy => by
-      simp only [hp_def, if_pos hy]
+      simp only [hp_def, ite_eq_left hy]
     have hpR_succ : ∀ y : ℝ, x₀ ≤ y → p y m.succ = pR y m.succ := by
       intro y hy
       rcases eq_or_lt_of_le hy with hy0 | hy0
-      · subst hy0; simp only [hp_def, if_pos (le_refl x₀), hjetF]
-      · simp only [hp_def, if_neg (not_le.mpr hy0)]
+      · subst hy0; simp only [hp_def, ite_eq_left (le_refl x₀), hjetF]
+      · simp only [hp_def, ite_eq_right (not_le.mpr hy0)]
     rcases lt_trichotomy x x₀ with hlt | heq | hgt
     · have hdL : HasFDerivWithinAt (fun y => pL y m) (pL x m.succ).curryLeft (Icc a x₀) x :=
         hTL.fderivWithin m (hm_lt m) x ⟨hx.1, hlt.le⟩
@@ -135,24 +135,24 @@ theorem contMDiffAt_ite_of_jet_match {fL fR : ℝ → M} {a b x₀ : ℝ} (ha : 
     ContMDiffAt 𝓘(ℝ, ℝ) I' ∞ (fun t => if t ≤ x₀ then fL t else fR t) x₀ := by
   set G : ℝ → M := fun t => if t ≤ x₀ then fL t else fR t with hG_def
   set κ : M → E' := fun y => extChartAt I' (fL x₀) y with hκ_def
-  have hGx : G x₀ = fL x₀ := by simp only [hG_def, if_pos le_rfl]
+  have hGx : G x₀ = fL x₀ := by simp only [hG_def, ite_eq_left le_rfl]
   have hglue : κ ∘ G = fun t : ℝ => if t ≤ x₀ then κ (fL t) else κ (fR t) := by
     funext t
     by_cases h : t ≤ x₀
-    · simp only [hG_def, hκ_def, Function.comp_apply, if_pos h]
-    · simp only [hG_def, hκ_def, Function.comp_apply, if_neg h]
+    · simp only [hG_def, hκ_def, Function.comp_apply, ite_eq_left h]
+    · simp only [hG_def, hκ_def, Function.comp_apply, ite_eq_right h]
   have hchart : ContDiffAt ℝ ∞ (fun t : ℝ => if t ≤ x₀ then κ (fL t) else κ (fR t)) x₀ :=
     contDiffAt_ite_of_jet_match ha hb hL hR hjet
   have hcont : ContinuousAt G x₀ := by
     have h1 : ContinuousWithinAt G (Iic x₀) x₀ :=
-      hcL.congr (fun t ht => by simp only [hG_def, if_pos (mem_Iic.mp ht)]) hGx
+      hcL.congr (fun t ht => by simp only [hG_def, ite_eq_left (mem_Iic.mp ht)]) hGx
     have h2 : ContinuousWithinAt G (Ici x₀) x₀ := by
-      refine hcR.congr (fun t ht => ?_) (by simp only [hG_def, if_pos le_rfl]; exact hval)
+      refine hcR.congr (fun t ht => ?_) (by simp only [hG_def, ite_eq_left le_rfl]; exact hval)
       rcases eq_or_lt_of_le (mem_Ici.mp ht) with h | h
       · subst h
-        simp only [hG_def, if_pos le_rfl]
+        simp only [hG_def, ite_eq_left le_rfl]
         exact hval
-      · simp only [hG_def, if_neg (not_le.mpr h)]
+      · simp only [hG_def, ite_eq_right (not_le.mpr h)]
     simpa only [Iic_union_Ici, continuousWithinAt_univ] using h1.union h2
   refine (contMDiffAt_iff_target).mpr ⟨hcont, ?_⟩
   rw [hGx]

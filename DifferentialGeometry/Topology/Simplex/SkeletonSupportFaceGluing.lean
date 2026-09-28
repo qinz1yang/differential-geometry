@@ -1,8 +1,11 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Skeleton
 import DifferentialGeometry.Topology.ClosedCover
 import Mathlib.Topology.UnitInterval
 
 noncomputable section
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -11,7 +14,7 @@ variable {ι X : Type*} [Fintype ι] [TopologicalSpace X]
 def skeletonHomotopyDesc {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
     (G : (s : {s : Finset ι // s.card = k + 1}) → C(unitInterval × supportFace s.val, X))
     (hG : ∀ (s r : {s : Finset ι // s.card = k + 1}) (t : unitInterval)
-      (p : stdSimplex ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
+      (p : coordinateSet ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
       G s (t, ⟨p, hs⟩) = G r (t, ⟨p, hr⟩)) :
     C(unitInterval × skeleton ι k, X) := by
   classical
@@ -37,7 +40,7 @@ def skeletonHomotopyDesc {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
 @[simp] theorem skeletonHomotopyDesc_supportFace {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
     (G : (s : {s : Finset ι // s.card = k + 1}) → C(unitInterval × supportFace s.val, X))
     (hG : ∀ (s r : {s : Finset ι // s.card = k + 1}) (t : unitInterval)
-      (p : stdSimplex ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
+      (p : coordinateSet ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
       G s (t, ⟨p, hs⟩) = G r (t, ⟨p, hr⟩))
     (s : {s : Finset ι // s.card = k + 1}) (t : unitInterval) (p : supportFace s.val) :
     skeletonHomotopyDesc hk G hG
@@ -67,9 +70,9 @@ def skeletonHomotopyDesc {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
 theorem skeletonHomotopyDesc_eq {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
     (G : (s : {s : Finset ι // s.card = k + 1}) → C(unitInterval × supportFace s.val, X))
     (hG : ∀ (s r : {s : Finset ι // s.card = k + 1}) (t : unitInterval)
-      (p : stdSimplex ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
+      (p : coordinateSet ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
       G s (t, ⟨p, hs⟩) = G r (t, ⟨p, hr⟩))
-    (t : unitInterval) (f : stdSimplex ℝ ι → X)
+    (t : unitInterval) (f : coordinateSet ℝ ι → X)
     (hf : ∀ (s : {s : Finset ι // s.card = k + 1}) (p : supportFace s.val),
       G s (t, p) = f p.val)
     (p : skeleton ι k) : skeletonHomotopyDesc hk G hG (t, p) = f p.val := by
@@ -80,9 +83,9 @@ theorem skeletonHomotopyDesc_eq {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
 theorem skeletonHomotopyDesc_zero {k : ℕ} (hk : k + 1 ≤ Fintype.card ι)
     (G : (s : {s : Finset ι // s.card = k + 1}) → C(unitInterval × supportFace s.val, X))
     (hG : ∀ (s r : {s : Finset ι // s.card = k + 1}) (t : unitInterval)
-      (p : stdSimplex ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
+      (p : coordinateSet ℝ ι) (hs : p ∈ supportFace s.val) (hr : p ∈ supportFace r.val),
       G s (t, ⟨p, hs⟩) = G r (t, ⟨p, hr⟩))
-    (f : stdSimplex ℝ ι → X)
+    (f : coordinateSet ℝ ι → X)
     (hf : ∀ (s : {s : Finset ι // s.card = k + 1}) (p : supportFace s.val),
       G s (0, p) = f p.val)
     (p : skeleton ι k) : skeletonHomotopyDesc hk G hG (0, p) = f p.val :=

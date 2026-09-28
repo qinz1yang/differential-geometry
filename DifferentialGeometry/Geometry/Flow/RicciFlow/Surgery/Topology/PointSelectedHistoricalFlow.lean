@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem exists_point_selected_historical_flows
-    (P : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (i : ∀ n, Fin (H n).eventCount)
     (p y : ∀ n, ((H n).toHistory.event (i n)).incoming.terminalRegularOpen)
     (A : ℕ → ℝ) (hA : ∀ n, 0 < A n) {D : ℝ} (hD : 0 ≤ D)

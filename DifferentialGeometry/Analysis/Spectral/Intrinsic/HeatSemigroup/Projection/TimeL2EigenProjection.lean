@@ -120,14 +120,14 @@ private lemma normSq_spatialEigenProj_sub_add (σ : ℝ) (N : ℕ)
       ring
     rw [hco]
     by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
-    · rw [if_pos hi, if_pos hi, sub_self]; ring
-    · rw [if_neg hi, if_neg hi]
+    · rw [ite_eq_left hi, ite_eq_left hi, sub_self]; ring
+    · rw [ite_eq_right hi, ite_eq_right hi]
       simp only [hwdef]
       ring
   have hon_sum :
       Summable (fun i => if i ∈ eigenIdxFinset (I := I) (M := M) g N then w i else 0) :=
     summable_of_ne_finset_zero (s := eigenIdxFinset (I := I) (M := M) g N)
-      (fun i hi => if_neg hi)
+      (fun i hi => ite_eq_right hi)
   have hoff_nonneg :
       ∀ i, 0 ≤ (if i ∈ eigenIdxFinset (I := I) (M := M) g N then 0 else w i) := fun i => by
     by_cases hi : i ∈ eigenIdxFinset (I := I) (M := M) g N
@@ -144,8 +144,8 @@ private lemma normSq_spatialEigenProj_sub_add (σ : ℝ) (N : ℕ)
   have hon_tsum :
       ∑' i, (if i ∈ eigenIdxFinset (I := I) (M := M) g N then w i else 0) =
         ∑ i ∈ eigenIdxFinset (I := I) (M := M) g N, w i := by
-    rw [tsum_eq_sum (s := eigenIdxFinset (I := I) (M := M) g N) (fun i hi => if_neg hi)]
-    exact Finset.sum_congr rfl (fun i hi => if_pos hi)
+    rw [tsum_eq_sum (s := eigenIdxFinset (I := I) (M := M) g N) (fun i hi => ite_eq_right hi)]
+    exact Finset.sum_congr rfl (fun i hi => ite_eq_left hi)
   calc (∑ i ∈ eigenIdxFinset (I := I) (M := M) g N, w i)
         + ‖spatialEigenProj (I := I) (M := M) g σ N W - W‖ ^ 2
       = (∑ i ∈ eigenIdxFinset (I := I) (M := M) g N, w i)

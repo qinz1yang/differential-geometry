@@ -244,11 +244,11 @@ theorem exists_isPiecewiseAffineOn_glue_prism_collar (L : Geometry.SimplicialCom
   have hgmem : ∀ z ∈ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε, g z = Φ z := by
     intro z hz
     rw [hgdef]
-    exact if_pos hz
+    exact ite_eq_left hz
   have hgnot : ∀ z ∉ Icc (0 : ℝ) 1 ×ˢ Icc (0 : ℝ) ε, g z = G z := by
     intro z hz
     rw [hgdef]
-    exact if_neg hz
+    exact ite_eq_right hz
   refine ⟨g, ?_, ?_, ?_, ?_⟩
   · rw [← hunion]
     exact hPAΦ.piecewise_of_isClosed hGupper (isClosed_Icc.prod isClosed_Icc)

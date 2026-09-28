@@ -218,7 +218,7 @@ theorem perelman_v_evolution
   let Hf := hessianSec (metricCov g) (metricCov_smooth g) (f t) hf x
   let Rc := metricRicciAt g x
   have hSq := normSq0S_sub_smul_metricTensor0S g x (Rc + Hf) (1 / (2 * t))
-  rw [_root_.Tensor0SBundle.normSq0S_add, metricTracePair0SAt_add, hTraceR, hTraceH] at hSq
+  rw [_root_.DifferentialGeometry.Tensor0SBundle.normSq0S_add, metricTracePair0SAt_add, hTraceR, hTraceH] at hSq
   have hDrift : deriv (fun r => A r x) t - laplacianAt G t (A t) x +
       2 * g.inner x (gradientFun g (f t) x) (gradientFun g (A t) x) =
       -2 * t * normSq0S g x 2 (Rc + Hf - (1 / (2 * t)) • metricTensor0S g x) := by

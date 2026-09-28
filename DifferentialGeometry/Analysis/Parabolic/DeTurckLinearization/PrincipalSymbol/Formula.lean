@@ -264,9 +264,9 @@ private lemma deTurckCorrection_block_contraction (g : SmoothRiemannianMetric I 
           ring
       _ = chartInvGramMatrix (I := I) g x x a b * ((1 / 2 : ℝ) * P m) := by
           rw [Finset.sum_eq_single m]
-          · rw [if_pos rfl, one_mul]
+          · rw [ite_eq_left rfl, one_mul]
           · intro l _ hl
-            rw [if_neg hl, zero_mul]
+            rw [ite_eq_right hl, zero_mul]
           · intro hm
             exact absurd (Finset.mem_univ m) hm
   have reorder :

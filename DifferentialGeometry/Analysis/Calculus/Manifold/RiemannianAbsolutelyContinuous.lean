@@ -26,7 +26,7 @@ theorem manifold {gamma : ℝ → M} {a b : ℝ}
     DifferentialGeometry.Geometry.Riemannian.exists_lipschitzOnWith_extChartAt_of_isCompact
       (I := I) p (isCompact_uIcc.image_of_continuousOn (hcont.mono hsub))
       (by simpa only [extChartAt_source] using mapsTo_iff_image_subset.mp hmaps)
-  exact hchart.comp_absolutelyContinuousOnInterval (AbsolutelyContinuousOnInterval.mono (f := gamma) h hsub)
-    (fun t ht => mem_image_of_mem gamma ht)
+  exact hchart.comp_absolutelyContinuousOnInterval (fun t ht => mem_image_of_mem gamma ht)
+    (AbsolutelyContinuousOnInterval.mono (f := gamma) h hsub)
 
 end AbsolutelyContinuousOnInterval

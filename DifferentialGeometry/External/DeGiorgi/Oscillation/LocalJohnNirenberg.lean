@@ -1683,7 +1683,7 @@ theorem john_nirenberg_local
     by_cases hlamA : A ≤ lam
     · intro x hx
       dsimp [Ebad] at hx
-      rw [dif_pos hlamA] at hx
+      rw [dite_eq_left hlamA] at hx
       rcases Set.mem_iUnion.1 hx with ⟨p, hp⟩
       have hcenter : p.center ∈ B := p.center_mem
       have hrad_le : stopR lam hlamA p ≤ R := by
@@ -1702,10 +1702,10 @@ theorem john_nirenberg_local
     intro lam
     by_cases hlamA : A ≤ lam
     · dsimp [Ebad]
-      rw [dif_pos hlamA]
+      rw [dite_eq_left hlamA]
       exact ((isOpen_iUnion fun _ : F lam => isOpen_ball).measurableSet)
     · dsimp [Ebad]
-      rw [dif_neg hlamA]
+      rw [dite_eq_right hlamA]
       simpa [hsixB_def] using
         (measurableSet_ball : MeasurableSet (Metric.ball x₀ (6 * R)))
   have hEbad_anti : ∀ lam₁ lam₂ : ℝ, lam₁ ≤ lam₂ → Ebad lam₂ ⊆ Ebad lam₁ := by
@@ -1714,7 +1714,7 @@ theorem john_nirenberg_local
     · have h₂ : A ≤ lam₂ := le_trans h₁ h12
       intro x hx
       dsimp [Ebad] at hx
-      rw [dif_pos h₂] at hx
+      rw [dite_eq_left h₂] at hx
       rcases Set.mem_iUnion.1 hx with ⟨p₂, hp₂⟩
       let p₁ : F lam₁ := weakenBadWitness h12 p₂
       have hrad :
@@ -1723,11 +1723,11 @@ theorem john_nirenberg_local
         exact stoppingRadiusBad_mono hR
           (havg_base lam₁ h₁) (havg_base lam₂ h₂) h12 p₂
       dsimp [Ebad]
-      rw [dif_pos h₁]
+      rw [dite_eq_left h₁]
       exact Set.mem_iUnion.2 ⟨p₁, Metric.ball_subset_ball hrad hp₂⟩
     · intro x hx
       dsimp [Ebad]
-      rw [dif_neg h₁]
+      rw [dite_eq_right h₁]
       exact hEbad_sub lam₂ hx
   have h_point_subset_ae : ∀ s : ℝ, {x ∈ B | w x > s} ≤ᵐ[volume] Ebad s := by
     intro s
@@ -1746,14 +1746,14 @@ theorem john_nirenberg_local
           radius_le := hr_le
           bad := hbad }
       dsimp [Ebad]
-      rw [dif_pos hsA]
+      rw [dite_eq_left hsA]
       exact Set.mem_iUnion.2 ⟨p, by
         simpa [p] using
           (Metric.mem_ball_self (stoppingRadiusBad_pos hR (havg_base s hsA) p) :
             p.center ∈ Metric.ball p.center (stopR s hsA p))⟩
     · exact Filter.Eventually.of_forall fun y hy => by
         dsimp [Ebad]
-        rw [dif_neg hsA]
+        rw [dite_eq_right hsA]
         exact hB_sub_six hy.1
   have h_decay_bad : ∀ lam : ℝ, A ≤ lam →
       volume (Ebad (lam + A)) ≤ ENNReal.ofReal θ * volume (Ebad lam) := by
@@ -1837,14 +1837,14 @@ theorem john_nirenberg_local
       have hULam_sub : (⋃ q : SLam, (BLam q).carrier) ⊆ Ebad lam := by
         intro x hx
         dsimp [Ebad]
-        rw [dif_pos hlamA]
+        rw [dite_eq_left hlamA]
         rcases Set.mem_iUnion.1 hx with ⟨q, hq⟩
         exact Set.mem_iUnion.2 ⟨q.1, by
           simpa [BLam, rLam, JNBall.carrier] using hq⟩
       have hUMu_sub : (⋃ q : SMu, (BMu q).carrier) ⊆ Ebad μ := by
         intro x hx
         dsimp [Ebad]
-        rw [dif_pos hμA]
+        rw [dite_eq_left hμA]
         rcases Set.mem_iUnion.1 hx with ⟨q, hq⟩
         exact Set.mem_iUnion.2 ⟨q.1, by
           simpa [BMu, rMu, JNBall.carrier] using hq⟩

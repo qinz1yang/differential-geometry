@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.CubeParametrization
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 
@@ -5,21 +6,23 @@ noncomputable section
 
 open scoped unitInterval
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 private def joinLine {X : Type*} [TopologicalSpace X]
-    (f : C(stdSimplex ℝ (Fin 3), X)) :
+    (f : C(coordinateSet ℝ (Fin 3), X)) :
     C(unitInterval × (unitInterval × unitInterval), X) where
   toFun p :=
     f ⟨(1 - (p.1 : ℝ)) • (triangleJoinReverse p.2 : Fin 3 → ℝ) +
       (p.1 : ℝ) • (triangleJoin (p.2.2, p.2.1) : Fin 3 → ℝ),
-      (convex_stdSimplex ℝ _) (triangleJoinReverse p.2).property
+      (convex_coordinateSet ℝ _) (triangleJoinReverse p.2).property
         (triangleJoin (p.2.2, p.2.1)).property
         (sub_nonneg.mpr p.1.2.2) p.1.2.1 (by ring)⟩
   continuous_toFun := by fun_prop
 
 private theorem joinLine_boundary {X : Type*} [TopologicalSpace X]
-    (f : C(stdSimplex ℝ (Fin 3), X)) {x : X}
+    (f : C(coordinateSet ℝ (Fin 3), X)) {x : X}
     (hf : ∀ y ∈ boundary (Fin 3), f y = x)
     {p : unitInterval × unitInterval × unitInterval}
     (hp : p.2.1 = 0 ∨ p.2.1 = 1 ∨ p.2.2 = 0 ∨ p.2.2 = 1) :
@@ -44,7 +47,7 @@ private theorem joinLine_boundary {X : Type*} [TopologicalSpace X]
     simp [h]
 
 def triangleJoinReverseHomotopyRel {X : Type*} [TopologicalSpace X]
-    (f : C(stdSimplex ℝ (Fin 3), X)) {x : X}
+    (f : C(coordinateSet ℝ (Fin 3), X)) {x : X}
     (hf : ∀ y ∈ boundary (Fin 3), f y = x) :
     (f.comp triangleJoinReverse).HomotopyRel
       ((f.comp triangleJoin).comp ⟨Prod.swap, continuous_swap⟩)

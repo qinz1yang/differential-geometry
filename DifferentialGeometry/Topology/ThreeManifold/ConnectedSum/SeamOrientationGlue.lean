@@ -1121,7 +1121,7 @@ theorem seam_interiorRight_eventuallyEq (x : qR c d aD hRq) (y : csModel)
       hzShell hz1 = d.toBallChart.interiorToPunctured z := by
     apply Subtype.ext
     rw [puncturedOfCoord_val, BallChart.interiorToPunctured_val, hzchart]
-  rw [rightSeamTransition, dif_pos ⟨hzShell, hz1⟩]
+  rw [rightSeamTransition, dite_eq_left ⟨hzShell, hz1⟩]
   congr 1
   rw [show interiorRight c.toBallChart d.toBallChart aD z =
       inr c.toBallChart d.toBallChart aD.toHomeomorph (d.toBallChart.interiorToPunctured z)

@@ -22,7 +22,7 @@ theorem exists_rounded_derivedNeighborhood_triangle_annulus
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
     let _ := prismAnnulusChartedSpace
     ∃ g : (Fin 3 → ℝ) × ℝ → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
         (derivedNeighborhoodCell K s).space ∧
       ∃ U : TopologicalSpace.Opens (derivedNeighborhoodCell K s).space,
         (derivedNeighborhoodCell K s).space ∩ (derivedNeighborhood K L).space ⊆

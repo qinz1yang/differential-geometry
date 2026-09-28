@@ -18,11 +18,11 @@ private noncomputable def extendByIdMap (e : P ≃ₜ P) : X → X := by
 
 private theorem extendByIdMap_of_mem (e : P ≃ₜ P) {x : X} (hx : x ∈ P) :
     extendByIdMap e x = (e ⟨x, hx⟩ : X) := by
-  simp only [extendByIdMap, dif_pos hx]
+  simp only [extendByIdMap, dite_eq_left hx]
 
 private theorem extendByIdMap_of_notMem (e : P ≃ₜ P) {x : X} (hx : x ∉ P) :
     extendByIdMap e x = x := by
-  simp only [extendByIdMap, dif_neg hx]
+  simp only [extendByIdMap, dite_eq_right hx]
 
 private theorem continuous_extendByIdMap (e : P ≃ₜ P) (hP : IsClosed P)
     (hfix : ∀ x : P, (x : X) ∈ frontier P → e x = x) : Continuous (extendByIdMap e) := by

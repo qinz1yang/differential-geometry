@@ -38,7 +38,7 @@ theorem exists_section34_vertex_circle_or_return_arc_of_model_disk
     (hfront : u '' frontier P =
       frontier (section34FaceTorus (section34VertexBallImage src f₁) s))
     (hJ : IsPLSphere 1 J) (hJF : J ⊆ u ⁻¹' fblBd s)
-    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ)
+    {q : (Fin 3 → ℝ) → E3} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hqJ : q '' stdSimplexBoundary 2 = J) (hΔP : Δ ⊆ frontier P) :
     (∃ w : Section34VertexIndex 𝒦 𝒦', Section34Incident w.1 s.1 ∧
       u '' J ⊆ section34VertexBallImage src f₁ w) ∨
@@ -129,7 +129,7 @@ theorem exists_section34_vertex_circle_or_return_arc_of_model_disk
     obtain ⟨L, hLfin, hL, -, hLfr⟩ := hP.isPLTorus_frontier.exists_combinatorial_triangulation
     let _ : Finite L.faces := hLfin.to_subtype
     have hacc : ∀ i, ∀ x ∈ J ∩ G i, ∀ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D → D ⊆ L.space →
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ L.space →
         (∀ᶠ y in 𝓝 x, y ∈ r '' stdSimplexBoundary 2 ↔ y ∈ J) →
         x ∈ closure (G i ∩ (D \ r '' stdSimplexBoundary 2)) := by
       intro i x hx D r hr hDL hlocal

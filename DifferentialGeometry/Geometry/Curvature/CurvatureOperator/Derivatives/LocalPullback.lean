@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Restriction
-import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pullback
 import DifferentialGeometry.Geometry.Metric.Pullback.Local
 
 noncomputable section

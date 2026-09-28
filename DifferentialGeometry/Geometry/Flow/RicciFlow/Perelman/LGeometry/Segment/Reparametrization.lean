@@ -40,8 +40,8 @@ theorem isFiniteActionLCurve_squareRootReparametrization
       refine ⟨Real.le_sqrt_of_sq_le htau.1, ?_⟩
       simpa only [Real.sqrt_sq hb] using Real.sqrt_le_sqrt htau.2
     change AbsolutelyContinuousOnInterval (alpha ∘ Real.sqrt) (a ^ 2) (b ^ 2)
-    exact hLip.comp_absolutelyContinuousOnInterval
-      (Real.absolutelyContinuousOnInterval_sqrt (a ^ 2) (b ^ 2)) hMaps
+    exact hLip.comp_absolutelyContinuousOnInterval hMaps
+      (Real.absolutelyContinuousOnInterval_sqrt (a ^ 2) (b ^ 2))
   · rw [ae_restrict_iff' measurableSet_Icc]
     filter_upwards [Ioo_ae_eq_Icc (μ := volume)] with tau htau
     intro htauIcc

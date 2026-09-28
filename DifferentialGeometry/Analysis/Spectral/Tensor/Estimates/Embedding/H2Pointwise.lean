@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Recons
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.RankZeroInner
+open DifferentialGeometry.TensorMetric (norm_eq_sqrt_tensorInnerPointwise
+  riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

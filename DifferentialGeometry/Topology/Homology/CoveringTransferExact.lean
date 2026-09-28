@@ -16,12 +16,9 @@ variable {E B : TopCat.{u}} (p : E ⟶ B)
 theorem natCard_singularSimplex_lifts (hp : IsCoveringMap p) {n : ℕ}
     (σ : TopCat.toSSet.obj B _⦋n⦌) :
     Nat.card (SingularSimplexLifts p σ) =
-      Nat.card (p ⁻¹' {B.toSSetObjEquiv _ σ stdSimplex.barycenter}) := by
-  let D := stdSimplex ℝ (Fin (n + 1))
-  let _ : ContractibleSpace D :=
-    (convex_stdSimplex ℝ _).contractibleSpace ⟨stdSimplex.barycenter, stdSimplex.barycenter.prop⟩
+      Nat.card (p ⁻¹' {B.toSSetObjEquiv _ σ Convexity.StdSimplex.barycenter}) := by
+  let D := Convexity.StdSimplex ℝ (Fin (n + 1))
   let _ : SimplyConnectedSpace D := SimplyConnectedSpace.ofContractible _
-  let _ : LocallyPathConnectedSpace D := (convex_stdSimplex ℝ _).locallyPathConnectedSpace
   let e : SingularSimplexLifts p σ ≃
       {g : C(D, E) // p ∘ g = B.toSSetObjEquiv _ σ} :=
     Equiv.subtypeEquiv (E.toSSetObjEquiv _) (fun τ => by
@@ -33,7 +30,7 @@ theorem natCard_singularSimplex_lifts (hp : IsCoveringMap p) {n : ℕ}
         apply (B.toSSetObjEquiv _).injective
         exact ContinuousMap.ext (congrFun h))
   exact Nat.card_congr (e.trans (Topology.Covering.continuousMapLiftsEquivFiber hp
-    (B.toSSetObjEquiv _ σ) stdSimplex.barycenter))
+    (B.toSSetObjEquiv _ σ) Convexity.StdSimplex.barycenter))
 
 private def chainFinsuppIso {R : Type v} [CommRing R] (K : SSet.{u})
     (A : ModuleCat.{u} R) (n : ℕ) :

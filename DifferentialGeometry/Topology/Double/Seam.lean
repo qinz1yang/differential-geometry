@@ -23,14 +23,14 @@ def doubleSeam : C(B × Icc (-ε) ε, Double B) := by
       doubleRealization B r hr (f q) = (c (a q), q.2.val) := by
     by_cases ht : 0 ≤ q.2.val
     · dsimp only [f]
-      rw [if_pos ht]
+      rw [ite_eq_left ht]
       refine Prod.ext ?_ ?_
       · rfl
       · change r (c (a q)) = q.2.val
         rw [hheight]
         exact abs_of_nonneg ht
     · dsimp only [f]
-      rw [if_neg ht]
+      rw [ite_eq_right ht]
       refine Prod.ext ?_ ?_
       · rfl
       · change -r (c (a q)) = q.2.val
@@ -50,7 +50,7 @@ theorem doubleRealization_doubleSeam (q : B × Icc (-ε) ε) :
   by_cases ht : 0 ≤ q.2.val
   · change doubleRealization B r hr
       (if 0 ≤ q.2.val then _ else _) = _
-    rw [if_pos ht]
+    rw [ite_eq_left ht]
     refine Prod.ext ?_ ?_
     · rfl
     · change r (c _) = q.2.val
@@ -58,7 +58,7 @@ theorem doubleRealization_doubleSeam (q : B × Icc (-ε) ε) :
       exact abs_of_nonneg ht
   · change doubleRealization B r hr
       (if 0 ≤ q.2.val then _ else _) = _
-    rw [if_neg ht]
+    rw [ite_eq_right ht]
     refine Prod.ext ?_ ?_
     · rfl
     · change -r (c _) = q.2.val

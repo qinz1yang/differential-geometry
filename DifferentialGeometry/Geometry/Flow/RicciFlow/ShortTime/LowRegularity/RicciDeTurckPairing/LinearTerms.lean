@@ -221,7 +221,7 @@ private lemma metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
     (g₀ g₁ : SmoothRiemannianMetric I M) (x : M)
     (B : Tensor0SSpace 1 I x) :
     Tensor0SSpace.toModel
-        (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) x
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) x
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) B) =
       Tensor0SSpace.toModel
         (DifferentialGeometry.Integral.Connection.slotExtendFib
@@ -234,7 +234,7 @@ private lemma metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
   intro u
   rw [show (u : Fin 4 → E) = Fin.cons (u 0) (Fin.tail u) from
     (Fin.cons_self_tail u).symm]
-  rw [tensor0SProdKappaFib_apply, Tensor0SSpace.toModel_ofModel,
+  rw [Tensor0SSpace.rightProductContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   rw [DifferentialGeometry.Integral.Connection.slotExtendFib_apply_eval
     (I := I) (M := M) 0 3 x
@@ -305,10 +305,10 @@ private lemma lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm_toMode
   intro y d
   rw [show ((show Tensor0SSpace 1 I y →L[ℝ] Tensor0SSpace 4 I y from
       (lieCorrectionZeroVectorBundleMetricConnectionDifferenceTerm (I := I) (M := M) g₀ g₁).toSection y) d) =
-      domDomCongrFibRank (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation y
-        (tensor0SProdKappaFib (I := I) (p := 1) (q := 3) y
+      Tensor0SSpace.reindexContinuousLinearMap (I := I) 4 LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation y
+        (Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 1) (q := 3) y
           (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ y) d) from rfl]
-  rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel]
+  rw [Tensor0SSpace.reindexContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel]
   exact congrArg
     (ContinuousMultilinearMap.domDomCongr LieCorrectionZeroFiberOperators.lieCorrectionZeroVectorBundleTracePermutation)
     (metricLoweredConnectionDifferenceTensorProduct_eq_slotExtension
@@ -1012,7 +1012,7 @@ private local instance instCompleteSpaceE_covariantTerm : CompleteSpace E :=
 
 private local instance (x : M) :
     ContinuousAdd (TangentSpace I x →L[ℝ] TangentSpace I x) :=
-  ContinuousLinearMap.topologicalAddGroup.toContinuousAdd
+  ContinuousLinearMap.isTopologicalAddGroup.toContinuousAdd
 
 private lemma half_sq_le_one {s : ℝ} (h0 : 0 ≤ s) (h1 : s ≤ 1) :
     (s / 2) ^ 2 ≤ 1 := by
@@ -1158,7 +1158,7 @@ theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism
       mul_le_mul_of_nonneg_left h0 (pow_nonneg (Nat.cast_nonneg _) 2)
     _ = ((Module.finrank ℝ E : ℝ) * Bs R * A) ^ 2 := by ring
 
-theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_covariantJetNormSq_difference_bound
+theorem exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_jet_two_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g : SmoothRiemannianMetric I M) :
     ∃ B0 B1 : ℝ → ℝ,
@@ -1719,7 +1719,7 @@ theorem exists_deTurckLieCovariantDerivativeRemainderTensor_covariantJetNormSq_d
   obtain ⟨Cq, hCq, hquadp⟩ := exists_connectionDifferenceQuadraticCurvatureTerm_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
   obtain ⟨Bs, hBs, harmb⟩ := exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_covariantJetNormSq_bound (I := I) (M := M) hDim g
   obtain ⟨Bt, hBt, hhatb⟩ := exists_connectionDifferenceMetricLoweredTensor_covariantJetNormSq_bound (I := I) (M := M) hDim g
-  obtain ⟨A0, A1, hA0, hA1, harmp⟩ := exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
+  obtain ⟨A0, A1, hA0, hA1, harmp⟩ := exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_jet_two_difference_bound (I := I) (M := M) hDim g
   obtain ⟨W0, W1, hW0, hW1, hhatp⟩ := exists_connectionDifferenceMetricLoweredTensor_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfrdef
   have hfr : 0 ≤ fr := Nat.cast_nonneg _
@@ -2633,7 +2633,7 @@ private lemma slotExtendIter_two_zero_three_apply (g : SmoothRiemannianMetric I 
     (K : SmoothCcTensor g 0 3) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g 0 3 2 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 2) (q := 3) x
+    Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 3) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -2689,7 +2689,7 @@ private lemma slotExtendIter_two_zero_three_apply (g : SmoothRiemannianMetric I 
     first
       | rfl
       | (congr 1; first | rfl | (congr 1; funext k; fin_cases k <;> rfl))
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x kappa D,
+  rw [hLHS, Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -2703,7 +2703,7 @@ lemma slotExtendIter_two_zero_four_apply (g : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g 0 4) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 6 I x from
       (slotExtendIter (I := I) (M := M) g 0 4 2 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 2) (q := 4) x
+    Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 4) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 4 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -2759,7 +2759,7 @@ lemma slotExtendIter_two_zero_four_apply (g : SmoothRiemannianMetric I M)
     first
       | rfl
       | (congr 1; first | rfl | (congr 1; funext k; fin_cases k <;> rfl))
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x kappa D,
+  rw [hLHS, Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -2773,7 +2773,7 @@ private lemma slotExtendIter_two_zero_two_apply (g : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g 0 2) (x : M) (D : Tensor0SSpace 2 I x) :
     (show Tensor0SSpace 2 I x →L[ℝ] Tensor0SSpace 4 I x from
       (slotExtendIter (I := I) (M := M) g 0 2 2 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 2) (q := 2) x
+    Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 2) (q := 2) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -2829,7 +2829,7 @@ private lemma slotExtendIter_two_zero_two_apply (g : SmoothRiemannianMetric I M)
     first
       | rfl
       | (congr 1; first | rfl | (congr 1; funext k; fin_cases k <;> rfl))
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x kappa D,
+  rw [hLHS, Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -2843,7 +2843,7 @@ private lemma slotExtendIter_three_zero_two_apply (g : SmoothRiemannianMetric I 
     (K : SmoothCcTensor g 0 2) (x : M) (D : Tensor0SSpace 3 I x) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 5 I x from
       (slotExtendIter (I := I) (M := M) g 0 2 3 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 3) (q := 2) x
+    Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 2) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -2872,7 +2872,7 @@ private lemma slotExtendIter_three_zero_two_apply (g : SmoothRiemannianMetric I 
       tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_two_zero_two_apply (I := I) (M := M) g K x D₂, ← hkappa,
-      tensor0SProdKappaFib_apply (I := I) x kappa D₂,
+      Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D₂,
       Tensor0SSpace.toModel_ofModel,
       Bundle.continuousMultilinearMap.modelProduct_apply]
     have hD₂val : Tensor0SSpace.toModel D₂
@@ -2888,7 +2888,7 @@ private lemma slotExtendIter_three_zero_two_apply (g : SmoothRiemannianMetric I 
     first
       | rfl
       | (congr 2; funext j; fin_cases j <;> rfl)
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x kappa D,
+  rw [hLHS, Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -2902,7 +2902,7 @@ lemma slotExtendIter_three_zero_three_apply (g : SmoothRiemannianMetric I M)
     (K : SmoothCcTensor g 0 3) (x : M) (D : Tensor0SSpace 3 I x) :
     (show Tensor0SSpace 3 I x →L[ℝ] Tensor0SSpace 6 I x from
       (slotExtendIter (I := I) (M := M) g 0 3 3 K).toSection x) D =
-    tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x
+    Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from K.toSection x)
         (unitTensor (I := I) (M := M) x)) D := by
   apply Tensor0SSpace.toModel_injective
@@ -2931,7 +2931,7 @@ lemma slotExtendIter_three_zero_three_apply (g : SmoothRiemannianMetric I M)
       tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) 2 x D
         ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (m 0)) with hD₂
     rw [slotExtendIter_two_zero_three_apply (I := I) (M := M) g K x D₂, ← hkappa,
-      tensor0SProdKappaFib_apply (I := I) x kappa D₂,
+      Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D₂,
       Tensor0SSpace.toModel_ofModel,
       Bundle.continuousMultilinearMap.modelProduct_apply]
     have hD₂val : Tensor0SSpace.toModel D₂
@@ -2947,7 +2947,7 @@ lemma slotExtendIter_three_zero_three_apply (g : SmoothRiemannianMetric I M)
     first
       | rfl
       | (congr 2; funext j; fin_cases j <;> rfl)
-  rw [hLHS, tensor0SProdKappaFib_apply (I := I) x kappa D,
+  rw [hLHS, Tensor0SSpace.rightProductContinuousLinearMap_apply (I := I) x kappa D,
     Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   congr 1
@@ -3151,7 +3151,7 @@ theorem tensorThreeTwoProductCoefficient_apply
     slotExtendIter_two_zero_three_apply (I := I) (M := M) g K x
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 2 I x from
         W.toSection x) (unitTensor (I := I) (M := M) x))]
-  rw [tensor0SProdKappaFib_apply, tensor0SProdKappaFib_apply,
+  rw [Tensor0SSpace.rightProductContinuousLinearMap_apply, Tensor0SSpace.rightProductContinuousLinearMap_apply,
     Tensor0SSpace.toModel_ofModel, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply,
     Bundle.continuousMultilinearMap.modelProduct_apply]

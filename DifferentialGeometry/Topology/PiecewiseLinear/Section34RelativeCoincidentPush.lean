@@ -41,7 +41,7 @@ theorem IsPseudoCell.exists_relative_push_of_coincident_patch_neighborhood
     {Ec Eint Ebd Γ D T Ω : Set (EuclideanSpace ℝ (Fin 3))}
     {P : EuclideanSpace ℝ (Fin 3)} (hpc : IsPseudoCell Ec Eint Ebd P)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Γ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ)
     (hD : IsPLBall 2 D) (hDΓ : D ⊆ r '' openSimplex (stdVertices 1))
     (hDE : D ⊆ Eint \ {P}) (hT : IsClosed T) (hDT : Disjoint D T)
     (hΓE : Γ ∩ Ec ⊆ D ∪ T) (hΩ : IsOpen Ω) (hDΩ : D ⊆ Ω) :
@@ -168,7 +168,7 @@ theorem IsPseudoCell.exists_relative_push_of_coincident_patch
     {Ec Eint Ebd Γ D T Ω : Set (EuclideanSpace ℝ (Fin 3))}
     {P : EuclideanSpace ℝ (Fin 3)} (hpc : IsPseudoCell Ec Eint Ebd P)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Γ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ)
     (hD : IsPLBall 2 D) (hDΓ : D ⊆ r '' openSimplex (stdVertices 1))
     (hDE : D ⊆ Eint \ {P}) (hT : IsClosed T) (hDT : Disjoint D T)
     (hΓE : Γ ∩ Ec ⊆ D ∪ T) (hΩ : IsOpen Ω) (hΓΩ : Γ ⊆ Ω) :

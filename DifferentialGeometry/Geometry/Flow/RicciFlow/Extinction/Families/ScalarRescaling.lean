@@ -7,42 +7,6 @@ open scoped Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Extinction.Families
 
-private theorem tendsto_mul_nhdsGT {r : ℝ} (hr : 0 < r) (t : ℝ) :
-    Tendsto (fun s : ℝ => r * s) (𝓝[>] t) (𝓝[>] (r * t)) := by
-  exact (continuous_const.mul continuous_id).continuousWithinAt.tendsto_nhdsWithin
-    (fun _ hs => mul_lt_mul_of_pos_left hs hr)
-
-private theorem tendsto_mul_nhdsLT {r : ℝ} (hr : 0 < r) (t : ℝ) :
-    Tendsto (fun s : ℝ => r * s) (𝓝[<] t) (𝓝[<] (r * t)) := by
-  exact (continuous_const.mul continuous_id).continuousWithinAt.tendsto_nhdsWithin
-    (fun _ hs => mul_lt_mul_of_pos_left hs hr)
-
-private theorem slope_rescale (r : ℝ) (W : ℝ → ℝ) (x y : ℝ) :
-    slope (fun s => r⁻¹ * W (r * s)) x y = slope W (r * x) (r * y) := by
-  simp only [slope, vsub_eq_sub, smul_eq_mul]
-  rw [show r * y - r * x = r * (y - x) by ring, mul_inv_rev]
-  ring
-
-theorem upperRightDiniLE_rescale {W : ℝ → ℝ} {r t L : ℝ} (hr : 0 < r)
-    (h : UpperRightDiniLE W (r * t) L) :
-    UpperRightDiniLE (fun s => r⁻¹ * W (r * s)) t L := by
-  intro ε hε
-  have hevent := (tendsto_mul_nhdsGT hr t).eventually (h ε hε)
-  filter_upwards [hevent] with s hs
-  simpa only [slope_rescale] using hs
-
-theorem incoming_liminf_rescale {W : ℝ → ℝ} {r t : ℝ} (hr : 0 < r)
-    (h : (W (r * t) : EReal) ≤ liminf (fun s => (W s : EReal)) (𝓝[<] (r * t))) :
-    (r⁻¹ * W (r * t) : EReal) ≤
-      liminf (fun s => (r⁻¹ * W (r * s) : EReal)) (𝓝[<] t) := by
-  have hbase := h.trans ((tendsto_mul_nhdsLT hr t).liminf_le_liminf_comp
-    (u := fun s => (W s : EReal)))
-  have hr0 : (0 : EReal) ≤ (r⁻¹ : ℝ) := by
-    exact_mod_cast (inv_pos.mpr hr).le
-  have hm := mul_le_mul_of_nonneg_left hbase hr0
-  rw [← EReal.liminf_const_mul_of_nonneg_of_ne_top hr0 (EReal.coe_ne_top _)] at hm
-  simpa only [Function.comp_def, EReal.coe_mul] using hm
-
 private theorem mul_mem_Icc {r H t : ℝ} (hr : 0 < r) (ht : t ∈ Icc 0 (H / r)) :
     r * t ∈ Icc 0 H := by
   refine ⟨mul_nonneg hr.le ht.1, ?_⟩

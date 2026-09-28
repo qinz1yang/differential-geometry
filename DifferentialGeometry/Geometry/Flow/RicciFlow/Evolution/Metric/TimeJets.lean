@@ -64,7 +64,7 @@ private theorem tensor_time_jets_of_polynomial_evolution {n r : ℕ} {x : M} {σ
         (tensorOfPolynomialComponents basis Q (v t)) J t := by
       apply tensor0S_hasDerivWithinAt_of_components basis
       intro slots
-      have hp := polynomial_hasDerivWithinAt evolve v (hv t ht)
+      have hp := DifferentialGeometry.Analysis.polynomial_hasDerivWithinAt evolve v (hv t ht)
         ((MvPolynomial.mkDerivation ℝ evolve)^[q] (P slots))
       have hp' := hp.congr_of_eventuallyEq
         (Filter.eventuallyEq_of_mem self_mem_nhdsWithin fun s hs => (ih s hs).1 slots)
@@ -180,7 +180,7 @@ private theorem ordinary_metric_time_jets_of_mixed_fields
     cases q with
     | zero => rfl
     | succ q =>
-      simp only [B, dif_pos ht]
+      simp only [B, dite_eq_left ht]
       exact hC q ⟨t, ht⟩ x
   refine ⟨B, fun _ => rfl, fun q t ht x => ⟨hB q t ht x, ?_⟩⟩
   have hd := (hdata x (Module.finBasis ℝ (TangentSpace I x)) q t ht).2

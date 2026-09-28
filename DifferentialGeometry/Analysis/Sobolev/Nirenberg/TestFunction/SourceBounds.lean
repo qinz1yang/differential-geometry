@@ -74,14 +74,14 @@ private theorem integral_sq_nirenbergTestFunction_le
   have hηsqc : HasCompactSupport (fun x => (η x)^2) :=
     hηc.comp_left (g := fun y : ℝ => y^2) (by simp)
   have hηsqLp : MemLp (fun x => (η x)^2) ∞ volume := hηsq.continuous.memLp_of_hasCompactSupport hηsqc
-  have hFLp : MemLp F 2 volume := hdqu.mul' hηsqLp
+  have hFLp : MemLp F 2 volume := hηsqLp.fun_mul hdqu
   have hDη := (hη.continuous_fderiv (by simp)).clm_apply
     (continuous_const : Continuous (fun _ : EuclideanSpace ℝ (Fin d) => EuclideanSpace.single k (1 : ℝ)))
   have hcoef : MemLp (fun x => 2 * η x * fderiv ℝ η x (EuclideanSpace.single k 1)) ∞ volume :=
     ((continuous_const.mul hη.continuous).mul hDη).memLp_of_hasCompactSupport
       ((hηc.mul_left).mul_right)
   have hGLp : MemLp G 2 volume :=
-    (hdqg.mul' hηsqLp).add (hdqu.mul' hcoef)
+    (hηsqLp.fun_mul hdqg).add (hcoef.fun_mul hdqu)
   have hFweak : DeGiorgi.HasWeakPartialDeriv k G F univ := by
     have h0 := hasWeakPartialDeriv_cutoff_sq_mul_diffQuot k k h hη
       (by simpa only [Measure.restrict_univ] using hu.locallyIntegrable (by norm_num : (1 : ℝ≥0∞) ≤ 2))
@@ -97,7 +97,7 @@ private theorem integral_sq_nirenbergTestFunction_le
     hηsqc.mul_right (-h)
   change (∫ x, (nirenbergTestFunction k h η u x)^2) ≤ ∫ x, (G x)^2 at hbound
   have hηLp : MemLp η ∞ volume := hη.continuous.memLp_of_hasCompactSupport hηc
-  have hmainLp : MemLp (fun x => η x * diffQuot k h g x) 2 volume := hdqg.mul' hηLp
+  have hmainLp : MemLp (fun x => η x * diffQuot k h g x) 2 volume := hηLp.fun_mul hdqg
   have hduLp : MemLp ((tsupport η).indicator (diffQuot k h u)) 2 volume := hdqu.indicator (isClosed_tsupport η).measurableSet
   have hp (x : EuclideanSpace ℝ (Fin d)) :
       (G x)^2 ≤ 2 * (η x * diffQuot k h g x)^2 +
@@ -148,7 +148,7 @@ private theorem abs_integral_mul_nirenbergTestFunction_le
   have hηsqLp : MemLp (fun x => (η x)^2) ∞ volume :=
     (hη.pow 2).continuous.memLp_of_hasCompactSupport hηsqc
   have hv : MemLp v 2 volume :=
-    memLp_diffQuot_two k (-h) ((memLp_diffQuot_two k h hu).mul' hηsqLp)
+    memLp_diffQuot_two k (-h) (hηsqLp.fun_mul (memLp_diffQuot_two k h hu))
   have hp : Integrable (fun x => f x * v x) volume := hf.integrable_mul hv
   have hy : (∫ x, |f x * v x|) ≤
       (ε / 2) * (∫ x, (v x)^2) + (2 * ε)⁻¹ * (∫ x, (f x)^2) := by
@@ -181,7 +181,7 @@ private theorem memLp_cutoff_product_local
     (hχ : Continuous χ) (hχc : HasCompactSupport χ) (hχs : tsupport χ ⊆ Ω) :
     MemLp (fun x => χ x * u x) 2 volume := by
   have hm : MemLp (fun x => χ x * u x) 2 (volume.restrict Ω) :=
-    hu.mul' ((hχ.memLp_of_hasCompactSupport hχc : MemLp χ ∞ volume).restrict Ω)
+    ((hχ.memLp_of_hasCompactSupport hχc : MemLp χ ∞ volume).restrict Ω).fun_mul hu
   have hi := (memLp_indicator_iff_restrict hΩ.measurableSet).mpr hm
   have heq : Ω.indicator (fun x => χ x * u x) = fun x => χ x * u x := by
     funext x

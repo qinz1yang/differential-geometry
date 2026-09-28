@@ -214,26 +214,6 @@ theorem exists_relative_collar_isotopy_supported
     change G t ((H t).symm (Φ₀ (p, t))) = Φ₁ (p, t)
     rw [hHt, hGt]
 
-theorem relativeCollarIsotopyShape_refl
-    {F E : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ F G}
-    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J 1 N]
-    (Φ : OpenPartialHomeomorph (N × ℝ) E) {A : Set N} {ε : ℝ} {P : Set E} :
-    ∃ Ψ : ℝ → E ≃ₘ[ℝ] E,
-      Ψ 0 = Diffeomorph.refl 𝓘(ℝ, E) E ∞ ∧
-      ContMDiff (𝓘(ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, E) ∞ (fun q : ℝ × E => Ψ q.1 q.2) ∧
-      ContMDiff (𝓘(ℝ).prod 𝓘(ℝ, E)) 𝓘(ℝ, E) ∞ (fun q : ℝ × E => (Ψ q.1).symm q.2) ∧
-      (∃ K : Set E, IsCompact K ∧ K ⊆ P ∧ (∀ t, Set.EqOn (Ψ t) id Kᶜ) ∧
-        ∀ t, Set.EqOn (Ψ t).symm id Kᶜ) ∧
-      ∀ p ∈ A, ∀ t ∈ Set.Ioo (-ε) ε, Ψ t (Φ (p, t)) = Φ (p, t) := by
-  refine ⟨fun _ => Diffeomorph.refl 𝓘(ℝ, E) E ∞, rfl, contMDiff_snd, contMDiff_snd,
-    ⟨∅, isCompact_empty, Set.empty_subset P, fun t => ?_, fun t => ?_⟩, ?_⟩
-  · exact fun x _ => rfl
-  · exact fun x _ => rfl
-  · intro p _ t _
-    rfl
-
 theorem exists_relative_collar_isotopy_supported_manifold
     {F E : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
@@ -286,8 +266,8 @@ theorem exists_relative_collar_isotopy_supported_manifold
     change DifferentialGeometry.Topology.Manifold.extendChartById e (id : E → E) x = x
     by_cases hx : x ∈ e.source
     · exact (show DifferentialGeometry.Topology.Manifold.extendChartById e (id : E → E) x =
-          e.symm (e x) from if_pos hx).trans (e.left_inv hx)
-    · exact if_neg hx
+          e.symm (e x) from ite_eq_left hx).trans (e.left_inv hx)
+    · exact ite_eq_right hx
   refine ⟨J, hJ0, hJ, hJi, ?_, ⟨e.symm '' K₀, hJcomp, Set.image_mono hK₀sub, ?_, ?_⟩, ?_⟩
   · refine (e.symm).isOpen_image_of_subset_source hP ?_
     rw [OpenPartialHomeomorph.symm_source, htarget]
@@ -301,7 +281,7 @@ theorem exists_relative_collar_isotopy_supported_manifold
     change DifferentialGeometry.Topology.Manifold.extendChartById e (⇑(D t))
       (e.symm (Φ₀ (p, t))) = e.symm (Φ₁ (p, t))
     rw [show DifferentialGeometry.Topology.Manifold.extendChartById e (⇑(D t))
-        (e.symm (Φ₀ (p, t))) = e.symm (D t (e (e.symm (Φ₀ (p, t))))) from if_pos hxs,
+        (e.symm (Φ₀ (p, t))) = e.symm (D t (e (e.symm (Φ₀ (p, t))))) from ite_eq_left hxs,
       e.right_inv (htarget ▸ Set.mem_univ (Φ₀ (p, t))), hDcollar p hp t ht]
 
 private theorem contMDiffOn_prodDomain_iff_contDiff
@@ -368,10 +348,10 @@ private def collarShift : OpenPartialHomeomorph (ℝ × ℝ) (ℝ × ℝ) where
   continuousOn_invFun :=
     (continuous_fst.prodMk (continuous_const.mul continuous_snd)).continuousOn
 
-theorem relativeCollarInput_nonvacuous :
+theorem exists_diffeomorph_family_eq_dilation_on_strip :
     ∃ Ψ : ℝ → (ℝ × ℝ) ≃ₘ[ℝ] (ℝ × ℝ),
       ∀ p ∈ Metric.closedBall (0 : ℝ) 1, ∀ t ∈ Set.Ioo (-1 : ℝ) 1,
-        Ψ t (collarId (p, t)) = collarShift (p, t) := by
+        Ψ t (p, t) = (p, 2 * t) := by
   have hsrc : collarId.source = (univ : Set (ℝ × ℝ)) := rfl
   have htgt : collarId.target = (univ : Set (ℝ × ℝ)) := rfl
   have hsrc' : collarShift.source = (univ : Set (ℝ × ℝ)) := rfl

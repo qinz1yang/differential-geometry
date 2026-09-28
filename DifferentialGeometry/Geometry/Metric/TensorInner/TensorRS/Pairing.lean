@@ -34,18 +34,15 @@ omit [BoundarylessManifold I M] [T2Space M] in
 
 end DifferentialGeometry.Geometry.Connection
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle Manifold
 open _root_.DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
 
-open DifferentialGeometry.Integral.L2
-open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 
-variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace Real E]
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
 variable [FiniteDimensional Real E]
 variable [NeZero (Module.finrank Real E)]
 variable {H : Type*} [TopologicalSpace H]
@@ -55,7 +52,7 @@ variable [T2Space M]
 variable [CompactSpace M] [I.Boundaryless]
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-private theorem lowerZero_unit (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
+private theorem lowerAllUpperIndices_zero (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
     (W : TensorRSSpace 0 s I x) (w : Fin (0 + s) → TangentSpace I x) :
     lowerAllUpperIndices (I := I) (M := M) g 0 s x (TensorRSSpace.toModel W)
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) =
@@ -68,7 +65,8 @@ private theorem lowerZero_unit (g : SmoothRiemannianMetric I M) (s : Nat) (x : M
   rfl
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-private theorem innerPtDiag (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
+private theorem tensorInnerPointwise_self_eq_normSq0S
+    (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
     (W : TensorRSSpace 0 s I x) :
     tensorInnerPointwise (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) =
@@ -91,7 +89,7 @@ private theorem innerPtDiag (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
     (Equiv.arrowCongr (finCongr (Nat.zero_add s).symm) (Equiv.refl _)) _ _ ?_
   intro slots
   rw [Tensor0SBundle.component0S_apply]
-  rw [lowerZero_unit (I := I) g s x W]
+  rw [lowerAllUpperIndices_zero (I := I) g s x W]
   rw [sq]
   congr 1 <;>
     (congr 1; funext a;
@@ -101,7 +99,7 @@ private theorem innerPtDiag (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
      simp)
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] [I.Boundaryless] in
-theorem innerPt_eq_inner0S (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
+theorem tensorInnerPointwise_eq_inner0S (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
     (W₁ W₂ : TensorRSSpace 0 s I x) :
     tensorInnerPointwise (I := I) (M := M) g 0 s x
         (TensorRSSpace.toModel W₁) (TensorRSSpace.toModel W₂) =
@@ -117,13 +115,14 @@ theorem innerPt_eq_inner0S (g : SmoothRiemannianMetric I M) (s : Nat) (x : M)
             (unitZeroSec (I := I) (M := M) x) +
           (show Tensor0SSpace 0 I x →L[Real] Tensor0SSpace s I x from W₂)
             (unitZeroSec (I := I) (M := M) x) := rfl
-  have h := innerPtDiag (I := I) g s x (W₁ + W₂)
+  have h := tensorInnerPointwise_self_eq_normSq0S (I := I) g s x (W₁ + W₂)
   rw [TensorRSSpace.toModel_add, hunit, normSq0S_add,
     tensorInnerPointwise_add_left, tensorInnerPointwise_add_right,
     tensorInnerPointwise_add_right,
-    innerPtDiag (I := I) g s x W₁, innerPtDiag (I := I) g s x W₂,
+    tensorInnerPointwise_self_eq_normSq0S (I := I) g s x W₁,
+    tensorInnerPointwise_self_eq_normSq0S (I := I) g s x W₂,
     tensorInnerPointwise_symm (I := I) (M := M) g 0 s x
       (TensorRSSpace.toModel W₂) (TensorRSSpace.toModel W₁)] at h
   linarith
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric

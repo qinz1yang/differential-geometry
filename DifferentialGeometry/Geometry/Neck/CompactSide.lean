@@ -46,7 +46,7 @@ private theorem SpatialNeck.exists_diffeomorph_center_eq_graph
   rw [(heval 0 (nk.map (q, 0))).1]
   change (if nk.map (q, 0) ∈ nk.map.target then
     nk.map (D (nk.map.symm (nk.map (q, 0)))) else nk.map (q, 0)) = _
-  rw [if_pos (nk.map.map_source hsrc)]
+  rw [ite_eq_left (nk.map.map_source hsrc)]
   have hinv := nk.map.left_inv hsrc
   change nk.map.symm (nk.map (q, 0)) = (q, 0) at hinv
   rw [hinv]

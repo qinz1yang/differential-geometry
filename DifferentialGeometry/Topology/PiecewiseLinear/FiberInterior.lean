@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.mem_nhdsWithin_fiber_of_notMem_image_boundary {n : ℕ}
     (hdimE : Module.finrank ℝ E = n + 2) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
-    {D : Set E} {g : (Fin (n + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) D)
+    {D : Set E} {g : (Fin (n + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D)
     {r : ℝ} (hDr : D ⊆ {x | ℓ x = r}) {q : E} (hq : q ∈ D) (hqJ : q ∉ g '' stdSimplexBoundary (n +
         1)) :
     D ∈ 𝓝[{x | ℓ x = r}] q := by
@@ -74,7 +74,7 @@ theorem hasPLCrossingAt_union_fiber_of_mem_nhdsWithin
 theorem hasPLCrossingAt_cap_fiber_of_notMem_image_boundary
     (hdimE : Module.finrank ℝ E = 3) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     {A D : Set E} (hA : IsClosed A) {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) {r : ℝ} (hDr : D ⊆ {x | ℓ x = r})
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {r : ℝ} (hDr : D ⊆ {x | ℓ x = r})
     (hAD : A ∩ D ⊆ g '' stdSimplexBoundary 2) {q p : E} (hq : q ∈ D)
     (hqJ : q ∉ g '' stdSimplexBoundary 2) (hpr : ℓ p = r) (f : E →ₗ[ℝ] ℝ) (hf : f q ≠ f p) :
     HasPLCrossingAt (A ∪ D) {x | f x = f q} q := by
@@ -88,7 +88,7 @@ theorem hasPLCrossingAt_cap_fiber_of_notMem_image_boundary
 theorem heightSingularPoints_cap_inter_subset_image_boundary
     (hdimE : Module.finrank ℝ E = 3) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
     {A D : Set E} (hA : IsClosed A) {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) {r : ℝ} (hDr : D ⊆ {x | ℓ x = r})
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {r : ℝ} (hDr : D ⊆ {x | ℓ x = r})
     (hAD : A ∩ D ⊆ g '' stdSimplexBoundary 2) {p : E} (hpr : ℓ p = r)
     (f : E →ₗ[ℝ] ℝ) (hside : ∀ q ∈ D \ {p}, f q ≠ f p) :
     heightSingularPoints (A ∪ D) f ∩ D ⊆ g '' stdSimplexBoundary 2 ∪ {p} := by

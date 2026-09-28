@@ -5,6 +5,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq)
+
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Integral.Connection

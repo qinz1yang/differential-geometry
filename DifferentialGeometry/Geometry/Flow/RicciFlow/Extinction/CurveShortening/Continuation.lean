@@ -154,25 +154,25 @@ theorem compact_family_solution_continuous
     let T' : P → CurveMap M := fun p => if h : φ p ∈ U then T (φ p) else solutions p
     have hTat : ContinuousAt T (φ p₀) :=
       continuousAt_of_eq_subtype_val hUopen sols hcont hmem0 (F := T)
-        (by simp only [T, dif_pos hmem0]) (fun x hx => by simp only [T, dif_pos hx])
+        (by simp only [T, dite_eq_left hmem0]) (fun x hx => by simp only [T, dite_eq_left hx])
     have hT'at : ContinuousAt T' p₀ := by
       have hbase : ContinuousAt (fun p : P => T (φ p)) p₀ := hTat.comp hφcont.continuousAt
       have hev : ∀ᶠ p in 𝓝 p₀, T (φ p) = T' p := by
         filter_upwards [hφcont.continuousAt.preimage_mem_nhds (hUopen.mem_nhds hmem0)]
           with p hp
         have hp' : φ p ∈ U := hp
-        simp only [T', dif_pos hp']
+        simp only [T', dite_eq_left hp']
       exact hbase.congr hev
     have hagree : ∀ p z t, t ∈ Icc a d → T' p z t = solutions p z t := by
       intro p z t ht
       by_cases h : φ p ∈ U
       · have hTp : T' p = sols ⟨φ p, h⟩ := by
-          simp only [T', T, dif_pos h]
+          simp only [T', T, dite_eq_left h]
         rw [hTp]
         refine local_solution_unique B (le_refl a) had had hdb hdb (sols ⟨φ p, h⟩) (solutions p)
           (hprop ⟨φ p, h⟩).1 (hsol p) (fun z => (hprop ⟨φ p, h⟩).2 z) huniq z t ?_
         simpa only [min_self] using ht
-      · simp only [T', dif_neg h]
+      · simp only [T', dite_eq_right h]
     exact smoothCylinderTopology_continuousAt_congr e hagree hT'at
 
 omit [CompleteSpace E] [SigmaCompactSpace M] t2M compactM nonemptyM hBoundary in

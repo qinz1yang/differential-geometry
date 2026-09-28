@@ -52,7 +52,7 @@ theorem exists_mul_transpose
     change B x (b x j) (e i) = _
     conv_lhs => rw [← (b x).sum_repr (e i)]
     simp only [map_sum, map_smul, smul_eq_mul, horth' x hx, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   have hBbasis (x : P) (i j : ι) : B x (e i) (e j) = A x i j := by
     rw [hBapply]
     simp only [e, Pi.basisFun_apply, Matrix.mulVec_single_one, single_one_dotProduct, Matrix.col_apply]

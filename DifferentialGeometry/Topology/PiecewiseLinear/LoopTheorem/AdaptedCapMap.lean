@@ -22,12 +22,12 @@ theorem exists_capMap_of_centeredPrism {M : Type u} [TopologicalSpace M]
     (hE : IsPLBall 2 E) (hs : 0 < s) (hρ : IsPLHomeomorphOn ρ (frontier E ×ˢ Icc (-s) 0) A)
     (hρ0 : ∀ x ∈ frontier E, ρ (x, 0) = x) (hAE : A ∩ E = frontier E) (hh₀ : 0 < h₀)
     (hh₀1 : h₀ ≤ 1) (hσ : σ = 1 ∨ σ = -1)
-    (hinj : InjOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
-    (hb : MapsTo b (E ∪ A) (stdSimplex ℝ (Fin 3))) (hbpa : IsPiecewiseAffineOn b (E ∪ A))
+    (hinj : InjOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1))
+    (hb : MapsTo b (E ∪ A) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))) (hbpa : IsPiecewiseAffineOn b (E ∪ A))
     (hbinj : InjOn b (E ∪ A))
     (hpl : ∀ (G : EuclideanSpace ℝ (Fin 2) → (Fin 3 → ℝ) × ℝ)
       (S : Set (EuclideanSpace ℝ (Fin 2))), IsPiecewiseAffineOn G S →
-        MapsTo G S (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) → IsPLOn 2 3 (prism ∘ G) S) :
+        MapsTo G S (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) → IsPLOn 2 3 (prism ∘ G) S) :
     ∃ F : EuclideanSpace ℝ (Fin 2) → M, IsPLOn 2 3 F (E ∪ A) ∧ InjOn F (E ∪ A) ∧
       (∀ x ∈ ρ '' (frontier E ×ˢ {-s}), F x = prism (b x, 0)) ∧
         ∀ x ∈ E ∪ A, ∃ t ∈ Icc (0 : ℝ) h₀, F x = prism (b x, σ * t) ∧
@@ -105,10 +105,10 @@ theorem exists_capMap_of_centeredPrism {M : Type u} [TopologicalSpace M]
   obtain ⟨ℓ, hℓpa, hℓ₁, hℓ₂⟩ : ∃ ℓ : EuclideanSpace ℝ (Fin 2) → ℝ,
       IsPiecewiseAffineOn ℓ (E ∪ A₁ ∪ A₂) ∧ EqOn ℓ (fun _ => h₀) (E ∪ A₁) ∧ EqOn ℓ g A₂ := by
     refine ⟨_, hconst.piecewise_of_isClosed hgpa hP₁poly.isClosed hA₂poly.isClosed hagree,
-      fun x hx => if_pos hx, fun x hx => ?_⟩
+      fun x hx => ite_eq_left hx, fun x hx => ?_⟩
     by_cases hx₁ : x ∈ E ∪ A₁
-    · exact (if_pos hx₁).trans (hagree ⟨hx₁, hx⟩)
-    · exact if_neg hx₁
+    · exact (ite_eq_left hx₁).trans (hagree ⟨hx₁, hx⟩)
+    · exact ite_eq_right hx₁
   have hℓrange : ∀ x ∈ E ∪ A₁ ∪ A₂, 0 ≤ ℓ x ∧ ℓ x ≤ h₀ := by
     rintro x (hx | hx)
     · rw [hℓ₁ hx]
@@ -142,7 +142,7 @@ theorem exists_capMap_of_centeredPrism {M : Type u} [TopologicalSpace M]
     rw [hEA] at hbpa ⊢
     exact (hbpa.prod_mk (hℓpa.affine_comp (σ • AffineMap.id ℝ ℝ))).congr fun x _ => by
       simp [hGdef]
-  have hGmaps : MapsTo G (E ∪ A) (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) := by
+  have hGmaps : MapsTo G (E ∪ A) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) := by
     intro x hx
     obtain ⟨h1, h2⟩ := hℓrange x (hEA ▸ hx)
     have hσℓ : σ * ℓ x ∈ Icc (-1 : ℝ) 1 := by

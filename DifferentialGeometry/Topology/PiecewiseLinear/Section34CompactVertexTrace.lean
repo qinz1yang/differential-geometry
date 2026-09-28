@@ -95,7 +95,7 @@ theorem Section34CompactFaceBallInvariants.disjoint_splitDiskImage_of_circle_sub
       (fblBd s ∩ frontier (⋃ v, section34CompactVertexBallImage src f₁ v))
       (section34CompactSplitDiskImage srcBd f₁ e) x := hcross s e x ⟨hJP hxJ, hxγ⟩
   obtain ⟨q, hq, hqb⟩ := (hcut.isPLCellOn_splitDiskImage hf₁ e).exists_isPLHomeomorphOn_stdSimplex
-  have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+  have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (section34CompactVertexBallImage src f₁ w ∩
         section34CompactVertexBallImage src f₁ u) := heq ▸ hq
   have hDU : section34CompactVertexBallImage src f₁ w ∩
@@ -124,7 +124,7 @@ theorem exists_vertex_disk_avoiding_other_face_split_disks
     (hJV : J ⊆ section34CompactVertexBallImage src f₁ w)
     (hJN : J ⊆ frontier (⋃ v, section34CompactVertexBallImage src f₁ v)) :
     ∃ (D : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
         D ⊆ section34CompactVertexBallImage srcBd f₁ w ∧
         ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 →
           Disjoint D (section34CompactSplitDiskImage src f₁ e) := by

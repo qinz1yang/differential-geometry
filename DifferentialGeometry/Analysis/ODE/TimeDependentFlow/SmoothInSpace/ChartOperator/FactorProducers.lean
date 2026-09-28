@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOp
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.VariationalODE.EuclideanVariationalODE
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.CovariantIdentity.VariationalLift
 import DifferentialGeometry.Analysis.ODE.TimeDependentFlow.SmoothInSpace.ChartOperator.ConventionBridge
-import Mathlib.Analysis.Calculus.FDeriv.Mul
+import Mathlib.Analysis.Calculus.Deriv.Mul
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
@@ -23,15 +23,6 @@ variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 variable [SigmaCompactSpace M] [T2Space M] [BoundarylessManifold I M]
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
-  [BoundarylessManifold I M] in
-theorem hasDerivAt_clm_comp_right
-    {A : ℝ → (E →L[ℝ] E)} {A' : E →L[ℝ] E} {t : ℝ}
-    (hA : HasDerivAt A A' t) (R : E →L[ℝ] E) :
-    HasDerivAt (fun s : ℝ => (A s).comp R) (A'.comp R) t := by
-  have hR : HasDerivAt (fun _ : ℝ => R) 0 t := hasDerivAt_const t R
-  simpa only [ContinuousLinearMap.comp_zero, add_zero] using hA.clm_comp hR
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
   [BoundarylessManifold I M] in
@@ -83,11 +74,11 @@ theorem chartCloseFderiv_hasDerivAt_of_eucl
         =ᶠ[𝓝 x] (fun y => Φ_eucl (extChartAt I α y) s)) :
     HasDerivAt (chartCloseFderiv (I := I) Φ_fam α x)
       (D'_eucl.comp (trivToE (I := I) α x)) t := by
-  let : InnerProductSpace ℝ (TangentSpace I x) := (inferInstance : InnerProductSpace ℝ E)
   have hpost : HasDerivAt
       (fun s : ℝ => (fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I α x)).comp (trivToE (I := I) α x))
-      (D'_eucl.comp (trivToE (I := I) α x)) t :=
-    hasDerivAt_clm_comp_right heucl (trivToE (I := I) α x)
+      (D'_eucl.comp (trivToE (I := I) α x)) t := by
+    simpa only [ContinuousLinearMap.comp_zero, add_zero] using
+      heucl.clm_comp (hasDerivAt_const t (trivToE (I := I) α x))
   have hev : (fun s : ℝ => chartCloseFderiv (I := I) Φ_fam α x s)
       =ᶠ[𝓝 t] (fun s : ℝ =>
         (fderiv ℝ (fun z => Φ_eucl z s) (extChartAt I α x)).comp (trivToE (I := I) α x)) := by

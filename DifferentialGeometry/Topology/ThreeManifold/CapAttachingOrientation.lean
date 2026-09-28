@@ -76,7 +76,7 @@ private theorem boundaryFrame_attaching_orientation_iff (a : T.Index)
     rw [← Basis.orientation_eq_iff_det_pos, Orientation.someBasis_orientation, eq_comm]
   change B.orientation = o ↔ _
   rw [hpos, h]
-  cases side <;> simp only [Bool.false_eq_true, if_false, if_true, one_mul, neg_one_mul, neg_neg_iff_pos]
+  cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true, one_mul, neg_one_mul, neg_neg_iff_pos]
   · exact (sphereOrientation_characterization 2 (by decide) z b).symm
   · change sphereOutwardDeterminant 2 z b < 0 ↔
       ¬ b.orientation = (sphereOrientation 2 (by decide)).orientation z

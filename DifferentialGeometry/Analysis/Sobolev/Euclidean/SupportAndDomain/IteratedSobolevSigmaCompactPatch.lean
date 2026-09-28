@@ -144,7 +144,7 @@ lemma patchedFunction_ae_eq_on_each
         have h_min : Nat.find hpred ≤ 0 := Nat.find_min' hpred hx
         have h_find_zero : Nat.find hpred = 0 := Nat.le_zero.mp h_min
         unfold patchedFunction
-        rw [dif_pos hpred, h_find_zero]
+        rw [dite_eq_left hpred, h_find_zero]
       rw [Filter.EventuallyEq, ae_restrict_iff' (hΩ_seq_open 0).measurableSet]
       exact Filter.Eventually.of_forall h_pointwise
   | succ n ih =>
@@ -175,7 +175,7 @@ lemma patchedFunction_ae_eq_on_each
           have h_eq : Nat.find hpred = n + 1 :=
             Nat.le_antisymm h_le (Nat.lt_of_not_le h_not_le)
           unfold patchedFunction
-          rw [dif_pos hpred, h_eq]
+          rw [dite_eq_left hpred, h_eq]
         have hΩ_diff_meas : MeasurableSet (Ω_seq (n+1) \ Ω_seq n) :=
           hΩ_seq_succ_meas.diff hΩ_seq_n_meas
         rw [Filter.EventuallyEq, ae_restrict_iff' hΩ_diff_meas]
@@ -273,8 +273,8 @@ lemma exists_global_of_ae_coherent_monotone
         Filter.Eventually.of_forall h_indicator_bound
       exact MeasureTheory.Lp.eLpNorm_le_of_ae_tendsto
         (u := Filter.atTop) (f := fun n => (Ω_seq n).indicator g) (g := g)
-        h_bound_eventually h_indicator_aem h_indicator_tendsto
-    exact ⟨h_g_aem_Ω, lt_of_le_of_lt h_eLpNorm_g_le_C hC_lt_top⟩
+        h_bound_eventually h_indicator_aem h_g_aem_Ω h_indicator_tendsto
+    exact lt_of_le_of_lt h_eLpNorm_g_le_C hC_lt_top
 
 omit [NeZero d] in
 theorem MemWkp_of_sigma_compact_cover_and_globalLp_zero

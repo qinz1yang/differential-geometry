@@ -21,7 +21,7 @@ theorem exists_singleton_cap_boundary_inter_surface
     (hLK : L.faces ⊆ K.faces) {s t : Finset E}
     (hs : s ∈ (boundaryComplex 2 L).faces) (ht : t ∈ (boundaryComplex 2 L).faces)
     (hne : s ≠ t) (hcomp : s ⊆ t ∨ t ⊆ s) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhoodCell K t).space)) :
     ∃ x : E, q '' stdSimplexBoundary 2 ∩
       ((derivedNeighborhoodCellBase K s).space ∩ L.space) = {x} ∧

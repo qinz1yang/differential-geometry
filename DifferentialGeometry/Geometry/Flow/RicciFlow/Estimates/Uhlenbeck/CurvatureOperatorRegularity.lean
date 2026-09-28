@@ -155,12 +155,12 @@ theorem exists_traceNormalizedCurvatureEndomorphism_pullback_sections_on_carrier
       (fun x : M => (⋀[ℝ]^2 (V x)) →L[ℝ] ⋀[ℝ]^2 (V x))⟯ :=
     fun t => if ht : t ∈ J then ⟨R t, hRslice t ht⟩ else 0
   have hAeq (t : ℝ) (ht : t ∈ J) (x : M) : A t x = R t x := by
-    simp only [A, dif_pos ht, ContMDiffSection.coeFn_mk]
+    simp only [A, dite_eq_left ht, ContMDiffSection.coeFn_mk]
   have hAsym (t : ℝ) (x : M) : (A t x).toLinearMap.IsSymmetric := by
     by_cases ht : t ∈ J
     · rw [hAeq t ht x]
       exact exteriorPower.traceNormalizedCurvatureEndomorphism_isSymmetric _ _
-    · simp only [A, dif_neg ht, ContMDiffSection.coe_zero, Pi.zero_apply]
+    · simp only [A, dite_eq_right ht, ContMDiffSection.coe_zero, Pi.zero_apply]
       exact LinearMap.IsSymmetric.zero
   have hRspace := traceNormalizedCurvatureEndomorphism_pullback_contMDiffOnSpacetimeEndomorphism
     S hS ι hKD (hι.mono (Set.prod_mono hKJ Set.Subset.rfl))

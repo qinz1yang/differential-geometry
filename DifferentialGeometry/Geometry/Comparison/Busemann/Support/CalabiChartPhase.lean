@@ -128,6 +128,8 @@ theorem exists_calabi_boundary_perturbation_of_chart
     have heq : gradientFun (I := I) g R x = gradientFun (I := I) g ρ x := by
       unfold gradientFun metricSharp mvfderiv
       rw [(hgerm x hx).mfderiv_eq, (hgerm x hx).eq_of_nhds]
+      simp [tangentSpaceCast]
+      rfl
     rw [heq]
     exact gradient_calabiPhase_chart_ne_zero (I := I) g Φ v hv a ha.ne' (hKsource hx)
   obtain ⟨lam, hlam, hsmooth, hlap⟩ := exists_positive_laplacian_exponential (I := I) g hR hK hRgrad

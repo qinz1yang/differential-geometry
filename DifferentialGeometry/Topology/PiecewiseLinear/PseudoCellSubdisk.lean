@@ -21,7 +21,7 @@ theorem IsTopologicalCellWithInterior.not_isPreconnected_sdiff {X : Type*}
   obtain ⟨φ⟩ := hC
   let κ : X → Schoenflies.Plane := fun y =>
     if hy : y ∈ D then (θ.symm ⟨y, hy⟩ : Schoenflies.Plane) else 0
-  have hκ : ∀ y (hy : y ∈ D), κ y = θ.symm ⟨y, hy⟩ := fun y hy => dif_pos hy
+  have hκ : ∀ y (hy : y ∈ D), κ y = θ.symm ⟨y, hy⟩ := fun y hy => dite_eq_left hy
   have hκc : ContinuousOn κ D := by
     rw [continuousOn_iff_continuous_domRestrict]
     have heq : D.domRestrict κ = fun y => (θ.symm y : Schoenflies.Plane) :=
@@ -151,7 +151,7 @@ theorem IsPseudoCell.subset_and_image_eq_inside {Ec Eint Ebd : Set E3} {P : E3}
   let g : Schoenflies.Plane → E3 := fun p =>
     if hp : p ∈ Metric.closedBall (0 : Schoenflies.Plane) 1 then (θ ⟨p, hp⟩ : E3) else Q
   have hg : ∀ p (hp : p ∈ Metric.closedBall (0 : Schoenflies.Plane) 1), g p = θ ⟨p, hp⟩ :=
-    fun p hp => dif_pos hp
+    fun p hp => dite_eq_left hp
   have hgc : ContinuousOn g (Metric.closedBall 0 1) := by
     rw [continuousOn_iff_continuous_domRestrict]
     have heq : (Metric.closedBall (0 : Schoenflies.Plane) 1).domRestrict g =

@@ -110,7 +110,7 @@ theorem SmoothDisk.hasDerivAt_diskArea_metricFamily
       refine congrArg (fun f : ℝ → ℝ => deriv f t₀) (funext fun r => ?_)
       rw [hzdiff v, ← hpt]
     rw [show diskExtension (u.metricVariationDensity g J t₀) z =
-        u.metricVariationDensity g J t₀ ⟨z, hzcb⟩ from dif_pos hzcb,
+        u.metricVariationDensity g J t₀ ⟨z, hzcb⟩ from dite_eq_left hzcb,
       SmoothDisk.metricVariationDensity]
     split_ifs with hpos
     · rw [derivWithin_of_mem_nhds hJ, derivWithin_of_mem_nhds hJ, hD 1, hD Complex.I]

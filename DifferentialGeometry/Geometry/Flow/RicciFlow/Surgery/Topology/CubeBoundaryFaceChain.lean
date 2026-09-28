@@ -10,38 +10,37 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 abbrev cube3 : Type := Fin 3 → unitInterval
 
-private def cubeFace (k : Fin 4) : C(stdSimplex ℝ (Fin 3), stdSimplex ℝ (Fin 4)) :=
-  ⟨stdSimplex.map (SimplexCategory.δ k).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ k).toOrderHom⟩
+private def cubeFace (k : Fin 4) : C(Convexity.StdSimplex ℝ (Fin 3), Convexity.StdSimplex ℝ (Fin 4)) :=
+  ⟨Convexity.StdSimplex.map (SimplexCategory.δ k).toOrderHom,
+    Convexity.StdSimplex.continuous_map ℝ (SimplexCategory.δ k).toOrderHom⟩
 
-private theorem cubeFace_self (k : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
-    cubeFace k q k = 0 := by
-  change FunOnFinite.linearMap ℝ ℝ k.succAbove (q : Fin 3 → ℝ) k = 0
-  rw [FunOnFinite.linearMap_apply_apply]
-  apply Finset.sum_eq_zero
-  intro j hj
-  exact False.elim (Fin.succAbove_ne k j (Finset.mem_filter.mp hj).2)
+private theorem cubeFace_self (k : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) :
+    (cubeFace k q).weights k = 0 := by
+  change Finsupp.mapDomain k.succAbove q.weights k = 0
+  exact Finsupp.mapDomain_of_notMem_range q.weights k (by
+    rintro ⟨j, hj⟩
+    exact Fin.succAbove_ne k j hj)
 
-private theorem cubeFace_succAbove (k : Fin 4) (q : stdSimplex ℝ (Fin 3)) (j : Fin 3) :
-    cubeFace k q (k.succAbove j) = q j := by
-  change FunOnFinite.linearMap ℝ ℝ k.succAbove (q : Fin 3 → ℝ) (k.succAbove j) = q j
-  simp [FunOnFinite.linearMap_apply_apply, Fin.succAbove_right_injective.eq_iff,
-    Finset.sum_filter]
+private theorem cubeFace_succAbove (k : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) (j : Fin 3) :
+    (cubeFace k q).weights (k.succAbove j) = q.weights j := by
+  change Finsupp.mapDomain k.succAbove q.weights (k.succAbove j) = q.weights j
+  exact Finsupp.mapDomain_apply_of_injective
+    (Fin.succAbove_right_injective (p := k)) q.weights j
 
 private theorem staircaseCoordinate_face (e : Equiv.Perm (Fin 3)) (k : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) (i : Fin 3) :
+    (q : Convexity.StdSimplex ℝ (Fin 3)) (i : Fin 3) :
     staircaseCoordinate e (cubeFace k q) i =
-      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q j else 0 := by
+      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q.weights j else 0 := by
   unfold staircaseCoordinate
   rw [Fin.sum_univ_succAbove _ k]
-  have hz : (if (e.symm i).val < k.val then (cubeFace k q).val k else 0) = 0 := by
+  have hz : (if (e.symm i).val < k.val then (cubeFace k q).weights k else 0) = 0 := by
     split_ifs
     · exact cubeFace_self k q
     · rfl
   have hsum :
       (∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then
-        (cubeFace k q).val (k.succAbove j) else 0) =
-      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q.val j else 0 := by
+        (cubeFace k q).weights (k.succAbove j) else 0) =
+      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q.weights j else 0 := by
     apply Finset.sum_congr rfl
     intro j _
     split_ifs
@@ -50,14 +49,14 @@ private theorem staircaseCoordinate_face (e : Equiv.Perm (Fin 3)) (k : Fin 4)
   exact (congrArg₂ (fun a b : ℝ => a + b) hz hsum).trans (zero_add _)
 
 private theorem staircase_face_zero (e : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 3)) : staircaseSimplex e (cubeFace 0 q) (e 0) = 1 := by
+    (q : Convexity.StdSimplex ℝ (Fin 3)) : staircaseSimplex e (cubeFace 0 q) (e 0) = 1 := by
   apply Subtype.ext
   change staircaseCoordinate e (cubeFace 0 q) (e 0) = 1
   rw [staircaseCoordinate_face]
   simp [Fin.succAbove]
 
 private theorem staircase_face_three (e : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 3)) : staircaseSimplex e (cubeFace 3 q) (e 2) = 0 := by
+    (q : Convexity.StdSimplex ℝ (Fin 3)) : staircaseSimplex e (cubeFace 3 q) (e 2) = 0 := by
   apply Subtype.ext
   change staircaseCoordinate e (cubeFace 3 q) (e 2) = 0
   rw [staircaseCoordinate_face]
@@ -102,7 +101,7 @@ theorem card_bottomFace_permutations (i : Fin 3) :
     Fintype.card {e : Equiv.Perm (Fin 3) // e 2 = i} = 2 := by
   fin_cases i <;> decide
 
-private theorem nativeCubeTetrahedronBoundary (s : C(stdSimplex ℝ (Fin 4), cube3)) :
+private theorem nativeCubeTetrahedronBoundary (s : C(Convexity.StdSimplex ℝ (Fin 4), cube3)) :
     singularSimplexChain s ≫ (IntegralChains cube3).d 3 2 =
       ∑ k : Fin 4, (-1 : ℤ) ^ k.val • singularSimplexChain (s.comp (cubeFace k)) :=
   (TopCat.toSSet.obj (TopCat.of cube3)).ιChainComplex_d
@@ -202,12 +201,12 @@ abbrev cubeBottomFaceElement (i : Fin 3) : (integralSingularChains (Fin 3 → un
   cubeBottomFaceChain i (ULift.up (1 : ℤ) : DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.integralCoefficients)
 
 theorem cubeTopFaceMap_mem_boundary (e : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : Convexity.StdSimplex ℝ (Fin 3)) :
     staircaseSimplex e (cubeFace 0 q) ∈ Cube.boundary (Fin 3) :=
   ⟨e 0, Or.inr (staircase_face_zero e q)⟩
 
 theorem cubeBottomFaceMap_mem_boundary (e : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 3)) :
+    (q : Convexity.StdSimplex ℝ (Fin 3)) :
     staircaseSimplex e (cubeFace 3 q) ∈ Cube.boundary (Fin 3) :=
   ⟨e 2, Or.inl (staircase_face_three e q)⟩
 

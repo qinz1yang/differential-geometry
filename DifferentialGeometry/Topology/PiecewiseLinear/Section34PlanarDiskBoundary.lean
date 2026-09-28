@@ -7,7 +7,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem IsPLHomeomorphOn.image_stdSimplexBoundary_eq_frontier_real_prod
     {P : Set (ℝ × ℝ)} {r : (Fin 3 → ℝ) → ℝ × ℝ}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) :
     r '' stdSimplexBoundary 2 = frontier P := by
   let e : (ℝ × ℝ) ≃L[ℝ] EuclideanSpace ℝ (Fin 2) :=
     (ContinuousLinearEquiv.finTwoArrow ℝ ℝ).symm.trans (EuclideanSpace.equiv (Fin 2) ℝ).symm

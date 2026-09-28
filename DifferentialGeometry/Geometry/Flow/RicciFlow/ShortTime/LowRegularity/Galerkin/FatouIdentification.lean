@@ -100,8 +100,8 @@ theorem galerkinSolutionMode_finiteEigenCombo (g₀ : SmoothRiemannianMetric I M
   refine TensorHs.ext (funext fun j => ?_)
   rw [finiteEigenComboHs_coeff, finiteEigenComboHs_coeff]
   by_cases hj : j ∈ eigenIdxFinset (I := I) (M := M) g₀ N
-  · rw [if_pos hj, if_pos hj, h2 j hj]
-  · rw [if_neg hj, if_neg hj]
+  · rw [ite_eq_left hj, ite_eq_left hj, h2 j hj]
+  · rw [ite_eq_right hj, ite_eq_right hj]
 
 omit [BoundarylessManifold I M] in
 theorem galerkinProjectedForce_mode_eq (g₀ : SmoothRiemannianMetric I M) {R T : ℝ}

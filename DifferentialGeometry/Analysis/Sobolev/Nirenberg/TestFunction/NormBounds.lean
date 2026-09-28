@@ -28,7 +28,7 @@ private theorem eLpNorm_translate_two_eq (k : Fin d) (h : ℝ) (u : E → ℝ) :
     _ = eLpNorm u 2 volume := by rw [hMP.map_eq]
 
 private theorem eLpNorm_diffQuot_le_inv
-    (k : Fin d) (h : ℝ) {u : E → ℝ} (hu : AEStronglyMeasurable u volume) :
+    (k : Fin d) (h : ℝ) {u : E → ℝ} :
     eLpNorm (diffQuot k h u) 2 volume ≤
       ENNReal.ofReal (2 * |h⁻¹|) * eLpNorm u 2 volume := by
   by_cases hh : h = 0
@@ -37,16 +37,15 @@ private theorem eLpNorm_diffQuot_le_inv
     funext x
     simp only [diffQuot_apply_of_ne k hh, Pi.smul_apply, Pi.sub_apply, smul_eq_mul,
       translate, div_eq_mul_inv, mul_comm]
-  have hMP : MeasurePreserving (fun x : E => x + h • EuclideanSpace.single k 1)
-      volume volume := measurePreserving_add_right volume _
-  have ht : AEStronglyMeasurable (translate k h u) volume :=
-    hu.comp_measurePreserving hMP
   have hnorm := eLpNorm_translate_two_eq k h u
   rw [heq, eLpNorm_const_smul, Real.enorm_eq_ofReal_abs]
   calc
     ENNReal.ofReal |h⁻¹| * eLpNorm (translate k h u - u) 2 volume ≤
         ENNReal.ofReal |h⁻¹| * (eLpNorm u 2 volume + eLpNorm u 2 volume) :=
-      mul_le_mul' le_rfl (by simpa only [hnorm] using eLpNorm_sub_le ht hu (by norm_num : (1 : ℝ≥0∞) ≤ 2))
+      mul_le_mul' le_rfl (by
+        simpa only [hnorm] using
+          eLpNorm_sub_le (f := translate k h u) (g := u) (μ := volume)
+            (by norm_num : (1 : ℝ≥0∞) ≤ 2))
     _ = ENNReal.ofReal (2 * |h⁻¹|) * eLpNorm u 2 volume := by
       rw [ENNReal.ofReal_mul (by norm_num), ENNReal.ofReal_ofNat, ← two_mul]
       ring
@@ -96,14 +95,11 @@ theorem wkpNorm_diffQuot_one_two_le
   rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial 0, wkpNorm_succ_eq_eLpNorm_add_sum_partial 0]
   simp only [wkpNorm_zero, Measure.restrict_univ, mul_add, Finset.mul_sum]
   apply add_le_add
-  · apply eLpNorm_diffQuot_le_inv
-    simpa only [Measure.restrict_univ] using hu.memLp.aestronglyMeasurable
+  · exact eLpNorm_diffQuot_le_inv k h
   · apply Finset.sum_le_sum
     intro j _
     rw [eLpNorm_congr_ae (chosenWeakPartialOrZero_diffQuot_ae hu k j h)]
-    apply eLpNorm_diffQuot_le_inv
-    simpa only [Measure.restrict_univ] using
-      (chosenWeakPartialOrZero_memLp_of_mem hu.memW1p j).aestronglyMeasurable
+    exact eLpNorm_diffQuot_le_inv k h
 
 theorem exists_wkpNorm_nirenbergTestFunction_le
     {η : E → ℝ} (hη : ContDiff ℝ (⊤ : ℕ∞) η) (hηc : HasCompactSupport η)
@@ -200,7 +196,7 @@ private theorem diffQuot_congr_ae (k : Fin d) (h : ℝ) {u v : E → ℝ}
     (huv : u =ᵐ[volume] v) : diffQuot k h u =ᵐ[volume] diffQuot k h v := by
   have hs : (fun x : E => u (x + h • EuclideanSpace.single k 1)) =ᵐ[volume]
       (fun x : E => v (x + h • EuclideanSpace.single k 1)) :=
-    (measurePreserving_add_right volume (h • EuclideanSpace.single k (1 : ℝ))).quasiMeasurePreserving.ae_eq huv
+    (measurePreserving_add_right volume (h • EuclideanSpace.single k (1 : ℝ))).quasiMeasurePreserving.ae_eq_comp huv
   filter_upwards [huv, hs] with x hx hsx
   simp only [diffQuot, hx, hsx]
 
@@ -286,7 +282,7 @@ theorem integral_cutoff_sq_diffQuot_le_eLpNorm_weakPartial_sq
       ENNReal.ofReal A * eLpNorm g 2 (volume.restrict Ω') := by
     calc
       _ ≤ eLpNorm (fun x => A * Ω''.indicator (diffQuot k h u) x) 2 volume := by
-        apply eLpNorm_mono_ae
+        apply eLpNorm_mono_ae hηq.aestronglyMeasurable
         filter_upwards [] with x
         by_cases hx : x ∈ Ω''
         · simp only [indicator_of_mem hx, norm_mul, Real.norm_eq_abs, abs_of_nonneg hA]

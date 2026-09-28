@@ -201,7 +201,7 @@ theorem halfBallRounding_eq_self {E : Type*} [NormedAddCommGroup E] [NormedSpace
         (r ^ 2 - ‖p.1‖ ^ 2 - p.2 ^ 2 - p.2)) / 2 = p.2 := by
       rw [Real.smoothAbs.eq_self_of_le hε hp]
       ring
-    simp only [halfBallRounding, if_neg hx, ha, hb,
+    simp only [halfBallRounding, ite_eq_right hx, ha, hb,
       show r ^ 2 - (r ^ 2 - ‖p.1‖ ^ 2 - p.2 ^ 2) - p.2 ^ 2 = ‖p.1‖ ^ 2 by ring,
       Real.sqrt_sq (norm_nonneg _), div_self (norm_ne_zero_iff.mpr hx), one_smul]
 
@@ -223,7 +223,7 @@ theorem halfBallRounding_halfBallCorner_symm {E : Type*}
     change ‖(e.symm p).1‖ ^ 2 + (e.symm p).2 ^ 2 = r ^ 2 - p.2.1 at h
     linarith
   change halfBallRounding r ε (e.symm p) = _
-  simp only [halfBallRounding, if_neg hne, hu]
+  simp only [halfBallRounding, ite_eq_right hne, hu]
   change ((Real.sqrt (r ^ 2 - (p.2.1 - p.2.2 + Real.smoothAbs ε (p.2.1 + p.2.2)) / 2 -
       ((Real.smoothAbs ε (p.2.1 + p.2.2) - (p.2.1 - p.2.2)) / 2) ^ 2) / ‖(e.symm p).1‖) •
       (e.symm p).1, (Real.smoothAbs ε (p.2.1 + p.2.2) - (p.2.1 - p.2.2)) / 2) = _

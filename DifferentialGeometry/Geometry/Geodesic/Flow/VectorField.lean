@@ -12,11 +12,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
+open TangentBundle
+  (chartFiberCoord chartFiberCoord_eq_tangentCoordChange extChartAt_tangent_apply_fst
+    extChartAt_tangent_apply_snd_tangentCoordChange fst_continuousLinearMapAt_secondaryTriv
+    secondaryTrivFiberComponentMap snd_continuousLinearMapAt_secondaryTriv)
+
 namespace DifferentialGeometry.Geometry.Riemannian.Geodesic
 
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.DivergenceTheorem
-open DifferentialGeometry.Geometry.Riemannian.Exponential
 
 variable [Module.Finite ℝ E] [NeZero (Module.finrank ℝ E)]
 

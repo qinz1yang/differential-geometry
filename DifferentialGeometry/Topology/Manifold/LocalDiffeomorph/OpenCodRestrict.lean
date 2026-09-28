@@ -49,7 +49,7 @@ theorem isLocalDiffeomorphAt_subtypeCodRestrict {V : Opens N} {f : M → N} (hfV
   let toFun : M → V :=
     fun y => if hy : y ∈ W then (⟨Φ y, hy.2⟩ : V) else (⟨f y, hfV y⟩ : V)
   have htoFun_of_mem : ∀ y (hy : y ∈ W), toFun y = (⟨Φ y, hy.2⟩ : V) :=
-    fun y hy => dif_pos hy
+    fun y hy => dite_eq_left hy
   have hcoe : ∀ y (hy : y ∈ W), (toFun y : N) = Φ y :=
     fun y hy => congrArg Subtype.val (htoFun_of_mem y hy)
   have himage : ((toFun : M → V) '' (W : Set M))

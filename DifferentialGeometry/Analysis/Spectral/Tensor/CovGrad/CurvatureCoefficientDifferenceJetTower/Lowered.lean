@@ -1,6 +1,11 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Grid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.PassZero
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sum_le_card_mul riemannianFiberNormSq_zero tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right)
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral

@@ -34,7 +34,7 @@ theorem linPull_holder (L : V ≃L[ℝ] V) {K : ℝ≥0} {f : V → F}
     (hf : HolderWith K (1 / 2 : ℝ≥0) f) :
     HolderWith (linHalfConst L K) (1 / 2 : ℝ≥0) (linPull L f) := by
   have hL : HolderWith ‖(L : V →L[ℝ] V)‖₊ 1 L :=
-    L.lipschitz.holderWith
+    L.lipschitzWith.holderWith
   simpa [linPull, linHalfConst] using hf.comp hL
 
 def linD2Cancel (L : V ≃L[ℝ] V) (t : ℝ) (v w : V)

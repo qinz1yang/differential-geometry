@@ -257,7 +257,7 @@ theorem nonempty_normalSingularSetTriangulation_of_triangulation
   obtain ⟨T, hTcomplex, hTmapval⟩ :
       ∃ T : PLPieceIn E 3 K.space univ, T.complex = K ∧ ∀ q : K.space, T.map (q : E) = q :=
     ⟨combinatorialPLPieceIn K hK p, rfl, fun q => Subtype.ext (by
-      simp only [combinatorialPLPieceIn, dif_pos q.2])⟩
+      simp only [combinatorialPLPieceIn, dite_eq_left q.2])⟩
   have hTimage : ∀ S : Set K.space, T.map '' (Subtype.val '' S) = S := by
     intro S
     ext w

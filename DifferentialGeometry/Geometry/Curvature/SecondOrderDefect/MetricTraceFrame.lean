@@ -5,6 +5,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.Pointw
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FiberNorm
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -135,12 +138,12 @@ theorem metricTraceHessian_eq_gWeighted_firstSlot
     refine Finset.sum_congr rfl (fun j _ => ?_)
     rw [smoothOrthoFrame_orthonormal_at_center (I := I) g x i j]
     by_cases hij : i = j
-    · rw [if_pos hij, if_pos hij, one_smul]
-    · rw [if_neg hij, if_neg hij, zero_smul]]
+    · rw [ite_eq_left hij, ite_eq_left hij, one_smul]
+    · rw [ite_eq_right hij, ite_eq_right hij, zero_smul]]
   rw [Finset.sum_ite_eq (Finset.univ) i
     (fun j => firstSlotHessMap (I := I) g r s (smoothOrthoFrame (I := I) g x i) T x
       (smoothOrthoFrame (I := I) g x j x))]
-  rw [if_pos (Finset.mem_univ i)]
+  rw [ite_eq_left (Finset.mem_univ i)]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 theorem thirdOrder_ricci_identity_firstSlot

@@ -54,7 +54,7 @@ def nablaKRm04ReactionIntrinsic
     (Tdot : Real -> (x : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) (4 + k) x) : Real -> M -> Real :=
   fun t x =>
-    ricReactionContract (gInv t x) (ric t x)
+    metricVariationContract (gInv t x) (ric t x)
         (fun I0 : Fin (4 + k) -> Idx =>
           tensor0SComponent (I := I) (nablaKRm04Field (I := I) S t k x)
             (fun i => basis x i) I0)
@@ -75,7 +75,7 @@ def nablaKReactionAt
     (gInv ric : Idx → Idx → Real)
     (Tdot : Tensor0SSpace (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
       (4 + k) x) : Real :=
-  ricReactionContract gInv ric
+  metricVariationContract gInv ric
       (fun I0 : Fin (4 + k) → Idx =>
         tensor0SComponent (I := I) (nablaKRm04Field (I := I) S t k x)
           (fun i => basis i) I0)
@@ -263,7 +263,7 @@ theorem nablaKNormHeatAt
           (nablaKNormHess (I := I) S (t : Real) k x) Fin.elim0 := by
     with_unfolding_all exact hlapBasis
   have hdt :=
-    hasDerivWithinAt_normSq0S_ricciFlow (I := I)
+    hasDerivWithinAt_normSq0S_of_metric_variation (I := I)
       (s := 4 + k) (x := x) (u := D.carrier) (t := (t : Real))
       (g := fun r : Real => S.base.metric r)
       (gInv := gInv)
@@ -292,7 +292,7 @@ theorem nablaKNormHeatAt
       hdu hHess
   refine hdt.congr_deriv ?_
   rw [hlap, nablaKReactionAt, nablaKRm04NormSqIntrinsic]
-  set A := ricReactionContract (gInv (t : Real)) ric
+  set A := metricVariationContract (gInv (t : Real)) ric
       (fun I0 : Fin (4 + k) → Idx =>
         tensor0SComponent (I := I) (nablaKRm04Field (I := I) S (t : Real) k x)
           (fun i => basis i) I0)
@@ -381,7 +381,7 @@ theorem nablaKRm04NormHeatEquationOn_intrinsic
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   have hdt :=
-    hasDerivWithinAt_normSq0S_ricciFlow (I := I)
+    hasDerivWithinAt_normSq0S_of_metric_variation (I := I)
       (s := 4 + k) (x := x) (u := D.carrier) (t := (t : Real))
       (g := fun r : Real => S.base.metric r)
       (gInv := fun r : Real => gInv r x)
@@ -413,7 +413,7 @@ theorem nablaKRm04NormHeatEquationOn_intrinsic
       (hdu (t : Real)) (hHess (t : Real) x)
   refine hdt.congr_deriv ?_
   rw [hlapTrace (t : Real) x, nablaKRm04ReactionIntrinsic, nablaKRm04NormSqIntrinsic]
-  set A := ricReactionContract (gInv (t : Real) x) (ric (t : Real) x)
+  set A := metricVariationContract (gInv (t : Real) x) (ric (t : Real) x)
       (fun I0 : Fin (4 + k) -> Idx =>
         tensor0SComponent (I := I) (nablaKRm04Field (I := I) S (t : Real) k x)
           (fun i => basis x i) I0)

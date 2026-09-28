@@ -1106,12 +1106,12 @@ lemma nonempty_radialCurveExtension
     smooth := fun w hw => (hgamma w hw).choose_spec.2.1
     eps_pos := fun w hw => by
       have heps_eq : eps w = (hgamma w hw).choose := by
-        simp only [eps, dif_pos hw]
+        simp only [eps, dite_eq_left hw]
       rw [heps_eq]
       exact (hgamma w hw).choose_spec.1
     eqOnNeighborhood := fun w hw => by
       have heps_eq : eps w = (hgamma w hw).choose := by
-        simp only [eps, dif_pos hw]
+        simp only [eps, dite_eq_left hw]
       change Set.EqOn (gamma w) (radialCurve (I := I) g p w)
         (Set.Icc (-(eps w)) (b + eps w))
       rw [heps_eq]
@@ -1294,12 +1294,12 @@ lemma radialFrameFamilyOfExtension_orthonormal
   rw [hbase] at h
   by_cases hij : i = j
   · have hijFd : (show Fd.ι from i) = (show Fd.ι from j) := hij
-    rw [if_pos hijFd] at h
-    rw [if_pos hij]
+    rw [ite_eq_left hijFd] at h
+    rw [ite_eq_left hij]
     simpa [radialFrameFamilyOfExtension, radialFrameOfExt, hw, htN] using h
   · have hijFd : ¬(show Fd.ι from i) = (show Fd.ι from j) := hij
-    rw [if_neg hijFd] at h
-    rw [if_neg hij]
+    rw [ite_eq_right hijFd] at h
+    rw [ite_eq_right hij]
     simpa [radialFrameFamilyOfExtension, radialFrameOfExt, hw, htN] using h
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [CompleteSpace E] [T2Space M]

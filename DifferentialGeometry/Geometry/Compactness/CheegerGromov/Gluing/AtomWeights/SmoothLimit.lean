@@ -524,7 +524,7 @@ private theorem existsAtomWeightCore
     intro gamma hgamma
     have h := hliveAtom (⟨gamma, hgamma⟩ : LiveSlot L pb r)
     simpa only [Xpsi, center, PointedRiemannianSeq.subseq, aInf,
-      dif_pos hgamma] using h
+      dite_eq_left hgamma] using h
   have hgpPsi (k : Nat) : ExponentialRadiusScaleAt (I := I) hd D P Lpsi pb r k := by
     exact (htailAt k).2.2
   have hatom0 :=
@@ -579,7 +579,7 @@ private theorem existsAtomWeightCore
           (hd.lambda_pos hD (Lpsi.rInf (gamma : Nat)))
             (gInf z live (Jinf live z) (Jinf live z)) := by
         funext z
-        simp only [aInf, dif_pos hgamma, live]
+        simp only [aInf, dite_eq_left hgamma, live]
       rw [haInf]
       intro z hz
       exact ((gluingBump (Lpsi.lamInf (gamma : Nat))

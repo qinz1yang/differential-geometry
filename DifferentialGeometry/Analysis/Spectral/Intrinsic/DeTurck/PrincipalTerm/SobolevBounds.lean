@@ -14,6 +14,10 @@ import DifferentialGeometry.Analysis.Convex.LogConvexSequence
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Pairing.CrossScale
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.OperatorFieldApplication
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinearity.Basic
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

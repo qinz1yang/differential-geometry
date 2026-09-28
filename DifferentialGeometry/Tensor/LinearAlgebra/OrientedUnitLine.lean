@@ -1,6 +1,6 @@
 import Mathlib.LinearAlgebra.Span.Basic
 import Mathlib.Algebra.Ring.Commute
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 
 namespace DifferentialGeometry.Analysis

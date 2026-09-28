@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 set_option autoImplicit false
 noncomputable section
 open Bundle Set DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
-open DifferentialGeometry.Analysis.Laplacian
 open scoped Manifold ContDiff ENNReal
 namespace DifferentialGeometry.Geometry.Metric
 

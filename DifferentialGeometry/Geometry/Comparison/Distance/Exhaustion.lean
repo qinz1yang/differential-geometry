@@ -276,6 +276,8 @@ private theorem hessFun_comp_of_contMDiffOn
     congr 1
     unfold mvfderiv
     rw [hFf.mfderiv_eq, hvalue]
+    ext u
+    rfl
   calc
     hessFun (I := I) g (fun y ↦ phi (f y)) x v w =
         hessFun (I := I) g (fun y ↦ phi (F y)) x v w := by
@@ -319,26 +321,26 @@ private theorem gInner_sq_le_mul
     (g : SmoothRiemannianMetric I M) (x : M)
     (v w : TangentSpace I x) :
     (g.inner x v w) ^ 2 ≤ g.inner x v v * g.inner x w w := by
-  let D := (Tensor0SBundle.tangentMetricDataGen (I := I) g x).metric
+  let D := (Tensor0SBundle.tangentMetricData (I := I) g x).metric
   let : PreInnerProductSpace.Core Real (TangentSpace I x) := D.toCore.toCore
   let : Inner Real (TangentSpace I x) := D.toCore.toCore.toInner
   have hcs := InnerProductSpace.Core.inner_mul_inner_self_le
     (𝕜 := Real) (F := TangentSpace I x) v w
   have hvw : Inner.inner Real v w = g.inner x v w := by
-    exact Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-      (Tensor0SBundle.tangentMetricDataGen (I := I) g x) v w
+    exact Tensor0SBundle.TangentMetricData.inner_eq
+      (Tensor0SBundle.tangentMetricData (I := I) g x) v w
   have hwv : Inner.inner Real w v = g.inner x v w := by
     calc
       Inner.inner Real w v = g.inner x w v :=
-        Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-          (Tensor0SBundle.tangentMetricDataGen (I := I) g x) w v
+        Tensor0SBundle.TangentMetricData.inner_eq
+          (Tensor0SBundle.tangentMetricData (I := I) g x) w v
       _ = g.inner x v w := g.symm x w v
   have hvv : Inner.inner Real v v = g.inner x v v := by
-    exact Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-      (Tensor0SBundle.tangentMetricDataGen (I := I) g x) v v
+    exact Tensor0SBundle.TangentMetricData.inner_eq
+      (Tensor0SBundle.tangentMetricData (I := I) g x) v v
   have hww : Inner.inner Real w w = g.inner x w w := by
-    exact Tensor0SBundle.TangentMetricDataGen.inner_eq_gen
-      (Tensor0SBundle.tangentMetricDataGen (I := I) g x) w w
+    exact Tensor0SBundle.TangentMetricData.inner_eq
+      (Tensor0SBundle.tangentMetricData (I := I) g x) w w
   rw [hvw, hwv, hvv, hww] at hcs
   simpa [Real.norm_eq_abs, pow_two] using hcs
 

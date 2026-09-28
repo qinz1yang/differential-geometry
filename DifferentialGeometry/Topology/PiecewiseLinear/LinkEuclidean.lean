@@ -47,7 +47,7 @@ theorem affineIndependent_insert_erase {T : Finset E} (hT : AffineIndependent �
   rw [Finset.sum_insert hpv] at ha₀ ha₁
   let f : E → ℝ := fun u => if u = v then 0 else a u
   have hf : ∀ u ∈ T.erase v, f u = a u := fun u hu => by
-    simp only [f, if_neg (Finset.ne_of_mem_erase hu)]
+    simp only [f, ite_eq_right (Finset.ne_of_mem_erase hu)]
   have hsum_f : ∑ u ∈ T, f u = ∑ u ∈ T.erase v, a u := by
     rw [← Finset.sum_erase T (by simp [f] : f v = 0)]
     exact Finset.sum_congr rfl hf
@@ -66,7 +66,7 @@ theorem affineIndependent_insert_erase {T : Finset E} (hT : AffineIndependent �
   have hzero := eq_zero_of_sum_eq_zero_of_affineIndependent hT hb₀ hb₁
   have hap : a p = 0 := by
     have h := hzero v hv
-    simp only [b, f, if_true, add_zero] at h
+    simp only [b, f, ite_true, add_zero] at h
     rcases mul_eq_zero.mp h with h | h
     · exact h
     · exact absurd h (hpos v hv).ne'

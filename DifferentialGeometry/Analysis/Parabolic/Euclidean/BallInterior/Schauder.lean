@@ -1107,7 +1107,7 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_cutoff
         aTime t₀ t₁ bTime r R Ksource Kcomm Bsource Bcomm X
         Ka omega T := hraw
 
-theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_cutoff_source_estimates_of_small_freeze_defect
+theorem parabolic_ball_schauder_estimate_of_commutator_bounds_of_small_defect
     {alpha Ksource Kcomm Bsource Bcomm : NNReal}
     (halpha0 : 0 < alpha) (halpha1 : alpha < 1)
     {aTime t₀ t₁ bTime S T : Real}
@@ -1662,7 +1662,7 @@ theorem parabolic_variable_coefficient_ball_interior_schauder_estimate_of_small_
     exact ne_of_lt (hcutoffBound.trans_lt ENNReal.coe_lt_top)
   simpa only [Q, dtimeChi, dchi, d2chi, Kcomm, Bcomm,
       parabolicVariableCoefficientBallInteriorAbsorbedSchauderConst] using
-    (parabolic_variable_coefficient_ball_interior_schauder_estimate_of_cutoff_source_estimates_of_small_freeze_defect
+    (parabolic_ball_schauder_estimate_of_commutator_bounds_of_small_defect
       halpha0 halpha1 haTime hat₀ ht₀t₁ ht₁b hbT hTS center hr hrR
       a p0 hA u dtimeU du d2u huTime hu hdu huCont hsourceHolder
       hcommHolder hsourceNorm hcommNorm Ka omega ha homega

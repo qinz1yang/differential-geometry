@@ -2,6 +2,12 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Fi
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetricField
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.HomTensorRSFiberNorm
+
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric
+  (coframeS coframeS_apply fiberNormSqComponent fiberNormSqSummand riemannianFiberNormSq
+    riemannianFiberNormSq_eq_sum_componentRS_sq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

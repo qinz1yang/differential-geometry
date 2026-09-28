@@ -45,6 +45,10 @@ private theorem tubeProjection_injective_mfderiv {t : ℝ} (ht : t ∈ Ioo (-2 :
     ((contMDiff_subtypeVal_Icc (x := (-2 : ℝ)) (y := 2) (n := ∞)).mdifferentiableAt (by simp))
     ((tubeProjection_contMDiffAt ht).mdifferentiableAt (by simp))
   rw [(tubeProjection_val_eventually ht).mfderiv_eq, mfderiv_id] at hchain
+  replace hchain : ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, ℝ) t) =
+      (mfderiv (𝓡∂ 1) 𝓘(ℝ, ℝ) (Subtype.val : Interval → ℝ) (tubeProjection t)).comp
+        (mfderiv 𝓘(ℝ, ℝ) (𝓡∂ 1) tubeProjection t) :=
+    (ContinuousLinearMap.ext fun _ => rfl).trans hchain
   have hinj : Injective (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) id t) := by
     rw [mfderiv_id]
     exact injective_id
@@ -99,12 +103,12 @@ private def axialSign (side : Bool) : Diffeomorph 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) 
   right_inv t := by cases side <;> simp
   contMDiff_toFun := by
     change ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun t : ℝ => if side then t else -t)
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true]
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true]
     · exact contMDiff_id.neg
     · exact contMDiff_id
   contMDiff_invFun := by
     change ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun t : ℝ => if side then t else -t)
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true]
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true]
     · exact contMDiff_id.neg
     · exact contMDiff_id
 
@@ -118,7 +122,7 @@ theorem radialTube_apply (a : T.Index) (A : Sphere ≃ₘ⟮𝓡 2, 𝓡 2⟯ Sp
     T.radialTube a A side v x = T.tube a
       (A (Manifold.sphereDirection v x),
         ⟨if side then ‖x‖ else -‖x‖, by
-          cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+          cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
             constructor <;> linarith [norm_nonneg x]⟩) := by
   unfold radialTube
   rw [projIcc_of_mem]
@@ -133,7 +137,7 @@ theorem isLocalDiffeomorphAt_radialTube (a : T.Index)
     P.symm.isLocalDiffeomorphAt _ _ ∞ (norm_pos_iff.mp hx0)
   have hrange : (R (P.symm x)).2 ∈ Ioo (-2 : ℝ) 2 := by
     change (if side then ‖x‖ else -‖x‖) ∈ Ioo (-2 : ℝ) 2
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true, mem_Ioo] <;>
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true, mem_Ioo] <;>
       constructor <;> linarith
   have hR := hP.comp PI (Sphere × ℝ) (R.isLocalDiffeomorph (P.symm x))
   exact hR.comp (𝓡 3) M.Carrier (isLocalDiffeomorphAt_clampedTube T a hrange)

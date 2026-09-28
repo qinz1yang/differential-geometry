@@ -241,7 +241,7 @@ theorem nablaChartJoint
       congr 1
       funext a
       exact local_frame_eq_chart (I := I) x₀ hxbase (L a)
-  have hext := prodExtDeriv_joint (I := I) e.open_baseSet ht hxbase
+  have hext := contMDiffWithinAt_partial_mvfderiv_apply (I := I) e.open_baseSet ht hxbase
     (hF := hbase (Fin.tail K))
     (hX := hframeInf.contMDiffAt e.open_baseSet hxbase (K 0))
   have hsum :

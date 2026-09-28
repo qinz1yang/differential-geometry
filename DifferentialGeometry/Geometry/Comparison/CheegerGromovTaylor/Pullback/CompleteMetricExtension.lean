@@ -1040,7 +1040,7 @@ private theorem exists_join_curve
   have hηEq (t : ℝ) (ht : γ t ∈ U) : (Subtype.val ∘ η) =ᶠ[𝓝 t] γ := by
     filter_upwards [hV.mem_nhds ht] with s hs
     change γ s ∈ U at hs
-    simp only [η, Function.comp_apply, dif_pos hs]
+    simp only [η, Function.comp_apply, dite_eq_left hs]
   have hη : ContMDiffOn 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ η (γ ⁻¹' (U : Set E)) := by
     intro t ht
     have hval : ContMDiffAt 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞ (Subtype.val ∘ η) t :=
@@ -2316,7 +2316,7 @@ theorem exists_fenced_min
     Classical.choose_spec
       (exists_fenced_curve (I := I) g hEnorm p hR h4aR hloc
         (x := x) (y := y) hx hy)
-  simpa only [join, dif_pos hx, dif_pos hy] using hspec
+  simpa only [join, dite_eq_left hx, dite_eq_left hy] using hspec
 
 open DifferentialGeometry.Geometry.Operator (hessFun) in
 open DifferentialGeometry.Geometry.Riemannian.Variation (curveVelocity) in

@@ -8,7 +8,9 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Curvature
 
 open Bundle Manifold DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle (normSq0S_neg normSq0S_add_le)
+open DifferentialGeometry.TensorMetric
+  (reLower reLower_apply reLowerPair reLowerPermutationWithTwoInputs
+    traceNormSq_le reLowerPairSq_le sharpFlat inner_sharpFlat)
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Tensor.RSTensor
 open scoped Manifold ContDiff BigOperators

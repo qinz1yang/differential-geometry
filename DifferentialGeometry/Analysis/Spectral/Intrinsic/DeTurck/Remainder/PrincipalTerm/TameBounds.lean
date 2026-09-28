@@ -41,6 +41,11 @@ namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
 
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqComponent riemannianFiberNormSq riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_eq_sum_component_sq riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
 open DifferentialGeometry.Integral.L2
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
@@ -519,7 +524,7 @@ lemma DeTurckRemainderPrincipalTerm.cometricDoubleTraceField_jet_bound (g₀ : S
     intro i'
     match i' with
     | 0 =>
-      rw [if_pos rfl]
+      rw [ite_eq_left rfl]
       have h := hCsh 0 (iteratedCovGrad (I := I) g₀ (2 + 2) 2 0 DT₂) x
       refine le_trans h ?_
       rw [hCDT_def]
@@ -531,7 +536,7 @@ lemma DeTurckRemainderPrincipalTerm.cometricDoubleTraceField_jet_bound (g₀ : S
         norm_iteratedCovGrad_iteratedCovGrad_eq (I := I) (M := M) g₀ (2 + 2) 2 0 t DT₂
       rw [hcomp, show (0 + t : ℕ) = t from by omega]
     | (k + 1) =>
-      rw [if_neg (Nat.succ_ne_zero k)]
+      rw [ite_eq_right (Nat.succ_ne_zero k)]
       have h := hCsh (k + 1) (iteratedCovGrad (I := I) g₀ (2 + 2) 2 (k + 1) DT₂) x
       refine le_trans h ?_
       have hz : ∑ t ∈ Finset.range w,
@@ -562,12 +567,12 @@ lemma DeTurckRemainderPrincipalTerm.cometricDoubleTraceField_jet_bound (g₀ : S
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 _ x _)
     split_ifs with h0
     · subst h0
-      refine mul_le_mul (le_trans (hDTsup 0) (by rw [if_pos rfl])) ?_ hY_nn hCDT_nn
+      refine mul_le_mul (le_trans (hDTsup 0) (by rw [ite_eq_left rfl])) ?_ hY_nn hCDT_nn
       refine Finset.sum_le_sum_of_subset_of_nonneg ?_ (fun l' _ _ =>
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 _ x _)
       exact fun y hy => Finset.mem_range.mpr (by have := Finset.mem_range.mp hy; omega)
     · have hle := hDTsup i'
-      rw [if_neg h0] at hle
+      rw [ite_eq_right h0] at hle
       have hrf_nn : 0 ≤ riemannianFiberNormSq (I := I) (M := M) g₀ (2 + 2) (2 + i') x
           ((iteratedCovGrad (I := I) g₀ (2 + 2) 2 i' DT₂).toSection x) :=
         riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ (2 + 2) _ x _
@@ -578,7 +583,7 @@ lemma DeTurckRemainderPrincipalTerm.cometricDoubleTraceField_jet_bound (g₀ : S
   refine le_trans (mul_le_mul_of_nonneg_left (Finset.sum_le_sum hterm)
     (operatorFieldApplicationGdiag_nonneg (E := E) j)) ?_
   rw [Finset.sum_ite_eq' (Finset.range (j + 1)) 0]
-  rw [if_pos (Finset.mem_range.mpr (by omega))]
+  rw [ite_eq_left (Finset.mem_range.mpr (by omega))]
   rw [← mul_assoc]
 
 end BalLadder
@@ -3526,7 +3531,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
       have hCgn_i :
         (Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
           (I := I) (M := M) g₀ 0 2 i hi1).choose = Cgn i := by
-        rw [hCgn_def]; simp only [dif_pos hi1]
+        rw [hCgn_def]; simp only [dite_eq_left hi1]
       have hLbound : ∀ θ : ℝ, 0 ≤ θ → θ ≤ 2 → Λ₀ ^ θ ≤ L := by
         intro θ hθ0 hθ2
         rcases le_or_gt 1 Λ₀ with hΛ1 | hΛ1
@@ -3796,7 +3801,7 @@ theorem exists_deTurckPrincipalCometricCoeff_realize_coeffJetEnvelope_le
   obtain ⟨Kg, hKg_nn, hKg⟩ :=
     exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrder (I := I) (M := M) g₀ a ha_super hR₀
   obtain ⟨Cd, hCd_nn, hCd⟩ :=
-    deTurckPrincipalCometricCoeff_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient (I := I) (M := M) g₀
+    exists_deTurckPrincipalCometricCoeff_pointwise_jet_bound (I := I) (M := M) g₀
   obtain ⟨C2, hC2_nn, hC2⟩ :=
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
@@ -4056,7 +4061,7 @@ theorem exists_deTurckPhiTotPathIntegral_sub_background_coeffJetEnvelope_le
   obtain ⟨Cth, hCth_nn, hCth⟩ :=
     traceHessianCoeff_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2 (I := I) (M := M) g₀
   obtain ⟨Cr, hCr_nn, hCr⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2 (I := I) (M := M) g₀
+    ricciDeTurckPrincipalCoefficient_sub_jet_l2_sq_le (I := I) (M := M) g₀
   obtain ⟨C2, hC2_nn, hC2⟩ :=
     exists_iteratedCovGrad_sum_le_smoothCcToTensorHs (I := I) (M := M) g₀ (a + 2)
   set B : ℝ := C2 * R₀ with hB_def
@@ -5003,7 +5008,7 @@ theorem exists_deTurckSmoothRemainderDiff_sub_principalCometricTerm_endpointResi
                 ‖iteratedCovGrad (I := I) g₀ 0 2 j T₀‖ ^ 2)) := by
   classical
   obtain ⟨εCr, hεCr_nn, hεCr_cap, Kc1, hKc1_nn, εar, hεar_nn, hεar_cap, Λ₁, hΛ₁_nn, harm⟩ :=
-    exists_deTurckRHSCovariantTermDifference_zero_canonicalTop_curvatureDecomposition_coeffSup_jetEnvelope_of_symm
+    exists_deTurckRHSTermG0_zero_tame_decomposition_of_symm
       (I := I) (M := M) g₀ g_bg a ha_super hR₀ hδ_le hδ_fibre
   obtain ⟨K₀, hK₀fold⟩ :=
     exists_deTurckMetricPrincipalDefectTotal_background_curvatureContraction_of_symm (I := I) (M := M) g₀
@@ -6572,7 +6577,7 @@ private lemma gFibreOpBound_delta_nonneg [Nonempty M] (g₀ : SmoothRiemannianMe
   set i0 : Fin n := ⟨0, hn_pos⟩ with hi0_def
   have hb := hfb x (e i0) (e i0)
   have hgi : g₀.inner x (e i0) (e i0) = 1 := by
-    rw [horth i0 i0, if_pos rfl]
+    rw [horth i0 i0, ite_eq_left rfl]
   rw [hgi, Real.sqrt_one, mul_one, mul_one] at hb
   exact le_trans (abs_nonneg _) hb
 
@@ -6674,7 +6679,7 @@ private lemma riemannianFiberNormSq_le_of_ccTensorBilinSymm_gFibreOpBound
       rw [← hpars u, hS_def]
       refine Finset.sum_congr rfl (fun i _ => ?_)
       rw [hgiu i]
-    have hgee : g₀.inner x (e a) (e a) = 1 := by rw [horth a a, if_pos rfl]
+    have hgee : g₀.inner x (e a) (e a) = 1 := by rw [horth a a, ite_eq_left rfl]
     have hopau := hop (e a) u
     rw [hgee, Real.sqrt_one, mul_one, hguu, hval] at hopau
     have hSle : S ≤ δ * Real.sqrt S := le_trans (le_abs_self S) hopau

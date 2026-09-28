@@ -1,5 +1,3 @@
-import DifferentialGeometry.Analysis.Time
-import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Tactic
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Metric.Comparison.BallMonotonicity
@@ -18,7 +16,6 @@ open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false
 
-open DifferentialGeometry.Analysis
 namespace DifferentialGeometry.Geometry.Curvature
 
 open Bundle DifferentialGeometry.Tensor0SBundle
@@ -137,42 +134,6 @@ theorem metricCompatibleAt_regular
   exact G.metricCompatible (RealTimeInterval.regularToFlow t)
 
 end MetricConnectionFamilyOn
-
-section TimeSmoothness
-
-variable {A Time : Type*} [CommRing A] [Algebra Real A]
-
-def metricFamilySmoothInTime
-    (td : TimeDerivativeData Real A Time) [TimeRegularFam td]
-    (G : MetricConnectionFamily (I := I) (M := M) Time) : Prop :=
-  forall (x : M) (X Y : TangentSpace I x),
-    td.isSmoothFam (fun t : Time => (G.metric t).inner x X Y)
-
-
-theorem metric_smooth_coeff_of_metricFamilySmoothInTime
-    (td : TimeDerivativeData Real A Time) [TimeRegularFam td]
-    (G : MetricConnectionFamily (I := I) (M := M) Time)
-    (hG : metricFamilySmoothInTime td G)
-    (x : M) (X Y : TangentSpace I x) :
-    td.isSmoothFam (fun t : Time => (G.metric t).inner x X Y) :=
-  hG x X Y
-
-
-noncomputable def metricTimeDerivative
-    (td : TimeDerivativeData Real A Time)
-    (G : MetricConnectionFamily (I := I) (M := M) Time)
-    (t : Time) (x : M) (X Y : TangentSpace I x) : Real :=
-  td.dtApply (fun s : Time => (G.metric s).inner x X Y) t
-
-@[simp] theorem metricTimeDerivative_eq
-    (td : TimeDerivativeData Real A Time)
-    (G : MetricConnectionFamily (I := I) (M := M) Time)
-    (t : Time) (x : M) (X Y : TangentSpace I x) :
-    metricTimeDerivative td G t x X Y =
-      td.dtApply (fun s : Time => (G.metric s).inner x X Y) t := by
-  rfl
-
-end TimeSmoothness
 
 section IntervalSmoothness
 

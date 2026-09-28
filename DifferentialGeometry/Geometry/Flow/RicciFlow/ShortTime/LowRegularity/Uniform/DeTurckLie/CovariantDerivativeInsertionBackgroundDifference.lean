@@ -139,7 +139,7 @@ private theorem wAlphaB_sub_eq_ccOperatorFieldComp
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gA)
         (deTurckVectorFieldCovector (I := I) (M := M) g₀ g₁ gB)).symm
 
-theorem exists_uniform_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covariantJetNormSq_one_bound
+theorem exists_uniform_deTurckLieCovariantDerivativeInsertionField_background_difference_jet_one_bound
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M) {Λ : ℝ} (hΛ : 1 ≤ Λ)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -327,8 +327,8 @@ theorem exists_uniform_deTurckLieCovariantDerivativeInsertion_backgroundDifferen
   have hWDform :
       WD = cometricRaiseSlot0Field (I := I) (M := M) g₀ 0 AD := by
     dsimp only [WD, AD]
-    rw [deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_deTurckVectorFieldCovariantDerivativeLowered,
-      deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_deTurckVectorFieldCovariantDerivativeLowered, ← raise_sub]
+    rw [deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_lowered,
+      deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_lowered, ← raise_sub]
   have hWD : (∑ i ∈ Finset.range 2,
       ‖iteratedCovGrad (I := I) g₀ 1 1 i WD‖ ^ 2) ≤
         2 * ((BO R) ^ 2 + (BAB R) ^ 2) := by

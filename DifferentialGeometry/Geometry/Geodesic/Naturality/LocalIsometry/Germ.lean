@@ -56,7 +56,7 @@ theorem isGeodesicAt_map_of_local_isometry_on
     hgamma.continuousAt.preimage_mem_nhds (hU.mem_nhds ht)
   have heq : (fun s ↦ (gammaO s : M)) =ᶠ[𝓝 t] gamma := by
     filter_upwards [hmem] with s hs
-    simp only [gammaO, dif_pos hs]
+    simp only [gammaO, dite_eq_left hs]
   have hgammaOamb := DifferentialGeometry.Geometry.isGeodesicAt_congr hgamma heq
   obtain ⟨V, hVsub, hVopen, htV⟩ := mem_nhds_iff.mp
     (DifferentialGeometry.Geometry.eventually_isGeodesicAt hgammaOamb)

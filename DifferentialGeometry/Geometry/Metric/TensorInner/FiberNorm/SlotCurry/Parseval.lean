@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Defs
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Commutation.ParallelNaturality
 
 
-open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 
 
@@ -13,8 +12,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -196,11 +194,10 @@ theorem riemannianFiberNormSq_three_eq_sum_tensor0SCurry
                   (unitZeroSec (I := I) (M := M) x)) (e a))) :=
   riemannianFiberNormSq_succ_eq_sum_tensor0SCurry (I := I) (M := M) g 2 x T
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
-namespace DifferentialGeometry.Integral.Connection
+namespace DifferentialGeometry.TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -226,6 +223,6 @@ lemma slot0Curry_eq_tensor0SAsRS_curry_unitZeroSec
   slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
     (I := I) (M := M) g x s e K₀ T a
 
-end DifferentialGeometry.Integral.Connection
+end DifferentialGeometry.TensorMetric
 
 end

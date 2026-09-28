@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRegularCrossingBefore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CanonicalCapWindows
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.NoncollapsingThroughSurgeryLeaves
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Noncollapsing.ReducedVolumeBounds
 set_option autoImplicit false
 noncomputable section
 open Set
@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-def HistoryScalarDerivativeBoundBefore {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+def HistoryScalarDerivativeBoundBefore (H : RetainedCoreHistory.{u})
     (Ctime : ℝ≥0) (qcan t : ℝ) : Prop :=
   ∀ (j : Fin (H.eventCount + 1)) (y : (H.stage j).Carrier),
     ∀ s ∈ Ioo (H.time j) (H.toHistory.stageEndTime j), s < t →
@@ -27,7 +27,7 @@ theorem exists_uniform_regularMinimizerEndpoint_of_regularizedCost_lt
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ ε₀ → R₀ ≤ p₀.modelRadius → m₀ ≤ p₀.modelOrder →
       p₀.recenterConstant ≤ Λ → δbound ≤ δ₀ → ρbound ≤ ρ →
-    ∀ (H : RetainedCoreHistory P₀), Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+    ∀ (H : RetainedCoreHistory.{u}), Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
       H.hasCanonicalCutoffRecords p₀ δbound ρbound →
     ∀ (t : Icc (0 : ℝ) H.toHistory.horizon), HistoryScalarDerivativeBoundBefore H Ctime qcan t →
     ∀ (p : (H.toHistory.stageAt t).Carrier), H.toHistory.isParabolicallyRmControlledBall t p r₀ →

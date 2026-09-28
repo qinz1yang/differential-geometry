@@ -37,7 +37,7 @@ theorem exists_contDiffOn_implicit_graph_of_deriv_neg
   let g : E → ℝ := fun x => if hx : x ∈ U then Classical.choose (hroot x hx) else 0
   have hspec (x : E) (hx : x ∈ U) : g x ∈ Ioo a b ∧ F (x, g x) = 0 := by
     dsimp only [g]
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     exact Classical.choose_spec (hroot x hx)
   have huniq (x : E) (hx : x ∈ U) (t : ℝ) (ht : t ∈ Icc a b) :
       F (x, t) = 0 ↔ t = g x := by
@@ -116,7 +116,7 @@ theorem exists_isOpen_contDiffOn_implicit_graph_of_injOn
   let g : E → ℝ := fun x => if hx : x ∈ O then Classical.choose hx else 0
   have hspec (x : E) (hx : x ∈ O) : (x, g x) ∈ W ∧ F (x, g x) = 0 := by
     dsimp only [g]
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     exact Classical.choose_spec hx
   have huniq (x : E) (hx : x ∈ O) (t : ℝ) (ht : (x, t) ∈ W ∧ F (x, t) = 0) :
       t = g x := congrArg Prod.snd (hinj ht (hspec x hx) rfl)

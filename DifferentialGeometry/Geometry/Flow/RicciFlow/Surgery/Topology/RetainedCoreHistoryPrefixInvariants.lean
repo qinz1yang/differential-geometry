@@ -16,7 +16,7 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u})
 
 theorem inCutoffClass_prefixAt {g₀ : P₀.Metric} {B : ℝ} {p₀ : CutoffParameters}
     {δbound ρbound : ℝ} (hH : H.InCutoffClass g₀ B p₀ δbound ρbound)

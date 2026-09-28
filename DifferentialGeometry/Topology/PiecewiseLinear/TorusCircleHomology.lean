@@ -135,12 +135,12 @@ theorem IsPLTorus.range_integralSingularHomologyMap_eq_bot_of_not_isPreconnected
       ⊥ := by
   obtain ⟨Δ, r, hr, hΔΘ, hGr⟩ :=
     hΘ.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff hG hGΘ hGsep
-  have hmaps : ∀ x ∈ stdSimplex ℝ (Fin 3), r x ∈ Θ := fun x hx => hΔΘ (hr.bijOn.mapsTo hx)
-  have himg : (fun x => φ (r x)) '' stdSimplex ℝ (Fin 3) = φ '' Δ := by
+  have hmaps : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), r x ∈ Θ := fun x hx => hΔΘ (hr.bijOn.mapsTo hx)
+  have himg : (fun x => φ (r x)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) = φ '' Δ := by
     rw [← hr.image_eq, image_image]
   have hsub := subsingleton_integralSingularHomology_image_of_convex (f := fun x => φ (r x))
-    (convex_stdSimplex ℝ (Fin 3)) (isCompact_stdSimplex ℝ (Fin 3))
-    ⟨_, single_mem_stdSimplex ℝ (0 : Fin 3)⟩ (hφ.comp hr.isPiecewiseAffineOn.continuousOn hmaps)
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)) (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3))
+    ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin 3)⟩ (hφ.comp hr.isPiecewiseAffineOn.continuousOn hmaps)
     (fun a ha b hb hab => hr.bijOn.injOn ha hb (hφi (hmaps a ha) (hmaps b hb) hab))
   rw [himg] at hsub
   have hGΔ : G ⊆ Δ := by

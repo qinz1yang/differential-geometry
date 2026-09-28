@@ -361,7 +361,7 @@ theorem nonempty_openMetricConvergenceData
       t ∈ RealTimeInterval.openWindow a b t₀ (idx t) := by
     intro t ht
     dsimp only [idx]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     exact Classical.choose_spec (RealTimeInterval.mem_openWindow (t₀ := t₀) ht)
   let gInf : letI : TopologicalSpace P.M := P.topology
       letI : ChartedSpace H P.M := P.charted
@@ -374,7 +374,7 @@ theorem nonempty_openMetricConvergenceData
     have htOpen : t ∈ Set.Ioo a b := RealTimeInterval.openWindow_subset ht₀ n ht
     have hdef : gInf t = gN (idx t) t := by
       dsimp only [gInf]
-      rw [dif_pos htOpen]
+      rw [dite_eq_left htOpen]
     rw [hdef]
     exact BumpMetricConvergence.unique (Φ := Φ) (hgN (idx t)) (hgN n) (hidx htOpen) ht
   exact ⟨{

@@ -28,8 +28,5 @@ instance chainComplexFunctor_preservesMonomorphisms :
   preserves f _ := by
     dsimp [_root_.SSet.chainComplexFunctor]
     apply +allowSynthFailures Functor.map_mono
-    apply +allowSynthFailures Functor.map_mono
-    dsimp [_root_.SSet, SimplicialObject.whiskering, SimplicialObject]
-    infer_instance
 
 end DifferentialGeometry.SSet

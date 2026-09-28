@@ -73,12 +73,12 @@ private noncomputable def concatenateSurfaceSplit (f g : ℝ → E) : ℝ → E 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
 private theorem concatenateSurfaceSplit_of_le {f g : ℝ → E} {t : ℝ} (ht : t ≤ 1 / 2) :
     concatenateSurfaceSplit f g t = f (2 * t) :=
-  if_pos ht
+  ite_eq_left ht
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
 private theorem concatenateSurfaceSplit_of_not_le {f g : ℝ → E} {t : ℝ}
     (ht : ¬t ≤ 1 / 2) : concatenateSurfaceSplit f g t = g (2 * t - 1) :=
-  if_neg ht
+  ite_eq_right ht
 
 omit [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E] in
 private theorem concatenateSurfaceSplit_upperHalf {f g : ℝ → E} (hmid : f 1 = g 0)

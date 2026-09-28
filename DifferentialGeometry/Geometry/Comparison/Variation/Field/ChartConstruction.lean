@@ -242,16 +242,16 @@ theorem exists_chartVar
   have hf_in : ∀ u t, t ∈ U → f u t = (extChartAt I c).symm
       (extChartAt I c (γ t) + η u • V t) := by
     intro u t ht
-    simp only [f, if_pos ht]
+    simp only [f, ite_eq_left ht]
   have hf_out : ∀ u t, t ∉ K → f u t = γ t := by
     intro u t ht
     have hV0 : V t = 0 := image_eq_zero_of_notMem_tsupport ht
     by_cases htU : t ∈ U
-    · simp only [f, if_pos htU, hV0, smul_zero, add_zero]
+    · simp only [f, ite_eq_left htU, hV0, smul_zero, add_zero]
       apply PartialEquiv.left_inv
       rw [extChartAt_source]
       exact htU
-    · simp only [f, if_neg htU]
+    · simp only [f, ite_eq_right htU]
   have hVM : ContMDiff 𝓘(Real, Real) 𝓘(Real, E) (8 : Nat) V := by
     rw [contMDiff_iff_contDiff]
     exact hV
@@ -269,7 +269,7 @@ theorem exists_chartVar
       apply PartialEquiv.left_inv
       rw [extChartAt_source]
       exact htU
-    · simp only [f, if_neg htU]
+    · simp only [f, ite_eq_right htU]
   · intro t
     by_cases htU : t ∈ U
     · rw [show (fun u : Real => f u t) =
@@ -293,7 +293,7 @@ theorem exists_chartVar
         exact htU (hKsub htK)
       have hfconst : (fun u : Real => f u t) = fun _ : Real => γ t := by
         funext u
-        simp only [f, if_neg htU]
+        simp only [f, ite_eq_right htU]
       rw [hfconst, hV0, map_zero]
       simp only [mfderiv_const]
       change (0 : Real →L[Real] TangentSpace I (γ t)) (1 : Real) = 0
@@ -304,7 +304,7 @@ theorem exists_chartVar
       apply PartialEquiv.left_inv
       rw [extChartAt_source]
       exact htU
-    · simp only [f, if_neg htU]
+    · simp only [f, ite_eq_right htU]
 
 end Variation
 end Riemannian

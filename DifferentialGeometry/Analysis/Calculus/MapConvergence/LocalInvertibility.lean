@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Inverse.DerivativePerturbation
 import DifferentialGeometry.Topology.Manifold.InverseFunctionTheorem.Basic
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Topology.MetricSpace.ProperSpace
 import DifferentialGeometry.Topology.Manifold.InverseFunction
 

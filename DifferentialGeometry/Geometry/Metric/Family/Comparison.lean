@@ -31,10 +31,10 @@ theorem inner_le_exp_mul_inner_of_abs_deriv_le
   have hlogderiv (r : ℝ) (hr : r ∈ Icc a b) :
       HasDerivWithinAt (fun u => Real.log ((g u).inner x v v))
         (f' r) (Icc a b) r := by
-    simpa only [f', dif_pos hr] using (hd r hr).log (hpos r).ne'
+    simpa only [f', dite_eq_left hr] using (hd r hr).log (hpos r).ne'
   have hlogbound (r : ℝ) (hr : r ∈ Icc a b) : ‖f' r‖ ≤ K := by
     dsimp only [f']
-    rw [dif_pos hr]
+    rw [dite_eq_left hr]
     rw [Real.norm_eq_abs, abs_div, abs_of_pos (hpos r), div_le_iff₀ (hpos r)]
     exact hbound r hr
   have hlog := (convex_Icc a b).norm_image_sub_le_of_norm_hasDerivWithin_le

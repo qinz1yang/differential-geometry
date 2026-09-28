@@ -107,7 +107,7 @@ theorem connectedComponent_eq_preimage_of_capCore_of_spatialNeck
     apply nk.domain
     change (z, if b.2 then 1 - t else -1 + t) ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹
     refine ⟨mem_univ _, ?_, ?_⟩ <;> cases b.2 <;>
-      simp only [Bool.false_eq_true, if_false, if_true] <;> linarith [ht.1, ht.2]
+      simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith [ht.1, ht.2]
   · intro z
     rw [happ]
     change _ = T.tube b.1 (z, boundaryLevel b.2)
@@ -116,7 +116,7 @@ theorem connectedComponent_eq_preimage_of_capCore_of_spatialNeck
   · intro z t ht
     let v : ℝ := if b.2 then 1 - t else -1 + t
     have hv : v ∈ Ioo (-1 : ℝ) 1 := by
-      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, if_false, if_true] <;>
+      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, ite_false, ite_true] <;>
         constructor <;> linarith [ht.1, ht.2]
     let q : TubeDomain := (z, ⟨v, by constructor <;> linarith [hv.1, hv.2]⟩)
     refine ⟨q, hv, ?_⟩
@@ -234,7 +234,7 @@ theorem isClopen_preimage_of_capCore_of_boundarySphere
     apply hEsource
     change (z, if b.2 then 1 - t else -1 + t) ∈ univ ×ˢ Ioo (-2 : ℝ) 2
     refine ⟨mem_univ _, ?_, ?_⟩ <;> cases b.2 <;>
-      simp only [Bool.false_eq_true, if_false, if_true] <;> linarith [ht.1, ht.2]
+      simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith [ht.1, ht.2]
   · intro z
     rw [happ]
     change _ = T.tube b.1 (z, boundaryLevel b.2)
@@ -243,7 +243,7 @@ theorem isClopen_preimage_of_capCore_of_boundarySphere
   · intro z t ht
     let v : ℝ := if b.2 then 1 - t else -1 + t
     have hv : v ∈ Ioo (-1 : ℝ) 1 := by
-      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, if_false, if_true] <;>
+      cases hb : b.2 <;> simp only [v, hb, Bool.false_eq_true, ite_false, ite_true] <;>
         constructor <;> linarith [ht.1, ht.2]
     let q : TubeDomain := (z, ⟨v, by constructor <;> linarith [hv.1, hv.2]⟩)
     refine ⟨q, hv, ?_⟩

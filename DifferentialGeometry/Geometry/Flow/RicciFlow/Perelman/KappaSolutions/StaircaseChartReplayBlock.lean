@@ -369,14 +369,14 @@ def metricBounds
       equiv := fun z hz v => d.metric_equiv j x z (hsub hz) v
       deriv := fun q z hz => ?_ }
   · by_cases h : n + q <= j
-    · simpa only [h, if_true] using d.metricC_nonneg n q
-    · simpa only [h, if_false] using
+    · simpa only [h, ite_true] using d.metricC_nonneg n q
+    · simpa only [h, ite_false] using
         (Classical.choose_spec
           (exists_metricDerivBound_quarter (I := I) d j x q)).1
   · by_cases h : n + q <= j
-    · simpa only [h, if_true] using
+    · simpa only [h, ite_true] using
         d.metric_deriv n q j h x hx z (hsub hz)
-    · simpa only [h, if_false] using
+    · simpa only [h, ite_false] using
         (Classical.choose_spec
           (exists_metricDerivBound_quarter (I := I) d j x q)).2 z hz
 
@@ -397,7 +397,7 @@ theorem metricBounds_C_eq
   let : ChartedSpace H (X.obj j).M := (X.obj j).charted
   let : IsManifold I ∞ (X.obj j).M := (X.obj j).smooth
   let : T2Space (TangentBundle I (X.obj j).M) := (X.obj j).t2TangentBundle
-  simp only [metricBounds, hq, if_true]
+  simp only [metricBounds, hq, ite_true]
 
 omit [CompleteSpace E] in
 theorem metricBounds_radius_eq

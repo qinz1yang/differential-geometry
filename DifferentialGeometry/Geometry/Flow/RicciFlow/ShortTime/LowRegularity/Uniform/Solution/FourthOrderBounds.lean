@@ -259,7 +259,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_fo
     simpa only [galerkinSolutionMode] using hmode i t ht
   · simpa only [U] using hUderiv
 
-theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_four_and_dissipation_five_bounds
+theorem exists_uniform_background_lowRegularity_solution_with_galerkin_energy_four_dissipation_five_bounds
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
     {Λ : ℝ} (hΛ : 1 ≤ Λ) :

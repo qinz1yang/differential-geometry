@@ -63,7 +63,7 @@ theorem integral_mass_inner_eq_integral_chart_prod
   let ψ : EuStd → ℝ := fun x => c x * H1ComplDirichletToLp q z
     ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm x))
   have hψ : MemLp ψ 2 (volume.restrict Ω) :=
-    ((Lp.memLp R).ae_eq hR).mul' hcm
+    hcm.fun_mul ((Lp.memLp R).ae_eq hR)
   calc
     _ = ∫ t, τ t * (∫ x in Ω, P t x * ψ x) ∂μ := by
       apply integral_congr_ae

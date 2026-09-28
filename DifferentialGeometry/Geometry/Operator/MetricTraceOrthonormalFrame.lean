@@ -27,7 +27,7 @@ theorem metricTraceFirstTwo0SAt_eq_sum_smoothOrthoFrame
   classical
   by_cases hdim : Module.finrank ℝ E = 0
   · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := by
-      simpa [hdim] using (Fin.isEmpty : IsEmpty (Fin 0))
+      simp [hdim]
     let basis : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
       Module.finBasis ℝ (TangentSpace I x)
     have horth : ∀ i j, g.inner x (basis i) (basis j) = if i = j then 1 else 0 := by
@@ -45,7 +45,7 @@ theorem metricTraceFirstTwo0SAt_eq_sum_smoothOrthoFrame
   rw [metricTraceFirstTwo0SAt_eq_sum_basis g basis identityInvMetric
     (metricInverseInBasis_identity_of_orthonormal g basis horth)]
   simp only [metricTrace0S2InBasis, identityInvMetric, diagonalInvMetric,
-    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true,
+    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true,
     basis, IsLocalFrameOn.toBasisAt_coe]
   rfl
 

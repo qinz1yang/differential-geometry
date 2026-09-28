@@ -28,21 +28,13 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff
-    deTurckVFCovDeriv connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib
-    metricConnectionDifferenceLoweredFib_toModel metricConnectionDifferenceLoweredFib_contMDiff domDomCongrFibRank
-    domDomCongrFibRank_apply tensor0SProdKappaFib tensor0SProdKappaFib_apply)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel metricConnectionDifferenceLoweredFib_contMDiff)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
 open LieCorrectionZeroFiberOperators
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckVF_metricPerturbationPath_jointContMDiffOn metricConnectionDifferenceLowered_selfFam_jointContMDiffOn
-  metricConnectionDifferenceLowered_bgFam_jointContMDiffOn jointTensor0SProd_local
-  deTurckVectorFieldCovariantDerivativeEndomorphism_metricPerturbationPath_jointContMDiffOn deTurckLieCoeffField
-  deTurckLieCoeffField_metricPerturbationPath_jointSmooth linearizedRicciCovariantJetJointSmoothness)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckVF_metricPerturbationPath_jointContMDiffOn metricConnectionDifferenceLowered_selfFam_jointContMDiffOn metricConnectionDifferenceLowered_bgFam_jointContMDiffOn jointTensor0SProd_local deTurckVectorFieldCovariantDerivativeEndomorphism_metricPerturbationPath_jointContMDiffOn deTurckLieCoeffField deTurckLieCoeffField_metricPerturbationPath_jointSmooth linearizedRicciCovariantJetJointSmoothness)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (inverseMetricSharpField_metricPerturbationPath_jointContMDiffOn
   cometricDoubleTraceFib_metricPerturbationPath_jointContMDiffOn)
@@ -381,7 +373,7 @@ private theorem lieCorrectionZeroTraceStepFam_jointContMDiffOn (p : ℕ) (σ : E
   refine htr.congr (fun pp _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel p ℝ E)
     (E := fun z : M => Tensor0SSpace p I z) pp.1 t) ?_
-  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] in
 omit [BoundarylessManifold I M] [SigmaCompactSpace M] in
@@ -415,7 +407,7 @@ private theorem lieCorrectionZeroTraceStepFixed_jointContMDiffOn (g : SmoothRiem
   refine happ.congr (fun pp _ => ?_)
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel p ℝ E)
     (E := fun z : M => Tensor0SSpace p I z) pp.1 t) ?_
-  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply]
+  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
@@ -491,7 +483,7 @@ private theorem lieCorrectionZeroVBFib_apply_jointContMDiffOn
   have hprod' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 4 ℝ E)) ∞
       (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
         (E := fun z : M => Tensor0SSpace 4 I z) pp.1
-        (tensor0SProdKappaFib (I := I) pp.1
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) pp.1
           (metricConnectionDifferenceLoweredFib (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ pp.1)
@@ -503,7 +495,7 @@ private theorem lieCorrectionZeroVBFib_apply_jointContMDiffOn
     refine hprod.congr (fun pp _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 4 ℝ E)
       (E := fun z : M => Tensor0SSpace 4 I z) pp.1 t) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply]
   have htr := lieCorrectionZeroTraceStepFam_jointContMDiffOn (I := I) g₀ T T' 2 lieCorrectionZeroVectorBundleTracePermutation hδ hδ' _
     hprod'
   have hs := lieCorrectionZero_j0S_smulConst_local (I := I) (d := 2)
@@ -545,7 +537,7 @@ private theorem lieCorrectionZeroMixedConnectionHalfFib_apply_jointContMDiffOn
   have hprod1' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 5 ℝ E)) ∞
       (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 5 ℝ E)
         (E := fun z : M => Tensor0SSpace 5 I z) pp.1
-        (tensor0SProdKappaFib (I := I) pp.1
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) pp.1
           (metricConnectionDifferenceLoweredFib (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ pp.1) (Y pp.1)))
@@ -553,14 +545,14 @@ private theorem lieCorrectionZeroMixedConnectionHalfFib_apply_jointContMDiffOn
     refine hprod1.congr (fun pp _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 5 ℝ E)
       (E := fun z : M => Tensor0SSpace 5 I z) pp.1 t) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply]
   have htr1 := lieCorrectionZeroTraceStepFam_jointContMDiffOn (I := I) g₀ T T' 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour
     hδ hδ' _ hprod1'
   have hprod2 := jointTensor0SProd_local (I := I) (p := 3) (q := 3)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ'))
     (fun pp : M × ℝ => lieCorrectionZeroTraceStep (I := I)
       (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour pp.1
-      (tensor0SProdKappaFib (I := I) pp.1
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) pp.1
         (metricConnectionDifferenceLoweredFib (I := I)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2)
           (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ pp.1) (Y pp.1)))
@@ -571,13 +563,13 @@ private theorem lieCorrectionZeroMixedConnectionHalfFib_apply_jointContMDiffOn
   have hprod2' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
       (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
         (E := fun z : M => Tensor0SSpace 6 I z) pp.1
-        (tensor0SProdKappaFib (I := I) pp.1
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) pp.1
           (metricConnectionDifferenceLoweredFib (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g_bg pp.1)
           (lieCorrectionZeroTraceStep (I := I)
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour pp.1
-            (tensor0SProdKappaFib (I := I) pp.1
+            (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) pp.1
               (metricConnectionDifferenceLoweredFib (I := I)
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2)
                 (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g₀ pp.1) (Y pp.1)))))
@@ -585,7 +577,7 @@ private theorem lieCorrectionZeroMixedConnectionHalfFib_apply_jointContMDiffOn
     refine hprod2.congr (fun pp _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
       (E := fun z : M => Tensor0SSpace 6 I z) pp.1 t) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply]
   have htr2 := lieCorrectionZeroTraceStepFam_jointContMDiffOn (I := I) g₀ T T' 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne
     hδ hδ' _ hprod2'
   have htr3 := lieCorrectionZeroTraceStepFam_jointContMDiffOn (I := I) g₀ T T' 2 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne
@@ -619,14 +611,14 @@ private theorem lieCorrectionZeroMixedConnectionFib_apply_jointContMDiffOn
   have hswap : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 2 ℝ E)) ∞
       (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
         (E := fun z : M => Tensor0SSpace 2 I z) pp.1
-        (domDomCongrFibRank (I := I) 2 (Equiv.swap 0 1) pp.1
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 2 (Equiv.swap 0 1) pp.1
           (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀
             (metricPerturbationPath (I := I) g₀ T T' hδ hδ' pp.2) g_bg pp.1 (Y pp.1))))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine hswapRaw.congr (fun pp _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 2 ℝ E)
       (E := fun z : M => Tensor0SSpace 2 I z) pp.1 t) ?_
-    rw [domDomCongrFibRank_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
   have hadd := lieCorrectionZero_j0S_add_local (I := I) (d := 2)
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ _ hhalf hswap
   have hs := lieCorrectionZero_j0S_smulConst_local (I := I) (d := 2)
@@ -668,12 +660,12 @@ private theorem lieCorrectionZeroRiemFib_apply_jointContMDiffOn
   have hprod' : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, Tensor0SModel 6 ℝ E)) ∞
       (fun pp : M × ℝ => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
         (E := fun z : M => Tensor0SSpace 6 I z) pp.1
-        (tensor0SProdKappaFib (I := I) pp.1 (lieCorrectionZeroRiemLoweredFib (I := I) g₀ pp.1) (Y pp.1)))
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) pp.1 (lieCorrectionZeroRiemLoweredFib (I := I) g₀ pp.1) (Y pp.1)))
       ((Set.univ : Set M) ×ˢ metricPerturbationPathDomain (δ := δ) (δ' := δ')) := by
     refine hprod.congr (fun pp _ => ?_)
     refine congrArg (fun t => TotalSpace.mk' (Tensor0SModel 6 ℝ E)
       (E := fun z : M => Tensor0SSpace 6 I z) pp.1 t) ?_
-    rw [tensor0SProdKappaFib_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply]
   have htr1 := lieCorrectionZeroTraceStepFixed_jointContMDiffOn (I := I) g₀ 4 lieCorrectionZeroRiemPerm1
     (S := metricPerturbationPathDomain (δ := δ) (δ' := δ')) _ hprod'
   have htr2 := lieCorrectionZeroTraceStepFam_jointContMDiffOn (I := I) g₀ T T' 2 lieCorrectionZeroRiemPerm2

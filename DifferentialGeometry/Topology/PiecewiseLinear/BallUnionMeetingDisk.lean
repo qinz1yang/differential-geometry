@@ -17,12 +17,12 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem sdiff_subset_interior_union_of_inter_eq {V₁ V₂ D : Set E3} (h₁ : IsPLBall 3 V₁)
     (h₂ : IsPLBall 3 V₂) {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hD : V₁ ∩ V₂ = D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hD : V₁ ∩ V₂ = D)
     (hD₁ : D ⊆ frontier V₁) (hD₂ : D ⊆ frontier V₂) :
     D \ q '' stdSimplexBoundary 2 ⊆ interior (V₁ ∪ V₂) := by
   have hDball : IsPLBall 2 D := ⟨q, hq⟩
   have hside : ∀ {V W : Set E3}, IsPLBall 3 V → IsClosed W → D ⊆ frontier V → V ∩ W = D →
-      ∃ (F : Set E3) (r : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) F ∧
+      ∃ (F : Set E3) (r : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧
         r '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2 ∧
         F ∩ D = q '' stdSimplexBoundary 2 ∧ F ⊆ V ∧ F ⊆ frontier (V ∪ W) := by
     intro V W hV hW hDV hVW

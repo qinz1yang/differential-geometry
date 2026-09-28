@@ -160,7 +160,7 @@ theorem riemTent_lip
   have hreal : LipschitzWith (r / 4).toNNReal⁻¹
       (fun z : M => ((thickenedIndicator hδ S z : ℝ≥0) : ℝ)) :=
     by
-      have h := NNReal.isometry_coe.lipschitz.comp
+      have h := NNReal.isometry_coe.lipschitzWith.comp
         (lipschitzWith_thickenedIndicator hδ S)
       intro x y
       simpa only [Function.comp_apply, one_mul] using h x y

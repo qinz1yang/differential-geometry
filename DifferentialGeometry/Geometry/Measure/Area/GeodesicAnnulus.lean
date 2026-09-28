@@ -57,7 +57,7 @@ theorem geodesicAnnulus_lipschitz_of_strip
   let : PseudoEMetricSpace M := .ofRiemannianMetric 𝓘(ℝ, E) M
   have hs : LipschitzWith K
       (extendedGeodesicStrip g (fun t => γ₀ (t : loopCircle)) (fun t => γ₁ (t : loopCircle))) := hK
-  have hp := hs.comp Complex.equivRealProdCLM.symm.lipschitz
+  have hp := hs.comp Complex.equivRealProdCLM.symm.toContinuousLinearMap.lipschitzWith
   have hc := cylinder_lipschitz_of_lift (F := geodesicAnnulus g γ₀ γ₁) hp
   exact ⟨_, hc⟩
 

@@ -1,4 +1,3 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.ChartTransition.LocallyConstantAtlas
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic

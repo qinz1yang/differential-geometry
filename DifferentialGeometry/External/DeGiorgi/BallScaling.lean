@@ -57,7 +57,7 @@ private lemma affine_map_volume
   rw [show (fun z : E => x₀ + R • z) = (fun z : E => x₀ + z) ∘ (fun z : E => R • z) from rfl]
   rw [← Measure.map_map (measurable_const_add x₀) (measurable_const_smul R)]
   rw [Measure.map_addHaar_smul volume hR.ne']
-  rw [Measure.map_smul, (measurePreserving_add_left volume x₀).map_eq, abs_inv]
+  rw [Measure.map_smul _ (measurable_const_add x₀).aemeasurable, (measurePreserving_add_left volume x₀).map_eq, abs_inv]
 
 omit [NeZero d] in
 private lemma affine_map_restrict_unitBall
@@ -467,7 +467,7 @@ private theorem eLpNorm_transportFromUnitBall
   rw [show DeGiorgi.transportFromUnitBall (d := d) (x₀ := x₀) (R := R) f = f ∘ S from rfl,
     ← hS_emb.eLpNorm_map_measure]
   rw [inverse_affine_map_restrict_ball (d := d) (x₀ := x₀) hR,
-    eLpNorm_smul_measure_of_ne_top hp']
+    eLpNorm_smul_measure_of_ne_zero_of_ne_top _hp hp']
   simp only [smul_eq_mul]
   congr 1
   have hfin : Module.finrank ℝ E = d := by

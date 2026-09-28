@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem exists_PL_disk_pseudoisotopy_with_prescribed_side
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {u : E → E} (hu : IsPLHomeomorphOn u D D) {φ : E × ℝ → E × ℝ}
     (hφ : IsPLHomeomorphOn φ ((r '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1)
       ((r '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1))
@@ -90,7 +90,7 @@ theorem exists_PL_disk_pseudoisotopy_with_prescribed_side
 theorem exists_PL_disk_family_pseudoisotopy_with_prescribed_sides
     {E ι : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [Finite ι] {D : ι → Set E} {r : ι → (Fin 3 → ℝ) → E}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hinter : ∀ i j, i ≠ j → D i ∩ D j ⊆ r i '' stdSimplexBoundary 2)
     {u : E → E} (hu : ∀ i, IsPLHomeomorphOn u (D i) (D i)) {φ : E × ℝ → E × ℝ}
     (hφ : IsPLHomeomorphOn φ ((⋃ i, r i '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1)

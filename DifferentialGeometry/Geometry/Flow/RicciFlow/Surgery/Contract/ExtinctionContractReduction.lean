@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLawsAssembly
@@ -27,8 +26,7 @@ theorem componentConnectedSumDecomposition_iff_localReconstruction
     (∀ i : Fin H.eventCount,
         (H.cutCapTrace.transition i).componentConnectedSumDecomposition) ↔
       ∀ i : Fin H.eventCount, (H.cutCapTrace.transition i).localReconstruction :=
-  DifferentialGeometry.Topology.FiniteCutCapTrace.componentConnectedSumDecomposition_iff_localReconstruction
-    H.cutCapTrace
+  H.cutCapTrace.componentConnectedSumDecomposition_iff_localReconstruction
 
 theorem connectedSum_standardThreeSphere_right_orientedDiffeomorph
     (N : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3) :
@@ -55,30 +53,5 @@ theorem geometricReconstructionBackground_of_relativeCollarUniqueness_ballEmbedd
     geometricReconstructionBackground.{u} :=
   geometricReconstructionBackground_iff.mpr
     ⟨h.1, h.2, sphereDiffeomorphismIsotopyConnected_holds⟩
-
-theorem nonempty_poincareExtinctionContracts_iff (DiscardedCutOpen : Type u → Prop) :
-    Nonempty (PoincareExtinctionContracts DiscardedCutOpen) ↔
-      relativeCollarUniqueness.{u} ∧ ballEmbeddingIsotopy.{u} ∧
-        (∃ (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ),
-          Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)) ∧
-        isCommonLocalRealizationOnAdmissibleStrips.{u} ∧
-        (∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-          (i : Fin H.eventCount),
-          (H.cutCapTrace.transition i).componentConnectedSumDecomposition) := by
-  constructor
-  · rintro ⟨c⟩
-    obtain ⟨hr, hb, -⟩ := geometricReconstructionBackground_iff.mp c.geometric
-    exact ⟨hr, hb, c.terminalStep, c.metricStep, c.componentSumInput⟩
-  · rintro ⟨hr, hb, hterminal, hmetric, hcomponentSum⟩
-    exact ⟨{ geometric :=
-              geometricReconstructionBackground_of_relativeCollarUniqueness_ballEmbeddingIsotopy
-                ⟨hr, hb⟩
-             terminalStep := hterminal
-             metricStep := hmetric
-             incidenceConnectedInput := incidenceConnected_of_finiteSurgeryHistory
-             componentSumInput := hcomponentSum
-             sumInput := DifferentialGeometry.Topology.poincareStandardSumClosed_holds
-             unitInput := connectedSum_standardThreeSphere_right_orientedDiffeomorph
-             congruenceInput := finiteConnectedSum_orientedDiffeomorph_of_forall₂ }⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

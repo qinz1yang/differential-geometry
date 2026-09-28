@@ -79,7 +79,9 @@ theorem exists_memW1pWitnesses_comp_contDiff_on_ball
         (volume.restrict B) ≤ (L : ℝ≥0∞) *
           eLpNorm (fun x => u n x - f x) 2 (volume.restrict B) := by
       rw [← ENNReal.ofReal_coe_nnreal]
-      apply eLpNorm_le_mul_eLpNorm_of_ae_le_mul (c := (L : ℝ)) _ 2
+      apply eLpNorm_le_mul_eLpNorm_of_ae_le_mul (c := (L : ℝ))
+        (((hR.continuous.comp (hu n).continuous).aestronglyMeasurable).sub
+          hRm.aestronglyMeasurable)
       exact Filter.Eventually.of_forall fun x => hLip.norm_sub_le (u n x) (f x)
     have ht := ENNReal.Tendsto.const_mul (a := (L : ℝ≥0∞)) hval
       (Or.inr ENNReal.coe_ne_top)
@@ -124,8 +126,8 @@ theorem exists_memW1pWitnesses_comp_contDiff_on_ball
       2 (volume.restrict B)) atTop (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hRval (fun _ => zero_le)
     intro n
-    exact eLpNorm_mono_ae (Filter.Eventually.of_forall fun x =>
-      PiLp.norm_apply_le (R (u n x) - R (f x)) k)
+    exact eLpNorm_mono_ae ((hum n k).sub (hRm.eval_piLp k)).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun x => PiLp.norm_apply_le (R (u n x) - R (f x)) k)
   have hdlim (k : κ) (j : Fin d) : Tendsto (fun n => eLpNorm (fun x =>
       fderiv ℝ (fun y => R (u n y) k) x (EuclideanSpace.single j 1) -
         (fderiv ℝ R (f x) (G j x)) k) 2 (volume.restrict B)) atTop (𝓝 0) := by
@@ -139,7 +141,9 @@ theorem exists_memW1pWitnesses_comp_contDiff_on_ball
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds ht (fun _ => zero_le)
     intro n
     apply eLpNorm_mono_ae
+      ((hud n k j).sub ((htarget j).eval_piLp k)).aestronglyMeasurable
     filter_upwards [] with x
+    simp only [Pi.sub_apply]
     have hd := ((EuclideanSpace.proj k : H →L[ℝ] ℝ).hasFDerivAt.comp x
       ((hR.differentiable one_ne_zero (u n x)).comp x
         ((hu n).differentiable (by simp) x)).hasFDerivAt).fderiv

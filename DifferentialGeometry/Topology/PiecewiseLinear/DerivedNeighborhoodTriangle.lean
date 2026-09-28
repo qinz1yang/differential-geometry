@@ -60,7 +60,7 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_triangle
     (hcard : s.card = 3) (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
     ∃ g : (Fin 3 → ℝ) × ℝ → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc 0 1)
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc 0 1)
         (derivedNeighborhoodCell K s).space ∧
       IsPLHomeomorphOn g (stdSimplexBoundary 2 ×ˢ Icc 0 1)
         ((derivedNeighborhoodCell K s).space ∩ (derivedNeighborhood K L).space) := by
@@ -160,7 +160,7 @@ theorem exists_isPLHomeomorphOn_derivedNeighborhoodCell_triangle
     · exact hxA
     · exact (hxD (Or.inl hx₀)).elim
     · exact (hxD (Or.inr hx₁)).elim
-  let P : Set (Fin 3 → ℝ) := stdSimplex ℝ (Fin 3)
+  let P : Set (Fin 3 → ℝ) := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   have hP : IsPLBall 2 P := isPLBall_stdSimplex 2
   obtain ⟨f, hf⟩ := hD₀
   obtain ⟨g, hg, hg0, hg1⟩ := exists_isPLHomeomorphOn_prism_map_ends hP zero_lt_one C hC

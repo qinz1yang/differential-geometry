@@ -66,9 +66,9 @@ theorem exists_geodesicStrip_lipschitz_radius (g : SmoothRiemannianMetric 𝓘(�
   let P : ℂ → ℝ × (EuclideanSpace ℝ (Fin n) × EuclideanSpace ℝ (Fin n)) :=
     fun z => (z.re, (e (γ₀ z.im), e (γ₁ z.im)))
   obtain ⟨Kp, hP⟩ : ∃ Kp : ℝ≥0, LipschitzWith Kp P :=
-    ⟨_, Complex.reCLM.lipschitz.prodMk
-      (((hcomp γ₀ L₀ h₀).comp Complex.imCLM.lipschitz).prodMk
-        ((hcomp γ₁ L₁ h₁).comp Complex.imCLM.lipschitz))⟩
+    ⟨_, Complex.reCLM.lipschitzWith.prodMk
+      (((hcomp γ₀ L₀ h₀).comp Complex.imCLM.lipschitzWith).prodMk
+        ((hcomp γ₁ L₁ h₁).comp Complex.imCLM.lipschitzWith))⟩
   have hPB (z : ℂ) (hz : z.re ∈ Icc (0 : ℝ) 1) : P z ∈ eB '' B :=
     mem_image_of_mem eB (show (z.re, (γ₀ z.im, γ₁ z.im)) ∈ B from ⟨hz, hnear z.im⟩)
   refine ⟨Cf * Kp, fun z hz w hw => ?_⟩

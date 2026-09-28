@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Connection.ParsevalFrameField
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FrameExpansion
+
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqComponent tensorInnerPointwise tensorInnerPointwise_eq_sum_componentS_mul)
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -168,9 +172,9 @@ theorem exists_orthoFrame_basis_E (g : SmoothRiemannianMetric I M) (x : M) :
     have h_pull : ∀ j ∈ fs, g.inner x (e k) (c j • e j) = c j * (if k = j then (1:ℝ) else 0) := by
       intro j _; rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]; rfl
   refine ⟨e, basisOfLinearIndependentOfCardEqFinrank he_li hcard, fun i => ?_, horth⟩
@@ -642,7 +646,8 @@ private theorem negDiffEndo_le
     (x : M) (v : TangentSpace I x) :
     g₀.inner x ((-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) v) v ≤
       (δ / (1 - δ)) * g₀.inner x v v := by
-  rw [neg_apply, map_neg]
+  rw [neg_apply (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) v,
+    map_neg (g₀.inner x)]
   have hbnd := abs_inner_metricComparisonDifferenceEndomorphism_le
     (I := I) g₀ g₁ h htie hδ_lt hδ_nn hδ x v v
   have hv_nn : 0 ≤ g₀.inner x v v :=

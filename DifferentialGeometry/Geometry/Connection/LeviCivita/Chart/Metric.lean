@@ -414,13 +414,13 @@ private lemma christoffelCorrection_repr_apply
   · rw [map_smul]
     rw [Finsupp.smul_apply]
     rw [Module.Basis.repr_self_apply]
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     rw [smul_eq_mul, mul_one]
   · intro c _ hci
     rw [map_smul]
     rw [Finsupp.smul_apply]
     rw [Module.Basis.repr_self_apply]
-    rw [if_neg hci]
+    rw [ite_eq_right hci]
     simp
   · intro habs
     exact absurd (Finset.mem_univ i) habs

@@ -93,11 +93,16 @@ private lemma eLpNorm_norm_fderiv_le_sum_eLpNorm_partials
       ‖fderiv ℝ ψ y‖ ≤ ∑ i : Fin d,
         ‖(fderiv ℝ ψ y) (EuclideanSpace.single i 1)‖ :=
     fun y => norm_fderiv_le_sum_partials (d := d) ψ y
+  have h_grad_aesm : AEStronglyMeasurable
+      (fun y : EuclN => ‖fderiv ℝ ψ y‖) μ := by
+    have h_cont : Continuous (fun y : EuclN => ‖fderiv ℝ ψ y‖) :=
+      (hψ_smooth.continuous_fderiv (by simp)).norm
+    exact h_cont.aestronglyMeasurable
   have h_step1 : eLpNorm (fun y : EuclN => ‖fderiv ℝ ψ y‖) q μ ≤
       eLpNorm (fun y : EuclN =>
         ∑ i : Fin d,
           ‖(fderiv ℝ ψ y) (EuclideanSpace.single i 1)‖) q μ := by
-    apply eLpNorm_mono_real
+    apply eLpNorm_mono_real h_grad_aesm
     intro y
     have hh := h_pt y
     have h_norm : ‖‖fderiv ℝ ψ y‖‖ = ‖fderiv ℝ ψ y‖ :=
@@ -108,7 +113,7 @@ private lemma eLpNorm_norm_fderiv_le_sum_eLpNorm_partials
   have h_sum_le := eLpNorm_sum_le (μ := μ) (p := q)
     (s := (Finset.univ : Finset (Fin d)))
     (f := fun i => fun y : EuclN => ‖(fderiv ℝ ψ y) (EuclideanSpace.single i 1)‖)
-    (fun i _ => (h_aesm_comp i).norm) hq_one
+    hq_one
   have h_lhs_eq :
       (fun y : EuclN =>
         ∑ i : Fin d,
@@ -121,7 +126,7 @@ private lemma eLpNorm_norm_fderiv_le_sum_eLpNorm_partials
   refine h_sum_le.trans ?_
   apply Finset.sum_le_sum
   intro i _
-  rw [eLpNorm_norm]
+  rw [eLpNorm_norm _ (h_aesm_comp i)]
 
 omit [NeZero d] in
 private lemma classical_partial_ae_eq_chosenWeakPartial

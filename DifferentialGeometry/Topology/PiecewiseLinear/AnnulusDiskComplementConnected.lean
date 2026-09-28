@@ -19,15 +19,15 @@ private theorem isConnected_prism_lateral_sdiff_iUnion {ι : Type*} [Finite ι]
     (hDA : ∀ i, D i ⊆ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)
     (hdisj : Pairwise fun i j => Disjoint (D i) (D j)) :
     IsConnected ((stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1) \ ⋃ i, D i) := by
-  let A₀ := stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ)
-  let A₁ := stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)
-  let S := stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+  let A₀ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ)
+  let A₁ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)
+  let S := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
     stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1
   let Q : Option (Option ι) → Set ((Fin 3 → ℝ) × ℝ)
     | none => A₀
     | some none => A₁
     | some (some i) => D i
-  have hΔ : IsPLBall 2 (stdSimplex ℝ (Fin 3)) := isPLBall_stdSimplex 2
+  have hΔ : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := isPLBall_stdSimplex 2
   have hQ : ∀ i, IsPLBall 2 (Q i) := by
     intro i
     cases i with

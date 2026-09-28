@@ -3,6 +3,18 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Curvatur
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.UnitEvaluation
 import Mathlib.Topology.Order.Compact
+
+open DifferentialGeometry.TensorMetric
+  (dualTensorFrameS
+    fiberNormSqComponent
+    fiberNormSqComponent_add
+    fiberNormSqComponent_dualTensorFrameS
+    fiberNormSqComponent_smul
+    fiberNormSqSummand
+    fiberNormSqSummand_eq_component_sq
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Elliptic
@@ -128,7 +140,7 @@ private lemma orthonormal_riemannianFiberNormSq_exists_basis
     rw [hriemannianFiberNormSq0] at hpd
     have hTm0 : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) T = 0 :=
-      (DifferentialGeometry.Integral.L2.tensorInnerPointwise_eq_zero_iff (I := I)
+      (DifferentialGeometry.TensorMetric.tensorInnerPointwise_eq_zero_iff (I := I)
         (M := M) g 0 t x _).mp hpd.symm
     have hT0model : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
         (r := 0) (s := t) (x := x) T =
@@ -289,7 +301,7 @@ theorem exists_continuous_riemannOp_tensorCovS_frameEnergy_bound
       rw [hriemannianFiberNormSq0] at hpd
       have hSm0 : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
           (r := 0) (s := 0) (x := x) S = 0 :=
-        (DifferentialGeometry.Integral.L2.tensorInnerPointwise_eq_zero_iff (I := I)
+        (DifferentialGeometry.TensorMetric.tensorInnerPointwise_eq_zero_iff (I := I)
           (M := M) g 0 0 x _).mp hpd.symm
       have : TensorRSSpace.toModel (𝕜 := ℝ) (E := E) (I := I) (M := M)
           (r := 0) (s := 0) (x := x) S =

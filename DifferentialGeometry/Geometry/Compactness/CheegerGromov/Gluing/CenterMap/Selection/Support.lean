@@ -936,7 +936,7 @@ theorem MetricCompactnessAssumptions.exists_atom_support_fin
                 (L.lamInf (gamma : Nat))
                 (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))
                 ((hOverlap target k) z hz).2)
-          · simp only [aInf, dif_pos htarget, target]
+          · simp only [aInf, dite_eq_left htarget, target]
         exact seqAtom_live_convergence (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
           hgpPhi beta gamma (hUopen alpha) hgamma (by
             simpa only [Lphi, NetLimitData.subseq_lamInf] using hstep)
@@ -944,7 +944,7 @@ theorem MetricCompactnessAssumptions.exists_atom_support_fin
         | false =>
             have hgammaPhi : Lphi.alive (gamma : Nat) = false := by
               simpa only [Lphi, NetLimitData.subseq] using hgamma
-            simpa only [aInf, dif_neg htarget] using
+            simpa only [aInf, dite_eq_right htarget] using
               (seqAtom_dead_convergence (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
                 beta gamma (hUopen alpha) hgammaPhi)
         | true =>
@@ -972,7 +972,7 @@ theorem MetricCompactnessAssumptions.exists_atom_support_fin
                     (U alpha)
                     (Lphi.hatBall inp.decay inp.D P inp.pack r k alpha.1) :=
                 Filter.Eventually.of_forall hsourcePhi
-              simpa only [aInf, dif_neg htarget] using
+              simpa only [aInf, dite_eq_right htarget] using
                 (atom_disjoint_convergence (I := I) inp.decay inp.divisor_pos P Lphi inp.pack r
                   beta alpha.1 gamma (hUopen alpha) hsourceTail
                   hdisjointPhi)
@@ -986,7 +986,7 @@ theorem MetricCompactnessAssumptions.exists_atom_support_fin
           simpa only [Lphi, NetLimitData.subseq, hslot] using target.1.2
         rw [hgamma] at htrue
         contradiction
-      simp only [aInf, dif_neg hnone]
+      simp only [aInf, dite_eq_right hnone]
       rfl
     have hatomSmooth (k : Nat) (gamma : Fin (inp.pack.A r)) :
         ContDiffOn Real (∞ : WithTop ℕ∞)
@@ -1009,8 +1009,8 @@ theorem MetricCompactnessAssumptions.exists_atom_support_fin
             (inp.decay.lambda_pos inp.divisor_pos (L.rInf (gamma : Nat)))).contDiff.comp_contDiffOn
               hquad) ?_
         intro z hz
-        simp only [aInf, dif_pos htarget, target, Function.comp_apply]
-      · simpa only [aInf, dif_neg htarget] using
+        simp only [aInf, dite_eq_left htarget, target, Function.comp_apply]
+      · simpa only [aInf, dite_eq_right htarget] using
           (contDiffOn_const : ContDiffOn Real (∞ : WithTop ℕ∞)
             (fun _ : E => (0 : Real)) (U alpha))
     exact HasAtomWeightLim.of_atoms (I := I) inp.divisor_pos P Lphi inp.realizes inp.pack
@@ -1082,7 +1082,7 @@ theorem MetricCompactnessAssumptions.exists_atom_support_fin
         target.1.1 = gamma := by
       by_contra hnone
       apply hnum
-      simp only [aInf, dif_neg hnone]
+      simp only [aInf, dite_eq_right hnone]
     let target := Classical.choose htarget
     have hslot : target.1.1 = gamma := Classical.choose_spec htarget
     let alphaPhi : LiveSlot Lphi inp.pack r :=

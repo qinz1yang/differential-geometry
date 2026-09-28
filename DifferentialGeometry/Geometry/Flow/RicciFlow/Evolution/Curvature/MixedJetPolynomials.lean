@@ -68,10 +68,10 @@ theorem hasDerivWithinAt_eval_rename_pderiv {σ τ : Type*} [Fintype σ]
             MvPolynomial.eval (w t) (MvPolynomial.rename ι P) else 0) := by
       intro j
       by_cases hji : j = i
-      · rw [if_pos hji, MvPolynomial.pderiv_mul, hji, MvPolynomial.pderiv_X_self, mul_one]
+      · rw [ite_eq_left hji, MvPolynomial.pderiv_mul, hji, MvPolynomial.pderiv_X_self, mul_one]
         simp only [map_add, map_mul, MvPolynomial.rename_X, MvPolynomial.eval_X]
         ring
-      · rw [if_neg hji, MvPolynomial.pderiv_mul, MvPolynomial.pderiv_X_of_ne (Ne.symm hji),
+      · rw [ite_eq_right hji, MvPolynomial.pderiv_mul, MvPolynomial.pderiv_X_of_ne (Ne.symm hji),
           mul_zero, add_zero]
         simp only [map_mul, MvPolynomial.rename_X, MvPolynomial.eval_X]
         ring
@@ -89,7 +89,7 @@ theorem hasDerivWithinAt_eval_rename_pderiv {σ τ : Type*} [Fintype σ]
       · rw [Finset.sum_eq_single i]
         · simp
         · intro j _ hj
-          rw [if_neg hj]
+          rw [ite_eq_right hj]
         · intro hi
           exact absurd (Finset.mem_univ i) hi
     rw [hsum]

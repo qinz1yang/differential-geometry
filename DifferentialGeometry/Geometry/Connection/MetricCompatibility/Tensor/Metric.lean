@@ -4,7 +4,7 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.Basic
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Tensor.RSTensor
 

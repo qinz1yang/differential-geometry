@@ -25,7 +25,7 @@ def attachDiskAnnulus (u : ℂ → Q) (H : ℝ × loopCircle → Q) (z : ℂ) : 
 
 theorem attachDiskAnnulus_inner (u : ℂ → Q) (H : ℝ × loopCircle → Q)
     {z : ℂ} (hz : ‖z‖ ≤ 1 / 2) : attachDiskAnnulus u H z = u ((2 : ℝ) • z) :=
-  if_pos hz
+  ite_eq_left hz
 
 
 
@@ -47,12 +47,12 @@ theorem attachDiskAnnulus_outer (u : ℂ → Q) (H : ℝ × loopCircle → Q)
     have hp : polarAnnulusCoordinates z = (0, θ) := by
       simp [polarAnnulusCoordinates, hnorm, θ]
     rw [htwo, ← hθ, hglue, hp]
-  · exact if_neg hzin
+  · exact ite_eq_right hzin
 
 
 theorem attachDiskAnnulus_boundary (u : ℂ → Q) (H : ℝ × loopCircle → Q) (θ : loopCircle) :
     attachDiskAnnulus u H (AddCircle.toCircle θ : ℂ) = H (1, θ) := by
-  rw [attachDiskAnnulus, if_neg (by rw [Circle.norm_coe]; norm_num), polarAnnulusCoordinates_outer]
+  rw [attachDiskAnnulus, ite_eq_right (by rw [Circle.norm_coe]; norm_num), polarAnnulusCoordinates_outer]
 
 
 

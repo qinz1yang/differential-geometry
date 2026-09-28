@@ -49,7 +49,7 @@ theorem localOrientationSign_orientationOfLe (hLK : L.faces ⊆ K.faces)
     (r : LinearOrder E) {s : Finset E} (hs : s ∈ L.faces) (t : Finset E) :
     localOrientationSign r (orientationOfLe hLK hK hL o) s t =
       localOrientationSign r o s t := by
-  rw [localOrientationSign, dif_pos hs, localOrientationSign, dif_pos (hLK hs)]
+  rw [localOrientationSign, dite_eq_left hs, localOrientationSign, dite_eq_left (hLK hs)]
   rfl
 
 open Classical in

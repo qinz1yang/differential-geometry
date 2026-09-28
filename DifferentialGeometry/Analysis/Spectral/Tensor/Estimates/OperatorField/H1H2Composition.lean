@@ -5,6 +5,10 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
 import Mathlib.MeasureTheory.Function.LpSeminorm.CompareExp
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise
+  riemannianFiberNormSq_nonneg
+  tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

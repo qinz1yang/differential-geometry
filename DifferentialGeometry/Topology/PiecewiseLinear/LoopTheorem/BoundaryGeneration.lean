@@ -747,7 +747,7 @@ theorem isClosed_diskAttachmentStage [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (hB : IsPLSphere 2 B)
     (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (l : List (Fin k)) : IsClosed (diskAttachmentStage B D l) := by
   induction l with
   | nil => exact isClosed_sphereWithDiskInteriorsRemoved D hB
@@ -760,7 +760,7 @@ theorem disk_inter_sphereWithDiskInteriorsRemoved [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D)) (i : Fin k) :
     D i ∩ sphereWithDiskInteriorsRemoved B D = q i '' stdSimplexBoundary 2 := by
@@ -788,7 +788,7 @@ theorem disk_inter_diskAttachmentStage [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) :
@@ -812,13 +812,13 @@ theorem disk_inter_diskAttachmentStage [FiniteDimensional ℝ E]
 noncomputable def diskClosedCellHomeomorph [FiniteDimensional ℝ E]
     {k : ℕ} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (i : Fin k) : ClosedCell 2 ≃ₜ D i :=
   (DifferentialGeometry.Cell.stdSimplexClosedCellHomeomorph 2).symm.trans
     (hq i).homeomorph
 
 theorem stdSimplexClosedCellHomeomorph_norm_eq_one_iff
-    (s : stdSimplex ℝ (Fin 3)) :
+    (s : Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :
     ‖((DifferentialGeometry.Cell.stdSimplexClosedCellHomeomorph 2 s : ClosedCell 2) :
       EuclideanSpace ℝ (Fin 2))‖ = 1 ↔
       s ∈ DifferentialGeometry.Simplex.boundary (Fin 3) := by
@@ -833,7 +833,7 @@ theorem diskClosedCellHomeomorph_mem_stage_iff [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) (d : ClosedCell 2) :
@@ -872,7 +872,7 @@ theorem diskClosedCellHomeomorph_mem_stage_iff [FiniteDimensional ℝ E]
     exact himage.2
 
 theorem stdSimplexBoundary_two_nonempty : (stdSimplexBoundary 2).Nonempty := by
-  refine ⟨Pi.single (0 : Fin 3) 1, single_mem_stdSimplex ℝ 0, 1, ?_⟩
+  refine ⟨Pi.single (0 : Fin 3) 1, Convexity.StdSimplex.single_mem_coordinateSet ℝ 0, 1, ?_⟩
   simp
 
 open Classical in
@@ -880,7 +880,7 @@ theorem pathConnectedSpace_diskAttachmentStage [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]
@@ -891,7 +891,10 @@ theorem pathConnectedSpace_diskAttachmentStage [FiniteDimensional ℝ E]
       exact inferInstance
   | cons i l ih =>
       let _ : PathConnectedSpace (diskAttachmentStage B D l) := ih
-      let _ : PathConnectedSpace (stdSimplex ℝ (Fin 3)) := inferInstance
+      let _ : PathConnectedSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
+        isPathConnected_iff_pathConnectedSpace.mp
+          ((Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)).isPathConnected
+            ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin 3)⟩)
       let _ : PathConnectedSpace (D i) :=
         (hq i).homeomorph.surjective.pathConnectedSpace (hq i).homeomorph.continuous
       apply isPathConnected_iff_pathConnectedSpace.mp
@@ -937,7 +940,7 @@ noncomputable def diskAttachmentStepMap [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) :
@@ -956,7 +959,7 @@ theorem diskAttachmentStepMap_coe [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l)
@@ -978,7 +981,7 @@ theorem fundamentalGroupMap_diskAttachmentStepMap [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l)
@@ -995,7 +998,7 @@ noncomputable def diskAttachmentMapForList [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D)) :
     (l : List (Fin k)) → l.Nodup →
@@ -1010,7 +1013,7 @@ theorem diskAttachmentMapForList_coe [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     (l : List (Fin k)) (hl : l.Nodup)
@@ -1029,7 +1032,7 @@ noncomputable def diskBoundaryLoopInRemovedSphere [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) :
@@ -1066,7 +1069,7 @@ theorem diskBoundaryLoopInRemovedSphere_range [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) :
@@ -1100,7 +1103,7 @@ theorem diskBoundaryLoopInRemovedSphere_postcompose [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l) (hl : l.Nodup) :
@@ -1119,7 +1122,7 @@ theorem surjective_fundamentalGroupMap_diskAttachmentStepMap [FiniteDimensional 
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l)
@@ -1140,7 +1143,7 @@ theorem ker_fundamentalGroupMap_diskAttachmentStepMap_le_of_loopClassMeets
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     {i : Fin k} {l : List (Fin k)} (hil : i ∉ l)
@@ -1179,7 +1182,7 @@ noncomputable def diskBoundaryLoopForList [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D)) :
     (l : List (Fin k)) → l.Nodup → (i : Fin k) → i ∈ l →
@@ -1197,7 +1200,7 @@ theorem diskBoundaryLoopForList_range [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     (l : List (Fin k)) (hl : l.Nodup) (i : Fin k) (hi : i ∈ l) :
@@ -1222,7 +1225,7 @@ noncomputable def sphereBoundaryLoop [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     (i : Fin k) : freeLoop (sphereWithDiskInteriorsRemoved B D) :=
@@ -1234,7 +1237,7 @@ theorem sphereBoundaryLoop_range [FiniteDimensional ℝ E]
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     (i : Fin k) :
@@ -1251,7 +1254,7 @@ theorem surjective_and_ker_le_fundamentalGroupMap_diskAttachmentMapForList
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E)
     (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]
@@ -1361,7 +1364,7 @@ open Classical in
 theorem eq_top_of_boundaryLoops_mem_normal [FiniteDimensional ℝ E]
     {B : Set E} (hB : IsPLSphere 2 B) {k : ℕ}
     (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B)
     (hdisj : Pairwise (Function.onFun Disjoint D))
     [PathConnectedSpace (sphereWithDiskInteriorsRemoved B D)]

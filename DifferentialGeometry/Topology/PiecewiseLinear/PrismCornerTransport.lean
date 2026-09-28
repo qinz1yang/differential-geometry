@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.exists_rounded_corner_chart
     {g : (Fin 3 → ℝ) × ℝ → E} {C A : Set E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) C)
     (htrace : g '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) = C ∩ A) :
     ∃ U : TopologicalSpace.Opens C, ∃ charts : ChartedSpace (EuclideanHalfSpace 3) U,
       let _ := charts
@@ -23,7 +23,7 @@ theorem IsPLHomeomorphOn.exists_rounded_corner_chart
         (∀ x : U, x.val.val ∈ A ↔ (d x).val.val 0 = 0 ∧ (d x).val.val 1 ≤ 0) ∧
         (∀ x : U, x ∈ (𝓡∂ 3).boundary U ↔ (d x).val.val 0 = 0) ∧
         ∃ x : U, (d x).val = 0 ∧ x.val.val = g (![0, (1 : ℝ) / 2, 1 / 2], 0) := by
-  let P := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+  let P := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
   let e : P ≃ₜ C := hg.homeomorph
   let U : TopologicalSpace.Opens C :=
     ⟨e '' (prismCornerSource : Set P), e.isOpenMap _ prismCornerSource.isOpen⟩

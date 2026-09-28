@@ -29,6 +29,14 @@ private theorem disk_energy_density_congr {g : SmoothRiemannianMetric 𝓘(ℝ, 
     diskMapEnergyDensity g f z = diskMapEnergyDensity g h z := by
   unfold diskMapEnergyDensity diskMapPartial
   rw [heq.mfderiv_eq, heq.eq_of_nhds]
+  have hcast :
+      (tangentSpaceCast 𝓘(ℝ, E) (h z) (h z) :
+        TangentSpace 𝓘(ℝ, E) (h z) →L[ℝ] TangentSpace 𝓘(ℝ, E) (h z)) =
+      ContinuousLinearMap.id ℝ _ := by
+    ext w
+    rfl
+  rw [hcast]
+  simp
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

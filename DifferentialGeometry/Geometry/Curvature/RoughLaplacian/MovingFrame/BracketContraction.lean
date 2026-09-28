@@ -2,6 +2,9 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.Remain
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.BracketDivergenceForm
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.RemainderDivergenceForm
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.MovingFrame.ContractionTerms
+
+open DifferentialGeometry.TensorMetric
+  (covariantTensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

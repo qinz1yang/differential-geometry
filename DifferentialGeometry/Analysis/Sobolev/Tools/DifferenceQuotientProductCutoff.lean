@@ -45,14 +45,13 @@ private theorem memLp_spatial_mul_cutoff {w : Z × E → ℝ} (hw : MemLp w 2 ν
 
 theorem eLpNorm_spatial_diffQuot_cutoff_mul_le
     {w : Z × E → ℝ} (hw : MemLp w 2 ν)
-    {η : E → ℝ} (hη : Continuous η) (hηc : HasCompactSupport η)
+    {η : E → ℝ} (hη : Continuous η)
     (k : Fin d) (h : ℝ) {L : ℝ} (hL : ∀ x, |diffQuot k h η x| ≤ L) :
     eLpNorm (fun p : Z × E => diffQuot k h (fun x => η x * w (p.1, x)) p.2) 2 ν ≤
       eLpNorm (fun p : Z × E => η p.2 * diffQuot k h (fun x => w (p.1, x)) p.2) 2 ν +
         ENNReal.ofReal L * eLpNorm w 2 ν := by
   let f : Z × E → ℝ := fun p => η p.2 * diffQuot k h (fun x => w (p.1, x)) p.2
   let g : Z × E → ℝ := fun p => diffQuot k h η p.2 * w (p.1, p.2 + h • EuclideanSpace.single k 1)
-  have hf : MemLp f 2 ν := memLp_spatial_mul_cutoff (memLp_spatial_diffQuot hw k h) hη hηc
   have htrans := (MeasurePreserving.id μ).prod
     (measurePreserving_add_right volume (h • EuclideanSpace.single k (1 : ℝ)))
   have ht : MemLp (fun p : Z × E => w (p.1, p.2 + h • EuclideanSpace.single k 1)) 2 ν :=
@@ -65,7 +64,6 @@ theorem eLpNorm_spatial_diffQuot_cutoff_mul_le
       dsimp only [g]
       rw [norm_mul, Real.norm_eq_abs]
       exact mul_le_mul_of_nonneg_right (hL p.2) (norm_nonneg _)
-  have hg : MemLp g 2 ν := ht.of_le_mul hgm hgb
   have heq : (fun p : Z × E => diffQuot k h (fun x => η x * w (p.1, x)) p.2) = f + g := by
     funext p
     by_cases hh : h = 0
@@ -74,10 +72,10 @@ theorem eLpNorm_spatial_diffQuot_cutoff_mul_le
       ring
   rw [heq]
   calc
-    _ ≤ eLpNorm f 2 ν + eLpNorm g 2 ν := eLpNorm_add_le hf.aestronglyMeasurable hg.aestronglyMeasurable (by norm_num)
+    _ ≤ eLpNorm f 2 ν + eLpNorm g 2 ν := eLpNorm_add_le (by norm_num)
     _ ≤ eLpNorm f 2 ν + ENNReal.ofReal L *
         eLpNorm (fun p : Z × E => w (p.1, p.2 + h • EuclideanSpace.single k 1)) 2 ν :=
-      add_le_add_right (eLpNorm_le_mul_eLpNorm_of_ae_le_mul hgb 2) _
+      add_le_add_right (eLpNorm_le_mul_eLpNorm_of_ae_le_mul hgm hgb 2) _
     _ = _ := by
       have he := eLpNorm_comp_measurePreserving (p := 2) hw.aestronglyMeasurable htrans
       exact congrArg (fun z => eLpNorm f 2 ν + ENNReal.ofReal L * z) he
@@ -93,7 +91,7 @@ theorem exists_uniform_eLpNorm_spatial_diffQuot_cutoff_mul_le
   have hL0 : 0 ≤ L := (norm_nonneg (fderiv ℝ η 0)).trans (hL 0)
   refine ⟨L, hL0, ?_⟩
   intro w hw k h
-  apply eLpNorm_spatial_diffQuot_cutoff_mul_le hw hη.continuous hηc k h
+  apply eLpNorm_spatial_diffQuot_cutoff_mul_le hw hη.continuous k h
   intro x
   exact abs_diffQuot_le_of_norm_fderiv_le (fun y _ => hη.differentiable_one y)
     (fun y _ => hL y) k h (subset_univ _)
@@ -153,7 +151,7 @@ theorem exists_cutoff_toLp_spatial_diffQuot_uniform_bound
     (measurePreserving_add_right volume (h • EuclideanSpace.single k (1 : ℝ)))
   have hdq : (fun p : Z × E => diffQuot k h (fun x => u (p.1, x)) p.2) =ᵐ[ν]
       fun p : Z × E => diffQuot k h (fun x => η x * w (p.1, x)) p.2 := by
-    have hshift := htrans.quasiMeasurePreserving.ae_eq hueq
+    have hshift := htrans.quasiMeasurePreserving.ae_eq_comp hueq
     filter_upwards [hueq, hshift] with p hp hps
     have hp' : u (p.1, p.2) = η p.2 * w (p.1, p.2) := hp
     have hps' : u (p.1, p.2 + h • EuclideanSpace.single k 1) =

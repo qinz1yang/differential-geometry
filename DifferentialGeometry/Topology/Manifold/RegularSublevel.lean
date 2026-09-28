@@ -86,7 +86,7 @@ theorem contMDiff_manifoldSublevelInclusion
     have hc : chartAt (MorseHalfSpace m) x =
         (sublevelPullbackChart I f a x b hb).trans mc := by
       change (if h : f x.1 = a then _ else _) = _
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
       rfl
     apply smooth_sublevel_inclusion_of_chart f a x b hb mc hc
       (sublevelBoundaryChartInvValueRaw g a p hp hg hr)
@@ -107,7 +107,7 @@ theorem contMDiff_manifoldSublevelInclusion
     have hc : chartAt (MorseHalfSpace m) x =
         (sublevelPullbackChart I f a x b hb).trans mc := by
       change (if h : f x.1 = a then _ else _) = _
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
       rfl
     apply smooth_sublevel_inclusion_of_chart f a x b hb mc hc
       (morseHalfSpaceShift (-(sublevelInteriorShift g a p hp hg))) Set.univ
@@ -134,14 +134,14 @@ theorem mem_boundary_manifoldSublevel_iff
   · have hc : chartAt (MorseHalfSpace m) x =
         manifoldSublevelBoundaryChart I f a x hx hf hreg := by
       change (if h : f x.1 = a then _ else _) = _
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
     rw [hc]
     exact iff_of_true (manifoldSublevelBoundaryChart_extend_last_zero I f a hf hreg x hx) hx
   · have hxlt := lt_of_le_of_ne (show f x.1 ≤ a from x.2) hx
     have hc : chartAt (MorseHalfSpace m) x =
         manifoldSublevelInteriorChart I f a x hxlt hf := by
       change (if h : f x.1 = a then _ else _) = _
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
     rw [hc]
     exact iff_of_false
       (ne_of_gt (manifoldSublevelInteriorChart_extend_last_pos I f a hf x hxlt)) hx

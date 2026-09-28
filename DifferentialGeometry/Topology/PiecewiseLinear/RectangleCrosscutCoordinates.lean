@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 private theorem exists_rectangle_eq_on_boundary_arc
     {D A : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {η : ℝ → E} (hη : IsPLHomeomorphOn η (Icc 0 1) A)
     (hAbd : A ⊆ r '' stdSimplexBoundary 2)
     {a b c : ℝ} (hab : a < b) (hc : c = a ∨ c = b) :
@@ -52,7 +52,7 @@ private theorem exists_rectangle_eq_on_boundary_arc
 
 theorem exists_isPLHomeomorphOn_rectangle_eq_on_crosscut
     {D A : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {η : ℝ → E} (hη : IsPLHomeomorphOn η (Icc 0 1) A) (hAD : A ⊆ D)
     (hmeet : A ∩ (r '' stdSimplexBoundary 2) = {η 0, η 1}) :
     ∃ g : ℝ × ℝ → E,

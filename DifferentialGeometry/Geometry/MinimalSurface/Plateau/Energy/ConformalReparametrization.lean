@@ -194,6 +194,8 @@ theorem integral_diskMapEnergyDensity_diskReflection
     rfl
   unfold diskMapEnergyDensity diskMapPartial
   rw [hext.eq_of_nhds, hext.mfderiv_eq]
+  rw [hext.eq_of_nhds]
+  rfl
 
 end DifferentialGeometry.Geometry
 

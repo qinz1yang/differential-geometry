@@ -19,8 +19,8 @@ theorem exists_isPLHomeomorphOn_halfSpaces_of_heightIndex_eq_zero
     (hzero : heightIndex K.space ℓ = 0) (r : ℝ)
     (hbelow : ∃ y ∈ K.space, ℓ y < r) (habove : ∃ z ∈ K.space, r < ℓ z) :
     ∃ f g : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) (K.space ∩ {x | ℓ x ≤ r}) ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (K.space ∩ {x | r ≤ ℓ x}) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (K.space ∩ {x | ℓ x ≤ r}) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (K.space ∩ {x | r ≤ ℓ x}) ∧
       f '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} ∧
       g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r} := by
   have hJ := isPLSphere_one_fiber_of_heightIndex_eq_zero K hK hdimE ℓ hℓ hinj hzero r hbelow habove

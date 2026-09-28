@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.TensorRS
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Analysis.Sobolev.Embedding.Tensor.SharpC0JetSum
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -110,7 +111,7 @@ theorem low_grid_int
       exact MeasureTheory.integrable_const 1
     · rw [hgrid, MeasureTheory.integral_const, smul_eq_mul, mul_one,
         MeasureTheory.measureReal_def]
-      simp only [K, if_pos rfl, vol]
+      simp only [K, ite_eq_left rfl, vol]
       exact le_rfl
   · have hk1 : 1 ≤ k := Nat.one_le_iff_ne_zero.mpr hk0
     have hrange : Finset.range (Module.finrank ℝ E / 2 + 2) =
@@ -155,7 +156,7 @@ theorem low_grid_int
       have hb := hGNspec P Lam hLam hLamSup j hj0 hjk
       have hchoose : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
             (I := I) (M := M) g 0 2 k hk1).choose = Cgn k := by
-        simp only [Cgn, dif_pos hk1]
+        simp only [Cgn, dite_eq_left hk1]
       rw [hchoose] at hb
       have hnorm : tensorL2Norm (I := I) g 0 (2 + k)
           (iteratedCovGrad (I := I) g 0 2 k P).toFun =
@@ -240,7 +241,7 @@ theorem low_grid_int
           intro n _
           rw [Finset.sum_const, nsmul_eq_mul]
       _ = K A k := by
-          simp only [K, if_neg hk0, G, Lam]
+          simp only [K, ite_eq_right hk0, G, Lam]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem h2_grid_int

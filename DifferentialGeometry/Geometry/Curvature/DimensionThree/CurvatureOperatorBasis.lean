@@ -408,8 +408,8 @@ private lemma inner_basis_eq_repr3
     intro i
     rw [basis.repr_self k, Finsupp.single_apply]
     by_cases h : k = i
-    · rw [if_pos h, if_pos h.symm]
-    · rw [if_neg h, if_neg (fun hi => h hi.symm)]
+    · rw [ite_eq_left h, ite_eq_left h.symm]
+    · rw [ite_eq_right h, ite_eq_right (fun hi => h hi.symm)]
   calc
     (∑ i : Fin 3, basis.repr X i * basis.repr (basis k) i) =
         ∑ i : Fin 3, basis.repr X i * (if i = k then 1 else 0) := by
@@ -418,10 +418,10 @@ private lemma inner_basis_eq_repr3
       rw [hsingle i]
     _ = basis.repr X k := by
       rw [Finset.sum_eq_single k]
-      · rw [if_pos rfl]
+      · rw [ite_eq_left rfl]
         simp
       · intro i _ hik
-        rw [if_neg hik]
+        rw [ite_eq_right hik]
         simp
       · intro hk
         exact absurd (Finset.mem_univ k) hk

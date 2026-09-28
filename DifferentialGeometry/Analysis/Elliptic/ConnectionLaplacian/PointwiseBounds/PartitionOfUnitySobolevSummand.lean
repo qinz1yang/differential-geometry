@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.PointwiseBounds.UniformRiemannianNormCoordinateBound
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartRepresentationBounds.Euclidean.DerivativeComparison
 import DifferentialGeometry.Analysis.Elliptic.TensorRegularity.CovDeriv.ChartFormLowerOrder
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 

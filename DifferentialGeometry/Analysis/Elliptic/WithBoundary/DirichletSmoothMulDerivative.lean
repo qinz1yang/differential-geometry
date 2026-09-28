@@ -85,9 +85,9 @@ theorem dirichletLocalWeakPartialLp_smoothMulH1ComplDirichlet
     (hψ.continuous_fderiv (by simp)).clm_apply continuous_const
   have hG : MemLp (fun z => ψ z * D j u z + fderiv ℝ ψ z (EuclideanSpace.single j 1) * U z)
       2 (volume.restrict Ω) :=
-    (hg.mul' ((hψ.continuous.memLp_of_hasCompactSupport hψc : MemLp ψ ∞ volume).restrict Ω)).add
-      (hu.mul' ((hdψ.memLp_of_hasCompactSupport (hψc.fderiv_apply (𝕜 := ℝ)
-        (EuclideanSpace.single j 1)) : MemLp _ ∞ volume).restrict Ω))
+    (((hψ.continuous.memLp_of_hasCompactSupport hψc : MemLp ψ ∞ volume).restrict Ω).fun_mul hg).add
+      (((hdψ.memLp_of_hasCompactSupport (hψc.fderiv_apply (𝕜 := ℝ)
+        (EuclideanSpace.single j 1)) : MemLp _ ∞ volume).restrict Ω).fun_mul hu)
   have hp := (hasWeakPartialDeriv_dirichletLocalWeakPartialLp q α hΩ hΩc hΩs j u).mul_smooth
     hΩ hψ (hu.locallyIntegrable (by norm_num)) (hg.locallyIntegrable (by norm_num))
   have hval : (fun z => H1ComplDirichletToLp q (smoothMulH1ComplDirichlet q φ u)

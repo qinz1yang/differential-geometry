@@ -157,7 +157,7 @@ theorem isPLBall_closure_sdiff_annulus_of_boundaryComplex_neighborhood
   obtain ⟨g, hg⟩ := hR
   have hK : IsPLBall 2 K.space := ⟨f, hf⟩
   have hR : IsPLBall 2 R.space := ⟨g, hg⟩
-  let u := g ∘ Function.invFunOn f (stdSimplex ℝ (Fin 3))
+  let u := g ∘ Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hu : IsPLHomeomorphOn u K.space R.space := hf.symm.trans hg
   have hNpoly : IsPolyhedron N := hρ.image_eq ▸
     (hJ.isPolyhedron.prod (isPLBall_Icc zero_lt_one).isPolyhedron).image_of_isPiecewiseAffineOn

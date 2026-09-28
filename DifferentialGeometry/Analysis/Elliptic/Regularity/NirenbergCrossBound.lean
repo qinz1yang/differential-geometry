@@ -166,7 +166,7 @@ theorem eLpNorm_diffQuot_restrict_le_of_cthickening
         eLpNorm (DifferentialGeometry.Analysis.Sobolev.translate
           (d := Module.finrank ℝ E) k h w_ext) 2 (volume : Measure EuclN) +
           eLpNorm w_ext 2 (volume : Measure EuclN) :=
-    eLpNorm_sub_le hτ_aesm hw_ext_aesm (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+    eLpNorm_sub_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)
   have hτ_eLpNorm :
       eLpNorm (DifferentialGeometry.Analysis.Sobolev.translate
         (d := Module.finrank ℝ E) k h w_ext) 2 (volume : Measure EuclN) =

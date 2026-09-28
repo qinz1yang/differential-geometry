@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Embedding.H2Pointwise
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.OperatorField.ApplicationJetWindow
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.PerOrderEnvelopes
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

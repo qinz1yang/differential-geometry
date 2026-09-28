@@ -42,7 +42,7 @@ private theorem coordinateFrameAt_coeff_one_eq
     unfold IsLocalFrameOn.toBasisAt
     congr 1
   unfold IsLocalFrameOn.coeff
-  rw [dif_pos hx, dif_pos hx, hbasis]
+  rw [dite_eq_left hx, dite_eq_left hx, hbasis]
 
 def gInvFun
     (g : SmoothRiemannianMetric I M)

@@ -43,7 +43,7 @@ theorem integral_uIoc_le (f : timeL2 X T) {a b : ℝ}
   have hint : ∫ s in uIoc a b, ‖f s‖ =
       (eLpNorm (fun s => f s) 1 μ).toReal := by
     rw [show (∫ s in uIoc a b, ‖f s‖) = ∫ s, ‖f s‖ ∂μ from rfl,
-      integral_norm_eq_lintegral_enorm hmeas, eLpNorm_one_eq_lintegral_enorm]
+      integral_norm_eq_lintegral_enorm hmeas, eLpNorm_one_eq_lintegral_enorm hmeas]
   have hholder := eLpNorm_le_eLpNorm_mul_rpow_measure_univ
     (μ := μ) (p := 1) (q := 2) (by norm_num) hmeas
   have hfin : eLpNorm (fun s => f s) 2 μ *

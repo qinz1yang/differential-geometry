@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Connecti
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrder.Coefficient.RadiusFreeDifference
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.FirstOrderTerm.L2JetBound
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -52,7 +55,7 @@ private lemma l1RiemannianFiberNormSqNeg (g : SmoothRiemannianMetric I M) {r s :
         ((iteratedCovGrad (I := I) g r s l X).toSection x) := by
   have hneg : (-X) = (-1 : ℝ) • X := by rw [neg_smul, one_smul]
   rw [hneg, l1IteratedCovGradSmul, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
-    Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    Pi.smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   norm_num
 
 theorem pureAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -71,7 +74,7 @@ theorem pureAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M) {δ�
   classical
   set Φ : SmoothCcTensor g₀ 4 2 := cometricDoubleTraceField (I := I) g₀ 2 with hΦ_def
   obtain ⟨C_base, hC_base_nn, hC_base⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   have hSΦ_ex : ∀ i : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + i) x
@@ -835,7 +838,7 @@ theorem low1AntidiagonalTupleGridWindowBackground (g₀ g_bg : SmoothRiemannianM
       4 * riemannianFiberNormSq (I := I) (M := M) g₀ 3 (2 + n) x
         ((iteratedCovGrad (I := I) g₀ 3 2 n R).toSection x) := by
     rw [l1IteratedCovGradSmul, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
-      Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      Pi.smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     norm_num
   rw [iteratedCovGrad_add (I := I) g₀ 3 2 n ((-2 : ℝ) • R) L,
     SmoothCcTensor.toSection_add, ContMDiffSection.coe_add, Pi.add_apply]

@@ -1,12 +1,15 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Face
 
 noncomputable section
 
 open scoped unitInterval
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
-def triangleJoin : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)) where
+def triangleJoin : C(unitInterval × unitInterval, coordinateSet ℝ (Fin 3)) where
   toFun x := ⟨![1 - (x.1 : ℝ), (x.1 : ℝ) * (1 - (x.2 : ℝ)), (x.1 : ℝ) * (x.2 : ℝ)], by
     constructor
     · intro i
@@ -24,14 +27,14 @@ def triangleJoin : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)) where
     fin_cases i <;> dsimp <;> fun_prop
 
 @[simp] theorem triangleJoin_zero (v : unitInterval) :
-    triangleJoin (0, v) = stdSimplex.vertex (0 : Fin 3) := by
+    triangleJoin (0, v) = coordinateSingle (0 : Fin 3) := by
   apply Subtype.ext
   funext i
   fin_cases i <;> simp [triangleJoin]
 
 @[simp] theorem triangleJoin_one (v : unitInterval) :
-    triangleJoin (1, v) = stdSimplex.map (0 : Fin 3).succAbove
-      (stdSimplexHomeomorphUnitInterval.symm v) := by
+    triangleJoin (1, v) = coordinateMap (0 : Fin 3).succAbove
+      (coordinateHomeomorphI.symm v) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 0
@@ -40,11 +43,11 @@ def triangleJoin : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)) where
     simp [triangleJoin]
   · obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq hi
     rw [map_succAbove_apply_image]
-    fin_cases j <;> simp [triangleJoin, stdSimplexHomeomorphUnitInterval, stdSimplexEquivIcc]
+    fin_cases j <;> simp [triangleJoin, coordinateHomeomorphI, coordinateEquivIcc, Equiv.symm]
 
 @[simp] theorem triangleJoin_second_zero (s : unitInterval) :
-    triangleJoin (s, 0) = stdSimplex.map (2 : Fin 3).succAbove
-      (stdSimplexHomeomorphUnitInterval.symm s) := by
+    triangleJoin (s, 0) = coordinateMap (2 : Fin 3).succAbove
+      (coordinateHomeomorphI.symm s) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 2
@@ -53,12 +56,12 @@ def triangleJoin : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)) where
     simp [triangleJoin]
   · obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq hi
     rw [map_succAbove_apply_image]
-    fin_cases j <;> simp [triangleJoin, stdSimplexHomeomorphUnitInterval, stdSimplexEquivIcc,
-      Fin.succAbove]
+    fin_cases j <;> simp [triangleJoin, coordinateHomeomorphI, coordinateEquivIcc,
+      Equiv.symm, Fin.succAbove]
 
 @[simp] theorem triangleJoin_second_one (s : unitInterval) :
-    triangleJoin (s, 1) = stdSimplex.map (1 : Fin 3).succAbove
-      (stdSimplexHomeomorphUnitInterval.symm s) := by
+    triangleJoin (s, 1) = coordinateMap (1 : Fin 3).succAbove
+      (coordinateHomeomorphI.symm s) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 1
@@ -67,10 +70,10 @@ def triangleJoin : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)) where
     simp [triangleJoin]
   · obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq hi
     rw [map_succAbove_apply_image]
-    fin_cases j <;> simp [triangleJoin, stdSimplexHomeomorphUnitInterval, stdSimplexEquivIcc,
-      Fin.succAbove]
+    fin_cases j <;> simp [triangleJoin, coordinateHomeomorphI, coordinateEquivIcc,
+      Equiv.symm, Fin.succAbove]
 
-def triangleJoinReverse : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)) where
+def triangleJoinReverse : C(unitInterval × unitInterval, coordinateSet ℝ (Fin 3)) where
   toFun x := ⟨![(1 - (x.1 : ℝ)) * (1 - (x.2 : ℝ)),
       (1 - (x.1 : ℝ)) * (x.2 : ℝ), (x.1 : ℝ)], by
     constructor
@@ -88,7 +91,7 @@ def triangleJoinReverse : C(unitInterval × unitInterval, stdSimplex ℝ (Fin 3)
     intro i
     fin_cases i <;> dsimp <;> fun_prop
 
-def tetrahedronJoin : C(unitInterval × unitInterval × unitInterval, stdSimplex ℝ (Fin 4)) where
+def tetrahedronJoin : C(unitInterval × unitInterval × unitInterval, coordinateSet ℝ (Fin 4)) where
   toFun x := ⟨![(1 - (x.1 : ℝ)) * (1 - (x.2.1 : ℝ)),
       (1 - (x.1 : ℝ)) * (x.2.1 : ℝ), (x.1 : ℝ) * (1 - (x.2.2 : ℝ)),
       (x.1 : ℝ) * (x.2.2 : ℝ)], by
@@ -120,7 +123,7 @@ def tetrahedronJoin : C(unitInterval × unitInterval × unitInterval, stdSimplex
   fin_cases i <;> simp [tetrahedronJoin]
 
 @[simp] theorem tetrahedronJoin_middle_zero (s u : unitInterval) :
-    tetrahedronJoin (s, 0, u) = stdSimplex.map (1 : Fin 4).succAbove (triangleJoin (s, u)) := by
+    tetrahedronJoin (s, 0, u) = coordinateMap (1 : Fin 4).succAbove (triangleJoin (s, u)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 1
@@ -132,7 +135,7 @@ def tetrahedronJoin : C(unitInterval × unitInterval × unitInterval, stdSimplex
     fin_cases j <;> simp [tetrahedronJoin, triangleJoin, Fin.succAbove]
 
 @[simp] theorem tetrahedronJoin_middle_one (s u : unitInterval) :
-    tetrahedronJoin (s, 1, u) = stdSimplex.map (0 : Fin 4).succAbove (triangleJoin (s, u)) := by
+    tetrahedronJoin (s, 1, u) = coordinateMap (0 : Fin 4).succAbove (triangleJoin (s, u)) := by
   apply Subtype.ext
   funext i
   by_cases hi : i = 0
@@ -144,7 +147,7 @@ def tetrahedronJoin : C(unitInterval × unitInterval × unitInterval, stdSimplex
     fin_cases j <;> simp [tetrahedronJoin, triangleJoin, Fin.succAbove]
 
 @[simp] theorem tetrahedronJoin_last_zero (s t : unitInterval) :
-    tetrahedronJoin (s, t, 0) = stdSimplex.map (3 : Fin 4).succAbove
+    tetrahedronJoin (s, t, 0) = coordinateMap (3 : Fin 4).succAbove
       (triangleJoinReverse (s, t)) := by
   apply Subtype.ext
   funext i
@@ -157,7 +160,7 @@ def tetrahedronJoin : C(unitInterval × unitInterval × unitInterval, stdSimplex
     fin_cases j <;> simp [tetrahedronJoin, triangleJoinReverse, Fin.succAbove]
 
 @[simp] theorem tetrahedronJoin_last_one (s t : unitInterval) :
-    tetrahedronJoin (s, t, 1) = stdSimplex.map (2 : Fin 4).succAbove
+    tetrahedronJoin (s, t, 1) = coordinateMap (2 : Fin 4).succAbove
       (triangleJoinReverse (s, t)) := by
   apply Subtype.ext
   funext i

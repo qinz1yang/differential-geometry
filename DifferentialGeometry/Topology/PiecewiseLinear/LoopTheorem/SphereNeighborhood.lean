@@ -24,7 +24,7 @@ theorem exists_isPLBall_inter_eq_of_isPLSphere_subset_boundaryComplex
     (hKB : K.space ⊆ B) (hJ : IsPLSphere 1 J)
     (hJboundary : J ⊆ (boundaryComplex 2 K).space) :
     ∃ (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ B ∧ q '' stdSimplexBoundary 2 = J ∧ D ∩ K.space = J := by
   have hJK : J ⊆ K.space := hJboundary.trans (boundaryComplex_space_subset 2 K)
   obtain ⟨D₀, D₁, q₀, q₁, hq₀, hq₁, hJ₀, hJ₁, hcover, hinter⟩ :=
@@ -68,8 +68,8 @@ open Classical in
 theorem disjoint_isPLBall_of_inter_eq_boundary
     {B M D D' : Set E} (hB : IsPLSphere 2 B)
     {q q' : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
-    (hq' : IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) D')
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (hq' : IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D')
     (hDB : D ⊆ B) (hD'B : D' ⊆ B)
     (hDM : D ∩ M = q '' stdSimplexBoundary 2)
     (hD'M : D' ∩ M = q' '' stdSimplexBoundary 2)
@@ -112,7 +112,7 @@ open Classical in
 theorem isPolyhedron_sphereWithDiskInteriorsRemoved
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E) (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B) : IsPolyhedron (sphereWithDiskInteriorsRemoved B D) := by
   have hpoly (s : Finset (Fin k)) : IsPolyhedron (B ∩ ⋂ i ∈ s, closure (B \ D i)) := by
     induction s using Finset.induction_on with
@@ -130,7 +130,7 @@ open Classical in
 theorem isPreconnected_sphereWithDiskInteriorsRemoved
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E) (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B) (hdisj : Pairwise (Function.onFun Disjoint D)) :
     IsPreconnected (sphereWithDiskInteriorsRemoved B D) := by
   have hdesc : ∀ l : List (Fin k), l.Nodup →
@@ -158,7 +158,7 @@ open Classical in
 theorem inter_closure_sdiff_sphereWithDiskInteriorsRemoved
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E) (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B) (hdisj : Pairwise (Function.onFun Disjoint D)) :
     sphereWithDiskInteriorsRemoved B D ∩ closure (B \ sphereWithDiskInteriorsRemoved B D) =
       ⋃ i, q i '' stdSimplexBoundary 2 := by
@@ -194,7 +194,7 @@ open Classical in
 theorem exists_isCombinatorialManifoldWithBoundary_sphereWithDiskInteriorsRemoved
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E) (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B) (hdisj : Pairwise (Function.onFun Disjoint D)) :
     ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧
       R.space = sphereWithDiskInteriorsRemoved B D ∧
@@ -272,7 +272,7 @@ open Classical in
 theorem sphereWithDiskInteriorsRemoved_eq_of_boundaryComplex
     {k : ℕ} {B : Set E} {D : Fin k → Set E}
     (q : Fin k → (Fin 3 → ℝ) → E) (hB : IsPLSphere 2 B)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDB : ∀ i, D i ⊆ B) (hdisj : Pairwise (Function.onFun Disjoint D))
     (M : Geometry.SimplicialComplex ℝ E) [Finite M.faces]
     (hM : IsCombinatorialManifoldWithBoundary 2 M) (hconn : IsConnected M.space)
@@ -352,7 +352,7 @@ theorem exists_boundaryNeighborhoodBoundary_disk_sides
       C.PairwiseDisjoint id ∧
         (PiecewiseLinear.boundaryComplex 2 S.boundaryNeighborhood).space = ⋃₀ C ∧
           ∀ J ∈ C, ∃ (D : Set E) (q : (Fin 3 → ℝ) → E),
-            IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+            IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
             D ⊆ S.boundaryComponent ∧ q '' stdSimplexBoundary 2 = J ∧
             D ∩ S.boundaryNeighborhood.space = J := by
   let _ : Finite S.boundaryNeighborhood.faces := S.boundaryNeighborhood_faces_finite.to_subtype
@@ -376,7 +376,7 @@ open Classical in
 theorem exists_pairwiseDisjoint_boundaryNeighborhood_disks
     (S : NormalSystem E) (hB : IsPLSphere 2 S.boundaryComponent) :
     ∃ (k : ℕ) (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E),
-      (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i)) ∧
+      (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i)) ∧
       (∀ i, D i ⊆ S.boundaryComponent) ∧ Pairwise (Function.onFun Disjoint D) ∧
       (⋃ i, q i '' stdSimplexBoundary 2) =
         (PiecewiseLinear.boundaryComplex 2 S.boundaryNeighborhood).space ∧
@@ -416,7 +416,7 @@ open Classical in
 theorem NormalSystem.exists_sphereWithDiskInteriorsRemoved_eq_boundaryNeighborhood
     (S : NormalSystem E) (hB : IsPLSphere 2 S.boundaryComponent) :
     ∃ (k : ℕ) (D : Fin k → Set E) (q : Fin k → (Fin 3 → ℝ) → E),
-      (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i)) ∧
+      (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i)) ∧
       (∀ i, D i ⊆ S.boundaryComponent) ∧ Pairwise (Function.onFun Disjoint D) ∧
       sphereWithDiskInteriorsRemoved S.boundaryComponent D = S.boundaryNeighborhood.space ∧
       (⋃ i, q i '' stdSimplexBoundary 2) =

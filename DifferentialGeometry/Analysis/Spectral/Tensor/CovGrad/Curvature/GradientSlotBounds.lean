@@ -1,6 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.GradientSlot
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -49,7 +53,7 @@ private lemma coframe_update_le
         abs_metric_inner_le_sqrt_metric_quadratic
           (I := I) (M := M) g x (e a) Q
       _ = Real.sqrt (g.inner x Q Q) := by
-        rw [horth a a, if_pos rfl, Real.sqrt_one, one_mul]
+        rw [horth a a, ite_eq_left rfl, Real.sqrt_one, one_mul]
       _ ≤ C := hQ
   have hdelta : ∀ a b : Fin n,
       |g.inner x (e a) (e b)| ≤ 1 := by
@@ -137,7 +141,7 @@ private lemma gradSlot_comp0_le
         have hunit : ∀ a : Fin 4,
             g.inner x (e (J a)) (e (J a)) = 1 := by
           intro a
-          rw [horth (J a) (J a), if_pos rfl]
+          rw [horth (J a) (J a), ite_eq_left rfl]
         have hm : g.inner x (m k) (m k) = 1 := by
           fin_cases k <;> simp [m, hunit]
         rw [hunit 0, hunit 1, hm, mul_one, mul_one, mul_one] at hb
@@ -216,7 +220,7 @@ private lemma gradSlot_comp1_le
         have hunit : ∀ a : Fin 5,
             g.inner x (e (J a)) (e (J a)) = 1 := by
           intro a
-          rw [horth (J a) (J a), if_pos rfl]
+          rw [horth (J a) (J a), ite_eq_left rfl]
         have hm : g.inner x (m k) (m k) = 1 := by
           fin_cases k <;> simp [m, hunit]
         simpa only [hunit 0, hunit 1, hunit 2, hm,

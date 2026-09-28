@@ -47,21 +47,20 @@ theorem exists_continuousLinearMap_chartPullback_mul
   obtain ⟨D, hD, hbound⟩ := exists_eLpNorm_chartPullback_le q α hΩc hΩs
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) (by norm_num)
   have hηf (f : Lp ℝ 2 (volume.restrict Ω)) : MemLp (fun z => η z * f z) 2 volume := by
-    refine ⟨(hη.measurable.mul (Lp.stronglyMeasurable f).measurable).aestronglyMeasurable, ?_⟩
+    change eLpNorm (η * (f : EuStd → ℝ)) 2 volume < ⊤
     rw [← eLpNorm_restrict_eq_of_support_subset
+      (hη.measurable.mul (Lp.stronglyMeasurable f).measurable).aestronglyMeasurable
       ((subset_tsupport _).trans ((tsupport_mul_subset_left (f := η) (g := f)).trans hηs))]
     exact ((Lp.memLp f).of_le_mul (c := C)
       (hη.aestronglyMeasurable.mul (Lp.memLp f).aestronglyMeasurable)
       (Filter.Eventually.of_forall fun z => by
-        simpa only [Pi.mul_apply, norm_mul] using mul_le_mul_of_nonneg_right (hC z) (norm_nonneg (f z)))).2
+        simpa only [Pi.mul_apply, norm_mul] using mul_le_mul_of_nonneg_right (hC z) (norm_nonneg (f z))))
   have hpb (f : Lp ℝ 2 (volume.restrict Ω)) :
       MemLp (chartPullback I α (fun z => η z * f z)) 2
         (riemannianVolumeMeasure (I := I) (M := M) q) := by
-    refine ⟨(measurable_chartPullback α
-      (hη.measurable.mul (Lp.stronglyMeasurable f).measurable)).aestronglyMeasurable, ?_⟩
     exact (hbound _ (hη.measurable.mul (Lp.stronglyMeasurable f).measurable)
       ((tsupport_mul_subset_left (f := η) (g := f)).trans (hηs.trans subset_closure))).trans_lt
-      (ENNReal.mul_lt_top (by simp) (hηf f).2)
+      (ENNReal.mul_lt_top (by simp) (hηf f))
   let F : Lp ℝ 2 (volume.restrict Ω) →
       Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) q) :=
     fun f => (hpb f).toLp _
@@ -100,15 +99,19 @@ theorem exists_continuousLinearMap_chartPullback_mul
       ((tsupport_mul_subset_left (f := η) (g := f)).trans (hηs.trans subset_closure))
     have hcut : eLpNorm (fun z => η z * f z) 2 volume ≤
         ENNReal.ofReal (max C 0) * eLpNorm f 2 (volume.restrict Ω) := by
+      change eLpNorm (η * (f : EuStd → ℝ)) 2 volume ≤ _
       rw [← eLpNorm_restrict_eq_of_support_subset
+        (hη.measurable.mul (Lp.stronglyMeasurable f).measurable).aestronglyMeasurable
         ((subset_tsupport _).trans ((tsupport_mul_subset_left (f := η) (g := f)).trans hηs))]
-      apply eLpNorm_le_mul_eLpNorm_of_ae_le_mul _ 2
+      apply eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+        (hη.measurable.mul (Lp.stronglyMeasurable f).measurable).aestronglyMeasurable
       filter_upwards [] with z
+      change ‖η z * f z‖ ≤ _
       rw [norm_mul]
       exact mul_le_mul_of_nonneg_right ((hC z).trans (le_max_left _ _)) (norm_nonneg _)
     have hb' := hb.trans (mul_le_mul' le_rfl hcut)
     have hreal := ENNReal.toReal_mono
-      (ENNReal.mul_ne_top (by simp) (ENNReal.mul_ne_top (by simp) (Lp.memLp f).2.ne)) hb'
+      (ENNReal.mul_ne_top (by simp) (ENNReal.mul_ne_top (by simp) (Lp.memLp f).ne)) hb'
     change ‖(hpb f).toLp _‖ ≤ _
     rw [Lp.norm_toLp]
     simpa only [ENNReal.toReal_mul, ENNReal.toReal_ofReal hD.le,

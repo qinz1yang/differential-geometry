@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Covering.Smooth.Manifold
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Smoothness
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Metric
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Operator.Hessian.Basic
 import DifferentialGeometry.Geometry.Curvature.Riemann.Defs
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
@@ -74,13 +74,15 @@ theorem chartBasisVecFiber_lifted
           α' i x'
         = (trivializationAt E (TangentSpace I :
             DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M
-              → Type _) α').symmL ℝ x' (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
+              → Type _) α').symmL ℝ x'
+                (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
     rfl
   have hRHS_symm :
       DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (M := M)
           (proj (X := M) α') i (proj (X := M) x')
         = (trivializationAt E (TangentSpace I : M → Type _)
-            (proj α')).symmL ℝ (proj x') (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
+            (proj α')).symmL ℝ (proj x')
+              (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i) := by
     rfl
   rw [hLHS_symm, hRHS_symm]
   have hSymmL :
@@ -96,7 +98,8 @@ theorem chartBasisVecFiber_lifted
           (b₀ := proj α') (b := proj x') hprojx'_chartM]
     exact uc_tangentBundleCore_coordChange_agree (I := I) α' x'
       ⟨hx', mem_chart_source H x'⟩
-  have hAt := congrArg (fun L : E →L[ℝ] E => L (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) hSymmL
+  have hAt := congrArg
+    (fun L : E →L[ℝ] E => L (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E i)) hSymmL
   exact hAt
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -194,7 +197,8 @@ theorem chartChristoffel_lifted
     change (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
           (M := DifferentialGeometry.Geometry.Riemannian.Topology.UniversalCover M)
           (liftedMetric (I := I) g) α' x')⁻¹ k l =
-        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (M := M) g (proj α') (proj x'))⁻¹ k l
+        (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix
+          (M := M) g (proj α') (proj x'))⁻¹ k l
     rw [hGramMatEq]
   rw [hInvGramEq]
   congr 1

@@ -45,21 +45,21 @@ theorem IsCombinatorialManifold.exists_compression_neighborhood_of_spanning_disk
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifold 2 S) (hSc : IsConnected S.space)
     (hdim : Module.finrank ℝ E = 3) {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2) (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (N W D₀ D₁ : Set E) (f : (Fin 3 → ℝ) × ℝ → E)
       (ρ : E × ℝ → E) (r₀ r₁ : (Fin 3 → ℝ) → E),
       IsPLBall 3 N ∧ N ⊆ U ∧ D ⊆ N ∧ D \ S.space ⊆ interior N ∧
       D ∩ frontier N = r '' stdSimplexBoundary 2 ∧ N ∈ 𝓝ˢ[S.space ∪ D] D ∧
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) ∧
       S.space ∩ N = W ∧ W = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1) ∧
       IsPolyhedron W ∧ W ∈ 𝓝ˢ[S.space] (r '' stdSimplexBoundary 2) ∧
       IsPLHomeomorphOn ρ ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 : ℝ) 1) W ∧
       (∀ x ∈ r '' stdSimplexBoundary 2, ρ (x, 0) = x) ∧
       (∀ x ∈ stdSimplexBoundary 2, ∀ t ∈ Icc (-1 : ℝ) 1, ρ (r x, t) = f (x, t)) ∧
-      IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧ Disjoint D₀ D₁ ∧
+      IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧ Disjoint D₀ D₁ ∧
       frontier N = W ∪ D₀ ∪ D₁ ∧
       W ∩ D₀ = r₀ '' stdSimplexBoundary 2 ∧ W ∩ D₁ = r₁ '' stdSimplexBoundary 2 ∧
       r₀ '' stdSimplexBoundary 2 = ρ '' ((r '' stdSimplexBoundary 2) ×ˢ {(-1 : ℝ)}) ∧

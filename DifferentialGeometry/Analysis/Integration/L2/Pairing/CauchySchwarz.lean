@@ -1,5 +1,9 @@
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Algebra
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_add_right tensorInnerPointwise_nonneg tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right tensorInnerPointwise_symm)
+
 
 noncomputable section
 

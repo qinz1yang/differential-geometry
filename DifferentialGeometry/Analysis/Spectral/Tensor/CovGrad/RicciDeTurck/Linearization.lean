@@ -9,8 +9,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.LowerAllUpperIndices
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChartParallelTransportOpNorm.ChartLeviCivitaParallelCLM
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Elliptic

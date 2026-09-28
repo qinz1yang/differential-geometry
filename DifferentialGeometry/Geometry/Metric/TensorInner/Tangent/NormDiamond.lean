@@ -1,6 +1,5 @@
 import DifferentialGeometry.Tensor.RSTensor.Defs
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.ContinuousRiemannianMetric
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Geometry.Manifold.Riemannian.Basic
 import Mathlib.Geometry.Manifold.Riemannian.PathELength
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian

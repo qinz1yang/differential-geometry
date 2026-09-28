@@ -6,6 +6,9 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Norm
 
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply fiberNormSqComponent
+  fiberNormSqSummand fiberNormSqSummand_eq_component_sq riemannianFiberNormSq)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -96,7 +99,7 @@ private lemma metric_inner_orthonormal_pair (g₁ : SmoothRiemannianMetric I M) 
   congr 1
   rw [Finset.sum_congr rfl (fun b _ => by rw [hB a b, mul_ite, mul_one, mul_zero])]
   rw [Finset.sum_ite_eq]
-  exact if_pos (Finset.mem_univ a)
+  exact ite_eq_left (Finset.mem_univ a)
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
@@ -449,9 +452,9 @@ theorem riemannianFiberNormSq_curvatureActionMonomialTrace_le
               (if K (σ.symm 3) = j1 then (1 : ℝ) else 0)) =
           (if K (σ.symm 2) = j0 then (1 : ℝ) else 0) := by
         intro j0
-        rw [← Finset.mul_sum, Finset.sum_ite_eq, if_pos (Finset.mem_univ _), mul_one]
+        rw [← Finset.mul_sum, Finset.sum_ite_eq, ite_eq_left (Finset.mem_univ _), mul_one]
       rw [Finset.sum_congr rfl (fun j0 _ => h5 j0), Finset.sum_ite_eq,
-        if_pos (Finset.mem_univ _)]
+        ite_eq_left (Finset.mem_univ _)]
     rw [hcount, mul_one]
   have hKcollapse : ∑ K : Fin 4 → Fin (Module.finrank ℝ E),
       (V (K (σ.symm 0)) (K (σ.symm 1))) ^ 2 =

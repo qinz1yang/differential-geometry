@@ -184,10 +184,10 @@ theorem discardedDesc_preservesTangentOrientationAt_cap (b : {b : E.trace.tubes.
   have hvalue : f (j x) = fCap b x := E.trace.discardedDesc_cap fCore fCap hboundary b x
   erw [hvalue]
   cases hside : b.1.2
-  · simp only [hside, Bool.false_eq_true, if_false, Module.Ray.neg_units_smul, one_smul] at hres
+  · simp only [hside, Bool.false_eq_true, ite_false, Module.Ray.neg_units_smul, one_smul] at hres
     have hn := (Orientation.map_neg L (D.orientation.orientation (j x))).symm.trans hres
     exact neg_injective hn
-  · simp only [hside, if_true, one_smul] at hres
+  · simp only [hside, ite_true, one_smul] at hres
     exact hres
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.Cross
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricci
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 
 noncomputable section
 open scoped Manifold ContDiff
@@ -32,9 +32,9 @@ theorem riemannOp_pullbackMetricCross
   have he (z : TangentSpace I x) : e z = mfderiv I J Φ x z :=
     congrArg (fun A : TangentSpace I x →L[ℝ] TangentSpace J (Φ x) ↦ A z)
       (Φ.mfderivToContinuousLinearEquiv_coe (by decide))
-  apply tangentFlatLinear_injective_gen (I := J) g (Φ x)
+  apply tangentFlatLinear_injective (I := J) g (Φ x)
   ext z
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   obtain ⟨q, rfl⟩ := e.surjective z
   rw [he]
   have h := metricRm04Standard_pullbackCross g Φ x u v w q
@@ -73,9 +73,9 @@ theorem ricciSharp_pullbackMetricCross
   have he (z : TangentSpace I x) : e z = mfderiv I J Φ x z :=
     congrArg (fun A : TangentSpace I x →L[ℝ] TangentSpace J (Φ x) ↦ A z)
       (Φ.mfderivToContinuousLinearEquiv_coe (by decide))
-  apply tangentFlatLinear_injective_gen (I := J) g (Φ x)
+  apply tangentFlatLinear_injective (I := J) g (Φ x)
   ext z
-  simp only [tangentFlatLinear_apply_gen]
+  simp only [tangentFlatLinear_apply]
   obtain ⟨w, rfl⟩ := e.surjective z
   rw [he, ← Diffeomorph.pullbackMetricCross_inner, inner_ricciSharp, inner_ricciSharp]
   exact ricciTensor_pullbackMetricCross g Φ x v w

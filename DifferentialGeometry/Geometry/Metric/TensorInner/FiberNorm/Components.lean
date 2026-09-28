@@ -7,8 +7,7 @@ open Bundle Manifold
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -77,8 +76,7 @@ lemma fiberNormSqComponent_sum
   · intro a s' ha ih
     rw [Finset.sum_cons, Finset.sum_cons, fiberNormSqComponent_add, ih]
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

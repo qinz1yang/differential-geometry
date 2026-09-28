@@ -18,7 +18,7 @@ noncomputable def toHalfSpace (v : EuclideanSpace ℝ (Fin 3)) : EuclideanHalfSp
 
 theorem toHalfSpace_val {v : EuclideanSpace ℝ (Fin 3)} (h : 0 ≤ v 0) :
     (toHalfSpace v).val = v := by
-  simp only [toHalfSpace, dif_pos h]
+  simp only [toHalfSpace, dite_eq_left h]
 
 theorem contMDiffWithinAt_toHalfSpace_comp {Y : Type*} [NormedAddCommGroup Y] [NormedSpace ℝ Y]
     {g : Y → EuclideanSpace ℝ (Fin 3)} {s : Set Y} {p : Y}

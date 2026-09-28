@@ -109,7 +109,7 @@ private lemma chartRSTwistInv_tensorCovDeriv_contMDiffOn
       (tensorCovDerivAt (I := I) (M := M) g r s S b
         (tangentSpaceModelContinuousLinearEquiv (I := I) b
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i b))) = _
-  rw [Bundle.Trivialization.linearMapAt_apply, if_pos hb_base]
+  rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hb_base]
 
 private noncomputable def covNormSumFun
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -467,10 +467,38 @@ private lemma exists_const_eLpNorm_pou_covDerivComponent_le_uniform
     rw [hf_def, hv_def, hC_proj_def]
     exact pou_covDerivComponent_le_chartPushedRaw (I := I) (M := M)
       g r s S.toCcTensor α Idx Jdx m y
+  have hbase : ContinuousOn
+      (fun y : EuclN => (extChartAt I α).symm ((toEuclidean (E := E)).symm y))
+      (chartTargetEuclid (I := I) (M := M) α) := by
+    refine (continuousOn_extChartAt_symm (I := I) α).comp
+      (toEuclidean (E := E)).symm.continuous.continuousOn ?_
+    intro y hy
+    rwa [chartTargetEuclid_eq_preimage_symm] at hy
+  have hcov := (chartRSTwistInv_tensorCovDeriv_contMDiffOn
+    (I := I) (M := M) g r s S.toCcTensor α m).continuousOn
+  have hcomp := (tensorChartComponentProjection (E := E) r s Idx Jdx).continuous.comp_continuousOn
+    (hcov.comp hbase (fun y hy =>
+      symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy))
+  have hweight := (chartAtlasPOU I M α).contMDiff.continuous.comp_continuousOn hbase
+  have hf_cont : ContinuousOn f (chartTargetEuclid (I := I) (M := M) α) := by
+    refine (hweight.mul hcomp).congr (fun y hy => ?_)
+    dsimp only [f]
+    rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α
+      (⇑(chartAtlasPOU I M α)) hy]
+    congr 1
+    rw [← tensorCovDerivAt_eq_chartTensorRSCovariantDerivative
+      (I := I) (M := M) g r s S.toCcTensor α m
+      (chartBasePoint_mem_goodSet (I := I) (M := M) α hy)]
+    rw [triv_continuousLinearMapAt_eq_chartRSTwistInv_toModel
+      (I := I) (M := M) r s α
+      (symm_toEuclidean_symm_mem_chartAtSource (I := I) (M := M) α hy)]
+    rfl
+  have hf_ae : AEStronglyMeasurable f μ :=
+    hf_cont.aestronglyMeasurable (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet
   have h_mono :
       eLpNorm f 2 μ ≤
         eLpNorm (C_proj • chartPushedRaw (I := I) (M := M) α v) 2 μ :=
-    eLpNorm_mono_real h_ptwise
+    eLpNorm_mono_real hf_ae h_ptwise
   have h_smul :
       eLpNorm (C_proj • chartPushedRaw (I := I) (M := M) α v) 2 μ =
         ‖C_proj‖ₑ * eLpNorm (chartPushedRaw (I := I) (M := M) α v) 2 μ :=

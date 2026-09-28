@@ -49,12 +49,14 @@ local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α) :
+    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, ‖f x‖ₑ ^ 2 ∂μ := by
   classical
   have h_rpow : eLpNorm f 2 μ = (∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ≥0∞).toReal ∂μ) ^
       (1 / (2 : ℝ≥0∞).toReal) :=
-    eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)
+    eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) (f := f)
+      (by norm_num) (by norm_num) hf
   have h_two_toReal : ((2 : ℝ≥0∞)).toReal = (2 : ℝ) := by norm_num
   rw [h_rpow, h_two_toReal]
   set I : ℝ≥0∞ := ∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ) ∂μ with hI_def
@@ -135,10 +137,11 @@ lemma tensorChartComp_tsupport_subset_chartTargetEuclid
   refine (closure_minimal h_support_K hK_closed).trans hK_subset_target
 
 private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
-    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α) :
+    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, ENNReal.ofReal ((f x) ^ 2) ∂μ := by
   classical
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq f μ]
+  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq f μ hf]
   refine lintegral_congr ?_
   intro x
   rw [show ((f x) ^ 2 : ℝ) = ‖f x‖ ^ 2 from by rw [Real.norm_eq_abs, sq_abs],
@@ -816,6 +819,8 @@ private lemma chartTarget_fderiv_sq_lintegral_le_wkpNorm
         ‖fderiv ℝ (tensorChartComp (I := I) (M := M) g r s T α Idx Jdx) y‖)
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α))
+      ((tensorChartComp_contDiff (I := I) (M := M) g r s T α Idx Jdx).continuous_fderiv
+        (by simp) |>.norm.measurable.aestronglyMeasurable)
   rw [← h_lp_sq]
   exact pow_le_pow_left' h_brg 2
 
@@ -837,12 +842,42 @@ private lemma chartTarget_raw_sq_lintegral_eq_eLpNorm
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) 2
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) ^ 2 := by
+  have h_chartTarget_meas : MeasurableSet
+      (chartTargetEuclid (I := I) (M := M) α) :=
+    DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_measurableSet
+      (I := I) (M := M) α
+  have h_raw_symm_contDiffOn : ContDiffOn ℝ ∞
+      (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx ∘
+        (extChartAt I α).symm) ((extChartAt I α).target) :=
+    tensorChartComponentRaw_symm_contDiffOn_target
+      (I := I) (M := M) g r s T α Idx Jdx
+  have h_raw_symm_cont : ContinuousOn
+      (fun e' : E => tensorChartComponentRaw (I := I) (M := M) g r s T α
+        Idx Jdx ((extChartAt I α).symm e')) (extChartAt I α).target :=
+    h_raw_symm_contDiffOn.continuousOn
+  have h_toEucl_symm_cont : Continuous ((toEuclidean (E := E)).symm) :=
+    (toEuclidean (E := E)).symm.continuous
+  have h_raw_sym_cont : ContinuousOn
+      (fun y : EuclN => tensorChartComponentRaw (I := I) (M := M) g r s T α
+        Idx Jdx ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
+      (chartTargetEuclid (I := I) (M := M) α) := by
+    refine h_raw_symm_cont.comp h_toEucl_symm_cont.continuousOn ?_
+    intro y hy
+    rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy
+    exact hy
+  have h_raw_sym_aestronglyMeasurable : AEStronglyMeasurable
+      (fun y : EuclN => tensorChartComponentRaw (I := I) (M := M) g r s T α
+        Idx Jdx ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
+      ((volume : Measure EuclN).restrict
+        (chartTargetEuclid (I := I) (M := M) α)) :=
+    (h_raw_sym_cont.aemeasurable h_chartTarget_meas).aestronglyMeasurable
   exact (sq_eLpNorm_two_eq_lintegral_ofReal_sq
     (fun y : EuclN =>
       tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx
         ((extChartAt I α).symm ((toEuclidean (E := E)).symm y)))
     ((volume : Measure EuclN).restrict
-      (chartTargetEuclid (I := I) (M := M) α))).symm
+      (chartTargetEuclid (I := I) (M := M) α))
+    h_raw_sym_aestronglyMeasurable).symm
 
 omit [BoundarylessManifold I M] in
 omit [NeZero (Module.finrank ℝ E)] in

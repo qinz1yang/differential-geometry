@@ -47,10 +47,12 @@ private theorem eLpNorm_euclidean_le_sum {ι : Type*} [Fintype ι]
       _ = ∑ i, ‖v i‖ := by simp only [PiLp.norm_single]
   calc
     eLpNorm f 2 μ ≤ eLpNorm (∑ i, fun x => ‖f x i‖) 2 μ :=
-      eLpNorm_mono_real (fun x => by simpa only [Finset.sum_apply] using hn (f x))
+      eLpNorm_mono_real hf.aestronglyMeasurable
+        (fun x => by simpa only [Finset.sum_apply] using hn (f x))
     _ ≤ ∑ i, eLpNorm (fun x => ‖f x i‖) 2 μ :=
-      eLpNorm_sum_le (fun i _ => (hf.eval_piLp i).aestronglyMeasurable.norm) (by norm_num)
-    _ = _ := by simp only [eLpNorm_norm]
+      eLpNorm_sum_le (by norm_num)
+    _ = _ := Finset.sum_congr rfl fun i _ =>
+      eLpNorm_norm _ (hf.eval_piLp i).aestronglyMeasurable
 
 private theorem mem_smoothTestGraph_closure (hΩ : IsOpen Ω)
     {f : E → ℝ} (hf : DeGiorgi.MemW01p 2 f Ω) :
@@ -115,6 +117,8 @@ private theorem memW01p_of_mem_smoothTestGraph_closure (hΩ : IsOpen Ω)
       (fun _ => zero_le)
     intro n
     apply eLpNorm_mono_ae
+      (((DeGiorgi.smoothTestWitness hΩ (hφ n)).weakGrad_component_memLp i).sub
+        ((Lp.memLp G).eval_piLp i)).aestronglyMeasurable
     exact Eventually.of_forall fun x => PiLp.norm_apply_le
       (DeGiorgi.smoothGradField (φ n) x - G x) i
   have hweak (i : Fin d) : DeGiorgi.HasWeakPartialDeriv i (fun x => G x i) f Ω := by
@@ -232,6 +236,7 @@ theorem memW01p_sub_of_tendsto_L2
       (fun _ => zero_le)
     intro n
     apply eLpNorm_mono_ae
+      ((hu i n).1.1.aestronglyMeasurable.fun_sub hvb.aestronglyMeasurable)
     filter_upwards with x
     have heq : (u n x i - b x i) - (v x i - b x i) = u n x i - v x i := by ring
     rw [heq]

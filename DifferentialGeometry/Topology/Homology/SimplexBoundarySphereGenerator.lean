@@ -17,11 +17,12 @@ private def tetrahedronBoundaryMap :
     C(ULift.{u} (Simplex.boundary (Fin 4)), SimplexDegree.puncturedThreeSpace.{u}) :=
   ⟨fun p => ⟨SimplexDegree.standardTetrahedronSimplex p.down.val, by
     intro hz
-    have hz' : DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.positiveTetrahedron p.down.val = 0 :=
+    have hz' : DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.positiveTetrahedron
+        ((Convexity.StdSimplex.coordinateHomeomorph ℝ _).symm p.down.val) = 0 :=
       ULift.up_inj.mp hz
     obtain ⟨i, hi⟩ := p.down.property
     exact DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.positiveTetrahedron_face_ne_zero
-      p.down.val i hi hz'⟩,
+      ((Convexity.StdSimplex.coordinateHomeomorph ℝ _).symm p.down.val) i hi hz'⟩,
     by
       apply Continuous.subtype_mk
       exact SimplexDegree.standardTetrahedronSimplex.continuous.comp
@@ -137,7 +138,7 @@ private theorem integralSingularHomologyMap_simplexBoundarySphereMap (n : ℕ) :
 theorem isSphereHomologyGenerator_simplexBoundarySphereClass_three :
     IsSphereHomologyGenerator 2 (simplexBoundarySphereClass.{u} 2) := by
   let e := simplexBoundarySphereHomeomorph.{u} 2
-  let p := simplexBoundaryFace.{u} 2 0 stdSimplex.barycenter
+  let p := simplexBoundaryFace.{u} 2 0 Convexity.StdSimplex.barycenter
   let L := integralLocalHomologyHomeomorphIso 3 e p
   let g := integralAbsoluteToRelative 3 ({e p}ᶜ : Set (liftedHomotopySphere.{u} 2))
   let c := integralAbsoluteToRelative 3 ({p}ᶜ : Set (ULift.{u} (Simplex.boundary (Fin 5))))

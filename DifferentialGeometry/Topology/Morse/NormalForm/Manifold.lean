@@ -3,6 +3,7 @@ import DifferentialGeometry.Topology.Morse.Attachment.ModelCell
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.Local
 import Mathlib.Analysis.Calculus.FDeriv.Comp
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.LinearAlgebra.QuadraticForm.Real
 
 open scoped Topology Manifold

@@ -21,7 +21,7 @@ theorem exists_arc_neighborhood_of_finite_circle_union
     {D F U : Set E} (hF : IsPLBall 1 F) (hDF : D ∩ (⋃ i, C i) = F)
     (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (A : Set E) (q : (Fin 2 → ℝ) → E) (O : Set E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧ A ⊆ (⋃ i, C i) ∩ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧ A ⊆ (⋃ i, C i) ∩ U ∧
       D ∩ A = F ∧ Disjoint D (q '' stdSimplexBoundary 1) ∧
       IsOpen O ∧ D ⊆ O ∧ O ⊆ U ∧ O ∩ (⋃ i, C i) = O ∩ A := by
   classical
@@ -83,7 +83,7 @@ theorem IsPLSphere.exists_arc_neighborhood_of_crossing_trace {S X D F U : Set E3
     (hF : IsPLBall 1 F) (hDF : D ∩ (S ∩ frontier X) = F)
     (hU : IsOpen U) (hDU : D ⊆ U) :
     ∃ (A : Set E3) (q : (Fin 2 → ℝ) → E3) (O : Set E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧ A ⊆ (S ∩ frontier X) ∩ U ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧ A ⊆ (S ∩ frontier X) ∩ U ∧
       D ∩ A = F ∧ Disjoint D (q '' stdSimplexBoundary 1) ∧
       IsOpen O ∧ D ⊆ O ∧ O ⊆ U ∧ O ∩ (S ∩ frontier X) = O ∩ A := by
   obtain ⟨ι, hι, C, hC, hdis, heq⟩ := exists_iUnion_isPLSphere_one_of_forall_lineChart

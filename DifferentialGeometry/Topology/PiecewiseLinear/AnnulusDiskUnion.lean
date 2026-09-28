@@ -15,9 +15,9 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem IsPLAnnulusWithEnds.exists_disk_union {A G J D : Set E3}
     (hA : IsPLAnnulusWithEnds A G J) {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hboundary : r '' stdSimplexBoundary 2 = G) (hAD : A ∩ D = G) :
-    ∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (D ∪ A) ∧
+    ∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D ∪ A) ∧
       q '' stdSimplexBoundary 2 = J ∧ Disjoint D J := by
   obtain ⟨Q, f, hQ, hf, hG, hJ⟩ := hA
   let g : E3 → E3 := fun x => f (x, 0)
@@ -50,7 +50,7 @@ theorem IsPLAnnulusWithEnds.exists_disk_union {A G J D : Set E3}
 
 theorem IsPLAnnulusWithEnds.disk_union_mem_nhdsSetWithin {A G J D P : Set E3}
     (hA : IsPLAnnulusWithEnds A G J) {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hboundary : r '' stdSimplexBoundary 2 = G) (hAD : A ∩ D = G)
     (hP : IsPLBall 2 P) (hsub : D ∪ A ⊆ P) : D ∪ A ∈ 𝓝ˢ[P] D := by
   classical

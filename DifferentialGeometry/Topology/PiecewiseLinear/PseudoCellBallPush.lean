@@ -149,11 +149,11 @@ theorem IsPseudoCell.exists_disk_push_of_ball_frontier {Ec Eint Ebd C Z O Δ : S
     {P : E3} (hpc : IsPseudoCell Ec Eint Ebd P) (hC : IsPLBall 3 C) (hZ : IsCompact Z)
     (hZE : Z ⊆ Eint \ {P}) (hO : IsOpen O) (hZO : Z ⊆ O)
     (hfront : O ∩ Ec = O ∩ frontier C) {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hΔC : Δ ∩ O ⊆ C) (hΔZ : Δ ∩ O ∩ Ec ⊆ Z)
     (hbdO : Disjoint (r '' stdSimplexBoundary 2) O) :
     ∃ (Δ' : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ' ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ' ∧
       q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
       Δ' ⊆ Δ ∪ O ∧ Δ' ∩ Ec = (Δ \ O) ∩ Ec := by
   obtain ⟨Φ, hΦ, hΦO, hΦC⟩ := hpc.exists_push_of_ball_frontier hC hZ hZE hO hZO hfront

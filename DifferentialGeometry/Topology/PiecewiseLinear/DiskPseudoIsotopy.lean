@@ -52,18 +52,18 @@ theorem isPLPseudoIsotopicToId_of_eqOn_boundaryComplex [FiniteDimensional ℝ E]
     refine (hu.prodMap hsing.isPLHomeomorphOn_id).congr ?_
     rintro z ⟨-, hz2⟩
     have hz2' : z.2 = 1 := hz2
-    simp only [if_pos hz2']
+    simp only [ite_eq_left hz2']
     rfl
   have hθid : EqOn (fun z : E × ℝ => if z.2 = 1 then (u z.1, z.2) else z) id
       (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1) := by
     rintro z hz
     by_cases hz2 : z.2 = 1
-    · simp only [if_pos hz2]
+    · simp only [ite_eq_left hz2]
       rcases hz with ⟨-, hzbot⟩ | ⟨hzb, -⟩
       · have hzbot' : z.2 = 0 := hzbot
         exact absurd (hz2.symm.trans hzbot') (by norm_num)
       · exact Prod.ext (hbd hzb) rfl
-    · simp only [if_neg hz2]
+    · simp only [ite_eq_right hz2]
       rfl
   have hθ0 : IsPLHomeomorphOn (fun z : E × ℝ => if z.2 = 1 then (u z.1, z.2) else z)
       (K.space ×ˢ ({0} : Set ℝ) ∪ (boundaryComplex 2 K).space ×ˢ Icc (0 : ℝ) 1)
@@ -84,12 +84,12 @@ theorem isPLPseudoIsotopicToId_of_eqOn_boundaryComplex [FiniteDimensional ℝ E]
       rw [hbdA]
       exact Or.inr (Or.inl ⟨hx, rfl⟩)
     rw [hΦbd hmem]
-    exact if_neg (by norm_num)
+    exact ite_eq_right (by norm_num)
   · have hmem : (x, (1 : ℝ)) ∈ (boundaryComplex 3 A).space := by
       rw [hbdA]
       exact Or.inl ⟨hx, rfl⟩
     rw [hΦbd hmem]
-    exact if_pos rfl
+    exact ite_eq_left rfl
 
 variable {P : Set E} {P' : Set E₂}
 

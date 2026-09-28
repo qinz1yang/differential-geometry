@@ -18,7 +18,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_closed_of_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hconn : IsConnected K.space)
     {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : K.space ∩ D = r '' stdSimplexBoundary 2)
     (hboundary : (boundaryComplex 2 K).space = r '' stdSimplexBoundary 2) :
     ∃ (R : Geometry.SimplicialComplex ℝ E) (hRfin : R.faces.Finite),
@@ -45,8 +45,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_closed_of_disk_pair
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hconn : IsConnected K.space)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : K.space ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : K.space ∩ D₁ = r₁ '' stdSimplexBoundary 2)
     (hboundary : (boundaryComplex 2 K).space =
@@ -90,8 +90,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_closed_pair_of_disks
     (hB : IsCombinatorialManifoldWithBoundary 2 B)
     (hAc : IsConnected A.space) (hBc : IsConnected B.space) (hAB : Disjoint A.space B.space)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : (A.space ∪ B.space) ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : (A.space ∪ B.space) ∩ D₁ = r₁ '' stdSimplexBoundary 2)
     (hboundary₀ : (boundaryComplex 2 A).space = r₀ '' stdSimplexBoundary 2)

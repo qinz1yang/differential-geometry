@@ -94,7 +94,7 @@ private theorem inner0S_four_orthonormalBasis_sq
       have hzero : gInv (I0 a) (J0 a) = 0 := by
         simp [gInv, hne]
       rw [Finset.prod_eq_zero (Finset.mem_univ a) hzero]
-      rw [if_neg hIJ]
+      rw [ite_eq_right hIJ]
   calc
     inner0S (I := I) g x 4 A B
         = coordInner0S (I := I) (x := x) 4 gInv A B basis := by
@@ -115,7 +115,7 @@ private theorem inner0S_four_orthonormalBasis_sq
           rw [Finset.sum_eq_single I0]
           · simp
           · intro J0 _ hJ0
-            rw [if_neg (Ne.symm hJ0)]
+            rw [ite_eq_right (Ne.symm hJ0)]
             ring
           · intro hJ0
             exact False.elim (hJ0 (Finset.mem_univ I0))
@@ -396,13 +396,13 @@ theorem radialTransportSection_linear_add [I.Boundaryless]
     have hcond : y ∈ (normalChartAt (I := I) g p).source ∧
         ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p := by
       simpa [radialTransportSectionDomain] using hy
-    simp_rw [radialTransportSection, dif_pos hcond]
+    simp_rw [radialTransportSection, dite_eq_left hcond]
     exact radialParallelTransportSection_add (I := I) g p hcond.2 u w (t := 1)
       ⟨by norm_num, by norm_num⟩
   · have hnot : ¬(y ∈ (normalChartAt (I := I) g p).source ∧
         ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p) := by
       simpa [radialTransportSectionDomain] using hy
-    simp_rw [radialTransportSection, dif_neg hnot]
+    simp_rw [radialTransportSection, dite_eq_right hnot]
     simp
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -417,13 +417,13 @@ theorem radialTransportSection_linear_smul [I.Boundaryless]
     have hcond : y ∈ (normalChartAt (I := I) g p).source ∧
         ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p := by
       simpa [radialTransportSectionDomain] using hy
-    simp_rw [radialTransportSection, dif_pos hcond]
+    simp_rw [radialTransportSection, dite_eq_left hcond]
     exact radialParallelTransportSection_smul (I := I) g p hcond.2 c u (t := 1)
       ⟨by norm_num, by norm_num⟩
   · have hnot : ¬(y ∈ (normalChartAt (I := I) g p).source ∧
         ‖normalChartAt (I := I) g p y‖ < radialRadius (I := I) g p) := by
       simpa [radialTransportSectionDomain] using hy
-    simp_rw [radialTransportSection, dif_neg hnot]
+    simp_rw [radialTransportSection, dite_eq_right hnot]
     simp
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -659,10 +659,10 @@ theorem radialTransportSection_inner_eq
     rw [← hsymm, hexp]
     simp
   have hval_u : radialTransportSection g p u y = radialParallelTransportSection (I := I) g p hcond.2 u 1 := by
-    simp_rw [radialTransportSection, dif_pos hcond]
+    simp_rw [radialTransportSection, dite_eq_left hcond]
     with_unfolding_all rfl
   have hval_w : radialTransportSection g p w y = radialParallelTransportSection (I := I) g p hcond.2 w 1 := by
-    simp_rw [radialTransportSection, dif_pos hcond]
+    simp_rw [radialTransportSection, dite_eq_left hcond]
     with_unfolding_all rfl
   have hmain := radialParallelTransportSection_inner_eq (I := I) g p hcond.2 u w (s := 1)
     ⟨by norm_num, by norm_num⟩
@@ -851,7 +851,7 @@ theorem radialTransportSectionTensor_initial
   have hmem : p ∈ radialTransportSectionDomain (I := I) g p :=
     mem_radialTransportSectionDomain_self (I := I) g p
   rw [radialTransportSectionTensor]
-  rw [dif_pos hmem]
+  rw [dite_eq_left hmem]
   have hid : radialTransportInverseAt g p p hmem =
       ContinuousLinearMap.id ℝ (TangentSpace I p) := by
     ext v
@@ -936,8 +936,8 @@ theorem radialTransportTensorExtension_apply
       (fun a => W (slots4 i j k l a)) y)
       (fun a => tangentSpaceModelContinuousLinearEquiv (I := I) y (v a)) = _
   rw [toModel_metricFormSection,
-    DifferentialGeometry.Integral.L2.separableFormAt_apply]
-  simp only [DifferentialGeometry.Integral.L2.modelInnerAt_apply,
+    DifferentialGeometry.TensorMetric.separableFormAt_apply]
+  simp only [DifferentialGeometry.TensorMetric.modelInnerAt_apply,
     ContinuousLinearEquiv.symm_apply_apply]
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -984,7 +984,7 @@ private theorem radialTransportSectionTensor_apply_eq_sum
   intro J _
   have hcoeff : radialTransportSectionTensor g p η₀ y (fun a => basisY (J a)) =
       η₀ (fun a => basis (J a)) := by
-    rw [radialTransportSectionTensor, dif_pos hy]
+    rw [radialTransportSectionTensor, dite_eq_left hy]
     change η₀ (fun a => radialTransportInverseAt g p y hy (basisY (J a))) = _
     congr 1
     funext a
@@ -1150,7 +1150,7 @@ theorem radialTransportSectionTensor_inner_eq
         C (fun a => basis₀ (J a)) := by
     intro C J
     rw [radialTransportSectionTensor]
-    rw [dif_pos hy]
+    rw [dite_eq_left hy]
     have hTval : ∀ a : Fin 4,
         (basisY (J a) : TangentSpace I y) =
           radialTransportLinearMapAt g p y (basis₀ (J a)) := by
@@ -1226,7 +1226,7 @@ theorem algebraicCurvatureTensorProjection_radialTransport_commute
   have hp0transport : radialTransportSectionTensor g p
         (p0 : Tensor04At (I := I) (M := M) p) y ∈
       algebraicCurvatureTensorSubmodule (I := I) (M := M) y := by
-    rw [radialTransportSectionTensor, dif_pos hy]
+    rw [radialTransportSectionTensor, dite_eq_left hy]
     exact compContinuousLinearMap_mem_algebraicCurvatureTensorSubmodule (I := I) Tinv p0
   let uY : algebraicCurvatureTensorSubmodule (I := I) (M := M) y :=
     ⟨radialTransportSectionTensor g p
@@ -1242,7 +1242,7 @@ theorem algebraicCurvatureTensorProjection_radialTransport_commute
     have hqtransport : radialTransportSectionTensor g p
         (q0 : Tensor04At (I := I) (M := M) p) y =
         (q : Tensor04At (I := I) (M := M) y) := by
-      rw [radialTransportSectionTensor, dif_pos hy]
+      rw [radialTransportSectionTensor, dite_eq_left hy]
       apply tensor0SSpace_ext 4 y
       intro v
       change (q : Tensor04At (I := I) (M := M) y)
@@ -1459,7 +1459,7 @@ private theorem radialTransportTensorExtension_eval_eventually_eq
       (mem_radialTransportSectionDomain_self (I := I) g p)
   filter_upwards [hA, χ.eventuallyEq_one, hD] with y hAy hχy hy
   simp only [Pi.one_apply] at hχy
-  rw [hAy, radialTransportSectionTensor, dif_pos hy]
+  rw [hAy, radialTransportSectionTensor, dite_eq_left hy]
   change η₀ (fun a => radialTransportInverseAt g p y hy (W (J a) y)) = _
   congr 1
   funext a

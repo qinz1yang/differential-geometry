@@ -3,6 +3,10 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.C
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.JetComparison.Tower
 import DifferentialGeometry.Tensor.Mixed.Field
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+   riemannianFiberNormSq_nonneg)
+
 set_option autoImplicit false
 
 noncomputable section

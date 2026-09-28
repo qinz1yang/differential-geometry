@@ -20,7 +20,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     (Cq θ : ℝ) (hθ : 0 < θ) :
     ∃ Q Λ Dcap Rrad ζ₀ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧ StandardCap.transitionEnd < Dcap ∧ Dcap ≤ Rrad ∧
     0 < ζ₀ ∧
-    ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+    ∀ (H : RetainedCoreHistory.{u})
       (p₀ : CutoffParameters) (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -52,13 +52,13 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
       C1 C2 hκ Ctime Cgrad hphi (2 * Real.sqrt (Real.exp 1) * A) (by positivity) (2 * Cq)
       (θ / 2) (half_pos hθ)
   refine ⟨2 * Q + 1, 4 * Λ, Dcap, Rrad, ζ₀, by linarith, by linarith, hD, hDR, hζ, ?_⟩
-  intro P₀ H p₀ δb ρb p records hrec hR hord hacc j t₀ t ht₀ ht₀t hts y q ρ hq hqy hΛy hΛt
+  intro H p₀ δb ρb p records hrec hR hord hacc j t₀ t ht₀ ht₀t hts y q ρ hq hqy hΛy hΛt
     hclose hmet hW hslabs hder hgrad hpinch hnc hρ hnot z hz
   obtain ⟨S, hS, hSb⟩ := H.exists_forall_neck_scale_le records
   obtain ⟨σ, haσ, hσt₀, hσS, hqσ, hΛσ, hΛσt, hρσ, htransfer⟩ :=
     (H.toHistory.event j).incoming.exists_earlier_slice_scalar_ball_transfer y ht₀ ht₀t hts hq
       hqy (by linarith) hΛy hΛt hclose hmet hρ hA hθ hS
-  refine htransfer Q (by linarith) (hmain P₀ H p₀ δb ρb records hrec hR hord hacc j haσ
+  refine htransfer Q (by linarith) (hmain H p₀ δb ρb records hrec hR hord hacc j haσ
     ((hσt₀.trans_le ht₀t).trans hts) y q ρ hq hqσ (by linarith) (by linarith)
     (fun x hx => hW x σ ⟨haσ, hσt₀⟩ hx) hslabs
     ((H.toHistory.event j).incoming.derivativeBoundBefore_mono hσt₀.le hder)
@@ -72,7 +72,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     (Cq θ : ℝ) (hθ : 0 < θ) :
     ∃ Q Λ Dcap Rrad ζ₀ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧ StandardCap.transitionEnd < Dcap ∧ Dcap ≤ Rrad ∧
     0 < ζ₀ ∧
-    ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+    ∀ (H : RetainedCoreHistory.{u})
       (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
       (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
       (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -103,13 +103,13 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
       κ C1 C2 hκ Ctime Cgrad hphi (2 * Real.sqrt (Real.exp 1) * A) (by positivity) (2 * Cq)
       (θ / 2) (half_pos hθ)
   refine ⟨2 * Q + 1, 4 * Λ, Dcap, Rrad, ζ₀, by linarith, by linarith, hD, hDR, hζ, ?_⟩
-  intro P₀ H hend s G hG p₀ δb ρb p records hrec hR hord hacc t₀ t ht₀ ht₀t hts y q ρ hq hqy
+  intro H hend s G hG p₀ δb ρb p records hrec hR hord hacc t₀ t ht₀ ht₀t hts y q ρ hq hqy
     hΛy hΛt hclose hmet hW hslabs hder hgrad hpinch hpinchG hnc hρ hnot z hz
   obtain ⟨S, hS, hSb⟩ := H.exists_forall_neck_scale_le records
   obtain ⟨σ, haσ, hσt₀, hσS, hqσ, hΛσ, hΛσt, hρσ, htransfer⟩ :=
     G.exists_earlier_slice_scalar_ball_transfer y ht₀ ht₀t hts hq hqy (by linarith) hΛy hΛt
       hclose hmet hρ hA hθ hS
-  refine htransfer Q (by linarith) (hmain P₀ H hend G hG p₀ δb ρb records hrec hR hord hacc haσ
+  refine htransfer Q (by linarith) (hmain H hend G hG p₀ δb ρb records hrec hR hord hacc haσ
     ((hσt₀.trans_le ht₀t).trans hts) y q ρ hq hqσ (by linarith) (by linarith)
     (fun x hx => hW x σ ⟨haσ, hσt₀⟩ hx) hslabs (G.derivativeBoundBefore_mono hσt₀.le hder)
     (G.gradientBoundBefore_mono hσt₀.le hgrad) hpinch hpinchG

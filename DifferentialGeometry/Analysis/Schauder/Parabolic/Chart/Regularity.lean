@@ -294,7 +294,7 @@ theorem exists_parabolic_chart_nondivergence_operator_coefficient_schauder_bound
   · rw [← hpreimage]
     simpa only [e] using hc
 
-theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_operator_coefficient_schauder_bounds
+theorem exists_finite_chart_cover_with_parabolic_coefficient_holder_bounds
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
@@ -411,7 +411,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
     exact (hpotential x).2.mono
       (Finset.single_le_sum (fun y _ ↦ (zero_le : 0 ≤ Kcx y)) (Finset.mem_univ x))
 
-theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_operator_schauder_and_ellipticity_bounds
+theorem exists_finite_chart_cover_with_holder_coefficients_and_uniform_ellipticity
     [I.Boundaryless] [CompactSpace M]
     {D : RealTimeInterval}
     {G : MetricConnectionFamilyOn (I := I) (M := M) D}
@@ -476,7 +476,7 @@ theorem exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_
   classical
   obtain ⟨s, r, R, Rext, hradii, hchart, hcover,
       Apr, Ka, Bb, Kb, Bc, Kc, hAnorm, ha, hpos, hbnorm, hb, hcnorm, hc⟩ :=
-    exists_finite_buffered_chart_cover_with_uniform_parabolic_nondivergence_operator_coefficient_schauder_bounds
+    exists_finite_chart_cover_with_parabolic_coefficient_holder_bounds
       hG hab habreg V hV halpha
   let e := (toEuclidean (E := E)).symm
   let center : ↥s → M := fun x ↦ x.1

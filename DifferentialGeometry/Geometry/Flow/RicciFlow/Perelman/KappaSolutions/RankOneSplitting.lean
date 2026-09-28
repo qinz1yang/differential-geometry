@@ -132,7 +132,7 @@ theorem exists_global_product_of_rankOne_on_ancient_of_completeBoundedCurvatureI
                     𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2) y),
                 LinearIndependent ℝ ![u, v] →
                   0 < Geometry.Riemannian.sectionalCurvature (h t) y u v :=
-  exists_positive_surface_global_product_of_curvatureOperator_rank_one_of_complete_ancient_existence_and_uniqueness
+  exists_positive_surface_product_of_rank_one_of_complete_ancient_existence_and_uniqueness
     (S := S) (hS := hS) (hreg := hreg) (hcomplete := hcomplete) (hbound := hbound)
     (hexists := hst.shortTime) (hclosedUnique := huq.unique) (hs := hs) (x₀ := x₀)
     (hrank := hrank)
@@ -211,7 +211,7 @@ theorem exists_global_product_of_pastTailRankOne_of_completeBoundedCurvatureInpu
                 LinearIndependent ℝ ![u, v] →
                   0 < Geometry.Riemannian.sectionalCurvature (h t) y u v := by
   obtain ⟨t₁, ht₁, htail'⟩ := htail
-  exact exists_positive_surface_global_product_of_curvatureOperator_rank_one_of_complete_ancient_existence_and_uniqueness
+  exact exists_positive_surface_product_of_rank_one_of_complete_ancient_existence_and_uniqueness
     (S := F.S) (hS := F.isSolution) (hreg := hreg) (hcomplete := hcomplete)
     (hbound := hbound) (hexists := hst.shortTime) (hclosedUnique := huq.unique)
     (hs := ht₁) (x₀ := F.basepoint) (hrank := htail' t₁ le_rfl F.basepoint)

@@ -8,6 +8,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bound
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConnectionLaplacian.OrderDropping
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FirstOrder.Section
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

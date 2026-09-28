@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.GagliardoNirenberg
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.Morrey
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -80,9 +83,9 @@ private lemma gnGridCoeff_le
     gnGridCoeff (I := I) (M := M) g m ≤
       gnClassC (E := E) (I := I) (M := M) gBase Λ m := by
   by_cases hm : 1 ≤ m
-  · simpa only [gnGridCoeff, if_pos hm, metricVolRadius] using
+  · simpa only [gnGridCoeff, ite_eq_left hm, metricVolRadius] using
       (gnClassC_spec (I := I) (M := M) gBase g hEq m)
-  · simpa only [gnGridCoeff, if_neg hm] using
+  · simpa only [gnGridCoeff, ite_eq_right hm] using
       (gnClassC_nonneg (E := E) (I := I) (M := M) gBase Λ m)
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]

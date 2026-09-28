@@ -27,7 +27,7 @@ theorem eventually_exists_homeomorph_adjust_height_preserving_submodule
   have hφlip : LipschitzWith (‖f - ℓ‖₊ * k) φ := by
     apply LipschitzWith.of_dist_le_mul
     intro x y
-    simpa only [φ, dist_sub_right, Function.comp_apply] using ((f - ℓ).lipschitz.comp
+    simpa only [φ, dist_sub_right, Function.comp_apply] using ((f - ℓ).lipschitzWith.comp
         hGlip).dist_le_mul x y
   have hvpl : IsPiecewiseAffineOn (fun x => φ x • d) univ :=
     hφpl.affine_comp (LinearMap.toSpanSingleton ℝ E d).toAffineMap

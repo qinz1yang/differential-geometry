@@ -100,7 +100,7 @@ theorem isCompatibleOrientation_diffeomorph_map
           ((mfd (f.symm y)).trans
             ((trivializationAt E (TangentSpace I) (f x₀)).continuousLinearEquivAt ℝ y hb))).toLinearEquiv) := by
     simp only [Cfun]
-    rw [dif_pos hb, dif_pos hm]
+    rw [dite_eq_left hb, dite_eq_left hm]
   have hCLM : ∀ (y : N) (hb : y ∈ (trivializationAt E (TangentSpace I) (f x₀)).baseSet)
       (hm : f.symm y ∈ (trivializationAt E (TangentSpace I) x₀).baseSet),
       (Cfun y : E →ₗ[ℝ] E) = ((L (f.symm y) : E →L[ℝ] E) : E →ₗ[ℝ] E) := by

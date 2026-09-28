@@ -365,6 +365,7 @@ private theorem mfderiv_quotientSection_comp' (q : G.Orbit) {z : SphereThree}
     mfderiv (𝓡 3) (𝓡 3) (fun w => quotientSection G q (G.projection w)) z =
       ContinuousLinearMap.id ℝ (TangentSpace (𝓡 3) z) := by
   rw [(quotientSection_comp_eventuallyEq' (G := G) (q := q) hz).mfderiv_eq, mfderiv_id]
+  exact ContinuousLinearMap.ext fun _ => rfl
 
 private theorem quotientSection_comp_apply_self (q : G.Orbit) {z : SphereThree}
     (hz : z ∈ (quotientSection G q).target) :

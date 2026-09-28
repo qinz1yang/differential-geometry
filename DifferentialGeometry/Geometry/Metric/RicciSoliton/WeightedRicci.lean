@@ -232,10 +232,10 @@ private theorem gradientRicciSoliton_nablaRic_codazzi_field
     (I := I) g cov Rm13 Rm04 hRm13 hRm04 x
   have hdu : duSec (I := I) f f.contMDiff x =
       dualToCotangent (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (gradSection x)) := by
+        ((tangentFlatLinear (I := I) g x) (gradSection x)) := by
     change differential1FormFun (I := I) f x =
       dualToCotangent (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (gradFun (I := I) g f x))
+        ((tangentFlatLinear (I := I) g x) (gradFun (I := I) g f x))
     exact differential1FormFun_eq_metric_dual_gradientFun (I := I) g f x
   rw [hdu] at hcomm
   have hlower := hLower (slots 0) (slots 1) (slots 2) (gradSection x)
@@ -570,10 +570,10 @@ private theorem gradientRicciSoliton_trace_nablaRm
       Rm04 hRm13 hRm04 x (gradSection x) w v (gradSection x)
   have hdu : duSec (I := I) f f.contMDiff x =
       dualToCotangent (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (gradSection x)) := by
+        ((tangentFlatLinear (I := I) g x) (gradSection x)) := by
     change differential1FormFun (I := I) f x =
       dualToCotangent (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (gradFun (I := I) g f x))
+        ((tangentFlatLinear (I := I) g x) (gradFun (I := I) g f x))
     exact differential1FormFun_eq_metric_dual_gradientFun (I := I) g f x
   rw [hdu] at hcodazzi
   have hcurv :
@@ -714,7 +714,7 @@ private theorem ricEndoRaisedFib_eq_sum_orthonormalBasis
     rw [basis_repr_eq_sum_inv_inner (I := I) g x basis
       (identityInvMetric (Idx := Idx)) hinv]
     rw [Finset.sum_eq_single j]
-    · simp only [identityInvMetric, diagonalInvMetric, if_pos, one_mul]
+    · simp only [identityInvMetric, diagonalInvMetric, ite_eq_left, one_mul]
       rw [inner_ricEndoRaisedFib (I := I) (M := M)]
     · intro k _ hkj
       simp [identityInvMetric, diagonalInvMetric, Ne.symm hkj]
@@ -912,10 +912,10 @@ private theorem gradientRicciSoliton_roughRicci_component
         (I := I) (M := M) h x basis horth (basis a) (basis b)
   have hdu : duSec (I := I) f f.contMDiff x =
       dualToCotangent (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (gradSection x)) := by
+        ((tangentFlatLinear (I := I) g x) (gradSection x)) := by
     change differential1FormFun (I := I) f x =
       dualToCotangent (I := I)
-        ((tangentFlatLinearGen (I := I) g x) (gradFun (I := I) g f x))
+        ((tangentFlatLinear (I := I) g x) (gradFun (I := I) g f x))
     exact differential1FormFun_eq_metric_dual_gradientFun (I := I) g f x
   have hFirstCodazzi :
       nablaRic x
@@ -1236,7 +1236,7 @@ theorem gradientRicciSoliton_weightedRoughLaplacian_ricci
       σ • metricRicciAt (I := I) (M := M) g x -
         2 • curvatureRicciContractionAt (I := I) (M := M) g x := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -1333,7 +1333,7 @@ theorem gradientRicciSoliton_weightedLaplacian_ricci_norm_sq
       (⟨fun y : M => normSq0S (I := I) g y 2 (Ric y),
         normSq0S_smooth (I := I) g Ric⟩ : C^∞⟮I, M; Real⟯) x = _
   rw [hnorm, hric]
-  rw [inner0S_sub_left, _root_.Tensor0SBundle.inner0S_smul_left,
+  rw [inner0S_sub_left, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
     two_smul, inner0S_add_left]
   simp only [normSq0S_eq_inner]
   rw [← metricRicci_apply]

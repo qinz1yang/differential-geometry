@@ -156,7 +156,7 @@ private theorem halfRiem_decomposition
   rw [hP]
   refine cc22_ext_app (I := I) (M := M) g _ _ (fun W => ?_)
   have hprim :=
-    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricci_curvature_coefficient_difference_apply_eq_residual_add_hessian
       (I := I) (M := M) g g1 P htie hPsymm W
   rw [hP] at hprim
   simpa only [operatorFieldApplication_smul_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left,

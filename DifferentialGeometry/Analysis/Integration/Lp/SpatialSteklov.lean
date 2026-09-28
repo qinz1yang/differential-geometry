@@ -114,7 +114,8 @@ private theorem setIntegral_norm_le_mul_norm (S : Set Y) (hS : MeasurableSet S)
     (∫ t in S, ‖u t‖ ∂ν) ≤ ‖setIntegralContinuousLinearMap S hS hvol‖ * ‖u‖ := by
   let v : X := (Lp.memLp u).norm.toLp (fun t => ‖u t‖)
   have hnorm : ‖v‖ = ‖u‖ := by
-    rw [show v = (Lp.memLp u).norm.toLp (fun t => ‖u t‖) from rfl, Lp.norm_toLp, eLpNorm_norm]
+    rw [show v = (Lp.memLp u).norm.toLp (fun t => ‖u t‖) from rfl, Lp.norm_toLp,
+      eLpNorm_norm _ (Lp.memLp u).aestronglyMeasurable]
     rfl
   have heq : (∫ t in S, ‖u t‖ ∂ν) = setIntegralContinuousLinearMap S hS hvol v := by
     rw [setIntegralContinuousLinearMap_apply]

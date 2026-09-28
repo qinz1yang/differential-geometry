@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Soliton.Canonical
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.Metric.Conditions
 import DifferentialGeometry.Geometry.Curvature.Metric.SectionalCone
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 
 set_option autoImplicit false
 

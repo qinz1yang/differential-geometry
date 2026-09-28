@@ -188,7 +188,7 @@ private theorem exists_jensen_of_pullback_extension
       join x y 0 = x ∧ join x y 1 = y ∧
       (∀ t ∈ Icc (0 : ℝ) 1, ‖(join x y t : E)‖ ≤ a) ∧
       EqOn (Subtype.val ∘ join x y) (minJoin gExt hExt (x : E) (y : E)) (Icc (0 : ℝ) 1) := by
-    simpa only [join, dif_pos (And.intro hx hy)] using Classical.choose_spec (hget x y hx hy)
+    simpa only [join, dite_eq_left (And.intro hx hy)] using Classical.choose_spec (hget x y hx hy)
   refine ⟨join, hjoin, ?_⟩
   intro pt hpt
   let φ : U → ℝ := fun z => (1 / 2 : ℝ) * (riemannianEDistOf gPull pt z).toReal ^ 2

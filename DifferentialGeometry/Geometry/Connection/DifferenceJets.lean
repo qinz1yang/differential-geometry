@@ -1,4 +1,4 @@
-import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
+import DifferentialGeometry.Geometry.Connection.LeviCivita.LoweredDifference
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.Control
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Self
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
@@ -13,7 +13,6 @@ open Bundle Manifold Set Filter DifferentialGeometry
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Tensor0SBundle DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.CheegerGromovCompactness
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open scoped Manifold ContDiff BigOperators Topology
 
 noncomputable section

@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.Pointwis
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiniteProductHolder
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
+
 noncomputable section
 
 

@@ -48,7 +48,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     (Cq θ : ℝ) (hθ : 0 < θ) :
     ∃ Q Λ Dcap Rrad ζ₀ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧ StandardCap.transitionEnd < Dcap ∧ Dcap ≤ Rrad ∧
     0 < ζ₀ ∧
-    ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+    ∀ (H : RetainedCoreHistory.{u})
       (p₀ : CutoffParameters) (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -86,7 +86,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     exists_presented_cap_scalar_lower_bound_of_canonical_window_core.{u} Dcap hTEDcap
   refine ⟨2 * QB + 2, 4 * ΛB, Dcap, max RB Dcap, min ζB (min (1 / 2) ε₀), by linarith,
     by linarith, hTEDcap, le_max_right _ _, lt_min hζB (lt_min (by norm_num) hε₀), ?_⟩
-  intro P₀ H p₀ δb ρb p records hrec hRrad hord hζ j s Gk hGk t hat hts y q ρ hq hqy hΛy hΛa
+  intro H p₀ δb ρb p records hrec hRrad hord hζ j s Gk hGk t hat hts y q ρ hq hqy hΛy hΛa
     hclose hmet hspat hder hgrad hpinch hnc hρ hnot z hz
   set R := Gk.flow.scalar t y with hRdef
   have hR1 : 1 ≤ R := by linarith
@@ -188,7 +188,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
       ⟨j', hl'.trans hle, A'.append y hcross, b, x,
         by rw [BackwardPointTrace.append_point_before]; exact hx, hxn, hage⟩
     exact hnot ((hcw.of_le_time hσa.le hSb hslack).mono hDBle le_rfl)
-  have hBσ := hB P₀ H p₀ δb ρb records hrec ((le_max_left _ _).trans hRrad) hord
+  have hBσ := hB H p₀ δb ρb records hrec ((le_max_left _ _).trans hRrad) hord
     (hζ.trans (min_le_left _ _)) j hσj hσa (Φ y') q ρ hq hqσ hΛσ hΛσt
     (fun x hx => hspat j j.castSucc_lt_succ x σ ⟨hσj, hσa⟩ hx)
     (fun i hi => hder i (hi.trans j.castSucc_lt_succ))

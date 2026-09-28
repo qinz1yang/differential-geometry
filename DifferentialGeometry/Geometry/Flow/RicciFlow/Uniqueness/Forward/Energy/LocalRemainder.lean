@@ -6,8 +6,11 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffSq metricDiffSq_def reLower reLowerDefSq_le reLowerPair
+    reLowerPairSq_le traceNormSq_le)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Tensor.RSTensor

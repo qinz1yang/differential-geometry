@@ -88,10 +88,10 @@ theorem curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
     else (pull (T / 2) hmid).exteriorPower 2
   have hcovsmooth : ∀ t ∈ Ioo 0 T, ContMDiffCovariantDerivative (cov t) ∞ := by
     intro t ht
-    simpa only [cov, dif_pos ht, pull] using (hp t ht).1
+    simpa only [cov, dite_eq_left ht, pull] using (hp t ht).1
   have hcovmetric : ∀ t ∈ Ioo 0 T, (cov t).IsMetricCompatible := by
     intro t ht
-    simpa only [cov, dif_pos ht, pull] using (hp t ht).2.1
+    simpa only [cov, dite_eq_left ht, pull] using (hp t ht).2.1
   have hApos : ∀ t ∈ Icc 0 T, ∀ x, (A t x).IsPositive := by
     intro t ht x
     rw [hA t ht x]
@@ -104,7 +104,7 @@ theorem curvatureOperator_rank_spatially_constant_and_locally_constant_from_left
         (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap) t := by
     intro t ht x
     have hd := (hp t ht).2.2 A (fun s hs y => hA s (hsub hs) y) x
-    simpa only [cov, dif_pos ht, pull] using hd.hasDerivAt (isOpen_Ioo.mem_nhds ht)
+    simpa only [cov, dite_eq_left ht, pull] using hd.hasDerivAt (isOpen_Ioo.mem_nhds ht)
   have hrank := DifferentialGeometry.Analysis.Parabolic.curvatureOperator_rank_spatially_constant_and_locally_constant_from_left_on_Icc
       S.family.metric cov hT hg hcovsmooth hcovmetric A hApos hAcont hevolution
   have hArank (t : ℝ) (ht : t ∈ Icc 0 T) (x : M) :

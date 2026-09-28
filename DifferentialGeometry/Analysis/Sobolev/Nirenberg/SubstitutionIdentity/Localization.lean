@@ -20,7 +20,7 @@ private theorem memLp_mul_cpt
     {f g : E → ℝ} (hf : Continuous f) (hf_cpt : HasCompactSupport f)
     (hg : MemLp g 2 (volume : Measure E)) :
     MemLp (fun x => f x * g x) 2 (volume : Measure E) := by
-  exact hg.mul' (r := 2) (hf.memLp_top_of_hasCompactSupport hf_cpt volume)
+  exact (hf.memLp_top_of_hasCompactSupport hf_cpt volume).fun_mul (r := 2) hg
 
 omit [NeZero d] in
 private theorem integrable_cpt_mul_two
@@ -112,7 +112,7 @@ private theorem coeff_mul_memLp
   have ha_meas : AEStronglyMeasurable
       (K.indicator (fun y => B.a y i j)) (volume : Measure E) :=
     (B.continuous_a i j).aestronglyMeasurable.indicator hK.measurableSet
-  apply hg.mul' (p := ⊤) (r := 2)
+  refine MemLp.fun_mul (p := ⊤) (r := 2) ?_ hg
   apply memLp_top_of_bound ha_meas M
   filter_upwards with x
   rw [Real.norm_eq_abs]

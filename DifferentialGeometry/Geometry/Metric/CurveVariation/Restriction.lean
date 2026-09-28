@@ -32,6 +32,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
     let : IsContinuousRiemannianBundle E (TangentSpace I : U → Type _) :=
       ⟨(g.restrictOpen U).inner, (g.restrictOpen U).contMDiff.continuous, fun _ _ _ => rfl⟩
     let : PseudoEMetricSpace U := .ofRiemannianMetric I U
+    let : WeakPseudoEMetricSpace U := PseudoEMetricSpace.toWeakPseudoEMetricSpace U
     let f : M → U := fun x => if hx : x ∈ U then ⟨x, hx⟩ else γ a
     have hcomp : f ∘ (Subtype.val ∘ γ) = γ := by
       funext t
@@ -53,7 +54,7 @@ attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
       dsimp [f]
       have hyU : y ∈ U := hy.2
       have hzU : z ∈ U := hz.2
-      rw [dif_pos hyU, dif_pos hzU, one_mul]
+      rw [dite_eq_left hyU, dite_eq_left hzU, one_mul]
       exact heq.le
     rw [hcomp, ENNReal.coe_one, one_mul] at hbound
     exact hbound

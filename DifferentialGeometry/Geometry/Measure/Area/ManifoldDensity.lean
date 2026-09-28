@@ -54,6 +54,7 @@ theorem riemannianAreaDensity_congr (g : SmoothRiemannianMetric I M)
     riemannianAreaDensity g u z = riemannianAreaDensity g v z := by
   unfold riemannianAreaDensity tangentTwoJacobian
   rw [h.mfderiv_eq, h.eq_of_nhds]
+  rfl
 
 
 

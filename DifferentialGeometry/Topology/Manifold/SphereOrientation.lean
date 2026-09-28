@@ -305,11 +305,11 @@ theorem sphereOutwardOrientation_characterization (n : ℕ)
   change b.orientation = (if 0 < sphereOutwardDeterminant n x bs then bs.orientation
     else -bs.orientation) ↔ 0 < sphereOutwardDeterminant n x b
   by_cases h : 0 < sphereOutwardDeterminant n x bs
-  · erw [if_pos h, b.orientation_eq_iff_det_pos bs, hmul x b]
+  · erw [ite_eq_left h, b.orientation_eq_iff_det_pos bs, hmul x b]
     exact (hpos_swap b).symm.trans (mul_pos_iff_of_pos_left h).symm
   · have hneg : sphereOutwardDeterminant n x bs < 0 :=
       lt_of_le_of_ne (le_of_not_gt h) (sphereOutwardDeterminant_ne_zero n x bs)
-    erw [if_neg h, ← Basis.orientation_ne_iff_eq_neg bs b.orientation, ne_eq,
+    erw [ite_eq_right h, ← Basis.orientation_ne_iff_eq_neg bs b.orientation, ne_eq,
       not_congr (b.orientation_eq_iff_det_pos bs)]
     erw [← hneg_of _ (b.isUnit_det bs).ne_zero, ← hneg_swap b, hmul x b]
     have key : 0 < sphereOutwardDeterminant n x bs * bs.det b ↔ bs.det b < 0 := by

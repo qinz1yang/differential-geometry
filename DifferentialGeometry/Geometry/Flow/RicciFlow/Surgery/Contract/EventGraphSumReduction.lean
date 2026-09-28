@@ -140,16 +140,4 @@ theorem componentConnectedSumDecomposition_of_eventSphericalGraphSumRealization
 
 end FiniteSurgeryHistory
 
-theorem smoothPoincareConjecture_of_eventSphericalGraphSumRealization
-    (S : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-    (hS : DifferentialGeometry.Topology.isSphereTwoTimesCircleFactor S)
-    (h : EventSphericalGraphSumRealization S)
-    (hext : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g)) :
-    smoothPoincareConjecture.{u} :=
-  Topology.smoothPoincareConjecture_of_sphericalGraphSumRealization S hS
-    (fun H i => h _ _ _ _ (H.event i)) hext
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery

@@ -200,8 +200,8 @@ theorem exists_isPLHomeomorphInto_extension_of_cell {d : ℕ} (hd : 0 < d)
     {P Q : Set (EuclideanSpace ℝ (Fin 3))}
     {r : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3)}
     {s : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) P)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin (d + 1))) Q)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) P)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) Q)
     {u : EuclideanSpace ℝ (Fin 3) → M₁} {v : EuclideanSpace ℝ (Fin 3) → M₂}
     (hu : IsPLHomeomorphInto 3 u P) (hv : IsPLHomeomorphInto 3 v Q)
     {D : Set M₁} {g : M₁ → M₂} (hg : IsPLHomeomorphInto 3 g D)
@@ -210,7 +210,7 @@ theorem exists_isPLHomeomorphInto_extension_of_cell {d : ℕ} (hd : 0 < d)
     ∃ f : M₁ → M₂, IsPLHomeomorphInto 3 f (u '' P) ∧ f '' (u '' P) = v '' Q ∧
       EqOn f g (u '' (r '' stdSimplexBoundary d)) := by
   obtain ⟨n, rfl⟩ : ∃ n, d = n + 1 := ⟨d - 1, by omega⟩
-  have hbsub : stdSimplexBoundary (n + 1) ⊆ stdSimplex ℝ (Fin (n + 2)) := fun x hx => hx.1
+  have hbsub : stdSimplexBoundary (n + 1) ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := fun x hx => hx.1
   have hPsphere : IsPLSphere n (r '' stdSimplexBoundary (n + 1)) :=
     hr.isPLSphere_image_stdSimplexBoundary
   have hQsphere : IsPLSphere n (s '' stdSimplexBoundary (n + 1)) :=
@@ -240,13 +240,13 @@ theorem exists_isPLHomeomorphOn_of_stdSimplex_dim_zero {E F : Type*} [NormedAddC
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
     [FiniteDimensional ℝ F] {d : ℕ} (hd : d = 0) {P : Set E} {Q : Set F}
     {r : (Fin (d + 1) → ℝ) → E} {s : (Fin (d + 1) → ℝ) → F}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (d + 1))) P)
-    (hs : IsPLHomeomorphOn s (stdSimplex ℝ (Fin (d + 1))) Q) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) P)
+    (hs : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) Q) :
     ∃ H : E → F, IsPLHomeomorphOn H P Q := by
   subst hd
   set c : Fin (0 + 1) → ℝ := Pi.single 0 1 with hc
-  have hcmem : c ∈ stdSimplex ℝ (Fin (0 + 1)) := single_mem_stdSimplex ℝ 0
-  have hunique : ∀ x ∈ stdSimplex ℝ (Fin (0 + 1)), x = c := by
+  have hcmem : c ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (0 + 1)) := Convexity.StdSimplex.single_mem_coordinateSet ℝ 0
+  have hunique : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (0 + 1)), x = c := by
     intro x hx
     have h1 : ∑ i, x i = 1 := hx.2
     have h2 : ∑ i, c i = 1 := hcmem.2
@@ -360,8 +360,8 @@ theorem exists_isPLHomeomorphInto_of_labelledCells (dim : Λ → ℕ) (face : Λ
     (s : (l : Λ) → (Fin (dim l + 1) → ℝ) → EuclideanSpace ℝ (Fin 3))
     (u : Λ → EuclideanSpace ℝ (Fin 3) → M₁) (v : Λ → EuclideanSpace ℝ (Fin 3) → M₂)
     (sourceCell : Λ → Set M₁) (targetCell : Λ → Set M₂) (hdim : ∀ l, dim l ≤ 3)
-    (hr : ∀ l, IsPLHomeomorphOn (r l) (stdSimplex ℝ (Fin (dim l + 1))) (P l))
-    (hs : ∀ l, IsPLHomeomorphOn (s l) (stdSimplex ℝ (Fin (dim l + 1))) (Q l))
+    (hr : ∀ l, IsPLHomeomorphOn (r l) (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim l + 1))) (P l))
+    (hs : ∀ l, IsPLHomeomorphOn (s l) (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim l + 1))) (Q l))
     (hu : ∀ l, IsPLHomeomorphInto 3 (u l) (P l))
     (hv : ∀ l, IsPLHomeomorphInto 3 (v l) (Q l))
     (hsourceCell : ∀ l, sourceCell l = u l '' P l)
@@ -498,9 +498,9 @@ theorem exists_isPLHomeomorphInto_of_labelledCells (dim : Λ → ℕ) (face : Λ
         choose Fnew hFnew using hnew
         set fcell : Λ → M₁ → M₂ := fun l => if dim l ≤ d then fcold l else Fnew l with hfcell
         have hfc1 : ∀ l, dim l ≤ d → fcell l = fcold l := fun l hl => by
-          simp only [hfcell, if_pos hl]
+          simp only [hfcell, ite_eq_left hl]
         have hfc2 : ∀ l, ¬ dim l ≤ d → fcell l = Fnew l := fun l hl => by
-          simp only [hfcell, if_neg hl]
+          simp only [hfcell, ite_eq_right hl]
         have hemb : ∀ l, dim l ≤ d + 1 → IsPLHomeomorphInto 3 (fcell l) (sourceCell l) := by
           intro l hl
           by_cases hd : dim l ≤ d

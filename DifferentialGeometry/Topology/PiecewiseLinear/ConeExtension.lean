@@ -41,17 +41,18 @@ theorem simplicialMap_coneComplex_apply {p : E} {L : Geometry.SimplicialComplex 
   have hw : ∀ v ∈ insert p σ, weights (insert p σ) (p + s • (z - p)) v =
       if v = p then 1 - s else s * weights σ z v := by
     refine weights_eq ((coneComplex h).indep hins) hx ?_ ?_
-    · rw [Finset.sum_insert hpσ, if_pos rfl,
-        Finset.sum_congr rfl fun v hv => if_neg (ne_of_mem_of_not_mem hv hpσ), ← Finset.mul_sum,
+    · rw [Finset.sum_insert hpσ, ite_eq_left rfl,
+        Finset.sum_congr rfl fun v hv => ite_eq_right (ne_of_mem_of_not_mem hv hpσ),
+        ← Finset.mul_sum,
         sum_weights hz]
       ring
-    · rw [Finset.sum_insert hpσ, if_pos rfl,
-        Finset.sum_congr rfl fun v hv => by rw [if_neg (ne_of_mem_of_not_mem hv hpσ)]]
+    · rw [Finset.sum_insert hpσ, ite_eq_left rfl,
+        Finset.sum_congr rfl fun v hv => by rw [ite_eq_right (ne_of_mem_of_not_mem hv hpσ)]]
       simp_rw [mul_smul]
       rw [← Finset.smul_sum, sum_weights_smul hz, add_smul_sub_eq_combo]
-  rw [Finset.sum_congr rfl fun v hv => by rw [hw v hv], Finset.sum_insert hpσ, if_pos rfl, hφp,
+  rw [Finset.sum_congr rfl fun v hv => by rw [hw v hv], Finset.sum_insert hpσ, ite_eq_left rfl, hφp,
     Finset.sum_congr rfl fun v hv => by
-      rw [if_neg (ne_of_mem_of_not_mem hv hpσ), hφ v hv,
+      rw [ite_eq_right (ne_of_mem_of_not_mem hv hpσ), hφ v hv,
         hA (subset_convexHull ℝ _ (Finset.mem_coe.mpr hv))]]
   simp_rw [mul_smul]
   rw [← Finset.smul_sum, ← affineMap_apply_eq_sum_weights_smul A hz, ← hA hz, add_smul_sub_eq_combo]
@@ -92,9 +93,9 @@ theorem exists_isPLHomeomorphOn_coneComplex [FiniteDimensional ℝ E] [FiniteDim
   have hφp : φ p = q := by simp [φ]
   have hφ'q : φ' q = p := by simp [φ']
   have hφ : ∀ σ ∈ L₁.faces, ∀ v ∈ σ, φ v = f v := fun σ hσ v hv => by
-    simp only [φ, if_neg (ne_of_mem_of_not_mem hv (h₁.notMem_face hσ))]
+    simp only [φ, ite_eq_right (ne_of_mem_of_not_mem hv (h₁.notMem_face hσ))]
   have hφ' : ∀ σ ∈ L'₁.faces, ∀ v ∈ σ, φ' v = f' v := fun σ hσ v hv => by
-    simp only [φ', if_neg (ne_of_mem_of_not_mem hv (h'₁.notMem_face hσ))]
+    simp only [φ', ite_eq_right (ne_of_mem_of_not_mem hv (h'₁.notMem_face hσ))]
   set g := simplicialMap (coneComplex h₁) φ with hgdef
   set g' := simplicialMap (coneComplex h'₁) φ' with hg'def
   have hspace : (coneComplex h₁).space = (coneComplex hL).space :=

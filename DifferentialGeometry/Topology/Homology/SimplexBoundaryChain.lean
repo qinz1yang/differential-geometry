@@ -6,6 +6,7 @@ import DifferentialGeometry.Topology.Homology.LiftedSphere
 noncomputable section
 
 open CategoryTheory AlgebraicTopology
+open Convexity.StdSimplex (coordinateSet coordinateMap coordinateHomeomorph coordinateEquiv)
 open scoped Simplicial
 
 namespace DifferentialGeometry.Topology
@@ -15,10 +16,11 @@ universe u
 variable {X : Type u} [TopologicalSpace X]
 
 def simplexBoundaryFace (n : ℕ) (i : Fin (n + 3)) :
-    C(stdSimplex ℝ (Fin (n + 2)), ULift.{u} (Simplex.boundary (Fin (n + 3)))) :=
-  ⟨fun p => ULift.up ⟨stdSimplex.map i.succAbove p,
-    ⟨i, Simplex.map_succAbove_apply_pivot i p⟩⟩,
-    continuous_uliftUp.comp ((stdSimplex.continuous_map i.succAbove).subtype_mk _)⟩
+    C(Convexity.StdSimplex ℝ (Fin (n + 2)), ULift.{u} (Simplex.boundary (Fin (n + 3)))) :=
+  ⟨fun p => ULift.up ⟨coordinateMap i.succAbove (coordinateEquiv ℝ _ p),
+    ⟨i, Simplex.map_succAbove_apply_pivot i (coordinateEquiv ℝ _ p)⟩⟩,
+    continuous_uliftUp.comp (((Convexity.StdSimplex.continuous_coordinateMap i.succAbove).comp
+      (coordinateHomeomorph ℝ _).continuous).subtype_mk _)⟩
 
 def simplexBoundaryChain (n : ℕ) :
     (integralSingularChains (ULift.{u} (Simplex.boundary (Fin (n + 3))))).X (n + 1) :=
@@ -26,16 +28,17 @@ def simplexBoundaryChain (n : ℕ) :
     ((integralSingularSimplexEquiv (n + 1) _).symm (simplexBoundaryFace n i))
 
 theorem integralSingularChainMap_boundaryDesc_simplexBoundaryChain (n : ℕ)
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p)) :
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p)) :
     (integralSingularChainMap
       ((Simplex.boundaryDesc f h).comp ⟨ULift.down, continuous_uliftDown⟩)).f (n + 1)
       (simplexBoundaryChain.{u} n) =
         ∑ i : Fin (n + 3), (-1 : ℤ) ^ i.val • integralSimplexChain (n + 1)
-          ((integralSingularSimplexEquiv (n + 1) X).symm (f i)) := by
+          ((integralSingularSimplexEquiv (n + 1) X).symm
+            ((f i).comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩)) := by
   rw [simplexBoundaryChain, map_sum]
   apply Finset.sum_congr rfl
   intro i _
@@ -44,7 +47,7 @@ theorem integralSingularChainMap_boundaryDesc_simplexBoundaryChain (n : ℕ)
   apply (integralSingularSimplexEquiv (n + 1) X).injective
   rw [integralSingularSimplexMap_apply, Equiv.apply_symm_apply, Equiv.apply_symm_apply]
   ext p
-  exact Simplex.boundaryDesc_face f h i p
+  exact Simplex.boundaryDesc_face f h i (coordinateEquiv ℝ _ p)
 
 def simplexBoundarySphereMap (n : ℕ) :
     C(ULift.{u} (Simplex.boundary (Fin (n + 3))), liftedHomotopySphere.{u} n) :=
@@ -59,16 +62,17 @@ def simplexBoundarySphereChain (n : ℕ) :
     (simplexBoundaryChain n)
 
 theorem integralSingularChainMap_boundarySphereDesc_simplexBoundarySphereChain (n : ℕ)
-    (f : Fin (n + 3) → C(stdSimplex ℝ (Fin (n + 2)), X))
+    (f : Fin (n + 3) → C(coordinateSet ℝ (Fin (n + 2)), X))
     (h : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      f i (stdSimplex.map j.succAbove p) =
-        f (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p)) :
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      f i (coordinateMap j.succAbove p) =
+        f (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p)) :
     (integralSingularChainMap
       ((Simplex.boundarySphereDesc f h).comp ⟨ULift.down, continuous_uliftDown⟩)).f (n + 1)
       (simplexBoundarySphereChain.{u} n) =
         ∑ i : Fin (n + 3), (-1 : ℤ) ^ i.val • integralSimplexChain (n + 1)
-          ((integralSingularSimplexEquiv (n + 1) X).symm (f i)) := by
+          ((integralSingularSimplexEquiv (n + 1) X).symm
+            ((f i).comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩)) := by
   let g : C(liftedHomotopySphere.{u} n, X) :=
     (Simplex.boundarySphereDesc f h).comp ⟨ULift.down, continuous_uliftDown⟩
   have he : g.comp (simplexBoundarySphereMap n) =
@@ -100,7 +104,7 @@ universe u
 
 private def simplexBoundaryAmbientInclusion (n : ℕ) :
     C(ULift.{u} (Simplex.boundary (Fin (n + 3))),
-      ULift.{u} (stdSimplex ℝ (Fin (n + 3)))) :=
+      ULift.{u} (coordinateSet ℝ (Fin (n + 3)))) :=
   ⟨fun p => ULift.up p.down.val,
     continuous_uliftUp.comp (continuous_subtype_val.comp continuous_uliftDown)⟩
 
@@ -112,15 +116,22 @@ private theorem simplexBoundaryAmbientInclusion_injective (n : ℕ) :
 private theorem simplexBoundaryChain_inclusion (n : ℕ) :
     (integralSingularChainMap (simplexBoundaryAmbientInclusion n)).f (n + 1)
       (simplexBoundaryChain.{u} n) =
-        (integralSingularChains (ULift.{u} (stdSimplex ℝ (Fin (n + 3))))).d (n + 2) (n + 1)
+        (integralSingularChains (ULift.{u} (coordinateSet ℝ (Fin (n + 3))))).d (n + 2) (n + 1)
           (integralSimplexChain (n + 2)
             ((integralSingularSimplexEquiv (n + 2) _).symm
-              ⟨ULift.up, continuous_uliftUp⟩)) := by
+              ⟨fun p => ULift.up (coordinateEquiv ℝ _ p),
+                continuous_uliftUp.comp (coordinateHomeomorph ℝ _).continuous⟩)) := by
   rw [simplexBoundaryChain, map_sum, integralSimplexChain_boundary]
   apply Finset.sum_congr rfl
   intro i _
   rw [map_zsmul, integralSimplexChain_map]
   congr 2
+  apply (integralSingularSimplexEquiv (n + 1) _).injective
+  apply ContinuousMap.ext
+  intro p
+  change ULift.up (coordinateMap i.succAbove (coordinateEquiv ℝ _ p)) =
+    ULift.up (coordinateEquiv ℝ _ (Convexity.StdSimplex.map i.succAbove p))
+  exact congrArg ULift.up (Convexity.StdSimplex.coordinateEquiv_map i.succAbove p).symm
 
 theorem simplexBoundaryChain_boundary (n : ℕ) :
     (integralSingularChains (ULift.{u} (Simplex.boundary (Fin (n + 3))))).d (n + 1) n
@@ -144,8 +155,9 @@ theorem simplexBoundaryChain_boundary (n : ℕ) :
       (simplexBoundaryChain.{u} n)) = 0
   rw [simplexBoundaryChain_inclusion]
   exact congrArg (fun k => k (integralSimplexChain (n + 2)
-    ((integralSingularSimplexEquiv (n + 2) _).symm ⟨ULift.up, continuous_uliftUp⟩)))
-      ((integralSingularChains (ULift.{u} (stdSimplex ℝ (Fin (n + 3))))).d_comp_d
+    ((integralSingularSimplexEquiv (n + 2) _).symm ⟨fun p => ULift.up (coordinateEquiv ℝ _ p),
+                continuous_uliftUp.comp (coordinateHomeomorph ℝ _).continuous⟩)))
+      ((integralSingularChains (ULift.{u} (coordinateSet ℝ (Fin (n + 3))))).d_comp_d
         (n + 2) (n + 1) n)
 
 theorem simplexBoundarySphereChain_boundary (n : ℕ) :

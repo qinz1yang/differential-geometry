@@ -405,6 +405,7 @@ private theorem covDerivAlong_gradient_lRegularizedAction_endpointBranch
         DifferentialGeometry.mvfderiv_real_eq_mfderiv,
         hq'.mfderiv_eq (I := I) (I' := 𝓘(Real, Real))]
       rw [hq'.self_of_nhds]
+      simp [tangentSpaceCast]
     exact congrArg
       (fun L : TangentSpace I q →ₗ[Real] Real ↦
         TotalSpace.mk' E q (metricSharp (I := I) g q L)) hmv

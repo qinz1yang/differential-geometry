@@ -5,10 +5,12 @@ import DifferentialGeometry.Topology.Homology.Algebra.FiniteTypeMap
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex.Attachment
 variable (k : Type) [Field k] {n : ℕ} {X P : TopCat.{0}}
   {g : TopCat.of (boundary (Fin (n + 1))) ⟶ X}
-  {r : TopCat.of (stdSimplex ℝ (Fin (n + 1))) ⟶ P} {b : X ⟶ P}
+  {r : TopCat.of (coordinateSet ℝ (Fin (n + 1))) ⟶ P} {b : X ⟶ P}
   (h : IsPushout boundaryι g r b)
 include h
 
@@ -16,13 +18,13 @@ private theorem finite_euler_of_attachment
     (hX : DifferentialGeometry.Homology.finiteHomologyType k X) :
     DifferentialGeometry.Homology.finiteHomologyType k P ∧
       DifferentialGeometry.Homology.eulerChar k P = DifferentialGeometry.Homology.eulerChar k X + (-1 : ℤ)^n := by
-  let D := TopCat.of (stdSimplex ℝ (Fin (n + 1)))
+  let D := TopCat.of (coordinateSet ℝ (Fin (n + 1)))
   let B := boundary (Fin (n + 1))
   let s : Set P := Set.range b
   let R := ModuleCat.of k k
   have hB := finiteHomologyType_boundary k n
-  let : ContractibleSpace D := (convex_stdSimplex ℝ (Fin (n + 1))).contractibleSpace
-    ⟨stdSimplex.barycenter, stdSimplex.barycenter.prop⟩
+  let : ContractibleSpace D := (convex_coordinateSet ℝ (Fin (n + 1))).contractibleSpace
+    ⟨coordinateBarycenter, coordinateBarycenter.prop⟩
   have hD : DifferentialGeometry.Homology.finiteHomologyType k D :=
     DifferentialGeometry.Homology.finiteHomologyType_of_contractible k
   let e : X ≃ₜ TopCat.of s := (DifferentialGeometry.TopCat.Pushout.isClosedEmbedding_inr h

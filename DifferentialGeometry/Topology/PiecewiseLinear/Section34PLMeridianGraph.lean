@@ -84,7 +84,7 @@ theorem exists_PL_meridian_graph_of_surjective_longitudes
   have he : e 0 = y := by simp [e]
   obtain ⟨a, ha⟩ := exists_nullhomotopic_graph f x e (by rw [he]; exact hs)
   let a' : F → E := fun q => if h : q ∈ K.space then (a ⟨q, h⟩ : E) else 0
-  have ha' (q : K.space) : a' q = (a q : E) := dif_pos q.2
+  have ha' (q : K.space) : a' q = (a q : E) := dite_eq_left q.2
   have hcont : ContinuousOn a' K.space := by
     rw [continuousOn_iff_continuous_domRestrict]
     exact (continuous_subtype_val.comp a.continuous).congr fun q => (ha' q).symm

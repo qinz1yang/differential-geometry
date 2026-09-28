@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.MovingFrameBracketDivergence
 import DifferentialGeometry.Geometry.Curvature.Bochner.Tensor.Pointwise.FieldDecomposition
+
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise)
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Geometry.Curvature
 

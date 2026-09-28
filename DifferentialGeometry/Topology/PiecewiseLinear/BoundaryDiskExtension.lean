@@ -15,7 +15,7 @@ theorem exists_isPLHomeomorphOn_eqOn_boundary_disk_in_polyhedron
     {M C D U : Set (EuclideanSpace ℝ (Fin 3))}
     (hM : IsPolyhedron M) (hC : IsPLBall 3 C) (hCM : C ⊆ M)
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDC : D ⊆ C) (hDM : D ⊆ frontier M)
     (hU : IsOpen U) (hUC : U ∩ M ⊆ C)
     {g : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3)}

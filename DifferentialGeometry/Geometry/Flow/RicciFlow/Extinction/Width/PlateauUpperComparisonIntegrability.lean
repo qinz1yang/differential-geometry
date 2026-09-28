@@ -69,9 +69,9 @@ theorem SmoothDisk.integrableOn_diskExtension_metricVariationDensity
   refine hInt.congr_fun ?_ measurableSet_closedBall
   intro z hz
   rw [show diskExtension (u.metricVariationDensity W.family.metric D.regular t₀) z =
-      u.metricVariationDensity W.family.metric D.regular t₀ ⟨z, hz⟩ from dif_pos hz,
+      u.metricVariationDensity W.family.metric D.regular t₀ ⟨z, hz⟩ from dite_eq_left hz,
     show diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z =
-      u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dif_pos hz]
+      u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dite_eq_left hz]
   exact hdens ⟨z, hz⟩
 
 theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_and_boundaryFlux

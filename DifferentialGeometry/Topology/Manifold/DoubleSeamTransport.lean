@@ -152,7 +152,7 @@ private theorem pushforwardField_of_mem
     {z : M₂} (hz : z ∈ e.target) :
     pushforwardField I₁ I₂ e v z = _root_.VectorField.mpullback I₂ I₁ e.symm v z := by
   classical
-  simp only [pushforwardField, if_pos hz]
+  simp only [pushforwardField, ite_eq_left hz]
 
 private theorem pushforwardField_of_not_mem
     {E₁ H₁ M₁ E₂ H₂ M₂ : Type*}
@@ -165,7 +165,7 @@ private theorem pushforwardField_of_not_mem
     {z : M₂} (hz : z ∉ e.target) :
     pushforwardField I₁ I₂ e v z = 0 := by
   classical
-  simp only [pushforwardField, if_neg hz]
+  simp only [pushforwardField, ite_eq_right hz]
 
 private theorem contMDiffOn_pushforwardField
     {E₁ H₁ M₁ E₂ H₂ M₂ : Type*}
@@ -553,7 +553,7 @@ theorem exists_doubleSeam_transport
                 (⟨w, v⟩ : TangentBundle 𝓘(ℝ, E) (Double B))) ?_
               rw [hXsec w]
               simp only [Pout]
-              rw [if_neg (not_lt.mpr hw.le)]
+              rw [ite_eq_right (not_lt.mpr hw.le)]
             have hsum : ContMDiffAt 𝓘(ℝ, E) (𝓘(ℝ, E)).tangent ∞
                 (fun w => (⟨w, ρ w • Pseam w + (1 - ρ w) • Pneg w⟩ :
                   TangentBundle 𝓘(ℝ, E) (Double B))) z :=
@@ -574,7 +574,7 @@ theorem exists_doubleSeam_transport
                 (⟨w, v⟩ : TangentBundle 𝓘(ℝ, E) (Double B))) ?_
               rw [hXsec w]
               simp only [Pout]
-              rw [if_pos hw]
+              rw [ite_eq_left hw]
             have hsum : ContMDiffAt 𝓘(ℝ, E) (𝓘(ℝ, E)).tangent ∞
                 (fun w => (⟨w, ρ w • Pseam w + (1 - ρ w) • Ppos w⟩ :
                   TangentBundle 𝓘(ℝ, E) (Double B))) z :=
@@ -607,7 +607,7 @@ theorem exists_doubleSeam_transport
               refine congrArg (fun v : TangentSpace 𝓘(ℝ, E) w =>
                 (⟨w, v⟩ : TangentBundle 𝓘(ℝ, E) (Double B))) ?_
               simp only [Pout]
-              rw [if_neg (not_lt.mpr hw.le)]
+              rw [ite_eq_right (not_lt.mpr hw.le)]
             exact ((hPnegSmooth.contMDiffAt
               (pdNeg.open_target.mem_nhds ((hnegMem z).mpr hlt)))).congr_of_eventuallyEq
               (hev.trans hev2)
@@ -620,7 +620,7 @@ theorem exists_doubleSeam_transport
               refine congrArg (fun v : TangentSpace 𝓘(ℝ, E) w =>
                 (⟨w, v⟩ : TangentBundle 𝓘(ℝ, E) (Double B))) ?_
               simp only [Pout]
-              rw [if_pos hw]
+              rw [ite_eq_left hw]
             exact ((hPposSmooth.contMDiffAt
               (pdPos.open_target.mem_nhds ((hposMem z).mpr hgt)))).congr_of_eventuallyEq
               (hev.trans hev2)
@@ -684,9 +684,9 @@ theorem exists_doubleSeam_transport
       intro z hz
       have hne : Pout z ≠ 0 := hz
       by_cases hpos : 0 < doubleHeight B r hr z
-      · have hne' : Ppos z ≠ 0 := by simpa only [Pout, if_pos hpos] using hne
+      · have hne' : Ppos z ≠ 0 := by simpa only [Pout, ite_eq_left hpos] using hne
         exact Or.inl (hsuppPos (subset_tsupport _ (Function.mem_support.mpr hne')))
-      · have hne' : Pneg z ≠ 0 := by simpa only [Pout, if_neg hpos] using hne
+      · have hne' : Pneg z ≠ 0 := by simpa only [Pout, ite_eq_right hpos] using hne
         exact Or.inr (hsuppNeg (subset_tsupport _ (Function.mem_support.mpr hne')))
     have hsuppRest : tsupport (fun z => (1 - ρ z) • Pout z) ⊆
         doublePositive B '' tsupport V ∪ doubleNegative B '' tsupport V := by
@@ -731,7 +731,7 @@ theorem exists_doubleSeam_transport
       rfl
     have hPout : Pout (doublePositive B x) = mfderiv I 𝓘(ℝ, E) (doublePositive B) x (V x) := by
       have hpos : 0 < doubleHeight B r hr (doublePositive B x) := by simpa using hx
-      simp only [Pout, if_pos hpos]
+      simp only [Pout, ite_eq_left hpos]
       exact hPpos
     by_cases hxa : r x < a
     · obtain ⟨q₀, hq₀⟩ := hsmall x hxa.le

@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionR
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise_0s_nonneg)
 
 
 noncomputable section
@@ -18,7 +20,6 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
@@ -280,7 +281,7 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
             (fun k : Fin r => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
         = fun b : M =>
             ∏ k : Fin r,
-              chartGramBilin (I := I) (M := M) g α b
+              DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b
                 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k))
                 ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) := by
     funext b
@@ -289,7 +290,7 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
   refine contMDiffOn_finsetProd (fun k _ => ?_)
   have hentry :
       (fun b : M =>
-          chartGramBilin (I := I) (M := M) g α b
+          DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (φ_first k))
             ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)))
         = fun b : M =>
@@ -301,7 +302,7 @@ private lemma chartSeparableFormAt_basis_scalar_contMDiffOn
                   (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun
                     ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (ψ k)) kk := by
     funext b
-    rw [chartGramBilin_apply]
+    rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_apply]
   rw [hentry]
   refine contMDiffOn_finsetSum (fun j _ => ?_)
   refine contMDiffOn_finsetSum (fun kk _ => ?_)

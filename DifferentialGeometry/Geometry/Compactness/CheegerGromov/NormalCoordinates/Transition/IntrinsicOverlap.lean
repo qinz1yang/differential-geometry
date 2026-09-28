@@ -83,8 +83,9 @@ theorem IntrinsicBallChart.target_eq_eball
       (by simpa only [Metric.mem_ball, dist_zero_right] using hz)
   · intro hy
     apply (c.mem_target_and_norm_symm (I := I) g hEnorm p ?_).1
-    rw [Metric.mem_eball'] at hy
-    simpa only [IsRiemannianManifold.out (I := I)] using hy
+    change edist y p < ENNReal.ofReal r at hy
+    simpa only [PseudoEMetricSpace.edist_comm,
+      IsRiemannianManifold.out (I := I)] using hy
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 
@@ -137,8 +138,9 @@ theorem IntrinsicBallChart.image_ball_eq_eball
       (by simpa only [Metric.mem_ball, dist_zero_right] using hz)
   · intro hy
     have hydist : Manifold.riemannianEDist I p y < ENNReal.ofReal s := by
-      rw [Metric.mem_eball'] at hy
-      simpa only [IsRiemannianManifold.out (I := I)] using hy
+      change edist y p < ENNReal.ofReal s at hy
+      simpa only [PseudoEMetricSpace.edist_comm,
+        IsRiemannianManifold.out (I := I)] using hy
     obtain ⟨hytarget, hynorm⟩ := c.mem_target_and_norm_symm g hEnorm p
       (hydist.trans_le (ENNReal.ofReal_le_ofReal hsr))
     refine ⟨c.hom.symm y, ?_, c.hom.right_inv hytarget⟩
@@ -164,7 +166,15 @@ theorem IntrinsicBallChart.transition_maps_to_ball_of_edist_add_le
     exact ⟨z, hz, rfl⟩
   have hdz : c.hom z ∈ d.hom '' Metric.ball (0 : E) t := by
     rw [d.image_ball_eq_eball g hEnorm q htr]
-    exact Metric.eball_subset hmargin hfin hcz
+    change edist (c.hom z) q < ENNReal.ofReal t
+    change edist (c.hom z) p < ENNReal.ofReal s at hcz
+    calc
+      edist (c.hom z) q ≤ edist (c.hom z) p + edist p q :=
+        edist_triangle _ _ _
+      _ = edist p q + edist (c.hom z) p := add_comm _ _
+      _ < edist p q + ENNReal.ofReal s :=
+        ENNReal.add_lt_add_left hfin hcz
+      _ ≤ ENNReal.ofReal t := hmargin
   obtain ⟨w, hw, hmap⟩ := hdz
   change d.hom.symm (c.hom z) ∈ Metric.ball (0 : E) t
   rw [show c.hom z = d.hom w by exact hmap.symm]
@@ -185,9 +195,18 @@ theorem IntrinsicBallChart.overlap_on_ball_of_edist_add_le
     ne_of_lt ((le_add_right (le_refl (edist p q))).trans_lt
       (hmargin.trans_lt ENNReal.ofReal_lt_top))
   rw [d.image_ball_eq_eball g hEnorm q le_rfl]
-  apply Metric.eball_subset hmargin hfin
-  rw [← c.image_ball_eq_eball g hEnorm p hsr]
-  exact ⟨z, hz, rfl⟩
+  change edist (c.hom z) q < ENNReal.ofReal r'
+  have hcz : c.hom z ∈ Metric.eball p (ENNReal.ofReal s) := by
+    rw [← c.image_ball_eq_eball g hEnorm p hsr]
+    exact ⟨z, hz, rfl⟩
+  change edist (c.hom z) p < ENNReal.ofReal s at hcz
+  calc
+    edist (c.hom z) q ≤ edist (c.hom z) p + edist p q :=
+      edist_triangle _ _ _
+    _ = edist p q + edist (c.hom z) p := add_comm _ _
+    _ < edist p q + ENNReal.ofReal s :=
+      ENNReal.add_lt_add_left hfin hcz
+    _ ≤ ENNReal.ofReal r' := hmargin
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 
@@ -233,7 +252,14 @@ theorem IntrinsicBallChart.disjoint_image_ball_of_add_le_edist
     Disjoint (c.hom '' Metric.ball (0 : E) a)
       (d.hom '' Metric.ball (0 : E) b) := by
   rw [c.image_ball_eq_eball g hEnorm p har, d.image_ball_eq_eball g hEnorm q hbr]
-  exact Metric.eball_disjoint hmargin
+  refine Set.disjoint_left.mpr (fun y hy hdy => ?_)
+  change edist y p < ENNReal.ofReal a at hy
+  change edist y q < ENNReal.ofReal b at hdy
+  apply (not_lt_of_ge hmargin)
+  calc
+    edist p q ≤ edist p y + edist y q := edist_triangle _ _ _
+    _ = edist y p + edist y q := by rw [PseudoEMetricSpace.edist_comm]
+    _ < ENNReal.ofReal a + ENNReal.ofReal b := ENNReal.add_lt_add hy hdy
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates
 

@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem exists_isPLHomeomorphOn_prism_eqOn_top_and_side {E : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P : Set E} {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     {u : E → E} (hu : IsPLHomeomorphOn u P P)
     (hfix : EqOn u id (q '' stdSimplexBoundary 2)) :
     ∃ Φ : E × ℝ → E × ℝ,
@@ -54,7 +54,7 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_top_and_side {E : Type*}
       exact isHPolytope_Icc.isPolyhedron
     refine (hu.prodMap hs.isPLHomeomorphOn_id).congr ?_
     rintro z ⟨_, hz⟩
-    simp only [θ, if_pos (show z.2 = 0 from hz)]
+    simp only [θ, ite_eq_left (show z.2 = 0 from hz)]
     rfl
   have hθfix : EqOn θ id
       (P ×ˢ ({1} : Set ℝ) ∪ (q '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1) := by
@@ -62,8 +62,8 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_top_and_side {E : Type*}
     · have hz1 : z.2 = 1 := hz.2
       simp only [θ, hz1, one_ne_zero, ↓reduceIte, id_eq]
     · by_cases hz0 : z.2 = 0
-      · simp only [θ, if_pos hz0, hfix hz.1, id_eq]
-      · exact if_neg hz0
+      · simp only [θ, ite_eq_left hz0, hfix hz.1, id_eq]
+      · exact ite_eq_right hz0
   have hθrest := hrest.isPLHomeomorphOn_id.congr hθfix
   have hmeet : θ '' ((P ×ˢ ({0} : Set ℝ)) ∩
       (P ×ˢ ({1} : Set ℝ) ∪ (q '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1)) =
@@ -79,7 +79,7 @@ theorem exists_isPLHomeomorphOn_prism_eqOn_top_and_side {E : Type*}
       rw [hbdA]
       exact Or.inl ⟨hx, rfl⟩
     rw [hΦθ hm]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   · intro z hz
     exact (hΦθ (hbdA.symm ▸ Or.inr hz)).trans (hθfix hz)
 

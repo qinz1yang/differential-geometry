@@ -193,15 +193,15 @@ open Classical in
 theorem exists_disjoint_slice_disks_of_centered_prism
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     {N : Set F} {ρ : E × ℝ → F}
     (hρ : IsPLHomeomorphOn ρ (P ×ˢ Icc (-1 : ℝ) 1) N) :
     ∃ (D₀ D₁ A : Set F) (q₀ q₁ : (Fin 3 → ℝ) → F),
       D₀ = ρ '' (P ×ˢ {(-1 / 2 : ℝ)}) ∧
       D₁ = ρ '' (P ×ˢ {(1 / 2 : ℝ)}) ∧
       A = ρ '' ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 / 2 : ℝ) (1 / 2 : ℝ)) ∧
-      IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       IsPLHomeomorphOn ρ
         ((r '' stdSimplexBoundary 2) ×ˢ Icc (-1 / 2 : ℝ) (1 / 2 : ℝ)) A ∧
       D₀ ⊆ N ∧ D₁ ⊆ N ∧ A ⊆ N ∧ Disjoint D₀ D₁ ∧
@@ -239,11 +239,11 @@ theorem exists_disjoint_slice_disks_of_centered_prism
   have hSP : S ⊆ P ×ˢ Icc (-1 : ℝ) 1 := by
     rintro ⟨x, t⟩ ⟨hx, ht⟩
     exact ⟨hJP hx, ht.1.trans' (by norm_num), ht.2.trans (by norm_num)⟩
-  have hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) (ρ '' Q₀) :=
+  have hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' Q₀) :=
     hr.trans ((hP.isPolyhedron.isPLHomeomorphOn_prod_const (-1 / 2 : ℝ)).trans
       (hρ.restrict
         (hP.isPolyhedron.prod (isHPolytope_singleton (-1 / 2 : ℝ)).isPolyhedron) hQ₀P))
-  have hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) (ρ '' Q₁) :=
+  have hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' Q₁) :=
     hr.trans ((hP.isPolyhedron.isPLHomeomorphOn_prod_const (1 / 2 : ℝ)).trans
       (hρ.restrict
         (hP.isPolyhedron.prod (isHPolytope_singleton (1 / 2 : ℝ)).isPolyhedron) hQ₁P))

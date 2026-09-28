@@ -70,7 +70,7 @@ private theorem capE4Unit_ofLp_last : capE4Unit.ofLp (Fin.last 3) = 1 := by
 
 private theorem capE4Unit_ofLp_castSucc (i : Fin 3) : capE4Unit.ofLp i.castSucc = 0 := by
   rw [capE4Unit, PiLp.single_apply]
-  rw [if_neg (Fin.castSucc_ne_last i)]
+  rw [ite_eq_right (Fin.castSucc_ne_last i)]
 
 private theorem capE4Unit_norm : ‖capE4Unit‖ = 1 := by
   rw [capE4Unit]
@@ -332,12 +332,12 @@ private theorem stereographicSymm_capStereoEquivTrue_coe (v : CapE3) :
   funext i
   refine Fin.lastCases ?_ (fun j => ?_) i
   · simp only [standardNeckCapPointAmbient, WithLp.ofLp_toLp, PiLp.add_apply, PiLp.smul_apply,
-      capE4Embed_ofLp_last, capPoleTrue_ofLp_last, snocR_last, if_true, smul_zero]
+      capE4Embed_ofLp_last, capPoleTrue_ofLp_last, snocR_last, ite_true, smul_zero]
     rw [standardNeckCapCAmbient_eq_radius, standardNeckCapRadius_sq, capScaleFactor_sq, zero_add]
     simp only [smul_eq_mul, mul_one]
     exact capStereographicLastTrue_algebra ‖v‖
   · simp only [standardNeckCapPointAmbient, WithLp.ofLp_toLp, PiLp.add_apply, PiLp.smul_apply,
-      capE4Embed_ofLp_castSucc, capPoleTrue_ofLp_castSucc, snocR_castSucc, if_true, smul_zero]
+      capE4Embed_ofLp_castSucc, capPoleTrue_ofLp_castSucc, snocR_castSucc, ite_true, smul_zero]
     rw [standardNeckCapUAmbient_ofLp, standardNeckCapRadius_sq, capScaleFactor_sq,
       show capScaleFactor = 2 * standardNeckCapAmbientRadius from rfl, add_zero]
     simp only [smul_eq_mul]
@@ -355,7 +355,7 @@ private theorem stereographicSymm_capStereoEquiv_coe (v : CapE3) :
   funext i
   refine Fin.lastCases ?_ (fun j => ?_) i
   · simp only [standardNeckCapPointAmbient, WithLp.ofLp_toLp, PiLp.add_apply, PiLp.smul_apply,
-      capE4Embed_ofLp_last, capPole_ofLp_last, snocR_last, Bool.false_eq_true, if_false,
+      capE4Embed_ofLp_last, capPole_ofLp_last, snocR_last, Bool.false_eq_true, ite_false,
       smul_zero]
     rw [standardNeckCapCAmbient_eq_radius, standardNeckCapRadius_sq, capScaleFactor_sq]
     rw [zero_add]
@@ -364,7 +364,7 @@ private theorem stereographicSymm_capStereoEquiv_coe (v : CapE3) :
     ring
   · simp only [standardNeckCapPointAmbient, WithLp.ofLp_toLp, PiLp.add_apply, PiLp.smul_apply,
       capE4Embed_ofLp_castSucc, capPole_ofLp_castSucc, snocR_castSucc, Bool.false_eq_true,
-      if_false, smul_zero]
+      ite_false, smul_zero]
     rw [standardNeckCapUAmbient_ofLp, standardNeckCapRadius_sq, capScaleFactor_sq]
     rw [show capScaleFactor = 2 * standardNeckCapAmbientRadius from rfl]
     rw [add_zero]

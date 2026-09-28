@@ -1,7 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Defs
 
 
-open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section
 
@@ -10,8 +9,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Geometry
-namespace Curvature
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -187,6 +185,5 @@ theorem tensorRS_section_eq_sum_slot0Curry_uncurry
   exact tensorRS_section_uncurry_cons_eval_slot0Curry (I := I) (M := M) g s x e
     (fun k => k.elim0) hv_expand T w m
 
-end Curvature
-end Geometry
+end TensorMetric
 end DifferentialGeometry

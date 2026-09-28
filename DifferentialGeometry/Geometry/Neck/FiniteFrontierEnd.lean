@@ -840,7 +840,7 @@ private theorem NeckFrontierState.exists_scheduled_process_of_transition
   refine ⟨S, selected, rfl, hmono, hanti, fun n => (states n).property,
     fun n => hpick n (states n), ?_, hsteps, N, hN⟩
   intro n hn
-  exact if_pos hn
+  exact ite_eq_left hn
 
 private theorem NeckFrontierState.exists_scheduled_process
     [PreconnectedSpace M] [NoncompactSpace M]

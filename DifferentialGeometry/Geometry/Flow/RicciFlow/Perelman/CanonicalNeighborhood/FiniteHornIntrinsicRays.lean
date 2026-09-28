@@ -141,7 +141,7 @@ private theorem endRay_of_completion_segment
   have hpoint (s : ℝ) (hs : s ∈ Ioc (0 : ℝ) r) :
       (point s : UniformSpace.Completion W) = f (tau s hs) := by
     dsimp only [point]
-    rw [dif_pos hs]
+    rw [dite_eq_left hs]
     exact Classical.choose_spec (hrealized s hs)
   let a : EndRay H.endpoint := {
     length := r

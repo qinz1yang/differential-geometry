@@ -48,9 +48,9 @@ private theorem dual_affine_increment_le_on_of_ae_fderiv
       simpa only [add_sub_cancel_left] using hconv.add_smul_sub_mem hbT.1 hbT.2 ht'
     let u : ℝ → ℝ := fun t => ell (f (b + t • v))
     have hlineLip : LipschitzWith (0 + ‖line‖₊) (fun t : ℝ => b + t • v) := by
-      exact (LipschitzWith.const b).add line.lipschitz
+      exact (LipschitzWith.const b).add line.lipschitzWith
     have huLip : LipschitzOnWith (‖ell‖₊ * (L * (0 + ‖line‖₊))) u (uIcc 0 1) :=
-      ell.lipschitz.comp_lipschitzOnWith (hf.comp hlineLip.lipschitzOnWith hseg)
+      ell.lipschitzWith.comp_lipschitzOnWith (hf.comp hlineLip.lipschitzOnWith hseg)
     have huAC : AbsolutelyContinuousOnInterval u 0 1 := huLip.absolutelyContinuousOnInterval
     let w : ℝ → ℝ := fun t => u t - t * ell (p v + B b v) - t ^ 2 / 2 * ell (B v v)
     have hpoly₁ : ContDiff ℝ 1 (fun t : ℝ => t * ell (p v + B b v)) := by fun_prop

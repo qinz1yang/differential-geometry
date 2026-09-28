@@ -65,8 +65,8 @@ noncomputable def deTurckLiePairTraceFib (g₁ : SmoothRiemannianMetric I M)
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
   ((cometricDoubleTraceFib (I := I) g₁ 2 x).comp
       ((cometricDoubleTraceFib (I := I) g₁ 4 x).comp
-        (domDomCongrFibRank (I := I) 6 σ x))).comp
-    (tensor0SProdKappaFib (I := I) (p := 3) (q := 3) x κ)
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 6 σ x))).comp
+    (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) (p := 3) (q := 3) x κ)
 
 noncomputable def deTurckLieKoszulTraceFib (g₀ g₁ : SmoothRiemannianMetric I M)
     (σ : Equiv.Perm (Fin 3)) (x : M) :
@@ -74,7 +74,7 @@ noncomputable def deTurckLieKoszulTraceFib (g₀ g₁ : SmoothRiemannianMetric I
   (show Tensor0SBundle.Tensor0SSpace 1 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x from
       connectionDifferenceFib (I := I) g₁ g₀ x).comp
     ((cometricDoubleTraceFib (I := I) g₁ 1 x).comp
-      (domDomCongrFibRank (I := I) 3 σ x))
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 3 σ x))
 
 noncomputable def deTurckLieFirstOrderCoreFib (g₀ g₁ g_bg : SmoothRiemannianMetric I M) (x : M) :
     Tensor0SBundle.Tensor0SSpace 3 I x →L[ℝ] Tensor0SBundle.Tensor0SSpace 2 I x :=
@@ -84,7 +84,7 @@ noncomputable def deTurckLieFirstOrderCoreFib (g₀ g₁ g_bg : SmoothRiemannian
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
     - (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
           ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x)).comp
-        (domDomCongrFibRank (I := I) 3 deTurckLieFirstOrderVecSlotPerm x)
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 3 deTurckLieFirstOrderVecSlotPerm x)
     - deTurckLiePairTraceFib (I := I) g₁ deTurckLieFirstOrderPairPermOuterZero x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
     - deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieFirstOrderKoszulMidPerm x
@@ -96,7 +96,7 @@ noncomputable def deTurckLieFirstOrderFib (g₀ g₁ g_bg : SmoothRiemannianMetr
   Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
       ((PDE.DeTurck.deTurckVF (I := I) g₁ g_bg : Π b : M, TangentSpace I b) x)
     + deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x
-    + (domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x).comp
+    + (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x).comp
         (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x)
     + deTurckLieKoszulTraceFib (I := I) g₀ g₁ deTurckLieFirstOrderKoszulZeroPerm x
 
@@ -180,7 +180,7 @@ private theorem deTurckLiePairTraceFib_apply_section_contMDiff
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLiePairTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.comp_apply, tensor0SProdKappaFib_apply, domDomCongrFibRank_apply]
+    ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 
 omit [CompactSpace M] in
@@ -206,7 +206,7 @@ private theorem deTurckLieKoszulTraceFib_apply_section_contMDiff
   refine congrArg (fun t => TotalSpace.mk' (Tensor0SBundle.Tensor0SModel 2 ℝ E)
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    domDomCongrFibRank_apply]
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
 
 
 omit [CompactSpace M] in
@@ -254,7 +254,7 @@ private theorem deTurckLieFirstOrderCoreFib_apply_section_contMDiff
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLieFirstOrderCoreFib]
   simp only [sub_apply, ContinuousLinearMap.comp_apply]
-  rw [domDomCongrFibRank_apply]
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
   rfl
 
 omit [CompactSpace M] in
@@ -288,7 +288,7 @@ theorem deTurckLieFirstOrderFib_contMDiff (g₀ g₁ g_bg : SmoothRiemannianMetr
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace 2 I z) x t) ?_
   rw [deTurckLieFirstOrderFib]
   simp only [add_apply, ContinuousLinearMap.comp_apply]
-  rw [domDomCongrFibRank_apply]
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply]
   rfl
 
 noncomputable def deTurckLieFirstOrderCoeff (g₀ g₁ g_bg : SmoothRiemannianMetric I M) :

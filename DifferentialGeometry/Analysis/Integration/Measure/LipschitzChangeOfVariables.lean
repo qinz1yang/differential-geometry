@@ -114,7 +114,6 @@ theorem integral_image_eq_integral_abs_det_of_lipschitz {f : E → E} {K : ℝ�
       simp only [mem_ofPred_eq, not_not]
     filter_upwards [ha] with x hx
     apply propext
-    change x ∈ f '' t ↔ x ∈ f '' s
     exact ⟨fun hxt => image_mono (show t ⊆ s from inter_subset_left) hxt, fun hxs =>
       not_not.mp (fun hxt => hx ⟨hxs, hxt⟩)⟩
   rw [← setIntegral_congr_set himage, ← setIntegral_congr_set hts]

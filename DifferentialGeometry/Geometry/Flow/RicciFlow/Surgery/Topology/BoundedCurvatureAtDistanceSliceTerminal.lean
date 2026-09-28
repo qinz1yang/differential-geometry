@@ -48,7 +48,7 @@ private theorem false_of_terminal_counterexamples {ε : ℝ}
     {κ C1 C2 : ℝ} (hκ : 0 < κ) {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ}
     (hphi : Perelman.AdmissiblePinchingFunction phi) {A Cq θ : ℝ} (hA : 0 < A) (hθ : 0 < θ)
     {K : ℝ} (hK : K = max Cq 1) (Dn : ℕ → ℝ) (hDn : Tendsto Dn atTop atTop)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -160,7 +160,7 @@ private theorem false_of_terminal_counterexamples {ε : ℝ}
     rw [hxQ n]
     exact h1.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (hQy n)) hρpos)
   obtain ⟨B, hB⟩ := RetainedCoreHistory.exists_normalized_scalar_bound_of_chain_traces
-    P₀ H t Asl (fun n => hG n) (fun n => (hend n) ▸ ht n) Ctime Cgrad q hq
+    H t Asl (fun n => hG n) (fun n => (hend n) ▸ ht n) Ctime Cgrad q hq
     (fun n j y' t' ht' hq' => hslabs n j (Fin.castSucc_lt_last j) y' t' ht' hq')
     (fun n y' t' ht' hq' => hder n y' t' ht' hq')
     (fun n y' t' ht' hq' v => hgrad n y' t' ht' hq' v) x hQ1
@@ -252,7 +252,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
     (Cq θ : ℝ) (hθ : 0 < θ) :
     ∃ Q Λ Dcap Rrad ζ₀ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧ StandardCap.transitionEnd < Dcap ∧ Dcap ≤ Rrad ∧
     0 < ζ₀ ∧
-    ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+    ∀ (H : RetainedCoreHistory.{u})
       (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
       (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
       (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -292,7 +292,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
       (StandardCap.transitionEnd + 1 + n) (hDn n)
   by_contra hcon
   push Not at hcon
-  choose P₀ H hend s G hG p₀ δb ρb p records hrec hRrad hord hζ t ht hts y q ρ hq hqy hΛ hΛt hW
+  choose H hend s G hG p₀ δb ρb p records hrec hRrad hord hζ t ht hts y q ρ hq hqy hΛ hΛt hW
     hslabs hder hgrad hpinch hpinchG hnc hρ hnot z hz hbad using fun n : ℕ =>
     hcon ((n : ℝ) + max Cq 1 + 1) ((n : ℝ) + max Cq 1 + 1) (StandardCap.transitionEnd + 1 + n)
       (StandardCap.transitionEnd + 1 + n) (min (1 / 2) (ε₀ n)) (by linarith [hn0 n])
@@ -313,7 +313,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_not_capWindowPoin
       (by rw [(hrec n).2.2.2.1]; exact (hζ n).trans (min_le_right _ _))
       (by rw [(hrec n).2.2.1]; exact hord n) ((records n i).static b) (hcan n i b) w
   refine false_of_terminal_counterexamples heps hκ hphi hA hθ rfl
-    (fun n => StandardCap.transitionEnd + 1 + n) ?_ P₀ H hend s G hG records hcan hscale hacc
+    (fun n => StandardCap.transitionEnd + 1 + n) ?_ H hend s G hG records hcan hscale hacc
     hradius t ht hts y q ρ hq hqy hΛ hΛt hW hslabs hder hgrad hpinch hpinchG hnc hρ hnot z hz hbad
   exact tendsto_atTop_add_const_left atTop _ tendsto_natCast_atTop_atTop
 
@@ -323,8 +323,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-theorem RetainedCoreHistory.CapWindowPoint.mono {P₀ : OrientedThreeStage.{u}}
-    {H : RetainedCoreHistory P₀} {p : CutoffParameters}
+theorem RetainedCoreHistory.CapWindowPoint.mono
+    {H : RetainedCoreHistory.{u}} {p : CutoffParameters}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     {k : Fin (H.eventCount + 1)} {y : (H.stage k).Carrier} {t D D' θ θ' : ℝ}
     (h : H.CapWindowPoint records k y t D θ) (hD : D ≤ D') (hθ : θ ≤ θ') :
@@ -336,7 +336,7 @@ theorem RetainedCoreHistory.CapWindowPoint.mono {P₀ : OrientedThreeStage.{u}}
 theorem RetainedCoreHistory.eventually_scalar_bound_at_distance_of_not_capWindowPoint_terminal
     {ε : ℝ} (hεle : ε ≤ coneAccuracy) {κ C1 C2 : ℝ} (hκ : 0 < κ) {Ctime Cgrad : ℝ≥0}
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) {Cq θ₀ : ℝ} (hθ₀ : 0 < θ₀)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -380,7 +380,7 @@ theorem RetainedCoreHistory.eventually_scalar_bound_at_distance_of_not_capWindow
   filter_upwards [hradius.eventually_ge_atTop Rrad, haccuracy ζ₀ hζ₀, hR.eventually_ge_atTop Λ,
     hRt.eventually_ge_atTop Λ, hρ.eventually_ge_atTop Λ, hD.eventually_ge_atTop Dcap]
     with n hn1 hn2 hn3 hn4 hn5 hn6
-  exact hmain (P₀ n) (H n) (hend n) (G n) (hG n) (p₀ n) (δbound n) (ρbound n) (records n)
+  exact hmain (H n) (hend n) (G n) (hG n) (p₀ n) (δbound n) (ρbound n) (records n)
     (hrec n) hn1 (horder n) hn2 (ht n) (hts n) (y n) (q n) (ρ n) (hq n) (hqy n) hn3 hn4 (hW n)
     (hslabs n) (hder n) (hgrad n) (hpinch n) (hpinchG n) (hnc n) hn5
     (fun hcw => hnot n (hcw.mono hn6 (hθ n)))

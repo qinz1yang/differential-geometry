@@ -19,11 +19,11 @@ private theorem dual_alternating_exactAt (A : ModuleCat.{u} ℤ) (n : ℕ) (hn :
   change K.ExactAt n
   have hin : K.d (n - 1) n = if Even n then 𝟙 (F.obj (op A)) else 0 := by
     change F.map ((if n - 1 + 1 = n then if Even n then 𝟙 A else 0 else 0).op) = _
-    rw [if_pos (by omega)]
+    rw [ite_eq_left (by omega)]
     split_ifs <;> simp
   have hout : K.d n (n + 1) = if Even (n + 1) then 𝟙 (F.obj (op A)) else 0 := by
     change F.map ((if n + 1 = n + 1 then if Even (n + 1) then 𝟙 A else 0 else 0).op) = _
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     split_ifs <;> simp
   rw [HomologicalComplex.exactAt_iff' K (n - 1) n (n + 1)
     ((ComplexShape.up ℕ).prev_eq' (by change n - 1 + 1 = n; omega))
@@ -32,10 +32,10 @@ private theorem dual_alternating_exactAt (A : ModuleCat.{u} ℤ) (n : ℕ) (hn :
   by_cases he : Even n
   · refine ⟨x, ?_⟩
     change K.d (n - 1) n x = x
-    rw [hin, if_pos he]
+    rw [hin, ite_eq_left he]
     rfl
   · change K.d n (n + 1) x = 0 at hx
-    rw [hout, if_pos (Nat.even_add_one.mpr he)] at hx
+    rw [hout, ite_eq_left (Nat.even_add_one.mpr he)] at hx
     change x = 0 at hx
     refine ⟨0, ?_⟩
     change K.d (n - 1) n 0 = x
@@ -81,7 +81,7 @@ theorem integralSingularCohomology_subsingleton_of_isEmpty
   have hs : Subsingleton (integralSingularCochain n X) := by
     refine ⟨fun φ ψ => (integralSingularChainBasis n X).ext fun σ => ?_⟩
     exact isEmptyElim (integralSingularSimplexEquiv n X σ
-      ⟨Pi.single (0 : Fin (n + 1)) 1, single_mem_stdSimplex ℝ 0⟩)
+      (Convexity.StdSimplex.single 0))
   apply ModuleCat.isZero_iff_subsingleton.mp
   apply HomologicalComplex.ExactAt.isZero_homology
   exact ((integralSingularCochains X).sc n).exact_of_isZero_X₂

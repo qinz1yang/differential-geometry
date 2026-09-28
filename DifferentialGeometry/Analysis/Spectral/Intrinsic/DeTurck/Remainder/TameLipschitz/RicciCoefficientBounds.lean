@@ -50,6 +50,10 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization

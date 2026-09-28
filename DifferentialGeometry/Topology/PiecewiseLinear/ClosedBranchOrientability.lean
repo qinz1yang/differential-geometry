@@ -255,10 +255,10 @@ noncomputable def upperSpliceArc (t : ℝ) : ℝ × ℝ :=
 noncomputable def lowerSpliceArc (t : ℝ) : ℝ × ℝ :=
   if t ≤ 1 / 4 then (1, -(4 * t)) else if t ≤ 3 / 4 then (2 - 4 * t, -1) else (-1, -(4 - 4 * t))
 
-theorem upperSpliceArc_of_le {t : ℝ} (ht : t ≤ 1 / 4) : upperSpliceArc t = (1, 4 * t) := if_pos ht
+theorem upperSpliceArc_of_le {t : ℝ} (ht : t ≤ 1 / 4) : upperSpliceArc t = (1, 4 * t) := ite_eq_left ht
 
 theorem lowerSpliceArc_of_le {t : ℝ} (ht : t ≤ 1 / 4) :
-    lowerSpliceArc t = (1, -(4 * t)) := if_pos ht
+    lowerSpliceArc t = (1, -(4 * t)) := ite_eq_left ht
 
 theorem upperSpliceArc_of_mem {t : ℝ} (h1 : 1 / 4 ≤ t) (h2 : t ≤ 3 / 4) :
     upperSpliceArc t = (2 - 4 * t, 1) := by
@@ -266,7 +266,7 @@ theorem upperSpliceArc_of_mem {t : ℝ} (h1 : 1 / 4 ≤ t) (h2 : t ≤ 3 / 4) :
   · rw [← h, upperSpliceArc_of_le le_rfl]
     norm_num
   · unfold upperSpliceArc
-    rw [if_neg (not_le.mpr h), if_pos h2]
+    rw [ite_eq_right (not_le.mpr h), ite_eq_left h2]
 
 theorem lowerSpliceArc_of_mem {t : ℝ} (h1 : 1 / 4 ≤ t) (h2 : t ≤ 3 / 4) :
     lowerSpliceArc t = (2 - 4 * t, -1) := by
@@ -274,14 +274,14 @@ theorem lowerSpliceArc_of_mem {t : ℝ} (h1 : 1 / 4 ≤ t) (h2 : t ≤ 3 / 4) :
   · rw [← h, lowerSpliceArc_of_le le_rfl]
     norm_num
   · unfold lowerSpliceArc
-    rw [if_neg (not_le.mpr h), if_pos h2]
+    rw [ite_eq_right (not_le.mpr h), ite_eq_left h2]
 
 theorem upperSpliceArc_of_ge {t : ℝ} (ht : 3 / 4 ≤ t) : upperSpliceArc t = (-1, 4 - 4 * t) := by
   rcases eq_or_lt_of_le ht with h | h
   · rw [← h, upperSpliceArc_of_mem (by norm_num) le_rfl]
     norm_num
   · unfold upperSpliceArc
-    rw [if_neg (not_le.mpr (by linarith : (1 : ℝ) / 4 < t)), if_neg (not_le.mpr h)]
+    rw [ite_eq_right (not_le.mpr (by linarith : (1 : ℝ) / 4 < t)), ite_eq_right (not_le.mpr h)]
 
 theorem lowerSpliceArc_of_ge {t : ℝ} (ht : 3 / 4 ≤ t) :
     lowerSpliceArc t = (-1, -(4 - 4 * t)) := by
@@ -289,7 +289,7 @@ theorem lowerSpliceArc_of_ge {t : ℝ} (ht : 3 / 4 ≤ t) :
   · rw [← h, lowerSpliceArc_of_mem (by norm_num) le_rfl]
     norm_num
   · unfold lowerSpliceArc
-    rw [if_neg (not_le.mpr (by linarith : (1 : ℝ) / 4 < t)), if_neg (not_le.mpr h)]
+    rw [ite_eq_right (not_le.mpr (by linarith : (1 : ℝ) / 4 < t)), ite_eq_right (not_le.mpr h)]
 
 theorem upperSpliceArc_cases (t : ℝ) :
     (t ≤ 1 / 4 ∧ upperSpliceArc t = (1, 4 * t)) ∨

@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.LengthPerturbation
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.Geometry DifferentialGeometry.Geometry.Riemannian
-open DifferentialGeometry.Analysis.Laplacian
 
 namespace DifferentialGeometry.Geometry.Metric
 
@@ -21,7 +20,7 @@ theorem restricted_roundCylinder_height_differential_bound
   let gRef := (roundCylinderMetric (E := E) (n := 2)).restrictOpen O
   let v : TangentSpace ((𝓡 2).prod 𝓘(ℝ)) x := restrictedCylinderAxis O x
   have hv : gRef.inner x v v = 1 := restrictedCylinderAxis_unit gS O x
-  have h := abs_metric_inner_le_sqrt_metric_quadratic gRef x v (w - v)
+  have h := SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic gRef x v (w - v)
   rw [hv, Real.sqrt_one, one_mul, map_sub, hv] at h
   have he : gRef.inner x v w =
       mvfderiv ((𝓡 2).prod 𝓘(ℝ)) (fun y : O ↦ (y : Metric.sphere (0 : E) 1 × ℝ).2) x w :=

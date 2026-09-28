@@ -70,18 +70,18 @@ theorem exactly_one_compact_closure_of_not_hasAtLeastEnds_two
       by_cases hi : i = 0
       · by_cases hj : j = 0
         · exact hi.trans hj.symm
-        · rw [if_pos hi, if_neg hj] at hij
+        · rw [ite_eq_left hi, ite_eq_right hj] at hij
           exact False.elim (hne hij)
       · by_cases hj : j = 0
-        · rw [if_neg hi, if_pos hj] at hij
+        · rw [ite_eq_right hi, ite_eq_left hj] at hij
           exact False.elim (hne hij.symm)
         · exact (Fin.eq_one_of_ne_zero i hi).trans (Fin.eq_one_of_ne_zero j hj).symm
     · intro i
       rw [hcomponents i]
       by_cases hi : i = 0
-      · rw [if_pos hi]
+      · rw [ite_eq_left hi]
         exact hBn
-      · rw [if_neg hi]
+      · rw [ite_eq_right hi]
         exact hEn
   have hnotboth : ¬ (IsCompact (closure B) ∧ IsCompact (closure E)) := by
     rintro ⟨hBc, hEc⟩

@@ -55,7 +55,7 @@ theorem exists_smooth_truncated_positive_cylinder_lower_annulus
     have h := SphereSeparation.frontier_image_subtype_val_positive_product p
       (p.frontier_left_eq hleft) b (ha.trans hab) hlow
     rw [← range_comp] at h
-    convert h using 1 <;> rfl
+    convert h using 1; rfl
   have hfK : frontier K = range (fun q : S2 => (σ q).val) ∪
       range (fun q : S2 => (q,a)) := by
     rw [frontier,hKc.isClosed.closure_eq,hKi]

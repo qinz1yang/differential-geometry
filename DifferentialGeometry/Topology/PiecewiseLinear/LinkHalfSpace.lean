@@ -98,7 +98,7 @@ theorem affineIndependent_insert_erase_far {v : E} (hv : v ∈ T.erase a) :
   rw [Finset.sum_insert hpv] at hc₀ hc₁
   let f : E → ℝ := fun u => if u = v then 0 else c u
   have hf : ∀ u ∈ T.erase v, f u = c u := fun u hu => by
-    simp only [f, if_neg (Finset.ne_of_mem_erase hu)]
+    simp only [f, ite_eq_right (Finset.ne_of_mem_erase hu)]
   have hsum_f : ∑ u ∈ T, f u = ∑ u ∈ T.erase v, c u := by
     rw [← Finset.sum_erase T (by simp [f] : f v = 0)]
     exact Finset.sum_congr rfl hf
@@ -117,7 +117,7 @@ theorem affineIndependent_insert_erase_far {v : E} (hv : v ∈ T.erase a) :
   have hzero := eq_zero_of_sum_eq_zero_of_affineIndependent hT hb₀ hb₁
   have hcp : c p = 0 := by
     have h := hzero v hvT
-    simp only [b, f, if_true, add_zero] at h
+    simp only [b, f, ite_true, add_zero] at h
     rcases mul_eq_zero.mp h with h | h
     · exact h
     · exact absurd h hpos.ne'
@@ -168,9 +168,9 @@ theorem exists_mem_convexHull_insert_erase_far {x : E} (hx : x ∈ convexHull �
   have hsmul_erase : ∑ v ∈ T.erase v₀, (weights T x v - s * weights T p v) • v = x - s • p := by
     rw [← hsmulT, ← Finset.add_sum_erase T _ hv₀T, hcoef₀, zero_smul, zero_add]
   set c : E → ℝ := fun u => if u = p then s else weights T x u - s * weights T p u with hc
-  have hcp : c p = s := by simp only [hc, if_true]
+  have hcp : c p = s := by simp only [hc, ite_true]
   have hcu : ∀ u ∈ T.erase v₀, c u = weights T x u - s * weights T p u := fun u hu => by
-    simp only [hc, if_neg (ne_of_mem_of_not_mem hu hpv₀)]
+    simp only [hc, ite_eq_right (ne_of_mem_of_not_mem hu hpv₀)]
   refine ⟨v₀, hv₀, mem_convexHull_iff_exists_weights.mpr ⟨c, ?_, ?_, ?_⟩⟩
   · intro u hu
     rcases Finset.mem_insert.mp hu with h | h

@@ -2,11 +2,10 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetr
 
 set_option autoImplicit false
 
-namespace Tensor0SBundle
+namespace DifferentialGeometry.Tensor0SBundle
 
 noncomputable section
 
-open DifferentialGeometry DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
@@ -166,4 +165,4 @@ theorem sqrt_normSq0S_sub_le
 
 end
 
-end Tensor0SBundle
+end DifferentialGeometry.Tensor0SBundle

@@ -84,8 +84,7 @@ private theorem memLp_nirenbergTestFunction
     (hη : Continuous η) (hηc : HasCompactSupport η)
     (k : Fin d) (h : ℝ) :
     MemLp (nirenbergTestFunction k h η u) 2 volume := by
-  exact memLp_diffQuot_two k (-h) ((memLp_diffQuot_two k h hu).mul'
-    (memLp_sq_cutoff hη hηc))
+  exact memLp_diffQuot_two k (-h) ((memLp_sq_cutoff hη hηc).fun_mul (memLp_diffQuot_two k h hu))
 
 private theorem memLp_nirenbergTestFunction_partial
     {u g η : E → ℝ} (hu : MemLp u 2 volume) (hg : MemLp g 2 volume)
@@ -95,8 +94,8 @@ private theorem memLp_nirenbergTestFunction_partial
       (fun x => (η x)^2 * diffQuot k h g x +
         2 * η x * fderiv ℝ η x (EuclideanSpace.single j 1) * diffQuot k h u x)) 2 volume := by
   exact memLp_diffQuot_two k (-h)
-    (((memLp_diffQuot_two k h hg).mul' (memLp_sq_cutoff hη.continuous hηc)).add
-      ((memLp_diffQuot_two k h hu).mul' (memLp_cutoff_partial hη hηc j)))
+    (((memLp_sq_cutoff hη.continuous hηc).fun_mul (memLp_diffQuot_two k h hg)).add
+      ((memLp_cutoff_partial hη hηc j).fun_mul (memLp_diffQuot_two k h hu)))
 
 theorem memWkp_nirenbergTestFunction
     {u η : E → ℝ} (hu : MemWkp 1 2 u univ)
@@ -172,7 +171,7 @@ theorem memLp_cutoff_mul_diffQuot_local
     (hηs : cthickening |h| (tsupport η) ⊆ Ω) :
     MemLp (fun x => η x * diffQuot k h u x) 2 volume := by
   have hu0 : MemLp (Ω.indicator u) 2 volume := (memLp_indicator_iff_restrict hΩ).mpr hu
-  have h : MemLp (fun x => η x * diffQuot k h (Ω.indicator u) x) 2 volume := (memLp_diffQuot_two k h hu0).mul' (hη.memLp_of_hasCompactSupport hηc (p := ∞))
+  have h : MemLp (fun x => η x * diffQuot k h (Ω.indicator u) x) 2 volume := (hη.memLp_of_hasCompactSupport hηc (p := ∞)).fun_mul (memLp_diffQuot_two k h hu0)
   apply h.ae_eq
   filter_upwards with x
   by_cases hx : η x = 0

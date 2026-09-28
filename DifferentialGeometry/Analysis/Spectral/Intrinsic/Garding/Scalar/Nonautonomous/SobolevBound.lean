@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautono
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Application.IteratedCovariantDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Parametric.Application
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.SmoothCompactSupportDense
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

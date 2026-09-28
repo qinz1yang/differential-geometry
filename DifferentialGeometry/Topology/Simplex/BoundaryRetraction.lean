@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.Topology.Homotopy.Equiv
 import Mathlib.Topology.Order.Lattice
@@ -8,12 +9,14 @@ noncomputable section
 
 open scoped BigOperators
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {I : Type*} [Fintype I] [Nonempty I]
 
 
-def minimumCoordinate (x : stdSimplex ℝ I) : ℝ :=
+def minimumCoordinate (x : coordinateSet ℝ I) : ℝ :=
   Finset.univ.inf' Finset.univ_nonempty x.val
 
 
@@ -22,20 +25,20 @@ theorem continuous_minimumCoordinate : Continuous (minimumCoordinate (I := I)) :
     (continuous_apply i).comp continuous_subtype_val)
 
 
-theorem minimumCoordinate_le (x : stdSimplex ℝ I) (i : I) : minimumCoordinate x ≤ x.val i :=
+theorem minimumCoordinate_le (x : coordinateSet ℝ I) (i : I) : minimumCoordinate x ≤ x.val i :=
   Finset.inf'_le _ (Finset.mem_univ i)
 
 
-theorem minimumCoordinate_nonneg (x : stdSimplex ℝ I) : 0 ≤ minimumCoordinate x :=
+theorem minimumCoordinate_nonneg (x : coordinateSet ℝ I) : 0 ≤ minimumCoordinate x :=
   Finset.le_inf' Finset.univ_nonempty _ (fun i _ ↦ x.property.1 i)
 
 
-theorem exists_minimumCoordinate (x : stdSimplex ℝ I) :
+theorem exists_minimumCoordinate (x : coordinateSet ℝ I) :
     ∃ i : I, minimumCoordinate x = x.val i := by
   obtain ⟨i, _, hi⟩ := Finset.exists_mem_eq_inf' Finset.univ_nonempty x.val
   exact ⟨i, hi⟩
 
-private theorem card_mul_minimumCoordinate_le (x : stdSimplex ℝ I) :
+private theorem card_mul_minimumCoordinate_le (x : coordinateSet ℝ I) :
     (Fintype.card I : ℝ) * minimumCoordinate x ≤ 1 := by
   have h := Finset.sum_le_sum (fun i (_ : i ∈ (Finset.univ : Finset I)) ↦
     minimumCoordinate_le x i)
@@ -43,7 +46,7 @@ private theorem card_mul_minimumCoordinate_le (x : stdSimplex ℝ I) :
     x.property.2] using h
 
 
-theorem normalizationDenominator_pos (x : stdSimplex ℝ I) (hx : x ≠ stdSimplex.barycenter) :
+theorem normalizationDenominator_pos (x : coordinateSet ℝ I) (hx : x ≠ coordinateBarycenter) :
     0 < 1 - (Fintype.card I : ℝ) * minimumCoordinate x := by
   have hle := card_mul_minimumCoordinate_le x
   have hcard : (0 : ℝ) < Fintype.card I := Nat.cast_pos.mpr Fintype.card_pos
@@ -63,7 +66,7 @@ theorem normalizationDenominator_pos (x : stdSimplex ℝ I) (hx : x ≠ stdSimpl
   exact (heq i (Finset.mem_univ i)).symm.trans hm
 
 
-theorem minimumCoordinate_lt_barycenter (x : stdSimplex ℝ I) (hx : x ≠ stdSimplex.barycenter) :
+theorem minimumCoordinate_lt_barycenter (x : coordinateSet ℝ I) (hx : x ≠ coordinateBarycenter) :
     minimumCoordinate x < (Fintype.card I : ℝ)⁻¹ := by
   have hd := normalizationDenominator_pos x hx
   have hcard : (0 : ℝ) < Fintype.card I := Nat.cast_pos.mpr Fintype.card_pos
@@ -73,12 +76,12 @@ theorem minimumCoordinate_lt_barycenter (x : stdSimplex ℝ I) (hx : x ≠ stdSi
   linarith
 
 
-def boundary (I : Type*) [Fintype I] : Set (stdSimplex ℝ I) :=
+def boundary (I : Type*) [Fintype I] : Set (coordinateSet ℝ I) :=
   {x | ∃ i : I, x.val i = 0}
 
 
-def punctured (I : Type*) [Fintype I] [Nonempty I] : Set (stdSimplex ℝ I) :=
-  {x | x ≠ stdSimplex.barycenter}
+def punctured (I : Type*) [Fintype I] [Nonempty I] : Set (coordinateSet ℝ I) :=
+  {x | x ≠ coordinateBarycenter}
 
 
 theorem isOpen_punctured : IsOpen (punctured I) :=
@@ -86,23 +89,23 @@ theorem isOpen_punctured : IsOpen (punctured I) :=
 
 omit [Nonempty I] in
 theorem isClosed_boundary : IsClosed (boundary I) := by
-  change IsClosed (Set.ofPred (fun x : stdSimplex ℝ I ↦ ∃ i : I, x.val i = 0))
+  change IsClosed (Set.ofPred (fun x : coordinateSet ℝ I ↦ ∃ i : I, x.val i = 0))
   rw [Set.ofPred_exists]
   exact isClosed_iUnion_of_finite (fun i ↦
     isClosed_eq ((continuous_apply i).comp continuous_subtype_val) continuous_const)
 
 
-theorem minimumCoordinate_eq_zero {x : stdSimplex ℝ I} (hx : x ∈ boundary I) :
+theorem minimumCoordinate_eq_zero {x : coordinateSet ℝ I} (hx : x ∈ boundary I) :
     minimumCoordinate x = 0 := by
   obtain ⟨i, hi⟩ := hx
   exact le_antisymm (hi ▸ minimumCoordinate_le x i) (minimumCoordinate_nonneg x)
 
 
-theorem boundary_ne_barycenter {x : stdSimplex ℝ I} (hx : x ∈ boundary I) :
-    x ≠ stdSimplex.barycenter := by
+theorem boundary_ne_barycenter {x : coordinateSet ℝ I} (hx : x ∈ boundary I) :
+    x ≠ coordinateBarycenter := by
   obtain ⟨i, hi⟩ := hx
   intro he
-  rw [he, stdSimplex.barycenter_apply] at hi
+  rw [he, coordinateBarycenter_apply] at hi
   have hp : (0 : ℝ) < (Fintype.card I : ℝ)⁻¹ :=
     inv_pos.mpr (Nat.cast_pos.mpr Fintype.card_pos)
   exact (ne_of_gt hp) hi
@@ -160,7 +163,7 @@ theorem radialRetraction_boundary (x : boundary I) :
 
 private def radialHomotopyPoint (t : unitInterval) (x : punctured I) : punctured I :=
   ⟨⟨(1 - (t : ℝ)) • x.val.val + (t : ℝ) • (radialRetraction x).val.val,
-    convex_stdSimplex ℝ I x.val.property (radialRetraction x).val.property
+    convex_coordinateSet ℝ I x.val.property (radialRetraction x).val.property
       (sub_nonneg.mpr t.property.2) t.property.1 (sub_add_cancel _ _)⟩, by
     obtain ⟨i, hi⟩ := exists_minimumCoordinate x.val
     have hq : (radialRetraction x).val.val i = 0 := by
@@ -170,7 +173,7 @@ private def radialHomotopyPoint (t : unitInterval) (x : punctured I) : punctured
     have htm : (1 - (t : ℝ)) * minimumCoordinate x.val ≤ minimumCoordinate x.val := by
       nlinarith [t.property.1, minimumCoordinate_nonneg x.val]
     intro he
-    have hei := congrArg (fun y : stdSimplex ℝ I ↦ y.val i) he
+    have hei := congrArg (fun y : coordinateSet ℝ I ↦ y.val i) he
     change (1 - (t : ℝ)) * x.val.val i + (t : ℝ) * (radialRetraction x).val.val i =
       (Fintype.card I : ℝ)⁻¹ at hei
     rw [← hi, hq, mul_zero, add_zero] at hei

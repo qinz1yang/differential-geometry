@@ -4,6 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Connectio
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.SecondBianchi
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+
 set_option autoImplicit false
 
 noncomputable section

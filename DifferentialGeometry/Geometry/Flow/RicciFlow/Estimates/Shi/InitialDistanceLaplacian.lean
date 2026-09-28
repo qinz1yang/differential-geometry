@@ -149,7 +149,7 @@ private theorem laplacian_le_of_hessian_and_connectionDifference_bound
             Real.sqrt (g₀.inner x (gradientFun (I := I) g₀ rho x)
               (gradientFun (I := I) g₀ rho x)) *
               Real.sqrt (g₀.inner x Dv Dv) :=
-          DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+          DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
             (I := I) (M := M) g₀ x _ _
         _ ≤ 1 * (Cd * g₀.inner x e e) :=
           mul_le_mul hsqrtgrad hD (Real.sqrt_nonneg _) zero_le_one

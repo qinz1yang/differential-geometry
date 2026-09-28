@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Connectio
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Uniqueness.Forward.Energy.SpeedBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.TailEvolution
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.TimeRecursion
-import DifferentialGeometry.Tensor.RicciIdentity.SlotAlgebra
+import DifferentialGeometry.Tensor.SlotAlgebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 
 set_option autoImplicit false
@@ -14,8 +14,11 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (raiseAt_eq raiseAt_lower metricDiffAt metricDiffSq metricDiffSq_def traceNormSq_le
+    reLower reLowerPair reLowerPairSq_le reLowerDefSq_le)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Integral.Connection

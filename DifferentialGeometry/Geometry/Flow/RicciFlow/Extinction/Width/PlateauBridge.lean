@@ -375,7 +375,7 @@ def SmoothDisk.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
       smooth := Φ.contMDiff.comp_contMDiffOn F.smooth
       agrees := ?_ }⟩
     intro w hw
-    simp only [diskExtension, dif_pos hw.2, F.agrees ⟨hw.1, hw.2⟩, ContinuousMap.coe_mk]
+    simp only [diskExtension, dite_eq_left hw.2, F.agrees ⟨hw.1, hw.2⟩, ContinuousMap.coe_mk]
 
 def InteriorSmoothDisk.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
     (u : InteriorSmoothDisk (I := I₁) (Q := M₁)) : InteriorSmoothDisk (I := I₂) (Q := M₂) where
@@ -390,7 +390,7 @@ def InteriorSmoothDisk.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
       smooth := Φ.contMDiff.comp_contMDiffOn F.smooth
       agrees := ?_ }⟩
     intro w hw
-    simp only [diskExtension, dif_pos hw.2, F.agrees ⟨hw.1, hw.2⟩, ContinuousMap.coe_mk]
+    simp only [diskExtension, dite_eq_left hw.2, F.agrees ⟨hw.1, hw.2⟩, ContinuousMap.coe_mk]
 
 omit [IsManifold I₁ ∞ M₁] [IsManifold I₂ ∞ M₂] in
 theorem IsSignedWeaklyMonotoneTrace.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)

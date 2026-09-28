@@ -246,7 +246,7 @@ theorem Section34CompactCutFrame.isPLSphere_outerCircle
     exact h0
 
 theorem closure_sdiff_eq_of_disk_pair {S D₀ D₁ J P : Set E3} {q₁ : (Fin 3 → ℝ) → E3}
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hq₁J : q₁ '' stdSimplexBoundary 2 = J) (hD : D₀ ∪ D₁ = S) (hDi : D₀ ∩ D₁ = J)
     (hD₀P : D₀ ⊆ P) (hD₁P : Disjoint (D₁ \ J) P) : closure (S \ P) = D₁ := by
   have heq : S \ P = D₁ \ J := by
@@ -294,7 +294,7 @@ theorem Section34CompactCutFrame.exists_residual_outerDisk
     (h9 : ∀ (t : Section34CompactSimplexIndex K 4) (s : Section34CompactSimplexIndex K 3),
       ¬ Section34Incident s.1 t.1 → Rf t ∩ tgtD s = ∅)
     (w : Section34CompactVertexIndex K K') (hw : (w.1 : Set E3) ⊆ frontier K.space) :
-    ∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    ∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (closure (frontier (section34CompactVertexBallImage src f₁ w) \
           ((⋃ (e : Section34CompactEdgeIndex K K') (_ : w.1 ⊆ e.1),
             section34CompactSplitDiskImage src f₁ e) ∪
@@ -577,7 +577,7 @@ theorem Section34CompactCutFrame.exists_residual_outerDisk
   have hDS : ∀ {D : Set E3}, D ⊆ D₀ ∪ D₁ →
       D ⊆ frontier (section34CompactVertexBallImage src f₁ w) :=
     fun hD => hD.trans hDU.subset
-  have hside : ∀ (D : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D →
+  have hside : ∀ (D : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       q '' stdSimplexBoundary 2 = Jset → D ⊆ D₀ ∪ D₁ →
       D \ q '' stdSimplexBoundary 2 ⊆ Cov ∨ Disjoint (D \ q '' stdSimplexBoundary 2) Cov := by
     intro D q hq hqJ hDsub
@@ -588,7 +588,7 @@ theorem Section34CompactCutFrame.exists_residual_outerDisk
     exact ⟨U, hU, fun x hx => hUC ⟨hx.1, hDS hDsub hx.2.1⟩⟩
   have hD0 := hside D₀ q₀ hq₀ hq₀J subset_union_left
   have hD1 := hside D₁ q₁ hq₁ hq₁J subset_union_right
-  have hcl : ∀ (D : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D →
+  have hcl : ∀ (D : Set E3) (q : (Fin 3 → ℝ) → E3), IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       D \ q '' stdSimplexBoundary 2 ⊆ Cov → D ⊆ Cov := fun D q hq h z hz => by
     rw [← hq.closure_sdiff_image_stdSimplexBoundary (n := 1)] at hz
     exact closure_minimal h hCovc hz

@@ -55,7 +55,7 @@ def nablaRm04ReactionIntrinsic
     (Tdot : Real -> (x : M) -> Tensor0SSpace (𝕜 := Real) (E := E) (H := H)
       (I := I) (M := M) 5 x) : Real -> M -> Real :=
   fun t x =>
-    ricReactionContract (gInv t x) (ric t x)
+    metricVariationContract (gInv t x) (ric t x)
         (fun I0 : Fin 5 -> Idx =>
           tensor0SComponent (I := I) (nablaRm04Field (I := I) S t x)
             (fun i => basis x i) I0)
@@ -132,7 +132,7 @@ theorem nablaRm04NormHeatEquationOn_intrinsic
       (S.family.connection (t : Real)) (S.base.metric (t : Real)) :=
     solution_isMetricCompatible (I := I) S (t : Real)
   have hdt :=
-    hasDerivWithinAt_normSq0S_ricciFlow (I := I)
+    hasDerivWithinAt_normSq0S_of_metric_variation (I := I)
       (s := 5) (x := x) (u := D.carrier) (t := (t : Real))
       (g := fun r : Real => S.base.metric r)
       (gInv := fun r : Real => gInv r x)

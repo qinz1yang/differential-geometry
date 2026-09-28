@@ -557,7 +557,7 @@ theorem curvatureOperatorImageAt_finrank_eq_one_on_interval_of_complete_existenc
   exact (curvatureOperatorImageAt_finrank_eq_at_later_time S hS hdim hrt
     (hsub.trans hreg) (fun u hu => hR u (hsub hu)) x x₀).trans (hall t ht)
 
-theorem exists_positive_surface_global_product_of_curvatureOperator_rank_one_of_complete_existence_and_uniqueness
+theorem exists_positive_surface_product_of_rank_one_of_complete_existence_and_uniqueness
     [SimplyConnectedSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a b s : ℝ} (hs : s ∈ Ioo a b) (hreg : Ioo a b ⊆ D.regular)

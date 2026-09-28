@@ -56,14 +56,14 @@ theorem exists_diffeomorph_extension_of_rectangle_family
       contMDiff_invFun := (hGs p hp).contMDiff }
     else Diffeomorph.refl 𝓘(ℝ, ℂ) ℂ ∞
   have hD (p : P) (hp : p ∈ S) (z : ℂ) : D p z = F (p, z) := by
-    simp only [D, dif_pos hp]; rfl
+    simp only [D, dite_eq_left hp]; rfl
   have hDi (p : P) (hp : p ∈ S) (z : ℂ) : (D p).symm z = G (p, z) := by
-    simp only [D, dif_pos hp]; rfl
+    simp only [D, dite_eq_left hp]; rfl
   have hcompact (H : P × ℂ → ℂ) (p : P) :
       HasCompactSupport (fun z ↦ extendRectangleById a b c d H (p, z) - z) := by
     apply HasCompactSupport.intro (K := Q) (isCompact_Icc.reProdIm isCompact_Icc)
     intro z hz
-    have he : extendRectangleById a b c d H (p, z) = z := if_neg hz
+    have he : extendRectangleById a b c d H (p, z) = z := ite_eq_right hz
     exact sub_eq_zero.mpr he
   refine ⟨D, hF.congr (fun q hq ↦ hD q.1 hq.1 q.2),
     hG.congr (fun q hq ↦ hDi q.1 hq.1 q.2), fun p hp ↦ ⟨hD p hp, hDi p hp, ?_, ?_, ?_⟩⟩
@@ -78,9 +78,9 @@ theorem exists_diffeomorph_extension_of_rectangle_family
   · intro z he
     rw [hD p hp, hDi p hp]
     by_cases hz : z ∈ Q
-    · have hFz : F (p, z) = f (p, z) := if_pos hz
-      have hGz : G (p, z) = g (p, z) := if_pos hz
+    · have hFz : F (p, z) = f (p, z) := ite_eq_left hz
+      have hGz : G (p, z) = g (p, z) := ite_eq_left hz
       exact ⟨hFz.trans (hfixed p hp z hz he).1, hGz.trans (hfixed p hp z hz he).2⟩
-    · exact ⟨if_neg hz, if_neg hz⟩
+    · exact ⟨ite_eq_right hz, ite_eq_right hz⟩
 
 end DifferentialGeometry.Analysis

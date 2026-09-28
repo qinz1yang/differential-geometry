@@ -74,6 +74,7 @@ theorem abstractHessian_congr_of_eventuallyEq
     filter_upwards [heq.eventuallyEq_nhds] with y hy
     unfold mvfderiv
     rw [hy.mfderiv_eq, hy.eq_of_nhds]
+    rfl
   have htotal : (fun y => (⟨y, mvfderiv I f y⟩ : TotalSpace (E →L[ℝ] ℝ)
       (fun y => TangentSpace I y →L[ℝ] ℝ))) =ᶠ[𝓝 x]
       (fun y => (⟨y, mvfderiv I h y⟩ : TotalSpace (E →L[ℝ] ℝ)

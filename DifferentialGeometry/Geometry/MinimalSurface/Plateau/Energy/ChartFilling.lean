@@ -200,6 +200,7 @@ theorem exists_disk_filling_in_chart_of_boundary_norm_le
           diskMapEnergyDensity g (ψ ∘ f) z := by
         unfold diskMapEnergyDensity diskMapPartial
         rw [heq.mfderiv_eq, heq.eq_of_nhds]
+        rfl
       rw [hed]
       exact diskMapEnergyDensity_comp_chart_le g ψ hsource hψ hA hd
         (closedBall_half_subset_plateauOpenCube (htarget (ball_subset_closedBall hz)))

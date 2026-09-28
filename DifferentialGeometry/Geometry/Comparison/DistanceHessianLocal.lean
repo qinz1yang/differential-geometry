@@ -304,7 +304,7 @@ theorem calabiDist_hess_support_on_of_sectional_lower_bound_lt
     rw [hcoef]
     refine Geometry.Riemannian.ricci_lower_of_sectionalBoundedBelowAt (I := I) g y ?_ w
     refine hsec y ?_
-    rw [Metric.mem_eball'] at hy
+    rw [@Metric.mem_eball' M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace inferInstance] at hy
     rwa [IsRiemannianManifold.out (I := I) O y] at hy
   obtain ⟨tail, hreach, _hrho_inf, hrho_x, hupper, _hrho_ev, _hrho_grad,
       hgrad_norm, _hlap⟩ :=

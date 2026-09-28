@@ -235,7 +235,7 @@ theorem Section34NormalPlus.exists_residualBall
       · exact Or.inr (mem_image_of_mem chart hzB)
     exact Set.disjoint_left.mp hdisj hzi hci
   have hbd : ∀ {P : Set E3} {q : (Fin 3 → ℝ) → E3},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P → q '' stdSimplexBoundary 2 ⊆ P :=
     fun hq => by
       rw [← hq.image_eq]
       exact image_mono fun x hx => hx.1

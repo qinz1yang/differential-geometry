@@ -71,7 +71,7 @@ theorem exists_uniform_derivative_gradient_bounds_of_cap_window_trace
     ∀ (D : ℝ), 0 < D →
     ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -124,7 +124,7 @@ theorem exists_uniform_derivative_gradient_bounds_of_cap_window_trace
   intro D hD
   obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, hwindow⟩ := hbridge D ε ε hD hε hε 4
   refine ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
-  intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ θcap hqcan hθ hHI hlow
+  intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ θcap hqcan hθ hHI hlow
     k s Gk hGk hderiv t hkt hts hcur j hl y A b x hanchor hage hxD hbirth haq
   obtain ⟨G, L, -, -, hL, -, -, -, -, -, -, -, z, -, hy, Ξ, -, -, hΞmark, hΞ, gflow, S, -, hS2,
       -, -, hS5, -, -, Q, -, hclose⟩ :=
@@ -219,7 +219,7 @@ theorem exists_cap_window_scalar_derivative_gradient_constants (τQ : ℝ) (hτQ
     ∀ (D : ℝ), 0 < D →
     ∃ R : ℝ, D + 1 < R ∧ ∃ m₀ : ℕ, 4 ≤ m₀ ∧
     ∃ ζ₀ δ₀ : ℝ, 0 < ζ₀ ∧ ζ₀ ≤ 1 / 2 ∧ 0 < δ₀ ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) (p₀ : CutoffParameters)
+    ∀ (H : RetainedCoreHistory.{u}) (p₀ : CutoffParameters)
       (δbound ρbound : ℝ) {p : CutoffParameters}
       (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
@@ -266,7 +266,7 @@ theorem exists_cap_window_scalar_derivative_gradient_constants (τQ : ℝ) (hτQ
     refine ⟨Cbirth, hCbirth, fun D hD => ?_⟩
     obtain ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, hbound⟩ := hC D hD
     refine ⟨R, hDR, m₀, hm₀, ζ₀, δ₀, hζ₀, hζhalf, hδ₀, ?_⟩
-    intro P₀ H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow
+    intro H p₀ δbound ρbound p records hfam hδb hRp hmp hζp qcan a₀ hqcan hHI hlow
       k s Gk hGk hderiv t hkt hts hcur j hl y A b x hanchor hTage hxD hbirth haq
       Ctime Cgrad hCt hCg
     obtain ⟨hRG, hd, hg⟩ := hbound H p₀ δbound ρbound records hfam hδb hRp hmp hζp qcan a₀ Θ₂

@@ -209,7 +209,7 @@ theorem boundaryChartInvFun_val_of_mem_target
         else x) =
         (⟨(chartAt H (x : M)).symm (hI.inclH z), h_in_boundary⟩ :
           BoundaryManifold I M) :=
-    dif_pos h_in_boundary
+    dite_eq_left h_in_boundary
   exact congrArg Subtype.val hdif
 
 theorem boundaryChartFun_mapsTo [Nonempty hI.boundaryH]
@@ -387,7 +387,7 @@ theorem defaultBoundaryChart_eq_boundaryChart [Nonempty hI.boundaryH]
     (x : BoundaryManifold I M) :
     defaultBoundaryChart (I := I) x = boundaryChart (I := I) x := by
   unfold defaultBoundaryChart
-  rw [dif_pos ‹_›]
+  rw [dite_eq_left ‹_›]
 
 instance chartedSpace : ChartedSpace hI.boundaryH (BoundaryManifold I M) where
   atlas := Set.range (fun x : BoundaryManifold I M => defaultBoundaryChart (I := I) x)

@@ -138,7 +138,7 @@ theorem symmMat_eq_zero
   have hdiag : tensorL2Coeff (I := I) (M := M) (hCompact (I := I) (M := M) g)
       (SmoothCcTensor.toL2 (eigenSmooth (I := I) (M := M) g i)) j = 0 := by
     rw [SmoothCcTensor.toL2_apply,
-      tensorL2Coeff_ofCompact_eigenSmooth (I := I) (M := M) g j i, if_neg hne]
+      tensorL2Coeff_ofCompact_eigenSmooth (I := I) (M := M) g j i, ite_eq_right hne]
   have hswap := tensorL2Coeff_toL2_swap_eigenSmooth_eq_zero_of_fst_ne
     (I := I) (M := M) g i j (fun h => hij h.symm)
   rw [symmMat, toL2_ccTensor02Symm (I := I) (M := M) g, tensorL2Coeff_smul,
@@ -176,12 +176,12 @@ private lemma coeff_block_sum
   · rw [Finset.sum_eq_single k]
     · simp [hkS]
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm)]
+      rw [ite_eq_right (fun h => hjk h.symm)]
     · intro h
       exact absurd hkS h
-  · rw [if_neg hkS, Finset.sum_eq_zero]
+  · rw [ite_eq_right hkS, Finset.sum_eq_zero]
     intro j hj
-    rw [if_neg (fun h => hkS (by rw [h]; exact hj))]
+    rw [ite_eq_right (fun h => hkS (by rw [h]; exact hj))]
 
 theorem toL2_ccTensor02Symm_eigen_eq_sum
     (i : Analysis.Parabolic.TensorHeatEquation.TensorEigenIdx
@@ -197,9 +197,9 @@ theorem toL2_ccTensor02Symm_eigen_eq_sum
   rw [coeff_block_sum (I := I) (M := M) g i
     (fun j => symmMat (I := I) (M := M) g i j) k]
   by_cases hk : k ∈ eigenBlock (I := I) (M := M) g i
-  · rw [if_pos hk]
+  · rw [ite_eq_left hk]
     rfl
-  · rw [if_neg hk]
+  · rw [ite_eq_right hk]
     exact symmMat_eq_zero (I := I) (M := M) g
       (fun h => hk ((mem_eigenBlock (I := I) (M := M) g).mpr h))
 

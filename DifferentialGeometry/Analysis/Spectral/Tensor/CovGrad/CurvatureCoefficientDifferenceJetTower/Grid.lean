@@ -21,6 +21,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bound
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import Mathlib.Analysis.MeanInequalities
 import Mathlib.Data.Fin.Tuple.NatAntidiagonal
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -739,7 +742,7 @@ theorem curvDiffGrid_integral_ballUniform_window
         have hb := hGNspec P Lam hLam_nn hΛsup j hj0 hji
         have hchoose : (DifferentialGeometry.Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
             (I := I) (M := M) g₀ 0 2 i hi1).choose = Cgn i := by
-          rw [hCgn]; simp only [dif_pos hi1]
+          rw [hCgn]; simp only [dite_eq_left hi1]
         rw [hchoose] at hb
         refine le_trans hb ?_
         have hnorm : Integral.L2.tensorL2Norm (I := I) (M := M) g₀ 0 (2 + i)

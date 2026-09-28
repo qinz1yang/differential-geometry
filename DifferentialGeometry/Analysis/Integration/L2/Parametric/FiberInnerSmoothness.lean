@@ -10,6 +10,8 @@ import Mathlib.Analysis.Calculus.ContDiff.Deriv
 import Mathlib.MeasureTheory.Function.LocallyIntegrable
 import Mathlib.Analysis.Normed.Group.Bounded
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
+
 
 noncomputable section
 

@@ -2530,21 +2530,21 @@ theorem card_of_mem_localMeshTriangles (t : M.Triangle)
   classical
   unfold localMeshTriangles at hs
   by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · erw [dif_pos hp] at hs
+  · erw [dite_eq_left hp] at hs
     exact (M.strictMeshFor f _ _ _ _ _).card_triangle s hs
-  erw [dif_neg hp] at hs
+  erw [dite_eq_right hp] at hs
   by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-  · erw [dif_pos hn] at hs
+  · erw [dite_eq_left hn] at hs
     exact (M.strictNegativeMeshFor f _ _ _ _ _).card_triangle s hs
-  erw [dif_neg hn] at hs
+  erw [dite_eq_right hn] at hs
   by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-  · erw [dif_pos hep] at hs
+  · erw [dite_eq_left hep] at hs
     exact (M.edgeMeshFor f _ _ _ _).card_triangle s hs
-  erw [dif_neg hep] at hs
+  erw [dite_eq_right hep] at hs
   by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-  · erw [dif_pos hen] at hs
+  · erw [dite_eq_left hen] at hs
     exact (M.edgeNegativeMeshFor f _ _ _ _).card_triangle s hs
-  erw [dif_neg hen] at hs
+  erw [dite_eq_right hen] at hs
   exact (M.unchangedMeshFor f _ _).card_triangle s hs
 
 theorem affineIndependent_of_mem_localMeshTriangles (t : M.Triangle)
@@ -2553,21 +2553,21 @@ theorem affineIndependent_of_mem_localMeshTriangles (t : M.Triangle)
   classical
   unfold localMeshTriangles at hs
   by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · erw [dif_pos hp] at hs
+  · erw [dite_eq_left hp] at hs
     exact (M.strictMeshFor f _ _ _ _ _).affineIndependent_triangle s hs
-  erw [dif_neg hp] at hs
+  erw [dite_eq_right hp] at hs
   by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-  · erw [dif_pos hn] at hs
+  · erw [dite_eq_left hn] at hs
     exact (M.strictNegativeMeshFor f _ _ _ _ _).affineIndependent_triangle s hs
-  erw [dif_neg hn] at hs
+  erw [dite_eq_right hn] at hs
   by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-  · erw [dif_pos hep] at hs
+  · erw [dite_eq_left hep] at hs
     exact (M.edgeMeshFor f _ _ _ _).affineIndependent_triangle s hs
-  erw [dif_neg hep] at hs
+  erw [dite_eq_right hep] at hs
   by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-  · erw [dif_pos hen] at hs
+  · erw [dite_eq_left hen] at hs
     exact (M.edgeNegativeMeshFor f _ _ _ _).affineIndependent_triangle s hs
-  erw [dif_neg hen] at hs
+  erw [dite_eq_right hen] at hs
   exact (M.unchangedMeshFor f _ _).affineIndependent_triangle s hs
 
 theorem localMeshTriangles_monochromatic (t : M.Triangle) :
@@ -2575,7 +2575,7 @@ theorem localMeshTriangles_monochromatic (t : M.Triangle) :
   classical
   unfold localMeshTriangles
   by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · erw [dif_pos hp]
+  · erw [dite_eq_left hp]
     let o := Classical.choice hp
     rw [M.strictMeshFor_triangles]
     apply M.strictPattern_monochromatic_positive
@@ -2586,15 +2586,15 @@ theorem localMeshTriangles_monochromatic (t : M.Triangle) :
       simp
     · rw [M.strictVertices_f]
       simp
-  erw [dif_neg hp]
+  erw [dite_eq_right hp]
   by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-  · erw [dif_pos hn]
+  · erw [dite_eq_left hn]
     let o := Classical.choice hn
     exact M.strictNegativeMeshFor_monochromatic f _ _
       o.negative o.positive_one o.positive_two
-  erw [dif_neg hn]
+  erw [dite_eq_right hn]
   by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-  · erw [dif_pos hep]
+  · erw [dite_eq_left hep]
     let o := Classical.choice hep
     rw [M.edgeMeshFor_triangles]
     apply M.edgePattern_monochromatic_positive
@@ -2604,12 +2604,12 @@ theorem localMeshTriangles_monochromatic (t : M.Triangle) :
       rfl
     · rw [M.edgeVertices_f f _ o.positive o.negative o.zero]
       rfl
-  erw [dif_neg hep]
+  erw [dite_eq_right hep]
   by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-  · erw [dif_pos hen]
+  · erw [dite_eq_left hen]
     let o := Classical.choice hen
     exact M.edgeNegativeMeshFor_monochromatic f _ _ o.negative o.positive o.zero
-  erw [dif_neg hen]
+  erw [dite_eq_right hen]
   have hpair := pairwise_nonnegative_of_no_orderings M f t hp hn hep hen
   have hsign := same_closed_side_of_pairwise_products hpair.1 hpair.2.1 hpair.2.2
   intro s hs
@@ -2642,7 +2642,7 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
   classical
   unfold localMeshTriangles at hs
   by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · erw [dif_pos hp] at hs
+  · erw [dite_eq_left hp] at hs
     let o := Classical.choice hp
     rw [M.strictMeshFor_triangles] at hs
     obtain ⟨i, rfl⟩ := exists_index_of_mem_strictPattern _ hs hx
@@ -2656,9 +2656,9 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
     · right
       rw [M.strictVertices_f]
       rfl
-  erw [dif_neg hp] at hs
+  erw [dite_eq_right hp] at hs
   by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-  · erw [dif_pos hn] at hs
+  · erw [dite_eq_left hn] at hs
     let o := Classical.choice hn
     unfold strictNegativeMeshFor at hs
     obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
@@ -2685,9 +2685,9 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
         (by simpa using o.negative) (by simpa using o.positive_one)
         (by simpa using o.positive_two) 4
       simpa using h
-  erw [dif_neg hn] at hs
+  erw [dite_eq_right hn] at hs
   by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-  · erw [dif_pos hep] at hs
+  · erw [dite_eq_left hep] at hs
     let o := Classical.choice hep
     rw [M.edgeMeshFor_triangles] at hs
     obtain ⟨i, rfl⟩ := exists_index_of_mem_edgePattern _ hs hx
@@ -2698,9 +2698,9 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
     · right
       rw [M.edgeVertices_f f _ o.positive o.negative o.zero]
       rfl
-  erw [dif_neg hep] at hs
+  erw [dite_eq_right hep] at hs
   by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-  · erw [dif_pos hen] at hs
+  · erw [dite_eq_left hen] at hs
     let o := Classical.choice hen
     unfold edgeNegativeMeshFor at hs
     obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
@@ -2717,7 +2717,7 @@ theorem local_child_vertex_old_or_zero (t : M.Triangle)
       have h := M.edgeVertices_f (-f) (M.orderedVertex t ∘ o.perm)
         (by simpa using o.negative) (by simpa using o.positive) (by simpa using o.zero) 3
       simpa using h
-  erw [dif_neg hen] at hs
+  erw [dite_eq_right hen] at hs
   unfold unchangedMeshFor at hs
   obtain ⟨r, hr, rfl⟩ := Finset.mem_image.mp hs
   have hr : r = Finset.univ := Finset.mem_singleton.mp hr
@@ -2733,7 +2733,7 @@ theorem localMeshTriangles_support (t : M.Triangle) :
   classical
   unfold localMeshTriangles
   by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · erw [dif_pos hp]
+  · erw [dite_eq_left hp]
     let o := Classical.choice hp
     dsimp only [Function.comp_apply]
     have h := M.strictMeshFor_support f (M.orderedVertex t ∘ o.perm)
@@ -2743,9 +2743,9 @@ theorem localMeshTriangles_support (t : M.Triangle) :
       o.positive o.negative_one o.negative_two).toPlaneComplex_support] at h
     rw [M.range_orderedVertex_perm t o.perm] at h
     exact h
-  erw [dif_neg hp]
+  erw [dite_eq_right hp]
   by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-  · erw [dif_pos hn]
+  · erw [dite_eq_left hn]
     let o := Classical.choice hn
     dsimp only [Function.comp_apply]
     have h := M.strictNegativeMeshFor_support f (M.orderedVertex t ∘ o.perm)
@@ -2755,9 +2755,9 @@ theorem localMeshTriangles_support (t : M.Triangle) :
       o.negative o.positive_one o.positive_two).toPlaneComplex_support] at h
     rw [M.range_orderedVertex_perm t o.perm] at h
     exact h
-  erw [dif_neg hn]
+  erw [dite_eq_right hn]
   by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-  · erw [dif_pos hep]
+  · erw [dite_eq_left hep]
     let o := Classical.choice hep
     dsimp only [Function.comp_apply]
     have h := M.edgeMeshFor_support f (M.orderedVertex t ∘ o.perm)
@@ -2766,9 +2766,9 @@ theorem localMeshTriangles_support (t : M.Triangle) :
       o.positive o.negative).toPlaneComplex_support] at h
     rw [M.range_orderedVertex_perm t o.perm] at h
     exact h
-  erw [dif_neg hep]
+  erw [dite_eq_right hep]
   by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-  · erw [dif_pos hen]
+  · erw [dite_eq_left hen]
     let o := Classical.choice hen
     dsimp only [Function.comp_apply]
     have h := M.edgeNegativeMeshFor_support f (M.orderedVertex t ∘ o.perm)
@@ -2777,7 +2777,7 @@ theorem localMeshTriangles_support (t : M.Triangle) :
       o.negative o.positive).toPlaneComplex_support] at h
     rw [M.range_orderedVertex_perm t o.perm] at h
     exact h
-  erw [dif_neg hen]
+  erw [dite_eq_right hen]
   simp only [unchangedMeshFor, TriangleMesh.reindex, TriangleMesh.single,
     oldVerticesEmbedding]
   have h := M.unchangedMeshFor_support f (M.orderedVertex t)
@@ -2796,21 +2796,21 @@ theorem localMeshTriangles_inter (t : M.Triangle)
   classical
   unfold localMeshTriangles at hs hu
   by_cases hp : Nonempty (M.PositiveStrictOrdering f t)
-  · erw [dif_pos hp] at hs hu
+  · erw [dite_eq_left hp] at hs hu
     exact (M.strictMeshFor f _ _ _ _ _).triangle_inter s hs u hu
-  erw [dif_neg hp] at hs hu
+  erw [dite_eq_right hp] at hs hu
   by_cases hn : Nonempty (M.NegativeStrictOrdering f t)
-  · erw [dif_pos hn] at hs hu
+  · erw [dite_eq_left hn] at hs hu
     exact (M.strictNegativeMeshFor f _ _ _ _ _).triangle_inter s hs u hu
-  erw [dif_neg hn] at hs hu
+  erw [dite_eq_right hn] at hs hu
   by_cases hep : Nonempty (M.PositiveEdgeOrdering f t)
-  · erw [dif_pos hep] at hs hu
+  · erw [dite_eq_left hep] at hs hu
     exact (M.edgeMeshFor f _ _ _ _).triangle_inter s hs u hu
-  erw [dif_neg hep] at hs hu
+  erw [dite_eq_right hep] at hs hu
   by_cases hen : Nonempty (M.NegativeEdgeOrdering f t)
-  · erw [dif_pos hen] at hs hu
+  · erw [dite_eq_left hen] at hs hu
     exact (M.edgeNegativeMeshFor f _ _ _ _).triangle_inter s hs u hu
-  erw [dif_neg hen] at hs hu
+  erw [dite_eq_right hen] at hs hu
   exact (M.unchangedMeshFor f _ _).triangle_inter s hs u hu
 
 theorem convexHull_child_subset_parent (t : M.Triangle)
@@ -3718,7 +3718,7 @@ theorem parent_inter_vertexSupportCoord_zero (t : M.Triangle) (i : Fin 3) :
           by_contra hij
           have : M.vertexSupportCoord t i (p j) = 1 := by
             change M.vertexSupportCoord t i (M.position (M.orderedVertex t j)) = 1
-            rw [M.vertexSupportCoord_vertex, if_neg hij]
+            rw [M.vertexSupportCoord_vertex, ite_eq_right hij]
           have hzero' : M.vertexSupportCoord t i (p j) = 0 := by
             rw [hj]
             exact hzero

@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.AbstractChartPullCutoff
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Bridge.Cross
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.L2
+open DifferentialGeometry.TensorMetric
+  (gramMatrixAt
+    gramMatrixAt_inv_isHermitian
+    tensorInnerPointwise_symm)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 

@@ -13,12 +13,12 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem IsPLHomeomorphOn.exists_isPLHomeomorphOn_union_collar
-    {D W : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D W : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {a b : ℝ} (hab : a < b) {ρ : E × ℝ → E}
     (hρ : IsPLHomeomorphOn ρ ((r '' stdSimplexBoundary 2) ×ˢ Icc a b) W)
     (hfix : ∀ x ∈ r '' stdSimplexBoundary 2, ρ (x, a) = x)
     (hmeet : W ∩ D = r '' stdSimplexBoundary 2) :
-    ∃ q : (Fin 3 → ℝ) → E, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (D ∪ W) ∧
+    ∃ q : (Fin 3 → ℝ) → E, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D ∪ W) ∧
       q '' stdSimplexBoundary 2 = ρ '' ((r '' stdSimplexBoundary 2) ×ˢ {b}) ∧
       Disjoint D (q '' stdSimplexBoundary 2) := by
   classical
@@ -29,7 +29,7 @@ theorem IsPLHomeomorphOn.exists_isPLHomeomorphOn_union_collar
   obtain ⟨K, hKfin, hKspace⟩ := hD.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLBall 2 K.space := hKspace.symm ▸ hD
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space := hKspace.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKspace.symm ▸ hr
   have hboundary : (boundaryComplex 2 K).space = J := by
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hrK,
       simplexBoundary_stdVertices_space]

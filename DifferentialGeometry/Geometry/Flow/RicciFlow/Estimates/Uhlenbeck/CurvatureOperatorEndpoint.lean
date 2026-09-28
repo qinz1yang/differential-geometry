@@ -164,7 +164,7 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_smooth_parallel_kernel_at_
       (rawBundleEndomorphismConnLap (S.family.metric r) (cov r) (fun z => A r z) y +
         (curvatureOperatorReactionEndomorphism3 (A r y).toLinearMap).toContinuousLinearMap) r := by
     intro r hr y
-    simp only [cov, dif_pos (hsub hr)]
+    simp only [cov, dite_eq_left (hsub hr)]
     exact (hp r (hsub hr)).2.2 A hA y
   have hArank : ∀ r ∈ Ioc a b, ∀ y, Module.finrank ℝ (A r y).range = q := by
     intro r hr y
@@ -190,7 +190,7 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_smooth_parallel_kernel_at_
   refine ⟨K, ?_, ?_, ?_⟩
   · intro x
     rw [hK x, hA b hb x]
-  · simpa only [cov, dif_pos hb, pull, hslice] using hparallel
+  · simpa only [cov, dite_eq_left hb, pull, hslice] using hparallel
   · intro x v hv
     have h := hQ x v hv
     rw [hA b hb x] at h

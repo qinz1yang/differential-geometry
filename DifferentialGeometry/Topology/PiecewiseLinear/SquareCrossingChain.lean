@@ -80,7 +80,7 @@ theorem finite_connectedComponents_of_iUnion {X : Type*} [TopologicalSpace X] {�
     obtain ⟨i, hzi⟩ := mem_iUnion.mp z.2
     have hAi : (A i).Nonempty := ⟨z, hzi⟩
     refine ⟨i, ?_⟩
-    simp only [f, dif_pos hAi]
+    simp only [f, dite_eq_left hAi]
     apply ConnectedComponents.coe_eq_coe'.mpr
     have hsubA : A i ⊆ connectedComponentIn (⋃ i, A i) z.1 :=
       (hA i).subset_connectedComponentIn hzi (subset_iUnion A i)
@@ -153,9 +153,9 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
     intro k
     rcases k with p | b
     · by_cases hp : (sq p.1 p.2 ∩ G).Nonempty
-      · simp only [P, if_pos hp]
+      · simp only [P, ite_eq_left hp]
         exact ((convex_Icc _ _).prod (convex_Icc _ _)).isPreconnected
-      · simp only [P, if_neg hp]
+      · simp only [P, ite_eq_right hp]
         exact isPreconnected_empty
     · cases b
       · exact ((convex_Iic _).prod (convex_Icc _ _)).isPreconnected
@@ -164,9 +164,9 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
     intro k
     rcases k with p | b
     · by_cases hp : (sq p.1 p.2 ∩ G).Nonempty
-      · simp only [P, if_pos hp]
+      · simp only [P, ite_eq_left hp]
         exact isClosed_Icc.prod isClosed_Icc
-      · simp only [P, if_neg hp]
+      · simp only [P, ite_eq_right hp]
         exact isClosed_empty
     · cases b
       · exact isClosed_Iic.prod isClosed_Icc
@@ -175,9 +175,9 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
     intro k p hp
     rcases k with q | b
     · by_cases hq : (sq q.1 q.2 ∩ G).Nonempty
-      · simp only [P, if_pos hq] at hp
+      · simp only [P, ite_eq_left hq] at hp
         exact (hsqQ q.1 q.1.2 q.2 q.2.2 hp).2
-      · simp only [P, if_neg hq] at hp
+      · simp only [P, ite_eq_right hq] at hp
         exact absurd hp (notMem_empty p)
     · cases b
       · exact hp.2
@@ -193,14 +193,14 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
     have hzsq : z ∈ sq i j := ⟨⟨hi1, hi2⟩, ⟨hj1, hj2⟩⟩
     refine mem_iUnion.mpr ⟨Sum.inl (⟨i, hi⟩, ⟨j, hj⟩), ?_⟩
     have hne : (sq i j ∩ G).Nonempty := ⟨z, hzsq, hz⟩
-    simp only [P, if_pos hne]
+    simp only [P, ite_eq_left hne]
     exact hzsq
   have hnear : ∀ z ∈ Cp, 0 < z.1 → z.1 < 1 → ∃ g ∈ G, dist z g ≤ 1 / n := by
     intro z hz hz0 hz1
     obtain ⟨k, hzk⟩ := mem_iUnion.mp hz
     rcases k with p | b
     · by_cases hp : (sq p.1 p.2 ∩ G).Nonempty
-      · simp only [P, if_pos hp] at hzk
+      · simp only [P, ite_eq_left hp] at hzk
         obtain ⟨g, hgsq, hgG⟩ := hp
         refine ⟨g, hgG, ?_⟩
         rw [Prod.dist_eq, Real.dist_eq, Real.dist_eq, max_le_iff]
@@ -211,7 +211,7 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
           constructor <;> linarith [hzk.1.1, hzk.1.2, hgsq.1.1, hgsq.1.2]
         · rw [abs_le]
           constructor <;> linarith [hzk.2.1, hzk.2.2, hgsq.2.1, hgsq.2.2]
-      · simp only [P, if_neg hp] at hzk
+      · simp only [P, ite_eq_right hp] at hzk
         exact absurd hzk (notMem_empty z)
     · cases b
       · exact absurd hzk.1 (not_le.mpr hz0)
@@ -414,12 +414,12 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
   have hprG : ∀ p ∈ Cp, pr (cl p) ∈ G ∧ dist (pr (cl p)) (cl p) ≤ 1 / n := by
     intro p hp
     by_cases hG : cl p ∈ G
-    · simp only [pr, if_pos hG]
+    · simp only [pr, ite_eq_left hG]
       exact ⟨hG, by rw [dist_self]; positivity⟩
     · rcases hclG p hp with hG' | ⟨hC, h0, h1⟩
       · exact absurd hG' hG
       · have hex := hnear (cl p) hC h0 h1
-        simp only [pr, if_neg hG, dif_pos hex]
+        simp only [pr, ite_eq_right hG, dite_eq_left hex]
         exact ⟨hex.choose_spec.1, by rw [dist_comm]; exact hex.choose_spec.2⟩
   have hG0 : ((0 : ℝ), (0 : ℝ)) ∈ G := hL _ hhalf
   have hG1 : ((1 : ℝ), (0 : ℝ)) ∈ G := hR _ hhalf
@@ -428,8 +428,8 @@ theorem exists_chain_left_right_of_no_crossing {G : Set (ℝ × ℝ)}
   have hcl1 : cl ((1 : ℝ), (0 : ℝ)) = ((1 : ℝ), 0) := by
     simp only [cl, min_self, max_eq_left zero_le_one]
   refine ⟨m, fun i => pr (cl (c i)), ?_, ?_, ?_, ?_⟩
-  · simp only [hc0, hcl0, pr, if_pos hG0]
-  · simp only [hcm, hcl1, pr, if_pos hG1]
+  · simp only [hc0, hcl0, pr, ite_eq_left hG0]
+  · simp only [hcm, hcl1, pr, ite_eq_left hG1]
   · intro i hi
     exact (hprG (c i) (hC₁Cp (hcC i hi))).1
   · intro i hi

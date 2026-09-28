@@ -91,14 +91,14 @@ private theorem lift_small (f : ℝ → ℝ) (hf : ∀ r ≤ 1, f r = r)
   classical
   by_cases hz : x = 0
   · simp only [radialLift, hz, ite_true]
-  · simp only [radialLift, if_neg hz, hf _ hx, div_self (norm_ne_zero_iff.mpr hz), one_smul]
+  · simp only [radialLift, ite_eq_right hz, hf _ hx, div_self (norm_ne_zero_iff.mpr hz), one_smul]
 
 private theorem lift_norm (f : ℝ → ℝ) (hzero : f 0 = 0)
     (hnonneg : ∀ r, 0 ≤ r → 0 ≤ f r) (x : E) : ‖radialLift f x‖ = f ‖x‖ := by
   classical
   by_cases hz : x = 0
   · simp only [radialLift, hz, ite_true, norm_zero, hzero]
-  · rw [radialLift, if_neg hz, norm_smul, Real.norm_eq_abs,
+  · rw [radialLift, ite_eq_right hz, norm_smul, Real.norm_eq_abs,
       abs_of_nonneg (div_nonneg (hnonneg _ (norm_nonneg x)) (norm_nonneg x)),
       div_mul_cancel₀ _ (norm_ne_zero_iff.mpr hz)]
 
@@ -117,7 +117,7 @@ private theorem lift_smooth (f : ℝ → ℝ) (hf : ContDiff ℝ ∞ f)
     apply (((hf.contDiffAt.comp x hn).div hn (norm_ne_zero_iff.mpr hx)).smul contDiffAt_id).congr_of_eventuallyEq
     filter_upwards [isOpen_compl_singleton.mem_nhds hx] with y hy
     change radialLift f y = (f ‖y‖ / ‖y‖) • y
-    exact if_neg (show y ≠ 0 from hy)
+    exact ite_eq_right (show y ≠ 0 from hy)
 
 private theorem lift_cancel (f g : ℝ → ℝ) (hf0 : f 0 = 0)
     (hfpos : ∀ r, 0 < r → 0 < f r) (hgf : ∀ r, g (f r) = r) (x : E) :
@@ -131,7 +131,7 @@ private theorem lift_cancel (f g : ℝ → ℝ) (hf0 : f 0 = 0)
       · rw [← he, hf0]
       · exact (hfpos r hp).le) x
     have hfx : radialLift f x ≠ 0 := norm_pos_iff.mp (hn.trans_gt (hfpos _ hr))
-    rw [radialLift, if_neg hfx, hn, hgf, radialLift, if_neg hx, smul_smul]
+    rw [radialLift, ite_eq_right hfx, hn, hgf, radialLift, ite_eq_right hx, smul_smul]
     have hc : (‖x‖ / f ‖x‖) * (f ‖x‖ / ‖x‖) = 1 := by
       field_simp [(hfpos _ hr).ne', hr.ne']
     rw [hc, one_smul]
@@ -153,7 +153,7 @@ theorem radialExponentialDiffeomorph_of_two_le_norm (x : E) (hx : 2 ≤ ‖x‖)
     radialExponentialDiffeomorph x = (Real.exp ‖x‖ / ‖x‖) • x := by
   have hz : x ≠ 0 := norm_pos_iff.mp (by linarith)
   change radialLift exponentialRadius x = _
-  rw [radialLift, if_neg hz, radius_large hx]
+  rw [radialLift, ite_eq_right hz, radius_large hx]
 
 theorem norm_radialExponentialDiffeomorph (x : E) (hx : 2 ≤ ‖x‖) :
     ‖radialExponentialDiffeomorph x‖ = Real.exp ‖x‖ := by
@@ -167,7 +167,7 @@ theorem radialExponentialDiffeomorph_linearIsometryEquiv (A : E ≃ₗᵢ[ℝ] E
   by_cases hx : x = 0
   · simp only [hx, map_zero, radialLift, ite_true]
   · have hAx : A x ≠ 0 := fun he => hx (A.injective (he.trans A.map_zero.symm))
-    simp only [radialLift, if_neg hx, if_neg hAx, A.norm_map, map_smul]
+    simp only [radialLift, ite_eq_right hx, ite_eq_right hAx, A.norm_map, map_smul]
 
 theorem norm_radialExponentialDiffeomorph_lt_iff (x : E) (r : ℝ) (hr : 2 ≤ r) :
     ‖radialExponentialDiffeomorph x‖ < Real.exp r ↔ ‖x‖ < r := by

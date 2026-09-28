@@ -78,13 +78,13 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_arc_traces
     {ι : Type*} [Finite ι] {D U : Set Plane} (hD : IsPLBall 2 D)
     (hU : IsOpen U) (hDU : D ⊆ U) (A : ι → Set Plane)
     (q : ι → (Fin 2 → ℝ) → Plane)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 2)) (A i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (A i))
     (hDA : ∀ i, IsPLBall 1 (D ∩ A i))
     (hends : ∀ i, Disjoint D (q i '' stdSimplexBoundary 1)) :
     ∃ Q : Set Plane, IsPLBall 2 Q ∧ D ⊆ interior Q ∧ Q ⊆ U ∧
       ∀ i, IsPLBall 1 (A i ∩ Q) ∧
         ∀ r : (Fin 2 → ℝ) → Plane,
-          IsPLHomeomorphOn r (stdSimplex ℝ (Fin 2)) (A i ∩ Q) →
+          IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (A i ∩ Q) →
           r '' stdSimplexBoundary 1 = A i ∩ frontier Q := by
   classical
   let _ : DecidableEq Plane := Classical.decEq _
@@ -220,7 +220,7 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_arc_traces
     (hA i).isPLBall_one_of_isCompact_of_isConnected (isPolyhedron_space Q).isCompact hQconn
       (hCball.nontrivial.mono hCQ)
       ((derivedNeighborhood_space_subset B L).trans hBA.subset)
-  have hqB : IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 2)) B.space := hBA.symm ▸ hq i
+  have hqB : IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) B.space := hBA.symm ▸ hq i
   have hBball : IsPLBall 1 B.space := ⟨q i, hqB⟩
   have hBbd : (boundaryComplex 1 B).space = q i '' stdSimplexBoundary 1 := by
     simpa only [simplexBoundary_stdVertices_space] using
@@ -235,7 +235,7 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_arc_traces
       hBR hNdis hQdis
   refine ⟨hQtrace ▸ hQball, ?_⟩
   intro s hs
-  have hsQ : IsPLHomeomorphOn s (stdSimplex ℝ (Fin 2)) Q.space := hQtrace.symm ▸ hs
+  have hsQ : IsPLHomeomorphOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) Q.space := hQtrace.symm ▸ hs
   have hsbd : (boundaryComplex 1 Q).space = s '' stdSimplexBoundary 1 := by
     simpa only [simplexBoundary_stdVertices_space] using
       boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex Q hsQ

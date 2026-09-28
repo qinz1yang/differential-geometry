@@ -13,9 +13,9 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem IsPLHomeomorphOn.image_stdSimplexBoundary_prism_bottom_union_side
-    {D : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {a b : ℝ} (hab : a < b) {q : (Fin 3 → ℝ) → E × ℝ}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (D ×ˢ {a} ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)) :
     q '' stdSimplexBoundary 2 = (r '' stdSimplexBoundary 2) ×ˢ {b} := by
   let J := r '' stdSimplexBoundary 2

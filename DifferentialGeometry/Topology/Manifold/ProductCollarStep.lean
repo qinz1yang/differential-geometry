@@ -161,28 +161,28 @@ theorem exists_uniform_smooth_step_of_product_collar :
   · intro x hx
     change collarStep U L q β x = 0
     have hxL : x ∈ L := Or.inl hx
-    rw [collarStep, if_neg (fun hu ↦ Set.disjoint_left.mp hPoff hx hu),
-      if_pos hxL]
+    rw [collarStep, ite_eq_right (fun hu ↦ Set.disjoint_left.mp hPoff hx hu),
+      ite_eq_left hxL]
   · intro x hx
     change collarStep U L q β x = 1
-    rw [collarStep, if_neg (fun hu ↦ Set.disjoint_left.mp hQoff hx hu),
-      if_neg (fun hl ↦ Set.disjoint_left.mp hQL hx hl)]
+    rw [collarStep, ite_eq_right (fun hu ↦ Set.disjoint_left.mp hQoff hx hu),
+      ite_eq_right (fun hl ↦ Set.disjoint_left.mp hQL hx hl)]
   · intro x
     change collarStep U L q β (e x) = β (x.2 : ℝ)
     by_cases hu : e x ∈ U
-    · rw [collarStep, if_pos hu, hqe]
+    · rw [collarStep, ite_eq_left hu, hqe]
     · by_cases hl : (x.2 : ℝ) ≤ c
       · have hxl : (x.2 : ℝ) ≤ l := by
           by_contra h
           exact hu (heU x ⟨lt_of_not_ge h, hl.trans_lt hcr⟩)
         have hxL : e x ∈ L := Or.inr ⟨x, hl, rfl⟩
-        rw [collarStep, if_neg hu, if_pos hxL,
+        rw [collarStep, ite_eq_right hu, ite_eq_left hxL,
           hzero _ (hxl.trans hla.le)]
       · have hxr : r ≤ (x.2 : ℝ) := by
           by_contra h
           exact hu (heU x ⟨hlc.trans (lt_of_not_ge hl), lt_of_not_ge h⟩)
         have hnL : e x ∉ L := fun h ↦ hl ((Set.ext_iff.mp hpre x).mp h)
-        rw [collarStep, if_neg hu, if_neg hnL, hone _ (hbr.le.trans hxr)]
+        rw [collarStep, ite_eq_right hu, ite_eq_right hnL, hone _ (hbr.le.trans hxr)]
   · intro x hx
     have hout : x ∉ U ∩ q ⁻¹' Icc a b := by rwa [hband]
     by_cases hu : x ∈ U
@@ -190,17 +190,17 @@ theorem exists_uniform_smooth_step_of_product_collar :
       rcases not_and_or.mp hqout with hlo | hhi
       · left
         change collarStep U L q β x = 0
-        rw [collarStep, if_pos hu, hzero _ (lt_of_not_ge hlo).le]
+        rw [collarStep, ite_eq_left hu, hzero _ (lt_of_not_ge hlo).le]
       · right
         change collarStep U L q β x = 1
-        rw [collarStep, if_pos hu, hone _ (lt_of_not_ge hhi).le]
+        rw [collarStep, ite_eq_left hu, hone _ (lt_of_not_ge hhi).le]
     · by_cases hl : x ∈ L
       · left
         change collarStep U L q β x = 0
-        rw [collarStep, if_neg hu, if_pos hl]
+        rw [collarStep, ite_eq_right hu, ite_eq_left hl]
       · right
         change collarStep U L q β x = 1
-        rw [collarStep, if_neg hu, if_neg hl]
+        rw [collarStep, ite_eq_right hu, ite_eq_right hl]
   · intro x hx
     apply mvfderiv_collarStep_eq_zero_off_band U L hL q β a c b hac.le hcb.le
       hside hzero hone hclosed hfrontier

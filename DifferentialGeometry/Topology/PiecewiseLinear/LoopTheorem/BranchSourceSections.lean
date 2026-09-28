@@ -66,7 +66,7 @@ theorem exists_branch_sections_of_compact_source_sheets
       ⟨Function.invFunOn f (A i b) (F y), hinvmem i b y hy⟩ else a₀
   have hsval : ∀ i b y, F y ∈ W i →
       (s i b y : EuclideanSpace ℝ (Fin 2)) = Function.invFunOn f (A i b) (F y) :=
-    fun i b y hy => by simp only [s, dif_pos hy]
+    fun i b y hy => by simp only [s, dite_eq_left hy]
   have hsA : ∀ i b y, F y ∈ W i → (s i b y : EuclideanSpace ℝ (Fin 2)) ∈ A i b := by
     intro i b y hy
     rw [hsval i b y hy]

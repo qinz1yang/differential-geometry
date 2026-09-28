@@ -14,16 +14,16 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem IsPLBall.simplyConnectedSpace [FiniteDimensional ℝ E] {n : ℕ} {D : Set E}
     (hD : IsPLBall n D) : SimplyConnectedSpace D := by
   obtain ⟨f, hf⟩ := hD
-  let _ : ContractibleSpace (stdSimplex ℝ (Fin (n + 1))) :=
-    (convex_stdSimplex ℝ (Fin (n + 1))).contractibleSpace
-      ⟨_, single_mem_stdSimplex ℝ (0 : Fin (n + 1))⟩
+  let _ : ContractibleSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :=
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))).contractibleSpace
+      ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (n + 1))⟩
   exact hf.homeomorph.symm.toHomotopyEquiv.simplyConnectedSpace
 
 theorem IsPLBall.locallyPathConnectedSpace [FiniteDimensional ℝ E] {n : ℕ} {D : Set E}
     (hD : IsPLBall n D) : LocallyPathConnectedSpace D := by
   obtain ⟨f, hf⟩ := hD
-  let _ : LocallyPathConnectedSpace (stdSimplex ℝ (Fin (n + 1))) :=
-    (convex_stdSimplex ℝ (Fin (n + 1))).locallyPathConnectedSpace
+  let _ : LocallyPathConnectedSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :=
+    (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))).locallyPathConnectedSpace
   exact hf.homeomorph.symm.isOpenEmbedding.locallyPathConnectedSpace
 
 end DifferentialGeometry.Topology.PiecewiseLinear

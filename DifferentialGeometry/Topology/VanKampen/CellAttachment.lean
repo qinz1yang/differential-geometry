@@ -104,12 +104,12 @@ theorem interiorCodeRaw_related {X : Type u} (n : ℕ)
   · rcases hx with ⟨rfl, rfl⟩
     change (if h : ‖(x : EuclideanSpace ℝ (Fin n))‖ < 1 then
       some (⟨cellBoundaryInclusion n x, h⟩ : CellInterior n) else none) = none
-    rw [dif_neg]
+    rw [dite_eq_right]
     simp [x.2]
   · rcases hx with ⟨rfl, rfl⟩
     change none = if h : ‖(x : EuclideanSpace ℝ (Fin n))‖ < 1 then
       some (⟨cellBoundaryInclusion n x, h⟩ : CellInterior n) else none
-    rw [dif_neg]
+    rw [dite_eq_right]
     simp [x.2]
 
 noncomputable def interiorCode {X : Type u} (n : ℕ)
@@ -123,7 +123,7 @@ theorem interiorCode_cellInterior {X : Type u} (n : ℕ)
   change (if h : ‖(d : EuclideanSpace ℝ (Fin n))‖ < 1 then
     some (⟨(cellInteriorInclusion n d : EuclideanSpace ℝ (Fin n)), h⟩ : CellInterior n)
       else none) = some d
-  rw [dif_pos d.2]
+  rw [dite_eq_left d.2]
   exact congrArg some (Subtype.ext rfl)
 
 def cellInteriorMap {X : Type u} (n : ℕ)
@@ -736,12 +736,12 @@ theorem lowerCodeRaw_related {X : Type u} (n : ℕ)
   · rcases hx with ⟨rfl, rfl⟩
     change (if h : ‖(x : EuclideanSpace ℝ (Fin n))‖ = 1 then
       some (φ ⟨cellBoundaryInclusion n x, h⟩) else none) = some (φ x)
-    rw [dif_pos x.2]
+    rw [dite_eq_left x.2]
     congr 2
   · rcases hx with ⟨rfl, rfl⟩
     change some (φ x) = if h : ‖(x : EuclideanSpace ℝ (Fin n))‖ = 1 then
       some (φ ⟨cellBoundaryInclusion n x, h⟩) else none
-    rw [dif_pos x.2]
+    rw [dite_eq_left x.2]
     congr 2
 
 noncomputable def lowerCode {X : Type u} (n : ℕ)

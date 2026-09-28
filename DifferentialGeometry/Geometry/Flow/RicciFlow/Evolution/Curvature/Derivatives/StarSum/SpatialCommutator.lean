@@ -497,9 +497,9 @@ private theorem curvRoute
   by_cases hq : q.val = 0
   · have hq0 : q = 0 := Fin.ext hq
     subst q
-    rw [dif_pos (by simp)]
+    rw [dite_eq_left (by simp)]
     simpa using (curvactStar0 (I := I) S t k basis horth' I0).symm
-  · rw [dif_neg hq]
+  · rw [dite_eq_right hq]
     simpa using (curvactStarPos (I := I) S t k q hq basis horth' I0).symm
 
 def commStarCost (n k : ℕ) : Real :=

@@ -1,6 +1,12 @@
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.SlotCurryLeibniz
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.GradientField
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorThirdOrder
+
+open DifferentialGeometry.TensorMetric
+  (tensor00Scalar
+    tensor00Scalar_apply
+    tensor0SAsRS_apply
+    tensor0SToTensorRS)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

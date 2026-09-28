@@ -57,7 +57,7 @@ theorem tensor02CovDerivNormWith_add_le (a : ℕ)
         tensor02CovDerivNormWith (I := J) a B cov nrm y := by
   unfold tensor02CovDerivNormWith
   rw [tensor02CovDeriv_add]
-  exact _root_.Tensor0SBundle.sqrt_normSq0S_add_le (I := J) nrm y (a + 2)
+  exact _root_.DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le (I := J) nrm y (a + 2)
     (tensor02CovDeriv (I := J) A cov a y) (tensor02CovDeriv (I := J) B cov a y)
 
 end TensorAlgebra

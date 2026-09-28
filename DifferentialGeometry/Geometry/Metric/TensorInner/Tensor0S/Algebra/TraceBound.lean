@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Met
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
@@ -110,4 +110,4 @@ theorem traceNormSq_le (g : SmoothRiemannianMetric I M) (x : M)
 end Trace
 
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric

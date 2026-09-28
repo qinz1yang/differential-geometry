@@ -17,18 +17,18 @@ theorem exists_homeomorph_iUnion_derivedNeighborhoodCell_vertices
     (hK : IsCombinatorialManifoldWithBoundary (n + 1) K) (V : Finset E)
     (hV : ∀ v ∈ V, {v} ∈ K.faces) :
     ∃ c : V → (Fin (n + 2) → ℝ) → E,
-      (∀ v, IsPLHomeomorphOn (c v) (stdSimplex ℝ (Fin (n + 2)))
+      (∀ v, IsPLHomeomorphOn (c v) (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
         (derivedNeighborhoodCell K {v.val}).space) ∧
-      ∃ e : (Σ _ : V, stdSimplex ℝ (Fin (n + 2))) ≃ₜ
+      ∃ e : (Σ _ : V, Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) ≃ₜ
           (⋃ v ∈ V, (derivedNeighborhoodCell K {v}).space),
         ∀ v x, (e ⟨v, x⟩ : E) = c v x.val := by
   classical
   have hballs (v : V) : ∃ c : (Fin (n + 2) → ℝ) → E,
-      IsPLHomeomorphOn c (stdSimplex ℝ (Fin (n + 2)))
+      IsPLHomeomorphOn c (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
         (derivedNeighborhoodCell K {v.val}).space :=
     hK.isPLBall_derivedNeighborhoodCell (hV v.val v.property)
   choose c hc using hballs
-  let f : (Σ _ : V, stdSimplex ℝ (Fin (n + 2))) →
+  let f : (Σ _ : V, Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) →
       (⋃ v ∈ V, (derivedNeighborhoodCell K {v}).space) := fun z =>
     ⟨c z.1 z.2.val, mem_iUnion₂.mpr ⟨z.1.val, z.1.property,
       (hc z.1).bijOn.mapsTo z.2.property⟩⟩

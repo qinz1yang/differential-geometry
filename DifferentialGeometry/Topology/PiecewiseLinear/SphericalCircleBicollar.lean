@@ -20,7 +20,7 @@ theorem IsPLSphere.exists_bicollar_of_isPLSphere_one
       W ∈ 𝓝ˢ[S] J ∧ IsPLHomeomorphOn ρ (J ×ˢ Icc (-1 : ℝ) 1) W ∧
       ∀ x ∈ J, ρ (x, 0) = x := by
   classical
-  let D : Set (Fin 3 → ℝ) := stdSimplex ℝ (Fin 3)
+  let D : Set (Fin 3 → ℝ) := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   let C : Set (Fin 3 → ℝ) := stdSimplexBoundary 2
   let B : Set ((Fin 3 → ℝ) × ℝ) := D ×ˢ {(-2 : ℝ), 2} ∪ C ×ˢ Icc (-2 : ℝ) 2
   obtain ⟨j, hj⟩ := id hJ

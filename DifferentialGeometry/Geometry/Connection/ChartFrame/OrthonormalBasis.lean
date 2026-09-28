@@ -47,7 +47,7 @@ private theorem exists_basis_eq_smoothOrthoFrame
     rw [Finset.sum_eq_single_of_mem k hk] at hzero
     · simpa using hzero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) =
       Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]

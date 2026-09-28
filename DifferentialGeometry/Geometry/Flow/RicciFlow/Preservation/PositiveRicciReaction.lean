@@ -392,7 +392,7 @@ theorem exists_nullOrthonormalBasis3At
       change f i = e0
       dsimp [f]
       have hi0 : (i : Fin 3) = 0 := i.2
-      rw [if_pos hi0]
+      rw [ite_eq_left hi0]
     rw [hval]
     simp [he0_norm]
   have hcard : Module.finrank Real (TangentSpace I x) = Fintype.card (Fin 3) := by

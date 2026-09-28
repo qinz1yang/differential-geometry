@@ -20,8 +20,8 @@ theorem isPLSphere_slab_of_heightIndex_eq_zero
     (hzero : heightIndex K.space ℓ = 0) {a b : ℝ} (hab : a < b)
     (hbelow : ∃ y ∈ K.space, ℓ y < a) (habove : ∃ z ∈ K.space, b < ℓ z)
     {D₀ D₁ : Set E} {g₀ g₁ : (Fin 3 → ℝ) → E}
-    (hg₀ : IsPLHomeomorphOn g₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hg₁ : IsPLHomeomorphOn g₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hg₀ : IsPLHomeomorphOn g₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hg₁ : IsPLHomeomorphOn g₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hD₀ : D₀ ⊆ {x | ℓ x = a}) (hD₁ : D₁ ⊆ {x | ℓ x = b})
     (hg₀J : g₀ '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = a})
     (hg₁J : g₁ '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = b}) :
@@ -121,8 +121,8 @@ theorem exists_isPLSphere_slab_of_heightIndex_eq_zero
     (hbelow : ∃ y ∈ K.space, ℓ y < a) (habove : ∃ z ∈ K.space, b < ℓ z)
     {W : Set E} (hW : IsOpen W) (hWconv : Convex ℝ W) (hKW : K.space ⊆ W) :
     ∃ (D₀ D₁ : Set E) (g₀ g₁ : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn g₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn g₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn g₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn g₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       g₀ '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = a} ∧
       g₁ '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = b} ∧
       D₀ ⊆ W ∩ {x | ℓ x = a} ∧ D₁ ⊆ W ∩ {x | ℓ x = b} ∧

@@ -5,6 +5,7 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Differentiability.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Regularity.SpectralSeriesSecondOrderSobolev
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FrameExpansion
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
+open DifferentialGeometry.TensorMetric (fiberNormSqComponent fiberNormSqSummand fiberNormSqSummand_eq_component_sq)
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
@@ -532,7 +533,7 @@ theorem realizeMetricMap_eq_of_small (g_bg : SmoothRiemannianMetric I M) (a : �
       metricCauchySchwarzBound (I := I) (M := M) g_bg
         (tensorHsBilinFormSymm (I := I) g_bg u hu_fs) δ' :=
     ⟨hu_fs, δ', hδ'_lt, hδ'⟩
-  rw [realizeMetricMap, dif_pos hex]
+  rw [realizeMetricMap, dite_eq_left hex]
   unfold tensorSectionRealizeMetric
   change g_bg.inner x v w +
       ccTensorBilinSymm (I := I) g_bg

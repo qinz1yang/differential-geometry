@@ -21,14 +21,14 @@ theorem barycentricCoordinate_pos_of_mem_openSimplex {L : Geometry.SimplicialCom
     {e : Finset E} (he : e ∈ L.faces) {x : E} (hx : x ∈ openSimplex e) {v : E} (hv : v ∈ e) :
     0 < barycentricCoordinate L v x := by
   have hxe := openSimplex_subset_convexHull e hx
-  rw [barycentricCoordinate_eq L he hxe, if_pos hv]
+  rw [barycentricCoordinate_eq L he hxe, ite_eq_left hv]
   exact (mem_openSimplex_self_iff (L.indep he) hxe).mp hx v hv
 
 theorem barycentricCoordinate_eq_zero_of_notMem_vertices {L : Geometry.SimplicialComplex ℝ E}
     {x : E} (hx : x ∈ L.space) {v : E} (hv : v ∉ L.vertices) :
     barycentricCoordinate L v x = 0 := by
   obtain ⟨e, he, hxe⟩ := L.mem_space_iff.mp hx
-  rw [barycentricCoordinate_eq L he hxe, if_neg]
+  rw [barycentricCoordinate_eq L he hxe, ite_eq_right]
   intro hve
   exact hv (L.down_closed he (Finset.singleton_subset_iff.mpr hve) (Finset.singleton_nonempty v))
 
@@ -40,9 +40,9 @@ theorem sum_barycentricCoordinate {L : Geometry.SimplicialComplex ℝ E} [Finite
     (mem_simplicialComplexVertices L).mpr
       (L.down_closed he (Finset.singleton_subset_iff.mpr hv) (Finset.singleton_nonempty v))
   have hzero : ∀ v ∈ simplicialComplexVertices L, v ∉ e → barycentricCoordinate L v x = 0 :=
-    fun v _ hve => by rw [barycentricCoordinate_eq L he hxe, if_neg hve]
+    fun v _ hve => by rw [barycentricCoordinate_eq L he hxe, ite_eq_right hve]
   rw [← Finset.sum_subset hsub hzero, ← sum_weights hxe]
-  exact Finset.sum_congr rfl fun v hv => by rw [barycentricCoordinate_eq L he hxe, if_pos hv]
+  exact Finset.sum_congr rfl fun v hv => by rw [barycentricCoordinate_eq L he hxe, ite_eq_left hv]
 
 theorem barycentricCoordinate_pos_of_forall_le {L : Geometry.SimplicialComplex ℝ E} {x : E}
     (hx : x ∈ L.space) {v : E}
@@ -68,8 +68,8 @@ theorem barycentricCoordinate_add_smul {L : Geometry.SimplicialComplex ℝ E} {s
   rw [barycentricCoordinate_eq L hs hq, barycentricCoordinate_eq L hs hy,
     barycentricCoordinate_eq L hs hz]
   by_cases hv : v ∈ s
-  · rw [if_pos hv, if_pos hv, if_pos hv, key v hv]
-  · rw [if_neg hv, if_neg hv, if_neg hv, mul_zero, mul_zero, add_zero]
+  · rw [ite_eq_left hv, ite_eq_left hv, ite_eq_left hv, key v hv]
+  · rw [ite_eq_right hv, ite_eq_right hv, ite_eq_right hv, mul_zero, mul_zero, add_zero]
 
 theorem add_smul_mem_convexHull_of_barycentricCoordinate_nonneg
     {L : Geometry.SimplicialComplex ℝ E} {s : Finset E} (hs : s ∈ L.faces) {y z : E}
@@ -80,8 +80,8 @@ theorem add_smul_mem_convexHull_of_barycentricCoordinate_nonneg
     α • y + γ • z ∈ convexHull ℝ (s : Set E) := by
   have h₀ : ∀ u ∈ s, 0 ≤ α * weights s y u + γ * weights s z u := fun u hu => by
     have h := hnonneg u hu
-    rwa [barycentricCoordinate_eq L hs hy, barycentricCoordinate_eq L hs hz, if_pos hu,
-      if_pos hu] at h
+    rwa [barycentricCoordinate_eq L hs hy, barycentricCoordinate_eq L hs hz, ite_eq_left hu,
+      ite_eq_left hu] at h
   have h₁ : ∑ u ∈ s, (α * weights s y u + γ * weights s z u) = 1 := by
     rw [Finset.sum_add_distrib, ← Finset.mul_sum, ← Finset.mul_sum, sum_weights hy,
       sum_weights hz, mul_one, mul_one, hαγ]
@@ -102,8 +102,8 @@ theorem barycentricCoordinate_vertex_of_mem {L : Geometry.SimplicialComplex ℝ 
     (by simp only [ite_smul, one_smul, zero_smul]; rw [Finset.sum_ite_eq' s w]; simp [hw])
   rw [barycentricCoordinate_eq L hs hwc]
   by_cases hv : v ∈ s
-  · rw [if_pos hv, key v hv]
-  · rw [if_neg hv, if_neg fun h : v = w => hv (h ▸ hw)]
+  · rw [ite_eq_left hv, key v hv]
+  · rw [ite_eq_right hv, ite_eq_right fun h : v = w => hv (h ▸ hw)]
 
 open Classical in
 theorem barycentricCoordinate_subcomplexBarycentricProjection
@@ -118,11 +118,11 @@ theorem barycentricCoordinate_subcomplexBarycentricProjection
       (subcomplexBarycentricProjection_mem_convexHull_filter L L₀ he hxe hm)
   rw [barycentricCoordinate_eq L he hp, barycentricCoordinate_eq L he hxe]
   by_cases hve : v ∈ e
-  · rw [if_pos hve, if_pos hve, weights_subcomplexBarycentricProjection L L₀ he hxe hm hve]
+  · rw [ite_eq_left hve, ite_eq_left hve, weights_subcomplexBarycentricProjection L L₀ he hxe hm hve]
     by_cases hv₀ : v ∈ L₀.vertices
-    · rw [if_pos (Finset.mem_filter.mpr ⟨hve, hv₀⟩), if_pos hv₀]
-    · rw [if_neg fun h => hv₀ (Finset.mem_filter.mp h).2, if_neg hv₀]
-  · rw [if_neg hve, if_neg hve, mul_zero, ite_self]
+    · rw [ite_eq_left (Finset.mem_filter.mpr ⟨hve, hv₀⟩), ite_eq_left hv₀]
+    · rw [ite_eq_right fun h => hv₀ (Finset.mem_filter.mp h).2, ite_eq_right hv₀]
+  · rw [ite_eq_right hve, ite_eq_right hve, mul_zero, ite_self]
 
 open Classical in
 theorem subcomplexBarycentricMass_eq_mul_of_barycentricCoordinate_eq_mul
@@ -163,11 +163,11 @@ theorem exists_barycentricCoordinate_le_of_mem_derivedNeighborhood
     ((barycentricSubdivision A).indep he) (Finset.filter_subset _ _) hf).mp hxe
   obtain ⟨hve, hvK⟩ := Finset.mem_filter.mp hvf
   refine ⟨v, hvK, fun w => ?_⟩
-  rw [barycentricCoordinate_eq _ he hxc, barycentricCoordinate_eq _ he hxc, if_pos hve]
+  rw [barycentricCoordinate_eq _ he hxc, barycentricCoordinate_eq _ he hxc, ite_eq_left hve]
   by_cases hwe : w ∈ e
-  · rw [if_pos hwe]
+  · rw [ite_eq_left hwe]
     exact hmax w hwe
-  · rw [if_neg hwe]
+  · rw [ite_eq_right hwe]
     exact weights_nonneg hxc hve
 
 open Classical in
@@ -187,11 +187,11 @@ theorem mem_derivedNeighborhood_of_barycentricCoordinate_le
     by_cases huK : u ∈ (barycentricSubdivision K).vertices
     · exact ⟨u, Finset.mem_filter.mpr ⟨hu, huK⟩, humax⟩
     · have h1 := hle u huK
-      rw [barycentricCoordinate_eq _ he hxe, barycentricCoordinate_eq _ he hxe, if_pos hu] at h1
+      rw [barycentricCoordinate_eq _ he hxe, barycentricCoordinate_eq _ he hxe, ite_eq_left hu] at h1
       by_cases hve : v ∈ e
-      · rw [if_pos hve] at h1
+      · rw [ite_eq_left hve] at h1
         exact ⟨v, Finset.mem_filter.mpr ⟨hve, hv⟩, fun w hw => (humax w hw).trans h1⟩
-      · rw [if_neg hve] at h1
+      · rw [ite_eq_right hve] at h1
         exact absurd h1 (not_le.mpr ((mem_openSimplex_self_iff
           ((barycentricSubdivision A).indep he) hxe).mp hxo u hu))
   obtain ⟨v', hv'f, hv'max⟩ := key
@@ -206,7 +206,7 @@ theorem barycentricCoordinate_eq_zero_of_mem_subcomplex {A K : Geometry.Simplici
     barycentricCoordinate (barycentricSubdivision A) w x = 0 := by
   rw [← (barycentricSubdivision_isSubdivision K).space_eq] at hx
   obtain ⟨u, hu, hxu⟩ := (barycentricSubdivision K).mem_space_iff.mp hx
-  rw [barycentricCoordinate_eq _ (barycentricSubdivision_faces_subset hKA hu) hxu, if_neg]
+  rw [barycentricCoordinate_eq _ (barycentricSubdivision_faces_subset hKA hu) hxu, ite_eq_right]
   intro hwu
   exact hw ((barycentricSubdivision K).down_closed hu (Finset.singleton_subset_iff.mpr hwu)
     (Finset.singleton_nonempty w))
@@ -240,7 +240,7 @@ theorem notMem_interior_derivedNeighborhood_of_barycentricCoordinate_le
   obtain ⟨e, he, hye⟩ := (barycentricSubdivision A).mem_space_iff.mp hy
   have hwe : w ∈ e := by
     by_contra hwe
-    rw [barycentricCoordinate_eq _ he hye, if_neg hwe] at hpos
+    rw [barycentricCoordinate_eq _ he hye, ite_eq_right hwe] at hpos
     exact lt_irrefl 0 hpos
   have hwc : w ∈ convexHull ℝ (e : Set E) := subset_convexHull ℝ _ (Finset.mem_coe.mpr hwe)
   have hout : ∀ s : ℝ, 0 < s → s ≤ 1 →
@@ -252,11 +252,11 @@ theorem notMem_interior_derivedNeighborhood_of_barycentricCoordinate_le
     have hw' : barycentricCoordinate (barycentricSubdivision A) w ((1 - s) • y + s • w) =
         (1 - s) * barycentricCoordinate (barycentricSubdivision A) w y + s := by
       rw [barycentricCoordinate_add_smul he hye hwc (by ring) hq,
-        barycentricCoordinate_vertex_of_mem he hwe, if_pos rfl, mul_one]
+        barycentricCoordinate_vertex_of_mem he hwe, ite_eq_left rfl, mul_one]
     have hv' : barycentricCoordinate (barycentricSubdivision A) v ((1 - s) • y + s • w) =
         (1 - s) * barycentricCoordinate (barycentricSubdivision A) v y := by
       rw [barycentricCoordinate_add_smul he hye hwc (by ring) hq,
-        barycentricCoordinate_vertex_of_mem he hwe, if_neg fun h : v = w => hw (h ▸ hvK), mul_zero,
+        barycentricCoordinate_vertex_of_mem he hwe, ite_eq_right fun h : v = w => hw (h ▸ hvK), mul_zero,
         add_zero]
     have h1 := hvmax w
     rw [hw', hv'] at h1
@@ -349,9 +349,9 @@ theorem barycentricCoordinate_smul_add_smul_subcomplexBarycentricProjection
   have key := barycentricCoordinate_add_smul he hbe hp (by ring) hq
   have hproj := barycentricCoordinate_subcomplexBarycentricProjection _ _ hbA hm
   refine ⟨fun u hu => ?_, fun u hu => ?_⟩
-  · rw [key, hproj, if_pos hu]
+  · rw [key, hproj, ite_eq_left hu]
     ring
-  · rw [key, hproj, if_neg hu]
+  · rw [key, hproj, ite_eq_right hu]
     ring
 
 open Classical in
@@ -591,13 +591,13 @@ theorem exists_mem_frontier_derivedNeighborhood_of_mem_interior
       barycentricCoordinate (barycentricSubdivision A) u b =
         (1 - t)⁻¹ * (1 - t * m⁻¹) * barycentricCoordinate (barycentricSubdivision A) u x := by
     intro u hu
-    rw [hbcoord u, hproj u, if_pos hu]
+    rw [hbcoord u, hproj u, ite_eq_left hu]
     ring
   have hbnon : ∀ u ∉ (barycentricSubdivision K).vertices,
       barycentricCoordinate (barycentricSubdivision A) u b =
         (1 - t)⁻¹ * barycentricCoordinate (barycentricSubdivision A) u x := by
     intro u hu
-    rw [hbcoord u, hproj u, if_neg hu]
+    rw [hbcoord u, hproj u, ite_eq_right hu]
     ring
   have hbv : barycentricCoordinate (barycentricSubdivision A) v b = (1 - t)⁻¹ * B := by
     rw [hbcore v hvK, hadef, mul_assoc, hlam]

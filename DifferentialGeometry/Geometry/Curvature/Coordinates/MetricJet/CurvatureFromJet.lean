@@ -64,7 +64,7 @@ theorem chartRiemannCLM_centeredChartBasis_eq_jet
   simp only [map_sum, map_smul, Module.Basis.repr_self_apply, Finsupp.finsetSum_apply,
     Finsupp.smul_apply]
   simp only [smul_eq_mul, ite_mul, mul_ite, mul_one, mul_zero, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   exact chartRiemann_eq_jet (I := I) g α (extChartAt_center_mem_interior (I := I) α)
     hG hG1 hG2 k i j l'
 
@@ -388,7 +388,7 @@ private theorem coordInner0S_four_le_of_component_bounds
     rw [Finset.abs_prod]
     calc
       ∏ a : Fin 4, |gInv (I0 a) (J0 a)| ≤ ∏ _a : Fin 4, K :=
-        Finset.prod_le_prod (fun a _ => abs_nonneg _) (fun a _ => hK _ _)
+        Finset.prod_le_prod₀ (fun a _ => abs_nonneg _) (fun a _ => hK _ _)
       _ = K ^ 4 := by rw [Finset.prod_const, Finset.card_univ, Fintype.card_fin]
   have hterm : ∀ I0 J0 : Fin 4 → Idx,
       (∏ a : Fin 4, gInv (I0 a) (J0 a)) * A (fun a => basis (I0 a)) *

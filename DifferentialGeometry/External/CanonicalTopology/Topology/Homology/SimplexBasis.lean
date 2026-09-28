@@ -19,7 +19,7 @@ abbrev integralSingularSimplex (n : ℕ) (X : Type u) [TopologicalSpace X] :=
 
 /-- These are exactly continuous maps from the original barycentric simplex. -/
 def integralSingularSimplexEquiv (n : ℕ) (X : Type u) [TopologicalSpace X] :
-    integralSingularSimplex n X ≃ C(stdSimplex ℝ (Fin (n + 1)), X) :=
+    integralSingularSimplex n X ≃ C(Convexity.StdSimplex ℝ (Fin (n + 1)), X) :=
   (TopCat.of X).toSSetObjEquiv (Opposite.op ⦋n⦌)
 
 /-- Identify the actual categorical coproduct chain group with the explicit

@@ -65,18 +65,14 @@ theorem ae_memWkp_one_and_memLp_wkpNorm_of_weak_partials
         ((ht.2 i).1.locallyIntegrable hp)
     rw [wkpNorm_one_eq]
     simp_rw [eLpNorm_congr_ae (he _)]
-    rw [ENNReal.toReal_add ht.1.2.ne (ENNReal.sum_ne_top.mpr fun a _ => (ht.2 (a 0)).1.2.ne),
-      ENNReal.toReal_sum (fun a _ => (ht.2 (a 0)).1.2.ne)]
+    rw [ENNReal.toReal_add ht.1.ne (ENNReal.sum_ne_top.mpr fun a _ => (ht.2 (a 0)).1.ne),
+      ENNReal.toReal_sum (fun a _ => (ht.2 (a 0)).1.ne)]
   have hb : MemLp (fun t => (eLpNorm (fun z => V (t, z)) p (volume.restrict Ω)).toReal +
         ∑ a : Fin 1 → Fin d,
           (eLpNorm (fun z => W (a 0) (t, z)) p (volume.restrict Ω)).toReal) p μ :=
     (hV.eLpNorm_toReal hpt).add
       (memLp_finsetSum _ fun a _ => (hW (a 0)).eLpNorm_toReal hpt)
-  have hmL : AEStronglyMeasurable (fun t => (iteratedWeakSobolevNorm 1 p (fun z => V (t, z)) Ω).toReal) μ :=
-    hb.1.congr heq.symm
-  apply hb.of_le hmL
-  filter_upwards [heq] with t ht
-  rw [ht]
+  exact hb.ae_eq heq.symm
 
 theorem ae_memWkp_one_and_memLp_wkpNorm_of_lp_weak_partials
     {Z : Type*} [MeasurableSpace Z] {μ : Measure Z} {d : ℕ}
@@ -114,7 +110,7 @@ theorem ae_memWkp_one_and_memLp_wkpNorm_of_lp_weak_partials
       filter_upwards [hUeq] with t ht
       apply congrArg ENNReal.toReal
       exact wkpNorm_congr_ae (by norm_num) hΩ ht
-    exact ⟨hnU.1.congr he, (eLpNorm_congr_ae he).symm.trans_lt hnU.2⟩
+    exact hnU.ae_eq he
   exact ⟨hmP, hnP⟩
 
 theorem ae_memWkp_succ_and_memLp_wkpNorm_of_weak_partials
@@ -153,11 +149,11 @@ theorem ae_memWkp_succ_and_memLp_wkpNorm_of_weak_partials
         ((hwt i).memLp.locallyIntegrable hp)
     rw [wkpNorm_succ_eq_eLpNorm_add_sum_partial]
     simp_rw [wkpNorm_congr_ae hp hΩ (he _)]
-    rw [ENNReal.toReal_add ht.2.ne
+    rw [ENNReal.toReal_add ht.ne
       (ENNReal.sum_ne_top.mpr fun i _ => (wkpNorm_lt_top_of_memWkp (hwt i)).ne),
       ENNReal.toReal_sum (fun i _ => (wkpNorm_lt_top_of_memWkp (hwt i)).ne)]
   have hb := (hV.eLpNorm_toReal hpt).add
     (memLp_finsetSum (Finset.univ : Finset (Fin d)) fun i _ => hWnorm i)
-  exact ⟨hb.1.congr heq.symm, (eLpNorm_congr_ae heq).trans_lt hb.2⟩
+  exact hb.ae_eq heq.symm
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean

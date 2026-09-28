@@ -77,12 +77,12 @@ theorem flowValid_chain_step
   have hΦ'_eq_Ψ : ∀ s ∈ Set.Ioo a₀ (t₁ + r), ∀ x : M, Φ' s x = Ψ (Φ t₁ x) s := by
     intro s hs x
     by_cases hlt : s < t₁
-    · simp only [hΦ'_def, if_pos hlt]
+    · simp only [hΦ'_def, ite_eq_left hlt]
       exact hoverlap x s ⟨hs.1, lt_trans hlt ht₁_hi⟩
-    · simp only [hΦ'_def, if_neg hlt]
+    · simp only [hΦ'_def, ite_eq_right hlt]
   have hΦ'_eq_Φ_left : ∀ s ∈ Set.Ioo lo t₁, ∀ x : M, Φ' s x = Φ s x := by
     intro s hs x
-    simp only [hΦ'_def, if_pos hs.2]
+    simp only [hΦ'_def, ite_eq_left hs.2]
   have hΨsm' : ContMDiffOn (𝓘(ℝ, ℝ).prod I) I ∞ (fun q : ℝ × M => Ψ (Φ t₁ q.2) q.1)
       (Set.Ioo (t₁ - r) (t₁ + r) ×ˢ (Set.univ : Set M)) := by
     have hΦt₁ : ContMDiff I I ∞ (fun x : M => Φ t₁ x) := by
@@ -110,7 +110,7 @@ theorem flowValid_chain_step
   refine ⟨Φ', ?_, ?_, ?_, ?_⟩
   · intro x
     have h0 : (0 : ℝ) < t₁ := h0t₁
-    simp only [hΦ'_def, if_pos h0]
+    simp only [hΦ'_def, ite_eq_left h0]
     exact hΦ0 x
   · intro q hq
     obtain ⟨hq1, _⟩ := hq
@@ -161,8 +161,8 @@ theorem flowValid_chain_step
     · have hev : (fun s : ℝ => Φ' s x) =ᶠ[𝓝 t] (fun s : ℝ => Φ s x) := by
         have hmem : Set.Iio t₁ ∈ 𝓝 t := isOpen_Iio.mem_nhds hlt
         filter_upwards [hmem] with s hs
-        simp only [hΦ'_def, if_pos (Set.mem_Iio.mp hs)]
-      have hΦ't : Φ' t x = Φ t x := by simp only [hΦ'_def, if_pos hlt]
+        simp only [hΦ'_def, ite_eq_left (Set.mem_Iio.mp hs)]
+      have hΦ't : Φ' t x = Φ t x := by simp only [hΦ'_def, ite_eq_left hlt]
       have htmem : t ∈ Set.Ioo lo hi := ⟨ht.1, lt_trans hlt ht₁_hi⟩
       rw [hΦ't]
       exact (hΦbare t htmem x).congr_of_eventuallyEq hev
@@ -177,8 +177,8 @@ theorem flowValid_chain_step
       exact (hΨcurve_bare x t htmem).congr_of_eventuallyEq hev
   · intro s hs x
     by_cases hlt : s < t₁
-    · simp only [hΦ'_def, if_pos hlt]
-    · simp only [hΦ'_def, if_neg hlt]
+    · simp only [hΦ'_def, ite_eq_left hlt]
+    · simp only [hΦ'_def, ite_eq_right hlt]
       have hsmem : s ∈ Set.Ioo a₀ hi :=
         ⟨lt_of_lt_of_le ha₀_lt_t₁ (not_lt.mp hlt), hs.2⟩
       exact (hoverlap x s hsmem).symm

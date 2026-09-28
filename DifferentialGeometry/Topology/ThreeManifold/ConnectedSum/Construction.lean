@@ -339,6 +339,7 @@ private theorem exists_oriented_ball_chart_data (M : ConnectedClosedOrientedMani
     have hid : mfderiv (𝓡 3) 𝓘(ℝ, E3) ((⇑e) ∘ (⇑e.symm)) (τ x)
         = ContinuousLinearMap.id ℝ (TangentSpace 𝓘(ℝ, E3) (τ x)) := by
       rw [Filter.EventuallyEq.mfderiv_eq hone, mfderiv_id]
+      rfl
     have hBcomp : Bclm ∘L mfderiv (𝓡 3) (𝓡 3) (⇑e.symm) (τ x)
         = ContinuousLinearMap.id ℝ (TangentSpace (𝓡 3) (τ x)) := by
       rw [hBclm_eq]

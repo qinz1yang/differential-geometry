@@ -127,7 +127,7 @@ theorem integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surf
     · exact integral_weighted_divergence_eq_zero_of_interior_support g X (hw i) (hwc i)
         (tsupport_mul_subset_left.trans (hrhoint i hi))
     · obtain ⟨k, rfl⟩ := Nat.exists_eq_succ_of_ne_zero (NeZero.ne n)
-      exact integral_mul_divergence_g_with_boundary_add_tangentSectionAction_eq_surfaceMeasure_flux_of_tsupport_subset
+      exact integration_by_parts_of_tsupport_subset_boundary_chart
         g ⟨i, hi⟩ X (hw i) (hwc i)
         (tsupport_mul_subset_left.trans (hrho i))
   have hleft : (fun x => f x * divergenceGWithBoundary g X x + tangentSectionAction X f x) =

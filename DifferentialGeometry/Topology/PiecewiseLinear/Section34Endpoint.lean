@@ -25,8 +25,8 @@ theorem exists_isPLHomeomorphInto_dist_lt_of_cellDiagram (dim : Λ → ℕ) (fac
     (u : Λ → EuclideanSpace ℝ (Fin 3) → M₁) (v : Λ → EuclideanSpace ℝ (Fin 3) → M₂)
     (sourceCell : Λ → Set M₁) (targetCell : Λ → Set M₂) (carrier : Λ → Set M₂) (U : Set M₁)
     (h : M₁ → M₂) (η : M₁ → ℝ) (hdim : ∀ l, dim l ≤ 3)
-    (hr : ∀ l, IsPLHomeomorphOn (r l) (stdSimplex ℝ (Fin (dim l + 1))) (P l))
-    (hs : ∀ l, IsPLHomeomorphOn (s l) (stdSimplex ℝ (Fin (dim l + 1))) (Q l))
+    (hr : ∀ l, IsPLHomeomorphOn (r l) (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim l + 1))) (P l))
+    (hs : ∀ l, IsPLHomeomorphOn (s l) (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim l + 1))) (Q l))
     (hu : ∀ l, IsPLHomeomorphInto 3 (u l) (P l))
     (hv : ∀ l, IsPLHomeomorphInto 3 (v l) (Q l))
     (hsourceCell : ∀ l, sourceCell l = u l '' P l)
@@ -70,8 +70,8 @@ def Section34CellDiagram : Prop :=
       (u : Λ → EuclideanSpace ℝ (Fin 3) → M₁) (v : Λ → EuclideanSpace ℝ (Fin 3) → M₂)
       (sourceCell : Λ → Set M₁) (targetCell : Λ → Set M₂) (carrier : Λ → Set M₂),
       (∀ l, dim l ≤ 3) ∧
-      (∀ l, IsPLHomeomorphOn (r l) (stdSimplex ℝ (Fin (dim l + 1))) (P l)) ∧
-      (∀ l, IsPLHomeomorphOn (s l) (stdSimplex ℝ (Fin (dim l + 1))) (Q l)) ∧
+      (∀ l, IsPLHomeomorphOn (r l) (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim l + 1))) (P l)) ∧
+      (∀ l, IsPLHomeomorphOn (s l) (Convexity.StdSimplex.coordinateSet ℝ (Fin (dim l + 1))) (Q l)) ∧
       (∀ l, IsPLHomeomorphInto 3 (u l) (P l)) ∧ (∀ l, IsPLHomeomorphInto 3 (v l) (Q l)) ∧
       (∀ l, sourceCell l = u l '' P l) ∧ (∀ l, targetCell l = v l '' Q l) ∧
       (∀ l m, m ∈ face l → m = l ∨ dim m < dim l) ∧

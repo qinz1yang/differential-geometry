@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.Remainder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalOperator.SmoothCoreIdentification
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

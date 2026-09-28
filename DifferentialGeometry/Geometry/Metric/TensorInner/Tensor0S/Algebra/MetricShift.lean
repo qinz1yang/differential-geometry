@@ -35,10 +35,11 @@ theorem normSq0S_sub_smul_metricTensor0S
     simpa only [Fintype.card_fin] using
       normSq0S_metricTensor0S_eq_card g basis
         (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) hinv
-  rw [_root_.Tensor0SBundle.normSq0S_sub,
-    _root_.Tensor0SBundle.inner0S_smul_right,
-    normSq0S_eq_inner (A := a • metricTensor0S g x), _root_.Tensor0SBundle.inner0S_smul_left,
-    _root_.Tensor0SBundle.inner0S_smul_right, ← normSq0S_eq_inner, hmetric]
+  rw [DifferentialGeometry.Tensor0SBundle.normSq0S_sub,
+    DifferentialGeometry.Tensor0SBundle.inner0S_smul_right,
+    normSq0S_eq_inner (A := a • metricTensor0S g x),
+    DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
+    DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, ← normSq0S_eq_inner, hmetric]
   rw [inner0S_symm g x A (metricTensor0S g x)]
   change _ = _
   dsimp only [metricTracePair0SAt]

@@ -82,6 +82,7 @@ theorem lDensity_congr
     (I := 𝓘(Real, Real)) (I' := I) h
   simp only [lDensity, lSpeedSq, lVelocity]
   rw [hval, hder]
+  rfl
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem lLength_congr

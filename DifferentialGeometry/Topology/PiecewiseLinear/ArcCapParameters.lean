@@ -107,8 +107,8 @@ theorem IsPLHomeomorphOn.exists_mem_sdiff_of_disjoint_terminal_segments
 
 theorem eq_of_cap_boundary_singletons_of_inter_eq
     {A B C : Set E} {q r : (Fin 3 → ℝ) → E} {x y : E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) C)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) C)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) C)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) C)
     (hA : q '' stdSimplexBoundary 2 ∩ A = {x})
     (hB : r '' stdSimplexBoundary 2 ∩ B = {y}) (hAB : A ∩ C = B ∩ C) : x = y := by
   have hbd : q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 :=

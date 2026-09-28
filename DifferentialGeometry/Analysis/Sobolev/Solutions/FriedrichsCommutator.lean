@@ -378,6 +378,13 @@ private lemma eLpNorm_commutatorPointwise_sq_le
   have hφ_meas : Measurable φ := hφ_cont.measurable
   have hu_meas : AEMeasurable u (volume : Measure E) :=
     hu.aestronglyMeasurable.aemeasurable
+  have hcomm_cont : Continuous (commutatorPointwise a u φ) := by
+    have h_au_memLp : MemLp (fun x => a x * u x) 2 volume :=
+      memLp_smul_of_bound ha_cont.aestronglyMeasurable ha_bd hu
+    exact (ha_cont.mul (convolution_continuous_of_compact_support
+      (hu.locallyIntegrable (by norm_num)) hφ_cont hφ_compact)).sub
+      (convolution_continuous_of_compact_support
+        (h_au_memLp.locallyIntegrable (by norm_num)) hφ_cont hφ_compact)
   have h_eLpNorm_sq :
       eLpNorm (commutatorPointwise a u φ) 2 (volume : Measure E) ^ (2 : ℝ)
         = ∫⁻ x, ‖commutatorPointwise a u φ x‖ₑ ^ (2 : ℝ)
@@ -385,7 +392,8 @@ private lemma eLpNorm_commutatorPointwise_sq_le
     rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
       (p := (2 : ℝ≥0∞)) (μ := (volume : Measure E))
       (f := commutatorPointwise a u φ)
-      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ∞)]
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ∞)
+      hcomm_cont.aestronglyMeasurable]
     have h_2toReal : ((2 : ℝ≥0∞).toReal) = (2 : ℝ) := by norm_num
     rw [h_2toReal]
     rw [← ENNReal.rpow_mul]
@@ -478,7 +486,8 @@ private lemma eLpNorm_commutatorPointwise_sq_le
       = eLpNorm u 2 (volume : Measure E) ^ (2 : ℝ) := by
     rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
       (p := (2 : ℝ≥0∞)) (μ := (volume : Measure E)) (f := u)
-      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ∞)]
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ∞)
+      hu.aestronglyMeasurable]
     have h_2toReal : ((2 : ℝ≥0∞).toReal) = (2 : ℝ) := by norm_num
     rw [h_2toReal, ← ENNReal.rpow_mul]
     rw [show (1 : ℝ) / 2 * 2 = 1 from by norm_num, ENNReal.rpow_one]
@@ -617,7 +626,7 @@ theorem friedrichsCommutator_tendsto_zero
     exact ⟨hε1, hε2⟩
   filter_upwards [h_eventually] with ε hε
   obtain ⟨hε_pos, hε_lt⟩ := hε
-  rw [dif_pos hε_pos]
+  rw [dite_eq_left hε_pos]
   have h_prop := mollifierEps_props (d := d) hε_pos
   obtain ⟨h_cont, h_compact, h_nn, h_support, h_intone⟩ := h_prop
   have h_bound :=

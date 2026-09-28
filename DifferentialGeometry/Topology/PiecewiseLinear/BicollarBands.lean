@@ -363,7 +363,7 @@ theorem IsPLHomeomorphOn.exists_continuousOn_push_to_ends
       ((continuous_fst.comp_continuousOn hψc).prodMk
         (hcc.comp_continuousOn (continuous_snd.comp_continuousOn hψc)))
       fun w hw => ⟨(hψW w hw).1, hcI _⟩
-  have hcont1 : ContinuousOn Φ W := hgc.congr fun w hw => if_pos hw
+  have hcont1 : ContinuousOn Φ W := hgc.congr fun w hw => ite_eq_left hw
   have hcont2 : ContinuousOn Φ (closure (K.space \ W)) := by
     refine continuousOn_id.congr fun w hw => ?_
     by_cases hwW : w ∈ W
@@ -371,7 +371,7 @@ theorem IsPLHomeomorphOn.exists_continuousOn_push_to_ends
       have hzI : z ∈ L.space ×ˢ Icc (-1 : ℝ) 1 := ⟨hz.1, by
         rcases hz.2 with h | h <;> rw [h] <;> norm_num⟩
       change (if ρ z ∈ W then g (ρ z) else ρ z) = ρ z
-      rw [if_pos hwW]
+      rw [ite_eq_left hwW]
       change ρ ((Function.invFunOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) (ρ z)).1,
         max (-1) (min 1 ((Function.invFunOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) (ρ z)).2 / s))) =
           ρ z
@@ -385,7 +385,7 @@ theorem IsPLHomeomorphOn.exists_continuousOn_push_to_ends
           rw [min_eq_left hs', max_eq_right (by norm_num)]]
         rw [← show z.2 = 1 from h]
     · change (if w ∈ W then g w else w) = w
-      rw [if_neg hwW]
+      rw [ite_eq_right hwW]
   refine ⟨Φ, ?_, ?_, ?_, ?_⟩
   · refine (hcont1.union_of_isClosed hcont2 hWclosed isClosed_closure).mono fun w hw => ?_
     by_cases hwW : w ∈ W
@@ -394,17 +394,17 @@ theorem IsPLHomeomorphOn.exists_continuousOn_push_to_ends
   · intro w hw
     by_cases hwW : w ∈ W
     · change (if w ∈ W then g w else w) ∈ K.space
-      rw [if_pos hwW]
+      rw [ite_eq_left hwW]
       exact hWK (hρ.bijOn.mapsTo ⟨(hψW w hwW).1, hcI _⟩)
     · change (if w ∈ W then g w else w) ∈ K.space
-      rw [if_neg hwW]
+      rw [ite_eq_right hwW]
       exact hw
   · intro w _ hwW
     change (if w ∈ W then g w else w) = w
-    rw [if_neg hwW]
+    rw [ite_eq_right hwW]
   · intro z hz
     change (if ρ z ∈ W then g (ρ z) else ρ z) = _
-    rw [if_pos (hρ.bijOn.mapsTo hz)]
+    rw [ite_eq_left (hρ.bijOn.mapsTo hz)]
     change ρ ((Function.invFunOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) (ρ z)).1,
       max (-1) (min 1 ((Function.invFunOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) (ρ z)).2 / s))) = _
     rw [hψρ z hz]
@@ -433,9 +433,9 @@ theorem IsPLHomeomorphOn.exists_continuousOn_retraction_image_connectedComponent
   have hqα : ∀ x, q x ∈ connectedComponentIn L.space y₀ := by
     intro x
     by_cases hx : x ∈ connectedComponentIn L.space y₀
-    · simp only [q, if_pos hx]
+    · simp only [q, ite_eq_left hx]
       exact hx
-    · simp only [q, if_neg hx]
+    · simp only [q, ite_eq_right hx]
       exact mem_connectedComponentIn hy₀
   have hqc : ContinuousOn q L.space := by
     have hc : Continuous fun x : L.space => if x ∈ S then (x : E) else y₀ := by
@@ -460,6 +460,6 @@ theorem IsPLHomeomorphOn.exists_continuousOn_retraction_image_connectedComponent
     change ρ (q (Function.invFunOn ρ (L.space ×ˢ Icc (-1 : ℝ) 1) (ρ (y, e))).1, e) = ρ (y, e)
     rw [hρ.bijOn.invOn_invFunOn.1 ⟨connectedComponentIn_subset _ _ hy, he⟩]
     change ρ (q y, e) = ρ (y, e)
-    simp only [q, if_pos hy]
+    simp only [q, ite_eq_left hy]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

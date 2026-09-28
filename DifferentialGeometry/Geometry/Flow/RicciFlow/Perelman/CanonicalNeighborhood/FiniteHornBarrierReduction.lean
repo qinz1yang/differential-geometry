@@ -27,7 +27,7 @@ theorem hornRadialExitPositionAtEndChart_of_hornRadialOuterPosition
   intro e he he10
   filter_upwards [hout e he he10] with i hi hx x hxfar
   have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hx).cross.tube := by
-    rw [neckTube, dif_pos hx]
+    rw [neckTube, dite_eq_left hx]
   rw [htube] at hi
   exact hi x hxfar
 
@@ -43,7 +43,7 @@ theorem hornRadialExitPositionAtEndChart_iff_hornRadialOuterPosition
   filter_upwards [hexit e he he10, eventually_mem_tail g H ray d hd hzero] with i hi hgood
   intro x hxfar
   have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-    rw [neckTube, dif_pos hgood]
+    rw [neckTube, dite_eq_left hgood]
   rw [htube]
   exact hi hgood x hxfar
 

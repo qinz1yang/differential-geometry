@@ -29,7 +29,7 @@ theorem neg_two_mul_inner_gradient_pow_le
   have hsq₀ : c₀ ^ 2 ≤ (ε * u x) * (a * b) := by
     calc
       c₀ ^ 2 ≤ g.inner x (gradientFun g u x) (gradientFun g u x) * g.inner x w w :=
-        DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+        DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
           g x (gradientFun g u x) w
       _ ≤ (ε * u x) * (a * b) :=
         mul_le_mul hgrad hw (metric_inner_self_nonneg g x w) (mul_nonneg hε hu0)

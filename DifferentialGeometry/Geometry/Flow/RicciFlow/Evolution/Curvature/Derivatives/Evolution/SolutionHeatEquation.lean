@@ -77,7 +77,7 @@ theorem towerHeatBoundOn_of_solution
         (-(∑ p : Idx, ∑ q : Idx,
           gInv (t : Real) i p * gdot p q * gInv (t : Real) q j)) (t : Real) := by
       simpa only [gInv] using
-        basisInv_time (I := I) (fun r => S'.base.metric r) gdot basis
+        hasDerivAt_basisInvMetric (I := I) (fun r => S'.base.metric r) gdot basis
           (fun p q => by
             change HasDerivAt
               (fun r => (S'.family.metric r).inner x (basis p) (basis q))

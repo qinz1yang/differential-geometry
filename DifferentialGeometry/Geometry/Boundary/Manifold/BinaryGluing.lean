@@ -208,8 +208,7 @@ theorem carrierHomeomorphInl_apply_coe (C : BoundaryComponent I M)
     ((carrierHomeomorphInl (I := I) (N := N) C y :
       ↥((Sum.inl : M → M ⊕ N) '' BoundaryComponent.carrier C)) : M ⊕ N) =
       Sum.inl (y : M) := by
-  simp [carrierHomeomorphInl, Homeomorph.trans_apply, Homeomorph.setCongr,
-    Equiv.setCongr_apply]
+  simp [carrierHomeomorphInl, Homeomorph.trans_apply, Homeomorph.setCongr]
 
 noncomputable def carrierEquivInl (C : BoundaryComponent I M) :
     ↥(BoundaryComponent.carrier (BoundaryComponent.sumInl (I := I) (N := N) C)) ≃ₜ
@@ -232,7 +231,7 @@ theorem carrierEquivInl_apply_coe (C : BoundaryComponent I M)
       ↥(BoundaryComponent.carrier C)) : M)) = (p : M ⊕ N) := by
   have h2 : ((Homeomorph.setCongr
       (BoundaryComponent.carrier_sumInl (I := I) (N := N) C)) p : M ⊕ N) = (p : M ⊕ N) := by
-    simp [Homeomorph.setCongr, Equiv.setCongr_apply]
+    simp [Homeomorph.setCongr]
   rw [carrierEquivInl, Homeomorph.trans_apply]
   exact (carrierHomeomorphInl_symm_apply_coe (I := I) (N := N) C _).trans h2
 
@@ -252,8 +251,7 @@ theorem carrierHomeomorphInr_apply_coe (C : BoundaryComponent I N)
     ((carrierHomeomorphInr (I := I) (M := M) C y :
       ↥((Sum.inr : N → M ⊕ N) '' BoundaryComponent.carrier C)) : M ⊕ N) =
       Sum.inr (y : N) := by
-  simp [carrierHomeomorphInr, Homeomorph.trans_apply, Homeomorph.setCongr,
-    Equiv.setCongr_apply]
+  simp [carrierHomeomorphInr, Homeomorph.trans_apply, Homeomorph.setCongr]
 
 omit [ChartedSpace H M] in
 theorem carrierHomeomorphInr_symm_apply_coe (C : BoundaryComponent I N)
@@ -276,7 +274,7 @@ theorem carrierEquivInr_apply_coe (C : BoundaryComponent I N)
       ↥(BoundaryComponent.carrier C)) : N)) = (p : M ⊕ N) := by
   have h2 : ((Homeomorph.setCongr
       (BoundaryComponent.carrier_sumInr (I := I) (M := M) C)) p : M ⊕ N) = (p : M ⊕ N) := by
-    simp [Homeomorph.setCongr, Equiv.setCongr_apply]
+    simp [Homeomorph.setCongr]
   rw [carrierEquivInr, Homeomorph.trans_apply]
   exact (carrierHomeomorphInr_symm_apply_coe (I := I) (M := M) C _).trans h2
 
@@ -310,7 +308,7 @@ def toCollaredGluing (G : BinaryCollaredGluing I M N) : CollaredGluing I (M ⊕ 
     rintro ⟨i, b⟩ ⟨j, c⟩ h
     have hij : i = j := Subsingleton.elim i j
     subst hij
-    cases b <;> cases c <;> simp only [cond_true, cond_false] at h ⊢
+    cases b <;> cases c <;> simp only [Bool.cond_true, Bool.cond_false] at h ⊢
     all_goals first
       | rfl
       | exact absurd h (BoundaryComponent.sumInl_ne_sumInr (I := I) G.left G.right)

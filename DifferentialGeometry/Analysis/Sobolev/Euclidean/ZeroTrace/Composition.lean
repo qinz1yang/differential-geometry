@@ -32,14 +32,20 @@ private theorem norm_gradLp_compSmoothBounded_le
       (eLpNorm hu.weakGrad 2 (volume.restrict Ω)).toReal
   rw [← ENNReal.coe_toReal L, ← ENNReal.toReal_mul]
   apply ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.coe_ne_top hu.weakGrad_memLp.eLpNorm_ne_top)
-  apply (eLpNorm_mono_ae (g := fun x => (L : ℝ) • hu.weakGrad x) ?_).trans_eq
-  · change eLpNorm ((L : ℝ) • hu.weakGrad) 2 (volume.restrict Ω) = _
-    rw [eLpNorm_const_smul]
-    simp only [Real.enorm_eq_ofReal_abs, abs_of_nonneg L.coe_nonneg, ENNReal.ofReal_coe_nnreal]
-  · filter_upwards with x
+  have hmono : eLpNorm (fun x => deriv Φ (u x) • hu.weakGrad x) 2
+      (volume.restrict Ω) ≤
+      eLpNorm (fun x => (L : ℝ) • hu.weakGrad x) 2 (volume.restrict Ω) := by
+    apply eLpNorm_mono_ae
+      ((hu.compSmoothBounded hΩ Φ hΦ hΦ0
+        ⟨(L : ℝ), by simpa only [Real.norm_eq_abs] using hL⟩).weakGrad_memLp.aestronglyMeasurable)
+    filter_upwards with x
     change ‖deriv Φ (u x) • hu.weakGrad x‖ ≤ ‖(L : ℝ) • hu.weakGrad x‖
     rw [norm_smul, norm_smul, Real.norm_of_nonneg L.coe_nonneg]
     exact mul_le_mul_of_nonneg_right (hL (u x)) (norm_nonneg _)
+  apply hmono.trans_eq
+  change eLpNorm ((L : ℝ) • hu.weakGrad) 2 (volume.restrict Ω) = _
+  rw [eLpNorm_const_smul]
+  simp only [Real.enorm_eq_ofReal_abs, abs_of_nonneg L.coe_nonneg, ENNReal.ofReal_coe_nnreal]
 
 omit [NeZero d] in
 private theorem norm_gradLp_add_le
@@ -65,10 +71,17 @@ private theorem eLpNorm_gradient_le_sum
   calc
     eLpNorm f 2 (volume.restrict Ω) ≤
         eLpNorm (∑ j : Fin d, fun x => ‖f x j‖) 2 (volume.restrict Ω) :=
-      eLpNorm_mono_real (fun x => by simpa only [Finset.sum_apply] using hn (f x))
+      eLpNorm_mono_real hf.aestronglyMeasurable
+        (fun x => by simpa only [Finset.sum_apply] using hn (f x))
     _ ≤ ∑ j : Fin d, eLpNorm (fun x => ‖f x j‖) 2 (volume.restrict Ω) :=
-      eLpNorm_sum_le (fun j _ => (hf.eval_piLp j).aestronglyMeasurable.norm) (by norm_num)
-    _ = _ := by simp only [eLpNorm_norm]
+      by
+        simpa only [Finset.sum_apply] using
+          (eLpNorm_sum_le (s := Finset.univ) (f := fun j => fun x => ‖f x j‖)
+            (by norm_num : (1 : ℝ≥0∞) ≤ 2))
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      exact eLpNorm_norm _ ((hf.eval_piLp j).aestronglyMeasurable)
 
 theorem MemW01p.comp_smooth_of_eq_zero_on_datum
     {Ω : Set E} (hΩ : IsOpen Ω) {u v : E → ℝ}
@@ -97,7 +110,7 @@ theorem MemW01p.comp_smooth_of_eq_zero_on_datum
   let b := fun x => if Φ (u x) = 0 then u x else 0
   have hbeq : b =ᵐ[volume.restrict Ω] u := hzero.mono fun x hx => by
     dsimp only [b]
-    rw [if_pos hx]
+    rw [ite_eq_left hx]
   have hbzero (x : E) : Φ (b x) = 0 := by
     dsimp only [b]
     split_ifs with hx
@@ -139,11 +152,15 @@ theorem MemW01p.comp_smooth_of_eq_zero_on_datum
       eLpNorm (fun x => fn n x - Φ (v x)) 2 (volume.restrict Ω) ≤
           eLpNorm (fun x => (L : ℝ) * (φ n x - (v x - u x))) 2 (volume.restrict Ω) := by
         apply eLpNorm_mono_ae
+          ((hfn n).memLp.sub hΦv.memLp).aestronglyMeasurable
         filter_upwards [hbeq] with x hx
         have hh := hLip.dist_le_mul (b x + φ n x) (v x)
         rw [hx] at hh
         have heq : u x + φ n x - v x = φ n x - (v x - u x) := by ring
-        simpa only [fn, hx, Real.dist_eq, heq, norm_mul,
+        change ‖Φ (b x + φ n x) - Φ (v x)‖ ≤
+          ‖(L : ℝ) * (φ n x - (v x - u x))‖
+        rw [hx]
+        simpa only [Real.dist_eq, heq, norm_mul,
           Real.norm_eq_abs, abs_of_nonneg L.coe_nonneg] using hh
       _ = (L : ℝ≥0∞) * eLpNorm (fun x => φ n x - (v x - u x)) 2 (volume.restrict Ω) := by
         change eLpNorm ((L : ℝ) • (fun x => φ n x - (v x - u x))) 2 _ = _
@@ -190,10 +207,17 @@ private theorem eLpNorm_vector_le_sum
   calc
     eLpNorm f 2 (volume.restrict Ω) ≤
         eLpNorm (∑ j : J, fun x => ‖f x j‖) 2 (volume.restrict Ω) :=
-      eLpNorm_mono_real (fun x => by simpa only [Finset.sum_apply] using hn (f x))
+      eLpNorm_mono_real hf.aestronglyMeasurable
+        (fun x => by simpa only [Finset.sum_apply] using hn (f x))
     _ ≤ ∑ j : J, eLpNorm (fun x => ‖f x j‖) 2 (volume.restrict Ω) :=
-      eLpNorm_sum_le (fun j _ => (hf.eval_piLp j).aestronglyMeasurable.norm) (by norm_num)
-    _ = _ := by simp only [eLpNorm_norm]
+      by
+        simpa only [Finset.sum_apply] using
+          (eLpNorm_sum_le (s := Finset.univ) (f := fun j => fun x => ‖f x j‖)
+            (by norm_num : (1 : ℝ≥0∞) ≤ 2))
+    _ = _ := by
+      apply Finset.sum_congr rfl
+      intro j hj
+      exact eLpNorm_norm _ ((hf.eval_piLp j).aestronglyMeasurable)
 
 private theorem exists_smooth_h01_approximation_bounded_gradient
     {Ω : Set E} (hΩ : IsOpen Ω) {u : E → ℝ}
@@ -247,11 +271,13 @@ private theorem eLpNorm_comp_gradient_le
       apply (eLpNorm_vector_le_sum G hGm).trans
       apply Finset.sum_le_sum
       intro i hi
-      exact eLpNorm_mono_ae (Eventually.of_forall fun x => PiLp.norm_apply_le ((hu i).weakGrad x) j)
+      exact eLpNorm_mono_ae ((hu i).weakGrad_component_memLp j).aestronglyMeasurable
+        (Eventually.of_forall fun x => PiLp.norm_apply_le ((hu i).weakGrad x) j)
     have hh : eLpNorm (fun x => (hT k).weakGrad x j) 2
         (volume.restrict (Metric.ball c a)) ≤ ENNReal.ofReal C *
         eLpNorm G 2 (volume.restrict (Metric.ball c a)) := by
       apply eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+        ((hT k).weakGrad_component_memLp j).aestronglyMeasurable
       filter_upwards with x
       rw [hG k x j]
       exact (PiLp.norm_apply_le _ k).trans
@@ -345,8 +371,18 @@ theorem memW01p_comp_sub_of_bounded_fderiv
     intro n
     change eLpNorm (fun x => (T (s n x) - T (u x)) - (T (v x) - T (u x))) 2 _ ≤ _
     simp only [sub_sub_sub_cancel_right]
-    exact eLpNorm_le_nnreal_smul_eLpNorm_of_ae_le_mul
-      (Eventually.of_forall fun x => hLip.norm_sub_le (s n x) (v x)) 2
+    have hTsm : MemLp (fun x => T (s n x)) 2 (volume.restrict Ω) :=
+      MemLp.of_eval_piLp fun k => (hTs n k).memLp
+    have hTvm : MemLp (fun x => T (v x)) 2 (volume.restrict Ω) :=
+      MemLp.of_eval_piLp fun k => (hTv k).memLp
+    simpa only [ENNReal.ofReal_coe_nnreal] using
+      (eLpNorm_le_mul_eLpNorm_of_ae_le_mul
+        (f := fun x => T (s n x) - T (v x))
+        (g := fun x => s n x - v x) (c := (L : ℝ))
+        ((hTsm.sub hTvm).aestronglyMeasurable)
+        (by
+          filter_upwards with x
+          exact hLip.norm_sub_le (s n x) (v x)) 2)
   let S : ℝ≥0∞ := ∑ i : ι, ENNReal.ofReal (‖DeGiorgi.gradLpOfWitness (hu i)‖ + B i)
   have hS : S ≠ (⊤ : ℝ≥0∞) := ENNReal.sum_ne_top.mpr fun i _ => ENNReal.ofReal_ne_top
   have hsource (n : ℕ) : (∑ i : ι, eLpNorm (hs n i).weakGrad 2 (volume.restrict Ω)) ≤ S := by
@@ -383,13 +419,13 @@ theorem memW01p_comp_sub_of_bounded_fderiv
       change (hTs n k).weakGrad x + -1 • (hTu k).weakGrad x = _
       simp only [neg_one_smul, Pi.sub_apply, sub_eq_add_neg]
     rw [he]
-    exact (eLpNorm_sub_le (hTs n k).weakGrad_memLp.aestronglyMeasurable
-      (hTu k).weakGrad_memLp.aestronglyMeasurable (by norm_num)).trans
+    exact (eLpNorm_sub_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)).trans
       (add_le_add_left (htarget n k) _)
   have hlimk : Tendsto (fun n => eLpNorm (fun x => fn n x k - f x k) 2
       (volume.restrict Ω)) atTop (𝓝 0) :=
     tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hfnLim (fun _ => zero_le)
-      (fun n => eLpNorm_mono_ae (Eventually.of_forall fun x => PiLp.norm_apply_le (fn n x - f x) k))
+      (fun n => eLpNorm_mono_ae ((hfn n k).memLp.sub (hf k).memLp).aestronglyMeasurable
+        (Eventually.of_forall fun x => PiLp.norm_apply_le (fn n x - f x) k))
   exact (exists_weakly_convergent_gradients_of_tendsto_L2 hΩ (fun n => hfn0 n k)
     (hf k).memLp hbound hlimk).1
 

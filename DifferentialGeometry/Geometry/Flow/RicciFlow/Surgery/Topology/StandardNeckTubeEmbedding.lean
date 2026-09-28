@@ -252,7 +252,7 @@ private theorem contMDiffOn_neckCylInverseCore :
   exact hdir.prodMk contMDiff_neckLastCoord.contMDiffOn
 
 private theorem neckCylInverseCore_apply_of_mem_band {z : Sphere 3} (hz : z ∈ neckCylBand) :
-    neckCylInverse z = ⟨neckCylInverseCore z, hz⟩ := dif_pos hz
+    neckCylInverse z = ⟨neckCylInverseCore z, hz⟩ := dite_eq_left hz
 
 private theorem neckCylDir_map (q : ↥neckCylDomain) :
     neckCylDir (neckCylMap q) = (q : CylSpace).1 := by

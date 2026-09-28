@@ -87,19 +87,19 @@ private noncomputable def galerkinCoordEmbedLM
     funext i
     simp only [TensorHs.add_coeff, finiteEigenComboHs_coeff]
     by_cases hi : i ∈ S
-    · simp only [if_pos hi, dif_pos hi]
+    · simp only [ite_eq_left hi, dite_eq_left hi]
       change (w + w') ⟨i, hi⟩ = w ⟨i, hi⟩ + w' ⟨i, hi⟩
       rfl
-    · simp only [if_neg hi, add_zero]
+    · simp only [ite_eq_right hi, add_zero]
   map_smul' c w := by
     apply TensorHs.ext
     funext i
     simp only [TensorHs.smul_coeff, RingHom.id_apply, finiteEigenComboHs_coeff]
     by_cases hi : i ∈ S
-    · simp only [if_pos hi, dif_pos hi]
+    · simp only [ite_eq_left hi, dite_eq_left hi]
       change (c • w) ⟨i, hi⟩ = c * w ⟨i, hi⟩
       rfl
-    · simp only [if_neg hi, mul_zero]
+    · simp only [ite_eq_right hi, mul_zero]
 
 noncomputable def galerkinCoordEmbed
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -121,8 +121,8 @@ omit [NeZero (Module.finrank ℝ E)] in
     (fun i => if h : i ∈ S then w ⟨i, h⟩ else 0) ((a : ℝ) + 2)).coeff i = _
   rw [finiteEigenComboHs_coeff]
   by_cases hi : i ∈ S
-  · rw [if_pos hi, dif_pos hi]
-  · rw [if_neg hi, dif_neg hi]
+  · rw [ite_eq_left hi, dite_eq_left hi]
+  · rw [ite_eq_right hi, dite_eq_right hi]
 
 noncomputable def galerkinCoordRestrict
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -325,11 +325,11 @@ theorem exists_deTurckGalerkin_solution_on_finset
         (EuclideanSpace.proj (𝕜 := ℝ) (⟨i, hi⟩ : {i // i ∈ S})).continuous
       exact hproj.comp_continuousOn hγcont
     refine hcoord.congr (fun t _ => ?_)
-    simp only [dif_pos hi]
+    simp only [dite_eq_left hi]
   · intro t ht i hi
     have hVeq : ∀ s, (fun r => if h : i ∈ S then (γ r).ofLp ⟨i, h⟩ else 0) s =
         (EuclideanSpace.proj (𝕜 := ℝ) ⟨i, hi⟩) (γ s) := by
-      intro s; simp only [dif_pos hi]; rfl
+      intro s; simp only [dite_eq_left hi]; rfl
     have hderiv_proj := ((EuclideanSpace.proj (𝕜 := ℝ) ⟨i, hi⟩).hasFDerivAt
       (x := γ t)).comp_hasDerivWithinAt t (hγderiv t ht)
     have hderiv_proj' :
@@ -352,11 +352,11 @@ theorem exists_deTurckGalerkin_solution_on_finset
         funext i'
         rw [galerkinCoordEmbed_coeff, finiteEigenComboHs_coeff]
         by_cases hi' : i' ∈ S
-        · simp only [if_pos hi', dif_pos hi']
-        · simp only [if_neg hi', dif_neg hi']
+        · simp only [ite_eq_left hi', dite_eq_left hi']
+        · simp only [ite_eq_right hi', dite_eq_right hi']
       rw [EuclideanSpace.coe_proj]
       change (galerkinCoordField (I := I) (M := M) g₀ g_bg a S (γ t)) ⟨i, hi⟩ = _
-      rw [galerkinCoordField_apply, if_pos hi, dif_pos hi, hembed_eq]
+      rw [galerkinCoordField_apply, ite_eq_left hi, dite_eq_left hi, hembed_eq]
     have hfinal : HasDerivWithinAt (fun r => (γ r).ofLp ⟨i, hi⟩)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) *
             (if h : i ∈ S then (γ t).ofLp ⟨i, h⟩ else 0) +
@@ -369,14 +369,14 @@ theorem exists_deTurckGalerkin_solution_on_finset
       DifferentialGeometry.Analysis.ODE.hasDerivWithinAt_Ici_of_Ici_zero hfinal ht.1
     have hcongr : (fun r => if h : i ∈ S then (γ r).ofLp ⟨i, h⟩ else 0) =
         (fun r => (γ r).ofLp ⟨i, hi⟩) := by
-      funext r; rw [dif_pos hi]
+      funext r; rw [dite_eq_left hi]
     rw [hcongr]
     convert hIci using 2
   · intro i hi
-    simp only [dif_pos hi]
+    simp only [dite_eq_left hi]
     rw [hγ0, hw₀_def]
   · intro t i hi
-    simp only [dif_neg hi]
+    simp only [dite_eq_right hi]
 
 theorem exists_deTurckGalerkin_solution
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -695,11 +695,11 @@ private theorem deTurckGalerkin_solution_exists_singleSymm
         (EuclideanSpace.proj (𝕜 := ℝ) (⟨i, hi⟩ : {i // i ∈ S})).continuous
       exact hproj.comp_continuousOn hγcont
     refine hcoord.congr (fun t _ => ?_)
-    simp only [dif_pos hi]
+    simp only [dite_eq_left hi]
   · intro t ht i hi
     have hVeq : ∀ s, (fun r => if h : i ∈ S then (γ r).ofLp ⟨i, h⟩ else 0) s =
         (EuclideanSpace.proj (𝕜 := ℝ) ⟨i, hi⟩) (γ s) := by
-      intro s; simp only [dif_pos hi]; rfl
+      intro s; simp only [dite_eq_left hi]; rfl
     have hderiv_proj := ((EuclideanSpace.proj (𝕜 := ℝ) ⟨i, hi⟩).hasFDerivAt
       (x := γ t)).comp_hasDerivWithinAt t (hγderiv t ht)
     have hderiv_proj' :
@@ -722,11 +722,11 @@ private theorem deTurckGalerkin_solution_exists_singleSymm
         funext i'
         rw [galerkinCoordEmbed_coeff, finiteEigenComboHs_coeff]
         by_cases hi' : i' ∈ S
-        · simp only [if_pos hi', dif_pos hi']
-        · simp only [if_neg hi', dif_neg hi']
+        · simp only [ite_eq_left hi', dite_eq_left hi']
+        · simp only [ite_eq_right hi', dite_eq_right hi']
       rw [EuclideanSpace.coe_proj]
       change (galerkinCoordFieldSymm (I := I) (M := M) g₀ g_bg a S (γ t)) ⟨i, hi⟩ = _
-      rw [galerkinCoordFieldSymm_apply, if_pos hi, dif_pos hi, hembed_eq]
+      rw [galerkinCoordFieldSymm_apply, ite_eq_left hi, dite_eq_left hi, hembed_eq]
     have hfinal : HasDerivWithinAt (fun r => (γ r).ofLp ⟨i, hi⟩)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) *
             (if h : i ∈ S then (γ t).ofLp ⟨i, h⟩ else 0) +
@@ -739,14 +739,14 @@ private theorem deTurckGalerkin_solution_exists_singleSymm
       DifferentialGeometry.Analysis.ODE.hasDerivWithinAt_Ici_of_Ici_zero hfinal ht.1
     have hcongr : (fun r => if h : i ∈ S then (γ r).ofLp ⟨i, h⟩ else 0) =
         (fun r => (γ r).ofLp ⟨i, hi⟩) := by
-      funext r; rw [dif_pos hi]
+      funext r; rw [dite_eq_left hi]
     rw [hcongr]
     convert hIci using 2
   · intro i hi
-    simp only [dif_pos hi]
+    simp only [dite_eq_left hi]
     rw [hγ0, hw₀_def]
   · intro t i hi
-    simp only [dif_neg hi]
+    simp only [dite_eq_right hi]
 
 theorem deTurckGalerkin_solution_existsSymm
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
@@ -1036,7 +1036,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
   have hTb_coeff_off : ∀ i, i ∉ S →
       (smoothCcToTensorHs (I := I) (M := M) g₀ ((a : ℝ) + 2) Tb).coeff i = 0 := by
     intro i hi
-    rw [← hbridge ((a : ℝ) + 2), finiteEigenComboHs_coeff, if_neg hi]
+    rw [← hbridge ((a : ℝ) + 2), finiteEigenComboHs_coeff, ite_eq_right hi]
   have hTb_L2_off : ∀ i, i ∉ S →
       tensorL2Coeff (I := I) (M := M)
         (tensorResolventL2_isCompactOperator (I := I) (M := M) g₀ 0 2)
@@ -1152,7 +1152,7 @@ theorem de_turck_sobolev_nonlinearity_difference_sobolev_split_per_scale
         ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ * (U N t i) ^ 2 := by
       refine Finset.sum_congr rfl (fun i hi => ?_)
       rw [← smoothCcToTensorHs_coeff (I := I) (M := M) g₀ τ Tb i, ← hbridge τ,
-        finiteEigenComboHs_coeff, if_pos hi]
+        finiteEigenComboHs_coeff, ite_eq_left hi]
     calc (∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
         ((smoothCcToTensorHs (I := I) (M := M) g₀ τ Ts).coeff i) ^ 2)
         = ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i τ *
@@ -1425,11 +1425,11 @@ private theorem deTurckGalerkin_forcing_dissipation_perScaleSymm
   set w := deTurckSobolevNonlinearitySymm (I := I) (M := M) g₀ g_bg a v with hw
   have hUcoeff : ∀ i ∈ S, U N t i = v.coeff i := by
     intro i hi
-    rw [hv, finiteEigenComboHs_coeff, if_pos hi]
+    rw [hv, finiteEigenComboHs_coeff, ite_eq_left hi]
   have hFcoeff : ∀ i ∈ S, deTurckGalerkinForcingSymm (I := I) (M := M) g₀ g_bg a U N t i =
       w.coeff i := by
     intro i hi
-    rw [deTurckGalerkinForcingSymm_apply, if_pos hi]
+    rw [deTurckGalerkinForcingSymm_apply, ite_eq_left hi]
   have hLHS_eq :
       ∑ i ∈ S, tensorSobolevWeight (I := I) (M := M) i σ *
           (U N t i * deTurckGalerkinForcingSymm (I := I) (M := M) g₀ g_bg a U N t i) =

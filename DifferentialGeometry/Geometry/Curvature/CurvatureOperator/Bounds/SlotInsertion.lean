@@ -1,6 +1,14 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFrame.Tensor02
 import Mathlib.Logic.Equiv.Fin.Basic
+
+open DifferentialGeometry.TensorMetric
+  (coframeS
+    coframeS_apply
+    exists_tangent_orthonormalBasis_with_norm_sum
+    fiberNormSqComponent
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_sum_component_sq_of_basis)
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
@@ -74,8 +82,8 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
     rw [fiberComponent_slotInsertEndoFib_eq_two (I := I) g₀ x Λ e horth K J]
     rw [g₀.symm x (Λ (e (J 0))) (e (K 0))]
     by_cases hkj : K 1 = J 1
-    · simp only [hkj, if_true, mul_one]
-    · simp only [hkj, if_false, mul_zero]; ring
+    · simp only [hkj, ite_true, mul_one]
+    · simp only [hkj, ite_false, mul_zero]; ring
   have hsumeq : (∑ K : Fin 2 → Fin n, ∑ J : Fin 2 → Fin n,
         (fiberNormSqComponent (I := I) (M := M) g₀ x 2 2
           (show TensorRSSpace 2 2 I x from
@@ -207,17 +215,17 @@ private lemma sum_compSq_slotInsertEndoFib_eq_normSq
           (if ρ = (fun j : {i : Fin s // i ≠ k} => J j) then (1 : ℝ) else 0) := by
       intro ρ
       by_cases hρ : ρ = (fun j : {i : Fin s // i ≠ k} => J j)
-      · rw [if_pos hρ]
+      · rw [ite_eq_left hρ]
         refine Finset.prod_eq_one (fun l hl => ?_)
         have hlk : l ≠ k := Finset.ne_of_mem_erase hl
-        rw [hcoe ρ l hlk, hρ, if_pos rfl]
-      · rw [if_neg hρ]
+        rw [hcoe ρ l hlk, hρ, ite_eq_left rfl]
+      · rw [ite_eq_right hρ]
         obtain ⟨j, hj⟩ : ∃ j : {i : Fin s // i ≠ k}, ρ j ≠ J j := by
           by_contra hcon
           exact hρ (funext (fun j => not_not.mp (fun h => hcon ⟨j, h⟩)))
         refine Finset.prod_eq_zero (i := (j : Fin s))
           (Finset.mem_erase.mpr ⟨j.2, Finset.mem_univ _⟩) ?_
-        rw [hcoe ρ (j : Fin s) j.2, if_neg hj]
+        rw [hcoe ρ (j : Fin s) j.2, ite_eq_right hj]
     rw [Finset.sum_congr rfl (fun ρ _ => by rw [hkval m ρ, hindic ρ] :
       ∀ ρ ∈ Finset.univ,
         (g₀.inner x (e ((ee.symm (m, ρ)) k)) (Λ (e (J k)))) ^ 2 *

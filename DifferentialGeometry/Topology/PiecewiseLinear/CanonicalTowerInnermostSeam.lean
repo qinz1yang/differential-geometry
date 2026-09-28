@@ -76,7 +76,7 @@ theorem IsCanonicalTower.exists_innermost_seam_disk
     (htw : IsCanonicalTower φ Pt Dp Dpint J A S T S'' T'' Dimg Dbdimg W I P') (i : ℤ)
     (hnull : ∃ G ∈ evenTorusSeams T'' i, boundsDiskIn G (T'' (2 * i))) :
     ∃ (G Δ : Set E3) (q : (Fin 3 → ℝ) → E3),
-      G ∈ evenTorusSeams T'' i ∧ IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ ∧
+      G ∈ evenTorusSeams T'' i ∧ IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
       Δ ⊆ T'' (2 * i) ∧ q '' stdSimplexBoundary 2 = G ∧
       ∀ H ∈ evenTorusSeams T'' i, H ≠ G → Disjoint Δ H := by
   classical
@@ -87,7 +87,7 @@ theorem IsCanonicalTower.exists_innermost_seam_disk
     rw [htw.boundary_eq]
     exact hS.isPLTorus_frontier
   have hseed : ∃ (G : evenTorusSeams T'' i) (Δ : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' (2 * i) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' (2 * i) ∧
         q '' stdSimplexBoundary 2 = (G : Set E3) := by
     obtain ⟨G, hG, Δ, q, hq, hΔT, hqG⟩ := hnull
     exact ⟨⟨G, hG⟩, Δ, q, hq, hΔT, hqG.symm⟩
@@ -104,7 +104,7 @@ theorem IsCanonicalTower.exists_innermost_seam_neighborhood
     (i : ℤ) {a b : E3} (havoid : Disjoint (φ '' S (2 * i)) ({a, b} : Set E3))
     (hnull : ∃ G ∈ evenTorusSeams T'' i, boundsDiskIn G (T'' (2 * i))) :
     ∃ (G Δ Ω : Set E3) (q : (Fin 3 → ℝ) → E3),
-      G ∈ evenTorusSeams T'' i ∧ IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Δ ∧
+      G ∈ evenTorusSeams T'' i ∧ IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
       Δ ⊆ T'' (2 * i) ∧ q '' stdSimplexBoundary 2 = G ∧ IsOpen Ω ∧ Δ ⊆ Ω ∧
       Ω ⊆ I ∧ Ω ⊆ φ '' S (2 * i) ∧ Disjoint Ω ({P', a, b} : Set E3) ∧
       ∀ H ∈ evenTorusSeams T'' i, H ≠ G → Disjoint Ω H := by

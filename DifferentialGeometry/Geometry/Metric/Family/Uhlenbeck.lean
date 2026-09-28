@@ -353,7 +353,7 @@ theorem exists_metric_freezing_isometry [I.Boundaryless]
     intro t ht x v
     change Ψ t x (ι₀ x v) = _
     dsimp only [Ψ]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     rfl
   have hιinit : ∀ x, ι t₀ x = ι₀ x := by
     intro x
@@ -547,7 +547,7 @@ theorem exists_metric_freezing_isometry_on_interval [I.Boundaryless]
     intro t ht x v
     change Ψ t x (ι₀ x v) = _
     dsimp only [Ψ]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     rfl
   have hιinit : ∀ x, ι t₀ x = ι₀ x := by
     intro x

@@ -181,7 +181,10 @@ private theorem injective_inclusion_in_collar
     rw [mfderiv_comp x (hψ.mdifferentiableAt (by simp)) hcinv]
     exact (injective_mfderiv_scaledHalfSpaceOneProductCoordinate J hσ (c.symm x)).comp
       ((PartialDiffeomorph.isLocalDiffeomorphAt I (J.prod (𝓡∂ 1)) ∞ c.symm hx).mfderivToContinuousLinearEquiv (by simp)).injective
-  have heqd := heq.mfderiv_eq (I := I) (I' := J.prod 𝓘(ℝ))
+  have heqd : mfderiv I (J.prod 𝓘(ℝ)) (d.symm ∘ f) x =
+      mfderiv I (J.prod 𝓘(ℝ)) (ψ ∘ c.symm) x := by
+    rw [heq.mfderiv_eq]
+    rfl
   rw [← heqd, mfderiv_comp x
     ((hd.contMDiffAt (d.open_target.mem_nhds hfx)).mdifferentiableAt (by simp))
     ((hi.contMDiffAt (c.open_target.mem_nhds hx)).mdifferentiableAt (by simp))] at hj

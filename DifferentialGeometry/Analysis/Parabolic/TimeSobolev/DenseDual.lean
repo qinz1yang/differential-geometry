@@ -41,14 +41,14 @@ theorem extend_scalar_weak_deriv_of_denseRange_on
     rw [ContinuousLinearMap.integral_apply hdp]
     change (∫ x, (deriv φ x • p x) (ι s) ∂μ) = -((∫ t, φ t • q t ∂μ) (ι s))
     rw [ContinuousLinearMap.integral_apply hqφ]
-    convert hweak s φ hφ hφc hφs using 1 <;> simp [μ, smul_eq_mul]
+    exact hweak s φ hφ hφc hφs
   have hAB : A = -B := ContinuousLinearMap.ext (fun s => congrFun hABfun s)
   have hx := congrArg (fun L : X →L[ℝ] ℝ => L x) hAB
   dsimp [A, B] at hx
   rw [ContinuousLinearMap.integral_apply hdp] at hx
   change (∫ t, (deriv φ t • p t) x ∂μ) = -((∫ t, φ t • q t ∂μ) x) at hx
   rw [ContinuousLinearMap.integral_apply hqφ] at hx
-  convert hx using 1 <;> simp [μ, smul_eq_mul]
+  exact hx
 
 theorem extend_scalar_weak_deriv_of_denseRange
     {T : ℝ} (ι : S →L[ℝ] X) (hdense : DenseRange ι)

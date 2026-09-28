@@ -223,7 +223,7 @@ private lemma sq_norm_gradFun_le_chartInvGramMatrix_l1Sum_mul
       rw [Finset.sum_eq_single j]
       · simp
       · intro k _ hjk
-        rw [if_neg (Ne.symm hjk), mul_zero]
+        rw [ite_eq_right (Ne.symm hjk), mul_zero]
       · intro hk
         exact absurd (Finset.mem_univ j) hk
     have hstep2 :
@@ -349,7 +349,7 @@ private lemma gramInvL1SumSupOnPouTsupport_nonneg
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hKα_def
   by_cases hKα_ne : Kα.Nonempty
-  · rw [dif_pos hKα_ne]
+  · rw [dite_eq_left hKα_ne]
     have hKα_compact : IsCompact Kα := (isClosed_tsupport _).isCompact
     have hKα_sub : Kα ⊆ (chartAt H α).source :=
       DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
@@ -368,7 +368,7 @@ private lemma gramInvL1SumSupOnPouTsupport_nonneg
         (0 : ℝ) ≤ chartInvGramMatrixL1Sum (I := I) (M := M) g α x₀ :=
       chartInvGramMatrix_l1Sum_nonneg (I := I) (M := M) g α x₀
     exact le_trans h_val_nn h_le
-  · rw [dif_neg hKα_ne]
+  · rw [dite_eq_right hKα_ne]
 
 private lemma chartInvGramMatrix_l1Sum_le_sup
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -385,7 +385,7 @@ private lemma chartInvGramMatrix_l1Sum_le_sup
     ((DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
       : C^∞⟮I, M; ℝ⟯) : M → ℝ) with hKα_def
   have hKα_ne : Kα.Nonempty := ⟨x, hx⟩
-  rw [dif_pos hKα_ne]
+  rw [dite_eq_left hKα_ne]
   have hKα_compact : IsCompact Kα := (isClosed_tsupport _).isCompact
   have hKα_sub : Kα ⊆ (chartAt H α).source :=
     DifferentialGeometry.Integral.Measure.chartAtlasPOU_isSubordinate I M α
@@ -460,7 +460,7 @@ private lemma contDiff_chartSmoothExt_local
         f ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))
       else (0 : ℝ)) =
       f ((extChartAt I α).symm ((toEuclidean (E := E)).symm z))
-    rw [if_pos htarget_at_z]
+    rw [ite_eq_left htarget_at_z]
   · set K : Set EuclN_E := (toEuclidean (E := E)) '' ((extChartAt I α) '' (tsupport f))
       with hK_def
     have hK_compact : IsCompact K := by
@@ -828,6 +828,8 @@ private lemma eLpNorm_gNormGrad_pou_mul_le_const_mul_wkpNormChart_smooth
           (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
             (I := I) (M := M) α)) := by
     apply eLpNorm_mono_real
+    · exact (chartPushedRaw_measurable (I := I) (M := M) α
+        h_gNormGrad_meas).aestronglyMeasurable
     intro y
     have h := h_pt_bound y
     have h_norm : ‖DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α
@@ -1083,6 +1085,7 @@ theorem eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
       (DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)) := by
     apply eLpNorm_mono_real
+    · exact (continuous_g_norm_gradFun (I := I) (M := M) g hu_smooth).aestronglyMeasurable
     intro x
     have h := h_pointwise x
     have h_norm : ‖gNormGrad (I := I) (M := M) g u x‖ =
@@ -1109,7 +1112,7 @@ theorem eLpNorm_g_norm_gradFun_le_const_mul_wkpNormChart_smooth_uniform
     (p := p) (s := S)
     (f := fun α => gNormGrad (I := I) (M := M) g
       (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
-        : C^∞⟮I, M; ℝ⟯) y * u y)) h_aesm hp_one
+        : C^∞⟮I, M; ℝ⟯) y * u y)) hp_one
   have h_fun_eq : (fun x : M => ∑ α ∈ S, gNormGrad (I := I) (M := M) g
         (fun y : M => (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M α
           : C^∞⟮I, M; ℝ⟯) y * u y) x) =
@@ -1263,7 +1266,7 @@ private lemma smooth_u_eq_zero_of_w1pNormIntrinsicLp_zero
     exact absurd hp_one (by norm_num)
   have h_u_aeEq_zero : u =ᵐ[DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M g]
       0 :=
-    (eLpNorm_eq_zero_iff h_aestronglyMeasurable h_p_ne_zero).mp h_eLp_u_zero
+    (eLpNorm_eq_zero_iff h_p_ne_zero).mp h_eLp_u_zero
   have hu_cont : Continuous u := hu_smooth.continuous
   have h_zero_cont : Continuous (fun _ : M => (0 : ℝ)) := continuous_const
   have h_pos : (DifferentialGeometry.Integral.Measure.riemannianVolumeMeasure I M
@@ -1650,7 +1653,8 @@ private lemma eLpNorm_gradFun_le_eLpNorm_smooth_of_HasWeakRiemannianGradLp
     hG_memLp.mono_exponent hp_one
   have h_pt_le := gNormGrad_le_gNormG_aeEq_smooth_of_HasWeakRiemannianGradLp
     (I := I) (M := M) g hu_smooth hG_weak hG_p1
-  refine eLpNorm_mono_ae_real ?_
+  refine eLpNorm_mono_ae_real
+    (continuous_g_norm_gradFun (I := I) (M := M) g hu_smooth).aestronglyMeasurable ?_
   filter_upwards [h_pt_le] with x hx
   rw [Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)]
   exact hx

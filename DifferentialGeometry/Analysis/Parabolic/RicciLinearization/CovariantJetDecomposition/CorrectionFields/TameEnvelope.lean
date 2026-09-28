@@ -4,6 +4,10 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Connecti
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderZero.KernelJetGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algebra.InputSlotSymmetrization
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sub_le tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -484,7 +488,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenc
     riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diagonalProductGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CK, hCK_nn, hCK⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0KernelField_diagonalProductGrid_le
+    linearizedRicciConnectionDifferenceOrder0KernelField_jet_norm_sq_le_antidiagonalTupleGrid
       (I := I) (M := M) g₀ hδ₀
   refine ⟨fun i => diagonalGridGrowthFactor (E := E) i *
       ∑ n ∈ Finset.range (i + 1), ∑ l ∈ Finset.range (i + 1 - n),
@@ -807,16 +811,16 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfBackgroun
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 2) (i + 3) := by
   classical
   obtain ⟨CQ, hCQ_nn, hCQ⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroAACommCoeffFieldInputSymm_boundedFactorGridWindow_le
+    ricciOrderZeroAACommCoeffField_input_symm_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CB, hCB_nn, hCB⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderFieldInputSymm_boundedFactorGridWindow_le
+    backgroundRicciCommutatorDiffDecompositionRemainderField_input_symm_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CL, hCL_nn, hCL⟩ :=
     riemannianFiberNormSq_iteratedCovGrad_linRicciConnectionDifferenceOrder0CoeffInputSymm_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CK, hCK_nn, hCK⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContractionFieldInputSymm_boundedFactorGridWindow_le
+    decompositionKernelContractionField_input_symm_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   let C : ℕ → ℝ := fun i => 8 * CQ i + 8 * CB i + 4 * CL i + 2 * CK i
   have hC : ∀ i, 0 ≤ C i := by
@@ -1066,7 +1070,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfCombInput
     riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0Coeff_diagGrid_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    exists_ricciOrderZeroRiemannCoeff_sub_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cbg, hcbg_nn, hcbg⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_fixedCoeffField_bound (I := I) (M := M) g₀

@@ -418,7 +418,7 @@ omit [TopologicalSpace Q] in
 theorem annulusExtension_agrees (u : Annulus → Q) {z : ℂ}
     (hz : z ∈ annulusRectangle) :
     annulusExtension u z = u (⟨z.re, hz.1⟩, (z.im : Surgery.Topology.Circle)) := by
-  simp only [annulusExtension, dif_pos hz.1]
+  simp only [annulusExtension, dite_eq_left hz.1]
 
 
 def annulusArea (g : SmoothRiemannianMetric I Q) (u : Annulus → Q) : ℝ :=
@@ -464,8 +464,15 @@ theorem parametricJacobian_congr_on (g : SmoothRiemannianMetric I Q)
   have hd := mfderivWithin_congr_of_mem (I := 𝓘(ℝ, ℂ)) (I' := I) h hz
   unfold parametricJacobian
   split_ifs with hu hv hv
-  · dsimp only [TangentSpace] at hd ⊢
-    rw [hd, h hz]
+  · rw [hd, h hz]
+    have hcast :
+        (tangentSpaceCast I (v z) (v z) :
+          TangentSpace I (v z) →L[ℝ] TangentSpace I (v z)) =
+          ContinuousLinearMap.id ℝ _ := by
+      ext w
+      rfl
+    rw [hcast]
+    simp
   · exact (hv (hdiff.mp hu)).elim
   · exact (hu (hdiff.mpr hv)).elim
   · rfl
@@ -749,7 +756,7 @@ private theorem parametricJacobian_comp_within (g : SmoothRiemannianMetric I Q)
       |(fderivWithin ℝ f s z).det| * parametricJacobian g u s (f z) := by
   have hmf := hf.mdifferentiableWithinAt
   have hc := hu.comp z hmf hfs
-  simp only [parametricJacobian, if_pos hc, if_pos hu]
+  simp only [parametricJacobian, ite_eq_left hc, ite_eq_left hu]
   let D : ℂ →L[ℝ] TangentSpace I (u (f z)) := mfderivWithin 𝓘(ℝ, ℂ) I u s (f z)
   let A : ℂ →L[ℝ] ℂ := fderivWithin ℝ f s z
   let B : LinearMap.BilinForm ℝ ℂ :=
@@ -982,7 +989,7 @@ private theorem aemeasurable_parametricJacobian_univ
   have hm := ((h0.mul h1).sub ((((hsum.sub h0).sub h1).div_const 2).pow_const 2)).sqrt
   apply hm.congr
   filter_upwards [hd] with z hz
-  simp only [parametricJacobian, if_pos hz.mdifferentiableWithinAt, mfderivWithin_univ]
+  simp only [parametricJacobian, ite_eq_left hz.mdifferentiableWithinAt, mfderivWithin_univ]
   dsimp only [Pi.mul_apply, Pi.sub_apply]
   let D : ℂ →L[ℝ] TangentSpace I (u z) := mfderiv 𝓘(ℝ, ℂ) I u z
   change Real.sqrt (g.inner (u z) (D (diskBasis 0)) (D (diskBasis 0)) *
@@ -1136,7 +1143,7 @@ private theorem aemeasurable_parametricJacobian_convex
   have hnhds : s ∈ 𝓝 z := Filter.mem_of_superset (isOpen_interior.mem_nhds hzs) interior_subset
   have hdu : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I u univ z := hz.mdifferentiableWithinAt
   have hds : MDifferentiableWithinAt 𝓘(ℝ, ℂ) I u s z := hz.mdifferentiableWithinAt
-  simp only [parametricJacobian, if_pos hdu, if_pos hds,
+  simp only [parametricJacobian, ite_eq_left hdu, ite_eq_left hds,
     mfderivWithin_univ, mfderivWithin_of_mem_nhds hnhds]
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
@@ -1183,7 +1190,7 @@ private theorem integrable_parametricJacobian_compact_convex
       _ ≤ ‖fderiv ℝ (e.map ∘ u) z‖ * ‖diskBasis i‖ := ContinuousLinearMap.le_opNorm _ _
       _ ≤ (L : ℝ) := by simpa only [hbi, mul_one] using hnorm
   unfold parametricJacobian
-  rw [if_pos hdz, mfderivWithin_of_mem_nhds hnhds]
+  rw [ite_eq_left hdz, mfderivWithin_of_mem_nhds hnhds]
   change Real.sqrt (Matrix.det (fun i j : Fin 2 => g.inner (u z)
     (V (diskBasis i)) (V (diskBasis j)))) ≤ M ^ 2
   calc
@@ -1581,7 +1588,7 @@ theorem ofReal_loopLength_le_riemannianCurveLength (g : SmoothRiemannianMetric I
     variationOnFromTo.self (loopLift γ) univ 0
   have hV1 : variationOnFromTo (loopLift γ) univ 0 1 =
       (eVariationOn (loopLift γ) (Icc (0 : ℝ) 1)).toReal := by
-    simp only [variationOnFromTo, if_pos (by norm_num : (0 : ℝ) ≤ 1), univ_inter]
+    simp only [variationOnFromTo, ite_eq_left (by norm_num : (0 : ℝ) ≤ 1), univ_inter]
   have hint01 : IntervalIntegrable (curveSpeed g (loopLift γ)) volume 0 1 := by
     have h : IntegrableOn (curveSpeed g (loopLift γ)) (uIcc (0 : ℝ) 1) := by
       rw [uIcc_of_le (by norm_num : (0 : ℝ) ≤ 1)]
@@ -1795,7 +1802,7 @@ theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
     (g : SmoothRiemannianMetric I Q) (U : ℂ → Q) {s : Set ℂ} {z : ℂ} (hs : s ∈ 𝓝 z) :
     parametricJacobian g U s z = Geometry.riemannianAreaDensity g U z := by
   by_cases hd : MDifferentiableAt 𝓘(ℝ, ℂ) I U z
-  · rw [parametricJacobian, if_pos hd.mdifferentiableWithinAt,
+  · rw [parametricJacobian, ite_eq_left hd.mdifferentiableWithinAt,
       mfderivWithin_of_mem_nhds (f := U) hs]
     rw [Geometry.riemannianAreaDensity, Geometry.tangentTwoJacobian]
     refine congrArg Real.sqrt ?_
@@ -1812,7 +1819,7 @@ theorem parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds
     rw [h0, h1]
     rw [g.symm (U z) (mfderiv 𝓘(ℝ, ℂ) I U z Complex.I) (mfderiv 𝓘(ℝ, ℂ) I U z (1 : ℂ))]
     ring
-  · rw [parametricJacobian, if_neg (fun h => hd (h.mdifferentiableAt hs)),
+  · rw [parametricJacobian, ite_eq_right (fun h => hd (h.mdifferentiableAt hs)),
       Geometry.riemannianAreaDensity_eq_zero_of_not_mdifferentiableAt g hd]
 
 omit finiteDimensionalE boundarylessI t2Q compactQ connectedQ in
@@ -1874,7 +1881,7 @@ private theorem diskArea_eq_riemannianArea (g : SmoothRiemannianMetric I Q) (u :
     (v := Geometry.diskExtension u) g ?_
     (Metric.ball_subset_closedBall hz)).trans ?_
   · intro w hw
-    simp only [diskExtension, dif_pos hw, Geometry.diskExtension, Function.comp_apply]
+    simp only [diskExtension, dite_eq_left hw, Geometry.diskExtension, Function.comp_apply]
     rw [Geometry.diskRetraction_coe ⟨w, hw⟩]
   · exact parametricJacobian_eq_riemannianAreaDensity_of_mem_nhds g (Geometry.diskExtension u) hs
 
@@ -2445,7 +2452,7 @@ private theorem parametricJacobian_eq_tangentTwoJacobian (g : SmoothRiemannianMe
     parametricJacobian g U s z = Geometry.tangentTwoJacobian g
       (mfderivWithin 𝓘(ℝ, ℂ) I U s z (1 : ℂ))
       (mfderivWithin 𝓘(ℝ, ℂ) I U s z Complex.I) := by
-  rw [parametricJacobian, if_pos hd]
+  rw [parametricJacobian, ite_eq_left hd]
   exact sqrt_det_gram_diskBasis g (mfderivWithin 𝓘(ℝ, ℂ) I U s z)
 
 section Composition

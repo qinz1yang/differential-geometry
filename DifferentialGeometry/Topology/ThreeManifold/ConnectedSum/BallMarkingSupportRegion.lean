@@ -135,9 +135,9 @@ theorem isotopic_of_relativeSupportRegion (B B' : BallMarking M I) {V : I → Se
       intro y
       rw [(hJ'form 0 y).1, hJ0]
       by_cases hy : y ∈ (B'.ball i).chart.symm.toOpenPartialHomeomorph.source
-      · rw [Manifold.extendChartById, if_pos hy]
+      · rw [Manifold.extendChartById, ite_eq_left hy]
         exact (B'.ball i).chart.symm.toOpenPartialHomeomorph.left_inv hy
-      · rw [Manifold.extendChartById, if_neg hy]
+      · rw [Manifold.extendChartById, ite_eq_right hy]
         rfl
     have hsub : (B'.ball i).chart.symm.toOpenPartialHomeomorph.symm '' K ⊆
         (B'.ball i).chart '' V i := by
@@ -280,7 +280,9 @@ private theorem preservesOrientation_of_eqOn_closedBall_chart
   have hkey : mfderiv (𝓡 3) (𝓡 3) (⇑Φ) (c.toBallChart.chart 0)
       ∘L mfderiv (𝓡 3) (𝓡 3) (fun x : E₃ => c.toBallChart.chart x) 0
       = mfderiv (𝓡 3) (𝓡 3) (fun x : E₃ => c'.toBallChart.chart x) 0 := by
-    rw [← hchain, Filter.EventuallyEq.mfderiv_eq hEq]
+    rw [← hchain, Filter.EventuallyEq.mfderiv_eq hEq,
+      hΦ 0 (Metric.mem_closedBall_self (by norm_num))]
+    rfl
   have h3 : (OrientationAssembly.chartTangentEquiv c h0c).toLinearEquiv.trans
       ((Φ.mfderivToContinuousLinearEquiv (by simp) (c.toBallChart.chart 0)).toLinearEquiv)
       = (OrientationAssembly.chartTangentEquiv c' h0c').toLinearEquiv := by

@@ -50,7 +50,7 @@ theorem abs_metricTracePair0SAt_le_of_metric_le
         · rw [hi]; simp
         · exact (h.pos x (basis i) hi).le
       have hc : h.inner x (basis i) (basis i) ≤ C := by
-        simpa only [hON i i, if_true, mul_one] using hmetric (basis i)
+        simpa only [hON i i, ite_true, mul_one] using hmetric (basis i)
       simp only [Fin.prod_univ_two, vec2, ite_self, Real.mul_self_sqrt hn] at ha
       exact ha.trans (mul_le_mul_of_nonneg_left hc (Real.sqrt_nonneg _))
     _ = _ := by

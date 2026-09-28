@@ -197,7 +197,7 @@ theorem IsPLHomeomorphOn.exists_prism_levels_of_essential {F : Type*} [NormedAdd
     (hCR : ∀ c ∈ C, c ⊆ Rs \ (h '' (stdSimplexBoundary 2 ×ˢ {0}) ∪
       h '' (stdSimplexBoundary 2 ×ˢ {1})))
     (hCess : ∀ c ∈ C, ¬ ∃ (D : Set F) (r : (Fin 3 → ℝ) → F),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ Rs ∧ r '' stdSimplexBoundary 2 = c)
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ Rs ∧ r '' stdSimplexBoundary 2 = c)
     (hCdisj : C.PairwiseDisjoint id) :
     ∃ (h' : (Fin 3 → ℝ) × ℝ → F) (s : Set F → ℝ),
       IsPLHomeomorphOn h' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) Rs ∧
@@ -221,7 +221,7 @@ theorem IsPLHomeomorphOn.exists_prism_levels_of_essential {F : Type*} [NormedAdd
   have hkS : ∀ c ∈ C, IsPLSphere 1 (k '' c) := fun c hc =>
     (hCsph c hc).of_isPLHomeomorphOn (hhi.restrict (hCsph c hc).isPolyhedron (hcR c hc))
   have hkE : ∀ c ∈ C, ¬ ∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧
       r '' stdSimplexBoundary 2 = k '' c := by
     rintro c hc ⟨D, r, hr, hDA, hrb⟩
     exact hCess c hc ⟨h '' D, h ∘ r, hr.trans (hh.restrict (IsPLBall.isPolyhedron ⟨r, hr⟩) hDA),
@@ -345,7 +345,7 @@ theorem exists_product_coordinates_for_disjoint_essential_polygons
     (hn : 1 < n) (hG : ∀ i, IsPLSphere 1 (G i)) (hGS : ∀ i, G i ⊆ frontier S)
     (hdisj : Pairwise (fun i j => Disjoint (G i) (G j)))
     (hess : ∀ i, ¬ ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier S ∧
         G i = r '' stdSimplexBoundary 2) :
     ∃ (J Q : Set E3) (f : E3 × E3 → E3) (q : Fin n → E3),
       IsPLSphere 1 J ∧ IsPLSphere 1 Q ∧ IsPLHomeomorphOn f (J ×ˢ Q) (frontier S) ∧
@@ -433,17 +433,17 @@ theorem exists_product_coordinates_for_disjoint_essential_polygons
   have ht : ∀ i, t i ∈ Icc (0 : ℝ) (3 / 4) := by
     intro i
     by_cases hi : i = i₀
-    · simp only [t, if_pos hi]
+    · simp only [t, ite_eq_left hi]
       norm_num
-    · simp only [t, if_neg hi]
+    · simp only [t, ite_eq_right hi]
       obtain ⟨hs, -⟩ := hh'C (G i) ⟨i, hi, rfl⟩
       exact ⟨by linarith [hs.1], by linarith [hs.2]⟩
   have hlevel : ∀ i, g '' (stdSimplexBoundary 2 ×ˢ {t i}) = G i := by
     intro i
     by_cases hi : i = i₀
-    · simp only [t, if_pos hi]
+    · simp only [t, ite_eq_left hi]
       rw [hg34, hi]
-    · simp only [t, if_neg hi]
+    · simp only [t, ite_eq_right hi]
       obtain ⟨hs, hsG⟩ := hh'C (G i) ⟨i, hi, rfl⟩
       rw [hglev (s (G i)) ⟨hs.1.le, hs.2.le⟩, hsG]
   have ht1 : ∀ i, t i ∈ Icc (0 : ℝ) 1 :=

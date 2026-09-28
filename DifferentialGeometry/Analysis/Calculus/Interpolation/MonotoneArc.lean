@@ -36,11 +36,11 @@ private theorem exists_monotone_affine_patch
     change x = b at hx
     subst x
     exact hLb
-  have hleft (x : ℝ) (hx : x ≤ b) : h x = L x := if_pos hx
+  have hleft (x : ℝ) (hx : x ≤ b) : h x = L x := ite_eq_left hx
   have hright (x : ℝ) (hx : b ≤ x) : h x = f x := by
     rcases hx.eq_or_lt with rfl | hx
     · simp only [h, le_refl, ↓reduceIte, hLb]
-    · exact if_neg hx.not_ge
+    · exact ite_eq_right hx.not_ge
   have hhm : Monotone h := by
     intro x y hxy
     by_cases hy : y ≤ b

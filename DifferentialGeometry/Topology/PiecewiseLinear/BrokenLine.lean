@@ -108,7 +108,7 @@ theorem exists_partition_affineOn_two {f g : ℝ → F}
   have hsval : ∀ i, ∀ h : i < N, s i = ((e ⟨i, h⟩ : ℝ)) := by
     intro i h
     rw [hsdef]
-    simp only [dif_pos h]
+    simp only [dite_eq_left h]
   have hsmem : ∀ i, ∀ h : i < N, s i ∈ P := by
     intro i h
     rw [hsval i h]

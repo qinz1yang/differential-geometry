@@ -80,7 +80,7 @@ theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
   let g : N → M := fun y =>
     if h : ∃ x ∈ U, f x = y then Classical.choose h else Classical.choose hne
   have hg_val : ∀ {y : N} (h : ∃ x ∈ U, f x = y), g y = Classical.choose h :=
-    fun h => dif_pos h
+    fun h => dite_eq_left h
   have hg_mem : ∀ {y : N} (h : ∃ x ∈ U, f x = y), g y ∈ U := fun h =>
     hg_val h ▸ (Classical.choose_spec h).1
   have hg_of : ∀ {y : N} (h : ∃ x ∈ U, f x = y), f (g y) = y := fun h =>

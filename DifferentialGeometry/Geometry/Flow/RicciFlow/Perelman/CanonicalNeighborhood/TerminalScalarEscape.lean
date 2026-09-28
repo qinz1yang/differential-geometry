@@ -104,7 +104,8 @@ theorem noTerminalScalarEscapeShell_of_boundedDistanceToBasepointShell
   obtain ⟨i, x, hx⟩ := hesc.2 C
   exact absurd (hC i x) (not_le.mpr hx)
 
-theorem uniformTerminalScalarUpperBoundShell_iff_boundedAtDistanceShell_and_noTerminalScalarEscapeShell
+theorem
+  uniformTerminalScalarUpperBoundShell_iff_boundedAtDistanceShell_and_noTerminalScalarEscapeShell
     {kappa sigma : ℝ} {Phi : ℝ → ℝ} :
     UniformTerminalScalarUpperBoundShell.{u} kappa sigma Phi ↔
       BoundedAtDistanceShell.{u} kappa sigma Phi ∧
@@ -125,7 +126,8 @@ theorem uniformTerminalScalarUpperBoundShell_iff_boundedAtDistanceShell_and_noTe
     exact ⟨max C 1, lt_of_lt_of_le zero_lt_one (le_max_right C 1),
       fun i x => le_trans (hC i x) (le_max_left C 1)⟩
 
-theorem uniformTerminalScalarUpperBoundShell_of_boundedAtDistanceShell_and_boundedDistanceToBasepointShell
+theorem
+  uniformTerminalScalarUpperBoundShell_of_boundedAtDistanceShell_and_boundedDistanceToBasepointShell
     {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hshell : BoundedAtDistanceShell.{u} kappa sigma Phi)
     (hdiam : BoundedDistanceToBasepointShell.{u} kappa sigma Phi) :
@@ -147,7 +149,7 @@ theorem noSubsequenceCurvatureEscapeShell_of_uniformTerminalScalarUpperBoundShel
   noSubsequenceCurvatureEscapeShell_of_boundedAtDistanceShell
     (boundedAtDistanceShell_of_uniformTerminalScalarUpperBoundShell h)
 
-theorem uniformTerminalScalarUpperBoundShell_of_boundedDistanceToBasepointShell_and_smallScale_and_noSubsequenceCurvatureEscapeShell
+theorem uniform_terminal_scalar_bound_of_bounded_distance_and_no_curvature_escape
     {kappa sigma : ℝ} {Phi : ℝ → ℝ}
     (hdiam : BoundedDistanceToBasepointShell.{u} kappa sigma Phi)
     (hsmall : ∃ epsStar r : ℝ, 0 < epsStar ∧ 0 < r ∧

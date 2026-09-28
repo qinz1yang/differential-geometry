@@ -21,7 +21,7 @@ theorem gQuot_scalar (D : RoundSphereQuotient E n) (x : D.Q) :
   rw [metricScalarAt_eq_orthonormal_trace D.gQuot x b hb]
   have hRic := ricci_of_sec D.gQuot 1
     (fun y v w => by simpa only [one_mul] using D.gQuot_sectional_one y v w)
-  simp only [hRic, hb, if_true, finrank_euclideanSpace_fin, mul_one]
+  simp only [hRic, hb, ite_true, finrank_euclideanSpace_fin, mul_one]
   simp only [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hdim : Module.finrank ℝ (TangentSpace (𝓡 n) x) = n := by
     change Module.finrank ℝ (EuclideanSpace ℝ (Fin n)) = n

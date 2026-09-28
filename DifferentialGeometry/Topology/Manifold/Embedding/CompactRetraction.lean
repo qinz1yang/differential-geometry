@@ -36,7 +36,7 @@ theorem exists_smooth_neighborhood_retraction_of_isCompact {e : M → F}
   let r : F → M := fun z => if h : R z ∈ range e then Classical.choose h else Classical.arbitrary M
   have her (z : F) (hz : z ∈ U) : e (r z) = R z := by
     dsimp only [r]
-    rw [dif_pos (hRU hz)]
+    rw [dite_eq_left (hRU hz)]
     exact Classical.choose_spec (hRU hz)
   have hleft (p : M) (hp : e p ∈ U) : r (e p) = p := hemb.injective
     ((her (e p) hp).trans (hRfix (e p) (mem_range_self p)))

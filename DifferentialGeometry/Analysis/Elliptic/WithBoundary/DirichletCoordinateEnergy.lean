@@ -284,12 +284,11 @@ theorem hasWeakDiv_dirichlet_chart_gradient
       Integrable (fun z => D i (u : H1ComplDirichlet q) z *
         (densityOnEuclid q α z * invGramOnEuclid q α i j z) *
         fderiv ℝ ψ z (EuclideanSpace.single j 1)) (volume.restrict Ω) := by
-    have hi := ((Lp.memLp (D i (u : H1ComplDirichlet q))).mul' (p := ⊤) (r := 2)
-      (hcoeff i j)).integrable_mul (hderiv j)
+    have hi := ((Lp.memLp (D i (u : H1ComplDirichlet q))).fun_mul (hcoeff i j)
+      (p := 2) (q := ⊤) (r := 2)).integrable_mul (hderiv j)
     apply hi.congr
     filter_upwards with z
     dsimp only [Pi.mul_apply]
-    rw [mul_comm (densityOnEuclid q α z * invGramOnEuclid q α i j z)]
   change (∫ z in Ω, ∑ j, (WithLp.toLp 2 (fun j => ∑ i,
     D i (u : H1ComplDirichlet q) z *
       (densityOnEuclid q α z * invGramOnEuclid q α i j z))) j *

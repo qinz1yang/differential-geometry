@@ -22,7 +22,7 @@ theorem IsCombinatorialManifold.not_subset_of_isPLBall {n : ℕ}
     (n := n) (by simp) (0 : EuclideanSpace ℝ (Fin (n + 1))) Filter.univ_mem
   obtain ⟨p, hp⟩ := isPLBall_convexHull_of_affineIndependent T hT hcard
   obtain ⟨q, hq⟩ := hB
-  let f := p ∘ Function.invFunOn q (stdSimplex ℝ (Fin (n + 2)))
+  let f := p ∘ Function.invFunOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)))
   have hf : IsPLHomeomorphOn f B (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin (n + 1))))) :=
     hq.symm.trans hp
   let _ := combinatorialChartedSpace K hK

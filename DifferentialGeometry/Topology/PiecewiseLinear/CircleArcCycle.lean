@@ -27,10 +27,10 @@ theorem isPLSphere_one_iUnion_union_iUnion_of_cycle {m : ℕ} {r β : Fin (m + 2
   let f : ℕ → Fin (m + 2) := fun i => Fin.ofNat (m + 2) (i / 2)
   let A : ℕ → Set E := fun i => if i % 2 = 0 then r (f i) else β (f i)
   let γ : ℕ → ℝ → E := fun i => if i % 2 = 0 then ρ (f i) else σ (f i)
-  have hAe : ∀ i, i % 2 = 0 → A i = r (f i) := fun i h => if_pos h
-  have hAo : ∀ i, i % 2 ≠ 0 → A i = β (f i) := fun i h => if_neg h
-  have hγe : ∀ i, i % 2 = 0 → γ i = ρ (f i) := fun i h => if_pos h
-  have hγo : ∀ i, i % 2 ≠ 0 → γ i = σ (f i) := fun i h => if_neg h
+  have hAe : ∀ i, i % 2 = 0 → A i = r (f i) := fun i h => ite_eq_left h
+  have hAo : ∀ i, i % 2 ≠ 0 → A i = β (f i) := fun i h => ite_eq_right h
+  have hγe : ∀ i, i % 2 = 0 → γ i = ρ (f i) := fun i h => ite_eq_left h
+  have hγo : ∀ i, i % 2 ≠ 0 → γ i = σ (f i) := fun i h => ite_eq_right h
   have hfv : ∀ i, i / 2 < m + 2 → (f i).val = i / 2 := fun i hi => by
     change (i / 2) % (m + 2) = i / 2
     exact Nat.mod_eq_of_lt hi
@@ -126,7 +126,7 @@ end Cycle
 theorem exists_split_of_runs {m : ℕ} {B₁ : Set E3} (hB₁ : IsPLBall 3 B₁)
     {H r : Fin (m + 2) → Set E3}
     {rH : Fin (m + 2) → (Fin 3 → ℝ) → E3} {ρ : Fin (m + 2) → ℝ → E3}
-    (hrH : ∀ k, IsPLHomeomorphOn (rH k) (stdSimplex ℝ (Fin 3)) (H k))
+    (hrH : ∀ k, IsPLHomeomorphOn (rH k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H k))
     (hHB : ∀ k, H k ⊆ frontier B₁) (hHdisj : Pairwise fun k l => Disjoint (H k) (H l))
     (hρ : ∀ k, IsPLHomeomorphOn (ρ k) (Icc 0 1) (r k)) (hrB : ∀ k, r k ⊆ frontier B₁)
     (hrr : Pairwise fun k l => Disjoint (r k) (r l))
@@ -136,8 +136,8 @@ theorem exists_split_of_runs {m : ℕ} {B₁ : Set E3} (hB₁ : IsPLBall 3 B₁)
     (hbin : ∀ k, ρ (k + 1) 0 ∈ rH k '' stdSimplexBoundary 2) :
     ∃ (X Y : Set E3) (qX qY : (Fin 3 → ℝ) → E3) (β : Fin (m + 2) → Set E3)
       (σ τ : Fin (m + 2) → ℝ → E3),
-      IsPLHomeomorphOn qX (stdSimplex ℝ (Fin 3)) X ∧
-      IsPLHomeomorphOn qY (stdSimplex ℝ (Fin 3)) Y ∧
+      IsPLHomeomorphOn qX (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X ∧
+      IsPLHomeomorphOn qY (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Y ∧
       X ∪ Y ∪ (⋃ k, H k) = frontier B₁ ∧ X ∩ Y = ⋃ k, r k ∧
       (∀ k, IsPLHomeomorphOn (σ k) (Icc 0 1) (β k) ∧ σ k 0 = ρ k 1 ∧ σ k 1 = ρ (k + 1) 0) ∧
       (∀ k, IsPLHomeomorphOn (τ k) (Icc 0 1) (closure (rH k '' stdSimplexBoundary 2 \ β k)) ∧

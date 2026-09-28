@@ -160,7 +160,7 @@ theorem exists_isOpen_piecewise_postcomp_eqOn_of_finite
       have hfxU : f x ∉ U := by
         intro hfx
         have hnot := hUW i hfx
-        rw [show W i = (B i)ᶜ from if_pos hyA] at hnot
+        rw [show W i = (B i)ᶜ from ite_eq_left hyA] at hnot
         exact hnot ⟨x, ⟨hx, hxQ⟩, rfl⟩
       rw [piecewise_eq_of_notMem P (h ∘ f) f hxP]
       exact (hfix hfxU).symm
@@ -170,7 +170,7 @@ theorem exists_isOpen_piecewise_postcomp_eqOn_of_finite
     · have hfxU : f x ∉ U := by
         intro hfx
         have hnot := hUW i hfx
-        rw [show W i = (A i)ᶜ from if_neg hyA] at hnot
+        rw [show W i = (A i)ᶜ from ite_eq_right hyA] at hnot
         exact hnot ⟨x, ⟨hx, hxP⟩, rfl⟩
       rw [piecewise_eq_of_mem P (h ∘ f) f hxP]
       exact hfix hfxU

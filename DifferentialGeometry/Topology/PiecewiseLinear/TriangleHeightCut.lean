@@ -22,7 +22,7 @@ theorem exists_isPLSphere_pair_of_singular_height_with_triangle_cap
       (T : Finset (EuclideanSpace ℝ (Fin 2))),
       A ∪ B = K.space ∧ A ∩ B = g '' stdSimplexBoundary 2 ∧
       K.space ∩ D = g '' stdSimplexBoundary 2 ∧
-      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLBall 2 A ∧ IsPLBall 2 B ∧ IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       D ⊆ W ∩ {x | ℓ x = ℓ p} ∧ D ∉ 𝓝[{x | ℓ x = ℓ p}] p ∧
       IsPLSphere 2 (A ∪ D) ∧ IsPLSphere 2 (B ∪ D) ∧ (A ∪ D) ∩ (B ∪ D) = D ∧
       ((A ∪ D) ∪ (B ∪ D)) \ (D \ (g '' stdSimplexBoundary 2)) = K.space ∧
@@ -117,7 +117,7 @@ theorem exists_isPLSphere_pair_of_singular_height_with_triangle_cap
       (hDU.trans hUC) hC hsep H hH hfixC hheight hRspace] with f hf hfne hfinj
     obtain ⟨houtside, hpoints⟩ := hf hfne hfinj
     refine ⟨houtside, hpoints, fun hside => ?_⟩
-    have hgimage : IsPLHomeomorphOn (H ∘ g) (stdSimplex ℝ (Fin 3))
+    have hgimage : IsPLHomeomorphOn (H ∘ g) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (H '' D) := hg.trans (hH.restrict hD.isPolyhedron (subset_univ D))
     have hlevel : H '' D ⊆ {x | ℓ x = ℓ p} := by
       rintro _ ⟨x, hx, rfl⟩

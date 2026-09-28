@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 import DifferentialGeometry.Geometry.Metric.Conformal.Basic
-import DifferentialGeometry.Tensor.Metric.CompactBounds
-import DifferentialGeometry.Tensor.Metric.ScaleNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.Scaling
 import DifferentialGeometry.Geometry.Metric.Construction.ConvexCombination
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison

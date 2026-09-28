@@ -16,7 +16,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensi
 
 theorem IsPLHomeomorphOn.isPLSphere_image_stdSimplexBoundary {n : ℕ} {P : Set E}
     {f : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) P) :
     IsPLSphere n (f '' stdSimplexBoundary (n + 1)) := by
   classical
   let B := simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)
@@ -27,8 +27,8 @@ theorem IsPLHomeomorphOn.isPLSphere_image_stdSimplexBoundary {n : ℕ} {P : Set 
 
 theorem exists_isPLHomeomorphOn_extension_of_stdSimplexBoundary {n : ℕ} {P : Set E} {Q : Set F}
     {f : (Fin (n + 2) → ℝ) → E} {g : (Fin (n + 2) → ℝ) → F}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) P)
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) Q) {b : E → F}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) P)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) Q) {b : E → F}
     (hb : IsPLHomeomorphOn b (f '' stdSimplexBoundary (n + 1)) (g '' stdSimplexBoundary (n + 1))) :
     ∃ H : E → F, IsPLHomeomorphOn H P Q ∧ EqOn H b (f '' stdSimplexBoundary (n + 1)) := by
   classical
@@ -38,8 +38,8 @@ theorem exists_isPLHomeomorphOn_extension_of_stdSimplexBoundary {n : ℕ} {P : S
   obtain ⟨L, hLfin, hLQ⟩ := hQ.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   let _ : Finite L.faces := hLfin.to_subtype
-  have hfK : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
-  have hgL : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) L.space := hLQ.symm ▸ hg
+  have hfK : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) K.space := hKP.symm ▸ hf
+  have hgL : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) L.space := hLQ.symm ▸ hg
   have hKboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hfK
   have hLboundary := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex L hgL
   rw [simplexBoundary_stdVertices_space] at hKboundary hLboundary
@@ -54,8 +54,8 @@ theorem exists_isPLHomeomorphOn_extension_of_stdSimplexBoundary {n : ℕ} {P : S
 
 theorem exists_isPLHomeomorphOn_replace_ball {n : ℕ} {P Q R J : Set E}
     (hP : IsPolyhedron P) {f g : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) Q)
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) R)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) Q)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) R)
     (hfJ : f '' stdSimplexBoundary (n + 1) = J) (hgJ : g '' stdSimplexBoundary (n + 1) = J)
     (hPQ : P ∩ Q = J) (hPR : P ∩ R = J) :
     ∃ H : E → E, IsPLHomeomorphOn H (P ∪ Q) (P ∪ R) ∧ EqOn H id P := by

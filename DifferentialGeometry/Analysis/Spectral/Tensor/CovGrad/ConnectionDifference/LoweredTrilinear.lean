@@ -1,3 +1,5 @@
+import DifferentialGeometry.Tensor.RSTensor.Reindexing.Permutation
+import DifferentialGeometry.Tensor.RSTensor.Algebra.Product
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.OperatorField.Application
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CorrectionFields.ChristoffelCoefficients
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.JointSmoothness
@@ -35,108 +37,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [T2Space M] [SigmaCompactSpace M]
 
 private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
-
-noncomputable def domDomCongrFibRank (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M) :
-    Tensor0SBundle.Tensor0SSpace d I x →L[ℝ] Tensor0SBundle.Tensor0SSpace d I x :=
-  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).symm.toContinuousLinearMap.comp
-    (((ContinuousMultilinearMap.domDomCongrₗᵢ ℝ E ℝ
-          σ).toContinuousLinearEquiv.toContinuousLinearMap).comp
-      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) d x).toContinuousLinearMap)
-
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
-    [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-theorem domDomCongrFibRank_apply (d : ℕ) (σ : Equiv.Perm (Fin d)) (x : M)
-    (D : Tensor0SBundle.Tensor0SSpace d I x) :
-    domDomCongrFibRank (I := I) d σ x D =
-      Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-        (ContinuousMultilinearMap.domDomCongr σ
-          (Tensor0SBundle.Tensor0SSpace.toModel D)) := by
-  rw [domDomCongrFibRank]
-  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
-    ContinuousLinearEquiv.coe_coe, LinearIsometryEquiv.coe_toContinuousLinearEquiv]
-  rfl
-
-noncomputable def modelProdCLM (p q : ℕ) :
-    Tensor0SBundle.Tensor0SModel p ℝ E →L[ℝ]
-      Tensor0SBundle.Tensor0SModel q ℝ E →L[ℝ] Tensor0SBundle.Tensor0SModel (p + q) ℝ E :=
-  LinearMap.toContinuousLinearMap
-    { toFun := fun A =>
-        LinearMap.toContinuousLinearMap
-          { toFun := fun B =>
-              Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q A B
-            map_add' := fun B B' => by
-              apply ContinuousMultilinearMap.ext
-              intro v
-              rw [add_apply,
-                Bundle.continuousMultilinearMap.modelProduct_apply,
-                Bundle.continuousMultilinearMap.modelProduct_apply,
-                Bundle.continuousMultilinearMap.modelProduct_apply,
-                add_apply]
-              ring
-            map_smul' := fun c B => by
-              apply ContinuousMultilinearMap.ext
-              intro v
-              rw [RingHom.id_apply, smul_apply,
-                Bundle.continuousMultilinearMap.modelProduct_apply,
-                Bundle.continuousMultilinearMap.modelProduct_apply,
-                smul_apply]
-              simp only [smul_eq_mul]
-              ring }
-      map_add' := fun A A' => by
-        apply ContinuousLinearMap.ext
-        intro B
-        apply ContinuousMultilinearMap.ext
-        intro v
-        simp only [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-          add_apply, add_apply]
-        rw [Bundle.continuousMultilinearMap.modelProduct_apply,
-          Bundle.continuousMultilinearMap.modelProduct_apply,
-          Bundle.continuousMultilinearMap.modelProduct_apply,
-          add_apply]
-        ring
-      map_smul' := fun c A => by
-        apply ContinuousLinearMap.ext
-        intro B
-        apply ContinuousMultilinearMap.ext
-        intro v
-        simp only [LinearMap.coe_toContinuousLinearMap', LinearMap.coe_mk, AddHom.coe_mk,
-          RingHom.id_apply, smul_apply, smul_apply]
-        rw [Bundle.continuousMultilinearMap.modelProduct_apply,
-          Bundle.continuousMultilinearMap.modelProduct_apply,
-          smul_apply]
-        simp only [smul_eq_mul]
-        ring }
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem modelProdCLM_apply (p q : ℕ)
-    (A : Tensor0SBundle.Tensor0SModel p ℝ E) (B : Tensor0SBundle.Tensor0SModel q ℝ E) :
-    modelProdCLM (E := E) p q A B =
-      Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q A B := by
-  rw [modelProdCLM]
-  rfl
-
-noncomputable def tensor0SProdKappaFib {p q : ℕ} (x : M)
-    (κ : Tensor0SBundle.Tensor0SSpace q I x) :
-    Tensor0SBundle.Tensor0SSpace p I x →L[ℝ] Tensor0SBundle.Tensor0SSpace (p + q) I x :=
-  (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) (p + q)
-      x).symm.toContinuousLinearMap.comp
-    (((modelProdCLM (E := E) p q).flip
-        (Tensor0SBundle.Tensor0SSpace.toModel κ)).comp
-      (Tensor0SBundle.tensor0SSpaceContinuousLinearEquiv (I := I) p x).toContinuousLinearMap)
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
-    [T2Space M] [SigmaCompactSpace M] in
-theorem tensor0SProdKappaFib_apply {p q : ℕ} (x : M)
-    (κ : Tensor0SBundle.Tensor0SSpace q I x) (D : Tensor0SBundle.Tensor0SSpace p I x) :
-    tensor0SProdKappaFib (I := I) x κ D =
-      Tensor0SBundle.Tensor0SSpace.ofModel (𝕜 := ℝ) (I := I) (x := x)
-        (Bundle.continuousMultilinearMap.modelProduct (𝕜 := ℝ) (F := E) p q
-          (Tensor0SBundle.Tensor0SSpace.toModel D) (Tensor0SBundle.Tensor0SSpace.toModel κ)) := by
-  rw [tensor0SProdKappaFib]
-  simp only [ContinuousLinearMap.coe_comp, Function.comp_apply,
-    ContinuousLinearEquiv.coe_coe, ContinuousLinearMap.flip_apply]
-  rw [modelProdCLM_apply]
-  rfl
 
 private noncomputable def trilinFormToModel (F : Type*) [NormedAddCommGroup F]
     [NormedSpace ℝ F] (B : F →L[ℝ] F →L[ℝ] F →L[ℝ] ℝ) :

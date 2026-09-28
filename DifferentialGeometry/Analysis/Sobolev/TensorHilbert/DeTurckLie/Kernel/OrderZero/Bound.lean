@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.OrderZero.Pointwise
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Positivity.PositiveDefinitePerturbation
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
 
@@ -37,7 +40,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 attribute [-instance] Tensor0SBundle.tensorRSSpaceNormedAddCommGroup
   Tensor0SBundle.tensorRSSpaceNormedSpace in
 set_option backward.isDefEq.respectTransparency true in
-theorem deTurckLieConnectionDifferenceDerivCoeffField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform
+theorem deTurckLieConnectionDifferenceDerivCoeffField_pointwise_perturbation_bound
     (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

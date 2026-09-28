@@ -288,7 +288,7 @@ theorem geo_map (g : SmoothRiemannianMetric I M) {p : M}
     if ht : t ∈ s then ⟨gamma t, hmem t ht⟩ else z0
   have hval : ∀ t ∈ s, (gammaQ t : E) = gamma t := by
     intro t ht
-    simp only [gammaQ, dif_pos ht]
+    simp only [gammaQ, dite_eq_left ht]
   have hbaseSmooth : ContMDiffOn (modelWithCornersSelf Real Real)
       (modelWithCornersSelf Real E) ∞ (fun t ↦ (gammaQ t : E)) s :=
     hgamma.congr hval

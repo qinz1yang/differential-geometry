@@ -56,24 +56,6 @@ def IsReducedLengthRealization {H : ObservedHistory.{u}} (S : VariationalStrip H
         (fun τ : ℝ => sInf (range (fun x => S.reducedLength (S.finish - τ) x)) - 6 * τ)
         (Ioo S.start S.finish) (S.finish - u))
 
-def isReducedLengthRealizationInput : Prop :=
-  ∀ (H : ObservedHistory.{u}) (S : VariationalStrip H), HasAdmissibleCurve S →
-    IsReducedLengthRealization S
-
-theorem isReducedLengthRealizationInput_of_isSurgeryVariationalInput
-    (h : isSurgeryVariationalInput.{u}) : isReducedLengthRealizationInput.{u} := by
-  intro H S _
-  obtain ⟨hfirst, hbarrier, hshift⟩ := h H S
-  refine ⟨?_, ?_, ?_, hbarrier, hshift⟩
-  · intro u hu x hle _
-    exact (hfirst u hu).2.2 x hle
-  · intro u hu
-    exact (hfirst u hu).1
-  · intro u hu
-    obtain ⟨x, hx⟩ := (hfirst u hu).2.1
-    obtain ⟨γ, hγ, hγ0, hγτ, -⟩ := (hfirst u hu).2.2 x hx
-    exact ⟨x, hx, γ, hγ, hγ0, hγτ⟩
-
 theorem not_isReducedLengthRealization_of_not_hasAdmissibleCurve {H : ObservedHistory.{u}}
     {S : VariationalStrip H} (h : ¬ HasAdmissibleCurve S) : ¬ IsReducedLengthRealization S := by
   intro hreal
@@ -81,50 +63,5 @@ theorem not_isReducedLengthRealization_of_not_hasAdmissibleCurve {H : ObservedHi
   obtain ⟨x, -, γ, hγ, -, -⟩ :=
     hleast ((S.start + S.finish) / 2) (by constructor <;> linarith [S.start_lt_finish])
   exact h ⟨γ, hγ⟩
-
-def isCommonLocalRealizationOnAdmissibleStrips : Prop :=
-  isLocalStabilityInput ∧ isBufferedControlInput.{u} ∧ isReducedLengthRealizationInput.{u} ∧
-    isJacobianInput.{u} ∧ (∃ d : OldData, isOldTubeInput.{u} d) ∧
-      isEnlargementInput.{u} ∧ isRoundDegreeInput.{u}
-
-theorem isLocalStabilityInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : isLocalStabilityInput :=
-  h.1
-
-theorem isBufferedControlInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : isBufferedControlInput.{u} :=
-  h.2.1
-
-theorem isReducedLengthRealizationInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : isReducedLengthRealizationInput.{u} :=
-  h.2.2.1
-
-theorem isJacobianInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : isJacobianInput.{u} :=
-  h.2.2.2.1
-
-theorem exists_isOldTubeInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : ∃ d : OldData, isOldTubeInput.{u} d :=
-  h.2.2.2.2.1
-
-theorem isEnlargementInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : isEnlargementInput.{u} :=
-  h.2.2.2.2.2.1
-
-theorem isRoundDegreeInput_of_isCommonLocalRealizationOnAdmissibleStrips
-    (h : isCommonLocalRealizationOnAdmissibleStrips.{u}) : isRoundDegreeInput.{u} :=
-  h.2.2.2.2.2.2
-
-theorem isCommonLocalRealizationOnAdmissibleStrips_of_components
-    (hstability : isLocalStabilityInput) (hbuffered : isBufferedControlInput.{u})
-    (hvariational : isReducedLengthRealizationInput.{u}) (hjacobian : isJacobianInput.{u})
-    (htube : ∃ d : OldData, isOldTubeInput.{u} d) (henlargement : isEnlargementInput.{u})
-    (hround : isRoundDegreeInput.{u}) : isCommonLocalRealizationOnAdmissibleStrips.{u} :=
-  ⟨hstability, hbuffered, hvariational, hjacobian, htube, henlargement, hround⟩
-
-theorem isCommonLocalRealizationOnAdmissibleStrips_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isCommonLocalRealizationOnAdmissibleStrips.{u} :=
-  ⟨h.1, h.2.1, isReducedLengthRealizationInput_of_isSurgeryVariationalInput h.2.2.1,
-    h.2.2.2.1, h.2.2.2.2.1, h.2.2.2.2.2.1, h.2.2.2.2.2.2⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

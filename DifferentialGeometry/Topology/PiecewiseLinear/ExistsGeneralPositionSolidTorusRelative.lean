@@ -204,7 +204,7 @@ theorem notMem_interior_of_homeomorph_closedBall_prod_sphere {S : Set E3}
     if h : x ∈ S then ψ ((φ ⟨x, h⟩).1 : EuclideanSpace ℝ (Fin 2))
       ((φ ⟨x, h⟩).2 : EuclideanSpace ℝ (Fin 2)) else 0
   have hGS : ∀ x (h : x ∈ S), G x = ψ ((φ ⟨x, h⟩).1 : EuclideanSpace ℝ (Fin 2))
-      ((φ ⟨x, h⟩).2 : EuclideanSpace ℝ (Fin 2)) := fun x h => dif_pos h
+      ((φ ⟨x, h⟩).2 : EuclideanSpace ℝ (Fin 2)) := fun x h => dite_eq_left h
   have hball2 : ∀ q : S, ‖((φ q).1 : EuclideanSpace ℝ (Fin 2))‖ < 2 := fun q =>
     lt_of_le_of_lt (mem_closedBall_zero_iff.mp (φ q).1.2) one_lt_two
   have hsph : ∀ q : S, ‖((φ q).2 : EuclideanSpace ℝ (Fin 2))‖ = 1 := fun q =>

@@ -338,7 +338,7 @@ theorem supersolution_geometric_majorant_fwd
       ∏ i ∈ Finset.range (m + 1), superStepConstFwd (d := d) A p₀ i ≤
         ∏ i ∈ Finset.range (m + 1), (K * CC ^ i) ^
           (1 / moserExponentSeq d p₀ i) :=
-    Finset.prod_le_prod hstep_nonneg hstep_le
+    Finset.prod_le_prod₀ hstep_nonneg hstep_le
   have hprod_eval :
       ∀ n : ℕ,
         ∏ i ∈ Finset.range n, (K * CC ^ i) ^

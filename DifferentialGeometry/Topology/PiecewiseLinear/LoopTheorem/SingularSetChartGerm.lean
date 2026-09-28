@@ -113,7 +113,7 @@ theorem SingularTwoCell.exists_ambient_ray_germ_doublePointSet
   have hebval : ∀ q : K.space, eb (q : E) = e q := by
     intro q
     rw [hebdef]
-    exact dif_pos q.2
+    exact dite_eq_left q.2
   have hpa0 : IsPiecewiseAffineOn eb (Subtype.val '' e.source) := by
     rw [hebdef, hpe]
     exact isPiecewiseAffineOn_vertexChart K hp (hK.isPLSphere_link hp)

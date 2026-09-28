@@ -1,4 +1,5 @@
-import DifferentialGeometry.Topology.Homotopy.TransportComposition
+import Mathlib.Topology.Homotopy.HomotopyGroup
+import Mathlib.Topology.Order.ProjIcc
 import Mathlib.Topology.Piecewise
 
 

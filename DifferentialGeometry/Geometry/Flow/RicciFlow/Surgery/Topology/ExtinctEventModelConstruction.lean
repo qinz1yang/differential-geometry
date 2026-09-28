@@ -342,7 +342,6 @@ def ofEmptyOutput (X : SmoothCutCapTransition P Q D N) [IsEmpty Q.Carrier]
       ⟨fun x => isEmptyElim x, continuous_iff_continuousAt.mpr fun x => isEmptyElim x⟩
     oldOutput_eq := fun x => isEmptyElim x
     old_metric_eq := fun x _ _ => isEmptyElim x
-    old_contains_outside := fun _ hx _ => hx
     every_child_meets_old := fun c => by
       obtain ⟨q, -⟩ := ConnectedComponents.surjective_coe c
       exact isEmptyElim q }

@@ -9,8 +9,10 @@ set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq metricDiffSq_def traceNormSq_le)
+
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature

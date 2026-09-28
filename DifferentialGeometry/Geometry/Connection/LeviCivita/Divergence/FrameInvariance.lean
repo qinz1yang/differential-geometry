@@ -321,7 +321,7 @@ private lemma coeff_cov_eq_deriv_add_christoffel
         rw [Module.Basis.repr_self_apply]
         by_cases hlk : l = k
         · simp [hlk]
-        · rw [if_neg hlk, if_neg (fun h => hlk h.symm)]
+        · rw [ite_eq_right hlk, ite_eq_right (fun h => hlk h.symm)]
       rw [hcoeff_frame]
       by_cases hkl : k = l
       · simp [hkl]
@@ -331,7 +331,7 @@ private lemma coeff_cov_eq_deriv_add_christoffel
   rw [add_comm]
   congr 1
   · rw [Finset.sum_ite_eq Finset.univ k (fun _ => mvfderiv (I := I) (Zc k) x₀ (frame i x₀))]
-    rw [if_pos (Finset.mem_univ k)]
+    rw [ite_eq_left (Finset.mem_univ k)]
   · refine Finset.sum_congr rfl fun l _ => ?_
     rw [hZc_def]
     ring
@@ -450,8 +450,8 @@ theorem divergence_g_eq_coordinateFrame_covariant_divergence
     _ = ∑ i, C i i := by
         refine Finset.sum_congr rfl fun i _ => ?_
         rw [Finset.sum_eq_single i]
-        · rw [if_pos rfl, mul_one]
-        · intro k _ hki; rw [if_neg (fun h => hki h.symm), mul_zero]
+        · rw [ite_eq_left rfl, mul_one]
+        · intro k _ hki; rw [ite_eq_right (fun h => hki h.symm), mul_zero]
         · intro hi; exact absurd (Finset.mem_univ i) hi
 
 end DifferentialGeometry.Geometry.Connection

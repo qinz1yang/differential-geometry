@@ -876,7 +876,7 @@ private theorem deTurckLieBackgroundDifferenceLoweredCoefficient_pairing_secondO
     exists_metricLoweredConnectionDifference_covariantJetNormSq_two_sub_tame_bound (I := I) (M := M) hDim g
       (δ₀ := (1 : ℝ) / 3) (by norm_num) (by norm_num)
   obtain ⟨S0, S1, hS0, hS1, hs⟩ :=
-    exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_covariantJetNormSq_difference_bound (I := I) (M := M) hDim g
+    exists_bilinearSlotInsertionCoefficient_connectionDifferenceEndomorphism_jet_two_difference_bound (I := I) (M := M) hDim g
   let fr : ℝ := Module.finrank ℝ E
   let B0 : ℝ → ℝ := fun R => P * W0 R + Q * (fr * S0 R)
   let B1 : ℝ → ℝ := fun R => P * W1 R + Q * (fr * S1 R)
@@ -1458,7 +1458,7 @@ private theorem covariantJetNormSq_two_deTurckLieConnectionDifferenceDerivativeB
   simpa only [covariantJetNormSq] using
     slotIter_h2 (I := I) (M := M) g 0 4 2 S
 
-theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_pairing_secondOrder_bound
+theorem exists_deTurckLieConnectionDifferenceDerivCoeffField_background_difference_jet_two_difference_bound
     (hDim : Module.finrank ℝ E = 3)
     (g gB : SmoothRiemannianMetric I M) :
     ∃ ρ : ℝ, ∃ B0 B1 : ℝ → ℝ,
@@ -1814,7 +1814,7 @@ theorem exists_deTurckLieCoefficient_backgroundDifference_covariantJetNormSq_two
         (B0 R * D3 + B1 R * D2 + B1 R * A * D2 +
           B1 R * N + B1 R * A * N) ^ 2 := by
   obtain ⟨ρa, Ba0, Ba1, hρa, hBa0, hBa1, hDLa⟩ :=
-    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_pairing_secondOrder_bound (I := I) (M := M) hDim g gB
+    exists_deTurckLieConnectionDifferenceDerivCoeffField_background_difference_jet_two_difference_bound (I := I) (M := M) hDim g gB
   obtain ⟨Bb, hBb, hDLb⟩ :=
     exists_deTurckLieInsertionCorrection_covariantJetNormSq_tame_difference_bound (I := I) (M := M) hDim g gB
   obtain ⟨ρm, Bm0, Bm1, hρm, hBm0, hBm1, hAMix⟩ :=

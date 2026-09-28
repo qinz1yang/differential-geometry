@@ -180,13 +180,13 @@ private theorem exists_orthoFrame_finrank (g : SmoothRiemannianMetric I M') (z :
   refine ⟨fun i => b0 (Fin.cast hdim i), fun i j => ?_⟩
   by_cases hij : i = j
   · subst hij
-    simpa only [if_pos rfl] using hb0 (Fin.cast hdim i) (Fin.cast hdim i)
+    simpa only [ite_eq_left rfl] using hb0 (Fin.cast hdim i) (Fin.cast hdim i)
   · have hcast : Fin.cast hdim i ≠ Fin.cast hdim j := by
       intro hh
       apply hij
       apply Fin.ext
       exact congrArg Fin.val hh
-    simpa only [if_neg hij, if_neg hcast] using hb0 (Fin.cast hdim i) (Fin.cast hdim j)
+    simpa only [ite_eq_right hij, ite_eq_right hcast] using hb0 (Fin.cast hdim i) (Fin.cast hdim j)
 
 private theorem riemannDiffC_nonneg {Λ Λ' Λ'' : ℝ} (hL : 0 ≤ Λ)
     (hL'' : 0 ≤ Λ'') : 0 ≤ riemannDiffC Λ Λ' Λ'' := by
@@ -213,7 +213,7 @@ theorem ricciTensor_sub_le_of_jetBounds
   obtain ⟨B, hB⟩ := exists_orthoFrame_finrank (I := I) g₂ z
   have hBii : ∀ i, g₂.inner z (B i) (B i) = 1 := by
     intro i
-    rw [hB i i, if_pos rfl]
+    rw [hB i i, ite_eq_left rfl]
   have hsplit : ricciTensor (I := I) g₁ z v w - ricciTensor (I := I) g₂ z v w =
       ∑ i : Fin (Module.finrank ℝ E),
         g₂.inner z ((ricciEndo (I := I) g₁ z v w - ricciEndo (I := I) g₂ z v w) (B i))
@@ -251,7 +251,7 @@ theorem ricciTensor_sub_le_of_jetBounds
               ((ricciEndo (I := I) g₁ z v w - ricciEndo (I := I) g₂ z v w) (B i))
               ((ricciEndo (I := I) g₁ z v w - ricciEndo (I := I) g₂ z v w) (B i))) *
             Real.sqrt (g₂.inner z (B i) (B i)) :=
-          abs_metric_inner_le_sqrt_metric_quadratic (I := I) g₂ z _ _
+          SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic (I := I) g₂ z _ _
       _ = Real.sqrt (g₂.inner z
               ((ricciEndo (I := I) g₁ z v w - ricciEndo (I := I) g₂ z v w) (B i))
               ((ricciEndo (I := I) g₁ z v w - ricciEndo (I := I) g₂ z v w) (B i))) := by
@@ -290,7 +290,7 @@ theorem abs_ricciTensor_le_of_riemannOp_le
   obtain ⟨B, hB⟩ := exists_orthoFrame_finrank (I := I) g z
   have hBii : ∀ i, g.inner z (B i) (B i) = 1 := by
     intro i
-    rw [hB i i, if_pos rfl]
+    rw [hB i i, ite_eq_left rfl]
   have hterm : ∀ i : Fin (Module.finrank ℝ E),
       |g.inner z (riemannOp (cov := LeviCivita (I := I) g) z (B i) v w) (B i)| ≤
         Kr * Real.sqrt (g.inner z v v) * Real.sqrt (g.inner z w w) := by
@@ -301,7 +301,7 @@ theorem abs_ricciTensor_le_of_riemannOp_le
         ≤ Real.sqrt (g.inner z (riemannOp (cov := LeviCivita (I := I) g) z (B i) v w)
               (riemannOp (cov := LeviCivita (I := I) g) z (B i) v w)) *
             Real.sqrt (g.inner z (B i) (B i)) :=
-          abs_metric_inner_le_sqrt_metric_quadratic (I := I) g z _ _
+          SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic (I := I) g z _ _
       _ = Real.sqrt (g.inner z (riemannOp (cov := LeviCivita (I := I) g) z (B i) v w)
               (riemannOp (cov := LeviCivita (I := I) g) z (B i) v w)) := by
           rw [hBii i, Real.sqrt_one, mul_one]
@@ -373,11 +373,11 @@ theorem abs_metricScalarAt_sub_le_of_jetBounds
     exact hh
   have hBii : ∀ i, g₂.inner z (basis i) (basis i) = 1 := by
     intro i
-    rw [hON2 i i, if_pos rfl]
+    rw [hON2 i i, ite_eq_left rfl]
   have hμlow : ∀ i, Λ⁻¹ ≤ μ i := by
     intro i
     have h1 := hONd i i
-    rw [if_pos rfl] at h1
+    rw [ite_eq_left rfl] at h1
     have h2 := (hEq.2 z hz (basis i)).2
     rw [hBii i, mul_one] at h2
     have h3 : 1 ≤ μ i * Λ := by nlinarith [hμ0 i]

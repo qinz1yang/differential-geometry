@@ -19,7 +19,7 @@ theorem MDifferentiableAt.isInvertible_mfderiv_iff
   change (if MDifferentiableAt I J f x then
     fderivWithin 𝕜 (writtenInExtChartAt I J x f) (Set.range I) (extChartAt I x x)
     else (0 : E →L[𝕜] F)).IsInvertible ↔ _
-  rw [if_pos hf, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
+  rw [ite_eq_left hf, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
 
 section Real
 

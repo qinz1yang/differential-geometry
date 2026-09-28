@@ -1,343 +1,559 @@
-import DifferentialGeometry.Geometry.Metric.ConeChart.Defs
-import DifferentialGeometry.Geometry.Metric.ConeDilation
-import DifferentialGeometry.Geometry.Curve.Reparametrization
+import DifferentialGeometry.Geometry.Connection.ParallelLineSplitting
+import DifferentialGeometry.Geometry.Coordinates.RadialPairing
+import DifferentialGeometry.Bundle.Frame
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
+import DifferentialGeometry.Geometry.Metric.ConeRadialCurve
+import DifferentialGeometry.Geometry.Metric.ConeDistance
+import DifferentialGeometry.Geometry.Metric.InfinitesimalDistance
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
+import DifferentialGeometry.Topology.Manifold.Diffeomorph.Preimage
+import DifferentialGeometry.Topology.Manifold.ULift
 import DifferentialGeometry.Geometry.Metric.Pullback.Immersion
-import DifferentialGeometry.Topology.Manifold.RegularLevel.Coordinates
-import DifferentialGeometry.Topology.Manifold.InverseFunction
-import DifferentialGeometry.Topology.Manifold.OpenSubtype
-import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
+import DifferentialGeometry.Geometry.Metric.Scaling
+import DifferentialGeometry.Geometry.Metric.ConeChart.Defs
+import Mathlib.Topology.Algebra.Module.FiniteDimension
 
-set_option autoImplicit false
+section
+
 noncomputable section
-open Bundle Filter Manifold Set
-open scoped Topology Manifold ContDiff ENNReal
+open Bundle Filter Set
+open scoped Manifold ContDiff Topology
+
 namespace DifferentialGeometry.Geometry.Riemannian
 
-open DifferentialGeometry.Geometry.Operator
+open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Operator
+
+variable {E H M Y : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
+  [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M] [PseudoMetricSpace Y]
+
+attribute [local instance] DifferentialGeometry.seminormedAddCommGroupTangentSpace
+  DifferentialGeometry.normedAddCommGroupTangentSpace DifferentialGeometry.normedSpaceTangentSpace
+
+private theorem bilinear_form_prod_eq_of_radial_pairing
+    {A B : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
+    [NormedAddCommGroup B] [NormedSpace ℝ B]
+    (g : B →L[ℝ] B →L[ℝ] ℝ) (D : A × ℝ →L[ℝ] B) (Q : A → A → ℝ)
+    (hsym : ∀ z w, g z w = g w z)
+    (hradial : ∀ u a b, g (D (0, a)) (D (u, b)) = a * b)
+    (hangular : ∀ u v, g (D (u, 0)) (D (v, 0)) = Q u v)
+    (u v : A) (a b : ℝ) : g (D (u, a)) (D (v, b)) = Q u v + a * b := by
+  have hsplit (w : A) (c : ℝ) : D (w, c) = D (w, 0) + D (0, c) := by
+    simpa only [Prod.mk_add_mk, add_zero, zero_add] using (map_add D (w, 0) (0, c))
+  have hleft : g (D (0, a)) (D (v, 0)) = 0 := by
+    simpa only [mul_zero] using hradial v a 0
+  have hright : g (D (u, 0)) (D (0, b)) = 0 := by
+    have h := hradial u b 0
+    simpa only [mul_zero] using (hsym (D (u, 0)) (D (0, b))).trans h
+  have hrr : g (D (0, a)) (D (0, b)) = a * b := hradial 0 a b
+  rw [hsplit u a, hsplit v b]
+  simp only [map_add, add_apply, hangular u v, hleft, hright, hrr, add_zero, zero_add]
+
+
+omit [SigmaCompactSpace M] in
+private theorem inner_angular_of_distance_cone_coordinates
+    {A : Type*} [NormedAddCommGroup A] [NormedSpace ℝ A]
+    (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
+    (hdist : ∀ y ∈ e.source, ∀ z ∈ e.source,
+      (riemannianEDistOf g y z).toReal = Metric.coneDistance (e y) (e z))
+    (phi : PartialDiffeomorph (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I (A × ℝ) M ∞)
+    {K : Set A} {J : Set ℝ} (hK : IsOpen K) (h0J : (0 : ℝ) ∈ J)
+    (hsource : phi.source = K ×ˢ J) (htarget : phi.target ⊆ e.source)
+    (r0 : ℝ) (hr0 : 0 < r0) (hpos : ∀ t ∈ J, 0 < r0 + t)
+    (hecurve : ∀ k ∈ K, ∀ t ∈ J, e (phi (k, t)) = (r0 + t, (e (phi (k, 0))).2))
+    {k : A} (hk : k ∈ K) {t : ℝ} (ht : t ∈ J) (u v : A) :
+    g.inner (phi (k, t))
+      (mfderiv (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I phi (k, t) (u, 0))
+      (mfderiv (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I phi (k, t) (v, 0)) =
+      ((r0 + t) / r0) ^ 2 * g.inner (phi (k, 0))
+        (mfderiv (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (u, 0))
+        (mfderiv (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (v, 0)) := by
+  have hmem (l : A) (hl : l ∈ K) (q : ℝ) (hq : q ∈ J) : phi (l, q) ∈ e.source :=
+    htarget (phi.map_source (hsource.symm ▸ ⟨hl, hq⟩))
+  have hmd (q : ℝ) (hq : q ∈ J) : MDifferentiableAt 𝓘(ℝ, A) I (fun l => phi (l, q)) k :=
+    (phi.mdifferentiableAt (by simp) (hsource.symm ▸ ⟨hk, hq⟩)).comp k
+      (mdifferentiableAt_id.prodMk mdifferentiableAt_const)
+  have hslice (q : ℝ) (hq : q ∈ J) (w : A) :
+      mfderiv 𝓘(ℝ, A) I (fun l => phi (l, q)) k w =
+        mfderiv (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) I phi (k, q) (w, 0) := by
+    have h := mfderiv_comp k (phi.mdifferentiableAt (by simp) (hsource.symm ▸ ⟨hk, hq⟩))
+      (mdifferentiableAt_id.prodMk mdifferentiableAt_const :
+        MDifferentiableAt 𝓘(ℝ, A) (𝓘(ℝ, A).prod 𝓘(ℝ, ℝ)) (fun l => (l, q)) k)
+    simp only [id_eq] at h
+    rw [mfderiv_prod_left] at h
+    exact congrArg (fun D : A →L[ℝ] E => D w) h
+  let c := (r0 + t) / r0
+  have hc : 0 < c := div_pos (hpos t ht) hr0
+  have hscale (l : A) (hl : l ∈ K) : e (phi (l, t)) =
+      (c * (e (phi (l, 0))).1, (e (phi (l, 0))).2) := by
+    have hr : (e (phi (l, 0))).1 = r0 := by
+      simpa only [add_zero] using congrArg Prod.fst (hecurve l hl 0 h0J)
+    rw [hecurve l hl t ht, hr]
+    change (r0 + t, _) = ((r0 + t) / r0 * r0, _)
+    rw [div_mul_cancel₀ _ hr0.ne']
+  have hdist' : ∀ᶠ l in 𝓝 k, (riemannianEDistOf g (phi (k, t)) (phi (l, t))).toReal =
+      c * (riemannianEDistOf g (phi (k, 0)) (phi (l, 0))).toReal := by
+    filter_upwards [hK.mem_nhds hk] with l hl
+    rw [hdist _ (hmem k hk t ht) _ (hmem l hl t ht), hscale k hk, hscale l hl,
+      Metric.coneDistance_radial_mul, abs_of_pos hc, hdist _ (hmem k hk 0 h0J) _ (hmem l hl 0 h0J)]
+  have h := Geometry.inner_mfderiv_eq_of_local_distance_scaling g g (hmd 0 h0J) (hmd t ht) c hdist'
+    u v
+  rw [hslice t ht u, hslice t ht v, hslice 0 h0J u, hslice 0 h0J v] at h
+  exact h
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem exists_cone_metric_coordinates_of_local_riemannian_distance_cone
+    (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
+    (hpos : ∀ y ∈ e.source, 0 < (e y).1)
+    (hdist : ∀ y ∈ e.source, ∀ z ∈ e.source,
+      (riemannianEDistOf g y z).toReal = Metric.coneDistance (e y) (e z))
+    {x : M} (hx : x ∈ e.source) :
+    ∃ s : Cₛ^∞⟮I; E, TangentSpace I⟯,
+      g.inner x (s x) (s x) = 1 ∧
+      ∃ (K : Set (perpSpace g x (s x))) (J : Set ℝ)
+        (phi : PartialDiffeomorph ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I
+          (perpSpace g x (s x) × ℝ) M ∞),
+        IsOpen K ∧ (0 : perpSpace g x (s x)) ∈ K ∧ IsOpen J ∧ (0 : ℝ) ∈ J ∧
+        phi.source = K ×ˢ J ∧ phi (0, 0) = x ∧ phi.target ⊆ e.source ∧
+        (∀ t ∈ J, 0 < (e x).1 + t) ∧
+        ∀ k ∈ K, ∀ t ∈ J, ∀ (u v : perpSpace g x (s x)) (a b : ℝ),
+          g.inner (phi (k, t))
+            (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I phi (k, t) (u, a))
+            (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I phi (k, t) (v, b)) =
+            (((e x).1 + t) / (e x).1) ^ 2 * g.inner (phi (k, 0))
+              (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (u, 0))
+              (mfderiv ((perpModel g x (s x)).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (v, 0)) + a * b := by
+  let r : M → ℝ := fun y => (e y).1
+  have hr : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ r e.source :=
+    contMDiffOn_radius_of_riemannianEDistOf_cone g e hpos hdist
+  have hgrad : ContMDiffOn I (I.prod 𝓘(ℝ, E)) ∞
+      (T% fun y => gradientFun g r y) e.source := by
+    intro y hy
+    exact (gradientFun_contMDiffAt g ((hr y hy).contMDiffAt
+      (e.open_source.mem_nhds hy))).contMDiffWithinAt
+  obtain ⟨sections, hsections⟩ := exists_contMDiffSection_eqOn_nhd (ι := Unit)
+    (s := fun _ y => gradientFun g r y) (fun _ => hgrad) e.open_source hx
+  let s := sections ()
+  obtain ⟨U, hUsub, hU, hxU⟩ := mem_nhds_iff.mp
+    (inter_mem (e.open_source.mem_nhds hx) (hsections.mono fun _ hy => hy ()))
+  have hUe : U ⊆ e.source := fun y hy => (hUsub hy).1
+  have hs : ∀ y ∈ U, s y = gradientFun g r y := fun y hy => (hUsub hy).2
+  have hunit : ∀ y ∈ U, g.inner y (s y) (s y) = 1 := by
+    intro y hy
+    rw [hs y hy]
+    exact gradient_radius_normSq_eq_one_of_riemannianEDistOf_cone g e hpos hdist (hUe hy)
+  have hsne : s x ≠ 0 := by
+    intro hz
+    have h := hunit x hxU
+    simp only [hz, map_zero] at h
+    exact zero_ne_one h
+  let _ : NeZero (Module.finrank ℝ E) :=
+    ⟨ne_of_gt (Module.finrank_pos_iff_exists_ne_zero.mpr ⟨s x, hsne⟩)⟩
+  let f : M → ℝ := fun y => r y - r x
+  have hf : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ f U := (hr.mono hUe).sub contMDiffOn_const
+  have hdf : ∀ y ∈ U, ∀ v : TangentSpace I y, mvfderiv I f y v = g.inner y (s y) v := by
+    intro y hy v
+    change mvfderiv I (r - fun _ => r x) y v = _
+    rw [mvfderiv_sub (((hr y (hUe hy)).contMDiffAt
+      (e.open_source.mem_nhds (hUe hy))).mdifferentiableAt (by simp)) mdifferentiableAt_const,
+      mvfderiv_const, sub_zero, hs y hy, inner_gradientFun]
+  obtain ⟨K, J, phi, hK, h0K, hJ, h0J, hsource, hcenter, htarget, hconn,
+      hfphi, hrad, _⟩ := exists_local_flow_coordinates_of_unit_gradient g x hU hxU s hunit f
+        (sub_self _) hf hdf
+  let A := perpSpace g x (s x)
+  let L := perpModel g x (s x)
+  have hmem (k : A) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) : phi (k, t) ∈ U :=
+    htarget (phi.map_source (hsource.symm ▸ ⟨hk, ht⟩))
+  have hradius (k : A) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) : r (phi (k, t)) = r x + t := by
+    have h := hfphi k hk t ht
+    change r (phi (k, t)) - r x = t at h
+    linarith
+  have hcurve (k : A) (hk : k ∈ K) : ContMDiffOn 𝓘(ℝ, ℝ) I 1 (fun t => phi (k, t)) J := by
+    intro t ht
+    have hkt : (k, t) ∈ phi.source := hsource.symm ▸ ⟨hk, ht⟩
+    have hpt := (phi.contMDiffOn_toFun _ hkt).contMDiffAt
+      (phi.open_source.mem_nhds hkt)
+    exact ((hpt.comp t (contMDiffAt_const.prodMk contMDiffAt_id)).of_le (by simp)).contMDiffWithinAt
+  have hvelocity (k : A) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) :
+      mfderiv 𝓘(ℝ, ℝ) I (fun q => phi (k, q)) t 1 = gradientFun g r (phi (k, t)) := by
+    have h := mfderiv_comp t (phi.mdifferentiableAt (by simp) (hsource.symm ▸ ⟨hk, ht⟩))
+      (mdifferentiableAt_const.prodMk mdifferentiableAt_id :
+        MDifferentiableAt 𝓘(ℝ, ℝ) (L.prod 𝓘(ℝ, ℝ)) (fun q => (k, q)) t)
+    rw [mfderiv_prod_right] at h
+    have hh := congrArg (fun D : ℝ →L[ℝ] E => D 1) h
+    change mfderiv 𝓘(ℝ, ℝ) I (fun q => phi (k, q)) t 1 =
+      mfderiv (L.prod 𝓘(ℝ, ℝ)) I phi (k, t) (0, 1) at hh
+    rw [hh, hrad k hk t ht 1, one_smul, hs _ (hmem k hk t ht)]
+  have hecurve (k : A) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) :
+      e (phi (k, t)) = (r x + t, (e (phi (k, 0))).2) := by
+    have h := radial_image_of_gradient_curve_of_riemannianEDistOf_cone
+      g e hpos hdist hJ hconn (hcurve k hk) (fun t ht => hUe (hmem k hk t ht))
+      (hvelocity k hk) h0J ht
+    change e (phi (k, t)) = (r (phi (k, 0)) + (t - 0), _) at h
+    simpa only [sub_zero, hradius k hk 0 h0J, add_zero] using h
+  have hrpos (t : ℝ) (ht : t ∈ J) : 0 < r x + t := by
+    rw [← hradius 0 h0K t ht]
+    exact hpos _ (hUe (hmem 0 h0K t ht))
+  have hang (k : A) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) (u v : A) :=
+    inner_angular_of_distance_cone_coordinates g e hdist phi hK h0J hsource
+      (htarget.trans hUe) (r x) (hpos x hx) hrpos hecurve hk ht u v
+  have hmixed (k : A) (hk : k ∈ K) (t : ℝ) (ht : t ∈ J) (u : A) (a b : ℝ) :
+      g.inner (phi (k, t))
+        (mfderiv (L.prod 𝓘(ℝ, ℝ)) I phi (k, t) (0, a))
+        (mfderiv (L.prod 𝓘(ℝ, ℝ)) I phi (k, t) (u, b)) = a * b :=
+    inner_mfderiv_radial_of_gradient_coordinate g s f phi hK hJ (by rw [hsource])
+      ((hf.mdifferentiableOn (by simp)).mono htarget) (fun y hy => hdf y (htarget hy)) hfphi hrad
+        hk ht u a b
+  refine ⟨s, hunit x hxU, K, J, phi, hK, h0K, hJ, h0J, hsource, hcenter, htarget.trans hUe, ?_, ?_⟩
+  · intro t ht
+    exact hrpos t ht
+  · intro k hk t ht u v a b
+    exact bilinear_form_prod_eq_of_radial_pairing (g.inner (phi (k, t)))
+      (mfderiv (L.prod 𝓘(ℝ, ℝ)) I phi (k, t)) _ (g.symm _) (hmixed k hk t ht) (hang k hk t ht) u v
+        a b
+
+end DifferentialGeometry.Geometry.Riemannian
+
+end
+
+end
+
+section
+
+
+noncomputable section
+
+open scoped Manifold ContDiff
+
+namespace DifferentialGeometry
+
+variable {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+  {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type*} [TopologicalSpace H] {J : ModelWithCorners ℝ E H}
+  {S : Type*} [TopologicalSpace S] [ChartedSpace H S]
+
+private def radialSliceTarget (K : TopologicalSpace.Opens P) :
+    TopologicalSpace.Opens (P × ℝ) :=
+  ⟨(K : Set P) ×ˢ Set.univ, K.isOpen.prod isOpen_univ⟩
+
+private def radialSliceCoordinate (K : TopologicalSpace.Opens P)
+    (f : Diffeomorph J 𝓘(ℝ, P) S K ∞) (r0 : ℝ) :
+    Diffeomorph (𝓘(ℝ, ℝ).prod J) (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ))
+      (ℝ × S) (radialSliceTarget K) ∞ where
+  toFun z := ⟨((f z.2).1, z.1 - r0), (f z.2).2, Set.mem_univ _⟩
+  invFun z := (r0 + z.1.2, f.symm ⟨z.1.1, z.2.1⟩)
+  left_inv z := by
+    apply Prod.ext
+    · change r0 + (z.1 - r0) = z.1
+      ring
+    · change f.symm (f z.2) = z.2
+      exact f.symm_apply_apply z.2
+  right_inv z := by
+    apply Subtype.ext
+    apply Prod.ext
+    · change (f (f.symm ⟨z.1.1, z.2.1⟩)).1 = z.1.1
+      exact congrArg Subtype.val (f.apply_symm_apply ⟨z.1.1, z.2.1⟩)
+    · change r0 + z.1.2 - r0 = z.1.2
+      ring
+  contMDiff_toFun := by
+    intro z
+    change ContMDiffAt (𝓘(ℝ, ℝ).prod J) (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) ∞
+      (fun q : ℝ × S =>
+        (⟨((f q.2).1, q.1 - r0), (f q.2).2, Set.mem_univ _⟩ : radialSliceTarget K)) z
+    have hf : ContMDiffAt (𝓘(ℝ, ℝ).prod J) 𝓘(ℝ, P) ∞
+        (fun q : ℝ × S => (f q.2).1) z :=
+      ((contMDiff_subtype_val (I := 𝓘(ℝ, P)) (U := K)).contMDiffAt).comp z
+        (f.contMDiffAt.comp z contMDiffAt_snd)
+    exact codRestr_contMDiffAt (V := radialSliceTarget K)
+      (fun q : ℝ × S => ⟨(f q.2).2, Set.mem_univ _⟩)
+      (hf.prodMk (contMDiffAt_fst.sub contMDiffAt_const))
+  contMDiff_invFun := by
+    intro z
+    have hv : ContMDiffAt (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ))
+        (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) ∞
+        (Subtype.val : radialSliceTarget K → P × ℝ) z :=
+      (contMDiff_subtype_val
+        (I := 𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) (U := radialSliceTarget K)).contMDiffAt
+    have hp : ContMDiffAt (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, P) ∞
+        (fun q : radialSliceTarget K => (⟨q.1.1, q.2.1⟩ : K)) z :=
+      codRestr_contMDiffAt (fun q : radialSliceTarget K => q.2.1)
+        (contMDiffAt_fst.comp z hv)
+    have ht : ContMDiffAt (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
+        (fun q : radialSliceTarget K => q.1.2) z :=
+      contMDiffAt_snd.comp z hv
+    exact (contMDiffAt_const.add ht).prodMk (f.symm.contMDiffAt.comp z hp)
+
+private def radialSlicePartialCoordinate
+    (r0 : ℝ) (K : TopologicalSpace.Opens P) [Nonempty K]
+    (f : Diffeomorph J 𝓘(ℝ, P) S K ∞) :
+    PartialDiffeomorph (𝓘(ℝ, ℝ).prod J) (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ))
+      (ℝ × S) (P × ℝ) ∞ := by
+  let k : K := Classical.choice inferInstance
+  let : Nonempty (radialSliceTarget K) :=
+    ⟨⟨(k.1, 0), k.2, Set.mem_univ _⟩⟩
+  exact PartialDiffeomorph.liftTargetOpen
+    (radialSliceCoordinate K f r0).toPartialDiffeomorph rfl
+
+end DifferentialGeometry
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+open TopologicalSpace Set
+
+universe u uE uH v
+
+variable {P : Type*} [NormedAddCommGroup P] [NormedSpace ℝ P]
+  {m : ℕ} {S : Type v} [TopologicalSpace S]
+  [ChartedSpace (EuclideanSpace ℝ (Fin m)) S] [IsManifold (𝓡 m) ∞ S]
+  [T2Space S] [SigmaCompactSpace S]
+  {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
+  {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+
+private theorem cone_chart_of_rectangular_metric_of_surface_diffeomorph
+    (g : SmoothRiemannianMetric I M) (K : Opens P) [Nonempty K]
+    (f : Diffeomorph (𝓡 m) 𝓘(ℝ, P) S K ∞) (J : Opens ℝ) (hJ : 0 ∈ J)
+    (r0 : ℝ) (hr0 : 0 < r0) (hpos : ∀ t ∈ J, 0 < r0 + t)
+    (phi : PartialDiffeomorph (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I (P × ℝ) M ∞)
+    (hsource : phi.source = (K : Set P) ×ˢ (J : Set ℝ))
+    (hmetric : ∀ k ∈ K, ∀ t ∈ J, ∀ (u v : P) (a b : ℝ),
+      g.inner (phi (k, t))
+        (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, t) (u, a))
+        (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, t) (v, b)) =
+      ((r0 + t) / r0) ^ 2 *
+        g.inner (phi (k, 0))
+          (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (u, 0))
+          (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (v, 0)) + a * b) :
+    Nonempty (ConeChart.{u, uE, uH, v} m g phi.target) := by
+  let q : S → P := fun s => (f s).1
+  have hq : ContMDiff (𝓡 m) 𝓘(ℝ, P) ∞ q :=
+    contMDiff_subtype_val.comp f.contMDiff
+  have hqder (s : S) : mfderiv (𝓡 m) 𝓘(ℝ, P) q s = mfderiv (𝓡 m) 𝓘(ℝ, P) f s := by
+    have hd := mfderiv_comp s
+      ((contMDiff_subtype_val (I := 𝓘(ℝ, P)) (U := K)).contMDiffAt.mdifferentiableAt
+        (by decide : (∞ : WithTop ℕ∞) ≠ 0))
+      (f.mdifferentiable (by decide) s)
+    rw [mfderiv_subtype_val] at hd
+    exact hd
+  have hqinj (s : S) : Function.Injective (mfderiv (𝓡 m) 𝓘(ℝ, P) q s) := by
+    rw [hqder, ← f.mfderivToContinuousLinearEquiv_coe (by decide)]
+    exact (f.mfderivToContinuousLinearEquiv (by decide) s).injective
+  have hs0 (s : S) : (q s, (0 : ℝ)) ∈ phi.source := by
+    rw [hsource]
+    exact ⟨(f s).2, hJ⟩
+  let Y : S → M := fun s => phi (q s, 0)
+  have hY : ContMDiff (𝓡 m) I ∞ Y := by
+    intro s
+    exact (phi.contMDiffOn.contMDiffAt (phi.open_source.mem_nhds (hs0 s))).comp s
+      ((hq.prodMk contMDiff_const).contMDiffAt)
+  have hYder (s : S) (v : TangentSpace (𝓡 m) s) :
+      mfderiv (𝓡 m) I Y s v =
+        mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (q s, 0)
+          (mfderiv (𝓡 m) 𝓘(ℝ, P) q s v, 0) := by
+    change mfderiv (𝓡 m) I (phi ∘ (fun s => (q s, (0 : ℝ)))) s v = _
+    rw [mfderiv_comp s (phi.mdifferentiableAt (by decide) (hs0 s))
+      ((hq.mdifferentiable (by decide) s).prodMk mdifferentiableAt_const),
+      mfderiv_prodMk (hq.mdifferentiable (by decide) s) mdifferentiableAt_const,
+      mfderiv_const]
+    rfl
+  have himm (s : S) : Function.Injective (mfderiv (𝓡 m) I Y s) := by
+    intro v w hvw
+    rw [hYder, hYder] at hvw
+    have hlocal := phi.isLocalDiffeomorphAt _ _ _ (hs0 s)
+    have hi : Function.Injective
+        (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (q s, 0)) := by
+      rw [← hlocal.mfderivToContinuousLinearEquiv_coe (by decide)]
+      exact (hlocal.mfderivToContinuousLinearEquiv (by decide)).injective
+    exact hqinj s (congrArg Prod.fst (hi hvw))
+  let h : SmoothRiemannianMetric (𝓡 m) S :=
+    scaleMetric ((r0 ^ 2)⁻¹) (inv_pos.mpr (sq_pos_of_pos hr0)) (g.pullback Y hY himm)
+  let A := DifferentialGeometry.radialSlicePartialCoordinate r0 K f
+  have hAsource : A.source = Set.univ := rfl
+  have hAder (z : ℝ × S) (v : ℝ × EuclideanSpace ℝ (Fin m)) :
+      mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) A z v =
+        (mfderiv (𝓡 m) 𝓘(ℝ, P) q z.2 v.2, v.1) := by
+    change mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ))
+      (fun z : ℝ × S => (q z.2, z.1 - r0)) z v = _
+    erw [mfderiv_prodMk (f := fun z : ℝ × S => q z.2)
+      (g := fun z : ℝ × S => z.1 - r0)
+      ((hq.mdifferentiable (by decide) z.2).comp z mdifferentiableAt_snd)
+      (mdifferentiableAt_fst.sub mdifferentiableAt_const)]
+    erw [mfderiv_comp z (hq.mdifferentiable (by decide) z.2) mdifferentiableAt_snd]
+    change ((mfderiv (𝓡 m) 𝓘(ℝ, P) q z.2).comp
+        (mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) (𝓡 m) Prod.snd z) v,
+      mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) 𝓘(ℝ, ℝ)
+        (Prod.fst - fun _ : ℝ × S => r0) z v) = _
+    erw [mfderiv_snd, mfderiv_sub mdifferentiableAt_fst mdifferentiableAt_const,
+      mfderiv_fst, mfderiv_const, sub_zero]
+    rfl
+  let psi := A.trans phi
+  have hpsisource (z : ℝ × S) : z ∈ psi.source ↔ (q z.2, z.1 - r0) ∈ phi.source := by
+    change (z ∈ A.source ∧ A z ∈ phi.source) ↔ _
+    rw [hAsource]
+    exact and_iff_right (Set.mem_univ z)
+  have hpsitarget : psi.target = phi.target := by
+    change phi.target ∩ phi.symm ⁻¹' A.target = phi.target
+    apply Set.inter_eq_left.mpr
+    intro y hy
+    have hs := phi.map_target' hy
+    rw [hsource] at hs
+    exact ⟨hs.1, Set.mem_univ _⟩
+  have hpsider (z : ℝ × S) (hz : z ∈ psi.source)
+      (v : ℝ × EuclideanSpace ℝ (Fin m)) :
+      mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I psi z v =
+        mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (q z.2, z.1 - r0)
+          (mfderiv (𝓡 m) 𝓘(ℝ, P) q z.2 v.2, v.1) := by
+    change mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I (phi ∘ A) z v = _
+    have ha : z ∈ A.source := by rw [hAsource]; exact Set.mem_univ z
+    have hphiAt : MDifferentiableAt (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (A z) :=
+      phi.mdifferentiableAt (by decide) hz.2
+    erw [mfderiv_comp (f := (A : ℝ × S → P × ℝ)) (g := (phi : P × ℝ → M))
+      z hphiAt (A.mdifferentiableAt (by decide) ha), ContinuousLinearMap.comp_apply, hAder]
+    rfl
+  refine ⟨{ surface := S
+            metric := h
+            map := psi
+            positive_radius := ?_
+            target_eq := hpsitarget
+            radial_metric := ?_ }⟩
+  · intro z hz
+    have hs := (hpsisource z).mp hz
+    rw [hsource] at hs
+    have hp := hpos (z.1 - r0) hs.2
+    linarith
+  · intro z hz v w
+    change ℝ × EuclideanSpace ℝ (Fin m) at v w
+    rw [hpsider z hz v, hpsider z hz w]
+    change g.inner (phi (q z.2, z.1 - r0)) _ _ = _
+    have hs := (hpsisource z).mp hz
+    rw [hsource] at hs
+    erw [hmetric (q z.2) hs.1 (z.1 - r0) hs.2
+      (mfderiv (𝓡 m) 𝓘(ℝ, P) q z.2 v.2) (mfderiv (𝓡 m) 𝓘(ℝ, P) q z.2 w.2) v.1 w.1]
+    dsimp only [h]
+    erw [scaleMetric_inner (I := (𝓡 m)) ((r0 ^ 2)⁻¹)
+      (inv_pos.mpr (sq_pos_of_pos hr0)) (g.pullback Y hY himm) z.2 v.2 w.2]
+    erw [SmoothRiemannianMetric.pullback_inner (I := (𝓡 m)) (J := I)
+      g Y hY himm z.2 v.2 w.2]
+    erw [hYder z.2 v.2, hYder z.2 w.2]
+    change ((r0 + (z.1 - r0)) / r0) ^ 2 *
+        g.inner (phi (q z.2, 0)) _ _ + v.1 * w.1 =
+      v.1 * w.1 + z.1 ^ 2 * ((r0 ^ 2)⁻¹ * g.inner (phi (q z.2, 0)) _ _)
+    field_simp [ne_of_gt hr0]
+    ring
+
+theorem cone_chart_of_rectangular_metric
+    [FiniteDimensional ℝ P] (hdim : Module.finrank ℝ P = m)
+    (g : SmoothRiemannianMetric I M) (K : Opens P) [Nonempty K]
+    (J : Opens ℝ) (hJ : 0 ∈ J)
+    (r0 : ℝ) (hr0 : 0 < r0) (hpos : ∀ t ∈ J, 0 < r0 + t)
+    (phi : PartialDiffeomorph (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I (P × ℝ) M ∞)
+    (hsource : phi.source = (K : Set P) ×ˢ (J : Set ℝ))
+    (hmetric : ∀ k ∈ K, ∀ t ∈ J, ∀ (u v : P) (a b : ℝ),
+      g.inner (phi (k, t))
+        (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, t) (u, a))
+        (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, t) (v, b)) =
+      ((r0 + t) / r0) ^ 2 *
+        g.inner (phi (k, 0))
+          (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (u, 0))
+          (mfderiv (𝓘(ℝ, P).prod 𝓘(ℝ, ℝ)) I phi (k, 0) (v, 0)) + a * b) :
+    Nonempty (ConeChart.{u, uE, uH, v} m g phi.target) := by
+  let e : EuclideanSpace ℝ (Fin m) ≃L[ℝ] P :=
+    ContinuousLinearEquiv.ofFinrankEq (by rw [finrank_euclideanSpace_fin, hdim])
+  let K' : Opens (EuclideanSpace ℝ (Fin m)) :=
+    ⟨e ⁻¹' (K : Set P), K.isOpen.preimage e.continuous⟩
+  let S := ULift.{v} K'
+  let : ChartedSpace (EuclideanSpace ℝ (Fin m)) S :=
+    DifferentialGeometry.Topology.uliftChartedSpace (EuclideanSpace ℝ (Fin m)) K'
+  let : IsManifold (𝓡 m) ∞ S := DifferentialGeometry.Topology.isManifold_ulift (𝓡 m) K'
+  let : LocallyCompactSpace K' := K'.isOpen.locallyCompactSpace
+  let : SigmaCompactSpace K' := inferInstance
+  let f : Diffeomorph (𝓡 m) 𝓘(ℝ, P) S K ∞ :=
+    (DifferentialGeometry.Topology.uliftDiffeomorph (𝓡 m) K').symm.trans
+      (DifferentialGeometry.Manifold.Diffeomorph.preimage e.toDiffeomorph K)
+  exact cone_chart_of_rectangular_metric_of_surface_diffeomorph g K f J hJ r0 hr0 hpos phi hsource
+    hmetric
+
+end DifferentialGeometry.Geometry.Riemannian
+
+end
+
+end
+
+section
+
+noncomputable section
+open Set
+open scoped Topology Manifold ContDiff
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
+open DifferentialGeometry.Geometry.Connection
+
+universe u uE uH v
+
+variable {E : Type uE} [NormedAddCommGroup E] [NormedSpace ℝ E]
+  [FiniteDimensional ℝ E]
+  {H : Type uH} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
+  {M : Type u} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+  [T2Space M] [SigmaCompactSpace M] {Y : Type*} [PseudoMetricSpace Y] {m : ℕ}
+
+theorem exists_cone_chart_of_riemannianEDistOf_cone
+    (g : SmoothRiemannianMetric I M) (e : OpenPartialHomeomorph M (ℝ × Y))
+    (hpos : ∀ y ∈ e.source, 0 < (e y).1)
+    (hdist : ∀ y ∈ e.source, ∀ z ∈ e.source,
+      (riemannianEDistOf g y z).toReal = Metric.coneDistance (e y) (e z))
+    (hdim : Module.finrank ℝ E = m + 1) {x : M} (hx : x ∈ e.source) :
+    ∃ V : Set M, IsOpen V ∧ x ∈ V ∧ V ⊆ e.source ∧ Nonempty (ConeChart.{u, uE, uH, v} m g V) := by
+  obtain ⟨s, hunit, K, J, phi, hK, h0K, hJ, h0J, hsource, hcenter, htarget, hpositive, hmetric⟩ :=
+    exists_cone_metric_coordinates_of_local_riemannian_distance_cone g e hpos hdist hx
+  have hsne : s x ≠ 0 := by
+    intro hz
+    simp only [hz, map_zero] at hunit
+    exact zero_ne_one hunit
+  have hperp : Module.finrank ℝ (perpSpace g x (s x)) = m := by
+    rw [finrank_perpSpace g x (s x) hsne, hdim]
+    omega
+  let Kopen : TopologicalSpace.Opens (perpSpace g x (s x)) := ⟨K, hK⟩
+  let : Nonempty Kopen := ⟨⟨0, h0K⟩⟩
+  refine ⟨phi.target, phi.open_target, ?_, htarget, ?_⟩
+  · have hm : phi (0, 0) ∈ phi.target := phi.map_source (hsource.symm ▸ ⟨h0K, h0J⟩)
+    rwa [hcenter] at hm
+  · exact cone_chart_of_rectangular_metric hperp g Kopen ⟨J, hJ⟩ h0J
+      (e x).1 (hpos x hx) hpositive phi hsource hmetric
+
+end DifferentialGeometry.Geometry.Riemannian
+
+end
+
+end
+
+noncomputable section
+open scoped Manifold ContDiff ENNReal
+
+namespace DifferentialGeometry.Geometry.Riemannian
+
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E]
   {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
   {M : Type*} [MetricSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-  [SigmaCompactSpace M] {m : ℕ}
-attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
-  Tensor0SBundle.tangentSpaceNormedSpace
+  [SigmaCompactSpace M] {Y : Type*} [PseudoMetricSpace Y] {m : ℕ}
 
-private def levelDomain
-    (φ : PartialDiffeomorph I (𝓘(ℝ, ℝ).prod (𝓡 m)) M (ℝ × EuclideanSpace ℝ (Fin m)) ∞)
-    (a : ℝ) : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin m)) :=
-  ⟨{u | (a, u) ∈ φ.target}, φ.open_target.preimage (continuous_const.prodMk continuous_id)⟩
-
-private def levelMap
-    (φ : PartialDiffeomorph I (𝓘(ℝ, ℝ).prod (𝓡 m)) M (ℝ × EuclideanSpace ℝ (Fin m)) ∞)
-    (a : ℝ) : levelDomain φ a → M := fun u => φ.symm (a, u)
-
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [SigmaCompactSpace M] in
-private theorem levelMap_smooth
-    (φ : PartialDiffeomorph I (𝓘(ℝ, ℝ).prod (𝓡 m)) M (ℝ × EuclideanSpace ℝ (Fin m)) ∞)
-    (a : ℝ) : ContMDiff (𝓡 m) I ∞ (levelMap φ a) := by
-  apply contMDiffOn_univ.mp
-  exact φ.symm.contMDiffOn.comp
-    (contMDiff_const.prodMk contMDiff_subtype_val).contMDiffOn (fun u _ => u.property)
-
-omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [SigmaCompactSpace M] in
-private theorem levelMap_mfderiv_injective
-    (φ : PartialDiffeomorph I (𝓘(ℝ, ℝ).prod (𝓡 m)) M (ℝ × EuclideanSpace ℝ (Fin m)) ∞)
-    (a : ℝ) (u : levelDomain φ a) : Function.Injective (mfderiv (𝓡 m) I (levelMap φ a) u) := by
-  let f := levelMap φ a
-  have hf : ContMDiff (𝓡 m) I ∞ f := levelMap_smooth φ a
-  have hback : MDifferentiableAt I (𝓡 m) (fun y => (φ y).2) (f u) :=
-    ((φ.contMDiffOn.contMDiffAt (φ.open_source.mem_nhds (φ.map_target u.property))).snd).mdifferentiableAt (by decide)
-  have heq : (fun y => (φ y).2) ∘ f = (Subtype.val : levelDomain φ a → EuclideanSpace ℝ (Fin m)) := by
-    funext z
-    exact congrArg Prod.snd (φ.right_inv z.property)
-  have hderiv := mfderiv_comp u hback (hf.mdifferentiable (by decide) u)
-  rw [heq, mfderiv_subtype_val] at hderiv
-  intro v w hvw
-  have hv := DFunLike.congr_fun hderiv v
-  have hw := DFunLike.congr_fun hderiv w
-  change v = (mfderiv I (𝓡 m) (fun y => (φ y).2) (f u)) (mfderiv (𝓡 m) I f u v) at hv
-  change w = (mfderiv I (𝓡 m) (fun y => (φ y).2) (f u)) (mfderiv (𝓡 m) I f u w) at hw
-  exact hv.trans ((congrArg (mfderiv I (𝓡 m) (fun y => (φ y).2) (f u)) hvw).trans hw.symm)
-
-variable {Y : Type*} [PseudoMetricSpace Y] [NeZero (Module.finrank ℝ E)]
-
-private theorem radial_velocity
-    (g : SmoothRiemannianMetric I M)
-    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
-    (e : OpenPartialHomeomorph M (ℝ × Y))
-    (hpositive : ∀ z ∈ e.target, 0 < z.1)
-    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source, dist x y = Metric.coneDistance (e x) (e y))
-    (r : ℝ) (u : Y) (hu : (r, u) ∈ e.target)
-    (hc : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun t : ℝ => e.symm (t, u)) r) :
-    (mfderiv 𝓘(ℝ, ℝ) I (fun t : ℝ => e.symm (t, u)) r 1 : E) =
-      gradientFun g (fun x => (e x).1) (e.symm (r, u)) := by
-  have hgrad := gradient_radius_eq_radial_velocity_of_coneDistance
-    g hmetric e hpositive hdist (e.map_target hu)
-  rw [e.right_inv hu] at hgrad
-  have hs := mfderiv_comp_add_apply_one (I := I) 0 r (by simpa only [zero_add] using hc)
-  rw [zero_add] at hs
-  rw [show (fun s : ℝ => e.symm (r + s, u)) = (fun s : ℝ => e.symm (s + r, u)) by
-    funext s; rw [add_comm r s]] at hgrad
-  exact hs.symm.trans hgrad.symm
-
-
-variable {S : Type*} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin m)) S]
-  [IsManifold (𝓡 m) ∞ S]
-
-private def radialMap (e : OpenPartialHomeomorph M (ℝ × Y)) (ι : S → M) : ℝ × S → M :=
-  fun z => e.symm (z.1, (e (ι z.2)).2)
-
-omit [IsManifold (𝓡 m) ∞ S] in
-private theorem radial_map_tangential_metric
-    (g : SmoothRiemannianMetric I M)
-    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
-    (e : OpenPartialHomeomorph M (ℝ × Y))
-    (hpositive : ∀ z ∈ e.target, 0 < z.1)
-    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source, dist x y = Metric.coneDistance (e x) (e y))
-    (ι : S → M) (hι : ContMDiff (𝓡 m) I ∞ ι)
-    (hsource : ∀ u, ι u ∈ e.source) (a : ℝ) (ha : 0 < a)
-    (hlevel : ∀ u, (e (ι u)).1 = a) (u₀ : S) :
-    ∃ W : Set (ℝ × S), IsOpen W ∧ (a, u₀) ∈ W ∧ W ⊆ Ioi 0 ×ˢ univ ∧
-      ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓡 m)) I ∞ (radialMap e ι) W ∧
-      (∀ z ∈ W, (z.1, (e (ι z.2)).2) ∈ e.target) ∧
-      ∀ z ∈ W, ∀ v w : TangentSpace (𝓡 m) z.2,
-        g.inner (radialMap e ι z)
-          (mfderiv (𝓡 m) I (fun u => radialMap e ι (z.1, u)) z.2 v)
-          (mfderiv (𝓡 m) I (fun u => radialMap e ι (z.1, u)) z.2 w) =
-            (z.1 / a) ^ 2 * g.inner (ι z.2)
-              (mfderiv (𝓡 m) I ι z.2 v) (mfderiv (𝓡 m) I ι z.2 w) := by
-  obtain ⟨Ω, hΩ, hΩbase, hΩsource, hΩtarget, hD, hmetricD⟩ :=
-    exists_smooth_dilation_of_coneDistance g hmetric e hpositive hdist (hsource u₀)
-  let P : ℝ × S → ℝ × M := fun z => (z.1 / a, ι z.2)
-  have hP : ContMDiff (𝓘(ℝ, ℝ).prod (𝓡 m)) (𝓘(ℝ, ℝ).prod I) ∞ P :=
-    (contMDiff_fst.div_const a).prodMk (hι.comp contMDiff_snd)
-  let W := P ⁻¹' Ω
-  have hW : IsOpen W := hΩ.preimage hP.continuous
-  have hbase : (a, u₀) ∈ W := by
-    change (a / a, ι u₀) ∈ Ω
-    rwa [div_self ha.ne']
-  have hformula (z : ℝ × S) : (z.1 / a * (e (ι z.2)).1, (e (ι z.2)).2) =
-      (z.1, (e (ι z.2)).2) := by
-    rw [hlevel, div_mul_cancel₀ _ ha.ne']
-  have heq : (fun z : ℝ × M => e.symm (z.1 * (e z.2).1, (e z.2).2)) ∘ P =
-      radialMap e ι := by
-    funext z
-    change e.symm (z.1 / a * (e (ι z.2)).1, (e (ι z.2)).2) = _
-    rw [hformula]
-    rfl
-  have hH : ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓡 m)) I ∞ (radialMap e ι) W := by
-    rw [← heq]
-    exact hD.comp hP.contMDiffOn (fun z hz => hz)
-  have htarget (z : ℝ × S) (hz : z ∈ W) : (z.1, (e (ι z.2)).2) ∈ e.target := by
-    have h := hΩtarget hz
-    change (z.1 / a * (e (ι z.2)).1, (e (ι z.2)).2) ∈ e.target at h
-    rwa [hformula] at h
-  refine ⟨W, hW, hbase, ?_, hH, htarget, ?_⟩
-  · intro z hz
-    exact ⟨(div_pos_iff_of_pos_right ha).mp (hΩsource hz).1, mem_univ _⟩
-  · intro z hz v w
-    let D : M → M := fun x => e.symm (z.1 / a * (e x).1, (e x).2)
-    have hDdiff : MDifferentiableAt I I D (ι z.2) :=
-      ((hD.contMDiffAt (hΩ.mem_nhds hz)).comp (ι z.2)
-        (contMDiffAt_const.prodMk contMDiffAt_id)).mdifferentiableAt (by decide)
-    have hcomp : (fun u => radialMap e ι (z.1, u)) = D ∘ ι := by
-      funext u
-      change e.symm (z.1, (e (ι u)).2) = e.symm (z.1 / a * (e (ι u)).1, (e (ι u)).2)
-      rw [hlevel, div_mul_cancel₀ _ ha.ne']
-    rw [hcomp, mfderiv_comp z.2 hDdiff (hι.mdifferentiable (by decide) z.2)]
-    have h := hmetricD (P z) hz (mfderiv (𝓡 m) I ι z.2 v) (mfderiv (𝓡 m) I ι z.2 w)
-    dsimp only [P] at h
-    erw [hlevel, div_mul_cancel₀ _ ha.ne'] at h
-    exact h
-
-
-omit [IsManifold (𝓡 m) ∞ S] in
-private theorem radial_map_metric
-    (g : SmoothRiemannianMetric I M)
-    (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
-    (e : OpenPartialHomeomorph M (ℝ × Y))
-    (hpositive : ∀ z ∈ e.target, 0 < z.1)
-    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source, dist x y = Metric.coneDistance (e x) (e y))
-    (ι : S → M) (hι : ContMDiff (𝓡 m) I ∞ ι)
-    (hsource : ∀ u, ι u ∈ e.source) (a : ℝ) (ha : 0 < a)
-    (hlevel : ∀ u, (e (ι u)).1 = a) (u₀ : S) :
-    ∃ W : Set (ℝ × S), IsOpen W ∧ (a, u₀) ∈ W ∧ W ⊆ Ioi 0 ×ˢ univ ∧
-      ContMDiffOn (𝓘(ℝ, ℝ).prod (𝓡 m)) I ∞ (radialMap e ι) W ∧
-      (∀ z ∈ W, (z.1, (e (ι z.2)).2) ∈ e.target) ∧
-      ∀ z ∈ W, ∀ v w : TangentSpace (𝓘(ℝ, ℝ).prod (𝓡 m)) z,
-        g.inner (radialMap e ι z)
-          (mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I (radialMap e ι) z v)
-          (mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I (radialMap e ι) z w) =
-            v.1 * w.1 + (z.1 / a) ^ 2 * g.inner (ι z.2)
-              (mfderiv (𝓡 m) I ι z.2 v.2) (mfderiv (𝓡 m) I ι z.2 w.2) := by
-  obtain ⟨W, hW, hbase, hpositiveW, hH, htarget, htan⟩ :=
-    radial_map_tangential_metric g hmetric e hpositive hdist ι hι hsource a ha hlevel u₀
-  refine ⟨W, hW, hbase, hpositiveW, hH, htarget, ?_⟩
-  intro z hz v w
-  let b := radialMap e ι z
-  let G : TangentSpace I b := gradientFun g (fun x => (e x).1) b
-  let A := mfderiv (𝓡 m) I (fun u => radialMap e ι (z.1, u)) z.2
-  have hb : b ∈ e.source := e.map_target (htarget z hz)
-  have hdiff := (hH.contMDiffAt (hW.mem_nhds hz)).mdifferentiableAt (by decide)
-  have hcurve : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun r => radialMap e ι (r, z.2)) z.1 :=
-    hdiff.comp (f := fun r : ℝ => (r, z.2)) (g := radialMap e ι) z.1
-      (mdifferentiableAt_id.prodMk mdifferentiableAt_const)
-  have hrad : (mfderiv 𝓘(ℝ, ℝ) I (fun r => radialMap e ι (r, z.2)) z.1 1 : E) = G :=
-    radial_velocity g hmetric e hpositive hdist z.1 (e (ι z.2)).2 (htarget z hz)
-      hcurve
-  have hr (t : ℝ) :
-      (mfderiv 𝓘(ℝ, ℝ) I (fun r => radialMap e ι (r, z.2)) z.1 t : E) = t • G := by
-    calc
-      _ = mfderiv 𝓘(ℝ, ℝ) I (fun r => radialMap e ι (r, z.2)) z.1 (t • (1 : ℝ)) := by
-        rw [smul_eq_mul, mul_one]
-      _ = t • (mfderiv 𝓘(ℝ, ℝ) I (fun r => radialMap e ι (r, z.2)) z.1 1 : E) := map_smul _ _ _
-      _ = _ := by rw [hrad]
-  have hunit : g.inner b G G = 1 :=
-    gradient_radius_normSq_eq_one_of_coneDistance g hmetric e hpositive hdist hb
-  have hρ : MDifferentiableAt I 𝓘(ℝ, ℝ) (fun x => (e x).1) b :=
-    ((contMDiffOn_radius_of_coneDistance g hmetric e hpositive hdist).contMDiffAt (e.open_source.mem_nhds hb)).mdifferentiableAt (by decide)
-  have htdiff : MDifferentiableAt (𝓡 m) I (fun u => radialMap e ι (z.1, u)) z.2 :=
-    hdiff.comp (f := fun u : S => (z.1, u)) (g := radialMap e ι) z.2
-      (mdifferentiableAt_const.prodMk mdifferentiableAt_id)
-  have heq : (fun u => (e (radialMap e ι (z.1, u))).1) =ᶠ[𝓝 z.2] fun _ => z.1 := by
-    have hev : ∀ᶠ u in 𝓝 z.2, (z.1, u) ∈ W :=
-      (continuousAt_const.prodMk continuousAt_id) (hW.mem_nhds hz)
-    filter_upwards [hev] with u hu
-    exact congrArg Prod.fst (e.right_inv (htarget (z.1, u) hu))
-  have hcross (v : TangentSpace (𝓡 m) z.2) : g.inner b G (A v) = 0 := by
-    rw [inner_gradientFun, ← mvfderiv_comp_apply z.2 hρ htdiff v]
-    simp only [Function.comp_def]
-    unfold mvfderiv
-    erw [heq.mfderiv_eq, mfderiv_const]
-    rfl
-  have hcross' (v : TangentSpace (𝓡 m) z.2) : g.inner b (A v) G = 0 :=
-    (g.symm b (A v) G).trans (hcross v)
-  have hdecomp (v : TangentSpace (𝓘(ℝ, ℝ).prod (𝓡 m)) z) :
-      (mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I (radialMap e ι) z v : E) = v.1 • G + A v.2 := by
-    rw [mfderiv_prod_eq_add_apply hdiff, hr]
-  rw [hdecomp v, hdecomp w]
-  change g.inner b (v.1 • G + A v.2) (w.1 • G + A w.2) = _
-  simp only [map_add, add_apply, map_smul, smul_apply, smul_eq_mul, hunit, mul_one]
-  erw [hcross' v.2, hcross w.2]
-  rw [htan z hz v.2 w.2]
-  ring
-
-
-omit [NeZero (Module.finrank ℝ E)] in
 theorem exists_cone_chart_of_coneDistance
     (g : SmoothRiemannianMetric I M)
     (hmetric : ∀ x y : M, edist x y = riemannianEDistOf g x y)
     (e : OpenPartialHomeomorph M (ℝ × Y))
     (hpositive : ∀ z ∈ e.target, 0 < z.1)
-    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source, dist x y = Metric.coneDistance (e x) (e y))
+    (hdist : ∀ x ∈ e.source, ∀ y ∈ e.source,
+      dist x y = Metric.coneDistance (e x) (e y))
     (hdim : Module.finrank ℝ E = m + 1) {p : M} (hp : p ∈ e.source) :
     ∃ U : Set M, p ∈ U ∧ U ⊆ e.source ∧ Nonempty (ConeChart.{_, _, _, 0} m g U) := by
-  let _ : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; omega⟩
-  obtain ⟨φ, hpφ, hφsource, hφlevel⟩ :=
-    DifferentialGeometry.Manifold.RegularLevel.exists_product_coordinates_of_contMDiffOn I hdim
-      e.open_source (contMDiffOn_radius_of_coneDistance g hmetric e hpositive hdist) hp
-      (mfderiv_radius_ne_zero_of_coneDistance g hmetric e hpositive hdist hp)
-  let a := (e p).1
-  have ha : 0 < a := hpositive (e p) (e.map_source hp)
-  let S := levelDomain φ a
-  let ι : S → M := levelMap φ a
-  have hι : ContMDiff (𝓡 m) I ∞ ι := levelMap_smooth φ a
-  have hιsource (u : S) : ι u ∈ e.source := hφsource (φ.map_target u.property)
-  have hιlevel (u : S) : (e (ι u)).1 = a := by
-    have h := hφlevel (ι u) (φ.map_target u.property)
-    have hφ := congrArg Prod.fst (φ.right_inv u.property)
-    exact h.symm.trans hφ
-  have hu₀ : (a, (φ p).2) ∈ φ.target := by
-    have heq : (a, (φ p).2) = φ p := Prod.ext (hφlevel p hpφ).symm rfl
-    rw [heq]
-    exact φ.map_source hpφ
-  let u₀ : S := ⟨(φ p).2, hu₀⟩
-  have hιbase : ι u₀ = p := by
-    change φ.symm ((e p).1, (φ p).2) = p
-    rw [← hφlevel p hpφ]
-    exact φ.left_inv hpφ
-  obtain ⟨W, hW, hbase, hWpos, hH, htarget, hradial⟩ :=
-    radial_map_metric g hmetric e hpositive hdist ι hι hιsource a ha hιlevel u₀
-  let Hmap := radialMap e ι
-  have hHbase : Hmap (a, u₀) = p := by
-    change e.symm (a, (e (ι u₀)).2) = p
-    rw [hιbase]
-    exact e.left_inv hp
-  let _ : LocallyCompactSpace S := ChartedSpace.locallyCompactSpace (EuclideanSpace ℝ (Fin m)) S
-  let _ : SigmaCompactSpace S := sigmaCompactSpace_of_locallyCompact_secondCountable
-  have himm (u : S) : Function.Injective (mfderiv (𝓡 m) I ι u) :=
-    levelMap_mfderiv_injective φ a u
-  let k := scaleMetric (a ^ 2)⁻¹ (inv_pos.mpr (pow_pos ha 2)) (g.pullback ι hι himm)
-  have hmetricH (z : ℝ × S) (hz : z ∈ W)
-      (v w : TangentSpace (𝓘(ℝ, ℝ).prod (𝓡 m)) z) :
-      g.inner (Hmap z) (mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I Hmap z v)
-        (mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I Hmap z w) =
-          v.1 * w.1 + z.1 ^ 2 * k.inner z.2 v.2 w.2 := by
-    rw [hradial z hz]
-    change _ = v.1 * w.1 + z.1 ^ 2 * ((a ^ 2)⁻¹ *
-      g.inner (ι z.2) (mfderiv (𝓡 m) I ι z.2 v.2) (mfderiv (𝓡 m) I ι z.2 w.2))
-    rw [div_pow, div_eq_mul_inv]
-    ring
-  let D : (ℝ × EuclideanSpace ℝ (Fin m)) →L[ℝ] E :=
-    mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I Hmap (a, u₀)
-  have hker (v : ℝ × EuclideanSpace ℝ (Fin m)) (hv : D v = 0) : v = 0 := by
-    have h := hmetricH (a, u₀) hbase v v
-    change g.inner (Hmap (a, u₀)) (D v) (D v) = v.1 * v.1 + a ^ 2 * k.inner u₀ v.2 v.2 at h
-    rw [hv] at h
-    have hzero : g.inner (Hmap (a, u₀)) (0 : TangentSpace I (Hmap (a, u₀))) 0 = 0 := map_zero _
-    erw [hzero] at h
-    have hv₂ : v.2 = 0 := by
-      by_contra hne
-      have hk := k.pos u₀ v.2 hne
-      have hp := mul_pos (pow_pos ha 2) hk
-      nlinarith only [h, hp, mul_self_nonneg v.1]
-    have hv₁ : v.1 = 0 := by
-      erw [hv₂, map_zero, mul_zero, add_zero] at h
-      exact mul_self_eq_zero.mp h.symm
-    exact Prod.ext hv₁ hv₂
-  have hinj : Function.Injective D := by
-    intro v w h
-    apply sub_eq_zero.mp
-    apply hker
-    rw [map_sub, h, sub_self]
-  have hdimension : Module.finrank ℝ (ℝ × EuclideanSpace ℝ (Fin m)) = Module.finrank ℝ E := by
-    simp only [Module.finrank_prod, Module.finrank_self, finrank_euclideanSpace_fin, hdim]
-    omega
-  have hsurj : Function.Surjective D :=
-    (LinearMap.injective_iff_surjective_of_finrank_eq_finrank hdimension).mp hinj
-  let A := ContinuousLinearEquiv.ofBijective D (LinearMap.ker_eq_bot.mpr hinj)
-    (LinearMap.range_eq_top.mpr hsurj)
-  obtain ⟨Ψ, hΨbase, hΨeq⟩ :=
-    DifferentialGeometry.Topology.isLocalDiffeomorphAt_of_contMDiffOn_of_isInvertible_mfderiv
-      hW hbase hH ⟨A, rfl⟩
-  let Γ := DifferentialGeometry.Topology.PartialDiffeomorph.restrict Ψ W hW
-  have hΓbase : (a, u₀) ∈ Γ.source := ⟨hΨbase, hbase⟩
-  have hΓbaseeq : Γ (a, u₀) = p := (hΨeq hΨbase).symm.trans hHbase
-  refine ⟨Γ.target, hΓbaseeq ▸ Γ.map_source hΓbase, ?_, ?_⟩
-  · intro y hy
-    rw [← Γ.right_inv hy]
-    change Ψ (Γ.symm y) ∈ e.source
-    exact (hΨeq (Γ.map_target hy).1) ▸ e.map_target (htarget (Γ.symm y) (Γ.map_target hy).2)
-  · refine ⟨{
-      surface := S
-      topology := inferInstance
-      charted := inferInstance
-      smooth := inferInstance
-      t2 := inferInstance
-      sigmaCompact := inferInstance
-      metric := k
-      map := Γ
-      positive_radius := fun z hz => (hWpos hz.2).1
-      target_eq := rfl
-      radial_metric := ?_ }⟩
-    intro z hz v w
-    have heq : Hmap =ᶠ[𝓝 z] Γ := by
-      filter_upwards [Γ.open_source.mem_nhds hz] with y hy
-      exact hΨeq hy.1
-    have hval : Γ z = Hmap z := heq.eq_of_nhds.symm
-    have hd : mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I Γ z =
-        mfderiv (𝓘(ℝ, ℝ).prod (𝓡 m)) I Hmap z := heq.mfderiv_eq.symm
-    erw [hval, hd]
-    exact hmetricH z hz.2 v w
+  obtain ⟨U, _, hpU, hsource, hchart⟩ :=
+    exists_cone_chart_of_riemannianEDistOf_cone g e
+      (fun x hx => hpositive (e x) (e.map_source hx)) (fun x hx y hy => by
+        simpa only [← hmetric, edist_dist, ENNReal.toReal_ofReal dist_nonneg] using
+          hdist x hx y hy) hdim hp
+  exact ⟨U, hpU, hsource, hchart⟩
 
 end DifferentialGeometry.Geometry.Riemannian

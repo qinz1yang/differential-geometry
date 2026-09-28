@@ -201,7 +201,7 @@ private theorem exists_compact_chart_sequence_of_tendsto (p : M)
     · exact hpK
   have heq : z =ᶠ[atTop] (fun n => extChartAt I p (y n)) := by
     filter_upwards [hnear] with n hn
-    exact if_pos hn
+    exact ite_eq_left hn
   have hz := (tendsto_congr' heq).2 hchart
   refine ⟨K, z, hK, hKV, hpK, hzK, hz, ?_⟩
   filter_upwards [heq, hy (extChartAt_source_mem_nhds (I := I) p)] with n hn hsrc

@@ -586,7 +586,7 @@ theorem linIndep_of_ortho
   rw [Finset.sum_eq_single j] at hpair
   · calc
       c j = c j * 1 := by rw [mul_one]
-      _ = c j * g.inner x (e j) (e j) := by rw [hON j j, if_pos rfl]
+      _ = c j * g.inner x (e j) (e j) := by rw [hON j j, ite_eq_left rfl]
       _ = g.inner x (c j • e j) (e j) :=
         (clm_smul_apply (g.inner x) (c j) (e j) (e j)).symm
       _ = 0 := hpair
@@ -595,7 +595,7 @@ theorem linIndep_of_ortho
       g.inner x (c i • e i) (e j) = c i * g.inner x (e i) (e j) :=
         clm_smul_apply (g.inner x) (c i) (e i) (e j)
       _ = c i * (if i = j then 1 else 0) := by rw [hON i j]
-      _ = c i * 0 := by rw [if_neg (by simpa using hij)]
+      _ = c i * 0 := by rw [ite_eq_right (by simpa using hij)]
       _ = 0 := mul_zero _
   · intro hj
     exact (hj (Finset.mem_univ j)).elim

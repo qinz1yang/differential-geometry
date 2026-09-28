@@ -252,10 +252,10 @@ theorem curveDensity_radialJacobiField_eq_mul_of_orthonormal
     · rw [LinearMap.isOrthoᵢ_def]
       intro i j hij
       change g.inner p (w i) (w j) = 0
-      rw [hON, if_neg hij]
+      rw [hON, ite_eq_right hij]
     · intro i
       change g.inner p (w i) (w i) ≠ 0
-      rw [hON, if_pos rfl]
+      rw [hON, ite_eq_left rfl]
       exact one_ne_zero
   obtain ⟨A, hA0, hAw⟩ :=
     exists_perp_basis (I := I) g p x w hLI hperp (g.pos p x hx0)

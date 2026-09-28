@@ -494,10 +494,10 @@ theorem ricciTensor_chartBasisVec_alpha_eq [I.Boundaryless]
     rw [map_sum, Finsupp.coe_finsetSum, Finset.sum_apply]
     rw [Finset.sum_eq_single t]
     · rw [← hbα_apply t, LinearEquiv.map_smul, Finsupp.smul_apply,
-        Module.Basis.repr_self_apply, smul_eq_mul, if_pos rfl, mul_one]
+        Module.Basis.repr_self_apply, smul_eq_mul, ite_eq_left rfl, mul_one]
     · intro l _ hl_ne
       rw [← hbα_apply l, LinearEquiv.map_smul, Finsupp.smul_apply,
-        Module.Basis.repr_self_apply, smul_eq_mul, if_neg hl_ne, mul_zero]
+        Module.Basis.repr_self_apply, smul_eq_mul, ite_eq_right hl_ne, mul_zero]
     · intro hl; exact absurd (Finset.mem_univ t) hl
   rw [Finset.sum_congr rfl (fun t _ => hdiag t)]
   have hricci_qp : (∑ t : Fin (Module.finrank ℝ E),

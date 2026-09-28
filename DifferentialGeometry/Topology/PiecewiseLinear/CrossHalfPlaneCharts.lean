@@ -20,7 +20,7 @@ theorem IsPLHomeomorphOn.exists_crossHalfPlane_disks
     (hΓ : ∀ p ∈ V, ψ p ∈ Γ ↔ p.1 = 0) {y : E} (hy : y ∈ S ∩ Ω) (hyΓ : y ∈ Γ) :
     ∃ (W : Set E) (P : Fin 4 → Set E) (q : Fin 4 → (Fin 3 → ℝ) → E),
       IsOpen W ∧ y ∈ W ∧ W ⊆ Ω ∧
-      (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i)) ∧
+      (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i)) ∧
       (∀ i, P i ⊆ S ∩ F) ∧
       (∀ x ∈ S ∩ W, ∀ i, x ∈ P i ↔ Function.invFunOn ψ V x ∈ crossHalfPlane i) ∧
       ∀ x ∈ S ∩ W, ∀ i, x ∈ q i '' stdSimplexBoundary 2 ↔ x ∈ Γ := by

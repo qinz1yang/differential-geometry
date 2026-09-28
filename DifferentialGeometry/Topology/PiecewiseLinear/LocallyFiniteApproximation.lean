@@ -23,7 +23,7 @@ theorem exists_forall_eqOn_coreSpace {Y : Type*} (T : LocallyFinitePieceTower n 
   obtain ⟨G, hG⟩ := T.exists_glue_of_eqOn f hf
   refine ⟨fun x => if hx : x ∈ U then G ⟨x, hx⟩ else f 0 x, fun i x hx => ?_⟩
   have hxU : x ∈ U := T.core_space_subset_union i hx
-  simp only [dif_pos hxU]
+  simp only [dite_eq_left hxU]
   exact hG i x hx
 
 theorem injOn_of_forall_eqOn_coreSpace {Y : Type*} (T : LocallyFinitePieceTower n M₁ U)
@@ -271,7 +271,7 @@ theorem exists_isPLHomeomorphInto_dist_lt_of_stages (T : LocallyFinitePieceTower
     refine ⟨fun x => if hx : ∃ i, x ∈ T.coreSpace i then ε (Nat.find hx) else 1, ?_⟩
     intro x hx
     have hex : ∃ i, x ∈ T.coreSpace i := T.exists_mem_core_space hx
-    exact ⟨Nat.find hex, Nat.find_spec hex, dif_pos hex,
+    exact ⟨Nat.find hex, Nat.find_spec hex, dite_eq_left hex,
       fun j hj => Nat.find_min' hex hj⟩
   have hclose' : ∀ i, ∀ x ∈ T.coreSpace i, dist (f i x) (h x) < β x := by
     intro i x hxi

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Coordinates.NablaComponents.Basic
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 open DifferentialGeometry.Tensor.Multilinear
 

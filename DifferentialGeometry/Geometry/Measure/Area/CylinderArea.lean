@@ -35,8 +35,8 @@ theorem cylinderLift_riemannian_lipschitz
     ⟨⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩⟩
   let : PseudoEMetricSpace M := .ofRiemannianMetric 𝓘(ℝ, E) M
   have hH' : LipschitzWith K H := hH
-  exact ⟨_, hH'.comp (Complex.reCLM.lipschitz.prodMk
-    (loopCircle_projection_lipschitz.comp Complex.imCLM.lipschitz))⟩
+  exact ⟨_, hH'.comp (Complex.reCLM.lipschitzWith.prodMk
+    (loopCircle_projection_lipschitz.comp Complex.imCLM.lipschitzWith))⟩
 
 
 theorem geodesicAnnulusArea_eq_cylinderArea

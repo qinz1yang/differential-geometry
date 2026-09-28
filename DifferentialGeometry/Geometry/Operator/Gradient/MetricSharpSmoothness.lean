@@ -139,7 +139,7 @@ lemma inner_metricSharpChartLocal_chartBasis
   rw [Finset.sum_eq_single k]
   · simp
   · intro j _ hjk
-    rw [if_neg (Ne.symm hjk), zero_mul]
+    rw [ite_eq_right (Ne.symm hjk), zero_mul]
   · intro hk
     exact absurd (Finset.mem_univ k) hk
 

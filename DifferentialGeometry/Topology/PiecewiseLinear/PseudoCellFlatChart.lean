@@ -22,26 +22,26 @@ local notation "P2" => EuclideanSpace ℝ (Fin 2)
 theorem IsPLHomeomorphOn.notMem_image_stdSimplexBoundary_of_mem_nhdsWithin {F : Type*}
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F] {M D : Set F}
     (hM : IsOpenTopologicalCell 2 M) {f : (Fin 3 → ℝ) → F}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D) {x : F} (hxM : x ∈ M)
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {x : F} (hxM : x ∈ M)
     (hD : D ∈ 𝓝[M] x) : x ∉ f '' stdSimplexBoundary 2 := by
   classical
   rintro ⟨q, hq, hqx⟩
   obtain ⟨ψ⟩ := hM
   obtain ⟨c, ϱ, γ, hϱ, hγc, hγi, hγmaps, hγc0⟩ :=
     exists_ball_chart_of_homeomorph_isOpen Metric.isOpen_ball ψ hxM hD
-  set g := Function.invFunOn f (stdSimplex ℝ (Fin 3)) with hgdef
+  set g := Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) with hgdef
   have hg := hf.symm
-  have hgf : ∀ p ∈ stdSimplex ℝ (Fin 3), g (f p) = p := fun p hp =>
+  have hgf : ∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), g (f p) = p := fun p hp =>
     hf.bijOn.invOn_invFunOn.1 hp
   let proj : (Fin 3 → ℝ) → P2 := fun p => WithLp.toLp 2 fun i : Fin 2 => p (Fin.castSucc i)
   have hproj0 : ∀ p, proj p 0 = p 0 := fun p => rfl
   have hproj1 : ∀ p, proj p 1 = p 1 := fun p => rfl
   have hprojc : Continuous proj := by fun_prop
-  have hσsum : ∀ p ∈ stdSimplex ℝ (Fin 3), p 0 + p 1 + p 2 = 1 := by
+  have hσsum : ∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), p 0 + p 1 + p 2 = 1 := by
     intro p hp
     have := hp.2
     rwa [Fin.sum_univ_three] at this
-  have hprojinj : InjOn proj (stdSimplex ℝ (Fin 3)) := by
+  have hprojinj : InjOn proj (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := by
     intro p hp p' hp' h
     have h0 : p 0 = p' 0 := by rw [← hproj0 p, ← hproj0 p', h]
     have h1 : p 1 = p' 1 := by rw [← hproj1 p, ← hproj1 p', h]
@@ -53,7 +53,7 @@ theorem IsPLHomeomorphOn.notMem_image_stdSimplexBoundary_of_mem_nhdsWithin {F : 
     · exact h2
   let κ : P2 → P2 := fun w => proj (g (γ w))
   have hγD : MapsTo γ (Metric.ball c ϱ) D := fun w hw => (hγmaps hw).2
-  have hgσ : MapsTo g D (stdSimplex ℝ (Fin 3)) := hg.bijOn.mapsTo
+  have hgσ : MapsTo g D (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hg.bijOn.mapsTo
   have hκc : ContinuousOn κ (Metric.ball c ϱ) :=
     hprojc.comp_continuousOn (hg.isPiecewiseAffineOn.continuousOn.comp hγc hγD)
   have hκi : InjOn κ (Metric.ball c ϱ) := by
@@ -62,11 +62,11 @@ theorem IsPLHomeomorphOn.notMem_image_stdSimplexBoundary_of_mem_nhdsWithin {F : 
       (hgσ (hγD hw')) h))
   have hopen := DifferentialGeometry.Topology.invariance_of_domain_isOpen_image
     Metric.isOpen_ball hκc hκi
-  have hqσ : q ∈ stdSimplex ℝ (Fin 3) := hq.1
+  have hqσ : q ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hq.1
   have hκcq : κ c = proj q := by
     change proj (g (γ c)) = proj q
     rw [hγc0, ← hqx, hgf q hqσ]
-  have hsub : κ '' Metric.ball c ϱ ⊆ proj '' stdSimplex ℝ (Fin 3) := by
+  have hsub : κ '' Metric.ball c ϱ ⊆ proj '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     rintro _ ⟨w, hw, rfl⟩
     exact ⟨g (γ w), hgσ (hγD hw), rfl⟩
   have hnear : ∀ v : P2, ∃ t : ℝ, 0 < t ∧ proj q + t • v ∈ κ '' Metric.ball c ϱ := by
@@ -83,7 +83,7 @@ theorem IsPLHomeomorphOn.notMem_image_stdSimplexBoundary_of_mem_nhdsWithin {F : 
       ((htend.eventually (hopen.mem_nhds hmem)).and self_mem_nhdsWithin).exists
     exact ⟨t, htpos, ht⟩
   obtain ⟨hq0, i, hi⟩ := hq
-  have hnonneg : ∀ p ∈ stdSimplex ℝ (Fin 3), ∀ j, 0 ≤ p j := fun p hp j => hp.1 j
+  have hnonneg : ∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ∀ j, 0 ≤ p j := fun p hp j => hp.1 j
   fin_cases i
   · have hi' : q 0 = 0 := hi
     obtain ⟨t, ht, hmem⟩ := hnear (WithLp.toLp 2 ![-1, 0])
@@ -232,13 +232,13 @@ theorem IsPseudoCell.exists_flatChart {Ec Eint Ebd : Set E3} {P : E3}
     refine mem_nhdsWithin_iff_exists_mem_nhds_inter.mpr ⟨C ∩ W₀, Filter.inter_mem hCn
       (hW₀.mem_nhds hxW₀), fun y hy => ⟨hy.1.1, (hW₀p y hy.1.2).mpr hy.2⟩⟩
   have hxnot := hf.notMem_image_stdSimplexBoundary_of_mem_nhdsWithin hpc.isOpenCell hx hDnhds
-  set q₀ := Function.invFunOn f (stdSimplex ℝ (Fin 3)) x with hq₀def
-  have hq₀σ : q₀ ∈ stdSimplex ℝ (Fin 3) := hf.bijOn.surjOn.mapsTo_invFunOn hxDQ
+  set q₀ := Function.invFunOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) x with hq₀def
+  have hq₀σ : q₀ ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hf.bijOn.surjOn.mapsTo_invFunOn hxDQ
   have hfq₀ : f q₀ = x := hf.bijOn.invOn_invFunOn.2 hxDQ
   have hq₀pos : ∀ i, 0 < q₀ i := by
     intro i
     refine lt_of_le_of_ne (hq₀σ.1 i) fun h => hxnot ⟨q₀, ⟨hq₀σ, i, h.symm⟩, hfq₀⟩
-  have hσsum : ∀ p ∈ stdSimplex ℝ (Fin 3), p 0 + p 1 + p 2 = 1 := by
+  have hσsum : ∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), p 0 + p 1 + p 2 = 1 := by
     intro p hp
     have := hp.2
     rwa [Fin.sum_univ_three] at this
@@ -246,7 +246,7 @@ theorem IsPseudoCell.exists_flatChart {Ec Eint Ebd : Set E3} {P : E3}
     ((LinearMap.proj 0).comp (LinearMap.fst ℝ _ ℝ)).prod
       (((LinearMap.proj 1).comp (LinearMap.fst ℝ _ ℝ)).prod (LinearMap.snd ℝ _ ℝ))
   have hκL : ∀ p : (Fin 3 → ℝ) × ℝ, κL p = (p.1 0, p.1 1, p.2) := fun p => rfl
-  set σI := stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 with hσIdef
+  set σI := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 with hσIdef
   have hσIpoly : IsPolyhedron σI :=
     (isHPolytope_stdSimplex (Fin 3)).isPolyhedron.prod isHPolytope_Icc.isPolyhedron
   have hκpl : IsPiecewiseAffineOn κL σI :=
@@ -346,7 +346,7 @@ theorem IsPseudoCell.exists_flatChart {Ec Eint Ebd : Set E3} {P : E3}
   refine ⟨U, Mo, φ, hU, hMo, ⟨_, hz₀, hGz₀⟩, hUC.trans hCO, hφ, ?_⟩
   rintro _ ⟨z, hz, rfl⟩
   rw [hφG z hz, ← hCW _ (hUC ⟨z, hz, rfl⟩), hGMo z hz]
-  have hqσ : (ι z).1 ∈ stdSimplex ℝ (Fin 3) := (hισ z hz).1
+  have hqσ : (ι z).1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := (hισ z hz).1
   have hfD : f (ι z).1 ∈ DQ := hf.bijOn.mapsTo hqσ
   rcases lt_trichotomy z.2.2 0 with hneg | hzero | hpos
   · have hmem := hρneg (show (f (ι z).1, z.2.2) ∈ DQ ×ˢ Ico (-1 : ℝ) 0 from

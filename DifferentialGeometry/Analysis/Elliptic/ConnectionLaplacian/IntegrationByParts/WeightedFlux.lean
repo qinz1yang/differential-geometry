@@ -3,6 +3,10 @@ import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.Integr
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricContinuity
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise_eq_inner0S
+  tensorInnerPointwise_smul_left)
+
+
 noncomputable section
 
 namespace DifferentialGeometry.Analysis.Elliptic
@@ -13,7 +17,7 @@ open DifferentialGeometry.Geometry.Operator DifferentialGeometry.Integral.Connec
 open DifferentialGeometry.Integral.Measure DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-open DifferentialGeometry.PDE.RicciFlow (metricNabla0S covDiv0SField innerPt_eq_inner0S)
+open DifferentialGeometry.PDE.RicciFlow (metricNabla0S covDiv0SField)
 open scoped Manifold Topology ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -64,7 +68,7 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
       funext x
       change inner0S (I := I) g x (s + 1) (A x) (U x) =
         (normSq0S (I := I) g x (s + 1) (A x + U x) - _ - _) * _
-      rw [_root_.Tensor0SBundle.normSq0S_add]
+      rw [_root_.DifferentialGeometry.Tensor0SBundle.normSq0S_add]
       ring
     rw [heq]
     exact (((normSq0S_cont (I := I) g (A + U)).sub
@@ -97,14 +101,14 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
         have hev : (χ : M → ℝ) =ᶠ[𝓝 x] (fun _ => 0) :=
           notMem_tsupport_iff_eventuallyEq.mp hx
         have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (χ : M → ℝ) x = 0 := by
-          rw [hev.mfderiv_eq]
-          exact mfderiv_const
+          rw [hev.mfderiv_eq, mfderiv_const]
+          rfl
         simp [mvfderiv, hmfd_zero]
       simp only [B, hzero, ContinuousLinearMap.zero_smulRight, map_zero]
   have hBB : Integrable (fun x => normSq0S (I := I) g x (s + 1) (B x)) μ := by
     refine (B₀.integrable_inner_cross B₀).congr (Filter.Eventually.of_forall fun x => ?_)
     dsimp only
-    rw [SmoothCcTensor.toFun_apply, innerPt_eq_inner0S, hB, normSq0S_eq_inner]
+    rw [SmoothCcTensor.toFun_apply, tensorInnerPointwise_eq_inner0S, hB, normSq0S_eq_inner]
   have hBU : Integrable (fun x => χ x * inner0S (I := I) g x (s + 1) (B x) (U x)) μ := by
     have hp := (scalarSmul (I := I) g 0 (s + 1) χ B₀).integrable_inner_cross U₀
     refine hp.congr (Filter.Eventually.of_forall fun x => ?_)
@@ -113,7 +117,7 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
     by_cases hx : x ∈ tsupport (χ : M → ℝ)
     · have hU : ∀ᶠ y in 𝓝 x, Uc y = unitScalarRSLiftCₛ (I := I) U y :=
         (nhds_le_nhdsSet hx) hUeq
-      rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply, innerPt_eq_inner0S, hB,
+      rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply, tensorInnerPointwise_eq_inner0S, hB,
         show U₀.toSection x = unitScalarRSLiftCₛ (I := I) U x from hU.self_of_nhds,
         unitScalarRSLiftCₛ_apply, unitScalarRSLiftSection_apply_unit]
     · simp [image_eq_zero_of_notMem_tsupport hx]
@@ -129,10 +133,10 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
             c * normSq0S (I := I) g x (s + 1) D +
               c⁻¹ * normSq0S (I := I) g x (s + 1) F := by
         have hp := normSq0S_nonneg (I := I) g x (s + 1) (c • D + F)
-        rw [_root_.Tensor0SBundle.normSq0S_add, normSq0S_eq_inner,
-          _root_.Tensor0SBundle.inner0S_smul_left,
-          _root_.Tensor0SBundle.inner0S_smul_right, ← normSq0S_eq_inner,
-          _root_.Tensor0SBundle.inner0S_smul_left] at hp
+        rw [_root_.DifferentialGeometry.Tensor0SBundle.normSq0S_add, normSq0S_eq_inner,
+          _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
+          _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, ← normSq0S_eq_inner,
+          _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left] at hp
         have hdiv := div_nonneg hp hc.le
         have heq (a b r : ℝ) : (c * (c * a) + 2 * (c * b) + r) / c =
             c * a + c⁻¹ * r + 2 * b := by
@@ -143,14 +147,14 @@ theorem integral_sq_weighted_covDiv0SField_le_of_hasCompactSupport
       have hsmul (c : ℝ) (D : Tensor0SSpace (s + 1) I x) :
           normSq0S (I := I) g x (s + 1) (c • D) =
             c ^ 2 * normSq0S (I := I) g x (s + 1) D := by
-        rw [normSq0S_eq_inner, _root_.Tensor0SBundle.inner0S_smul_left,
-          _root_.Tensor0SBundle.inner0S_smul_right, ← normSq0S_eq_inner]
+        rw [normSq0S_eq_inner, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
+          _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, ← normSq0S_eq_inner]
         ring
       have hmain := hyoung (χ x • A x) (χ x • U x) hε
-      rw [_root_.Tensor0SBundle.inner0S_smul_left,
-        _root_.Tensor0SBundle.inner0S_smul_right, hsmul, hsmul] at hmain
+      rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
+        _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, hsmul, hsmul] at hmain
       have hboundary := hyoung (B x) (χ x • U x) (c := 1) (by norm_num)
-      rw [_root_.Tensor0SBundle.inner0S_smul_right, hsmul] at hboundary
+      rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, hsmul] at hboundary
       norm_num only [inv_one, one_mul] at hboundary
       have hbound := mul_le_mul_of_nonneg_left (hU x hx)
         (show 0 ≤ (ε⁻¹ + 2) * χ x ^ 2 by positivity)

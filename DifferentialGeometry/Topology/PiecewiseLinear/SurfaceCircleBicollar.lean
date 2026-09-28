@@ -33,7 +33,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_bicollar_of_isPLSphere_one
   have hNint : N.space ⊆ K.space \ (boundaryComplex 2 K).space := fun x hx =>
     ⟨hNK hx, (hNO hx).2⟩
   have hNU : N.space ⊆ U := fun x hx => hOU ⟨(hNO hx).1, hNK hx⟩
-  let D : Set (Fin 3 → ℝ) := stdSimplex ℝ (Fin 3)
+  let D : Set (Fin 3 → ℝ) := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   let C : Set (Fin 3 → ℝ) := stdSimplexBoundary 2
   let A := C ×ˢ Icc (0 : ℝ) 1
   let B := D ×ˢ {(0 : ℝ), 1} ∪ A

@@ -46,7 +46,7 @@ theorem exists_diffeomorphs_of_small_lipschitz_displacement
     let B := fderiv ℝ (fun z ↦ u (p, z)) x
     have hBnorm : ‖B‖₊ ≤ c := norm_fderiv_le_of_lipschitz ℝ hlip
     have hBbij : Function.Bijective (fun z ↦ z + B z) :=
-      bijective_id_add_of_lipschitz (B.lipschitz.weaken hBnorm) hc
+      bijective_id_add_of_lipschitz (B.lipschitzWith.weaken hBnorm) hc
     let L := ContinuousLinearMap.id ℝ E + B
     let A : E ≃L[ℝ] E := ContinuousLinearEquiv.ofBijective L
       (LinearMap.ker_eq_bot.mpr hBbij.1) (LinearMap.range_eq_top.mpr hBbij.2)

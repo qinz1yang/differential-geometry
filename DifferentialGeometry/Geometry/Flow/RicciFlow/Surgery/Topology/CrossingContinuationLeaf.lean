@@ -24,9 +24,7 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}}
-
-private theorem metricScalarAt_extendAt_eq (H : RetainedCoreHistory P₀)
+private theorem metricScalarAt_extendAt_eq (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -59,7 +57,7 @@ private theorem metricScalarAt_extendAt_eq (H : RetainedCoreHistory P₀)
   rw [hmet]
   rfl
 
-private theorem le_static_scale_of_neckRadius_le {H : RetainedCoreHistory P₀}
+private theorem le_static_scale_of_neckRadius_le {H : RetainedCoreHistory.{u}}
     {p₀ p : CutoffParameters} {δ₀ ρ₀ : ℝ}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     (hrec : H.IsCanonicalCutoffRecordFamily p₀ δ₀ ρ₀ records)
@@ -80,7 +78,7 @@ private theorem le_static_scale_of_neckRadius_le {H : RetainedCoreHistory P₀}
   rw [inv_inv] at h3
   exact h3.trans hlt.le
 
-private theorem exists_sliver_bad_point (H : RetainedCoreHistory P₀) {s : ℝ}
+private theorem exists_sliver_bad_point (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     {p : CutoffParameters} (records : ∀ i, GeometricCutoffRecord H.toHistory i p)
     {ε C1 C2 qcan τmin θ D θcap t₀ : ℝ} {Ctime Cgrad : ℝ≥0} {n : ℕ} (hCt : 0 < Ctime)
@@ -165,11 +163,11 @@ theorem crossingContinuation_holds (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.
     (lt_max_of_lt_left (by positivity)).trans_le (hqcan n)
   choose δs ρs εs hδs hρs hεs hslice using fun n : ℕ =>
     hsliceQ (qcan n) ((le_max_right _ _).trans (hqcan n))
-  have hpack : ∀ n : ℕ, ∃ (H : RetainedCoreHistory P₀) (s : ℝ)
+  have hpack : ∀ n : ℕ, ∃ (H : RetainedCoreHistory.{u}) (s : ℝ)
       (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
       (p p₀ : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p)
       (δb ρb qs t₀ η t : ℝ) (y : (H.stage (Fin.last H.eventCount)).Carrier)
-      (hH : H.InCutoffClass g₀ B p₀ δb ρb) (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
+      (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δb ρb) (hG : H.IsContinuationSlab B (Fin.last H.eventCount) G),
       H.IsCanonicalCutoffRecordFamily p₀ δb ρb records ∧
       ((n : ℝ) + 1 ≤ qcan n ∧ qcan n ≤ qs ∧ qs ≤ Cs * qcan n) ∧
       (p₀.modelAccuracy ≤ 1 / ((n : ℝ) + 1) ∧ (n : ℝ) + 1 ≤ max ((n : ℝ) + 1) Rs ∧
@@ -284,7 +282,7 @@ theorem crossingContinuation_holds (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.
       mul_nonneg (hRpos n).le (sub_nonneg.mpr (hbad n).2.1)
     exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
       tendsto_one_div_add_atTop_nhds_zero_nat hlow hup
-  let K : ℕ → RetainedCoreHistory P₀ := fun n =>
+  let K : ℕ → RetainedCoreHistory.{u} := fun n =>
     (H n).extendAt (hH n).2.1 (G n) (hG n).2 (hbad n).1 (hts n)
   let τ : ∀ n, Icc (0 : ℝ) (K n).toHistory.horizon := fun n =>
     (H n).extendAtTime (hH n).2.1 (G n) (hG n).2 (hbad n).1 (hts n)

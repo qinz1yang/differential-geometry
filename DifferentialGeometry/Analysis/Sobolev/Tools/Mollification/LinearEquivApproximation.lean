@@ -29,7 +29,7 @@ theorem exists_nonneg_smooth_compactSupport_approx_of_measurePreserving
   let u' : E → ℝ := u ∘ e.symm
   let Ω' : Set E := e.symm ⁻¹' Ω
   have hemb : MeasurableEmbedding e := e.toHomeomorph.toMeasurableEquiv.measurableEmbedding
-  have hu' : LocallyLipschitz u' := hu.comp e.symm.lipschitz.locallyLipschitz
+  have hu' : LocallyLipschitz u' := hu.comp e.symm.toContinuousLinearMap.lipschitzWith.locallyLipschitz
   have huc' : HasCompactSupport u' := huc.comp_homeomorph e.symm.toHomeomorph
   have hu'support : tsupport u' ⊆ Ω' :=
     (tsupport_comp_subset_preimage u e.symm.continuous).trans (preimage_mono hsupport)

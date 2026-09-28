@@ -47,13 +47,13 @@ theorem isPLSphere_geometricLink_of_isPLSphere {n : ℕ} (K : Geometry.Simplicia
 
 theorem isPLBall_geometricLink_iff_of_isPLHomeomorphOn_stdSimplex {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {f : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space) {u : E} (hu : {u} ∈ K.faces) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) K.space) {u : E} (hu : {u} ∈ K.faces) :
     IsPLBall n (SimplicialComplex.geometricLink K {u}).space ↔
       u ∈ f '' (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space := by
   classical
   have hT := stdVertices_affineIndependent n
   have hcard : (stdVertices n).card = n + 2 := card_stdVertices n
-  have hspace : (simplexComplex (stdVertices n) hT).space = stdSimplex ℝ (Fin (n + 2)) := by
+  have hspace : (simplexComplex (stdVertices n) hT).space = Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
     rw [simplexComplex_space _ hT (Finset.card_pos.mp (by omega)), convexHull_stdVertices]
   have hfin₀ : Finite (simplexComplex (stdVertices n) hT).faces :=
     (simplexComplex_faces_finite _ hT).to_subtype
@@ -87,13 +87,13 @@ theorem isPLBall_geometricLink_iff_of_isPLHomeomorphOn_stdSimplex {n : ℕ}
 
 theorem isPLSphere_geometricLink_iff_of_isPLHomeomorphOn_stdSimplex {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] {f : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) K.space) {u : E} (hu : {u} ∈ K.faces) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) K.space) {u : E} (hu : {u} ∈ K.faces) :
     IsPLSphere n (SimplicialComplex.geometricLink K {u}).space ↔
       u ∉ f '' (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space := by
   classical
   have hT := stdVertices_affineIndependent n
   have hcard : (stdVertices n).card = n + 2 := card_stdVertices n
-  have hspace : (simplexComplex (stdVertices n) hT).space = stdSimplex ℝ (Fin (n + 2)) := by
+  have hspace : (simplexComplex (stdVertices n) hT).space = Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
     rw [simplexComplex_space _ hT (Finset.card_pos.mp (by omega)), convexHull_stdVertices]
   have hfin₀ : Finite (simplexComplex (stdVertices n) hT).faces :=
     (simplexComplex_faces_finite _ hT).to_subtype

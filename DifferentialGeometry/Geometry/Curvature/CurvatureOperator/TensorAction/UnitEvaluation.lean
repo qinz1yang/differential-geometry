@@ -4,6 +4,17 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Tens
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.OperatorNorm
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.FiberNorm
 
+open DifferentialGeometry.TensorMetric
+  (coframeS
+    coframeS_apply
+    dualTensorFrameS
+    dualTensorFrameS_apply
+    fiberNormSqComponent
+    fiberNormSqSummand
+    riemannianFiberNormSq
+    riemannianFiberNormSq_eq_sum_componentRS_sq
+    tensor00Scalar)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -327,7 +338,7 @@ theorem abs_toModel_riemannOp_tensor0SCov_coframeS_le
     intro a; rw [← hinner_eq a a]; exact (real_inner_self_eq_norm_sq a).symm
   have he_unit : ∀ i : Fin n, ‖e i‖ ≤ 1 := by
     intro i
-    have h1 : ‖e i‖ ^ 2 = 1 := by rw [hnorm_sq (e i), horth i i, if_pos rfl]
+    have h1 : ‖e i‖ ^ 2 = 1 := by rw [hnorm_sq (e i), horth i i, ite_eq_left rfl]
     nlinarith [norm_nonneg (e i), sq_nonneg (‖e i‖ - 1), h1]
   have hm_unit : ∀ s : Fin t, ‖m s‖ ≤ 1 := by
     intro s
@@ -388,7 +399,7 @@ theorem abs_toModel_riemannOp_tensor0SCov_coframeS_le
             mul_le_mul (he_unit (J k)) (hcurv_norm k) (norm_nonneg _) zero_le_one
         _ = Real.sqrt Kbase := one_mul _
     have hrest_le : ∏ s ∈ Finset.univ.erase k, |g.inner x (e (J s)) (m s)| ≤ 1 := by
-      refine Finset.prod_le_one (fun s _ => abs_nonneg _) (fun s _ => ?_)
+      refine Finset.prod_le_one₀ (fun s _ => abs_nonneg _) (fun s _ => ?_)
       rw [← hinner_eq (e (J s)) (m s)]
       refine le_trans (abs_real_inner_le_norm (e (J s)) (m s)) ?_
       calc ‖e (J s)‖ * ‖m s‖ ≤ 1 * 1 :=
@@ -426,8 +437,8 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_dualTensorFrameS_le
           (dualTensorFrameS (I := I) (M := M) g x t e J)) ≤
       (Module.finrank ℝ E : ℝ) ^ t * ((t : ℝ) * Real.sqrt Kbase) ^ 2 := by
   classical
-  have hii : g.inner x (e i) (e i) ≤ 1 := by rw [horth i i, if_pos rfl]
-  have hjj : g.inner x (e j) (e j) ≤ 1 := by rw [horth j j, if_pos rfl]
+  have hii : g.inner x (e i) (e i) ≤ 1 := by rw [horth i i, ite_eq_left rfl]
+  have hjj : g.inner x (e j) (e j) ≤ 1 := by rw [horth j j, ite_eq_left rfl]
   let cd : InnerProductSpace.Core ℝ (TangentSpace I x) := g.toRiemannianMetric.toCore x
   have hc : ContinuousAt (fun z : TangentSpace I x => cd.inner z z) 0 :=
     g.toRiemannianMetric.continuousAt x
@@ -514,7 +525,7 @@ theorem riemannianFiberNormSq_riemannOp_tensorCov_dualTensorFrameS_le
     rw [hcomp_eval Jp]
     have hbd := abs_toModel_riemannOp_tensor0SCov_coframeS_le (I := I) (M := M) g t x (e i) (e j)
       e J (fun s => eb (Jp s)) Kbase hKbase hKb hii hjj horth
-      (fun s => by rw [horthb (Jp s) (Jp s), if_pos rfl])
+      (fun s => by rw [horthb (Jp s) (Jp s), ite_eq_left rfl])
     exact sq_le_sq' (neg_le_of_abs_le hbd) (le_of_abs_le hbd)
   calc (∑ K : Fin 0 → Fin nb, ∑ Jp : Fin t → Fin nb,
           (fiberNormSqComponent (I := I) (M := M) g x 0 t V nb eb K Jp) ^ 2)

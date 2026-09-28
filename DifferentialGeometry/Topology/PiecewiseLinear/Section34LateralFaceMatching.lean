@@ -56,7 +56,7 @@ theorem IsPLHomeomorphOn.top_arc_eq_of_disjoint_spanning_family
 theorem exists_lateral_disk_with_matching_rim_arcs
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P A : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
     {Z : (r '' stdSimplexBoundary 2) → Set (E × ℝ)}
     (hZ : ∀ z, IsPreconnected (Z z))
     (hZside : ∀ z, Z z ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)
@@ -71,7 +71,7 @@ theorem exists_lateral_disk_with_matching_rim_arcs
     (hβ₀ : β 0 = ((y : E), a)) (hβ₁ : β 1 = ((y : E), b))
     (hδ₀ : δ 0 = x) (hδ₁ : δ 1 = y) (hAP : A ⊆ r '' stdSimplexBoundary 2) :
     ∃ (F : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧
       F ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b ∧
       q '' stdSimplexBoundary 2 =
         ((Z x ∪ (A ×ˢ ({a} : Set ℝ))) ∪ Z y) ∪ (A ×ˢ ({b} : Set ℝ)) ∧

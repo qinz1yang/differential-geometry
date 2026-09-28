@@ -248,7 +248,7 @@ private theorem pointVertex_of_mem_core {y : ComponentCarrier M C}
     E.pointVertex C y = ⟨E.associatedFactor ⟨(y : M.Carrier), h⟩,
       ⟨⟨(y : M.Carrier), h⟩, (ClosedOrientedManifold.mem_componentSet M C _).mp y.2, rfl⟩⟩ := by
   rw [pointVertex]
-  exact dif_pos h
+  exact dite_eq_left h
 
 private theorem pointVertex_of_notMem_core {y : ComponentCarrier M C}
     (h : (y : M.Carrier) ∉ E.tubes.core) :
@@ -258,7 +258,7 @@ private theorem pointVertex_of_notMem_core {y : ComponentCarrier M C}
           (Classical.choose_spec (E.exists_mem_removedBand_of_notMem_core h)) y.2⟩
       false sphereBasePoint := by
   rw [pointVertex]
-  exact dif_neg h
+  exact dite_eq_right h
 
 private theorem pointVertex_eq_of_mem_removedBand {y : ComponentCarrier M C} {a : E.tubes.Index}
     (hy : (y : M.Carrier) ∈ E.tubes.removedBand a) (hmem : a ∈ E.cutIndices C) :

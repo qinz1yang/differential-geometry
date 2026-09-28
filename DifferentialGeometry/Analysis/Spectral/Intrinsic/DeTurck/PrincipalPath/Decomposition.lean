@@ -10,6 +10,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.PrincipalCometri
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.CurvatureContraction
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.Coefficient.L2JetMoser
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sub_le)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -158,7 +162,7 @@ theorem lieDecomposition2_cap
     intro i
     simp only [U]
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     have he2 : (lieDecompositionEps i) ^ 2 ≤ 1 := by
       nlinarith [abs_nonneg (lieDecompositionEps i), sq_abs (lieDecompositionEps i), heps i]
     exact (mul_le_mul he2 (hmono (lieDecompositionQ i))
@@ -166,7 +170,7 @@ theorem lieDecomposition2_cap
       (by nlinarith [sq_nonneg B])
   rw [lieDecomposition2, deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight,
     SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   simp only [Fin.sum_univ_three, SmoothCcTensor.toSection_add,
     ContMDiffSection.coe_add, Pi.add_apply]
   change s ^ 2 * riemannianFiberNormSq (I := I) (M := M) g 4 2 x
@@ -207,10 +211,10 @@ theorem metricPrincipalDefect_cap
               deTurckMetricPrincipalDefectTotal (I := I) (M := M) g g).toSection x) ≤
           (K * (δ / (1 - δ))) ^ 2 := by
   obtain ⟨CTH, hCTH0, hCTH⟩ :=
-    traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    traceHessianCoeff_sub_jet_norm_sq_le
       (I := I) (M := M) g
   obtain ⟨CR, hCR0, hCR⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_ricciDeTurckPrincipalCoefficient_sub_pointwise_jet_bound
       (I := I) (M := M) g
   let K0 : ℝ := 8 * CTH 0 + 8 * CR 0
   let n : ℝ := Module.finrank ℝ E
@@ -444,16 +448,16 @@ theorem phi_dev_h2
   classical
   obtain ⟨ρ, Cinv, hρ, hCinv, hinv⟩ := exists_inverseMetricDifferenceSlotCoefficient_secondOrder_bound (I := I) (M := M) hDim g₀
   obtain ⟨CTH, hCTH_nn, hCTH⟩ :=
-    traceHessianCoeff_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    traceHessianCoeff_sub_jet_norm_sq_le
       (I := I) (M := M) g₀
   obtain ⟨CR, hCR_nn, hCR⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_perOrder_riemannianFiberNormSq_le_inverseMetricDifferenceSlotCoefficient
+    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.exists_ricciDeTurckPrincipalCoefficient_sub_pointwise_jet_bound
       (I := I) (M := M) g₀
   obtain ⟨DTH, hDTH_nn, hDTH⟩ :=
     traceHessianCoeff_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2
       (I := I) (M := M) g₀
   obtain ⟨DR, hDR_nn, hDR⟩ :=
-    ricciDeTurckPrincipalCoefficient_sub_background_jetL2_le_inverseMetricDifferenceSlotCoefficient_jetL2
+    ricciDeTurckPrincipalCoefficient_sub_jet_l2_sq_le
       (I := I) (M := M) g₀
   let Kpt : ℝ := 8 * CTH 0 + 8 * CR 0
   let Kjet : ℝ := 8 * (∑ i ∈ Finset.range 3, DTH i) +

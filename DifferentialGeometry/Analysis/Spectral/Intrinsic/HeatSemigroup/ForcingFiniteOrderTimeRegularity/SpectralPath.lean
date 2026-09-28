@@ -316,7 +316,7 @@ private theorem spectralPathFiniteOrder_rawCompOnE_euclidean_contDiffOn_local
     intro n hn
     have hspec := Classical.choose_spec (hmajorant n hn)
     have hveq : v n = Classical.choose (hmajorant n hn) := by
-      rw [hv_def]; exact dif_pos hn
+      rw [hv_def]; exact dite_eq_left hn
     rw [hveq]
     exact hspec
   have htsum_Bc : ContDiffOn ℝ (kk : ℕ)
@@ -720,7 +720,7 @@ theorem spectralPathFiniteOrder_toFun_timeJet_eq_of_coeff_jets_local
       funext i
       change (if a ≤ kk then CK * (Real.sqrt (Cmf a i) *
         tensorSobolevWeight (I := I) (M := M) i (-(sW : ℝ))) else 0) = _
-      rw [if_pos ha]
+      rw [ite_eq_left ha]
     have hv_sum : ∀ a : ℕ, a ≤ kk → Summable (v a) := by
       intro a ha
       rw [hveq a ha]

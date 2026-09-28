@@ -102,7 +102,7 @@ theorem abs_snd_lt_one_of_cylinderSide (σ : cylinderSide ≃ₜ cylinderSide) (
   have hmem : ∀ x ∈ U, cylinderSideOfPlane x ∈ cylinderSide :=
     fun x hx => cylinderSideOfPlane_mem hx.1.le hx.2.le
   have hGU : ∀ x (hx : x ∈ U), G x = cylinderSidePlane (σ ⟨_, hmem x hx⟩).val :=
-    fun x hx => dif_pos (hmem x hx)
+    fun x hx => dite_eq_left (hmem x hx)
   have hP : Continuous cylinderSidePlane :=
     (continuous_const.add continuous_snd).smul continuous_fst
   have hcont : ContinuousOn G U := by
@@ -185,7 +185,7 @@ theorem exists_rimSign (σ : cylinderSide ≃ₜ cylinderSide) {e : ℝ} (he : |
   have hmemS : ∀ u ∈ S, (u, e) ∈ cylinderSide :=
     fun u hu => mem_cylinderSide_of_mem_sphere hu he.le
   have hhS : ∀ u (hu : u ∈ S), h u = (σ ⟨(u, e), hmemS u hu⟩).val.2 :=
-    fun u hu => dif_pos (hmemS u hu)
+    fun u hu => dite_eq_left (hmemS u hu)
   have hc : ContinuousOn h S := by
     rw [continuousOn_iff_continuous_domRestrict]
     have hc1 : Continuous (fun u : S => (⟨(u.val, e), hmemS u.val u.2⟩ : cylinderSide)) :=
@@ -327,13 +327,13 @@ theorem exists_homeomorph_extension_of_cylinderSide (σ : cylinderSide ≃ₜ cy
     if h : q ∈ cylinderSide then (σ ⟨q, h⟩).val
     else if 0 < q.2 then (R₁ q.1, ε₁) else (R₂ q.1, ε₂)
   let Sph := sphere (0 : EuclideanSpace ℝ (Fin 2) × ℝ) 1
-  have hside : ∀ q (h : q ∈ cylinderSide), B0 q = (σ ⟨q, h⟩).val := fun q h => dif_pos h
+  have hside : ∀ q (h : q ∈ cylinderSide), B0 q = (σ ⟨q, h⟩).val := fun q h => dite_eq_left h
   have hcapP : ∀ q, q ∉ cylinderSide → 0 < q.2 → B0 q = (R₁ q.1, ε₁) := by
     intro q h hp
-    simp only [B0, dif_neg h, if_pos hp]
+    simp only [B0, dite_eq_right h, ite_eq_left hp]
   have hcapN : ∀ q, q ∉ cylinderSide → ¬ 0 < q.2 → B0 q = (R₂ q.1, ε₂) := by
     intro q h hp
-    simp only [B0, dif_neg h, if_neg hp]
+    simp only [B0, dite_eq_right h, ite_eq_right hp]
   have hB0n : ∀ q ∈ Sph, B0 q ∈ Sph := by
     intro q hq
     rw [mem_sphere_zero_iff_norm] at hq ⊢

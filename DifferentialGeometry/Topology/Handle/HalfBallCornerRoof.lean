@@ -13,19 +13,19 @@ private theorem halfBallShearRawHeight_eq_max {s : ℝ}
     halfBallShearRawHeight s = max (halfBallShearHeight s) 0 := by
   have h1 := Icc_subset_halfBallShearHeight_domain (show (1 : ℝ) ∈ Icc 0 1 by simp)
   by_cases hh : s ≤ 1
-  · rw [halfBallShearRawHeight, if_pos hh, max_eq_left]
+  · rw [halfBallShearRawHeight, ite_eq_left hh, max_eq_left]
     rw [← halfBallShearHeight_one]
     exact strictAntiOn_halfBallShearHeight.antitoneOn hs h1 hh
-  · rw [halfBallShearRawHeight, if_neg hh, max_eq_right]
+  · rw [halfBallShearRawHeight, ite_eq_right hh, max_eq_right]
     rw [← halfBallShearHeight_one]
     exact strictAntiOn_halfBallShearHeight.antitoneOn h1 hs (le_of_not_ge hh)
 
 private theorem halfBallShearRawHeight_nonneg {s : ℝ} (hs : 0 ≤ s) :
     0 ≤ halfBallShearRawHeight s := by
   by_cases hh : s ≤ 1
-  · rw [halfBallShearRawHeight, if_pos hh]
+  · rw [halfBallShearRawHeight, ite_eq_left hh]
     exact (halfBallShearHeight_mem_Icc ⟨hs, hh⟩).1
-  · simp only [halfBallShearRawHeight, if_neg hh, le_refl]
+  · simp only [halfBallShearRawHeight, ite_eq_right hh, le_refl]
 
 private theorem continuousOn_halfBallShearRawHeight : ContinuousOn halfBallShearRawHeight
     (Ioo (halfBallShearRadiusSq (5 / 4)) (halfBallShearRadiusSq (-(1 / 4)))) := by
@@ -51,7 +51,7 @@ private theorem halfBallShearCorner_roof_separation_pos {s : ℝ} (hs : 0 ≤ s)
   · have hg : 0 < halfBallShearHeight s := by
       simpa only [halfBallShearHeight_one] using strictAntiOn_halfBallShearHeight hdom h1 hh
     have ht := halfBallShearHeight_mem_Icc ⟨hs, hh.le⟩
-    rw [halfBallShearRawHeight, if_pos hh.le]
+    rw [halfBallShearRawHeight, ite_eq_left hh.le]
     have hd : 0 < s + (1 - halfBallShearHeight s / 2) ^ 2 * (halfBallShearHeight s + 1) ^ 2 := by
       have hb : 0 < 1 - halfBallShearHeight s / 2 := by linarith [ht.2]
       have hb' : 0 < halfBallShearHeight s + 1 := by linarith
@@ -60,7 +60,7 @@ private theorem halfBallShearCorner_roof_separation_pos {s : ℝ} (hs : 0 ≤ s)
     rw [halfBallShearRadiusSq_height hdom, sub_self, zero_div, add_zero]
     exact (div_pos (mul_pos (mul_pos (by norm_num) hg)
       (sq_pos_of_pos (by linarith [ht.2]))) hd).ne'
-  · rw [halfBallShearRawHeight, if_neg (not_le.mpr hh)]
+  · rw [halfBallShearRawHeight, ite_eq_right (not_le.mpr hh)]
     norm_num only [halfBallShearCornerCoordinates, halfBallShearRadiusSq, zero_div,
       sub_zero, zero_mul, mul_zero, one_pow, zero_pow (by decide : 2 ≠ 0),
       add_zero, zero_add, mul_one]
@@ -207,10 +207,10 @@ private theorem contDiffAt_halfBallShearRawHeight {s : ℝ} (hs : 0 ≤ s) (hne 
       (Icc_subset_halfBallShearHeight_domain ⟨hs, hh.le⟩))
     apply hg.congr_of_eventuallyEq
     filter_upwards [isOpen_Iio.mem_nhds hh] with y hy
-    exact if_pos hy.le
+    exact ite_eq_left hy.le
   · apply (contDiffAt_const (c := (0 : ℝ))).congr_of_eventuallyEq
     filter_upwards [isOpen_Ioi.mem_nhds hh] with y hy
-    exact if_neg (not_le.mpr hy)
+    exact ite_eq_right (not_le.mpr hy)
 
 theorem exists_roundedHalfBallCornerRoof_graph
     {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
@@ -240,19 +240,19 @@ theorem exists_roundedHalfBallCornerRoof_graph
   have hraw (x : E) : halfBallShearRawHeight (‖x‖ ^ 2) = halfBallShearRoof x := rfl
   have hfar (x : E) (hx : r / 2 ≤ |‖x‖ ^ 2 - 1|) : f x = halfBallShearRawHeight (‖x‖ ^ 2) := by
     by_cases hh : ‖x‖ ^ 2 ∈ Ioo (1 - r) (1 + r)
-    · exact (if_pos hh).trans (heq _ (hsub hh) hx)
-    · exact if_neg hh
+    · exact (ite_eq_left hh).trans (heq _ (hsub hh) hx)
+    · exact ite_eq_right hh
   have hfg (x : E) (hx : ‖x‖ ^ 2 ∈ Ioo (1 - 2 * r) (1 + 2 * r)) :
       f x = g (‖x‖ ^ 2) := by
     by_cases hh : ‖x‖ ^ 2 ∈ Ioo (1 - r) (1 + r)
-    · exact if_pos hh
+    · exact ite_eq_left hh
     · have haway : r / 2 ≤ |‖x‖ ^ 2 - 1| := by
         have hh' : r ≤ |‖x‖ ^ 2 - 1| := by
           by_contra h
           have hlt := abs_lt.mp (lt_of_not_ge h)
           exact hh ⟨by linarith [hlt.1], by linarith [hlt.2]⟩
         linarith [hr.1]
-      exact (if_neg hh).trans (heq _ hx haway).symm
+      exact (ite_eq_right hh).trans (heq _ hx haway).symm
   refine ⟨f, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · apply contDiff_iff_contDiffAt.mpr
     intro x
@@ -260,7 +260,7 @@ theorem exists_roundedHalfBallCornerRoof_graph
     · have hgc := hg.contDiffAt (isOpen_Ioo.mem_nhds (hsub hx))
       apply (hgc.comp x (contDiff_norm_sq ℝ).contDiffAt).congr_of_eventuallyEq
       filter_upwards [((continuous_norm.pow 2).isOpen_preimage _ isOpen_Ioo).mem_nhds hx] with y hy
-      exact if_pos hy
+      exact ite_eq_left hy
     · have haway : r / 2 < |‖x‖ ^ 2 - 1| := by
         have hh : r ≤ |‖x‖ ^ 2 - 1| := by
           by_contra h
@@ -276,18 +276,18 @@ theorem exists_roundedHalfBallCornerRoof_graph
       exact hfar y hy.le
   · intro x
     by_cases hx : ‖x‖ ^ 2 ∈ Ioo (1 - r) (1 + r)
-    · simpa only [f, if_pos hx, hraw] using hbounds _ (hsub hx)
-    · simp only [f, if_neg hx, hraw, le_refl, true_and]
+    · simpa only [f, ite_eq_left hx, hraw] using hbounds _ (hsub hx)
+    · simp only [f, ite_eq_right hx, hraw, le_refl, true_and]
       linarith
   · intro x hx
     rw [hfg x hx]
     exact hroot _ hx
   · intro x hx
-    exact if_neg hx
+    exact ite_eq_right hx
   · intro x hx
     have hnot : ‖x‖ ^ 2 ∉ Ioo (1 - r) (1 + r) := fun hh => not_lt_of_ge hx hh.2
-    rw [show f x = halfBallShearRawHeight (‖x‖ ^ 2) from if_neg hnot]
-    exact if_neg (by linarith [hr.1])
+    rw [show f x = halfBallShearRawHeight (‖x‖ ^ 2) from ite_eq_right hnot]
+    exact ite_eq_right (by linarith [hr.1])
   · intro x hx t ht
     simpa only [hfg x hx] using hsign _ hx t ht
 

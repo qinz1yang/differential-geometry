@@ -21,7 +21,7 @@ theorem exists_derived_surface_arcs_and_caps
     (hψ : IsPLHomeomorphOn ψ V (R.space ∩ Ω)) (hWΩ : W ⊆ Ω)
     (hΓ : ∀ p ∈ V, ψ p ∈ Γ.space ↔ p.1 = 0)
     {P : Fin 4 → Set E} {q : Fin 4 → (Fin 3 → ℝ) → E}
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i))
     (hPR : ∀ i, (PiecewiseLinear.restrict R (P i)).space = P i)
     (hread : ∀ x ∈ R.space ∩ W, ∀ i,
       x ∈ P i ↔ Function.invFunOn ψ V x ∈ crossHalfPlane i)
@@ -45,7 +45,7 @@ theorem exists_derived_surface_arcs_and_caps
           (U ∩ ((derivedNeighborhoodCellBase R s).space ∩ P (i + 3))).Nonempty → False) ∧
       ∀ t ∈ Γ.faces, s ≠ t → (s ⊆ t ∨ t ⊆ s) →
         ∀ r : (Fin 3 → ℝ) → E,
-          IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3))
+          IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
             ((derivedNeighborhoodCell R s).space ∩ (derivedNeighborhoodCell R t).space) →
           ∀ i : Fin 4, ∃ x : E,
             r '' stdSimplexBoundary 2 ∩

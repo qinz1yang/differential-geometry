@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Metric.ModelChange
-import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pullback
 
 noncomputable section
 open Set

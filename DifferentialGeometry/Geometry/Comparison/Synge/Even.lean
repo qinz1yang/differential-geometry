@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Comparison.Synge.Weinstein
-import DifferentialGeometry.Geometry.Metric.UniversalCoverCompact
+import DifferentialGeometry.Geometry.Metric.UniversalCover.Compact
 import DifferentialGeometry.Geometry.Curvature.UniversalCover
 import DifferentialGeometry.Topology.Manifold.UniversalCoverOrientation
 import DifferentialGeometry.Topology.Covering.UniversalDeckGroup

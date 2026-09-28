@@ -49,6 +49,7 @@ private theorem inner_eq_of_eq_localPullMetric_of_isRightInverse
   have hchain : mfderiv I I (p ∘ (ψ : N → M)) y =
       ContinuousLinearMap.id ℝ (TangentSpace I y) := by
     rw [hev.mfderiv_eq, mfderiv_id]
+    rfl
   have hpψ : ∀ v : TangentSpace I y,
       mfderiv I I p (ψ y) (mfderiv I I (ψ : N → M) y v) = v := by
     intro v

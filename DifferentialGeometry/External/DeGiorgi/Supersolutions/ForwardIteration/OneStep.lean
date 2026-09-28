@@ -96,7 +96,6 @@ theorem supersolution_preMoser_forward
         ∫ x in Ω, ‖hwvReal.weakGrad x‖ ^ 2 ∂volume :=
     integral_congr_ae (hae_grad.fun_comp (fun z => ‖z‖ ^ 2))
   have hv_memLp_q : MemLp v q μ := by
-    refine ⟨hwv_real.memLp.aestronglyMeasurable, ?_⟩
     exact lt_of_le_of_lt (by simpa [q, μ, Ω] using hSob)
       (ENNReal.mul_lt_top_iff.mpr (Or.inl ⟨ENNReal.ofReal_lt_top,
         lt_top_iff_ne_top.mpr (by simpa using hwv_real.weakGrad_norm_memLp.eLpNorm_ne_top)⟩))
@@ -111,10 +110,8 @@ theorem supersolution_preMoser_forward
     have hSob_toReal :=
       (ENNReal.toReal_le_toReal hv_memLp_q.eLpNorm_ne_top
         (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hgrad_ne_top)).2 hSob'
-    rwa [MeasureTheory.toReal_eLpNorm hv_memLp_q.aestronglyMeasurable,
-      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm
-        hwv_real.weakGrad_norm_memLp.aestronglyMeasurable,
-      ENNReal.toReal_ofReal (C_gns_nonneg d 2)] at hSob_toReal
+    rwa [MeasureTheory.toReal_eLpNorm, ENNReal.toReal_mul,
+      MeasureTheory.toReal_eLpNorm, ENNReal.toReal_ofReal (C_gns_nonneg d 2)] at hSob_toReal
   have hgrad_lp :
       MeasureTheory.lpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ =
         (∫ x in Ω, ‖hwv_real.weakGrad x‖ ^ 2 ∂volume) ^ (1 / (2 : ℝ)) := by

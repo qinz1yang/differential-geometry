@@ -277,62 +277,6 @@ def hornCylinderLimit (ε Λ : ℝ) : Prop :=
               metricDerivNormSupOn (Set.univ : Set ↥(cylinderSlab N)) order (scaled v)
                 (backwardCylinderMetric N v) (backwardCylinderMetric N v) < η)
 
-def IsConstantPositiveSectionalCurvature {M : Type u} [TopologicalSpace M]
-    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-    (g : SmoothRiemannianMetric ThreeModel M) : Prop :=
-  ∃ κ : ℝ, 0 < κ ∧ ∀ x (v w : TangentSpace ThreeModel x),
-    LinearIndependent ℝ ![v, w] →
-      DifferentialGeometry.Geometry.Riemannian.sectionalCurvature g x v w = κ
-
-def IsPositiveSpaceFormModel (M : ConnectedClosedOrientedManifold.{u} 3) : Prop :=
-  ∃ g : SmoothRiemannianMetric ThreeModel M.Carrier,
-    IsConstantPositiveSectionalCurvature g
-
-def sphericalSpaceFormCovering : Prop :=
-  ∀ (M : ConnectedClosedOrientedManifold.{u} 3) (g : SmoothRiemannianMetric ThreeModel M.Carrier),
-    IsConstantPositiveSectionalCurvature g →
-    ∃ G : DifferentialGeometry.Topology.SphericalSpaceFormGroup,
-      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph M.toClosedOrientedManifold
-        G.manifold.toClosedOrientedManifold)
-
-structure RelativeDiscardPresentation (C : Type u) [TopologicalSpace C]
-    [ChartedSpace ThreeSpace C] [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C] where
-  vertexCount : ℕ
-  vertex : Fin vertexCount → ConnectedClosedOrientedManifold.{u} 3
-  vertex_elementary : ∀ i,
-    DifferentialGeometry.Topology.isStandardFactor (vertex i) ∨ IsPositiveSpaceFormModel (vertex i)
-  edgeCount : ℕ
-  edgeSource : Fin edgeCount → Fin vertexCount
-  edgeTarget : Fin edgeCount → Fin vertexCount
-  graph_connected : ∀ i i' : Fin vertexCount,
-    Relation.ReflTransGen (fun a b : Fin vertexCount =>
-      ∃ e : Fin edgeCount,
-        (edgeSource e = a ∧ edgeTarget e = b) ∨ (edgeSource e = b ∧ edgeTarget e = a)) i i'
-  externalCount : ℕ
-  externalSphere : Fin externalCount → C(Sphere 2, C)
-  externalSphere_smooth : ∀ b, IsSmoothEmbedding (𝓡 2) ThreeModel ∞ (externalSphere b)
-  externalSphere_pairwise : Pairwise fun b b' =>
-    Disjoint (Set.range (externalSphere b)) (Set.range (externalSphere b'))
-  edgeCollar : Fin edgeCount → C(Sphere 2 × Set.Icc (-2 : ℝ) 2, C)
-  edgeCollar_smooth : ∀ e,
-    letI : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
-    IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (edgeCollar e)
-  edgeCollar_pairwise : Pairwise fun e e' =>
-    Disjoint (Set.range (edgeCollar e)) (Set.range (edgeCollar e'))
-  edgeCollar_disjoint_sphere : ∀ e b,
-    Disjoint (Set.range (edgeCollar e)) (Set.range (externalSphere b))
-  region : Fin vertexCount → Set C
-  region_compact : ∀ i, IsCompact (region i)
-  region_connected : ∀ i, IsConnected (region i)
-  region_frontier : ∀ i, frontier (region i) ⊆
-    (⋃ b, Set.range (externalSphere b)) ∪ (⋃ e, Set.range (edgeCollar e))
-  cover : ∀ x : C, (∃ i, x ∈ region i) ∨ (∃ e, x ∈ Set.range (edgeCollar e)) ∨
-    (∃ b, x ∈ Set.range (externalSphere b))
-
-def HasElementaryDiscardDecomposition (C : Type u) [TopologicalSpace C]
-    [ChartedSpace ThreeSpace C] [IsManifold ThreeModel ∞ C] [T2Space C] [CompactSpace C] : Prop :=
-  Nonempty (RelativeDiscardPresentation C)
-
 structure ProtectedIncomingWitness (D : OneStepIncoming.{u})
     (X : Set ↥D.slab.terminalRegularOpen) (x : ↥D.slab.terminalRegularOpen) where
   region : Set ↥D.slab.terminalRegularOpen
@@ -398,9 +342,44 @@ structure GlobalStepInputs (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ)
   pieceInput : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
     GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
     (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor
-  roundInput : sphericalSpaceFormCovering.{u}
   cylinderInput : hornCylinderLimit.{u} ε endInput.lambda
   protectInput : protectionInput.{u} τ ε endInput.lambda
+
+theorem GlobalStepInputs.component_isPoincareStandard
+    {p : CutoffParameters} {τ ε d : ℝ} {k : ℕ} {DiscardedCutOpen : Type u → Prop}
+    (G : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
+    (H : ObservedHistory.{u}) (i : Fin H.eventCount) (R : GeometricCutoffRecord H i p)
+    (hD : DiscardedCutOpen (H.event i).discarded.Carrier)
+    (C : ConnectedComponents (H.event i).discarded.Carrier) :
+    componentIsPoincareStandard (H.event i).discarded.toClosedOrientedManifold C :=
+  componentwise_isPoincareStandard_of_componentwiseConnectedSumStandardFactor
+    (H.event i).discarded.toClosedOrientedManifold (G.pieceInput H i R hD) C
+
+theorem nonempty_globalStepInputs_of_endInput
+    (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (DiscardedCutOpen : Type u → Prop)
+    (endInput : TerminalCorePresentationInput.{u} τ ε)
+    (neckInput : historicalNeckRecognition.{u} τ ε d k endInput.lambda)
+    (pieceInput : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
+      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseConnectedSumStandardFactor)
+    (cylinderInput : hornCylinderLimit.{u} ε endInput.lambda)
+    (protectInput : protectionInput.{u} τ ε endInput.lambda) :
+    Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) :=
+  ⟨{ endInput := endInput
+     neckInput := neckInput
+     pieceInput := pieceInput
+     cylinderInput := cylinderInput
+     protectInput := protectInput }⟩
+
+theorem not_nonempty_globalStepInputs_of_not_endInput
+    (p : CutoffParameters) (τ ε : ℝ)
+    (h : ¬ Nonempty (TerminalCorePresentationInput.{u} τ ε)) :
+    ∀ (d : ℝ) (k : ℕ) (DiscardedCutOpen : Type u → Prop),
+      ¬ Nonempty (GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) := by
+  intro d k DiscardedCutOpen hF
+  obtain ⟨G⟩ := hF
+  exact h ⟨G.endInput⟩
+
 
 def GlobalStepConclusion (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
     (DiscardedCutOpen : Type u → Prop)

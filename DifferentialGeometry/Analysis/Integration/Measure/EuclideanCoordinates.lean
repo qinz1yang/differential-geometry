@@ -29,7 +29,6 @@ theorem measurePreserving_finSuccEquivProd : MeasurePreserving (finSuccEquivProd
   · funext x
     simp [finSuccEquivProd_apply, Function.comp_def, MeasurableEquiv.piFinSuccAbove]
     rfl
-  · rfl
 
 theorem finSuccEquivProd_single_zero :
     finSuccEquivProd d (EuclideanSpace.single 0 1) = (1, 0) := by

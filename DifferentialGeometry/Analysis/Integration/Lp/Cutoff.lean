@@ -18,7 +18,7 @@ theorem MemLp.continuous_smul_of_tsupport_subset
     (hη : Continuous η) (hηc : HasCompactSupport η) (hηs : tsupport η ⊆ Ω) :
     MemLp (fun x => η x • u x) p μ := by
   have hm : MemLp (fun x => η x • u x) p (μ.restrict Ω) :=
-    hu.smul ((hη.memLp_top_of_hasCompactSupport hηc μ).restrict Ω)
+    ((hη.memLp_top_of_hasCompactSupport hηc μ).restrict Ω).smul hu
   have hi := (memLp_indicator_iff_restrict hΩ).mpr hm
   have heq : Ω.indicator (fun x => η x • u x) = fun x => η x • u x := by
     funext x

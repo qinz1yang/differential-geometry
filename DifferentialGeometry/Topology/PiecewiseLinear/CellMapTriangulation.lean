@@ -256,7 +256,7 @@ theorem exists_cellCenters_pullbackArrangement [Finite κ] {P : Set E} {Q : Set 
       (p σ ∈ P ∧ p σ ∈ openCell (pullbackArrangement l m A) σ) ∧
         A (p σ) = c.point (σ ∘ Sum.inr) := by
     dsimp only [p]
-    rw [dif_pos hσ]
+    rw [dite_eq_left hσ]
     exact (hex σ hσ).choose_spec
   exact ⟨⟨p, fun σ hσ => (hp σ hσ).1⟩, fun σ hσ => (hp σ hσ).2⟩
 

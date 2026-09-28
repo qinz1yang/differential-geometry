@@ -47,19 +47,19 @@ theorem IsPLHomeomorphOn.exists_component_equiv_of_connected_attachment
   let P := fun c => B c ∪ if c = c₀ then D else ∅
   have hPsub (c : ConnectedComponents K.space) : P c ⊆ K.space ∪ D := by
     by_cases hc : c = c₀
-    · simpa only [P, if_pos hc] using union_subset_union (hBsub c) (Subset.rfl : D ⊆ D)
-    · simpa only [P, if_neg hc, union_empty] using (hBsub c).trans subset_union_left
+    · simpa only [P, ite_eq_left hc] using union_subset_union (hBsub c) (Subset.rfl : D ⊆ D)
+    · simpa only [P, ite_eq_right hc, union_empty] using (hBsub c).trans subset_union_left
   have hPpoly (c : ConnectedComponents K.space) : IsPolyhedron (P c) := by
     by_cases hc : c = c₀
-    · simpa only [P, if_pos hc] using (isPolyhedron_space (connectedComponentComplex K c)).union hD
-    · simpa only [P, if_neg hc, union_empty] using
+    · simpa only [P, ite_eq_left hc] using (isPolyhedron_space (connectedComponentComplex K c)).union hD
+    · simpa only [P, ite_eq_right hc, union_empty] using
         isPolyhedron_space (connectedComponentComplex K c)
   have hPc (c : ConnectedComponents K.space) : IsConnected (P c) := by
     by_cases hc : c = c₀
     · subst c
       simpa [P] using IsConnected.union ⟨x, hG hx, hx.2⟩
         (isConnected_connectedComponentComplex_space K c₀) hDc
-    · simpa only [P, if_neg hc, union_empty] using isConnected_connectedComponentComplex_space K c
+    · simpa only [P, ite_eq_right hc, union_empty] using isConnected_connectedComponentComplex_space K c
   have hPdis : Pairwise fun c d => Disjoint (P c) (P d) := by
     intro c d hcd
     by_cases hc : c = c₀
@@ -69,7 +69,7 @@ theorem IsPLHomeomorphOn.exists_component_equiv_of_connected_attachment
     · by_cases hd : d = c₀
       · subst d
         simpa [P, hc] using (hBdis hcd).union_right (hDdis c hc).symm
-      · simpa only [P, if_neg hc, if_neg hd, union_empty] using hBdis hcd
+      · simpa only [P, ite_eq_right hc, ite_eq_right hd, union_empty] using hBdis hcd
   have hPcover : (⋃ c, P c) = K.space ∪ D := by
     apply Subset.antisymm (iUnion_subset hPsub)
     rintro y (hyK | hyD)

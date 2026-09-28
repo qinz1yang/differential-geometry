@@ -41,7 +41,7 @@ theorem exists_isometry_mapClusterPt_of_compact_approximation
   have hz : ∀ᶠ i in (U : Filter ι), dist y (f i (z i)) ≤ eps i := by
     filter_upwards [hUl hcover, hyU] with i hi hiy
     have hex : ∃ x, dist y (f i x) ≤ eps i := hi y hiy
-    simpa only [z, dif_pos hex] using hex.choose_spec
+    simpa only [z, dite_eq_left hex] using hex.choose_spec
   obtain ⟨x, _, hx⟩ := (isCompact_univ : IsCompact (univ : Set X)).exists_mapClusterPt
     (u := z) (f := (U : Filter ι)) (by simp)
   obtain ⟨V, hVU, hxV⟩ := mapClusterPt_iff_ultrafilter.mp hx

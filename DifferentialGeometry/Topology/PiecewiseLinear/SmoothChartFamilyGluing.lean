@@ -50,15 +50,15 @@ theorem exists_isManifold_of_isOpenEmbedding_of_charts
       chartAt := chartFn
       mem_chart_source := fun x => by
         by_cases hx : x ∈ ι '' U
-        · simp only [chartFn, dif_pos hx]
+        · simp only [chartFn, dite_eq_left hx]
           exact ⟨_, mem_chart_source _ _, hx.choose_spec.2⟩
-        · simp only [chartFn, dif_neg hx]
+        · simp only [chartFn, dite_eq_right hx]
           exact ((hcov x).resolve_left hx).choose_spec
       chart_mem_atlas := fun x => by
         by_cases hx : x ∈ ι '' U
-        · simp only [chartFn, dif_pos hx]
+        · simp only [chartFn, dite_eq_left hx]
           exact Or.inl ⟨_, rfl⟩
-        · simp only [chartFn, dif_neg hx]
+        · simp only [chartFn, dite_eq_right hx]
           exact Or.inr ⟨_, rfl⟩ }
   refine ⟨cs, ?_, ?_⟩
   · apply isManifold_of_contDiffOn (𝓡∂ 3) ∞ X
@@ -107,7 +107,7 @@ theorem exists_isManifold_of_isOpenEmbedding_of_charts
             filter_upwards [((κ j).symm.trans (chartL q)).open_source.mem_nhds hy] with y' hy'
             obtain ⟨hvt, hvU⟩ := key y' hy'
             obtain ⟨hΘU, hκ, -⟩ := hbwd j _ hvt hvU
-            have hk : ΘU y' = ⟨Θ j y', hΘU⟩ := dif_pos hΘU
+            have hk : ΘU y' = ⟨Θ j y', hΘU⟩ := dite_eq_left hΘU
             change (chartL q) ((κ j).symm y') = _
             rw [hκ, Function.comp_apply, hk]
             exact OpenPartialHomeomorph.lift_openEmbedding_apply (chartAt (EuclideanHalfSpace 3) q)
@@ -122,11 +122,11 @@ theorem exists_isManifold_of_isOpenEmbedding_of_charts
             refine (ContMDiffAt.subtypeVal_comp_iff U ΘU _).mp ?_
             apply hΘs.congr_of_eventuallyEq
             filter_upwards [hnbhd] with w hw
-            simp only [Function.comp_apply, ΘU, dif_pos hw]
+            simp only [Function.comp_apply, ΘU, dite_eq_left hw]
           have hq' : ΘU y ∈ (chartAt (EuclideanHalfSpace 3) q).source := by
             obtain ⟨p', hp', hpe⟩ := hy.2
             have hp'eq : p' = ΘU y := by
-              rw [show ΘU y = ⟨Θ j y, hΘU⟩ from dif_pos hΘU]
+              rw [show ΘU y = ⟨Θ j y, hΘU⟩ from dite_eq_left hΘU]
               exact hι.injective (hpe.trans hκ)
             rw [← hp'eq]
             exact hp'

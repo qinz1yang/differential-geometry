@@ -1716,7 +1716,7 @@ private def concat (A : BackwardPointTrace H middle last hmid endpoint) (hfirst 
     · exact A.endpoint_eq
   crossing i hf hl := by
     by_cases hi : i.succ ≤ middle
-    · simpa only [dif_pos hi,dif_pos (i.castSucc_lt_succ.le.trans hi)] using B.crossing i hf hi
+    · simpa only [dite_eq_left hi,dite_eq_left (i.castSucc_lt_succ.le.trans hi)] using B.crossing i hf hi
     · have hmiddle : middle ≤ i.castSucc := by
         have hh : middle < i.succ := lt_of_not_ge hi
         exact Nat.le_of_lt_succ hh
@@ -1725,16 +1725,16 @@ private def concat (A : BackwardPointTrace H middle last hmid endpoint) (hfirst 
             (i.castSucc_lt_succ.le.trans hl) := by
           subst middle
           exact B.endpoint_eq
-        simpa only [dif_pos he.le,dif_neg hi,hpoint] using A.crossing i hmiddle hl
+        simpa only [dite_eq_left he.le,dite_eq_right hi,hpoint] using A.crossing i hmiddle hl
       · have hi' : ¬ i.castSucc ≤ middle := not_le.mpr (lt_of_le_of_ne hmiddle (Ne.symm he))
-        simpa only [dif_neg hi,dif_neg hi'] using A.crossing i hmiddle hl
+        simpa only [dite_eq_right hi,dite_eq_right hi'] using A.crossing i hmiddle hl
 
 @[simp] theorem concat_point_before
     (A : BackwardPointTrace H middle last hmid endpoint) (hfirst : first ≤ middle)
     (B : BackwardPointTrace H first middle hfirst (A.point middle le_rfl hmid))
     (j : Fin (H.eventCount + 1)) (hf : first ≤ j) (hj : j ≤ middle) :
     (A.concat hfirst B).point j hf (hj.trans hmid) = B.point j hf hj := by
-  simp only [concat,dif_pos hj]
+  simp only [concat,dite_eq_left hj]
 
 @[simp] theorem concat_point_after
     (A : BackwardPointTrace H middle last hmid endpoint) (hfirst : first ≤ middle)
@@ -1743,9 +1743,9 @@ private def concat (A : BackwardPointTrace H middle last hmid endpoint) (hfirst 
     (A.concat hfirst B).point j (hfirst.trans hj) hl = A.point j hj hl := by
   by_cases he : j = middle
   · subst j
-    simp only [concat,dif_pos le_rfl,B.endpoint_eq]
+    simp only [concat,dite_eq_left le_rfl,B.endpoint_eq]
   · have hn : ¬ j ≤ middle := not_le.mpr (lt_of_le_of_ne hj (Ne.symm he))
-    simp only [concat,dif_neg hn]
+    simp only [concat,dite_eq_right hn]
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.BackwardPointTrace
 end
@@ -1982,7 +1982,7 @@ private theorem selectedChartExtension_apply
     {G : (H.stage last).IncomingSlab (H.time last) s} {L : G.TerminalLimitMetric}
     {eps : ℝ} {k : ℕ} (O : NormalizedNeck L.metric eps k) (z : neckBuffer eps) :
     selectedChartExtension O z = O.chart z := by
-  simp only [selectedChartExtension,dif_pos z.property]
+  simp only [selectedChartExtension,dite_eq_left z.property]
 
 private theorem actual_reset_point_trace_on_compact_of_selected_chart
     (H : ℕ → ObservedHistory.{u}) (first reset last : ∀ i, Fin ((H i).eventCount + 1))
@@ -2011,7 +2011,7 @@ private theorem actual_reset_point_trace_on_compact_of_selected_chart
     constructor <;> linarith [hh.1,hh.2]
   obtain ⟨hprec,A,hA⟩ := hpoint i ⟨z,hzin⟩
   have he : selectedChartExtension (O i) z = ((O i).monoDelta hprec (hδ1 i)).chart ⟨z,hzin⟩ := by
-    rw [selectedChartExtension,dif_pos (neckBuffer_le_of_le (O i).delta_pos hprec hzin)]
+    rw [selectedChartExtension,dite_eq_left (neckBuffer_le_of_le (O i).delta_pos hprec hzin)]
     rfl
   rw [he]
   exact ⟨A,hA⟩
@@ -3555,7 +3555,7 @@ theorem exists_uniform_selected_neck_append_backward_of_initialIdentification
       0 < ηstar ∧ 0 < Qmin ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-    ∀ (H : RetainedCoreHistory P), InitialIdentification P g H.toHistory →
+    ∀ (H : RetainedCoreHistory.{u}), InitialIdentification P g H.toHistory →
     ∀ ρ : ℝ, H.hasCanonicalCutoffRecords p₀ δ₀ ρ →
     ∀ (s : ℝ) (Qstage : OrientedThreeStage.{u})
       (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qstage

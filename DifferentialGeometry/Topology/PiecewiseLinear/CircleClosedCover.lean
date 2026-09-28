@@ -239,7 +239,7 @@ theorem isPLCellOn_one_of_isPLHomeomorphOn_Icc {A : Set E3} {γ : ℝ → E3}
     simp only [L, AffineMap.lineMap_apply, vsub_eq_sub, vadd_eq_add, Pi.add_apply,
       Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
     simp
-  have hLbij : BijOn L (Icc 0 1) (stdSimplex ℝ (Fin 2)) := by
+  have hLbij : BijOn L (Icc 0 1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) := by
     refine ⟨fun t ht => ⟨fun i => ?_, ?_⟩, fun s _ t _ hst => ?_, fun x hx => ?_⟩
     · fin_cases i
       · simp only [Fin.zero_eta, Fin.isValue, hL0]
@@ -259,7 +259,7 @@ theorem isPLCellOn_one_of_isPLHomeomorphOn_Icc {A : Set E3} {γ : ℝ → E3}
           have hsum : x 0 + x 1 = 1 := by simpa [Fin.sum_univ_two] using hx.2
           linarith
         · simp only [Fin.mk_one, Fin.isValue, hL1]
-  have hLpl : IsPLHomeomorphOn L (Icc 0 1) (stdSimplex ℝ (Fin 2)) :=
+  have hLpl : IsPLHomeomorphOn L (Icc 0 1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn isHPolytope_Icc.isPolyhedron
       ((isPiecewiseAffineOn_of_affine L isOpen_univ).mono_of_isPolyhedron
         isHPolytope_Icc.isPolyhedron (subset_univ _)) hLbij

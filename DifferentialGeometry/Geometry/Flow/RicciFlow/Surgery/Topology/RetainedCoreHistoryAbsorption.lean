@@ -10,26 +10,26 @@ universe u
 namespace RetainedCoreHistory
 variable {P : OrientedThreeStage.{u}}
 
-def absorbingHistory (H : RetainedCoreHistory P)
+def absorbingHistory (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ) :
-    RetainedCoreHistory P :=
+    RetainedCoreHistory.{u} :=
   if h : (n : ℝ) < H.horizon then
     H.restrict ⟨(n : ℝ), Nat.cast_nonneg n, h.le⟩
   else H.emptyExtension (n : ℝ) (le_of_not_gt h)
 
-theorem absorbingHistory_eq_restrict (H : RetainedCoreHistory P)
+theorem absorbingHistory_eq_restrict (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ)
     (h : (n : ℝ) < H.horizon) :
     H.absorbingHistory n = H.restrict ⟨(n : ℝ), Nat.cast_nonneg n, h.le⟩ :=
-  dif_pos h
+  dite_eq_left h
 
-theorem absorbingHistory_eq_emptyExtension (H : RetainedCoreHistory P)
+theorem absorbingHistory_eq_emptyExtension (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ)
     (h : H.horizon ≤ (n : ℝ)) :
     H.absorbingHistory n = H.emptyExtension (n : ℝ) h :=
-  dif_neg (not_lt.mpr h)
+  dite_eq_right (not_lt.mpr h)
 
-theorem absorbingHistory_horizon (H : RetainedCoreHistory P)
+theorem absorbingHistory_horizon (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ) :
     (H.absorbingHistory n).horizon = (n : ℝ) := by
   unfold absorbingHistory
@@ -48,7 +48,7 @@ private theorem samePresentation_of_eq {J K : ObservedHistory.{u}} (h : J = K) :
   subst K
   exact ObservedHistory.SamePresentation.refl _
 
-theorem absorbingHistory_successor (H : RetainedCoreHistory P)
+theorem absorbingHistory_successor (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ)
     (p : Icc (0 : ℝ) (H.absorbingHistory (n + 1)).toHistory.horizon)
     (hp : p.1 = (n : ℝ)) :
@@ -82,7 +82,7 @@ theorem absorbingHistory_successor (H : RetainedCoreHistory P)
     exact htransport.trans ((H.successor_empty_empty n hn' hs).trans
       (samePresentation_of_eq e0.symm))
 
-theorem absorbingHistory_stage_zero (H : RetainedCoreHistory P)
+theorem absorbingHistory_stage_zero (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ) :
     (H.absorbingHistory n).toHistory.stage 0 = H.toHistory.stage 0 := by
   by_cases h : (n : ℝ) < H.horizon
@@ -91,7 +91,7 @@ theorem absorbingHistory_stage_zero (H : RetainedCoreHistory P)
   · rw [absorbingHistory_eq_emptyExtension H n (le_of_not_gt h)]
     rfl
 
-theorem absorbingHistory_initialMetric_zero (H : RetainedCoreHistory P)
+theorem absorbingHistory_initialMetric_zero (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier] (n : ℕ) :
     HEq ((H.absorbingHistory n).toHistory.initialMetric 0) (H.toHistory.initialMetric 0) := by
   by_cases h : (n : ℝ) < H.horizon
@@ -101,21 +101,21 @@ theorem absorbingHistory_initialMetric_zero (H : RetainedCoreHistory P)
   · rw [absorbingHistory_eq_emptyExtension H n (le_of_not_gt h)]
     rfl
 
-def absorbingInitial {g : P.Metric} (H : RetainedCoreHistory P)
+def absorbingInitial {g : P.Metric} (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (A : InitialIdentification P g H.toHistory) (n : ℕ) :
     InitialIdentification P g (H.absorbingHistory n).toHistory :=
   InitialIdentification.of_stageZero A (H.absorbingHistory_stage_zero n)
     (H.absorbingHistory_initialMetric_zero n)
 
-theorem absorbingInitial_map_heq {g : P.Metric} (H : RetainedCoreHistory P)
+theorem absorbingInitial_map_heq {g : P.Metric} (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (A : InitialIdentification P g H.toHistory) (n : ℕ) :
     HEq (H.absorbingInitial A n).map A.map :=
   InitialIdentification.map_of_stageZero_heq A (H.absorbingHistory_stage_zero n)
     (H.absorbingHistory_initialMetric_zero n)
 
-def absorbingTower {g : P.Metric} (H : RetainedCoreHistory P)
+def absorbingTower {g : P.Metric} (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (A : InitialIdentification P g H.toHistory) : RetainedCoreObservationTower P g where
   history := H.absorbingHistory
@@ -126,7 +126,7 @@ def absorbingTower {g : P.Metric} (H : RetainedCoreHistory P)
     (heq_of_eq (InitialIdentification.restrict_map (H.absorbingInitial A (n + 1)) _)).trans
       ((H.absorbingInitial_map_heq A (n + 1)).trans (H.absorbingInitial_map_heq A n).symm)
 
-theorem towerExtinct_of_absorbingTower {g : P.Metric} (H : RetainedCoreHistory P)
+theorem towerExtinct_of_absorbingTower {g : P.Metric} (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (A : InitialIdentification P g H.toHistory) :
     towerExtinct (H.absorbingTower A).toObservationTower := by

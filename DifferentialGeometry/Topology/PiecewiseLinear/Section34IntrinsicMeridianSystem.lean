@@ -32,11 +32,11 @@ theorem Section34CutFrame.intrinsic_splitDisk_meridian
     let D := Function.invFunOn u P '' section34SplitDiskImage src f₁ e
     let G := Function.invFunOn u P '' section34SplitDiskImage srcBd f₁ e
     (∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ G = q '' stdSimplexBoundary 2) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ G = q '' stdSimplexBoundary 2) ∧
       D ⊆ P ∧ frontier P ∩ D = G ∧ D \ G ⊆ interior P ∧
       IsConnected (frontier P \ G) ∧
       ¬ ∃ (A : Set E3) (r : (Fin 3 → ℝ) → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) A ∧ A ⊆ frontier P ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧ A ⊆ frontier P ∧
           G = r '' stdSimplexBoundary 2 := by
   classical
   dsimp only
@@ -50,7 +50,7 @@ theorem Section34CutFrame.intrinsic_splitDisk_meridian
   obtain ⟨q, hq, hqb⟩ :=
     (hcut.isPLCellOn_splitDiskImage hf₁ e).exists_isPLHomeomorphOn_invFunOn hu hDT
   obtain ⟨i, j, hij, hD⟩ := hedge e he
-  have hqij : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (B i ∩ B j) := hD ▸ hq
+  have hqij : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (B i ∩ B j) := hD ▸ hq
   have hDb : IsPLBall 2 (B i ∩ B j) := ⟨q, hqij⟩
   have hDi : B i ∩ B j ⊆ frontier (B i) :=
     (hB j).inter_subset_frontier_of_isPLBall hDb (by norm_num)

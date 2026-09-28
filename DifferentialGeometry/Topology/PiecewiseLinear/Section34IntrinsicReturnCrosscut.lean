@@ -38,7 +38,7 @@ theorem exists_section34_model_trace_crosscut_in_return_disk
     (hu : IsPLHomeomorphInto 3 u P) (hβ : IsPLHomeomorphOn β (Icc 0 1) B)
     (hBF : B ⊆ u ⁻¹' fblBd s) (hR : R ⊆ u ⁻¹' section34SplitDiskImage srcBd f₁ e)
     (hBR : B ∩ R = {β 0, β 1})
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hqB : q '' stdSimplexBoundary 2 = B ∪ R) (hDP : D ⊆ P)
     (hDloc : D ⊆ u ⁻¹' (section34VertexBallImage srcBd f₁ w ∩
       frontier (⋃ v, section34VertexBallImage src f₁ v)))

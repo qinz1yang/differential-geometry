@@ -27,11 +27,11 @@ def arcInterval (T : Real) : RealTimeInterval :=
 
 theorem arcInterval_carrier {T : Real} (hT : 0 < T) :
     (arcInterval T).carrier = Set.Icc (-T) 0 := by
-  simp only [arcInterval, dif_pos hT, RealTimeInterval.closed]
+  simp only [arcInterval, dite_eq_left hT, RealTimeInterval.closed]
 
 theorem arcInterval_regular {T : Real} (hT : 0 < T) :
     (arcInterval T).regular = Set.Ioo (-T) 0 := by
-  simp only [arcInterval, dif_pos hT, RealTimeInterval.closed]
+  simp only [arcInterval, dite_eq_left hT, RealTimeInterval.closed]
 
 theorem arcInterval_carrier_subset_Iic (T : Real) (hT : 0 < T) :
     (arcInterval T).carrier ⊆ Set.Iic 0 := by
@@ -70,7 +70,7 @@ theorem not_arcInterval_eq_ancient (A : Real) (hA : 0 < A) :
   linarith
 
 theorem arcInterval_initial (T : Real) (hT : 0 < T) : (arcInterval T).initial = -T := by
-  simp only [arcInterval, dif_pos hT, RealTimeInterval.closed]
+  simp only [arcInterval, dite_eq_left hT, RealTimeInterval.closed]
 
 theorem not_openInterval_carrier_subset_ancient {α b : Real}
     (h0 : (0 : Real) ∈ Set.Ioo α b) :

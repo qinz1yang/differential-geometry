@@ -205,7 +205,6 @@ theorem integral_lt_sublevel_laplacian_eq_levelSet_normGrad_of_isCompact
       (riemannianVolumeMeasure_levelSet_eq_zero I g f a f.contMDiff hreg)
     filter_upwards [hae] with x hx
     apply propext
-    change (f x < a) ↔ f x ≤ a
     exact ⟨le_of_lt, fun h => lt_of_le_of_ne h hx⟩
   rw [hμ]
   exact integral_sublevel_laplacian_eq_levelSet_normGrad_of_isCompact I g f a hreg hcompact

@@ -13,12 +13,12 @@ theorem IsPLSphere.exists_ordered_disk_caps_of_essential_family
     (hCsph : ∀ J ∈ C, IsPLSphere 1 J) (hCA : ∀ J ∈ C, J ⊆ A)
     (hCend : ∀ J ∈ C, Disjoint J (A₀ ∪ A₁)) (hCdisj : C.PairwiseDisjoint id)
     (hCess : ∀ J ∈ C, ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J) :
     ∃ (e : Fin C.ncard ≃ C) (D₀ D₁ : Fin C.ncard → Set E)
       (r₀ r₁ : Fin C.ncard → (Fin 3 → ℝ) → E),
-      (∀ i, IsPLHomeomorphOn (r₀ i) (stdSimplex ℝ (Fin 3)) (D₀ i) ∧
-        IsPLHomeomorphOn (r₁ i) (stdSimplex ℝ (Fin 3)) (D₁ i) ∧
+      (∀ i, IsPLHomeomorphOn (r₀ i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₀ i) ∧
+        IsPLHomeomorphOn (r₁ i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ i) ∧
         r₀ i '' stdSimplexBoundary 2 = (e i).val ∧
         r₁ i '' stdSimplexBoundary 2 = (e i).val ∧
         D₀ i ∪ D₁ i = S ∧ D₀ i ∩ D₁ i = (e i).val ∧

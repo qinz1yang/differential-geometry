@@ -234,9 +234,7 @@ private lemma tendsto_integral_mul_of_eLpNorm_tendsto_zero
     have hEq :
         (fun n => (eLpNorm (g n) 2 μ).toReal) = (fun n => MeasureTheory.lpNorm (g n) 2 μ) := by
       funext n
-      simpa using
-        (MeasureTheory.toReal_eLpNorm
-          (μ := μ) (p := (2 : ℝ≥0∞)) (f := g n) (hg n).aestronglyMeasurable)
+      exact MeasureTheory.toReal_eLpNorm
     simpa [hEq] using hlim_toReal
   have hbound : ∀ n, |∫ x, f x * g n x ∂μ| ≤ C * MeasureTheory.lpNorm (g n) 2 μ := by
     intro n
@@ -379,15 +377,13 @@ theorem HasWeakPartialDeriv.of_eLpNormApprox
 
 theorem exists_subseq_tendsto_ae_of_tendsto_eLpNorm
     {α : Type*} [MeasurableSpace α] {μ : Measure α} {f : α → ℝ} {ψ : ℕ → α → ℝ}
-    (hψ_aemeas : ∀ n, AEStronglyMeasurable (ψ n) μ)
-    (hf_aemeas : AEStronglyMeasurable f μ)
     (hψ :
       Tendsto (fun n => eLpNorm (fun x => ψ n x - f x) 2 μ) atTop (nhds 0)) :
     ∃ ns : ℕ → ℕ, StrictMono ns ∧
       ∀ᵐ x ∂μ, Tendsto (fun n => ψ (ns n) x) atTop (nhds (f x)) := by
   have htim : TendstoInMeasure μ ψ atTop f := by
     exact MeasureTheory.tendstoInMeasure_of_tendsto_eLpNorm
-      (by norm_num : (2 : ℝ≥0∞) ≠ 0) hψ_aemeas hf_aemeas hψ
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) hψ
   exact htim.exists_seq_tendsto_ae
 
 private lemma indicator_diff_mul_le_abs {a c d : ℝ} :
@@ -459,47 +455,31 @@ theorem tendsto_eLpNorm_indicator_diff_mul_of_tendsto_eLpNorm
     exact MeasureTheory.unifIntegrable_const (p := (2 : ℝ≥0∞))
       (by norm_num) (by simp) hG_memLp
   have huiF : UnifIntegrable F 2 μ := by
-    intro ε hε
-    obtain ⟨δ, hδ, hδ'⟩ := huiG hε
-    refine ⟨δ, hδ, fun n s hs hμs => ?_⟩
-    calc
-      eLpNorm (s.indicator (F n)) 2 μ ≤ eLpNorm (s.indicator G) 2 μ := by
-        refine eLpNorm_mono ?_
-        intro x
-        by_cases hx : x ∈ s
-        · simp only [Set.indicator_of_mem hx, Real.norm_eq_abs]
-          exact hF_dom n x
-        · simp [Set.indicator_of_notMem, hx]
-      _ ≤ ENNReal.ofReal ε := hδ' 0 s hs hμs
+    refine huiG.ae_mono hF_meas ?_
+    intro n
+    exact Eventually.of_forall fun x => by
+      simpa only [enorm_le_iff_norm_le] using hF_dom n x
   have hutG : UnifTight (fun _ : ℕ => G) 2 μ := by
     exact MeasureTheory.unifTight_const (p := (2 : ℝ≥0∞)) (by simp) hG_memLp
   have hutF : UnifTight F 2 μ := by
     intro ε hε
-    obtain ⟨s, hμs, hs'⟩ := hutG hε
-    refine ⟨s, hμs, fun n => ?_⟩
-    calc
-      eLpNorm (sᶜ.indicator (F n)) 2 μ ≤ eLpNorm (sᶜ.indicator G) 2 μ := by
-        refine eLpNorm_mono ?_
-        intro x
-        by_cases hx : x ∈ sᶜ
-        · simp only [Set.indicator_of_mem hx, Real.norm_eq_abs]
-          exact hF_dom n x
-        · simp [Set.indicator_of_notMem, hx]
-      _ ≤ ε := hs' 0
+    obtain ⟨s, hs, hμs, hs'⟩ := hutG.exists_measurableSet_indicator hε.ne'
+    refine ⟨s, hμs.ne, fun n => ?_⟩
+    refine (eLpNorm_mono ((hF_meas n).indicator hs.compl) ?_).trans (hs' 0)
+    intro x
+    by_cases hx : x ∈ sᶜ
+    · simpa only [Set.indicator_of_mem hx] using hF_dom n x
+    · simp [Set.indicator_of_notMem, hx]
   refine tendsto_of_subseq_tendsto ?_
   intro ns hns
   obtain ⟨ms, -, hms_ae⟩ :=
     exists_subseq_tendsto_ae_of_tendsto_eLpNorm
       (μ := μ) (f := u) (ψ := fun n => ψ (ns n))
-      (fun n => hψ_aestrong (ns n)) hu_aestrong (hψ.comp hns)
-  have hui_subseq : UnifIntegrable (fun n => F (ns (ms n))) 2 μ := by
-    intro ε hε
-    obtain ⟨δ, hδ, hδ'⟩ := huiF hε
-    exact ⟨δ, hδ, fun n s hs hμs => hδ' (ns (ms n)) s hs hμs⟩
-  have hut_subseq : UnifTight (fun n => F (ns (ms n))) 2 μ := by
-    intro ε hε
-    obtain ⟨s, hμs, hs'⟩ := hutF hε
-    exact ⟨s, hμs, fun n => hs' (ns (ms n))⟩
+      (hψ.comp hns)
+  have hui_subseq : UnifIntegrable (fun n => F (ns (ms n))) 2 μ :=
+    huiF.comp (fun n => ns (ms n))
+  have hut_subseq : UnifTight (fun n => F (ns (ms n))) 2 μ :=
+    hutF.comp (fun n => ns (ms n))
   have hF_ae :
       ∀ᵐ x ∂μ, Tendsto (fun n => F (ns (ms n)) x) atTop (nhds 0) := by
     filter_upwards [hzero, hms_ae] with x hxzero hxt
@@ -650,14 +630,19 @@ private lemma positivePart_sub_abs_le {f g : E → ℝ} (x : E) :
 
 omit [NeZero d] in
 private theorem eLpNorm_positivePart_sub_le
-    {f g : E → ℝ} {μ : Measure E} :
+    {f g : E → ℝ} {μ : Measure E}
+    (hf : AEStronglyMeasurable f μ) (hg : AEStronglyMeasurable g μ) :
     eLpNorm (fun x => max (f x) 0 - max (g x) 0) 2 μ ≤
       eLpNorm (fun x => f x - g x) 2 μ := by
-  exact eLpNorm_mono_ae (Eventually.of_forall (positivePart_sub_abs_le (f := f) (g := g)))
+  exact eLpNorm_mono_ae
+    ((hf.aemeasurable.max aemeasurable_const).aestronglyMeasurable.sub
+      (hg.aemeasurable.max aemeasurable_const).aestronglyMeasurable)
+    (Eventually.of_forall (positivePart_sub_abs_le (f := f) (g := g)))
 
 omit [NeZero d] in
 private theorem tendsto_eLpNorm_positivePart_sub
     {f : E → ℝ} {g : ℕ → E → ℝ} {μ : Measure E}
+    (hf : AEStronglyMeasurable f μ) (hg : ∀ n, AEStronglyMeasurable (g n) μ)
     (h :
       Tendsto (fun n => eLpNorm (fun x => g n x - f x) 2 μ) atTop (nhds 0)) :
     Tendsto (fun n => eLpNorm (fun x => max (g n x) 0 - max (f x) 0) 2 μ)
@@ -666,7 +651,7 @@ private theorem tendsto_eLpNorm_positivePart_sub
       ∀ n, eLpNorm (fun x => max (g n x) 0 - max (f x) 0) 2 μ ≤
         eLpNorm (fun x => g n x - f x) 2 μ := by
     intro n
-    exact eLpNorm_positivePart_sub_le (f := fun x => g n x) (g := fun x => f x)
+    exact eLpNorm_positivePart_sub_le (hg n) hf
   have hnonneg :
       ∀ n, 0 ≤ eLpNorm (fun x => max (g n x) 0 - max (f x) 0) 2 μ := by
     intro n
@@ -738,7 +723,8 @@ noncomputable def MemW1pWitness.posPartOfAux
     have hψ_fun :
         Tendsto (fun n => eLpNorm (fun x => max (ψ n x) 0 - max (u x) 0) 2 μ)
           atTop (nhds 0) :=
-      tendsto_eLpNorm_positivePart_sub hψ_func
+      tendsto_eLpNorm_positivePart_sub hw.memLp.aestronglyMeasurable
+        (fun n => (hψ_smooth n).continuous.aestronglyMeasurable) hψ_func
     have hψ_grad_memLp : ∀ n, MemLp (fun x => gψ n x - g x) 2 μ := by
       intro n
       have hderiv_cont : Continuous
@@ -778,8 +764,7 @@ noncomputable def MemW1pWitness.posPartOfAux
             (if 0 < ψ n x then
               (fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i else 0) +
               ((if 0 < ψ n x then hw.weakGrad x i else 0) - g x))
-          2 μ := ⟨hfirst.aestronglyMeasurable.add hsecond.aestronglyMeasurable,
-            eLpNorm_add_lt_top hfirst hsecond⟩
+          2 μ := hfirst.add hsecond
       simpa [hEq] using hsum
     have hψ_grad_tendsto :
         Tendsto (fun n => eLpNorm (fun x => gψ n x - g x) 2 μ) atTop (nhds 0) := by
@@ -799,9 +784,11 @@ noncomputable def MemW1pWitness.posPartOfAux
                   (fun x => (fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i)
                   2 μ := by
           intro n
-          refine eLpNorm_mono ?_
-          intro x
-          by_cases hx : 0 < ψ n x <;> simp [hx]
+          change eLpNorm ({x | 0 < ψ n x}.indicator
+            (fun x => (fderiv ℝ (ψ n) x) (EuclideanSpace.single i 1) - hw.weakGrad x i))
+            2 μ ≤ _
+          exact eLpNorm_indicator_le _
+            (isOpen_lt continuous_const (hψ_smooth n).continuous).measurableSet
         have hnonneg :
             ∀ n,
               0 ≤ eLpNorm
@@ -868,10 +855,7 @@ noncomputable def MemW1pWitness.posPartOfAux
           funext x
           by_cases hxψ : 0 < ψ n x <;> by_cases hxu : 0 < u x <;> simp [gψ, g, hxψ, hxu]
         rw [hEq]
-        exact eLpNorm_add_le
-          hfirst_mem.aestronglyMeasurable
-          hsecond_mem.aestronglyMeasurable
-          (by norm_num : (1 : ℝ≥0∞) ≤ 2)
+        exact eLpNorm_add_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)
       have hnonneg : ∀ n, 0 ≤ eLpNorm (fun x => gψ n x - g x) 2 μ := by
         intro n
         positivity

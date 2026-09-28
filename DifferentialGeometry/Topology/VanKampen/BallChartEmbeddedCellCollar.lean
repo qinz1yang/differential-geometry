@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.VanKampen.ConnectedSum
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.PartialChartEmbedding
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRescale

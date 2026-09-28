@@ -11,7 +11,7 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_nullhomotopic_circle_of_he
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {f : E × ℝ → F} {P : Set E} {S J : Set F} {d : (Fin 3 → ℝ) → E}
-    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (stdSimplex ℝ (Fin 3)) P)
+    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1)) (hJ : IsPLSphere 1 J)
     (hJside : J ⊆ f '' ((d '' stdSimplexBoundary 2) ×ˢ Icc 0 1))
     (hJS : J ⊆ S)
@@ -23,7 +23,7 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_nullhomotopic_circle_of_he
         (x, r) ∈ closure (((P ×ˢ Icc a b) ∩ f ⁻¹' J) ∩ {y | r < y.2}))
     (hne : (J ∩ f '' (P ×ˢ {r})).Nonempty) :
     ∃ (D A : Set F) (q : (Fin 3 → ℝ) → F) (β : ℝ → F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ IsPLBall 1 A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ IsPLBall 1 A ∧
       IsPLHomeomorphOn β (Icc 0 1) (β '' Icc 0 1) ∧ β 0 ≠ β 1 ∧
       β '' Icc 0 1 ⊆ J ∧ β 0 ∈ f '' (P ×ˢ {r}) ∧ β 1 ∈ f '' (P ×ˢ {r}) ∧
       Disjoint (β '' Ioo 0 1) (f '' (P ×ˢ {r})) ∧ IsClosed (J \ β '' Ioo 0 1) ∧
@@ -43,10 +43,10 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_nullhomotopic_circle_of_he
     apply continuousOn_iff_continuous_domRestrict.mpr
     convert l.continuous using 1
     ext y
-    exact dif_pos y.2
+    exact dite_eq_left y.2
   have hgl (y : F) (hy : y ∈ J) :
       (g y : loopCircle) = (e' ⟨y, hJS hy⟩).2 := by
-    have hgval : g y = l ⟨y, hy⟩ := dif_pos hy
+    have hgval : g y = l ⟨y, hy⟩ := dite_eq_left hy
     rw [hgval]
     exact hl ⟨y, hy⟩
   have hgl' (y : F) (hy : y ∈ J) (hyS : y ∈ S) :
@@ -138,7 +138,7 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_nullhomotopic_circle
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {f : E × ℝ → F} {P : Set E} {S J : Set F} {d : (Fin 3 → ℝ) → E}
-    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (stdSimplex ℝ (Fin 3)) P)
+    (hf : IsCylindricalDiagram f P S) (hd : IsPLHomeomorphOn d (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hends : ∀ x ∈ P, f (x, 0) = f (x, 1)) (hJ : IsPLSphere 1 J)
     (hJside : J ⊆ f '' ((d '' stdSimplexBoundary 2) ×ˢ Icc 0 1))
     (hJS : J ⊆ S)
@@ -148,7 +148,7 @@ theorem IsCylindricalDiagram.exists_returning_disk_of_nullhomotopic_circle
     (hrab : r ∈ Ioo a b) (hK : K.space = (P ×ˢ Icc a b) ∩ f ⁻¹' J)
     (hr : r ∉ Prod.snd '' K.vertices) (hne : (J ∩ f '' (P ×ˢ {r})).Nonempty) :
     ∃ (D A : Set F) (q : (Fin 3 → ℝ) → F) (β : ℝ → F),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ IsPLBall 1 A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ IsPLBall 1 A ∧
       IsPLHomeomorphOn β (Icc 0 1) (β '' Icc 0 1) ∧ β 0 ≠ β 1 ∧
       β '' Icc 0 1 ⊆ J ∧ β 0 ∈ f '' (P ×ˢ {r}) ∧ β 1 ∈ f '' (P ×ˢ {r}) ∧
       Disjoint (β '' Ioo 0 1) (f '' (P ×ˢ {r})) ∧ IsClosed (J \ β '' Ioo 0 1) ∧

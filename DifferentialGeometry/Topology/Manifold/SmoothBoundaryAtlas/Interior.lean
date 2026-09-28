@@ -19,7 +19,7 @@ def interiorPartialDiffeomorph (x₀ : K) :
   let _ := C.toChartedSpace
   classical
   let g : M → K := fun y => if hy : y ∈ K then ⟨y, hy⟩ else x₀
-  have hg (y : M) (hy : y ∈ K) : (g y).val = y := by dsimp [g]; rw [dif_pos hy]
+  have hg (y : M) (hy : y ∈ K) : (g y).val = y := by dsimp [g]; rw [dite_eq_left hy]
   refine
     { toFun := Subtype.val
       invFun := g

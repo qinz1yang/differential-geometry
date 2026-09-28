@@ -121,7 +121,7 @@ def fiberChart (g : A → B)
     map_target' := by
       intro z hz
       change (0, z) ∈ Φ.target at hz
-      simp only [dif_pos hz, mem_preimage]
+      simp only [dite_eq_left hz, mem_preimage]
       exact Φ.map_target hz
     left_inv' := by
       intro x hx
@@ -130,7 +130,7 @@ def fiberChart (g : A → B)
         · exact (hΦ _ |>.trans x.property.2).symm
         · rfl
       have ht : (0, (Φ x.val).2) ∈ Φ.target := he ▸ Φ.map_source hx
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       apply Subtype.ext
       change Φ.symm (0, (Φ x.val).2) = x.val
       rw [he]
@@ -138,7 +138,7 @@ def fiberChart (g : A → B)
     right_inv' := by
       intro z hz
       change (0, z) ∈ Φ.target at hz
-      simp only [dif_pos hz]
+      simp only [dite_eq_left hz]
       exact congrArg Prod.snd (Φ.right_inv hz)
     open_source := Φ.open_source.preimage continuous_subtype_val
     open_target := Φ.open_target.preimage (continuous_const.prodMk continuous_id)
@@ -151,7 +151,7 @@ def fiberChart (g : A → B)
         (continuous_const.prodMk continuous_id).continuousOn (fun _ hz => hz)).congr
       intro z hz
       change (0, z) ∈ Φ.target at hz
-      simp only [Function.comp_apply, dif_pos hz]
+      simp only [Function.comp_apply, dite_eq_left hz]
       rfl }
 
 omit [CompleteSpace A] in
@@ -176,7 +176,7 @@ theorem fiberChart_symm_apply (g : A → B)
   change (if hz' : (0, z) ∈ Φ.target then
     (⟨Φ.symm (0, z), hΦS (Φ.map_target hz'), (hΦ _).symm.trans (congrArg Prod.fst (Φ.right_inv hz'))⟩ : {y : A // y ∈ S ∧ g y = 0})
     else a).val = Φ.symm (0, z)
-  rw [dif_pos (show (0, z) ∈ Φ.target from hz)]
+  rw [dite_eq_left (show (0, z) ∈ Φ.target from hz)]
 
 omit [CompleteSpace A] in
 theorem contDiffOn_fiberChart_symm (g : A → B)

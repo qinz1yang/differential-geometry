@@ -18,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem LocallyFinitePLPieceIn.inter_subset_image_boundary_of_isPLBall
     {A B : Set E} {r : (Fin 4 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 4)) A) (hB : IsPLBall 3 B)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) A) (hB : IsPLBall 3 B)
     (hAK : A ⊆ T.complex.space) (hBK : B ⊆ T.complex.space)
     (hI : IsPLBall 2 (A ∩ B)) : A ∩ B ⊆ r '' stdSimplexBoundary 3 := by
   obtain ⟨s, hs⟩ := hB
@@ -43,7 +43,7 @@ theorem LocallyFinitePLPieceIn.inter_subset_boundaryComplex_of_isPLBall
     (hI : IsPLBall 2 (A ∩ B)) : A ∩ B ⊆ (boundaryComplex 3 K).space := by
   classical
   obtain ⟨r, hr⟩ := hA
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 4)) K.space := hK.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) K.space := hK.symm ▸ hr
   rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hrK,
     simplexBoundary_stdVertices_space]
   exact T.inter_subset_image_boundary_of_isPLBall hr hB hAK hBK hI

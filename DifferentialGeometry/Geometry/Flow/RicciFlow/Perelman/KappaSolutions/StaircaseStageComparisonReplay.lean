@@ -205,7 +205,7 @@ theorem chartPhaseK_eq
   let : IsManifold I ∞ (X.obj j).M := (X.obj j).smooth
   let : T2Space (TangentBundle I (X.obj j).M) := (X.obj j).t2TangentBundle
   apply NNReal.eq
-  simp only [chartPhaseK, metricBounds, phaseK, h1, h2, if_true]
+  simp only [chartPhaseK, metricBounds, phaseK, h1, h2, ite_true]
 
 theorem exists_metricBounds_C_le
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -238,7 +238,7 @@ theorem exists_metricBounds_C_le
         exact ⟨j, Finset.mem_range.mpr (by omega), le_rfl⟩
       exact hle.trans (le_max_right _ _)
     · have hC : f j = d.metricC n q := by
-        simp only [f, metricBounds, hj, if_true]
+        simp only [f, metricBounds, hj, ite_true]
       exact hC.le.trans (le_max_left _ _)
 
 end SeqBallNormalChartData

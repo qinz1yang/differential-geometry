@@ -163,7 +163,7 @@ theorem secLower_of_ricci_lower_bound_of_scalar_upper
   have hA : 0 ≤ g.inner y v v := inner_self_nonneg (I := I3) g y v
   have hB : 0 ≤ g.inner y w w := inner_self_nonneg (I := I3) g y w
   have hgram : 0 ≤ g.inner y v v * g.inner y w w - g.inner y v w ^ 2 := by
-    have h := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+    have h := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
       (I := I3) g y v w
     linarith
   have ha : 0 ≤ ricciTensor (I := I3) g y v v - rho * g.inner y v v := by
@@ -242,7 +242,7 @@ theorem secLower_of_ricci_lower_bound_of_scalar_upper
         ≤ (ricciTensor (I := I3) g y v v - rho * g.inner y v v)
           * (ricciTensor (I := I3) g y w w - rho * g.inner y w w)
           * (g.inner y v v * g.inner y w w) := by
-      have hc := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+      have hc := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
         (I := I3) g y v w
       nlinarith [hsCS, hc, ha, hb, hA, hB]
     calc (ricciTensor (I := I3) g y v w - rho * g.inner y v w) * g.inner y v w

@@ -13,7 +13,6 @@ open Bundle Set
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.RSTensor (metricTraceFirstTwoField)
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (metricLoweredConnectionDifferenceField)
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Tensor
 open scoped Manifold ContDiff BigOperators
@@ -49,7 +48,7 @@ private theorem jet_add_le (G : SmoothRiemannianMetric I M)
       Real.sqrt (normSq0S G x (r + j) (iterCov G r T j x)) +
         Real.sqrt (normSq0S G x (r + j) (iterCov G r V j x)) := by
   rw [iterCov_add]
-  exact Tensor0SBundle.sqrt_normSq0S_add_le G x (r + j) _ _
+  exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le G x (r + j) _ _
 
 private theorem jet_sub_le (G : SmoothRiemannianMetric I M)
     {r : ℕ} (T V : Tensor0SField (I := I) (M := M) ∞ r) (j : ℕ) (x : M) :
@@ -57,7 +56,7 @@ private theorem jet_sub_le (G : SmoothRiemannianMetric I M)
       Real.sqrt (normSq0S G x (r + j) (iterCov G r T j x)) +
         Real.sqrt (normSq0S G x (r + j) (iterCov G r V j x)) := by
   rw [iterCov_sub]
-  exact Tensor0SBundle.sqrt_normSq0S_sub_le G x (r + j) _ _
+  exact DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_sub_le G x (r + j) _ _
 
 theorem exists_iterCov_rm04Section_connection_bound [BoundarylessManifold I M] (j : ℕ) :
     ∃ C > 0, ∀ (G g : SmoothRiemannianMetric I M) (x : M),

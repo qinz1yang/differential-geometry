@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Curvature.Algebraic.TensorMetric
-import DifferentialGeometry.Geometry.Curvature.PositiveSectional
+import DifferentialGeometry.Geometry.Curvature.Metric.ConstantSectional
+import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceForm
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormGroup
 import DifferentialGeometry.Topology.Manifold.DiffeomorphOrientationDichotomy
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
@@ -17,8 +17,6 @@ namespace DifferentialGeometry.Geometry
 noncomputable def roundSphereQuotientOfSphericalSpaceFormGroup
     (G : DifferentialGeometry.Topology.SphericalSpaceFormGroup) :
     RoundSphereQuotient (EuclideanSpace ℝ (Fin 4)) 3 := by
-  classical
-  letI : Fintype G.group := Fintype.ofFinite G.group
   exact {
     Q := G.Orbit
     Γ := G.group
@@ -38,96 +36,19 @@ noncomputable def roundSphereQuotientOfSphericalSpaceFormGroup
       LocalSmoothSection.ofLocal (proj := G.projection) G.projection_surjective
         G.projection_isLocalDiffeomorph x }
 
-end DifferentialGeometry.Geometry
 
-namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
-
-open DifferentialGeometry.Geometry
 open DifferentialGeometry.Topology
+open Curvature
 
 universe u
 
-private theorem metricRm04StandardAt_eq_zero_of_not_linearIndependent
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric ThreeModel M) (x : M)
-    (W T : TangentSpace ThreeModel x) (hdep : ¬ LinearIndependent ℝ ![W, T]) :
-    DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
-      (I := ThreeModel) (M := M) g x W T T W = 0 := by
-  let B : TangentSpace ThreeModel x → TangentSpace ThreeModel x →
-      TangentSpace ThreeModel x → TangentSpace ThreeModel x → ℝ :=
-    fun X Y Z U => DifferentialGeometry.Geometry.Curvature.metricRm04StandardAt
-      (I := ThreeModel) (M := M) g x X Y Z U
-  have hB : DifferentialGeometry.Geometry.Curvature.IsAlgCurvForm B := by
-    change DifferentialGeometry.Geometry.Curvature.IsAlgCurvForm
-      (DifferentialGeometry.Geometry.Curvature.tensor04StandardAt
-        (DifferentialGeometry.Geometry.Curvature.metricRm04At
-          (I := ThreeModel) (M := M) g x))
-    exact DifferentialGeometry.Geometry.Curvature.mem_algebraicCurvatureTensorSubmodule.mp
-      (DifferentialGeometry.Geometry.Curvature.metricRm04At_mem_algebraicCurvatureTensorSubmodule
-        (I := ThreeModel) (M := M) g x)
-  by_cases hW : W = 0
-  · subst hW
-    have hzero := hB.smul_left 0 (0 : TangentSpace ThreeModel x) T T 0
-    simpa [B] using hzero
-  · rw [LinearIndependent.pair_iff' hW] at hdep
-    push Not at hdep
-    obtain ⟨a, rfl⟩ := hdep
-    have hdiag : B W W (a • W) W = 0 := by
-      have hskew := hB.anti_first W W (a • W) W
-      linarith
-    have hskew := hB.anti_first W (a • W) (a • W) W
-    have hsmul := hB.smul_left a W W (a • W) W
-    change B W (a • W) (a • W) W = 0
-    rw [hskew, hsmul, hdiag]
-    ring
-
-private theorem sectionalCurvatureDenominator_eq_zero_of_not_linearIndependent
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric ThreeModel M) (x : M)
-    (v w : TangentSpace ThreeModel x) (hdep : ¬ LinearIndependent ℝ ![v, w]) :
-    g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2 = 0 := by
-  have hnonneg : 0 ≤ g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2 := by
-    simpa only [DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_def]
-      using DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_nonneg
-        (I := ThreeModel) (M := M) g x v w
-  have hnotpos : ¬ 0 < g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2 := by
-    intro hpos
-    exact hdep (DifferentialGeometry.Geometry.Riemannian.linearIndependent_pair_of_sectionalCurvatureDenominator_pos
-      (I := ThreeModel) (M := M) g x v w (by
-        simpa only [DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_def]
-          using hpos))
-  exact le_antisymm (le_of_not_gt hnotpos) hnonneg
-
-theorem sectionalCurvatureMetricBridge_holds :
-    sectionalCurvatureMetricBridge.{u} := by
-  intro M g hg
-  obtain ⟨κ, hκpos, hκ⟩ := hg
-  refine ⟨κ, hκpos, fun x X Y => ?_⟩
-  by_cases hLI : LinearIndependent ℝ ![X, Y]
-  · have hden : 0 < g.inner x X X * g.inner x Y Y - (g.inner x X Y) ^ 2 := by
-      simpa only [DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_def]
-        using DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_pos_of_linearIndependent
-          (I := ThreeModel) (M := M.Carrier) g x X Y hLI
-    have hsec := hκ x X Y hLI
-    rw [DifferentialGeometry.Geometry.Riemannian.sectionalCurvature_eq_metricRm04StandardAt_div]
-      at hsec
-    field_simp [ne_of_gt hden] at hsec
-    linarith
-  · have hnum := metricRm04StandardAt_eq_zero_of_not_linearIndependent
-      (M := M.Carrier) g x X Y hLI
-    have hden := sectionalCurvatureDenominator_eq_zero_of_not_linearIndependent
-      (M := M.Carrier) g x X Y hLI
-    rw [hnum]
-    have hden' : g.inner x X X * g.inner x Y Y -
-        g.inner x X Y * g.inner x X Y = 0 := by
-      simpa only [pow_two] using hden
-    rw [hden', mul_zero]
-
-theorem roundSphereQuotientOrientedCovering_holds :
-    roundSphereQuotientOrientedCovering.{u} := by
-  intro M D he
+theorem exists_orientedDiffeomorph_sphericalSpaceForm_of_roundSphereQuotient
+    (M : ConnectedClosedOrientedManifold.{u} 3)
+    (D : RoundSphereQuotient.{0, u} (EuclideanSpace ℝ (Fin 4)) 3)
+    (he : Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯ D.Q)) :
+    ∃ G : SphericalSpaceFormGroup,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        M.toClosedOrientedManifold G.manifold.toClosedOrientedManifold) := by
   obtain ⟨e⟩ := he
   let G := sphericalSpaceFormGroupOfRoundSphereQuotient D
   let F : Diffeomorph (𝓡 3) (𝓡 3) M.Carrier G.Orbit ∞ :=
@@ -140,48 +61,38 @@ theorem roundSphereQuotientOrientedCovering_holds :
         M.toClosedOrientedManifold G.manifold.opposite.toClosedOrientedManifold := ⟨F, hF⟩
     exact ⟨G', ⟨Fop.trans f⟩⟩
 
-theorem sphericalSpaceFormCovering_holds : sphericalSpaceFormCovering.{u} :=
-  sphericalSpaceFormCovering_of_inputs sectionalCurvatureMetricBridge_holds
-    roundSphereQuotientOrientedCovering_holds
+theorem exists_orientedDiffeomorph_sphericalSpaceForm_of_constantPositiveSectionalCurvature
+    (M : ConnectedClosedOrientedManifold.{u} 3)
+    (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
+    (hg : constantPositiveSectionalCurvatureMetric g) :
+    ∃ G : SphericalSpaceFormGroup,
+      Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
+        M.toClosedOrientedManifold G.manifold.toClosedOrientedManifold) := by
+  have hclosed : ThreeManifold.isClosedThreeManifold (I := 𝓡 3) (M := M.Carrier) :=
+    ⟨inferInstance, inferInstance, inferInstance, by rw [finrank_euclideanSpace_fin]⟩
+  obtain ⟨S⟩ := constant_positive_sectional_curvature_implies_spherical_space_form
+    (I := 𝓡 3) (M := M.Carrier) hclosed ⟨g, hg⟩
+  exact exists_orientedDiffeomorph_sphericalSpaceForm_of_roundSphereQuotient M S.quotient
+    ⟨S.equiv⟩
 
 noncomputable def sphericalSpaceFormQuotientModelOfSphericalSpaceFormGroup
     (G : SphericalSpaceFormGroup) :
-    SphericalSpaceFormQuotientModel ThreeModel G.manifold.Carrier where
+    SphericalSpaceFormQuotientModel (𝓡 3) G.manifold.Carrier where
   quotient := roundSphereQuotientOfSphericalSpaceFormGroup G
-  equiv := Diffeomorph.refl ThreeModel G.manifold.Carrier ∞
+  equiv := Diffeomorph.refl (𝓡 3) G.manifold.Carrier ∞
 
-private theorem isConstantPositiveSectionalCurvature_of_metric
-    {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M]
-    (g : SmoothRiemannianMetric ThreeModel M)
-    (hg : DifferentialGeometry.Geometry.Curvature.constantPositiveSectionalCurvatureMetric
-      (I := ThreeModel) (M := M) g) :
-    IsConstantPositiveSectionalCurvature g := by
-  obtain ⟨c, hc, hsec⟩ := hg
-  refine ⟨c, hc, fun x v w hLI => ?_⟩
-  have hden : 0 < g.inner x v v * g.inner x w w - (g.inner x v w) ^ 2 := by
-    simpa only [DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_def]
-      using DifferentialGeometry.Geometry.Riemannian.sectionalCurvatureDenominator_pos_of_linearIndependent
-        (I := ThreeModel) (M := M) g x v w hLI
-  rw [DifferentialGeometry.Geometry.Riemannian.sectionalCurvature_eq_metricRm04StandardAt_div,
-    hsec x v w]
-  field_simp [ne_of_gt hden]
+theorem admitsConstantPositiveSectionalCurvature_antipodal :
+    admitsConstantPositiveSectionalCurvature
+      (I := 𝓡 3) (M := SphericalSpaceFormGroup.antipodal.manifold.Carrier) :=
+  spherical_space_form_admits_constant_positive_sectional_curvature
+    ⟨sphericalSpaceFormQuotientModelOfSphericalSpaceFormGroup SphericalSpaceFormGroup.antipodal⟩
 
-theorem isPositiveSpaceFormModel_antipodal :
-    IsPositiveSpaceFormModel SphericalSpaceFormGroup.antipodal.manifold := by
-  obtain ⟨g, hg⟩ :=
-    spherical_space_form_admits_constant_positive_sectional_curvature
-      (I := ThreeModel) (M := SphericalSpaceFormGroup.antipodal.manifold.Carrier)
-      ⟨sphericalSpaceFormQuotientModelOfSphericalSpaceFormGroup
-        SphericalSpaceFormGroup.antipodal⟩
-  exact ⟨g, isConstantPositiveSectionalCurvature_of_metric g hg⟩
-
-theorem exists_isPositiveSpaceFormModel_nonsimplyConnected :
+theorem exists_admitsConstantPositiveSectionalCurvature_not_simplyConnected :
     ∃ M : ConnectedClosedOrientedManifold.{0} 3,
-      IsPositiveSpaceFormModel M ∧
+      admitsConstantPositiveSectionalCurvature (I := 𝓡 3) (M := M.Carrier) ∧
         ∀ p : M.Carrier, ¬ Subsingleton (FundamentalGroup M.Carrier p) :=
   ⟨SphericalSpaceFormGroup.antipodal.manifold,
-    isPositiveSpaceFormModel_antipodal,
+    admitsConstantPositiveSectionalCurvature_antipodal,
     SphericalSpaceFormGroup.not_subsingleton_fundamentalGroup_antipodal⟩
 
-end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+end DifferentialGeometry.Geometry

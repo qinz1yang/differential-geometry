@@ -314,7 +314,8 @@ theorem timeL2_norm_le_of_ae_bound
     (hbound : ∀ᵐ s ∂(timeMeasure T), ‖f s‖ ≤ C) :
     ‖f‖ ≤ Real.sqrt T * C := by
   rw [show (‖f‖ : ℝ) = (eLpNorm f 2 (timeMeasure T)).toReal from rfl]
-  have hle := eLpNorm_le_of_ae_bound (μ := timeMeasure T) (p := 2) hbound
+  have hle := eLpNorm_le_of_ae_bound (μ := timeMeasure T) (p := 2)
+    (Lp.memLp f).aestronglyMeasurable hbound
   refine le_trans (ENNReal.toReal_mono ?_ hle) ?_
   · exact ENNReal.mul_ne_top
       (by rw [TimeSobolev.timeMeasure_univ]

@@ -16,13 +16,14 @@ theorem tendsto_of_ae_tendsto_of_ae_norm_le
     (hlim : ∀ᵐ x ∂μ, Tendsto (fun n => F n x) atTop (𝓝 (f x))) :
     Tendsto F atTop (𝓝 f) := by
   have hui : UnifIntegrable (fun n => (F n : α → K)) p μ := by
-    intro ε hε
+    refine unifIntegrable_iff'.mpr fun ε hε => ?_
     obtain ⟨δ, hδ, hδbound⟩ :=
       (memLp_const C : MemLp (fun _ : α => C) p μ).eLpNorm_indicator_le
         Fact.out hp hε
     refine ⟨δ, hδ, fun n s hs hμs => ?_⟩
+    rw [← eLpNorm_indicator_eq_eLpNorm_restrict hs]
     refine le_trans ?_ (hδbound s hs hμs)
-    apply eLpNorm_mono_ae
+    apply eLpNorm_mono_ae ((Lp.aestronglyMeasurable (F n)).indicator hs)
     filter_upwards [hbound n] with x hx
     by_cases hxs : x ∈ s
     · simpa only [Set.indicator_of_mem hxs, Real.norm_eq_abs] using hx.trans (le_abs_self C)
@@ -53,17 +54,11 @@ theorem tendsto_of_tendstoInMeasure_of_ae_norm_le
     unifIntegrable_of_tendsto_Lp Fact.out hp (fun n => Lp.memLp (b n))
       (Lp.memLp b0) ((Lp.tendsto_Lp_iff_tendsto_eLpNorm' b b0).mp hb)
   have huf : UnifIntegrable (fun n => (f n : α → E)) p μ := by
-    intro ε hε
-    obtain ⟨δ, hδ, hsmall⟩ := hub hε
-    refine ⟨δ, hδ, ?_⟩
-    intro n s hs hμs
-    refine le_trans ?_ (hsmall n s hs hμs)
-    apply eLpNorm_mono_ae
-    filter_upwards [hbound n] with x hx
-    by_cases hxs : x ∈ s
-    · simpa only [Set.indicator_of_mem hxs] using hx
-    · simpa only [Set.indicator_of_notMem hxs] using
-        (show ‖(0 : E)‖ ≤ ‖(0 : F)‖ by simp)
+    refine unifIntegrable_iff.mpr fun ε hε => ?_
+    obtain ⟨δ, hδ, hsmall⟩ := unifIntegrable_iff.mp hub ε hε
+    refine ⟨δ, hδ, fun n s hμs => ?_⟩
+    exact (eLpNorm_mono_ae (Lp.aestronglyMeasurable (f n)).restrict
+      ((hbound n).filter_mono ae_restrict_le)).trans (hsmall n s hμs)
   apply (Lp.tendsto_Lp_iff_tendsto_eLpNorm' f f0).mpr
   exact tendsto_Lp_finite_of_tendstoInMeasure Fact.out hp
     (fun n => Lp.aestronglyMeasurable (f n)) (Lp.memLp f0) huf hf
@@ -92,7 +87,7 @@ theorem tendsto_top_of_tendstoUniformlyOn
     rw [hsub, Pi.sub_apply, hft, hf0t, ← dist_eq_norm_sub, dist_comm]
     exact (hx t ht).le
   have hnorm : ‖f x - f0‖ ≤ ε / 2 := by
-    rw [Lp.norm_def, eLpNorm_exponent_top]
+    rw [Lp.norm_def, eLpNorm_exponent_top (Lp.aestronglyMeasurable (f x - f0))]
     exact (ENNReal.toReal_mono ENNReal.ofReal_ne_top
       (eLpNormEssSup_le_of_ae_bound hbound)).trans_eq
         (ENNReal.toReal_ofReal (half_pos hε).le)

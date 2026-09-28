@@ -44,7 +44,7 @@ theorem exists_isSubordinate_chartAt_source_inter_interior :
   · intro x hx y hy
     have h := hrho x hy
     dsimp only [U] at h
-    rw [if_pos hx] at h
+    rw [ite_eq_left hx] at h
     exact h.2
 
 end SmoothPartitionOfUnity

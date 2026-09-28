@@ -151,31 +151,6 @@ theorem hasExtinctRetainedCoreHistory_of_hasUniformRecordsSurgeryTower
   exact RetainedCoreObservationTower.hasExtinctRetainedCoreHistory M T hbfr hctrl
     (T.toObservationTower.towerExtinct_of_uniformRecordsAbove hrec)
 
-theorem hext_of_hasUniformRecordsSurgeryTower
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasUniformRecordsSurgeryTower
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
-  hext_of_hasExtinctRetainedCoreHistory fun M _ g =>
-    hasExtinctRetainedCoreHistory_of_hasUniformRecordsSurgeryTower M g (h M g)
-
-theorem smoothPoincareConjecture_of_hasUniformRecordsSurgeryTower
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasUniformRecordsSurgeryTower
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_hasExtinctRetainedCoreHistory hsum fun M hsc g =>
-    let _ := hsc
-    hasExtinctRetainedCoreHistory_of_hasUniformRecordsSurgeryTower M g (h M g)
-
 theorem hasUniformRecordsSurgeryTower_of_hasMorganTianExtinctionInput
     {P : OrientedThreeStage.{u}} [ConnectedSpace P.Carrier] [SimplyConnectedSpace P.Carrier]
     {g : P.Metric} (h : HasMorganTianExtinctionInput P g) :
@@ -198,31 +173,5 @@ theorem hasExtinctRetainedCoreHistory_of_hasMorganTianExtinctionInput
       M.toClosedOrientedManifold).Carrier := inferInstanceAs (SimplyConnectedSpace M.Carrier)
   hasExtinctRetainedCoreHistory_of_hasUniformRecordsSurgeryTower M g
     (hasUniformRecordsSurgeryTower_of_hasMorganTianExtinctionInput h)
-
-theorem hext_of_hasMorganTianExtinctionInput
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasMorganTianExtinctionInput
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
-  hext_of_hasExtinctRetainedCoreHistory fun M hsc g =>
-    let _ := hsc
-    hasExtinctRetainedCoreHistory_of_hasMorganTianExtinctionInput M g (h M g)
-
-theorem smoothPoincareConjecture_of_hasMorganTianExtinctionInput
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasMorganTianExtinctionInput
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_hasExtinctRetainedCoreHistory hsum fun M hsc g =>
-    let _ := hsc
-    hasExtinctRetainedCoreHistory_of_hasMorganTianExtinctionInput M g (h M g)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

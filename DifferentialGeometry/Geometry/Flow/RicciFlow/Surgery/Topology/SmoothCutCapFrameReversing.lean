@@ -91,7 +91,7 @@ theorem RetainedCoreEvent.toMetricCutCapEvent_hasCutCapCompletion_of_attaching_e
   E.transition.nonempty_smoothCutCapCompletion_of_attaching_eq_refl h hout
 
 theorem RetainedCoreHistory.boundaryFrameReversing_of_attaching_eq_refl
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+    (H : RetainedCoreHistory.{u})
     (h : ∀ (i : Fin H.eventCount) (b : (H.coreEvent i).transition.trace.tubes.Boundary),
       (H.coreEvent i).transition.attaching b = Diffeomorph.refl (𝓡 2)
         (Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) ∞)

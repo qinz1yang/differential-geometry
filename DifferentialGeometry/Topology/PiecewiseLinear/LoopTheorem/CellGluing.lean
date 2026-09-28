@@ -111,10 +111,10 @@ theorem exists_boundaryParam_paths_of_isCutPair_union_with_endpoints
     split_ifs with htHalf
     · change t ≤ 1 / 2 at htHalf
       change f (2 * t) = Schoenflies.concatenate f g t
-      rw [Schoenflies.concatenate, if_pos htHalf]
+      rw [Schoenflies.concatenate, ite_eq_left htHalf]
     · change ¬t ≤ 1 / 2 at htHalf
       change g (2 * t - 1) = Schoenflies.concatenate f g t
-      rw [Schoenflies.concatenate, if_neg htHalf]
+      rw [Schoenflies.concatenate, ite_eq_right htHalf]
   let p : Path a' a' := ρ.trans κ
   let F : loopCircle → frontier P := pathToCircle p
   have hFcontinuous : Continuous F := by

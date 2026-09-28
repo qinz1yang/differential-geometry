@@ -64,7 +64,7 @@ theorem curvatureOperatorImageAt_finrank_prod_real_eq_one_of_scalar_ne_zero
       ⟨metricRm04At (g.prod (euclideanMetric (E := ℝ))) x,
         metricRm04At_mem_algebraicCurvatureTensorSubmodule
           (g.prod (euclideanMetric (E := ℝ))) x⟩) = 1 := by
-  rw [curvatureOperatorImageAt_finrank_prod_real g hdim x, if_neg hscalar]
+  rw [curvatureOperatorImageAt_finrank_prod_real g hdim x, ite_eq_right hscalar]
 
 variable {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
   [FiniteDimensional ℝ F]
@@ -123,7 +123,7 @@ theorem curvatureOperatorImageAt_finrank_pullback_prod_real_eq_one_of_scalar_ne_
           (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x,
         metricRm04At_mem_algebraicCurvatureTensorSubmodule
           (Diffeomorph.pullbackMetricCross (g.prod (euclideanMetric (E := ℝ))) Φ) x⟩) = 1 := by
-  rw [curvatureOperatorImageAt_finrank_pullback_prod_real g Φ hdim x, if_neg hscalar]
+  rw [curvatureOperatorImageAt_finrank_pullback_prod_real g Φ hdim x, ite_eq_right hscalar]
 
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
 

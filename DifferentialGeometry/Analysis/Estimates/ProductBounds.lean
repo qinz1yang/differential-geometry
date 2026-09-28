@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Analysis.Normed.Group.Basic
 import Mathlib.Analysis.Real.Sqrt
 import Mathlib.Algebra.BigOperators.Fin
@@ -315,7 +315,7 @@ theorem prod_le_pow_card_mul_pow_of_sum_le {ι : Type*} (s : Finset ι) (d : ι 
     (hf : ∀ i ∈ s, 0 ≤ f i) (hb : ∀ i ∈ s, f i ≤ D * ρ ^ d i)
     (hw : (∑ i ∈ s, d i) ≤ w) : (∏ i ∈ s, f i) ≤ D ^ s.card * ρ ^ w := by
   calc
-    (∏ i ∈ s, f i) ≤ ∏ i ∈ s, D * ρ ^ d i := Finset.prod_le_prod hf hb
+    (∏ i ∈ s, f i) ≤ ∏ i ∈ s, D * ρ ^ d i := Finset.prod_le_prod₀ hf hb
     _ = D ^ s.card * ρ ^ (∑ i ∈ s, d i) := by
       rw [Finset.prod_mul_distrib, Finset.prod_const, Finset.prod_pow_eq_pow_sum]
     _ ≤ D ^ s.card * ρ ^ w :=

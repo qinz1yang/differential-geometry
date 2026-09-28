@@ -168,7 +168,7 @@ lemma maximalGeodesic_of_not_mem
     maximalGeodesic (I := I) g p v t = p := by
   unfold maximalGeodesic
   let : Decidable (HasGeodesicAt (I := I) g p v t) := Classical.dec _
-  exact dif_neg ht
+  exact dite_eq_right ht
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless]
   [CompleteSpace E] in
@@ -179,7 +179,7 @@ lemma maximalGeodesic_of_mem
       maximalGeodesicChosenCurve (I := I) g p v h t := by
   unfold maximalGeodesic
   let : Decidable (HasGeodesicAt (I := I) g p v t) := Classical.dec _
-  exact dif_pos h
+  exact dite_eq_left h
 
 end MaximalGeodesicDefinition
 

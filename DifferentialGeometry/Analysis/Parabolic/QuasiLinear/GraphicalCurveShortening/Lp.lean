@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Parabolic.QuasiLinear.GraphicalCurveShortening.Coefficients
+import Mathlib.Analysis.Calculus.FDeriv.Measurable
 import Mathlib.MeasureTheory.Function.Holder
 import Mathlib.MeasureTheory.Function.LpSeminorm.LpNorm
 import Mathlib.MeasureTheory.Function.LpSeminorm.TriangleInequality
@@ -29,13 +30,14 @@ theorem graphDiffusionRemainderLp_ae (p : Lp E ∞ μ) :
 
 private theorem lp_top_ae_norm_le (p : Lp E ∞ μ) :
     ∀ᵐ x ∂μ, ‖p x‖ ≤ ‖p‖ := by
-  simpa only [← toReal_eLpNorm p.1.aestronglyMeasurable, Lp.norm_def] using
+  simpa only [← toReal_eLpNorm, Lp.norm_def] using
     ae_le_lpNorm_exponent_top (Lp.memLp p)
 
 private theorem lp_top_norm_le_of_ae_bound {c : Lp ℝ ∞ μ} {C : ℝ} (hC : 0 ≤ C)
     (h : ∀ᵐ x ∂μ, ‖c x‖ ≤ C) : ‖c‖ ≤ C := by
   rw [Lp.norm_def]
   apply (ENNReal.toReal_le_of_le_ofReal hC)
+  rw [eLpNorm_exponent_top c.1.aestronglyMeasurable]
   exact eLpNormEssSup_le_of_ae_bound h
 
 theorem graphDiffusionRemainderLp_norm_le (p : Lp E ∞ μ) :
@@ -162,7 +164,10 @@ theorem eLpNorm_graphDiffusionCoefficient_derivative_sub_le
     {R D : ℝ} {l : ℝ≥0∞} (hR : 0 ≤ R) (hD : 0 ≤ D) (hl : 1 ≤ l)
     (hpR : ∀ᵐ x ∂μ, ‖p x‖ ≤ R) (hqR : ∀ᵐ x ∂μ, ‖q x‖ ≤ R)
     (hpq : ∀ᵐ x ∂μ, ‖p x - q x‖ ≤ D)
-    (hr : AEStronglyMeasurable r μ) (hs : AEStronglyMeasurable s μ) :
+    (hr : AEStronglyMeasurable r μ) (hs : AEStronglyMeasurable s μ)
+    (hcoeff : AEStronglyMeasurable (fun x =>
+      (-2 * graphDiffusionCoefficient (p x) ^ 2 * ⟪p x, r x⟫_ℝ) -
+        (-2 * graphDiffusionCoefficient (q x) ^ 2 * ⟪q x, s x⟫_ℝ)) μ) :
     eLpNorm (fun x => (-2 * graphDiffusionCoefficient (p x) ^ 2 * ⟪p x, r x⟫_ℝ) -
         (-2 * graphDiffusionCoefficient (q x) ^ 2 * ⟪q x, s x⟫_ℝ)) l μ ≤
       ENNReal.ofReal (2 * R) * eLpNorm (fun x => r x - s x) l μ +
@@ -173,8 +178,6 @@ theorem eLpNorm_graphDiffusionCoefficient_derivative_sub_le
   let B := (2 + 8 * R ^ 2) * D
   have hA : 0 ≤ A := by dsimp [A]; positivity
   have hB : 0 ≤ B := by dsimp [B]; positivity
-  have hf : AEStronglyMeasurable f μ := (hr.sub hs).norm
-  have hg : AEStronglyMeasurable g μ := hs.norm
   have hpoint : ∀ᵐ x ∂μ,
       ‖(-2 * graphDiffusionCoefficient (p x) ^ 2 * ⟪p x, r x⟫_ℝ) -
         (-2 * graphDiffusionCoefficient (q x) ^ 2 * ⟪q x, s x⟫_ℝ)‖ ≤
@@ -192,13 +195,14 @@ theorem eLpNorm_graphDiffusionCoefficient_derivative_sub_le
     dsimp [A, B, f, g]
     nlinarith only [hb, hmul, hr]
   calc
-    _ ≤ eLpNorm (A • f + B • g) l μ := eLpNorm_mono_ae_real hpoint
+    _ ≤ eLpNorm (A • f + B • g) l μ := eLpNorm_mono_ae_real hcoeff hpoint
     _ ≤ eLpNorm (A • f) l μ + eLpNorm (B • g) l μ :=
-      eLpNorm_add_le (hf.const_smul A) (hg.const_smul B) hl
+      eLpNorm_add_le hl
     _ = _ := by
       rw [eLpNorm_const_smul, eLpNorm_const_smul,
         Real.enorm_eq_ofReal hA, Real.enorm_eq_ofReal hB]
-      simp only [f, g, eLpNorm_norm, A, B]
+      simp only [f, g, A, B, eLpNorm_norm (fun x => r x - s x) (hr.sub hs),
+        eLpNorm_norm s hs]
 
 theorem eLpNorm_deriv_graphDiffusionCoefficient_sub_le
     {p q : ℝ → E} {μ : Measure ℝ} {R D : ℝ} {l : ℝ≥0∞}
@@ -221,6 +225,7 @@ theorem eLpNorm_deriv_graphDiffusionCoefficient_sub_le
       (hasDerivAt_graphDiffusionCoefficient hqx.hasDerivAt)).deriv
   rw [eLpNorm_congr_ae heq]
   exact eLpNorm_graphDiffusionCoefficient_derivative_sub_le hR hD hl hpR hqR hpq hp'm hq'm
+    ((aestronglyMeasurable_deriv _ μ).congr heq)
 
 end DifferentialGeometry.Analysis.Parabolic
 

@@ -187,7 +187,10 @@ private theorem smooth_pointwise_holder_bound_components
         eLpNorm (fun y => ∑ i : Fin d,
           ‖(fderiv ℝ u y) (EuclideanSpace.single i 1)‖) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball z r)) := by
-    refine eLpNorm_mono ?_
+    have h_norm_aesm : AEStronglyMeasurable (fun y : E => ‖fderiv ℝ u y‖)
+        (volume.restrict (Metric.ball z r)) :=
+      ((hu.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).norm.aestronglyMeasurable).restrict
+    refine eLpNorm_mono h_norm_aesm ?_
     intro y
     rw [Real.norm_of_nonneg (norm_nonneg _),
       Real.norm_of_nonneg (Finset.sum_nonneg fun i _ => norm_nonneg _)]
@@ -213,12 +216,14 @@ private theorem smooth_pointwise_holder_bound_components
           ‖(fderiv ℝ u y) (EuclideanSpace.single i 1)‖) := by
       ext y; simp [Finset.sum_apply]
     rw [h_eq]
-    exact eLpNorm_sum_le (fun i _ => h_aesm i) hpp_one
+    exact eLpNorm_sum_le hpp_one
   have h_comp_eq : ∀ i : Fin d,
       eLpNorm (fun y => ‖(fderiv ℝ u y) (EuclideanSpace.single i 1)‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r)) =
       eLpNorm (fun y => (fderiv ℝ u y) (EuclideanSpace.single i 1)) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r)) := fun i => eLpNorm_norm _
+          (((hu.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
+            continuous_const).aestronglyMeasurable.restrict)
   have h_eLpNorm_total :
       eLpNorm (fun y => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r)) ≤
@@ -241,7 +246,12 @@ private theorem smooth_pointwise_holder_bound_components
     intro i _
     refine lt_of_le_of_lt (b := eLpNorm (fun y => ‖fderiv ℝ u y‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r))) ?_ (lt_of_le_of_ne le_top h_eLpNorm_lt)
-    refine eLpNorm_mono ?_
+    have h_comp_aesm : AEStronglyMeasurable
+        (fun y : E => (fderiv ℝ u y) (EuclideanSpace.single i 1))
+        (volume.restrict (Metric.ball z r)) :=
+      (((hu.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
+        continuous_const).aestronglyMeasurable.restrict)
+    refine eLpNorm_mono h_comp_aesm ?_
     intro y
     have hbound_pt : ‖(fderiv ℝ u y) (EuclideanSpace.single i 1)‖ ≤
         ‖fderiv ℝ u y‖ * ‖EuclideanSpace.single i (1 : ℝ)‖ :=
@@ -430,7 +440,7 @@ private lemma tendsto_setIntegral_of_eLpNorm_p_to_zero
         eLpNorm (fun x => F n x - g x) 1 (volume.restrict Ω) =
           ∫⁻ x, ‖F n x - g x‖ₑ ∂(volume.restrict Ω) := by
       intro n
-      rw [eLpNorm_one_eq_lintegral_enorm]
+      rw [eLpNorm_one_eq_lintegral_enorm (h_diff_memLp n).aestronglyMeasurable]
     refine (Filter.tendsto_congr h_eq).mp h_L1
   have hg_int : Integrable g (volume.restrict Ω) := by
     have h_one_le_p : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
@@ -500,15 +510,13 @@ private lemma eLpNorm_sub_le_eLpNorm_diff_real
   have h1 : eLpNorm f p μ ≤ eLpNorm g p μ + eLpNorm (fun x => f x - g x) p μ := by
     have h_eq : f = (fun x => g x + (f x - g x)) := by funext; ring
     nth_rewrite 1 [h_eq]
-    refine (eLpNorm_add_le hg.aestronglyMeasurable
-      (hf.sub hg).aestronglyMeasurable hp).trans (le_refl _)
+    refine (eLpNorm_add_le hp).trans (le_refl _)
   have h2 : eLpNorm g p μ ≤ eLpNorm f p μ + eLpNorm (fun x => f x - g x) p μ := by
     have h_eq : g = (fun x => f x + (g x - f x)) := by funext; ring
     nth_rewrite 1 [h_eq]
     have h_step : eLpNorm (fun x => f x + (g x - f x)) p μ ≤
         eLpNorm f p μ + eLpNorm (fun x => g x - f x) p μ :=
-      eLpNorm_add_le hf.aestronglyMeasurable
-        ((hg.sub hf).aestronglyMeasurable) hp
+      eLpNorm_add_le hp
     refine h_step.trans ?_
     have h_eLpNorm_eq : eLpNorm (fun x => g x - f x) p μ =
         eLpNorm (fun x => f x - g x) p μ := by
@@ -724,7 +732,10 @@ private lemma eLpNorm_fderiv_norm_le_sum_components
         eLpNorm (fun y => ∑ i : Fin d,
           ‖(fderiv ℝ φ y) (EuclideanSpace.single i 1)‖) (ENNReal.ofReal p)
           (volume.restrict (Metric.ball z r)) := by
-    refine eLpNorm_mono ?_
+    have h_norm_aesm : AEStronglyMeasurable (fun y : E => ‖fderiv ℝ φ y‖)
+        (volume.restrict (Metric.ball z r)) :=
+      ((hφ.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).norm.aestronglyMeasurable).restrict
+    refine eLpNorm_mono h_norm_aesm ?_
     intro y
     rw [Real.norm_of_nonneg (norm_nonneg _),
       Real.norm_of_nonneg (Finset.sum_nonneg fun i _ => norm_nonneg _)]
@@ -750,12 +761,14 @@ private lemma eLpNorm_fderiv_norm_le_sum_components
           ‖(fderiv ℝ φ y) (EuclideanSpace.single i 1)‖) := by
       ext y; simp [Finset.sum_apply]
     rw [h_eq]
-    exact eLpNorm_sum_le (fun i _ => h_aesm i) hpp_one
+    exact eLpNorm_sum_le hpp_one
   have h_comp_eq : ∀ i : Fin d,
       eLpNorm (fun y => ‖(fderiv ℝ φ y) (EuclideanSpace.single i 1)‖) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r)) =
       eLpNorm (fun y => (fderiv ℝ φ y) (EuclideanSpace.single i 1)) (ENNReal.ofReal p)
         (volume.restrict (Metric.ball z r)) := fun i => eLpNorm_norm _
+          (((hφ.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
+            continuous_const).aestronglyMeasurable.restrict)
   refine h_eLpNorm_le.trans (h_sum_eLpNorm_le.trans (le_of_eq ?_))
   refine Finset.sum_congr rfl ?_
   intro i _; exact h_comp_eq i
@@ -1037,7 +1050,13 @@ theorem mean_value_inequality_W1p
               (b := eLpNorm (fun z => ‖fderiv ℝ (φ n) z‖) (ENNReal.ofReal p)
                 (volume.restrict (Metric.ball x₀ (3 * R / 4)))) ?_
               (lt_of_le_of_ne le_top h_memLp.eLpNorm_ne_top)
-            refine eLpNorm_mono ?_
+            have h_comp_aesm : AEStronglyMeasurable
+                (fun z => (fderiv ℝ (φ n) z) (EuclideanSpace.single i 1))
+                (volume.restrict (Metric.ball x₀ (3 * R / 4))) :=
+              (((hφ_smooth n).continuous_fderiv
+                (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
+                continuous_const).aestronglyMeasurable.restrict
+            refine eLpNorm_mono h_comp_aesm ?_
             intro z
             have hbound_pt :
                 ‖(fderiv ℝ (φ n) z) (EuclideanSpace.single i 1)‖ ≤
@@ -1375,7 +1394,11 @@ theorem mean_value_inequality_W1p
                 (volume.restrict (Metric.ball x₀ (3 * R / 4))) ≤
               eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p)
                 (volume.restrict (Metric.ball x₀ (3 * R / 4))) := by
-            refine eLpNorm_mono ?_
+            have h_comp_memLp : MemLp (fun z => hu.weakGrad z i) (ENNReal.ofReal p)
+                (volume.restrict (Metric.ball x₀ (3 * R / 4))) :=
+              (hu.weakGrad_component_memLp i).mono_measure
+                (Measure.restrict_mono_set _ h_ball_R34_sub)
+            refine eLpNorm_mono h_comp_memLp.aestronglyMeasurable ?_
             intro z
             rw [Real.norm_of_nonneg (norm_nonneg _)]
             have hzi : |hu.weakGrad z i| ≤ ‖hu.weakGrad z‖ := h_pt z
@@ -1510,8 +1533,7 @@ private lemma eLpNorm_diff_real_bound
     rw [h_sub_eq]
     have h_neg_diff_m : MemLp (fun x => -(F m x - g x)) (ENNReal.ofReal p) μ :=
       h_diff_m.neg
-    refine (eLpNorm_add_le h_diff_n.aestronglyMeasurable
-      h_neg_diff_m.aestronglyMeasurable hp_one).trans ?_
+    refine (eLpNorm_add_le hp_one).trans ?_
     have h_neg_eLp : eLpNorm (fun x => -(F m x - g x)) (ENNReal.ofReal p) μ =
         eLpNorm (fun x => F m x - g x) (ENNReal.ofReal p) μ := by
       have : (fun x => -(F m x - g x)) = -(fun x => F m x - g x) := by
@@ -1587,7 +1609,10 @@ private lemma eLpNorm_weakGrad_component_le_norm_real
   have h_step1 :
       eLpNorm (fun z => hu.weakGrad z i) (ENNReal.ofReal p) (volume.restrict S) ≤
       eLpNorm (fun z => ‖hu.weakGrad z‖) (ENNReal.ofReal p) (volume.restrict S) := by
-    refine eLpNorm_mono ?_
+    have h_comp_memLp : MemLp (fun z => hu.weakGrad z i) (ENNReal.ofReal p)
+        (volume.restrict S) :=
+      (hu.weakGrad_component_memLp i).mono_measure (Measure.restrict_mono_set _ hS)
+    refine eLpNorm_mono h_comp_memLp.aestronglyMeasurable ?_
     intro z
     rw [Real.norm_of_nonneg (norm_nonneg _)]
     rw [show ‖hu.weakGrad z i‖ = |hu.weakGrad z i| from rfl]
@@ -2045,9 +2070,7 @@ private theorem morrey_representative_of_W1pWitness_uniform
       exact h_phi_to_u_R4
     have h_in_measure : TendstoInMeasure (volume.restrict (Metric.ball x₀ (R / 4)))
         φ atTop u :=
-      tendstoInMeasure_of_tendsto_eLpNorm h_p_ne_zero
-        (fun n => (h_phi_memLp_R4 n).aestronglyMeasurable)
-        h_u_memLp_R4.aestronglyMeasurable h_phi_to_u_R4_alt
+      tendstoInMeasure_of_tendsto_eLpNorm h_p_ne_zero h_phi_to_u_R4_alt
     obtain ⟨ns, hns_strict, h_ae_phi⟩ := h_in_measure.exists_seq_tendsto_ae
     have h_subseq_to_ũ : ∀ x ∈ Metric.ball x₀ (R / 4),
         Tendsto (fun i => φ (ns i) x) atTop

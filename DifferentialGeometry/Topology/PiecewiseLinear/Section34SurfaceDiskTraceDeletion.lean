@@ -10,7 +10,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem IsCombinatorialManifold.exists_strict_trace_subfamily_after_disk
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) {ι : Type*} [Finite ι] {D : Set E} {J : ι → Set E}
-    (i : ι) {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (i : ι) {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hbd : r '' stdSimplexBoundary 2 = J i) (hDK : D ⊆ K.space)
     (hJ : ∀ j, IsPLSphere 1 (J j)) (hJK : ∀ j, J j ⊆ K.space)
     (hdis : Pairwise fun j k => Disjoint (J j) (J k)) :

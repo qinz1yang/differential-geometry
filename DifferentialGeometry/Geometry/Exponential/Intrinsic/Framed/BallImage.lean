@@ -35,7 +35,8 @@ theorem intrinsicFramedExp_image_ball
   · intro hq
     have hq' : riemannianEDist I p q < ENNReal.ofReal r := by
       rw [← IsRiemannianManifold.out (I := I)]
-      exact Metric.mem_eball'.mp hq
+      change edist q p < ENNReal.ofReal r at hq
+      simpa only [PseudoEMetricSpace.edist_comm] using hq
     obtain ⟨v, hv, hvnorm⟩ := hopf_rinow_expMapIntrinsic_surjective_minimizing_of_ne_top
       g hEnorm p q (ne_of_lt (hq'.trans ENNReal.ofReal_lt_top))
     let w : E := (normalFrame (I := I) g p).symm v

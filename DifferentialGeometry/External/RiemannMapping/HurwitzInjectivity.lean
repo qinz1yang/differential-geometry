@@ -131,7 +131,7 @@ theorem circleIntegral_logDeriv_eq_finsum_analyticOrderNatAdd {f : ℂ → ℂ} 
     intro z hz
     conv_lhs => rw [hfg]
     simp only [smul_eq_mul]
-    rw [logDeriv_mul, logDeriv_prod]
+    rw [logDeriv_fun_mul, logDeriv_fun_prod]
     · congr 1
       refine Finset.sum_congr rfl fun w hw ↦ ?_
       rw [logDeriv_fun_pow (by fun_prop), logDeriv, Pi.div_apply, deriv_sub_const, deriv_id'']

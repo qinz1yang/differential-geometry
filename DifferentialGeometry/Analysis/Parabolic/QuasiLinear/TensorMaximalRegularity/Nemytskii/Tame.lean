@@ -19,18 +19,9 @@ theorem timeL2_norm_le_of_ae_three_bound
   set Pf : ℝ → ℝ := fun t => ‖(p : ℝ → Y) t‖ with hPf
   set Qf : ℝ → ℝ := fun t => ‖(q : ℝ → Z) t‖ with hQf
   set Rf : ℝ → ℝ := fun t => ‖(r : ℝ → W) t‖ with hRf
-  have hPm : AEStronglyMeasurable Pf (timeMeasure T) :=
-    (Lp.aestronglyMeasurable p).norm
-  have hQm : AEStronglyMeasurable Qf (timeMeasure T) :=
-    (Lp.aestronglyMeasurable q).norm
-  have hRm : AEStronglyMeasurable Rf (timeMeasure T) :=
-    (Lp.aestronglyMeasurable r).norm
-  have hAPm : AEStronglyMeasurable (A • Pf) (timeMeasure T) := hPm.const_smul A
-  have hBQm : AEStronglyMeasurable (B • Qf) (timeMeasure T) := hQm.const_smul B
-  have hCRm : AEStronglyMeasurable (C • Rf) (timeMeasure T) := hRm.const_smul C
   have hmono : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
       eLpNorm (A • Pf + B • Qf + C • Rf) 2 (timeMeasure T) := by
-    refine eLpNorm_mono_ae ?_
+    refine eLpNorm_mono_ae (Lp.aestronglyMeasurable h) ?_
     filter_upwards [hbound] with t ht
     have happ : (A • Pf + B • Qf + C • Rf) t = A * ‖p t‖ + B * ‖q t‖ + C * ‖r t‖ := by
       simp [hPf, hQf, hRf, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
@@ -46,23 +37,26 @@ theorem timeL2_norm_le_of_ae_three_bound
         + eLpNorm (C • Rf) 2 (timeMeasure T) := by
     have step1 : eLpNorm (A • Pf + B • Qf + C • Rf) 2 (timeMeasure T) ≤
         eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) + eLpNorm (C • Rf) 2 (timeMeasure T) :=
-      eLpNorm_add_le (hAPm.add hBQm) hCRm (by norm_num)
+      eLpNorm_add_le (by norm_num)
     have step2 : eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) ≤
         eLpNorm (A • Pf) 2 (timeMeasure T) + eLpNorm (B • Qf) 2 (timeMeasure T) :=
-      eLpNorm_add_le hAPm hBQm (by norm_num)
+      eLpNorm_add_le (by norm_num)
     exact le_trans step1 (add_le_add step2 le_rfl)
   have hscaleP : eLpNorm (A • Pf) 2 (timeMeasure T) =
       ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hA]
+    rw [eLpNorm_const_smul, eLpNorm_norm _ (Lp.aestronglyMeasurable p),
+      Real.enorm_eq_ofReal hA]
   have hscaleQ : eLpNorm (B • Qf) 2 (timeMeasure T) =
       ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hB]
+    rw [eLpNorm_const_smul, eLpNorm_norm _ (Lp.aestronglyMeasurable q),
+      Real.enorm_eq_ofReal hB]
   have hscaleR : eLpNorm (C • Rf) 2 (timeMeasure T) =
       ENNReal.ofReal C * eLpNorm (r : ℝ → W) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hC]
-  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp p).2.ne
-  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp q).2.ne
-  have hr_top : eLpNorm (r : ℝ → W) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp r).2.ne
+    rw [eLpNorm_const_smul, eLpNorm_norm _ (Lp.aestronglyMeasurable r),
+      Real.enorm_eq_ofReal hC]
+  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ := Lp.eLpNorm_ne_top p
+  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ := Lp.eLpNorm_ne_top q
+  have hr_top : eLpNorm (r : ℝ → W) 2 (timeMeasure T) ≠ ⊤ := Lp.eLpNorm_ne_top r
   have hAp_ne : ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ :=
     ENNReal.mul_ne_top ENNReal.ofReal_ne_top hp_top
   have hBq_ne : ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ :=

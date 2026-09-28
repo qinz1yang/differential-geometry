@@ -750,16 +750,16 @@ private theorem exists_inj_parts
   have hVopen : ∀ x, IsOpen (V x) := by
     intro x
     by_cases hx : x ∈ U
-    · simpa only [V, dif_pos hx] using (e x hx).open_source
-    · simp only [V, dif_neg hx, isOpen_empty]
+    · simpa only [V, dite_eq_left hx] using (e x hx).open_source
+    · simp only [V, dite_eq_right hx, isOpen_empty]
   have hxV : ∀ x (hx : x ∈ U), x ∈ V x := by
     intro x hx
-    simpa only [V, dif_pos hx] using he x hx
+    simpa only [V, dite_eq_left hx] using he x hx
   have hVinj : ∀ x, Set.InjOn F (V x) := by
     intro x
     by_cases hx : x ∈ U
-    · simpa only [V, dif_pos hx, hFe x hx] using (e x hx).injOn
-    · simp only [V, dif_neg hx, Set.injOn_empty]
+    · simpa only [V, dite_eq_left hx, hFe x hx] using (e x hx).injOn
+    · simp only [V, dite_eq_right hx, Set.injOn_empty]
   have hVnhds : ∀ x ∈ U, V x ∈ 𝓝[U] x := by
     intro x hx
     exact mem_nhdsWithin_of_mem_nhds ((hVopen x).mem_nhds (hxV x hx))

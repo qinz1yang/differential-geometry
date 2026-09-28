@@ -21,7 +21,11 @@ theorem mfderivWithin_curve_eq_mfderiv_comp_apply_one
     (hK : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) K w) (hw : w ∈ K)
     (heq : EqOn (f ∘ η) α K) :
     mfderivWithin 𝓘(ℝ, ℝ) J α K w (1 : ℝ) = mfderiv I J f (η w) (mfderiv 𝓘(ℝ, ℝ) I η w (1 : ℝ)) := by
-  rw [← mfderivWithin_congr_of_mem heq hw]
+  have hcongr : mfderivWithin 𝓘(ℝ, ℝ) J (f ∘ η) K w =
+      mfderivWithin 𝓘(ℝ, ℝ) J α K w := by
+    rw [mfderivWithin_congr_of_mem heq hw]
+    rfl
+  rw [← hcongr]
   rw [mfderivWithin_eq_mfderiv hK (hf.comp w hη)]
   rw [mfderiv_comp w hf hη]
   rfl

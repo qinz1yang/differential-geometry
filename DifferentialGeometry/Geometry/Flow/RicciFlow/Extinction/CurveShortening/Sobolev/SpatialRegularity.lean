@@ -1872,7 +1872,7 @@ private theorem ambient_retraction_contMDiff_two_and_immersed_of_parameterDeriva
   · intro x t htt hzero
     have hdne : deriv (fun y => d.lift y t) x ≠ 0 := by
       have hpos := (hjet t htt x).2.2
-      let B := TensorSpectral.chartGramBilin (Geometry.Riemannian.retractionMetric (g t) he hr) β
+      let B := Tensor.Coordinates.chartGramBilin (Geometry.Riemannian.retractionMetric (g t) he hr) β
         ((extChartAt 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) β).symm (d.lift x t))
       change 0 < B (deriv (fun y => d.lift y t) x) (deriv (fun y => d.lift y t) x) at hpos
       intro h

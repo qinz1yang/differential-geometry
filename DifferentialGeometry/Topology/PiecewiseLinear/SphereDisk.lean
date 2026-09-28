@@ -19,7 +19,7 @@ theorem exists_isPLHomeomorphOn_stdSimplex_starComplex {E : Type*}
     (T : Finset E) (hT : AffineIndependent ℝ ((↑) : T → E))
     {n : ℕ} (hcard : T.card = n + 3) {a : E} (ha : a ∈ T) :
     ∃ f : (Fin (n + 2) → ℝ) → E,
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) (starComplex (simplexBoundary T hT) a).space ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (starComplex (simplexBoundary T hT) a).space ∧
       f '' stdSimplexBoundary (n + 1) =
         (simplexBoundary (T.erase a) (affineIndependent_of_subset hT (Finset.erase_subset a
             T))).space := by
@@ -47,7 +47,7 @@ theorem exists_disk_in_simplexBoundary_of_isPLSphere_one
     (hJB : J ⊆ (simplexBoundary T hT).space) :
     ∃ D : Set (EuclideanSpace ℝ (Fin 3)), D ⊆ (simplexBoundary T hT).space ∧
       ∃ f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-        IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D ∧ f '' stdSimplexBoundary 2 = J := by
+        IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ f '' stdSimplexBoundary 2 = J := by
   let B := simplexBoundary T hT
   let _ : Finite B.faces := (simplexBoundary_faces_finite T hT).to_subtype
   have hB : IsPLSphere 2 B.space := by
@@ -129,11 +129,11 @@ theorem exists_complementary_disk_in_simplexBoundary
     (hT : AffineIndependent ℝ ((↑) : T → EuclideanSpace ℝ (Fin 3))) (hcard : T.card = 4)
     {D : Set (EuclideanSpace ℝ (Fin 3))} (hDB : D ⊆ (simplexBoundary T hT).space)
     {f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) :
     ∃ D' : Set (EuclideanSpace ℝ (Fin 3)),
       D ∪ D' = (simplexBoundary T hT).space ∧ D ∩ D' = f '' stdSimplexBoundary 2 ∧
       ∃ g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-        IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D' ∧
+        IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧
           g '' stdSimplexBoundary 2 = f '' stdSimplexBoundary 2 := by
   let B := simplexBoundary T hT
   have hfront : frontier (convexHull ℝ (T : Set _)) = B.space :=
@@ -182,8 +182,8 @@ theorem exists_disk_decomposition_of_isPLSphere_one_subset_two {E : Type*}
     {S J : Set E} (hS : IsPLSphere 2 S) (hJ : IsPLSphere 1 J) (hJS : J ⊆ S) :
     ∃ D₁ D₂ : Set E, D₁ ∪ D₂ = S ∧ D₁ ∩ D₂ = J ∧
       ∃ f₁ f₂ : (Fin 3 → ℝ) → E,
-        IsPLHomeomorphOn f₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-        IsPLHomeomorphOn f₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+        IsPLHomeomorphOn f₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+        IsPLHomeomorphOn f₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
         f₁ '' stdSimplexBoundary 2 = J ∧ f₂ '' stdSimplexBoundary 2 = J := by
   classical
   obtain ⟨T, hT, hTcard, -, -, -⟩ := exists_affineIndependent_openSimplex_subset

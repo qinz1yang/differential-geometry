@@ -112,8 +112,8 @@ theorem exists_target_valued_smooth_approximation_tendsto_energy_on_ball
   have hum (n : ℕ) : MemLp (v n) 2 μ :=
     ((hv n).continuousOn.memLp_restrict_compact (isCompact_closedBall c a) 2).mono_measure
       (Measure.restrict_mono_set volume Metric.ball_subset_closedBall)
-  obtain ⟨φ, hφ, hae⟩ := (tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-    (fun n => (hum n).aestronglyMeasurable) hfm.aestronglyMeasurable hval).exists_seq_tendsto_ae
+  obtain ⟨φ, hφ, hae⟩ := (tendstoInMeasure_of_tendsto_eLpNorm
+    (by norm_num : (2 : ℝ≥0∞) ≠ 0) hval).exists_seq_tendsto_ae
   have hpartial (n : ℕ) (j : Fin 2) : MemLp
       (fun x => fderiv ℝ (v n) x (EuclideanSpace.single j 1)) 2 μ := by
     obtain ⟨L, hL⟩ := hvLip n
@@ -321,8 +321,7 @@ theorem exists_globally_lipschitz_target_approximation_tendsto_energy_on_ball
       _ ≤ 2 * max D 0 := mul_le_mul_of_nonneg_left
         ((hD (mem_range_self n)).trans (le_max_left _ _)) (by norm_num)
   obtain ⟨φ, hφ, hpoint⟩ :=
-    (tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-      (fun n => (hvm n).aestronglyMeasurable) hfm.aestronglyMeasurable hval').exists_seq_tendsto_ae
+    (tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0) hval').exists_seq_tendsto_ae
   exact ⟨v ∘ φ, L ∘ φ, 2 * max D 0, by positivity,
     fun n => hLip (φ n), fun n => hv (φ n), fun n => hvK (φ n),
     hval'.comp hφ.tendsto_atTop, fun j => (hder' j).comp hφ.tendsto_atTop,
@@ -419,7 +418,7 @@ theorem exists_lipschitz_complex_target_approximation_tendsto_energy_on_ball
     intro z hz
     simpa only [Metric.mem_closedBall, dist_zero_right, e.norm_map] using hz
   have hvLip (n : ℕ) : LipschitzWith (L n) (v n) := by
-    simpa only [mul_one] using (huLip n).comp e.isometry.lipschitz
+    simpa only [mul_one] using (huLip n).comp e.isometry.lipschitzWith
   have hv (n : ℕ) : ContDiffOn ℝ ∞ (v n) (Metric.closedBall (0 : ℂ) a) :=
     (hu n).comp e.toContinuousLinearEquiv.contDiff.contDiffOn hmap
   have hvK (n : ℕ) : MapsTo (v n) (Metric.closedBall (0 : ℂ) a) K :=
@@ -460,8 +459,6 @@ theorem exists_lipschitz_complex_target_approximation_tendsto_energy_on_ball
     let : IsFiniteMeasure μ := isFiniteMeasure_restrict.mpr measure_ball_lt_top.ne
     have hAc : ContinuousOn (fun x => A (u n x)) (Metric.closedBall (0 : E) a) :=
       hA.comp (hu n).continuousOn (huK n)
-    have hm : AEStronglyMeasurable (fun x => A (u n x)) μ :=
-      (hAc.mono Metric.ball_subset_closedBall).aestronglyMeasurable Metric.isOpen_ball.measurableSet
     have hAnorm : ContinuousOn (fun y => ‖A y‖) K :=
       (@continuous_norm (F →L[ℝ] F →L[ℝ] ℝ) inferInstance).comp_continuousOn hA
     obtain ⟨C, hC⟩ := hK.bddAbove_image hAnorm
@@ -474,8 +471,13 @@ theorem exists_lipschitz_complex_target_approximation_tendsto_energy_on_ball
         have hd := (fderiv ℝ (u n) x).le_opNorm (EuclideanSpace.single j 1)
         simpa only [PiLp.norm_single, norm_one, mul_one] using hd.trans
           (mul_le_mul_of_nonneg_right (norm_fderiv_le_of_lipschitz ℝ (huLip n)) (norm_nonneg _))
+    have hAc' : ContinuousOn (fun x => A (u n x)) (Metric.ball (0 : E) a) :=
+      hAc.mono Metric.ball_subset_closedBall
+    have hAm (b c : F) : AEStronglyMeasurable (fun x => A (u n x) b c) μ :=
+      ((hAc'.clm_apply continuousOn_const).clm_apply continuousOn_const).aestronglyMeasurable
+        Metric.isOpen_ball.measurableSet
     exact integrable_bilinear_of_apply_aestronglyMeasurable (fun x => A (u n x))
-      (fun b c => (hm.apply_continuousLinearMap b).apply_continuousLinearMap c) hb hdm hdm
+      hAm hb hdm hdm
   have heq (n : ℕ) : (∫ z in Metric.ball (0 : ℂ) a,
       (A (v n z) (fderiv ℝ (v n) z 1) (fderiv ℝ (v n) z 1) +
         A (v n z) (fderiv ℝ (v n) z Complex.I) (fderiv ℝ (v n) z Complex.I)) / 2) =

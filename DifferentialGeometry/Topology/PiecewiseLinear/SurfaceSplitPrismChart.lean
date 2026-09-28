@@ -17,17 +17,17 @@ open Classical in
 theorem IsPLBall.exists_complex_pair_with_centered_prism_and_boundary_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
     ∃ (K₀ K₁ : Geometry.SimplicialComplex ℝ E) (ρ : (Fin 3 → ℝ) × ℝ → E),
       K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧
       K₀.space ∪ K₁.space = K.space ∧ K₀.space ∩ K₁.space = D ∧
       D ⊆ (boundaryComplex 3 K₀).space ∧ D ⊆ (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) K.space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-       ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) K.space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+       ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
        K₀.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₀).space ∧
        K₁.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₁).space ∧
        (boundaryComplex 3 K₀).space =
@@ -51,17 +51,17 @@ open Classical in
 theorem IsPLBall.exists_complex_pair_with_centered_prism_and_outer_boundary_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
     ∃ (K₀ K₁ : Geometry.SimplicialComplex ℝ E) (ρ : (Fin 3 → ℝ) × ℝ → E),
       K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧
       K₀.space ∪ K₁.space = K.space ∧ K₀.space ∩ K₁.space = D ∧
       D ⊆ (boundaryComplex 3 K₀).space ∧ D ⊆ (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) K.space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) K.space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
       K₀.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₀).space ∧
       K₁.space ∩ (boundaryComplex 3 K).space ⊆ (boundaryComplex 3 K₁).space := by
   obtain ⟨K₀, K₁, ρ, hK₀fin, hK₁fin, hK₀, hK₁, hcover, hinter, hD₀, hD₁,
@@ -75,17 +75,17 @@ open Classical in
 theorem IsPLBall.exists_complex_pair_with_centered_prism_of_boundary_trace
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 3 K.space)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (htrace : D ∩ (boundaryComplex 3 K).space = g '' stdSimplexBoundary 2) :
     ∃ (K₀ K₁ : Geometry.SimplicialComplex ℝ E) (ρ : (Fin 3 → ℝ) × ℝ → E),
       K₀.faces.Finite ∧ K₁.faces.Finite ∧ IsPLBall 3 K₀.space ∧ IsPLBall 3 K₁.space ∧
       K₀.space ∪ K₁.space = K.space ∧ K₀.space ∩ K₁.space = D ∧
       D ⊆ (boundaryComplex 3 K₀).space ∧ D ⊆ (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) K.space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) K.space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space := by
   obtain ⟨K₀, K₁, ρ, hK₀fin, hK₁fin, hK₀, hK₁, hcover, hinter, hD₀, hD₁,
       hρ, hρmid, hρ₀, hρ₁, -, -⟩ :=
     hK.exists_complex_pair_with_centered_prism_and_outer_boundary_of_boundary_trace
@@ -101,7 +101,7 @@ theorem exists_isSubdivision_disk_pair_with_centered_prism_and_boundary
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
     {r₂ : (Fin 3 → ℝ) → E}
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ)
@@ -125,7 +125,7 @@ theorem exists_isSubdivision_disk_pair_with_centered_prism_and_boundary
       (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∩
           (boundaryComplex 3 (PiecewiseLinear.derivedNeighborhood R A)).space =
         (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∧
       g '' stdSimplexBoundary 2 =
         (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space ∧
@@ -138,11 +138,11 @@ theorem exists_isSubdivision_disk_pair_with_centered_prism_and_boundary
       D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space ⊆
         (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
           (PiecewiseLinear.derivedNeighborhood R A).space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
       K₀.space ∩
           (boundaryComplex 3 (PiecewiseLinear.derivedNeighborhood R A)).space ⊆
         (boundaryComplex 3 K₀).space ∧
@@ -194,7 +194,7 @@ theorem exists_isSubdivision_disk_pair_with_centered_prism_and_outer_boundary
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
     {r₂ : (Fin 3 → ℝ) → E}
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ)
@@ -218,7 +218,7 @@ theorem exists_isSubdivision_disk_pair_with_centered_prism_and_outer_boundary
       (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∩
           (boundaryComplex 3 (PiecewiseLinear.derivedNeighborhood R A)).space =
         (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∧
       g '' stdSimplexBoundary 2 =
         (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space ∧
@@ -231,11 +231,11 @@ theorem exists_isSubdivision_disk_pair_with_centered_prism_and_outer_boundary
       D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space ⊆
         (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
           (PiecewiseLinear.derivedNeighborhood R A).space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space ∧
       K₀.space ∩
           (boundaryComplex 3 (PiecewiseLinear.derivedNeighborhood R A)).space ⊆
         (boundaryComplex 3 K₀).space ∧
@@ -263,7 +263,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isSubdivision_disk_pair_with_
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
     {r₂ : (Fin 3 → ℝ) → E}
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ)
@@ -287,7 +287,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isSubdivision_disk_pair_with_
       (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∩
           (boundaryComplex 3 (PiecewiseLinear.derivedNeighborhood R A)).space =
         (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space) ∧
       g '' stdSimplexBoundary 2 =
         (boundaryComplex 2 (PiecewiseLinear.derivedNeighborhood A₂ A)).space ∧
@@ -300,11 +300,11 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isSubdivision_disk_pair_with_
       D₂ ∩ (PiecewiseLinear.derivedNeighborhood R A).space ⊆
         (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
           (PiecewiseLinear.derivedNeighborhood R A).space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space := by
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space := by
   obtain ⟨R, A, A₁, A₂, K₀, K₁, L, φ, ψ, g, ρ, hR, hRfin, hAR, hAfin, hAΔ,
       hA₁R, hA₁fin, hA₁D₁, hA₂R, hA₂fin, hA₂D₂, hAA₁, hAA₂, hmeet,
       hLfin, hL, hIso, hN, hΔN, hNK, hNU, hnhds, hB, htrace, hg, hgboundary,
@@ -324,7 +324,7 @@ theorem IsCombinatorialManifold.exists_isSubdivision_disk_pair_with_centered_pri
     (hK : IsCombinatorialManifold 3 K) {Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
     {r₂ : (Fin 3 → ℝ) → E}
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ) :
@@ -347,7 +347,7 @@ theorem IsCombinatorialManifold.exists_isSubdivision_disk_pair_with_centered_pri
       (D₂ ∩ (derivedNeighborhood R A).space) ∩
           (boundaryComplex 3 (derivedNeighborhood R A)).space =
         (boundaryComplex 2 (derivedNeighborhood A₂ A)).space ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (D₂ ∩ (derivedNeighborhood R A).space) ∧
       g '' stdSimplexBoundary 2 =
         (boundaryComplex 2 (derivedNeighborhood A₂ A)).space ∧
@@ -358,10 +358,10 @@ theorem IsCombinatorialManifold.exists_isSubdivision_disk_pair_with_centered_pri
       D₂ ∩ (derivedNeighborhood R A).space ⊆ (boundaryComplex 3 K₀).space ∧
       D₂ ∩ (derivedNeighborhood R A).space ⊆ (boundaryComplex 3 K₁).space ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (derivedNeighborhood R A).space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = g x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) (derivedNeighborhood R A).space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = g x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) = K₀.space ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) = K₁.space := by
   classical
   have hboundary : (boundaryComplex 3 K).space = ∅ := by
     change (⋃ t ∈ (boundaryComplex 3 K).faces, convexHull ℝ (t : Set E)) = ∅

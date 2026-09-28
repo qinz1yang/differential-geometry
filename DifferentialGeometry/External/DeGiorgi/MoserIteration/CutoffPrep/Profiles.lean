@@ -38,22 +38,24 @@ theorem moserSmoothClip_contDiff {ε N : ℝ} (_hε : 0 < ε) :
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => t / ε) := by
       simpa [div_eq_mul_inv, mul_comm] using
         ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => ε⁻¹).mul contDiff_id)
-    convert Real.smoothTransition.contDiff.comp hlin using 1 <;>
-      ext <;> rfl
+    convert Real.smoothTransition.contDiff.comp hlin using 1
+    ext
+    rfl
   have hσ₁ :
       ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => Real.smoothTransition (N + 1 - t)) := by
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => N + 1 - t) := by
       simpa using
         ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => N + 1).sub contDiff_id)
-    convert Real.smoothTransition.contDiff.comp hlin using 1 <;>
-      ext <;> rfl
+    convert Real.smoothTransition.contDiff.comp hlin using 1
+    ext
+    rfl
   convert (((contDiff_id.mul hσ₀).mul hσ₁).add
     (contDiff_const.mul (contDiff_const.sub hσ₁))
       : ContDiff ℝ (⊤ : ℕ∞)
           (fun t : ℝ =>
             t * Real.smoothTransition (t / ε) * Real.smoothTransition (N + 1 - t) +
-              N * (1 - Real.smoothTransition (N + 1 - t)))) using 1 <;>
-    rfl
+              N * (1 - Real.smoothTransition (N + 1 - t)))) using 1
+  rfl
 
 theorem moserSmoothClip_eq_zero_of_nonpos
     {ε N t : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) (ht : t ≤ 0) :
@@ -421,7 +423,8 @@ theorem moserExactLeftTransition_contDiff
     simpa [mul_comm, mul_left_comm, mul_assoc] using
       ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => 2 / ε).mul contDiff_id).add
         contDiff_const
-  convert Real.smoothTransition.contDiff.comp hlin using 1 <;> try rfl
+  convert Real.smoothTransition.contDiff.comp hlin using 1
+  try rfl
   ext t
   simp only [moserExactLeftTransition, Function.comp_apply, add_comm]
 
@@ -436,15 +439,16 @@ theorem moserExactInput_contDiff
     have hlin : ContDiff ℝ (⊤ : ℕ∞) (fun t : ℝ => N + 1 - t) := by
       simpa using
         ((contDiff_const : ContDiff ℝ (⊤ : ℕ∞) fun _ : ℝ => N + 1).sub contDiff_id)
-    convert Real.smoothTransition.contDiff.comp hlin using 1 <;>
-      ext <;> rfl
+    convert Real.smoothTransition.contDiff.comp hlin using 1
+    ext
+    rfl
   convert (((contDiff_id.mul hσL).mul hσR).add
       (contDiff_const.mul (contDiff_const.sub hσR))
       : ContDiff ℝ (⊤ : ℕ∞)
           (fun t : ℝ =>
             t * Real.smoothTransition (1 + (2 / ε) * t) * Real.smoothTransition (N + 1 - t) +
-              N * (1 - Real.smoothTransition (N + 1 - t)))) using 1 <;>
-    rfl
+              N * (1 - Real.smoothTransition (N + 1 - t)))) using 1
+  rfl
 
 theorem moserExactBase_ne_zero
     {ε N : ℝ} (hε : 0 < ε) (hN : 0 ≤ N) :

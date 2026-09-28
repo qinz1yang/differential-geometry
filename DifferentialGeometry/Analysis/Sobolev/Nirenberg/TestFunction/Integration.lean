@@ -21,7 +21,7 @@ private theorem memLp_sq_mul_diffQuot
   have hηsq : MemLp (fun x => η x ^ 2) ∞ volume := by
     apply (hη.pow 2).memLp_of_hasCompactSupport
     simpa only [pow_two] using (hηc.mul_right : HasCompactSupport (fun x => η x * η x))
-  exact (memLp_diffQuot_two k h hv).mul' hηsq
+  exact hηsq.fun_mul (memLp_diffQuot_two k h hv)
 
 theorem integral_mul_nirenbergTestFunction_eq
     {w v η : E → ℝ} (hw : MemLp w 2 volume) (hv : MemLp v 2 volume)
@@ -115,9 +115,9 @@ theorem neg_integral_weight_mul_nirenbergTestFunction_ge
         A^2 / (2 * lam) * (∫ x, (η x * u x)^2) ≤
       -(∫ x, a x * u x * nirenbergTestFunction k h η u x) := by
   have hηlp : MemLp η ∞ volume := hη.memLp_of_hasCompactSupport hηc
-  have hηu : MemLp (fun x => η x * u x) 2 volume := hu.mul' hηlp
+  have hηu : MemLp (fun x => η x * u x) 2 volume := hηlp.fun_mul hu
   have hηdq : MemLp (fun x => η x * diffQuot k h u x) 2 volume :=
-    (memLp_diffQuot_two k h hu).mul' hηlp
+    hηlp.fun_mul (memLp_diffQuot_two k h hu)
   have hηuSq : Integrable (fun x => (η x * u x)^2) volume := by
     exact (hηu.integrable_mul hηu).congr (Filter.Eventually.of_forall fun x => by simp [pow_two])
   have hηdqSq : Integrable (fun x => (η x * diffQuot k h u x)^2) volume := by

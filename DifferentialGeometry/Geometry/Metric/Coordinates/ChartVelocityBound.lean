@@ -25,7 +25,7 @@ private theorem sqrt_inner_sum_le
   | empty => simp
   | @insert i s hi ih =>
       simp only [Finset.sum_insert hi]
-      exact (DifferentialGeometry.Analysis.Laplacian.gNorm_add_le g q _ _).trans
+      exact (DifferentialGeometry.SmoothRiemannianMetric.gNorm_add_le g q _ _).trans
         (add_le_add le_rfl ih)
 
 omit [FiniteDimensional ℝ E] in
@@ -33,7 +33,7 @@ private theorem sqrt_inner_smul
     (g : SmoothRiemannianMetric I M) (q : M) (r : ℝ) (v : TangentSpace I q) :
     Real.sqrt (g.inner q (r • v) (r • v)) =
       |r| * Real.sqrt (g.inner q v v) := by
-  rw [DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self,
+  rw [DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self,
     Real.sqrt_mul (sq_nonneg r), Real.sqrt_sq_eq_abs]
 
 theorem exists_pos_sqrt_inner_symmL_le_mul_norm_on_compact

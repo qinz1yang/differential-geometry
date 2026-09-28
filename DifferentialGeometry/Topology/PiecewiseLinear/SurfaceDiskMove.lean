@@ -23,7 +23,7 @@ theorem exists_openPartialHomeomorph_ball_of_closedBall_embedding
   let F : Plane → S := fun x =>
     if hx : x ∈ closedBall (0 : Plane) 1 then e ⟨x, hx⟩
     else e ⟨0, mem_closedBall_self zero_le_one⟩
-  have hFv : ∀ v : closedBall (0 : Plane) 1, F v.val = e v := fun v => dif_pos v.2
+  have hFv : ∀ v : closedBall (0 : Plane) 1, F v.val = e v := fun v => dite_eq_left v.2
   have hFc : ContinuousOn F (ball (0 : Plane) 1) := by
     rw [continuousOn_iff_continuous_domRestrict]
     have h : (ball (0 : Plane) 1).domRestrict F =

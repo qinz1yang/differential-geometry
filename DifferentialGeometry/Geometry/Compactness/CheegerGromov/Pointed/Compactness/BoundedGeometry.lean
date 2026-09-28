@@ -104,7 +104,7 @@ theorem metricCompactness_eq_of_connected [CompleteSpace E] (S : PointedRiemanni
     metricCompactness S hcomplete hgeom hinj =
       metricCompactnessOfBoundedGeometry S hcomplete hgeom hinj hconn := by
   classical
-  simp only [metricCompactness, dif_pos hconn]
+  simp only [metricCompactness, dite_eq_left hconn]
 
 end
 

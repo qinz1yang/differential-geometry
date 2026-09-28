@@ -215,7 +215,7 @@ private theorem unitLine_isEvenlyCovered
           · have hpos : 0 < a p.1 := by simp [a, hp, hsunit p.1.1.1 p.2]
             have hsignp : sign p.1 = true := by
               dsimp only [sign]
-              rw [if_pos hpos]
+              rw [ite_eq_left hpos]
             change (match sign p.1 with
               | false => -s (unitLineProj g S p.1)
               | true => s (unitLineProj g S p.1)) ≍ p.1.1.2
@@ -224,7 +224,7 @@ private theorem unitLine_isEvenlyCovered
           · have hneg : ¬ 0 < a p.1 := by simp [a, hp, hsunit p.1.1.1 p.2]
             have hsignp : sign p.1 = false := by
               dsimp only [sign]
-              rw [if_neg hneg]
+              rw [ite_eq_right hneg]
             change (match sign p.1 with
               | false => -s (unitLineProj g S p.1)
               | true => s (unitLineProj g S p.1)) ≍ p.1.1.2

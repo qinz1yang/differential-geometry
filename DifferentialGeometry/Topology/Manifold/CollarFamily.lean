@@ -155,12 +155,12 @@ theorem disjointFamily_of_shrinking_families
       rw [Finset.lt_inf'_iff]
       intro p hp
       rw [Finset.mem_filter] at hp
-      simp only [w, dif_pos hp.2]
+      simp only [w, dite_eq_left hp.2]
       exact (hpair p.1 p.2 hp.2).choose_spec.1
     have hpos : 0 < min (P.inf' hP w) 1 := lt_min hwinf one_pos
     refine ⟨min (P.inf' hP w) 1, hpos, min_le_right _ _, fun i j hij => ?_⟩
     have hmem : (i, j) ∈ P := Finset.mem_filter.mpr ⟨Finset.mem_univ _, hij⟩
-    have hwij : w (i, j) = (hpair i j hij).choose := by simp only [w, dif_pos hij]
+    have hwij : w (i, j) = (hpair i j hij).choose := by simp only [w, dite_eq_left hij]
     have hle : P.inf' hP w ≤ w (i, j) := Finset.inf'_le w hmem
     have hmin : min (P.inf' hP w) 1 ≤ (hpair i j hij).choose := by
       rw [hwij] at hle

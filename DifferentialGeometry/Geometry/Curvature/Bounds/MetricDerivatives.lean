@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Curvature.Bounds.ReferenceDerivatives
 import DifferentialGeometry.Geometry.Connection.DifferenceJets
 import DifferentialGeometry.Geometry.Connection.MixedDerivativeBounds
-import DifferentialGeometry.Tensor.Metric.CompactBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
 
 
 noncomputable section
@@ -11,7 +11,6 @@ namespace DifferentialGeometry.Geometry.Curvature
 open Bundle Set
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (metricLoweredConnectionDifferenceField)
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Geometry.Tensor
 open scoped Manifold ContDiff BigOperators

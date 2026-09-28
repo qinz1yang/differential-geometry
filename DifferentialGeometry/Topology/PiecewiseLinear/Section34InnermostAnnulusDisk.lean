@@ -53,7 +53,7 @@ theorem IsPLCellOn.exists_innermost_boundary_disk_subset {M : Type*} [Topologica
       ((hsec j).subset (mem_image_of_mem u hxj))
   have hexists' : ∃ (i : ι) (D : Set (EuclideanSpace ℝ (Fin 3)))
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
         D ⊆ Function.invFunOn u P '' A ∧ q '' stdSimplexBoundary 2 = J' i := by
     obtain ⟨i, D, hD, hDA⟩ := hexists
     obtain ⟨q, hq, hqb⟩ := hD.exists_isPLHomeomorphOn_invFunOn hu (hDA.trans hAP)

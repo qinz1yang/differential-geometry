@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.VectorField.CollarExtension
 import Mathlib.LinearAlgebra.Determinant
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 
 set_option autoImplicit false
 

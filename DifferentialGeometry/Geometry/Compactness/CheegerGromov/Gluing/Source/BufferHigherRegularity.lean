@@ -179,7 +179,9 @@ private theorem NormalBallChart.MetricEquivOn.inv_join_le
       have hderiv := Filter.EventuallyEq.mfderiv_eq
         (I := 𝓘(Real, Real)) (I' := I) heq
       rw [mfderiv_comp s hhomDiff hetaDiff] at hderiv
-      simpa only using hderiv
+      refine hderiv.trans ?_
+      ext
+      rfl
     have hetaVelocity : mfderiv 𝓘(Real, Real) 𝓘(Real, E) eta s 1 =
         deriv eta s := by
       rw [mfderiv_eq_fderiv]

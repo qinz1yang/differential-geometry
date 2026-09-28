@@ -16,7 +16,7 @@ theorem IsCombinatorialManifold.exists_disjoint_disk_subfamily_of_disjoint_bound
     {ι : Type*} [Finite ι] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsCombinatorialManifold 2 K) (hKc : IsConnected K.space)
     {D : ι → Set E} {r : ι → (Fin 3 → ℝ) → E}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hDK : ∀ i, D i ⊆ K.space)
     (hdis : Pairwise fun i j => Disjoint (r i '' stdSimplexBoundary 2)
       (r j '' stdSimplexBoundary 2))

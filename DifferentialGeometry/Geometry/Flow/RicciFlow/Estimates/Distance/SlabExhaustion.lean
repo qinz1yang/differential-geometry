@@ -147,7 +147,7 @@ private theorem support_bounds_of_metric_first_order
             Real.sqrt (g0.inner x (gradientFun (I := I) g0 f x)
               (gradientFun (I := I) g0 f x)) *
               Real.sqrt (g0.inner x Dv Dv) :=
-          DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+          DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
             (I := I) (M := M) g0 x _ _
         _ ≤ Real.sqrt C0 * (A * Lambda) :=
           mul_le_mul (Real.sqrt_le_sqrt hgrad) hD (Real.sqrt_nonneg _)

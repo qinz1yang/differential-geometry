@@ -50,12 +50,12 @@ theorem exists_piecewiseAffine_lipschitz_vertex_function_vanishing_on_hyperplane
       by_cases hwv : w = v
       · subst w
         simp
-      · simp only [if_neg hwv, mul_zero, zero_mul]
+      · simp only [ite_eq_right hwv, mul_zero, zero_mul]
         exact mul_nonneg (weights_nonneg hxs hw) (hsℓ w hw)
     change b x ≤ (ℓ v)⁻¹ * ℓ x
     rw [mul_comm, ← div_eq_mul_inv]
     exact (le_div_iff₀ hv).mpr hbℓ
-  refine ⟨c, max k (max 0 ‖A‖₊), hc, hk.min ((LipschitzWith.const 0).max A.lipschitz), ?_, ?_,
+  refine ⟨c, max k (max 0 ‖A‖₊), hc, hk.min ((LipschitzWith.const 0).max A.lipschitzWith), ?_, ?_,
     ?_, ?_, ?_⟩
   · intro x hx
     change min (b x) (max 0 (A x)) = _
@@ -493,7 +493,7 @@ private theorem exists_lipschitz_displacement_in_affine_cover
       have hi : ‖(A i).linear.toContinuousLinearMap‖₊ ≤ c :=
         Finset.le_sup (f := fun i => ‖(A i).linear.toContinuousLinearMap‖₊)
           (Finset.mem_univ i)
-      exact ((A i).linear.toContinuousLinearMap.lipschitz.comp hk).weaken
+      exact ((A i).linear.toContinuousLinearMap.lipschitzWith.comp hk).weaken
         (mul_le_mul_of_nonneg_right hi (by positivity))
 
 open Classical in

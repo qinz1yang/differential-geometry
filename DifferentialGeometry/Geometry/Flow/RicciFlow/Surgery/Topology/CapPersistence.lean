@@ -236,11 +236,11 @@ private def coreInclusionMap (z : cylinderTubeSystem.core) : ThreeBall ⊕ Three
 
 private theorem coreInclusionMap_lower {z : cylinderTubeSystem.core}
     (h : (z.1.2 : ℝ) ≤ -1) : coreInclusionMap z = Sum.inl (lowerPoint z.1) :=
-  dif_pos h
+  dite_eq_left h
 
 private theorem coreInclusionMap_upper {z : cylinderTubeSystem.core}
     (h : ¬ (z.1.2 : ℝ) ≤ -1) : coreInclusionMap z = Sum.inr (upperPoint z.1) :=
-  dif_neg h
+  dite_eq_right h
 
 private theorem continuous_lowerPoint :
     Continuous fun z : cylinderTubeSystem.core => lowerPoint z.1 :=

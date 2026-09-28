@@ -256,7 +256,7 @@ private theorem hamiltonian_square_root_rescaling
     rw [hb2, gradientFun_const_smul _ _ hspace]
   change deriv (fun a ↦ psi a q) b + _ - _ = _
   rw [hpsitime.deriv, hgrad, hb2,
-    DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self]
+    DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self]
   have hs : (2 * b) ^ 2 = 4 * tau := by nlinarith [hb2]
   rw [hs]
   field_simp

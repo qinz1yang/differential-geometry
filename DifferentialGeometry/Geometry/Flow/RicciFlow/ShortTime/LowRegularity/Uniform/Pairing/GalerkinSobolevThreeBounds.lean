@@ -208,7 +208,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound
   obtain ⟨R0, hR0, hR0one, hpair0⟩ := hpair hdelta le_rfl
   exact ⟨delta, R0, hdelta, hdeltathird, hR0, hR0one, hpair0⟩
 
-theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_metric_perturbations
+theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_perturbations
     (hDim : Module.finrank ℝ E = 3)
     (gBase : SmoothRiemannianMetric I M)
     {Λ : ℝ} (hΛ : 1 ≤ Λ) :
@@ -274,7 +274,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_
     have hc : ∀ i ∈ F, c i = 0 := by
       intro i hi
       have hcoeff := congrArg (fun u => u.coeff i) hcombo
-      simpa only [finiteEigenComboHs_coeff, if_pos hi, TensorHs.zero_coeff] using hcoeff
+      simpa only [finiteEigenComboHs_coeff, ite_eq_left hi, TensorHs.zero_coeff] using hcoeff
     have hE3 : 0 ≤ ∑ i ∈ F,
         tensorSobolevWeight (I := I) (M := M) i (3 : ℝ) * (c i) ^ 2 :=
       Finset.sum_nonneg fun i _ => mul_nonneg
@@ -330,7 +330,7 @@ theorem galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_
                         (c i) ^ 2) ^ 2) := by
   intro eta heta
   obtain ⟨delta, hdelta, hdeltathird, hpair⟩ :=
-    galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_metric_perturbations (I := I) (M := M) hDim gBase hΛ heta
+    galerkin_background_action_sobolev_three_pairing_bound_of_low_view_norm_le_for_smaller_perturbations (I := I) (M := M) hDim gBase hΛ heta
   obtain ⟨R0, hR0, hR0one, hpair0⟩ := hpair hdelta le_rfl
   exact ⟨delta, R0, hdelta, hdeltathird, hR0, hR0one, hpair0⟩
 

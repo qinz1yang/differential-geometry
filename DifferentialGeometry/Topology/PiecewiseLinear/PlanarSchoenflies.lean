@@ -323,7 +323,7 @@ private theorem exists_face_containing_polygon_edge
   have himage : K.position '' (({v, w} : Finset K.Vertex) : Set K.Vertex) =
       ({K.position v, K.position w} : Set Plane) := by
     ext x
-    simp [eq_comm]
+    simp
   have hmABSegment : m ∈ segment ℝ A B := by
     simpa only [PlaneComplex.cellCarrier, himage, convexHull_pair, A, B] using hms
   have hmAB : m ∈ openSegment ℝ A B := by

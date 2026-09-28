@@ -130,7 +130,7 @@ theorem cross_le
     calc
       c ^ 2 ≤
           (G.metric t).inner x a a * (G.metric t).inner x b b := by
-        exact DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+        exact DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
           (I := I) (M := M) (G.metric t) x a b
       _ ≤ (cut.err n * cut.chi n t x) *
           (4 * B.w k t x * B.w (k + 1) t x) :=
@@ -286,7 +286,7 @@ theorem pow_cross_le
         (4 * B.w k t x * B.w (k + 1) t x) := by
     calc
       c₀ ^ 2 ≤ (G.metric t).inner x a a * (G.metric t).inner x b b := by
-        exact DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+        exact DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
           (I := I) (M := M) (G.metric t) x a b
       _ ≤ (cut.err n * cut.chi n t x) *
           (4 * B.w k t x * B.w (k + 1) t x) :=
@@ -552,7 +552,7 @@ private theorem cutWterms_nonpos
     have hkle : k ≤ m := hkm.le
     have hGk : BernsteinTower.Gcoef (I := I) B m k =
         beta * towerFactCoeff m k := by
-      rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ k = m)]
+      rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ k = m)]
     have hfac : (k : Real) * towerFactCoeff m k =
         towerFactCoeff m (k - 1) :=
       nat_mul_towerFactCoeff m hk1
@@ -1350,7 +1350,7 @@ private theorem GfunSupport_parabolic_le
     have him : i < m := Finset.mem_range.mp hi
     have hGi : BernsteinTower.Gcoef (I := I) B m i =
         beta * towerFactCoeff m i := by
-      rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ i = m), hbeta, hC]
+      rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ i = m), hbeta, hC]
     have hR := BernsteinTower.tpow_mul_reactionSum_le (I := I) B i htpos
       (fun j hj ↦ hIH j (lt_of_le_of_lt hj him))
     rw [← hC] at hR
@@ -1779,7 +1779,7 @@ theorem estimate_cutoff_at
               simp at h
           have hGc0 : BernsteinTower.Gcoef (I := I) B m 0 =
               beta * (Nat.factorial (m - 1) : Real) := by
-            rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ (0 : Nat) = m),
+            rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ (0 : Nat) = m),
               towerFactCoeff]
             rw [Nat.factorial_zero, Nat.cast_one, div_one, ← hC, ← hbeta]
           have hchi := cut.range n 0 y h0mem
@@ -2086,7 +2086,7 @@ theorem estimate_barrier_at
             · simp
           have hGc0 : BernsteinTower.Gcoef (I := I) B m 0 =
               beta * (Nat.factorial (m - 1) : Real) := by
-            rw [BernsteinTower.Gcoef, if_neg (by omega : ¬ (0 : Nat) = m),
+            rw [BernsteinTower.Gcoef, ite_eq_right (by omega : ¬ (0 : Nat) = m),
               towerFactCoeff, Nat.factorial_zero, Nat.cast_one, div_one,
               ← hC, ← hbeta]
           have hchi := cut.range n 0 y h0mem

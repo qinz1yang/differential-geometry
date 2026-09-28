@@ -2349,27 +2349,27 @@ theorem contDiffWithinAt_chartChristoffelContraction
         ((univ : Set ℝ) ×ˢ J) z := by
       have h1 : ContDiffWithinAt ℝ ∞
           (fun q : ℝ × ℝ =>
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E i (P q))
+            DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E i (P q))
           ((univ : Set ℝ) ×ˢ J) z :=
         hP.continuousLinearMap_comp
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E i)
+          (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E i)
       refine h1.congr (fun q _ => ?_) ?_
-      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+      · simp only [DifferentialGeometry.Tensor.Coordinates.chartCoordCLM_apply,
           chartCoord_def, Module.Basis.equivFun_apply]
-      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+      · simp only [DifferentialGeometry.Tensor.Coordinates.chartCoordCLM_apply,
           chartCoord_def, Module.Basis.equivFun_apply]
     have hQj : ContDiffWithinAt ℝ ∞ (fun q : ℝ × ℝ => chartCoord (E := E) j (Q q))
         ((univ : Set ℝ) ×ˢ J) z := by
       have h1 : ContDiffWithinAt ℝ ∞
           (fun q : ℝ × ℝ =>
-            DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E j (Q q))
+            DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E j (Q q))
           ((univ : Set ℝ) ×ˢ J) z :=
         hQ.continuousLinearMap_comp
-          (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM E j)
+          (DifferentialGeometry.Tensor.Coordinates.chartCoordCLM E j)
       refine h1.congr (fun q _ => ?_) ?_
-      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+      · simp only [DifferentialGeometry.Tensor.Coordinates.chartCoordCLM_apply,
           chartCoord_def, Module.Basis.equivFun_apply]
-      · simp only [DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartCoordCLM_apply,
+      · simp only [DifferentialGeometry.Tensor.Coordinates.chartCoordCLM_apply,
           chartCoord_def, Module.Basis.equivFun_apply]
     exact (((contDiffWithinAt_chartChristoffelOnE_comp (I := I) (D := D) (g := g) hG
       hJreg hJun hz hΦ hΦint i j k).mul

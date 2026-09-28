@@ -14,13 +14,13 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem exists_disk_pair_of_boundary_bicollar
-    {D J W : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {D J W : Set E} {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hboundary : r '' stdSimplexBoundary 2 = J) {ρ : E × ℝ → E}
     (hρ : IsPLHomeomorphOn ρ (J ×ˢ Icc (-1 : ℝ) 1) W)
     (hfix : ∀ x ∈ J, ρ (x, 0) = x) (hmeet : W ∩ D = J) :
     ∃ q₁ q₂ : (Fin 3 → ℝ) → E,
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) (D ∪ ρ '' (J ×ˢ Icc (0 : ℝ) 1)) ∧
-      IsPLHomeomorphOn q₂ (stdSimplex ℝ (Fin 3)) (D ∪ ρ '' (J ×ˢ Icc (-1 : ℝ) 0)) ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D ∪ ρ '' (J ×ˢ Icc (0 : ℝ) 1)) ∧
+      IsPLHomeomorphOn q₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D ∪ ρ '' (J ×ˢ Icc (-1 : ℝ) 0)) ∧
       (D ∪ ρ '' (J ×ˢ Icc (0 : ℝ) 1)) ∩ (D ∪ ρ '' (J ×ˢ Icc (-1 : ℝ) 0)) = D ∧
       (D ∪ ρ '' (J ×ˢ Icc (0 : ℝ) 1)) ∪ (D ∪ ρ '' (J ×ˢ Icc (-1 : ℝ) 0)) = D ∪ W ∧
       q₁ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(1 : ℝ)}) ∧

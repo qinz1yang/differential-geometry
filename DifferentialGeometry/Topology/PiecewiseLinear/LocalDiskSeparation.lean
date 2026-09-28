@@ -13,7 +13,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLSphere.inter_closure_sdiff_disk_of_eventually_eq {S T D : Set E}
     (hS : IsPLSphere 2 S) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S)
     (hlocal : ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ T ↔ y ∈ S) :
     D ∩ closure (T \ D) = q '' stdSimplexBoundary 2 := by
   have hcl : ∀ x ∈ D, x ∈ closure (T \ D) ↔ x ∈ closure (S \ D) := by
@@ -34,7 +34,7 @@ theorem IsPLSphere.inter_closure_sdiff_disk_of_eventually_eq {S T D : Set E}
 
 theorem IsPLSphere.subset_or_disjoint_disk_of_eventually_eq {S T D Y : Set E}
     (hS : IsPLSphere 2 S) {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S)
     (hlocal : ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ T ↔ y ∈ S)
     (hY : IsPreconnected Y) (hYT : Y ⊆ T) (hYJ : Disjoint Y (q '' stdSimplexBoundary 2)) :
     Y ⊆ D ∨ Disjoint D Y := by

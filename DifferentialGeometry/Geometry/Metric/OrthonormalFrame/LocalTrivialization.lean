@@ -85,7 +85,7 @@ private theorem exists_coframe_of_orthonormal_sections
   refine ⟨q, ?_⟩
   intro x hx w
   dsimp only [q]
-  rw [dif_pos hx]
+  rw [dite_eq_left hx]
   change (OrthonormalBasis.mk (he x hx) (hsp x hx)).repr.symm (b.repr w) = _
   rw [← (OrthonormalBasis.mk (he x hx) (hsp x hx)).sum_repr_symm]
   simp only [OrthonormalBasis.coe_mk]
@@ -163,7 +163,7 @@ theorem exists_contMDiff_coframe_to (x₀ : B) (p₀ : V x₀ ≃ₗᵢ[ℝ] G) 
   have hq (x : B) (hxU : x ∈ U) (w : G) :
       (q x).symm w = ∑ i, b.repr w i • e i x := by
     dsimp only [q]
-    rw [dif_pos hxU]
+    rw [dite_eq_left hxU]
     change (OrthonormalBasis.mk (ho x hxU) (hsp x hxU)).repr.symm (b.repr w) = _
     rw [← (OrthonormalBasis.mk (ho x hxU) (hsp x hxU)).sum_repr_symm]
     simp only [OrthonormalBasis.coe_mk]

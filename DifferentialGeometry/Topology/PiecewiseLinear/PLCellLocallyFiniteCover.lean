@@ -224,7 +224,7 @@ theorem exists_isPLCellOn_locallyFinite_cover_of_isOpen {X : Type*} [Topological
       have hznotprev : z ∉ prev i.1 := (hCmarg i.1 (a i.1 i.2) hzC).1.2
       have hzprev : z ∈ prev i.1 := by
         change z ∈ if i.1 = 0 then ∅ else L (i.1 - 1)
-        rw [if_neg hi0]
+        rw [ite_eq_right hi0]
         exact hLmono (a := k + 1) (b := i.1 - 1) (by omega) (interior_subset hzV)
       exact hznotprev hzprev
   · have hYempty : Y = ∅ := not_nonempty_iff_eq_empty.mp hYne

@@ -29,8 +29,8 @@ theorem exists_tensor_bump_extension (U : TopologicalSpace.Opens M) (r : ℕ)
       ∀ x : M, x ∉ U → B x = 0 := by
   classical
   let raw : (x : M) → Tensor0SSpace r I x := fun x => if hx : x ∈ U then A ⟨x, hx⟩ else 0
-  have hraw (x : M) (hx : x ∈ U) : raw x = A ⟨x, hx⟩ := dif_pos hx
-  have hrawOut (x : M) (hx : x ∉ U) : raw x = 0 := dif_neg hx
+  have hraw (x : M) (hx : x ∈ U) : raw x = A ⟨x, hx⟩ := dite_eq_left hx
+  have hrawOut (x : M) (hx : x ∉ U) : raw x = 0 := dite_eq_right hx
   let T : (x : M) → Tensor0SSpace r I x := fun x => χ x • raw x
   let := tensor0SBundleTopology (𝕜 := ℝ) (I := I) (M := M) r
   refine ⟨⟨T, ?_⟩, ?_, ?_⟩

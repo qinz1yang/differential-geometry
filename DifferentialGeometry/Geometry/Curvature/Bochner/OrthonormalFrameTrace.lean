@@ -435,7 +435,7 @@ private lemma finBasis_repr_eq_invGram_inner_sum
     rw [Finset.sum_eq_single k]
     · simp
     · intro p _ hpk
-      rw [if_neg (fun h => hpk h.symm)]; ring
+      rw [ite_eq_right (fun h => hpk h.symm)]; ring
     · intro hk
       exact absurd (Finset.mem_univ k) hk]
 

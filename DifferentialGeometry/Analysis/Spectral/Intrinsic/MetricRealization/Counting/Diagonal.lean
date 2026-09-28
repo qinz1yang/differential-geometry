@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.Counting.Weyl
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.SmoothRepresentative.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Invariance
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

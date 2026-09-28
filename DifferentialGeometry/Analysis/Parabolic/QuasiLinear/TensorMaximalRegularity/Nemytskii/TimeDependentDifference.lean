@@ -49,7 +49,7 @@ theorem timeNemyTame_sub_norm_le
       Lp.coeFn_sub f g, J.coeFn_compLpL (p := 2) (μ := timeMeasure T) (f - g), hpoint]
       with t hFG hFt hGt hft hgt hNt hfg hj hp
     rw [hFG, Pi.sub_apply, hFt, hGt]
-    simp only [aeSetLift, dif_pos hft, dif_pos hgt]
+    simp only [aeSetLift, dite_eq_left hft, dite_eq_left hgt]
     have hraw := hNt ⟨f t, hft⟩ ⟨g t, hgt⟩
     have hfg' : f t - g t = (f - g) t := hfg.symm
     have hj' : J ((f - g) t) = j t := hj.symm

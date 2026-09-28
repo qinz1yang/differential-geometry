@@ -180,19 +180,19 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
     (E := fun z : M => Tensor0SBundle.Tensor0SSpace q I z)).mp (hB p₀ hp₀)
   have h_combine : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, Tensor0SBundle.Tensor0SModel (p + q) ℝ E) ∞
-      (fun pp : M × ℝ => modelProdCLM (E := E) p q
+      (fun pp : M × ℝ => DifferentialGeometry.Tensor0SBundle.Tensor0SModel.productContinuousLinearMap (E := E) p q
         ((trivializationAt (Tensor0SBundle.Tensor0SModel p ℝ E)
           (fun z : M => Tensor0SBundle.Tensor0SSpace p I z) x₀ ⟨pp.1, A pp⟩).2)
         ((trivializationAt (Tensor0SBundle.Tensor0SModel q ℝ E)
           (fun z : M => Tensor0SBundle.Tensor0SSpace q I z) x₀ ⟨pp.1, B pp⟩).2))
       ((Set.univ : Set M) ×ˢ S) p₀ :=
-    ((contMDiffWithinAt_const (c := modelProdCLM (E := E) p q)).clm_apply
+    ((contMDiffWithinAt_const (c := DifferentialGeometry.Tensor0SBundle.Tensor0SModel.productContinuousLinearMap (E := E) p q)).clm_apply
       hA'.2).clm_apply hB'.2
   refine h_combine.congr_of_eventuallyEq ?_ ?_
   · filter_upwards [Filter.univ_mem] with pp _
     apply ContinuousMultilinearMap.ext
     intro v
-    rw [modelProdCLM_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SModel.productContinuousLinearMap_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
     change (Tensor0SBundle.Tensor0SSpace.toModel (A pp))
           (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) pp.1
             ((trivializationAt E (TangentSpace I) x₀).symmL ℝ pp.1
@@ -210,7 +210,7 @@ theorem jointTensor0SProd_local {p q : ℕ} {S : Set ℝ}
     rfl
   · apply ContinuousMultilinearMap.ext
     intro v
-    rw [modelProdCLM_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
+    rw [DifferentialGeometry.Tensor0SBundle.Tensor0SModel.productContinuousLinearMap_apply, Bundle.continuousMultilinearMap.modelProduct_apply]
     change (Tensor0SBundle.Tensor0SSpace.toModel (A p₀))
           (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) p₀.1
             ((trivializationAt E (TangentSpace I) x₀).symmL ℝ p₀.1

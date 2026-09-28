@@ -86,7 +86,7 @@ theorem covDerivAlong_map_localIso
     hγ.continuousAt.preimage_mem_nhds (U.isOpen.mem_nhds γtU.property)
   have hγU_val : (fun s => ((γU s : U) : M)) =ᶠ[𝓝 t] γ := by
     filter_upwards [hmem] with s hs
-    simp only [γU, dif_pos hs]
+    simp only [γU, dite_eq_left hs]
   have hγU_smooth : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γU t := by
     have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞
         (fun s => ((γU s : U) : M)) t :=
@@ -169,7 +169,7 @@ theorem covDerivAlong_map_localIso
         ((mfderiv I J f (γ s) (V s)) : F) := by
     filter_upwards [hmem] with s hs
     rw [PartialDiffeomorph.mfderiv_toOpensDiffeo Φ hUΦ (γU s) (VU s)]
-    rw [show ((γU s : U) : M) = γ s from by simp only [γU, dif_pos hs],
+    rw [show ((γU s : U) : M) = γ s from by simp only [γU, dite_eq_left hs],
       hΦmfd ⟨γ s, hs⟩]
     rfl
   have hcont : ContinuousAt (fun s : ℝ => Ψ (γU s)) t :=
@@ -177,7 +177,7 @@ theorem covDerivAlong_map_localIso
   have hmap : (fun s => ((Ψ (γU s) : Un) : N)) =ᶠ[𝓝 t] (fun s => f (γ s)) := by
     filter_upwards [hmem] with s hs
     dsimp only [Ψ]
-    have hγUs : ((γU s : U) : M) = γ s := by simp only [γU, dif_pos hs]
+    have hγUs : ((γU s : U) : M) = γ s := by simp only [γU, dite_eq_left hs]
     change (Φ : M → N) ((γU s : U) : M) = f (γ s)
     rw [hγUs]
     exact (hfΦ hs.1).symm
@@ -321,7 +321,7 @@ theorem covDerivAlong_map_of_local_isometry_on
     hgamma.continuousAt.preimage_mem_nhds (hU.mem_nhds ht)
   have heq : (fun s ↦ (gammaO s : M)) =ᶠ[𝓝 t] gamma := by
     filter_upwards [hmem] with s hs
-    simp only [gammaO, dif_pos hs]
+    simp only [gammaO, dite_eq_left hs]
   have hgammaO : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ gammaO t := by
     have hamb : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ (fun s ↦ (gammaO s : M)) t :=
       hgamma.congr_of_eventuallyEq heq

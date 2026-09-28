@@ -743,9 +743,9 @@ theorem IsStableCrossingBlock.exists_perturbation {f : EuclideanSpace ℝ (Fin 2
   set LℓA : NNReal := ‖LinearMap.toContinuousLinearMap A.linear.toLinearMap‖₊
   set LℓB : NNReal := ‖LinearMap.toContinuousLinearMap (A.trans blockSwap).linear.toLinearMap‖₊
   have hALA : LipschitzWith LℓA A.linear :=
-    (LinearMap.toContinuousLinearMap A.linear.toLinearMap).lipschitz
+    (LinearMap.toContinuousLinearMap A.linear.toLinearMap).lipschitzWith
   have hALB : LipschitzWith LℓB (A.trans blockSwap).linear :=
-    (LinearMap.toContinuousLinearMap (A.trans blockSwap).linear.toLinearMap).lipschitz
+    (LinearMap.toContinuousLinearMap (A.trans blockSwap).linear.toLinearMap).lipschitzWith
   have hAnorm : ∀ v : EuclideanSpace ℝ (Fin 3), ‖A.linear v‖ ≤ LℓA * ‖v‖ := fun v =>
     (LinearMap.toContinuousLinearMap A.linear.toLinearMap).le_opNorm v
   have hLtA0 : (0 : ℝ) ≤ LtA := NNReal.coe_nonneg _

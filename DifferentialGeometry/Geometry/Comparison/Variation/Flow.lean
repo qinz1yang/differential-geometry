@@ -348,6 +348,8 @@ theorem flow_cov_variation
             (-(X t ((Φ_fam t : M → M) (cc r))))) :=
       (hΦode (cc r) t ⟨ht0, htT⟩).hasMFDerivAt (Ici_mem_nhds ht0)
     rw [hmf.mfderiv]
+    change ((tangentSpaceModelContinuousLinearEquiv (I := 𝓘(ℝ, ℝ)) t).toContinuousLinearMap.smulRight
+      (-(X t ((Φ_fam t : M → M) (cc r))))) (constantModelVectorField (1 : ℝ) t) = _
     rw [ContinuousLinearMap.smulRight_apply]
     simp [constantModelVectorField]
   have hGg0 : ∀ s : ℝ, Gg s 0 = (Φ_fam (ρ s) : M → M) x := by

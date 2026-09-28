@@ -549,7 +549,7 @@ theorem historyScalarLowerBound_of_stageInitial
         have hmetric : Extinction.Width.historyStageMetric H (Fin.last H.eventCount) t.1
             = (H.finalSlab hfin).flow.base.metric t.1 := by
           simp only [Extinction.Width.historyStageMetric, Fin.lastCases_last]
-          rw [dif_pos hfin]
+          rw [dite_eq_left hfin]
         rw [hmetric]
         exact closedSlab_scalarLowerBarrier_le hfin hle hc (H.finalSlab hfin) hinit htIcc x
       · have hge : H.horizon ≤ H.time (Fin.last H.eventCount) := le_of_not_gt hfin

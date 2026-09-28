@@ -27,7 +27,7 @@ theorem aeSetLift_coe_ae {S : Set X} (hzero : (0 : X) ∈ S)
     (f : timeL2 X T) (hf : ∀ᵐ t ∂(timeMeasure T), f t ∈ S) :
     (fun t => ((aeSetLift hzero f t : S) : X)) =ᵐ[timeMeasure T] fun t => f t := by
   filter_upwards [hf] with t ht
-  simp only [aeSetLift, dif_pos ht]
+  simp only [aeSetLift, dite_eq_left ht]
 
 omit [NormedSpace ℝ X] [CompleteSpace X] in
 theorem aeSetLift_aesm {S : Set X} (hzero : (0 : X) ∈ S)
@@ -55,7 +55,7 @@ theorem memLp_on {S : Set X} (hzero : (0 : X) ∈ S)
     filter_upwards [hf] with t ht
     have hdist := hN.dist_le_mul (aeSetLift hzero f t) z
     rw [dist_eq_norm] at hdist
-    simpa only [aeSetLift, dif_pos ht, z, Subtype.dist_eq, dist_zero_right] using hdist
+    simpa only [aeSetLift, dite_eq_left ht, z, Subtype.dist_eq, dist_zero_right] using hdist
   have hconst : MemLp (fun _ : ℝ => N z) 2 (timeMeasure T) :=
     memLp_const (N z)
   have hsum := hshift.add hconst
@@ -93,7 +93,7 @@ theorem nemytskiiOn_zero_le {S : Set X} (hzero : (0 : X) ∈ S)
   have hzeroFn := Lp.coeFn_zero (E := X) (p := 2) (μ := timeMeasure T)
   filter_upwards [hcoe, hzeroFn, hf] with t ht htz hmem
   rw [ht]
-  simp only [aeSetLift, dif_pos hmem]
+  simp only [aeSetLift, dite_eq_left hmem]
   have hval : ((0 : timeL2 X T) t) = (0 : X) := by
     simpa only [Pi.zero_apply] using htz
   have hsub : (⟨(0 : timeL2 X T) t, hmem⟩ : S) = ⟨0, hzero⟩ :=
@@ -127,7 +127,7 @@ theorem timeL2_norm_le_four
   let major : ℝ → ℝ := A • Pf + B • Qf + C • Rf + D • Sf
   have hmono : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
       eLpNorm major 2 (timeMeasure T) := by
-    refine eLpNorm_mono_ae ?_
+    refine eLpNorm_mono_ae (Lp.aestronglyMeasurable h) ?_
     filter_upwards [hbound] with t ht
     have happ : major t =
         A * ‖p t‖ + B * ‖q t‖ + C * ‖r t‖ + D * ‖s t‖ := by
@@ -140,27 +140,39 @@ theorem timeL2_norm_le_four
   have htri₁ : eLpNorm major 2 (timeMeasure T) ≤
       eLpNorm (A • Pf + B • Qf + C • Rf) 2 (timeMeasure T) +
         eLpNorm (D • Sf) 2 (timeMeasure T) := by
-    exact eLpNorm_add_le ((hAPm.add hBQm).add hCRm) hDSm (by norm_num)
+    exact eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have htri₂ : eLpNorm (A • Pf + B • Qf + C • Rf) 2 (timeMeasure T) ≤
       eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) +
         eLpNorm (C • Rf) 2 (timeMeasure T) := by
-    exact eLpNorm_add_le (hAPm.add hBQm) hCRm (by norm_num)
+    exact eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have htri₃ : eLpNorm (A • Pf + B • Qf) 2 (timeMeasure T) ≤
       eLpNorm (A • Pf) 2 (timeMeasure T) +
         eLpNorm (B • Qf) 2 (timeMeasure T) :=
-    eLpNorm_add_le hAPm hBQm (by norm_num)
+    eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have hscaleP : eLpNorm (A • Pf) 2 (timeMeasure T) =
       ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hA]
+    rw [eLpNorm_const_smul]
+    change ‖A‖ₑ * eLpNorm (fun t => ‖(p : ℝ → Y) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (p : ℝ → Y) (Lp.aestronglyMeasurable p), Real.enorm_eq_ofReal hA]
   have hscaleQ : eLpNorm (B • Qf) 2 (timeMeasure T) =
       ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hB]
+    rw [eLpNorm_const_smul]
+    change ‖B‖ₑ * eLpNorm (fun t => ‖(q : ℝ → Z) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (q : ℝ → Z) (Lp.aestronglyMeasurable q), Real.enorm_eq_ofReal hB]
   have hscaleR : eLpNorm (C • Rf) 2 (timeMeasure T) =
       ENNReal.ofReal C * eLpNorm (r : ℝ → W) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hC]
+    rw [eLpNorm_const_smul]
+    change ‖C‖ₑ * eLpNorm (fun t => ‖(r : ℝ → W) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (r : ℝ → W) (Lp.aestronglyMeasurable r), Real.enorm_eq_ofReal hC]
   have hscaleS : eLpNorm (D • Sf) 2 (timeMeasure T) =
       ENNReal.ofReal D * eLpNorm (s : ℝ → V) 2 (timeMeasure T) := by
-    rw [eLpNorm_const_smul, eLpNorm_norm, Real.enorm_eq_ofReal hD]
+    rw [eLpNorm_const_smul]
+    change ‖D‖ₑ * eLpNorm (fun t => ‖(s : ℝ → V) t‖) 2 (timeMeasure T) = _
+    rw [eLpNorm_norm (p := (2 : ENNReal)) (μ := timeMeasure T)
+      (s : ℝ → V) (Lp.aestronglyMeasurable s), Real.enorm_eq_ofReal hD]
   have hfinal : eLpNorm (h : ℝ → X) 2 (timeMeasure T) ≤
       ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) +
         ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) +
@@ -180,10 +192,14 @@ theorem timeL2_norm_le_four
           eLpNorm (D • Sf) 2 (timeMeasure T) :=
         add_le_add (add_le_add htri₃ le_rfl) le_rfl
       _ = _ := by rw [hscaleP, hscaleQ, hscaleR, hscaleS]
-  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp p).2.ne
-  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp q).2.ne
-  have hr_top : eLpNorm (r : ℝ → W) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp r).2.ne
-  have hs_top : eLpNorm (s : ℝ → V) 2 (timeMeasure T) ≠ ⊤ := (Lp.memLp s).2.ne
+  have hp_top : eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp p)
+  have hq_top : eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp q)
+  have hr_top : eLpNorm (r : ℝ → W) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp r)
+  have hs_top : eLpNorm (s : ℝ → V) 2 (timeMeasure T) ≠ ⊤ :=
+    ne_top_of_lt (Lp.memLp s)
   have hp_mul : ENNReal.ofReal A * eLpNorm (p : ℝ → Y) 2 (timeMeasure T) ≠ ⊤ :=
     ENNReal.mul_ne_top ENNReal.ofReal_ne_top hp_top
   have hq_mul : ENNReal.ofReal B * eLpNorm (q : ℝ → Z) 2 (timeMeasure T) ≠ ⊤ :=
@@ -280,7 +296,7 @@ theorem memLp_tame {S : Set X} (hzero : (0 : X) ∈ S) {R : ℝ} (hR : 0 ≤ R)
     exact add_nonneg (mul_nonneg hK (norm_nonneg _)) hQ
   change ‖N (aeSetLift hzero f t)‖ ≤ ‖major t‖
   have hu : aeSetLift hzero f t = u := by
-    simp only [aeSetLift, dif_pos ht, u]
+    simp only [aeSetLift, dite_eq_left ht, u]
   rw [hu, Real.norm_eq_abs, abs_of_nonneg hmajor0]
   exact hn
 

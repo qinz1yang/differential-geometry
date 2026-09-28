@@ -63,12 +63,13 @@ private lemma pouInter_subset_chartSourceβ (α β : M) :
   exact (chartAtlasPOU_isSubordinate I M) β hx.2
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
+    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -298,7 +299,14 @@ theorem chart_α_pou_α_pou_β_raw_β_sq_le_chart_β_wkpNorm
           ∂(volume : Measure EuclN)) =
         (eLpNorm (fun y => g_β (Φ.toFun y)) 2
             ((volume : Measure EuclN).restrict Ω_αβ)) ^ 2 := by
-    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq]
+    have h_comp_cont : Continuous (fun y => g_β (Φ.toFun y)) := by
+      rw [hgβ_def]
+      exact (tensorChartComp_contDiff (I := I) (M := M) g r s T β Idx Jdx).continuous.comp
+        Φ.continuous_toFun
+    have h_comp_meas : AEStronglyMeasurable (fun y => g_β (Φ.toFun y))
+        ((volume : Measure EuclN).restrict Ω_αβ) :=
+      h_comp_cont.measurable.aestronglyMeasurable
+    rw [sq_eLpNorm_two_eq_lintegral_enorm_sq _ _ h_comp_meas]
     refine lintegral_congr_ae ?_
     refine Filter.Eventually.of_forall ?_
     intro y

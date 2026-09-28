@@ -41,8 +41,8 @@ theorem exists_smooth_least_ricci_field_on_restricted_roundCylinder
   let μ := fun x ↦ if hx : x ∈ U then a x hx else 0
   let w : ∀ x : O, TangentSpace IC x :=
     fun x ↦ if hx : x ∈ U then v x hx else 0
-  have hμeq (x) (hx : x ∈ U) : μ x = a x hx := dif_pos hx
-  have hweq (x) (hx : x ∈ U) : w x = v x hx := dif_pos hx
+  have hμeq (x) (hx : x ∈ U) : μ x = a x hx := dite_eq_left hx
+  have hweq (x) (hx : x ∈ U) : w x = v x hx := dite_eq_left hx
   have hlocal (x) (hx : x ∈ U) :
       ContMDiffAt IC 𝓘(ℝ) ∞ μ x ∧
       ContMDiffAt IC IC.tangent ∞

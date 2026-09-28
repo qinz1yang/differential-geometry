@@ -115,7 +115,7 @@ theorem curvatureOperatorPairingAt_smul_left
     curvatureOperatorPairingAt (I := I) g x A (c • a) b =
       c * curvatureOperatorPairingAt (I := I) g x A a b := by
   rw [curvatureOperatorPairingAt, twoFormTensorProduct_smul_left]
-  rw [Tensor0SBundle.inner0S_smul_right]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
   unfold curvatureOperatorPairingAt
   ring
 
@@ -196,7 +196,7 @@ theorem curvatureOperatorPairingAt_smul_right
     curvatureOperatorPairingAt (I := I) g x A a (c • b) =
       c * curvatureOperatorPairingAt (I := I) g x A a b := by
   rw [curvatureOperatorPairingAt, twoFormTensorProduct_smul_right]
-  rw [Tensor0SBundle.inner0S_smul_right]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
   unfold curvatureOperatorPairingAt
   ring
 

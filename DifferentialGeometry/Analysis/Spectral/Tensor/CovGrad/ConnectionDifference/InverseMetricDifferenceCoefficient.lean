@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionJetTower
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

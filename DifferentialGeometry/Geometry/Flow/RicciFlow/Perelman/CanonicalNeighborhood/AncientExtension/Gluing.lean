@@ -53,7 +53,7 @@ theorem exists_isHalfLineExtension_of_compatible_slabs
     intro n t ht
     have ht0 : t ≤ 0 := htimes n ht
     dsimp [g]
-    rw [dif_pos ht0]
+    rw [dite_eq_left ht0]
     exact hcompat _ n t (hc t ht0).choose_spec ht
   have hg0 : g 0 = L.space.metric := by
     obtain ⟨n, hn⟩ := hc 0 le_rfl

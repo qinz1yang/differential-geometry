@@ -445,7 +445,8 @@ theorem exists_inner_radii_tendsto_scaled_boundary_rates
       (width n)⁻¹ * (∫ t in Icc (0 : ℝ) 1, ‖inn n t - out t‖ ^ 2) ≤ 2 * E n := by
     have hbound := integral_norm_radial_boundary_sub_sq_le hf hfs hE (hahalf n) (ha1 n)
     have hmono : (∫ z in {z : ℂ | ‖z‖ ∈ Icc (a n) 1}, e z) ≤ E n := by
-      apply setIntegral_mono_set (hEc.mono_set (fun z hz => by
+      apply setIntegral_mono_set (t := {z : ℂ | ‖z‖ ∈ Icc (1 - h n) 1})
+        (hEc.mono_set (fun z hz => by
         simpa only [mem_closedBall, dist_zero_right] using hz.2))
         (Eventually.of_forall fun z => sq_nonneg _) (Eventually.of_forall fun z hz => ⟨
           (ha n).1.trans hz.1, hz.2⟩)

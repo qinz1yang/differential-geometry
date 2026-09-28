@@ -396,19 +396,19 @@ theorem HasStageJetConvergence.inv_cov_comp_tail
       apply hGconvO.congr_eventually hOopen
       · filter_upwards [eventually_atTop.2 ⟨Nsm, fun n hn => hn⟩] with n hn
         intro w _hw
-        simp only [Gp, if_pos hn]
+        simp only [Gp, ite_eq_left hn]
       · exact Set.eqOn_refl id O
     have hGpcd : ∀ n, ContDiffOn Real (∞ : WithTop ℕ∞) (Gp n) O := by
       intro n
       by_cases hn : Nsm ≤ n
-      · simpa only [Gp, if_pos hn] using (hNsm n hn).1
-      · simpa only [Gp, if_neg hn] using
+      · simpa only [Gp, ite_eq_left hn] using (hNsm n hn).1
+      · simpa only [Gp, ite_eq_right hn] using
           (contDiff_id : ContDiff Real (∞ : WithTop ℕ∞) (id : E → E)).contDiffOn
     have hGpmap : ∀ n, Set.MapsTo (Gp n) O D := by
       intro n
       by_cases hn : Nsm ≤ n
-      · simpa only [Gp, if_pos hn] using (hNsm n hn).2
-      · simp only [Gp, if_neg hn]
+      · simpa only [Gp, ite_eq_left hn] using (hNsm n hn).2
+      · simp only [Gp, ite_eq_right hn]
         intro w hw
         exact hOD hw
     let Ralpha : Real := L.rInf (alpha.1 : Nat) + 1
@@ -573,7 +573,7 @@ theorem HasStageJetConvergence.inv_cov_comp_tail
             (Qp n w - B alpha (ln n) w)
             (e (slots 0)) (e (slots 1)))
           (a : Nat) (A alpha (kn n) (ln n) (zn n))) (slotn n)).trans hnorm
-      simpa only [Qp, Gp, if_pos hnSm, tower, Gamma, Q] using hpi
+      simpa only [Qp, Gp, ite_eq_left hnSm, tower, Gamma, Q] using hpi
     have hsmall :
         |tower alpha (kn n) (ln n) a
           (A alpha (kn n) (ln n) (zn n)) (slotn n)| < eps := by

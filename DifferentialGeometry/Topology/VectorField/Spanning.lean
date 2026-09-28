@@ -20,7 +20,8 @@ theorem tsupport_gradientFun_subset (g : SmoothRiemannianMetric I M) (f : M → 
   apply hx
   apply gradientFun_eq_zero_of_mfderiv_eq_zero
   have he : f =ᶠ[𝓝 x] fun _ => (0 : ℝ) := notMem_tsupport_iff_eventuallyEq.mp hxf
-  exact he.mfderiv_eq.trans mfderiv_const
+  rw [he.mfderiv_eq, mfderiv_const]
+  rfl
 
 theorem span_gradientFun_eq_top (g : SmoothRiemannianMetric I M)
     {ι : Type*} (φ : ι → M → ℝ) (x : M)

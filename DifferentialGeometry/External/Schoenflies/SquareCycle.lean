@@ -653,7 +653,7 @@ noncomputable def sqCoord (c : Plane) (r : ℝ) (z : Plane) : ℝ :=
 theorem sqCoord_top (hz : z ∈ segment ℝ (sqNE c r) (sqNW c r)) :
     sqCoord c r z = dist (sqNE c r) z := by
   classical
-  rw [sqCoord, if_pos hz]
+  rw [sqCoord, ite_eq_left hz]
 
 theorem sqCoord_left (hr : 0 ≤ r) (hz : z ∈ segment ℝ (sqNW c r) (sqSW c r)) :
     sqCoord c r z = 2 * r + dist (sqNW c r) z := by
@@ -661,8 +661,8 @@ theorem sqCoord_left (hr : 0 ≤ r) (hz : z ∈ segment ℝ (sqNW c r) (sqSW c r
   by_cases htop : z ∈ segment ℝ (sqNE c r) (sqNW c r)
   · -- the shared corner, where the two formulas agree
     obtain rfl := eq_sqNW_of_mem_top_left hr htop hz
-    rw [sqCoord, if_pos htop, dist_sqNE_sqNW c hr, dist_self, add_zero]
-  · rw [sqCoord, if_neg htop, if_pos hz]
+    rw [sqCoord, ite_eq_left htop, dist_sqNE_sqNW c hr, dist_self, add_zero]
+  · rw [sqCoord, ite_eq_right htop, ite_eq_left hz]
 
 theorem sqCoord_bottom (hr : 0 < r) (hz : z ∈ segment ℝ (sqSW c r) (sqSE c r)) :
     sqCoord c r z = 4 * r + dist (sqSW c r) z := by
@@ -670,9 +670,9 @@ theorem sqCoord_bottom (hr : 0 < r) (hz : z ∈ segment ℝ (sqSW c r) (sqSE c r
   have htop : z ∉ segment ℝ (sqNE c r) (sqNW c r) := notMem_top_of_mem_bottom hr hz
   by_cases hleft : z ∈ segment ℝ (sqNW c r) (sqSW c r)
   · obtain rfl := eq_sqSW_of_mem_left_bottom hr.le hleft hz
-    rw [sqCoord, if_neg htop, if_pos hleft, dist_sqNW_sqSW c hr.le, dist_self, add_zero]
+    rw [sqCoord, ite_eq_right htop, ite_eq_left hleft, dist_sqNW_sqSW c hr.le, dist_self, add_zero]
     ring
-  · rw [sqCoord, if_neg htop, if_neg hleft, if_pos hz]
+  · rw [sqCoord, ite_eq_right htop, ite_eq_right hleft, ite_eq_left hz]
 
 theorem sqCoord_right (hr : 0 < r) (hz : z ∈ segment ℝ (sqSE c r) (sqNE c r))
     (hne : z ≠ sqNE c r) : sqCoord c r z = 6 * r + dist (sqSE c r) z := by
@@ -682,10 +682,10 @@ theorem sqCoord_right (hr : 0 < r) (hz : z ∈ segment ℝ (sqSE c r) (sqNE c r)
   have hleft : z ∉ segment ℝ (sqNW c r) (sqSW c r) := notMem_left_of_mem_right hr hz
   by_cases hbot : z ∈ segment ℝ (sqSW c r) (sqSE c r)
   · obtain rfl := eq_sqSE_of_mem_bottom_right hr.le hbot hz
-    rw [sqCoord, if_neg htop, if_neg hleft, if_pos hbot, dist_sqSW_sqSE c hr.le, dist_self,
+    rw [sqCoord, ite_eq_right htop, ite_eq_right hleft, ite_eq_left hbot, dist_sqSW_sqSE c hr.le, dist_self,
       add_zero]
     ring
-  · rw [sqCoord, if_neg htop, if_neg hleft, if_neg hbot]
+  · rw [sqCoord, ite_eq_right htop, ite_eq_right hleft, ite_eq_right hbot]
 
 /-! ## Part 4: the overlay edges on one side
 

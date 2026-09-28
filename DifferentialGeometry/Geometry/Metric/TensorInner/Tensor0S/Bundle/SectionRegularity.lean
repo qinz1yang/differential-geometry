@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.InnerProduct
-import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.PositiveDefiniteBilinearBoundedUnitBall
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Chart.Inner
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Chart.ContinuousLinearMap
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.InnerBridge
@@ -32,7 +31,7 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace Tensor0SRiemannian
 
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -290,7 +289,7 @@ theorem chartLocal_continuous_inner_of_smooth_sections
   exact chartTensorInnerPointwise_0s_continuousOn_smooth_args
     (I := I) (M := M) g α s _ _ hTα hSα
 
-theorem _root_.Tensor0SBundle.continuous_inner_of_smooth_sections
+theorem _root_.DifferentialGeometry.Tensor0SBundle.continuous_inner_of_smooth_sections
     (g : SmoothRiemannianMetric I M) (s : ℕ)
     (T S : ∀ y : M, Tensor0SSpace s I y)
     (hT_charts : ∀ α : M, ContinuousOn

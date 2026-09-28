@@ -87,22 +87,22 @@ private theorem graphical_curve_shortening_eq_of_derivative_bounds
   have hw (t : ℝ) (ht : t ∈ Icc s T) :
       (fun x => w x t) = fun x => F t x - G t x := by
     funext x
-    exact if_pos ht
+    exact ite_eq_left ht
   have hwt (x t : ℝ) (ht : t ∈ Ioo s T) :
       (fun r => w x r) =ᶠ[𝓝 t] fun r => F r x - G r x := by
     filter_upwards [Icc_mem_nhds ht.1 ht.2] with r hr
-    exact if_pos hr
+    exact ite_eq_left hr
   have hwper (x t : ℝ) : w (x + 1) t = w x t := by
     by_cases ht : t ∈ Icc s T
-    · simp only [w, if_pos ht, hFper t ht x, hGper t ht x]
-    · simp only [w, if_neg ht]
+    · simp only [w, ite_eq_left ht, hFper t ht x, hGper t ht x]
+    · simp only [w, ite_eq_right ht]
   have hwcont : ContinuousOn (Function.uncurry w) (Icc 0 1 ×ˢ Icc s T) := by
     have hc : ContinuousOn (fun p : ℝ × ℝ => F p.2 p.1 - G p.2 p.1)
         (Icc 0 1 ×ˢ Icc s T) :=
       (hFcont.sub hGcont).comp continuous_swap.continuousOn (fun _ ht => ⟨ht.2, ht.1⟩)
     apply hc.congr
     intro p hp
-    exact if_pos hp.2
+    exact ite_eq_left hp.2
   have hwtime (x t : ℝ) (ht : t ∈ Ioo s T) :
       DifferentiableAt ℝ (fun r => w x r) t :=
     ((hFtime t ht x).sub (hGtime t ht x)).differentiableAt.congr_of_eventuallyEq (hwt x t ht)

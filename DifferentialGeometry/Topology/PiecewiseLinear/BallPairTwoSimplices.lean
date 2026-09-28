@@ -153,7 +153,7 @@ theorem convexHull_insert_union_convexHull_insert_of_midpoint [DecidableEq E] {F
   · have hcongr : ∀ v ∈ F,
         (if v = c then w c - w d else if v = m then 2 * w d else w v) = w v := by
       intro v hv
-      rw [if_neg (fun hh : v = c => hcF (hh ▸ hv)), if_neg (fun hh : v = m => hmF (hh ▸ hv))]
+      rw [ite_eq_right (fun hh : v = c => hcF (hh ▸ hv)), ite_eq_right (fun hh : v = m => hmF (hh ▸ hv))]
     refine Or.inl (mem_convexHull_iff_exists_weights.mpr
       ⟨fun v => if v = c then w c - w d else if v = m then 2 * w d else w v, ?_, ?_, ?_⟩)
     · intro v hv
@@ -166,18 +166,18 @@ theorem convexHull_insert_union_convexHull_insert_of_midpoint [DecidableEq E] {F
         · exact absurd rfl h1
         · exact absurd rfl h2
         · exact hwF v hv
-    · rw [Finset.sum_insert hcmi, Finset.sum_insert hmF, if_pos rfl, if_neg (Ne.symm hcm),
-        if_pos rfl, Finset.sum_congr rfl hcongr]
+    · rw [Finset.sum_insert hcmi, Finset.sum_insert hmF, ite_eq_left rfl, ite_eq_right (Ne.symm hcm),
+        ite_eq_left rfl, Finset.sum_congr rfl hcongr]
       linarith
     · rw [Finset.sum_insert hcmi, Finset.sum_insert hmF]
       dsimp only
-      rw [if_pos rfl, if_neg (Ne.symm hcm), if_pos rfl,
+      rw [ite_eq_left rfl, ite_eq_right (Ne.symm hcm), ite_eq_left rfl,
         Finset.sum_congr rfl (fun v hv => by rw [hcongr v hv]), h2 (w d), ← hwx]
       module
   · have hcongr : ∀ v ∈ F,
         (if v = d then w d - w c else if v = m then 2 * w c else w v) = w v := by
       intro v hv
-      rw [if_neg (fun hh : v = d => hdF (hh ▸ hv)), if_neg (fun hh : v = m => hmF (hh ▸ hv))]
+      rw [ite_eq_right (fun hh : v = d => hdF (hh ▸ hv)), ite_eq_right (fun hh : v = m => hmF (hh ▸ hv))]
     refine Or.inr (mem_convexHull_iff_exists_weights.mpr
       ⟨fun v => if v = d then w d - w c else if v = m then 2 * w c else w v, ?_, ?_, ?_⟩)
     · intro v hv
@@ -190,12 +190,12 @@ theorem convexHull_insert_union_convexHull_insert_of_midpoint [DecidableEq E] {F
         · exact absurd rfl h1
         · exact absurd rfl h2
         · exact hwF v hv
-    · rw [Finset.sum_insert hdmi, Finset.sum_insert hmF, if_pos rfl, if_neg (Ne.symm hdm),
-        if_pos rfl, Finset.sum_congr rfl hcongr]
+    · rw [Finset.sum_insert hdmi, Finset.sum_insert hmF, ite_eq_left rfl, ite_eq_right (Ne.symm hdm),
+        ite_eq_left rfl, Finset.sum_congr rfl hcongr]
       linarith
     · rw [Finset.sum_insert hdmi, Finset.sum_insert hmF]
       dsimp only
-      rw [if_pos rfl, if_neg (Ne.symm hdm), if_pos rfl,
+      rw [ite_eq_left rfl, ite_eq_right (Ne.symm hdm), ite_eq_left rfl,
         Finset.sum_congr rfl (fun v hv => by rw [hcongr v hv]), h2 (w c), ← hwx]
       module
 

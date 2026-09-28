@@ -129,8 +129,9 @@ private theorem mem_eball_of_shiCutoff_pos
     {y : M} (hy : 0 < shiCutoff (I := I) B s y) :
     y ∈ Metric.eball B.center (ENNReal.ofReal (B.radius / 2)) := by
   have helt := riemannianEDistOf_lt_of_shiCutoff_pos (I := I) B hs hy
-  rw [Metric.mem_eball',
-    IsRiemannianManifold.out (I := I) B.center y]
+  rw [Metric.mem_eball,
+    IsRiemannianManifold.out (I := I) y B.center]
+  rw [Manifold.riemannianEDist_comm]
   simpa only [
     riemannianEDistOf_eq_riemannianEDist
       (I := I) (S.base.metric s) hEnorm] using helt

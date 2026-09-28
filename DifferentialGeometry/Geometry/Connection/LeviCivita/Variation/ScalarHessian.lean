@@ -273,10 +273,7 @@ theorem lcHessVarCoord
         base := by
     have hsub := (hsecond i j).sub hprod
     convert hsub using 1
-    · rfl
-    · rfl
-    · funext s
-      simp [scalarHessCoordAt]
+    rfl
   refine hraw.congr_deriv ?_
   simp [scalarHessCoordAt, Finset.sum_add_distrib, sub_eq_add_neg, add_comm,
     add_left_comm]

@@ -721,10 +721,10 @@ theorem evolvingMoserPositiveExponentLocalBoundFactor_nonneg
     0 ≤ evolvingMoserPositiveExponentLocalBoundFactor
       n Vfixed Vmoving C G B p τ c d D lower upper := by
   by_cases hp_two : p < 2
-  · rw [evolvingMoserPositiveExponentLocalBoundFactor, if_pos hp_two]
+  · rw [evolvingMoserPositiveExponentLocalBoundFactor, ite_eq_left hp_two]
     exact evolvingMoserSmallExponentLocalBoundFactor_nonneg
       n Vfixed Vmoving C G B hp hp_two
-  · rw [evolvingMoserPositiveExponentLocalBoundFactor, if_neg hp_two]
+  · rw [evolvingMoserPositiveExponentLocalBoundFactor, ite_eq_right hp_two]
     exact mul_nonneg
       (mul_nonneg
         (zero_le_one.trans (le_max_left 1 Vfixed.toReal))
@@ -784,7 +784,7 @@ theorem evolving_local_boundedness_of_subsolution_rpow_of_volume_le
             (spatialCutoffBetween rho outerLower outerUpper) u p τ D := by
   by_cases hp_two : p < 2
   · simpa only [evolvingMoserPositiveExponentLocalBoundFactor,
-      if_pos hp_two] using
+      ite_eq_left hp_two] using
       (evolving_local_boundedness_of_subsolution_of_lt_two_of_volume_le
         (I := I) (M := M) qMetric g hdim rho u hu hpos Vfixed Vmoving
           hp hp_two hτc hcd hdD hC hG hB houter houterLower hlowerUpper
@@ -792,7 +792,7 @@ theorem evolving_local_boundedness_of_subsolution_rpow_of_volume_le
           hfixedVolume hmovingVolume)
   · have hpTwo : 2 ≤ p := le_of_not_gt hp_two
     simpa only [evolvingMoserPositiveExponentLocalBoundFactor,
-      if_neg hp_two] using
+      ite_eq_right hp_two] using
       (evolving_local_boundedness_of_subsolution_of_two_le_of_volume_le
         (I := I) (M := M) qMetric g hdim rho u hu hpos Vfixed Vmoving
           hpTwo hτc hcd hdD hC hG hB houter houterLower hlowerUpper

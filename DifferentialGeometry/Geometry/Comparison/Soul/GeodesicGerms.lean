@@ -115,7 +115,7 @@ private theorem exists_lift_of_eventually_geodesic_equation
     simp only [hc₁_def, hwt, hvt]
   have hc₂_t : c₂ t = (extChartAt I y y, v) := by
     rw [hc₂_def, chartPushLift_self_pair (I := I) f₁ t, hf₁_proj_t]
-    have hfib : chartFiberCoord (I := I) y (f₁ t) = v := by
+    have hfib : TangentBundle.chartFiberCoord (I := I) y (f₁ t) = v := by
       rw [show f₁ t = (⟨y, v⟩ : TangentBundle I M) from hf₁_init]
       exact chartFiberCoord_mk_self (I := I) y v
     rw [hfib]
@@ -163,7 +163,7 @@ theorem isGeodesicAt_of_eventually_hasGeodesicEquationAt
     · rfl
   have hF : F =ᶠ[𝓝 t] f := by
     filter_upwards [hproj] with s hs
-    exact if_pos hs.symm
+    exact ite_eq_left hs.symm
   refine ⟨γ t, F, hFproj, ?_, ?_⟩
   · rw [hFproj]
     exact mem_chart_source H (γ t)

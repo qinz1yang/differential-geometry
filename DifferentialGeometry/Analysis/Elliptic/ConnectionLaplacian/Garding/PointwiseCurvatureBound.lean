@@ -4,6 +4,8 @@ import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Commutator.Curvatu
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Analysis.Integration.L2.Tensor.FiberNormBounds
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Tensor.Pointwise
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

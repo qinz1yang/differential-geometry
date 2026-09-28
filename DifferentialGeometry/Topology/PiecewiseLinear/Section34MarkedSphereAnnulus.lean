@@ -11,7 +11,7 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 theorem IsPLSphere.exists_disk_neighborhood_avoiding_closed {S F : Set E}
     (hS : IsPLSphere 2 S) (hF : IsClosed F) {p : E} (hp : p ∈ S) (hpF : p ∉ F) :
     ∃ (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ S ∧ Disjoint D F ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ S ∧ Disjoint D F ∧
       p ∈ D ∧ p ∉ q '' stdSimplexBoundary 2 := by
   obtain ⟨K, hKfin, hKS⟩ := hS.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
@@ -73,7 +73,7 @@ theorem IsPLSphere.exists_innermost_disk_or_band_avoiding_pair {S : Set E}
     (hCdisj : C.PairwiseDisjoint id) {x y : E} (hxS : x ∈ S) (hyS : y ∈ S)
     (hxy : x ≠ y) (hxC : x ∉ ⋃₀ C) (hyC : y ∉ ⋃₀ C) :
     (∃ J ∈ C, ∃ (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ S ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ S ∧
         q '' stdSimplexBoundary 2 = J ∧ x ∉ D ∧ y ∉ D ∧
           ∀ L ∈ C, L ≠ J → Disjoint D L) ∨
     ∃ J ∈ C, ∃ L ∈ C, J ≠ L ∧ ∃ φ : (Fin 3 → ℝ) × ℝ → E,
@@ -95,7 +95,7 @@ theorem IsPLSphere.exists_innermost_disk_or_band_avoiding_pair {S : Set E}
   have hJend : ∀ J ∈ C, Disjoint J (A₀ ∪ A₁) := fun J hJ =>
     hends.mono_left (subset_sUnion_of_mem hJ)
   by_cases hex : ∃ J ∈ C, ∃ (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         q '' stdSimplexBoundary 2 = J
   · let _ : Finite C := hC.to_subtype
     obtain ⟨i, D, q, hq, hDA, hqJ, hdis⟩ :=

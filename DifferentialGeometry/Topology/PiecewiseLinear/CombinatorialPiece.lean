@@ -48,7 +48,7 @@ noncomputable def combinatorialPLPieceIn {n : ℕ} (K : Geometry.SimplicialCompl
       rw [Function.comp_apply, hf_eq y.1 y.2]
       change (vertexChart K hq (hK.isPLSphere_link hq)) ⟨y.1, y.2⟩ =
         if h : y.1 ∈ K.space then (vertexChart K hq (hK.isPLSphere_link hq)) ⟨y.1, h⟩ else 0
-      rw [dif_pos y.2]
+      rw [dite_eq_left y.2]
   · intro e he
     obtain ⟨q, hq, rfl⟩ := mem_combinatorialChartedSpace_atlas K hK he
     rw [preimage_univ, inter_univ]
@@ -80,11 +80,11 @@ noncomputable def combinatorialSubcomplexPLPieceIn {n : ℕ}
         obtain ⟨s, hs, hys⟩ := L.mem_space_iff.mp hy
         exact K.convexHull_subset_space (hL hs) hys
       change (((combinatorialPLPieceIn K hK p).map y : K.space) : E) ∈ L.space
-      simpa only [combinatorialPLPieceIn, dif_pos hyK] using hy
+      simpa only [combinatorialPLPieceIn, dite_eq_left hyK] using hy
     · intro hx
       refine ⟨x.1, hx, ?_⟩
       apply Subtype.ext
-      simp only [combinatorialPLPieceIn, dif_pos x.2]
+      simp only [combinatorialPLPieceIn, dite_eq_left x.2]
   rw [← himage]
   exact (combinatorialPLPieceIn K hK p).restrict L hL
 

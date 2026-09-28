@@ -359,11 +359,11 @@ theorem perpFrame_expand
     rw [map_sum, sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
     · rw [ContinuousLinearMap.map_smul, smul_apply,
-        hON i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
+        hON i i, ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
       exact hpair
     · intro j _ hji
       rw [ContinuousLinearMap.map_smul, smul_apply,
-        hON j i, if_neg hji, smul_zero]
+        hON j i, ite_eq_right hji, smul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   let vW : ι → W := fun i => ⟨F i, hFmem i⟩
@@ -391,9 +391,9 @@ theorem perpFrame_expand
     have hsum_inner :
         g.inner x (F i) (∑ j, a j • F j) = a i := by
       rw [map_sum, Finset.sum_eq_single i]
-      · rw [map_smul, hON i i, if_pos rfl, smul_eq_mul, mul_one]
+      · rw [map_smul, hON i i, ite_eq_left rfl, smul_eq_mul, mul_one]
       · intro j _ hji
-        rw [map_smul, hON i j, if_neg (Ne.symm hji), smul_zero]
+        rw [map_smul, hON i j, ite_eq_right (Ne.symm hji), smul_zero]
       · intro hi
         exact absurd (Finset.mem_univ i) hi
     calc

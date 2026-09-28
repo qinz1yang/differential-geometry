@@ -15,11 +15,11 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 theorem exists_isPLBall_frontier_eq_of_four_disks {B₁ B₂ : Set E3} (hB₁ : IsPLBall 3 B₁)
     (hB₂ : IsPLBall 3 B₂) {H D : Fin 4 → Set E3}
     {rH qD : Fin 4 → (Fin 3 → ℝ) → E3} {γ₁ γ₂ : Fin 4 → ℝ → E3}
-    (hrH : ∀ k, IsPLHomeomorphOn (rH k) (stdSimplex ℝ (Fin 3)) (H k))
+    (hrH : ∀ k, IsPLHomeomorphOn (rH k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (H k))
     (hHdisj : Pairwise fun k l => Disjoint (H k) (H l)) (h12 : B₁ ∩ B₂ = ⋃ k, H k)
     (hH₁ : ∀ k, H k ⊆ frontier B₁) (hH₂ : ∀ k, H k ⊆ frontier B₂)
     (hHint : ∀ k, H k \ rH k '' stdSimplexBoundary 2 ⊆ interior (B₁ ∪ B₂))
-    (hqD : ∀ k, IsPLHomeomorphOn (qD k) (stdSimplex ℝ (Fin 3)) (D k))
+    (hqD : ∀ k, IsPLHomeomorphOn (qD k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D k))
     (hDdisj : Pairwise fun k l => Disjoint (D k) (D l))
     (hγ₁ : ∀ k, IsPLHomeomorphOn (γ₁ k) (Icc 0 1) (D k ∩ B₁))
     (hγ₂ : ∀ k, IsPLHomeomorphOn (γ₂ k) (Icc 0 1) (D k ∩ B₂))
@@ -35,9 +35,9 @@ theorem exists_isPLBall_frontier_eq_of_four_disks {B₁ B₂ : Set E3} (hB₁ : 
     (hbin : ∀ k, γ₁ (k + 1) 0 ∈ rH k '' stdSimplexBoundary 2) :
     ∃ R A Ω : Set E3, IsPLBall 3 R ∧ frontier R = A ∪ (⋃ k, D k) ∪ Ω ∧
       A ⊆ frontier B₁ ∧ Ω ⊆ frontier B₂ ∧
-      (∃ qA : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A ∧
+      (∃ qA : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
         ∀ k, D k ∩ B₁ ⊆ qA '' stdSimplexBoundary 2) ∧
-      (∃ qΩ : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qΩ (stdSimplex ℝ (Fin 3)) Ω ∧
+      (∃ qΩ : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qΩ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ω ∧
         ∀ k, D k ∩ B₂ ⊆ qΩ '' stdSimplexBoundary 2) ∧
       Ω ∩ B₁ ⊆ A ∧ A ∩ B₂ ⊆ Ω ∧ Disjoint (interior R) (B₁ ∪ B₂) := by
   have hB₁c := hB₁.isPolyhedron.isClosed

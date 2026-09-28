@@ -110,8 +110,8 @@ private theorem canonical_clauses_of_closedPrefixAt {K : ObservedHistory.{u}}
     rw [K.closedPrefixAt_metric τ hlt v, hF v]
   exact canonical_clauses_of_base_eq _ F hbase hD hwit hder hgrad
 
-theorem RetainedCoreHistory.canonical_clauses_of_extendAt {P₀ : OrientedThreeStage.{u}}
-    (H : RetainedCoreHistory P₀) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
+theorem RetainedCoreHistory.canonical_clauses_of_extendAt
+    (H : RetainedCoreHistory.{u}) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) {t : ℝ}

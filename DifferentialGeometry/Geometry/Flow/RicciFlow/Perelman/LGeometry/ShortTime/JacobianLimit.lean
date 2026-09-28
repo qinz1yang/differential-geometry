@@ -155,13 +155,13 @@ private theorem tendsto_lNormGram
       ContinuousWithinAt (U V) (Ioi 0) 0 := by
     change Tendsto (U V) (nhdsWithin (0 : Real) (Ioi 0)) (nhds (U V 0))
     have hU0 : U V 0 = e.continuousLinearMapAt Real x V := by
-      simp only [U, if_pos]
+      simp only [U, ite_eq_left]
     rw [hU0]
     refine (tendsto_normalized_lRegularizedJacobiField_chartRepAtBase_at_zero S hS T x Z V hT).congr' ?_
     filter_upwards [self_mem_nhdsWithin] with s hs
     have hspos : 0 < s := hs
     have hs0 : s ≠ 0 := ne_of_gt hspos
-    simp only [U, hs0, if_false, Y, gamma]
+    simp only [U, hs0, ite_false, Y, gamma]
   have hW (V : TangentSpace J x) : ContinuousWithinAt
       (fun s ↦ (TotalSpace.mk' F (gamma s) (W V s) : TangentBundle J N))
       (Ioi 0) 0 := by
@@ -273,7 +273,7 @@ private theorem tendsto_lNormGram
         (S.base.metric T).inner x bi bj := by
       norm_num only [zero_pow, sub_zero]
       rw [hgamma0]
-      simp only [W, U, if_pos]
+      simp only [W, U, ite_eq_left]
       rw [hgamma0]
       with_unfolding_all
         rw [e.symmL_continuousLinearMapAt (R := Real) hxbase,
@@ -285,7 +285,7 @@ private theorem tendsto_lNormGram
     hbase.filter_mono inf_le_left
   filter_upwards [self_mem_nhdsWithin, hbase'] with s hs hsbase
   have hs0 : s ≠ 0 := ne_of_gt hs
-  simp only [lNormGram, Matrix.of_apply, W, U, hs0, if_false]
+  simp only [lNormGram, Matrix.of_apply, W, U, hs0, ite_false]
   change (S.base.metric (T - s ^ 2)).inner (gamma s)
       (e.symmL Real (gamma s)
         ((2 * s)⁻¹ • e.continuousLinearMapAt Real (gamma s)

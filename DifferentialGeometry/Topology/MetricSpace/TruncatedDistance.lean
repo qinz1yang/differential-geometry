@@ -1,5 +1,5 @@
 import Mathlib.Topology.MetricSpace.Lipschitz
-import Mathlib.Data.ENNReal.Real
+import Mathlib.Basic.ENNReal.Real
 import Mathlib.Tactic.Linarith
 import Mathlib.Analysis.Normed.Group.Real
 

@@ -315,7 +315,7 @@ private theorem hamilton_harnack_block_evolution_of_pulled_test_jets
     U W hskew hDW' hDU' hUt' hWt'
 
 private theorem hamilton_block_tensor_contraction_pullback {x y : M}
-    (gSource gTarget : SmoothMetricGen I M)
+    (gSource gTarget : SmoothRiemannianMetric I M)
     (e : TangentSpace I x ≃ₗ[ℝ] TangentSpace I y)
     (hiso : ∀ u v, gTarget.inner y (e u) (e v) = gSource.inner x u v)
     (K : Tensor0SSpace 4 I y) (P : Tensor0SSpace 3 I y) (Mbar : Tensor0SSpace 2 I y)
@@ -328,12 +328,12 @@ private theorem hamilton_block_tensor_contraction_pullback {x y : M}
         ((tensor0SPullbackCLE 1 e W).product (tensor0SPullbackCLE 1 e W)) =
     inner0S gTarget y 4 K (U.product U) + 2 * inner0S gTarget y 3 P (U.product W) +
       inner0S gTarget y 2 Mbar (W.product W) := by
-  rw [← Tensor0SBundle.tensor0SPullbackCLE_product,
-    ← Tensor0SBundle.tensor0SPullbackCLE_product,
-    ← Tensor0SBundle.tensor0SPullbackCLE_product]
-  rw [Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 4 e hiso,
-    Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 3 e hiso,
-    Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 2 e hiso]
+  rw [← DifferentialGeometry.Tensor0SBundle.tensor0SPullbackCLE_product,
+    ← DifferentialGeometry.Tensor0SBundle.tensor0SPullbackCLE_product,
+    ← DifferentialGeometry.Tensor0SBundle.tensor0SPullbackCLE_product]
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 4 e hiso,
+    DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 3 e hiso,
+    DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE gSource gTarget x y 2 e hiso]
 
 
 theorem hamilton_harnack_block_evolution_pullback
@@ -1103,10 +1103,10 @@ theorem hamilton_perturbed_harnack_block_evolution_within_pullback
       (Tensor0SField.domDomCongr ∞ curvatureSlotSwap (S.base.rm04 r) y)
       (hamiltonPField (S.base.metric r) y)
       (hamiltonMOriginField clock.origin r (S.base.metric r) y) (U r y) (W r y)
-    have hWnorm := Tensor0SBundle.inner0S_tensor0SPullbackCLE
+    have hWnorm := DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE
       gSource (S.base.metric r) y y 1 (φ r y).toLinearEquiv
       (hiso r hr y) (W r y) (W r y)
-    have hUnorm := Tensor0SBundle.inner0S_tensor0SPullbackCLE
+    have hUnorm := DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE
       gSource (S.base.metric r) y y 2 (φ r y).toLinearEquiv
       (hiso r hr y) (U r y) (U r y)
     dsimp only [qFixed, qOriginal, normSq0S]

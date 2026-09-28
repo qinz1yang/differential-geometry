@@ -66,7 +66,7 @@ theorem dirichletMassComplOnIcc_apply_smooth
     dirichletMassComplOnIcc g hCg hequiv Cv hCv0 hCvtop hvol t
         (smoothToH1ComplDirichlet q u) (smoothToH1ComplDirichlet q v) =
       dirichletMass (g t) u v := by
-  rw [dirichletMassComplOnIcc, dif_pos ht,
+  rw [dirichletMassComplOnIcc, dite_eq_left ht,
     dirichletMassCompl_apply_smooth]
 
 theorem norm_dirichletMassComplOnIcc_le
@@ -85,10 +85,10 @@ theorem norm_dirichletMassComplOnIcc_le
     ‖dirichletMassComplOnIcc g hCg hequiv Cv hCv0 hCvtop hvol t‖ ≤
       Cv.toReal * Cg := by
   by_cases ht : t ∈ Icc (0 : ℝ) T
-  · rw [dirichletMassComplOnIcc, dif_pos ht]
+  · rw [dirichletMassComplOnIcc, dite_eq_left ht]
     exact norm_dirichletMassCompl_le (g t) hCg (hequiv t ht)
       Cv hCv0 hCvtop (hvol t ht)
-  · rw [dirichletMassComplOnIcc, dif_neg ht, norm_zero]
+  · rw [dirichletMassComplOnIcc, dite_eq_right ht, norm_zero]
     exact mul_nonneg ENNReal.toReal_nonneg (zero_le_one.trans hCg)
 
 theorem dirichletMassComplOnIcc_aestronglyMeasurable
@@ -171,7 +171,7 @@ theorem dirichletMassVariationComplOnIco_apply_smooth
         Cv hCv0 hCvtop hvol t
         (smoothToH1ComplDirichlet q u) (smoothToH1ComplDirichlet q v) =
       dirichletMassVariation G.metric t u v := by
-  rw [dirichletMassVariationComplOnIco, dif_pos ht,
+  rw [dirichletMassVariationComplOnIco, dite_eq_left ht,
     dirichletMassVariationCompl_apply_smooth]
 
 theorem norm_dirichletMassVariationComplOnIco_le
@@ -197,12 +197,12 @@ theorem norm_dirichletMassVariationComplOnIco_le
       Cv hCv0 hCvtop hvol t‖ ≤
         (1 / 2) * max B 0 * (Cv.toReal * Cg) := by
   by_cases ht : t ∈ Ico (0 : ℝ) T
-  · rw [dirichletMassVariationComplOnIco, dif_pos ht]
+  · rw [dirichletMassVariationComplOnIco, dite_eq_left ht]
     exact norm_dirichletMassVariationCompl_le hG
       (hreg ⟨ht.1, ht.2.le⟩) B (htrace t ht) hCg
       (hequiv t ⟨ht.1, ht.2.le⟩) Cv hCv0 hCvtop
       (hvol t ⟨ht.1, ht.2.le⟩)
-  · rw [dirichletMassVariationComplOnIco, dif_neg ht, norm_zero]
+  · rw [dirichletMassVariationComplOnIco, dite_eq_right ht, norm_zero]
     exact mul_nonneg
       (mul_nonneg (by norm_num) (le_max_right B 0))
       (mul_nonneg ENNReal.toReal_nonneg (zero_le_one.trans hCg))
@@ -300,7 +300,7 @@ theorem dirichletWeakFormComplOnIco_apply_smooth
         Cv hCv0 hCvtop hvol t
         (smoothToH1ComplDirichlet q u) (smoothToH1ComplDirichlet q v) =
       dirichletWeakForm (g t) (X t) (a t) u v := by
-  rw [dirichletWeakFormComplOnIco, dif_pos ht,
+  rw [dirichletWeakFormComplOnIco, dite_eq_left ht,
     dirichletWeakFormCompl_apply_smooth]
 
 theorem norm_dirichletWeakFormComplOnIco_le
@@ -328,13 +328,13 @@ theorem norm_dirichletWeakFormComplOnIco_le
       Cv hCv0 hCvtop hvol t‖ ≤
         (1 + Real.sqrt (max B 0) + A) * (Cv.toReal * Cg) := by
   by_cases ht : t ∈ Ico (0 : ℝ) T
-  · rw [dirichletWeakFormComplOnIco, dif_pos ht]
+  · rw [dirichletWeakFormComplOnIco, dite_eq_left ht]
     exact (norm_dirichletWeakFormCompl_le (g t) (X t) (a t) B
       (hX t ht) hCg (hequiv t ⟨ht.1, ht.2.le⟩)
       Cv hCv0 hCvtop (hvol t ⟨ht.1, ht.2.le⟩)).trans (by
         gcongr
         exact ha t ht)
-  · rw [dirichletWeakFormComplOnIco, dif_neg ht, norm_zero]
+  · rw [dirichletWeakFormComplOnIco, dite_eq_right ht, norm_zero]
     exact mul_nonneg
       (add_nonneg
         (add_nonneg zero_le_one (Real.sqrt_nonneg (max B 0)))

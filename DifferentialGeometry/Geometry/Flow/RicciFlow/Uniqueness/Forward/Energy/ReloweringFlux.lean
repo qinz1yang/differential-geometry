@@ -5,8 +5,10 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq metricDiffSq_def reLower)
+
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle (normSq0S_sub_le)
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff
 

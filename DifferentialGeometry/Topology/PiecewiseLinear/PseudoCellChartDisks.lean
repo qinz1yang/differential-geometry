@@ -40,7 +40,7 @@ theorem exists_isPLHomeomorphOn_chart_closure_inside {M : Set E3} (hM : IsLocall
     (hJ : IsPLSphere 1 J) (hJM : J ⊆ M)
     (hcl : closure (Schoenflies.inside (χ '' J)) ⊆ χ '' M) :
     ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (ξ '' closure (Schoenflies.inside (χ '' J))) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ξ '' closure (Schoenflies.inside (χ '' J))) ∧
       r '' stdSimplexBoundary 2 = J ∧ ξ '' closure (Schoenflies.inside (χ '' J)) ⊆ M ∧
       ∀ x ∈ M, (x ∈ ξ '' closure (Schoenflies.inside (χ '' J)) ↔
         χ x ∈ closure (Schoenflies.inside (χ '' J))) := by

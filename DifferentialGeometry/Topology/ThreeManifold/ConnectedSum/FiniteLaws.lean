@@ -20,10 +20,13 @@ def connectedBallChartTransport : Prop :=
     Manifold.BallChartTransport c.toBallChart c'.toBallChart
 
 theorem orientedBallChartTransport_of_ballChartTransport
-    (h : connectedBallChartTransport.{u}) (M : ConnectedClosedOrientedManifold.{u} 3)
-    (c c' : OrientedBallChart M.toClosedOrientedManifold) :
+    {M : ConnectedClosedOrientedManifold.{u} 3}
+    {M' : ConnectedClosedOrientedManifold.{v} 3}
+    (c : OrientedBallChart M.toClosedOrientedManifold)
+    (c' : OrientedBallChart M'.toClosedOrientedManifold)
+    (h : Manifold.BallChartTransport c.toBallChart c'.toBallChart) :
     OrientedBallChartTransport c c' := by
-  obtain ⟨Φ, hΦ⟩ := h M c c'
+  obtain ⟨Φ, hΦ⟩ := h
   have h0c : (0 : E3) ∈ c.toBallChart.chart.source :=
     c.toBallChart.closedBall_subset_source (Metric.mem_closedBall_self (by norm_num))
   have h0c' : (0 : E3) ∈ c'.toBallChart.chart.source :=
@@ -41,6 +44,7 @@ theorem orientedBallChartTransport_of_ballChartTransport
       ∘L mfderiv (𝓡 3) (𝓡 3) (fun x : E3 => c.toBallChart.chart x) 0
       = mfderiv (𝓡 3) (𝓡 3) (fun x : E3 => c'.toBallChart.chart x) 0 := by
     rw [← hchain, Filter.EventuallyEq.mfderiv_eq hEq]
+    rfl
   have h3 : (OrientationAssembly.chartTangentEquiv c h0c).toLinearEquiv.trans
       ((Φ.mfderivToContinuousLinearEquiv (by simp) (c.toBallChart.chart 0)).toLinearEquiv)
       = (OrientationAssembly.chartTangentEquiv c' h0c').toLinearEquiv := by
@@ -48,7 +52,7 @@ theorem orientedBallChartTransport_of_ballChartTransport
     simp only [LinearEquiv.trans_apply, ContinuousLinearEquiv.coe_toLinearEquiv]
     exact DFunLike.congr_fun hkey v
   refine ⟨Φ, ?_, hΦ⟩
-  refine Diffeomorph.preservesOrientation_of_eq_at Φ M.orientation M.orientation
+  refine Diffeomorph.preservesOrientation_of_eq_at Φ M.orientation M'.orientation
     (c.toBallChart.chart 0) ?_
   rw [hΦ 0 (Metric.mem_closedBall_self (by norm_num))]
   erw [OrientationAssembly.orientation_eq_map_chartTangentEquiv c h0c,
@@ -59,15 +63,9 @@ theorem orientedBallChartTransport_of_ballChartTransport
     h3]
   exact (OrientationAssembly.orientation_eq_map_chartTangentEquiv c' h0c').symm
 
-theorem orientedBallChartTransport_all_of_ballChartTransport
-    (h : connectedBallChartTransport.{u}) :
-    ∀ (M : ConnectedClosedOrientedManifold.{u} 3)
-      (c c' : OrientedBallChart M.toClosedOrientedManifold), OrientedBallChartTransport c c' :=
-  fun M c c' => orientedBallChartTransport_of_ballChartTransport h M c c'
-
 theorem selfTransport_of_connectedBallChartTransport (h : connectedBallChartTransport.{u}) :
     SelfTransport.{u} :=
-  fun {M} c c' => orientedBallChartTransport_of_ballChartTransport h M c c'
+  fun {M} c c' => orientedBallChartTransport_of_ballChartTransport c c' (h M c c')
 
 def connectedSumUnorientedTransport : Prop :=
   ∀ (X X' Y Y' : ConnectedClosedOrientedManifold.{u} 3),
@@ -207,7 +205,8 @@ theorem finiteConnectedSum_opposite_of_binaryConnectedSumLaws (h : binaryConnect
     (hopp : connectedSumOpposite.{u}) (L : List (ConnectedClosedOrientedManifold.{u} 3)) :
     Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
       (finiteConnectedSum L).opposite.toClosedOrientedManifold
-      (finiteConnectedSum (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) :=
+      (finiteConnectedSum
+        (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) :=
   finiteConnectedSum_opposite_of_connectedSumLaws
     (connectedSumLaws_of_binaryConnectedSumLaws h) hopp
     standardThreeSphereLift_orientationReversing_diffeomorph L
@@ -244,7 +243,8 @@ theorem finiteConnectedSum_laws_of_unit_assoc_comm_transport (hunit : sphereUnit
         (finiteConnectedSum K).toClosedOrientedManifold) ∧
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph
         (finiteConnectedSum L).opposite.toClosedOrientedManifold
-        (finiteConnectedSum (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold)) :=
+        (finiteConnectedSum
+          (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold)) :=
   ⟨connectedSum_sphere_right_of_binaryConnectedSumLaws hbin M,
     connectedSum_sphere_left_of_binaryConnectedSumLaws hbin M,
     finiteConnectedSum_append_of_binaryConnectedSumLaws hbin L K,

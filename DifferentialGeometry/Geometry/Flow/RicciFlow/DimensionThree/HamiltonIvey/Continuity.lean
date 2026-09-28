@@ -119,11 +119,11 @@ private theorem normSq0S_eq_four_mul_matrixNormSq_of_frame
     rw [map_sum, sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
     · rw [ContinuousLinearMap.map_smul, smul_apply,
-        horth i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
+        horth i i, ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
       exact hpair
     · intro j _ hji
       rw [ContinuousLinearMap.map_smul, smul_apply,
-        horth j i, if_neg (by simpa using hji), smul_zero]
+        horth j i, ite_eq_right (by simpa using hji), smul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   have hcard : Fintype.card (Fin 3) = Module.finrank ℝ (TangentSpace I x) := by
@@ -231,8 +231,8 @@ private lemma normSq0S_rm04_continuousOn_local
       if a = b then 1 else 0
     rw [horth]
     by_cases hab : a = b
-    · rw [if_pos hab, if_pos (by rw [hab])]
-    · rw [if_neg hab, if_neg (fun h => hab (hidx.mp h))]
+    · rw [ite_eq_left hab, ite_eq_left (by rw [hab])]
+    · rw [ite_eq_right hab, ite_eq_right (fun h => hab (hidx.mp h))]
   have hentry4 : ∀ a b c d : Fin 3,
       ContinuousOn (fun q : ℝ × M =>
         tensor04StandardAt (I := I) (M := M) (S.base.rm04 q.1 q.2)
@@ -620,8 +620,8 @@ private theorem intrinsicFiberInfDist_eq_two_mul_flowFrameMatrixInfDist
       if a = b then 1 else 0
     rw [horth]
     by_cases hab : a = b
-    · rw [if_pos hab, if_pos (by rw [hab])]
-    · rw [if_neg hab, if_neg (fun h => hab (hidx_inj h))]
+    · rw [ite_eq_left hab, ite_eq_left (by rw [hab])]
+    · rw [ite_eq_right hab, ite_eq_right (fun h => hab (hidx_inj h))]
   have hli : LinearIndependent ℝ e := by
     rw [Fintype.linearIndependent_iff]
     intro c hc i
@@ -631,11 +631,11 @@ private theorem intrinsicFiberInfDist_eq_two_mul_flowFrameMatrixInfDist
     rw [map_sum, sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
     · rw [ContinuousLinearMap.map_smul, smul_apply,
-        horth_e i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
+        horth_e i i, ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
       exact hpair
     · intro j _ hji
       rw [ContinuousLinearMap.map_smul, smul_apply,
-        horth_e j i, if_neg (by simpa using hji), smul_zero]
+        horth_e j i, ite_eq_right (by simpa using hji), smul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   have hcard : Fintype.card (Fin 3) = Module.finrank ℝ (TangentSpace I q.2) := by
@@ -1000,8 +1000,8 @@ private theorem exists_orthonormalBasis_flowFrameOperatorMatrix
         (chartFrameNorm (I := I) gτ α (intrinsicFrameIndex (I := I) hdim x b) x) = _
     rw [horth]
     by_cases hab : a = b
-    · rw [if_pos hab, if_pos (by rw [hab])]
-    · rw [if_neg hab, if_neg (fun h => hab (hidx_inj h))]
+    · rw [ite_eq_left hab, ite_eq_left (by rw [hab])]
+    · rw [ite_eq_right hab, ite_eq_right (fun h => hab (hidx_inj h))]
   have hli : LinearIndependent ℝ e := by
     rw [Fintype.linearIndependent_iff]
     intro c hc i
@@ -1009,11 +1009,11 @@ private theorem exists_orthonormalBasis_flowFrameOperatorMatrix
     rw [map_sum, sum_apply] at hpair
     rw [Finset.sum_eq_single i] at hpair
     · rw [ContinuousLinearMap.map_smul, smul_apply,
-        horth_e i i, if_pos rfl, smul_eq_mul, mul_one] at hpair
+        horth_e i i, ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
       exact hpair
     · intro j _ hji
       rw [ContinuousLinearMap.map_smul, smul_apply,
-        horth_e j i, if_neg hji, smul_zero]
+        horth_e j i, ite_eq_right hji, smul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   have hsp : Submodule.span ℝ (Set.range e) = ⊤ :=

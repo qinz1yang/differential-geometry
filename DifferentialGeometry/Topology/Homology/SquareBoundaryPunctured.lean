@@ -197,19 +197,19 @@ theorem squareBoundaryArclength_mem_Ioo {p : Square} (hp : p ∈ squareBoundaryP
   have hy0 : 0 ≤ ((p 1 : unitInterval) : ℝ) := (p 1).property.1
   have hy1 : ((p 1 : unitInterval) : ℝ) ≤ 1 := (p 1).property.2
   by_cases hTy : ((p 1 : unitInterval) : ℝ) = 1
-  · rw [squareBoundaryArclength, if_pos hTy]
+  · rw [squareBoundaryArclength, ite_eq_left hTy]
     have hxlt : ((p 0 : unitInterval) : ℝ) < 1 := by
       rcases lt_or_eq_of_le hx1 with h | h
       · exact h
       · exact absurd (squarePoint_eq_northEast_of h hTy) hp.2
     exact ⟨by linarith, by linarith⟩
   · by_cases hLx : ((p 0 : unitInterval) : ℝ) = 0
-    · rw [squareBoundaryArclength, if_neg hTy, if_pos hLx]
+    · rw [squareBoundaryArclength, ite_eq_right hTy, ite_eq_left hLx]
       exact ⟨by linarith, by linarith⟩
     · by_cases hBy : ((p 1 : unitInterval) : ℝ) = 0
-      · rw [squareBoundaryArclength, if_neg hTy, if_neg hLx, if_pos hBy]
+      · rw [squareBoundaryArclength, ite_eq_right hTy, ite_eq_right hLx, ite_eq_left hBy]
         exact ⟨by linarith, by linarith⟩
-      · rw [squareBoundaryArclength, if_neg hTy, if_neg hLx, if_neg hBy]
+      · rw [squareBoundaryArclength, ite_eq_right hTy, ite_eq_right hLx, ite_eq_right hBy]
         exact ⟨by linarith, by have h := lt_of_le_of_ne hy1 hTy; linarith⟩
 
 theorem squareBoundaryArclength_curve (s : ℝ) (hs : s ∈ Ioo (0 : ℝ) 4) :
@@ -217,7 +217,7 @@ theorem squareBoundaryArclength_curve (s : ℝ) (hs : s ∈ Ioo (0 : ℝ) 4) :
   have hs0 : 0 < s := hs.1
   have hs4 : s < 4 := hs.2
   by_cases h1 : s ≤ 1
-  · rw [squareBoundaryArclength, if_pos (by
+  · rw [squareBoundaryArclength, ite_eq_left (by
       rw [squareBoundaryCurve_val_one, squareBoundarySecondCoord_of_le_one h1])]
     rw [squareBoundaryCurve_val_zero,
       squareBoundaryFirstCoord_of_nonneg_of_le_one (le_of_lt hs0) h1]
@@ -225,12 +225,12 @@ theorem squareBoundaryArclength_curve (s : ℝ) (hs : s ∈ Ioo (0 : ℝ) 4) :
   · have h1' : 1 < s := lt_of_not_ge h1
     by_cases h2 : s ≤ 2
     · rw [squareBoundaryArclength,
-        if_neg (by
+        ite_eq_right (by
           intro hh
           rw [squareBoundaryCurve_val_one,
             squareBoundarySecondCoord_of_one_le_of_le_two (le_of_lt h1') h2] at hh
           linarith),
-        if_pos (by rw [squareBoundaryCurve_val_zero,
+        ite_eq_left (by rw [squareBoundaryCurve_val_zero,
           squareBoundaryFirstCoord_of_one_le_of_le_two (le_of_lt h1') h2])]
       rw [squareBoundaryCurve_val_one,
         squareBoundarySecondCoord_of_one_le_of_le_two (le_of_lt h1') h2]
@@ -238,13 +238,13 @@ theorem squareBoundaryArclength_curve (s : ℝ) (hs : s ∈ Ioo (0 : ℝ) 4) :
     · have h2' : 2 < s := lt_of_not_ge h2
       by_cases h3 : s ≤ 3
       · rw [squareBoundaryArclength,
-          if_neg (by
+          ite_eq_right (by
             intro hh
             rw [squareBoundaryCurve_val_one,
               squareBoundarySecondCoord_of_two_le_of_le_three (le_of_lt h2') h3] at hh
             linarith)]
         by_cases hx0 : ((squareBoundaryCurve s 0 : unitInterval) : ℝ) = 0
-        · rw [if_pos hx0]
+        · rw [ite_eq_left hx0]
           have hcoord : squareBoundaryFirstCoord s = 0 := by
             rw [← squareBoundaryCurve_val_zero]
             exact hx0
@@ -256,24 +256,24 @@ theorem squareBoundaryArclength_curve (s : ℝ) (hs : s ∈ Ioo (0 : ℝ) 4) :
             squareBoundarySecondCoord_of_two_le_of_le_three le_rfl (by norm_num)
           rw [hs2, squareBoundaryCurve_val_one, hval]
           norm_num
-        · rw [if_neg hx0, if_pos (by rw [squareBoundaryCurve_val_one,
+        · rw [ite_eq_right hx0, ite_eq_left (by rw [squareBoundaryCurve_val_one,
             squareBoundarySecondCoord_of_two_le_of_le_three (le_of_lt h2') h3])]
           rw [squareBoundaryCurve_val_zero,
             squareBoundaryFirstCoord_of_two_le_of_le_three (le_of_lt h2') h3]
           ring
       · have h3' : 3 < s := lt_of_not_ge h3
         rw [squareBoundaryArclength,
-          if_neg (by
+          ite_eq_right (by
             intro hh
             rw [squareBoundaryCurve_val_one,
               squareBoundarySecondCoord_of_three_le_of_le_four (le_of_lt h3') (le_of_lt hs4)] at hh
             linarith),
-          if_neg (by
+          ite_eq_right (by
             intro hh
             rw [squareBoundaryCurve_val_zero,
               squareBoundaryFirstCoord_of_three_le (le_of_lt h3')] at hh
             linarith),
-          if_neg (by
+          ite_eq_right (by
             intro hh
             rw [squareBoundaryCurve_val_one,
               squareBoundarySecondCoord_of_three_le_of_le_four (le_of_lt h3') (le_of_lt hs4)] at hh
@@ -289,7 +289,7 @@ theorem squareBoundaryCurve_arclength {p : Square} (hp : p ∈ squareBoundaryPun
   have hy0 : 0 ≤ ((p 1 : unitInterval) : ℝ) := (p 1).property.1
   have hy1 : ((p 1 : unitInterval) : ℝ) ≤ 1 := (p 1).property.2
   by_cases hTy : ((p 1 : unitInterval) : ℝ) = 1
-  · rw [squareBoundaryArclength, if_pos hTy]
+  · rw [squareBoundaryArclength, ite_eq_left hTy]
     have h0 : squareBoundaryCurve (1 - ((p 0 : unitInterval) : ℝ)) 0 = p 0 := by
       apply Subtype.ext
       rw [squareBoundaryCurve_val_zero,
@@ -304,7 +304,7 @@ theorem squareBoundaryCurve_arclength {p : Square} (hp : p ∈ squareBoundaryPun
     · exact h0
     · exact h1
   · by_cases hLx : ((p 0 : unitInterval) : ℝ) = 0
-    · rw [squareBoundaryArclength, if_neg hTy, if_pos hLx]
+    · rw [squareBoundaryArclength, ite_eq_right hTy, ite_eq_left hLx]
       have h0 : squareBoundaryCurve (2 - ((p 1 : unitInterval) : ℝ)) 0 = p 0 := by
         apply Subtype.ext
         rw [squareBoundaryCurve_val_zero,
@@ -320,7 +320,7 @@ theorem squareBoundaryCurve_arclength {p : Square} (hp : p ∈ squareBoundaryPun
       · exact h0
       · exact h1
     · by_cases hBy : ((p 1 : unitInterval) : ℝ) = 0
-      · rw [squareBoundaryArclength, if_neg hTy, if_neg hLx, if_pos hBy]
+      · rw [squareBoundaryArclength, ite_eq_right hTy, ite_eq_right hLx, ite_eq_left hBy]
         have h0 : squareBoundaryCurve (2 + ((p 0 : unitInterval) : ℝ)) 0 = p 0 := by
           apply Subtype.ext
           rw [squareBoundaryCurve_val_zero,
@@ -344,7 +344,7 @@ theorem squareBoundaryCurve_arclength {p : Square} (hp : p ∈ squareBoundaryPun
           · rcases hi with hi | hi
             · exact absurd (congrArg (fun t : unitInterval => (t : ℝ)) hi) hBy
             · exact absurd (congrArg (fun t : unitInterval => (t : ℝ)) hi) hTy
-        rw [squareBoundaryArclength, if_neg hTy, if_neg hLx, if_neg hBy]
+        rw [squareBoundaryArclength, ite_eq_right hTy, ite_eq_right hLx, ite_eq_right hBy]
         have h0 : squareBoundaryCurve (3 + ((p 1 : unitInterval) : ℝ)) 0 = p 0 := by
           apply Subtype.ext
           rw [squareBoundaryCurve_val_zero, squareBoundaryFirstCoord_of_three_le (by linarith)]
@@ -380,7 +380,7 @@ theorem continuous_squareBoundaryArclength :
         ((continuous_apply 0).comp continuous_subtype_val))
     hg.continuousOn.congr fun p hp => by
       have hp' : ((p.val 1 : unitInterval) : ℝ) = 1 := hp
-      simp only [squareBoundaryArclength, if_pos hp']
+      simp only [squareBoundaryArclength, ite_eq_left hp']
   have hLcont : ContinuousOn (fun p : ↥squareBoundaryPuncture => squareBoundaryArclength p.val)
       {p : ↥squareBoundaryPuncture | ((p.val 0 : unitInterval) : ℝ) = 0} :=
     have hg : Continuous fun p : ↥squareBoundaryPuncture => 2 - ((p.val 1 : unitInterval) : ℝ) :=
@@ -389,10 +389,10 @@ theorem continuous_squareBoundaryArclength :
     hg.continuousOn.congr fun p hp => by
       have hp' : ((p.val 0 : unitInterval) : ℝ) = 0 := hp
       by_cases hy : ((p.val 1 : unitInterval) : ℝ) = 1
-      · simp only [squareBoundaryArclength, if_pos hy]
+      · simp only [squareBoundaryArclength, ite_eq_left hy]
         rw [hp', hy]
         norm_num
-      · simp only [squareBoundaryArclength, if_neg hy, if_pos hp']
+      · simp only [squareBoundaryArclength, ite_eq_right hy, ite_eq_left hp']
   have hBcont : ContinuousOn (fun p : ↥squareBoundaryPuncture => squareBoundaryArclength p.val)
       {p : ↥squareBoundaryPuncture | ((p.val 1 : unitInterval) : ℝ) = 0} :=
     have hg : Continuous fun p : ↥squareBoundaryPuncture => 2 + ((p.val 0 : unitInterval) : ℝ) :=
@@ -402,10 +402,10 @@ theorem continuous_squareBoundaryArclength :
       have hp' : ((p.val 1 : unitInterval) : ℝ) = 0 := hp
       have hy : ((p.val 1 : unitInterval) : ℝ) ≠ 1 := by rw [hp']; norm_num
       by_cases hx : ((p.val 0 : unitInterval) : ℝ) = 0
-      · simp only [squareBoundaryArclength, if_neg hy, if_pos hx]
+      · simp only [squareBoundaryArclength, ite_eq_right hy, ite_eq_left hx]
         rw [hp', hx]
         norm_num
-      · simp only [squareBoundaryArclength, if_neg hy, if_neg hx, if_pos hp']
+      · simp only [squareBoundaryArclength, ite_eq_right hy, ite_eq_right hx, ite_eq_left hp']
   have hRcont : ContinuousOn (fun p : ↥squareBoundaryPuncture => squareBoundaryArclength p.val)
       {p : ↥squareBoundaryPuncture | ((p.val 0 : unitInterval) : ℝ) = 1} :=
     have hg : Continuous fun p : ↥squareBoundaryPuncture => 3 + ((p.val 1 : unitInterval) : ℝ) :=
@@ -418,10 +418,10 @@ theorem continuous_squareBoundaryArclength :
         intro h
         exact p.property.2 (squarePoint_eq_northEast_of hp' h)
       by_cases hb : ((p.val 1 : unitInterval) : ℝ) = 0
-      · simp only [squareBoundaryArclength, if_neg hy, if_neg hx, if_pos hb]
+      · simp only [squareBoundaryArclength, ite_eq_right hy, ite_eq_right hx, ite_eq_left hb]
         rw [hp', hb]
         norm_num
-      · simp only [squareBoundaryArclength, if_neg hy, if_neg hx, if_neg hb]
+      · simp only [squareBoundaryArclength, ite_eq_right hy, ite_eq_right hx, ite_eq_right hb]
   have hTL : ContinuousOn (fun p : ↥squareBoundaryPuncture => squareBoundaryArclength p.val)
       ({p : ↥squareBoundaryPuncture | ((p.val 1 : unitInterval) : ℝ) = 1} ∪
         {p : ↥squareBoundaryPuncture | ((p.val 0 : unitInterval) : ℝ) = 0}) :=

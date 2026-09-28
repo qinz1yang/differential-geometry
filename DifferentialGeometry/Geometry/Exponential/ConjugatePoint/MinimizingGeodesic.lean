@@ -118,6 +118,7 @@ theorem injective_mfderiv_expMap_of_minimising_geodesic
       Real.sqrt (g.inner (γr t) (mfderiv 𝓘(ℝ, ℝ) I γr t (1 : ℝ))
         (mfderiv 𝓘(ℝ, ℝ) I γr t (1 : ℝ)))
     rw [hev.eq_of_nhds, hev.mfderiv_eq]
+    rfl
   have hminγ : ∀ η : ℝ → M, ContMDiffOn 𝓘(ℝ, ℝ) I 1 η (Icc 0 L) →
       η 0 = γ 0 → η L = γ L → arcLength (I := I) g γ 0 L ≤ arcLength (I := I) g η 0 L := by
     intro η hη hη0 hηL

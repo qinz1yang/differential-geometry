@@ -157,7 +157,7 @@ theorem regionGluedMap_of_notMem (D : SingularTwoCell M)
     (φ : EuclideanSpace ℝ (Fin 2) → EuclideanSpace ℝ (Fin 3))
     {x : EuclideanSpace ℝ (Fin 2)} (hx : x ∉ Rc.space) : regionGluedMap D ec R φ Rc x = D x := by
   classical
-  simp only [regionGluedMap, if_neg hx]
+  simp only [regionGluedMap, ite_eq_right hx]
 
 theorem admissibleVertexMap_region_clauses (D : SingularTwoCell M) {BdM C V W K : Set M}
     {τ ε d₀ ρ : ℝ} (hproper : D.domain ∩ ⇑D ⁻¹' BdM = frontier D.domain)

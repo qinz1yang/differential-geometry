@@ -32,7 +32,7 @@ theorem exists_vertex_return_disk_avoiding_split_disks
     ∃ (R D : Set E3) (q : (Fin 3 → ℝ) → E3) (δ : ℝ → E3),
       IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = η 0 ∧ δ 1 = η 1 ∧
       R ⊆ section34CompactSplitDiskImage srcBd f₁ e₀ ∧ B ∩ R = {η 0, η 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = B ∪ R ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = B ∪ R ∧
       D ⊆ section34CompactVertexBallImage srcBd f₁ w ∩
         frontier (⋃ v, section34CompactVertexBallImage src f₁ v) ∧
       D ∩ section34CompactSplitDiskImage src f₁ e₀ = R ∧
@@ -116,14 +116,14 @@ theorem exists_vertex_return_disk_avoiding_split_disks
     (hJ₁.trans (hD₁Q.trans (hQS.trans hV.boundary_subset)))
     (union_subset hBN (hR₁γ.trans hγN)) (union_subset_union hBP hR₁γ) hJE
   have hselect : ∀ (D R : Set E3) (q : (Fin 3 → ℝ) → E3) (δ : ℝ → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       IsPLHomeomorphOn δ (Icc 0 1) R → δ 0 = η 0 → δ 1 = η 1 →
       D ⊆ Q → q '' stdSimplexBoundary 2 = B ∪ R →
       D ∩ section34CompactSplitDiskImage srcBd f₁ e₀ = R → Disjoint D Y →
       ∃ (R D : Set E3) (q : (Fin 3 → ℝ) → E3) (δ : ℝ → E3),
         IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = η 0 ∧ δ 1 = η 1 ∧
         R ⊆ section34CompactSplitDiskImage srcBd f₁ e₀ ∧ B ∩ R = {η 0, η 1} ∧
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = B ∪ R ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = B ∪ R ∧
         D ⊆ section34CompactVertexBallImage srcBd f₁ w ∩
           frontier (⋃ v, section34CompactVertexBallImage src f₁ v) ∧
         D ∩ section34CompactSplitDiskImage src f₁ e₀ = R ∧

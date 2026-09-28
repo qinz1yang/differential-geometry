@@ -31,13 +31,8 @@ structure SphericalSpaceFormQuotientModel
   quotient : RoundSphereQuotient.{0, u} (EuclideanSpace ℝ (Fin 4)) 3
   equiv : N ≃ₘ⟮I, 𝓡 3⟯ quotient.Q
 
-def isSphericalSpaceFormQuotient
-    (I : ModelWithCorners ℝ E H) (N : Type u)
-    [TopologicalSpace N] [ChartedSpace H N] : Prop :=
-  Nonempty (SphericalSpaceFormQuotientModel I N)
-
 def isSphericalSpaceForm : Prop :=
-  isSphericalSpaceFormQuotient I M
+  Nonempty (SphericalSpaceFormQuotientModel I M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompleteSpace E] in
 theorem constant_positive_sectional_curvature_implies_spherical_space_form
@@ -47,14 +42,14 @@ theorem constant_positive_sectional_curvature_implies_spherical_space_form
   obtain ⟨hcompact, hconn, hbdry, hdim⟩ := hM
   obtain ⟨g, c, hc, hsec⟩ := hconst
   let model :=
-    constPosQuotient
+    roundThreeSphereQuotientOfConstantPositiveSectionalCurvature
       (I := I) (M := M) hcompact hconn hbdry hdim g c hc hsec
   exact ⟨⟨model.1, model.2⟩⟩
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 theorem spherical_space_form_admits_constant_positive_sectional_curvature
-    (model : isSphericalSpaceFormQuotient I M) :
+    (model : isSphericalSpaceForm (I := I) (M := M)) :
     admitsConstantPositiveSectionalCurvature (I := I) (M := M) := by
   obtain ⟨S⟩ := model
   have : NeZero (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) := by
@@ -66,14 +61,6 @@ theorem spherical_space_form_admits_constant_positive_sectional_curvature
     ← Diffeomorph.pullbackMetricCross_inner S.quotient.gQuot S.equiv x Y Y,
     ← Diffeomorph.pullbackMetricCross_inner S.quotient.gQuot S.equiv x X Y]
 
-omit [SigmaCompactSpace M] in
-omit [NeZero (Module.finrank ℝ E)] in
-theorem spherical_space_form_implies_constant_positive_sectional_curvature
-    (hsph : isSphericalSpaceForm (I := I) (M := M)) :
-    admitsConstantPositiveSectionalCurvature (I := I) (M := M) :=
-  spherical_space_form_admits_constant_positive_sectional_curvature
-    (I := I) (M := M) hsph
-
 omit [NeZero (Module.finrank ℝ E)] in
 theorem constant_positive_sectional_curvature_iff_spherical_space_form
     (hM : isClosedThreeManifold (I := I) (M := M)) :
@@ -83,7 +70,7 @@ theorem constant_positive_sectional_curvature_iff_spherical_space_form
   constructor
   · exact constant_positive_sectional_curvature_implies_spherical_space_form
       (I := I) (M := M) hM
-  · exact spherical_space_form_implies_constant_positive_sectional_curvature
+  · exact spherical_space_form_admits_constant_positive_sectional_curvature
       (I := I) (M := M)
 
 end DifferentialGeometry.Geometry

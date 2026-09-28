@@ -73,8 +73,8 @@ theorem CurvatureExpression.eval_comm {D : RealTimeInterval}
   apply Finset.sum_congr rfl
   intro q _
   by_cases hq : q.val = 0
-  · simp only [dif_pos hq, eval_binaryContraction]
-  · simp only [dif_neg hq, eval_binaryContraction]
+  · simp only [dite_eq_left hq, eval_binaryContraction]
+  · simp only [dite_eq_right hq, eval_binaryContraction]
 
 theorem CurvatureExpression.eval_residual {D : RealTimeInterval}
     (S : SolutionOn (I := I) (M := M) D) (t : RealTimeInterval.RegularTime D) (k : ℕ) :

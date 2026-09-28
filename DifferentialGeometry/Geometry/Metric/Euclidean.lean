@@ -53,7 +53,7 @@ theorem euclideanMetric_complete :
     intro x y
     rw [IsRiemannianManifold.out (I := 𝓘(Real, E)) x y]
     exact (hsource x y).symm
-  refine EMetric.complete_of_cauchySeq_tendsto (α := E) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := E) fun s hs => ?_
   have hsTarget : ∀ ε > (0 : ENNReal), ∃ N,
       ∀ m, N ≤ m → ∀ n, N ≤ n → edist (s m) (s n) < ε :=
     EMetric.cauchySeq_iff.mp hs

@@ -106,7 +106,7 @@ private theorem SpatialNeck.exists_loop_crossing_center_once_of_return_path
       · intro h
         exact False.elim (hs (by linarith))
   · intro s hs
-    rw [Path.trans_apply, dif_pos hs]
+    rw [Path.trans_apply, dite_eq_left hs]
     rfl
 
 theorem SpatialNeck.loop_crossing_center_once_or_two_complement_components

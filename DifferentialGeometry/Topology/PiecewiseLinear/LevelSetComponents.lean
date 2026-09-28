@@ -60,7 +60,7 @@ theorem exists_finite_circle_arc_decomposition_of_neighbors [FiniteDimensional �
       (x ∉ W → ∃ a b, a ≠ b ∧ {y | y ≠ x ∧ {x, y} ∈ G.faces} = {a, b})) :
     ∃ C : Set (Set E), C.Finite ∧ C.PairwiseDisjoint id ∧ G.space = ⋃₀ C ∧
       ∀ S ∈ C, (IsPLSphere 1 S ∧ Disjoint S W) ∨
-        ∃ q : (Fin 2 → ℝ) → E, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) S ∧
+        ∃ q : (Fin 2 → ℝ) → E, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) S ∧
           q '' stdSimplexBoundary 1 = S ∩ W := by
   have hG : IsCombinatorialManifoldWithBoundary 1 G := by
     apply (isCombinatorialManifoldWithBoundary_one_iff G).mpr

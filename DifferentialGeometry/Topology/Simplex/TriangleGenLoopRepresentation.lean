@@ -2,12 +2,14 @@ import DifferentialGeometry.Topology.Simplex.TriangleSphereCollapse
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 variable {X : Type*} [TopologicalSpace X]
 
 theorem exists_triangleGenLoop_eq (x : X) (a : GenLoop (Fin 2) X x) :
-    ∃ g : C(stdSimplex ℝ (Fin 3), X),
+    ∃ g : C(coordinateSet ℝ (Fin 3), X),
       ∃ hg : ∀ p ∈ boundary (Fin 3), g p = x,
         triangleGenLoop g x hg = a := by
   let f := (Topology.genLoopSphereHomeomorph 1 x a).val

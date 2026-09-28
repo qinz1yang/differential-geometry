@@ -117,7 +117,7 @@ private noncomputable def polarInverse [Nontrivial E] (x : E) : sphere (0 : E) 1
   exact if hx : x ≠ 0 then polarBack ⟨x, hx⟩ else polarDefault
 
 private theorem polarInverse_of_ne_zero [Nontrivial E] {x : E} (hx : x ≠ 0) :
-    polarInverse x = polarBack ⟨x, hx⟩ := dif_pos hx
+    polarInverse x = polarBack ⟨x, hx⟩ := dite_eq_left hx
 
 def euclideanPolarDiffeomorph [Nontrivial E] :
     PartialDiffeomorph ((𝓡 n).prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, E)

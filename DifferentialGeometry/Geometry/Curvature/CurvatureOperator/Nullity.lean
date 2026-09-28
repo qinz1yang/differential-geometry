@@ -162,9 +162,9 @@ theorem riemannOp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
         metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩)
     (a b : TangentSpace I x) :
     riemannOp (LeviCivita (I := I) g) x a b v = 0 := by
-  apply tangentFlatLinear_injective_gen (I := I) g x
+  apply tangentFlatLinear_injective (I := I) g x
   ext c
-  rw [tangentFlatLinear_apply_gen, tangentFlatLinear_apply_gen]
+  rw [tangentFlatLinear_apply, tangentFlatLinear_apply]
   have h := tensor04StdAt_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
     g x ⟨metricRm04At (I := I) g x,
       metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩ hv a b c
@@ -193,9 +193,9 @@ theorem ricciSharp_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt
       ⟨metricRm04At (I := I) g x,
         metricRm04At_mem_algebraicCurvatureTensorSubmodule (I := I) g x⟩) :
     ricciSharp (I := I) g x v = 0 := by
-  apply tangentFlatLinear_injective_gen (I := I) g x
+  apply tangentFlatLinear_injective (I := I) g x
   ext w
-  rw [tangentFlatLinear_apply_gen, tangentFlatLinear_apply_gen, inner_ricciSharp,
+  rw [tangentFlatLinear_apply, tangentFlatLinear_apply, inner_ricciSharp,
     ricciTensor_eq_zero_of_mem_curvatureOperatorImageAnnihilatorAt g x hv w]
   simp
 

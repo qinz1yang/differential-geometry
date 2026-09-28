@@ -129,7 +129,7 @@ private theorem smoothSectionExtension_eq
     (t : ℝ) (ht : t ∈ J) (x : M) :
     smoothSectionExtension R hR t x = R t x := by
   classical
-  simp only [smoothSectionExtension, dif_pos ht]
+  simp only [smoothSectionExtension, dite_eq_left ht]
   rfl
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [IsManifold I ∞ M] [T2Space M]
@@ -149,7 +149,7 @@ private theorem smoothSectionExtension_symmetric
     exact hsym t x
   · change ((if ht : t ∈ J then (⟨R t, hR t ht⟩ :
       Cₛ^∞⟮I; F →L[ℝ] F, (fun x : M => V x →L[ℝ] V x)⟯) else 0) x).IsSymmetric
-    rw [dif_neg ht]
+    rw [dite_eq_right ht]
     intro v w
     simp
 
@@ -184,7 +184,7 @@ private theorem connectionExtension_eq
     {J : Set ℝ} (cov : ∀ t ∈ J, CovariantDerivative I F V) {t₀ : ℝ} (ht₀ : t₀ ∈ J)
     {t : ℝ} (ht : t ∈ J) : connectionExtension cov ht₀ t = cov t ht := by
   classical
-  simp only [connectionExtension, dif_pos ht]
+  simp only [connectionExtension, dite_eq_left ht]
 
 omit [FiniteDimensional ℝ E] [I.Boundaryless] [T2Space M]
     [FiniteDimensional ℝ F] [ContMDiffVectorBundle ∞ F V I]

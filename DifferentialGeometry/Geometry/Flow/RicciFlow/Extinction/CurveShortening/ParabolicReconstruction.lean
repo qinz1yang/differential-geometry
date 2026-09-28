@@ -335,7 +335,7 @@ theorem exists_parabolic_curve_of_classical_retraction_equation
   let d : CurveMap U := fun z t => if ht : t ∈ J then ⟨u z t, hEU (hrange z t ht)⟩ else β
   have hdu : ∀ z t, t ∈ J → (d z t : F) = u z t := by
     intro z t ht
-    simp only [d, dif_pos ht]
+    simp only [d, dite_eq_left ht]
   have hd : d.SmoothOn (I := 𝓘(ℝ, F)) J := by
     apply (DifferentialGeometry.Manifold.contMDiffOn_subtypeVal_comp_iff U
       (fun p : ℝ × ℝ => d.lift p.1 p.2) (univ ×ˢ J)).mp

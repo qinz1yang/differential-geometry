@@ -1135,7 +1135,7 @@ noncomputable def connectedCanonicalMetricCompactnessOfConvergentChain
         with_unfolding_all
           convert metricCovDerivNorm_pullback (I := I) q
             ((g (j₀ + k)).restrictOpen (I := I) (tailBallOpen b j₀ k))
-            (gTail k) F x using 1 ; rfl
+            (gTail k) F x using 1
       rw [hpull]
       exact hcov k (F x)
   let XTail := X.subseq (fun n => σ (j₀ + n))

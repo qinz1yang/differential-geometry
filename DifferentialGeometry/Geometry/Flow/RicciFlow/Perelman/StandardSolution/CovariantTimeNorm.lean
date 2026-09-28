@@ -20,7 +20,7 @@ theorem ricciTimeCorrection_component {ι : Type*} [Fintype ι] [DecidableEq ι]
     (horth : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0)
     (m : Fin s → ι) :
     tensor0SComponent (ricciTimeCorrection g T) (fun i => basis i) m =
-      ricStarArray (fun i j => ricciTensor g x (basis i) (basis j))
+      covariantEndomorphismActionArray (fun i j => ricciTensor g x (basis i) (basis j))
         (fun n => tensor0SComponent T (fun i => basis i) n) m := by
   have hinv := metricInverseInBasis_identity_of_orthonormal g basis horth
   have hrepr (k i : ι) : basis.repr (ricciSharp g x (basis k)) i =
@@ -33,7 +33,7 @@ theorem ricciTimeCorrection_component {ι : Type*} [Fintype ι] [DecidableEq ι]
     conv_lhs => rw [← basis.sum_repr (ricciSharp g x (basis k))]
     simp only [hrepr]
   rw [tensor0SComponent_apply, ricciTimeCorrection_apply]
-  unfold ricStarArray
+  unfold covariantEndomorphismActionArray
   apply Finset.sum_congr rfl
   intro q _
   rw [hexp (m q)]
@@ -59,11 +59,11 @@ theorem ricciReaction_eq_two_inner_timeCorrection {ι : Type*} [Fintype ι] [Dec
     {s : ℕ} {x : M} (g : SmoothRiemannianMetric I M) (T : Tensor0SSpace s I x)
     (basis : Module.Basis ι ℝ (TangentSpace I x))
     (horth : ∀ i j, g.inner x (basis i) (basis j) = if i = j then (1 : ℝ) else 0) :
-    ricReactionContract identityInvMetric (fun i j => ricciTensor g x (basis i) (basis j))
+    metricVariationContract identityInvMetric (fun i j => ricciTensor g x (basis i) (basis j))
       (fun m => tensor0SComponent T (fun i => basis i) m)
       (fun m => tensor0SComponent T (fun i => basis i) m) =
         2 * inner0S g x s (ricciTimeCorrection g T) T := by
-  rw [ricReactionContract_delta_eq_compContract]
+  rw [metricVariationContract_identityInvMetric]
   rw [inner0S_eq_coord g x s basis identityInvMetric
     (metricInverseInBasis_identity_of_orthonormal g basis horth)]
   rw [coordInner0S_identity_eq_sum]
@@ -91,7 +91,7 @@ theorem hasDerivWithinAt_normSq0S_covariantTime {ι : Type*} [Finite ι] [Decida
   have hinv (r : ℝ) : MetricInverseInBasis (g r) x basis (B r) := basisInvMetric_isInverse (g r) x basis
   have hB : B t = identityInvMetric := MetricInverseInBasis.unique (g t) x basis _ _ (hinv t)
     (metricInverseInBasis_identity_of_orthonormal (g t) basis horth)
-  have hd := hasDerivWithinAt_normSq0S_ricciFlow (fun r => g r) B
+  have hd := hasDerivWithinAt_normSq0S_of_metric_variation (fun r => g r) B
     (fun i j => 2 * ∑ a : ι, ∑ b : ι, B t i a * B t j b * ric a b) ric T
     (fun m => tensor0SComponent Tdot (fun i => basis i) m) Tdot basis hinv
     (fun i j => DifferentialGeometry.Geometry.Metric.basisInvMetric_hasDerivWithinAt_ricciFlow g x basis J t hflow i j)
@@ -101,7 +101,8 @@ theorem hasDerivWithinAt_normSq0S_covariantTime {ι : Type*} [Finite ι] [Decida
     exact congrArg (fun U : Tensor0SSpace s I x => U + ricciTimeCorrection (g t) (T t)) hh
   apply hd.congr_deriv
   rw [hB]
-  change ricReactionContract identityInvMetric (fun i j => ricciTensor (g t) x (basis i) (basis j))
+  change metricVariationContract identityInvMetric
+    (fun i j => ricciTensor (g t) x (basis i) (basis j))
     (fun m => tensor0SComponent (T t) (fun i => basis i) m)
     (fun m => tensor0SComponent (T t) (fun i => basis i) m) + 2 * inner0S (g t) x s Tdot (T t) = _
   rw [ricciReaction_eq_two_inner_timeCorrection (g t) (T t) basis horth, he, inner0S_add_left]

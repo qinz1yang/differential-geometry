@@ -8,7 +8,6 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 namespace RetainedCoreHistory
-variable {P : OrientedThreeStage.{u}}
 
 private theorem prefix_restrict_adapter {J K : ObservedHistory.{u}}
     (h : J.IsPrefixOf K) {t : Icc (0 : ℝ) K.horizon} (ht : J.horizon ≤ t.1) :
@@ -37,7 +36,7 @@ private theorem emptyExtension_restrict_adapter
   exact hr.symm.trans hs
 
 theorem successor_empty_empty
-    (H : RetainedCoreHistory P) [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
+    (H : RetainedCoreHistory.{u}) [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (n : ℕ) (hn : H.horizon ≤ (n : ℝ))
     (hnext : H.horizon ≤ ((n + 1 : ℕ) : ℝ)) :
     ((H.emptyExtension ((n + 1 : ℕ) : ℝ) hnext).toHistory.restrict
@@ -61,7 +60,7 @@ theorem successor_empty_empty
   simpa only [RetainedCoreHistory.toHistory_emptyExtension] using hu.symm
 
 theorem successor_empty_restrict
-    (H : RetainedCoreHistory P) [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
+    (H : RetainedCoreHistory.{u}) [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (n : ℕ) (hn : ¬ H.horizon ≤ (n : ℝ))
     (hnext : H.horizon ≤ ((n + 1 : ℕ) : ℝ)) :
     ((H.emptyExtension ((n + 1 : ℕ) : ℝ) hnext).toHistory.restrict
@@ -73,7 +72,7 @@ theorem successor_empty_restrict
     ⟨(n : ℝ), Nat.cast_nonneg n, le_of_not_ge hn⟩
 
 theorem successor_restrict_restrict
-    (H : RetainedCoreHistory P) [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
+    (H : RetainedCoreHistory.{u}) [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (n : ℕ) (hn : ¬ H.horizon ≤ (n : ℝ))
     (hnext : ¬ H.horizon ≤ ((n + 1 : ℕ) : ℝ)) :
     ((H.restrict ⟨((n + 1 : ℕ) : ℝ), Nat.cast_nonneg _, le_of_not_ge hnext⟩).toHistory.restrict

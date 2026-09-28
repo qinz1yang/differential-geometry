@@ -198,7 +198,7 @@ private theorem inner0S_domDomCongr_curvaturePairSwap
     exact basis.inner_eq_ite i j
   have hinv := metricInverseInBasis_identity_of_orthonormal
     (I := I) g basis.toBasis horth
-  exact Tensor0SBundle.inner0S_domDomCongr
+  exact DifferentialGeometry.Tensor0SBundle.inner0S_domDomCongr
     (I := I) g x basis.toBasis hinv curvaturePairSwap A B
 
 omit [CompleteSpace E] [T2Space M] in

@@ -89,9 +89,9 @@ private theorem weak_deriv_of_spacetime_test_identity
   have hdηmem : MemLp (deriv η) 2 μ :=
     (hη.continuous_deriv (by norm_cast)).memLp_of_hasCompactSupport hηc.deriv
   have hPint : Integrable (fun t => deriv η t • P t) μ :=
-    (Lp.memLp P).smul (r := 1) hdηmem |>.integrable (by norm_num)
+    hdηmem.smul (r := 1) (Lp.memLp P) |>.integrable (by norm_num)
   have hQint : Integrable (fun t => η t • Q t) μ :=
-    (Lp.memLp Q).smul (r := 1) hηmem |>.integrable (by norm_num)
+    hηmem.smul (r := 1) (Lp.memLp Q) |>.integrable (by norm_num)
   have hspace : (∫ t, deriv η t • P t ∂μ) + (∫ t, η t • Q t ∂μ) = 0 := by
     apply lp_eq_zero_of_integral_test_eq_zero hΩ
     intro ψ hψ hψc hψs

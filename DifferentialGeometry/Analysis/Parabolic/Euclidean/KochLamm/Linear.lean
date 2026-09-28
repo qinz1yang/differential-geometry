@@ -16,13 +16,14 @@ variable {X E F : Type*}
   [NormedAddCommGroup F] [NormedSpace ℝ F]
 
 theorem eLpNorm_clm_le (A : X → E →L[ℝ] F) (d : X → E)
-    (ε : ℝ≥0) (hA : ∀ x, ‖A x‖ ≤ (ε : ℝ)) (p : ℝ≥0∞) (μ : Measure X) :
+    (ε : ℝ≥0) (hA : ∀ x, ‖A x‖ ≤ (ε : ℝ)) (p : ℝ≥0∞) (μ : Measure X)
+    (hmeas : AEStronglyMeasurable (fun x => A x (d x)) μ) :
     eLpNorm (fun x => A x (d x)) p μ ≤
       (ε : ℝ≥0∞) * eLpNorm d p μ := by
   calc
     eLpNorm (fun x => A x (d x)) p μ ≤
         eLpNorm (fun x => (ε : ℝ) • d x) p μ := by
-      apply eLpNorm_mono
+      apply eLpNorm_mono hmeas
       intro x
       calc
         ‖A x (d x)‖ ≤ ‖A x‖ * ‖d x‖ := (A x).le_opNorm _
@@ -57,7 +58,7 @@ theorem KochLammSourceOne.clm_apply {T : ℝ} {A₂ Aₚ ε : ℝ≥0}
         kochLammL2Scale (V := V) R *
           ((ε : ℝ≥0∞) * eLpNorm d 2
             ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammCylinder x R))) :=
-          mul_le_mul_right (eLpNorm_clm_le A d ε hA 2 _) _
+          mul_le_mul_right (eLpNorm_clm_le A d ε hA 2 _ hmeas.restrict) _
       _ = (ε : ℝ≥0∞) *
           (kochLammL2Scale (V := V) R *
             eLpNorm d 2
@@ -74,7 +75,7 @@ theorem KochLammSourceOne.clm_apply {T : ℝ} {A₂ Aₚ ε : ℝ≥0}
         kochLammLpScale (V := V) R *
           ((ε : ℝ≥0∞) * eLpNorm d (kochLammP V)
             ((kochLammVolume : Measure (ℝ × V)).restrict (kochLammLateCylinder x R))) :=
-          mul_le_mul_right (eLpNorm_clm_le A d ε hA (kochLammP V) _) _
+          mul_le_mul_right (eLpNorm_clm_le A d ε hA (kochLammP V) _ hmeas.restrict) _
       _ = (ε : ℝ≥0∞) *
           (kochLammLpScale (V := V) R *
             eLpNorm d (kochLammP V)

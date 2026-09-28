@@ -183,7 +183,6 @@ theorem expMapIntrinsic_eq_of_left_mem_segInt [ConnectedSpace M]
     isGeodesic_contMDiff (I := I) g hσ_geo hσ_cont
   have ha_unit : g.inner (γv L) a a = 1 := by
     convert hγv_unit L using 1
-    · rfl
   have hσ_unit (t : ℝ) :
       g.inner (σ t) (mfderiv 𝓘(ℝ, ℝ) I σ t 1)
         (mfderiv 𝓘(ℝ, ℝ) I σ t 1) = 1 := by

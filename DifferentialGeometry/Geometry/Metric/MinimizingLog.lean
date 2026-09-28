@@ -35,7 +35,7 @@ def minimizingLog (g : SmoothRiemannianMetric I M) (hg : IsMetricNorm (I := I) (
 theorem minimizingLog_exp (g : SmoothRiemannianMetric I M) (hg : IsMetricNorm (I := I) (M := M) g)
     {x y : M} (h : Manifold.riemannianEDist I x y ≠ ⊤) :
     expMapIntrinsic (I := I) g hg x (minimizingLog g hg x y) = y := by
-  rw [minimizingLog, dif_pos h]
+  rw [minimizingLog, dite_eq_left h]
   exact (minExp_of_ne_top (I := I) g hg x y h).choose_spec.1
 
 
@@ -43,7 +43,7 @@ theorem minimizingLog_norm (g : SmoothRiemannianMetric I M) (hg : IsMetricNorm (
     {x y : M} (h : Manifold.riemannianEDist I x y ≠ ⊤) :
     Real.sqrt (g.inner x (minimizingLog g hg x y) (minimizingLog g hg x y)) =
       (Manifold.riemannianEDist I x y).toReal := by
-  rw [minimizingLog, dif_pos h]
+  rw [minimizingLog, dite_eq_left h]
   exact (minExp_of_ne_top (I := I) g hg x y h).choose_spec.2
 
 

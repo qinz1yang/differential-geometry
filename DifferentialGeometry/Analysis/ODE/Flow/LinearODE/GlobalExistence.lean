@@ -671,7 +671,7 @@ theorem hasLinearODESolution_of_continuousOn
           div_pos (by linarith) (by norm_num)
         linarith
     change (if h : ∃ n, h₀ ∈ Ioo (α n) (β n) then Zn (Nat.find h) h₀ else Z₀ x) = Z₀ x
-    rw [dif_pos h_h0_mem]
+    rw [dite_eq_left h_h0_mem]
     exact hZn_initial _
   · intro t ht
     obtain ⟨N, hN⟩ := h_exhaust t ht
@@ -687,7 +687,7 @@ theorem hasLinearODESolution_of_continuousOn
       filter_upwards [h_nhd_open] with s hs
       have h_ex_s : ∃ n, s ∈ Ioo (α n) (β n) := ⟨N₀, hs⟩
       change (if h : ∃ n, s ∈ Ioo (α n) (β n) then Zn (Nat.find h) s else Z₀ x) = Zn N₀ s
-      rw [dif_pos h_ex_s]
+      rw [dite_eq_left h_ex_s]
       let M_s := Nat.find h_ex_s
       have hMs_spec : s ∈ Ioo (α M_s) (β M_s) := Nat.find_spec h_ex_s
       apply h_unique M_s N₀ s

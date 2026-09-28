@@ -22,7 +22,7 @@ theorem IsConeBase.exists_stdSimplex_homeomorph_apex {n : ℕ} {p : E}
     {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]
     (hK : IsConeBase p K) (hS : IsPLSphere n K.space) :
     ∃ q : (Fin (n + 2) → ℝ) → E,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin (n + 2))) (coneSet p K.space) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (coneSet p K.space) ∧
       q (stdCenter n) = p := by
   classical
   obtain ⟨q₀, hq₀⟩ := hS
@@ -41,8 +41,8 @@ theorem exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk_marked
     (hS : IsPLSphere 2 S) (hS' : IsPLSphere 2 S')
     (hD₀ : IsPLBall 2 D₀) (hD₀S : D₀ ⊆ S)
     {q : (Fin 3 → ℝ) → E} {q' : (Fin 3 → ℝ) → F}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D₁)
-    (hq' : IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) D₁')
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hq' : IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁')
     (hD₁S : D₁ ⊆ S) (hD₁'S' : D₁' ⊆ S')
     (hdis : Disjoint D₀ D₁) (hdis' : Disjoint D₀' D₁')
     {g : E → F} (hg : IsPLHomeomorphOn g D₀ D₀') (hD₀'S' : D₀' ⊆ S') :
@@ -56,7 +56,7 @@ theorem exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk_marked
   have hfD : IsPLHomeomorphOn f D₁ D₁' := by
     have h := hf.restrict hD₁.isPolyhedron hD₁S
     rwa [hfD₁] at h
-  have hqf : IsPLHomeomorphOn (f ∘ q) (stdSimplex ℝ (Fin 3)) D₁' := hq.trans hfD
+  have hqf : IsPLHomeomorphOn (f ∘ q) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁' := hq.trans hfD
   have hbd : (f ∘ q) '' stdSimplexBoundary 2 = q' '' stdSimplexBoundary 2 :=
     hqf.image_stdSimplexBoundary_congr hq'
   have hBpoly : IsPolyhedron (stdSimplexBoundary 2) := by
@@ -98,7 +98,7 @@ theorem exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk_marked
     rw [piecewise_eq_of_notMem _ _ _ (fun hxD₁ => disjoint_left.mp hdis' hxD₀ hxD₁)]
     exact hfg hx
   · rw [image_comp, hfD₁, hκD.image_eq, hk.image_eq]
-  · have hc : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
+  · have hc : stdCenter 1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
       openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
     change D₁'.piecewise k id (f (q (stdCenter 1))) = q' (stdCenter 1)
     exact (hκD (hqf.bijOn.mapsTo hc)).trans hkcenter
@@ -111,8 +111,8 @@ theorem exists_isPLHomeomorphOn_cone_pair_map_caps_marked
     {D₀ D₁ : Set E} {D₀' D₁' : Set F}
     (hD₀ : IsPLBall 2 D₀) (hD₀S : D₀ ⊆ K.space)
     {q : (Fin 3 → ℝ) → E} {q' : (Fin 3 → ℝ) → F}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D₁)
-    (hq' : IsPLHomeomorphOn q' (stdSimplex ℝ (Fin 3)) D₁')
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hq' : IsPLHomeomorphOn q' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁')
     (hD₁S : D₁ ⊆ K.space) (hD₁'S' : D₁' ⊆ K'.space)
     (hdis : Disjoint D₀ D₁) (hdis' : Disjoint D₀' D₁')
     {g : E → F} (hg : IsPLHomeomorphOn g D₀ D₀') (hD₀'S' : D₀' ⊆ K'.space)
@@ -130,10 +130,10 @@ theorem exists_isPLHomeomorphOn_cone_pair_map_caps_marked
   rw [coneComplex_space_eq_coneSet, coneComplex_space_eq_coneSet] at hG
   refine ⟨G, hG, (hGf.mono hD₀S).trans hfg, hGp,
     (hGf.mono hD₁S).image_eq.trans hfD, ?_, ?_⟩
-  · have hc : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
+  · have hc : stdCenter 1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
       openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
     exact (hGf (hD₁S (hq.bijOn.mapsTo hc))).trans hfc
-  have hc : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
+  have hc : stdCenter 1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
     openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
   have hsub : ({x, q (stdCenter 1)} : Set E) ⊆ K.space := by
     intro z hz
@@ -160,7 +160,7 @@ theorem exists_isPLHomeomorphOn_prism_cone_marked
     {D₀ D₁ : Set F} (hD₀S : D₀ ⊆ K.space) (hD₁S : D₁ ⊆ K.space)
     (hdis : Disjoint D₀ D₁) {g : EuclideanSpace ℝ (Fin 2) → F}
     (hg : IsPLHomeomorphOn g P D₀) {q : (Fin 3 → ℝ) → F}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D₁) :
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) :
     ∃ G : EuclideanSpace ℝ (Fin 2) × ℝ → F,
       IsPLHomeomorphOn G (P ×ˢ Icc (0 : ℝ) 1) (coneSet p K.space) ∧
       (∀ x ∈ P, G (x, 0) = g x) ∧ G (a, 1 / 2) = p ∧
@@ -193,7 +193,7 @@ theorem exists_isPLHomeomorphOn_prism_cone_marked
     exact zero_ne_one (hz₀.2.symm.trans hz₁.2)
   obtain ⟨r, hr, hra⟩ := hPball.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq ha
   have hr1 : IsPLHomeomorphOn ((fun x => (x, (1 : ℝ))) ∘ r)
-      (stdSimplex ℝ (Fin 3)) (P ×ˢ {1}) :=
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P ×ˢ {1}) :=
     hr.trans (hP.isPolyhedron.isPLHomeomorphOn_prod_const 1)
   have hgf : IsPLHomeomorphOn (g ∘ Prod.fst) (P ×ˢ ({0} : Set ℝ)) D₀ :=
     (hP.isPolyhedron.isPLHomeomorphOn_fst_prod_const 0).trans hg

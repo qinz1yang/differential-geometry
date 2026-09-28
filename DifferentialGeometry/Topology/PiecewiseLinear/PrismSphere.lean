@@ -12,7 +12,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem IsPLHomeomorphOn.isPLSphere_prism_boundary {D : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) {a b : ℝ} (hab : a < b) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) {a b : ℝ} (hab : a < b) :
     IsPLSphere 2 (D ×ˢ {a, b} ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b) := by
   classical
   let _ : DecidableEq E := Classical.decEq _
@@ -21,7 +21,7 @@ theorem IsPLHomeomorphOn.isPLSphere_prism_boundary {D : Set E} {r : (Fin 3 → �
   obtain ⟨K, hKfin, hKspace⟩ := hD.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLBall 2 K.space := hKspace.symm ▸ hD
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space := hKspace.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKspace.symm ▸ hr
   have hboundary : (boundaryComplex 2 K).space = r '' stdSimplexBoundary 2 := by
     rw [boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex K hrK,
       simplexBoundary_stdVertices_space]

@@ -151,7 +151,6 @@ theorem differential1FormFun_apply_eq_mvfderiv
     differential1FormFun (I := I) u x (fun _ : Fin 1 => v) =
       mvfderiv (I := I) u x v := by
   simp [differential1FormFun, mvfderiv, NormedSpace.fromTangentSpace]
-  rfl
 
 theorem dphi_apply_smooth
     (u : M -> Real) (hu : ContMDiff I 𝓘(Real, Real) (∞ : WithTop ℕ∞) u)
@@ -300,7 +299,7 @@ theorem hess_sub_conn
     (x : M) :
     hessianSec (I := I) cov hcov u hu x -
         hessianSec (I := I) cov' hcov' u hu x =
-      -connectionDifferenceOutput (I := I)
+      -bilinearCovectorComp (I := I)
         (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x) := by
   classical
   let basis : Module.Basis (Fin (Module.finrank Real (TangentSpace I x))) Real
@@ -339,12 +338,12 @@ theorem hess_sub_conn
     hessianSec (I := I) cov hcov u hu x (vec2 (I := I) (X x) (Y x)) -
         hessianSec (I := I) cov' hcov' u hu x (vec2 (I := I) (X x) (Y x)) =
       -Tensor0SSpace.eval
-        (connectionDifferenceOutput (I := I)
+        (bilinearCovectorComp (I := I)
           (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x))
         (vec2 (I := I) (X x) (Y x))
   rw [(hessianSec_nabla (I := I) cov hcov u hu) x X (Y x),
     (hessianSec_nabla (I := I) cov' hcov' u hu) x X (Y x)]
-  rw [connectionDifferenceOutput_apply]
+  rw [bilinearCovectorComp_apply]
   have hupdate :
       Function.update (fun _ : Fin 1 => Y x) 0
           (((CovariantDerivative.difference cov cov' x) (Y x)) (X x)) =
@@ -917,7 +916,7 @@ theorem lap_sub_conn
         scalarLapTraceAt (I := I) g'
           (hessianSec (I := I) cov' hcov' u hu x)) -
       scalarLapTraceAt (I := I) g
-        (connectionDifferenceOutput (I := I)
+        (bilinearCovectorComp (I := I)
           (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x)) := by
   have hlap :
       laplacian (I := I) cov g u x =
@@ -931,18 +930,18 @@ theorem lap_sub_conn
   have hHess :
       hessianSec (I := I) cov hcov u hu x =
         hessianSec (I := I) cov' hcov' u hu x -
-          connectionDifferenceOutput (I := I)
+          bilinearCovectorComp (I := I)
             (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x) := by
     calc
       hessianSec (I := I) cov hcov u hu x =
           (hessianSec (I := I) cov hcov u hu x -
             hessianSec (I := I) cov' hcov' u hu x) +
               hessianSec (I := I) cov' hcov' u hu x := by abel
-      _ = -(connectionDifferenceOutput (I := I)
+      _ = -(bilinearCovectorComp (I := I)
             (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x)) +
               hessianSec (I := I) cov' hcov' u hu x := by rw [hh]
       _ = hessianSec (I := I) cov' hcov' u hu x -
-          connectionDifferenceOutput (I := I)
+          bilinearCovectorComp (I := I)
             (CovariantDerivative.difference cov cov' x) (duSec (I := I) u hu x) := by
         abel
   rw [hlap, hlap', hHess]

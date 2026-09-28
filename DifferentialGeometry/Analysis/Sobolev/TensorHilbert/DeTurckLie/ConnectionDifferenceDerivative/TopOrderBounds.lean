@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.L2JetBound
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -26,7 +29,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Geometry.Curvature
   (exists_covDerivConnectionDifference_gQuadratic_le_of_jetEnvelope
@@ -92,7 +95,7 @@ private lemma engineRem_le_deTurckLieConnectionDifferenceDerivativeGridWin (b : 
             (Combinatorics.antidiagonalTupleGridCount_nonneg _))
 
 omit [SigmaCompactSpace M] in
-private theorem exists_riemannianFiberNormSq_connectionDifferenceSection_topsep_deTurckLieConnectionDifferenceDerivative
+private theorem connectionDifferenceSection_covariant_pointwise_tame_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ j, 0 ≤ Kc j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -198,10 +201,10 @@ private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDeriv
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
   classical
-  obtain ⟨CA, hCA_nn, hCA⟩ := exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid_deTurckLieConnectionDifferenceDerivative
+  obtain ⟨CA, hCA_nn, hCA⟩ := connectionDifferenceSection_covariant_antidiagonal_sum_bound
     (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtopA, hKtopA_nn, KcA, hKcA_nn, hCAts⟩ :=
-    exists_riemannianFiberNormSq_connectionDifferenceSection_topsep_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ hδ₀
+    connectionDifferenceSection_covariant_pointwise_tame_bound (I := I) (M := M) g₀ hδ₀
   obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_fixedField_riemannianFiberNormSq_jet_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3
     (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀))
   obtain ⟨cc, hcc_nn, hcc⟩ := exists_fixedField_riemannianFiberNormSq_jet_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 2
@@ -736,7 +739,7 @@ private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDeriv
         (8 * KcL i + 8 * diagonalGridGrowthFactor
           (E := E) i * cPer * KcL i + 8 * CLT i) * W := by ring
 
-theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDerivCoeffField_topOrderSeparated_le (g₀ g_bg : SmoothRiemannianMetric I M)
+theorem deTurckLieConnectionDifferenceDerivCoeffField_covariant_pointwise_tame_bound (g₀ g_bg : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -756,7 +759,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDeri
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
   classical
-  obtain ⟨CPT, hCPT_nn, hCPT⟩ := exists_deTurckLieConnectionDifferenceDerivativePairTraceOperator_fiberNormSq_antidiagonalTupleGrid_bound (I := I) (M := M) g₀ hδ₀
+  obtain ⟨CPT, hCPT_nn, hCPT⟩ := deTurckLieConnectionDifferenceDerivativePairTraceOperator_covariant_antidiagonal_sum_bound (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtopS, hKtopS_nn, KcS, hKcS_nn, hSym⟩ :=
     exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeSym_topsep (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨CX, hCX_nn, hCX⟩ := exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDerivativeSym_tgrid (I := I) (M := M) g₀ g_bg hδ₀
@@ -930,28 +933,6 @@ theorem riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDeri
             _ = (fr * (fr * CX l)) * antidiagonalTupleGridPartialSum b (l + 3) := by ring)))
       (le_of_eq (by rw [hCfield_def, hW_def])))) ?_
   exact le_of_eq (by ring)
-
-theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_fiberNormSq_topOrderSeparated_bound (g₀ g_bg : SmoothRiemannianMetric I M)
-    {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
-    ∃ Ktop : ℝ, 0 ≤ Ktop ∧ ∃ Kc : ℕ → ℝ, (∀ i, 0 ≤ Kc i) ∧
-      ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
-        (_htie : ∀ (y : M) (v w : TangentSpace I y),
-          g₁.inner y v w = g₀.inner y v w + ccTensorBilinSymm (I := I) g₀ T y v w)
-        {δ : ℝ} (_hδ_le : δ ≤ δ₀) (_hδ0 : 0 ≤ δ)
-        (_hbound : gFibreOpBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ T) δ)
-        (i : ℕ) (x : M),
-        riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x
-            ((iteratedCovGrad (I := I) g₀ 2 2 i
-              (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg)).toSection x) ≤
-          Ktop * operatorFieldApplicationGdiag (E := E) i * operatorFieldApplicationGdiag (E := E) i *
-              riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + (i + 2)) x
-                ((iteratedCovGrad (I := I) g₀ 0 2 (i + 2) T).toSection x) +
-          Kc i * antidiagonalTupleGridPartialSum
-            (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
-              ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
-  simpa only [deTurckLieConnectionDifferenceDerivCoeffField, operatorFieldApplicationGdiag, antidiagonalTupleGridPartialSum] using
-    riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDerivCoeffField_topOrderSeparated_le
-      (I := I) (M := M) g₀ g_bg hδ₀
 
 end DeTurckLieConnectionDifferenceDerivativeGridBrick
 

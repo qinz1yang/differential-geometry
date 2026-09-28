@@ -35,11 +35,7 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff
-    deTurckVFCovDeriv connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib
-    metricConnectionDifferenceLoweredFib_toModel metricConnectionDifferenceLoweredFib_contMDiff domDomCongrFibRank
-    domDomCongrFibRank_apply tensor0SProdKappaFib tensor0SProdKappaFib_apply)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckVectorFieldCovariantDerivativeEndomorphism deTurckVectorFieldCovariantDerivativeEndomorphism_apply deTurckVectorFieldCovariantDerivativeEndomorphism_homSection_contMDiff deTurckVFCovDeriv connectionDifferenceOp_homSection_contMDiff metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_toModel metricConnectionDifferenceLoweredFib_contMDiff)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
   (cometricDoubleTraceFib cometricDoubleTraceFib_toModel cometricDoubleTraceFib_contMDiff)
 
@@ -466,9 +462,7 @@ private lemma lieCorrectionZeroInsertionFib_basis_value (x : M) (D : Tensor0SSpa
     (fun p => lieCorrectionZeroNScalar (I := I) (M := M) g₀ g₁ g_bg x i p) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j),
     lieCorrectionZero_cmm2_expand_slot1 (Tensor0SSpace.toModel D)
     (fun p => lieCorrectionZeroNScalar (I := I) (M := M) g₀ g₁ g_bg x j p) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)]
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (quadrilinearMapSlotBilinearAt unitModel4SlotBilin_apply
-  cometricFinBasisTrace_eq_chartInvGram_bilin)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (quadrilinearMapSlotBilinearAt unitModel4SlotBilin_apply cometricFinBasisTrace_eq_chartInvGram_bilin)
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieCorrectionZeroTraceStep_toModel (g : SmoothRiemannianMetric I M) (p : ℕ)
@@ -482,7 +476,7 @@ private lemma lieCorrectionZeroTraceStep_toModel (g : SmoothRiemannianMetric I M
                 ((Module.finBasis ℝ E).cDualBasis k)))
             (Fin.cons ((Module.finBasis ℝ E) k) u) : Fin (p + 2) → E) (σ i)) := by
   classical
-  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, domDomCongrFibRank_apply,
+  rw [lieCorrectionZeroTraceStep, ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply,
     cometricDoubleTraceFib_toModel]
   rw [DeTurck.modelDoubleTrace_apply]
   refine Finset.sum_congr rfl (fun k _ => ?_)
@@ -505,10 +499,10 @@ omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [Boundary
     [T2Space M] [SigmaCompactSpace M] in
 private lemma lieCorrectionZero_prodKappa_toModel {pq q : ℕ} (x : M) (κ : Tensor0SSpace q I x)
     (D : Tensor0SSpace pq I x) (v : Fin (pq + q) → E) :
-    Tensor0SSpace.toModel (tensor0SProdKappaFib (I := I) x κ D) v =
+    Tensor0SSpace.toModel (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x κ D) v =
       Tensor0SSpace.toModel D (fun i => v (Fin.castAdd q i)) *
         Tensor0SSpace.toModel κ (fun i => v (Fin.natAdd pq i)) := by
-  rw [tensor0SProdKappaFib_apply, Tensor0SSpace.toModel_ofModel,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel,
     Bundle.continuousMultilinearMap.modelProduct_apply]
   rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
@@ -582,7 +576,7 @@ private lemma lieCorrectionZeroVBFib_basis_value (x : M) (D : Tensor0SSpace 2 I 
   classical
   rw [show lieCorrectionZeroVBFib (I := I) g₀ g₁ x D =
       (2 : ℝ) • lieCorrectionZeroTraceStep (I := I) g₁ 2 lieCorrectionZeroVectorBundleTracePermutation x
-        (tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
           (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
             ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) D)) from by
     rw [lieCorrectionZeroVBFib]
@@ -590,7 +584,7 @@ private lemma lieCorrectionZeroVBFib_basis_value (x : M) (D : Tensor0SSpace 2 I 
   rw [Tensor0SSpace.toModel_smul, smul_apply, smul_eq_mul]
   refine congrArg (fun t : ℝ => 2 * t) ?_
   set P4 : Tensor0SSpace 4 I x :=
-    tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x)
       (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 1 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π b : M, TangentSpace I b) x) D)
     with hP4
@@ -740,7 +734,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZeroQ_value (x : M) (D : Tensor0SSpace 2 I x) (u : Fin 3 → E) :
     Tensor0SSpace.toModel
         (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-          (tensor0SProdKappaFib (I := I) x
+          (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
             (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D)) u =
       ∑ k : Fin (Module.finrank ℝ E), ∑ kl : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x k kl *
@@ -749,7 +743,7 @@ private lemma lieCorrectionZeroQ_value (x : M) (D : Tensor0SSpace 2 I x) (u : Fi
               ![u 0, u 1, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) kl]) := by
   classical
   set P5 : Tensor0SSpace 5 I x :=
-    tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D with hP5
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D with hP5
   rw [lieCorrectionZeroTraceStep_toModel (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x P5 u]
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel P5
@@ -816,16 +810,16 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma lieCorrectionZeroT4_value (x : M) (D : Tensor0SSpace 2 I x) (w : Fin 4 → E) :
     Tensor0SSpace.toModel
         (lieCorrectionZeroTraceStep (I := I) g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x
-          (tensor0SProdKappaFib (I := I) x
+          (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
             (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
             (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-              (tensor0SProdKappaFib (I := I) x
+              (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
                 (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D)))) w =
       ∑ j : Fin (Module.finrank ℝ E), ∑ jl : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₁ x x j jl *
           (Tensor0SSpace.toModel
               (lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-                (tensor0SProdKappaFib (I := I) x
+                (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
                   (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D))
               ![w 0, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) jl, w 1] *
             Tensor0SSpace.toModel (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x)
@@ -833,10 +827,10 @@ private lemma lieCorrectionZeroT4_value (x : M) (D : Tensor0SSpace 2 I x) (w : F
   classical
   set QD : Tensor0SSpace 3 I x :=
     lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-      (tensor0SProdKappaFib (I := I) x
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) with hQD
   set P6 : Tensor0SSpace 6 I x :=
-    tensor0SProdKappaFib (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x) QD
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x) QD
     with hP6
   rw [lieCorrectionZeroTraceStep_toModel (I := I) g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x P6 w]
   rw [show (∑ j : Fin (Module.finrank ℝ E),
@@ -935,11 +929,11 @@ private lemma lieCorrectionZeroMixedConnectionHalfFib_basis_value (x : M) (D : T
   classical
   set QD : Tensor0SSpace 3 I x :=
     lieCorrectionZeroTraceStep (I := I) g₁ 3 lieCorrectionZeroMixedConnectionPermutationCycleZeroOneFour x
-      (tensor0SProdKappaFib (I := I) x
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g₀ x) D) with hQD
   set T4 : Tensor0SSpace 4 I x :=
     lieCorrectionZeroTraceStep (I := I) g₁ 4 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoThreeOne x
-      (tensor0SProdKappaFib (I := I) x
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x
         (metricConnectionDifferenceLoweredFib (I := I) g₁ g₁ g_bg x) QD) with hT4
   rw [show lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ g_bg x D =
       lieCorrectionZeroTraceStep (I := I) g₁ 2 lieCorrectionZeroMixedConnectionPermutationCycleZeroTwoOne x T4 from by
@@ -1023,7 +1017,7 @@ private lemma lieCorrectionZeroMixedConnectionFib_basis_value (x : M) (D : Tenso
           ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i]) := by
   rw [show lieCorrectionZeroMixedConnectionFib (I := I) g₀ g₁ g_bg x D =
       (2 : ℝ) • (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ g_bg x D +
-        domDomCongrFibRank (I := I) 2 (Equiv.swap 0 1) x
+        DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 2 (Equiv.swap 0 1) x
           (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ g_bg x D)) from by
     rw [lieCorrectionZeroMixedConnectionFib]
     rfl]
@@ -1033,7 +1027,7 @@ private lemma lieCorrectionZeroMixedConnectionFib_basis_value (x : M) (D : Tenso
   refine congrArg (fun t : ℝ =>
     Tensor0SSpace.toModel (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ g_bg x D)
       ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j] + t) ?_
-  rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   refine congrArg (fun t => Tensor0SSpace.toModel
     (lieCorrectionZeroMixedConnectionHalfFib (I := I) g₀ g₁ g_bg x D) t) ?_
@@ -1073,7 +1067,7 @@ omit [SigmaCompactSpace M] in
 private lemma lieCorrectionZeroRiemT4_value (x : M) (D : Tensor0SSpace 2 I x) (w : Fin 4 → E) :
     Tensor0SSpace.toModel
         (lieCorrectionZeroTraceStep (I := I) g₀ 4 lieCorrectionZeroRiemPerm1 x
-          (tensor0SProdKappaFib (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) D)) w =
+          (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) D)) w =
       ∑ k : Fin (Module.finrank ℝ E), ∑ kl : Fin (Module.finrank ℝ E),
         chartInvGramMatrix (I := I) g₀ x x k kl *
           (Tensor0SSpace.toModel D ![(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) k, w 3] *
@@ -1081,7 +1075,7 @@ private lemma lieCorrectionZeroRiemT4_value (x : M) (D : Tensor0SSpace 2 I x) (w
               ![w 0, w 1, w 2, (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) kl]) := by
   classical
   set P6 : Tensor0SSpace 6 I x :=
-    tensor0SProdKappaFib (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) D with hP6
+    DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) D with hP6
   rw [lieCorrectionZeroTraceStep_toModel (I := I) g₀ 4 lieCorrectionZeroRiemPerm1 x P6 w]
   rw [show (∑ k : Fin (Module.finrank ℝ E),
       Tensor0SSpace.toModel P6
@@ -1185,7 +1179,7 @@ private lemma lieCorrectionZeroRiemFib_basis_value (x : M) (D : Tensor0SSpace 2 
   classical
   set T4 : Tensor0SSpace 4 I x :=
     lieCorrectionZeroTraceStep (I := I) g₀ 4 lieCorrectionZeroRiemPerm1 x
-      (tensor0SProdKappaFib (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) D) with hT4
+      (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap (I := I) x (lieCorrectionZeroRiemLoweredFib (I := I) g₀ x) D) with hT4
   rw [show lieCorrectionZeroRiemFib (I := I) g₀ g₁ x D =
       (-1 : ℝ) • lieCorrectionZeroTraceStep (I := I) g₁ 2 lieCorrectionZeroRiemPerm2 x T4 from by
     rw [lieCorrectionZeroRiemFib, hT4]
@@ -1311,9 +1305,9 @@ private lemma lieCorrectionZeroRiemFib_basis_value (x : M) (D : Tensor0SSpace 2 
             lieTerm_chartInvGramMatrix_symm (I := I) g₀ x k kl])]
       exact lieTerm_gram_invGram_collapse (I := I) g₀ x k ρ)]
   rw [Finset.sum_eq_single ρ]
-  · rw [if_pos rfl, mul_one]
+  · rw [ite_eq_left rfl, mul_one]
   · intro k _ hk
-    rw [if_neg hk, mul_zero, mul_zero]
+    rw [ite_eq_right hk, mul_zero, mul_zero]
   · intro h
     exact absurd (Finset.mem_univ ρ) h
 end LieCorrectionZeroMixedConnectionEval
@@ -1321,12 +1315,7 @@ end LieCorrectionZeroEval
 section LieCorrectionZeroValue
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartChristoffel)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField deTurckLieCoeffField_apply_eq
-  deTurckConnectionDifferenceCovDeriv deTurckVFCovDeriv deTurckLieCovariantDerivativeW_chartBasis_eq
-  deTurckLieCovariantDerivativeA_chartBasis_eq connectionDifferenceCovDerivOp deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend
-  frameConnectionDifferenceCovDerivKernel frameConnectionDifferenceCovariantDerivativeKernel_apply double_frame_bilin_trace_eq_fixed
-  unitModel_basisChart_eq_tensorChartComponentRaw tensorChartComponentRaw)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField deTurckLieCoeffField_apply_eq deTurckConnectionDifferenceCovDeriv deTurckVFCovDeriv deTurckLieCovariantDerivativeW_chartBasis_eq deTurckLieCovariantDerivativeA_chartBasis_eq connectionDifferenceCovDerivOp deTurckLieConnectionDifferenceDerivativeCovKernel_apply_extend frameConnectionDifferenceCovDerivKernel frameConnectionDifferenceCovariantDerivativeKernel_apply double_frame_bilin_trace_eq_fixed unitModel_basisChart_eq_tensorChartComponentRaw tensorChartComponentRaw)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv metricPerturbationPath)
 variable (g₀ : SmoothRiemannianMetric I M) (T T' : SmoothCcTensor g₀ 0 2)
 variable {δ δ' : ℝ}
@@ -1774,9 +1763,7 @@ private lemma lieCorrectionZero_phi0b_value_split (_hδ_lt : δ < 1)
     rw [SmoothCcTensor.toSection_add]
     rfl]
   rw [Tensor0SSpace.toModel_add, add_apply]
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (secondOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection_center_eq
-  secondOrderCovariantDerivativeCorrection_center_eq partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (secondOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection_center_eq secondOrderCovariantDerivativeCorrection_center_eq partialDeriv_realizedGramDeriv_eq_half_sum_euclidPartial)
 open DifferentialGeometry.Analysis.Sobolev.Chart
   (chartPushedRaw chartPushedRaw_apply_of_mem chartTargetEuclid chartTargetEuclid_isOpen)
 open DifferentialGeometry.Analysis.Laplacian.TensorRegularity
@@ -1823,9 +1810,7 @@ open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Geometry.Operator
   (chartInvGramMatrix chartChristoffel chartGramOnE chartInvGramOnE
   chartChristoffel_symm chartGramOnE_symm chartInvGramOnE_symm partialDeriv_chartInvGramOnE_eq)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField secondOrderCovariantDerivativeCorrection
-  firstOrderCovariantDerivativeCorrection)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm unitModel unitTensor deTurckLieCoeffField secondOrderCovariantDerivativeCorrection firstOrderCovariantDerivativeCorrection)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv metricPerturbationPath)
 open DifferentialGeometry.Geometry.Connection
   (chartChristoffelBracket chartChristoffelBracketDeriv

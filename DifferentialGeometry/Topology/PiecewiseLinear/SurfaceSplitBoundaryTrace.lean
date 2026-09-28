@@ -182,7 +182,7 @@ theorem exists_isSubdivision_disk_pair_with_derivedNeighborhood_boundary_trace
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
     {r₂ : (Fin 3 → ℝ) → E}
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ)
@@ -268,7 +268,7 @@ theorem
     (hK : IsCombinatorialManifold 3 K) {Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ) (hD₁ : IsPLBall 2 D₁)
     {r₂ : (Fin 3 → ℝ) → E}
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
     (hD₁K : D₁ ⊆ K.space) (hD₂K : D₂ ⊆ K.space) (hU : U ∈ 𝓝ˢ[K.space] Δ) :

@@ -56,7 +56,7 @@ theorem exists_strictMono_sequence_of_pos_continuous_step
       ∀ n, (s (n + 1) : α) = (s n : α) + d (s n) := by
   classical
   let f : α → α := fun x => if hx : x ∈ Ico a b then x + d ⟨x, hx⟩ else x
-  have hf (x : Ico a b) : f x = (x : α) + d x := by simp only [f, dif_pos x.property]
+  have hf (x : Ico a b) : f x = (x : α) + d x := by simp only [f, dite_eq_left x.property]
   have hcont : ContinuousOn f (Ico a b) := by
     rw [continuousOn_iff_continuous_domRestrict]
     exact (continuous_subtype_val.add d.continuous).congr (fun x => (hf x).symm)

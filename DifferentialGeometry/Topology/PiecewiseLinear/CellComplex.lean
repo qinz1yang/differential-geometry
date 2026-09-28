@@ -81,7 +81,7 @@ noncomputable def cellPt (σ : ι → SignType) : E :=
 theorem cellPt_spec {σ : ι → SignType} (hσ : σ ∈ cellsOf l P) :
     cellPt l P σ ∈ P ∧ cellPt l P σ ∈ openCell l σ := by
   have h : ∃ x ∈ P, signVec l x = σ := hσ
-  rw [cellPt, dif_pos h]
+  rw [cellPt, dite_eq_left h]
   exact Classical.choose_spec h
 
 theorem cellPt_mem {σ : ι → SignType} (hσ : σ ∈ cellsOf l P) : cellPt l P σ ∈ P :=

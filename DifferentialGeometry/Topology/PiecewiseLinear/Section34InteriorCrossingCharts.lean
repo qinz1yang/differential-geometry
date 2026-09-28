@@ -135,7 +135,7 @@ theorem HasPLCrossingAt.exists_isolated_circle_disks_of_local_ball_charts {A B J
       (∀ p ∈ V, (ψ p ∈ A ↔ p.1.2 = 0) ∧ (ψ p ∈ B ↔ p.1.1 = 0)) ∧
       (∀ p ∈ V, ψ p ∈ A ∪ B ↔ p ∈ crossPlanes) ∧
       (∀ p ∈ V, ψ p ∈ J ↔ p.1 = 0) ∧
-      (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (P i)) ∧
+      (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P i)) ∧
       (∀ i, P i ⊆ N ∩ (A ∪ B)) ∧
       (∀ y ∈ W, ∀ i, y ∈ P i ↔ Function.invFunOn ψ V y ∈ crossHalfPlane i) ∧
       ∀ y ∈ W, ∀ i, y ∈ q i '' stdSimplexBoundary 2 ↔ y ∈ J := by

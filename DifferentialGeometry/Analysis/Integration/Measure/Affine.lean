@@ -27,7 +27,8 @@ theorem map_add_smul_addHaar (b : E) {r : ℝ} (hr : r ≠ 0) :
       ENNReal.ofReal |(r ^ Module.finrank ℝ E)⁻¹| • ν := by
   change ν.map ((b + ·) ∘ (r • ·)) = _
   rw [← Measure.map_map (measurable_const_add b) (measurable_const_smul r),
-    map_addHaar_smul ν hr, Measure.map_smul, map_add_left_eq_self ν b]
+    map_addHaar_smul ν hr, Measure.map_smul _ (measurable_const_add b).aemeasurable,
+    map_add_left_eq_self ν b]
 
 theorem map_add_smul_restrict_addHaar (b : E) {r : ℝ} (hr : r ≠ 0) (Ω : Set E) :
     (ν.restrict ((fun x => b + r • x) ⁻¹' Ω)).map (fun x => b + r • x) =

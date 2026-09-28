@@ -84,7 +84,7 @@ theorem boundaryComplex_space_prism [d : DecidableEq (E × ℝ)]
   have hT : IsPLBall 2 T.space := hTspace.symm ▸ isPLBall_coordinate_triangle
   obtain ⟨t, ht⟩ := hT
   obtain ⟨k, hk⟩ := hK
-  let f := k ∘ Function.invFunOn t (stdSimplex ℝ (Fin 3))
+  let f := k ∘ Function.invFunOn t (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hf : IsPLHomeomorphOn f T.space K.space := ht.symm.trans hk
   have hI : IsPLBall 1 (Icc a b) := isPLBall_Icc hab
   have hprod : IsPLBall 3 (T.space ×ˢ Icc a b) := isPLBall_three_prod ⟨t, ht⟩ hI

@@ -196,8 +196,10 @@ theorem lMinCurve_regularizedGeodesicOn_of_absolutelyContinuousOnInterval_of_spa
       exact (heq (Ioo_subset_Icc_self hx)).symm
     have hv := hn.self_of_nhds
     have hder := hn.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I)
+    rw [hv] at hder
     unfold lRegularizedLagrangian lVelocity
     rw [hv, hder]
+    with_unfolding_all rfl
   have hetaInt := hint.congr_uIoo hlag
   obtain ⟨m, t, p, u, ht0, htmono, htlast, hsrc, hrep, _⟩ :=
     exists_timeH1_chart_partition_of_absolutelyContinuousOnInterval S hS.smoothMetric

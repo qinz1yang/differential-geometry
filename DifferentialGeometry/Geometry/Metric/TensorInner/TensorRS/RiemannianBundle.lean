@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Topology
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.Riemannian
@@ -27,7 +28,7 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace TensorRSRiemannianBundle
 
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor.TensorRSRiemannian
 open DifferentialGeometry.Tensor0SBundle
@@ -388,9 +389,9 @@ theorem tensorRSRiemannianInnerCLM_diagonal_continuousAt_zero
       tensorRSRiemannianInnerCLM (I := I) (M := M) g r s b v v) 0 :=
   (tensorRSRiemannianInnerCLM_diagonal_continuous (I := I) (M := M) g r s b).continuousAt
 
-private lemma innerModelRS_diagonal_sublevel_isBounded
+private lemma innerModelRS_diagonal_sublevel_isVonNBounded
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M) :
-    Bornology.IsBounded
+    IsVonNBounded ℝ
       {T : TensorRSModel r s ℝ E |
         innerModelCLMRS (I := I) (M := M) g r s b T T < 1} := by
   have hPD : ∀ v : TensorRSModel r s ℝ E,
@@ -401,16 +402,10 @@ private lemma innerModelRS_diagonal_sublevel_isBounded
       (I := I) (M := M) g r s b v).not.mpr hv
     have hnn := tensorInnerPointwise_nonneg (I := I) (M := M) g r s b v
     exact lt_of_le_of_ne hnn (Ne.symm hQpos)
-  exact Tensor0SRiemannian.posDef_bilin_unit_ball_isBounded
-    (innerModelCLMRS (I := I) (M := M) g r s b) hPD
-
-private lemma innerModelRS_diagonal_sublevel_isVonNBounded
-    (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M) :
-    IsVonNBounded ℝ
-      {T : TensorRSModel r s ℝ E |
-        innerModelCLMRS (I := I) (M := M) g r s b T T < 1} :=
-  NormedSpace.isVonNBounded_of_isBounded ℝ
-    (innerModelRS_diagonal_sublevel_isBounded (I := I) (M := M) g r s b)
+  let B := (innerModelCLMRS (I := I) (M := M) g r s b).toBilinForm
+  have hsymm : B.IsSymm := ⟨innerModelCLMRS_symm (I := I) (M := M) g r s b⟩
+  have hpos : B.toQuadraticMap.PosDef := hPD
+  exact (MetricFiberData.ofBilinForm B hsymm hpos).isVonNBounded_inner_self_lt 1
 
 private lemma tensorRSRiemannianInner_diagonal_clm_apply
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (b : M)

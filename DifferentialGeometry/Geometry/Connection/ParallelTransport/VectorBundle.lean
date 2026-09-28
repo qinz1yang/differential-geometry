@@ -110,12 +110,12 @@ private theorem exists_parallel_transport_in_trivialization_on_Icc_of_lt
         (VectorBundle.continuousLinearEquivAt ℝ F V (γ t p)).symm
   have hT (t : ℝ) (ht : t ∈ Icc a b) (p : P) (v : V (γ t₀ p)) :
       T t p v = e.symmL ℝ (γ t p) (Φ t p (e.continuousLinearMapAt ℝ (γ t₀ p) v)) := by
-    simp only [T, dif_pos ht, ContinuousLinearEquiv.equivOfInverse_apply, L,
+    simp only [T, dite_eq_left ht, ContinuousLinearEquiv.equivOfInverse_apply, L,
       ContinuousLinearMap.comp_apply]
   have hTinv (t : ℝ) (ht : t ∈ Icc a b) (p : P) (v : V (γ t p)) :
       (T t p).symm v =
         e.symmL ℝ (γ t₀ p) ((Φ t p).inverse (e.continuousLinearMapAt ℝ (γ t p) v)) := by
-    simp only [T, dif_pos ht, ContinuousLinearEquiv.symm_equivOfInverse,
+    simp only [T, dite_eq_left ht, ContinuousLinearEquiv.symm_equivOfInverse,
       ContinuousLinearEquiv.equivOfInverse_apply, K, ContinuousLinearMap.comp_apply]
   have hsmooth (B : ℝ → P → F →L[ℝ] F)
       (hB : ContMDiffOn (𝓘(ℝ, ℝ).prod IP) 𝓘(ℝ, F →L[ℝ] F) ∞
@@ -604,7 +604,7 @@ private theorem exists_parallel_transport_on_Icc_of_left_endpoint
       refine ⟨U, ?_, fun v => (hU v).1, fun v => (hU v).2⟩
       intro v
       dsimp only [U]
-      rw [if_pos (τ n).property.1]
+      rw [ite_eq_left (τ n).property.1]
       exact hT₀ v
   have h := hstep N
   simpa only [hN N le_rfl] using h
@@ -981,7 +981,7 @@ private theorem exists_differentiable_parallel_transport_on_interval
         (VectorBundle.continuousLinearEquivAt ℝ F V (γ t)).symm
   have hT (t : ℝ) (ht : t ∈ J) : T t = S ⟨t, ht⟩ t := by
     dsimp only [T]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
   have hlocal {a b : ℝ} (ht₀K : t₀ ∈ Icc a b) (hKsub : Icc a b ⊆ J)
       (R : ∀ t : ℝ, V (γ t₀) ≃L[ℝ] V (γ t))
       (hR₀ : ∀ v : V (γ t₀), R t₀ v = v)

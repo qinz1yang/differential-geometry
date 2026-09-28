@@ -17,8 +17,8 @@ private theorem exists_openPartialHomeomorph_of_subtype
   let x₀ : S := ⟨hSne.choose, hSne.choose_spec⟩
   let f : X → Y := fun x ↦ if hx : x ∈ S then (h ⟨x, hx⟩).1 else (h x₀).1
   let g : Y → X := fun y ↦ if hy : y ∈ T then (h.symm ⟨y, hy⟩).1 else x₀.1
-  have hf (x : X) (hx : x ∈ S) : f x = (h ⟨x, hx⟩).1 := dif_pos hx
-  have hg (y : Y) (hy : y ∈ T) : g y = (h.symm ⟨y, hy⟩).1 := dif_pos hy
+  have hf (x : X) (hx : x ∈ S) : f x = (h ⟨x, hx⟩).1 := dite_eq_left hx
+  have hg (y : Y) (hy : y ∈ T) : g y = (h.symm ⟨y, hy⟩).1 := dite_eq_left hy
   have hfc : ContinuousOn f S := by
     rw [continuousOn_iff_continuous_domRestrict]
     have heq : S.domRestrict f = fun x : S ↦ (h x).1 := funext (fun x ↦ hf x.1 x.2)

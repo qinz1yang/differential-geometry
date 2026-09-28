@@ -9,6 +9,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq)
+
 open DifferentialGeometry.Tensor.Coordinates
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Connection DifferentialGeometry.Geometry.Curvature
@@ -153,7 +156,7 @@ theorem forward_uniqueness_cutoff_energy_deriv_le_of_flux_remainder_bounds
           hδ (hΛric x hx) hΛ0 (hΛ x hx) (hB₁ x hx) (hBRic21 x hx)
       have hm : normSq0S (I := I) (g₁ t) x 4 (F x) ≤
           C_rem * forwardUniqueDensity (I := I) g₁ g₂ t x := hRem x hx
-      have hpair := _root_.Tensor0SBundle.two_inner0S_le (I := I) (g₁ t) x 4 (F x) (S x)
+      have hpair := _root_.DifferentialGeometry.Tensor0SBundle.two_inner0S_le (I := I) (g₁ t) x 4 (F x) (S x)
       have hs : normSq0S (I := I) (g₁ t) x 4 (S x) ≤ forwardUniqueDensity (I := I) g₁ g₂ t x :=
         rmDiffSq_le_dens (I := I) g₁ g₂ t x
       have heq : R x = rateRest (I := I) g₁ g₂ Adot t x +

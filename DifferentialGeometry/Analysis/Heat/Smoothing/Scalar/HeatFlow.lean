@@ -15,6 +15,9 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.HeatPoten
 import DifferentialGeometry.Analysis.Heat.Smoothing.Scalar.MildSolution
 import DifferentialGeometry.Analysis.Parabolic.Harnack.LiYauHarnack
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -2039,8 +2042,8 @@ theorem heatPower_one_inner_eq_lambda_coeff
       ∑' k : EigenIdx (I := I) (M := M) g,
         (lam k ^ 1 * Real.exp (-(lam k) * t)) • (⟪b k, v⟫_ℝ • b k) := by
     unfold heatPower
-    rw [dif_neg (by norm_num : (1 : ℕ) ≠ 0)]
-    rw [dif_pos ht]
+    rw [dite_eq_right (by norm_num : (1 : ℕ) ≠ 0)]
+    rw [dite_eq_left ht]
     rfl
   have hdef' : heatPower (I := I) (M := M) g 1 t v =
       ∑' k : EigenIdx (I := I) (M := M) g,
@@ -4127,7 +4130,7 @@ private lemma scalarTimeDerivField_zero
   apply SmoothScalar.ext
   funext x
   unfold scalarTimeDerivField
-  rw [dif_pos ht]
+  rw [dite_eq_left ht]
   simp
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless]

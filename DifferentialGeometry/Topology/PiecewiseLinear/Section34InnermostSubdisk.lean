@@ -9,10 +9,10 @@ variable {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensiona
 
 theorem IsPLSphere.exists_disk_in_disk_sdiff_boundary {S D J : Set E}
     (hS : IsPLSphere 2 S) {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ S)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ S)
     (hJ : IsPLSphere 1 J) (hJD : J ⊆ D \ r '' stdSimplexBoundary 2) :
     ∃ (Q : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ D \ r '' stdSimplexBoundary 2 ∧ q '' stdSimplexBoundary 2 = J := by
   have hD : IsPLBall 2 D := ⟨r, hr⟩
   have hbdD : r '' stdSimplexBoundary 2 ⊆ D := by
@@ -47,13 +47,13 @@ theorem IsPLSphere.exists_disk_in_disk_sdiff_boundary {S D J : Set E}
   exact ⟨Q, q, hq, fun x hx => ⟨hQD hx, fun hxB => disjoint_left.mp hdis hxB hx⟩, hqJ⟩
 
 theorem IsPLSphere.exists_innermost_subdisk {S D : Set E} (hS : IsPLSphere 2 S)
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDS : D ⊆ S) {ι : Type*} [Finite ι] [Nonempty ι] {J : ι → Set E}
     (hJ : ∀ i, IsPLSphere 1 (J i))
     (hJD : ∀ i, J i ⊆ D \ r '' stdSimplexBoundary 2)
     (hdisj : Pairwise fun i j => Disjoint (J i) (J j)) :
     ∃ (i : ι) (Q : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Q ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Q ∧
       Q ⊆ D \ r '' stdSimplexBoundary 2 ∧ q '' stdSimplexBoundary 2 = J i ∧
       ∀ j, j ≠ i → Disjoint Q (J j) := by
   obtain ⟨i⟩ := ‹Nonempty ι›

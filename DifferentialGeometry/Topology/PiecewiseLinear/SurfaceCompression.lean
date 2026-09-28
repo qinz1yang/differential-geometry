@@ -140,8 +140,8 @@ theorem IsCombinatorialManifold.exists_separating_component_bettiOne_lt_of_annul
     (hboundary : (boundaryComplex 2 R).space = ρ '' (J ×ˢ {(-1 : ℝ), 1}))
     (hnon : ¬ (⟨Set.inclusion hJK, continuous_inclusion hJK⟩ : C(J, K.space)).Nullhomotopic)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : R.space ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : R.space ∩ D₁ = r₁ '' stdSimplexBoundary 2)
     (hbd₀ : r₀ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(-1 : ℝ)}))
@@ -210,8 +210,8 @@ theorem IsCombinatorialManifold.exists_separating_surface_bettiOne_lt_of_annulus
     (hboundary : (boundaryComplex 2 R).space = ρ '' (J ×ˢ {(-1 : ℝ), 1}))
     (hnon : ¬ (⟨Set.inclusion hJK, continuous_inclusion hJK⟩ : C(J, K.space)).Nullhomotopic)
     {D₀ D₁ : Set E} {r₀ r₁ : (Fin 3 → ℝ) → E}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁) (hdis : Disjoint D₀ D₁)
     (hmeet₀ : R.space ∩ D₀ = r₀ '' stdSimplexBoundary 2)
     (hmeet₁ : R.space ∩ D₁ = r₁ '' stdSimplexBoundary 2)
     (hbd₀ : r₀ '' stdSimplexBoundary 2 = ρ '' (J ×ˢ {(-1 : ℝ)}))

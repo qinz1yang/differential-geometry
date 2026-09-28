@@ -89,7 +89,7 @@ theorem exists_unit_ricciTensor_bound_of_small_metric_derivatives_on_restricted_
     (ricciSharp g x v - (1 / 2 : ℝ) • (v - g.inner x v v • v))) ≤
     5772 * ε * Real.sqrt (g.inner x v v) at hnorm
   rw [hunit, one_smul, sub_self, smul_zero, sub_zero, Real.sqrt_one, mul_one] at hnorm
-  have hupper := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hupper := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     g x (ricciSharp g x v) v
   rw [inner_ricciSharp, hunit, Real.sqrt_one, mul_one] at hupper
   exact ⟨v, hunit, hupper.trans hnorm⟩

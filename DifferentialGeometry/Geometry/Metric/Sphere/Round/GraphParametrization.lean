@@ -34,7 +34,7 @@ theorem sphereGraphMap_norm_sq (hv : ‖v‖ = 1) (R : E2 ≃ₗᵢ[ℝ] (ℝ �
   have h0 : ⟪(R y : E3), v⟫ = 0 :=
     Submodule.mem_orthogonal_singleton_iff_inner_left.mp (R y).property
   have hnorm : ‖(R y : E3)‖ = ‖y‖ := by
-    rw [← Submodule.coe_norm, R.norm_map]
+    rw [Submodule.norm_coe, R.norm_map]
   have h1 : 0 ≤ 1 - ‖y‖ ^ 2 := by nlinarith [norm_nonneg y]
   have horth : ⟪(R y : E3), Real.sqrt (1 - ‖y‖ ^ 2) • v⟫ = 0 := by
     rw [real_inner_smul_right, h0, mul_zero]

@@ -283,6 +283,19 @@ theorem diskMapConformalAt_of_minimizing_sequence
       exact hq y hy
     unfold hopfDifferentialCoefficient diskMapPartial
     rw [heq.mfderiv_eq, heq.self_of_nhds]
+    have hmap :
+        ((tangentSpaceCast 𝓘(ℝ, E)
+          (r (v (Complex.orthonormalBasisOneI.repr z)))
+          (r (v (Complex.orthonormalBasisOneI.repr z))) :
+          TangentSpace 𝓘(ℝ, E) (r (v (Complex.orthonormalBasisOneI.repr z))) →L[ℝ]
+            TangentSpace 𝓘(ℝ, E) (r (v (Complex.orthonormalBasisOneI.repr z)))) ∘L
+          (mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E)
+            (fun z => r (v (Complex.orthonormalBasisOneI.repr z))) z)) =
+        mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E)
+          (fun z => r (v (Complex.orthonormalBasisOneI.repr z))) z := by
+      ext ξ
+      rfl
+    rw [hmap]
   have hhol := hhopf.congr hsame
   have henergy := (integrable_diskMapEnergyDensity_and_energy_eq_of_contDiffOn_representative
     g hN (hr.of_le (by simp)) (isCompact_range hΦ.continuous) hΦN

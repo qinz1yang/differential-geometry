@@ -1,4 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.ConnectionInsertionFirstOrderBounds
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -85,13 +88,13 @@ theorem covariantJetGrid_h1_tame_bound
     exact Finset.sum_nonneg fun k _ ↦ by
       by_cases hk : k = 3
       · simp [hk]
-      · simp only [if_neg hk]
+      · simp only [ite_eq_right hk]
         exact hK0 R hR k
   have hT : ∀ R : ℝ, 0 ≤ R → ∀ i, 0 ≤ T R i := by
     intro R hR i
     exact Finset.sum_nonneg fun k _ ↦ by
       by_cases hk : k = 3
-      · simp only [hk, if_pos]
+      · simp only [hk, ite_eq_left]
         exact hK3 R hR
       · simp [hk]
   have hQ0 : ∀ R : ℝ, 0 ≤ R → 0 ≤ Q0 R := by
@@ -107,9 +110,9 @@ theorem covariantJetGrid_h1_tame_bound
   have hKm : ∀ k, 0 ≤ Km k := by
     intro k
     by_cases hk : k = 3
-    · simp only [Km, hk, if_pos]
+    · simp only [Km, hk, ite_eq_left]
       exact mul_nonneg (hK3 R hR) (sq_nonneg A)
-    · simp only [Km, if_neg hk]
+    · simp only [Km, ite_eq_right hk]
       exact hK0 R hR k
   have hgr : ∀ k : ℕ, k ≤ 3 →
       MeasureTheory.Integrable (lowJetGrid (I := I) (M := M) g P k)
@@ -126,10 +129,10 @@ theorem covariantJetGrid_h1_tame_bound
     rw [hlow]
     by_cases hk3 : k = 3
     · subst k
-      simpa only [Km, if_pos, Nat.reduceAdd] using
+      simpa only [Km, ite_eq_left, Nat.reduceAdd] using
         hgrid3 P R A hR hA hP2 htop
     · have hk2 : k ≤ 2 := by omega
-      simpa only [Km, if_neg hk3] using
+      simpa only [Km, ite_eq_right hk3] using
         hgrid0 P R hR hP2 k hk2
   have hle := grid_h1_le (I := I) (M := M) g P Km C
     hgr hC Φ hΦ
@@ -141,9 +144,9 @@ theorem covariantJetGrid_h1_tame_bound
     apply Finset.sum_congr rfl
     intro k _
     by_cases hk : k = 3
-    · simp only [Km, hk, if_pos]
+    · simp only [Km, hk, ite_eq_left]
       ring
-    · simp only [Km, if_neg hk]
+    · simp only [Km, ite_eq_right hk]
       ring
   have hQeq :
       (∑ i ∈ Finset.range 2,
@@ -412,7 +415,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_covariantJetN
             (deTurckLieConnectionDifferenceDerivCoeffField (I := I) (M := M) g₀ g₁ g_bg)‖ ^ 2) ≤
           (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨C, hC, hpt⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_deTurckLieConnectionDifferenceDerivCoeffField_diagonalProductGrid_le
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_pointwise_bound
       (I := I) (M := M) g₀ g_bg hδ₀
   obtain ⟨B0, B1, hB0, hB1, hgrid⟩ :=
     covariantJetGrid_h1_tame_bound (I := I) (M := M) (r := 2) (s := 2) hDim g₀ C hC

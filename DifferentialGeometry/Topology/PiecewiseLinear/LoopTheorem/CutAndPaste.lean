@@ -1934,45 +1934,45 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
     rw [hGdomain] at hx
     by_cases hxP : x ∈ P
     · change (if x ∈ P then f₁ x else f₃ x) ∈ D.domain
-      rw [if_pos hxP]
+      rw [ite_eq_left hxP]
       exact hD₁sub (hf₁.bijOn.mapsTo hxP)
     · have hxQ : x ∈ Q := hx.resolve_left hxP
       change (if x ∈ P then f₁ x else f₃ x) ∈ D.domain
-      rw [if_neg hxP]
+      rw [ite_eq_right hxP]
       exact hD₃sub (hf₃.bijOn.mapsTo hxQ)
   have hpullback_apply : ∀ x ∈ G.domain, D (pullback x) = G x := by
     intro x hx
     rw [hGdomain] at hx
     by_cases hxP : x ∈ P
     · change D (if x ∈ P then f₁ x else f₃ x) = G x
-      rw [if_pos hxP]
+      rw [ite_eq_left hxP]
       exact (congrFun hfun₁ (f₁ x)).symm.trans (hG₁ hxP).symm
     · have hxQ : x ∈ Q := hx.resolve_left hxP
       change D (if x ∈ P then f₁ x else f₃ x) = G x
-      rw [if_neg hxP]
+      rw [ite_eq_right hxP]
       exact (congrFun hfun₃ (f₃ x)).symm.trans (hG₃ hxQ).symm
   have hpullback_inj : InjOn pullback G.domain := by
     intro x hx y hy hxy
     rw [hGdomain] at hx hy
     by_cases hxP : x ∈ P <;> by_cases hyP : y ∈ P
     · apply hf₁.bijOn.injOn hxP hyP
-      simpa only [pullback, if_pos hxP, if_pos hyP] using hxy
+      simpa only [pullback, ite_eq_left hxP, ite_eq_left hyP] using hxy
     · have hyQ : y ∈ Q := hy.resolve_left hyP
       exfalso
       have hmaps : f₁ x = f₃ y := by
-        simpa only [pullback, if_pos hxP, if_neg hyP] using hxy
+        simpa only [pullback, ite_eq_left hxP, ite_eq_right hyP] using hxy
       exact Set.disjoint_left.mp hdisjoint₁₃
         (hf₁.bijOn.mapsTo hxP) (hmaps ▸ hf₃.bijOn.mapsTo hyQ)
     · have hxQ : x ∈ Q := hx.resolve_left hxP
       exfalso
       have hmaps : f₁ y = f₃ x := by
-        simpa only [pullback, if_neg hxP, if_pos hyP] using hxy.symm
+        simpa only [pullback, ite_eq_right hxP, ite_eq_left hyP] using hxy.symm
       exact Set.disjoint_left.mp hdisjoint₁₃
         (hf₁.bijOn.mapsTo hyP) (hmaps ▸ hf₃.bijOn.mapsTo hxQ)
     · have hxQ : x ∈ Q := hx.resolve_left hxP
       have hyQ : y ∈ Q := hy.resolve_left hyP
       apply hf₃.bijOn.injOn hxQ hyQ
-      simpa only [pullback, if_neg hxP, if_neg hyP] using hxy
+      simpa only [pullback, ite_eq_right hxP, ite_eq_right hyP] using hxy
   have hfiber : ∀ y, (G.domain ∩ G ⁻¹' {y}).encard ≤ 2 := by
     intro y
     have hmaps : pullback '' (G.domain ∩ G ⁻¹' {y}) ⊆
@@ -2014,7 +2014,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
     rw [hGdomain] at hx
     by_cases hxP : x ∈ P
     · have hxbranch' : f₁ x ∈ A ∪ C := by
-        simpa only [pullback, if_pos hxP] using hxbranch
+        simpa only [pullback, ite_eq_left hxP] using hxbranch
       rcases hxbranch' with hxA | hxC
       · have hximage : f₁ x ∈ f₁ '' (P ∩ Q) := hf₁seam.symm.subset hxA
         obtain ⟨w, hw, hwx⟩ := hximage
@@ -2024,7 +2024,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
           (hf₁.bijOn.mapsTo hxP) (D₃.frontier_subset_domain (hC₃ hxC))).elim
     · have hxQ : x ∈ Q := hx.resolve_left hxP
       have hxbranch' : f₃ x ∈ A ∪ C := by
-        simpa only [pullback, if_neg hxP] using hxbranch
+        simpa only [pullback, ite_eq_right hxP] using hxbranch
       rcases hxbranch' with hxA | hxC
       · exact (Set.disjoint_left.mp hdisjoint₁₃
           (D₁.frontier_subset_domain (hA₁ hxA)) (hf₃.bijOn.mapsTo hxQ)).elim
@@ -2063,7 +2063,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
     obtain ⟨hxseam, hfxA⟩ := hpullback_branch hx (Or.inr hxC)
     have hpullback_eq : pullback x = f₁ x := by
       change (if x ∈ P then f₁ x else f₃ x) = f₁ x
-      rw [if_pos hxseam.1]
+      rw [ite_eq_left hxseam.1]
     rw [hpullback_eq] at hxC
     exact Set.disjoint_left.mp hAC hfxA hxC
   let outer := D₁.domain ∪ D₃.domain
@@ -2072,10 +2072,10 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
     have hxunion : x ∈ P ∪ Q := hGdomain.subset hx
     by_cases hxP : x ∈ P
     · exact Or.inl (by
-        simpa only [pullback, if_pos hxP] using hf₁.bijOn.mapsTo hxP)
+        simpa only [pullback, ite_eq_left hxP] using hf₁.bijOn.mapsTo hxP)
     · have hxQ : x ∈ Q := hxunion.resolve_left hxP
       exact Or.inr (by
-        simpa only [pullback, if_neg hxP] using hf₃.bijOn.mapsTo hxQ)
+        simpa only [pullback, ite_eq_right hxP] using hf₃.bijOn.mapsTo hxQ)
   have houter_nhds : ∀ x ∈ outer, D x ∉ hD.singularSet.branchCarrier c →
       outer ∈ 𝓝[D.domain] x := by
     intro x hxouter hximage
@@ -2110,7 +2110,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
       have hzG : z ∈ G.domain := hGdomain.symm.subset (Or.inl hzP)
       refine ⟨z, hzG, ?_⟩
       change (if z ∈ P then f₁ z else f₃ z) = x
-      rw [if_pos hzP, hzx]
+      rw [ite_eq_left hzP, hzx]
     · obtain ⟨z, hzQ, hzx⟩ := hf₃.bijOn.surjOn hxD₃
       have hzP : z ∉ P := by
         intro hzP
@@ -2124,7 +2124,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
       have hzG : z ∈ G.domain := hGdomain.symm.subset (Or.inr hzQ)
       refine ⟨z, hzG, ?_⟩
       change (if z ∈ P then f₁ z else f₃ z) = x
-      rw [if_neg hzP, hzx]
+      rw [ite_eq_right hzP, hzx]
   have hopenDouble : ∀ y ∈ doublePointSet G G.domain,
       doublePointSet G G.domain ∈ 𝓝[doublePointSet D D.domain] y :=
     doublePointSet_mem_nhdsWithin_of_pullback
@@ -2390,7 +2390,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
       have hpull : EqOn f₁ pullback S := by
         intro z hz
         change f₁ z = if z ∈ P then f₁ z else f₃ z
-        rw [if_pos hz.1]
+        rw [ite_eq_left hz.1]
       have hmap : EqOn G (D ∘ f₁) S := by
         intro z hz
         exact (hG₁ hz.1).trans (congrFun hfun₁ (f₁ z))
@@ -2450,7 +2450,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
       have hpull : EqOn f₃ pullback S := by
         intro z hz
         change f₃ z = if z ∈ P then f₁ z else f₃ z
-        rw [if_neg hz.2]
+        rw [ite_eq_right hz.2]
       have hmap : EqOn G (D ∘ f₃) S := by
         intro z hz
         exact (hG₃ hz.1).trans (congrFun hfun₃ (f₃ z))
@@ -2620,7 +2620,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
     · obtain ⟨w, hwP, hwz⟩ := hf₁.bijOn.surjOn hzD₁
       refine ⟨w, hGdomain.symm.subset (Or.inl hwP), ?_⟩
       change (if w ∈ P then f₁ w else f₃ w) = z
-      rw [if_pos hwP, hwz]
+      rw [ite_eq_left hwP, hwz]
     · exact absurd hzD₂ hz.2
     · obtain ⟨w, hwQ, hwz⟩ := hf₃.bijOn.surjOn hzD₃
       have hwP : w ∉ P := by
@@ -2631,7 +2631,7 @@ theorem exists_boundary_surgery_cell_of_cut_with_source_paths
         exact hz.2 (hCD₂ hzC)
       refine ⟨w, hGdomain.symm.subset (Or.inr hwQ), ?_⟩
       change (if w ∈ P then f₁ w else f₃ w) = z
-      rw [if_neg hwP, hwz]
+      rw [ite_eq_right hwP, hwz]
   have hband : Disjoint (pullback '' G.domain) (D₂.domain \ A) := by
     apply Set.disjoint_left.mpr
     rintro _ ⟨w, hw, rfl⟩ hz

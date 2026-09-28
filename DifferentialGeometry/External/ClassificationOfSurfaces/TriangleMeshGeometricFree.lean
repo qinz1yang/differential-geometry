@@ -351,7 +351,7 @@ private theorem exists_mesh_crosscut_of_bad_free_triangle
     rw [hsupport]
     exact frontier_closure_subset.trans_eq (jordan_curve_theorem hC).frontier_inside
   have havImage : M.position '' (({a, v} : Finset M.Vertex) : Set M.Vertex) =
-      {M.position a, M.position v} := by ext p; simp [eq_comm]
+      {M.position a, M.position v} := by ext p; simp
   have hedge : ({a, v} : Finset M.Vertex) ∈ M.edges := by
     apply Finset.mem_biUnion.mpr
     exact ⟨T.1, T.2, Finset.mem_powersetCard.mpr ⟨havT, havCard⟩⟩
@@ -490,7 +490,7 @@ private theorem triangle_inter_crosscut_subset_endpoints
   have hcarrier : convexHull ℝ (M.position '' (e : Set M.Vertex)) =
       segment ℝ (M.position a) (M.position b) := by
     rw [show M.position '' (e : Set M.Vertex) = {M.position a, M.position b} by
-      ext p; simp [e, eq_comm]]
+      ext p; simp [e]]
     exact convexHull_pair _ _
   intro x hx
   have hxCommon : x ∈ convexHull ℝ
@@ -547,7 +547,7 @@ private theorem frontier_inter_triangleCarrier_crosscut_side
   have hcarrier : convexHull ℝ (M.position '' (({a, b} : Finset M.Vertex) : Set M.Vertex)) =
       E := by
     rw [show M.position '' (({a, b} : Finset M.Vertex) : Set M.Vertex) =
-      {M.position a, M.position b} by ext p; simp [eq_comm]]
+      {M.position a, M.position b} by ext p; simp]
     exact convexHull_pair _ _
   have hs : N.toPlaneComplex.support = closure (inside (A₁ ∪ E)) :=
     (restrict_triangles_crosscut_partition M hsupport he hcarrier h hcut).1
@@ -800,7 +800,7 @@ theorem exists_two_geometrically_free_triangles_of_jordan_support
       have hcarrier : convexHull ℝ (M.position ''
           (({a, b} : Finset M.Vertex) : Set M.Vertex)) = E := by
         rw [show M.position '' (({a, b} : Finset M.Vertex) : Set M.Vertex) =
-          {M.position a, M.position b} by ext p; simp [eq_comm]]
+          {M.position a, M.position b} by ext p; simp]
         exact convexHull_pair _ _
       have hside (A R : Set Plane)
           (hc : IsCutPair C (M.position a) (M.position b) A R) :

@@ -6,6 +6,10 @@ import DifferentialGeometry.Geometry.Operator.CovariantTensor
 import DifferentialGeometry.Geometry.Operator.MetricTraceOrthonormalFrame
 import DifferentialGeometry.Analysis.Calculus.CompactSupportSection
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_eq_inner0S tensorInnerPointwise_smul_left tensorInnerPointwise_symm)
+
+
 noncomputable section
 set_option autoImplicit false
 
@@ -209,7 +213,7 @@ theorem integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSuppor
       have hV : ∀ᶠ y in 𝓝 x, Vc y = unitScalarRSLiftCₛ (I := I) V y :=
         (nhds_le_nhdsSet hx) hVeq
       rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply,
-        innerPt_eq_inner0S, covDivergence_unit_of_eventuallyEq g V V₀ hV]
+        tensorInnerPointwise_eq_inner0S, covDivergence_unit_of_eventuallyEq g V V₀ hV]
       rw [show T₀.toSection x = unitScalarRSLiftCₛ (I := I) T x from hT.self_of_nhds,
         unitScalarRSLiftCₛ_apply, unitScalarRSLiftSection_apply_unit]
     · simp [image_eq_zero_of_notMem_tsupport hx]
@@ -223,7 +227,7 @@ theorem integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSuppor
       have hV : ∀ᶠ y in 𝓝 x, Vc y = unitScalarRSLiftCₛ (I := I) V y :=
         (nhds_le_nhdsSet hx) hVeq
       rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply,
-        innerPt_eq_inner0S, covGrad_unit_of_eventuallyEq g T T₀ hT]
+        tensorInnerPointwise_eq_inner0S, covGrad_unit_of_eventuallyEq g T T₀ hT]
       rw [show V₀.toSection x = unitScalarRSLiftCₛ (I := I) V x from hV.self_of_nhds,
         unitScalarRSLiftCₛ_apply, unitScalarRSLiftSection_apply_unit]
     · simp [image_eq_zero_of_notMem_tsupport hx]
@@ -236,7 +240,7 @@ theorem integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSuppor
           (unitZeroSec (I := I) x)) (V x) := by
     intro x
     rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply,
-      innerPt_eq_inner0S, prependCovGradSlot_toSection_apply]
+      tensorInnerPointwise_eq_inner0S, prependCovGradSlot_toSection_apply]
     by_cases hx : x ∈ tsupport (χ : M → ℝ)
     · have hT : ∀ᶠ y in 𝓝 x, Tc y = unitScalarRSLiftCₛ (I := I) T y :=
         (nhds_le_nhdsSet hx) hTeq
@@ -250,11 +254,11 @@ theorem integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSuppor
         have hev : (χ : M → ℝ) =ᶠ[𝓝 x] (fun _ => 0) :=
           notMem_tsupport_iff_eventuallyEq.mp hx
         have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (χ : M → ℝ) x = 0 := by
-          rw [hev.mfderiv_eq]
-          exact mfderiv_const
+          rw [hev.mfderiv_eq, mfderiv_const]
+          rfl
         simp [mvfderiv, hmfd_zero]
       have hz (W : Tensor0SSpace (s + 1) I x) : inner0S (I := I) g x (s + 1) 0 W = 0 := by
-        have hh := _root_.Tensor0SBundle.inner0S_smul_left (I := I) g x (s + 1)
+        have hh := _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left (I := I) g x (s + 1)
           (0 : ℝ) (0 : Tensor0SSpace (s + 1) I x) W
         simpa only [zero_smul, zero_mul] using hh
       simp only [hzero, ContinuousLinearMap.zero_smulRight, map_zero,
@@ -311,7 +315,7 @@ theorem integral_sq_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSup
       ext v
       simp only [ContinuousLinearMap.smulRight_apply, smul_apply,
         smul_smul, smul_eq_mul]
-    rw [hs, map_smul, TensorRSSpace.smul_apply, _root_.Tensor0SBundle.inner0S_smul_left]
+    rw [hs, map_smul, TensorRSSpace.smul_apply, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left]
     ring
   have hgreen := integral_weighted_covDiv0SField_eq_neg_metricNabla0S_of_hasCompactSupport
     g s (χ * χ) hχ.mul_right T V

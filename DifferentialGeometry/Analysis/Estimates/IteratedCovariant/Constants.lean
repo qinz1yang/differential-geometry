@@ -2,7 +2,7 @@ import Mathlib.Algebra.Order.BigOperators.Group.Finset
 
 
 import Mathlib.Data.Nat.Choose.Basic
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.NormNum
 

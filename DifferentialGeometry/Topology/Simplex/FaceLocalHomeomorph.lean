@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Face
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.Topology.OpenPartialHomeomorph.Constructions
@@ -6,6 +7,8 @@ noncomputable section
 
 open Set
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 universe u
@@ -13,14 +16,14 @@ universe u
 variable {n : ℕ}
 
 def faceToBoundary (i : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), boundary (Fin (n + 2))) :=
-  ⟨fun p => ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩,
-    (stdSimplex.continuous_map i.succAbove).subtype_mk _⟩
+    C(coordinateSet ℝ (Fin (n + 1)), boundary (Fin (n + 2))) :=
+  ⟨fun p => ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩,
+    (continuous_coordinateMap i.succAbove).subtype_mk _⟩
 
 @[simp]
 theorem faceToBoundary_val (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 1))) :
-    (faceToBoundary i p).val = stdSimplex.map i.succAbove p := rfl
+    (p : coordinateSet ℝ (Fin (n + 1))) :
+    (faceToBoundary i p).val = coordinateMap i.succAbove p := rfl
 
 theorem faceToBoundary_injective (i : Fin (n + 2)) :
     Function.Injective (faceToBoundary i) := by
@@ -43,8 +46,8 @@ private theorem faceInterior_pivot_eq_zero (i : Fin (n + 2))
     exact False.elim ((ne_of_gt (hp k)) hj)
 
 private def faceFromBoundary (i : Fin (n + 2))
-    (p : boundary (Fin (n + 2))) : stdSimplex ℝ (Fin (n + 1)) :=
-  if hp : p.val.val i = 0 then faceDelete i ⟨p.val, hp⟩ else stdSimplex.barycenter
+    (p : boundary (Fin (n + 2))) : coordinateSet ℝ (Fin (n + 1)) :=
+  if hp : p.val.val i = 0 then faceDelete i ⟨p.val, hp⟩ else coordinateBarycenter
 
 private theorem faceFromBoundary_apply (i : Fin (n + 2))
     {p : boundary (Fin (n + 2))} (hp : p.val.val i = 0) :
@@ -52,20 +55,20 @@ private theorem faceFromBoundary_apply (i : Fin (n + 2))
   simp [faceFromBoundary, hp]
 
 private theorem faceFromBoundary_faceToBoundary (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 1))) :
+    (p : coordinateSet ℝ (Fin (n + 1))) :
     faceFromBoundary i (faceToBoundary i p) = p := by
   rw [faceFromBoundary_apply i (map_succAbove_apply_pivot i p)]
   exact faceDelete_faceInsert i p
 
 def faceOpenPartialHomeomorph (i : Fin (n + 2)) :
-    OpenPartialHomeomorph (stdSimplex ℝ (Fin (n + 1))) (boundary (Fin (n + 2))) where
+    OpenPartialHomeomorph (coordinateSet ℝ (Fin (n + 1))) (boundary (Fin (n + 2))) where
   toFun := faceToBoundary i
   invFun := faceFromBoundary i
   source := (boundary (Fin (n + 1)))ᶜ
   target := faceInterior i
   map_source' := by
     intro p hp j
-    change 0 < (stdSimplex.map i.succAbove p).val (i.succAbove j)
+    change 0 < (coordinateMap i.succAbove p).val (i.succAbove j)
     rw [map_succAbove_apply_image]
     exact lt_of_le_of_ne (p.property.1 j) (Ne.symm (fun hj => hp ⟨j, hj⟩))
   map_target' := by
@@ -78,7 +81,7 @@ def faceOpenPartialHomeomorph (i : Fin (n + 2)) :
     intro p hp
     rw [faceFromBoundary_apply i (faceInterior_pivot_eq_zero i hp)]
     apply Subtype.ext
-    change stdSimplex.map i.succAbove (faceDelete i ⟨p.val, _⟩) = p.val
+    change coordinateMap i.succAbove (faceDelete i ⟨p.val, _⟩) = p.val
     exact congrArg Subtype.val (faceInsert_faceDelete i ⟨p.val, faceInterior_pivot_eq_zero i hp⟩)
   open_source := isClosed_boundary.isOpen_compl
   open_target := by
@@ -104,7 +107,7 @@ def faceOpenPartialHomeomorph (i : Fin (n + 2)) :
 
 @[simp]
 theorem faceOpenPartialHomeomorph_apply (i : Fin (n + 2))
-    (p : stdSimplex ℝ (Fin (n + 1))) :
+    (p : coordinateSet ℝ (Fin (n + 1))) :
     faceOpenPartialHomeomorph i p = faceToBoundary i p := rfl
 
 @[simp]
@@ -118,7 +121,7 @@ theorem faceOpenPartialHomeomorph_target (i : Fin (n + 2)) :
 
 
 def liftedFaceToBoundary (i : Fin (n + 2)) :
-    C(ULift.{u} (stdSimplex ℝ (Fin (n + 1))), ULift.{u} (boundary (Fin (n + 2)))) :=
+    C(ULift.{u} (coordinateSet ℝ (Fin (n + 1))), ULift.{u} (boundary (Fin (n + 2)))) :=
   ⟨fun p => ULift.up (faceToBoundary i p.down),
     continuous_uliftUp.comp ((faceToBoundary i).continuous.comp continuous_uliftDown)⟩
 
@@ -129,14 +132,14 @@ theorem liftedFaceToBoundary_injective (i : Fin (n + 2)) :
   exact faceToBoundary_injective i (congrArg ULift.down h)
 
 def liftedFaceOpenPartialHomeomorph (i : Fin (n + 2)) :
-    OpenPartialHomeomorph (ULift.{u} (stdSimplex ℝ (Fin (n + 1))))
+    OpenPartialHomeomorph (ULift.{u} (coordinateSet ℝ (Fin (n + 1))))
       (ULift.{u} (boundary (Fin (n + 2)))) :=
   (Homeomorph.ulift.transOpenPartialHomeomorph
     (faceOpenPartialHomeomorph i)).transHomeomorph Homeomorph.ulift.symm
 
 @[simp]
 theorem liftedFaceOpenPartialHomeomorph_apply (i : Fin (n + 2))
-    (p : ULift.{u} (stdSimplex ℝ (Fin (n + 1)))) :
+    (p : ULift.{u} (coordinateSet ℝ (Fin (n + 1)))) :
     liftedFaceOpenPartialHomeomorph i p = liftedFaceToBoundary i p := rfl
 
 @[simp]
@@ -145,7 +148,7 @@ theorem liftedFaceOpenPartialHomeomorph_source (i : Fin (n + 2)) :
       {p | p.down ∈ (boundary (Fin (n + 1)))ᶜ} := rfl
 
 theorem liftedFaceToBoundary_mapsTo (i : Fin (n + 2))
-    (p : ULift.{u} (stdSimplex ℝ (Fin (n + 1)))) :
+    (p : ULift.{u} (coordinateSet ℝ (Fin (n + 1)))) :
     MapsTo (liftedFaceToBoundary i) ({p}ᶜ : Set _)
       ({liftedFaceToBoundary i p}ᶜ : Set _) :=
   fun _ hq h => hq (liftedFaceToBoundary_injective i h)

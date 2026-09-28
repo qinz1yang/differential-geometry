@@ -49,7 +49,7 @@ theorem geodesicInterpolation_spec [PreconnectedSpace M]
   · let : Subsingleton M := subsingleton_of_zero_model h
     have hG : geodesicInterpolation g = fun x _ _ => x := by
       funext x y t
-      simp only [geodesicInterpolation, dif_pos h]
+      simp only [geodesicInterpolation, dite_eq_left h]
     rw [hG]
     refine ⟨fun _ _ => rfl, fun _ _ _ => Subsingleton.elim _ _, fun _ _ => rfl, ?_,
       1, univ, zero_lt_one, isOpen_univ, fun _ _ _ _ _ => mem_univ _, ?_⟩
@@ -62,7 +62,7 @@ theorem geodesicInterpolation_spec [PreconnectedSpace M]
   · let : NeZero (Module.finrank ℝ E) := ⟨h⟩
     have hG : geodesicInterpolation g = metricShortGeodesic g := by
       funext x y t
-      simp only [geodesicInterpolation, dif_neg h]
+      simp only [geodesicInterpolation, dite_eq_right h]
     rw [hG]
     exact metricShortGeodesic_spec g
 

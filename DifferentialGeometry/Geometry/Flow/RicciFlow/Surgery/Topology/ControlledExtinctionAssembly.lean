@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.ObservedComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Reconstruction
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventBridge
 import DifferentialGeometry.Topology.Manifold.CollarFamily

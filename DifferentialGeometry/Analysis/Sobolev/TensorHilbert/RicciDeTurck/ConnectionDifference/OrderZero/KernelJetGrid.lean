@@ -1,4 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.ConnectionDifference.OrderOne.TameEnvelope
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le tensorInnerPointwise_smul_left
+    tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -786,7 +791,7 @@ private lemma riemannianFiberNormSq_eightTerm_cascade (g : SmoothRiemannianMetri
   linarith [c12, c123, c1234, c12345, c123456, cm7, cm8, h1, h2, h3, h4, h5, h6, h7, h8]
 
 omit [SigmaCompactSpace M] in
-theorem riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0KernelField_diagonalProductGrid_le
+theorem linearizedRicciConnectionDifferenceOrder0KernelField_jet_norm_sq_le_antidiagonalTupleGrid
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ l, 0 ≤ C l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2)
@@ -1164,7 +1169,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_ricciCometricFourTraceCastG0_diago
                 ((iteratedCovGrad (I := I) g₀ 0 2 j' P).toSection x)) k := by
   classical
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   have hSΦ_ex : ∀ q : ℕ, ∃ K : ℝ, 0 ≤ K ∧ ∀ x : M,
       riemannianFiberNormSq (I := I) (M := M) g₀ 4 (2 + q) x

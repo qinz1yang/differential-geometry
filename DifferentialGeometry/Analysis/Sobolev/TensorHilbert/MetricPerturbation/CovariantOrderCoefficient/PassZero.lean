@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.CovariantDerivative
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
@@ -261,13 +264,13 @@ theorem toModel_operatorFieldComposition_termSlotEndoPassZeroCc_eval (g : Smooth
   congr 1
   funext j
   refine Fin.cases ?_ ?_ j
-  · rw [Function.update_self, if_pos rfl]
+  · rw [Function.update_self, ite_eq_left rfl]
     change Term x (vt (finRotate 3 0)) (vt (finRotate 3 1)) = Term x (vt 1) (vt 2)
     rw [hr0, hr1]
   · intro i
     have hi : i = 0 := Subsingleton.elim i 0
     subst hi
-    rw [Function.update_of_ne (Fin.succ_ne_zero 0), if_neg (Fin.succ_ne_zero 0)]
+    rw [Function.update_of_ne (Fin.succ_ne_zero 0), ite_eq_right (Fin.succ_ne_zero 0)]
     change vt (finRotate 3 2) = vt 0
     rw [hr2]
 

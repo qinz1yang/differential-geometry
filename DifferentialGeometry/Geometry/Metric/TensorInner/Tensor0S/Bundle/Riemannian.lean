@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.MetricFiberData.Topology
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Defs
@@ -23,7 +24,7 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace Tensor0SRiemannianBundle
 
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor0SBundle
 
@@ -134,9 +135,9 @@ private lemma tensor0SRiemannianInner_diagonal_clm_apply
           (𝕜 := ℝ) (E := E) (I := I) (M := M) (s := s) (x := b) T) := by
   rw [tensor0SRiemannianInnerCLM_apply, innerBundleCLM_apply]
 
-private lemma innerModel_diagonal_sublevel_isBounded
+private lemma innerModel_diagonal_sublevel_isVonNBounded
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
-    Bornology.IsBounded
+    IsVonNBounded ℝ
       {T : Tensor0SModel s ℝ E |
         innerModelCLM (I := I) (M := M) g s b T T < 1} := by
   have hPD : ∀ v : Tensor0SModel s ℝ E,
@@ -147,16 +148,11 @@ private lemma innerModel_diagonal_sublevel_isBounded
       (I := I) (M := M) g b s v).not.mpr hv
     have hnn := tensorInnerPointwise_0s_nonneg (I := I) (M := M) g b s v
     exact lt_of_le_of_ne hnn (Ne.symm hQpos)
-  exact Tensor0SRiemannian.posDef_bilin_unit_ball_isBounded
-    (innerModelCLM (I := I) (M := M) g s b) hPD
-
-private lemma innerModel_diagonal_sublevel_isVonNBounded
-    (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :
-    IsVonNBounded ℝ
-      {T : Tensor0SModel s ℝ E |
-        innerModelCLM (I := I) (M := M) g s b T T < 1} :=
-  NormedSpace.isVonNBounded_of_isBounded ℝ
-    (innerModel_diagonal_sublevel_isBounded (I := I) (M := M) g s b)
+  let B := (innerModelCLM (I := I) (M := M) g s b).toBilinForm
+  have hsymm : B.IsSymm := ⟨fun T S =>
+    tensorInnerPointwise_0s_symm (I := I) (M := M) g b s T S⟩
+  have hpos : B.toQuadraticMap.PosDef := hPD
+  exact (MetricFiberData.ofBilinForm B hsymm hpos).isVonNBounded_inner_self_lt 1
 
 theorem tensor0SRiemannianInner_isVonNBounded
     (g : SmoothRiemannianMetric I M) (s : ℕ) (b : M) :

@@ -64,10 +64,10 @@ private theorem curvature_rank_spreading_on_closed_interval
   let cov := fun q => if hq : q ∈ Ioo 0 T then cov₀ q hq else cov₀ (T / 2) hmid
   have hcovsmooth : ∀ q ∈ Ioo 0 T, ContMDiffCovariantDerivative (cov q) ∞ := by
     intro q hq
-    simpa only [cov, dif_pos hq, cov₀] using (hevol q hq).choose_spec.1
+    simpa only [cov, dite_eq_left hq, cov₀] using (hevol q hq).choose_spec.1
   have hcovmetric : ∀ q ∈ Ioo 0 T, (cov q).IsMetricCompatible := by
     intro q hq
-    simpa only [cov, dif_pos hq, cov₀] using (hevol q hq).choose_spec.2.1
+    simpa only [cov, dite_eq_left hq, cov₀] using (hevol q hq).choose_spec.2.1
   have hpos : ∀ q ∈ Icc 0 T, ∀ x, (A q x).IsPositive := by
     intro q hq x
     rw [hA q hq x]
@@ -98,7 +98,7 @@ private theorem curvature_rank_spreading_on_closed_interval
         (mem_closedBall_zero_iff.mpr hCn))
     (by
       intro q hq z
-      simpa only [cov, dif_pos hq, cov₀, map_zero, add_zero, reaction] using
+      simpa only [cov, dite_eq_left hq, cov₀, map_zero, add_zero, reaction] using
         (hevol q hq).choose_spec.2.2 z) hs hst ht x y
   have hsT : s ∈ Icc 0 T := ⟨hs, hst.le.trans ht⟩
   have htT : t ∈ Icc 0 T := ⟨hs.trans hst.le, ht⟩

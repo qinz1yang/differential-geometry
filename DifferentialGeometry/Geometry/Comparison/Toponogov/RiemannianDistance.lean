@@ -178,7 +178,6 @@ def RealizedMinimizingConnector.reverse
     rw [hvel]
     simp only [curveVelocity, neg_one_smul, map_neg, neg_apply, neg_neg]
     convert c.unitSpeed ((-1 : ℝ) * t + c.length) htime using 1
-    with_unfolding_all rfl
   realizes := by
     rw [riemannianEDistOf_comm (I := I) g q p]
     exact c.realizes

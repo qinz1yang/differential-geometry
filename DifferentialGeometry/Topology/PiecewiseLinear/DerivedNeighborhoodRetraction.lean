@@ -465,14 +465,14 @@ theorem subcomplexBarycentricHomotopy_mem_faceNeighborhood
     weights_combo (K.indep he) hxe hpE hα hβ hsum v (Finset.mem_filter.mp hvf).1,
     weights_subcomplexBarycentricProjection K L he hxe hm hw,
     weights_subcomplexBarycentricProjection K L he hxe hm (Finset.mem_filter.mp hvf).1,
-    if_pos hvf]
+    ite_eq_left hvf]
   have hinv : 0 ≤ m⁻¹ := inv_nonneg.mpr hm.le
   have hvnonneg : 0 ≤ weights e x v := weights_nonneg hxe (Finset.mem_filter.mp hvf).1
   by_cases hwf : w ∈ f
-  · rw [if_pos hwf]
+  · rw [ite_eq_left hwf]
     exact add_le_add (mul_le_mul_of_nonneg_left (hmax w hw) hα)
       (mul_le_mul_of_nonneg_left (mul_le_mul_of_nonneg_left (hmax w hw) hinv) hβ)
-  · rw [if_neg hwf, mul_zero, add_zero]
+  · rw [ite_eq_right hwf, mul_zero, add_zero]
     exact (mul_le_mul_of_nonneg_left (hmax w hw) hα).trans
       (le_add_of_nonneg_right (mul_nonneg hβ (mul_nonneg hinv hvnonneg)))
 

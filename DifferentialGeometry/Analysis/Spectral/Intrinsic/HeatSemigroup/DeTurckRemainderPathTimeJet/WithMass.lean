@@ -1133,7 +1133,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
       { toSection := ⟨fun x => Tensor0SBundle.TensorRSSpace.ofModel (jetD x t), hSlice t ht⟩
         hasCompactSupport := HasCompactSupport.of_compactSpace _ } := by
     intro t ht
-    rw [hRjtDef]; exact dif_pos ht
+    rw [hRjtDef]; exact dite_eq_left ht
   have hRjtSection : ∀ t ∈ Set.Icc (0 : ℝ) T, ∀ x : M,
       (Rjt t).toSection x = Tensor0SBundle.TensorRSSpace.ofModel (jetD x t) := by
     intro t ht x
@@ -1157,7 +1157,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
     have hcoeffInt : ∀ S : SmoothCcTensor g₀ 0 2,
         tensorL2Coeff (I := I) (M := M) hc
             (SmoothCcTensor.toL2 (g := g₀) (r := 0) (s := 2) S) i =
-          ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+          ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x) (S.toFun x) ∂μ := by
       intro S
       rw [tensorL2Coeff_eq_inner,
@@ -1168,7 +1168,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
         SmoothCcTensor.inner_toL2, SmoothCcTensor.inner_def]
       rfl
     set fInt : M → ℝ → ℝ := fun x s =>
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
         (eig.toFun x) ((Rec s).toFun x) with hfInt
     have hfInt_joint : ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
         (fun p : M × ℝ => fInt p.1 p.2) ((Set.univ : Set M) ×ˢ Set.Icc (0 : ℝ) T) :=
@@ -1182,7 +1182,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
     rw [hLHS_eq]
     rw [iteratedDerivWithin_integral_param_Icc μ hT j fInt hfInt_joint t ht]
     have hfiberJet : ∀ x : M, iteratedDerivWithin j (fun s => fInt x s) (Set.Icc (0 : ℝ) T) t =
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
           (eig.toFun x) (jetD x t) := by
       intro x
       have hL := clm_comm_iteratedDerivWithin
@@ -1194,7 +1194,7 @@ private theorem deTurckRHSReconSection_timeJet_jointSmooth_section
       rw [hjetD]
       exact hL
     have hRHS_eq : (∫ x, iteratedDerivWithin j (fun s => fInt x s) (Set.Icc (0 : ℝ) T) t ∂μ)
-        = ∫ x, DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
+        = ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 x
             (eig.toFun x) ((Rjt t).toFun x) ∂μ := by
       refine integral_congr_ae (Filter.Eventually.of_forall (fun x => ?_))
       simp only []

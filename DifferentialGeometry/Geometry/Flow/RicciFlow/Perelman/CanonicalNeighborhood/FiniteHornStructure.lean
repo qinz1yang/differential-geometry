@@ -381,7 +381,7 @@ theorem neckSectionBarrier_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H 
   · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
     filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
     have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-      rw [neckTube, dif_pos hgood]
+      rw [neckTube, dite_eq_left hgood]
     intro x hx
     rw [htube] at hx
     exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
@@ -398,7 +398,7 @@ theorem neckSectionBarrier_of_neckEndScale (g : SmoothRiemannianMetric I3 W) (H 
     obtain ⟨j0, hsub0, _hsup0, hdeep0⟩ := hj0
     obtain ⟨j1, hsub1, hsup1, _hdeep1⟩ := hj1
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
       le_trans (le_max_left _ _) hbig
@@ -537,7 +537,7 @@ theorem neckSectionBarrier_of_neckEndScaleWindow (g : SmoothRiemannianMetric I3 
   · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
     filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
     have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-      rw [neckTube, dif_pos hgood]
+      rw [neckTube, dite_eq_left hgood]
     intro x hx
     rw [htube] at hx
     exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
@@ -550,7 +550,7 @@ theorem neckSectionBarrier_of_neckEndScaleWindow (g : SmoothRiemannianMetric I3 
     obtain ⟨j0, hsub0, hdeep0⟩ := hj0
     obtain ⟨j1, hsub1, hsup1⟩ := hj1
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
       le_trans (le_max_left _ _) hbig
@@ -656,7 +656,7 @@ theorem neckSectionBarrier_of_hornRadialPosition (g : SmoothRiemannianMetric I3 
   · refine ⟨transverseShortcutConstant W, transverseShortcutConstant_pos W, ?_⟩
     filter_upwards [eventually_mem_tail g H ray d hd hzero] with i hgood
     have htube : neckTube g H ray d i = (endChart g H (ray.point (d i)) hgood).cross.tube := by
-      rw [neckTube, dif_pos hgood]
+      rw [neckTube, dite_eq_left hgood]
     intro x hx
     rw [htube] at hx
     exact endChart_section_diameter_le g H (ray.point (d i)) hgood x hx
@@ -665,7 +665,7 @@ theorem neckSectionBarrier_of_hornRadialPosition (g : SmoothRiemannianMetric I3 
       with i hR hgood
     obtain ⟨htip, houter⟩ := hR
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     intro c hc0 hc1
     have hc0' : dist (c ⟨0, by simp⟩ : UniformSpace.Completion W) H.endpoint <
@@ -722,7 +722,7 @@ theorem hornRadialPosition_of_neckEndScaleWindow (g : SmoothRiemannianMetric I3 
   · intro x hx
     obtain ⟨j1, hsub1, hsup1⟩ := hj1
     set E := endChart g H (ray.point (d i)) hgood with hE
-    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dif_pos hgood]
+    have htube : neckTube g H ray d i = E.cross.tube := by rw [neckTube, dite_eq_left hgood]
     have hdpos : 0 < d i := (hd i).1
     have hsmul : 1 ≤ metricScalarAt g (ray.point (d i)) * d i ^ 2 :=
       le_trans (le_max_left _ _) hbig
@@ -884,7 +884,7 @@ theorem hornRadialPosition_of_hornRadialExitPosition (g : SmoothRiemannianMetric
     with i htip hex hgood
   have htube : neckTube g H ray d i =
       (endChart g H (ray.point (d i)) hgood).cross.tube := by
-    rw [neckTube, dif_pos hgood]
+    rw [neckTube, dite_eq_left hgood]
   refine ⟨?_, ?_⟩ <;> intro x hx
   · rw [htube]
     exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx
@@ -946,7 +946,7 @@ theorem hornRadialPosition_of_hornRadialExitPositionAtEndChart
     hexit e he he10, eventually_mem_tail g H ray d hd hzero] with i htip hex hgood
   have htube : neckTube g H ray d i =
       (endChart g H (ray.point (d i)) hgood).cross.tube := by
-    rw [neckTube, dif_pos hgood]
+    rw [neckTube, dite_eq_left hgood]
   refine ⟨?_, ?_⟩ <;> intro x hx
   · rw [htube]
     exact htip hgood (endChart g H (ray.point (d i)) hgood) x hx

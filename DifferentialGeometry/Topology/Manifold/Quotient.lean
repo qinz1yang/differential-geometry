@@ -71,60 +71,6 @@ theorem IsLocalDiffeomorph.contMDiff_of_continuous_of_comp
   change h y = hlocal.localInverse (f (h y))
   exact (hlocal.localInverse_left_inv hy).symm
 
-class ContMDiffConstSMul {k : Type*} [NontriviallyNormedField k]
-    {H : Type*} [TopologicalSpace H]
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace k E]
-    (I : ModelWithCorners k E H) (n : WithTop ℕ∞)
-    (G : Type*) (M : Type*) [TopologicalSpace M] [ChartedSpace H M]
-    [SMul G M] : Prop where
-  contMDiff_const_smul : ∀ g : G, ContMDiff I I n fun x : M => g • x
-
-private lemma symm_trans_trans_mem_maximalAtlas_of_contMDiffOn
-    {k : Type*} [NontriviallyNormedField k]
-    {H : Type*} [TopologicalSpace H]
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace k E]
-    {I : ModelWithCorners k E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {n : WithTop ℕ∞}
-    [hM : IsManifold I n M]
-    {phi phi' : OpenPartialHomeomorph M H}
-    (hphi : phi ∈ IsManifold.maximalAtlas I n M)
-    (hphi' : phi' ∈ IsManifold.maximalAtlas I n M)
-    {f : OpenPartialHomeomorph M M}
-    (hf : ContMDiffOn I I n f f.source)
-    (hf' : ContMDiffOn I I n f.symm f.target) :
-    phi.symm.trans (f.trans phi') ∈ IsManifold.maximalAtlas I n H := by
-  let _ := hM
-  refine (phi.symm.trans (f.trans phi')).mem_maximalAtlas_of_contMDiffOn ?_ ?_
-  · exact (contMDiffOn_of_mem_maximalAtlas hphi').comp
-      (hf.comp ((contMDiffOn_symm_of_mem_maximalAtlas hphi).mono fun z hz => hz.1)
-        fun z hz => hz.2.1)
-      fun z hz => hz.2.2
-  · exact (contMDiffOn_of_mem_maximalAtlas hphi).comp
-      (hf'.comp ((contMDiffOn_symm_of_mem_maximalAtlas hphi').mono fun z hz => hz.1.1)
-        fun z hz => hz.1.2)
-      fun z hz => hz.2
-
-private lemma symm_trans_trans_mem_contDiffGroupoid_of_contMDiffOn
-    {k : Type*} [NontriviallyNormedField k]
-    {H : Type*} [TopologicalSpace H]
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace k E]
-    {I : ModelWithCorners k E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
-    {n : WithTop ℕ∞}
-    [IsManifold I n M]
-    {phi phi' : OpenPartialHomeomorph M H}
-    (hphi : phi ∈ IsManifold.maximalAtlas I n M)
-    (hphi' : phi' ∈ IsManifold.maximalAtlas I n M)
-    {f : OpenPartialHomeomorph M M}
-    (hf : ContMDiffOn I I n f f.source)
-    (hf' : ContMDiffOn I I n f.symm f.target) :
-    phi.symm.trans (f.trans phi') ∈ contDiffGroupoid n I := by
-  simpa [OpenPartialHomeomorph.refl_trans, OpenPartialHomeomorph.refl_symm] using
-    IsManifold.compatible_of_mem_maximalAtlas
-      (IsManifold.subset_maximalAtlas (chartedSpaceSelf_atlas.mpr rfl))
-      (symm_trans_trans_mem_maximalAtlas_of_contMDiffOn hphi hphi' hf hf')
-
 namespace MulAction
 
 variable {M : Type*} [TopologicalSpace M]

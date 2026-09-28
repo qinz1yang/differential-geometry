@@ -42,7 +42,7 @@ theorem IsPLBall.exists_outer_boundary_collar {D H U : Set Plane}
     rintro ⟨x, t⟩ ⟨hx, ht⟩
     exact Or.inl ⟨interior_subset (hHD hx), Or.inl ht⟩
   let qH := (fun x : Plane => (x, (0 : ℝ))) ∘ rH
-  have hqH : IsPLHomeomorphOn qH (stdSimplex ℝ (Fin 3)) H₀ :=
+  have hqH : IsPLHomeomorphOn qH (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) H₀ :=
     hrH.trans (hH.isPolyhedron.isPLHomeomorphOn_prod_const 0)
   have hqHJ : qH '' stdSimplexBoundary 2 = J ×ˢ ({0} : Set ℝ) := by
     rw [show qH = (fun x : Plane => (x, (0 : ℝ))) ∘ rH from rfl, image_comp,

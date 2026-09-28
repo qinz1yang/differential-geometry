@@ -57,6 +57,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 
+local instance : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
+
 variable {ι : Type*} [Fintype ι]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -228,6 +230,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
 
+local instance : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
+
 variable {ι : Type*} [Fintype ι]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
@@ -335,7 +339,9 @@ theorem maximalRegularityDuhamelVectorMap_timeDeriv_eq (hT : 0 < T)
       (ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
         tensorScaleLaplacian (I := I) (M := M) (g := g) (r := r) (s := s) a)).compLpL
           2 (timeMeasure T) (maximalRegularityDuhamelVectorField hT u₀ F) + F := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+  apply (Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a)
+    (timeMeasure T)).injective
   rw [map_add, Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
   change Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)
     ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm
@@ -368,7 +374,9 @@ theorem timeL2Inclusion_maximalRegularityDuhamelVectorField
         (show a + 1 ≤ a + 2 by linarith))).compLpL 2 (timeMeasure T)
           (maximalRegularityDuhamelVectorField hT u₀ F) =
         maximalRegularityDuhamelVectorFieldHa1 hT u₀ F := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+  apply (Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 1))
+    (timeMeasure T)).injective
   rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
   simp only [maximalRegularityDuhamelVectorField, maximalRegularityDuhamelVectorFieldHa1,
     LinearIsometryEquiv.apply_symm_apply]
@@ -421,13 +429,15 @@ end
 
 noncomputable section
 open MeasureTheory
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff ENNReal
 
 namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
 open DifferentialGeometry.Analysis.Parabolic.TimeSobolev
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity
+
+local instance : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
 
 variable {ι : Type*} [Fintype ι]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -437,25 +447,53 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
 
+local instance : NormedSpace ℝ
+    (Lp (TensorHs (I := I) (M := M) g r s a) 2 (timeMeasure T)) := by infer_instance
+local instance : NormedSpace ℝ
+    (Lp (TensorHs (I := I) (M := M) g r s (a + 2)) 2 (timeMeasure T)) := by infer_instance
+local instance : Module ℝ
+    (PiLp 2 (fun _ : ι => Lp (TensorHs (I := I) (M := M) g r s a) 2
+      (timeMeasure T))) := by infer_instance
+local instance : Module ℝ
+    (PiLp 2 (fun _ : ι => Lp (TensorHs (I := I) (M := M) g r s (a + 2)) 2
+      (timeMeasure T))) := by infer_instance
+
 def maximalRegularityVectorFieldL (a : ℝ) {T : ℝ} (hT : 0 ≤ T) :
     timeL2 (PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g r s a)) T →L[ℝ]
       timeL2 (PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))) T :=
-  (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm.toContinuousLinearEquiv.toContinuousLinearMap.comp
+  (Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))
+    (timeMeasure T)).symm.toContinuousLinearEquiv.toContinuousLinearMap.comp
     ((ContinuousLinearMap.piLpMap 2 (fun _ : ι => maximalRegularitySolutionFieldL a hT)).comp
-      (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).toContinuousLinearEquiv.toContinuousLinearMap)
+      (Lp.piLpEquiv (𝕜 := ℝ)
+        (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a)
+        (timeMeasure T)).toContinuousLinearEquiv.toContinuousLinearMap)
 
 theorem maximalRegularityVectorFieldL_eq_duhamel (hT : 0 < T)
     (F : timeL2 (PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g r s a)) T) :
     maximalRegularityVectorFieldL a hT.le F = maximalRegularityDuhamelVectorField hT
       (0 : PiLp 2 (fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))) F := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-  change Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)
-    ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm
+  apply (Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))
+    (timeMeasure T)).injective
+  change Lp.piLpEquiv (𝕜 := ℝ)
+      (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2)) (timeMeasure T)
+    ((Lp.piLpEquiv (𝕜 := ℝ)
+        (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))
+        (timeMeasure T)).symm
       (ContinuousLinearMap.piLpMap 2 (fun _ : ι => maximalRegularitySolutionFieldL a hT.le)
-        (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F))) =
-    Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm
+        (Lp.piLpEquiv (𝕜 := ℝ)
+          (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a)
+          (timeMeasure T) F))) =
+    Lp.piLpEquiv (𝕜 := ℝ)
+      (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2)) (timeMeasure T)
+      ((Lp.piLpEquiv (𝕜 := ℝ)
+          (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))
+          (timeMeasure T)).symm
       (maximalRegularityDuhamelSolutionFieldPi hT (fun _ : ι => 0)
-        (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F)))
+        (Lp.piLpEquiv (𝕜 := ℝ)
+          (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a)
+          (timeMeasure T) F)))
   rw [LinearIsometryEquiv.apply_symm_apply, LinearIsometryEquiv.apply_symm_apply]
   apply PiLp.ext
   intro i
@@ -499,7 +537,9 @@ theorem maximalRegularityDuhamelVectorField_toFunL2 (hT : 0 < T)
         (show a ≤ a + 2 by linarith))).compLpL 2 (timeMeasure T)
           (maximalRegularityDuhamelVectorField hT u₀ F) =
         (maximalRegularityDuhamelVectorMap hT u₀ F).toFunL2 := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
+  apply (Lp.piLpEquiv (𝕜 := ℝ)
+    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s a)
+    (timeMeasure T)).injective
   rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
   simp only [maximalRegularityDuhamelVectorField, maximalRegularityDuhamelVectorMap,
     timeH1.piLpEquiv_symm_toFunL2, LinearIsometryEquiv.apply_symm_apply]
@@ -517,12 +557,25 @@ open scoped Manifold ContDiff ENNReal
 namespace DifferentialGeometry.Analysis.Parabolic.QuasiLinear
 open TensorHeatEquation TensorSpectral TimeSobolev MaximalRegularity
 
+local instance : Fact (1 ≤ (2 : ℝ≥0∞)) := ⟨by norm_num⟩
+
 variable {ι : Type*} [Fintype ι]
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
   [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 variable {g : SmoothRiemannianMetric I M} {r s : ℕ} {a T : ℝ}
+
+local instance : NormedSpace ℝ
+    (Lp (TensorHs (I := I) (M := M) g r s a) 2 (timeMeasure T)) := by infer_instance
+local instance : NormedSpace ℝ
+    (Lp (TensorHs (I := I) (M := M) g r s (a + 2)) 2 (timeMeasure T)) := by infer_instance
+local instance : Module ℝ
+    (PiLp 2 (fun _ : ι => Lp (TensorHs (I := I) (M := M) g r s a) 2
+      (timeMeasure T))) := by infer_instance
+local instance : Module ℝ
+    (PiLp 2 (fun _ : ι => Lp (TensorHs (I := I) (M := M) g r s (a + 2)) 2
+      (timeMeasure T))) := by infer_instance
 
 theorem strongPair_eq_duhamel_vector (hT : 0 < T)
     (hc : IsCompactOperator (tensorResolventL2 (I := I) (M := M) g r s))
@@ -560,9 +613,14 @@ theorem strongPair_eq_duhamel_vector (hT : 0 < T)
       rw [map_add, Lp.piLpEquiv_compLpL] at h
       exact h
   constructor
-  · apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-    change _ = (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T))
-      ((Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).symm _)
+  · apply (Lp.piLpEquiv (𝕜 := ℝ)
+      (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))
+      (timeMeasure T)).injective
+    change _ = (Lp.piLpEquiv (𝕜 := ℝ)
+      (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2)) (timeMeasure T))
+      ((Lp.piLpEquiv (𝕜 := ℝ)
+        (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 2))
+        (timeMeasure T)).symm _)
     rw [LinearIsometryEquiv.apply_symm_apply]
     exact PiLp.ext fun i => (hparts i).1
   · apply timeH1.piLpEquiv.injective

@@ -4,6 +4,7 @@ import Mathlib.Analysis.Calculus.FDeriv.Symmetric
 import Mathlib.Analysis.Calculus.InverseFunctionTheorem.FDeriv
 import Mathlib.Analysis.Normed.Module.FiniteDimension
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.LinearAlgebra.Dual.Lemmas
 import Mathlib.Topology.DiscreteSubset
 
@@ -68,7 +69,7 @@ private theorem mfderiv_eq_chart_fderiv
   change (if MDifferentiableAt I 𝓘(ℝ, ℝ) f p then
     fderivWithin ℝ (writtenInExtChartAt I 𝓘(ℝ, ℝ) p f) (Set.range I) (extChartAt I p p)
     else (0 : E →L[ℝ] ℝ)) = _
-  rw [if_pos hf, I.range_eq_univ, fderivWithin_univ]
+  rw [ite_eq_left hf, I.range_eq_univ, fderivWithin_univ]
   rfl
 
 private theorem chart_fderiv_eq_zero_of_critical [IsManifold I 1 M]

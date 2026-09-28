@@ -328,13 +328,13 @@ private theorem seamImage_val (p : SelfAttachment.directSeamDomain) :
   · rw [show seamImage N endpoint chart hdisj s a hends b H hL hR p =
         leftFactorMap N endpoint chart hdisj s a hends b H hL
           (radialPoint N endpoint chart hdisj s false p.val.1 (1 + p.val.2)
-            ⟨by linarith,by linarith [p.property.2.2]⟩) from dif_pos ht]
+            ⟨by linarith,by linarith [p.property.2.2]⟩) from dite_eq_left ht]
     rw [leftFactorMap_val,ConnectedSumQuotient.collarMap_of_nonneg _ _ _ _ (by simpa only [hright] using ht)]
     congr 1
   · rw [show seamImage N endpoint chart hdisj s a hends b H hL hR p =
         rightFactorMap N endpoint chart hdisj s a hends b H hR
           (radialPoint N endpoint chart hdisj s true (a.1 p.val.1) (1 - p.val.2)
-            ⟨by linarith,by linarith [p.property.2.1]⟩) from dif_neg ht]
+            ⟨by linarith,by linarith [p.property.2.1]⟩) from dite_eq_right ht]
     rw [rightFactorMap_val,ConnectedSumQuotient.collarMap_of_neg _ _ _ _
       (by simpa only [hright] using lt_of_not_ge ht)]
     congr 1

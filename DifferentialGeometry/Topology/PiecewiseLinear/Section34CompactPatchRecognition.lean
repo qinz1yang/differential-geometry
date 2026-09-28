@@ -33,7 +33,7 @@ theorem exists_isPLHomeomorphOn_compactDualPatch_with_boundary
     let G := restrict (restrict K (section34CompactGraphSkeleton K)) S.space
     let I := {e : Finset E3 // e ∈ G.faces ∧ e.card = 2 ∧ x.1.2.1.centroid ℝ id ∈ e}
     ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (compactDualCutCell M K hKM (.patch x)) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (compactDualCutCell M K hKM (.patch x)) ∧
       q '' stdSimplexBoundary 2 = compactDualCutCell M K hKM (.patch x) ∩
         ((boundaryComplex 3 S).space ∪ ⋃ e : I,
           (splittingDisk M e.1 (hKM e.2.1.1.1)).space) := by
@@ -113,7 +113,7 @@ theorem exists_isPLHomeomorphOn_compactDualPatch_with_boundary
   have hpatchFree := hpatch.trans hfree
   obtain ⟨q, hq, hqb⟩ :=
     hS.exists_isPLHomeomorphOn_graphDualCell_boundary_remainder S G hGB hGcard hvG
-  have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+  have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (compactDualCutCell M K hKM (.patch x)) := hpatchFree.symm ▸ hq
   refine ⟨q, hq', ?_⟩
   have hB : @boundaryComplex E3 _ _ dNative 3 S = boundaryComplex 3 S :=

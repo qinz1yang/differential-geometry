@@ -486,11 +486,11 @@ theorem Section34CompactCutFrame.exists_isPLBall_of_tetra
       frontier R = A ∪ (tgtD sacd ∪ tgtD sabc ∪ tgtD sbcd ∪ tgtD sabd) ∪ Ω ∧
       A ⊆ frontier (section34CompactClawBall (section34CompactVertexBallImage src f₁) a b c d) ∧
       Ω ⊆ frontier (section34CompactClawBall (section34CompactVertexBallImage src f₁) d c a b) ∧
-      (∃ qA : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A ∧
+      (∃ qA : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
         ∀ k, tgtD (![sacd, sabc, sbcd, sabd] k) ∩
           section34CompactClawBall (section34CompactVertexBallImage src f₁) a b c d ⊆
             qA '' stdSimplexBoundary 2) ∧
-      (∃ qΩ : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qΩ (stdSimplex ℝ (Fin 3)) Ω ∧
+      (∃ qΩ : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qΩ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ω ∧
         ∀ k, tgtD (![sacd, sabc, sbcd, sabd] k) ∩
           section34CompactClawBall (section34CompactVertexBallImage src f₁) d c a b ⊆
             qΩ '' stdSimplexBoundary 2) ∧
@@ -531,12 +531,12 @@ theorem Section34CompactCutFrame.exists_isPLBall_of_tetra
       exact ⟨hz.1, hB hz.2⟩
     exact ⟨subset_closure hz.2, fun hzi => (hD4 s hzDb).2 (interior_mono hB hzi)⟩
   have hrHex : ∀ k, ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (section34CompactSplitDiskImage src f₁ (eH k)) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (section34CompactSplitDiskImage src f₁ (eH k)) ∧
         section34CompactSplitDiskImage srcBd f₁ (eH k) = q '' stdSimplexBoundary 2 := fun k =>
     (hcut.isPLCellOn_splitDiskImage hf₁ (eH k)).exists_isPLHomeomorphOn_stdSimplex
   choose rH hrH hrHb using hrHex
   have hqDex : ∀ k, ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (tgtD (F k)) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (tgtD (F k)) ∧
         tgtDBd (F k) = q '' stdSimplexBoundary 2 := fun k =>
     (hD1 (F k)).exists_isPLHomeomorphOn_stdSimplex
   choose qD hqD hqDb using hqDex

@@ -101,7 +101,7 @@ theorem rawBundleConnLap_eq_zero_of_eventually_zero
   classical
   by_cases hdim : Module.finrank ℝ E = 0
   · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := by
-      simpa [hdim] using (Fin.isEmpty : IsEmpty (Fin 0))
+      simp [hdim]
     simp [rawBundleConnLap]
   let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
   have cov_eq_zero_of_eqOn
@@ -161,7 +161,7 @@ theorem rawBundleConnLap_mem_of_isCovariantlyInvariant
   classical
   by_cases hdim : Module.finrank ℝ E = 0
   · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := by
-      simpa [hdim] using (Fin.isEmpty : IsEmpty (Fin 0))
+      simp [hdim]
     simp [rawBundleConnLap]
   let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
   rw [rawBundleConnLap_def]
@@ -212,7 +212,7 @@ theorem rawBundleEndomorphismConnLap_apply
   classical
   by_cases hdim : Module.finrank ℝ E = 0
   · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := by
-      simpa [hdim] using (Fin.isEmpty : IsEmpty (Fin 0))
+      simp [hdim]
     simp [rawBundleEndomorphismConnLap, rawBundleConnLap]
   let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
   let covHom := HomConnectionGen.homBundleCovariantDerivativeGen
@@ -317,7 +317,7 @@ theorem rawBundleEndomorphismConnLap_apply_eq_zero_of_isCovariantlyInvariant
     exact hAk y (w y) (hs y hy)
   by_cases hdim : Module.finrank ℝ E = 0
   · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := by
-      simpa [hdim] using (Fin.isEmpty : IsEmpty (Fin 0))
+      simp [hdim]
     simp [rawBundleEndomorphismConnLap, rawBundleConnLap]
   let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
   let Aw : Cₛ^∞⟮I; F, V⟯ :=

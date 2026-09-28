@@ -194,8 +194,7 @@ theorem isPiecewiseAffineOn_of_subsingleton [Subsingleton E] (f : E → F) (u : 
     fun _ => ⟨IsHPolytope.univ_of_subsingleton, fun y _ => ?_, fun y _ => ?_⟩, by
       rw [iUnion_const]
       exact univ_mem⟩
-  · rw [Subsingleton.elim y x]
-    assumption
+  · rwa [Subsingleton.elim y x]
   · rw [Subsingleton.elim y x]
     simp
 

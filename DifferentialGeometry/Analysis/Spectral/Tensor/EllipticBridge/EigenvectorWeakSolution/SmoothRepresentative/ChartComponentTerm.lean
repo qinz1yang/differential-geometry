@@ -56,12 +56,12 @@ private lemma raw_eigenvectorSmoothChart_eq_ite
         else 0) := by
   classical
   by_cases hxα : x ∈ (chartAt H α).source
-  · rw [if_pos hxα]
+  · rw [ite_eq_left hxα]
     exact tensorChartComponentRaw_eq_transitionCoeff_sum
       (E := E) (I := I) (M := M) g r s
       (eigenvectorSmoothChart (I := I) (M := M) g r s i α)
       α β P₀ ⟨hxα, hxβ⟩
-  · rw [if_neg hxα]
+  · rw [ite_eq_right hxα]
     exact tensorChartComponentRaw_eigenvectorSmoothChart_eq_zero_off_source
       (I := I) (M := M) g r s i α β P₀ hxα
 

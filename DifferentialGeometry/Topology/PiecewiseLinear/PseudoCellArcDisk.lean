@@ -72,7 +72,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_arc_eDisk_of_chart
     ∃ B ∈ Cs, ∃ (B₁ DB : Set E3) (γ₁ : ℝ → E3) (rB : (Fin 3 → ℝ) → E3),
       B ⊆ Ec e ∧ IsPLHomeomorphOn γ₁ (Icc 0 1) B₁ ∧
       ({γ₁ 0, γ₁ 1} : Set E3) = B ∩ frontier XK.space ∧ B₁ ⊆ frontier XK.space ∧
-      B ∩ B₁ = B ∩ frontier XK.space ∧ IsPLHomeomorphOn rB (stdSimplex ℝ (Fin 3)) DB ∧
+      B ∩ B₁ = B ∩ frontier XK.space ∧ IsPLHomeomorphOn rB (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) DB ∧
       rB '' stdSimplexBoundary 2 = B ∪ B₁ ∧ DB ⊆ Ec e ∧ DB ⊆ interior N' \ h '' K.space ∧
       DB ∩ frontier XK.space = B₁ ∧ DB ∩ Δ = B := by
   classical

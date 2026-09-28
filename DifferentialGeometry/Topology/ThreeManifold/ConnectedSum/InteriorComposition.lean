@@ -27,7 +27,7 @@ theorem isLocalDiffeomorphAt_inr_comp
   have hnb := hf.contMDiffAt.continuousAt.preimage_mem_nhds (d.interior.isOpen.mem_nhds hx)
   have hg : (fun y => (g y).val) =ᶠ[𝓝 x] (fun y => (f y).val) := by
     filter_upwards [hnb] with y hy
-    rw [show g y = ⟨(f y).val, hy⟩ from dif_pos hy]
+    rw [show g y = ⟨(f y).val, hy⟩ from dite_eq_left hy]
   have hgl : IsLocalDiffeomorphAt I (𝓡 3) ∞ g x :=
     DifferentialGeometry.isLocalDiffeomorphAt_subtypeCodRestrict (fun y => (g y).property)
       (IsLocalDiffeomorphAt.of_eventuallyEq hg hf)
@@ -37,7 +37,7 @@ theorem isLocalDiffeomorphAt_inr_comp
   filter_upwards [hnb] with y hy
   change ConnectedSumQuotient.inr c.toBallChart d.toBallChart a.val.toHomeomorph (f y) =
     ConnectedSumQuotient.interiorRight c.toBallChart d.toBallChart a.val (g y)
-  rw [show g y = ⟨(f y).val, hy⟩ from dif_pos hy]
+  rw [show g y = ⟨(f y).val, hy⟩ from dite_eq_left hy]
   rfl
 
 theorem isLocalDiffeomorphAt_inl_comp
@@ -52,7 +52,7 @@ theorem isLocalDiffeomorphAt_inl_comp
   have hnb := hf.contMDiffAt.continuousAt.preimage_mem_nhds (c.interior.isOpen.mem_nhds hx)
   have hg : (fun y => (g y).val) =ᶠ[𝓝 x] (fun y => (f y).val) := by
     filter_upwards [hnb] with y hy
-    rw [show g y = ⟨(f y).val, hy⟩ from dif_pos hy]
+    rw [show g y = ⟨(f y).val, hy⟩ from dite_eq_left hy]
   have hgl : IsLocalDiffeomorphAt I (𝓡 3) ∞ g x :=
     DifferentialGeometry.isLocalDiffeomorphAt_subtypeCodRestrict (fun y => (g y).property)
       (IsLocalDiffeomorphAt.of_eventuallyEq hg hf)
@@ -62,7 +62,7 @@ theorem isLocalDiffeomorphAt_inl_comp
   filter_upwards [hnb] with y hy
   change ConnectedSumQuotient.inl c.toBallChart d.toBallChart a.val.toHomeomorph (f y) =
     ConnectedSumQuotient.interiorLeft c.toBallChart d.toBallChart a.val (g y)
-  rw [show g y = ⟨(f y).val, hy⟩ from dif_pos hy]
+  rw [show g y = ⟨(f y).val, hy⟩ from dite_eq_left hy]
   rfl
 
 end DifferentialGeometry.Topology.SmoothConnectedSum

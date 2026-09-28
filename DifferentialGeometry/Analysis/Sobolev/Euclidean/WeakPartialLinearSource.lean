@@ -63,9 +63,9 @@ theorem ae_eq_weak_partial_linear_source
       (hφ.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply continuous_const
     have hdφc : HasCompactSupport dφ := hφc.fderiv_apply (𝕜 := ℝ) (0, EuclideanSpace.single k 1)
     have hI (i) : Integrable (fun p => C i p * V i p * dφ p) ν :=
-      ((Lp.memLp (V i)).mul (r := p) (hC i)).locallyIntegrable hp |>.integrable_smul_right_of_hasCompactSupport hdφ hdφc
+      ((hC i).mul (r := p) (Lp.memLp (V i))).locallyIntegrable hp |>.integrable_smul_right_of_hasCompactSupport hdφ hdφc
     have hI0 : Integrable (fun p => C0 p * U p * dφ p) ν :=
-      ((Lp.memLp U).mul (r := p) hC0).locallyIntegrable hp |>.integrable_smul_right_of_hasCompactSupport hdφ hdφc
+      (hC0.mul (r := p) (Lp.memLp U)).locallyIntegrable hp |>.integrable_smul_right_of_hasCompactSupport hdφ hdφc
     have hFI (i) : Integrable (fun p => Fi i p * φ p) ν :=
       (Lp.memLp (Fi i)).locallyIntegrable hp |>.integrable_smul_right_of_hasCompactSupport hφ.continuous hφc
     have hF0I : Integrable (fun p => F0 p * φ p) ν :=
@@ -101,10 +101,10 @@ theorem ae_eq_weak_partial_linear_source
           rw [integral_finsetSum _ (fun i _ => hFI i)]
     rw [hleft]
     have hFi' (i) := integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      (((Lp.memLp (V i)).mul (r := p) (hC i)).locallyIntegrable hp)
+      (((hC i).mul (r := p) (Lp.memLp (V i))).locallyIntegrable hp)
       ((Lp.memLp (Fi i)).locallyIntegrable hp) k (hFi i).2 φ hφ hφc hφs
     have hF0' := integral_fderiv_prod_eq_neg_of_hasWeakPartialDeriv
-      (((Lp.memLp U).mul (r := p) hC0).locallyIntegrable hp)
+      ((hC0.mul (r := p) (Lp.memLp U)).locallyIntegrable hp)
       ((Lp.memLp F0).locallyIntegrable hp) k hF0weak φ hφ hφc hφs
     have hFi'' (i) : (∫ p, C i p * V i p * dφ p ∂ν) =
         -∫ p, Fi i p * φ p ∂ν := by simpa [dφ] using hFi' i

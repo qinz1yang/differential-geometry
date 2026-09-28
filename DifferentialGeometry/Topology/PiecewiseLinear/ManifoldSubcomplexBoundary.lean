@@ -112,7 +112,7 @@ open Classical in
 theorem IsCombinatorialManifold.inter_closure_sdiff_eq_image_stdSimplexBoundary {n : ℕ}
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifold (n + 1) K) {D : Set E} {r : (Fin (n + 2) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) D) (hDK : D ⊆ K.space) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D) (hDK : D ⊆ K.space) :
     D ∩ closure (K.space \ D) = r '' stdSimplexBoundary (n + 1) := by
   classical
   have hD : IsPLBall (n + 1) D := ⟨r, hr⟩
@@ -120,7 +120,7 @@ theorem IsCombinatorialManifold.inter_closure_sdiff_eq_image_stdSimplexBoundary 
   let _ : Finite T.faces := hTfin.to_subtype
   let A := restrict T D
   let _ : Finite A.faces := (restrict_faces_finite T D).to_subtype
-  have hrA : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) A.space := hTD.symm ▸ hr
+  have hrA : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) A.space := hTD.symm ▸ hr
   have hA : IsPLBall (n + 1) A.space := ⟨r, hrA⟩
   have heq := inter_closure_sdiff_space_eq_boundaryComplex_of_isCombinatorialManifold T A
     (hK.of_isSubdivision hT) hA.isCombinatorialManifoldWithBoundary (restrict_faces_subset T D)

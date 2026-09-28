@@ -242,7 +242,7 @@ private theorem hamilton_ivey_of_complete_fixed_inner_product
         (if h : t ∈ Icc 0 T then covJ ⟨t, h⟩ else covJ ⟨0, le_rfl, hT.le⟩)
         (fun y => A t y) x +
         (curvatureOperatorReactionEndomorphism3 (A t x).toLinearMap).toContinuousLinearMap) _ _
-    rw [dif_pos htcc]
+    rw [dite_eq_left htcc]
     exact hPDEcov t ht x
   have hbound := hamilton_ivey_of_complete_endomorphism_evolution
     (I := I) (M := M) (F := ⋀[ℝ]^2 F) (V := fun x => ⋀[ℝ]^2 (V x))

@@ -290,22 +290,22 @@ theorem rfs_family_deformation_of_prepared_flow
     have hγproj : ∀ t ∈ Icc a b, ∀ z, γ t z = (solutions p).projection z t := by
       intro t ht z
       rw [hγ]
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       exact hproj ⟨t, ht⟩ p z
     have hγctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t) := by
       intro t ht
       rw [hγ]
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       exact (projected ⟨t, ht⟩ p).2
     have ha_mem : a ∈ Icc a b := ⟨le_rfl, B.lt.le⟩
     have hb_mem : b ∈ Icc a b := ⟨B.lt.le, le_rfl⟩
     have hγa0 : γ a = (prepared p).1.toContinuousLoop := by
       rw [hγ]
-      simp only [dif_pos ha_mem]
+      simp only [dite_eq_left ha_mem]
       rw [hat]
     have hγb0 : γ b = ((projected ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop := by
       rw [hγ]
-      simp only [dif_pos hb_mem]
+      simp only [dite_eq_left hb_mem]
     have hinit : loopFamilyLeastArea B.family.metric γ a ≤ Ainit := by
       have h1 : regularLeastArea (B.family.metric a) (prepared p) ≤ Ainit :=
         (hrampdata p lambda₀ hl₀pos hl₀one).2.2.2.2
@@ -440,22 +440,22 @@ theorem rfs_family_deformation_of_prepared_family
     have hγproj : ∀ t ∈ Icc a b, ∀ z, γ t z = (solutions p).projection z t := by
       intro t ht z
       rw [hγ]
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       exact hproj ⟨t, ht⟩ p z
     have hγctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t) := by
       intro t ht
       rw [hγ]
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       exact (projected ⟨t, ht⟩ p).2
     have ha_mem : a ∈ Icc a b := ⟨le_rfl, B.lt.le⟩
     have hb_mem : b ∈ Icc a b := ⟨B.lt.le, le_rfl⟩
     have hγa0 : γ a = (prepared p).1.toContinuousLoop := by
       rw [hγ]
-      simp only [dif_pos ha_mem]
+      simp only [dite_eq_left ha_mem]
       rw [hat]
     have hγb0 : γ b = ((projected ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop := by
       rw [hγ]
-      simp only [dif_pos hb_mem]
+      simp only [dite_eq_left hb_mem]
     have hinit : loopFamilyLeastArea B.family.metric γ a ≤ Ainit := by
       have h1 : regularLeastArea (B.family.metric a) (prepared p) ≤ Ainit :=
         (hrampdata p lambda₀ hl₀pos hl₀one).2.2.2.2
@@ -1049,22 +1049,22 @@ theorem rfs_family_deformation (B : RicciBackground (I := I) (M := Q) D a b)
     have hγproj : ∀ t ∈ Icc a b, ∀ z, γ t z = (solutions p).projection z t := by
       intro t ht z
       rw [hγ]
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       exact hproj ⟨t, ht⟩ p z
     have hγctr : ∀ t ∈ Icc a b, IsContractibleLoop (γ t) := by
       intro t ht
       rw [hγ]
-      simp only [dif_pos ht]
+      simp only [dite_eq_left ht]
       exact (projected ⟨t, ht⟩ p).2
     have ha_mem : a ∈ Icc a b := ⟨le_rfl, B.lt.le⟩
     have hb_mem : b ∈ Icc a b := ⟨B.lt.le, le_rfl⟩
     have hγa0 : γ a = (prepared p).1.toContinuousLoop := by
       rw [hγ]
-      simp only [dif_pos ha_mem]
+      simp only [dite_eq_left ha_mem]
       rw [hat]
     have hγb0 : γ b = ((projected ⟨b, B.lt.le, le_rfl⟩) p).1.toContinuousLoop := by
       rw [hγ]
-      simp only [dif_pos hb_mem]
+      simp only [dite_eq_left hb_mem]
     have hinit : loopFamilyLeastArea B.family.metric γ a ≤ Ainit := by
       have h1 : regularLeastArea (B.family.metric a) (prepared p) ≤ Ainit :=
         (hrampdata p lambda₀ hl₀pos hl₀one).2.2.2.2

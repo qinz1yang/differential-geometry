@@ -37,7 +37,7 @@ theorem chartGramOp_unit {D : RealTimeInterval}
       exact hK hp.2)
     isCompact_singleton
   let B : E →L[Real] E →L[Real] Real :=
-    chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
+    DifferentialGeometry.Tensor.Coordinates.chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
       ((extChartAt I alpha).symm p.2)
   have hco : IsCoercive B := by
     refine ⟨c, hc, ?_⟩
@@ -46,7 +46,7 @@ theorem chartGramOp_unit {D : RealTimeInterval}
     have heq : B v v =
         inner Real (chartGramOp (I := I) G alpha p v) v := by
       dsimp only [B]
-      rw [chartGramBilin_eq_innerJinv]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv]
       exact (chartGramOp_inner (I := I) G alpha p v v).symm
     rw [heq]
     simpa only [pow_two, mul_assoc] using hv
@@ -126,7 +126,7 @@ theorem chartGramOp_unit_of_carrier {D : RealTimeInterval}
       exact hK hp.2)
     isCompact_singleton
   let B : E →L[Real] E →L[Real] Real :=
-    chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
+    DifferentialGeometry.Tensor.Coordinates.chartGramBilin (E := E) (I := I) (M := M) (G.metric p.1) alpha
       ((extChartAt I alpha).symm p.2)
   have hco : IsCoercive B := by
     refine ⟨c, hc, ?_⟩
@@ -135,7 +135,7 @@ theorem chartGramOp_unit_of_carrier {D : RealTimeInterval}
     have heq : B v v =
         inner Real (chartGramOp (I := I) G alpha p v) v := by
       dsimp only [B]
-      rw [chartGramBilin_eq_innerJinv]
+      rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_eq_innerJinv]
       exact (chartGramOp_inner (I := I) G alpha p v v).symm
     rw [heq]
     simpa only [pow_two, mul_assoc] using hv

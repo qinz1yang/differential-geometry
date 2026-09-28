@@ -48,10 +48,10 @@ theorem isPreconnected_compl_iUnion_of_collar {X : Type*} [TopologicalSpace X] [
     have hidx : Classical.choose (mem_iUnion.mp hzU) = i := by
       by_contra hne
       exact (Set.disjoint_left.mp (hKdisj _ i hne) hspec) hz
-    simp only [g, dif_pos hzU, hidx]
+    simp only [g, dite_eq_left hzU, hidx]
   have hgCompl : ∀ z, z ∉ ⋃ i, K i → g z = f z := by
     intro z hz
-    simp only [g, dif_neg hz]
+    simp only [g, dite_eq_right hz]
   have hgcont : Continuous g := by
     rw [continuous_iff_continuousAt]
     intro z

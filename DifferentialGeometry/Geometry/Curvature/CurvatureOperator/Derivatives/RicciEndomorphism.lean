@@ -5,6 +5,12 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartT
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Parseval
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.FrameInvariance
+
+open DifferentialGeometry.TensorMetric
+  (tensor0SToTensorRS
+    tensorInnerPointwise
+    tensorInnerPointwise_add_left
+    tensorInnerPointwise_zero_left)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -141,7 +147,7 @@ private lemma riemannSec_smul_acted_smooth
     have hle : (2 : WithTop ℕ∞) ≤ ∞ := by
       have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h1
+      exact h1
     exact (hf x).of_le hle
   have hf_mdiff : MDifferentiable I 𝓘(ℝ, ℝ) f := hf.mdifferentiable (by simp)
   have hZ_mdiff : MDifferentiable I (I.prod 𝓘(ℝ, E)) (T% Z) := hZ.mdifferentiable (by simp)

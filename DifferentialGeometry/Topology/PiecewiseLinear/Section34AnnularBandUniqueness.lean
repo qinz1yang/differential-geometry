@@ -159,10 +159,10 @@ theorem IsPLSphere.image_lateral_eq_of_same_ends {E : Type*} [NormedAddCommGroup
     (hJK : Disjoint J K) (hJend : Disjoint J (A₀ ∪ A₁))
     (hKend : Disjoint K (A₀ ∪ A₁))
     (hJess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J)
     (hKess : ¬ ∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = K)
     {f g : (Fin 3 → ℝ) × ℝ → E}
     (hf : ContinuousOn f (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1))
@@ -250,7 +250,7 @@ theorem IsPLCellOn.image_lateral_eq_of_same_ends {M : Type*}
       (hXess : ¬ ∃ D : Set M, IsPLCellOn 2 D X ∧ D ⊆ A) :
       ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
         (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
           q '' stdSimplexBoundary 2 = τ '' X := by
     rintro ⟨D, q, hq, hDA, hqb⟩
     have hDP := (hDA.trans hA'S).trans hfront

@@ -461,7 +461,7 @@ theorem exists_uniform_selected_neck_append_backward_flow_of_initialIdentificati
       0 < ηstar ∧ 0 < Qmin ∧
     ∀ (p₀ : CutoffParameters), p₀.modelRadius = Dbig →
       ⌈tol⁻¹⌉₊ + 2 ≤ p₀.modelOrder → p₀.modelAccuracy ≤ ε₀ →
-    ∀ (H : RetainedCoreHistory P), InitialIdentification P g H.toHistory →
+    ∀ (H : RetainedCoreHistory.{u}), InitialIdentification P g H.toHistory →
     ∀ ρ : ℝ, H.hasCanonicalCutoffRecords p₀ δ₀ ρ →
     ∀ (s : ℝ) (Qstage : OrientedThreeStage.{u})
       (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Qstage

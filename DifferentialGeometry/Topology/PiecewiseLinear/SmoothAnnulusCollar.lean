@@ -86,13 +86,13 @@ theorem exists_twoHandleCollar_of_isSmoothEmbedding
   have hg : ∀ x, g (fB x) = x := by
     intro x
     have hΦx : Φ x = ⟨fB x, hfBV x⟩ := Subtype.ext (hΦ x)
-    simp only [g, dif_pos (hfBV x), ← hΦx, Diffeomorph.symm_apply_apply]
+    simp only [g, dite_eq_left (hfBV x), ← hΦx, Diffeomorph.symm_apply_apply]
   have hgs : ∀ b ∈ Vb, ContMDiffAt (HasSmoothBoundary.boundaryI (I := 𝓡∂ 3))
       ((𝓡 1).prod 𝓘(ℝ, ℝ)) ∞ g b := by
     intro b hb
     have hres : (fun x : Vb => g x) = Φ.symm := by
       funext x
-      simp only [g, dif_pos x.2]
+      simp only [g, dite_eq_left x.2]
     have h := Φ.symm.contMDiff ⟨b, hb⟩
     rw [← hres] at h
     exact contMDiffAt_subtype_iff.mp h
@@ -136,7 +136,7 @@ theorem exists_twoHandleCollar_of_isSmoothEmbedding
   have hθc : ∀ q : B × Icc (0 : ℝ) a₀, (q.2 : ℝ) < a₀ → θ (c q) = F q := by
     intro q hq
     obtain ⟨hY, hsymm⟩ := hcU q hq
-    simp only [θ, dif_pos hY, hsymm]
+    simp only [θ, dite_eq_left hY, hsymm]
   have hproj : ∀ p : EuclideanSpace ℝ (Fin 2) × ℝ, 1 ≤ ‖p.1‖ → ‖p.1‖ < 1 + a →
       (projIcc 0 a₀ ha₀.le (‖p.1‖ - 1) : ℝ) = ‖p.1‖ - 1 := by
     intro p h1 h2
@@ -241,7 +241,7 @@ theorem exists_twoHandleCollar_of_isSmoothEmbedding
     apply ContMDiffAt.contMDiffWithinAt
     have hres : (fun x : Y => θ x) = F ∘ Subtype.val ∘ dc.symm := by
       funext x
-      simp only [θ, dif_pos x.2, Function.comp_apply]
+      simp only [θ, dite_eq_left x.2, Function.comp_apply]
     have h : ContMDiffAt (𝓡∂ 3) 𝓘(ℝ, EuclideanSpace ℝ (Fin 2) × ℝ) ∞ (fun x : Y => θ x)
         ⟨c q, hY⟩ := by
       rw [hres]

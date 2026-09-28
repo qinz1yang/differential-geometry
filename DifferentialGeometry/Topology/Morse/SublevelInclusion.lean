@@ -115,7 +115,7 @@ theorem contMDiff_manifoldSublevelInclusion [I.Boundaryless] [IsManifold I (↑(
     · change (if h : f x.1 = a then manifoldSublevelBoundaryChart I f a x h hf hreg
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) = _
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
       rfl
     · exact contDiffOn_sublevelBoundaryChart_symm_val g a p hp hg hr
   · have hlt : f x.1 < a := lt_of_le_of_ne x.2 hx
@@ -125,7 +125,7 @@ theorem contMDiff_manifoldSublevelInclusion [I.Boundaryless] [IsManifold I (↑(
     · change (if h : f x.1 = a then manifoldSublevelBoundaryChart I f a x h hf hreg
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) = _
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
       rfl
     · exact contDiffOn_sublevelInteriorChart_symm_val g a p hp hg
 
@@ -215,7 +215,7 @@ theorem mfderiv_manifoldSublevelInclusion_injective [I.Boundaryless]
     · change (if h : f x.1 = a then manifoldSublevelBoundaryChart I f a x h hf hreg
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) = _
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
       rfl
     · intro y _
       exact sublevelBoundaryChart_apply_value g a p hp hg hr y
@@ -228,7 +228,7 @@ theorem mfderiv_manifoldSublevelInclusion_injective [I.Boundaryless]
     · change (if h : f x.1 = a then manifoldSublevelBoundaryChart I f a x h hf hreg
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) = _
-      rw [dif_neg hx]
+      rw [dite_eq_right hx]
       rfl
     · intro y hy
       exact sublevelInteriorChart_apply_value g a p hp hg y hy

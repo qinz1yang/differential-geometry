@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 open Classical in
 theorem IsPLHomeomorphOn.isPathConnected_sdiff_of_isPLBall_subset_openSimplex
     {P D : Set E} {p : (Fin 3 → ℝ) → E}
-    (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) P)
+    (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hD : IsPLBall 2 D) (hDP : D ⊆ p '' openSimplex (stdVertices 1)) :
     IsPathConnected (P \ D) := by
   classical
@@ -110,8 +110,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {C Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
@@ -124,7 +124,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
       B.faces.Finite ∧ IsPLBall 3 N ∧ IsPLBall 3 B.space ∧
       Δ ⊆ N ∧ N ⊆ K.space ∧ N ⊆ U ∧
       (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N) ∧
       D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
       A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
       IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧
@@ -134,7 +134,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
       C ∩ B.space = (D₂ ∩ N) ∪ A₁ ∧
       C' ∩ B.space = (D₂ ∩ N) ∪ Δ₁ ∧
       C' \ B.space = C \ B.space ∧
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) (D₁ ∩ N) ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ ∩ N) ∧
       D₁ ∩ B.space = D₁ ∩ N ∧
        q₁ '' stdSimplexBoundary 2 ⊆ (boundaryComplex 3 B).space ∧
        Disjoint (q₁ '' stdSimplexBoundary 2) (D₂ ∩ N) ∧
@@ -237,7 +237,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
     refine ⟨hr₁.bijOn.mapsTo (simplexBoundary_stdVertices_space_subset 1 hy'), ?_⟩
     intro hxinner
     exact disjoint_left.mp hNJ₁ hxinner.2 ⟨y, hy, rfl⟩
-  have hq₁inner : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) (D₁ ∩ N.space) := by
+  have hq₁inner : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ ∩ N.space) := by
     rwa [hQ₁space]
   have hΔopenQ₁ : Δ ⊆ q₁ '' openSimplex (stdVertices 1) := by
     rw [hq₁.image_openSimplex_stdVertices,
@@ -262,7 +262,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
     rw [hq₁.image_openSimplex_stdVertices] at hxopen
     exact hxopen.2 hxboundary
   let T := Q₁.space \ Δ
-  let P := stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1
+  let P := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1
   let θ := Function.invFunOn ρ P
   have hTN : T ⊆ N.space := sdiff_subset.trans hQ₁N
   have hθconn : IsConnected (θ '' T) :=
@@ -300,7 +300,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
       have hyN : y ∈ N.space := hTN hyT
       have hzP : θ y ∈ P := hρ.bijOn.surjOn.mapsTo_invFunOn hyN
       have hneg' : (θ y).2 < 0 := hneg ⟨θ y, ⟨y, hyT, rfl⟩, rfl⟩
-      have hzhalf : θ y ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0 :=
+      have hzhalf : θ y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0 :=
         ⟨hzP.1, hzP.2.1, hneg'.le⟩
       rw [← hρ₀]
       exact ⟨θ y, hzhalf, hρ.bijOn.invOn_invFunOn.2 hyN⟩
@@ -309,7 +309,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
       have hyN : y ∈ N.space := hTN hyT
       have hzP : θ y ∈ P := hρ.bijOn.surjOn.mapsTo_invFunOn hyN
       have hpos' : 0 < (θ y).2 := hpos ⟨θ y, ⟨y, hyT, rfl⟩, rfl⟩
-      have hzhalf : θ y ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 :=
+      have hzhalf : θ y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 :=
         ⟨hzP.1, hpos'.le, hzP.2.2⟩
       rw [← hρ₁]
       exact ⟨θ y, hzhalf, hρ.bijOn.invOn_invFunOn.2 hyN⟩
@@ -345,7 +345,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
         B'.faces.Finite ∧ IsPLBall 3 N' ∧ IsPLBall 3 B'.space ∧
         Δ ⊆ N' ∧ N' ⊆ K.space ∧ N' ⊆ U ∧
         (∀ x ∈ Δ, N' ∈ 𝓝[K.space] x) ∧ B'.space ⊆ N' ∧
-        IsPLHomeomorphOn g' (stdSimplex ℝ (Fin 3)) (D₂ ∩ N') ∧
+        IsPLHomeomorphOn g' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N') ∧
         D₂ ∩ N' ⊆ (boundaryComplex 3 B').space ∧
         A₁' = N' ∩ closure (D₁ \ Δ) ∧ A₁' ⊆ B'.space ∧
         IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B').space ∧
@@ -355,7 +355,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
         C ∩ B'.space = (D₂ ∩ N') ∪ A₁' ∧
         C' ∩ B'.space = (D₂ ∩ N') ∪ Δ₁ ∧
         C' \ B'.space = C \ B'.space ∧
-        IsPLHomeomorphOn q₁' (stdSimplex ℝ (Fin 3)) (D₁ ∩ N') ∧
+        IsPLHomeomorphOn q₁' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ ∩ N') ∧
         D₁ ∩ B'.space = D₁ ∩ N' ∧
         q₁' '' stdSimplexBoundary 2 ⊆ (boundaryComplex 3 B').space ∧
          Disjoint (q₁' '' stdSimplexBoundary 2) (D₂ ∩ N') ∧
@@ -479,8 +479,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {C Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
@@ -493,7 +493,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
       B.faces.Finite ∧ IsPLBall 3 N ∧ IsPLBall 3 B.space ∧
       Δ ⊆ N ∧ N ⊆ K.space ∧ N ⊆ U ∧
       (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N) ∧
       D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
       A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
       IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧
@@ -503,7 +503,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces_wi
       C ∩ B.space = (D₂ ∩ N) ∪ A₁ ∧
       C' ∩ B.space = (D₂ ∩ N) ∪ Δ₁ ∧
       C' \ B.space = C \ B.space ∧
-      IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) (D₁ ∩ N) ∧
+      IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ ∩ N) ∧
       D₁ ∩ B.space = D₁ ∩ N ∧
       q₁ '' stdSimplexBoundary 2 ⊆ (boundaryComplex 3 B).space ∧
       Disjoint (q₁ '' stdSimplexBoundary 2) (D₂ ∩ N) ∧
@@ -526,8 +526,8 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {C Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
@@ -540,7 +540,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_split_local_traces
       B.faces.Finite ∧ IsPLBall 3 N ∧ IsPLBall 3 B.space ∧
       Δ ⊆ N ∧ N ⊆ K.space ∧ N ⊆ U ∧
       (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N) ∧
       D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
       A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
       IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧
@@ -565,8 +565,8 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
     (hK : IsCombinatorialManifold 3 K) {C Δ D₁ D₂ U : Set E}
     (hΔ : IsPLBall 2 Δ)
     {r₁ r₂ : (Fin 3 → ℝ) → E}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
-    (hr₂ : IsPLHomeomorphOn r₂ (stdSimplex ℝ (Fin 3)) D₂)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
+    (hr₂ : IsPLHomeomorphOn r₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂)
     (hΔintD₁ : Δ ⊆ r₁ '' openSimplex (stdVertices 1))
     (hΔintD₂ : Δ ⊆ r₂ '' openSimplex (stdVertices 1))
     (hΔD₁ : Δ ⊆ D₁) (hΔD₂ : Δ ⊆ D₂) (hD₁D₂ : D₁ ∩ D₂ = Δ)
@@ -578,7 +578,7 @@ theorem IsCombinatorialManifold.exists_surface_split_local_traces
       B.faces.Finite ∧ IsPLBall 3 N ∧ IsPLBall 3 B.space ∧
       Δ ⊆ N ∧ N ⊆ K.space ∧ N ⊆ U ∧
       (∀ x ∈ Δ, N ∈ 𝓝[K.space] x) ∧ B.space ⊆ N ∧
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (D₂ ∩ N) ∧
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₂ ∩ N) ∧
       D₂ ∩ N ⊆ (boundaryComplex 3 B).space ∧
       A₁ = N ∩ closure (D₁ \ Δ) ∧ A₁ ⊆ B.space ∧
       IsPLBall 2 Δ₁ ∧ Δ₁ ⊆ (boundaryComplex 3 B).space ∧

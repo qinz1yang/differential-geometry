@@ -21,7 +21,7 @@ theorem IsCombinatorialManifold.exists_isPLHomeomorphOn_disk_of_not_isPreconnect
     (hconn : IsConnected K.space) (hor : IsOrientable 2 K) (hχ : 0 ≤ eulerChar K)
     {J : Set E} (hJ : IsPLSphere 1 J) (hJK : J ⊆ K.space)
     (hsep : ¬ IsPreconnected (K.space \ J)) :
-    ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E), IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+    ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E), IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
       Δ ⊆ K.space ∧ J = r '' stdSimplexBoundary 2 := by
   obtain ⟨A, B, hAfin, hBfin, hA, hB, hAo, hBo, hAc, hBc, hcover, hmeet, hAbd, hBbd, -⟩ :=
     hK.exists_manifold_pair_of_separating_circle K hor hconn.isPreconnected hJ hJK hsep
@@ -37,7 +37,7 @@ theorem IsCombinatorialManifold.exists_isPLHomeomorphOn_disk_of_not_isPreconnect
       (hM : IsCombinatorialManifoldWithBoundary 2 M) (hMc : IsConnected M.space)
       (hMbd : (boundaryComplex 2 M).space = J) (hMK : M.space ⊆ K.space)
       (hM1 : eulerChar M = 1) :
-      ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E), IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+      ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E), IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
         Δ ⊆ K.space ∧ J = r '' stdSimplexBoundary 2 := by
     obtain ⟨r, hr, hrJ⟩ := hM.exists_isPLHomeomorphOn_of_eulerChar_eq_one M hMc hJ hMbd hM1
     exact ⟨M.space, r, hr, hMK, hrJ.symm⟩
@@ -49,7 +49,7 @@ theorem IsPLTorus.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff
     {T G : Set (EuclideanSpace ℝ (Fin 3))} (hT : IsPLTorus T) (hG : IsPLSphere 1 G)
     (hGT : G ⊆ T) (hsep : ¬ IsPreconnected (T \ G)) :
     ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧ G = r '' stdSimplexBoundary 2 := by
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧ G = r '' stdSimplexBoundary 2 := by
   obtain ⟨L, hLfin, hL, hLc, hLT⟩ := hT.exists_combinatorial_triangulation
   let _ : Finite L.faces := hLfin.to_subtype
   have hLo := hL.isOrientable_euclidean_three L hLc

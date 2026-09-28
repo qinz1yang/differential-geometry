@@ -19,7 +19,7 @@ theorem exists_derivedNeighborhood_maximal_attachment
     {s : Finset E} (hs : s ∈ K.faces) (hmax : ∀ t ∈ K.faces, s ⊆ t → s = t)
     (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
-    let D := stdSimplex ℝ (Fin (n + 3))
+    let D := Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3))
     let A : Set D := {z | z.val ∈ stdSimplexBoundary (n + 2)}
     let N := derivedNeighborhood K L
     IsCombinatorialManifoldWithBoundary (n + 2) N ∧
@@ -36,7 +36,7 @@ theorem exists_derivedNeighborhood_maximal_attachment
             ∀ z, (e (adjunctionCell Subtype.val φ z) : E) = g z.val := by
   classical
   dsimp only
-  let D := stdSimplex ℝ (Fin (n + 3))
+  let D := Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 3))
   let A : Set D := {z | z.val ∈ stdSimplexBoundary (n + 2)}
   obtain ⟨g, hg, hgs⟩ := exists_isPLHomeomorphOn_derivedNeighborhoodCell_maximal
     K L hK hLK hs hmax hsL hproper
@@ -57,7 +57,7 @@ theorem exists_derivedNeighborhood_tetrahedron_attachment
     (hK : IsCombinatorialManifold 3 K) (hLK : L.faces ⊆ K.faces)
     {s : Finset E} (hs : s ∈ K.faces) (hcard : s.card = 4) (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
-    let D := stdSimplex ℝ (Fin 4)
+    let D := Convexity.StdSimplex.coordinateSet ℝ (Fin 4)
     let A : Set D := {z | z.val ∈ stdSimplexBoundary 3}
     let N := derivedNeighborhood K L
     IsCombinatorialManifoldWithBoundary 3 N ∧

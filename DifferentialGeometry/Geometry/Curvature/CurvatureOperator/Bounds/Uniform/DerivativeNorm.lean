@@ -935,7 +935,7 @@ theorem exists_continuous_nablaCurvSec_frameSum_gNorm_envelope
           (smoothOrthoFrame_smooth (I := I) g x i)) x) = 1 := by
     intro i
     have := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     simpa using this
   have hBaon :
       g.inner x ((ContMDiffSection.mk (smoothOrthoFrame (I := I) g x a)
@@ -943,7 +943,7 @@ theorem exists_continuous_nablaCurvSec_frameSum_gNorm_envelope
         ((ContMDiffSection.mk (smoothOrthoFrame (I := I) g x a)
           (smoothOrthoFrame_smooth (I := I) g x a)) x) = 1 := by
     have := smoothOrthoFrame_orthonormal_at_center (I := I) g x a a
-    rw [if_pos rfl] at this
+    rw [ite_eq_left rfl] at this
     simpa using this
   have hpt := nablaBaseSlotCurv_frameSum_normSq_le_chartConstants_mul_normSq_u (I := I) g α hx_base
     hx_good

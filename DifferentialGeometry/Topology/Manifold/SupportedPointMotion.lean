@@ -80,7 +80,7 @@ theorem exists_supported_diffeomorph_apply_eq_of_mem_nhds
   refine ⟨J 1, e.symm '' Metric.closedBall (e x) R, hKc, ?_, hJo, ?_, hJfix 1⟩
   · rintro y ⟨q, hq, rfl⟩
     exact (hRsub hq).2
-  · rw [(hJe 1 x).1, Manifold.extendChartById, if_pos hxsrc, hD, e.left_inv hz.1]
+  · rw [(hJe 1 x).1, Manifold.extendChartById, ite_eq_left hxsrc, hD, e.left_inv hz.1]
 
 theorem exists_supported_diffeomorph_apply_eq_of_isPreconnected
     (o : ManifoldOrientation (𝓡 3) M 3) (U : Set M) (hU : IsOpen U) (hc : IsPreconnected U)

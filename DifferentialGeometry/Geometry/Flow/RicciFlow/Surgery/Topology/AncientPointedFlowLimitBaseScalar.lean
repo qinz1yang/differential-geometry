@@ -69,7 +69,7 @@ theorem metricScalarAt_basepoint_eq_of_local_flow_limit
     filter_upwards [eventually_ge_atTop j₀] with i hi
     obtain ⟨hNi, hbound⟩ := hj₀ i hi
     have hg : g i = localPullMetric (h 0 (f (ψ i)) 0) (φ 0 (ψ i) hNi) (hφ 0 (ψ i) hNi) :=
-      dif_pos hNi
+      dite_eq_left hNi
     rw [hg]
     exact hbound 0 ⟨by norm_num, le_rfl⟩
   have hlim := tendsto_metricScalarAt_of_metricDerivNormSupOn hconv'
@@ -82,7 +82,7 @@ theorem metricScalarAt_basepoint_eq_of_local_flow_limit
     filter_upwards [(hf.comp hψ).tendsto_atTop.eventually (hW0 0),
       hψ.tendsto_atTop.eventually_ge_atTop (N 0)] with i hW hNi
     have hg : g i = localPullMetric (h 0 (f (ψ i)) 0) (φ 0 (ψ i) hNi) (hφ 0 (ψ i) hNi) :=
-      dif_pos hNi
+      dite_eq_left hNi
     have hW' : ∀ z : W 0 (f (ψ i)),
         metricScalarAt (h 0 (f (ψ i)) 0) z = metricScalarAt (X.obj (f (ψ i))).metric z := hW
     have hb : F.map (ψ i) (x₀ : P.M) = (X.obj (f (ψ i))).basepoint := F.basepoint_map (ψ i)

@@ -151,7 +151,7 @@ theorem isHPolytope_convexHull_of_affineIndependent [FiniteDimensional ℝ E] (s
     (hs : AffineIndependent ℝ ((↑) : s → E)) : IsHPolytope (convexHull ℝ (s : Set E)) := by
   classical
   obtain ⟨t, hst, hti, htop⟩ := exists_subset_affineIndependent_affineSpan_eq_top hs
-  have htf : t.Finite := finite_set_of_fin_dim_affineIndependent ℝ hti
+  have htf : t.Finite := (finiteDimensional_iff_setFinite ℝ hti).mp inferInstance
   have : Finite t := htf.to_subtype
   let : Fintype t := Fintype.ofFinite t
   obtain ⟨m, ⟨e⟩⟩ := Finite.exists_equiv_fin t
@@ -182,11 +182,11 @@ theorem isHPolytope_convexHull_of_affineIndependent [FiniteDimensional ℝ E] (s
       rw [hcoord] at this
       linarith
     · by_cases hj : ((e.symm j : t) : E) ∈ s
-      · rw [if_pos hj, if_pos hj]
+      · rw [ite_eq_left hj, ite_eq_left hj]
         simp
       · have := hS (e.symm j) (fun h => hj ((hmemS _).mp h))
         rw [hcoord] at this
-        rw [if_neg hj, if_neg hj]
+        rw [ite_eq_right hj, ite_eq_right hj]
         linarith
   · rintro ⟨h1, h2⟩
     refine ⟨fun i => ?_, fun i hi => ?_⟩
@@ -196,7 +196,7 @@ theorem isHPolytope_convexHull_of_affineIndependent [FiniteDimensional ℝ E] (s
       linarith
     · have hi' : (i : E) ∉ s := fun h => hi ((hmemS i).mpr h)
       have h2i := h2 (e i)
-      rw [Equiv.symm_apply_apply, if_neg hi', if_neg hi'] at h2i
+      rw [Equiv.symm_apply_apply, ite_eq_right hi', ite_eq_right hi'] at h2i
       have h1i := h1 (e i)
       rw [Equiv.symm_apply_apply] at h1i
       rw [hcoord]

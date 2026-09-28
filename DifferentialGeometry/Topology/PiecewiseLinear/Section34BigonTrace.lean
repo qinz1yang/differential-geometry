@@ -188,7 +188,7 @@ theorem exists_section34BigonTraceArc (hh : IsEmbedding (U.domRestrict h))
     (hTc : section34FaceTorus (section34VertexBallImage src f₁) s ⊆ c.source)
     (hDc : Dj ⊆ c.source) {V : Set E3} (hV : IsOpen V) (hDV : c '' Dj ⊆ V) :
     ∃ (A : Set E3) (q : (Fin 2 → ℝ) → E3) (O : Set E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
       A ⊆ (c '' (fblBd s ∩ frontier (⋃ w, section34VertexBallImage src f₁ w))) ∩ V ∧
       (c '' Dj) ∩ A = c '' B ∧ Disjoint (c '' Dj) (q '' stdSimplexBoundary 1) ∧
       IsOpen O ∧ c '' Dj ⊆ O ∧ O ⊆ V ∧
@@ -274,7 +274,7 @@ theorem exists_section34BigonSplittingArc
     (hEc : section34SplitDiskImage src f₁ e ⊆ c.source) (hDc : Dj ⊆ c.source)
     {V : Set E3} (hV : IsOpen V) (hDV : c '' Dj ⊆ V) :
     ∃ (A : Set E3) (q : (Fin 2 → ℝ) → E3) (O : Set E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
       A ⊆ (c '' section34SplitDiskImage srcBd f₁ e) ∩ V ∧
       (c '' Dj) ∩ A = c '' B' ∧ Disjoint (c '' Dj) (q '' stdSimplexBoundary 1) ∧
       IsOpen O ∧ c '' Dj ⊆ O ∧ O ⊆ V ∧

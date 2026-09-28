@@ -8,6 +8,7 @@ import DifferentialGeometry.Topology.Category.TopCat.ClosedCover
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Simplicial Opposite
+open Convexity.StdSimplex (coordinateHomeomorph)
 
 namespace DifferentialGeometry.Topology.SimplicialComplex
 
@@ -19,16 +20,18 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
 def orderedFaceRealizationHomeomorph :
     SSet.toTop.obj (Δ[n] : SSet.{u}) ≃ₜ convexHull ℝ (s : Set E) :=
   (SimplexCategory.toTopHomeo ⦋n⦌).trans
-    ((DifferentialGeometry.Simplex.reindexHomeomorph (s.orderIsoOfFin hn).toEquiv).trans
-      (geometricFaceHomeomorphism K hs))
+    ((coordinateHomeomorph ℝ (Fin (n + 1))).trans
+      ((DifferentialGeometry.Simplex.reindexHomeomorph (s.orderIsoOfFin hn).toEquiv).trans
+        (geometricFaceHomeomorphism K hs)))
 
 
 @[simp]
 theorem orderedFaceRealizationHomeomorph_apply (x : SSet.toTop.obj (Δ[n] : SSet.{u})) :
     (orderedFaceRealizationHomeomorph K s hs hn x : E) =
-      ∑ i, (SimplexCategory.toTopHomeo ⦋n⦌ x).val i • (s.orderEmbOfFin hn) i := by
+      ∑ i, (SimplexCategory.toTopHomeo ⦋n⦌ x).weights i • (s.orderEmbOfFin hn) i := by
   exact DifferentialGeometry.Simplex.vertexMap_reindex (s.orderIsoOfFin hn).toEquiv
-    (fun i : s ↦ (i : E)) (SimplexCategory.toTopHomeo ⦋n⦌ x)
+    (fun i : s ↦ (i : E))
+    (coordinateHomeomorph ℝ (Fin (n + 1)) (SimplexCategory.toTopHomeo ⦋n⦌ x))
 
 theorem orderedFaceCellMap_geometricRealizationMap_apply
     (x : SSet.toTop.obj (Δ[n] : SSet.{u})) :
@@ -36,7 +39,7 @@ theorem orderedFaceCellMap_geometricRealizationMap_apply
         (SSet.toTop.map (orderedFaceCellMap K.toPreAbstractSimplicialComplex s hs hn) x) =
       geometricSimplexMap K
         (orderedSimplexOfFace K.toPreAbstractSimplicialComplex s hs hn).val
-        (SimplexCategory.toTopHomeo ⦋n⦌ x) := by
+        (coordinateHomeomorph ℝ (Fin (n + 1)) (SimplexCategory.toTopHomeo ⦋n⦌ x)) := by
   let a := (orderedSimplexOfFace K.toPreAbstractSimplicialComplex s hs hn).val
   have hu : (TopCat.toSSetObjEquiv _ (op ⦋n⦌))
       ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app _ a)
@@ -50,7 +53,9 @@ theorem orderedFaceCellMap_geometricRealizationMap_apply
       ((SimplexCategory.toTopHomeo ⦋n⦌).symm (SimplexCategory.toTopHomeo ⦋n⦌ x)) = _
     rw [Homeomorph.symm_apply_apply]
   rw [← hu]
-  exact geometricRealizationMap_unit_apply K a _
+  simpa only [Homeomorph.symm_apply_apply] using
+    geometricRealizationMap_unit_apply K a
+      (coordinateHomeomorph ℝ (Fin (n + 1)) (SimplexCategory.toTopHomeo ⦋n⦌ x))
 
 @[reassoc]
 theorem orderedFaceCellMap_geometricRealizationMap :
@@ -72,10 +77,12 @@ theorem orderedFaceCellMap_geometricRealizationMap :
 theorem orderedFaceRealizationHomeomorph_mem_costar_iff
     (x : SSet.toTop.obj (Δ[n] : SSet.{u})) :
     (orderedFaceRealizationHomeomorph K s hs hn x : E) ∈ (geometricFaceCostar K s).space ↔
-      SimplexCategory.toTopHomeo ⦋n⦌ x ∈ DifferentialGeometry.Simplex.boundary (Fin (n + 1)) := by
+      coordinateHomeomorph ℝ (Fin (n + 1)) (SimplexCategory.toTopHomeo ⦋n⦌ x) ∈
+        DifferentialGeometry.Simplex.boundary (Fin (n + 1)) := by
   change DifferentialGeometry.Simplex.vertexMap (fun i : s ↦ (i : E))
     (DifferentialGeometry.Simplex.reindexHomeomorph (s.orderIsoOfFin hn).toEquiv
-      (SimplexCategory.toTopHomeo ⦋n⦌ x)) ∈ (geometricFaceCostar K s).space ↔ _
+      (coordinateHomeomorph ℝ (Fin (n + 1)) (SimplexCategory.toTopHomeo ⦋n⦌ x))) ∈
+        (geometricFaceCostar K s).space ↔ _
   rw [vertexMap_mem_geometricFaceCostar_iff K hs,
     DifferentialGeometry.Simplex.reindexHomeomorph_mem_boundary]
 

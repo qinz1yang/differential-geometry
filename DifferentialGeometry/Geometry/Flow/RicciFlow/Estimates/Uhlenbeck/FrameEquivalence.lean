@@ -114,7 +114,7 @@ theorem exists_uhlenbeck_isometry_eq_endomorphism_on_Icc
   have hU (t : ℝ) (ht : t ∈ Icc c b) (x : M) :
       (U t x).toContinuousLinearMap = uhlenbeckEndomorphismAt (basisAt x) ι t := by
     dsimp only [U]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     rfl
   have hUapp (t : ℝ) (ht : t ∈ Icc c b) (x : M) (v : TangentSpace I x) :
       U t x v = uhlenbeckEndomorphismAt (basisAt x) ι t v :=

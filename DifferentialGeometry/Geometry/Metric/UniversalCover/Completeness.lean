@@ -14,7 +14,7 @@ import Mathlib.Topology.UniformSpace.Cauchy
 import Mathlib.Topology.EMetricSpace.Lipschitz
 import Mathlib.LinearAlgebra.Trace
 import Mathlib.Logic.Equiv.Basic
-import Mathlib.Data.Finite.Defs
+import Mathlib.Basic.Finite.Defs
 
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

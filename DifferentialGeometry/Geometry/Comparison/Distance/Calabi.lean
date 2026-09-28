@@ -263,7 +263,7 @@ theorem CalabiTail.mem_eball
     have hbase : 0 ≤ tail.initialLength + tail.terminalLength * t :=
       add_nonneg tail.initialLength_nonneg hellt
     linarith
-  rw [Metric.mem_eball',
+  rw [Metric.mem_eball, edist_comm,
     IsRiemannianManifold.out (I := I) O
       (intrinsicGeodesic (I := I) g hEnorm tail.splitPoint tail.endpointVector t)]
   calc

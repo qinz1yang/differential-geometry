@@ -45,14 +45,14 @@ theorem exists_section34_edge_target_centered_prism
       Section34Incident e.1 s.1 ∧
       Section34Incident (ends e).1.1 s.1 ∧
       Section34Incident (ends e).2.1 s.1 ∧
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (ct s '' Dd e) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ct s '' Dd e) ∧
       IsPLHomeomorphOn ρ
-        (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1)
         (ct s '' (Dv (ends e).1 ∪ Dv (ends e).2)) ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), ρ (x, 0) = r x) ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) =
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), ρ (x, 0) = r x) ∧
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 0) =
         ct s '' Dv (ends e).1 ∧
-      ρ '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) =
+      ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) =
         ct s '' Dv (ends e).2 := by
   obtain ⟨s, hse, hs₁, hs₂, hct, hsource⟩ :=
     exists_section34Edge_common_chart hframe htor hends e

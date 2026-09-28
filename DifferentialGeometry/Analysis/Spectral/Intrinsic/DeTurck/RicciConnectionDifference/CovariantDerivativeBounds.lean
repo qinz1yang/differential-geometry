@@ -1,6 +1,10 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.AdjointBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RicciConnectionDifference.Pairing
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.FibreBounds
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -614,7 +618,7 @@ theorem ricciCovariantDerivativeConnectionDifference_path_pairing_le
     rw [SmoothCcTensor.toSection_smul]
     change riemannianFiberNormSq (I := I) (M := M) g 0 3 y
         (s • (iteratedCovGrad (I := I) g 0 2 1 W).toSection y) ≤ _
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     exact mul_le_of_le_one_left
       (riemannianFiberNormSq_nonneg (I := I) (M := M) g 0 3 y _) hs2
   have hPnorm : ‖iteratedCovGrad (I := I) g 0 2 1 P‖ = s * ‖D‖ := by

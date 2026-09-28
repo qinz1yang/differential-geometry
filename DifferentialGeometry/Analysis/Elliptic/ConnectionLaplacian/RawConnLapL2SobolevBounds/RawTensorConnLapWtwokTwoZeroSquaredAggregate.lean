@@ -39,12 +39,13 @@ local notation "EuclN" =>
   EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma sq_eLpNorm_two_eq_lintegral_ofReal_sq
-    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α) :
+    {α : Type*} {_ : MeasurableSpace α} (f : α → ℝ) (μ : Measure α)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, ENNReal.ofReal ((f x) ^ 2) ∂μ := by
   classical
   have h_rpow : eLpNorm f 2 μ = (∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ≥0∞).toReal ∂μ) ^
       (1 / (2 : ℝ≥0∞).toReal) :=
-    eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num)
+    eLpNorm_eq_lintegral_rpow_enorm_toReal (by norm_num) (by norm_num) hf
   have h_two_toReal : ((2 : ℝ≥0∞)).toReal = (2 : ℝ) := by norm_num
   rw [h_rpow, h_two_toReal]
   set I : ℝ≥0∞ := ∫⁻ x, ‖f x‖ₑ ^ (2 : ℝ) ∂μ with hI_def

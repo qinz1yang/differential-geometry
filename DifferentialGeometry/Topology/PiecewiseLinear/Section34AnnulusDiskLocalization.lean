@@ -219,12 +219,12 @@ theorem IsPLSphere.exists_disk_in_annulus_or_separating_ends {E : Type*}
     (hAS : A ⊆ S) (hJ : IsPLSphere 1 J) (hJA : J ⊆ A)
     (hends : Disjoint J (A₀ ∪ A₁)) :
     (∃ (D : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ A ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ A ∧
         r '' stdSimplexBoundary 2 = J) ∨
     ∃ (D₀ D₁ : Set E) (r₀ r₁ : (Fin 3 → ℝ) → E),
       D₀ ∪ D₁ = S ∧ D₀ ∩ D₁ = J ∧
-      IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-      IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+      IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+      IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
       r₀ '' stdSimplexBoundary 2 = J ∧ r₁ '' stdSimplexBoundary 2 = J ∧
       A₀ ⊆ D₀ ∧ A₁ ⊆ D₁ := by
   obtain ⟨D₀, D₁, hU, hI, r₀, r₁, hr₀, hr₁, hb₀, hb₁⟩ :=
@@ -238,7 +238,7 @@ theorem IsPLSphere.exists_disk_in_annulus_or_separating_ends {E : Type*}
     rw [hI]
     exact hCJ.inter_eq
   have hdisk : ∀ (D D' : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D →
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       D ∪ D' = S → D ∩ D' = J → A₀ ⊆ D' → A₁ ⊆ D' → D ⊆ A := by
     intro D D' r hr hcover hmeet h₀ h₁
     have hJD : J ⊆ D := hmeet ▸ inter_subset_left

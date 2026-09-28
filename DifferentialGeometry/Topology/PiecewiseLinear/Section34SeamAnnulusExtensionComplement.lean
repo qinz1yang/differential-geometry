@@ -9,7 +9,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem IsPLHomeomorphOn.exists_lateral_complement_of_rim_collar
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     {a b c d : ℝ} (hab : a < b) (hcd : c < d)
     {W : Set (E × ℝ)} {ρ : (E × ℝ) × ℝ → E × ℝ}
     (hρ : IsPLHomeomorphOn ρ (((r '' stdSimplexBoundary 2) ×ˢ {a}) ×ˢ Icc c d) W)

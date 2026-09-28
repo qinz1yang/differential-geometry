@@ -41,10 +41,10 @@ theorem separates_or_separates_of_union [SimplyConnectedSpace X] [LocallyConnect
     have ha : a.val ∈ range f := ⟨0, congrArg Subtype.val r.source⟩
     have hb : b.val ∈ range f := ⟨1, congrArg Subtype.val r.target⟩
     rcases hR.subset_or_subset hA hB hd hRA with hs | hs
-    · simp only [label, hs ha, hs hb, if_true]
+    · simp only [label, hs ha, hs hb, ite_true]
     · have hna : a.val ∉ A := fun haA => disjoint_left.mp hd haA (hs ha)
       have hnb : b.val ∉ A := fun hbA => disjoint_left.mp hd hbA (hs hb)
-      simp only [label, hna, hnb, if_false]
+      simp only [label, hna, hnb, ite_false]
   have hcover : Cᶜ ∪ Dᶜ = (univ : Set X) := by
     rw [← compl_inter, disjoint_iff_inter_eq_empty.mp hCD, compl_empty]
   have hyA : y ∉ A := fun hyA => disjoint_left.mp hd hyA (hKB hy)

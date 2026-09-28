@@ -7,6 +7,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.LieCorrection.ZeroOrd
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.Grid.H3Bounded
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.RadiusFree
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le)
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
@@ -367,7 +370,7 @@ theorem exists_decompositionKernelContractionMonomialField_secondOrder_tame_boun
                   norm (iteratedCovGrad (I := I) g 0 2 (i + 2) P) ^ 2) +
                 (B A) ^ 2 := by
   obtain ⟨K, hK, hraw⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContrMonomial_topOrderSeparated_lowerWindow_le
+    decompositionKernelContractionMonomialField_top_order_bounds
       (I := I) (M := M) g hdelta0_lt
   let Ctop : Nat -> Real := fun _ =>
     2 * (((1 / (1 - delta0)) ^ 2) ^ 2)
@@ -682,7 +685,7 @@ theorem exists_linearizedRicciConnectionDifferenceOrderZeroCoefficient_secondOrd
                   norm (iteratedCovGrad (I := I) g 0 2 (i + 2) P) ^ 2) +
                 (B A) ^ 2 := by
   obtain ⟨C, hC, hpoint⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0CoeffField_topAmplitude_le
+    linearizedRicciConnectionDifferenceOrder0CoeffField_pointwise_tame_bound
       (I := I) (M := M) g hdelta0_lt hdelta0_half
   let Ctop : Nat -> Real := fun _ =>
     ((21 / 4 : Real) * (Module.finrank Real E : Real) *
@@ -871,7 +874,7 @@ theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_covariantJetN
       0 <= (Module.finrank Real E : Real) * delta0 :=
     mul_nonneg (Nat.cast_nonneg _) hdelta0_nonneg
   obtain ⟨Ktop, hKtop, Flow, hFlow, hper⟩ :=
-    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_iteratedCovGrad_normSq_perOrder_radiusFree_bound (I := I) (M := M) g g_bg hdelta0_lt hLambda
+    deTurckLieConnectionDifferenceDerivCoeffField_covariant_l2_tame_bound (I := I) (M := M) g g_bg hdelta0_lt hLambda
   let Kt : Real := ∑ i ∈ Finset.range 3, Ktop i
   let Kl : Real := ∑ i ∈ Finset.range 3, Flow i
   have hKt : 0 <= Kt := by

@@ -4,6 +4,12 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.C
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Basic
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+   riemannianFiberNormSq_nonneg)
+
 set_option autoImplicit false
 
 noncomputable section

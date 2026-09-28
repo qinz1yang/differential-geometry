@@ -161,6 +161,7 @@ theorem lExpPartial_density
   unfold paramDensity paramGramMatrix lExpDensity lExpGram lGram lExpField
   rw [hev.eq_of_nhds,
     hev.mfderiv_eq (I := modelWithCornersSelf Real E) (I' := I)]
+  congr 2
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup
   Tensor0SBundle.tangentSpaceNormedSpace in

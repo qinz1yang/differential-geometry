@@ -53,7 +53,7 @@ private theorem sqrt_mul_exp_mul_div_eq {M Q θ K a : ℝ} (hM : 0 ≤ M) (hQ : 
   field_simp
 
 theorem RetainedCoreHistory.exists_trace_first_of_chain_trace_on_scaled_ball
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {T : ℝ}
+    (H : RetainedCoreHistory.{u}) {T : ℝ}
     (A : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (x : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen)
     (hQ : 1 ≤ A.flow.scalar T x.val) {Kc lam θ D : ℝ} {Ctime : ℝ≥0} {Phi : ℝ → ℝ}
@@ -147,7 +147,7 @@ theorem RetainedCoreHistory.exists_trace_first_of_chain_trace_on_scaled_ball
   exact (A.mem_scaled_endpoint_closedBall_iff Q hQpos x y R).mp hy
 
 theorem RetainedCoreHistory.exists_trace_first_of_chain_trace_on_witness_ball
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {T : ℝ}
+    (H : RetainedCoreHistory.{u}) {T : ℝ}
     (A : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (x : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen)
     {Kc lam θ D : ℝ} {Ctime Cgrad : ℝ≥0} {Phi : ℝ → ℝ}
@@ -204,8 +204,8 @@ theorem RetainedCoreHistory.exists_trace_first_of_chain_trace_on_witness_ball
     split_ifs
     · exact hr₀
     · exact hsN
-  have hδlt : ∀ k < N, δ k = r₀ := fun k hk => if_pos hk
-  have hδN : δ N = (Real.sqrt (A.flow.scalar T (p N)))⁻¹ := if_neg (lt_irrefl N)
+  have hδlt : ∀ k < N, δ k = r₀ := fun k hk => ite_eq_left hk
+  have hδN : δ N = (Real.sqrt (A.flow.scalar T (p N)))⁻¹ := ite_eq_right (lt_irrefl N)
   have hsum : ∑ k ∈ Finset.range (N + 1), δ k = N * r₀ + (Real.sqrt (A.flow.scalar T (p N)))⁻¹ := by
     rw [Finset.sum_range_succ, hδN, Finset.sum_congr rfl (fun k hk => hδlt k
       (Finset.mem_range.mp hk)), Finset.sum_const, Finset.card_range, nsmul_eq_mul]
@@ -318,7 +318,7 @@ private theorem four_mul_le_of_depth {M τ K₃ θ₂ θ : ℝ} (hτ : M * τ �
   linarith
 
 theorem RetainedCoreHistory.exists_trace_first_on_witness_ball_of_ray_chain
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {T : ℝ}
+    (H : RetainedCoreHistory.{u}) {T : ℝ}
     (A : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (x : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen)
     (hQ : 1 ≤ A.flow.scalar T x.val) {Kc lam θ D : ℝ} {Ctime Cgrad : ℝ≥0} {Phi : ℝ → ℝ}

@@ -885,7 +885,7 @@ theorem radialTransportSection_pullback_eq (g : SmoothRiemannianMetric I M) (p :
     exact hcond.2
   apply (tangentSpaceModelContinuousLinearEquiv (I := I)
     (expMap (I := I) g p (s • X))).injective
-  rw [radialTransportSection, dif_pos hcond]
+  rw [radialTransportSection, dite_eq_left hcond]
   dsimp only
   rw [ContinuousLinearEquiv.apply_symm_apply]
   have hEq : radialParallelTransportSection (I := I) g p

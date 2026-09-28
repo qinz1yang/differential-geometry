@@ -183,7 +183,7 @@ theorem lRegularizedIndex_trace_linear_cutoff
           S.ricciAt (T - s ^ 2) (alpha s) (vec2 (P i s) (P i s)))
     (fun i _ ↦ hint i)]
   apply congrArg₂ (· + ·)
-  · simp_rw [hON, if_pos]
+  · simp_rw [hON, ite_eq_left]
     rw [Finset.sum_const, Finset.card_fin]
     simp only [nsmul_eq_mul]
     field_simp [hba]

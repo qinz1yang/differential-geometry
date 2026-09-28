@@ -380,7 +380,7 @@ private theorem hamilton_contracted_curvature_derivative_components
     (metricNablaRic (I := I) (M := M) (S.base.metric t) x)
     hcore.1 hcore.2.1 hcore.2.2 (basis r) (basis q) (basis p)
   simp only [ite_mul, one_mul, zero_mul, Finset.sum_ite_eq,
-    Finset.mem_univ, if_true, hamiltonP_apply] at hDiv
+    Finset.mem_univ, ite_true, hamiltonP_apply] at hDiv
   rw [metricNablaRic_last_two_symm (I := I) (M := M)
       (S.base.metric t) x (basis q) (basis r) (basis p),
     metricNablaRic_last_two_symm (I := I) (M := M)
@@ -501,7 +501,7 @@ theorem exists_hamiltonPerturbedBlock_reaction_lower_bound
         hinvTrace (basis a) (basis b)
     simp only [DifferentialGeometry.Tensor0SBundle.identityInvMetric,
       DifferentialGeometry.Tensor0SBundle.diagonalInvMetric, ite_mul, one_mul,
-      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true] at htrace
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true] at htrace
     symm
     simpa only [nablaP, hamiltonNablaPField_apply] using htrace
   have hMAt_eq : hamiltonMAt (I := I) clock (S.base.metric clock.time) x =

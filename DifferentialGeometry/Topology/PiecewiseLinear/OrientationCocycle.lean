@@ -35,7 +35,7 @@ theorem localOrientationSign_eq_one_or_neg_one (r : LinearOrder E)
     {s t : Finset E} (hs : s ∈ K.faces) (ht : t ∈ K.faces)
     (hst : s ⊆ t) (htcard : t.card = n + 1) :
     localOrientationSign r o s t = 1 ∨ localOrientationSign r o s t = -1 := by
-  simpa only [localOrientationSign, dif_pos hs] using
+  simpa only [localOrientationSign, dite_eq_left hs] using
     ((o s hs).changeVertexOrder r).sign_top t (mem_faceStarComplex_faces_of_subset K ht hst) htcard
 
 open Classical in
@@ -68,7 +68,7 @@ private theorem localOrientationSign_mul_eq
   have hTu := mem_faceStarComplex_faces_of_subset K hT huT
   have heq := p.sign_mul_sign_eq_of_dualGraph_reachable (hK.faceStar hu) q rfl
     (hK.dualGraph_faceStarComplex_preconnected hu ⟨S, hSu, hScard⟩ ⟨T, hTu, hTcard⟩)
-  simpa only [p, q, CoherentOrientation.restrict, localOrientationSign, dif_pos hs, dif_pos ht]
+  simpa only [p, q, CoherentOrientation.restrict, localOrientationSign, dite_eq_left hs, dite_eq_left ht]
     using heq
 
 open Classical in
@@ -90,7 +90,7 @@ private theorem localOrientationParity_eq
       decide (localOrientationSign r o s S * localOrientationSign r o t S = -1) := by
   have hu : s ∪ t ∈ K.faces := K.down_closed hS (Finset.union_subset hsS htS)
     ((K.nonempty_of_mem_faces hs).mono Finset.subset_union_left)
-  rw [localOrientationParity, dif_pos hu]
+  rw [localOrientationParity, dite_eq_left hu]
   dsimp only
   have htop := (hK.exists_face_superset_card_eq hu).choose_spec
   rw [localOrientationSign_mul_eq hK r o hs ht hu Finset.subset_union_left
@@ -194,7 +194,7 @@ theorem localSubdivisionOrientationSign_eq_one_or_neg_one
   have haff := affineSimplexOrientationSign_eq_one_or_neg_one r hqcard hScard
     ((barycentricSubdivision K).indep hq) hspec.2
   have hlocal := localOrientationSign_eq_one_or_neg_one r o haK hspec.1 haS hScard
-  rw [localSubdivisionOrientationSign, dif_pos hqcard, dif_pos hScard]
+  rw [localSubdivisionOrientationSign, dite_eq_left hqcard, dite_eq_left hScard]
   change affineSimplexOrientationSign r hqcard hScard *
       localOrientationSign r o (carrierFace K a) S = 1 ∨
     affineSimplexOrientationSign r hqcard hScard *
@@ -240,8 +240,8 @@ theorem orientationCocycle_parity_eq_localSubdivisionOrientationSign
   have hlocalB := localOrientationSign_eq_one_or_neg_one r o hbK hspec.1 hbS hScard
   change localOrientationParity hK r o (carrierFace K a) (carrierFace K b) = _
   rw [localOrientationParity_eq hK r o haK hbK hspec.1 hScard haS hbS]
-  rw [localSubdivisionOrientationSign, dif_pos hqcard, dif_pos hScard,
-    localSubdivisionOrientationSign, dif_pos hqcard, dif_pos hScard]
+  rw [localSubdivisionOrientationSign, dite_eq_left hqcard, dite_eq_left hScard,
+    localSubdivisionOrientationSign, dite_eq_left hqcard, dite_eq_left hScard]
   change decide (localOrientationSign r o (carrierFace K a) S *
       localOrientationSign r o (carrierFace K b) S = -1) =
     decide ((affineSimplexOrientationSign r hqcard hScard *
@@ -277,7 +277,7 @@ private theorem orientationCocycle_isCoboundary_of_isOrientable
         ⟨S, mem_faceStarComplex_faces_of_subset K hS hsS, hScard⟩)
     have heq : p.sign T * localOrientationSign r o s T =
         p.sign S * localOrientationSign r o s S := by
-      simpa only [ps, os, CoherentOrientation.restrict, localOrientationSign, dif_pos hs] using
+      simpa only [ps, os, CoherentOrientation.restrict, localOrientationSign, dite_eq_left hs] using
           hratio
     rw [heq]
   choose b hb using hex
@@ -290,7 +290,7 @@ private theorem orientationCocycle_isCoboundary_of_isOrientable
   obtain ⟨S, hS, hScard, hsub⟩ := exists_topFace_superset_carrierFaces hK hac
   change localOrientationParity hK r o (carrierFace K a) (carrierFace K c) = _
   dsimp only
-  rw [dif_pos haK, dif_pos hcK, hb _ haK S hS hScard (hsub a ha),
+  rw [dite_eq_left haK, dite_eq_left hcK, hb _ haK S hS hScard (hsub a ha),
     hb _ hcK S hS hScard (hsub c hc),
     localOrientationParity_eq hK r o haK hcK hS hScard (hsub a ha) (hsub c hc)]
   simpa only [mul_comm] using
@@ -376,8 +376,8 @@ theorem localSubdivisionOrientationSign_pair_cancel
     (barycentricSubdivision K) hq hp hqp hfq hfp hfcard hqcard hpcard
     hSlocal hTlocal hScard hTcard hqspec.2 hpspec.2
   simpa only [r, s, S, T, olocal, CoherentOrientation.changeVertexOrder,
-    localSubdivisionOrientationSign, dif_pos hqtop, dif_pos hStop',
-    dif_pos hptop, dif_pos hTtop', localOrientationSign, dif_pos hs'] using hcancel
+    localSubdivisionOrientationSign, dite_eq_left hqtop, dite_eq_left hStop',
+    dite_eq_left hptop, dite_eq_left hTtop', localOrientationSign, dite_eq_left hs'] using hcancel
 
 open Classical in
 private theorem isOrientable_of_orientationCocycle_isCoboundary
@@ -419,7 +419,7 @@ private theorem isOrientable_of_orientationCocycle_isCoboundary
     rw [orientedBoundary_eq_sum_faceCofaces, faceCofaces_faceStarComplex_self] at hold
     have hsum : (∑ S ∈ faceCofaces K t (n + 1),
         localOrientationSign r o t S * simplexBoundaryCoefficient r S t) = 0 := by
-      simpa only [ot, CoherentOrientation.changeVertexOrder, localOrientationSign, dif_pos ht]
+      simpa only [ot, CoherentOrientation.changeVertexOrder, localOrientationSign, dite_eq_left ht]
         using hold
     rw [orientedBoundary_eq_sum_faceCofaces]
     calc

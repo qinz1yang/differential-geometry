@@ -305,7 +305,7 @@ theorem interToLeft_map_normalizedObj_eq
   · have hzW : z ∉ {q | q.as ∈ selectedIn A (U ∩ V)} := hzA
     have hzU : J.obj z ∉ {q | q.as ∈ selectedIn A U} := hzA
     unfold RepresentativeChoice.normalizedObj
-    rw [if_neg hzW, if_neg hzU]
+    rw [ite_eq_right hzW, ite_eq_right hzU]
     change J.obj (dW.obj z) = dU.obj (J.obj z)
     simp [dU, leftRepresentativeChoice, J, hzV', hzw']
 
@@ -398,7 +398,7 @@ theorem interToRight_map_normalizedObj_eq
   · have hzW : z ∉ {q | q.as ∈ selectedIn A (U ∩ V)} := hzA
     have hzV : J.obj z ∉ {q | q.as ∈ selectedIn A V} := hzA
     unfold RepresentativeChoice.normalizedObj
-    rw [if_neg hzW, if_neg hzV]
+    rw [ite_eq_right hzW, ite_eq_right hzV]
     change J.obj (dW.obj z) = dV.obj (J.obj z)
     simp [dV, rightRepresentativeChoice, J, hzU', hzw']
 
@@ -486,7 +486,7 @@ theorem leftToAmbient_map_normalizedObj_eq
   · have hzSelU : z ∉ {q | q.as ∈ selectedIn A U} := hzA
     have hzSelX : J.obj z ∉ {q | q.as ∈ A} := hzA
     unfold RepresentativeChoice.normalizedObj
-    rw [if_neg hzSelU, if_neg hzSelX]
+    rw [ite_eq_right hzSelU, ite_eq_right hzSelX]
     change J.obj (dU.obj z) = dX.obj (J.obj z)
     simp [dX, ambientRepresentativeChoice, J, hzU', hzu']
 
@@ -603,7 +603,7 @@ theorem rightToAmbient_map_normalizedObj_eq
     · have hzSelV : z ∉ {q | q.as ∈ selectedIn A V} := hzA
       have hzSelX : JV.obj z ∉ {q | q.as ∈ A} := hzA
       unfold RepresentativeChoice.normalizedObj
-      rw [if_neg hzSelV, if_neg hzSelX]
+      rw [ite_eq_right hzSelV, ite_eq_right hzSelX]
       change JV.obj (dV.obj z) = dX.obj (JV.obj z)
       simp [dX, ambientRepresentativeChoice, JV, hzU'', hzv']
 

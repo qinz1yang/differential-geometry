@@ -56,7 +56,7 @@ private theorem linIndep_of_ortho
   rw [Finset.sum_eq_single j] at hpair
   · calc
       c j = c j * 1 := by rw [mul_one]
-      _ = c j * g.inner x (e j) (e j) := by rw [hON j j, if_pos rfl]
+      _ = c j * g.inner x (e j) (e j) := by rw [hON j j, ite_eq_left rfl]
       _ = g.inner x (c j • e j) (e j) :=
         (clm_smul_apply (g.inner x) (c j) (e j) (e j)).symm
       _ = 0 := hpair
@@ -65,7 +65,7 @@ private theorem linIndep_of_ortho
       g.inner x (c i • e i) (e j) = c i * g.inner x (e i) (e j) :=
         clm_smul_apply (g.inner x) (c i) (e i) (e j)
       _ = c i * (if i = j then 1 else 0) := by rw [hON i j]
-      _ = c i * 0 := by rw [if_neg (by simpa using hij)]
+      _ = c i * 0 := by rw [ite_eq_right (by simpa using hij)]
       _ = 0 := mul_zero _
   · intro hj
     exact absurd (Finset.mem_univ j) hj
@@ -234,13 +234,13 @@ theorem curvTrace_eq_ricci
       change g.inner (γ t) (bE.repr z i • e i) (e i) =
         g.inner (γ t) (z : TangentSpace I (γ t)) (e i) at hpair
       rw [clm_smul_apply (B := g.inner (γ t)), hON i i,
-        if_pos rfl, mul_one] at hpair
+        ite_eq_left rfl, mul_one] at hpair
       exact hpair
     · intro j _ hji
       rw [hbE j]
       change g.inner (γ t) (bE.repr z j • e j) (e i) = 0
       rw [clm_smul_apply (B := g.inner (γ t)), hON j i,
-        if_neg (by simpa using hji), mul_zero]
+        ite_eq_right (by simpa using hji), mul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   have htraceE : LinearMap.trace ℝ W T =
@@ -440,13 +440,13 @@ private theorem shape_trace_model
       change g.inner (γ t) (bE.repr z i • e i) (e i) =
         g.inner (γ t) (z : TangentSpace I (γ t)) (e i) at hpair
       rw [clm_smul_apply (B := g.inner (γ t)), hON i i,
-        if_pos rfl, mul_one] at hpair
+        ite_eq_left rfl, mul_one] at hpair
       exact hpair
     · intro j _ hji
       rw [hbE j]
       change g.inner (γ t) (bE.repr z j • e j) (e i) = 0
       rw [clm_smul_apply (B := g.inner (γ t)), hON j i,
-        if_neg (by simpa using hji), mul_zero]
+        ite_eq_right (by simpa using hji), mul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   let B : Matrix (Fin (Module.finrank ℝ E - 1))

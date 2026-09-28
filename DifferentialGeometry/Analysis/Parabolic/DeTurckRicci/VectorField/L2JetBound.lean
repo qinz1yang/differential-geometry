@@ -90,11 +90,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma connectionDifferenceLoweredCc_unitModel' (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x =
-      Tensor0SSpace.toModel (metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x) := by
+      Tensor0SSpace.toModel (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x) := by
   rw [unitModel]
   rw [show (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
+          (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
@@ -113,7 +113,7 @@ lemma connectionDifferenceLoweredCc_unitModel_apply (g₀ g₁ : SmoothRiemannia
   rw [connectionDifferenceLoweredCc_unitModel']
   rw [Tensor0SSpace.toModel_apply_model_vector]
   simp only [ContinuousLinearEquiv.symm_apply_apply,
-    connectionDifferenceLoweredCovec_apply]
+    DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceCovector_apply]
 
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in

@@ -63,7 +63,7 @@ theorem IsCylindricalDiagram.exists_finite_crosscut_partition_of_regular_upper_s
     ∃ C : Set (Set F), C.Finite ∧ C.PairwiseDisjoint id ∧
       ⋃₀ C = J ∩ f '' (P ×ˢ Icc a 1) ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → F,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ f '' (P ×ˢ ({a, 1} : Set ℝ)) := by
   let D : Set F := f '' (P ×ˢ Icc a 1)
   let W : Set F := f '' (P ×ˢ ({a, 1} : Set ℝ))
@@ -149,7 +149,7 @@ theorem IsCylindricalDiagram.exists_source_crosscut_partition_of_regular_upper_s
     ∃ C : Set (Set (E × ℝ)), C.Finite ∧ C.PairwiseDisjoint id ∧
       ⋃₀ C = (P ×ˢ Icc a 1) ∩ f ⁻¹' J ∧
       ∀ A ∈ C, ∃ q : (Fin 2 → ℝ) → E × ℝ,
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) A ∧
         q '' stdSimplexBoundary 1 = A ∩ (P ×ˢ ({a, 1} : Set ℝ)) := by
   obtain ⟨C, hCfin, hCdis, hcover, hC⟩ :=
     hf.exists_finite_crosscut_partition_of_regular_upper_strip hP hJ hJS L hc hca had hd

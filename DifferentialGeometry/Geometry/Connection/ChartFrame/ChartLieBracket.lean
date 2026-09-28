@@ -369,6 +369,7 @@ theorem mfderiv_scalar_along_eq_chart_fderiv
     unfold mvfderiv
     rw [hLHS_eventually.self_of_nhds]
     rw [Filter.EventuallyEq.mfderiv_eq hLHS_eventually]
+    rfl
   have hφ_mdiff : MDiffAt φ x := mdifferentiableAt_extChartAt (I := I) (x := x) hsrc_chart
   have hftilde_cmd : ContMDiffWithinAt 𝓘(ℝ, E) 𝓘(ℝ) 2 ftilde (range I) (φ x) :=
     (contMDiffAt_iff_source_of_mem_source (n := (2 : WithTop ℕ∞))

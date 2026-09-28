@@ -49,8 +49,8 @@ theorem galerkinEmbedCombo (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
   funext i
   rw [galerkinCoordEmbed_coeff, finiteEigenComboHs_coeff]
   by_cases hi : i ∈ S
-  · rw [if_pos hi]
-  · rw [if_neg hi, dif_neg hi]
+  · rw [ite_eq_left hi]
+  · rw [ite_eq_right hi, dite_eq_right hi]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galerkinViewComboC (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
@@ -98,7 +98,7 @@ theorem galerkinCoordNormLe (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     rw [← Finset.sum_coe_sort S (fun i => (c i) ^ 2)]
     refine Finset.sum_congr rfl (fun j _ => ?_)
     have hj : (j : TensorEigenIdx (I := I) (M := M) g₀ 0 2) ∈ S := j.2
-    simp only [hc, dif_pos hj, Subtype.coe_eta, Real.norm_eq_abs, sq_abs]
+    simp only [hc, dite_eq_left hj, Subtype.coe_eta, Real.norm_eq_abs, sq_abs]
   have hle : ‖w‖ ^ 2 ≤ ‖galerkinLowView (I := I) (M := M) g₀ a
       (galerkinCoordEmbed (I := I) (M := M) g₀ a S w)‖ ^ 2 := by
     rw [hwsq, hsq]
@@ -212,11 +212,11 @@ theorem galerkinTameStateC_emb (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R 
       funext i
       rw [finiteEigenComboHs_coeff, finiteEigenComboHs_coeff]
       by_cases hi : i ∈ S
-      · rw [if_pos hi, if_pos hi, hc' i hi]
-      · rw [if_neg hi, if_neg hi]
+      · rw [ite_eq_left hi, ite_eq_left hi, hc' i hi]
+      · rw [ite_eq_right hi, ite_eq_right hi]
     simp only [galerkinTameStateC, hcombo]
   rw [galerkinTameState_eq]
-  exact key _ (fun i hi => dif_pos hi)
+  exact key _ (fun i hi => dite_eq_left hi)
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem galerkinTameRetr_view (g₀ : SmoothRiemannianMetric I M) (a : ℕ) (R : ℝ)
@@ -618,10 +618,10 @@ theorem galerkinTameForce_contOn (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {
             galerkinTameStateC_mem (I := I) (M := M) g₀ a hR S (c t)⟩).coeff i := by
       rw [galerkinTameField_apply, hsub]
       rfl
-    rw [galerkinTameForce_apply, if_pos hi, hval]
+    rw [galerkinTameForce_apply, ite_eq_left hi, hval]
     ring
   · refine (continuousOn_const (c := (0 : ℝ))).congr (fun t _ => ?_)
-    rw [galerkinTameForce_apply, if_neg hi]
+    rw [galerkinTameForce_apply, ite_eq_right hi]
 
 open scoped Classical in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
@@ -698,7 +698,7 @@ theorem galerkinTameSolutionOne (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R
         (EuclideanSpace.proj (𝕜 := ℝ) (⟨i, hi⟩ : {i // i ∈ S})).continuous
       exact hproj.comp_continuousOn hγcont
     refine hcoord.congr (fun t _ => ?_)
-    simp only [dif_pos hi]
+    simp only [dite_eq_left hi]
   · intro t ht i hi
     have hderiv_proj := ((EuclideanSpace.proj (𝕜 := ℝ) ⟨i, hi⟩).hasFDerivAt
       (x := γ t)).comp_hasDerivWithinAt t (hγderiv t ht)
@@ -729,7 +729,7 @@ theorem galerkinTameSolutionOne (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R
             galerkinTameStateC_mem (I := I) (M := M) g₀ a hR S
               (fun i => if h : i ∈ S then (γ t) ⟨i, h⟩ else 0)⟩ :=
         Subtype.ext hstate
-      rw [galerkinTameField_apply, galerkinTameForce_apply, if_pos hi, dif_pos hi, hsub]
+      rw [galerkinTameField_apply, galerkinTameForce_apply, ite_eq_left hi, dite_eq_left hi, hsub]
     have hfinal : HasDerivWithinAt (fun s => (γ s).ofLp ⟨i, hi⟩)
         (-(TensorEigenIdx.lambda (I := I) (M := M) i) *
             (if h : i ∈ S then (γ t) ⟨i, h⟩ else 0) +
@@ -741,16 +741,16 @@ theorem galerkinTameSolutionOne (g₀ : SmoothRiemannianMetric I M) (a : ℕ) {R
         ht.1
     have hcongr : (fun r => if h : i ∈ S then (γ r) ⟨i, h⟩ else 0) =
         (fun r => (γ r).ofLp ⟨i, hi⟩) := by
-      funext r; rw [dif_pos hi]
+      funext r; rw [dite_eq_left hi]
     rw [hcongr]
     convert hIci using 2
   · intro i
     by_cases hi : i ∈ S
-    · simp only [dif_pos hi, hγ0]
+    · simp only [dite_eq_left hi, hγ0]
       rfl
-    · simp only [dif_neg hi]
+    · simp only [dite_eq_right hi]
   · intro t i hi
-    simp only [dif_neg hi]
+    simp only [dite_eq_right hi]
 
 open DifferentialGeometry.Analysis.Parabolic.MaximalRegularity in
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in

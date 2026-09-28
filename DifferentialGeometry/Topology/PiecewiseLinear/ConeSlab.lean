@@ -86,7 +86,7 @@ theorem coneComplex_space_inter_slab {p : E}
       · simpa only [zero_smul, add_zero] using apex_mem_coneComplex_space hK
       · rw [add_sub_cancel_left, smul_smul]
         exact (mem_coneComplex_space_iff hK).mpr (Or.inr ⟨w, hw, t * s, mul_pos ht hs,
-          mul_le_one₀ ht1 hs.le hs1, rfl⟩)
+          (mul_le_mul_of_nonneg_right ht1 hs.le).trans (by simpa using hs1), rfl⟩)
   apply Subset.antisymm
   · intro x hx
     rcases (mem_coneComplex_space_iff hL).mp hx with rfl | ⟨z, hz, t, ht, ht1, rfl⟩

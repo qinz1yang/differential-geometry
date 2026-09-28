@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Polarization
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.LpProduct
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sub_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -506,7 +510,7 @@ theorem ricciDeTurckTopOrderBilinearPairingCoefficient_uniform_norm_bound :
     intro a Q
     dsimp only [N]
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
-      Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      Pi.smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
   have hkernel : ∀ qq : Fin 4 → Equiv.Perm (Fin 4), N (Kern qq) ≤ 4 * B := by
     intro qq
     exact quadratic_kernel_bound N Pair B hNadd hNsub hNsmul hpair qq

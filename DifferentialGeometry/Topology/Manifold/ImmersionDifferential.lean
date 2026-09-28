@@ -52,10 +52,6 @@ theorem IsImmersionAt.hasLeftInverse_mfderiv
     (mfderiv I J f x).HasLeftInverse :=
   isImmersionAtOfComplement_hasLeftInverse_mfderiv h.isImmersionAtOfComplement_complement hn
 
-theorem IsImmersionAt.injective_mfderiv
-    (h : IsImmersionAt I J n f x) (hn : n ≠ 0) : Function.Injective (mfderiv I J f x) :=
-  (h.hasLeftInverse_mfderiv hn).injective
-
 end Manifold
 
 namespace DifferentialGeometry.Topology.Manifold

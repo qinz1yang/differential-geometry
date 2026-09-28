@@ -11,7 +11,7 @@ theorem IsCombinatorialManifold.exists_disk_chart_around_disk
     (hD : IsPLBall 2 D) (hDK : D ⊆ K.space) :
     ∃ (Γ : Set (EuclideanSpace ℝ (Fin 3)))
       (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)) (p : EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Γ ∧ Γ ⊆ K.space ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ ∧ Γ ⊆ K.space ∧
       D ⊆ r '' openSimplex (stdVertices 1) ∧
       p ∈ Γ \ r '' stdSimplexBoundary 2 ∧ p ∉ D ∧
       ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ Γ ↔ y ∈ K.space := by
@@ -56,7 +56,7 @@ theorem IsCombinatorialManifold.exists_disk_neighborhood_of_disk_subset
     (hD : IsPLBall 2 D) (hDK : D ⊆ K.space) (hΩ : IsOpen Ω) (hDΩ : D ⊆ Ω) :
     ∃ (M : Set (EuclideanSpace ℝ (Fin 3)))
       (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) M ∧ M ⊆ K.space ∩ Ω ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) M ∧ M ⊆ K.space ∩ Ω ∧
       D ⊆ r '' openSimplex (stdVertices 1) ∧
       ∀ x ∈ D, ∀ᶠ y in 𝓝 x, y ∈ M ↔ y ∈ K.space := by
   obtain ⟨Γ, q, p, hq, hΓK, hDΓ, hpΓ, hpD, hag⟩ :=

@@ -281,21 +281,21 @@ theorem correction_slot_map_injective {r' : ℕ} (s : Fin (r' + 1)) :
   · congr 1
     by_cases h1 : ia = 0 <;> by_cases h2 : ib = 0
     · rw [h1, h2]
-    · rw [if_pos h1, if_neg h2] at hab
+    · rw [ite_eq_left h1, ite_eq_right h2] at hab
       exact absurd hab.symm (Fin.succ_ne_zero s)
-    · rw [if_neg h1, if_pos h2] at hab
+    · rw [ite_eq_right h1, ite_eq_left h2] at hab
       exact absurd hab (Fin.succ_ne_zero s)
     · omega
   · by_cases h1 : ia = 0
-    · rw [if_pos h1] at hab
+    · rw [ite_eq_left h1] at hab
       exact absurd hab.symm (Fin.succ_ne_zero _)
-    · rw [if_neg h1] at hab
+    · rw [ite_eq_right h1] at hab
       have hs := Fin.succ_injective _ hab
       exact absurd hs.symm (Fin.succAbove_ne s ib)
   · by_cases h2 : ib = 0
-    · rw [if_pos h2] at hab
+    · rw [ite_eq_left h2] at hab
       exact absurd hab (Fin.succ_ne_zero _)
-    · rw [if_neg h2] at hab
+    · rw [ite_eq_right h2] at hab
       have hs := Fin.succ_injective _ hab
       exact absurd hs (Fin.succAbove_ne s ia)
   · have hs := Fin.succ_injective _ hab
@@ -324,10 +324,10 @@ theorem christoffel_correction_field_eq_contract_tail {r' : ℕ}
   refine Finset.sum_congr rfl fun c _ => ?_
   have hcorr0 : correctionSlotEquiv s (Fin.castAdd r' (0 : Fin 2)) = 0 := by
     change correctionSlotMap s (Fin.castAdd r' (0 : Fin 2)) = 0
-    rw [correctionSlotMap, Fin.addCases_left, if_pos rfl]
+    rw [correctionSlotMap, Fin.addCases_left, ite_eq_left rfl]
   have hcorr1 : correctionSlotEquiv s (Fin.castAdd r' (1 : Fin 2)) = s.succ := by
     change correctionSlotMap s (Fin.castAdd r' (1 : Fin 2)) = s.succ
-    rw [correctionSlotMap, Fin.addCases_left, if_neg (by decide)]
+    rw [correctionSlotMap, Fin.addCases_left, ite_eq_right (by decide)]
   have hcorrR : ∀ i : Fin r',
       correctionSlotEquiv s (Fin.natAdd 2 i) = (s.succAbove i).succ := by
     intro i
@@ -878,8 +878,8 @@ theorem christoffel_difference_contraction_eq_of_levi_civita {u : Set M} (hu : I
                 fun q => if q = 0 then idx 2 else c from by
               funext q
               by_cases hq : q = 0
-              · rw [hq, if_pos rfl, hB0]
-              · rw [if_neg hq, show q = 1 from Fin.eq_one_of_ne_zero q hq, hB1]]
+              · rw [hq, ite_eq_left rfl, hB0]
+              · rw [ite_eq_right hq, show q = 1 from Fin.eq_one_of_ne_zero q hq, hB1]]
             simp]
           congr 1
           show christoffelSymbolInFrame covG frame hframe y (idx 0) (idx 1) c -
@@ -927,9 +927,9 @@ theorem christoffel_difference_contraction_eq_of_levi_civita {u : Set M} (hu : I
     congr 1
     funext q
     refine Fin.cases ?_ (fun q' => ?_) q
-    · rw [if_pos rfl]
+    · rw [ite_eq_left rfl]
       rfl
-    · rw [if_neg (by simp [Fin.ext_iff])]
+    · rw [ite_eq_right (by simp [Fin.ext_iff])]
       have hq' : q' = 0 := Subsingleton.elim q' 0
       rw [hq']
       rfl

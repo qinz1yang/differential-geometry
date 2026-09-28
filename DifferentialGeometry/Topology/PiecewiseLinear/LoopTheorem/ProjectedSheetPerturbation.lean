@@ -35,7 +35,7 @@ private theorem exists_homeomorph_adjust_displacement_preserving_halfSpace
     intro x y
     change dist (ℓ (a x) • d) (ℓ (a y) • d) ≤ _
     rw [dist_eq_norm, ← sub_smul, norm_smul]
-    have hbound := (ℓ.lipschitz.comp halip).dist_le_mul x y
+    have hbound := (ℓ.lipschitzWith.comp halip).dist_le_mul x y
     rw [dist_eq_norm] at hbound
     calc ‖ℓ (a x) - ℓ (a y)‖ * ‖d‖ ≤
           ((‖ℓ‖₊ * k : NNReal) * dist x y) * ‖d‖ :=

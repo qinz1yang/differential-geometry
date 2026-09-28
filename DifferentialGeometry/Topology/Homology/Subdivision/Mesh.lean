@@ -52,7 +52,7 @@ theorem dist_vertexBarycenter_le (n : ℕ) (v : Fin (n + 1) → E) (j : Fin (n +
 
 theorem dist_affineSimplex_le {n : ℕ} (v : Fin (n + 1) → E) {D : ℝ}
     (hv : ∀ i j, dist (v i) (v j) ≤ D)
-    (x y : stdSimplex ℝ (Fin (n + 1))) :
+    (x y : Convexity.StdSimplex ℝ (Fin (n + 1))) :
     dist (affineSimplex v x) (affineSimplex v y) ≤ D := by
   have hy : ∀ i, affineSimplex v y ∈ Metric.closedBall (v i) D := fun i ↦
     range_affineSimplex_subset v (convex_closedBall (v i) D)
@@ -105,7 +105,7 @@ theorem dist_barycentricPieceVertices_le (n : ℕ) (v : Fin (n + 1) → E)
 
 theorem dist_affineBarycentricPiece_le (n : ℕ) (v : Fin (n + 1) → E)
     (p : BarycentricFlag n) {D : ℝ} (hv : ∀ i j, dist (v i) (v j) ≤ D)
-    (x y : stdSimplex ℝ (Fin (n + 1))) :
+    (x y : Convexity.StdSimplex ℝ (Fin (n + 1))) :
     dist (affineSimplex (barycentricPieceVertices n v p) x)
         (affineSimplex (barycentricPieceVertices n v p) y) ≤
       (n : ℝ) / (n + 1) * D :=

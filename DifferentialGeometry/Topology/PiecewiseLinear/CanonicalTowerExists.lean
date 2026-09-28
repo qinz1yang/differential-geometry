@@ -54,11 +54,11 @@ theorem exists_fits_family_pairGP_succ {A U : ℤ → Set E3}
     intro k
     have hm : (2 * k + 1) % 2 ≠ 0 := by omega
     have hd : (2 * k + 1) / 2 = k := by omega
-    simp only [S, if_neg hm, hd]
+    simp only [S, ite_eq_right hm, hd]
   refine ⟨S, ?_, ?_⟩
   · intro i
     by_cases hi : i % 2 = 0
-    · simpa only [S, if_pos hi] using hR i
+    · simpa only [S, ite_eq_left hi] using hR i
     · have heq : i = 2 * (i / 2) + 1 := by omega
       rw [heq, hodd']
       exact hQ _

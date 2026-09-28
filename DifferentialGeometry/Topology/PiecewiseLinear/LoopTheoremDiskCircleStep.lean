@@ -21,7 +21,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem IsLoopTheoremDisk.of_boundary_eq {Kimg N' B Δ Δ₁ : Set E3}
     (hΔ : IsLoopTheoremDisk Kimg N' B Δ) {r₁ : (Fin 3 → ℝ) → E3}
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) Δ₁) (hsub : Δ₁ ⊆ interior N' \ Kimg)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁) (hsub : Δ₁ ⊆ interior N' \ Kimg)
     (hB : Δ₁ ∩ B = Δ ∩ B) (hbd : r₁ '' stdSimplexBoundary 2 = Δ ∩ B) :
     IsLoopTheoremDisk Kimg N' B Δ₁ := by
   obtain ⟨r, -, -, hΔB, hb, hnull⟩ := hΔ
@@ -35,7 +35,7 @@ theorem IsLoopTheoremDisk.of_boundary_eq {Kimg N' B Δ Δ₁ : Set E3}
 
 theorem IsPLHomeomorphOn.exists_planarModel {F : Type*} [NormedAddCommGroup F]
     [NormedSpace ℝ F] [FiniteDimensional ℝ F] {Δ : Set F} {r : (Fin 3 → ℝ) → F}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) :
     ∃ (Pl : Set (EuclideanSpace ℝ (Fin 2))) (ρ : EuclideanSpace ℝ (Fin 2) → F),
       IsPLBall 2 Pl ∧ IsPLHomeomorphOn ρ Pl Δ ∧ ρ '' frontier Pl = r '' stdSimplexBoundary 2 := by
   obtain ⟨T, hT, hTcard, -, -, -⟩ := exists_affineIndependent_openSimplex_subset
@@ -44,21 +44,21 @@ theorem IsPLHomeomorphOn.exists_planarModel {F : Type*} [NormedAddCommGroup F]
   have hball : IsPLBall 2 (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))) :=
     isPLBall_convexHull_of_affineIndependent T hT (by omega)
   obtain ⟨u, hu⟩ : ∃ u : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 2),
-      IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2)))) := hball
   refine ⟨convexHull ℝ (T : Set (EuclideanSpace ℝ (Fin 2))),
-    r ∘ Function.invFunOn u (stdSimplex ℝ (Fin 3)),
+    r ∘ Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)),
     ⟨u, hu⟩, hu.symm.trans hr, ?_⟩
   rw [← hu.image_stdSimplexBoundary_eq_frontier (n := 1)]
   ext y
   constructor
   · rintro ⟨_, ⟨x, hx, rfl⟩, rfl⟩
     refine ⟨x, hx, ?_⟩
-    change r x = r (Function.invFunOn u (stdSimplex ℝ (Fin 3)) (u x))
+    change r x = r (Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (u x))
     rw [hu.bijOn.invOn_invFunOn.1 hx.1]
   · rintro ⟨x, hx, rfl⟩
     refine ⟨u x, ⟨x, hx, rfl⟩, ?_⟩
-    change r (Function.invFunOn u (stdSimplex ℝ (Fin 3)) (u x)) = r x
+    change r (Function.invFunOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (u x)) = r x
     rw [hu.bijOn.invOn_invFunOn.1 hx.1]
 
 section CircleStep
@@ -73,7 +73,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
     (h34 : HasSinglePolygonTraces K h Ec XK.space)
     (h8 : ∀ v₁ ∈ K.vertices, ∀ e₁ ∈ K.faces, e₁.card = 2 →
       ∀ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ → Δ ⊆ Cpp v₁ ∩ interior N' →
         Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2 →
         (∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
           IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e₁ ∧
@@ -84,7 +84,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
     {Cs : Set (Set E3)} (hfin : Cs.Finite) (hdisj : Cs.PairwiseDisjoint id)
     (hA : Δ ∩ (⋃ e ∈ {e : Finset E3 | e ∈ K.faces ∧ e.card = 2}, Ec e) = ⋃₀ Cs)
     (hCs : ∀ S ∈ Cs, (IsPLSphere 1 S ∧ Disjoint S (frontier XK.space)) ∨
-      ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) S ∧
+      ∃ q : (Fin 2 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) S ∧
         q '' stdSimplexBoundary 1 = S ∩ frontier XK.space)
     (hcirc : ∃ S ∈ Cs, IsPLSphere 1 S ∧ Disjoint S (frontier XK.space)) :
     ∃ (Δ' : Set E3) (Cs' : Set (Set E3)),
@@ -109,10 +109,10 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
     rcases hCs S hS with ⟨hSs, -⟩ | ⟨q, hq, -⟩
     · exact hSs.isConnected_one.isPreconnected
     · rw [← hq.image_eq]
-      exact (convex_stdSimplex ℝ (Fin 2)).isPreconnected.image q
+      exact (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 2)).isPreconnected.image q
         hq.isPiecewiseAffineOn.continuousOn
   have hstd1 : (stdSimplexBoundary 1).Nonempty :=
-    ⟨Pi.single 0 1, single_mem_stdSimplex ℝ 0, 1, by simp⟩
+    ⟨Pi.single 0 1, Convexity.StdSimplex.single_mem_coordinateSet ℝ 0, 1, by simp⟩
   have hCsX : ∀ S ∈ Cs, ¬ (IsPLSphere 1 S ∧ Disjoint S (frontier XK.space)) →
       (S ∩ frontier XK.space).Nonempty := by
     intro S hS hn
@@ -222,7 +222,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
           (hQint (interior_subset (h1 ⟨y, hyS, rfl⟩))))
       · exact Set.disjoint_left.mpr fun x hx hxQ => h1 hx hxQ
   obtain ⟨q₀, hq₀⟩ := id hQball
-  have hr₀ : IsPLHomeomorphOn (ρ ∘ q₀) (stdSimplex ℝ (Fin 3)) (ρ '' Q) :=
+  have hr₀ : IsPLHomeomorphOn (ρ ∘ q₀) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' Q) :=
     hq₀.trans (hρ.restrict hQpoly hQPl)
   have hr₀b : (ρ ∘ q₀) '' stdSimplexBoundary 2 = J₀ := by
     rw [image_comp, hq₀.image_stdSimplexBoundary_eq_frontier (n := 1), hfrQ, hρσimg J₀ hJ₀Cs]
@@ -341,7 +341,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
   have hPcΔc_union : ρ '' Pc' ∪ ρ '' Qc = Δ := by
     rw [← image_union, hPc'Qc_union, hρ.image_eq]
   obtain ⟨qc, hqc⟩ := id hQc
-  have hrΔc : IsPLHomeomorphOn (ρ ∘ qc) (stdSimplex ℝ (Fin 3)) (ρ '' Qc) :=
+  have hrΔc : IsPLHomeomorphOn (ρ ∘ qc) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' Qc) :=
     hqc.trans (hρ.restrict hQc.isPolyhedron hQcPl)
   have hrΔcb : (ρ ∘ qc) '' stdSimplexBoundary 2 = c := by
     rw [image_comp, hqc.image_stdSimplexBoundary_eq_frontier (n := 1), hfrQc, hρσimg c hcCs]
@@ -360,7 +360,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
   obtain ⟨H, hH, hHid⟩ :=
     exists_isPLHomeomorphOn_replace_ball hPcpoly hrΔc hrc hrΔcb hrcb hPcΔc hPcDc
   rw [hPcΔc_union] at hH
-  have hr₁ : IsPLHomeomorphOn (H ∘ r) (stdSimplex ℝ (Fin 3)) (ρ '' Pc' ∪ Dc) := hr.trans hH
+  have hr₁ : IsPLHomeomorphOn (H ∘ r) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (ρ '' Pc' ∪ Dc) := hr.trans hH
   have hbdΔ : r '' stdSimplexBoundary 2 ⊆ ρ '' Pc' := by
     rw [← hρb]
     exact image_mono hfrPlPc'
@@ -502,7 +502,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_isLoopTheoremDisk_circleStep
       hWcc.isClosed.isOpen_compl
   have hDcc : IsCompact Dc := by
     rw [← hrc.image_eq]
-    exact (isCompact_stdSimplex ℝ (Fin 3)).image_of_continuousOn
+    exact (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).image_of_continuousOn
       hrc.isPiecewiseAffineOn.continuousOn
   have hDcO : Dc ⊆ (interior N' \ h '' K.space) ∩ (⋃₀ Cs')ᶜ ∩ (frontier XK.space)ᶜ ∩
       (ρ '' (Pc' \ V'))ᶜ := by

@@ -44,7 +44,7 @@ theorem exists_subdivision_marked_branchSurface_disks
                 x ∈ A j false ∪ A j true) ∧
               (∀ b, ∀ y ∈ hD.singularSet.branchCarrier c,
                 (y : E) ∈ W j → y ∈ D '' (A j b ∩ J)) ∧
-              ∀ i, IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+              ∀ i, IsPLHomeomorphOn (q j i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P j i) ∧
                 P j i ⊆ L.space ∩ Subtype.val '' (D '' D.domain) ∧
                 (PiecewiseLinear.restrict R (P j i)).space = P j i ∧
                 ∀ x ∈ L.space ∩ W j,

@@ -392,7 +392,7 @@ theorem loopFlag_flagMap_selected
   classical
   have h : loopFlag N endpoint chart s b e t = ⟨none, b ⟨(e.val, t), e.property, hi⟩⟩ := by
     unfold loopFlag
-    rw [dif_pos hi]
+    rw [dite_eq_left hi]
   exact congrArg (fun p : Σ v, OrientedBallChart (loopFactor N endpoint s
       v).toClosedOrientedManifold =>
     (⟨p.fst, p.snd.chart x⟩ : Σ v, (loopFactor N endpoint s v).Carrier)) h
@@ -409,7 +409,7 @@ theorem loopFlag_flagMap_remaining
   have h : loopFlag N endpoint chart s b e t =
       ⟨some ⟨endpoint e.val t, hi⟩, chart e.val t⟩ := by
     unfold loopFlag
-    rw [dif_neg hi]
+    rw [dite_eq_right hi]
   exact congrArg (fun p : Σ v, OrientedBallChart (loopFactor N endpoint s
       v).toClosedOrientedManifold =>
     (⟨p.fst, p.snd.chart x⟩ : Σ v, (loopFactor N endpoint s v).Carrier)) h

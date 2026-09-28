@@ -83,7 +83,7 @@ theorem moser_aestronglyMeasurable_matMulE
     hG_ofLp_cont.comp_aestronglyMeasurable hG
   have hmulVec :
       AEMeasurable (fun x => Matrix.mulVec (A.a x) (G x).ofLp) (volume.restrict Ω) := by
-    refine aemeasurable_pi_lambda _ ?_
+    refine AEMeasurable.of_eval ?_
     intro i
     have hmeas_sum :
         AEMeasurable
@@ -116,26 +116,24 @@ theorem moser_tendsto_eLpNorm_zero_of_dominated
       (MeasureTheory.unifIntegrable_const (p := (2 : ENNReal))
         (by norm_num) (by simp) hH_memLp)
   have huiF : UnifIntegrable F 2 μ := by
+    refine MeasureTheory.unifIntegrable_iff.mpr ?_
     intro ε hε
-    obtain ⟨δ, hδ, hδ'⟩ := huiH hε
-    refine ⟨δ, hδ, fun n s hs hμs => ?_⟩
+    obtain ⟨δ, hδ, hδ'⟩ := (MeasureTheory.unifIntegrable_iff.mp huiH) ε hε
+    refine ⟨δ, hδ, fun n s hs => ?_⟩
     calc
-      eLpNorm (s.indicator (F n)) 2 μ ≤ eLpNorm (s.indicator H) 2 μ := by
-        refine eLpNorm_mono_ae_real ?_
-        filter_upwards [hdom n] with x hx
-        by_cases hxs : x ∈ s
-        · simpa [Set.indicator_of_mem, hxs] using hx
-        · simp [Set.indicator_of_notMem, hxs]
-      _ ≤ ENNReal.ofReal ε := hδ' 0 s hs hμs
+      eLpNorm (F n) 2 (μ.restrict s) ≤ eLpNorm H 2 (μ.restrict s) := by
+        refine eLpNorm_mono_ae_real ((hF_meas n).restrict) ?_
+        simpa only [Real.norm_eq_abs] using ae_restrict_of_ae (hdom n)
+      _ ≤ ε := hδ' 0 s hs
   have hutH : UnifTight (fun _ : ℕ => H) 2 μ := by
     exact MeasureTheory.unifTight_const (p := (2 : ENNReal)) (by simp) hH_memLp
   have hutF : UnifTight F 2 μ := by
     intro ε hε
-    obtain ⟨s, hμs, hs'⟩ := hutH hε
-    refine ⟨s, hμs, fun n => ?_⟩
+    obtain ⟨s, hs, hμs, hs'⟩ := hutH.exists_measurableSet_indicator hε.ne'
+    refine ⟨s, hμs.ne, fun n => ?_⟩
     calc
       eLpNorm (sᶜ.indicator (F n)) 2 μ ≤ eLpNorm (sᶜ.indicator H) 2 μ := by
-        refine eLpNorm_mono_ae_real ?_
+        refine eLpNorm_mono_ae_real ((hF_meas n).indicator hs.compl) ?_
         filter_upwards [hdom n] with x hx
         by_cases hxs : x ∈ sᶜ
         · simpa [Set.indicator_of_mem, hxs] using hx
@@ -276,9 +274,11 @@ theorem sobolev_prepare_on_ball
     exact hv_support (subset_tsupport _ hx)
   have hv_restrict :
       eLpNorm v qexp μ = eLpNorm v qexp volume := by
+    have hv_meas : AEStronglyMeasurable v volume := by
+      simpa [Measure.restrict_univ] using hwv_univ.memLp.aestronglyMeasurable
     simpa [μ] using
       (MeasureTheory.eLpNorm_restrict_eq_of_support_subset
-        (μ := volume) (p := qexp) hv_support_fun)
+        (μ := volume) (p := qexp) hv_meas hv_support_fun)
   have hSob'' :
       eLpNorm v qexp μ ≤
         ENNReal.ofReal (CGns d 2) * eLpNorm (fun x => ‖hwv_real.weakGrad x‖) 2 μ := by
@@ -354,7 +354,9 @@ lemma affine_map_volume
   rw [show (fun z : E => x₀ + R • z) = (fun z : E => x₀ + z) ∘ (fun z : E => R • z) from rfl]
   rw [← Measure.map_map (measurable_const_add x₀) (measurable_const_smul R)]
   rw [Measure.map_addHaar_smul volume hR.ne']
-  rw [Measure.map_smul, (measurePreserving_add_left volume x₀).map_eq, abs_inv]
+  have hmeas_add : AEMeasurable (fun x : E => x₀ + x) volume :=
+    (measurable_const_add x₀).aemeasurable
+  rw [Measure.map_smul _ hmeas_add, (measurePreserving_add_left volume x₀).map_eq, abs_inv]
 
 omit [NeZero d] in
 lemma affine_map_restrict_ball_radius

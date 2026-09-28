@@ -125,8 +125,8 @@ theorem eventually_exists_vertexMap_eq_height_on_fiber_of_unique_vertex_in_fiber
   let φ : E → E := fun v => if hv : v ∈ A then Classical.choose (hf ⟨v, hv⟩) else v
   have hφ : ∀ v ∈ A, R f v (φ v) := by
     intro v hv
-    simpa only [φ, dif_pos hv] using Classical.choose_spec (hf ⟨v, hv⟩)
-  have hfix : ∀ v ∉ A, φ v = v := fun v hv => dif_neg hv
+    simpa only [φ, dite_eq_left hv] using Classical.choose_spec (hf ⟨v, hv⟩)
+  have hfix : ∀ v ∉ A, φ v = v := fun v hv => dite_eq_right hv
   refine ⟨φ, fun v hv => hfix v hv, ?_, ?_, fun v hv => (hφ v hv).1,
     fun v hv => (hφ v hv).2.1, fun v hv => (hφ v hv.1).2.2.1 hv.2⟩
   · intro v hvK

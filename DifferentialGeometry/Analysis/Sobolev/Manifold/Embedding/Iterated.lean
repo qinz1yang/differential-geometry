@@ -338,7 +338,6 @@ theorem MemWkp_subcritical_iterated
           rw [hp_1_enn_def, hpOne_eq]]
         exact h
       have hf_W1p : DeGiorgi.MemW1p p_enn f Ω := MemWkp.one_iff_memW1p.mp hf
-      have hf_aem : AEStronglyMeasurable f (volume.restrict Ω) := hf.memLp.aestronglyMeasurable
       have h_eLp_lt_top : eLpNorm f p_1_enn (volume.restrict Ω) < ⊤ := by
         refine lt_of_le_of_lt h_subcritical ?_
         have h_wkp_lt_top : iteratedWeakSobolevNorm (d := d) 1 p_enn f Ω < ⊤ :=
@@ -348,7 +347,7 @@ theorem MemWkp_subcritical_iterated
         refine ENNReal.mul_lt_top ?_ h_wkp_lt_top
         exact ENNReal.mul_lt_top h_first.lt_top h_d_top.lt_top
       have hf_memLp_p1 : MemLp f p_1_enn (volume.restrict Ω) :=
-        ⟨hf_aem, h_eLp_lt_top⟩
+        h_eLp_lt_top
       refine ⟨?_, ?_⟩
       · rw [MemWkp_zero]
         exact hf_memLp_p1
@@ -387,8 +386,6 @@ theorem MemWkp_subcritical_iterated
           rw [show p_1_enn = ENNReal.ofReal ((d : ℝ) * p / ((d : ℝ) - p)) from by
             rw [hp_1_enn_def, hpOne_eq]]
           exact h
-        have hf_aem : AEStronglyMeasurable f (volume.restrict Ω) :=
-          hf.memLp.aestronglyMeasurable
         have h_eLp_lt_top : eLpNorm f p_1_enn (volume.restrict Ω) < ⊤ := by
           refine lt_of_le_of_lt h_subcritical ?_
           have h_wkp_lt_top : iteratedWeakSobolevNorm (d := d) 1 p_enn f Ω < ⊤ :=
@@ -397,7 +394,7 @@ theorem MemWkp_subcritical_iterated
           exact ENNReal.mul_lt_top
             (ENNReal.ofReal_lt_top) (ENNReal.natCast_lt_top _)
         refine ⟨?_, ?_⟩
-        · rw [MemWkp_zero]; exact ⟨hf_aem, h_eLp_lt_top⟩
+        · rw [MemWkp_zero]; exact h_eLp_lt_top
         · rw [wkpNorm_zero, subcriticalConstant_zero]
           unfold subcriticalConstantBase
           have hC_nn : 0 ≤ DeGiorgi.CGns d p := DeGiorgi.C_gns_nonneg d p
@@ -1723,8 +1720,7 @@ theorem iterated_sobolev_embedding_chart_C0
             exact le_antisymm h_le (zero_le)
           have hp_pos : ENNReal.ofReal p ≠ 0 := by
             rw [Ne, ENNReal.ofReal_eq_zero]; linarith
-          have h_aesm := (hu α).memLp.aestronglyMeasurable
-          exact (MeasureTheory.eLpNorm_eq_zero_iff h_aesm hp_pos).mp h_eLp_zero
+          exact (MeasureTheory.eLpNorm_eq_zero_iff hp_pos).mp h_eLp_zero
         have h_per_chart_p'_zero : ∀ α : M,
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) k (ENNReal.ofReal p')
@@ -1920,8 +1916,7 @@ theorem iterated_sobolev_embedding_chart_C0
             exact le_antisymm h_le (zero_le)
           have hp1_pos : ENNReal.ofReal p_1 ≠ 0 := by
             rw [Ne, ENNReal.ofReal_eq_zero]; linarith
-          have h_aesm := (h_mem_p1' α).memLp.aestronglyMeasurable
-          exact (MeasureTheory.eLpNorm_eq_zero_iff h_aesm hp1_pos).mp h_eLp_zero
+          exact (MeasureTheory.eLpNorm_eq_zero_iff hp1_pos).mp h_eLp_zero
         have h_per_chart_p'_zero : ∀ α : M,
             DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
               (d := Module.finrank ℝ E) k' (ENNReal.ofReal p')

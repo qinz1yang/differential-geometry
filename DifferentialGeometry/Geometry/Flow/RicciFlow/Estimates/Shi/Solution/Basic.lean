@@ -92,13 +92,13 @@ theorem bernsteinShi_solution_estimate
   set wLap' : ℕ -> Real -> M -> Real := fun k => if k <= m then wLap k else fun _ _ => 0
     with hwLap'_def
   have hw'_le : ∀ k : ℕ, k <= m -> w' k = w k := by
-    intro k hk; simp only [hw'_def, if_pos hk]
+    intro k hk; simp only [hw'_def, ite_eq_left hk]
   have hw'_gt : ∀ k : ℕ, ¬ k <= m -> w' k = fun _ _ => 0 := by
-    intro k hk; simp only [hw'_def, if_neg hk]
+    intro k hk; simp only [hw'_def, ite_eq_right hk]
   have hwLap'_le : ∀ k : ℕ, k <= m -> wLap' k = wLap k := by
-    intro k hk; simp only [hwLap'_def, if_pos hk]
+    intro k hk; simp only [hwLap'_def, ite_eq_left hk]
   have hwLap'_gt : ∀ k : ℕ, ¬ k <= m -> wLap' k = fun _ _ => 0 := by
-    intro k hk; simp only [hwLap'_def, if_neg hk]
+    intro k hk; simp only [hwLap'_def, ite_eq_right hk]
   have hw'_val_le : ∀ k : ℕ, k <= m -> ∀ (s : Real) (y : M), w' k s y = w k s y := by
     intro k hk s y; rw [hw'_le k hk]
   have hw'_val_gt : ∀ k : ℕ, ¬ k <= m -> ∀ (s : Real) (y : M), w' k s y = 0 := by

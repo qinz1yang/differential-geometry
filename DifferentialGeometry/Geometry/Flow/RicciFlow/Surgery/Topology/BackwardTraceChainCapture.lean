@@ -86,7 +86,7 @@ end Chain
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem exists_cap_capture_of_chain_point_without_trace_of_comparison
     {p : CutoffParameters}

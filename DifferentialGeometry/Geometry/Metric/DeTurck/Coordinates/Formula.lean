@@ -205,7 +205,7 @@ lemma coord_christoffelCorrection_chartBasis_pair
       · intro k' _ hk'
         rw [LinearMap.map_smul, smul_eq_mul]
         simp only [Module.Basis.coord_apply, Module.Basis.repr_self,
-          Finsupp.single_apply, if_neg hk', mul_zero]
+          Finsupp.single_apply, ite_eq_right hk', mul_zero]
       · intro h
         exact absurd (Finset.mem_univ p) h
     · intro j' _ hj'
@@ -213,7 +213,7 @@ lemma coord_christoffelCorrection_chartBasis_pair
       refine Finset.sum_eq_zero (fun p' _ => ?_)
       rw [LinearMap.map_smul, smul_eq_mul]
       simp only [Module.Basis.coord_apply, Module.Basis.repr_self,
-        Finsupp.single_apply, if_neg (Ne.symm hj')]
+        Finsupp.single_apply, ite_eq_right (Ne.symm hj')]
       ring
     · intro h
       exact absurd (Finset.mem_univ j) h
@@ -224,7 +224,7 @@ lemma coord_christoffelCorrection_chartBasis_pair
     refine Finset.sum_eq_zero (fun p' _ => ?_)
     rw [LinearMap.map_smul, smul_eq_mul]
     simp only [Module.Basis.coord_apply, Module.Basis.repr_self,
-      Finsupp.single_apply, if_neg (Ne.symm hk')]
+      Finsupp.single_apply, ite_eq_right (Ne.symm hk')]
     ring
   · intro h
     exact absurd (Finset.mem_univ k) h

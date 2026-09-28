@@ -66,15 +66,6 @@ theorem exists_pos_forall_mem_of_compact_zeroSection
       (fun p _ => h0 p)
   exact ⟨δ, hδ, fun p t ht => h p (mem_univ p) t ht⟩
 
-private theorem eqOn_symm_of_eqOn_id {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M]
-    {Φ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞} {X : Set M}
-    (h : Set.EqOn Φ id X) : Set.EqOn Φ.symm id X := by
-  intro x hx
-  have hx' : Φ x = x := h hx
-  calc Φ.symm x = Φ.symm (Φ x) := by rw [hx']
-    _ = x := Diffeomorph.symm_apply_apply Φ x
-
 def BoundaryCollarRegularization : Prop :=
   ∀ {S : Type u} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
     [IsManifold (𝓡 2) ∞ S] [T2Space S] [CompactSpace S]
@@ -90,45 +81,6 @@ def BoundaryCollarRegularization : Prop :=
           (∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < δ →
             Φ (c₀ (p, t)) = c₁ (p, t)) ∧
           Set.EqOn Φ id (c₀ '' {q : S × EuclideanHalfSpace 1 | q.2.1 0 < δ})ᶜ
-
-theorem relativeBoundaryCollarUniqueness_of_regularization
-    (h : BoundaryCollarRegularization.{u}) :
-    ∀ {S : Type u} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
-    [IsManifold (𝓡 2) ∞ S] [T2Space S] [CompactSpace S]
-    {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
-    (c₀ c₁ : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
-      (S × EuclideanHalfSpace 1) M ∞),
-    (∀ p : S, (p, 0) ∈ c₀.source ∧ (p, 0) ∈ c₁.source) →
-    (∀ p : S, c₀ (p, 0) = c₁ (p, 0)) →
-    (∀ p : S, c₀ (p, 0) ∈ (𝓡∂ 3).boundary M) →
-      ∀ U : Set M, IsOpen U →
-        (∃ ε : ℝ, 0 < ε ∧ ∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < ε →
-          c₀ (p, t) ∈ U ∧ c₁ (p, t) ∈ U) →
-        ∃ δ : ℝ, 0 < δ ∧
-          (∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < δ →
-            (p, t) ∈ c₀.source ∧ (p, t) ∈ c₁.source ∧
-              c₀ (p, t) ∈ U ∧ c₁ (p, t) ∈ U) ∧
-          ∃ Φ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞,
-            (∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < δ →
-              Φ (c₀ (p, t)) = c₁ (p, t)) ∧
-            Set.EqOn Φ id Uᶜ ∧ Set.EqOn Φ.symm id Uᶜ := by
-  intro S _ _ _ _ _ M _ _ _ _ _ c₀ c₁ hsrc hcore hbdy U _ ⟨ε, hε, hU⟩
-  obtain ⟨δsrc, hδsrc, hstrip⟩ := exists_pos_forall_mem_of_compact_zeroSection
-    (S := S) (W := c₀.source ∩ c₁.source)
-    (c₀.open_source.inter c₁.open_source) (fun p => ⟨(hsrc p).1, (hsrc p).2⟩)
-  obtain ⟨δ, hδ, hδε, Φ, hmatch, hsupp⟩ :=
-    h c₀ c₁ hsrc hcore hbdy (min δsrc ε) (lt_min hδsrc hε)
-  have hδsrc' : δ ≤ δsrc := hδε.trans (min_le_left _ _)
-  have hδε' : δ ≤ ε := hδε.trans (min_le_right _ _)
-  have hsub : Uᶜ ⊆ (c₀ '' {q : S × EuclideanHalfSpace 1 | q.2.1 0 < δ})ᶜ := by
-    rintro x hx ⟨q, hq, rfl⟩
-    exact hx (hU q.1 q.2 (lt_of_lt_of_le hq hδε')).1
-  refine ⟨δ, hδ, fun p t ht => ?_, Φ, hmatch, Set.EqOn.mono hsub hsupp,
-    eqOn_symm_of_eqOn_id (Set.EqOn.mono hsub hsupp)⟩
-  · exact ⟨(hstrip p t (lt_of_lt_of_le ht hδsrc')).1,
-      (hstrip p t (lt_of_lt_of_le ht hδsrc')).2,
-      (hU p t (lt_of_lt_of_le ht hδε')).1, (hU p t (lt_of_lt_of_le ht hδε')).2⟩
 
 theorem exists_diffeomorph_of_eqOn_halfStrip
     {S : Type u} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]

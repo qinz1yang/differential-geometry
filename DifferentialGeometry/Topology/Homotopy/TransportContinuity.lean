@@ -14,42 +14,17 @@ variable {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y] {x y : X}
 
 
 
-theorem continuous_cubePathExtension_joint (n : ℕ) :
-    Continuous (fun z : (Path x y × GenLoop (Fin (n + 1)) X x) ×
-      (unitInterval × (Fin (n + 1) → unitInterval)) =>
-        cubePathExtension n z.1.1 z.1.2 z.2) := by
-  apply Continuous.if
-  · intro z hz
-    have heq := frontier_le_subset_eq
-      ((continuous_cubeRadius n).comp (continuous_snd.comp continuous_snd))
-      (continuous_const.sub
-        ((continuous_subtype_val.comp (continuous_fst.comp continuous_snd)).div_const 2)) hz
-    exact cubePathExtension_interface n z.1.1 z.1.2 z.2 heq
-  · exact continuous_eval.comp
-      ((continuous_subtype_val.comp (continuous_snd.comp continuous_fst)).prodMk
-        ((continuous_cubePrismRetract n).snd.comp continuous_snd))
-  · exact (Path.continuous_uncurry_iff.mpr continuous_id).comp
-      ((continuous_fst.comp continuous_fst).prodMk
-        ((continuous_cubePrismRetract n).fst.comp continuous_snd))
-
-
 theorem continuous_genLoopTransport (n : ℕ) :
     Continuous (fun z : Path x y × GenLoop (Fin (n + 1)) X x => genLoopTransport n z.1 z.2) := by
   apply Continuous.subtype_mk
   apply continuous_of_continuous_uncurry
   change Continuous (fun z : (Path x y × GenLoop (Fin (n + 1)) X x) ×
     (Fin (n + 1) → unitInterval) => cubePathExtension n z.1.1 z.1.2 (1, z.2))
-  apply Continuous.if
-  · intro z hz
-    have heq := frontier_le_subset_eq ((continuous_cubeRadius n).comp continuous_snd)
-      (continuous_const (y := (1 - (1 : ℝ) / 2))) hz
-    exact cubePathExtension_interface n z.1.1 z.1.2 (1, z.2) heq
-  · exact continuous_eval.comp
-      ((continuous_subtype_val.comp (continuous_snd.comp continuous_fst)).prodMk
-        ((continuous_cubePrismRetract n).snd.comp (continuous_const.prodMk continuous_snd)))
-  · exact (Path.continuous_uncurry_iff.mpr continuous_id).comp
-      ((continuous_fst.comp continuous_fst).prodMk
-        ((continuous_cubePrismRetract n).fst.comp (continuous_const.prodMk continuous_snd)))
+  have h : Continuous (fun z : (Path x y × GenLoop (Fin (n + 1)) X x) ×
+      (Fin (n + 1) → unitInterval) => (z.1, ((1 : unitInterval), z.2))) :=
+    continuous_fst.prodMk (continuous_const.prodMk continuous_snd)
+  have hc := (continuous_cubePathExtension_joint (X := X) (x := x) (y := y) n).comp h
+  exact hc
 
 
 theorem genLoopTransport_homotopic (n : ℕ) (p : Path x y)

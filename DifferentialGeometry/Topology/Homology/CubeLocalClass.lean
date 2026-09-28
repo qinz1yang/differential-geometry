@@ -4,6 +4,7 @@ import DifferentialGeometry.Topology.Homology.SimplexDegreeNaturality
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology ContinuousMap Set Module
+open Convexity.StdSimplex (coordinateSet coordinateEquiv coordinateHomeomorph)
 open scoped Topology Simplicial
 
 universe u
@@ -14,15 +15,15 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 def cubeStaircasePoint : Fin 3 → unitInterval := ![⟨3/4, by norm_num⟩,⟨1/2, by norm_num⟩,⟨1/4, by norm_num⟩]
 
-private theorem staircasePoint_coordinate (e : Equiv.Perm (Fin 3)) (q : stdSimplex ℝ (Fin 4)) (k : Fin 3)
+private theorem staircasePoint_coordinate (e : Equiv.Perm (Fin 3)) (q : Convexity.StdSimplex ℝ (Fin 4)) (k : Fin 3)
  (h : staircaseSimplex e q = cubeStaircasePoint) :
- ((cubeStaircasePoint (e k) : unitInterval) : ℝ) = ∑ j : Fin 4, if k.val < j.val then q.val j else 0 := by
+ ((cubeStaircasePoint (e k) : unitInterval) : ℝ) = ∑ j : Fin 4, if k.val < j.val then q.weights j else 0 := by
   have hh := congrArg (fun z => (z (e k) : unitInterval) : (Fin 3 → unitInterval) → unitInterval) h
   change (cubeStaircasePoint (e k) : ℝ) = _
   rw [← hh]
   simp [staircaseSimplex, staircaseCoordinate]
 
-private theorem staircasePoint_antitone (e : Equiv.Perm (Fin 3)) (q : stdSimplex ℝ (Fin 4))
+private theorem staircasePoint_antitone (e : Equiv.Perm (Fin 3)) (q : Convexity.StdSimplex ℝ (Fin 4))
  (h : staircaseSimplex e q = cubeStaircasePoint) :
  ((cubeStaircasePoint (e 0) : unitInterval) : ℝ) ≥ ((cubeStaircasePoint (e 1) : unitInterval) : ℝ) ∧
  ((cubeStaircasePoint (e 1) : unitInterval) : ℝ) ≥ ((cubeStaircasePoint (e 2) : unitInterval) : ℝ) := by
@@ -35,18 +36,18 @@ private theorem staircasePoint_antitone (e : Equiv.Perm (Fin 3)) (q : stdSimplex
     intro j hj
     split_ifs <;> first
     | exact le_rfl
-    | exact q.property.1 j
+    | exact q.weights_nonneg j
     | omega
   · rw [h1, h2]
     apply Finset.sum_le_sum
     intro j hj
     split_ifs <;> first
     | exact le_rfl
-    | exact q.property.1 j
+    | exact q.weights_nonneg j
     | omega
 
 theorem staircaseSimplex_ne_cubeStaircasePoint (e : Equiv.Perm (Fin 3))
-    (he : e ≠ Equiv.refl (Fin 3)) (q : stdSimplex ℝ (Fin 4)) :
+    (he : e ≠ Equiv.refl (Fin 3)) (q : Convexity.StdSimplex ℝ (Fin 4)) :
     staircaseSimplex e q ≠ cubeStaircasePoint := by
   intro h
   have hm := staircasePoint_antitone e q h
@@ -62,14 +63,15 @@ theorem staircaseSimplex_ne_cubeStaircasePoint (e : Equiv.Perm (Fin 3))
   fin_cases i <;> simp_all
 
 theorem staircaseSimplex_refl_eq_cubeStaircasePoint_coordinates
-    (q : stdSimplex ℝ (Fin 4))
+    (q : Convexity.StdSimplex ℝ (Fin 4))
     (h : staircaseSimplex (Equiv.refl (Fin 3)) q = cubeStaircasePoint) (i : Fin 4) :
-    q.val i = (1/4 : ℝ) := by
+    q.weights i = (1/4 : ℝ) := by
   have h0 := staircasePoint_coordinate (Equiv.refl (Fin 3)) q 0 h
   have h1 := staircasePoint_coordinate (Equiv.refl (Fin 3)) q 1 h
   have h2 := staircasePoint_coordinate (Equiv.refl (Fin 3)) q 2 h
-  have hsum := q.property.2
-  norm_num [cubeStaircasePoint, Fin.sum_univ_succ, Matrix.cons_val_two] at h0 h1 h2 hsum
+  have hsum := q.total_of_fintype
+  norm_num [cubeStaircasePoint, Fin.sum_univ_succ, Matrix.cons_val_two] at h0 h1 h2
+  rw [Fin.sum_univ_four] at hsum
   fin_cases i
   · dsimp
     linarith
@@ -80,8 +82,9 @@ theorem staircaseSimplex_refl_eq_cubeStaircasePoint_coordinates
   · exact h2.symm
 
 theorem staircaseSimplex_refl_face_ne_cubeStaircasePoint (i : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) :
-    staircaseSimplex (Equiv.refl (Fin 3)) (SimplexDegree.orientedSimplexFace i q) ≠
+    (q : coordinateSet ℝ (Fin 3)) :
+    staircaseSimplex (Equiv.refl (Fin 3))
+      ((coordinateHomeomorph ℝ _).symm (SimplexDegree.orientedSimplexFace i q)) ≠
       cubeStaircasePoint := by
   intro h
   have hh := staircaseSimplex_refl_eq_cubeStaircasePoint_coordinates _ h i
@@ -91,15 +94,16 @@ theorem staircaseSimplex_refl_face_ne_cubeStaircasePoint (i : Fin 4)
     apply Finset.sum_eq_zero
     intro j hj
     exact False.elim (Fin.succAbove_ne i j (Finset.mem_filter.mp hj).2)
+  change (SimplexDegree.orientedSimplexFace i q).val i = (1 / 4 : ℝ) at hh
   rw [hi] at hh
   norm_num at hh
 
 
 private theorem singularSimplexChain_comp_projection_of_mem {X : Type u} [TopologicalSpace X]
-    (n : ℕ) (A : Set X) (σ : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (n : ℕ) (A : Set X) (σ : C(coordinateSet ℝ (Fin (n + 1)), X))
     (hσ : ∀ t, σ t ∈ A) :
     SimplexDegree.integralSimplexChain n σ ≫ (integralRelativeProjection A).f n = 0 := by
-  let τ : C(stdSimplex ℝ (Fin (n + 1)), A) :=
+  let τ : C(coordinateSet ℝ (Fin (n + 1)), A) :=
     ⟨fun t => ⟨σ t, hσ t⟩, σ.continuous.subtype_mk _⟩
   have hchain : SimplexDegree.integralSimplexChain n τ ≫
       (integralSingularChainMap (singularSubspaceInclusion A)).f n =
@@ -108,7 +112,8 @@ private theorem singularSimplexChain_comp_projection_of_mem {X : Type u} [Topolo
       (TopCat.toSSet.obj (TopCat.of X))
       (TopCat.toSSet.map (TopCat.ofHom (singularSubspaceInclusion A)))
       integralSingularCoefficients
-      ((TopCat.toSSetObjEquiv (TopCat.of A) (.op ⦋n⦌)).symm τ)
+      ((TopCat.toSSetObjEquiv (TopCat.of A) (.op ⦋n⦌)).symm
+        (τ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩))
   have hπ : (integralSingularChainMap (singularSubspaceInclusion A)).f n ≫
       (integralRelativeProjection A).f n = 0 :=
     congrArg (fun f => f.f n) (integralRelativeProjection_condition A)
@@ -136,7 +141,8 @@ private theorem integralChainHom_cubeTetrahedralChain_image {X : Type u} [Topolo
     (f : C(Fin 3 → unitInterval, X)) :
     integralChainHom 3 (singularChainImageGen 3 f cubeTetrahedralChain) =
       ∑ e : Equiv.Perm (Fin 3), ((e.sign : ℤˣ) : ℤ) •
-        SimplexDegree.integralSimplexChain 3 (f.comp (staircaseSimplex e)) := by
+        SimplexDegree.integralSimplexChain 3 ((f.comp (staircaseSimplex e)).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) := by
   apply ModuleCat.hom_ext
   apply LinearMap.ext
   intro y
@@ -152,6 +158,20 @@ private theorem integralChainHom_cubeTetrahedralChain_image {X : Type u} [Topolo
   apply Finset.sum_congr rfl
   intro e he
   rw [map_zsmul, singularChainImageGen_simplex]
+  have hc : (((f.comp (staircaseSimplex e)).comp
+        ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩).comp
+          ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩) =
+      f.comp (staircaseSimplex e) := by
+    apply ContinuousMap.ext
+    intro q
+    change f (staircaseSimplex e
+      ((coordinateHomeomorph ℝ _).symm (coordinateHomeomorph ℝ _ q))) =
+        f (staircaseSimplex e q)
+    rw [Homeomorph.symm_apply_apply]
+  change _ = ((e.sign : ℤˣ) : ℤ) •
+    DifferentialGeometry.Topology.integralSimplexChain 3
+      ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋3⦌)).symm _)
+  rw [hc]
   rfl
 
 private theorem cubeChain_image_comp_projection_eq_simplex {X : Type u} [TopologicalSpace X]
@@ -160,7 +180,8 @@ private theorem cubeChain_image_comp_projection_eq_simplex {X : Type u} [Topolog
       ∀ t, f (staircaseSimplex e t) ≠ p) :
     integralChainHom 3 (singularChainImageGen 3 f cubeTetrahedralChain) ≫
         (integralRelativeProjection ({p}ᶜ : Set X)).f 3 =
-      SimplexDegree.integralSimplexChain 3 (f.comp (staircaseSimplex (Equiv.refl (Fin 3)))) ≫
+      SimplexDegree.integralSimplexChain 3 ((f.comp (staircaseSimplex (Equiv.refl (Fin 3)))).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) ≫
         (integralRelativeProjection ({p}ᶜ : Set X)).f 3 := by
   classical
   rw [integralChainHom_cubeTetrahedralChain_image]
@@ -170,7 +191,8 @@ private theorem cubeChain_image_comp_projection_eq_simplex {X : Type u} [Topolog
   · intro e he hne
     erw [Linear.smul_comp,
       singularSimplexChain_comp_projection_of_mem 3 ({p}ᶜ : Set X)
-        (f.comp (staircaseSimplex e)) (fun t => hp e hne t), smul_zero]
+        ((f.comp (staircaseSimplex e)).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) (fun t => hp e hne ((coordinateHomeomorph ℝ _).symm t)), smul_zero]
   · intro h
     exact False.elim (h (Finset.mem_univ _))
 
@@ -186,14 +208,16 @@ theorem liftedCubeTetrahedralChain_comp_projection :
         (integralRelativeProjection ({ULift.up cubeStaircasePoint}ᶜ :
           Set (ULift.{u} (Fin 3 → unitInterval)))).f 3 =
       SimplexDegree.integralSimplexChain 3
-          (liftedCubeUp.comp (staircaseSimplex (Equiv.refl (Fin 3)))) ≫
+          ((liftedCubeUp.comp (staircaseSimplex (Equiv.refl (Fin 3)))).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩) ≫
         (integralRelativeProjection ({ULift.up cubeStaircasePoint}ᶜ :
           Set (ULift.{u} (Fin 3 → unitInterval)))).f 3 :=
   cubeChain_image_comp_projection_eq_simplex liftedCubeUp (ULift.up cubeStaircasePoint)
     (fun e he q h => staircaseSimplex_ne_cubeStaircasePoint e he q (ULift.up_inj.mp h))
 
-private theorem liftedCubeSimplex_faces (i : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
-    (liftedCubeUp.{u}.comp (staircaseSimplex (Equiv.refl (Fin 3))))
+private theorem liftedCubeSimplex_faces (i : Fin 4) (q : coordinateSet ℝ (Fin 3)) :
+    ((liftedCubeUp.{u}.comp (staircaseSimplex (Equiv.refl (Fin 3)))).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩)
         (SimplexDegree.orientedSimplexFace i q) ≠ ULift.up cubeStaircasePoint :=
   fun h => staircaseSimplex_refl_face_ne_cubeStaircasePoint i q (ULift.up_inj.mp h)
 
@@ -206,7 +230,8 @@ theorem liftedCubeTetrahedralChain_local_boundary :
   rw [liftedCubeTetrahedralChain_comp_projection]
   exact integralRelativeChain_projection_boundary 1 _
     (SimplexDegree.integralSimplexChain 3
-      (liftedCubeUp.comp (staircaseSimplex (Equiv.refl (Fin 3)))))
+      ((liftedCubeUp.comp (staircaseSimplex (Equiv.refl (Fin 3)))).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩))
     (SimplexDegree.puncturedSimplexBoundary (ULift.up cubeStaircasePoint) _
       liftedCubeSimplex_faces)
     (SimplexDegree.puncturedSimplexBoundary_chain (ULift.up cubeStaircasePoint) _
@@ -221,7 +246,8 @@ def liftedCubeLocalClass : integralLocalHomology 3
 
 theorem liftedCubeLocalClass_eq_simplexLocalClass :
     liftedCubeLocalClass.{u} = SimplexDegree.simplexLocalClass (ULift.up cubeStaircasePoint)
-      (liftedCubeUp.comp (staircaseSimplex (Equiv.refl (Fin 3))))
+      ((liftedCubeUp.comp (staircaseSimplex (Equiv.refl (Fin 3)))).comp
+          ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩)
       liftedCubeSimplex_faces := by
   unfold liftedCubeLocalClass SimplexDegree.simplexLocalClass
   apply congrArg (fun k : integralSingularCoefficients ⟶

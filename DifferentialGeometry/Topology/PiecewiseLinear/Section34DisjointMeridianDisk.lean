@@ -20,7 +20,7 @@ theorem IsCylindricalDiagram.exists_aligned_disk_of_disjoint_essential_meridian
       EqOn H id (f '' ((boundaryComplex 2 D).space ×ˢ {0})) ∧
       IsCylindricalDiagram (H ∘ f) D.space S ∧
       (∀ x ∈ D.space, (H ∘ f) (x, 0) = (H ∘ f) (x, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ∧
       q '' stdSimplexBoundary 2 = J ∧ ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ⊆ S := by
   obtain ⟨K, hK, hKA, hfK, hess⟩ :=
     hf.exists_essential_lateral_pullback_of_disjoint_seam D hD hJ hJside hdis hnon
@@ -43,7 +43,7 @@ theorem IsCylindricalDiagram.exists_original_meridian_disk_of_disjoint_image
     ∃ (H : F → F) (q : (Fin 3 → ℝ) → F), IsPLHomeomorphOn H S S ∧
       IsCylindricalDiagram (H ∘ f) D.space S ∧
       (∀ x ∈ D.space, (H ∘ f) (x, 0) = (H ∘ f) (x, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ∧
       q '' stdSimplexBoundary 2 = J ∧ ((H ∘ f) '' (D.space ×ˢ {1 / 2})) ⊆ S := by
   have hσJ : IsPLSphere 1 (σ '' J) :=
     hJ.of_isPLHomeomorphOn (hσ.restrict hJ.isPolyhedron hJS)
@@ -53,7 +53,7 @@ theorem IsCylindricalDiagram.exists_original_meridian_disk_of_disjoint_image
   let U := τ ∘ H
   have hU : IsPLHomeomorphOn U S S := hH.trans hσ.symm
   have hg := hf.postcomp_equivalence hU
-  have hq' : IsPLHomeomorphOn (τ ∘ q) (stdSimplex ℝ (Fin 3))
+  have hq' : IsPLHomeomorphOn (τ ∘ q) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       ((U ∘ f) '' (D.space ×ˢ {1 / 2})) := by
     have ht := hq.trans (hσ.symm.restrict (IsPLBall.isPolyhedron ⟨q, hq⟩) hQS)
     rw [← image_comp] at ht

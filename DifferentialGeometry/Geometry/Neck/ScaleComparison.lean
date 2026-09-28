@@ -42,7 +42,7 @@ private theorem abs_trace_le_of_metric_bound
     _ ≤ ∑ _i : Fin (Module.finrank ℝ (TangentSpace I x)), c := by
       refine Finset.sum_le_sum fun i _ => ?_
       have hu : g.inner x (b i) (b i) = 1 := by simpa only [ite_true] using hb i i
-      have hcs := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+      have hcs := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
         g x (A (b i)) (b i)
       rw [hu, Real.sqrt_one, mul_one] at hcs
       exact hcs.trans (by simpa only [hu, Real.sqrt_one, mul_one] using hA (b i))

@@ -290,7 +290,7 @@ private lemma exists_eigenSpatialFactor_jet_le_lambda_pow
     rw [hCmax_def]
     refine le_trans (le_of_eq ?_) (Finset.le_sup' (fun b => if hb : b ≤ m then Cf b hb else 0)
       (Finset.mem_range.mpr (by omega : m' < m + 1)))
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   refine ⟨Cmax, 2 * kE, ?_, fun m' hm' i y hy => ?_⟩
   · exact le_trans (hCf_nn 0 (Nat.zero_le m)) (hCmax_ge 0 (Nat.zero_le m))
   · refine le_trans (hCf m' hm' i y hy) ?_

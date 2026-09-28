@@ -53,12 +53,13 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq'
-    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ) :
+    {β : Type*} [MeasurableSpace β] (μ : Measure β) (f : β → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -68,65 +69,6 @@ private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq'
     rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) from by norm_num, ENNReal.rpow_natCast]
   rw [h_inner_eq, ← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]
   norm_num
-
-omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
-private lemma hsNorm_zero_summand_eq_sq_eLpNorm_chartPushedSqrtPou
-    (g : SmoothRiemannianMetric I M) (r s : ℕ)
-    (T : Integral.L2.SmoothCcTensor g r s) (α : M)
-    (Idx : Fin r → Fin (Module.finrank ℝ E))
-    (Jdx : Fin s → Fin (Module.finrank ℝ E))
-    (basisIdx : Fin 0 → Fin (Module.finrank ℝ E)) :
-    (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
-        ENNReal.ofReal
-          (((chartAtlasPOU I M α : M → ℝ)
-              ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) *
-            |(iteratedFDeriv ℝ 0
-                  (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx
-                    ∘ (extChartAt I α).symm
-                    ∘ (toEuclidean (E := E)).symm)
-                  y)
-                (fun i => EuclideanSpace.basisFun
-                  (Fin (Module.finrank ℝ E)) ℝ (basisIdx i))| ^ 2)
-        ∂(volume : Measure EuclN)) =
-      (eLpNorm
-          (chartPushedRaw I α
-            (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx)) 2
-          ((volume : Measure EuclN).restrict
-            (chartTargetEuclid (I := I) (M := M) α))) ^ 2 := by
-  classical
-  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq']
-  rw [← MeasureTheory.lintegral_indicator
-        (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet,
-      ← MeasureTheory.lintegral_indicator
-        (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet]
-  refine MeasureTheory.lintegral_congr (fun y => ?_)
-  by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
-  · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy]
-    set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb_def
-    have hraw_eval :
-        (iteratedFDeriv ℝ 0
-              (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx
-                ∘ (extChartAt I α).symm
-                ∘ (toEuclidean (E := E)).symm) y)
-            (fun i => EuclideanSpace.basisFun
-              (Fin (Module.finrank ℝ E)) ℝ (basisIdx i)) =
-          tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx b := by
-      rw [iteratedFDeriv_zero_apply]; rfl
-    have hpush :
-        chartPushedRaw I α
-            (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx) y =
-          tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx b :=
-      chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy
-    rw [hraw_eval, hpush]
-    have hw_sq :
-        (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx b) ^ 2 =
-          ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
-            (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx b) ^ 2 :=
-      tensorChartComponentSqrtPou_sq (I := I) (M := M) g r s T α Idx Jdx b
-    rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2]
-    congr 1
-    rw [sq_abs, sq_abs, hw_sq]
-  · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] in
 private lemma support_sqrt_pou_eq' (α : M) :
@@ -220,6 +162,67 @@ private lemma measurable_sqrtPou
       (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx) :=
   (continuous_sqrtPou (I := I) (M := M) g r s T α Idx Jdx).measurable
 
+omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] in
+private lemma hsNorm_zero_summand_eq_sq_eLpNorm_chartPushedSqrtPou
+    (g : SmoothRiemannianMetric I M) (r s : ℕ)
+    (T : Integral.L2.SmoothCcTensor g r s) (α : M)
+    (Idx : Fin r → Fin (Module.finrank ℝ E))
+    (Jdx : Fin s → Fin (Module.finrank ℝ E))
+    (basisIdx : Fin 0 → Fin (Module.finrank ℝ E)) :
+    (∫⁻ y in chartTargetEuclid (I := I) (M := M) α,
+        ENNReal.ofReal
+          (((chartAtlasPOU I M α : M → ℝ)
+              ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))) *
+            |(iteratedFDeriv ℝ 0
+                  (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx
+                    ∘ (extChartAt I α).symm
+                    ∘ (toEuclidean (E := E)).symm)
+                  y)
+                (fun i => EuclideanSpace.basisFun
+                  (Fin (Module.finrank ℝ E)) ℝ (basisIdx i))| ^ 2)
+        ∂(volume : Measure EuclN)) =
+      (eLpNorm
+          (chartPushedRaw I α
+            (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx)) 2
+          ((volume : Measure EuclN).restrict
+            (chartTargetEuclid (I := I) (M := M) α))) ^ 2 := by
+  classical
+  rw [sq_eLpNorm_two_eq_lintegral_enorm_sq' _ _
+    (chartPushedRaw_measurable (I := I) (M := M) α
+      (measurable_sqrtPou (I := I) (M := M) g r s T α Idx Jdx)).aestronglyMeasurable]
+  rw [← MeasureTheory.lintegral_indicator
+        (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet,
+      ← MeasureTheory.lintegral_indicator
+        (chartTargetEuclid_isOpen (I := I) (M := M) α).measurableSet]
+  refine MeasureTheory.lintegral_congr (fun y => ?_)
+  by_cases hy : y ∈ chartTargetEuclid (I := I) (M := M) α
+  · rw [Set.indicator_of_mem hy, Set.indicator_of_mem hy]
+    set b : M := (extChartAt I α).symm ((toEuclidean (E := E)).symm y) with hb_def
+    have hraw_eval :
+        (iteratedFDeriv ℝ 0
+              (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx
+                ∘ (extChartAt I α).symm
+                ∘ (toEuclidean (E := E)).symm) y)
+            (fun i => EuclideanSpace.basisFun
+              (Fin (Module.finrank ℝ E)) ℝ (basisIdx i)) =
+          tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx b := by
+      rw [iteratedFDeriv_zero_apply]; rfl
+    have hpush :
+        chartPushedRaw I α
+            (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx) y =
+          tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx b :=
+      chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy
+    rw [hraw_eval, hpush]
+    have hw_sq :
+        (tensorChartComponentSqrtPou (I := I) (M := M) g r s T α Idx Jdx b) ^ 2 =
+          ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) b *
+            (tensorChartComponentRaw (I := I) (M := M) g r s T α Idx Jdx b) ^ 2 :=
+      tensorChartComponentSqrtPou_sq (I := I) (M := M) g r s T α Idx Jdx b
+    rw [Real.enorm_eq_ofReal_abs, ← ENNReal.ofReal_pow (abs_nonneg _) 2]
+    congr 1
+    rw [sq_abs, sq_abs, hw_sq]
+  · rw [Set.indicator_of_notMem hy, Set.indicator_of_notMem hy]
+
 omit [BoundarylessManifold I M] in
 private lemma sq_eLpNorm_scalar_le_const_mul_hsNorm_zero_summand
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M) :
@@ -289,11 +292,15 @@ private lemma sq_eLpNorm_scalar_le_const_mul_hsNorm_zero_summand
       _ ≤ 1 * Real.sqrt (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) :=
           mul_le_mul_of_nonneg_right hsqrt_le_one hsqrt_nn
       _ = Real.sqrt (((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) := one_mul _
+  have h_scalar_meas : AEStronglyMeasurable
+      (tensorChartComponentScalar (I := I) (M := M) g r s T α Idx Jdx)
+      (riemannianVolumeMeasure (I := I) (M := M) g) :=
+    (((tensorChartComponentScalar_contMDiff (I := I) (M := M) g r s T α Idx Jdx).continuous).measurable).aestronglyMeasurable
   have h_scalar_le_w :
       eLpNorm (tensorChartComponentScalar (I := I) (M := M) g r s T α Idx Jdx) 2
           (riemannianVolumeMeasure (I := I) (M := M) g) ≤
         eLpNorm w 2 (riemannianVolumeMeasure (I := I) (M := M) g) :=
-    eLpNorm_mono h_ptwise
+    eLpNorm_mono h_scalar_meas h_ptwise
   have h_bridge := hCbr (u := w) hw_meas hw_support
   rw [show DifferentialGeometry.Integral.Measure.riemannianMeasure (I := I) g
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M)

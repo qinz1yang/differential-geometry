@@ -68,7 +68,8 @@ theorem abs_dirichletMassVariation_le_norm
         (riemannianVolumeMeasure (I := I_half n) (M := M) (g t)) by
       simpa only [fu, Real.norm_eq_abs] using
         (eLpNorm_norm (p := 2)
-          (μ := riemannianVolumeMeasure (I := I_half n) (M := M) (g t)) u.toFun)]
+          (μ := riemannianVolumeMeasure (I := I_half n) (M := M) (g t)) u.toFun
+          u.memLp_two.aestronglyMeasurable)]
     have hnorm := u.norm_smoothToLp_le
     change ‖u.memLp_two.toLp u.toFun‖ ≤ ‖u‖ at hnorm
     rwa [Lp.norm_toLp] at hnorm
@@ -80,7 +81,8 @@ theorem abs_dirichletMassVariation_le_norm
         (riemannianVolumeMeasure (I := I_half n) (M := M) (g t)) by
       simpa only [fv, Real.norm_eq_abs] using
         (eLpNorm_norm (p := 2)
-          (μ := riemannianVolumeMeasure (I := I_half n) (M := M) (g t)) v.toFun)]
+          (μ := riemannianVolumeMeasure (I := I_half n) (M := M) (g t)) v.toFun
+          v.memLp_two.aestronglyMeasurable)]
     have hnorm := v.norm_smoothToLp_le
     change ‖v.memLp_two.toLp v.toFun‖ ≤ ‖v‖ at hnorm
     rwa [Lp.norm_toLp] at hnorm

@@ -21,10 +21,10 @@ universe u
 
 theorem exists_slices_of_deep_horn_presentation_sequence :
     ∃ eta etaC : ℝ, 0 < eta ∧ 0 < etaC ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} {κ ε ε₁ C1 C2 qcan εc a : ℝ} {Ctime Cgrad : ℝ≥0}
+    ∀ {κ ε ε₁ C1 C2 qcan εc a : ℝ} {Ctime Cgrad : ℝ≥0}
       {phi : ℝ → ℝ}, 0 < κ → 0 < qcan → 0 < ε → ε ≤ etaC → 0 < εc → εc < 1 / 2 → 0 < a →
       Perelman.AdmissiblePinchingFunction phi →
-    ∀ (H : ℕ → RetainedCoreHistory P₀)
+    ∀ (H : ℕ → RetainedCoreHistory.{u})
       (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon),
       (∀ n, (H n).EventSlabsDerivative Ctime qcan (Fin.last (H n).eventCount)) →
       (∀ n, (H n).EventSlabsPinched phi) →
@@ -110,7 +110,7 @@ theorem exists_slices_of_deep_horn_presentation_sequence :
     TerminalCorePresentation.eventually_forall_neck_alternative_of_subset_hornHalfRange.{u}
   refine ⟨min eta₀ (min eta₇ eta₂), min eta₂ eta₇, lt_min heta₀ (lt_min heta₇ heta₂),
     lt_min heta₂ heta₇, ?_⟩
-  intro P₀ κ ε ε₁ C1 C2 qcan εc a Ctime Cgrad phi hκ hq hε hεC hεc hεc12 ha hphi H hend hderiv
+  intro κ ε ε₁ C1 C2 qcan εc a Ctime Cgrad phi hκ hq hε hεC hεc hεc12 ha hphi H hend hderiv
     hpinch s G L hsing parameters hG hs hderG hgradG hcanG hpinchG hncG εP Λ P hεP c e x hxint hRl
     hnoN
   have hεη₂ : ε ≤ eta₂ := hεC.trans (min_le_left _ _)
@@ -160,7 +160,7 @@ theorem exists_slices_of_deep_horn_presentation_sequence :
     intro hfreq
     exact hnoN n ((L n).exists_normalizedNeck_of_frequently_spatialNeck (x n) (hRlpos n) hεc
       (by linarith) hfit hfreq)
-  have hSC7' := hSC7 hε hεη₇ hκ hq hε hphi (fun _ => P₀) H hend s G hG L hsing parameters εP Λ P
+  have hSC7' := hSC7 hε hεη₇ hκ hq hε hphi H hend s G hG L hsing parameters εP Λ P
     hεPη₇ c hcomp e x hhorn hcanG hderiv hderG hgradG hpinch hpinchG hncG hgrow hRs
   choose Q hQ1 hQev using fun m : ℕ => hSC7' (8 * ((m : ℝ) + 1)) (by positivity)
   have hfar : ∀ m : ℕ, ∀ᶠ n in atTop, ∀ w ∈ frontier ((P n).core (c n)),

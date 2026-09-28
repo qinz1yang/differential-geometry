@@ -245,12 +245,12 @@ theorem seamLeft_eq_seamRight_of_norm_eq_one (x : Seam)
 theorem seamMap_of_one_le (x : Seam) (h : 1 ≤ ‖(x : EuclideanSpace ℝ (Fin 3))‖) :
     seamMap c d a x = seamLeft c d a x := by
   unfold seamMap
-  rw [if_pos h]
+  rw [ite_eq_left h]
 
 theorem seamMap_of_lt_one (x : Seam) (h : ¬ 1 ≤ ‖(x : EuclideanSpace ℝ (Fin 3))‖) :
     seamMap c d a x = seamRight c d a x := by
   unfold seamMap
-  rw [if_neg h]
+  rw [ite_eq_right h]
 
 theorem continuous_seamMap : Continuous (seamMap c d a) := by
   have h : seamMap c d a = fun x : Seam =>
@@ -493,7 +493,7 @@ noncomputable def unitVecFun (x : EuclideanSpace ℝ (Fin 3)) :
 
 theorem unitVecFun_of_ne {x : EuclideanSpace ℝ (Fin 3)} (hx : x ≠ 0) :
     unitVecFun x = unitVec x hx := by
-  simp only [unitVecFun, dif_neg hx]
+  simp only [unitVecFun, dite_eq_right hx]
 
 theorem continuous_unitVecFun_subtype :
     Continuous fun x : {x : EuclideanSpace ℝ (Fin 3) // x ≠ 0} =>

@@ -79,7 +79,7 @@ theorem chartCoeff_weightedChartTest (g : SmoothRiemannianMetric I M) (α : M)
   by_cases hji : j = i
   · subst j
     simp
-  · simp only [hji, Ne.symm hji, if_false, mul_zero]
+  · simp only [hji, Ne.symm hji, ite_false, mul_zero]
 
 
 theorem divergence_weightedChartTest [I.Boundaryless] [T2Space M]
@@ -120,7 +120,7 @@ theorem divergence_weightedChartTest [I.Boundaryless] [T2Space M]
     by_cases hji : j = i
     · subst j
       simp only [ite_true]
-    · simp only [hji, if_false, fderiv_const_apply, zero_apply]
+    · simp only [hji, ite_false, fderiv_const_apply, zero_apply]
   simp_rw [hpartial]
   simp
 

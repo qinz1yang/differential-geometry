@@ -95,7 +95,7 @@ theorem cutoff_diffQuot_congr_ae_local {Ω : Set E} (hΩ : MeasurableSet Ω)
     · simp only [indicator_of_mem hxΩ, hx hxΩ]
     · simp only [indicator_of_notMem hxΩ]
   have hs := (measurePreserving_add_right volume
-    (h • EuclideanSpace.single k (1 : ℝ))).quasiMeasurePreserving.ae_eq hind
+    (h • EuclideanSpace.single k (1 : ℝ))).quasiMeasurePreserving.ae_eq_comp hind
   filter_upwards [hind, hs] with x hx hsx
   by_cases hηx : η x = 0
   · simp only [hηx, zero_mul]

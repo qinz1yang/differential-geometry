@@ -32,14 +32,6 @@ theorem pairwise_disjoint_range_twoPointCollarCore :
   obtain ⟨t, ht⟩ := hb
   exact hij (Fin.ext (Nat.cast_inj.mp (ht.trans hs.symm))).symm
 
-theorem twoPointCollarFamily_hypotheses :
-    (∀ i : Fin 2, Topology.IsOpenEmbedding (twoPointCollarHeight i)) ∧
-      (∀ (i : Fin 2) (s : Unit), twoPointCollarHeight i (s, 0) = twoPointCollarCore i s) ∧
-      (Pairwise fun i j : Fin 2 =>
-        Disjoint (range (twoPointCollarCore i)) (range (twoPointCollarCore j))) :=
-  ⟨isOpenEmbedding_twoPointCollarHeight, twoPointCollarHeight_apply_zero,
-    pairwise_disjoint_range_twoPointCollarCore⟩
-
 theorem exists_pos_disjoint_twoPointCollarImages :
     ∃ δ : ℝ, 0 < δ ∧
       Pairwise fun i j : Fin 2 =>

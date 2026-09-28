@@ -165,7 +165,7 @@ theorem exists_uniform_integral_cutoff_diffQuot_weakPartial_le
     change lam / 2 * E t ≤ F₀ t (u t) (S t (L (u t))) + _
     rw [hpair]
     dsimp only [F₀]
-    rw [dirichletWeakFormComplOnIco, dif_pos ht]
+    rw [dirichletWeakFormComplOnIco, dite_eq_left ht]
     exact hb
   have hInt : lam / 2 * (∫ t, ζ t * E t ∂timeMeasure T) ≤
       (∫ t, ζ t * W t ∂timeMeasure T) + CF * ∫ t, ‖u t‖^2 ∂timeMeasure T := by

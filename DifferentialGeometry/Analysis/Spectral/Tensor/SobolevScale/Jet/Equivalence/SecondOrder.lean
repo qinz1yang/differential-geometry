@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Basic.FractionalPower
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.Hilbert.L2BanachIsomorphism
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
-import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.NablaTensor.IteratedNabla
+import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.NormEquivalence
 import Mathlib.Analysis.Normed.Operator.Extend
 
 open DifferentialGeometry.Analysis.Sobolev.HebeyBlock
@@ -46,7 +46,7 @@ theorem tensorPouSobolevHs_order2_equiv_pouSobolev
             (tensorPouSobolevHsNorm (I := I) (M := M) g 2 T).toReal ∧
           (tensorPouSobolevHsNorm (I := I) (M := M) g 2 T).toReal ≤
             C * (tensorPouSobolevNorm (I := I) (M := M) g 2 T).toReal :=
-  iterated_nabla_vs_iterated_partial_equivalence_H1
+  tensorPouSobolevHsNorm_equiv_tensorPouSobolevNorm
     (I := I) (M := M) g r s 2
 
 def tensorHsOrder2IsometryEquivTensorL2

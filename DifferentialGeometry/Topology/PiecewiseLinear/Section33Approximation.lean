@@ -110,7 +110,7 @@ theorem moise331_of_moise323_of_moise324_of_moise264Orientable (h323 : Moise323)
   obtain ⟨XK, AK, h2, h34, h56, h7⟩ := exists_hasNoHandleLoopTheoremDisk hd h2₂ h34₂ h56₂
   have h8 : ∀ v₁ ∈ L'.vertices, ∀ e₁ ∈ L'.faces, e₁.card = 2 →
       ∀ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ →
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ →
         Δ ⊆ Cpp v₁ ∩ interior (h '' (derivedNeighborhood T L').space) →
         Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2 →
         (∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),

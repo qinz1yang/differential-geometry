@@ -35,7 +35,7 @@ theorem mem_crossHalfPlane_iff_label (i : Fin 4) (p : (ℝ × ℝ) × ℝ) :
         0 ≤ (if (fourSpokeLabel i).1 then p.1.2 else p.1.1)
       else (if (fourSpokeLabel i).1 then p.1.2 else p.1.1) ≤ 0) := by
   fin_cases i <;> simp only [fourSpokeLabel, Equiv.coe_fn_mk, Bool.false_eq_true,
-    if_false, if_true] <;> constructor
+    ite_false, ite_true] <;> constructor
   all_goals try
     rintro ⟨a, ha, hpa⟩
     simp only [fourSpokeModelLeaf, Prod.smul_mk, smul_eq_mul, mul_one, mul_zero,

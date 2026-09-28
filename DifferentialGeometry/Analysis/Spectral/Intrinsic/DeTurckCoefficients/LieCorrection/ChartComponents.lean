@@ -611,7 +611,7 @@ lemma covDerivLowerOrderTerm02_center_eq
   rw [Fintype.sum_prod_type]
   rw [Finset.sum_eq_single (![] : Fin 0 → Fin (Module.finrank ℝ E))]
   · simp only [covDerivLowerOrderCoeff_def]
-    simp only [Finset.univ_eq_empty, Finset.sum_empty, if_true, mul_one, zero_sub]
+    simp only [Finset.univ_eq_empty, Finset.sum_empty, ite_true, mul_one, zero_sub]
     have hout : ∀ J' : Fin 2 → Fin (Module.finrank ℝ E),
         (∑ l : Fin 2, outputSlotCoeff (I := I) (M := M) g₀ 2 x m l ![p, q] J'
             (toEuclidean (E := E) (extChartAt I x x))) =
@@ -682,8 +682,8 @@ lemma covDerivLowerOrderTerm02_center_eq
         refine Finset.sum_congr rfl (fun b _ => ?_); ring]
       congr 1
       · rw [Finset.sum_eq_single q]
-        · rw [if_pos rfl]; ring
-        · intro b _ hbq; rw [if_neg (fun h => hbq h.symm)]; ring
+        · rw [ite_eq_left rfl]; ring
+        · intro b _ hbq; rw [ite_eq_right (fun h => hbq h.symm)]; ring
         · intro h; exact absurd (Finset.mem_univ q) h
       · rw [← Finset.mul_sum, Finset.sum_neg_distrib]
     rw [Finset.sum_congr rfl (fun a _ => hsplit a)]
@@ -693,11 +693,11 @@ lemma covDerivLowerOrderTerm02_center_eq
       refine Finset.sum_congr rfl (fun a _ => ?_)
       rw [chartChristoffel_symm (I := I) g₀ x p m a (extChartAt I x x)]
     · rw [Finset.sum_eq_single p]
-      · rw [if_pos rfl, one_mul]
+      · rw [ite_eq_left rfl, one_mul]
         congr 1
         refine Finset.sum_congr rfl (fun b _ => ?_)
         rw [chartChristoffel_symm (I := I) g₀ x q m b (extChartAt I x x)]
-      · intro a _ hap; rw [if_neg (fun h => hap h.symm), zero_mul]
+      · intro a _ hap; rw [ite_eq_right (fun h => hap h.symm), zero_mul]
       · intro h; exact absurd (Finset.mem_univ p) h
   · intro b _ hb
     exact absurd (Subsingleton.elim b ![]) hb
@@ -796,7 +796,7 @@ lemma covDerivLowerOrderTerm03_center_eq
   rw [Fintype.sum_prod_type]
   rw [Finset.sum_eq_single (![] : Fin 0 → Fin (Module.finrank ℝ E))]
   · simp only [covDerivLowerOrderCoeff_def]
-    simp only [Finset.univ_eq_empty, Finset.sum_empty, if_true, mul_one, zero_sub]
+    simp only [Finset.univ_eq_empty, Finset.sum_empty, ite_true, mul_one, zero_sub]
     rw [Finset.sum_congr rfl (fun J' _ => by
         rw [covDerivLowerOrderTerm03_center_hout (I := I) (M := M) g₀ x m b c d J'] :
       ∀ J' ∈ Finset.univ,
@@ -850,38 +850,38 @@ lemma covDerivLowerOrderTerm03_center_eq
         refine Finset.sum_congr rfl (fun a0 _ => ?_)
         rw [Finset.sum_eq_single c]
         · rw [Finset.sum_eq_single d]
-          · rw [if_pos rfl, if_pos rfl]; ring
-          · intro a2 _ ha2; rw [if_neg (show ¬ d = a2 from fun h => ha2 h.symm), mul_zero]; ring
+          · rw [ite_eq_left rfl, ite_eq_left rfl]; ring
+          · intro a2 _ ha2; rw [ite_eq_right (show ¬ d = a2 from fun h => ha2 h.symm), mul_zero]; ring
           · intro h; exact absurd (Finset.mem_univ d) h
         · intro a1 _ ha1
           refine Finset.sum_eq_zero (fun a2 _ => ?_)
-          rw [if_neg (show ¬ c = a1 from fun h => ha1 h.symm), zero_mul]; ring
+          rw [ite_eq_right (show ¬ c = a1 from fun h => ha1 h.symm), zero_mul]; ring
         · intro h; exact absurd (Finset.mem_univ c) h
       · rw [← Finset.sum_neg_distrib]
         rw [Finset.sum_eq_single b]
         · refine Finset.sum_congr rfl (fun a1 _ => ?_)
           rw [Finset.sum_eq_single d]
-          · rw [if_pos rfl, if_pos rfl]; ring
-          · intro a2 _ ha2; rw [if_neg (show ¬ d = a2 from fun h => ha2 h.symm), mul_zero]; ring
+          · rw [ite_eq_left rfl, ite_eq_left rfl]; ring
+          · intro a2 _ ha2; rw [ite_eq_right (show ¬ d = a2 from fun h => ha2 h.symm), mul_zero]; ring
           · intro h; exact absurd (Finset.mem_univ d) h
         · intro a0 _ ha0
           refine Finset.sum_eq_zero (fun a1 _ => ?_)
           refine Finset.sum_eq_zero (fun a2 _ => ?_)
-          rw [if_neg (show ¬ b = a0 from fun h => ha0 h.symm), zero_mul]; ring
+          rw [ite_eq_right (show ¬ b = a0 from fun h => ha0 h.symm), zero_mul]; ring
         · intro h; exact absurd (Finset.mem_univ b) h
     · rw [← Finset.sum_neg_distrib]
       rw [Finset.sum_eq_single b]
       · rw [Finset.sum_eq_single c]
         · refine Finset.sum_congr rfl (fun a2 _ => ?_)
-          rw [if_pos rfl, if_pos rfl]; ring
+          rw [ite_eq_left rfl, ite_eq_left rfl]; ring
         · intro a1 _ ha1
           refine Finset.sum_eq_zero (fun a2 _ => ?_)
-          rw [if_neg (show ¬ c = a1 from fun h => ha1 h.symm), mul_zero]; ring
+          rw [ite_eq_right (show ¬ c = a1 from fun h => ha1 h.symm), mul_zero]; ring
         · intro h; exact absurd (Finset.mem_univ c) h
       · intro a0 _ ha0
         refine Finset.sum_eq_zero (fun a1 _ => ?_)
         refine Finset.sum_eq_zero (fun a2 _ => ?_)
-        rw [if_neg (show ¬ b = a0 from fun h => ha0 h.symm), zero_mul]; ring
+        rw [ite_eq_right (show ¬ b = a0 from fun h => ha0 h.symm), zero_mul]; ring
       · intro h; exact absurd (Finset.mem_univ b) h
   · intro b' _ hb'
     exact absurd (Subsingleton.elim b' ![]) hb'

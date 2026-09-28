@@ -250,6 +250,7 @@ theorem exists_contMDiffOn_lCost_upper_support_gradient_hess_le_index
         DifferentialGeometry.mvfderiv_real_eq_mfderiv,
         hF0germ.mfderiv_eq (I := IM) (I' := 𝓘(Real, Real))]
       rw [hF0germ.self_of_nhds]
+      simp [tangentSpaceCast]
     exact congrArg (metricSharp (I := IM) (S.base.metric (T - tau))
       (lExp S T x Z tau)) hmv
   have hF0diff : MDifferentiableAt IM 𝓘(Real, Real) F0 (lExp S T x Z tau) :=

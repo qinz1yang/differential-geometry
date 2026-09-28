@@ -19,7 +19,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_spanning_disk_annular_neighbo
     (S : Geometry.SimplicialComplex ℝ E) [Finite S.faces]
     (hS : IsCombinatorialManifoldWithBoundary 2 S) (hor : IsOrientable 2 S)
     (hdim : Module.finrank ℝ E = 3) {D U F : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2)
     (hF : IsClosed F) (hJF : Disjoint (r '' stdSimplexBoundary 2) F)
     (hU : IsOpen U) (hJU : r '' stdSimplexBoundary 2 ⊆ U) :
@@ -66,7 +66,7 @@ theorem IsSphericalShell.exists_spanning_disk_annular_neighborhood
     (hS : IsCombinatorialManifold 2 S) (hconn : IsConnected S.space)
     (hsep : Separates S.space B₀ B₁)
     {D : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : D ∩ S.space = r '' stdSimplexBoundary 2) :
     ∃ K N : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)),
       K.faces.Finite ∧ IsPLBall 3 K.space ∧ N.faces.Finite ∧

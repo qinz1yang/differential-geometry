@@ -249,7 +249,7 @@ theorem exists_cInf_subseq_on
   let Gext : (r : ℕ) → E → ContinuousMultilinearMap ℝ (fun _ : Fin r => E) F :=
     fun r x => if h : x ∈ U then (G r) ⟨x, h⟩ else 0
   have hGext : ∀ (r : ℕ) (x : E) (hx : x ∈ U), Gext r x = (G r) ⟨x, hx⟩ :=
-    fun r x hx => dif_pos hx
+    fun r x hx => dite_eq_left hx
   let Φinf : E → F := fun x => (Gext 0 x).curry0
   have hGuniformE : ∀ r : ℕ, ∀ K : Set E, IsCompact K → K ⊆ U →
       TendstoUniformlyOn (fun k => iteratedFDerivWithin ℝ r (Φ (φ k)) U)

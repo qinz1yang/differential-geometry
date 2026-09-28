@@ -202,8 +202,8 @@ theorem Section34CompactCutFrame.residual_inter_vertexBallImage_eq_of_sides
     (hscomp : ∀ s : Section34CompactSimplexIndex K 3, Section34Incident s.1 t.1 →
       Section34Incident w.1 s.1 → ∃ k, s = sK k)
     {A B : Set E3} {qA qB : (Fin 3 → ℝ) → E3}
-    (hqA : IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A)
-    (hqB : IsPLHomeomorphOn qB (stdSimplex ℝ (Fin 3)) B)
+    (hqA : IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A)
+    (hqB : IsPLHomeomorphOn qB (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) B)
     (hAB : A ∪ B ∪ (⋃ k, section34CompactSplitDiskImage src f₁ (eK k)) =
       frontier (section34CompactVertexBallImage src f₁ w))
     (hABi : A ∩ B = ⋃ k, tgtA ⟨(sK k, w), hwsK k⟩)
@@ -367,8 +367,8 @@ theorem Section34CompactCutFrame.residual_sides
     (hecomp : ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 → w.1 ⊆ e.1 →
       ∃ k, e = eK k)
     {X Y : Set E3} {qX qY : (Fin 3 → ℝ) → E3}
-    (hqX : IsPLHomeomorphOn qX (stdSimplex ℝ (Fin 3)) X)
-    (hqY : IsPLHomeomorphOn qY (stdSimplex ℝ (Fin 3)) Y)
+    (hqX : IsPLHomeomorphOn qX (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) X)
+    (hqY : IsPLHomeomorphOn qY (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Y)
     (hXY : X ∪ Y ∪ (⋃ k, section34CompactSplitDiskImage src f₁ (eK k)) =
       frontier (section34CompactVertexBallImage src f₁ w))
     (hqXb : qX '' stdSimplexBoundary 2 = (⋃ k, tgtA ⟨(sK k, w), hwsK k⟩) ∪
@@ -538,7 +538,7 @@ theorem Section34CompactCutFrame.exists_residualPatch
       Section34Incident w.1 s.1 → ∃ k, s = sK k)
     (hecomp : ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 → w.1 ⊆ e.1 →
       ∃ k, e = eK k) :
-    (∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (R ∩ section34CompactVertexBallImage src f₁ w) ∧
       q '' stdSimplexBoundary 2 = (⋃ k, tgtA ⟨(sK k, w), hwsK k⟩) ∪
         ⋃ k, R ∩ section34CompactSplitDiskImage src f₁ (eK k)) ∧
@@ -624,7 +624,7 @@ theorem Section34CompactCutFrame.exists_residualPatch
     · rw [h1, h2, union_comm]
       exact union_closure_sdiff_eq_of_subset hcl (hβb k)
   have hkey : ∃ (A : Set E3) (qA : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A ∧
+      IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
       qA '' stdSimplexBoundary 2 = (⋃ k, tgtA ⟨(sK k, w), hwsK k⟩) ∪
         ⋃ k, A ∩ section34CompactSplitDiskImage src f₁ (eK k) ∧
       R ∩ section34CompactVertexBallImage src f₁ w = A ∧

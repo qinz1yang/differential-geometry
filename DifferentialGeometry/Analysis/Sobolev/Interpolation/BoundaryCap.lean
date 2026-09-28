@@ -22,12 +22,12 @@ theorem lipschitzOnWith_piecewise_closedBall
     (hglue : EqOn q u (S ∩ sphere c r)) :
     LipschitzOnWith (max Kq Ku) (fun z => if dist z c ≤ r then q z else u z) S := by
   let f : E → F := fun z => if dist z c ≤ r then q z else u z
-  have hfinner (z : E) (hz : dist z c ≤ r) : f z = q z := if_pos hz
+  have hfinner (z : E) (hz : dist z c ≤ r) : f z = q z := ite_eq_left hz
   have hfouter (z : E) (hzS : z ∈ S) (hz : r ≤ dist z c) : f z = u z := by
     by_cases hi : dist z c ≤ r
     · rw [hfinner z hi]
       exact hglue ⟨hzS, le_antisymm hi hz⟩
-    · exact if_neg hi
+    · exact ite_eq_right hi
   have htranslated : LipschitzOnWith (max Kq Ku) (fun z => f (c + z))
       ((fun z => c + z) ⁻¹' S) := by
     apply lipschitzOnWith_of_radial_pieces (r := r) (hS.translate_preimage_right c)
@@ -70,11 +70,11 @@ def attachBoundaryCap (u q : ℂ → F) (ρ : ℝ) (z : ℂ) : F :=
   if ‖z + 1‖ ≤ ρ then q z else u z
 
 theorem attachBoundaryCap_inner (u q : ℂ → F) (ρ : ℝ) {z : ℂ}
-    (hz : ‖z + 1‖ ≤ ρ) : attachBoundaryCap u q ρ z = q z := if_pos hz
+    (hz : ‖z + 1‖ ≤ ρ) : attachBoundaryCap u q ρ z = q z := ite_eq_left hz
 
 theorem attachBoundaryCap_outside (u q : ℂ → F) (ρ : ℝ) {z : ℂ}
     (hz : ρ < ‖z + 1‖) : attachBoundaryCap u q ρ z = u z :=
-  if_neg (not_le.mpr hz)
+  ite_eq_right (not_le.mpr hz)
 
 theorem attachBoundaryCap_on_lens (u q : ℂ → F) (ρ : ℝ) :
     EqOn (attachBoundaryCap u q ρ) q (boundaryLens ρ) := by
@@ -91,7 +91,7 @@ theorem attachBoundaryCap_outer (u q : ℂ → F) (ρ : ℝ)
     apply hglue
     refine ⟨hz, ?_⟩
     simpa only [mem_sphere, dist_eq_norm, sub_neg_eq_add] using le_antisymm hi hρz
-  · exact if_neg hi
+  · exact ite_eq_right hi
 
 theorem attachBoundaryCap_boundary (u q : ℂ → F) (ρ : ℝ) (z : Circle) :
     attachBoundaryCap u q ρ z = if ‖(z : ℂ) + 1‖ ≤ ρ then q z else u z := rfl

@@ -32,18 +32,18 @@ private def retainedTimeAffine (side : Bool) : Diffeomorph 𝓘(ℝ, ℝ) 𝓘(�
   right_inv t := by cases side <;> simp
   contMDiff_toFun := by
     change ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun t : ℝ => if side then 1 + t else -1 - t)
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
       apply ContDiff.contMDiff <;> fun_prop
   contMDiff_invFun := by
     change ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) ∞ (fun t : ℝ => if side then t - 1 else -1 - t)
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
       apply ContDiff.contMDiff <;> fun_prop
 
 namespace SphericalTubeSystem
 
 def coreCollarParameter (side : Bool) (t : Half) : Interval :=
   ⟨if side then 1 + t.val else -1 - t.val, by
-    cases side <;> change -2 ≤ _ ∧ _ ≤ 2 <;> simp only [Bool.false_eq_true, if_false, if_true] <;>
+    cases side <;> change -2 ≤ _ ∧ _ ≤ 2 <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;>
       constructor <;> linarith [t.property.1, t.property.2]⟩
 
 theorem coreCollarParameter_val (side : Bool) (t : Half) :

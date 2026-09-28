@@ -120,7 +120,7 @@ theorem trace_eq_cometricLmodel_pairing_sum (g₁ : SmoothRiemannianMetric I M) 
     change g₁.inner x (e.symm (d k)) (e.symm ((Module.finBasis ℝ E) k)) = 1
     rw [hd]
     have h := cometricLmodel_finBasis_inner_eq_kronecker (I := I) g₁ x k k
-    rw [if_pos rfl] at h
+    rw [ite_eq_left rfl] at h
     with_unfolding_all exact h
   have hev_ne : Pairwise fun i j => ε i (d j) = 0 := by
     intro i j hij
@@ -128,7 +128,7 @@ theorem trace_eq_cometricLmodel_pairing_sum (g₁ : SmoothRiemannianMetric I M) 
     change g₁.inner x (e.symm (d j)) (e.symm ((Module.finBasis ℝ E) i)) = 0
     rw [hd]
     have h := cometricLmodel_finBasis_inner_eq_kronecker (I := I) g₁ x i j
-    rw [if_neg hij] at h
+    rw [ite_eq_right hij] at h
     with_unfolding_all exact h
   have htot : ∀ {m₁ m₂ : E}, (∀ k, ε k m₁ = ε k m₂) → m₁ = m₂ := by
     intro m₁ m₂ hm

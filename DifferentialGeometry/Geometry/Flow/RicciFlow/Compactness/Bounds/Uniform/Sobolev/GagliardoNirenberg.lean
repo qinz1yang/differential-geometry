@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.JetIntegral
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Algebra.CovariantSumCross
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Sobolev.MorreySecondDerivative
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -154,7 +157,7 @@ theorem volClassC_spec
       have hinv : 1 / Vg ≤ S / VBase := by
         rw [div_le_div_iff₀ hVgPos hVBasePos]
         simpa only [one_mul] using hrev
-      rw [if_neg hVBase0]
+      rw [ite_eq_right hVBase0]
       exact le_trans hinv (le_max_right _ _)
 
 def gnClassLogC (n k : ℕ) (B : ℝ) : ℝ :=
@@ -489,7 +492,7 @@ theorem h2_grid_uniform
       nlinarith [norm_nonneg (iteratedCovGrad (I := I) g 0 2 k P)]
     have hgrid := rank_two_grid_uniform (E := E) (I := I) (M := M)
       hDim gBase hΛ k hk1 g hEq hjet1 hjet2 P R R hR hR hP2 htop
-    simpa only [h2GridC, if_neg hk0] using hgrid
+    simpa only [h2GridC, ite_eq_right hk0] using hgrid
 
 noncomputable def h3TopGridC
     (gBase : SmoothRiemannianMetric I M) (Λ R : ℝ) : ℝ :=

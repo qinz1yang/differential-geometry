@@ -94,7 +94,7 @@ theorem IsCircleCapping.exists_component_capping
       intro x hx
       exact ⟨hx.1.1, hx.2⟩
   · intro c hc
-    refine ⟨f, by simpa only [if_neg hc, union_empty] using hcomp c, ?_⟩
+    refine ⟨f, by simpa only [ite_eq_right hc, union_empty] using hcomp c, ?_⟩
     apply hfix.mono
     intro x hx
     exact ⟨hx.1, fun hxG =>

@@ -18,7 +18,7 @@ theorem IsCombinatorialManifoldWithBoundary.inter_disk_eq_of_not_subset [d : Dec
     (hR : IsCombinatorialManifoldWithBoundary (n + 1) R)
     (hconn : IsPreconnected R.space) (hRK : R.space ⊆ K.space)
     {D : Set E} {r : (Fin (n + 2) → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin (n + 2))) D) (hDK : D ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D) (hDK : D ⊆ K.space)
     (hboundary : r '' stdSimplexBoundary (n + 1) ⊆ (boundaryComplex (n + 1) R).space)
     (hnot : ¬ R.space ⊆ D) : R.space ∩ D = r '' stdSimplexBoundary (n + 1) := by
   have hd : d = fun a b => Classical.propDecidable (a = b) := Subsingleton.elim _ _
@@ -54,12 +54,12 @@ theorem IsCombinatorialManifoldWithBoundary.inter_disk_eq_of_essential_circle [D
     (hK : IsCombinatorialManifold 2 K) (hR : IsCombinatorialManifoldWithBoundary 2 R)
     (hconn : IsPreconnected R.space) (hRK : R.space ⊆ K.space)
     {D H : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDK : D ⊆ K.space)
     (hboundary : r '' stdSimplexBoundary 2 ⊆ (boundaryComplex 2 R).space)
     (hH : IsPLSphere 1 H) (hHR : H ⊆ R.space)
     (hHJ : Disjoint H (r '' stdSimplexBoundary 2))
     (hess : ¬ ∃ (D' : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' ∧ D' ⊆ K.space ∧
         H = q '' stdSimplexBoundary 2) : R.space ∩ D = r '' stdSimplexBoundary 2 := by
   have hdis := hK.disjoint_disk_of_essential_circle K hr hDK hH (hHR.trans hRK) hHJ hess
   apply hR.inter_disk_eq_of_not_subset K R hK hconn hRK hr hDK hboundary

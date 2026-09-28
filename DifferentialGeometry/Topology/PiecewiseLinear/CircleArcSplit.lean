@@ -162,7 +162,7 @@ theorem isPLSphere_one_iUnion_union_iUnion_of_fin_four {r β : Fin 4 → Set E}
       have h3 : Fin.ofNat 4 ((2 * k.val) / 2) = k := Fin.ext (by rw [Fin.val_ofNat]; omega)
       have hA : A (2 * k.val) = r k := by
         dsimp only [A]
-        rw [if_pos h2, h3]
+        rw [ite_eq_left h2, h3]
       rw [hA]
       exact hk
     · refine ⟨2 * k.val + 1, by omega, ?_⟩
@@ -170,16 +170,16 @@ theorem isPLSphere_one_iUnion_union_iUnion_of_fin_four {r β : Fin 4 → Set E}
       have h3 : Fin.ofNat 4 ((2 * k.val + 1) / 2) = k := Fin.ext (by rw [Fin.val_ofNat]; omega)
       have hA : A (2 * k.val + 1) = β k := by
         dsimp only [A]
-        rw [if_neg h2, h3]
+        rw [ite_eq_right h2, h3]
       rw [hA]
       exact hk
   · rintro ⟨i, -, hx⟩
     by_cases h2 : i % 2 = 0
     · dsimp only [A] at hx
-      rw [if_pos h2] at hx
+      rw [ite_eq_left h2] at hx
       exact Or.inl ⟨_, hx⟩
     · dsimp only [A] at hx
-      rw [if_neg h2] at hx
+      rw [ite_eq_right h2] at hx
       exact Or.inr ⟨_, hx⟩
 
 end DifferentialGeometry.Topology.PiecewiseLinear

@@ -34,7 +34,7 @@ private local instance (K : Set (H.event i).incoming.terminalRegularOpen) :
       (H.backwardSurvivorFootprintInterior first i hle K).isOpen)
 
 theorem RetainedCoreHistory.exists_parabolic_terminal_ball_flow
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+    (H : RetainedCoreHistory.{u}) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
     (x : (H.toHistory.event i).incoming.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
     (hcompact : IsCompact (riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r))
     {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)
@@ -259,7 +259,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
 
-private local instance {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+private local instance (H : RetainedCoreHistory.{u})
     (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
     (K : Set (H.toHistory.event i).incoming.terminalRegularOpen) :
     SigmaCompactSpace (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K) := by
@@ -276,7 +276,7 @@ private local instance {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
       (H.toHistory.backwardSurvivorFootprintInterior first.castSucc i hle K).isOpen)
 
 theorem RetainedCoreHistory.exists_parabolically_controlled_terminal_ball
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
+    (H : RetainedCoreHistory.{u}) (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
     (x : (H.toHistory.event i).incoming.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
     (hcompact : IsCompact (riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r))
     {q Q : ℝ} {C : ℝ≥0} (hq : 0 < q) (hqQ : q ≤ Q)
@@ -362,7 +362,7 @@ theorem exists_uniform_parabolically_controlled_terminal_ball_radius
     {Phi : ℝ → ℝ} (hPhi : Perelman.AdmissiblePinchingFunction Phi)
     {θ : ℝ} (hθ : 0 < θ) :
     ∃ α : ℝ, 0 < α ∧ α ≤ 1 ∧ α ^ 2 ≤ θ ∧
-    ∀ {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+    ∀ (H : RetainedCoreHistory.{u})
       (first i : Fin H.eventCount) (hle : first.castSucc ≤ i.castSucc)
       (x : (H.toHistory.event i).incoming.terminalRegularOpen) {r : ℝ} (hr : 0 < r)
       (hcompact : IsCompact (riemannianClosedBallOf (H.toHistory.event i).terminal.metric x r))
@@ -414,7 +414,7 @@ theorem exists_uniform_parabolically_controlled_terminal_ball_radius
         IsCompact (riemannianClosedBallOf (S.base.metric (H.time i.succ)) p (α / Real.sqrt Q)) := by
   obtain ⟨α, hα, hα1, hαθ, hchoice⟩ := Perelman.exists_uniform_pinching_test_radius hPhi hθ
   refine ⟨α, hα, hα1, hαθ, ?_⟩
-  intro P H first i hle x r hr hcompact q Q C hq hqQ hQ hbound hpinch hscalar hc hcap htime hradius
+  intro H first i hle x r hr hcompact q Q C hq hqQ hQ hbound hpinch hscalar hc hcap htime hradius
   have hQpos : 0 < Q := zero_lt_one.trans_le hQ
   have hrho : 0 < α / Real.sqrt Q := div_pos hα (Real.sqrt_pos.mpr hQpos)
   have htime' : 6 * C * (H.time i.succ - (H.time i.succ - θ / Q)) * Q ≤ 1 := by

@@ -49,7 +49,7 @@ theorem affineSubdivisionHomotopy_succ (n : ℕ) (v : Fin (n + 2) → E) :
       (integralSimplexChain (n + 1) (affineSingularSimplex (n + 1) v)) = _
   rw [← integralSingularChainBasis_apply, Basis.constr_basis]
   let h : ∃ w, affineSingularSimplex (n + 1) w = affineSingularSimplex (n + 1) v := ⟨v, rfl⟩
-  rw [dif_pos h, affineSingularSimplex_injective (n + 1) h.choose_spec]
+  rw [dite_eq_left h, affineSingularSimplex_injective (n + 1) h.choose_spec]
   rfl
 
 /-- The same actual convex carrier is preserved by every homotopy component. -/

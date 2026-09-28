@@ -43,7 +43,7 @@ theorem exists_memW1pWitness_fderiv_of_lipschitz
     weakGrad := G
     weakGrad_component_memLp := fun i => hGm.eval_piLp i
     isWeakGrad := hweak }
-  refine ⟨hw, hG, eLpNorm_congr_norm_ae ?_⟩
+  refine ⟨hw, hG, eLpNorm_congr_norm_ae hGm.aestronglyMeasurable hdfm.aestronglyMeasurable ?_⟩
   exact Filter.Eventually.of_forall fun x =>
     (InnerProductSpace.toDual ℝ E).symm.norm_map (fderiv ℝ f x)
 
@@ -102,7 +102,8 @@ theorem exists_coordinate_memW1pWitness_fderiv_of_lipschitz
   choose hw hrep hnorm using fun i =>
     exists_memW1pWitness_fderiv_of_lipschitz (hfi i) (hfm.eval_piLp i) (hmi i)
   exact ⟨hw, hrep, fun i => (hnorm i).trans_le
-    (eLpNorm_mono_ae (norm_fderiv_coordinate_le_ae_of_lipschitz hf i))⟩
+    (eLpNorm_mono_ae (hmi i).aestronglyMeasurable
+      (norm_fderiv_coordinate_le_ae_of_lipschitz hf i))⟩
 
 end DifferentialGeometry.Analysis.Sobolev.Euclidean
 
@@ -145,11 +146,12 @@ theorem exists_uniform_coordinate_memW1pWitness_of_lipschitz
       ENNReal.ofReal_ne_top
   have hfun (n : ℕ) : eLpNorm (f n) 2 (volume.restrict Ω) ≤ A := by
     simpa only [A, ENNReal.toReal_ofNat, one_div] using
-      eLpNorm_le_of_ae_bound (p := (2 : ℝ≥0∞)) (hD n)
+      eLpNorm_le_of_ae_bound (p := (2 : ℝ≥0∞)) (hfm n).aestronglyMeasurable (hD n)
   let R : ℝ := A.toReal + Real.sqrt B
   refine ⟨R, hw, hrep, ?_, ?_⟩
   · intro n i
-    apply ((eLpNorm_mono_ae (Filter.Eventually.of_forall fun x => PiLp.norm_apply_le (f n x) i)).trans
+    apply ((eLpNorm_mono_ae ((hfm n).eval_piLp i).aestronglyMeasurable
+      (Filter.Eventually.of_forall fun x => PiLp.norm_apply_le (f n x) i)).trans
       (hfun n)).trans
     rw [← ENNReal.ofReal_toReal hAtop]
     exact ENNReal.ofReal_le_ofReal (le_add_of_nonneg_right (Real.sqrt_nonneg B))

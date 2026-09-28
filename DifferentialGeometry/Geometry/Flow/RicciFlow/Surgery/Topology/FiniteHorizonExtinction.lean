@@ -38,7 +38,7 @@ private theorem ObservedHistory.isExtinctAtHorizon_of_initialScalarBarrier
 
 theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_initialScalarBarrier
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
-    {g : P.Metric} (H : RetainedCoreHistory P) (A : InitialIdentification P g H.toHistory)
+    {g : P.Metric} (H : RetainedCoreHistory.{u}) (A : InitialIdentification P g H.toHistory)
     (parameters : CutoffParameters)
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i parameters)
     (hbfr : ∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing)
@@ -67,9 +67,9 @@ private theorem prefix_initial_metric {H K : ObservedHistory.{u}} (h : H.IsPrefi
 
 theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_volume_debit
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
-    {g : P.Metric} (H : RetainedCoreHistory P)
+    {g : P.Metric} (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
-    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    (S : Set (RetainedCoreHistory.{u})) (hH : H ∈ S)
     {B v : ℝ} (hv : 0 < v)
     (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
     (hhorizon : ∀ K ∈ S, K.horizon ≤ B)
@@ -144,9 +144,9 @@ theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_history_vol
 
 theorem RetainedCoreHistory.exists_poincare_controlled_extinction_of_volume_debit
     {P : OrientedThreeStage.{u}} [SimplyConnectedSpace P.Carrier]
-    {g : P.Metric} (H : RetainedCoreHistory P)
+    {g : P.Metric} (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
-    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    (S : Set (RetainedCoreHistory.{u})) (hH : H ∈ S)
     {B v : ℝ} (hv : 0 < v)
     (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
     (hhorizon : ∀ K ∈ S, K.horizon ≤ B)

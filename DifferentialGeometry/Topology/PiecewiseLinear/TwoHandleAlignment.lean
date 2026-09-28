@@ -12,17 +12,17 @@ open Set Topology Metric
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 noncomputable def prismCylinderMap
-    (p : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
+    (p : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
     EuclideanSpace ℝ (Fin 2) × ℝ :=
   (((prismBallHomeomorph p).1 : EuclideanSpace ℝ (Fin 2)),
     2 * ((prismBallHomeomorph p).2 : ℝ) - 1)
 
 theorem prismCylinderMap_snd
-    (p : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
+    (p : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
     (prismCylinderMap p).2 = 2 * p.val.2 - 1 := rfl
 
 theorem norm_prismCylinderMap_fst_eq_one_iff
-    (p : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
+    (p : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ))) :
     ‖(prismCylinderMap p).1‖ = 1 ↔ p.val.1 ∈ stdSimplexBoundary 2 := by
   rw [← prismBallHomeomorph_mem_sphere_iff p, mem_sphere_zero_iff_norm]
   rfl
@@ -76,13 +76,13 @@ theorem abs_snd_eq_one_iff_norm_eq_one {q : EuclideanSpace ℝ (Fin 2) × ℝ}
     exact (norm_fst_lt_one_of_notMem_cylinderSide h hs).2
 
 theorem exists_twoHandle_alignment {M : Type} [TopologicalSpace M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
       z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} → M)
     (hψ : IsClosedEmbedding ψ) (f : Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × ℝ → M)
     (hf : IsEmbedding f) (hrange : range ψ = f '' (univ ×ˢ Icc (0 : ℝ) 1)) :
-    ∃ (Ext : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) →
+    ∃ (Ext : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) →
         EuclideanSpace ℝ (Fin 2) × ℝ)
-      (g : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      (g : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
         z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} →
           Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 × ℝ),
       IsClosedEmbedding Ext ∧ range Ext = closedBall 0 1 ∧
@@ -91,18 +91,18 @@ theorem exists_twoHandle_alignment {M : Type} [TopologicalSpace M] [CompactSpace
       (∀ z, f (g z) = ψ z) ∧
       ∀ z, Ext z.val = (((g z).1 : EuclideanSpace ℝ (Fin 2)), 2 * (g z).2 - 1) := by
   classical
-  have hAc : CompactSpace {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+  have hAc : CompactSpace {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
       z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} := hψ.compactSpace
-  have hPc : CompactSpace (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) :=
-    isCompact_iff_compactSpace.mp ((isCompact_stdSimplex ℝ (Fin 3)).prod isCompact_Icc)
-  have hmem : ∀ z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+  have hPc : CompactSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) :=
+    isCompact_iff_compactSpace.mp ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod isCompact_Icc)
+  have hmem : ∀ z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
       z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1}, prismCylinderMap z.val ∈ cylinderSide := by
     intro z
     refine ⟨(norm_prismCylinderMap_fst_eq_one_iff _).mpr z.2.1, ?_⟩
     rw [prismCylinderMap_snd]
     obtain ⟨h0, h1⟩ := z.2.2
     exact abs_le.mpr ⟨by linarith, by linarith⟩
-  let mAf : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+  let mAf : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
       z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} → cylinderSide := fun z => ⟨_, hmem z⟩
   have hmAc : Continuous mAf :=
     (continuous_prismCylinderMap.comp continuous_subtype_val).subtype_mk _

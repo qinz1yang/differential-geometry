@@ -12,7 +12,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 local notation "V2" => Fin 3 → ℝ
-local notation "Δ" => stdSimplex ℝ (Fin 3)
+local notation "Δ" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "p" => stdCenter 1
 
 theorem exists_marked_prism_of_isBridgeDisk

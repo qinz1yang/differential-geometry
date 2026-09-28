@@ -53,22 +53,22 @@ theorem exists_diffeomorph_extension_of_interval_family
       contMDiff_invFun := (hGs p hp).contMDiff }
     else Diffeomorph.refl 𝓘(ℝ) ℝ ∞
   have hD (p : P) (hp : p ∈ S) (y : ℝ) : D p y = F (p, y) := by
-    simp only [D, dif_pos hp]; rfl
+    simp only [D, dite_eq_left hp]; rfl
   have hDi (p : P) (hp : p ∈ S) (y : ℝ) : (D p).symm y = G (p, y) := by
-    simp only [D, dif_pos hp]; rfl
+    simp only [D, dite_eq_left hp]; rfl
   refine ⟨D, hF.congr (fun q hq ↦ hD q.1 hq.1 q.2),
     hG.congr (fun q hq ↦ hDi q.1 hq.1 q.2), fun p hp ↦ ⟨hD p hp, hDi p hp, ?_, ?_⟩⟩
   · have hDf (y : ℝ) (hy : y ∈ Icc a b) : D p y = f (p, y) := by
       rw [hD p hp]
-      exact if_pos hy
+      exact ite_eq_left hy
     refine ⟨fun y hy ↦ (hDf y hy).symm ▸ hfmap p hp hy, (D p).injective.injOn, ?_⟩
     intro y hy
     exact ⟨g (p, y), hgmap p hp hy, (hDf _ (hgmap p hp hy)).trans (hright p hp y hy)⟩
   · have hend : F (p, a) = a ∧ F (p, b) = b := by
       constructor
-      · simp only [F, extendIntervalById, if_pos (left_mem_Icc.mpr hab.le)]
+      · simp only [F, extendIntervalById, ite_eq_left (left_mem_Icc.mpr hab.le)]
         exact (hfixed p hp a (left_mem_Icc.mpr hab.le) (Or.inl (by linarith))).1
-      · simp only [F, extendIntervalById, if_pos (right_mem_Icc.mpr hab.le)]
+      · simp only [F, extendIntervalById, ite_eq_left (right_mem_Icc.mpr hab.le)]
         exact (hfixed p hp b (right_mem_Icc.mpr hab.le) (Or.inr (by linarith))).1
     have hmono : StrictMono (fun y ↦ F (p, y)) := by
       rcases (hFs p hp).continuous.strictMono_of_inj (hGF p hp).injective with hm | hm

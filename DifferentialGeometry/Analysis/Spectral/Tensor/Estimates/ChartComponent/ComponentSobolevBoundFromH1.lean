@@ -103,7 +103,7 @@ theorem eLpNorm_chartPushed_le_const_mul_eLpNorm_riemannianVolumeMeasure_uniform
   rw [eLpNorm_congr_ae h_ae]
   refine h_raw_bound.trans ?_
   gcongr
-  refine eLpNorm_mono (f := f) (g := u) ?_
+  refine eLpNorm_mono (f := f) (g := u) hf_meas.aestronglyMeasurable ?_
   intro x
   have h_norm_f : ‖f x‖ = |((ρ : C^∞⟮I, M; ℝ⟯) : M → ℝ) x * u x| := Real.norm_eq_abs _
   have h_norm_u : ‖u x‖ = |u x| := Real.norm_eq_abs _

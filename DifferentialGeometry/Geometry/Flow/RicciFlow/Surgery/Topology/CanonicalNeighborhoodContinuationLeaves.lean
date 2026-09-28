@@ -64,7 +64,7 @@ end OrientedThreeStage.IncomingSlab
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 def IsCanonicalCutoffRecordFamily (p₀ : CutoffParameters) (δ₀ ρ₀ : ℝ) {p : CutoffParameters}
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p) : Prop :=
@@ -85,7 +85,7 @@ theorem hasCanonicalCutoffRecords_iff_exists_isCanonicalCutoffRecordFamily
   · rintro ⟨p, records, hf, hD, hm, hε, hc, hcan, hδ, hρ⟩
     exact ⟨p, hf, hD, hm, hε, hc, records, hcan, hδ, hρ⟩
 
-theorem IsCanonicalCutoffRecordFamily.inv_two_mul_sq_lt_static_scale {H : RetainedCoreHistory P₀}
+theorem IsCanonicalCutoffRecordFamily.inv_two_mul_sq_lt_static_scale {H : RetainedCoreHistory.{u}}
     {p₀ p : CutoffParameters} {δ₀ ρ₀ : ℝ}
     {records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p}
     (hrec : H.IsCanonicalCutoffRecordFamily p₀ δ₀ ρ₀ records)
@@ -155,7 +155,7 @@ def DeepContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : Prop
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound),
+    ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound),
       H.EventSlabsPinched phi →
       (∀ j : Fin H.eventCount,
         H.EventSlabsCanonical ε C1 C2 qcan τmin j.castSucc →
@@ -198,7 +198,7 @@ def CapWindowContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) :
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Rcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound)
+    ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound)
       (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
       H.EventSlabsPinched phi →
@@ -244,7 +244,7 @@ def CrossingContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Metric) : 
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound)
+    ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound)
       (p : CutoffParameters) (records : ∀ i, GeometricCutoffRecord H.toHistory i p),
       H.IsCanonicalCutoffRecordFamily p₀ δbound ρbound records →
       H.EventSlabsPinched phi →

@@ -177,7 +177,7 @@ theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
         ⟨fun _ => p, contMDiffOn_const, (isGeodesic_const g p).isGeodesicOn _,
           rfl, rfl, fun s _ t _ => by simp only [riemannianEDistOf_self, mul_zero]⟩
       have hshort : shortSegment g p p = Classical.choose hex := by
-        rw [shortSegment, dif_pos hex]
+        rw [shortSegment, dite_eq_left hex]
       refine ⟨?_, ?_⟩
       · rw [hshort]; exact Classical.choose_spec hex
       · intro c _hc t _ht; exact hsub _ _
@@ -409,7 +409,7 @@ theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
             (lt_of_lt_of_le hpq (ENNReal.ofReal_le_ofReal (min_le_right _ _))))
       have hex : ∃ c : ℝ → Q, IsShortSegment g p q c := ⟨_, hseg p q hne⟩
       have hshort : shortSegment g p q = Classical.choose hex := by
-        rw [shortSegment, dif_pos hex]
+        rw [shortSegment, dite_eq_left hex]
       have hspec : IsShortSegment g p q (shortSegment g p q) := by
         rw [hshort]; exact Classical.choose_spec hex
       exact ⟨hspec, fun c hc => hkey p q c (shortSegment g p q) hne hDlt hc hspec⟩
@@ -442,7 +442,7 @@ theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
             (lt_of_lt_of_le hzball (ENNReal.ofReal_le_ofReal (min_le_right _ _))))
       have hex : ∃ c : ℝ → Q, IsShortSegment g z.1.1 z.1.2 c := ⟨_, hseg z.1.1 z.1.2 hne⟩
       have hshort : shortSegment g z.1.1 z.1.2 = Classical.choose hex := by
-        rw [shortSegment, dif_pos hex]
+        rw [shortSegment, dite_eq_left hex]
       have hspec : IsShortSegment g z.1.1 z.1.2 (shortSegment g z.1.1 z.1.2) := by
         rw [hshort]; exact Classical.choose_spec hex
       exact (hkey z.1.1 z.1.2 (shortGeodesic g hEnorm z.1.1 z.1.2)
@@ -461,7 +461,7 @@ theorem shortSegment_neighborhood (g : SmoothRiemannianMetric I Q) :
           rfl, rfl, fun s _ t _ => by simp only [riemannianEDistOf_self, mul_zero]⟩
       have hex : ∃ c : ℝ → Q, IsShortSegment g p p c := ⟨_, hconstseg⟩
       have hshort : shortSegment g p p = Classical.choose hex := by
-        rw [shortSegment, dif_pos hex]
+        rw [shortSegment, dite_eq_left hex]
       have hspec : IsShortSegment g p p (shortSegment g p p) := by
         rw [hshort]; exact Classical.choose_spec hex
       exact (hkey p p (fun _ => p) (shortSegment g p p) hne hDlt hconstseg hspec
@@ -1398,8 +1398,8 @@ theorem contDiffAt_map_flatPolygon_and_iteratedDeriv_eq_zero (g : SmoothRiemanni
     intro x hx
     rcases eq_or_lt_of_le (mem_Ici.mp hx) with h | h
     · subst h
-      simp only [if_pos le_rfl, hLx, hRx]
-    · simp only [if_neg (not_le.mpr h)]
+      simp only [ite_eq_left le_rfl, hLx, hRx]
+    · simp only [ite_eq_right (not_le.mpr h)]
   have hFG : (fun x : ℝ => e.map (flatPolygon g P N γ (x : Surgery.Topology.Circle)))
       =ᶠ[𝓝 ((i : ℝ) / N)]
       (fun x : ℝ => if x ≤ (i : ℝ) / N then e.map (L x) else e.map (R x)) := by
@@ -1409,10 +1409,10 @@ theorem contDiffAt_map_flatPolygon_and_iteratedDeriv_eq_zero (g : SmoothRiemanni
     dsimp only
     by_cases h : x ≤ (i : ℝ) / N
     · have hxL : x ∈ Icc a₁ ((i : ℝ) / N) := ⟨le_trans (le_max_left a₁ _) hx.1, h⟩
-      rw [hF₁ x hxL, if_pos h]
+      rw [hF₁ x hxL, ite_eq_left h]
     · have hxR : x ∈ Icc ((i : ℝ) / N) b₁ :=
         ⟨le_of_lt (not_le.mp h), le_trans hx.2 (min_le_left b₁ _)⟩
-      rw [hF₁' x hxR, if_neg h]
+      rw [hF₁' x hxR, ite_eq_right h]
   refine ⟨hG.congr_of_eventuallyEq hFG, ?_⟩
   intro m hm
   rw [Filter.EventuallyEq.iteratedDeriv_eq m hFG]

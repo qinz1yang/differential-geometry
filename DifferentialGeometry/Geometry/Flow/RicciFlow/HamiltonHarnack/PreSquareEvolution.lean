@@ -708,7 +708,7 @@ private theorem mixed_evolution_contraction
       refine Finset.sum_congr rfl fun d _ => ?_
       simp only [mul_sub, sub_mul, Finset.sum_sub_distrib, mul_ite,
         ite_mul, mul_zero, zero_mul, Finset.sum_ite_eq',
-        Finset.mem_univ, if_true]
+        Finset.mem_univ, ite_true]
       ring
     rw [hDelta, hH2, hH1]
     ring

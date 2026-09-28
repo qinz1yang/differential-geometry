@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionProducer
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.BoundaryIsotopyFrontier
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.VelocityExtensionManifoldFrontier
 import DifferentialGeometry.Geometry.Connection.ChartFrame.ChartSection
 
 noncomputable section

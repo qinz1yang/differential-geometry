@@ -47,7 +47,7 @@ theorem sideDefiningFunction_zeroSet [Nonempty S] :
       smoothSignedClamp_eq_zero_iff]
     exact h.finiteTime_eq_zero_iff_mem_range ⟨x, hxN⟩
   · have hr : x ∉ Set.range e := fun hx ↦ hxN (h.zeroSlice_subset_neighborhood hx)
-    simp only [sideDefiningFunction, dif_neg hxN, hr, iff_false]
+    simp only [sideDefiningFunction, dite_eq_right hxN, hr, iff_false]
     split_ifs <;> norm_num
 
 
@@ -113,7 +113,7 @@ theorem sideDefiningFunction_neg_iff_of_disconnected (x : M) :
   · rw [h.sideDefiningFunction_of_mem_neighborhood hxN,
       collarSignedValue, smoothSignedClamp_neg_iff]
     exact (h.finiteTime_neg_iff_mem_negativeSide_of_disconnected hsep) ⟨x, hxN⟩
-  · simp only [sideDefiningFunction, dif_neg hxN]
+  · simp only [sideDefiningFunction, dite_eq_right hxN]
     by_cases hxneg : x ∈ h.toTwoSidedCollar.negativeSide
     · simp [hxneg]
     · simp [hxneg]
@@ -124,7 +124,7 @@ theorem sideDefiningFunction_pos_iff_of_disconnected (x : M) :
   · rw [h.sideDefiningFunction_of_mem_neighborhood hxN,
       collarSignedValue, smoothSignedClamp_pos_iff]
     exact (h.finiteTime_pos_iff_mem_positiveSide_of_disconnected hsep) ⟨x, hxN⟩
-  · simp only [sideDefiningFunction, dif_neg hxN]
+  · simp only [sideDefiningFunction, dite_eq_right hxN]
     by_cases hxneg : x ∈ h.toTwoSidedCollar.negativeSide
     · have hxnotpos : x ∉ h.toTwoSidedCollar.positiveSide := fun hxpos =>
         Set.disjoint_left.mp (h.toTwoSidedCollar.disjoint_negativeSide_positiveSide_of_disconnected hsep) hxneg hxpos

@@ -222,7 +222,7 @@ theorem IsTopologicalCellWithInterior.isTopologicalSphere_union [T2Space X]
   have hinj : Function.Injective Θ := by
     intro p p' hpp'
     by_cases hp : (0 : ℝ) ≤ (p : P3) 2 <;> by_cases hp' : (0 : ℝ) ≤ (p' : P3) 2 <;>
-      simp only [Θ, hp, hp', if_true, if_false] at hpp'
+      simp only [Θ, hp, hp', ite_true, ite_false] at hpp'
     · have hρ := α.injective (Subtype.ext hpp')
       exact hext p p' hρ ((pow_left_inj₀ hp hp' two_ne_zero).mp (hsq p p' hρ))
     · exfalso
@@ -277,7 +277,7 @@ theorem IsTopologicalCellWithInterior.isTopologicalSphere_union [T2Space X]
         change (0 : ℝ) ≤ lift q t 2
         rw [hlift2]
         exact Real.sqrt_nonneg _
-      simp only [Θ, h0, if_true]
+      simp only [Θ, h0, ite_true]
       rw [hliftρ q t]
       simp [q]
     · let q := β.symm ⟨y, hyB⟩
@@ -289,7 +289,7 @@ theorem IsTopologicalCellWithInterior.isTopologicalSphere_union [T2Space X]
         have h0 : (0 : ℝ) ≤ (p : P3) 2 := by
           change (0 : ℝ) ≤ lift q 0 2
           rw [hlift2]
-        simp only [Θ, h0, if_true]
+        simp only [Θ, h0, ite_true]
         rw [hliftρ q 0, ← hαβ q hq1]
         simp [q]
       · have hlt : ‖(q : P2)‖ < 1 := lt_of_le_of_ne hq hq1
@@ -306,7 +306,7 @@ theorem IsTopologicalCellWithInterior.isTopologicalSphere_union [T2Space X]
             Real.sqrt_pos.mpr (by nlinarith [norm_nonneg (q : P2)])
           simp only [t]
           linarith
-        simp only [Θ, h0, if_false]
+        simp only [Θ, h0, ite_false]
         rw [hliftρ q t]
         simp [q]
   let Θ' : Metric.sphere (0 : P3) 1 → ↥(A ∪ B) := fun p => ⟨Θ p, hΘmem p⟩
@@ -371,13 +371,13 @@ theorem IsTopologicalCellWithInterior.sdiff_union_of_subcell [T2Space X]
     rw [hBD, ← hBb] at hzBD
     exact hzBD.2 hz
   let Θ₀ : X → X := fun y => if hy : y ∈ D₁ then (γ ⟨y, hy⟩ : X) else y
-  have hΘ₁ : ∀ y (hy : y ∈ D₁), Θ₀ y = γ ⟨y, hy⟩ := fun y hy => dif_pos hy
+  have hΘ₁ : ∀ y (hy : y ∈ D₁), Θ₀ y = γ ⟨y, hy⟩ := fun y hy => dite_eq_left hy
   have hΘ₂ : ∀ y, y ∉ D₁int → Θ₀ y = y := by
     intro y hy
     by_cases hy₁ : y ∈ D₁
     · rw [hΘ₁ y hy₁]
       exact hγfix ⟨y, hy₁⟩ hy
-    · exact dif_neg hy₁
+    · exact dite_eq_right hy₁
   obtain ⟨W, hW, hWeq⟩ := hopen
   have hΘc : ContinuousOn Θ₀ D := by
     have hsplit : D = D₁ ∪ (D \ D₁int) := by
@@ -491,16 +491,16 @@ end Cells
 
 theorem IsPLHomeomorphOn.isTopologicalCellWithInterior {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {r : (Fin 3 → ℝ) → E} {Δ : Set E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) :
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) :
     IsTopologicalCellWithInterior 2 Δ (Δ \ r '' stdSimplexBoundary 2) := by
   let τ := DifferentialGeometry.Simplex.stdSimplexNormedBallHomeomorph (n := 2)
     (EuclideanSpace.equiv (Fin 2) ℝ).symm
   have hrc : Continuous (hr.bijOn.mapsTo.restrict r _ _) :=
     hr.isPiecewiseAffineOn.continuousOn.mapsToRestrict hr.bijOn.mapsTo
-  let ρ : ↥(stdSimplex ℝ (Fin 3)) ≃ₜ ↥Δ :=
+  let ρ : ↥(Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ≃ₜ ↥Δ :=
     Continuous.homeoOfEquivCompactToT2 (f := hr.bijOn.equiv r) hrc
   refine ⟨τ.symm.trans ρ, ?_⟩
-  have hbd : ∀ x : ↥(stdSimplex ℝ (Fin 3)),
+  have hbd : ∀ x : ↥(Convexity.StdSimplex.coordinateSet ℝ (Fin 3)),
       (x : Fin 3 → ℝ) ∈ stdSimplexBoundary 2 ↔ x ∈ DifferentialGeometry.Simplex.boundary (Fin 3) :=
     fun x => ⟨fun h => h.2, fun h => ⟨x.2, h⟩⟩
   ext y

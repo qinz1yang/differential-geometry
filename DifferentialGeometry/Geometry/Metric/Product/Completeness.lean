@@ -223,7 +223,7 @@ theorem RiemannianMetricComplete.prod
     ⟨(g.prod h).inner, (g.prod h).contMDiff.continuous, by intro x v w; rfl⟩
   let : EMetricSpace (M × N) :=
     EMetricSpace.ofRiemannianMetric (I.prod J) (M × N)
-  refine EMetric.complete_of_cauchySeq_tendsto (α := M × N) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := M × N) fun s hs => ?_
   have hsProduct : ∀ ε > (0 : ENNReal), ∃ K,
       ∀ m, K ≤ m → ∀ n, K ≤ n →
         riemannianEDistOf (I := I.prod J) (g.prod h) (s m) (s n) < ε := by
@@ -300,7 +300,7 @@ theorem RiemannianMetricComplete.fst_of_prod
       (fun x : M => TangentSpace I x) :=
     ⟨g.inner, g.contMDiff.continuous, by intro x v w; rfl⟩
   let : EMetricSpace M := EMetricSpace.ofRiemannianMetric I M
-  refine EMetric.complete_of_cauchySeq_tendsto (α := M) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := M) fun s hs => ?_
   let : IsManifold (I.prod J) 1 (M × N) :=
     IsManifold.of_le (I := I.prod J) (M := M × N) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)
@@ -350,7 +350,7 @@ theorem RiemannianMetricComplete.snd_of_prod
       (fun y : N => TangentSpace J y) :=
     ⟨h.inner, h.contMDiff.continuous, by intro y v w; rfl⟩
   let : EMetricSpace N := EMetricSpace.ofRiemannianMetric J N
-  refine EMetric.complete_of_cauchySeq_tendsto (α := N) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := N) fun s hs => ?_
   let : IsManifold (I.prod J) 1 (M × N) :=
     IsManifold.of_le (I := I.prod J) (M := M × N) (n := ∞)
       (by decide : (1 : WithTop ℕ∞) ≤ ∞)

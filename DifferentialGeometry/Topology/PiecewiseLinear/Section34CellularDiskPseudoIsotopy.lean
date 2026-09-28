@@ -8,7 +8,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 theorem exists_PL_cellular_disk_pseudoisotopy
     {E ι κ : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     [Finite ι] [Finite κ] {D : ι → Set E} {r : ι → (Fin 3 → ℝ) → E}
-    (hr : ∀ i, IsPLHomeomorphOn (r i) (stdSimplex ℝ (Fin 3)) (D i))
+    (hr : ∀ i, IsPLHomeomorphOn (r i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i))
     (hinter : ∀ i j, i ≠ j → D i ∩ D j ⊆ r i '' stdSimplexBoundary 2)
     {A : κ → Set E} {γ : κ → ℝ → E}
     (hγ : ∀ e, IsPLHomeomorphOn (γ e) (Icc 0 1) (A e))

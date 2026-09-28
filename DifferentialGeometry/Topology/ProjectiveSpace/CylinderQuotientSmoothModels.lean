@@ -43,22 +43,12 @@ theorem sphereAntipodalDiffeomorph_ne_self (x : SphereTwo) :
   rw [hzero, norm_zero] at hnorm
   norm_num at hnorm
 
-private def cylinderLineNegation : ℝ ≃ₘ[ℝ] ℝ where
-  toEquiv := {
-    toFun := fun s => -s
-    invFun := fun s => -s
-    left_inv := neg_neg
-    right_inv := neg_neg }
-  contMDiff_toFun := contDiff_neg.contMDiff
-  contMDiff_invFun := contDiff_neg.contMDiff
-
-def cylinderDiagonalDiffeomorph : Cylinder ≃ₘ⟮CylinderI, CylinderI⟯ Cylinder :=
-  sphereAntipodalDiffeomorph.prodCongr cylinderLineNegation
+abbrev cylinderDiagonalDiffeomorph : Cylinder ≃ₘ⟮CylinderI, CylinderI⟯ Cylinder :=
+  Geometry.cylinderDiagonalDiffeomorph
 
 theorem cylinderDiagonalDiffeomorph_ne_self (p : Cylinder) :
-    cylinderDiagonalDiffeomorph p ≠ p := by
-  intro h
-  exact sphereAntipodalDiffeomorph_ne_self p.1 (congrArg Prod.fst h)
+    cylinderDiagonalDiffeomorph p ≠ p :=
+  Geometry.cylinderDiagonalDiffeomorph_fixed_point_free p
 
 private theorem twoPointQuotient_t2Space
     {X Q : Type*} [TopologicalSpace X] [T2Space X] [TopologicalSpace Q]
@@ -102,25 +92,10 @@ end SphereAntipodalQuotient
 namespace CylinderDiagonalQuotient
 
 theorem isLocalHomeomorph_proj : IsLocalHomeomorph proj :=
-  isLocalHomeomorph_of_free_two_point_fibres cylinderDiagonalDiffeomorph
-    cylinderDiagonalDiffeomorph.continuous cylinderDiagonalDiffeomorph_ne_self
-    proj continuous_proj isOpenMap_proj proj_eq_iff
-
-instance instChartedSpace :
-    ChartedSpace (ModelProd (EuclideanSpace ℝ (Fin 2)) ℝ) CylinderDiagonalQuotient :=
-  isLocalHomeomorph_proj.chartedSpace surjective_proj
-
-instance instIsManifold : IsManifold CylinderI ∞ CylinderDiagonalQuotient :=
-  involutionQuotient_isManifold cylinderDiagonalDiffeomorph
-    cylinderDiagonalDiffeomorph_ne_self proj proj_eq_iff isLocalHomeomorph_proj surjective_proj
-
-instance instT2Space : T2Space CylinderDiagonalQuotient :=
-  twoPointQuotient_t2Space cylinderDiagonalDiffeomorph cylinderDiagonalDiffeomorph.continuous
-    proj isLocalHomeomorph_proj surjective_proj proj_eq_iff
+  Geometry.cylinderDiagonalQuotientMap_isLocalDiffeomorph.isLocalHomeomorph
 
 theorem isLocalDiffeomorph_proj : IsLocalDiffeomorph CylinderI CylinderI ∞ proj :=
-  involutionQuotient_projection_isLocalDiffeomorph cylinderDiagonalDiffeomorph
-    cylinderDiagonalDiffeomorph_ne_self proj proj_eq_iff isLocalHomeomorph_proj surjective_proj
+  Geometry.cylinderDiagonalQuotientMap_isLocalDiffeomorph
 
 end CylinderDiagonalQuotient
 

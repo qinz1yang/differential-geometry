@@ -17,10 +17,12 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 open DifferentialGeometry.Topology
+open DifferentialGeometry.Geometry.Curvature (admitsConstantPositiveSectionalCurvature)
 
 def DiscardedComponentsRoundOrSphereProduct (D : ClosedOrientedManifold.{u} 3) : Prop :=
   ∀ C : ConnectedComponents D.Carrier,
-    IsPositiveSpaceFormModel (D.component C) ∨ isSphereTwoTimesCircleFactor (D.component C)
+    admitsConstantPositiveSectionalCurvature (I := ThreeModel) (M := (D.component C).Carrier) ∨
+      isSphereTwoTimesCircleFactor (D.component C)
 
 theorem componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoundOrSphereProduct
     (D : ClosedOrientedManifold.{u} 3) (h : DiscardedComponentsRoundOrSphereProduct D) :
@@ -37,12 +39,11 @@ theorem componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoun
       exact Or.inr hcy, ⟨ClosedOrientedManifold.OrientedDiffeomorph.refl _⟩⟩
 
 theorem MetricCutCapEvent.poincareStandardDiscarded_of_discardedComponentsRoundOrSphereProduct
-    (hround : sphericalSpaceFormCovering.{u})
     {P Q : OrientedThreeStage.{u}} {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (h : DiscardedComponentsRoundOrSphereProduct E.discarded.toClosedOrientedManifold) :
     E.poincareStandardDiscarded :=
   MetricCutCapEvent.poincareStandardDiscarded_of_componentwisePositiveCurvatureOrSphereProduct
-    hround E
+    E
     (componentwisePositiveCurvatureOrSphereProduct_of_discardedComponentsRoundOrSphereProduct
       E.discarded.toClosedOrientedManifold h)
 
@@ -53,19 +54,20 @@ def RetainedCoreObservationTower.discardedSideGeometry {P : OrientedThreeStage.{
       ((T.history n).coreEvent j).toMetricCutCapEvent.discarded.toClosedOrientedManifold
 
 theorem RetainedCoreObservationTower.hasPoincareStandardDiscarded_of_discardedSideGeometry
-    (hround : sphericalSpaceFormCovering.{u})
     {P : OrientedThreeStage.{u}} {g : P.Metric} (T : RetainedCoreObservationTower P g)
     (h : T.discardedSideGeometry) : T.hasPoincareStandardDiscarded :=
   fun n j => MetricCutCapEvent.poincareStandardDiscarded_of_discardedComponentsRoundOrSphereProduct
-    hround _ (h n j)
+    _ (h n j)
 
 theorem discardedComponentsRoundOrSphereProduct_standardThreeSphereLift :
     DiscardedComponentsRoundOrSphereProduct
       standardThreeSphereLift.{u}.toClosedOrientedManifold := by
   intro C
-  exact Or.inl (isPositiveSpaceFormModel_of_diffeomorph
+  exact Or.inl (admitsConstantPositiveSectionalCurvature_of_diffeomorph
+    (M := standardThreeSphereLift.toClosedOrientedManifold.component C)
+    (N := standardThreeSphereLift)
     ((standardThreeSphereLift.toClosedOrientedManifold.componentOrientedDiffeomorph C).1)
-    isPositiveSpaceFormModel_standardThreeSphereLift)
+    admitsConstantPositiveSectionalCurvature_standardThreeSphereLift)
 
 theorem discardedComponentsRoundOrSphereProduct_sphereTwoTimesCircleLift :
     DiscardedComponentsRoundOrSphereProduct
@@ -94,11 +96,10 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreTower_discardedSide
     (T : RetainedCoreObservationTower (OrientedThreeStage.ofClosedOrientedManifold
       M.toClosedOrientedManifold) g)
     (hbfr : T.hasBoundaryFrameReversing)
-    (hround : sphericalSpaceFormCovering.{u})
     (h : T.discardedSideGeometry)
     (hextinct : towerExtinct T.toObservationTower) :
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
   exists_poincare_controlled_extinction_of_retainedCoreTower_cutCap M g T hbfr
-    (T.hasPoincareStandardDiscarded_of_discardedSideGeometry hround h) hextinct
+    (T.hasPoincareStandardDiscarded_of_discardedSideGeometry h) hextinct
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery

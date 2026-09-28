@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Action.LowerScaleSobolevExtensions
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Embedding.Inclusion
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

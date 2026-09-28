@@ -73,7 +73,7 @@ theorem abs_covDerivAlong_velocity_pairing_div_le_of_reference_geodesic
       (Real.sqrt Λ * (A * V ^ 2) * U) / (2 * b) := by
   have hacc := covDerivAlong_velocity_norm_le_of_reference_geodesic
     g h beta t hbeta hΛ hA hmetric hconnection hvelocity
-  have hpair := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hpair := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     h (beta t) (covDerivAlong h beta
       (fun s ↦ mfderiv 𝓘(ℝ, ℝ) I beta s (1 : ℝ)) t) w
   rw [abs_div, abs_of_pos (mul_pos (by norm_num) hb)]

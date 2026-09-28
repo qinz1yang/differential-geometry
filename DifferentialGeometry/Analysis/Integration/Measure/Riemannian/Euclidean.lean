@@ -173,7 +173,7 @@ theorem riemannianVolumeMeasure_euclideanMetric
     (fun α => measurable_ofReal_pou_weight (I := 𝓘(ℝ, E)) ρ α.val)]
   have hsum : (∑' α : T, (fun x : E => ENNReal.ofReal (ρ α.val x))) = 1 := by
     funext x
-    rw [tsum_apply (Pi.summable.2 fun _ => ENNReal.summable)]
+    rw [ENNReal.tsum_apply]
     have hsupp : Function.support (fun α : E => ENNReal.ofReal (ρ α x)) ⊆ T := by
       intro α hα
       simp only [Function.mem_support, ne_eq, ENNReal.ofReal_eq_zero, not_le] at hα

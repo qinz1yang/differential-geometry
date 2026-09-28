@@ -39,7 +39,7 @@ private theorem solutionOn_Ico_of_local_agreement
   · intro x t ht
     obtain ⟨r, htr, c, hc, heq⟩ := hlocal t ht
     have hset : Ico a T =ᶠ[𝓝 t] Icc a r := by
-      rw [Filter.eventuallyEq_set]
+      rw [Filter.eventuallyEqSet_iff]
       filter_upwards [isOpen_Iio.mem_nhds (lt_min ht.2 htr)] with τ hτ
       exact ⟨fun h => ⟨h.1, (hτ.trans_le (min_le_right _ _)).le⟩,
         fun h => ⟨h.1, hτ.trans_le (min_le_left _ _)⟩⟩
@@ -129,7 +129,7 @@ theorem exists_ramp_solution_on_Icc
   have hqeq (r : horizon) (z : Surgery.Topology.Circle) (t : ℝ)
       (ht : t ∈ Ico a T) (htr : t ≤ r.1) : q z t = (flow r).map z t := by
     dsimp only [q]
-    rw [dif_pos ht]
+    rw [dite_eq_left ht]
     exact map_eq_of_isSolutionOn B lambda hlambda
       (had.trans_le (cover ⟨t, ht⟩).2.1) (had.trans_le r.2.1)
       (cover ⟨t, ht⟩).2.2.1 r.2.2.1 (flow (cover ⟨t, ht⟩)) (flow r)

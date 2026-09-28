@@ -19,7 +19,7 @@ theorem exists_derivedNeighborhood_triangle_attachment
     (hL : ∀ t ∈ L.faces, t.card ≤ 3) {s : Finset E} (hs : s ∈ K.faces)
     (hcard : s.card = 3) (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
-    let D := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+    let D := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
     let A : Set D := {z | z.val.1 ∈ stdSimplexBoundary 2}
     let N := derivedNeighborhood K L
     IsCombinatorialManifoldWithBoundary 3 N ∧
@@ -36,7 +36,7 @@ theorem exists_derivedNeighborhood_triangle_attachment
             ∀ z, (e (adjunctionCell Subtype.val φ z) : E) = g z.val := by
   classical
   dsimp only
-  let D := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+  let D := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
   let A : Set D := {z | z.val.1 ∈ stdSimplexBoundary 2}
   obtain ⟨g, hg, hgs⟩ := exists_isPLHomeomorphOn_derivedNeighborhoodCell_triangle
     K L hK hLK hL hs hcard hsL hproper

@@ -300,12 +300,12 @@ private theorem curvatureTwoFormBasisAt_ordered_apply {x : M}
       basis basis.cDualBasis basis.cDualBasis_apply_self]
   by_cases hip : i = p
   · subst p
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     have h := Fin.multiKroneckerDelta_comp_perm (R := Real)
       (RelEmbedding.injective (bivectorOrderEmbedding3 i))
       (Equiv.refl (Fin 2))
     simpa using h
-  · rw [if_neg hip]
+  · rw [ite_eq_right hip]
     apply Fin.multiKroneckerDelta_eq_zero
     apply Equiv.Perm.orderEmb_ne_comp_perm
     intro hEmbedding
@@ -371,7 +371,7 @@ theorem curvatureOperatorPairingAt_curvatureTwoFormBasisAt
         (I := I) x basis A i j := by
   classical
   rw [curvatureOperatorPairingAt]
-  rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis
+  rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis
     (orthonormal_invBasis3 (I := I) g basis horth)]
   rw [curvatureKernel_sum_slots4]
   rw [DimensionThree.traceNormalizedCurvatureOperatorMatrixAt_apply]

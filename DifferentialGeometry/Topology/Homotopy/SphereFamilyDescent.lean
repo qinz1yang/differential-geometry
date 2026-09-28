@@ -38,7 +38,7 @@ theorem sphereFamilyDescendValue_projection (n : ℕ)
     (cubeInteriorSphereHomeomorph n (openCollapse (cubeInterior _) v))).elim _ _ = _
   rw [Homeomorph.symm_apply_apply]
   by_cases hv : v ∈ cubeInterior (Fin (n + 1))
-  · simp only [openCollapse, dif_pos hv, OnePoint.elim_some]
+  · simp only [openCollapse, dite_eq_left hv, OnePoint.elim_some]
   · rw [openCollapse_of_notMem _ hv, OnePoint.elim_infty]
     exact (hb k v (by
       simpa only [cubeInterior_eq_compl_boundary, mem_compl_iff, not_not] using hv)).symm

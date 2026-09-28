@@ -163,7 +163,7 @@ theorem interiorLeft_isLocalDiffeomorph
       (fun q : ConnectedSumQuotient c d aD.toHomeomorph => f.symm (L.symm q)) L.target := hgood
   have hcomp_inv : ContMDiffOn (𝓡 3) (𝓡 3) ∞ (Subtype.val ∘ w) L.target :=
     hregood.congr (fun q hq => by
-      simp only [Function.comp_apply, w, dif_pos hq, Subtype.coe_mk])
+      simp only [Function.comp_apply, w, dite_eq_left hq, Subtype.coe_mk])
   have hinv : ContMDiffOn (𝓡 3) (𝓡 3) ∞ w L.target := by
     intro q hq
     exact (ContMDiffWithinAt.subtypeVal_comp_iff (U := c.interior) w L.target q).mp
@@ -183,15 +183,15 @@ theorem interiorLeft_isLocalDiffeomorph
   · intro u hu
     exact L.map_source (hLsrc_of u hu)
   · intro q hq
-    simp only [w, dif_pos hq]
+    simp only [w, dite_eq_left hq]
     exact f.map_target (hftgt_of q hq)
   · intro u hu
     have hLu : f (u : M) ∈ L.source := hLsrc_of u hu
     apply Subtype.ext
-    simp only [w, dif_pos (L.map_source hLu), Subtype.coe_mk]
+    simp only [w, dite_eq_left (L.map_source hLu), Subtype.coe_mk]
     rw [L.left_inv hLu, f.left_inv hu]
   · intro q hq
-    simp only [w, dif_pos hq]
+    simp only [w, dite_eq_left hq]
     rw [f.right_inv (hftgt_of q hq), L.right_inv hq]
   · exact f.open_source.preimage continuous_subtype_val
   · intro u hu
@@ -276,7 +276,7 @@ theorem interiorRight_isLocalDiffeomorph
     hgsymmsmooth.comp hLsymmsmooth (fun q hq => hgtgt_of q hq)
   have hcomp_inv : ContMDiffOn (𝓡 3) (𝓡 3) ∞ (Subtype.val ∘ w) L.target :=
     hgood.congr (fun q hq => by
-      simp only [Function.comp_apply, w, dif_pos hq, Subtype.coe_mk])
+      simp only [Function.comp_apply, w, dite_eq_left hq, Subtype.coe_mk])
   have hinv : ContMDiffOn (𝓡 3) (𝓡 3) ∞ w L.target := by
     intro q hq
     exact (ContMDiffWithinAt.subtypeVal_comp_iff (U := d.interior) w L.target q).mp
@@ -296,15 +296,15 @@ theorem interiorRight_isLocalDiffeomorph
   · intro u hu
     exact L.map_source (hLsrc_of u hu)
   · intro q hq
-    simp only [w, dif_pos hq]
+    simp only [w, dite_eq_left hq]
     exact g.map_target (hgtgt_of q hq)
   · intro u hu
     have hLu : g (u : N) ∈ L.source := hLsrc_of u hu
     apply Subtype.ext
-    simp only [w, dif_pos (L.map_source hLu), Subtype.coe_mk]
+    simp only [w, dite_eq_left (L.map_source hLu), Subtype.coe_mk]
     rw [L.left_inv hLu, g.left_inv hu]
   · intro q hq
-    simp only [w, dif_pos hq]
+    simp only [w, dite_eq_left hq]
     rw [g.right_inv (hgtgt_of q hq), L.right_inv hq]
   · exact g.open_source.preimage continuous_subtype_val
   · intro u hu
@@ -551,11 +551,11 @@ theorem collarInv_collarMap (p : K) : collarInv c d aD (collarMap c d aD p) = p 
     rw [collarMap_eq_seamChartX c d aD p]
     exact (seamChartX c d aD.toHomeomorph).right_inv (by
       rw [seamChartX_target]; exact rad_mem_SeamShell p)
-  simp only [collarInv, dif_pos hmem]
+  simp only [collarInv, dite_eq_left hmem]
   refine Prod.ext ?_ ?_
   · exact (congrArg unitVecFun hchart).trans (unitVecFun_rad p)
   · apply Subtype.ext
-    simp only [collarParam, dif_pos hmem, hchart, norm_rad, Subtype.coe_mk]
+    simp only [collarParam, dite_eq_left hmem, hchart, norm_rad, Subtype.coe_mk]
     ring
 
 omit [IsManifold (𝓡 3) ∞ M] [T2Space M] [IsManifold (𝓡 3) ∞ N] [T2Space N]
@@ -568,12 +568,12 @@ theorem collarMap_collarInv (q : ConnectedSumQuotient c d aD.toHomeomorph)
   have hrad : rad (unitVecFun (seamChartX c d aD.toHomeomorph q), collarParam c d aD q)
       = seamChartX c d aD.toHomeomorph q := by
     rw [rad]
-    simp only [collarParam, dif_pos hq, Subtype.coe_mk]
+    simp only [collarParam, dite_eq_left hq, Subtype.coe_mk]
     rw [unitVecFun_of_ne hwne]
     have h1 : (1 : ℝ) + (‖seamChartX c d aD.toHomeomorph q‖ - 1) =
         ‖seamChartX c d aD.toHomeomorph q‖ := by ring
     rw [h1, smul_unitVec]
-  simp only [collarInv, dif_pos hq]
+  simp only [collarInv, dite_eq_left hq]
   rw [collarMap_eq_seamChartX c d aD, hrad]
   exact (seamChartX c d aD.toHomeomorph).left_inv (by rw [seamChartX_source]; exact hq)
 
@@ -615,14 +615,14 @@ theorem contMDiffOn_collarInv (hseam : seamChartX c d aD.toHomeomorph ∈
     refine (ContMDiffWithinAt.subtypeVal_comp_iff (U := collarInterval)
       (f := collarParam c d aD) (Set.range (seamMap c d aD.toHomeomorph)) q₀).mp ?_
     refine hsub.congr (fun q hq => ?_) ?_
-    · simp only [Function.comp_apply, collarParam, dif_pos hq, Subtype.coe_mk]
-    · simp only [Function.comp_apply, collarParam, dif_pos hq₀, Subtype.coe_mk]
+    · simp only [Function.comp_apply, collarParam, dite_eq_left hq, Subtype.coe_mk]
+    · simp only [Function.comp_apply, collarParam, dite_eq_left hq₀, Subtype.coe_mk]
   have hpair : ContMDiffWithinAt (𝓡 3) ((𝓡 2).prod 𝓘(ℝ, ℝ)) ∞
       (fun q => (unitVecFun (seamChartX c d aD.toHomeomorph q), collarParam c d aD q))
       (Set.range (seamMap c d aD.toHomeomorph)) q₀ :=
     hfirst.prodMk hparam
-  exact hpair.congr (fun q hq => by simp only [collarInv, dif_pos hq]) (by
-    simp only [collarInv, dif_pos hq₀])
+  exact hpair.congr (fun q hq => by simp only [collarInv, dite_eq_left hq]) (by
+    simp only [collarInv, dite_eq_left hq₀])
 
 omit [IsManifold (𝓡 3) ∞ M] [T2Space M] [IsManifold (𝓡 3) ∞ N] [T2Space N] in
 theorem collarMap_isLocalDiffeomorph (hseam : seamChartX c d aD.toHomeomorph ∈

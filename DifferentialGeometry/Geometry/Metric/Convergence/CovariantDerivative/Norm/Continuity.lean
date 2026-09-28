@@ -45,11 +45,11 @@ private noncomputable def orthoFrameBasis
       rw [map_sum, sum_apply] at hpair
       rw [Finset.sum_eq_single b] at hpair
       · rw [ContinuousLinearMap.map_smul, smul_apply, hON b b,
-          if_pos rfl, smul_eq_mul, mul_one] at hpair
+          ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
         exact hpair
       · intro a _ hab
         rw [ContinuousLinearMap.map_smul, smul_apply, hON a b,
-          if_neg (by simpa using hab), smul_zero]
+          ite_eq_right (by simpa using hab), smul_zero]
       · intro hb
         exact absurd (Finset.mem_univ b) hb)
     (by rw [Fintype.card_fin]; rfl)

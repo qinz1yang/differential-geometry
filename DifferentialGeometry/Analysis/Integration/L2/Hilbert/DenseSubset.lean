@@ -7,6 +7,9 @@ import Mathlib.Analysis.Normed.Group.Completion
 import Mathlib.Analysis.Normed.Module.Completion
 import Mathlib.Analysis.InnerProductSpace.Completion
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_eq_zero_iff
+  tensorInnerPointwise_nonneg)
+
 
 noncomputable section
 

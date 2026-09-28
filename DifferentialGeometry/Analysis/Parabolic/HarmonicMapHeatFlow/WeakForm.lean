@@ -11,6 +11,10 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricPerturbation.Famil
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import DifferentialGeometry.Geometry.Connection.Laplacian.Musical
+
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise tensorInnerPointwise_add_left
+  tensorInnerPointwise_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right
+  tensorInnerPointwise_symm)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

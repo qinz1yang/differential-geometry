@@ -24,6 +24,8 @@ namespace DifferentialGeometry
 namespace PDE
 namespace RicciFlow
 namespace IntrinsicSpectral
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le)
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
@@ -639,7 +641,7 @@ private theorem fullSlot_cap
             ((slotInsertEndoCc (I := I) (M := M) g 2
               (metricComparisonEndomorphismField (I := I) (M := M) g gm)).toSection x) ≤ K := by
   obtain ⟨C, hC_nn, hC⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g (δ₀ := (1 : ℝ) / 3) (by norm_num)
   obtain ⟨K0, hK0, hK0b⟩ :=
     exists_bound_riemannianFiberNormSq_smoothCcTensor
@@ -2942,7 +2944,7 @@ private theorem secondOrderCoefficient_fibre_bound
       (((-2 * s : ℝ) • ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T).toSection x) ≤
         4 * (KR * r2) ^ 2 := by
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     calc
       (-2 * s) ^ 2 * riemannianFiberNormSq (I := I) (M := M) g 4 2 x
           ((ricciConnectionDifferenceTopOrderCoefficient (I := I) (M := M) g gm T).toSection x) ≤

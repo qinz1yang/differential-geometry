@@ -366,7 +366,7 @@ def Moise314 : Prop :=
           (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S'' k)) x)) ∨
       ∀ k : Fin 3, (k = j.castSucc ∨ k = j.succ) →
         ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-          IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' k ∧
+          IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' k ∧
             G = r '' stdSimplexBoundary 2
 
 end Statements

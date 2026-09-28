@@ -1,5 +1,8 @@
---- before
-+++ after
+--- canonical-topology/Poincare/Topology/Homology/LocalLinearMaps.lean
++++ DifferentialGeometry/External/CanonicalTopology/Topology/Homology/LocalLinearMaps.lean
+@@ -3 +3 @@
+-import Mathlib.Data.Sign.Basic
++import Mathlib.Basic.Sign.Basic
 @@ -230 +230 @@
 -  rw [show integralAbsoluteToRelative (n + 2) A₂
 +  have hnat : integralAbsoluteToRelative (n + 2) A₂

@@ -186,8 +186,6 @@ theorem contMDiff_transportCoeffManifold
       have := (hcutα.mul hcutβ).mul hcoeff_at
       unfold transportCoeffManifold
       convert this using 1
-      funext y
-      rfl
     exact hprod
   · have hsupp_sub := tsupport_transportCoeffManifold_subset
       (I := I) (M := M) r s β α P₀ Q
@@ -444,7 +442,7 @@ private lemma aestronglyMeasurable_transportFun
     h_f_meas.comp_quasiMeasurePreserving D.Φ.toFun_quasiMeasurePreserving
   exact h_coeff.mul h_comp
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma exists_eLpNorm_transportFun_bound
     (r s : ℕ) (β α : M)
     (P₀ Q : TensorCompIdx (E := E) r s)
@@ -482,9 +480,34 @@ private lemma exists_eLpNorm_transportFun_bound
         ENNReal.ofReal C *
           eLpNorm (D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))) 2
             (chartLebesgueMeasure (I := I) (M := M) α) := by
-    refine (eLpNorm_mono_ae (Filter.Eventually.of_forall h_pointwise)).trans ?_
-    rw [show (C • D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))) =
-        (C : ℝ) • D.Ωαβ.indicator (fun y => (f : EuclN → ℝ) (D.Φ.toFun y)) from rfl]
+    have h_transport_meas : AEStronglyMeasurable
+        (transportFun (I := I) (M := M) r s β α P₀ Q f)
+        (chartLebesgueMeasure (I := I) (M := M) α) := by
+      rw [transportFun_eq_indicator (I := I) (M := M) r s β α P₀ Q D f]
+      rw [aestronglyMeasurable_indicator_iff
+        (Ωαβ_measurableSet (I := I) (M := M) r s β α P₀ Q D),
+        chartLebesgueMeasure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D]
+      have h_coeff : AEStronglyMeasurable
+          (transportCoeffPushed (I := I) (M := M) r s β α P₀ Q)
+          ((volume : Measure EuclN).restrict D.Ωαβ) := by
+        have h := aestronglyMeasurable_transportCoeffPushed
+          (I := I) (M := M) r s β α P₀ Q
+        rw [← chartLebesgueMeasure_restrict_Ωαβ
+          (I := I) (M := M) r s β α P₀ Q D]
+        exact h.restrict
+      have h_f_meas : AEStronglyMeasurable (f : EuclN → ℝ)
+          ((volume : Measure EuclN).restrict D.Ωβα) :=
+        (Lp.aestronglyMeasurable f).mono_measure
+          (by rw [chartLebesgueMeasure]
+              exact Measure.restrict_mono D.hΩβα_subset_target le_rfl)
+      have h_comp : AEStronglyMeasurable
+          (fun y => (f : EuclN → ℝ) (D.Φ.toFun y))
+          ((volume : Measure EuclN).restrict D.Ωαβ) :=
+        h_f_meas.comp_quasiMeasurePreserving D.Φ.toFun_quasiMeasurePreserving
+      exact h_coeff.mul h_comp
+    refine (eLpNorm_mono_ae
+      h_transport_meas
+      (Filter.Eventually.of_forall h_pointwise)).trans ?_
     refine (eLpNorm_const_smul_le).trans ?_
     rw [Real.enorm_eq_ofReal_abs, abs_of_nonneg hC_nn]
   have h_indic : eLpNorm
@@ -536,13 +559,12 @@ private lemma memLp_transportFun
     (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) β)) :
     MemLp (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
       (chartLebesgueMeasure (I := I) (M := M) α) := by
-  refine ⟨aestronglyMeasurable_transportFun (I := I) (M := M) r s β α P₀ Q D f,
-    ?_⟩
+  rw [memLp_iff]
   obtain ⟨K, hK_nn, hK⟩ :=
     exists_eLpNorm_transportFun_bound (I := I) (M := M) r s β α P₀ Q D
   refine lt_of_le_of_lt (hK f) ?_
   refine ENNReal.mul_lt_top ENNReal.ofReal_lt_top ?_
-  exact (Lp.memLp f).2
+  exact Lp.memLp f
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 private lemma transportFun_aux_ae_eq
@@ -566,7 +588,7 @@ private lemma transportFun_aux_ae_eq
   have h_comp_Ωαβ : (fun y => u₁ (D.Φ.toFun y)) =ᵐ[
       (volume : Measure EuclN).restrict Ωαβ]
         fun y => u₂ (D.Φ.toFun y) :=
-    D.Φ.toFun_quasiMeasurePreserving.ae_eq huv_Ωβα
+    D.Φ.toFun_quasiMeasurePreserving.ae_eq_comp huv_Ωβα
   have h_meas_eq : (chartLebesgueMeasure (I := I) (M := M) α).restrict Ωαβ =
       (volume : Measure EuclN).restrict Ωαβ :=
     chartLebesgueMeasure_restrict_Ωαβ (I := I) (M := M) r s β α P₀ Q D
@@ -737,7 +759,7 @@ private lemma transportLpLin_norm_le
       ENNReal.ofReal K *
         eLpNorm (f : EuclN → ℝ) 2 (chartLebesgueMeasure (I := I) (M := M) β) ≠
           (⊤ : ℝ≥0∞) :=
-    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (Lp.memLp f).2).ne
+    (ENNReal.mul_lt_top ENNReal.ofReal_lt_top (Lp.memLp f)).ne
   have h_toReal_le :
       (eLpNorm (transportFun (I := I) (M := M) r s β α P₀ Q f) 2
         (chartLebesgueMeasure (I := I) (M := M) α)).toReal ≤

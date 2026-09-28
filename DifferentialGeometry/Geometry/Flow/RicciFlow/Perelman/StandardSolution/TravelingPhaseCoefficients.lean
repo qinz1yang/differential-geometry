@@ -160,7 +160,7 @@ private theorem traveling_phase_gradient_lower
   · change (4 / M) * ‖z‖ ^ 2 ≤ q
     simpa only [hz, norm_zero, zero_pow (by decide : 2 ≠ 0), mul_zero] using hq
   · have hzsq : 0 < ‖z‖ ^ 2 := sq_pos_of_pos (norm_pos_iff.mpr hz)
-    have hcs := metric_inner_cauchy_schwarz_sq g x V z
+    have hcs := SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq g x V z
     rw [hpair] at hcs
     have hprod : (4 * ‖z‖ ^ 2) * ‖z‖ ^ 2 ≤ (q * M) * ‖z‖ ^ 2 := by
       calc

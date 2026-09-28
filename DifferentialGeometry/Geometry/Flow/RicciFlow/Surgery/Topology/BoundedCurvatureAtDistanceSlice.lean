@@ -19,10 +19,9 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}}
 
 private theorem nonempty_backwardPointTrace_of_chain_of_not_capWindowPoint_aux
-    (H : RetainedCoreHistory P₀) {p : CutoffParameters}
+    (H : RetainedCoreHistory.{u}) {p : CutoffParameters}
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p)
     (hcan : ∀ i b, ((records i).static b).hasCanonicalWindow)
     (hscale : ∀ i b z, ((records i).static b).neck.scale / 2 ≤
@@ -67,12 +66,12 @@ private theorem sum_range_ite_add {Nc N : ℕ} (a b : ℕ → ℝ) :
       ∑ j ∈ Finset.range Nc, a j + ∑ j ∈ Finset.range (N + 1), b j := by
   rw [show Nc + N + 1 = Nc + (N + 1) by ring, Finset.sum_range_add]
   congr 1
-  · exact Finset.sum_congr rfl fun j hj => if_pos (Finset.mem_range.mp hj)
+  · exact Finset.sum_congr rfl fun j hj => ite_eq_left (Finset.mem_range.mp hj)
   · refine Finset.sum_congr rfl fun j _ => ?_
-    rw [if_neg (by omega), Nat.add_sub_cancel_left]
+    rw [ite_eq_right (by omega), Nat.add_sub_cancel_left]
 
 theorem chain_traces_of_not_capWindowPoint_of_incomingSlab
-    (H : RetainedCoreHistory P₀) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount))
@@ -140,18 +139,18 @@ theorem chain_traces_of_not_capWindowPoint_of_incomingSlab
   let Δ : ℕ → ℝ := fun j => if j < Nc then δc j else δ (j - Nc)
   have hP0 : P 0 = y := by
     by_cases hN : 0 < Nc
-    · exact (if_pos hN).trans hpc0
+    · exact (ite_eq_left hN).trans hpc0
     · have : Nc = 0 := by omega
       change (if 0 < Nc then pc 0 else pp (0 - Nc)) = y
-      rw [if_neg hN, Nat.zero_sub, h0, this, hpc0]
+      rw [ite_eq_right hN, Nat.zero_sub, h0, this, hpc0]
   have hΔ : ∀ j ≤ Nc + N, 0 < Δ j := by
     intro j hj
     by_cases hjc : j < Nc
     · change 0 < (if j < Nc then δc j else δ (j - Nc))
-      rw [if_pos hjc]
+      rw [ite_eq_left hjc]
       exact hδc j hjc
     · change 0 < (if j < Nc then δc j else δ (j - Nc))
-      rw [if_neg hjc]
+      rw [ite_eq_right hjc]
       exact hδ _ (by omega)
   have hchainP : ∀ j < Nc + N, P (j + 1) ∈
       riemannianBallOf (H'.toHistory.stageMetric (Fin.last H.eventCount) t) (P j) (Δ j) := by
@@ -161,16 +160,16 @@ theorem chain_traces_of_not_capWindowPoint_of_incomingSlab
     · change (if j + 1 < Nc then pc (j + 1) else pp (j + 1 - Nc)) ∈
         riemannianBallOf (S.flow.base.metric t)
         (if j < Nc then pc j else pp (j - Nc)) (if j < Nc then δc j else δ (j - Nc))
-      rw [if_pos hjc, if_pos hjc]
+      rw [ite_eq_left hjc, ite_eq_left hjc]
       by_cases hjc' : j + 1 < Nc
-      · rw [if_pos hjc']
+      · rw [ite_eq_left hjc']
         exact hchainc j hjc
-      · rw [if_neg hjc', show j + 1 - Nc = 0 by omega, h0, show Nc = j + 1 by omega]
+      · rw [ite_eq_right hjc', show j + 1 - Nc = 0 by omega, h0, show Nc = j + 1 by omega]
         exact hchainc j (by omega)
     · change (if j + 1 < Nc then pc (j + 1) else pp (j + 1 - Nc)) ∈
         riemannianBallOf (S.flow.base.metric t)
         (if j < Nc then pc j else pp (j - Nc)) (if j < Nc then δc j else δ (j - Nc))
-      rw [if_neg hjc, if_neg hjc, if_neg (show ¬ (j + 1 < Nc) by omega),
+      rw [ite_eq_right hjc, ite_eq_right hjc, ite_eq_right (show ¬ (j + 1 < Nc) by omega),
         show j + 1 - Nc = j - Nc + 1 by omega]
       exact hch (j - Nc) (by omega)
   have hspaceP : ∀ j ≤ Nc + N, ∀ w ∈ riemannianBallOf
@@ -181,11 +180,11 @@ theorem chain_traces_of_not_capWindowPoint_of_incomingSlab
     by_cases hjc : j < Nc
     · change w ∈ riemannianBallOf (S.flow.base.metric t) (if j < Nc then pc j else pp (j - Nc))
         (if j < Nc then δc j else δ (j - Nc)) at hw
-      rw [if_pos hjc, if_pos hjc] at hw
+      rw [ite_eq_left hjc, ite_eq_left hjc] at hw
       exact (hMc j hjc w hw).trans hMcM
     · change w ∈ riemannianBallOf (S.flow.base.metric t) (if j < Nc then pc j else pp (j - Nc))
         (if j < Nc then δc j else δ (j - Nc)) at hw
-      rw [if_neg hjc, if_neg hjc] at hw
+      rw [ite_eq_right hjc, ite_eq_right hjc] at hw
       exact hb _ (by omega) w hw
   have hsum : ∑ j ∈ Finset.range (Nc + N + 1), Δ j ≤ lamc + ∑ j ∈ Finset.range (N + 1), δ j := by
     have := sum_range_ite_add (Nc := Nc) (N := N) δc δ
@@ -218,7 +217,7 @@ theorem chain_traces_of_not_capWindowPoint_of_incomingSlab
       change z ∈ riemannianBallOf (S.flow.base.metric t)
         (if Nc + k < Nc then pc (Nc + k) else pp (Nc + k - Nc))
         (if Nc + k < Nc then δc (Nc + k) else δ (Nc + k - Nc))
-      rw [if_neg (show ¬ (Nc + k < Nc) by omega), if_neg (show ¬ (Nc + k < Nc) by omega),
+      rw [ite_eq_right (show ¬ (Nc + k < Nc) by omega), ite_eq_right (show ¬ (Nc + k < Nc) by omega),
         Nat.add_sub_cancel_left]
       exact hz)
   obtain ⟨A⟩ := hres

@@ -203,10 +203,7 @@ theorem hasDerivAt_warpingFunction (r : ℝ) :
   have ha := (contDiff_angle.differentiable (by simp) r).hasDerivAt
   change HasDerivAt (fun y => Real.sqrt 2 * Real.sin (angle y))
     (Real.sqrt 2 * Real.cos (angle r) * deriv angle r) r
-  convert ha.sin.const_mul (Real.sqrt 2) using 1
-  · rfl
-  · rfl
-  · ring
+  simpa only [mul_assoc] using ha.sin.const_mul (Real.sqrt 2)
 
 theorem deriv_warpingFunction (r : ℝ) :
     deriv warpingFunction r = Real.sqrt 2 * Real.cos (angle r) * deriv angle r :=

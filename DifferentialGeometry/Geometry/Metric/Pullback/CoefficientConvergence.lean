@@ -177,6 +177,7 @@ theorem pullbackMetricCoefficients_eq_of_eventuallyEq
   ext v w
   rw [pullbackMetricCoefficients_apply, pullbackMetricCoefficients_apply, hd]
   rw [heq.eq_of_nhds]
+  rfl
 
 theorem pullbackMetricCoefficients_eventuallyEq_of_eventuallyEq
     (g : SmoothRiemannianMetric I M) {f h : V → M} {x : V}

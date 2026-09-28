@@ -115,8 +115,8 @@ theorem exists_finite_isPLSphere_decomposition_of_isPLSphere_two
     intro x hxG
     exact subset_closure ⟨hGB hxG, fun hxH => Set.disjoint_left.mp hHG hxH hxG⟩
   obtain ⟨q, hq⟩ := hR
-  let g := Function.invFunOn q (stdSimplex ℝ (Fin 3))
-  have hg : IsPLHomeomorphOn g R (stdSimplex ℝ (Fin 3)) := hq.symm
+  let g := Function.invFunOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+  have hg : IsPLHomeomorphOn g R (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hq.symm
   have hgG : IsPLHomeomorphOn g G.space (g '' G.space) :=
     hg.restrict (isPolyhedron_space G) hGR
   obtain ⟨L, hLfinite, hLspace, hLmap⟩ :=
@@ -135,7 +135,7 @@ theorem exists_finite_isPLSphere_decomposition_of_isPLSphere_two
   have hLfiber : L.space ⊆ {x | ℓ x = 1} := by
     intro x hxL
     obtain ⟨y, hyG, rfl⟩ := hLspace ▸ hxL
-    have hsimplex : g y ∈ stdSimplex ℝ (Fin 3) := hg.bijOn.mapsTo (hGR hyG)
+    have hsimplex : g y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hg.bijOn.mapsTo (hGR hyG)
     exact hsimplex.2
   obtain ⟨C, hCfinite, hCsphere, hCdisjoint, hCcover⟩ :=
     exists_finite_isPLSphere_decomposition_of_subset_fiber L hL (by simp) ℓ hℓ hLfiber
@@ -152,7 +152,7 @@ theorem exists_finite_isPLSphere_decomposition_of_isPLSphere_two
   refine ⟨(fun S => q '' S) '' C, hCfinite.image _, ?_, ?_, ?_⟩
   · rintro S ⟨D, hDC, rfl⟩
     have hDL : D ⊆ L.space := (subset_sUnion_of_mem hDC).trans_eq hCcover.symm
-    have hDsimplex : D ⊆ stdSimplex ℝ (Fin 3) := hDL.trans fun x hx => by
+    have hDsimplex : D ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hDL.trans fun x hx => by
       rw [hLspace] at hx
       obtain ⟨y, hyG, rfl⟩ := hx
       exact hg.bijOn.mapsTo (hGR hyG)
@@ -162,11 +162,11 @@ theorem exists_finite_isPLSphere_decomposition_of_isPLSphere_two
     have hne : D ≠ F := fun h => hDF (congrArg (fun A => q '' A) h)
     have hDL : D ⊆ L.space := (subset_sUnion_of_mem hDC).trans_eq hCcover.symm
     have hFL : F ⊆ L.space := (subset_sUnion_of_mem hFC).trans_eq hCcover.symm
-    have hDsimplex : D ⊆ stdSimplex ℝ (Fin 3) := hDL.trans fun x hx => by
+    have hDsimplex : D ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hDL.trans fun x hx => by
       rw [hLspace] at hx
       obtain ⟨y, hyG, rfl⟩ := hx
       exact hg.bijOn.mapsTo (hGR hyG)
-    have hFsimplex : F ⊆ stdSimplex ℝ (Fin 3) := hFL.trans fun x hx => by
+    have hFsimplex : F ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := hFL.trans fun x hx => by
       rw [hLspace] at hx
       obtain ⟨y, hyG, rfl⟩ := hx
       exact hg.bijOn.mapsTo (hGR hyG)
@@ -230,8 +230,8 @@ theorem exists_boundaryNeighborhoodBoundary_ball_pairs (S : NormalSystem E)
       C.PairwiseDisjoint id ∧
         (PiecewiseLinear.boundaryComplex 2 S.boundaryNeighborhood).space = ⋃₀ C ∧
           ∀ J ∈ C, ∃ (D₀ D₁ : Set E) (q₀ q₁ : (Fin 3 → ℝ) → E),
-            IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀ ∧
-            IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
+            IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀ ∧
+            IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
             q₀ '' stdSimplexBoundary 2 = J ∧ q₁ '' stdSimplexBoundary 2 = J ∧
             D₀ ∪ D₁ = S.boundaryComplex.space ∧ D₀ ∩ D₁ = J := by
   obtain ⟨C, hCfinite, hCsphere, hCdisjoint, hCcover⟩ :=

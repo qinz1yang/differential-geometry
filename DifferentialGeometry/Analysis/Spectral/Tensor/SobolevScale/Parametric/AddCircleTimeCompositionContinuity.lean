@@ -159,25 +159,25 @@ private theorem tendsto_timeL2_scalarHs_composition_firstJet_of_eventually
   let fc := fun x => if good x then f x else f₀
   let uc := fun x => if good x then u x else u₀
   let ac := fun x => if good x then a x else a₀
-  have hfEq : f =ᶠ[l] fc := hg.mono fun x hx => by simp only [fc, if_pos hx]
-  have huEq : u =ᶠ[l] uc := hg.mono fun x hx => by simp only [uc, if_pos hx]
-  have haEq : ac =ᶠ[l] a := hg.mono fun x hx => by simp only [ac, if_pos hx]
+  have hfEq : f =ᶠ[l] fc := hg.mono fun x hx => by simp only [fc, ite_eq_left hx]
+  have huEq : u =ᶠ[l] uc := hg.mono fun x hx => by simp only [uc, ite_eq_left hx]
+  have haEq : ac =ᶠ[l] a := hg.mono fun x hx => by simp only [ac, ite_eq_left hx]
   have hc : Tendsto ac l (𝓝 a₀) := by
     apply tendsto_timeL2_scalarHs_composition_firstJet g k T F hF hU hK hKU R
       fc f₀ uc u₀ ac a₀ (hf.congr' hfEq) (hu.congr' huEq)
     · intro x
       by_cases hx : good x
-      · simpa only [fc, uc, if_pos hx] using hx.1
-      · simpa only [fc, uc, if_neg hx] using hRange₀
+      · simpa only [fc, uc, ite_eq_left hx] using hx.1
+      · simpa only [fc, uc, ite_eq_right hx] using hRange₀
     · exact hRange₀.mono fun t ht => ht.trans hKU
     · intro x
       by_cases hx : good x
-      · simpa only [fc, uc, if_pos hx] using hx.2.1
-      · simpa only [fc, uc, if_neg hx] using hBound₀
+      · simpa only [fc, uc, ite_eq_left hx] using hx.2.1
+      · simpa only [fc, uc, ite_eq_right hx] using hBound₀
     · intro x
       by_cases hx : good x
-      · simpa only [fc, uc, ac, if_pos hx] using hx.2.2
-      · simpa only [fc, uc, ac, if_neg hx] using hEval₀
+      · simpa only [fc, uc, ac, ite_eq_left hx] using hx.2.2
+      · simpa only [fc, uc, ac, ite_eq_right hx] using hEval₀
     · exact hEval₀
   exact hc.congr' haEq
 
@@ -599,27 +599,27 @@ private theorem tendsto_timeL2_scalarHs_composition_firstJet_timeShift_of_eventu
   let fc := fun x => if good x then f x else f₀
   let uc := fun x => if good x then u x else u₀
   let ac := fun x => if good x then a x else a₀
-  have hσEq : σ =ᶠ[l] σc := hg.mono fun x hx => by simp only [σc, if_pos hx]
-  have hfEq : f =ᶠ[l] fc := hg.mono fun x hx => by simp only [fc, if_pos hx]
-  have huEq : u =ᶠ[l] uc := hg.mono fun x hx => by simp only [uc, if_pos hx]
-  have haEq : ac =ᶠ[l] a := hg.mono fun x hx => by simp only [ac, if_pos hx]
+  have hσEq : σ =ᶠ[l] σc := hg.mono fun x hx => by simp only [σc, ite_eq_left hx]
+  have hfEq : f =ᶠ[l] fc := hg.mono fun x hx => by simp only [fc, ite_eq_left hx]
+  have huEq : u =ᶠ[l] uc := hg.mono fun x hx => by simp only [uc, ite_eq_left hx]
+  have haEq : ac =ᶠ[l] a := hg.mono fun x hx => by simp only [ac, ite_eq_left hx]
   have hc : Tendsto ac l (𝓝 a₀) := by
     apply tendsto_timeL2_scalarHs_composition_firstJet_timeShift
       g k T σc σ₀ (hσ.congr' hσEq) F hF hU hK hKU R
       fc f₀ uc u₀ ac a₀ (hf.congr' hfEq) (hu.congr' huEq)
     · intro x
       by_cases hx : good x
-      · simpa only [σc, fc, uc, if_pos hx] using hx.1
-      · simpa only [σc, fc, uc, if_neg hx] using hRange₀
+      · simpa only [σc, fc, uc, ite_eq_left hx] using hx.1
+      · simpa only [σc, fc, uc, ite_eq_right hx] using hRange₀
     · exact hRange₀.mono fun t ht => ht.trans hKU
     · intro x
       by_cases hx : good x
-      · simpa only [σc, fc, uc, if_pos hx] using hx.2.1
-      · simpa only [σc, fc, uc, if_neg hx] using hBound₀
+      · simpa only [σc, fc, uc, ite_eq_left hx] using hx.2.1
+      · simpa only [σc, fc, uc, ite_eq_right hx] using hBound₀
     · intro x
       by_cases hx : good x
-      · simpa only [σc, fc, uc, ac, if_pos hx] using hx.2.2
-      · simpa only [σc, fc, uc, ac, if_neg hx] using hEval₀
+      · simpa only [σc, fc, uc, ac, ite_eq_left hx] using hx.2.2
+      · simpa only [σc, fc, uc, ac, ite_eq_right hx] using hEval₀
     · exact hEval₀
   exact hc.congr' haEq
 

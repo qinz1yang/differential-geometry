@@ -80,7 +80,10 @@ private theorem norm_chartIterWeakPartialLpLinear_le
   exact (Euclidean.eLpNorm_iterWeakPartial_le_wkpNorm p
     (chartPushed (chartAtlasPOU I_hs M) α (wkpChartFun u))
     (Euclidean.interiorHalfSpace (chartTargetEuclid α)) j hj β).trans
-      (ENNReal.le_tsum α)
+      (ENNReal.le_tsum (f := fun γ : M =>
+        Euclidean.iteratedWeakSobolevNorm k p
+          (chartPushed (chartAtlasPOU I_hs M) γ (wkpChartFun u))
+          (Euclidean.interiorHalfSpace (chartTargetEuclid γ))) α)
 
 noncomputable def chartIterWeakPartialLp
     (hj : j ≤ k) (α : M) (β : Fin j → Fin n) :

@@ -86,7 +86,7 @@ theorem IsPLCellOn.exists_annular_band_with_carrier_trace {M : Type*}
       (hXess : ¬ ∃ D : Set M, IsPLCellOn 2 D X ∧ D ⊆ A) :
       ¬ ∃ (D : Set (EuclideanSpace ℝ (Fin 3)))
         (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ τ '' A ∧
           q '' stdSimplexBoundary 2 = τ '' X := by
     rintro ⟨D, q, hq, hDA, hqb⟩
     have hDP := (hDA.trans hA'S).trans hfront
@@ -117,7 +117,7 @@ theorem IsPLCellOn.exists_annular_band_with_carrier_trace {M : Type*}
   intro C hFC hCfront hCT
   have hcell {D : Set (EuclideanSpace ℝ (Fin 3))} {X : Set M}
       {q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-      (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDS : D ⊆ frontier P)
+      (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDS : D ⊆ frontier P)
       (hXA : X ⊆ A) (hqb : q '' stdSimplexBoundary 2 = τ '' X) :
       IsPLCellOn 2 (u '' D) X := by
     have hpoly : IsPolyhedron D := IsPLBall.isPolyhedron ⟨q, hq⟩

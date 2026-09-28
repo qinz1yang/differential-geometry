@@ -216,7 +216,7 @@ theorem exists_eventually_strong_spatialCanonicalWitness_of_isTracedRegion :
       scaleMetric (R n) (hR n) (localPullMetric (gflow k n hn ((t n : ℝ) + σ / R n))
         (fun x : W k n => (⟨x.val, hWU k n hn x⟩ :
           (H n).backwardSurvivorDomain (first k n hn) ((H n).activeStage (t n)) (hle k n hn)))
-        (hι k n hn)) := fun k n hn => dif_pos hn
+        (hι k n hn)) := fun k n hn => dite_eq_left hn
   have hh'eq : ∀ k n (hn : Nb k ≤ n), ∀ σ ∈ Icc (-((k + 2 : ℕ) : ℝ)) 0, h' k n σ = h k n σ := by
     intro k n hn σ hσ
     rw [hh' k n hn, hid' k n hn σ hσ]

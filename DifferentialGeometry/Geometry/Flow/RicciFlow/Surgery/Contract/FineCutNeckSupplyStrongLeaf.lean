@@ -29,7 +29,7 @@ theorem fineCutNeckSupplyStrong_holds (P₀ : OrientedThreeStage.{u}) (g₀ : P�
     lt_min hetaC (lt_min hepsW crossingNeckAccuracy_pos), ?_⟩
   intro κ C1s C2s qcan a₀ Ctime Cgrad ε hκ _ _ hq _ hε hεcone εc hεc hεc12
   by_contra hcon
-  have hbad : ∀ n : ℕ, ∃ (p₀ : CutoffParameters) (δb ρb : ℝ) (H : RetainedCoreHistory P₀),
+  have hbad : ∀ n : ℕ, ∃ (p₀ : CutoffParameters) (δb ρb : ℝ) (H : RetainedCoreHistory.{u}),
       ∃ (_ : InitialIdentification P₀ g₀ H.toHistory)
         (hend : H.time (Fin.last H.eventCount) = H.horizon),
         H.hasCanonicalCutoffRecords p₀ δb ρb ∧

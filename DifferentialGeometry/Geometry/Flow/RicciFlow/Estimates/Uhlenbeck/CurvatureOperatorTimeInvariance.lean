@@ -104,7 +104,7 @@ theorem traceNormalizedCurvatureEndomorphism_pullback_kernel_and_range_eq_of_con
           (cov r) (cov r) (fun z => A r z) y 0 +
         (curvatureOperatorReactionEndomorphism3 (A r y).toLinearMap).toContinuousLinearMap) r := by
     intro r hr y
-    simpa only [cov, dif_pos hr, map_zero, add_zero] using (hevolution r hr).choose_spec.2.2 y
+    simpa only [cov, dite_eq_left hr, map_zero, add_zero] using (hevolution r hr).choose_spec.2.2 y
   have hArank : ∀ r ∈ Ioo a b, ∀ y, Module.finrank ℝ (A r y).range = q := by
     intro r hr y
     rw [hA r hr y]

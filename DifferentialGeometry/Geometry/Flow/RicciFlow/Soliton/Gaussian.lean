@@ -59,7 +59,7 @@ theorem canonicalFlowDiffeomorph_gaussian
   have hpos : 0 < 1 - t := by
     simpa only [one_mul] using mem_canonicalTimeDomain_iff.mp ht
   have hparameter : canonicalFlowParameter 1 t = -Real.log (1 - t) := by
-    simp only [canonicalFlowParameter, one_ne_zero, if_false, one_mul, div_one]
+    simp only [canonicalFlowParameter, one_ne_zero, ite_false, one_mul, div_one]
   rw [hparameter, Real.rpow_def_of_pos hpos]
   congr 2
   ring
@@ -105,7 +105,7 @@ theorem canonicalMetricFamily_gaussian (t : Real) :
   by_cases ht : t ∈ canonicalTimeDomain 1
   · rw [canonicalMetricFamily_eq _ _ _ _ _ ht]
     exact canonicalMetric_gaussian ht
-  · simp only [canonicalMetricFamily, dif_neg ht]
+  · simp only [canonicalMetricFamily, dite_eq_right ht]
 
 theorem canonicalPotential_gaussian
     {t : Real} (ht : t ∈ canonicalTimeDomain 1) (x : E) :

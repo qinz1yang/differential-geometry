@@ -12,16 +12,19 @@ private theorem exists_pos_eLpNorm_two_Icc_lt {E : Type*} [NormedAddCommGroup E]
     ∃ δ > 0, δ ≤ T ∧ ∀ s t : ℝ, Icc s t ⊆ Icc 0 T → t - s ≤ δ →
       eLpNorm f 2 (volume.restrict (Icc s t)) < ENNReal.ofReal ε := by
   obtain ⟨η, hη, hsmall⟩ := hf.eLpNorm_indicator_le
-    (by norm_num) (by norm_num) (half_pos hε)
-  refine ⟨min η T, lt_min hη hT, min_le_right _ _, ?_⟩
+    (by norm_num) (by norm_num) (ENNReal.ofReal_pos.mpr (half_pos hε))
+  obtain ⟨r, hr, hrη⟩ := ENNReal.lt_iff_exists_nnreal_btwn.mp hη
+  have hrpos : (0 : ℝ) < r := by exact_mod_cast hr
+  refine ⟨min (r : ℝ) T, lt_min hrpos hT, min_le_right _ _, ?_⟩
   intro s t hsub hlength
-  have hmeasure : (volume.restrict (Icc 0 T)) (Icc s t) ≤ ENNReal.ofReal η := by
+  have hmeasure : (volume.restrict (Icc 0 T)) (Icc s t) ≤ η := by
     calc
       (volume.restrict (Icc 0 T)) (Icc s t) ≤ volume (Icc s t) :=
         Measure.restrict_apply_le _ _
       _ = ENNReal.ofReal (t - s) := Real.volume_Icc
-      _ ≤ ENNReal.ofReal η := ENNReal.ofReal_le_ofReal
+      _ ≤ ENNReal.ofReal r := ENNReal.ofReal_le_ofReal
         (hlength.trans (min_le_left _ _))
+      _ ≤ η := by simpa only [ENNReal.ofReal_coe_nnreal] using hrη.le
   have hnorm := hsmall (Icc s t) measurableSet_Icc hmeasure
   rw [eLpNorm_indicator_eq_eLpNorm_restrict measurableSet_Icc,
     Measure.restrict_restrict_of_subset hsub] at hnorm
@@ -51,7 +54,7 @@ theorem exists_pos_l2_slice_contraction_lt {X : Type*} [NormedAddCommGroup X]
     (Lp.memLp f).mono_measure (Measure.restrict_mono hsub le_rfl)
   have hn : ‖timeL2.slice f a b ha hbT‖ < ε := by
     rw [timeL2.norm_slice_eq]
-    have h := (ENNReal.toReal_lt_toReal hmem.2.ne ENNReal.ofReal_ne_top).2 hnorm
+    have h := (ENNReal.toReal_lt_toReal hmem.eLpNorm_ne_top ENNReal.ofReal_ne_top).2 hnorm
     simpa only [ENNReal.toReal_ofReal hε.le] using h
   have hd1 : b - a ≤ 1 :=
     hdδ.trans ((min_le_right _ _).trans (min_le_left _ _))
@@ -105,7 +108,7 @@ theorem exists_pos_l2_slice_contraction_lt_of_norm_sub_lt
     Measure.restrict_mono hsub le_rfl
   have hnorm : ‖timeL2.slice (g - f) a b ha hbT‖ ≤ ‖g - f‖ := by
     rw [timeL2.norm_slice_eq, Lp.norm_def]
-    exact ENNReal.toReal_mono (Lp.memLp (g - f)).2.ne
+    exact ENNReal.toReal_mono (Lp.memLp (g - f)).eLpNorm_ne_top
       (eLpNorm_mono_measure (g - f) hrestrict)
   have hsplit : timeL2.slice g a b ha hbT =
       timeL2.slice f a b ha hbT + timeL2.slice (g - f) a b ha hbT := by

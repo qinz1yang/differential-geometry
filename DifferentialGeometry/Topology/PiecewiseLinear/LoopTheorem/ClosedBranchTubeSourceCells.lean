@@ -39,8 +39,8 @@ theorem exists_isSourceTrackedBranchTube_of_sourceCells
     (hsep : ∀ k, ∀ i : Fin 4, ∀ U ⊆ (K k).space \ (T k i ∪ T k (i + 2)),
       IsPreconnected U → (U ∩ T k (i + 1)).Nonempty → (U ∩ T k (i + 3)).Nonempty → False)
     {q₀ q₁ : ℕ → (Fin 3 → ℝ) → E} {D₀ D₁ : ℕ → Set E}
-    (hq₀ : ∀ k, IsPLHomeomorphOn (q₀ k) (stdSimplex ℝ (Fin 3)) (D₀ k))
-    (hq₁ : ∀ k, IsPLHomeomorphOn (q₁ k) (stdSimplex ℝ (Fin 3)) (D₁ k))
+    (hq₀ : ∀ k, IsPLHomeomorphOn (q₀ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₀ k))
+    (hq₁ : ∀ k, IsPLHomeomorphOn (q₁ k) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ k))
     (hD₀S : ∀ k, D₀ k ⊆ (K k).space) (hD₁S : ∀ k, D₁ k ⊆ (K k).space)
     (hdis : ∀ k, Disjoint (D₀ k) (D₁ k)) (hy₀ : ∀ k, y₀ k ∈ D₀ k) (hy₁ : ∀ k, y₁ k ∈ D₁ k)
     (hcap : ∀ k < m, D₁ k = D₀ (k + 1)) (hcapc : D₁ m = D₀ 0)
@@ -206,7 +206,7 @@ theorem exists_isSourceTrackedBranchTube_of_sourceCells
   choose δ hδ hδ0 hδ1 hδcap0 hδcap1 hδmid using hδexists
   have hpt : ∀ k < m, ∀ i, δ k i (3 / 4) = δ (k + 1) i (1 / 4) := by
     intro k hk i
-    have hq : IsPLHomeomorphOn (q₀ (k + 1)) (stdSimplex ℝ (Fin 3)) (D₁ k) :=
+    have hq : IsPLHomeomorphOn (q₀ (k + 1)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D₁ k) :=
       (hcap k hk).symm ▸ hq₀ (k + 1)
     exact eq_of_cap_boundary_singletons_of_inter_eq (hq₁ k) hq (hδcap1 k i) (hδcap0 (k + 1) i)
       (by simpa only [← hcap k hk] using harm k hk i)

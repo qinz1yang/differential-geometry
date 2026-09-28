@@ -304,8 +304,8 @@ private theorem weak_harnack_stage_one_forward_power_upgrade
         MeasureTheory.lpNorm u (ENNReal.ofReal p) μ * V ^ (1 / p₀ - 1 / p) := by
     have htoReal :=
       (ENNReal.toReal_le_toReal hu_memLp_p₀.eLpNorm_ne_top hrhs_ne_top).2 hcompare_enn
-    simpa [MeasureTheory.toReal_eLpNorm hu_memLp_p₀.aestronglyMeasurable,
-      MeasureTheory.toReal_eLpNorm hu_memLp_p.aestronglyMeasurable,
+    simpa [MeasureTheory.toReal_eLpNorm,
+      MeasureTheory.toReal_eLpNorm,
       V, μ, measureReal_def, Measure.restrict_apply_univ,
       ENNReal.toReal_mul, ENNReal.toReal_rpow,
       mul_comm, mul_left_comm, mul_assoc] using htoReal

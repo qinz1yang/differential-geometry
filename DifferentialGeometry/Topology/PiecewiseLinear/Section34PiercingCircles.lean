@@ -79,7 +79,7 @@ theorem exists_positive_finite_crossing_circle_family {A B : Set E3}
     exact ⟨i⟩
   let e : Fin (Fintype.card ι) ≃ ι := (Fintype.equivFin ι).symm
   let Pg : ℕ → Set E3 := fun i => if hi : i < Fintype.card ι then C (e ⟨i, hi⟩) else ∅
-  have hPg (i : ℕ) (hi : i < Fintype.card ι) : Pg i = C (e ⟨i, hi⟩) := dif_pos hi
+  have hPg (i : ℕ) (hi : i < Fintype.card ι) : Pg i = C (e ⟨i, hi⟩) := dite_eq_left hi
   refine ⟨Fintype.card ι, Pg, Fintype.card_pos_iff.mpr hιne, ?_, ?_, ?_⟩
   · rw [hcover]
     ext x

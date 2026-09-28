@@ -126,7 +126,7 @@ theorem exists_section34_face_aligned_filling_cylinder
       (a : Fin 2 → (boundaryComplex 2 B).space) (A₀ A₁ : Set E) (δ₀ δ₁ : ℝ → E),
       IsCylindricalDiagram g' B.space R.space ∧
       (∀ z ∈ B.space, g' (z, 0) = g' (z, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g' '' (B.space ×ˢ {0})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g' '' (B.space ×ˢ {0})) ∧
       q '' stdSimplexBoundary 2 ⊆ frontier R.space ∧ Function.Injective a ∧
       (u ∘ g') '' ({(a 0 : E)} ×ˢ Icc (0 : ℝ) 1) = Pg e i ∧
       (u ∘ g') '' ({(a 1 : E)} ×ˢ Icc (0 : ℝ) 1) = Pg e j ∧

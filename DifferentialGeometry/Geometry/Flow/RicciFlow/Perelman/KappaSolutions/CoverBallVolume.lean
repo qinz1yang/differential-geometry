@@ -187,24 +187,24 @@ theorem universalCover_volume_image_le
   have hS_open : ∀ n, IsOpen (S n) := by
     intro n
     by_cases h : Set.InjOn proj (b n)
-    · have hSn : S n = b n := by dsimp only [S]; rw [if_pos h]
+    · have hSn : S n = b n := by dsimp only [S]; rw [ite_eq_left h]
       rw [hSn]
       exact hb.isOpen (Set.mem_range_self n)
-    · have hSn : S n = ∅ := by dsimp only [S]; rw [if_neg h]
+    · have hSn : S n = ∅ := by dsimp only [S]; rw [ite_eq_right h]
       rw [hSn]
       exact isOpen_empty
   have hS_inj : ∀ n, Set.InjOn proj (S n) := by
     intro n
     by_cases h : Set.InjOn proj (b n)
-    · have hSn : S n = b n := by dsimp only [S]; rw [if_pos h]
+    · have hSn : S n = b n := by dsimp only [S]; rw [ite_eq_left h]
       rw [hSn]; exact h
-    · have hSn : S n = ∅ := by dsimp only [S]; rw [if_neg h]
+    · have hSn : S n = ∅ := by dsimp only [S]; rw [ite_eq_right h]
       rw [hSn]; exact Set.injOn_empty (f := proj)
   have hS_cover : U ⊆ ⋃ n, S n := by
     intro q hq
     obtain ⟨n, hqn, hinj⟩ := hcover q hq
     refine Set.mem_iUnion.mpr ⟨n, ?_⟩
-    have hSn : S n = b n := by dsimp only [S]; rw [if_pos hinj]
+    have hSn : S n = b n := by dsimp only [S]; rw [ite_eq_left hinj]
     rw [hSn]; exact hqn
   let D : ℕ → Set (UniversalCover M) := fun n => S n \ ⋃ m < n, S m
   have hDS : ∀ n, D n ⊆ S n := fun n => Set.sdiff_subset

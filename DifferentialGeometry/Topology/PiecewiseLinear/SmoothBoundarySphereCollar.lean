@@ -83,12 +83,12 @@ theorem exists_radialCollar_of_isSmoothEmbedding_sphere
   have hg : ∀ u, g (dB u) = u := by
     intro u
     have hΦu : Φ u = ⟨dB u, hdBV u⟩ := Subtype.ext (hΦ u)
-    simp only [g, dif_pos (hdBV u), ← hΦu, Diffeomorph.symm_apply_apply]
+    simp only [g, dite_eq_left (hdBV u), ← hΦu, Diffeomorph.symm_apply_apply]
   have hgs : ∀ b ∈ Vb, ContMDiffAt (HasSmoothBoundary.boundaryI (I := 𝓡∂ 3)) (𝓡 2) ∞ g b := by
     intro b hb
     have hres : (fun x : Vb => g x) = Φ.symm := by
       funext x
-      simp only [g, dif_pos x.2]
+      simp only [g, dite_eq_left x.2]
     have h := Φ.symm.contMDiff ⟨b, hb⟩
     rw [← hres] at h
     exact contMDiffAt_subtype_iff.mp h
@@ -121,7 +121,7 @@ theorem exists_radialCollar_of_isSmoothEmbedding_sphere
   have hθc : ∀ q : B × Icc (0 : ℝ) a, (q.2 : ℝ) < a → θ (c q) = F q := by
     intro q hq
     obtain ⟨hY, hsymm⟩ := hcU q hq
-    simp only [θ, dif_pos hY, hsymm]
+    simp only [θ, dite_eq_left hY, hsymm]
   have hdc0 : ∀ u, c (dB u, projIcc 0 a ha.le 0) = d u := by
     intro u
     rw [projIcc_left]
@@ -197,7 +197,7 @@ theorem exists_radialCollar_of_isSmoothEmbedding_sphere
     apply ContMDiffAt.contMDiffWithinAt
     have hres : (fun x : Y => θ x) = F ∘ Subtype.val ∘ dc.symm := by
       funext x
-      simp only [θ, dif_pos x.2, Function.comp_apply]
+      simp only [θ, dite_eq_left x.2, Function.comp_apply]
     have h : ContMDiffAt (𝓡∂ 3) 𝓘(ℝ, EuclideanSpace ℝ (Fin 3)) ∞ (fun x : Y => θ x)
         ⟨c q, hY⟩ := by
       rw [hres]

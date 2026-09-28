@@ -83,7 +83,7 @@ private lemma centredOrthoFrameCoordMatrix_of_mem
         (smoothOrthoFrame (I := I) g c i b) k := by
   classical
   unfold centredOrthoFrameCoordMatrix
-  rw [dif_pos hb]
+  rw [dite_eq_left hb]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
@@ -254,7 +254,7 @@ private lemma centredOrthoFrameCoordMatrix_eq_clmAt_proj
           (smoothOrthoFrame (I := I) g c i b)) := by
   classical
   unfold centredOrthoFrameCoordMatrix
-  rw [dif_pos hb]
+  rw [dite_eq_left hb]
   unfold DifferentialGeometry.Tensor.Coordinates.chartBasisFamily
   rw [Module.Basis.map_repr]
   simp only [LinearEquiv.trans_apply]

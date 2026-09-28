@@ -36,7 +36,7 @@ private theorem sum_pair_elementaryCovector {n : ℕ}
   rw [hv]
   simp only [smul_apply, sum_apply, smul_eq_mul, elementaryCovector_pair_basis_apply]
   simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_one, mul_zero,
-    Finset.sum_ite_eq', Finset.mem_univ, if_true]
+    Finset.sum_ite_eq', Finset.mem_univ, ite_true]
   have hswap : a ![B (v 1),B (v 0)] = -a ![B (v 0),B (v 1)] := by
     simpa using a.map_swap (v := ![B (v 0),B (v 1)]) (i := 0) (j := 1) (by decide)
   rw [hswap]

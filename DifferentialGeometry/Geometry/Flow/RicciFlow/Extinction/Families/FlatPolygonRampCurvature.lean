@@ -363,7 +363,7 @@ private theorem initialRamp_speed_of_velocity
       have hv' : v = w := hv
       rw [hv']
     exact hkey _ _ _ _ hbase hvel
-  rw [hinner, DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self, hnorm]
+  rw [hinner, DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self, hnorm]
   congr 1
   ring
 
@@ -448,7 +448,7 @@ private theorem curvature_mul_speed_eq_sqrt_inner_Dx
   have hscale : c.inner (fun _ : ℝ => g) lambda x t (S⁻¹ • v) (S⁻¹ • v) =
       S⁻¹ ^ 2 * c.inner (fun _ : ℝ => g) lambda x t v v := by
     simp only [ProductCurve.inner, Prod.smul_fst, Prod.smul_snd, smul_eq_mul,
-      DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self]
+      DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self]
     ring
   change Real.sqrt (c.inner (fun _ : ℝ => g) lambda x t (S⁻¹ • v) (S⁻¹ • v)) * S = _
   rw [hscale, Real.sqrt_mul (sq_nonneg _), Real.sqrt_sq_eq_abs,
@@ -494,7 +494,7 @@ theorem initialRamp_curvature_mul_speed_of_reparam_geodesic
       ((initialRamp c).unitTangent (fun _ => g) lambda) x t).2 *
     ((initialRamp c).Dx (fun _ : ℝ => g) ((initialRamp c).unitTangent (fun _ => g) lambda) x t).2) = _
   rw [hinner]
-  rw [DifferentialGeometry.Analysis.Laplacian.metric_inner_smul_self, hnorm.self_of_nhds]
+  rw [DifferentialGeometry.SmoothRiemannianMetric.metric_inner_smul_self, hnorm.self_of_nhds]
   have hscalar := sqrt_sq_deriv_div_sqrt_add_sq_deriv_inv_sqrt_eq_abs_deriv_arctan
     (d := d) hlambda ha.hasDerivAt
   convert hscalar using 1

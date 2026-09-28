@@ -4,6 +4,8 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.CovariantDerivative.Cm
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.MetricPerturbationPath.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.SingleSlotFiberNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.PerturbationFrameComponentBounds
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

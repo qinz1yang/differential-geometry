@@ -16,7 +16,7 @@ theorem exists_lp_sum_mul_norm_sq_le
       (∀ j, E j =ᵐ[μ] fun p => ∑ i, a i j p * V p) ∧
       ∑ j, ‖E j‖ ^ 2 ≤ (∑ j, (∑ i, C i j) ^ 2) * ‖hV.toLp V‖ ^ 2 := by
   have hmem (j) : MemLp (fun p => ∑ i, a i j p * V p) 2 μ :=
-    memLp_finsetSum Finset.univ fun i _ => hV.mul (r := 2) (ha i j)
+    memLp_finsetSum Finset.univ fun i _ => (ha i j).mul (r := 2) hV
   let E : κ → Lp ℝ 2 μ := fun j => (hmem j).toLp (fun p => ∑ i, a i j p * V p)
   have hE (j) : E j =ᵐ[μ] fun p => ∑ i, a i j p * V p := (hmem j).coeFn_toLp
   have hn (j) : ‖E j‖ ≤ (∑ i, C i j) * ‖hV.toLp V‖ := by
@@ -51,7 +51,7 @@ theorem norm_varying_coefficient_sum_le
     ‖F‖ ≤ ∑ i, C i * ‖V i‖ := by
   classical
   have hmem (i : ι) : MemLp (fun p => a i p * V i p) 2 μ :=
-    (Lp.memLp (V i)).mul' (ha i)
+    (ha i).fun_mul (Lp.memLp (V i))
   let E : ι → Lp ℝ 2 μ := fun i => (hmem i).toLp (fun p => a i p * V i p)
   have hE (i : ι) : E i =ᵐ[μ] fun p => a i p * V i p := (hmem i).coeFn_toLp
   have hEnorm (i : ι) : ‖E i‖ ≤ C i * ‖V i‖ := by
@@ -84,7 +84,7 @@ theorem norm_double_varying_coefficient_sum_le
     ‖F‖ ≤ ∑ i, ∑ j, C i j * ‖V i‖ := by
   classical
   have hmem (i : ι) (j : κ) : MemLp (fun p => a i j p * V i p) 2 μ :=
-    (Lp.memLp (V i)).mul' (ha i j)
+    (ha i j).fun_mul (Lp.memLp (V i))
   let E : ι → κ → Lp ℝ 2 μ := fun i j =>
     (hmem i j).toLp (fun p => a i j p * V i p)
   have hE (i : ι) (j : κ) : E i j =ᵐ[μ] fun p => a i j p * V i p :=

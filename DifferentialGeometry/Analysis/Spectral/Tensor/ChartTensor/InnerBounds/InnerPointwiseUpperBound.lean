@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.Inn
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Inner.InnerBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.TrivProj.ChartTwistIdentity
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise)
 
 noncomputable section
 

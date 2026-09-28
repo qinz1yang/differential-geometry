@@ -3788,12 +3788,12 @@ theorem PrePolygon.exists_local_corner_replacement_isotopy_of_two_edge_free_tria
       fin_cases j
       · exact (he₀ (b 0)).1.trans hf₀
       · exact (he₀ (b 0)).2.trans (by
-          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, if_false])
+          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, ite_false])
     · ext j
       fin_cases j
       · exact (he₁ (b 1)).1.trans hf₁
       · exact (he₁ (b 1)).2.trans (by
-          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, if_false])
+          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, ite_false])
     · exact he₂c
   have hc (i : Fin 3) : c i ≠ 0 := by fin_cases i <;> norm_num [c]
   have hgraph_full (i : Fin 3) (x : Plane) (hx : x ∈ Og i) : x ∈ P.carrier ↔
@@ -4208,13 +4208,13 @@ theorem PrePolygon.exists_local_corner_replacement_isotopy_of_one_edge_free_tria
     P.exists_prePolygon_closed_region_erase_triangle_of_one_edge_free M hfrontier T k hfree
   have hmax (s x : ℝ) : s * (x - max x 0) = if x < 0 then s * x else 0 := by
     by_cases hx : x < 0
-    · rw [if_pos hx, max_eq_right hx.le, sub_zero]
-    · rw [if_neg hx, max_eq_left (le_of_not_gt hx), sub_self, mul_zero]
+    · rw [ite_eq_left hx, max_eq_right hx.le, sub_zero]
+    · rw [ite_eq_right hx, max_eq_left (le_of_not_gt hx), sub_self, mul_zero]
   have hmax' (s x z : ℝ) : s * (x - max x 0) + max x 0 / z =
       if x < 0 then s * x else x / z := by
     by_cases hx : x < 0
-    · rw [if_pos hx, max_eq_right hx.le, sub_zero, zero_div, add_zero]
-    · rw [if_neg hx, max_eq_left (le_of_not_gt hx), sub_self, mul_zero, zero_add]
+    · rw [ite_eq_left hx, max_eq_right hx.le, sub_zero, zero_div, add_zero]
+    · rw [ite_eq_right hx, max_eq_left (le_of_not_gt hx), sub_self, mul_zero, zero_add]
   let s₀ := b.coord 2 v₀ / f₀ v₀
   let s₁ := b.coord 2 v₁ / f₁ v₁
   let N := (interior B ∩ {p | 0 < b.coord 2 p}) ∪
@@ -4285,12 +4285,12 @@ theorem PrePolygon.exists_local_corner_replacement_isotopy_of_one_edge_free_tria
       fin_cases j
       · exact (he₀ (b 0)).1.trans hf₀
       · exact (he₀ (b 0)).2.trans (by
-          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, if_false])
+          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, ite_false])
     · ext j
       fin_cases j
       · exact (he₁ (b 1)).1.trans hf₁
       · exact (he₁ (b 1)).2.trans (by
-          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, if_false])
+          change b.coord 2 (b _) = 0; simp only [AffineBasis.coord_apply, Fin.reduceEq, ite_false])
     · exact he₂c
   have hc (i : Fin 3) : c i ≠ 0 := by fin_cases i <;> norm_num [c]
   have hgraph_full (i : Fin 3) (x : Plane) (hx : x ∈ Og i) : x ∈ Q.carrier ↔

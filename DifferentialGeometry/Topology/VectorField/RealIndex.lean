@@ -77,6 +77,9 @@ private theorem real_mpullback_congr {f g : ℝ → M}
       _root_.VectorField.mpullback 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) g V a := by
   unfold _root_.VectorField.mpullback
   erw [h.mfderiv_eq, h.eq_of_nhds]
+  exact congrArg
+    (fun L : ℝ →L[ℝ] TangentSpace 𝓘(ℝ, ℝ) (g a) ↦ L.inverse (V (g a)))
+    (ContinuousLinearMap.ext fun _ ↦ rfl)
 
 omit [IsManifold 𝓘(ℝ, ℝ) 1 M] in
 private theorem real_mpullback_comp {f : ℝ → ℝ} {g : ℝ → M}

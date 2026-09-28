@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.Metric.ScaleNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Polar
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Distance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.Scalar

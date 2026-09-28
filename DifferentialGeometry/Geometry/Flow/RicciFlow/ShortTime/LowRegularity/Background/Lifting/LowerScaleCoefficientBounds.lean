@@ -269,7 +269,7 @@ private theorem topNorm_le
   nlinarith [norm_nonneg (iteratedCovGrad (I := I) g 0 2 3 P)]
 
 
-theorem exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_covariantJetNormSq_two_tame_bound
+theorem exists_deTurckLieConnectionDifferenceDerivCoeffField_background_difference_jet_two_tame_bound
     (hDim : Module.finrank ℝ E = 3)
     (g₀ gB : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -875,7 +875,7 @@ private theorem bgCorrectionFam_tame
               (bgCorrectionFam (I := I) (M := M) g₀ gB T hδ hδZ s)‖ ^ 2) ≤
             (B0 R + B1 R * A) ^ 2 := by
   obtain ⟨Ba0, Ba1, hBa0, hBa1, hDla⟩ :=
-    exists_deTurckLieConnectionDifferenceDerivativeCoefficient_backgroundDifference_covariantJetNormSq_two_tame_bound (I := I) (M := M) hDim g₀ gB hδ₀
+    exists_deTurckLieConnectionDifferenceDerivCoeffField_background_difference_jet_two_tame_bound (I := I) (M := M) hDim g₀ gB hδ₀
   obtain ⟨Bb0, Bb1, hBb0, hBb1, hDlb⟩ :=
     exists_deTurckLieCovariantDerivativeInsertion_backgroundDifference_covariantJetNormSq_two_tame_bound (I := I) (M := M) hDim g₀ gB hδ₀
   obtain ⟨Bi0, Bi1, hBi0, hBi1, hIns⟩ :=

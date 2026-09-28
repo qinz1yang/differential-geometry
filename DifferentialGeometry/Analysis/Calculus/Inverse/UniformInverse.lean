@@ -119,7 +119,7 @@ theorem exists_uniform_continuous_inverse_of_pos_deriv
     ((hroots q.1 hq.1).2.2 q.2 hq.2).exists.choose else 0
   have hR : ∀ q ∈ S, R q ∈ Icc 0 ε ∧ h (q.1, R q) = q.2 := by
     intro q hq
-    simp only [R, dif_pos hq]
+    simp only [R, dite_eq_left hq]
     exact ((hroots q.1 hq.1).2.2 q.2 hq.2).exists.choose_spec
   have hερ : ε ≤ ρ := hεε₀.trans hε₀ρ
   have hsub : Icc (0 : ℝ) ε ⊆ Icc 0 ρ := Icc_subset_Icc_right hερ

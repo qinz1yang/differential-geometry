@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.ChartBilinear
 import DifferentialGeometry.Tensor.RSTensor.Defs
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Bundle.SectionRegularity
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
@@ -20,8 +21,9 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor
+open DifferentialGeometry.Tensor.Coordinates
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -29,46 +31,18 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
 variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
 
-def chartCoordCLM (E : Type*) [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] (i : Fin (Module.finrank ℝ E)) : E →L[ℝ] ℝ :=
-  (ContinuousLinearMap.proj (R := ℝ) (φ := fun _ : Fin (Module.finrank ℝ E) => ℝ) i).comp
-    (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFunL.toContinuousLinearMap
-
-@[simp]
-lemma chartCoordCLM_apply (i : Fin (Module.finrank ℝ E)) (u : E) :
-    chartCoordCLM E i u = (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u i := by
-  unfold chartCoordCLM
-  rfl
-
-def chartGramBilin (g : SmoothRiemannianMetric I M) (α b : M) :
-    E →L[ℝ] E →L[ℝ] ℝ :=
-  ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-    DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b j k • (chartCoordCLM E j).smulRight (chartCoordCLM E k)
-
-@[simp]
-lemma chartGramBilin_apply
-    (g : SmoothRiemannianMetric I M) (α b : M) (u w : E) :
-    chartGramBilin (I := I) (M := M) g α b u w =
-      ∑ j : Fin (Module.finrank ℝ E), ∑ k : Fin (Module.finrank ℝ E),
-        DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g α b j k *
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun u j *
-          (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E).equivFun w k := by
-  unfold chartGramBilin
-  simp [sum_apply, smul_apply,
-    ContinuousLinearMap.smulRight_apply, smul_eq_mul, mul_assoc]
-
 def chartSeparableFormAt
     (g : SmoothRiemannianMetric I M) (α b : M) (r : ℕ) (v : Fin r → E) :
     ContinuousMultilinearMap ℝ (fun _ : Fin r => E) ℝ :=
   (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
-    (fun k => chartGramBilin (I := I) (M := M) g α b (v k))
+    (fun k => DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (v k))
 
 @[simp]
 lemma chartSeparableFormAt_apply
     (g : SmoothRiemannianMetric I M) (α b : M) (r : ℕ) (v w : Fin r → E) :
     chartSeparableFormAt (I := I) (M := M) g α b r v w =
       ∏ k : Fin r,
-        chartGramBilin (I := I) (M := M) g α b (v k) (w k) := by
+        DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (v k) (w k) := by
   unfold chartSeparableFormAt
   rw [ContinuousMultilinearMap.compContinuousLinearMap_apply,
     ContinuousMultilinearMap.mkPiAlgebra_apply]
@@ -90,10 +64,10 @@ private lemma chartSeparableFormAt_update_add
   simp only [Finset.sdiff_singleton_eq_erase, Function.update_self]
   have hrest : ∀ (d : E),
       ∏ k ∈ Finset.univ.erase i,
-          chartGramBilin (I := I) (M := M) g α b
+          DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b
             (Function.update v i d k) (w k)
         = ∏ k ∈ Finset.univ.erase i,
-            chartGramBilin (I := I) (M := M) g α b (v k) (w k) := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (v k) (w k) := by
     intro d
     refine Finset.prod_congr rfl ?_
     intro k hk
@@ -101,9 +75,9 @@ private lemma chartSeparableFormAt_update_add
     rw [Function.update_of_ne hk.1]
   rw [hrest, hrest, hrest]
   have h_bilin_add :
-      chartGramBilin (I := I) (M := M) g α b (a + c) (w i) =
-        chartGramBilin (I := I) (M := M) g α b a (w i) +
-          chartGramBilin (I := I) (M := M) g α b c (w i) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (a + c) (w i) =
+        DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b a (w i) +
+          DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b c (w i) := by
     rw [ContinuousLinearMap.map_add, add_apply]
   rw [h_bilin_add]
   ring
@@ -124,10 +98,10 @@ private lemma chartSeparableFormAt_update_smul
   simp only [Finset.sdiff_singleton_eq_erase, Function.update_self]
   have hrest : ∀ (d : E),
       ∏ k ∈ Finset.univ.erase i,
-          chartGramBilin (I := I) (M := M) g α b
+          DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b
             (Function.update v i d k) (w k)
         = ∏ k ∈ Finset.univ.erase i,
-            chartGramBilin (I := I) (M := M) g α b (v k) (w k) := by
+            DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (v k) (w k) := by
     intro d
     refine Finset.prod_congr rfl ?_
     intro k hk
@@ -135,8 +109,8 @@ private lemma chartSeparableFormAt_update_smul
     rw [Function.update_of_ne hk.1]
   rw [hrest, hrest]
   have h_bilin_smul :
-      chartGramBilin (I := I) (M := M) g α b (c • a) (w i) =
-        c * chartGramBilin (I := I) (M := M) g α b a (w i) := by
+      DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (c • a) (w i) =
+        c * DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b a (w i) := by
     rw [ContinuousLinearMap.map_smul, smul_apply, smul_eq_mul]
   rw [h_bilin_smul]
   ring
@@ -157,7 +131,7 @@ private lemma upd_castAdd_first {r s : ℕ} (v : Fin (r + s) → E) (i : Fin r) 
   rw [Function.update_apply, Function.update_apply]
   by_cases hk : k = i
   · subst hk; simp
-  · rw [if_neg hk, if_neg]
+  · rw [ite_eq_right hk, ite_eq_right]
     intro h
     exact hk (Fin.castAdd_injective r s h.symm).symm
 
@@ -169,7 +143,7 @@ private lemma upd_castAdd_first_noop_last
   classical
   funext j
   rw [Function.update_apply]
-  rw [if_neg]
+  rw [ite_eq_right]
   intro h
   have hcoe := Fin.val_eq_of_eq h
   simp [Fin.castAdd, Fin.natAdd] at hcoe
@@ -183,7 +157,7 @@ private lemma upd_natAdd_last_noop_first
   classical
   funext k
   rw [Function.update_apply]
-  rw [if_neg]
+  rw [ite_eq_right]
   intro h
   have hcoe := Fin.val_eq_of_eq h
   simp [Fin.castAdd, Fin.natAdd] at hcoe
@@ -199,7 +173,7 @@ private lemma upd_natAdd_last
   rw [Function.update_apply, Function.update_apply]
   by_cases hk : k = j
   · subst hk; simp
-  · rw [if_neg hk, if_neg]
+  · rw [ite_eq_right hk, ite_eq_right]
     intro h
     exact hk (Fin.natAdd_injective s r h.symm).symm
 
@@ -266,7 +240,7 @@ private lemma chartLowerAllUpperIndices_modelML_norm_bound
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T : TensorRSModel r s ℝ E) (v : Fin (r + s) → E) :
     ‖chartLowerAllUpperIndices_modelML (I := I) (M := M) r s g α b T v‖ ≤
-      (‖T‖ * ∏ _i : Fin r, ‖chartGramBilin (I := I) (M := M) g α b‖) *
+      (‖T‖ * ∏ _i : Fin r, ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖) *
         ∏ k : Fin (r + s), ‖v k‖ := by
   classical
   rw [chartLowerAllUpperIndices_modelML_apply]
@@ -277,25 +251,25 @@ private lemma chartLowerAllUpperIndices_modelML_norm_bound
   set α' := chartSeparableFormAt (I := I) (M := M) g α b r
       (fun i : Fin r => v (Fin.castAdd s i)) with hα'_def
   have hα'_norm :
-      ‖α'‖ ≤ ∏ i : Fin r, ‖chartGramBilin (I := I) (M := M) g α b‖ *
+      ‖α'‖ ≤ ∏ i : Fin r, ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ *
               ‖v (Fin.castAdd s i)‖ := by
     rw [hα'_def]
     unfold chartSeparableFormAt
     have h₁ :
         ‖(ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
             (fun i : Fin r =>
-              chartGramBilin (I := I) (M := M) g α b (v (Fin.castAdd s i)))‖
+              DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (v (Fin.castAdd s i)))‖
           ≤ ‖ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ‖ *
             ∏ i : Fin r,
-              ‖chartGramBilin (I := I) (M := M) g α b (v (Fin.castAdd s i))‖ :=
+              ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b (v (Fin.castAdd s i))‖ :=
       ContinuousMultilinearMap.norm_compContinuousLinearMap_le _ _
     have h_mkPi : ‖ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ‖ = 1 :=
       ContinuousMultilinearMap.norm_mkPiAlgebra
     rw [h_mkPi, one_mul] at h₁
     refine h₁.trans ?_
-    refine Finset.prod_le_prod (fun _ _ => norm_nonneg _) ?_
+    refine Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) ?_
     intro i _
-    exact (chartGramBilin (I := I) (M := M) g α b).le_opNorm
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b).le_opNorm
       (v (Fin.castAdd s i))
   have h_step1 :
       ‖T α' (fun j : Fin s => v (Fin.natAdd r j))‖
@@ -309,24 +283,24 @@ private lemma chartLowerAllUpperIndices_modelML_norm_bound
   have h_step3 :
       (‖T‖ * ‖α'‖) * ∏ j : Fin s, ‖v (Fin.natAdd r j)‖
         ≤ (‖T‖ * (∏ i : Fin r,
-              ‖chartGramBilin (I := I) (M := M) g α b‖ *
+              ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ *
                 ‖v (Fin.castAdd s i)‖)) *
             ∏ j : Fin s, ‖v (Fin.natAdd r j)‖ := by
     gcongr
   have h_step4 :
       (‖T‖ * (∏ i : Fin r,
-              ‖chartGramBilin (I := I) (M := M) g α b‖ *
+              ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖ *
                 ‖v (Fin.castAdd s i)‖)) *
             ∏ j : Fin s, ‖v (Fin.natAdd r j)‖
-        = (‖T‖ * ∏ _i : Fin r, ‖chartGramBilin (I := I) (M := M) g α b‖) *
+        = (‖T‖ * ∏ _i : Fin r, ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖) *
             ((∏ i : Fin r, ‖v (Fin.castAdd s i)‖) *
               ∏ j : Fin s, ‖v (Fin.natAdd r j)‖) := by
     rw [Finset.prod_mul_distrib]; ring
   have h_step5 :
-      (‖T‖ * ∏ _i : Fin r, ‖chartGramBilin (I := I) (M := M) g α b‖) *
+      (‖T‖ * ∏ _i : Fin r, ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖) *
             ((∏ i : Fin r, ‖v (Fin.castAdd s i)‖) *
               ∏ j : Fin s, ‖v (Fin.natAdd r j)‖)
-        = (‖T‖ * ∏ _i : Fin r, ‖chartGramBilin (I := I) (M := M) g α b‖) *
+        = (‖T‖ * ∏ _i : Fin r, ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖) *
             ∏ j : Fin (r + s), ‖v j‖ := by
     rw [← hsplit]
   linarith [h_step1, h_step2, h_step3, h_step4, h_step5]
@@ -335,7 +309,7 @@ def chartLowerAllUpperIndicesModel
     (r s : ℕ) (g : SmoothRiemannianMetric I M) (α b : M)
     (T : TensorRSModel r s ℝ E) : Tensor0SModel (r + s) ℝ E :=
   (chartLowerAllUpperIndices_modelML (I := I) (M := M) r s g α b T).mkContinuous
-    (‖T‖ * ∏ _i : Fin r, ‖chartGramBilin (I := I) (M := M) g α b‖)
+    (‖T‖ * ∏ _i : Fin r, ‖DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b‖)
     (chartLowerAllUpperIndices_modelML_norm_bound (I := I) (M := M)
       r s g α b T)
 
@@ -512,11 +486,11 @@ private lemma contMDiffOn_into_tensor0SModel_of_eval_basis_local
 private lemma chartGramBilin_basis_basis
     (g : SmoothRiemannianMetric I M) (α b : M)
     (i j : Fin (Module.finrank ℝ E)) :
-    chartGramBilin (I := I) (M := M) g α b
+    DifferentialGeometry.Tensor.Coordinates.chartGramBilin (I := I) (M := M) g α b
         ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
       DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) g α b i j := by
   classical
-  rw [chartGramBilin_apply]
+  rw [DifferentialGeometry.Tensor.Coordinates.chartGramBilin_apply]
   have hcollapse :
       ∀ j' : Fin (Module.finrank ℝ E),
         (∑ k : Fin (Module.finrank ℝ E),

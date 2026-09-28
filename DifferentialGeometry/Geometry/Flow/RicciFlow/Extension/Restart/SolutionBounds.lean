@@ -295,7 +295,7 @@ theorem ric_quad_le_of_realizes
       rw [ricciCompAt_apply, hmr]
     rw [hlhs, hcomp]
     simp only [identityInvMetric, diagonalInvMetric, rm04CompAt_apply, ite_mul, one_mul,
-      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   exact ric_quad_le_of_rm04 (I := I) g x basis hON hinv (Rm04sec x) htrace hnorm v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]

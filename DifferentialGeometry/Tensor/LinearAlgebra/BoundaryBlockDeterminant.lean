@@ -1,5 +1,5 @@
 import Mathlib.LinearAlgebra.Determinant
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 noncomputable section
 open Module

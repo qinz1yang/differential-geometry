@@ -18,7 +18,7 @@ theorem exists_reducedDisk_of_crossesPseudoCell {Ec Eint Ebd Bl Dc Dcint Ω : Se
     (hBE : Bl ∩ Ec ⊆ Dc) (hgp : CrossesPseudoCell (frontier Bl) Ec Eint P) (hΩ : IsOpen Ω)
     (hBlΩ : Bl ⊆ Ω) (hDcΩ : Dc ⊆ Ω) :
     ∃ (Δ Δbd : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δbd = r '' stdSimplexBoundary 2 ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δbd = r '' stdSimplexBoundary 2 ∧
       Δ ⊆ Ω ∧ Δbd = Δ ∩ Ec ∧
       ∃ DJ DJint : Set E3, IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec ∧
         DJ \ DJint = Δbd ∧ P ∈ DJint := by

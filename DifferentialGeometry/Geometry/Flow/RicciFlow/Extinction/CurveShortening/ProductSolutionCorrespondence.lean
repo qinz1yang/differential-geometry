@@ -57,7 +57,7 @@ private theorem isLocalDiffeomorphAt_addCircle_coe (t : ℝ) :
             (fun s : ℝ => (s : AddCircle (1 : ℝ))))
           (extChartAt 𝓘(ℝ, ℝ) y y) =
         mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) (fun s : ℝ => (s : AddCircle (1 : ℝ))) y := by
-      rw [hmd.mfderiv, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
+      rw [hmd.mfderiv_abuse, ModelWithCorners.Boundaryless.range_eq_univ, fderivWithin_univ]
     rw [hderiv]
     exact isInvertible_of_injective_realLine _
       (AddCircle.bijective_mfderiv_coe y).1
@@ -239,19 +239,19 @@ theorem product_solution_lift [T2Space M] [I.Boundaryless]
   have hyfun_on : ∀ x t, t ∈ J → yfun x t = y (x, t) := by
     intro x t ht
     change (if t ∈ J then y (x, t) else (d : ℝ) * (⌊x⌋ : ℝ)) = y (x, t)
-    rw [if_pos ht]
+    rw [ite_eq_left ht]
   have hyfun_off : ∀ x t, t ∉ J → yfun x t = (d : ℝ) * (⌊x⌋ : ℝ) := by
     intro x t ht
     change (if t ∈ J then y (x, t) else (d : ℝ) * (⌊x⌋ : ℝ)) = (d : ℝ) * (⌊x⌋ : ℝ)
-    rw [if_neg ht]
+    rw [ite_eq_right ht]
   have hmap_eq : ∀ z t, t ∈ J → map z t = c z t := by
     intro z t ht
     change (if t ∈ J then c z t else ((c 0 0).1, 0)) = c z t
-    rw [if_pos ht]
+    rw [ite_eq_left ht]
   have hmap_off : ∀ z t, t ∉ J → map z t = ((c 0 0).1, 0) := by
     intro z t ht
     change (if t ∈ J then c z t else ((c 0 0).1, 0)) = ((c 0 0).1, 0)
-    rw [if_neg ht]
+    rw [ite_eq_right ht]
   have hlift_eq : ∀ x t,
       (yfun x t : Surgery.Topology.Circle) = (map (x : Surgery.Topology.Circle) t).2 := by
     intro x t
@@ -281,7 +281,7 @@ theorem product_solution_lift [T2Space M] [I.Boundaryless]
       refine h2.congr (fun p hp => ?_)
       change ((if p.2 ∈ J then c (p.1 : Surgery.Topology.Circle) p.2
           else ((c 0 0).1, 0)) : M × Surgery.Topology.Circle).1 = (c.lift p.1 p.2).1
-      rw [if_pos hp.2]
+      rw [ite_eq_left hp.2]
       rfl
     · change ContDiffOn ℝ ∞ (fun p : ℝ × ℝ => yfun p.1 p.2) (univ ×ˢ J)
       exact hy_smooth.congr (fun p hp => hyfun_on p.1 p.2 hp.2)

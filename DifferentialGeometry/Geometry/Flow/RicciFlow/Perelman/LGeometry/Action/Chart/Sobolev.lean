@@ -50,15 +50,15 @@ theorem exists_timeH1_extChartAt_of_intervalIntegrable_lRegularizedLagrangian
     let _ : RiemannianBundle (TangentSpace I : M → Type _) := ⟨cg.toRiemannianMetric⟩
     let _ : IsRiemannianManifold I M := ⟨fun _ _ ↦ rfl⟩
     have hshiftAC : AbsolutelyContinuousOnInterval beta 0 L :=
-      hAC.comp_monotone_lipschitzOn (isometry_add_left A).lipschitz.lipschitzOnWith
+      hAC.comp_monotone_lipschitzOn (isometry_add_left A).lipschitzWith.lipschitzOnWith
         (by intro x _ y _ hxy; linarith)
         (by simpa only [uIcc_of_le hL, uIcc_of_le hAB] using hmaps)
     obtain ⟨C, hchart⟩ :=
       Geometry.Riemannian.exists_lipschitzOnWith_extChartAt_of_isCompact (I := I) p
         (isCompact_Icc.image_of_continuousOn (hαc.mono Icc_subset_uIcc))
         (by simpa only [extChartAt_source] using mapsTo_iff_image_subset.mp hsrc)
-    exact hchart.comp_absolutelyContinuousOnInterval hshiftAC (fun r hr ↦
-      ⟨A + r, hmaps (by simpa only [uIcc_of_le hL] using hr), rfl⟩)
+    exact hchart.comp_absolutelyContinuousOnInterval (fun r hr ↦
+      ⟨A + r, hmaps (by simpa only [uIcc_of_le hL] using hr), rfl⟩) hshiftAC
   have hsrcShift : MapsTo beta (uIcc 0 L) (chartAt H p).source := by
     simpa only [uIcc_of_le hL, beta, Function.comp_def] using hsrc.comp hmaps
   have hchart : MapsTo ((extChartAt I p) ∘ beta) (Icc 0 L)
@@ -168,7 +168,7 @@ theorem exists_timeH1_extChartAt_of_absolutelyContinuousOnInterval
   have hfAC : AbsolutelyContinuousOnInterval ((extChartAt I p) ∘ beta) 0 L := by
     have hcoord : AbsolutelyContinuousOnInterval ((extChartAt I p) ∘ alpha) A B :=
       hAC.2 p A B Subset.rfl (by simpa only [uIcc_of_le hAB] using hsrc)
-    exact hcoord.comp_monotone_lipschitzOn (isometry_add_left A).lipschitz.lipschitzOnWith
+    exact hcoord.comp_monotone_lipschitzOn (isometry_add_left A).lipschitzWith.lipschitzOnWith
       (by intro x _ y _ hxy; linarith)
       (by simpa only [uIcc_of_le hL, uIcc_of_le hAB] using hmaps)
   have hsrcShift : MapsTo beta (uIcc 0 L) (chartAt H p).source := by

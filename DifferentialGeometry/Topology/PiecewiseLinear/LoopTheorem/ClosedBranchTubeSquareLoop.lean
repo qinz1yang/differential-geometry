@@ -15,14 +15,14 @@ noncomputable def spliceSquareLoop (t : ℝ) : ℝ × ℝ :=
 
 theorem spliceSquareLoop_of_le {t : ℝ} (ht : t ≤ 1 / 2) :
     spliceSquareLoop t = upperSpliceArc (2 * t) :=
-  if_pos ht
+  ite_eq_left ht
 
 theorem spliceSquareLoop_of_ge {t : ℝ} (ht : 1 / 2 ≤ t) :
     spliceSquareLoop t = lowerSpliceArc (2 - 2 * t) := by
   rcases eq_or_lt_of_le ht with h | h
   · rw [← h, spliceSquareLoop_of_le le_rfl, show (2 : ℝ) * (1 / 2) = 1 by norm_num,
       show (2 : ℝ) - 1 = 1 by norm_num, upperSpliceArc_one, lowerSpliceArc_one]
-  · exact if_neg (not_le.mpr h)
+  · exact ite_eq_right (not_le.mpr h)
 
 theorem continuousOn_spliceSquareLoop : ContinuousOn spliceSquareLoop (Icc 0 1) := by
   have hu := isPLHomeomorphOn_upperSpliceArc.isPiecewiseAffineOn.continuousOn

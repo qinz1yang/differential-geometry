@@ -698,7 +698,7 @@ theorem RiemannianMetricComplete.of_coveringMap_localPullMetric
       (fun y : P => TangentSpace J y) :=
     ⟨h.inner, h.contMDiff.continuous, by intro y v w; rfl⟩
   let : EMetricSpace P := EMetricSpace.ofRiemannianMetric J P
-  refine EMetric.complete_of_cauchySeq_tendsto (α := P) fun s hs => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := P) fun s hs => ?_
   let d : ℕ → NNReal := fun n => (2⁻¹ : NNReal) ^ n
   have hdPos (n : ℕ) : 0 < (d n : ENNReal) := by
     positivity

@@ -3,7 +3,9 @@ import DifferentialGeometry.Analysis.Integration.Holder.Weighted
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Properties
 import Mathlib.MeasureTheory.Integral.MeanInequalities
-open DifferentialGeometry.Analysis.Elliptic
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 
 noncomputable section
 
@@ -250,7 +252,7 @@ theorem holder_integral_prod_riemannianFiberNormSq_le_of_sup_bound
       riemannianFiberNormSq (I := I) (M := M) g (r m) (s m) x ((S m).toSection x)),
       mul_comm (∏ m ∈ t₀, Λ m)]
     refine mul_le_mul_of_nonneg_left ?_ (Finset.prod_nonneg fun m _ => hnn m x)
-    exact Finset.prod_le_prod (fun m _ => hnn m x) fun m hm => hΛ m hm x
+    exact Finset.prod_le_prod₀ (fun m _ => hnn m x) fun m hm => hΛ m hm x
   have h1 : (∫ x, ∏ m ∈ t,
       riemannianFiberNormSq (I := I) (M := M) g (r m) (s m) x ((S m).toSection x) ∂μ) ≤
       ∫ x, (∏ m ∈ t₀, Λ m) * ∏ m ∈ t \ t₀,

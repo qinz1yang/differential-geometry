@@ -93,7 +93,7 @@ theorem suspensionAt_update (i : N)
     simp
   · simp only [suspensionAt, ContinuousMap.comp_apply, ContinuousMap.prodMap_apply,
       ContinuousMap.coe_mk, Homeomorph.funSplitAt_apply,
-      Homeomorph.funSplitAt_symm_apply, dif_neg hj, Function.update_of_ne hj]
+      Homeomorph.funSplitAt_symm_apply, dite_eq_right hj, Function.update_of_ne hj]
     have hrestrict : (fun k : {j : N // j ≠ i} => Function.update v i t k) =
         (fun k : {j : N // j ≠ i} => v k) :=
       funext (fun k => Function.update_of_ne k.property t v)

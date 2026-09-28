@@ -65,7 +65,7 @@ private theorem isCompact_image_Iic_of_ray {X : Type*} [TopologicalSpace X] {rho
   exact ⟨⟨r, hr.1, hr.2.trans_lt T.2.2⟩, rfl⟩
 
 theorem RetainedCoreHistory.exists_trace_first_on_witness_ball_of_scaled_ray_chain
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {T : ℝ}
+    (H : RetainedCoreHistory.{u}) {T : ℝ}
     (A : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (x : (A.restrictIncoming le_rfl A.lt le_rfl).terminalRegularOpen)
     (hQ : 1 ≤ A.flow.scalar T x.val) {Kc lam θ D : ℝ} {Ctime Cgrad : ℝ≥0} {Phi : ℝ → ℝ}
@@ -168,7 +168,7 @@ private theorem ray_chain_step {rho T : ℝ} {N : ℕ} (hN : 0 < N) (hT : 0 ≤ 
   exact (ENNReal.ofReal_lt_ofReal_iff (lt_of_le_of_lt (by positivity) hNT)).mpr hNT
 
 theorem RetainedCoreHistory.eventually_second_level_traces_of_chain_traces
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (Cgrad : ℝ≥0) (q : ℕ → ℝ)

@@ -27,11 +27,11 @@ theorem isPolyhedron_stdSimplexBoundary_two : IsPolyhedron (stdSimplexBoundary 2
 theorem exists_prism_of_inter_frontier_eq (XK : Geometry.SimplicialComplex ℝ E3)
     [Finite XK.faces] (hX : IsCombinatorialManifoldWithBoundary 3 XK) {V : Set E3}
     (hV : IsOpen V) {Δ : Set E3} {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔV : Δ ⊆ V)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔV : Δ ⊆ V)
     (hΔB : Δ ∩ frontier XK.space = r '' stdSimplexBoundary 2) :
     ∃ (N : Set E3) (f : (Fin 3 → ℝ) × ℝ → E3),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧ N ⊆ V ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N ∧ N ⊆ V ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) ∧
       frontier XK.space ∩ N = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1) ∧ Δ ⊆ N := by
   classical
   obtain ⟨L, hLfin, hL, hLeq⟩ :=
@@ -107,22 +107,22 @@ theorem exists_prism_of_inter_frontier_eq (XK : Geometry.SimplicialComplex ℝ E
     exact ⟨hSL hyS, hyN⟩
 
 theorem isPLHomeomorphOn_prism_level {N : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N) {s : ℝ}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N) {s : ℝ}
     (hs : s ∈ Icc (-1 : ℝ) 1) :
-    IsPLHomeomorphOn (fun x => f (x, s)) (stdSimplex ℝ (Fin 3))
-      ((fun x => f (x, s)) '' stdSimplex ℝ (Fin 3)) := by
-  have hσ : IsPolyhedron (stdSimplex ℝ (Fin 3)) := (isHPolytope_stdSimplex (Fin 3)).isPolyhedron
-  have hι : IsPiecewiseAffineOn (fun x : Fin 3 → ℝ => (x, s)) (stdSimplex ℝ (Fin 3)) :=
+    IsPLHomeomorphOn (fun x => f (x, s)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
+      ((fun x => f (x, s)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := by
+  have hσ : IsPolyhedron (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := (isHPolytope_stdSimplex (Fin 3)).isPolyhedron
+  have hι : IsPiecewiseAffineOn (fun x : Fin 3 → ℝ => (x, s)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
     ((isPiecewiseAffineOn_id isOpen_univ).prod_mk
       (isPiecewiseAffineOn_of_affine (AffineMap.const ℝ (Fin 3 → ℝ) s)
         isOpen_univ)).mono_of_isPolyhedron hσ (subset_univ _)
-  have hιinj : InjOn (fun x : Fin 3 → ℝ => (x, s)) (stdSimplex ℝ (Fin 3)) :=
+  have hιinj : InjOn (fun x : Fin 3 → ℝ => (x, s)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
     fun x _ y _ h => (Prod.mk.inj h).1
   have hιpl := isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn hσ hι hιinj.bijOn_image
-  have hPpoly : IsPolyhedron ((fun x : Fin 3 → ℝ => (x, s)) '' stdSimplex ℝ (Fin 3)) :=
+  have hPpoly : IsPolyhedron ((fun x : Fin 3 → ℝ => (x, s)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) :=
     hσ.image_of_isPiecewiseAffineOn hι hιinj
-  have hsub : (fun x : Fin 3 → ℝ => (x, s)) '' stdSimplex ℝ (Fin 3) ⊆
-      stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
+  have hsub : (fun x : Fin 3 → ℝ => (x, s)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ⊆
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1 := by
     rintro _ ⟨x, hx, rfl⟩
     exact ⟨hx, hs⟩
   have htr := hιpl.trans (hf.restrict hPpoly hsub)
@@ -130,10 +130,10 @@ theorem isPLHomeomorphOn_prism_level {N : Set E3} {f : (Fin 3 → ℝ) × ℝ �
   exact htr
 
 theorem prism_level_inter_eq {N : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N) {B : Set E3}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N) {B : Set E3}
     (hwall : B ∩ N = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1)) {s : ℝ}
     (hs : s ∈ Icc (-1 : ℝ) 1) :
-    (fun x => f (x, s)) '' stdSimplex ℝ (Fin 3) ∩ B =
+    (fun x => f (x, s)) '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∩ B =
       (fun x => f (x, s)) '' stdSimplexBoundary 2 := by
   apply Subset.antisymm
   · rintro _ ⟨⟨x, hx, rfl⟩, hxB⟩
@@ -152,24 +152,24 @@ theorem prism_level_inter_eq {N : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
     exact hmem.1
 
 theorem not_nullhomotopic_prism_level {N : Set E3} {f : (Fin 3 → ℝ) × ℝ → E3}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N) {B : Set E3}
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) N) {B : Set E3}
     (hwall : B ∩ N = f '' (stdSimplexBoundary 2 ×ˢ Icc (-1 : ℝ) 1)) {Δ : Set E3}
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
-    (hzero : ∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = r x) (hb : r '' stdSimplexBoundary 2 ⊆ B)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
+    (hzero : ∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = r x) (hb : r '' stdSimplexBoundary 2 ⊆ B)
     (hnull : ¬ (⟨Set.inclusion hb, continuous_inclusion hb⟩ :
       C(r '' stdSimplexBoundary 2, B)).Nullhomotopic)
     {s : ℝ} (hs : s ∈ Icc (-1 : ℝ) 1) (hbs : (fun x => f (x, s)) '' stdSimplexBoundary 2 ⊆ B) :
     ¬ (⟨Set.inclusion hbs, continuous_inclusion hbs⟩ :
       C((fun x => f (x, s)) '' stdSimplexBoundary 2, B)).Nullhomotopic := by
   intro hns
-  have hBdσ : stdSimplexBoundary 2 ⊆ stdSimplex ℝ (Fin 3) := fun x hx => hx.1
+  have hBdσ : stdSimplexBoundary 2 ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := fun x hx => hx.1
   have hmemB : ∀ x ∈ stdSimplexBoundary 2, ∀ t ∈ Icc (-1 : ℝ) 1, f (x, t) ∈ B := by
     intro x hx t ht
     have hmem : f (x, t) ∈ B ∩ N := by
       rw [hwall]
       exact ⟨(x, t), ⟨hx, ht⟩, rfl⟩
     exact hmem.1
-  have hfc : ContinuousOn f (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
+  have hfc : ContinuousOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) :=
     hf.isPiecewiseAffineOn.continuousOn
   have hτ : ∀ τ : unitInterval, (τ : ℝ) * s ∈ Icc (-1 : ℝ) 1 := by
     intro τ

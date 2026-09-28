@@ -61,7 +61,7 @@ private lemma frameVec_contMDiffAt (x₀ : M) (i : Fin (Module.finrank ℝ E)) {
   have hfr : frameVec (I := I) x₀ i =ᶠ[𝓝 x] e.localFrame b i := by
     filter_upwards [e.open_baseSet.mem_nhds hx] with y hy
     change (e.symmL ℝ y) (b i) = e.localFrame b i y
-    rw [Bundle.Trivialization.localFrame, dif_pos hy]
+    rw [Bundle.Trivialization.localFrame, dite_eq_left hy]
     rw [Bundle.Trivialization.basisAt, Module.Basis.map_apply,
       Bundle.Trivialization.linearEquivAt_symm_apply]
     exact e.symmL_apply hy (b i)

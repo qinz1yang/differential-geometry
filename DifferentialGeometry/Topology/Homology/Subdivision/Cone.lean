@@ -67,7 +67,7 @@ theorem ι_affineCone (p : E) {n : ℕ}
     (TopCat.toSSet.obj (TopCat.of E)).ιChainComplex σ ≫ affineCone R p n =
       (TopCat.toSSet.obj (TopCat.of E)).ιChainComplex
         (affineSingularSimplex (Fin.cons p (singularSimplexVertices σ))) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 theorem affineCone_boundary (p : E) (n : ℕ) :
     affineCone R p (n + 1) ≫
@@ -92,7 +92,7 @@ omit [NormedSpace ℝ E] in
 theorem ι_singularChainAugmentation (σ : TopCat.toSSet.obj (TopCat.of E) _⦋0⦌) :
     (TopCat.toSSet.obj (TopCat.of E)).ιChainComplex σ ≫
       singularChainAugmentation (E := E) R = 𝟙 R :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 omit [NormedSpace ℝ E] in
 theorem d_singularChainAugmentation :

@@ -85,13 +85,13 @@ theorem exists_isPLHomeomorphOn_unitSquare_of_fixed_endpoints
     refine (hw.prodMap hsing.isPLHomeomorphOn_id).congr ?_
     rintro z ⟨-, hz2⟩
     have hz2' : z.2 = 1 := hz2
-    simp only [hθdef, if_pos hz2']
+    simp only [hθdef, ite_eq_left hz2']
     rfl
   have hθid : EqOn θ id
       (Icc (0 : ℝ) 1 ×ˢ ({0} : Set ℝ) ∪ ({0, 1} : Set ℝ) ×ˢ Icc (0 : ℝ) 1) := by
     rintro z hz
     by_cases hz2 : z.2 = 1
-    · simp only [hθdef, if_pos hz2]
+    · simp only [hθdef, ite_eq_left hz2]
       rcases hz with ⟨-, hzbot⟩ | ⟨hz1, -⟩
       · have hzbot' : z.2 = 0 := hzbot
         exact absurd (hz2.symm.trans hzbot') (by norm_num)
@@ -102,7 +102,7 @@ theorem exists_isPLHomeomorphOn_unitSquare_of_fixed_endpoints
         · have hz1' : z.1 = 1 := hz1
           rw [hz1', hw1]
           exact Prod.ext hz1'.symm rfl
-    · simp only [hθdef, if_neg hz2]
+    · simp only [hθdef, ite_eq_right hz2]
       rfl
   have hθ0 : IsPLHomeomorphOn θ
       (Icc (0 : ℝ) 1 ×ˢ ({0} : Set ℝ) ∪ ({0, 1} : Set ℝ) ×ˢ Icc (0 : ℝ) 1)
@@ -122,26 +122,26 @@ theorem exists_isPLHomeomorphOn_unitSquare_of_fixed_endpoints
       rw [hbd]
       exact Or.inr (Or.inl ⟨hx, rfl⟩)
     rw [hΨbd hmem]
-    exact if_neg (by norm_num)
+    exact ite_eq_right (by norm_num)
   · have hmem : (x, (1 : ℝ)) ∈ (boundaryComplex 2 A).space := by
       rw [hbd]
       exact Or.inl ⟨hx, rfl⟩
     rw [hΨbd hmem]
-    exact if_pos rfl
+    exact ite_eq_left rfl
   · have hmem : ((0 : ℝ), t) ∈ (boundaryComplex 2 A).space := by
       rw [hbd]
       exact Or.inr (Or.inr ⟨Or.inl rfl, ht⟩)
     rw [hΨbd hmem]
     by_cases ht1 : t = 1
-    · simp only [hθdef, if_pos ht1, hw0]
-    · exact if_neg ht1
+    · simp only [hθdef, ite_eq_left ht1, hw0]
+    · exact ite_eq_right ht1
   · have hmem : ((1 : ℝ), t) ∈ (boundaryComplex 2 A).space := by
       rw [hbd]
       exact Or.inr (Or.inr ⟨Or.inr rfl, ht⟩)
     rw [hΨbd hmem]
     by_cases ht1 : t = 1
-    · simp only [hθdef, if_pos ht1, hw1]
-    · exact if_neg ht1
+    · simp only [hθdef, ite_eq_left ht1, hw1]
+    · exact ite_eq_right ht1
 
 theorem exists_isPLHomeomorphOn_arc_prod_of_fixed_endpoints [FiniteDimensional ℝ E]
     {A : Set E} {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)

@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Geometry.Metric.TensorInner.TensorRS.RiemannianBundle
-open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
@@ -10,10 +9,8 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Tensor.TensorRSRiemannianBundle
 
@@ -100,8 +97,7 @@ theorem norm_eq_of_tensorInnerPointwise_eq
   rw [norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x T,
     norm_eq_sqrt_tensorInnerPointwise (I := I) (M := M) g r s x S, h]
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

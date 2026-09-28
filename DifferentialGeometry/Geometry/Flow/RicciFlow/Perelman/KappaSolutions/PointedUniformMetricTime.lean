@@ -120,7 +120,7 @@ theorem pointed_metric_quadratic_uniform_on_closed_time
         mul_le_mul_of_nonneg_left (hlimit t ht z) (div_pos hε hH0).le
       _ = ε * w z := by field_simp
   intro ε hε
-  have huniform := eventually_uniform_on_compact_time_of_weighted_lipschitz
+  have huniform := IsCompact.eventually_uniform_of_weighted_lipschitz
     Q Q0 w hw isCompact_Icc hB.le hLip hslice ε hε
   filter_upwards [huniform, hmod] with i hi hmi
   exact ⟨hmi.1, fun t ht x hx v => hi t ht ⟨⟨x, hx⟩, v⟩⟩

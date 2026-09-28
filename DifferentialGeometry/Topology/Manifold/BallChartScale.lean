@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 import DifferentialGeometry.Topology.Manifold.BallChartTransport
 import DifferentialGeometry.Topology.Manifold.EmbeddedBallContraction
 
@@ -140,7 +140,7 @@ theorem extendChartById_chartSymm_of_target (c : BallChart 3 (𝓡 3) X) (f : E3
       = c.chart (f (c.chart.symm y)) := by
   rw [Manifold.extendChartById]
   have hsrc : y ∈ c.chart.symm.toOpenPartialHomeomorph.source := hy
-  rw [if_pos hsrc]
+  rw [ite_eq_left hsrc]
   rfl
 
 theorem exists_diffeomorph_eqOn_of_modelDiffeomorph (c c' : BallChart 3 (𝓡 3) X)

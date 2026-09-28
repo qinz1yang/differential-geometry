@@ -80,7 +80,7 @@ theorem exists_disk_of_zero_trace_homology_image {ι : Type*} [Finite ι] {T : S
     (hzero : integralSingularHomologyMap 1
       (⟨inclusion hsub, continuous_inclusion hsub⟩ : C(J i, T)) = 0) :
     ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier T ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier T ∧
         J i = r '' stdSimplexBoundary 2 :=
   hT.isPLTorus_frontier.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff
     (hJ i) (hJT i)

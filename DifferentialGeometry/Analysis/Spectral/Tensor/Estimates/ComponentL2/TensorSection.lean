@@ -1,11 +1,13 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerPointwiseUpperBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.Components.Defs
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.ComponentL2Bound
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.Integrability
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
 import Mathlib.MeasureTheory.Function.LpSpace.Basic
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise
+  tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

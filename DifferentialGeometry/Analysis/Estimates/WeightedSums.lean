@@ -1,7 +1,7 @@
 import Mathlib.Algebra.BigOperators.Ring.Finset
 import Mathlib.Algebra.Order.BigOperators.Group.Finset
-import Mathlib.Data.ENNReal.BigOperators
-import Mathlib.Data.ENNReal.Operations
+import Mathlib.Basic.ENNReal.BigOperators
+import Mathlib.Basic.ENNReal.Operations
 
 noncomputable section
 

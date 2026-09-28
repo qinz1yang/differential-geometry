@@ -5,6 +5,8 @@ import DifferentialGeometry.Topology.Simplex.AttachmentEuler
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory CategoryTheory.Limits DifferentialGeometry.Topology
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Cell
 variable {X : TopCat.{0}} (n : ℕ) (φ : C(CellBoundary n, X))
 
@@ -17,7 +19,7 @@ def simplexAttachingMap : TopCat.of (DifferentialGeometry.Simplex.boundary (Fin 
   (TopCat.isoOfHomeo (stdSimplexCellBoundaryHomeomorph n)).hom ≫ TopCat.ofHom φ
 
 
-def simplexCellMap : TopCat.of (stdSimplex ℝ (Fin (n + 1))) ⟶ TopCat.of (CellAdjunctionSpace n φ) :=
+def simplexCellMap : TopCat.of (coordinateSet ℝ (Fin (n + 1))) ⟶ TopCat.of (CellAdjunctionSpace n φ) :=
   (TopCat.isoOfHomeo (stdSimplexClosedCellHomeomorph n)).hom ≫
     DifferentialGeometry.TopCat.Adjunction.cellMap (boundaryInclusion n) (TopCat.ofHom φ)
 

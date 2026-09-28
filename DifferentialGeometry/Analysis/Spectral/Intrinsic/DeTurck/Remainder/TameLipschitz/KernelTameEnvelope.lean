@@ -16,6 +16,9 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_zero)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -75,7 +78,7 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open Analysis.Parabolic.TensorSpectral
 
 
-private theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfComb_topOrderSeparated_budgetDualCap_le
+private theorem linearizedRicci_order_zero_curvature_pointwise_tame_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
     ∃ ε : ℝ, 0 ≤ ε ∧
       27 * Real.sqrt (Module.finrank ℝ E) * (1 - δ₀) * ε ≤
@@ -126,7 +129,7 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfC
       have h1 : Module.finrank ℝ E ≠ 0 := NeZero.ne _
       omega
     obtain ⟨KC, hKC_nn, hKC⟩ :=
-      riemannianFiberNormSq_iteratedCovGrad_linearizedRicciConnectionDifferenceOrder0CoeffField_topAmplitude_le
+      linearizedRicciConnectionDifferenceOrder0CoeffField_pointwise_tame_bound
       (I := I) (M := M) g₀ hδ₀ hδ₀half
     obtain ⟨KR, hKR_nn, hKR⟩ :=
       riemannianFiberNormSq_iteratedCovGrad_decompositionKernelContr_symmSecondCovGrad_topAmplitude_le
@@ -332,12 +335,12 @@ private theorem riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfC
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x T3)
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x T4)
         + Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x T5) := by
-      have h4 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
+      have h4 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
         (((T1 + T2) + T3) + T4) T5
-      have h3 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
+      have h3 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x
         ((T1 + T2) + T3) T4
-      have h2 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x (T1 + T2) T3
-      have h1 := DifferentialGeometry.Analysis.Elliptic.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x T1 T2
+      have h2 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x (T1 + T2) T3
+      have h1 := DifferentialGeometry.TensorMetric.sqrt_riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 2 (2 + i) x T1 T2
       linarith [h1, h2, h3, h4]
     have hsp1 : Real.sqrt (riemannianFiberNormSq (I := I) (M := M) g₀ 2 (2 + i) x T1) ≤
         ((21 / 4 : ℝ) * (Module.finrank ℝ E : ℝ) * (1 / (1 - δ₀)) ^ 2) * Real.sqrt btop
@@ -406,7 +409,7 @@ private theorem
               ε ^ 2 * ‖iteratedCovGrad (I := I) g₀ 0 2 (i + 2) P‖ ^ 2 := by
   classical
   obtain ⟨ε, hε_nn, hε_cap, C, hC_nn, hC⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_linRicciOrder0RiemannHalfComb_topOrderSeparated_budgetDualCap_le
+    linearizedRicci_order_zero_curvature_pointwise_tame_bound
       (I := I) (M := M) g₀ hδ₀ hδ₀half
   obtain ⟨Kflat, hKflat_nn, hKflat⟩ :=
     boundedFactorGridWindow_integral_ballUniform_flat_allOrders
@@ -511,7 +514,7 @@ private theorem
       mul_nonneg (sq_nonneg ε) (sq_nonneg _)
     nlinarith
 
-theorem exists_linearizedRicciOrderZeroCorrectionField_metricPerturbationPath_jetL2_topTerm_tameEnvelope_highOrder
+theorem linearizedRicciOrderZeroCorrectionField_path_tame_bound_of_high_order
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) (hδ₀half : δ₀ ≤ 1 / 2) :
@@ -672,7 +675,7 @@ theorem linearizedRicciOrderZeroCorrectionField_allOrder_tameEnvelope_interface
     Analysis.Parabolic.TensorSpectral.exists_correctionTerm0Field_metricPerturbationPath_jetL2_tameEnvelope
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨Kgt, hKgt_nn, ε, hε_nn, hε_cap, hKgt⟩ :=
-    exists_linearizedRicciOrderZeroCorrectionField_metricPerturbationPath_jetL2_topTerm_tameEnvelope_highOrder
+    linearizedRicciOrderZeroCorrectionField_path_tame_bound_of_high_order
       (I := I) (M := M) g₀ a ha_super hR hδ₀ hδ₀half
   refine ⟨fun i => Kle i + Kgt i, fun i => add_nonneg (hKle_nn i) (hKgt_nn i),
     ε, hε_nn, hε_cap, ?_⟩

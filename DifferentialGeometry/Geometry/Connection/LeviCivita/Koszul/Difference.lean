@@ -91,8 +91,8 @@ theorem nabla_metric_two_term
     Tensor0SSpace.zero_apply, zero_add,
     show -N = (-1 : ℝ) • N by rw [neg_one_smul], Tensor0SSpace.smul_apply,
     neg_one_smul] at hsub
-  simp only [metricTensorField_apply, if_true,
-    show ((1 : Fin 2) = 0) = False from by simp, if_false] at hsub
+  simp only [metricTensorField_apply, ite_true,
+    show ((1 : Fin 2) = 0) = False from by simp, ite_false] at hsub
   exact neg_injective hsub
 
 omit [SigmaCompactSpace M] in

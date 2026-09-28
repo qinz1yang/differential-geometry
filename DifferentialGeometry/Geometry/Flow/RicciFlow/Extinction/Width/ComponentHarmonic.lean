@@ -156,7 +156,7 @@ theorem harmonic_subtypeVal (g : SmoothRiemannianMetric I Q)
     have hF0 : EqOn (Subtype.val ∘ F0) F.map S := by
       intro y hy
       have hyU : F.map y ∈ U := hy.2
-      simp only [Function.comp_apply, F0, dif_pos hyU]
+      simp only [Function.comp_apply, F0, dite_eq_left hyU]
     have hF0smooth : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ F0 S := by
       have hcompose : ContMDiffOn 𝓘(ℝ, ℂ) I ∞ (Subtype.val ∘ F0) S :=
         (F.smooth.mono inter_subset_left).congr hF0

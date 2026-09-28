@@ -10,6 +10,15 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Commutation.Op
 import DifferentialGeometry.Geometry.Connection.MetricTrace.NormBound
 import DifferentialGeometry.Geometry.Connection.ChartFrame.OrthonormalBasis
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+   riemannianFiberNormSq_add_le
+   riemannianFiberNormSq_eq_tensorInnerPointwise
+   tensorInnerPointwise_smul_left
+   tensorInnerPointwise_smul_right)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -1499,7 +1508,7 @@ theorem uniformKsupOne_of
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x
           ((-2 : ℝ) • R1) =
         4 * riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + 1) x R1 := by
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul]
     norm_num
   have hRA :=
     riemannianFiberNormSq_add_le (I := I) (M := M) g₀ 0 (2 + 1) x

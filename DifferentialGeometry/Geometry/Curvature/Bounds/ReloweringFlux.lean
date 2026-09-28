@@ -6,6 +6,7 @@ noncomputable section
 namespace DifferentialGeometry.Geometry.Curvature
 
 open Bundle DifferentialGeometry.Tensor0SBundle DifferentialGeometry.PDE.RicciFlow
+open DifferentialGeometry.TensorMetric (reLower metricDiffSq metricDiffSq_def reLowerDefSq_le)
 open scoped Manifold ContDiff
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

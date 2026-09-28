@@ -1377,9 +1377,9 @@ theorem rawTensorConnLap_eq_frame_trace
     rw [hC_orthonormal j k]
   rw [Finset.sum_congr rfl (fun k _ => h_inner_per_k k)]
   rw [Finset.sum_eq_single j]
-  · rw [if_pos rfl, one_smul]
+  · rw [ite_eq_left rfl, one_smul]
   · intro k _ hkne
-    rw [if_neg (Ne.symm hkne), zero_smul]
+    rw [ite_eq_right (Ne.symm hkne), zero_smul]
   · intro h_notin
     exact absurd (Finset.mem_univ j) h_notin
 

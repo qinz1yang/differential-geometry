@@ -108,7 +108,7 @@ theorem integral_mul_trace_fderivWithin_add_fderivWithin_euclidean_half_space_of
     rfl
   · rfl
 
-theorem integral_mul_trace_fderivWithin_add_fderivWithin_withDensity_euclidean_half_space_of_hasCompactSupport
+theorem integration_by_parts_euclidean_half_space_withDensity
     {n : Nat} {a : Real}
     {phi rho : EuclideanSpace Real (Fin (n + 1)) → Real}
     {u : EuclideanSpace Real (Fin (n + 1)) → EuclideanSpace Real (Fin (n + 1))}
@@ -165,7 +165,7 @@ theorem integral_trace_fderivWithin_withDensity_euclidean_half_space_of_hasCompa
         (modelHaar (E := EuclideanSpace Real (Fin (n + 1))))) volume •
         ∫ z : Fin n → Real, rho (WithLp.toLp 2 (Fin.cons a z)) *
           u (WithLp.toLp 2 (Fin.cons a z)) 0) := by
-  have h := integral_mul_trace_fderivWithin_add_fderivWithin_withDensity_euclidean_half_space_of_hasCompactSupport
+  have h := integration_by_parts_euclidean_half_space_withDensity
     (phi := fun _ => 1) contDiffOn_const hrho hu hpos (by simpa only [one_smul] using hcs)
   simpa using h
 
@@ -200,7 +200,7 @@ theorem integral_trace_fderivWithin_euclidean_half_space_inter_of_hasCompactSupp
     rw [fderivWithin_of_mem_nhds hnhds, fderiv_of_notMem_tsupport Real hxcs]
     simp
 
-theorem integral_mul_trace_fderivWithin_add_fderivWithin_withDensity_euclidean_half_space_inter_of_hasCompactSupport
+theorem integration_by_parts_euclidean_half_space_inter_withDensity
     {n : Nat} {a : Real}
     {U : Set (EuclideanSpace Real (Fin (n + 1)))}
     {phi rho : EuclideanSpace Real (Fin (n + 1)) → Real}

@@ -1,4 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionLeibnizGrid
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+    riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

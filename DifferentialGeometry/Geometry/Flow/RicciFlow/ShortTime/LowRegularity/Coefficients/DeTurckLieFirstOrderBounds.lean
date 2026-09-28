@@ -6,6 +6,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Unif
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Coefficients.SecondOrderBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Uniform.Application.FixedConnectionSecondOrderBounds
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -544,8 +547,6 @@ theorem kappaBackground_h1_uniform
     simp only [B, Real.sq_sqrt (hQ R)]]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M] in
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (metricLoweredConnectionDifferenceField) in
 private theorem lie_kappa_unit
     (g₀ g₁ gB : SmoothRiemannianMetric I M)
     (x : M) (m : Fin 3 → E) :
@@ -811,7 +812,7 @@ private theorem exists_sharpFlatEndoCc_covariantJetNormSq_two_bound
           (sharpFlatEndoCc (I := I) g₀ g₁) ≤ (B R) ^ 2 := by
   classical
   obtain ⟨C, hC, hgrid⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨BD, hBD, hdiff⟩ :=
     h2_of_grid_low (I := I) (M := M) (r := 1) (s := 1)

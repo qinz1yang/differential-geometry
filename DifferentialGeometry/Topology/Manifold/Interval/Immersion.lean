@@ -29,7 +29,10 @@ theorem isImmersion_Icc_of_injective_mfderiv
     have hGd := (hG.contDiffAt (hU.mem_nhds hxU)).differentiableAt (by simp)
     have hchain : mfderiv (𝓡∂ 1) 𝓘(ℝ, F) f x =
         (fderiv ℝ G (x : ℝ)).comp (mfderiv (𝓡∂ 1) 𝓘(ℝ) (fun y : Icc a b => (y : ℝ)) x) := by
-      rw [← heq.mfderiv_eq]
+      have heq' :
+          mfderiv (𝓡∂ 1) 𝓘(ℝ, F) (G ∘ fun y : Icc a b => (y : ℝ)) x =
+            mfderiv (𝓡∂ 1) 𝓘(ℝ, F) f x := heq.mfderiv_eq
+      rw [← heq']
       rw [mfderiv_comp x hGd.mdifferentiableAt (hi.contMDiff.mdifferentiableAt (by simp))]
       rw [mfderiv_eq_fderiv]
       rfl

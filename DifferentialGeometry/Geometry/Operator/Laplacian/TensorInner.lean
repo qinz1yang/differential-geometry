@@ -685,7 +685,7 @@ theorem ricciReaction0S_eq_inner_covariantEndomorphismAction0S_add_of_symmetric
         Q (fun a : Fin 2 => if a = 0 then Y else X))
     (hL : ∀ X Y : TangentSpace I x,
       g.inner x (L X) Y = Q (fun a : Fin 2 => if a = 0 then X else Y)) :
-    ricciReaction0S (I := I) g x s Q A B =
+    metricVariationPairing0S (I := I) g x s Q A B =
       inner0S (I := I) g x s
           (covariantEndomorphismAction0S (I := I) A L) B +
         inner0S (I := I) g x s A
@@ -721,7 +721,7 @@ theorem ricciReaction0S_eq_inner_covariantEndomorphismAction0S_add_of_symmetric
           (covariantEndomorphismAction0S (I := I) D L) =
         coordContract gInv
           (fun slots => tensor0SComponent (I := I) C basis slots)
-          (ricStarArray raised
+          (covariantEndomorphismActionArray raised
             (fun slots => tensor0SComponent (I := I) D basis slots)) := by
     rw [inner0S_eq_coord (I := I) g x s basis gInv hinv C
       (covariantEndomorphismAction0S (I := I) D L)]
@@ -738,34 +738,34 @@ theorem ricciReaction0S_eq_inner_covariantEndomorphismAction0S_add_of_symmetric
     funext i e
     exact hLcomp i e
   have hreaction :
-      ricciReaction0S (I := I) g x s Q A B =
-        2 * coordContract gInv cA (ricStarArray raised cB) := by
-    simpa only [ricciReaction0S, basis, gInv, q, raised, cA, cB] using
-      ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise
+      metricVariationPairing0S (I := I) g x s Q A B =
+        2 * coordContract gInv cA (covariantEndomorphismActionArray raised cB) := by
+    simpa only [metricVariationPairing0S, basis, gInv, q, raised, cA, cB] using
+      metricVariationContract_eq_coordContract
         gInv q cA cB
   have hcoord :
-      coordContract gInv cB (ricStarArray raised cA) =
-        coordContract gInv cA (ricStarArray raised cB) := by
-    have hsymm := ricReactionContract_symm gInv q cA cB hgInv hq
-    rw [ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise,
-      ricReactionContract_eq_two_mul_coordContract_ricStarArray_raise] at hsymm
-    change 2 * coordContract gInv cA (ricStarArray raised cB) =
-      2 * coordContract gInv cB (ricStarArray raised cA) at hsymm
+      coordContract gInv cB (covariantEndomorphismActionArray raised cA) =
+        coordContract gInv cA (covariantEndomorphismActionArray raised cB) := by
+    have hsymm := metricVariationContract_symm gInv q cA cB hgInv hq
+    rw [metricVariationContract_eq_coordContract,
+      metricVariationContract_eq_coordContract] at hsymm
+    change 2 * coordContract gInv cA (covariantEndomorphismActionArray raised cB) =
+      2 * coordContract gInv cB (covariantEndomorphismActionArray raised cA) at hsymm
     linarith
   have hright :
       inner0S (I := I) g x s A
           (covariantEndomorphismAction0S (I := I) B L) =
-        coordContract gInv cA (ricStarArray raised cB) := by
+        coordContract gInv cA (covariantEndomorphismActionArray raised cB) := by
     simpa only [cA, cB] using hinner A B
   have hleft :
       inner0S (I := I) g x s
           (covariantEndomorphismAction0S (I := I) A L) B =
-        coordContract gInv cA (ricStarArray raised cB) := by
+        coordContract gInv cA (covariantEndomorphismActionArray raised cB) := by
     rw [inner0S_symm (I := I) g x
       (covariantEndomorphismAction0S (I := I) A L) B]
     rw [show inner0S (I := I) g x s B
         (covariantEndomorphismAction0S (I := I) A L) =
-          coordContract gInv cB (ricStarArray raised cA) by
+          coordContract gInv cB (covariantEndomorphismActionArray raised cA) by
       simpa only [cA, cB] using hinner B A]
     exact hcoord
   rw [hreaction, hleft, hright]
@@ -816,7 +816,7 @@ theorem inner0S_time_deriv_sub_laplacianAt_eq_orthonormal
     let roughB := metricTrace0S2TensorInBasis (I := I) basis
       (identityInvMetric (Idx := Idx)) (nabla2B x)
     let timeDeriv :=
-      ricciReaction0S (I := I) (G.metric t) x s Q (A t x) (B t x) +
+      metricVariationPairing0S (I := I) (G.metric t) x s Q (A t x) (B t x) +
         inner0S (I := I) (G.metric t) x s Adot (B t x) +
         inner0S (I := I) (G.metric t) x s (A t x) Bdot
     HasDerivAt
@@ -824,7 +824,7 @@ theorem inner0S_time_deriv_sub_laplacianAt_eq_orthonormal
         timeDeriv t ∧
       timeDeriv - laplacianAt (I := I) G t
           (fun y : M => inner0S (I := I) (G.metric t) y s (A t y) (B t y)) x =
-        ricciReaction0S (I := I) (G.metric t) x s Q (A t x) (B t x) +
+        metricVariationPairing0S (I := I) (G.metric t) x s Q (A t x) (B t x) +
           inner0S (I := I) (G.metric t) x s (Adot - roughA) (B t x) +
           inner0S (I := I) (G.metric t) x s (A t x) (Bdot - roughB) -
           2 * ∑ e : Idx,
@@ -834,7 +834,7 @@ theorem inner0S_time_deriv_sub_laplacianAt_eq_orthonormal
               (tensor0SCurry (I := I) (𝕜 := Real) (M := M) s x
                 (nablaB x) (basis e)) := by
   dsimp only
-  have htime := inner0S_moving_deriv (I := I)
+  have htime := hasDerivAt_inner0S_of_metric_variation (I := I)
     (fun r => G.metric r) Q (fun r => A r x) (fun r => B r x)
       Adot Bdot hg hAt hBt
   refine ⟨htime, ?_⟩
@@ -842,7 +842,7 @@ theorem inner0S_time_deriv_sub_laplacianAt_eq_orthonormal
     (I := I) (G := G) (t := t) (x := x)
     (A t) nablaA nabla2A (B t) nablaB nabla2B
     hA h2A hB h2B hcov basis horth]
-  rw [inner0S_sub_left, Tensor0SBundle.inner0S_sub_right]
+  rw [inner0S_sub_left, DifferentialGeometry.Tensor0SBundle.inner0S_sub_right]
   ring
 
 omit [CompleteSpace E] [SigmaCompactSpace M] in
@@ -897,7 +897,7 @@ theorem inner0S_time_deriv_sub_laplacianAt_eq_fixed_metric_orthonormal
     let roughB := metricTrace0S2TensorInBasis (I := I) basis
       (identityInvMetric (Idx := Idx)) (nabla2B x)
     let timeDeriv :=
-      ricciReaction0S (I := I) (G.metric t) x s Q (A t x) (B t x) +
+      metricVariationPairing0S (I := I) (G.metric t) x s Q (A t x) (B t x) +
         inner0S (I := I) (G.metric t) x s Adot (B t x) +
         inner0S (I := I) (G.metric t) x s (A t x) Bdot
     let fixedHeatA := Adot - roughA +
@@ -927,7 +927,7 @@ theorem inner0S_time_deriv_sub_laplacianAt_eq_fixed_metric_orthonormal
   rw [ricciReaction0S_eq_inner_covariantEndomorphismAction0S_add_of_symmetric
     (I := I) (G.metric t) Q (A t x) (B t x) L hQ hL]
   rw [inner0S_add_left, inner0S_add_right, inner0S_sub_left,
-    Tensor0SBundle.inner0S_sub_right]
+    DifferentialGeometry.Tensor0SBundle.inner0S_sub_right]
   ring
 
 omit [CompleteSpace E] [T2Space M] [SigmaCompactSpace M] in
@@ -1034,7 +1034,7 @@ theorem inner0S_product_time_deriv_sub_laplacianAt_eq_fixed_metric_orthonormal
     let productValue := (A t x).product (B t x)
     let productDot := Adot.product (B t x) + (A t x).product Bdot
     let timeDeriv :=
-      ricciReaction0S (I := I) (G.metric t) x (p + q) Q (T t x) productValue +
+      metricVariationPairing0S (I := I) (G.metric t) x (p + q) Q (T t x) productValue +
         inner0S (I := I) (G.metric t) x (p + q) Tdot productValue +
         inner0S (I := I) (G.metric t) x (p + q) (T t x) productDot
     HasDerivAt
@@ -1152,8 +1152,8 @@ theorem inner0S_product_time_deriv_sub_laplacianAt_eq_fixed_metric_orthonormal
         tensor0SCurry_tensor0SProductNabla
           (A t) nablaA (B t) nablaB (basis e)
     simp_rw [hnabla]
-    rw [Tensor0SBundle.inner0S_sub_right, inner0S_add_right,
-      Tensor0SBundle.inner0S_smul_right]
+    rw [DifferentialGeometry.Tensor0SBundle.inner0S_sub_right, inner0S_add_right,
+      DifferentialGeometry.Tensor0SBundle.inner0S_smul_right]
     have hsum :
         inner0S (I := I) (G.metric t) x (p + q) (T t x)
             (∑ e : Idx,

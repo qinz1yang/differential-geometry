@@ -501,7 +501,7 @@ theorem riemannSec_metric_skew
     have hle : (2 : WithTop ℕ∞) ≤ ∞ := by
       have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h1
+      exact h1
     exact (hf_smooth x).of_le hle
   have hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     (I.isInteriorPoint_iff (x := x)).mp BoundarylessManifold.isInteriorPoint

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.MovingSlope
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.Families.DiniComparison
+import DifferentialGeometry.Analysis.Calculus.DiniComparison
 
 noncomputable section
 

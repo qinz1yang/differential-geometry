@@ -77,9 +77,9 @@ theorem exists_quarterLink_sphere {G : (ℝ × ℝ) × ℝ → (ℝ × ℝ) × �
       (β : Fin 4 → ℝ → (ℝ × ℝ) × ℝ) (c : (ℝ × ℝ) × ℝ) (uP uN : (Fin 3 → ℝ) → (ℝ × ℝ) × ℝ)
       (ρ : ℝ),
       K.faces.Finite ∧ ({0} : Finset ((ℝ × ℝ) × ℝ)) ∈ K.faces ∧ K.space ∈ 𝓝 0 ∧
-      IsPLHomeomorphOn uP (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn uP (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         ((SimplicialComplex.geometricLink K {0}).space ∩ {x | 0 ≤ x.2}) ∧
-      IsPLHomeomorphOn uN (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn uN (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         ((SimplicialComplex.geometricLink K {0}).space ∩ {x | x.2 ≤ 0}) ∧
       uP '' stdSimplexBoundary 2 =
         (SimplicialComplex.geometricLink K {0}).space ∩ {x | x.2 = 0} ∧

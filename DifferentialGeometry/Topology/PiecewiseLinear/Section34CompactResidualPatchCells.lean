@@ -42,7 +42,7 @@ theorem Section34CompactCutFrame.exists_residualPatch_boundary
     (h7 : ∀ w : Section34CompactVertexIndex K K', ¬ Section34Incident w.1 t.1 →
       R ∩ section34CompactVertexBallImage src f₁ w = ∅)
     {w : Section34CompactVertexIndex K K'} (hw : Section34Incident w.1 t.1) :
-    ∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    ∃ q : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (R ∩ section34CompactVertexBallImage src f₁ w) ∧
       q '' stdSimplexBoundary 2 =
         (⋃ (a : Section34CompactArcIndex K K')

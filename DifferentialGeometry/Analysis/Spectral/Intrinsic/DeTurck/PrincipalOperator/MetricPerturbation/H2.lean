@@ -4,6 +4,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.SymmetricRai
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq)
 
 noncomputable section
 

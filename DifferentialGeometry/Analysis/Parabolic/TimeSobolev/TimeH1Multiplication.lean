@@ -65,7 +65,7 @@ private theorem memLp_clm_apply_of_bound_right
     {C : ℝ} (hA : MemLp A 2 μ) (hu : AEStronglyMeasurable u μ)
     (hb : ∀ᵐ t ∂μ, ‖u t‖ ≤ C) : MemLp (fun t => A t (u t)) 2 μ := by
   refine MemLp.of_le_mul (c := C) hA
-    ((ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hu hA.1) ?_
+    ((ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hu hA.aestronglyMeasurable) ?_
   filter_upwards [hb] with t ht
   exact ((A t).le_opNorm _).trans (by
     rw [mul_comm]
@@ -78,7 +78,7 @@ private theorem memLp_clm_apply_of_bound_left
     {C : ℝ} (hA : AEStronglyMeasurable A μ) (hu : MemLp u 2 μ)
     (hb : ∀ᵐ t ∂μ, ‖A t‖ ≤ C) : MemLp (fun t => A t (u t)) 2 μ := by
   refine MemLp.of_le_mul (c := C) hu
-    ((ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hu.1 hA) ?_
+    ((ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂ hu.aestronglyMeasurable hA) ?_
   filter_upwards [hb] with t ht
   exact ((A t).le_opNorm _).trans
     (mul_le_mul_of_nonneg_right ht (norm_nonneg _))

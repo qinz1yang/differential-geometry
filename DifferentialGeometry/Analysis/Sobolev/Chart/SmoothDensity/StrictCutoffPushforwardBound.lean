@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.CrossChartBounds.CrossChartBo
 import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.StrictCutoff
 import DifferentialGeometry.Analysis.Sobolev.Tools.StrictStrongSupport
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 
 
 noncomputable section

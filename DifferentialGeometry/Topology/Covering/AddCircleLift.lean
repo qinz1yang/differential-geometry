@@ -58,7 +58,7 @@ theorem exists_contDiffOn_addCircle_lift_of_periodic {s : Set ℝ} (hs : Convex 
   let g : ℝ × ℝ → ℝ := fun q => if hq : q ∈ U then Y ⟨q, hq⟩ else 0
   have hg_apply : ∀ q (hq : q ∈ U), g q = Y ⟨q, hq⟩ := by
     intro q hq
-    simp only [g, dif_pos hq]
+    simp only [g, dite_eq_left hq]
   have hg_lift : ∀ q ∈ U, (g q : AddCircle (1 : ℝ)) = f q := by
     intro q hq
     rw [hg_apply q hq]
@@ -104,11 +104,11 @@ theorem exists_contDiffOn_addCircle_lift_of_periodic {s : Set ℝ} (hs : Convex 
         continuousOn_iff_continuous_domRestrict.mp hψ_cont
       refine (Continuous.subtype_mk h1 fun x => hψ_mem x.1 x.2).congr fun x => ?_
       change (⟨g x.1 - φ x.1, hψ_mem x.1 x.2⟩ : AddSubgroup.zmultiples (1 : ℝ)) = Ψ x.1
-      simp only [Ψ, dif_pos x.2]
+      simp only [Ψ, dite_eq_left x.2]
     have hq_t : q ∈ t := ⟨hq, Metric.mem_ball_self hrpos⟩
     have hval : ∀ p (hp : p ∈ t), (Ψ p).val = g p - φ p := by
       intro p hp
-      simp only [Ψ, dif_pos hp]
+      simp only [Ψ, dite_eq_left hp]
     have hconst : ∀ p ∈ t, g p - φ p = g q - φ q := by
       intro p hp
       have hc := congrArg Subtype.val (IsPreconnected.constant ht_pre hΨcont hq_t hp)
@@ -136,7 +136,7 @@ theorem exists_contDiffOn_addCircle_lift_of_periodic {s : Set ℝ} (hs : Convex 
     refine (Continuous.subtype_mk hψd_cont fun x => hψd_mem x.1 x.2).congr fun x => ?_
     change (⟨g (x.1.1 + 1, x.1.2) - g x.1, hψd_mem x.1 x.2⟩ :
       AddSubgroup.zmultiples (1 : ℝ)) = Ψd x.1
-    simp only [Ψd, dif_pos x.2]
+    simp only [Ψd, dite_eq_left x.2]
   obtain ⟨d, hd⟩ := AddSubgroup.mem_zmultiples_iff.mp (hψd_mem hUne.some hUne.some_mem)
   have hd' : g (hUne.some.1 + 1, hUne.some.2) - g hUne.some = (d : ℝ) := by
     rw [← hd, zsmul_one]
@@ -144,7 +144,7 @@ theorem exists_contDiffOn_addCircle_lift_of_periodic {s : Set ℝ} (hs : Convex 
   intro q hq
   have hval : ∀ p (hp : p ∈ U), (Ψd p).val = g (p.1 + 1, p.2) - g p := by
     intro p hp
-    simp only [Ψd, dif_pos hp]
+    simp only [Ψd, dite_eq_left hp]
   have hc := congrArg Subtype.val (IsPreconnected.constant hUpre hΨd_cont hUne.some_mem hq)
   rw [hval hUne.some hUne.some_mem, hval q hq] at hc
   linarith

@@ -336,7 +336,7 @@ theorem exists_local_second_weak_time_derivative_of_metric_divergence_equation
       (fun _ _ => Ft) (fun m hm => by omega) hFt
   exact ⟨Q 0 (fun i => Fin.elim0 i), Rt 0 (fun i => Fin.elim0 i), hQ, hRt⟩
 
-theorem exists_local_weak_partial_trees_of_all_orders_of_second_time_derivative_of_metric_divergence_equation
+theorem exists_local_weak_partial_trees_all_orders_of_metric_divergence_second_time_derivative
     {D : RealTimeInterval} {g : ℝ → SmoothRiemannianMetric I_hs M}
     (hG : MetricFamilySmoothOn (I := I_hs) (M := M) D g)
     {a b : ℝ} (hab : a < b) (hreg : Icc a b ⊆ D.regular)

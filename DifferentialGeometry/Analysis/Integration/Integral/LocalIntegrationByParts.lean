@@ -101,7 +101,7 @@ theorem integral_fderiv_fderiv_mul_eq_of_locallyLipschitzOn_fderiv
     apply (contDiffOn_succ_iff_fderiv_of_isOpen (n := 0) hΩ).mpr
     exact ⟨hu, by norm_num, contDiffOn_zero.mpr hdu.continuousOn⟩
   have hw : LocallyLipschitzOn Ω (fun x => fderiv ℝ u x w) :=
-    ((ContinuousLinearMap.apply ℝ ℝ w).lipschitz.locallyLipschitz.locallyLipschitzOn).comp
+    ((ContinuousLinearMap.apply ℝ ℝ w).lipschitzWith.locallyLipschitz.locallyLipschitzOn).comp
       hdu (Set.mapsTo_univ _ _)
   have hd : (fun x => lineDeriv ℝ (fun y => fderiv ℝ u y w) x v) =ᵐ[μ.restrict Ω]
       (fun x => fderiv ℝ (fderiv ℝ u) x v w) := by

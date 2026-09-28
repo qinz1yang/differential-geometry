@@ -185,13 +185,13 @@ lemma exists_iter_deriv_bound_of_smooth_compactSupport
     intro i
     by_cases hi : i ≤ k
     · simp only [M_seq]
-      rw [dif_pos hi]
+      rw [dite_eq_left hi]
       exact (h_each i hi).choose_spec.1
-    · simp [M_seq, dif_neg hi]
+    · simp [M_seq, dite_eq_right hi]
   have hM_spec : ∀ i, i ≤ k → ∀ y, ‖iteratedFDeriv ℝ i η y‖ ≤ M_seq i := by
     intro i hi y
     simp only [M_seq]
-    rw [dif_pos hi]
+    rw [dite_eq_left hi]
     exact (h_each i hi).choose_spec.2 y
   let Mη : ℝ := (Finset.range (k + 1)).sup'
     ⟨0, Finset.mem_range.mpr (Nat.zero_lt_succ _)⟩ M_seq
@@ -544,7 +544,7 @@ private lemma continuousMultilinearMap_norm_le_sum_basis
     rw [abs_mul]
     have h_prod_le : |∏ i : Fin n, m i (β i)| ≤ ∏ i : Fin n, ‖m i‖ := by
       rw [Finset.abs_prod]
-      refine Finset.prod_le_prod ?_ ?_
+      refine Finset.prod_le_prod₀ ?_ ?_
       · intro i _; exact abs_nonneg _
       · intro i _; exact euclidean_coord_le_norm (d := d) (m i) (β i)
     exact mul_le_mul_of_nonneg_right h_prod_le (abs_nonneg _)
@@ -689,7 +689,9 @@ private lemma eLpNorm_iteratedFDeriv_le_sum_iterClassicalPartial
       eLpNorm (fun y => ‖iteratedFDeriv ℝ n f y‖) p (volume.restrict Ω) ≤
       eLpNorm (fun y => ∑ β : Fin n → Fin d,
         |iterClassicalPartial (d := d) n β f y|) p (volume.restrict Ω) := by
-    refine eLpNorm_mono_ae ?_
+    refine eLpNorm_mono_ae
+      (hf_smooth.continuous_iteratedFDeriv (m := n)
+        (by exact_mod_cast le_top)).norm.aestronglyMeasurable ?_
     refine Filter.Eventually.of_forall ?_
     intro y
     rw [Real.norm_eq_abs, abs_of_nonneg (norm_nonneg _),
@@ -720,7 +722,7 @@ private lemma eLpNorm_iteratedFDeriv_le_sum_iterClassicalPartial
       (μ := volume.restrict Ω) (p := p)
       (s := (Finset.univ : Finset (Fin n → Fin d)))
       (f := fun β y => |iterClassicalPartial (d := d) n β f y|)
-      (fun β _ => h_strong_meas β) hp
+      hp
     have h_eq : (fun y => ∑ β : Fin n → Fin d,
         |iterClassicalPartial (d := d) n β f y|) =
         ((Finset.univ : Finset (Fin n → Fin d)).sum
@@ -730,7 +732,7 @@ private lemma eLpNorm_iteratedFDeriv_le_sum_iterClassicalPartial
     exact hsum
   refine h_triangle.trans ?_
   refine Finset.sum_le_sum (fun β _ => ?_)
-  refine eLpNorm_mono_ae ?_
+  refine eLpNorm_mono_ae (h_strong_meas β) ?_
   refine Filter.Eventually.of_forall ?_
   intro y
   rw [Real.norm_eq_abs, abs_abs]
@@ -842,17 +844,25 @@ theorem eLpNorm_comp_toFun_le_const
   set q := p.toReal with hq_def
   have hq_pos : 0 < q := ENNReal.toReal_pos hp_zero hp_top
   have hjLB_pos : 0 < Φ.jacobianLowerBound := Φ.jacobian_lower_bound_pos
+  by_cases hf : AEStronglyMeasurable f (volume.restrict Ω')
+  swap
+  · rw [eLpNorm_of_not_aestronglyMeasurable hf,
+      ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr
+        (Real.rpow_pos_of_pos (one_div_pos.mpr hjLB_pos) _)))]
+    exact le_top
+  have hcomp : AEStronglyMeasurable (fun x => f (Φ.toFun x)) (volume.restrict Ω) :=
+    hf.comp_quasiMeasurePreserving Φ.toFun_quasiMeasurePreserving
   have h_lint :=
     lintegral_rpow_enorm_comp_le (d := d) (p := p) hΩ Φ f
   have h_LHS_pow_eq :
       ∫⁻ x, ‖f (Φ.toFun x)‖ₑ ^ q ∂(volume.restrict Ω) =
         eLpNorm (fun x => f (Φ.toFun x)) p (volume.restrict Ω) ^ q := by
-    rw [eLpNorm_eq_eLpNorm' hp_zero hp_top, hq_def]
+    rw [eLpNorm_eq_eLpNorm' hp_zero hp_top hcomp, hq_def]
     exact lintegral_rpow_enorm_eq_rpow_eLpNorm' hq_pos
   have h_RHS_pow_eq :
       ∫⁻ y, ‖f y‖ₑ ^ q ∂(volume.restrict Ω') =
         eLpNorm f p (volume.restrict Ω') ^ q := by
-    rw [eLpNorm_eq_eLpNorm' hp_zero hp_top, hq_def]
+    rw [eLpNorm_eq_eLpNorm' hp_zero hp_top hf, hq_def]
     exact lintegral_rpow_enorm_eq_rpow_eLpNorm' hq_pos
   rw [h_LHS_pow_eq, h_RHS_pow_eq] at h_lint
   set A : ℝ≥0∞ := eLpNorm (fun x => f (Φ.toFun x)) p (volume.restrict Ω)
@@ -1063,7 +1073,9 @@ private lemma eLpNorm_iterWeakPartial_comp_le
         eLpNorm (fun x => Const *
           ∑ n ∈ Finset.range (k + 1), ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) p
           (volume.restrict Ω) := by
-    refine eLpNorm_mono_ae ?_
+    refine eLpNorm_mono_ae
+      (contDiff_iterClassicalPartial (d := d) j β
+        (Φ.comp_toFun_contDiff hψ_smooth)).continuous.aestronglyMeasurable ?_
     refine Filter.Eventually.of_forall ?_
     intro x
     have h_rhs_nonneg : 0 ≤ Const *
@@ -1084,23 +1096,13 @@ private lemma eLpNorm_iterWeakPartial_comp_le
     Real.enorm_of_nonneg hConst_nonneg
   rw [hConst_norm]
   refine mul_le_mul_of_nonneg_left ?_ (zero_le)
-  have h_strong_meas : ∀ n ∈ Finset.range (k + 1),
-      AEStronglyMeasurable
-        (fun x => ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) (volume.restrict Ω) := by
-    intro n _
-    have h_inner :
-        Continuous (fun x => ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) := by
-      have hψ_iter : Continuous (fun y => iteratedFDeriv ℝ n ψ y) :=
-        hψ_smooth.continuous_iteratedFDeriv (m := n) (by exact_mod_cast le_top)
-      exact (hψ_iter.comp Φ.continuous_toFun).norm
-    exact h_inner.aestronglyMeasurable
   have h_pointwise_eq : (fun x => ∑ n ∈ Finset.range (k + 1),
         ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) =
       ∑ n ∈ Finset.range (k + 1),
         (fun x => ‖iteratedFDeriv ℝ n ψ (Φ.toFun x)‖) := by
     funext x; rw [Finset.sum_apply]
   rw [h_pointwise_eq]
-  exact eLpNorm_sum_le h_strong_meas hp_one
+  exact eLpNorm_sum_le hp_one
 
 omit [NeZero d] in
 private lemma eLpNorm_iteratedFDeriv_comp_le
@@ -1503,14 +1505,7 @@ theorem MemWkp.comp_smoothDiffeoBounded
     refine h_chg.trans ?_
     refine mul_le_mul_of_nonneg_left ?_ (zero_le)
     exact h_eLp_le_wkp.trans (hψ_close n)
-  have h_uΦ_aestrong :
-      AEStronglyMeasurable (fun x => u (Φ.toFun x)) (volume.restrict Ω) := by
-    have hu_aestrong : AEStronglyMeasurable u (volume.restrict Ω') :=
-      hu.memLp.aestronglyMeasurable
-    exact hu_aestrong.comp_quasiMeasurePreserving Φ.toFun_quasiMeasurePreserving
   have h_v_eq_uΦ : v =ᵐ[volume.restrict Ω] (fun x => u (Φ.toFun x)) := by
-    have h_v_aestrong : AEStronglyMeasurable v (volume.restrict Ω) :=
-      hv_mem.memLp.aestronglyMeasurable
     have hp_zero_ne : p ≠ 0 := by
       intro hpz; rw [hpz] at hp_one
       exact absurd hp_one (by norm_num)
@@ -1523,18 +1518,14 @@ theorem MemWkp.comp_smoothDiffeoBounded
                 ((1 / Φ.jacobianLowerBound) ^ (1 / p.toReal)) *
               ENNReal.ofReal ((1 : ℝ) / (n + 1 : ℝ)) := by
         intro n
-        have h_ψn_comp_aestrong : AEStronglyMeasurable
-            (fun x => ψ n (Φ.toFun x)) (volume.restrict Ω) :=
-          (hψ_smooth n).continuous.aestronglyMeasurable.comp_quasiMeasurePreserving
-            Φ.toFun_quasiMeasurePreserving
         have h_decomp :
             (fun x => v x - u (Φ.toFun x)) = (fun x =>
               (v x - ψ n (Φ.toFun x)) + (ψ n (Φ.toFun x) - u (Φ.toFun x))) := by
           funext x; ring
         rw [h_decomp]
         have h_tri := eLpNorm_add_le (μ := volume.restrict Ω)
-          (h_v_aestrong.sub h_ψn_comp_aestrong)
-          (h_ψn_comp_aestrong.sub h_uΦ_aestrong) hp_one
+          (f := fun x => v x - ψ n (Φ.toFun x))
+          (g := fun x => ψ n (Φ.toFun x) - u (Φ.toFun x)) hp_one
         refine h_tri.trans ?_
         have h_first :
             eLpNorm (fun x => v x - ψ n (Φ.toFun x)) p (volume.restrict Ω) ≤
@@ -1632,8 +1623,7 @@ theorem MemWkp.comp_smoothDiffeoBounded
       exact ge_of_tendsto h_tendsto_sum (Filter.Eventually.of_forall h_bound)
     have h_diff_zero : (fun x => v x - u (Φ.toFun x)) =ᵐ[volume.restrict Ω]
         0 := by
-      have h_aestrong := h_v_aestrong.sub h_uΦ_aestrong
-      exact (eLpNorm_eq_zero_iff h_aestrong hp_zero_ne).mp h_zero
+      exact (eLpNorm_eq_zero_iff hp_zero_ne).mp h_zero
     filter_upwards [h_diff_zero] with x hx
     have : v x - u (Φ.toFun x) = 0 := hx
     linarith

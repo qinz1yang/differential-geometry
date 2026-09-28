@@ -55,7 +55,7 @@ theorem deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc
       segment_eq_Icc (by linarith : a / 2 ≤ a)]
     intro s hs
     exact ⟨by linarith [hs.1], hs.2⟩
-  have hnonpos := hmax.localize.hasFDerivWithinAt_nonpos
+  have hnonpos := hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos
     hderiv.hasFDerivAt.hasFDerivWithinAt hdir
   have heval : (ContinuousLinearMap.toSpanSingleton Real d) (-(a / 2)) =
       -(a / 2) * d := by
@@ -212,15 +212,14 @@ theorem closed_convex_heat_reaction_mem_of_supporting_normal
         (Real.exp (-K * q₀.1) * (-K)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -K * s) (-K) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-K)
-      convert (Real.hasDerivAt_exp (-K * q₀.1)).comp q₀.1 hinner using 1 <;> rfl
+      convert (Real.hasDerivAt_exp (-K * q₀.1)).comp q₀.1 hinner using 1
+      rfl
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-K * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (innerScalarization u ν q₀.1) q₀.2 +
               inner Real (reaction q₀.1 q₀.2 (u q₀.1 q₀.2)) ν) -
           K * Real.exp (-K * q₀.1) * inner Real (u q₀.1 q₀.2 - p) ν) q₀.1 := by
       convert hexpDeriv.mul (hscalarEq.sub_const (inner Real p ν)) using 1
-      · rfl
-      · rfl
       · funext s
         dsimp [z, innerScalarization]
         rw [inner_sub_left]
@@ -348,7 +347,7 @@ theorem closed_convex_heat_reaction_mem_of_tangent
       change inner Real ν q ≤ inner Real ν p
       rw [← sub_nonpos]
       simpa [inner_sub_right] using hnormal q hq
-    exact hmax.localize.hasFDerivWithinAt_nonpos
+    exact hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos
       (innerSL Real ν).hasFDerivAt.hasFDerivWithinAt (htangent t ht x p hp)
   · exact hinit
 
@@ -684,15 +683,14 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-KK)
-      convert (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner using 1 <;> rfl
+      convert (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner using 1
+      rfl
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-KK * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 +
               inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν') -
           KK * Real.exp (-KK * q₀.1) * inner ℝ (u' q₀.1 q₀.2 - p) ν') q₀.1 := by
       convert hexpDeriv.mul (hscalarEq.sub_const (inner ℝ p ν')) using 1
-      · rfl
-      · rfl
       · funext s
         dsimp [z, innerScalarization]
         rw [inner_sub_left]
@@ -765,7 +763,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
           have hp : WithLp.toLp 2 (WithLp.ofLp p) = p := WithLp.toLp_ofLp 2 p
           dsimp [reac']
           exact hp ▸ htan
-        exact hmax.localize.hasFDerivWithinAt_nonpos
+        exact hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos
           (innerSL ℝ ν').hasFDerivAt.hasFDerivWithinAt hcone
       · have hp2eq : (WithLp.ofLp p).2 = T := le_antisymm hpK'.1.2 (le_of_not_gt hp2lt)
         have hν2 : (WithLp.ofLp ν').2 = q₀.1 - T := by
@@ -809,7 +807,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent
           exact h
         have htanf := htangent_fiber T ⟨hT, le_rfl⟩ q₀.2 (WithLp.ofLp p).1 hp1
         have hreacf : inner ℝ (WithLp.ofLp ν').1 (reaction T q₀.2 (WithLp.ofLp p).1) ≤ 0 :=
-          hmaxf.localize.hasFDerivWithinAt_nonpos
+          hmaxf.isLocalMaxOn.hasFDerivWithinAt_nonpos
             (innerSL ℝ (WithLp.ofLp ν').1).hasFDerivAt.hasFDerivWithinAt htanf
         have hmain : inner ℝ ν' (reac' q₀.1 q₀.2 p) ≤ 0 := by
           dsimp [reac']
@@ -1151,15 +1149,14 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
         (Real.exp (-KK * q₀.1) * (-KK)) q₀.1 := by
       have hinner : HasDerivAt (fun s : Real ↦ -KK * s) (-KK) q₀.1 := by
         simpa using (hasDerivAt_id q₀.1).const_mul (-KK)
-      convert (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner using 1 <;> rfl
+      convert (Real.hasDerivAt_exp (-KK * q₀.1)).comp q₀.1 hinner using 1
+      rfl
     have hzderiv : HasDerivAt (fun s ↦ z s q₀.2)
         (Real.exp (-KK * q₀.1) *
             (laplacianAt (I := I) G q₀.1 (innerScalarization u' ν' q₀.1) q₀.2 +
               inner ℝ (reac' q₀.1 q₀.2 (u' q₀.1 q₀.2)) ν') -
           KK * Real.exp (-KK * q₀.1) * inner ℝ (u' q₀.1 q₀.2 - p) ν') q₀.1 := by
       convert hexpDeriv.mul (hscalarEq.sub_const (inner ℝ p ν')) using 1
-      · rfl
-      · rfl
       · funext s
         dsimp [z, innerScalarization]
         rw [inner_sub_left]
@@ -1232,7 +1229,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
           have hp : WithLp.toLp 2 (WithLp.ofLp p) = p := WithLp.toLp_ofLp 2 p
           dsimp [reac']
           exact hp ▸ htan
-        exact hmax.localize.hasFDerivWithinAt_nonpos
+        exact hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos
           (innerSL ℝ ν').hasFDerivAt.hasFDerivWithinAt hcone
       · have hp2eq : (WithLp.ofLp p).2 = T := le_antisymm hpK'.1.2 (le_of_not_gt hp2lt)
         have hν2 : (WithLp.ofLp ν').2 = q₀.1 - T := by
@@ -1276,7 +1273,7 @@ theorem closed_convex_heat_reaction_mem_of_timeDep_tangent_lipschitzOnBalls
           exact h
         have htanf := htangent_fiber T ⟨hT, le_rfl⟩ q₀.2 (WithLp.ofLp p).1 hp1
         have hreacf : inner ℝ (WithLp.ofLp ν').1 (reaction T q₀.2 (WithLp.ofLp p).1) ≤ 0 :=
-          hmaxf.localize.hasFDerivWithinAt_nonpos
+          hmaxf.isLocalMaxOn.hasFDerivWithinAt_nonpos
             (innerSL ℝ (WithLp.ofLp ν').1).hasFDerivAt.hasFDerivWithinAt htanf
         have hmain : inner ℝ ν' (reac' q₀.1 q₀.2 p) ≤ 0 := by
           dsimp [reac']
@@ -1462,11 +1459,7 @@ theorem timeDepHalfspace_heat_reaction_mem_of_tangent
           (laplacianAt (I := I) G t (innerScalarization u y t) x +
               inner ℝ (reaction t x (u t x)) y -
             (derivWithin s (Set.Icc 0 T) t / ‖ν‖ ^ 2) * inner ℝ ν y) t := by
-        convert hA.sub hB using 1
-        · rfl
-        · rfl
-        · funext r
-          rfl
+        exact hA.sub hB
       have hfun : (fun r : Real => innerScalarization v y r x) =
           fun r : Real => innerScalarization u y r x - c r * inner ℝ ν y := by
         funext r

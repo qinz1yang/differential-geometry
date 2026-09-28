@@ -45,19 +45,22 @@ theorem not_affineIndependent_insert_of_eq_sum [DecidableEq E] {s : Finset E} {v
   intro hind
   have hne : ∀ u ∈ s, u ≠ v := fun u hu h => hv (h ▸ hu)
   have hδ : ∑ u ∈ insert v s, (if u = v then (1 : ℝ) else 0) = 1 := by
-    rw [Finset.sum_insert hv, if_pos rfl, Finset.sum_eq_zero fun u hu => if_neg (hne u hu),
+    rw [Finset.sum_insert hv, ite_eq_left rfl,
+      Finset.sum_eq_zero fun u hu => ite_eq_right (hne u hu),
       add_zero]
   have hw'₁ : ∑ u ∈ insert v s, (if u = v then (0 : ℝ) else w u) = 1 := by
-    rw [Finset.sum_insert hv, if_pos rfl, zero_add, ← hw]
-    exact Finset.sum_congr rfl fun u hu => if_neg (hne u hu)
+    rw [Finset.sum_insert hv, ite_eq_left rfl, zero_add, ← hw]
+    exact Finset.sum_congr rfl fun u hu => ite_eq_right (hne u hu)
   have hcomb : ∑ u ∈ insert v s, (if u = v then (1 : ℝ) else 0) • φ u =
       ∑ u ∈ insert v s, (if u = v then (0 : ℝ) else w u) • φ u := by
-    rw [Finset.sum_insert hv, Finset.sum_insert hv, if_pos rfl, if_pos rfl, one_smul, zero_smul,
-      zero_add, Finset.sum_eq_zero fun u hu => by rw [if_neg (hne u hu), zero_smul], add_zero, h]
-    exact Finset.sum_congr rfl fun u hu => by rw [if_neg (hne u hu)]
+    rw [Finset.sum_insert hv, Finset.sum_insert hv, ite_eq_left rfl, ite_eq_left rfl,
+      one_smul, zero_smul,
+      zero_add, Finset.sum_eq_zero fun u hu => by rw [ite_eq_right (hne u hu), zero_smul],
+      add_zero, h]
+    exact Finset.sum_congr rfl fun u hu => by rw [ite_eq_right (hne u hu)]
   have hvv := eq_on_of_sum_smul_eq_of_affineIndependent hind hδ hw'₁ hcomb v
     (Finset.mem_insert_self v s)
-  rw [if_pos rfl, if_pos rfl] at hvv
+  rw [ite_eq_left rfl, ite_eq_left rfl] at hvv
   exact one_ne_zero hvv
 
 theorem eq_of_simplicialMap_eq_of_affineIndependent [DecidableEq E]

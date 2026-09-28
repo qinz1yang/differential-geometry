@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.exists_disk_boundary_collar
     {D U : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hU : U ∈ 𝓝ˢ[D] (r '' stdSimplexBoundary 2)) :
     ∃ (A B : Set E) (ρ : E × ℝ → E),
       IsPolyhedron A ∧ IsPLBall 2 B ∧ A ⊆ U ∧ D = B ∪ A ∧
@@ -28,7 +28,7 @@ theorem IsPLHomeomorphOn.exists_disk_boundary_collar
         (D \ (r '' stdSimplexBoundary 2)) := by
   classical
   let _ : DecidableEq (Fin 3 → ℝ) := Classical.decEq _
-  let Δ : Set (Fin 3 → ℝ) := stdSimplex ℝ (Fin 3)
+  let Δ : Set (Fin 3 → ℝ) := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   let C : Set (Fin 3 → ℝ) := stdSimplexBoundary 2
   let J := r '' C
   have hΔ : IsPLBall 2 Δ := isPLBall_stdSimplex 2

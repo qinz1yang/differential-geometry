@@ -171,10 +171,10 @@ theorem exists_isPLHomeomorphOn_cellInterface_marked
   obtain ⟨q, hq, hqa⟩ := hD.exists_stdSimplex_homeomorph_apex hSd
   have hPball : IsPLBall 2 P := by simpa using hP.isPLBall ⟨a, ha⟩
   obtain ⟨r, hr, hra⟩ := hPball.exists_isPLHomeomorphOn_stdSimplex_stdCenter_eq ha
-  refine ⟨q ∘ Function.invFunOn r (stdSimplex ℝ (Fin 3)), ?_, ?_⟩
+  refine ⟨q ∘ Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)), ?_, ?_⟩
   · rw [derivedNeighborhoodCell_inter_eq_coneSet K hs ht hcomp]
     exact hr.symm.trans hq
-  · change q (Function.invFunOn r (stdSimplex ℝ (Fin 3)) a) = _
+  · change q (Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) a) = _
     rw [← hra, hr.bijOn.invOn_invFunOn.1
       (openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)), hqa]
 

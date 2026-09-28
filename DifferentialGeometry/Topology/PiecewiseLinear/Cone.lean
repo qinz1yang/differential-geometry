@@ -91,7 +91,7 @@ theorem radialRatio_pos (p : E) (S : Set E) (w : E) : 0 < radialRatio p S w := b
 theorem radialProj_mem {p : E} {S : Set E} {w : E}
     (h : ∃ t : ℝ, 0 < t ∧ p + t • (w - p) ∈ S) : radialProj p S w ∈ S := by
   unfold radialProj radialRatio
-  rw [dif_pos h]
+  rw [dite_eq_left h]
   exact (Classical.choose_spec h).2
 
 theorem radialProj_sub (p : E) (S : Set E) (w : E) :
@@ -198,7 +198,7 @@ theorem not_radial_lt_one_geometricLink {x y : E}
       (Finset.mem_insert_self p σ) hpσ
   let w : E → ℝ := fun v => if v = p then 1 - t else t * weights σ x v
   have hw : ∀ v ∈ σ, w v = t * weights σ x v := fun v hv => by
-    simp only [w, if_neg (ne_of_mem_of_not_mem hv hpσ)]
+    simp only [w, ite_eq_right (ne_of_mem_of_not_mem hv hpσ)]
   have hw₁ : ∑ v ∈ insert p σ, w v = 1 := by
     rw [Finset.sum_insert hpσ, Finset.sum_congr rfl hw, ← Finset.mul_sum, sum_weights hxσ]
     simp [w]
@@ -209,7 +209,7 @@ theorem not_radial_lt_one_geometricLink {x y : E}
     simp [w]
   have := weights_eq (K.indep hins) hyins hw₁ hwy p (Finset.mem_insert_self p σ)
   rw [hzero] at this
-  simp only [w, if_true] at this
+  simp only [w, ite_true] at this
   linarith
 
 theorem isRadiallyInjective_geometricLink :

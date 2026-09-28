@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.SimplicialComplex.OrderedSimplicialSet
 import DifferentialGeometry.Topology.Simplex.VertexMap
 import Mathlib.Analysis.Convex.SimplicialComplex.Basic
@@ -6,6 +7,7 @@ import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 set_option autoImplicit false
 noncomputable section
 open CategoryTheory Simplicial Opposite
+open Convexity.StdSimplex
 namespace DifferentialGeometry.Topology.SimplicialComplex
 universe u
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
@@ -14,7 +16,7 @@ variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E] [LinearOrder E]
 
 theorem geometricVertexSum_mem_space {n : SimplexCategoryᵒᵖ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj n)
-    (x : stdSimplex ℝ (Fin (n.unop.len + 1))) :
+    (x : coordinateSet ℝ (Fin (n.unop.len + 1))) :
     DifferentialGeometry.Simplex.vertexMap s.val.obj x ∈ K.space := by
   have hs : Finset.univ.image s.val.obj ∈ K.faces := s.prop
   have hh : DifferentialGeometry.Simplex.vertexMap s.val.obj x ∈
@@ -26,7 +28,7 @@ theorem geometricVertexSum_mem_space {n : SimplexCategoryᵒᵖ}
 
 def geometricSimplexMap {n : SimplexCategoryᵒᵖ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj n) :
-    C(stdSimplex ℝ (Fin (n.unop.len + 1)), K.space) where
+    C(coordinateSet ℝ (Fin (n.unop.len + 1)), K.space) where
   toFun x := ⟨DifferentialGeometry.Simplex.vertexMap s.val.obj x, geometricVertexSum_mem_space K s x⟩
   continuous_toFun := (DifferentialGeometry.Simplex.vertexMap s.val.obj).continuous.subtype_mk _
 
@@ -34,27 +36,34 @@ def geometricSimplexMap {n : SimplexCategoryᵒᵖ}
 @[simp]
 theorem geometricSimplexMap_apply {n : SimplexCategoryᵒᵖ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj n)
-    (x : stdSimplex ℝ (Fin (n.unop.len + 1))) :
+    (x : coordinateSet ℝ (Fin (n.unop.len + 1))) :
     (geometricSimplexMap K s x : E) = ∑ i, x.val i • s.val.obj i := rfl
 
 
 theorem geometricSimplexMap_naturality {m n : SimplexCategoryᵒᵖ} (f : m ⟶ n)
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj m)
-    (x : stdSimplex ℝ (Fin (n.unop.len + 1))) :
+    (x : coordinateSet ℝ (Fin (n.unop.len + 1))) :
     geometricSimplexMap K ((orderedSimplicialSet K.toPreAbstractSimplicialComplex).map f s) x =
-      geometricSimplexMap K s (stdSimplex.map f.unop.toOrderHom x) := by
+      geometricSimplexMap K s (coordinateMap f.unop.toOrderHom x) := by
   apply Subtype.ext
   exact (DifferentialGeometry.Simplex.vertexMap_map s.val.obj f.unop.toOrderHom x).symm
 
 def geometricSingularMap : orderedSimplicialSet K.toPreAbstractSimplicialComplex ⟶
     TopCat.toSSet.obj (TopCat.of K.space) where
-  app n := ↾fun s => (TopCat.toSSetObjEquiv (TopCat.of K.space) n).symm (geometricSimplexMap K s)
+  app n := ↾fun s => (TopCat.toSSetObjEquiv (TopCat.of K.space) n).symm
+    ((geometricSimplexMap K s).comp
+      (toContinuousMap (coordinateHomeomorph ℝ (Fin (n.unop.len + 1)))))
   naturality {m n} f := by
     ext s
     apply (TopCat.toSSetObjEquiv (TopCat.of K.space) n).injective
     apply ContinuousMap.ext
     intro x
-    exact geometricSimplexMap_naturality K f s x
+    change geometricSimplexMap K
+      ((orderedSimplicialSet K.toPreAbstractSimplicialComplex).map f s)
+        (coordinateEquiv ℝ _ x) =
+      geometricSimplexMap K s (coordinateEquiv ℝ _ (map f.unop.toOrderHom x))
+    rw [coordinateEquiv_map]
+    exact geometricSimplexMap_naturality K f s (coordinateEquiv ℝ _ x)
 
 def geometricRealizationMap :
     SSet.toTop.obj (orderedSimplicialSet K.toPreAbstractSimplicialComplex) ⟶ TopCat.of K.space :=
@@ -67,14 +76,22 @@ theorem geometricRealizationMap_unit :
 
 theorem geometricRealizationMap_unit_apply {n : SimplexCategoryᵒᵖ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).obj n)
-    (t : stdSimplex ℝ (Fin (n.unop.len + 1))) :
+    (t : coordinateSet ℝ (Fin (n.unop.len + 1))) :
     geometricRealizationMap K
       ((TopCat.toSSetObjEquiv _ n)
-        ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app n s) t) =
+        ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app n s)
+          ((coordinateHomeomorph ℝ _).symm t)) =
       geometricSimplexMap K s t := by
   have hh := congrArg (fun f : orderedSimplicialSet K.toPreAbstractSimplicialComplex ⟶
       TopCat.toSSet.obj (TopCat.of K.space) => f.app n s) (geometricRealizationMap_unit K)
-  exact congrArg (fun f => TopCat.toSSetObjEquiv (TopCat.of K.space) n f t) hh
+  have h := congrArg (fun f => TopCat.toSSetObjEquiv (TopCat.of K.space) n f
+    ((coordinateHomeomorph ℝ _).symm t)) hh
+  change geometricRealizationMap K
+    ((TopCat.toSSetObjEquiv _ n)
+      ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app n s)
+        ((coordinateHomeomorph ℝ _).symm t)) = geometricSimplexMap K s
+    ((coordinateHomeomorph ℝ _) ((coordinateHomeomorph ℝ _).symm t)) at h
+  simpa only [Homeomorph.apply_symm_apply] using h
 
 theorem geometricSimplexMap_injective {n : ℕ}
     (s : (orderedSimplicialSet K.toPreAbstractSimplicialComplex).nonDegenerate n) :
@@ -104,7 +121,8 @@ theorem geometricRealizationMap_surjective : Function.Surjective (geometricReali
     exact hx
   obtain ⟨t, ht⟩ := hx'
   refine ⟨(TopCat.toSSetObjEquiv _ (op ⦋n⦌))
-    ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app _ a.val) t, ?_⟩
+    ((sSetTopAdj.unit.app (orderedSimplicialSet K.toPreAbstractSimplicialComplex)).app _ a.val)
+      ((coordinateHomeomorph ℝ _).symm t), ?_⟩
   exact (geometricRealizationMap_unit_apply K a.val t).trans (Subtype.ext ht)
 
 end DifferentialGeometry.Topology.SimplicialComplex

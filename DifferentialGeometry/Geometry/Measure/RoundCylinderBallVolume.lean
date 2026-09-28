@@ -129,7 +129,8 @@ private theorem roundCylinder_ball_volume_mul_cube_le
   let _ : IsContinuousRiemannianBundle (EuclideanSpace ℝ (Fin 2) × ℝ)
       (TangentSpace I : M → Type _) := ⟨⟨g.inner, g.contMDiff.continuous, fun _ _ _ => rfl⟩⟩
   let _ : PseudoEMetricSpace M := PseudoEMetricSpace.ofRiemannianMetric I M
-  let _ : IsRiemannianManifold I M := ⟨fun _ _ => rfl⟩
+  let _ : EMetricSpace M := EMetricSpace.ofT0PseudoEMetricSpace M
+  let _ : IsRiemannianManifold I M := inferInstance
   have hmetric : g = (scaleMetric 2 (by norm_num) (Geometry.roundMetric (E := E) (n := 2))).prod
       (euclideanMetric (E := ℝ)) := by
     apply SmoothRiemannianMetric.ext_inner
@@ -143,9 +144,13 @@ private theorem roundCylinder_ball_volume_mul_cube_le
     rw [hmetric]
     exact (RiemannianMetricComplete.of_compact _).prod euclideanMetric_complete
   have hcompact : IsCompact (Metric.closedEBall p (ENNReal.ofReal (1 : ℝ))) := by
-    change IsCompact {x : M | riemannianEDist I x p ≤ ENNReal.ofReal 1}
-    have hh := hcomplete.closedEBall_isCompact p 1
-    simpa only [riemannianEDistOf, riemannianEDist_comm] using hh
+    have hset : Metric.closedEBall p (ENNReal.ofReal (1 : ℝ)) =
+        {x : M | riemannianEDistOf (I := I) g p x ≤ ENNReal.ofReal 1} := by
+      ext x
+      rw [Metric.mem_closedEBall', IsRiemannianManifold.out (I := I) p x]
+      rfl
+    rw [hset]
+    exact hcomplete.closedEBall_isCompact p 1
   have hEnorm : IsMetricNorm (I := I) g :=
     fun x v => tensor0SBundle_enorm_eq_riemannianBundle_enorm (I := I) g x v
   have hbg := bishop_gromov_of_isCompact_closedEBall g hEnorm p

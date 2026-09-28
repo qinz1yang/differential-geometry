@@ -3,10 +3,9 @@ import Mathlib.Analysis.Matrix.Spectrum
 import Mathlib.Analysis.Matrix.PosDef
 import Mathlib.LinearAlgebra.Matrix.PosDef
 
-namespace DifferentialGeometry.CheegerGromovCompactness
+namespace Matrix
 
 open scoped BigOperators
-open Matrix
 
 variable {n : Type*} [Fintype n] [DecidableEq n]
 
@@ -421,7 +420,7 @@ theorem quad_ub_of_near_id {ι : Type*} [Fintype ι] [DecidableEq ι]
     rw [Finset.abs_prod]
     calc (∏ a, |Q (I0 a) (J0 a)|)
         ≤ ∏ _a : Fin s, (1 + ε) :=
-          Finset.prod_le_prod (fun a _ => abs_nonneg _) (fun a _ => hQabs _ _)
+          Finset.prod_le_prod₀ (fun a _ => abs_nonneg _) (fun a _ => hQabs _ _)
       _ = (1 + ε) ^ s := by simp
   calc (∑ I0 : Fin s → ι, ∑ J0 : Fin s → ι,
         (∏ a, Q (I0 a) (J0 a)) * (c I0 * c J0))
@@ -460,4 +459,4 @@ theorem quad_ub_of_near_id {ι : Type*} [Fintype ι] [DecidableEq ι]
 
 end KroneckerPow
 
-end DifferentialGeometry.CheegerGromovCompactness
+end Matrix

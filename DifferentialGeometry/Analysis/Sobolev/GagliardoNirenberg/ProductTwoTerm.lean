@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -386,10 +389,10 @@ theorem exists_integrated_iteratedCovGrad_diagonalProductGrid_twoTerm_le
           (I := I) (M := M) g s₂ m hm1).choose_spec.2 T ΛT hΛT hTsup l hlpos hml
         have hCSf_m : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le
             (I := I) (M := M) g s₁ m hm1).choose = CSf m := by
-          simp only [hCSf, dif_pos hm1]
+          simp only [hCSf, dite_eq_left hm1]
         have hCTf_m : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le
             (I := I) (M := M) g s₂ m hm1).choose = CTf m := by
-          simp only [hCTf, dif_pos hm1]
+          simp only [hCTf, dite_eq_left hm1]
         rw [hCSf_m] at hSe
         rw [hCTf_m] at hTe
         rw [mul_div_assoc 2 (i : ℝ) m, ← hwi] at hSe
@@ -1019,10 +1022,10 @@ theorem exists_integrated_iteratedCovGrad_antiDiagGrid_topTerm_scaled_le
         (I := I) (M := M) g s₂ k hk1).choose_spec.2 T ΛT hΛT hTsup l hl_pos hml
       have hCS_m : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le
           (I := I) (M := M) g s₁ k hk1).choose = CS := by
-        simp only [hCSdef, dif_pos hk1]
+        simp only [hCSdef, dite_eq_left hk1]
       have hCT_m : (exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le
           (I := I) (M := M) g s₂ k hk1).choose = CT := by
-        simp only [hCTdef, dif_pos hk1]
+        simp only [hCTdef, dite_eq_left hk1]
       rw [hCS_m] at hSe
       rw [hCT_m] at hTe
       rw [mul_div_assoc 2 (i : ℝ) k, ← hwi] at hSe

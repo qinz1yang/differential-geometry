@@ -96,7 +96,7 @@ private theorem weakGrad_real_le
     intro i
     funext x
     unfold chosenWeakPartialOrZero
-    simp only [dif_pos hW1]
+    simp only [dite_eq_left hW1]
     rfl
   have hmono : G ≤ eLpNorm (fun x => ∑ i : Fin d, ‖hw.weakGrad x i‖) p
       (volume.restrict Ω) := by

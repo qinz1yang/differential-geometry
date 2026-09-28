@@ -6,6 +6,8 @@ noncomputable section
 namespace DifferentialGeometry.Topology
 
 open CategoryTheory AlgebraicTopology ContinuousMap
+open Convexity.StdSimplex (coordinateSet coordinateMap continuous_coordinateMap
+  coordinateEquiv coordinateHomeomorph coordinateEquiv_map coordinateMap_comp_apply)
 open scoped Simplicial
 
 universe u
@@ -15,19 +17,21 @@ variable (x : X) [Subsingleton (HomotopyGroup (Fin 2) X x)]
 
 theorem exists_fourSimplex_cone_terminal_faces
     (τ : integralSingularSimplex 4 X) :
-    ∃ g : C(stdSimplex ℝ (Fin 5), X),
-      (integralSingularSimplexEquiv 4 X τ).Homotopic g ∧
+    ∃ g : C(coordinateSet ℝ (Fin 5), X),
+      ((integralSingularSimplexEquiv 4 X τ).comp
+        ⟨(coordinateHomeomorph ℝ (Fin 5)).symm,
+          (coordinateHomeomorph ℝ (Fin 5)).symm.continuous⟩).Homotopic g ∧
       (∀ p : Simplex.skeleton (Fin 5) 2, g p.val = x) ∧
       ∀ i : Fin 5,
         ∃ hgi : ∀ p ∈ Simplex.boundary (Fin 4),
-          (g.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩) p = x,
+          (g.comp ⟨coordinateMap i.succAbove, continuous_coordinateMap i.succAbove⟩) p = x,
           (integralSingularConeThreeSphereMap x ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)).Homotopic
             (Simplex.tetrahedronSphereMap
-              (g.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩) x hgi) := by
+              (g.comp ⟨coordinateMap i.succAbove, continuous_coordinateMap i.succAbove⟩) x hgi) := by
   classical
   obtain ⟨F, hF0, hFs, hFskel⟩ := exists_fourSimplex_cone_triangle_homotopy x τ
-  have htrace (i : Fin 5) (j : Fin 4) (t : unitInterval) (p : stdSimplex ℝ (Fin 3)) :
-      F (t, stdSimplex.map i.succAbove (stdSimplex.map j.succAbove p)) =
+  have htrace (i : Fin 5) (j : Fin 4) (t : unitInterval) (p : coordinateSet ℝ (Fin 3)) :
+      F (t, coordinateMap i.succAbove (coordinateMap j.succAbove p)) =
         integralSingularConeTriangleHomotopy x
           ((TopCat.toSSet.obj (TopCat.of X)).δ j
             ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)) (t, p) := by
@@ -43,52 +47,64 @@ theorem exists_fourSimplex_cone_terminal_faces
     rw [← he] at h
     have hsimplex : (integralSingularSimplexEquiv 2 X).symm
         ((integralSingularSimplexEquiv 4 X τ).comp
-          ⟨stdSimplex.map f, stdSimplex.continuous_map f⟩) =
+          ⟨Convexity.StdSimplex.map f, Convexity.StdSimplex.continuous_map ℝ f⟩) =
         (TopCat.toSSet.obj (TopCat.of X)).δ j
           ((TopCat.toSSet.obj (TopCat.of X)).δ i τ) := by
       apply (integralSingularSimplexEquiv 2 X).injective
       rw [Equiv.apply_symm_apply]
       ext q
-      change integralSingularSimplexEquiv 4 X τ (stdSimplex.map f q) =
+      change integralSingularSimplexEquiv 4 X τ (Convexity.StdSimplex.map f q) =
         (TopCat.of X).toSSetObjEquiv _
           ((TopCat.toSSet.obj (TopCat.of X)).δ j
             ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)) q
       rw [TopCat.toSSetObjEquiv_δ_apply, TopCat.toSSetObjEquiv_δ_apply]
-      change integralSingularSimplexEquiv 4 X τ (stdSimplex.map f q) =
+      change integralSingularSimplexEquiv 4 X τ (Convexity.StdSimplex.map f q) =
         integralSingularSimplexEquiv 4 X τ
-          (stdSimplex.map i.succAbove (stdSimplex.map j.succAbove q))
-      rw [stdSimplex.map_comp_apply]
+          (Convexity.StdSimplex.map i.succAbove (Convexity.StdSimplex.map j.succAbove q))
+      congr 1
+      apply (coordinateEquiv ℝ (Fin 5)).injective
+      rw [coordinateEquiv_map, coordinateEquiv_map, coordinateEquiv_map,
+        coordinateMap_comp_apply]
     rw [hsimplex] at h
-    simpa only [stdSimplex.map_comp_apply] using h
-  let g : C(stdSimplex ℝ (Fin 5), X) := ⟨fun p => F (1, p), by fun_prop⟩
-  let H : (integralSingularSimplexEquiv 4 X τ).Homotopy g :=
+    simpa only [coordinateMap_comp_apply] using h
+  let g : C(coordinateSet ℝ (Fin 5), X) := ⟨fun p => F (1, p), by fun_prop⟩
+  let H : ((integralSingularSimplexEquiv 4 X τ).comp
+      ⟨(coordinateHomeomorph ℝ (Fin 5)).symm,
+        (coordinateHomeomorph ℝ (Fin 5)).symm.continuous⟩).Homotopy g :=
     { toContinuousMap := F
       map_zero_left := hF0
       map_one_left := fun _ => rfl }
   refine ⟨g, ⟨H⟩, hFskel, ?_⟩
   intro i
-  let gi : C(stdSimplex ℝ (Fin 4), X) :=
-    g.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩
+  let gi : C(coordinateSet ℝ (Fin 4), X) :=
+    g.comp ⟨coordinateMap i.succAbove, continuous_coordinateMap i.succAbove⟩
   have hgi : ∀ p ∈ Simplex.boundary (Fin 4), gi p = x := by
     intro p hp
     obtain ⟨j, hj⟩ := hp
     let q := Simplex.faceDelete j ⟨p, hj⟩
-    have hq : stdSimplex.map j.succAbove q = p :=
+    have hq : coordinateMap j.succAbove q = p :=
       congrArg Subtype.val (Simplex.faceInsert_faceDelete j ⟨p, hj⟩)
-    change F (1, stdSimplex.map i.succAbove p) = x
+    change F (1, coordinateMap i.succAbove p) = x
     rw [← hq, htrace, integralSingularConeTriangleHomotopy_one]
-  let Hi : (integralSingularSimplexEquiv 3 X
-      ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)).Homotopy gi :=
-    { toContinuousMap := ⟨fun z => F (z.1, stdSimplex.map i.succAbove z.2),
+  let Hi : ((integralSingularSimplexEquiv 3 X
+      ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)).comp
+        ⟨(coordinateHomeomorph ℝ (Fin 4)).symm,
+          (coordinateHomeomorph ℝ (Fin 4)).symm.continuous⟩).Homotopy gi :=
+    { toContinuousMap := ⟨fun z => F (z.1, coordinateMap i.succAbove z.2),
         F.continuous.comp (continuous_fst.prodMk
-          ((stdSimplex.continuous_map i.succAbove).comp continuous_snd))⟩
+          ((continuous_coordinateMap i.succAbove).comp continuous_snd))⟩
       map_zero_left := by
         intro p
-        change F (0, stdSimplex.map i.succAbove p) = _
+        change F (0, coordinateMap i.succAbove p) = _
         rw [hF0]
-        change integralSingularSimplexEquiv 4 X τ (stdSimplex.map i.succAbove p) =
-          (TopCat.of X).toSSetObjEquiv _ ((TopCat.toSSet.obj (TopCat.of X)).δ i τ) p
-        rw [TopCat.toSSetObjEquiv_δ_apply]
+        obtain ⟨p, rfl⟩ := (coordinateHomeomorph ℝ (Fin 4)).surjective p
+        change integralSingularSimplexEquiv 4 X τ
+            ((coordinateEquiv ℝ (Fin 5)).symm
+              (coordinateMap i.succAbove (coordinateEquiv ℝ (Fin 4) p))) =
+          (TopCat.of X).toSSetObjEquiv _ ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)
+            ((coordinateHomeomorph ℝ (Fin 4)).symm (coordinateHomeomorph ℝ (Fin 4) p))
+        rw [← coordinateEquiv_map, Equiv.symm_apply_apply, Homeomorph.symm_apply_apply,
+          TopCat.toSSetObjEquiv_δ_apply]
         rfl
       map_one_left := fun _ => rfl }
   exact ⟨hgi, integralSingularConeThreeSphereMap_homotopic_tetrahedronSphereMap x

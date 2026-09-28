@@ -176,12 +176,12 @@ theorem boundaryFrame_normal (a : T.Index) (z : S2)
     change mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel false)
       (normalFirstModelBasis z b (boundaryLevel false) 0) = _
     rw [normalFirstModelBasis_zero]
-    simp only [Bool.false_eq_true, if_false, one_smul]
+    simp only [Bool.false_eq_true, ite_false, one_smul]
     rfl
   | true =>
-    erw [boundaryFrame, if_pos rfl, Basis.unitsSMul_apply, Function.update_self, Units.neg_smul,
+    erw [boundaryFrame, ite_eq_left rfl, Basis.unitsSMul_apply, Function.update_self, Units.neg_smul,
       one_smul, tubeFrame_apply, normalFirstModelBasis_zero]
-    simp only [if_true, neg_smul, one_smul]
+    simp only [ite_true, neg_smul, one_smul]
     change -(mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel true)
       (0, (DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc (boundaryLevel true)).symm 1)) = _
     erw [show ((0 : TangentSpace (𝓡 2) z),
@@ -234,7 +234,7 @@ theorem boundaryFrame_zero (a : T.Index) (z : S2)
   rw [T.boundaryFrame_normal]
   have ht : (boundaryLevel side).val < 2 := by cases side <;> norm_num [boundaryLevel]
   rw [DifferentialGeometry.Manifold.Interval.tangentCoordinateIcc_symm_apply_of_lt _ ht]
-  cases side <;> simp only [outwardVector, Bool.false_eq_true, if_false, if_true, one_smul, neg_smul]
+  cases side <;> simp only [outwardVector, Bool.false_eq_true, ite_false, ite_true, one_smul, neg_smul]
   · exact congrArg (mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel false))
       (Prod.ext rfl (one_smul ℝ (EuclideanSpace.single 0 (1 : ℝ))))
   · exact congrArg (mfderiv CI (𝓡 3) (T.tube a) (z, boundaryLevel true))
@@ -262,7 +262,7 @@ theorem boundaryFrame_succ (a : T.Index) (z : S2)
     rw [normalFirstModelBasis_succ]
     rfl
   | true =>
-    erw [boundaryFrame, if_pos rfl, Basis.unitsSMul_apply,
+    erw [boundaryFrame, ite_eq_left rfl, Basis.unitsSMul_apply,
       Function.update_of_ne (Fin.succ_ne_zero i), Pi.one_apply, one_smul,
       tubeFrame_apply, normalFirstModelBasis_succ]
     rfl

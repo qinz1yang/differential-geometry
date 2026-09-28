@@ -38,7 +38,7 @@ private theorem twoFormMetricData_inner_pullback_musical
   have horth : ∀ i j, g.inner x (b' i) (b' j) = if i = j then 1 else 0 := by
     intro i j
     exact (hmetric (b i) (b j)).trans (b.inner_eq_ite i j)
-  rw [twoFormMetricData_inner, Tensor0SBundle.inner0S_identity_eq_sum g x 2 b'
+  rw [twoFormMetricData_inner, DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum g x 2 b'
     (metricInverseInBasis_identity_of_orthonormal g b' horth)]
   have hs := exteriorPower.sum_mul_eq_factorial_mul_inner 2 b
     (exteriorPower.musicalEquiv 2 u) (exteriorPower.musicalEquiv 2 v)

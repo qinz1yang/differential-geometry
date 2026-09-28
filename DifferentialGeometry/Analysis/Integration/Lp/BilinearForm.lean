@@ -85,8 +85,8 @@ theorem exists_bilinear_integral_weight_mul_lp_family
   · intro u v
     have hf (i j) : AEStronglyMeasurable
         (fun t => ∫ z, D i u z * c t i j z * D j v z ∂μ) τ := by
-      exact (((Lp.memLp (D i u)).1.comp_snd.mul (hc i j)).mul
-        (Lp.memLp (D j v)).1.comp_snd).integral_prod_right'
+      exact (((Lp.aestronglyMeasurable (D i u)).comp_snd.mul (hc i j)).mul
+        (Lp.aestronglyMeasurable (D j v)).comp_snd).integral_prod_right'
     simpa only [hF] using Finset.aestronglyMeasurable_fun_sum Finset.univ
       (fun i _ => Finset.aestronglyMeasurable_fun_sum Finset.univ (fun j _ => hf i j))
   · filter_upwards [hC] with t ht
@@ -125,8 +125,8 @@ theorem exists_bilinear_integral_weight_mul_family
   · intro u v
     have hf (i j) : AEStronglyMeasurable
         (fun t => ∫ z, D i u z * c t i j z * D j v z ∂μ) τ := by
-      exact (((Lp.memLp (D i u)).1.comp_snd.mul (hc i j)).mul
-        (Lp.memLp (D j v)).1.comp_snd).integral_prod_right'
+      exact (((Lp.aestronglyMeasurable (D i u)).comp_snd.mul (hc i j)).mul
+        (Lp.aestronglyMeasurable (D j v)).comp_snd).integral_prod_right'
     simpa only [hFraw] using Finset.aestronglyMeasurable_fun_sum Finset.univ
       (fun i _ => Finset.aestronglyMeasurable_fun_sum Finset.univ (fun j _ => hf i j))
   · filter_upwards [hcb] with t ht
@@ -167,7 +167,7 @@ theorem exists_lp_flux_of_bilinear_integral
   have hMp (j) : MemLp (fun p => ∑ i, c i j p * U i p) 2 (μ.prod ν) := by
     apply memLp_finsetSum
     intro i _
-    exact (Lp.memLp (U i)).mul (r := 2) (hc i j)
+    exact (hc i j).fun_mul (r := 2) (Lp.memLp (U i))
   let M : ι → Lp ℝ 2 (μ.prod ν) := fun j => (hMp j).toLp (fun p => ∑ i, c i j p * U i p)
   have hMs (j) : ∀ᵐ t ∂μ, (fun x => M j (t, x)) =ᵐ[ν]
       fun x => ∑ i, c i j (t, x) * D i (v t) x := by

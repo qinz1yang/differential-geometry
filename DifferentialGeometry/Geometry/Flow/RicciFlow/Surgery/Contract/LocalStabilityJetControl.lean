@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityRepair
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 
@@ -17,13 +16,6 @@ open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
-
-theorem not_isCommonLocalRealizationOnAdmissibleStrips_of_vanishingStability :
-    ¬ (IsLocalStabilityVanishingInput ∧ isBufferedControlInput.{u} ∧
-        isReducedLengthRealizationInput.{u} ∧ isJacobianInput.{u} ∧
-        (∃ d : OldData, isOldTubeInput.{u} d) ∧ isEnlargementInput.{u} ∧
-        isRoundDegreeInput.{u}) :=
-  fun h => not_isLocalStabilityVanishingInput_of_roundSphereShrink h.1
 
 def localStabilityPointwiseVanishing
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)

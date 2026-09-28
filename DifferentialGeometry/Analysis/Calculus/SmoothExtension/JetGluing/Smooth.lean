@@ -41,33 +41,33 @@ theorem contDiff_if_le_of_jet_match
     simpa only [hpL_def, hpR_def, ftaylorSeriesWithin] using hLR
   have hEqL : ∀ m : ℕ, Set.EqOn (fun y => p y m) (fun y => pL y m) (Set.Iic (0:ℝ)) := by
     intro m y hy
-    simp only [hp_def, if_pos (Set.mem_Iic.mp hy)]
+    simp only [hp_def, ite_eq_left (Set.mem_Iic.mp hy)]
   have hEqR : ∀ m : ℕ, Set.EqOn (fun y => p y m) (fun y => pR y m) (Set.Ici (0:ℝ)) := by
     intro m y hy
     rcases eq_or_lt_of_le (Set.mem_Ici.mp hy) with hy0 | hy0
     · subst hy0
-      simp only [hp_def, if_pos (le_refl (0:ℝ)), hjetF m]
-    · simp only [hp_def, if_neg (not_le.mpr hy0)]
+      simp only [hp_def, ite_eq_left (le_refl (0:ℝ)), hjetF m]
+    · simp only [hp_def, ite_eq_right (not_le.mpr hy0)]
   have hzero : ∀ x : ℝ, (p x 0).curry0 = f x := by
     intro x
     by_cases hx : x ≤ 0
     · have hval : (pL x 0).curry0 = fL x := hTL.zero_eq x (Set.mem_Iic.mpr hx)
-      simp only [hp_def, hf_def, if_pos hx, hval]
+      simp only [hp_def, hf_def, ite_eq_left hx, hval]
     · have hx' : (0:ℝ) ≤ x := le_of_lt (not_le.mp hx)
       have hval : (pR x 0).curry0 = fR x := hTR.zero_eq x (Set.mem_Ici.mpr hx')
-      simp only [hp_def, hf_def, if_neg hx, hval]
+      simp only [hp_def, hf_def, ite_eq_right hx, hval]
   have hm_lt : ∀ m : ℕ, (m : WithTop ℕ∞) < ∞ := fun m => by
     exact_mod_cast (Nat.cast_lt.mpr m.lt_succ_self).trans_le le_top
   have hderiv : ∀ m : ℕ, ∀ x : ℝ,
       HasFDerivWithinAt (fun y => p y m) (p x m.succ).curryLeft Set.univ x := by
     intro m x
     have hpL_succ : ∀ y : ℝ, y ≤ 0 → p y m.succ = pL y m.succ := by
-      intro y hy; simp only [hp_def, if_pos hy]
+      intro y hy; simp only [hp_def, ite_eq_left hy]
     have hpR_succ : ∀ y : ℝ, (0:ℝ) ≤ y → p y m.succ = pR y m.succ := by
       intro y hy
       rcases eq_or_lt_of_le hy with hy0 | hy0
-      · subst hy0; simp only [hp_def, if_pos (le_refl (0:ℝ)), hjetF]
-      · simp only [hp_def, if_neg (not_le.mpr hy0)]
+      · subst hy0; simp only [hp_def, ite_eq_left (le_refl (0:ℝ)), hjetF]
+      · simp only [hp_def, ite_eq_right (not_le.mpr hy0)]
     rcases lt_trichotomy x 0 with hx | hx | hx
     · have hxle : x ≤ 0 := le_of_lt hx
       have hdL : HasFDerivWithinAt (fun y => pL y m) (pL x m.succ).curryLeft (Set.Iic 0) x :=

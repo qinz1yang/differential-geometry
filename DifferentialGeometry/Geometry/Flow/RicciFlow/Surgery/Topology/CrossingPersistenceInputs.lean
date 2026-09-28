@@ -13,7 +13,7 @@ universe u
 
 theorem exists_capWindow_persistence_inputs_eventually {P₀ : OrientedThreeStage.{u}}
     {g₀ : P₀.Metric} {Ctime : ℝ≥0} {D qcan t₀ s : ℕ → ℝ} {p₀ p : ℕ → CutoffParameters}
-    {δb ρb : ℕ → ℝ} {H : ℕ → RetainedCoreHistory P₀}
+    {δb ρb : ℕ → ℝ} {H : ℕ → RetainedCoreHistory.{u}}
     {records : ∀ n i, GeometricCutoffRecord (H n).toHistory i (p n)}
     {G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n)}
@@ -87,7 +87,7 @@ theorem exists_capWindow_persistence_inputs_eventually {P₀ : OrientedThreeStag
       _ ≤ a₀ * ((records n i).static b).neck.scale := mul_le_mul_of_nonneg_left hs ha₀.le
 
 theorem RetainedCoreHistory.CapWindowPoint.exists_standard_comparison_anchor
-    {P₀ : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {p : CutoffParameters}
+    {H : RetainedCoreHistory.{u}} {p : CutoffParameters}
     {records : ∀ i, GeometricCutoffRecord H.toHistory i p} {k : Fin (H.eventCount + 1)}
     {y : (H.stage k).Carrier} {t Dcap D θ Θ : ℝ} (hD : Dcap ≤ D) (hθ : θ ≤ Θ)
     (hy : H.CapWindowPoint records k y t Dcap θ) :

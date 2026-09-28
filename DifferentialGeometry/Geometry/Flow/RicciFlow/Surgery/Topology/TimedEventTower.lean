@@ -61,13 +61,11 @@ end RetainedCoreTimedEventChain
 
 namespace RetainedCoreHistory
 
-variable {P : OrientedThreeStage.{u}}
-
-private def attach (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+private def attach (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (h : H.time (Fin.last H.eventCount) < T) →
       (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : ∀ h, (S h).flow.base.metric (H.time (Fin.last H.eventCount)) =
-      H.initialMetric (Fin.last H.eventCount)) : RetainedCoreHistory P where
+      H.initialMetric (Fin.last H.eventCount)) : RetainedCoreHistory.{u} where
   horizon := T
   horizon_nonneg := H.horizon_nonneg.trans hT
   eventCount := H.eventCount
@@ -83,7 +81,7 @@ private def attach (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
   finalSlab := S
   final_initial := hS
 
-private theorem attach_isPrefixOf (H : RetainedCoreHistory P) (T : ℝ) (hT : H.horizon ≤ T)
+private theorem attach_isPrefixOf (H : RetainedCoreHistory.{u}) (T : ℝ) (hT : H.horizon ≤ T)
     (S : (h : H.time (Fin.last H.eventCount) < T) →
       (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)
     (hS : ∀ h, (S h).flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -175,8 +173,8 @@ end RetainedCoreHistory
 variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 
 private structure Layer (C : RetainedCoreTimedEventChain P g) (m : ℕ)
-    (Hprev : RetainedCoreHistory P) where
-  history : RetainedCoreHistory P
+    (Hprev : RetainedCoreHistory.{u}) where
+  history : RetainedCoreHistory.{u}
   eventCount_eq : history.eventCount = m + 1
   horizon_eq : history.horizon = (m : ℝ) + 1
   time_last_eq : history.time (Fin.last history.eventCount) = C.time (m + 1)
@@ -193,7 +191,7 @@ private structure Layer (C : RetainedCoreTimedEventChain P g) (m : ℕ)
   initial : InitialIdentification P g history.toHistory
   initial_heq : HEq initial.map (InitialIdentification.atZero P g).map
 
-private def layerCore (C : RetainedCoreTimedEventChain P g) (m : ℕ) {H : RetainedCoreHistory P}
+private def layerCore (C : RetainedCoreTimedEventChain P g) (m : ℕ) {H : RetainedCoreHistory.{u}}
     (A : InitialIdentification P g H.toHistory)
     (heventCount : H.eventCount = m) (hhorizon : H.horizon = (m : ℝ))
     (hstage : H.stage (Fin.last H.eventCount) = C.stage m)
@@ -310,7 +308,7 @@ private def layerZero (C : RetainedCoreTimedEventChain P g) :
     (RetainedCoreHistory.appendEventCompatible_of_time_eq_horizon _ _ rfl)
 
 private def layerStep (C : RetainedCoreTimedEventChain P g) (m : ℕ)
-    {Hprev : RetainedCoreHistory P} (L : Layer C m Hprev) : Layer C (m + 1) L.history :=
+    {Hprev : RetainedCoreHistory.{u}} (L : Layer C m Hprev) : Layer C (m + 1) L.history :=
   layerCore C (m + 1) L.initial L.eventCount_eq
     (by rw [L.horizon_eq]; push_cast; ring) L.stage_last_eq L.time_last_eq
     L.metric_last_heq L.initial_heq
@@ -320,7 +318,7 @@ private def layerStep (C : RetainedCoreTimedEventChain P g) (m : ℕ)
         L.time_last_eq.symm rfl (C.event (m + 1)) τ).trans (L.cap_metric_heq h τ).symm))
 
 private def layerSigma (C : RetainedCoreTimedEventChain P g) :
-    (m : ℕ) → Sigma fun H : RetainedCoreHistory P => Layer C m H
+    (m : ℕ) → Sigma fun H : RetainedCoreHistory.{u} => Layer C m H
   | 0 => ⟨RetainedCoreHistory.atZero P g, layerZero C⟩
   | m + 1 => ⟨(layerSigma C m).2.history, layerStep C m (layerSigma C m).2⟩
 
@@ -430,17 +428,17 @@ theorem exists_surgeryTime_zero_gt_le_strict :
   refine ⟨fun n => if n = 0 then 0 else (n : ℝ) - 1 / 2, rfl, ?_, ?_, ?_⟩
   · intro n
     dsimp only
-    rw [if_neg (Nat.succ_ne_zero n)]
+    rw [ite_eq_right (Nat.succ_ne_zero n)]
     push_cast
     linarith
   · intro n
     dsimp only
-    rw [if_neg (Nat.succ_ne_zero n)]
+    rw [ite_eq_right (Nat.succ_ne_zero n)]
     push_cast
     norm_num
   · intro n
     dsimp only
-    rw [if_neg (Nat.succ_ne_zero n)]
+    rw [ite_eq_right (Nat.succ_ne_zero n)]
     push_cast
     linarith
 

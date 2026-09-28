@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.AbsoluteContinuity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.AbsoluteContinuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryParabolicBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.MasterFlowCompatibility
 
@@ -8,9 +8,9 @@ open DifferentialGeometry DifferentialGeometry.Geometry.Curvature DifferentialGe
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory
 universe u
-variable {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+variable (H : RetainedCoreHistory.{u})
 
-private theorem stageMetric_cast_eq (A : RetainedCoreHistory P) (i : Fin A.eventCount) (v : ℝ) :
+private theorem stageMetric_cast_eq (A : RetainedCoreHistory.{u}) (i : Fin A.eventCount) (v : ℝ) :
     A.toHistory.stageMetric i.castSucc v = (A.coreEvent i).toMetricCutCapEvent.incoming.flow.base.metric v := by
   simp only [ObservedHistory.stageMetric, Fin.lastCases_castSucc]
 
@@ -121,25 +121,24 @@ open scoped Manifold ContDiff BigOperators
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistory
 
 universe u
-variable {P : OrientedThreeStage.{u}}
 
-private theorem stageDomain_last_eq (A : RetainedCoreHistory P) :
+private theorem stageDomain_last_eq (A : RetainedCoreHistory.{u}) :
     A.toHistory.stageDomain (Fin.last A.eventCount) = Icc (A.time (Fin.last A.eventCount)) A.horizon := by
   simp only [ObservedHistory.stageDomain, Fin.lastCases_last]
 
-private theorem stageDomain_cast_eq (A : RetainedCoreHistory P) (i : Fin A.eventCount) :
+private theorem stageDomain_cast_eq (A : RetainedCoreHistory.{u}) (i : Fin A.eventCount) :
     A.toHistory.stageDomain i.castSucc = Ico (A.time i.castSucc) (A.time i.succ) := by
   simp only [ObservedHistory.stageDomain, Fin.lastCases_castSucc]
 
-private theorem stageEndTime_last_eq (A : RetainedCoreHistory P) :
+private theorem stageEndTime_last_eq (A : RetainedCoreHistory.{u}) :
     A.toHistory.stageEndTime (Fin.last A.eventCount) = A.horizon := by
   simp only [ObservedHistory.stageEndTime, Fin.lastCases_last]
 
-private theorem stageEndTime_cast_eq (A : RetainedCoreHistory P) (i : Fin A.eventCount) :
+private theorem stageEndTime_cast_eq (A : RetainedCoreHistory.{u}) (i : Fin A.eventCount) :
     A.toHistory.stageEndTime i.castSucc = A.time i.succ := by
   simp only [ObservedHistory.stageEndTime, Fin.lastCases_castSucc]
 
-variable {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s t u : ℝ}
+variable (H : RetainedCoreHistory.{u}) {s t u : ℝ}
   (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
   (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
   (ht : H.horizon < t) (htu : t ≤ u) (hus : u < s)

@@ -35,7 +35,7 @@ theorem starConvex_faceOpenStar : StarConvex ℝ (s.centroid ℝ id) (faceOpenSt
     ht (geometricFaceBarycenter K s hs) xx hbt hxt ha hb hab
   change vertexHeight K p ⟨a • s.centroid ℝ id + b • x, _⟩ =
     a * vertexHeight K p (geometricFaceBarycenter K s hs) + b * vertexHeight K p xx at hv
-  rw [vertexHeight_geometricFaceBarycenter, if_pos hp] at hv
+  rw [vertexHeight_geometricFaceBarycenter, ite_eq_left hp] at hv
   rw [hv]
   by_cases hb0 : b = 0
   · have ha1 : a = 1 := by simpa only [hb0, add_zero] using hab

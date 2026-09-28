@@ -127,12 +127,12 @@ theorem exists_diffeomorphIsotopy_apply_eq_of_mem_nhds [T2Space M] (x : M) :
     rw [(hJ 0 y).1, hD0]
     rw [DifferentialGeometry.Topology.Manifold.extendChartById]
     by_cases hy : y ∈ e.source
-    · rw [if_pos hy, Diffeomorph.coe_refl, id_eq, e.left_inv hy]
+    · rw [ite_eq_left hy, Diffeomorph.coe_refl, id_eq, e.left_inv hy]
       rfl
-    · rw [if_neg hy]
+    · rw [ite_eq_right hy]
       rfl
   have hJx : J 1 x = z := by
-    rw [(hJ 1 x).1, DifferentialGeometry.Topology.Manifold.extendChartById, if_pos hxsrc, hD1,
+    rw [(hJ 1 x).1, DifferentialGeometry.Topology.Manifold.extendChartById, ite_eq_left hxsrc, hD1,
       e.left_inv hzsrc]
   exact ⟨J, hJ0, hJc, hJx⟩
 

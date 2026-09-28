@@ -193,7 +193,8 @@ theorem laplacian_dist_le_of_ricci_nonneg
     have hden := ((tendsto_const_nhds (x := (1 : ℝ))).sub hs0).mul_const (dist p x)
     have h := (tendsto_const_nhds
       (x := ((Module.finrank ℝ E - 1 : ℕ) : ℝ))).div hden (by simpa using hr.ne')
-    convert h using 1 <;> first | rfl | simp only [sub_zero, one_mul]
+    convert h using 1
+    simp only [sub_zero, one_mul]
   exact ge_of_tendsto hlim (Eventually.of_forall fun n => hbound (s n) (hs n).1 (hs n).2)
 
 theorem intrinsic_ray_support_laplacian_ge

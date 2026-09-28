@@ -9,6 +9,9 @@ set_option backward.isDefEq.respectTransparency false
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric (inner_sharpFlat metricDiffAt raiseAt raiseAt_eq reLower
+  reLower_apply reLowerPair sharpFlat)
+
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection

@@ -43,7 +43,7 @@ private theorem exists_holderOnWith_clm_of_basis
   obtain ⟨K, hK⟩ := exists_holderOnWith_pi (f := fun x => e (f x))
     (fun i => by simpa only [he] using hf i)
   refine ⟨‖e.symm.toContinuousLinearMap‖₊ * K, ?_⟩
-  have hh := e.symm.lipschitz.holderWith.comp_holderOnWith hK
+  have hh := e.symm.lipschitzWith.holderWith.comp_holderOnWith hK
   intro x hx y hy
   simpa only [Function.comp_def, e.symm_apply_apply, one_mul, NNReal.coe_one,
     NNReal.rpow_one] using! hh x hx y hy

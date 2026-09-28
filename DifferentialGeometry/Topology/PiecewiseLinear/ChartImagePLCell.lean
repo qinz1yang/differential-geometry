@@ -42,7 +42,7 @@ theorem IsPLCellOn.exists_isPLHomeomorphOn_image_chart {M : Type*} [TopologicalS
     {c : OpenPartialHomeomorph M (EuclideanSpace ℝ (Fin 3))}
     (hc : c ∈ (plGroupoid 3).maximalAtlas M) (hSc : S ⊆ c.source) :
     ∃ q : (Fin (d + 1) → ℝ) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin (d + 1))) (c '' S) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) (c '' S) ∧
         c '' B = q '' stdSimplexBoundary d := by
   obtain ⟨P, r, u, hr, hu, rfl, rfl⟩ := hS
   have hP : IsPolyhedron P := IsPLBall.isPolyhedron ⟨r, hr⟩

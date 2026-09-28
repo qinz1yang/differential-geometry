@@ -26,7 +26,7 @@ theorem exists_scalar_bounds_at_distance_of_final_slab_window_of_le_coneAccuracy
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) :
     ∀ A : ℝ, 0 < A →
       ∃ Q Λ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧
-      ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+      ∀ (H : RetainedCoreHistory.{u})
         (hend : H.time (Fin.last H.eventCount) = H.horizon) {t : ℝ}
         (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) t)
         (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -53,12 +53,12 @@ theorem exists_scalar_bounds_at_distance_of_final_slab_window_of_le_coneAccuracy
     exists_scalar_bound_at_distance_of_final_slab_window_of_le_coneAccuracy hεle κ C1 C2 hκ
       Ctime Cgrad hphi A hA
   refine ⟨2 * Q₁, 2 * Q₁ * Λ₁, by linarith, by nlinarith, ?_⟩
-  intro P₀ H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
+  intro H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
   have hRy : 0 < S.flow.scalar t y :=
     (mul_pos (mul_pos (by linarith : (0 : ℝ) < 2 * Q₁) (by linarith : (0 : ℝ) < Λ₁))
       (by linarith : (0 : ℝ) < q)).trans hΛq
   have hΛle : Λ₁ ≤ 2 * Q₁ * Λ₁ := by nlinarith
-  have hup := hcone P₀ H hend S hS y q ρ hq1 (by nlinarith)
+  have hup := hcone H hend S hS y q ρ hq1 (by nlinarith)
     (hwin.trans (sub_le_sub_left (div_le_div_of_nonneg_right hΛle hRy.le) _)) hW hderiv hfinal
     hgrad hpinch hpinchF hnc (hΛle.trans hρ) z hz
   refine ⟨?_, hup.trans (by nlinarith)⟩
@@ -111,7 +111,7 @@ theorem exists_scalar_bounds_at_distance_of_final_slab_window_of_le_coneAccuracy
     rw [hw]
     refine hwy.trans_le (ENNReal.ofReal_le_ofReal ?_)
     exact div_le_div_of_nonneg_left hA.le (Real.sqrt_pos.mpr hc0) (Real.sqrt_le_sqrt hcle)
-  have hback := hcone P₀ H hend S hS w q ρ hq1 hqw hwinw hW hderiv hfinal hgrad hpinch hpinchF
+  have hback := hcone H hend S hS w q ρ hq1 hqw hwinw hW hderiv hfinal hgrad hpinch hpinchF
     hnc hΛw y hyw
   rw [hw, hcdef] at hback
   have : Q₁ * ((2 * Q₁)⁻¹ * S.flow.scalar t y) = S.flow.scalar t y / 2 := by
@@ -121,7 +121,7 @@ theorem exists_scalar_bounds_at_distance_of_final_slab_window_of_le_coneAccuracy
 theorem eventually_scalar_bounds_at_distance_extendAt_of_le_coneAccuracy
     {ε : ℝ} (hεle : ε ≤ coneAccuracy) {κ C1 C2 ρ qcan : ℝ} (hκ : 0 < κ) (hρ : 0 < ρ)
     {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi)
-    {P₀ : ℕ → OrientedThreeStage.{u}} (H Hext : ∀ n, RetainedCoreHistory (P₀ n))
+    (H Hext : ℕ → RetainedCoreHistory.{u})
     (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) {s τ : ℕ → ℝ}
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -183,7 +183,7 @@ theorem eventually_scalar_bounds_at_distance_extendAt_of_le_coneAccuracy
   have hR0 : 0 < R n := lt_of_le_of_lt (by positivity) hn1
   have hq1 : (1 : ℝ) ≤ max qcan 1 := le_max_right _ _
   have hy0' : ((G n).closedPrefix (τ n) (hat n) (hτs n)).flow.scalar (τ n) y0 = R n := hy0
-  exact hcone (P₀ n) (H n) (hend n) ((G n).closedPrefix (τ n) (hat n) (hτs n)) (hG n) y0
+  exact hcone (H n) (hend n) ((G n).closedPrefix (τ n) (hat n) (hτs n)) (hG n) y0
     (max qcan 1) ρ hq1 (by rw [hy0']; exact hn1)
     (by
       rw [hy0', le_sub_iff_add_le, ← le_sub_iff_add_le', div_le_iff₀ hR0]

@@ -2,6 +2,7 @@ import DifferentialGeometry.Topology.Manifold.BoundaryFrameOrientationSign
 import DifferentialGeometry.Topology.Manifold.RoundCylinderBoundaryOrientation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.OrientationSign
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.BoundaryNormal
+import DifferentialGeometry.Topology.Manifold.SphereDiffeomorphDegree
 
 set_option autoImplicit false
 noncomputable section

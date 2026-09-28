@@ -82,7 +82,7 @@ theorem exists_simplicialMap_lift_of_continuousMap
   let ψ : F → EuclideanSpace ℝ (Fin (Nat.card (coveringVertex K p))) := fun v =>
     if hv : v ∈ A.vertices then coveringVertexPoint K p (V ⟨v, hv⟩) else 0
   have hψv {v : F} (hv : v ∈ A.vertices) :
-      ψ v = coveringVertexPoint K p (V ⟨v, hv⟩) := by simp only [ψ, dif_pos hv]
+      ψ v = coveringVertexPoint K p (V ⟨v, hv⟩) := by simp only [ψ, dite_eq_left hv]
   have hbase : ∀ v ∈ A.vertices, coveringBaseVertex K p (ψ v) = φ v := by
     intro v hv
     rw [hψv hv, coveringBaseVertex_point, hV]

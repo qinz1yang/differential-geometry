@@ -71,7 +71,7 @@ theorem ricci_identity_oneForm
     have hle : (2 : WithTop ℕ∞) ≤ ∞ := by
       have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
         exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-      simpa using h1
+      exact h1
     exact (hf_smooth x).of_le hle
   have hx_int : extChartAt I x x ∈ interior ((extChartAt I x).target : Set E) :=
     (I.isInteriorPoint_iff (x := x)).mp BoundarylessManifold.isInteriorPoint
@@ -485,7 +485,7 @@ theorem inner_cov_gradFun_symm [I.Boundaryless]
   exact abstractHessian_symm (I := I) g (hf.contMDiffAt.of_le (by
     have h1 : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ((⊤ : ℕ∞) : WithTop ℕ∞) := by
       exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-    simpa using h1)) (X x) (Y x)
+    exact h1)) (X x) (Y x)
 
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in

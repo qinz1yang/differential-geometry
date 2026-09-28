@@ -77,7 +77,7 @@ private lemma lcFrameSelfCoord_of_mem
           ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b)) m := by
   classical
   unfold leviCivitaFrameSelfCoord
-  rw [dif_pos hb]
+  rw [dite_eq_left hb]
 
 omit [I.Boundaryless] in
 omit [BoundarylessManifold I M] in

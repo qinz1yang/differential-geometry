@@ -75,6 +75,6 @@ theorem exists_contMDiff_extension_on_Icc {h : M × ℝ → F} {ρ : ℝ} (hρ :
   refine ⟨g, g.contMDiff, ?_⟩
   intro q hq
   have h := hg q
-  simpa only [T, if_pos hq.2, mem_singleton_iff] using h
+  simpa only [T, ite_eq_left hq.2, mem_singleton_iff] using h
 
 end DifferentialGeometry.Topology.Manifold

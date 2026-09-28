@@ -1,6 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.Spectrum
 import Mathlib.LinearAlgebra.QuadraticForm.Signature
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 
 set_option autoImplicit false
 noncomputable section

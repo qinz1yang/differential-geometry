@@ -39,7 +39,7 @@ theorem continuous_prismCornerInv : Continuous prismCornerInv := by
   · exact hr.snd
 
 def prismCornerSource : TopologicalSpace.Opens
-    (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) where
+    (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) where
   carrier := {p | 0 < p.val.1 1 ∧ 0 < p.val.1 2 ∧ p.val.2 < 1}
   is_open' :=
     (isOpen_lt continuous_const ((continuous_apply 1).comp
@@ -58,11 +58,11 @@ noncomputable def prismCornerTarget : TopologicalSpace.Opens (EuclideanHalfSpace
       (isOpen_lt hr.snd continuous_const)
 
 theorem prismCornerMap_mem_halfSpace {p : (Fin 3 → ℝ) × ℝ}
-    (hp : p ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) : 0 ≤ prismCornerMap p 0 := by
+    (hp : p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) : 0 ≤ prismCornerMap p 0 := by
   exact mul_nonneg (mul_nonneg (by norm_num) (hp.1.1 0)) hp.2.1
 
 theorem prismCornerInv_map {p : (Fin 3 → ℝ) × ℝ}
-    (hp : p ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :
+    (hp : p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :
     prismCornerInv (prismCornerMap p) = p := by
   have hr := cornerRoot_cornerSquaring (p := (p.1 0, p.2)) ⟨hp.1.1 0, hp.2.1⟩
   have hs : p.1 0 + p.1 1 + p.1 2 = 1 := by simpa [Fin.sum_univ_three] using hp.1.2
@@ -85,7 +85,7 @@ theorem prismCornerMap_inv {q : EuclideanSpace ℝ (Fin 3)} (hq : 0 ≤ q 0) :
     ring
 
 theorem prismCornerInv_mem_source (q : prismCornerTarget) :
-    prismCornerInv q.val.val ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 ∧
+    prismCornerInv q.val.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 ∧
       0 < (prismCornerInv q.val.val).1 1 ∧ 0 < (prismCornerInv q.val.val).1 2 ∧
         (prismCornerInv q.val.val).2 < 1 := by
   have hr := cornerRoot_nonneg (q.val.val 0, q.val.val 1)
@@ -106,7 +106,7 @@ theorem prismCornerInv_mem_source (q : prismCornerTarget) :
     ring
 
 theorem prismCornerMap_mem_target
-    (p : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)))
+    (p : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)))
     (hp : p ∈ prismCornerSource) :
     (⟨prismCornerMap p.val, prismCornerMap_mem_halfSpace p.property⟩ : EuclideanHalfSpace 3) ∈
       prismCornerTarget := by

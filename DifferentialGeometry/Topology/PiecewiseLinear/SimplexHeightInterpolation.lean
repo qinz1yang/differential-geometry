@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.Analysis.Convex.StdSimplex
 import Mathlib.LinearAlgebra.Pi
 import Mathlib.Tactic.Linarith
@@ -5,6 +6,8 @@ import Mathlib.Tactic.NormNum
 import Mathlib.Tactic.Ring
 
 open Set
+
+open Convexity.StdSimplex (coordinateSet convex_coordinateSet single_mem_coordinateSet)
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
@@ -22,7 +25,7 @@ private theorem linearMap_eq_sum_stdSimplex (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ)
 
 open Classical in
 private theorem exists_pos_coordinate_height_lt
-    (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {x : ι → ℝ} (hx : x ∈ stdSimplex ℝ ι) {r : ℝ}
+    (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {x : ι → ℝ} (hx : x ∈ coordinateSet ℝ ι) {r : ℝ}
     (hxr : ℓ x ≤ r) (havoid : ∀ i, ℓ (Pi.single i 1) ≠ r) :
     ∃ i, 0 < x i ∧ ℓ (Pi.single i 1) < r := by
   classical
@@ -47,9 +50,9 @@ private theorem exists_pos_coordinate_height_lt
 
 open Classical in
 private theorem exists_stdSimplex_height_of_lt
-    (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {x : ι → ℝ} (hx : x ∈ stdSimplex ℝ ι)
+    (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {x : ι → ℝ} (hx : x ∈ coordinateSet ℝ ι)
     {i : ι} (hi : 0 < x i) {r : ℝ} (hlo : ℓ (Pi.single i 1) < r) (hhi : r < ℓ x) :
-    ∃ y ∈ stdSimplex ℝ ι, ℓ y = r ∧ ∀ j, y j = 0 ↔ x j = 0 := by
+    ∃ y ∈ coordinateSet ℝ ι, ℓ y = r ∧ ∀ j, y j = 0 ↔ x j = 0 := by
   classical
   let c := ℓ (Pi.single i 1)
   let t := (r - c) / (ℓ x - c)
@@ -58,7 +61,7 @@ private theorem exists_stdSimplex_height_of_lt
   have ht1 : t < 1 := (div_lt_one hden).mpr (by linarith)
   have hmul : t * (ℓ x - c) = r - c := div_mul_cancel₀ _ hden.ne'
   let y := t • x + (1 - t) • Pi.single i 1
-  have hy : y ∈ stdSimplex ℝ ι := (convex_stdSimplex ℝ ι) hx (single_mem_stdSimplex ℝ i)
+  have hy : y ∈ coordinateSet ℝ ι := (convex_coordinateSet ℝ ι) hx (single_mem_coordinateSet ℝ i)
     ht.le (sub_nonneg.mpr ht1.le) (by ring)
   refine ⟨y, hy, ?_, ?_⟩
   · change ℓ (t • x + (1 - t) • Pi.single i 1) = r
@@ -70,7 +73,7 @@ private theorem exists_stdSimplex_height_of_lt
       simp only [y, Pi.add_apply, Pi.smul_apply, smul_eq_mul]
     constructor
     · intro hyj
-      have hnonneg : 0 ≤ (Pi.single i (1 : ℝ) : ι → ℝ) j := (single_mem_stdSimplex ℝ i).1 j
+      have hnonneg : 0 ≤ (Pi.single i (1 : ℝ) : ι → ℝ) j := (single_mem_coordinateSet ℝ i).1 j
       have hxj := hx.1 j
       nlinarith
     · intro hxj
@@ -82,9 +85,9 @@ open Classical in
 theorem exists_stdSimplex_same_support_height
     (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b : ℝ}
     (hvertices : ∀ i, ℓ (Pi.single i 1) < a ∨ b < ℓ (Pi.single i 1))
-    {x : ι → ℝ} (hx : x ∈ stdSimplex ℝ ι) (hxa : a ≤ ℓ x) (hxb : ℓ x ≤ b)
+    {x : ι → ℝ} (hx : x ∈ coordinateSet ℝ ι) (hxa : a ≤ ℓ x) (hxb : ℓ x ≤ b)
     {r : ℝ} (hra : a ≤ r) (hrb : r ≤ b) :
-    ∃ y ∈ stdSimplex ℝ ι, ℓ y = r ∧ ∀ j, y j = 0 ↔ x j = 0 := by
+    ∃ y ∈ coordinateSet ℝ ι, ℓ y = r ∧ ∀ j, y j = 0 ↔ x j = 0 := by
   classical
   rcases lt_trichotomy (ℓ x) r with hlt | heq | hgt
   · obtain ⟨i, hi, hlow⟩ := exists_pos_coordinate_height_lt (-ℓ) hx

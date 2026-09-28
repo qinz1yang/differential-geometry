@@ -131,7 +131,7 @@ private theorem forward_unique_on_Ioo_of_complete_bounded_curvature_of_buffered_
     (fun t ht x v => (heq₁ t (Ioo_subset_Icc_self ht)).2 x (mem_univ x) v)
     (fun t ht => hdensity t (Ioo_subset_Icc_self ht)) hzero
 
-private theorem forward_unique_on_closed_slab_of_complete_bounded_curvature_of_buffered_reference_of_innerProductSpace
+private theorem forward_unique_on_Icc_of_buffered_reference_innerProductSpace
     {D₁ D₂ : RealTimeInterval}
     (S₁ : SolutionOn (I := I) (M := M) D₁)
     (S₂ : SolutionOn (I := I) (M := M) D₂)
@@ -223,7 +223,7 @@ theorem forward_unique_on_closed_slab_of_complete_bounded_curvature_of_buffered_
     change Diffeomorph.pullbackMetricCross (S₁.base.metric a) Φ.symm =
       Diffeomorph.pullbackMetricCross (S₂.base.metric a) Φ.symm
     rw [hinit]
-  have heq := forward_unique_on_closed_slab_of_complete_bounded_curvature_of_buffered_reference_of_innerProductSpace
+  have heq := forward_unique_on_Icc_of_buffered_reference_innerProductSpace
     U₁ U₂ hU₁ hU₂ hbuffer hab hcarrier₁ hcarrier₂ hregular₁ hregular₂
     hcompleteU hR₁ hR₂ (hcurv_trans S₁ hcurv₁) (hcurv_trans S₂ hcurv₂) hinitU
   intro t ht

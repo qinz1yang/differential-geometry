@@ -45,7 +45,7 @@ local instance instNormedSpaceContinuousMultilinearMapFinContinuousLinearMapIdDi
   inferInstance
 
 omit [CompleteSpace 𝕜] in
-theorem dualMultilinearSymmTransition {r : ℕ} (x₀ x : B)
+theorem dual_multilinear_symm_eq_symmL_comp {r : ℕ} (x₀ x : B)
     (hx : x ∈ (trivializationAt F E x₀).baseSet)
     (Φ : F ≃L[𝕜] F)
     (hΦ : Φ =
@@ -178,7 +178,7 @@ theorem dualMultilinearTrivTransition {r : ℕ} (x₀ x : B)
       change x ∈ (trivializationAt F E x₀).baseSet ∩ Set.univ
       exact ⟨hx, trivial⟩
     exact this
-  have key := dualMultilinearSymmTransition x₀ x hx Φ hΦ M
+  have key := dual_multilinear_symm_eq_symmL_comp x₀ x hx Φ hΦ M
   change (trivializationAt
       (ContinuousMultilinearMap 𝕜 (fun _ : Fin r => F →L[𝕜] 𝕜) 𝕜)
       (fun x => _root_.Bundle.continuousMultilinearMap 𝕜 r (F →L[𝕜] 𝕜)

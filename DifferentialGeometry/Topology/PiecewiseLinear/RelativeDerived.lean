@@ -435,7 +435,7 @@ theorem not_affineCombination_of_mem_openSimplex {T : Finset E}
     rw [← Finset.smul_sum, sum_weights_smul (hmem w hw)]
   let b' : E → ℝ := fun u => if u ∈ τ then b u else 0
   have h := weights_eq hT hpT (w := b') ?_ ?_ v hvT
-  · simp only [b', if_neg hvτ] at h
+  · simp only [b', ite_eq_right hvτ] at h
     exact (hpos v hvT).ne' h
   · simp only [b']
     rw [Finset.sum_ite_mem, Finset.inter_eq_right.mpr hτ.subset]

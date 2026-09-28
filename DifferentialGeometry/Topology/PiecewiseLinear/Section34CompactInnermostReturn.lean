@@ -51,7 +51,7 @@ theorem exists_admissible_bigon_of_returning_arc
       B ∩ (⋃ d, section34CompactSplitDiskImage src f₁ d) = {β 0, β 1} ∧
       IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = β 0 ∧ δ 1 = β 1 ∧
       R ⊆ section34CompactSplitDiskImage srcBd f₁ e ∧ B ∩ R = {β 0, β 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = B ∪ R ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = B ∪ R ∧
       D ⊆ section34CompactVertexBallImage srcBd f₁ v ∩
         frontier (⋃ u, section34CompactVertexBallImage src f₁ u) ∧
       D ∩ section34CompactSplitDiskImage src f₁ e = R ∧

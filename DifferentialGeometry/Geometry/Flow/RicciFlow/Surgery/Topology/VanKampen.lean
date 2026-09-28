@@ -85,21 +85,21 @@ theorem FundamentalGroupVanKampen.TwoOpenCover.rawPathTo_mem {X : Type*} [Topolo
     change x ∈ D.U at hx
     unfold rawPathTo
     by_cases h : x ∈ (D.U : Set X) ∩ D.V
-    · rw [dif_pos h]
+    · rw [dite_eq_left h]
       exact
         ((D.pathConnectedIntersection.joinedIn D.base ⟨D.baseU, D.baseV⟩ x h).somePath_mem t).1
-    · rw [dif_neg h, dif_pos hx]
+    · rw [dite_eq_right h, dite_eq_left hx]
       exact JoinedIn.somePath_mem _ t
   | true =>
     change D.rawPathTo x t ∈ D.V
     change x ∈ D.V at hx
     unfold rawPathTo
     by_cases h : x ∈ (D.U : Set X) ∩ D.V
-    · rw [dif_pos h]
+    · rw [dite_eq_left h]
       exact
         ((D.pathConnectedIntersection.joinedIn D.base ⟨D.baseU, D.baseV⟩ x h).somePath_mem t).2
     · have hnU : x ∉ D.U := fun hU => h ⟨hU, hx⟩
-      rw [dif_neg h, dif_neg hnU]
+      rw [dite_eq_right h, dite_eq_right hnU]
       exact JoinedIn.somePath_mem _ t
 
 def FundamentalGroupVanKampen.TwoOpenCover.pathTo {X : Type*} [TopologicalSpace X]

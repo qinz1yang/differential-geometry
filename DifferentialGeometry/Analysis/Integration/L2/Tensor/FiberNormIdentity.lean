@@ -1,6 +1,9 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import DifferentialGeometry.Analysis.Integration.L2.Pairing.Defs
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise tensorInnerPointwise_nonneg)
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory

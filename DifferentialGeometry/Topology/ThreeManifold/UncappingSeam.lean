@@ -21,7 +21,7 @@ private def seamRadius (side : Bool) (t : ConnectedSumQuotient.collarInterval) :
     have hhi : max 1 (1 + (if side then -t.val else t.val)) ≤ (4 : ℝ) := by
       apply max_le (by norm_num)
       have ht : -(1 / 2 : ℝ) < t.val ∧ t.val < 1 / 2 := t.property
-      cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;> linarith
+      cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith
     constructor <;> linarith⟩
 
 private theorem seamRadius_lt_half (side : Bool) (t : ConnectedSumQuotient.collarInterval) :
@@ -29,7 +29,7 @@ private theorem seamRadius_lt_half (side : Bool) (t : ConnectedSumQuotient.colla
   have ht : -(1 / 2 : ℝ) < t.val ∧ t.val < 1 / 2 := t.property
   have h : max 1 (1 + (if side then -t.val else t.val)) < (2 : ℝ) := by
     apply max_lt (by norm_num)
-    cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;> linarith
+    cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> linarith
   change max 1 (1 + (if side then -t.val else t.val)) / 4 < 1 / 2
   linarith
 
@@ -37,7 +37,7 @@ private theorem continuous_seamRadius (side : Bool) : Continuous (seamRadius sid
   apply Continuous.subtype_mk
   change Continuous (fun t : ConnectedSumQuotient.collarInterval =>
     max 1 (1 + (if side then -t.val else t.val)) / 4)
-  cases side <;> simp only [Bool.false_eq_true, if_false, if_true] <;> fun_prop
+  cases side <;> simp only [Bool.false_eq_true, ite_false, ite_true] <;> fun_prop
 
 private theorem seamRadius_zero (side : Bool) (t : ConnectedSumQuotient.collarInterval)
     (ht : t.val = 0) : seamRadius side t = ⟨1 / 4, by norm_num⟩ := by
@@ -95,14 +95,14 @@ theorem uncappingSeam_of_nonneg (a : T.Index) (p : Collar) (ht : 0 ≤ p.2.val) 
           have hb : p.2.val < (1 / 2 : ℝ) := p.2.property.2
           constructor <;> linarith⟩⟩) := by
   change C.uncappingProjection (C.uncappingSeamPoint a p) = _
-  rw [uncappingSeamPoint, if_pos ht]
+  rw [uncappingSeamPoint, ite_eq_left ht]
   change C.uncappingProjection (C.puncturedCappingHomeomorph _) = _
   rw [C.uncappingProjection_homeomorph]
   have hr : seamRadius false p.2 = (⟨(1 + p.2.val) / 4, by
       have hb : p.2.val < (1 / 2 : ℝ) := p.2.property.2
       constructor <;> linarith⟩ : Icc (1 / 4 : ℝ) 1) := by
     apply Subtype.ext
-    simp only [seamRadius, Bool.false_eq_true, if_false]
+    simp only [seamRadius, Bool.false_eq_true, ite_false]
     rw [max_eq_right (by linarith : (1 : ℝ) ≤ 1 + p.2.val)]
   rw [hr]
 
@@ -125,7 +125,7 @@ theorem uncappingSeam_of_nonpos (a : T.Index) (p : Collar) (ht : p.2.val ≤ 0) 
       have hb : -(1 / 2 : ℝ) < p.2.val := p.2.property.1
       constructor <;> linarith⟩ : Icc (1 / 4 : ℝ) 1) := by
     apply Subtype.ext
-    simp only [seamRadius, if_true]
+    simp only [seamRadius, ite_true]
     rw [max_eq_right (by linarith : (1 : ℝ) ≤ 1 + -p.2.val)]
     ring
   rw [hr]
@@ -138,9 +138,9 @@ private theorem capAnnulusMap_eq_capBallChart (a : T.Index) (side : Bool)
   have hs : (if side then (1 / 4 : ℝ) else -(1 / 4)) •
       ((4 * r.val) • (if side then -z.val else z.val)) = r.val • (-z.val) := by
     cases side
-    · simp only [Bool.false_eq_true, if_false, smul_smul]
+    · simp only [Bool.false_eq_true, ite_false, smul_smul]
       rw [show -(1 / 4 : ℝ) * (4 * r.val) = -r.val by ring, neg_smul, smul_neg]
-    · simp only [if_true, smul_smul]
+    · simp only [ite_true, smul_smul]
       rw [show (1 / 4 : ℝ) * (4 * r.val) = r.val by ring]
   have hn : ‖r.val • (-z.val)‖ < 1 := by
     rw [norm_smul, Real.norm_eq_abs, abs_of_pos hp, norm_neg, norm_eq_of_mem_sphere, mul_one]
@@ -153,11 +153,11 @@ private theorem capAnnulusMap_eq_capBallChart (a : T.Index) (side : Bool)
 theorem uncappingSeamPoint_val_of_nonneg (a : T.Index) (p : Collar) (ht : 0 ≤ p.2.val) :
     (C.uncappingSeamPoint a p).val =
       (C.capBallChart (a, false)).chart ((1 + p.2.val) • p.1.val) := by
-  rw [uncappingSeamPoint, if_pos ht]
+  rw [uncappingSeamPoint, ite_eq_left ht]
   change C.capAnnulusMap (a, false) (-p.1, seamRadius false p.2) = _
   rw [C.capAnnulusMap_eq_capBallChart a false p.1 _ (seamRadius_lt_half false p.2)]
   apply congrArg (C.capBallChart (a, false)).chart
-  simp only [Bool.false_eq_true, if_false, seamRadius]
+  simp only [Bool.false_eq_true, ite_false, seamRadius]
   rw [max_eq_right (by linarith : (1 : ℝ) ≤ 1 + p.2.val)]
   congr 1
   ring
@@ -165,11 +165,11 @@ theorem uncappingSeamPoint_val_of_nonneg (a : T.Index) (p : Collar) (ht : 0 ≤ 
 theorem uncappingSeamPoint_val_of_neg (a : T.Index) (p : Collar) (ht : p.2.val < 0) :
     (C.uncappingSeamPoint a p).val =
       (C.capBallChart (a, true)).chart ((1 - p.2.val) • (-p.1.val)) := by
-  rw [uncappingSeamPoint, if_neg (not_le.mpr ht)]
+  rw [uncappingSeamPoint, ite_eq_right (not_le.mpr ht)]
   change C.capAnnulusMap (a, true) (-p.1, seamRadius true p.2) = _
   rw [C.capAnnulusMap_eq_capBallChart a true p.1 _ (seamRadius_lt_half true p.2)]
   apply congrArg (C.capBallChart (a, true)).chart
-  simp only [if_true, seamRadius]
+  simp only [ite_true, seamRadius]
   rw [max_eq_right (by linarith : (1 : ℝ) ≤ 1 + -p.2.val)]
   congr 1
   ring

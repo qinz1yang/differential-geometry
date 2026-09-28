@@ -16,6 +16,9 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.RicciContractionKernel
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.KoszulResidualSmoothness
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -142,7 +145,7 @@ lemma palatiniRiemannianFiberNormSq_iteratedCovGrad_koszulCovecCc_le (g₀ : Smo
     hpermW (finRotate 3)
   have hbC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC ≤ R2 :=
     hpermW (Equiv.swap (1 : Fin 3) 2)
-  rw [htoSec, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (3 + i) x]
+  rw [htoSec, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (3 + i) x]
   have hnegC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x (-PC) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC :=
     palatiniRiemannianFiberNormSq_neg (I := I) (M := M) g₀ 0 (3 + i) x PC
@@ -223,7 +226,7 @@ lemma riemannianFiberNormSq_iteratedCovGrad_bdKRaw_le (g₀ : SmoothRiemannianMe
     hpermW (finRotate 3)
   have hbC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC ≤ R2 :=
     hpermW (Equiv.swap (1 : Fin 3) 2)
-  rw [htoSec, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (3 + i) x]
+  rw [htoSec, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (3 + i) x]
   have hnegC : riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x (-PC) =
       riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + i) x PC :=
     palatiniRiemannianFiberNormSq_neg (I := I) (M := M) g₀ 0 (3 + i) x PC
@@ -295,7 +298,7 @@ theorem exists_sobolevConst_riemannianFiberNormSq_covGrad_T_le_sq (g₀ : Smooth
   nlinarith [h0', hb, hnn, mul_nonneg hCsob_nn hR]
 
 
-theorem exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
+theorem koszul_residual_uniform_bound_on_metric_path
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
@@ -415,7 +418,7 @@ theorem exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbation
       sharpGradKoszulWeightedTerm (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) sharpGradKoszulPermutationFour T T))))).toSection x) from by
     rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
   have hss : 0 ≤ s * s := mul_nonneg hs0 hs0
   have hs2 : s * s ≤ 1 := by nlinarith
   have hsq1 : ((2 : ℝ) * (s * s)) ^ 2 ≤ 4 := by nlinarith [hss, hs2]
@@ -1063,7 +1066,7 @@ theorem exists_ricciContractionRemainderField_metricPerturbationPath_riemannianF
               (palatiniRicciContractionWeightA (I := I) (M := M) g₀ T +
                 palatiniRicciContractionWeightB (I := I) (M := M) g₀ T)))).toSection x) from by
     rw [SmoothCcTensor.toSection_smul]; rfl]
-  rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
+  rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
   have hsq1 : ((-(1 / 2) : ℝ) * s) ^ 2 ≤ 1 := by nlinarith
   have hcomp : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
       ((ccOperatorFieldComp (I := I) (M := M) g₀ 2 6 2

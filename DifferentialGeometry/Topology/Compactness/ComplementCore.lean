@@ -1,6 +1,6 @@
 import Mathlib.Topology.Compactness.Compact
 import Mathlib.Topology.Closure
-import Mathlib.Data.Finite.Defs
+import Mathlib.Basic.Finite.Defs
 
 set_option autoImplicit false
 

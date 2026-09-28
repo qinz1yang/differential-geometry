@@ -5,6 +5,12 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.InverseMetricQuadraticResidual
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.MultilinearIdentities
+
+open DifferentialGeometry.TensorMetric
+  (coframeS coframeS_zero_eq_unitZeroSec exists_tangent_orthonormalBasis_with_norm_sum
+    fiberNormSqComponent riemannianFiberNormSq riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+    tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -111,9 +117,9 @@ lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth_pt
       intro j _
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
   have hcard : Fintype.card (Fin n) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin, hrank]; exact hn
@@ -179,9 +185,9 @@ lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_of_ball (T : SmoothCcTensor g
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
-      rw [horth (J 0) (J 0), if_pos rfl]
+      rw [horth (J 0) (J 0), ite_eq_left rfl]
     have h11 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by
-      rw [horth (J 1) (J 1), if_pos rfl]
+      rw [horth (J 1) (J 1), ite_eq_left rfl]
     rw [h00, h11, Real.sqrt_one, mul_one, mul_one] at habs
     have := abs_nonneg (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))
     nlinarith [habs, sq_abs (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))]

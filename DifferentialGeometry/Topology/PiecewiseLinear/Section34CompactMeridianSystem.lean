@@ -25,7 +25,7 @@ theorem Section34CompactCutFrame.splitDiskBoundary_is_essential
     IsConnected (frontier (section34CompactFaceTorus (section34CompactVertexBallImage src f₁) s) \
       section34CompactSplitDiskImage srcBd f₁ e) ∧
       ¬ ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
           D ⊆ frontier (section34CompactFaceTorus (section34CompactVertexBallImage src f₁) s) ∧
           section34CompactSplitDiskImage srcBd f₁ e = r '' stdSimplexBoundary 2 := by
   obtain ⟨n, v, -, -, hadj, hnext, hedge, htriple, hU⟩ :=

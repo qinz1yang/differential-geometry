@@ -14,7 +14,7 @@ universe u
 variable {X : Type u} [TopologicalSpace X] [SimplyConnectedSpace X]
 
 theorem sphereHurewicz_tetrahedronGenLoop
-    (g : C(stdSimplex ℝ (Fin 4), X)) (x : X)
+    (g : C(Convexity.StdSimplex.coordinateSet ℝ (Fin 4), X)) (x : X)
     (hg : ∀ p ∈ Simplex.boundary (Fin 4), g p = x) :
     sphereHurewicz 2 x tetrahedronSphereFundamentalClass
       (⟦Simplex.tetrahedronGenLoop g x hg⟧ : HomotopyGroup (Fin 3) X x) =
@@ -49,8 +49,15 @@ theorem integralSingularTetrahedronSphereHomologyPairing_sphereHurewicz
       (sphereHurewicz 2 x tetrahedronSphereFundamentalClass a) = Additive.ofMul a := by
   obtain ⟨g, hg, rfl⟩ := Simplex.exists_tetrahedronGenLoop_class_eq a
   rw [sphereHurewicz_tetrahedronGenLoop, integralSingularTetrahedronSphereHomologyPairing_cycle,
-    integralSingularTetrahedronCycle_val, integralSingularTetrahedronSpherePairing_simplex,
-    integralSingularTetrahedronSphereClass_eq_tetrahedronGenLoop_of_boundary]
+    integralSingularTetrahedronCycle_val, integralSingularTetrahedronSpherePairing_simplex]
+  have hcomp :
+      g.comp ⟨Convexity.StdSimplex.coordinateEquiv ℝ (Fin 4),
+        (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin 4)).continuous⟩ =
+        g.comp ⟨Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin 4),
+          (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin 4)).continuous⟩ := by
+    ext p
+    rfl
+  rw [hcomp, integralSingularTetrahedronSphereClass_eq_tetrahedronGenLoop_of_boundary]
 
 theorem bijective_sphereHurewicz_tetrahedronSphereFundamentalClass :
     Function.Bijective (sphereHurewicz 2 x tetrahedronSphereFundamentalClass) := by

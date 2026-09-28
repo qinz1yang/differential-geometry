@@ -170,7 +170,7 @@ theorem IsStableCrossingBlock.exists_recentre_localized [T2Space M]
         exact (le_max_right _ _).trans (le_max_right _ _)
       rw [Real.dist_eq] at h2
       have h3 : ρ ≤ |(A (ec y₀)).2.2| := by
-        have h5 : ρ₃ = |(A (ec y₀)).2.2| := by rw [hρ₃, if_neg hne]
+        have h5 : ρ₃ = |(A (ec y₀)).2.2| := by rw [hρ₃, ite_eq_right hne]
         rw [← h5]
         exact min_le_right _ _
       linarith

@@ -148,8 +148,8 @@ theorem sobolev_lpNorm
   simpa only [q, μ, gradNorm, ENNReal.toReal_mul, ENNReal.toReal_add,
       ENNReal.toReal_ofReal hC,
       ENNReal.toReal_add hu_mem.eLpNorm_ne_top hgrad_mem.eLpNorm_ne_top,
-      toReal_eLpNorm hu.continuous.aestronglyMeasurable,
-      toReal_eLpNorm hgrad_cont.aestronglyMeasurable] using hreal
+      toReal_eLpNorm,
+      toReal_eLpNorm] using hreal
 
 theorem sobolev_two_lpNorm
     {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]

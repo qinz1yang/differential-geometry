@@ -14,15 +14,15 @@ namespace DifferentialGeometry.PDE.RicciFlow
 private theorem trace_ricStar {ι : Type*} [Fintype ι] {s : ℕ}
     (R : ι → ι → ℝ) (hR : ∀ i j, R i j = R j i)
     (A : (Fin (s + 2) → ι) → ℝ) (m : Fin s → ι) :
-    (∑ i : ι, ricStarArray R A (Fin.cons i (Fin.cons i m))) =
-      ricStarArray R (fun n => ∑ i : ι, A (Fin.cons i (Fin.cons i n))) m +
+    (∑ i : ι, covariantEndomorphismActionArray R A (Fin.cons i (Fin.cons i m))) =
+      covariantEndomorphismActionArray R (fun n => ∑ i : ι, A (Fin.cons i (Fin.cons i n))) m +
         2 * ∑ i : ι, ∑ j : ι, R i j * A (Fin.cons i (Fin.cons j m)) := by
   classical
-  have he (i : ι) : ricStarArray R A (Fin.cons i (Fin.cons i m)) =
+  have he (i : ι) : covariantEndomorphismActionArray R A (Fin.cons i (Fin.cons i m)) =
       (∑ j : ι, R i j * A (Fin.cons j (Fin.cons i m))) +
         ((∑ j : ι, R i j * A (Fin.cons i (Fin.cons j m))) +
           ∑ q : Fin s, ∑ j : ι, R (m q) j * A (Fin.cons i (Fin.cons i (Function.update m q j)))) := by
-    simp only [ricStarArray, Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ,
+    simp only [covariantEndomorphismActionArray, Fin.sum_univ_succ, Fin.cons_zero, Fin.cons_succ,
       Fin.update_cons_zero, ← Fin.cons_update]
   have hswap : (∑ i : ι, ∑ j : ι, R i j * A (Fin.cons j (Fin.cons i m))) =
       ∑ i : ι, ∑ j : ι, R i j * A (Fin.cons i (Fin.cons j m)) := by
@@ -34,9 +34,9 @@ private theorem trace_ricStar {ι : Type*} [Fintype ι] {s : ℕ}
     rw [hR j i]
   have htail : (∑ i : ι, ∑ q : Fin s, ∑ j : ι,
       R (m q) j * A (Fin.cons i (Fin.cons i (Function.update m q j)))) =
-        ricStarArray R (fun n => ∑ i : ι, A (Fin.cons i (Fin.cons i n))) m := by
+        covariantEndomorphismActionArray R (fun n => ∑ i : ι, A (Fin.cons i (Fin.cons i n))) m := by
     rw [Finset.sum_comm]
-    unfold ricStarArray
+    unfold covariantEndomorphismActionArray
     apply Finset.sum_congr rfl
     intro q _
     rw [Finset.sum_comm]
@@ -108,7 +108,7 @@ theorem ricciTimeCorrection_metricTrace {ι : Type*} [Fintype ι] [DecidableEq �
     trace_component_orthonormal g basis horth]
   have hc (r : ℕ) (V : Tensor0SSpace r I x) (n : Fin r → ι) :
       component0S basis (ricciTimeCorrection g V) n =
-        ricStarArray (fun i j => ricciTensor g x (basis i) (basis j))
+        covariantEndomorphismActionArray (fun i j => ricciTensor g x (basis i) (basis j))
           (fun v => component0S basis V v) n :=
     ricciTimeCorrection_component g V basis horth n
   simp only [hc]
@@ -126,7 +126,7 @@ private theorem basis_inverse_orthonormal {ι : Type*} [Finite ι] [DecidableEq 
     basisInvMetric g x basis i j = if i = j then (1 : ℝ) else 0 := by
   let _ := Fintype.ofFinite ι
   have hh := (basisInvMetric_isInverse g x basis i j).1
-  simpa only [horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true] using hh
+  simpa only [horth, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true] using hh
 
 theorem hasDerivWithinAt_metricTrace {ι : Type*} [Fintype ι] [DecidableEq ι]
     {s : ℕ} {x : M} (g : ℝ → SmoothRiemannianMetric I M)
@@ -146,7 +146,7 @@ theorem hasDerivWithinAt_metricTrace {ι : Type*} [Fintype ι] [DecidableEq ι]
       (2 * ricciTensor (g t) x (basis i) (basis j)) J t := by
     have hh := basisInvMetric_hasDerivWithinAt_ricciFlow g x basis J t hRF i j
     simpa only [hB, ite_mul, one_mul, zero_mul, mul_ite, mul_one, mul_zero,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true] using hh
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true] using hh
   apply hasDerivWithinAt_tensor0S_of_eval
   intro v
   have hh := HasDerivWithinAt.fun_sum (u := Finset.univ) (fun (i : ι) _ =>

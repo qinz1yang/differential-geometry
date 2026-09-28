@@ -40,7 +40,7 @@ private def connectionDifferenceOutAt (g : SmoothRiemannianMetric I M)
     (cov cov' : CovariantDerivative I E (TangentSpace I : M -> Type _)) (x : M) :
     Tensor0SSpace 3 I x :=
   Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-    (DifferentialGeometry.Integral.L2.lowerAllUpperIndices (I := I) (M := M) g 1 2 x
+    (DifferentialGeometry.TensorMetric.lowerAllUpperIndices (I := I) (M := M) g 1 2 x
       (TensorRSSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
         (connectionDifferenceTensorAt (I := I) cov cov' x)))
 
@@ -57,30 +57,30 @@ private theorem connectionDifferenceOutAt_apply (g : SmoothRiemannianMetric I M)
     connectionDifferenceOutAt (I := I) g cov cov' x w =
       g.inner x (w 0) (CovariantDerivative.difference cov cov' x (w 2) (w 1)) := by
   change
-    DifferentialGeometry.Integral.L2.lowerAllUpperIndices (I := I) (M := M) g 1 2 x
+    DifferentialGeometry.TensorMetric.lowerAllUpperIndices (I := I) (M := M) g 1 2 x
         (TensorRSSpace.toModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
           (connectionDifferenceTensorAt (I := I) cov cov' x))
         (fun i => tangentSpaceModelContinuousLinearEquiv (I := I) x (w i)) = _
-  rw [DifferentialGeometry.Integral.L2.lowerAllUpperIndices_apply]
+  rw [DifferentialGeometry.TensorMetric.lowerAllUpperIndices_apply]
   change
     Tensor0SSpace.eval
-      (connectionDifferenceOutput (I := I) (CovariantDerivative.difference cov cov' x)
+      (bilinearCovectorComp (I := I) (CovariantDerivative.difference cov cov' x)
         (Tensor0SSpace.ofModel (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)
-          (DifferentialGeometry.Integral.L2.separableFormAt (I := I) (M := M) g x 1
+          (DifferentialGeometry.TensorMetric.separableFormAt (I := I) (M := M) g x 1
             (fun i : Fin 1 =>
               tangentSpaceModelContinuousLinearEquiv (I := I) x (w (Fin.castAdd 2 i))))))
         (fun j : Fin 2 => w (Fin.natAdd 1 j)) = _
-  rw [connectionDifferenceOutput_apply]
+  rw [bilinearCovectorComp_apply]
   change
-    DifferentialGeometry.Integral.L2.separableFormAt (I := I) (M := M) g x 1
+    DifferentialGeometry.TensorMetric.separableFormAt (I := I) (M := M) g x 1
         (fun i : Fin 1 =>
           tangentSpaceModelContinuousLinearEquiv (I := I) x (w (Fin.castAdd 2 i)))
         (fun _ : Fin 1 =>
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             (CovariantDerivative.difference cov cov' x
               (w (Fin.natAdd 1 (1 : Fin 2))) (w (Fin.natAdd 1 (0 : Fin 2))))) = _
-  rw [DifferentialGeometry.Integral.L2.separableFormAt_apply]
-  simp only [DifferentialGeometry.Integral.L2.modelInnerAt_apply,
+  rw [DifferentialGeometry.TensorMetric.separableFormAt_apply]
+  simp only [DifferentialGeometry.TensorMetric.modelInnerAt_apply,
     ContinuousLinearEquiv.symm_apply_apply]
   simp
 

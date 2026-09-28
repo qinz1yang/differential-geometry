@@ -680,16 +680,16 @@ theorem chartFrameNormFiber_orthonormal
     have horth := h.2.1 i hlt
     have hne : i ≠ j := by
       intro h_eq; rw [h_eq] at hlt; omega
-    rw [if_neg hne, horth]
+    rw [ite_eq_right hne, horth]
   · have hi_eq_j : i = j := Fin.ext heq
-    rw [if_pos hi_eq_j, ← hi_eq_j]
+    rw [ite_eq_left hi_eq_j, ← hi_eq_j]
     have h := chartFrameNormFiber_orth_strong (I := I) g α hb i.val i (le_refl _)
     exact h.2.2
   · have h := chartFrameNormFiber_orth_strong (I := I) g α hb i.val i (le_refl _)
     have horth_ji := h.2.1 j hgt
     have hne : i ≠ j := by
       intro h_eq; rw [h_eq] at hgt; omega
-    rw [if_neg hne]
+    rw [ite_eq_right hne]
     rw [g.symm]
     exact horth_ji
 
@@ -737,12 +737,12 @@ private lemma smoothOrtho_li
   rw [Finset.sum_eq_single i] at hpair
   · rw [ContinuousLinearMap.map_smul, smul_apply,
       smoothOrthoFrame_orthonormal (I := I) g α hb i i,
-      if_pos rfl, smul_eq_mul, mul_one] at hpair
+      ite_eq_left rfl, smul_eq_mul, mul_one] at hpair
     exact hpair
   · intro j _ hji
     rw [ContinuousLinearMap.map_smul, smul_apply,
       smoothOrthoFrame_orthonormal (I := I) g α hb j i,
-      if_neg (by simpa using hji), smul_zero]
+      ite_eq_right (by simpa using hji), smul_zero]
   · intro hi
     exact absurd (Finset.mem_univ i) hi
 

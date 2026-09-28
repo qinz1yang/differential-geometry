@@ -219,7 +219,7 @@ theorem outerCycleData_spec {fresh : List Plane} (hfresh : ∀ z ∈ fresh, z �
         Graph.edgesCover segmentDrawing (t.1 :: t.2.2.2.2) = modelCurve := by
     obtain ⟨e, u, v, x, D, h₁, h₂, h₃⟩ := squareMesh_outer_cycle hfresh δ anchors
     exact ⟨(e, u, v, x, D), h₁, h₂, h₃⟩
-  have hd : outerCycleData δ fresh anchors = h.choose := dif_pos h
+  have hd : outerCycleData δ fresh anchors = h.choose := dite_eq_left h
   simpa [outerCycleEdge, outerCycleStart, outerCycleEnd, outerCycleThird, outerCycleDetour, hd]
     using h.choose_spec
 
@@ -748,7 +748,7 @@ theorem spokeWalk_spec {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
         ∀ Q, Q ∈ W ↔ (Q ∈ E(meshGraph N fresh anchors) ∧ Q.seg ⊆ (spokePiece N z).seg) :=
     meshSubdividesToPath hN hfresh anchors _ (spokePiece_mem_meshSegments hz)
       (spokePiece_nondeg hN (hfresh z hz))
-  rw [spokeWalk, dif_pos h]
+  rw [spokeWalk, dite_eq_left h]
   exact h.choose_spec
 
 theorem spokeWalk_isPath {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
@@ -837,7 +837,7 @@ theorem ringArc_isPath {N : ℕ} (hN : 2 ≤ N) {fresh : List Plane}
   classical
   have h : ∃ P : List Piece, (ringGraph N fresh anchors r).IsPath a P b :=
     (ringGraph_isTwoConnected hN hfresh anchors hr).connected.exists_isPath ha hb
-  rw [ringArc, dif_pos h]
+  rw [ringArc, dite_eq_left h]
   exact h.choose_spec
 
 /-- **The ear**: down the spoke at `z`, round the inner ring, and back up the spoke at `w`. -/

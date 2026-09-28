@@ -24,8 +24,8 @@ theorem exists_surface_split_and_cap_of_disk_pair
     (h : SurfaceSplitAlongPolygon source split)
     (hsplit : IsCombinatorialManifoldWithBoundary 2 split)
     {D₀ D₁ : Set E} {q₀ q₁ : (Fin 3 → ℝ) → E}
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hq₁ : IsPLHomeomorphOn q₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hq₁ : IsPLHomeomorphOn q₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hdis : Disjoint D₀ D₁)
     (hmeet₀ : split.space ∩ D₀ = q₀ '' stdSimplexBoundary 2)
     (hmeet₁ : split.space ∩ D₁ = q₁ '' stdSimplexBoundary 2)

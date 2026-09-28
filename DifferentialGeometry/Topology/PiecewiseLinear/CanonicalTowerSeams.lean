@@ -17,7 +17,7 @@ def traceCircles (L T : Set E3) : Set (Set E3) :=
 
 def boundsDiskIn (G T : Set E3) : Prop :=
   ∃ (Δ : Set E3) (r : (Fin 3 → ℝ) → E3),
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
+    IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T ∧
       G = r '' stdSimplexBoundary 2
 
 noncomputable def nullTraceCount (L T : Set E3) : ℕ :=

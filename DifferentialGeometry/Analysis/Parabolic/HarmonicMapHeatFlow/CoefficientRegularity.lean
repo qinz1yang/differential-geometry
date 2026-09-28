@@ -4,6 +4,10 @@ import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.RankZ
 import DifferentialGeometry.Geometry.Exponential.Smoothness.AtZero.IntrinsicDerivative
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.MetricComparisonEndomorphismJetBounds
 import Mathlib.Geometry.Manifold.ContMDiffMFDeriv
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise gramMatrixAt
+  gramMatrixAt_inv_mul_self gramMatrixAt_isUnit tensorInnerPointwise tensorInnerPointwise_0s_succ
+  tensorInnerPointwise_0s_zero_arity)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

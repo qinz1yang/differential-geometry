@@ -61,21 +61,24 @@ theorem squarePoint_zero (a b : unitInterval) : squarePoint a b 0 = a := rfl
 theorem squarePoint_one (a b : unitInterval) : squarePoint a b 1 = b := rfl
 
 def squareAffineMap (n : ℕ) (v : Fin (n + 1) → Square) :
-    C(stdSimplex ℝ (Fin (n + 1)), Square) where
-  toFun t := fun i => ⟨Simplex.vertexMap (fun j => (v j i : ℝ)) t, by
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), Square) where
+  toFun t := fun i => ⟨Simplex.vertexMap (fun j => (v j i : ℝ))
+      (Convexity.StdSimplex.coordinateEquiv ℝ _ t), by
     refine convexHull_min ?_ (convex_Icc 0 1)
-      (Simplex.vertexMap_mem_convexHull (fun j => (v j i : ℝ)) t)
+      (Simplex.vertexMap_mem_convexHull (fun j => (v j i : ℝ))
+        (Convexity.StdSimplex.coordinateEquiv ℝ _ t))
     rintro x ⟨j, rfl⟩
     exact (v j i).property⟩
   continuous_toFun := by
     apply continuous_pi
     intro i
     apply Continuous.subtype_mk
-    exact (Simplex.vertexMap (fun j => (v j i : ℝ))).continuous
+    exact (Simplex.vertexMap (fun j => (v j i : ℝ))).continuous.comp
+      (Convexity.StdSimplex.coordinateHomeomorph ℝ _).continuous
 
 theorem squareAffineMap_apply_coe (n : ℕ) (v : Fin (n + 1) → Square)
-    (t : stdSimplex ℝ (Fin (n + 1))) (i : Fin 2) :
-    ((squareAffineMap n v t i : unitInterval) : ℝ) = ∑ j, (t.val j) * (v j i : ℝ) := by
+    (t : Convexity.StdSimplex ℝ (Fin (n + 1))) (i : Fin 2) :
+    ((squareAffineMap n v t i : unitInterval) : ℝ) = ∑ j, (t.weights j) * (v j i : ℝ) := by
   simp [squareAffineMap, Simplex.vertexMap_apply, smul_eq_mul]
 
 def squareAffineSimplex (n : ℕ) (v : Fin (n + 1) → Square) :
@@ -88,7 +91,7 @@ def squareAffineSimplex (n : ℕ) (v : Fin (n + 1) → Square) :
   Equiv.apply_symm_apply _ _
 
 theorem squareAffineSimplex_face_eval (n : ℕ) (v : Fin (n + 2) → Square)
-    (i : Fin (n + 2)) (t : stdSimplex ℝ (Fin (n + 1))) (i' : Fin 2) :
+    (i : Fin (n + 2)) (t : Convexity.StdSimplex ℝ (Fin (n + 1))) (i' : Fin 2) :
     (((integralSingularSimplexEquiv n Square)
         ((TopCat.toSSet.obj (TopCat.of Square)).δ i (squareAffineSimplex (n + 1) v))) t i'
         : ℝ) =
@@ -97,7 +100,11 @@ theorem squareAffineSimplex_face_eval (n : ℕ) (v : Fin (n + 2) → Square)
   simp only [integralSingularSimplexEquiv]
   rw [TopCat.toSSetObjEquiv_δ_apply]
   rw [squareAffineSimplex_val, squareAffineSimplex_val]
-  exact Simplex.vertexMap_map (fun j => (v j i' : ℝ)) i.succAbove t
+  change Simplex.vertexMap (fun j => (v j i' : ℝ))
+    (Convexity.StdSimplex.coordinateEquiv ℝ _ (Convexity.StdSimplex.map i.succAbove t)) = _
+  rw [Convexity.StdSimplex.coordinateEquiv_map]
+  exact Simplex.vertexMap_map (fun j => (v j i' : ℝ)) i.succAbove
+    (Convexity.StdSimplex.coordinateEquiv ℝ _ t)
 
 theorem squareAffineSimplex_face (n : ℕ) (v : Fin (n + 2) → Square) (i : Fin (n + 2)) :
     (TopCat.toSSet.obj (TopCat.of Square)).δ i (squareAffineSimplex (n + 1) v) =

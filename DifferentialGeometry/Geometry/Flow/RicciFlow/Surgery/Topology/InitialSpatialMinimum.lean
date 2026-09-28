@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryAction.MinimumPropagation
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Action.MinimumPropagation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapWindowActionRegularCrossingRecenter
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryPoleAction
 

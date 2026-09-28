@@ -36,12 +36,12 @@ theorem laplacian_leviCivita_hasDerivAt
           (hessianSec (LeviCivita (g t))
             (leviCivita_contMDiffCovariantDerivativeLocally (g t)) (f t) (hfs t) x) -
         metricTracePair0SAt (g t)
-          (connectionDifferenceOutput (leviCivitaVariation g t x) (duSec (f t) (hfs t) x))) t := by
+          (bilinearCovectorComp (leviCivitaVariation g t x) (duSec (f t) (hfs t) x))) t := by
   let H := fun r => hessianSec (I := I) (LeviCivita (g r))
     (leviCivita_contMDiffCovariantDerivativeLocally (g r)) (f r) (hfs r) x
   let Ht := hessianSec (I := I) (LeviCivita (g t))
     (leviCivita_contMDiffCovariantDerivativeLocally (g t)) ft hft x
-  let C := connectionDifferenceOutput (I := I) (leviCivitaVariation g t x)
+  let C := bilinearCovectorComp (I := I) (leviCivitaVariation g t x)
     (duSec (I := I) (f t) (hfs t) x)
   have hH := hessianSec_leviCivita_hasDerivAt g h t hg hgs f hfs ft hft hf ht x
   have hmain := hasDerivAt_metricTracePair0SAt (I := I) g (h x) H (Ht - C) (hg x) hH
@@ -105,7 +105,7 @@ theorem laplacian_leviCivita_hasDerivAt_of_ricci_deriv
   rw [hz, sub_zero] at hl
   change HasDerivAt _ (laplacian (LeviCivita (g t)) (g t) ft x -
     inner0S (g t) x 2 (c • metricRicci (g t) x) _) t at hl
-  simpa only [_root_.Tensor0SBundle.inner0S_smul_left] using hl
+  simpa only [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left] using hl
 
 end DifferentialGeometry.Geometry.Operator
 

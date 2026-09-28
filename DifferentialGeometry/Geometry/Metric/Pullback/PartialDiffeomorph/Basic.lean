@@ -270,6 +270,7 @@ theorem PartialDiffeomorph.pullbackMetricOn_congr
   rw [PartialDiffeomorph.pullbackMetricOn_inner,
     PartialDiffeomorph.pullbackMetricOn_inner, hmap_nhds.eq_of_nhds,
     hmap_nhds.mfderiv_eq]
+  rfl
 
 end PullbackMetricOn
 

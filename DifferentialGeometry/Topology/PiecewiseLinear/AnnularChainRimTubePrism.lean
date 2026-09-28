@@ -12,7 +12,7 @@ open DifferentialGeometry.Simplex
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
-local notation "Triangle" => stdSimplex ℝ (Fin 3)
+local notation "Triangle" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "Interval" => Icc (-1 : ℝ) 1
 
 theorem IsTube.exists_centered_product_homeomorph
@@ -25,10 +25,10 @@ theorem IsTube.exists_centered_product_homeomorph
       range (fun p : Triangle => (e (p, ⟨0, by norm_num⟩) : E3)) = h '' D {u, v} ∧
       range (fun b : boundary (Fin 3) => (e (b.val, ⟨0, by norm_num⟩) : E3)) =
         h '' Dbd {u, v} ∧
-      (e (stdSimplex.barycenter, ⟨0, by norm_num⟩) : E3) =
+      (e (Convexity.StdSimplex.coordinateBarycenter, ⟨0, by norm_num⟩) : E3) =
         h (({u, v} : Finset E3).centroid ℝ id) := by
   obtain ⟨ρ, hρ, hρP, hρD, hρR, -, -⟩ := ht.exists_centered_prism_coordinates hu hv huv he
-  let e₀ := (Homeomorph.Set.prod (stdSimplex ℝ (Fin 3)) (Icc (-1 : ℝ) 1)).symm.trans
+  let e₀ := (Homeomorph.Set.prod (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Icc (-1 : ℝ) 1)).symm.trans
     hρ.homeomorph
   let e₁ := (ht.isEmbedding_dualBall_pair hu hv).toHomeomorph.trans
     (Homeomorph.setCongr ((Set.range_domRestrict h (C u ∪ C v)).trans (image_union h _ _)))
@@ -60,10 +60,10 @@ theorem IsTube.exists_centered_product_homeomorph
       refine ⟨⟨⟨p, hp.1⟩, hp.2⟩, ?_⟩
       exact (heval _ _).trans (congrArg h hpt)
   · rw [heval]
-    have hb : (stdSimplex.barycenter : Triangle).val = stdCenter 1 := by
+    have hb : (Convexity.StdSimplex.coordinateBarycenter : Triangle).val = stdCenter 1 := by
       ext i
-      norm_num [stdSimplex.barycenter, stdCenter]
-    change h (ρ ((stdSimplex.barycenter : Triangle).val, 0)) = _
+      norm_num [Convexity.StdSimplex.coordinateBarycenter, stdCenter]
+    change h (ρ ((Convexity.StdSimplex.coordinateBarycenter : Triangle).val, 0)) = _
     rw [hb, hρP]
 
 end DifferentialGeometry.Topology.PiecewiseLinear

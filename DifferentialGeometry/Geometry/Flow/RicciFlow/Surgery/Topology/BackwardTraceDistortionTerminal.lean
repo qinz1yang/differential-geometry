@@ -53,7 +53,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem normSq_stageMetric_le_of_backwardPointTrace_of_final
     {Ctime : ℝ≥0} {qcan M : ℝ} {phi : ℝ → ℝ}

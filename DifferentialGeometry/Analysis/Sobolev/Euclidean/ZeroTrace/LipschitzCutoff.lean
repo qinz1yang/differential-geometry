@@ -84,7 +84,8 @@ theorem exists_memW01p_smooth_mul_bounds_of_lipschitz
     DifferentialGeometry.Analysis.Integration.eLpNorm_two_le_of_integral_norm_sq_le hdfm hB
   have hpartial (i : Fin d) : eLpNorm (fun x => hu.weakGrad x i) 2
       (volume.restrict Ω) ≤ ENNReal.ofReal (Real.sqrt B) := by
-    refine (eLpNorm_mono fun x => ?_).trans hderiv
+    refine (eLpNorm_mono (hu.weakGrad_component_memLp i).aestronglyMeasurable
+      fun x => ?_).trans hderiv
     rw [hrep x i]
     simpa using (fderiv ℝ f x).le_opNorm (EuclideanSpace.single i 1)
   have hfactor : ENNReal.ofReal (C * (Real.sqrt A + Real.sqrt B)) =
@@ -95,7 +96,8 @@ theorem exists_memW01p_smooth_mul_bounds_of_lipschitz
   refine ⟨hvzero, ?_, ?_⟩
   · rw [hfactor]
     refine (eLpNorm_eta_mul_le hΩ
-      (fun x _ => by simpa only [Real.norm_eq_abs] using hηbound x) f).trans ?_
+      (fun x _ => by simpa only [Real.norm_eq_abs] using hηbound x) f
+      (hη.continuous.aestronglyMeasurable.mul hfm.aestronglyMeasurable)).trans ?_
     exact mul_le_mul_right (hfun.trans (le_self_add)) _
   · intro hw i
     let : NeZero d := ⟨fun hd => by simpa [hd] using i.isLt⟩
@@ -118,11 +120,11 @@ theorem exists_memW01p_smooth_mul_bounds_of_lipschitz
         (volume.restrict Ω) :=
       ((hη.continuous_fderiv (by simp)).clm_apply continuous_const).aestronglyMeasurable.mul
         hfm.aestronglyMeasurable
-    refine (eLpNorm_add_le hfirst hsecond (by norm_num)).trans ?_
+    refine (eLpNorm_add_le (by norm_num)).trans ?_
     have hleft := (eLpNorm_eta_mul_le hΩ
       (fun x _ => by simpa only [Real.norm_eq_abs] using hηbound x)
-      (fun x => hu.weakGrad x i)).trans (mul_le_mul_right (hpartial i) _)
-    have hright := (eLpNorm_partial_eta_mul_le hΩ (fun x _ => hdηbound x) i f).trans
+      (fun x => hu.weakGrad x i) hfirst).trans (mul_le_mul_right (hpartial i) _)
+    have hright := (eLpNorm_partial_eta_mul_le hΩ (fun x _ => hdηbound x) i f hsecond).trans
       (mul_le_mul_right hfun _)
     calc
       _ ≤ ENNReal.ofReal C * ENNReal.ofReal (Real.sqrt B) +

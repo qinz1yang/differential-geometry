@@ -168,7 +168,7 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
         Finset.sum_congr rfl fun v hv => by rw [hA i v hv]
       _ = weights T x i := by simp [Finset.mem_of_mem_erase i.2]
   have hAa (i : T.erase a) : A i a = 0 := by
-    rw [hA i a ha, if_neg (Finset.ne_of_mem_erase i.2).symm]
+    rw [hA i a ha, ite_eq_right (Finset.ne_of_mem_erase i.2).symm]
   let c := T.centroid ℝ id
   have hc : c ∈ openSimplex T := centroid_mem_openSimplex (Finset.card_pos.mp (by omega))
   have hcT : c ∈ convexHull ℝ (T : Set E) := openSimplex_subset_convexHull _ hc
@@ -246,7 +246,7 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
       rw [← hwq, affineMap_apply_sum_smul _ hw]
       apply Finset.sum_eq_zero
       intro v hv
-      rw [hA₀ v (Finset.mem_of_mem_erase hv), if_neg (Finset.ne_of_mem_erase hv), smul_zero]
+      rw [hA₀ v (Finset.mem_of_mem_erase hv), ite_eq_right (Finset.ne_of_mem_erase hv), smul_zero]
     exact hβpos.ne' hzero
   have hsumF : ∑ v ∈ T.erase a, weights T c v = 1 - weights T c a := by
     have h := Finset.add_sum_erase T (weights T c) ha
@@ -257,9 +257,9 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
         sum_weights_smul hcT]
   have haopen : a ∈ openSimplex (insert q (T.erase a)) := by
     let w : E → ℝ := fun v => if v = q then β⁻¹ else t / β * weights T c v
-    have hwq : w q = β⁻¹ := if_pos rfl
+    have hwq : w q = β⁻¹ := ite_eq_left rfl
     have hwF : ∀ v ∈ T.erase a, w v = t / β * weights T c v :=
-      fun v hv => if_neg (ne_of_mem_of_not_mem hv hqF)
+      fun v hv => ite_eq_right (ne_of_mem_of_not_mem hv hqF)
     refine ⟨w, ?_, ?_, ?_⟩
     · intro v hv
       rcases Finset.mem_insert.mp hv with hv | hv
@@ -292,7 +292,7 @@ theorem exists_isConeBase_simplexAvoiding_near_vertex [FiniteDimensional ℝ E] 
     intro s hs
     obtain ⟨v, hv, hvs⟩ := Finset.not_subset.mp (hs.2.2 _ (Finset.mem_singleton_self _))
     refine ⟨⟨v, hv⟩, fun w hw => ?_⟩
-    rw [hA _ w (hs.2.1 hw), if_neg (ne_of_mem_of_not_mem hw hvs)]
+    rw [hA _ w (hs.2.1 hw), ite_eq_right (ne_of_mem_of_not_mem hw hvs)]
   let hp : IsConeBase p L := isConeBase_of_affine_halfSpaces A L
     (fun x hx => hnonneg x (hLC hx)) hface (Or.inl hpA)
   let hq : IsConeBase q L := isConeBase_of_affine_halfSpaces A L

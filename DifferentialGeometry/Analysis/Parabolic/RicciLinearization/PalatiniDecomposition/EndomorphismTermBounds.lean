@@ -13,6 +13,9 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Curvature.Deco
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_zero)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -87,7 +90,7 @@ private theorem palatiniCometricCastG0_gridWindow (g₀ : SmoothRiemannianMetric
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (j + 1) := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cfix, hcfix_nn, hcfix⟩ := exists_iteratedCovGrad_riemannianFiberNormSq_bound (I := I) (M := M) g₀ 3 1
     (cometricDoubleTraceField (I := I) g₀ 1)
@@ -316,7 +319,7 @@ private lemma palatiniConnectionDifferenceSection_eq_cometricRaise (g₀ g₁ : 
 
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
-lemma palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection
+lemma connection_difference_lowering_preserves_covariant_jet_norm_sq
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 0 (3 + n) x
         ((iteratedCovGrad (I := I) g₀ 0 3 n (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) =
@@ -386,7 +389,7 @@ private theorem palatiniCA_gridWindow (g₀ : SmoothRiemannianMetric I M)
           (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁)).toSection x) :=
     riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection (I := I) (M := M) g₀
       (Equiv.swap (1 : Fin 3) 2) (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) j x
-  rw [h1, h2, palatiniRiemannianFiberNormSq_iteratedCovGrad_connectionDifferenceLoweredCc_eq_connectionDifferenceSection (I := I) (M := M) g₀ g₁ j x]
+  rw [h1, h2, connection_difference_lowering_preserves_covariant_jet_norm_sq (I := I) (M := M) g₀ g₁ j x]
   refine le_trans (hCA g₁ P htie hδ_le hδ0 hbound j x) ?_
   rw [show Combinatorics.antidiagonalTupleGridWindow b (j + 2) =
       ∑ k ∈ Finset.range (j + 2), Combinatorics.antidiagonalTupleGrid b k from rfl]

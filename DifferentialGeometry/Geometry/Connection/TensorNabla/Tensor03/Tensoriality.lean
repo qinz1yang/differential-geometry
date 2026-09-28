@@ -459,7 +459,7 @@ lemma tensor03CovAt_apply_of_diff
     tensor03CovAt cov T x v = tensor03TrilinAt cov hT v := by
   classical
   unfold tensor03CovAt
-  rw [dif_pos hT]
+  rw [dite_eq_left hT]
   rfl
 
 lemma tensor03CovAt_apply_of_diff_extend
@@ -485,7 +485,7 @@ lemma tensor03CovAt_apply_of_diff_extend
     tensor03CovAt cov T x = 0 := by
   classical
   unfold tensor03CovAt
-  rw [dif_neg hT]
+  rw [dite_eq_right hT]
 
 def tensor03CovFun
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _)) :

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Coordinates
 import DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn
 import DifferentialGeometry.Topology.Manifold.InjectiveLocalDiffeomorph
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 
 set_option autoImplicit false
 noncomputable section
@@ -23,7 +23,7 @@ private def closedCellInsertion (x : EuN) : ClosedCell (m + 1) :=
 
 private theorem closedCellInsertion_val {x : EuN} (hx : ‖x‖ < 1) :
     (closedCellInsertion x).val = x := by
-  rw [closedCellInsertion, dif_pos hx.le]
+  rw [closedCellInsertion, dite_eq_left hx.le]
 
 private theorem closedCellInsertion_eventually {x : EuN} (hx : ‖x‖ < 1) :
     (Subtype.val : ClosedCell (m + 1) → EuN) ∘ closedCellInsertion =ᶠ[𝓝 x] id := by
@@ -209,7 +209,7 @@ theorem mfderiv_eq_of_eq_closedCell_smul
       isOpen_lt hscale.norm continuous_const
     filter_upwards [hopen.mem_nhds hx] with y hy
     change ‖r • y‖ < 1 at hy
-    simpa only [closedCellInsertion, dif_pos hy.le] using hF y hy
+    simpa only [closedCellInsertion, dite_eq_left hy.le] using hF y hy
   have hscale : mfderiv (𝓡 (m + 1)) (𝓡 (m + 1)) (fun y : EuN => r • y) x v = r • v := by
     have hd : (mfderiv (𝓡 (m + 1)) (𝓡 (m + 1))
         (fun y : EuN => r • y) x : EuN →L[ℝ] EuN) = r • ContinuousLinearMap.id ℝ EuN := by

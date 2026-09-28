@@ -229,12 +229,12 @@ theorem lRegularizedAction_minimal_on_subinterval_of_absolutelyContinuousOnInter
     hint.mono_set (by
       simpa only [uIcc_of_le hst, uIcc_of_le hab] using Icc_subset_Icc has htb)
   let beta : ℝ → M := (Iic c).piecewise gamma delta
-  have hbetaLeft (r : ℝ) (hr : r ≤ c) : beta r = gamma r := if_pos hr
+  have hbetaLeft (r : ℝ) (hr : r ≤ c) : beta r = gamma r := ite_eq_left hr
   have hbetaRight (r : ℝ) (hr : c ≤ r) : beta r = delta r := by
     rcases hr.eq_or_lt with hr | hr
     · subst r
       exact (hbetaLeft c le_rfl).trans hdeltaC.symm
-    · exact if_neg (not_le.mpr hr)
+    · exact ite_eq_right (not_le.mpr hr)
   have hbeta : Manifold.absolutelyContinuousOnInterval I beta a d :=
     Manifold.absolutelyContinuousOnInterval_piecewise_Iic
       (hgammaAC a c le_rfl hac (hcd.trans hdb)) hdelta hac hcd hdeltaC.symm
@@ -245,16 +245,16 @@ theorem lRegularizedAction_minimal_on_subinterval_of_absolutelyContinuousOnInter
       ((hbetaRight d hcd).trans hdeltaD)
   have hleft : EqOn eta gamma (Icc a c) := by
     intro r hr
-    exact (if_pos (hr.2.trans hcd)).trans (hbetaLeft r hr.2)
+    exact (ite_eq_left (hr.2.trans hcd)).trans (hbetaLeft r hr.2)
   have hmiddle : EqOn eta delta (Icc c d) := by
     intro r hr
-    exact (if_pos hr.2).trans (hbetaRight r hr.1)
+    exact (ite_eq_left hr.2).trans (hbetaRight r hr.1)
   have hright : EqOn eta gamma (Icc d b) := by
     intro r hr
     rcases hr.1.eq_or_lt with heq | hlt
     · subst r
       exact (hmiddle ⟨hcd, le_rfl⟩).trans hdeltaD
-    · exact if_neg (not_le.mpr hlt)
+    · exact ite_eq_right (not_le.mpr hlt)
   have hlag (alpha beta : ℝ → M) (s t : ℝ) (hst : s ≤ t)
       (heq : EqOn alpha beta (Icc s t)) :
       EqOn (lRegularizedLagrangian S T alpha) (lRegularizedLagrangian S T beta) (uIoo s t) := by
@@ -267,6 +267,7 @@ theorem lRegularizedAction_minimal_on_subinterval_of_absolutelyContinuousOnInter
     have hder := hn.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := I)
     unfold lRegularizedLagrangian lVelocity
     rw [hv, hder]
+    rfl
   have hlagLeft := hlag eta gamma a c hac hleft
   have hlagMiddle := hlag eta delta c d hcd hmiddle
   have hlagRight := hlag eta gamma d b hdb hright

@@ -63,7 +63,7 @@ end ObservedHistory
 theorem RetainedCoreHistory.exists_scalar_le_before_initial_window (P₀ : OrientedThreeStage.{u})
     (g₀ : P₀.Metric) :
     ∃ η₀ K : ℝ, 0 < η₀ ∧ ∀ (B : ℝ) (p₀ : CutoffParameters) (δbound ρbound : ℝ)
-      (H : RetainedCoreHistory P₀), H.InCutoffClass g₀ B p₀ δbound ρbound →
+      (H : RetainedCoreHistory.{u}), H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound →
       (∀ (j : Fin H.eventCount) (t : ℝ) (y : (H.stage j.castSucc).Carrier),
         H.time j.castSucc ≤ t → t < H.time j.succ → t < η₀ →
           (H.toHistory.event j).incoming.flow.scalar t y ≤ K) ∧
@@ -100,8 +100,8 @@ theorem RetainedCoreHistory.exists_scalar_le_before_initial_window (P₀ : Orien
 
 theorem RetainedCoreHistory.tendsto_scalar_mul_time_atTop_of_inCutoffClass
     {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric} {B δb ρb s t : ℕ → ℝ}
-    {p₀ : ℕ → CutoffParameters} {H : ℕ → RetainedCoreHistory P₀}
-    (hH : ∀ n, (H n).InCutoffClass g₀ (B n) (p₀ n) (δb n) (ρb n))
+    {p₀ : ℕ → CutoffParameters} {H : ℕ → RetainedCoreHistory.{u}}
+    (hH : ∀ n, (H n).InCutoffClass (P₀ := P₀) g₀ (B n) (p₀ n) (δb n) (ρb n))
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
     (hG : ∀ n, (G n).flow.base.metric ((H n).time (Fin.last (H n).eventCount)) =
@@ -121,8 +121,8 @@ theorem RetainedCoreHistory.tendsto_scalar_mul_time_atTop_of_inCutoffClass
 
 theorem RetainedCoreHistory.tendsto_scalar_mul_earlier_time_atTop_of_inCutoffClass
     {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric} {B δb ρb s t t₀ : ℕ → ℝ}
-    {p₀ : ℕ → CutoffParameters} {H : ℕ → RetainedCoreHistory P₀}
-    (hH : ∀ n, (H n).InCutoffClass g₀ (B n) (p₀ n) (δb n) (ρb n))
+    {p₀ : ℕ → CutoffParameters} {H : ℕ → RetainedCoreHistory.{u}}
+    (hH : ∀ n, (H n).InCutoffClass (P₀ := P₀) g₀ (B n) (p₀ n) (δb n) (ρb n))
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
     (hG : ∀ n, (G n).flow.base.metric ((H n).time (Fin.last (H n).eventCount)) =

@@ -139,7 +139,7 @@ theorem exists_mem_openCell_notMem_affineSubspaces_notMem_ranges {κ ι η F : T
       dimH_iUnion_lt_of_finite hpos fun j => ?_⟩
     calc dimH (range (f j) ∩ arrangementLayer l x) ≤ dimH (range (f j)) :=
           dimH_mono inter_subset_left
-      _ ≤ Module.finrank ℝ F := (hf j).dimH_range_le
+      _ ≤ Module.finrank ℝ F := ((hf j).differentiable one_ne_zero).dimH_range_le
       _ < Module.finrank ℝ (arrangementLayer l x).direction := by
           rw [hLdir]
           exact_mod_cast hF

@@ -252,7 +252,7 @@ theorem exists_eParabolicC2HolderGaugeInEuclideanChartOn_le_of_chartTransition_o
   refine ⟨Kgamma, (hgamma hmap hu).trans ?_⟩
   exact mul_le_mul_right hsource Kgamma
 
-theorem isBoundedParabolicC2HolderOn_parabolicEuclideanChartRepresentation_of_chartTransition_of_nested_source_balls
+theorem isBoundedParabolicC2HolderOn_chart_transition_of_nested_balls
     [FiniteDimensional Real E] [I.Boundaryless] [IsManifold I ∞ M]
     (gamma delta : M) {s : Set (EuclideanSpace Real
       (Fin (Module.finrank Real E)))}
@@ -637,7 +637,7 @@ theorem isBoundedParabolicC2HolderInEuclideanChartsOn_of_chartTransitions_of_nes
       beta I center (fun i ↦ parabolicCylinder J (s i)) u := by
   intro i
   exact
-    isBoundedParabolicC2HolderOn_parabolicEuclideanChartRepresentation_of_chartTransition_of_nested_source_balls
+    isBoundedParabolicC2HolderOn_chart_transition_of_nested_balls
       (center i) (source i) (hs i) (hsconv i) (hsOverlap i)
       hbeta J hJ (sourceBallCenter i) (hrR i) (hmap i) (hsource i)
 

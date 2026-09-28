@@ -153,11 +153,9 @@ private theorem aestronglyMeasurable_euclidean_of_components
 omit [NeZero d] in
 private theorem tendstoInMeasure_of_eLpNorm_tendsto
     {q : ℝ≥0∞} (hq : q ≠ 0) {f : ℕ → E → ℝ} {g : E → ℝ}
-    (hf : ∀ n, AEStronglyMeasurable (f n) volume)
-    (hg : AEStronglyMeasurable g volume)
     (h : Tendsto (fun n => eLpNorm (fun x => f n x - g x) q volume) atTop (nhds 0)) :
     TendstoInMeasure volume f atTop g :=
-  tendstoInMeasure_of_tendsto_eLpNorm hq hf hg h
+  tendstoInMeasure_of_tendsto_eLpNorm hq h
 
 omit [NeZero d] in
 private theorem partialDiff_aestronglyMeasurable
@@ -233,7 +231,7 @@ private theorem gradVec_eLpNorm_le_sum
         eLpNorm (fun x => ‖δ i x‖) (ENNReal.ofReal p) volume =
           eLpNorm (δ i) (ENNReal.ofReal p) volume := by
     intro i
-    simpa using (eLpNorm_norm (f := δ i) (p := ENNReal.ofReal p) (μ := volume))
+    exact eLpNorm_norm (δ i) (hδ_aesm i)
   have hPointwise :
       ∀ᵐ x ∂volume,
         ‖WithLp.toLp 2 (fun i => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1)) - G x‖ ≤
@@ -264,13 +262,15 @@ private theorem gradVec_eLpNorm_le_sum
       eLpNorm
         (fun x => ∑ i : Fin d, ‖δ i x‖)
         (ENNReal.ofReal p) volume := by
-          exact eLpNorm_mono_ae_real hPointwise
+          exact eLpNorm_mono_ae_real
+            (aestronglyMeasurable_euclidean_of_components (fun i => by
+              simpa [δ] using hδ_aesm i)) hPointwise
     _ ≤ ∑ i : Fin d,
           eLpNorm (fun x => ‖δ i x‖) (ENNReal.ofReal p) volume := by
         have hp_enn : (1 : ℝ≥0∞) ≤ ENNReal.ofReal p := by
           rwa [← ENNReal.ofReal_one, ENNReal.ofReal_le_ofReal_iff (by linarith)]
         convert eLpNorm_sum_le (s := Finset.univ) (f := fun i => fun x => ‖δ i x‖)
-          (fun i _ => (hδ_aesm i).norm) hp_enn using 1
+          hp_enn using 1
         congr 1
         ext x
         simp [Finset.sum_apply]
@@ -314,11 +314,11 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
     rw [hp_enn_def, ← ENNReal.ofReal_one]
     exact ENNReal.ofReal_le_ofReal hp
   have hTIM : TendstoInMeasure volume φ atTop u :=
-    tendstoInMeasure_of_eLpNorm_tendsto hp_ne hφ_aesm hu_aesm hφ_fun
+    tendstoInMeasure_of_eLpNorm_tendsto hp_ne hφ_fun
   obtain ⟨σ, hσ_mono, hσ_ae⟩ := hTIM.exists_seq_tendsto_ae
   have hFatou : eLpNorm u p_star volume ≤
       atTop.liminf (fun n => eLpNorm (φ (σ n)) p_star volume) :=
-    Lp.eLpNorm_lim_le_liminf_eLpNorm (fun n => hφ_aesm (σ n)) u hσ_ae
+    Lp.eLpNorm_lim_le_liminf_eLpNorm (fun n => hφ_aesm (σ n)) u hu_aesm hσ_ae
   let gradVec : ℕ → E → E := fun n x =>
     WithLp.toLp 2 (fun i => (fderiv ℝ (φ n) x) (EuclideanSpace.single i 1))
   have hBridge : ∀ n, (fun x => ‖fderiv ℝ (φ n) x‖) =ᵐ[volume]
@@ -335,7 +335,8 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
         ≤ C * eLpNorm (fderiv ℝ (φ n)) p_enn volume := hGNS n
       _ = C * eLpNorm (fun x => ‖gradVec n x‖) p_enn volume := by
           congr 1
-          rw [← eLpNorm_norm (fderiv ℝ (φ n))]
+          rw [← eLpNorm_norm (fderiv ℝ (φ n))
+            ((hφ_smooth n).continuous_fderiv (by simp)).aestronglyMeasurable]
           exact eLpNorm_congr_ae (hBridge n)
   have hGradDiffTendstoZero : Tendsto
       (fun n => eLpNorm (fun x => gradVec n x - G x) p_enn volume) atTop (nhds 0) := by
@@ -393,9 +394,10 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
                   simpa [Real.norm_eq_abs] using
                     (eLpNorm_norm
                       (f := fun x => ‖gradVec (σ n) x‖ - ‖G x‖)
-                      (p := p_enn) (μ := volume)).symm
+                      (p := p_enn) (μ := volume) hGradNormAesm).symm
           _ ≤ eLpNorm (fun x => gradVec (σ n) x - G x) p_enn volume := by
-                refine eLpNorm_mono_ae ?_
+                refine eLpNorm_mono_ae
+                  (by simpa only [Real.norm_eq_abs] using hGradNormAesm.norm) ?_
                 filter_upwards with x
                 simpa [Real.norm_eq_abs] using
                   (abs_norm_sub_norm_le (gradVec (σ n) x) (G x))
@@ -407,7 +409,7 @@ theorem sobolev_of_approx {p : ℝ} (hp : 1 ≤ p) (hpd : p < (d : ℝ))
                 ring
         _ ≤ eLpNorm (fun x => ‖gradVec (σ n) x‖ - ‖G x‖) p_enn volume +
               eLpNorm (fun x => ‖G x‖) p_enn volume := by
-                exact eLpNorm_add_le hGradNormAesm hGnorm_aesm hp_one_enn
+                exact eLpNorm_add_le hp_one_enn
         _ ≤ eLpNorm (fun x => gradVec (σ n) x - G x) p_enn volume +
               eLpNorm (fun x => ‖G x‖) p_enn volume := by
                 exact add_le_add hNormDiff le_rfl

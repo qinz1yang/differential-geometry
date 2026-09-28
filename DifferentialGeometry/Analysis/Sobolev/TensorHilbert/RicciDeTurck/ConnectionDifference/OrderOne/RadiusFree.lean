@@ -1,5 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.OperatorComposition
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

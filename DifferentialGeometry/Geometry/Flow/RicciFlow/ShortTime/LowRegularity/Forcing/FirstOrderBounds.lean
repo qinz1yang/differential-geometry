@@ -19,6 +19,8 @@ open scoped Manifold Topology ContDiff ENNReal NNReal BigOperators Matrix
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 
 open DifferentialGeometry.Integral.DivergenceTheorem
 open DifferentialGeometry.Integral.Measure

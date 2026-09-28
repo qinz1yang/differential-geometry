@@ -47,8 +47,8 @@ private theorem prefix_initial_budget {H K : ObservedHistory.{u}} (h : H.IsPrefi
 
 
 theorem RetainedCoreHistory.exists_closedSlab_extension_to_horizon_of_volume_debit
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
-    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    (H : RetainedCoreHistory.{u})
+    (S : Set (RetainedCoreHistory.{u})) (hH : H ∈ S)
     {B C v : ℝ} (hC : 0 ≤ C) (hv : 0 < v)
     (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
     (hhorizon : ∀ K ∈ S, K.horizon ≤ B)
@@ -117,9 +117,9 @@ theorem RetainedCoreHistory.exists_closedSlab_extension_to_horizon_of_volume_deb
     omega
 
 theorem RetainedCoreHistory.exists_extension_to_horizon_of_volume_debit
-    {P : OrientedThreeStage.{u}} {g : P.Metric} (H : RetainedCoreHistory P)
+    {P : OrientedThreeStage.{u}} {g : P.Metric} (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
-    (S : Set (RetainedCoreHistory P)) (hH : H ∈ S)
+    (S : Set (RetainedCoreHistory.{u})) (hH : H ∈ S)
     {B C v : ℝ} (hC : 0 ≤ C) (hv : 0 < v)
     (hprefix : ∀ K ∈ S, H.toHistory.IsPrefixOf K.toHistory)
     (hhorizon : ∀ K ∈ S, K.horizon ≤ B)
@@ -147,7 +147,7 @@ theorem RetainedCoreHistory.exists_extension_to_horizon_of_volume_debit
         (hinit : E.toMetricCutCapEvent.incoming.flow.base.metric
           (K.time (Fin.last K.eventCount)) = K.initialMetric (Fin.last K.eventCount)),
         E.incoming = G ∧ K.appendEvent E.incoming.lt E hinit ∈ S) :
-    ∃ (K : RetainedCoreHistory P) (A' : InitialIdentification P g K.toHistory),
+    ∃ (K : RetainedCoreHistory.{u}) (A' : InitialIdentification P g K.toHistory),
       K.horizon = B ∧ A.IsPrefixOf A' ∧
       ∃ J ∈ S, J.toHistory.IsPrefixOf K.toHistory ∧ K.eventCount = J.eventCount := by
   classical

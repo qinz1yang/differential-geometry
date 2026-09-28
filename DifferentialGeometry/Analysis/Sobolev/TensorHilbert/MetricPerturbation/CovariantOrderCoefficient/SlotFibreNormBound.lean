@@ -9,6 +9,10 @@ import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.Basic
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleProductGrid
+
+open DifferentialGeometry.TensorMetric
+  (coframeS coframeS_apply exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent
+    riemannianFiberNormSq)
 open DifferentialGeometry.Geometry.Connection.Realization DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -272,18 +276,18 @@ private lemma sum_compSq_termSlotFib_eq_normSq
             then (1 : ℝ) else 0) := by
       intro ρ
       by_cases hρ : ρ = (fun j : {i : Fin (s + 1) // i ≠ 0} => J (Fin.succ (j : Fin (s + 1))))
-      · rw [if_pos hρ]
+      · rw [ite_eq_left hρ]
         refine Finset.prod_eq_one (fun l hl => ?_)
         have hlk : l ≠ (0 : Fin (s + 1)) := Finset.ne_of_mem_erase hl
-        rw [hcoe ρ l hlk, hρ, if_pos rfl]
-      · rw [if_neg hρ]
+        rw [hcoe ρ l hlk, hρ, ite_eq_left rfl]
+      · rw [ite_eq_right hρ]
         obtain ⟨j, hj⟩ : ∃ j : {i : Fin (s + 1) // i ≠ 0},
             ρ j ≠ J (Fin.succ (j : Fin (s + 1))) := by
           by_contra hcon
           exact hρ (funext (fun j => not_not.mp (fun h => hcon ⟨j, h⟩)))
         refine Finset.prod_eq_zero (i := (j : Fin (s + 1)))
           (Finset.mem_erase.mpr ⟨j.2, Finset.mem_univ _⟩) ?_
-        rw [hcoe ρ (j : Fin (s + 1)) j.2, if_neg hj]
+        rw [hcoe ρ (j : Fin (s + 1)) j.2, ite_eq_right hj]
     rw [Finset.sum_congr rfl (fun ρ _ => by rw [hkval m ρ, hindic ρ] :
       ∀ ρ ∈ Finset.univ,
         (g₀.inner x (e ((ee.symm (m, ρ)) 0)) w) ^ 2 *

@@ -173,14 +173,14 @@ theorem faceEulerChar_eq_sum_connectedComponentComplex
     constructor
     · rintro ⟨hsB, hg⟩
       have hcomp : connectedComponentOfFace B hsB = c := by
-        simpa only [g, dif_pos hsB] using hg
+        simpa only [g, dite_eq_left hsB] using hg
       exact (mem_connectedComponentComplex_faces_iff_connectedComponentOfFace_eq
         B c hsB).mpr hcomp
     · intro hsC
       have hsB : s ∈ B.faces := hsC.1
       refine ⟨hsB, ?_⟩
       have hcomp := connectedComponentOfFace_eq_of_mem B c hsB hsC
-      simpa only [g, dif_pos hsB] using hcomp
+      simpa only [g, dite_eq_left hsB] using hcomp
   · intro s _
     rfl
 
@@ -313,7 +313,7 @@ theorem orderedNormalizedBoundary_apply_eq_sum_faceCofaces
         rw [simplexBoundaryCoefficient]
         apply Finset.sum_eq_zero
         intro v hv
-        rw [if_neg]
+        rw [ite_eq_right]
         intro herase
         apply hst
         apply (mem_faceCofaces K).mpr
@@ -348,7 +348,7 @@ theorem orientedBoundary_componentOrientationChain
         orientedBoundary o.vertexOrder B 2 o.sign t.1 else 0 := by
   rw [orientedBoundary_eq_sum_faceCofaces, orientedBoundary_eq_sum_faceCofaces]
   by_cases htc : connectedComponentOfFace B t.2.1 = c
-  · rw [if_pos htc]
+  · rw [ite_eq_left htc]
     apply Finset.sum_congr rfl
     intro s hs
     obtain ⟨hsB, hscard, hts⟩ := (mem_faceCofaces B).mp hs
@@ -356,7 +356,7 @@ theorem orientedBoundary_componentOrientationChain
     have hcard : s.card = 3 := by omega
     have hsc : connectedComponentOfFace B hsB = c := hcomp.symm.trans htc
     simp [componentOrientationChain, hsB, hcard, hsc]
-  · rw [if_neg htc]
+  · rw [ite_eq_right htc]
     apply Finset.sum_eq_zero
     intro s hs
     obtain ⟨hsB, hscard, hts⟩ := (mem_faceCofaces B).mp hs
@@ -389,9 +389,9 @@ theorem orderedNormalizedBoundary_boundaryComponentCycle
     rw [hB.card_faceCofaces_eq_two B t.2.1 t.2.2]
     omega)
   by_cases htc : connectedComponentOfFace B t.2.1 = c
-  · rw [if_pos htc, hzero]
+  · rw [ite_eq_left htc, hzero]
     norm_num
-  · rw [if_neg htc]
+  · rw [ite_eq_right htc]
     norm_num
 
 abbrev OtherBoundaryComponent
@@ -977,7 +977,7 @@ theorem topBoundaryAndBoundaryComponents_snd_apply_eq_zero_of_fst_eq_zero
   simp only [boundaryComponentCombinationCoeff, tB.2.1, tB.2.2, and_self,
     dite_true, hcsub] at hbc
   by_cases hc : connectedComponentOfFace B tB.2.1 ≠ c₀
-  · rw [dif_pos hc] at hbc
+  · rw [dite_eq_left hc] at hbc
     have hsign : (oB.sign tB.1 : k) ≠ 0 := by
       rcases oB.sign_top tB.1 tB.2.1 tB.2.2 with h | h <;> simp [h]
     exact (mul_eq_zero.mp hbc).resolve_right hsign

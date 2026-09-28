@@ -83,7 +83,7 @@ theorem exists_local_dirichlet_bilinear_form_family
       (hJc.measurableSet.prod hΩ.measurableSet) (prod_mono Subset.rfl subset_closure)
       (μ := (volume : Measure ℝ).prod volume)
     rw [← Measure.prod_restrict] at h
-    exact h.1
+    exact h.aestronglyMeasurable
   have hcp : ContinuousOn
       (fun p : ℝ × EuStd => fun i j : Fin (Module.finrank ℝ EuN) => c p.1 i j p.2)
       (J ×ˢ closure Ω) := continuousOn_pi.mpr fun i => continuousOn_pi.mpr fun j => hcjoint i j

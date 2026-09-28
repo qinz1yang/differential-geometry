@@ -201,7 +201,6 @@ theorem moser_preMoser
     dsimp [qexp]
     exact div_pos (mul_pos hd_pos (by norm_num)) hd_sub_pos
   have hv_memLp_q : MemLp v q μ := by
-    refine ⟨hwvSob.memLp.aestronglyMeasurable, ?_⟩
     have hgrad_lt_top :
         eLpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ < ⊤ :=
       lt_top_iff_ne_top.mpr (by simpa using hwvSob.weakGrad_norm_memLp.eLpNorm_ne_top)
@@ -229,9 +228,8 @@ theorem moser_preMoser
     have hC_toReal : (ENNReal.ofReal (CGns d 2)).toReal = CGns d 2 :=
       ENNReal.toReal_ofReal (C_gns_nonneg d 2)
     have hSob_toReal' := hSob_toReal
-    rw [MeasureTheory.toReal_eLpNorm hv_memLp_q.aestronglyMeasurable,
-      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm
-      hwvSob.weakGrad_norm_memLp.aestronglyMeasurable, hC_toReal] at hSob_toReal'
+    rw [MeasureTheory.toReal_eLpNorm,
+      ENNReal.toReal_mul, MeasureTheory.toReal_eLpNorm, hC_toReal] at hSob_toReal'
     exact hSob_toReal'
   have hgrad_lp :
       MeasureTheory.lpNorm (fun x => ‖hwvSob.weakGrad x‖) 2 μ =

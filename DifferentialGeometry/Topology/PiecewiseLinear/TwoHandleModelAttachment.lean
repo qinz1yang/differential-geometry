@@ -357,11 +357,11 @@ theorem twoHandleChart_rim (a : ℝ) (j : Fin 5) :
   · rintro p ⟨-, -, -, h2⟩ -
     simp only [twoHandleBottomL] at h2
     have hs : p.2 < 0 := by linarith
-    exact (if_pos hs).symm
+    exact (ite_eq_left hs).symm
   · rintro p ⟨-, -, -, h1⟩ -
     simp only [twoHandleTopL] at h1
     have hs : ¬ p.2 < 0 := by linarith
-    exact (if_neg hs).symm
+    exact (ite_eq_right hs).symm
 
 theorem twoHandleChart_cover {a : ℝ} (ha : 0 < a) {p : EuclideanSpace ℝ (Fin 2) × ℝ}
     (hp : p ∈ Metric.closedBall 0 1) : ∃ j, p ∈ twoHandleChartSource a j := by

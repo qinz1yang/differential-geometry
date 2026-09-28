@@ -33,6 +33,8 @@ private theorem mvfderiv_congr_of_eventuallyEq {f₁ f : M → ℝ} {x : M}
   have hx : f₁ x = f x := h.eq_of_nhds
   simp only [mvfderiv]
   rw [Filter.EventuallyEq.mfderiv_eq h, hx]
+  simp [tangentSpaceCast]
+  rfl
 
 private theorem mvfzero_finset_prod {ι' : Type*} {s : Finset ι'} {g : ι' → M → ℝ} {x : M}
     {w : TangentSpace I x} (hg : ∀ i ∈ s, MDiffAt (g i) x)
@@ -138,27 +140,27 @@ private theorem mvfzero_adjugate {G : M → Matrix ι ι ℝ} {x : M} {w : Tange
           else fun p => G p a b) : M → ℝ) := by
     intro a b
     by_cases haj : a = j
-    · rw [if_pos haj, haj]
+    · rw [ite_eq_left haj, haj]
       funext p
       rw [Matrix.updateRow_self]
-    · rw [if_neg haj]
+    · rw [ite_eq_right haj]
       funext p
       rw [Matrix.updateRow_ne haj]
   refine mvfzero_det (G := fun p => (G p).updateRow j (Pi.single i 1)) ?_ ?_
   · intro a b
     rw [hentry a b]
     by_cases haj : a = j
-    · rw [if_pos haj]
+    · rw [ite_eq_left haj]
       exact mdifferentiableAt_const (I := I) (M := M) (I' := 𝓘(ℝ)) (M' := ℝ)
         (c := (Pi.single i (1 : ℝ) : ι → ℝ) b) (x := x)
-    · rw [if_neg haj]
+    · rw [ite_eq_right haj]
       exact hG a b
   · intro a b
     rw [hentry a b]
     by_cases haj : a = j
-    · rw [if_pos haj]
+    · rw [ite_eq_left haj]
       simp [mvfderiv_const]
-    · rw [if_neg haj]
+    · rw [ite_eq_right haj]
       exact h0 a b
 
 theorem mvfderiv_matrix_inv_eq_zero_of_entry_mvfderiv_eq_zero {G : M → Matrix ι ι ℝ} {x : M}
@@ -292,7 +294,7 @@ theorem exists_basis_apply_eq_of_frame (n : ℕ) (x : M)
   filter_upwards [hgood] with p hp
   have hfd : FiniteDimensional ℝ (TangentSpace I p) :=
     inferInstanceAs (FiniteDimensional ℝ E)
-  rw [dif_pos hp]
+  rw [dite_eq_left hp]
   intro a
   exact congrFun (coe_basisOfLinearIndependentOfCardEqFinrank' (fun a => V a p)
     (hindep p hp.1 hp.2) (by rw [Fintype.card_fin]; exact hcard)) a

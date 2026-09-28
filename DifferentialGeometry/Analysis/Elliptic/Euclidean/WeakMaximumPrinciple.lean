@@ -199,7 +199,7 @@ private theorem memW01p_pos_part
     apply le_trans _ (hC _ (mem_range_self n))
     rw [gradLpOfWitness, gradLpOfWitness, Lp.norm_toLp, Lp.norm_toLp]
     apply ENNReal.toReal_mono (htw n).weakGrad_memLp.eLpNorm_ne_top
-    apply eLpNorm_mono_ae
+    apply eLpNorm_mono_ae (hpw n).weakGrad_memLp.aestronglyMeasurable
     filter_upwards with x
     change ‖if 0 < φ n x then (htw n).weakGrad x else 0‖ ≤ ‖(htw n).weakGrad x‖
     split_ifs <;> simp
@@ -209,9 +209,9 @@ private theorem memW01p_pos_part
       2 (volume.restrict Ω)) atTop (𝓝 0) := by
     apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hφf (fun _ => zero_le)
     intro n
-    apply eLpNorm_mono_ae
+    apply eLpNorm_mono_ae ((hpw n).memLp.sub hpLp).aestronglyMeasurable
     filter_upwards with x
-    simpa only [Real.norm_eq_abs, Real.dist_eq, NNReal.coe_one, one_mul] using
+    simpa only [Pi.sub_apply, Real.norm_eq_abs, Real.dist_eq, NNReal.coe_one, one_mul] using
       (MeasureTheory.Lp.lipschitzWith_pos_part.dist_le_mul (φ n x) (u x))
   exact (exists_weakly_convergent_gradients_of_tendsto_L2 hΩ hp0 hpLp hbound hlim).1
 

@@ -28,7 +28,7 @@ private theorem continuous_radialExtensionFun (f : C(sphere (0 : E) 1, sphere (0
     have heq : ({0}ᶜ : Set E).domRestrict (radialExtensionFun f) =
         fun x : ({0}ᶜ : Set E) ↦ ‖x.val‖ • (f ((homeomorphUnitSphereProd E) x).1 : F) := by
       funext x
-      exact dif_neg (show x.val ≠ 0 from x.property)
+      exact dite_eq_right (show x.val ≠ 0 from x.property)
     rw [heq]
     exact (continuous_norm.comp continuous_subtype_val).smul
       (continuous_subtype_val.comp (f.continuous.comp (homeomorphUnitSphereProd E).continuous.fst))
@@ -58,7 +58,7 @@ theorem sphereRadialExtension_norm (f : C(sphere (0 : E) 1, sphere (0 : F) 1)) (
 theorem sphereRadialExtension_apply_of_ne_zero (f : C(sphere (0 : E) 1, sphere (0 : F) 1))
     {x : E} (hx : x ≠ 0) :
     sphereRadialExtension f x = ‖x‖ • (f ((homeomorphUnitSphereProd E) ⟨x, hx⟩).1 : F) :=
-  dif_neg hx
+  dite_eq_right hx
 
 
 @[simp]

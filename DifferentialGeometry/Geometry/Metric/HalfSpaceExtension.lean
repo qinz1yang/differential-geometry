@@ -1,5 +1,5 @@
-import DifferentialGeometry.Tensor.Metric.HalfSpaceExtension
-import DifferentialGeometry.Tensor.Metric.BilinearSymmetrization
+import DifferentialGeometry.Tensor.BilinearForm.HalfSpaceExtension
+import DifferentialGeometry.Tensor.BilinearForm.Smoothness
 import DifferentialGeometry.Geometry.Metric.LocalRealization
 
 set_option autoImplicit false

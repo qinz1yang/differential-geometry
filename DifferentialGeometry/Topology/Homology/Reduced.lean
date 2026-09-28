@@ -26,7 +26,7 @@ def singularAugmentation :
 @[reassoc (attr := simp)]
 theorem ι_singularAugmentation (σ : TopCat.toSSet.obj X _⦋0⦌) :
     (TopCat.toSSet.obj X).ιChainComplex σ ≫ singularAugmentation R X = 𝟙 R :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 theorem d_singularAugmentation :
@@ -415,7 +415,7 @@ theorem isZero_reducedSingularHomology_of_isEmpty [IsEmpty X] (n : ℕ) :
     rw [IsZero.iff_id_eq_zero]
     apply SSet.chainComplex_hom_ext
     intro σ
-    exact isEmptyElim ((X.toSSetObjEquiv _ σ) (stdSimplex.vertex 0))
+    exact isEmptyElim ((X.toSSetObjEquiv _ σ) (Convexity.StdSimplex.single 0))
   exact (HomologicalComplex.ExactAt.of_isZero
     (K := augmentedSingularChainComplex R X) (i := n + 1) hz).isZero_homology
 

@@ -20,7 +20,7 @@ theorem exists_derivedNeighborhoodCell_edge_attachment
     (he : {a, b} ∈ K.faces) (d : Finset (Finset E))
     (hd : ∀ s ∈ d, s ∈ K.faces ∧ s.card ≤ 2) (hed : {a, b} ∉ d)
     (ha : {a} ∈ d) (hb : {b} ∈ d) :
-    let D := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+    let D := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
     let A : Set D := {z | z.val.2 = 0 ∨ z.val.2 = 1}
     let U := ⋃ s ∈ d, (derivedNeighborhoodCell K s).space
     ∃ g : (Fin 3 → ℝ) × ℝ → E,
@@ -33,7 +33,7 @@ theorem exists_derivedNeighborhoodCell_edge_attachment
           ∀ z, (e (adjunctionCell Subtype.val φ z) : E) = g z.val := by
   classical
   dsimp only
-  let D := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+  let D := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
   let A : Set D := {z | z.val.2 = 0 ∨ z.val.2 = 1}
   let U := ⋃ s ∈ d, (derivedNeighborhoodCell K s).space
   obtain ⟨g, hg, hg0, hg1⟩ := exists_isPLHomeomorphOn_derivedNeighborhoodCell_edge K hK hab he
@@ -73,7 +73,7 @@ theorem exists_derivedNeighborhoodCell_edge_attachment
   have hφinj : Function.Injective φ := fun x y h =>
     Subtype.ext (hci (congrArg Subtype.val h))
   let _ : CompactSpace D := isCompact_iff_compactSpace.mp
-    ((isCompact_stdSimplex ℝ (Fin 3)).prod isCompact_Icc)
+    ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod isCompact_Icc)
   have hA : IsClosed A :=
     (isClosed_eq (continuous_snd.comp continuous_subtype_val) continuous_const).union
       (isClosed_eq (continuous_snd.comp continuous_subtype_val) continuous_const)
@@ -111,7 +111,7 @@ theorem exists_derivedNeighborhood_edge_attachment
     (hL : ∀ s ∈ L.faces, s.card ≤ 2) {a b : E} (hab : a ≠ b)
     (he : {a, b} ∈ K.faces) (heL : {a, b} ∉ L.faces)
     (ha : {a} ∈ L.faces) (hb : {b} ∈ L.faces) :
-    let D := stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
+    let D := Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1
     let A : Set D := {z | z.val.2 = 0 ∨ z.val.2 = 1}
     let N := derivedNeighborhood K L
     IsCombinatorialManifoldWithBoundary 3 N ∧

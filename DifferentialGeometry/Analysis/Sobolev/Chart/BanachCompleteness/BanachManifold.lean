@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.MeasurablePul
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobolevBanach
 import DifferentialGeometry.Analysis.Integration.Measure.Chart.MeasureComparison
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 import Mathlib.Topology.UniformSpace.UniformEmbedding
 
@@ -120,7 +120,13 @@ theorem chartPushed_cauchy_of_wkpNormChart_cauchy
             (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α'
             (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x))
           (chartTargetEuclid (I := I) (M := M) α') :=
-    ENNReal.le_tsum α
+    ENNReal.le_tsum (f := fun α' : M =>
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
+        (d := Module.finrank ℝ E) k p
+        (chartPushed (I := I) (M := M)
+          (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α'
+          (fun x => wkpChartFun (f m) x - wkpChartFun (f n) x))
+        (chartTargetEuclid (I := I) (M := M) α')) α
   exact le_trans h_summand_le_tsum h_le
 
 omit [NeZero (Module.finrank ℝ E)] in
@@ -265,25 +271,13 @@ lemma chartLimit_ae_zero
     intro h
     rw [h] at hp_one
     exact absurd hp_one (by norm_num : ¬ ((1 : ℝ≥0∞) ≤ 0))
-  have h_aesm_seq : ∀ n, AEStronglyMeasurable
-      (chartPushed (I := I) (M := M)
-        (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
-        (wkpChartFun (f n)))
-      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) := fun n =>
-    ((wkpChartFun_memWkpChart (f n)) α).memLp.aestronglyMeasurable
-  have h_aesm_lim : AEStronglyMeasurable
-      (chartLimit (I := I) (M := M) hp_one h_cauchy α)
-      (volume.restrict (chartTargetEuclid (I := I) (M := M) α)) :=
-    (chartLimit_memWkp (I := I) (M := M)
-      hp_one h_cauchy α).memLp.aestronglyMeasurable
   have h_meas : TendstoInMeasure
       (volume.restrict (chartTargetEuclid (I := I) (M := M) α))
       (fun n => chartPushed (I := I) (M := M)
         (DifferentialGeometry.Integral.Measure.chartAtlasPOU I M) α
         (wkpChartFun (f n)))
       atTop (chartLimit (I := I) (M := M) hp_one h_cauchy α) :=
-    tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top
-      h_aesm_seq h_aesm_lim h_eLp
+    tendstoInMeasure_of_tendsto_eLpNorm_of_ne_top hp_zero hp_top h_eLp
   obtain ⟨ns, _hns, h_ae⟩ := h_meas.exists_seq_tendsto_ae
   have hK_compact : IsCompact
       (toEuclidean ''

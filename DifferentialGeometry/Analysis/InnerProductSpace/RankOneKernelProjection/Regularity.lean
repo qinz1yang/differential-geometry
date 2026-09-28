@@ -7,7 +7,7 @@ import Mathlib.Analysis.Normed.Module.FiniteDimension
 set_option autoImplicit false
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+namespace ContinuousLinearMap
 
 open Filter Set
 open scoped Topology
@@ -50,7 +50,7 @@ theorem fderiv_rankOneKernelProjection_apply
   simp only [Function.comp_def, operatorTraceCLM_apply] at hfull
   simp only [Pi.smul_apply'] at hfull
   rw [hfull.fderiv]
-  simp only [neg_apply, add_apply, smul_apply, ContinuousLinearMap.smulRight_apply,
+  simp only [_root_.neg_apply, _root_.add_apply, _root_.smul_apply, ContinuousLinearMap.smulRight_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.toSpanSingleton_apply,
     operatorTraceCLM_apply, smul_eq_mul]
   module
@@ -91,4 +91,4 @@ theorem continuousWithinAt_fderiv_rankOneKernelProjection
   rw [fderiv_rankOneKernelProjection_apply (hspace b hb) hτ v]
   exact hc.congr' heq.symm
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+end ContinuousLinearMap

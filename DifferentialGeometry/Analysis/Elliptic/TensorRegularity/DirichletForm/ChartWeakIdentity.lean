@@ -532,9 +532,9 @@ theorem covPrincipalIntegrand_rotated_collapse
               euclidPartial (E := E) l (chartPushedRaw I α χ) y := by
     rw [Finset.sum_congr rfl (fun P _ => hcollapse P)]
     rw [Finset.sum_eq_single P₀]
-    · rw [if_pos rfl, one_mul, hbumpSum_def]
+    · rw [ite_eq_left rfl, one_mul, hbumpSum_def]
     · intro P _ hP
-      rw [if_neg hP, zero_mul]
+      rw [ite_eq_right hP, zero_mul]
     · intro hP₀
       exact absurd (Finset.mem_univ P₀) hP₀
   rw [hbump_collapse]

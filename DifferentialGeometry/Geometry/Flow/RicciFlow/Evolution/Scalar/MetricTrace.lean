@@ -34,7 +34,7 @@ theorem scalar_hasDerivWithinAt_of_ricci_deriv
     (by simpa only [smul_apply, smul_eq_mul] using hRic)
   change HasDerivWithinAt (fun r => S.scalar r x) _ J t at hh
   convert hh using 1
-  rw [_root_.Tensor0SBundle.inner0S_smul_left, metricTracePair0SAt_smul]
+  rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left, metricTracePair0SAt_smul]
   change 2 * normSq0S (S.base.metric t) x 2 (S.ricciAt t x) -
       1 / 2 * metricTracePair0SAt (S.base.metric t) B =
     - (-2 * normSq0S (S.base.metric t) x 2 (S.ricciAt t x)) +

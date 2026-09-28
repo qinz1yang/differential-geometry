@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.LocalDegree.ReflectionDegree
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 
 set_option autoImplicit false
 open Metric Submodule

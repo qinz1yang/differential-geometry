@@ -4,6 +4,9 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.SourceEst
 import DifferentialGeometry.Geometry.Connection.Convergence.DifferenceDerivativeBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.Uniform.Curvature.JetBound
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (abs_metric_inner_le_sqrt_metric_quadratic)
+
 set_option autoImplicit false
 
 noncomputable section

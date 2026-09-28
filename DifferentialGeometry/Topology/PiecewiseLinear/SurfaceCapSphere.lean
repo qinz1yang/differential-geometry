@@ -22,7 +22,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLSphere_cap
     ∃ (S : Set (E × (ι → ℝ))) (D : ι → Set (E × (ι → ℝ)))
       (q : ι → (Fin 3 → ℝ) → E × (ι → ℝ)),
       IsPLSphere 2 S ∧ S = LinearMap.inl ℝ E (ι → ℝ) '' M.space ∪ ⋃ i, D i ∧
-      (∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 3)) (D i)) ∧
+      (∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D i)) ∧
       (∀ i, q i '' stdSimplexBoundary 2 = LinearMap.inl ℝ E (ι → ℝ) '' J i) ∧
       (∀ i, D i ∩ LinearMap.inl ℝ E (ι → ℝ) '' M.space = LinearMap.inl ℝ E (ι → ℝ) '' J i) ∧
       Pairwise fun i j => Disjoint (D i) (D j) := by
@@ -45,7 +45,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_isPLSphere_cap
     change (boundaryComplex (1 + 1) M').space = _
     rw [boundaryComplex_space_of_isPLHomeomorphOn M M' hM hι, hbd, image_iUnion]
   have hdisk : ∀ i : ι, ∃ (D : Set (E × (ι → ℝ))) (r : (Fin 3 → ℝ) → E × (ι → ℝ)),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = ι₀ '' J i ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = ι₀ '' J i ∧
       D ∩ M'.space = ι₀ '' J i ∧
       ∀ y ∈ D, ∃ s : ℝ, y.2 = s • Pi.single i (1 : ℝ) ∧ (s = 0 → y ∈ ι₀ '' J i) := by
     intro i

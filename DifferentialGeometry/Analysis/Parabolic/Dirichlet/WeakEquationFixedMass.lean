@@ -201,8 +201,8 @@ theorem IsWeakEvolutionSolution.integral_timeH1_test_volumeDensity_swap
     filter_upwards [hwd, hmem] with t hdt ht
     have htc : t ∈ Icc (0 : ℝ) T := ⟨ht.1, ht.2.le⟩
     dsimp only [massForm, variationForm]
-    rw [dirichletMassComplOnIcc, dif_pos htc,
-      dirichletMassVariationComplOnIco, dif_pos ht]
+    rw [dirichletMassComplOnIcc, dite_eq_left htc,
+      dirichletMassVariationComplOnIco, dite_eq_left ht]
     exact dirichletMassCompl_add_massVariationCompl_eq_inner_of_volumeDensity_swap
       hG (hreg htc) Bv (htrace t ht) hCg (hequiv t htc) Cv hCv0 hCvtop (hvol t htc)
       (u t) (z.toFun t) (z.deriv t) (w.toFun t) (w.deriv t) (hw t htc) hdt

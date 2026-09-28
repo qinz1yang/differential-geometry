@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BoundedAtDistanceFromRmBallBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.DistanceCurvatureEscape
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornBarrierFrontierWeb
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornBarriersMinimalFrontier
@@ -131,22 +130,6 @@ theorem noSubsequenceCurvatureEscapeShell_iff_boundedAtDistanceShell_of_smallSca
       BoundedAtDistanceShell.{u} kappa sigma Phi :=
   ⟨boundedAtDistanceShell_of_noSubsequenceCurvatureEscapeShell hsmall,
     noSubsequenceCurvatureEscapeShell_of_boundedAtDistanceShell⟩
-
-theorem bounded_curvature_at_distance_of_noSubsequenceCurvatureEscapeShell_and_terminalDerivativeBoundProducer
-    {kappa sigma : ℝ} {Phi : ℝ → ℝ}
-    (hsmall : ∃ epsStar r : ℝ, 0 < epsStar ∧ 0 < r ∧
-      ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-        ∀ X : NormalizedSequence.{u} eps kappa sigma Phi, CurvatureBoundedWithin X r)
-    (hesc : NoSubsequenceCurvatureEscapeShell.{u} kappa sigma Phi)
-    (hder : TerminalDerivativeBoundProducer.{u} kappa sigma Phi) :
-    ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
-      ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
-        BoundedAtDistance X ∧ TerminalDerivativeBounds X := by
-  obtain ⟨e₁, he₁, hb⟩ := boundedAtDistanceShell_of_noSubsequenceCurvatureEscapeShell hsmall hesc
-  obtain ⟨e₂, he₂, hd⟩ := hder
-  exact ⟨min e₁ e₂, lt_min he₁ he₂, fun eps hp hle X =>
-    ⟨hb eps hp (le_trans hle (min_le_left e₁ e₂)) X,
-      hd eps hp (le_trans hle (min_le_right e₁ e₂)) X⟩⟩
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
   [IsManifold I3 ∞ W] [SigmaCompactSpace W]

@@ -79,7 +79,7 @@ theorem IsSubdivision.exists_path_of_edge [DecidableEq E] {K K' : Geometry.Simpl
   set c : ℕ → ℝ := fun i => if h : i < n + 1 then s ⟨i, h⟩ else 1 with hcdef
   have hc : ∀ i (h : i < n + 1), c i = s ⟨i, h⟩ := fun i h => by
     change (if h' : i < n + 1 then s ⟨i, h'⟩ else 1) = s ⟨i, h⟩
-    rw [dif_pos h]
+    rw [dite_eq_left h]
   have hcmem : ∀ i ≤ n, c i ∈ Λf := fun i hi => by
     rw [hc i (by omega)]
     exact Λf.orderEmbOfFin_mem hn _

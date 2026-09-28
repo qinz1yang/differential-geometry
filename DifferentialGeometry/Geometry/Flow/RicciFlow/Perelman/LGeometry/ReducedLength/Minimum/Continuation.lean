@@ -76,7 +76,7 @@ theorem exists_free_endpoint_minimizers_of_compact_linear_action_sublevels
       hminSeed c ⟨hc.1, hc.2.trans hb.2⟩ (hs c hc)
     choose η hη hη0 hηQ hηmin using hfamily
     let family : ℝ → ℝ → M := fun c => if hc : c ∈ Icc b₀ b then η c hc else fun _ => x
-    have heq (c : ℝ) (hc : c ∈ Icc b₀ b) : family c = η c hc := dif_pos hc
+    have heq (c : ℝ) (hc : c ∈ Icc b₀ b) : family c = η c hc := dite_eq_left hc
     have hanti := antitoneOn_scaled_action_sub_dim_mul_sq_of_compact_free_endpoint_minimizers
       S hS T hb₀ (hslab hb) x family Q hQ
       (fun c hc => by rw [heq c hc]; exact hη c hc)
@@ -154,7 +154,7 @@ theorem exists_free_endpoint_minimizers_of_compact_linear_action_sublevels
   let family : ℝ → ℝ → M := fun b => if hb : b ∈ Icc b₀ b₁ then η b hb else fun _ => x
   refine ⟨family, ?_⟩
   intro b hb
-  have heq : family b = η b hb := dif_pos hb
+  have heq : family b = η b hb := dite_eq_left hb
   rw [heq]
   exact ⟨hη b hb, hη0 b hb, hηQ b hb, hηmin b hb, hηbound b hb,
     (hηbound b hb).trans_lt hq₀⟩

@@ -64,7 +64,7 @@ subgraph can answer differently. `Graph.IsWalk.anti` from `Walk.lean` is the eng
   edge lies on a cycle if and only if deleting it does not disconnect its endpoints", both
   directions, with the finiteness the proof does not use dropped. The two halves are
   `Graph.LiesOnCycle.deleteEdges_reaches` and `Graph.LiesOnCycle.of_deleteEdges_reaches`.
-* `Graph.IsBridge`, `Graph.isBridge_iff_not_reaches` — the bridges of
+* `Graph.IsCycleBridge`, `Graph.isBridge_iff_not_reaches` — the bridges of
   `lem:subdivision-ear-preserve` ("a 2-connected graph has no bridge. Indeed, if `uv` were a
   bridge, the two components of `G - uv` …"), stated as the separation of the two ends.
 * `Graph.IsAcyclic`, `Graph.Connected.deleteEdges_singleton` — the acyclicity underneath
@@ -284,41 +284,41 @@ theorem IsAcyclic.mem_of_isLink_of_mem_walkVertices (hac : G.IsAcyclic) (hP : G.
 
 /-! ### Bridges -/
 
-/-- `G.IsBridge e` : an edge of `G` that lies on no cycle. Equivalently — and this is the
+/-- `G.IsCycleBridge e` : an edge of `G` that lies on no cycle. Equivalently — and this is the
 form every use wants — an edge whose deletion separates its two ends
 (`Graph.isBridge_iff_not_reaches`). -/
-def IsBridge (G : Graph α β) (e : β) : Prop := e ∈ E(G) ∧ ¬ G.LiesOnCycle e
+def IsCycleBridge (G : Graph α β) (e : β) : Prop := e ∈ E(G) ∧ ¬ G.LiesOnCycle e
 
-theorem IsBridge.edge_mem (h : G.IsBridge e) : e ∈ E(G) := h.1
+theorem IsCycleBridge.edge_mem (h : G.IsCycleBridge e) : e ∈ E(G) := h.1
 
-theorem IsBridge.not_liesOnCycle (h : G.IsBridge e) : ¬ G.LiesOnCycle e := h.2
+theorem IsCycleBridge.not_liesOnCycle (h : G.IsCycleBridge e) : ¬ G.LiesOnCycle e := h.2
 
 /-- **Deleting a bridge separates its ends.** -/
-theorem IsBridge.not_reaches (h : G.IsBridge e) (hl : G.IsLink e u v) :
+theorem IsCycleBridge.not_reaches (h : G.IsCycleBridge e) (hl : G.IsLink e u v) :
     ¬ (G.deleteEdges {e}).Reaches u v :=
   fun hR ↦ h.not_liesOnCycle (LiesOnCycle.of_deleteEdges_reaches hl hR)
 
 /-- **An edge whose deletion separates its ends is a bridge.** -/
 theorem isBridge_of_not_reaches (hl : G.IsLink e u v)
-    (h : ¬ (G.deleteEdges {e}).Reaches u v) : G.IsBridge e :=
+    (h : ¬ (G.deleteEdges {e}).Reaches u v) : G.IsCycleBridge e :=
   ⟨hl.edge_mem, fun hc ↦ h (hc.deleteEdges_reaches hl)⟩
 
 /-- **A bridge is exactly an edge whose deletion separates its ends** — the cycle criterion,
 negated. -/
 theorem isBridge_iff_not_reaches (hl : G.IsLink e u v) :
-    G.IsBridge e ↔ ¬ (G.deleteEdges {e}).Reaches u v :=
+    G.IsCycleBridge e ↔ ¬ (G.deleteEdges {e}).Reaches u v :=
   ⟨fun h ↦ h.not_reaches hl, isBridge_of_not_reaches hl⟩
 
 /-- A bridge is never a loop: a loop is a cycle. -/
-theorem IsBridge.not_isLoopAt (h : G.IsBridge e) (x : α) : ¬ G.IsLoopAt e x :=
+theorem IsCycleBridge.not_isLoopAt (h : G.IsCycleBridge e) (x : α) : ¬ G.IsLoopAt e x :=
   fun hloop ↦ h.not_liesOnCycle (liesOnCycle_of_isLoopAt hloop)
 
 /-- **A graph is acyclic exactly when every one of its edges is a bridge.** This is the form
 the tree module wants acyclicity in: "it is a tree — an edge of a cycle could be deleted"
 reads backwards as "no edge can be deleted without separating its ends". -/
-theorem isAcyclic_iff_forall_isBridge : G.IsAcyclic ↔ ∀ e ∈ E(G), G.IsBridge e :=
+theorem isAcyclic_iff_forall_isBridge : G.IsAcyclic ↔ ∀ e ∈ E(G), G.IsCycleBridge e :=
   ⟨fun h _ he ↦ ⟨he, h he⟩, fun h _ he ↦ (h _ he).not_liesOnCycle⟩
 
-theorem IsAcyclic.isBridge (h : G.IsAcyclic) (he : e ∈ E(G)) : G.IsBridge e := ⟨he, h he⟩
+theorem IsAcyclic.isBridge (h : G.IsAcyclic) (he : e ∈ E(G)) : G.IsCycleBridge e := ⟨he, h he⟩
 
 end Graph

@@ -5,6 +5,9 @@ import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import Mathlib.MeasureTheory.Function.LpSpace.Indicator
 import Mathlib.MeasureTheory.Function.L2Space
 
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices_apply separableFormAt
+  separableFormAt_apply tensorInnerPointwise tensorInnerPointwise_0s_zero_arity)
+
 noncomputable section
 
 open MeasureTheory

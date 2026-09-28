@@ -23,7 +23,6 @@ namespace Parabolic
 namespace TensorSpectral
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
@@ -385,7 +384,6 @@ namespace DifferentialGeometry.Tensor.TensorRSRiemannianBundleContinuous
 
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
 open DifferentialGeometry.Tensor.Tensor0SInnerSectionContinuity

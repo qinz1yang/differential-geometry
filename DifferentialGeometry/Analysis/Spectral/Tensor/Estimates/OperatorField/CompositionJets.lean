@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 
 noncomputable section
 

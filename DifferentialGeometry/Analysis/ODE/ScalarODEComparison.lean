@@ -59,7 +59,6 @@ theorem scalar_ode_upper_bound_compact
       have hh := (hode t ht htpos).neg.derivWithin ((uniqueDiffOn_Icc hp) t ht)
       simp only [neg_neg]
       convert hh using 1
-      all_goals rfl
     · exact hinit
     · exact fun _ _ => hK
   · have hz : T = 0 := le_antisymm (le_of_not_gt hp) hT

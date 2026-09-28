@@ -6,6 +6,8 @@ set_option autoImplicit false
 noncomputable section
 open Set Finset
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology.SimplicialComplex
 
 universe u
@@ -30,7 +32,7 @@ def vertexHeight [Finite K.faces] : C(K.space, ℝ) :=
   vertexFunction K (fun q ↦ if q = p then 1 else 0)
 
 theorem vertexHeight_face_of_mem [Finite K.faces] {s : Finset E}
-    (hs : s ∈ K.faces) (hp : p ∈ s) (x : stdSimplex ℝ s) :
+    (hs : s ∈ K.faces) (hp : p ∈ s) (x : coordinateSet ℝ s) :
     vertexHeight K p
       ⟨(geometricFaceHomeomorphism K hs x).val,
         Geometry.SimplicialComplex.convexHull_subset_space hs
@@ -42,12 +44,12 @@ theorem vertexHeight_face_of_mem [Finite K.faces] {s : Finset E}
   · simp
   · intro i _ hi
     have hne : i.val ≠ p := fun h ↦ hi (Subtype.ext h)
-    simp only [hne, if_false, smul_zero]
+    simp only [hne, ite_false, smul_zero]
   · simp
 
 
 theorem vertexHeight_face_of_not_mem [Finite K.faces] {s : Finset E}
-    (hs : s ∈ K.faces) (hp : p ∉ s) (x : stdSimplex ℝ s) :
+    (hs : s ∈ K.faces) (hp : p ∉ s) (x : coordinateSet ℝ s) :
     vertexHeight K p
       ⟨(geometricFaceHomeomorphism K hs x).val,
         Geometry.SimplicialComplex.convexHull_subset_space hs
@@ -57,11 +59,11 @@ theorem vertexHeight_face_of_not_mem [Finite K.faces] {s : Finset E}
   intro i _
   have hne : i.val ≠ p := fun h ↦ hp (h ▸ i.prop)
   change x.val i • (if i.val = p then (1 : ℝ) else 0) = 0
-  simp only [hne, if_false, smul_zero]
+  simp only [hne, ite_false, smul_zero]
 
 omit [LinearOrder E] in
 private theorem geometricFace_induction_on (x : K.space) (P : K.space → Prop)
-    (h : ∀ (s : Finset E) (hs : s ∈ K.faces) (a : stdSimplex ℝ s),
+    (h : ∀ (s : Finset E) (hs : s ∈ K.faces) (a : coordinateSet ℝ s),
       P ⟨(geometricFaceHomeomorphism K hs a).val,
         Geometry.SimplicialComplex.convexHull_subset_space hs
           (geometricFaceHomeomorphism K hs a).prop⟩) : P x := by
@@ -82,7 +84,9 @@ theorem vertexHeight_mem_Icc [Finite K.faces] (x : K.space) :
   intro s hs a
   by_cases hp : p ∈ s
   · rw [vertexHeight_face_of_mem K p hs hp]
-    exact ⟨a.prop.1 _, stdSimplex.le_one a _⟩
+    refine ⟨a.prop.1 _, ?_⟩
+    rw [← a.prop.2]
+    exact Finset.single_le_sum (fun i _ => a.prop.1 i) (Finset.mem_univ _)
   · rw [vertexHeight_face_of_not_mem K p hs hp]
     exact ⟨le_rfl, zero_le_one⟩
 
@@ -174,7 +178,7 @@ theorem vertexHeight_eq_one_iff [Finite K.faces] (hp : {p} ∈ K.faces) (x : K.s
   · exact eq_vertex_of_vertexHeight_eq_one K p x
   · intro hx
     change vertexFunction K (fun q ↦ if q = p then 1 else 0) x = 1
-    rw [vertexFunction_vertex K _ hp x hx, if_pos rfl]
+    rw [vertexFunction_vertex K _ hp x hx, ite_eq_left rfl]
 
 theorem vertexHeight_mem_Ioo_iff [Finite K.faces] (hp : {p} ∈ K.faces) (x : K.space) :
     vertexHeight K p x ∈ Ioo (0 : ℝ) 1 ↔ x.val ∈ puncturedVertexOpenStar K p := by
@@ -185,7 +189,7 @@ theorem vertexHeight_mem_Ioo_iff [Finite K.faces] (hp : {p} ∈ K.faces) (x : K.
   exact and_congr Iff.rfl (not_congr (vertexHeight_eq_one_iff K p hp x))
 
 private theorem normalize_vertexMap_mem_hull_erase {s : Finset E} (hp : p ∈ s)
-    (a : stdSimplex ℝ s) (ha : a.val ⟨p, hp⟩ < 1) :
+    (a : coordinateSet ℝ s) (ha : a.val ⟨p, hp⟩ < 1) :
     (1 - a.val ⟨p, hp⟩)⁻¹ •
       (DifferentialGeometry.Simplex.vertexMap (fun i : s ↦ (i : E)) a - a.val ⟨p, hp⟩ • p) ∈
         convexHull ℝ (s.erase p : Set E) := by

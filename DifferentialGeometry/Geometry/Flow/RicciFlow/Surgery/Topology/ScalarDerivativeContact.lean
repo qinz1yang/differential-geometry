@@ -80,7 +80,7 @@ theorem exists_scalar_derivative_contact_sequence_of_failures
     (P : OrientedThreeStage.{v}) (g : P.Metric) (Dbig : ℝ) (m : ℕ) {C q amin δ₀ : ℝ}
     (hC : 0 < C) (hq : 0 < q) (hamin : 0 < amin)
     (hcounter : ∀ Q : ℝ, q ≤ Q → ∀ ε : ℝ, 0 < ε →
-      ∃ (H : RetainedCoreHistory P) (_ : InitialIdentification P g H.toHistory)
+      ∃ (H : RetainedCoreHistory.{v}) (_ : InitialIdentification P g H.toHistory)
         (parameters : CutoffParameters)
         (records : ∀ j, GeometricCutoffRecord H.toHistory j parameters)
         (finish : ℝ)
@@ -113,7 +113,7 @@ theorem exists_scalar_derivative_contact_sequence_of_failures
             (G.flow.base.metric b).inner x (gradientFun (G.flow.base.metric b) (G.flow.scalar b) x)
               (gradientFun (G.flow.base.metric b) (G.flow.scalar b) x) ∨
           C * (max q (G.flow.scalar b x)) ^ 2 ≤ |derivWithin (fun t => G.flow.scalar t x) (Iic b) b|)) :
-    ∃ (H : ℕ → RetainedCoreHistory P) (_ : ∀ i, InitialIdentification P g (H i).toHistory)
+    ∃ (H : ℕ → RetainedCoreHistory.{v}) (_ : ∀ i, InitialIdentification P g (H i).toHistory)
       (parameters : ℕ → CutoffParameters)
       (records : ∀ i j, GeometricCutoffRecord (H i).toHistory j (parameters i))
       (finish : ℕ → ℝ)
@@ -202,7 +202,7 @@ theorem exists_scalar_derivative_contact_sequence_of_bounded_failures
     (P : OrientedThreeStage.{v}) (g : P.Metric) (Dbig : ℝ) (m : ℕ) (B δ₀ : ℝ) :
     ∃ amin : ℝ, 0 < amin ∧ ∀ C : ℝ, 0 < C → ∃ q : ℝ, 0 < q ∧
     ((∀ Q : ℝ, q ≤ Q → ∀ ε : ℝ, 0 < ε →
-      ∃ (H : RetainedCoreHistory P) (_ : InitialIdentification P g H.toHistory)
+      ∃ (H : RetainedCoreHistory.{v}) (_ : InitialIdentification P g H.toHistory)
         (parameters : CutoffParameters)
         (records : ∀ j, GeometricCutoffRecord H.toHistory j parameters)
         (finish : ℝ)
@@ -236,7 +236,7 @@ theorem exists_scalar_derivative_contact_sequence_of_bounded_failures
             (G.flow.base.metric b).inner x (gradientFun (G.flow.base.metric b) (G.flow.scalar b) x)
               (gradientFun (G.flow.base.metric b) (G.flow.scalar b) x) ∨
           C * (max q (G.flow.scalar b x)) ^ 2 ≤ |derivWithin (fun t => G.flow.scalar t x) (Iic b) b|)) →
-    ∃ (H : ℕ → RetainedCoreHistory P) (_ : ∀ i, InitialIdentification P g (H i).toHistory)
+    ∃ (H : ℕ → RetainedCoreHistory.{v}) (_ : ∀ i, InitialIdentification P g (H i).toHistory)
       (parameters : ℕ → CutoffParameters)
       (records : ∀ i j, GeometricCutoffRecord (H i).toHistory j (parameters i))
       (finish : ℕ → ℝ)

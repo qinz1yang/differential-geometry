@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialSpat
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialEndpointPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialVolume
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.InitialCurvatureLifespan
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryLGeometry.Seam
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Geodesic.Seam
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryHorizonExtension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ReducedVolumeTruncation
 
@@ -205,7 +205,7 @@ theorem exists_uniform_initial_regular_block
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ ε₀ → R₀ ≤ p₀.modelRadius → m₀ ≤ p₀.modelOrder →
       p₀.recenterConstant * δbound ≤ 1 / 2 → δbound ≤ δ₀ → ρbound ≤ ρ →
-    ∀ (H : RetainedCoreHistory P₀), Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
+    ∀ (H : RetainedCoreHistory.{u}), Nonempty (InitialIdentification P₀ g₀ H.toHistory) →
       H.horizon < B → H.hasCanonicalCutoffRecords p₀ δbound ρbound →
     ∀ (t : Icc (0 : ℝ) H.toHistory.horizon), 0 < (t : ℝ) →
       HistoryScalarDerivativeBoundBefore H Ctime qcan t →
@@ -353,7 +353,7 @@ private theorem exp_density_mul_volume_eq {t C κ₀ : ℝ} (ht : 0 < t) :
   field_simp
 
 theorem RetainedCoreHistory.reducedVolume_ge_of_initial_regular_block
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {Bf κ₀ C : ℝ}
+    (H : RetainedCoreHistory.{u}) {Bf κ₀ C : ℝ}
     (hfloor : ∀ (j : Fin (H.eventCount + 1)), ∀ s ∈ H.toHistory.stageDomain j,
       ∀ x : (H.stage j).Carrier, -Bf ≤ metricScalarAt (H.toHistory.stageMetric j s) x)
     (t : Icc (0 : ℝ) H.toHistory.horizon) (ht : 0 < (t : ℝ))
@@ -430,7 +430,7 @@ theorem RetainedCoreHistory.reducedVolume_ge_of_initial_regular_block
     _ ≤ _ := lintegral_mono_set hsub
 
 theorem RetainedCoreHistory.historyScalarDerivativeBoundBefore_of_eventSlabsDerivative
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {Ctime : ℝ≥0} {qcan : ℝ}
+    (H : RetainedCoreHistory.{u}) {Ctime : ℝ≥0} {qcan : ℝ}
     (hend : H.time (Fin.last H.eventCount) = H.horizon) (j : Fin H.eventCount)
     (hder : H.EventSlabsDerivative Ctime qcan j.castSucc) {t₀ : ℝ}
     (ht₀ : t₀ ≤ H.time j.succ)
@@ -456,7 +456,7 @@ theorem RetainedCoreHistory.historyScalarDerivativeBoundBefore_of_eventSlabsDeri
       exact absurd (hs.1.trans hst) (not_lt.mpr (hmono.trans' (ht.trans ht₀)))
 
 theorem RetainedCoreHistory.historyScalarDerivativeBoundBefore_extendHorizon
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {Ctime : ℝ≥0} {qcan : ℝ}
+    (H : RetainedCoreHistory.{u}) {Ctime : ℝ≥0} {qcan : ℝ}
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -521,7 +521,7 @@ theorem historyReducedVolumeInitialLowerBound_holds (P₀ : OrientedThreeStage.{
   have hstart := hHI H.toHistory A
   have hpreserve := H.toHistory.fixedHamiltonIveyRegion_and_scalar_lower records ha₀
     hstart.1 hstart.2
-  have hfloorOf (K : RetainedCoreHistory P₀) (hK : ∀ (j : Fin (K.eventCount + 1)) (s : ℝ),
+  have hfloorOf (K : RetainedCoreHistory.{u}) (hK : ∀ (j : Fin (K.eventCount + 1)) (s : ℝ),
       s ∈ K.toHistory.stageDomain j → ∀ x : (K.stage j).Carrier,
         -3 / (a₀ + s) ≤ metricScalarAt (K.toHistory.stageMetric j s) x) :
       ∀ (j : Fin (K.eventCount + 1)), ∀ s ∈ K.toHistory.stageDomain j,

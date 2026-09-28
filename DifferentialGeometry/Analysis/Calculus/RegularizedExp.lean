@@ -16,25 +16,25 @@ private theorem log_half_le_log_three_halves : log (1 / 2 : ℝ) ≤ log (3 / 2 
 theorem regularizedExp_eq_exp {x : ℝ}
     (hx : x ∈ Set.Icc (log (1 / 2 : ℝ)) (log (3 / 2 : ℝ))) :
     regularizedExp x = exp x := by
-  rw [regularizedExp, if_neg (not_lt.mpr hx.1), if_neg (not_lt.mpr hx.2)]
+  rw [regularizedExp, ite_eq_right (not_lt.mpr hx.1), ite_eq_right (not_lt.mpr hx.2)]
 
 theorem regularizedExp_of_le {x : ℝ} (hx : x ≤ log (1 / 2 : ℝ)) :
     regularizedExp x = 1 / 2 + (1 / 2) * (x - log (1 / 2)) := by
   rcases hx.lt_or_eq with hx | rfl
-  · rw [regularizedExp, if_pos hx]
-  · rw [regularizedExp, if_neg (lt_irrefl _),
-      if_neg (not_lt.mpr log_half_le_log_three_halves)]
+  · rw [regularizedExp, ite_eq_left hx]
+  · rw [regularizedExp, ite_eq_right (lt_irrefl _),
+      ite_eq_right (not_lt.mpr log_half_le_log_three_halves)]
     rw [exp_log (by norm_num : 0 < (1 / 2 : ℝ))]
     ring
 
 theorem regularizedExp_of_ge {x : ℝ} (hx : log (3 / 2 : ℝ) ≤ x) :
     regularizedExp x = 3 / 2 + (3 / 2) * (x - log (3 / 2)) := by
   rcases hx.lt_or_eq with hx | hx
-  · rw [regularizedExp, if_neg (not_lt.mpr (log_half_le_log_three_halves.trans hx.le)),
-      if_pos hx]
+  · rw [regularizedExp, ite_eq_right (not_lt.mpr (log_half_le_log_three_halves.trans hx.le)),
+      ite_eq_left hx]
   · subst x
-    rw [regularizedExp, if_neg (not_lt.mpr log_half_le_log_three_halves),
-      if_neg (lt_irrefl _), exp_log (by norm_num : 0 < (3 / 2 : ℝ))]
+    rw [regularizedExp, ite_eq_right (not_lt.mpr log_half_le_log_three_halves),
+      ite_eq_right (lt_irrefl _), exp_log (by norm_num : 0 < (3 / 2 : ℝ))]
     ring
 
 private theorem exp_sub_bounds {x y : ℝ}

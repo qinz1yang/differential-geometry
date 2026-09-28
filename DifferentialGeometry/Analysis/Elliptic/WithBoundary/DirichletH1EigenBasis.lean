@@ -53,7 +53,7 @@ private theorem dirichletH1Eigenvector_orthonormal
     (dirichletLaplacianHilbertBasis g).orthonormal) j i
   by_cases h : i = j
   · subst j
-    rw [horth, if_pos rfl]
+    rw [horth, ite_eq_left rfl]
     have hμ : 0 ≤ i.1.1 :=
       (resolvent_eigenvalue_pos g i.1.property).le
     calc
@@ -62,8 +62,8 @@ private theorem dirichletH1Eigenvector_orthonormal
         (Real.sqrt i.1.1) ^ 2 * i.1.1⁻¹ := by ring
       _ = i.1.1 * i.1.1⁻¹ := by rw [Real.sq_sqrt hμ]
       _ = 1 := mul_inv_cancel₀ (ne_of_gt (resolvent_eigenvalue_pos g i.1.property))
-  · rw [horth, if_neg (Ne.symm h), mul_zero, mul_zero,
-      if_neg h]
+  · rw [horth, ite_eq_right (Ne.symm h), mul_zero, mul_zero,
+      ite_eq_right h]
     exact mul_zero _
 
 private theorem span_dirichletH1Eigenvector_orthogonal_eq_bot

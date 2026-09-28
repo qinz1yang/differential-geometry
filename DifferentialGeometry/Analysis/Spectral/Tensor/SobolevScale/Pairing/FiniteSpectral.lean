@@ -179,7 +179,7 @@ theorem finite_pair_split
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
               (SmoothCcTensor.toL2 A) i) = 0 := by
     intro i hi
-    rw [hcoeff i, if_neg hi, zero_mul, mul_zero]
+    rw [hcoeff i, ite_eq_right hi, zero_mul, mul_zero]
   calc
     ∑ i ∈ F, tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
           (c i * tensorL2Coeff (I := I) (M := M)
@@ -194,7 +194,7 @@ theorem finite_pair_split
               (tensorResolventL2_isCompactOperator (I := I) (M := M) g 0 2)
               (SmoothCcTensor.toL2 A) i) := by
         refine Finset.sum_congr rfl (fun i hi => ?_)
-        rw [hcoeff i, if_pos hi]
+        rw [hcoeff i, ite_eq_left hi]
     _ = ∑' i,
           tensorSobolevWeight (I := I) (M := M) i (((a + b : ℕ) : ℝ)) *
             (tensorL2Coeff (I := I) (M := M)

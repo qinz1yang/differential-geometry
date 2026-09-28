@@ -41,7 +41,7 @@ def TerminalLimitMetric.extendedMetric (L : G.TerminalLimitMetric) (t : ℝ) :
 theorem TerminalLimitMetric.extendedMetric_before (L : G.TerminalLimitMetric)
     {t : ℝ} (ht : t < s) :
     L.extendedMetric t = (G.flow.base.metric t).restrictOpen G.terminalRegularOpen :=
-  if_pos ht
+  ite_eq_left ht
 
 private theorem continuousWithinAt_terminal_of_uniform
     {Y Z : Type*} [TopologicalSpace Y] [PseudoMetricSpace Z]
@@ -424,7 +424,7 @@ theorem TerminalLimitMetric.exists_time_derivative_fields
         (fun s => metricTensorField (L.extendedMetric s) x) (Icc c s) t := by
     cases q with
     | zero => simp only [B, iteratedDerivWithin_zero]
-    | succ q => simpa only [B, dif_pos ht] using hC q ⟨t, ht⟩ x
+    | succ q => simpa only [B, dite_eq_left ht] using hC q ⟨t, ht⟩ x
   refine ⟨B, fun _ => rfl, ?_⟩
   intro q t ht x
   refine ⟨hB q t ht x, ?_⟩

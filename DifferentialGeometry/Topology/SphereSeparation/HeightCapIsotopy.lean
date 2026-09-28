@@ -60,13 +60,13 @@ private theorem exists_ambient_isotopy_eqOn_quadratic_cap_models
         ((isOpen_ne_fun continuous_fst continuous_const).mem_nhds hzc)
       apply (hmodel.congr_of_eventuallyEq ?_).contDiffWithinAt
       filter_upwards [(isOpen_lt continuous_fst continuous_const).mem_nhds (hmid₀ hz.1)] with y hy
-      exact if_pos hy
+      exact ite_eq_left hy
     · have hzc : z.1 ≠ c₁ := by linarith [hz.1.2]
       have hmodel := (A₁.contDiffOn_quadraticFiberVectorField c₁ z hzc).contDiffAt
         ((isOpen_ne_fun continuous_fst continuous_const).mem_nhds hzc)
       apply (hmodel.congr_of_eventuallyEq ?_).contDiffWithinAt
       filter_upwards [(isOpen_lt continuous_const continuous_fst).mem_nhds (hmid₁ hz.1)] with y hy
-      exact if_neg (not_lt.mpr hy.le)
+      exact ite_eq_right (not_lt.mpr hy.le)
   let γ₀ : V → ℝ → V := fun x t => (A₀ (quadraticLevelScaling a c₀ x t, t)).1
   let γ₁ : V → ℝ → V := fun x t => (A₁ (quadraticLevelScaling b c₁ x t, t)).1
   let C₀ : Set (ℝ × V) := (fun z : ℝ × V => (z.1, γ₀ z.2 z.1)) ''
@@ -90,8 +90,8 @@ private theorem exists_ambient_isotopy_eqOn_quadratic_cap_models
   have hWe (t : ℝ) (_ : t ∈ Icc a b) (x : M) (hx : (t, e (t, x)) ∈ U) :
       HasDerivWithinAt (fun s => e (s, x)) (W (t, e (t, x))) (Icc a b) t := by
     rcases hx with hx | hx
-    · simpa only [W, if_pos (hmid₀ hx.1)] using hv₀ t hx.1 x
-    · simpa only [W, if_neg (not_lt.mpr (hmid₁ hx.1).le)] using hv₁ t hx.1 x
+    · simpa only [W, ite_eq_left (hmid₀ hx.1)] using hv₀ t hx.1 x
+    · simpa only [W, ite_eq_right (not_lt.mpr (hmid₁ hx.1).le)] using hv₁ t hx.1 x
   let γ : K ⊕ K → ℝ → V := Sum.elim (fun x => γ₀ x.val) (fun x => γ₁ x.val)
   let l : K ⊕ K → ℝ := Sum.elim (fun _ => a - δ / 2) (fun _ => b - δ / 2)
   let u : K ⊕ K → ℝ := Sum.elim (fun _ => a + δ / 2) (fun _ => b + δ / 2)
@@ -107,14 +107,14 @@ private theorem exists_ambient_isotopy_eqOn_quadratic_cap_models
     | inl x =>
       have ht' := htime₀ ⟨ht.1, ht.2.le⟩
       have hpos : 0 < (t - c₀) / (a - c₀) := div_pos (by linarith [ht'.1]) (by linarith)
-      simp only [W, if_pos (hmid₀ ht')]
+      simp only [W, ite_eq_left (hmid₀ ht')]
       convert! (A₀.hasDerivAt_fst_comp_quadraticLevelScaling
         hA₀ a c₀ x.val hpos).hasDerivWithinAt (s := Ici t) using 1
     | inr x =>
       have ht' := htime₁ ⟨ht.1, ht.2.le⟩
       have hpos : 0 < (t - c₁) / (b - c₁) :=
         div_pos_of_neg_of_neg (by linarith [ht'.2]) (by linarith)
-      simp only [W, if_neg (not_lt.mpr (hmid₁ ht').le)]
+      simp only [W, ite_eq_right (not_lt.mpr (hmid₁ ht').le)]
       convert! (A₁.hasDerivAt_fst_comp_quadraticLevelScaling
         hA₁ b c₁ x.val hpos).hasDerivWithinAt (s := Ici t) using 1
   have hγC (x : K ⊕ K) (t : ℝ) (ht : t ∈ Icc (l x) (u x)) : (t, γ x t) ∈ C₀ ∪ C₁ := by

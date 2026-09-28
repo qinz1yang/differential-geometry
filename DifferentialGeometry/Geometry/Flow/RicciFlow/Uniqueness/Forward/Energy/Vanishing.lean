@@ -8,6 +8,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffAt_apply metricDiffAt_self metricDiffSq metricDiffSq_def)
+
 open Bundle Manifold MeasureTheory Set DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 

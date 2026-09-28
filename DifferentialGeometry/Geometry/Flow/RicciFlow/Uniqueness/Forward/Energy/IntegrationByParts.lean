@@ -157,10 +157,10 @@ private theorem orthoBasisAt (g : SmoothRiemannianMetric I M) (x : M) :
         (c j) (smoothOrthoFrame (I := I) g x j x), smul_eq_mul, hON k j]
     rw [Finset.sum_congr rfl hpull] at hzero
     rw [Finset.sum_eq_single_of_mem k hk] at hzero
-    · rw [if_pos rfl, mul_one] at hzero
+    · rw [ite_eq_left rfl, mul_one] at hzero
       exact hzero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank Real E)) =
       Module.finrank Real (TangentSpace I x) := by
     change Fintype.card (Fin (Module.finrank Real E)) = Module.finrank Real E
@@ -198,12 +198,12 @@ private theorem traceFirstTwo_eq_frame_sum (g : SmoothRiemannianMetric I M) {x :
   rw [Finset.sum_eq_single_of_mem i (Finset.mem_univ i)]
   · change (if i = i then (1 : Real) else 0) *
         A (metricTraceInput (I := I) (frame i) (frame i) slots) = _
-    rw [if_pos rfl, one_mul]
+    rw [ite_eq_left rfl, one_mul]
     rfl
   · intro j _ hji
     change (if i = j then (1 : Real) else 0) *
         A (metricTraceInput (I := I) (frame i) (frame j) slots) = 0
-    rw [if_neg (fun h => hji h.symm), zero_mul]
+    rw [ite_eq_right (fun h => hji h.symm), zero_mul]
 
 theorem covDivLift_unit (g : SmoothRiemannianMetric I M)
     (V : Tensor0SField (𝕜 := Real) (E := E) (H := H) (I := I) (M := M)

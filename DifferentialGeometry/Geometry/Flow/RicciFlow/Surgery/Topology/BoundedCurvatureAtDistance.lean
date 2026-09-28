@@ -29,7 +29,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_final_slab_window
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -95,7 +95,7 @@ theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_final_slab_window
   intro R hR
   by_contra hB
   have hL1 := RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_final_slab_window
-    P₀ H time A hinit hs Ctime Cgrad q hq hderiv hfinal hgradient x hQ hqQ θ₀ hθ₀ hwindow
+    H time A hinit hs Ctime Cgrad q hq hderiv hfinal hgradient x hQ hqQ θ₀ hθ₀ hwindow
     ⟨R, hR, hB⟩ Phi hPhi hpinch hpinchFinal κ σ₀ σ hκ hσ₀ hσQ htested
   dsimp only at hL1
   obtain ⟨rho, hrho, ind, hind, z, f, hf, r, hr, hrlim, Pl, F₀, M, _, hcan, hradial, hcompact,
@@ -159,7 +159,7 @@ theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_final_slab_window
       dist (xW n : UniformSpace.Completion W) qW ^ 2 ≤ B := by
     obtain ⟨B, _, hB⟩ := hupperW
     exact ⟨B, by simpa only [metricScalarAt_restrictOpen] using hB⟩
-  exact RetainedCoreHistory.final_slab_punctured_cone_end_exclusion (fun i => P₀ (ind i))
+  exact RetainedCoreHistory.final_slab_punctured_cone_end_exclusion
     (fun i => H (ind i)) (fun i => time (ind i)) (fun i => A (ind i)) (fun i => hinit (ind i))
     (fun i => hs (ind i)) Ctime (fun i => q (ind i)) (fun i => hq _) (fun i => hderiv (ind i))
     (fun i => hfinal (ind i)) (fun i => x (ind i)) (fun i => hQ _) (fun i => hqQ _)
@@ -173,7 +173,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_final_slab_window
     (hphi : Perelman.AdmissiblePinchingFunction phi) :
     ∃ εcone : ℝ, 0 < εcone ∧ ∀ ε : ℝ, ε ≤ εcone → ∀ A : ℝ, 0 < A →
       ∃ Q Λ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧
-      ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+      ∀ (H : RetainedCoreHistory.{u})
         (hend : H.time (Fin.last H.eventCount) = H.horizon) {t : ℝ}
         (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) t)
         (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -205,7 +205,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_final_slab_window
     linarith
   by_contra hcon
   push Not at hcon
-  choose P₀ H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
+  choose H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
     hbad using fun n : ℕ => hcon ((n : ℝ) + 1) ((n : ℝ) + 1)
       (by linarith [(n.cast_nonneg : (0 : ℝ) ≤ n)]) (by linarith [(n.cast_nonneg : (0 : ℝ) ≤ n)])
   have hn0 (n : ℕ) : (0 : ℝ) ≤ n := n.cast_nonneg
@@ -246,7 +246,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_final_slab_window
   have hσQ (n : ℕ) : 1 ≤ ρ n * Real.sqrt ((S n).flow.scalar (t n) (x n).val) :=
     le_trans (by linarith [hn0 n]) (hρ n)
   obtain ⟨B, hB⟩ := RetainedCoreHistory.exists_normalized_scalar_bound_of_final_slab_window
-    P₀ H t S hS (fun n => by rw [← hend n]; exact (S n).lt) Ctime Cgrad q
+    H t S hS (fun n => by rw [← hend n]; exact (S n).lt) Ctime Cgrad q
     (fun n => by linarith [hq1 n]) (fun n j y' t' ht hqy => hderiv n j (Fin.castSucc_lt_last j)
       y' t' ht hqy) (fun n y' t' ht hqy => hfinal n y' t' ht hqy)
     (fun n y' t' ht hqy => hgrad n y' t' ht hqy) x hQ hqQ hQlim hqlim one_pos hwindow hphi

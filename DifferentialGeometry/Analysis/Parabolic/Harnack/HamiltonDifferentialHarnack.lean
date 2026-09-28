@@ -949,7 +949,6 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
             2 * K * Real.exp (2 * K * s) * (n / 2) - eps) s := by
         convert ((hlin.sub hexp).sub hconst).congr_of_eventuallyEq
           (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
-        all_goals rfl
       simpa [G] using hmain.deriv
     have hder : HasDerivAt (fun τ' : ℝ => G eps τ' x₀)
         (deriv (fun τ' : ℝ => G eps τ' x₀) s) s := by
@@ -978,7 +977,6 @@ theorem hamilton_quantity_slab_bound_of_ricci_lower_bound
             2 * K * Real.exp (2 * K * s) * (n / 2) - eps) s := by
         convert ((hlin.sub hexp).sub hconst).congr_of_eventuallyEq
           (Filter.Eventually.of_forall fun _ ↦ rfl) using 1
-        all_goals rfl
       simpa [G, hval] using hmain
     have htime : 0 ≤ deriv (fun τ' : ℝ => G eps τ' x₀) s :=
       deriv_nonneg_at_right_endpoint_of_isMaxOn_Icc hspos hzmax hder

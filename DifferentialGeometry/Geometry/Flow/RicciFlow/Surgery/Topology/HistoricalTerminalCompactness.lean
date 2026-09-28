@@ -188,7 +188,7 @@ theorem exists_historical_footprint_terminal_metric_limit
     rw [← hclosed n (a/8) (by linarith) (by linarith)]
     exact le_of_lt (show riemannianEDistOf (g' n) (p n) x < ENNReal.ofReal (a/8) from hx)
 
-private local instance {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+private local instance (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (first : Fin (H.eventCount + 1)) (K : Set G.terminalRegularOpen) :
     SigmaCompactSpace (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
@@ -213,7 +213,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
 private theorem RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_volume_radius_of_scaled_bound
     {R θ C σ : ℝ} (hR : 0 < R) (hθ : 0 < θ) (hC : 0 ≤ C) (hσ : 0 < σ) :
     ∃ a₀ : ℝ, 0 < a₀ ∧ ∀ a : ℝ, 0 < a → a ≤ a₀ →
-    ∀ {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    ∀ (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -260,7 +260,7 @@ private theorem RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_
   obtain ⟨a₀, ha₀, hvol⟩ :=
     RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_volume_radius hR hθ hC hσ
   refine ⟨a₀, ha₀, ?_⟩
-  intro a ha haa₀ P H s G L hinit hs first K gflow hslabs hlast p Q κ hQ hcpt hroom hbound htested x hx
+  intro a ha haa₀ H s G L hinit hs first K gflow hslabs hlast p Q κ hQ hcpt hroom hbound htested x hx
   have hQpos : 0 < Q := zero_lt_one.trans_le hQ
   have hphysical : ∀ v ∈ Ico (s - θ / Q) s, ∀ z : H.toHistory.backwardSurvivorIncomingFootprint
       first (Fin.last H.eventCount) (Fin.le_last first) G K,
@@ -293,7 +293,7 @@ private theorem RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_
 
 theorem exists_pointed_convergence_of_tested_incomingFootprint_flows
     {R θ C σ κ : ℝ} (hR : 0 < R) (hθ : 0 < θ) (hC : 0 < C) (hσ : 0 < σ) (hκ : 0 < κ)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -381,7 +381,7 @@ theorem tested_incomingFootprint_flow_rescaled_cone_exclusion
     (x : ℕ → End) (scale : ℕ → ℝ) (hscale : ∀ n, 0 < scale n)
     (hscaleTop : Tendsto scale atTop atTop)
     {Rcmp lower upper : ℝ} (hRcmp : 0 < Rcmp) (hlower : 0 < lower)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))

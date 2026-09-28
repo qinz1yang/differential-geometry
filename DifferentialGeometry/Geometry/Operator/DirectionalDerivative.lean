@@ -503,7 +503,7 @@ theorem mfderiv_eq_fderivWithin_scalarOnE
   have hchain := mfderiv_comp_mfderivWithin_of_eq hf hs
     (I.uniqueMDiffOn (extChartAt I α x) (extChartAt_target_subset_range α hxt)) hinv
   rw [mfderivWithin_eq_fderivWithin] at hchain
-  rw [fderivWithin_congr_set (extChartAt_target_eventuallyEq_of_mem hxt)]
+  rw [fderivWithin_congr_set (extChartAt_target_eventuallyEqSet_of_mem hxt)]
   change mfderiv I 𝓘(ℝ) f x v =
     fderivWithin ℝ (f ∘ (extChartAt I α).symm) (Set.range I) (extChartAt I α x)
       ((trivializationAt E (TangentSpace I) α).continuousLinearMapAt ℝ x v)

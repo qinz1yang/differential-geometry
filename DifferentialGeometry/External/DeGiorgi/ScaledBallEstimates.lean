@@ -34,7 +34,7 @@ noncomputable def CWeakHarnackOf (d : ℕ) [NeZero d] : ℝ :=
 
 theorem C_weakHarnack_of_eq (hd : 2 < (d : ℝ)) :
     CWeakHarnackOf d = CWeakHarnack d hd :=
-  dif_pos hd
+  dite_eq_left hd
 
 theorem one_le_C_weakHarnack_of : 1 ≤ CWeakHarnackOf d := by
   unfold CWeakHarnackOf
@@ -76,7 +76,9 @@ private lemma affine_map_restrict_ball_mul
             rw [show (fun z : E => x₀ + R • z) = (fun z => x₀ + z) ∘ (fun z => R • z) from rfl]
             rw [← Measure.map_map (measurable_const_add x₀) (measurable_const_smul R)]
             rw [Measure.map_addHaar_smul volume hR.ne']
-            rw [Measure.map_smul, (measurePreserving_add_left volume x₀).map_eq, abs_inv]
+            rw [Measure.map_smul (c := ENNReal.ofReal |(R ^ Module.finrank ℝ E)⁻¹|)
+              (f := fun z : E => x₀ + z) (measurable_const_add x₀).aemeasurable,
+              (measurePreserving_add_left volume x₀).map_eq, abs_inv]
     _ = ENNReal.ofReal (|R ^ Module.finrank ℝ E|⁻¹) •
           (volume.restrict (Metric.ball x₀ (R * ρ))) := by
             rw [Measure.restrict_smul]
@@ -158,7 +160,9 @@ private lemma integrableOn_rescaleToUnitBall_iff
           rw [show T = (fun z : E => x₀ + z) ∘ (fun z : E => R • z) from rfl]
           rw [← Measure.map_map (measurable_const_add x₀) (measurable_const_smul R)]
           rw [Measure.map_addHaar_smul volume hR.ne']
-          rw [Measure.map_smul, (measurePreserving_add_left volume x₀).map_eq, abs_inv]]
+          rw [Measure.map_smul (c := ENNReal.ofReal |(R ^ Module.finrank ℝ E)⁻¹|)
+            (f := fun z : E => x₀ + z) (measurable_const_add x₀).aemeasurable,
+            (measurePreserving_add_left volume x₀).map_eq, abs_inv]]
     rw [IntegrableOn, Measure.restrict_smul]
     exact integrable_smul_measure (affine_scale_measure_ne_zero (d := d) hR) ENNReal.ofReal_ne_top
   exact hiff.trans hsmul

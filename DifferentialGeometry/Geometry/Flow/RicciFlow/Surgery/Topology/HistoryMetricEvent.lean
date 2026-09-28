@@ -58,7 +58,7 @@ namespace RetainedCoreHistory
 
 variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 
-theorem exists_extension_after_metricCutCapEvent_with_source (H : RetainedCoreHistory P)
+theorem exists_extension_after_metricCutCapEvent_with_source (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     {Q : OrientedThreeStage.{u}} {s : ℝ}
@@ -67,7 +67,7 @@ theorem exists_extension_after_metricCutCapEvent_with_source (H : RetainedCoreHi
     (hOld : E.old = E.transition.trace.retainedCore)
     (hinit : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) :
-    ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory),
+    ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory),
       A.IsPrefixOf B ∧ s < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = s ∧ K.stage (Fin.last K.eventCount) = Q ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
@@ -117,7 +117,7 @@ theorem exists_extension_after_metricCutCapEvent_with_source (H : RetainedCoreHi
     exact HEq.rfl
   exact ht _ _ _ _ F
 
-theorem exists_extension_after_metricCutCapEvent (H : RetainedCoreHistory P)
+theorem exists_extension_after_metricCutCapEvent (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     {Q : OrientedThreeStage.{u}} {s : ℝ}
@@ -126,7 +126,7 @@ theorem exists_extension_after_metricCutCapEvent (H : RetainedCoreHistory P)
     (hOld : E.old = E.transition.trace.retainedCore)
     (hinit : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) :
-    ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory),
+    ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory),
       A.IsPrefixOf B ∧ s < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = s ∧ K.stage (Fin.last K.eventCount) = Q ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
@@ -137,7 +137,7 @@ theorem exists_extension_after_metricCutCapEvent (H : RetainedCoreHistory P)
   exact ⟨K,B,hprefix,horizon,hcount,htime',hstage,hmetric,i,hi,hevent⟩
 
 theorem exists_extension_after_metricCutCapEvent_preserving_debit
-    (H : RetainedCoreHistory P) (A : InitialIdentification P g H.toHistory)
+    (H : RetainedCoreHistory.{u}) (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
@@ -155,7 +155,7 @@ theorem exists_extension_after_metricCutCapEvent_preserving_debit
     (hscalar : ∀ B : ℝ, B ≤ 0 →
       (∀ x, B ≤ metricScalarAt E.terminal.metric x) →
       ∀ x, B ≤ metricScalarAt E.outputMetric x) :
-    ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory),
+    ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory),
       A.IsPrefixOf B ∧ s < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = s ∧ K.stage (Fin.last K.eventCount) = Q ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
@@ -230,7 +230,7 @@ private theorem compact_volume_debit_transport
   exact hdebit
 
 theorem RetainedCoreHistory.appendEvent_compact_volume_debit
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)

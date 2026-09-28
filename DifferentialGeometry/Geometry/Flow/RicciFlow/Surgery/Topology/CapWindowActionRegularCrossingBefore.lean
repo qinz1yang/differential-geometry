@@ -70,7 +70,7 @@ theorem abs_derivWithin_stageScalar_le_of_forall_Ioo {C q t₀ : ℝ}
       simpa only [H.stageEndTime_last] using ht₀.1.trans ht₀.2
     have hmetric : H.stageMetric (Fin.last H.eventCount) = (H.finalSlab hlt).flow.base.metric := by
       funext τ
-      simp only [stageMetric, Fin.lastCases_last, dif_pos hlt]
+      simp only [stageMetric, Fin.lastCases_last, dite_eq_left hlt]
     rw [hmetric] at h hy ⊢
     rw [H.stageEndTime_last] at ht₀
     exact (H.finalSlab hlt).abs_derivWithin_scalar_le_of_forall_Ioo ht₀ y h hy

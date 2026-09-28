@@ -229,15 +229,15 @@ private theorem borelDomBound_summable (c : ℕ → F) (k : ℕ) :
   refine Summable.congr_cofinite hgeom ?_
   rw [Nat.cofinite_eq_atTop]
   filter_upwards [eventually_gt_atTop k] with n hn
-  rw [borelDomBound, if_pos hn]
+  rw [borelDomBound, ite_eq_left hn]
 
 private theorem borelDomBound_bound (c : ℕ → F) (k n : ℕ) (t : ℝ) :
     ‖iteratedFDeriv ℝ k (borelTerm c n) t‖ ≤ borelDomBound c k n := by
   rw [norm_iteratedFDeriv_eq_norm_iteratedDeriv, borelDomBound]
   by_cases hkn : k < n
-  · rw [if_pos hkn]
+  · rw [ite_eq_left hkn]
     exact borelTerm_iteratedDeriv_bound c hkn t
-  · rw [if_neg hkn]
+  · rw [ite_eq_right hkn]
     exact Classical.choose_spec (borelTerm_iteratedDeriv_global_bound c n k) t
 
 private theorem borelTerm_iteratedDeriv_zero (c : ℕ → F) (n k : ℕ) :
@@ -279,10 +279,10 @@ private theorem borelTerm_iteratedDeriv_zero (c : ℕ → F) (n k : ℕ) :
       rw [← mul_pow, inv_mul_cancel₀ hL0.ne', one_pow]
     rcases eq_or_ne n k with h | h
     · subst h
-      rw [if_pos rfl, if_pos rfl]
+      rw [ite_eq_left rfl, ite_eq_left rfl]
       have hfac : (Nat.factorial n : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
       rw [div_mul_cancel₀ _ hfac, hLn]
-    · rw [if_neg (fun h' => h h'.symm), if_neg h]
+    · rw [ite_eq_right (fun h' => h h'.symm), ite_eq_right h]
       simp
   rw [hpow]
 
@@ -312,8 +312,8 @@ private theorem borel_jet_realize [CompleteSpace F] (c : ℕ → F) :
         ← iteratedDeriv_eq_equiv_comp]
       exact borelTerm_iteratedDeriv_zero c n k
     rw [tsum_congr hterm]
-    rw [tsum_eq_single k (fun n hn => by rw [if_neg hn, zero_smul])]
-    rw [if_pos rfl, one_smul]
+    rw [tsum_eq_single k (fun n hn => by rw [ite_eq_right hn, zero_smul])]
+    rw [ite_eq_left rfl, one_smul]
 
 theorem borel_halfLine_extend {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
     [CompleteSpace F] (g : ℝ → F) :

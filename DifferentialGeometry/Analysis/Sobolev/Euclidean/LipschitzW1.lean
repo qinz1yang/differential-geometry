@@ -199,14 +199,16 @@ theorem partials_l2_le_wkp
         eLpNorm (fun x : E => ∑ i : Fin d,
           ‖(fderiv ℝ f x) (EuclideanSpace.single i 1)‖) 2
           (volume.restrict Omega) := by
-    apply eLpNorm_mono_real
+    refine eLpNorm_mono_real
+      (Real.continuous_sqrt.comp_aestronglyMeasurable
+        (Finset.aestronglyMeasurable_fun_sum Finset.univ (fun i _ => (hcomp i).pow 2))) ?_
     intro x
     simpa only [Real.norm_of_nonneg (Real.sqrt_nonneg _)] using hpoint x
   refine hmono.trans ?_
   have hsum := eLpNorm_sum_le (μ := volume.restrict Omega) (p := (2 : ℝ≥0∞))
     (s := (Finset.univ : Finset (Fin d)))
     (f := fun i x => ‖(fderiv ℝ f x) (EuclideanSpace.single i 1)‖)
-    (fun i _ => (hcomp i).norm) hp
+    hp
   have hfun : (fun x : E => ∑ i : Fin d,
       ‖(fderiv ℝ f x) (EuclideanSpace.single i 1)‖) =
       ∑ i : Fin d, fun x : E =>
@@ -221,7 +223,7 @@ theorem partials_l2_le_wkp
           (volume.restrict Omega) =
         eLpNorm (chosenWeakPartialOrZero (d := d) (2 : ℝ≥0∞) i f Omega) 2
           (volume.restrict Omega) := by
-    rw [eLpNorm_norm]
+    rw [eLpNorm_norm _ (hcomp i)]
     exact eLpNorm_congr_ae (fderiv_ae_chosen hp hOmega hf hf_support i)
   calc
     (∑ i : Fin d, eLpNorm (fun x : E =>

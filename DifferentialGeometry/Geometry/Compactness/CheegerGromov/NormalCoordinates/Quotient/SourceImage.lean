@@ -80,7 +80,7 @@ theorem IntrinsicBallChart.eventually_chart_core_subset_image [Finite ι] :
       U V.isOpen (hchart i) hsk (c i k).hom (hLdom.trans hdomU)
       (fun z hz => hdomV z (hLdom hz))
       (fun z hz => hk z (hdomU (hLdom hz)) hz)
-      (fun z => by dsimp only [coords]; rw [dif_pos z.property]; rfl)
+      (fun z => by dsimp only [coords]; rw [dite_eq_left z.property]; rfl)
   have hball : Metric.closedBall (0 : E) (ρ / 10) ⊆ chartDomain V i := by
     intro z hz
     have hzU : z ∈ U := Metric.closedBall_subset_ball (by linarith) hz
@@ -95,7 +95,7 @@ theorem IntrinsicBallChart.eventually_chart_core_subset_image [Finite ι] :
   have hwU : w ∈ U := hdomU (hLdom hw)
   refine ⟨D.toGlueData.ι i ⟨w, hwU⟩, hdomV w (hLdom hw), ?_⟩
   have hcoord : (c i k).hom.symm (F k (D.toGlueData.ι i ⟨w, hwU⟩)) = z := by
-    simpa only [coords, dif_pos hwU] using hwz
+    simpa only [coords, dite_eq_left hwU] using hwz
   exact ((c i k).hom.right_inv (ht w hwU hw)).symm.trans (congrArg (c i k).hom hcoord)
 
 end DifferentialGeometry.Geometry.Riemannian.NormalCoordinates

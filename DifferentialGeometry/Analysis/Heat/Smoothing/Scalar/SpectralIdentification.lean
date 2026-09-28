@@ -18,6 +18,9 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.DualMetric
 import DifferentialGeometry.Tensor.RSTensor.RankZero
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices_apply separableFormAt
+  separableFormAt_apply tensorInnerPointwise tensorInnerPointwise_0s_zero_arity)
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter
@@ -176,10 +179,10 @@ theorem tensorL2Coeff_eigenvectorSmooth00
   have horth := orthonormal_iff_ite.mp b.orthonormal
   by_cases hji : j = i
   · subst hji
-    rw [if_pos rfl]
+    rw [ite_eq_left rfl]
     simpa using horth j j
   · have hne : i ≠ j := fun hij => hji hij.symm
-    rw [if_neg hne]
+    rw [ite_eq_right hne]
     exact Orthonormal.inner_eq_zero b.orthonormal hji
 
 theorem tensorEigen00_rawLap_eq

@@ -44,40 +44,4 @@ theorem hasUniformRecordsSurgeryTower_of_hasMorganTianExtinctionInput_of_uniform
   obtain ⟨A, hA, hrec⟩ := hw T parameters cutoff c hc hscalar
   exact ⟨T, c, A, hbfr, hctrl, hrec⟩
 
-theorem hext_of_hasMorganTianExtinctionInput_of_uniformWidthBound
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasMorganTianExtinctionInput
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
-    (hw : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasUniformWidthBound
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
-  hext_of_hasUniformRecordsSurgeryTower fun M hsc g =>
-    let _ := hsc
-    hasUniformRecordsSurgeryTower_of_hasMorganTianExtinctionInput_of_uniformWidthBound
-      (h M g) (hw M g)
-
-theorem smoothPoincareConjecture_of_hasMorganTianExtinctionInput_of_uniformWidthBound
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasMorganTianExtinctionInput
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g)
-    (hw : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasUniformWidthBound
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_hasUniformRecordsSurgeryTower hsum fun M hsc g =>
-    let _ := hsc
-    hasUniformRecordsSurgeryTower_of_hasMorganTianExtinctionInput_of_uniformWidthBound
-      (h M g) (hw M g)
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

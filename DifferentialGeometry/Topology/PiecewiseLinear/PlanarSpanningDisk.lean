@@ -19,7 +19,7 @@ theorem IsPLSphere.exists_isPLHomeomorphOn_disk_of_subset_fiber {J : Set E}
     (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0) {r : ℝ} (hJr : J ⊆ {x | ℓ x = r})
     {W : Set E} (hW : IsOpen W) (hWconv : Convex ℝ W) (hJW : J ⊆ W) :
     ∃ (D : Set E) (f : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn f (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       f '' stdSimplexBoundary 2 = J ∧ D ⊆ W ∩ {x | ℓ x = r} := by
   obtain ⟨e, π, hleft, hfixed, heheight⟩ := exists_affine_coordinates_of_linear_fiber hdimE ℓ hℓ r
   have hπinj : InjOn π J := by

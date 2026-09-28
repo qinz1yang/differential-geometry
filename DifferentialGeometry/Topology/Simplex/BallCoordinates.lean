@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.Analysis.Convex.GaugeRescale
 import Mathlib.Topology.Algebra.Module.FiniteDimension
@@ -9,13 +10,15 @@ noncomputable section
 open Set Metric Topology
 open scoped BigOperators
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 def coordinateSimplex (n : ℕ) : Set (Fin n → ℝ) :=
   {x | (∀ i, 0 ≤ x i) ∧ ∑ i, x i ≤ 1}
 
 def stdSimplexCoordinateHomeomorph (n : ℕ) :
-    stdSimplex ℝ (Fin (n + 1)) ≃ₜ coordinateSimplex n where
+    coordinateSet ℝ (Fin (n + 1)) ≃ₜ coordinateSimplex n where
   toFun x := ⟨fun i ↦ x.val i.succ, fun i ↦ x.prop.1 i.succ, by
     have h := x.prop.2
     rw [Fin.sum_univ_succ] at h
@@ -48,7 +51,7 @@ def stdSimplexCoordinateHomeomorph (n : ℕ) :
 
 @[simp]
 theorem stdSimplexCoordinateHomeomorph_apply (n : ℕ)
-    (x : stdSimplex ℝ (Fin (n + 1))) (i : Fin n) :
+    (x : coordinateSet ℝ (Fin (n + 1))) (i : Fin n) :
     (stdSimplexCoordinateHomeomorph n x).val i = x.val i.succ := rfl
 
 @[simp]

@@ -15,6 +15,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainde
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.LieCovariantDerivative
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.EndomorphismTermAlgebra
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.CovariantDerivativeTerm
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sum_le_card_mul)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -475,7 +478,7 @@ private theorem curvatureDecompositionMonomialCoeffField_pointwise_gridWindow
         have hCSl : CS l = 1 := by
           rw [hCS_def]
           dsimp only
-          rw [if_neg (by omega)]
+          rw [ite_eq_right (by omega)]
         rw [hCSl, one_mul]
         exact le_trans hsymm (le_trans hsingle hgw)
     calc riemannianFiberNormSq (I := I) (M := M) g₀ 4 (6 + l) x
@@ -785,7 +788,7 @@ theorem exists_curvatureDecompositionMonomialCoeffField_ccTensor02Symm_metricPer
           s • ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x) from by
         rw [SmoothCcTensor.toSection_smul]
         rfl]
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 0 (2 + l) x]
       have hs2 : s ^ 2 ≤ 1 := by nlinarith
       nlinarith [riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + l) x
         ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)]

@@ -191,7 +191,7 @@ private theorem curvatureOperatorPairingAt_eq_sum_orthonormal
             a ![basis i, basis j] *
             b ![basis (tail 0), basis (tail 1)] := by
   rw [curvatureOperatorPairingAt,
-    Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis
+    DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 4 basis
       (metricInverseInBasis_identity_of_orthonormal (I := I) g basis horth),
     sum_curvatureOperatorSlotEquiv]
   refine congrArg (fun z => -(1 / 2 : Real) * z) ?_
@@ -451,7 +451,7 @@ private theorem curvatureOperatorContractedTensorAt_pairing
               A ![basis i, basis j, basis (tail 0), basis (tail 1)] *
                 a ![basis i, basis j] *
                 b ![basis (tail 0), basis (tail 1)] := by
-    rw [Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis.toBasis hinv]
+    rw [DifferentialGeometry.Tensor0SBundle.inner0S_identity_eq_sum (I := I) g x 2 basis.toBasis hinv]
     simp only [component0S_apply, twoFormTensorAt_apply]
     simp_rw [curvatureOperatorContractedTensorAt_apply_orthonormal
       (I := I) g x basis.toBasis horth]
@@ -556,7 +556,7 @@ theorem curvatureOperatorEndomorphismAt_elementaryCovector_apply
     simp only [Matrix.cons_val_zero, Matrix.cons_val_one, Module.Basis.cDualBasis_apply_self]
   simp only [hbeta, mul_sub, mul_ite, mul_one, mul_zero,
     Finset.sum_sub_distrib, Finset.sum_ite_irrel, Finset.sum_ite_eq, Finset.sum_const_zero,
-    Finset.mem_univ, if_true]
+    Finset.mem_univ, ite_true]
   have hfirst := (mem_algebraicCurvatureTensorSubmodule_iff_symmetries.mp A.property).1
     (basis i) (basis j) v w
   have hvec (a b c d : TangentSpace I x) :

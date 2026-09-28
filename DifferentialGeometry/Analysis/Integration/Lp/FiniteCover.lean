@@ -47,7 +47,7 @@ theorem exists_lp_lift_of_finite_ae_cover
     have hex : ∃ e : E, j e = g x := ⟨v i x, hx⟩
     apply hinj
     have hfg : j (f x) = g x := by
-      simp only [f, dif_pos hex]
+      simp only [f, dite_eq_left hex]
       exact hex.choose_spec
     exact hfg.trans hx.symm
   have hf : MemLp f p μ :=

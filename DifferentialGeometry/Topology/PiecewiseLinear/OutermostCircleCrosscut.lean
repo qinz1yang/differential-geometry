@@ -24,7 +24,7 @@ variable [FiniteDimensional ℝ E]
 
 theorem exists_boundary_arc_avoiding_disjoint_circles
     (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] (hL : IsCombinatorialManifold 2 L)
-    {D J : Set E} {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    {D J : Set E} {q : (Fin 3 → ℝ) → E} (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDJ : q '' stdSimplexBoundary 2 = J) (hDL : D ⊆ L.space)
     {ι : Type*} {F : ι → Set E} (hF : ∀ i, IsPLSphere 1 (F i)) (hFL : ∀ i, F i ⊆ L.space)
     (hdis : Pairwise fun i j => Disjoint (F i) (F j))

@@ -175,7 +175,7 @@ theorem chartRSTwist_tensorTrivProj_eq_toFun
         ContinuousMultilinearMap.compContinuousLinearMap_apply]
     congr 1
     funext k
-    exact chartJinv_chartJ_self (I := I) (M := M) α hb (v k)
+    exact chartJinv_chartJ (I := I) (M := M) α hb (v k)
   rw [hinner]
   refine ContinuousMultilinearMap.ext ?_
   intro w
@@ -183,7 +183,7 @@ theorem chartRSTwist_tensorTrivProj_eq_toFun
       ContinuousMultilinearMap.compContinuousLinearMap_apply]
   congr 1
   funext k
-  exact chartJinv_chartJ_self (I := I) (M := M) α hb (w k)
+  exact chartJinv_chartJ (I := I) (M := M) α hb (w k)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

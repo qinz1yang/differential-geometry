@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Product.Bilinear
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.SmoothTensor
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Curvature.ContractionCovariantLeibnizBounds
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

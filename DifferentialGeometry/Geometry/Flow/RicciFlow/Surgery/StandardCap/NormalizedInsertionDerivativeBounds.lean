@@ -1,9 +1,9 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.ReferenceCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.NormalizedInsertionNorm
-import DifferentialGeometry.Tensor.Metric.ScaleNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.Scaling
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.StandardCap.QuotientCollapse
-import DifferentialGeometry.Tensor.Metric.IsometryNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
 import DifferentialGeometry.Geometry.Curvature.Bounds.ScalarNorm
 
 set_option autoImplicit false

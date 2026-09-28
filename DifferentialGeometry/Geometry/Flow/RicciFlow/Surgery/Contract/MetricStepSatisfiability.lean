@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Assembly
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
 
 set_option autoImplicit false
 
@@ -11,48 +11,6 @@ open scoped Manifold ContDiff
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 universe u
-
-theorem isCommonLocalRealization_iff_components :
-    isCommonLocalRealization.{u} ↔
-      (isLocalStabilityInput ∧ isBufferedControlInput.{u} ∧ isSurgeryVariationalInput.{u} ∧
-        isJacobianInput.{u} ∧ (∃ d : OldData, isOldTubeInput.{u} d) ∧
-        isEnlargementInput.{u} ∧ isRoundDegreeInput.{u}) :=
-  Iff.rfl
-
-theorem isLocalStabilityInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isLocalStabilityInput :=
-  h.1
-
-theorem isBufferedControlInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isBufferedControlInput.{u} :=
-  h.2.1
-
-theorem isSurgeryVariationalInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isSurgeryVariationalInput.{u} :=
-  h.2.2.1
-
-theorem isJacobianInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isJacobianInput.{u} :=
-  h.2.2.2.1
-
-theorem exists_isOldTubeInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : ∃ d : OldData, isOldTubeInput.{u} d :=
-  h.2.2.2.2.1
-
-theorem isEnlargementInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isEnlargementInput.{u} :=
-  h.2.2.2.2.2.1
-
-theorem isRoundDegreeInput_of_isCommonLocalRealization
-    (h : isCommonLocalRealization.{u}) : isRoundDegreeInput.{u} :=
-  h.2.2.2.2.2.2
-
-theorem isCommonLocalRealization_of_components
-    (hstability : isLocalStabilityInput) (hbuffered : isBufferedControlInput.{u})
-    (hvariational : isSurgeryVariationalInput.{u}) (hjacobian : isJacobianInput.{u})
-    (htube : ∃ d : OldData, isOldTubeInput.{u} d) (henlargement : isEnlargementInput.{u})
-    (hround : isRoundDegreeInput.{u}) : isCommonLocalRealization.{u} :=
-  ⟨hstability, hbuffered, hvariational, hjacobian, htube, henlargement, hround⟩
 
 theorem nonempty_oldData : Nonempty OldData :=
   ⟨{ horizon := 1, horizon_pos := one_pos
@@ -136,46 +94,8 @@ theorem not_attainmentClause_emptyVariationalStrip (H : ObservedHistory.{u})
   obtain ⟨γ, hγ, -⟩ := h p (forall_isLeast_emptyVariationalStrip H hpos p u p)
   exact hγ
 
-theorem not_isSurgeryVariationalInput_of_positiveHorizon (H : ObservedHistory.{u})
-    (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :
-    ¬ isSurgeryVariationalInput.{u} := by
-  intro h
-  let S := emptyVariationalStrip H hpos p
-  let u : ℝ := H.horizon / 2
-  have hu : u ∈ Ioo (0 : ℝ) H.horizon := ⟨half_pos hpos, half_lt_self hpos⟩
-  obtain ⟨-, -, hattain⟩ := (h H S).1 u hu
-  exact not_attainmentClause_emptyVariationalStrip H hpos p u hattain
-
-theorem not_isCommonLocalRealization_of_positiveHorizon (H : ObservedHistory.{u})
-    (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :
-    ¬ isCommonLocalRealization.{u} :=
-  fun h => not_isSurgeryVariationalInput_of_positiveHorizon H hpos p
-    (isSurgeryVariationalInput_of_isCommonLocalRealization h)
-
-structure UnguardedPoincareExtinctionContracts (DiscardedCutOpen : Type u → Prop)
-    extends PoincareExtinctionContracts DiscardedCutOpen where
-  metricStep_unguarded : isCommonLocalRealization.{u}
-
-theorem nonempty_unguardedPoincareExtinctionContracts_of_isCommonLocalRealization
-    {DiscardedCutOpen : Type u → Prop} (c : PoincareExtinctionContracts DiscardedCutOpen)
-    (hm : isCommonLocalRealization.{u}) :
-    Nonempty (UnguardedPoincareExtinctionContracts DiscardedCutOpen) :=
-  ⟨{ toPoincareExtinctionContracts := c, metricStep_unguarded := hm }⟩
-
-theorem not_nonempty_unguardedPoincareExtinctionContracts_of_positiveHorizon
-    (DiscardedCutOpen : Type u → Prop) (H : ObservedHistory.{u}) (hpos : 0 < H.horizon)
-    (p : (H.stage 0).Carrier) :
-    ¬ Nonempty (UnguardedPoincareExtinctionContracts DiscardedCutOpen) := by
-  rintro ⟨c⟩
-  exact not_isCommonLocalRealization_of_positiveHorizon H hpos p c.metricStep_unguarded
-
 def HasNonemptyPositiveHorizonHistory : Prop :=
   ∃ H : ObservedHistory.{u}, 0 < H.horizon ∧ Nonempty (H.stage 0).Carrier
-
-theorem not_isCommonLocalRealization_of_hasNonemptyPositiveHorizonHistory
-    (h : HasNonemptyPositiveHorizonHistory.{u}) : ¬ isCommonLocalRealization.{u} := by
-  obtain ⟨H, hpos, ⟨p⟩⟩ := h
-  exact not_isCommonLocalRealization_of_positiveHorizon H hpos p
 
 theorem isReducedLengthAttainment_emptyVariationalStrip (H : ObservedHistory.{u})
     (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) (u : ℝ) :
@@ -200,12 +120,6 @@ theorem lowerSemicontinuousOn_emptyVariationalStrip (H : ObservedHistory.{u})
     exact emptyVariationalStrip_reducedLength H hpos p u x
   rw [hconst]
   exact lowerSemicontinuousOn_const
-
-theorem isReducedLengthRealization_emptyVariationalStrip_of_hasAdmissibleCurve
-    (H : ObservedHistory.{u}) (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier)
-    (h : HasAdmissibleCurve (emptyVariationalStrip H hpos p)) :
-    IsReducedLengthRealization (emptyVariationalStrip H hpos p) :=
-  absurd h (not_hasAdmissibleCurve_emptyVariationalStrip H hpos p)
 
 theorem not_isReducedLengthRealization_emptyVariationalStrip (H : ObservedHistory.{u})
     (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :

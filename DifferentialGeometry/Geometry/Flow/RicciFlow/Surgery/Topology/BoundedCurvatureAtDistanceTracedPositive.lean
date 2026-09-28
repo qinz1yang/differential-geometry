@@ -31,7 +31,7 @@ private local instance pointedLimitRegular (L : PointedRiemannianManifold.{u, 0,
   infer_instance
 
 theorem RetainedCoreHistory.traced_buffer_of_chain_traces
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (x : ∀ i, ((A i).restrictIncoming le_rfl (A i).lt le_rfl).terminalRegularOpen)
@@ -95,7 +95,7 @@ theorem RetainedCoreHistory.traced_buffer_of_chain_traces
     (hQ i) (htrace i) hR hε hBi hθ₁ hθθ hCθ hTi hDi
 
 theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_chain_traces
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ i, RetainedCoreHistory (P₀ i)) (time : ℕ → ℝ)
+    (H : ℕ → RetainedCoreHistory.{u}) (time : ℕ → ℝ)
     (A : ∀ i, ((H i).stage (Fin.last (H i).eventCount)).ClosedSlab
       ((H i).time (Fin.last (H i).eventCount)) (time i))
     (hinit : ∀ i, (A i).flow.base.metric ((H i).time (Fin.last (H i).eventCount)) =
@@ -174,8 +174,8 @@ theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_chain_traces
   intro R hR
   by_contra hB
   have hL1 := RetainedCoreHistory.exists_pointed_convergence_at_scalar_escape_of_traced_buffer
-    P₀ H time A hinit hs Ctime Cgrad q hq hderiv hfinal hgradient x hQ hqQ
-    (RetainedCoreHistory.traced_buffer_of_chain_traces P₀ H time A x hQ hθ D hD htime htrace)
+    H time A hinit hs Ctime Cgrad q hq hderiv hfinal hgradient x hQ hqQ
+    (RetainedCoreHistory.traced_buffer_of_chain_traces H time A x hQ hθ D hD htime htrace)
     ⟨R, hR, hB⟩ Phi hPhi hpinch hpinchFinal κ σ₀ σ hκ hσ₀ hσQ htested
   dsimp only at hL1
   obtain ⟨rho, hrho, ind, hind, z, f, hf, r, hr, hrlim, Pl, F₀, M, _, hcan, hradial, hcompact,
@@ -247,7 +247,7 @@ theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_chain_traces
     exact ⟨B, (tendsto_add_atTop_nat m₀).eventually hB'⟩
   have hux' (m : ℕ) : (xW (m + m₀) : Pl.M) = g (times (m + m₀)) := hux (m + m₀)
   obtain ⟨θ₂, hθ₂, htr₂⟩ := RetainedCoreHistory.eventually_second_level_traces_of_chain_traces
-    (fun i => P₀ (ind i)) (fun i => H (ind i)) (fun i => time (ind i)) (fun i => A (ind i))
+    (fun i => H (ind i)) (fun i => time (ind i)) (fun i => A (ind i))
     Cgrad (fun i => q (ind i)) (fun i => hgradient (ind i)) (fun i => x (ind i))
     (fun i => hQ (ind i)) (fun i => hqQ (ind i)) (fun i => hW (ind i)) hlam hθ hPhi
     (fun i => D (ind i)) (hD.comp hind.tendsto_atTop) (htime.comp hind.tendsto_atTop)
@@ -262,7 +262,6 @@ theorem RetainedCoreHistory.exists_normalized_scalar_bound_of_chain_traces
       rw [← hux (m + m₀)]
       exact (hm₀ (m + m₀) (Nat.le_add_left _ _)).2)
   exact RetainedCoreHistory.final_slab_punctured_cone_end_exclusion_of_trace_chains
-    (fun i => P₀ (ind i))
     (fun i => H (ind i)) (fun i => time (ind i)) (fun i => A (ind i)) (fun i => hinit (ind i))
     (fun i => hs (ind i)) Ctime (fun i => q (ind i)) (fun i => hq _) (fun i => hderiv (ind i))
     (fun i => hfinal (ind i)) (fun i => x (ind i)) (fun i => hQ _) (fun i => hqQ _)

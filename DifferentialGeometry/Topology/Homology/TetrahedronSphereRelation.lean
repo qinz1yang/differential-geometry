@@ -25,7 +25,8 @@ theorem integralSingularTetrahedronSphereClass_face_relation
   have hg : ∀ p ∈ Simplex.skeleton (Fin 5) 2, g p = x := fun p hp => hskel ⟨p, hp⟩
   have heq (i : Fin 5) := integralSingularTetrahedronSphereClass_eq_tetrahedronGenLoop x
     ((TopCat.toSSet.obj (TopCat.of X)).δ i τ)
-    (g.comp ⟨stdSimplex.map i.succAbove, stdSimplex.continuous_map i.succAbove⟩)
+    (g.comp ⟨Convexity.StdSimplex.coordinateMap i.succAbove,
+      Convexity.StdSimplex.continuous_coordinateMap i.succAbove⟩)
     (fun p hp => hg _ (Simplex.map_succAbove_mem_skeleton_of_mem_boundary i hp))
     (hfaces i).choose_spec
   rw [heq 0, heq 2, heq 4, heq 1, heq 3]

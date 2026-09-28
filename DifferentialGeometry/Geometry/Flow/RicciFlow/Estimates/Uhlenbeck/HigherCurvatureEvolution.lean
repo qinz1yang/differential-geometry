@@ -48,7 +48,7 @@ theorem slotArrayOfComponents_componentSlotSeq {k : ℕ}
   unfold slotArrayOfComponents componentSlotSeq
   congr 1
   funext t
-  rw [dif_pos t.isLt, Fin.eta]
+  rw [dite_eq_left t.isLt, Fin.eta]
 
 def firstSlotDerivativeLift (B : ContractionMap Idx) : ContractionMap Idx :=
   fun X Y s => B (fun m => X (consSlot (s 0) m)) Y (tailSlot s)
@@ -234,7 +234,7 @@ theorem sum_recursiveCurvatureContraction_succ [Fintype Idx]
         secondSlotDerivativeLift (recursiveCurvatureContraction Q (i + 1) (k - i - 1))
           (A (i + 1)) (A (k - i)) s)) k]
     have hlast : k - k = 0 := by omega
-    rw [if_pos hlast]
+    rw [ite_eq_left hlast]
     have hterm : ∀ i ∈ Finset.range k,
         (if k - i = 0 then (0 : Real) else
           secondSlotDerivativeLift (recursiveCurvatureContraction Q (i + 1) (k - i - 1))
@@ -246,7 +246,7 @@ theorem sum_recursiveCurvatureContraction_succ [Fintype Idx]
       have h1 : k - i ≠ 0 := by omega
       have h2 : k - i - 1 = k - (i + 1) := by omega
       have h3 : k - i = k - (i + 1) + 1 := by omega
-      rw [if_neg h1, h2, h3]
+      rw [ite_eq_right h1, h2, h3]
     rw [Finset.sum_congr rfl hterm]
     have h4 : k - 0 = k := by omega
     rw [h4]
@@ -601,7 +601,7 @@ theorem sum_contractionBoundConstant_succ (κ : Real) (k : ℕ) :
       (if k - i = 0 then (0 : Real) else
         contractionBoundConstant κ (i + 1) (k - i - 1))) k]
     have hlast : k - k = 0 := by omega
-    rw [if_pos hlast]
+    rw [ite_eq_left hlast]
     have hterm : ∀ i ∈ Finset.range k,
         (if k - i = 0 then (0 : Real) else
           contractionBoundConstant κ (i + 1) (k - i - 1)) =
@@ -610,7 +610,7 @@ theorem sum_contractionBoundConstant_succ (κ : Real) (k : ℕ) :
       rw [Finset.mem_range] at hi
       have h1 : k - i ≠ 0 := by omega
       have h2 : k - i - 1 = k - (i + 1) := by omega
-      rw [if_neg h1, h2]
+      rw [ite_eq_right h1, h2]
     rw [Finset.sum_congr rfl hterm]
     have h4 : k - 0 = k := by omega
     rw [h4]

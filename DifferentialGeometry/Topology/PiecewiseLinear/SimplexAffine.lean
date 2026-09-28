@@ -23,9 +23,9 @@ theorem exists_isPLHomeomorphOn_affine_of_equiv [FiniteDimensional ℝ E] [Finit
   obtain ⟨A, hA⟩ := exists_affineMap_eqOn hs φ
   obtain ⟨B, hB⟩ := exists_affineMap_eqOn ht ψ
   have hAv (v : s) : A v = (e v : F) := by
-    simpa only [φ, dif_pos v.property, Subtype.coe_eta] using hA v v.property
+    simpa only [φ, dite_eq_left v.property, Subtype.coe_eta] using hA v v.property
   have hBw (w : t) : B w = (e.symm w : E) := by
-    simpa only [ψ, dif_pos w.property, Subtype.coe_eta] using hB w w.property
+    simpa only [ψ, dite_eq_left w.property, Subtype.coe_eta] using hB w w.property
   have hBA : EqOn (B.comp A) (AffineMap.id ℝ E) (s : Set E) := by
     intro v hv
     change B (A v) = v

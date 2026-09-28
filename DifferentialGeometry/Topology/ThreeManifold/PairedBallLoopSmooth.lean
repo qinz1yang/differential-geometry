@@ -181,9 +181,9 @@ theorem loop_seamChart_image (p : SelfAttachment.directSeamDomain) :
   · let hr : 1 + p.val.2 ∈ Icc 1 2 := ⟨by linarith, by linarith [p.property.2.2]⟩
     obtain ⟨y, hy, hyval⟩ := hH (radialPoint N endpoint chart hdisj s false p.val.1 (1 + p.val.2) hr)
     refine ⟨y, ?_, hyval.trans ?_⟩
-    · simpa only [seamChart, dif_pos ht] using hy
+    · simpa only [seamChart, dite_eq_left ht] using hy
     · apply congrArg F.val
-      rw [SelfAttachment.directSeam, dif_pos ht] at hseam
+      rw [SelfAttachment.directSeam, dite_eq_left ht] at hseam
       exact hseam
   · let hr : 1 - p.val.2 ∈ Icc 1 2 := ⟨by linarith, by linarith [p.property.2.1]⟩
     let x : PuncturedFactor N endpoint chart (endpoint s false) :=
@@ -193,10 +193,10 @@ theorem loop_seamChart_image (p : SelfAttachment.directSeamDomain) :
         ⟨endpoint s true, radialPoint N endpoint chart hdisj s true (a.val p.val.1) (1 - p.val.2) hr⟩ :=
       radialPoint_cast_sigma N endpoint chart hdisj s true (endpoint s false) hloop _ _ _
     refine ⟨y, ?_, hyval.trans ?_⟩
-    · rw [seamChart, dif_neg ht]
+    · rw [seamChart, dite_eq_right ht]
       exact (congrArg (fun q => H (Quot.mk _ q)) hx).symm.trans hy
     · apply congrArg F.val
-      rw [SelfAttachment.directSeam, dif_neg ht] at hseam
+      rw [SelfAttachment.directSeam, dite_eq_right ht] at hseam
       have hxval : (loopPuncturedFactorHomeomorph N endpoint chart s hloop x).val =
           (chart s false).toBallChart.secondRadialMap
             (loopSecondChart N endpoint chart s hloop).toBallChart

@@ -140,9 +140,9 @@ theorem nablaLapComm_orthonormalTrace
   rw [nablaLapComm_trace (I := I) S t x₀ gInv c m]
   refine Finset.sum_congr rfl fun a _ => ?_
   rw [Finset.sum_eq_single a]
-  · rw [horth a a, if_pos rfl, one_mul]
+  · rw [horth a a, ite_eq_left rfl, one_mul]
   · intro b _ hb
-    rw [horth a b, if_neg (fun h => hb h.symm), zero_mul]
+    rw [horth a b, ite_eq_right (fun h => hb h.symm), zero_mul]
   · intro h; exact absurd (Finset.mem_univ a) h
 
 omit [I.Boundaryless] in

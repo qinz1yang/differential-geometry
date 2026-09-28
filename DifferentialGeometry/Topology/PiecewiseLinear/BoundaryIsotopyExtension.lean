@@ -102,11 +102,11 @@ theorem exists_homeomorph_of_boundary_isotopy
   have hθf_on : ∀ q, θf (e q) = e (F q) := by
     intro q
     simp only [θf, Subtype.coe_eta, e.symm_apply_apply]
-    exact dif_pos (e q).2
+    exact dite_eq_left (e q).2
   have hθi_on : ∀ q, θi (e q) = e (Fi q) := by
     intro q
     simp only [θi, Subtype.coe_eta, e.symm_apply_apply]
-    exact dif_pos (e q).2
+    exact dite_eq_left (e q).2
   have hθf_off : ∀ m, m ∉ T → θf m = m := by
     intro m hm
     by_cases hU : m ∈ (U : Set M)
@@ -116,9 +116,9 @@ theorem exists_homeomorph_of_boundary_isotopy
         refine ⟨e.symm ⟨m, hU⟩, h, ?_⟩
         change (e (e.symm ⟨m, hU⟩) : M) = m
         rw [e.apply_symm_apply]
-      simp only [θf, dif_pos hU]
+      simp only [θf, dite_eq_left hU]
       rw [(hFid _ (not_le.mp hq)).1, e.apply_symm_apply]
-    · simp only [θf, dif_neg hU]
+    · simp only [θf, dite_eq_right hU]
   have hθi_off : ∀ m, m ∉ T → θi m = m := by
     intro m hm
     by_cases hU : m ∈ (U : Set M)
@@ -128,9 +128,9 @@ theorem exists_homeomorph_of_boundary_isotopy
         refine ⟨e.symm ⟨m, hU⟩, h, ?_⟩
         change (e (e.symm ⟨m, hU⟩) : M) = m
         rw [e.apply_symm_apply]
-      simp only [θi, dif_pos hU]
+      simp only [θi, dite_eq_left hU]
       rw [(hFid _ (not_le.mp hq)).2, e.apply_symm_apply]
-    · simp only [θi, dif_neg hU]
+    · simp only [θi, dite_eq_right hU]
   have hcont : ∀ (H : B × Ico (0 : ℝ) δ → B × Ico (0 : ℝ) δ), Continuous H →
       ∀ θ : M → M, (∀ q, θ (e q) = e (H q)) → (∀ m, m ∉ T → θ m = m) → Continuous θ := by
     intro H hH θ hon hoff
@@ -146,13 +146,13 @@ theorem exists_homeomorph_of_boundary_isotopy
           have h2 : Continuous (fun m' : (U : Set M) => (e (H (e.symm m')) : M)) :=
             continuous_subtype_val.comp (e.continuous.comp (hH.comp e.symm.continuous))
           refine h2.congr fun m' => ?_
-          simp only [Set.domRestrict_apply, dif_pos m'.2, Subtype.coe_eta]
+          simp only [Set.domRestrict_apply, dite_eq_left m'.2, Subtype.coe_eta]
         exact hc.continuousAt (U.isOpen.mem_nhds hU)
       apply hloc.congr_of_eventuallyEq
       filter_upwards [U.isOpen.mem_nhds hU] with m' hm'
       have h1 := hon (e.symm ⟨m', hm'⟩)
       rw [e.apply_symm_apply] at h1
-      rw [dif_pos hm']
+      rw [dite_eq_left hm']
       exact h1
     · apply continuousAt_id.congr_of_eventuallyEq
       filter_upwards [hTc.isOpen_compl.mem_nhds hm] with m' hm'
@@ -164,17 +164,17 @@ theorem exists_homeomorph_of_boundary_isotopy
     by_cases hU : m ∈ (U : Set M)
     · have hm : m = e (e.symm ⟨m, hU⟩) := by rw [e.apply_symm_apply]
       rw [hm, hθf_on, hθi_on, hFiF]
-    · have h1 : θf m = m := by simp only [θf, dif_neg hU]
+    · have h1 : θf m = m := by simp only [θf, dite_eq_right hU]
       rw [h1]
-      simp only [θi, dif_neg hU]
+      simp only [θi, dite_eq_right hU]
   have hright : ∀ m, θf (θi m) = m := by
     intro m
     by_cases hU : m ∈ (U : Set M)
     · have hm : m = e (e.symm ⟨m, hU⟩) := by rw [e.apply_symm_apply]
       rw [hm, hθi_on, hθf_on, hFFi]
-    · have h1 : θi m = m := by simp only [θi, dif_neg hU]
+    · have h1 : θi m = m := by simp only [θi, dite_eq_right hU]
       rw [h1]
-      simp only [θf, dif_neg hU]
+      simp only [θf, dite_eq_right hU]
   let θ : M ≃ₜ M :=
     { toFun := θf
       invFun := θi

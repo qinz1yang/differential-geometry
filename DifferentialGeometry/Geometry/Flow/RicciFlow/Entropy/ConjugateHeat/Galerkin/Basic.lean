@@ -47,7 +47,7 @@ def scalarGalerkinVec
   weighted_summable := by
     refine summable_of_ne_finset_zero (s := F) ?_
     intro i hi
-    rw [if_neg hi]
+    rw [ite_eq_right hi]
     ring
 
 open Classical in
@@ -77,7 +77,7 @@ theorem scalarGalerkinVec_support
   have hiF' : i ∉ F := by
     simpa only [Finset.mem_coe] using hiF
   have hzero : (scalarGalerkinVec (I := I) (M := M) q F c σ).coeff i = 0 := by
-    rw [scalarGalerkinVec_coeff, if_neg hiF']
+    rw [scalarGalerkinVec_coeff, ite_eq_right hiF']
   exact hi hzero
 
 open Classical in
@@ -135,16 +135,16 @@ private noncomputable def scalarGalerkinEmbedLM
     funext i
     simp only [TensorHs.add_coeff, scalarGalerkinVec_coeff]
     by_cases hi : i ∈ F
-    · simp only [if_pos hi, dif_pos hi, WithLp.ofLp_add, Pi.add_apply]
-    · simp only [if_neg hi, add_zero]
+    · simp only [ite_eq_left hi, dite_eq_left hi, WithLp.ofLp_add, Pi.add_apply]
+    · simp only [ite_eq_right hi, add_zero]
   map_smul' c w := by
     apply TensorHs.ext
     funext i
     simp only [TensorHs.smul_coeff, RingHom.id_apply, scalarGalerkinVec_coeff]
     by_cases hi : i ∈ F
-    · simp only [if_pos hi, dif_pos hi, WithLp.ofLp_smul, Pi.smul_apply,
+    · simp only [ite_eq_left hi, dite_eq_left hi, WithLp.ofLp_smul, Pi.smul_apply,
         smul_eq_mul]
-    · simp only [if_neg hi, mul_zero]
+    · simp only [ite_eq_right hi, mul_zero]
 
 noncomputable def scalarGalerkinEmbed
     (q : SmoothRiemannianMetric I M)
@@ -192,13 +192,13 @@ theorem scalarGalerkinVec_cont
   funext i
   simp only [scalarGalerkinVec_coeff]
   by_cases hi : i ∈ F
-  · simp only [if_pos hi, dif_pos hi]
+  · simp only [ite_eq_left hi, dite_eq_left hi]
     have hwt : (w t).ofLp ⟨i, hi⟩ = c t i := by
       dsimp only [w]
       change e (e.symm (fun j => c t j.1)) ⟨i, hi⟩ = c t i
       rw [e.apply_symm_apply]
     exact hwt.symm
-  · simp only [if_neg hi, dif_neg hi]
+  · simp only [ite_eq_right hi, dite_eq_right hi]
 
 noncomputable def scalarGalerkinRestrict
     (q : SmoothRiemannianMetric I M)
@@ -440,7 +440,7 @@ theorem scalarGalerkinCoefficients_of_mem
     (t : Real) (i : TensorEigenIdx (I := I) (M := M) q 0 0) (hi : i ∈ F) :
     scalarGalerkinCoefficients (I := I) (M := M) q F γ t i = (γ t).ofLp ⟨i, hi⟩ := by
   classical
-  simp only [scalarGalerkinCoefficients, dif_pos hi]
+  simp only [scalarGalerkinCoefficients, dite_eq_left hi]
 
 omit [NeZero (Module.finrank ℝ E)] [BoundarylessManifold I M] in
 theorem scalarGalerkinCoefficients_of_not_mem
@@ -450,7 +450,7 @@ theorem scalarGalerkinCoefficients_of_not_mem
     (t : Real) (i : TensorEigenIdx (I := I) (M := M) q 0 0) (hi : i ∉ F) :
     scalarGalerkinCoefficients (I := I) (M := M) q F γ t i = 0 := by
   classical
-  simp only [scalarGalerkinCoefficients, dif_neg hi]
+  simp only [scalarGalerkinCoefficients, dite_eq_right hi]
 
 open Classical in
 structure IsConjGalerkinSolution
@@ -638,8 +638,8 @@ theorem scalarGalerkinCoefficients_isConjGalerkinSolution
       funext j
       rw [scalarGalerkinEmbed_apply, scalarGalerkinVec_coeff, scalarGalerkinVec_coeff]
       by_cases hj : j ∈ F
-      · simp only [dif_pos hj, if_pos hj, hV_mem t j hj]
-      · simp only [dif_neg hj, if_neg hj]
+      · simp only [dite_eq_left hj, ite_eq_left hj, hV_mem t j hj]
+      · simp only [dite_eq_right hj, ite_eq_right hj]
     have hRHS :
         (EuclideanSpace.proj (𝕜 := Real) ⟨i, hi⟩)
             (scalarGalerkinField (I := I) (M := M) S T F t (γ t)) =

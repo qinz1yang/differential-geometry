@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.SectionDifference.ConnectionBicontraction
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.UniformBound
 import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.PreHilbert
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 
 noncomputable section

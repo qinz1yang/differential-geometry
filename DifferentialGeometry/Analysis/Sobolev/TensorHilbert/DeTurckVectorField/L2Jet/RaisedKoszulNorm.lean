@@ -3,6 +3,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifferenc
 import DifferentialGeometry.Geometry.Metric.DeTurck.ConnectionDifference.Identities
 import DifferentialGeometry.Geometry.Curvature.Bochner.WeitzenbockIdentity
 import Mathlib.Analysis.MeanInequalities
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

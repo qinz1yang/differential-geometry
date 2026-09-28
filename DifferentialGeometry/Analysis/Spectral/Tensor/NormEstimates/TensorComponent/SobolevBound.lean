@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ChartComponent.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.H1Compl
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.TensorComponent.GradientLpNormPerIndex
 import Mathlib.Topology.Compactness.LocallyFinite
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Operator
 
 

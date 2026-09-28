@@ -298,7 +298,7 @@ theorem exists_heat_pot_subsolution_with_drift_of_unbounded_potential
         (fun _ x => (0 : TangentSpace I x)) (fun s _ => s) t x = 1 := by
       simp only [parabolicOperatorWithDrift, hheat, hderiv, sub_zero]
     have hV : (if t = 0 then (0 : Real) else t⁻¹) * t = 1 := by
-      rw [if_neg htne, inv_mul_cancel₀ htne]
+      rw [ite_eq_right htne, inv_mul_cancel₀ htne]
     rw [hP, hV]
     norm_num
   · intro x
@@ -314,7 +314,7 @@ theorem exists_heat_pot_subsolution_with_drift_of_unbounded_potential
       Classical.choice inferInstance, by
         change C < (if (max C 0 + 1)⁻¹ = 0 then (0 : Real)
           else ((max C 0 + 1)⁻¹)⁻¹)
-        rw [if_neg hne, inv_inv]
+        rw [ite_eq_right hne, inv_inv]
         exact hC⟩
   · intro x
     norm_num

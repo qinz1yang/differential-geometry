@@ -1737,8 +1737,8 @@ theorem ricciQuadDeriv_coord
     have hself : (fun q : Fin 2 => if q = 0 then v else v) = fun _ : Fin 2 => v := by
       funext q
       by_cases hq : q = 0
-      · rw [if_pos hq]
-      · rw [if_neg hq]
+      · rw [ite_eq_left hq]
+      · rw [ite_eq_right hq]
     rw [hself] at h
     simpa only [b, frame, ricciCompInFrame,
       SolutionOn.ricci, SolutionOn.ricciAt, SolutionFamily.ricci_apply] using h

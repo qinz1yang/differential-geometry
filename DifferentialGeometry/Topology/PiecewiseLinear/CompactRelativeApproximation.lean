@@ -131,7 +131,7 @@ theorem moise352_of_stageStep {n : ℕ} (H : Moise352StageStep.{u} n) : Moise352
     refine ⟨fun x => if hx : ∃ i, x ∈ T.coreSpace i then ε (Nat.find hx) else 1, ?_⟩
     intro x hx
     have hex : ∃ i, x ∈ T.coreSpace i := T.exists_mem_core_space hx
-    exact ⟨Nat.find hex, Nat.find_spec hex, dif_pos hex, fun j hj => Nat.find_min' hex hj⟩
+    exact ⟨Nat.find hex, Nat.find_spec hex, dite_eq_left hex, fun j hj => Nat.find_min' hex hj⟩
   have hβstage : ∀ i, ∃ b : ℝ, 0 < b ∧ ∀ x ∈ T.coreSpace i, b ≤ β x := by
     refine fun i => ⟨ε i, hεpos i, fun x hx => ?_⟩
     obtain ⟨j, -, hβx, hmin⟩ := hβ x (T.core_space_subset_union i hx)

@@ -15,7 +15,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.RetainedCoreHistor
 universe u
 
 theorem scalar_le_two_mul_along_backward_traces_of_scalar_le_on_ball
-    {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+    (H : RetainedCoreHistory.{u})
     {Ctime : ℝ≥0} {qcan R Q T ρ : ℝ} {u t : Icc (0 : ℝ) H.toHistory.horizon}
     (hR : 0 < R) (hQ : 0 < Q) (hstep : 2 * Ctime * Q * T ≤ 1) (hu : (u : ℝ) = t - T / R)
     (hut : u ≤ t)
@@ -52,8 +52,8 @@ theorem scalar_le_two_mul_along_backward_traces_of_scalar_le_on_ball
       (H.toHistory.activeStage_mono hvt) = x from B.endpoint_eq]
   exact hball x hx
 
-private theorem scalar_le_on_ball_extendHorizon_of_final_slab {P₀ : OrientedThreeStage.{u}}
-    (H : RetainedCoreHistory P₀) {t : ℝ} (hT : H.horizon ≤ t)
+private theorem scalar_le_on_ball_extendHorizon_of_final_slab
+    (H : RetainedCoreHistory.{u}) {t : ℝ} (hT : H.horizon ≤ t)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) t)
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount))
@@ -74,7 +74,7 @@ theorem exists_scalar_le_along_backward_traces_of_final_slab_window
     (hphi : Perelman.AdmissiblePinchingFunction phi) :
     ∃ εcone : ℝ, 0 < εcone ∧ ∀ ε : ℝ, ε ≤ εcone → ∀ A : ℝ, 0 < A →
       ∃ Q Λ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧
-      ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+      ∀ (H : RetainedCoreHistory.{u})
         (hend : H.time (Fin.last H.eventCount) = H.horizon) {t : ℝ}
         (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) t)
         (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -123,9 +123,9 @@ theorem exists_scalar_le_along_backward_traces_of_final_slab_window
   refine ⟨εcone, hεcone, fun ε hε A hA => ?_⟩
   obtain ⟨Q, Λ, hQ1, hΛ1, hQ⟩ := hbound ε hε A hA
   refine ⟨Q, Λ, hQ1, hΛ1, ?_⟩
-  intro P₀ H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ hT tt
+  intro H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ hT tt
     htt y' hy T hT0 hstep uu huu
-  have hball := hQ P₀ H hend S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ
+  have hball := hQ H hend S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ
   have hqR : q ≤ S.flow.scalar t y := by nlinarith
   have hR : 0 < S.flow.scalar t y := by linarith
   have hlast : (H.extendHorizon t hT S hS).toHistory.activeStage tt = Fin.last H.eventCount :=

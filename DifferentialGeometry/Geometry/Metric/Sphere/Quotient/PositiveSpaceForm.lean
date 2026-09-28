@@ -390,19 +390,5 @@ noncomputable def roundThreeSphereQuotientOfConstantPositiveSectionalCurvature
       (I := I) (M := M) (n := 3) (by omega)
       hcompact hconn hbdry hdim g c hc hsec
 
-noncomputable def constPosQuotient
-    (hcompact : CompactSpace M) (hconn : ConnectedSpace M)
-    (hbdry : I.Boundaryless) (hdim : Module.finrank ℝ E = 3)
-    (g : SmoothRiemannianMetric I M) (c : ℝ) (hc : 0 < c)
-    (hsec : ∀ x : M, ∀ X Y : TangentSpace I x,
-      metricRm04StandardAt (I := I) (M := M) g x X Y Y X =
-        c * (g.inner x X X * g.inner x Y Y -
-          g.inner x X Y * g.inner x X Y)) :
-    Σ data : RoundSphereQuotient.{0, u}
-        (EuclideanSpace ℝ (Fin 4)) 3,
-      M ≃ₘ⟮I, 𝓡 3⟯ data.Q := by
-  exact roundThreeSphereQuotientOfConstantPositiveSectionalCurvature
-    (I := I) (M := M) hcompact hconn hbdry hdim g c hc hsec
-
 end Geometry
 end DifferentialGeometry

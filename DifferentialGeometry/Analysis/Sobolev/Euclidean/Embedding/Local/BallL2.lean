@@ -212,7 +212,9 @@ private theorem eLpNorm_iterWeakPartial_le_eLpNorm_iteratedFDeriv
     iterWeakPartial_smooth_ae_eq_iterClassicalPartial (d := d) hp_one hΩ_open j β
       hψ_smooth hψ_compact hψ_support
   rw [eLpNorm_congr_ae h_ae]
-  refine eLpNorm_mono (fun x => ?_)
+  refine eLpNorm_mono
+    (contDiff_iterClassicalPartial j β hψ_smooth).continuous.aestronglyMeasurable
+    (fun x => ?_)
   have h := norm_iterClassicalPartial_le_iteratedFDeriv (d := d) j β hψ_smooth x
   simpa [norm_norm] using h
 
@@ -328,17 +330,16 @@ private theorem eLpNorm_iteratedFDeriv_smul_le
           (j.choose i : ℝ) * Cχ * ‖iteratedFDeriv ℝ (j - i) f z‖ := by
       gcongr
     simpa [hg, mul_assoc] using h_step
-  refine (eLpNorm_mono h_pt).trans ?_
-  have h_meas : ∀ i ∈ Finset.range (j + 1), AEStronglyMeasurable (g i) μ := by
-    intro i _
-    have h_iter_cont : Continuous (fun z : EuN => iteratedFDeriv ℝ (j - i) f z) := by
-      have h := hf.iteratedFDeriv_right' (m := (⊤ : ℕ∞)) (i := j - i)
-      simpa using h.continuous
-    have hcont : Continuous (g i) := by
-      simp only [hg]
-      exact (continuous_const.mul (continuous_norm.comp h_iter_cont))
-    exact hcont.aestronglyMeasurable
-  refine (eLpNorm_sum_le h_meas (by norm_num : (1 : ℝ≥0∞) ≤ 2)).trans ?_
+  have hprod_smooth : ContDiff ℝ (⊤ : ℕ∞) (fun y => χ y * f y) := hχ.mul hf
+  have h_iter_cont : Continuous
+      (fun z : EuN => iteratedFDeriv ℝ j (fun y => χ y * f y) z) := by
+    have h := hprod_smooth.iteratedFDeriv_right' (m := (⊤ : ℕ∞)) (i := j)
+    simpa using h.continuous
+  have h_left_meas : AEStronglyMeasurable
+      (fun z : EuN => ‖iteratedFDeriv ℝ j (fun y => χ y * f y) z‖) μ :=
+    (continuous_norm.comp h_iter_cont).aestronglyMeasurable
+  refine (eLpNorm_mono h_left_meas h_pt).trans ?_
+  refine (eLpNorm_sum_le (by norm_num : (1 : ℝ≥0∞) ≤ 2)).trans ?_
   refine Finset.sum_le_sum (fun i _ => ?_)
   have h_smul : g i = ((j.choose i : ℝ) * Cχ) •
       (fun z => ‖iteratedFDeriv ℝ (j - i) f z‖) := by

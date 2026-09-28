@@ -322,7 +322,7 @@ variable {g : SkeletonHomeo R₁ R₂} {m : d.EarHomeo earPos₁ earDraw₁ earP
 theorem splitMap_of_mem_skeletonSet {x : Plane} (hx : x ∈ R₁.skeletonSet) :
     splitMap g m x = g.toFun x := by
   classical
-  simp only [splitMap, if_pos hx]
+  simp only [splitMap, ite_eq_left hx]
 
 theorem splitMap_eqOn_skeletonSet : EqOn (splitMap g m) g.toFun R₁.skeletonSet :=
   fun _ hx => splitMap_of_mem_skeletonSet hx
@@ -330,12 +330,12 @@ theorem splitMap_eqOn_skeletonSet : EqOn (splitMap g m) g.toFun R₁.skeletonSet
 theorem splitInvMap_of_mem_skeletonSet {y : Plane} (hy : y ∈ R₂.skeletonSet) :
     splitInvMap g m y = g.invFun y := by
   classical
-  simp only [splitInvMap, if_pos hy]
+  simp only [splitInvMap, ite_eq_left hy]
 
 theorem splitInvMap_of_notMem_skeletonSet {y : Plane} (hy : y ∉ R₂.skeletonSet) :
     splitInvMap g m y = m.invFun y := by
   classical
-  simp only [splitInvMap, if_neg hy]
+  simp only [splitInvMap, ite_eq_right hy]
 
 variable (hE₁ : d.EarCrosscut R₁ earPos₁ earDraw₁) (hE₂ : d.EarCrosscut R₂ earPos₂ earDraw₂)
 
@@ -348,13 +348,13 @@ theorem splitMap_of_mem_earSet {x : Plane} (hx : x ∈ d.earSet earPos₁ earDra
     splitMap g m x = m.toFun x := by
   classical
   by_cases hs : x ∈ R₁.skeletonSet
-  · rw [splitMap, if_pos hs]
+  · rw [splitMap, ite_eq_left hs]
     have hends := hE₁.earSet_inter_skeletonSet ⟨hx, hs⟩
     simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hends
     rcases hends with rfl | rfl
     · rw [g.pos_apply d.source_mem_skel, m.toFun_pos_source hE₁ hE₂]
     · rw [g.pos_apply d.target_mem_skel, m.toFun_pos_target hE₁ hE₂]
-  · rw [splitMap, if_neg hs]
+  · rw [splitMap, ite_eq_right hs]
 
 theorem splitMap_eqOn_earSet : EqOn (splitMap g m) m.toFun (d.earSet earPos₁ earDraw₁) :=
   fun _ hx => splitMap_of_mem_earSet hE₁ hE₂ hx
@@ -365,7 +365,7 @@ theorem splitInvMap_eqOn_earSet :
   classical
   intro y hy
   by_cases hs : y ∈ R₂.skeletonSet
-  · rw [splitInvMap, if_pos hs]
+  · rw [splitInvMap, ite_eq_left hs]
     have hends := hE₂.earSet_inter_skeletonSet ⟨hy, hs⟩
     simp only [Set.mem_insert_iff, Set.mem_singleton_iff] at hends
     rcases hends with rfl | rfl
@@ -373,7 +373,7 @@ theorem splitInvMap_eqOn_earSet :
       rw [h, m.invFun_pos_source hE₁ hE₂]
     · have h : g.invFun (R₂.pos d.target) = R₁.pos d.target := g.symm.pos_apply d.target_mem_skel
       rw [h, m.invFun_pos_target hE₁ hE₂]
-  · rw [splitInvMap, if_neg hs]
+  · rw [splitInvMap, ite_eq_right hs]
 
 /-- **A point of the source ear off the old skeleton is carried off the old target skeleton.**
 The image lies on the target ear, and the target ear meets the target skeleton only in the two

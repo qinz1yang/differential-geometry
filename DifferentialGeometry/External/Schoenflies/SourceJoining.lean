@@ -95,10 +95,10 @@ theorem head_getLast_mem_endSet_segsOf {vs : List Plane} (hvs : vs ≠ [])
       | v :: rest =>
           rw [segsOf_cons_cons]
           by_cases huv : u = v
-          · rw [if_pos huv]
+          · rw [ite_eq_left huv]
             subst u
             exact ih (List.cons_ne_nil v rest) hne
-          · rw [if_neg huv]
+          · rw [ite_eq_right huv]
             constructor
             · exact ⟨(u, v), List.mem_cons_self, Or.inl rfl⟩
             · by_cases hvlast : v = (v :: rest).getLast (List.cons_ne_nil v rest)
@@ -302,7 +302,7 @@ theorem drawing_of_inner {e : γ} (he : e ∈ E(u.innerGraph)) :
     u.drawing e =
       (Q.joinedCrosscutOverlay J p s epsilon extra joins).relabelDrawing
         u.name segmentDrawing e := by
-  rw [drawing, if_neg]
+  rw [drawing, ite_eq_right]
   obtain ⟨R, hR, rfl⟩ := he
   exact fun heOuter => u.name_fresh R hR
     (P.str.mem_cells_of_mem_edgeSet (P.str.outerGraph_le.edgeSet_mono heOuter))

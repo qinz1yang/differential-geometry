@@ -367,7 +367,7 @@ end General
 private theorem isClosed_stdSimplexBoundary (n : ℕ) : IsClosed (stdSimplexBoundary n) := by
   have hc : IsClosed (⋃ i : Fin (n + 1), {x : Fin (n + 1) → ℝ | x i = 0}) :=
     isClosed_iUnion_of_finite fun i => isClosed_eq (continuous_apply i) continuous_const
-  convert (isClosed_stdSimplex ℝ (Fin (n + 1))).inter hc using 1
+  convert (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin (n + 1))).isClosed.inter hc using 1
   ext x
   simp [stdSimplexBoundary]
 
@@ -375,9 +375,9 @@ open Classical in
 private theorem boundaryComplex_space_stdSimplex_prism
     [d : DecidableEq ((Fin 3 → ℝ) × ℝ)]
     (Q : Geometry.SimplicialComplex ℝ ((Fin 3 → ℝ) × ℝ)) [Finite Q.faces]
-    (hQspace : Q.space = stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :
+    (hQspace : Q.space = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :
     (boundaryComplex 3 Q).space =
-      stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
         stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 := by
   classical
   let _ : DecidableEq (Fin 3 → ℝ) := Classical.decEq _
@@ -392,9 +392,9 @@ private theorem boundaryComplex_space_stdSimplex_prism
     hDspace, hDbd]
 
 private theorem stdSimplex_prism_ends_sdiff_side :
-    (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) \
+    (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) \
         (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) =
-      (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ) := by
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ) := by
   ext ⟨x, t⟩
   constructor
   · rintro ⟨⟨hx, ht⟩, hn⟩
@@ -405,7 +405,7 @@ private theorem stdSimplex_prism_ends_sdiff_side :
 
 private theorem stdSimplex_prism_side_sdiff_ends :
     (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) \
-        (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) =
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) =
       stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1 := by
   ext ⟨x, t⟩
   constructor
@@ -427,11 +427,11 @@ theorem boundaryComplex_space_of_isPLCellAttachmentWith_one [FiniteDimensional �
     {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
     (hL : IsCombinatorialManifoldWithBoundary 3 L)
     (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 3 → ℝ) × ℝ → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
-      (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N'.space g) :
+    (hatt : IsPLCellAttachmentWith 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N'.space g) :
     (boundaryComplex 3 N').space =
       ((boundaryComplex 3 L).space \
-          g '' ((stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ))) ∪
+          g '' ((Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ))) ∪
         g '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := by
   classical
   let _ : DecidableEq ((Fin 3 → ℝ) × ℝ) := Classical.decEq _
@@ -441,7 +441,7 @@ theorem boundaryComplex_space_of_isPLCellAttachmentWith_one [FiniteDimensional �
     (isClosed_stdSimplexBoundary 2).prod isClosed_Icc
   have hdense : stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ⊆
       closure ((stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) \
-        (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ))) := by
+        (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ))) := by
     rw [stdSimplex_prism_side_sdiff_ends, closure_prod_eq,
       (isClosed_stdSimplexBoundary 2).closure_eq, closure_Ioo (by norm_num : (0 : ℝ) ≠ 1)]
   have h := hatt.boundaryComplex_space hL hN' Q hQspace
@@ -453,30 +453,30 @@ theorem boundaryComplex_space_of_isPLCellAttachmentWith_two [FiniteDimensional �
     {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
     (hL : IsCombinatorialManifoldWithBoundary 3 L)
     (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 3 → ℝ) × ℝ → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+    (hatt : IsPLCellAttachmentWith 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
       (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) L C N'.space g) :
     (boundaryComplex 3 N').space =
       ((boundaryComplex 3 L).space \ g '' (stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1)) ∪
-        g '' (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) := by
+        g '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) := by
   classical
   let _ : DecidableEq ((Fin 3 → ℝ) × ℝ) := Classical.decEq _
   obtain ⟨Q, hQfin, hQspace⟩ := hatt.1.isPolyhedron.exists_simplicialComplex
   let _ : Finite Q.faces := hQfin.to_subtype
   have hZclosed : IsClosed ({0, 1} : Set ℝ) :=
     (Set.Finite.insert 0 (finite_singleton 1)).isClosed
-  have hclosed : IsClosed (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) :=
-    (isClosed_stdSimplex ℝ (Fin 3)).prod hZclosed
-  have hdense : stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ⊆
-      closure ((stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) \
+  have hclosed : IsClosed (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) :=
+    (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).isClosed.prod hZclosed
+  have hdense : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ⊆
+      closure ((Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) \
         (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)) := by
     have hid := (isPLBall_stdSimplex 2).isPolyhedron.isPLHomeomorphOn_id
-    have hcl : closure (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) =
-        stdSimplex ℝ (Fin 3) := by
+    have hcl : closure (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) =
+        Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
       simpa only [image_id] using hid.closure_sdiff_image_stdSimplexBoundary
     rw [stdSimplex_prism_ends_sdiff_side, closure_prod_eq, hcl, hZclosed.closure_eq]
   have hQbd : (boundaryComplex 3 Q).space =
       stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∪
-        stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) := by
+        Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) := by
     rw [boundaryComplex_space_stdSimplex_prism Q hQspace, union_comm]
   have h := hatt.boundaryComplex_space hL hN' Q hQspace hQbd hclosed hdense
   rwa [stdSimplex_prism_side_sdiff_ends] at h
@@ -486,7 +486,7 @@ theorem boundaryComplex_space_of_isPLCellAttachmentWith_three [FiniteDimensional
     {L N' : Geometry.SimplicialComplex ℝ E} [Finite L.faces] [Finite N'.faces]
     (hL : IsCombinatorialManifoldWithBoundary 3 L)
     (hN' : IsCombinatorialManifoldWithBoundary 3 N') {C : Set E} {g : (Fin 4 → ℝ) → E}
-    (hatt : IsPLCellAttachmentWith 3 (stdSimplex ℝ (Fin 4)) (stdSimplexBoundary 3) L C
+    (hatt : IsPLCellAttachmentWith 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) (stdSimplexBoundary 3) L C
       N'.space g) :
     (boundaryComplex 3 N').space = (boundaryComplex 3 L).space \ g '' stdSimplexBoundary 3 := by
   classical

@@ -170,6 +170,7 @@ private theorem metric_mvfderiv_congr_eventually
   have hx : f x = g x := h.eq_of_nhds
   unfold mvfderiv
   rw [hmf, hx]
+  rfl
 
 omit [SigmaCompactSpace M] in
 theorem inverseMetric_derivative_row_eq

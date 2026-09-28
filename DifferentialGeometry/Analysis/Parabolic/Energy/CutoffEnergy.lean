@@ -1,12 +1,14 @@
 import DifferentialGeometry.Analysis.Parabolic.Energy.ParabolicLocalAlgebra
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_cauchy_schwarz_sq)
 
 set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Analysis

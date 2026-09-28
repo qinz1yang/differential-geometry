@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.NormalDerivative
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.ParametrizedExtension
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
 
 set_option autoImplicit false
 noncomputable section

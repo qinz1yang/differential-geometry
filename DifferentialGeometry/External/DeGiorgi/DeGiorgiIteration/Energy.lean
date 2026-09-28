@@ -151,7 +151,7 @@ private theorem aestronglyMeasurable_matMulE
     hG_ofLp_cont.comp_aestronglyMeasurable hG
   have hmulVec :
       AEMeasurable (fun x => Matrix.mulVec (A.a x) (G x).ofLp) (volume.restrict Ω) := by
-    refine aemeasurable_pi_lambda _ ?_
+    refine AEMeasurable.of_eval ?_
     intro i
     have hmeas_sum :
         AEMeasurable

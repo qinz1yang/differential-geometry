@@ -69,7 +69,8 @@ theorem exists_ballCalabi
   have hxriem :
       riemannianEDist I B.center x < ENNReal.ofReal (B.radius / 2) := by
     have hx' := hx
-    rw [Metric.mem_eball',
+    rw [@Metric.mem_eball' M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+      inferInstance,
       IsRiemannianManifold.out (I := I) B.center x] at hx'
     exact hx'
   have hfinite :
@@ -100,7 +101,8 @@ theorem exists_ballCalabi
     have hyriem :
         riemannianEDist I B.center y < ENNReal.ofReal B.radius := by
       have hy' := hy
-      rw [Metric.mem_eball',
+      rw [@Metric.mem_eball' M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+        inferInstance,
         IsRiemannianManifold.out (I := I) B.center y] at hy'
       exact hy'
     have hyset : y ∈ B.setAt t := by
@@ -200,12 +202,12 @@ theorem exists_ballFlow
       exact_mod_cast hnNat_pos
     have hq_sq : q ^ 2 = Λ / n := by
       dsimp only [q]
-      rw [if_neg hn0, Real.sq_sqrt (div_nonneg hΛ hn.le)]
+      rw [ite_eq_right hn0, Real.sq_sqrt (div_nonneg hΛ hn.le)]
     rw [hq_sq]
     field_simp
   have hnq : n * q = Real.sqrt ((d - 1) * Λ) := by
     by_cases hn0 : nNat = 0
-    · simp only [q, hn0, if_pos, n, Nat.cast_zero, zero_mul, mul_zero,
+    · simp only [q, hn0, ite_eq_left, n, Nat.cast_zero, zero_mul, mul_zero,
         hdn, Real.sqrt_zero]
     · rw [hdn]
       have hnNat_pos : 0 < nNat := Nat.pos_of_ne_zero hn0
@@ -213,7 +215,7 @@ theorem exists_ballFlow
         dsimp only [n]
         exact_mod_cast hnNat_pos
       have hq_def : q = Real.sqrt (Λ / n) := by
-        simp only [q, hn0, if_false]
+        simp only [q, hn0, ite_false]
       have hq_sq : q ^ 2 = Λ / n := by
         rw [hq_def, Real.sq_sqrt (div_nonneg hΛ hn.le)]
       have hright_sq :
@@ -241,7 +243,8 @@ theorem exists_ballFlow
     have hyriem :
         riemannianEDist I B.center y < ENNReal.ofReal B.radius := by
       have hy' := hy
-      rw [Metric.mem_eball',
+      rw [@Metric.mem_eball' M PseudoEMetricSpace.toUniformSpace.toTopologicalSpace
+        inferInstance,
         IsRiemannianManifold.out (I := I) B.center y] at hy'
       exact hy'
     have hyset : y ∈ B.setAt t := by

@@ -260,7 +260,7 @@ private theorem contMDiffOn_satCylInverseCore :
   exact hdir.prodMk contMDiff_satLastCoord.contMDiffOn
 
 private theorem satCylInverseCore_apply_of_mem_band {z : Sphere 3} (hz : z ∈ satBandImage) :
-    satCylInverse z = ⟨satCylInverseCore z, hz⟩ := dif_pos hz
+    satCylInverse z = ⟨satCylInverseCore z, hz⟩ := dite_eq_left hz
 
 private theorem satCylDir_map (q : ↥satBand) :
     satCylDir (satCylMap q) = (q : satCylSpace).1 := by
@@ -384,7 +384,7 @@ private theorem expNegInvGlue_ge_quarter {x : ℝ} (hx : 1 ≤ x) :
     (1 / 4 : ℝ) ≤ expNegInvGlue x := by
   have h1 : expNegInvGlue 1 ≤ expNegInvGlue x := expNegInvGlue.monotone hx
   have h2 : expNegInvGlue 1 = Real.exp (-1) := by
-    rw [expNegInvGlue, if_neg (by norm_num : ¬ (1 : ℝ) ≤ 0), inv_one]
+    rw [expNegInvGlue, ite_eq_right (by norm_num : ¬ (1 : ℝ) ≤ 0), inv_one]
   have h3 : (1 / 4 : ℝ) ≤ Real.exp (-1) := by
     have h4 : (1 / 4 : ℝ) = (4 : ℝ)⁻¹ := by norm_num
     rw [h4, Real.exp_neg]

@@ -1,4 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.CylinderCollar.Compression
+import DifferentialGeometry.Topology.Manifold.CylinderCollar.Germ
+import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SupportedExtension
 
 set_option autoImplicit false
 noncomputable section
@@ -19,12 +21,14 @@ theorem exists_supported_diffeomorph_eq_on_compact_cylinder_collar_of_germ
     (U : Set SphereCylinder) (hband : univ ×ˢ Icc (-R) R ⊆ U)
     (himage : A '' (univ ×ˢ Icc (-R) R) ⊆ U)
     (K₀ : Set SphereCylinder) (hK₀ : IsCompact K₀) (hK₀band : K₀ ⊆ U)
-    (hGfix : EqOn G id K₀ᶜ) (hGfixi : EqOn G.symm id K₀ᶜ) :
+    (hGfix : EqOn G id K₀ᶜ) :
     ∃ F : SphereCylinder ≃ₘ⟮SphereCylinderModel, SphereCylinderModel⟯ SphereCylinder,
       (∀ q : SphereCylinder, |q.2| ≤ r → F q = A q) ∧
       ∃ K : Set SphereCylinder, IsCompact K ∧ K ⊆ U ∧
         EqOn F id Kᶜ ∧ EqOn F.symm id Kᶜ := by
   classical
+  have hGfixi : EqOn G.symm id K₀ᶜ :=
+    fun _ hx => (G.toEquiv.symm_apply_eq).2 (hGfix hx).symm
   have hR : 0 < R := hr.trans hrR
   obtain ⟨C, hC, K, hK, hKR, hCfix, hCfixi⟩ :=
     exists_supported_cylinder_compression hr hrR (lt_min hε hR)
@@ -40,7 +44,7 @@ theorem exists_supported_diffeomorph_eq_on_compact_cylinder_collar_of_germ
     rw [(hHeq 0 (A q)).1]
     have htarget : A q ∈ A.target := A.map_source hq
     change (if A q ∈ A.target then A (C (A.symm (A q))) else A q) = _
-    rw [if_pos htarget]
+    rw [ite_eq_left htarget]
     exact congrArg (fun x => A (C x)) (A.left_inv hq)
   let F := (C.trans G).trans (H 0).symm
   have hmatch (q : SphereCylinder) (hq : |q.2| ≤ r) : F q = A q := by
@@ -89,14 +93,14 @@ theorem exists_supported_diffeomorph_eq_on_compact_cylinder_collar
   have hR : 0 < R := hr.trans hrR
   have hzsource (p : S2) : (p, (0 : ℝ)) ∈ A.source :=
     hsource ⟨mem_univ _,by constructor <;> linarith⟩
-  obtain ⟨ε,hε,G,hG,hGzero,hGtail,K₀,hK₀,hK₀band,hGfix,hGfixi⟩ :=
+  obtain ⟨ε,hε,G,hG,hGzero,hGtail,K₀,hK₀,hK₀band,hGfix,_⟩ :=
     exists_supported_diffeomorph_eq_on_cylinder_collar A hzsource hfixed hside l u
       (by linarith) (by linarith)
   obtain ⟨F,hF,K,hK,hKU,hfix,hfixi⟩ :=
     exists_supported_diffeomorph_eq_on_compact_cylinder_collar_of_germ A hr hrR hε hsource G
       (fun q hq => (hG q.1 q.2 hq).2) (univ ×ˢ Ioo l u)
       (fun q hq => ⟨mem_univ _,hlR.trans_le hq.2.1,hq.2.2.trans_lt hRu⟩)
-      himage K₀ hK₀ hK₀band hGfix hGfixi
+      himage K₀ hK₀ hK₀band hGfix
   exact ⟨F,hF,fun p => (hF (p,0) (by simpa using hr.le)).trans (hfixed p),K,hK,hKU,hfix,hfixi⟩
 
 end DifferentialGeometry.Topology.Manifold

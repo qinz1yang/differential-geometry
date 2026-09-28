@@ -698,13 +698,45 @@ private theorem lEndVelocity_cov
         (T% fun q ↦ gradientFun (I := I) g
           (lActBranch S hS T x Z tau hdom hconj) q) := by
     filter_upwards [hf₀eq.eventuallyEq_nhds] with q hq
+    have hq' : f₀ =ᶠ[nhds q]
+        (lActBranch S hS T x Z tau hdom hconj) := by
+      change f₀ =ᶠ[nhds q]
+        (lActBranch S hS T x Z tau hdom hconj) at hq
+      exact hq
     change TotalSpace.mk' E q (gradientFun (I := I) g f₀ q) =
       TotalSpace.mk' E q
         (gradientFun (I := I) g
           (lActBranch S hS T x Z tau hdom hconj) q)
     unfold gradientFun
-    unfold mvfderiv
-    rw [hq.mfderiv_eq, hq.eq_of_nhds]
+    have hmv : (mvfderiv (I := I) f₀ q).toLinearMap =
+        (mvfderiv (I := I)
+          (lActBranch S hS T x Z tau hdom hconj) q).toLinearMap := by
+      apply LinearMap.ext
+      intro V
+      change mvfderiv (I := I) f₀ q V =
+        mvfderiv (I := I)
+          (lActBranch S hS T x Z tau hdom hconj) q V
+      rw [DifferentialGeometry.mvfderiv_real_eq_mfderiv,
+        DifferentialGeometry.mvfderiv_real_eq_mfderiv,
+        hq'.mfderiv_eq (I := I) (I' := 𝓘(Real, Real))]
+      rw [hq'.self_of_nhds]
+      have hcast :
+          (tangentSpaceCast 𝓘(Real, Real)
+            (lActBranch S hS T x Z tau hdom hconj q)
+            (lActBranch S hS T x Z tau hdom hconj q) :
+            TangentSpace 𝓘(Real, Real)
+                (lActBranch S hS T x Z tau hdom hconj q) →L[Real]
+              TangentSpace 𝓘(Real, Real)
+                (lActBranch S hS T x Z tau hdom hconj q)) =
+            ContinuousLinearMap.id Real _ := by
+        apply ContinuousLinearMap.ext
+        intro v
+        rfl
+      rw [hcast]
+      rfl
+    exact congrArg
+      (fun L : TangentSpace I q →ₗ[Real] Real ↦
+        TotalSpace.mk' E q (metricSharp (I := I) g q L)) hmv
   have hgradAt : MDifferentiableAt I
       (I.prod (modelWithCornersSelf Real E))
       (fun q ↦ TotalSpace.mk' E q

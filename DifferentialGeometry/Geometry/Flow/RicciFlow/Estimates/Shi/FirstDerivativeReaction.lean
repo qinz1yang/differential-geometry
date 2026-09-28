@@ -432,7 +432,7 @@ theorem inner_gradient_nablaKRm04NormSqIntrinsic_sq_le
     have h0 := nablaKRm04NormSqIntrinsic_nonneg (I := I) S 0 t x
     have h1 := nablaKRm04NormSqIntrinsic_nonneg (I := I) S 1 t x
     positivity
-  have hcs := DifferentialGeometry.Analysis.Laplacian.metric_inner_cauchy_schwarz_sq
+  have hcs := DifferentialGeometry.SmoothRiemannianMetric.metric_inner_cauchy_schwarz_sq
     (I := I) (M := M) ((flowG (I := I) S).metric t) x
     (gradientAt (I := I) (flowG (I := I) S) t
       (nablaKRm04NormSqIntrinsic (I := I) S 0 t) x)

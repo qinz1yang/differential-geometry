@@ -2,6 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Sard
 import Mathlib.Geometry.Manifold.ContMDiff.Atlas
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
 import Mathlib.Geometry.Manifold.MFDeriv.Atlas
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import Mathlib.Topology.Algebra.Support
 
 noncomputable section

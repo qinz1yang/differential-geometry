@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.Window
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg tensorInnerPointwise)
+
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -137,7 +140,7 @@ theorem atgGridIntRs
       have hb := hGNspec P Λ₀ hΛ₀0 hsup j hj0 hji
       have hchoose : (DifferentialGeometry.Analysis.Sobolev.Tensor.exists_gagliardoNirenberg_iteratedCovGrad_lpFiberNorm_le_rs
           (I := I) (M := M) g₀ r s i hi1).choose = Cgn i := by
-        rw [hCgn]; simp only [dif_pos hi1]
+        rw [hCgn]; simp only [dite_eq_left hi1]
       rw [hchoose] at hb
       have hnorm : Integral.L2.tensorL2Norm (I := I) g₀ r (s + i)
           (iteratedCovGrad (I := I) g₀ r s i P).toFun = ‖iteratedCovGrad (I := I) g₀ r s i P‖ :=

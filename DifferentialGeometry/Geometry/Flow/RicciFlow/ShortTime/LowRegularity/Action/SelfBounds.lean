@@ -13,6 +13,8 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Integral.Connection
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le riemannianFiberNormSq_zero)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev
@@ -86,7 +88,7 @@ private theorem endoAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (i + 1) := by
   classical
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   choose Sid hSid_nn hSid using
     (fun i : ℕ => exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀
@@ -379,7 +381,7 @@ private theorem ptAntidiagonalTupleGridWindow (g₀ : SmoothRiemannianMetric I M
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (i + 1) := by
   classical
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   choose SΦ hSΦ_nn hSΦ using
     (fun i : ℕ => exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀
@@ -1433,7 +1435,7 @@ private theorem clExact (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ�
             (covariantJetFiberNormSqGrid (I := I) (M := M) g₀ P x) (i + 1) := by
   classical
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphismField_diagonalProductGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   set fr : ℝ := (Module.finrank ℝ E : ℝ) with hfr_def
   have hfr_nn : (0 : ℝ) ≤ fr := Nat.cast_nonneg _
@@ -1488,7 +1490,7 @@ private theorem clExact (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ�
     set DC : SmoothCcTensor g₀ 3 (3 + (i + 1)) := iteratedCovGrad (I := I) g₀ 3 3 (i + 1)
       (reindexCoefficientInputSlots (I := I) (M := M) g₀ 3 3 E₁ (Equiv.swap (1 : Fin 3) 2)) with hDC_def
     rw [hYsplit, iteratedCovGradSm, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul,
-      Pi.smul_apply, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul, iteratedCovGrad_sub, iteratedCovGrad_add]
+      Pi.smul_apply, DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul, iteratedCovGrad_sub, iteratedCovGrad_add]
     rw [show ((DA + DB - DC).toSection x) =
         (DA.toSection x + DB.toSection x) - DC.toSection x from by
       rw [SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add]; rfl]

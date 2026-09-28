@@ -1395,7 +1395,7 @@ section CkDriver
 variable {f : ℝ → E → E} {t₀ : ℝ} {x₀ : E} {r : ℝ≥0} {tmin tmax : ℝ} {Φ : E × ℝ → E}
 variable [FiniteDimensional ℝ E]
 
-theorem exists_contDiffOn_flow_succ_driver
+private theorem exists_contDiffOn_flow_succ_driver
     {aΦ : (E × (E →L[ℝ] E)) × ℝ → E × (E →L[ℝ] E)}
     {R : ℝ≥0} {tmin' tmax' : ℝ} {Ω : Set ((E × (E →L[ℝ] E)) × ℝ)}
     (hΦ : IsLocalFlow f t₀ x₀ r tmin tmax Φ)
@@ -1517,7 +1517,7 @@ section CkInduction
 
 universe u
 
-def FlowCkPred (n : ℕ) : Prop :=
+private def flowCkPred (n : ℕ) : Prop :=
   ∀ {E' : Type u} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [CompleteSpace E']
     [FiniteDimensional ℝ E'] {g : ℝ → E' → E'} {t₀ : ℝ} {x₀ : E'} {r : ℝ≥0}
     {tmin tmax : ℝ} {Ψ : E' × ℝ → E'},
@@ -1526,13 +1526,13 @@ def FlowCkPred (n : ℕ) : Prop :=
     t₀ ∈ Ioo tmin tmax → 0 < (r : ℝ) →
     ∃ U : Set (E' × ℝ), IsOpen U ∧ (x₀, t₀) ∈ U ∧ ContDiffOn ℝ (n : ℕ∞) Ψ U
 
-theorem flowCkPred_base : FlowCkPred.{u} 1 := by
+private theorem flowCkPred_base : flowCkPred.{u} 1 := by
   intro E' _ _ _ _ g t₀ x₀ r tmin tmax Ψ hΨ hg ht₀ hr
   have hg1 : ContDiffOn ℝ 1 (uncurry g) (Set.univ : Set (ℝ × E')) := by simpa using hg
   exact exists_contDiffOn_flow_C1 hΨ hg1 ht₀ hr
 
-theorem flowCkPred_step {n : ℕ} (hn : 1 ≤ n) (IH : FlowCkPred.{u} n) :
-    FlowCkPred.{u} (n + 1) := by
+private theorem flowCkPred_step {n : ℕ} (hn : 1 ≤ n) (IH : flowCkPred.{u} n) :
+    flowCkPred.{u} (n + 1) := by
   intro E' _ _ _ _ g t₀ x₀ r tmin tmax Ψ hΨ hg ht₀ hr
   have horder : ((((n + 1 : ℕ) : ℕ∞) : WithTop ℕ∞)) =
       (((n : ℕ∞) : WithTop ℕ∞) + 1) := by norm_num
@@ -1565,7 +1565,7 @@ theorem flowCkPred_step {n : ℕ} (hn : 1 ≤ n) (IH : FlowCkPred.{u} n) :
   rw [horder]
   exact hU_C
 
-theorem flowCkPred_all (n : ℕ) (hn : 1 ≤ n) : FlowCkPred.{u} n := by
+private theorem flowCkPred_all (n : ℕ) (hn : 1 ≤ n) : flowCkPred.{u} n := by
   induction n, hn using Nat.le_induction with
   | base => exact flowCkPred_base
   | succ m hm IH => exact flowCkPred_step hm IH

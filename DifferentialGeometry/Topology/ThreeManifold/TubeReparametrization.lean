@@ -57,6 +57,10 @@ private theorem unitTubeParameter_injective_mfderiv {t : ℝ} (ht : t ∈ Ioo (-
     ((contMDiff_subtypeVal_Icc (x := (0 : ℝ)) (y := 1) (n := ∞)).mdifferentiableAt (by simp))
     ((unitTubeParameter_contMDiffAt ht).mdifferentiableAt (by simp))
   rw [(unitTubeParameter_val_eventually ht).mfderiv_eq] at hchain
+  replace hchain : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) parameterAffine t =
+      (mfderiv (𝓡∂ 1) 𝓘(ℝ, ℝ) (Subtype.val : Unit → ℝ) (unitTubeParameter t)).comp
+        (mfderiv 𝓘(ℝ, ℝ) (𝓡∂ 1) unitTubeParameter t) :=
+    (ContinuousLinearMap.ext fun _ => rfl).trans hchain
   have hinj : Injective (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) parameterAffine t) :=
     (parameterAffine.mfderivToContinuousLinearEquiv (by simp) t).injective
   rw [hchain] at hinj

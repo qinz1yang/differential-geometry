@@ -47,7 +47,7 @@ private lemma chartFrameNormGlobalSmoothCoordMatrix_of_mem
         ((chartFrameNormGlobalSmooth (I := I) (M := M) g α i).toFun b) k := by
   classical
   unfold chartFrameNormGlobalSmoothCoordMatrix
-  rw [dif_pos hb]
+  rw [dite_eq_left hb]
 
 omit [I.Boundaryless] in
 theorem chartFrameNormGlobalSmooth_eq_coordMatrix_sum

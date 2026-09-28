@@ -13,12 +13,12 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
 
 theorem exists_isPLSphere_pair_of_spanning_disk {S D : Set E} (hS : IsPLSphere 2 S)
-    {g : (Fin 3 → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D)
+    {g : (Fin 3 → ℝ) → E} (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hSD : S ∩ D = g '' stdSimplexBoundary 2) :
     ∃ D₁ D₂ : Set E, D₁ ∪ D₂ = S ∧ D₁ ∩ D₂ = g '' stdSimplexBoundary 2 ∧
       (∃ f₁ f₂ : (Fin 3 → ℝ) → E,
-        IsPLHomeomorphOn f₁ (stdSimplex ℝ (Fin 3)) D₁ ∧
-        IsPLHomeomorphOn f₂ (stdSimplex ℝ (Fin 3)) D₂ ∧
+        IsPLHomeomorphOn f₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁ ∧
+        IsPLHomeomorphOn f₂ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₂ ∧
         f₁ '' stdSimplexBoundary 2 = g '' stdSimplexBoundary 2 ∧
         f₂ '' stdSimplexBoundary 2 = g '' stdSimplexBoundary 2) ∧
       IsPLSphere 2 (D₁ ∪ D) ∧ IsPLSphere 2 (D₂ ∪ D) ∧

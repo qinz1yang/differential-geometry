@@ -104,12 +104,7 @@ theorem heat_pot_add
           (DifferentialGeometry.Geometry.Curvature.laplacianAt
               (I := I) (reverseFamily G T) (r - a) (u (r - a)) x +
             V (r - a) x * u (r - a) x) r := by
-      convert hcomp using 1
-      · rfl
-      · rfl
-      · funext s
-        rfl
-      · simp
+      simpa only [Function.comp_def, mul_one] using hcomp
     convert hcomp' using 1
     all_goals
       simp only [reverseFamily,
@@ -133,12 +128,7 @@ theorem reverse_deriv
   have hsub : HasDerivAt (fun r : Real => T - r) (-1) s := by
     have hsubRaw :=
       (hasDerivAt_const (x := s) (c := T)).sub (hasDerivAt_id (x := s))
-    convert hsubRaw using 1
-    · rfl
-    · rfl
-    · funext r
-      rfl
-    · norm_num
+    convert hsubRaw using 1 <;> first | rfl | norm_num
   have hcomp := hu.hasDerivAt.comp s hsub
   have hderiv := hcomp.deriv
   convert hderiv using 1
@@ -234,26 +224,17 @@ theorem heat_pot_to_conj
   have hsub : HasDerivAt (fun s : Real => T - s) (-1) t := by
     have hsubRaw :=
       (hasDerivAt_const (x := t) (c := T)).sub (hasDerivAt_id (x := t))
-    convert hsubRaw using 1
-    · rfl
-    · rfl
-    · funext s
-      rfl
-    · norm_num
+    convert hsubRaw using 1 <;> first | rfl | norm_num
   have hcomp := (h.equation (T - t) ht x).comp t hsub
-  convert hcomp using 1
-  · rfl
-  · rfl
-  · funext s
-    rfl
-  · change
+  convert hcomp using 1 <;> try rfl
+  change
       -DifferentialGeometry.Geometry.Curvature.laplacianAt
             (I := I) G t (v (T - t)) x + scalar t x * v (T - t) x =
         (DifferentialGeometry.Geometry.Curvature.laplacianAt
             (I := I) G (T - (T - t)) (v (T - t)) x +
           -scalar (T - (T - t)) x * v (T - t) x) * -1
-    rw [show T - (T - t) = t by ring]
-    ring
+  rw [show T - (T - t) = t by ring]
+  ring
 
 theorem conj_heat_mass_deriv
     [I.Boundaryless] [T2Space M] [CompactSpace M]

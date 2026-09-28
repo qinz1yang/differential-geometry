@@ -56,7 +56,7 @@ theorem IsCombinatorialManifold.exists_raw_bigon_slide
     (hsecond : ∀ i, ∀ p ∈ Ioo (-ε i) (ε i) ×ˢ Ioo (-ε i) (ε i),
       (e i p : E) ∈ L ↔ p.2 = 0) :
     ∃ (N : Set E) (r : (Fin 3 → ℝ) → E) (H : E → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N ∧ N ⊆ K.space ∩ Ω ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N ∧ N ⊆ K.space ∩ Ω ∧
       B ⊆ r '' openSimplex (stdVertices 1) ∧ IsPLHomeomorphOn H K.space K.space ∧
       EqOn H id (closure (K.space \ N)) ∧ H '' N = N ∧
       H '' J ∩ L = (J ∩ L) \ {c 0, c 1} ∧
@@ -83,9 +83,9 @@ theorem IsCombinatorialManifold.exists_raw_bigon_slide
     apply (htrace.symm.subset ?_).2.1
     fin_cases i <;> simp
   have hcN (i : Fin 2) : c i ∈ N := hBN (hcB i)
-  have hα' : IsPLHomeomorphOn α (stdSimplex ℝ (Fin 2)) (J ∩ N) := by
+  have hα' : IsPLHomeomorphOn α (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (J ∩ N) := by
     simpa only [inter_comm] using hα
-  have hβ' : IsPLHomeomorphOn β (stdSimplex ℝ (Fin 2)) (L ∩ N) := by
+  have hβ' : IsPLHomeomorphOn β (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (L ∩ N) := by
     simpa only [inter_comm] using hβ
   obtain ⟨γ, hγ, hγbd⟩ := exists_isPLHomeomorphOn_Icc_of_stdSimplex_one hα'
     (W := r '' stdSimplexBoundary 2) (by rw [← hαbd, inter_comm N J])
@@ -190,7 +190,7 @@ theorem IsCombinatorialManifold.exists_raw_bigon_slide
   let g := Function.invFunOn σ N
   have hg : IsPLHomeomorphOn g A (g '' A) := hσ.symm.restrict hA.isPolyhedron hAD
   obtain ⟨a, ha⟩ := hA
-  have hga : IsPLHomeomorphOn (g ∘ a) (stdSimplex ℝ (Fin 3)) (g '' A) := ha.trans hg
+  have hga : IsPLHomeomorphOn (g ∘ a) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' A) := ha.trans hg
   have hgAN : g '' A ⊆ N := (image_mono hAD).trans hσ.symm.image_eq.subset
   have hgabd : (g ∘ a) '' stdSimplexBoundary 2 = g '' frontier A := by
     rw [image_comp, ha.image_stdSimplexBoundary]

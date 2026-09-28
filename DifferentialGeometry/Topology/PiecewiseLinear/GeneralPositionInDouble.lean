@@ -104,35 +104,35 @@ theorem exists_finiteAdaptedCover_of_compactSpace [T2Space M] [CompactSpace M] (
     fun j => if h : j < t.card then Vy (p j h) else ∅, ?_, ?_, ?_, ?_, ?_, ?_⟩
   · intro j
     by_cases h : j < t.card
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact hWopen _
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact isOpen_empty
   · intro j
     by_cases h : j < t.card
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact hVyopen _
-    · simp only [dif_neg h]
+    · simp only [dite_eq_right h]
       exact isOpen_empty
   · intro j
     by_cases h : j < t.card
-    · simp only [dif_pos h]
+    · simp only [dite_eq_left h]
       exact hWVy _
-    · simp only [dif_neg h, closure_empty]
+    · simp only [dite_eq_right h, closure_empty]
       exact Subset.rfl
   · intro j hj
-    exact dif_neg (not_lt.2 hj)
+    exact dite_eq_right (not_lt.2 hj)
   · refine eq_univ_of_forall fun x => ?_
     obtain ⟨y, hy, hxy⟩ := mem_iUnion₂.mp (hcover (mem_univ x))
     refine mem_iUnion.2 ⟨((t.equivFin ⟨y, hy⟩ : Fin t.card) : ℕ), ?_⟩
-    rw [dif_pos (t.equivFin ⟨y, hy⟩).isLt]
+    rw [dite_eq_left (t.equivFin ⟨y, hy⟩).isLt]
     have hval : p ((t.equivFin ⟨y, hy⟩ : Fin t.card) : ℕ) (t.equivFin ⟨y, hy⟩).isLt = y :=
       congrArg Subtype.val (t.equivFin.symm_apply_apply ⟨y, hy⟩)
     rw [hval]
     exact hxy
   · intro j hj
     refine ⟨ecy (p j hj), ℓy (p j hj), hecm _, hℓne _, ?_, hCm _, hBdm _⟩
-    simp only [dif_pos hj]
+    simp only [dite_eq_left hj]
     exact hVycl _
 
 omit [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] in
@@ -821,9 +821,9 @@ theorem eq_regionGluedMap_of_eqOn {D D' : SingularTwoCell M}
   classical
   funext x
   by_cases hx : x ∈ Rc.space
-  · simp only [regionGluedMap, if_pos hx]
+  · simp only [regionGluedMap, ite_eq_left hx]
     exact hglue hx
-  · simp only [regionGluedMap, if_neg hx]
+  · simp only [regionGluedMap, ite_eq_right hx]
     exact hglueoff hx
 
 open Classical in
@@ -852,11 +852,11 @@ theorem freeSourceGerm_of_mem_closure (D : SingularTwoCell M) {W V : Set M} {ε 
     by_contra hxR
     have hDx : D x = y := by
       rw [← hxy]
-      simp only [regionGluedMap, if_neg hxR]
+      simp only [regionGluedMap, ite_eq_right hxR]
     exact hxR (hΩR ⟨hxdom, hΩcover ⟨hxdom, by simp only [mem_preimage, hDx]; exact hy⟩⟩)
   have hgx : ec.symm (simplicialMap Rs φ x) = y := by
     rw [← hxy]
-    simp only [regionGluedMap, if_pos hxR]
+    simp only [regionGluedMap, ite_eq_left hxR]
   have hxA : x ∈ Rc.space \ Ac.space :=
     hactive x hxR _ (hsmall x hxR) (by rw [hgx]; exact hy)
   have hxΩ : x ∈ Ω := by

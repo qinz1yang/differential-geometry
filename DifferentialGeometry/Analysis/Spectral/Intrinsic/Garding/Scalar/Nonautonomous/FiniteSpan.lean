@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricDoubleTrace
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Scalar.Nonautonomous.UniformBound
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev

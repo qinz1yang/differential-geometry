@@ -40,51 +40,6 @@ theorem mdifferentiableAt_finset_sum_smul
         (Filter.Eventually.of_forall fun z => by simp [smul_eq_mul])).add htail
 
 omit [CompleteSpace E] [T2Space M] in
-theorem gradientFun_sum
-    [hVectorBundle : VectorBundle Real E (TangentSpace I : M -> Type _)]
-    {ι : Type*} (s : Finset ι)
-    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
-    (t : Real) (f : ι -> M -> Real) (c : ι -> Real) (x : M)
-    (hf : ∀ i ∈ s, MDifferentiableAt I 𝓘(Real, Real) (f i) x) :
-    DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t)
-        (fun z : M => ∑ i ∈ s, c i * f i z) x =
-      ∑ i ∈ s, c i •
-        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (f i) x := by
-  let _ := hVectorBundle
-  classical
-  induction s using Finset.induction_on with
-  | empty =>
-      simp only [Finset.sum_empty]
-      exact DifferentialGeometry.Geometry.Operator.gradientFun_const
-        (I := I) (G.metric t) 0 x
-  | insert a s has ih =>
-      have hfa : MDifferentiableAt I 𝓘(Real, Real) (f a) x := hf a (by simp)
-      have htail_diff : MDifferentiableAt I 𝓘(Real, Real)
-          (fun z : M => ∑ i ∈ s, c i * f i z) x :=
-        mdifferentiableAt_finset_sum_smul (I := I) s f c x
-          (fun i hi => hf i (by simp [hi]))
-      have hhead_eq : (fun z : M => c a * f a z) = c a • f a := by
-        funext z
-        simp [smul_eq_mul]
-      have hhead_diff : MDifferentiableAt I 𝓘(Real, Real)
-          (fun z : M => c a * f a z) x := by
-        rw [hhead_eq]
-        exact hfa.const_smul (c a)
-      rw [show (fun z : M => ∑ i ∈ insert a s, c i * f i z) =
-            (fun z : M => c a * f a z + ∑ i ∈ s, c i * f i z) from by
-        funext z
-        rw [Finset.sum_insert has]]
-      rw [DifferentialGeometry.Geometry.Operator.gradientFun_add
-        (I := I) (G.metric t) hhead_diff htail_diff]
-      rw [show (fun z : M => c a * f a z) = (c a • f a) from by
-        funext z
-        simp [smul_eq_mul]]
-      rw [DifferentialGeometry.Geometry.Operator.gradientFun_const_smul
-        (I := I) (G.metric t) (c a) hfa]
-      rw [ih (fun i hi => hf i (by simp [hi]))]
-      rw [Finset.sum_insert has]
-
-omit [CompleteSpace E] [T2Space M] in
 theorem mdiffAt_gradientFun_finset_sum_smul
     [VectorBundle Real E (TangentSpace I : M -> Type _)]
     {ι : Type*} (s : Finset ι)
@@ -106,7 +61,13 @@ theorem mdiffAt_gradientFun_finset_sum_smul
             DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (f i) w)
               y) := by
     funext y
-    exact gradientFun_sum (I := I) s G t f c y (fun i hi => hf i hi y)
+    have hfun : (fun z : M => ∑ i ∈ s, c i * f i z) = ∑ i ∈ s, c i • f i := by
+      funext z
+      simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]
+    rw [hfun]
+    simpa only [Pi.smul_apply] using
+      DifferentialGeometry.Geometry.Operator.gradientFun_sum_smul (I := I)
+        (G.metric t) s c (f := f) (x := y) (fun i hi => hf i hi y)
   have hsection_eq :
       (T% fun y : M =>
           DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t)
@@ -312,7 +273,7 @@ theorem towerConstSq_pos (c α : Real) {n : ℕ} (hn : 0 < n) :
   have hCeq : ∀ j ∈ Finset.range n, Cloc j = towerConst c α j := by
     intro j hj
     rw [hCloc]
-    simp only [dif_pos (Finset.mem_range.mp hj)]
+    simp only [dite_eq_left (Finset.mem_range.mp hj)]
     rw [towerConst]
   have hLHS : towerConstSq c α n =
       towerBeta c α Cloc n * (Nat.factorial (n - 1) : Real) +
@@ -320,7 +281,7 @@ theorem towerConstSq_pos (c α : Real) {n : ℕ} (hn : 0 < n) :
           towerBeta c α Cloc n *
             ∑ i ∈ Finset.range n, towerFactCoeff n i * towerBarGood c Cloc i) * α := by
     conv_lhs => rw [towerConstSq, Nat.strongRec_eq]
-    rw [if_neg (by omega : ¬ n = 0)]
+    rw [ite_eq_right (by omega : ¬ n = 0)]
     rfl
   have hgoodsum :
       (∑ i ∈ Finset.range n, towerFactCoeff n i * towerBarGood c Cloc i) =
@@ -862,7 +823,7 @@ theorem Wterms_nonpos (B : BernsteinTower (I := I) G) {m : ℕ} (hm : 1 <= m)
     have hkm : k < m := by omega
     have hk1 : 1 <= k := hkmem.1
     have hGk : Gcoef (I := I) B m k = β * towerFactCoeff m k := by
-      rw [Gcoef, if_neg (by omega : ¬ k = m)]
+      rw [Gcoef, ite_eq_right (by omega : ¬ k = m)]
     rw [hGk]
     have hfac : (k : Real) * towerFactCoeff m k = towerFactCoeff m (k - 1) :=
       nat_mul_towerFactCoeff m hk1
@@ -1004,7 +965,7 @@ theorem Gfun_dissipative (B : BernsteinTower (I := I) G)
     intro i hi
     have him : i < m := Finset.mem_range.mp hi
     have hGi : Gcoef (I := I) B m i = β * towerFactCoeff m i := by
-      rw [Gcoef, if_neg (by omega : ¬ i = m)]
+      rw [Gcoef, ite_eq_right (by omega : ¬ i = m)]
     have hR76 := tpow_mul_reactionSum_le (I := I) B i htpos (fun j hj =>
       hIHle i him j hj)
     rw [← hC] at hR76
@@ -1188,7 +1149,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
             · intro h; simp at h
           rw [h0, haBar]
           have hGc0 : Gcoef (I := I) B m 0 = β * (Nat.factorial (m - 1) : Real) := by
-            rw [Gcoef, if_neg (by omega : ¬ (0 : ℕ) = m), towerFactCoeff]
+            rw [Gcoef, ite_eq_right (by omega : ¬ (0 : ℕ) = m), towerFactCoeff]
             rw [Nat.factorial_zero, Nat.cast_one, div_one, ← hC, ← hβ]
           rw [hGc0]
           have h0mem : (0 : Real) ∈ Set.Icc 0 B.T := ⟨le_rfl, le_of_lt B.time_pos⟩
@@ -1214,7 +1175,7 @@ theorem estimate [CompactSpace M] (B : BernsteinTower (I := I) G) :
           have him : i ∈ Finset.range (m + 1) := Finset.mem_of_mem_erase hi
           have hine : i ≠ m := Finset.ne_of_mem_erase hi
           have hGci : 0 <= Gcoef (I := I) B m i := by
-            rw [Gcoef, if_neg hine]
+            rw [Gcoef, ite_eq_right hine]
             exact mul_nonneg hβ_nonneg (towerFactCoeff_nonneg _ _)
           have : 0 <= t ^ i := pow_nonneg (le_of_lt htpos) i
           have : 0 <= B.w i t x := B.quantity_nonneg i t htmem x

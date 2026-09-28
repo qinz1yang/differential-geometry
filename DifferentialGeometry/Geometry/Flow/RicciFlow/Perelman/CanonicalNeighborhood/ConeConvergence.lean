@@ -230,7 +230,7 @@ theorem nonempty_annularConvergence_of_coneAnnulusRealization
       err a b i = el a b ha hab i + ed a b ha hab i + 1 / ((i : ℝ) + 1) := by
     intro a b ha hab i
     simp only [err]
-    rw [dif_pos ⟨ha, hab⟩]
+    rw [dite_eq_left ⟨ha, hab⟩]
   have herrpos : ∀ a b i, 0 < err a b i := by
     intro a b i
     by_cases h : 0 < a ∧ a < b
@@ -241,7 +241,7 @@ theorem nonempty_annularConvergence_of_coneAnnulusRealization
       linarith
     · have herr : err a b i = 1 := by
         simp only [err]
-        rw [dif_neg h]
+        rw [dite_eq_right h]
       rw [herr]
       norm_num
   have herrtend : ∀ a b, 0 < a → a < b → Filter.Tendsto (err a b) Filter.atTop (nhds 0) := by

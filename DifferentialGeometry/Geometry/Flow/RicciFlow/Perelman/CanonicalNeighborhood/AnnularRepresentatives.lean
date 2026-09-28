@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornRescaling
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ConeDistance
+import DifferentialGeometry.Geometry.Metric.ConeDistance
 
 section
 
@@ -81,7 +81,7 @@ theorem AnnularConvergence.exists_annular_selection
   refine ⟨fun i p => (selected i p).1, fun i p => (selected i p).2, ?_⟩
   filter_upwards [hchoose] with i hi
   intro p
-  simpa only [selected, dif_pos hi] using
+  simpa only [selected, dite_eq_left hi] using
     Classical.choose_spec (Classical.choose_spec (hi p))
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
@@ -164,12 +164,12 @@ theorem AnnularConvergence.exists_curvature_rescaled_marked_representatives
       (Eventually.of_forall fun _ => mem_univ _)
     intro z _ hz
     have hc : Continuous (fun z : B => Metric.coneDistance x (P z)) :=
-      continuous_openConeDistance.comp (continuous_const.prodMk hP)
+      Metric.continuous_coneDistance.comp (continuous_const.prodMk hP)
     have hcluster := hz.continuousAt_comp hc.continuousAt
     have heq : Metric.coneDistance x (P z) = 0 :=
       eq_of_nhds_neBot (hcluster.clusterPt.mono hnear)
     have hzpos : 0 < (P z).1 := ha.trans_le z.1.2.1
-    have hp := (openConeDistance_eq_zero_iff (ha.trans_le hx.1) hzpos).mp heq
+    have hp := (Metric.coneDistance_eq_zero_iff (ha.trans_le hx.1) hzpos).mp heq
     exact Prod.ext (Subtype.ext (congrArg Prod.fst hp).symm)
       (congrArg Prod.snd hp).symm
   have hyx : Tendsto (fun i => P (y i)) atTop (𝓝 x) := hP.continuousAt.tendsto.comp hyB
@@ -177,7 +177,7 @@ theorem AnnularConvergence.exists_curvature_rescaled_marked_representatives
     (1, (angles.classOf ray : UniformSpace.Completion angles.quotient))
   have hcone : Tendsto (fun i => Metric.coneDistance o (P (y i))) atTop
       (𝓝 (Metric.coneDistance o x)) :=
-    continuous_openConeDistance.continuousAt.tendsto.comp
+    Metric.continuous_coneDistance.continuousAt.tendsto.comp
       (tendsto_const_nhds.prodMk_nhds hyx)
   have hdist : Tendsto (fun i => dist (ray.point (d i)) (w i) / d i) atTop
       (𝓝 (Metric.coneDistance o x)) := by
@@ -243,7 +243,7 @@ theorem AnnularConvergence.tendsto_curvature_scaled_distance_of_representatives
     Tendsto (fun i => metricDistance
       (scaleMetric (metricScalarAt g (ray.point (d i))) (hQ i) g) (w i) (z i)) atTop
       (𝓝 (lambda * Metric.coneDistance x₀ y₀)) := by
-  have hcone := continuous_openConeDistance.continuousAt.tendsto.comp (hx.prodMk_nhds hy)
+  have hcone := Metric.continuous_coneDistance.continuousAt.tendsto.comp (hx.prodMk_nhds hy)
   have herr : Tendsto (fun i => Real.sqrt
       (metricScalarAt g (ray.point (d i)) * d i ^ 2) * C.error a b i) atTop (𝓝 0) := by
     simpa only [mul_zero] using hscale.mul (C.error_zero a b ha hab)
@@ -299,7 +299,7 @@ theorem AnnularConvergence.tendsto_rescaled_distance_of_approximated_representat
     Tendsto (fun i => metricDistance
       (scaleMetric (metricScalarAt g (ray.point (d i))) (hQ i) g) (w i) (v i)) l
       (𝓝 (lambda * Metric.coneDistance x₀ y₀)) := by
-  have hcone := continuous_openConeDistance.continuousAt.tendsto.comp (hx.prodMk_nhds hy)
+  have hcone := Metric.continuous_coneDistance.continuousAt.tendsto.comp (hx.prodMk_nhds hy)
   have hdiff : Tendsto (fun i => Metric.coneDistance (x i) (y i) -
       dist (w i) (z i) / d i) l (𝓝 0) := by
     apply tendsto_zero_iff_norm_tendsto_zero.mpr

@@ -1,11 +1,14 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.Face
 
 noncomputable section
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
 def simplexCone (n : ℕ) :
-    C(unitInterval × stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 2))) where
+    C(unitInterval × coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 2))) where
   toFun z := ⟨Fin.cons z.1.val (fun i => (1 - z.1.val) * z.2.val i), by
     constructor
     · intro i
@@ -24,8 +27,8 @@ def simplexCone (n : ℕ) :
     · exact (continuous_const.sub (continuous_subtype_val.comp continuous_fst)).mul
         ((continuous_apply j).comp (continuous_subtype_val.comp continuous_snd))
 
-@[simp] theorem simplexCone_zero (n : ℕ) (p : stdSimplex ℝ (Fin (n + 1))) :
-    simplexCone n (0, p) = stdSimplex.map (0 : Fin (n + 2)).succAbove p := by
+@[simp] theorem simplexCone_zero (n : ℕ) (p : coordinateSet ℝ (Fin (n + 1))) :
+    simplexCone n (0, p) = coordinateMap (0 : Fin (n + 2)).succAbove p := by
   apply Subtype.ext
   funext i
   refine Fin.cases ?_ (fun j => ?_) i
@@ -35,23 +38,23 @@ def simplexCone (n : ℕ) :
     simpa only [Fin.succAbove_zero, sub_zero, one_mul] using
       (map_succAbove_apply_image (0 : Fin (n + 2)) p j).symm
 
-@[simp] theorem simplexCone_one (n : ℕ) (p : stdSimplex ℝ (Fin (n + 1))) :
-    simplexCone n (1, p) = stdSimplex.vertex (0 : Fin (n + 2)) := by
+@[simp] theorem simplexCone_one (n : ℕ) (p : coordinateSet ℝ (Fin (n + 1))) :
+    simplexCone n (1, p) = coordinateSingle (0 : Fin (n + 2)) := by
   apply Subtype.ext
   funext i
   refine Fin.cases ?_ (fun j => ?_) i <;> simp [simplexCone]
 
 @[simp] theorem simplexCone_apply_zero (n : ℕ) (t : unitInterval)
-    (p : stdSimplex ℝ (Fin (n + 1))) : (simplexCone n (t, p)).val 0 = t.val := rfl
+    (p : coordinateSet ℝ (Fin (n + 1))) : (simplexCone n (t, p)).val 0 = t.val := rfl
 
 @[simp] theorem simplexCone_apply_succ (n : ℕ) (t : unitInterval)
-    (p : stdSimplex ℝ (Fin (n + 1))) (i : Fin (n + 1)) :
+    (p : coordinateSet ℝ (Fin (n + 1))) (i : Fin (n + 1)) :
     (simplexCone n (t, p)).val i.succ = (1 - t.val) * p.val i := rfl
 
 theorem simplexCone_map_succAbove (n : ℕ) (i : Fin (n + 2))
-    (t : unitInterval) (p : stdSimplex ℝ (Fin (n + 1))) :
-    simplexCone (n + 1) (t, stdSimplex.map i.succAbove p) =
-      stdSimplex.map i.succ.succAbove (simplexCone n (t, p)) := by
+    (t : unitInterval) (p : coordinateSet ℝ (Fin (n + 1))) :
+    simplexCone (n + 1) (t, coordinateMap i.succAbove p) =
+      coordinateMap i.succ.succAbove (simplexCone n (t, p)) := by
   apply Subtype.ext
   funext j
   by_cases hji : j = i.succ

@@ -14,8 +14,8 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem exists_triangulation_parameterized_disk_union
     [dE : DecidableEq E] {P D J : Set E} {u v : (Fin 3 → ℝ) → E}
-    (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) P)
-    (hv : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) D)
+    (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
+    (hv : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (huJ : u '' stdSimplexBoundary 2 = J) (hvJ : v '' stdSimplexBoundary 2 = J)
     (a : E →ᵃ[ℝ] ℝ) (r : ℝ) :
     ∃ R : Geometry.SimplicialComplex ℝ E, R.faces.Finite ∧ R.space = P ∪ D ∧
@@ -40,9 +40,9 @@ theorem exists_triangulation_parameterized_disk_union
   let _ : Finite (restrict R D).faces := (restrict_faces_finite R D).to_subtype
   have hRP : (restrict R P).space = P := by
     simpa only [hKspace] using hsub.space_eq
-  have huR : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) (restrict R P).space := by
+  have huR : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (restrict R P).space := by
     rwa [hRP]
-  have hvR : IsPLHomeomorphOn v (stdSimplex ℝ (Fin 3)) (restrict R D).space := by
+  have hvR : IsPLHomeomorphOn v (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (restrict R D).space := by
     rwa [hRD]
   have hboundaryP := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex
     (restrict R P) huR

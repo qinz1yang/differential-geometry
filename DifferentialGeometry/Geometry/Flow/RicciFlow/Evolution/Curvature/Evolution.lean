@@ -1037,7 +1037,7 @@ theorem rm04EvolutionFam
   have h := rm04Evolution_at (I := I) S hS x (gInvDt x) (hmetricRegularity x) t
     (fun q : Fin 4 => if q = 0 then i else if q = 1 then j else if q = 2 then k else l)
   simpa only [rm04Fam, rm04LapFam, rm04BFam, ricUpFam, riemann04RicciDriftInFrame,
-    rmCompBase (I := I) S x, if_pos, if_neg, if_false,
+    rmCompBase (I := I) S x, ite_eq_left, ite_eq_right, ite_false,
     show (1 : Fin 4) ≠ 0 by decide,
     show (2 : Fin 4) ≠ 0 by decide,
     show (2 : Fin 4) ≠ 1 by decide,

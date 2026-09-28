@@ -21,7 +21,7 @@ theorem exists_rounded_derivedNeighborhood_triangle_corner
     (hcard : s.card = 3) (hsL : s ∉ L.faces)
     (hproper : ∀ t : Finset E, t.Nonempty → t ⊂ s → t ∈ L.faces) :
     ∃ g : (Fin 3 → ℝ) × ℝ → E,
-      IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+      IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
         (derivedNeighborhoodCell K s).space ∧
       ∃ U : TopologicalSpace.Opens (derivedNeighborhoodCell K s).space,
       ∃ charts : ChartedSpace (EuclideanHalfSpace 3) U,

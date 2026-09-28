@@ -180,7 +180,7 @@ private theorem exists_calabi_coeff
         (I := I) g (-(n * q ^ 2)) := by
     by_cases hn0 : nNat = 0
     · have hd1 : dNat = 1 := by omega
-      simpa only [q, hn0, if_pos, zero_pow, zero_mul, mul_zero, neg_zero,
+      simpa only [q, hn0, ite_eq_left, zero_pow, zero_mul, mul_zero, neg_zero,
         n, nNat, hd1, Nat.cast_zero] using
         (Geometry.Riemannian.BonnetMyers.ricciLower_dim1
           (I := I) g hd1)
@@ -190,7 +190,7 @@ private theorem exists_calabi_coeff
         exact_mod_cast hnNat_pos
       have hq_sq : q ^ 2 = Λ / n := by
         dsimp only [q]
-        rw [if_neg hn0, Real.sq_sqrt (div_nonneg hΛ hn.le)]
+        rw [ite_eq_right hn0, Real.sq_sqrt (div_nonneg hΛ hn.le)]
       intro y v
       have habs := hricQuad y v
       have hneg :
@@ -205,7 +205,7 @@ private theorem exists_calabi_coeff
   have hnq :
       n * q = Real.sqrt ((d - 1) * Λ) := by
     by_cases hn0 : nNat = 0
-    · simp only [q, hn0, if_pos, n, Nat.cast_zero, zero_mul, mul_zero,
+    · simp only [q, hn0, ite_eq_left, n, Nat.cast_zero, zero_mul, mul_zero,
         hdn, Real.sqrt_zero]
     · rw [hdn]
       have hnNat_pos : 0 < nNat := Nat.pos_of_ne_zero hn0
@@ -213,7 +213,7 @@ private theorem exists_calabi_coeff
         dsimp only [n]
         exact_mod_cast hnNat_pos
       have hq_def : q = Real.sqrt (Λ / n) := by
-        simp only [q, hn0, if_false]
+        simp only [q, hn0, ite_false]
       have hq_nonneg : 0 ≤ q := hq
       have hq_sq : q ^ 2 = Λ / n := by
         rw [hq_def, Real.sq_sqrt (div_nonneg hΛ hn.le)]
@@ -561,8 +561,9 @@ private theorem calabi_core_of_tail
           mul_le_mul_of_nonneg_left hu.2 tail.initialLength_nonneg
         _ = tail.initialLength := mul_one _
         _ < R := hleftR
-    rw [Metric.mem_eball',
-      IsRiemannianManifold.out (I := I) O (γ u)]
+    rw [Metric.mem_eball,
+      IsRiemannianManifold.out (I := I) (γ u) O]
+    rw [Manifold.riemannianEDist_comm]
     exact hseg'.trans_lt ((ENNReal.ofReal_lt_ofReal_iff hR).2 hmul)
   have hL₁_deriv :=
     pathLength_timeDeriv_of_ricciFlow

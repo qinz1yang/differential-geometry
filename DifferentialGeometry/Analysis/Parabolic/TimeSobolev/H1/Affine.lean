@@ -74,7 +74,7 @@ theorem lipschitzWith_mk_zero_add {P : Type*} [PseudoEMetricSpace P]
     (hf : LipschitzWith Kf f) (hu : LipschitzWith Ku u) :
     LipschitzWith (Kf + Ku) (fun p => mk (f p) 0 + u p) := by
   have hc : LipschitzWith Kf (fun p => mk (f p) (0 : timeL2 X T)) := by
-    simpa only [one_mul, Function.comp_def] using (isometry_mk_zero (X := X) (T := T)).lipschitz.comp hf
+    simpa only [one_mul, Function.comp_def] using (isometry_mk_zero (X := X) (T := T)).lipschitzWith.comp hf
   exact hc.add hu
 
 end DifferentialGeometry.Analysis.Parabolic.TimeSobolev.timeH1

@@ -52,6 +52,8 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -61,29 +63,14 @@ open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Geometry.Curvature (chartRiemannTensor)
 open DifferentialGeometry.Integral.DivergenceTheorem
   (extChartAt_target_subset_interior_of_boundaryless)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField
-  pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness
-  linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero
-  exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply
-  linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz
-  linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff
-  linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff
-  linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth
-  linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff
-  exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand
-  unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm
-  ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection
-  riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (covGrad unitModel smoothCcTensor_ext_of_unitModel unitTensor pathIntegralCoeffField pathIntegralCoeffField_operatorFieldApplication_eq pathIntegralCoeffField_toSection linearizedRicciCovariantJetJointSmoothness linearizedRicciCovariantJetJointContinuity linearizedRicciCovariantJetJointSmoothness_zero exists_linearizedRicci_covariantJet_coeffFields ricciTensor_realize_sub_eq_covariantJet_operatorFieldApply linearizedRicciOrderZeroField linearizedRicciFirstOrderField linearizedRicciSecondOrderFieldLichnerowicz linearizedRicciOrderZeroBaseCoeff linearizedRicciOrderZeroCorrectionField linearizedRicciFirstOrderBaseCoeff linearizedRicciFirstOrderCorrectionField ricciDeTurckPrincipalCoefficient traceHessianCoeff linearizedRicci_orderZeroField_jointSmooth linearizedRicci_firstOrderField_jointSmooth linearizedRicci_secondOrderFieldLichnerowicz_jointSmooth ricciFirstOrderKoszulCoeff exists_firstOrderKoszul_metricPerturbationPath_riemannianFiberNormSq_ballUniform continuousBilinearMap_basis_expand unitModel_basis_expand_two unitModel_eq_ccTensorBilin_local operatorFieldApplication_zero_left_local ccTensor02Symm ccTensor02Symm_sub smoothCcTensorBilinForm_ccTensor02Symm iteratedCovGrad_ccTensor02Symm_eq domDomCongrSection riemannianFiberNormSq_iteratedCovGrad_domDomCongrSection)
 open DifferentialGeometry.PDE.DeTurck (deTurckVF)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPathDomain metricPerturbationPathDomain_isOpen Icc_subset_metricPerturbationPathDomain linearizedRicciAt
   ricciTensor_realized_sub_eq_integral_linearizedRicci linearizedRicciAt_eq_deriv_chartSum_on_Ioo
   realizedRicciChartSum
   hasDerivAt_realizedRicciChartSum metricPerturbationPath)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection
-  symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (symmAbsorbedCoeff symmAbsorbedCoeff_operatorFieldApplication_eq exists_iteratedCovGrad_unitModel_domDomCongrSection symmAbsorbedCoeff_riemannianFiberNormSq_le symmAbsorbedCoeff_jet_le)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
@@ -97,15 +84,8 @@ private local instance instCompleteSpaceE_tame : CompleteSpace E :=
 open DifferentialGeometry.Analysis.Spectral.DeTurck (cometricLmodel)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (lieDeTurckChartSlope deriv_metricPerturbationPath_chartLieDeTurckComp_eq_chartSlope)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField
-  deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth
-  deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection
-  deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib
-  domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA
-  deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieSecondOrderPrincipalCoeff deTurckLieFirstOrderCoeff deTurckLieCoeffField deTurckLieSecondOrderPrincipalCoeff_metricPerturbationPath_jointSmooth deTurckLieFirstOrderCoeff_metricPerturbationPath_jointSmooth deTurckLieCoeffField_metricPerturbationPath_jointSmooth)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (reindexCoefficientInputSlots reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply reindexCoefficientInputSlots_toSection deTurckLieTraceCoeff deTurckLieTraceCoeff_toSection deTurckLieTraceFib traceHessianFib domDomCongrFibPerm_apply domDomCongrFib_apply traceHessianSlotPerm deTurckLieSecondOrderDivSlotPermA deTurckLieSecondOrderDivSlotPermAT traceHessianCoeff_toSection)
 
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (convexPerturbation convexPerturbation_gFibreOpBound metricPerturbationPath_inner_of_mem)
@@ -465,7 +445,7 @@ private lemma pAO_connectionDifference_antisymm (gA gB : SmoothRiemannianMetric 
   rw [pAO_connectionDifference_self_zero (I := I) (M := M) gA x u v] at h
   exact eq_neg_of_add_eq_zero_left h.symm
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (metricLoweredConnectionDifferenceField) in
+ in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
@@ -487,7 +467,7 @@ private lemma pAO_lieFirstOrderKappa_unitModel_apply (g₀ g₁ g_bg : SmoothRie
   rw [show ((deTurckLieFirstOrderBackgroundLoweredConnectionDifference (I := I) (M := M) g₀ g₁ g_bg).toSection x)
       (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (metricLoweredConnectionDifferenceField (I := I) g₁ g_bg x)
+          (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g₁ g_bg x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
@@ -546,8 +526,7 @@ private lemma pAO_riemannianFiberNormSq_lieFirstOrderKappa_eq (g₀ g₁ g_bg : 
   rw [hsec]
   exact riemannianFiberNormSq_neg_value (I := I) (M := M) g₀ 0 3 x _
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (cometricRaiseSlot0Field riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (cometricRaiseSlot0Field riemannianFiberNormSq_iteratedCovGrad_cometricRaiseSlot0Field_eq) in
 omit [SigmaCompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma pAO_riemannianFiberNormSq_iteratedCovGrad_raiseDomDom_eq (g₀ : SmoothRiemannianMetric I M)
@@ -593,7 +572,7 @@ theorem pAO_sharpFlat_jetSum_tame (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
               ‖iteratedCovGrad (I := I) g₀ 0 2 q P‖ ^ 2) := by
   classical
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Kt, hKt_nn, hKt⟩ :=
     antidiagonalTupleGrid_integral_ballUniform_tameWindow (I := I) (M := M) g₀ a ha_super hR
@@ -666,8 +645,7 @@ theorem pAO_sharpFlat_jetSum_tame (g₀ : SmoothRiemannianMetric I M) (a : ℕ)
   refine le_trans (Finset.sum_le_sum hterm) ?_
   rw [← Finset.sum_mul]
 
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (metricLoweredConnectionDifferenceCoefficient cometricRaiseSlot0Field) in
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (metricLoweredConnectionDifferenceCoefficient cometricRaiseSlot0Field) in
 theorem pAO_kappa_jetSum_tame (g₀ g_bg : SmoothRiemannianMetric I M) (a : ℕ)
     (ha_super : 2 * Module.finrank ℝ E + 10 ≤ a) {R : ℝ} (hR : 0 ≤ R)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :

@@ -86,7 +86,7 @@ private theorem roundSphereShrinkMetric_inner {t : ℝ} (ht : t < 1 / 4) (x : Sp
     (v w : TangentSpace (𝓡 3) x) :
     (roundSphereShrinkMetric t).inner x v w =
       (1 - 4 * t) * (roundMetric (E := SphereShrinkAmbient) (n := 3)).inner x v w := by
-  rw [roundSphereShrinkMetric, scaleMetric_inner, roundSphereShrinkScale, if_pos ht]
+  rw [roundSphereShrinkMetric, scaleMetric_inner, roundSphereShrinkScale, ite_eq_left ht]
 
 private theorem ricciTensor_roundSphereShrinkMetric (t : ℝ) (x : SphereShrinkSpace)
     (v w : TangentSpace (𝓡 3) x) :
@@ -327,7 +327,7 @@ private theorem counterBall_metricDerivNorm_val (i : ℕ) {u : ℝ} (hu : u < 1 
   rw [metricDerivNorm_restrictOpen]
   rw [metricDerivNorm_pullback]
   rw [metricDerivNorm_restrictOpen]
-  rw [metricDerivNorm_roundSphereShrinkMetric, roundSphereShrinkScale, if_pos hu]
+  rw [metricDerivNorm_roundSphereShrinkMetric, roundSphereShrinkScale, ite_eq_left hu]
 
 private theorem counterBall_curvature_le (i : ℕ) (x : ↥(ModelBall (counterBallRadius i))) :
     curvatureNormSq ((counterBallSolution i).base.metric (counterTime i)) x
@@ -341,10 +341,10 @@ private theorem counterBall_curvature_le (i : ℕ) (x : ↥(ModelBall (counterBa
   simp only [curvatureNormSq, counterBallSolution, counterGlobalSolution,
     counterPunctureSolution, solutionOnRestrictOpen, solutionOnPullback,
     SolutionOn.timeRestrict_base, counterTime_eq]
-  rw [normSq0S_restrictOpen_apply,
+  rw [DifferentialGeometry.Tensor0SBundle.normSq0S_restrictOpen_apply,
     DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.metricRm04At_restrictOpen]
   rw [← Diffeomorph.pullbackMetricCross_eq_pullbackMetric, riemannNormSq_cross]
-  rw [normSq0S_restrictOpen_apply,
+  rw [DifferentialGeometry.Tensor0SBundle.normSq0S_restrictOpen_apply,
     DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.metricRm04At_restrictOpen]
   exact (Classical.choose_spec exists_roundSphereShrink_curvatureBound).2 (1 / 8)
     ⟨by norm_num, le_rfl⟩ _
@@ -392,7 +392,7 @@ private theorem counterBall_zero_metricDerivNorm (i : ℕ)
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) x =
       Real.sqrt 3 / 2 := by
-  rw [counterBall_metricDerivNorm_val i (by norm_num [counterTime]) 0 x, if_pos rfl]
+  rw [counterBall_metricDerivNorm_val i (by norm_num [counterTime]) 0 x, ite_eq_left rfl]
   have h1 : (1 : ℝ) - 4 * counterTime i - 1 = -(1 / 2) := by norm_num [counterTime]
   rw [h1, abs_neg]
   ring

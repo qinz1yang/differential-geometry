@@ -18,15 +18,15 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 theorem IsPLHomeomorphOn.exists_prism_cap_images_preserving_axis
     (hdim : Module.finrank ℝ E = 2) {P : Set E} (hP : IsHPolytope P)
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     (hp : r (stdCenter 1) ∈ interior P)
     {C D₀ D₁ : Set (EuclideanSpace ℝ (Fin 3))}
     {ρ : E × ℝ → EuclideanSpace ℝ (Fin 3)}
     (hρ : IsPLHomeomorphOn ρ (P ×ˢ Icc (0 : ℝ) 1) C)
     (hD₀ : D₀ ⊆ frontier C) (hD₁ : D₁ ⊆ frontier C) (hdis : Disjoint D₀ D₁)
     {r₀ r₁ : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr₀ : IsPLHomeomorphOn r₀ (stdSimplex ℝ (Fin 3)) D₀)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) D₁)
+    (hr₀ : IsPLHomeomorphOn r₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₁)
     (hρ0 : ρ (r (stdCenter 1), 0) = r₀ (stdCenter 1))
     (hρ1 : ρ (r (stdCenter 1), 1) = r₁ (stdCenter 1)) :
     ∃ σ : E × ℝ → EuclideanSpace ℝ (Fin 3),
@@ -68,7 +68,7 @@ theorem IsPLHomeomorphOn.exists_prism_cap_images_preserving_axis
       (hC.isPolyhedron.isClosed.frontier_subset (hD₀ hx)) hyx
     exact disjoint_left.mp hdis hx (heq ▸ hy)
   have hcap (a : ℝ) : IsPLHomeomorphOn (fun x => (r x, a))
-      (stdSimplex ℝ (Fin 3)) (P ×ˢ {a}) := hr.trans (hP.isPolyhedron.isPLHomeomorphOn_prod_const a)
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P ×ˢ {a}) := hr.trans (hP.isPolyhedron.isPLHomeomorphOn_prod_const a)
   have hcapfront : ∀ a ∈ ({0, 1} : Set ℝ), P ×ˢ {a} ⊆ frontier Q := by
     intro a ha z hz
     rw [frontier_prod_eq, hP.isClosed.closure_eq, frontier_Icc zero_le_one]
@@ -79,7 +79,7 @@ theorem IsPLHomeomorphOn.exists_prism_cap_images_preserving_axis
     have h01 : (0 : ℝ) = 1 := hz0.symm.trans hz1
     norm_num at h01
   let g₀ := (v ∘ r₀) ∘ Function.invFunOn (fun x => (r x, (0 : ℝ)))
-    (stdSimplex ℝ (Fin 3))
+    (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hg₀ : IsPLHomeomorphOn g₀ (P ×ˢ {(0 : ℝ)}) (v '' D₀) :=
     (hcap 0).symm.trans (hr₀.trans hv₀)
   obtain ⟨f, hf, hfg, hfD₁, hfc⟩ :=
@@ -87,7 +87,7 @@ theorem IsPLHomeomorphOn.exists_prism_cap_images_preserving_axis
       (hPball.of_isPLHomeomorphOn (hP.isPolyhedron.isPLHomeomorphOn_prod_const 0))
       (hcapfront 0 (Or.inl rfl)) (hcap 1) (hr₁.trans hv₁)
       (hcapfront 1 (Or.inr rfl)) (hvD D₁ hD₁) hcapdis hvdis hg₀ (hvD D₀ hD₀)
-  have hpΔ : stdCenter 1 ∈ stdSimplex ℝ (Fin 3) :=
+  have hpΔ : stdCenter 1 ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
     openSimplex_stdVertices_subset_stdSimplex (stdCenter_mem_openSimplex 1)
   have hpP := interior_subset hp
   have hv0 : v (r₀ (stdCenter 1)) = (r (stdCenter 1), 0) := by
@@ -99,7 +99,7 @@ theorem IsPLHomeomorphOn.exists_prism_cap_images_preserving_axis
   have hf0 : f (r (stdCenter 1), 0) = (r (stdCenter 1), 0) := by
     rw [hfg (show (r (stdCenter 1), (0 : ℝ)) ∈ P ×ˢ {0} from ⟨hpP, rfl⟩)]
     change v (r₀ (Function.invFunOn (fun x => (r x, (0 : ℝ)))
-      (stdSimplex ℝ (Fin 3)) (r (stdCenter 1), 0))) = _
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (r (stdCenter 1), 0))) = _
     rw [(hcap 0).bijOn.invOn_invFunOn.1 hpΔ]
     exact hv0
   have hf1 : f (r (stdCenter 1), 1) = (r (stdCenter 1), 1) := hfc.trans hv1

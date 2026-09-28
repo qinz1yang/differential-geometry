@@ -156,7 +156,7 @@ theorem lKTail_tendsto
           simpa only [one_mul] using hcoef.mul tendsto_const_nhds
         apply hprod.congr'
         filter_upwards [Ioo_mem_nhdsGT hsI.1] with a ha
-        simp only [F, if_pos ha.2]
+        simp only [F, ite_eq_left ha.2]
   have hEq :
       (fun a ↦ lKTail S T alpha a b) =ᶠ[𝓝[>] 0]
         (fun a ↦ 2 * ∫ s in (0 : Real)..b, F a s) := by
@@ -176,7 +176,7 @@ theorem lKTail_tendsto
           intro s hs
           have hsI : s ∈ Set.Icc (0 : Real) a := by
             simpa only [Set.uIcc_of_le ha.1.le] using hs
-          simp only [F, if_neg (not_lt.mpr hsI.2)]
+          simp only [F, ite_eq_right (not_lt.mpr hsI.2)]
         _ = 0 := intervalIntegral.integral_zero
     have htail :
         (∫ s in a..b, F a s) =
@@ -186,10 +186,10 @@ theorem lKTail_tendsto
       have hsI : s ∈ Set.Icc a b := by
         simpa only [Set.uIcc_of_le ha.2.le] using hs
       by_cases has : a < s
-      · simp only [F, if_pos has]
+      · simp only [F, ite_eq_left has]
       · have hsa : s = a := le_antisymm (not_lt.mp has) hsI.1
         subst s
-        simp only [F, lt_self_iff_false, if_false, sub_self, zero_div]
+        simp only [F, lt_self_iff_false, ite_false, sub_self, zero_div]
         ring
     rw [lKTail]
     congr 1

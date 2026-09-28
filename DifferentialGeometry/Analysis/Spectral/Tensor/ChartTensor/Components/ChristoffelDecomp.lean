@@ -69,7 +69,7 @@ lemma tensorTrivProj_contMDiffOn_chart_source
   unfold tensorTrivProj
   change (trivializationAt (TensorRSModel r s ℝ E)
       (fun y : M => TensorRSSpace r s I y) α).linearMapAt ℝ x (S.toSection x) = _
-  rw [Bundle.Trivialization.linearMapAt_apply, if_pos hx_base]
+  rw [Bundle.Trivialization.linearMapAt_apply, ite_eq_left hx_base]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

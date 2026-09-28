@@ -60,7 +60,7 @@ lemma IsImmersion.diffeomorph_comp [IsManifold J n N']
     rw [Φ.symm_apply_apply]
     exact h.writtenInCharts hy
 
-lemma IsImmersion.comp_diffeomorph [IsManifold I n M']
+lemma IsImmersion.precomp_diffeomorph [IsManifold I n M']
     (hf : IsImmersion I J n f) (Φ : Diffeomorph I I M' M n) :
     IsImmersion I J n (f ∘ Φ) := by
   classical
@@ -112,7 +112,7 @@ lemma IsSmoothEmbedding.diffeomorph_comp [IsManifold J n N']
 lemma IsSmoothEmbedding.comp_diffeomorph [IsManifold I n M']
     (hf : IsSmoothEmbedding I J n f) (Φ : Diffeomorph I I M' M n) :
     IsSmoothEmbedding I J n (f ∘ Φ) :=
-  ⟨hf.isImmersion.comp_diffeomorph Φ,
+  ⟨hf.isImmersion.precomp_diffeomorph Φ,
     hf.isEmbedding.comp Φ.toHomeomorph.isEmbedding⟩
 
 lemma _root_.Diffeomorph.isSmoothEmbedding [IsManifold J n N] [IsManifold J n N']

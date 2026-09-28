@@ -133,13 +133,15 @@ private theorem exists_h1ComplDirichlet_chartPullback_of_measurable
     φ hφ hφc hφs (fun j => (hε j).le) hεt herr
   obtain ⟨w, hw⟩ := cauchySeq_tendsto_of_complete hcauchy
   have hfLp : MemLp f 2 volume := by
-    refine ⟨hfm.aestronglyMeasurable, ?_⟩
-    rw [← eLpNorm_restrict_eq_of_support_subset ((subset_tsupport f).trans hfs)]
-    exact hf.memLp.2
+    change eLpNorm f 2 volume < ⊤
+    rw [← eLpNorm_restrict_eq_of_support_subset hfm.aestronglyMeasurable
+      ((subset_tsupport f).trans hfs)]
+    exact hf.memLp
   have hpb : MemLp (chartPullback I_hs α f) 2 (riemannianVolumeMeasure (I := I_hs) (M := M) q) := by
-    refine ⟨(measurable_chartPullback α hfm).aestronglyMeasurable, ?_⟩
+    change eLpNorm (chartPullback I_hs α f) 2
+        (riemannianVolumeMeasure (I := I_hs) (M := M) q) < ⊤
     exact (hLp f hfm (hfs.trans subset_closure)).trans_lt
-      (ENNReal.mul_lt_top (by simp) hfLp.2)
+      (ENNReal.mul_lt_top (by simp) hfLp)
   let F := hpb.toLp (chartPullback I_hs α f)
   have hLpt : Tendsto (fun j => smoothToLpDirichlet q (v j)) atTop (𝓝 F) := by
     apply Metric.tendsto_atTop.mpr
@@ -154,7 +156,10 @@ private theorem exists_h1ComplDirichlet_chartPullback_of_measurable
     have hdiff := hLp (fun x => f x - φ j x) (hfm.sub (hφ j).continuous.measurable)
       (hdiffs.trans subset_closure)
     have hE : eLpNorm (fun x => f x - φ j x) 2 volume ≤ ENNReal.ofReal (ε j) := by
-      rw [← eLpNorm_restrict_eq_of_support_subset ((subset_tsupport _).trans hdiffs)]
+      change eLpNorm (f - φ j) 2 volume ≤ ENNReal.ofReal (ε j)
+      rw [← eLpNorm_restrict_eq_of_support_subset
+        (hfm.sub (hφ j).continuous.measurable).aestronglyMeasurable
+        ((subset_tsupport _).trans hdiffs)]
       exact (eLpNorm_le_wkpNorm 1 2 Ω _).trans (herr j)
     have hEt := hdiff.trans (mul_le_mul' le_rfl hE)
     have hR := ENNReal.toReal_mono (ENNReal.mul_ne_top (by simp) (by simp)) hEt
@@ -212,8 +217,10 @@ theorem exists_h1ComplDirichlet_chartPullback
   obtain ⟨C, hC, hbound⟩ := exists_h1ComplDirichlet_chartPullback_of_measurable q α hΩ hΩc hΩs
   refine ⟨C, hC, ?_⟩
   intro f hf hfs
-  let g := (tsupport f).indicator (hf.memLp.1.mk f)
-  have hgm : Measurable g := hf.memLp.1.measurable_mk.indicator (isClosed_tsupport f).measurableSet
+  let g := (tsupport f).indicator (hf.memLp.aestronglyMeasurable.mk f)
+  have hgm : Measurable g :=
+    hf.memLp.aestronglyMeasurable.measurable_mk.indicator
+      (isClosed_tsupport f).measurableSet
   have hgsub : tsupport g ⊆ tsupport f := by
     apply closure_minimal _ (isClosed_tsupport f)
     intro x hx
@@ -221,10 +228,10 @@ theorem exists_h1ComplDirichlet_chartPullback
     exact hx (indicator_of_notMem hxs _)
   have hgs := hgsub.trans hfs
   have hfgΩ : f =ᵐ[volume.restrict Ω] g := by
-    filter_upwards [hf.memLp.1.ae_eq_mk] with x hx
+    filter_upwards [hf.memLp.aestronglyMeasurable.ae_eq_mk] with x hx
     by_cases hxs : x ∈ tsupport f
     · simpa only [g, indicator_of_mem hxs] using hx
-    · change f x = (tsupport f).indicator (hf.memLp.1.mk f) x
+    · change f x = (tsupport f).indicator (hf.memLp.aestronglyMeasurable.mk f) x
       rw [indicator_of_notMem hxs]
       exact image_eq_zero_of_notMem_tsupport hxs
   have hfg : f =ᵐ[volume] g := by
@@ -511,7 +518,8 @@ theorem dirichletLocalWeakPartialLp_eq_ae_of_chartPullback_mul
       ((hη.continuous_fderiv (by simp)).clm_apply continuous_const
         |>.memLp_of_hasCompactSupport (hηc.fderiv_apply (𝕜 := ℝ)
           (EuclideanSpace.single j 1)) : MemLp _ ∞ volume).restrict Ω
-    have hG : MemLp (fun z => η z * H z + fderiv ℝ η z (EuclideanSpace.single j 1) * P z) 2 (volume.restrict Ω) := (hH.mul' hηm).add (hP.mul' hdη)
+    have hG : MemLp (fun z => η z * H z + fderiv ℝ η z (EuclideanSpace.single j 1) * P z) 2 (volume.restrict Ω) :=
+      (hηm.fun_mul hH).add (hdη.fun_mul hP)
     exact hG.locallyIntegrable (by norm_num)
   exact dirichletLocalWeakPartialLp_eq_ae_of_coeFn_eq_chartPullback q α hΩ hΩc hΩs v hv j hloc hmul
 

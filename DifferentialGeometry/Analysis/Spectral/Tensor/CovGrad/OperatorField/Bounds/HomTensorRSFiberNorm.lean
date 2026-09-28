@@ -5,6 +5,8 @@ import DifferentialGeometry.Bundle.HomNorm
 import Mathlib.Topology.VectorBundle.Hom
 import Mathlib.Topology.Order.Compact
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic

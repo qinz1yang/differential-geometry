@@ -69,7 +69,7 @@ theorem ι_affineSubdivisionHomotopyMap_succ (n : ℕ)
         (TopCat.toSSet.obj (TopCat.of E)).ιChainComplex σ ≫ (K).d (n + 1) n ≫
           affineSubdivisionHomotopyMap R n) ≫
         affineCone R (singularSimplexBarycenter σ) (n + 1) :=
-  Sigma.ι_desc _ _
+  Sigma.ι_comp_desc _ _
 
 
 theorem affineSubdivisionHomotopyMap_straightening (n : ℕ) :
@@ -140,17 +140,17 @@ def affineSubdivisionHomotopy : Homotopy (B) (S) where
     affineSubdivisionHomotopyMap R i ≫ eqToHom (congrArg (K).X h) else 0
   zero i j hij := by
     change ¬ i + 1 = j at hij
-    exact dif_neg hij
+    exact dite_eq_right hij
   comm n := by
     cases n with
     | zero =>
       rw [Homotopy.dNext_zero_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id,
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id,
         affineSubdivisionHomotopyMap_zero, zero_comp, zero_add,
         affineSubdivision_f, affineSubdivisionMap_zero, affineStraightening_f_zero]
     | succ n =>
       rw [Homotopy.dNext_succ_chainComplex, Homotopy.prevD_chainComplex]
-      simp only [dif_pos rfl, eqToHom_refl, Category.comp_id]
+      simp only [dite_eq_left rfl, eqToHom_refl, Category.comp_id]
       exact sub_eq_iff_eq_add.mp (affineSubdivisionHomotopyMap_comm R n)
 
 
@@ -160,6 +160,6 @@ theorem affineSubdivisionHomotopy_hom (n : ℕ) :
       affineSubdivisionHomotopyMap R n := by
   change (if h : n + 1 = n + 1 then
     affineSubdivisionHomotopyMap R n ≫ eqToHom (congrArg (K).X h) else 0) = _
-  rw [dif_pos rfl, eqToHom_refl, Category.comp_id]
+  rw [dite_eq_left rfl, eqToHom_refl, Category.comp_id]
 
 end DifferentialGeometry.Homology

@@ -10,6 +10,9 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.NormBridge
 import DifferentialGeometry.Analysis.Sobolev.Embedding.ConnectionLaplacian.OrderDropping
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.SmoothRepresentative.ChartComponentReconstruction
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.PouComponentBound.PouCutoffComponentBridge
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -95,7 +98,7 @@ theorem exists_zeroContentR_le_fiberNorm_on_pouKernel
       Real.sqrt (tensorInnerPointwise (I := I) (M := M) g r s b
         (S.toFun b) (S.toFun b)) := by
     rw [show S.toFun b = TensorRSSpace.toModel (𝕜 := ℝ) (I := I) (S.toSection b) from rfl]
-    exact DifferentialGeometry.Analysis.Elliptic.norm_eq_sqrt_tensorInnerPointwise
+    exact DifferentialGeometry.TensorMetric.norm_eq_sqrt_tensorInnerPointwise
       (I := I) (M := M) g r s b (S.toSection b)
   have hInner_nn : 0 ≤ tensorInnerPointwise (I := I) (M := M) g r s b
       (S.toFun b) (S.toFun b) :=
@@ -851,12 +854,12 @@ private lemma raw_chartLimitSection_eq_ite
         else 0) := by
   classical
   by_cases hxα : x ∈ (chartAt H α).source
-  · rw [if_pos hxα]
+  · rw [ite_eq_left hxα]
     exact tensorChartComponentRaw_eq_transitionCoeff_sum
       (E := E) (I := I) (M := M) g r s
       (chartLimitSection (I := I) (M := M) g r s F hF_cauchy α)
       α β P₀ ⟨hxα, hxβ⟩
-  · rw [if_neg hxα]
+  · rw [ite_eq_right hxα]
     exact tensorChartComponentRaw_chartLimitSection_eq_zero_off_source
       (I := I) (M := M) g r s F hF_cauchy α β P₀ hxα
 
@@ -1151,7 +1154,7 @@ private lemma chartLimitSection_transport_term_aeEq
         rw [hA_def]
         simp only
         rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-          ← hz_def, if_pos hz_sourceα]
+          ← hz_def, ite_eq_left hz_sourceα]
         congr 1
         have h_raw := tensorChartComponentRaw_chartLimitSection_self
           (I := I) (M := M) g r s F hF_cauchy α Q
@@ -1222,7 +1225,7 @@ private lemma chartLimitSection_transport_term_aeEq
           rw [hA_def]
           simp only
           rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-            ← hz_def, if_neg hz_notin_sourceα]
+            ← hz_def, ite_eq_right hz_notin_sourceα]
         have hRHS_y : RHS y = 0 := by
           rw [hRHS_def]
           simp only
@@ -1311,8 +1314,8 @@ private lemma chartLimitSection_tensorL2ChartComponent_eq_transport_sum
             else 0) := by
       funext x
       by_cases hp : x ∈ (chartAt H α).source
-      · simp only [if_pos hp]
-      · simp only [if_neg hp, Finset.sum_const_zero]
+      · simp only [ite_eq_left hp]
+      · simp only [ite_eq_right hp, Finset.sum_const_zero]
     rw [h_ite, chartPushedRaw_finsetSum (I := I) (M := M) β
       (Finset.univ : Finset (TensorCompIdx (E := E) r s)) _ y, Finset.mul_sum]
   have h_terms : ∀ Q : TensorCompIdx (E := E) r s,
@@ -1395,8 +1398,8 @@ private lemma transportSum_u_ae_zero_of_notMem
             (fun _ : EuclN => (0 : ℝ)) := by
         filter_upwards [h_gate_target] with y hy
         by_cases hw : chartPushedPouWeight (I := I) (M := M) α y = 0
-        · rw [if_pos hw]; exact hy hw
-        · rw [if_neg hw]
+        · rw [ite_eq_left hw]; exact hy hw
+        · rw [ite_eq_right hw]
       have h_gate_overlap :
           (fun y => if chartPushedPouWeight (I := I) (M := M) α y = 0 then
               ((tensorL2ChartComponent (I := I) (M := M) g r s u α Q :
@@ -1458,7 +1461,7 @@ private lemma transportSum_u_ae_zero_of_notMem
                 Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ)
               (chartTransitionEuclid (I := I) (M := M) β α y)
           else 0) = 0 := hy_gate
-        rw [if_pos hw_zero] at hy_gate'
+        rw [ite_eq_left hw_zero] at hy_gate'
         rw [hy_gate', mul_zero]
     have h_off_overlap : ∀ y, y ∉ chartOverlapEuclid (I := I) (M := M) β α →
         chartPushedRaw (I := I) (M := M) β

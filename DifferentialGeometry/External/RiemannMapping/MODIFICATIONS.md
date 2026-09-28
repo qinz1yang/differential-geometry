@@ -42,6 +42,8 @@ Compiler compatibility edits after extraction will be recorded here. No mathemat
 
 - Wrapped one line in the zero-count proof at an existing function application to satisfy the strict line-length linter. Tokens, statements, proof semantics, author header, comments and documentation are unchanged.
 
+- Adapt the logarithmic-derivative product rewrite to the current Mathlib API using `logDeriv_fun_mul` and `logDeriv_fun_prod` for explicit function expressions. This replaces the corresponding pointwise-function product lemma names only; all theorem statements, hypotheses, remaining proof steps, attribution, and upstream snapshots are unchanged.
+
 ## Unit-disc shift adaptation record
 
 # Modifications log

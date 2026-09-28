@@ -1,7 +1,7 @@
-import DifferentialGeometry.Analysis.Heat.Smoothing.Regularity.ChartSobolev
+import DifferentialGeometry.Analysis.Heat.Smoothing.Regularity.SmoothRepresentative
 import DifferentialGeometry.Analysis.Heat.Smoothing.Spectral.IteratedDomain
 import DifferentialGeometry.Analysis.Heat.Semigroup.Generator
-import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.ChartH2kRegularity
+import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.Regularity
 
 noncomputable section
 
@@ -21,8 +21,6 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M
 open DifferentialGeometry.Integral.Measure
 open DifferentialGeometry.Analysis.Sobolev.Chart
 open DifferentialGeometry.Analysis.Laplacian
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
-open DifferentialGeometry.Analysis.Laplacian.ChartSideH2kBridge
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -31,27 +29,29 @@ private local instance : BorelSpace M := ⟨rfl⟩
 
 variable [CompactSpace M] [I.Boundaryless] [T2Space M] [SigmaCompactSpace M]
 
-theorem chartSideH2kBridge_heat
+theorem heatSemigroup_memWkpChart
     (g : SmoothRiemannianMetric I M)
     {t : ℝ} (ht : 0 < t)
     (u_0 : Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g))
     (k : ℕ) :
-    ChartSideH2kBridge (I := I) (M := M) k
+    MemWkpChart (I := I) (M := M) k 2
       (((heatSemigroup (I := I) (M := M) g t u_0 :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) := by
   obtain ⟨u_h, hu_h_mem, hu_h_eq⟩ :=
     heatSemigroup_mem_laplacianDomainPow_all
       (I := I) (M := M) g ht u_0 k
-  have h_bridge_lift :=
-    chartSideH2kBridge_of_laplacianDomainPow
+  have h_regularity :=
+    memWkpChart_two_k_of_laplacianDomainPow
       (I := I) (M := M) g k hu_h_mem
   have h_coe : ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =
       ((heatSemigroup (I := I) (M := M) g t u_0 :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
     rw [hu_h_eq]
-  rw [h_coe] at h_bridge_lift
-  exact h_bridge_lift
+  rw [h_coe] at h_regularity
+  intro α
+  exact DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp.le_of_le
+    (by omega : k ≤ 2 * k) (h_regularity α)
 
 theorem heatSemigroup_smooth_representative_of_closed
     (g : SmoothRiemannianMetric I M)
@@ -62,11 +62,11 @@ theorem heatSemigroup_smooth_representative_of_closed
       ((heatSemigroup (I := I) (M := M) g t u_0 :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) =ᵐ[
           riemannianVolumeMeasure (I := I) (M := M) g] u_smooth := by
-  apply heatSemigroup_smooth_representative_of_chartSideBridges
+  apply heatSemigroup_smooth_representative
     (I := I) (M := M) g u_0
   intro k
-  exact chartSideH2kBridge_heat
-    (I := I) (M := M) g ht u_0 k
+  exact heatSemigroup_memWkpChart
+    (I := I) (M := M) (k := 2 * k) g ht u_0
 
 theorem heatPower_smooth_representative_of_closed
     (g : SmoothRiemannianMetric I M) (k : ℕ)
@@ -181,11 +181,11 @@ theorem heatSemigroup_smooth_in_space_and_time
         (heatSemigroup (I := I) (M := M) g t u_0 :
           Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)))
       (Set.Ioi (0 : ℝ)) := by
-  apply heatSemigroup_smooth_in_space_and_time_of_chartSideBridges
+  apply heatSemigroup_smooth_in_space_and_time_of_iterated_regularity
     (I := I) (M := M) g u_0
   intro t ht k
-  exact chartSideH2kBridge_heat
-    (I := I) (M := M) g ht u_0 k
+  exact heatSemigroup_memWkpChart
+    (I := I) (M := M) (k := 2 * k) g ht u_0
 
 end HeatEquation
 end Analysis

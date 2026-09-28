@@ -65,7 +65,7 @@ theorem Section34CompactCutFrame.inter_closure_sdiff_disk_on_frontier
     (hf₁ : IsPLHomeomorphOn f₁ (section34CompactCutNeighborhood src)
       (f₁ '' section34CompactCutNeighborhood src))
     {D : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDN : D ⊆ frontier (⋃ w, section34CompactVertexBallImage src f₁ w)) :
     D ∩ closure (frontier (⋃ w, section34CompactVertexBallImage src f₁ w) \ D) =
       q '' stdSimplexBoundary 2 := by

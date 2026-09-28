@@ -19,7 +19,7 @@ theorem absolutelyContinuousOnInterval_of_timeH1_extChartAt
   have hshift : AbsolutelyContinuousOnInterval (fun t => u.toFun (t - a)) a b := by
     apply hAC.comp_monotone_lipschitzOn (g := fun t => t - a) (K := 1)
     · simpa only [sub_eq_add_neg] using
-        (isometry_add_right (-a)).lipschitz.lipschitzOnWith (s := uIcc a b)
+        (isometry_add_right (-a)).lipschitzWith.lipschitzOnWith (s := uIcc a b)
     · exact fun _ _ _ _ hst => sub_le_sub_right hst a
     · intro t ht
       change t ∈ (fun r => r - a) ⁻¹' uIcc 0 (b - a)

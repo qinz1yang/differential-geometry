@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem exists_isPLHomeomorphOn_map_disk_eqOn_boundary
     {D A B : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hA : IsPLBall 2 A) (hB : IsPLBall 2 B)
     (hAD : A ⊆ D \ r '' stdSimplexBoundary 2)
     (hBD : B ⊆ D \ r '' stdSimplexBoundary 2) :
@@ -28,7 +28,7 @@ theorem exists_isPLHomeomorphOn_map_disk_eqOn_boundary
     ⟨standardTrianglePosition, standardTrianglePosition_affineIndependent, rfl⟩
   obtain ⟨t, ht⟩ := hT
   have hT : IsPLBall 2 T := ⟨t, ht⟩
-  let φ := t ∘ Function.invFunOn r (stdSimplex ℝ (Fin 3))
+  let φ := t ∘ Function.invFunOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hφ : IsPLHomeomorphOn φ D T := hr.symm.trans ht
   have hφJ : φ '' (r '' stdSimplexBoundary 2) = frontier T := by
     rw [image_image]

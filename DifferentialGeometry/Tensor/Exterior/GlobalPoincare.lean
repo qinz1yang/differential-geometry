@@ -135,12 +135,8 @@ private theorem potentialLocal_sub_eventuallyEq
   obtain ⟨G, hGsmooth, hGd, hGval⟩ := hW
   have hFx : f x = ULift.up (F x) := by
     convert hFval ⟨x.1, hxV⟩ using 1
-    change f x = f ⟨x.1, iV.le hxV⟩
-    congr
   have hGx : g x = ULift.up (G x) := by
     convert hGval ⟨x.1, hxW⟩ using 1
-    change g x = g ⟨x.1, iW.le hxW⟩
-    congr
   let D : M → ℝ := F - G
   have hDsmooth : ContMDiffOn I 𝓘(ℝ, ℝ) ∞ D (V ∩ W) :=
     (hFsmooth.mono inter_subset_left).sub (hGsmooth.mono inter_subset_right)
@@ -166,12 +162,8 @@ private theorem potentialLocal_sub_eventuallyEq
     with y hDy hyV hyW
   have hFy : f y = ULift.up (F y) := by
     convert hFval ⟨y.1, hyV⟩ using 1
-    change f y = f ⟨y.1, iV.le hyV⟩
-    congr
   have hGy : g y = ULift.up (G y) := by
     convert hGval ⟨y.1, hyW⟩ using 1
-    change g y = g ⟨y.1, iW.le hyW⟩
-    congr
   have hFydown : (f y).down = F y := congrArg ULift.down hFy
   have hGydown : (g y).down = G y := congrArg ULift.down hGy
   have hFxdown : (f x).down = F x := congrArg ULift.down hFx
@@ -413,8 +405,6 @@ theorem exists_global_potential [SimplyConnectedSpace M]
     have hsectionValue : s.1 ⟨y, hyU⟩ = ULift.up (G y) := by
       have h := hGval ⟨y, hy.1⟩
       convert h using 1
-      · change s.1 ⟨y, hyU⟩ = s.1 ⟨y, iV.le hy.1⟩
-        congr
     dsimp only [f]
     have hvalue := TopCat.stalkToFiber_germ P U (L y).base hyUbase s
     rw [← hygerm] at hvalue
@@ -442,6 +432,7 @@ theorem exists_global_potential [SimplyConnectedSpace M]
     rw [hevent.self_of_nhds,
       Filter.EventuallyEq.mfderiv_eq
         (I := I) (I' := 𝓘(ℝ, ℝ)) hevent]
+    rfl
   rw [hmv]
   exact hGd x hxV v
 

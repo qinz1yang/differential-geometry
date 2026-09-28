@@ -3,6 +3,8 @@ import DifferentialGeometry.Analysis.Integration.L2.SmoothSections.ParametricSmo
 import DifferentialGeometry.Tensor.RSTensor.Smoothness.Parametric
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.ParametricSmoothness
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
+
 noncomputable section
 
 set_option autoImplicit false

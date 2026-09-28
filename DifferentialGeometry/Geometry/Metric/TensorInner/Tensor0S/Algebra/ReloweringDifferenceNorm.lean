@@ -4,10 +4,9 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetr
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
@@ -131,7 +130,7 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     rw [hsnd, hHdiff, Tensor0SSpace.sub_apply (I := I) 2 x,
       metricTensorField_apply, metricTensorField_apply]
     have h10 : (1 : Fin 2) ≠ 0 := by decide
-    simp only [if_true, h10, if_false]
+    simp only [ite_true, h10, ite_false]
     rw [Tensor0SSpace.eval_eq]
     ring
   have hprod :
@@ -151,13 +150,13 @@ theorem reLowerDefSq_le (g₁ g₂ : SmoothRiemannianMetric I M) {s : ℕ}
     have heq : Hdiff x = -metricDiffAt (I := I) g₁ g₂ x := by
       dsimp [Hdiff, metricDiffAt]
       abel
-    rw [heq, Tensor0SBundle.normSq0S_neg]
+    rw [heq, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
   rw [htrace]
   have htr := traceNormSq_le (I := I) (s := s + 1) g₁ x V
   rw [hcongr, hprod, hH] at htr
   simpa [Nat.add_assoc, Nat.add_comm, Nat.add_left_comm] using htr
 
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric
 
 end

@@ -107,7 +107,7 @@ theorem exists_uniform_boundary_weak_gradient_power_bound
   let H : ℝ := 8 * (CΦ : ℝ) ^ 2
   have hH : 0 ≤ H := by dsimp [H]; positivity
   have hf (n : ℕ) : LipschitzWith (CΦ * Ku n) (f n) := by
-    simpa only [mul_one] using ((hEmb (u n) (Ku n) (hKu n)).1.comp e.isometry.lipschitz)
+    simpa only [mul_one] using ((hEmb (u n) (Ku n) (hKu n)).1.comp e.isometry.lipschitzWith)
   have hG0 (x : V) : 0 ≤ G x := Finset.sum_nonneg fun _ _ => sq_nonneg _
   have hGi : IntegrableOn G (ball (0 : V) 1) := by
     apply integrable_finsetSum

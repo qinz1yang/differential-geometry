@@ -26,13 +26,13 @@ theorem affineIndependent_insert_iff {p : E} {τ : Finset E} (hpτ : p ∉ τ)
   · rintro h ⟨c, hc₁, hcp⟩
     let e : E → ℝ := fun u => if u = p then 1 else -c u
     have he : ∀ u ∈ τ, e u = -c u := fun u hu => by
-      simp only [e, if_neg (ne_of_mem_of_not_mem hu hpτ)]
+      simp only [e, ite_eq_right (ne_of_mem_of_not_mem hu hpτ)]
     have h₀ : ∑ u ∈ insert p τ, e u = 0 := by
       rw [Finset.sum_insert hpτ, Finset.sum_congr rfl he, Finset.sum_neg_distrib, hc₁]
       simp [e]
     have h₁ : ∑ u ∈ insert p τ, e u • u = 0 := by
       rw [Finset.sum_insert hpτ, Finset.sum_congr rfl fun u hu => by rw [he u hu]]
-      simp only [e, if_true, one_smul, neg_smul, Finset.sum_neg_distrib, hcp, add_neg_cancel]
+      simp only [e, ite_true, one_smul, neg_smul, Finset.sum_neg_distrib, hcp, add_neg_cancel]
     have := eq_zero_of_sum_eq_zero_of_affineIndependent h h₀ h₁ p (Finset.mem_insert_self p τ)
     simp [e] at this
   · intro hnot
@@ -115,7 +115,7 @@ theorem isConeBase_simplexBoundary {T : Finset E} (hT : AffineIndependent ℝ ((
     rintro ⟨c, hc₁, hcp⟩
     let c' : E → ℝ := fun u => if u ∈ τ then c u else 0
     have h := weights_eq hT hpT (w := c') ?_ ?_ v hvT
-    · simp only [c', if_neg hvτ] at h
+    · simp only [c', ite_eq_right hvτ] at h
       exact (hpos v hvT).ne' h
     · simp only [c']
       rw [Finset.sum_ite_mem, Finset.inter_eq_right.mpr hτT]

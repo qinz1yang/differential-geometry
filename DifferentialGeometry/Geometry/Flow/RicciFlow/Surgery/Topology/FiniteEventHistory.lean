@@ -19,7 +19,7 @@ variable {n : ℕ} (time : Fin (n + 1) → ℝ) (htime : StrictMono time) (hzero
   (houtput : ∀ j, (event j).outputMetric = metric j.succ)
   (hOld : ∀ j, (event j).old = (event j).transition.trace.retainedCore)
 
-def ofEvents : RetainedCoreHistory (stage 0) where
+def ofEvents : RetainedCoreHistory.{u} where
   horizon := time (Fin.last n)
   horizon_nonneg := hzero ▸ htime.monotone (Fin.zero_le _)
   eventCount := n
@@ -125,7 +125,7 @@ theorem ofEvents_exists_restart {c b B : ℝ}
     (hcap : ∀ j : Fin n, time j.succ ∈ Ioc c b →
       ∀ x ∈ (event j).capRegion, B ≤ metricScalarAt (event j).outputMetric x) :
     let H := ofEvents time htime hzero stage metric event hinitial houtput hOld
-    ∃ K : RetainedCoreHistory (stage 0), H.toHistory.IsPrefixOf K.toHistory ∧
+    ∃ K : RetainedCoreHistory.{u}, H.toHistory.IsPrefixOf K.toHistory ∧
       time (Fin.last n) < K.horizon ∧ ∃ hn : K.eventCount = n,
       (∀ j : Fin (K.eventCount + 1), K.time j = time (Fin.cast (congrArg (· + 1) hn) j)) ∧
       (∀ j : Fin K.eventCount,

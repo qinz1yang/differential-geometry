@@ -1,5 +1,4 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
@@ -8,10 +7,8 @@ open Bundle Manifold Set Filter DifferentialGeometry.Tensor0SBundle
 open scoped Manifold Topology ContDiff BigOperators
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
-open DifferentialGeometry.Integral.L2
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [Module.Finite ℝ E]
   [NeZero (Module.finrank ℝ E)]
@@ -268,8 +265,7 @@ theorem riemannianFiberNormSq_sum_le_card_mul
         rw [Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const, nsmul_eq_mul]
         ring
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

@@ -9,8 +9,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -140,6 +139,5 @@ theorem riemannianFiberNormSq_succ_eq_sum_slot0Curry
   refine Finset.sum_congr rfl (fun J' _ => ?_)
   rw [fiberNormSqComponent_slot0Curry (I := I) (M := M) g x s e K₀ T a J']
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry

@@ -22,7 +22,7 @@ theorem extChartAt_closedCell_eq_shift {x : ClosedCell (m + 1)} (hx : ‖x.val�
     extChartAt (𝓡∂ (m + 1)) x y = closedCellShiftSucc m 1 y.val := by
   have hc : chartAt (EuclideanHalfSpace (m + 1)) x = closedCellInteriorChart m := by
     change closedCellChartAt x = _
-    rw [closedCellChartAt, dif_pos hx]
+    rw [closedCellChartAt, dite_eq_left hx]
   rw [extChartAt, OpenPartialHomeomorph.extend_coe, Function.comp_apply, hc]
   rfl
 
@@ -68,7 +68,7 @@ theorem extChartAt_closedCell_target {α : ClosedCell (m + 1)} (hα : ‖α.val�
     (extChartAt (𝓡∂ (m + 1)) α).target = {y : EuN | ‖closedCellShiftSucc m (-1) y‖ < 1} := by
   have hc : chartAt (EuclideanHalfSpace (m + 1)) α = closedCellInteriorChart m := by
     change closedCellChartAt α = _
-    rw [closedCellChartAt, dif_pos hα]
+    rw [closedCellChartAt, dite_eq_left hα]
   ext y
   constructor
   · intro hy

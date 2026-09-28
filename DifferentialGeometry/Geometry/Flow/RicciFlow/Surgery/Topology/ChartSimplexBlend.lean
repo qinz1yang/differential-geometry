@@ -23,10 +23,10 @@ def positiveTetrahedronVertex : Fin 4 → ThreeSpace :=
     WithLp.toLp 2 ![0, 1, 0], WithLp.toLp 2 ![0, 0, 1]]
 
 
-def positiveTetrahedron : C(stdSimplex ℝ (Fin 4), ThreeSpace) where
-  toFun q := ∑ i : Fin 4, q.val i • positiveTetrahedronVertex i
+def positiveTetrahedron : C(Convexity.StdSimplex ℝ (Fin 4), ThreeSpace) where
+  toFun q := ∑ i : Fin 4, q.weights i • positiveTetrahedronVertex i
   continuous_toFun := continuous_finsetSum _ fun i _ =>
-    ((continuous_apply i).comp continuous_subtype_val).smul continuous_const
+    (Convexity.StdSimplex.continuous_weights_apply ℝ i).smul continuous_const
 
 
 theorem positiveTetrahedron_det :
@@ -37,29 +37,29 @@ theorem positiveTetrahedron_det :
   norm_num [positiveTetrahedronVertex, Matrix.cons_val_two, Matrix.cons_val_three]
 
 
-theorem positiveTetrahedron_coordinate (q : stdSimplex ℝ (Fin 4)) (i : Fin 3) :
-    positiveTetrahedron q i = q.val i.succ - q.val 0 := by
+theorem positiveTetrahedron_coordinate (q : Convexity.StdSimplex ℝ (Fin 4)) (i : Fin 3) :
+    positiveTetrahedron q i = q.weights i.succ - q.weights 0 := by
   fin_cases i <;>
     simp [positiveTetrahedron, positiveTetrahedronVertex, Fin.sum_univ_succ] <;> ring
 
 
-theorem positiveTetrahedron_zero_iff (q : stdSimplex ℝ (Fin 4)) :
-    positiveTetrahedron q = 0 ↔ ∀ i : Fin 4, q.val i = (1 / 4 : ℝ) := by
+theorem positiveTetrahedron_zero_iff (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    positiveTetrahedron q = 0 ↔ ∀ i : Fin 4, q.weights i = (1 / 4 : ℝ) := by
   constructor
   · intro h
-    have hc : ∀ i : Fin 3, q.val i.succ - q.val 0 = 0 := by
+    have hc : ∀ i : Fin 3, q.weights i.succ - q.weights 0 = 0 := by
       intro i
       rw [← positiveTetrahedron_coordinate, h]
       rfl
     have hc0 := hc 0
     have hc1 := hc 1
     have hc2 := hc 2
-    change q.val 1 - q.val 0 = 0 at hc0
-    change q.val 2 - q.val 0 = 0 at hc1
-    change q.val 3 - q.val 0 = 0 at hc2
-    have hsum := q.property.2
-    simp [Fin.sum_univ_succ] at hsum
-    have hzero : q.val 0 = (1 / 4 : ℝ) := by linarith
+    change q.weights 1 - q.weights 0 = 0 at hc0
+    change q.weights 2 - q.weights 0 = 0 at hc1
+    change q.weights 3 - q.weights 0 = 0 at hc2
+    have hsum := q.total_of_fintype
+    rw [Fin.sum_univ_four] at hsum
+    have hzero : q.weights 0 = (1 / 4 : ℝ) := by linarith
     exact Fin.cases hzero (fun j => by have hj := hc j; linarith)
   · intro h
     ext i
@@ -67,8 +67,8 @@ theorem positiveTetrahedron_zero_iff (q : stdSimplex ℝ (Fin 4)) :
     simp
 
 
-theorem positiveTetrahedron_face_ne_zero (q : stdSimplex ℝ (Fin 4))
-    (i : Fin 4) (hi : q.val i = 0) : positiveTetrahedron q ≠ 0 := by
+theorem positiveTetrahedron_face_ne_zero (q : Convexity.StdSimplex ℝ (Fin 4))
+    (i : Fin 4) (hi : q.weights i = 0) : positiveTetrahedron q ≠ 0 := by
   intro h
   have hquarter := (positiveTetrahedron_zero_iff q).mp h i
   linarith
@@ -83,12 +83,12 @@ structure OrientedChartSimplex (o : TangentOrientationSection M) (x : M) where
       derivative_bijective) (o.orientation x) = standardThreeOrientation
   radius : ℝ
   radius_pos : 0 < radius
-  simplex_inside : ∀ q : stdSimplex ℝ (Fin 4),
+  simplex_inside : ∀ q : Convexity.StdSimplex ℝ (Fin 4),
     chart x + radius • positiveTetrahedron q ∈ chart.target
 
 
 def OrientedChartSimplex.simplex {o : TangentOrientationSection M} {x : M}
-    (S : OrientedChartSimplex o x) : C(stdSimplex ℝ (Fin 4), M) where
+    (S : OrientedChartSimplex o x) : C(Convexity.StdSimplex ℝ (Fin 4), M) where
   toFun q := S.chart.symm (S.chart x + S.radius • positiveTetrahedron q)
   continuous_toFun := S.chart.continuousOn_symm.comp_continuous
     (by fun_prop) S.simplex_inside
@@ -109,12 +109,8 @@ theorem exists_relative_derivative_bound {f : E → F}
     ∃ ε : ℝ, 0 < ε ∧ ∀ x ∈ Metric.ball (0 : E) ε,
       ‖f x - L x‖ ≤ (1 / 2 : ℝ) * ‖L x‖ := by
   have herr : (fun x : E => f x - L x) =o[𝓝 (0 : E)] (fun x : E => x) := by
-    convert hf.isLittleO using 1
-    · rfl
-    · rfl
-    · simp only [hzero, sub_zero]
-      rfl
-    · simp only [sub_zero]
+    convert hf.isLittleO using 1 <;>
+      simp only [hzero, sub_zero, ContinuousLinearEquiv.coe_coe]
   have hbig : (fun x : E => x) =O[𝓝 (0 : E)] (fun x : E => L x) := by
     apply Asymptotics.isBigO_iff.mpr
     refine ⟨‖L.symm.toContinuousLinearMap‖, Filter.Eventually.of_forall ?_⟩
@@ -418,28 +414,32 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
     [IsManifold ThreeModel ∞ M] {o : TangentOrientationSection M} {x : M}
 
 private def simplexContraction (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1)
-    (q : stdSimplex ℝ (Fin 4)) : stdSimplex ℝ (Fin 4) :=
-  ⟨fun j => a * q.val j + (1 - a) / 4, by
-    constructor
-    · intro j
-      exact add_nonneg (mul_nonneg ha.1 (q.property.1 j))
+    (q : Convexity.StdSimplex ℝ (Fin 4)) : Convexity.StdSimplex ℝ (Fin 4) :=
+  { weights := Finsupp.equivFunOnFinite.symm (fun j => a * q.weights j + (1 - a) / 4)
+    nonneg := by
+      intro j
+      exact add_nonneg (mul_nonneg ha.1 (q.nonneg j))
         (div_nonneg (sub_nonneg.mpr ha.2) (by norm_num))
-    · simp only [Finset.sum_add_distrib, ← Finset.mul_sum, q.property.2,
+    total := by
+      rw [Finsupp.sum_fintype _ _ (by simp)]
+      simp only [Finsupp.coe_equivFunOnFinite_symm,
+        Finset.sum_add_distrib, ← Finset.mul_sum, q.total_of_fintype,
         Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
-      ring⟩
+      ring }
+
 
 private theorem positiveTetrahedron_simplexContraction (a : ℝ) (ha : a ∈ Icc (0 : ℝ) 1)
-    (q : stdSimplex ℝ (Fin 4)) :
+    (q : Convexity.StdSimplex ℝ (Fin 4)) :
     positiveTetrahedron (simplexContraction a ha q) = a • positiveTetrahedron q := by
   ext i
   rw [positiveTetrahedron_coordinate]
-  change (a * q.val i.succ + (1 - a) / 4) - (a * q.val 0 + (1 - a) / 4) =
+  change (a * q.weights i.succ + (1 - a) / 4) - (a * q.weights 0 + (1 - a) / 4) =
     a * positiveTetrahedron q i
   rw [positiveTetrahedron_coordinate]
   ring
 
 private theorem chartSimplex_mem_of_ratio (S : OrientedChartSimplex o x) {r : ℝ}
-    (h0 : 0 ≤ r) (hr : r ≤ S.radius) (q : stdSimplex ℝ (Fin 4)) :
+    (h0 : 0 ≤ r) (hr : r ≤ S.radius) (q : Convexity.StdSimplex ℝ (Fin 4)) :
     S.chart x + r • positiveTetrahedron q ∈ S.chart.target := by
   have ha : r / S.radius ∈ Icc (0 : ℝ) 1 :=
     ⟨div_nonneg h0 S.radius_pos.le, (div_le_one S.radius_pos).mpr hr⟩
@@ -449,13 +449,13 @@ private theorem chartSimplex_mem_of_ratio (S : OrientedChartSimplex o x) {r : �
   exact hp
 
 private theorem chartSimplex_ratio_mem (S : OrientedChartSimplex o x) {b : ℝ}
-    (hb : b ∈ Icc (0 : ℝ) 1) (q : stdSimplex ℝ (Fin 4)) :
+    (hb : b ∈ Icc (0 : ℝ) 1) (q : Convexity.StdSimplex ℝ (Fin 4)) :
     S.chart x + S.radius • (b • positiveTetrahedron q) ∈ S.chart.target := by
   have hp := S.simplex_inside (simplexContraction b hb q)
   rwa [positiveTetrahedron_simplexContraction b hb q] at hp
 
 private theorem chartSimplex_blendRatio_mem (S : OrientedChartSimplex o x) {r : ℝ}
-    (h0 : 0 ≤ r) (hr : r ≤ S.radius) (t : unitInterval) (q : stdSimplex ℝ (Fin 4)) :
+    (h0 : 0 ≤ r) (hr : r ≤ S.radius) (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)) :
     S.chart x + S.radius • (((1 - (t : ℝ)) + (t : ℝ) * (r / S.radius)) •
       positiveTetrahedron q) ∈ S.chart.target := by
   apply chartSimplex_ratio_mem S _ q
@@ -480,7 +480,7 @@ private theorem chartSimplex_blendRatio_pos (S : OrientedChartSimplex o x) {r : 
     linarith
 
 private theorem chartSimplex_ratio_smul_ne_zero (S : OrientedChartSimplex o x)
-    {b : ℝ} (hb : b ≠ 0) {q : stdSimplex ℝ (Fin 4)} (hq : positiveTetrahedron q ≠ 0) :
+    {b : ℝ} (hb : b ≠ 0) {q : Convexity.StdSimplex ℝ (Fin 4)} (hq : positiveTetrahedron q ≠ 0) :
     S.radius • (b • positiveTetrahedron q) ≠ 0 := by
   intro h
   rcases smul_eq_zero.mp h with h1 | h1
@@ -489,19 +489,19 @@ private theorem chartSimplex_ratio_smul_ne_zero (S : OrientedChartSimplex o x)
     · exact hb h2
     · exact hq h2
 
-private theorem positiveTetrahedron_ne_zero_of_boundary (q : stdSimplex ℝ (Fin 4))
-    (hq : ∃ i : Fin 4, q.val i = 0) : positiveTetrahedron q ≠ 0 := by
+private theorem positiveTetrahedron_ne_zero_of_boundary (q : Convexity.StdSimplex ℝ (Fin 4))
+    (hq : ∃ i : Fin 4, q.weights i = 0) : positiveTetrahedron q ≠ 0 := by
   obtain ⟨i, hi⟩ := hq
   exact positiveTetrahedron_face_ne_zero q i hi
 
 private noncomputable def chartSimplexRadius (S : OrientedChartSimplex o x) (r : ℝ)
-    (h0 : 0 ≤ r) (hr : r ≤ S.radius) : C(stdSimplex ℝ (Fin 4), M) where
+    (h0 : 0 ≤ r) (hr : r ≤ S.radius) : C(Convexity.StdSimplex ℝ (Fin 4), M) where
   toFun q := S.chart.symm (S.chart x + r • positiveTetrahedron q)
   continuous_toFun := S.chart.continuousOn_symm.comp_continuous (by fun_prop)
     (fun q => chartSimplex_mem_of_ratio S h0 hr q)
 
 @[simp] private theorem chartSimplexRadius_apply (S : OrientedChartSimplex o x) (r : ℝ)
-    (h0 : 0 ≤ r) (hr : r ≤ S.radius) (q : stdSimplex ℝ (Fin 4)) :
+    (h0 : 0 ≤ r) (hr : r ≤ S.radius) (q : Convexity.StdSimplex ℝ (Fin 4)) :
     chartSimplexRadius S r h0 hr q = S.chart.symm (S.chart x + r • positiveTetrahedron q) :=
   rfl
 
@@ -527,14 +527,14 @@ private noncomputable def chartSimplexRadiusHomotopy (S : OrientedChartSimplex o
 private noncomputable def chartSimplexLinear (T : OrientedChartSimplex o x)
     (D : ThreeSpace →L[ℝ] ThreeSpace) (r : ℝ)
     (hmem : ∀ q, T.chart x + D (r • positiveTetrahedron q) ∈ T.chart.target) :
-    C(stdSimplex ℝ (Fin 4), M) where
+    C(Convexity.StdSimplex ℝ (Fin 4), M) where
   toFun q := T.chart.symm (T.chart x + D (r • positiveTetrahedron q))
   continuous_toFun := T.chart.continuousOn_symm.comp_continuous (by fun_prop) hmem
 
 @[simp] private theorem chartSimplexLinear_apply (T : OrientedChartSimplex o x)
     (D : ThreeSpace →L[ℝ] ThreeSpace) (r : ℝ)
     (hmem : ∀ q, T.chart x + D (r • positiveTetrahedron q) ∈ T.chart.target)
-    (q : stdSimplex ℝ (Fin 4)) :
+    (q : Convexity.StdSimplex ℝ (Fin 4)) :
     chartSimplexLinear T D r hmem q = T.chart.symm (T.chart x + D (r • positiveTetrahedron q)) :=
   rfl
 
@@ -553,36 +553,36 @@ private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex 
     (p.1 : ℝ) • (chartSimplex_centeredTransition S T (r • positiveTetrahedron p.2) -
       D (r • positiveTetrahedron p.2))))
   continuous_toFun := by
-    have hv : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+    have hv : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         r • positiveTetrahedron p.2 := by fun_prop
-    have hmem1 : ∀ p : unitInterval × stdSimplex ℝ (Fin 4),
+    have hmem1 : ∀ p : unitInterval × Convexity.StdSimplex ℝ (Fin 4),
         S.chart x + r • positiveTetrahedron p.2 ∈ S.chart.target := by
       intro p
       have h := (hblend _ (hε p.2)).1
       rw [chartSimplex_transitionDomain, OpenPartialHomeomorph.trans_source,
         OpenPartialHomeomorph.symm_source, Set.mem_preimage, Set.mem_inter_iff] at h
       exact h.1
-    have hmem2 : ∀ p : unitInterval × stdSimplex ℝ (Fin 4),
+    have hmem2 : ∀ p : unitInterval × Convexity.StdSimplex ℝ (Fin 4),
         S.chart.symm (S.chart x + r • positiveTetrahedron p.2) ∈ T.chart.source := by
       intro p
       have h := (hblend _ (hε p.2)).1
       rw [chartSimplex_transitionDomain, OpenPartialHomeomorph.trans_source,
         OpenPartialHomeomorph.symm_source, Set.mem_preimage, Set.mem_inter_iff] at h
       exact h.2
-    have hsymm : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+    have hsymm : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         S.chart.symm (S.chart x + r • positiveTetrahedron p.2) :=
       S.chart.continuousOn_symm.comp_continuous (continuous_const.add hv) hmem1
-    have hchart : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+    have hchart : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         T.chart (S.chart.symm (S.chart x + r • positiveTetrahedron p.2)) :=
       T.chart.continuousOn.comp_continuous hsymm hmem2
-    have hcent : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+    have hcent : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         chartSimplex_centeredTransition S T (r • positiveTetrahedron p.2) :=
       hchart.sub continuous_const
-    have hDv : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+    have hDv : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         D (r • positiveTetrahedron p.2) := D.continuous.comp hv
-    have ht : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) => (p.1 : ℝ) :=
+    have ht : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) => (p.1 : ℝ) :=
       continuous_subtype_val.comp continuous_fst
-    have hcomb : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+    have hcomb : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         T.chart x + (D (r • positiveTetrahedron p.2) + (p.1 : ℝ) •
           (chartSimplex_centeredTransition S T (r • positiveTetrahedron p.2) -
             D (r • positiveTetrahedron p.2))) :=
@@ -613,14 +613,14 @@ private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex 
 private noncomputable def chartSimplexLinearHomotopy (T : OrientedChartSimplex o x)
     (D : ThreeSpace →L[ℝ] ThreeSpace) (r : ℝ) (h0 : 0 ≤ r) (hrT : r ≤ T.radius)
     (H : (⟨D, D.continuous⟩ : C(ThreeSpace, ThreeSpace)).Homotopy (ContinuousMap.id ThreeSpace))
-    (hmemH : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
+    (hmemH : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
       T.chart x + H (t, r • positiveTetrahedron q) ∈ T.chart.target)
     (hmemD : ∀ q, T.chart x + D (r • positiveTetrahedron q) ∈ T.chart.target) :
     (chartSimplexLinear T D r hmemD).Homotopy (chartSimplexRadius T r h0 hrT) where
   toFun p := T.chart.symm (T.chart x + H (p.1, r • positiveTetrahedron p.2))
   continuous_toFun := T.chart.continuousOn_symm.comp_continuous
     (by
-      have hv : Continuous fun p : unitInterval × stdSimplex ℝ (Fin 4) =>
+      have hv : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
           r • positiveTetrahedron p.2 := by fun_prop
       exact continuous_const.add (H.continuous.comp (Continuous.prodMk continuous_fst hv)))
     (fun p => hmemH p.1 p.2)
@@ -639,8 +639,8 @@ private noncomputable def chartSimplexLinearHomotopy (T : OrientedChartSimplex o
 
 theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
     (S T : OrientedChartSimplex o x) :
-    ∃ H : S.simplex.Homotopy T.simplex, ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) → H (t, q) ≠ x := by
+    ∃ H : S.simplex.Homotopy T.simplex, ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) → H (t, q) ≠ x := by
   classical
   obtain ⟨ε, hε, hblend⟩ := chartSimplex_exists_blend_radius S T
   obtain ⟨H, hHne, C, hC⟩ := positive_linear_homotopy (EuclideanSpace.basisFun (Fin 3) ℝ)
@@ -680,12 +680,12 @@ theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
       exact mul_lt_mul_of_pos_left (by nlinarith [hRpos, hC0] :
         R * (max C 0 + 1) < 2 * (R + 1) * (max C 0 + 1)) hδ
     nlinarith [h2, h3]
-  have hεball : ∀ q : stdSimplex ℝ (Fin 4),
+  have hεball : ∀ q : Convexity.StdSimplex ℝ (Fin 4),
       r • positiveTetrahedron q ∈ Metric.ball (0 : ThreeSpace) ε := by
     intro q
     rw [Metric.mem_ball, dist_eq_norm, sub_zero, norm_smul, Real.norm_eq_abs, abs_of_pos hr0]
     exact lt_of_le_of_lt (mul_le_mul_of_nonneg_left (hR _ ⟨q, rfl⟩) hr0.le) hrε
-  have hmemD : ∀ q : stdSimplex ℝ (Fin 4),
+  have hmemD : ∀ q : Convexity.StdSimplex ℝ (Fin 4),
       T.chart x + simplexDerivativeTransition S T (r • positiveTetrahedron q) ∈
         T.chart.target := by
     intro q
@@ -693,7 +693,7 @@ theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
     have h0' : ((0 : unitInterval) : ℝ) = 0 := rfl
     rw [h0', zero_smul, add_zero] at h
     exact h
-  have hmemH : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
+  have hmemH : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
       T.chart x + H (t, r • positiveTetrahedron q) ∈ T.chart.target := by
     intro t q
     apply hδsub
@@ -719,15 +719,15 @@ theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
         ((chartSimplexLinearHomotopy T (simplexDerivativeTransition S T) r hr0.le hrT
             H hmemH hmemD).trans
           ((chartSimplexRadiusHomotopy T r hr0 hrT).symm))), ?_⟩
-  have hpq : ∀ q : stdSimplex ℝ (Fin 4), (∃ i : Fin 4, q.val i = 0) →
+  have hpq : ∀ q : Convexity.StdSimplex ℝ (Fin 4), (∃ i : Fin 4, q.weights i = 0) →
       positiveTetrahedron q ≠ 0 :=
     fun q hq => positiveTetrahedron_ne_zero_of_boundary q hq
-  have hrv : ∀ q : stdSimplex ℝ (Fin 4), (∃ i : Fin 4, q.val i = 0) →
+  have hrv : ∀ q : Convexity.StdSimplex ℝ (Fin 4), (∃ i : Fin 4, q.weights i = 0) →
       r • positiveTetrahedron q ≠ 0 := by
     intro q hq h
     exact hpq q hq (smul_eq_zero.mp h |>.resolve_left (ne_of_gt hr0))
-  have hne1 : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) →
+  have hne1 : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) →
         chartSimplexRadiusHomotopy S r hr0 hrS (t, q) ≠ x := by
     intro t q hq
     change S.chart.symm (S.chart x + S.radius •
@@ -735,8 +735,8 @@ theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
     exact chartSimplex_lift_ne_center S (chartSimplex_blendRatio_mem S hr0.le hrS t q)
       (chartSimplex_ratio_smul_ne_zero S
         (ne_of_gt (chartSimplex_blendRatio_pos S hr0 t)) (hpq q hq))
-  have hne2 : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) →
+  have hne2 : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) →
         (chartSimplexBlendHomotopy S T (simplexDerivativeTransition S T) r hr0.le hrS
           hblend hεball hmemD).symm (t, q) ≠ x := by
     intro t q hq
@@ -748,15 +748,15 @@ theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
           simplexDerivativeTransition S T (r • positiveTetrahedron q)))) ≠ x
     exact chartSimplex_lift_ne_center T ((hblend _ (hεball q)).2 (unitInterval.symm t) |>.1)
       ((hblend _ (hεball q)).2 (unitInterval.symm t) |>.2 (hrv q hq))
-  have hne3 : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) →
+  have hne3 : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) →
         chartSimplexLinearHomotopy T (simplexDerivativeTransition S T) r hr0.le hrT
           H hmemH hmemD (t, q) ≠ x := by
     intro t q hq
     change T.chart.symm (T.chart x + H (t, r • positiveTetrahedron q)) ≠ x
     exact chartSimplex_lift_ne_center T (hmemH t q) (hHne t _ (hrv q hq))
-  have hne4 : ∀ (t : unitInterval) (q : stdSimplex ℝ (Fin 4)),
-      (∃ i : Fin 4, q.val i = 0) →
+  have hne4 : ∀ (t : unitInterval) (q : Convexity.StdSimplex ℝ (Fin 4)),
+      (∃ i : Fin 4, q.weights i = 0) →
         (chartSimplexRadiusHomotopy T r hr0 hrT).symm (t, q) ≠ x := by
     intro t q hq
     rw [ContinuousMap.Homotopy.symm_apply]

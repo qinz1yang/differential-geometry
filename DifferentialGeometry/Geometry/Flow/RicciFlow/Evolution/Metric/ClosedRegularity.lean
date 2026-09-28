@@ -138,7 +138,8 @@ theorem chartGram_contDiffOn_of_spatialJets
     have hflow := jetRicciFlow_chartGram (I := I) (g t) p hyint
       (hAt.differentiableAt (by simp)) hG1 hG2 i j
     exact (hentry.hasDerivAt (isOpen_Ioo.mem_nhds ht)).congr_deriv hflow.symm
-  exact Perelman.CanonicalNeighborhood.FiniteHorn.contDiffOn_of_closed_jet_pde hab hV hΩ (fun t _ => hstatic t) hΦ hmap
+  exact DifferentialGeometry.Analysis.contDiffOn_of_closed_jet_pde hab hV hΩ
+    (fun t _ => hstatic t) hΦ hmap
     (fun r => chartGramPi_jets_continuousOn g p hVt r (hjets r)) htime
 
 private theorem solution_metricCLMSection_contMDiffOn_closed_of_innerProductSpace

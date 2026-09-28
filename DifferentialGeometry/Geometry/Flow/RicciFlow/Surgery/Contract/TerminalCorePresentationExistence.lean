@@ -360,9 +360,9 @@ private def assembleTerminalCorePresentation
         (if c ∈ component then {x | ConnectedComponents.mk x = c} else ∅)
         (r ^ 2)⁻¹ (Λ * (r ^ 2)⁻¹) ε := by
     by_cases hc : c ∈ component
-    · rw [if_pos hc]
+    · rw [ite_eq_left hc]
       exact (produce c hc).some
-    · rw [if_neg hc]
+    · rw [ite_eq_right hc]
       exact compactComponentPresentation D.terminal.metric ∅ _ _ _
         isOpen_empty isClosed_empty isCompact_empty (fun h => h.ne_empty rfl |>.elim)
   refine ⟨{
@@ -406,15 +406,15 @@ private def assembleTerminalCorePresentation
   · intro c hc
     apply (data c).connected
     obtain ⟨y, hy, _⟩ := (show c ∈ component from hc)
-    exact ⟨y, by simp only [if_pos hc]; exact hy⟩
+    exact ⟨y, by simp only [ite_eq_left hc]; exact hy⟩
   · intro c hc
-    have h := (data c).cover.symm.trans (if_neg hc)
+    have h := (data c).cover.symm.trans (ite_eq_right hc)
     exact (union_empty_iff.mp h).1
   · intro c hc x hx hscalar
     apply (data c).low
-    exact ⟨by simp only [if_pos hc]; exact hx, hscalar⟩
+    exact ⟨by simp only [ite_eq_left hc]; exact hx, hscalar⟩
   · intro c hc
-    have h := (data c).cover.symm.trans (if_neg hc)
+    have h := (data c).cover.symm.trans (ite_eq_right hc)
     have he := (union_empty_iff.mp h).2
     refine ⟨fun i => ?_⟩
     let q : Sphere 2 := ⟨EuclideanSpace.single 0 1, by simp⟩
@@ -422,13 +422,13 @@ private def assembleTerminalCorePresentation
       mem_iUnion.mpr ⟨i, ⟨(q, 0), le_rfl⟩, rfl⟩
     exact Set.notMem_empty _ (he.subset hm)
   · intro c hc
-    exact (if_pos hc).symm.trans (data c).cover
+    exact (ite_eq_left hc).symm.trans (data c).cover
   · intro c e
     exact (data c).base_neck e
 
 namespace OneStepIncoming
 
-theorem exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_necks_of_canonical_neighborhoods
+theorem exists_neckRadius_terminalCorePresentation_with_base_necks_of_canonical_neighborhoods
     {ε : ℝ} (hε : 0 < ε) :
     ∃ εcan : ℝ, 0 < εcan ∧ εcan < 1 / 11 ∧
       ∀ C1 C2 : ℝ, 1 ≤ C2 →
@@ -459,7 +459,8 @@ theorem exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_nec
             |level| ≤ 3 ∧ metricScalarAt D.terminal.metric p ≤ 2 * Λ * (P.coreRadius ^ 2)⁻¹ ∧
             ∀ y, P.horn c e (y, 0) = N.map (y, level) := by
   classical
-  obtain ⟨η₁, hη₁, hcutoff⟩ := exists_neckRadius_disjoint_spherical_region_with_exterior_alternatives_and_scale_bound_of_canonical_neighborhoods.{u}
+  obtain ⟨η₁, hη₁, hcutoff⟩ :=
+    exists_neckRadius_spherical_region_with_exterior_alternatives_of_canonical_neighborhoods.{u}
   obtain ⟨η₂, hη₂, hends⟩ := exists_smooth_saved_end_decomposition_on_noncompact_component.{u,u}
   let δ := min η₁ (min η₂ (min (ε / 26000) (1 / 156000)))
   have hδ : 0 < δ := lt_min hη₁ (lt_min hη₂ (lt_min (by positivity) (by norm_num)))
@@ -589,7 +590,7 @@ theorem exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_nec
             |level| ≤ 3 ∧ metricScalarAt D.terminal.metric p ≤ 2 * Λ * (P.coreRadius ^ 2)⁻¹ ∧
             ∀ y, P.horn c e (y, 0) = N.map (y, level) := by
   obtain ⟨εcan, hεcan, hsmall, hproduce⟩ :=
-    exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_necks_of_canonical_neighborhoods.{u} hε
+    exists_neckRadius_terminalCorePresentation_with_base_necks_of_canonical_neighborhoods.{u} hε
   obtain ⟨C2, hC2, hcanonical⟩ :=
     OrientedThreeStage.IncomingSlab.exists_uniform_canonical_constants_with_cap_neck_charts.{u} hεcan hsmall
   obtain ⟨C, Λ, hC, hΛ, hproduce⟩ := hproduce C2 C2 hC2
@@ -687,7 +688,7 @@ theorem exists_neckRadius_terminalCorePresentation_with_radius_lower_bound_of_ca
             |level| ≤ 3 ∧ metricScalarAt D.terminal.metric p ≤ 2 * Λ * (P.coreRadius ^ 2)⁻¹ ∧
             ∀ y, P.horn c e (y, 0) = N.map (y, level) := by
   obtain ⟨εcan, hεcan, hεsmall, hproduce⟩ :=
-    exists_neckRadius_terminalCorePresentation_with_scale_bound_and_base_necks_of_canonical_neighborhoods.{u} hε
+    exists_neckRadius_terminalCorePresentation_with_base_necks_of_canonical_neighborhoods.{u} hε
   refine ⟨εcan, hεcan, hεsmall, ?_⟩
   intro C1 C2 hC2
   obtain ⟨C, Λ, hC, hΛ, hproduce⟩ := hproduce C1 C2 hC2

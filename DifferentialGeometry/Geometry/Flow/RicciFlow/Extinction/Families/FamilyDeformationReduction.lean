@@ -197,15 +197,15 @@ theorem rampFamilyInput_of_windowExtension
     refine ⟨sol, ?_, ?_⟩
     · refine continuousAt_of_eq_subtype_val (tX := smoothProductCylinderTopology e (Icc a b))
         hU sols hcont hxU ?_ ?_
-      · simp only [sol, dif_pos hxU]
+      · simp only [sol, dite_eq_left hxU]
       · intro x hx
-        simp only [sol, dif_pos hx]
+        simp only [sol, dite_eq_left hx]
     · intro c hs hr
       by_cases h : (⟨c, hs, hr⟩ :
           RampInitialData (I := I) (Q := Q) (D := D) (a := a) (b := b) B lambda) ∈ U
-      · simp only [sol, dif_pos h]
+      · simp only [sol, dite_eq_left h]
         exact ⟨hsol ⟨_, h⟩, hramp ⟨_, h⟩, hinit ⟨_, h⟩⟩
-      · simp only [sol, dif_neg h]
+      · simp only [sol, dite_eq_right h]
         exact ⟨(K.exists_solution c hs hr).choose_spec.1,
           (K.exists_solution c hs hr).choose_spec.2.1,
           (K.exists_solution c hs hr).choose_spec.2.2.1⟩

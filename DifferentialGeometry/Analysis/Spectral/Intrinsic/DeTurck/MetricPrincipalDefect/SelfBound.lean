@@ -2,6 +2,12 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalD
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.CovariantJetDecomposition.CometricTraceSelf
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.FiberNorm
 
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+  riemannianFiberNormSq_sub_le riemannianFiberNormSq_zero tensorInnerPointwise_smul_left
+  tensorInnerPointwise_smul_right)
+
 set_option autoImplicit false
 
 noncomputable section
@@ -37,7 +43,7 @@ def phiSelfC (i : ℕ) : ℝ :=
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 theorem phiSelfC_nonneg (i : ℕ) : 0 ≤ phiSelfC (E := E) i := by
   by_cases hi : i = 0
-  · simp only [phiSelfC, hi, if_pos]
+  · simp only [phiSelfC, hi, ite_eq_left]
     positivity
   · simp [phiSelfC, hi]
 
@@ -53,7 +59,7 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] in
 private theorem selfTraceC_nonneg (i : ℕ) :
     0 ≤ selfTraceC (E := E) i := by
   by_cases hi : i = 0
-  · simp only [selfTraceC, hi, if_pos]
+  · simp only [selfTraceC, hi, ite_eq_left]
     positivity
   · simp [selfTraceC, hi]
 
@@ -67,7 +73,7 @@ private theorem doubleTrace_grid
   match i with
   | 0 =>
       rw [iteratedCovGrad_zero]
-      simpa only [selfTraceC, if_pos] using
+      simpa only [selfTraceC, ite_eq_left] using
         (cometricTrace_riemannianFiberNormSq (I := I) (M := M) g x)
   | (i' + 1) =>
       rw [iteratedCovGrad_eq_zero_of_covGrad_eq_zero
@@ -130,7 +136,7 @@ private theorem pureSelf_grid
   exact doubleTrace_grid (I := I) (M := M) g i x
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
-private theorem DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul
+private theorem riemannianFiberNormSq_smul
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (x : M)
     (c : ℝ) (v : TensorRSSpace r s I x) :
     riemannianFiberNormSq (I := I) (M := M) g r s x (c • v) =
@@ -208,7 +214,7 @@ private theorem ricciSelf_riemannianFiberNormSq_le
   have hnegC :
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x (-PC) =
         riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PC := by
-    rw [← neg_one_smul ℝ PC, DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M)]
+    rw [← neg_one_smul ℝ PC, riemannianFiberNormSq_smul (I := I) (M := M)]
     norm_num
   have hsum :
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x
@@ -230,7 +236,7 @@ private theorem ricciSelf_riemannianFiberNormSq_le
       riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x (PA0 + PA0) =
         4 * riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PA0 := by
     rw [show PA0 + PA0 = (2 : ℝ) • PA0 from (two_smul ℝ PA0).symm,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M)]
+      riemannianFiberNormSq_smul (I := I) (M := M)]
     norm_num
   have hkey :
       4 * riemannianFiberNormSq (I := I) (M := M) g 4 (2 + i) x PA0 ≤
@@ -263,7 +269,7 @@ private theorem ricciSelf_grid
           (show (0 : ℝ) < 1 by norm_num) (show (0 : ℝ) ≤ 0 by norm_num) hz x
       rw [iteratedCovGrad_zero, ricciDeTurckPrincipalCoefficient_toSection]
       refine hricci.trans (le_of_eq ?_)
-      simp only [selfTraceC, if_pos, sub_zero, div_one, mul_one]
+      simp only [selfTraceC, ite_eq_left, sub_zero, div_one, mul_one]
       ring
   | (i' + 1) =>
       have hmain := ricciSelf_riemannianFiberNormSq_le (I := I) (M := M) g (i' + 1) x
@@ -272,7 +278,7 @@ private theorem ricciSelf_grid
         (I := I) (M := M) g 4 (2 + (i' + 1)) x
           ((iteratedCovGrad (I := I) g 4 2 (i' + 1)
             (cometricDoubleTraceField (I := I) g 2)).toSection x)
-      simp only [selfTraceC, Nat.succ_ne_zero, if_false] at htrace ⊢
+      simp only [selfTraceC, Nat.succ_ne_zero, ite_false] at htrace ⊢
       linarith
 
 omit [SigmaCompactSpace M] in

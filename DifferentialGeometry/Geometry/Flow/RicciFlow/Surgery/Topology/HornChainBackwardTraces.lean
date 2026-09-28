@@ -255,7 +255,7 @@ private theorem lt_scalar_of_mem_closedBall_of_gradientBoundBefore {P : Oriented
 
 theorem eventually_chain_backward_traces_of_mem_hornHalfRange :
     ∃ eta : ℝ, 0 < eta ∧
-    ∀ {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀) {s : ℝ}
+    ∀ (H : RetainedCoreHistory.{u}) {s : ℝ}
       (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
       (L : G.TerminalLimitMetric) (hsing : G.SingularEndpoint) (parameters : CutoffParameters)
       {εP Λ : ℝ}
@@ -291,7 +291,7 @@ theorem eventually_chain_backward_traces_of_mem_hornHalfRange :
               (Fin.le_last first) z) := by
   obtain ⟨eta, heta, hsn⟩ := eventually_forall_historyStrongNeck_of_subset_hornHalfRange.{u}
   refine ⟨eta, heta, ?_⟩
-  intro P₀ H s G L hsing parameters εP Λ P hεP c hc e x hx ε ε₁ C1 C2 qcan Ctime Cgrad hε hεη hq
+  intro H s G L hsing parameters εP Λ P hεP c hc e x hx ε ε₁ C1 C2 qcan Ctime Cgrad hε hεη hq
     hcan hder hgrad Dr hDr hbig
   set lam := Λ * (P.coreRadius ^ 2)⁻¹ with hlamdef
   set μ := max (4 * C2 * lam) (max lam qcan) with hμdef

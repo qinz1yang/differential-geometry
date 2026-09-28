@@ -6,13 +6,13 @@ import Mathlib.Tactic
 
 set_option autoImplicit false
 
-namespace DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+namespace IsCompact
 
 open Filter Set
 open scoped Topology
 
 
-theorem eventually_uniform_on_compact_time_of_weighted_lipschitz
+theorem eventually_uniform_of_weighted_lipschitz
     {α : Type*} (F : ℕ → ℝ → α → ℝ) (F₀ : ℝ → α → ℝ) (w : α → ℝ)
     (hw : ∀ x, 0 ≤ w x) {J : Set ℝ} (hJ : IsCompact J) {B : ℝ} (hB : 0 ≤ B)
     (hLip : ∀ᶠ i in atTop, ∀ s ∈ J, ∀ t ∈ J, ∀ x,
@@ -76,4 +76,4 @@ theorem eventually_uniform_on_compact_time_of_weighted_lipschitz
       add_le_add (add_le_add hleft (hnear s hs x)) hright
     _ = ε * w x := by ring
 
-end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions
+end IsCompact

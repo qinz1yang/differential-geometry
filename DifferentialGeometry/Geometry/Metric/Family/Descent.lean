@@ -33,6 +33,7 @@ private theorem metric_inner_eq_of_local_section
       ContinuousLinearMap.id ℝ (TangentSpace J y) := by
     rw [← mfderiv_comp y (hf.contMDiff.mdifferentiableAt (by simp))
       (hY.mdifferentiableAt (by simp)), hsec.mfderiv_eq, mfderiv_id]
+    rfl
   have hv := congrArg (fun L : TangentSpace J y →L[ℝ] TangentSpace J (f (Y y)) => L v) hder
   have hw := congrArg (fun L : TangentSpace J y →L[ℝ] TangentSpace J (f (Y y)) => L w) hder
   simp only [ContinuousLinearMap.comp_apply] at hv hw

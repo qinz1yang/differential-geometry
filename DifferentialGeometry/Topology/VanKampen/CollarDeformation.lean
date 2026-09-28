@@ -68,19 +68,19 @@ theorem negativeHomotopyValue_eq_of_mem_negativeSide
       change p.2 < 0 at this
       exact this
     unfold negativeHomotopyValue
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     change h.toFun (p.1, collarScale (t : ℝ) p.2) = x.1
     rw [collarScale_eq_self_of_nonpos t.2.1 hp.le]
     exact congrArg Subtype.val (h.homeomorphRange.apply_symm_apply _)
   · unfold negativeHomotopyValue
-    rw [dif_neg hx]
+    rw [dite_eq_right hx]
 
 theorem negativeHomotopyValue_mem_negativeCover
     [Nonempty S] (t : I) (x : h.negativeCover) :
     h.negativeHomotopyValue t x ∈ h.negativeCover := by
   by_cases hx : x.1 ∈ h.collarSlice (Set.Iio 1)
   · unfold negativeHomotopyValue
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     refine Or.inr ?_
     have hmem : (⟨h.toFun
         ((h.homeomorphRange.symm
@@ -99,7 +99,7 @@ theorem negativeHomotopyValue_mem_negativeCover
       exact collarScale_lt_one _ hτ
     exact hmem
   · unfold negativeHomotopyValue
-    rw [dif_neg hx]
+    rw [dite_eq_right hx]
     exact x.2
 
 theorem continuous_negativeHomotopyValue
@@ -153,7 +153,7 @@ theorem continuous_negativeHomotopyValue
     simp only [Set.domRestrict_apply]
     unfold negativeHomotopyValue
     have hz : z.1.2.1 ∈ h.collarSlice (Set.Iio 1) := z.2.2
-    rw [dif_pos hz]
+    rw [dite_eq_left hz]
 
 noncomputable def negativeHomotopy
     [CompactSpace S] [Nonempty S] [T2Space X] [ConnectedSpace S] [ConnectedSpace X]
@@ -176,7 +176,7 @@ theorem negativeHomotopy_zero
   change h.negativeHomotopyValue 0 x = h.negativeRetractionValue x
   by_cases hx : x.1 ∈ h.collarSlice (Set.Iio 1)
   · unfold negativeHomotopyValue negativeRetractionValue
-    rw [dif_pos hx, dif_pos (h.collarSlice_subset_range _ hx), collarScale_zero_fun]
+    rw [dite_eq_left hx, dite_eq_left (h.collarSlice_subset_range _ hx), collarScale_zero_fun]
   · have hxr : x.1 ∉ h.range := by
       intro hr
       have htime : h.time (⟨x.1, hr⟩ : h.range) < 1 := by
@@ -186,7 +186,7 @@ theorem negativeHomotopy_zero
         · exact (h.mem_collarSlice_iff_time (Set.Iio 1) _).mp hc
       exact hx ((h.mem_collarSlice_iff_time (Set.Iio 1) _).mpr htime)
     unfold negativeHomotopyValue negativeRetractionValue
-    rw [dif_neg hx, dif_neg hxr]
+    rw [dite_eq_right hx, dite_eq_right hxr]
 
 theorem negativeHomotopy_one
     [CompactSpace S] [Nonempty S] [T2Space X] [ConnectedSpace S] [ConnectedSpace X]
@@ -196,7 +196,7 @@ theorem negativeHomotopy_one
   rw [negativeHomotopy_apply_val]
   by_cases hx : x.1 ∈ h.collarSlice (Set.Iio 1)
   · unfold negativeHomotopyValue
-    rw [dif_pos hx]
+    rw [dite_eq_left hx]
     change h.toFun
       ((h.homeomorphRange.symm ⟨x.1, h.collarSlice_subset_range _ hx⟩).1,
         collarScale ((1 : I) : ℝ)
@@ -204,7 +204,7 @@ theorem negativeHomotopy_one
     rw [collarScale_one_fun]
     exact congrArg Subtype.val (h.homeomorphRange.apply_symm_apply _)
   · unfold negativeHomotopyValue
-    rw [dif_neg hx]
+    rw [dite_eq_right hx]
 
 theorem negativeCover_deformationRetract
     [CompactSpace S] [Nonempty S] [T2Space X] [ConnectedSpace S] [ConnectedSpace X]

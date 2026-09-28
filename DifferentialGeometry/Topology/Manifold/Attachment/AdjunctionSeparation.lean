@@ -17,7 +17,7 @@ private theorem saturation_inl (i : A → B) (φ : A → X) (hi : Injective i) (
   · rintro ⟨p, hp, he⟩
     cases p with
     | inl c =>
-      have hc := adjunctionCell_injective i φ hi hφ he
+      have hc := adjunctionCell_injective i φ hφ he
       exact Or.inl (hc ▸ hp)
     | inr x =>
       obtain ⟨a, ha, hx⟩ := (adjunctionCell_eq_lower_iff i φ hi b x).mp he.symm
@@ -54,7 +54,7 @@ theorem adjunctionMk_finite_fiber (i : A → B) (φ : A → X) (hi : Injective i
     (q : AdjunctionSpace i φ) : (adjunctionMk i φ ⁻¹' {q}).Finite := by
   apply finite_preimage_inl_and_inr.mp
   change (adjunctionCell i φ ⁻¹' {q}).Finite ∧ (adjunctionLower (i := i) φ ⁻¹' {q}).Finite
-  exact ⟨(finite_singleton q).preimage (adjunctionCell_injective i φ hi hφ).injOn,
+  exact ⟨(finite_singleton q).preimage (adjunctionCell_injective i φ hφ).injOn,
     (finite_singleton q).preimage (adjunctionLower_injective i φ hi).injOn⟩
 
 variable [TopologicalSpace A] [TopologicalSpace B] [TopologicalSpace X]
@@ -101,7 +101,7 @@ theorem isClosedEmbedding_adjunctionCell (i : A → B) (φ : A → X)
     (hi : Injective i) (hφ : Injective φ) (hci : Continuous i) (hcφ : Continuous φ) :
     _root_.Topology.IsClosedEmbedding (adjunctionCell i φ) :=
   _root_.Topology.IsClosedEmbedding.of_continuous_injective_isClosedMap
-    (continuous_adjunctionCell i φ) (adjunctionCell_injective i φ hi hφ)
+    (continuous_adjunctionCell i φ) (adjunctionCell_injective i φ hφ)
       ((isClosedMap_adjunctionMk i φ hi hφ hci hcφ).comp isClosedMap_inl)
 
 theorem isClosedEmbedding_adjunctionLower (i : A → B) (φ : A → X)

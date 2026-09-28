@@ -18,7 +18,7 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_crosscut_traces
     {ι : Type*} [Finite ι] {D U : Set Plane} (hD : IsPLBall 2 D)
     (hU : IsOpen U) (hDU : D ⊆ U) (A : ι → Set Plane)
     (q : ι → (Fin 2 → ℝ) → Plane)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 2)) (A i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (A i))
     (hDA : ∀ i, IsPLBall 1 (D ∩ A i))
     (hends : ∀ i, Disjoint D (q i '' stdSimplexBoundary 1)) :
     ∃ (Q : Set Plane) (γ : ι → ℝ → Plane),
@@ -72,7 +72,7 @@ theorem IsPLBall.exists_isPLBall_neighborhood_with_chart_crosscuts
     (he : IsPiecewiseAffineOn e e.source) {D : Set E} (hD : IsPLBall 2 D)
     (hDs : D ⊆ e.source) (hDz : ∀ x ∈ D, (e x).2 = 0)
     (A : ι → Set E) (q : ι → (Fin 2 → ℝ) → E)
-    (hq : ∀ i, IsPLHomeomorphOn (q i) (stdSimplex ℝ (Fin 2)) (A i))
+    (hq : ∀ i, IsPLHomeomorphOn (q i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) (A i))
     (hAs : ∀ i, A i ⊆ e.source) (hAz : ∀ i, ∀ x ∈ A i, (e x).2 = 0)
     (hDA : ∀ i, IsPLBall 1 (D ∩ A i))
     (hends : ∀ i, Disjoint D (q i '' stdSimplexBoundary 1))

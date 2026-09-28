@@ -4,6 +4,7 @@ import Mathlib.Topology.Homeomorph.Lemmas
 import Mathlib.Topology.Semicontinuity.Basic
 import Mathlib.Topology.Instances.Real.Lemmas
 import Mathlib.Algebra.Order.Floor.Semiring
+import Mathlib.Order.Filter.AtTopBot.Archimedean
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Ring
 

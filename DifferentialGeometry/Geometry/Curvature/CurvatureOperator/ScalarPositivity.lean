@@ -52,7 +52,7 @@ private theorem metricScalarAt_eq_sum_rm04_orthonormal
     (I := I) g basis (identityInvMetric (Idx := Idx))
     (metricInverseInBasis_identity_of_orthonormal g basis horth)]
   simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul, zero_mul,
-    Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    Finset.sum_ite_eq, Finset.mem_univ, ite_true]
   apply Finset.sum_congr rfl
   intro i _
   exact ricci_diag_eq_sum_rm04_diag_of_orthonormal (I := I) g basis

@@ -23,6 +23,9 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomp
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.KoszulResidualSmoothness
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.ResidualCoefficientUniformBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.ResidualCoefficientJetBounds
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -157,11 +160,11 @@ theorem exists_riemannPalatini_decomposition_identity_with_bounds
     exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_fiberNormSq_ballUniform (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨ΛB, hΛB_nn, hcapB⟩ :=
-    exists_ricciOrderZeroBackgroundCurvatureCoeffField_metricPerturbationPath_riemannianFiberNormSq_ballUniform
+    ricci_background_curvature_coefficient_uniform_bound_on_metric_path
       (I := I) (M := M)
       g₀ a (R := R) hδ₀
   obtain ⟨ΛS, hΛS_nn, hcapS⟩ :=
-    exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_riemannianFiberNormSq_uniformBound
+    koszul_residual_uniform_bound_on_metric_path
       (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨ΛF, hΛF_nn, hcapF⟩ :=
@@ -178,7 +181,7 @@ theorem exists_riemannPalatini_decomposition_identity_with_bounds
     exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
       g₀ a ha_super hR hδ₀
   obtain ⟨KBw, hKBw_nn, hwinB⟩ :=
-    exists_ricciOrderZeroBackgroundRCommCoeffField_metricPerturbationPath_backgroundDifference_l2JetWindow
+    ricci_background_curvature_difference_l2_jet_bound_on_metric_path
       (I := I) (M := M) g₀ a ha_super hR hδ₀
   obtain ⟨KSw, hKSw_nn, hwinS⟩ :=
     exists_ricciCovariantTermSharpGradKoszulResidualField_metricPerturbationPath_l2JetWindow (I := I) (M := M)
@@ -326,7 +329,7 @@ theorem exists_riemannPalatini_decomposition_identity_with_bounds
       rw [h2]
       abel
     have hprim :=
-      ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+      ricci_curvature_coefficient_difference_apply_eq_residual_add_hessian
         (I := I) (M := M) g₀ (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T) htie hPsymm T
     rw [operatorFieldApplication_add_left, operatorFieldApplication_sub_left, operatorFieldApplication_add_left,
       coeffOpApply_slotSwapField_eq_apply_of_symm (I := I) (M := M) g₀ _ T hTsymm] at hprim
@@ -377,7 +380,7 @@ theorem exists_riemannPalatini_decomposition_identity_with_bounds
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)
               - ricciContractionRemainderField (I := I) (M := M) g₀
                   (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T))).toSection x) := by
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
       norm_num
     have hX : riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
         ((ricciOrderZeroAACommCoeffField (I := I) (M := M) g₀
@@ -445,7 +448,7 @@ theorem exists_riemannPalatini_decomposition_identity_with_bounds
           (1 / 4 : ℝ) * riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
             ((ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s) (s • T)).toSection x) := by
-        rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
+        rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 2 x]
         norm_num
       have h6 : (0 : ℝ) ≤ riemannianFiberNormSq (I := I) (M := M) g₀ 2 2 x
           ((ricciCovariantTermSharpGradKoszulResidualField (I := I) (M := M) g₀
@@ -570,12 +573,12 @@ theorem riemannPalatiniDecompositionC2Family_riemannianFiberNormSq_le
   rw [riemannPalatiniDecompositionC2Family_eq_ccTensor02Symm_kernel (I := I) (M := M) g₀ T hδ hδZ
     qA qB hq s]
   rw [smul_smul, SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
   rw [curvatureActionKernelCoeffField, SmoothCcTensor.toSection_smul,
     SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_sub, SmoothCcTensor.toSection_add,
     ContMDiffSection.coe_smul, Pi.smul_apply, ContMDiffSection.coe_sub, Pi.sub_apply,
     ContMDiffSection.coe_sub, Pi.sub_apply, ContMDiffSection.coe_add, Pi.add_apply,
-    DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
+    DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
   have hB := riemannianFiberNormSq_addsub4_le (I := I) (M := M) g₀ 4 2 x
     ((curvatureActionMonomialCoeffField (I := I) (M := M) g₀
       (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)
@@ -921,7 +924,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
                 (ccTensor02Symm (I := I) (M := M) g₀ T)) σp).toSection x)) ≤
           (deTurckTermFibreConst (Module.finrank ℝ E) * (δ / (1 - δ) ^ 2)) ^ 2 := by
       intro c hc σp
-      rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
+      rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
       have h1 := hmono_cap σp
       have hc2 : c ^ 2 ≤ 1 := by nlinarith only [abs_nonneg c, sq_abs c, hc]
       have h0 := riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 4 2 x
@@ -934,7 +937,7 @@ theorem exists_deTurckLieCovariantDerivativeDecompositionC2Family_cap_l2JetWindo
       nlinarith only [h1, hc2, h0, sq_nonneg c]
     rw [deTurckLieCovariantDerivativeDecompositionC2Family_eq_ccTensor02Symm_weight (I := I) (M := M) g₀ T hδ hδZ q ε s]
     rw [SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 4 2 x]
     simp only [Fin.sum_univ_three, SmoothCcTensor.toSection_add,
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_add, ContMDiffSection.coe_smul,
       Pi.add_apply, Pi.smul_apply]
@@ -1273,10 +1276,10 @@ theorem exists_deTurckLieEndoTerm_backgroundDifference_order0_bounds
               ‖iteratedCovGrad (I := I) g₀ 0 2 j T‖ ^ 2)) := by
   classical
   obtain ⟨Λbg, hΛbg_nn, hsup_bg⟩ :=
-    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
+    deTurckLieCovariantDerivativeInsertionField_pointwise_perturbation_bound (I := I) (M := M)
       g₀ g_bg a ha_super hR hδ₀
   obtain ⟨Λz, hΛz_nn, hsup_z⟩ :=
-    deTurckLieCovariantDerivativeInsertionField_metricPerturbationPath_riemannianFiberNormSq_order0_ballUniform (I := I) (M := M)
+    deTurckLieCovariantDerivativeInsertionField_pointwise_perturbation_bound (I := I) (M := M)
       g₀ g₀ a ha_super hR hδ₀
   obtain ⟨Ke, hKe_nn, henv⟩ :=
     exists_deTurckLieEndoTerm_backgroundDifference_l2JetWindow (I := I) (M := M)

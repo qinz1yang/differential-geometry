@@ -21,10 +21,10 @@ theorem exists_isPLHomeomorphOn_cone_disk_arc_pair_of_boundary_singleton
     (hL : IsConeBase p L) (hL' : IsConeBase q L')
     (hS : IsPLSphere 2 L.space) (hS' : IsPLSphere 2 L'.space)
     {D A : Set E} {D' A' : Set F} (hDL : D ⊆ L.space) (hDL' : D' ⊆ L'.space)
-    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {η : ℝ → E} (hη : IsPLHomeomorphOn η (Icc 0 1) A) (hAD : A ⊆ D)
     (hmeet : A ∩ (r '' stdSimplexBoundary 2) = {η 0})
-    {r' : (Fin 3 → ℝ) → F} (hr' : IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) D')
+    {r' : (Fin 3 → ℝ) → F} (hr' : IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D')
     {η' : ℝ → F} (hη' : IsPLHomeomorphOn η' (Icc 0 1) A') (hAD' : A' ⊆ D')
     (hmeet' : A' ∩ (r' '' stdSimplexBoundary 2) = {η' 0}) :
     ∃ G : E → F, IsPLHomeomorphOn G (coneSet p L.space) (coneSet q L'.space) ∧

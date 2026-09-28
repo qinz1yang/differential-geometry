@@ -11,6 +11,8 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StarComplex
 
 open Set
 
+open Convexity.StdSimplex (coordinateSet)
+
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E E' F F' : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -72,7 +74,7 @@ theorem exists_isPLHomeomorphOn_simplexComplex [FiniteDimensional ℝ E] {n : �
   obtain ⟨T, hT, hcard, hball⟩ := exists_simplexComplex_isPLBall n
   obtain ⟨f, hf⟩ := h
   obtain ⟨g, hg⟩ := hball
-  exact ⟨T, hT, f ∘ Function.invFunOn g (stdSimplex ℝ (Fin (n + 1))), hcard, hg.symm.trans hf⟩
+  exact ⟨T, hT, f ∘ Function.invFunOn g (coordinateSet ℝ (Fin (n + 1))), hcard, hg.symm.trans hf⟩
 
 theorem isPLSphere_joinComplex_of_isPLSphere [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     [DecidableEq E] [DecidableEq F] {K : Geometry.SimplicialComplex ℝ E} [Finite K.faces]

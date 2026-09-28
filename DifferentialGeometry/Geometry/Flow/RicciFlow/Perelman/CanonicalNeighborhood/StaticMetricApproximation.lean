@@ -47,15 +47,15 @@ def MetricComparisonOn.ofMapMetricApproximation
     change D.pullback y v - metricTensorField g y v = _
     rw [metricTensorField_apply]
   · intro b s _hs y _hy v
-    simp only [if_neg (Nat.add_one_ne_zero b)]
+    simp only [ite_eq_right (Nat.add_one_ne_zero b)]
     change 0 = derivWithin (fun _ => (if b = 0 then A else 0) y v) times s
     simp only [derivWithin_fun_const, Pi.zero_apply]
   · intro s _hs y hy v
     exact tensor_apply_bounds_of_metricTensorErrorNorm_le D.pullback g (D.c0_small y hy) v
   · intro a b hab s _hs y hy
     by_cases hb : b = 0
-    · simpa only [if_pos hb] using hbound a (by omega) y hy
-    · rw [if_neg hb, tensor02CovDerivNormWith,
+    · simpa only [ite_eq_left hb] using hbound a (by omega) y hy
+    · rw [ite_eq_right hb, tensor02CovDerivNormWith,
         tensor02_cov_deriv_eq_cov_deriv_of_field, covDerivOfField_zero_tensor]
       simpa only [ContMDiffSection.coe_zero, Pi.zero_apply, normSq0S, inner0S,
         MetricFiberData.inner, map_zero, Real.sqrt_zero] using D.eps_pos.le

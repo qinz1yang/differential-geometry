@@ -145,14 +145,6 @@ noncomputable def roundQuotientUC
   letI : CompactSpace (UniversalCover Q) := d.toHomeomorph.compactSpace
   letI : Finite (FundamentalGroup Q (default : Q)) :=
     UniversalCover.finite_pi1_of_uc
-  letI : Fintype (FundamentalGroup Q (default : Q)) :=
-    Fintype.ofFinite _
-  letI : IsManifold (𝓡 n) 1 Q :=
-    IsManifold.of_le (I := 𝓡 n) (M := Q) (n := (∞ : WithTop ℕ∞))
-      (by simp)
-  letI : IsManifold (𝓡 n) ((∞ : WithTop ℕ∞) + 1) Q := by
-    rw [ENat.coe_top_add_one]
-    infer_instance
   refine
     { Q := Q
       Γ := FundamentalGroup Q (default : Q)

@@ -2,6 +2,10 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByP
 import DifferentialGeometry.Analysis.Integration.DivergenceTheorem.Global.IntegrationByParts
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 
+open DifferentialGeometry.TensorMetric (tensorInnerPointwise_eq_inner0S
+  tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
+
 noncomputable section
 
 namespace DifferentialGeometry.Analysis.Elliptic
@@ -69,14 +73,14 @@ theorem integral_sq_weighted_roughLap0SField_le_of_hasCompactSupport
         have hev : (χ : M → ℝ) =ᶠ[𝓝 x] (fun _ => 0) :=
           notMem_tsupport_iff_eventuallyEq.mp hx
         have hmfd_zero : mfderiv I 𝓘(ℝ, ℝ) (χ : M → ℝ) x = 0 := by
-          rw [hev.mfderiv_eq]
-          exact mfderiv_const
+          rw [hev.mfderiv_eq, mfderiv_const]
+          rfl
         simp [mvfderiv, hmfd_zero]
       simp only [B, hzero, ContinuousLinearMap.zero_smulRight, map_zero]
   have hBB : Integrable (fun x => normSq0S (I := I) g x (s + 1) (B x)) μ := by
     refine (B₀.integrable_inner_cross B₀).congr (Filter.Eventually.of_forall fun x => ?_)
     dsimp only
-    rw [SmoothCcTensor.toFun_apply, innerPt_eq_inner0S, hB, normSq0S_eq_inner]
+    rw [SmoothCcTensor.toFun_apply, tensorInnerPointwise_eq_inner0S, hB, normSq0S_eq_inner]
   have hBA : Integrable (fun x => χ x * inner0S (I := I) g x (s + 1) (B x) (A x)) μ := by
     have hp := (scalarSmul (I := I) g 0 (s + 1) χ B₀).integrable_inner_cross A₀
     refine hp.congr (Filter.Eventually.of_forall fun x => ?_)
@@ -85,7 +89,7 @@ theorem integral_sq_weighted_roughLap0SField_le_of_hasCompactSupport
     by_cases hx : x ∈ tsupport (χ : M → ℝ)
     · have hA : ∀ᶠ y in 𝓝 x, Ac y = unitScalarRSLiftCₛ (I := I) A y :=
         (nhds_le_nhdsSet hx) hAeq
-      rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply, innerPt_eq_inner0S, hB,
+      rw [SmoothCcTensor.toFun_apply, SmoothCcTensor.toFun_apply, tensorInnerPointwise_eq_inner0S, hB,
         show A₀.toSection x = unitScalarRSLiftCₛ (I := I) A x from hA.self_of_nhds,
         unitScalarRSLiftCₛ_apply, unitScalarRSLiftSection_apply_unit]
     · simp [image_eq_zero_of_notMem_tsupport hx]
@@ -98,7 +102,7 @@ theorem integral_sq_weighted_roughLap0SField_le_of_hasCompactSupport
     by_cases hx : x ∈ tsupport (χ : M → ℝ)
     · have hA : ∀ᶠ y in 𝓝 x, Ac y = unitScalarRSLiftCₛ (I := I) A y :=
         (nhds_le_nhdsSet hx) hAeq
-      rw [SmoothCcTensor.toFun_apply, innerPt_eq_inner0S,
+      rw [SmoothCcTensor.toFun_apply, tensorInnerPointwise_eq_inner0S,
         show A₀.toSection x = unitScalarRSLiftCₛ (I := I) A x from hA.self_of_nhds,
         unitScalarRSLiftCₛ_apply, unitScalarRSLiftSection_apply_unit, normSq0S_eq_inner]
       ring
@@ -108,13 +112,13 @@ theorem integral_sq_weighted_roughLap0SField_le_of_hasCompactSupport
         η * (χ x ^ 2 * normSq0S (I := I) g x (s + 1) (A x)) +
           η⁻¹ * normSq0S (I := I) g x (s + 1) (B x) := by
     have hp := normSq0S_nonneg (I := I) g x (s + 1) ((η * χ x) • A x + B x)
-    rw [_root_.Tensor0SBundle.normSq0S_add,
+    rw [_root_.DifferentialGeometry.Tensor0SBundle.normSq0S_add,
       normSq0S_eq_inner,
-      _root_.Tensor0SBundle.inner0S_smul_left,
-      _root_.Tensor0SBundle.inner0S_smul_right,
+      _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
+      _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right,
       ← normSq0S_eq_inner,
-      _root_.Tensor0SBundle.inner0S_smul_left,
-      _root_.Tensor0SBundle.inner0S_comm g x (s + 1) (A x) (B x)] at hp
+      _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left,
+      _root_.DifferentialGeometry.Tensor0SBundle.inner0S_comm g x (s + 1) (A x) (B x)] at hp
     have hdiv := div_nonneg hp hη.le
     have halgebra (a b c : ℝ) :
         ((η * χ x) * ((η * χ x) * a) + 2 * ((η * χ x) * b) + c) / η =

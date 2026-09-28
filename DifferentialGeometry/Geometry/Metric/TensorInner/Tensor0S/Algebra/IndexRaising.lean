@@ -3,7 +3,7 @@ import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 noncomputable section
 
-namespace DifferentialGeometry.PDE.RicciFlow
+namespace DifferentialGeometry.TensorMetric
 
 open Bundle DifferentialGeometry.Tensor0SBundle
 open scoped Manifold ContDiff BigOperators
@@ -111,6 +111,6 @@ theorem inner_sharpFlat (g₁ g₂ : SmoothRiemannianMetric I M) (x : M)
 
 end Pairing
 
-end DifferentialGeometry.PDE.RicciFlow
+end DifferentialGeometry.TensorMetric
 
 end

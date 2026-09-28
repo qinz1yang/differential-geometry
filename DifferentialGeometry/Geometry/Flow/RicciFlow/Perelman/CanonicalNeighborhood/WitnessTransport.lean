@@ -562,7 +562,7 @@ theorem modelComparison_ricciTensor_sub_le
               ((ricciEndo (I := I) pb y v w - ricciEndo (I := I) hU y v w) (B i))
               ((ricciEndo (I := I) pb y v w - ricciEndo (I := I) hU y v w) (B i))) *
             Real.sqrt (hU.inner y (B i) (B i)) :=
-          abs_metric_inner_le_sqrt_metric_quadratic (I := I) hU y _ _
+          SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic (I := I) hU y _ _
       _ = Real.sqrt (hU.inner y
               ((ricciEndo (I := I) pb y v w - ricciEndo (I := I) hU y v w) (B i))
               ((ricciEndo (I := I) pb y v w - ricciEndo (I := I) hU y v w) (B i))) := by

@@ -213,7 +213,7 @@ theorem connectedSumNeck_homeomorph_adjunctionSpace_of_collar
     rcases u with q | w
     · rcases v with q' | w'
       · change adjunctionCell ℓ φr (cyl q) = adjunctionCell ℓ φr (cyl q') at h
-        have h1 : cyl q = cyl q' := (adjunctionCell_injective ℓ φr hℓinj hφrinj) h
+        have h1 : cyl q = cyl q' := (adjunctionCell_injective ℓ φr hφrinj) h
         have hq : q = q' := by
           rcases q with ⟨b, s⟩
           rcases q' with ⟨b', s'⟩
@@ -229,7 +229,7 @@ theorem connectedSumNeck_homeomorph_adjunctionSpace_of_collar
         rw [hq]
       · rcases w' with x | y
         · change adjunctionCell ℓ φr (cyl q) = adjunctionCell ℓ φr (res x) at h
-          have h1 : cyl q = res x := (adjunctionCell_injective ℓ φr hℓinj hφrinj) h
+          have h1 : cyl q = res x := (adjunctionCell_injective ℓ φr hφrinj) h
           rcases q with ⟨b, s⟩
           have h1' : c (b, cylHalf s) = res x := by rw [← hcyl_apply]; exact h1
           have hmem : (1 / 4 : ℝ) ≤ (cylHalf s : ℝ) :=
@@ -269,7 +269,7 @@ theorem connectedSumNeck_homeomorph_adjunctionSpace_of_collar
     · rcases w with x | y
       · rcases v with q' | w'
         · change adjunctionCell ℓ φr (res x) = adjunctionCell ℓ φr (cyl q') at h
-          have h1 : res x = cyl q' := (adjunctionCell_injective ℓ φr hℓinj hφrinj) h
+          have h1 : res x = cyl q' := (adjunctionCell_injective ℓ φr hφrinj) h
           rcases q' with ⟨b, s⟩
           have h1' : res x = c (b, cylHalf s) := h1.trans (hcyl_apply b s)
           have hmem : (1 / 4 : ℝ) ≤ (cylHalf s : ℝ) :=
@@ -289,7 +289,7 @@ theorem connectedSumNeck_homeomorph_adjunctionSpace_of_collar
           exact (hlinked_zero b).symm
         · rcases w' with x' | y'
           · change adjunctionCell ℓ φr (res x) = adjunctionCell ℓ φr (res x') at h
-            have h1 : res x = res x' := (adjunctionCell_injective ℓ φr hℓinj hφrinj) h
+            have h1 : res x = res x' := (adjunctionCell_injective ℓ φr hφrinj) h
             rw [hresinj h1]
           · change adjunctionCell ℓ φr (res x) = adjunctionLower φr y' at h
             obtain ⟨b, hb, -⟩ := (adjunctionCell_eq_lower_iff ℓ φr hℓinj (res x) y').mp h

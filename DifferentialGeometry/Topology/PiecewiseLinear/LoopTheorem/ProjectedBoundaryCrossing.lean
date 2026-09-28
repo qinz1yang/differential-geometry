@@ -285,11 +285,11 @@ theorem exists_isOpen_forall_exists_small_isPLOn_boundary_crossing_in_chart
     have hHP (t : unitInterval) (x : K.space) (hx : (x : EuclideanSpace ℝ (Fin d)) ∈ P) :
         H (t, x) = J (t, f x) := by
       change (if (x : EuclideanSpace ℝ (Fin d)) ∈ P then J (t, f x) else f x) = _
-      exact if_pos hx
+      exact ite_eq_left hx
     have hHOffP (t : unitInterval) (x : K.space)
         (hx : (x : EuclideanSpace ℝ (Fin d)) ∉ P) : H (t, x) = f x := by
       change (if (x : EuclideanSpace ℝ (Fin d)) ∈ P then J (t, f x) else f x) = _
-      exact if_neg hx
+      exact ite_eq_right hx
     refine ⟨H, ?_, ?_, ?_⟩
     · intro x
       by_cases hx : (x : EuclideanSpace ℝ (Fin d)) ∈ P

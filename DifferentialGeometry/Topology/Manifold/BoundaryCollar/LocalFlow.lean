@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.BoundaryCollar.Extension
-import DifferentialGeometry.Analysis.ODE.Flow.CompactSupport
+import DifferentialGeometry.Topology.Manifold.BoundaryCollar.EuclideanFlow
 
 open Set Function Manifold Filter
 open scoped Topology ContDiff
@@ -8,40 +8,9 @@ noncomputable section
 
 namespace DifferentialGeometry.Manifold.BoundaryCollar
 
-private theorem exists_complete_euclidean_flow
-    {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
-    (g : E → E) (hg : ContDiff ℝ ∞ g) (hgK : HasCompactSupport g) :
-    ∃ Φ : E × ℝ → E, ContDiff ℝ ∞ Φ ∧
-      (∀ x, Φ (x, 0) = x) ∧
-      (∀ x s t, Φ (Φ (x, s), t) = Φ (x, s + t)) ∧
-      (∀ t, Injective (fun x => Φ (x, t))) ∧
-      ∀ x t, HasDerivAt (fun s => Φ (x, s)) (g (Φ (x, t))) t := by
-  let V : (x : E) → TangentSpace 𝓘(ℝ, E) x := g
-  have hV : ContMDiff 𝓘(ℝ, E) (𝓘(ℝ, E).prod 𝓘(ℝ, E)) ∞
-      (fun x => (⟨x, V x⟩ : TangentBundle 𝓘(ℝ, E) E)) :=
-    contMDiff_vectorSpace_iff_contDiff.mpr hg
-  let hc := DifferentialGeometry.Analysis.ODE.exists_globalIntegralCurve_of_compactSupport V hV hgK
-  let Φ : E × ℝ → E := fun p => DifferentialGeometry.Analysis.ODE.curveAt V hc p.1 p.2
-  have hΦ : ContDiff ℝ ∞ Φ := by
-    have hh := (DifferentialGeometry.Analysis.ODE.contMDiff_globalFlow_joint_of_compactSupport
-      V hV hgK).comp (contMDiff_snd.prodMk contMDiff_fst)
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod] at hh
-    exact contMDiff_iff_contDiff.mp hh
-  refine ⟨Φ, hΦ, DifferentialGeometry.Analysis.ODE.curveAt_zero V hc, ?_, ?_, ?_⟩
-  · intro x s t
-    exact (DifferentialGeometry.Analysis.ODE.curveAt_add V
-      (hV.of_le (by norm_num)) hc x s t).symm
-  · exact DifferentialGeometry.Analysis.ODE.curveAt_injective V (hV.of_le (by norm_num)) hc
-  · intro x t
-    have hd : HasFDerivAt (fun s => Φ (x, s))
-        ((1 : ℝ →L[ℝ] ℝ).smulRight (g (Φ (x, t)))) t := by
-      exact (DifferentialGeometry.Analysis.ODE.curveAt_integralCurve V hc x t).hasFDerivAt
-    simpa using hd.hasDerivAt
-
 theorem exists_inward_halfSpace_localFlow
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
+    [FiniteDimensional ℝ E]
     {U : Set (ℝ × E)} (hU : IsOpen U) {z : E} (hz : (0, z) ∈ U)
     {f : ℝ × E → ℝ × E}
     (hf : ContDiffOn ℝ ∞ f ((Ici (0 : ℝ) ×ˢ (univ : Set E)) ∩ U))
@@ -56,8 +25,9 @@ theorem exists_inward_halfSpace_localFlow
             Φ (x, t) ∈ U ∧ 0 ≤ (Φ (x, t)).1 ∧
             HasDerivAt (fun s => Φ (x, s)) (f (Φ (x, t))) t ∧
             (0 < t → 0 < (Φ (x, t)).1) := by
+  let _ : CompleteSpace E := FiniteDimensional.complete ℝ E
   obtain ⟨g, hg, hgK, hgf⟩ := exists_contDiff_halfSpace_extension hU hz hf
-  obtain ⟨Φ, hΦ, hzero, hadd, hinj, hder⟩ := exists_complete_euclidean_flow g hg hgK
+  obtain ⟨Φ, hΦ, hzero, hadd, hinj, hder⟩ := exists_complete_smooth_flow g hg hgK
   have hgpos : 0 < (g (0, z)).1 := by
     rw [hgf.eq_of_nhdsWithin (by simp)]
     exact hpos

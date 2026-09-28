@@ -1,5 +1,5 @@
 import Mathlib.Algebra.BigOperators.Fin
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 
 noncomputable section
 
@@ -19,9 +19,9 @@ lemma inverse_metric_contraction {n : ℕ} (ig cg : Fin n → Fin n → ℝ)
     rw [← Finset.sum_mul, hcol u e]
   rw [Finset.sum_congr rfl (fun u _ => h1 u)]
   rw [Finset.sum_eq_single e]
-  · rw [if_pos rfl, one_mul]
+  · rw [ite_eq_left rfl, one_mul]
   · intro b _ hb
-    rw [if_neg hb, zero_mul]
+    rw [ite_eq_right hb, zero_mul]
   · intro h
     exact absurd (Finset.mem_univ e) h
 
@@ -36,9 +36,9 @@ lemma inverse_metric_contraction_rev {n : ℕ} (ig cg : Fin n → Fin n → ℝ)
     rw [← Finset.sum_mul, hcol e w]
   rw [Finset.sum_congr rfl (fun w _ => h1 w)]
   rw [Finset.sum_eq_single e]
-  · rw [if_pos rfl, one_mul]
+  · rw [ite_eq_left rfl, one_mul]
   · intro b _ hb
-    rw [if_neg (fun h => hb h.symm), zero_mul]
+    rw [ite_eq_right (fun h => hb h.symm), zero_mul]
   · intro h
     exact absurd (Finset.mem_univ e) h
 

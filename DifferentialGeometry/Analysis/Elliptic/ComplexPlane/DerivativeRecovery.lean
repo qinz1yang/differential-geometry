@@ -122,7 +122,7 @@ private theorem exists_holder_eval
     ∃ C : ℝ≥0, HolderOnWith C α (fun x => A x v) s := by
   let L := ContinuousMultilinearMap.apply ℝ (fun _ : Fin N => H) F v
   refine ⟨‖L‖₊ * K, ?_⟩
-  have hh := L.lipschitz.holderWith.comp_holderOnWith hA
+  have hh := L.lipschitzWith.holderWith.comp_holderOnWith hA
   simpa only [Function.comp_def, one_mul, NNReal.coe_one, NNReal.rpow_one] using! hh
 
 private theorem holder_sub

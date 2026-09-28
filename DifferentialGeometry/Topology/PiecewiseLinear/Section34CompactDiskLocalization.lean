@@ -22,7 +22,7 @@ theorem Section34CompactCutFrame.disk_subset_vertexBall_of_boundary_subset
     (hgraph : Section34CompactGraphFrame V h ε K K' src H f₁)
     (s : Section34CompactSimplexIndex K 3) (w : Section34CompactVertexIndex K K')
     (hw : Section34Incident w.1 s.1) {D : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDT : D ⊆ frontier (section34CompactFaceTorus (section34CompactVertexBallImage src f₁) s))
     (hJV : q '' stdSimplexBoundary 2 ⊆ section34CompactVertexBallImage src f₁ w)
     (hJdisj : ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 s.1 →
@@ -101,7 +101,7 @@ theorem exists_vertex_disk_avoiding_other_face_seams
     (hJdisj : ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 →
       Disjoint J (section34CompactSplitDiskImage srcBd f₁ e)) :
     ∃ (D : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ q '' stdSimplexBoundary 2 = J ∧
         D ⊆ section34CompactVertexBallImage srcBd f₁ w ∧
         ∀ e : Section34CompactEdgeIndex K K', Section34Incident e.1 t.1 →
           Disjoint D (section34CompactSplitDiskImage src f₁ e) := by

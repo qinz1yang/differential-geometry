@@ -29,7 +29,7 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace Tensor0SRiemannian
 
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -92,13 +92,6 @@ lemma chartJinv_chartJ (α : M) {b : M}
   simp only [ContinuousLinearMap.comp_apply]
   rw [(trivializationAt E (TangentSpace I) α).symmL_continuousLinearMapAt hb]
   exact (tangentSpaceModelContinuousLinearEquiv (I := I) b).apply_symm_apply v
-
-omit [Module.Finite ℝ E] in
-lemma chartJinv_chartJ_self (α : M) {b : M}
-    (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) (v : E) :
-    chartTrivializationLinearMapSymm (I := I) (M := M) α b
-        (chartTrivializationLinearMap (I := I) (M := M) α b v) = v :=
-  chartJinv_chartJ (I := I) (M := M) α hb v
 
 lemma chartGramMatrix_eq_innerJinv
     (g : SmoothRiemannianMetric I M) (α b : M)
@@ -436,11 +429,11 @@ private lemma chartJinvMatrix_mul_chartJMatrix (α : M) {b : M}
   rw [Finsupp.single_apply]
   rw [Matrix.one_apply]
   by_cases hac : c = a
-  · rw [if_pos hac]
-    rw [if_pos hac.symm]
-  · rw [if_neg hac]
+  · rw [ite_eq_left hac]
+    rw [ite_eq_left hac.symm]
+  · rw [ite_eq_right hac]
     have : ¬ a = c := fun h => hac h.symm
-    rw [if_neg this]
+    rw [ite_eq_right this]
 
 private lemma chartJMatrix_mul_chartJinvMatrix (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :
@@ -461,11 +454,11 @@ private lemma chartJMatrix_mul_chartJinvMatrix (α : M) {b : M}
   rw [Finsupp.single_apply]
   rw [Matrix.one_apply]
   by_cases hac : c = a
-  · rw [if_pos hac]
-    rw [if_pos hac.symm]
-  · rw [if_neg hac]
+  · rw [ite_eq_left hac]
+    rw [ite_eq_left hac.symm]
+  · rw [ite_eq_right hac]
     have : ¬ a = c := fun h => hac h.symm
-    rw [if_neg this]
+    rw [ite_eq_right this]
 
 private lemma chartJinvMatrix_inv (α : M) {b : M}
     (hb : b ∈ (trivializationAt E (TangentSpace I) α).baseSet) :

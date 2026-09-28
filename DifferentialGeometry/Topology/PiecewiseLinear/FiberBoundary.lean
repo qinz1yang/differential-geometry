@@ -14,7 +14,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.mem_nhdsWithin_fiber_iff_notMem_image_boundary {n : ℕ}
     (hdimE : Module.finrank ℝ E = n + 2) (ℓ : E →ₗ[ℝ] ℝ) (hℓ : ℓ ≠ 0)
-    {D : Set E} {g : (Fin (n + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin (n + 2))) D)
+    {D : Set E} {g : (Fin (n + 2) → ℝ) → E} (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D)
     {r : ℝ} (hDr : D ⊆ {x | ℓ x = r}) {q : E} (hq : q ∈ D) :
     D ∈ 𝓝[{x | ℓ x = r}] q ↔ q ∉ g '' stdSimplexBoundary (n + 1) := by
   refine ⟨?_, hg.mem_nhdsWithin_fiber_of_notMem_image_boundary hdimE ℓ hℓ hDr hq⟩

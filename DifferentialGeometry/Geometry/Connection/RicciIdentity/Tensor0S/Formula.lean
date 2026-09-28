@@ -677,7 +677,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
             (Fin.cons (Xsec x) slots : Fin (s + 1) → TangentSpace I x)
             q.succ (YV q x) := by
       rw [hVYq_at q]
-      exact finCons_update_tail_eq_update_finCons_succ
+      exact Fin.cons_update (α := fun _ : Fin (s + 1) => TangentSpace I x)
         (Xsec x) slots q (YV q x)
     have hFinConsVX (q : Fin s) :
         (Fin.cons (Ysec x) (fun a : Fin s => VXq q a x) :
@@ -686,7 +686,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
             (Fin.cons (Ysec x) slots : Fin (s + 1) → TangentSpace I x)
             q.succ (XV q x) := by
       rw [hVXq_at q]
-      exact finCons_update_tail_eq_update_finCons_succ
+      exact Fin.cons_update (α := fun _ : Fin (s + 1) => TangentSpace I x)
         (Ysec x) slots q (XV q x)
     have hDoubleY :
         (∑ q : Fin s, ∑ a : Fin s,
@@ -840,7 +840,7 @@ private theorem tensor0S_commutator_expansion_from_realizes
         _ = -∑ q : Fin s, D q := by
               simp [Finset.sum_neg_distrib]
     simp_rw [hFinConsVY, hFinConsVX]
-    simp_rw [finCons_update_tail_eq_update_finCons_succ]
+    simp_rw [Fin.cons_update]
     repeat rw [Finset.sum_add_distrib]
     linarith [hDoubleCancel, hDiagCurv]
   calc

@@ -153,7 +153,7 @@ theorem exists_closedWindow_metric_time_fields
         (fun s => metricTensorField (S.base.metric s) x) (Icc c b) t := by
     cases q with
     | zero => simp only [B, iteratedDerivWithin_zero]
-    | succ q => simpa only [B, dif_pos ht] using hC q ⟨t, ht⟩ x
+    | succ q => simpa only [B, dite_eq_left ht] using hC q ⟨t, ht⟩ x
   refine ⟨B, fun _ => rfl, ?_⟩
   intro q t ht x
   refine ⟨hB q t ht x, ?_⟩

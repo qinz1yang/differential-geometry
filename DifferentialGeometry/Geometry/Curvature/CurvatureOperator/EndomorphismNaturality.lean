@@ -38,7 +38,7 @@ theorem twoFormMetricData_inner_congrLeft
           (ι := Fin 2) b) =
       (twoFormMetricData (I := I) gSource x).inner a b := by
   rw [twoFormMetricData_inner, twoFormMetricData_inner]
-  rw [← Tensor0SBundle.inner0S_tensor0SPullbackCLE
+  rw [← DifferentialGeometry.Tensor0SBundle.inner0S_tensor0SPullbackCLE
     (I := I) gSource gTarget x y 2 e hiso]
   rw [tensor0SPullbackCLE_twoFormTensorAt_congrLeft,
     tensor0SPullbackCLE_twoFormTensorAt_congrLeft]

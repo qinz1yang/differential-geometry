@@ -45,14 +45,15 @@ theorem terminal_limit_global_bound_of_compactnessFrontier_and_uniformTerminalSc
   terminal_limit_global_bound_of_frontiers hPhi hcompact
     (terminalLimitScalarBoundFrontier_of_uniformTerminalScalarUpperBoundShell hscal)
 
-theorem uniformTerminalScalarUpperBoundShell_of_harnackCollapseBound_and_noSubsequenceCurvatureEscapeShell
+theorem
+  uniformTerminalScalarUpperBoundShell_of_harnackCollapseBound_and_noSubsequenceCurvatureEscapeShell
     {kappa sigma : ℝ} {Phi : ℝ → ℝ} (hsigma : 0 < sigma)
     (hPhi : AdmissiblePinchingFunction Phi)
     (hdiam : BoundedDistanceToBasepointShell.{u} kappa sigma Phi)
     (h : KappaSolutions.KLimHarnackCollapseBound.{u, 0, 0} (I := I3) kappa)
     (hescape : NoSubsequenceCurvatureEscapeShell.{u} kappa sigma Phi) :
     UniformTerminalScalarUpperBoundShell.{u} kappa sigma Phi :=
-  uniformTerminalScalarUpperBoundShell_of_boundedDistanceToBasepointShell_and_smallScale_and_noSubsequenceCurvatureEscapeShell
+  uniform_terminal_scalar_bound_of_bounded_distance_and_no_curvature_escape
     hdiam (exists_curvatureBoundedWithin_of_harnackCollapseBound hsigma hPhi h) hescape
 
 theorem window_subset_carrier_of_le_modelDepth {eps kappa sigma : ℝ} {Phi : ℝ → ℝ}

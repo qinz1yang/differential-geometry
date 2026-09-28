@@ -286,7 +286,8 @@ theorem tendsto_eLpNorm_retracted_convolution_sub_on_compact
     filter_upwards [hfk] with x hx
     exact ((hReq.filter_mono (nhds_le_nhdsSet hx)).eq_of_nhds).trans (hfix _ hx)
   obtain ⟨L, hL⟩ := hR.lipschitzWith_of_hasCompactSupport hRc (by simp)
-  have hRval := hL.tendsto_eLpNorm_comp_sub_of_fixed_ae v f hfixed hval
+  have hRval := hL.tendsto_eLpNorm_comp_sub_of_fixed_ae v f
+    (hfm.mono_measure (Measure.restrict_mono_set volume hSΩ)).aestronglyMeasurable hfixed hval
   obtain ⟨O, hO, hKO, hOr⟩ := mem_nhdsSet_iff_exists.mp hReq
   have hind : (Ω.indicator f) =ᵐ[volume.restrict Ω] f := by
     filter_upwards [ae_restrict_mem hΩ.measurableSet] with x hx

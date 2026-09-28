@@ -95,7 +95,7 @@ theorem netList_succ_spec (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) (�
         (isClosed_availSet O hlam (forbidden O lam (netList O lam hlam α))) h).choose_spec.1,
       (exists_min_dist_base O
         (isClosed_availSet O hlam (forbidden O lam (netList O lam hlam α))) h).choose_spec.2⟩
-  rw [netList, dif_pos h]
+  rw [netList, dite_eq_left h]
 
 def ballsDisjoint (O : M) (lam : ℝ → ℝ) (l : List M) : Prop :=
   l.Pairwise fun a b =>
@@ -117,7 +117,7 @@ theorem netList_ballsDisjoint (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam
         simp only [availSet, Set.mem_ofPred_eq, forbidden,
           Set.disjoint_iUnion_right] at hxavail
         exact (hxavail a ha).symm
-      · rw [ballsDisjoint, netList, dif_neg h]; exact ih
+      · rw [ballsDisjoint, netList, dite_eq_right h]; exact ih
 
 @[simp] theorem netList_zero (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) :
     netList O lam hlam 0 = [O] := rfl
@@ -125,7 +125,7 @@ theorem netList_ballsDisjoint (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam
 theorem netList_succ_stop (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) (α : ℕ)
     (h : ¬ (availSet O lam (forbidden O lam (netList O lam hlam α))).Nonempty) :
     netList O lam hlam (α + 1) = netList O lam hlam α := by
-  rw [netList, dif_neg h]
+  rw [netList, dite_eq_right h]
 
 theorem mem_netList_succ (O : M) (lam : ℝ → ℝ) (hlam : Continuous lam) (α : ℕ)
     {a : M} (ha : a ∈ netList O lam hlam α) : a ∈ netList O lam hlam (α + 1) := by

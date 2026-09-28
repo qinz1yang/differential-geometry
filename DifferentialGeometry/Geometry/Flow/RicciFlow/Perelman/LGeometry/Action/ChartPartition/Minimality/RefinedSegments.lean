@@ -175,7 +175,7 @@ theorem lChartAction_refined_adjacent_pair_le_of_lRegularizedAction_minimizer
     · contradiction
   have hurOld (k : Fin (m + 2)) (hkj : k ≠ j) :
       ur (head.succAbove k) = (hOldLen k hkj).symm ▸ u k := by
-    simp only [ur, Fin.insertNth_apply_succAbove, dif_neg hkj]
+    simp only [ur, Fin.insertNth_apply_succAbove, dite_eq_right hkj]
   have htrMono : Monotone tr := by
     apply Fin.monotone_iff_le_succ.mpr
     intro k

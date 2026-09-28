@@ -395,10 +395,10 @@ theorem polygon_dichotomy_of_carrier {Sa Sb U K Z G : Set (EuclideanSpace ℝ (F
       ∀ hsub : G ⊆ Sb, ∀ x : G, Function.Surjective (FundamentalGroup.map
         (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, Sb)) x)) ∨
     ((∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier Sa ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier Sa ∧
           G = r '' stdSimplexBoundary 2) ∧
       ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier Sb ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ frontier Sb ∧
           G = r '' stdSimplexBoundary 2) := by
   have hGK : Disjoint G K := (disjoint_interior_frontier (s := Sb)).symm.mono hGb hKb
   have hGSa : G ⊆ Sa := hGa.trans (isClosed_of_isTopologicalSolidTorus hSa.1).frontier_subset
@@ -440,10 +440,10 @@ theorem moise314_pair {P : Fin 4 → EuclideanSpace ℝ (Fin 3)}
       ∀ hsub : G ⊆ S'' b, ∀ x : G, Function.Surjective (FundamentalGroup.map
         (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S'' b)) x)) ∨
     ((∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' a ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' a ∧
           G = r '' stdSimplexBoundary 2) ∧
       ∃ (Δ : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' b ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ T'' b ∧
           G = r '' stdSimplexBoundary 2) := by
   have hSN : ∀ j, S j ⊆ N := fun j => by
     rw [hc.unionEq]

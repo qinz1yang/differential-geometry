@@ -73,7 +73,7 @@ theorem IsPLTorus.exists_isPLHomeomorphOn_disk_of_nullhomotopic_inclusion
     {T J : Set E3} (hT : IsPLTorus T) (hJ : IsPLSphere 1 J) (hJT : J ⊆ T)
     (hnull : (⟨inclusion hJT, continuous_inclusion hJT⟩ : C(J, T)).Nullhomotopic) :
     ∃ (D : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ T ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ T ∧
         J = r '' stdSimplexBoundary 2 := by
   exact hT.exists_isPLHomeomorphOn_disk_of_not_isPreconnected_sdiff hJ hJT
     (fun hconn => hT.not_nullhomotopic_inclusion_of_nonseparating_circle hJ hJT hconn hnull)

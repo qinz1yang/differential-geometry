@@ -719,7 +719,7 @@ theorem normSq0S_two_eq_coord
           intro l _
           ring
 
-theorem inner0S_two_eq_coord_direct
+theorem inner0S_two_eq_coord
     {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
     (g : SmoothRiemannianMetric I M) (x : M)
     (basis : Module.Basis Idx Real (TangentSpace I x))
@@ -1137,20 +1137,6 @@ theorem normSq0S_eq_coord
     normSq0S (I := I) g x s A =
       coordInner0S (I := I) (x := x) s gInv A A basis := by
   rw [normSq0S_eq_inner, inner0S_eq_coord (I := I) g x s basis gInv hinv]
-
-theorem inner0S_two_eq_coord
-    {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-    (g : SmoothRiemannianMetric I M) (x : M)
-    (basis : Module.Basis Idx Real (TangentSpace I x))
-    (gInv : Idx -> Idx -> Real)
-    (hinv : MetricInverseInBasis (I := I) g x basis gInv)
-    (A B : Tensor0SSpace 2 I x) :
-    inner0S (I := I) g x 2 A B =
-      ∑ i : Idx, ∑ j : Idx, ∑ k : Idx, ∑ l : Idx,
-        gInv i k * gInv j l *
-          A (fun a : Fin 2 => if a = 0 then basis i else basis j) *
-            B (fun a : Fin 2 => if a = 0 then basis k else basis l) := by
-  exact inner0S_two_eq_coord_direct (I := I) g x basis gInv hinv A B
 
 theorem coord_normSq0S_eq_coord
     {Idx₁ Idx₂ : Type*} [Fintype Idx₁] [DecidableEq Idx₁]

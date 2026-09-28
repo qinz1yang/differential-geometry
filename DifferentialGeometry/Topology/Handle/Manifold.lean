@@ -340,7 +340,7 @@ theorem closedCellShiftSucc_apply_of_ne {n : ℕ} (c : ℝ) (x : EuclideanSpace 
     closedCellShiftSucc n c x j = x j := by
   dsimp [closedCellShiftSucc]
   change (if _ : j = (0) then x (0) + c else x j) = x j
-  exact dif_neg hj
+  exact dite_eq_right hj
 
 theorem closedCellShiftSucc_eq_add {n : ℕ} (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
     closedCellShiftSucc n c x = x + c • (EuclideanSpace.basisFun (Fin (n + 1)) ℝ
@@ -354,7 +354,7 @@ theorem closedCellShiftSucc_eq_add {n : ℕ} (c : ℝ) (x : EuclideanSpace ℝ (
     rw [closedCellShiftSucc_apply_of_ne c x hj']
     change x j = x j + c * ((EuclideanSpace.basisFun (Fin (n + 1)) ℝ (0)) j)
     rw [EuclideanSpace.basisFun_apply, PiLp.single_apply]
-    rw [if_neg hj']
+    rw [ite_eq_right hj']
     ring
 
 theorem closedCellShiftSucc_neg_left_inv (n : ℕ) (c : ℝ) (x : EuclideanSpace ℝ (Fin (n + 1))) :
@@ -901,9 +901,9 @@ noncomputable def closedCellChartedSpaceSucc (m : ℕ) :
   mem_chart_source := by
     intro x
     by_cases hx : ‖x.1‖ < 1
-    · rw [closedCellChartAt, dif_pos hx]
+    · rw [closedCellChartAt, dite_eq_left hx]
       exact hx
-    · rw [closedCellChartAt, dif_neg hx]
+    · rw [closedCellChartAt, dite_eq_right hx]
       have hne : x.1 (Classical.choose (exists_closedCell_coord_ne_zero x.1 (by
           have hle : ‖x.1‖ ≤ 1 := x.2
           have hnot : ¬ ‖x.1‖ < 1 := hx
@@ -1548,10 +1548,10 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
   by_cases hx₁ : ‖x₁.1‖ < 1
   · by_cases hx₂ : ‖x₂.1‖ < 1
     · unfold closedCellChartAt
-      rw [dif_pos hx₁, dif_pos hx₂]
+      rw [dite_eq_left hx₁, dite_eq_left hx₂]
       exact closedCellInteriorInterior_transition_mem_groupoid
     · unfold closedCellChartAt
-      rw [dif_pos hx₁, dif_neg hx₂]
+      rw [dite_eq_left hx₁, dite_eq_right hx₂]
       exact closedCellInteriorBoundary_transition_mem_groupoid
         (Classical.choose (exists_closedCell_coord_ne_zero x₂.1 (by
           have hle : ‖x₂.1‖ ≤ 1 := x₂.2
@@ -1562,7 +1562,7 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
           linarith))))
   · by_cases hx₂ : ‖x₂.1‖ < 1
     · unfold closedCellChartAt
-      rw [dif_neg hx₁, dif_pos hx₂]
+      rw [dite_eq_right hx₁, dite_eq_left hx₂]
       exact closedCellBoundaryInterior_transition_mem_groupoid
         (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
@@ -1572,7 +1572,7 @@ theorem closedCellChart_transition_mem_groupoid {m : ℕ} (x₁ x₂ : ClosedCel
           have hnot : ¬ ‖x₁.1‖ < 1 := hx₁
           linarith))))
     · unfold closedCellChartAt
-      rw [dif_neg hx₁, dif_neg hx₂]
+      rw [dite_eq_right hx₁, dite_eq_right hx₂]
       exact closedCellBoundaryBoundary_transition_mem_groupoid
         (Classical.choose (exists_closedCell_coord_ne_zero x₁.1 (by
           have hle : ‖x₁.1‖ ≤ 1 := x₁.2
@@ -1916,7 +1916,7 @@ theorem closedCellInclusion_contMDiff (m : ℕ) :
   · have hchart : chartAt (H := EuclideanHalfSpace (m + 1)) (M := ClosedCell (m + 1)) x =
         closedCellInteriorChart m := by
       change closedCellChartAt x = closedCellInteriorChart m
-      rw [closedCellChartAt, dif_pos hx]
+      rw [closedCellChartAt, dite_eq_left hx]
     have hc : ContMDiffOn (modelWithCornersEuclideanHalfSpace (m + 1))
         (modelWithCornersEuclideanHalfSpace (m + 1)) (⊤ : ℕ∞)
         (closedCellInteriorChart m) (closedCellInteriorChart m).source := by
@@ -1950,7 +1950,7 @@ theorem closedCellInclusion_contMDiff (m : ℕ) :
     have hchart : chartAt (H := EuclideanHalfSpace (m + 1)) (M := ClosedCell (m + 1)) x =
         closedCellBoundaryChart m i σ := by
       change closedCellChartAt x = closedCellBoundaryChart m i σ
-      rw [closedCellChartAt, dif_neg hx]
+      rw [closedCellChartAt, dite_eq_right hx]
     have hxsrc : x ∈ (closedCellBoundaryChart m i σ).source := by
       simpa [hchart] using (mem_chart_source (H := EuclideanHalfSpace (m + 1))
         (M := ClosedCell (m + 1)) x)
@@ -2632,7 +2632,7 @@ theorem closedCellInclusion_contMDiff_of (l : ℕ) [Fact (l = (l - 1) + 1)] :
   · have hc' : chartAt (H := EuclideanHalfSpace ((l - 1) + 1))
         (M := ClosedCell ((l - 1) + 1)) (r x) = closedCellInteriorChart (l - 1) := by
       change closedCellChartAt (r x) = closedCellInteriorChart (l - 1)
-      rw [closedCellChartAt, dif_pos (by
+      rw [closedCellChartAt, dite_eq_left (by
         rwa [hnorm])]
     have hchart : chartAt (H := EuclideanHalfSpace ((l - 1) + 1)) (M := ClosedCell l) x =
         r.toOpenPartialHomeomorph ≫ₕ closedCellInteriorChart (l - 1) := by
@@ -2721,7 +2721,7 @@ theorem closedCellInclusion_contMDiff_of (l : ℕ) [Fact (l = (l - 1) + 1)] :
     have hc' : chartAt (H := EuclideanHalfSpace ((l - 1) + 1))
         (M := ClosedCell ((l - 1) + 1)) (r x) = closedCellBoundaryChart (l - 1) i σ := by
       change closedCellChartAt (r x) = closedCellBoundaryChart (l - 1) i σ
-      rw [closedCellChartAt, dif_neg (by
+      rw [closedCellChartAt, dite_eq_right (by
         rwa [hnorm])]
     have hchart : chartAt (H := EuclideanHalfSpace ((l - 1) + 1)) (M := ClosedCell l) x =
         r.toOpenPartialHomeomorph ≫ₕ closedCellBoundaryChart (l - 1) i σ := by

@@ -8,6 +8,11 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.SobolevNonlinear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.SymmetricCoefficientBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.OperatorField.H1H2Composition
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero tensorInnerPointwise_smul_left
+    tensorInnerPointwise_smul_right)
+
 noncomputable section
 
 set_option autoImplicit false
@@ -22,14 +27,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
-  (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib
-    reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply
-    iteratedCovGrad_reindexCoefficientInputSlots norm_reindexCoefficientInputSlots_eq
-    domDomCongrFibRank domDomCongrFibRank_apply tensor0SProdKappaFib
-    metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff
-    ccTensor02Symm cometricRaiseSlot0Field unitModel unitTensor covGrad covGrad_zero
-    metricConnectionDifferenceLoweredFib_toModel smoothCcTensor_ext_of_unitModel)
+open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (deTurckLieEndoTermField deTurckLieEndoTermField_toSection deTurckLieCovariantDerivativeInsertionFib reindexCoefficientInputSlots reindexCoefficientInputSlots_toSection reindexCoefficientInputSlotsFiber reindexCoefficientInputSlotsFiber_apply iteratedCovGrad_reindexCoefficientInputSlots norm_reindexCoefficientInputSlots_eq metricConnectionDifferenceLoweredFib metricConnectionDifferenceLoweredFib_contMDiff ccTensor02Symm cometricRaiseSlot0Field unitModel unitTensor covGrad covGrad_zero metricConnectionDifferenceLoweredFib_toModel smoothCcTensor_ext_of_unitModel)
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Elliptic
@@ -81,7 +79,7 @@ private lemma lieCorrectionZeroBase_perOrder_rf
       ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g₀)‖ := by
     rw [lieCorrectionZeroInsertion_base_eq_neg_covariantDerivativeInsertion (I := I) (M := M) g₀ g₁, iteratedCovGrad_neg, norm_neg]
   have hdlb := normSq_iteratedCovGrad_deTurckLieCovariantDerivativeInsertionField_le (I := I) (M := M) g₀ g₁ g₀ i
-  rw [norm_iteratedCovGrad_deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_deTurckVectorFieldCovariantDerivativeLowered (I := I) (M := M) g₀ g₁ g₀ i] at hdlb
+  rw [deTurckVectorFieldCovariantDerivativeEndomorphismInsert_iteratedCovGrad_norm_eq_lowered (I := I) (M := M) g₀ g₁ g₀ i] at hdlb
   have hwa := hwalpha g₁ P htie hδ_le hδ0 hδ hsup i hi
   calc ‖iteratedCovGrad (I := I) g₀ 2 2 i (lieCorrectionZeroInsertion (I := I) (M := M) g₀ g₁ g₀)‖ ^ 2
       = ‖iteratedCovGrad (I := I) g₀ 2 2 i (deTurckLieCovariantDerivativeInsertionField (I := I) g₀ g₁ g₀)‖ ^ 2 := by
@@ -1012,9 +1010,9 @@ private theorem b4_frame_expand (g : SmoothRiemannianMetric I M) (x : M)
       rw [(g.inner x (smoothOrthoFrame (I := I) g x k x)).map_smul (c j),
         smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   obtain ⟨bse, hbse⟩ : ∃ bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x),
       ∀ i, bse i = smoothOrthoFrame (I := I) g x i x :=
     ⟨basisOfLinearIndependentOfCardEqFinrank he_li (Fintype.card_fin _),
@@ -1029,9 +1027,9 @@ private theorem b4_frame_expand (g : SmoothRiemannianMetric I M) (x : M)
       rw [(g.inner x (smoothOrthoFrame (I := I) g x j x)).map_smul (bse.repr u i),
         smul_eq_mul, hbse i, horth j i])]
     rw [Finset.sum_eq_single_of_mem j (Finset.mem_univ j)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro i _ hij
-      rw [if_neg (fun h => hij h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hij h.symm), mul_zero]
   calc u = ∑ i : Fin (Module.finrank ℝ E), bse.repr u i • bse i := (bse.sum_repr u).symm
     _ = ∑ i : Fin (Module.finrank ℝ E),
         g.inner x u (smoothOrthoFrame (I := I) g x i x) •
@@ -1870,7 +1868,7 @@ private lemma b4_app_antidiagonalTupleGridWindow (g₀ gb : SmoothRiemannianMetr
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
   obtain ⟨Kphi, hKphi_nn, hphi⟩ := metricPerturbationLoweringCoefficient_antidiagonalTupleGridWindow_bound (I := I) (M := M) g₀ σ
-  obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb hδ₀
+  obtain ⟨Kwx, hKwx_nn, hwx⟩ := metricLoweredConnectionDifference_iteratedCovGrad_fiber_norm_sq_bound (I := I) (M := M) g₀ gb hδ₀
   refine ⟨fun n => operatorFieldApplicationGdiag (E := E) n *
       ∑ i' ∈ Finset.range (n + 1), ∑ l ∈ Finset.range (n + 1),
         Kphi i' * Kwx l * Combinatorics.antidiagonalTupleGridWindowMulConst i' (l + 1),
@@ -1980,7 +1978,7 @@ theorem metricConnectionDifferenceLoweredCoefficient_antidiagonalTupleGridWindow
             (fun j => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j) x
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
-  obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb hδ₀
+  obtain ⟨Kwx, hKwx_nn, hwx⟩ := metricLoweredConnectionDifference_iteratedCovGrad_fiber_norm_sq_bound (I := I) (M := M) g₀ gb hδ₀
   obtain ⟨KapA, hKapA_nn, hapA⟩ := b4_app_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb b4PermA hδ₀
   obtain ⟨KapB, hKapB_nn, hapB⟩ := b4_app_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb b4PermB hδ₀
   refine ⟨fun n => 2 * Kwx n + (KapA n + KapB n),
@@ -2176,7 +2174,7 @@ theorem deTurckVectorFieldCovector_antidiagonalTupleGridWindow_bound (g₀ gb : 
               ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) (n + 2) := by
   classical
   obtain ⟨Kcg, hKcg_nn, hcg⟩ := riemannianFiberNormSq_iteratedCovGrad_cometricCastG0_antidiagonalTupleGridWindow_rf (I := I) (M := M) g₀ hδ₀
-  obtain ⟨Kwx, hKwx_nn, hwx⟩ := riemannianFiberNormSq_iteratedCovGrad_metricLoweredConnectionDifference_le_antidiagonalTupleGridWindow (I := I) (M := M) g₀ gb hδ₀
+  obtain ⟨Kwx, hKwx_nn, hwx⟩ := metricLoweredConnectionDifference_iteratedCovGrad_fiber_norm_sq_bound (I := I) (M := M) g₀ gb hδ₀
   refine ⟨fun n => operatorFieldApplicationGdiag (E := E) n *
       ∑ i' ∈ Finset.range (n + 1), ∑ l ∈ Finset.range (n + 1),
         Kcg i' * Kwx l * Combinatorics.antidiagonalTupleGridWindowMulConst i' (l + 1),

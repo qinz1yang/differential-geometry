@@ -145,7 +145,7 @@ theorem exists_uniform_background_lowRegularity_solution_with_weighted_mode_mass
                         gforce i) s) t) ^ 2 ≤ C4) ∧
                 Summable (solutionFieldMass (I := I) (M := M) hT.le gforce 5) := by
   obtain ⟨K, hKuniform, T, hT, hT1, hsolve⟩ :=
-    exists_uniform_background_lowRegularity_solution_with_galerkin_energy_four_and_dissipation_five_bounds (I := I) (M := M) hDim gBase hΛ
+    exists_uniform_background_lowRegularity_solution_with_galerkin_energy_four_dissipation_five_bounds (I := I) (M := M) hDim gBase hΛ
   refine ⟨K, hKuniform, T, hT, hT1, ?_⟩
   intro g hEq hjet
   obtain ⟨u, gforce, fseq, _Φ3, Φ4, Φ5, hsolveAt, hconv, _hΦ3, hΦ4, hΦ5⟩ :=

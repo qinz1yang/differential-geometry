@@ -55,7 +55,7 @@ private theorem exists_piecewise_affine_convex_disk_extension
     hP.isPolyhedron.isCompact hc hP.interior_nonempty b
   let v : EuclideanSpace ℝ (Fin 2) → E :=
     fun z => if hz : z ∈ P then (F ⟨z, hz⟩ : E) else 0
-  have hv (z : P) : v z = (F z : E) := by simp only [v, dif_pos z.property]
+  have hv (z : P) : v z = (F z : E) := by simp only [v, dite_eq_left z.property]
   have hvcont : ContinuousOn v P := by
     rw [continuousOn_iff_continuous_domRestrict]
     exact (continuous_subtype_val.comp F.continuous).congr (fun z => (hv z).symm)
@@ -86,7 +86,7 @@ theorem IsPLBall.exists_isPiecewiseAffineOn_extension
     ((convex_Icc (0 : ℝ) 1).prod (convex_Icc (0 : ℝ) 1)).linear_image e.toLinearMap
   obtain ⟨r, hr⟩ := hP
   obtain ⟨s, hs⟩ := hQ
-  let φ := r ∘ Function.invFunOn s (stdSimplex ℝ (Fin 3))
+  let φ := r ∘ Function.invFunOn s (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
   have hφ : IsPLHomeomorphOn φ (e '' C) P := hs.symm.trans hr
   have hP : IsPLBall 2 P := ⟨r, hr⟩
   have hQ : IsPLBall 2 (e '' C) := ⟨s, hs⟩

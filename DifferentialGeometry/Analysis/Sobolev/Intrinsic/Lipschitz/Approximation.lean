@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Lipschitz.Basic
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Measure.UniformChartComparison
 import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.Preliminaries
 import DifferentialGeometry.Analysis.Sobolev.Approximation.Density.FirstOrder
@@ -8,6 +8,7 @@ import DifferentialGeometry.Analysis.Sobolev.Chart.SmoothDensity.SmoothMulQuant
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.Equivalence.NormEquivalence
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Compact
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
+import DifferentialGeometry.Analysis.Integration.Measure.Gradient
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -198,7 +199,7 @@ private lemma gNorm_sum_le
   | empty => simp
   | @insert i s hi ih =>
       simp only [Finset.sum_insert hi]
-      exact (DifferentialGeometry.Analysis.Laplacian.gNorm_add_le
+      exact (DifferentialGeometry.SmoothRiemannianMetric.gNorm_add_le
         (I := I) (M := M) g x (v i) (s.sum v)).trans
           (by simpa only [add_comm] using
             add_le_add_right ih (Real.sqrt (g.inner x (v i) (v i))))
@@ -248,7 +249,7 @@ private lemma gramSup_nonneg
   let K : Set M := tsupport
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   by_cases hK : K.Nonempty
-  · rw [dif_pos hK]
+  · rw [dite_eq_left hK]
     have hKc : IsCompact K := (isClosed_tsupport _).isCompact
     have hKs : K ⊆ (chartAt H α).source :=
       chartAtlasPOU_isSubordinate I M α
@@ -259,7 +260,7 @@ private lemma gramSup_nonneg
     exact (chartInvGramMatrix_l1Sum_nonneg
       (I := I) (M := M) g α x).trans
         ((hKc.image_of_continuousOn hc).bddAbove.choose_spec ⟨x, hx, rfl⟩)
-  · rw [dif_neg hK]
+  · rw [dite_eq_right hK]
 
 private lemma gram_le_sup
     [T2Space M] [SigmaCompactSpace M] [CompactSpace M]
@@ -273,7 +274,7 @@ private lemma gram_le_sup
   let K : Set M := tsupport
     ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
   have hK : K.Nonempty := ⟨x, hx⟩
-  rw [dif_pos hK]
+  rw [dite_eq_left hK]
   have hKc : IsCompact K := (isClosed_tsupport _).isCompact
   have hKs : K ⊆ (chartAt H α).source :=
     chartAtlasPOU_isSubordinate I M α
@@ -400,7 +401,7 @@ private lemma local_grad_l2_le
     apply closure_minimal
     · intro x hx
       by_contra hxK
-      exact hx (by simp only [q, if_neg hxK])
+      exact hx (by simp only [q, ite_eq_right hxK])
     · exact isClosed_tsupport _
   have hGq : ∀ᵐ x ∂riemannianMeasure (I := I) g (chartAtlasPOU I M),
       Real.sqrt (g.inner x (gradFun (I := I) g f x) (gradFun (I := I) g f x)) ≤
@@ -425,7 +426,7 @@ private lemma local_grad_l2_le
           have hx0 : x ∈ (extChartAt I α).source := by
             rwa [extChartAt_source_eq_chartAt_source (I := I)]
           exact (extChartAt I α).map_source hx0
-      simp only [q, if_pos hxK]
+      simp only [q, ite_eq_left hxK]
       refine Real.sqrt_le_sqrt ?_
       simpa only [f, hpartx] using hbase
     · have hρ :
@@ -436,7 +437,7 @@ private lemma local_grad_l2_le
         simp only [f, hy, zero_mul, Pi.zero_apply]
       have hg0 : gradFun (I := I) g f x = 0 :=
         gradFun_eq_zero_of_eventuallyEq_zero (I := I) g hf0
-      simp only [q, if_neg hxK, hg0, map_zero,
+      simp only [q, ite_eq_right hxK, hg0, map_zero,
         Real.sqrt_zero, le_refl]
   have hq_nonneg : ∀ x, 0 ≤ q x := by
     intro x
@@ -477,7 +478,7 @@ private lemma local_grad_l2_le
             ContinuousLinearEquiv.apply_symm_apply]
         change (if x ∈ K then
           Real.sqrt (Cg * ∑ i : Fin (Module.finrank ℝ E), (part i x) ^ 2) else 0) ≤ _
-        rw [if_pos hxK, Real.sqrt_mul hCg]
+        rw [ite_eq_left hxK, Real.sqrt_mul hCg]
         have hpartsum :
             (∑ i : Fin (Module.finrank ℝ E), (part i x) ^ 2) =
               ∑ i : Fin (Module.finrank ℝ E),
@@ -488,7 +489,7 @@ private lemma local_grad_l2_le
         rw [hpartsum]
       · change (if x ∈ K then
           Real.sqrt (Cg * ∑ i : Fin (Module.finrank ℝ E), (part i x) ^ 2) else 0) ≤ _
-        rw [if_neg hxK]
+        rw [ite_eq_right hxK]
         exact mul_nonneg (Real.sqrt_nonneg _) (Real.sqrt_nonneg _)
     · rw [DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_apply_of_notMem
         (I := I) α q hy]
@@ -526,7 +527,14 @@ private lemma local_grad_l2_le
             (volume.restrict
               (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
                 (I := I) (M := M) α)) := by
-      apply eLpNorm_mono_ae_real
+      have hqraw_meas : AEStronglyMeasurable
+          (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw I α q)
+          (volume.restrict
+            (DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid
+              (I := I) (M := M) α)) :=
+        (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_measurable
+          (I := I) (M := M) α hq).aestronglyMeasurable
+      apply eLpNorm_mono_ae_real hqraw_meas
       exact Filter.Eventually.of_forall fun y => by
         simpa only [Real.norm_eq_abs, abs_of_nonneg (hchart_nonneg y)] using hchart_pt y
     refine hmono_chart.trans ?_
@@ -630,7 +638,13 @@ theorem grad_sub_l2_le
           (riemannianMeasure (I := I) g (chartAtlasPOU I M)) ≤
         eLpNorm (fun x => ∑ a : S, q a x) 2
           (riemannianMeasure (I := I) g (chartAtlasPOU I M)) := by
-    apply eLpNorm_mono_ae_real
+    have htarget_meas : Measurable (fun x : M => Real.sqrt (g.inner x
+        (gradFun (I := I) g (fun y => u y - v y) x)
+        (gradFun (I := I) g (fun y => u y - v y) x))) := by
+      exact Real.continuous_sqrt.measurable.comp
+        (DifferentialGeometry.Analysis.measurable_inner_gradFun g
+          (fun y => u y - v y) (fun y => u y - v y))
+    apply eLpNorm_mono_ae_real htarget_meas.aestronglyMeasurable
     filter_upwards [hglobal] with x hx
     simpa only [Real.norm_eq_abs, abs_of_nonneg (Real.sqrt_nonneg _)] using hx
   have hsum :
@@ -642,7 +656,7 @@ theorem grad_sub_l2_le
       funext x
       simp only [Finset.sum_apply]
     rw [heq]
-    exact eLpNorm_sum_le (fun a _ => hq_meas a) (by norm_num)
+    exact eLpNorm_sum_le (by norm_num)
   have hper : (∑ a : S, eLpNorm (q a) 2
         (riemannianMeasure (I := I) g (chartAtlasPOU I M))) ≤
       ∑ a : S, ENNReal.ofReal (C a) * W a := by

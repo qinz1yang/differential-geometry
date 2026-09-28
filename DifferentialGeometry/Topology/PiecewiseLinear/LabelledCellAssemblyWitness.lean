@@ -9,8 +9,8 @@ open Set
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-theorem eq_of_mem_stdSimplex_fin_one {x y : Fin 1 → ℝ} (hx : x ∈ stdSimplex ℝ (Fin 1))
-    (hy : y ∈ stdSimplex ℝ (Fin 1)) : x = y := by
+theorem eq_of_mem_stdSimplex_fin_one {x y : Fin 1 → ℝ} (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 1))
+    (hy : y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 1)) : x = y := by
   have h1 : ∑ i, x i = 1 := hx.2
   have h2 : ∑ i, y i = 1 := hy.2
   rw [Fin.sum_univ_one] at h1 h2
@@ -32,10 +32,10 @@ theorem stdSimplexBoundary_zero : stdSimplexBoundary 0 = (∅ : Set (Fin 1 → �
 
 theorem isPLHomeomorphOn_const_stdSimplex_fin_one {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] (a : E) :
-    IsPLHomeomorphOn (fun _ : Fin 1 → ℝ => a) (stdSimplex ℝ (Fin 1)) {a} := by
-  have hmem : (Pi.single (0 : Fin 1) 1 : Fin 1 → ℝ) ∈ stdSimplex ℝ (Fin 1) :=
-    single_mem_stdSimplex ℝ 0
-  have hbij : BijOn (fun _ : Fin 1 → ℝ => a) (stdSimplex ℝ (Fin 1)) {a} :=
+    IsPLHomeomorphOn (fun _ : Fin 1 → ℝ => a) (Convexity.StdSimplex.coordinateSet ℝ (Fin 1)) {a} := by
+  have hmem : (Pi.single (0 : Fin 1) 1 : Fin 1 → ℝ) ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 1) :=
+    Convexity.StdSimplex.single_mem_coordinateSet ℝ 0
+  have hbij : BijOn (fun _ : Fin 1 → ℝ => a) (Convexity.StdSimplex.coordinateSet ℝ (Fin 1)) {a} :=
     ⟨fun _ _ => rfl, fun x hx y hy _ => eq_of_mem_stdSimplex_fin_one hx hy,
       fun y hy => ⟨_, hmem, hy.symm⟩⟩
   refine ⟨hbij, ?_, ?_⟩

@@ -137,7 +137,7 @@ theorem eventually_heightIndex_eq (K : Geometry.SimplicialComplex ℝ E) [Finite
   filter_upwards [eventually_heightSingularPoints_eq_and_levelPolygons_encard_eq K hK hdimE ℓ hℓ
       hinj]
     with f hf
-  let e : heightSingularPoints K.space ℓ ≃ heightSingularPoints K.space f := Equiv.setCongr
+  let e : heightSingularPoints K.space ℓ ≃ heightSingularPoints K.space f := Set.equivOfEq
       hf.1.symm
   unfold heightIndex
   rw [← e.tsum_eq]

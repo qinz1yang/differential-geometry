@@ -19,7 +19,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_surface_of_isPLHomeomorphOn_u
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 2 K) (hKo : IsOrientable 2 K)
     {Δ : Set E} {L : Set F} {r : (Fin 3 → ℝ) → E} {f : E → F}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hmeet : K.space ∩ Δ = r '' stdSimplexBoundary 2)
     (hcollar : HasPLCircleCollar K.space (r '' stdSimplexBoundary 2))
     (hf : IsPLHomeomorphOn f (K.space ∪ Δ) L) :

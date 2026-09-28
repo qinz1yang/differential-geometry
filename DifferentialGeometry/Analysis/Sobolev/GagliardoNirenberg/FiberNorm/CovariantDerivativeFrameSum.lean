@@ -10,6 +10,9 @@ import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Mixed
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Integral
@@ -52,12 +55,12 @@ private lemma fiberNormSqComponent_covGradBundleEquiv_symm_apply_eq_finCons
     (T : Tensor0SBundle.TensorRSSpace r (s + 1) I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)
     (K : Fin r → Fin n) (J : Fin s → Fin n) (a : Fin n) :
-    DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r s
+    DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r s
         ((Tensor0SBundle.covGradBundleEquiv (I := I) (M := M) r s x).symm T (e a)) n e K J =
-      DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+      DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
         (s + 1) T n e K
         (Fin.cons a J) := by
-  unfold DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent
+  unfold DifferentialGeometry.TensorMetric.fiberNormSqComponent
   set ωK : Tensor0SBundle.Tensor0SSpace r I x :=
     (ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin r) ℝ).compContinuousLinearMap
       (fun k => g.inner x (e (K k))) with hωK
@@ -83,7 +86,7 @@ theorem riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame
     (horth : ∀ a b : Fin n, g.inner x (e a) (e b) = if a = b then (1 : ℝ) else 0) :
     riemannianFiberNormSq (I := I) (M := M) g r s x S =
       ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
-        (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I)
+        (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I)
           (M := M) g x r s S n e K J) ^ 2 := by
   classical
   subst hn
@@ -98,9 +101,9 @@ theorem riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame
       intro j _
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin]; rfl
   set bse : Module.Basis (Fin (Module.finrank ℝ E)) ℝ (TangentSpace I x) :=
@@ -108,7 +111,7 @@ theorem riemannianFiberNormSq_eq_sum_fiberNormSqComponent_sq_of_orthonormalFrame
   have hbse : ∀ i : Fin (Module.finrank ℝ E), bse i = e i := fun i => by
     rw [hbse_def, coe_basisOfLinearIndependentOfCardEqFinrank]
   rw [riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r s x S]
-  rw [DifferentialGeometry.Analysis.Elliptic.tensorInnerPointwise_eq_sum_componentS_mul (I := I)
+  rw [DifferentialGeometry.TensorMetric.tensorInnerPointwise_eq_sum_componentS_mul (I := I)
     (M := M) g r s x e bse
     rfl hbse horth S S]
   refine Finset.sum_congr rfl (fun K _ => Finset.sum_congr rfl (fun J _ => ?_))
@@ -139,7 +142,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs
   have hper : ∀ a : Fin n,
       riemannianFiberNormSq (I := I) (M := M) g r s x (Φ (e a)) =
         ∑ K : Fin r → Fin n, ∑ J : Fin s → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (s + 1) T
             n e K (Fin.cons a J)) ^ 2 := by
     intro a
@@ -160,33 +163,33 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_eq_sum_frame_rs
     · exact Fin.cons_self_tail J''
   have hperK : ∀ K : Fin r → Fin n,
       (∑ a : Fin n, ∑ J : Fin s → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (s + 1) T
             n e K (Fin.cons a J)) ^ 2) =
         ∑ J'' : Fin (s + 1) → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (s + 1) T
             n e K J'') ^ 2 := by
     intro K
     rw [show (∑ a : Fin n, ∑ J : Fin s → Fin n,
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (s + 1) T
             n e K (Fin.cons a J)) ^ 2) =
         ∑ p : Fin n × (Fin s → Fin n),
-          (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+          (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
             (s + 1) T
             n e K (Fin.cons p.1 p.2)) ^ 2 from
       (Fintype.sum_prod_type (fun p : Fin n × (Fin s → Fin n) =>
-        (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+        (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
           (s + 1) T
           n e K (Fin.cons p.1 p.2)) ^ 2)).symm]
     exact Fintype.sum_bijective _ hcons_bij
       (fun p : Fin n × (Fin s → Fin n) =>
-        (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+        (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
           (s + 1) T
           n e K (Fin.cons p.1 p.2)) ^ 2)
       (fun J'' : Fin (s + 1) → Fin n =>
-        (DifferentialGeometry.Analysis.Elliptic.fiberNormSqComponent (I := I) (M := M) g x r
+        (DifferentialGeometry.TensorMetric.fiberNormSqComponent (I := I) (M := M) g x r
           (s + 1) T
           n e K J'') ^ 2)
       (fun p => rfl)
@@ -234,7 +237,7 @@ theorem riemannianFiberNormSq_covGradBundleEquiv_le_card_mul_rs
       riemannianFiberNormSq (I := I) (M := M) g r s x (Φ (e a)) ≤ b := by
     intro a
     refine hbound (e a) ?_
-    have := horth a a; rwa [if_pos rfl] at this
+    have := horth a a; rwa [ite_eq_left rfl] at this
   refine le_trans (Finset.sum_le_sum (fun a _ => hper a)) ?_
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   rw [hn_def, hfr]

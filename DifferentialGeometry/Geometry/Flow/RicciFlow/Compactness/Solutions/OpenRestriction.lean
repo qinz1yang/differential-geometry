@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restricti
 import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Basic
-import DifferentialGeometry.Geometry.Curvature.RicciRestriction
 
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
@@ -72,7 +71,7 @@ theorem restrictOpenPush_contMDiffWithinAt
         else 0)) (Subtype.val '' u) (x : M) := by
   set cor : M → U := fun y => if h : y ∈ U then ⟨y, h⟩ else x with hcor_def
   have hcorval : ∀ z : U, cor (z : M) = z := by
-    intro z; rw [hcor_def]; simp only [dif_pos z.2, Subtype.coe_eta]
+    intro z; rw [hcor_def]; simp only [dite_eq_left z.2, Subtype.coe_eta]
   have hcor : ContMDiffAt I I (∞ : WithTop ℕ∞) cor (x : M) := by
     rw [← contMDiffAt_subtype_iff (I := I) (I' := I) (U := U) (n := ∞) (x := x)]
     have hid : (fun z : U => cor (z : M)) = id := by funext z; simpa using hcorval z
@@ -100,8 +99,8 @@ theorem restrictOpenPush_contMDiffWithinAt
                   (frame i ⟨z, h⟩))
             else 0) := by
     intro z hz
-    have hcz : cor z = ⟨z, hz⟩ := by simp only [hcor_def, dif_pos hz]
-    rw [dif_pos hz, hcz]
+    have hcz : cor z = ⟨z, hz⟩ := by simp only [hcor_def, dite_eq_left hz]
+    rw [dite_eq_left hz, hcz]
     change TotalSpace.mk' E (E := fun w : M => TangentSpace I w) z
         (mfderiv I I (Subtype.val : U → M) (⟨z, hz⟩ : U) (frame i ⟨z, hz⟩)) =
       TotalSpace.mk' E (E := fun w : M => TangentSpace I w) z
@@ -144,7 +143,7 @@ theorem isLocalFrameOn_restrictOpenPush
               (frame i ⟨(x : M), h⟩))
         else 0) = fun i => basisM i := by
       funext i
-      rw [dif_pos hxU, Module.Basis.map_apply, IsLocalFrameOn.toBasisAt_coe]
+      rw [dite_eq_left hxU, Module.Basis.map_apply, IsLocalFrameOn.toBasisAt_coe]
       rfl
     exact hval.symm ▸ basisM.linearIndependent
   generating {y} hy := by
@@ -161,7 +160,7 @@ theorem isLocalFrameOn_restrictOpenPush
               (frame i ⟨(x : M), h⟩))
         else 0) = fun i => basisM i := by
       funext i
-      rw [dif_pos hxU, Module.Basis.map_apply, IsLocalFrameOn.toBasisAt_coe]
+      rw [dite_eq_left hxU, Module.Basis.map_apply, IsLocalFrameOn.toBasisAt_coe]
       rfl
     exact hval.symm ▸ (Module.Basis.span_eq basisM).ge
   contMDiffOn i := by
@@ -215,7 +214,7 @@ theorem frameCompSmooth_restrictOpen
         (tangentSpaceModelContinuousLinearEquiv (I := I) (⟨(p.2 : M), h⟩ : U)
           (frame k ⟨(p.2 : M), h⟩))
     else 0) = mfderiv I I (Subtype.val : U → M) p.2 (frame k p.2)
-    rw [dif_pos hxU]
+    rw [dite_eq_left hxU]
     exact (mfderiv_subtype_val_eq_modelLift (I := I) U p.2 (frame k p.2)).symm
   simp only [Function.comp_apply, hval]
   change ((S.base.metric p.1).restrictOpen (I := I) U).inner p.2

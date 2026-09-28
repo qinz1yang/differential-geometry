@@ -124,7 +124,15 @@ theorem delta_barycentricPiece_appendOmittedVertex_finalFace
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     ContinuousMap.comp_apply]
   apply congr_arg (X.toSSetObjEquiv _ s)
-  rw [barycentricPermutationSimplexMap_finalFace,
+  apply (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin (n + 2))).injective
+  change barycentricPermutationSimplexMap (appendOmittedVertexPermutation p τ)
+      (Convexity.StdSimplex.coordinateEquiv ℝ _
+        (Convexity.StdSimplex.map (Fin.last (n + 1)).succAbove x)) =
+    Convexity.StdSimplex.coordinateEquiv ℝ _ (Convexity.StdSimplex.map p.succAbove
+      ((Convexity.StdSimplex.coordinateEquiv ℝ _).symm
+        (barycentricPermutationSimplexMap τ (Convexity.StdSimplex.coordinateEquiv ℝ _ x))))
+  rw [Convexity.StdSimplex.coordinateEquiv_map, Convexity.StdSimplex.coordinateEquiv_map,
+    Equiv.apply_symm_apply, barycentricPermutationSimplexMap_finalFace,
     appendOmittedVertexPermutation_apply_last,
     eraseLastPermutation_appendOmittedVertexPermutation]
 

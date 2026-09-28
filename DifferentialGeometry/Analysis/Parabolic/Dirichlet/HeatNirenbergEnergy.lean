@@ -259,7 +259,7 @@ private theorem exists_bounded_dirichlet_heat_form
         (norm_nonneg _) (by positivity))
   · intro t ht u v
     dsimp only [F, ContinuousLinearMap.bilinearComp_apply, ContinuousLinearMap.id_apply, F₀]
-    rw [dirichletWeakFormComplOnIco, dif_pos ht]
+    rw [dirichletWeakFormComplOnIco, dite_eq_left ht]
 
 private theorem exists_heat_nirenberg_energy_bound
     {D : RealTimeInterval} {G : MetricConnectionFamilyOn (I := I_hs) (M := M) D}

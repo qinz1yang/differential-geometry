@@ -12,9 +12,9 @@ open Classical in
 theorem IsPLHomeomorphOn.capped_prism_boundary
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces] (hK : IsPLBall 2 K.space)
     {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space)
     {a b : ℝ} (hab : a < b) {q : (Fin 3 → ℝ) → E × ℝ}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (K.space ×ˢ {a} ∪ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)) :
     q '' stdSimplexBoundary 2 = (r '' stdSimplexBoundary 2) ×ˢ {b} := by
   classical
@@ -70,13 +70,13 @@ theorem IsPLHomeomorphOn.capped_prism_boundary
 
 theorem exists_disk_of_lateral_returning_arc
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P) {a b : ℝ} (hab : a < b)
     {A : Set (E × ℝ)} {γ : ℝ → E × ℝ} (hγ : IsPLHomeomorphOn γ (Icc 0 1) A)
     (hAside : A ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc a b)
     (hends : A ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = {γ 0, γ 1})
     (hbase : Disjoint A (P ×ˢ ({a} : Set ℝ))) :
     ∃ (F B : Set (E × ℝ)) (q : (Fin 3 → ℝ) → E × ℝ),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ IsPLBall 1 B ∧
       F ⊆ (r '' stdSimplexBoundary 2) ×ˢ Ioc a b ∧
       q '' stdSimplexBoundary 2 = A ∪ B ∧
       F ∩ ((r '' stdSimplexBoundary 2) ×ˢ ({b} : Set ℝ)) = B := by
@@ -85,7 +85,7 @@ theorem exists_disk_of_lateral_returning_arc
   obtain ⟨K, hKfin, hKP⟩ := hP.isPolyhedron.exists_simplicialComplex
   let _ : Finite K.faces := hKfin.to_subtype
   have hK : IsPLBall 2 K.space := hKP.symm ▸ hP
-  have hrK : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) K.space := hKP.symm ▸ hr
+  have hrK : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) K.space := hKP.symm ▸ hr
   have hJ : (boundaryComplex 2 K).space = r '' stdSimplexBoundary 2 :=
     (hr.image_stdSimplexBoundary_eq_boundaryComplex K hKP).symm
   have hD := isPLBall_prism_bottom_union_side K hK hab

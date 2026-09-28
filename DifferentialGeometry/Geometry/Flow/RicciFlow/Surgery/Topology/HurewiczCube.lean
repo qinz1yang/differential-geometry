@@ -17,30 +17,30 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 def staircaseCoordinate (sigma : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 4)) (i : Fin 3) : ℝ :=
-  ∑ j : Fin 4, if (sigma.symm i).val < j.val then q.val j else 0
+    (q : Convexity.StdSimplex ℝ (Fin 4)) (i : Fin 3) : ℝ :=
+  ∑ j : Fin 4, if (sigma.symm i).val < j.val then q.weights j else 0
 
 theorem staircaseCoordinate_mem (sigma : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 4)) (i : Fin 3) :
+    (q : Convexity.StdSimplex ℝ (Fin 4)) (i : Fin 3) :
     staircaseCoordinate sigma q i ∈ Icc (0 : ℝ) 1 := by
   constructor
   · apply Finset.sum_nonneg
     intro j _
     split_ifs
-    · exact q.property.1 j
+    · exact q.nonneg j
     · exact le_rfl
   · calc
-      staircaseCoordinate sigma q i ≤ ∑ j : Fin 4, q.val j := by
+      staircaseCoordinate sigma q i ≤ ∑ j : Fin 4, q.weights j := by
         apply Finset.sum_le_sum
         intro j _
         split_ifs
         · exact le_rfl
-        · exact q.property.1 j
-      _ = 1 := q.property.2
+        · exact q.nonneg j
+      _ = 1 := q.total_of_fintype
 
 
 def staircaseSimplex (sigma : Equiv.Perm (Fin 3)) :
-    C(stdSimplex ℝ (Fin 4), I^(Fin 3)) where
+    C(Convexity.StdSimplex ℝ (Fin 4), I^(Fin 3)) where
   toFun q i := ⟨staircaseCoordinate sigma q i, staircaseCoordinate_mem sigma q i⟩
   continuous_toFun := by
     apply continuous_pi
@@ -50,7 +50,7 @@ def staircaseSimplex (sigma : Equiv.Perm (Fin 3)) :
     apply continuous_finsetSum
     intro j _
     split_ifs
-    · exact (continuous_apply j).comp continuous_subtype_val
+    · exact Convexity.StdSimplex.continuous_weights_apply ℝ j
     · exact continuous_const
 
 variable {X : Type u} [TopologicalSpace X] {x : X}
@@ -101,7 +101,7 @@ def hurewiczCubeChain (c : GenLoop (Fin 3) X x) :
     singularSimplexChain (c.val.comp (staircaseSimplex sigma))
 
 private theorem nativeSimplex_chain_map (f : C(X, Y)) {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
     singularSimplexChain s ≫ (integralChainsFunctor.map (TopCat.ofHom f)).f n =
       singularSimplexChain (f.comp s) := by
   exact SSet.ι_chainComplexMap_f (TopCat.toSSet.obj (TopCat.of X))
@@ -133,44 +133,42 @@ theorem hurewiczCubeChain_const (x : X) :
   classical
   have hs : ∀ e : Equiv.Perm (Fin 3),
       (GenLoop.const : GenLoop (Fin 3) X x).val.comp (staircaseSimplex e) =
-        ContinuousMap.const (stdSimplex ℝ (Fin 4)) x := by
+        ContinuousMap.const (Convexity.StdSimplex ℝ (Fin 4)) x := by
     intro e
     rfl
   simp only [hurewiczCubeChain, hs, ← Finset.sum_smul, permutation_sign_sum_zero, zero_smul]
 
 private def staircaseFace (k : Fin 4) :
-    C(stdSimplex ℝ (Fin 3), stdSimplex ℝ (Fin 4)) :=
-  ⟨stdSimplex.map (SimplexCategory.δ k).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ k).toOrderHom⟩
+    C(Convexity.StdSimplex ℝ (Fin 3), Convexity.StdSimplex ℝ (Fin 4)) :=
+  ⟨Convexity.StdSimplex.map (SimplexCategory.δ k).toOrderHom,
+    Convexity.StdSimplex.continuous_map ℝ (SimplexCategory.δ k).toOrderHom⟩
 
-private theorem staircaseFace_self (k : Fin 4) (q : stdSimplex ℝ (Fin 3)) :
-    staircaseFace k q k = 0 := by
-  change FunOnFinite.linearMap ℝ ℝ k.succAbove (q : Fin 3 → ℝ) k = 0
-  rw [FunOnFinite.linearMap_apply_apply]
-  apply Finset.sum_eq_zero
-  intro j hj
-  exact False.elim (Fin.succAbove_ne k j (Finset.mem_filter.mp hj).2)
+private theorem staircaseFace_self (k : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) :
+    (staircaseFace k q).weights k = 0 := by
+  change Finsupp.mapDomain k.succAbove q.weights k = 0
+  exact Finsupp.mapDomain_of_notMem_range q.weights k (by
+    rintro ⟨j, hj⟩
+    exact Fin.succAbove_ne k j hj)
 
-private theorem staircaseFace_succAbove (k : Fin 4) (q : stdSimplex ℝ (Fin 3)) (j : Fin 3) :
-    staircaseFace k q (k.succAbove j) = q j := by
-  change FunOnFinite.linearMap ℝ ℝ k.succAbove (q : Fin 3 → ℝ) (k.succAbove j) = q j
-  simp [FunOnFinite.linearMap_apply_apply, Fin.succAbove_right_injective.eq_iff,
-    Finset.sum_filter]
+private theorem staircaseFace_succAbove (k : Fin 4) (q : Convexity.StdSimplex ℝ (Fin 3)) (j : Fin 3) :
+    (staircaseFace k q).weights (k.succAbove j) = q.weights j := by
+  change Finsupp.mapDomain k.succAbove q.weights (k.succAbove j) = q.weights j
+  exact Finsupp.mapDomain_apply_of_injective (Fin.succAbove_right_injective (p := k)) q.weights j
 
 private theorem staircase_face_coordinate (e : Equiv.Perm (Fin 3)) (k : Fin 4)
-    (q : stdSimplex ℝ (Fin 3)) (i : Fin 3) :
+    (q : Convexity.StdSimplex ℝ (Fin 3)) (i : Fin 3) :
     staircaseCoordinate e (staircaseFace k q) i =
-      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q j else 0 := by
+      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q.weights j else 0 := by
   unfold staircaseCoordinate
   rw [Fin.sum_univ_succAbove _ k]
-  have hz : (if (e.symm i).val < k.val then (staircaseFace k q).val k else 0) = 0 := by
+  have hz : (if (e.symm i).val < k.val then (staircaseFace k q).weights k else 0) = 0 := by
     split_ifs
     · exact staircaseFace_self k q
     · rfl
   have hsum :
       (∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then
-        (staircaseFace k q).val (k.succAbove j) else 0) =
-      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q.val j else 0 := by
+        (staircaseFace k q).weights (k.succAbove j) else 0) =
+      ∑ j : Fin 3, if (e.symm i).val < (k.succAbove j).val then q.weights j else 0 := by
     apply Finset.sum_congr rfl
     intro j _
     split_ifs
@@ -179,14 +177,14 @@ private theorem staircase_face_coordinate (e : Equiv.Perm (Fin 3)) (k : Fin 4)
   exact (congrArg₂ (fun a b : ℝ => a + b) hz hsum).trans (zero_add _)
 
 private theorem staircase_face_zero (e : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 3)) : staircaseSimplex e (staircaseFace 0 q) (e 0) = 1 := by
+    (q : Convexity.StdSimplex ℝ (Fin 3)) : staircaseSimplex e (staircaseFace 0 q) (e 0) = 1 := by
   apply Subtype.ext
   change staircaseCoordinate e (staircaseFace 0 q) (e 0) = 1
   rw [staircase_face_coordinate]
   simp [Fin.succAbove]
 
 private theorem staircase_face_three (e : Equiv.Perm (Fin 3))
-    (q : stdSimplex ℝ (Fin 3)) : staircaseSimplex e (staircaseFace 3 q) (e 2) = 0 := by
+    (q : Convexity.StdSimplex ℝ (Fin 3)) : staircaseSimplex e (staircaseFace 3 q) (e 2) = 0 := by
   apply Subtype.ext
   change staircaseCoordinate e (staircaseFace 3 q) (e 2) = 0
   rw [staircase_face_coordinate]
@@ -213,7 +211,7 @@ private theorem staircase_face_two_swap (e : Equiv.Perm (Fin 3)) :
   fin_cases k <;> simp [Fin.sum_univ_succ, Equiv.swap_apply_def, Fin.succAbove]
 
 private theorem native_tetrahedron_boundary
-    (s : C(stdSimplex ℝ (Fin 4), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin 4), X)) :
     singularSimplexChain s ≫ (IntegralChains X).d 3 2 =
       ∑ k : Fin 4, (-1 : ℤ) ^ k.val • singularSimplexChain (s.comp (staircaseFace k)) := by
   exact (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex_d
@@ -226,11 +224,11 @@ private theorem mapped_staircase_boundary (c : GenLoop (Fin 3) X x)
       -singularSimplexChain (c.val.comp ((staircaseSimplex e).comp (staircaseFace 1))) +
         singularSimplexChain (c.val.comp ((staircaseSimplex e).comp (staircaseFace 2))) := by
   have hzero : (c.val.comp (staircaseSimplex e)).comp (staircaseFace 0) =
-      ContinuousMap.const (stdSimplex ℝ (Fin 3)) x := by
+      ContinuousMap.const (Convexity.StdSimplex ℝ (Fin 3)) x := by
     ext q
     exact c.property _ ⟨e 0, Or.inr (staircase_face_zero e q)⟩
   have hthree : (c.val.comp (staircaseSimplex e)).comp (staircaseFace 3) =
-      ContinuousMap.const (stdSimplex ℝ (Fin 3)) x := by
+      ContinuousMap.const (Convexity.StdSimplex ℝ (Fin 3)) x := by
     ext q
     exact c.property _ ⟨e 2, Or.inl (staircase_face_three e q)⟩
   rw [native_tetrahedron_boundary]
@@ -238,10 +236,7 @@ private theorem mapped_staircase_boundary (c : GenLoop (Fin 3) X x)
     pow_zero, one_smul, add_zero]
   norm_num
   simp only [ContinuousMap.comp_assoc] at hzero hthree
-  have hthree' : c.val.comp ((staircaseSimplex e).comp
-      (staircaseFace (Fin.succ (2 : Fin 3)))) =
-      ContinuousMap.const (stdSimplex ℝ (Fin 3)) x := hthree
-  rw [hzero, hthree']
+  rw [hzero, hthree]
   abel
 
 private theorem signed_swap_pairing {A : Type*} [AddCommGroup A] (F : Equiv.Perm (Fin 3) → A)
@@ -498,22 +493,22 @@ private def concatVertexPoint (v : ConcatVertex) : I^(Fin 3) :=
       exact_mod_cast h⟩]
 
 private def concatAffineSimplex {n : ℕ} (v : Fin (n + 1) → ConcatVertex) :
-    C(stdSimplex ℝ (Fin (n + 1)), I^(Fin 3)) where
-  toFun q i := ⟨∑ j, q.val j * (concatVertexPoint (v j) i : ℝ), by
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), I^(Fin 3)) where
+  toFun q i := ⟨∑ j, q.weights j * (concatVertexPoint (v j) i : ℝ), by
     constructor
-    · exact Finset.sum_nonneg (fun j _ => mul_nonneg (q.property.1 j)
+    · exact Finset.sum_nonneg (fun j _ => mul_nonneg (q.nonneg j)
         (concatVertexPoint (v j) i).property.1)
     · calc
-        ∑ j, q.val j * (concatVertexPoint (v j) i : ℝ) ≤ ∑ j, q.val j * 1 :=
+        ∑ j, q.weights j * (concatVertexPoint (v j) i : ℝ) ≤ ∑ j, q.weights j * 1 :=
           Finset.sum_le_sum (fun j _ => mul_le_mul_of_nonneg_left
-            (concatVertexPoint (v j) i).property.2 (q.property.1 j))
-        _ = 1 := by simpa only [mul_one] using q.property.2⟩
+            (concatVertexPoint (v j) i).property.2 (q.nonneg j))
+        _ = 1 := by simpa only [mul_one] using q.total_of_fintype⟩
   continuous_toFun := by
     apply continuous_pi
     intro i
     apply Continuous.subtype_mk
     exact continuous_finsetSum _ (fun j _ =>
-      ((continuous_apply j).comp continuous_subtype_val).mul continuous_const)
+      (Convexity.StdSimplex.continuous_weights_apply ℝ j).mul continuous_const)
 
 private def concatPrismChain {X : Type u} [TopologicalSpace X] {x : X}
     (p q : GenLoop (Fin 3) X x) : integralCoefficients ⟶ (IntegralChains X).X 4 :=
@@ -521,40 +516,38 @@ private def concatPrismChain {X : Type u} [TopologicalSpace X] {x : X}
     ((GenLoop.transAt (0 : Fin 3) p q).val.comp (concatAffineSimplex (concatCells k)))
 
 private def concatSimplexFace (n : ℕ) (i : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 2))) :=
-  ⟨stdSimplex.map (SimplexCategory.δ i).toOrderHom,
-    stdSimplex.continuous_map (SimplexCategory.δ i).toOrderHom⟩
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), Convexity.StdSimplex ℝ (Fin (n + 2))) :=
+  ⟨Convexity.StdSimplex.map (SimplexCategory.δ i).toOrderHom,
+    Convexity.StdSimplex.continuous_map ℝ (SimplexCategory.δ i).toOrderHom⟩
 
 private theorem concatSimplexFace_self (n : ℕ) (i : Fin (n + 2))
-    (q : stdSimplex ℝ (Fin (n + 1))) : (concatSimplexFace n i q).val i = 0 := by
-  change FunOnFinite.linearMap ℝ ℝ i.succAbove (q : Fin (n + 1) → ℝ) i = 0
-  rw [FunOnFinite.linearMap_apply_apply]
-  apply Finset.sum_eq_zero
-  intro j hj
-  exact False.elim (Fin.succAbove_ne i j (Finset.mem_filter.mp hj).2)
+    (q : Convexity.StdSimplex ℝ (Fin (n + 1))) : (concatSimplexFace n i q).weights i = 0 := by
+  change Finsupp.mapDomain i.succAbove q.weights i = 0
+  exact Finsupp.mapDomain_of_notMem_range q.weights i (by
+    rintro ⟨j, hj⟩
+    exact Fin.succAbove_ne i j hj)
 
 private theorem concatSimplexFace_above (n : ℕ) (i : Fin (n + 2))
-    (q : stdSimplex ℝ (Fin (n + 1))) (j : Fin (n + 1)) :
-    (concatSimplexFace n i q).val (i.succAbove j) = q.val j := by
-  change FunOnFinite.linearMap ℝ ℝ i.succAbove (q : Fin (n + 1) → ℝ) (i.succAbove j) = q j
-  simp [FunOnFinite.linearMap_apply_apply, Fin.succAbove_right_injective.eq_iff,
-    Finset.sum_filter]
+    (q : Convexity.StdSimplex ℝ (Fin (n + 1))) (j : Fin (n + 1)) :
+    (concatSimplexFace n i q).weights (i.succAbove j) = q.weights j := by
+  change Finsupp.mapDomain i.succAbove q.weights (i.succAbove j) = q.weights j
+  exact Finsupp.mapDomain_apply_of_injective (Fin.succAbove_right_injective (p := i)) q.weights j
 
 private theorem concatAffineSimplex_face {n : ℕ} (v : Fin (n + 2) → ConcatVertex)
     (i : Fin (n + 2)) :
     (concatAffineSimplex v).comp (concatSimplexFace n i) =
       concatAffineSimplex (fun j => v (i.succAbove j)) := by
   ext q k
-  change (∑ j : Fin (n + 2), (concatSimplexFace n i q).val j *
+  change (∑ j : Fin (n + 2), (concatSimplexFace n i q).weights j *
       (concatVertexPoint (v j) k : ℝ)) =
-    ∑ j : Fin (n + 1), q.val j * (concatVertexPoint (v (i.succAbove j)) k : ℝ)
+    ∑ j : Fin (n + 1), q.weights j * (concatVertexPoint (v (i.succAbove j)) k : ℝ)
   rw [Fin.sum_univ_succAbove _ i]
-  have hz : (concatSimplexFace n i q).val i * (concatVertexPoint (v i) k : ℝ) = 0 := by
+  have hz : (concatSimplexFace n i q).weights i * (concatVertexPoint (v i) k : ℝ) = 0 := by
     rw [concatSimplexFace_self, zero_mul]
   have hs :
-      (∑ j : Fin (n + 1), (concatSimplexFace n i q).val (i.succAbove j) *
+      (∑ j : Fin (n + 1), (concatSimplexFace n i q).weights (i.succAbove j) *
         (concatVertexPoint (v (i.succAbove j)) k : ℝ)) =
-      ∑ j : Fin (n + 1), q.val j * (concatVertexPoint (v (i.succAbove j)) k : ℝ) := by
+      ∑ j : Fin (n + 1), q.weights j * (concatVertexPoint (v (i.succAbove j)) k : ℝ) := by
     apply Finset.sum_congr rfl
     intro j _
     exact congrArg (fun a : ℝ => a * (concatVertexPoint (v (i.succAbove j)) k : ℝ))
@@ -562,7 +555,7 @@ private theorem concatAffineSimplex_face {n : ℕ} (v : Fin (n + 2) → ConcatVe
   exact (congrArg₂ (fun a b : ℝ => a + b) hz hs).trans (zero_add _)
 
 private theorem concat_singular_boundary {X : Type u} [TopologicalSpace X] {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 2)), X)) :
+    (s : C(Convexity.StdSimplex ℝ (Fin (n + 2)), X)) :
     singularSimplexChain s ≫ (IntegralChains X).d (n + 1) n =
       ∑ i : Fin (n + 2), (-1 : ℤ) ^ i.val •
         singularSimplexChain (s.comp (concatSimplexFace n i)) := by
@@ -626,9 +619,9 @@ private theorem concatHalf_coordinate (b : Fin 2) (z : I^(Fin 3)) (i : Fin 3) :
       if i = 0 then ((z 0 : ℝ) + b.val) / 2 else (z i : ℝ) := by
   by_cases hi : i = 0
   · subst i
-    rw [if_pos rfl, concatHalf_zero]
+    rw [ite_eq_left rfl, concatHalf_zero]
   · change ((Function.update z 0 _) i : ℝ) = _
-    simp only [Function.update_of_ne hi, if_neg hi]
+    simp only [Function.update_of_ne hi, ite_eq_right hi]
 
 private theorem concat_half_lower {X : Type u} [TopologicalSpace X] {x : X}
     (p q : GenLoop (Fin 3) X x) :
@@ -643,7 +636,7 @@ private theorem concat_half_lower {X : Type u} [TopologicalSpace X] {x : X}
   change (if ((concatHalf 0 z) 0 : ℝ) ≤ 1 / 2 then
     p (Function.update (concatHalf 0 z) 0
       (Set.projIcc 0 1 zero_le_one (2 * ((concatHalf 0 z) 0 : ℝ)))) else _) = p z
-  rw [if_pos hhalf]
+  rw [ite_eq_left hhalf]
   congr 1
   funext i
   by_cases hi : i = 0
@@ -673,7 +666,7 @@ private theorem concat_half_upper {X : Type u} [TopologicalSpace X] {x : X}
     have hhalf : ((concatHalf 1 z) 0 : ℝ) = 1 / 2 := by
       change ((z 0 : ℝ) + (1 : Fin 2).val) / 2 = 1 / 2
       norm_num [hz]
-    rw [if_pos (le_of_eq hhalf)]
+    rw [ite_eq_left (le_of_eq hhalf)]
     have hp : p.val (Function.update (concatHalf 1 z) 0
         (Set.projIcc 0 1 zero_le_one (2 * ((concatHalf 1 z) 0 : ℝ)))) = x :=
       p.property _ ⟨0, Or.inr (by
@@ -686,7 +679,7 @@ private theorem concat_half_upper {X : Type u} [TopologicalSpace X] {x : X}
       change ¬ ((z 0 : ℝ) + (1 : Fin 2).val) / 2 ≤ 1 / 2
       norm_num
       linarith
-    rw [if_neg hhalf]
+    rw [ite_eq_right hhalf]
     congr 1
     funext i
     by_cases hi : i = 0
@@ -890,88 +883,88 @@ private theorem concatEndVertex_values (k : Fin 18) (j : Fin 4) (i : Fin 3) :
   · exact concatEndVertex_values_15 j i
   · exact concatEndVertex_values_16 j i
   · exact concatEndVertex_values_17 j i
-private def concatStaircaseValues (k : Fin 6) (q : stdSimplex ℝ (Fin 4)) : Fin 3 → ℝ :=
-  ![![q.val 1 + q.val 2 + q.val 3, q.val 2 + q.val 3, q.val 3],
-        ![q.val 1 + q.val 2 + q.val 3, q.val 3, q.val 2 + q.val 3],
-        ![q.val 2 + q.val 3, q.val 1 + q.val 2 + q.val 3, q.val 3],
-        ![q.val 3, q.val 1 + q.val 2 + q.val 3, q.val 2 + q.val 3],
-        ![q.val 2 + q.val 3, q.val 3, q.val 1 + q.val 2 + q.val 3],
-        ![q.val 3, q.val 2 + q.val 3, q.val 1 + q.val 2 + q.val 3]] k
+private def concatStaircaseValues (k : Fin 6) (q : Convexity.StdSimplex ℝ (Fin 4)) : Fin 3 → ℝ :=
+  ![![q.weights 1 + q.weights 2 + q.weights 3, q.weights 2 + q.weights 3, q.weights 3],
+        ![q.weights 1 + q.weights 2 + q.weights 3, q.weights 3, q.weights 2 + q.weights 3],
+        ![q.weights 2 + q.weights 3, q.weights 1 + q.weights 2 + q.weights 3, q.weights 3],
+        ![q.weights 3, q.weights 1 + q.weights 2 + q.weights 3, q.weights 2 + q.weights 3],
+        ![q.weights 2 + q.weights 3, q.weights 3, q.weights 1 + q.weights 2 + q.weights 3],
+        ![q.weights 3, q.weights 2 + q.weights 3, q.weights 1 + q.weights 2 + q.weights 3]] k
 
-private theorem concatStaircaseValues_row_0 (q : stdSimplex ℝ (Fin 4)) :
-    concatStaircaseValues 0 q = ![q.val 1 + q.val 2 + q.val 3, q.val 2 + q.val 3, q.val 3] := rfl
+private theorem concatStaircaseValues_row_0 (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    concatStaircaseValues 0 q = ![q.weights 1 + q.weights 2 + q.weights 3, q.weights 2 + q.weights 3, q.weights 3] := rfl
 
-private theorem concatStaircaseValues_row_1 (q : stdSimplex ℝ (Fin 4)) :
-    concatStaircaseValues 1 q = ![q.val 1 + q.val 2 + q.val 3, q.val 3, q.val 2 + q.val 3] := rfl
+private theorem concatStaircaseValues_row_1 (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    concatStaircaseValues 1 q = ![q.weights 1 + q.weights 2 + q.weights 3, q.weights 3, q.weights 2 + q.weights 3] := rfl
 
-private theorem concatStaircaseValues_row_2 (q : stdSimplex ℝ (Fin 4)) :
-    concatStaircaseValues 2 q = ![q.val 2 + q.val 3, q.val 1 + q.val 2 + q.val 3, q.val 3] := rfl
+private theorem concatStaircaseValues_row_2 (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    concatStaircaseValues 2 q = ![q.weights 2 + q.weights 3, q.weights 1 + q.weights 2 + q.weights 3, q.weights 3] := rfl
 
-private theorem concatStaircaseValues_row_3 (q : stdSimplex ℝ (Fin 4)) :
-    concatStaircaseValues 3 q = ![q.val 3, q.val 1 + q.val 2 + q.val 3, q.val 2 + q.val 3] := rfl
+private theorem concatStaircaseValues_row_3 (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    concatStaircaseValues 3 q = ![q.weights 3, q.weights 1 + q.weights 2 + q.weights 3, q.weights 2 + q.weights 3] := rfl
 
-private theorem concatStaircaseValues_row_4 (q : stdSimplex ℝ (Fin 4)) :
-    concatStaircaseValues 4 q = ![q.val 2 + q.val 3, q.val 3, q.val 1 + q.val 2 + q.val 3] := rfl
+private theorem concatStaircaseValues_row_4 (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    concatStaircaseValues 4 q = ![q.weights 2 + q.weights 3, q.weights 3, q.weights 1 + q.weights 2 + q.weights 3] := rfl
 
-private theorem concatStaircaseValues_row_5 (q : stdSimplex ℝ (Fin 4)) :
-    concatStaircaseValues 5 q = ![q.val 3, q.val 2 + q.val 3, q.val 1 + q.val 2 + q.val 3] := rfl
+private theorem concatStaircaseValues_row_5 (q : Convexity.StdSimplex ℝ (Fin 4)) :
+    concatStaircaseValues 5 q = ![q.weights 3, q.weights 2 + q.weights 3, q.weights 1 + q.weights 2 + q.weights 3] := rfl
 
-private theorem concatStaircase_value (k : Fin 6) (q : stdSimplex ℝ (Fin 4)) (i : Fin 3) :
+private theorem concatStaircase_value (k : Fin 6) (q : Convexity.StdSimplex ℝ (Fin 4)) (i : Fin 3) :
     staircaseCoordinate (concatPerms k) q i =
       concatStaircaseValues k q i := by
   fin_cases k <;> fin_cases i
-  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.val j else 0) = q.val 1 + q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.weights j else 0) = q.weights 1 + q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.val j else 0) = q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.weights j else 0) = q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.val j else 0) = q.val 3
+  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.weights j else 0) = q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.val j else 0) = q.val 1 + q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.weights j else 0) = q.weights 1 + q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.val j else 0) = q.val 3
+  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.weights j else 0) = q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.val j else 0) = q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.weights j else 0) = q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.val j else 0) = q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.weights j else 0) = q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.val j else 0) = q.val 1 + q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.weights j else 0) = q.weights 1 + q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.val j else 0) = q.val 3
+  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.weights j else 0) = q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.val j else 0) = q.val 3
+  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.weights j else 0) = q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.val j else 0) = q.val 1 + q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.weights j else 0) = q.weights 1 + q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.val j else 0) = q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.weights j else 0) = q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.val j else 0) = q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.weights j else 0) = q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.val j else 0) = q.val 3
+  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.weights j else 0) = q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.val j else 0) = q.val 1 + q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.weights j else 0) = q.weights 1 + q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.val j else 0) = q.val 3
+  · change (∑ j : Fin 4, if (2 : ℕ) < j.val then q.weights j else 0) = q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.val j else 0) = q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (1 : ℕ) < j.val then q.weights j else 0) = q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
-  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.val j else 0) = q.val 1 + q.val 2 + q.val 3
+  · change (∑ j : Fin 4, if (0 : ℕ) < j.val then q.weights j else 0) = q.weights 1 + q.weights 2 + q.weights 3
     simp only [Fin.sum_univ_four]
     norm_num
 
@@ -979,56 +972,56 @@ private theorem concatEnd_upper (k : Fin 6) :
     concatAffineSimplex (concatEndFaces ⟨k.val, by omega⟩) =
       (concatHalf 1).comp (staircaseSimplex (concatPerms k)) := by
   ext q i
-  have hsum := q.property.2
-  change (∑ j : Fin 4, q.val j) = 1 at hsum
+  have hsum := q.total_of_fintype
+  change (∑ j : Fin 4, q.weights j) = 1 at hsum
   rw [Fin.sum_univ_four] at hsum
-  change (∑ j : Fin 4, q.val j *
+  change (∑ j : Fin 4, q.weights j *
       (concatVertexPoint (concatEndFaces ⟨k.val, by omega⟩ j) i : ℝ)) =
     ((concatHalf 1 (staircaseSimplex (concatPerms k) q)) i : ℝ)
   rw [concatHalf_coordinate]
   simp only [Fin.val_one, Nat.cast_one]
-  change (∑ j : Fin 4, q.val j *
+  change (∑ j : Fin 4, q.weights j *
       (concatVertexPoint (concatEndFaces ⟨k.val, by omega⟩ j) i : ℝ)) =
     if i = 0 then (staircaseCoordinate (concatPerms k) q 0 + 1) / 2
       else staircaseCoordinate (concatPerms k) q i
   simp only [concatEndVertex_values, concatStaircase_value]
   fin_cases k
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 0 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 0 j i) =
       if i = 0 then (concatStaircaseValues 0 q 0 + 1) / 2
         else concatStaircaseValues 0 q i
     rw [concatEndValues_row_0, concatStaircaseValues_row_0]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals linarith
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 1 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 1 j i) =
       if i = 0 then (concatStaircaseValues 1 q 0 + 1) / 2
         else concatStaircaseValues 1 q i
     rw [concatEndValues_row_1, concatStaircaseValues_row_1]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals linarith
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 2 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 2 j i) =
       if i = 0 then (concatStaircaseValues 2 q 0 + 1) / 2
         else concatStaircaseValues 2 q i
     rw [concatEndValues_row_2, concatStaircaseValues_row_2]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals linarith
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 3 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 3 j i) =
       if i = 0 then (concatStaircaseValues 3 q 0 + 1) / 2
         else concatStaircaseValues 3 q i
     rw [concatEndValues_row_3, concatStaircaseValues_row_3]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals linarith
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 4 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 4 j i) =
       if i = 0 then (concatStaircaseValues 4 q 0 + 1) / 2
         else concatStaircaseValues 4 q i
     rw [concatEndValues_row_4, concatStaircaseValues_row_4]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals linarith
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 5 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 5 j i) =
       if i = 0 then (concatStaircaseValues 5 q 0 + 1) / 2
         else concatStaircaseValues 5 q i
     rw [concatEndValues_row_5, concatStaircaseValues_row_5]
@@ -1040,37 +1033,37 @@ private theorem concatEnd_full (k : Fin 6) :
     concatAffineSimplex (concatEndFaces ⟨6 + k.val, by omega⟩) =
       staircaseSimplex (concatPerms k) := by
   ext q i
-  change (∑ j : Fin 4, q.val j *
+  change (∑ j : Fin 4, q.weights j *
       (concatVertexPoint (concatEndFaces ⟨6 + k.val, by omega⟩ j) i : ℝ)) =
     staircaseCoordinate (concatPerms k) q i
   simp only [concatEndVertex_values, concatStaircase_value]
   fin_cases k
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 6 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 6 j i) =
       concatStaircaseValues 0 q i
     rw [concatEndValues_row_6, concatStaircaseValues_row_0]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 7 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 7 j i) =
       concatStaircaseValues 1 q i
     rw [concatEndValues_row_7, concatStaircaseValues_row_1]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 8 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 8 j i) =
       concatStaircaseValues 2 q i
     rw [concatEndValues_row_8, concatStaircaseValues_row_2]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 9 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 9 j i) =
       concatStaircaseValues 3 q i
     rw [concatEndValues_row_9, concatStaircaseValues_row_3]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 10 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 10 j i) =
       concatStaircaseValues 4 q i
     rw [concatEndValues_row_10, concatStaircaseValues_row_4]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 11 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 11 j i) =
       concatStaircaseValues 5 q i
     rw [concatEndValues_row_11, concatStaircaseValues_row_5]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
@@ -1080,53 +1073,53 @@ private theorem concatEnd_lower (k : Fin 6) :
     concatAffineSimplex (concatEndFaces ⟨12 + k.val, by omega⟩) =
       (concatHalf 0).comp (staircaseSimplex (concatPerms k)) := by
   ext q i
-  change (∑ j : Fin 4, q.val j *
+  change (∑ j : Fin 4, q.weights j *
       (concatVertexPoint (concatEndFaces ⟨12 + k.val, by omega⟩ j) i : ℝ)) =
     ((concatHalf 0 (staircaseSimplex (concatPerms k) q)) i : ℝ)
   rw [concatHalf_coordinate]
   simp only [Fin.val_zero, Nat.cast_zero]
-  change (∑ j : Fin 4, q.val j *
+  change (∑ j : Fin 4, q.weights j *
       (concatVertexPoint (concatEndFaces ⟨12 + k.val, by omega⟩ j) i : ℝ)) =
     if i = 0 then (staircaseCoordinate (concatPerms k) q 0 + 0) / 2
       else staircaseCoordinate (concatPerms k) q i
   simp only [concatEndVertex_values, concatStaircase_value]
   fin_cases k
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 12 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 12 j i) =
       if i = 0 then (concatStaircaseValues 0 q 0 + 0) / 2
         else concatStaircaseValues 0 q i
     rw [concatEndValues_row_12, concatStaircaseValues_row_0]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals ring
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 13 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 13 j i) =
       if i = 0 then (concatStaircaseValues 1 q 0 + 0) / 2
         else concatStaircaseValues 1 q i
     rw [concatEndValues_row_13, concatStaircaseValues_row_1]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals ring
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 14 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 14 j i) =
       if i = 0 then (concatStaircaseValues 2 q 0 + 0) / 2
         else concatStaircaseValues 2 q i
     rw [concatEndValues_row_14, concatStaircaseValues_row_2]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals ring
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 15 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 15 j i) =
       if i = 0 then (concatStaircaseValues 3 q 0 + 0) / 2
         else concatStaircaseValues 3 q i
     rw [concatEndValues_row_15, concatStaircaseValues_row_3]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals ring
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 16 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 16 j i) =
       if i = 0 then (concatStaircaseValues 4 q 0 + 0) / 2
         else concatStaircaseValues 4 q i
     rw [concatEndValues_row_16, concatStaircaseValues_row_4]
     fin_cases i <;> simp only [Fin.sum_univ_four] <;>
       norm_num [Matrix.cons_val_two, Matrix.cons_val_three]
     all_goals ring
-  · change (∑ j : Fin 4, q.val j * concatEndVertexValues 17 j i) =
+  · change (∑ j : Fin 4, q.weights j * concatEndVertexValues 17 j i) =
       if i = 0 then (concatStaircaseValues 5 q 0 + 0) / 2
         else concatStaircaseValues 5 q i
     rw [concatEndValues_row_17, concatStaircaseValues_row_5]
@@ -1137,15 +1130,15 @@ private theorem concatEnd_lower (k : Fin 6) :
 private theorem concatAffineSimplex_constant_coordinate {n : ℕ}
     (v : Fin (n + 1) → ConcatVertex) (i : Fin 3) (b : I)
     (hb : ∀ j, concatVertexPoint (v j) i = b)
-    (q : stdSimplex ℝ (Fin (n + 1))) : concatAffineSimplex v q i = b := by
+    (q : Convexity.StdSimplex ℝ (Fin (n + 1))) : concatAffineSimplex v q i = b := by
   apply Subtype.ext
-  change (∑ j, q.val j * (concatVertexPoint (v j) i : ℝ)) = (b : ℝ)
-  simp only [hb, ← Finset.sum_mul, q.property.2, one_mul]
+  change (∑ j, q.weights j * (concatVertexPoint (v j) i : ℝ)) = (b : ℝ)
+  simp only [hb, ← Finset.sum_mul, q.total_of_fintype, one_mul]
 
 private theorem concatSide_constant {X : Type u} [TopologicalSpace X] {x : X}
     (c : GenLoop (Fin 3) X x) (k : Fin 12) :
     c.val.comp (concatAffineSimplex (concatSideFaces k)) =
-      ContinuousMap.const (stdSimplex ℝ (Fin 4)) x := by
+      ContinuousMap.const (Convexity.StdSimplex ℝ (Fin 4)) x := by
   ext z
   apply c.property
   rcases concat_side_constant_coordinate k with ⟨b, hb⟩ | ⟨b, hb⟩
@@ -1168,7 +1161,7 @@ private theorem concatSide_sum_zero {X : Type u} [TopologicalSpace X] {x : X}
 
 private def concatEndMaps {X : Type u} [TopologicalSpace X] {x : X}
     (p q : GenLoop (Fin 3) X x) :
-    Fin 18 → C(stdSimplex ℝ (Fin 4), X) :=
+    Fin 18 → C(Convexity.StdSimplex ℝ (Fin 4), X) :=
   ![    q.val.comp (staircaseSimplex (concatPerms 0)),
     q.val.comp (staircaseSimplex (concatPerms 1)),
     q.val.comp (staircaseSimplex (concatPerms 2)),
@@ -1238,7 +1231,7 @@ private theorem concatEnd_sum {X : Type u} [TopologicalSpace X] {x : X}
       ∑ k : Fin 18, concatEndSigns k • singularSimplexChain (concatEndMaps p q k) := by
     apply Finset.sum_congr rfl
     intro k _
-    exact congrArg (fun f : C(stdSimplex ℝ (Fin 4), X) =>
+    exact congrArg (fun f : C(Convexity.StdSimplex ℝ (Fin 4), X) =>
       concatEndSigns k • singularSimplexChain f) (hm k)
   refine hs.trans ?_
   simp only [hurewiczCubeChain, concat_oriented_sum]

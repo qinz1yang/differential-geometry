@@ -35,7 +35,7 @@ def directSeam (p : directSeamDomain) : DirectQuotient c d hcd a :=
 theorem directSeam_zero (z : Sphere (n := 3)) :
     directSeam c d hcd a ⟨(z, 0), mem_univ _, by norm_num⟩ =
       Quot.mk _ (c.firstBoundaryMap d hcd z) := by
-  rw [directSeam, dif_pos le_rfl]
+  rw [directSeam, dite_eq_left le_rfl]
   congr 1
   apply Subtype.ext
   change c.chart ((1 + 0 : ℝ) • z.val) = c.chart z.val
@@ -68,7 +68,7 @@ theorem directToBand_directSeam (p : directSeamDomain) :
         ⟨(p.val.1, 1 / 2 - p.val.2), mem_univ _,
           by constructor <;> linarith [p.property.2.1, p.property.2.2]⟩ := by
   by_cases ht : 0 ≤ p.val.2
-  · rw [directSeam, dif_pos ht]
+  · rw [directSeam, dite_eq_left ht]
     change coreToBand c d hcd a
       (c.firstClosedRadial d hcd (p.val.1, ⟨1 + p.val.2, by constructor <;> linarith [p.property.2.2]⟩)) = _
     rw [coreToBand_first, stretchedLowerCollar_of_radius_le_three_halves c d hcd a _
@@ -77,7 +77,7 @@ theorem directToBand_directSeam (p : directSeamDomain) :
     refine Prod.ext rfl (Subtype.ext ?_)
     change 3 / 2 - (1 + p.val.2) = 1 / 2 - p.val.2
     ring
-  · rw [directSeam, dif_neg ht]
+  · rw [directSeam, dite_eq_right ht]
     change coreToBand c d hcd a
       (c.secondClosedRadial d hcd (a p.val.1, ⟨1 - p.val.2, by constructor <;> linarith [p.property.2.1]⟩)) = _
     rw [coreToBand_second, stretchedUpperCollar_of_radius_le_three_halves c d hcd a _

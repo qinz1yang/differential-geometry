@@ -36,7 +36,7 @@ theorem iterCovComp_joint_contMDiffOn {Idx : Type*} [Fintype Idx]
           (fun y => iterCovComp (I := I) frame (chr p.1) (base p.1) a y (Fin.tail n))
           p.2 (frame (n 0) p.2)) (J ×ˢ u) := by
       intro p hp
-      exact prodExtDeriv_joint hu hp.1 hp.2 (ih (Fin.tail n) p hp)
+      exact contMDiffWithinAt_partial_mvfderiv_apply hu hp.1 hp.2 (ih (Fin.tail n) p hp)
         ((hframe (n 0)).contMDiffAt (hu.mem_nhds hp.2))
     have hs : ContMDiffOn (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, ℝ) ∞
         (fun p : ℝ × M => ∑ s : Fin (r + a), ∑ j : Idx,

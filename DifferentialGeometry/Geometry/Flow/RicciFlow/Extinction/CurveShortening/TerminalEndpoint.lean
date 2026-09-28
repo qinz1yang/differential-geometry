@@ -117,7 +117,7 @@ theorem exists_embedded_spatial_endpoint_extension
     rw [heqT]
     apply (hft.mono_left (nhdsWithin_mono _ Ico_subset_Iio_self)).congr'
     filter_upwards [self_mem_nhdsWithin] with t ht
-    simp only [closed, CurveMap.lift, if_pos ht.2]
+    simp only [closed, CurveMap.lift, ite_eq_left ht.2]
   have hGtime : ∀ x : ℝ, x ∈ Set.univ →
       ContinuousOn (fun t => f (closed.lift x t)) (Ico s T) := by
     intro x _
@@ -130,7 +130,7 @@ theorem exists_embedded_spatial_endpoint_extension
     have hsmooth := c.space_slice_contMDiffOn (Ico a T) hc.smooth t
       ⟨has.le.trans ht.1, ht.2⟩
     have hsm := (hf.comp (contMDiffOn_univ.mp hsmooth)).contDiff.contDiffOn (s := Set.univ)
-    simpa only [Function.comp_def, closed, CurveMap.lift, if_pos ht.2] using hsm
+    simpa only [Function.comp_def, closed, CurveMap.lift, ite_eq_left ht.2] using hsm
   have hbdd : ∀ r : ℕ, ∀ Q : Set ℝ, IsCompact Q → Q ⊆ Set.univ →
       ∃ C : ℝ, ∀ t ∈ Ico s T, ∀ x ∈ Q,
         ‖iteratedFDeriv ℝ r (fun y : ℝ => f (closed.lift y t)) x‖ ≤ C := by
@@ -146,10 +146,10 @@ theorem exists_embedded_spatial_endpoint_extension
     DifferentialGeometry.CheegerGromovCompactness.contDiffOn_and_continuousOn_spatial_iteratedFDeriv_Icc
       (show s < T from hsT) (isOpen_univ) (fun t x => f (closed.lift x t)) hGtime hpoint hGs hbdd
   refine ⟨closed, heq, ?_, ?_, ?_, hsmooth, hjets⟩
-  · simpa only [closed, lt_self_iff_false, if_false] using cT.continuous
-  · simpa only [closed, CurveMap.lift, lt_self_iff_false, if_false] using hcTlim
+  · simpa only [closed, lt_self_iff_false, ite_false] using cT.continuous
+  · simpa only [closed, CurveMap.lift, lt_self_iff_false, ite_false] using hcTlim
   · intro z
-    simpa only [closed, lt_self_iff_false, if_false] using hcTpoint z
+    simpa only [closed, lt_self_iff_false, ite_false] using hcTpoint z
 
 end DifferentialGeometry.PDE.RicciFlow.Extinction.CurveShortening.CurveMap
 

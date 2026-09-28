@@ -3,6 +3,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Algeb
 import DifferentialGeometry.Analysis.Sobolev.BoundedFactorProductGrid
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ReindexingNorm
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -128,9 +132,9 @@ private theorem orthoFrame_basis_at_center (x : M) :
       rw [(g₀.inner x (smoothOrthoFrame (I := I) g₀ x k x)).map_smul (c j),
         smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
     · intro j _ hjk
-      rw [if_neg (fun h => hjk h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ E)) = Module.finrank ℝ E :=
     Fintype.card_fin _
   exact ⟨basisOfLinearIndependentOfCardEqFinrank he_li hcard,
@@ -158,9 +162,9 @@ theorem orthoFrame_expansion_at_center (x : M) (u : TangentSpace I x) :
       rw [(g₀.inner x (smoothOrthoFrame (I := I) g₀ x j x)).map_smul (bse.repr u i),
         smul_eq_mul, hbse i, horth j i])]
     rw [Finset.sum_eq_single_of_mem j (Finset.mem_univ j)]
-    · rw [if_pos rfl, mul_one]
+    · rw [ite_eq_left rfl, mul_one]
     · intro i _ hij
-      rw [if_neg (fun h => hij h.symm), mul_zero]
+      rw [ite_eq_right (fun h => hij h.symm), mul_zero]
   calc u = ∑ i : Fin (Module.finrank ℝ E), bse.repr u i • bse i := (bse.sum_repr u).symm
     _ = ∑ i : Fin (Module.finrank ℝ E),
         g₀.inner x u (smoothOrthoFrame (I := I) g₀ x i x) •
@@ -190,14 +194,14 @@ lemma connectionDifferenceLowered_unitModel_value (x : M) (m : Fin 3 → Tangent
     unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x m =
       g₀.inner x (PDE.DeTurck.connectionDifference (I := I) g₁ g₀ x (m 0) (m 1)) (m 2) := by
   have hbase : unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x =
-      Tensor0SSpace.toModel (metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x) := by
+      Tensor0SSpace.toModel (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x) := by
     rw [unitModel]
     change Tensor0SSpace.toModel
         ((MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
+          (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x)
             (1 : ℝ))) =
-      Tensor0SSpace.toModel (metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x)
+      Tensor0SSpace.toModel (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x)
     rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,
       ContinuousMultilinearMap.constOfIsEmpty_apply, one_smul]
     rfl
@@ -717,7 +721,7 @@ private lemma sum_rect_le_sum_triangle (a : ℕ → ℝ) (ha : ∀ j, 0 ≤ a j)
 
 end helpers
 
-theorem exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connectionDifferenceSection_diagGrid
+theorem gInvDiffQuadResidualField_jet_norm_sq_le_connectionDifferenceSection
     (g₀ : SmoothRiemannianMetric I M) :
     ∃ K : ℕ → ℝ, (∀ i, 0 ≤ K i) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (i : ℕ) (x : M),
@@ -1117,7 +1121,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidualInputSymm_grid
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) (i + 1) (i + 3) := by
   classical
   obtain ⟨K, hK_nn, hK⟩ :=
-    exists_riemannianFiberNormSq_iteratedCovGrad_gInvDiffQuadResidual_connectionDifferenceSection_diagGrid
+    gInvDiffQuadResidualField_jet_norm_sq_le_connectionDifferenceSection
       (I := I) (M := M) g₀
   obtain ⟨CA, hCA_nn, hCA⟩ :=
     exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid (I := I) (M := M) g₀ hδ₀

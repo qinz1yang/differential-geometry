@@ -28,7 +28,7 @@ theorem affineSingularConeBasis_affine (n : ℕ) (a : E) (v : Fin (n + 1) → E)
   classical
   unfold affineSingularConeBasis
   let h : ∃ w, affineSingularSimplex n w = affineSingularSimplex n v := ⟨v, rfl⟩
-  rw [dif_pos h, affineSingularSimplex_injective n h.choose_spec]
+  rw [dite_eq_left h, affineSingularSimplex_injective n h.choose_spec]
 
 /-- Extend the actual affine cones linearly on the original singular basis. -/
 def affineSingularCone (n : ℕ) (a : E) :

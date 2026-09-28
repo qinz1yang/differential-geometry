@@ -12,204 +12,196 @@ namespace DifferentialGeometry.Topology
 variable {X : Type u} [TopologicalSpace X]
 
 theorem mem_stdSimplex_fin_three {a b c : ℝ} (ha : 0 ≤ a) (hb : 0 ≤ b) (hc : 0 ≤ c)
-    (h : a + b + c = 1) : (![a, b, c] : Fin 3 → ℝ) ∈ stdSimplex ℝ (Fin 3) := by
+    (h : a + b + c = 1) : (![a, b, c] : Fin 3 → ℝ) ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
   refine ⟨fun i => ?_, ?_⟩
   · fin_cases i <;> assumption
   · simpa [Fin.sum_univ_three] using h
 
 theorem unitInterval_sub_nonneg (s : unitInterval) : 0 ≤ 1 - (s : ℝ) := by linarith [s.2.2]
 
-def simplexEdgePoint0 (s : unitInterval) : stdSimplex ℝ (Fin 3) :=
-  ⟨![0, 1 - (s : ℝ), (s : ℝ)],
-    mem_stdSimplex_fin_three le_rfl (unitInterval_sub_nonneg s) s.2.1 (by ring)⟩
+def simplexEdgePoint0 (s : unitInterval) : Convexity.StdSimplex ℝ (Fin 3) :=
+  (Convexity.StdSimplex.coordinateEquiv ℝ (Fin 3)).symm
+    ⟨![0, 1 - (s : ℝ), (s : ℝ)],
+      mem_stdSimplex_fin_three le_rfl (unitInterval_sub_nonneg s) s.2.1 (by ring)⟩
 
-def simplexEdgePoint1 (s : unitInterval) : stdSimplex ℝ (Fin 3) :=
-  ⟨![1 - (s : ℝ), 0, (s : ℝ)],
-    mem_stdSimplex_fin_three (unitInterval_sub_nonneg s) le_rfl s.2.1 (by ring)⟩
+def simplexEdgePoint1 (s : unitInterval) : Convexity.StdSimplex ℝ (Fin 3) :=
+  (Convexity.StdSimplex.coordinateEquiv ℝ (Fin 3)).symm
+    ⟨![1 - (s : ℝ), 0, (s : ℝ)],
+      mem_stdSimplex_fin_three (unitInterval_sub_nonneg s) le_rfl s.2.1 (by ring)⟩
 
-def simplexEdgePoint2 (s : unitInterval) : stdSimplex ℝ (Fin 3) :=
-  ⟨![1 - (s : ℝ), (s : ℝ), 0],
-    mem_stdSimplex_fin_three (unitInterval_sub_nonneg s) s.2.1 le_rfl (by ring)⟩
+def simplexEdgePoint2 (s : unitInterval) : Convexity.StdSimplex ℝ (Fin 3) :=
+  (Convexity.StdSimplex.coordinateEquiv ℝ (Fin 3)).symm
+    ⟨![1 - (s : ℝ), (s : ℝ), 0],
+      mem_stdSimplex_fin_three (unitInterval_sub_nonneg s) s.2.1 le_rfl (by ring)⟩
 
 theorem continuous_simplexEdgePoint0 : Continuous simplexEdgePoint0 := by
+  apply (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin 3)).symm.continuous.comp
   apply Continuous.subtype_mk
   apply continuous_pi
   intro j
   fin_cases j <;> fun_prop
 
 theorem continuous_simplexEdgePoint1 : Continuous simplexEdgePoint1 := by
+  apply (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin 3)).symm.continuous.comp
   apply Continuous.subtype_mk
   apply continuous_pi
   intro j
   fin_cases j <;> fun_prop
 
 theorem continuous_simplexEdgePoint2 : Continuous simplexEdgePoint2 := by
+  apply (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin 3)).symm.continuous.comp
   apply Continuous.subtype_mk
   apply continuous_pi
   intro j
   fin_cases j <;> fun_prop
 
-theorem simplexEdgePoint0_zero : simplexEdgePoint0 0 = stdSimplex.vertex (1 : Fin 3) := by
-  apply Subtype.ext
-  funext j
+theorem simplexEdgePoint0_zero : simplexEdgePoint0 0 = Convexity.StdSimplex.single (1 : Fin 3) := by
+  ext j
   fin_cases j <;> simp [simplexEdgePoint0]
 
-theorem simplexEdgePoint0_one : simplexEdgePoint0 1 = stdSimplex.vertex (2 : Fin 3) := by
-  apply Subtype.ext
-  funext j
+theorem simplexEdgePoint0_one : simplexEdgePoint0 1 = Convexity.StdSimplex.single (2 : Fin 3) := by
+  ext j
   fin_cases j <;> simp [simplexEdgePoint0]
 
-theorem simplexEdgePoint1_zero : simplexEdgePoint1 0 = stdSimplex.vertex (0 : Fin 3) := by
-  apply Subtype.ext
-  funext j
+theorem simplexEdgePoint1_zero : simplexEdgePoint1 0 = Convexity.StdSimplex.single (0 : Fin 3) := by
+  ext j
   fin_cases j <;> simp [simplexEdgePoint1]
 
-theorem simplexEdgePoint1_one : simplexEdgePoint1 1 = stdSimplex.vertex (2 : Fin 3) := by
-  apply Subtype.ext
-  funext j
+theorem simplexEdgePoint1_one : simplexEdgePoint1 1 = Convexity.StdSimplex.single (2 : Fin 3) := by
+  ext j
   fin_cases j <;> simp [simplexEdgePoint1]
 
-theorem simplexEdgePoint2_zero : simplexEdgePoint2 0 = stdSimplex.vertex (0 : Fin 3) := by
-  apply Subtype.ext
-  funext j
+theorem simplexEdgePoint2_zero : simplexEdgePoint2 0 = Convexity.StdSimplex.single (0 : Fin 3) := by
+  ext j
   fin_cases j <;> simp [simplexEdgePoint2]
 
-theorem simplexEdgePoint2_one : simplexEdgePoint2 1 = stdSimplex.vertex (1 : Fin 3) := by
-  apply Subtype.ext
-  funext j
+theorem simplexEdgePoint2_one : simplexEdgePoint2 1 = Convexity.StdSimplex.single (1 : Fin 3) := by
+  ext j
   fin_cases j <;> simp [simplexEdgePoint2]
 
-def simplexEdgePath0 : Path (stdSimplex.vertex (S := ℝ) (1 : Fin 3)) (stdSimplex.vertex (S := ℝ) (2 : Fin 3)) where
+def simplexEdgePath0 : Path (Convexity.StdSimplex.single (R := ℝ) (1 : Fin 3)) (Convexity.StdSimplex.single (R := ℝ) (2 : Fin 3)) where
   toFun := simplexEdgePoint0
   continuous_toFun := continuous_simplexEdgePoint0
   source' := simplexEdgePoint0_zero
   target' := simplexEdgePoint0_one
 
-def simplexEdgePath1 : Path (stdSimplex.vertex (S := ℝ) (0 : Fin 3)) (stdSimplex.vertex (S := ℝ) (2 : Fin 3)) where
+def simplexEdgePath1 : Path (Convexity.StdSimplex.single (R := ℝ) (0 : Fin 3)) (Convexity.StdSimplex.single (R := ℝ) (2 : Fin 3)) where
   toFun := simplexEdgePoint1
   continuous_toFun := continuous_simplexEdgePoint1
   source' := simplexEdgePoint1_zero
   target' := simplexEdgePoint1_one
 
-def simplexEdgePath2 : Path (stdSimplex.vertex (S := ℝ) (0 : Fin 3)) (stdSimplex.vertex (S := ℝ) (1 : Fin 3)) where
+def simplexEdgePath2 : Path (Convexity.StdSimplex.single (R := ℝ) (0 : Fin 3)) (Convexity.StdSimplex.single (R := ℝ) (1 : Fin 3)) where
   toFun := simplexEdgePoint2
   continuous_toFun := continuous_simplexEdgePoint2
   source' := simplexEdgePoint2_zero
   target' := simplexEdgePoint2_one
 
 theorem stdSimplexHomeomorphUnitInterval_symm_val (s : unitInterval) :
-    (stdSimplexHomeomorphUnitInterval.symm s).val = ![1 - (s : ℝ), (s : ℝ)] := by
-  rw [stdSimplexHomeomorphUnitInterval]
-  rfl
+    ((Convexity.StdSimplex.homeomorphI.symm s).weights : Fin 2 → ℝ) =
+      ![1 - (s : ℝ), (s : ℝ)] := by
+  ext j
+  fin_cases j <;> simp [Convexity.StdSimplex.homeomorphI, Convexity.StdSimplex.equivIcc]
 
 theorem simplexSourceVertex_delta_zero (τ : integralSingularSimplex 2 X) :
     simplexSourceVertex ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) =
-      (integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (1 : Fin 3)) := by
+      (integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (1 : Fin 3)) := by
   simp only [simplexSourceVertex]
   rw [TopCat.toSSetObj₀Equiv_apply, TopCat.toSSetObjEquiv_δ_apply,
     TopCat.toSSetObjEquiv_δ_apply]
   congr 1
-  rw [show (default : stdSimplex ℝ (Fin 1)) = stdSimplex.vertex 0 from
-    Subsingleton.elim _ _, stdSimplex.map_vertex, stdSimplex.map_vertex]
+  rw [show (default : Convexity.StdSimplex ℝ (Fin 1)) = Convexity.StdSimplex.single 0 from
+    Subsingleton.elim _ _, Convexity.StdSimplex.map_single, Convexity.StdSimplex.map_single]
   congr 1
 
 theorem simplexTargetVertex_delta_zero (τ : integralSingularSimplex 2 X) :
     simplexTargetVertex ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) =
-      (integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (2 : Fin 3)) := by
+      (integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (2 : Fin 3)) := by
   simp only [simplexTargetVertex]
   rw [TopCat.toSSetObj₀Equiv_apply, TopCat.toSSetObjEquiv_δ_apply,
     TopCat.toSSetObjEquiv_δ_apply]
   congr 1
-  rw [show (default : stdSimplex ℝ (Fin 1)) = stdSimplex.vertex 0 from
-    Subsingleton.elim _ _, stdSimplex.map_vertex, stdSimplex.map_vertex]
+  rw [show (default : Convexity.StdSimplex ℝ (Fin 1)) = Convexity.StdSimplex.single 0 from
+    Subsingleton.elim _ _, Convexity.StdSimplex.map_single, Convexity.StdSimplex.map_single]
   congr 1
 
 theorem simplexSourceVertex_delta_one (τ : integralSingularSimplex 2 X) :
     simplexSourceVertex ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ) =
-      (integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (0 : Fin 3)) := by
+      (integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (0 : Fin 3)) := by
   simp only [simplexSourceVertex]
   rw [TopCat.toSSetObj₀Equiv_apply, TopCat.toSSetObjEquiv_δ_apply,
     TopCat.toSSetObjEquiv_δ_apply]
   congr 1
-  rw [show (default : stdSimplex ℝ (Fin 1)) = stdSimplex.vertex 0 from
-    Subsingleton.elim _ _, stdSimplex.map_vertex, stdSimplex.map_vertex]
+  rw [show (default : Convexity.StdSimplex ℝ (Fin 1)) = Convexity.StdSimplex.single 0 from
+    Subsingleton.elim _ _, Convexity.StdSimplex.map_single, Convexity.StdSimplex.map_single]
   congr 1
 
 theorem simplexTargetVertex_delta_one (τ : integralSingularSimplex 2 X) :
     simplexTargetVertex ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ) =
-      (integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (2 : Fin 3)) := by
+      (integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (2 : Fin 3)) := by
   simp only [simplexTargetVertex]
   rw [TopCat.toSSetObj₀Equiv_apply, TopCat.toSSetObjEquiv_δ_apply,
     TopCat.toSSetObjEquiv_δ_apply]
   congr 1
-  rw [show (default : stdSimplex ℝ (Fin 1)) = stdSimplex.vertex 0 from
-    Subsingleton.elim _ _, stdSimplex.map_vertex, stdSimplex.map_vertex]
+  rw [show (default : Convexity.StdSimplex ℝ (Fin 1)) = Convexity.StdSimplex.single 0 from
+    Subsingleton.elim _ _, Convexity.StdSimplex.map_single, Convexity.StdSimplex.map_single]
   congr 1
 
 theorem simplexSourceVertex_delta_two (τ : integralSingularSimplex 2 X) :
     simplexSourceVertex ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ) =
-      (integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (0 : Fin 3)) := by
+      (integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (0 : Fin 3)) := by
   simp only [simplexSourceVertex]
   rw [TopCat.toSSetObj₀Equiv_apply, TopCat.toSSetObjEquiv_δ_apply,
     TopCat.toSSetObjEquiv_δ_apply]
   congr 1
-  rw [show (default : stdSimplex ℝ (Fin 1)) = stdSimplex.vertex 0 from
-    Subsingleton.elim _ _, stdSimplex.map_vertex, stdSimplex.map_vertex]
+  rw [show (default : Convexity.StdSimplex ℝ (Fin 1)) = Convexity.StdSimplex.single 0 from
+    Subsingleton.elim _ _, Convexity.StdSimplex.map_single, Convexity.StdSimplex.map_single]
   congr 1
 
 theorem simplexTargetVertex_delta_two (τ : integralSingularSimplex 2 X) :
     simplexTargetVertex ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ) =
-      (integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (1 : Fin 3)) := by
+      (integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (1 : Fin 3)) := by
   simp only [simplexTargetVertex]
   rw [TopCat.toSSetObj₀Equiv_apply, TopCat.toSSetObjEquiv_δ_apply,
     TopCat.toSSetObjEquiv_δ_apply]
   congr 1
-  rw [show (default : stdSimplex ℝ (Fin 1)) = stdSimplex.vertex 0 from
-    Subsingleton.elim _ _, stdSimplex.map_vertex, stdSimplex.map_vertex]
+  rw [show (default : Convexity.StdSimplex ℝ (Fin 1)) = Convexity.StdSimplex.single 0 from
+    Subsingleton.elim _ _, Convexity.StdSimplex.map_single, Convexity.StdSimplex.map_single]
   congr 1
 
 theorem simplexMap_succAbove_zero (s : unitInterval) :
-    stdSimplex.map (Fin.succAbove (0 : Fin 3)) (stdSimplexHomeomorphUnitInterval.symm s) =
+    Convexity.StdSimplex.map (Fin.succAbove (0 : Fin 3)) (Convexity.StdSimplex.homeomorphI.symm s) =
       simplexEdgePoint0 s := by
-  apply Subtype.ext
-  funext j
-  fin_cases j <;>
-    · simp only [stdSimplex.map, FunOnFinite.linearMap_apply_apply, simplexEdgePoint0,
-        stdSimplexHomeomorphUnitInterval, stdSimplexEquivIcc]
-      rw [Finset.sum_filter]
-      simp [Fin.sum_univ_two, Fin.succAbove]
-      try rfl
+  change Convexity.StdSimplex.map _ (Convexity.StdSimplex.duple 0 1
+    (unitInterval_sub_nonneg s) s.property.1 (sub_add_cancel 1 _)) = _
+  rw [Convexity.StdSimplex.map_duple]
+  ext j
+  fin_cases j <;> simp [simplexEdgePoint0, Fin.succAbove]
 
 theorem simplexMap_succAbove_one (s : unitInterval) :
-    stdSimplex.map (Fin.succAbove (1 : Fin 3)) (stdSimplexHomeomorphUnitInterval.symm s) =
+    Convexity.StdSimplex.map (Fin.succAbove (1 : Fin 3)) (Convexity.StdSimplex.homeomorphI.symm s) =
       simplexEdgePoint1 s := by
-  apply Subtype.ext
-  funext j
-  fin_cases j <;>
-    · simp only [stdSimplex.map, FunOnFinite.linearMap_apply_apply, simplexEdgePoint1,
-        stdSimplexHomeomorphUnitInterval, stdSimplexEquivIcc]
-      rw [Finset.sum_filter]
-      simp [Fin.sum_univ_two, Fin.succAbove]
-      try rfl
+  change Convexity.StdSimplex.map _ (Convexity.StdSimplex.duple 0 1
+    (unitInterval_sub_nonneg s) s.property.1 (sub_add_cancel 1 _)) = _
+  rw [Convexity.StdSimplex.map_duple]
+  ext j
+  fin_cases j <;> simp [simplexEdgePoint1, Fin.succAbove]
 
 theorem simplexMap_succAbove_two (s : unitInterval) :
-    stdSimplex.map (Fin.succAbove (2 : Fin 3)) (stdSimplexHomeomorphUnitInterval.symm s) =
+    Convexity.StdSimplex.map (Fin.succAbove (2 : Fin 3)) (Convexity.StdSimplex.homeomorphI.symm s) =
       simplexEdgePoint2 s := by
-  apply Subtype.ext
-  funext j
-  fin_cases j <;>
-    · simp only [stdSimplex.map, FunOnFinite.linearMap_apply_apply, simplexEdgePoint2,
-        stdSimplexHomeomorphUnitInterval, stdSimplexEquivIcc]
-      rw [Finset.sum_filter]
-      simp [Fin.sum_univ_two, Fin.succAbove]
-      try rfl
+  change Convexity.StdSimplex.map _ (Convexity.StdSimplex.duple 0 1
+    (unitInterval_sub_nonneg s) s.property.1 (sub_add_cancel 1 _)) = _
+  rw [Convexity.StdSimplex.map_duple]
+  ext j
+  fin_cases j <;> simp [simplexEdgePoint2, Fin.succAbove]
 
 theorem integralSimplexPath_delta_zero (τ : integralSingularSimplex 2 X) (s : unitInterval) :
     integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) s =
       (integralSingularSimplexEquiv 2 X τ) (simplexEdgePoint0 s) := by
   have h1 : integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) s
       = (integralSingularSimplexEquiv 1 X ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ))
-        (stdSimplexHomeomorphUnitInterval.symm s) := by rw [integralSimplexPath]; rfl
+        (Convexity.StdSimplex.homeomorphI.symm s) := by rw [integralSimplexPath]; rfl
   rw [h1]
   simp only [integralSingularSimplexEquiv]
   rw [TopCat.toSSetObjEquiv_δ_apply, simplexMap_succAbove_zero]
@@ -219,7 +211,7 @@ theorem integralSimplexPath_delta_one (τ : integralSingularSimplex 2 X) (s : un
       (integralSingularSimplexEquiv 2 X τ) (simplexEdgePoint1 s) := by
   have h1 : integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ) s
       = (integralSingularSimplexEquiv 1 X ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ))
-        (stdSimplexHomeomorphUnitInterval.symm s) := by rw [integralSimplexPath]; rfl
+        (Convexity.StdSimplex.homeomorphI.symm s) := by rw [integralSimplexPath]; rfl
   rw [h1]
   simp only [integralSingularSimplexEquiv]
   rw [TopCat.toSSetObjEquiv_δ_apply, simplexMap_succAbove_one]
@@ -229,14 +221,14 @@ theorem integralSimplexPath_delta_two (τ : integralSingularSimplex 2 X) (s : un
       (integralSingularSimplexEquiv 2 X τ) (simplexEdgePoint2 s) := by
   have h1 : integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ) s
       = (integralSingularSimplexEquiv 1 X ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ))
-        (stdSimplexHomeomorphUnitInterval.symm s) := by rw [integralSimplexPath]; rfl
+        (Convexity.StdSimplex.homeomorphI.symm s) := by rw [integralSimplexPath]; rfl
   rw [h1]
   simp only [integralSingularSimplexEquiv]
   rw [TopCat.toSSetObjEquiv_δ_apply, simplexMap_succAbove_two]
 
 def facePath0 (τ : integralSingularSimplex 2 X) :
-    Path ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (1 : Fin 3)))
-      ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (2 : Fin 3))) where
+    Path ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (1 : Fin 3)))
+      ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (2 : Fin 3))) where
   toFun := fun s => integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) s
   continuous_toFun := (integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ)).continuous
   source' := (integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ)).source.trans
@@ -245,8 +237,8 @@ def facePath0 (τ : integralSingularSimplex 2 X) :
     (simplexTargetVertex_delta_zero τ)
 
 def facePath1 (τ : integralSingularSimplex 2 X) :
-    Path ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (0 : Fin 3)))
-      ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (2 : Fin 3))) where
+    Path ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (0 : Fin 3)))
+      ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (2 : Fin 3))) where
   toFun := fun s => integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ) s
   continuous_toFun := (integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ)).continuous
   source' := (integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ)).source.trans
@@ -255,8 +247,8 @@ def facePath1 (τ : integralSingularSimplex 2 X) :
     (simplexTargetVertex_delta_one τ)
 
 def facePath2 (τ : integralSingularSimplex 2 X) :
-    Path ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (0 : Fin 3)))
-      ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (1 : Fin 3))) where
+    Path ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (0 : Fin 3)))
+      ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (1 : Fin 3))) where
   toFun := fun s => integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ) s
   continuous_toFun := (integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ)).continuous
   source' := (integralSimplexPath ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ)).source.trans
@@ -299,13 +291,11 @@ theorem facePath2_eq_map (τ : integralSingularSimplex 2 X) :
 
 theorem facePath_trans_homotopic (τ : integralSingularSimplex 2 X) :
     ((facePath2 τ).trans (facePath0 τ)).Homotopic (facePath1 τ) := by
-  have hc : ContractibleSpace (stdSimplex ℝ (Fin 3)) :=
-    (convex_stdSimplex ℝ (Fin 3)).contractibleSpace
-      ⟨(stdSimplex.vertex (0 : Fin 3) : Fin 3 → ℝ), (stdSimplex.vertex (0 : Fin 3)).2⟩
-  have hs : SimplyConnectedSpace (stdSimplex ℝ (Fin 3)) :=
-    @SimplyConnectedSpace.ofContractible (stdSimplex ℝ (Fin 3)) _ hc
+  have hc : ContractibleSpace (Convexity.StdSimplex ℝ (Fin 3)) := inferInstance
+  have hs : SimplyConnectedSpace (Convexity.StdSimplex ℝ (Fin 3)) :=
+    @SimplyConnectedSpace.ofContractible (Convexity.StdSimplex ℝ (Fin 3)) _ hc
   have hN : ((simplexEdgePath2.trans simplexEdgePath0)).Homotopic simplexEdgePath1 :=
-    @SimplyConnectedSpace.paths_homotopic (stdSimplex ℝ (Fin 3)) _ hs _ _
+    @SimplyConnectedSpace.paths_homotopic (Convexity.StdSimplex ℝ (Fin 3)) _ hs _ _
       (simplexEdgePath2.trans simplexEdgePath0) simplexEdgePath1
   have hM := hN.map (integralSingularSimplexEquiv 2 X τ)
   rw [Path.map_trans] at hM
@@ -332,9 +322,9 @@ theorem pathLoopOfSimplex_delta_zero [PathConnectedSpace X] (x : X)
     (τ : integralSingularSimplex 2 X) :
     pathLoopOfSimplex x ((TopCat.toSSet.obj (TopCat.of X)).δ 0 τ) =
       (PathConnectedSpace.somePath x
-        ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (1 : Fin 3)))).trans
+        ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (1 : Fin 3)))).trans
       ((facePath0 τ).trans (PathConnectedSpace.somePath x
-        ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (2 : Fin 3)))).symm) := by
+        ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (2 : Fin 3)))).symm) := by
   rw [pathLoopOfSimplex]
   refine pathLoop_conj_eq _ _
     (fun t => congrArg (fun y => PathConnectedSpace.somePath x y t)
@@ -347,9 +337,9 @@ theorem pathLoopOfSimplex_delta_one [PathConnectedSpace X] (x : X)
     (τ : integralSingularSimplex 2 X) :
     pathLoopOfSimplex x ((TopCat.toSSet.obj (TopCat.of X)).δ 1 τ) =
       (PathConnectedSpace.somePath x
-        ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (0 : Fin 3)))).trans
+        ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (0 : Fin 3)))).trans
       ((facePath1 τ).trans (PathConnectedSpace.somePath x
-        ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (2 : Fin 3)))).symm) := by
+        ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (2 : Fin 3)))).symm) := by
   rw [pathLoopOfSimplex]
   refine pathLoop_conj_eq _ _
     (fun t => congrArg (fun y => PathConnectedSpace.somePath x y t)
@@ -362,9 +352,9 @@ theorem pathLoopOfSimplex_delta_two [PathConnectedSpace X] (x : X)
     (τ : integralSingularSimplex 2 X) :
     pathLoopOfSimplex x ((TopCat.toSSet.obj (TopCat.of X)).δ 2 τ) =
       (PathConnectedSpace.somePath x
-        ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (0 : Fin 3)))).trans
+        ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (0 : Fin 3)))).trans
       ((facePath2 τ).trans (PathConnectedSpace.somePath x
-        ((integralSingularSimplexEquiv 2 X τ) (stdSimplex.vertex (1 : Fin 3)))).symm) := by
+        ((integralSingularSimplexEquiv 2 X τ) (Convexity.StdSimplex.single (1 : Fin 3)))).symm) := by
   rw [pathLoopOfSimplex]
   refine pathLoop_conj_eq _ _
     (fun t => congrArg (fun y => PathConnectedSpace.somePath x y t)

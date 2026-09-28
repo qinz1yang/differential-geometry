@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarCover
-import DifferentialGeometry.Topology.Connected.ComponentIn
+import DifferentialGeometry.Topology.FundamentalGroup.ConnectedComponent
 import DifferentialGeometry.Topology.VanKampen.TwoSidedCollarRestriction
 
 noncomputable section

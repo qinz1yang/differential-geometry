@@ -71,7 +71,7 @@ theorem injective_finiteCapInclusion (hL : 0 < L) (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, bufferedCylinder (precision i) → M) (hf : ∀ i, Injective (f i))
     (hdisj : Pairwise (fun i j => Disjoint (range (f i)) (range (f j)))) :
     Injective (finiteCapInclusion hL hδ f hf hdisj) := by
-  apply adjunctionCell_injective _ _ (injective_indexedCapBoundary hL)
+  apply adjunctionCell_injective _ _
   intro p q he
   exact injective_cuttingSphereMap hδ f hf hdisj (congrArg Subtype.val he)
 

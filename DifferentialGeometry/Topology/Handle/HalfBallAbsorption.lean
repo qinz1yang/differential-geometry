@@ -177,11 +177,11 @@ private theorem exists_halfBall_attachment_roof
   obtain ⟨f, hf, hbound, hroot, heq, hzero, hsign⟩ := hroof ε hε
   have hraw (x : E) (hx : ‖x‖ ^ 2 ∈ Ioo (1 - 2 * r) (1 + 2 * r)) : halfBallShearRoof x < w / 4 := by
     by_cases hh : ‖x‖ ^ 2 ≤ 1
-    · rw [halfBallShearRoof, if_pos hh]
+    · rw [halfBallShearRoof, ite_eq_left hh]
       apply hτsub
       rw [Real.dist_eq, abs_lt]
       constructor <;> linarith [hx.1, hx.2]
-    · rw [halfBallShearRoof, if_neg hh]
+    · rw [halfBallShearRoof, ite_eq_right hh]
       positivity
   refine ⟨f, hf, fun x => (hbound x).1, ?_, heq, hzero, ?_, ?_⟩
   · intro x hx

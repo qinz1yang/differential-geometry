@@ -31,14 +31,14 @@ private theorem contDiff_glue_curves_of_germ
   · apply hf.contDiffAt.congr_of_eventuallyEq
     filter_upwards [Iio_mem_nhds ht] with u hu
     change u < a at hu
-    simp only [if_pos hu]
+    simp only [ite_eq_left hu]
   · apply hg.contDiffAt.congr_of_eventuallyEq
     filter_upwards [heq] with u hu
     split_ifs <;> first | assumption | rfl
   · apply hg.contDiffAt.congr_of_eventuallyEq
     filter_upwards [Ioi_mem_nhds ht] with u hu
     change a < u at hu
-    simp only [if_neg (not_lt.mpr hu.le)]
+    simp only [ite_eq_right (not_lt.mpr hu.le)]
 
 private theorem exists_contDiff_curve_attaching_ends
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -59,7 +59,7 @@ private theorem exists_contDiff_curve_attaching_ends
   have hl₁ : l =ᶠ[𝓝 (1 : ℝ)] f := by
     filter_upwards [Ioi_mem_nhds (by norm_num : (0 : ℝ) < 1)] with t ht
     change 0 < t at ht
-    simp only [l, if_neg (not_lt.mpr ht.le)]
+    simp only [l, ite_eq_right (not_lt.mpr ht.le)]
   let g : ℝ → F := fun t => if t < 1 then l t else α₁ (D₁ t)
   have hg : ContDiff ℝ ∞ g := contDiff_glue_curves_of_germ hl
     (hα₁.comp D₁.contMDiff.contDiff) (hl₁.trans h₁.symm)
@@ -67,25 +67,25 @@ private theorem exists_contDiff_curve_attaching_ends
   · intro t ht
     have ht1 : t < 1 := lt_of_le_of_lt ht (by norm_num)
     dsimp only [g, l]
-    rw [if_pos ht1]
+    rw [ite_eq_left ht1]
     rcases ht.eq_or_lt with rfl | ht
-    · rw [if_neg (lt_irrefl 0)]
+    · rw [ite_eq_right (lt_irrefl 0)]
       exact h₀.self_of_nhds.symm
-    · rw [if_pos ht]
+    · rw [ite_eq_left ht]
   · intro t ht
     dsimp only [g, l]
-    rw [if_neg (not_lt.mpr ht.1)]
+    rw [ite_eq_right (not_lt.mpr ht.1)]
     split_ifs with ht1
     · rfl
     · have ht' : t = 1 := le_antisymm ht.2 (not_lt.mp ht1)
       subst t
       exact h₁.self_of_nhds
   · intro t ht
-    exact if_neg (not_lt.mpr ht)
+    exact ite_eq_right (not_lt.mpr ht)
   · filter_upwards [Iio_mem_nhds (by norm_num : (0 : ℝ) < 1), h₀] with t ht he
     change t < 1 at ht
     dsimp only [g, l]
-    rw [if_pos ht]
+    rw [ite_eq_left ht]
     split_ifs <;> first | rfl | exact he.symm
   · filter_upwards [hl₁, h₁] with t hl hf
     dsimp only [g]

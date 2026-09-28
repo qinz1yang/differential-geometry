@@ -13,7 +13,7 @@ namespace MeasureTheory
 
 private theorem norm_top_le_of_ae_bound {X : Type*} [MeasurableSpace X] {μ : Measure X}
     (f : Lp ℝ ∞ μ) {C : ℝ} (hC : 0 ≤ C) (hf : ∀ᵐ x ∂μ, ‖f x‖ ≤ C) : ‖f‖ ≤ C := by
-  rw [Lp.norm_def, eLpNorm_exponent_top]
+  rw [Lp.norm_def, eLpNorm_exponent_top (Lp.memLp f).aestronglyMeasurable]
   exact (ENNReal.toReal_mono ENNReal.ofReal_ne_top
     (eLpNormEssSup_le_of_ae_bound hf)).trans_eq (ENNReal.toReal_ofReal hC)
 
@@ -61,7 +61,7 @@ theorem exists_lp_top_reciprocal_sub_one_of_ae_lipschitz
     if ht : t ∈ Icc (0 : ℝ) T then (hmem t ht).toLp (fun x => (v t x)⁻¹ - 1) else 0
   have ha (t : ℝ) (ht : t ∈ Icc (0 : ℝ) T) :
       a t =ᵐ[μ] fun x => (v t x)⁻¹ - 1 := by
-    simpa only [a, dif_pos ht] using (hmem t ht).coeFn_toLp
+    simpa only [a, dite_eq_left ht] using (hmem t ht).coeFn_toLp
   have hnorm (t : ℝ) (ht : t ∈ Icc (0 : ℝ) T) : ‖a t‖ ≤ (B : ℝ) * T / c := by
     apply norm_top_le_of_ae_bound _ (div_nonneg (mul_nonneg B.coe_nonneg hT) hc.le)
     filter_upwards [ha t ht, hbound t ht] with x hx hbx

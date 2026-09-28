@@ -128,7 +128,8 @@ theorem ricCovTower_normSq0S_restrictOpen
           (g.restrictOpen (I := I) U) s x)
       = Tensor0SBundle.normSq0S (I := I) g (x : M) (2 + s)
           (ricCovTower (I := I) g g s (x : M)) := by
-  rw [normSq0S_restrictOpen_apply (I := I) g U (2 + s) x
+  rw [DifferentialGeometry.Tensor0SBundle.normSq0S_restrictOpen_apply
+    (I := I) g U (2 + s) x
     (ricCovTower (I := I) (g.restrictOpen (I := I) U) (g.restrictOpen (I := I) U) s x)]
   have htensor :
       ricCovTower (I := I) (g.restrictOpen (I := I) U) (g.restrictOpen (I := I) U) s x

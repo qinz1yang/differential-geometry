@@ -97,7 +97,7 @@ theorem IsPiecewiseParallelOn.piecewise {cov : CovariantDerivative I F V}
     cov.IsPiecewiseParallelOn γ (fun t => if t ≤ b then Z t else W t) a c := by
   refine .trans hab hbc (hZ.congr ?_) (hW.congr ?_)
   · intro t ht
-    exact if_pos ht.2
+    exact ite_eq_left ht.2
   · intro t ht
     split_ifs with htb
     · have heq : t = b := le_antisymm htb ht.1
@@ -264,7 +264,7 @@ private theorem exists_piecewise_parallel_transport_from_left
         if t ≤ b then S t else (S b).trans (R t)
       refine ⟨T, ?_, ?_⟩
       · intro v
-        simpa only [T, if_pos hab.le] using hS₀ v
+        simpa only [T, ite_eq_left hab.le] using hS₀ v
       · intro v
         have h := (hS v).piecewise (hR (S b v)) hab hbc (hR₀ (S b v)).symm
         apply h.congr

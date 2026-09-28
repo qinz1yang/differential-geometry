@@ -895,7 +895,7 @@ private lemma hyperbolicSn_scale_one (q r : ℝ) : r * hyperbolicSn (q * r) 1 = 
       simp [hyperbolicSn]
     · rw [hyperbolicSn, hyperbolicSn]
       have hqr : q * r ≠ 0 := mul_ne_zero hq hr
-      rw [if_neg hq, if_neg hqr]
+      rw [ite_eq_right hq, ite_eq_right hqr]
       field_simp
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

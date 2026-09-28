@@ -1,4 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Parametric.PathIntegralFibreNorm
+
+open DifferentialGeometry.TensorMetric (tensorPointwiseNorm)
 open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section

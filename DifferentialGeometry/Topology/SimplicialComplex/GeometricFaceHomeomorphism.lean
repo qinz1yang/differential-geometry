@@ -1,21 +1,24 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.SimplicialComplex.GeometricFaceBoundary
 
 set_option autoImplicit false
 noncomputable section
 open Set Finset
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology.SimplicialComplex
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   (K : Geometry.SimplicialComplex ℝ E) {s : Finset E}
 
 
 def geometricFaceHomeomorphism (hs : s ∈ K.faces) :
-    stdSimplex ℝ s ≃ₜ convexHull ℝ (s : Set E) :=
+    coordinateSet ℝ s ≃ₜ convexHull ℝ (s : Set E) :=
   (DifferentialGeometry.Simplex.vertexHomeomorphism (K.indep hs)).trans
     (Homeomorph.setCongr (by congr 1; ext a; simp))
 
 
 @[simp]
-theorem geometricFaceHomeomorphism_apply (hs : s ∈ K.faces) (x : stdSimplex ℝ s) :
+theorem geometricFaceHomeomorphism_apply (hs : s ∈ K.faces) (x : coordinateSet ℝ s) :
     (geometricFaceHomeomorphism K hs x : E) =
       DifferentialGeometry.Simplex.vertexMap (fun i : s => (i : E)) x := rfl
 

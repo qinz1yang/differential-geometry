@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Covering.Smooth.Manifold
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Density
+import DifferentialGeometry.Geometry.Metric.Basic
 import Mathlib.Geometry.Manifold.VectorBundle.Riemannian
 import Mathlib.Geometry.Manifold.VectorBundle.Hom
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent

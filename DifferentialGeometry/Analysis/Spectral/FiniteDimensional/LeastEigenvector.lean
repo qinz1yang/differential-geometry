@@ -18,7 +18,7 @@ theorem exists_unit_least_eigenvector
   have hnorm : ‖w‖ = 1 := by simpa only [mem_sphere_zero_iff_norm] using hw
   have heigen := hA.eq_smul_self_of_isLocalExtrOn_real
     (show IsLocalExtrOn A.reApplyInnerSelf (sphere (0 : E) ‖w‖) w from
-      hnorm ▸ Or.inl hmin.localize)
+      hnorm ▸ Or.inl hmin.isLocalMinOn)
   refine ⟨⟪A w, w⟫_ℝ, w, hnorm, ?_, ?_⟩
   · simpa [ContinuousLinearMap.rayleighQuotient, ContinuousLinearMap.reApplyInnerSelf_apply,
       hnorm] using heigen

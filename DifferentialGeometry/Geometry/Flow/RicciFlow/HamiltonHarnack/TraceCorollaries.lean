@@ -927,7 +927,7 @@ theorem hamilton_trace_harnack_distance
     metricRicciAt_le_half_scalar_mul_inner_of_curvatureOperator_nonnegative
       (I := I) (M := M) g x (hR t₁ ht₁reg x) (basis i₀)
   have hscalarMetric : 0 ≤ metricScalarAt (I := I) (M := M) g x := by
-    rw [hON i₀ i₀, if_pos rfl, mul_one] at hRicUpper
+    rw [hON i₀ i₀, ite_eq_left rfl, mul_one] at hRicUpper
     nlinarith
   have hscalar : 0 ≤ S.scalar t₁ x := by
     change 0 ≤ metricScalarAt (I := I) (M := M) (S.base.metric t₁) x

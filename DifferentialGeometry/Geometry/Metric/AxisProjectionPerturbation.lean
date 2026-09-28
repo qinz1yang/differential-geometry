@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 noncomputable section
 open scoped Manifold ContDiff
 open DifferentialGeometry DifferentialGeometry.CheegerGromovCompactness
-open DifferentialGeometry.Analysis.Laplacian
 
 namespace DifferentialGeometry.Geometry.Metric
 
@@ -39,7 +38,7 @@ theorem axis_projection_difference_bound
   have hsl : 1 - δ ≤ s := by linarith [(abs_le.mp hs).1]
   have hab : |a - b| ≤ δ * N := hdiff z
   have hb : |b| ≤ N := by
-    have h := abs_metric_inner_le_sqrt_metric_quadratic gRef x v z
+    have h := SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic gRef x v z
     rwa [hv, Real.sqrt_one, one_mul] at h
   have hnum : |a - s * b| ≤ 2 * δ * N := by
     calc

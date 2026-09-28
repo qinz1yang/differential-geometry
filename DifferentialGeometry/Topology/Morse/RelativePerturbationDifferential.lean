@@ -1,6 +1,7 @@
 import DifferentialGeometry.Topology.Morse.RelativePerturbationFamily
 import Mathlib.Analysis.Normed.Operator.BoundedLinearMaps
 import Mathlib.Analysis.Normed.Ring.Units
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 
 set_option autoImplicit false
 noncomputable section

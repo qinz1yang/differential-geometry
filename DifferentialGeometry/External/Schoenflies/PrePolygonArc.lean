@@ -626,13 +626,13 @@ theorem insVertex_emb (P : PrePolygon m) (z : Plane) (j : ZMod (m + 3)) :
   have hlt : j.val < m + 3 := ZMod.val_lt j
   have hval : (emb j).val = j.val := by
     rw [emb, ZMod.val_cast_of_lt (by omega)]
-  rw [insVertex, if_pos (by rw [hval]; exact hlt), hval, ZMod.natCast_rightInverse j]
+  rw [insVertex, ite_eq_left (by rw [hval]; exact hlt), hval, ZMod.natCast_rightInverse j]
 
 theorem val_neg_one' : (-1 : ZMod (m + 1 + 3)).val = m + 3 := by
   rw [neg_one_eq_cast, ZMod.val_cast_of_lt (by omega)]
 
 theorem insVertex_neg_one (P : PrePolygon m) (z : Plane) : insVertex P z (-1) = z := by
-  rw [insVertex, if_neg (by rw [val_neg_one' (m := m)]; omega)]
+  rw [insVertex, ite_eq_right (by rw [val_neg_one' (m := m)]; omega)]
 
 /-- Away from the inserted vertex the edges are unchanged. -/
 theorem insEdge_of_lt {j : ZMod (m + 3)} (h : j.val + 1 < m + 3) :
@@ -691,12 +691,12 @@ def insertLast (P : PrePolygon m) (hz : z ∈ openSegment ℝ (P.vertex (-1)) (P
     have hi := ZMod.val_lt i
     have hj := ZMod.val_lt j
     by_cases hli : i.val < m + 3 <;> by_cases hlj : j.val < m + 3
-    · rw [if_pos hli, if_pos hlj] at hij
+    · rw [ite_eq_left hli, ite_eq_left hlj] at hij
       exact ZMod.val_injective _
         (ClosedPolygon.natCast_inj hli hlj (P.vertex_inj hij))
-    · rw [if_pos hli, if_neg hlj] at hij
+    · rw [ite_eq_left hli, ite_eq_right hlj] at hij
       exact absurd hij (hzv _)
-    · rw [if_neg hli, if_pos hlj] at hij
+    · rw [ite_eq_right hli, ite_eq_left hlj] at hij
       exact absurd hij.symm (hzv _)
     · exact ZMod.val_injective _ (by omega)
   edges_meet := by

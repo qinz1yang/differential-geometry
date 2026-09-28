@@ -37,7 +37,7 @@ theorem abs_polynomial_eval_le {σ : Type*} [Fintype σ]
   rw [abs_mul, Finset.abs_prod]
   simp only [abs_pow]
   apply mul_le_mul_of_nonneg_left _ (abs_nonneg _)
-  exact Finset.prod_le_prod (fun i _ => pow_nonneg (abs_nonneg _) _)
+  exact Finset.prod_le_prod₀ (fun i _ => pow_nonneg (abs_nonneg _) _)
     (fun i _ => pow_le_pow_left₀ (abs_nonneg _) (hv i) _)
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

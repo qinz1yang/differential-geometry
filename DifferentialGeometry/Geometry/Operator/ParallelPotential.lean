@@ -33,7 +33,7 @@ theorem abs_laplacian_le_of_parallel_unit_gradient
   have hb (i : Fin (Module.finrank ℝ E)) : |hessFun h u x (B i) (B i)| ≤ 24 * ε := by
     have hi : g.inner x (B i) (B i) ≤ 2 := by
       have ht := ((metricUniformEquivalentOn_symm heq).2 x (Set.mem_singleton x) (B i)).2
-      have hBi : h.inner x (B i) (B i) = 1 := (hB i i).trans (if_pos rfl)
+      have hBi : h.inner x (B i) (B i) = 1 := (hB i i).trans (ite_eq_left rfl)
       simpa only [hBi, mul_one] using ht
     have ht := abs_hessFun_sub_le_of_small_metric_derivatives g h u hu x ε hε hsmall (B i) (B i)
     rw [hparallel, sub_zero, hunit, Real.sqrt_one, mul_one, mul_assoc,

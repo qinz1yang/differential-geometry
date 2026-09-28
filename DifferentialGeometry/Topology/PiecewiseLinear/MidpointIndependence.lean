@@ -96,10 +96,10 @@ theorem exists_linearMap_separating_midpoint [FiniteDimensional ℝ E] [Decidabl
     have hvc : v ≠ c := by
       rintro rfl
       exact hc hv
-    rw [hℓ v (Finset.mem_insert_of_mem hv), if_neg hvc]
+    rw [hℓ v (Finset.mem_insert_of_mem hv), ite_eq_right hvc]
     ring
   have hcval : ℓ c = s - 1 := by
-    rw [hℓ c (Finset.mem_insert_self c S), if_pos rfl]
+    rw [hℓ c (Finset.mem_insert_self c S), ite_eq_left rfl]
     ring
   have hdval : ℓ d = s + 1 := by
     have hd : d = m + m - c := by rw [← hm]; abel

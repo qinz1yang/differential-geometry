@@ -54,7 +54,7 @@ theorem exists_eventually_terminal_scalar_bound_at_distance_of_mem_hornHalfRange
     ∀ {ε ε₁ κ C1 C2 qcan ρ : ℝ} {Ctime Cgrad : ℝ≥0} {phi : ℝ → ℝ},
       0 < ε → ε ≤ eta → 0 < κ → 0 < qcan → 0 < ρ →
       Perelman.AdmissiblePinchingFunction phi →
-    ∀ (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    ∀ (H : ℕ → RetainedCoreHistory.{u})
       (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) (s : ℕ → ℝ)
       (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
         ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -98,7 +98,7 @@ theorem exists_eventually_terminal_scalar_bound_at_distance_of_mem_hornHalfRange
         (A / Real.sqrt (metricScalarAt (L n).metric (x n)))) := by
   obtain ⟨etab, hetab, hsup⟩ := eventually_chain_backward_traces_of_mem_hornHalfRange.{u}
   refine ⟨min etab coneAccuracy, lt_min hetab coneAccuracy_pos, ?_⟩
-  intro ε ε₁ κ C1 C2 qcan ρ Ctime Cgrad phi hε hεη hκ hq hρ hphi P₀ H hend s G hG L hsing
+  intro ε ε₁ κ C1 C2 qcan ρ Ctime Cgrad phi hε hεη hκ hq hρ hphi H hend s G hG L hsing
     parameters εP Λ P hεP c hc e x hx hcan hslabs hder hgrad hpinch hpinchG hnc hgrow hRs
   have hεb : ε ≤ etab := hεη.trans (min_le_left _ _)
   have hεc : ε ≤ coneAccuracy := hεη.trans (min_le_right _ _)
@@ -145,7 +145,7 @@ theorem exists_eventually_terminal_scalar_bound_at_distance_of_mem_hornHalfRange
     hsup (H n) (G n) (L n) (hsing n) (parameters n) (P n) ((hεP n).trans (min_le_left _ _))
       (c n) (hc n) (e n) (x n) (hx n) hε hεb hq (hcan n) (hder n) (hgrad n) (hD0 n) hn
   exact RetainedCoreHistory.eventually_terminal_scalar_bound_at_distance_of_chain_backward_traces
-    hεc hκ hphi (by norm_num : (0 : ℝ) < 1 / 5) P₀ H hend s G hG L x (fun _ => qcan) (fun _ => ρ)
+    hεc hκ hphi (by norm_num : (0 : ℝ) < 1 / 5) H hend s G hG L x (fun _ => qcan) (fun _ => ρ)
     (fun _ => hq) (fun _ => hρ) hqx hRtend hRs
     (fun n => (hcan n).spatiallyCanonicalBefore) hslabs hder hgrad hpinch hpinchG hnc
     ((Real.tendsto_sqrt_atTop.comp hRtend).const_mul_atTop hρ) D hD hsupply

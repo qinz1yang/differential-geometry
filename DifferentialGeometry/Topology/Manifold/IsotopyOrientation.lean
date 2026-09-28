@@ -238,7 +238,7 @@ theorem preservesOrientation_of_jointlySmooth_isotopy {U : Type u} [TopologicalS
       simp [Diffeomorph.preservesOrientation_refl]
     have hpos := pos_of_continuous_ne_zero_of_pos_zero hfcont hfne hf0 t₁
     by_contra hcon
-    simp only [f, hcon, if_false] at hpos
+    simp only [f, hcon, ite_false] at hpos
     norm_num at hpos
 
 theorem isotopyPreservesOrientation_holds : isotopyPreservesOrientation.{u} := by

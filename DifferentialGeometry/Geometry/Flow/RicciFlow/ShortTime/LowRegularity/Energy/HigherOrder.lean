@@ -255,7 +255,7 @@ theorem exists_uniform_galerkin_energy_bound_all_orders_above_five
       rw [galerkinForceTerm (I := I) (M := M) g₀ hsol.threshold_lt_one hsol.threshold_nonneg hsol.threshold_le_third
         hsol.top_nonneg hsol.slope_nonneg hsol.outer_pos hsol.realize_pos hsol.metric_realization hsol.smoothCore_continuous
         (eigenIdxFinset (I := I) (M := M) g₀ N)
-        (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i, if_pos hi]
+        (galerkinSolutionMode (I := I) (M := M) g₀ fseq N t) i, ite_eq_left hi]
       simp only [galerkinActionVector]
       module
     have hstatRaw := hseed (6 + k) (eigenIdxFinset (I := I) (M := M) g₀ N)

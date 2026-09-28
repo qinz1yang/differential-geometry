@@ -11,7 +11,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 def IsLoopTheoremDisk (Kimg N' BdX Δ : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
   ∃ r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-    IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ interior N' \ Kimg ∧
+    IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ interior N' \ Kimg ∧
     Δ ∩ BdX = r '' stdSimplexBoundary 2 ∧
     ∃ hb : r '' stdSimplexBoundary 2 ⊆ BdX,
       ¬ (⟨Set.inclusion hb, continuous_inclusion hb⟩ :

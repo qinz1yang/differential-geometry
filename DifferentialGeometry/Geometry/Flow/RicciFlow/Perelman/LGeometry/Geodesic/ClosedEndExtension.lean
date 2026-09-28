@@ -63,7 +63,7 @@ theorem exists_isSolutionOn_extension_past_right_endpoint [CompactSpace M] {a b 
   have hmatch : S.base.metric b = gR b := hinit.symm
   exact ⟨d, hbd, { base := { metric := fun t => if t ≤ b then S.base.metric t else gR t } },
     isSolutionOn_ite_of_ricciFlow S.base.metric gR hab hbd hjoint hR hpdeL hpdeR hmatch,
-    fun t ht => if_pos ht,
+    fun t ht => ite_eq_left ht,
     metricCLMSection_jointContMDiffOn_ite_of_ricciFlow S.base.metric gR hab hbd hjoint hR
       hpdeL hpdeR hmatch⟩
 
@@ -153,7 +153,7 @@ theorem lRegularizedCurve_eq_of_metric_eq_of_le {S₁ : SolutionOn (I := I) (M :
       h (HasLRegularizedCurveAt.of_metric_eq_of_le h₂ (fun t ht => (hreg t ht).2)
         (fun t ht h₂' => (hmetric t ht ((hreg t ht).2 h₂')).symm))
     unfold lRegularizedCurve
-    rw [dif_neg h, dif_neg h']
+    rw [dite_eq_right h, dite_eq_right h']
 
 theorem lExp_eq_of_metric_eq_of_le {S₁ : SolutionOn (I := I) (M := M) D₁}
     {S₂ : SolutionOn (I := I) (M := M) D₂} (hS₂ : IsSolutionOn S₂) {T : ℝ}

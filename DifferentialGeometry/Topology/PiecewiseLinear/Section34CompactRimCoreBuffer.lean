@@ -14,7 +14,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 local notation "E2" => EuclideanSpace ℝ (Fin 2)
-local notation "Δ" => stdSimplex ℝ (Fin 3)
+local notation "Δ" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "p" => (stdCenter 1 : Fin 3 → ℝ)
 
 theorem exists_marked_graphDualCell_prisms_triangle

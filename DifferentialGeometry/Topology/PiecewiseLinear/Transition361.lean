@@ -317,7 +317,7 @@ theorem Moise352.exists_approx_image_eq_of_isOpen {m : ℕ} (h352 : Moise352.{u}
       min (φ x) (min (r (e ⟨x, hx⟩)) (δ (e ⟨x, hx⟩))) else 0
     have hε : ∀ x : U, ε x = min (φ x) (min (r (e x)) (δ (e x))) := by
       intro x
-      simp only [ε, dif_pos x.property]
+      simp only [ε, dite_eq_left x.property]
     have hεcont : ContinuousOn ε U := by
       rw [continuousOn_iff_continuous_domRestrict]
       have heq : U.domRestrict ε = fun x : U => min (φ x) (min (r (e x)) (δ (e x))) := funext hε

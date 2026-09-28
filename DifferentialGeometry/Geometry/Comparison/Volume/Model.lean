@@ -84,7 +84,7 @@ theorem modelRadius_neg_sq (q t : ℝ) (hq : 0 ≤ q) :
   · have hKpos : ¬0 < -(q ^ 2) :=
       not_lt.mpr (neg_nonpos.mpr (sq_nonneg q))
     have hK0 : -(q ^ 2) ≠ 0 := neg_ne_zero.mpr (pow_ne_zero 2 hq0)
-    rw [modelRadius, if_neg hKpos, if_neg hK0, hyperbolicSn, if_neg hq0]
+    rw [modelRadius, ite_eq_right hKpos, ite_eq_right hK0, hyperbolicSn, ite_eq_right hq0]
     rw [show Real.sqrt (-(-(q ^ 2))) = q by
       rw [neg_neg, Real.sqrt_sq_eq_abs, abs_of_nonneg hq]]
 
@@ -127,7 +127,7 @@ theorem hasDerivAt_modelRadiusDeriv (K t : ℝ) :
       simp [modelRadiusDeriv, hK]]
     convert h using 1
     · simp
-    · rw [modelRadius, if_pos hK]
+    · rw [modelRadius, ite_eq_left hK]
       field_simp
       rw [Real.sq_sqrt hK.le]
       simp
@@ -145,7 +145,7 @@ theorem hasDerivAt_modelRadiusDeriv (K t : ℝ) :
         simp [modelRadiusDeriv, hK, hK0]]
       convert h using 1
       · simp
-      · rw [modelRadius, if_neg hK, if_neg hK0]
+      · rw [modelRadius, ite_eq_right hK, ite_eq_right hK0]
         field_simp
         rw [Real.sq_sqrt hneg.le]
         simp
@@ -178,7 +178,7 @@ theorem modelRadius_energy (K t : ℝ) :
     modelRadiusDeriv K t ^ 2 + K * modelRadius K t ^ 2 = 1 := by
   by_cases hK : 0 < K
   · have hq0 : Real.sqrt K ≠ 0 := (Real.sqrt_ne_zero').2 hK
-    rw [modelRadiusDeriv, if_pos hK, modelRadius, if_pos hK]
+    rw [modelRadiusDeriv, ite_eq_left hK, modelRadius, ite_eq_left hK]
     have htrig := Real.cos_sq_add_sin_sq (Real.sqrt K * t)
     have hsqrt := Real.sq_sqrt hK.le
     field_simp
@@ -188,8 +188,8 @@ theorem modelRadius_energy (K t : ℝ) :
       simp [modelRadiusDeriv, modelRadius]
     · have hneg : 0 < -K := neg_pos.mpr (lt_of_le_of_ne (le_of_not_gt hK) hK0)
       have hq0 : Real.sqrt (-K) ≠ 0 := (Real.sqrt_ne_zero').2 hneg
-      rw [modelRadiusDeriv, if_neg hK, if_neg hK0,
-        modelRadius, if_neg hK, if_neg hK0]
+      rw [modelRadiusDeriv, ite_eq_right hK, ite_eq_right hK0,
+        modelRadius, ite_eq_right hK, ite_eq_right hK0]
       have hhyp := Real.cosh_sq_sub_sinh_sq (Real.sqrt (-K) * t)
       have hsqrt := Real.sq_sqrt hneg.le
       field_simp
@@ -204,13 +204,13 @@ theorem modelRadius_pos {K t : ℝ} (ht : modelRadiusAdmissible K t) :
     have hqtlt : Real.sqrt K * t < Real.pi := by
       have h := (lt_div_iff₀ hqpos).mp (hupper hK)
       simpa [mul_comm] using h
-    rw [modelRadius, if_pos hK]
+    rw [modelRadius, ite_eq_left hK]
     exact div_pos (Real.sin_pos_of_pos_of_lt_pi hqtpos hqtlt) hqpos
   · by_cases hK0 : K = 0
     · simpa [modelRadius, hK0] using ht
     · have hneg : 0 < -K := neg_pos.mpr (lt_of_le_of_ne (le_of_not_gt hK) hK0)
       have hqpos : 0 < Real.sqrt (-K) := Real.sqrt_pos.2 hneg
-      rw [modelRadius, if_neg hK, if_neg hK0]
+      rw [modelRadius, ite_eq_right hK, ite_eq_right hK0]
       exact div_pos (Real.sinh_pos_iff.2 (mul_pos hqpos ht)) hqpos
 
 theorem modelRadius_nonneg {K t : ℝ} (ht : 0 ≤ t)
@@ -221,13 +221,13 @@ theorem modelRadius_nonneg {K t : ℝ} (ht : 0 ≤ t)
     have hqtpi : Real.sqrt K * t ≤ Real.pi := by
       have h := (le_div_iff₀ hqpos).mp (hadm.2 hK)
       simpa only [mul_comm] using h
-    rw [modelRadius, if_pos hK]
+    rw [modelRadius, ite_eq_left hK]
     exact div_nonneg (Real.sin_nonneg_of_nonneg_of_le_pi hqt0 hqtpi) hqpos.le
   · by_cases hK0 : K = 0
     · simpa [modelRadius, hK0] using ht
     · have hneg : 0 < -K := neg_pos.mpr (lt_of_le_of_ne (le_of_not_gt hK) hK0)
       have hqpos : 0 < Real.sqrt (-K) := Real.sqrt_pos.2 hneg
-      rw [modelRadius, if_neg hK, if_neg hK0]
+      rw [modelRadius, ite_eq_right hK, ite_eq_right hK0]
       exact div_nonneg
         (Real.sinh_nonneg_iff.2 (mul_nonneg hqpos.le ht)) hqpos.le
 
@@ -542,7 +542,7 @@ theorem modelVolume_one_two_pi : modelVolume 1 2 Real.pi = 4 * Real.pi := by
     rw [modelRadialVolume]
     have hdens : ∀ t : ℝ, modelDensity 1 1 t = Real.sin t := by
       intro t
-      rw [modelDensity, pow_one, modelRadius, if_pos one_pos]
+      rw [modelDensity, pow_one, modelRadius, ite_eq_left one_pos]
       norm_num
     simp_rw [hdens]
     rw [integral_sin, Real.cos_zero, Real.cos_pi]

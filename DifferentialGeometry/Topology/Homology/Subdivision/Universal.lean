@@ -1,4 +1,5 @@
 import DifferentialGeometry.Topology.Homology.Subdivision.Restriction
+import DifferentialGeometry.Topology.Simplex.Coordinates
 
 set_option autoImplicit false
 
@@ -8,20 +9,32 @@ noncomputable section
 namespace DifferentialGeometry.Homology
 private abbrev simplexAmbient (n : ℕ) := ULift.{u} (Fin (n + 1) → ℝ)
 private def simplexRegion (n : ℕ) : Set (simplexAmbient.{u} n) :=
-  ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1))
+  ULift.down ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))
 private theorem convex_simplexRegion (n : ℕ) : Convex ℝ (simplexRegion.{u} n) := by
   intro x hx y hy a b ha hb hab
-  exact (convex_stdSimplex ℝ (Fin (n + 1))) hx hy ha hb hab
+  exact (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))) hx hy ha hb hab
 private def simplexRegionHomeo (n : ℕ) :
     SimplexCategory.toTop.{u}.obj ⦋n⦌ ≃ₜ simplexRegion.{u} n where
-  toFun x := ⟨⟨x.down.val⟩, x.down.property⟩
-  invFun x := ⟨⟨x.val.down, x.property⟩⟩
-  left_inv _ := rfl
-  right_inv _ := rfl
+  toFun x := ⟨⟨x.down.weights⟩, x.down.weights_nonneg, x.down.total_of_fintype⟩
+  invFun x := ⟨(Convexity.StdSimplex.coordinateEquiv ℝ (Fin (n + 1))).symm
+    ⟨x.val.down, x.property⟩⟩
+  left_inv x := by
+    apply ULift.ext
+    exact (Convexity.StdSimplex.coordinateEquiv ℝ (Fin (n + 1))).left_inv x.down
+  right_inv x := by
+    apply Subtype.ext
+    apply ULift.ext
+    exact congrArg Subtype.val
+      ((Convexity.StdSimplex.coordinateEquiv ℝ (Fin (n + 1))).right_inv
+        ⟨x.val.down, x.property⟩)
   continuous_toFun :=
-    (continuous_uliftUp.comp (continuous_subtype_val.comp continuous_uliftDown)).subtype_mk _
+    (continuous_uliftUp.comp
+      ((Convexity.StdSimplex.isEmbedding_toFun_comp_weights ℝ (Fin (n + 1))).continuous.comp
+        continuous_uliftDown)).subtype_mk _
   continuous_invFun :=
-    continuous_uliftUp.comp ((continuous_uliftDown.comp continuous_subtype_val).subtype_mk _)
+    continuous_uliftUp.comp
+      ((Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin (n + 1))).symm.continuous.comp
+        ((continuous_uliftDown.comp continuous_subtype_val).subtype_mk _))
 private def simplexCoordinatesMap {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
     simplexAmbient.{u} n →L[ℝ] simplexAmbient.{u} m where
   toFun x := ⟨FunOnFinite.linearMap ℝ ℝ f x.down⟩
@@ -36,15 +49,20 @@ private def simplexCoordinatesMap {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
 private theorem simplexCoordinatesMap_mem {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
     Set.MapsTo (simplexCoordinatesMap.{u} f) (simplexRegion n) (simplexRegion m) := by
   intro x hx
-  exact (stdSimplex.map f ⟨x.down, hx⟩).property
+  exact (Convexity.StdSimplex.coordinateMap f ⟨x.down, hx⟩).property
 private def simplexEmbedding (n : ℕ) :
     SimplexCategory.toTop.{u}.obj ⦋n⦌ ⟶ TopCat.of (simplexAmbient.{u} n) :=
-  TopCat.ofHom ⟨fun x ↦ ⟨x.down.val⟩,
-    continuous_uliftUp.comp (continuous_subtype_val.comp continuous_uliftDown)⟩
+  TopCat.ofHom ⟨fun x ↦ ⟨x.down.weights⟩,
+    continuous_uliftUp.comp
+      ((Convexity.StdSimplex.isEmbedding_toFun_comp_weights ℝ (Fin (n + 1))).continuous.comp
+        continuous_uliftDown)⟩
 private theorem simplexEmbedding_naturality {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
     SimplexCategory.toTop.map f ≫ simplexEmbedding m =
       simplexEmbedding n ≫ TopCat.ofHom (⟨simplexCoordinatesMap f,
-        (simplexCoordinatesMap f).continuous⟩ : C(simplexAmbient n, simplexAmbient m)) := rfl
+        (simplexCoordinatesMap f).continuous⟩ : C(simplexAmbient n, simplexAmbient m)) := by
+  ext x : 1
+  apply ULift.ext
+  exact congrArg Subtype.val (Convexity.StdSimplex.coordinateEquiv_map f x.down)
 
 private def simplexSupportedIso (n : ℕ) :
     TopCat.toSSet.obj (SimplexCategory.toTop.{u}.obj ⦋n⦌) ≅
@@ -71,9 +89,12 @@ private def simplexSupportedMap {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
 private theorem simplexSupportedIso_naturality {n m : ℕ} (f : ⦋n⦌ ⟶ ⦋m⦌) :
     TopCat.toSSet.map (SimplexCategory.toTop.map f) ≫ (simplexSupportedIso.{u} m).hom =
       (simplexSupportedIso.{u} n).hom ≫ simplexSupportedMap f := by
-  ext d σ
-  apply Subtype.ext
-  rfl
+  apply (cancel_mono (smallSingularSimplices (TopCat.of (simplexAmbient.{u} m))
+    (fun _ : Unit ↦ simplexRegion m)).ι).mp
+  simp only [Category.assoc, simplexSupportedIso_inclusion, simplexSupportedMap,
+    smallSingularSimplicesMap_ι]
+  rw [← Category.assoc, simplexSupportedIso_inclusion, ← Functor.map_comp,
+    ← Functor.map_comp, simplexEmbedding_naturality]
 
 variable {k : Type u} [Ring k] (R : ModuleCat.{u} k)
 
@@ -219,19 +240,20 @@ theorem barycentricSimplexChain_boundary (n : ℕ) :
 
 private theorem simplexEmbedding_fundamental (n : ℕ) :
     (TopCat.toSSet.map (simplexEmbedding.{u} n)).app (op ⦋n⦌) (fundamentalSingularSimplex n) =
-      affineSingularSimplex (fun i ↦ ULift.up (stdSimplex.vertex (S := ℝ) i).val) := by
+      affineSingularSimplex (fun i ↦ ULift.up (Pi.single i (1 : ℝ))) := by
   apply ((TopCat.of (simplexAmbient.{u} n)).toSSetObjEquiv (op ⦋n⦌)).injective
   apply ContinuousMap.ext
   intro x
   apply ULift.ext
-  change x.val = (∑ i, x i • ULift.up (stdSimplex.vertex (S := ℝ) i).val).down
-  change x.val = (ULift.moduleEquiv : simplexAmbient.{u} n ≃ₗ[ℝ] (Fin (n + 1) → ℝ))
-    (∑ i, x i • ULift.up (stdSimplex.vertex (S := ℝ) i).val)
+  change (x.weights : Fin (n + 1) → ℝ) =
+    (∑ i, x.weights i • ULift.up (Pi.single i (1 : ℝ))).down
+  change (x.weights : Fin (n + 1) → ℝ) =
+    (ULift.moduleEquiv : simplexAmbient.{u} n ≃ₗ[ℝ] (Fin (n + 1) → ℝ))
+      (∑ i, x.weights i • ULift.up (Pi.single i (1 : ℝ)))
   rw [map_sum]
   simp only [map_smul, ULift.moduleEquiv_apply]
   ext i
   simp [Finset.sum_apply, Pi.single_apply]
-  rfl
 
 
 theorem fundamentalSimplexChain_straightening (n : ℕ) :

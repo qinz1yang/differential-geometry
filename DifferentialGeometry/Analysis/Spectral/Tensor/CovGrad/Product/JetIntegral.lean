@@ -4,6 +4,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNor
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.Garding.PointwiseCurvatureBound
 import Mathlib.Analysis.MeanInequalities
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq
+  riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
+
 noncomputable section
 
 open Bundle Manifold MeasureTheory Set Filter DifferentialGeometry.Tensor0SBundle
@@ -128,10 +131,12 @@ theorem grid_prod_int_le
     calc (∏ m ∈ Zset, riemannianFiberNormSq (I := I) (M := M) g₀ r (s + e m) x
             ((iteratedCovGrad (I := I) g₀ r s (e m) P).toSection x))
         ≤ ∏ _m ∈ Zset, Λ ^ 2 := by
-          apply Finset.prod_le_prod (fun m _ => hnn (e m) x)
-          intro m hm
-          have hem0 : e m = 0 := by have := (Finset.mem_filter.mp hm).2; omega
-          rw [hem0]; exact hΛsup x
+          apply Finset.prod_le_prod₀
+          · intro m hm
+            exact hnn (e m) x
+          · intro m hm
+            have hem0 : e m = 0 := by have := (Finset.mem_filter.mp hm).2; omega
+            rw [hem0]; exact hΛsup x
       _ = Λ ^ (2 * Zset.card) := by rw [Finset.prod_const, ← pow_mul]
   have hZsum0 : ∑ m ∈ Zset, e m = 0 := by
     apply Finset.sum_eq_zero

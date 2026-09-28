@@ -12,6 +12,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Coefficien
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Curvature.DecompositionMonomialBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -170,7 +173,7 @@ theorem exists_ricciOrderZeroRiemannCoeff_metricPerturbationPath_riemannianFiber
               (metricPerturbationPath (I := I) g₀ T 0 hδ hδZ s)).toSection x) ≤ Λ ^ 2 := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_diagonalProductGrid_le
+    exists_ricciOrderZeroRiemannCoeff_sub_covariant_jet_bound
       (I := I) (M := M) g₀ (max_lt hδ₀ one_pos)
   obtain ⟨Csob, hCsob_nn, hCsob⟩ :=
     exists_Csob_convexPerturbation_pointwise_C2_le (I := I) (M := M) (E := E) g₀ a ha_super

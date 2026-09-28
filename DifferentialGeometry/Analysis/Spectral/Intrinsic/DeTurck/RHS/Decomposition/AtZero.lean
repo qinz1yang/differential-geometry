@@ -195,7 +195,7 @@ theorem ricciDecomposition_app
     intro x v w
     rw [bilin_smul (I := I) (M := M), bilin_smul (I := I) (M := M), hT x v w]
   have hprim :=
-    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricci_curvature_coefficient_difference_apply_eq_residual_add_hessian
       (I := I) (M := M) g
       (metricPerturbationPath (I := I) g T 0 hδ hδZ s) (s • T) htie hPsymm T
   have hC2 := ricciDecomposition2_eq (I := I) (M := M) g T hT hδ hδZ s

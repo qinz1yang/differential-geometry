@@ -1,5 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.CovariantJet.PointwiseBounds
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 
@@ -212,7 +215,7 @@ theorem capSmul (g₀ : SmoothRiemannianMetric I M) (P : SmoothCcTensor g₀ 0 2
     rw [DifferentialGeometry.Analysis.Sobolev.iteratedCovGrad_smul_real
       (I := I) (M := M) g₀ r c i t X,
       SmoothCcTensor.toSection_smul, ContMDiffSection.coe_smul, Pi.smul_apply,
-      DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r (c + i) x t _]
+      DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ r (c + i) x t _]
   rw [heq, mul_assoc]
   exact mul_le_mul_of_nonneg_left (hX i x) (sq_nonneg t)
 

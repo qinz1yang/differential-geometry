@@ -1,4 +1,4 @@
-import Mathlib.Analysis.Convex.StdSimplex
+import Mathlib.Geometry.Convex.ConvexSpace.PathConnectedSpaceStdSimplex
 import Mathlib.Analysis.Complex.Basic
 import Mathlib.Analysis.Convex.GaugeRescale
 import Mathlib.Tactic.FinCases
@@ -65,46 +65,54 @@ theorem planeTriangle_frontier_edges {z : ℂ} (hz : z ∈ frontier planeTriangl
 
 /-- The original barycentric 2-simplex and the actual planar triangle are
 homeomorphic by the affine coordinates z = t1 + i t2. -/
-def simplexTriangleHomeomorph : stdSimplex ℝ (Fin 3) ≃ₜ planeTriangle where
-  toFun t := ⟨⟨t.val 1, t.val 2⟩, t.property.1 1, t.property.1 2, by
-    change t.val 1 + t.val 2 ≤ 1
-    have ht : t.val 0 + t.val 1 + t.val 2 = 1 := by
-      simpa [Fin.sum_univ_succ, add_assoc] using t.property.2
-    linarith [t.property.1 0]⟩
-  invFun z := ⟨![1 - z.val.re - z.val.im, z.val.re, z.val.im], by
-    constructor
-    · intro i
-      fin_cases i
-      · change 0 ≤ 1 - z.val.re - z.val.im
-        linarith [z.property.2.2]
-      · exact z.property.1
-      · exact z.property.2.1
-    · simp [Fin.sum_univ_succ]⟩
+def simplexTriangleHomeomorph : Convexity.StdSimplex ℝ (Fin 3) ≃ₜ planeTriangle where
+  toFun t := ⟨⟨t.weights 1, t.weights 2⟩, t.weights_nonneg 1, t.weights_nonneg 2, by
+    change t.weights 1 + t.weights 2 ≤ 1
+    have ht := t.total_of_fintype
+    simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero] at ht
+    change t.weights 0 + (t.weights 1 + t.weights 2) = 1 at ht
+    linarith [t.weights_nonneg 0]⟩
+  invFun z :=
+    { weights := Finsupp.equivFunOnFinite.symm ![1 - z.val.re - z.val.im, z.val.re, z.val.im]
+      nonneg := by
+        intro i
+        fin_cases i
+        · change 0 ≤ 1 - z.val.re - z.val.im
+          linarith [z.property.2.2]
+        · exact z.property.1
+        · exact z.property.2.1
+      total := by
+        rw [Finsupp.sum_fintype _ _ (by simp)]
+        change ∑ i : Fin 3, (![1 - z.val.re - z.val.im, z.val.re, z.val.im] i) = 1
+        simp [Fin.sum_univ_succ] }
   left_inv t := by
-    apply Subtype.ext
-    funext i
+    ext i
     fin_cases i
-    · change 1 - t.val 1 - t.val 2 = t.val 0
-      have ht : t.val 0 + t.val 1 + t.val 2 = 1 := by
-        simpa [Fin.sum_univ_succ, add_assoc] using t.property.2
+    · change 1 - t.weights 1 - t.weights 2 = t.weights 0
+      have ht := t.total_of_fintype
+      simp only [Fin.sum_univ_succ, Fin.sum_univ_zero, add_zero] at ht
+      change t.weights 0 + (t.weights 1 + t.weights 2) = 1 at ht
       linarith
     · rfl
     · rfl
   right_inv z := by rfl
   continuous_toFun := by
     apply Continuous.subtype_mk
-    have hc : Continuous (fun t : stdSimplex ℝ (Fin 3) =>
-        (t.val 1 : ℂ) + (t.val 2 : ℂ) * Complex.I) :=
-      (Complex.continuous_ofReal.comp ((continuous_apply 1).comp continuous_subtype_val)).add
-        ((Complex.continuous_ofReal.comp ((continuous_apply 2).comp continuous_subtype_val)).mul
-          continuous_const)
+    have hc : Continuous (fun t : Convexity.StdSimplex ℝ (Fin 3) =>
+        (t.weights 1 : ℂ) + (t.weights 2 : ℂ) * Complex.I) :=
+      (Complex.continuous_ofReal.comp
+        (Convexity.StdSimplex.continuous_weights_apply ℝ 1)).add
+        ((Complex.continuous_ofReal.comp
+          (Convexity.StdSimplex.continuous_weights_apply ℝ 2)).mul continuous_const)
     apply hc.congr
     intro t
     apply Complex.ext <;> simp
   continuous_invFun := by
-    apply Continuous.subtype_mk
+    rw [(Convexity.StdSimplex.isEmbedding_toFun_comp_weights ℝ (Fin 3)).continuous_iff]
     apply continuous_pi
     intro i
-    fin_cases i <;> fun_prop
+    change Continuous (fun z : planeTriangle =>
+      ![1 - z.val.re - z.val.im, z.val.re, z.val.im] i)
+    fin_cases i <;> dsimp <;> fun_prop
 
 end DifferentialGeometry.Topology

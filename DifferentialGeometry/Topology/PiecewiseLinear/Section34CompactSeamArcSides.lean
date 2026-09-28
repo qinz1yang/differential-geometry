@@ -49,7 +49,7 @@ theorem Section34CompactCutFrame.not_arc_interior_on_split_disk_boundary
       · exact hvu hv)
   have hlocalA := hc.swap.eventually_mem_arc_iff hα hAJ hx
   obtain ⟨q, hq, hqb⟩ := (hcut.isPLCellOn_splitDiskImage hf₁ e).exists_isPLHomeomorphOn_stdSimplex
-  have hq' : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3))
+  have hq' : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
       (section34CompactVertexBallImage src f₁ w ∩ section34CompactVertexBallImage src f₁ u) :=
     heq ▸ hq
   have hDU : section34CompactVertexBallImage src f₁ w ∩

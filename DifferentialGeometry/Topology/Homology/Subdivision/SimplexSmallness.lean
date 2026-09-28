@@ -13,32 +13,35 @@ universe u v
 namespace DifferentialGeometry.Homology
 
 private theorem convex_coordinateSimplex (n : ℕ) :
-    Convex ℝ (ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1)) :
+    Convex ℝ (ULift.down ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)) :
       Set (ULift.{u} (Fin (n + 1) → ℝ))) := by
   intro x hx y hy a b ha hb hab
-  exact (convex_stdSimplex ℝ (Fin (n + 1))) hx hy ha hb hab
+  exact (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin (n + 1))) hx hy ha hb hab
 
 
 def affineSimplexCoordinateLift {n : ℕ} (v : Fin (n + 1) → ULift.{u} (Fin (n + 1) → ℝ))
-    (hv : ∀ i, (v i).down ∈ stdSimplex ℝ (Fin (n + 1))) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 1))) :=
-  ⟨fun x ↦ ⟨(affineSimplex v x).down,
-      range_affineSimplex_subset v (convex_coordinateSimplex n) hv ⟨x, rfl⟩⟩,
-    (continuous_uliftDown.comp (affineSimplex v).continuous).subtype_mk _⟩
+    (hv : ∀ i, (v i).down ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :
+    C(Convexity.StdSimplex ℝ (Fin (n + 1)), Convexity.StdSimplex ℝ (Fin (n + 1))) :=
+  ⟨fun x ↦ (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin (n + 1))).symm
+      ⟨(affineSimplex v x).down,
+        range_affineSimplex_subset v (convex_coordinateSimplex n) hv ⟨x, rfl⟩⟩,
+    (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin (n + 1))).symm.continuous.comp
+      ((continuous_uliftDown.comp (affineSimplex v).continuous).subtype_mk _)⟩
 
 
 theorem dist_affineSimplexCoordinateLift_le {n : ℕ}
     (v : Fin (n + 1) → ULift.{u} (Fin (n + 1) → ℝ))
-    (hv : ∀ i, (v i).down ∈ stdSimplex ℝ (Fin (n + 1))) {D : ℝ}
+    (hv : ∀ i, (v i).down ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) {D : ℝ}
     (hD : ∀ i j, dist (v i) (v j) ≤ D)
-    (x y : stdSimplex ℝ (Fin (n + 1))) :
-    dist (affineSimplexCoordinateLift v hv x) (affineSimplexCoordinateLift v hv y) ≤ D :=
-  dist_affineSimplex_le v hD x y
+    (x y : Convexity.StdSimplex ℝ (Fin (n + 1))) :
+    dist (affineSimplexCoordinateLift v hv x) (affineSimplexCoordinateLift v hv y) ≤ D := by
+  change dist (affineSimplex v x) (affineSimplex v y) ≤ D
+  exact dist_affineSimplex_le v hD x y
 
 
 def affineSingularSimplexCoordinateLift {n : ℕ}
     (v : Fin (n + 1) → ULift.{u} (Fin (n + 1) → ℝ))
-    (hv : ∀ i, (v i).down ∈ stdSimplex ℝ (Fin (n + 1))) :
+    (hv : ∀ i, (v i).down ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :
     TopCat.toSSet.obj (SimplexCategory.toTop.{u}.obj ⦋n⦌) _⦋n⦌ :=
   ((SimplexCategory.toTop.obj ⦋n⦌).toSSetObjEquiv (op ⦋n⦌)).symm
     ⟨fun x ↦ ULift.up (affineSimplexCoordinateLift v hv x),
@@ -47,7 +50,7 @@ def affineSingularSimplexCoordinateLift {n : ℕ}
 
 theorem affineSingularSimplexCoordinateLift_embedding {n : ℕ}
     (v : Fin (n + 1) → ULift.{u} (Fin (n + 1) → ℝ))
-    (hv : ∀ i, (v i).down ∈ stdSimplex ℝ (Fin (n + 1))) :
+    (hv : ∀ i, (v i).down ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) :
     (TopCat.toSSet.map (simplexCoordinateEmbedding n)).app (op ⦋n⦌)
         (affineSingularSimplexCoordinateLift v hv) = affineSingularSimplex v := by
   apply ((TopCat.of (ULift.{u} (Fin (n + 1) → ℝ))).toSSetObjEquiv (op ⦋n⦌)).injective
@@ -75,12 +78,12 @@ variable (X : TopCat.{u}) {ι : Type v} (U : ι → Set X)
 
 private theorem affineMeshSubmodule_le_coordinate_map {n : ℕ}
     (σ : TopCat.toSSet.obj X _⦋n⦌) {δ : ℝ}
-    (hsmall : ∀ τ : C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 1))),
+    (hsmall : ∀ τ : C(Convexity.StdSimplex ℝ (Fin (n + 1)), Convexity.StdSimplex ℝ (Fin (n + 1))),
       (∀ a b, dist (τ a) (τ b) < δ) →
         ((X.toSSetObjEquiv (op ⦋n⦌)).symm ((X.toSSetObjEquiv (op ⦋n⦌) σ).comp τ)) ∈
           (smallSingularSimplices X U).obj (op ⦋n⦌)) {D : ℝ} (hDδ : D < δ) :
     affineMeshSubmodule R
-      (ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1)) : Set (ULift.{u} (Fin (n + 1) → ℝ))) n D ≤
+      (ULift.down ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)) : Set (ULift.{u} (Fin (n + 1) → ℝ))) n D ≤
     ((LinearMap.range ((smallChainMap X U R).f n).hom).comap
       ((SSet.chainComplexMap (TopCat.toSSet.map (singularSimplexMap X σ)) R).f n).hom).map
       ((SSet.chainComplexMap (TopCat.toSSet.map (simplexCoordinateEmbedding n)) R).f n).hom := by
@@ -123,10 +126,10 @@ theorem exists_small_subdivision_power_generator
           ((TopCat.toSSet.obj X).ιChainComplex (R := R) σ r) ∈
         LinearMap.range ((smallChainMap X U R).f n).hom := by
   let v₀ : Fin (n + 1) → ULift.{u} (Fin (n + 1) → ℝ) :=
-    fun i ↦ ULift.up (stdSimplex.vertex (S := ℝ) i).val
+    fun i ↦ ULift.up (Pi.single i (1 : ℝ))
   let D₀ : ℝ := Metric.diam (Set.range v₀)
-  have hv₀ : ∀ i, (v₀ i).down ∈ stdSimplex ℝ (Fin (n + 1)) :=
-    fun i ↦ (stdSimplex.vertex (S := ℝ) i).property
+  have hv₀ : ∀ i, (v₀ i).down ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)) :=
+    fun i ↦ Convexity.StdSimplex.single_mem_coordinateSet ℝ i
   have hD₀ : ∀ i j, dist (v₀ i) (v₀ j) ≤ D₀ := fun i j ↦
     Metric.dist_le_diam_of_mem (Set.finite_range v₀).isBounded ⟨i, rfl⟩ ⟨j, rfl⟩
   obtain ⟨δ, hδ, hsmall⟩ := exists_small_precomp_radius X U hopen hcover σ
@@ -160,7 +163,7 @@ theorem exists_small_subdivision_power_generator
       congrArg (fun q ↦ ModuleCat.Hom.hom q r) hJfund] at he
     exact he
   have hmesh : J.f n c ∈ affineMeshSubmodule R
-      (ULift.down ⁻¹' stdSimplex ℝ (Fin (n + 1)) : Set (ULift.{u} (Fin (n + 1) → ℝ)))
+      (ULift.down ⁻¹' Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)) : Set (ULift.{u} (Fin (n + 1) → ℝ)))
       n (((n : ℝ) / (n + 1)) ^ m * D₀) := by
     rw [hJc]
     exact (hN m hm).2 _ (affineGenerator_mem_affineMeshSubmodule R v₀ hv₀ hD₀ r)

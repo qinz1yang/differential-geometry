@@ -1158,7 +1158,7 @@ private theorem hasCanonicalWindow_of_finite_metric_stage
   intro f hf hdisj hs R
   exact hasCanonicalWindow_of_finite_metric P.smoothOrientation hδ f hf hdisj hs R
 
-private theorem exists_prepared_horn_cutoff_event_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds :
+private theorem exists_prepared_horn_cutoff_event_with_original_neck_bounds_and_canonical_windows :
     ∃ (c : ℝ) (_ : 4 ≤ c) (A : ℝ) (hA : 0 < A) (Kreset : ℝ), 3 ≤ Kreset ∧
       ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
       ∀ η : ℝ, 0 < η →
@@ -1606,7 +1606,7 @@ private theorem exists_prepared_horn_cutoff_event_at_scale_with_canonical_window
             ∀ j, F.neck (e j) = orientedRotatedNeck (NOriginal j) (hδOriginal j)
               hδ1 (rotation j) (hmark j) (side j) (horder j) := by
   obtain ⟨c, hc, A, hA, Kreset, hKreset, hfamily⟩ :=
-    exists_prepared_horn_cutoff_event_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds.{u}
+    exists_prepared_horn_cutoff_event_with_original_neck_bounds_and_canonical_windows.{u}
   refine ⟨c, hc, A, hA, Kreset, hKreset, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
   obtain ⟨δ, hδ, hδ1, hδη, ε₀, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
@@ -2004,7 +2004,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ}
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 private theorem exists_original_backward_transfer
-    {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
+    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {i : Fin H.eventCount}
     {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (hP : H.stage i.castSucc = P) (hQ : H.stage i.succ = Q)
     (ha : H.time i.castSucc = a) (hs : H.time i.succ = s)
@@ -2077,7 +2077,7 @@ private theorem exists_original_backward_transfer
   exact ⟨B.orientedRotatedNeck (hδ j) hδ1 (rotation j) (hmarkH j) (side j) (horder j)⟩
 
 private theorem exists_record_from_original_backward_with_static
-    {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
+    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {i : Fin H.eventCount}
     {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (hP : H.stage i.castSucc = P) (hQ : H.stage i.succ = Q)
     (ha : H.time i.castSucc = a) (hs : H.time i.succ = s)
@@ -2148,7 +2148,7 @@ private theorem exists_record_from_original_backward_with_static
     exact ⟨hcapNeck, hcapScale, hwitness, hinclusion, hwindow, hcap, hcanonical⟩
 
 private theorem exists_record_from_original_backward_with_neck
-    {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
+    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {i : Fin H.eventCount}
     {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (hP : H.stage i.castSucc = P) (hQ : H.stage i.succ = Q)
     (ha : H.time i.castSucc = a) (hs : H.time i.succ = s)
@@ -2193,7 +2193,7 @@ private theorem exists_record_from_original_backward_with_neck
   exact ⟨G, hδG, hkG, hNG, hscaleG⟩
 
 private theorem exists_record_from_original_backward
-    {P₀ P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory P₀} {i : Fin H.eventCount}
+    {P Q : OrientedThreeStage.{u}} {H : RetainedCoreHistory.{u}} {i : Fin H.eventCount}
     {a s : ℝ} (E : MetricCutCapEvent P Q a s)
     (hP : H.stage i.castSucc = P) (hQ : H.stage i.succ = Q)
     (ha : H.time i.castSucc = a) (hs : H.time i.succ = s)
@@ -2247,7 +2247,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ}
     (DifferentialGeometry.Geometry.isSigmaCompact_of_isOpen ThreeModel G.terminalRegularOpen.isOpen)
 
 private theorem exists_append_metricCutCapEvent
-    {P : OrientedThreeStage.{u}} {g : P.Metric} (H : RetainedCoreHistory P)
+    {P : OrientedThreeStage.{u}} {g : P.Metric} (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     {Q : OrientedThreeStage.{u}} {s : ℝ}
@@ -2256,7 +2256,7 @@ private theorem exists_append_metricCutCapEvent
     (hOld : E.old = E.transition.trace.retainedCore)
     (hinit : E.incoming.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) :
-    ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory),
+    ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory),
       A.IsPrefixOf B ∧ K.horizon = s ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = s ∧ K.stage (Fin.last K.eventCount) = Q ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
@@ -2326,14 +2326,14 @@ private theorem original_backward_of_cut_neck_family
     ((B.monoDelta (hδ (e.symm j)) hδ1).rotatedDatum (rotation (e.symm j))
       (hmark (e.symm j)) (side (e.symm j)))).lowerOrder (horder (e.symm j))⟩
 
-private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds :
+private theorem exists_horn_cutoff_history_extension_with_static_caps_and_original_neck_bounds :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
       4 ≤ recenterConstant ∧
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -2343,7 +2343,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -2492,7 +2492,8 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
                           parameters.recenterConstant_ge_four (eB b) ((w (eB b)).window u))
                           ((S b).inclusion ((S b).witness.cap z)))) := by
   classical
-  obtain ⟨c, hc, A, hA, Kreset, hKreset, hfamily⟩ := exists_prepared_horn_cutoff_event_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds.{u}
+  obtain ⟨c, hc, A, hA, Kreset, hKreset, hfamily⟩ :=
+    exists_prepared_horn_cutoff_event_with_original_neck_bounds_and_canonical_windows.{u}
   refine ⟨StaticCapScaffold.ofCollarLength A hA, c, hc, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
   obtain ⟨δ, hδ, hδ1, hδη, ε₀, hε₀, hmake⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
@@ -2503,7 +2504,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
     hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
     geometry, hgeometry, hcanonical, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
     side, horder, hδ1', e, hscale, hsource, hrecipe, hneck⟩ := hproduce Q hQscale hQnominal
-  have hext : ∃ (K : RetainedCoreHistory P₀) (B : InitialIdentification P₀ g₀ K.toHistory),
+  have hext : ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P₀ g₀ K.toHistory),
       initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
@@ -2560,7 +2561,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -2570,7 +2571,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -2717,7 +2718,8 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_canon
                           transitionEnd_pos hδ f hf hd hs R parameters.recenterConstant
                           parameters.recenterConstant_ge_four (eB b) ((w (eB b)).window u))
                           ((S b).inclusion ((S b).witness.cap z)))) := by
-  obtain ⟨fixed, c, hc, hfamily⟩ := exists_uniform_horn_cutoff_history_extension_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds.{u}
+  obtain ⟨fixed, c, hc, hfamily⟩ :=
+    exists_horn_cutoff_history_extension_with_static_caps_and_original_neck_bounds.{u}
   refine ⟨fixed, c, hc, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
@@ -2742,7 +2744,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_stati
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -2752,7 +2754,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_stati
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -2925,7 +2927,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_stati
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -2935,7 +2937,7 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_stati
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3087,14 +3089,14 @@ private theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_stati
   obtain ⟨δ, ε₀, hδ, hδ1, _, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy 1 zero_lt_one
   exact ⟨δ, ε₀, hδ, hδ1, hε₀, hproduce⟩
 
-theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck_bounds_and_canonical_windows :
+theorem exists_horn_cutoff_history_extension_with_original_neck_bounds_and_canonical_windows :
     ∃ (fixed : StaticCapScaffold) (recenterConstant : ℝ),
       4 ≤ recenterConstant ∧
     ∀ Dcap : ℝ, 0 < Dcap → transitionEnd < Dcap + 1 → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3104,7 +3106,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3168,7 +3170,8 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, hfamily⟩ := exists_uniform_horn_cutoff_history_extension_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds.{u}
+  obtain ⟨fixed, c, hc, hfamily⟩ :=
+    exists_horn_cutoff_history_extension_with_static_caps_and_original_neck_bounds.{u}
   refine ⟨fixed, c, hc, ?_⟩
   intro Dcap hDcap hDfit m accuracy haccuracy η hη
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
@@ -3197,7 +3200,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_window
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3207,7 +3210,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_window
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3299,7 +3302,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3309,7 +3312,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3372,7 +3375,8 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_original_neck
             ((Nat.card E.transition.trace.tubes.Index : ℝ) * Q ^ (-3 / 2 : ℝ)) ≤
           riemannianVolumeMeasure ThreeModel D.slab.terminalRegularOpen D.terminal.metric Kvol) ∧
         (∀ q ∈ E.capRegion, Q / 4 ≤ metricScalarAt E.outputMetric q) := by
-  obtain ⟨fixed, c, hc, hfamily⟩ := exists_uniform_horn_cutoff_history_extension_at_scale_with_canonical_windows_precision_bound_and_original_neck_bounds.{u}
+  obtain ⟨fixed, c, hc, hfamily⟩ :=
+    exists_horn_cutoff_history_extension_with_static_caps_and_original_neck_bounds.{u}
   refine ⟨fixed, c, hc, ?_⟩
   intro Dcap hDcap m accuracy haccuracy η hη
   obtain ⟨δ, ε₀, hδ, hδ1, hδη, hε₀, hproduce⟩ := hfamily Dcap hDcap m accuracy haccuracy η hη
@@ -3400,7 +3404,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck_p
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3410,7 +3414,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck_p
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3499,7 +3503,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3509,7 +3513,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale_with_record_neck :
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3583,7 +3587,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3593,7 +3597,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_scale :
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3679,7 +3683,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_base_bounded_scale :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3687,7 +3691,7 @@ theorem exists_uniform_horn_cutoff_history_extension_at_base_bounded_scale :
       ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3777,7 +3781,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension_at_base_bounded_scale :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ Λ : ℝ, 0 < δ ∧ δ < 1 ∧ 1 ≤ Λ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3789,7 +3793,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension_at_base_bounded_scale :
         D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3900,7 +3904,7 @@ theorem exists_uniform_horn_cutoff_history_extension_of_cut_necks :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -3908,7 +3912,7 @@ theorem exists_uniform_horn_cutoff_history_extension_of_cut_necks :
       ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -3979,7 +3983,7 @@ theorem exists_uniform_horn_cutoff_history_extension_of_cut_necks :
     hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
     geometry, hgeometry, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
     side, horder, hδ1', e, hscale, hneck⟩ := hmake P hε
-  have hext : ∃ (K : RetainedCoreHistory P₀) (B : InitialIdentification P₀ g₀ K.toHistory),
+  have hext : ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P₀ g₀ K.toHistory),
       initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧
@@ -4030,7 +4034,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension_of_cut_necks :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -4042,7 +4046,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension_of_cut_necks :
         D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -4144,7 +4148,7 @@ theorem exists_uniform_horn_cutoff_history_extension_with_scalar_upper_bound :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -4152,7 +4156,7 @@ theorem exists_uniform_horn_cutoff_history_extension_with_scalar_upper_bound :
       ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -4242,7 +4246,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension_with_scalar_upper_bound 
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -4254,7 +4258,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension_with_scalar_upper_bound 
         D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -4347,7 +4351,7 @@ theorem exists_uniform_horn_cutoff_history_extension :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -4355,7 +4359,7 @@ theorem exists_uniform_horn_cutoff_history_extension :
       ∀ {ε Λ : ℝ} (P : TerminalCorePresentation D ε Λ), ε ≤ ε₀ →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -4440,7 +4444,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension :
     ∀ Dcap : ℝ, 0 < Dcap → ∀ m : ℕ, ∀ accuracy : ℝ, 0 < accuracy →
     ∃ δ : ℝ, 0 < δ ∧ δ < 1 ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -4452,7 +4456,7 @@ theorem exists_neckRadius_horn_cutoff_history_extension :
         D.parameters.delta D.endTime * ρ D.endTime ≤ D.parameters.protectedRadius D.endTime ∧
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters) (Q : ℝ)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric

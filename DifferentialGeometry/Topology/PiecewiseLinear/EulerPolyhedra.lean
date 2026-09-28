@@ -43,7 +43,7 @@ theorem eulerChar_of_isPLBall [FiniteDimensional ℝ E]
   obtain ⟨f, hf⟩ := hK
   calc
     eulerChar K = Homology.eulerChar ℚ (TopCat.of K.space) := eulerChar_eq_singular K ℚ
-    _ = Homology.eulerChar ℚ (TopCat.of (stdSimplex ℝ (Fin (n + 1)))) :=
+    _ = Homology.eulerChar ℚ (TopCat.of (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)))) :=
       (Homology.eulerChar_eq_of_homeomorph ℚ hf.homeomorph).symm
     _ = 1 := eulerChar_stdSimplex n
 

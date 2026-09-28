@@ -186,14 +186,14 @@ theorem laplacianEigenvalueAscending_zero_eq_sInf
     (h_nonempty : (nonzeroLaplacianEigenvalueSet (I := I) (M := M) g).Nonempty) :
     laplacianEigenvalueAscending (I := I) (M := M) g 0 =
       sInf (nonzeroLaplacianEigenvalueSet (I := I) (M := M) g) := by
-  rw [laplacianEigenvalueAscending_zero, if_pos h_nonempty]
+  rw [laplacianEigenvalueAscending_zero, ite_eq_left h_nonempty]
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem laplacianEigenvalueAscending_zero_of_empty
     (g : SmoothRiemannianMetric I M)
     (h_empty : ¬ (nonzeroLaplacianEigenvalueSet (I := I) (M := M) g).Nonempty) :
     laplacianEigenvalueAscending (I := I) (M := M) g 0 = 0 := by
-  rw [laplacianEigenvalueAscending_zero, if_neg h_empty]
+  rw [laplacianEigenvalueAscending_zero, ite_eq_right h_empty]
 
 private lemma csInf_mem_of_finite_slice
     {T : Set ℝ} (hT_bddBelow : BddBelow T) (a : ℝ) (ha : a ∈ T)
@@ -273,7 +273,7 @@ theorem laplacianEigenvalueAscending_mem_of_infinite
       nonzeroLaplacianEigenvalueSet (I := I) (M := M) g := by
   induction n with
   | zero =>
-      rw [laplacianEigenvalueAscending_zero, if_pos h_inf.nonempty]
+      rw [laplacianEigenvalueAscending_zero, ite_eq_left h_inf.nonempty]
       set S : Set ℝ := nonzeroLaplacianEigenvalueSet (I := I) (M := M) g
       obtain ⟨a, ha_S⟩ := h_inf.nonempty
       have h_S_bddBelow : BddBelow S := by
@@ -292,7 +292,7 @@ theorem laplacianEigenvalueAscending_mem_of_infinite
           (I := I) (M := M) g h_inf prev
       have h_inter_nonempty : ((nonzeroLaplacianEigenvalueSet (I := I) (M := M) g) ∩
                                 Set.Ioi prev).Nonempty := h_inter_inf.nonempty
-      rw [if_pos h_inter_nonempty]
+      rw [ite_eq_left h_inter_nonempty]
       exact (sInf_inter_Ioi_mem (I := I) (M := M) g prev h_inter_nonempty).1
 
 theorem laplacianEigenvalueAscending_strictMono_of_infinite
@@ -308,7 +308,7 @@ theorem laplacianEigenvalueAscending_strictMono_of_infinite
     nonzeroLaplacianEigenvalueSet_inter_Ioi_infinite
       (I := I) (M := M) g h_inf prev
   have h_inter_nonempty := h_inter_inf.nonempty
-  rw [if_pos h_inter_nonempty]
+  rw [ite_eq_left h_inter_nonempty]
   exact (sInf_inter_Ioi_mem (I := I) (M := M) g prev h_inter_nonempty).2
 
 theorem laplacianEigenvalueAscending_tendsto_atTop_of_infinite

@@ -102,13 +102,9 @@ theorem exists_smooth_lipschitz_convex_approximation_tendsto_energy_on_closedBal
     apply eLpNorm_congr_ae
     filter_upwards [hdwae n] with x hx
     rw [hx]
-  have hwmem (n : ℕ) : MemLp (w n) 2 μ :=
-    (hwsmooth n).continuous.continuousOn.memLp_restrict_compact (isCompact_closedBall c a) 2
-  have hfmem : MemLp f 2 μ := hfm.mono_measure (Measure.restrict_mono_set volume hball)
   obtain ⟨σ, hσ, hpoint⟩ :=
     (tendstoInMeasure_of_tendsto_eLpNorm (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-      (fun n => (hwmem n).aestronglyMeasurable)
-      hfmem.aestronglyMeasurable hval).exists_seq_tendsto_ae
+      hval).exists_seq_tendsto_ae
   have hG (j : Fin d) : MemLp (fun x => WithLp.toLp 2 (fun i => (hf i).weakGrad x j)) 2 μ :=
     MemLp.of_eval_piLp fun i => ((hf i).weakGrad_component_memLp j).mono_measure
       (Measure.restrict_mono_set volume hball)

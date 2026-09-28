@@ -16,12 +16,12 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem IsPseudoCell.exists_disk_push_of_coincident_patch {Ec Eint Ebd Γ D T Ω : Set E3}
     {P : E3} (hpc : IsPseudoCell Ec Eint Ebd P) {r : (Fin 3 → ℝ) → E3}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Γ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ)
     (hD : IsPLBall 2 D) (hDΓ : D ⊆ r '' openSimplex (stdVertices 1))
     (hDE : D ⊆ Eint \ {P}) (hT : IsClosed T) (hDT : Disjoint D T)
     (hΓE : Γ ∩ Ec ⊆ D ∪ T) (hΩ : IsOpen Ω) (hΓΩ : Γ ⊆ Ω) :
     ∃ (Γ' : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) Γ' ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Γ' ∧
       q '' stdSimplexBoundary 2 = r '' stdSimplexBoundary 2 ∧
       Γ' ⊆ Ω ∧ Γ' ∩ Ec = (Γ \ D) ∩ Ec := by
   let _ : DecidableEq E3 := fun a b => Classical.propDecidable (a = b)

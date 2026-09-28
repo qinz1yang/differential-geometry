@@ -66,7 +66,7 @@ theorem IsIntegralCurveOn.inner_nonpos_of_mapsTo_Icc
     rwa [inner_sub_right, sub_nonpos] at h
   have hderiv : HasFDerivAt (fun y : V => inner ℝ ν y) (innerSL ℝ ν) (γ a) :=
     (innerSL ℝ ν).hasFDerivAt
-  exact hmax.localize.hasFDerivWithinAt_nonpos hderiv.hasFDerivWithinAt
+  exact hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos hderiv.hasFDerivWithinAt
     (IsIntegralCurveOn.mem_posTangentConeAt_of_mapsTo_Icc hγ hab hC)
 
 theorem IsForwardInvariantForODEOn.inner_nonpos_of_contDiffAt
@@ -79,7 +79,7 @@ theorem IsForwardInvariantForODEOn.inner_nonpos_of_contDiffAt
     intro y hy
     have h := hν.2 y hy
     rwa [inner_sub_right, sub_nonpos] at h
-  exact hmax.localize.hasFDerivWithinAt_nonpos
+  exact hmax.isLocalMaxOn.hasFDerivWithinAt_nonpos
     (innerSL ℝ ν).hasFDerivAt.hasFDerivWithinAt
     (hC.mem_posTangentConeAt_of_contDiffAt hJ hν.1 hf)
 

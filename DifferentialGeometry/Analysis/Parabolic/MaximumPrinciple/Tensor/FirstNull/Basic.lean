@@ -240,7 +240,7 @@ private theorem deriv_nonpos_of_nonneg_left
     intro y hy
     rw [hzero]
     exact hnonneg y ⟨(le_of_lt ham).trans hy.1, hy.2⟩
-  have hlocal : IsLocalMinOn phi (Set.Icc m t) t := hmin.localize
+  have hlocal : IsLocalMinOn phi (Set.Icc m t) t := hmin.isLocalMinOn
   have hdir : m - t ∈ posTangentConeAt (Set.Icc m t) t := by
     have hseg : segment Real t m ⊆ Set.Icc m t := by
       rw [segment_symm, segment_eq_Icc (le_of_lt hmt)]

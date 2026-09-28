@@ -39,7 +39,7 @@ theorem IsLoopTheoremDisk.image_of_isPLHomeomorphOn {Kimg N' X Δ : Set E3}
   have hb' : (Φ ∘ r) '' stdSimplexBoundary 2 ⊆ frontier X := by
     rw [himg]
     exact inter_subset_right
-  have hr' : IsPLHomeomorphOn (Φ ∘ r) (stdSimplex ℝ (Fin 3)) (Φ '' Δ) :=
+  have hr' : IsPLHomeomorphOn (Φ ∘ r) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Φ '' Δ) :=
     IsPLHomeomorphOn.trans hr (IsPLHomeomorphOn.restrict hΦ hΔpoly (subset_univ Δ))
   refine ⟨Φ ∘ r, hr', ?_, himg.symm, hb', fun hnull' => hnull ?_⟩
   · rintro _ ⟨y, hy, rfl⟩

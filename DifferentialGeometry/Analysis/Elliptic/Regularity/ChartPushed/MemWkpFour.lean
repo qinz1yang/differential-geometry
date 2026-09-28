@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.Iterated.BaseFChart.Mem
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.ResidualRegularity.ChosenFChartDerivMemW1p
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.VariationalIdentity
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpFourSmooth
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 
 noncomputable section
 
@@ -32,7 +31,6 @@ open DifferentialGeometry.Analysis.Laplacian.BaseFChartMemW22
 open DifferentialGeometry.Analysis.Laplacian.ChosenFChartDerivMemW1p
 open DifferentialGeometry.Analysis.Laplacian.TwiceDifferentiatedVariationalIdentity
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpFourSmooth
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
 
 private local instance : MeasurableSpace E := borel E
 private local instance : BorelSpace E := ⟨rfl⟩
@@ -93,17 +91,6 @@ theorem chartPushed_memWkp_four_two_of_laplacianDomainPow_two
   chartPushed_memWkp_four_two_of_laplacianDomainPow_two_of_twice_diff_identities
     (I := I) (M := M) g α hu_h
     (twice_diff_identities_at (I := I) (M := M) g α hu_h)
-
-theorem chartSideH2kBridge_two_of_laplacianDomainPow_two
-    (g : SmoothRiemannianMetric I M)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
-    ChartSideH2kBridge (I := I) (M := M) 2
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) :=
-  chartSideH2kBridge_two_of_twice_diff_identities
-    (I := I) (M := M) g hu_h
-    (fun α => twice_diff_identities_at (I := I) (M := M) g α hu_h)
 
 theorem laplacianDomainPow_memWkpChart_four_two_of_laplacianDomainPow_two
     (g : SmoothRiemannianMetric I M)

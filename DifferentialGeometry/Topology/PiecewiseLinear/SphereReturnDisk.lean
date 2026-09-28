@@ -16,7 +16,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 open Classical in
 theorem IsPLSphere.exists_return_disk_avoiding_family
     {S L Lb B : Set E} (hS : IsPLSphere 2 S)
-    {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (stdSimplex ℝ (Fin 3)) L)
+    {p : (Fin 3 → ℝ) → E} (hp : IsPLHomeomorphOn p (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) L)
     (hpLb : p '' stdSimplexBoundary 2 = Lb) (hLS : L ⊆ S)
     {η : ℝ → E} (hη : IsPLHomeomorphOn η (Icc 0 1) B) (hBS : B ⊆ S)
     (hends : ({η 0, η 1} : Set E) ⊆ Lb) (hBL : B ∩ L = {η 0, η 1})
@@ -26,7 +26,7 @@ theorem IsPLSphere.exists_return_disk_avoiding_family
     ∃ (R D : Set E) (q : (Fin 3 → ℝ) → E) (δ : ℝ → E),
       IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = η 0 ∧ δ 1 = η 1 ∧
       R ⊆ Lb ∧ B ∩ R = {η 0, η 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       q '' stdSimplexBoundary 2 = B ∪ R ∧ D ⊆ S ∧ D ∩ L = R ∧
       ∀ i, Disjoint D (F i) := by
   have hη0 : η 0 ∈ B := hη.bijOn.mapsTo (by norm_num)
@@ -62,13 +62,13 @@ theorem IsPLSphere.exists_return_disk_avoiding_family
   have hJ : IsPLSphere 1 (B ∪ R₁) := hq₁B ▸ hq₁.isPLSphere_image_stdSimplexBoundary
   obtain ⟨Y, hY, hYS, hFY⟩ := hconnect R₁ hJ hR₁Lb
   have hselect : ∀ (D R : Set E) (q : (Fin 3 → ℝ) → E) (δ : ℝ → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       IsPLHomeomorphOn δ (Icc 0 1) R → δ 0 = η 0 → δ 1 = η 1 →
       D ⊆ Q → q '' stdSimplexBoundary 2 = B ∪ R → D ∩ Lb = R → Disjoint D Y →
       ∃ (R D : Set E) (q : (Fin 3 → ℝ) → E) (δ : ℝ → E),
         IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = η 0 ∧ δ 1 = η 1 ∧
         R ⊆ Lb ∧ B ∩ R = {η 0, η 1} ∧
-        IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+        IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
         q '' stdSimplexBoundary 2 = B ∪ R ∧ D ⊆ S ∧ D ∩ L = R ∧
         ∀ i, Disjoint D (F i) := by
     intro D R q δ hq hδ hδ0 hδ1 hDQ hqB hDR hDY

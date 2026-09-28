@@ -400,8 +400,7 @@ private theorem quarterBall_lpNorm_mono
         lt_of_le_of_lt hcompare_enn (lt_top_iff_ne_top.2 hs_mem.eLpNorm_ne_top)
     have htoReal :=
       (ENNReal.toReal_le_toReal hr_ne_top hs_mem.eLpNorm_ne_top).2 hcompare_enn
-    simpa [MeasureTheory.toReal_eLpNorm hu_aesm,
-      MeasureTheory.toReal_eLpNorm hs_mem.aestronglyMeasurable] using htoReal
+    simpa [MeasureTheory.toReal_eLpNorm] using htoReal
   rw [lpNorm_eq_integral_norm_rpow_toReal (p := ENNReal.ofReal r)
       (by simpa [ENNReal.ofReal_eq_zero, not_le] using hr) ENNReal.ofReal_ne_top hu_aesm,
     lpNorm_eq_integral_norm_rpow_toReal (p := ENNReal.ofReal s)

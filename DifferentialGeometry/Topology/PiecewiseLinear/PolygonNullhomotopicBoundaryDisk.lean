@@ -75,13 +75,13 @@ private theorem not_isPreconnected_of_disjoint_disk_firstHomology_carrier
 theorem exists_isPLCell_frontier_of_polygon_nullhomotopic
     {S G Δ Z : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
     (hS : IsCombinatorialSolidTorus S) (hGS : G ⊆ frontier S)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hGΔ : G = r '' stdSimplexBoundary 2)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hGΔ : G = r '' stdSimplexBoundary 2)
     (hΔZ : Disjoint Δ Z) (hZ : Z.Nonempty) (hZS : Z ⊆ interior S)
     (hZgen : CarriesFundamentalGroupOnto Z S)
     (htriv : ∀ (hsub : G ⊆ S) (x : G) (g : FundamentalGroup G x),
       FundamentalGroup.map (⟨Set.inclusion hsub, continuous_inclusion hsub⟩ : C(G, S)) x g = 1) :
     ∃ (Δ' : Set (EuclideanSpace ℝ (Fin 3))) (r' : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn r' (stdSimplex ℝ (Fin 3)) Δ' ∧ Δ' ⊆ frontier S ∧
+      IsPLHomeomorphOn r' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ' ∧ Δ' ⊆ frontier S ∧
         G = r' '' stdSimplexBoundary 2 := by
   have hG : IsPLSphere 1 G := hGΔ.symm ▸ hr.isPLSphere_image_stdSimplexBoundary
   have hGsub : G ⊆ Δ := by

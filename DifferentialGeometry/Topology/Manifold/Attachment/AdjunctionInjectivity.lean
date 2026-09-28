@@ -14,7 +14,7 @@ private def representative (i : A → B) (φ : A → X) : B ⊕ X → B ⊕ X :=
 private theorem representative_boundary (i : A → B) (φ : A → X) (hi : Injective i) (a : A) :
     representative i φ (Sum.inl (i a)) = Sum.inr (φ a) := by
   have h : ∃ b, i b = i a := ⟨a, rfl⟩
-  simp only [representative, dif_pos h]
+  simp only [representative, dite_eq_left h]
   exact congrArg (fun b => Sum.inr (φ b)) (hi (Classical.choose_spec h))
 private theorem representative_rel (i : A → B) (φ : A → X) (hi : Injective i)
     (x y : B ⊕ X) (h : adjunctionRel i φ x y) : representative i φ x = representative i φ y := by
@@ -40,31 +40,27 @@ theorem adjunctionCell_eq_lower_iff (i : A → B) (φ : A → X) (hi : Injective
     have hh := congrArg (quotientRepresentative i φ hi) he
     change representative i φ (Sum.inl b) = Sum.inr x at hh
     by_cases hb : ∃ a, i a = b
-    · rw [representative, dif_pos hb] at hh
+    · rw [representative, dite_eq_left hb] at hh
       exact ⟨Classical.choose hb, Classical.choose_spec hb, Sum.inr_injective hh⟩
-    · rw [representative, dif_neg hb] at hh
+    · rw [representative, dite_eq_right hb] at hh
       cases hh
   · rintro ⟨a, rfl, rfl⟩
     exact adjunction_coherence i φ a
 
-theorem adjunctionCell_injective (i : A → B) (φ : A → X) (hi : Injective i) (hφ : Injective φ) :
+theorem adjunctionCell_injective (i : A → B) (φ : A → X) (hφ : Injective φ) :
     Injective (adjunctionCell i φ) := by
-  classical
-  intro b c he
-  have hh := congrArg (quotientRepresentative i φ hi) he
-  change representative i φ (Sum.inl b) = representative i φ (Sum.inl c) at hh
-  by_cases hb : ∃ a, i a = b
-  · by_cases hc : ∃ a, i a = c
-    · rw [representative, dif_pos hb, representative, dif_pos hc] at hh
-      have ha := hφ (Sum.inr_injective hh)
-      exact (Classical.choose_spec hb).symm.trans ((congrArg i ha).trans (Classical.choose_spec hc))
-    · rw [representative, dif_pos hb, representative, dif_neg hc] at hh
-      cases hh
-  · by_cases hc : ∃ a, i a = c
-    · rw [representative, dif_neg hb, representative, dif_pos hc] at hh
-      cases hh
-    · rw [representative, dif_neg hb, representative, dif_neg hc] at hh
-      exact Sum.inl_injective hh
+  intro b b' h
+  let f : B ⊕ X → Prop := Sum.elim (fun z => z = b) (fun x => ∃ a, φ a = x ∧ i a = b)
+  have hf (a : A) : f (Sum.inl (i a)) = f (Sum.inr (φ a)) := by
+    simp [f, hφ.eq_iff]
+  let g : AdjunctionSpace i φ → Prop := Quot.lift f (by
+    intro u v huv
+    rcases huv with ⟨a, ⟨rfl, rfl⟩ | ⟨rfl, rfl⟩⟩
+    · exact hf a
+    · exact (hf a).symm)
+  have hh := congrArg g h
+  change (b = b) = (b' = b) at hh
+  exact (Eq.mp hh rfl).symm
 
 theorem adjunction_inclusions_cover (i : A → B) (φ : A → X) :
     range (adjunctionCell i φ) ∪ range (adjunctionLower (i := i) φ) = univ := by

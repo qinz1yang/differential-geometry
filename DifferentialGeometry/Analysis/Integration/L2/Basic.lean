@@ -32,7 +32,7 @@ theorem abs_integral_mul_le_eLpNorm_two
         rw [← Real.norm_eq_abs, ofReal_norm]
         exact enorm_integral_le_lintegral_enorm _
       _ = eLpNorm (fun x => g x * f x) 1 μ := by
-        rw [eLpNorm_one_eq_lintegral_enorm]
+        rw [eLpNorm_one_eq_lintegral_enorm (hg.aestronglyMeasurable.fun_mul hf.aestronglyMeasurable)]
         refine lintegral_congr fun x => ?_
         simp [enorm_mul, mul_comm]
       _ ≤ eLpNorm g 2 μ * eLpNorm f 2 μ := by
@@ -44,7 +44,7 @@ theorem abs_integral_mul_le_eLpNorm_two
           constructor
           rw [show (1 : ℝ≥0∞)⁻¹ = 1 by simp, ENNReal.inv_two_add_inv_two]
         exact eLpNorm_smul_le_mul_eLpNorm
-          hf.aestronglyMeasurable hg.aestronglyMeasurable
+          hg.aestronglyMeasurable hf.aestronglyMeasurable
       _ = eLpNorm f 2 μ * eLpNorm g 2 μ := mul_comm _ _
   have hfinite : eLpNorm f 2 μ * eLpNorm g 2 μ ≠ (⊤ : ℝ≥0∞) :=
     ENNReal.mul_ne_top hf.eLpNorm_lt_top.ne hg.eLpNorm_lt_top.ne

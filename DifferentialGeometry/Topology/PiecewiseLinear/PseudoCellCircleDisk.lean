@@ -32,7 +32,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_circle_eDisk
     (hgood : ¬ ∃ DJ DJint : Set E3, IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e ∧
       DJ \ DJint = c₀ ∧ h (e.centroid ℝ id) ∈ DJint) :
     ∃ c ∈ Cs, ∃ (Dc : Set E3) (rc : (Fin 3 → ℝ) → E3), IsPLSphere 1 c ∧ c ⊆ Ec e ∧
-      Disjoint c (frontier XK.space) ∧ IsPLHomeomorphOn rc (stdSimplex ℝ (Fin 3)) Dc ∧
+      Disjoint c (frontier XK.space) ∧ IsPLHomeomorphOn rc (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Dc ∧
       rc '' stdSimplexBoundary 2 = c ∧ Dc ⊆ Ec e ∧ Dc ⊆ interior N' \ h '' K.space ∧
       Disjoint Dc (frontier XK.space) ∧ Dc ∩ Δ = c := by
   classical

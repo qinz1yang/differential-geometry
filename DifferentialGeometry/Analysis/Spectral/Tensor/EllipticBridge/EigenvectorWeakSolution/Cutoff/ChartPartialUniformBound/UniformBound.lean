@@ -9,6 +9,9 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorW
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.ChartPartialUniformBound.Regularity
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.ChartPartialUniformBound.LeibnizDecomposition
 import DifferentialGeometry.Analysis.Spectral.Tensor.EllipticBridge.EigenvectorWeakSolution.Cutoff.ChartPartialUniformBound.PrincipalCovariantComponent
+open DifferentialGeometry.TensorMetric
+  (tensorInnerPointwise
+    tensorInnerPointwise_nonneg)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -533,7 +536,8 @@ private lemma exists_const_eLpNorm_rawComponentCutoffM_le
       (eLpNorm f 2 μ) ^ 2 ≤
         ENNReal.ofReal (C *
           tensorL2Inner (I := I) (M := M) g r s S.toFun S.toFun) := by
-    rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq]
+    rw [DifferentialGeometry.Analysis.Integration.eLpNorm_two_sq_eq_lintegral_enorm_sq f
+      (rawComponentCutoffM_measurable (I := I) (M := M) g r s S α Idx Jdx).aestronglyMeasurable]
     have h_lint_le :
         ∫⁻ b, (‖f b‖ₑ : ℝ≥0∞) ^ 2 ∂μ ≤
           ∫⁻ b, ENNReal.ofReal (C * tensorInnerPointwise
@@ -872,6 +876,7 @@ private lemma exists_const_eLpNorm_cutoffCovDerivComponent_le_uniform
       (I := I) (M := M) g r s α
       (fun x : M => ((chartKernelCutoff (I := I) (M := M) α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
+      (chartKernelCutoff_contMDiff (I := I) (M := M) α).continuous.measurable
       (fun x => (chartKernelCutoff_mem_Icc (I := I) (M := M) α x).1)
       (fun x => (chartKernelCutoff_mem_Icc (I := I) (M := M) α x).2)
       hKα_compact

@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Ricc
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetricIneq
 import DifferentialGeometry.Geometry.Metric.TensorInner.Estimates.TensorProductNorm
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tangent.MetricData
+import DifferentialGeometry.Geometry.Metric.TensorInner.Fiber.MetricData
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 
 noncomputable section
@@ -12,7 +12,6 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Curvature
@@ -39,7 +38,7 @@ private theorem drift_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
         (TangentSpace I x),
       ∀ i j, g.inner x (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let D := (tangentMetricDataGen (I := I) g x).metric
+  let D := (tangentMetricData (I := I) g x).metric
   let : InnerProductSpace.Core Real (TangentSpace I x) := D.toCore
   let : NormedAddCommGroup (TangentSpace I x) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I x) _ _ _ D.toCore
@@ -51,8 +50,8 @@ private theorem drift_onFrame (g : SmoothRiemannianMetric I M) (x : M) :
   have hinner : Inner.inner Real (ob i) (ob j) = D.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner D (ob i) (ob j)
   change g.inner x (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricData.inner_eq
+    (tangentMetricData (I := I) g x) (ob.toBasis i) (ob.toBasis j)]
   change D.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j

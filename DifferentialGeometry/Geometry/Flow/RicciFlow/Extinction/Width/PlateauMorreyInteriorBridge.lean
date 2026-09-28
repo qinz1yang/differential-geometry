@@ -27,7 +27,7 @@ def interiorSmoothDiskOfDiskSmoothInterior (u : C(Disk, Q))
     mem_domain := hz
     smooth := h
     agrees := fun w hw => by
-      rw [Geometry.diskExtension_coe u ⟨w, hw.2⟩, diskExtension, dif_pos hw.2] }⟩
+      rw [Geometry.diskExtension_coe u ⟨w, hw.2⟩, diskExtension, dite_eq_left hw.2] }⟩
 
 omit [FiniteDimensional ℝ E] [IsManifold 𝓘(ℝ, E) ∞ Q] in
 @[simp] theorem interiorSmoothDiskOfDiskSmoothInterior_map (u : C(Disk, Q))
@@ -45,7 +45,7 @@ theorem interiorSmoothDiskOfDiskSmoothInterior_differential (u : C(Disk, Q))
     Filter.mem_of_superset hball Metric.ball_subset_closedBall
   have hgerm : diskExtension (⇑u) =ᶠ[𝓝 (z : ℂ)] Geometry.diskExtension u := by
     filter_upwards [hcb] with w hw
-    rw [diskExtension, dif_pos hw, Geometry.diskExtension_coe u ⟨w, hw⟩]
+    rw [diskExtension, dite_eq_left hw, Geometry.diskExtension_coe u ⟨w, hw⟩]
   rw [InteriorSmoothDisk.differential]
   have hderiv : mfderivWithin 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (diskExtension (⇑u))
         (Metric.closedBall (0 : ℂ) 1) (z : ℂ) =
@@ -84,7 +84,7 @@ theorem interiorSmoothDiskOfDiskSmoothInterior_isHarmonic (u : C(Disk, Q))
     Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall
   have hgerm : F.map =ᶠ[𝓝 (z : ℂ)] Geometry.diskExtension u := by
     filter_upwards [F.isOpen_domain.mem_nhds F.mem_domain, hcb] with w hwd hwb
-    rw [F.agrees ⟨hwd, hwb⟩, diskExtension, dif_pos hwb,
+    rw [F.agrees ⟨hwd, hwb⟩, diskExtension, dite_eq_left hwb,
       Geometry.diskExtension_coe u ⟨w, hwb⟩]
     rfl
   rw [diskLocalTension_congr_germ g F.map (Geometry.diskExtension u) (z : ℂ) hgerm,

@@ -17,7 +17,14 @@ namespace Analysis
 namespace Elliptic
 
 open DifferentialGeometry.Integral.Measure
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise tensorInnerPointwise
+  lowerAllUpperIndices lowerAllUpperIndices_apply fiberNormSqComponent
+  fiberNormSqSummand_eq_component_sq fiberNormSqSummand riemannianFiberNormSq
+  tensorInnerPointwise_0s_eq_diag_sum_orthoFrame riemannianFiberNormSq_eq_tensorInnerPointwise
+  tensor00Scalar tensor00Scalar_apply coframeS coframeS_apply
+  riemannianFiberNormSq_eq_sum_componentS_sq riemannianFiberNormSq_succ_eq_sum_slot0Curry_of_frame
+  riemannianFiberNormSq_slot0Curry_le_of_frame slot0Curry tensor0SToTensorRS tensor0SAsRS_apply
+  coframeS_zero_eq_unitZeroSec slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec)
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -52,8 +59,8 @@ lemma riemannianFiberNormSq_eq_sum_fiberNormSqSummand_of_orthoFrame
       intro j _
       rw [(g.inner x (e k)).map_smul (c j) (e j), smul_eq_mul, horth k j]
     rw [Finset.sum_congr rfl h_pull, Finset.sum_eq_single_of_mem k hk_mem] at h_zero
-    · rwa [if_pos rfl, mul_one] at h_zero
-    · intro j _ hjk; rw [if_neg (fun h => hjk h.symm), mul_zero]
+    · rwa [ite_eq_left rfl, mul_one] at h_zero
+    · intro j _ hjk; rw [ite_eq_right (fun h => hjk h.symm), mul_zero]
   have hcard : Fintype.card (Fin (Module.finrank ℝ (TangentSpace I x))) =
       Module.finrank ℝ (TangentSpace I x) := Fintype.card_fin _
   set bse : Module.Basis (Fin (Module.finrank ℝ (TangentSpace I x))) ℝ (TangentSpace I x) :=
@@ -303,7 +310,7 @@ lemma riemannianFiberNormSq_covGradBundleEquiv_le_card_mul
       riemannianFiberNormSq (I := I) (M := M) g 0 s x (Φ (e a)) ≤ b := by
     intro a
     refine hbound (e a) ?_
-    have := horth a a; rwa [if_pos rfl] at this
+    have := horth a a; rwa [ite_eq_left rfl] at this
   refine le_trans (Finset.sum_le_sum (fun a _ => hper a)) ?_
   rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
   have hfr : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl

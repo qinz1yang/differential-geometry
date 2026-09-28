@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.LinearAlgebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.Expansion
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Algebra.Product

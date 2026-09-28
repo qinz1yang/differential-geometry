@@ -54,7 +54,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_final_slab_window
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) :
     ∀ A : ℝ, 0 < A →
       ∃ Q Λ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧
-      ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+      ∀ (H : RetainedCoreHistory.{u})
         (hend : H.time (Fin.last H.eventCount) = H.horizon) {t : ℝ}
         (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) t)
         (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -83,7 +83,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_final_slab_window
     linarith
   by_contra hcon
   push Not at hcon
-  choose P₀ H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
+  choose H hend t S hS y q ρ hq1 hΛq hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
     hbad using fun n : ℕ => hcon ((n : ℝ) + 1) ((n : ℝ) + 1)
       (by linarith [(n.cast_nonneg : (0 : ℝ) ≤ n)]) (by linarith [(n.cast_nonneg : (0 : ℝ) ≤ n)])
   have hn0 (n : ℕ) : (0 : ℝ) ≤ n := n.cast_nonneg
@@ -124,7 +124,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_final_slab_window
   have hσQ (n : ℕ) : 1 ≤ ρ n * Real.sqrt ((S n).flow.scalar (t n) (x n).val) :=
     le_trans (by linarith [hn0 n]) (hρ n)
   obtain ⟨B, hB⟩ := RetainedCoreHistory.exists_normalized_scalar_bound_of_final_slab_window
-    P₀ H t S hS (fun n => by rw [← hend n]; exact (S n).lt) Ctime Cgrad q
+    H t S hS (fun n => by rw [← hend n]; exact (S n).lt) Ctime Cgrad q
     (fun n => by linarith [hq1 n]) (fun n j y' t' ht hqy => hderiv n j (Fin.castSucc_lt_last j)
       y' t' ht hqy) (fun n y' t' ht hqy => hfinal n y' t' ht hqy)
     (fun n y' t' ht hqy => hgrad n y' t' ht hqy) x hQ hqQ hQlim hqlim one_pos hwindow hphi
@@ -170,7 +170,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_bounded_threshold
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) :
     ∀ A : ℝ, 0 < A → ∀ Cq : ℝ,
       ∃ Q Λ : ℝ, 1 ≤ Q ∧ 1 ≤ Λ ∧
-      ∀ (P₀ : OrientedThreeStage.{u}) (H : RetainedCoreHistory P₀)
+      ∀ (H : RetainedCoreHistory.{u})
         (hend : H.time (Fin.last H.eventCount) = H.horizon) {t : ℝ}
         (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) t)
         (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -202,7 +202,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_bounded_threshold
   by_contra hcon
   push Not at hcon
   have hn0 (n : ℕ) : (0 : ℝ) ≤ n := n.cast_nonneg
-  choose P₀ H hend t S hS y q ρ hq hqy hΛ hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
+  choose H hend t S hS y q ρ hq hqy hΛ hwin hW hderiv hfinal hgrad hpinch hpinchF hnc hρ z hz
     hbad using fun n : ℕ => hcon ((n : ℝ) + K + 1) ((n : ℝ) + K + 1)
       (by linarith [hn0 n]) (by linarith [hn0 n])
   have hRy (n : ℕ) : (n : ℝ) + K + 1 ≤ (S n).flow.scalar (t n) (y n) := hΛ n
@@ -261,7 +261,7 @@ theorem RetainedCoreHistory.exists_scalar_bound_at_distance_of_bounded_threshold
     exact h1.trans (mul_le_mul_of_nonneg_left (Real.sqrt_le_sqrt (hyx n)) hρpos)
   obtain ⟨B, hB⟩ :=
     RetainedCoreHistory.exists_normalized_scalar_bound_of_bounded_threshold
-    P₀ H t S hS (fun n => by rw [← hend n]; exact (S n).lt) Ctime Cgrad q hq
+    H t S hS (fun n => by rw [← hend n]; exact (S n).lt) Ctime Cgrad q hq
     (fun n j y' t' ht hqy' => hderiv n j (Fin.castSucc_lt_last j) y' t' ht hqy')
     (fun n y' t' ht hqy' => hfinal n y' t' ht hqy')
     (fun n y' t' ht hqy' => hgrad n y' t' ht hqy') x hQ hqQ hQlim one_pos hwindow hphi

@@ -16,7 +16,7 @@ theorem exists_embedded_solid_torus_meridian :
       (C D : Set (EuclideanSpace ℝ (Fin 3))) (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
       N.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 N ∧
       IsTopologicalSolidTorus N.space ∧
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = C ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ r '' stdSimplexBoundary 2 = C ∧
       IsPLSphere 1 C ∧ D ⊆ N.space ∧ frontier N.space ∩ D = C ∧
       D \ C ⊆ interior N.space ∧ (D \ frontier N.space).Nonempty ∧
       IsConnected (frontier N.space \ C) ∧
@@ -36,7 +36,7 @@ theorem exists_embedded_solid_torus_meridian :
   obtain ⟨N, q, z, hNfin, hN, hsolid, hf, hends, hKfront, hball, hPfront,
     -, -, -, -, -⟩ := hregion
   let C := f '' (stdSimplexBoundary 2 ×ˢ {(1 / 4 : ℝ)})
-  let D := f '' (stdSimplex ℝ (Fin 3) ×ˢ {(1 / 4 : ℝ)})
+  let D := f '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(1 / 4 : ℝ)})
   let r := fun x => f (x, (1 / 4 : ℝ))
   have hboundary : r '' stdSimplexBoundary 2 = C := by
     dsimp [r, C]

@@ -34,12 +34,12 @@ omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
 private theorem lSourceGram_eq_gramMatrixAt
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
     lSourceGram S T x =
-      DifferentialGeometry.Integral.L2.gramMatrixAt
+      DifferentialGeometry.TensorMetric.gramMatrixAt
         (I := I) (M := M) (S.base.metric T) x := by
   ext i j
   simp only [lSourceGram, Matrix.of_apply,
-    DifferentialGeometry.Integral.L2.gramMatrixAt_apply,
-    DifferentialGeometry.Integral.L2.modelInnerAt_apply]
+    DifferentialGeometry.TensorMetric.gramMatrixAt_apply,
+    DifferentialGeometry.TensorMetric.modelInnerAt_apply]
   with_unfolding_all
     simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]
 
@@ -49,7 +49,7 @@ theorem lSourceGram_posDef
     (S : SolutionOn (I := I) (M := M) D) (T : Real) (x : M) :
     (lSourceGram S T x).PosDef := by
   rw [lSourceGram_eq_gramMatrixAt S T x]
-  exact DifferentialGeometry.Integral.L2.gramMatrixAt_posDef
+  exact DifferentialGeometry.TensorMetric.gramMatrixAt_posDef
     (I := I) (M := M) (S.base.metric T) x
 
 omit [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M]
@@ -86,21 +86,21 @@ theorem lSourceGram_quadraticForm
         ∑ i : Fin (Module.finrank Real E),
           ∑ j : Fin (Module.finrank Real E),
             v i * v j *
-              DifferentialGeometry.Integral.L2.modelInnerAt
+              DifferentialGeometry.TensorMetric.modelInnerAt
                 (I := I) (M := M) g x
                   ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
       rw [lSourceGram_eq_gramMatrixAt S T x]
       rw [Matrix.inner_toEuclideanCLM]
       simp only [dotProduct, Matrix.mulVec,
-        DifferentialGeometry.Integral.L2.gramMatrixAt_apply]
+        DifferentialGeometry.TensorMetric.gramMatrixAt_apply]
       refine Finset.sum_congr rfl fun i _ => ?_
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       ring
-    _ = DifferentialGeometry.Integral.L2.modelInnerAt
+    _ = DifferentialGeometry.TensorMetric.modelInnerAt
         (I := I) (M := M) g x w w := by
       symm
-      change DifferentialGeometry.Integral.L2.modelInnerAt
+      change DifferentialGeometry.TensorMetric.modelInnerAt
           (I := I) (M := M) g x
           (∑ i : Fin (Module.finrank Real E),
             v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
@@ -109,18 +109,18 @@ theorem lSourceGram_quadraticForm
       rw [map_sum]
       refine Finset.sum_congr rfl fun j _ => ?_
       have hsm1 :
-          DifferentialGeometry.Integral.L2.modelInnerAt
+          DifferentialGeometry.TensorMetric.modelInnerAt
               (I := I) (M := M) g x
               (∑ i : Fin (Module.finrank Real E),
                 v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
               (v j • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
-            v j * DifferentialGeometry.Integral.L2.modelInnerAt
+            v j * DifferentialGeometry.TensorMetric.modelInnerAt
               (I := I) (M := M) g x
               (∑ i : Fin (Module.finrank Real E),
                 v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         have h := ContinuousLinearMap.map_smul
-          (DifferentialGeometry.Integral.L2.modelInnerAt
+          (DifferentialGeometry.TensorMetric.modelInnerAt
             (I := I) (M := M) g x
             (∑ i : Fin (Module.finrank Real E),
               v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i))
@@ -131,30 +131,30 @@ theorem lSourceGram_quadraticForm
       rw [Finset.mul_sum]
       refine Finset.sum_congr rfl fun i _ => ?_
       have hsm2 :
-          DifferentialGeometry.Integral.L2.modelInnerAt
+          DifferentialGeometry.TensorMetric.modelInnerAt
               (I := I) (M := M) g x (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) =
-            v i * DifferentialGeometry.Integral.L2.modelInnerAt
+            v i * DifferentialGeometry.TensorMetric.modelInnerAt
               (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
               ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j) := by
         have h :
-            DifferentialGeometry.Integral.L2.modelInnerAt
+            DifferentialGeometry.TensorMetric.modelInnerAt
                 (I := I) (M := M) g x (v i • (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) =
-              v i • DifferentialGeometry.Integral.L2.modelInnerAt
+              v i • DifferentialGeometry.TensorMetric.modelInnerAt
                 (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i) :=
           ContinuousLinearMap.map_smul
-            (DifferentialGeometry.Integral.L2.modelInnerAt
+            (DifferentialGeometry.TensorMetric.modelInnerAt
               (I := I) (M := M) g x) (v i) ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
         rw [h, _root_.smul_apply, smul_eq_mul]
       rw [hsm2]
-      rw [DifferentialGeometry.Integral.L2.modelInnerAt_symm
+      rw [DifferentialGeometry.TensorMetric.modelInnerAt_symm
         (I := I) (M := M) g x ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) i)
           ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
       ring
-    _ = DifferentialGeometry.Integral.L2.modelInnerAt
+    _ = DifferentialGeometry.TensorMetric.modelInnerAt
         (I := I) (M := M) g x Z Z := by rw [hw]
     _ = (S.base.metric T).inner x Z Z := by
-      simp only [DifferentialGeometry.Integral.L2.modelInnerAt_apply,
+      simp only [DifferentialGeometry.TensorMetric.modelInnerAt_apply,
         g]
       with_unfolding_all
         simp only [tangentSpaceModelContinuousLinearEquiv_symm_apply]

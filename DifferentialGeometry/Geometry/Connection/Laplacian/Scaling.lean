@@ -27,7 +27,7 @@ theorem rawBundleConnLap_scaleMetric
   classical
   by_cases hdim : Module.finrank ℝ E = 0
   · let _ : IsEmpty (Fin (Module.finrank ℝ E)) := by
-      simpa [hdim] using (Fin.isEmpty : IsEmpty (Fin 0))
+      simp [hdim]
     simp [rawBundleConnLap]
   let _ : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
   let _ : CompleteSpace E := FiniteDimensional.complete ℝ E

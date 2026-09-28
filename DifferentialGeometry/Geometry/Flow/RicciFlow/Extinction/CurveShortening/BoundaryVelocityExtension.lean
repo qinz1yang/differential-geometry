@@ -123,9 +123,9 @@ theorem transportedAreaFirstVariation_of_isotopy_smoothOn_nhds
         diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z := by
     refine setIntegral_congr_fun measurableSet_closedBall (fun z hz => ?_)
     rw [show diskExtension (u.metricVariationDensity W.family.metric T t₀) z =
-        u.metricVariationDensity W.family.metric T t₀ ⟨z, hz⟩ from dif_pos hz,
+        u.metricVariationDensity W.family.metric T t₀ ⟨z, hz⟩ from dite_eq_left hz,
       show diskExtension (u.metricVariationDensity W.family.metric (Icc a b) t₀) z =
-        u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dif_pos hz]
+        u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dite_eq_left hz]
     simp only [SmoothDisk.metricVariationDensity]
     split_ifs with hpos
     · rw [derivWithin_of_mem_nhds (hTopen.mem_nhds hT₀),

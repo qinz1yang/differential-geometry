@@ -1,3 +1,4 @@
+import DifferentialGeometry.Bundle.TangentChart
 import DifferentialGeometry.Geometry.Exponential.ChartFlow.Orbit.TangentLift
 import DifferentialGeometry.Bundle.TangentSpace
 import Mathlib.Geometry.Manifold.IntegralCurve.ExistUnique
@@ -8,6 +9,9 @@ noncomputable section
 
 open Set Function Filter Metric Bundle Manifold
 open scoped Topology NNReal Manifold ContDiff
+
+open TangentBundle
+  (chartFiberCoord extChartAt_tangent_zero_apply_chartFiber)
 
 namespace DifferentialGeometry
 namespace Geometry

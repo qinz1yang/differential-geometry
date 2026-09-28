@@ -231,7 +231,7 @@ theorem exists_uniform_smooth_tail_variation_with_geodesic_endpoint_norm_bounds 
       ⟨div_nonneg ht.1 hL.le, (div_le_one hL).mpr ht.2⟩
     have hcoef : |chi t * (t / L)| ≤ 1 := by
       rw [abs_mul, abs_of_nonneg hratio.1]
-      exact mul_le_one₀ (hchiBound t) hratio.1 hratio.2
+      exact (mul_le_of_le_one_left hratio.1 (hchiBound t)).trans hratio.2
     exact (mul_le_mul_of_nonneg_right hcoef (Real.sqrt_nonneg _)).trans_eq (one_mul _)
   · intro t ht
     change Real.sqrt (g.inner (f 0 t)

@@ -146,7 +146,7 @@ theorem norm_gradLpOfWitness_eq
       (∫ x, ‖hu.weakGrad x‖ ^ (2 : ℝ) ∂(volume.restrict Ω)) ^ (1 / (2 : ℝ)) := by
   let _ := (inferInstance : NeZero d)
   rw [gradLpOfWitness, Lp.norm_toLp]
-  rw [MeasureTheory.toReal_eLpNorm hu.weakGrad_memLp.aestronglyMeasurable]
+  rw [MeasureTheory.toReal_eLpNorm]
   simpa using
     (MeasureTheory.lpNorm_eq_integral_norm_rpow_toReal
       (μ := volume.restrict Ω) (f := hu.weakGrad) (p := (2 : ENNReal))
@@ -223,7 +223,7 @@ theorem norm_smoothFunToLp_eq
       (∫ x, ‖u x‖ ^ (2 : ℝ) ∂(volume.restrict Ω)) ^ (1 / (2 : ℝ)) := by
   let _ := (inferInstance : NeZero d)
   rw [smoothFunToLp, Lp.norm_toLp]
-  rw [MeasureTheory.toReal_eLpNorm (smoothTestWitness hΩ hu).memLp.aestronglyMeasurable]
+  rw [MeasureTheory.toReal_eLpNorm]
   simpa using
     (MeasureTheory.lpNorm_eq_integral_norm_rpow_toReal
       (μ := volume.restrict Ω) (f := u) (p := (2 : ENNReal))

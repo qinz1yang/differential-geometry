@@ -285,7 +285,7 @@ lemma continuousOn_traceTimeDerivMetric_on_base
               DifferentialGeometry.Tensor.Coordinates.chartGramMatrix (I := I) (g_fam p.1) α p.2 (σ i) i := by
         funext p
         rw [Matrix.updateRow_apply]
-        exact if_neg hiv
+        exact ite_eq_right hiv
       rw [hnonrow]; exact hG_joint (σ i) i
   have h_det_ne_zero : ∀ p ∈ (Set.univ ×ˢ (trivializationAt E (TangentSpace I) α).baseSet
         : Set (ℝ × M)),

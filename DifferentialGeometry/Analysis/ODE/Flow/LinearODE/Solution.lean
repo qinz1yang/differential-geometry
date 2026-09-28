@@ -507,9 +507,9 @@ theorem linearODESolution_initial
     linearODESolution A a b h₀ Z₀ x h₀ = Z₀ x := by
   unfold linearODESolution
   by_cases h : HasLinearODESolution A a b h₀ Z₀ x
-  · simp only [dif_pos h]
+  · simp only [dite_eq_left h]
     exact (Classical.choose_spec h).1
-  · simp only [dif_neg h]
+  · simp only [dite_eq_right h]
 
 omit [NormedAddCommGroup F] [NormedSpace ℝ F] [CompleteSpace G] in
 theorem linearODESolution_hasDerivAt_of_hasSolution
@@ -519,7 +519,7 @@ theorem linearODESolution_hasDerivAt_of_hasSolution
       (A x t (linearODESolution A a b h₀ Z₀ x t)) t := by
   have hZ_eq : linearODESolution A a b h₀ Z₀ x = Classical.choose hx := by
     unfold linearODESolution
-    simp only [dif_pos hx]
+    simp only [dite_eq_left hx]
   rw [hZ_eq]
   exact (Classical.choose_spec hx).2 t ht
 

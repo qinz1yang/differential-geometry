@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Poincare
 
 set_option autoImplicit false
 
@@ -16,8 +15,7 @@ universe u
 theorem exists_poincare_controlled_extinction_of_retainedCoreHistory
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
-    (H : RetainedCoreHistory
-      (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold))
+    (H : RetainedCoreHistory.{u})
     (A : InitialIdentification
       (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
     (hbfr : ∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing)
@@ -38,7 +36,7 @@ theorem exists_poincare_controlled_extinction_of_retainedCoreHistory
     hempty
 
 theorem RetainedCoreHistory.eventCount_pos_of_final_empty {P : OrientedThreeStage.{u}}
-    {g : P.Metric} [Nonempty P.Carrier] (H : RetainedCoreHistory P)
+    {g : P.Metric} [Nonempty P.Carrier] (H : RetainedCoreHistory.{u})
     (A : InitialIdentification P g H.toHistory)
     (hempty : IsEmpty (H.stage (Fin.last H.eventCount)).Carrier) : 0 < H.eventCount :=
   @ObservedHistory.eventCount_pos_of_final_empty H.toHistory A.initial_nonempty hempty
@@ -61,8 +59,7 @@ end ObservedHistory
 def HasExtinctRetainedCoreHistory
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier) : Prop :=
-  ∃ (H : RetainedCoreHistory
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold))
+  ∃ (H : RetainedCoreHistory.{u})
     (_ : InitialIdentification
       (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory),
     (∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing) ∧
@@ -77,18 +74,6 @@ theorem exists_poincare_controlled_extinction_of_hasExtinctRetainedCoreHistory
     Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) := by
   obtain ⟨H, A, hbfr, hctrl, hempty⟩ := h
   exact exists_poincare_controlled_extinction_of_retainedCoreHistory M g H A hbfr hctrl hempty
-
-theorem hext_of_hasExtinctRetainedCoreHistory
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasExtinctRetainedCoreHistory M g) :
-    ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier),
-      Nonempty (PoincareControlledExtinction M.toClosedOrientedManifold g) :=
-  fun M hsc g =>
-    let _ := hsc
-    exists_poincare_controlled_extinction_of_hasExtinctRetainedCoreHistory M g (h M g)
 
 theorem RetainedCoreObservationTower.hasExtinctRetainedCoreHistory
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
@@ -115,7 +100,7 @@ theorem RetainedCoreObservationTower.hasExtinctRetainedCoreHistory
 
 theorem exists_retainedCoreHistory_extinct_of_isEmpty (P : OrientedThreeStage.{u})
     [hP : IsEmpty P.Carrier] (g : P.Metric) :
-    ∃ (H : RetainedCoreHistory P) (_ : InitialIdentification P g H.toHistory),
+    ∃ (H : RetainedCoreHistory.{u}) (_ : InitialIdentification P g H.toHistory),
       (∀ i : Fin H.eventCount, (H.coreEvent i).transition.boundaryFrameReversing) ∧
       (∀ i : Fin H.eventCount,
         (H.coreEvent i).toMetricCutCapEvent.poincareStandardDiscarded) ∧
@@ -135,16 +120,5 @@ theorem not_isEmpty_carrier_of_connectedClosedOrientedManifold
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3) :
     ¬ IsEmpty M.Carrier :=
   not_isEmpty_iff.mpr inferInstance
-
-theorem smoothPoincareConjecture_of_hasExtinctRetainedCoreHistory
-    (hsum : ∀ (H : DifferentialGeometry.PDE.RicciFlow.Surgery.FiniteSurgeryHistory.{u})
-      (i : Fin H.eventCount),
-      (H.cutCapTrace.transition i).componentConnectedSumDecomposition)
-    (h : ∀ (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
-      [SimplyConnectedSpace M.Carrier]
-      (g : SmoothRiemannianMetric (𝓡 3) M.Carrier), HasExtinctRetainedCoreHistory M g) :
-    smoothPoincareConjecture.{u} :=
-  smoothPoincareConjecture_of_poincareControlledExtinction hsum
-    (hext_of_hasExtinctRetainedCoreHistory h)
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

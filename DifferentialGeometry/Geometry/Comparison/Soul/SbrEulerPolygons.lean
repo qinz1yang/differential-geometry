@@ -41,17 +41,17 @@ private theorem lipschitzWith_glue
   apply lipschitzWith_of_ordered_dist
   intro s t hst
   by_cases ht : t ≤ c
-  · simp only [if_pos (hst.trans ht), if_pos ht]
+  · simp only [ite_eq_left (hst.trans ht), ite_eq_left ht]
     exact hf' s t hst
   · by_cases hs : s ≤ c
-    · simp only [if_pos hs, if_neg ht]
+    · simp only [ite_eq_left hs, ite_eq_right ht]
       calc
         dist (f s) (g t) ≤ dist (f s) (f c) + dist (f c) (g t) := dist_triangle _ _ _
         _ = dist (f s) (f c) + dist (g c) (g t) := by rw [hc]
         _ ≤ K * (c - s) + K * (t - c) :=
           add_le_add (hf' s c hs) (hg' c t (le_of_not_ge ht))
         _ = K * (t - s) := by ring
-    · simp only [if_neg hs, if_neg ht]
+    · simp only [ite_eq_right hs, ite_eq_right ht]
       exact hg' s t hst
 
 private theorem exists_glued_mesh_curve
@@ -102,28 +102,28 @@ private theorem exists_glued_mesh_curve
           (hend.trans (hleft n hnlt).symm)
       · change (if time (n + 1) ≤ time n then partialCurve n (time (n + 1))
           else segment n (time (n + 1))) = node (n + 1)
-        rw [if_neg (not_le.mpr (htime (Nat.lt_succ_self n))), hright n hnlt]
+        rw [ite_eq_right (not_le.mpr (htime (Nat.lt_succ_self n))), hright n hnlt]
       · change (if time 0 ≤ time n then partialCurve n (time 0) else segment n (time 0)) = node 0
-        rw [if_pos (htime.monotone (Nat.zero_le n)), hstart]
+        rw [ite_eq_left (htime.monotone (Nat.zero_le n)), hstart]
       · intro i hi t ht
         by_cases hin : i < n
         · change (if t ≤ time n then partialCurve n t else segment n t) = segment i t
-          rw [if_pos (ht.2.trans (htime.monotone (Nat.succ_le_of_lt hin)))]
+          rw [ite_eq_left (ht.2.trans (htime.monotone (Nat.succ_le_of_lt hin)))]
           exact hpieces i hin ht
         · have heq : i = n := by omega
           subst i
           change (if t ≤ time n then partialCurve n t else segment n t) = segment n t
           by_cases htleft : t ≤ time n
           · have heq : t = time n := le_antisymm htleft ht.1
-            rw [heq, if_pos le_rfl, hend, hleft n hnlt]
-          · rw [if_neg htleft]
+            rw [heq, ite_eq_left le_rfl, hend, hleft n hnlt]
+          · rw [ite_eq_right htleft]
       · intro t ht
         change t ≤ F (if t ≤ time n then partialCurve n t else segment n t) ∧
           F (if t ≤ time n then partialCurve n t else segment n t) ≤ t + err
         by_cases htn : t ≤ time n
-        · simp only [if_pos htn]
+        · simp only [ite_eq_left htn]
           exact hlevels t ⟨ht.1, htn⟩
-        · simp only [if_neg htn]
+        · simp only [ite_eq_right htn]
           exact hlevel n hnlt t ⟨le_of_not_ge htn, ht.2⟩
   obtain ⟨hLip, hend, hstart, hpieces, hlevels⟩ := hprefix N le_rfl
   refine ⟨partialCurve N, hLip, hstart, ?_, hpieces, hlevels⟩
@@ -242,7 +242,7 @@ theorem exists_nearest_superlevel_euler_polygon
       have hp := ih (Nat.le_of_succ_le hi)
       rw [hnode_succ]
       dsimp only [nextNode]
-      rw [dif_pos hiN, dif_pos hp]
+      rw [dite_eq_left hiN, dite_eq_left hp]
       exact (hnext i hiN (node i) hp).choose_spec.1
   have hnodeC : ∀ i ≤ N, node i ∈ {z : M | 0 ≤ F z} := by
     intro i hi
@@ -256,7 +256,7 @@ theorem exists_nearest_superlevel_euler_polygon
     have hp := hnodelevel i hi.le
     rw [hnode_succ]
     dsimp only [nextNode]
-    rw [dif_pos hi, dif_pos hp]
+    rw [dite_eq_left hi, dite_eq_left hp]
     exact (hnext i hi (node i) hp).choose_spec.2
   have hminseg (i : ℕ) : ∃ v : TangentSpace I (node i),
       intrinsicGeodesic g hEnorm (node i) v 1 = node (i + 1) ∧

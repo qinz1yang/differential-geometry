@@ -13,6 +13,8 @@ import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Curvature.Deco
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.Basic
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.PalatiniDecomposition.FamilySmoothness
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -320,11 +322,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
 private lemma palatiniConnectionDifferenceLoweredCc_unitModel (g₀ g₁ : SmoothRiemannianMetric I M) (x : M) :
     unitModel (I := I) (M := M) g₀ 3 (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁) x =
-      Tensor0SSpace.toModel (metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x) := by
+      Tensor0SSpace.toModel (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceCovector (I := I) g₀ g₁ x) := by
   rw [unitModel]
   rw [show (metricLoweredConnectionDifferenceCoefficient (I := I) g₀ g₁).toSection x (unitTensor (I := I) (M := M) x) =
       (MixedSection.eval₀ (F := E) (E := (TangentSpace I : M → Type _)) x).smulRight
-          (metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
+          (DifferentialGeometry.Geometry.Connection.metricLoweredConnectionDifferenceField (I := I) g₀ g₁ x)
           (ContinuousMultilinearMap.constOfIsEmpty ℝ (fun _ : Fin 0 => TangentSpace I x) (1 : ℝ))
       from rfl]
   rw [ContinuousLinearMap.smulRight_apply, MixedSection.eval₀_apply,

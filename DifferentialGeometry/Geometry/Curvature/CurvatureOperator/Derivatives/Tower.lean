@@ -1656,8 +1656,8 @@ private theorem curvOpNDeriv_all
           (TotalSpace.mk' E (E := (TangentSpace I : M -> Type _))
             (gamma s) (mix S j s) : TangentBundle I M)) := by
     by_cases hj : j ∈ S
-    · simpa only [mix, if_pos hj] using hZ j
-    · simpa only [mix, if_neg hj] using hY j
+    · simpa only [mix, ite_eq_left hj] using hZ j
+    · simpa only [mix, ite_eq_right hj] using hY j
   have hPartial (S : Finset (Fin (k + 3))) :
       curvOpNDerivAlong (I := I) g k gamma Y t =
         curvOpNDerivAlong (I := I) g k gamma (mix S) t := by
@@ -1669,7 +1669,7 @@ private theorem curvOpNDeriv_all
         rw [hEmpty]
     | @insert a S ha ih =>
         have hMixA : mix S a = Y a := by
-          simp only [mix, if_neg ha]
+          simp only [mix, ite_eq_right ha]
         have hAtA : mix S a t = Z a t := by
           rw [hMixA]
           exact hAt a
@@ -1688,7 +1688,7 @@ private theorem curvOpNDeriv_all
           by_cases hja : j = a
           · subst j
             simp only [Function.update_self, mix, Finset.mem_insert,
-              true_or, if_true]
+              true_or, ite_true]
           · rw [Function.update_of_ne hja]
             simp only [mix, Finset.mem_insert, hja, false_or]
         rw [hleft, hright] at hstep
@@ -1696,7 +1696,7 @@ private theorem curvOpNDeriv_all
   have hall := hPartial (Finset.univ : Finset (Fin (k + 3)))
   have hUniv : mix Finset.univ = Z := by
     funext j
-    simp only [mix, Finset.mem_univ, if_true]
+    simp only [mix, Finset.mem_univ, ite_true]
   rw [hUniv] at hall
   exact hall
 

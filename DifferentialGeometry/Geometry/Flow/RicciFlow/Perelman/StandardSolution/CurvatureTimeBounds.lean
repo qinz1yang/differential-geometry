@@ -58,14 +58,14 @@ private theorem trace_component_bound {ι : Type*} [Fintype ι] [DecidableEq ι]
     apply Finset.sum_congr rfl
     intro i _
     rw [Finset.sum_eq_single i]
-    · rw [if_pos rfl, component0S_apply]
+    · rw [ite_eq_left rfl, component0S_apply]
       congr 1
       funext a
       refine Fin.cases ?_ (fun a1 => ?_) a
       · rfl
       · refine Fin.cases ?_ (fun _ => ?_) a1 <;> rfl
     · intro j _ hji
-      simp only [if_neg (Ne.symm hji)]
+      simp only [ite_eq_right (Ne.symm hji)]
     · intro hni
       exact absurd (Finset.mem_univ i) hni
   rw [he]
@@ -132,7 +132,7 @@ theorem curvature_time_derivative_bound {D : RealTimeInterval}
   have hCorrection (m : Fin (4 + k) → Idx) :
       |component0S basis (ricciTimeCorrection g (T (t : ℝ))) m| ≤
         ((4 + k : ℕ) : ℝ) * (d : ℝ) ^ 2 * C ^ 2 := by
-    have hh := abs_ricStarArray_le
+    have hh := abs_covariantEndomorphismActionArray_le
       (fun i j => ricciTensor g x (basis i) (basis j))
       (fun n => tensor0SComponent (T (t : ℝ)) (fun i => basis i) n)
       ((d : ℝ) * C) (mul_nonneg (Nat.cast_nonneg d) hC) hRic m

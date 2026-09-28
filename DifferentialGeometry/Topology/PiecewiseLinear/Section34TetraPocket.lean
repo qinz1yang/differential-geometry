@@ -61,9 +61,9 @@ theorem Section34NormalPlus.exists_isPLBall_of_tetra_in_chart
     let D : Fin 4 → Set E3 := fun k => chart '' tgtD (![sacd, sabc, sbcd, sabd] k)
     ∃ R A Ω : Set E3, IsPLBall 3 R ∧ frontier R = A ∪ (⋃ k, D k) ∪ Ω ∧
       A ⊆ frontier C₁ ∧ Ω ⊆ frontier C₂ ∧
-      (∃ qA : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qA (stdSimplex ℝ (Fin 3)) A ∧
+      (∃ qA : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qA (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A ∧
         ∀ k, D k ∩ C₁ ⊆ qA '' stdSimplexBoundary 2) ∧
-      (∃ qΩ : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qΩ (stdSimplex ℝ (Fin 3)) Ω ∧
+      (∃ qΩ : (Fin 3 → ℝ) → E3, IsPLHomeomorphOn qΩ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Ω ∧
         ∀ k, D k ∩ C₂ ⊆ qΩ '' stdSimplexBoundary 2) ∧
       Ω ∩ C₁ ⊆ A ∧ A ∩ C₂ ⊆ Ω ∧ Disjoint (interior R) (C₁ ∪ C₂) := by
   classical
@@ -148,14 +148,14 @@ theorem Section34NormalPlus.exists_isPLBall_of_tetra_in_chart
     rw [← hfr₂]
     exact image_mono (hH₂M k)
   have hrHex : ∀ k, ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (DH k) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (DH k) ∧
         chart '' Eb k = r '' stdSimplexBoundary 2 := fun k =>
     (hcut.isPLCellOn_splitDiskImage hf₁ (eH k)).exists_isPLHomeomorphOn_image_chart
       hchart (hEsrc k)
   choose rH hrH hrHb using hrHex
   obtain ⟨hD1, -, hD3, hD4, hD5, -⟩ := id hdisk
   have hqDex : ∀ k, ∃ q : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (D k) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D k) ∧
         chart '' tgtDBd (F k) = q '' stdSimplexBoundary 2 := fun k =>
     (hD1 (F k)).exists_isPLHomeomorphOn_image_chart hchart (hDsrc k)
   choose qD hqD hqDb using hqDex

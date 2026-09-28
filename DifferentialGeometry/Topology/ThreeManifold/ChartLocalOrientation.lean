@@ -6,6 +6,7 @@ noncomputable section
 
 open CategoryTheory CategoryTheory.Limits Set ContinuousMap
 open DifferentialGeometry.Topology
+open Convexity.StdSimplex (coordinateSet coordinateHomeomorph coordinateEquiv)
 open scoped ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
@@ -23,7 +24,7 @@ def OrientedChartSimplex.localHomologyNormalizationIso
     (Homeomorph.ulift (X := ThreeSpace) : liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.toOpenPartialHomeomorph
   have hx : x ∈ e.source := ⟨S.center_mem, Set.mem_univ _⟩
   let N : liftedSphereSpace.{u} 1 ≃ₜ liftedSphereSpace.{u} 1 :=
-    (Homeomorph.subRight (e x)).trans
+    (Homeomorph.addRight (-(e x))).trans
       (Homeomorph.smulOfNeZero S.radius⁻¹ (inv_ne_zero (ne_of_gt S.radius_pos)))
   have hN : N (e x) = 0 := by
     change S.radius⁻¹ • (e x - e x) = 0
@@ -42,28 +43,38 @@ theorem OrientedChartSimplex.localHomologyNormalizationIso_localOrientationClass
   let e := S.chart.trans
     (Homeomorph.ulift (X := ThreeSpace) : liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.toOpenPartialHomeomorph
   have hx : x ∈ e.source := ⟨S.center_mem, Set.mem_univ _⟩
-  have hσsource : ∀ q : stdSimplex ℝ (Fin 4), S.simplex q ∈ e.source :=
-    fun q => ⟨S.chart.map_target (S.simplex_inside q), Set.mem_univ _⟩
-  have hσ : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
-      S.simplex (SimplexDegree.orientedSimplexFace i q) ≠ x := by
+  let σ := S.simplex.comp
+    ⟨(coordinateHomeomorph ℝ _).symm, (coordinateHomeomorph ℝ _).symm.continuous⟩
+  have hσsource : ∀ q : coordinateSet ℝ (Fin 4), σ q ∈ e.source :=
+    fun q => ⟨S.chart.map_target (S.simplex_inside _), Set.mem_univ _⟩
+  have hσ : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)),
+      σ (SimplexDegree.orientedSimplexFace i q) ≠ x := by
     intro i q heq
+    let t := (coordinateHomeomorph ℝ _).symm (SimplexDegree.orientedSimplexFace i q)
     have h := congrArg S.chart heq
-    change S.chart (S.chart.symm (S.chart x + S.radius • positiveTetrahedron (SimplexDegree.orientedSimplexFace i q))) = S.chart x at h
-    rw [S.chart.right_inv (S.simplex_inside _)] at h
-    have hs : S.radius • positiveTetrahedron (SimplexDegree.orientedSimplexFace i q) = 0 :=
+    change S.chart (S.chart.symm (S.chart x + S.radius • positiveTetrahedron t)) =
+      S.chart x at h
+    rw [S.chart.right_inv (S.simplex_inside t)] at h
+    have hs : S.radius • positiveTetrahedron t = 0 :=
       add_left_cancel (h.trans (add_zero _).symm)
     apply SimplexDegree.standardTetrahedronSimplex_face_ne_zero.{u} i q
     exact congrArg ULift.up ((smul_eq_zero.mp hs).resolve_left (ne_of_gt S.radius_pos))
-  have hclass : localOrientationClass o x = SimplexDegree.simplexLocalClass x S.simplex hσ := by
-    rw [← localOrientationClass_spec o x S]
+  have hσround :
+      σ.comp ⟨coordinateEquiv ℝ _, (coordinateHomeomorph ℝ _).continuous⟩ = S.simplex := by
+    ext q
     rfl
-  let σE : C(stdSimplex ℝ (Fin 4), liftedSphereSpace.{u} 1) :=
-    ⟨fun q => e (S.simplex q), e.continuousOn.comp_continuous S.simplex.continuous hσsource⟩
-  have hσE : ∀ (i : Fin 4) (q : stdSimplex ℝ (Fin 3)),
+  have hclass : localOrientationClass o x = SimplexDegree.simplexLocalClass x σ hσ := by
+    rw [← localOrientationClass_spec o x S]
+    unfold SimplexDegree.simplexLocalClass SimplexDegree.integralSimplexChain
+    simp only [hσround]
+    rfl
+  let σE : C(coordinateSet ℝ (Fin 4), liftedSphereSpace.{u} 1) :=
+    ⟨fun q => e (σ q), e.continuousOn.comp_continuous σ.continuous hσsource⟩
+  have hσE : ∀ (i : Fin 4) (q : coordinateSet ℝ (Fin 3)),
       σE (SimplexDegree.orientedSimplexFace i q) ≠ e x :=
     fun i q h => hσ i q (e.injOn (hσsource _) hx h)
   let N : liftedSphereSpace.{u} 1 ≃ₜ liftedSphereSpace.{u} 1 :=
-    (Homeomorph.subRight (e x)).trans
+    (Homeomorph.addRight (-(e x))).trans
       (Homeomorph.smulOfNeZero S.radius⁻¹ (inv_ne_zero (ne_of_gt S.radius_pos)))
   have hN : N (e x) = 0 := by
     change S.radius⁻¹ • (e x - e x) = 0
@@ -77,7 +88,9 @@ theorem OrientedChartSimplex.localHomologyNormalizationIso_localOrientationClass
   change (integralRelativeHomologyHomeomorphIso 3 N _ _ hNmap hNinv).hom.hom
     ((integralLocalHomologyOpenPartialHomeomorphIso 3 e x hx).hom.hom
       (localOrientationClass o x)) = _
-  rw [hclass, SimplexDegree.integralLocalHomologyOpenPartialHomeomorphIso_simplexLocalClass e x hx S.simplex hσsource hσ]
+  rw [hclass,
+    SimplexDegree.integralLocalHomologyOpenPartialHomeomorphIso_simplexLocalClass
+      e x hx σ hσsource hσ]
   change (integralRelativeHomologyHomeomorphIso 3 N _ _ hNmap hNinv).hom.hom
     (SimplexDegree.simplexLocalClass (e x) σE hσE) = _
   change integralRelativeHomologyMap 3 (⟨N, N.continuous⟩ : C(liftedSphereSpace.{u} 1, liftedSphereSpace.{u} 1)) hNmap
@@ -87,14 +100,16 @@ theorem OrientedChartSimplex.localHomologyNormalizationIso_localOrientationClass
       SimplexDegree.standardTetrahedronSimplex := by
     apply ContinuousMap.ext
     intro q
+    let t := (coordinateHomeomorph ℝ _).symm q
     change (ULift.up (S.radius⁻¹ •
-      (S.chart (S.chart.symm (S.chart x + S.radius • positiveTetrahedron q)) - S.chart x)) :
-      liftedSphereSpace.{u} 1) = ULift.up (positiveTetrahedron q)
-    rw [S.chart.right_inv (S.simplex_inside q), add_sub_cancel_left, smul_smul,
+      (S.chart (S.chart.symm (S.chart x + S.radius • positiveTetrahedron t)) - S.chart x)) :
+      liftedSphereSpace.{u} 1) = ULift.up (positiveTetrahedron t)
+    rw [S.chart.right_inv (S.simplex_inside t), add_sub_cancel_left, smul_smul,
       inv_mul_cancel₀ (ne_of_gt S.radius_pos), one_smul]
-  change SimplexDegree.simplexLocalClass 0 _ _ =
-    SimplexDegree.simplexLocalClass 0 SimplexDegree.standardTetrahedronSimplex SimplexDegree.standardTetrahedronSimplex_face_ne_zero
   simp only [hσN]
+  unfold SimplexDegree.simplexLocalClass SimplexDegree.integralSimplexChain
+    euclideanStandardSimplexClass simplexLocalClass
+  congr 1
 
 
 theorem OrientedChartSimplex.localOrientationClass_chart_normalization
@@ -102,8 +117,8 @@ theorem OrientedChartSimplex.localOrientationClass_chart_normalization
     let e := S.chart.trans
       (Homeomorph.ulift (X := ThreeSpace) : liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.toOpenPartialHomeomorph
     let _ : T1Space M := ChartedSpace.t1Space ThreeSpace M
-    integralRelativeHomologyMap 3 (toContinuousMap (Homeomorph.subRight (e x)))
-      (show MapsTo (Homeomorph.subRight (e x)) ({e x}ᶜ : Set (liftedSphereSpace.{u} 1))
+    integralRelativeHomologyMap 3 (toContinuousMap (Homeomorph.addRight (-(e x))))
+      (show MapsTo (Homeomorph.addRight (-(e x))) ({e x}ᶜ : Set (liftedSphereSpace.{u} 1))
         ({0}ᶜ : Set (liftedSphereSpace.{u} 1)) from fun _ hz => sub_ne_zero.mpr hz)
       ((integralLocalHomologyOpenPartialHomeomorphIso 3 e x
         (show x ∈ e.source from ⟨S.center_mem, Set.mem_univ _⟩)).hom.hom
@@ -113,7 +128,7 @@ theorem OrientedChartSimplex.localOrientationClass_chart_normalization
     (Homeomorph.ulift (X := ThreeSpace) : liftedSphereSpace.{u} 1 ≃ₜ ThreeSpace).symm.toOpenPartialHomeomorph
   have h := S.localHomologyNormalizationIso_localOrientationClass
   change integralRelativeHomologyMap 3
-    (toContinuousMap ((Homeomorph.subRight (e x)).trans
+    (toContinuousMap ((Homeomorph.addRight (-(e x))).trans
       (Homeomorph.smulOfNeZero S.radius⁻¹ (inv_ne_zero (ne_of_gt S.radius_pos)))))
     (show MapsTo (fun y : liftedSphereSpace.{u} 1 => S.radius⁻¹ • (y - e x))
       ({e x}ᶜ : Set (liftedSphereSpace.{u} 1)) ({0}ᶜ : Set (liftedSphereSpace.{u} 1)) from

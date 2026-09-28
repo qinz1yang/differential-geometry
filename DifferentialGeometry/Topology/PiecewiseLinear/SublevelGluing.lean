@@ -16,7 +16,7 @@ theorem isSimplyEmbedded_frontier_sublevel_of_slab (I : SchoenfliesInput)
     (hleft : IsSimplyEmbedded (frontier (P ∩ ℓ ⁻¹' Iic a)))
     (hslab : IsSimplyEmbedded (frontier (P ∩ ℓ ⁻¹' Icc a b)))
     {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (P ∩ {x | ℓ x = a}))
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P ∩ {x | ℓ x = a}))
     (hgb : g '' stdSimplexBoundary 2 = frontier P ∩ {x | ℓ x = a}) :
     IsSimplyEmbedded (frontier (P ∩ ℓ ⁻¹' Iic b)) := by
   have hlinear : ℓ.toLinearMap ≠ 0 := by
@@ -36,7 +36,7 @@ theorem isSimplyEmbedded_frontier_of_sublevel_superlevel (I : SchoenfliesInput)
     (hleft : IsSimplyEmbedded (frontier (P ∩ ℓ ⁻¹' Iic a)))
     (hright : IsSimplyEmbedded (frontier (P ∩ ℓ ⁻¹' Ici a)))
     {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) (P ∩ {x | ℓ x = a}))
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P ∩ {x | ℓ x = a}))
     (hgb : g '' stdSimplexBoundary 2 = frontier P ∩ {x | ℓ x = a}) :
     IsSimplyEmbedded (frontier P) := by
   have hlinear : ℓ.toLinearMap ≠ 0 := by

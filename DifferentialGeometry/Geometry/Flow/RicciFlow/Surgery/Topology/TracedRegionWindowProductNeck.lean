@@ -112,7 +112,7 @@ private theorem tendsto_localPull_shifted_of_subseq
     obtain ⟨j₀, hj₀⟩ := hconv k K' hK' p' η' hη'
     refine ⟨j₀, fun i hi => ?_⟩
     obtain ⟨hi', hb⟩ := hj₀ i hi
-    simp only [dif_pos hi']
+    simp only [dite_eq_left hi']
     exact hb t ht
   have hconv0 := hconvAt h0k
   rw [hG0] at hconv0
@@ -172,12 +172,12 @@ private theorem tendsto_localPull_shifted_of_subseq
       (localPullMetric (h k (f (ψ (τ m))) 0) (φ k (ψ (τ m)) hi) (hφ k (ψ (τ m)) hi)) x ≤ 1 / 2 := by
     intro x hx q hq
     have h1 := hsw x (subset_closure hx) q hq
-    simpa only [dif_pos hi] using h1
+    simpa only [dite_eq_left hi] using h1
   have hS2 : metricDerivNormSupOn K p
       (localPullMetric (h k (f (ψ (τ m))) s) (φ k (ψ (τ m)) hi) (hφ k (ψ (τ m)) hi))
       ((G s).restrictOpen (V k)) (P.metric.restrictOpen (V k)) < η / 2 := by
     have h1 := hj₁ (τ m) hij₁
-    simpa only [dif_pos hi] using h1
+    simpa only [dite_eq_left hi] using h1
   set σi := σ m with hσi_def
   set A := localPullMetric (h k (f (ψ (τ m))) σi) (φ k (ψ (τ m)) hi) (hφ k (ψ (τ m)) hi) with hA_def
   set B := localPullMetric (h k (f (ψ (τ m))) s) (φ k (ψ (τ m)) hi) (hφ k (ψ (τ m)) hi) with hB_def

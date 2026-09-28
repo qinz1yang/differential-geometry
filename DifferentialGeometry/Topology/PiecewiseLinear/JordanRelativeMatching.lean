@@ -268,7 +268,7 @@ theorem exists_matching_of_isLoop_of_strictMono {γ τ : ℝ → Plane} (hγ : I
     ⟨one_mem_I, by rw [mem_preimage, hγ1, h0]; exact mem_image_of_mem τ zero_mem_I⟩
   have hkey : ∀ t ∈ G, t ≠ 1 → hh t ∈ Ico (0 : ℝ) 1 ∧ τ (hh t) = γ t := by
     intro t ht ht1
-    simp only [hhh, if_neg ht1]
+    simp only [hhh, ite_eq_right ht1]
     exact invFunOn_isLoop hτ ht.2
   have hh0 : hh 0 = 0 := by
     have e := hkey 0 h0G zero_ne_one
@@ -294,7 +294,7 @@ theorem exists_matching_of_isLoop_of_strictMono {γ τ : ℝ → Plane} (hγ : I
         exact (hinner t₁ ht₁ ⟨hpos₁, hlt.trans_le ht₂.1.2⟩).2
       · have ht₁' : t₁ ∈ Ioo (0 : ℝ) 1 := ⟨hpos₁, hlt.trans hlt₂⟩
         have ht₂' : t₂ ∈ Ioo (0 : ℝ) 1 := ⟨hpos₁.trans hlt, hlt₂⟩
-        simp only [hhh, if_neg ht₁'.2.ne, if_neg hlt₂.ne]
+        simp only [hhh, ite_eq_right ht₁'.2.ne, ite_eq_right hlt₂.ne]
         exact hmono t₁ ht₁' ht₁.2 t₂ ht₂' ht₂.2 hlt
   have himage : hh '' G = I ∩ τ ⁻¹' (γ '' I) := by
     ext s

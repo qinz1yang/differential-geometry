@@ -254,13 +254,13 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
     fun q => if q ∈ Ico 0 T then A q else 0
   have hAeq : ∀ q ∈ Ico 0 T, A' q = A q := by
     intro q hq
-    exact if_pos hq
+    exact ite_eq_left hq
   have hAsymm' : ∀ q z, ((A' q z : V z →L[ℝ] V z) : V z →ₗ[ℝ] V z).IsSymmetric := by
     intro q z
     by_cases hq : q ∈ Ico 0 T
     · rw [hAeq q hq]
       exact (hApos q hq z).toLinearMap.isSymmetric
-    · simp only [A', if_neg hq]
+    · simp only [A', ite_eq_right hq]
       change (0 : V z →ₗ[ℝ] V z).IsSymmetric
       exact LinearMap.IsSymmetric.zero
   have hApos' : ∀ q ∈ Icc 0 t, ∀ z, (A' q z).IsPositive := by
@@ -295,9 +295,9 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
   have hnull : ∀ q z, satisfiesNullEigenvectorCondition (reaction' q z) := by
     intro q z
     by_cases hq : q ∈ Ico 0 T
-    · simpa only [reaction', if_pos hq] using hreactionNull q hq z
+    · simpa only [reaction', ite_eq_left hq] using hreactionNull q hq z
     · intro B hB v hv
-      simp only [reaction', if_neg hq, zero_apply, inner_zero_left, le_refl]
+      simp only [reaction', ite_eq_right hq, zero_apply, inner_zero_left, le_refl]
   have hlip : ∀ {a b : ℝ}, 0 ≤ a → a < b → b ≤ t → ∀ {K : Set M},
       IsCompact K → ∀ R, ∃ Klip : NNReal, ∀ q ∈ Ioc a b, ∀ z ∈ K,
         LipschitzOnWith Klip (reaction' q z)
@@ -307,7 +307,7 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
     refine ⟨Klip, ?_⟩
     intro q hq z hz
     have hqT : q ∈ Ico 0 T := ⟨(ha.trans_lt hq.1).le, hq.2.trans_lt (hb.trans_lt ht)⟩
-    simpa only [reaction', if_pos hqT] using hKlip q hq z hz
+    simpa only [reaction', ite_eq_left hqT] using hKlip q hq z hz
   have hevol : ∀ q ∈ Ioc 0 t, ∀ z,
       HasDerivAt (fun r ↦ A' r z)
         (rawBundleEndomorphismConnLap (I := I) (G.metric q) (cov' q)
@@ -321,7 +321,7 @@ theorem finrank_range_le_at_later_time_of_continuous_endomorphism_on_Ioo
     have hev : (fun r => A' r z) =ᶠ[𝓝 q] (fun r => A r z) := by
       filter_upwards [isOpen_Ioo.mem_nhds hqT] with r hr
       rw [hAeq r ⟨hr.1.le, hr.2⟩]
-    simpa only [hAeq q hqT', cov', reaction', if_pos hqT'] using
+    simpa only [hAeq q hqT', cov', reaction', ite_eq_left hqT'] using
       (hevolution q hqT z).congr_of_eventuallyEq hev
   have hbound : ∀ {a b : ℝ}, 0 ≤ a → a < b → b ≤ t → ∀ {K : Set M},
       IsCompact K → ∃ R, ∀ q ∈ Icc a b, ∀ z ∈ K, ‖A' q z‖ ≤ R := by

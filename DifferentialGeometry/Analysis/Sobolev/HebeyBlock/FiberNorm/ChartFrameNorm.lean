@@ -116,7 +116,7 @@ theorem chart_frame_component_norm_bound
                   Measure (EuclideanSpace ℝ
                     (Fin (Module.finrank ℝ E)))) := by
     rw [hFα_def]
-    exact ENNReal.le_tsum α
+    apply ENNReal.le_tsum α
   have hFα_le_sq : Fα ≤ tensorPouSobolevHsNormSq (I := I) (M := M) g k T := by
     refine hFα_le_tsum.trans ?_
     rw [htsum_eq]

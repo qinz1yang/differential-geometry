@@ -42,7 +42,7 @@ theorem exists_metric_family_of_compatible_open_covers
   refine ⟨fun t => if ht : t ∈ A then G ⟨t, ht⟩ else G base, ?_⟩
   intro i t ht hJ
   dsimp only
-  rw [dif_pos ht]
+  rw [dite_eq_left ht]
   exact (hexists ⟨t, ht⟩).choose_spec i hJ
 
 end DifferentialGeometry.Geometry.Metric

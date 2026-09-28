@@ -243,7 +243,7 @@ theorem IsPseudoCell.exists_replacementDisk (h324 : Moise324) {Ec Eint Ebd : Set
     (hJ : IsPLSphere 1 (DJ \ DJint)) (hJE : DJ \ DJint ⊆ Eint) (hPDJ : P ∈ DJint)
     {δ₀ : ℝ} (hδ₀ : 0 < δ₀) :
     ∃ (δ : ℝ) (Δ₁ : Set E3) (r₁ : (Fin 3 → ℝ) → E3) (DJ₁ DJint₁ G : Set E3),
-      0 < δ ∧ δ ≤ δ₀ ∧ IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) Δ₁ ∧
+      0 < δ ∧ δ ≤ δ₀ ∧ IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁ ∧
         Δ₁ ⊆ Metric.ball P δ ∧ Δ₁ ∩ Ec = r₁ '' stdSimplexBoundary 2 ∧
           IsTopologicalCellWithInterior 2 DJ₁ DJint₁ ∧ DJ₁ ⊆ Ec ∧
             DJ₁ \ DJint₁ = r₁ '' stdSimplexBoundary 2 ∧ P ∈ DJint₁ ∧ DJ₁ ⊆ DJint ∧
@@ -620,8 +620,8 @@ theorem IsPseudoCell.isPolyhedron_sdiff_of_subdisk {Ec Eint Ebd : Set E3} {P : E
   exact hUpoly.union (hJ.isPolyhedron.union hJ₁.isPolyhedron)
 
 theorem exists_isCombinatorialManifold_sdiff_union {Δ Δ₁ DJ DJint DJ₁ DJint₁ : Set E3}
-    {r r₁ : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
-    (hr₁ : IsPLHomeomorphOn r₁ (stdSimplex ℝ (Fin 3)) Δ₁)
+    {r r₁ : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
+    (hr₁ : IsPLHomeomorphOn r₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ₁)
     (hDJ : IsTopologicalCellWithInterior 2 DJ DJint)
     (hDJ₁ : IsTopologicalCellWithInterior 2 DJ₁ DJint₁)
     (hDJJ : DJ \ DJint = r '' stdSimplexBoundary 2)
@@ -783,7 +783,7 @@ theorem section33_disk_meets_graph (h324 : Moise324)
     {v₁ : EuclideanSpace ℝ (Fin 3)} (hv₁ : v₁ ∈ K.vertices)
     {e₁ : Finset (EuclideanSpace ℝ (Fin 3))} (he₁ : e₁ ∈ K.faces) (hcard : e₁.card = 2)
     {Δ : Set (EuclideanSpace ℝ (Fin 3))} {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ) (hΔ : Δ ⊆ Cpp v₁ ∩ interior N')
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ) (hΔ : Δ ⊆ Cpp v₁ ∩ interior N')
     (hbd : Δ ∩ Ec e₁ = r '' stdSimplexBoundary 2)
     (hcenter : ∃ DJ DJint : Set (EuclideanSpace ℝ (Fin 3)),
       IsTopologicalCellWithInterior 2 DJ DJint ∧ DJ ⊆ Ec e₁ ∧

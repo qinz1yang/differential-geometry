@@ -139,8 +139,8 @@ theorem exists_section34_empty_annular_filling_in_tube_model
       (f : (Fin 3 → ℝ) × ℝ → EuclideanSpace ℝ (Fin 3)),
       IsPLBall 3 P ∧ IsPLHomeomorphInto 3 u P ∧ u '' P = G (ends e).1 '' Cc (ends e).1 ∧
       S.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 S ∧ S.space ⊆ P ∧
-      u '' S.space = Sp e ∧ IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) S.space ∧
-      (∀ x ∈ stdSimplex ℝ (Fin 3), f (x, 0) = f (x, 1)) ∧
+      u '' S.space = Sp e ∧ IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) S.space ∧
+      (∀ x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3), f (x, 0) = f (x, 1)) ∧
       R.faces.Finite ∧ IsCombinatorialManifoldWithBoundary 3 R ∧
       R.space ⊆ interior S.space ∧ IsPLTorus (frontier R.space) ∧
       CarriesFundamentalGroupOnto (frontier R.space) S.space ∧

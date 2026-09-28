@@ -158,7 +158,7 @@ theorem isPoincareStandard_component_of_ball_spherical_frontier
       hsmooth (fun b => hinside b.val b.property) hfr hpair
   let B' : T.Boundary → PartialDiffeomorph I3 I3 ThreeSpace M.Carrier ∞ :=
     fun b => if hb : b ∈ s then B ⟨b,hb⟩ else A
-  have hB'eq (b : T.Boundary) (hb : b ∈ s) : B' b = B ⟨b,hb⟩ := dif_pos hb
+  have hB'eq (b : T.Boundary) (hb : b ∈ s) : B' b = B ⟨b,hb⟩ := dite_eq_left hb
   have hAint : interior (A '' closedBall (0 : ThreeSpace) 1) = A '' ball (0 : ThreeSpace) 1 := by
     have hh := A.toOpenPartialHomeomorph.image_interior_of_subset_source hA
     change A '' interior (closedBall (0 : ThreeSpace) 1) = interior (A '' closedBall 0 1) at hh

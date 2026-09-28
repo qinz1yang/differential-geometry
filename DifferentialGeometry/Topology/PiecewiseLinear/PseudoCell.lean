@@ -232,7 +232,7 @@ structure IsTube (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)
   dualBall : ∀ v ∈ K.vertices, IsPLBall 3 (C v)
   splitCell : ∀ e ∈ K.faces, e.card = 2 →
     ∃ r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (D e) ∧ Dbd e = r '' stdSimplexBoundary 2
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧ Dbd e = r '' stdSimplexBoundary 2
   unionEq : N = ⋃ v ∈ K.vertices, C v
   splitProper : ∀ e ∈ K.faces, e.card = 2 → D e ∩ frontier N = Dbd e
   splitSeparates : ∀ u ∈ K.vertices, ∀ v ∈ K.vertices, u ≠ v →
@@ -425,7 +425,7 @@ def Moise324 : Prop :=
     ∀ δ : ℝ, 0 < δ →
       ∃ (Δ Δbd : Set (EuclideanSpace ℝ (Fin 3)))
         (r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
         Δbd = r '' stdSimplexBoundary 2 ∧
         Δ ⊆ Metric.ball P δ ∧
         Δbd = Δ ∩ Ec ∧

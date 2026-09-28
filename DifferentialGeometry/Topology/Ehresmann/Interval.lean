@@ -239,8 +239,8 @@ def affineIntervalDiffeomorph (a b : ℝ) [h : Fact (a < b)] :
         (fun x : Set.Icc (0 : ℝ) 1 ↦ (b - a) * x.1 + a)
       convert
         ((contMDiff_const.mul
-          (contMDiff_subtypeVal_Icc (x := (0 : ℝ)) (y := 1))).add contMDiff_const) using 1 <;>
-        first | rfl | infer_instance
+          (contMDiff_subtypeVal_Icc (x := (0 : ℝ)) (y := 1))).add contMDiff_const) using 1
+      first | rfl | infer_instance
   · rw [contMDiff_iff_comp_subtypeVal_Icc]
     constructor
     · exact e.symm.continuous

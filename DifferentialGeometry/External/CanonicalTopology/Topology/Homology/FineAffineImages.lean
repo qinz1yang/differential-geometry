@@ -26,7 +26,7 @@ theorem integralSingularChainRestriction_simplex (n : ℕ) (A : Set X)
 /-- All points of the SAME affine simplex are within its original vertex
 diameter of its zeroth vertex. -/
 theorem affineSimplexMap_dist_vertex_zero (n : ℕ) (v : Fin (n + 1) → E)
-    (t : stdSimplex ℝ (Fin (n + 1))) :
+    (t : Convexity.StdSimplex ℝ (Fin (n + 1))) :
     dist (affineSimplexMap v t) (v 0) ≤ Metric.diam (range v) := by
   have hb : Bornology.IsBounded (convexHull ℝ (range v)) :=
     isBounded_convexHull.mpr (Set.finite_range v).isBounded

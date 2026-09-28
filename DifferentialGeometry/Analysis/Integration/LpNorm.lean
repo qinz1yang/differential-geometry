@@ -11,10 +11,11 @@ open scoped ENNReal
 
 variable {α : Type*} [MeasurableSpace α] {μ : Measure α}
 
-theorem eLpNorm_two_sq_eq_lintegral_enorm_sq (f : α → ℝ) :
+theorem eLpNorm_two_sq_eq_lintegral_enorm_sq (f : α → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
-    (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))]
+    (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞)) hf]
   have h2 : (2 : ℝ≥0∞).toReal = 2 := by rfl
   rw [h2]
   have h_integral : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -29,17 +30,7 @@ theorem integral_sq_eq_l2 {v : α → ℝ} (hv : MemLp v 2 μ) :
     (∫ x, v x ^ 2 ∂μ) = (eLpNorm v 2 μ).toReal ^ 2 := by
   have h_sq_lintegral :
       (eLpNorm v 2 μ) ^ 2 = ∫⁻ x, (‖v x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
-    rw [eLpNorm_eq_lintegral_rpow_enorm_toReal
-      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞))]
-    have h2 : (2 : ℝ≥0∞).toReal = 2 := by rfl
-    rw [h2]
-    have h_inner_eq : ∫⁻ x, (‖v x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
-        ∫⁻ x, (‖v x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
-      refine lintegral_congr_ae ?_
-      filter_upwards with x
-      rw [show (2 : ℝ) = ((2 : ℕ) : ℝ) by norm_num, ENNReal.rpow_natCast]
-    rw [h_inner_eq, ← ENNReal.rpow_natCast _ 2, ← ENNReal.rpow_mul]
-    norm_num
+    exact eLpNorm_two_sq_eq_lintegral_enorm_sq v hv.aestronglyMeasurable
   have h_point : ∀ x : α,
       (‖v x‖ₑ : ℝ≥0∞) ^ 2 = ENNReal.ofReal (v x ^ 2) := by
     intro x
@@ -70,7 +61,8 @@ theorem eLpNorm_two_le_of_integral_norm_sq_le {f : α → F} (hf : MemLp f 2 μ)
     hf.of_le_enorm hf.aestronglyMeasurable.norm
       (Filter.Eventually.of_forall fun x ↦ (enorm_norm (f x)).le)
   have heq : eLpNorm (fun x ↦ ‖f x‖) 2 μ = eLpNorm f 2 μ :=
-    eLpNorm_congr_enorm_ae (Filter.Eventually.of_forall fun x ↦ enorm_norm (f x))
+    eLpNorm_congr_enorm_ae hnorm.aestronglyMeasurable hf.aestronglyMeasurable
+      (Filter.Eventually.of_forall fun x ↦ enorm_norm (f x))
   rw [← heq, hnorm.eLpNorm_eq_integral_rpow_norm (by norm_num) (by norm_num)]
   norm_num [← Real.sqrt_eq_rpow]
   exact Real.sqrt_le_sqrt hS

@@ -251,12 +251,12 @@ theorem liftedSquareRelativeFundamentalClass_ne_zero_of_exists_linearMap_eq_one
   exact hψ.symm.trans ((congrArg ψ hzero).trans (map_zero ψ))
 
 theorem squareAffineMap_vertex (n : ℕ) (v : Fin (n + 1) → Square) (j : Fin (n + 1)) :
-    squareAffineMap n v (stdSimplex.vertex j) = v j := by
+    squareAffineMap n v (Convexity.StdSimplex.single j) = v j := by
   funext i
   apply Subtype.ext
   rw [squareAffineMap_apply_coe]
-  change ∑ k, (Pi.single j (1 : ℝ) : Fin (n + 1) → ℝ) k * (v k i : ℝ) = (v j i : ℝ)
-  simp [Pi.single_apply]
+  change ∑ k, (Finsupp.single j (1 : ℝ)) k * (v k i : ℝ) = (v j i : ℝ)
+  simp [Finsupp.single_apply]
 
 theorem squareAffineSimplex_eq_iff (n : ℕ) (v v' : Fin (n + 1) → Square) :
     squareAffineSimplex n v = squareAffineSimplex n v' ↔ v = v' := by

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Tensor.Metric.TraceDerivativeBounds
+import DifferentialGeometry.Geometry.Metric.Tensor.TraceDerivativeBounds
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Tensor0S.Algebra.ContractionLeibniz
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Tensor.Metric
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
@@ -37,7 +37,7 @@ private theorem trace_orthonormal (G : SmoothRiemannianMetric I M)
   erw [metricTraceFirstTwoField_apply, metricTraceFirstTwo0STensor_apply,
     metricTraceFirstTwo0SAt_eq_sum_basis G b (identityInvMetric (Idx := ι)) hi]
   simp only [metricTrace0S2InBasis, identityInvMetric, diagonalInvMetric,
-    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, if_true]
+    ite_mul, one_mul, zero_mul, Finset.sum_ite_eq, Finset.mem_univ, ite_true]
 
 private theorem lower_product_eval (G g : SmoothRiemannianMetric I M)
     (x : M) (a b : TangentSpace I x) (w : Fin 4 → TangentSpace I x) :
@@ -102,7 +102,7 @@ theorem exists_metricRm04_relowering :
   have hrepr (i) : b.repr R i = G.inner x (b i) R := by
     rw [basis_repr_eq_sum_inv_inner G x b (identityInvMetric (Idx := Fin (Module.finrank ℝ (TangentSpace I x)))) hi R i]
     simp only [identityInvMetric, diagonalInvMetric, ite_mul, one_mul, zero_mul,
-      Finset.sum_ite_eq, Finset.mem_univ, if_true]
+      Finset.sum_ite_eq, Finset.mem_univ, ite_true]
     rw [G.symm]
   calc
     g.inner x (w 3) R = g.inner x R (w 3) := g.symm x _ _

@@ -20,7 +20,7 @@ theorem exists_coneComplex_frontier_eq_lower_cap
     (ℓ : E →ₗ[ℝ] ℝ) {p : E} {r : ℝ} (hp : p ∈ K.vertices) (hpr : ℓ p < r)
     (hother : ∀ v ∈ K.vertices, v ≠ p → r < ℓ v)
     {D : Set E} {g : (Fin 3 → ℝ) → E}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDr : D ⊆ {x | ℓ x = r}) (hgJ : g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r}) :
     ∃ (L : Geometry.SimplicialComplex ℝ E) (hpL : IsConeBase p L),
       L.faces.Finite ∧ IsPLBall 2 L.space ∧ L.space = D ∧
@@ -45,7 +45,7 @@ theorem isSimplyEmbedded_lower_cap_of_lt_other_vertices (I : SchoenfliesInput)
     (hp : p ∈ K.vertices) (hpr : ℓ p < r)
     (hother : ∀ v ∈ K.vertices, v ≠ p → r < ℓ v)
     {D : Set (EuclideanSpace ℝ (Fin 3))} {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDr : D ⊆ {x | ℓ x = r}) (hgJ : g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r}) :
     IsSimplyEmbedded ((K.space ∩ {x | ℓ x ≤ r}) ∪ D) := by
   obtain ⟨L, hpL, hLfin, hL, -, hfront⟩ :=
@@ -62,7 +62,7 @@ theorem isSimplyEmbedded_upper_cap_of_other_vertices_lt (I : SchoenfliesInput)
     (hp : p ∈ K.vertices) (hpr : r < ℓ p)
     (hother : ∀ v ∈ K.vertices, v ≠ p → ℓ v < r)
     {D : Set (EuclideanSpace ℝ (Fin 3))} {g : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hg : IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3)) D)
+    (hg : IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDr : D ⊆ {x | ℓ x = r}) (hgJ : g '' stdSimplexBoundary 2 = K.space ∩ {x | ℓ x = r}) :
     IsSimplyEmbedded ((K.space ∩ {x | r ≤ ℓ x}) ∪ D) := by
   have hDr' : D ⊆ {x | (-ℓ) x = -r} := fun x hx => by

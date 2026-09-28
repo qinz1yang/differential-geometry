@@ -9,10 +9,11 @@ namespace DifferentialGeometry.Topology
 universe u
 
 open Set
+open Convexity.StdSimplex (coordinateSet)
 open scoped BigOperators
 
 def simplexCoordinateInclusion (n : ℕ) :
-    C(stdSimplex ℝ (Fin (n + 1)), Fin n → ℝ) :=
+    C(coordinateSet ℝ (Fin (n + 1)), Fin n → ℝ) :=
   ⟨fun p i => p.val i.succ, by
       exact continuous_pi (fun i => (continuous_apply i.succ).comp continuous_subtype_val)⟩
 
@@ -23,7 +24,7 @@ theorem simplexCoordinateInclusion_injective (n : ℕ) :
   exact Subtype.ext h
 
 private theorem simplexCoordinateInclusion_mem_interior_iff (n : ℕ)
-    (p : stdSimplex ℝ (Fin (n + 1))) :
+    (p : coordinateSet ℝ (Fin (n + 1))) :
     simplexCoordinateInclusion n p ∈ interior (Simplex.coordinateSimplex n) ↔
       p ∈ Simplex.openCell (Fin (n + 1)) := by
   rw [Simplex.interior_coordinateSimplex]
@@ -55,13 +56,13 @@ private def simplexOpenCellCoordinateHomeomorph (n : ℕ) :
       (continuous_subtype_val.subtype_mk _)
 
 theorem simplexCoordinateInclusion_mapsTo_pointComplement (n : ℕ)
-    (p : stdSimplex ℝ (Fin (n + 1))) :
-    MapsTo (simplexCoordinateInclusion n) ({p}ᶜ : Set (stdSimplex ℝ (Fin (n + 1))))
+    (p : coordinateSet ℝ (Fin (n + 1))) :
+    MapsTo (simplexCoordinateInclusion n) ({p}ᶜ : Set (coordinateSet ℝ (Fin (n + 1))))
       ({simplexCoordinateInclusion n p}ᶜ : Set (Fin n → ℝ)) :=
   fun _ hp => (simplexCoordinateInclusion_injective n).ne hp
 
 theorem integralRelativeHomologyMap_simplexCoordinateInclusion_bijective
-    (n k : ℕ) (p : stdSimplex ℝ (Fin (n + 1)))
+    (n k : ℕ) (p : coordinateSet ℝ (Fin (n + 1)))
     (hp : p ∈ Simplex.openCell (Fin (n + 1))) :
     Function.Bijective (integralRelativeHomologyMap k (simplexCoordinateInclusion n)
       (simplexCoordinateInclusion_mapsTo_pointComplement n p)) := by
@@ -89,7 +90,7 @@ theorem integralRelativeHomologyMap_simplexCoordinateInclusion_bijective
   exact (Function.Bijective.of_comp_iff _ Jx.toLinearEquiv.bijective).mp hcomp
 
 def liftedSimplexCoordinateInclusion (n : ℕ) :
-    C(ULift.{u} (stdSimplex ℝ (Fin (n + 1))), ULift.{u} (Fin n → ℝ)) :=
+    C(ULift.{u} (coordinateSet ℝ (Fin (n + 1))), ULift.{u} (Fin n → ℝ)) :=
   ⟨fun p => ULift.up (simplexCoordinateInclusion n p.down), by fun_prop⟩
 
 theorem liftedSimplexCoordinateInclusion_injective (n : ℕ) :
@@ -99,14 +100,14 @@ theorem liftedSimplexCoordinateInclusion_injective (n : ℕ) :
   exact simplexCoordinateInclusion_injective n (congrArg ULift.down h)
 
 theorem liftedSimplexCoordinateInclusion_mapsTo_pointComplement (n : ℕ)
-    (p : ULift.{u} (stdSimplex ℝ (Fin (n + 1)))) :
+    (p : ULift.{u} (coordinateSet ℝ (Fin (n + 1)))) :
     MapsTo (liftedSimplexCoordinateInclusion n)
-      ({p}ᶜ : Set (ULift.{u} (stdSimplex ℝ (Fin (n + 1)))))
+      ({p}ᶜ : Set (ULift.{u} (coordinateSet ℝ (Fin (n + 1)))))
       ({liftedSimplexCoordinateInclusion n p}ᶜ : Set (ULift.{u} (Fin n → ℝ))) :=
   fun _ hp => (liftedSimplexCoordinateInclusion_injective n).ne hp
 
 private def liftedSimplexOpenCell (n : ℕ) :
-    Set (ULift.{u} (stdSimplex ℝ (Fin (n + 1)))) :=
+    Set (ULift.{u} (coordinateSet ℝ (Fin (n + 1)))) :=
   {p | p.down ∈ Simplex.openCell (Fin (n + 1))}
 
 private def liftedCoordinateSimplexInterior (n : ℕ) : Set (ULift.{u} (Fin n → ℝ)) :=
@@ -142,7 +143,7 @@ private def liftedSimplexOpenCellCoordinateHomeomorph (n : ℕ) :
       ((continuous_uliftDown.comp continuous_subtype_val).subtype_mk _)
 
 theorem integralRelativeHomologyMap_liftedSimplexCoordinateInclusion_bijective
-    (n k : ℕ) (p : ULift.{u} (stdSimplex ℝ (Fin (n + 1))))
+    (n k : ℕ) (p : ULift.{u} (coordinateSet ℝ (Fin (n + 1))))
     (hp : p.down ∈ Simplex.openCell (Fin (n + 1))) :
     Function.Bijective (integralRelativeHomologyMap k (liftedSimplexCoordinateInclusion n)
       (liftedSimplexCoordinateInclusion_mapsTo_pointComplement n p)) := by

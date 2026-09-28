@@ -33,7 +33,7 @@ theorem isPLSphere_frontier_slab_of_heightIndex_eq_zero
   have hbelowB : ∃ x ∈ B.space, ℓ x < a := hfront ▸ hbelow
   have haboveB : ∃ x ∈ B.space, b < ℓ x := hfront ▸ habove
   have hfiber (r : ℝ) (hr : r ∈ Icc a b) :
-      ∃ g : (Fin 3 → ℝ) → E, IsPLHomeomorphOn g (stdSimplex ℝ (Fin 3))
+      ∃ g : (Fin 3 → ℝ) → E, IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (K.space ∩ {x | ℓ x = r}) ∧ g '' stdSimplexBoundary 2 = B.space ∩ {x | ℓ x = r} := by
     exact exists_isPLHomeomorphOn_filling_fiber_of_heightIndex_eq_zero B K hB hdim hfront hreg hconn
       ℓ hℓ hBinj (hfront ▸ hzero) r

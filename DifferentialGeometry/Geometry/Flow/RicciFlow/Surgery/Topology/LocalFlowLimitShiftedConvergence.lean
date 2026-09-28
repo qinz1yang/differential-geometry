@@ -125,12 +125,12 @@ theorem tendsto_metricDerivNormSupOn_localPull_shifted_to_zero_of_time_lipschitz
       (localPullMetric (h k (f (ψ i)) 0) (φ k (ψ i) hi) (hφ k (ψ i) hi)) x ≤ 1 / 2 := by
     intro x hx q hq
     have h1 := hsw x (subset_closure hx) q hq
-    simpa only [dif_pos hi] using h1
+    simpa only [dite_eq_left hi] using h1
   have hS2 : metricDerivNormSupOn K p
       (localPullMetric (h k (f (ψ i)) 0) (φ k (ψ i) hi) (hφ k (ψ i) hi))
       (P.metric.restrictOpen (V k)) (P.metric.restrictOpen (V k)) < η / 2 := by
     have h1 := hj₁ i hij₁
-    simpa only [dif_pos hi] using h1
+    simpa only [dite_eq_left hi] using h1
   set σi := σ (f (ψ i)) with hσi_def
   set A := localPullMetric (h k (f (ψ i)) σi) (φ k (ψ i) hi) (hφ k (ψ i) hi) with hA_def
   set Z := localPullMetric (h k (f (ψ i)) 0) (φ k (ψ i) hi) (hφ k (ψ i) hi) with hZ_def

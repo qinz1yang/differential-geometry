@@ -179,17 +179,17 @@ theorem exists_metricBounds_radiusProfileFloor_of_offShell
       equiv := fun z hz v => d.metric_equiv j x z (hsub hz) v
       deriv := fun q z hz => ?_ }, rfl, ?_, ?_⟩
   · by_cases hq : n + q ≤ j
-    · simpa only [hq, if_true] using d.metricC_nonneg n q
-    · simpa only [hq, if_false] using hCF q
+    · simpa only [hq, ite_true] using d.metricC_nonneg n q
+    · simpa only [hq, ite_false] using hCF q
   · by_cases hq : n + q ≤ j
-    · simpa only [hq, if_true] using d.metric_deriv n q j hq x hx z (hsub hz)
-    · simpa only [hq, if_false] using hfull q hq z hz
+    · simpa only [hq, ite_true] using d.metric_deriv n q j hq x hx z (hsub hz)
+    · simpa only [hq, ite_false] using hfull q hq z hz
   · intro q hq
-    simp only [hq, if_true]
+    simp only [hq, ite_true]
   · intro q
     by_cases hq : n + q ≤ j
-    · simpa only [hq, if_true] using hshell q hq
-    · simp only [hq, if_false]
+    · simpa only [hq, ite_true] using hshell q hq
+    · simp only [hq, ite_false]
       exact le_rfl
 
 omit [CompleteSpace E] in

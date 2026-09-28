@@ -58,10 +58,10 @@ theorem paramDensity_expMap_le_mul_hyperbolicDensity
     · rw [LinearMap.isOrthoᵢ_def]
       intro i j hij
       change g.inner p (w i) (w j) = 0
-      rw [hON, if_neg hij]
+      rw [hON, ite_eq_right hij]
     · intro i
       change g.inner p (w i) (w i) ≠ 0
-      rw [hON, if_pos rfl]
+      rw [hON, ite_eq_left rfl]
       exact one_ne_zero
   have hdom t (ht : t ∈ Ioo (0 : ℝ) 1) :
       (show TangentSpace I p from t • x) ∈ expDomain (I := I) g p :=

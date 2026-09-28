@@ -236,13 +236,13 @@ theorem TerminalLimitMetric.exists_contMDiff_action_lt_of_terminal_curve
   have hα₂int : IntervalIntegrable (lRegularizedLagrangian G.flow T α₂) volume d v := by
     have hc := lRegularizedLagrangian_continuousOn_carrier G.flow G.equation α₂ hα₂
     exact (hc.comp (f := fun r : ℝ => (T, r)) (continuous_const.prodMk continuous_id).continuousOn htailClock).intervalIntegrable_of_Icc hd.2.le
-  have hβleft : EqOn β α₁ (Icc u d) := fun r hr => if_pos hr.2
+  have hβleft : EqOn β α₁ (Icc u d) := fun r hr => ite_eq_left hr.2
   have hβright : EqOn β α₂ (Icc d v) := by
     intro r hr
     rcases hr.1.eq_or_lt with heq | hlt
     · subst r
       exact ((Iic d).piecewise_eq_of_mem α₁ α₂ (by simp : d ∈ Iic d)).trans hmatch.self_of_nhds
-    · exact if_neg (not_le.mpr hlt)
+    · exact ite_eq_right (not_le.mpr hlt)
   have hβLagLeft : EqOn (lRegularizedLagrangian G.flow T β) (lRegularizedLagrangian G.flow T α₁) (uIoo u d) := by
     intro r hr
     rw [uIoo_of_le hd.1.le] at hr
@@ -1357,10 +1357,10 @@ private theorem exists_open_subtype_lifts_of_tendstoUniformlyOn
     if ht : t ∈ Icc u d then ⟨gamma t, hgamma ht⟩ else ⟨gamma u, hgamma hu⟩
   have hseq : ∀ n, EqOn (Subtype.val ∘ etaSeq n) (alpha n) (Icc u d) := by
     intro n t ht
-    simp only [Function.comp_apply, etaSeq, dif_pos ht]
+    simp only [Function.comp_apply, etaSeq, dite_eq_left ht]
   have heta : EqOn (Subtype.val ∘ eta) gamma (Icc u d) := by
     intro t ht
-    simp only [Function.comp_apply, eta, dif_pos ht]
+    simp only [Function.comp_apply, eta, dite_eq_left ht]
   refine ⟨etaSeq, eta, hseq, heta, ?_, ?_, ?_, ?_⟩
   · intro n r hr
     apply (DifferentialGeometry.Topology.contMDiffWithinAt_subtypeVal_comp_iff U (etaSeq n) (Icc u d) r).mp
@@ -1374,9 +1374,9 @@ private theorem exists_open_subtype_lifts_of_tendstoUniformlyOn
     rw [heta ht, hseq n ht]
     exact hn t ht
   · intro n t ht
-    simp only [etaSeq, dif_neg ht, dif_pos hu]
+    simp only [etaSeq, dite_eq_right ht, dite_eq_left hu]
   · intro t ht
-    simp only [eta, dif_neg ht, dif_pos hu]
+    simp only [eta, dite_eq_right ht, dite_eq_left hu]
 
 universe u
 variable {P : OrientedThreeStage.{u}} {a s : ℝ} {G : P.IncomingSlab a s}

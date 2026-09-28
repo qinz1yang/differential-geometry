@@ -9,6 +9,8 @@ import Mathlib.Tactic.FinCases
 
 open Set
 
+open Convexity.StdSimplex (coordinateSet isCompact_coordinateSet)
+
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 private theorem nonneg_of_sign_eq_or_zero {a b : ℝ}
@@ -68,7 +70,7 @@ private theorem simplexPrismArrangement_apply (ℓ : (ι → ℝ) →ₗ[ℝ] �
 
 private theorem isCellClosed_simplexSlab (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b : ℝ) :
     IsCellClosed (simplexSlabArrangement ℓ a b)
-      (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) := by
+      (coordinateSet ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) := by
   rintro x ⟨hx, hxa, hxb⟩ y hy
   have hsign (i) := hy i
   simp only [signVec, simplexSlabArrangement_apply] at hsign
@@ -85,7 +87,7 @@ private theorem isCellClosed_simplexSlab (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a
 
 private theorem isCellClosed_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) (a b r : ℝ) :
     IsCellClosed (simplexPrismArrangement ℓ a b r)
-      ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
+      ((coordinateSet ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
   rintro x ⟨⟨hx, hxlevel⟩, hxa, hxb⟩ y hy
   change ℓ x.1 = r at hxlevel
   have hsign (i) := hy i
@@ -109,8 +111,9 @@ open Classical in
 private theorem cellsOf_simplexSlab_eq_simplexPrism (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc
     a b)
     (hvertices : ∀ i, ℓ (Pi.single i 1) < a ∨ b < ℓ (Pi.single i 1)) :
-    cellsOf (simplexSlabArrangement ℓ a b) (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) =
-      cellsOf (simplexPrismArrangement ℓ a b r) ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
+    cellsOf (simplexSlabArrangement ℓ a b) (coordinateSet ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) =
+      cellsOf (simplexPrismArrangement ℓ a b r)
+        ((coordinateSet ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) := by
   ext σ
   constructor
   · rintro ⟨x, ⟨hx, hxa, hxb⟩, rfl⟩
@@ -138,18 +141,18 @@ theorem exists_isPLHomeomorphOn_stdSimplex_slab_prism
     (ℓ : (ι → ℝ) →ₗ[ℝ] ℝ) {a b r : ℝ} (hr : r ∈ Icc a b)
     (hvertices : ∀ i, ℓ (Pi.single i 1) < a ∨ b < ℓ (Pi.single i 1)) :
     ∃ f : (ι → ℝ) → (ι → ℝ) × ℝ,
-      IsPLHomeomorphOn f (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b})
-        ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) ∧
-      ∀ x ∈ stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b},
+      IsPLHomeomorphOn f (coordinateSet ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b})
+        ((coordinateSet ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) ∧
+      ∀ x ∈ coordinateSet ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b},
         (∀ i, (f x).1 i = 0 ↔ x i = 0) ∧ ((f x).2 = a ↔ ℓ x = a) ∧
           ((f x).2 = b ↔ ℓ x = b) := by
   classical
-  have hP : IsCompact (stdSimplex ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) :=
-    (isCompact_stdSimplex ℝ ι).inter_right ((isClosed_le continuous_const
+  have hP : IsCompact (coordinateSet ℝ ι ∩ {x | a ≤ ℓ x ∧ ℓ x ≤ b}) :=
+    (isCompact_coordinateSet ℝ ι).inter_right ((isClosed_le continuous_const
         ℓ.continuous_of_finiteDimensional).inter
       (isClosed_le ℓ.continuous_of_finiteDimensional continuous_const))
-  have hQ : IsCompact ((stdSimplex ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) :=
-    ((isCompact_stdSimplex ℝ ι).inter_right
+  have hQ : IsCompact ((coordinateSet ℝ ι ∩ {x | ℓ x = r}) ×ˢ Icc a b) :=
+    ((isCompact_coordinateSet ℝ ι).inter_right
       (isClosed_eq ℓ.continuous_of_finiteDimensional continuous_const)).prod isCompact_Icc
   obtain ⟨f, hf, hsign⟩ := exists_isPLHomeomorphOn_of_cellsOf_eq
     (simplexSlabArrangement ℓ a b) _ (simplexPrismArrangement ℓ a b r) _

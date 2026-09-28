@@ -1,4 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.RaisedGrid
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero)
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -34,7 +37,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
@@ -388,7 +391,7 @@ private theorem exists_riemannianFiberNormSq_pureDT_tgrid (g₀ : SmoothRiemanni
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (j + 1) := by
   classical
-  obtain ⟨S, hS_nn, hS⟩ := exists_riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_tgrid_deTurckLieConnectionDifferenceDerivative
+  obtain ⟨S, hS_nn, hS⟩ := sharpFlatEndoCc_covariant_antidiagonal_bound
     (I := I) (M := M) g₀ hδ₀
   obtain ⟨c0, hc0_nn, hc0⟩ := exists_fixedField_riemannianFiberNormSq_jet_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ (s + 2) s
     (cometricDoubleTraceField (I := I) g₀ s)
@@ -506,7 +509,7 @@ private theorem exists_riemannianFiberNormSq_pureDT_tgrid (g₀ : SmoothRiemanni
   rw [← mul_assoc, ← mul_assoc]
   rw [mul_assoc (diagonalGridGrowthFactor (E := E) j) (c0 0)]
 
-theorem exists_deTurckLieConnectionDifferenceDerivativePairTraceOperator_fiberNormSq_antidiagonalTupleGrid_bound (g₀ : SmoothRiemannianMetric I M)
+theorem deTurckLieConnectionDifferenceDerivativePairTraceOperator_covariant_antidiagonal_sum_bound (g₀ : SmoothRiemannianMetric I M)
     {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ C : ℕ → ℝ, (∀ j, 0 ≤ C j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)

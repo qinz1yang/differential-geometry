@@ -67,7 +67,7 @@ lemma partialDeriv_chartInvGramOnE_eq
     by_cases hep : e = p
     · subst hep
       simp
-    · rw [if_neg hep]
+    · rw [ite_eq_right hep]
       exact Matrix.one_apply_ne hep
   have hf_const : ∀ y ∈ interior (extChartAt I α).target,
       (∑ b : Fin (Module.finrank ℝ E),
@@ -270,7 +270,7 @@ lemma partialDeriv_chartInvGramOnE_eq
       by_cases hjb : j = b
       · subst hjb
         simp
-      · rw [if_neg hjb]
+      · rw [ite_eq_right hjb]
         exact Matrix.one_apply_ne hjb
     rw [show (∑ b : Fin (Module.finrank ℝ E),
             (∑ a : Fin (Module.finrank ℝ E),
@@ -283,10 +283,10 @@ lemma partialDeriv_chartInvGramOnE_eq
       refine Finset.sum_congr rfl (fun b _ => ?_)
       rw [hinner b]]
     rw [Finset.sum_eq_single j]
-    · rw [if_pos rfl]; ring
+    · rw [ite_eq_left rfl]; ring
     · intros b _ hbj
       have hjb : ¬ j = b := fun h => hbj h.symm
-      rw [if_neg hjb, zero_mul]
+      rw [ite_eq_right hjb, zero_mul]
     · intro hj
       exact absurd (Finset.mem_univ j) hj
   rw [hsecond] at hsum_zero

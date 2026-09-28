@@ -11,7 +11,8 @@ noncomputable section
 namespace DifferentialGeometry.PDE.RicciFlow
 
 open Bundle DifferentialGeometry.Tensor0SBundle
-open _root_.Tensor0SBundle
+open DifferentialGeometry.TensorMetric
+  (metricDiffAt metricDiffAt_self metricDiffSq metricDiffSq_def traceNormSq_le)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -72,7 +73,7 @@ private theorem repr_inner {Idx : Type*} [Finite Idx] [DecidableEq Idx]
     intro l
     rw [metricTensorField_eval]
     simpa using hON l k
-  simp only [hbb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true]
+  simp only [hbb, mul_ite, mul_one, mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true]
 
 omit [SigmaCompactSpace M] [T2Space M] in
 private theorem normSq0S_reindex (g : SmoothRiemannianMetric I M) {x : M} {s s' : ℕ}

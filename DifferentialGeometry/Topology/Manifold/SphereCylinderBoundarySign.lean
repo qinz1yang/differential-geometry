@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.Manifold.SphereDiffeomorphDegree
 import DifferentialGeometry.Tensor.LinearAlgebra.BoundaryBlockDeterminant
 import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.BoundaryNormalDerivative
 import DifferentialGeometry.Analysis.Calculus.Inverse.CoordinateDerivativeEquiv
-import DifferentialGeometry.Tensor.LinearAlgebra.CoordinateLinearSquare
+import DifferentialGeometry.Analysis.Calculus.Derivative.Coordinates.LinearSquare
 
 noncomputable section
 open Set Metric Filter Topology Manifold Module

@@ -53,7 +53,7 @@ theorem exists_section34_model_return_disk_avoiding_split_disks
     ∃ (R D : Set E3) (q : (Fin 3 → ℝ) → E3) (δ : ℝ → E3),
       IsPLHomeomorphOn δ (Icc 0 1) R ∧ δ 0 = η 0 ∧ δ 1 = η 1 ∧
       R ⊆ u ⁻¹' section34SplitDiskImage srcBd f₁ e₀ ∧ B ∩ R = {η 0, η 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
       q '' stdSimplexBoundary 2 = B ∪ R ∧ D ⊆ P ∧
       D ⊆ u ⁻¹' (section34VertexBallImage srcBd f₁ w ∩
         frontier (⋃ v, section34VertexBallImage src f₁ v)) ∧

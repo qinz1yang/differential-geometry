@@ -17,7 +17,7 @@ theorem IsPseudoCell.exists_plDisk_agreeing_off_ball (h324 : Moise324)
     (hDJ : IsTopologicalCellWithInterior 2 DJ DJint) (hDJE : DJ ⊆ Eint)
     (hJ : IsPLSphere 1 (DJ \ DJint)) (hPDJ : P ∈ DJint) {δ₀ : ℝ} (hδ₀ : 0 < δ₀) :
     ∃ (F : Set E3) (r : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) F ∧ r '' stdSimplexBoundary 2 = DJ \ DJint ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) F ∧ r '' stdSimplexBoundary 2 = DJ \ DJint ∧
         F ⊆ DJ ∪ Metric.ball P δ₀ ∧ DJ \ Metric.ball P δ₀ ⊆ F := by
   have hEintE : Eint ⊆ Ec := by
     rw [hpc.carrierEq]
@@ -30,7 +30,7 @@ theorem IsPseudoCell.exists_plDisk_agreeing_off_ball (h324 : Moise324)
   have hΔ₁b : Δ₁ ⊆ Metric.ball P δ₀ := hΔ₁ball.trans (Metric.ball_subset_ball hδle)
   have hDJint : DJint ⊆ DJ := hDJ.subset
   have hDJ₁int : DJint₁ ⊆ DJ₁ := hDJ₁.subset
-  have hbsub : stdSimplexBoundary 2 ⊆ stdSimplex ℝ (Fin 3) := fun x hx => hx.1
+  have hbsub : stdSimplexBoundary 2 ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := fun x hx => hx.1
   have hJ₁Δ₁ : r₁ '' stdSimplexBoundary 2 ⊆ Δ₁ := (image_mono hbsub).trans hr₁.image_eq.subset
   have hJ₁ : IsPLSphere 1 (DJ₁ \ DJint₁) := by
     rw [hDJ₁J]

@@ -18,7 +18,6 @@ namespace Analysis
 namespace Spectral
 namespace MetricRealization
 
-open DifferentialGeometry.Analysis.Laplacian
 
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]

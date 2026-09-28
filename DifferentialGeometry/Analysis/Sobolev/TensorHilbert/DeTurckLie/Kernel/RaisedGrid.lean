@@ -1,4 +1,8 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.LoweredRepresentation
+
+open DifferentialGeometry.TensorMetric
+  (coframeS coframeS_apply exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent
+    riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
@@ -34,7 +38,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
@@ -75,7 +79,7 @@ private lemma termSlotEndoCc_one_eq_reindex_slotExtend_deTurckLieConnectionDiffe
   exact DifferentialGeometry.Analysis.Spectral.CurvatureCoefficientDifferenceJetTower.termSlotEndoCc_one_eq_reindex_slotExtend
     (I := I) (M := M) g₀ Term
 omit [SigmaCompactSpace M] in
-private lemma riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connTerm_le_deTurckLieConnectionDifferenceDerivative
+private lemma deTurckLieConnectionDifferenceDerivativeConnTermPt_covariant_insertion_bound
     (g₀ gc : SmoothRiemannianMetric I M) (j : ℕ) (x : M) :
     riemannianFiberNormSq (I := I) (M := M) g₀ 2 (3 + j) x
         ((iteratedCovGrad (I := I) g₀ 2 3 j
@@ -142,7 +146,7 @@ lemma deTurckLieConnectionDifferenceDerivativeQuad_tower_of_factors (g₀ ga gb 
           (termSlotEndoPassZeroCc (I := I) (M := M) g₀
             (deTurckLieConnectionDifferenceDerivativeConnTermPt (I := I) (M := M) g₀ ga))).toSection x) ≤
         (Module.finrank ℝ E : ℝ) * (Ba i * antidiagonalTupleGridPartialSum b (i + 2)) := by
-      refine le_trans (riemannianFiberNormSq_iteratedCovGrad_termSlotPass_connTerm_le_deTurckLieConnectionDifferenceDerivative
+      refine le_trans (deTurckLieConnectionDifferenceDerivativeConnTermPt_covariant_insertion_bound
         (I := I) (M := M) g₀ ga i x) ?_
       exact mul_le_mul_of_nonneg_left (harm i hi_le) hfr_nn
     have hA2 : (∑ l ∈ Finset.range (j + 1 - i),
@@ -228,7 +232,7 @@ private theorem exists_riemannianFiberNormSq_deTurckLieConnectionDifferenceDeriv
             (fun l => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + l) x
               ((iteratedCovGrad (I := I) g₀ 0 2 l T).toSection x)) (i + 3) := by
   classical
-  obtain ⟨CA, hCA_nn, hCA⟩ := exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid_deTurckLieConnectionDifferenceDerivative
+  obtain ⟨CA, hCA_nn, hCA⟩ := connectionDifferenceSection_covariant_antidiagonal_sum_bound
     (I := I) (M := M) g₀ hδ₀
   obtain ⟨cbg, hcbg_nn, hcbg⟩ := exists_fixedField_riemannianFiberNormSq_jet_deTurckLieConnectionDifferenceDerivative (I := I) (M := M) g₀ 1 3
     (covGrad (I := I) (M := M) g₀ 1 2 (connectionDifferenceSection (I := I) g_bg g₀))
@@ -498,9 +502,9 @@ lemma riemannianFiberNormSq_ccTensor02Symm_zero_le_deTurckLieConnectionDifferenc
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
-      rw [horth (J 0) (J 0), if_pos rfl]
+      rw [horth (J 0) (J 0), ite_eq_left rfl]
     have h11 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by
-      rw [horth (J 1) (J 1), if_pos rfl]
+      rw [horth (J 1) (J 1), ite_eq_left rfl]
     rw [h00, h11, Real.sqrt_one, mul_one, mul_one] at habs
     have := abs_nonneg (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))
     nlinarith [habs, sq_abs (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))]

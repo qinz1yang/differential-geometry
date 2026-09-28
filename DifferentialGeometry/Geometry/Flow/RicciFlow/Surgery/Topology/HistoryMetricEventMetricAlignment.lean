@@ -49,7 +49,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ}
 variable {P : OrientedThreeStage.{u}} {g : P.Metric}
 
 theorem exists_extension_after_metricCutCapEvent_preserving_debit_with_metric_alignment
-    (H : RetainedCoreHistory P) (A : InitialIdentification P g H.toHistory)
+    (H : RetainedCoreHistory.{u}) (A : InitialIdentification P g H.toHistory)
     (htime : H.time (Fin.last H.eventCount) = H.horizon)
     {Q : OrientedThreeStage.{u}} {s : ℝ}
     (E : MetricCutCapEvent (H.stage (Fin.last H.eventCount)) Q
@@ -67,7 +67,7 @@ theorem exists_extension_after_metricCutCapEvent_preserving_debit_with_metric_al
     (hscalar : ∀ B : ℝ, B ≤ 0 →
       (∀ x, B ≤ metricScalarAt E.terminal.metric x) →
       ∀ x, B ≤ metricScalarAt E.outputMetric x) :
-    ∃ (K : RetainedCoreHistory P) (B : InitialIdentification P g K.toHistory)
+    ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P g K.toHistory)
       (i : Fin K.eventCount),
       A.IsPrefixOf B ∧ s < K.horizon ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = s ∧ K.stage (Fin.last K.eventCount) = Q ∧

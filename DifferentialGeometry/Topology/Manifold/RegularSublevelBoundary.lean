@@ -45,7 +45,7 @@ theorem manifoldSublevelBoundary_iff_mem_levelSet [I.Boundaryless]
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) =
         manifoldSublevelInteriorChart I f a x hlt hf
-      rw [dif_neg hxne]
+      rw [dite_eq_right hxne]
     change (chartAt (MorseHalfSpace m) x).extend
       (morseModelWithCornersHalfSpace m) x ∈
         {w : MorseModel (m + 1) | w (Fin.last m) = 0} at hx
@@ -69,7 +69,7 @@ theorem manifoldSublevelBoundary_iff_mem_levelSet [I.Boundaryless]
         else manifoldSublevelInteriorChart I f a x
           (lt_of_le_of_ne (show f x.1 ≤ a from x.2) h) hf) =
         manifoldSublevelBoundaryChart I f a x hx hf hreg
-      rw [dif_pos hx]
+      rw [dite_eq_left hx]
     change (chartAt (MorseHalfSpace m) x).extend
       (morseModelWithCornersHalfSpace m) x ∈
         {w : MorseModel (m + 1) | w (Fin.last m) = 0}

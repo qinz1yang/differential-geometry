@@ -126,7 +126,7 @@ theorem coordinateFrame_christoffel_formula_point_of_isLeviCivita
       rw [IsLocalFrameOn.toBasisAt_coe]
       rw [coordinateFrameAt_basis_apply]
     unfold IsLocalFrameOn.coeff
-    rw [dif_pos hx, hbasis]
+    rw [dite_eq_left hx, hbasis]
   have hcoord :
       basis.coord k A =
         ∑ l : CoordinateIdx (𝕜 := Real) E, gInv k l * g.inner x (basis l) A :=

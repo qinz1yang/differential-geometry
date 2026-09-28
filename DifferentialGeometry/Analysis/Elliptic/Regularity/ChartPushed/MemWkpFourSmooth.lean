@@ -2,7 +2,6 @@ import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.Differentiate
 import DifferentialGeometry.Analysis.Elliptic.Regularity.DiffChart.TwiceDifferentiated.DerivedH2Interior
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThreeSmooth
 import DifferentialGeometry.Analysis.Elliptic.Regularity.ChartPushed.MemWkpThree
-import DifferentialGeometry.Analysis.Elliptic.Regularity.LaplacianDomain.Powers.EvenOrderBridge
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.IteratedSobolevSpace.IteratedSobolev
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Density
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
@@ -38,7 +37,6 @@ open DifferentialGeometry.Analysis.Laplacian.CanonicalDerivedChartBilinearH1Comp
 open DifferentialGeometry.Analysis.Laplacian.TwiceDerivedChartBilinearH2Interior
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThreeSmooth
 open DifferentialGeometry.Analysis.Laplacian.ChartPushedMemWkpThree
-open DifferentialGeometry.Analysis.Laplacian.LaplacianDomainPowH2kBridge
 open DifferentialGeometry.Analysis.Laplacian.DiffChartChosenFirstPartial
 
 private local instance : MeasurableSpace E := borel E
@@ -292,40 +290,6 @@ theorem chartPushed_memWkp_four_two_of_laplacianDomainPow_two_of_twice_diff_iden
   exact chartPushedChosenFirstPartial_memWkp_three_two_of_twice_diff_identities
     (I := I) (M := M) g α hu_h h_twice_identities l₁
 
-theorem chartSideH2kBridge_two_of_twice_diff_identities
-    (g : SmoothRiemannianMetric I M)
-    {u_h : H1Compl (I := I) (M := M) g}
-    (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2)
-    (h_twice_identities :
-      ∀ α : M, ∀ l₁ l₂ : Fin (Module.finrank ℝ E),
-        ∀ ψ : EuclN → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
-          tsupport ψ ⊆ chartTargetEuclid (I := I) (M := M) α →
-          (∫ y in chartTargetEuclid (I := I) (M := M) α,
-            (∑ i : Fin (Module.finrank ℝ E),
-              ∑ j : Fin (Module.finrank ℝ E),
-                weightedInvGramOnEuclid (I := I) g α i j y *
-                  chosenThirdMixedPartialChartPushedU
-                    (I := I) (M := M) g α u_h i l₁ l₂ y *
-                  (fderiv ℝ ψ y) (EuclideanSpace.single j 1))
-            ∂(volume : Measure EuclN))
-          + (∫ y in chartTargetEuclid (I := I) (M := M) α,
-              densityOnEuclid (I := I) g α y *
-                chosenSecondPartialChartPushedU
-                  (I := I) (M := M) g α u_h l₁ l₂ y * ψ y
-              ∂(volume : Measure EuclN)) =
-          ∫ y in chartTargetEuclid (I := I) (M := M) α,
-            densityOnEuclid (I := I) g α y *
-              effectiveSourceChartSecondOrder (I := I) (M := M) g α l₁ l₂ hu_h y * ψ y
-            ∂(volume : Measure EuclN)) :
-    ChartSideH2kBridge (I := I) (M := M) 2
-      (((H1ComplToLp (I := I) (M := M) g u_h :
-        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ)) := by
-  intro α
-  have h_eq : (2 : ℕ) * 2 = 4 := by norm_num
-  rw [h_eq]
-  exact chartPushed_memWkp_four_two_of_laplacianDomainPow_two_of_twice_diff_identities
-    (I := I) (M := M) g α hu_h (h_twice_identities α)
-
 theorem laplacianDomainPow_memWkpChart_four_two_of_twice_diff_identities
     (g : SmoothRiemannianMetric I M)
     {u_h : H1Compl (I := I) (M := M) g}
@@ -359,13 +323,15 @@ theorem laplacianDomainPow_memWkpChart_four_two_of_twice_diff_identities
       (I := I) (M := M) 4 2
       ((H1ComplToLp (I := I) (M := M) g u_h :
         Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) < ⊤ := by
-  have h_bridge := chartSideH2kBridge_two_of_twice_diff_identities
-    (I := I) (M := M) g hu_h h_twice_identities
-  have h := laplacianDomainPow_memWkpChart_2k_of_chartSideH2kBridge
-    (I := I) (M := M) g 2 h_bridge
-  have h_eq : (2 : ℕ) * 2 = 4 := by norm_num
-  rw [h_eq] at h
-  exact h
+  have h_mem : DifferentialGeometry.Analysis.Sobolev.Chart.MemWkpChart
+      (I := I) (M := M) 4 2
+      ((H1ComplToLp (I := I) (M := M) g u_h :
+        Lp ℝ 2 (riemannianVolumeMeasure (I := I) (M := M) g)) : M → ℝ) := by
+    intro α
+    exact chartPushed_memWkp_four_two_of_laplacianDomainPow_two_of_twice_diff_identities
+      (I := I) (M := M) g α hu_h (h_twice_identities α)
+  exact ⟨h_mem, wkpNormChart_lt_top_of_memWkpChart
+    (I := I) (M := M) (k := 4) (p := 2) (by norm_num) h_mem⟩
 
 end ChartPushedMemWkpFourSmooth
 end Laplacian

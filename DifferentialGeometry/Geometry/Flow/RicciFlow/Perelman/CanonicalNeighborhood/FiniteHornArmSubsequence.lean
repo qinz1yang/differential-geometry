@@ -51,9 +51,9 @@ theorem finiteHorn_arm_subsequence_eq_endRay
     funext s
     by_cases hs : (s : ℝ) = 0
     · have hsz : s = ⟨0, by norm_num⟩ := Subtype.ext hs
-      rw [if_pos hs]
+      rw [ite_eq_left hs]
       exact (congrArg f hsz).trans hf0
-    · rw [if_neg hs]
+    · rw [ite_eq_right hs]
       exact hfRay s (lt_of_le_of_ne s.property.1 (Ne.symm hs))
   rw [heq] at huniform
   exact ⟨phi, hphi, huniform⟩

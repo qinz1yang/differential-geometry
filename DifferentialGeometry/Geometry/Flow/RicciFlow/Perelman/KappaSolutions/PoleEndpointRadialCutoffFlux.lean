@@ -66,7 +66,7 @@ theorem HalfLineMetricConvergenceData.abs_inner_redLength_limit_gradient_radialD
     (co.gInf (1 - a)) (co.gInf (1 - s))
     (co.metric_inner_le_at_reflected_times F hcar hreg b hbmem tau q hsigma
       Phi kappa hancient ha has) z hr x
-  have hinner := DifferentialGeometry.Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic
+  have hinner := DifferentialGeometry.SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic
     (co.gInf (1 - s)) x
     (gradientFun (co.gInf (1 - s)) ell x)
     (gradientFun (co.gInf (1 - s)) (radialDistanceCutoff (co.gInf (1 - a)) z r) x)

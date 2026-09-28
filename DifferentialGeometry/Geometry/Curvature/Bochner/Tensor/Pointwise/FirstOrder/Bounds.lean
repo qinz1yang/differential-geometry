@@ -16,6 +16,31 @@ import DifferentialGeometry.Geometry.Connection.TensorNabla.Curvature.TensorRS
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Slotwise
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.Uniform.DerivativeNorm
+
+open DifferentialGeometry.TensorMetric
+  (embedRS
+    exists_tangent_orthonormalBasisS_with_norm_sum
+    fiberNormSqComponent
+    fiberNormSqComponent_embedRS
+    fiberNormSqComponent_smul
+    fiberNormSqComponent_sum
+    fiberNormSqSummand
+    riemannianFiberNormSq
+    riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_eq_sum_componentS_sq
+    riemannianFiberNormSq_nonneg
+    riemannianFiberNormSq_slot0Curry_le_of_frame
+    riemannianFiberNormSq_slotSub_le
+    riemannianFiberNormSq_sub_le
+    riemannianFiberNormSq_succ_eq_sum_slot0Curry_of_frame
+    riemannianFiberNormSq_sum_le_card_mul
+    slot0Curry
+    slot0Curry_eq_tensor0SToTensorRS_curry_unitZeroSec
+    tensor00Scalar
+    tensor00Scalar_apply
+    tensor0SAsRS_apply
+    tensor0SToTensorRS
+    toModel_tensorSlotSubstCLM_apply)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 
@@ -1142,10 +1167,10 @@ private theorem exists_frameSummed_curvDirCovDeriv_fiberNormSq_le
   have hgB : ∀ i : Fin n, g.inner x (smoothOrthoFrame (I := I) g x i x)
       (smoothOrthoFrame (I := I) g x i x) = 1 := by
     intro i
-    have := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i; rwa [if_pos rfl] at this
+    have := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i; rwa [ite_eq_left rfl] at this
   have hga : g.inner x (smoothOrthoFrame (I := I) g x a x)
       (smoothOrthoFrame (I := I) g x a x) = 1 := by
-    have := smoothOrthoFrame_orthonormal_at_center (I := I) g x a a; rwa [if_pos rfl] at this
+    have := smoothOrthoFrame_orthonormal_at_center (I := I) g x a a; rwa [ite_eq_left rfl] at this
   have hw_bd : ∀ i : Fin n, g.inner x (w i) (w i) ≤ Kbase := by
     intro i
     have h := hKbase x (smoothOrthoFrame (I := I) g x i x) (smoothOrthoFrame (I := I) g x a x)
@@ -1859,7 +1884,7 @@ private lemma frameCurvVec_le
       Kbase := by
   have hi := smoothOrthoFrame_orthonormal_at_center (I := I) g x i i
   have ha := smoothOrthoFrame_orthonormal_at_center (I := I) g x a a
-  rw [if_pos rfl] at hi ha
+  rw [ite_eq_left rfl] at hi ha
   have h := hKbase x (smoothOrthoFrame (I := I) g x i x)
     (smoothOrthoFrame (I := I) g x a x) (smoothOrthoFrame (I := I) g x i x)
   simpa only [hi, ha, mul_one] using h

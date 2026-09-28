@@ -112,7 +112,7 @@ theorem exists_unitSpeedVectorField_eq_nhds_on_union
     if h : ∃ i, x ∈ U i then W (Classical.choose h) x else 0
   have heq (i : ι) {x : M} (hx : x ∈ U i) : W₀ x = W i x := by
     dsimp only [W₀]
-    rw [dif_pos ⟨i, hx⟩]
+    rw [dite_eq_left ⟨i, hx⟩]
     exact hagree _ i x ⟨Classical.choose_spec (show ∃ j, x ∈ U j from ⟨i, hx⟩), hx⟩
   have hW₀ : ContMDiffOn I I.tangent ∞
       (fun x => (⟨x, W₀ x⟩ : TangentBundle I M)) (⋃ i, U i) := by

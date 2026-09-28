@@ -46,7 +46,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem HasPLCurveCrossingOnAt.not_subset_of_ball_seam {A B J : Set E}
     (hA : IsClosed A) (hB : IsClosed B) (hS : IsPLSphere 2 (frontier B))
     {q : (Fin 3 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (A ∩ B))
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (A ∩ B))
     (hDS : A ∩ B ⊆ frontier B) {x : E}
     (hc : HasPLCurveCrossingOnAt (frontier (A ∪ B)) J (q '' stdSimplexBoundary 2) x) :
     ¬ J ⊆ A := by

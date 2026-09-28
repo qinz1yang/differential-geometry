@@ -154,7 +154,7 @@ def SpatialCanonicalContinuation (P₀ : OrientedThreeStage.{u}) (g₀ : P₀.Me
     ∀ (p₀ : CutoffParameters) (δbound ρbound : ℝ),
       p₀.modelAccuracy ≤ εcap → Dcap ≤ p₀.modelRadius → mcap ≤ p₀.modelOrder →
       δbound ≤ δmax → ρbound ≤ ρmax →
-    ∀ (H : RetainedCoreHistory P₀) (hH : H.InCutoffClass g₀ B p₀ δbound ρbound),
+    ∀ (H : RetainedCoreHistory.{u}) (hH : H.InCutoffClass (P₀ := P₀) g₀ B p₀ δbound ρbound),
       H.EventSlabsPinched phi →
       (∀ j : Fin H.eventCount,
         H.EventSlabsCanonical ε C1 C2 qcan τmin j.castSucc →

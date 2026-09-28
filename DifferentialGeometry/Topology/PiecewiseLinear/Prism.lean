@@ -15,9 +15,9 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 private theorem isPLBall_of_linear_coordinates
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {n : ℕ} {P : Set E} (f : (Fin (n + 1) → ℝ) →ₗ[ℝ] E) (g : E → Fin (n + 1) → ℝ)
-    (hf : MapsTo f (stdSimplex ℝ (Fin (n + 1))) P)
-    (hg : MapsTo g P (stdSimplex ℝ (Fin (n + 1))))
-    (hgf : LeftInvOn g f (stdSimplex ℝ (Fin (n + 1)))) (hfg : RightInvOn g f P) :
+    (hf : MapsTo f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) P)
+    (hg : MapsTo g P (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))))
+    (hgf : LeftInvOn g f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)))) (hfg : RightInvOn g f P) :
     IsPLBall n P := by
   refine ⟨f, isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn
     (isHPolytope_stdSimplex (Fin (n + 1))).isPolyhedron

@@ -276,7 +276,7 @@ theorem exists_absolutelyContinuousOnInterval_openSubtype
     else ⟨gamma a, hU left_mem_uIcc⟩
   have heq : EqOn (Subtype.val ∘ eta) gamma (uIcc a b) := by
     intro t ht
-    simp only [eta, dif_pos ht, Function.comp_apply]
+    simp only [eta, dite_eq_left ht, Function.comp_apply]
   refine ⟨eta, ?_, heq⟩
   apply absolutelyContinuousOnInterval_subtype_of_val U
   exact absolutelyContinuousOnInterval_congr h heq.symm
@@ -323,8 +323,8 @@ theorem absolutelyContinuousOnInterval_of_extChartAt
     obtain ⟨C, V, hV, hCV⟩ := hcd.exists_lipschitzOnWith
     exact ⟨C, V, mem_nhdsWithin_of_mem_nhds hV, hCV⟩
   obtain ⟨C, hC⟩ := hlocal.exists_lipschitzOnWith_of_compact hK
-  have hh := hC.comp_absolutelyContinuousOnInterval (hAC.mono hsub)
-    (fun r hr => mem_image_of_mem _ hr)
+  have hh := hC.comp_absolutelyContinuousOnInterval
+    (fun r hr => mem_image_of_mem _ hr) (hAC.mono hsub)
   apply hh.congr
   intro r hr
   change (extChartAt I q) ((extChartAt I p).symm ((extChartAt I p) (γ r))) =
@@ -402,8 +402,8 @@ theorem absolutelyContinuousOnInterval_comp_contMDiff
         obtain ⟨L, V, hV, hLip⟩ := hC.exists_lipschitzOnWith I.convex_range
         exact ⟨L, V, nhdsWithin_mono _ hKr hV, hLip⟩
       obtain ⟨L, hLip⟩ := hloc.exists_lipschitzOnWith_of_compact hK
-      have h := hLip.comp_absolutelyContinuousOnInterval hAC
-        (fun r hr => mem_image_of_mem ((extChartAt I p) ∘ gamma) hr)
+      have h := hLip.comp_absolutelyContinuousOnInterval
+        (fun r hr => mem_image_of_mem ((extChartAt I p) ∘ gamma) hr) hAC
       apply h.congr
       intro r hr
       dsimp only [Function.comp_apply]
@@ -411,11 +411,7 @@ theorem absolutelyContinuousOnInterval_comp_contMDiff
     have hjoin (n : ℕ) : AbsolutelyContinuousOnInterval
         ((extChartAt J q) ∘ f ∘ gamma) c (t n).val := by
       induction n with
-      | zero =>
-        rw [ht0]
-        have h := hsegment 0
-        rw [ht0] at h
-        exact h.mono (by simp)
+      | zero => rw [ht0]
       | succ n ih =>
         simpa only [Set.piecewise_same] using
           AbsolutelyContinuousOnInterval.piecewise_Iic (t n).property.1

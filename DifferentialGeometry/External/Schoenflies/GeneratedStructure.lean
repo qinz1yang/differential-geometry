@@ -1038,10 +1038,10 @@ subdivided edge as parent; every surviving cell is its own parent. -/
 noncomputable def parent : γ → γ := fun σ => if σ ∈ d.newCells then d.edge else σ
 
 theorem parent_of_mem_newCells {σ : γ} (h : σ ∈ d.newCells) : d.parent σ = d.edge := by
-  rw [parent]; exact if_pos h
+  rw [parent]; exact ite_eq_left h
 
 theorem parent_of_notMem_newCells {σ : γ} (h : σ ∉ d.newCells) : d.parent σ = σ := by
-  rw [parent]; exact if_neg h
+  rw [parent]; exact ite_eq_right h
 
 theorem parent_of_mem_cells {σ : γ} (h : σ ∈ S.cells) : d.parent σ = σ :=
   d.parent_of_notMem_newCells (notMem_newCells_of_mem_cells h)
@@ -1364,10 +1364,10 @@ endpoints, which the split does not create — is its own parent. -/
 noncomputable def parent : γ → γ := fun σ => if σ ∈ d.newCells then d.face else σ
 
 theorem parent_of_mem_newCells {σ : γ} (h : σ ∈ d.newCells) : d.parent σ = d.face := by
-  rw [parent]; exact if_pos h
+  rw [parent]; exact ite_eq_left h
 
 theorem parent_of_notMem_newCells {σ : γ} (h : σ ∉ d.newCells) : d.parent σ = σ := by
-  rw [parent]; exact if_neg h
+  rw [parent]; exact ite_eq_right h
 
 theorem parent_of_mem_cells {σ : γ} (h : σ ∈ S.cells) : d.parent σ = σ :=
   d.parent_of_notMem_newCells (notMem_newCells_of_mem_cells h)

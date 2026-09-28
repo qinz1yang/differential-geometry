@@ -196,7 +196,7 @@ theorem exists_continuousOn_mapsTo_of_nullhomotopic {E : Type*} [NormedAddCommGr
   let v : EuclideanSpace ℝ (Fin 2) → E := fun z => if hz : z ∈ P then (F ⟨z, hz⟩ : E) else 0
   have hv : ∀ z : P, v z = (F z : E) := by
     intro z
-    simp only [v, dif_pos z.property]
+    simp only [v, dite_eq_left z.property]
   refine ⟨v, ?_, ?_, ?_⟩
   · rw [continuousOn_iff_continuous_domRestrict]
     exact (continuous_subtype_val.comp F.continuous).congr fun z => (hv z).symm
@@ -328,7 +328,7 @@ theorem exists_polyhedralDisk_of_embeddedDisk
     (hN : S.normalSubgroup = (⊥ : Subgroup (FundamentalGroup V y)).comap
       (FundamentalGroup.mapOfEq β hb)) :
     ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧ Δ ⊆ K.space ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧ Δ ⊆ K.space ∧
       Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 ∧
       ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ V,
         ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
@@ -383,7 +383,7 @@ theorem exists_polyhedralDisk_of_normalSystemDisk {E : Type}
       C((connectedComponentComplex (boundaryComplex 3 K) c).space, K.space)).comp γ))
     (hess : ¬ IsNullHomotopic γ) :
     ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
       Δ ⊆ K.space ∧
       Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 ∧
       ∃ hboundary : r '' stdSimplexBoundary 2 ⊆

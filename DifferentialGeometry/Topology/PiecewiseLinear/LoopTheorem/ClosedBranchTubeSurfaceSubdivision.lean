@@ -33,7 +33,7 @@ theorem exists_subdivision_branchSurface_disks
             (∀ p ∈ V j, ψ j p ∈ Subtype.val '' (D '' D.domain) ↔ p ∈ crossPlanes) ∧
             (∀ p ∈ V j,
               ψ j p ∈ Subtype.val '' hD.singularSet.branchCarrier c ↔ p.1 = 0) ∧
-            ∀ i, IsPLHomeomorphOn (q j i) (stdSimplex ℝ (Fin 3)) (P j i) ∧
+            ∀ i, IsPLHomeomorphOn (q j i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (P j i) ∧
               P j i ⊆ L.space ∩ Subtype.val '' (D '' D.domain) ∧
               (PiecewiseLinear.restrict R (P j i)).space = P j i ∧
               ∀ x ∈ L.space ∩ W j,

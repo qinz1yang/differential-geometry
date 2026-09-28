@@ -2,6 +2,8 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByP
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.FirstOrder.LoweredCovariantDerivative
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.TensorCommutator
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.ChartCoordinateExpansion.FrameTrace
+
+open DifferentialGeometry.TensorMetric (covariantTensorInnerPointwise lowerAllUpperIndices)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection

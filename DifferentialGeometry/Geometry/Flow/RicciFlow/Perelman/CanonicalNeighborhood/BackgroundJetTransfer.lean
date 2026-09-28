@@ -217,7 +217,7 @@ theorem tensor02CovDerivNormWith_le_of_metric_close
       rw [hΔdef]
       exact iterCov_metricTensorField_succ_eq_neg_diff h g₁ j'
     rw [hrw]
-    simp only [ContMDiffSection.coe_neg, Pi.neg_apply, Tensor0SBundle.normSq0S_neg]
+    simp only [ContMDiffSection.coe_neg, Pi.neg_apply, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
     refine le_trans (hstepA x hx (j' + 1) (Nat.succ_pos _) hjp) ?_
     have hsum : (∑ k ∈ Finset.range (j' + 1),
         Real.sqrt (normSq0S (I := J) h x (2 + k) (iterCov (I := J) h 2 Δ k x)))

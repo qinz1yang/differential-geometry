@@ -178,7 +178,8 @@ theorem laplacian_scalar_eq_of_local_isometry [BoundarylessManifold I M]
   have hinner : ∀ᶠ y in 𝓝 x, ∀ v w : TangentSpace I y,
       g.inner y v w = h.inner (Φ y) (mfderiv I I Φ y v) (mfderiv I I Φ y w) := by
     filter_upwards [Φ.open_source.mem_nhds hx] with y hy v w
-    rw [← hEq hy, ← (hfΦ y hy).mfderiv_eq]
+    have hdf : mfderiv I I f y = mfderiv I I Φ y := (hfΦ y hy).mfderiv_eq
+    rw [← hEq hy, ← hdf]
     exact hmetric y v w
   rw [laplacian_eq_of_partialDiffeomorph_inner g h Φ hx hinner
     ((metricScalar_smooth h).contMDiffAt.of_le (by decide)), hEq hx]

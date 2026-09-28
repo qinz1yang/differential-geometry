@@ -368,7 +368,7 @@ theorem metric_deriv_norm_reference_change_le
     have hneg : metricDiffCovDerivAt (I := I) a gBase gInf gBase x =
         -metricDiffCovDerivAt (I := I) a gInf gBase gBase x := by
       simp [metricDiffCovDerivAt]
-    rw [metricDerivNorm, metricDerivNorm, hneg, Tensor0SBundle.normSq0S_neg]
+    rw [metricDerivNorm, metricDerivNorm, hneg, DifferentialGeometry.Tensor0SBundle.normSq0S_neg]
   have hbase (a : ℕ) (hap : a ≤ p) :
       metricDerivNorm (I := I) a A gInf gBase x ≤ 2 * δ := by
     calc

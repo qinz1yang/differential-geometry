@@ -78,7 +78,7 @@ theorem exists_isSubdivision_simplicialApproximation
         (t := fun s => convexHull ℝ (s : Set E)) ⟨hs, subset_convexHull ℝ _ hv⟩ hxs
     have hφv : φ v = ψ ⟨v, hv'⟩ := by
       rw [hφdef]
-      simp only [hv', dif_pos]
+      simp only [hv', dite_eq_left]
     rw [hφv]
     exact mem_carrierFace_of_mem_openStar L (hψstar ⟨v, hv'⟩ x ⟨hxstar, hxK⟩)
   refine ⟨K', φ, hK', hK'fin, ?_, ?_⟩
@@ -237,7 +237,7 @@ theorem exists_isPiecewiseAffineOn_freeLoop_homotopic
   have hfval : ∀ x : J.space, f x = ((Φ x : L.space) : F) := by
     intro x
     rw [hfdef]
-    simp only [dif_pos x.2]
+    simp only [dite_eq_left x.2]
   have hf : ContinuousOn f J.space := by
     rw [continuousOn_iff_continuous_domRestrict]
     have hres : J.space.domRestrict f = fun x => ((Φ x : L.space) : F) := funext hfval

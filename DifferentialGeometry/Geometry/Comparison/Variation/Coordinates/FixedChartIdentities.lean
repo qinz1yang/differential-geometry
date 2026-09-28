@@ -693,9 +693,9 @@ lemma chartCoord_sum_smul_basis (c : Fin (Module.finrank ℝ E) → ℝ)
   classical
   rw [← chartCoordCLM_apply, map_sum]
   rw [Finset.sum_eq_single s]
-  · rw [map_smul, chartCoordCLM_apply, chartCoord_basis, if_pos rfl, smul_eq_mul, mul_one]
+  · rw [map_smul, chartCoordCLM_apply, chartCoord_basis, ite_eq_left rfl, smul_eq_mul, mul_one]
   · intro b _ hb
-    rw [map_smul, chartCoordCLM_apply, chartCoord_basis, if_neg hb, smul_eq_mul, mul_zero]
+    rw [map_smul, chartCoordCLM_apply, chartCoord_basis, ite_eq_right hb, smul_eq_mul, mul_zero]
   · intro h; exact absurd (Finset.mem_univ s) h
 
 end ChartCoordinateExpansion

@@ -174,11 +174,11 @@ theorem exists_isPiecewiseAffineOn_prism_of_isPLSphere_one {J : Set E} (hJ : IsP
   have hGmem : ∀ z ∈ A ×ˢ Icc (0 : ℝ) 1, G z = ΦA z := by
     intro z hz
     rw [hGdef]
-    exact if_pos hz
+    exact ite_eq_left hz
   have hGnot : ∀ z ∉ A ×ˢ Icc (0 : ℝ) 1, G z = ΦB z := by
     intro z hz
     rw [hGdef]
-    exact if_neg hz
+    exact ite_eq_right hz
   refine ⟨G, ?_, ?_, ?_, ?_⟩
   · rw [← hsets]
     exact hPAA.piecewise_of_isClosed hPAB (hApoly.isClosed.prod isClosed_Icc)
@@ -255,11 +255,11 @@ theorem exists_isPiecewiseAffineOn_prism_of_arcs_mapsTo_space
   have hGmem : ∀ z ∈ A ×ˢ Icc (0 : ℝ) 1, G z = ΦA z := by
     intro z hz
     rw [hGdef]
-    exact if_pos hz
+    exact ite_eq_left hz
   have hGnot : ∀ z ∉ A ×ˢ Icc (0 : ℝ) 1, G z = ΦB z := by
     intro z hz
     rw [hGdef]
-    exact if_neg hz
+    exact ite_eq_right hz
   refine ⟨G, ?_, ?_, ?_, ?_⟩
   · rw [← hsets]
     exact hPAA.piecewise_of_isClosed hPAB (hApoly.isClosed.prod isClosed_Icc)

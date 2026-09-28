@@ -28,7 +28,7 @@ theorem Section34CutFrame.intrinsic_disk_subset_vertexBall_of_boundary_subset
     (hP : IsCombinatorialSolidTorus P) (hu : IsPLHomeomorphInto 3 u P)
     (hUP : u '' P = section34FaceTorus (section34VertexBallImage src f₁) s)
     {D : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D) (hDP : D ⊆ frontier P)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDP : D ⊆ frontier P)
     (hJV : q '' stdSimplexBoundary 2 ⊆
       Function.invFunOn u P '' section34VertexBallImage src f₁ w)
     (hJdis : ∀ e : Section34EdgeIndex 𝒦 𝒦', Section34Incident e.1 s.1 →

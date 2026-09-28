@@ -11,6 +11,9 @@ import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByP
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.DiscreteLogConvexity
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.HolderIntegrability
 import DifferentialGeometry.Analysis.Sobolev.GagliardoNirenberg.FiberNorm.KatoSecondDerivative
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -75,7 +78,7 @@ private theorem covDerivCrossLeft_weight_bound_rs
   set P : Integral.L2.SmoothCcTensor g r (m + 1) :=
     prependCovGradSlot (I := I) (M := M) g r m ζ w with hP_def
   have hcross_eq : tensorCovDerivCrossLeft (I := I) (M := M) g r m ζ w w x =
-      Integral.L2.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
         (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x))
         (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x)) :=
     tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad (I := I) (M := M) g r m ζ w w x
@@ -84,16 +87,16 @@ private theorem covDerivCrossLeft_weight_bound_rs
   have hCS2 : |tensorCovDerivCrossLeft (I := I) (M := M) g r m ζ w w x| ≤
       Real.sqrt b * Real.sqrt rP := by
     rw [hcross_eq]
-    have hsq := Integral.L2.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r (m + 1) x
+    have hsq := DifferentialGeometry.TensorMetric.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r (m + 1) x
       (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x))
       (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x))
-    have hQself : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
+    have hQself : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
         (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x))
         (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x)) = b := by
       rw [show b = riemannianFiberNormSq (I := I) (M := M) g r (m + 1) x (Q.toSection x) from rfl,
         riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
           (Q.toSection x)]
-    have hPself : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
+    have hPself : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
         (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x))
         (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x)) = rP := by
       rw [show rP = riemannianFiberNormSq (I := I) (M := M) g r (m + 1) x (P.toSection x) from rfl,
@@ -320,16 +323,16 @@ theorem weightedCovIBP_lpFiberJet_sup_rs
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
     have hwx : Tensor0SBundle.TensorRSSpace.toModel (w.toSection x) = w.toFun x := rfl
     simp only [Tensor0SBundle.TensorRSSpace.toModel_add, Tensor0SBundle.TensorRSSpace.toModel_smul,
-      hwx, Integral.L2.tensorInnerPointwise_add_right, Integral.L2.tensorInnerPointwise_smul_right]
+      hwx, DifferentialGeometry.TensorMetric.tensorInnerPointwise_add_right, DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right]
     ring
-  have hpull : ∀ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  have hpull : ∀ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Lw.toFun x) (v.toFun x) =
-      (ζ : M → ℝ) x * Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+      (ζ : M → ℝ) x * DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Lw.toFun x) (w.toFun x) := by
     intro x
-    rw [hv, scalarSmul_toFun_apply, Integral.L2.tensorInnerPointwise_smul_right]
+    rw [hv, scalarSmul_toFun_apply, DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right]
   have hcentral : ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r m w v x ∂μ =
-      - ∫ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+      - ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
           (Lw.toFun x) (v.toFun x) ∂μ := by
     have hgreen := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawTensorConnLapSmooth_rs
       (I := I) (M := M) g r m w v
@@ -351,7 +354,7 @@ theorem weightedCovIBP_lpFiberJet_sup_rs
           (ζ : M → ℝ) x * b x := by
       funext x; rw [hsplit x]; ring
     rw [heq]; exact htcdpi_cont.sub hζb_cont
-  set dw : M → ℝ := fun x => Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  set dw : M → ℝ := fun x => DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
     (Lw.toFun x) (w.toFun x) with hdw
   have hdw_eq : dw = DifferentialGeometry.Analysis.Elliptic.tensorInnerScalar (I := I)
     (M := M) g r m
@@ -393,7 +396,7 @@ theorem weightedCovIBP_lpFiberJet_sup_rs
         ∫ x, tensorCovDerivCrossLeft (I := I) (M := M) g r m ζ w w x ∂μ := by
     rw [← MeasureTheory.integral_add (hint _ hζb_cont) (hint _ hcrossL_cont)]
     exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsplit)
-  have hRHS_pull : (∫ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  have hRHS_pull : (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Lw.toFun x) (v.toFun x) ∂μ) = ∫ x, (ζ : M → ℝ) x * dw x ∂μ :=
     MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpull)
   have hmaster : (∫ x, (ζ : M → ℝ) x * b x ∂μ) +
@@ -572,16 +575,16 @@ private theorem weightedCovIBP_lpFiberJet_fin_regularityIneq_rs
       ((DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) j)]
     have hwx : Tensor0SBundle.TensorRSSpace.toModel (w.toSection x) = w.toFun x := rfl
     simp only [Tensor0SBundle.TensorRSSpace.toModel_add, Tensor0SBundle.TensorRSSpace.toModel_smul,
-      hwx, Integral.L2.tensorInnerPointwise_add_right, Integral.L2.tensorInnerPointwise_smul_right]
+      hwx, DifferentialGeometry.TensorMetric.tensorInnerPointwise_add_right, DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right]
     ring
-  have hpull : ∀ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  have hpull : ∀ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Lw.toFun x) (v.toFun x) =
-      (ζ : M → ℝ) x * Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+      (ζ : M → ℝ) x * DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Lw.toFun x) (w.toFun x) := by
     intro x
-    rw [hv, scalarSmul_toFun_apply, Integral.L2.tensorInnerPointwise_smul_right]
+    rw [hv, scalarSmul_toFun_apply, DifferentialGeometry.TensorMetric.tensorInnerPointwise_smul_right]
   have hcentral : ∫ x, tensorCovDerivPointwiseInner (I := I) (M := M) g r m w v x ∂μ =
-      - ∫ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+      - ∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
           (Lw.toFun x) (v.toFun x) ∂μ := by
     have hgreen := tensorL2Inner_covGrad_eq_neg_tensorL2Inner_rawTensorConnLapSmooth_rs
       (I := I) (M := M) g r m w v
@@ -605,7 +608,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regularityIneq_rs
           (ζ : M → ℝ) x * b x := by
       funext x; rw [hsplit x]; ring
     rw [heq]; exact htcdpi_cont.sub hζb_cont
-  set dw : M → ℝ := fun x => Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  set dw : M → ℝ := fun x => DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
     (Lw.toFun x) (w.toFun x) with hdw
   have hdw_eq : dw = DifferentialGeometry.Analysis.Elliptic.tensorInnerScalar (I := I)
     (M := M) g r m
@@ -640,7 +643,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regularityIneq_rs
         ∫ x, tensorCovDerivCrossLeft (I := I) (M := M) g r m ζ w w x ∂μ := by
     rw [← MeasureTheory.integral_add (hint _ hζb_cont) (hint _ hcrossL_cont)]
     exact MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hsplit)
-  have hRHS_pull : (∫ x, Integral.L2.tensorInnerPointwise (I := I) (M := M) g r m x
+  have hRHS_pull : (∫ x, DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r m x
         (Lw.toFun x) (v.toFun x) ∂μ) = ∫ x, (ζ : M → ℝ) x * dw x ∂μ :=
     MeasureTheory.integral_congr_ae (Filter.Eventually.of_forall hpull)
   have hmaster : (∫ x, (ζ : M → ℝ) x * b x ∂μ) +
@@ -666,7 +669,7 @@ private theorem weightedCovIBP_lpFiberJet_fin_regularityIneq_rs
     set P : Integral.L2.SmoothCcTensor g r (m + 1) :=
       prependCovGradSlot (I := I) (M := M) g r m ζ w with hP_def
     have hcross_eq : tensorCovDerivCrossLeft (I := I) (M := M) g r m ζ w w x =
-        Integral.L2.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x))
           (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x)) :=
       tensorCovDerivCrossLeft_eq_tensorInnerPointwise_grad (I := I) (M := M) g r m ζ w w x
@@ -675,17 +678,17 @@ private theorem weightedCovIBP_lpFiberJet_fin_regularityIneq_rs
     have hCS2 : |tensorCovDerivCrossLeft (I := I) (M := M) g r m ζ w w x| ≤
         Real.sqrt bv * Real.sqrt rP := by
       rw [hcross_eq]
-      have hsq := Integral.L2.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r (m + 1) x
+      have hsq := DifferentialGeometry.TensorMetric.tensorInnerPointwise_sq_le_mul (I := I) (M := M) g r (m + 1) x
         (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x))
         (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x))
-      have hQself : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
+      have hQself : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x))
           (Tensor0SBundle.TensorRSSpace.toModel (Q.toSection x)) = bv := by
         rw [show bv = riemannianFiberNormSq (I := I) (M := M) g r (m + 1) x (Q.toSection x) from
           rfl,
           riemannianFiberNormSq_eq_tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
             (Q.toSection x)]
-      have hPself : Integral.L2.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
+      have hPself : DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g r (m + 1) x
           (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x))
           (Tensor0SBundle.TensorRSSpace.toModel (P.toSection x)) = rP := by
         rw [show rP = riemannianFiberNormSq (I := I) (M := M) g r (m + 1) x (P.toSection x) from

@@ -71,7 +71,7 @@ private theorem continuous_domainDeformationValue {K : Set X}
       classical
       change _ = c.domainDeformationValue K q.val
       unfold domainDeformationValue
-      rw [dif_pos (show q.val.2.val ∈ c.range from q.property)]
+      rw [dite_eq_left (show q.val.2.val ∈ c.range from q.property)]
 
 private theorem domainDeformationValue_mem (K : Set X)
     (q : unitInterval × c.domainNeighborhood K) :
@@ -122,10 +122,10 @@ noncomputable def domainHomotopyEquiv {K : Set X} (hK : IsClosed K)
           (if hy : x.val ∈ c.range then
             c.toFun ((c.homeomorphRange.symm ⟨x.val, hy⟩).1,
               min (c.homeomorphRange.symm ⟨x.val, hy⟩).2 0) else x.val)
-        rw [dif_pos hx]
+        rw [dite_eq_left hx]
         simp
       · change x.val = (if hy : x.val ∈ c.range then _ else x.val)
-        rw [dif_neg hx]
+        rw [dite_eq_right hx]
 
 theorem domainHomotopyEquiv_apply {K : Set X} (hK : IsClosed K)
     (hfront : frontier K ⊆ Set.range e)

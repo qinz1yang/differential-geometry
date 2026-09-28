@@ -14,7 +14,7 @@ theorem exists_ball_pair_of_interior_essential_disk
     (hR : IsCombinatorialManifoldWithBoundary 3 R) (hT : IsPLTorus (frontier R.space))
     {D : Set (EuclideanSpace ℝ (Fin 3))}
     {r : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D) (hDR : D ⊆ R.space)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D) (hDR : D ⊆ R.space)
     (hmeet : D ∩ frontier R.space = r '' stdSimplexBoundary 2)
     (hess : ∃ hboundary : r '' stdSimplexBoundary 2 ⊆ frontier R.space,
       ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :

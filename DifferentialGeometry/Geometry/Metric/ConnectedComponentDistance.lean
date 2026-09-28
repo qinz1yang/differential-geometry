@@ -186,7 +186,7 @@ theorem riemannianMetricComplete_restrictOpen_connCompOpen
   let : IsContinuousRiemannianBundle E (TangentSpace I : C → Type _) :=
     ⟨gC.inner, gC.contMDiff.continuous, by intro x v w; rfl⟩
   let : EMetricSpace C := EMetricSpace.ofRiemannianMetric I C
-  refine EMetric.complete_of_cauchySeq_tendsto (α := C) fun u hu => ?_
+  refine EMetric.complete_of_cauchySeq_tendsto (γ := C) fun u hu => ?_
   have huC : ∀ ε > (0 : ENNReal), ∃ N,
       ∀ m, N ≤ m → ∀ n, N ≤ n →
         riemannianEDistOf gC (u m) (u n) < ε := by

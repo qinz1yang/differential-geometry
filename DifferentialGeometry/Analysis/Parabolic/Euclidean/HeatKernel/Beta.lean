@@ -26,7 +26,7 @@ private theorem heatScale12_nonneg (s : ℝ) : 0 ≤ heatScale12 s := by
   · by_cases hs0 : s = 0
     · subst s
       rw [Real.zero_rpow (by norm_num : (-(1 : ℝ) / 2) ≠ 0)]
-    · rw [Real.rpow_def_of_nonpos hs, if_neg hs0]
+    · rw [Real.rpow_def_of_nonpos hs, ite_eq_right hs0]
       have hcos : Real.cos ((-(1 : ℝ) / 2) * Real.pi) = 0 := by
         rw [show (-(1 : ℝ) / 2) * Real.pi = -(Real.pi / 2) by ring,
           Real.cos_neg, Real.cos_pi_div_two]

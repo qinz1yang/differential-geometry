@@ -517,7 +517,7 @@ private theorem dampProd_memLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
       𝓕 (sourceSch f hf hfc) q) 2 volume :=
     (𝓕 (sourceSch f hf hfc)).memLp 2
   exact MemLp.ae_eq (Filter.Eventually.of_forall fun _ => rfl)
-    (hFsrc.smul (dampSym_memLp hδ v w))
+    ((dampSym_memLp hδ v w).smul hFsrc)
 
 private theorem dampConvergence_fourierLp {δ : ℝ} (hδ : 0 < δ) (v w : V)
     (f : ℝ × V → ℝ) (hf : ContDiff ℝ ∞ f) (hfc : HasCompactSupport f) :

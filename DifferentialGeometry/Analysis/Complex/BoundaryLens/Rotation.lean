@@ -47,7 +47,7 @@ theorem preimage_rotated_annular_cap (ζ : Circle) (r R : ℝ) :
 theorem lipschitzWith_comp_rotation {M : Type*} [PseudoEMetricSpace M]
     {f : ℂ → M} {K : ℝ≥0} (hf : LipschitzWith K f) (ζ : Circle) :
     LipschitzWith K (f ∘ rotation ζ) := by
-  simpa only [mul_one] using hf.comp (rotation ζ).isometry.lipschitz
+  simpa only [mul_one] using hf.comp (rotation ζ).isometry.lipschitzWith
 
 theorem mapsTo_comp_rotation_closedDisk {M : Type*} {f : ℂ → M} {S : Set M}
     (hf : MapsTo f (Metric.closedBall (0 : ℂ) 1) S) (ζ : Circle) :

@@ -11,6 +11,12 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Algebra
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Permutation.SymmetricCoefficientBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Iterated.Linear
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
+
+open DifferentialGeometry.TensorMetric
+  (coframeS coframeS_apply exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent
+    riemannianFiberNormSq riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_eq_tensorInnerPointwise riemannianFiberNormSq_nonneg
+    tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -691,7 +697,7 @@ theorem lieFirstOrder_sharpFlat_bounds (g₀ : SmoothRiemannianMetric I M) (a : 
             ‖iteratedCovGrad (I := I) g₀ 1 1 q (sharpFlatEndoCc (I := I) g₀ g₁)‖ ^ 2 ≤ F i) := by
   classical
   obtain ⟨Cb, hCb_nn, hCb⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Km, hKm_nn, hKm⟩ :=
     diagonalProductGrid_riemannianFiberNormSq_integral_ballUniform
@@ -1331,9 +1337,9 @@ lemma lieFirstOrder_riemannianFiberNormSq_ccTensor02Symm_zero_le (g₀ : SmoothR
     rw [hval]
     have habs := hbound x (e (J 0)) (e (J 1))
     have h00 : g₀.inner x (e (J 0)) (e (J 0)) = 1 := by
-      rw [horth (J 0) (J 0), if_pos rfl]
+      rw [horth (J 0) (J 0), ite_eq_left rfl]
     have h11 : g₀.inner x (e (J 1)) (e (J 1)) = 1 := by
-      rw [horth (J 1) (J 1), if_pos rfl]
+      rw [horth (J 1) (J 1), ite_eq_left rfl]
     rw [h00, h11, Real.sqrt_one, mul_one, mul_one] at habs
     have := abs_nonneg (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))
     nlinarith [habs, sq_abs (ccTensorBilinSymm (I := I) g₀ T x (e (J 0)) (e (J 1)))]

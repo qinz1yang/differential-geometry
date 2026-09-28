@@ -117,7 +117,7 @@ private theorem convexSublevelRadius_spec {f : E → ℝ}
     {c v : E} (hneg : f c < 0) (hv : v ≠ 0) :
     0 < convexSublevelRadius f c v ∧ f (convexSublevelRadius f c v • v + c) = 0 := by
   have hex := (convex_sublevel_exists_unique_ray_root hf hc hb hneg hv).exists
-  rw [convexSublevelRadius, dif_pos hex]
+  rw [convexSublevelRadius, dite_eq_left hex]
   exact Classical.choose_spec hex
 
 private theorem convexSublevelRadius_ray_convex {f : E → ℝ}

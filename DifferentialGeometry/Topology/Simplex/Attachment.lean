@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Category.TopCat.PushoutClosedEmbedding
 import DifferentialGeometry.Topology.Simplex.BoundaryRetraction
 import Mathlib.Topology.CompactOpen
@@ -10,12 +11,14 @@ open CategoryTheory CategoryTheory.Limits Topology
 
 universe u
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex.Attachment
 
 variable {I : Type u} [Fintype I] [Nonempty I]
 
 
-def boundaryι : TopCat.of (boundary I) ⟶ TopCat.of (stdSimplex ℝ I) :=
+def boundaryι : TopCat.of (boundary I) ⟶ TopCat.of (coordinateSet ℝ I) :=
   TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
 
 omit [Nonempty I] in
@@ -23,31 +26,31 @@ theorem isClosedEmbedding_boundaryι : IsClosedEmbedding (boundaryι (I := I)) :
   isClosed_boundary.isClosedEmbedding_subtypeVal
 
 variable {X P : TopCat.{u}} {g : TopCat.of (boundary I) ⟶ X}
-  {r : TopCat.of (stdSimplex ℝ I) ⟶ P} {b : X ⟶ P}
+  {r : TopCat.of (coordinateSet ℝ I) ⟶ P} {b : X ⟶ P}
   (h : IsPushout boundaryι g r b)
 
 
-def puncturedNeighborhood : Set P := {p | p ≠ r stdSimplex.barycenter}
+def puncturedNeighborhood : Set P := {p | p ≠ r coordinateBarycenter}
 
 include h
 
 
-theorem inl_eq_barycenter_iff (d : stdSimplex ℝ I) :
-    r d = r stdSimplex.barycenter ↔ d = stdSimplex.barycenter := by
+theorem inl_eq_barycenter_iff (d : coordinateSet ℝ I) :
+    r d = r coordinateBarycenter ↔ d = coordinateBarycenter := by
   constructor
   · intro hd
     rcases (DifferentialGeometry.TopCat.Pushout.inl_eq_inl_iff h Subtype.val_injective
-      d stdSimplex.barycenter).mp hd with hd | ⟨_, a, _, _, ha⟩
+      d coordinateBarycenter).mp hd with hd | ⟨_, a, _, _, ha⟩
     · exact hd
     · exact (boundary_ne_barycenter a.property ha.symm).elim
   · rintro rfl
     rfl
 
 
-theorem inr_ne_barycenter (x : X) : b x ≠ r stdSimplex.barycenter := by
+theorem inr_ne_barycenter (x : X) : b x ≠ r coordinateBarycenter := by
   intro hx
   obtain ⟨a, ha, _⟩ := (DifferentialGeometry.TopCat.Pushout.inl_eq_inr_iff h Subtype.val_injective
-    stdSimplex.barycenter x).mp hx.symm
+    coordinateBarycenter x).mp hx.symm
   exact boundary_ne_barycenter a.property ha
 
 

@@ -476,7 +476,7 @@ theorem hamilton_scalar_slab_lipschitz
   refine ⟨K, ?_⟩
   intro T hT hTω hPole t ht
   dsimp [K]
-  rw [dif_pos ⟨hT, hTω, hPole⟩]
+  rw [dite_eq_left ⟨hT, hTω, hPole⟩]
   exact Classical.choose_spec (hExists T hT hTω hPole) t ht
 
 omit [NeZero (Module.finrank ℝ E)] in

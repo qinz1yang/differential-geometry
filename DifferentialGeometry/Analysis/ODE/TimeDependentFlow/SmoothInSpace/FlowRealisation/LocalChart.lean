@@ -64,22 +64,6 @@ theorem hagree_of_cocycle_realisation
   unfold Φ_euclLocal
   rw [precompMap_chartPoint (I := I) Φ_fam t α y hysrc]
 
-omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
-  [BoundarylessManifold I M] in
-omit [CompleteSpace E] in
-theorem hasDerivAt_clm_comp_right_local
-    {A : ℝ → (E →L[ℝ] E)} {A' : E →L[ℝ] E} {t : ℝ}
-    (hA : HasDerivAt A A' t) (R : E →L[ℝ] E) :
-    HasDerivAt (fun s : ℝ => (A s).comp R) (A'.comp R) t := by
-  have hcompR : HasFDerivAt (fun L : E →L[ℝ] E => L.comp R)
-      ((ContinuousLinearMap.compL ℝ E E E).flip R) (A t) :=
-    ((ContinuousLinearMap.compL ℝ E E E).flip R).hasFDerivAt
-  rw [show (fun s : ℝ => (A s).comp R) =
-      (fun L : E →L[ℝ] E => L.comp R) ∘ A by
-    funext s
-    rfl]
-  exact hcompR.comp_hasDerivAt t hA
-
 omit [NeZero (Module.finrank ℝ E)] [SigmaCompactSpace M] [T2Space M]
   [BoundarylessManifold I M] in
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [I.Boundaryless] in
@@ -127,9 +111,10 @@ theorem chartPrecomp_spatialFderiv_hasDerivAt
       (fun s : ℝ => (fderiv ℝ (fun w => ΦE (w, s)) w₀).comp
         (fderiv ℝ (precompMap (I := I) Φ_fam t α) z₀))
       (((fderiv ℝ (f t) (ΦE (w₀, t))).comp (fderiv ℝ (fun w => ΦE (w, t)) w₀)).comp
-        (fderiv ℝ (precompMap (I := I) Φ_fam t α) z₀)) t :=
-    hasDerivAt_clm_comp_right_local hPicard
-      (fderiv ℝ (precompMap (I := I) Φ_fam t α) z₀)
+        (fderiv ℝ (precompMap (I := I) Φ_fam t α) z₀)) t := by
+    simpa only [ContinuousLinearMap.comp_zero, add_zero] using
+      hPicard.clm_comp (hasDerivAt_const t
+        (fderiv ℝ (precompMap (I := I) Φ_fam t α) z₀))
   have hev : (fun s : ℝ => fderiv ℝ
         (fun z => Φ_euclLocal (I := I) ΦE Φ_fam t α z s) z₀)
       =ᶠ[𝓝 t] (fun s : ℝ => (fderiv ℝ (fun w => ΦE (w, s)) w₀).comp

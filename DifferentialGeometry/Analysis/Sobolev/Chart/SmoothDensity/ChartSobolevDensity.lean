@@ -268,9 +268,10 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
               (vΦ x - ψ n (Φ.toFun x)) + (ψ n (Φ.toFun x) - u (Φ.toFun x))) := by
           funext x; ring
         rw [h_decomp]
-        have h_tri := eLpNorm_add_le (μ := volume.restrict Ω)
-          (h_v_aestrong.sub h_ψn_comp_aestrong)
-          (h_ψn_comp_aestrong.sub h_uΦ_aestrong) hp_one
+        have h_tri := eLpNorm_add_le
+          (f := fun x => vΦ x - ψ n (Φ.toFun x))
+          (g := fun x => ψ n (Φ.toFun x) - u (Φ.toFun x))
+          (μ := volume.restrict Ω) hp_one
         refine h_tri.trans ?_
         have h_first :
             eLpNorm (fun x => vΦ x - ψ n (Φ.toFun x)) p (volume.restrict Ω) ≤
@@ -369,8 +370,7 @@ theorem SmoothDiffeoBoundedAtOrder.wkpNorm_comp_le
       exact ge_of_tendsto h_tendsto_sum (Filter.Eventually.of_forall h_bound)
     have h_diff_zero : (fun x => vΦ x - u (Φ.toFun x)) =ᵐ[volume.restrict Ω]
         0 := by
-      have h_aestrong := h_v_aestrong.sub h_uΦ_aestrong
-      exact (eLpNorm_eq_zero_iff h_aestrong hp_zero_ne).mp h_zero
+      exact (eLpNorm_eq_zero_iff hp_zero_ne).mp h_zero
     filter_upwards [h_diff_zero] with x hx
     have : vΦ x - u (Φ.toFun x) = 0 := hx
     linarith

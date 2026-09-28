@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.NormEstimates.Gradient.PartitionOfUnityWeightedBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Tensor.FiberToModel
-import DifferentialGeometry.Analysis.Sobolev.HebeyBlock.ChristoffelCorrectionL2.ChristoffelSlotCorrectionFiberNormBridge
+import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.PreHilbert
+import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.TensorRS.ChartTensorRSCovariantDerivative
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

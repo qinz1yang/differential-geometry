@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import Mathlib.AlgebraicTopology.SimplicialSet.Subdivision
 import Mathlib.AlgebraicTopology.SingularHomology.HomotopyInvariance
 import Mathlib.Algebra.Category.ModuleCat.Colimits
@@ -7,6 +8,7 @@ import Mathlib.Order.Interval.Finset.Fin
 set_option autoImplicit false
 
 open CategoryTheory
+open Convexity.StdSimplex
 open CategoryTheory.Limits
 open PartialOrder
 open Simplicial
@@ -127,10 +129,10 @@ theorem barycentricSubdivisionChainMap_naturality
 
 noncomputable def nonemptyFaceBarycenter {n : ℕ}
     (A : Finset (Fin (n + 1))) (hA : A.Nonempty) :
-    stdSimplex ℝ (Fin (n + 1)) := by
-  letI : Nonempty A := hA.coe_sort
-  exact stdSimplex.map Subtype.val
-    (stdSimplex.barycenter : stdSimplex ℝ A)
+    coordinateSet ℝ (Fin (n + 1)) := by
+  let : Nonempty A := hA.coe_sort
+  exact coordinateMap Subtype.val
+    (coordinateBarycenter : coordinateSet ℝ A)
 
 @[simp]
 theorem nonemptyFaceBarycenter_apply {n : ℕ}
@@ -140,7 +142,7 @@ theorem nonemptyFaceBarycenter_apply {n : ℕ}
       if i ∈ A then (A.card : ℝ)⁻¹ else 0 := by
   classical
   unfold nonemptyFaceBarycenter
-  dsimp only [stdSimplex.map, stdSimplex.barycenter]
+  dsimp only [coordinateMap, coordinateBarycenter]
   change (FunOnFinite.linearMap ℝ ℝ Subtype.val
     (fun _ : A => (Fintype.card A : ℝ)⁻¹)) i = _
   rw [FunOnFinite.linearMap_apply_apply]
@@ -151,22 +153,22 @@ theorem nonemptyFaceBarycenter_apply {n : ℕ}
       ext x
       simp [Subtype.ext_iff]
     rw [hfilter]
-    simp only [Finset.sum_singleton, if_pos hi, Fintype.card_coe]
+    simp only [Finset.sum_singleton, ite_eq_left hi, Fintype.card_coe]
   · simp [hi]
 
 noncomputable def affineStandardSimplexMap
     {ι κ : Type} [Fintype ι] [Fintype κ]
-    (v : ι → stdSimplex ℝ κ) :
-    C(stdSimplex ℝ ι, stdSimplex ℝ κ) where
+    (v : ι → coordinateSet ℝ κ) :
+    C(coordinateSet ℝ ι, coordinateSet ℝ κ) where
   toFun x :=
-    ⟨fun k => ∑ i, x i * v i k, by
+    ⟨fun k => ∑ i, x.val i * (v i).val k, by
       constructor
       · intro k
         exact Finset.sum_nonneg fun i _ =>
-          mul_nonneg (stdSimplex.zero_le x i) (stdSimplex.zero_le (v i) k)
+          mul_nonneg (x.property.1 i) ((v i).property.1 k)
       · rw [Finset.sum_comm]
-        simp_rw [← Finset.mul_sum, stdSimplex.sum_eq_one, mul_one]
-        exact stdSimplex.sum_eq_one x⟩
+        simp_rw [← Finset.mul_sum, (fun i => (v i).property.2), mul_one]
+        exact x.property.2⟩
   continuous_toFun := by
     apply Continuous.subtype_mk
     apply continuous_pi
@@ -177,21 +179,22 @@ noncomputable def affineStandardSimplexMap
 @[simp]
 theorem affineStandardSimplexMap_apply
     {ι κ : Type} [Fintype ι] [Fintype κ]
-    (v : ι → stdSimplex ℝ κ) (x : stdSimplex ℝ ι) (k : κ) :
-    affineStandardSimplexMap v x k = ∑ i, x i * v i k :=
+    (v : ι → coordinateSet ℝ κ) (x : coordinateSet ℝ ι) (k : κ) :
+    affineStandardSimplexMap v x k = ∑ i, x.val i * (v i).val k :=
   rfl
 
 @[simp]
 theorem affineStandardSimplexMap_vertex
     {ι κ : Type} [Fintype ι] [Fintype κ]
-    [DecidableEq ι] (v : ι → stdSimplex ℝ κ) (i : ι) :
-    affineStandardSimplexMap v (stdSimplex.vertex i) = v i := by
+    [DecidableEq ι] (v : ι → coordinateSet ℝ κ) (i : ι) :
+    affineStandardSimplexMap v (coordinateSingle i) = v i := by
   classical
   ext k
-  rw [affineStandardSimplexMap_apply, Finset.sum_eq_single i]
+  change ∑ j, (coordinateSingle i : coordinateSet ℝ ι).val j * (v j).val k = (v i).val k
+  rw [Finset.sum_eq_single i]
   · simp
   · intro j _ hji
-    simp [stdSimplex.vertex, hji]
+    simp [Pi.single_eq_of_ne hji]
   · simp
 
 
@@ -301,50 +304,50 @@ theorem dist_barycentricPrefixBarycenter_apply_le_of_le {n : ℕ}
     barycentricPrefixBarycenter_apply, Real.dist_eq]
   by_cases hik : σ.symm i ≤ k
   · have hil : σ.symm i ≤ l := hik.trans hkl
-    rw [if_pos hik, if_pos hil]
+    rw [ite_eq_left hik, ite_eq_left hil]
     have hinv : ((l : ℝ) + 1)⁻¹ ≤ ((k : ℝ) + 1)⁻¹ := by
       apply (inv_le_inv₀ (by positivity) (by positivity)).2
       exact_mod_cast Nat.add_le_add_right (show (k : ℕ) ≤ l from hkl) 1
     rw [abs_of_nonneg (sub_nonneg.2 hinv)]
     exact inv_natSucc_sub_inv_natSucc_le_barycentricContractionFactor
       (Nat.le_of_lt_succ l.isLt)
-  · rw [if_neg hik]
+  · rw [ite_eq_right hik]
     by_cases hil : σ.symm i ≤ l
-    · rw [if_pos hil, zero_sub, abs_neg, abs_of_nonneg (by positivity)]
+    · rw [ite_eq_left hil, zero_sub, abs_neg, abs_of_nonneg (by positivity)]
       have hlt : k < l := lt_of_le_of_ne hkl fun h => hik (h ▸ hil)
       exact inv_natSucc_le_barycentricContractionFactor
         (Nat.succ_le_iff.2 (Nat.zero_lt_of_lt (show (k : ℕ) < l from hlt)))
         (Nat.le_of_lt_succ l.isLt)
-    · rw [if_neg hil, sub_zero, abs_zero]
+    · rw [ite_eq_right hil, sub_zero, abs_zero]
       exact barycentricContractionFactor_nonneg n
 
 noncomputable def barycentricPermutationSimplexMap {n : ℕ}
     (σ : Equiv.Perm (Fin (n + 1))) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 1))) :=
+    C(coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 1))) :=
   affineStandardSimplexMap fun k =>
     nonemptyFaceBarycenter (barycentricPrefix σ k)
       (barycentricPrefix_nonempty σ k)
 
 theorem dist_affineStandardSimplexMap_le_of_pairwise
     {ι κ : Type} [Fintype ι] [Fintype κ]
-    (v : ι → stdSimplex ℝ κ) {r : ℝ} (hr : 0 ≤ r)
-    (hv : ∀ i j k, dist (v i k) (v j k) ≤ r)
-    (x y : stdSimplex ℝ ι) :
+    (v : ι → coordinateSet ℝ κ) {r : ℝ} (hr : 0 ≤ r)
+    (hv : ∀ i j k, dist ((v i).val k) ((v j).val k) ≤ r)
+    (x y : coordinateSet ℝ ι) :
     dist (affineStandardSimplexMap v x)
         (affineStandardSimplexMap v y) ≤ r := by
   rw [Subtype.dist_eq, dist_pi_le_iff hr]
   intro k
   rw [Real.dist_eq]
   have hdecomp :
-      (∑ i, x i * v i k) - (∑ j, y j * v j k) =
-        ∑ i, ∑ j, (x i * y j) * (v i k - v j k) := by
+      (∑ i, x.val i * (v i).val k) - (∑ j, y.val j * (v j).val k) =
+        ∑ i, ∑ j, (x.val i * y.val j) * ((v i).val k - (v j).val k) := by
     calc
-      (∑ i, x i * v i k) - (∑ j, y j * v j k) =
-          (∑ i, x i * v i k) * (∑ j, y j) -
-            (∑ i, x i) * (∑ j, y j * v j k) := by
-              rw [stdSimplex.sum_eq_one x, stdSimplex.sum_eq_one y]
+      (∑ i, x.val i * (v i).val k) - (∑ j, y.val j * (v j).val k) =
+          (∑ i, x.val i * (v i).val k) * (∑ j, y.val j) -
+            (∑ i, x.val i) * (∑ j, y.val j * (v j).val k) := by
+              rw [x.property.2, y.property.2]
               ring
-      _ = ∑ i, ∑ j, (x i * y j) * (v i k - v j k) := by
+      _ = ∑ i, ∑ j, (x.val i * y.val j) * ((v i).val k - (v j).val k) := by
         simp_rw [Finset.sum_mul, Finset.mul_sum]
         rw [← Finset.sum_sub_distrib]
         apply Finset.sum_congr rfl
@@ -353,40 +356,40 @@ theorem dist_affineStandardSimplexMap_le_of_pairwise
         apply Finset.sum_congr rfl
         intro j _
         ring
-  change |(∑ i, x i * v i k) - (∑ j, y j * v j k)| ≤ r
+  change |(∑ i, x.val i * (v i).val k) - (∑ j, y.val j * (v j).val k)| ≤ r
   rw [hdecomp]
   calc
-    |∑ i, ∑ j, (x i * y j) * (v i k - v j k)| ≤
-        ∑ i, |∑ j, (x i * y j) * (v i k - v j k)| :=
+    |∑ i, ∑ j, (x.val i * y.val j) * ((v i).val k - (v j).val k)| ≤
+        ∑ i, |∑ j, (x.val i * y.val j) * ((v i).val k - (v j).val k)| :=
       Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i, ∑ j, |(x i * y j) * (v i k - v j k)| := by
+    _ ≤ ∑ i, ∑ j, |(x.val i * y.val j) * ((v i).val k - (v j).val k)| := by
       exact Finset.sum_le_sum fun i _ => Finset.abs_sum_le_sum_abs _ _
-    _ ≤ ∑ i, ∑ j, (x i * y j) * r := by
+    _ ≤ ∑ i, ∑ j, (x.val i * y.val j) * r := by
       apply Finset.sum_le_sum
       intro i _
       apply Finset.sum_le_sum
       intro j _
       rw [abs_mul, abs_of_nonneg (mul_nonneg
-        (stdSimplex.zero_le x i) (stdSimplex.zero_le y j))]
+        (x.property.1 i) (y.property.1 j))]
       exact mul_le_mul_of_nonneg_left
         (by simpa [Real.dist_eq] using hv i j k)
-        (mul_nonneg (stdSimplex.zero_le x i) (stdSimplex.zero_le y j))
+        (mul_nonneg (x.property.1 i) (y.property.1 j))
     _ = r := by
       calc
-        (∑ i, ∑ j, (x i * y j) * r) =
-            ∑ i, (x i * r) * ∑ j, y j := by
+        (∑ i, ∑ j, (x.val i * y.val j) * r) =
+            ∑ i, (x.val i * r) * ∑ j, y.val j := by
           apply Finset.sum_congr rfl
           intro i _
           rw [Finset.mul_sum]
           apply Finset.sum_congr rfl
           intro j _
           ring
-        _ = ∑ i, x i * r := by rw [stdSimplex.sum_eq_one y]; simp
-        _ = r := by rw [← Finset.sum_mul, stdSimplex.sum_eq_one x, one_mul]
+        _ = ∑ i, x.val i * r := by rw [y.property.2]; simp
+        _ = r := by rw [← Finset.sum_mul, x.property.2, one_mul]
 
 theorem dist_barycentricPermutationSimplexMap_le {n : ℕ}
     (σ : Equiv.Perm (Fin (n + 1)))
-    (x y : stdSimplex ℝ (Fin (n + 1))) :
+    (x y : coordinateSet ℝ (Fin (n + 1))) :
     dist (barycentricPermutationSimplexMap σ x)
         (barycentricPermutationSimplexMap σ y) ≤
       barycentricContractionFactor n := by
@@ -411,12 +414,12 @@ theorem diam_range_barycentricPermutationSimplexMap_le {n : ℕ}
 
 noncomputable def standardSimplexStraightLineHomotopy
     {Z : Type} [TopologicalSpace Z] {n : ℕ}
-    (f g : C(Z, stdSimplex ℝ (Fin (n + 1)))) :
+    (f g : C(Z, coordinateSet ℝ (Fin (n + 1)))) :
     ContinuousMap.Homotopy f g where
   toFun p :=
     ⟨p.1.1 • (g p.2 : Fin (n + 1) → ℝ) +
         (1 - p.1.1) • (f p.2 : Fin (n + 1) → ℝ), by
-      exact (convex_stdSimplex ℝ _)
+      exact (convex_coordinateSet ℝ _)
         (g p.2).2 (f p.2).2 p.1.2.1
         (sub_nonneg.2 p.1.2.2) (add_sub_cancel _ _)⟩
   continuous_toFun := by fun_prop
@@ -433,14 +436,14 @@ noncomputable def standardSimplexStraightLineHomotopy
 
 noncomputable def topCatStandardSimplexStraightLineHomotopy
     {Z : TopCat} {n : ℕ}
-    (f g : Z ⟶ TopCat.of (stdSimplex ℝ (Fin (n + 1)))) :
+    (f g : Z ⟶ TopCat.of (coordinateSet ℝ (Fin (n + 1)))) :
     TopCat.Homotopy f g :=
   standardSimplexStraightLineHomotopy f.hom g.hom
 
 noncomputable def standardSimplexPrismChainHomotopy
     {C : Type} [Category C] [Preadditive C] [HasCoproducts.{0} C]
     {Z : TopCat} {n : ℕ}
-    (f g : Z ⟶ TopCat.of (stdSimplex ℝ (Fin (n + 1)))) (R : C) :
+    (f g : Z ⟶ TopCat.of (coordinateSet ℝ (Fin (n + 1)))) (R : C) :
     _root_.Homotopy
       (((AlgebraicTopology.singularChainComplexFunctor C).obj R).map f)
       (((AlgebraicTopology.singularChainComplexFunctor C).obj R).map g) :=
@@ -451,7 +454,7 @@ noncomputable def barycentricPermutationSimplexPrismChainHomotopy
     {n : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (R : C) :
     _root_.Homotopy
       (((AlgebraicTopology.singularChainComplexFunctor C).obj R).map
-        (𝟙 (TopCat.of (stdSimplex ℝ (Fin (n + 1))))))
+        (𝟙 (TopCat.of (coordinateSet ℝ (Fin (n + 1))))))
       (((AlgebraicTopology.singularChainComplexFunctor C).obj R).map
         (TopCat.ofHom (barycentricPermutationSimplexMap σ))) :=
   standardSimplexPrismChainHomotopy _ _ R
@@ -462,7 +465,7 @@ theorem barycentricPermutationSimplex_homologyMap_eq
     {n q : ℕ} (σ : Equiv.Perm (Fin (n + 1))) (R : C) :
     HomologicalComplex.homologyMap
         (((AlgebraicTopology.singularChainComplexFunctor C).obj R).map
-          (𝟙 (TopCat.of (stdSimplex ℝ (Fin (n + 1)))))) q =
+          (𝟙 (TopCat.of (coordinateSet ℝ (Fin (n + 1)))))) q =
       HomologicalComplex.homologyMap
         (((AlgebraicTopology.singularChainComplexFunctor C).obj R).map
           (TopCat.ofHom (barycentricPermutationSimplexMap σ))) q :=
@@ -471,7 +474,7 @@ theorem barycentricPermutationSimplex_homologyMap_eq
 @[simp]
 theorem barycentricPermutationSimplexMap_vertex {n : ℕ}
     (σ : Equiv.Perm (Fin (n + 1))) (k : Fin (n + 1)) :
-    barycentricPermutationSimplexMap σ (stdSimplex.vertex k) =
+    barycentricPermutationSimplexMap σ (coordinateSingle k) =
       nonemptyFaceBarycenter (barycentricPrefix σ k)
         (barycentricPrefix_nonempty σ k) := by
   classical
@@ -479,14 +482,14 @@ theorem barycentricPermutationSimplexMap_vertex {n : ℕ}
 
 noncomputable def singularSimplexBarycentricPiece
     {X : Type} [TopologicalSpace X] {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (s : C(coordinateSet ℝ (Fin (n + 1)), X))
     (σ : Equiv.Perm (Fin (n + 1))) :
-    C(stdSimplex ℝ (Fin (n + 1)), X) :=
+    C(coordinateSet ℝ (Fin (n + 1)), X) :=
   s.comp (barycentricPermutationSimplexMap σ)
 
 theorem range_singularSimplexBarycentricPiece_subset
     {X : Type} [TopologicalSpace X] {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (s : C(coordinateSet ℝ (Fin (n + 1)), X))
     (σ : Equiv.Perm (Fin (n + 1))) :
     Set.range (singularSimplexBarycentricPiece s σ) ⊆ Set.range s := by
   rintro _ ⟨x, rfl⟩
@@ -494,7 +497,7 @@ theorem range_singularSimplexBarycentricPiece_subset
 
 theorem range_singularSimplexBarycentricPiece_subset_of_subset
     {X : Type} [TopologicalSpace X] {n : ℕ}
-    (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (s : C(coordinateSet ℝ (Fin (n + 1)), X))
     (σ : Equiv.Perm (Fin (n + 1))) (A : Set X)
     (hs : Set.range s ⊆ A) :
     Set.range (singularSimplexBarycentricPiece s σ) ⊆ A :=
@@ -502,7 +505,7 @@ theorem range_singularSimplexBarycentricPiece_subset_of_subset
 
 theorem singularSimplexBarycentricPiece_smallFor_twoSets
     {X : Type} [TopologicalSpace X] {n : ℕ}
-    (V W : Set X) (s : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (V W : Set X) (s : C(coordinateSet ℝ (Fin (n + 1)), X))
     (σ : Equiv.Perm (Fin (n + 1)))
     (hs : Set.range s ⊆ V ∨ Set.range s ⊆ W) :
     Set.range (singularSimplexBarycentricPiece s σ) ⊆ V ∨
@@ -519,7 +522,9 @@ noncomputable def barycentricPieceOfSingularSimplex
     (σ : Equiv.Perm (Fin (n + 1))) :
     (TopCat.toSSet.obj X) _⦋n⦌ :=
   (X.toSSetObjEquiv _).symm
-    ((X.toSSetObjEquiv _ s).comp (barycentricPermutationSimplexMap σ))
+    ((X.toSSetObjEquiv _ s).comp ((toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1))).symm).comp
+        ((barycentricPermutationSimplexMap σ).comp
+          (toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1)))))))
 
 @[simp]
 theorem toSSetObjEquiv_barycentricPieceOfSingularSimplex
@@ -527,7 +532,9 @@ theorem toSSetObjEquiv_barycentricPieceOfSingularSimplex
     (s : (TopCat.toSSet.obj X) _⦋n⦌)
     (σ : Equiv.Perm (Fin (n + 1))) :
     X.toSSetObjEquiv _ (barycentricPieceOfSingularSimplex X s σ) =
-      (X.toSSetObjEquiv _ s).comp (barycentricPermutationSimplexMap σ) :=
+      (X.toSSetObjEquiv _ s).comp ((toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1))).symm).comp
+        ((barycentricPermutationSimplexMap σ).comp
+          (toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1)))))) :=
   Equiv.apply_symm_apply _ _
 
 
@@ -573,7 +580,7 @@ theorem ιChainComplex_barycentricSubdivisionDegreeMap
             (R := ModuleCat.of ℤ ℤ)
             (barycentricPieceOfSingularSimplex X s σ) := by
   dsimp [barycentricSubdivisionDegreeMap, SSet.ιChainComplex]
-  apply Sigma.ι_desc
+  apply Sigma.ι_comp_desc
 
 theorem barycentricSubdivisionDegreeMap_naturality
     {X Y : TopCat} (f : X ⟶ Y) (n : ℕ) :

@@ -20,7 +20,7 @@ theorem weights_vertex {u : E} (hu : u ∈ T) : weights T u u = 1 := by
   have h := weights_eq hT (subset_convexHull ℝ _ (Finset.mem_coe.mpr hu))
     (w := fun x => if x = u then (1 : ℝ) else 0) (by rw [Finset.sum_ite_eq' T u]; simp [hu])
     (by simp only [ite_smul, one_smul, zero_smul]; rw [Finset.sum_ite_eq' T u]; simp [hu]) u hu
-  rw [h, if_pos rfl]
+  rw [h, ite_eq_left rfl]
 
 variable [FiniteDimensional ℝ E] [DecidableEq E] {f : Finset E} (hfT : f ⊆ T) (hf : f.Nonempty)
   (hfne : f ≠ T)

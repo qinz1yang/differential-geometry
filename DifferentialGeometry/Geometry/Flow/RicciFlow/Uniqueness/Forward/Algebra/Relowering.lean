@@ -10,6 +10,8 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric (reLower reLower_apply reLowerPair sharpFlat)
+
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Curvature

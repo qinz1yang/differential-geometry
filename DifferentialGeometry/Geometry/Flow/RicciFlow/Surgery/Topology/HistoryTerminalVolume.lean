@@ -66,7 +66,7 @@ private theorem test_of_stage_index
     exact hseam j hj hjl
 
 theorem RetainedCoreHistory.isParabolicallyRmControlledBall_extendHorizon_of_incomingFootprint
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -206,7 +206,7 @@ open private OrientedThreeStage.IncomingSlab.TerminalLimitMetric.eventually_ball
   DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.TerminalVolume
 
 private theorem RetainedCoreHistory.eventually_incomingFootprint_ball_subset_and_curvature_bound
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric) (hs : H.horizon < s)
     (first : Fin (H.eventCount + 1)) (K : Set G.terminalRegularOpen)
@@ -278,7 +278,7 @@ private theorem volume_ball_eq_of_activeStage_eq
   rfl
 
 theorem RetainedCoreHistory.terminal_volume_ball_ge_of_tested_incomingFootprint
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -353,7 +353,7 @@ theorem RetainedCoreHistory.terminal_volume_ball_ge_of_tested_incomingFootprint
   rwa [hmetric] at hvol
 
 theorem RetainedCoreHistory.terminal_volume_ball_ge_of_tested_incomingFootprint_flow_ball
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -406,7 +406,7 @@ theorem RetainedCoreHistory.terminal_volume_ball_ge_of_tested_incomingFootprint_
   · exact htested
 
 theorem RetainedCoreHistory.normalized_terminal_volume_ball_ge_of_tested_incomingFootprint_flow_ball
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -487,7 +487,7 @@ theorem RetainedCoreHistory.exists_uniform_terminal_volume_lower_of_spatial_rm_b
     ∀ (Phi : ℝ → ℝ), Perelman.AdmissiblePinchingFunction Phi →
     ∀ (θ : ℝ), 0 < θ → θ ≤ 1 / 4 → 4 * θ ≤ η →
     ∃ α : ℝ, 0 < α ∧ α ≤ 1 ∧ α ^ 2 ≤ θ ∧
-    ∀ {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) (first : Fin (H.eventCount + 1))
+    ∀ (H : RetainedCoreHistory.{u}) (first : Fin (H.eventCount + 1))
       {s : ℝ} (G : (H.stage (Fin.last H.eventCount)).IncomingSlab
         (H.time (Fin.last H.eventCount)) s) (L : G.TerminalLimitMetric)
       (x : G.terminalRegularOpen) {r q σ : ℝ},
@@ -554,7 +554,7 @@ theorem RetainedCoreHistory.exists_uniform_terminal_volume_lower_of_spatial_rm_b
   intro Phi hPhi θ hθ hθsmall hηθ
   obtain ⟨α, hα, hα1, hαθ, hball⟩ := hvolume Phi hPhi θ hθ hθsmall hηθ
   refine ⟨α, hα, hα1, hαθ, ?_⟩
-  intro P H first s G L x r q σ hr hr1
+  intro H first s G L x r q σ hr hr1
   dsimp only
   intro hinit hs hcompact hq hqQ hderiv hfinal hpinch hpinchFinal hRm hcrossTime
     parameters records hcap hmargin hm haccuracy hcanonical hδ a₀ hfixed hlower
@@ -581,7 +581,7 @@ theorem RetainedCoreHistory.exists_uniform_terminal_volume_lower_of_spatial_rm_b
     exact (mul_le_mul' (ENNReal.ofReal_le_ofReal (min_le_right κcap κtest)) le_rfl).trans hvol
   · exact (mul_le_mul' (ENNReal.ofReal_le_ofReal (min_le_left κcap κtest)) le_rfl).trans hcapvolume
 
-private local instance {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+private local instance (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (first : Fin (H.eventCount + 1)) (K : Set G.terminalRegularOpen) :
     SigmaCompactSpace (H.toHistory.backwardSurvivorIncomingFootprint first (Fin.last H.eventCount)
@@ -599,7 +599,7 @@ private local instance {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) 
       (Fin.le_last first) G K).isOpen)
 
 theorem RetainedCoreHistory.incomingFootprint_volume_ball_ge_of_tested_history_and_curvature_bound
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -680,7 +680,7 @@ theorem RetainedCoreHistory.incomingFootprint_volume_ball_ge_of_tested_history_a
 
 
 theorem RetainedCoreHistory.normalized_incomingFootprint_volume_ball_ge_of_tested_history_and_curvature_bound
-    {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -767,7 +767,7 @@ theorem RetainedCoreHistory.normalized_incomingFootprint_volume_ball_ge_of_teste
 theorem RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_volume_radius
     {R θ C σ : ℝ} (hR : 0 < R) (hθ : 0 < θ) (hC : 0 ≤ C) (hσ : 0 < σ) :
     ∃ a₀ : ℝ, 0 < a₀ ∧ ∀ a : ℝ, 0 < a → a ≤ a₀ →
-    ∀ {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    ∀ (H : RetainedCoreHistory.{u}) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (L : G.TerminalLimitMetric)
     (hinit : G.flow.base.metric (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount))
@@ -813,7 +813,7 @@ theorem RetainedCoreHistory.exists_uniform_normalized_incomingFootprint_volume_r
   let a₀ := min (R / 8) (min (Real.sqrt θ / 2) (min (1 / (C + 1)) σ))
   have ha₀ : 0 < a₀ := by dsimp only [a₀]; positivity
   refine ⟨a₀, ha₀, ?_⟩
-  intro a ha haa₀ P H s G L hinit hs first K gflow hslabs hlast p Q κ hQ hcpt hroom hbound htested x hx
+  intro a ha haa₀ H s G L hinit hs first K gflow hslabs hlast p Q κ hQ hcpt hroom hbound htested x hx
   have haR : a ≤ R / 8 := haa₀.trans (min_le_left _ _)
   have hatheta : a ≤ Real.sqrt θ / 2 :=
     haa₀.trans ((min_le_right _ _).trans (min_le_left _ _))

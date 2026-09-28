@@ -5,6 +5,9 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.Co
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.LoweredCoefficient
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.InverseMetricQuadraticResidual
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.RicciDeTurck.Remainder.ResidualField.GridWindow.BackgroundDecomposition.MultilinearIdentities
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -482,7 +485,7 @@ lemma exists_riemannianFiberNormSq_iteratedCovGrad_movingMetricDoubleTraceField_
               ((iteratedCovGrad (I := I) g₀ 0 2 l P).toSection x)) K (u + 1) := by
   classical
   obtain ⟨CΛ, hCΛ_nn, hCΛ⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   set KD : ℕ → ℝ := fun u =>
     (exists_bound_riemannianFiberNormSq_smoothCcTensor (I := I) (M := M) g₀ (s + 2) (s + u)

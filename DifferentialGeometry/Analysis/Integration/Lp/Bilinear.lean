@@ -108,8 +108,10 @@ private theorem integral_norm_mul_norm_le_lp_norm
     simp only [Real.inner_apply]
     change ‖u t‖ * ‖v t‖ = uN t * vN t
     rw [show uN t = ‖u t‖ from hu, show vN t = ‖v t‖ from hv]
-  have hun : ‖uN‖ = ‖u‖ := by rw [Lp.norm_toLp, eLpNorm_norm, Lp.norm_def]
-  have hvn : ‖vN‖ = ‖v‖ := by rw [Lp.norm_toLp, eLpNorm_norm, Lp.norm_def]
+  have hun : ‖uN‖ = ‖u‖ := by
+    rw [Lp.norm_toLp, eLpNorm_norm _ (Lp.memLp u).aestronglyMeasurable, Lp.norm_def]
+  have hvn : ‖vN‖ = ‖v‖ := by
+    rw [Lp.norm_toLp, eLpNorm_norm _ (Lp.memLp v).aestronglyMeasurable, Lp.norm_def]
   rw [hpair, ← hun, ← hvn]
   exact real_inner_le_norm _ _
 

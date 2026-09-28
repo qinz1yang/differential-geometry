@@ -213,7 +213,7 @@ theorem flow_end_le
             S.scalar (scalarLowerBarrier 3 c0)) := by
     intro U hU hUT hPole t ht
     dsimp [K]
-    rw [dif_pos ⟨hU, hUT, hPole⟩]
+    rw [dite_eq_left ⟨hU, hUT, hPole⟩]
     exact Classical.choose_spec (hKExists U hU hUT hPole) t ht
   exact (finiteTime3D (I := I) (M := M) hT G c0 S.scalar scalarLap
     (ricciNorm (I := I) S) K hinit_min hinit_pos hscalar_cont hreg hevol hlap

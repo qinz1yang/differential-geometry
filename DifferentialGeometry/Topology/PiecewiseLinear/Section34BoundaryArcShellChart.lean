@@ -10,7 +10,7 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem IsPLHomeomorphOn.exists_boundary_arc_chart_of_exterior_collar
     {D W G : Set (ℝ × ℝ)} {q : (Fin 3 → ℝ) → ℝ × ℝ}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     {c d : ℝ} (hc : 0 < c) (hd : 0 < d) {γ : ℝ → ℝ × ℝ}
     (hγ : IsPLHomeomorphOn γ (Icc (-d) d) G)
     (hG : G ⊆ q '' stdSimplexBoundary 2) {ρ : (ℝ × ℝ) × ℝ → ℝ × ℝ}

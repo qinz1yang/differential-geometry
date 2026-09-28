@@ -15,7 +15,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 
 theorem IsPLHomeomorphOn.subset_convex_of_boundary_subset_of_subset_affineSubspace
     {n : ℕ} {D W : Set E} {q : (Fin (n + 2) → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin (n + 2))) D)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) D)
     (s : AffineSubspace ℝ E) (hs : Module.finrank ℝ s.direction = n + 1) (hDs : D ⊆ s)
     (hW : Convex ℝ W) (hWo : IsOpen W) (hJW : q '' stdSimplexBoundary (n + 1) ⊆ W) : D ⊆ W := by
   have hD : IsPLBall (n + 1) D := ⟨q, hq⟩

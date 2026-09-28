@@ -84,8 +84,6 @@ private theorem moserPowerCutoff_functionApprox
       change AEStronglyMeasurable
         (fun x => η x * |max (u x) 0| ^ (p / 2)) μ
       convert hmul using 1
-      funext x
-      rfl
     · filter_upwards [hqual] with x hx
       by_cases hxη : x ∈ tsupport η
       · have hboundx : max (u x) 0 < N := hx hxη
@@ -258,8 +256,6 @@ private theorem tendsto_eLpNorm_sub_of_component_decomposition
     {f₁ f₂ : ℕ → α → ℝ} {g₁ g₂ : α → ℝ}
     (hdecomp :
       ∀ n x, f n x - g x = (f₁ n x - g₁ x) + (f₂ n x - g₂ x))
-    (h₁mem : ∀ n, MemLp (fun x => f₁ n x - g₁ x) 2 μ)
-    (h₂mem : ∀ n, MemLp (fun x => f₂ n x - g₂ x) 2 μ)
     (h₁tendsto :
       Tendsto (fun n => eLpNorm (fun x => f₁ n x - g₁ x) 2 μ) atTop (nhds 0))
     (h₂tendsto :
@@ -279,8 +275,7 @@ private theorem tendsto_eLpNorm_sub_of_component_decomposition
     rw [hEq]
     change eLpNorm
         ((fun x => f₁ n x - g₁ x) + (fun x => f₂ n x - g₂ x)) 2 μ ≤ rhs n
-    exact eLpNorm_add_le
-      (h₁mem n).aestronglyMeasurable (h₂mem n).aestronglyMeasurable (by norm_num)
+    exact eLpNorm_add_le (by norm_num : (1 : ENNReal) ≤ 2)
   have hsum_tendsto : Tendsto rhs atTop (nhds 0) := by
     simpa [rhs] using h₁tendsto.add h₂tendsto
   exact tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hsum_tendsto
@@ -758,7 +753,7 @@ private theorem moserExactSingularFactor_sub_le_of_lt_two
                           (deriv (moserExactRegPow (moserEpsSeq n) N p) (max (u x) 0) -
                             ((p / 2) * (max (u x) 0) ^ (p / 2 - 1))) *
                         v x i := by
-                  simp only [moserExactSingularFactor, moserSingularFactor, if_pos hux]
+                  simp only [moserExactSingularFactor, moserSingularFactor, ite_eq_left hux]
                   ring
                 rw [hfactor, abs_mul, abs_mul]
         _ = η x *
@@ -1214,8 +1209,6 @@ theorem moserPowerCutoff_memW1pWitness
     intro n i
     change MemLp (fun x => (wfn n).weakGrad x i - Bn n i x) 2 μ
     convert ((wfn n).weakGrad_component_memLp i).sub (hBn_memLp n i) using 1
-    funext x
-    rfl
   have hAsingSeq_formula :
       ∀ n i x,
         AsingSeq n i x =
@@ -1512,7 +1505,6 @@ theorem moserPowerCutoff_memW1pWitness
       (fun n x => by
         dsimp [Gn, gComp, AsingSeq]
         abel)
-      (fun n => hAsing_fun_memLp n i) (fun n => hBn_fun_memLp n i)
       (hAsing_tendsto i) (hB_tendsto i)
   have hWeakComp :
       ∀ i : Fin d, HasWeakPartialDeriv i (gComp i) f Ω := by

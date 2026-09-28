@@ -28,12 +28,12 @@ theorem exists_planar_coordinates_of_isPLBall_two {D : Set E} (hD : IsPLBall 2 D
 theorem exists_isPLHomeomorphOn_fourSpokeSphere {Λ : Set E} {Λ' : Set F} {t : E → ℝ}
     {t' : F → ℝ} {ℓ : E → ℝ} (hℓ : Continuous ℓ) {uP uN : (Fin 3 → ℝ) → E}
     {u'P u'N : (Fin 3 → ℝ) → F}
-    (huP : IsPLHomeomorphOn uP (stdSimplex ℝ (Fin 3)) (Λ ∩ {x | 0 ≤ t x}))
-    (huN : IsPLHomeomorphOn uN (stdSimplex ℝ (Fin 3)) (Λ ∩ {x | t x ≤ 0}))
+    (huP : IsPLHomeomorphOn uP (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Λ ∩ {x | 0 ≤ t x}))
+    (huN : IsPLHomeomorphOn uN (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Λ ∩ {x | t x ≤ 0}))
     (hbP : uP '' stdSimplexBoundary 2 = Λ ∩ {x | t x = 0})
     (hbN : uN '' stdSimplexBoundary 2 = Λ ∩ {x | t x = 0})
-    (hu'P : IsPLHomeomorphOn u'P (stdSimplex ℝ (Fin 3)) (Λ' ∩ {x | 0 ≤ t' x}))
-    (hu'N : IsPLHomeomorphOn u'N (stdSimplex ℝ (Fin 3)) (Λ' ∩ {x | t' x ≤ 0}))
+    (hu'P : IsPLHomeomorphOn u'P (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Λ' ∩ {x | 0 ≤ t' x}))
+    (hu'N : IsPLHomeomorphOn u'N (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (Λ' ∩ {x | t' x ≤ 0}))
     (hb'P : u'P '' stdSimplexBoundary 2 = Λ' ∩ {x | t' x = 0})
     (hb'N : u'N '' stdSimplexBoundary 2 = Λ' ∩ {x | t' x = 0})
     {m : Fin 4 → Set E} {β : Fin 4 → ℝ → E} {c : E}

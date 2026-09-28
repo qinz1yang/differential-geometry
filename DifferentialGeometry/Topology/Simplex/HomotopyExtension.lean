@@ -1,17 +1,20 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Homotopy.BallHomotopyExtension
 import DifferentialGeometry.Topology.Simplex.BoundaryGluing
 
 noncomputable section
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
 variable {X : Type*} [TopologicalSpace X]
 
 theorem exists_continuous_homotopy_extension (n : ℕ)
-    (f : C(stdSimplex ℝ (Fin (n + 1)), X))
+    (f : C(coordinateSet ℝ (Fin (n + 1)), X))
     (H : C(unitInterval × boundary (Fin (n + 1)), X))
     (hH : ∀ x : boundary (Fin (n + 1)), H (0, x) = f x.val) :
-    ∃ F : C(unitInterval × stdSimplex ℝ (Fin (n + 1)), X),
+    ∃ F : C(unitInterval × coordinateSet ℝ (Fin (n + 1)), X),
       (∀ x, F (0, x) = f x) ∧
       ∀ t (x : boundary (Fin (n + 1))), F (t, x.val) = H (t, x) := by
   let e := stdSimplexNormedBoundarySphereHomeomorph
@@ -42,34 +45,34 @@ theorem exists_continuous_homotopy_extension (n : ℕ)
     exact h
 
 theorem exists_continuous_homotopy_extension_of_faces (n : ℕ)
-    (f : C(stdSimplex ℝ (Fin (n + 3)), X))
-    (H : Fin (n + 3) → C(unitInterval × stdSimplex ℝ (Fin (n + 2)), X))
+    (f : C(coordinateSet ℝ (Fin (n + 3)), X))
+    (H : Fin (n + 3) → C(unitInterval × coordinateSet ℝ (Fin (n + 2)), X))
     (hH : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (t : unitInterval) (p : stdSimplex ℝ (Fin (n + 1))),
-      H i (t, stdSimplex.map j.succAbove p) =
-        H (i.succAbove j) (t, stdSimplex.map (j.predAbove i).succAbove p))
-    (h₀ : ∀ (i : Fin (n + 3)) (p : stdSimplex ℝ (Fin (n + 2))),
-      H i (0, p) = f (stdSimplex.map i.succAbove p)) :
-    ∃ F : C(unitInterval × stdSimplex ℝ (Fin (n + 3)), X),
+      (t : unitInterval) (p : coordinateSet ℝ (Fin (n + 1))),
+      H i (t, coordinateMap j.succAbove p) =
+        H (i.succAbove j) (t, coordinateMap (j.predAbove i).succAbove p))
+    (h₀ : ∀ (i : Fin (n + 3)) (p : coordinateSet ℝ (Fin (n + 2))),
+      H i (0, p) = f (coordinateMap i.succAbove p)) :
+    ∃ F : C(unitInterval × coordinateSet ℝ (Fin (n + 3)), X),
       (∀ x, F (0, x) = f x) ∧
-      ∀ (i : Fin (n + 3)) (t : unitInterval) (p : stdSimplex ℝ (Fin (n + 2))),
-        F (t, stdSimplex.map i.succAbove p) = H i (t, p) := by
-  let K (i : Fin (n + 3)) : C(stdSimplex ℝ (Fin (n + 2)), C(unitInterval, X)) :=
+      ∀ (i : Fin (n + 3)) (t : unitInterval) (p : coordinateSet ℝ (Fin (n + 2))),
+        F (t, coordinateMap i.succAbove p) = H i (t, p) := by
+  let K (i : Fin (n + 3)) : C(coordinateSet ℝ (Fin (n + 2)), C(unitInterval, X)) :=
     ((H i).comp ContinuousMap.prodSwap).curry
   have hK : ∀ (i : Fin (n + 3)) (j : Fin (n + 2))
-      (p : stdSimplex ℝ (Fin (n + 1))),
-      K i (stdSimplex.map j.succAbove p) =
-        K (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p) := by
+      (p : coordinateSet ℝ (Fin (n + 1))),
+      K i (coordinateMap j.succAbove p) =
+        K (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p) := by
     intro i j p
     ext t
     exact hH i j t p
   let G : C(unitInterval × boundary (Fin (n + 3)), X) :=
     (boundaryDesc K hK).uncurry.comp ContinuousMap.prodSwap
   have hface (i : Fin (n + 3)) (t : unitInterval)
-      (p : stdSimplex ℝ (Fin (n + 2))) :
-      G (t, ⟨stdSimplex.map i.succAbove p,
+      (p : coordinateSet ℝ (Fin (n + 2))) :
+      G (t, ⟨coordinateMap i.succAbove p,
         ⟨i, map_succAbove_apply_pivot i p⟩⟩) = H i (t, p) := by
-    change boundaryDesc K hK ⟨stdSimplex.map i.succAbove p,
+    change boundaryDesc K hK ⟨coordinateMap i.succAbove p,
       ⟨i, map_succAbove_apply_pivot i p⟩⟩ t = H i (t, p)
     rw [boundaryDesc_face]
     rfl
@@ -77,16 +80,16 @@ theorem exists_continuous_homotopy_extension_of_faces (n : ℕ)
     intro x
     obtain ⟨i, hi⟩ := x.property
     let p := faceDelete i ⟨x.val, hi⟩
-    have hp : stdSimplex.map i.succAbove p = x.val :=
+    have hp : coordinateMap i.succAbove p = x.val :=
       congrArg Subtype.val (faceInsert_faceDelete i ⟨x.val, hi⟩)
-    have hx : (⟨stdSimplex.map i.succAbove p,
+    have hx : (⟨coordinateMap i.succAbove p,
         ⟨i, map_succAbove_apply_pivot i p⟩⟩ : boundary (Fin (n + 3))) = x :=
       Subtype.ext hp
     rw [← hx, hface, h₀]
   obtain ⟨F, hF, hside⟩ := exists_continuous_homotopy_extension (n + 2) f G hG
   refine ⟨F, hF, ?_⟩
   intro i t p
-  exact (hside t ⟨stdSimplex.map i.succAbove p,
+  exact (hside t ⟨coordinateMap i.succAbove p,
     ⟨i, map_succAbove_apply_pivot i p⟩⟩).trans (hface i t p)
 
 end DifferentialGeometry.Simplex

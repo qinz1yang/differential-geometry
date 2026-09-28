@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
+import Mathlib.Analysis.Calculus.Deriv.Prod
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Analysis.Calculus.MeanValue
 

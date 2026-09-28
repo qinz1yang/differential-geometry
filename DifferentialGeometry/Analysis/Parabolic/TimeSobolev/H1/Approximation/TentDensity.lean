@@ -84,14 +84,14 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
     intro n
     filter_upwards [hLgc' n, hRshift n] with t hlt hrt
     by_cases htc : t ≤ c
-    · simpa only [f, Set.piecewise, if_pos (mem_Iic.mpr htc)] using hlt
+    · simpa only [f, Set.piecewise, ite_eq_left (mem_Iic.mpr htc)] using hlt
     · have hnot : t ∉ Iic c := by simpa only [mem_Iic] using htc
-      simpa only [f, Set.piecewise, if_neg hnot] using hrt
+      simpa only [f, Set.piecewise, ite_eq_right hnot] using hrt
   have hf_left : ∀ n, ContDiffOn ℝ 1 (f n) (Icc (0 : ℝ) c) := by
     intro n
     apply (hfL n).contDiffOn.congr
     intro t ht
-    simp only [f, Set.piecewise, if_pos (mem_Iic.mpr ht.2)]
+    simp only [f, Set.piecewise, ite_eq_left (mem_Iic.mpr ht.2)]
   have hf_right : ∀ n, ContDiffOn ℝ 1 (f n) (Icc c T) := by
     intro n
     have hcomp : ContDiff ℝ 1 (fun t : ℝ => fR n (t - c)) :=
@@ -99,10 +99,10 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
     apply hcomp.contDiffOn.congr
     intro t ht
     rcases ht.1.eq_or_lt with rfl | hct
-    · simp only [f, Set.piecewise, if_pos (mem_Iic.mpr le_rfl), sub_self,
+    · simp only [f, Set.piecewise, ite_eq_left (mem_Iic.mpr le_rfl), sub_self,
         hLc' n, hR0' n]
     · simp only [f, Set.piecewise,
-        if_neg (show t ∉ Iic c from not_le.mpr hct)]
+        ite_eq_right (show t ∉ Iic c from not_le.mpr hct)]
   have hfC1 : ∀ n, ContDiffOn ℝ 1 (f n) (Icc (0 : ℝ) T) := by
     intro n
     apply contDiffOn_Icc_join hc hcT (hf_left n) (hf_right n)
@@ -120,21 +120,21 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
     timeH1.toFun_ofContDiffOn (hc.le.trans hcT.le) (f n) (hfC1 n)
   have hf0 : ∀ n, f n 0 = 0 := by
     intro n
-    simp only [f, Set.piecewise, if_pos (mem_Iic.mpr hc.le), hL0' n]
+    simp only [f, Set.piecewise, ite_eq_left (mem_Iic.mpr hc.le), hL0' n]
   have hfc : ∀ n, f n c = z := by
     intro n
-    simp only [f, Set.piecewise, if_pos (mem_Iic.mpr le_rfl), hLc' n]
+    simp only [f, Set.piecewise, ite_eq_left (mem_Iic.mpr le_rfl), hLc' n]
   have hfT : ∀ n, f n T = 0 := by
     intro n
     simp only [f, Set.piecewise,
-      if_neg (show T ∉ Iic c from not_le.mpr hcT), hRT' n]
+      ite_eq_right (show T ∉ Iic c from not_le.mpr hcT), hRT' n]
   have hdf_left : ∀ n t, t ≤ c → _root_.deriv (f n) t = _root_.deriv (fL n) t := by
     intro n t htc
     by_cases hlt : t < c
     · apply EventuallyEq.deriv_eq
       filter_upwards [Iio_mem_nhds hlt] with s hs
       have hsc : s < c := by simpa only [mem_Iio] using hs
-      simp only [f, Set.piecewise, if_pos (mem_Iic.mpr hsc.le)]
+      simp only [f, Set.piecewise, ite_eq_left (mem_Iic.mpr hsc.le)]
     · have htc' : t = c := le_antisymm htc (le_of_not_gt hlt)
       subst t
       exact EventuallyEq.deriv_eq ((hfgerm n).trans (hLgc' n).symm)
@@ -147,7 +147,7 @@ theorem exists_tent_c1 {T c : ℝ} (hc : 0 < c) (hcT : c < T) (z : X) :
       filter_upwards [Ioi_mem_nhds hlt] with s hs
       have hcs : c < s := by simpa only [mem_Ioi] using hs
       have hnot : s ∉ Iic c := by simpa only [mem_Iic] using (not_le.mpr hcs)
-      simp only [f, Set.piecewise, if_neg hnot]
+      simp only [f, Set.piecewise, ite_eq_right hnot]
   have hder_comp : ∀ n t, _root_.deriv (fun s => fR n (s - c)) t =
       _root_.deriv (fR n) (t - c) := by
     intro n t

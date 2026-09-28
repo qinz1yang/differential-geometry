@@ -22,7 +22,7 @@ private theorem integralSingularChainMap_empty_eq_zero
     apply (integralSingularChainRepr n (∅ : Set X)).injective
     ext σ
     exact ((integralSingularSimplexEquiv n (∅ : Set X) σ)
-      ⟨Pi.single (0 : Fin (n + 1)) 1, single_mem_stdSimplex ℝ 0⟩).2.elim
+      (Convexity.StdSimplex.single 0)).2.elim
   subst c
   exact map_zero _
 

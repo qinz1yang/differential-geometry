@@ -77,8 +77,11 @@ private lemma chartPushedPouWeight_mul_memLp
     MemLp (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y) 2
       (chartLebesgueMeasure (I := I) (M := M) α) := by
   classical
-  refine ⟨(chartPushedPouWeight_aestronglyMeasurable
-    (I := I) (M := M) α).mul hf.1, ?_⟩
+  have hmeas : AEStronglyMeasurable
+      (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y)
+      (chartLebesgueMeasure (I := I) (M := M) α) :=
+    (chartPushedPouWeight_aestronglyMeasurable
+      (I := I) (M := M) α).mul hf.aestronglyMeasurable
   have hpt : ∀ y : EuclN,
       ‖chartPushedPouWeight (I := I) (M := M) α y * f y‖ ≤ ‖f y‖ := by
     intro y
@@ -90,8 +93,8 @@ private lemma chartPushedPouWeight_mul_memLp
   calc eLpNorm (fun y => chartPushedPouWeight (I := I) (M := M) α y * f y) 2
         (chartLebesgueMeasure (I := I) (M := M) α)
       ≤ eLpNorm f 2 (chartLebesgueMeasure (I := I) (M := M) α) :=
-        eLpNorm_mono hpt
-    _ < ⊤ := hf.2
+        eLpNorm_mono hmeas hpt
+    _ < ⊤ := hf
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] in
 private lemma eLpNorm_chartPushedPouWeight_mul_le
@@ -108,7 +111,13 @@ private lemma eLpNorm_chartPushedPouWeight_mul_le
       (chartPushedPouWeight_norm_le_one (I := I) (M := M) α y)
       (norm_nonneg _)).trans ?_
     rw [one_mul]
-  exact eLpNorm_mono hpt
+  by_cases hf : AEStronglyMeasurable f
+    (chartLebesgueMeasure (I := I) (M := M) α)
+  · exact eLpNorm_mono
+      ((chartPushedPouWeight_aestronglyMeasurable
+        (I := I) (M := M) α).mul hf) hpt
+  · rw [eLpNorm_of_not_aestronglyMeasurable hf]
+    exact le_top
 
 private def boundedPouMulLp
     (α : M) (f : Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) :
@@ -276,6 +285,7 @@ private lemma tensorChartComponent_eq_chartPushedPouWeight_mul_cutoffComponentEu
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private lemma tensorL2ChartComponent_smooth_eq_boundedPouMul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -301,6 +311,7 @@ private lemma tensorL2ChartComponent_smooth_eq_boundedPouMul_cutoff
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private lemma continuous_boundedPouMul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
     (P₀ : TensorCompIdx (E := E) r s) :
@@ -324,6 +335,7 @@ private lemma continuous_boundedPouMul_cutoff
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 private lemma tensorL2ChartComponent_eq_boundedPouMul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M)
@@ -358,6 +370,7 @@ private lemma tensorL2ChartComponent_eq_boundedPouMul_cutoff
 
 omit [CompleteSpace E] in
 omit [NeZero (Module.finrank ℝ E)] in
+omit [I.Boundaryless] in
 theorem tensorL2ChartComponent_eq_chartPushedPou_mul_cutoff
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :

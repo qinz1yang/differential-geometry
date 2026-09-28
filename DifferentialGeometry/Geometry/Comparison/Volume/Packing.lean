@@ -1,4 +1,4 @@
-import Mathlib.Data.Real.Basic
+import Mathlib.Basic.Real.Basic
 import Mathlib.MeasureTheory.Measure.Real
 import Mathlib.MeasureTheory.Constructions.BorelSpace.Basic
 import Mathlib.Tactic

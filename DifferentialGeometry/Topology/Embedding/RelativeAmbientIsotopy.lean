@@ -229,7 +229,7 @@ theorem exists_contDiff_compact_ambient_isotopy_Icc_eqOn_integralCurve_family
     intro z hz
     have hex : ∃ j, z ∈ U j := ⟨i, hz⟩
     dsimp only [X]
-    rw [dif_pos hex]
+    rw [dite_eq_left hex]
     exact hagree _ i ⟨Classical.choose_spec hex, hz⟩
   have hX : ContDiffOn ℝ ∞ X (⋃ i, U i) := by
     intro z hz

@@ -84,11 +84,13 @@ theorem tendsto_radialDiskEnergyFirstVariation_of_eqOn_exhausting_closedBall
     filter_upwards [hgerm n] with z hz
     unfold diskMapEnergyDensity diskMapPartial
     rw [hz.mfderiv_eq, hz.eq_of_nhds]
+    rfl
   have hcoreS (n : ℕ) : radialStress g (diskExtension (qn n)) ψ =ᵐ[μ.restrict (T n)]
       radialStress g (diskExtension q) ψ := by
     filter_upwards [hgerm n] with z hz
     unfold radialStress diskMapDirectionalEnergyDensity
     rw [hz.mfderiv_eq, hz.eq_of_nhds]
+    rfl
   have htail : Tendsto (fun n => ∫ z in (T n)ᶜ,
       diskMapEnergyDensity g (diskExtension q) z ∂μ) atTop (𝓝 0) := by
     have hh := tendsto_integral_closedBall_sdiff_of_tendsto_radius hE

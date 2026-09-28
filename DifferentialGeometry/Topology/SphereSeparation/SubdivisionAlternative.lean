@@ -8,6 +8,8 @@ open CategoryTheory.Limits
 open Simplicial
 open scoped Simplicial
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology.SphereSeparation
 
 private theorem nonemptyFaceBarycenter_eq_of_finset_eq
@@ -19,14 +21,14 @@ private theorem nonemptyFaceBarycenter_eq_of_finset_eq
 
 private theorem affineStandardSimplexMap_stdSimplexMap
     {ι κ μ : Type} [Fintype ι] [Fintype κ] [Fintype μ]
-    (v : κ → stdSimplex ℝ μ) (f : ι → κ)
-    (x : stdSimplex ℝ ι) :
-    affineStandardSimplexMap v (stdSimplex.map f x) =
+    (v : κ → coordinateSet ℝ μ) (f : ι → κ)
+    (x : coordinateSet ℝ ι) :
+    affineStandardSimplexMap v (coordinateMap f x) =
       affineStandardSimplexMap (v ∘ f) x := by
   classical
   apply Subtype.ext
   funext k
-  change (∑ j, (stdSimplex.map f x).val j * v j k) =
+  change (∑ j, (coordinateMap f x).val j * v j k) =
     ∑ i, x i * v (f i) k
   change (∑ j, (FunOnFinite.linearMap ℝ ℝ f x) j * v j k) = _
   simp only [FunOnFinite.linearMap_apply_apply]
@@ -45,15 +47,15 @@ private theorem affineStandardSimplexMap_stdSimplexMap
 
 noncomputable def barycentricPermutationFaceMap {n : ℕ}
     (σ : Equiv.Perm (Fin (n + 2))) (j : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 2))) :=
+    C(coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 2))) :=
   affineStandardSimplexMap fun k ↦
     nonemptyFaceBarycenter (barycentricPrefix σ (j.succAbove k))
       (barycentricPrefix_nonempty σ (j.succAbove k))
 
 private theorem barycentricPermutationSimplexMap_stdSimplexMap_succAbove
     {n : ℕ} (σ : Equiv.Perm (Fin (n + 2))) (j : Fin (n + 2))
-    (x : stdSimplex ℝ (Fin (n + 1))) :
-    barycentricPermutationSimplexMap σ (stdSimplex.map j.succAbove x) =
+    (x : coordinateSet ℝ (Fin (n + 1))) :
+    barycentricPermutationSimplexMap σ (coordinateMap j.succAbove x) =
       barycentricPermutationFaceMap σ j x := by
   exact affineStandardSimplexMap_stdSimplexMap _ _ x
 
@@ -62,7 +64,10 @@ noncomputable def barycentricFaceOfSingularSimplex
     (σ : Equiv.Perm (Fin (n + 2))) (j : Fin (n + 2)) :
     (TopCat.toSSet.obj X) _⦋n⦌ :=
   (X.toSSetObjEquiv _).symm
-    ((X.toSSetObjEquiv _ s).comp (barycentricPermutationFaceMap σ j))
+    ((X.toSSetObjEquiv _ s).comp
+      ((toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 2))).symm).comp
+        ((barycentricPermutationFaceMap σ j).comp
+          (toContinuousMap (coordinateHomeomorph ℝ (Fin (n + 1)))))))
 
 theorem delta_barycentricPieceOfSingularSimplex
     (X : TopCat) {n : ℕ} (s : (TopCat.toSSet.obj X) _⦋n + 1⦌)
@@ -76,7 +81,12 @@ theorem delta_barycentricPieceOfSingularSimplex
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     barycentricFaceOfSingularSimplex, Equiv.apply_symm_apply,
     ContinuousMap.comp_apply]
-  rw [barycentricPermutationSimplexMap_stdSimplexMap_succAbove]
+  apply congr_arg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin (n + 2))).injective
+  change barycentricPermutationSimplexMap σ
+      (coordinateEquiv ℝ _ (Convexity.StdSimplex.map j.succAbove x)) =
+    barycentricPermutationFaceMap σ j (coordinateEquiv ℝ _ x)
+  rw [coordinateEquiv_map, barycentricPermutationSimplexMap_stdSimplexMap_succAbove]
 
 private theorem adjacentSwap_le_succAbove_iff {n : ℕ}
     (a k : Fin (n + 1)) (x : Fin (n + 2)) :
@@ -295,7 +305,7 @@ private theorem nonemptyFaceBarycenter_image_succAbove
     (A : Finset (Fin (n + 1))) (hA : A.Nonempty) :
     nonemptyFaceBarycenter (A.image r.succAbove)
         (hA.image r.succAbove) =
-      stdSimplex.map r.succAbove (nonemptyFaceBarycenter A hA) := by
+      coordinateMap r.succAbove (nonemptyFaceBarycenter A hA) := by
   classical
   apply Subtype.ext
   funext i
@@ -320,7 +330,7 @@ private theorem nonemptyFaceBarycenter_image_succAbove
       simp only [Finset.mem_filter, Finset.mem_univ, true_and,
         Finset.notMem_empty, iff_false]
       exact r.succAbove_ne k
-    rw [if_neg hnotmem, hfilter, Finset.sum_empty]
+    rw [ite_eq_right hnotmem, hfilter, Finset.sum_empty]
   · obtain ⟨k, rfl⟩ := Fin.exists_succAbove_eq hir
     have hmem : r.succAbove k ∈ A.image r.succAbove ↔ k ∈ A := by
       simp [Finset.mem_image, r.succAbove_right_injective.eq_iff]
@@ -341,10 +351,10 @@ private theorem nonemptyFaceBarycenter_image_succAbove
 
 private theorem stdSimplexMap_affineStandardSimplexMap
     {ι κ μ : Type} [Fintype ι] [Fintype κ] [Fintype μ]
-    (f : κ → μ) (v : ι → stdSimplex ℝ κ)
-    (x : stdSimplex ℝ ι) :
-    stdSimplex.map f (affineStandardSimplexMap v x) =
-      affineStandardSimplexMap (fun i ↦ stdSimplex.map f (v i)) x := by
+    (f : κ → μ) (v : ι → coordinateSet ℝ κ)
+    (x : coordinateSet ℝ ι) :
+    coordinateMap f (affineStandardSimplexMap v x) =
+      affineStandardSimplexMap (fun i ↦ coordinateMap f (v i)) x := by
   classical
   apply Subtype.ext
   funext l
@@ -364,8 +374,8 @@ private theorem stdSimplexMap_affineStandardSimplexMap
 
 
 noncomputable def standardSimplexFaceMap {n : ℕ} (r : Fin (n + 2)) :
-    C(stdSimplex ℝ (Fin (n + 1)), stdSimplex ℝ (Fin (n + 2))) :=
-  ⟨stdSimplex.map r.succAbove, stdSimplex.continuous_map _⟩
+    C(coordinateSet ℝ (Fin (n + 1)), coordinateSet ℝ (Fin (n + 2))) :=
+  ⟨coordinateMap r.succAbove, continuous_coordinateMap _⟩
 
 private theorem barycentricPermutationFaceMap_appendLastPerm_last
     {n : ℕ} (r : Fin (n + 2))
@@ -383,7 +393,7 @@ private theorem barycentricPermutationFaceMap_appendLastPerm_last
           ((Fin.last (n + 1)).succAbove k))
         (barycentricPrefix_nonempty (appendLastPerm r τ)
           ((Fin.last (n + 1)).succAbove k))) =
-      (fun k ↦ stdSimplex.map r.succAbove
+      (fun k ↦ coordinateMap r.succAbove
         (nonemptyFaceBarycenter (barycentricPrefix τ k)
           (barycentricPrefix_nonempty τ k))) := by
     funext k
@@ -397,7 +407,7 @@ private theorem barycentricPermutationFaceMap_appendLastPerm_last
           ((barycentricPrefix_nonempty τ k).image r.succAbove) :=
             nonemptyFaceBarycenter_eq_of_finset_eq _ _
               (barycentricPrefix_appendLastPerm_castSucc r τ k)
-      _ = stdSimplex.map r.succAbove
+      _ = coordinateMap r.succAbove
           (nonemptyFaceBarycenter (barycentricPrefix τ k)
             (barycentricPrefix_nonempty τ k)) :=
         nonemptyFaceBarycenter_image_succAbove r _ _
@@ -417,7 +427,15 @@ private theorem barycentricFaceOfSingularSimplex_appendLastPerm_last
   simp only [barycentricFaceOfSingularSimplex, Equiv.apply_symm_apply,
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     TopCat.toSSetObjEquiv_δ_apply, ContinuousMap.comp_apply]
-  rw [barycentricPermutationFaceMap_appendLastPerm_last]
+  apply congr_arg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin (n + 2))).injective
+  change barycentricPermutationFaceMap (appendLastPerm r τ) (Fin.last (n + 1))
+      (coordinateEquiv ℝ _ x) =
+    coordinateEquiv ℝ _ (Convexity.StdSimplex.map r.succAbove
+      ((coordinateEquiv ℝ _).symm
+        (barycentricPermutationSimplexMap τ (coordinateEquiv ℝ _ x))))
+  rw [coordinateEquiv_map, Equiv.apply_symm_apply,
+    barycentricPermutationFaceMap_appendLastPerm_last]
   rfl
 
 private theorem appendLastPerm_eq_cycleIcc_mul_extendDomain
@@ -614,8 +632,8 @@ theorem barycentricSubdivisionBoundaryCompatible_all (X : TopCat) :
 
 private theorem barycentricPermutationSimplexMap_refl_vertex_zero :
     barycentricPermutationSimplexMap (Equiv.refl (Fin 2))
-        (stdSimplex.vertex 0) =
-      stdSimplex.vertex 0 := by
+        (coordinateSingle 0) =
+      coordinateSingle 0 := by
   rw [barycentricPermutationSimplexMap_vertex]
   apply Subtype.ext
   funext i
@@ -629,8 +647,8 @@ private theorem barycentricPermutationSimplexMap_refl_vertex_zero :
 
 private theorem barycentricPermutationSimplexMap_swap_vertex_zero :
     barycentricPermutationSimplexMap (Equiv.swap (0 : Fin 2) 1)
-        (stdSimplex.vertex 0) =
-      stdSimplex.vertex 1 := by
+        (coordinateSingle 0) =
+      coordinateSingle 1 := by
   rw [barycentricPermutationSimplexMap_vertex]
   apply Subtype.ext
   funext i
@@ -648,11 +666,17 @@ private theorem barycentricPermutationSimplexMap_swap_vertex_zero :
 
 private theorem barycentricPermutationSimplexMap_vertex_one_eq
     (σ : Equiv.Perm (Fin 2)) :
-    barycentricPermutationSimplexMap σ (stdSimplex.vertex 1) =
+    barycentricPermutationSimplexMap σ (coordinateSingle 1) =
       nonemptyFaceBarycenter Finset.univ Finset.univ_nonempty := by
   rw [barycentricPermutationSimplexMap_vertex]
   simp only [show (1 : Fin 2) = Fin.last 1 by rfl,
     barycentricPrefix_last]
+
+private theorem coordinateHomeomorph_single_fin_two (i : Fin 2) :
+    coordinateHomeomorph ℝ (Fin 2) (Convexity.StdSimplex.single i) = coordinateSingle i := by
+  apply Subtype.ext
+  ext j
+  simp [coordinateHomeomorph, coordinateEquiv, Pi.single_apply, Finsupp.single_apply, eq_comm]
 
 private theorem delta_zero_barycentricPiece_one_refl_eq_swap
     (X : TopCat) (s : (TopCat.toSSet.obj X) _⦋1⦌) :
@@ -665,10 +689,18 @@ private theorem delta_zero_barycentricPiece_one_refl_eq_swap
   simp only [TopCat.toSSetObjEquiv_δ_apply,
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     ContinuousMap.comp_apply]
-  rw [Subsingleton.elim x (stdSimplex.vertex 0), stdSimplex.map_vertex]
+  rw [Subsingleton.elim x (Convexity.StdSimplex.single (0 : Fin 1)),
+    Convexity.StdSimplex.map_single]
   simp only [Fin.zero_succAbove]
   rw [show Fin.succ (0 : Fin 1) = (1 : Fin 2) by rfl]
-  rw [barycentricPermutationSimplexMap_vertex_one_eq,
+  apply congr_arg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin 2)).injective
+  change barycentricPermutationSimplexMap (Equiv.refl (Fin 2))
+      (coordinateHomeomorph ℝ (Fin 2) (.single 1)) =
+    barycentricPermutationSimplexMap (Equiv.swap 0 1)
+      (coordinateHomeomorph ℝ (Fin 2) (.single 1))
+  rw [coordinateHomeomorph_single_fin_two,
+    barycentricPermutationSimplexMap_vertex_one_eq,
     barycentricPermutationSimplexMap_vertex_one_eq]
 
 private theorem delta_one_barycentricPiece_one_refl
@@ -681,9 +713,15 @@ private theorem delta_one_barycentricPiece_one_refl
   simp only [TopCat.toSSetObjEquiv_δ_apply,
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     ContinuousMap.comp_apply]
-  rw [Subsingleton.elim x (stdSimplex.vertex 0), stdSimplex.map_vertex]
+  rw [Subsingleton.elim x (Convexity.StdSimplex.single (0 : Fin 1)),
+    Convexity.StdSimplex.map_single]
   simp only [Fin.one_succAbove_zero]
-  rw [barycentricPermutationSimplexMap_refl_vertex_zero]
+  apply congr_arg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin 2)).injective
+  change barycentricPermutationSimplexMap (Equiv.refl (Fin 2))
+      (coordinateHomeomorph ℝ (Fin 2) (.single 0)) =
+    coordinateHomeomorph ℝ (Fin 2) (.single 0)
+  rw [coordinateHomeomorph_single_fin_two, barycentricPermutationSimplexMap_refl_vertex_zero]
 
 private theorem delta_one_barycentricPiece_one_swap
     (X : TopCat) (s : (TopCat.toSSet.obj X) _⦋1⦌) :
@@ -695,11 +733,18 @@ private theorem delta_one_barycentricPiece_one_swap
   simp only [TopCat.toSSetObjEquiv_δ_apply,
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     ContinuousMap.comp_apply]
-  rw [Subsingleton.elim x (stdSimplex.vertex 0), stdSimplex.map_vertex,
-    stdSimplex.map_vertex]
+  rw [Subsingleton.elim x (Convexity.StdSimplex.single (0 : Fin 1)),
+    Convexity.StdSimplex.map_single,
+    Convexity.StdSimplex.map_single]
   simp only [Fin.one_succAbove_zero, Fin.zero_succAbove]
   rw [show Fin.succ (0 : Fin 1) = (1 : Fin 2) by rfl]
-  rw [barycentricPermutationSimplexMap_swap_vertex_zero]
+  apply congr_arg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin 2)).injective
+  change barycentricPermutationSimplexMap (Equiv.swap 0 1)
+      (coordinateHomeomorph ℝ (Fin 2) (.single 0)) =
+    coordinateHomeomorph ℝ (Fin 2) (.single 1)
+  rw [coordinateHomeomorph_single_fin_two, coordinateHomeomorph_single_fin_two,
+    barycentricPermutationSimplexMap_swap_vertex_zero]
 
 theorem barycentricSubdivisionDegreeMap_boundary_zero (X : TopCat) :
     barycentricSubdivisionDegreeMap X 1 ≫

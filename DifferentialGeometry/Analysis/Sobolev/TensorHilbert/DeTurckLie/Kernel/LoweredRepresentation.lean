@@ -19,6 +19,11 @@ import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.Ord
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.LoweredTensors
 import DifferentialGeometry.Analysis.Sobolev.AntidiagonalTupleGridPartialSum
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.DeTurckLie.Kernel.CometricTraceFrame
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg riemannianFiberNormSq_zero tensorInnerPointwise_smul_left
+    tensorInnerPointwise_smul_right)
 open DifferentialGeometry.Combinatorics
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Integral.DivergenceTheorem
@@ -57,7 +62,7 @@ open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
   (metricPerturbationPath convexPerturbation metricPerturbationPath_inner_of_mem convexPerturbation_gFibreOpBound_abs
     abs_convex_smallConstant_lt_one metricPerturbationPathDomain)
-open DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.SmoothRiemannianMetric
   (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Analysis.Parabolic.TensorSpectral
   (covGrad connectionDifference_gFibreNorm_le_iteratedCovGrad_of_lt_one deTurckLieConnectionDifferenceDerivativeBiContrFibFixedFrame_toModel)
@@ -857,7 +862,7 @@ private lemma iteratedCovGrad_slotInsert_fullRaised_id_succ_eq_zero_deTurckLieCo
   | succ m' ih =>
       rw [iteratedCovGrad_succ, ih, covGrad_zero]
 
-theorem exists_riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_tgrid_deTurckLieConnectionDifferenceDerivative
+theorem sharpFlatEndoCc_covariant_antidiagonal_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ S : ℕ → ℝ, (∀ l, 0 ≤ S l) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -874,7 +879,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_tgrid_deTur
               ((iteratedCovGrad (I := I) g₀ 0 2 j T).toSection x)) l := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨cid, hcid_nn, hcid⟩ := exists_bound_riemannianFiberNormSq_smoothCcTensor
     (I := I) (M := M) g₀ 1 1
@@ -947,7 +952,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_tgrid_deTur
         linarith
     _ = (2 * CD l + 2 * cid) * Combinatorics.antidiagonalTupleGrid b l := by ring
 
-theorem exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection_tgrid_deTurckLieConnectionDifferenceDerivative
+theorem connectionDifferenceSection_covariant_antidiagonal_sum_bound
     (g₀ : SmoothRiemannianMetric I M) {δ₀ : ℝ} (hδ₀ : δ₀ < 1) :
     ∃ CA : ℕ → ℝ, (∀ j, 0 ≤ CA j) ∧
       ∀ (g₁ : SmoothRiemannianMetric I M) (T : SmoothCcTensor g₀ 0 2)
@@ -964,7 +969,7 @@ theorem exists_riemannianFiberNormSq_iteratedCovGrad_connectionDifferenceSection
             (fun j' => riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + j') x
               ((iteratedCovGrad (I := I) g₀ 0 2 j' T).toSection x)) (j + 2) := by
   classical
-  obtain ⟨S, hS_nn, hS⟩ := exists_riemannianFiberNormSq_iteratedCovGrad_sharpFlatEndoCc_tgrid_deTurckLieConnectionDifferenceDerivative
+  obtain ⟨S, hS_nn, hS⟩ := sharpFlatEndoCc_covariant_antidiagonal_bound
     (I := I) (M := M) g₀ hδ₀
   refine ⟨fun j => diagonalGridGrowthFactor (E := E) j *
       ∑ i ∈ Finset.range (j + 1), 10 * ∑ l ∈ Finset.range (j + 1 - i), S l,

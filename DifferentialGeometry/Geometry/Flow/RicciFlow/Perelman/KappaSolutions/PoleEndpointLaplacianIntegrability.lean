@@ -308,7 +308,7 @@ private theorem continuousOn_chartInvGramOnE_of_chartGradientBilin
         chartInvGramOnE (g p) a i j p.2 := by
     rw [chartGradientBilin_apply]
     simp only [hu, mul_ite, mul_one, mul_zero, Finset.sum_ite_irrel,
-      Finset.sum_const_zero, Finset.sum_ite_eq', Finset.mem_univ, if_true,
+      Finset.sum_const_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true,
       chartInvGramOnE_def]
   have hc := (h.clm_apply (g := fun _ => u j) continuousOn_const).clm_apply
     (g := fun _ => u i) continuousOn_const

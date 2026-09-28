@@ -132,7 +132,6 @@ def toRetainedCoreEvent (D : RetainedCoreEventData P Q a s) : RetainedCoreEvent 
   oldOutput := D.transition.retainedOutputMap
   oldOutput_eq := fun x => D.transition.retainedOutputMap_eq x
   old_metric_eq := D.retained_metric_eq
-  old_contains_outside := fun _ hx _ => hx
   every_child_meets_old := D.completion.exists_retainedOutputMap_eq
 
 theorem coreCompatibility (D : RetainedCoreEventData P Q a s) :

@@ -15,11 +15,8 @@ variable {X : Type*} [TopologicalSpace X] {x y : X}
 
 def sphereHomotopyBasepointPath (n : ℕ)
     {f : basedMappingSpace (cubeSphereBasepoint n) x}
-    {g : basedMappingSpace (cubeSphereBasepoint n) y} (H : f.val.Homotopy g.val) : Path x y where
-  toFun t := H (t, cubeSphereBasepoint n)
-  continuous_toFun := H.continuous.comp (continuous_id.prodMk continuous_const)
-  source' := (H.apply_zero _).trans f.property
-  target' := (H.apply_one _).trans g.property
+    {g : basedMappingSpace (cubeSphereBasepoint n) y} (H : f.val.Homotopy g.val) : Path x y :=
+  (H.evalAt (cubeSphereBasepoint n)).cast f.property.symm g.property.symm
 
 
 

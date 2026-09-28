@@ -238,10 +238,7 @@ lemma chartPhaseVFTime_uncurry_contDiffOn_univ_two
     ContDiffOn ℝ 2 (Function.uncurry (chartPhaseVFTime (I := I) g α z₀ b))
       (Set.univ : Set (ℝ × (E × E))) := by
   have h := chartPhaseVFTime_uncurry_contDiff (I := I) g α z₀ b hb_sub
-  have hle : (2 : WithTop ℕ∞) ≤ ∞ := by
-    have h2le : ((2 : ℕ∞) : WithTop ℕ∞) ≤ ∞ :=
-      by exact_mod_cast (le_top : (2 : ℕ∞) ≤ ⊤)
-    simpa using h2le
+  have hle : (2 : WithTop ℕ∞) ≤ ∞ := by simp
   have h2 : ContDiff ℝ 2 (Function.uncurry (chartPhaseVFTime (I := I) g α z₀ b)) :=
     h.of_le hle
   exact h2.contDiffOn

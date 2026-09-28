@@ -42,18 +42,19 @@ theorem tendsto_eLpNorm_clm_apply_sub_of_ae_tendsto
   have hC₀ : ∀ᵐ t ∂μ, ‖A₀ t‖ ≤ C := by
     filter_upwards [hconv, ae_all_iff.mpr hC] with t ht hb
     exact le_of_tendsto ht.norm (Eventually.of_forall hb)
+  let f : ℕ → P → Y := fun n t => (A n t - A₀ t) (v t)
+  have hf (n : ℕ) : AEStronglyMeasurable (f n) μ :=
+    (ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂
+      hv.aestronglyMeasurable ((hA n).sub hA₀)
+  change Tendsto (fun n => eLpNorm (f n) p μ) atTop (𝓝 0)
   by_cases hp₀ : p = 0
-  · simp only [hp₀, eLpNorm_exponent_zero]
+  · simp only [hp₀, eLpNorm_exponent_zero (hf _)]
     exact tendsto_const_nhds
   have hpr : 0 < p.toReal := ENNReal.toReal_pos hp₀ hp
   let D : ℝ := 2 * max 0 C
   have hD : 0 ≤ D := mul_nonneg (by norm_num) (le_max_left _ _)
-  let f : ℕ → P → Y := fun n t => (A n t - A₀ t) (v t)
   let b : P → X := fun t => D • v t
   have hb : MemLp b p μ := hv.const_smul D
-  have hf (n : ℕ) : AEStronglyMeasurable (f n) μ :=
-    (ContinuousLinearMap.apply ℝ Y).aestronglyMeasurable_comp₂
-      hv.aestronglyMeasurable ((hA n).sub hA₀)
   have hbound (n : ℕ) : ∀ᵐ t ∂μ, ‖f n t‖ₑ ≤ ‖b t‖ₑ := by
     filter_upwards [hC n, hC₀] with t ht ht₀
     apply enorm_le_iff_norm_le.mpr
@@ -90,8 +91,7 @@ theorem tendsto_eLpNorm_clm_apply_sub_of_ae_tendsto
         (fun n => (hbound n).mono fun t ht => ENNReal.rpow_le_rpow ht hpr.le)
         (lintegral_rpow_enorm_lt_top_of_eLpNorm_lt_top hp₀ hp hb.eLpNorm_lt_top).ne
         hpowlim
-  change Tendsto (fun n => eLpNorm (f n) p μ) atTop (𝓝 0)
-  simp only [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp]
+  simp only [eLpNorm_eq_lintegral_rpow_enorm_toReal hp₀ hp (hf _)]
   simpa only [Function.comp_def, ENNReal.zero_rpow_of_pos (one_div_pos.mpr hpr)] using
     (ENNReal.continuous_rpow_const (y := 1 / p.toReal)).continuousAt.tendsto.comp hlin
 

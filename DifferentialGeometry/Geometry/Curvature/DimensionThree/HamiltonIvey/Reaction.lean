@@ -1642,7 +1642,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_eq_supportFunc
     unfold hamiltonIveyConvexMatrixRegionSupportEuclidean
     rw [hν']
     dsimp
-    exact (if_pos hν0).trans rfl
+    exact (ite_eq_left hν0).trans rfl
   have hbddF : BddAbove Fset := by
     dsimp [Fset]
     exact support_formula_bddAbove hK hτ hν0
@@ -2390,7 +2390,7 @@ theorem hamiltonIveyConvexMatrixRegionSupportEuclidean_continuousOn
       sSup {x : ℝ | ∃ X : ℝ, 0 ≤ X ∧
         x = hamiltonIveyConvexBarrier K τ X * nv 0 +
           X * (2 * nv 0 - nv 1 - nv 2)} else 0) = _
-    rw [if_pos hnv0]
+    rw [ite_eq_left hnv0]
   exact hmain.congr (fun τ hτ => hdef τ)
 
 private lemma support_formula_min_branch
@@ -3588,7 +3588,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
     have hspec := Classical.choose_spec (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ))
     have hξdef : ξ τ = Classical.choose (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ)) := by
       dsimp [ξ]
-      rw [dif_pos hguard]
+      rw [dite_eq_left hguard]
     rw [hξdef]
     constructor
     · exact hspec.1
@@ -3602,7 +3602,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
     have hspec := Classical.choose_spec (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne))
     have hηdef : η τ = Classical.choose (exists_hamiltonIveyBarrier_x_deriv_eq_slope (τ₀ := τ₀) hK hXpos hX2pos (Ne.symm hX2ne)) := by
       dsimp [η]
-      rw [dif_pos hguard]
+      rw [dite_eq_left hguard]
     rw [hηdef]
     constructor
     · exact hspec.1
@@ -3632,7 +3632,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
     · have hX2eq : X₂ τ = X := not_not.mp hX2ne
       have hηdef : η τ = X := by
         dsimp [η]
-        rw [dif_neg]
+        rw [dite_eq_right]
         intro hg
         exact hX2ne hg.2.2.2
       rw [hX2eq, hηdef]
@@ -3648,7 +3648,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
     have hspec := Classical.choose_spec (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ))
     have hξdef : ξ τ = Classical.choose (exists_hamiltonIveyBarrier_tau_deriv_eq_slope hK hτ₀ hτ0 hτne (X₂ τ)) := by
       dsimp [ξ]
-      rw [dif_pos hguard]
+      rw [dite_eq_left hguard]
     rw [hξdef]
     have hk : hamiltonIveyBarrier K τ (X₂ τ) = s τ := by
       dsimp [s, X₂]
@@ -3675,7 +3675,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
       · have hX2eq : X₂ τ = X := not_not.mp hX2ne
         have hηdef : η τ = X := by
           dsimp [η]
-          rw [dif_neg]
+          rw [dite_eq_right]
           intro hg
           exact hX2ne hg.2.2.2
         rw [hηdef]
@@ -3728,7 +3728,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
         linarith
     · have hξdef : ξ τ = τ₀ := by
         dsimp [ξ]
-        rw [dif_neg hg]
+        rw [dite_eq_right hg]
       rw [hξdef]
       simp
   have hη_bound : ∀ τ : ℝ, |η τ - X| ≤ |X₂ τ - X| := by
@@ -3755,7 +3755,7 @@ private lemma hasDerivAt_hamiltonIveyKinkPoint
         linarith
     · have hηdef : η τ = X := by
         dsimp [η]
-        rw [dif_neg hg]
+        rw [dite_eq_right hg]
       rw [hηdef]
       simp
   have hτdiff_zero : Filter.Tendsto (fun τ : ℝ => |τ - τ₀|) (𝓝 τ₀) (𝓝 (0 : ℝ)) := by
@@ -3981,7 +3981,7 @@ private lemma support_formula_eq_kink_or_star
     unfold hamiltonIveyConvexMatrixRegionSupportEuclidean
     rw [hν']
     dsimp [F]
-    exact (if_pos hν0).trans rfl
+    exact (ite_eq_left hν0).trans rfl
   have hbddF : BddAbove Fset := by
     dsimp [Fset, F]
     exact support_formula_bddAbove hK hτ hν0
@@ -3991,14 +3991,14 @@ private lemma support_formula_eq_kink_or_star
   have hF_le_choice : ∀ X : ℝ, 0 ≤ X → F X ≤ (if X₂ ≤ Xs then G₁ else G₂) := by
     intro X hX
     by_cases h2s : X₂ ≤ Xs
-    · rw [if_pos h2s]
+    · rw [ite_eq_left h2s]
       by_cases hXle : X ≤ Xs
       · have hmain : Fh X ≤ Fh Xs := hFh_left (x := X) (y := Xs) hX hXle le_rfl
         exact le_trans (hF_le_Fh X) (le_trans hmain hFh_Xs.le)
       · have hXsle : Xs ≤ X := le_of_not_ge hXle
         have hmain : Fh X ≤ Fh Xs := hFh_right (x := Xs) (y := X) le_rfl hXsle
         exact le_trans (hF_le_Fh X) (le_trans hmain hFh_Xs.le)
-    · rw [if_neg h2s]
+    · rw [ite_eq_right h2s]
       by_cases hXle : X ≤ X₂
       · have hmain : Fs X ≤ Fs X₂ := hFs_mono trivial trivial hXle
         exact le_trans (hF_le_Fs X) (le_trans hmain hFs_X2.le)
@@ -4040,7 +4040,7 @@ private lemma support_formula_eq_kink_or_star
       have hmem : G₁ ∈ Fset := by
         refine ⟨Xs, le_of_lt hXspos, ?_⟩
         exact hF_Xs.symm
-      rw [if_pos h2s]
+      rw [ite_eq_left h2s]
       rw [hdef_eq]
       exact le_csSup hbddF hmem
     · have hF_X2 : F X₂ = G₂ := by
@@ -4050,7 +4050,7 @@ private lemma support_formula_eq_kink_or_star
       have hmem : G₂ ∈ Fset := by
         refine ⟨X₂, hX2pos, ?_⟩
         exact hF_X2.symm
-      rw [if_neg h2s]
+      rw [ite_eq_right h2s]
       rw [hdef_eq]
       exact le_csSup hbddF hmem
   exact le_antisymm hsup_le hsup_ge
@@ -4259,7 +4259,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
         have h1 : X₂ τ - Xs τ - (X₂ τ₀ - Xs τ₀) < -(X₂ τ₀ - Xs τ₀) :=
           (abs_lt.mp (by simpa [dist_eq_norm, Real.norm_eq_abs] using hd)).2
         have hltτ : X₂ τ < Xs τ := by linarith
-        rw [hform, if_pos (le_of_lt hltτ)]
+        rw [hform, ite_eq_left (le_of_lt hltτ)]
       have hmain : HasDerivAt support
           (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
         hG₁deriv.congr_of_eventuallyEq hnhd
@@ -4283,15 +4283,15 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
         intro hτne
         by_cases h : X₂ τ ≤ Xs τ
         · left
-          rw [hform, if_pos h]
+          rw [hform, ite_eq_left h]
         · right
-          rw [hform, if_neg h]
+          rw [hform, ite_eq_right h]
       have hsupp₀ : support τ₀ = G₁ τ₀ := by
         change hamiltonIveyConvexMatrixRegionSupportEuclidean K τ₀ (matrixToEuclidean (Matrix.diagonal ν)) = G₁ τ₀
         rw [support_formula_eq_kink_or_star hK hτ₀.le hν hν0]
         have hle' : hamiltonIveyKinkPoint hK τ₀ ≤ K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) := by
           simpa [X₂, Xs] using hle
-        rw [if_pos hle']
+        rw [ite_eq_left hle']
       have hG₂deriv' : HasDerivAt G₂
           (-(ν 0 * (-2 * K * (K * Real.exp ((ν 1 + ν 2) / ν 0) / (1 + 2 * K * τ₀) ^ 2)))) τ₀ :=
         hG₂deriv.congr_deriv hderiv_eq
@@ -4309,7 +4309,7 @@ private lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_diag_hasDerivAt
       have h1 : -(X₂ τ₀ - Xs τ₀) < X₂ τ - Xs τ - (X₂ τ₀ - Xs τ₀) :=
         (abs_lt.mp (by simpa [dist_eq_norm, Real.norm_eq_abs] using hd)).1
       have hgtτ : Xs τ < X₂ τ := by linarith
-      rw [hform, if_neg (not_le_of_gt hgtτ)]
+      rw [hform, ite_eq_right (not_le_of_gt hgtτ)]
     have hmain : HasDerivAt support
         (12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 * ν 0 +
           ((12 * K ^ 2 / (1 + 4 * K * τ₀) ^ 2 -
@@ -4386,7 +4386,7 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_eq_zero_of_symm_zero
       rw [hdef, Equiv.symm_apply_apply] at h0
       exact h0
     linarith
-  rw [if_neg hν]
+  rw [ite_eq_right hν]
 
 private lemma supportFunction_eq_zero_of_symm_zero
     {K τ : ℝ} (hK : 0 < K) (hτ : 0 ≤ τ)
@@ -4516,14 +4516,14 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_hasDerivAt
                 Real.log (1 + 2 * K * τ₀) - 2)) *
               (2 * nv 0 - nv 1 - nv 2)
       change d = if nv 0 < 0 then d else 0
-      rw [if_pos hv])
+      rw [ite_eq_left hv])
   · have hnot : ¬ (euclideanMatrixSymmetrization_isHermitian v).eigenvalues₀ 0 < 0 := by
       dsimp [nv] at hv
       exact hv
     have hconst : ∀ τ : ℝ, hamiltonIveyConvexMatrixRegionSupportEuclidean K τ v = 0 := by
       intro τ
       unfold hamiltonIveyConvexMatrixRegionSupportEuclidean
-      rw [if_neg hnot]
+      rw [ite_eq_right hnot]
     have hzero : HasDerivAt (fun τ : ℝ => hamiltonIveyConvexMatrixRegionSupportEuclidean K τ v) 0 τ₀ := by
       simpa [hconst] using (hasDerivAt_const (x := τ₀) (c := (0 : ℝ)))
     exact hzero.congr_deriv (by
@@ -4543,7 +4543,7 @@ lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_hasDerivAt
                 Real.log (1 + 2 * K * τ₀) - 2)) *
               (2 * nv 0 - nv 1 - nv 2)
       change 0 = if nv 0 < 0 then d else 0
-      rw [if_neg hv])
+      rw [ite_eq_right hv])
 
 lemma hamiltonIveyConvexMatrixRegionSupportEuclidean_reaction_le_deriv
     {K τ₀ : ℝ} (hK : 0 < K) (hτ₀ : 0 ≤ τ₀)
@@ -4667,7 +4667,7 @@ lemma hamiltonIveyConvexMatrixRegionSupportDeriv_eq_zero_of_symm_zero
       rw [hdef, Equiv.symm_apply_apply] at h0
       exact h0
     linarith
-  rw [if_neg hnot]
+  rw [ite_eq_right hnot]
 end DifferentialGeometry.Geometry.Curvature.DimensionThree
 
 end

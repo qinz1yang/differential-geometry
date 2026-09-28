@@ -137,7 +137,7 @@ private theorem exists_metricOrthonormalBasis
         (TangentSpace I y),
       ∀ i j, g.inner y (b i) (b j) = if i = j then (1 : Real) else 0 := by
   classical
-  let Dat := (tangentMetricDataGen (I := I) g y).metric
+  let Dat := (tangentMetricData (I := I) g y).metric
   let _ : InnerProductSpace.Core Real (TangentSpace I y) := Dat.toCore
   let _ : NormedAddCommGroup (TangentSpace I y) :=
     @InnerProductSpace.Core.toNormedAddCommGroup Real (TangentSpace I y) _ _ _ Dat.toCore
@@ -149,8 +149,8 @@ private theorem exists_metricOrthonormalBasis
   have hinner : Inner.inner Real (ob i) (ob j) = Dat.inner (ob i) (ob j) :=
     MetricFiberData.toCore_inner Dat (ob i) (ob j)
   change g.inner y (ob.toBasis i) (ob.toBasis j) = if i = j then (1 : Real) else 0
-  rw [← TangentMetricDataGen.inner_eq_gen
-    (tangentMetricDataGen (I := I) g y) (ob.toBasis i) (ob.toBasis j)]
+  rw [← TangentMetricData.inner_eq
+    (tangentMetricData (I := I) g y) (ob.toBasis i) (ob.toBasis j)]
   change Dat.inner (ob i) (ob j) = if i = j then (1 : Real) else 0
   rw [← hinner]
   exact ob.inner_eq_ite i j

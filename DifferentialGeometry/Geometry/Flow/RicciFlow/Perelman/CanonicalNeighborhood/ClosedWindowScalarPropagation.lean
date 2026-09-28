@@ -192,7 +192,7 @@ theorem scalar_le_of_left_derivative_bounds
       HasDerivWithinAt (fun sigma : Real => S.scalar sigma y)
         (derivWithin (fun sigma : Real => S.scalar sigma y) (Set.Iic rho) rho) D.carrier rho := by
     intro rho hrho
-    exact hasDerivWithinAt_left_of_mem_nhdsLE
+    exact DifferentialGeometry.Analysis.hasDerivWithinAt_left_of_mem_nhdsLE
       (hS.scalarTime (K := D.carrier) (hJ (hwin hrho)) Set.Subset.rfl y)
       (hleft rho (hwin hrho))
   have hftd : ∀ sg ∈ Set.Icc (0 : Real) 1,

@@ -1,15 +1,12 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Metric.Pullback.PartialDiffeomorph.OpenSubtype
 
-open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.Geometry.Connection
-
 set_option autoImplicit false
 
 noncomputable section
 
 namespace DifferentialGeometry
-namespace CheegerGromovCompactness
+namespace Tensor0SBundle
 
 open scoped Manifold ContDiff Topology
 
@@ -69,5 +66,5 @@ theorem normSq0S_restrictOpen_apply
 
 end FixedManifold
 
-end CheegerGromovCompactness
+end Tensor0SBundle
 end DifferentialGeometry

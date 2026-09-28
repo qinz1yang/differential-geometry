@@ -382,7 +382,7 @@ private theorem opensInclusion_symm_apply {M : Type u} [TopologicalSpace M]
     (hy : y ∈ U) : (opensInclusion U x).symm y = ⟨y, hy⟩ := by
   classical
   change (if h : y ∈ U then (⟨y, h⟩ : U) else x) = _
-  rw [dif_pos hy]
+  rw [dite_eq_left hy]
 
 private noncomputable def windowedModelWitnessOfLimitComparison {N : Type u}
     [TopologicalSpace N] [ChartedSpace ThreeSpace N] [IsManifold I3 ∞ N] {L : ℝ} (hL : -L ≤ 0)

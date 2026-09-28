@@ -76,7 +76,7 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
     (u_h : H1Compl (I := I) (M := M) g) :
     ∀ (m : ℕ) (dirs : Fin m → Fin (Module.finrank ℝ E))
       (i : Fin (Module.finrank ℝ E)),
-      MemWkp (d := Module.finrank ℝ E) (m + 2) 2
+      MemWkp (d := Module.finrank ℝ E) (m + 1) 2
         (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
           ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
         (chartTargetEuclid (I := I) (M := M) α) →
@@ -137,13 +137,12 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
                 m (Fin.init dirs)) Ω := by
         rw [chosenMthMixedPartialChartPushedU_succ]
       have h_parent_for_ih :
-          MemWkp (d := Module.finrank ℝ E) (m + 2) 2
+          MemWkp (d := Module.finrank ℝ E) (m + 1) 2
             (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
               ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
-            (chartTargetEuclid (I := I) (M := M) α) := by
-        exact MemWkp.le_of_le (by omega) h_parent
-      have h_ih :=
-        ih (Fin.init dirs) i h_parent_for_ih
+            (chartTargetEuclid (I := I) (M := M) α) :=
+        MemWkp.le_of_le (by omega) h_parent
+      have h_ih := ih (Fin.init dirs) i h_parent_for_ih
       have h_propagate :
           chosenWeakPartialOrZero (d := Module.finrank ℝ E) 2
               (dirs (Fin.last m))
@@ -168,7 +167,7 @@ theorem chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMix
                 ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
               Ω := by
           rw [h_2_m]
-          exact h_parent_for_ih
+          exact h_parent
         exact chosenMthMixedPartialChartPushedU_memWkp_of_chartPushed_memWkp
           (I := I) (M := M) g α u_h m 2 h_parent_2_m (Fin.init dirs)
       have h_swap :=
@@ -593,7 +592,7 @@ omit [NeZero (Module.finrank ℝ E)] in
 private lemma iterated_weak_partial_locally_memLp
     (g : SmoothRiemannianMetric I M) (α : M)
     (u_h : H1Compl (I := I) (M := M) g) (m : ℕ)
-    (h_parent_m_plus_2 : MemWkp (d := Module.finrank ℝ E) (m + 2) 2
+    (h_parent_m_plus_1 : MemWkp (d := Module.finrank ℝ E) (m + 1) 2
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α))
@@ -605,12 +604,6 @@ private lemma iterated_weak_partial_locally_memLp
       ((volume : Measure EuclN).restrict K) := by
   classical
   unfold iterated_weak_partial iterated_u_chart
-  have h_parent_m_plus_1 :
-      MemWkp (d := Module.finrank ℝ E) (m + 1) 2
-        (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
-          ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
-        (chartTargetEuclid (I := I) (M := M) α) :=
-    MemWkp.le_of_le (by omega) h_parent_m_plus_2
   have h_u_memW1p :=
     chosenMthMixedPartialChartPushedU_memW1p_two
       (I := I) (M := M) g α u_h m h_parent_m_plus_1 dirs
@@ -639,10 +632,6 @@ noncomputable def iteratedChartBilinearH1ComplData
     (h_chart_H_m_plus_1 : MemWkp (d := Module.finrank ℝ E) (m + 1) 2
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
-      (chartTargetEuclid (I := I) (M := M) α))
-    (h_chart_H_m_plus_2 : MemWkp (d := Module.finrank ℝ E) (m + 2) 2
-      (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
-        ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α)) :
     ChartBilinearH1ComplData (I := I) (M := M) g α where
   uChart := iterated_u_chart (I := I) (M := M) g α u_h m D_m.directions
@@ -662,7 +651,7 @@ noncomputable def iteratedChartBilinearH1ComplData
   f_chart_memLp_weighted := D_m.fChartEffective_memLp_weighted
   weak_partial_locally_memLp := fun i _K hK_compact hK_in =>
     iterated_weak_partial_locally_memLp
-      (I := I) (M := M) g α u_h m h_chart_H_m_plus_2 D_m.directions i
+      (I := I) (M := M) g α u_h m h_chart_H_m_plus_1 D_m.directions i
       hK_compact hK_in
   weak_partial_isWeakPartial := fun i =>
     iterated_weak_partial_isWeakPartial
@@ -672,8 +661,6 @@ noncomputable def iteratedChartBilinearH1ComplData
     intro ψ hψ hψ_cs hψ_support
     have h_in := D_m.m_diff_variational_identity ψ hψ hψ_cs hψ_support
     set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
-    have hΩ_open : IsOpen Ω := chartTargetEuclid_isOpen (I := I) (M := M) α
-    have hΩ_meas : MeasurableSet Ω := hΩ_open.measurableSet
     have h_schwarz_ae : ∀ i : Fin (Module.finrank ℝ E),
         chosenMthMixedPartialChartPushedU (I := I) (M := M) g α u_h (m + 1)
           (Fin.cons i D_m.directions) =ᵐ[
@@ -682,7 +669,7 @@ noncomputable def iteratedChartBilinearH1ComplData
           (chosenMthMixedPartialChartPushedU (I := I) (M := M)
             g α u_h m D_m.directions) Ω := fun i =>
       chosenMthMixedPartialChartPushedU_cons_eq_chosenWeakPartial_chosenMthMixed_ae
-        (I := I) (M := M) g α u_h m D_m.directions i h_chart_H_m_plus_2
+        (I := I) (M := M) g α u_h m D_m.directions i h_chart_H_m_plus_1
     have h_principal_eq :
         (∫ y in Ω,
           (∑ i : Fin (Module.finrank ℝ E),
@@ -745,10 +732,6 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior
     (h_chart_H_m_plus_1 : MemWkp (d := Module.finrank ℝ E) (m + 1) 2
       (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
         ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
-      (chartTargetEuclid (I := I) (M := M) α))
-    (h_chart_H_m_plus_2 : MemWkp (d := Module.finrank ℝ E) (m + 2) 2
-      (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
-        ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
       (chartTargetEuclid (I := I) (M := M) α)) :
     ∃ Ω'' : Set EuclN,
       IsOpen Ω'' ∧
@@ -762,7 +745,7 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior
   classical
   set D : ChartBilinearH1ComplData (I := I) (M := M) g α :=
     iteratedChartBilinearH1ComplData (I := I) (M := M) g α D_m
-      h_chart_H_m_plus_1 h_chart_H_m_plus_2
+      h_chart_H_m_plus_1
     with hD_def
   set K_α : Set EuclN := chartImagePOUTsupport (I := I) (M := M) α with hK_α_def
   have hK_α_compact : IsCompact K_α :=
@@ -968,6 +951,26 @@ theorem iteratedDerivedChartBilinear_memWkp_two_two_interior
   refine ⟨Ω'', hΩ''_open, hK_α_in_Ω'', hΩ''_compact_closure,
     h_closureΩ''_in_chart, ?_⟩
   exact h_uChart_memWkp_two_Ω''
+
+theorem iteratedDerivedChartBilinear_memWkp_two_two_interior_of_memWkp_succ_succ
+    (g : SmoothRiemannianMetric I M) (α : M)
+    {u_h : H1Compl (I := I) (M := M) g} (m : ℕ)
+    (D_m : IteratedDiffChartBilinearData (I := I) (M := M) g α u_h m)
+    (h_chart_H_m_plus_2 : MemWkp (d := Module.finrank ℝ E) (m + 2) 2
+      (chartPushed (I := I) (M := M) (chartAtlasPOU I M) α
+        ((H1ComplToLp (I := I) (M := M) g u_h) : M → ℝ))
+      (chartTargetEuclid (I := I) (M := M) α)) :
+    ∃ Ω'' : Set EuclN,
+      IsOpen Ω'' ∧
+      chartImagePOUTsupport (I := I) (M := M) α ⊆ Ω'' ∧
+      IsCompact (closure Ω'') ∧
+      closure Ω'' ⊆ chartTargetEuclid (I := I) (M := M) α ∧
+      DifferentialGeometry.Analysis.Sobolev.Euclidean.MemWkp
+        (d := Module.finrank ℝ E) 2 2
+        (chosenMthMixedPartialChartPushedU
+          (I := I) (M := M) g α u_h m D_m.directions) Ω'' := by
+  exact iteratedDerivedChartBilinear_memWkp_two_two_interior
+    (I := I) (M := M) g α m D_m (MemWkp.le_of_le (by omega) h_chart_H_m_plus_2)
 
 end IteratedNirenbergInterior
 end Laplacian

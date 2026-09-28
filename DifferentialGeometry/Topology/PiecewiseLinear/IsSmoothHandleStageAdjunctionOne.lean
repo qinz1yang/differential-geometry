@@ -26,17 +26,17 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem isSmoothHandleStage_adjunction_one
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} → M)
     (hψ : IsClosedEmbedding ψ) (f : Fin 2 → EuclideanSpace ℝ (Fin 2) → M)
     (hf : ∀ j, IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ (f j))
     (hfbd : ∀ j, range (f j) ⊆ (𝓡∂ 3).boundary M)
     (hdisj : Disjoint (range (f 0)) (range (f 1)))
     (hrange : range ψ = ⋃ j, f j '' Metric.closedBall 0 1) :
     IsSmoothHandleStage
-      (AdjunctionSpace (Subtype.val : _ → stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) ψ)
+      (AdjunctionSpace (Subtype.val : _ → Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) ψ)
       (adjunctionLower ψ '' ((𝓡∂ 3).boundary M \
-          ψ '' {z | z.val.val ∈ (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ
+          ψ '' {z | z.val.val ∈ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ
             ({0, 1} : Set ℝ)}) ∪
         adjunctionCell Subtype.val ψ '' {z | z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1}) := by
   classical
@@ -91,23 +91,23 @@ theorem isSmoothHandleStage_adjunction_one
     exact hFdisj
   obtain ⟨a, V, θ, Θ, ha, ha2, hV, hθV, hΘO, hΘθ, hθΘ, hΘb, hΘt, hθs, hΘs⟩ :=
     exists_oneHandleCollar_of_isSmoothEmbedding Fc hFcS hFcbd hFcdisj
-  have hA : CompactSpace {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := hψ.compactSpace
-  have hP : CompactSpace (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) :=
-    isCompact_iff_compactSpace.mp ((isCompact_stdSimplex ℝ (Fin 3)).prod isCompact_Icc)
-  have hi : IsClosedEmbedding (Subtype.val : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} →
-        stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :=
+  have hA : CompactSpace {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} := hψ.compactSpace
+  have hP : CompactSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) :=
+    isCompact_iff_compactSpace.mp ((Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 3)).prod isCompact_Icc)
+  have hi : IsClosedEmbedding (Subtype.val : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} →
+        Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) :=
     continuous_subtype_val.isClosedEmbedding Subtype.val_injective
   have hExti : ∀ b, |(Ext b).2| = 1 ↔ b ∈ range (Subtype.val :
-      {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-        z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} →
-          stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) := by
+      {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+        z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} →
+          Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1) := by
     intro b
     rw [hExt2, Subtype.range_coe]
     exact ⟨fun h => ⟨b.2.1, h⟩, fun h => h.2⟩
-  have hΘi : ∀ z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, Θ (Ext z.val) = ψ z := by
+  have hΘi : ∀ z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)}, Θ (Ext z.val) = ψ z := by
     intro z
     rcases z.2.2 with h | h
     · obtain ⟨h1, h2⟩ := hEb z h
@@ -120,18 +120,18 @@ theorem isSmoothHandleStage_adjunction_one
       exact h2
   have hstage := isSmoothHandleStage_adjunction_of_oneHandleCollar hi hψ hExt hExtr hExti ha
     ha2 hV hθV hΘO hΘθ hθΘ hΘi hθs hΘs
-  have hFr : {b : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) |
+  have hFr : {b : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) |
       ‖(Ext b).1‖ = 1} = {z | z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} := by
     ext b
     change ‖(Ext b).1‖ = 1 ↔ b.val.1 ∈ stdSimplexBoundary 2 ∧ b.val.2 ∈ Icc (0 : ℝ) 1
     rw [hExt1]
     exact ⟨fun h => ⟨h, b.2.2⟩, fun h => h.1⟩
-  have hRFr : ∀ z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-      z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)},
-      z ∉ {z : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
-        z.val ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} |
-          z.val.val ∈ (stdSimplex ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ)} →
-      z.val ∈ {z : (stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) |
+  have hRFr : ∀ z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+      z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)},
+      z ∉ {z : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+        z.val ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)} |
+          z.val.val ∈ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ)} →
+      z.val ∈ {z : (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 : Set ((Fin 3 → ℝ) × ℝ)) |
         z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} := by
     intro z hz
     refine ⟨?_, z.val.2.2⟩

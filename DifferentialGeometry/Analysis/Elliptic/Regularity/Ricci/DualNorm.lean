@@ -1,5 +1,7 @@
 import DifferentialGeometry.Analysis.Elliptic.Regularity.GradInner.Laplacian.Rhs.Pairings
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
+
+open DifferentialGeometry.SmoothRiemannianMetric (metric_inner_cauchy_schwarz_sq)
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -298,7 +300,7 @@ lemma inner_ricciSharpChartLocal_chartBasis
   rw [Finset.sum_eq_single k]
   · simp
   · intro j _ hjk
-    rw [if_neg (Ne.symm hjk), zero_mul]
+    rw [ite_eq_right (Ne.symm hjk), zero_mul]
   · intro hk
     exact absurd (Finset.mem_univ k) hk
 
@@ -465,9 +467,9 @@ private lemma sum_sharp_coeff_gram_eq_invGram
         (∑ l, Ginv l j * (if l = i then (1 : ℝ) else 0)) from
       Finset.sum_congr rfl (fun l _ => by rw [hinner i l])]
     rw [Finset.sum_eq_single i]
-    · rw [if_pos rfl]; ring
+    · rw [ite_eq_left rfl]; ring
     · intro l _ hli
-      rw [if_neg hli, mul_zero]
+      rw [ite_eq_right hli, mul_zero]
     · intro hi
       exact absurd (Finset.mem_univ i) hi
   have hLHS_full :

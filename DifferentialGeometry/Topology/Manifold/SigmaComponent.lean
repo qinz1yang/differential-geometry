@@ -52,9 +52,9 @@ private theorem sigmaMk_component_surjective (i : ι) (x : M i) :
     intro j
     by_cases h : j = i
     · subst j
-      simp only [r, dif_pos rfl]
+      simp only [r, dite_eq_left rfl]
       exact continuous_id
-    · simp only [r, dif_neg h]
+    · simp only [r, dite_eq_right h]
       exact continuous_const
   have hrmk (w : M i) : r ⟨i, w⟩ = w := by simp [r]
   have hz' : z ∈ connectedComponent x := by

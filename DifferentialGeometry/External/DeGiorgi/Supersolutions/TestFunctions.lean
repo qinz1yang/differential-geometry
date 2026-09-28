@@ -152,7 +152,7 @@ theorem super_aestronglyMeasurable_matMulE
     hG_ofLp_cont.comp_aestronglyMeasurable hG
   have hmulVec :
       AEMeasurable (fun x => Matrix.mulVec (A.a x) (G x).ofLp) (volume.restrict Ω) := by
-    refine aemeasurable_pi_lambda _ ?_
+    refine AEMeasurable.of_eval ?_
     intro i
     have hmeas_sum :
         AEMeasurable
@@ -185,30 +185,45 @@ theorem super_tendsto_eLpNorm_zero_of_dominated
       (MeasureTheory.unifIntegrable_const (p := (2 : ENNReal))
         (by norm_num) (by simp) hH_memLp)
   have huiF : UnifIntegrable F 2 μ := by
+    refine MeasureTheory.unifIntegrable_iff'.2 ?_
     intro ε hε
-    obtain ⟨δ, hδ, hδ'⟩ := huiH hε
+    obtain ⟨δ, hδ, hδ'⟩ := (MeasureTheory.unifIntegrable_iff'.1 huiH) ε hε
     refine ⟨δ, hδ, fun n s hs hμs => ?_⟩
     calc
-      eLpNorm (s.indicator (F n)) 2 μ ≤ eLpNorm (s.indicator H) 2 μ := by
-        refine eLpNorm_mono_ae_real ?_
-        filter_upwards [hdom n] with x hx
-        by_cases hxs : x ∈ s
-        · simpa [Set.indicator_of_mem, hxs] using hx
-        · simp [Set.indicator_of_notMem, hxs]
-      _ ≤ ENNReal.ofReal ε := hδ' 0 s hs hμs
+      eLpNorm (F n) 2 (μ.restrict s) ≤ eLpNorm H 2 (μ.restrict s) := by
+        refine eLpNorm_mono_ae_real
+          ((hF_meas n).mono_measure Measure.restrict_le_self) ?_
+        filter_upwards [(hdom n).filter_mono ae_restrict_le] with x hx
+        simpa only [Real.norm_eq_abs] using hx
+      _ ≤ ε := hδ' 0 s hs hμs
   have hutH : UnifTight (fun _ : ℕ => H) 2 μ := by
     exact MeasureTheory.unifTight_const (p := (2 : ENNReal)) (by simp) hH_memLp
   have hutF : UnifTight F 2 μ := by
     intro ε hε
-    obtain ⟨s, hμs, hs'⟩ := hutH hε
-    refine ⟨s, hμs, fun n => ?_⟩
+    obtain ⟨s, hμs, hs'⟩ := hutH ε hε
+    obtain ⟨t, hst, ht, htμ⟩ := exists_measurable_superset μ s
+    refine ⟨t, htμ ▸ hμs, fun n => ?_⟩
     calc
-      eLpNorm (sᶜ.indicator (F n)) 2 μ ≤ eLpNorm (sᶜ.indicator H) 2 μ := by
-        refine eLpNorm_mono_ae_real ?_
+      eLpNorm (tᶜ.indicator (F n)) 2 μ ≤ eLpNorm (tᶜ.indicator H) 2 μ := by
+        refine eLpNorm_mono_ae ((hF_meas n).indicator ht.compl) ?_
         filter_upwards [hdom n] with x hx
-        by_cases hxs : x ∈ sᶜ
-        · simpa [Set.indicator_of_mem, hxs] using hx
-        · simp [Set.indicator_of_notMem, hxs]
+        by_cases hxt : x ∈ tᶜ
+        · have hxs : x ∈ sᶜ := by
+            intro hxs
+            exact hxt (hst hxs)
+          have hHnonneg : 0 ≤ H x := le_trans (abs_nonneg _) hx
+          simpa [Set.indicator_of_mem, hxt, hxs, abs_of_nonneg hHnonneg] using hx
+        · simp [Set.indicator_of_notMem, hxt]
+      _ ≤ eLpNorm (sᶜ.indicator H) 2 μ := by
+        refine eLpNorm_mono_ae
+          (hH_memLp.aestronglyMeasurable.indicator ht.compl) ?_
+        filter_upwards [] with x
+        by_cases hxt : x ∈ tᶜ
+        · have hxs : x ∈ sᶜ := by
+            intro hxs
+            exact hxt (hst hxs)
+          simp [Set.indicator_of_mem, hxt, hxs]
+        · simp [Set.indicator_of_notMem, hxt]
       _ ≤ ε := hs' 0
   have hLpF0 :
       Filter.Tendsto (fun n => eLpNorm (F n - fun _ => (0 : ℝ)) 2 μ)

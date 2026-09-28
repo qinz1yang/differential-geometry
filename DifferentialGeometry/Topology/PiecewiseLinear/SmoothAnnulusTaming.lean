@@ -26,7 +26,7 @@ variable {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 theorem exists_homeomorph_smooth_annulus_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : stdSimplex ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1 |
       z.val ∈ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ θ : M ≃ₜ M, θ '' (𝓡∂ 3).boundary M = (𝓡∂ 3).boundary M ∧

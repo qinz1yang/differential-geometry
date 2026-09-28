@@ -43,7 +43,7 @@ private local instance : NormedSpace ℝ (E →L[ℝ] E →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedSpace
 
 private local instance (x : M) : ContinuousAdd (TangentSpace I x →L[ℝ] ℝ) :=
-  (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
+  (ContinuousLinearMap.isTopologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
 
 private def Phi (I : ModelWithCorners ℝ E H) [hI : HasSmoothBoundary E H I] :
     hI.boundaryE → E :=
@@ -164,7 +164,7 @@ private local instance : NormedSpace ℝ (hI.boundaryE →L[ℝ] hI.boundaryE �
 
 private local instance (x : BoundaryManifold I M) :
     ContinuousAdd (TangentSpace hI.boundaryI x →L[ℝ] ℝ) :=
-  (ContinuousLinearMap.topologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
+  (ContinuousLinearMap.isTopologicalAddGroup (𝕜₁ := ℝ) (𝕜₂ := ℝ)).toContinuousAdd
 
 
 noncomputable def boundaryInclusionMfderiv (x : BoundaryManifold I M) :

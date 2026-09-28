@@ -150,14 +150,14 @@ private theorem apply_diag_sum
   refine Finset.sum_congr rfl ?_
   intro g _
   by_cases hg : ∀ i, g i ∈ s
-  · rw [if_pos hg]
+  · rw [ite_eq_left hg]
     change
       A.toMultilinearMap (fun i => if g i ∈ s then v (g i) else 0) =
         A.toMultilinearMap (fun i => v (g i))
     congr 1
     funext i
-    rw [if_pos (hg i)]
-  · rw [if_neg hg]
+    rw [ite_eq_left (hg i)]
+  · rw [ite_eq_right hg]
     push Not at hg
     obtain ⟨i, hi⟩ := hg
     exact A.map_coord_zero i (by simp [hi])
@@ -209,9 +209,9 @@ theorem polarization_eq
           intro s
           by_cases hs : finRange g ⊆ s
           · have hg : ∀ i, g i ∈ s := (finRange_subset_iff g s).mp hs
-            rw [if_pos hg, if_pos hs]
+            rw [ite_eq_left hg, ite_eq_left hs]
           · have hg : ¬ ∀ i, g i ∈ s := fun h => hs ((finRange_subset_iff g s).mpr h)
-            rw [if_neg hg, if_neg hs]
+            rw [ite_eq_right hg, ite_eq_right hs]
             simp
         _ = (∑ s : Finset (Fin n),
               if finRange g ⊆ s
@@ -233,8 +233,8 @@ def polarConst (n : ℕ) : ℝ :=
 
 theorem polarConst_nonneg (n : ℕ) : 0 ≤ polarConst n := by
   classical
-  apply Finset.sum_nonneg'
-  intro s
+  apply Finset.sum_nonneg
+  intro s _
   positivity
 
 private theorem unit_apply_le

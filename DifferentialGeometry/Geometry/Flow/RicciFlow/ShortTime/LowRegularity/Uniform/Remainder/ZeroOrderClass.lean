@@ -8,6 +8,7 @@ open scoped Manifold Topology ContDiff ENNReal NNReal InnerProductSpace BigOpera
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Analysis.Parabolic
 open DifferentialGeometry.Analysis.Sobolev

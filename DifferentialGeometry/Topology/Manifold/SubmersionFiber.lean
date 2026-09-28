@@ -39,16 +39,16 @@ private def sliceChart (s : Set X) (x₀ : s) (e : OpenPartialHomeomorph X (A ×
   · intro z hz
     change (a, z) ∈ e.target at hz
     change (inv z).1 ∈ e.source
-    simpa only [inv, dif_pos hz] using e.map_target hz
+    simpa only [inv, dite_eq_left hz] using e.map_target hz
   · intro x hx
     have hz : (a, (e x.1).2) ∈ e.target := by rw [hp x hx]; exact e.map_source hx
     apply Subtype.ext
-    simp only [inv, dif_pos hz]
+    simp only [inv, dite_eq_left hz]
     rw [hp x hx]
     exact e.left_inv hx
   · intro z hz
     change (a, z) ∈ e.target at hz
-    simp only [inv, dif_pos hz]
+    simp only [inv, dite_eq_left hz]
     exact congrArg Prod.snd (e.right_inv hz)
   · exact continuous_snd.comp_continuousOn
       (e.continuousOn.comp continuous_subtype_val.continuousOn (fun _ hx ↦ hx))
@@ -61,7 +61,7 @@ private def sliceChart (s : Set X) (x₀ : s) (e : OpenPartialHomeomorph X (A ×
     apply hc.congr
     intro z
     have hz : (a, z.1) ∈ e.target := z.2
-    have hv : inv z.1 = ⟨e.symm (a, z.1), hinv z.1 hz⟩ := dif_pos hz
+    have hv : inv z.1 = ⟨e.symm (a, z.1), hinv z.1 hz⟩ := dite_eq_left hz
     exact (congrArg Subtype.val hv).symm
 
 variable {E F K H H' M N : Type*}
@@ -141,7 +141,7 @@ private theorem fiberChart_symm_apply (y : N) (x₀ : {z : M // f z = y})
       ⟨(projectionChart h).symm ((h.codChart.extend J) y, z), _⟩ else x₀) :
         {z : M // f z = y}).1 = _
   have ht : ((h.codChart.extend J) y, z) ∈ (projectionChart h).target := hz
-  rw [dif_pos ht]
+  rw [dite_eq_left ht]
 
 private theorem fiberChart_symm_contMDiffOn (y : N) (x₀ : {z : M // f z = y})
     (h : Manifold.IsSubmersionAtOfComplement K I J ∞ f x₀.1) :

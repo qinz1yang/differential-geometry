@@ -186,7 +186,7 @@ end ObservedHistory
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}} (H : RetainedCoreHistory P₀)
+variable (H : RetainedCoreHistory.{u})
 
 private theorem normSq_le_of_sqrt_le_two_mul {N C R M : ℝ} (hN : 0 ≤ N) (hC : 0 ≤ C)
     (hsqrt : Real.sqrt N ≤ C * max R 1) (hR : R ≤ 2 * M) (hM : 1 ≤ M) :

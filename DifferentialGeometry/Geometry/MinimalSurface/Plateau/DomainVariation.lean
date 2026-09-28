@@ -128,6 +128,7 @@ theorem hasDerivAt_diskMapEnergyDensity_domain_variation
     simp only [_root_.smul_apply, _root_.add_apply, smul_eq_mul, div_eq_mul_inv]
     ring
   rw [henergy]
-  convert hd.congr_of_eventuallyEq heq using 1 <;> first | rfl | ring
+  convert hd.congr_of_eventuallyEq heq using 1
+  first | rfl | ring
 
 end DifferentialGeometry.Geometry

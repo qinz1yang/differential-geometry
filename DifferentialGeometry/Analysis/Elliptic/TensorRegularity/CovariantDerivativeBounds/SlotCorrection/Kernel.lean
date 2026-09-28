@@ -204,7 +204,7 @@ private lemma slotInputConjCLM_compCLM_compCLM_chartJ
         chartTrivializationLinearMap (I := I) (M := M) α b
           (tangentLinearMapToModel (I := I)
             (chartLeviCivitaParallelCLM (I := I) g α b B) x)
-      rw [chartJinv_chartJ_self (I := I) (M := M) α hb_base]
+      rw [chartJinv_chartJ (I := I) (M := M) α hb_base]
     · rw [slotInputConjCLM_other (I := I) g r α B k b hik,
         tangentSlotCLM_other (I := I) r k _ hik]
       refine ContinuousLinearMap.ext ?_
@@ -265,7 +265,7 @@ private lemma slotOutputConjCLM_compose_chartJinv
           (tangentLinearMapToModel (I := I)
             (chartLeviCivitaParallelCLM (I := I) g α b B)
             (chartTrivializationLinearMapSymm (I := I) (M := M) α b (m j)))) = _
-    rw [chartJinv_chartJ_self (I := I) (M := M) α hb_base]
+    rw [chartJinv_chartJ (I := I) (M := M) α hb_base]
     rfl
   · rw [slotOutputConjCLM_other (I := I) g s α B l b hjl,
       tangentSlotCLM_other (I := I) s l _ hjl]
@@ -947,7 +947,7 @@ private lemma slotInputConjCLM_prod_opNorm_le (g : SmoothRiemannianMetric I M)
   have h_pow : M_b ^ r = ∏ _i : Fin r, M_b := by
     rw [Finset.prod_const]; simp
   rw [h_pow]
-  refine Finset.prod_le_prod ?_ ?_
+  refine Finset.prod_le_prod₀ ?_ ?_
   · intro i _; exact norm_nonneg _
   · intro i _; exact slotInputConjCLM_opNorm_le (I := I) (M := M) g r α B k b i
 
@@ -968,7 +968,7 @@ private lemma slotOutputConjCLM_prod_opNorm_le (g : SmoothRiemannianMetric I M)
   have h_pow : M_b ^ s = ∏ _j : Fin s, M_b := by
     rw [Finset.prod_const]; simp
   rw [h_pow]
-  refine Finset.prod_le_prod ?_ ?_
+  refine Finset.prod_le_prod₀ ?_ ?_
   · intro j _; exact norm_nonneg _
   · intro j _; exact slotOutputConjCLM_opNorm_le (I := I) (M := M) g s α B l b j
 

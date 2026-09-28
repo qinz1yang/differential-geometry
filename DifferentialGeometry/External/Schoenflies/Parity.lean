@@ -380,19 +380,19 @@ private theorem crossings_split_aux (hab : hgt u a < hgt u b) (hc : c ∈ openSe
   by_cases hD : fwd u q < fwd u (meet u a b (hgt u q))
   · by_cases h1 : hgt u a ≤ hgt u q
     · by_cases h2 : hgt u q < hgt u c
-      · rw [if_pos ⟨h1, h2, hD⟩, if_neg (by rintro ⟨g, -, -⟩; linarith),
-          if_pos ⟨h1, by linarith, hD⟩]
+      · rw [ite_eq_left ⟨h1, h2, hD⟩, ite_eq_right (by rintro ⟨g, -, -⟩; linarith),
+          ite_eq_left ⟨h1, by linarith, hD⟩]
       · push Not at h2
         by_cases h3 : hgt u q < hgt u b
-        · rw [if_neg (by rintro ⟨-, g, -⟩; linarith), if_pos ⟨h2, h3, hD⟩,
-            if_pos ⟨h1, h3, hD⟩]
-        · rw [if_neg (by rintro ⟨-, g, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith),
-            if_neg (by rintro ⟨-, g, -⟩; linarith)]
+        · rw [ite_eq_right (by rintro ⟨-, g, -⟩; linarith), ite_eq_left ⟨h2, h3, hD⟩,
+            ite_eq_left ⟨h1, h3, hD⟩]
+        · rw [ite_eq_right (by rintro ⟨-, g, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith),
+            ite_eq_right (by rintro ⟨-, g, -⟩; linarith)]
     · push Not at h1
-      rw [if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨g, -, -⟩; linarith),
-        if_neg (by rintro ⟨g, -, -⟩; linarith)]
-  · rw [if_neg (by rintro ⟨-, -, g⟩; exact hD g), if_neg (by rintro ⟨-, -, g⟩; exact hD g),
-      if_neg (by rintro ⟨-, -, g⟩; exact hD g)]
+      rw [ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨g, -, -⟩; linarith),
+        ite_eq_right (by rintro ⟨g, -, -⟩; linarith)]
+  · rw [ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g), ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g),
+      ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g)]
 
 private theorem crossings_split (hab : hgt u a ≠ hgt u b) (hc : c ∈ openSegment ℝ a b)
     (q : Plane) :
@@ -693,52 +693,52 @@ private theorem mark_step {q : Plane} {s : ℝ} (hs : 0 ≤ s) (hab : hgt u a < 
         (meet u a b (hgt u q + s)) (hma _ (by linarith) hB.le)
         (hha _).ge (by rw [hha]; linarith) (by rw [hha]; linarith) (hha _).le
       by_cases hD : fwd u q < fwd u (meet u a b (hgt u q))
-      · rw [if_pos ⟨hA, by linarith, hD⟩, if_pos ⟨by linarith, hB, e.1 hD⟩,
-          if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith)]
+      · rw [ite_eq_left ⟨hA, by linarith, hD⟩, ite_eq_left ⟨by linarith, hB, e.1 hD⟩,
+          ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith)]
         decide
-      · rw [if_neg (by rintro ⟨-, -, g⟩; exact hD g),
-          if_neg (by rintro ⟨-, -, g⟩; exact hD (e.2 g)),
-          if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith)]
+      · rw [ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g),
+          ite_eq_right (by rintro ⟨-, -, g⟩; exact hD (e.2 g)),
+          ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith)]
     · rcases lt_or_ge (hgt u q) (hgt u b) with hB2 | hB2
       · -- the sweep passes the upper end
         have e := hside (meet u a b (hgt u q)) (hma _ hA hB2.le) b hbseg
           (hha _).ge (by rw [hha]; linarith) (by linarith) hB
         by_cases hD : fwd u q < fwd u (meet u a b (hgt u q))
-        · rw [if_pos ⟨hA, hB2, hD⟩, if_neg (by rintro ⟨-, g, -⟩; linarith),
-            if_neg (by rintro ⟨g, -, -⟩; linarith), if_pos ⟨hB2, hB, e.1 hD⟩]
+        · rw [ite_eq_left ⟨hA, hB2, hD⟩, ite_eq_right (by rintro ⟨-, g, -⟩; linarith),
+            ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_left ⟨hB2, hB, e.1 hD⟩]
           decide
-        · rw [if_neg (by rintro ⟨-, -, g⟩; exact hD g),
-            if_neg (by rintro ⟨-, g, -⟩; linarith),
-            if_neg (by rintro ⟨g, -, -⟩; linarith),
-            if_neg (by rintro ⟨-, -, g⟩; exact hD (e.2 g))]
+        · rw [ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g),
+            ite_eq_right (by rintro ⟨-, g, -⟩; linarith),
+            ite_eq_right (by rintro ⟨g, -, -⟩; linarith),
+            ite_eq_right (by rintro ⟨-, -, g⟩; exact hD (e.2 g))]
       · -- the edge is entirely below the sweep
-        rw [if_neg (by rintro ⟨-, g, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith),
-          if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨g, -, -⟩; linarith)]
+        rw [ite_eq_right (by rintro ⟨-, g, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith),
+          ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨g, -, -⟩; linarith)]
   · rcases le_or_gt (hgt u a) (hgt u q + s) with hA2 | hA2
     · rcases lt_or_ge (hgt u q + s) (hgt u b) with hB | hB
       · -- the sweep passes the lower end only
         have e := hside (meet u a b (hgt u q + s)) (hma _ hA2 hB.le) a haseg
           (by rw [hha]; linarith) (hha _).le (by linarith) hA2
         by_cases hD : fwd u q < fwd u a
-        · rw [if_neg (by rintro ⟨g, -, -⟩; linarith), if_pos ⟨hA2, hB, e.2 hD⟩,
-            if_pos ⟨hA, hA2, hD⟩, if_neg (by rintro ⟨-, g, -⟩; linarith)]
+        · rw [ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_left ⟨hA2, hB, e.2 hD⟩,
+            ite_eq_left ⟨hA, hA2, hD⟩, ite_eq_right (by rintro ⟨-, g, -⟩; linarith)]
           decide
-        · rw [if_neg (by rintro ⟨g, -, -⟩; linarith),
-            if_neg (by rintro ⟨-, -, g⟩; exact hD (e.1 g)),
-            if_neg (by rintro ⟨-, -, g⟩; exact hD g),
-            if_neg (by rintro ⟨-, g, -⟩; linarith)]
+        · rw [ite_eq_right (by rintro ⟨g, -, -⟩; linarith),
+            ite_eq_right (by rintro ⟨-, -, g⟩; exact hD (e.1 g)),
+            ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g),
+            ite_eq_right (by rintro ⟨-, g, -⟩; linarith)]
       · -- the sweep passes both ends
         have e := hside a haseg b hbseg (by linarith) hA2 (by linarith) hB
         by_cases hD : fwd u q < fwd u a
-        · rw [if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith),
-            if_pos ⟨hA, hA2, hD⟩, if_pos ⟨by linarith, hB, e.1 hD⟩]
+        · rw [ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith),
+            ite_eq_left ⟨hA, hA2, hD⟩, ite_eq_left ⟨by linarith, hB, e.1 hD⟩]
           decide
-        · rw [if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith),
-            if_neg (by rintro ⟨-, -, g⟩; exact hD g),
-            if_neg (by rintro ⟨-, -, g⟩; exact hD (e.2 g))]
+        · rw [ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith),
+            ite_eq_right (by rintro ⟨-, -, g⟩; exact hD g),
+            ite_eq_right (by rintro ⟨-, -, g⟩; exact hD (e.2 g))]
     · -- the edge is entirely above the sweep
-      rw [if_neg (by rintro ⟨g, -, -⟩; linarith), if_neg (by rintro ⟨g, -, -⟩; linarith),
-        if_neg (by rintro ⟨-, g, -⟩; linarith), if_neg (by rintro ⟨-, g, -⟩; linarith)]
+      rw [ite_eq_right (by rintro ⟨g, -, -⟩; linarith), ite_eq_right (by rintro ⟨g, -, -⟩; linarith),
+        ite_eq_right (by rintro ⟨-, g, -⟩; linarith), ite_eq_right (by rintro ⟨-, g, -⟩; linarith)]
 
 /-- Sweeping the base point across the ray direction, without meeting the polygon, does not
 change the parity. This is where the polygon has to be closed. -/
@@ -885,7 +885,7 @@ theorem parity_eq_zero_of_lt (hL : ∀ P ∈ L, hgt u P.1 ≠ hgt u P.2) {q : Pl
   refine List.sum_eq_zero ?_
   intro x hx
   obtain ⟨P, hP, rfl⟩ := List.mem_map.1 hx
-  refine if_neg ?_
+  refine ite_eq_right ?_
   rintro ⟨h1, h2, h3⟩
   exact absurd (h _ (mem_cover hP (meet_mem_seg (hL P hP) h1 h2.le))) (not_lt.2 h3.le)
 
@@ -1002,7 +1002,7 @@ theorem parity_flip {L₁ L₂ : List Piece} {a b p : Plane}
       rintro ⟨-, -, g⟩
       rw [hgp, hfp, hmeetp] at g
       linarith
-    rw [mark, mark, if_pos hm1, if_neg hm2, add_zero]
+    rw [mark, mark, ite_eq_left hm1, ite_eq_right hm2, add_zero]
   refine ⟨by rw [hneg]; exact hcov (-t) (by linarith) habsm, hcov t (ne_of_gt ht) habsp, ?_⟩
   have hz1 : (L₁.map (fun P => mark u P (p - t • u) + mark u P (p + t • u))).sum = 0 := by
     refine List.sum_eq_zero ?_

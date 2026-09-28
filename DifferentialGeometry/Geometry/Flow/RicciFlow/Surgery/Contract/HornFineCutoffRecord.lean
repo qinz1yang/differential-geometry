@@ -411,7 +411,7 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
     ∀ η : ℝ, 0 < η →
     ∃ δ ε₀ : ℝ, 0 < δ ∧ δ < 1 ∧ δ ≤ η ∧ 0 < ε₀ ∧
     ∀ {P₀ : OrientedThreeStage.{u}} {g₀ : P₀.Metric}
-      (H : RetainedCoreHistory P₀) (initial : InitialIdentification P₀ g₀ H.toHistory),
+      (H : RetainedCoreHistory.{u}) (initial : InitialIdentification P₀ g₀ H.toHistory),
       H.time (Fin.last H.eventCount) = H.horizon →
       ∀ (D : OneStepIncoming.{u}), H.stage (Fin.last H.eventCount) = D.stage →
       H.time (Fin.last H.eventCount) = D.startTime →
@@ -422,7 +422,7 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
       (((δ ^ 2 * D.parameters.neckRadius D.endTime) ^ 2)⁻¹) < Q → Qc ≤ Q →
       ∃ (Qout : OrientedThreeStage.{u}) (E : MetricCutCapEvent D.stage Qout D.startTime D.endTime)
         (hOld : E.old = E.transition.trace.retainedCore)
-        (K : RetainedCoreHistory P₀) (initialK : InitialIdentification P₀ g₀ K.toHistory)
+        (K : RetainedCoreHistory.{u}) (initialK : InitialIdentification P₀ g₀ K.toHistory)
         (i : Fin K.eventCount) (parameters : CutoffParameters)
         (n : ℕ) (δOriginal : Fin n → ℝ) (kOriginal : Fin n → ℕ)
         (NOriginal : ∀ j, NormalizedNeck (K.toHistory.event i).terminal.metric
@@ -501,7 +501,7 @@ theorem exists_horn_cutoff_history_extension_with_canonical_windows_of_fineCutNe
     hpδ, hpR, hpρ, hpFixed, hpM, hpD, hpAcc, hpC, hr, hvol, hcap, hreset,
     geometry, hgeometry, hcanonical, n, δOrig, kOrig, NOrig, hδOrig, rotation, hmark,
     side, horder, hδ1', e, hscale, hsource, hrecipe, hneck⟩ := hproduce Q hQscale hQnominal hQc
-  have hext : ∃ (K : RetainedCoreHistory P₀) (B : InitialIdentification P₀ g₀ K.toHistory),
+  have hext : ∃ (K : RetainedCoreHistory.{u}) (B : InitialIdentification P₀ g₀ K.toHistory),
       initial.IsPrefixOf B ∧ K.horizon = D.endTime ∧ K.eventCount = H.eventCount + 1 ∧
       K.time (Fin.last K.eventCount) = D.endTime ∧ K.stage (Fin.last K.eventCount) = Qout ∧
       HEq (K.initialMetric (Fin.last K.eventCount)) E.outputMetric ∧

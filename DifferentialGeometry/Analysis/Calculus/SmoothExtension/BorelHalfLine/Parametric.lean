@@ -224,7 +224,7 @@ private theorem norm_iteratedFDeriv_comp_fst_le {b : ℝ → F} (hb : ContDiff �
   have hfst : ‖ContinuousLinearMap.fst ℝ ℝ E‖ ≤ 1 := ContinuousLinearMap.norm_fst_le ℝ ℝ E
   have hprod : ∏ _j : Fin i, ‖ContinuousLinearMap.fst ℝ ℝ E‖ ≤ 1 := by
     calc ∏ _j : Fin i, ‖ContinuousLinearMap.fst ℝ ℝ E‖ ≤ ∏ _j : Fin i, (1:ℝ) :=
-          Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun _ _ => hfst)
+          Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) (fun _ _ => hfst)
       _ = 1 := by simp
   have hpval : (ContinuousLinearMap.fst ℝ ℝ E) p = p.1 := rfl
   rw [hpval]
@@ -242,7 +242,7 @@ private theorem norm_iteratedFDeriv_comp_snd_le {b : E → F} (hb : ContDiff ℝ
   have hsnd : ‖ContinuousLinearMap.snd ℝ ℝ E‖ ≤ 1 := ContinuousLinearMap.norm_snd_le ℝ ℝ E
   have hprod : ∏ _j : Fin j, ‖ContinuousLinearMap.snd ℝ ℝ E‖ ≤ 1 := by
     calc ∏ _j : Fin j, ‖ContinuousLinearMap.snd ℝ ℝ E‖ ≤ ∏ _j : Fin j, (1:ℝ) :=
-          Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun _ _ => hsnd)
+          Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) (fun _ _ => hsnd)
       _ = 1 := by simp
   have hpval : (ContinuousLinearMap.snd ℝ ℝ E) p = p.2 := rfl
   rw [hpval]
@@ -353,14 +353,14 @@ private theorem paramDomBound_summable (k : ℕ) : Summable (paramDomBound a ha 
   refine Summable.congr_cofinite hgeom ?_
   rw [Nat.cofinite_eq_atTop]
   filter_upwards [eventually_gt_atTop k] with n hn
-  rw [paramDomBound, if_pos hn]
+  rw [paramDomBound, ite_eq_left hn]
 
 private theorem paramDomBound_bound (k n : ℕ) (p : ℝ × E) :
     ‖iteratedFDeriv ℝ k (paramTerm a ha hsupp n) p‖ ≤ paramDomBound a ha hsupp k n := by
   rw [paramDomBound]
   by_cases hkn : k < n
-  · rw [if_pos hkn]; exact paramTerm_iteratedFDeriv_bound a ha hsupp hkn p
-  · rw [if_neg hkn]
+  · rw [ite_eq_left hkn]; exact paramTerm_iteratedFDeriv_bound a ha hsupp hkn p
+  · rw [ite_eq_right hkn]
     exact Classical.choose_spec (paramTerm_iteratedFDeriv_global_bound a ha hsupp n k) p
 
 private theorem paramScalar_iteratedDeriv_zero (n k : ℕ) :
@@ -399,10 +399,10 @@ private theorem paramScalar_iteratedDeriv_zero (n k : ℕ) :
     rw [← mul_pow, inv_mul_cancel₀ hL0.ne', one_pow]
   rcases eq_or_ne n k with h | h
   · subst h
-    rw [if_pos rfl, if_pos rfl]
+    rw [ite_eq_left rfl, ite_eq_left rfl]
     have hfac : (Nat.factorial n : ℝ) ≠ 0 := by exact_mod_cast Nat.factorial_ne_zero n
     rw [div_mul_cancel₀ _ hfac, hLn]
-  · rw [if_neg (fun h' => h h'.symm), if_neg h]
+  · rw [ite_eq_right (fun h' => h h'.symm), ite_eq_right h]
     simp
 
 private theorem paramTerm_slice_eq (n : ℕ) (w : E) :
@@ -490,15 +490,15 @@ private theorem paramSliceDomBound_summable (w : E) (k : ℕ) :
   refine Summable.congr_cofinite hgeom ?_
   rw [Nat.cofinite_eq_atTop]
   filter_upwards [eventually_gt_atTop k] with n hn
-  rw [paramSliceDomBound, if_pos hn]
+  rw [paramSliceDomBound, ite_eq_left hn]
 
 private theorem paramSliceDomBound_bound (w : E) (k n : ℕ) (t : ℝ) :
     ‖iteratedFDeriv ℝ k (fun s => paramTerm a ha hsupp n (s, w)) t‖ ≤
       paramSliceDomBound a ha hsupp w k n := by
   rw [paramSliceDomBound]
   by_cases hkn : k < n
-  · rw [if_pos hkn]; exact paramTerm_slice_iteratedFDeriv_bound a ha hsupp hkn w t
-  · rw [if_neg hkn]
+  · rw [ite_eq_left hkn]; exact paramTerm_slice_iteratedFDeriv_bound a ha hsupp hkn w t
+  · rw [ite_eq_right hkn]
     exact Classical.choose_spec (paramTerm_slice_iteratedFDeriv_global_bound a ha hsupp n k w) t
 
 private theorem paramSeries_slice_iteratedDeriv_zero [CompleteSpace F] (k : ℕ) (w : E) :
@@ -521,8 +521,8 @@ private theorem paramSeries_slice_iteratedDeriv_zero [CompleteSpace F] (k : ℕ)
     rw [← Function.comp_apply (f := (ContinuousMultilinearMap.piFieldEquiv ℝ (Fin k) F).symm),
       ← iteratedDeriv_eq_equiv_comp]
     exact paramTerm_slice_iteratedDeriv_zero a ha hsupp n k w
-  rw [tsum_congr hterm, tsum_eq_single k (fun n hn => by rw [if_neg hn, zero_smul]),
-    if_pos rfl, one_smul]
+  rw [tsum_congr hterm, tsum_eq_single k (fun n hn => by rw [ite_eq_right hn, zero_smul]),
+    ite_eq_left rfl, one_smul]
 
 private theorem paramSeries_contDiff [CompleteSpace F] :
     ContDiff ℝ ∞ (fun p : ℝ × E => ∑' n, paramTerm a ha hsupp n p) :=
@@ -641,15 +641,15 @@ theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
         rw [paramTerm, hp1, mul_zero]
         rcases Nat.eq_zero_or_pos n with hn | hn
         · subst hn
-          rw [if_pos rfl, hbump0]
+          rw [ite_eq_left rfl, hbump0]
           simp
-        · rw [if_neg (by omega : ¬ n = 0), borelBumpMono,
+        · rw [ite_eq_right (by omega : ¬ n = 0), borelBumpMono,
             zero_pow (by omega : n ≠ 0)]
           simp
       rw [hΦ_def]
       change (∑' n, paramTerm a ha hsupp n (0, z)) = g 0 z
-      rw [tsum_congr hterm0, tsum_eq_single 0 (fun n hn => by rw [if_neg hn, zero_smul]),
-        if_pos rfl, one_smul, ha_def]
+      rw [tsum_congr hterm0, tsum_eq_single 0 (fun n hn => by rw [ite_eq_right hn, zero_smul]),
+        ite_eq_left rfl, one_smul, ha_def]
       change ρ z • iteratedDerivWithin 0 (fun s => g s z) (Set.Ici 0) 0 = g 0 z
       rw [hρV z hz, one_smul, iteratedDerivWithin_zero]
     have hEqLower : Set.EqOn (Function.uncurry gext) Φ (Set.Iic (0:ℝ) ×ˢ V) := by
@@ -657,14 +657,14 @@ theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
       simp only [Set.mem_Iic] at ht
       rcases eq_or_lt_of_le ht with ht0 | ht0
       · subst ht0
-        simp only [Function.uncurry, hgext_def, if_pos (le_refl (0:ℝ))]
+        simp only [Function.uncurry, hgext_def, ite_eq_left (le_refl (0:ℝ))]
         exact (hΦ0 z hz).symm
-      · simp only [Function.uncurry, hgext_def, if_neg (not_le.mpr ht0), hΦ_def]
+      · simp only [Function.uncurry, hgext_def, ite_eq_right (not_le.mpr ht0), hΦ_def]
     have hEqUpper : Set.EqOn (Function.uncurry gext) (Function.uncurry g)
         (Set.Ici (0:ℝ) ×ˢ V) := by
       rintro ⟨t, z⟩ ⟨ht, _⟩
       simp only [Set.mem_Ici] at ht
-      simp only [Function.uncurry, hgext_def, if_pos ht]
+      simp only [Function.uncurry, hgext_def, ite_eq_left ht]
     have hUDl : UniqueDiffOn ℝ (Set.Iic (0:ℝ) ×ˢ V) :=
       UniqueDiffOn.prod (uniqueDiffOn_Iic 0) hVopen.uniqueDiffOn
     have hUDr : UniqueDiffOn ℝ (Set.Ici (0:ℝ) ×ˢ V) :=
@@ -713,27 +713,27 @@ theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
       exact hjetF n z hz
     have hEqpL : ∀ m : ℕ, Set.EqOn (fun q => p q m) (fun q => pL q m) (Set.Iic (0:ℝ) ×ˢ V) := by
       intro m q hq
-      simp only [hp_def, if_pos (Set.mem_Iic.mp hq.1)]
+      simp only [hp_def, ite_eq_left (Set.mem_Iic.mp hq.1)]
     have hEqpR : ∀ m : ℕ, Set.EqOn (fun q => p q m) (fun q => pR q m) (Set.Ici (0:ℝ) ×ˢ V) := by
       intro m q hq
       rcases eq_or_lt_of_le (Set.mem_Ici.mp hq.1) with hq0 | hq0
       · obtain ⟨t, z⟩ := q
         simp only at hq0
         subst hq0
-        simp only [hp_def, if_pos (le_refl (0:ℝ))]
+        simp only [hp_def, ite_eq_left (le_refl (0:ℝ))]
         exact hpLR m z hq.2
-      · simp only [hp_def, if_neg (not_le.mpr hq0)]
+      · simp only [hp_def, ite_eq_right (not_le.mpr hq0)]
     have hzero : ∀ q ∈ Set.univ ×ˢ V, (p q 0).curry0 = Function.uncurry gext q := by
       rintro ⟨t, z⟩ ⟨_, hz⟩
       by_cases ht : t ≤ 0
       · have hmem : (t, z) ∈ Set.Iic (0:ℝ) ×ˢ V := ⟨Set.mem_Iic.mpr ht, hz⟩
         have hval : (pL (t, z) 0).curry0 = Φ (t, z) := hTL.zero_eq (t, z) hmem
-        rw [hp_def]; simp only [if_pos ht]
+        rw [hp_def]; simp only [ite_eq_left ht]
         rw [hval, hEqLower hmem]
       · have ht' : (0:ℝ) ≤ t := le_of_lt (not_le.mp ht)
         have hmem : (t, z) ∈ Set.Ici (0:ℝ) ×ˢ V := ⟨Set.mem_Ici.mpr ht', hz⟩
         have hval : (pR (t, z) 0).curry0 = Function.uncurry g (t, z) := hTR.zero_eq (t, z) hmem
-        rw [hp_def]; simp only [if_neg ht]
+        rw [hp_def]; simp only [ite_eq_right ht]
         rw [hval, hEqUpper hmem]
     have hm_lt : ∀ m : ℕ, (m : WithTop ℕ∞) < ∞ := fun m => by
       exact_mod_cast (Nat.cast_lt.mpr m.lt_succ_self).trans_le le_top
@@ -756,7 +756,7 @@ theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
           Filter.eventuallyEq_of_mem hnhds (fun y hy => hEqpL m (hsub hy))
         have hfd : HasFDerivAt (fun y => p y m) (pL (t, z) m.succ).curryLeft (t, z) :=
           hdL'.congr_of_eventuallyEq hee
-        rw [hp_def]; simp only [if_pos (le_of_lt ht)]
+        rw [hp_def]; simp only [ite_eq_left (le_of_lt ht)]
         exact hfd.hasFDerivWithinAt
       · subst ht
         have hmemL : ((0:ℝ), z) ∈ Set.Iic (0:ℝ) ×ˢ V := ⟨Set.self_mem_Iic, hz⟩
@@ -776,7 +776,7 @@ theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
         have hunion : HasFDerivWithinAt (fun y => p y m) (pL (0, z) m.succ).curryLeft
             (Set.Iic (0:ℝ) ×ˢ V ∪ Set.Ici (0:ℝ) ×ˢ V) (0, z) := hdL0'.union hdR0'
         rw [← Set.union_prod, Set.Iic_union_Ici] at hunion
-        rw [hp_def]; simp only [if_pos (le_refl (0:ℝ))]
+        rw [hp_def]; simp only [ite_eq_left (le_refl (0:ℝ))]
         exact hunion
       · have hmem : (t, z) ∈ Set.Ici (0:ℝ) ×ˢ V := ⟨Set.mem_Ici.mpr (le_of_lt ht), hz⟩
         have hdR : HasFDerivWithinAt (fun y => pR y m) (pR (t, z) m.succ).curryLeft
@@ -791,13 +791,13 @@ theorem borel_halfLine_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
           Filter.eventuallyEq_of_mem hnhds (fun y hy => hEqpR m (hsub hy))
         have hfd : HasFDerivAt (fun y => p y m) (pR (t, z) m.succ).curryLeft (t, z) :=
           hdR'.congr_of_eventuallyEq hee
-        rw [hp_def]; simp only [if_neg (not_le.mpr ht)]
+        rw [hp_def]; simp only [ite_eq_right (not_le.mpr ht)]
         exact hfd.hasFDerivWithinAt
     have hTaylor : HasFTaylorSeriesUpToOn ∞ (Function.uncurry gext) p (Set.univ ×ˢ V) :=
       (hasFTaylorSeriesUpToOn_top_iff' (le_refl _)).mpr ⟨hzero, hderiv⟩
     exact hTaylor.contDiffOn
   · intro t ht z _
-    simp only [hgext_def, if_pos ht]
+    simp only [hgext_def, ite_eq_left ht]
 
 private def reflectFst : (ℝ × E) ≃L[ℝ] (ℝ × E) :=
   (ContinuousLinearEquiv.neg ℝ).prodCongr (ContinuousLinearEquiv.refl ℝ E)
@@ -1071,10 +1071,10 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
       have hp1 : (((0:ℝ), w) : ℝ × E).1 = 0 := rfl
       rw [paramTerm, hp1, mul_zero]
       rcases Nat.eq_zero_or_pos n with hn | hn
-      · subst hn; rw [if_pos rfl, hbump0]; simp
-      · rw [if_neg (by omega : ¬ n = 0), borelBumpMono, zero_pow (by omega : n ≠ 0)]; simp
-    rw [tsum_congr hterm0, tsum_eq_single 0 (fun n hn => by rw [if_neg hn, zero_smul]),
-      if_pos rfl, one_smul]
+      · subst hn; rw [ite_eq_left rfl, hbump0]; simp
+      · rw [ite_eq_right (by omega : ¬ n = 0), borelBumpMono, zero_pow (by omega : n ≠ 0)]; simp
+    rw [tsum_congr hterm0, tsum_eq_single 0 (fun n hn => by rw [ite_eq_right hn, zero_smul]),
+      ite_eq_left rfl, one_smul]
   have hLext0 : ∀ z ∈ V, Lext (0, z) = g 0 z := by
     intro z hz
     rw [hLext_def]
@@ -1186,65 +1186,65 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
       simp only [Set.mem_Iic] at ht
       rcases eq_or_lt_of_le ht with ht0 | ht0
       · subst ht0
-        simp only [Function.uncurry, hgext_def, lt_irrefl, if_false, le_of_lt hT, ite_true]
+        simp only [Function.uncurry, hgext_def, lt_irrefl, ite_false, le_of_lt hT, ite_true]
         exact (hLext0 z hz).symm
-      · simp only [Function.uncurry, hgext_def, if_pos ht0]
+      · simp only [Function.uncurry, hgext_def, ite_eq_left ht0]
     have hEqM : Set.EqOn (Function.uncurry gext) (Function.uncurry g) (Set.Icc (0:ℝ) T ×ˢ V) := by
       rintro ⟨t, z⟩ ⟨ht, _⟩
       simp only [Set.mem_Icc] at ht
-      simp only [Function.uncurry, hgext_def, if_neg (not_lt.mpr ht.1), if_pos ht.2]
+      simp only [Function.uncurry, hgext_def, ite_eq_right (not_lt.mpr ht.1), ite_eq_left ht.2]
     have hEqR : Set.EqOn (Function.uncurry gext) (Function.uncurry Rext) (Set.Ici T ×ˢ V) := by
       rintro ⟨t, z⟩ ⟨ht, hz⟩
       simp only [Set.mem_Ici] at ht
       rcases eq_or_lt_of_le ht with htT | htT
       · subst htT
-        simp only [Function.uncurry, hgext_def, if_neg (not_lt.mpr (le_of_lt hT)),
-          if_pos (le_refl T)]
+        simp only [Function.uncurry, hgext_def, ite_eq_right (not_lt.mpr (le_of_lt hT)),
+          ite_eq_left (le_refl T)]
         exact (hRextT z hz).symm
-      · simp only [Function.uncurry, hgext_def, if_neg (not_lt.mpr (le_of_lt (lt_trans hT htT))),
-          if_neg (not_le.mpr htT)]
+      · simp only [Function.uncurry, hgext_def, ite_eq_right (not_lt.mpr (le_of_lt (lt_trans hT htT))),
+          ite_eq_right (not_le.mpr htT)]
     have hEqpL : ∀ m : ℕ, Set.EqOn (fun q => p q m) (fun q => pL q m) (Set.Iic (0:ℝ) ×ˢ V) := by
       intro m q hq
       rcases lt_or_ge q.1 0 with hq0 | hq0
-      · simp only [hp_def, if_pos hq0]
+      · simp only [hp_def, ite_eq_left hq0]
       · have hq0' : q.1 = 0 := le_antisymm (Set.mem_Iic.mp hq.1) hq0
         obtain ⟨t, z⟩ := q
         simp only at hq0'
         subst hq0'
-        simp only [hp_def, lt_irrefl, if_false, le_of_lt hT, ite_true]
+        simp only [hp_def, lt_irrefl, ite_false, le_of_lt hT, ite_true]
         exact (hLM m z hq.2).symm
     have hEqpM : ∀ m : ℕ, Set.EqOn (fun q => p q m) (fun q => pM q m) (Set.Icc (0:ℝ) T ×ˢ V) := by
       intro m q hq
       have ht := Set.mem_Icc.mp hq.1
-      simp only [hp_def, if_neg (not_lt.mpr ht.1), if_pos ht.2]
+      simp only [hp_def, ite_eq_right (not_lt.mpr ht.1), ite_eq_left ht.2]
     have hEqpR : ∀ m : ℕ, Set.EqOn (fun q => p q m) (fun q => pR q m) (Set.Ici T ×ˢ V) := by
       intro m q hq
       rcases eq_or_lt_of_le (Set.mem_Ici.mp hq.1) with hqT | hqT
       · have hq1 : q.1 = T := hqT.symm
-        simp only [hp_def, hq1, if_neg (not_lt.mpr (le_of_lt hT)), if_pos (le_refl T)]
+        simp only [hp_def, hq1, ite_eq_right (not_lt.mpr (le_of_lt hT)), ite_eq_left (le_refl T)]
         have : q = (T, q.2) := by rw [← hq1]
         rw [this]; exact hMR m q.2 hq.2
-      · simp only [hp_def, if_neg (not_lt.mpr (le_of_lt (lt_trans hT hqT))), if_neg
+      · simp only [hp_def, ite_eq_right (not_lt.mpr (le_of_lt (lt_trans hT hqT))), ite_eq_right
         (not_le.mpr hqT)]
     have hzero : ∀ q ∈ Set.univ ×ˢ V, (p q 0).curry0 = Function.uncurry gext q := by
       rintro ⟨t, z⟩ ⟨_, hz⟩
       rcases lt_trichotomy t 0 with ht | ht | ht
       · have hmem : (t, z) ∈ Set.Iic (0:ℝ) ×ˢ V := ⟨Set.mem_Iic.mpr (le_of_lt ht), hz⟩
-        rw [hp_def]; simp only [if_pos ht]
+        rw [hp_def]; simp only [ite_eq_left ht]
         rw [hTL.zero_eq (t, z) hmem, hEqL hmem]
       · subst ht
         have hmem : ((0:ℝ), z) ∈ Set.Icc (0:ℝ) T ×ˢ V :=
           ⟨Set.mem_Icc.mpr ⟨le_refl 0, le_of_lt hT⟩, hz⟩
-        rw [hp_def]; simp only [lt_irrefl, if_false, le_of_lt hT, ite_true]
+        rw [hp_def]; simp only [lt_irrefl, ite_false, le_of_lt hT, ite_true]
         rw [hTM.zero_eq (0, z) hmem, hEqM hmem]
       · rcases le_or_gt t T with htT | htT
         · have hmem : (t, z) ∈ Set.Icc (0:ℝ) T ×ˢ V :=
             ⟨Set.mem_Icc.mpr ⟨le_of_lt ht, htT⟩, hz⟩
-          rw [hp_def]; simp only [if_neg (not_lt.mpr (le_of_lt ht)), if_pos htT]
+          rw [hp_def]; simp only [ite_eq_right (not_lt.mpr (le_of_lt ht)), ite_eq_left htT]
           rw [hTM.zero_eq (t, z) hmem, hEqM hmem]
         · have hmem : (t, z) ∈ Set.Ici T ×ˢ V := ⟨Set.mem_Ici.mpr (le_of_lt htT), hz⟩
           rw [hp_def]
-          simp only [if_neg (not_lt.mpr (le_of_lt (lt_trans hT htT))), if_neg (not_le.mpr htT)]
+          simp only [ite_eq_right (not_lt.mpr (le_of_lt (lt_trans hT htT))), ite_eq_right (not_le.mpr htT)]
           rw [hTR.zero_eq (t, z) hmem, hEqR hmem]
     have hm_lt : ∀ m : ℕ, (m : WithTop ℕ∞) < ∞ := fun m => by
       exact_mod_cast (Nat.cast_lt.mpr m.lt_succ_self).trans_le le_top
@@ -1264,7 +1264,7 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
         have hfd : HasFDerivAt (fun y => p y m) (pL (t, z) m.succ).curryLeft (t, z) :=
           ((hdL.mono hsub).hasFDerivAt hnhds).congr_of_eventuallyEq
             (Filter.eventuallyEq_of_mem hnhds (fun y hy => hEqpL m (hsub hy)))
-        rw [hp_def]; simp only [if_pos ht]
+        rw [hp_def]; simp only [ite_eq_left ht]
         exact hfd.hasFDerivWithinAt
       · subst ht
         have hu : Set.Iio T ×ˢ V ∈ nhds ((0:ℝ), z) :=
@@ -1292,7 +1292,7 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
             ((Set.univ ×ˢ V) ∩ (Set.Iio T ×ˢ V)) (0, z) := by rw [hinter]; exact hmono
         have hres := (hasFDerivWithinAt_inter hu).mp hmono'
         rw [hLM m.succ z hz] at hres
-        rw [hp_def]; simp only [lt_irrefl, if_false, le_of_lt hT, ite_true]
+        rw [hp_def]; simp only [lt_irrefl, ite_false, le_of_lt hT, ite_true]
         exact hres
       · rcases lt_trichotomy t T with htT | htT | htT
         · have hmem : (t, z) ∈ Set.Icc (0:ℝ) T ×ˢ V :=
@@ -1306,7 +1306,7 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
           have hfd : HasFDerivAt (fun y => p y m) (pM (t, z) m.succ).curryLeft (t, z) :=
             ((hdM.mono hsub).hasFDerivAt hnhds).congr_of_eventuallyEq
               (Filter.eventuallyEq_of_mem hnhds (fun y hy => hEqpM m (hsub hy)))
-          rw [hp_def]; simp only [if_neg (not_lt.mpr (le_of_lt ht)), if_pos (le_of_lt htT)]
+          rw [hp_def]; simp only [ite_eq_right (not_lt.mpr (le_of_lt ht)), ite_eq_left (le_of_lt htT)]
           exact hfd.hasFDerivWithinAt
         · subst htT
           have hu : Set.Ioi (0:ℝ) ×ˢ V ∈ nhds (t, z) :=
@@ -1328,13 +1328,13 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
           have hmono : HasFDerivWithinAt (fun y => p y m) (pM (t, z) m.succ).curryLeft
               (Set.Ioi (0:ℝ) ×ˢ V) (t, z) :=
             hunion.mono (Set.prod_mono_left Ioi_subset_Ici_self)
-          rw [hp_def]; simp only [if_neg (not_lt.mpr (le_of_lt hT)), if_pos (le_refl t)]
+          rw [hp_def]; simp only [ite_eq_right (not_lt.mpr (le_of_lt hT)), ite_eq_left (le_refl t)]
           have hinter : (Set.univ ×ˢ V) ∩ (Set.Ioi (0:ℝ) ×ˢ V) = Set.Ioi (0:ℝ) ×ˢ V := by
             rw [Set.prod_inter_prod, Set.univ_inter, Set.inter_self]
           have hmono' : HasFDerivWithinAt (fun y => p y m) (pM (t, z) m.succ).curryLeft
               ((Set.univ ×ˢ V) ∩ (Set.Ioi (0:ℝ) ×ˢ V)) (t, z) := by rw [hinter]; exact hmono
           have hres := (hasFDerivWithinAt_inter hu).mp hmono'
-          simpa only [hp_def, if_neg (not_lt.mpr (le_of_lt hT)), if_pos (le_refl t)] using hres
+          simpa only [hp_def, ite_eq_right (not_lt.mpr (le_of_lt hT)), ite_eq_left (le_refl t)] using hres
         · have hmem : (t, z) ∈ Set.Ici T ×ˢ V := ⟨Set.mem_Ici.mpr (le_of_lt htT), hz⟩
           have hdR : HasFDerivWithinAt (fun y => pR y m) (pR (t, z) m.succ).curryLeft
               (Set.Ici T ×ˢ V) (t, z) := hTR.fderivWithin m (hm_lt m) (t, z) hmem
@@ -1346,14 +1346,14 @@ theorem borel_interval_extend_param [FiniteDimensional ℝ E] [CompleteSpace F]
             ((hdR.mono hsub).hasFDerivAt hnhds).congr_of_eventuallyEq
               (Filter.eventuallyEq_of_mem hnhds (fun y hy => hEqpR m (hsub hy)))
           rw [hp_def]
-          simp only [if_neg (not_lt.mpr (le_of_lt (lt_trans hT htT))), if_neg (not_le.mpr htT)]
+          simp only [ite_eq_right (not_lt.mpr (le_of_lt (lt_trans hT htT))), ite_eq_right (not_le.mpr htT)]
           exact hfd.hasFDerivWithinAt
     have hTaylor : HasFTaylorSeriesUpToOn ∞ (Function.uncurry gext) p (Set.univ ×ˢ V) :=
       (hasFTaylorSeriesUpToOn_top_iff' (le_refl _)).mpr ⟨hzero, hderiv⟩
     exact hTaylor.contDiffOn
   · intro t ht z _
     obtain ⟨ht0, htT⟩ := ht
-    simp only [hgext_def, if_neg (not_lt.mpr ht0), if_pos htT]
+    simp only [hgext_def, ite_eq_right (not_lt.mpr ht0), ite_eq_left htT]
 
 end Setup
 

@@ -67,15 +67,18 @@ variable {E : Type u} [AddCommGroup E] [Module ℝ E] [TopologicalSpace E]
 
 theorem integralRelativeHomologyMap_smul_sub_eq_sub (n : ℕ) (a : E) {r : ℝ} (hr : 0 < r) :
     integralRelativeHomologyMap n
-      (toContinuousMap ((Homeomorph.subRight a).trans (Homeomorph.smulOfNeZero r hr.ne')))
-      (show MapsTo (fun x : E => r • (x - a)) ({a}ᶜ : Set E) ({0}ᶜ : Set E) from
-        fun _ hx hz => hx (sub_eq_zero.mp ((smul_eq_zero.mp hz).resolve_left hr.ne'))) =
-      integralRelativeHomologyMap n (toContinuousMap (Homeomorph.subRight a))
-        (show MapsTo (fun x : E => x - a) ({a}ᶜ : Set E) ({0}ᶜ : Set E) from
-          fun _ hx => sub_ne_zero.mpr hx) := by
-  let f := toContinuousMap (Homeomorph.subRight a)
+      (toContinuousMap ((Homeomorph.addRight (-a)).trans (Homeomorph.smulOfNeZero r hr.ne')))
+      (show MapsTo (fun x : E => r • (x + -a)) ({a}ᶜ : Set E) ({0}ᶜ : Set E) from
+        fun _ hx hz => hx (sub_eq_zero.mp (by
+          simpa only [sub_eq_add_neg] using (smul_eq_zero.mp hz).resolve_left hr.ne'))) =
+      integralRelativeHomologyMap n (toContinuousMap (Homeomorph.addRight (-a)))
+        (show MapsTo (fun x : E => x + -a) ({a}ᶜ : Set E) ({0}ᶜ : Set E) from
+          fun _ hx => by simpa [sub_eq_add_neg] using sub_ne_zero.mpr hx) := by
+  let f := toContinuousMap (Homeomorph.addRight (-a))
   let g : C(E, E) := ⟨fun x => r • x, continuous_const.smul continuous_id⟩
-  have hf : MapsTo f ({a}ᶜ : Set E) ({0}ᶜ : Set E) := fun _ hx => sub_ne_zero.mpr hx
+  have hf : MapsTo f ({a}ᶜ : Set E) ({0}ᶜ : Set E) := by
+    intro x hx
+    simpa [f, sub_eq_add_neg] using sub_ne_zero.mpr hx
   have hg : MapsTo g ({0}ᶜ : Set E) ({0}ᶜ : Set E) :=
     fun _ hx hz => hx ((smul_eq_zero.mp hz).resolve_left hr.ne')
   change integralRelativeHomologyMap n (g.comp f) (hg.comp hf) =

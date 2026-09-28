@@ -243,7 +243,7 @@ theorem abstractSpectralSemigroup_apply_of_nonneg (b : HilbertBasis ι ℝ X)
     abstractSpectralSemigroup b hlam t v =
       ∑' i : ι, heatCoeff lam t i • ⟪b i, v⟫_ℝ • b i := by
   unfold abstractSpectralSemigroup
-  rw [dif_pos ht]; rfl
+  rw [dite_eq_left ht]; rfl
 
 theorem abstractSpectralSemigroup_repr_apply (b : HilbertBasis ι ℝ X)
     {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 ≤ t)
@@ -273,16 +273,16 @@ theorem abstractSpectralSemigroup_of_neg (b : HilbertBasis ι ℝ X)
     {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : t < 0) :
     abstractSpectralSemigroup b hlam t = 0 := by
   unfold abstractSpectralSemigroup
-  rw [dif_neg (not_le.mpr ht)]
+  rw [dite_eq_right (not_le.mpr ht)]
 
 theorem abstractSpectralSemigroup_opNorm_le_one (b : HilbertBasis ι ℝ X)
     {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) (t : ℝ) :
     ‖abstractSpectralSemigroup b hlam t‖ ≤ 1 := by
   unfold abstractSpectralSemigroup
   by_cases ht : 0 ≤ t
-  · rw [dif_pos ht]
+  · rw [dite_eq_left ht]
     exact LinearMap.mkContinuous_norm_le _ zero_le_one _
-  · rw [dif_neg ht, norm_zero]; exact zero_le_one
+  · rw [dite_eq_right ht, norm_zero]; exact zero_le_one
 
 theorem abstractSpectralSemigroup_apply_basis (b : HilbertBasis ι ℝ X)
     {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i) {t : ℝ} (ht : 0 ≤ t) (i : ι) :

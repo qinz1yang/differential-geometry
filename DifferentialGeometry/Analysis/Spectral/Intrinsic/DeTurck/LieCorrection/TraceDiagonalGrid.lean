@@ -5,6 +5,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RecoveryEndomorphismJetBounds
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.CovariantOrderCoefficient.ProductGridRankLeftBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.SlotInsertion
+
+open DifferentialGeometry.TensorMetric (
+  riemannianFiberNormSq riemannianFiberNormSq_add_le riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Analysis.Sobolev
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
@@ -54,7 +58,7 @@ theorem lieCorrectionZeroTr_pointwise_antidiagonalGrid_le
                 ((iteratedCovGrad (I := I) g₀ 0 2 j P).toSection x)) k := by
   classical
   obtain ⟨CD, hCD_nn, hCD⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_slotInsertEndoCc_zero_metricComparisonDifferenceEndomorphism_diagGrid_le
+    exists_metricComparisonDifferenceEndomorphismField_covariant_jet_bound
       (I := I) (M := M) g₀ hδ₀
   let Φ : SmoothCcTensor g₀ (p + 2) p := cometricDoubleTraceField (I := I) g₀ p
   have hS_ex : ∀ m : ℕ, ∃ S : ℝ, 0 ≤ S ∧ ∀ x : M,

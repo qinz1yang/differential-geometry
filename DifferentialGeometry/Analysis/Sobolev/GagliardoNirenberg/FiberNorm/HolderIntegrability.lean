@@ -8,6 +8,9 @@ import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Identities.Tens
 import DifferentialGeometry.Analysis.Spectral.Tensor.Variational.CovDerivPointwise
 import DifferentialGeometry.Bundle.Section
 import DifferentialGeometry.Analysis.Elliptic.ConnectionLaplacian.IntegrationByParts.CovariantTensor.Mixed
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_eq_tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 

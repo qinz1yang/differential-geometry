@@ -17,7 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem exists_innermost_disk_with_boundary_subarc
     (L : Geometry.SimplicialComplex ℝ E) [Finite L.faces] (hL : IsCombinatorialManifold 2 L)
     {D₀ B₀ R₀ : Set E} {q₀ : (Fin 3 → ℝ) → E}
-    (hq₀ : IsPLHomeomorphOn q₀ (stdSimplex ℝ (Fin 3)) D₀)
+    (hq₀ : IsPLHomeomorphOn q₀ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D₀)
     (hD₀L : D₀ ⊆ L.space) {β₀ δ₀ : ℝ → E}
     (hβ₀ : IsPLHomeomorphOn β₀ (Icc 0 1) B₀) (hδ₀ : IsPLHomeomorphOn δ₀ (Icc 0 1) R₀)
     (hδ₀0 : δ₀ 0 = β₀ 0) (hδ₀1 : δ₀ 1 = β₀ 1)
@@ -29,14 +29,14 @@ theorem exists_innermost_disk_with_boundary_subarc
     ∃ (i : ι) (B R D : Set E) (q : (Fin 3 → ℝ) → E) (β δ : ℝ → E),
       IsPLHomeomorphOn β (Icc 0 1) B ∧ IsPLHomeomorphOn δ (Icc 0 1) R ∧
       δ 0 = β 0 ∧ δ 1 = β 1 ∧ B ⊆ F i ∧ R ⊆ R₀ ∧ B ∩ R = {β 0, β 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧ D ∩ R₀ = R ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧ D ∩ R₀ = R ∧
       q '' stdSimplexBoundary 2 = B ∪ R ∧ ∀ j, Disjoint (D \ (B ∪ R)) (F j) := by
   classical
   let Z := ⋃ i, F i
   let P := fun (i : ι) (B R D : Set E) (q : (Fin 3 → ℝ) → E) (β δ : ℝ → E) =>
     IsPLHomeomorphOn β (Icc 0 1) B ∧ IsPLHomeomorphOn δ (Icc 0 1) R ∧
       δ 0 = β 0 ∧ δ 1 = β 1 ∧ B ⊆ F i ∧ R ⊆ R₀ ∧ B ∩ R = {β 0, β 1} ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧ D ∩ R₀ = R ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ D₀ ∧ D ∩ R₀ = R ∧
       q '' stdSimplexBoundary 2 = B ∪ R
   have hR₀D₀ : R₀ ⊆ D₀ := by
     intro x hx

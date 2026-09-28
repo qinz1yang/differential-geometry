@@ -42,12 +42,12 @@ theorem exists_diffeomorphs_contracting_embedded_closedBall
     rw [(hJe 0 x).1, hzero]
     by_cases hx : x ∈ e.source
     · change (if x ∈ e.source then e.symm (e x) else x) = x
-      rw [if_pos hx, e.left_inv hx]
-    · exact if_neg hx
+      rw [ite_eq_left hx, e.left_inv hx]
+    · exact ite_eq_right hx
   · intro t x ht hx
     rw [(hJe t (φ x)).1]
     have hφx : φ x ∈ e.source := φ.map_source (hrs hx)
-    rw [show extendChartById e (D t) (φ x) = e.symm (D t (e (φ x))) from if_pos hφx]
+    rw [show extendChartById e (D t) (φ x) = e.symm (D t (e (φ x))) from ite_eq_left hφx]
     change φ (D t (φ.symm (φ x))) = _
     have hi : φ.symm.toPartialEquiv (φ.toPartialEquiv x) = x := φ.left_inv (hrs hx)
     rw [hi, hrad t x ht hx]

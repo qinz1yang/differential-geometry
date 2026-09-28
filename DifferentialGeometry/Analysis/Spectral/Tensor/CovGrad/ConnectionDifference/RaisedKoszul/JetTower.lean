@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.CovariantOrderFibreNormBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.ConnectionDifference.RaisedKoszul.ParallelRaiseJetBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.CometricRaiseCovariantDerivative
+
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply coframeS_zero_eq_unitZeroSec
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -126,9 +129,9 @@ private lemma riemannianFiberNormSq_eq_sum_componentSq_of_horth
       intro j _
       rw [map_smul, horth k j, smul_eq_mul]
     rw [Finset.sum_congr rfl h_pull] at h_zero
-    rw [Finset.sum_eq_single k (fun j _ hj => by rw [if_neg (Ne.symm hj), mul_zero])
+    rw [Finset.sum_eq_single k (fun j _ hj => by rw [ite_eq_right (Ne.symm hj), mul_zero])
       (fun hk => absurd hk_mem hk)] at h_zero
-    rwa [if_pos rfl, mul_one] at h_zero
+    rwa [ite_eq_left rfl, mul_one] at h_zero
   have hrank : Module.finrank ℝ (TangentSpace I x) = Module.finrank ℝ E := rfl
   have hcard : Fintype.card (Fin n) = Module.finrank ℝ (TangentSpace I x) := by
     rw [Fintype.card_fin, hrank]; exact hn

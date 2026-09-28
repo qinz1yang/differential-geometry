@@ -34,6 +34,8 @@ theorem contDiffAt_parameterLift_of_manifoldImmersion {f : E → M} {ψ : G → 
   have hd : fderiv ℝ (c ∘ f) (ψ x) = mfderiv 𝓘(ℝ, E) I f (ψ x) := by
     rw [(hf.mdifferentiable (by simp) (ψ x)).mfderiv]
     simp only [writtenInExtChartAt, mfld_simps, c, fderivWithin_univ]
+    simp [tangentSpaceCastModel]
+    rfl
   have hca : ContMDiffAt I 𝓘(ℝ, F) ∞ (↑c : M → F) (f (ψ x)) :=
     (contMDiffOn_extChartAt (I := I) (x := f (ψ x)) (n := ∞)).contMDiffAt
       ((chartAt H (f (ψ x))).open_source.mem_nhds (mem_chart_source H (f (ψ x))))

@@ -97,7 +97,7 @@ theorem riemannianEDistOf_symm_chart_le_of_segment
         convert hn using 1; rfl
       have henorm := ENNReal.ofReal_le_ofReal hnorm
       simp only [ofReal_norm, ENNReal.ofReal_mul hK] at henorm
-      convert henorm using 1; rfl
+      convert henorm using 1
     _ = _ := by simp
 
 attribute [-instance] Tensor0SBundle.tangentSpaceNormedAddCommGroup

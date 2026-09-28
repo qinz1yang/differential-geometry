@@ -222,7 +222,7 @@ theorem exists_partialDiffeomorph_saddle_band_cutoff_profile_superlevel {s h t�
     have hc := hχ01 p.1
     have hp0 := mul_nonneg (sub_nonneg.mpr hc.2) hb0
     have hp1 : (1 - χ p.1) * β p.2 ≤ 1 :=
-      mul_le_one₀ (by linarith [hc.1]) hb0 hb1
+      (mul_le_of_le_one_left hb0 (by linarith [hc.1])).trans hb1
     dsimp only [θ]
     constructor <;> linarith
   have hθ0 (t u : ℝ) (ht : t ≤ t₀ / 4) (hu : |u| ≤ h / 4) : θ (t, u) = 0 := by

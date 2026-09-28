@@ -78,7 +78,7 @@ private theorem polar_dir_inner
 private theorem polar_dir_norm
     (p : sphere (0 : E) 1) (w : PolarDir p) :
     ‖((w : (ℝ ∙ (p : E))ᗮ) : E)‖ = 1 := by
-  simpa only [Submodule.coe_norm] using
+  simpa only [← Submodule.norm_coe] using
     (mem_sphere_zero_iff_norm.mp w.2)
 
 private theorem polar_norm
@@ -198,7 +198,7 @@ private noncomputable def polarBack
       ((x : E) - ⟪(p : E), (x : E)⟫_ℝ • (p : E))
     ⟨(r, ⟨⟨w, (polarBack_data p x).2.1⟩, by
         apply mem_sphere_zero_iff_norm.mpr
-        simpa only [Submodule.coe_norm] using
+        simpa only [← Submodule.norm_coe] using
           (polarBack_data p x).2.2.1⟩),
       (polarBack_data p x).1⟩
 
@@ -403,7 +403,7 @@ private theorem polarInv_mem
     (hx : x ∈ polarTarget p) :
     polarInv (n := n) p x =
       (polarOpenDiffeo (n := n) p).symm ⟨x, hx⟩ := by
-  simp only [polarInv, dif_pos hx]
+  simp only [polarInv, dite_eq_left hx]
 
 noncomputable def spherePolarPD
     (p : sphere (0 : E) 1) :

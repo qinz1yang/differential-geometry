@@ -46,7 +46,7 @@ theorem curvatureSkewActionContraction_eq_slots {q : Nat}
         2 * ∑ d : Idx,
           R a e d (b r) * DA e (Function.update b r d) := by
     simp only [mul_sub, Finset.sum_sub_distrib, mul_ite, mul_zero]
-    simp only [Finset.sum_ite_eq', Finset.mem_univ, if_pos]
+    simp only [Finset.sum_ite_eq', Finset.mem_univ, ite_eq_left]
     have hfirst :
         (∑ c : Idx, ∑ d : Idx,
           if c = b r then R a e d c * DA e (Function.update b r d) else 0) =
@@ -416,7 +416,7 @@ private theorem prependCovariantDerivativeComponents_update_succ {q : Nat}
   have hzero : ¬(0 : Fin (q + 1)) = r.succ := by
     exact (Fin.succ_ne_zero r) ∘ Eq.symm
   simp only [prependCovariantDerivativeComponents, Function.update_apply,
-    hzero, if_false, Fin.cons_zero, Fin.cons_succ, Fin.succ_inj]
+    hzero, ite_false, Fin.cons_zero, Fin.cons_succ, Fin.succ_inj]
   apply congrArg (DA e)
   funext r₁
   simp only [Function.update_apply]

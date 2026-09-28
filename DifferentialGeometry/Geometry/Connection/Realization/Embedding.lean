@@ -87,7 +87,7 @@ theorem vectorFieldActionSmooth_smul
     hmfderiv]
   change (NormedSpace.fromTangentSpace _) ((c • mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x) (X x)) =
     c * (NormedSpace.fromTangentSpace _) ((mfderiv I 𝓘(ℝ, ℝ) (f : M → ℝ) x) (X x))
-  simp only [NormedSpace.fromTangentSpace, ContinuousLinearEquiv.coe_mk]
+  simp only [NormedSpace.fromTangentSpace]
   exact smul_eq_mul c _
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in

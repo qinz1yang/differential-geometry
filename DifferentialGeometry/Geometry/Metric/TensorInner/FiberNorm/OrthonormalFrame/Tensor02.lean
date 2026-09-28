@@ -8,8 +8,7 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -179,16 +178,16 @@ lemma tensor02_coframe_expansion
   rw [Finset.sum_comm]
   rw [Finset.sum_eq_single (v 1)]
   · rw [Finset.sum_eq_single (v 0)]
-    · simp only [if_pos, mul_one]
+    · simp only [ite_eq_left, mul_one]
       congr 1
       funext k
       fin_cases k <;> simp [Matrix.cons_val_zero, Matrix.cons_val_one]
     · intro a _ ha
-      rw [if_neg ha, zero_mul, mul_zero]
+      rw [ite_eq_right ha, zero_mul, mul_zero]
     · intro h; exact absurd (Finset.mem_univ (v 0)) h
   · intro b _ hb
     refine Finset.sum_eq_zero (fun a _ => ?_)
-    rw [if_neg hb, mul_zero, mul_zero]
+    rw [ite_eq_right hb, mul_zero, mul_zero]
   · intro h; exact absurd (Finset.mem_univ (v 1)) h
 
 lemma exists_tangent_orthonormalBasis_with_norm_sum
@@ -352,8 +351,7 @@ lemma riemannianFiberNormSq_eq_sum_component_sq
     exact absurd (Subsingleton.elim K K₀) hK
   · intro h; exact absurd (Finset.mem_univ K₀) h
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

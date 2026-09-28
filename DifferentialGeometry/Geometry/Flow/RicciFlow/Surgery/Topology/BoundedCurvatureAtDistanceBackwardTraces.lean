@@ -22,7 +22,7 @@ universe u
 theorem RetainedCoreHistory.eventually_scalar_bound_at_distance_of_chain_backward_traces
     {ε : ℝ} (hεle : ε ≤ coneAccuracy) {κ C1 C2 : ℝ} (hκ : 0 < κ) {Ctime Cgrad : ℝ≥0}
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) {θ : ℝ} (hθ : 0 < θ)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -96,7 +96,7 @@ theorem RetainedCoreHistory.eventually_scalar_bound_at_distance_of_chain_backwar
     fun k => ⟨y (φ k), hU k (y (φ k))⟩
   have hTE := StandardCap.transitionEnd_pos
   obtain ⟨B, hB⟩ := RetainedCoreHistory.exists_normalized_scalar_bound_of_chain_traces
-    (fun k => P₀ (φ k)) (fun k => H (φ k)) (fun k => t (φ k)) Asl (fun k => hG (φ k))
+    (fun k => H (φ k)) (fun k => t (φ k)) Asl (fun k => hG (φ k))
     (fun k => (hend (φ k)) ▸ ht (φ k)) Ctime Cgrad (fun k => q (φ k)) (fun k => hq (φ k))
     (fun k j y' t' ht' hq' => hslabs (φ k) j (Fin.castSucc_lt_last j) y' t' ht' hq')
     (fun k y' t' ht' hq' => hder (φ k) y' t' ht' hq')
@@ -224,7 +224,7 @@ private local instance {P : OrientedThreeStage.{u}} {a s : ℝ} (G : P.IncomingS
 theorem RetainedCoreHistory.eventually_terminal_scalar_bound_at_distance_of_chain_backward_traces
     {ε : ℝ} (hεle : ε ≤ coneAccuracy) {κ C1 C2 : ℝ} (hκ : 0 < κ) {Ctime Cgrad : ℝ≥0}
     {phi : ℝ → ℝ} (hphi : Perelman.AdmissiblePinchingFunction phi) {θ : ℝ} (hθ : 0 < θ)
-    (P₀ : ℕ → OrientedThreeStage.{u}) (H : ∀ n, RetainedCoreHistory (P₀ n))
+    (H : ℕ → RetainedCoreHistory.{u})
     (hend : ∀ n, (H n).time (Fin.last (H n).eventCount) = (H n).horizon) (s : ℕ → ℝ)
     (G : ∀ n, ((H n).stage (Fin.last (H n).eventCount)).IncomingSlab
       ((H n).time (Fin.last (H n).eventCount)) (s n))
@@ -352,7 +352,7 @@ theorem RetainedCoreHistory.eventually_terminal_scalar_bound_at_distance_of_chai
     have hτ2 (k : ℕ) : s (φ k) / 2 ≤ τ k := ((le_max_right _ _).trans_lt (hτ k).1.1).le
     obtain ⟨Q₀, -, hQ₀⟩ :=
       RetainedCoreHistory.eventually_scalar_bound_at_distance_of_chain_backward_traces hεle hκ
-        hphi hθ (fun k => P₀ (φ k)) (fun k => H (φ k)) (fun k => hend (φ k)) (fun k => s (φ k))
+        hphi hθ (fun k => H (φ k)) (fun k => hend (φ k)) (fun k => s (φ k))
         (fun k => G (φ k)) (fun k => hG (φ k)) τ hτa hτs (fun k => (x (φ k)).val)
         (fun k => q (φ k)) (fun k => ρ (φ k)) (fun k => hq (φ k)) (fun k => (hτ k).2.2.1.le)
         (tendsto_atTop_mono (fun k => (hτ k).2.1.1.le) ((hR.comp hφt).atTop_div_const two_pos))

@@ -107,7 +107,7 @@ theorem exists_compactBigonCrosscutNeighborhood
       (isPLHomeomorphOn_fst_openPartialHomeomorph k hk hBball.isPolyhedron
         (hB'D.trans hDk) (fun x hx => hDz x (hB'D hx)))
   have hends (R : Set E3) (u : (Fin 2 → ℝ) → E3)
-      (hu : IsPLHomeomorphOn u (stdSimplex ℝ (Fin 2)) R) (hRZ : R ⊆ Z)
+      (hu : IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) R) (hRZ : R ⊆ Z)
       (he : Disjoint Dj (u '' stdSimplexBoundary 1)) :
       Disjoint (f '' Dj) ((f ∘ u) '' stdSimplexBoundary 1) := by
     refine disjoint_left.mpr ?_

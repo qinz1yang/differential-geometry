@@ -26,8 +26,16 @@ theorem exists_flat_deriv {T : ℝ} (hT : 0 < T) (v : timeL2 X T)
     (Lp.memLp v).exist_eLpNorm_sub_le (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num) hη
   have hgLp : MemLp g 2 (timeMeasure T) :=
     hg_smooth.continuous.memLp_of_hasCompactSupport hg_comp
-  obtain ⟨δ, hδ, hsmall⟩ :=
-    hgLp.eLpNorm_indicator_le (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num) hη
+  obtain ⟨δ', hδ', hsmall⟩ :=
+    hgLp.eLpNorm_indicator_le (p := (2 : ℝ≥0∞)) (by norm_num) (by norm_num)
+      (ENNReal.ofReal_pos.2 hη)
+  let δ : ℝ := (min δ' 1).toReal
+  have hδtop : min δ' 1 < ⊤ := lt_of_le_of_lt (min_le_right _ _) (by simp)
+  have hδ : 0 < δ := ENNReal.toReal_pos (lt_min hδ' (by norm_num)).ne' hδtop.ne
+  have hδle : ENNReal.ofReal δ ≤ δ' := by
+    dsimp only [δ]
+    rw [ENNReal.ofReal_toReal hδtop.ne]
+    exact min_le_left _ _
   let ρ : ℝ := min (T / 8) (δ / 4)
   have hρ : 0 < ρ := by
     dsimp [ρ]
@@ -49,7 +57,7 @@ theorem exists_flat_deriv {T : ℝ} (hT : 0 < T) (v : timeL2 X T)
         rw [show 2 * ρ = ρ + ρ by ring, ENNReal.ofReal_add hρ.le hρ.le]
       _ ≤ ENNReal.ofReal δ := ENNReal.ofReal_le_ofReal h2ρδ
   have hSsmall : eLpNorm (S.indicator g) 2 (timeMeasure T) ≤ ENNReal.ofReal η :=
-    hsmall S hSmeas hμS
+    hsmall S hSmeas (hμS.trans hδle)
   let χ : ContDiffBump (T / 2) :=
     ⟨T / 2 - ρ, T / 2 - ρ / 2, by linarith [hρT], by linarith [hρ]⟩
   let q : ℝ → X := fun t ↦ χ t • g t
@@ -71,7 +79,8 @@ theorem exists_flat_deriv {T : ℝ} (hT : 0 < T) (v : timeL2 X T)
   have hqLp : MemLp q 2 (timeMeasure T) :=
     memLp_of_continuousOn hq_smooth.continuous.continuousOn
   have hqg : eLpNorm (q - g) 2 (timeMeasure T) ≤ ENNReal.ofReal η := by
-    refine (eLpNorm_mono_ae ?_).trans hSsmall
+    refine (eLpNorm_mono_ae (hqLp.aestronglyMeasurable.sub hgLp.aestronglyMeasurable) ?_).trans
+      hSsmall
     unfold timeMeasure
     filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht
     by_cases htS : t ∈ S

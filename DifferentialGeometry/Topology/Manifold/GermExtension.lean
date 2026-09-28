@@ -3,6 +3,7 @@ Copyright (c) 2026 Yuan Liao. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Yuan Liao
 -/
+import Mathlib.Geometry.Manifold.MFDeriv.NormedSpace
 import DifferentialGeometry.Analysis.Calculus.Cutoff.SmallGermCutoff
 import DifferentialGeometry.Analysis.Calculus.Interpolation.SmallPerturbation
 import DifferentialGeometry.Topology.Manifold.EuclideanBoundaryCoordinates

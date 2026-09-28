@@ -40,7 +40,7 @@ theorem IsPolyhedralTubeNeighborhood.exists_hasConnectedHandlePieces_of_isConnec
     fun v => if hv : v ∈ K.vertices then (hex v hv).choose else XK
   refine ⟨AK, hXc, hFc, fun v hv => ?_⟩
   obtain ⟨hA1, hA2, hA3, hA4, hA5⟩ := (hex v hv).choose_spec
-  have hAK : AK v = (hex v hv).choose := dif_pos hv
+  have hAK : AK v = (hex v hv).choose := dite_eq_left hv
   rw [hAK]
   refine ⟨hA1, hA2, hA3, hA4, ?_⟩
   convert hA5 using 3

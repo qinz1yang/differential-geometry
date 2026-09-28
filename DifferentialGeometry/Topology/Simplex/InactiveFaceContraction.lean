@@ -1,9 +1,12 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.VertexContraction
 import DifferentialGeometry.Topology.Simplex.HomotopyExtension
 
 noncomputable section
 
 open ContinuousMap
+
+open Convexity.StdSimplex
 
 namespace DifferentialGeometry.Simplex
 
@@ -35,7 +38,7 @@ private def inactiveDiskContraction :
 private def oppositeFaceBoundaryToInactive :
     C(boundary (Fin (n + 2)), inactiveDisk (n := n)) where
   toFun q :=
-    ⟨⟨stdSimplex.map (0 : Fin (n + 3)).succAbove q.1,
+    ⟨⟨coordinateMap (0 : Fin (n + 3)).succAbove q.1,
       ⟨0, map_succAbove_apply_pivot (0 : Fin (n + 3)) q.1⟩⟩, by
       obtain ⟨j, hz⟩ := q.2
       refine ⟨(0 : Fin (n + 3)).succAbove j, Fin.succAbove_ne _ _, ?_⟩
@@ -44,7 +47,7 @@ private def oppositeFaceBoundaryToInactive :
   continuous_toFun := by
     apply Continuous.subtype_mk
     apply Continuous.subtype_mk
-    exact (stdSimplex.continuous_map (0 : Fin (n + 3)).succAbove).comp continuous_subtype_val
+    exact (continuous_coordinateMap (0 : Fin (n + 3)).succAbove).comp continuous_subtype_val
 
 private def inactiveDiskBoundaryInclusion :
     C(inactiveDisk (n := n), boundary (Fin (n + 3))) :=
@@ -58,23 +61,23 @@ private def oppositeFaceBoundaryContraction :
 
 private theorem oppositeFaceBoundaryContraction_zero (q : boundary (Fin (n + 2))) :
     oppositeFaceBoundaryContraction (n := n) (0, q) =
-      ⟨stdSimplex.map (0 : Fin (n + 3)).succAbove q.1,
+      ⟨coordinateMap (0 : Fin (n + 3)).succAbove q.1,
         ⟨0, map_succAbove_apply_pivot (0 : Fin (n + 3)) q.1⟩⟩ := by
   apply Subtype.ext
   exact vertexContraction_zero (0 : Fin (n + 3)) _
 
 private def boundaryFaceInclusion (i : Fin (n + 3)) :
-    C(stdSimplex ℝ (Fin (n + 2)), boundary (Fin (n + 3))) where
-  toFun p := ⟨stdSimplex.map i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
-  continuous_toFun := (stdSimplex.continuous_map i.succAbove).subtype_mk _
+    C(coordinateSet ℝ (Fin (n + 2)), boundary (Fin (n + 3))) where
+  toFun p := ⟨coordinateMap i.succAbove p, ⟨i, map_succAbove_apply_pivot i p⟩⟩
+  continuous_toFun := (continuous_coordinateMap i.succAbove).subtype_mk _
 
 private def inactiveFaceInclusion (i : Fin (n + 3)) (hi : i ≠ 0) :
-    C(stdSimplex ℝ (Fin (n + 2)), inactiveDisk (n := n)) where
+    C(coordinateSet ℝ (Fin (n + 2)), inactiveDisk (n := n)) where
   toFun p := ⟨boundaryFaceInclusion (n := n) i p, ⟨i, hi, map_succAbove_apply_pivot i p⟩⟩
   continuous_toFun := (boundaryFaceInclusion (n := n) i).continuous.subtype_mk _
 
 private def inactiveFaceContraction (i : Fin (n + 3)) (hi : i ≠ 0) :
-    C(unitInterval × stdSimplex ℝ (Fin (n + 2)), boundary (Fin (n + 3))) :=
+    C(unitInterval × coordinateSet ℝ (Fin (n + 2)), boundary (Fin (n + 3))) :=
   (inactiveDiskBoundaryInclusion (n := n)).comp
     ((inactiveDiskContraction (n := n)).comp
       (ContinuousMap.prodMap (ContinuousMap.id unitInterval) (inactiveFaceInclusion (n := n) i hi)))
@@ -88,44 +91,44 @@ private theorem exists_boundaryHomotopy_contraction_inactiveDisk :
   obtain ⟨F, hF, hside⟩ := exists_continuous_homotopy_extension (n + 1)
     (boundaryFaceInclusion (n := n) 0) (oppositeFaceBoundaryContraction (n := n))
       (oppositeFaceBoundaryContraction_zero (n := n))
-  let L (i : Fin (n + 3)) : C(unitInterval × stdSimplex ℝ (Fin (n + 2)), boundary (Fin (n + 3))) :=
+  let L (i : Fin (n + 3)) : C(unitInterval × coordinateSet ℝ (Fin (n + 2)), boundary (Fin (n + 3))) :=
     if hi : i = 0 then F else inactiveFaceContraction (n := n) i hi
   have hL (i : Fin (n + 3)) (j : Fin (n + 2)) (t : unitInterval)
-      (p : stdSimplex ℝ (Fin (n + 1))) :
-      (L i (t, stdSimplex.map j.succAbove p)).val =
+      (p : coordinateSet ℝ (Fin (n + 1))) :
+      (L i (t, coordinateMap j.succAbove p)).val =
         vertexContraction (0 : Fin (n + 3))
-          (t, stdSimplex.map i.succAbove (stdSimplex.map j.succAbove p)) := by
+          (t, coordinateMap i.succAbove (coordinateMap j.succAbove p)) := by
     by_cases hi : i = 0
     · subst i
-      simp only [L, dif_pos rfl]
+      simp only [L, dite_eq_left rfl]
       exact congrArg Subtype.val (hside t
-        ⟨stdSimplex.map j.succAbove p, ⟨j, map_succAbove_apply_pivot j p⟩⟩)
-    · simp only [L, dif_neg hi]
+        ⟨coordinateMap j.succAbove p, ⟨j, map_succAbove_apply_pivot j p⟩⟩)
+    · simp only [L, dite_eq_right hi]
       rfl
   have hfaces (i : Fin (n + 3)) (j : Fin (n + 2)) (t : unitInterval)
-      (p : stdSimplex ℝ (Fin (n + 1))) :
-      L i (t, stdSimplex.map j.succAbove p) =
-        L (i.succAbove j) (t, stdSimplex.map (j.predAbove i).succAbove p) := by
+      (p : coordinateSet ℝ (Fin (n + 1))) :
+      L i (t, coordinateMap j.succAbove p) =
+        L (i.succAbove j) (t, coordinateMap (j.predAbove i).succAbove p) := by
     apply Subtype.ext
     rw [hL, hL]
     congr 2
-    rw [stdSimplex.map_comp_apply, stdSimplex.map_comp_apply]
+    rw [coordinateMap_comp_apply, coordinateMap_comp_apply]
     congr 1
     funext k
     exact (Fin.succAbove_succAbove_succAbove_predAbove i j k).symm
-  let G (i : Fin (n + 3)) : C(stdSimplex ℝ (Fin (n + 2)), C(unitInterval, boundary (Fin (n + 3)))) :=
+  let G (i : Fin (n + 3)) : C(coordinateSet ℝ (Fin (n + 2)), C(unitInterval, boundary (Fin (n + 3)))) :=
     ((L i).comp ContinuousMap.prodSwap).curry
-  have hG (i : Fin (n + 3)) (j : Fin (n + 2)) (p : stdSimplex ℝ (Fin (n + 1))) :
-      G i (stdSimplex.map j.succAbove p) =
-        G (i.succAbove j) (stdSimplex.map (j.predAbove i).succAbove p) := by
+  have hG (i : Fin (n + 3)) (j : Fin (n + 2)) (p : coordinateSet ℝ (Fin (n + 1))) :
+      G i (coordinateMap j.succAbove p) =
+        G (i.succAbove j) (coordinateMap (j.predAbove i).succAbove p) := by
     apply ContinuousMap.ext
     intro t
     exact hfaces i j t p
   let K : C(unitInterval × boundary (Fin (n + 3)), boundary (Fin (n + 3))) :=
     (boundaryDesc G hG).uncurry.comp ContinuousMap.prodSwap
-  have hK (i : Fin (n + 3)) (t : unitInterval) (p : stdSimplex ℝ (Fin (n + 2))) :
+  have hK (i : Fin (n + 3)) (t : unitInterval) (p : coordinateSet ℝ (Fin (n + 2))) :
       K (t, boundaryFaceInclusion (n := n) i p) = L i (t, p) := by
-    change boundaryDesc G hG ⟨stdSimplex.map i.succAbove p,
+    change boundaryDesc G hG ⟨coordinateMap i.succAbove p,
       ⟨i, map_succAbove_apply_pivot i p⟩⟩ t = L i (t, p)
     rw [boundaryDesc_face]
     rfl
@@ -135,13 +138,13 @@ private theorem exists_boundaryHomotopy_contraction_inactiveDisk :
     let q := faceDelete i ⟨p.val, hi⟩
     have hq : boundaryFaceInclusion (n := n) i q = p := by
       apply Subtype.ext
-      change stdSimplex.map i.succAbove q = p.val
+      change coordinateMap i.succAbove q = p.val
       exact congrArg (fun r : face i => r.val) (faceInsert_faceDelete i ⟨p.val, hi⟩)
     rw [← hq, hK]
     by_cases hi0 : i = 0
     · subst i
       exact hF q
-    · simp only [L, dif_neg hi0]
+    · simp only [L, dite_eq_right hi0]
       apply Subtype.ext
       exact vertexContraction_zero (0 : Fin (n + 3)) _
   · intro t p hp
@@ -149,10 +152,10 @@ private theorem exists_boundaryHomotopy_contraction_inactiveDisk :
     let q := faceDelete i ⟨p.val, hi⟩
     have hq : boundaryFaceInclusion (n := n) i q = p := by
       apply Subtype.ext
-      change stdSimplex.map i.succAbove q = p.val
+      change coordinateMap i.succAbove q = p.val
       exact congrArg (fun r : face i => r.val) (faceInsert_faceDelete i ⟨p.val, hi⟩)
     rw [← hq, hK]
-    simp only [L, dif_neg hi0]
+    simp only [L, dite_eq_right hi0]
     rfl
 
 theorem exists_boundary_homotopy_contracting_faces_through_zero (n : ℕ) :
@@ -167,7 +170,7 @@ theorem exists_boundary_homotopy_collapsing_faces_through_zero (n : ℕ) :
     ∃ K : C(unitInterval × boundary (Fin (n + 3)), boundary (Fin (n + 3))),
       (∀ p, K (0, p) = p) ∧
       (∀ p, (∃ j : Fin (n + 3), j ≠ 0 ∧ p.val.val j = 0) →
-        (K (1, p)).val = stdSimplex.vertex (S := ℝ) (0 : Fin (n + 3))) ∧
+        (K (1, p)).val = coordinateSingle (S := ℝ) (0 : Fin (n + 3))) ∧
       ∀ (t : unitInterval) p,
         (∃ j : Fin (n + 3), j ≠ 0 ∧ p.val.val j = 0) →
           ∃ j : Fin (n + 3), j ≠ 0 ∧ (K (t, p)).val.val j = 0 := by

@@ -2,7 +2,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Defs
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Tensor.RSTensor.Norm.Operator
 import Mathlib.Analysis.Normed.Module.Multilinear.Basic
-open DifferentialGeometry.Analysis.Elliptic
 
 
 noncomputable section
@@ -12,10 +11,9 @@ open Bundle Set IsManifold ContinuousLinearMap Function
 open scoped Manifold Topology Bundle ContDiff BigOperators Matrix
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
-open DifferentialGeometry.Analysis.Laplacian
+open SmoothRiemannianMetric (metricInnerOpNorm metricInnerOpNorm_nonneg)
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -112,7 +110,7 @@ private lemma omegaK_opNorm_le
   have hprod_le :
       ∏ k : Fin r, ‖g.inner b (e (K k))‖ ≤
         ∏ k : Fin r, (metricInnerOpNorm (I := I) (M := M) g b * ‖e (K k)‖) := by
-    refine Finset.prod_le_prod ?_ ?_
+    refine Finset.prod_le_prod₀ ?_ ?_
     · intro k _; exact norm_nonneg _
     · intro k _; exact hfactor k
   have hprod_eq :
@@ -347,8 +345,7 @@ lemma exists_riemannianFiberNormSq_pointwise_bound
   rw [h_eq]
   exact riemannianFiberNormSq_sum_le_pointwise (I := I) (M := M) g r s b T n e
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

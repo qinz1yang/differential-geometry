@@ -86,9 +86,9 @@ theorem exists_diffeomorph_intervalInterpolation
       contMDiff_invFun := (hrs p hp).contMDiff }
     else Diffeomorph.refl 𝓘(ℝ) ℝ ∞
   have hD (p : P) (hp : p ∈ S) (y : ℝ) : D p y = H (p, y) := by
-    simp only [D, dif_pos hp]; rfl
+    simp only [D, dite_eq_left hp]; rfl
   have hDi (p : P) (hp : p ∈ S) (y : ℝ) : (D p).symm y = R (p, y) := by
-    simp only [D, dif_pos hp]; rfl
+    simp only [D, dite_eq_left hp]; rfl
   refine ⟨D, hH.congr (fun q hq ↦ hD q.1 hq.1 q.2),
     hR.congr (fun q hq ↦ hDi q.1 hq.1 q.2), fun p hp ↦ ?_⟩
   have he : (D p : ℝ → ℝ) = fun y ↦ H (p, y) := funext (hD p hp)

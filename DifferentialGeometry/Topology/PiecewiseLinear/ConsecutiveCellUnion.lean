@@ -94,12 +94,12 @@ theorem isTopologicalCell_union_of_isTopologicalCell_inter {A B : Set Plane}
     exact mem_image_of_mem g hx
   set S := frontier (A ∩ B) with hS
   set η : Plane → Plane := fun x => if x ∈ frontier A then g x else f x with hη
-  have hηA : ∀ x, x ∈ frontier A → η x = g x := fun x hx => if_pos hx
+  have hηA : ∀ x, x ∈ frontier A → η x = g x := fun x hx => ite_eq_left hx
   have hηB : ∀ x ∈ S, x ∈ frontier B → η x = f x := by
     intro x hxS hxB
     by_cases hxA : x ∈ frontier A
     · rw [hηA x hxA, hgfix x ⟨hxS, hxB⟩, hffix x ⟨hxS, hxA⟩]
-    · exact if_neg hxA
+    · exact ite_eq_right hxA
   have hcov : S ∩ frontier A ∪ S ∩ frontier B = S := by
     apply Subset.antisymm
     · rintro x (hx | hx) <;> exact hx.1

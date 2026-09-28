@@ -15,8 +15,8 @@ theorem exists_surface_inessential_disk_filling_in_solid_torus
     (hKS : K.space ⊆ interior S.space) (hgen : CarriesFundamentalGroupOnto K.space S.space)
     {D E : Set (EuclideanSpace ℝ (Fin 3))}
     {d e : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)}
-    (hd : IsPLHomeomorphOn d (stdSimplex ℝ (Fin 3)) D)
-    (he : IsPLHomeomorphOn e (stdSimplex ℝ (Fin 3)) E)
+    (hd : IsPLHomeomorphOn d (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
+    (he : IsPLHomeomorphOn e (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E)
     (hends : e '' stdSimplexBoundary 2 = d '' stdSimplexBoundary 2)
     (hDS : D ⊆ interior S.space) (hEK : E ⊆ K.space)
     (htrace : D ∩ K.space = d '' stdSimplexBoundary 2) :

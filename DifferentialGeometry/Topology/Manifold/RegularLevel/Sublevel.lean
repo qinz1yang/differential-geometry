@@ -18,22 +18,22 @@ private def restrictSubtypes {X Y : Type*} [TopologicalSpace X] [TopologicalSpac
     map_source' := by
       intro x hx
       change (x : X) ∈ e.source at hx
-      simp only [mem_preimage, dif_pos hx]
+      simp only [mem_preimage, dite_eq_left hx]
       exact e.map_source hx
     map_target' := by
       intro y hy
       change (y : Y) ∈ e.target at hy
-      simp only [mem_preimage, dif_pos hy]
+      simp only [mem_preimage, dite_eq_left hy]
       exact e.map_target hy
     left_inv' := by
       intro x hx
       change (x : X) ∈ e.source at hx
-      simp only [dif_pos hx, dif_pos (e.map_source hx)]
+      simp only [dite_eq_left hx, dite_eq_left (e.map_source hx)]
       exact Subtype.ext (e.left_inv hx)
     right_inv' := by
       intro y hy
       change (y : Y) ∈ e.target at hy
-      simp only [dif_pos hy, dif_pos (e.map_target hy)]
+      simp only [dite_eq_left hy, dite_eq_left (e.map_target hy)]
       exact Subtype.ext (e.right_inv hy)
     open_source := e.open_source.preimage continuous_subtype_val
     open_target := e.open_target.preimage continuous_subtype_val
@@ -42,13 +42,13 @@ private def restrictSubtypes {X Y : Type*} [TopologicalSpace X] [TopologicalSpac
       apply (e.continuousOn.comp continuous_subtype_val.continuousOn (fun _ hx => hx)).congr
       intro x hx
       change (x : X) ∈ e.source at hx
-      simp only [Function.comp_apply, dif_pos hx]
+      simp only [Function.comp_apply, dite_eq_left hx]
     continuousOn_invFun := by
       apply Topology.IsInducing.subtypeVal.continuousOn_iff.mpr
       apply (e.symm.continuousOn.comp continuous_subtype_val.continuousOn (fun _ hy => hy)).congr
       intro y hy
       change (y : Y) ∈ e.target at hy
-      simp only [Function.comp_apply, dif_pos hy] }
+      simp only [Function.comp_apply, dite_eq_left hy] }
 
 private theorem restrictSubtypes_apply {X Y : Type*} [TopologicalSpace X] [TopologicalSpace Y]
     (e : OpenPartialHomeomorph X Y) {S : Set X} {T : Set Y}

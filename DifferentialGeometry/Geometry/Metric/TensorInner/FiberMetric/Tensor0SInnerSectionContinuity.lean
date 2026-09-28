@@ -19,7 +19,7 @@ namespace DifferentialGeometry
 namespace Tensor
 namespace Tensor0SInnerSectionContinuity
 
-open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric
 open DifferentialGeometry.Tensor.Tensor0SRiemannian
 open DifferentialGeometry.Tensor.Tensor0SRiemannianBundle
 open DifferentialGeometry.Tensor0SBundle

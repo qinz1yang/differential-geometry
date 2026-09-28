@@ -10,7 +10,9 @@ open DifferentialGeometry.Topology.SimplicialComplex
 
 private def boundaryRealizationCoordinates (n : ℕ) :
     _root_.SSet.toTop.obj (_root_.SSet.boundary n : _root_.SSet) ≃ₜ boundary (Fin (n + 1)) :=
-  (DifferentialGeometry.SSet.boundaryRealizationHomeomorph n).trans (Homeomorph.ulift.sets rfl)
+  (DifferentialGeometry.SSet.boundaryRealizationHomeomorph n).trans
+    ((Homeomorph.ulift.trans (Convexity.StdSimplex.coordinateHomeomorph ℝ (Fin (n + 1)))).subtype
+      (fun _ => Iff.rfl))
 
 
 theorem finiteHomologyType_boundary (k : Type) [Field k] (n : ℕ) :

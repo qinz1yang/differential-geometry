@@ -141,10 +141,10 @@ theorem exists_cutModel_data [FiniteDimensional ℝ E] (hn : Module.finrank ℝ 
   have hℓm : ℓ m = r := hℓS m (by simp)
   have hℓA : ℓ A = r := hℓS A (by simp)
   have hℓB : ℓ B = r := hℓS B (by simp)
-  have hνc : ν c = s := by rw [hν c (by simp), if_neg hcA]; ring
-  have hνm : ν m = s := by rw [hν m (by simp), if_neg hmA]; ring
-  have hνA : ν A = s + 1 := by rw [hν A (by simp), if_pos rfl]
-  have hνB : ν B = s := by rw [hν B (by simp), if_neg (Ne.symm hAB)]; ring
+  have hνc : ν c = s := by rw [hν c (by simp), ite_eq_right hcA]; ring
+  have hνm : ν m = s := by rw [hν m (by simp), ite_eq_right hmA]; ring
+  have hνA : ν A = s + 1 := by rw [hν A (by simp), ite_eq_left rfl]
+  have hνB : ν B = s := by rw [hν B (by simp), ite_eq_right (Ne.symm hAB)]; ring
   have hνd : ν d = s := by rw [hd, map_sub, map_add, hνm, hνc]; ring
   have hℓz : ℓ z = r := by
     rw [hzdef]

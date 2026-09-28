@@ -11,6 +11,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric (metricDiffAt metricDiffAt_apply metricDiffSq
+  metricDiffSq_def traceNormSq_le)
+
 open Bundle DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Curvature
@@ -83,7 +86,7 @@ private theorem onFrame_coord {Idx : Type*} [DecidableEq Idx]
     rw [hON i j]
     by_cases h : i = j
     · subst h; simp
-    · rw [if_neg h, if_neg (fun hh : j = i => h hh.symm)]
+    · rw [ite_eq_right h, ite_eq_right (fun hh : j = i => h hh.symm)]
   exact congrArg (fun L : (TangentSpace I x) →ₗ[Real] Real => L v) hlin
 
 omit [SigmaCompactSpace M] [T2Space M] in

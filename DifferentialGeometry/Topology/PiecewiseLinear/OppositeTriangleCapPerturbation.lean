@@ -55,7 +55,7 @@ theorem exists_small_opposite_triangle_cap_pair_with_level_comparison
       (levelPolygons R₁.space f₁ (f₁ (H p))).encard + 1 ≤ (levelPolygons A ℓ (ℓ p)).encard ∧
       (levelPolygons R₂.space f₂ (f₂ (H p))).encard + 1 ≤ (levelPolygons B ℓ (ℓ p)).encard ∧
       (A ∪ D) ∩ (B ∪ D) = D ∧ ((A ∪ D) ∪ (B ∪ D)) \ (D \ J) = K.space ∧
-      ∃ u : (Fin 3 → ℝ) → E, IsPLHomeomorphOn u (stdSimplex ℝ (Fin 3)) D ∧
+      ∃ u : (Fin 3 → ℝ) → E, IsPLHomeomorphOn u (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
         u '' stdSimplexBoundary 2 = J := by
   classical
   obtain ⟨A, B, D, C, g, fA, fB, H, m, e, T, hunion, hinter, hJ, hfA, hfAJ,

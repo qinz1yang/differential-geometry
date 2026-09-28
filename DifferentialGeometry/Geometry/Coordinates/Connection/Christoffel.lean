@@ -1,5 +1,3 @@
-import DifferentialGeometry.Analysis.Time
-import Mathlib.RingTheory.Derivation.Basic
 import Mathlib.Tactic
 import Mathlib.Geometry.Manifold.VectorBundle.LocalFrame
 import Mathlib.Geometry.Manifold.VectorBundle.Tangent
@@ -9,7 +7,6 @@ import Mathlib.Geometry.Manifold.VectorBundle.CovariantDerivative.Torsion
 
 set_option autoImplicit false
 
-open DifferentialGeometry.Analysis
 namespace DifferentialGeometry.Tensor.Coordinates
 
 noncomputable section
@@ -182,53 +179,7 @@ theorem christoffelSymbolDifferenceInFrame_eq_sub
 
 end Difference
 
-section TimeDerivative
-
-variable {A Time : Type*} [CommRing A] [Algebra 𝕜 A]
-
-
-def christoffelSymbolTimeDerivativeInFrame
-    (td : TimeDerivativeData 𝕜 A Time)
-    (covFam : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
-    (t : Time) (x : M) (i j k : Idx) : 𝕜 :=
-  td.dtApply (fun s => christoffelSymbolInFrame (covFam s) frame hframe x i j k) t
-
-omit [CompleteSpace 𝕜] in
-@[simp] theorem christoffelSymbolTimeDerivativeInFrame_eval
-    (td : TimeDerivativeData 𝕜 A Time)
-    (covFam : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
-    (t : Time) (x : M) (i j k : Idx) :
-    christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
-      td.dtApply (fun s => christoffelSymbolInFrame (covFam s) frame hframe x i j k) t := by
-  rfl
-
-
-def ChristoffelSymbolEvolutionEquationInFrame
-    (td : TimeDerivativeData 𝕜 A Time)
-    (covFam : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
-    (rhs : Time -> M -> Idx -> Idx -> Idx -> 𝕜) : Prop :=
-  forall t x i j k,
-    christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
-      rhs t x i j k
-
-omit [CompleteSpace 𝕜] in
-theorem christoffelSymbolEvolution_from_equation
-    (td : TimeDerivativeData 𝕜 A Time)
-    (covFam : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
-    (rhs : Time -> M -> Idx -> Idx -> Idx -> 𝕜)
-    (h_evolution : ChristoffelSymbolEvolutionEquationInFrame td covFam frame hframe rhs)
-    (t : Time) (x : M) (i j k : Idx) :
-    christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
-      rhs t x i j k :=
-  h_evolution t x i j k
+variable {Time : Type*}
 
 def ricciFlowChristoffelEvolutionRHSInFrame
     (nablaRicLastRaised nablaRicDirectionRaised : Time -> M -> Idx -> Idx -> Idx -> 𝕜)
@@ -236,37 +187,6 @@ def ricciFlowChristoffelEvolutionRHSInFrame
   - nablaRicLastRaised t x i j k -
     nablaRicLastRaised t x j i k +
     nablaRicDirectionRaised t x i j k
-
-def RicciFlowChristoffelSymbolEvolutionEquationInFrame
-    (td : TimeDerivativeData 𝕜 A Time)
-    (covFam : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
-    (nablaRicLastRaised nablaRicDirectionRaised :
-      Time -> M -> Idx -> Idx -> Idx -> 𝕜) : Prop :=
-  ChristoffelSymbolEvolutionEquationInFrame td covFam frame hframe
-    (ricciFlowChristoffelEvolutionRHSInFrame nablaRicLastRaised nablaRicDirectionRaised)
-
-omit [CompleteSpace 𝕜] in
-theorem ricciFlow_christoffelSymbolEvolution_from_equation
-    (td : TimeDerivativeData 𝕜 A Time)
-    (covFam : Time -> CovariantDerivative I E (TangentSpace I : M -> Type _))
-    (frame : Idx -> (x : M) -> TangentSpace I x)
-    (hframe : IsLocalFrameOn I E 1 frame u)
-    (nablaRicLastRaised nablaRicDirectionRaised :
-      Time -> M -> Idx -> Idx -> Idx -> 𝕜)
-    (h_evolution : RicciFlowChristoffelSymbolEvolutionEquationInFrame
-      td covFam frame hframe nablaRicLastRaised nablaRicDirectionRaised)
-    (t : Time) (x : M) (i j k : Idx) :
-    christoffelSymbolTimeDerivativeInFrame td covFam frame hframe t x i j k =
-      - nablaRicLastRaised t x i j k -
-        nablaRicLastRaised t x j i k +
-        nablaRicDirectionRaised t x i j k := by
-  simpa [RicciFlowChristoffelSymbolEvolutionEquationInFrame,
-    ChristoffelSymbolEvolutionEquationInFrame, ricciFlowChristoffelEvolutionRHSInFrame]
-    using h_evolution t x i j k
-
-end TimeDerivative
 
 end
 

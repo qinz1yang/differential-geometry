@@ -459,7 +459,7 @@ theorem supportFun_core (d : (G.Child c).Carrier) (y : G.transition.ChildCore c)
     K.supportFun d (childCoreIntoParentFun y) = childCoreInclusionCoe y := by
   have h : ∃ y' : G.transition.ChildCore c,
       childCoreIntoParentFun y' = childCoreIntoParentFun y := ⟨y, rfl⟩
-  rw [supportFun, dif_pos h]
+  rw [supportFun, dite_eq_left h]
   exact congrArg childCoreInclusionCoe
     (childCoreIntoParentFun_injective (G := G) (c := c) (Classical.choose_spec h))
 
@@ -467,7 +467,7 @@ theorem supportFun_collar (d : (G.Child c).Carrier) (b : G.ChildBoundary c)
     (w : Sphere 2 × ↑(Icc (K.level b) 0)) :
     K.supportFun d (K.collar b w) = K.localCollapse b (K.collarParameter b w) := by
   by_cases h : ∃ y : G.transition.ChildCore c, childCoreIntoParentFun y = K.collar b w
-  · rw [supportFun, dif_pos h]
+  · rw [supportFun, dite_eq_left h]
     have hmem : K.collar b w ∈ Set.range (K.collar b) ∩
         Set.range (G.transition.childCoreIntoParent c) :=
       ⟨Set.mem_range_self w, ⟨Classical.choose h, Classical.choose_spec h⟩⟩
@@ -486,7 +486,7 @@ theorem supportFun_collar (d : (G.Child c).Carrier) (b : G.ChildBoundary c)
     exact (Classical.choose_spec h).trans (congrArg (K.collar b) hw)
   · have h' : ∃ (b' : G.ChildBoundary c) (w' : Sphere 2 × ↑(Icc (K.level b') 0)),
         K.collar b' w' = K.collar b w := ⟨b, w, rfl⟩
-    rw [supportFun, dif_neg h, dif_pos h']
+    rw [supportFun, dite_eq_right h, dite_eq_left h']
     exact K.collarChoiceValue_eq rfl
 
 theorem childCoreIntoParentFun_continuous :
@@ -559,12 +559,12 @@ noncomputable def wholeParentMapFun (d : (G.Child c).Carrier) (x : (G.Parent c).
 theorem wholeParentMapFun_of_mem (d : (G.Child c).Carrier) {x : (G.Parent c).Carrier}
     (hx : x ∈ K.support.region) :
     K.wholeParentMapFun d x = K.supportFun d x := by
-  rw [wholeParentMapFun, dif_pos hx]
+  rw [wholeParentMapFun, dite_eq_left hx]
 
 theorem wholeParentMapFun_of_notMem (d : (G.Child c).Carrier) {x : (G.Parent c).Carrier}
     (hx : x ∉ K.support.region) :
     K.wholeParentMapFun d x = K.tip (Classical.choose (K.exterior_exists x hx)) := by
-  rw [wholeParentMapFun, dif_neg hx]
+  rw [wholeParentMapFun, dite_eq_right hx]
 
 theorem wholeParentMapFun_continuousOn_region (d : (G.Child c).Carrier) :
     ContinuousOn (K.wholeParentMapFun d) K.support.region :=

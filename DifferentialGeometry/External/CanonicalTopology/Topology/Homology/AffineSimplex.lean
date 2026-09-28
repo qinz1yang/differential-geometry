@@ -15,41 +15,40 @@ namespace DifferentialGeometry.Topology
 variable {E : Type u} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 /-- The actual barycentric affine simplex with the specified ordered vertices. -/
-def affineSimplexMap {ι : Type*} [Fintype ι] (v : ι → E) : C(stdSimplex ℝ ι, E) :=
-  ⟨fun t => ∑ i, t.val i • v i,
+def affineSimplexMap {ι : Type*} [Fintype ι] (v : ι → E) : C(Convexity.StdSimplex ℝ ι, E) :=
+  ⟨fun t => ∑ i, t.weights i • v i,
     continuous_finsetSum _ (fun i _ =>
-      ((continuous_apply i).comp continuous_subtype_val).smul continuous_const)⟩
+      (Convexity.StdSimplex.continuous_weights_apply ℝ i).smul continuous_const)⟩
 
 /-- Its original barycentric vertex evaluates to the specified vertex. -/
-theorem affineSimplexMap_vertex {ι : Type*} [Fintype ι] [DecidableEq ι]
-    (v : ι → E) (i : ι) : affineSimplexMap v (stdSimplex.vertex i) = v i := by
-  change ∑ j, (Pi.single i (1 : ℝ) : ι → ℝ) j • v j = v i
-  simp [Pi.single_apply]
+theorem affineSimplexMap_vertex {ι : Type*} [Fintype ι]
+    (v : ι → E) (i : ι) : affineSimplexMap v (Convexity.StdSimplex.single i) = v i := by
+  classical
+  change ∑ j, (Finsupp.single i (1 : ℝ)) j • v j = v i
+  simp [Finsupp.single_apply]
 
 /-- Every point of the actual affine simplex lies in the convex hull of
 its original vertices. -/
 theorem affineSimplexMap_mem_convexHull {ι : Type*} [Fintype ι] (v : ι → E)
-    (t : stdSimplex ℝ ι) : affineSimplexMap v t ∈ convexHull ℝ (range v) :=
-  (convex_convexHull ℝ (range v)).sum_mem (fun i _ => t.property.1 i) t.property.2
+    (t : Convexity.StdSimplex ℝ ι) : affineSimplexMap v t ∈ convexHull ℝ (range v) :=
+  (convex_convexHull ℝ (range v)).sum_mem (fun i _ => t.weights_nonneg i) t.total_of_fintype
     (fun i _ => subset_convexHull ℝ (range v) ⟨i, rfl⟩)
 
 /-- The affine simplex respects the original barycentric pushforward for
 every map of its finite vertex sets. -/
 theorem affineSimplexMap_map {ι κ : Type*} [Fintype ι] [Fintype κ]
-    (f : ι → κ) (v : κ → E) (t : stdSimplex ℝ ι) :
-    affineSimplexMap v (stdSimplex.map f t) = affineSimplexMap (v ∘ f) t := by
+    (f : ι → κ) (v : κ → E) (t : Convexity.StdSimplex ℝ ι) :
+    affineSimplexMap v (Convexity.StdSimplex.map f t) = affineSimplexMap (v ∘ f) t := by
   classical
-  change (∑ j, (FunOnFinite.linearMap ℝ ℝ f t.val) j • v j) = ∑ i, t.val i • v (f i)
-  simp only [FunOnFinite.linearMap_apply_apply, Finset.sum_smul]
+  change (∑ j, (t.weights.mapDomain f) j • v j) = ∑ i, t.weights i • v (f i)
   calc
-    (∑ j, ∑ i with f i = j, t.val i • v j) =
-        ∑ j, ∑ i with f i = j, t.val i • v (f i) := by
-      apply Finset.sum_congr rfl
-      intro j _
-      apply Finset.sum_congr rfl
-      intro i hi
-      rw [(Finset.mem_filter.mp hi).2]
-    _ = ∑ i, t.val i • v (f i) := Finset.sum_fiberwise Finset.univ f _
+    (∑ j, (t.weights.mapDomain f) j • v j) =
+        (t.weights.mapDomain f).sum (fun j r => r • v j) :=
+      (Finsupp.sum_fintype (t.weights.mapDomain f) (fun j r => r • v j)
+        (fun _ => zero_smul ℝ _)).symm
+    _ = t.weights.sum (fun i r => r • v (f i)) :=
+      Finsupp.sum_mapDomain_index (fun _ => zero_smul ℝ _) (fun _ _ _ => add_smul _ _ _)
+    _ = ∑ i, t.weights i • v (f i) := Finsupp.sum_fintype _ _ (by simp)
 
 /-- The same affine map as an original singular simplex. -/
 def affineSingularSimplex (n : ℕ) (v : Fin (n + 1) → E) : integralSingularSimplex n E :=
@@ -67,7 +66,7 @@ theorem affineSingularSimplex_face (n : ℕ) (v : Fin (n + 2) → E) (i : Fin (n
   rw [TopCat.toSSetObjEquiv_δ_apply]
   change integralSingularSimplexEquiv (n + 1) E
     ((integralSingularSimplexEquiv (n + 1) E).symm (affineSimplexMap v))
-      (stdSimplex.map i.succAbove t) =
+      (Convexity.StdSimplex.map i.succAbove t) =
     integralSingularSimplexEquiv n E ((integralSingularSimplexEquiv n E).symm
       (affineSimplexMap (v ∘ i.succAbove))) t
   rw [Equiv.apply_symm_apply, Equiv.apply_symm_apply]

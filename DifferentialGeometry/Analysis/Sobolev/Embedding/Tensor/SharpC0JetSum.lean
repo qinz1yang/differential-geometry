@@ -2,6 +2,9 @@ import DifferentialGeometry.Analysis.Sobolev.Embedding.Reverse.OrderPeeling
 import DifferentialGeometry.Analysis.Sobolev.Tensor.PartitionOfUnity.ReverseZerothOrderBound
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.FiberNorm.RawComponentBound
 import Mathlib.Algebra.Order.Chebyshev
+
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -318,7 +321,7 @@ private theorem sharpRawPullCenter_le_jetSum
               (iteratedCovGrad g r s i T) α q.1 q.2 z|) 2
               ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) := by
           rw [hZc_sum]
-          exact eLpNorm_sum_le (fun q _ => h_raw_meas i q) (by norm_num)
+          exact eLpNorm_sum_le (by norm_num)
       _ ≤ ∑ _q : (Fin r → Fin (Module.finrank ℝ E)) ×
             (Fin (s + i) → Fin (Module.finrank ℝ E)),
             ENNReal.ofReal ((Real.sqrt c⁻¹ * Bfun i) *
@@ -356,7 +359,25 @@ private theorem sharpRawPullCenter_le_jetSum
         ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) ≤
         eLpNorm (Cjfun j • fun z => ∑ i ∈ Finset.range (m + 1), Zc i z) 2
           ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) := by
-      refine eLpNorm_mono_ae ?_
+      have h_lhs_meas : AEStronglyMeasurable (fun z => ‖iteratedFDeriv ℝ j
+          (tensorComponentEuclideanChart (I := I) (M := M) g r s T α IJ.1 IJ.2) z‖)
+          ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) := by
+        have h_cdOn := rawPullR_contDiffOn (I := I) (M := M) g r s T α IJ.1 IJ.2
+        have h_open : IsOpen (chartTargetEuclid (I := I) (M := M) α) :=
+          DifferentialGeometry.Analysis.Sobolev.Chart.chartTargetEuclid_isOpen
+            (I := I) (M := M) α
+        have h_iter_contOn : ContinuousOn (fun z => iteratedFDeriv ℝ j
+            (tensorComponentEuclideanChart (I := I) (M := M) g r s T α IJ.1 IJ.2) z)
+            (Metric.ball y₀ R) := by
+          intro z hz
+          have h_cd : ContDiffAt ℝ ∞
+              (tensorComponentEuclideanChart (I := I) (M := M) g r s T α IJ.1 IJ.2) z :=
+            h_cdOn.contDiffAt (h_open.mem_nhds (hball_open hz))
+          exact (h_cd.continuousAt_iteratedFDeriv (k := j)
+            (by exact_mod_cast le_top)).continuousWithinAt
+        exact ContinuousOn.aestronglyMeasurable
+          (continuous_norm.comp_continuousOn h_iter_contOn) measurableSet_ball
+      refine eLpNorm_mono_ae h_lhs_meas ?_
       refine (ae_restrict_iff' measurableSet_ball).2
         (Filter.Eventually.of_forall (fun z hz => ?_))
       have h2 : 0 ≤ Cjfun j * ∑ i ∈ Finset.range (m + 1), Zc i z :=
@@ -383,7 +404,7 @@ private theorem sharpRawPullCenter_le_jetSum
       rw [eLpNorm_const_smul, Real.enorm_eq_ofReal (hCjfun_nn j)]
       refine mul_le_mul_right ?_ _
       rw [h_sum_fun]
-      exact eLpNorm_sum_le (fun i _ => hZc_meas i) (by norm_num)
+      exact eLpNorm_sum_le (by norm_num)
     have h_enn2 : eLpNorm (fun z => ‖iteratedFDeriv ℝ j
         (tensorComponentEuclideanChart (I := I) (M := M) g r s T α IJ.1 IJ.2) z‖) 2
         ((volume : Measure EuclN).restrict (Metric.ball y₀ R)) ≤

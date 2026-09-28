@@ -29,7 +29,7 @@ theorem lintegral_paramDensity_mul_le_lintegral_image
   have hJ : AEMeasurable J ((modelHaar (E := E)).restrict K) :=
     (((continuousOn_paramDensity (I := I) g hU hf).mono hKU).aemeasurable hK).ennreal_ofReal
   have hfw : AEMeasurable f ν :=
-    ((hf.continuousOn.mono hKU).aemeasurable (μ := modelHaar (E := E)) hK).mono'
+    ((hf.continuousOn.mono hKU).aemeasurable (μ := modelHaar (E := E)) hK).mono_ac
       (withDensity_absolutelyContinuous _ _)
   have he : MeasurableEmbedding (K.domRestrict f) :=
     (hf.continuousOn.mono hKU).measurableEmbedding hK hinj

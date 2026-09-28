@@ -144,7 +144,7 @@ private theorem exists_iterated_ds_tensorTangentJet_bound (c : CurveMap M)
       (fun i => c.iteratedDs g (v i) (c.unitTangent g) x t)| ≤ _
     refine (abs_apply_le_norm0S (g t) (c.lift x t) (r + j) _ _).trans ?_
     apply mul_le_mul ((hC x t ht).trans (le_max_right _ _))
-    · exact Finset.prod_le_prod (fun _ _ => Real.sqrt_nonneg _)
+    · exact Finset.prod_le_prod₀ (fun _ _ => Real.sqrt_nonneg _)
         (fun i _ => (hB (v i) x t ht).trans (le_max_right _ _))
     · exact Finset.prod_nonneg (fun _ _ => Real.sqrt_nonneg _)
     · exact le_max_left _ _

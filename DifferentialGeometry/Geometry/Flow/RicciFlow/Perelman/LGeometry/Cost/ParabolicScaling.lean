@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.Re
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.RegularizedEquality
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.ReducedLength.Defs
-import Mathlib.Data.Real.Pointwise
+import Mathlib.Basic.Real.Pointwise
 
 noncomputable section
 

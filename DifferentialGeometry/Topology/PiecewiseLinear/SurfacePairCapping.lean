@@ -18,7 +18,7 @@ theorem exists_orientable_surface_pair_of_circle_cap [d : DecidableEq E3]
     (hX₁ : IsCombinatorialManifoldWithBoundary 2 X₁) (hX₁o : IsOrientable 2 X₁)
     {Δ L' T O : Set E3} {r : (Fin 3 → ℝ) → E3} {f : E3 → E3}
     (htrace₀ : HasFiniteCollaredTrace X₀.space T) (hdis : Disjoint X₀.space X₁.space)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hG₀ : r '' stdSimplexBoundary 2 ∈ traceCircles X₀.space T)
     (hmeet : (X₀.space ∪ X₁.space) ∩ Δ = r '' stdSimplexBoundary 2) (hΔO : Δ ⊆ O)
     (hf : IsPLHomeomorphOn f ((X₀.space ∪ X₁.space) ∪ Δ) L')
@@ -107,7 +107,7 @@ theorem exists_orientable_surface_pair_of_trace_cap [d : DecidableEq E3]
     {Δ L' T O : Set E3} {r : (Fin 3 → ℝ) → E3} {f : E3 → E3}
     (htrace₀ : HasFiniteCollaredTrace X₀.space T)
     (htrace₁ : HasFiniteCollaredTrace X₁.space T) (hdis : Disjoint X₀.space X₁.space)
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hG : r '' stdSimplexBoundary 2 ∈ traceCircles (X₀.space ∪ X₁.space) T)
     (hmeet : (X₀.space ∪ X₁.space) ∩ Δ = r '' stdSimplexBoundary 2) (hΔO : Δ ⊆ O)
     (hf : IsPLHomeomorphOn f ((X₀.space ∪ X₁.space) ∪ Δ) L')

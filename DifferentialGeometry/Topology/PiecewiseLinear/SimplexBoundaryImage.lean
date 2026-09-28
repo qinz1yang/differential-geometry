@@ -30,7 +30,7 @@ theorem mem_convexHull_erase_iff_weights_eq_zero [DecidableEq E] {T : Finset E}
       exact h
 
 theorem weights_stdVertices {n : ℕ} {x : Fin (n + 2) → ℝ}
-    (hx : x ∈ stdSimplex ℝ (Fin (n + 2))) (i : Fin (n + 2)) :
+    (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (i : Fin (n + 2)) :
     weights (stdVertices n) x (Pi.single i (1 : ℝ)) = x i := by
   classical
   have hx' : x ∈ convexHull ℝ ((stdVertices n : Finset _) : Set _) := by
@@ -38,7 +38,7 @@ theorem weights_stdVertices {n : ℕ} {x : Fin (n + 2) → ℝ}
   have h := congrFun (sum_weights_smul hx') i
   rw [stdVertices, Finset.sum_image (fun j _ k _ h => stdVertex_injective n h)] at h
   simpa only [Finset.sum_apply, Pi.smul_apply, Pi.single_apply, smul_eq_mul,
-    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, stdVertices, Finset.mem_univ, if_true] using h
+    mul_ite, mul_one, mul_zero, Finset.sum_ite_eq, stdVertices, Finset.mem_univ, ite_true] using h
 
 theorem simplexBoundary_stdVertices_space (n : ℕ) :
     (simplexBoundary (stdVertices n) (stdVertices_affineIndependent n)).space =
@@ -67,12 +67,12 @@ open Classical in
 theorem image_stdSimplexBoundary_of_isPLHomeomorphOn_convexHull [FiniteDimensional ℝ E]
     {T : Finset E} (hT : AffineIndependent ℝ ((↑) : T → E)) {n : ℕ}
     (hcard : T.card = n + 2) {f : (Fin (n + 2) → ℝ) → E}
-    (hf : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) (convexHull ℝ (T : Set E))) :
+    (hf : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (convexHull ℝ (T : Set E))) :
     f '' stdSimplexBoundary (n + 1) = (simplexBoundary T hT).space := by
   have : Finite (simplexComplex T hT).faces := (simplexComplex_faces_finite T hT).to_subtype
   have hspace : (simplexComplex T hT).space = convexHull ℝ (T : Set E) :=
     simplexComplex_space T hT (Finset.card_pos.mp (by omega))
-  have hf' : IsPLHomeomorphOn f (stdSimplex ℝ (Fin (n + 2))) (simplexComplex T hT).space := by
+  have hf' : IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (simplexComplex T hT).space := by
     rwa [hspace]
   have h := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex (simplexComplex T hT) hf'
   rw [boundaryComplex_simplexComplex hT hcard, simplexBoundary_stdVertices_space] at h

@@ -47,7 +47,7 @@ private theorem exists_cylindricalDiagram_of_inter_eq_disjoint_disks
     (hD₀ : IsPLBall 2 D₀) (hD₁ : IsPLBall 2 D₁) (hdis : Disjoint D₀ D₁)
     (hinter : A ∩ B = D₀ ∪ D₁) :
     ∃ f : (Fin 3 → ℝ) × ℝ → E3,
-      IsCylindricalDiagram f (stdSimplex ℝ (Fin 3)) (A ∪ B) := by
+      IsCylindricalDiagram f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (A ∪ B) := by
   classical
   let _ : DecidableEq E3 := Classical.decEq _
   obtain ⟨K, hKfin, hKA⟩ := hA.isPolyhedron.exists_simplicialComplex

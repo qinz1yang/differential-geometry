@@ -15,7 +15,7 @@ local notation "Plane" => EuclideanSpace ℝ (Fin 2)
 
 theorem exists_halfspace_chart_of_ball_pair
     {P Q D : Set E3} (hP : IsPLBall 3 P) (hQ : IsPLBall 3 Q)
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hmeet : P ∩ Q = D) (hDP : D ⊆ frontier P) (hDQ : D ⊆ frontier Q) :
     ∃ e : OpenPartialHomeomorph E3 (Plane × ℝ),
       D \ r '' stdSimplexBoundary 2 ⊆ e.source ∧ e.source ⊆ interior (P ∪ Q) ∧

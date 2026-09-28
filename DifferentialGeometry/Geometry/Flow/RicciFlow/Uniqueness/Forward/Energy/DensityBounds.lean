@@ -11,6 +11,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq)
+
 open Bundle _root_.Manifold Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
 open scoped _root_.Manifold ContDiff
@@ -53,7 +56,7 @@ theorem forwardUniqueDensity_le_of_metric_curvature_connection_bounds
       (metricTensorField (I := I) (g₂ t) x)
     simpa only [hself] using h
   have hmetric : metricDiffSq (I := I) (g₁ t) (g₂ t) x ≤ 2 * n + 2 * C ^ 2 * n := by
-    have h := _root_.Tensor0SBundle.normSq0S_sub_le (I := I) (g₁ t) x 2
+    have h := _root_.DifferentialGeometry.Tensor0SBundle.normSq0S_sub_le (I := I) (g₁ t) x 2
       (metricTensorField (I := I) (g₁ t) x) (metricTensorField (I := I) (g₂ t) x)
     rw [hself] at h
     change normSq0S (I := I) (g₁ t) x 2
@@ -67,7 +70,7 @@ theorem forwardUniqueDensity_le_of_metric_curvature_connection_bounds
       (mul_le_mul_of_nonneg_left hR₂ (by positivity))
   have hriemann : rmDiffSq (I := I) (g₁ t) (g₂ t) x ≤
       2 * R₁ + 2 * n ^ 7 * C ^ 6 * R₂ := by
-    have h := _root_.Tensor0SBundle.normSq0S_sub_le (I := I) (g₁ t) x 4
+    have h := _root_.DifferentialGeometry.Tensor0SBundle.normSq0S_sub_le (I := I) (g₁ t) x 4
       (metricRm04At (I := I) (g₁ t) x)
       (CovariantDerivative.riemannCurvature04At (I := I) (g₁ t)
         (metricCov (I := I) (g₂ t)) (metricCov_smooth (I := I) (g₂ t)) x)

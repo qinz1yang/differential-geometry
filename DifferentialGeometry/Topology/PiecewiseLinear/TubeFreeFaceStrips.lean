@@ -107,7 +107,7 @@ theorem IsTube.disjoint_rim_freeFace (ht : IsTube K N C D Dbd h N') {e : Finset 
 
 theorem IsTube.exists_freeFace_strip (ht : IsTube K N C D Dbd h N')
     {R : Finset E3 → (Fin 3 → ℝ) → E3}
-    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (stdSimplex ℝ (Fin 3)) (D e) ∧
+    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧
       Dbd e = R e '' stdSimplexBoundary 2)
     {v : E3} (hv : v ∈ K.vertices) {ein eout : Finset E3} (hein : ein ∈ edgesAt K v)
     (heout : eout ∈ edgesAt K v) (hne : ein ≠ eout) {α β : ℝ → E3}
@@ -129,7 +129,7 @@ theorem IsTube.exists_freeFace_strip (ht : IsTube K N C D Dbd h N')
   have hfin : (edgesAt K v).Finite := ht.facesFinite.subset fun e he => he.1
   have _ : Finite {e // e ∈ edgesAt K v} := hfin.to_subtype
   have hq : ∀ e : {e // e ∈ edgesAt K v},
-      IsPLHomeomorphOn (R e.1) (stdSimplex ℝ (Fin 3)) (D e.1) := fun e =>
+      IsPLHomeomorphOn (R e.1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e.1) := fun e =>
     (hR e.1 e.2.1 e.2.2.1).1
   have hc : ∀ e : {e // e ∈ edgesAt K v}, R e.1 '' stdSimplexBoundary 2 = Dbd e.1 := fun e =>
     (hR e.1 e.2.1 e.2.2.1).2.symm
@@ -210,7 +210,7 @@ theorem IsTube.exists_freeFace_strip (ht : IsTube K N C D Dbd h N')
 
 theorem IsTube.exists_freeFace_chain (ht : IsTube K N C D Dbd h N')
     {R : Finset E3 → (Fin 3 → ℝ) → E3}
-    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (stdSimplex ℝ (Fin 3)) (D e) ∧
+    (hR : ∀ e ∈ K.faces, e.card = 2 → IsPLHomeomorphOn (R e) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (D e) ∧
       Dbd e = R e '' stdSimplexBoundary 2)
     {x y : K.vertices} (p : (SimplicialComplex.edgeGraph K).Walk x y) :
     p.IsPath → ∀ {ein eout : Finset E3}, ein ∈ edgesAt K x → eout ∈ edgesAt K y → ein ≠ eout →

@@ -7,7 +7,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Completeness.IteratedSobo
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.WeakDerivative.Closedness
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Basic
 import DifferentialGeometry.Analysis.Sobolev.Manifold.Embedding.Manifold
-import DifferentialGeometry.Analysis.Integration.Measure.Chart.Rellich
+import DifferentialGeometry.Analysis.Integration.Measure.Chart.Localization
 import DifferentialGeometry.Analysis.Sobolev.Chart.AtlasNorm.Atlas
 import DifferentialGeometry.Analysis.Integration.Measure.Riemannian.Basic
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Basic

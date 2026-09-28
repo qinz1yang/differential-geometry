@@ -15,7 +15,7 @@ theorem IsPLCellOn.boundary_nonempty_two {S B : Set E3} (hS : IsPLCellOn 2 S B) 
     B.Nonempty := by
   obtain ⟨P, r, u, -, -, -, rfl⟩ := hS
   exact ⟨u (r (Pi.single 0 1)), r (Pi.single 0 1),
-    ⟨Pi.single 0 1, ⟨single_mem_stdSimplex ℝ 0, 1,
+    ⟨Pi.single 0 1, ⟨Convexity.StdSimplex.single_mem_coordinateSet ℝ 0, 1,
       Pi.single_eq_of_ne (show (1 : Fin 3) ≠ 0 by decide) (1 : ℝ)⟩, rfl⟩, rfl⟩
 
 section Cut

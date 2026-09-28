@@ -11,6 +11,9 @@ noncomputable section
 
 namespace DifferentialGeometry.PDE.RicciFlow
 
+open DifferentialGeometry.TensorMetric
+  (metricDiffSq)
+
 open Bundle Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Integral.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -46,12 +49,12 @@ private theorem density_bound (g₁ g₂ : ℝ → SmoothRiemannianMetric I M) (
   have hbackground := normSq0S_upper_le_of_equiv (g₂ t) (g₁ t) x 2 hC
     (metric_equiv_symm (g₁ t) (g₂ t) x hC heq) (metricTensorField (g₂ t) x)
   rw [hself] at hbackground
-  have hm := _root_.Tensor0SBundle.normSq0S_sub_le (g₁ t) x 2
+  have hm := _root_.DifferentialGeometry.Tensor0SBundle.normSq0S_sub_le (g₁ t) x 2
     (metricTensorField (g₁ t) x) (metricTensorField (g₂ t) x)
   rw [hself] at hm
   have hcross := (norm_sq_cross_curvature_le (g₁ t) (g₂ t) x hC heq).trans
     (mul_le_mul_of_nonneg_left hR₂ (by positivity))
-  have hrm := _root_.Tensor0SBundle.normSq0S_sub_le (g₁ t) x 4
+  have hrm := _root_.DifferentialGeometry.Tensor0SBundle.normSq0S_sub_le (g₁ t) x 4
     (metricRm04At (g₁ t) x)
     (CovariantDerivative.riemannCurvature04At (g₁ t) (metricCov (g₂ t)) (metricCov_smooth (g₂ t)) x)
   change rmDiffSq (g₁ t) (g₂ t) x ≤ _ at hrm
@@ -86,11 +89,11 @@ private theorem connection_sq_bound (g h : SmoothRiemannianMetric I M) (x : M)
     rw [component0S_apply]
     change |Tensor0SSpace.eval (connectionDifferenceLowAt g h x) (fun i => basis (v i))| ≤ A
     rw [connectionDifferenceLowAt_apply, hswap, map_neg, neg_apply, abs_neg]
-    have hcs := Analysis.Laplacian.abs_metric_inner_le_sqrt_metric_quadratic g x
+    have hcs := SmoothRiemannianMetric.abs_metric_inner_le_sqrt_metric_quadratic g x
       (CovariantDerivative.difference (metricCov h) (metricCov g) x (basis (v 1)) (basis (v 0)))
       (basis (v 2))
     have hc := hconn (basis (v 1)) (basis (v 0))
-    simp only [hON, if_true, Real.sqrt_one, mul_one] at hc hcs
+    simp only [hON, ite_true, Real.sqrt_one, mul_one] at hc hcs
     exact hcs.trans hc
   have h := normSq0S_le_card_of_component_bound g x 3 basis hinv
     (connectionDifferenceLowAt g h x) A hA hcomp

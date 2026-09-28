@@ -93,7 +93,7 @@ theorem NormalizedNeck.exists_metricRm04_centralSphere_pos
     simpa using hB j j
   have huv : (Geometry.roundMetric (E := ThreeSpace) (n := 2)).inner y (basis i) (basis j) = 0 := by
     have hij : i ≠ j := by intro hij; have := congrArg Fin.val hij; norm_num [i, j] at this
-    simpa only [hij, if_false] using hB i j
+    simpa only [hij, ite_false] using hB i j
   have hpos := N.metricRm04_chart_horizontal_pos hδ hk x hx (basis i) (basis j) hu hv huv
   have hF : ContMDiff (𝓡 2) NeckCylinderModel ∞ F := by
     apply (DifferentialGeometry.Manifold.contMDiff_subtypeVal_comp_iff (neckBuffer δ) F).mp

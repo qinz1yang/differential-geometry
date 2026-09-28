@@ -65,13 +65,14 @@ theorem wkpNorm_smul_globalSmooth_uniform
   induction k generalizing η with
   | zero =>
       refine ⟨C + 1, by linarith, ?_⟩
-      intro Ω hΩ u _hu
+      intro Ω hΩ u hu
       have h0 : ∀ x ∈ Ω, ‖η x‖ ≤ C := by
         intro x _
         have h := hbound 0 (le_refl 0) x
         rwa [norm_iteratedFDeriv_zero] at h
       rw [wkpNorm_zero (d := d), wkpNorm_zero (d := d)]
-      refine (eLpNorm_eta_mul_le (d := d) hΩ h0 u).trans ?_
+      refine (eLpNorm_eta_mul_le (d := d) hΩ h0 u
+        (hη_smooth.continuous.aestronglyMeasurable.mul hu.aestronglyMeasurable)).trans ?_
       exact mul_le_mul_of_nonneg_right
         (ENNReal.ofReal_le_ofReal (by linarith)) (zero_le)
   | succ k ih =>
@@ -110,7 +111,9 @@ theorem wkpNorm_smul_globalSmooth_uniform
         rwa [norm_iteratedFDeriv_zero] at h
       have hLp_le : eLpNorm (fun x => η x * u x) 2 (volume.restrict Ω) ≤
           ENNReal.ofReal C * D := by
-        refine (eLpNorm_eta_mul_le (d := d) hΩ h0 u).trans ?_
+        refine (eLpNorm_eta_mul_le (d := d) hΩ h0 u
+          (hη_smooth.continuous.aestronglyMeasurable.mul
+            hu.memLp.aestronglyMeasurable)).trans ?_
         refine mul_le_mul_of_nonneg_left ?_ (zero_le)
         rw [hD_def, wkpNorm_succ_eq_eLpNorm_add_sum_partial (d := d) k 2 Ω u]
         exact le_self_add

@@ -22,7 +22,7 @@ theorem exists_holderOnWith_clm_comp
     [NormedAddCommGroup B] [NormedSpace ℝ B] {s : Set X} {f : X → A}
     {K α : ℝ≥0} (hf : HolderOnWith K α f s) (L : A →L[ℝ] B) :
     ∃ C : ℝ≥0, HolderOnWith C α (fun x => L (f x)) s := by
-  have hh := L.lipschitz.holderWith.comp_holderOnWith hf
+  have hh := L.lipschitzWith.holderWith.comp_holderOnWith hf
   refine ⟨‖L‖₊ * K, ?_⟩
   simpa only [Function.comp_def, NNReal.coe_one, NNReal.rpow_one, one_mul] using hh
 
@@ -81,7 +81,7 @@ theorem exists_holderOnWith_piLp_of_components
     gcongr
     exact Finset.single_le_sum (fun _ _ => zero_le) (Finset.mem_univ i)
   let e := (PiLp.continuousLinearEquiv 2 ℝ (fun _ : ι => ℝ)).symm
-  have hh := e.lipschitz.holderWith.comp_holderOnWith hp
+  have hh := e.lipschitzWith.holderWith.comp_holderOnWith hp
   refine ⟨‖e.toContinuousLinearMap‖₊ * ∑ i, K i, ?_⟩
   intro x hx y hy
   have he (x : X) : e (fun i => f x i) = f x := rfl

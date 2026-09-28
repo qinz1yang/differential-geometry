@@ -99,17 +99,17 @@ theorem capAnnulusMap_inner (b : T.Boundary) (z : S2) :
       ((C.capBallChart b).toBallChart.boundaryMap (if b.2 then z else -z)).val := by
   cases hb : b.2 with
   | true =>
-    simp only [if_true]
+    simp only [ite_true]
     change C.cap b (capAnnulusPoint _) = (C.capBallChart b).chart z.val
-    rw [C.capBallChart_apply b z.val (by simpa only [hb, if_true] using quarter_norm z)]
+    rw [C.capBallChart_apply b z.val (by simpa only [hb, ite_true] using quarter_norm z)]
     apply congrArg (C.cap b)
     apply Subtype.ext
     simp [capAnnulusPoint, hb]
   | false =>
-    simp only [Bool.false_eq_true, if_false]
+    simp only [Bool.false_eq_true, ite_false]
     change C.cap b (capAnnulusPoint _) = (C.capBallChart b).chart (-z.val)
     rw [C.capBallChart_apply b (-z.val) (by
-      simp only [hb, Bool.false_eq_true, if_false, smul_neg, neg_smul, neg_neg]
+      simp only [hb, Bool.false_eq_true, ite_false, smul_neg, neg_smul, neg_neg]
       exact quarter_norm z)]
     apply congrArg (C.cap b)
     apply Subtype.ext

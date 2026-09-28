@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.CurvatureCoefficientDifferenceJetTower.Residual.Base
 import DifferentialGeometry.Analysis.Estimates.ProductBounds
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
+
 
 noncomputable section
 
@@ -98,10 +100,10 @@ theorem ricciOrderZeroBaseCoeff_perOrder_l2_radiusFree
   have : IsFiniteMeasure (riemannianVolumeMeasure (I := I) (M := M) g₀) :=
     riemannianVolumeMeasure_isFiniteMeasure_of_compactSpace g₀
   obtain ⟨KtCr, hKtCr_nn, KcCr, hKcCr_nn, hCr⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroRiemannCoeff_backgroundDifference_topOrderSeparated_le
+    DifferentialGeometry.Analysis.Spectral.exists_ricciOrderZeroRiemannCoeff_sub_top_order_split
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨KtCu, hKtCu_nn, KcCu, hKcCu_nn, hCu⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroCurvCoeff_backgroundDifference_topOrderSeparated_le
+    DifferentialGeometry.Analysis.Spectral.exists_ricciOrderZeroCurvCoeff_sub_top_order_split
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨Klg, hKlg_nn, Ktg, hKtg_nn, hgate⟩ :=
     boundedFactorGridWindow_integral_radiusFree_topOrderSeparated (I := I) (M := M) g₀ hΛ₀0

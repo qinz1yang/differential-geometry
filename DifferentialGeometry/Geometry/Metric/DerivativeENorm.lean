@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Continuity
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Arity
-import Mathlib.Data.ENNReal.Real
+import Mathlib.Basic.ENNReal.Real
 
 set_option autoImplicit false
 noncomputable section

@@ -13,7 +13,7 @@ import DifferentialGeometry.Geometry.Curvature.Components.RicciIdentity
 import DifferentialGeometry.Geometry.Connection.MetricCompatibility.Defs
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Characterization.Torsion
 import DifferentialGeometry.Bundle.PartialMfderiv.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.ModelMixed
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Mixed
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
 
 

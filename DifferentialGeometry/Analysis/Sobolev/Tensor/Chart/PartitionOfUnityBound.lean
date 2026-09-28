@@ -36,12 +36,13 @@ variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I (⊤ 
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 private lemma sq_eLpNorm_two_eq_lintegral_enorm_sq
-    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ) :
+    {α : Type*} [MeasurableSpace α] (μ : Measure α) (f : α → ℝ)
+    (hf : AEStronglyMeasurable f μ) :
     (eLpNorm f 2 μ) ^ 2 = ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ 2 ∂μ := by
   classical
   have h2_ne_zero : (2 : ℝ≥0∞) ≠ 0 := by norm_num
   have h2_ne_top : (2 : ℝ≥0∞) ≠ (⊤ : ℝ≥0∞) := by norm_num
-  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top]
+  rw [eLpNorm_eq_lintegral_rpow_enorm_toReal (μ := μ) h2_ne_zero h2_ne_top hf]
   have h2_toReal : ((2 : ℝ≥0∞)).toReal = 2 := by show ENNReal.toReal 2 = 2; rfl
   rw [h2_toReal]
   have h_inner_eq : ∫⁻ x, (‖f x‖ₑ : ℝ≥0∞) ^ (2 : ℝ) ∂μ =
@@ -463,7 +464,7 @@ private lemma uniform_iteratedFDeriv_bound_on_compact_of_contDiffOn
       intro i
       dsimp [Ci]
       refine Finset.le_sup'_of_le _ (by simp : (0 : ℕ) ∈ Finset.range (m + 1)) ?_
-      simp only [Nat.zero_le, dif_pos]
+      simp only [Nat.zero_le, dite_eq_left]
       exact hM_nn i 0 (Nat.zero_le m)
     have hC_nn : 0 ≤ C := by
       dsimp [C]
@@ -475,7 +476,7 @@ private lemma uniform_iteratedFDeriv_bound_on_compact_of_contDiffOn
     have h_le_Ci : M i j hj ≤ Ci i := by
       dsimp [Ci]
       refine Finset.le_sup'_of_le _ hmem ?_
-      simp only [hj, dif_pos, le_refl]
+      simp only [hj, dite_eq_left, le_refl]
     refine h_le_Ci.trans ?_
     dsimp [C]
     exact Finset.single_le_sum (f := Ci) (fun i' _ => hCi_nn i') (Finset.mem_univ i)
@@ -1013,7 +1014,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
               ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
                 ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
             else 0) = _
-          rw [if_pos (by rw [hy_symm]; exact hz_target)]
+          rw [ite_eq_left (by rw [hy_symm]; exact hz_target)]
         rw [hη_def]
         rw [hval]
         rw [hy_symm]
@@ -1030,7 +1031,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           else 0) = 0
-        rw [if_neg]
+        rw [ite_eq_right]
         rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
         exact hy_target
     have hKP_compact : IsCompact KP :=
@@ -1560,7 +1561,7 @@ lemma tsupport_chartSmoothExt_pou_subset_chartImage
             ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
               ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
           else 0) = _
-        rw [if_pos (by rw [hy_symm]; exact hz_target)]
+        rw [ite_eq_left (by rw [hy_symm]; exact hz_target)]
       rw [hval]
       rw [hy_symm]
       by_contra hne
@@ -1575,7 +1576,7 @@ lemma tsupport_chartSmoothExt_pou_subset_chartImage
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ)
             ((extChartAt I α).symm ((toEuclidean (E := E)).symm y))
         else 0) = 0
-      rw [if_neg]
+      rw [ite_eq_right]
       rw [chartTargetEuclid_eq_preimage_symm (I := I) (M := M)] at hy_target
       exact hy_target
   have hKP_compact : IsCompact KP := by

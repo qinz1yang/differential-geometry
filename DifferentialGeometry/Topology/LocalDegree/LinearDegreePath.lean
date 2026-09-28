@@ -1,6 +1,6 @@
 import Mathlib.Analysis.InnerProductSpace.GramSchmidtOrtho
 import Mathlib.Analysis.Normed.Module.FiniteDimension
-import Mathlib.Data.Sign.Basic
+import Mathlib.Basic.Sign.Basic
 import Mathlib.Topology.Path
 
 set_option autoImplicit false
@@ -110,7 +110,7 @@ private theorem triangularPart_pos
   rw [← LinearMap.det_toMatrix b, Matrix.det_of_isUpperTriangular htri]
   apply Finset.prod_pos
   intro i _
-  rw [triangularPart_matrix, if_pos rfl, mul_one]
+  rw [triangularPart_matrix, ite_eq_left rfl, mul_one]
   have hli : LinearIndependent ℝ
       (fun k => A (EuclideanSpace.basisFun (Fin n) ℝ k)) :=
     ((EuclideanSpace.basisFun (Fin n) ℝ).toBasis.map A.toLinearEquiv).linearIndependent

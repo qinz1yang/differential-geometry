@@ -16,6 +16,7 @@ open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry.PDE.RicciFlow.IntrinsicSpectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Integral.Connection
@@ -27,7 +28,6 @@ open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
-open DifferentialGeometry.Analysis.Elliptic (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev (iteratedCovGrad)
 open DifferentialGeometry.Analysis.Spectral
   (operatorFieldApply ccTensorToHs ccToHs_norm_mono covsum_hs_three

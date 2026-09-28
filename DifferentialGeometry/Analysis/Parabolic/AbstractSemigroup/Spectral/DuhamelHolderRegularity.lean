@@ -56,13 +56,13 @@ private theorem abstractSpectralDuhamelHolderCorrection_eq_kernel_integral
         else 0) =
         abstractSpectralDuhamelHolderKernel b lam F t (t - s)
       by_cases hs : s < t
-      · rw [if_pos hs]
-        simp only [abstractSpectralDuhamelHolderKernel, if_pos (sub_pos.mpr hs)]
+      · rw [ite_eq_left hs]
+        simp only [abstractSpectralDuhamelHolderKernel, ite_eq_left (sub_pos.mpr hs)]
         congr 2
         ring_nf
-      · rw [if_neg hs]
+      · rw [ite_eq_right hs]
         simp only [abstractSpectralDuhamelHolderKernel,
-          if_neg (not_lt.mpr (sub_nonpos.mpr (le_of_not_gt hs)))]
+          ite_eq_right (not_lt.mpr (sub_nonpos.mpr (le_of_not_gt hs)))]
     _ = ∫ τ in t - t..t - 0,
         abstractSpectralDuhamelHolderKernel b lam F t τ :=
       intervalIntegral.integral_comp_sub_left
@@ -125,7 +125,7 @@ theorem abstractSpectralDuhamelHolderCorrection_intervalIntegrable
       rw [Real.dist_eq, abs_of_nonpos (sub_nonpos.mpr hs.2)]
       ring
     rw [dist_eq_norm, hdist] at hholder
-    simp only [if_pos hst]
+    simp only [ite_eq_left hst]
     change ‖abstractSpectralSemigroupDeriv b lam (t - s) (F s - F t)‖ ≤
       ((K : ℝ) / Real.exp 1) *
       (t - s) ^ ((α : ℝ) - 1)
@@ -198,7 +198,7 @@ theorem abstractSpectralDuhamelHolderCorrection_continuousOn
           have heq : q - τ - q = -τ := by ring
           rw [heq, abs_neg, abs_of_pos hτ]
         rw [dist_eq_norm, hdist] at hholder
-        simp only [G, abstractSpectralDuhamelHolderKernel, if_pos hτ, bound]
+        simp only [G, abstractSpectralDuhamelHolderKernel, ite_eq_left hτ, bound]
         calc
           ‖abstractSpectralSemigroupDeriv b lam τ (F (q - τ) - F q)‖ ≤
               (1 / (Real.exp 1 * τ)) * ‖F (q - τ) - F q‖ :=
@@ -208,7 +208,7 @@ theorem abstractSpectralDuhamelHolderCorrection_continuousOn
           _ = ((K : ℝ) / Real.exp 1) * τ ^ ((α : ℝ) - 1) := by
             rw [Real.rpow_sub_one hτ.ne']
             field_simp [hτ.ne', (Real.exp_pos 1).ne']
-      · simp only [G, abstractSpectralDuhamelHolderKernel, if_neg hτ,
+      · simp only [G, abstractSpectralDuhamelHolderKernel, ite_eq_right hτ,
           norm_zero, bound]
         exact le_rfl
   have hbound : IntervalIntegrable bound volume (-1 : ℝ) (2 * t) := by
@@ -223,12 +223,12 @@ theorem abstractSpectralDuhamelHolderCorrection_continuousOn
         (fun _ : ℝ => (0 : ℝ)) volume (-1 : ℝ) 0).congr ?_
       intro τ hτ
       rw [Set.uIoc_of_le (by norm_num)] at hτ
-      simp only [bound, if_neg (not_lt.mpr hτ.2)]
+      simp only [bound, ite_eq_right (not_lt.mpr hτ.2)]
     have hpos : IntervalIntegrable bound volume 0 (2 * t) := by
       refine hpow.congr ?_
       intro τ hτ
       rw [Set.uIoc_of_le (by linarith)] at hτ
-      simp only [bound, if_pos hτ.1]
+      simp only [bound, ite_eq_left hτ.1]
     exact hneg.trans hpos
   have hGcont : ∀ᵐ τ ∂volume.restrict (Set.uIoc (-1 : ℝ) (2 * t)),
       ContinuousAt (fun q : ℝ => G q τ) t := by
@@ -240,8 +240,8 @@ theorem abstractSpectralDuhamelHolderCorrection_continuousOn
         have h' : Continuous
             (fun q : ℝ => abstractSpectralSemigroupDeriv b lam τ (F (q - τ) - F q)) :=
           h.congr fun _ => rfl
-        simpa only [G, abstractSpectralDuhamelHolderKernel, if_pos hτ] using h'.continuousAt
-      · simpa only [G, abstractSpectralDuhamelHolderKernel, if_neg hτ] using
+        simpa only [G, abstractSpectralDuhamelHolderKernel, ite_eq_left hτ] using h'.continuousAt
+      · simpa only [G, abstractSpectralDuhamelHolderKernel, ite_eq_right hτ] using
           (continuousAt_const : ContinuousAt (fun _ : ℝ => (0 : X)) t)
   have hparam := intervalIntegral.continuousAt_parametric_primitive_of_dominated
     (X := ℝ) (E := X) (F := G) (bound := bound) (a := (-1 : ℝ))
@@ -276,7 +276,7 @@ theorem abstractSpectralDuhamelHolderCorrection_repr_apply
   intro s hs
   rw [Set.uIcc_of_le ht.le] at hs
   by_cases hst : s < t
-  · simp only [if_pos hst]
+  · simp only [ite_eq_left hst]
     change ℓ (abstractSpectralSemigroupDeriv b lam (t - s) (F s - F t)) = _
     simp only [ℓ, innerSL_apply_apply, ← b.repr_apply_apply]
     rw [abstractSpectralSemigroupDeriv_repr_apply b hlam (sub_pos.mpr hst), map_sub]
@@ -471,10 +471,10 @@ private theorem abstractSpectralDuhamelHolderCorrection_eq_holderIccExtension
   intro s hs
   rw [Set.uIcc_of_le ht.1] at hs
   by_cases hst : s < t
-  · simp only [if_pos hst]
+  · simp only [ite_eq_left hst]
     rw [holderIccExtension_apply F hT ⟨hs.1, hs.2.trans ht.2⟩,
       holderIccExtension_apply F hT ht]
-  · simp only [if_neg hst]
+  · simp only [ite_eq_right hst]
 
 private theorem abstractSpectralDuhamelHolderDeriv_eq_holderIccExtension
     (b : HilbertBasis ι ℝ X) {lam : ι → ℝ} (hlam : ∀ i, 0 ≤ lam i)

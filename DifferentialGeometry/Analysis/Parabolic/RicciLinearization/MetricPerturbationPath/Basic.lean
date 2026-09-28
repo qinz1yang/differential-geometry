@@ -357,7 +357,7 @@ theorem metricPerturbationPath_inner_of_mem (g₀ : SmoothRiemannianMetric I M)
     (metricPerturbationPath (I := I) g₀ T T' hδ hδ' s).inner x v w =
       g₀.inner x v w +
         ccTensorBilinSymm (I := I) g₀ (convexPerturbation (I := I) g₀ T T' s) x v w := by
-  rw [metricPerturbationPath, dif_pos (Set.mem_ofPred.mp hs), metricPerturbationPathOnDomain_inner]
+  rw [metricPerturbationPath, dite_eq_left (Set.mem_ofPred.mp hs), metricPerturbationPathOnDomain_inner]
 
 omit [CompactSpace M] in
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

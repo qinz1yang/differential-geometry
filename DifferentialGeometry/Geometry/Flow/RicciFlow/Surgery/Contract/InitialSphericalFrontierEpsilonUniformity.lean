@@ -1,6 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
-import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 
 set_option autoImplicit false
 
@@ -78,7 +77,6 @@ theorem nonempty_globalStepInputs_of_uniformEpsilon {p : CutoffParameters} {τ �
           presentation := hΛpres },
       neckInput := hneck Λ hΛ hΛpres,
       pieceInput := hpiece,
-      roundInput := sphericalSpaceFormCovering_holds,
       cylinderInput := hcylinder Λ hΛ hΛpres,
       protectInput := hprotect Λ hΛ hΛpres }
 
@@ -114,7 +112,6 @@ theorem exists_pair_and_globalStepInputs_of_hasInitialSphericalFrontier
             presentation := hΛpres },
         neckInput := hneck ε Λ hε hε1 hΛ hΛpres,
         pieceInput := hpiece,
-        roundInput := sphericalSpaceFormCovering_holds,
         cylinderInput := hcylinder ε Λ hε hε1 hΛ hΛpres,
         protectInput := hprotect ε Λ hε hε1 hΛ hΛpres }⟩
 

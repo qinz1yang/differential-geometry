@@ -188,7 +188,7 @@ private theorem canonical_scheduled_frontier_process [NoncompactSpace M]
     intro x hx
     exact hgap x (fun h => hx (interior_mono (states n).property.1 h))
   · intro n hn
-    exact if_pos hn
+    exact ite_eq_left hn
 
 
 private theorem canonical_frontier_process [NoncompactSpace M]

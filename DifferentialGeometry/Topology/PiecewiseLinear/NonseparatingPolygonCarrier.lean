@@ -178,21 +178,21 @@ section Prism
 
 open Classical in
 private theorem isPLSphere_prism_frontier :
-    IsPLSphere 2 (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+    IsPLSphere 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
       stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := by
-  have hΔ : IsPLBall 2 (stdSimplex ℝ (Fin 3)) := isPLBall_stdSimplex 2
-  have hΔpoly : IsPolyhedron (stdSimplex ℝ (Fin 3)) := hΔ.isPolyhedron
+  have hΔ : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := isPLBall_stdSimplex 2
+  have hΔpoly : IsPolyhedron (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hΔ.isPolyhedron
   obtain ⟨Kd, hKdfin, hKdspace⟩ := hΔpoly.exists_simplicialComplex
   let _ : Finite Kd.faces := hKdfin.to_subtype
   have hKd : IsPLBall 2 Kd.space := hKdspace ▸ hΔ
-  have hid : IsPLHomeomorphOn id (stdSimplex ℝ (Fin (1 + 2))) Kd.space := by
+  have hid : IsPLHomeomorphOn id (Convexity.StdSimplex.coordinateSet ℝ (Fin (1 + 2))) Kd.space := by
     rw [hKdspace]
     exact isPLHomeomorphOn_id_of_isHPolytope (isHPolytope_stdSimplex _)
   have hprism := isPLBall_three_prod hΔ (isPLBall_Icc (zero_lt_one' ℝ))
   obtain ⟨A, hAfin, hAspace⟩ := hprism.isPolyhedron.exists_simplicialComplex
   let _ : Finite A.faces := hAfin.to_subtype
   have hA : IsPLBall 3 A.space := hAspace ▸ hprism
-  have hAbd : (boundaryComplex 3 A).space = stdSimplex ℝ (Fin 3) ×ˢ {0, 1} ∪
+  have hAbd : (boundaryComplex 3 A).space = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {0, 1} ∪
       stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 := by
     have h := boundaryComplex_space_prism Kd hKd (zero_lt_one' ℝ) A (by rw [hAspace, hKdspace])
     have h2 := boundaryComplex_space_of_isPLHomeomorphOn_stdSimplex (n := 1) Kd hid
@@ -207,7 +207,7 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
     {K : Set ((Fin 3 → ℝ) × ℝ)} (hK : IsPLSphere 1 K)
     (hKA : K ⊆ stdSimplexBoundary 2 ×ˢ Ioo (0 : ℝ) 1) :
     (∃ (D : Set ((Fin 3 → ℝ) × ℝ)) (r : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-        IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) D ∧
+        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧
         D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ∧ r '' stdSimplexBoundary 2 = K) ∨
       ∃ ψ : (Fin 3 → ℝ) × ℝ → (Fin 3 → ℝ) × ℝ,
         IsPLHomeomorphOn ψ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)
@@ -216,8 +216,8 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
         (∀ x ∈ stdSimplexBoundary 2, ψ (x, 0) = (x, 0)) ∧
         ψ '' (stdSimplexBoundary 2 ×ˢ {1}) = K := by
   have hSig := isPLSphere_prism_frontier
-  have hΔ : IsPLBall 2 (stdSimplex ℝ (Fin 3)) := isPLBall_stdSimplex 2
-  have hΔpoly : IsPolyhedron (stdSimplex ℝ (Fin 3)) := hΔ.isPolyhedron
+  have hΔ : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := isPLBall_stdSimplex 2
+  have hΔpoly : IsPolyhedron (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) := hΔ.isPolyhedron
   let _ : Finite (simplexBoundary (stdVertices 1) (stdVertices_affineIndependent 1)).faces :=
     (simplexBoundary_faces_finite _ _).to_subtype
   have hBpoly : IsPolyhedron (stdSimplexBoundary 2) := by
@@ -226,42 +226,42 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
   have hA₀poly : IsPolyhedron (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) :=
     hBpoly.prod isHPolytope_Icc.isPolyhedron
   have hA₀Sph : stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 ⊆
-      stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
     subset_union_right
   have hKA₀ : K ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
     fun y hy => ⟨(hKA hy).1, Ioo_subset_Icc_self (hKA hy).2⟩
   have hKSph := hKA₀.trans hA₀Sph
   have hι₀ := hΔpoly.isPLHomeomorphOn_prod_const (0 : ℝ)
   have hι₁ := hΔpoly.isPLHomeomorphOn_prod_const (1 : ℝ)
-  have hE₀ : IsPLBall 2 (stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ)) := hΔ.of_isPLHomeomorphOn hι₀
-  have hE₁ : IsPLBall 2 (stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := hΔ.of_isPLHomeomorphOn hι₁
-  have hE₀Sph : stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆
-      stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
+  have hE₀ : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ)) := hΔ.of_isPLHomeomorphOn hι₀
+  have hE₁ : IsPLBall 2 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := hΔ.of_isPLHomeomorphOn hι₁
+  have hE₀Sph : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
     fun y hy => Or.inl ⟨hy.1, Or.inl hy.2⟩
-  have hE₁Sph : stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆
-      stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
+  have hE₁Sph : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 :=
     fun y hy => Or.inl ⟨hy.1, Or.inr hy.2⟩
-  have hE₀K : Disjoint (stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ)) K := by
+  have hE₀K : Disjoint (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ)) K := by
     rw [disjoint_left]
     intro y hy hyK
     have h := (hKA hyK).2.1
     rw [mem_singleton_iff.mp hy.2] at h
     exact lt_irrefl _ h
-  have hE₁K : Disjoint (stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) K := by
+  have hE₁K : Disjoint (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) K := by
     rw [disjoint_left]
     intro y hy hyK
     have h := (hKA hyK).2.2
     rw [mem_singleton_iff.mp hy.2] at h
     exact lt_irrefl _ h
-  have hE₀E₁ : Disjoint (stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ))
-      (stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
+  have hE₀E₁ : Disjoint (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ))
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
     rw [disjoint_left]
     intro y hy0 hy1
     have h := (mem_singleton_iff.mp hy0.2).symm.trans (mem_singleton_iff.mp hy1.2)
     exact zero_ne_one h
   obtain ⟨D₁, D₂, hU, hI, f₁, f₂, hf₁, hf₂, hf₁b, hf₂b⟩ :=
     exists_disk_decomposition_of_isPLSphere_one_subset_two hSig hK hKSph
-  have hside : ∀ C, C ⊆ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+  have hside : ∀ C, C ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
       stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 → IsPreconnected C → Disjoint C K →
         C ⊆ D₁ ∨ C ⊆ D₂ := by
     intro C hCSph hC hCK
@@ -270,9 +270,9 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
       (by rw [hU]; exact hCSph) ?_
     rw [hI]
     exact hCK.inter_eq
-  have hdisk : ∀ D D' : Set ((Fin 3 → ℝ) × ℝ), D ∪ D' = stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+  have hdisk : ∀ D D' : Set ((Fin 3 → ℝ) × ℝ), D ∪ D' = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
       stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 → D ∩ D' = K →
-      stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆ D' → stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆ D' →
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆ D' → Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆ D' →
         D ⊆ stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 := by
     intro D D' hDD' hDI h0 h1 y hy
     have hySph : y ∈ D ∪ D' := Or.inl hy
@@ -287,10 +287,10 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
       exact hKA₀ hyK
     · exact hyA
   have hann : ∀ (D D' : Set ((Fin 3 → ℝ) × ℝ)) (f' : (Fin 3 → ℝ) → (Fin 3 → ℝ) × ℝ),
-      IsPLHomeomorphOn f' (stdSimplex ℝ (Fin 3)) D' → f' '' stdSimplexBoundary 2 = K →
-      D ∪ D' = stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+      IsPLHomeomorphOn f' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D' → f' '' stdSimplexBoundary 2 = K →
+      D ∪ D' = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
         stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 → D ∩ D' = K →
-      stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆ D → stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆ D' →
+      Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) ⊆ D → Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ) ⊆ D' →
       ∃ ψ : (Fin 3 → ℝ) × ℝ → (Fin 3 → ℝ) × ℝ,
         IsPLHomeomorphOn ψ (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)
           (ψ '' (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)) ∧
@@ -298,11 +298,11 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
         (∀ x ∈ stdSimplexBoundary 2, ψ (x, 0) = (x, 0)) ∧
         ψ '' (stdSimplexBoundary 2 ×ˢ {1}) = K := by
     intro D D' f' hf' hf'b hDD' hDI h0 h1
-    have hD'Sph : D' ⊆ stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+    have hD'Sph : D' ⊆ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
         stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1 := by
       rw [← hDD']
       exact subset_union_right
-    have hdis0 : Disjoint (stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ)) D' := by
+    have hdis0 : Disjoint (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ)) D' := by
       rw [disjoint_left]
       intro y hy0 hyD'
       have hyK : y ∈ D ∩ D' := ⟨h0 hy0, hyD'⟩
@@ -310,23 +310,23 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
       exact disjoint_left.mp hE₀K hy0 hyK
     obtain ⟨Φ, hΦ, hΦid, hΦD'⟩ := exists_isPLHomeomorphOn_map_disk_pair_eqOn_disk hSig hSig hE₀
       hE₀Sph ⟨f', hf'⟩ hD'Sph hdis0 hE₁ hE₁Sph hE₀E₁ hE₀.isPolyhedron.isPLHomeomorphOn_id hE₀Sph
-    have hΦD'pl : IsPLHomeomorphOn Φ D' (stdSimplex ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
+    have hΦD'pl : IsPLHomeomorphOn Φ D' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({1} : Set ℝ)) := by
       have h := hΦ.restrict (IsPLBall.isPolyhedron ⟨f', hf'⟩) hD'Sph
       rwa [hΦD'] at h
     have hrim : Φ '' K = stdSimplexBoundary 2 ×ˢ ({1} : Set ℝ) := by
       have h := IsPLHomeomorphOn.image_image_stdSimplexBoundary hf' hι₁ hΦD'pl
       rw [hf'b] at h
       rw [h, prod_singleton]
-    have hψ : IsPLHomeomorphOn (Function.invFunOn Φ (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
-        stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)) (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
-        stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+    have hψ : IsPLHomeomorphOn (Function.invFunOn Φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+        stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+        stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
         stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) := hΦ.symm
     refine ⟨_, hψ.restrict hA₀poly hA₀Sph, ?_, fun x hx => ?_, ?_⟩
     · rintro _ ⟨y, hyA, rfl⟩
       have hySph := hA₀Sph hyA
       have hxSph := hψ.bijOn.mapsTo hySph
       have hΦx := hΦ.bijOn.invOn_invFunOn.2 hySph
-      by_cases hxD' : Function.invFunOn Φ (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+      by_cases hxD' : Function.invFunOn Φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
           stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) y ∈ D'
       · have hyE₁ : y ∈ Φ '' D' := ⟨_, hxD', hΦx⟩
         rw [hΦD'] at hyE₁
@@ -338,17 +338,17 @@ theorem IsPLSphere.exists_disk_or_annulus_of_subset_prism_lateral
         exact hKA₀ hx'K
       · rcases hxSph with ⟨hxΔ, hx01⟩ | hxA
         · rcases hx01 with hx0 | hx1
-          · have hfix := hΦid (show _ ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) from ⟨hxΔ, hx0⟩)
+          · have hfix := hΦid (show _ ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) from ⟨hxΔ, hx0⟩)
             rw [id_eq, hΦx] at hfix
             rw [← hfix]
             exact hyA
           · exact (hxD' (h1 ⟨hxΔ, hx1⟩)).elim
         · exact hxA
-    · have hxE₀ : (x, (0 : ℝ)) ∈ stdSimplex ℝ (Fin 3) ×ˢ ({0} : Set ℝ) := ⟨hx.1, rfl⟩
+    · have hxE₀ : (x, (0 : ℝ)) ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0} : Set ℝ) := ⟨hx.1, rfl⟩
       have hfix := hΦid hxE₀
-      calc Function.invFunOn Φ (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+      calc Function.invFunOn Φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
             stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) (x, 0)
-          = Function.invFunOn Φ (stdSimplex ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
+          = Function.invFunOn Φ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ) ∪
             stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) (Φ (x, 0)) := by rw [hfix, id_eq]
         _ = (x, 0) := hΦ.bijOn.invOn_invFunOn.1 (hE₀Sph hxE₀)
     · rw [← hrim]

@@ -184,14 +184,14 @@ private lemma tensorChartComponentRaw_chartBasisTensorSection_on_source
   by_cases hQ : (Idx, Jdx) = Q
   · have h1 : Idx = Q.1 := congrArg Prod.fst hQ
     have h2 : Q.2 = Jdx := (congrArg Prod.snd hQ).symm
-    rw [if_pos h1, if_pos h2, if_pos hQ, mul_one]
-  · rw [if_neg hQ]
+    rw [ite_eq_left h1, ite_eq_left h2, ite_eq_left hQ, mul_one]
+  · rw [ite_eq_right hQ]
     by_cases h1 : Idx = Q.1
     · have h2 : Q.2 ≠ Jdx := by
         intro h2
         exact hQ (Prod.ext h1 h2.symm)
-      rw [if_neg h2, mul_zero]
-    · rw [if_neg h1, zero_mul]
+      rw [ite_eq_right h2, mul_zero]
+    · rw [ite_eq_right h1, zero_mul]
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -396,7 +396,7 @@ theorem rotatedTestSection_chartComp
   rw [Finset.sum_congr rfl (fun Q' _ => hterm Q')]
   rw [Finset.sum_eq_single Q]
   · rw [show ((Q.1, Q.2) : CompIdx E r s) = Q from Prod.ext rfl rfl]
-    rw [if_pos rfl, mul_one]
+    rw [ite_eq_left rfl, mul_one]
     rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α _ hy]
     have hb_eq : (toEuclidean (E := E))
         ((extChartAt I α)
@@ -411,7 +411,7 @@ theorem rotatedTestSection_chartComp
     rw [chartPushedRaw_apply_of_mem (I := I) (M := M) α χ hy]
   · intro Q' _ hne
     rw [show ((Q.1, Q.2) : CompIdx E r s) = Q from Prod.ext rfl rfl]
-    rw [if_neg (fun h => hne h.symm), mul_zero]
+    rw [ite_eq_right (fun h => hne h.symm), mul_zero]
   · intro hQ
     exact absurd (Finset.mem_univ Q) hQ
 

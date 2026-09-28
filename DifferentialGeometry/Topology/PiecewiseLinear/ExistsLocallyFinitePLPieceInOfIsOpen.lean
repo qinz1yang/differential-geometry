@@ -109,7 +109,7 @@ theorem exists_eqOn_of_eqOn_succ {α β : Type*} {S : ℕ → Set α} (hS : Mono
     | succ j hij ih => exact fun x hx => (hf j (hS hij hx)).trans (ih hx)
   refine ⟨fun x => if h : ∃ i, x ∈ S i then f (Nat.find h) x else f 0 x, fun i x hx => ?_⟩
   have h : ∃ i, x ∈ S i := ⟨i, hx⟩
-  exact (dif_pos h).trans (hmono _ _ (Nat.find_min' h hx) (Nat.find_spec h)).symm
+  exact (dite_eq_left h).trans (hmono _ _ (Nat.find_min' h hx) (Nat.find_spec h)).symm
 
 theorem IsPiecewiseAffineWithinAt.of_subset_of_mem_nhdsWithin {E F : Type*}
     [NormedAddCommGroup E] [NormedSpace ℝ E] [NormedAddCommGroup F] [NormedSpace ℝ F]
@@ -202,27 +202,27 @@ theorem injOn_vertexParam (i : ℕ) : InjOn (T.vertexParam i) (T.core i).vertice
     rw [vertexParam_succ, vertexParam_succ] at h
     have hiso := T.embed_isGlueIso i
     by_cases hvA : {v} ∈ (T.coreImage i).faces <;> by_cases hwA : {w} ∈ (T.coreImage i).faces
-    · rw [if_pos hvA, if_pos hwA] at h
+    · rw [ite_eq_left hvA, ite_eq_left hwA] at h
       have hv' : T.embedInv i v ∈ (T.core i).vertices := hiso.symm.singleton_mem hvA
       have hw' : T.embedInv i w ∈ (T.core i).vertices := hiso.symm.singleton_mem hwA
       calc v = T.embed i (T.embedInv i v) :=
             (hiso.right _ hvA v (Finset.mem_singleton_self v)).symm
         _ = T.embed i (T.embedInv i w) := by rw [ih hv' hw' h]
         _ = w := hiso.right _ hwA w (Finset.mem_singleton_self w)
-    · rw [if_pos hvA, if_neg hwA] at h
+    · rw [ite_eq_left hvA, ite_eq_right hwA] at h
       have h1 := T.unpair_vertexParam_fst_le i (T.embedInv i v)
       rw [h, Nat.unpair_pair] at h1
       omega
-    · rw [if_neg hvA, if_pos hwA] at h
+    · rw [ite_eq_right hvA, ite_eq_left hwA] at h
       have h1 := T.unpair_vertexParam_fst_le i (T.embedInv i w)
       rw [← h, Nat.unpair_pair] at h1
       omega
-    · rw [if_neg hvA, if_neg hwA] at h
+    · rw [ite_eq_right hvA, ite_eq_right hwA] at h
       exact T.injOn_vertexCode (i + 1) hv hw (Nat.pair_eq_pair.mp h).2
 
 theorem vertexParam_embed (i : ℕ) {v : EuclideanSpace ℝ (Fin (T.piece i).ambientDim)}
     (hv : {v} ∈ (T.core i).faces) : T.vertexParam (i + 1) (T.embed i v) = T.vertexParam i v := by
-  rw [vertexParam_succ, if_pos ((T.embed_isGlueIso i).singleton_mem hv),
+  rw [vertexParam_succ, ite_eq_left ((T.embed_isGlueIso i).singleton_mem hv),
     (T.embed_isGlueIso i).left _ hv v (Finset.mem_singleton_self v)]
 
 noncomputable def vertexPos (i : ℕ) (v : EuclideanSpace ℝ (Fin (T.piece i).ambientDim)) :

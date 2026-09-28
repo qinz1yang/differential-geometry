@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.Quotient
+import DifferentialGeometry.Topology.Manifold.BallChart.Defs
 import DifferentialGeometry.Topology.Manifold.LocalDiffeomorph.OpenCodRestrict
 
 set_option autoImplicit false
@@ -29,7 +29,7 @@ theorem exists_ballChart_of_open_embedding (c : BallChart n I M) (U : Topologica
   have hzero : (0 : EuclideanSpace ℝ (Fin n)) ∈ W := hKW (Metric.mem_closedBall_self (by norm_num))
   let g : EuclideanSpace ℝ (Fin n) → U := fun x =>
     if hx : x ∈ W then ⟨c.chart x, hx.2⟩ else ⟨c.chart 0, hzero.2⟩
-  have hg (x : EuclideanSpace ℝ (Fin n)) (hx : x ∈ W) : g x = ⟨c.chart x, hx.2⟩ := dif_pos hx
+  have hg (x : EuclideanSpace ℝ (Fin n)) (hx : x ∈ W) : g x = ⟨c.chart x, hx.2⟩ := dite_eq_left hx
   have hloc : IsLocalDiffeomorphOn 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) J ∞ (f ∘ g) W := by
     intro x
     have hcg : (fun y => (g y).val) =ᶠ[𝓝 x.val] c.chart := by

@@ -347,7 +347,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
         rw [hA_def]
         simp only
         rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-          ← hz_def, if_pos hz_sourceγ]
+          ← hz_def, ite_eq_left hz_sourceγ]
         congr 1
         have h_raw := tensorChartComponentRaw_eigenvectorSmoothChart_self
           (I := I) (M := M) g r s i γ Q
@@ -416,7 +416,7 @@ theorem eigenvectorSmoothChart_transport_term_aeEq
           rw [hA_def]
           simp only
           rw [chartPushedRaw_apply_of_mem (I := I) (M := M) β _ hy_target,
-            ← hz_def, if_neg hz_notin_sourceγ]
+            ← hz_def, ite_eq_right hz_notin_sourceγ]
         have hRHS_y : RHS y = 0 := by
           rw [hRHS_def]
           simp only

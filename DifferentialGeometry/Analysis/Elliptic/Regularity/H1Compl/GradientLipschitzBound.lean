@@ -390,7 +390,8 @@ theorem chartPushedPartial_lipschitz_uniform_support
       rw [ENNReal.zero_rpow_of_pos (by norm_num)]
   rw [MeasureTheory.eLpNorm_eq_lintegral_rpow_enorm_toReal
     (by norm_num : (2 : ℝ≥0∞) ≠ 0)
-    (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
+    (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+    h_cont.aestronglyMeasurable]
   rw [show ((2 : ℝ≥0∞).toReal : ℝ) = 2 from by norm_num]
   have h_lint_bd : ∫⁻ y, ‖smoothChartExtPartial (I := I) (M := M) g α j v y‖ₑ ^ (2 : ℝ)
       ∂μ_w ≤

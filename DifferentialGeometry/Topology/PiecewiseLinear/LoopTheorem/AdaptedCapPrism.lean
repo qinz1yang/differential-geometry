@@ -23,17 +23,17 @@ theorem exists_centeredPrism_of_isPLOn {M : Type u} [TopologicalSpace M]
     (hE₁ : IsPLBall 2 E₁) (hE₂ : IsPLBall 2 E₂) (hE₁₂ : E₁ ⊆ interior E₂)
     (hβ : IsPLOn 2 3 β E₂) (hinj : InjOn β E₂) (hV : IsOpen V) (hβV : β '' E₂ ⊆ V) :
     ∃ (prism : (Fin 3 → ℝ) × ℝ → M) (b : EuclideanSpace ℝ (Fin 2) → (Fin 3 → ℝ)),
-      ContinuousOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-        InjOn prism (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-          prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V ∧
-            (∀ x ∈ E₁, prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (β x)) ∧
-              prism '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
-                β '' E₂ ∩ prism '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
-                MapsTo b E₁ (stdSimplex ℝ (Fin 3)) ∧ IsPiecewiseAffineOn b E₁ ∧
+      ContinuousOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+        InjOn prism (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+          prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ⊆ V ∧
+            (∀ x ∈ E₁, prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∈ 𝓝 (β x)) ∧
+              prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) =
+                β '' E₂ ∩ prism '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) ∧
+                MapsTo b E₁ (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∧ IsPiecewiseAffineOn b E₁ ∧
                   (∀ x ∈ E₁, prism (b x, 0) = β x) ∧
                     ∀ (G : EuclideanSpace ℝ (Fin 2) → (Fin 3 → ℝ) × ℝ)
                       (S : Set (EuclideanSpace ℝ (Fin 2))), IsPiecewiseAffineOn G S →
-                        MapsTo G S (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) →
+                        MapsTo G S (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) →
                           IsPLOn 2 3 (prism ∘ G) S := by
   classical
   obtain ⟨x₀, hx₀⟩ := hE₂.nonempty
@@ -65,7 +65,7 @@ theorem exists_centeredPrism_of_isPLOn {M : Type u} [TopologicalSpace M]
   obtain ⟨ψ₂, hψ₂⟩ := id hE₂
   have hΔ : IsPLBall 2 (β' '' E₁) :=
     ⟨β' ∘ ψ₁, hψ₁.trans (hβ'pl.restrict hE₁.isPolyhedron hE₁E₂)⟩
-  have hr₂ : IsPLHomeomorphOn (β' ∘ ψ₂) (stdSimplex ℝ (Fin 3)) (β' '' E₂) := hψ₂.trans hβ'pl
+  have hr₂ : IsPLHomeomorphOn (β' ∘ ψ₂) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (β' '' E₂) := hψ₂.trans hβ'pl
   have hΔint : β' '' E₁ ⊆ (β' ∘ ψ₂) '' openSimplex (stdVertices 1) := by
     rintro _ ⟨x, hx, rfl⟩
     obtain ⟨y, hy, rfl⟩ := hψ₂.bijOn.surjOn (hE₁E₂ hx)
@@ -111,13 +111,13 @@ theorem exists_centeredPrism_of_isPLOn {M : Type u} [TopologicalSpace M]
     hTp.exists_isSubdivision_disk_pair_with_centered_prism hΔ hΔ hr₂ hΔint subset_rfl hΔD₂
       (inter_eq_left.mpr hΔD₂) hΔK hD₂K hU hUdis
   set N := (PiecewiseLinear.derivedNeighborhood R A).space with hNdef
-  have hρN : ∀ p ∈ stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1, ρ p ∈ T.complex.space :=
+  have hρN : ∀ p ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1, ρ p ∈ T.complex.space :=
     fun p hp => hNK (hρ.bijOn.mapsTo hp)
   have hgN : ∀ x ∈ E₁, β' x ∈ β' '' E₂ ∩ N := fun x hx =>
     ⟨⟨x, hE₁E₂ hx, rfl⟩, hΔN ⟨x, hx, rfl⟩⟩
-  have himage : (T.map ∘ ρ) '' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) = T.map '' N := by
+  have himage : (T.map ∘ ρ) '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) = T.map '' N := by
     rw [image_comp, hρ.image_eq]
-  refine ⟨T.map ∘ ρ, Function.invFunOn g (stdSimplex ℝ (Fin 3)) ∘ β', ?_, ?_, ?_, ?_, ?_, ?_,
+  refine ⟨T.map ∘ ρ, Function.invFunOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) ∘ β', ?_, ?_, ?_, ?_, ?_, ?_,
     ?_, ?_, ?_⟩
   · exact T.continuousOn.comp hρ.isPiecewiseAffineOn.continuousOn hρN
   · intro p hp q hq hpq
@@ -132,7 +132,7 @@ theorem exists_centeredPrism_of_isPLOn {M : Type u} [TopologicalSpace M]
       exact mem_interior_iff_mem_nhds.mp (hCP ⟨x, hE₁E₂ hx, rfl⟩)
     have h := T.image_mem_nhds_of_mem_nhds (hβ'K x (hE₁E₂ hx)) hP (hnhds _ ⟨x, hx, rfl⟩)
     rwa [hβ'map x (hE₁E₂ hx)] at h
-  · have hcenter : ρ '' (stdSimplex ℝ (Fin 3) ×ˢ {(0 : ℝ)}) = g '' stdSimplex ℝ (Fin 3) := by
+  · have hcenter : ρ '' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ {(0 : ℝ)}) = g '' Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
       ext y
       constructor
       · rintro ⟨⟨x, t⟩, ⟨hx, ht⟩, rfl⟩
@@ -152,14 +152,14 @@ theorem exists_centeredPrism_of_isPLOn {M : Type u} [TopologicalSpace M]
     have hsub : E₁ ⊆ E₂ ∩ β' ⁻¹' (β' '' E₂ ∩ N) := fun x hx => ⟨hE₁E₂ hx, hgN x hx⟩
     exact h.mono_of_isPolyhedron hE₁.isPolyhedron hsub
   · intro x hx
-    change T.map (ρ (Function.invFunOn g (stdSimplex ℝ (Fin 3)) (β' x), 0)) = β x
+    change T.map (ρ (Function.invFunOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (β' x), 0)) = β x
     rw [hρmid _ (hg.bijOn.surjOn.mapsTo_invFunOn (hgN x hx)),
       hg.bijOn.invOn_invFunOn.2 (hgN x hx), hβ'map x (hE₁E₂ hx)]
   · intro G S hG hGS
     have hpa : IsPiecewiseAffineOn (ρ ∘ G) S := by
       have h := hρ.isPiecewiseAffineOn.comp hG
       rwa [inter_eq_left.mpr
-        (show S ⊆ G ⁻¹' (stdSimplex ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) from hGS)] at h
+        (show S ⊆ G ⁻¹' (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (-1 : ℝ) 1) from hGS)] at h
     exact T.isPLOn_comp hpa fun x hx => hρN (G x) (hGS hx)
 
 end DifferentialGeometry.Topology.PiecewiseLinear

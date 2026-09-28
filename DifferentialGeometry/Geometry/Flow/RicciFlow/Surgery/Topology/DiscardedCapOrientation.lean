@@ -80,9 +80,9 @@ theorem discardedCap_positive (b : E.trace.tubes.Boundary) (hb : E.trace.capDisc
   change Orientation.map (Fin 3) ((A.symm.trans B).trans C) _ = _
   rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hcap']
   cases hside : b.2
-  · simp only [Bool.false_eq_true, if_false, Module.Ray.neg_units_smul, one_smul]
+  · simp only [Bool.false_eq_true, ite_false, Module.Ray.neg_units_smul, one_smul]
     exact (Orientation.map_neg C (N.orientation.orientation (E.trace.capping.cap b x))).trans
       (congrArg Neg.neg hpres')
-  · simpa only [hside, if_true, one_smul] using hpres'
+  · simpa only [hside, ite_true, one_smul] using hpres'
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.SmoothCutCapTransition

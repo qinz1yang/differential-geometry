@@ -37,6 +37,11 @@ namespace Analysis
 namespace Spectral
 
 open DifferentialGeometry.Integral.L2
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply fiberNormSqComponent
+  fiberNormSqComponent_add fiberNormSqComponent_smul riemannianFiberNormSq
+  riemannianFiberNormSq_eq_sum_componentRS_sq riemannianFiberNormSq_eq_tensorInnerPointwise
+  tensorInnerPointwise_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right
+  tensorPointwiseNorm)
 
 open DifferentialGeometry.Analysis.Parabolic.TensorHeatEquation
 open DifferentialGeometry.Analysis.Spectral.MetricRealization

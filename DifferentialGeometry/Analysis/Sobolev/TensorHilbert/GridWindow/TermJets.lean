@@ -1,6 +1,9 @@
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.Marked
 import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.GridWindow.SelfLowCap
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq riemannianFiberNormSq_add_le)
+
 noncomputable section
 set_option backward.isDefEq.respectTransparency false
 

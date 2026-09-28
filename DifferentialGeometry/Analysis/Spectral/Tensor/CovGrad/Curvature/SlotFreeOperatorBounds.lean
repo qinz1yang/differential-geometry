@@ -1,5 +1,10 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.SlotFree
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bounds.FiberNormJets
+import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
+
+open DifferentialGeometry.SmoothRiemannianMetric (abs_metric_inner_le_sqrt_metric_quadratic)
+open DifferentialGeometry.TensorMetric (coframeS coframeS_apply
+  exists_tangent_orthonormalBasis_with_norm_sum fiberNormSqComponent riemannianFiberNormSq)
 
 set_option autoImplicit false
 
@@ -54,7 +59,7 @@ private lemma coframe_one_le
     _ ≤ Real.sqrt (g.inner x (e (K 0)) (e (K 0))) *
         Real.sqrt (g.inner x Q Q) := hinner
     _ = Real.sqrt (g.inner x Q Q) * 1 := by
-      rw [mul_comm, horth (K 0) (K 0), if_pos rfl, Real.sqrt_one]
+      rw [mul_comm, horth (K 0) (K 0), ite_eq_left rfl, Real.sqrt_one]
     _ ≤ C * 1 := mul_le_mul hQ le_rfl zero_le_one hC
     _ = C := mul_one C
 
@@ -172,7 +177,7 @@ private lemma sfOne_comp0_le
   have hunit : ∀ a : Fin 3,
       g.inner x (e (J a)) (e (J a)) = 1 := by
     intro a
-    rw [horth (J a) (J a), if_pos rfl]
+    rw [horth (J a) (J a), ite_eq_left rfl]
   have hm : g.inner x (m 0) (m 0) = 1 := by
     simp [m, hunit]
   rw [hunit 0, hunit 1, hm, mul_one, mul_one, mul_one] at hb
@@ -238,7 +243,7 @@ private lemma sfOne_comp1_le
   have hunit : ∀ a : Fin 4,
       g.inner x (e (J a)) (e (J a)) = 1 := by
     intro a
-    rw [horth (J a) (J a), if_pos rfl]
+    rw [horth (J a) (J a), ite_eq_left rfl]
   have hm : g.inner x (m 0) (m 0) = 1 := by
     simp [m, hunit]
   simpa only [hunit 0, hunit 1, hunit 2, hm,

@@ -97,7 +97,7 @@ theorem euclideanBallDegree_eq_finsum_localDegrees :
     congr 1
     exact heq.symm
   refine hdegree.trans (hsum.trans ?_)
-  let e : {x | G x = 0} ≃ Z := Equiv.setCongr hset
+  let e : {x | G x = 0} ≃ Z := Set.equivOfEq hset
   have hlocal (p : {x | G x = 0}) :
       euclideanLocalDegree G p.val (isolatedZero_of_continuous_finite_zeroSet G.continuous hGfinite p.property) =
       euclideanLocalDegree f (e p).val

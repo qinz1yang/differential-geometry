@@ -45,9 +45,9 @@ theorem derivNorm_le_cov_add
         (-(metricCovDeriv (I := I) h gRef a x))
       = Tensor0SBundle.normSq0S (I := I) gRef x (a + 2)
         (metricCovDeriv (I := I) h gRef a x) :=
-    Tensor0SBundle.normSq0S_neg (I := I) gRef x (a + 2)
+    DifferentialGeometry.Tensor0SBundle.normSq0S_neg (I := I) gRef x (a + 2)
       (metricCovDeriv (I := I) h gRef a x)
-  refine le_trans (Tensor0SBundle.sqrt_normSq0S_add_le (I := I) gRef x (a + 2) _ _) ?_
+  refine le_trans (DifferentialGeometry.Tensor0SBundle.sqrt_normSq0S_add_le (I := I) gRef x (a + 2) _ _) ?_
   rw [hneg]
 
 omit [Module.Finite ℝ E] [I.Boundaryless] [IsManifold I 1 M] [IsManifold I 2 M]

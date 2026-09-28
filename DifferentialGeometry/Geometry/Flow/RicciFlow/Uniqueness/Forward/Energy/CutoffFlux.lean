@@ -68,10 +68,10 @@ theorem forward_uniqueness_cutoff_flux_le
       t x hB₂0 hBP0 hBackground0 hB₂ hBP' hBackground
   have hmain := neg_two_inner0S_le_eps (I := I) (g₁ t) x 5
     (χ x • A) (χ x • U) hε
-  rw [_root_.Tensor0SBundle.inner0S_smul_left, _root_.Tensor0SBundle.inner0S_smul_right, normSq0S_smul, normSq0S_smul] at hmain
+  rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_left, _root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, normSq0S_smul, normSq0S_smul] at hmain
   have hboundary := neg_two_inner0S_le_eps (I := I) (g₁ t) x 5 B (χ x • U)
     (ε := 1) (by norm_num)
-  rw [_root_.Tensor0SBundle.inner0S_smul_right, normSq0S_smul] at hboundary
+  rw [_root_.DifferentialGeometry.Tensor0SBundle.inner0S_smul_right, normSq0S_smul] at hboundary
   norm_num only [inv_one, one_mul] at hboundary
   have hflux_bound := mul_le_mul_of_nonneg_left hU
     (show 0 ≤ (ε⁻¹ + 2) * χ x ^ 2 by positivity)

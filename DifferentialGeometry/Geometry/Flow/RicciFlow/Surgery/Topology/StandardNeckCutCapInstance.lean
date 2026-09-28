@@ -216,11 +216,11 @@ private def neckCoreInclusion (x : standardNeckTubeSystem.core) : Sphere 3 ⊕ S
 
 private theorem neckCoreInclusion_of_mem_lower {x : standardNeckTubeSystem.core}
     (hx : x ∈ coreLower) : neckCoreInclusion x = Sum.inl x.1 :=
-  if_pos hx
+  ite_eq_left hx
 
 private theorem neckCoreInclusion_of_not_mem_lower {x : standardNeckTubeSystem.core}
     (hx : x ∉ coreLower) : neckCoreInclusion x = Sum.inr x.1 :=
-  if_neg hx
+  ite_eq_right hx
 
 private theorem continuous_neckCoreInclusion : Continuous neckCoreInclusion := by
   rw [continuous_iff_continuousAt]
@@ -407,9 +407,9 @@ private theorem continuous_capPoint (side : Bool) : Continuous (capPoint side) :
     intro i
     exact continuous_capU_coord i
   · cases side
-    · simp only [Bool.false_eq_true, if_false]
+    · simp only [Bool.false_eq_true, ite_false]
       exact continuous_capC
-    · simp only [if_true]
+    · simp only [ite_true]
       exact continuous_capC.neg
 
 private def standardNeckCap (side : Bool) : C(ThreeBall, Sphere 3) :=
@@ -615,7 +615,7 @@ private theorem range_standardNeckCapFun_true :
   · rintro ⟨v, rfl⟩
     change neckLastCoord (standardNeckCapFun true v) ≤ 1 / 4
     rw [neckLastCoord_standardNeckCapFun, capSign]
-    simp only [if_true, neg_mul, one_mul]
+    simp only [ite_true, neg_mul, one_mul]
     have := capC_lower v
     linarith
   · intro hz
@@ -949,7 +949,7 @@ def standardNeckCapping : Capping standardNeckTubeSystem (Sphere 3 ⊕ Sphere 3)
             (Sum.inr_injective (hv.trans (neckCoreInclusion_of_not_mem_lower hx))).symm
           have hle : neckLastCoord x₀.1 ≤ 1 / 4 := by
             rw [hz, neckLastCoord_standardNeckCapFun, capSign]
-            simp only [if_true, neg_mul, one_mul]
+            simp only [ite_true, neg_mul, one_mul]
             have := capC_lower v
             linarith
           have hcore' : 1 / 4 ≤ |neckLastCoord x₀.1| := (mem_core_iff x₀.1).mp x₀.2

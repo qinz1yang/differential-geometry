@@ -112,7 +112,7 @@ theorem isTube_graphDualCell {A K : Geometry.SimplicialComplex ℝ E3} (hAfin : 
   have hn : Module.finrank ℝ E3 = 2 + 1 := finrank_euclideanSpace_fin
   have hDe : ∀ e (he : e ∈ A.faces),
       (if he : e ∈ A.faces then (splittingDisk A e he).space else ∅) =
-        (splittingDisk A e he).space := fun e he => dif_pos he
+        (splittingDisk A e he).space := fun e he => dite_eq_left he
   have hball : ∀ v ∈ K.vertices, IsPLBall 3 (graphDualCell A K v).space :=
     fun v hv => hA.isPLBall_graphDualCell A K hKA hcard hv
   have hclosed : ∀ v ∈ K.vertices, IsClosed (graphDualCell A K v).space :=
@@ -129,7 +129,7 @@ theorem isTube_graphDualCell {A K : Geometry.SimplicialComplex ℝ E3} (hAfin : 
     rw [hDe e (hKA he)]
     exact graphDualCell_space_inter_of_mem A K hKA hcard he hu hw huw
   have hdisk : ∀ e ∈ K.faces, e.card = 2 → ∃ r : (Fin 3 → ℝ) → E3,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3))
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3))
         (if he : e ∈ A.faces then (splittingDisk A e he).space else ∅) ∧
       (if he : e ∈ A.faces then (splittingDisk A e he).space else ∅) ∩
           frontier (⋃ v ∈ K.vertices, (graphDualCell A K v).space) =

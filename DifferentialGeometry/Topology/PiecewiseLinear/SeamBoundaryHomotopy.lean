@@ -149,7 +149,7 @@ theorem exists_lift_homotopic_of_crossSeamBoundary
             F z = chart (crossSeamResolveHomotopy (z.1 : ℝ) (co z.2))) ∧
           ∀ z : unitInterval × Θ, z.2 ∉ Ω₁ → F z = g z.2 :=
     ⟨fun z => if z.2 ∈ Ω₁ then chart (crossSeamResolveHomotopy (z.1 : ℝ) (co z.2)) else g z.2,
-      fun _ hz => if_pos hz, fun _ hz => if_neg hz⟩
+      fun _ hz => ite_eq_left hz, fun _ hz => ite_eq_right hz⟩
   have hother : ∀ θ : Θ, θ ∉ Ω₁ → θ ∈ Ω₂ := by
     intro θ hθ
     have hmem : θ ∈ Ω₁ ∪ Ω₂ := by rw [hcover]; exact mem_univ θ

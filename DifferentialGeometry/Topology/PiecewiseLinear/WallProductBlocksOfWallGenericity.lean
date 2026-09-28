@@ -111,7 +111,7 @@ theorem wallProductBlocks_of_wallGenericity (D : SingularTwoCell M) {BdM C W V K
       exact (hsys.chartC i₀ (g x) hs).mpr (by rw [he]; exact hpnonneg x hxR)
     · have hgx : g x = D x := by
         rw [hgdef]
-        simp only [regionGluedMap, if_neg hxR]
+        simp only [regionGluedMap, ite_eq_right hxR]
       rw [hgx]
       exact hmapC hx
   have hpinj : ∀ x ∈ Rc.space, ∀ z ∈ Rc.space, dist x z < κ →

@@ -19,7 +19,11 @@ theorem eLpNorm_cutoff_residual_le
     (hu : AEStronglyMeasurable u (μ.restrict Ω))
     (hdu : AEStronglyMeasurable du (μ.restrict Ω))
     (hf : AEStronglyMeasurable f (μ.restrict Ω))
-    (et ex : E) (hηs : tsupport η ⊆ Ω) {A K0 Kt Kx Kxx : ℝ≥0}
+    (et ex : E) (hηs : tsupport η ⊆ Ω)
+    (hrmeas : AEStronglyMeasurable (fun x => η x • f x + fderiv ℝ η x et • u x -
+      a x • ((2 * fderiv ℝ η x ex) • du x +
+        fderiv ℝ (fun y => fderiv ℝ η y ex) x ex • u x)) (μ.restrict Ω))
+    {A K0 Kt Kx Kxx : ℝ≥0}
     (ha : ∀ᵐ x ∂μ.restrict Ω, ‖a x‖ ≤ A)
     (hη : ∀ᵐ x ∂μ.restrict Ω, ‖η x‖ ≤ K0)
     (hηt : ∀ᵐ x ∂μ.restrict Ω, ‖fderiv ℝ η x et‖ ≤ Kt)
@@ -79,20 +83,19 @@ theorem eLpNorm_cutoff_residual_le
   calc
     eLpNorm r p μ = eLpNorm r p (μ.restrict Ω) := hrnorm
     _ ≤ eLpNorm ((K0 : ℝ) • F + C • U + B • D) p (μ.restrict Ω) :=
-      eLpNorm_mono_ae_real hm
+      eLpNorm_mono_ae_real hrmeas hm
     _ ≤ eLpNorm ((K0 : ℝ) • F + C • U) p (μ.restrict Ω) +
         eLpNorm (B • D) p (μ.restrict Ω) :=
-      eLpNorm_add_le ((hf.norm.const_smul (K0 : ℝ)).add (hu.norm.const_smul C))
-        (hdu.norm.const_smul B) hp
+      eLpNorm_add_le hp
     _ ≤ (eLpNorm ((K0 : ℝ) • F) p (μ.restrict Ω) +
         eLpNorm (C • U) p (μ.restrict Ω)) + eLpNorm (B • D) p (μ.restrict Ω) :=
-      add_le_add (eLpNorm_add_le (hf.norm.const_smul (K0 : ℝ))
-        (hu.norm.const_smul C) hp) le_rfl
+      add_le_add (eLpNorm_add_le hp) le_rfl
     _ = _ := by
       rw [eLpNorm_const_smul, eLpNorm_const_smul, eLpNorm_const_smul,
         Real.enorm_eq_ofReal K0.coe_nonneg, Real.enorm_eq_ofReal hC,
         Real.enorm_eq_ofReal hB]
-      simp only [F, U, D, eLpNorm_norm, C, B]
+      simp only [F, U, D, C, B]
+      rw [eLpNorm_norm f hf, eLpNorm_norm u hu, eLpNorm_norm du hdu]
       norm_cast
       simp only [ENNReal.ofReal_coe_nnreal]
 

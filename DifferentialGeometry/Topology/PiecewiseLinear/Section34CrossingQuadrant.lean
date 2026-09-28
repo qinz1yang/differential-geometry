@@ -53,7 +53,7 @@ theorem side_of_frontier_plane_snd_snd {X U : Set E3} {x : E3} {φ : E3 → ℝ 
   · exact Or.inr fun y hy => by rw [h y hy, hS]
 
 theorem exists_quadrantChart {P V D : Set E3} {q : (Fin 3 → ℝ) → E3} (hP : IsPLBall 3 P)
-    (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDV : D ⊆ frontier V) (hDP : D ∩ P = q '' stdSimplexBoundary 2) {p : E3}
     (hp : p ∈ q '' stdSimplexBoundary 2) (hcross : HasPLCrossingAt (frontier V) (frontier P) p) :
     ∃ (U : Set E3) (φ : E3 → ℝ × ℝ × ℝ) (r : ℝ), IsOpen U ∧ p ∈ U ∧ 0 < r ∧
@@ -296,10 +296,10 @@ theorem IsPLHomeomorphOn.restrict_ball {U : Set E3} {φ : E3 → ℝ × ℝ × �
     rw [hinj.leftInvOn_invFunOn hx, hφ.bijOn.injOn.leftInvOn_invFunOn (hsub hx)]
 
 theorem exists_sideCollar {P V D E E' F G : Set E3} {q : (Fin 3 → ℝ) → E3}
-    (hP : IsPLBall 3 P) (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D)
+    (hP : IsPLBall 3 P) (hV : IsPLBall 3 V) (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D)
     (hDV : D ⊆ frontier V) (hDP : D ∩ P = q '' stdSimplexBoundary 2)
     (hcross : ∀ p ∈ q '' stdSimplexBoundary 2, HasPLCrossingAt (frontier V) (frontier P) p)
-    {qE : (Fin 3 → ℝ) → E3} (hqE : IsPLHomeomorphOn qE (stdSimplex ℝ (Fin 3)) E)
+    {qE : (Fin 3 → ℝ) → E3} (hqE : IsPLHomeomorphOn qE (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) E)
     (hqEJ : qE '' stdSimplexBoundary 2 = q '' stdSimplexBoundary 2)
     (hEE' : E ∪ E' = frontier P) (hEE'J : E ∩ E' = q '' stdSimplexBoundary 2)
     (hE'c : IsClosed E') (hF : IsClosed F) (hFD : Disjoint F D) (hG : IsOpen G)

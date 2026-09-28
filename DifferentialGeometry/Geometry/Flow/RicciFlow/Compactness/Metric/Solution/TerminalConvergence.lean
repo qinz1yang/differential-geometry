@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Metric.Solution.
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Metric.ModelChange
 import DifferentialGeometry.Geometry.Metric.Convergence.Naturality.PullbackCrossConvergence
-import DifferentialGeometry.Geometry.Metric.UniversalCover.ProductCurvatureJets
+import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Bounds.CovariantDerivative.EventualTerminalBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds

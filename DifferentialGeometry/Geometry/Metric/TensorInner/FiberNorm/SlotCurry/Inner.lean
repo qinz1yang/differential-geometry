@@ -1,7 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotCurry.Reconstruction
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
-open DifferentialGeometry.Analysis.Elliptic
-open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -10,10 +8,8 @@ open Bundle Manifold Set
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Analysis
-namespace Elliptic
+namespace TensorMetric
 
-open DifferentialGeometry.Integral.L2
 open DifferentialGeometry.Tensor0SBundle
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -74,8 +70,7 @@ theorem tensorInnerPointwise_succ_eq_sum_slot0Curry
     exact absurd (Subsingleton.elim K K₀) hK
   · intro h; exact absurd (Finset.mem_univ K₀) h
 
-end Elliptic
-end Analysis
+end TensorMetric
 end DifferentialGeometry
 
 end

@@ -26,7 +26,7 @@ theorem laplacian_gradient_eq_zero_of_eventuallyEq_const
       _ = 0 := laplacian_const cov g c q
   · apply gradientFun_eq_zero_of_mfderiv_eq_zero
     rw [he.mfderiv_eq]
-    exact mfderiv_const
+    simp only [mfderiv_const, ContinuousLinearMap.comp_zero]
 
 theorem exists_isCompact_laplacian_gradient_support_of_eventuallyEq_const
     (cov : CovariantDerivative I E (TangentSpace I : M → Type _))

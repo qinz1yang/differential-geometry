@@ -13,17 +13,15 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}}
-
-def extendAt (H : RetainedCoreHistory P₀)
+def extendAt (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
       H.initialMetric (Fin.last H.eventCount)) {t : ℝ}
-    (hat : H.time (Fin.last H.eventCount) < t) (hts : t < s) : RetainedCoreHistory P₀ :=
+    (hat : H.time (Fin.last H.eventCount) < t) (hts : t < s) : RetainedCoreHistory.{u} :=
   H.extendHorizon t (hend ▸ hat.le) (G.closedPrefix t hat hts) hG
 
-def extendAtTime (H : RetainedCoreHistory P₀)
+def extendAtTime (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -32,7 +30,7 @@ def extendAtTime (H : RetainedCoreHistory P₀)
     Icc (0 : ℝ) (H.extendAt hend G hG hat hts).toHistory.horizon :=
   ⟨t, (H.toHistory.time_nonneg _).trans hat.le, le_rfl⟩
 
-theorem capWindowPoint_extendHorizon_iff (H : RetainedCoreHistory P₀) {p : CutoffParameters}
+theorem capWindowPoint_extendHorizon_iff (H : RetainedCoreHistory.{u}) {p : CutoffParameters}
     (records : ∀ i : Fin H.eventCount, GeometricCutoffRecord H.toHistory i p) {T : ℝ}
     (hT : H.horizon ≤ T)
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T)

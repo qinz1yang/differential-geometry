@@ -81,9 +81,9 @@ private theorem radial_gluing_diffeomorph
     exact (hradius (Φ.symm q) (Φ.map_target hqT)).trans (congrArg d (hΦright q hqT))
   let τ : M → ℝ := fun q => if hq : ℓ ≤ d q then (hcross q hq).choose else 0
   have hτ (q : M) (hq : ℓ ≤ d q) : d (ϕ (τ q) q) = ℓ := by
-    simpa only [τ, dif_pos hq] using (hcross q hq).choose_spec.1
+    simpa only [τ, dite_eq_left hq] using (hcross q hq).choose_spec.1
   have hτunique (q : M) (hq : ℓ ≤ d q) (t : ℝ) (ht : d (ϕ t q) = ℓ) : t = τ q := by
-    simpa only [τ, dif_pos hq] using (hcross q hq).choose_spec.2 t ht
+    simpa only [τ, dite_eq_left hq] using (hcross q hq).choose_spec.2 t ht
   have hτnonpos (q : M) (hq : ℓ ≤ d q) : τ q ≤ 0 := by
     by_contra h
     have hh := hinc q hq (τ q) (lt_of_not_ge h)
@@ -106,7 +106,7 @@ private theorem radial_gluing_diffeomorph
     · rfl
     · exact hrad z (by linarith only [lt_of_not_ge h, hδ]) hz
   have hFouter (z : N) (hz : ℓ < L z) : F z = ϕ (L z - ℓ) (Φ (n z)) :=
-    if_neg (not_le_of_gt hz)
+    ite_eq_right (not_le_of_gt hz)
   have hFdist (z : N) (hz : ℓ < L z) : ℓ < d (F z) := by
     rw [hFouter z hz]
     have hh := hinc (Φ (n z))
@@ -119,16 +119,16 @@ private theorem radial_gluing_diffeomorph
     · have hzS : z ∈ Φ.source := by rw [hsource]; exact hz.trans_lt hℓε
       have hd : d (Φ z) ≤ ℓ := by rw [← hradius z hzS]; exact hz
       change G (F z) = z
-      rw [show F z = Φ z from if_pos hz]
+      rw [show F z = Φ z from ite_eq_left hz]
       change (if d (Φ z) ≤ ℓ then Φ.symm (Φ z) else _) = z
-      rw [if_pos hd, hΦleft z hzS]
+      rw [ite_eq_left hd, hΦleft z hzS]
     · have hz' := lt_of_not_ge hz
       have hdz := hFdist z hz'
       have ht : -(L z - ℓ) = τ (F z) := hτunique (F z) hdz.le _ (by
         rw [hFouter z hz', ← ϕ.map_add, neg_add_cancel, ϕ.map_zero_apply]
         exact hdn z (hℓ.trans hz'))
       change (if d (F z) ≤ ℓ then _ else _) = z
-      rw [if_neg (not_le_of_gt hdz), ← ht, hFouter z hz', ← ϕ.map_add,
+      rw [ite_eq_right (not_le_of_gt hdz), ← ht, hFouter z hz', ← ϕ.map_add,
         neg_add_cancel, ϕ.map_zero_apply, hΦleft _ (hnS z (hℓ.trans hz'))]
       have hc : (ℓ - -(L z - ℓ)) / ℓ = L z / ℓ := by ring
       rw [hc]
@@ -139,9 +139,9 @@ private theorem radial_gluing_diffeomorph
     · have hqT : q ∈ Φ.target := by rw [htarget]; exact hq.trans_lt hℓε
       have hz : L (Φ.symm q) ≤ ℓ := by rw [hLinv q (hq.trans_lt hℓε)]; exact hq
       change F (if d q ≤ ℓ then _ else _) = q
-      rw [if_pos hq]
+      rw [ite_eq_left hq]
       change (if L (Φ.symm q) ≤ ℓ then _ else _) = q
-      rw [if_pos hz, hΦright q hqT]
+      rw [ite_eq_left hz, hΦright q hqT]
     · have hq' := lt_of_not_ge hq
       let z := Φ.symm (ϕ (τ q) q)
       have hyT : ϕ (τ q) q ∈ Φ.target := by
@@ -151,7 +151,7 @@ private theorem radial_gluing_diffeomorph
         exact hℓε
       have hzL : L z = ℓ := (hLinv _ (by rw [hτ q hq'.le]; exact hℓε)).trans (hτ q hq'.le)
       have hr : ℓ < ℓ - τ q := by linarith only [hτneg q hq']
-      have hGq : G q = scale ((ℓ - τ q) / ℓ) z := if_neg hq
+      have hGq : G q = scale ((ℓ - τ q) / ℓ) z := ite_eq_right hq
       have hLG : L (G q) = ℓ - τ q := by
         rw [hGq, hlength _ (div_nonneg (hℓ.trans hr).le hℓ.le), hzL,
           div_mul_cancel₀ _ hℓ.ne']
@@ -266,7 +266,7 @@ private theorem radial_gluing_diffeomorph
           (((contMDiffAt_const.sub hτs).div_const ℓ).prodMk hzs)
       apply hs.congr_of_eventuallyEq
       filter_upwards [hdc.continuousAt (Ioi_mem_nhds hq')] with x hx
-      exact if_neg (not_le_of_gt hx)
+      exact ite_eq_right (not_le_of_gt hx)
   let e : N ≃ₘ⟮J, I⟯ M :=
     { toEquiv :=
         { toFun := F
@@ -340,7 +340,7 @@ def normalFlowMap (S : Set M) (ϕ : Flow ℝ M) (ℓ : ℝ) :
 omit [ConnectedSpace M] [T2Space (TangentBundle I M)] in
 @[simp] theorem normalFlowMap_zero (ϕ : Flow ℝ M) {ℓ : ℝ} (hℓ : 0 ≤ ℓ) (p : S) :
     normalFlowMap (I := I) g hEnorm S ϕ ℓ ⟨p, 0⟩ = p.1 := by
-  simp only [normalFlowMap, Submodule.coe_zero, map_zero, Real.sqrt_zero, if_pos hℓ,
+  simp only [normalFlowMap, Submodule.coe_zero, map_zero, Real.sqrt_zero, ite_eq_left hℓ,
     normalExp_zero]
 
 theorem exists_normalFlow_diffeomorph

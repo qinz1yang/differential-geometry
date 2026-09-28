@@ -16,7 +16,7 @@ theorem iteratedDeriv_pow_smul_zero {n : ℕ} {f : 𝕜 → F}
   rw [Finset.sum_eq_single m]
   · simp [← Nat.cast_smul_eq_nsmul 𝕜, smul_smul]
   · intro i hi him
-    simp [if_neg him]
+    simp [ite_eq_right him]
   · intro hm
     have hnm : n < m := by simpa using hm
     simp [Nat.choose_eq_zero_of_lt hnm]

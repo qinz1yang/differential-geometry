@@ -56,7 +56,7 @@ end MetricCutCapEvent.PresentedStaticCap
 
 
 theorem RetainedCoreHistory.exists_canonical_cutoff_records_at_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)
@@ -100,7 +100,7 @@ theorem RetainedCoreHistory.exists_canonical_cutoff_records_at_appendEvent
 
 namespace RetainedCoreHistory
 
-def hasCanonicalCutoffRecords {P : OrientedThreeStage.{u}} (H : RetainedCoreHistory P)
+def hasCanonicalCutoffRecords (H : RetainedCoreHistory.{u})
     (p₀ : CutoffParameters) (δ₀ ρ₀ : ℝ) : Prop :=
   ∃ p : CutoffParameters,
     p.fixed = p₀.fixed ∧ p.modelRadius = p₀.modelRadius ∧ p.modelOrder = p₀.modelOrder ∧
@@ -119,7 +119,7 @@ theorem hasCanonicalCutoffRecords_atZero (P : OrientedThreeStage.{u}) (g : P.Met
   · exact fun i => Fin.elim0 i
 
 theorem hasCanonicalCutoffRecords_extendHorizon
-    {P : OrientedThreeStage.{u}} {H : RetainedCoreHistory P}
+    {H : RetainedCoreHistory.{u}}
     {p₀ : CutoffParameters} {δ₀ ρ₀ : ℝ}
     (hH : H.hasCanonicalCutoffRecords p₀ δ₀ ρ₀)
     (T : ℝ) (hT : H.horizon ≤ T)
@@ -133,7 +133,7 @@ theorem hasCanonicalCutoffRecords_extendHorizon
   exact hcanonical i b
 
 theorem hasCanonicalCutoffRecords_appendEvent
-    {P Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory P) {s : ℝ}
+    {Q : OrientedThreeStage.{u}} (H : RetainedCoreHistory.{u}) {s : ℝ}
     (hs : H.time (Fin.last H.eventCount) < s)
     (E : RetainedCoreEvent (H.stage (Fin.last H.eventCount)) Q
       (H.time (Fin.last H.eventCount)) s)

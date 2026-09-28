@@ -147,8 +147,8 @@ private lemma memLp_two_of_bounded_mul
     MemLp (fun y => h y * f y) 2 ((volume : Measure EuclN).restrict K) := by
   classical
   have hh_memLp_top : MemLp h ∞ ((volume : Measure EuclN).restrict K) := by
-    refine ⟨hh_meas, ?_⟩
-    rw [eLpNorm_exponent_top]
+    change eLpNorm h ∞ ((volume : Measure EuclN).restrict K) < ⊤
+    rw [eLpNorm_exponent_top hh_meas]
     refine lt_of_le_of_lt ?_
       (show (ENNReal.ofReal (max C 0) : ℝ≥0∞) < ⊤ from
         ENNReal.ofReal_lt_top)
@@ -157,7 +157,7 @@ private lemma memLp_two_of_bounded_mul
     rw [Real.enorm_eq_ofReal_abs]
     apply ENNReal.ofReal_le_ofReal
     exact hy.trans (le_max_left _ _)
-  exact MemLp.mul' (p := ∞) (q := 2) (r := 2) hf hh_memLp_top
+  exact hh_memLp_top.fun_mul (p := ∞) (q := 2) (r := 2) hf
 
 private abbrev Kα (α : M) : Set EuclN :=
   chartImagePOUTsupport (I := I) (M := M) α

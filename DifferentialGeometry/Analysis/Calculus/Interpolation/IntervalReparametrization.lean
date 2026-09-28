@@ -256,9 +256,9 @@ private theorem exists_interval_diffeomorph_with_formula :
       contMDiff_toFun := (hsmooth r hr).contMDiff
       contMDiff_invFun := (hRsmooth r hr).contMDiff }
     else Diffeomorph.refl 𝓘(ℝ) ℝ ∞
-  have hD (r : ℝ) (hr : 0 < r) (x : ℝ) : D r x = χ (r, x) := by simp only [D, dif_pos hr]; rfl
+  have hD (r : ℝ) (hr : 0 < r) (x : ℝ) : D r x = χ (r, x) := by simp only [D, dite_eq_left hr]; rfl
   have hDi (r : ℝ) (hr : 0 < r) (x : ℝ) : (D r).symm x = R (r, x) := by
-    simp only [D, dif_pos hr]; rfl
+    simp only [D, dite_eq_left hr]; rfl
   refine ⟨D, hχ.congr (fun q hq ↦ hD q.1 hq.1 q.2),
     hR.congr (fun q hq ↦ hDi q.1 hq.1 q.2), ?_, (fun r hr ↦ ?_), hD⟩
   · apply Diffeomorph.ext

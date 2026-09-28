@@ -6,6 +6,7 @@ import DifferentialGeometry.Analysis.Integration.L2.Parametric.FiberInnerSmoothn
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.Garding.Spectrum.EigenCombination
 import DifferentialGeometry.Analysis.Spectral.Tensor.SobolevScale.Jet.Bounds.PartitionOfUnityNormComparison
 import DifferentialGeometry.Analysis.Integration.L2.Hilbert.SmoothSectionMap
+open DifferentialGeometry.TensorMetric (lowerAllUpperIndices_apply)
 open DifferentialGeometry.Tensor.Multilinear
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
@@ -545,7 +546,7 @@ theorem deTurckRHSSection_realize_path_tensorInner_eigenSmooth_jointContMDiffOn
     (i : TensorEigenIdx (I := I) (M := M) g₀ 0 2) :
     ContMDiffOn (I.prod 𝓘(ℝ, ℝ)) 𝓘(ℝ, ℝ) ∞
       (fun p : M × ℝ =>
-        DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+        DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           ((Analysis.Parabolic.TensorSpectral.eigenvectorSmooth (I := I) (M := M) g₀ 0 2 i).toFun
             p.1)
           ((deTurckRHSReconSection (I := I) g₀ g_bg (F p.2) hδ_lt (hδ p.2)).toFun p.1))
@@ -588,7 +589,7 @@ theorem deTurckRHSSection_realize_path_tensorInner_eigenSmooth_jointContMDiffOn
   rw [hinter]
   set α : M := x₀ with hα
   have hbridge : ∀ p ∈ (chartAt H α).source ×ˢ Set.Icc (0 : ℝ) T,
-      DifferentialGeometry.Integral.L2.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
+      DifferentialGeometry.TensorMetric.tensorInnerPointwise (I := I) (M := M) g₀ 0 2 p.1
           (eig.toFun p.1) ((recon p.2).toFun p.1) =
         chartTensorInnerPointwise0s (I := I) (M := M) (0 + 2) g₀ α p.1
           (loweredCompose (I := I) (M := M) g₀ 0 2 α p.1 (eig.toFun p.1))

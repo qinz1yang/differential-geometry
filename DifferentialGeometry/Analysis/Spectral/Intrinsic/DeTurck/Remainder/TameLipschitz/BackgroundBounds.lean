@@ -54,6 +54,9 @@ open scoped ENNReal NNReal BigOperators Manifold ContDiff
 
 namespace DifferentialGeometry.Analysis.Spectral
 
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sub_le)
+
 open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -332,7 +335,7 @@ theorem half_ricciOrderZeroRiemannCoeff_difference_eq_residualFieldSum_add_kerne
   rw [hP]
   refine ccTensor22_ext_of_operatorFieldApplication (I := I) (M := M) g₀ _ _ (fun W => ?_)
   have hprim :=
-    ricciOrderZeroRiemannHalfBackgroundDiff_operatorFieldApplication_eq_residualFieldSum_add_decompositionKernelSecondGrad
+    ricci_curvature_coefficient_difference_apply_eq_residual_add_hessian
       (I := I) (M := M) g₀ g₁ P htie hPsymm W
   rw [hP] at hprim
   rw [operatorFieldApplication_smul_left (I := I) (M := M) g₀ 2 2,
@@ -408,10 +411,10 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
     riemannianFiberNormSq_iteratedCovGrad_ricciOrderZeroBackgroundRCommCoeffDiff_gridWindow_le
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CS, hCS_nn, hCS⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciCovariantTermSharpGradKoszulResidualMetricDiff_gridWindow_le
+    ricciCovariantTermSharpGradKoszulResidualField_metric_difference_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨CR, hCR_nn, hCR⟩ :=
-    riemannianFiberNormSq_iteratedCovGrad_ricciContractionRemainderFieldMetricDifference_boundedFactorGridWindow_le
+    ricciContractionRemainderField_metric_difference_jet_norm_sq_le_gridWindow
       (I := I) (M := M) g₀ hδ₀
   obtain ⟨SW, hSW_nn, hSW⟩ := DifferentialGeometry.Analysis.Spectral.exists_riemannianFiberNormSq_iteratedCovGrad_bound (I := I) (M := M) g₀ 2 2
     (ccInputSlotSwapField (I := I) (M := M) g₀)
@@ -539,7 +542,7 @@ theorem riemannianFiberNormSq_iteratedCovGrad_bgRDiffDecompositionRemainderField
               (I := I) (M := M) g₀ g₁))).toSection x from by
       rw [SmoothCcTensor.toSection_smul]
       rfl]
-    rw [DifferentialGeometry.Analysis.Elliptic.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x (1 / 2) _]
+    rw [DifferentialGeometry.TensorMetric.riemannianFiberNormSq_smul (I := I) (M := M) g₀ 2 (2 + i) x (1 / 2) _]
     rw [mul_assoc]
     refine mul_le_mul_of_nonneg_left ?_ (by positivity)
     exact hCS g₁ P htie hδ_le hδ0 hbound i x

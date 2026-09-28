@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
-import DifferentialGeometry.Tensor.Metric.IsometryNorm
+import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
 import DifferentialGeometry.Topology.Manifold.InverseFunction.ContDiffOn
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.SigmaCompactOpen

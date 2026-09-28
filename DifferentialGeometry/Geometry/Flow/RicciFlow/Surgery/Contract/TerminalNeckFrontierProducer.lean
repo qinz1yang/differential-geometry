@@ -47,13 +47,13 @@ noncomputable def TerminalNeckFrontier.ofSmoothRegion
   let η : ℝ := if hs : s.Nonempty then s.sup' hs eta_b else ε - 1
   have hη : η < ε := by
     by_cases hs : s.Nonempty
-    · simp only [η, dif_pos hs]
+    · simp only [η, dite_eq_left hs]
       exact (Finset.sup'_lt_iff hs).2 (fun b _ => heta_b b)
-    · simp only [η, dif_neg hs]
+    · simp only [η, dite_eq_right hs]
       linarith
   have hηle (b : W.Boundary) : eta_b b ≤ η := by
     by_cases hs : s.Nonempty
-    · simp only [η, dif_pos hs]
+    · simp only [η, dite_eq_left hs]
       exact Finset.le_sup' eta_b (Finset.mem_univ b)
     · have hb : b ∈ s := by simp [s]
       exact (hs ⟨b, hb⟩).elim

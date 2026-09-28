@@ -194,7 +194,7 @@ private lemma deTurckLiePairTraceFib_toModel_eval (g₁ gA gB : SmoothRiemannian
                     ((Module.finBasis ℝ E).cDualBasis k)))
                 (Fin.cons ((Module.finBasis ℝ E) k) w)))) := by
   rw [deTurckLiePairTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    ContinuousLinearMap.comp_apply, tensor0SProdKappaFib_apply, domDomCongrFibRank_apply,
+    ContinuousLinearMap.comp_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.rightProductContinuousLinearMap_apply, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply,
     Tensor0SSpace.toModel_ofModel, cometricDoubleTraceFib_toModel,
     cometricDoubleTraceFib_toModel, Tensor0SSpace.toModel_ofModel]
   simp only [modelDoubleTrace_apply]
@@ -217,7 +217,7 @@ private lemma deTurckLieKoszulTraceFib_toModel_eval (g₀ g₁ : SmoothRiemannia
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 0))
                 ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (w 1)))] := by
   rw [deTurckLieKoszulTraceFib, ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
-    connectionDifferenceFib_toModel_eval, cometricDoubleTraceFib_toModel, domDomCongrFibRank_apply,
+    connectionDifferenceFib_toModel_eval, cometricDoubleTraceFib_toModel, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply,
     Tensor0SSpace.toModel_ofModel, modelDoubleTrace_apply]
   refine Finset.sum_congr rfl fun k _ => ?_
   refine congrArg _ ?_
@@ -364,12 +364,12 @@ private lemma deTurckLieFirstOrderCoreFib_toModel_eval (g₀ g₁ g_bg : SmoothR
   have hT2 : Tensor0SBundle.Tensor0SSpace.toModel
       (Tensor0SBundle.interiorProduct (𝕜 := ℝ) (I := I) 2 x
         ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)
-        (domDomCongrFibRank (I := I) 3 deTurckLieFirstOrderVecSlotPerm x D)) ![a, b] =
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 3 deTurckLieFirstOrderVecSlotPerm x D)) ![a, b] =
       Tensor0SBundle.Tensor0SSpace.toModel D
         ![a, b,
           tangentSpaceModelContinuousLinearEquiv (I := I) x
             ((PDE.DeTurck.deTurckVF (I := I) g₁ g₀ : Π y : M, TangentSpace I y) x)] := by
-    rw [interior_product_toModel_eval, domDomCongrFibRank_apply,
+    rw [interior_product_toModel_eval, DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply,
       Tensor0SSpace.toModel_ofModel, ContinuousMultilinearMap.domDomCongr_apply]
     exact congrArg (fun t : Fin 3 → E => Tensor0SBundle.Tensor0SSpace.toModel D t)
       (by funext i; fin_cases i <;> rfl)
@@ -542,11 +542,11 @@ omit [SigmaCompactSpace M] in
 private lemma deTurckLieFirstOrder_swapCore_eval (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
     (x : M) (D : Tensor0SBundle.Tensor0SSpace 3 I x) (v : Fin 2 → E) :
     Tensor0SBundle.Tensor0SSpace.toModel
-        (domDomCongrFibRank (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
+        (DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap (I := I) 2 (Equiv.swap (0 : Fin 2) 1) x
           (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D)) v =
       Tensor0SBundle.Tensor0SSpace.toModel
         (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) ![v 1, v 0] := by
-  rw [domDomCongrFibRank_apply, Tensor0SSpace.toModel_ofModel,
+  rw [DifferentialGeometry.Tensor0SBundle.Tensor0SSpace.reindexContinuousLinearMap_apply, Tensor0SSpace.toModel_ofModel,
     ContinuousMultilinearMap.domDomCongr_apply]
   exact congrArg (fun t : Fin 2 → E => Tensor0SBundle.Tensor0SSpace.toModel
     (deTurckLieFirstOrderCoreFib (I := I) g₀ g₁ g_bg x D) t)
@@ -1022,12 +1022,12 @@ private lemma christoffelCorrection_chartModelBasis_pair_self
     · intro j' _ hj'
       refine Finset.sum_eq_zero (fun m _ => ?_)
       rw [Module.Basis.repr_self, Module.Basis.repr_self, Finsupp.single_eq_same, one_mul,
-        Finsupp.single_apply, if_neg (Ne.symm hj'), zero_mul, zero_smul]
+        Finsupp.single_apply, ite_eq_right (Ne.symm hj'), zero_mul, zero_smul]
     · intro h
       exact absurd (Finset.mem_univ j) h
   · intro i' _ hi'
     refine Finset.sum_eq_zero (fun j' _ => Finset.sum_eq_zero (fun m _ => ?_))
-    rw [Module.Basis.repr_self, Finsupp.single_apply, if_neg (Ne.symm hi'), zero_mul, zero_mul,
+    rw [Module.Basis.repr_self, Finsupp.single_apply, ite_eq_right (Ne.symm hi'), zero_mul, zero_mul,
       zero_smul]
   · intro h
     exact absurd (Finset.mem_univ i) h
@@ -1142,7 +1142,7 @@ private lemma leviCivita_toFun_chartBasis_eval_of_localComponents
       rw [Module.Basis.repr_self, Finsupp.single_eq_same, one_mul, hreprY m, mul_comm]
     · intro i' _ hi'
       refine Finset.sum_eq_zero (fun j' _ => Finset.sum_eq_zero (fun p _ => ?_))
-      rw [Module.Basis.repr_self, Finsupp.single_apply, if_neg (Ne.symm hi'), zero_mul,
+      rw [Module.Basis.repr_self, Finsupp.single_apply, ite_eq_right (Ne.symm hi'), zero_mul,
         zero_mul, zero_smul]
     · intro h
       exact absurd (Finset.mem_univ i) h

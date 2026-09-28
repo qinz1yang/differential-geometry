@@ -4,7 +4,6 @@ import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.OrthonormalFra
 import DifferentialGeometry.Tensor.RSTensor.Coordinates.Field
 import Mathlib.Analysis.InnerProductSpace.Adjoint
 import Mathlib.Algebra.Order.Chebyshev
-open DifferentialGeometry.Analysis.Elliptic
 
 open DifferentialGeometry.Geometry.Connection
 
@@ -15,8 +14,7 @@ open Bundle Manifold Set FiberBundle NormedSpace Filter
 open scoped Manifold Topology ContDiff BigOperators RealInnerProductSpace
 
 namespace DifferentialGeometry
-namespace Geometry
-namespace Curvature
+namespace TensorMetric
 
 open DifferentialGeometry.Tensor0SBundle
 
@@ -185,8 +183,8 @@ private lemma gFrame_gram_sum_sq (g : SmoothRiemannianMetric I M) (x : M)
   rw [hbil]
   refine Finset.sum_congr rfl (fun j _ => ?_)
   rw [Finset.sum_eq_single j]
-  · rw [horth j j, if_pos rfl, mul_one]; ring
-  · intro l _ hl; rw [horth j l, if_neg (fun h => hl h.symm), mul_zero]
+  · rw [horth j j, ite_eq_left rfl, mul_one]; ring
+  · intro l _ hl; rw [horth j l, ite_eq_right (fun h => hl h.symm), mul_zero]
   · intro h; exact absurd (Finset.mem_univ j) h
 
 private lemma frame_double_sum_slotSub_le
@@ -349,6 +347,5 @@ theorem riemannianFiberNormSq_slotSub_le
         rw [Finset.sum_const, Finset.card_univ, Fintype.card_fin, nsmul_eq_mul]
         ring
 
-end Curvature
-end Geometry
+end TensorMetric
 end DifferentialGeometry

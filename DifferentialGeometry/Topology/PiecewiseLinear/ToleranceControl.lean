@@ -78,10 +78,11 @@ theorem dist_lt_of_image_subset_of_diam_lt {ι X Y : Type*} [PseudoMetricSpace Y
 theorem isLocallyClosed_of_forall_exists_isCompact_mem_nhdsWithin {X : Type*}
     [TopologicalSpace X] [T2Space X] {K : Set X}
     (hK : ∀ x ∈ K, ∃ N ⊆ K, IsCompact N ∧ N ∈ 𝓝[K] x) : IsLocallyClosed K := by
-  refine ((isLocallyClosed_tfae K).out 3 0).mp fun x hx => ?_
+  refine isLocallyClosed_iff_isLocallyClosedAt.mpr fun x hx => ?_
+  apply isLocallyClosedAt_iff_exists_inter_closure_subset.mpr
   obtain ⟨N, hNK, hNc, hNnhds⟩ := hK x hx
   obtain ⟨V, hVopen, hxV, hVsub⟩ := mem_nhdsWithin.mp hNnhds
-  refine ⟨V, hxV, hVopen, fun y hy => hNK ?_⟩
+  refine ⟨V, hVopen.mem_nhds hxV, fun y hy => hNK ?_⟩
   have hclosure : closure (V ∩ K) ⊆ N := by
     rw [← hNc.isClosed.closure_eq]
     exact closure_mono hVsub

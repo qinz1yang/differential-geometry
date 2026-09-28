@@ -1,5 +1,8 @@
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.Estimates.RankRaisingBilinearGrid
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Calculus.TensorRS
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq riemannianFiberNormSq_add_le
+  riemannianFiberNormSq_nonneg riemannianFiberNormSq_sum_le_card_mul)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -269,9 +272,9 @@ theorem dropNormalForm_succ (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
           (covGrad (I := I) (M := M) g ((b₀ + w) + (k + 1)) ((s₀ + w) + p) (Ψr (k + 1)))
           (iteratedCovGrad g 0 (b₀ + w) (k + 1) W) from by
     rw [Finset.sum_range_succ]
-    rw [if_neg (by omega : ¬ (p + 1 < p + 1)), operatorFieldComposition_zero_left, add_zero]
+    rw [ite_eq_right (by omega : ¬ (p + 1 < p + 1)), operatorFieldComposition_zero_left, add_zero]
     refine Finset.sum_congr rfl (fun k hk => ?_)
-    rw [if_pos (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
+    rw [ite_eq_left (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
   rw [Finset.sum_range_succ' (fun k =>
     ccOperatorFieldComp (I := I) (M := M) g 0 ((b₀ + w) + k) ((s₀ + w) + (p + 1))
       (covGrad (I := I) (M := M) g ((b₀ + w) + k) ((s₀ + w) + p) (Ψr k))
@@ -433,9 +436,9 @@ theorem dropTowerPsi_spec (g : SmoothRiemannianMetric I M) (b₀ s₀ : ℕ)
                 (dropTowerPsi (I := I) (M := M) g b₀ s₀ C p w (k + 1)))
               (iteratedCovGrad g 0 (b₀ + w) (k + 1) W) from by
         rw [Finset.sum_range_succ]
-        rw [if_neg (by omega : ¬ (p + 1 < p + 1)), operatorFieldComposition_zero_left, add_zero]
+        rw [ite_eq_right (by omega : ¬ (p + 1 < p + 1)), operatorFieldComposition_zero_left, add_zero]
         refine Finset.sum_congr rfl (fun k hk => ?_)
-        rw [if_pos (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
+        rw [ite_eq_left (by simp only [Finset.mem_range] at hk; omega : k + 1 < p + 1)]]
       rw [Finset.sum_range_succ' (fun k =>
         ccOperatorFieldComp (I := I) (M := M) g 0 ((b₀ + w) + k) ((s₀ + w) + (p + 1))
           (covGrad (I := I) (M := M) g ((b₀ + w) + k) ((s₀ + w) + p)

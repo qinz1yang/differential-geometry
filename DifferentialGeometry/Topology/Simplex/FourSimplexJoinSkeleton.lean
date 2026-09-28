@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Simplex.Coordinates
 import DifferentialGeometry.Topology.Simplex.FourSimplexJoin
 import DifferentialGeometry.Topology.Simplex.Skeleton
 
@@ -5,9 +6,11 @@ noncomputable section
 
 open scoped unitInterval
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Simplex
 
-private theorem mem_two_skeleton_of_two_zero_coordinates {p : stdSimplex ℝ (Fin 5)}
+private theorem mem_two_skeleton_of_two_zero_coordinates {p : coordinateSet ℝ (Fin 5)}
     (i j : Fin 5) (hij : i ≠ j) (hi : p i = 0) (hj : p j = 0) : p ∈ skeleton (Fin 5) 2 := by
   let s : Finset (Fin 5) := Finset.univ.erase i
   have hsc : s.card ≤ 4 := by simp [s]

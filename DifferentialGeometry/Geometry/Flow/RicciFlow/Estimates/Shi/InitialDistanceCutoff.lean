@@ -7,6 +7,10 @@ import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 
+open DifferentialGeometry.SmoothRiemannianMetric
+  (metric_inner_cauchy_schwarz_sq
+   metric_inner_smul_self)
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
@@ -23,7 +27,6 @@ namespace DifferentialGeometry.PDE.RicciFlow
 open Bundle Filter Set DifferentialGeometry.Tensor0SBundle
 open DifferentialGeometry.Analysis
 open DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.Analysis.Laplacian
 open DifferentialGeometry.Geometry.Riemannian
 open scoped Manifold ContDiff Topology Bundle
 

@@ -7,6 +7,8 @@ set_option autoImplicit false
 open Equiv
 open scoped Simplicial
 
+open Convexity.StdSimplex
+
 namespace DifferentialGeometry.Topology.SphereSeparation
 
 
@@ -120,16 +122,16 @@ theorem adjacentPositionSwap_ne {n : ℕ}
 
 theorem affineStandardSimplexMap_stdSimplex_map
     {α β γ : Type} [Fintype α] [Fintype β] [Fintype γ]
-    (v : β → stdSimplex ℝ γ) (f : α → β)
-    (x : stdSimplex ℝ α) :
-    affineStandardSimplexMap v (stdSimplex.map f x) =
+    (v : β → coordinateSet ℝ γ) (f : α → β)
+    (x : coordinateSet ℝ α) :
+    affineStandardSimplexMap v (coordinateMap f x) =
       affineStandardSimplexMap (v ∘ f) x := by
   classical
   ext a
-  rw [affineStandardSimplexMap_apply,
-    affineStandardSimplexMap_apply]
-  simp only [stdSimplex.map_coe,
-    FunOnFinite.linearMap_apply_apply, Function.comp_apply]
+  change (∑ j, (coordinateMap f x).val j * (v j).val a) =
+    ∑ i, x.val i * (v (f i)).val a
+  simp only [coordinateMap_coe,
+    FunOnFinite.linearMap_apply_apply]
   calc
     (∑ j, (∑ i ∈ Finset.univ with f i = j, x i) * v j a) =
         ∑ j, ∑ i ∈ Finset.univ with f i = j, x i * v (f i) a := by
@@ -147,90 +149,91 @@ theorem stdSimplex_map_nonemptyFaceBarycenter
     {m n : ℕ} (f : Fin (m + 1) → Fin (n + 1))
     (hf : Function.Injective f)
     (A : Finset (Fin (m + 1))) (hA : A.Nonempty) :
-    stdSimplex.map f (nonemptyFaceBarycenter A hA) =
+    coordinateMap f (nonemptyFaceBarycenter A hA) =
       nonemptyFaceBarycenter (A.image f) (hA.image f) := by
   classical
   ext y
-  rw [stdSimplex.map_coe, FunOnFinite.linearMap_apply_apply]
-  simp_rw [nonemptyFaceBarycenter_apply]
+  rw [coordinateMap_coe, FunOnFinite.linearMap_apply_apply]
+  have hb (A : Finset (Fin (m + 1))) (hA : A.Nonempty) (z : Fin (m + 1)) :
+      (nonemptyFaceBarycenter A hA).val z =
+        if z ∈ A then (A.card : ℝ)⁻¹ else 0 := nonemptyFaceBarycenter_apply A hA z
+  have hb' (z : Fin (n + 1)) :
+      (nonemptyFaceBarycenter (A.image f) (hA.image f)).val z =
+        if z ∈ A.image f then ((A.image f).card : ℝ)⁻¹ else 0 :=
+    nonemptyFaceBarycenter_apply _ _ z
+  simp_rw [hb, hb']
   rw [Finset.card_image_of_injective _ hf]
   by_cases hy : y ∈ A.image f
   · obtain ⟨x, hxA, hxy⟩ := Finset.mem_image.1 hy
     subst y
-    rw [if_pos hy]
+    rw [ite_eq_left hy]
     have hfiber :
         Finset.univ.filter (fun z : Fin (m + 1) => f z = f x) = {x} := by
       ext z
       simp [hf.eq_iff]
     rw [hfiber]
     simp [hxA]
-  · rw [if_neg hy]
+  · rw [ite_eq_right hy]
     apply Finset.sum_eq_zero
     intro x hx
-    rw [if_neg]
+    rw [ite_eq_right]
     intro hxA
     exact hy (Finset.mem_image.2
       ⟨x, hxA, (Finset.mem_filter.1 hx).2⟩)
 
 theorem stdSimplex_map_affineStandardSimplexMap
     {α β γ : Type} [Fintype α] [Fintype β] [Fintype γ]
-    (f : β → γ) (v : α → stdSimplex ℝ β)
-    (x : stdSimplex ℝ α) :
-    stdSimplex.map f (affineStandardSimplexMap v x) =
-      affineStandardSimplexMap (fun i => stdSimplex.map f (v i)) x := by
+    (f : β → γ) (v : α → coordinateSet ℝ β)
+    (x : coordinateSet ℝ α) :
+    coordinateMap f (affineStandardSimplexMap v x) =
+      affineStandardSimplexMap (fun i => coordinateMap f (v i)) x := by
   classical
   ext y
-  rw [stdSimplex.map_coe, FunOnFinite.linearMap_apply_apply,
-    affineStandardSimplexMap_apply]
+  change (FunOnFinite.linearMap ℝ ℝ f (affineStandardSimplexMap v x).val) y =
+    ∑ i, x.val i * (coordinateMap f (v i)).val y
+  rw [FunOnFinite.linearMap_apply_apply]
   have haff (z : β) :
-      (affineStandardSimplexMap v x) z = ∑ i, x i * v i z :=
-    affineStandardSimplexMap_apply v x z
+      (affineStandardSimplexMap v x).val z = ∑ i, x.val i * (v i).val z := rfl
   have hmap (i : α) :
-      stdSimplex.map f (v i) y = ∑ z with f z = y, v i z := by
-    rw [stdSimplex.map_coe, FunOnFinite.linearMap_apply_apply]
+      (coordinateMap f (v i)).val y = ∑ z with f z = y, (v i).val z := by
+    rw [coordinateMap_coe, FunOnFinite.linearMap_apply_apply]
   simp_rw [haff, hmap]
   simp_rw [Finset.mul_sum]
   exact Finset.sum_comm
 
 theorem barycentricPermutationSimplexMap_finalFace
     {n : ℕ} (σ : Equiv.Perm (Fin (n + 2)))
-    (x : stdSimplex ℝ (Fin (n + 1))) :
+    (x : coordinateSet ℝ (Fin (n + 1))) :
     barycentricPermutationSimplexMap σ
-        (stdSimplex.map (Fin.last (n + 1)).succAbove x) =
-      stdSimplex.map (σ (Fin.last (n + 1))).succAbove
+        (coordinateMap (Fin.last (n + 1)).succAbove x) =
+      coordinateMap (σ (Fin.last (n + 1))).succAbove
         (barycentricPermutationSimplexMap
           (eraseLastPermutation σ) x) := by
   unfold barycentricPermutationSimplexMap
   rw [affineStandardSimplexMap_stdSimplex_map,
     stdSimplex_map_affineStandardSimplexMap]
-  ext a
-  simp only [affineStandardSimplexMap_apply, Function.comp_apply]
-  apply Finset.sum_congr rfl
-  intro k _
-  congr 1
-  rw [stdSimplex_map_nonemptyFaceBarycenter]
-  · rw [nonemptyFaceBarycenter_apply,
-      nonemptyFaceBarycenter_apply,
-      Fin.succAbove_last_apply,
-      barycentricPrefix_castSucc_eq_image_eraseLast]
-  · exact Fin.succAbove_right_injective
+  apply congrArg (fun v : Fin (n + 1) → coordinateSet ℝ (Fin (n + 2)) =>
+    affineStandardSimplexMap v x)
+  funext k
+  dsimp only [Function.comp_apply]
+  rw [stdSimplex_map_nonemptyFaceBarycenter _ Fin.succAbove_right_injective]
+  simp only [Fin.succAbove_last_apply, barycentricPrefix_castSucc_eq_image_eraseLast]
 
 theorem barycentricPermutationSimplexMap_adjacentPositionSwap_face
     {n : ℕ} (σ : Equiv.Perm (Fin (n + 2))) (i : Fin (n + 1))
-    (x : stdSimplex ℝ (Fin (n + 1))) :
+    (x : coordinateSet ℝ (Fin (n + 1))) :
     barycentricPermutationSimplexMap (adjacentPositionSwap σ i)
-        (stdSimplex.map i.castSucc.succAbove x) =
+        (coordinateMap i.castSucc.succAbove x) =
       barycentricPermutationSimplexMap σ
-        (stdSimplex.map i.castSucc.succAbove x) := by
+        (coordinateMap i.castSucc.succAbove x) := by
   unfold barycentricPermutationSimplexMap
   rw [affineStandardSimplexMap_stdSimplex_map,
     affineStandardSimplexMap_stdSimplex_map]
-  ext a
-  simp only [affineStandardSimplexMap_apply, Function.comp_apply]
-  apply Finset.sum_congr rfl
-  intro j _
-  rw [nonemptyFaceBarycenter_apply, nonemptyFaceBarycenter_apply,
-    barycentricPrefix_adjacentPositionSwap_succAbove σ i j]
+  apply congrArg (fun v : Fin (n + 1) → coordinateSet ℝ (Fin (n + 2)) =>
+    affineStandardSimplexMap v x)
+  funext j
+  dsimp only [Function.comp_apply]
+  simp only [barycentricPrefix_adjacentPositionSwap_succAbove σ i j]
 
 theorem delta_barycentricPiece_adjacentPositionSwap
     (X : TopCat) {n : ℕ}
@@ -247,7 +250,14 @@ theorem delta_barycentricPiece_adjacentPositionSwap
   simp only [TopCat.toSSetObjEquiv_δ_apply,
     toSSetObjEquiv_barycentricPieceOfSingularSimplex,
     ContinuousMap.comp_apply]
-  exact congr_arg (X.toSSetObjEquiv _ s)
-    (barycentricPermutationSimplexMap_adjacentPositionSwap_face σ i x)
+  apply congr_arg (X.toSSetObjEquiv _ s)
+  apply (coordinateHomeomorph ℝ (Fin (n + 2))).injective
+  change barycentricPermutationSimplexMap (adjacentPositionSwap σ i)
+      (coordinateEquiv ℝ _ (Convexity.StdSimplex.map i.castSucc.succAbove x)) =
+    barycentricPermutationSimplexMap σ
+      (coordinateEquiv ℝ _ (Convexity.StdSimplex.map i.castSucc.succAbove x))
+  rw [coordinateEquiv_map]
+  exact barycentricPermutationSimplexMap_adjacentPositionSwap_face σ i
+    (coordinateEquiv ℝ _ x)
 
 end DifferentialGeometry.Topology.SphereSeparation

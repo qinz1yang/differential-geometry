@@ -36,15 +36,15 @@ theorem exists_isotopy_of_support_in_planar_chart
     intro x
     rw [(hJe 0 x).1, hD0]
     by_cases hx : x ∈ e.source
-    · exact (show extendChartById e g x = e.symm (g (e x)) from if_pos hx).trans (hgf x hx)
-    · exact (show extendChartById e g x = x from if_neg hx).trans
+    · exact (show extendChartById e g x = e.symm (g (e x)) from ite_eq_left hx).trans (hgf x hx)
+    · exact (show extendChartById e g x = x from ite_eq_right hx).trans
         (hfix x (fun hk ↦ hx (hKs hk))).symm
   · apply Diffeomorph.ext
     intro x
     rw [(hJe 1 x).1, hD1]
     change extendChartById e (id : ℂ → ℂ) x = x
     by_cases hx : x ∈ e.source
-    · exact (show extendChartById e id x = e.symm (e x) from if_pos hx).trans (e.left_inv hx)
-    · exact if_neg hx
+    · exact (show extendChartById e id x = e.symm (e x) from ite_eq_left hx).trans (e.left_inv hx)
+    · exact ite_eq_right hx
 
 end DifferentialGeometry.Topology.Manifold

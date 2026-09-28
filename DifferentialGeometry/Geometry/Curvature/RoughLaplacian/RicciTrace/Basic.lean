@@ -3,6 +3,10 @@ import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.OperatorField.Bound
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
 import DifferentialGeometry.Geometry.Operator.Gradient.MetricSharpSmoothness
 
+open DifferentialGeometry.TensorMetric
+  (riemannianFiberNormSq
+    riemannianFiberNormSq_nonneg)
+
 open DifferentialGeometry.Geometry.Connection.Realization
 open DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
 open DifferentialGeometry.Analysis.Spectral

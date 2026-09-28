@@ -19,14 +19,14 @@ theorem IsCombinatorialManifold.exists_innermost_disk
     (hJ : ∀ i, IsPLSphere 1 (J i)) (hJK : ∀ i, J i ⊆ K.space)
     (hdisj : Pairwise fun i j => Disjoint (J i) (J j))
     (hseed : ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ K.space ∧
         q '' stdSimplexBoundary 2 = J i) :
     ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ K.space ∧
         q '' stdSimplexBoundary 2 = J i ∧ ∀ j, j ≠ i → Disjoint D (J j) := by
   classical
   have hside : ∀ {D Y : Set E} {q : (Fin 3 → ℝ) → E} {i : ι},
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D → D ⊆ K.space →
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D → D ⊆ K.space →
       q '' stdSimplexBoundary 2 = J i → IsPreconnected Y → Y ⊆ K.space →
       Disjoint Y (J i) → Y ⊆ D ∨ Disjoint D Y := by
     intro D Y q i hq hDK hqJ hY hYK hYJ
@@ -48,7 +48,7 @@ theorem IsCombinatorialManifold.exists_innermost_disk
       rw [hmeet] at hy
       exact Set.disjoint_left.mp hYJ hyY hy
   have hex : ∃ n, ∃ (i : ι) (D : Set E) (q : (Fin 3 → ℝ) → E),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ K.space ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ K.space ∧
         q '' stdSimplexBoundary 2 = J i ∧ {j | j ≠ i ∧ J j ⊆ D}.ncard = n := by
     obtain ⟨i, D, q, hq, hDK, hqJ⟩ := hseed
     exact ⟨_, i, D, q, hq, hDK, hqJ, rfl⟩
@@ -85,11 +85,11 @@ theorem IsPLTorus.exists_innermost_disk {T : Set (EuclideanSpace ℝ (Fin 3))}
     (hdisj : Pairwise fun i j => Disjoint (J i) (J j))
     (hseed : ∃ (i : ι) (D : Set (EuclideanSpace ℝ (Fin 3)))
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ T ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ T ∧
         q '' stdSimplexBoundary 2 = J i) :
     ∃ (i : ι) (D : Set (EuclideanSpace ℝ (Fin 3)))
       (q : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3)),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ T ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ T ∧
         q '' stdSimplexBoundary 2 = J i ∧ ∀ j, j ≠ i → Disjoint D (J j) := by
   obtain ⟨K, hKfin, hK, -, hKT⟩ := hT.exists_combinatorial_triangulation
   let _ : Finite K.faces := hKfin.to_subtype

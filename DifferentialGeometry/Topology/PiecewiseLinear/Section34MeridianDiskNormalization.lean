@@ -23,7 +23,7 @@ theorem IsCylindricalDiagram.exists_cylinder_with_meridian
     ∃ (g : E × ℝ → F) (q : (Fin 3 → ℝ) → F),
       IsCylindricalDiagram g D.space M.space ∧
       (∀ x ∈ D.space, g (x, 0) = g (x, 1)) ∧
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) (g '' (D.space ×ˢ {1 / 2})) ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (g '' (D.space ×ˢ {1 / 2})) ∧
       q '' stdSimplexBoundary 2 = J ∧ (g '' (D.space ×ˢ {1 / 2})) ⊆ M.space := by
   obtain ⟨r, hr, hpos⟩ := hf.exists_meridian_position D M hD hM hends hdim hJ hJB hnull hess
   obtain ⟨σ, hσ, hfinal, hdis⟩ := hpos.exists_disjoint_image D M hD hM hf hends hdim hr

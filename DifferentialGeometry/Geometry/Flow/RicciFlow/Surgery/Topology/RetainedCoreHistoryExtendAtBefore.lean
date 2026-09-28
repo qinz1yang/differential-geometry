@@ -16,9 +16,7 @@ universe u
 
 namespace RetainedCoreHistory
 
-variable {P₀ : OrientedThreeStage.{u}}
-
-theorem stageMetric_activeStage_extendHorizon_eq (H : RetainedCoreHistory P₀) {T₁ T₂ : ℝ}
+theorem stageMetric_activeStage_extendHorizon_eq (H : RetainedCoreHistory.{u}) {T₁ T₂ : ℝ}
     (hT₁ : H.horizon ≤ T₁) (hT₂ : H.horizon ≤ T₂)
     (S₁ : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T₁)
     (S₂ : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T₂)
@@ -49,7 +47,7 @@ theorem stageMetric_activeStage_extendHorizon_eq (H : RetainedCoreHistory P₀) 
     erw [Fin.lastCases_castSucc, Fin.lastCases_castSucc]
     rfl
 
-theorem isParabolicallyRmControlledBall_extendHorizon_of_agree (H : RetainedCoreHistory P₀)
+theorem isParabolicallyRmControlledBall_extendHorizon_of_agree (H : RetainedCoreHistory.{u})
     {T₁ T₂ : ℝ} (hT₁ : H.horizon ≤ T₁) (hT₂ : H.horizon ≤ T₂)
     (S₁ : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T₁)
     (S₂ : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T₂)
@@ -92,7 +90,7 @@ theorem isParabolicallyRmControlledBall_extendHorizon_of_agree (H : RetainedCore
   rw [e] at h2
   exact h2
 
-theorem isParabolicallyRmControlledBall_of_extendHorizon (H : RetainedCoreHistory P₀)
+theorem isParabolicallyRmControlledBall_of_extendHorizon (H : RetainedCoreHistory.{u})
     {T' : ℝ} (hT' : H.horizon ≤ T')
     (S : (H.stage (Fin.last H.eventCount)).ClosedSlab (H.time (Fin.last H.eventCount)) T')
     (hS : S.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -124,7 +122,7 @@ theorem isParabolicallyRmControlledBall_of_extendHorizon (H : RetainedCoreHistor
   rw [e] at h2
   exact h2
 
-theorem volume_ge_extendAt_of_terminalNoncollapsedBefore (H : RetainedCoreHistory P₀)
+theorem volume_ge_extendAt_of_terminalNoncollapsedBefore (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -182,7 +180,7 @@ theorem volume_ge_extendAt_of_terminalNoncollapsedBefore (H : RetainedCoreHistor
         ⟨v, v.2.1, le_rfl⟩ v.2.2).symm]
     exact h1
 
-theorem exists_spatialCanonicalWitness_extendAt_of_before (H : RetainedCoreHistory P₀)
+theorem exists_spatialCanonicalWitness_extendAt_of_before (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =
@@ -219,7 +217,7 @@ theorem exists_spatialCanonicalWitness_extendAt_of_before (H : RetainedCoreHisto
     simp only [ObservedHistory.stageDomain, Fin.lastCases_castSucc, mem_Ico] at hmem
     exact hslab j (Fin.castSucc_lt_last j) p v ⟨hvk, hmem.2⟩ hq
 
-theorem curvatureOperatorLowerBoundAt_extendAt_of_pinched (H : RetainedCoreHistory P₀)
+theorem curvatureOperatorLowerBoundAt_extendAt_of_pinched (H : RetainedCoreHistory.{u})
     (hend : H.time (Fin.last H.eventCount) = H.horizon) {s : ℝ}
     (G : (H.stage (Fin.last H.eventCount)).IncomingSlab (H.time (Fin.last H.eventCount)) s)
     (hG : G.flow.base.metric (H.time (Fin.last H.eventCount)) =

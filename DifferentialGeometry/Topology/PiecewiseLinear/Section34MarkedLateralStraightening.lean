@@ -12,7 +12,7 @@ private theorem exists_rectangle_param_with_rim
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {A : Set E} {δ : ℝ → E} (hδ : IsPLHomeomorphOn δ (Icc 0 1) A) :
     ∃ r : (Fin 3 → ℝ) → E × ℝ,
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) (A ×ˢ Icc (0 : ℝ) 1) ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (A ×ˢ Icc (0 : ℝ) 1) ∧
       r '' stdSimplexBoundary 2 =
         ({δ 0, δ 1} ×ˢ Icc (0 : ℝ) 1) ∪ (A ×ˢ ({0, 1} : Set ℝ)) := by
   obtain ⟨r, hr⟩ := isPLBall_unit_square
@@ -38,7 +38,7 @@ theorem exists_lateral_straightening_of_two_disk_faces
     (hTdis : Disjoint (T 0) (T 1))
     (hTrim : ∀ i, T i ∩ (P ×ˢ ({0, 1} : Set ℝ)) = {(a i, 0), (a i, 1)})
     {s : Fin 2 → (Fin 3 → ℝ) → E × ℝ}
-    (hs : ∀ i, IsPLHomeomorphOn (s i) (stdSimplex ℝ (Fin 3)) (F i))
+    (hs : ∀ i, IsPLHomeomorphOn (s i) (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) (F i))
     (hsrim : ∀ i, s i '' stdSimplexBoundary 2 =
       (T 0 ∪ T 1) ∪ (A i ×ˢ ({0, 1} : Set ℝ)))
     (hFcover : F 0 ∪ F 1 = P ×ˢ Icc (0 : ℝ) 1)
@@ -142,7 +142,7 @@ theorem exists_lateral_straightening_of_two_disk_faces
 theorem exists_lateral_straightening_of_spanning_family
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {P : Set E} {r : (Fin 3 → ℝ) → E}
-    (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) P)
+    (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) P)
     {Z : (r '' stdSimplexBoundary 2) → Set (E × ℝ)}
     (hZ : ∀ z, IsPreconnected (Z z))
     (hZside : ∀ z, Z z ⊆ (r '' stdSimplexBoundary 2) ×ˢ Icc (0 : ℝ) 1)

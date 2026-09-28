@@ -21,7 +21,7 @@ theorem exists_disk_of_nullhomotopic_circle_disjoint_carrier
     (hnull : (⟨inclusion (hJΘ.trans hT.isPolyhedron.isClosed.frontier_subset),
       continuous_inclusion _⟩ : C(J, T)).Nullhomotopic) :
     ∃ (D : Set E3) (q : (Fin 3 → ℝ) → E3),
-      IsPLHomeomorphOn q (stdSimplex ℝ (Fin 3)) D ∧ D ⊆ frontier T ∧
+      IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D ∧ D ⊆ frontier T ∧
         J = q '' stdSimplexBoundary 2 := by
   let G : Option ι → Set E3 := fun i => i.elim J F
   have hG : ∀ i, IsPLSphere 1 (G i) := by

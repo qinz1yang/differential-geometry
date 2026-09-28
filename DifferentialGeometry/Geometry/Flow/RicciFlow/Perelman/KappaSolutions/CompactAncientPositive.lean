@@ -1,4 +1,3 @@
-import DifferentialGeometry.Geometry.Metric.RicciSoliton.CylinderQuotientHomeomorph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.AncientCylinderBranch
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverCylinderQuotient
 
@@ -42,9 +41,7 @@ theorem AncientCylinderBranch.not_compactSpace
     exact (not_compactSpace_iff.mpr
       (inferInstance : NoncompactSpace (SphereAntipodalQuotient × ℝ))) hc
   · obtain ⟨e, _⟩ := hdiagonal.1
-    obtain ⟨d, _⟩ := CylinderDiagonalQuotient.exists_homeomorph_orbitQuotient
-    let _ : CompactSpace CylinderDiagonalQuotient := e.toHomeomorph.symm.compactSpace
-    have hc := d.compactSpace
+    have hc := e.toHomeomorph.symm.compactSpace
     exact (not_compactSpace_iff.mpr
       DifferentialGeometry.Geometry.noncompactSpace_cylinderDiagonalQuotient) hc
 

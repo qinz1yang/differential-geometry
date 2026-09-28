@@ -51,7 +51,7 @@ private theorem adjunctionRestrictionMap_injective
         | inl b' =>
           intro h
           exact congrArg (adjunctionCell i (fun a => (⟨φ a, hφT a⟩ : T)))
-            (Manifold.Attachment.adjunctionCell_injective i φ hi hφ h)
+            (Manifold.Attachment.adjunctionCell_injective i φ hφ h)
         | inr x =>
           intro h
           obtain ⟨a, ha, hx⟩ :=

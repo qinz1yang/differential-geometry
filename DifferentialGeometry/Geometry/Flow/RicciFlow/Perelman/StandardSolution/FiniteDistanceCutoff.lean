@@ -13,7 +13,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Conne
 open DifferentialGeometry.Geometry.Operator DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 open DifferentialGeometry.Geometry.Riemannian
-open DifferentialGeometry.Analysis.Parabolic DifferentialGeometry.Analysis.Laplacian
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow
@@ -198,7 +198,7 @@ private theorem profile_of_scaled_support
   have hGu : (S.base.metric t).inner x
       (gradientFun (I := I) (S.base.metric t) (u t) x)
       (gradientFun (I := I) (S.base.metric t) (u t) x) ≤ alpha ^ 2 * U ^ 2 := by
-    rw [hgrad_u, metric_inner_smul_self]
+    rw [hgrad_u, SmoothRiemannianMetric.metric_inner_smul_self]
     exact (mul_le_mul_of_nonneg_left F.grad_sq (sq_nonneg alpha)).trans
       (mul_le_mul_of_nonneg_left hexp2 (sq_nonneg alpha))
   have hgrad_phi : gradientFun (I := I) (S.base.metric t) (phi t) x =
@@ -208,7 +208,7 @@ private theorem profile_of_scaled_support
   have hgradient : (S.base.metric t).inner x
       (gradientFun (I := I) (S.base.metric t) (phi t) x)
       (gradientFun (I := I) (S.base.metric t) (phi t) x) ≤ eps * phi t x := by
-    rw [hgrad_phi, metric_inner_smul_self]
+    rw [hgrad_phi, SmoothRiemannianMetric.metric_inner_smul_self]
     have hprofile := profileGradientCost_spec.2 (u t x)
     have hphi0 := (DifferentialGeometry.Analysis.CutoffProfile.mem_Icc (u t x)).1
     calc

@@ -313,8 +313,8 @@ private theorem slotInsert_deTurckLieInsertionCorrectionEndomorphism
     slotInsertEndoCc (I := I) (M := M) g 0
       (endoDiffSection (I := I) (M := M) g gm g_bg) = _
   rw [endoDiffSection, slotInsertEndoCc_sub,
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_deTurckVectorFieldCovariantDerivativeLowered,
-    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_deTurckVectorFieldCovariantDerivativeLowered,
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_lowered,
+    deTurckVectorFieldCovariantDerivativeEndomorphismInsert_eq_cometricRaise_lowered,
     connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise,
     connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise]
   rw [deTurckVectorFieldCovariantDerivativeLowered, deTurckVectorFieldCovariantDerivativeLowered, cometricRaiseSlot0Field_add, cometricRaiseSlot0Field_add, cometricRaiseSlot0Field_sub]
@@ -473,7 +473,7 @@ private theorem deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDiffe
     deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference (I := I) (M := M) g g_bg gU,
     ← domDomCongrSection_sub, ← covGrad_sub]
 
-private theorem exists_deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_covariantJetNormSq_tame_bound
+private theorem exists_deTurckVectorFieldCovariantDerivativeLoweredBase_background_difference_jet_two_tame_bound
     (hDim : Module.finrank ℝ E = 3)
     (g g_bg : SmoothRiemannianMetric I M) :
     ∃ B : ℝ → ℝ,
@@ -583,7 +583,7 @@ theorem exists_deTurckLieInsertionCorrection_covariantJetNormSq_tame_difference_
               (lieCorrectionZeroInsertion (I := I) (M := M) g gU g_bg -
                 lieCorrectionZeroInsertion (I := I) (M := M) g gU g))) ≤
         (B R * (D3 + D2 + A * D2)) ^ 2 := by
-  obtain ⟨Ba, hBa, hα⟩ := exists_deTurckVectorFieldCovariantDerivativeLoweredBase_backgroundDifference_covariantJetNormSq_tame_bound (I := I) (M := M) hDim g g_bg
+  obtain ⟨Ba, hBa, hα⟩ := exists_deTurckVectorFieldCovariantDerivativeLoweredBase_background_difference_jet_two_tame_bound (I := I) (M := M) hDim g g_bg
   let fr : ℝ := Module.finrank ℝ E
   let Z : ℝ := 4 * fr
   let C : ℝ := Real.sqrt Z

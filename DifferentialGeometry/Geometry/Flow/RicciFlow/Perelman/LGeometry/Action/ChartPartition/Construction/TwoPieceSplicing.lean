@@ -78,7 +78,7 @@ theorem exists_chartH1_join
     intro s hs
     by_cases hsc : s = c
     · subst s
-      simpa only [gamma, Set.piecewise, Set.mem_Iic, if_pos le_rfl] using hnode
+      simpa only [gamma, Set.piecewise, Set.mem_Iic, ite_eq_left le_rfl] using hnode
     · exact (Iic c).piecewise_eq_of_notMem gamma0 gamma1 (by
         rw [mem_Iic]
         exact not_le.mpr (lt_of_le_of_ne hs.1 (Ne.symm hsc)))
@@ -320,7 +320,7 @@ theorem exists_chartH1_join
             apply Fin.ext
             rfl
         rw [show p (Fin.castAdd m1 i0) = p0 j by
-          simp only [p, Fin.addCases_left, dif_pos hi, j]]
+          simp only [p, Fin.addCases_left, dite_eq_left hi, j]]
         rw [hseg]
         intro s hs
         have hsac : s ∈ Icc a c := ⟨(ht0mem j.castSucc).1.trans hs.1,
@@ -329,7 +329,7 @@ theorem exists_chartH1_join
         exact hsrc0 j hs
       · have hiLast := hlast0 i0 hi
         subst i0
-        simp only [p, Fin.addCases_left, dif_neg (by omega)]
+        simp only [p, Fin.addCases_left, dite_eq_right (by omega)]
         intro s hs
         have hstart : t (Fin.castAdd m1 (Fin.last m0)).castSucc = c := by
           rw [ht_left _ (by
@@ -393,9 +393,9 @@ theorem exists_chartH1_join
           simpa only [hlen0 i0 hi] using hr
         have hu : u (Fin.castAdd m1 i0) =
             (hlen0 i0 hi).symm ▸ v0 j := by
-          simp only [u, Fin.addCases_left, dif_pos hi, j]
+          simp only [u, Fin.addCases_left, dite_eq_left hi, j]
         have hp0eq : p (Fin.castAdd m1 i0) = p0 j := by
-          simp only [p, Fin.addCases_left, dif_pos hi, j]
+          simp only [p, Fin.addCases_left, dite_eq_left hi, j]
         have ht0eq : t (Fin.castAdd m1 i0).castSucc = t0 j.castSucc := by
           rw [ht_left _ (by
             simp only [Fin.val_castSucc, Fin.val_castAdd]
@@ -419,9 +419,9 @@ theorem exists_chartH1_join
           exact le_antisymm hrle hr.1
         subst r
         have hu : u (Fin.castAdd m1 (Fin.last m0)) = hmid.symm ▸ vMid := by
-          simp only [u, Fin.addCases_left, dif_neg hnot]
+          simp only [u, Fin.addCases_left, dite_eq_right hnot]
         have hpMid : p (Fin.castAdd m1 (Fin.last m0)) = gamma0 c := by
-          simp only [p, Fin.addCases_left, dif_neg hnot]
+          simp only [p, Fin.addCases_left, dite_eq_right hnot]
         have htMid : t (Fin.castAdd m1 (Fin.last m0)).castSucc = c := by
           rw [ht_left _ (by
             simp only [Fin.val_castSucc, Fin.val_castAdd, Fin.val_last]

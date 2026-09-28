@@ -1,6 +1,8 @@
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.Metric.ContractionJetTower
 import DifferentialGeometry.Geometry.Curvature.RoughLaplacian.RicciTrace.Basic
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.TensorAction.Field
+
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature

@@ -51,8 +51,8 @@ theorem attachThinAnnulus_normalized_polar
   have hnorm : ‖Complex.polarCoord.symm
       (p.1, 2 * Real.pi * p.2 - Real.pi)‖ = p.1 := by
     rw [Complex.norm_polarCoord_symm, abs_of_pos hp0]
-  rw [attachThinAnnulus, if_neg (by simpa only [hnorm] using not_le.mpr hp.1),
-    if_neg (by simpa only [hnorm] using not_le.mpr hp.2)]
+  rw [attachThinAnnulus, ite_eq_right (by simpa only [hnorm] using not_le.mpr hp.1),
+    ite_eq_right (by simpa only [hnorm] using not_le.mpr hp.2)]
   rw [thinAnnulusInterpolation, thinAnnulusProjection_normalized_polar R hp0,
     thinAnnulusParameter, hnorm]
   rfl

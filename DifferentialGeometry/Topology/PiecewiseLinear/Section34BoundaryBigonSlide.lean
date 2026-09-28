@@ -11,11 +11,11 @@ theorem IsCombinatorialManifoldWithBoundary.exists_boundary_crosscut_slide
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     (K : Geometry.SimplicialComplex ℝ E) [Finite K.faces]
     (hK : IsCombinatorialManifoldWithBoundary 3 K) {N A J L : Set E}
-    {n a : (Fin 3 → ℝ) → E} (hn : IsPLHomeomorphOn n (stdSimplex ℝ (Fin 3)) N)
+    {n a : (Fin 3 → ℝ) → E} (hn : IsPLHomeomorphOn n (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N)
     (hNB : N ⊆ (boundaryComplex 3 K).space) (hJB : J ⊆ (boundaryComplex 3 K).space)
     {γ : ℝ → E} (hγ : IsPLHomeomorphOn γ (Icc 0 1) (J ∩ N))
     (hends : (J ∩ N) ∩ n '' stdSimplexBoundary 2 = {γ 0, γ 1})
-    (ha : IsPLHomeomorphOn a (stdSimplex ℝ (Fin 3)) A) (hAN : A ⊆ N)
+    (ha : IsPLHomeomorphOn a (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) A) (hAN : A ⊆ N)
     (hside : A ∩ (L ∪ n '' stdSimplexBoundary 2) ⊆ a '' stdSimplexBoundary 2)
     (h₀ : γ 0 ∈ a '' stdSimplexBoundary 2) (h₁ : γ 1 ∈ a '' stdSimplexBoundary 2)
     (h₀L : γ 0 ∉ L) (h₁L : γ 1 ∉ L) :
@@ -65,7 +65,7 @@ theorem IsCombinatorialManifoldWithBoundary.exists_boundary_raw_bigon_slide
     (hsecond : ∀ i, ∀ p ∈ Ioo (-ε i) (ε i) ×ˢ Ioo (-ε i) (ε i),
       (e i p : E) ∈ L ↔ p.2 = 0) :
     ∃ (N : Set E) (r : (Fin 3 → ℝ) → E) (F : E → E),
-      IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) N ∧
+      IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) N ∧
       N ⊆ (boundaryComplex 3 K).space ∩ Ω ∧ B ⊆ r '' openSimplex (stdVertices 1) ∧
       IsPLHomeomorphOn F K.space K.space ∧
       EqOn F id (closure ((boundaryComplex 3 K).space \ N)) ∧ F '' N = N ∧

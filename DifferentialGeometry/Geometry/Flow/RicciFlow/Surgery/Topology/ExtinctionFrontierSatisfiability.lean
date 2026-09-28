@@ -55,8 +55,7 @@ theorem HasExtinctRetainedCoreHistory.exists_extinctionEvent
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreHistory M g) :
-    ∃ (H : RetainedCoreHistory
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold))
+    ∃ (H : RetainedCoreHistory.{u})
       (_ : InitialIdentification
         (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
       (i : Fin H.eventCount),
@@ -78,8 +77,7 @@ theorem HasExtinctRetainedCoreHistory.exists_extinctionEvent_discardedStandard
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreHistory M g) :
-    ∃ (H : RetainedCoreHistory
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold))
+    ∃ (H : RetainedCoreHistory.{u})
       (_ : InitialIdentification
         (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
       (i : Fin H.eventCount) (q : ConnectedComponents (H.coreEvent i).discarded.Carrier),
@@ -158,7 +156,7 @@ theorem HasExtinctStandardSideNucleus.exists_extinctionEvent
       Nonempty (H.event i).discarded.Carrier ∧
       (H.event i).transition.boundaryFrameReversing ∧
       (H.event i).coreInclusionIsSmoothEmbedding ∧
-      DiscardedSideStandardRealization (H.event i).discarded.toClosedOrientedManifold := by
+      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor := by
   obtain ⟨H, A, hbfr, hcore, hside, hempty⟩ := h
   have : Nonempty (H.stage 0).Carrier := A.initial_nonempty
   obtain ⟨i, hsucc, hsrc, hsink, hdisc⟩ :=
@@ -169,8 +167,7 @@ theorem HasExtinctRetainedCoreHistoryAtTime.exists_extinctionEvent
     (M : DifferentialGeometry.Topology.ConnectedClosedOrientedManifold.{u} 3)
     (g : SmoothRiemannianMetric (𝓡 3) M.Carrier)
     (h : HasExtinctRetainedCoreHistoryAtTime M g) :
-    ∃ (H : RetainedCoreHistory
-        (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold))
+    ∃ (H : RetainedCoreHistory.{u})
       (_ : InitialIdentification
         (OrientedThreeStage.ofClosedOrientedManifold M.toClosedOrientedManifold) g H.toHistory)
       (t : Icc (0 : ℝ) H.horizon)
@@ -219,7 +216,7 @@ theorem HasExtinctRetainedCoreTower.exists_extinctionEvent
 namespace RetainedCoreEvent
 
 def extinctionHistory {P Q : OrientedThreeStage.{u}} {s : ℝ} (hs : 0 < s)
-    (E : RetainedCoreEvent P Q 0 s) : RetainedCoreHistory P where
+    (E : RetainedCoreEvent P Q 0 s) : RetainedCoreHistory.{u} where
   horizon := s
   horizon_nonneg := hs.le
   eventCount := 1

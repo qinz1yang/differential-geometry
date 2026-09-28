@@ -237,7 +237,7 @@ lemma chartFormulaRhsSmoothExt_apply_of_mem (g : SmoothRiemannianMetric I M) (α
   change (if y ∈ chartTargetEuclid (I := I) (M := M) α then
         chartFormulaRhsSmooth (I := I) (M := M) g α ρα u y
       else 0) = _
-  rw [if_pos hy]
+  rw [ite_eq_left hy]
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [T2Space M]
     [CompactSpace M] in
@@ -249,7 +249,7 @@ lemma chartFormulaRhsSmoothExt_apply_of_notMem (g : SmoothRiemannianMetric I M) 
   change (if y ∈ chartTargetEuclid (I := I) (M := M) α then
         chartFormulaRhsSmooth (I := I) (M := M) g α ρα u y
       else 0) = 0
-  rw [if_neg hy]
+  rw [ite_eq_right hy]
 
 omit [NeZero (Module.finrank ℝ E)] [T2Space M] [CompactSpace M] in
 lemma chartFormulaRhsSmoothExt_measurable

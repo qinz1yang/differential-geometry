@@ -32,7 +32,7 @@ theorem smallSingularSimplices_twoSet :
     ((∃ _ : Unit, Set.range (X.toSSetObjEquiv n σ) ⊆ s) ∨
       (∃ _ : Unit, Set.range (X.toSSetObjEquiv n σ) ⊆ t))
   simp only [exists_const, Bool.exists_bool, twoSetFamily, Bool.false_eq_true,
-    if_false, if_true, or_comm]
+    ite_false, ite_true, or_comm]
 
 
 def subspaceInclusion {s t : Set X} (h : s ⊆ t) : TopCat.of s ⟶ TopCat.of t :=

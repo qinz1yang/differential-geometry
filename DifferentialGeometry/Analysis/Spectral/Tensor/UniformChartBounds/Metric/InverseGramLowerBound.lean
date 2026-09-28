@@ -222,7 +222,7 @@ theorem exists_chartInvGramMatrix_quadForm_lower_bound_on_compact
           rw [Finset.sum_eq_single i₀]
           · simp [he₀_def]
           · intro i _ hi
-            rw [he₀_def, Pi.single_apply, if_neg hi]; ring
+            rw [he₀_def, Pi.single_apply, ite_eq_right hi]; ring
           · intro h
             exact absurd (Finset.mem_univ _) h
         obtain ⟨b₀, hb₀⟩ := hKα_ne

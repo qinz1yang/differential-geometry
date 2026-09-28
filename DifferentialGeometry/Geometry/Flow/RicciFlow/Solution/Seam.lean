@@ -63,10 +63,10 @@ theorem metric_inner_hasDerivAt_ite_of_ricciFlow {t : ℝ} (ht : t ∈ Ioo a b)
       (-2 * ricciTensor (I := I) (if t ≤ c then gL t else gR t) x v w) t := by
   rcases lt_trichotomy t c with htc | heq | hct
   · have hd := hpdeL t ⟨ht.1, htc⟩ x v w
-    rw [if_pos htc.le]
+    rw [ite_eq_left htc.le]
     apply hd.congr_of_eventuallyEq
     filter_upwards [Iio_mem_nhds htc] with s hs
-    rw [if_pos (mem_Iio.mp hs).le]
+    rw [ite_eq_left (mem_Iio.mp hs).le]
   · subst t
     have hdL := metric_inner_hasDerivWithinAt_of_joint_ricciFlow gL ha hL hpdeL
       ⟨ha.le, le_rfl⟩ x v w
@@ -76,7 +76,7 @@ theorem metric_inner_hasDerivAt_ite_of_ricciFlow {t : ℝ} (ht : t ∈ Ioo a b)
         (fun s => (gL s).inner x v w) (Icc a c) := by
       intro s hs
       dsimp only
-      rw [if_pos hs.2]
+      rw [ite_eq_left hs.2]
     have heqR : EqOn (fun s => (if s ≤ c then gL s else gR s).inner x v w)
         (fun s => (gR s).inner x v w) (Icc c b) := by
       intro s hs
@@ -84,20 +84,20 @@ theorem metric_inner_hasDerivAt_ite_of_ricciFlow {t : ℝ} (ht : t ∈ Ioo a b)
       by_cases hsc : s ≤ c
       · have he : s = c := le_antisymm hsc hs.1
         subst s
-        rw [if_pos le_rfl, hmatch]
-      · rw [if_neg hsc]
+        rw [ite_eq_left le_rfl, hmatch]
+      · rw [ite_eq_right hsc]
     have hdL' := hdL.congr_of_mem heqL ⟨ha.le, le_rfl⟩
     have hdR' := hdR.congr_of_mem heqR ⟨le_rfl, hb.le⟩
     rw [← hmatch] at hdR'
     have hd := hdL'.union hdR'
     rw [Icc_union_Icc_eq_Icc ha.le hb.le] at hd
-    rw [if_pos le_rfl]
+    rw [ite_eq_left le_rfl]
     exact hd.hasDerivAt (Icc_mem_nhds ha hb)
   · have hd := hpdeR t ⟨hct, ht.2⟩ x v w
-    rw [if_neg (not_le.mpr hct)]
+    rw [ite_eq_right (not_le.mpr hct)]
     apply hd.congr_of_eventuallyEq
     filter_upwards [Ioi_mem_nhds hct] with s hs
-    rw [if_neg (not_le.mpr (mem_Ioi.mp hs))]
+    rw [ite_eq_right (not_le.mpr (mem_Ioi.mp hs))]
 
 include ha hb hL hR hpdeL hpdeR hmatch in
 theorem isSolutionOn_ite_of_ricciFlow :

@@ -15,7 +15,7 @@ local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
 theorem exists_isPLHomeomorphOn_Icc_of_stdSimplex_one {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] [FiniteDimensional ℝ E] {S W : Set E} {q : (Fin 2 → ℝ) → E}
-    (hq : IsPLHomeomorphOn q (stdSimplex ℝ (Fin 2)) S)
+    (hq : IsPLHomeomorphOn q (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) S)
     (hqb : q '' stdSimplexBoundary 1 = S ∩ W) :
     ∃ g : ℝ → E, IsPLHomeomorphOn g (Icc 0 1) S ∧ ({g 0, g 1} : Set E) = S ∩ W := by
   let L : ℝ →ᵃ[ℝ] (Fin 2 → ℝ) := AffineMap.lineMap ![1, 0] ![0, 1]
@@ -30,7 +30,7 @@ theorem exists_isPLHomeomorphOn_Icc_of_stdSimplex_one {E : Type*} [NormedAddComm
     simp only [L, AffineMap.lineMap_apply, vsub_eq_sub, vadd_eq_add, Pi.add_apply,
       Pi.smul_apply, Pi.sub_apply, smul_eq_mul]
     simp
-  have hLbij : BijOn L (Icc 0 1) (stdSimplex ℝ (Fin 2)) := by
+  have hLbij : BijOn L (Icc 0 1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) := by
     refine ⟨fun t ht => ⟨fun i => ?_, ?_⟩, fun s _ t _ hst => ?_, fun x hx => ?_⟩
     · fin_cases i
       · simp only [Fin.zero_eta, Fin.isValue, hL0]
@@ -50,7 +50,7 @@ theorem exists_isPLHomeomorphOn_Icc_of_stdSimplex_one {E : Type*} [NormedAddComm
           have hsum : x 0 + x 1 = 1 := by simpa [Fin.sum_univ_two] using hx.2
           linarith
         · simp only [Fin.mk_one, Fin.isValue, hL1]
-  have hLpl : IsPLHomeomorphOn L (Icc 0 1) (stdSimplex ℝ (Fin 2)) :=
+  have hLpl : IsPLHomeomorphOn L (Icc 0 1) (Convexity.StdSimplex.coordinateSet ℝ (Fin 2)) :=
     isPLHomeomorphOn_of_isPiecewiseAffineOn_of_bijOn isHPolytope_Icc.isPolyhedron
       ((isPiecewiseAffineOn_of_affine L isOpen_univ).mono_of_isPolyhedron
         isHPolytope_Icc.isPolyhedron (subset_univ _)) hLbij
@@ -59,7 +59,7 @@ theorem exists_isPLHomeomorphOn_Icc_of_stdSimplex_one {E : Type*} [NormedAddComm
   simp only [Function.comp_apply, L, AffineMap.lineMap_apply_zero, AffineMap.lineMap_apply_one]
 
 theorem IsLoopTheoremDisk.of_isPLHomeomorphOn {Kimg N' B Δ S : Set E3}
-    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (stdSimplex ℝ (Fin 3)) Δ)
+    {r : (Fin 3 → ℝ) → E3} (hr : IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ)
     (hsub : Δ ⊆ interior N' \ Kimg) (hΔB : Δ ∩ B = S) (hrS : r '' stdSimplexBoundary 2 = S)
     (hSB : S ⊆ B)
     (hnull : ¬ (⟨Set.inclusion hSB, continuous_inclusion hSB⟩ : C(S, B)).Nullhomotopic) :

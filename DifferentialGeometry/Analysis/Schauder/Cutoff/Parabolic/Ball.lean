@@ -216,8 +216,8 @@ theorem norm_parabolicBallCutoff_le_one
   rw [parabolicBallCutoff_apply, norm_smul, Real.norm_eq_abs,
     abs_of_nonneg (intervalCutoffBoundedContinuousFunction_mem_Icc ha ht hb t).1,
     Real.norm_eq_abs, abs_of_nonneg (ballCutoff_mem_Icc center r R x).1]
-  exact mul_le_one₀ (intervalCutoffBoundedContinuousFunction_mem_Icc ha ht hb t).2
-    (ballCutoff_mem_Icc center r R x).1
+  exact (mul_le_of_le_one_left (ballCutoff_mem_Icc center r R x).1
+    (intervalCutoffBoundedContinuousFunction_mem_Icc ha ht hb t).2).trans
     (ballCutoff_mem_Icc center r R x).2
 
 theorem norm_parabolicBallCutoffTimeDerivative_le

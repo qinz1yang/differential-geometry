@@ -61,14 +61,14 @@ lemma abs_prod_kronecker_le_one
   | insert i t hi ih =>
       rw [Finset.prod_insert hi, abs_mul]
       by_cases hf : f i
-      · rw [if_pos hf, abs_one, one_mul]; exact ih
-      · rw [if_neg hf, abs_zero, zero_mul]; exact zero_le_one
+      · rw [ite_eq_left hf, abs_one, one_mul]; exact ih
+      · rw [ite_eq_right hf, abs_zero, zero_mul]; exact zero_le_one
 
 private lemma abs_kronecker_le_one' {P : Prop} [Decidable P] :
     |if P then (1 : ℝ) else 0| ≤ 1 := by
   by_cases h : P
-  · rw [if_pos h, abs_one]
-  · rw [if_neg h, abs_zero]; exact zero_le_one
+  · rw [ite_eq_left h, abs_one]
+  · rw [ite_eq_right h, abs_zero]; exact zero_le_one
 
 lemma abs_sum_coeff_kronecker_le
     {ι : Type*} (t : Finset ι) (f : ι → ℝ) (P : ι → Prop) [DecidablePred P]

@@ -73,7 +73,7 @@ private theorem hasDerivAt_scalar_cutoff_trace
           lRegularizedIndexIntegrand_smul_function_self_of_isLAdaptedAt
             (I := I) S T alpha (P i) chi s hchi.differentiableAt (hP i) (hDP i)
       _ = _ := by
-        simp only [hON, if_pos, mul_one, Finset.sum_sub_distrib,
+        simp only [hON, ite_eq_left, mul_one, Finset.sum_sub_distrib,
           Finset.sum_add_distrib, ← Finset.mul_sum, Finset.sum_const,
           Finset.card_fin, nsmul_eq_mul]
         rw [hRic]

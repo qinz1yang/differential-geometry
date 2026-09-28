@@ -24,11 +24,10 @@ private theorem contMDiff_conformalMetric_inner_section
       (TangentSpace I y →L[Real] TangentSpace I y →L[Real] Real) := fun _ => inferInstance
   have h : ContMDiff I 𝓘(Real, Real) ∞ (fun x => Real.exp (2 * u x)) :=
     Real.contDiff_exp.contMDiff.comp (contMDiff_const.mul u.contMDiff)
-  convert
+  exact
     h.smul_section (I := I) (F := E →L[Real] E →L[Real] Real)
       (V := fun y : M => TangentSpace I y →L[Real] TangentSpace I y →L[Real] Real)
-      g.contMDiff using 1
-  with_reducible_and_instances rfl
+      g.contMDiff
 
 def conformalMetric (g : SmoothRiemannianMetric I M) (u : C^∞⟮I, M; Real⟯) :
     SmoothRiemannianMetric I M where

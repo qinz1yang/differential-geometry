@@ -318,7 +318,7 @@ theorem tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhd
     tendsto_setIntegral_regularized_quadratic_kernel_mul_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
       Complex.finrank_real_complex ha hs h0 hg hcont
 
-theorem tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+theorem tendsto_setIntegral_regularized_quadratic_kernel_jacobian_of_finrank_eq_two
     {F : Type*} [NormedAddCommGroup F] [InnerProductSpace Real F]
     [FiniteDimensional Real F] [MeasurableSpace F] [BorelSpace F]
     (hdim : Module.finrank Real F = 2)
@@ -358,7 +358,7 @@ theorem tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv
           (ε * g (φ z) * (a ^ 2 * ‖φ z‖ ^ 2 + ε)⁻¹ ^ 2))
       (𝓝[>] 0) (𝓝 (Real.pi / a ^ 2 * g 0)) := by
   exact
-    tendsto_setIntegral_regularized_quadratic_kernel_comp_mul_abs_det_fderiv_of_integrableOn_nhdsGT_zero_of_finrank_eq_two
+    tendsto_setIntegral_regularized_quadratic_kernel_jacobian_of_finrank_eq_two
       Complex.finrank_real_complex ha hs hφ' hφ h0 hg hcont
 
 end DifferentialGeometry.Analysis.Integration
