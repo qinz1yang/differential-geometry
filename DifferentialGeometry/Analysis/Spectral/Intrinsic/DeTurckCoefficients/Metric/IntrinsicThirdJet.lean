@@ -1,4 +1,5 @@
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.ThirdJetDifference
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
+import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Chart.RawComponentIdentification
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.MetricRealization.MetricJets.CovariantJetBounds
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.ResidualCoefficient.Decomposition
@@ -440,7 +441,7 @@ theorem metricJet3_le_gram (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ g₂ : SmoothRiemannianMetric I M) {y : E},
         y ∈ interior (extChartAt I α).target →
-        metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y ≤
           C * chartGramJetDiffSeminormSum (I := I) (M := M) 3 g₁ g₂ α
             (interior (extChartAt I α).target) y := by
   classical
@@ -518,11 +519,11 @@ theorem metricJet3_le_gram (α : M) :
       _ = (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), B ^ 2) * J := by
         rw [Finset.sum_mul]
-  have h3 : gramD3DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+  have h3 : DifferentialGeometry.Tensor.Coordinates.chartGramPartial3DiffSum (I := I) (M := M) g₁ g₂ α y ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E), B ^ 3) * J := by
-    unfold gramD3DiffSup
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartial3DiffSum
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
@@ -545,12 +546,12 @@ theorem metricJet3_le_gram (α : M) :
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E), B ^ 3) * J := by
         rw [Finset.sum_mul]
-  unfold metricJet3DiffSup DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum
+  unfold DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum
   calc
     DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) +
           DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) g₁ g₂ α y +
         DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) g₁ g₂ α y +
-      gramD3DiffSup (I := I) (M := M) g₁ g₂ α y
+      DifferentialGeometry.Tensor.Coordinates.chartGramPartial3DiffSum (I := I) (M := M) g₁ g₂ α y
         ≤ ((∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), (1 : ℝ)) * J +
             (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E), B) * J) +
@@ -729,7 +730,7 @@ theorem metricJet3_intrinsic
       ∀ (g₁ g₂ : SmoothRiemannianMetric I M) {b : M},
         b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
-        metricJet3DiffSup (I := I) (M := M) g₁ g₂ α (extChartAt I α b) ≤
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α (extChartAt I α b) ≤
           C * ∑ i ∈ Finset.range 4,
             Real.sqrt (riemannianFiberNormSq (I := I) (M := M) gBase 0 (2 + i) b
               ((iteratedCovGrad (I := I) gBase 0 2 i
@@ -777,7 +778,7 @@ theorem metricJet3_intrinsic
   have hfib' := hfib D hyK
   rw [hb_pre] at hfib'
   calc
-    metricJet3DiffSup (I := I) (M := M) g₁ g₂ α (extChartAt I α b)
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α (extChartAt I α b)
         ≤ Cmetric * chartGramJetDiffSeminormSum (I := I) (M := M) 3 g₁ g₂ α
             (interior (extChartAt I α).target) (extChartAt I α b) := hmetric'
     _ ≤ Cmetric * (Npair *

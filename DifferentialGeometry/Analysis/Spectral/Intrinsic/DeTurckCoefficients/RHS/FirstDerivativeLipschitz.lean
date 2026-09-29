@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.FirstDerivativeBound
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -111,38 +112,38 @@ theorem deTurckVFD2_sub
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g_bg α a b k)) y| ≤ S)
     (hInv : ∀ a b, |chartInvGramOnE (I := I) g₁ α a b y -
       chartInvGramOnE (I := I) g₂ α a b y| ≤
-        C₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        C₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hInvD : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartInvGramOnE (I := I) g₁ α a b) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartInvGramOnE (I := I) g₂ α a b) y| ≤
-        C₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        C₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hInvD2 : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartInvGramOnE (I := I) g₁ α a b)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartInvGramOnE (I := I) g₂ α a b)) y| ≤
-        C₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        C₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓ : ∀ a b q, |chartChristoffel (I := I) g₁ α a b q y -
       chartChristoffel (I := I) g₂ α a b q y| ≤
-        G₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        G₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓD : ∀ e a b q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b q) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b q) y| ≤
-        G₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        G₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓD2 : ∀ e r a b q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b q)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b q)) y| ≤
-        G₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
+        G₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y) :
     |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₁ g_bg α k)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartDeTurckVFComp (I := I) g₂ g_bg α k)) y| ≤
       (Module.finrank ℝ E : ℝ) ^ 2 *
         ((C₂ * P + T * G₀) + 2 * (C₁ * R + D * G₁) + (C₀ * S + M_b * G₂)) *
-        metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
-  set J : ℝ := metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y with hJ_def
-  have hJ_nn : 0 ≤ J := metricJet3_nonneg (I := I) (M := M) g₁ g₂ α y
+  set J : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y with hJ_def
+  have hJ_nn : 0 ≤ J := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum_nonneg (I := I) (M := M) g₁ g₂ α y
   let K : ℝ := (C₂ * P + T * G₀) + 2 * (C₁ * R + D * G₁) + (C₀ * S + M_b * G₂)
   rw [partial2_deTurckVF (I := I) g₁ g_bg α d m k hy,
     partial2_deTurckVF (I := I) g₂ g_bg α d m k hy,
@@ -302,23 +303,23 @@ theorem chartRiemannD_sub
       (chartChristoffel (I := I) g₂ α a b c) y| ≤ CdΓ)
     (hΓ : ∀ a b c, |chartChristoffel (I := I) g₁ α a b c y -
       chartChristoffel (I := I) g₂ α a b c y| ≤
-        G₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        G₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓD : ∀ e a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b c) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b c) y| ≤
-        G₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        G₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓD2 : ∀ e r a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b c)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b c)) y| ≤
-        G₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
+        G₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y) :
     |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₁ α i j k l) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₂ α i j k l) y| ≤
       (2 * G₂ + 4 * (Module.finrank ℝ E : ℝ) * (G₁ * CΓ + CdΓ * G₀)) *
-        metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
-  set J : ℝ := metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y with hJ_def
-  have hJ_nn : 0 ≤ J := metricJet3_nonneg (I := I) (M := M) g₁ g₂ α y
+  set J : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y with hJ_def
+  have hJ_nn : 0 ≤ J := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum_nonneg (I := I) (M := M) g₁ g₂ α y
   let K : ℝ := G₁ * CΓ + CdΓ * G₀
   rw [partial_chartRiemann (I := I) g₁ α d i j k l hy,
     partial_chartRiemann (I := I) g₂ α d i j k l hy]
@@ -463,26 +464,26 @@ theorem chartRicciD_sub
       (chartChristoffel (I := I) g₂ α a b c) y| ≤ CdΓ)
     (hΓ : ∀ a b c, |chartChristoffel (I := I) g₁ α a b c y -
       chartChristoffel (I := I) g₂ α a b c y| ≤
-        G₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        G₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓD : ∀ e a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartChristoffel (I := I) g₁ α a b c) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartChristoffel (I := I) g₂ α a b c) y| ≤
-        G₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        G₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hΓD2 : ∀ e r a b c, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₁ α a b c)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartChristoffel (I := I) g₂ α a b c)) y| ≤
-        G₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
+        G₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y) :
     |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRicciTensor (I := I) g₁ α i k) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRicciTensor (I := I) g₂ α i k) y| ≤
       (Module.finrank ℝ E : ℝ) *
         (2 * G₂ + 4 * (Module.finrank ℝ E : ℝ) * (G₁ * CΓ + CdΓ * G₀)) *
-        metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
   rw [partial_chartRicci (I := I) g₁ α d i k hy,
     partial_chartRicci (I := I) g₂ α d i k hy,
     ← Finset.sum_sub_distrib]
-  set J : ℝ := metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y with hJ_def
+  set J : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y with hJ_def
   let K : ℝ := 2 * G₂ + 4 * (Module.finrank ℝ E : ℝ) * (G₁ * CΓ + CdΓ * G₀)
   let F : Fin (Module.finrank ℝ E) → ℝ := fun j =>
     DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartRiemannTensor (I := I) g₁ α i j k j) y -
@@ -515,27 +516,27 @@ theorem chartLieD_sub
       (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y| ≤ D2V)
     (hVsub : ∀ q, |chartDeTurckVFComp (I := I) g₁ g_bg α q y -
       chartDeTurckVFComp (I := I) g₂ g_bg α q y| ≤
-        W₀ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        W₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hVDsub : ∀ e q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartDeTurckVFComp (I := I) g₁ g_bg α q) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartDeTurckVFComp (I := I) g₂ g_bg α q) y| ≤
-        W₁ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y)
+        W₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hVD2sub : ∀ e r q, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₁ g_bg α q)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartDeTurckVFComp (I := I) g₂ g_bg α q)) y| ≤
-        W₂ * metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y) :
+        W₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y) :
     |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartLieDeTurckComp (I := I) g₁ g_bg α i j) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d (chartLieDeTurckComp (I := I) g₂ g_bg α i j) y| ≤
       (Module.finrank ℝ E : ℝ) *
         (((W₁ * Q₁ + DV) + (W₀ * Q₂ + V)) +
           2 * ((W₁ * Q₁ + DV) + (W₂ * Q₀ + D2V))) *
-        metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
-  set J : ℝ := metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y with hJ_def
-  have hJ_nn : 0 ≤ J := metricJet3_nonneg (I := I) (M := M) g₁ g₂ α y
+  set J : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y with hJ_def
+  have hJ_nn : 0 ≤ J := DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum_nonneg (I := I) (M := M) g₁ g₂ α y
   have hJ₂_le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y ≤ J :=
-    metricJet2_le_jet3 (I := I) (M := M) g₁ g₂ α y
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_le_chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y
   have hJ₁_le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y ≤ J :=
     (DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y).trans hJ₂_le
   have hGram : ∀ a b, |chartGramOnE (I := I) g₁ α a b y -

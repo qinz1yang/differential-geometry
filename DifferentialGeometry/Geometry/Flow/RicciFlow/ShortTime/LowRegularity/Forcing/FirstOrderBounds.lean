@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.LowRegularity.Coefficients.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.Estimates.ComponentL2.UniformFromRaw
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.ChartComponentIdentity
@@ -391,7 +392,7 @@ theorem rhs_cov_lip {ι : Type*}
     dsimp [y]
     exact ⟨extChartAt I α b, ⟨b, hb, rfl⟩, rfl⟩
   have hjet' := hjet α (gSeq k₁) (gSeq k₂) hb
-  have hjetAll : metricJet3DiffSup (I := I) (M := M)
+  have hjetAll : DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤ CjetAll * A := by
     rw [hA_def]
     exact hjet'.trans (mul_le_mul_of_nonneg_right (hCjet_le α hα)

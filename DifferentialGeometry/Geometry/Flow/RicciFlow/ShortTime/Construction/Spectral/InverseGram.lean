@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Construction.Spectral.GramBounds
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation

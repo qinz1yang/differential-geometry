@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.AbsoluteBound
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator

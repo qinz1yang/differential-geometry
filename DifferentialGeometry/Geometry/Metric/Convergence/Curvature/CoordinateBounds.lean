@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelBounds
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.InverseGram
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Ricci.AffineDifference

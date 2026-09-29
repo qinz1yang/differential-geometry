@@ -132,4 +132,83 @@ lemma chartGramPartial2DiffSum_le_chartMetricJet2DiffSum
 
 end
 
+section
+
+variable [NeZero (Module.finrank ℝ E)]
+
+local notation "D3Idx" =>
+  Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
+    Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
+      Fin (Module.finrank ℝ E)
+
+def chartGramPartial3DiffSum (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
+  ∑ p : D3Idx,
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.2.1
+            (chartGramOnE (I := I) g₁ α p.2.2.2.1 p.2.2.2.2))) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.1
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.1
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) p.2.2.1
+            (chartGramOnE (I := I) g₂ α p.2.2.2.1 p.2.2.2.2))) y|
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem partialDeriv3_chartGramOnE_sub_abs_le_chartGramPartial3DiffSum
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E)
+    (d c m a b : Fin (Module.finrank ℝ E)) :
+    |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₁ α a b))) y -
+      DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
+        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) c
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartGramOnE (I := I) g₂ α a b))) y| ≤
+      chartGramPartial3DiffSum (I := I) (M := M) g₁ g₂ α y := by
+  classical
+  let p : D3Idx := (d, (c, (m, (a, b))))
+  have h := Finset.single_le_sum
+    (f := fun q : D3Idx =>
+      |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q.1
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q.2.1
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q.2.2.1
+              (chartGramOnE (I := I) g₁ α q.2.2.2.1 q.2.2.2.2))) y -
+        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q.1
+          (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q.2.1
+            (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) q.2.2.1
+              (chartGramOnE (I := I) g₂ α q.2.2.2.1 q.2.2.2.2))) y|)
+    (fun q _ => abs_nonneg _) (Finset.mem_univ p)
+  simpa only [chartGramPartial3DiffSum, p] using h
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartGramPartial3DiffSum_nonneg
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    0 ≤ chartGramPartial3DiffSum (I := I) (M := M) g₁ g₂ α y := by
+  exact Finset.sum_nonneg fun _ _ => abs_nonneg _
+
+def chartMetricJet3DiffSum (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
+  DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y +
+    chartGramPartial3DiffSum (I := I) (M := M) g₁ g₂ α y
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartMetricJet3DiffSum_nonneg
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    0 ≤ chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y :=
+  add_nonneg (DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _)
+    (chartGramPartial3DiffSum_nonneg (I := I) (M := M) g₁ g₂ α y)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartMetricJet2DiffSum_le_chartMetricJet3DiffSum
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y ≤
+      chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y :=
+  le_add_of_nonneg_right (chartGramPartial3DiffSum_nonneg (I := I) (M := M) g₁ g₂ α y)
+
+omit [NeZero (Module.finrank ℝ E)] in
+theorem chartGramPartial3DiffSum_le_chartMetricJet3DiffSum
+    (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
+    chartGramPartial3DiffSum (I := I) (M := M) g₁ g₂ α y ≤
+      chartMetricJet3DiffSum (I := I) (M := M) g₁ g₂ α y :=
+  le_add_of_nonneg_left (DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _)
+
+end
+
 end DifferentialGeometry.Tensor.Coordinates

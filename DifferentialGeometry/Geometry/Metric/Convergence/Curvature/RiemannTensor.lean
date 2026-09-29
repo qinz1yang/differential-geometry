@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelBounds
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBounds
 import DifferentialGeometry.Topology.UniformConvergence
 

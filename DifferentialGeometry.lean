@@ -2273,7 +2273,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieC
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.NormalForm.ZeroOrderVectorCorrection
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.Splitting
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.IntrinsicThirdJet
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Metric.ThirdJetDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.AbsoluteBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.ChartComponentIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.CovariantDerivativeL2Decomposition
@@ -3822,6 +3821,7 @@ import DifferentialGeometry.Geometry.Connection.AlongCurveAlternating
 import DifferentialGeometry.Geometry.Connection.AlongCurveHom
 import DifferentialGeometry.Geometry.Connection.AlongCurveRegularity
 import DifferentialGeometry.Geometry.Connection.Associated
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelBounds
 import DifferentialGeometry.Geometry.Connection.ChartBridge.TensorDerivative
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
@@ -5456,6 +5456,7 @@ import DifferentialGeometry.Geometry.Metric.ComparisonEndomorphism
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Parameter
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Distance.SublevelMinimizer
 import DifferentialGeometry.Geometry.Metric.Duality
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Parseval

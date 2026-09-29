@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Curvature.CoordinateBounds
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentityOffCenter
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace

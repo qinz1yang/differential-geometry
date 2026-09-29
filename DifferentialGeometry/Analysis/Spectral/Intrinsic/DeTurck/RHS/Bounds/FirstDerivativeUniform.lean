@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.FirstDerivativeLipschitz
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -87,7 +89,7 @@ theorem chartRHSD_pou_lip
               DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
                 (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j)
                   (extChartAt I α b)| ≤
-              C * metricJet3DiffSup (I := I) (M := M)
+              C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
   classical
   let gAll : Option ι → SmoothRiemannianMetric I M := fun k => k.elim gBase gSeq
@@ -402,33 +404,33 @@ theorem chartRHSD_pou_lip
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
           (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r
             (chartChristoffel (I := I) (gSeq k₂) α a c l)) (extChartAt I α b)| ≤
-          G₂ * metricJet3DiffSup (I := I) (M := M)
+          G₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro e r a c l
     exact hΓD2Lip α hα k₁ k₂ b hb e r a c l
   have hJ₂_le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤
-        metricJet3DiffSup (I := I) (M := M)
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
-    metricJet2_le_jet3 (I := I) (M := M)
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_le_chartMetricJet3DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
   have hJ₁_le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤
-        metricJet3DiffSup (I := I) (M := M)
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
     (DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b)).trans hJ₂_le
   have hG_le : DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α
         ((extChartAt I α).symm (extChartAt I α b)) ≤
-        metricJet3DiffSup (I := I) (M := M)
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     exact (DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum_le_chartMetricJet1DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b)).trans hJ₁_le
   have hInv3 : ∀ a c : Fin (Module.finrank ℝ E),
       |chartInvGramOnE (I := I) (gSeq k₁) α a c (extChartAt I α b) -
         chartInvGramOnE (I := I) (gSeq k₂) α a c (extChartAt I α b)| ≤
-          Cinv * metricJet3DiffSup (I := I) (M := M)
+          Cinv * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro a c
     exact (hInv a c).trans (mul_le_mul_of_nonneg_left hG_le hCinv.le)
@@ -437,7 +439,7 @@ theorem chartRHSD_pou_lip
           (chartInvGramOnE (I := I) (gSeq k₁) α a c) (extChartAt I α b) -
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
           (chartInvGramOnE (I := I) (gSeq k₂) α a c) (extChartAt I α b)| ≤
-          CD * metricJet3DiffSup (I := I) (M := M)
+          CD * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro e a c
     exact (hInvD e a c).trans (mul_le_mul_of_nonneg_left hJ₁_le hCD.le)
@@ -448,14 +450,14 @@ theorem chartRHSD_pou_lip
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
           (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r
             (chartInvGramOnE (I := I) (gSeq k₂) α a c)) (extChartAt I α b)| ≤
-          CT * metricJet3DiffSup (I := I) (M := M)
+          CT * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro e r a c
     exact (hInvD2 e r a c).trans (mul_le_mul_of_nonneg_left hJ₂_le hCT.le)
   have hΓ3 : ∀ a c l : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) (gSeq k₁) α a c l (extChartAt I α b) -
         chartChristoffel (I := I) (gSeq k₂) α a c l (extChartAt I α b)| ≤
-          G₀ * metricJet3DiffSup (I := I) (M := M)
+          G₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro a c l
     exact (hΓ a c l).trans (mul_le_mul_of_nonneg_left hJ₁_le hG₀.le)
@@ -464,7 +466,7 @@ theorem chartRHSD_pou_lip
           (chartChristoffel (I := I) (gSeq k₁) α a c l) (extChartAt I α b) -
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
           (chartChristoffel (I := I) (gSeq k₂) α a c l) (extChartAt I α b)| ≤
-          G₁ * metricJet3DiffSup (I := I) (M := M)
+          G₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro e a c l
     exact (hΓD e a c l).trans (mul_le_mul_of_nonneg_left hJ₂_le hG₁.le)
@@ -495,7 +497,7 @@ theorem chartRHSD_pou_lip
   have hVFsub : ∀ l : Fin (Module.finrank ℝ E),
       |chartDeTurckVFComp (I := I) (gSeq k₁) gBase α l (extChartAt I α b) -
         chartDeTurckVFComp (I := I) (gSeq k₂) gBase α l (extChartAt I α b)| ≤
-          W₀ * metricJet3DiffSup (I := I) (M := M)
+          W₀ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro l
     have h := DeTurckCoefficients.chartDeTurckVFComp_sub_abs_le
@@ -512,7 +514,7 @@ theorem chartRHSD_pou_lip
           (chartDeTurckVFComp (I := I) (gSeq k₁) gBase α l) (extChartAt I α b) -
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
           (chartDeTurckVFComp (I := I) (gSeq k₂) gBase α l) (extChartAt I α b)| ≤
-          W₁ * metricJet3DiffSup (I := I) (M := M)
+          W₁ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro e l
     have h := DeTurckCoefficients.partialDeriv_chartDeTurckVFComp_sub_abs_le
@@ -535,7 +537,7 @@ theorem chartRHSD_pou_lip
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
           (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r
             (chartDeTurckVFComp (I := I) (gSeq k₂) gBase α l)) (extChartAt I α b)| ≤
-          W₂ * metricJet3DiffSup (I := I) (M := M)
+          W₂ * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
             (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     intro e r l
     simpa [W₂, n] using DeTurckCoefficients.deTurckVFD2_sub
@@ -549,7 +551,7 @@ theorem chartRHSD_pou_lip
         (chartRicciTensor (I := I) (gSeq k₁) α i j) (extChartAt I α b) -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (chartRicciTensor (I := I) (gSeq k₂) α i j) (extChartAt I α b)| ≤
-        RicL * metricJet3DiffSup (I := I) (M := M)
+        RicL * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     simpa [RicL, n] using DeTurckCoefficients.chartRicciD_sub
       (I := I) (M := M) (gSeq k₁) (gSeq k₂) α hy d i j
@@ -558,7 +560,7 @@ theorem chartRHSD_pou_lip
         (chartLieDeTurckComp (I := I) (gSeq k₁) gBase α i j) (extChartAt I α b) -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
         (chartLieDeTurckComp (I := I) (gSeq k₂) gBase α i j) (extChartAt I α b)| ≤
-        LieL * metricJet3DiffSup (I := I) (M := M)
+        LieL * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
     simpa [LieL, n] using DeTurckCoefficients.chartLieD_sub
       (I := I) (M := M) (gSeq k₁) (gSeq k₂) gBase α hy d i j
@@ -586,18 +588,18 @@ theorem chartRHSD_pou_lip
   refine (abs_add_le _ _).trans ?_
   calc
     |(-2 : ℝ) * (_ - _)| + |_ - _| ≤
-        2 * (RicL * metricJet3DiffSup (I := I) (M := M)
+        2 * (RicL * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b)) +
-        LieL * metricJet3DiffSup (I := I) (M := M)
+        LieL * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
       rw [abs_mul, show |(-2 : ℝ)| = 2 by norm_num]
       exact add_le_add (mul_le_mul_of_nonneg_left hRic (by norm_num)) hLie
-    _ = (2 * RicL + LieL) * metricJet3DiffSup (I := I) (M := M)
+    _ = (2 * RicL + LieL) * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by ring
-    _ ≤ C * metricJet3DiffSup (I := I) (M := M)
+    _ ≤ C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
       exact mul_le_mul_of_nonneg_right (by dsimp [C]; linarith)
-        (metricJet3_nonneg (I := I) (M := M)
+        (DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum_nonneg (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b))
 
 omit [NeZero (Module.finrank ℝ E)] in

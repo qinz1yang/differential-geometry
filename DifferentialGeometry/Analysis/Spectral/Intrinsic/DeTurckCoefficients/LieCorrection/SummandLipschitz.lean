@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Christoffel.Perturbation
 import DifferentialGeometry.Geometry.Metric.DeTurck.Coordinates.Components
 open DifferentialGeometry.Geometry.Curvature

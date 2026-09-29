@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.UniformFamily
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.RHS.Bounds.FirstDerivativeUniform
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
@@ -128,7 +129,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) d
               (chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j)
                 (extChartAt I α b)| ≤
-              D.rhsD1Lip * metricJet3DiffSup (I := I) (M := M)
+              D.rhsD1Lip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet3DiffSum (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
 
 omit [NeZero (Module.finrank ℝ E)] in
