@@ -66,8 +66,8 @@ private theorem lpNorm_vol_cross
     simpa only [μg, μB, L] using
       (volumeMeasure_cross_le (I := I) (M := M) gBase g hEq).1
   have he := eLpNorm_mono_measure (p := (6 : ENNReal)) f hμ
-  rw [eLpNorm_smul_measure_of_ne_top (μ := μB) (p := (6 : ENNReal))
-      (by norm_num) f (ENNReal.ofReal L), smul_eq_mul] at he
+  rw [eLpNorm_smul_measure_of_ne_zero_of_ne_top (μ := μB) (p := (6 : ENNReal))
+      (by norm_num) (by norm_num) (f := f) (ENNReal.ofReal L), smul_eq_mul] at he
   have hexp : (1 / (6 : ENNReal)).toReal = (1 / 6 : ℝ) := by norm_num
   rw [hexp] at he
   have hpow : (ENNReal.ofReal L) ^ (1 / 6 : ℝ) ≠ ⊤ :=

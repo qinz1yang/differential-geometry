@@ -142,7 +142,8 @@ private lemma eLpNorm_chartPulledWeighted_le_of_ae_zero_off_compact
             (ENNReal.ofReal c_max • ((volume : Measure EuclN).restrict K)) :=
     eLpNorm_mono_measure f hc_le_meas
   refine h_mono.trans ?_
-  rw [eLpNorm_smul_measure_of_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
+  rw [eLpNorm_smul_measure_of_ne_zero_of_ne_top
+    (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
   have h_toReal : ((1 / 2 : ℝ≥0∞).toReal : ℝ) = (1 : ℝ) / 2 := by
     rw [show (1 / 2 : ℝ≥0∞) = (1 : ℝ≥0∞) / 2 from rfl]; simp
   rw [h_toReal]

@@ -117,7 +117,8 @@ private lemma eLpNorm_volume_restrict_compact_le_weighted
           eLpNorm f 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
     rw [hc_d_enn_def]
-    exact eLpNorm_smul_measure_of_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) f
+    exact eLpNorm_smul_measure_of_ne_zero_of_ne_top
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
       (ENNReal.ofReal c)
   have h_smul_eq :
       c_d_enn •
@@ -166,7 +167,8 @@ private lemma eLpNorm_volume_restrict_compact_le_weighted_uniform
           eLpNorm f 2 ((chartPulledWeightedMeasure (I := I) g α).restrict
             (chartTargetEuclid (I := I) (M := M) α)) := by
     rw [hc_d_enn_def]
-    exact eLpNorm_smul_measure_of_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) f
+    exact eLpNorm_smul_measure_of_ne_zero_of_ne_top
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
       (ENNReal.ofReal c)
   have h_smul_eq :
       c_d_enn •

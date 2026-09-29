@@ -386,8 +386,9 @@ theorem eigenvector_chartComponent_wkpNorm_two_energy_le
             ((chartPulledWeightedMeasure (I := I) g α).restrict
               (chartTargetEuclid (I := I) (M := M) α))) :=
       eLpNorm_mono_measure f h_dom_le
-    rw [eLpNorm_smul_measure_of_ne_top (by norm_num : (2 : ℝ≥0∞) ≠ ⊤) f
-      (ENNReal.ofReal c_dom), smul_eq_mul,
+    rw [eLpNorm_smul_measure_of_ne_zero_of_ne_top
+      (by norm_num : (2 : ℝ≥0∞) ≠ 0) (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)
+      (f := f) (ENNReal.ofReal c_dom), smul_eq_mul,
       ← ENNReal.ofReal_toReal hc_d_enn_ne_top, ← hc_d_def] at h_mono
     exact h_mono
   obtain ⟨K_prom, hK_prom_pos, hK_prom_bd⟩ :=
