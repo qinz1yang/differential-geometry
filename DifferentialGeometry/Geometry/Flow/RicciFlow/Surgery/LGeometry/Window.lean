@@ -795,7 +795,7 @@ theorem contMDiffOn_invFun (j : H.StageInterval lo hi) [Nonempty W.X] :
     filter_upwards [hx.localInverse_open_source.mem_nhds hx.localInverse_mem_source] with y hy
     apply W.injective j
     rw [Function.invFun_eq ⟨_, hx.localInverse_right_inv hy⟩, hx.localInverse_right_inv hy]
-  exact ((hx.localInverse_contMDiffAt.of_le (by decide)).congr_of_eventuallyEq
+  exact ((hx.contMDiffAt_localInverse.of_le (by decide)).congr_of_eventuallyEq
     hev).contMDiffWithinAt
 
 theorem invFun_eq_of_mem_piece_of_mem_piece [Nonempty W.X]

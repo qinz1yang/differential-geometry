@@ -252,7 +252,7 @@ private theorem exists_window_point_of_edist_le {p : CutoffParameters}
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv _
       ((records j).static b).window_smooth.contMDiff
       (fun q => (((records j).static b).window_smooth.isImmersion.isImmersionAt
-        q).injective_mfderiv (by simp)) rfl
+        q).mfderiv_injective (by simp)) rfl
   have hinjW := ((records j).static b).window_smooth.isEmbedding.injective
   have hsmall := w.properties.window_close
   change Geometry.Metric.metricDerivENormSupOn

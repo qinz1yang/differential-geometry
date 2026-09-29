@@ -313,7 +313,7 @@ theorem exists_endpoint_action_branch_of_minimal
       hfixed.localInverse_left_inv hfixed.localInverse_mem_target
   have hgoodOpen : IsOpen
       (htime.localInverse.source ∩ htime.localInverse ⁻¹' (V ×ˢ Ktime)) :=
-    htime.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    htime.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       htime.localInverse_open_source (hVopen.prod hKopen)
   have hgood : (y, b) ∈
       htime.localInverse.source ∩ htime.localInverse ⁻¹' (V ×ˢ Ktime) := by

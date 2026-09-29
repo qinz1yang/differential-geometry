@@ -24,7 +24,7 @@ theorem IsImmersion.of_comp (h : IsImmersion I K n (g ∘ f)) (hn : n ≠ 0)
     (hf : ContMDiff I J n f) (hg : ContMDiff J K n g) : IsImmersion I J n f := by
   apply DifferentialGeometry.Topology.Manifold.isImmersion_of_injective_mfderiv hn hf
   intro x
-  have hinj := (h.isImmersionAt x).injective_mfderiv hn
+  have hinj := (h.isImmersionAt x).mfderiv_injective hn
   rw [mfderiv_comp x (hg.mdifferentiableAt hn) (hf.mdifferentiableAt hn)] at hinj
   exact Function.Injective.of_comp hinj
 
@@ -100,7 +100,7 @@ theorem IsSmoothEmbedding.fst_Icc_of_snd_eq_const
   refine ⟨isImmersion_Icc_of_injective_mfderiv hp ?_,
     Topology.IsEmbedding.of_comp hp.continuous hj.continuous hh.isEmbedding⟩
   intro x
-  have hinj := (hh.isImmersion.isImmersionAt x).injective_mfderiv (by simp)
+  have hinj := (hh.isImmersion.isImmersionAt x).mfderiv_injective (by simp)
   rw [mfderiv_comp x (hj.mdifferentiableAt (by simp)) (hp.mdifferentiableAt (by simp))] at hinj
   exact Function.Injective.of_comp hinj
 

@@ -1515,7 +1515,7 @@ theorem exists_normalized_backwardSurvivorIncoming_embedding_solution_curvature_
             max Kpast ((2 * Real.sqrt 3 * (C₀+max (2*C₀) (Real.exp 4))) ^ 2) := by
   have hΨloc : IsLocalDiffeomorph ThreeModel ThreeModel ∞ Ψ :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv Ψ
-      hΨ.contMDiff (fun x => (hΨ.isImmersion.isImmersionAt x).injective_mfderiv (by simp)) rfl
+      hΨ.contMDiff (fun x => (hΨ.isImmersion.isImmersionAt x).mfderiv_injective (by simp)) rfl
   obtain ⟨Ξ, hΞ, hprojection, hbirth', hrest⟩ :=
     exists_normalized_backwardSurvivorIncoming_chart_solution_curvature_bound_of_final_scalar_bound_at_time
       G L hinit Ψ hΨloc hC₀ hq hrQ haq hτ hbound hscalar htime J hbirth g₀ hzero

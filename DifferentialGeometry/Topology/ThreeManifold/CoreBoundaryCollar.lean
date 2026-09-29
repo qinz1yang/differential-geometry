@@ -78,7 +78,7 @@ private theorem coreCollarParameter_injective_mfderiv (side : Bool) (t : Half) :
     rw [show (Subtype.val : Interval → ℝ) ∘ coreCollarParameter side =
       retainedTimeAffine side ∘ (Subtype.val : Half → ℝ) from rfl, hchain]
     exact ((retainedTimeAffine side).mfderivToContinuousLinearEquiv (by simp) t.val).injective.comp
-      ((hi.isImmersion.isImmersionAt t).injective_mfderiv (by simp))
+      ((hi.isImmersion.isImmersionAt t).mfderiv_injective (by simp))
   rw [mfderiv_comp t
     ((contMDiff_subtypeVal_Icc (x := (-2 : ℝ)) (y := 2) (n := ∞)).mdifferentiableAt (by simp))
     ((coreCollarParameter_contMDiff side).mdifferentiableAt (by simp))] at hj
@@ -163,7 +163,7 @@ theorem coreBoundaryHalfCollar_mfderiv_bijective (b : T.Boundary) (p : Sphere ×
     change Injective (mfderiv CI (𝓡 3) ((T.tube b.1) ∘ k) p)
     rw [mfderiv_comp p ((T.smooth b.1).contMDiff.mdifferentiableAt (by simp))
       (hk.mdifferentiableAt (by simp))]
-    exact ((T.smooth b.1).isImmersion.isImmersionAt _ |>.injective_mfderiv (by simp)).comp hDk
+    exact ((T.smooth b.1).isImmersion.isImmersionAt _ |>.mfderiv_injective (by simp)).comp hDk
   rw [mfderiv_comp p (C.core_induced.contMDiff.mdifferentiableAt (by simp))
     ((C.coreBoundaryHalfCollar_contMDiff b).mdifferentiableAt (by simp))] at hD
   change Injective ((mfderiv (𝓡∂ 3) (𝓡 3) (Subtype.val : T.core → M.Carrier)

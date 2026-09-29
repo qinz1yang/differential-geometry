@@ -44,7 +44,7 @@ theorem of_surjective_localPullMetric
     let Y := (hf x).localInverse
     have hxmem : f x ∈ Y.source := (hf x).localInverse_mem_source
     have hqY : q.2 ∈ Y.source := by rw [← hx]; exact hxmem
-    have hYsm : ContMDiffOn J I ∞ (Y : N → M) Y.source := (hf x).localInverse_contMDiffOn
+    have hYsm : ContMDiffOn J I ∞ (Y : N → M) Y.source := (hf x).contMDiffOn_localInverse
     have hYopen : IsOpen Y.source := Y.open_source
     have hYDiff : ∀ y ∈ Y.source, MDifferentiableAt J I (Y : N → M) y := fun y hy =>
       (hYsm.contMDiffAt (hYopen.mem_nhds hy)).mdifferentiableAt (by simp)

@@ -33,7 +33,7 @@ theorem backwardSurvivorTerminalMap_isLocalDiffeomorph
     (fun x => by
       have hi :=
         (H.backwardSurvivorTerminalMap_isSmoothEmbedding first last hle i hf hl).isImmersion
-      exact (hi.isImmersionAt x).injective_mfderiv (by simp)) rfl
+      exact (hi.isImmersionAt x).mfderiv_injective (by simp)) rfl
 
 def backwardSurvivorSlabMetric
     (i : Fin H.eventCount) (hf : first ≤ i.castSucc) (hl : i.succ ≤ last) (t : ℝ) :

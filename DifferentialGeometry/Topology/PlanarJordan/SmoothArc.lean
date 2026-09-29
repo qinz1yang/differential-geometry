@@ -188,7 +188,7 @@ private theorem exists_smooth_complementary_arc_parameter
   refine ⟨f, hf.contMDiff.contDiff, ?_, fun t => mem_range_self _, ?_, by simpa [f, l] using hp,
     by simpa [f, l] using hq, hcut⟩
   · intro t ht
-    have hi := (hf.isImmersionAt t).injective_mfderiv (by simp)
+    have hi := (hf.isImmersionAt t).mfderiv_injective (by simp)
     rw [mfderiv_eq_fderiv] at hi
     change Function.Injective (fderiv ℝ f t) at hi
     exact (one_ne_zero : (1 : ℝ) ≠ 0) (hi (ht.trans (map_zero _).symm))

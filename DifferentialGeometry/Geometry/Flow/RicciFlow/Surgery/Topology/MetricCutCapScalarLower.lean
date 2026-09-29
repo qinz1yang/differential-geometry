@@ -127,7 +127,7 @@ theorem PresentedStaticCap.scalar_eq {fixed : StaticCapScaffold} {D : ℝ} {m : 
   have hloc : IsLocalDiffeomorph ThreeModel ThreeModel ∞ S.inclusion :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv S.inclusion
       S.inclusion_smooth.contMDiff
-      (fun p => (S.inclusion_smooth.isImmersion.isImmersionAt p).injective_mfderiv (by simp)) rfl
+      (fun p => (S.inclusion_smooth.isImmersion.isImmersionAt p).mfderiv_injective (by simp)) rfl
   exact (DifferentialGeometry.Geometry.Curvature.curvature_of_injective_local_isometry
     S.witness.metric E.outputMetric S.inclusion hloc S.inclusion_smooth.isEmbedding.injective
     S.inclusion_metric x).1

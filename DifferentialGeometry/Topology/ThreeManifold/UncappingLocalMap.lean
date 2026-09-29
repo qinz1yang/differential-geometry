@@ -82,11 +82,11 @@ theorem isLocalDiffeomorphAt_uncappingInteriorMap_core
   have hc : IsLocalDiffeomorphAt (𝓡∂ 3) (𝓡 3) ∞ C.coreInclusion x :=
     Manifold.isLocalDiffeomorphAt_of_isInteriorPoint_of_injective_mfderiv
       C.core_embedding.contMDiff hx rfl
-      ((C.core_embedding.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      ((C.core_embedding.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
   have hs : IsLocalDiffeomorphAt (𝓡∂ 3) (𝓡 3) ∞ (Subtype.val : T.core → M.Carrier) x :=
     Manifold.isLocalDiffeomorphAt_of_isInteriorPoint_of_injective_mfderiv
       C.core_induced.contMDiff hx rfl
-      ((C.core_induced.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      ((C.core_induced.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
   let f : T.core → C.uncappingInterior := fun y => ⟨C.coreInclusion y,C.coreInclusion_mem_uncappingInterior y⟩
   have hf : IsLocalDiffeomorphAt (𝓡∂ 3) (𝓡 3) ∞ f x :=
     DifferentialGeometry.isLocalDiffeomorphAt_subtypeCodRestrict (C.coreInclusion_mem_uncappingInterior) hc

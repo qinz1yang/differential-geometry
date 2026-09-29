@@ -87,7 +87,7 @@ theorem contMDiff_parameterTangent :
   intro z
   obtain ⟨x, rfl⟩ := QuotientAddGroup.mk_surjective z
   have hx := isLocalDiffeomorph_coe x
-  have hc := (ht _).comp _ hx.localInverse_contMDiffAt
+  have hc := (ht _).comp _ hx.contMDiffAt_localInverse
   apply hc.congr_of_eventuallyEq
   have heq := hx.localInverse_eventuallyEq_right
   filter_upwards [heq] with y hy

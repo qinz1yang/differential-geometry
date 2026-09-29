@@ -95,7 +95,7 @@ private theorem exists_partialDiffeomorph_of_open_cylinder_embedding
       φ.source = U ∧ φ.target = range f ∧ ∀ q : U, φ q.val = f q := by
   have hlocal : IsLocalDiffeomorph SphereCylinderModel SphereCylinderModel ∞ f :=
     isLocalDiffeomorph_of_injective_mfderiv f hf.contMDiff
-      (fun q => (hf.isImmersion.isImmersionAt q).injective_mfderiv (by simp)) rfl
+      (fun q => (hf.isImmersion.isImmersionAt q).mfderiv_injective (by simp)) rfl
   let V := hlocal.image
   let e := diffeomorphOntoImage f hlocal hf.isEmbedding.injective
   let iU := DifferentialGeometry.Manifold.openSubtypePartialDiffeomorph SphereCylinderModel U ⟨x₀⟩

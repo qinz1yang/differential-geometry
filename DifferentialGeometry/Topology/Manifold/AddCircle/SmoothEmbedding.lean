@@ -53,7 +53,7 @@ theorem deriv_comp_coe_ne_zero
   rw [deriv_comp_coe (hf.contMDiff.mdifferentiable (by simp) (t : AddCircle (1 : ℝ)))]
   intro heq
   apply parameterTangent_ne_zero (t : AddCircle (1 : ℝ))
-  exact (hf.isImmersion.isImmersionAt (t : AddCircle (1 : ℝ))).injective_mfderiv
+  exact (hf.isImmersion.isImmersionAt (t : AddCircle (1 : ℝ))).mfderiv_injective
     (by simp) (heq.trans (map_zero _).symm)
 
 end AddCircle

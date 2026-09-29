@@ -94,7 +94,7 @@ private theorem hasMFDerivAt_lRegularizedAction_endpointBranch_at
       flat (mfderiv 𝓘(Real, E) I endMap A B)
     ring
   have hInv : MDifferentiableAt I 𝓘(Real, E) hloc.localInverse y :=
-    (hloc.localInverse_contMDiffOn y hySource).contMDiffAt
+    (hloc.contMDiffOn_localInverse y hySource).contMDiffAt
       (hloc.localInverse_open_source.mem_nhds hySource) |>.mdifferentiableAt (by simp)
   have hEnd : MDifferentiableAt 𝓘(Real, E) I endMap A := by
     have hpair : ContMDiffAt 𝓘(Real, E)
@@ -201,7 +201,7 @@ theorem exists_gradient_lRegularizedAction_endpointBranch
     lRegularizedAction S T (fun s ↦ alpha (hloc.localInverse y, s)) a b
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
   have hUopen : IsOpen U :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hWopen
   have hinv : hloc.localInverse (alpha (A0, b)) = A0 :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
@@ -215,7 +215,7 @@ theorem exists_gradient_lRegularizedAction_endpointBranch
     contMDiffOn_iff_contDiffOn.mpr hact
   have hbranch : ContMDiffOn I 𝓘(Real, Real) ∞ branch U := by
     have hcomp := hactM.comp
-      (hloc.localInverse_contMDiffOn.mono inter_subset_left)
+      (hloc.contMDiffOn_localInverse.mono inter_subset_left)
       (fun _ hy ↦ hy.2)
     change ContMDiffOn I 𝓘(Real, Real) ∞
       ((fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) ∘

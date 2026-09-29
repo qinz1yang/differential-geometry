@@ -36,7 +36,7 @@ theorem isImmersion_Icc_of_injective_mfderiv
       rw [mfderiv_comp x hGd.mdifferentiableAt (hi.contMDiff.mdifferentiableAt (by simp))]
       rw [mfderiv_eq_fderiv]
       rfl
-    have hicoe := (hi.isImmersion.isImmersionAt x).injective_mfderiv (by simp)
+    have hicoe := (hi.isImmersion.isImmersionAt x).mfderiv_injective (by simp)
     let _ : FiniteDimensional ℝ (TangentSpace (𝓡∂ 1) x) :=
       inferInstanceAs (FiniteDimensional ℝ (EuclideanSpace ℝ (Fin 1)))
     let _ : FiniteDimensional ℝ (TangentSpace 𝓘(ℝ) (x : ℝ)) :=

@@ -81,7 +81,7 @@ theorem exists_far_spatialNeck_unbounded_separated_component_of_nonnegative
     apply Isometry.of_dist_eq
     intro q r
     rfl
-  let _ : ProperSpace X := heiso.antilipschitz.properSpace e.continuous e.surjective
+  let _ : ProperSpace X := heiso.antilipschitzWith.properSpace e.continuous e.surjective
   have href (q r : M) : dist (e q) (e r) = metricDistance g0 q r := hdist0 q r
   refine ⟨Rs + Rr + A + K + 1, 1, by positivity, zero_lt_one, ?_⟩
   intro g hg hsec eta x nk heta herror hfar hQ R

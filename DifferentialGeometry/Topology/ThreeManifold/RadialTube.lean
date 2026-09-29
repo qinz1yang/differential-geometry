@@ -78,7 +78,7 @@ private theorem clampedTube_injective_mfderiv (a : T.Index) {p : Sphere × ℝ}
     (hj.mdifferentiableAt (by simp)),
     mfderiv_prodMap mdifferentiableAt_id ((tubeProjection_contMDiffAt hp).mdifferentiableAt (by simp)),
     mfderiv_id]
-  exact ((T.smooth a).isImmersion.isImmersionAt _ |>.injective_mfderiv (by simp)).comp
+  exact ((T.smooth a).isImmersion.isImmersionAt _ |>.mfderiv_injective (by simp)).comp
     (injective_id.prodMap (tubeProjection_injective_mfderiv hp))
 
 private theorem isLocalDiffeomorphAt_clampedTube (a : T.Index) {p : Sphere × ℝ}

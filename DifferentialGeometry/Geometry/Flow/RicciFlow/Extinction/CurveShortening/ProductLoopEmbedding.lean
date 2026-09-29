@@ -53,7 +53,7 @@ def QuotientProductAtlas.smoothLoopEmbedding
       (κ ∘ fun s : ℝ => (s : Surgery.Topology.Circle)) t)
     rw [mfderiv_comp t (hκ.contMDiff.mdifferentiableAt (by simp))
       (AddCircle.contMDiff_coe.mdifferentiableAt (by simp))]
-    exact ((hκ.isImmersion.isImmersionAt (t : Surgery.Topology.Circle)).injective_mfderiv
+    exact ((hκ.isImmersion.isImmersionAt (t : Surgery.Topology.Circle)).mfderiv_injective
       (by simp)).comp (AddCircle.bijective_mfderiv_coe t).injective
   have hcover : ContMDiff (I.prod 𝓘(ℝ, ℝ))
       𝓘(ℝ, EuclideanSpace ℝ (Fin N) × ℂ) ∞
@@ -102,7 +102,7 @@ def QuotientProductAtlas.smoothLoopEmbedding
       smooth := hLφ.contMDiff
       isClosedEmbedding := L.toHomeomorph.isClosedEmbedding.comp hclosed
       injective_mfderiv := fun q =>
-        (hLφ.isImmersion.isImmersionAt q).injective_mfderiv (by simp) }
+        (hLφ.isImmersion.isImmersionAt q).mfderiv_injective (by simp) }
 
 @[simp]
 theorem QuotientProductAtlas.smoothLoopEmbedding_map

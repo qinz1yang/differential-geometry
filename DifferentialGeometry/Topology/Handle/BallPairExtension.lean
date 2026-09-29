@@ -140,7 +140,7 @@ private theorem exists_partialDiffeomorph_sphere_chart_comp
       change Function.Injective (mfderiv (𝓡 (m + 1)) (𝓡 ((m + 1) + 1)) (Subtype.val ∘ φ) x)
       rw [mfderiv_comp x (hcoe.contMDiff.mdifferentiableAt (by simp))
         ((φ.contMDiffOn.contMDiffAt (φ.open_source.mem_nhds hx.1)).mdifferentiableAt (by simp))]
-      exact ((hcoe.isImmersion.isImmersionAt (φ x)).injective_mfderiv (by simp)).comp
+      exact ((hcoe.isImmersion.isImmersionAt (φ x)).mfderiv_injective (by simp)).comp
         ((φ.isLocalDiffeomorphAt _ _ _ hx.1).mfderivToContinuousLinearEquiv (by simp)).injective
     simp only [mfderiv_eq_fderiv, TangentSpace] at hi
     convert! hi using 1

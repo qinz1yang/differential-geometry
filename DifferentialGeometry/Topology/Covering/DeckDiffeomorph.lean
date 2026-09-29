@@ -27,7 +27,7 @@ theorem IsLocalDiffeomorph.contMDiff_of_comp_eq_self
     ContMDiff I I n φ := by
   intro x
   have hpx := hp (φ x)
-  refine (hpx.localInverse_contMDiffAt.comp_of_eq
+  refine (hpx.contMDiffAt_localInverse.comp_of_eq
     hp.contMDiff.contMDiffAt (congrFun hcomp x).symm).congr_of_eventuallyEq ?_
   have hevent : ∀ᶠ y in 𝓝 x, φ y ∈ hpx.localInverse.target :=
     hφ.continuousAt

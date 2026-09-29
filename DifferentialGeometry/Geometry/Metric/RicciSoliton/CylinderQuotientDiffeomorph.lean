@@ -35,7 +35,7 @@ noncomputable def cylinderAntipodalQuotientDiffeomorph :
     have hinv : ContMDiffAt ((𝓡 2).prod 𝓘(Real, Real)) (𝓡 2) ∞
         (fun z : RealProjectivePlane × Real => hlocal.localInverse z.1)
         (realProjectivePlaneQuotientMap x, s) :=
-      hlocal.localInverse_contMDiffAt.comp
+      hlocal.contMDiffAt_localInverse.comp
         (f := fun z : RealProjectivePlane × Real => z.1)
         (realProjectivePlaneQuotientMap x, s) contMDiffAt_fst
     have hsmooth := cylinderAntipodalQuotientMap_isLocalDiffeomorph.contMDiff.contMDiffAt.comp
@@ -100,7 +100,7 @@ noncomputable def cylinderDiagonalQuotientDiffeomorph :
           isOpen_compl_singleton⟩)).contMDiffAt
     have hi : ContMDiffAt (𝓡 3) (𝓡 3) ∞
         (fun q : PuncturedRealProjectiveThreeSpace => hlocal.localInverse q.1) y := by
-      have hl := hlocal.localInverse_contMDiffAt
+      have hl := hlocal.contMDiffAt_localInverse
       change ContMDiffAt (𝓡 3) (𝓡 3) ∞ hlocal.localInverse
         (realProjectiveSpaceQuotientMap z) at hl
       rw [hz] at hl

@@ -40,7 +40,7 @@ theorem contMDiffOn_of_comp_coe {U : Set K} {f : K × AddCircle (1 : ℝ) → N}
     hloc.localInverse_left_inv hloc.localInverse_mem_target
   have hmap : ContMDiffAt (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞ ψ
       (k, (x : AddCircle (1 : ℝ))) :=
-    contMDiffAt_fst.prodMk (hloc.localInverse_contMDiffAt.comp
+    contMDiffAt_fst.prodMk (hloc.contMDiffAt_localInverse.comp
       (k, (x : AddCircle (1 : ℝ))) contMDiffAt_snd)
   have hg : ContMDiffWithinAt (I.prod 𝓘(ℝ, ℝ)) J ∞ g (U ×ˢ univ)
       (ψ (k, (x : AddCircle (1 : ℝ)))) := hf _ ⟨hz.1, mem_univ _⟩

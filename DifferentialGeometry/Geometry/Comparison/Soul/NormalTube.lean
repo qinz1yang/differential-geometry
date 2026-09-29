@@ -49,7 +49,7 @@ private def partialDiffeomorphOfBijOn [Nonempty M]
     let ψ := hl.localInverse
     have hψy : ContMDiffAt J I ∞ (ψ : N → M) y := by
       rw [← hfx]
-      exact hl.localInverse_contMDiffAt
+      exact hl.contMDiffAt_localInverse
     have hψyx : ψ y = x := by
       rw [← hfx]
       exact hl.localInverse_left_inv hl.localInverse_mem_target

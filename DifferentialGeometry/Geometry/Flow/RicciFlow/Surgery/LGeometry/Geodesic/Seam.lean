@@ -279,7 +279,7 @@ theorem mdifferentiableAt_of_regularCrossing (i : Fin H.eventCount) (hl : lo ≤
     exact (H.event i).regularCrossing_right_unique hp h
   exact (((W.localDiffeomorph ⟨i.succ, hl.trans i.castSucc_lt_succ.le, hh⟩ _).mdifferentiableAt
     (by simp)).comp _
-    (hx.localInverse_mdifferentiableAt (by simp))).congr_of_eventuallyEq hev
+    (hx.mdifferentiableAt_localInverse (by simp))).congr_of_eventuallyEq hev
 
 theorem mfderiv_apply_mfderiv_eq_of_regularCrossing (i : Fin H.eventCount)
     (hl : lo ≤ i.castSucc) (hh : i.succ ≤ hi) (z : W.X)

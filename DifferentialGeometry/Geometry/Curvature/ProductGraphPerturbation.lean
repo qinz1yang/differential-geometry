@@ -307,7 +307,7 @@ theorem exists_diffeomorph_graph_of_tangent_sectional_lower_bound_in_product_cha
     rw [mfderiv_comp q (Φ.symm.contMDiff.mdifferentiableAt (by decide))
       (hfV.contMDiff.mdifferentiableAt (by decide))]
     exact (Φ.symm.mfderivToContinuousLinearEquiv (by decide) (fV q)).injective.comp
-      ((hfV.isImmersion.isImmersionAt q).injective_mfderiv (by simp))
+      ((hfV.isImmersion.isImmersionAt q).mfderiv_injective (by simp))
   let G := Diffeomorph.pullbackMetricCross (g.restrictOpen V) Φ
   have hpoint (q : A) : Φ (e q) = fV q := Φ.apply_symm_apply (fV q)
   have hdf (q : A) : mfderiv I I₀ fV q = mfderiv I I₀ f q := by

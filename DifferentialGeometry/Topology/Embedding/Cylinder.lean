@@ -70,7 +70,7 @@ theorem IsSmoothEmbedding.exists_cylinder_diffeomorph
   obtain ⟨V, C, hV, hC, _⟩ :=
     DifferentialGeometry.Topology.Manifold.exists_diffeomorph_onto_range_of_injective_immersion
       c hc hcemb.isEmbedding.injective
-      (fun x => (hcemb.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      (fun x => (hcemb.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
       (by simp [Module.finrank_prod])
   refine ⟨q, hq, hqrange, V, C, ?_, ?_, ?_⟩
   · rw [hV]

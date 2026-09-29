@@ -30,7 +30,7 @@ theorem isImmersionAtOfComplement_lift_source (f : S → T)
     (hs x).localInverse_left_inv (hs x).localInverse_mem_target
   have hg : ContinuousAt g (f x) := by
     have hgf : ContinuousAt (g ∘ f) ((hs x).localInverse (f x)) := hinv.symm ▸ h.continuousAt
-    have hcomp := hgf.comp (hs x).localInverse_contMDiffAt.continuousAt
+    have hcomp := hgf.comp (hs x).contMDiffAt_localInverse.continuousAt
     apply hcomp.congr_of_eventuallyEq
     filter_upwards [(hs x).localInverse_open_source.mem_nhds (hs x).localInverse_mem_source] with y hy
     exact congrArg g ((hs x).localInverse_right_inv hy).symm

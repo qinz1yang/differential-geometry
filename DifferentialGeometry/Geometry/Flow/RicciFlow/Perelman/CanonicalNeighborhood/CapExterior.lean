@@ -49,7 +49,7 @@ theorem LocalCap.outer_boundary_isSmoothEmbedding (cap : LocalCap S eps x t U) :
   rw [mfderiv_comp z (hlocal.contMDiffAt.mdifferentiableAt (by simp))
     (hf.contMDiff.mdifferentiable (by simp) z)]
   exact (hlocal.mfderivToContinuousLinearEquiv (by simp)).injective.comp
-    ((hf.isImmersion.isImmersionAt z).injective_mfderiv (by simp))
+    ((hf.isImmersion.isImmersionAt z).mfderiv_injective (by simp))
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem LocalCap.range_outer_boundary_eq (cap : LocalCap S eps x t U) :

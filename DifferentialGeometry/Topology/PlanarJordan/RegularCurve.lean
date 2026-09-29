@@ -143,7 +143,7 @@ theorem exists_circle_embedding_of_isCompact_isConnected_regular_level
     intro x
     rw [mfderiv_comp x (he.mdifferentiableAt (by simp))
       (hγ.contMDiff.mdifferentiableAt (by simp)), mfderiv_eq_fderiv, e.fderiv]
-    exact e.injective.comp ((hγ.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+    exact e.injective.comp ((hγ.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
   refine ⟨e ∘ γ, ⟨himm, e.toHomeomorph.isEmbedding.comp hγ.isEmbedding⟩, ?_⟩
   rw [range_comp, hrange]
   ext x

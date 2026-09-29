@@ -52,7 +52,7 @@ theorem isLocalDiffeomorphAt_of_isInteriorPoint_of_isImmersion
     {f : S → M} (hf : IsImmersion I J ∞ f) {x : S} (hx : I.IsInteriorPoint x)
     (hdim : Module.finrank ℝ E = Module.finrank ℝ F) : IsLocalDiffeomorphAt I J ∞ f x :=
   isLocalDiffeomorphAt_of_isInteriorPoint_of_injective_mfderiv hf.contMDiff hx hdim
-    ((hf.isImmersionAt x).injective_mfderiv (by simp))
+    ((hf.isImmersionAt x).mfderiv_injective (by simp))
 
 variable {G H'' N : Type*} [NormedAddCommGroup G] [NormedSpace ℝ G] [FiniteDimensional ℝ G]
   [TopologicalSpace H''] {K : ModelWithCorners ℝ G H''} [K.Boundaryless]

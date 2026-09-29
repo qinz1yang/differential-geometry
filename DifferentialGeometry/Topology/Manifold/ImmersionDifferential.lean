@@ -66,7 +66,7 @@ variable [TopologicalSpace N] [ChartedSpace H' N]
 
 theorem injective_mfderiv_of_isImmersionAt (f : M → N) (x : M)
     (hf : Manifold.IsImmersionAt I J ∞ f x) : Injective (mfderiv I J f x) :=
-  hf.injective_mfderiv (by simp)
+  hf.mfderiv_injective (by simp)
 
 theorem bijective_mfderiv_of_isImmersionAt [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
     (f : M → N) (x : M) (hf : Manifold.IsImmersionAt I J ∞ f x)

@@ -33,7 +33,7 @@ theorem IsLocalDiffeomorph.contMDiff_of_comp_of_surjective
   have hlocal := hf x
   have hsmooth : ContMDiffAt J K n
       ((g ∘ f) ∘ hlocal.localInverse) (f x) :=
-    hcomp.contMDiffAt.comp (f x) hlocal.localInverse_contMDiffAt
+    hcomp.contMDiffAt.comp (f x) hlocal.contMDiffAt_localInverse
   apply hsmooth.congr_of_eventuallyEq
   simpa only [Function.comp_id, Function.comp_assoc] using
     (hlocal.localInverse_eventuallyEq_right.fun_comp g).symm
@@ -61,7 +61,7 @@ theorem IsLocalDiffeomorph.contMDiff_of_continuous_of_comp
   have hlocal := hf (h x)
   have hsmooth : ContMDiffAt L I m
       (hlocal.localInverse ∘ (f ∘ h)) x :=
-    (hlocal.localInverse_contMDiffAt.of_le hmn).comp x hcomp.contMDiffAt
+    (hlocal.contMDiffAt_localInverse.of_le hmn).comp x hcomp.contMDiffAt
   apply hsmooth.congr_of_eventuallyEq
   have hevent : ∀ᶠ y in 𝓝 x, h y ∈ hlocal.localInverse.target :=
     hh.continuousAt

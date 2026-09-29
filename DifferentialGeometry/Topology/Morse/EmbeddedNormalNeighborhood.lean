@@ -36,7 +36,7 @@ theorem exists_global_height_preserving_morse_normal_neighborhood
   have hq0 : q 0 = (e p).2 := by simp [q, morseNormalForm]
   obtain ⟨R, hR, χ, Φ, hRs, hχ0, hheight, hnormal⟩ :=
     exists_global_height_preserving_morse_normal_form he.contMDiff
-      ((he.isImmersion.isImmersionAt p).injective_mfderiv (by simp)) k hk hnd hindex
+      ((he.isImmersion.isImmersionAt p).mfderiv_injective (by simp)) k hk hnd hindex
   have hgraph : ∀ y ∈ ball 0 R, (Φ.symm ∘ e) (χ.toOpenPartialHomeomorph y) = (y, q y) := by
     intro y hy
     change Φ.symm (e (χ y)) = (y, q y)

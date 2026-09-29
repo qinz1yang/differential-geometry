@@ -26,7 +26,7 @@ private theorem injective_mfderiv_of_comp_isSmoothEmbedding
   have hi : Injective ((mfderiv ThreeModel ThreeModel f (j x)).comp
       (mfderiv (𝓡∂ 3) ThreeModel j x)) := by
     rw [hd]
-    exact hk.isImmersion.isImmersionAt x |>.injective_mfderiv (by simp)
+    exact hk.isImmersion.isImmersionAt x |>.mfderiv_injective (by simp)
   change Injective ((mfderiv ThreeModel ThreeModel f (j x)) ∘
     (mfderiv (𝓡∂ 3) ThreeModel j x)) at hi
   exact Function.Injective.of_comp_right

@@ -30,7 +30,7 @@ theorem mdifferentiableAt_of_comp
     hq.localInverse_left_inv hq.localInverse_mem_target
   have hf' : MDifferentiableAt I₁ I₃ (f ∘ q) (hq.localInverse (q x)) := by
     rwa [hinverse]
-  apply (hf'.comp (q x) (hq.localInverse_mdifferentiableAt hn)).congr_of_eventuallyEq
+  apply (hf'.comp (q x) (hq.mdifferentiableAt_localInverse hn)).congr_of_eventuallyEq
   filter_upwards [hq.localInverse_eventuallyEq_right] with y hy
   change f y = f (q (hq.localInverse y))
   change q (hq.localInverse y) = y at hy

@@ -33,7 +33,7 @@ def diffeomorphRangeOfInjective
     have hxy : f x = (y : N) := congrArg Subtype.val (h.apply_symm_apply y)
     have hi : ContMDiffAt J I ∞ (hf x).localInverse (y : N) := by
       rw [← hxy]
-      exact (hf x).localInverse_contMDiffAt
+      exact (hf x).contMDiffAt_localInverse
     have hlocal : ContMDiffAt J I ∞ (fun z : hf.image ↦ (hf x).localInverse (z : N)) y :=
       hi.comp y (contMDiff_subtype_val (U := hf.image)).contMDiffAt
     apply hlocal.congr_of_eventuallyEq

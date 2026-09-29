@@ -55,7 +55,7 @@ theorem lActBranch_upper_of_bdd
   have hsrc : hloc.localInverse.source ∈ nhds y0 :=
     hloc.localInverse_open_source.mem_nhds hloc.localInverse_mem_source
   have hpre : hloc.localInverse ⁻¹' U ∈ nhds y0 := by
-    apply hloc.localInverse_contMDiffAt.continuousAt.preimage_mem_nhds
+    apply hloc.contMDiffAt_localInverse.continuousAt.preimage_mem_nhds
     rw [hinv]
     exact hUopen.mem_nhds hzU
   filter_upwards [hsrc, hpre, hbdd] with y hySrc hyU hybdd

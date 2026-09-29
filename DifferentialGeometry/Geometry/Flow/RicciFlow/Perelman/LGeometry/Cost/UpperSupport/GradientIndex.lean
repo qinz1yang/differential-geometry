@@ -129,7 +129,7 @@ theorem exists_contMDiffOn_lCost_upper_support_gradient_hess_le_index
     (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V)
   have hbranchOpen : IsOpen
       (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V) :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hUopen : IsOpen U := hU0open.inter hbranchOpen
   have hzSource : lExp S T x Z tau ∈ hloc.localInverse.source := by

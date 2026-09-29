@@ -121,7 +121,7 @@ theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
     obtain ⟨x, hxU, rfl⟩ := hy
     have hloc := hf ⟨x, hxU⟩
     have hcont : ContinuousAt hloc.localInverse (f x) :=
-      hloc.localInverse_contMDiffAt.continuousAt
+      hloc.contMDiffAt_localInverse.continuousAt
     have hmemU : hloc.localInverse (f x) ∈ U := by
       rw [hloc.localInverse_left_inv hloc.localInverse_mem_target]
       exact hxU
@@ -134,7 +134,7 @@ theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_injOn
       have hrep : f (hloc.localInverse z) = z := hloc.localInverse_right_inv hzsrc
       have h1 : g z ∈ U := hg_mem ⟨hloc.localInverse z, hzU, hrep⟩
       exact hinj h1 hzU (by rw [hg_of ⟨hloc.localInverse z, hzU, hrep⟩, hrep])
-    exact (heq.contMDiffAt_iff.mpr hloc.localInverse_contMDiffAt).contMDiffWithinAt
+    exact (heq.contMDiffAt_iff.mpr hloc.contMDiffAt_localInverse).contMDiffWithinAt
 
 theorem IsLocalDiffeomorphOn.exists_partialDiffeomorph_of_isCompact
     {E : Type*} [NormedAddCommGroup E] [NormedSpace 𝕜 E]

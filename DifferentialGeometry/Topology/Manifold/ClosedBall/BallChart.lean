@@ -77,7 +77,7 @@ theorem exists_partialDiffeomorph_of_closedCell_embedding
       rw [show g = f ∘ closedCellInsertion from rfl,
         mfderiv_comp x.val (hf.contMDiff.mdifferentiableAt (by simp))
           ((closedCellInsertion_contMDiffAt hx).mdifferentiableAt (by simp))]
-      exact ((hf.isImmersion.isImmersionAt _).injective_mfderiv (by simp)).comp
+      exact ((hf.isImmersion.isImmersionAt _).mfderiv_injective (by simp)).comp
         (closedCellInsertion_injective_mfderiv hx)
     let D : EuN →L[ℝ] EuN := mfderiv (𝓡 (m + 1)) (𝓡 (m + 1)) g x.val
     have hD : Function.Injective D := hder

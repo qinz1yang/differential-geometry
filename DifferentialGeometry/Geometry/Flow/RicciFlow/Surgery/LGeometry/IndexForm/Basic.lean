@@ -1185,7 +1185,7 @@ private theorem contMDiffAt_invFun_f {lo hi : Fin (H.eventCount + 1)} (Wd : H.LW
     filter_upwards [hx.localInverse_open_source.mem_nhds hx.localInverse_mem_source] with y hy
     apply Wd.injective j
     rw [Function.invFun_eq ⟨_, hx.localInverse_right_inv hy⟩, hx.localInverse_right_inv hy]
-  exact (hx.localInverse_contMDiffAt.of_le (by decide)).congr_of_eventuallyEq hev
+  exact (hx.contMDiffAt_localInverse.of_le (by decide)).congr_of_eventuallyEq hev
 
 private theorem mfderiv_congr_point {X N : Type u} [TopologicalSpace X]
     [ChartedSpace ThreeSpace X] [TopologicalSpace N] [ChartedSpace ThreeSpace N] {F : X → N}

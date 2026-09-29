@@ -221,7 +221,7 @@ theorem contMDiffAt_gL (hLq : AtlasLeft c d aD) (x : qL c d aD hLq) :
         (gL c d aD hLq x)).localInverse
       (x : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) :=
     hx ▸ (interiorLeft_isLocalDiffeomorph c.toBallChart d.toBallChart aD hLq
-      (gL c d aD hLq x)).localInverse_contMDiffAt
+      (gL c d aD hLq x)).contMDiffAt_localInverse
   refine (hfinv.comp x contMDiff_subtype_val.contMDiffAt).congr_of_eventuallyEq ?_
   exact gL_eventuallyEq_localInverse c d aD hLq x
 
@@ -238,7 +238,7 @@ theorem contMDiffAt_gR (hRq : AtlasRight c d aD) (x : qR c d aD hRq) :
         (gR c d aD hRq x)).localInverse
       (x : ConnectedSumQuotient c.toBallChart d.toBallChart aD.toHomeomorph) :=
     hx ▸ (interiorRight_isLocalDiffeomorph c.toBallChart d.toBallChart aD hRq
-      (gR c d aD hRq x)).localInverse_contMDiffAt
+      (gR c d aD hRq x)).contMDiffAt_localInverse
   refine (hfinv.comp x contMDiff_subtype_val.contMDiffAt).congr_of_eventuallyEq ?_
   exact gR_eventuallyEq_localInverse c d aD hRq x
 

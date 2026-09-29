@@ -46,7 +46,7 @@ theorem range_mfderiv_level_inclusion {f : M → ℝ} {a : ℝ}
     (f := (mfderiv I 𝓘(ℝ, ℝ) f x.val).toLinearMap)
     (by intro h; exact hr x.val x.property (ContinuousLinearMap.coe_injective h))
   rw [LinearMap.finrank_range_of_inj
-    ((he.isImmersion.isImmersionAt x).injective_mfderiv (by simp))]
+    ((he.isImmersion.isImmersionAt x).mfderiv_injective (by simp))]
   change Module.finrank ℝ (MorseModel m) = _
   change Module.finrank ℝ (mfderiv I 𝓘(ℝ, ℝ) f x.val).ker + 1 =
     Module.finrank ℝ (MorseModel (m + 1)) at hdim

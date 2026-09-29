@@ -792,7 +792,7 @@ theorem hasMFDerivAt_lRegularizedAction_endpointBranch
       hloc.localInverse_left_inv hloc.localInverse_mem_target
   have hInv : MDifferentiableAt L J hloc.localInverse q0 := by
     simpa only [hloc, q0, F] using
-      hloc.localInverse_mdifferentiableAt (by simp)
+      hloc.mdifferentiableAt_localInverse (by simp)
   have hComp : HasMFDerivAt L 𝓘(Real, Real)
       (fun q : M × Real ↦ Act (hloc.localInverse q)) q0
       (dAct.comp (mfderiv L J hloc.localInverse q0)) := by
@@ -922,7 +922,7 @@ theorem exists_contMDiffOn_lRegularizedAction_endpointBranch
   let hloc := Coordinates.isLocalDiffeomorphAt_slice_of_mfderiv_injective hVopen hA0V hbK halpha hinj
   let U : Set M := hloc.localInverse.source ∩ hloc.localInverse ⁻¹' W
   have hUopen : IsOpen U :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hWopen
   have hinv : hloc.localInverse (alpha (A0, b)) = A0 :=
     hloc.localInverse_left_inv hloc.localInverse_mem_target
@@ -936,7 +936,7 @@ theorem exists_contMDiffOn_lRegularizedAction_endpointBranch
   have hactM : ContMDiffOn 𝓘(Real, E) 𝓘(Real, Real) ∞
       (fun A : E ↦ lRegularizedAction S T (fun s ↦ alpha (A, s)) a b) W :=
     contMDiffOn_iff_contDiffOn.mpr hact
-  have hinvMD := hloc.localInverse_contMDiffOn.mono
+  have hinvMD := hloc.contMDiffOn_localInverse.mono
     (inter_subset_left : U ⊆ hloc.localInverse.source)
   have hF : ContMDiffOn I 𝓘(Real, Real) ∞ F U := by
     exact hactM.comp hinvMD (fun _ hy ↦ hy.2)
@@ -1053,7 +1053,7 @@ theorem exists_contMDiffOn_lCost_upper_support
     (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V)
   have hbranchOpen : IsOpen
       (hloc.localInverse.source ∩ hloc.localInverse ⁻¹' V) :=
-    hloc.localInverse_contMDiffOn.continuousOn.isOpen_inter_preimage
+    hloc.contMDiffOn_localInverse.continuousOn.isOpen_inter_preimage
       hloc.localInverse_open_source hVopen
   have hUopen : IsOpen U := hU0open.inter hbranchOpen
   have hzSource : lExp S T x Z tau ∈ hloc.localInverse.source := by

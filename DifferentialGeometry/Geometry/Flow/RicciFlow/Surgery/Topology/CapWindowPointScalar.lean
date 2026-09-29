@@ -68,7 +68,7 @@ theorem exists_presented_cap_window_scalar_lower_bound (Dcap Dstar : ℝ)
         simp only [inc, mfderiv_opens_incl] at hd
         dsimp only [TangentSpace] at hd ⊢
         rw [hd]
-        exact (S.window_smooth.isImmersion.isImmersionAt (inc p)).injective_mfderiv (by simp))
+        exact (S.window_smooth.isImmersion.isImmersionAt (inc p)).mfderiv_injective (by simp))
       rfl
   have hinj : Function.Injective (S.window ∘ inc) := fun p q h => by
     have h' := S.window_smooth.isEmbedding.injective h

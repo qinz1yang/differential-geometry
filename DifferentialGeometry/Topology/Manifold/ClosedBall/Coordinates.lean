@@ -54,7 +54,7 @@ theorem mfderiv_closedCell_inclusion_of_norm_lt_one
 theorem injective_mfderiv_closedCell_inclusion (x : ClosedCell (m + 1)) :
     Function.Injective (mfderiv (𝓡∂ (m + 1)) (𝓡 (m + 1))
       (Subtype.val : ClosedCell (m + 1) → EuN) x) :=
-  ((isSmoothEmbedding_closedCell_inclusion m).isImmersion.isImmersionAt x).injective_mfderiv (by simp)
+  ((isSmoothEmbedding_closedCell_inclusion m).isImmersion.isImmersionAt x).mfderiv_injective (by simp)
 
 theorem extChartAt_closedCell_symm_val {α : ClosedCell (m + 1)} (hα : ‖α.val‖ < 1)
     {y : EuN} (hy : y ∈ (extChartAt (𝓡∂ (m + 1)) α).target) :

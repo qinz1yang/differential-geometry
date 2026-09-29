@@ -377,7 +377,7 @@ private theorem contMDiffOn_invFun_smooth (W : H.LWindow lo hi T) (j : H.StageIn
     filter_upwards [hx.localInverse_open_source.mem_nhds hx.localInverse_mem_source] with y hy
     apply W.injective j
     rw [Function.invFun_eq ⟨_, hx.localInverse_right_inv hy⟩, hx.localInverse_right_inv hy]
-  exact (hx.localInverse_contMDiffAt.congr_of_eventuallyEq hev).contMDiffWithinAt
+  exact (hx.contMDiffAt_localInverse.congr_of_eventuallyEq hev).contMDiffWithinAt
 
 end LWindow
 

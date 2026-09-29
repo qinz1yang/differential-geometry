@@ -338,7 +338,7 @@ private theorem NormalizedNeck.normalizedMetric_scalar_center
   have hlocal : IsLocalDiffeomorph NeckCylinderModel ThreeModel ∞ N.chart :=
     DifferentialGeometry.Topology.Manifold.isLocalDiffeomorph_of_injective_mfderiv N.chart
       N.chart_smooth.contMDiff
-      (fun x => (N.chart_smooth.isImmersion.isImmersionAt x).injective_mfderiv (by simp))
+      (fun x => (N.chart_smooth.isImmersion.isImmersionAt x).mfderiv_injective (by simp))
       (by simp [ThreeSpace])
   have heq : N.normalizedMetric = localPullMetric (scaleMetric N.scale N.scale_pos g) N.chart hlocal := by
     apply SmoothRiemannianMetric.ext_inner
