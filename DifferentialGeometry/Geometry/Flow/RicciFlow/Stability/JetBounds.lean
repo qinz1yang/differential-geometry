@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityRepair
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.TimeInterval
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.Lipschitz
 
@@ -19,14 +19,14 @@ universe u
 
 def localStabilityPointwiseVanishing
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
     ∃ N : ℕ, ∀ i : ℕ, N ≤ i → ∀ r : ℝ, ∀ hr : r ≤ L i,
       ∀ u ∈ Set.Icc (0 : ℝ) (v i), ∀ a : ℕ, a ≤ m →
-        ∀ x : ↥(ModelBall r), (x : ThreeSpace) ∈ A →
-          metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+        ∀ x : ↥(ModelBall r), (x : (EuclideanSpace ℝ (Fin 3))) ∈ A →
+          metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
             (((ℓ i).base.metric u).restrictOpenOfSubset (modelBall_mono hr))
             ((γ.restrictOpen (ModelBall r))) ((γ.restrictOpen (ModelBall r))) x ≤ ε
 
@@ -34,13 +34,13 @@ def IsLocalStabilityPointwiseVanishingInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
       (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
         (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, IsSolutionOn (ℓ i)) →
       (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
             ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
       localStabilityInitialJetHypothesis L v hv γ ℓ →
       localStabilityPointwiseVanishing L v hv γ ℓ
@@ -52,61 +52,61 @@ theorem isLocalStabilityInput_of_pointwiseVanishingInput
       (h θ hθ hθ1 K hK L hLpos hLtop v hv hvθ γ ℓ hsol hcurv hjet)
 
 theorem metricDerivNorm_restrictOpenOfSubset_le_of_supOn_le
-    {L r : ℝ} (hr : r ≤ L) {A : Set ThreeSpace} {m : ℕ}
-    {g : SmoothRiemannianMetric ThreeModel ↥(ModelBall L)}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace} {ε : ℝ}
+    {L r : ℝ} (hr : r ≤ L) {A : Set (EuclideanSpace ℝ (Fin 3))} {m : ℕ}
+    {g : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) ↥(ModelBall L)}
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))} {ε : ℝ}
     (hbdd : BddAbove {s : ℝ | ∃ a : ℕ, a ≤ m ∧ ∃ x : ↥(ModelBall L),
-      (x : ThreeSpace) ∈ A ∧
-        metricDerivNorm (I := ThreeModel) a g (γ.restrictOpen (ModelBall L))
+      (x : (EuclideanSpace ℝ (Fin 3))) ∈ A ∧
+        metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) a g (γ.restrictOpen (ModelBall L))
           (γ.restrictOpen (ModelBall L)) x = s})
     (hsup : metricDerivNormSupOn (Subtype.val ⁻¹' A) m g (γ.restrictOpen (ModelBall L))
       (γ.restrictOpen (ModelBall L)) ≤ ε) :
-    ∀ a : ℕ, a ≤ m → ∀ x : ↥(ModelBall r), (x : ThreeSpace) ∈ A →
-      metricDerivNorm (I := ThreeModel) a (g.restrictOpenOfSubset (modelBall_mono hr))
+    ∀ a : ℕ, a ≤ m → ∀ x : ↥(ModelBall r), (x : (EuclideanSpace ℝ (Fin 3))) ∈ A →
+      metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) a (g.restrictOpenOfSubset (modelBall_mono hr))
         (γ.restrictOpen (ModelBall r)) (γ.restrictOpen (ModelBall r)) x ≤ ε := by
   let : SigmaCompactSpace ↥(ModelBall L) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
-      (isSigmaCompact_of_isOpen ThreeModel (ModelBall L).isOpen)
+      (isSigmaCompact_of_isOpen (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (ModelBall L).isOpen)
   have hγ : γ.restrictOpen (ModelBall r) =
       (γ.restrictOpen (ModelBall L)).restrictOpenOfSubset (modelBall_mono hr) :=
-    (SmoothRiemannianMetric.restrictOpen_flat (I := ThreeModel) γ
+    (SmoothRiemannianMetric.restrictOpen_flat (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) γ
       (modelBall_mono hr)).symm
   intro a ha x hx
-  rw [hγ, metricDerivNorm_flat (I := ThreeModel) (modelBall_mono hr) g
+  rw [hγ, metricDerivNorm_flat (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (modelBall_mono hr) g
     (γ.restrictOpen (ModelBall L)) (γ.restrictOpen (ModelBall L)) a x]
   exact (le_csSup hbdd ⟨a, ha, TopologicalSpace.Opens.inclusion (modelBall_mono hr) x,
     hx, rfl⟩).trans hsup
 
 def localStabilityReferenceJetBounded
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, ∀ i : ℕ, ∀ u ∈ Set.Icc (0 : ℝ) (v i),
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, ∀ i : ℕ, ∀ u ∈ Set.Icc (0 : ℝ) (v i),
     BddAbove {s : ℝ | ∃ a : ℕ, a ≤ m ∧ ∃ x : ↥(ModelBall (L i)),
-      (x : ThreeSpace) ∈ A ∧
-        metricDerivNorm (I := ThreeModel) a ((ℓ i).base.metric u)
+      (x : (EuclideanSpace ℝ (Fin 3))) ∈ A ∧
+        metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) a ((ℓ i).base.metric u)
           (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) x = s}
 
 def IsLocalStabilityReferenceJetBoundedInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
       (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
         (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, IsSolutionOn (ℓ i)) →
       (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
             ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
       localStabilityInitialJetHypothesis L v hv γ ℓ →
       localStabilityReferenceJetBounded L v hv γ ℓ
 
 theorem localStabilityPointwiseVanishing_of_vanishing_of_referenceJetBounded
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
     (hb : localStabilitySlabDerivativeBound L v hv γ ℓ)
     (hbdd : localStabilityReferenceJetBounded L v hv γ ℓ)

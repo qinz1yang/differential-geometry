@@ -1,36 +1,17 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Realization
 
 set_option autoImplicit false
 
 noncomputable section
 
 open Bundle Manifold Set Filter
-open scoped Manifold ContDiff
+open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
+open DifferentialGeometry (SmoothRiemannianMetric)
+
 universe u
-
-theorem nonempty_oldData : Nonempty OldData :=
-  ⟨{ horizon := 1, horizon_pos := one_pos
-     initialParameter := 1, initialParameter_pos := one_pos
-     epsilon := 1, epsilon_pos := one_pos
-     comparisonConstant := 1, comparisonConstant_pos := one_pos
-     volumeConstant := 1, volumeConstant_pos := one_pos
-     scaleLower := 1, scaleLower_pos := one_pos
-     noncollapsing := 1, noncollapsing_pos := one_pos
-     olderLength := 1, olderLength_pos := one_pos
-     energyBound := 1, olderLength_le_energy := le_rfl }⟩
-
-theorem nonempty_capClass : Nonempty CapClass :=
-  ⟨{ horizon := 1, horizon_pos := one_pos
-     initialParameter := 1, initialParameter_pos := one_pos
-     epsilon := 1, epsilon_pos := one_pos
-     comparisonConstant := 1, comparisonConstant_pos := one_pos
-     volumeConstant := 1, volumeConstant_pos := one_pos
-     scaleLower := 1, scaleLower_pos := one_pos
-     scaleUpper := 2, scale_lt := one_lt_two }⟩
 
 def emptyVariationalStrip (H : ObservedHistory.{u}) (hpos : 0 < H.horizon)
     (p : (H.stage 0).Carrier) : VariationalStrip H where

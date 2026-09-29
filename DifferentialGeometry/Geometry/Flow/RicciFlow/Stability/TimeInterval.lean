@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityDecomposition
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityInputWitness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.CauchyCriterion
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.Examples
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.OpenRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Solutions.Pullback
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Restriction
@@ -34,8 +34,8 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 theorem localStabilityCauchyConclusion_of_limitFlowConclusion
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
     (h : localStabilityLimitFlowConclusion L v hv γ ℓ) :
     localStabilityCauchyConclusion L v hv γ ℓ := by
@@ -43,17 +43,17 @@ theorem localStabilityCauchyConclusion_of_limitFlowConclusion
   intro A hA m hm ε hε
   obtain ⟨N, hN⟩ := hlim A hA m hm (ε / 2) (half_pos hε)
   refine ⟨N, fun i j hi hj r hr u hu => ?_⟩
-  refine metricDerivNormSupOn_le_of_forall (I := ThreeModel) (M := ↥(ModelBall r))
+  refine metricDerivNormSupOn_le_of_forall (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r))
     (Subtype.val ⁻¹' A) m _ _ _ ε hε.le (fun a ha x hx => ?_)
   have hr' : r ≤ min (L j) (L i) := by simpa only [min_comm] using hr
   have h1 := hN i j hi hj r hr u hu a ha x hx
   have h2 := hN j i hj hi r hr' u (by simpa only [min_comm] using hu) a ha x hx
-  have hsymm := metricDerivNorm_symm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have hsymm := metricDerivNorm_symm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (((ℓ j).base.metric u).restrictOpenOfSubset
       (modelBall_mono (le_trans hr (min_le_right (L i) (L j)))))
     ((γLim u).restrictOpen (ModelBall r))
     ((γ.restrictOpen (ModelBall r))) x
-  have htri := metricDerivNorm_triangle (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have htri := metricDerivNorm_triangle (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (((ℓ i).base.metric u).restrictOpenOfSubset
       (modelBall_mono (le_trans hr (min_le_left (L i) (L j)))))
     ((γLim u).restrictOpen (ModelBall r))
@@ -176,7 +176,7 @@ private noncomputable def counterSphereNorth : SphereShrinkSpace :=
   ⟨EuclideanSpace.single 0 (1 : ℝ), by simp⟩
 
 private noncomputable def counterStereographic :
-    ThreeSpace ≃ₘ⟮𝓡 3, 𝓡 3⟯
+    (EuclideanSpace ℝ (Fin 3)) ≃ₘ⟮𝓡 3, 𝓡 3⟯
       ↥(Topology.Manifold.stereographicImage counterSphereNorth) :=
   Topology.Manifold.stereographicDiffeomorph counterSphereNorth
 
@@ -204,7 +204,7 @@ private theorem counterPunctureSolution_isSolutionOn :
     (Topology.Manifold.stereographicImage counterSphereNorth)
 
 private noncomputable def counterGlobalSolution :
-    SolutionOn (I := 𝓡 3) (M := ThreeSpace) counterShrinkInterval :=
+    SolutionOn (I := 𝓡 3) (M := (EuclideanSpace ℝ (Fin 3))) counterShrinkInterval :=
   solutionOnPullback counterPunctureSolution counterStereographic
 
 private theorem counterGlobalSolution_isSolutionOn : IsSolutionOn counterGlobalSolution :=
@@ -232,15 +232,15 @@ private theorem counterTime_eq (i : ℕ) : counterTime i = 1 / 8 := rfl
 private def counterInterval (i : ℕ) : RealTimeInterval :=
   RealTimeInterval.closed (0 : ℝ) (counterTime i) (le_of_lt (counterTime_pos i))
 
-private noncomputable def counterReferenceMetric : SmoothRiemannianMetric ThreeModel ThreeSpace :=
+private noncomputable def counterReferenceMetric : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)) :=
   counterGlobalSolution.base.metric 0
 
 private noncomputable def counterBallSolution (i : ℕ) :
-    SolutionOn (I := ThreeModel) (M := ↥(ModelBall (counterBallRadius i)))
+    SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (counterBallRadius i)))
       (counterInterval i) := by
   haveI : SigmaCompactSpace ↥(ModelBall (counterBallRadius i)) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
-      (isSigmaCompact_of_isOpen ThreeModel (ModelBall (counterBallRadius i)).isOpen)
+      (isSigmaCompact_of_isOpen (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (ModelBall (counterBallRadius i)).isOpen)
   exact solutionOnRestrictOpen (counterGlobalSolution.timeRestrict (counterInterval i))
     (ModelBall (counterBallRadius i))
 
@@ -264,7 +264,7 @@ private theorem counterBallSolution_isSolutionOn (i : ℕ) :
     IsSolutionOn (counterBallSolution i) := by
   have : SigmaCompactSpace ↥(ModelBall (counterBallRadius i)) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
-      (isSigmaCompact_of_isOpen ThreeModel (ModelBall (counterBallRadius i)).isOpen)
+      (isSigmaCompact_of_isOpen (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (ModelBall (counterBallRadius i)).isOpen)
   exact isSolutionOn_restrictOpen _
     (isSolutionOn_timeRestrict counterGlobalSolution_isSolutionOn
       (counterInterval_carrier_subset i) (counterInterval_regular_subset i))
@@ -310,13 +310,13 @@ private theorem metricDerivNorm_roundSphereShrinkMetric (u : ℝ) (a : ℕ)
 
 private theorem counterBall_metricDerivNorm_val (i : ℕ) {u : ℝ} (hu : u < 1 / 4) (a : ℕ)
     (x : ↥(ModelBall (counterBallRadius i))) :
-    metricDerivNorm (I := ThreeModel) a ((counterBallSolution i).base.metric u)
+    metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) a ((counterBallSolution i).base.metric u)
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) x =
       (if a = 0 then |1 - 4 * u - 1| * Real.sqrt 3 else 0) := by
   have : SigmaCompactSpace ↥(ModelBall (counterBallRadius i)) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
-      (isSigmaCompact_of_isOpen ThreeModel (ModelBall (counterBallRadius i)).isOpen)
+      (isSigmaCompact_of_isOpen (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (ModelBall (counterBallRadius i)).isOpen)
   have : SigmaCompactSpace ↥(Topology.Manifold.stereographicImage counterSphereNorth) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
       (isSigmaCompact_of_isOpen (𝓡 3)
@@ -331,12 +331,12 @@ private theorem counterBall_metricDerivNorm_val (i : ℕ) {u : ℝ} (hu : u < 1 
 
 private theorem counterBall_curvature_le (i : ℕ) (x : ↥(ModelBall (counterBallRadius i))) :
     curvatureNormSq ((counterBallSolution i).base.metric (counterTime i)) x
-      (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (counterBallRadius i)))
+      (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (counterBallRadius i)))
         ((counterBallSolution i).base.metric (counterTime i)) x) ≤
       counterCurvatureConstant ^ 2 := by
   have : SigmaCompactSpace ↥(ModelBall (counterBallRadius i)) :=
     isSigmaCompact_iff_sigmaCompactSpace.mp
-      (isSigmaCompact_of_isOpen ThreeModel (ModelBall (counterBallRadius i)).isOpen)
+      (isSigmaCompact_of_isOpen (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (ModelBall (counterBallRadius i)).isOpen)
   refine le_trans ?_ counterCurvatureConstant_ge_bound
   simp only [curvatureNormSq, counterBallSolution, counterGlobalSolution,
     counterPunctureSolution, solutionOnRestrictOpen, solutionOnPullback,
@@ -352,7 +352,7 @@ private theorem counterBall_curvature_le (i : ℕ) (x : ↥(ModelBall (counterBa
 private theorem counterBall_metricDerivNorm_val_le_sqrt_three (i : ℕ) {u : ℝ}
     (hu0 : 0 ≤ u) (hu8 : u ≤ 1 / 8) (a : ℕ)
     (x : ↥(ModelBall (counterBallRadius i))) :
-    metricDerivNorm (I := ThreeModel) a ((counterBallSolution i).base.metric u)
+    metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) a ((counterBallSolution i).base.metric u)
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) x ≤
       Real.sqrt 3 := by
@@ -371,8 +371,8 @@ private theorem counterBall_metricDerivNorm_val_le_sqrt_three (i : ℕ) {u : ℝ
 
 private theorem counterBall_metricDerivNorm_bddAbove (i : ℕ) :
     BddAbove {r : ℝ | ∃ a : ℕ, a ≤ 4 ∧
-      ∃ x ∈ Subtype.val ⁻¹' ({0} : Set ThreeSpace),
-      metricDerivNorm (I := ThreeModel) a ((counterBallSolution i).base.metric (counterTime i))
+      ∃ x ∈ Subtype.val ⁻¹' ({0} : Set (EuclideanSpace ℝ (Fin 3))),
+      metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) a ((counterBallSolution i).base.metric (counterTime i))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) x = r} := by
   refine ⟨Real.sqrt 3, fun r hr => ?_⟩
@@ -381,13 +381,13 @@ private theorem counterBall_metricDerivNorm_bddAbove (i : ℕ) :
     (by norm_num [counterTime]) a x
 
 private theorem counterBall_zero_mem (i : ℕ) :
-    (0 : ThreeSpace) ∈ ModelBall (counterBallRadius i) := by
+    (0 : (EuclideanSpace ℝ (Fin 3))) ∈ ModelBall (counterBallRadius i) := by
   refine Metric.mem_ball.mpr ?_
   simpa using counterBallRadius_pos i
 
 private theorem counterBall_zero_metricDerivNorm (i : ℕ)
     (x : ↥(ModelBall (counterBallRadius i))) :
-    metricDerivNorm (I := ThreeModel) 0
+    metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) 0
         ((counterBallSolution i).base.metric (counterTime i))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) x =
@@ -411,7 +411,7 @@ private theorem counterSlabDerivativeBound :
 private theorem counterTimeLowerBound :
     ∀ᶠ i in atTop, ∃ u ∈ Set.Icc (0 : ℝ) (counterTime i),
       Real.sqrt 3 / 2 ≤ metricDerivNormSupOn
-        (Subtype.val ⁻¹' ({0} : Set ThreeSpace)) 4 ((counterBallSolution i).base.metric u)
+        (Subtype.val ⁻¹' ({0} : Set (EuclideanSpace ℝ (Fin 3)))) 4 ((counterBallSolution i).base.metric u)
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) := by
   filter_upwards with i
@@ -429,12 +429,12 @@ private theorem counterCurvatureConstant_pos : 0 < counterCurvatureConstant := b
 
 
 private noncomputable def counterLimitMetric (u : ℝ) :
-    SmoothRiemannianMetric ThreeModel ThreeSpace :=
+    SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)) :=
   counterGlobalSolution.base.metric u
 
 private theorem restrictOpenOfSubset_restrictOpen_eq
-    (g : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (U V : TopologicalSpace.Opens ThreeSpace) (hVU : V ≤ U) :
+    (g : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (U V : TopologicalSpace.Opens (EuclideanSpace ℝ (Fin 3))) (hVU : V ≤ U) :
     (g.restrictOpen U).restrictOpenOfSubset hVU = g.restrictOpen V := by
   apply SmoothRiemannianMetric.ext_inner
   intro x v w
@@ -445,16 +445,16 @@ private theorem counterInitialJetHypothesis :
       counterReferenceMetric counterBallSolution := by
   intro A _hA p
   have hzero : ∀ i : ℕ,
-      metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (counterBallRadius i)))
+      metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (counterBallRadius i)))
         (Subtype.val ⁻¹' A) p ((counterBallSolution i).base.metric 0)
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i))) = 0 := by
     intro i
     simp only [counterBallSolution, counterReferenceMetric, solutionOnRestrictOpen,
       SolutionOn.timeRestrict_base]
-    exact metricDerivNormSupOn_self (I := ThreeModel)
+    exact metricDerivNormSupOn_self (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
       (M := ↥(ModelBall (counterBallRadius i))) (Subtype.val ⁻¹' A) p _ _
-  rw [show (fun i : ℕ => metricDerivNormSupOn (I := ThreeModel)
+  rw [show (fun i : ℕ => metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
         (M := ↥(ModelBall (counterBallRadius i))) (Subtype.val ⁻¹' A) p
         ((counterBallSolution i).base.metric 0)
         (counterReferenceMetric.restrictOpen (ModelBall (counterBallRadius i)))
@@ -467,7 +467,7 @@ private theorem counterBallSolution_cauchyConclusion :
       counterReferenceMetric counterBallSolution := by
   intro A _hA m _hm ε hε
   refine ⟨0, fun i j _ _ r hr u _hu => ?_⟩
-  have hzero : metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall r))
+  have hzero : metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r))
       (Subtype.val ⁻¹' A) m
       (((counterBallSolution i).base.metric u).restrictOpenOfSubset
         (modelBall_mono
@@ -479,7 +479,7 @@ private theorem counterBallSolution_cauchyConclusion :
     simp only [counterBallSolution, counterReferenceMetric, solutionOnRestrictOpen,
       SolutionOn.timeRestrict_base]
     rw [restrictOpenOfSubset_restrictOpen_eq, restrictOpenOfSubset_restrictOpen_eq]
-    exact metricDerivNormSupOn_self (I := ThreeModel) (M := ↥(ModelBall r))
+    exact metricDerivNormSupOn_self (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r))
       (Subtype.val ⁻¹' A) m _ _
   rw [hzero]
   exact hε.le
@@ -490,7 +490,7 @@ private theorem counterBallSolution_limitFlowConclusion :
   refine ⟨counterLimitMetric, rfl, ?_⟩
   intro A _hA m _hm ε hε
   refine ⟨0, fun i j _ _ r hr u _hu a _ha x _hx => ?_⟩
-  have hzero : metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have hzero : metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
       (((counterBallSolution i).base.metric u).restrictOpenOfSubset
         (modelBall_mono
           (le_trans hr (min_le_left (counterBallRadius i) (counterBallRadius j)))))
@@ -499,7 +499,7 @@ private theorem counterBallSolution_limitFlowConclusion :
     simp only [counterBallSolution, counterReferenceMetric, counterLimitMetric,
       solutionOnRestrictOpen, SolutionOn.timeRestrict_base]
     rw [restrictOpenOfSubset_restrictOpen_eq]
-    exact metricDerivNorm_self (I := ThreeModel) (M := ↥(ModelBall r)) a _ _ x
+    exact metricDerivNorm_self (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a _ _ x
   rw [hzero]
   exact hε.le
 
@@ -514,25 +514,25 @@ private theorem counterBallSolution_not_conclusion :
     ¬ localStabilityConclusion counterBallRadius counterTime counterTime_pos
       counterReferenceMetric counterBallSolution := by
   intro h
-  have htend := h ({0} : Set ThreeSpace) isCompact_singleton 4 (by norm_num)
+  have htend := h ({0} : Set (EuclideanSpace ℝ (Fin 3))) isCompact_singleton 4 (by norm_num)
   refine not_tendsto_zero_of_eventually_ge (c := Real.sqrt 3 / 2) (by positivity) ?_ htend
   filter_upwards [counterTimeLowerBound] with i hi
   obtain ⟨u, hu, hle⟩ := hi
   exact hle.trans (le_csSup
-    (bddAbove_localStabilityIccValues counterSlabDerivativeBound ({0} : Set ThreeSpace)
+    (bddAbove_localStabilityIccValues counterSlabDerivativeBound ({0} : Set (EuclideanSpace ℝ (Fin 3)))
       isCompact_singleton 4 (by norm_num) i) ⟨u, hu, rfl⟩)
 
 theorem exists_localStabilityRepair_witness :
     ∃ (θ K : ℝ), 0 < θ ∧ θ < 1 ∧ 0 < K ∧
       ∃ L : ℕ → ℝ, (∀ i, 0 < L i) ∧ Tendsto L atTop atTop ∧
         ∃ (v : ℕ → ℝ) (hv : ∀ i, 0 < v i), (∀ i, v i ≤ θ) ∧
-          ∃ γ : SmoothRiemannianMetric ThreeModel ThreeSpace,
-            ∃ ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          ∃ γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)),
+            ∃ ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
               (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i))),
               (∀ i, IsSolutionOn (ℓ i)) ∧
               (∀ i, ∀ x : ↥(ModelBall (L i)),
                 curvatureNormSq ((ℓ i).base.metric (v i)) x
-                  (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+                  (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
                     ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) ∧
               localStabilityInitialJetHypothesis L v hv γ ℓ ∧
               localStabilityCauchyConclusion L v hv γ ℓ ∧
@@ -547,14 +547,14 @@ theorem exists_localStabilityRepair_witness :
 
 theorem localStabilityCauchyConclusion_of_staticJetLimit
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
-    (h : ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
+    (h : ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m → ∀ ε : ℝ, 0 < ε →
       ∃ N : ℕ, ∀ i : ℕ, N ≤ i → ∀ r : ℝ, ∀ hr : r ≤ L i,
         ∀ u ∈ Set.Icc (0 : ℝ) (v i), ∀ a : ℕ, a ≤ m →
-          ∀ x : ↥(ModelBall r), (x : ThreeSpace) ∈ A →
-            metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+          ∀ x : ↥(ModelBall r), (x : (EuclideanSpace ℝ (Fin 3))) ∈ A →
+            metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
               (((ℓ i).base.metric u).restrictOpenOfSubset
                 (modelBall_mono hr))
               ((γ.restrictOpen (ModelBall r)))
@@ -567,14 +567,14 @@ theorem localStabilityCauchyConclusion_of_staticJetLimit
   have hrj : r ≤ L j := le_trans hr (min_le_right (L i) (L j))
   have hui : u ∈ Set.Icc (0 : ℝ) (v i) := ⟨hu.1, hu.2.trans (min_le_left (v i) (v j))⟩
   have huj : u ∈ Set.Icc (0 : ℝ) (v j) := ⟨hu.1, hu.2.trans (min_le_right (v i) (v j))⟩
-  refine metricDerivNormSupOn_le_of_forall (I := ThreeModel) (M := ↥(ModelBall r))
+  refine metricDerivNormSupOn_le_of_forall (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r))
     (Subtype.val ⁻¹' A) m _ _ _ ε hε.le (fun a ha x hx => ?_)
   have h1 := hN i hi r hri u hui a ha x hx
   have h2 := hN j hj r hrj u huj a ha x hx
-  have hsymm := metricDerivNorm_symm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have hsymm := metricDerivNorm_symm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (((ℓ j).base.metric u).restrictOpenOfSubset (modelBall_mono hrj))
     ((γ.restrictOpen (ModelBall r))) ((γ.restrictOpen (ModelBall r))) x
-  have htri := metricDerivNorm_triangle (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have htri := metricDerivNorm_triangle (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (((ℓ i).base.metric u).restrictOpenOfSubset (modelBall_mono hri))
     ((γ.restrictOpen (ModelBall r)))
     (((ℓ j).base.metric u).restrictOpenOfSubset (modelBall_mono hrj))
@@ -588,13 +588,13 @@ def IsLocalStabilityLimitFlowInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
       (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
         (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, IsSolutionOn (ℓ i)) →
       (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
             ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
       localStabilityInitialJetHypothesis L v hv γ ℓ →
       localStabilityLimitFlowConclusion L v hv γ ℓ
@@ -614,36 +614,36 @@ private theorem flatBallScaledMetric_restrictOpen_eq (L r c : ℝ) (hc : 0 < c) 
 
 private theorem shortScaledBall_cauchyConclusion :
     localStabilityCauchyConclusion flatBallRadius shortEuclideanBallTime
-      shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution := by
+      shortEuclideanBallTime_pos (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution := by
   intro A _hA m _hm ε hε
   have hev : ∀ᶠ i in atTop,
-      |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ ThreeSpace) < ε / 2 :=
+      |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) < ε / 2 :=
     tendsto_flatBallScaledFactor.eventually (Iio_mem_nhds (half_pos hε))
   obtain ⟨N, hN⟩ := eventually_atTop.mp hev
   refine ⟨N, fun i j hi hj r hr u _hu => ?_⟩
   have hri : r ≤ flatBallRadius i := le_trans hr (min_le_left _ _)
   have hrj : r ≤ flatBallRadius j := le_trans hr (min_le_right _ _)
-  refine metricDerivNormSupOn_le_of_forall (I := ThreeModel) (M := ↥(ModelBall r))
+  refine metricDerivNormSupOn_le_of_forall (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r))
     (Subtype.val ⁻¹' A) m _ _ _ ε hε.le (fun a _ha x _hx => ?_)
-  change metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  change metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (flatBallScaledMetric r (flatBallRescale i) (flatBallRescale_pos i))
     (flatBallScaledMetric r (flatBallRescale j) (flatBallRescale_pos j))
     (flatBallMetric r) x ≤ ε
-  have h1 : metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have h1 : metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
       (flatBallScaledMetric r (flatBallRescale i) (flatBallRescale_pos i))
       (flatBallMetric r) (flatBallMetric r) x ≤ ε / 2 :=
     (metricDerivNorm_flatBallScaledMetric_le r (flatBallRescale i) (flatBallRescale_pos i)
       a x).trans (le_of_lt (hN i hi))
-  have h2 : metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have h2 : metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
       (flatBallMetric r)
       (flatBallScaledMetric r (flatBallRescale j) (flatBallRescale_pos j))
       (flatBallMetric r) x ≤ ε / 2 := by
-    rw [← metricDerivNorm_symm (I := ThreeModel) (M := ↥(ModelBall r)) a
+    rw [← metricDerivNorm_symm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
       (flatBallScaledMetric r (flatBallRescale j) (flatBallRescale_pos j))
       (flatBallMetric r) (flatBallMetric r) x]
     exact (metricDerivNorm_flatBallScaledMetric_le r (flatBallRescale j)
       (flatBallRescale_pos j) a x).trans (le_of_lt (hN j hj))
-  have htri := metricDerivNorm_triangle (I := ThreeModel) (M := ↥(ModelBall r)) a
+  have htri := metricDerivNorm_triangle (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (flatBallScaledMetric r (flatBallRescale i) (flatBallRescale_pos i))
     (flatBallMetric r)
     (flatBallScaledMetric r (flatBallRescale j) (flatBallRescale_pos j))
@@ -652,15 +652,15 @@ private theorem shortScaledBall_cauchyConclusion :
 
 private theorem shortScaledBall_limitFlowConclusion :
     localStabilityLimitFlowConclusion flatBallRadius shortEuclideanBallTime
-      shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution := by
-  refine ⟨fun _ => euclideanMetric (E := ThreeSpace), rfl, ?_⟩
+      shortEuclideanBallTime_pos (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution := by
+  refine ⟨fun _ => euclideanMetric (E := (EuclideanSpace ℝ (Fin 3))), rfl, ?_⟩
   intro A _hA m _hm ε hε
   have hev : ∀ᶠ i in atTop,
-      |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ ThreeSpace) < ε :=
+      |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) < ε :=
     tendsto_flatBallScaledFactor.eventually (Iio_mem_nhds hε)
   obtain ⟨N, hN⟩ := eventually_atTop.mp hev
   refine ⟨N, fun i j hi _hj r hr u _hu a _ha x _hx => ?_⟩
-  change metricDerivNorm (I := ThreeModel) (M := ↥(ModelBall r)) a
+  change metricDerivNorm (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall r)) a
     (flatBallScaledMetric r (flatBallRescale i) (flatBallRescale_pos i))
     (flatBallMetric r) (flatBallMetric r) x ≤ ε
   exact (metricDerivNorm_flatBallScaledMetric_le r (flatBallRescale i) (flatBallRescale_pos i)
@@ -668,7 +668,7 @@ private theorem shortScaledBall_limitFlowConclusion :
 
 private theorem constantBall_cauchyConclusion :
     localStabilityCauchyConclusion flatBallRadius flatBallTime flatBallTime_pos
-      (euclideanMetric (E := ThreeSpace)) constantBallSolution := by
+      (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution := by
   intro A _hA m _hm ε hε
   refine ⟨0, fun i j _ _ r hr u _hu => ?_⟩
   have hri : r ≤ flatBallRadius i := le_trans hr (min_le_left _ _)
@@ -680,8 +680,8 @@ private theorem constantBall_cauchyConclusion :
 
 private theorem constantBall_limitFlowConclusion :
     localStabilityLimitFlowConclusion flatBallRadius flatBallTime flatBallTime_pos
-      (euclideanMetric (E := ThreeSpace)) constantBallSolution := by
-  refine ⟨fun _ => euclideanMetric (E := ThreeSpace), rfl, ?_⟩
+      (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution := by
+  refine ⟨fun _ => euclideanMetric (E := (EuclideanSpace ℝ (Fin 3))), rfl, ?_⟩
   intro A _hA m _hm ε hε
   refine ⟨0, fun i _hi j _hj r _hr u _hu a _ha x _hx => ?_⟩
   rw [constantBallSolution_base_metric, flatBallMetric, restrictOpenOfSubset_restrictOpen_eq,
@@ -690,13 +690,13 @@ private theorem constantBall_limitFlowConclusion :
 
 theorem localStabilityRepair_holds_on_knownWitnesses :
     localStabilityCauchyConclusion flatBallRadius flatBallTime flatBallTime_pos
-        (euclideanMetric (E := ThreeSpace)) constantBallSolution ∧
+        (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution ∧
       localStabilityLimitFlowConclusion flatBallRadius flatBallTime flatBallTime_pos
-        (euclideanMetric (E := ThreeSpace)) constantBallSolution ∧
+        (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution ∧
       localStabilityCauchyConclusion flatBallRadius shortEuclideanBallTime
-        shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution ∧
+        shortEuclideanBallTime_pos (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution ∧
       localStabilityLimitFlowConclusion flatBallRadius shortEuclideanBallTime
-        shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution :=
+        shortEuclideanBallTime_pos (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution :=
   ⟨constantBall_cauchyConclusion, constantBall_limitFlowConclusion,
     shortScaledBall_cauchyConclusion, shortScaledBall_limitFlowConclusion⟩
 

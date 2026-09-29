@@ -411,4 +411,22 @@ theorem GlobalStepConclusion.scale_positive
   obtain ⟨hstar, hpos, hlt, _⟩ := h
   exact ⟨hstar, hpos, hlt⟩
 
+
+theorem nonempty_globalStepInputs_falseDiscard_iff (p : CutoffParameters) (τ ε d : ℝ)
+    (k : ℕ) :
+    Nonempty (GlobalStepInputs.{u} p τ ε d k fun _ => False) ↔
+      ∃ endInput : TerminalCorePresentationInput.{u} τ ε,
+        historicalNeckRecognition.{u} τ ε d k endInput.lambda ∧
+          hornCylinderLimit.{u} ε endInput.lambda ∧
+            protectionInput.{u} τ ε endInput.lambda := by
+  constructor
+  · rintro ⟨G⟩
+    exact ⟨G.endInput, G.neckInput, G.cylinderInput, G.protectInput⟩
+  · rintro ⟨endInput, hneck, hcylinder, hprotect⟩
+    exact ⟨{ endInput := endInput
+             neckInput := hneck
+             pieceInput := fun _ _ _ h => h.elim
+             cylinderInput := hcylinder
+             protectInput := hprotect }⟩
+
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

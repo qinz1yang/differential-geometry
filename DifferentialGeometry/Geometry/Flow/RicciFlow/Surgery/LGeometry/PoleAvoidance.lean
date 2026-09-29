@@ -1,15 +1,15 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStripPinning
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.Terminal
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.InitialSphericalFrontierEpsilonUniformity
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.HistoryPinning
 
 set_option autoImplicit false
 
 noncomputable section
 
-open Bundle Manifold Set
-open scoped Manifold ContDiff
+open Bundle Manifold Set Filter
+open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+open DifferentialGeometry (SmoothRiemannianMetric)
 
 universe u
 
@@ -79,48 +79,5 @@ theorem
   exact ⟨H, towerVariationalStrip H hpos p, hpos,
     isTowerPinnedStrip_towerVariationalStrip H hpos p,
     hasAdmissibleCurve_towerVariationalStrip H hpos p⟩
-
-theorem nonempty_globalStepInputs_falseDiscard_iff (p : CutoffParameters) (τ ε d : ℝ)
-    (k : ℕ) :
-    Nonempty (GlobalStepInputs.{u} p τ ε d k fun _ => False) ↔
-      ∃ endInput : TerminalCorePresentationInput.{u} τ ε,
-        historicalNeckRecognition.{u} τ ε d k endInput.lambda ∧
-          hornCylinderLimit.{u} ε endInput.lambda ∧
-            protectionInput.{u} τ ε endInput.lambda := by
-  constructor
-  · rintro ⟨G⟩
-    exact ⟨G.endInput, G.neckInput, G.cylinderInput, G.protectInput⟩
-  · rintro ⟨endInput, hneck, hcylinder, hprotect⟩
-    exact ⟨{ endInput := endInput
-             neckInput := hneck
-             pieceInput := fun _ _ _ h => h.elim
-             cylinderInput := hcylinder
-             protectInput := hprotect }⟩
-
-open DifferentialGeometry.Topology
-  (componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor) in
-theorem nonempty_globalStepInputs_of_uniformEpsilon_of_standardDiscard
-    {p : CutoffParameters} {τ d : ℝ} {k : ℕ} {DiscardedCutOpen : Type u → Prop}
-    (hτ : 0 < τ) (huniform : HasUniformEpsilonSphericalFrontier.{u} τ)
-    (hmodels : ∀ (H : ObservedHistory.{u}) (i : Fin H.eventCount),
-      GeometricCutoffRecord H i p → DiscardedCutOpen (H.event i).discarded.Carrier →
-      (H.event i).discarded.toClosedOrientedManifold.componentwiseStandardFactor)
-    (hneck : ∀ Λ : ℝ, 1 ≤ Λ →
-      (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
-        Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
-      historicalNeckRecognition.{u} τ (1 / 2) d k Λ)
-    (hcylinder : ∀ Λ : ℝ, 1 ≤ Λ →
-      (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
-        Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
-      hornCylinderLimit.{u} (1 / 2) Λ)
-    (hprotect : ∀ Λ : ℝ, 1 ≤ Λ →
-      (∀ D : OneStepIncoming.{u}, τ ≤ D.endTime →
-        Nonempty (TerminalCorePresentation.{u} D (1 / 2) Λ)) →
-      protectionInput.{u} τ (1 / 2) Λ) :
-    Nonempty (GlobalStepInputs.{u} p τ (1 / 2) d k DiscardedCutOpen) :=
-  nonempty_globalStepInputs_of_uniformEpsilon hτ (by norm_num) (by norm_num) huniform hneck
-    hcylinder hprotect (fun H i R hD =>
-      componentwiseConnectedSumStandardFactor_of_componentwiseStandardFactor
-        (H.event i).discarded.toClosedOrientedManifold (hmodels H i R hD))
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

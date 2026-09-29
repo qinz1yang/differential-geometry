@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Action.MetricFamily
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.LGeometry.Cost.SmoothAttainment
 
 noncomputable section
@@ -11,11 +11,11 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.PDE.RicciFlow.Perelman
 
-variable {M : Type*} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-  [IsManifold ThreeModel ∞ M]
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
+  [IsManifold (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) ∞ M]
 
 theorem reducedAction_eq_lLength {D : RealTimeInterval}
-    (S : SolutionOn (I := ThreeModel) (M := M) D) (T τ : ℝ) (γ : ℝ → M) :
+    (S : SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := M) D) (T τ : ℝ) (γ : ℝ → M) :
     reducedAction S.base.metric T τ γ = lLength S T γ 0 τ := by
   unfold reducedAction lLength lDensity lSpeedSq lVelocity
   congr 1
@@ -25,10 +25,10 @@ theorem reducedAction_eq_lLength {D : RealTimeInterval}
   rfl
 
 def isRegularizedAdmissible (γ : ℝ → M) : Prop :=
-  ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α ∧ squareRootReparametrization α = γ
+  ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) 1 α ∧ squareRootReparametrization α = γ
 
 theorem reducedLength_eq_lCost {D : RealTimeInterval}
-    (S : SolutionOn (I := ThreeModel) (M := M) D) (T τ : ℝ) (x y : M) :
+    (S : SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := M) D) (T τ : ℝ) (x y : M) :
     reducedLength S.base.metric T isRegularizedAdmissible x τ y = lCost S T x y τ := by
   unfold reducedLength lCost
   apply congrArg sInf
@@ -46,11 +46,11 @@ theorem reducedLength_eq_lCost {D : RealTimeInterval}
 variable [T2Space M] [CompactSpace M]
 
 theorem exists_reducedAction_minimizer_of_regular_interval {D : RealTimeInterval}
-    (S : SolutionOn (I := ThreeModel) (M := M) D) (hS : IsSolutionOn S)
+    (S : SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := M) D) (hS : IsSolutionOn S)
     (T τ : ℝ) (hτ : 0 < τ) (hreg : Icc (T - τ) T ⊆ D.regular)
-    (x y : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) ThreeModel 1 α₀)
+    (x y : M) (α₀ : ℝ → M) (hα₀ : ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) 1 α₀)
     (h₀ : α₀ 0 = x) (h₁ : α₀ (Real.sqrt τ) = y) :
-    ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) ThreeModel ∞ α ∧ α 0 = x ∧ α (Real.sqrt τ) = y ∧
+    ∃ α : ℝ → M, ContMDiff 𝓘(ℝ, ℝ) (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) ∞ α ∧ α 0 = x ∧ α (Real.sqrt τ) = y ∧
       isRegularizedAdmissible (squareRootReparametrization α) ∧
       reducedAction S.base.metric T τ (squareRootReparametrization α) =
         reducedLength S.base.metric T isRegularizedAdmissible x τ y := by

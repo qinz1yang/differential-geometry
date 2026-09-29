@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ReducedLengthRealization
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStepSatisfiability
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Realization
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.EmptyAdmissiblePaths
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
 
 set_option autoImplicit false
@@ -7,6 +7,7 @@ set_option autoImplicit false
 noncomputable section
 
 open Bundle Manifold Set Filter
+open DifferentialGeometry.Geometry.Curvature
 open scoped Manifold ContDiff
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
@@ -146,5 +147,82 @@ theorem reducedLength_le_reducedAction_of_bddBelow {H : ObservedHistory.{u}}
     (hb : BddBelow (reducedActionValueSet S u x)) :
     S.reducedLength u x ≤ reducedAction S.metricAt S.finish (S.finish - u) γ :=
   csInf_le hb ⟨γ, hγ, h0, hτ, rfl⟩
+
+
+def IsTowerPinnedJacobianStrip {H : ObservedHistory.{u}} (S : JacobianStrip H) : Prop :=
+  S.metricAt = H.stageMetric 0 ∧ S.poleTime = H.horizon
+
+noncomputable def towerJacobianStrip (H : ObservedHistory.{u}) (hpos : 0 < H.horizon)
+    (p : (H.stage 0).Carrier) : JacobianStrip H where
+  pole := p
+  start := 0
+  poleTime := H.horizon
+  start_nonneg := le_rfl
+  start_lt := hpos
+  poleTime_le_horizon := le_rfl
+  radius := 1
+  radius_pos := one_pos
+  metricAt := H.stageMetric 0
+  admissible := IsTowerAdmissiblePath p (H.horizon - 0)
+  regular := fun _ => False
+  regular_admissible := fun _ h => h.elim
+
+theorem isTowerPinnedJacobianStrip_towerJacobianStrip (H : ObservedHistory.{u})
+    (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :
+    IsTowerPinnedJacobianStrip (towerJacobianStrip H hpos p) :=
+  ⟨rfl, rfl⟩
+
+theorem exists_isTowerPinnedJacobianStrip (H : ObservedHistory.{u}) (hpos : 0 < H.horizon)
+    (p : (H.stage 0).Carrier) : ∃ S : JacobianStrip H, IsTowerPinnedJacobianStrip S :=
+  ⟨towerJacobianStrip H hpos p, isTowerPinnedJacobianStrip_towerJacobianStrip H hpos p⟩
+
+theorem not_isTowerPinnedJacobianStrip_of_poleTime_ne {H : ObservedHistory.{u}}
+    {S : JacobianStrip H} (h : S.poleTime ≠ H.horizon) : ¬ IsTowerPinnedJacobianStrip S :=
+  fun hS => h hS.2
+
+noncomputable def halfHorizonJacobianStrip (H : ObservedHistory.{u}) (hpos : 0 < H.horizon)
+    (p : (H.stage 0).Carrier) : JacobianStrip H where
+  pole := p
+  start := 0
+  poleTime := H.horizon / 2
+  start_nonneg := le_rfl
+  start_lt := by linarith
+  poleTime_le_horizon := by linarith
+  radius := 1
+  radius_pos := one_pos
+  metricAt := H.stageMetric 0
+  admissible := IsTowerAdmissiblePath p (H.horizon / 2 - 0)
+  regular := fun _ => False
+  regular_admissible := fun _ h => h.elim
+
+theorem not_isTowerPinnedJacobianStrip_halfHorizonJacobianStrip (H : ObservedHistory.{u})
+    (hpos : 0 < H.horizon) (p : (H.stage 0).Carrier) :
+    ¬ IsTowerPinnedJacobianStrip (halfHorizonJacobianStrip H hpos p) :=
+  not_isTowerPinnedJacobianStrip_of_poleTime_ne (by
+    simp only [halfHorizonJacobianStrip]
+    linarith)
+
+def isTowerPinnedJacobianInput : Prop :=
+  ∀ _d : OldData, ∃ modul : ℝ → ℝ,
+    (∀ v : ℝ, 0 < v → 0 < modul v) ∧ Monotone modul ∧
+    (∀ ε : ℝ, 0 < ε →
+        ∃ δ : ℝ, 0 < δ ∧ ∀ v : ℝ, 0 < v → v < δ → modul v < ε) ∧
+    ∀ (H : ObservedHistory.{u}) (S : JacobianStrip H) (s : ℝ),
+      IsTowerPinnedJacobianStrip S → s ∈ Ioo S.start S.poleTime →
+      S.radius ^ 2 < S.poleTime - s →
+      letI : MeasurableSpace (H.stage 0).Carrier := borel (H.stage 0).Carrier
+      ∀ (V : Set (H.stage 0).Carrier), MeasurableSet V →
+      V ⊆ regularMinimizingSet S.metricAt S.poleTime S.admissible S.regular S.pole
+        (S.poleTime - s) →
+      ∀ v : ℝ, 0 < v →
+        riemannianBallVolume (S.metricAt S.poleTime) S.pole S.radius < v * S.radius ^ 3 →
+          reducedVolume S.metricAt S.poleTime S.admissible S.pole (S.poleTime - s) V ≤
+            ENNReal.ofReal (modul v)
+
+theorem isTowerPinnedJacobianInput_of_isJacobianInput (h : isJacobianInput.{u}) :
+    isTowerPinnedJacobianInput.{u} := by
+  intro d
+  obtain ⟨modul, hpos, hmono, hsmall, hmain⟩ := h d
+  exact ⟨modul, hpos, hmono, hsmall, fun H S s _ hs hr => hmain H S s hs hr⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

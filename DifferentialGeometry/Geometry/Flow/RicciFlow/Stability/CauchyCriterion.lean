@@ -1,7 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.MetricStep
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityInputWitness
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WorldBridges
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.Local
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.Examples
 
 set_option autoImplicit false
 
@@ -80,19 +78,19 @@ theorem sSup_eq_of_const_on_nonempty {s : Set ℝ} (hs : s.Nonempty) {c : ℝ} :
 
 def localStabilityTimeZeroJetControl
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m →
     Tendsto (fun i : ℕ => metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric 0)
       (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i)))) atTop (𝓝 0)
 
 def localStabilityInitialWindowJetControl
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) (δ : ℝ) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m →
     Tendsto (fun i : ℕ => sSup {r : ℝ | ∃ u ∈ Set.Ioc (0 : ℝ) (min (v i) δ),
       metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
         (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
@@ -100,10 +98,10 @@ def localStabilityInitialWindowJetControl
 
 def localStabilityPositiveSlabJetControl
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) (δ : ℝ) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m →
     Tendsto (fun i : ℕ => sSup {r : ℝ | ∃ u ∈ Set.Icc (min (v i) δ) (v i),
       metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
         (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
@@ -111,20 +109,20 @@ def localStabilityPositiveSlabJetControl
 
 def localStabilitySlabDerivativeBound
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m →
     ∃ C : ℝ, 0 ≤ C ∧ ∀ i : ℕ, ∀ u ∈ Set.Icc (0 : ℝ) (v i),
       metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
         (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) ≤ C
 
 def localStabilityConclusion
     (L : ℕ → ℝ) (v : ℕ → ℝ) (hv : ∀ i, 0 < v i)
-    (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-    (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+    (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))) : Prop :=
-  ∀ A : Set ThreeSpace, IsCompact A → ∀ m : ℕ, 4 ≤ m →
+  ∀ A : Set (EuclideanSpace ℝ (Fin 3)), IsCompact A → ∀ m : ℕ, 4 ≤ m →
     Tendsto (fun i : ℕ => sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (v i),
       metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
       (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r})
@@ -135,13 +133,13 @@ def IsLocalStabilityVanishingInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
       (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
         (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, IsSolutionOn (ℓ i)) →
       (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
             ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
       localStabilityInitialJetHypothesis L v hv γ ℓ →
       localStabilityConclusion L v hv γ ℓ
@@ -150,13 +148,13 @@ def IsLocalStabilitySlabDerivativeBoundInput : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
       (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
         (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, IsSolutionOn (ℓ i)) →
       (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
             ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
       localStabilityInitialJetHypothesis L v hv γ ℓ →
       localStabilitySlabDerivativeBound L v hv γ ℓ
@@ -165,13 +163,13 @@ def IsLocalStabilityWindowSlabInput (δ : ℝ) : Prop :=
   ∀ (θ : ℝ), 0 < θ → θ < 1 → ∀ (K : ℝ), 0 < K →
     ∀ (L : ℕ → ℝ) (_hLpos : ∀ i, 0 < L i) (_hLtop : Tendsto L atTop atTop)
       (v : ℕ → ℝ) (hv : ∀ i, 0 < v i) (_hvθ : ∀ i, v i ≤ θ)
-      (γ : SmoothRiemannianMetric ThreeModel ThreeSpace)
-      (ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+      (γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)))
+      (ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
         (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))),
       (∀ i, IsSolutionOn (ℓ i)) →
       (∀ i, ∀ x : ↥(ModelBall (L i)),
         curvatureNormSq ((ℓ i).base.metric (v i)) x
-          (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
             ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) →
       localStabilityInitialJetHypothesis L v hv γ ℓ →
       localStabilityInitialWindowJetControl L v hv γ ℓ δ ∧
@@ -179,8 +177,8 @@ def IsLocalStabilityWindowSlabInput (δ : ℝ) : Prop :=
 
 theorem localStabilityTimeZeroJetControl_of_initialJetHypothesis
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
     (h : localStabilityInitialJetHypothesis L v hv γ ℓ) :
     localStabilityTimeZeroJetControl L v hv γ ℓ :=
@@ -188,11 +186,11 @@ theorem localStabilityTimeZeroJetControl_of_initialJetHypothesis
 
 theorem localStabilityIntervalSup_eq_max
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
     (hb : localStabilitySlabDerivativeBound L v hv γ ℓ) {δ : ℝ} (hδ : 0 < δ)
-    (A : Set ThreeSpace) (hA : IsCompact A) (m : ℕ) (hm : 4 ≤ m) (i : ℕ) :
+    (A : Set (EuclideanSpace ℝ (Fin 3))) (hA : IsCompact A) (m : ℕ) (hm : 4 ≤ m) (i : ℕ) :
     sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (v i),
         metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
           (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r} =
@@ -221,11 +219,11 @@ theorem localStabilityIntervalSup_eq_max
 
 theorem bddAbove_localStabilityIccValues
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
     (hb : localStabilitySlabDerivativeBound L v hv γ ℓ)
-    (A : Set ThreeSpace) (hA : IsCompact A) (m : ℕ) (hm : 4 ≤ m) (i : ℕ) :
+    (A : Set (EuclideanSpace ℝ (Fin 3))) (hA : IsCompact A) (m : ℕ) (hm : 4 ≤ m) (i : ℕ) :
     BddAbove {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (v i),
       metricDerivNormSupOn (Subtype.val ⁻¹' A) m ((ℓ i).base.metric u)
         (γ.restrictOpen (ModelBall (L i))) (γ.restrictOpen (ModelBall (L i))) = r} := by
@@ -236,8 +234,8 @@ theorem bddAbove_localStabilityIccValues
 
 theorem localStabilityConclusion_iff_of_slabDerivativeBound
     {L : ℕ → ℝ} {v : ℕ → ℝ} {hv : ∀ i, 0 < v i}
-    {γ : SmoothRiemannianMetric ThreeModel ThreeSpace}
-    {ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+    {γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3))}
+    {ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
       (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i)))}
     (hb : localStabilitySlabDerivativeBound L v hv γ ℓ) {δ : ℝ} (hδ : 0 < δ) :
     localStabilityConclusion L v hv γ ℓ ↔
@@ -326,7 +324,7 @@ theorem tendsto_shortEuclideanBallTime : Tendsto shortEuclideanBallTime atTop (�
   exact hbase.comp (tendsto_add_atTop_nat 1)
 
 noncomputable abbrev constantBallSolution (i : ℕ) :
-    SolutionOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+    SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (RealTimeInterval.closed (0 : ℝ) (flatBallTime i) (le_of_lt (flatBallTime_pos i))) :=
   SolutionOn.const (flatBallMetric (flatBallRadius i))
     (RealTimeInterval.closed (0 : ℝ) (flatBallTime i) (le_of_lt (flatBallTime_pos i)))
@@ -343,28 +341,28 @@ theorem isSolutionOn_constantBallSolution (i : ℕ) : IsSolutionOn (constantBall
 theorem curvatureNormSq_constantBallSolution_le (i : ℕ)
     (x : ↥(ModelBall (flatBallRadius i))) :
     curvatureNormSq ((constantBallSolution i).base.metric (flatBallTime i)) x
-      (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+      (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
         ((constantBallSolution i).base.metric (flatBallTime i)) x) ≤ (1 : ℝ) ^ 2 :=
   curvatureNormSq_flatBallSolution_le i x
 
-theorem metricDerivNormSupOn_constantBallSolution_eq_zero (i : ℕ) (A : Set ThreeSpace)
+theorem metricDerivNormSupOn_constantBallSolution_eq_zero (i : ℕ) (A : Set (EuclideanSpace ℝ (Fin 3)))
     (m : ℕ) (u : ℝ) :
-    metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+    metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (Subtype.val ⁻¹' A) m ((constantBallSolution i).base.metric u)
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) = 0 := by
   rw [constantBallSolution_base_metric]
-  exact metricDerivNormSupOn_self (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+  exact metricDerivNormSupOn_self (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
     (Subtype.val ⁻¹' A) m _ _
 
 theorem constantBall_metricDerivNormSupOn_tendsto_zero :
     localStabilityInitialJetHypothesis flatBallRadius flatBallTime flatBallTime_pos
-      (euclideanMetric (E := ThreeSpace)) constantBallSolution := by
+      (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution := by
   intro A _ p
-  have h : (fun i : ℕ => metricDerivNormSupOn (I := ThreeModel)
+  have h : (fun i : ℕ => metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
         (M := ↥(ModelBall (flatBallRadius i))) (Subtype.val ⁻¹' A) p
         ((constantBallSolution i).base.metric 0)
-        ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-        ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))))
+        ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+        ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))))
       = fun _ => (0 : ℝ) := by
     funext i
     simpa only [flatBallMetric] using metricDerivNormSupOn_constantBallSolution_eq_zero i A p 0
@@ -373,20 +371,20 @@ theorem constantBall_metricDerivNormSupOn_tendsto_zero :
 
 theorem constantBall_localStability_tendsto :
     localStabilityConclusion flatBallRadius flatBallTime flatBallTime_pos
-      (euclideanMetric (E := ThreeSpace)) constantBallSolution := by
+      (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution := by
   intro A _ m _
   have h : (fun i : ℕ => sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (flatBallTime i),
-        metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+        metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
           (Subtype.val ⁻¹' A) m ((constantBallSolution i).base.metric u)
-          ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-          ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))) = r})
+          ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+          ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))) = r})
       = fun _ => (0 : ℝ) := by
     funext i
     have hset : {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (flatBallTime i),
-        metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+        metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
           (Subtype.val ⁻¹' A) m ((constantBallSolution i).base.metric u)
-          ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-          ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))) = r}
+          ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+          ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))) = r}
         = {0} := by
       ext r
       constructor
@@ -406,19 +404,19 @@ theorem constantBall_localStability_tendsto :
 
 theorem constantBall_localStabilitySlabDerivativeBound :
     localStabilitySlabDerivativeBound flatBallRadius flatBallTime flatBallTime_pos
-      (euclideanMetric (E := ThreeSpace)) constantBallSolution := by
+      (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) constantBallSolution := by
   intro A _ m _
   refine ⟨1, by norm_num, fun i u _ => ?_⟩
-  have h0 : metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+  have h0 : metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (Subtype.val ⁻¹' A) m ((constantBallSolution i).base.metric u)
-      ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-      ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))) = 0 := by
+      ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+      ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))) = 0 := by
     simpa only [flatBallMetric] using metricDerivNormSupOn_constantBallSolution_eq_zero i A m u
   rw [h0]
   norm_num
 
 noncomputable abbrev shortScaledBallSolution (i : ℕ) :
-    SolutionOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+    SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (RealTimeInterval.closed (0 : ℝ) (shortEuclideanBallTime i)
         (le_of_lt (shortEuclideanBallTime_pos i))) :=
   SolutionOn.const (flatBallScaledMetric (flatBallRadius i) (flatBallRescale i)
@@ -444,31 +442,31 @@ theorem isSolutionOn_shortScaledBallSolution (i : ℕ) :
 theorem curvatureNormSq_shortScaledBallSolution_le (i : ℕ)
     (x : ↥(ModelBall (flatBallRadius i))) :
     curvatureNormSq ((shortScaledBallSolution i).base.metric (shortEuclideanBallTime i)) x
-      (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+      (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
         ((shortScaledBallSolution i).base.metric (shortEuclideanBallTime i)) x)
       ≤ (1 : ℝ) ^ 2 := by
-  have hz : Tensor0SBundle.normSq0S (I := ThreeModel)
+  have hz : Tensor0SBundle.normSq0S (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
       (M := ↥(ModelBall (flatBallRadius i)))
       (flatBallScaledMetric (flatBallRadius i) (flatBallRescale i) (flatBallRescale_pos i)) x 4
-      (0 : Tensor0SBundle.Tensor0SSpace 4 ThreeModel x) = 0 :=
+      (0 : Tensor0SBundle.Tensor0SSpace 4 (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) x) = 0 :=
     (Tensor0SBundle.normSq0S_eq_zero_iff _ _ _ _).mpr rfl
   rw [shortScaledBallSolution_base_metric, metricRm04At_flatBallScaledMetric_eq_zero,
     curvatureNormSq, hz]
   norm_num
 
-theorem metricDerivNormSupOn_shortScaledBallSolution_le (i : ℕ) (A : Set ThreeSpace)
+theorem metricDerivNormSupOn_shortScaledBallSolution_le (i : ℕ) (A : Set (EuclideanSpace ℝ (Fin 3)))
     (m : ℕ) (u : ℝ) :
-    metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+    metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (Subtype.val ⁻¹' A) m ((shortScaledBallSolution i).base.metric u)
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i))
-      ≤ |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ ThreeSpace) := by
+      ≤ |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) := by
   rw [shortScaledBallSolution_base_metric]
   exact metricDerivNormSupOn_flatBallScaledMetric_le (flatBallRadius i) (flatBallRescale i)
     (flatBallRescale_pos i) (Subtype.val ⁻¹' A) m
 
 theorem shortScaledBall_metricDerivNormSupOn_tendsto_zero :
     localStabilityInitialJetHypothesis flatBallRadius shortEuclideanBallTime
-      shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution := by
+      shortEuclideanBallTime_pos (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution := by
   intro A _ p
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
     tendsto_flatBallScaledFactor (fun i => metricDerivNormSupOn_nonneg _ _ _ _ _) (fun i => ?_)
@@ -476,7 +474,7 @@ theorem shortScaledBall_metricDerivNormSupOn_tendsto_zero :
 
 theorem shortScaledBall_localStability_tendsto :
     localStabilityConclusion flatBallRadius shortEuclideanBallTime shortEuclideanBallTime_pos
-      (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution := by
+      (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution := by
   intro A _ m _
   refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
     tendsto_flatBallScaledFactor (fun i => Real.sSup_nonneg (fun _ hr => by
@@ -488,7 +486,7 @@ theorem shortScaledBall_localStability_tendsto :
 
 theorem shortScaledBall_localStabilitySlabDerivativeBound :
     localStabilitySlabDerivativeBound flatBallRadius shortEuclideanBallTime
-      shortEuclideanBallTime_pos (euclideanMetric (E := ThreeSpace)) shortScaledBallSolution := by
+      shortEuclideanBallTime_pos (euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))) shortScaledBallSolution := by
   intro A _ m _
   refine ⟨2, by norm_num, fun i u _ => ?_⟩
   have habs : |flatBallRescale i - 1| ≤ 1 := by
@@ -496,12 +494,12 @@ theorem shortScaledBall_localStabilitySlabDerivativeBound :
       abs_of_pos (by positivity : (0 : ℝ) < 1 / ((i : ℝ) + 1))]
     rw [div_le_iff₀ (by positivity : (0 : ℝ) < (i : ℝ) + 1)]
     linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ (i : ℝ))]
-  have hsqrt : Real.sqrt (Module.finrank ℝ ThreeSpace) ≤ 2 := by
-    rw [finrank_threeSpace_eq_three, Real.sqrt_le_iff]
+  have hsqrt : Real.sqrt (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) ≤ 2 := by
+    rw [finrank_threeSpace, Real.sqrt_le_iff]
     exact ⟨by norm_num, by norm_num⟩
-  have hstep : |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ ThreeSpace) ≤ 2 :=
+  have hstep : |flatBallRescale i - 1| * Real.sqrt (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) ≤ 2 :=
     (mul_le_mul habs hsqrt (Real.sqrt_nonneg _) (by norm_num)).trans_eq (by norm_num)
-  have hbound : metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+  have hbound : metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (Subtype.val ⁻¹' A) m
       (flatBallScaledMetric (flatBallRadius i) (flatBallRescale i) (flatBallRescale_pos i))
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) ≤ 2 :=
@@ -511,28 +509,28 @@ theorem shortScaledBall_localStabilitySlabDerivativeBound :
   simpa only [flatBallMetric] using hbound
 
 theorem modelBall_halfBall_nonempty (L : ℝ) (hL : 0 < L) :
-    (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2) :
+    (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2) :
       Set ↥(ModelBall L)).Nonempty :=
-  ⟨⟨(0 : ThreeSpace), Metric.mem_ball_self (x := (0 : ThreeSpace)) (ε := L) hL⟩,
-    Metric.mem_closedBall_self (x := (0 : ThreeSpace)) (ε := (1 / 2 : ℝ)) (by norm_num)⟩
+  ⟨⟨(0 : (EuclideanSpace ℝ (Fin 3))), Metric.mem_ball_self (x := (0 : (EuclideanSpace ℝ (Fin 3)))) (ε := L) hL⟩,
+    Metric.mem_closedBall_self (x := (0 : (EuclideanSpace ℝ (Fin 3)))) (ε := (1 / 2 : ℝ)) (by norm_num)⟩
 
 theorem shortScaledBall_conclusion_sup_pos (i : ℕ) :
     0 < sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (shortEuclideanBallTime i),
-      metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-        (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+      metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+        (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
         ((shortScaledBallSolution i).base.metric u)
         (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) = r} := by
   obtain ⟨y, hy⟩ := modelBall_halfBall_nonempty (flatBallRadius i) (flatBallRadius_pos i)
   have hbdd : BddAbove {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (shortEuclideanBallTime i),
-      metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-        (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+      metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+        (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
         ((shortScaledBallSolution i).base.metric u)
         (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) = r} :=
     ⟨2, fun r hr => by
       obtain ⟨u, _hu, rfl⟩ := hr
       have := metricDerivNormSupOn_flatBallScaledMetric_le (flatBallRadius i)
         (flatBallRescale i) (flatBallRescale_pos i)
-        (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+        (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
       rw [shortScaledBallSolution_base_metric]
       refine this.trans ?_
       have habs : |flatBallRescale i - 1| ≤ 1 := by
@@ -540,23 +538,23 @@ theorem shortScaledBall_conclusion_sup_pos (i : ℕ) :
           abs_of_pos (by positivity : (0 : ℝ) < 1 / ((i : ℝ) + 1))]
         rw [div_le_iff₀ (by positivity : (0 : ℝ) < (i : ℝ) + 1)]
         linarith [(Nat.cast_nonneg i : (0 : ℝ) ≤ (i : ℝ))]
-      have hsqrt : Real.sqrt (Module.finrank ℝ ThreeSpace) ≤ 2 := by
-        rw [finrank_threeSpace_eq_three, Real.sqrt_le_iff]
+      have hsqrt : Real.sqrt (Module.finrank ℝ (EuclideanSpace ℝ (Fin 3))) ≤ 2 := by
+        rw [finrank_threeSpace, Real.sqrt_le_iff]
         exact ⟨by norm_num, by norm_num⟩
       exact (mul_le_mul habs hsqrt (Real.sqrt_nonneg _) (by norm_num)).trans_eq (by norm_num)⟩
-  have hmem : metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+  have hmem : metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
       ((shortScaledBallSolution i).base.metric 0)
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) ∈
       {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (shortEuclideanBallTime i),
-        metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-          (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+        metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+          (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
           ((shortScaledBallSolution i).base.metric u)
           (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) = r} :=
     ⟨0, ⟨le_rfl, (shortEuclideanBallTime_pos i).le⟩, rfl⟩
-  have hpos : 0 < metricDerivNormSupOn (I := ThreeModel)
+  have hpos : 0 < metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
       (M := ↥(ModelBall (flatBallRadius i)))
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
       ((shortScaledBallSolution i).base.metric 0)
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) := by
     rw [shortScaledBallSolution_base_metric]
@@ -564,7 +562,7 @@ theorem shortScaledBall_conclusion_sup_pos (i : ℕ) :
   exact lt_of_lt_of_le hpos (le_csSup hbdd hmem)
 
 noncomputable abbrev twoScaledBallSolution (i : ℕ) :
-    SolutionOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+    SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
       (RealTimeInterval.closed (0 : ℝ) (flatBallTime i) (le_of_lt (flatBallTime_pos i))) :=
   SolutionOn.const (flatBallScaledMetric (flatBallRadius i) 2 (by norm_num))
     (RealTimeInterval.closed (0 : ℝ) (flatBallTime i) (le_of_lt (flatBallTime_pos i)))
@@ -584,52 +582,52 @@ theorem isSolutionOn_twoScaledBallSolution (i : ℕ) : IsSolutionOn (twoScaledBa
 theorem curvatureNormSq_twoScaledBallSolution_le (i : ℕ)
     (x : ↥(ModelBall (flatBallRadius i))) :
     curvatureNormSq ((twoScaledBallSolution i).base.metric (flatBallTime i)) x
-      (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
+      (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
         ((twoScaledBallSolution i).base.metric (flatBallTime i)) x) ≤ (1 : ℝ) ^ 2 := by
-  have hz : Tensor0SBundle.normSq0S (I := ThreeModel)
+  have hz : Tensor0SBundle.normSq0S (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
       (M := ↥(ModelBall (flatBallRadius i)))
       (flatBallScaledMetric (flatBallRadius i) 2 (by norm_num)) x 4
-      (0 : Tensor0SBundle.Tensor0SSpace 4 ThreeModel x) = 0 :=
+      (0 : Tensor0SBundle.Tensor0SSpace 4 (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) x) = 0 :=
     (Tensor0SBundle.normSq0S_eq_zero_iff _ _ _ _).mpr rfl
   rw [twoScaledBallSolution_base_metric, metricRm04At_flatBallScaledMetric_eq_zero,
     curvatureNormSq, hz]
   norm_num
 
 theorem metricDerivNormSupOn_twoScaledBallSolution_eq_sqrt_three (i : ℕ) :
-    metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 0
+    metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 0
       ((twoScaledBallSolution i).base.metric 0)
-      ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-      ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
+      ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+      ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
       = Real.sqrt 3 := by
   obtain ⟨y, hy⟩ := modelBall_halfBall_nonempty (flatBallRadius i) (flatBallRadius_pos i)
-  have h : metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 0
+  have h : metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 0
       (flatBallScaledMetric (flatBallRadius i) 2 (by norm_num))
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) = Real.sqrt 3 := by
     rw [metricDerivNormSupOn_flatBallScaledMetric_eq (flatBallRadius i) 2 (by norm_num)
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) ⟨y, hy⟩ 0,
-      finrank_threeSpace_eq_three]
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) ⟨y, hy⟩ 0,
+      finrank_threeSpace]
     norm_num
   rw [twoScaledBallSolution_base_metric]
   simpa only [flatBallMetric] using h
 
 theorem metricDerivNormSupOn_twoScaledBallSolution_eq_sqrt_three_four (i : ℕ)
     (u : ℝ) :
-    metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+    metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
       ((twoScaledBallSolution i).base.metric u)
-      ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-      ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
+      ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+      ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
       = Real.sqrt 3 := by
   obtain ⟨y, hy⟩ := modelBall_halfBall_nonempty (flatBallRadius i) (flatBallRadius_pos i)
-  have h : metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+  have h : metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
       (flatBallScaledMetric (flatBallRadius i) 2 (by norm_num))
       (flatBallMetric (flatBallRadius i)) (flatBallMetric (flatBallRadius i)) = Real.sqrt 3 := by
     rw [metricDerivNormSupOn_flatBallScaledMetric_eq (flatBallRadius i) 2 (by norm_num)
-      (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) ⟨y, hy⟩ 4,
-      finrank_threeSpace_eq_three]
+      (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) ⟨y, hy⟩ 4,
+      finrank_threeSpace]
     norm_num
   rw [twoScaledBallSolution_base_metric]
   simpa only [flatBallMetric] using h
@@ -638,20 +636,20 @@ theorem exists_localStability_input_witness :
     ∃ (θ K : ℝ), 0 < θ ∧ θ < 1 ∧ 0 < K ∧
       ∃ L : ℕ → ℝ, (∀ i, 0 < L i) ∧ Tendsto L atTop atTop ∧
         ∃ (v : ℕ → ℝ) (hv : ∀ i, 0 < v i), (∀ i, v i ≤ θ) ∧
-          ∃ γ : SmoothRiemannianMetric ThreeModel ThreeSpace,
-            ∃ ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          ∃ γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)),
+            ∃ ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
               (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i))),
               (∀ i, IsSolutionOn (ℓ i)) ∧
               (∀ i, ∀ x : ↥(ModelBall (L i)),
                 curvatureNormSq ((ℓ i).base.metric (v i)) x
-                  (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+                  (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
                     ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) ∧
               localStabilityInitialJetHypothesis L v hv γ ℓ ∧
               localStabilitySlabDerivativeBound L v hv γ ℓ ∧
               localStabilityConclusion L v hv γ ℓ := by
   refine ⟨1 / 2, 1, by norm_num, by norm_num, by norm_num, flatBallRadius,
     flatBallRadius_pos, tendsto_flatBallRadius_atTop, flatBallTime, flatBallTime_pos,
-    flatBallTime_le_half, euclideanMetric (E := ThreeSpace), constantBallSolution,
+    flatBallTime_le_half, euclideanMetric (E := (EuclideanSpace ℝ (Fin 3))), constantBallSolution,
     ?_, ?_, ?_, ?_, ?_⟩
   · exact isSolutionOn_constantBallSolution
   · exact curvatureNormSq_constantBallSolution_le
@@ -664,13 +662,13 @@ theorem exists_localStability_vanishingDuration_witness :
       ∃ L : ℕ → ℝ, (∀ i, 0 < L i) ∧ Tendsto L atTop atTop ∧
         ∃ (v : ℕ → ℝ) (hv : ∀ i, 0 < v i),
           (∀ i, v i ≤ θ) ∧ Tendsto v atTop (𝓝 0) ∧
-          ∃ γ : SmoothRiemannianMetric ThreeModel ThreeSpace,
-            ∃ ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          ∃ γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)),
+            ∃ ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
               (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i))),
               (∀ i, IsSolutionOn (ℓ i)) ∧
               (∀ i, ∀ x : ↥(ModelBall (L i)),
                 curvatureNormSq ((ℓ i).base.metric (v i)) x
-                  (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+                  (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
                     ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) ∧
               localStabilityInitialJetHypothesis L v hv γ ℓ ∧
               localStabilitySlabDerivativeBound L v hv γ ℓ ∧
@@ -678,7 +676,7 @@ theorem exists_localStability_vanishingDuration_witness :
   refine ⟨1 / 2, 1, by norm_num, by norm_num, by norm_num, flatBallRadius,
     flatBallRadius_pos, tendsto_flatBallRadius_atTop, shortEuclideanBallTime,
     shortEuclideanBallTime_pos, shortEuclideanBallTime_le_half, tendsto_shortEuclideanBallTime,
-    euclideanMetric (E := ThreeSpace), shortScaledBallSolution, ?_, ?_, ?_, ?_, ?_⟩
+    euclideanMetric (E := (EuclideanSpace ℝ (Fin 3))), shortScaledBallSolution, ?_, ?_, ?_, ?_, ?_⟩
   · exact isSolutionOn_shortScaledBallSolution
   · exact curvatureNormSq_shortScaledBallSolution_le
   · exact shortScaledBall_metricDerivNormSupOn_tendsto_zero
@@ -689,32 +687,32 @@ theorem exists_localStability_hypotheses_not_conclusion :
     ∃ (θ K : ℝ), 0 < θ ∧ θ < 1 ∧ 0 < K ∧
       ∃ L : ℕ → ℝ, (∀ i, 0 < L i) ∧ Tendsto L atTop atTop ∧
         ∃ (v : ℕ → ℝ) (hv : ∀ i, 0 < v i), (∀ i, v i ≤ θ) ∧
-          ∃ γ : SmoothRiemannianMetric ThreeModel ThreeSpace,
-            ∃ ℓ : (i : ℕ) → SolutionOn (I := ThreeModel) (M := ↥(ModelBall (L i)))
+          ∃ γ : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) (EuclideanSpace ℝ (Fin 3)),
+            ∃ ℓ : (i : ℕ) → SolutionOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
               (RealTimeInterval.closed (0 : ℝ) (v i) (le_of_lt (hv i))),
               (∀ i, IsSolutionOn (ℓ i)) ∧
               (∀ i, ∀ x : ↥(ModelBall (L i)),
                 curvatureNormSq ((ℓ i).base.metric (v i)) x
-                  (metricRm04At (I := ThreeModel) (M := ↥(ModelBall (L i)))
+                  (metricRm04At (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (L i)))
                     ((ℓ i).base.metric (v i)) x) ≤ K ^ 2) ∧
               ¬ localStabilityInitialJetHypothesis L v hv γ ℓ ∧
               ¬ localStabilityConclusion L v hv γ ℓ := by
   refine ⟨1 / 2, 1, by norm_num, by norm_num, by norm_num, flatBallRadius,
     flatBallRadius_pos, tendsto_flatBallRadius_atTop, flatBallTime, flatBallTime_pos,
-    flatBallTime_le_half, euclideanMetric (E := ThreeSpace), twoScaledBallSolution,
+    flatBallTime_le_half, euclideanMetric (E := (EuclideanSpace ℝ (Fin 3))), twoScaledBallSolution,
     ?_, ?_, ?_, ?_⟩
   · exact isSolutionOn_twoScaledBallSolution
   · exact curvatureNormSq_twoScaledBallSolution_le
   · intro hjet
-    have hA : IsCompact (Metric.closedBall (0 : ThreeSpace) (1 / 2)) :=
-      isCompact_closedBall (0 : ThreeSpace) (1 / 2)
-    have htend := hjet (Metric.closedBall (0 : ThreeSpace) (1 / 2)) hA 0
-    have hval : (fun i : ℕ => metricDerivNormSupOn (I := ThreeModel)
+    have hA : IsCompact (Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) :=
+      isCompact_closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)
+    have htend := hjet (Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) hA 0
+    have hval : (fun i : ℕ => metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))))
         (M := ↥(ModelBall (flatBallRadius i)))
-        (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 0
+        (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 0
         ((twoScaledBallSolution i).base.metric 0)
-        ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-        ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))))
+        ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+        ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))))
         = fun _ : ℕ => Real.sqrt 3 := by
       funext i
       exact metricDerivNormSupOn_twoScaledBallSolution_eq_sqrt_three i
@@ -722,23 +720,23 @@ theorem exists_localStability_hypotheses_not_conclusion :
     exact absurd (tendsto_nhds_unique tendsto_const_nhds htend)
       (Real.sqrt_pos.mpr (show (0 : ℝ) < 3 by norm_num)).ne'
   · intro hcon
-    have hA : IsCompact (Metric.closedBall (0 : ThreeSpace) (1 / 2)) :=
-      isCompact_closedBall (0 : ThreeSpace) (1 / 2)
-    have htend := hcon (Metric.closedBall (0 : ThreeSpace) (1 / 2)) hA 4 le_rfl
+    have hA : IsCompact (Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) :=
+      isCompact_closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)
+    have htend := hcon (Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) hA 4 le_rfl
     have hval : (fun i : ℕ => sSup {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (flatBallTime i),
-        metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-          (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+        metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+          (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
           ((twoScaledBallSolution i).base.metric u)
-          ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-          ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))) = r})
+          ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+          ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))) = r})
         = fun _ : ℕ => Real.sqrt 3 := by
       funext i
       have hset : {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (flatBallTime i),
-          metricDerivNormSupOn (I := ThreeModel) (M := ↥(ModelBall (flatBallRadius i)))
-            (Subtype.val ⁻¹' Metric.closedBall (0 : ThreeSpace) (1 / 2)) 4
+          metricDerivNormSupOn (I := (𝓘(ℝ, EuclideanSpace ℝ (Fin 3)))) (M := ↥(ModelBall (flatBallRadius i)))
+            (Subtype.val ⁻¹' Metric.closedBall (0 : (EuclideanSpace ℝ (Fin 3))) (1 / 2)) 4
             ((twoScaledBallSolution i).base.metric u)
-            ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i)))
-            ((euclideanMetric (E := ThreeSpace)).restrictOpen (ModelBall (flatBallRadius i))) = r} =
+            ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i)))
+            ((euclideanMetric (E := (EuclideanSpace ℝ (Fin 3)))).restrictOpen (ModelBall (flatBallRadius i))) = r} =
           {r : ℝ | ∃ u ∈ Set.Icc (0 : ℝ) (flatBallTime i), Real.sqrt 3 = r} := by
         ext r
         constructor

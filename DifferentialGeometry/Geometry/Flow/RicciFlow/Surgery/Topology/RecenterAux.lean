@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Convergence.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Neck.Recentering
 import DifferentialGeometry.Topology.Manifold.ImmersionDifferential
@@ -70,15 +71,6 @@ theorem isCompact_neckClosedTest (δ : ℝ) : IsCompact (neckClosedTest δ) := b
       constructor <;> linarith [hq.1, hq.2]
   rw [himg]
   exact isCompact_univ.prod isCompact_Icc
-
-theorem metricDerivNormSupOn_nonneg {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E]
-    {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
-    (K : Set M) (p : ℕ) (gk gInf gRef : SmoothRiemannianMetric I M) :
-    0 ≤ metricDerivNormSupOn K p gk gInf gRef := by
-  rw [metricDerivNormSupOn]
-  exact Real.sSup_nonneg (by rintro r ⟨a, ha, x, hx, rfl⟩; rw [metricDerivNorm]; positivity)
 
 section SupTransport
 

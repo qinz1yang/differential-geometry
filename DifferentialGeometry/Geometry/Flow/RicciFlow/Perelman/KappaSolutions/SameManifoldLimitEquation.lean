@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Metric.Euclidean
 import DifferentialGeometry.Geometry.Metric.Scaling
 import DifferentialGeometry.Geometry.Curvature.Metric.Scaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.Stationary
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.LocalStabilityInputWitness
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Stability.Examples
 import Mathlib.Analysis.Calculus.UniformLimitsDeriv
 
 set_option autoImplicit false
