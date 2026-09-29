@@ -574,6 +574,7 @@ private lemma slice_indicator_sum_eq_dim {n : ℕ} (K : Fin 2 → Fin n) (k : Fi
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma slotEndo_fiberComponent_slotk_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)

@@ -99,6 +99,7 @@ private noncomputable def negGInvDiffSlotApplied
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
   [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private theorem slotInsertEndoFib_neg_left (s : ℕ) (k : Fin s) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) :
     slotInsertEndoFib (I := I) (M := M) s k x (-Λ) =

@@ -31,6 +31,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma fiberComponent_slotInsertEndoFib_eq_two
     (g₀ : SmoothRiemannianMetric I M) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
@@ -128,6 +129,7 @@ lemma riemannianFiberNormSq_slotInsertEndoFib_le_card_mul_two
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma fiberComponent_slotInsertEndoFib_eq
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ) (k : Fin s)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
@@ -162,6 +164,7 @@ private lemma fiberComponent_slotInsertEndoFib_eq
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma sum_compSq_slotInsertEndoFib_eq_normSq
     (g₀ : SmoothRiemannianMetric I M) (x : M) (s : ℕ) (k : Fin s)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)

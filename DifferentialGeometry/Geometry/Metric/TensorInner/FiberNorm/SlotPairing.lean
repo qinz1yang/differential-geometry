@@ -48,10 +48,10 @@ theorem _root_.DifferentialGeometry.TensorMetric.multilinear_slot_pairing_le
           Wm (Function.update z j (e a)) ^ 2 := by
   classical
   by_cases hdim : Module.finrank ℝ E = 0
-  · letI : IsEmpty (Fin (Module.finrank ℝ E)) :=
+  · let : IsEmpty (Fin (Module.finrank ℝ E)) :=
       ⟨fun i => Fin.elim0 (Fin.cast hdim i)⟩
     simp
-  · letI : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
+  · let : NeZero (Module.finrank ℝ E) := ⟨hdim⟩
     set φ : TangentSpace I x →L[ℝ] ℝ :=
       (Wm.toContinuousLinearMap z j).comp
         (ContinuousLinearMap.id ℝ (TangentSpace I x)) with hφ_def

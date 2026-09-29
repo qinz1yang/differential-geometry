@@ -1,5 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.TensorInner.Cotangent.InverseMetric
 import DifferentialGeometry.Geometry.Metric.Perturbation.Pointwise
+import Mathlib.Geometry.Manifold.IsManifold.InteriorBoundary
 
 open DifferentialGeometry.SmoothRiemannianMetric
   (abs_metric_inner_le_sqrt_metric_quadratic)

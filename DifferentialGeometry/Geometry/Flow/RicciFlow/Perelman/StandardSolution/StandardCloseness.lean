@@ -392,7 +392,7 @@ theorem StandardSolution.exists_strict_oriented_witness
       (modelRadius δ + 1) ⊆ (standardCapWindow D : Set ThreeSpace) :=
     image_subset_standardCapWindow hT₀mem hδ hδ1 W₄ hΛ1 hΛ hR1 hx hD
   refine ⟨W, W₄.mono_of_regular_strict_of_lt hP hlt hδ1 hreg4, hU, ?_, ?_⟩
-  · letI : PreconnectedSpace (standardCapWindow D) :=
+  · let : PreconnectedSpace (standardCapWindow D) :=
       Subtype.preconnectedSpace (isPreconnected_standardCapWindow D)
     intro o
     exact W.exists_toRestrictOpen_orientation (x := x) hU oE oN hO o

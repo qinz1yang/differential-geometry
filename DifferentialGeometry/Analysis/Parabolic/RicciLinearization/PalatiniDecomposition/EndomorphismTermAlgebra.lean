@@ -882,6 +882,7 @@ private lemma palatiniWEndo_sub_eq (g₀ g₁ g_bg : SmoothRiemannianMetric I M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 lemma palatiniCotangentToDual_slotInsertEndoFib (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :

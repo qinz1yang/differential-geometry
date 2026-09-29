@@ -303,6 +303,7 @@ private lemma slotInsert_sqsum_kroneckerDelta_eq_dim_mul_sqsum (n : ℕ) (f : Fi
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma slotEndo_fiberComponent_endo_eq (g₀ : SmoothRiemannianMetric I M) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
     {n : ℕ} (e : Fin n → TangentSpace I x)

@@ -15,6 +15,10 @@ open DifferentialGeometry (SmoothRiemannianMetric)
 
 universe u
 
+private local instance :
+    Fact (Module.finrank ℝ (EuclideanSpace ℝ (Fin 4)) = 3 + 1) :=
+  ⟨finrank_euclideanSpace_fin⟩
+
 structure RoundCovering (Z : Type u) [TopologicalSpace Z] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) Z]
     [IsManifold (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) ∞ Z] (k : SmoothRiemannianMetric (𝓘(ℝ, EuclideanSpace ℝ (Fin 3))) Z) where
   cover : C((Metric.sphere (0 : EuclideanSpace ℝ (Fin (3 + 1))) 1), Z)

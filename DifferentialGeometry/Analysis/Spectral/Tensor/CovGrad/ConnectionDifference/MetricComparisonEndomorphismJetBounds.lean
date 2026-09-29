@@ -392,6 +392,7 @@ private lemma recovery_comp_fullRaisedEndo (g₀ g₁ : SmoothRiemannianMetric I
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma slotInsertEndoFib_comp_eq (s : ℕ) (x : M)
     (A B : TangentSpace I x →L[ℝ] TangentSpace I x) :
     ContinuousLinearMap.comp (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x A)
@@ -401,6 +402,7 @@ private lemma slotInsertEndoFib_comp_eq (s : ℕ) (x : M)
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma slotInsertEndoFib_id_eq' (s : ℕ) (x : M) :
     slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
         (ContinuousLinearMap.id ℝ (TangentSpace I x)) =
@@ -687,6 +689,7 @@ private lemma cotangentToDual_cometricRaiseSlot0_eq (g₀ : SmoothRiemannianMetr
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
     [T2Space M] [SigmaCompactSpace M] in
+omit [FiniteDimensional ℝ E] in
 private lemma cotangentToDual_slotInsertEndoFib (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x) (om : Tensor0SSpace 1 I x)
     (w : TangentSpace I x) :

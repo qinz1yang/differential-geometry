@@ -30,16 +30,14 @@ theorem exists_smoothTwoSidedCollar_of_compact_regularLevel
       (MorseModel m) _ (MorseModel m) _ 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel m)
       (LevelSetSpace f a) _ C (LevelSetSpace f a) _ D ∞ :=
     levelAtlasDiffeomorph 𝓘(ℝ, MorseModel (m + 1)) hf.contMDiff hr
-  have hd (x : LevelSetSpace f a) : d x = x := by
-    rfl
   let dInv : @Diffeomorph ℝ _ (MorseModel m) _ _ (MorseModel m) _ _
       (MorseModel m) _ (MorseModel m) _ 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel m)
       (LevelSetSpace f a) _ D (LevelSetSpace f a) _ C ∞ :=
     @Diffeomorph.symm ℝ _ (MorseModel m) _ _ (MorseModel m) _ _
       (MorseModel m) _ (MorseModel m) _ 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel m)
       (LevelSetSpace f a) _ C (LevelSetSpace f a) _ D ∞ d
-  have hdi (x : LevelSetSpace f a) : dInv x = x :=
-    (d.toEquiv.symm_apply_eq).2 (hd x).symm
+  have hdi (x : LevelSetSpace f a) : dInv x = x := by
+    rfl
   let cD := @SmoothTwoSidedCollar.reparametrize
     (MorseModel m) _ _ (MorseModel m) _
     (MorseModel (m + 1)) _ _ (MorseModel (m + 1)) _
