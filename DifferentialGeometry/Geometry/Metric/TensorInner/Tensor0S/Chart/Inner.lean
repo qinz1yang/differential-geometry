@@ -16,8 +16,6 @@ import Mathlib.Analysis.Calculus.ContDiff.Operations
 import Mathlib.Analysis.Normed.Operator.NormedSpace
 import Mathlib.Analysis.Normed.Module.Multilinear.Curry
 import Mathlib.Geometry.Manifold.ContMDiff.NormedSpace
-import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-open DifferentialGeometry.Geometry.Operator
 
 
 noncomputable section

@@ -5442,6 +5442,8 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.TensorReference
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.OpenEmbedding
 import DifferentialGeometry.Geometry.Metric.Distance.SublevelMinimizer
+import DifferentialGeometry.Geometry.Metric.Duality
+import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Parseval
 import DifferentialGeometry.Geometry.Neck.CapSeparation
 import DifferentialGeometry.Geometry.Neck.CompactCapClassification
 import DifferentialGeometry.Geometry.Neck.CompactCapCover
@@ -5450,6 +5452,7 @@ import DifferentialGeometry.Geometry.Neck.SpatialIsometry
 import DifferentialGeometry.Geometry.Neck.SpatialMinimizer
 import DifferentialGeometry.Geometry.Neck.StaticQuarterBand
 import DifferentialGeometry.Geometry.Neck.StaticSlabCapture
+import DifferentialGeometry.Tensor.RSTensor.SlotSubstitution
 import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
 import DifferentialGeometry.Topology.Connected.ClosedAttachments

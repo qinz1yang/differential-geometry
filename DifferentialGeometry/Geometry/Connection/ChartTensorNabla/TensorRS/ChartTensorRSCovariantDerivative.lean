@@ -2,6 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.ChartT
 import DifferentialGeometry.Geometry.Connection.LeviCivita.Chart.Local
 import DifferentialGeometry.Geometry.Connection.ChartTensorNabla.Tensor0S.Tensor0SChartChristoffel
 import DifferentialGeometry.Tensor.RSTensor.Defs
+import DifferentialGeometry.Tensor.RSTensor.SlotSubstitution
 
 
 noncomputable section
@@ -169,57 +170,6 @@ lemma tensorRSIntrinsicChartCLM_smul_section (r s : ℕ) (α : M)
   rw [ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply,
     ContinuousLinearMap.comp_apply, ContinuousLinearMap.comp_apply]
   rw [smul_apply, map_smul]
-
-def tangentSlotCLM (n : ℕ) {b : M}
-    (k : Fin n) (Φ : TangentSpace I b →L[ℝ] TangentSpace I b)
-    (i : Fin n) : TangentSpace I b →L[ℝ] TangentSpace I b :=
-  if i = k then Φ else ContinuousLinearMap.id ℝ (TangentSpace I b)
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
-    [T2Space M] in
-lemma tangentSlotCLM_self (n : ℕ) {b : M}
-    (k : Fin n) (Φ : TangentSpace I b →L[ℝ] TangentSpace I b) :
-    tangentSlotCLM (I := I) n k Φ k = Φ := by
-  unfold tangentSlotCLM
-  simp
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [IsManifold I ∞ M] [SigmaCompactSpace M]
-    [T2Space M] in
-lemma tangentSlotCLM_other (n : ℕ) {b : M}
-    (k : Fin n) (Φ : TangentSpace I b →L[ℝ] TangentSpace I b)
-    {i : Fin n} (h : i ≠ k) :
-    tangentSlotCLM (I := I) n k Φ i = ContinuousLinearMap.id ℝ (TangentSpace I b) := by
-  unfold tangentSlotCLM
-  simp [h]
-
-noncomputable def tangentCompCLMLE (n : ℕ) (b : M)
-    (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b)) :
-    ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
-      ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ :=
-  ContinuousMultilinearMap.compContinuousLinearMapL
-    (𝕜 := ℝ) (E := fun _ : Fin n => E) (F := ℝ)
-    (show Fin n → (E →L[ℝ] E) from Φ)
-
-noncomputable def tensorSlotSubstCLM (n : ℕ) (b : M)
-    (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b)) :
-    Tensor0SSpace n I b →L[ℝ] Tensor0SSpace n I b :=
-  ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b).symm
-      : ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ →L[ℝ]
-          Tensor0SSpace n I b).comp
-    ((tangentCompCLMLE (I := I) (M := M) n b Φ).comp
-      ((tensor0SSpaceContinuousLinearEquiv (I := I) (M := M) n b)
-          : Tensor0SSpace n I b →L[ℝ]
-            ContinuousMultilinearMap ℝ (fun _ : Fin n => E) ℝ))
-
-omit [FiniteDimensional ℝ E] [CompleteSpace E] [SigmaCompactSpace M] [T2Space M] in
-lemma tensorSlotSubstCLM_apply (n : ℕ) (b : M)
-    (Φ : Fin n → (TangentSpace I b →L[ℝ] TangentSpace I b))
-    (τ : Tensor0SSpace n I b) (m : Fin n → TangentSpace I b) :
-    Tensor0SSpace.eval (tensorSlotSubstCLM (I := I) n b Φ τ) m =
-      Tensor0SSpace.eval τ (fun i => Φ i (m i)) := by
-  classical
-  unfold tensorSlotSubstCLM tangentCompCLMLE
-  rfl
 
 noncomputable def chartTensorRSInputSlotCorrection (r s : ℕ)
     (g : SmoothRiemannianMetric I M) (α : M)
