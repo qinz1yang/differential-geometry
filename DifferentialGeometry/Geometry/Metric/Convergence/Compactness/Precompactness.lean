@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Alge
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.TimeRegularity
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.GoodFrame
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Bounds
-import DifferentialGeometry.Analysis.Spectral.Tensor.ChartTensor.InnerBounds.InnerLowerBound
 import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Iterated
 import DifferentialGeometry.Geometry.Metric.TensorInner.Tensor0S.Coordinates.MetricComparison
 import DifferentialGeometry.Geometry.Coordinates.Calculus.FixedBaseDerivative
@@ -1279,14 +1278,8 @@ theorem chartGram_pou_le
             (extChartAt I α y)‖ ≤ C := by
     intro α
     exact chartGram_of_orders (I := I) gRef gSeq α
-      (DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_isCompact
-        (I := I) (M := M) α)
-      (by
-        intro y hy
-        have hy_base :=
-          DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
-            (I := I) (M := M) α hy
-        rwa [trivializationAt_baseSet_eq_chartAt_source (I := I)] at hy_base)
+      (isClosed_tsupport _).isCompact
+      (chartAtlasPOU_isSubordinate I M α)
       r B (fun k q hq y _hy => hbdd k q hq y (Set.mem_univ y))
   choose Cα hCα hbound using hper
   let C : Real := ∑ α ∈ chartAtlasPOUFinset (I := I) (M := M), Cα α
@@ -1388,9 +1381,9 @@ theorem chartGram_pou_d2
   have hCE_nn : 0 ≤ C_E := Finset.sum_nonneg fun a _ => norm_nonneg _
   refine ⟨C * (C_E * C_E), mul_nonneg hC_nn (mul_nonneg hCE_nn hCE_nn), ?_⟩
   intro α hα k y hy c m i j
-  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
-      (I := I) (M := M) α hy
+  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
+    exact chartAtlasPOU_isSubordinate I M α hy
   have hy_source : y ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I),
       ← trivializationAt_baseSet_eq_chartAt_source (I := I)]
@@ -1450,9 +1443,9 @@ theorem chartGram_pou_d3
   refine ⟨C * (C_E * (C_E * C_E)),
     mul_nonneg hC_nn (mul_nonneg hCE_nn (mul_nonneg hCE_nn hCE_nn)), ?_⟩
   intro α hα k y hy d c m i j
-  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
-    DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
-      (I := I) (M := M) α hy
+  have hy_base : y ∈ (trivializationAt E (TangentSpace I) α).baseSet := by
+    rw [trivializationAt_baseSet_eq_chartAt_source (I := I)]
+    exact chartAtlasPOU_isSubordinate I M α hy
   have hy_source : y ∈ (extChartAt I α).source := by
     rw [extChartAt_source_eq_chartAt_source (I := I),
       ← trivializationAt_baseSet_eq_chartAt_source (I := I)]

@@ -66,7 +66,7 @@ theorem chartRHS_pou_lip
           ∀ i j : Fin (Module.finrank ℝ E),
             |chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α i j (extChartAt I α b) -
               chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j (extChartAt I α b)| ≤
-                C * chartMetricJet2DiffSup (I := I) (M := M)
+                C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
                   (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
   classical
   obtain ⟨Cric, hCric_pos, hCric⟩ :=
@@ -99,16 +99,16 @@ theorem chartRHS_pou_lip
             chartRicciTensor (I := I) (gSeq k₂) α i j (extChartAt I α b))| +
         |chartLieDeTurckComp (I := I) (gSeq k₁) gBase α i j (extChartAt I α b) -
           chartLieDeTurckComp (I := I) (gSeq k₂) gBase α i j (extChartAt I α b)|
-      ≤ 2 * (Cric * chartMetricJet2DiffSup (I := I) (M := M)
+      ≤ 2 * (Cric * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b)) +
-        Clie * chartMetricJet2DiffSup (I := I) (M := M)
+        Clie * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
         apply add_le_add
         · rw [abs_mul, show |(-2 : ℝ)| = 2 by norm_num]
           have htwo : (0 : ℝ) ≤ 2 := by norm_num
           exact mul_le_mul_of_nonneg_left hric htwo
         · exact hlie
-    _ = (2 * Cric + Clie) * chartMetricJet2DiffSup (I := I) (M := M)
+    _ = (2 * Cric + Clie) * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by ring
 
 omit [NeZero (Module.finrank ℝ E)] in

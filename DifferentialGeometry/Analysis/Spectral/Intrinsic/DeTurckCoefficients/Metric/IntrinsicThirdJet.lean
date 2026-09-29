@@ -342,7 +342,7 @@ theorem metricJet2_le_gram (α : M) :
     ∃ C : ℝ, 0 ≤ C ∧
       ∀ (g₁ g₂ : SmoothRiemannianMetric I M) {y : E},
         y ∈ interior (extChartAt I α).target →
-        chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y ≤
           C * chartGramJetDiffSeminormSum (I := I) (M := M) 2 g₁ g₂ α
             (interior (extChartAt I α).target) y := by
   classical
@@ -364,10 +364,10 @@ theorem metricJet2_le_gram (α : M) :
   have hJ : 0 ≤ J := by
     rw [hJ_def]
     exact chartGramJetDiffSeminormSum_nonneg (I := I) (M := M) 2 g₁ g₂ α _ y
-  have h0 : chartGramDiffSup (I := I) (M := M) g₁ g₂ α
+  have h0 : DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α
       ((extChartAt I α).symm y) ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), (1 : ℝ)) * J := by
-    unfold chartGramDiffSup matrixEntryL1
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum Matrix.entrywiseL1
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
           |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α ((extChartAt I α).symm y) -
@@ -378,10 +378,10 @@ theorem metricJet2_le_gram (α : M) :
             gram0_le (I := I) (M := M) g₁ g₂ α 2 hy p.1 p.2
       _ = (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
           (1 : ℝ)) * J := by simp
-  have h1 : chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y ≤
+  have h1 : DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) g₁ g₂ α y ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E), B) * J := by
-    unfold chartGramPartialDiffSup gramPartialDiffEntry
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartialAbsDiffEntry
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E),
@@ -396,10 +396,10 @@ theorem metricJet2_le_gram (α : M) :
       _ = (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E), B) * J := by
         simp only [B, Finset.sum_mul]
-  have h2 : chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+  have h2 : DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) g₁ g₂ α y ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), B ^ 2) * J := by
-    unfold chartGramPartial2DiffSup gramPartial2DiffEntry
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartial2AbsDiffEntry
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -417,11 +417,11 @@ theorem metricJet2_le_gram (α : M) :
       _ = (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), B ^ 2) * J := by
         rw [Finset.sum_mul]
-  unfold chartMetricJet2DiffSup chartMetricJet1DiffSup
+  unfold DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum
   calc
-    chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) +
-          chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y +
-        chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y
+    DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) +
+          DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) g₁ g₂ α y +
+        DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) g₁ g₂ α y
         ≤ ((∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), (1 : ℝ)) * J +
             (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
               Fin (Module.finrank ℝ E), B) * J) +
@@ -465,10 +465,10 @@ theorem metricJet3_le_gram (α : M) :
   have hJ : 0 ≤ J := by
     rw [hJ_def]
     exact chartGramJetDiffSeminormSum_nonneg (I := I) (M := M) 3 g₁ g₂ α _ y
-  have h0 : chartGramDiffSup (I := I) (M := M) g₁ g₂ α
+  have h0 : DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α
       ((extChartAt I α).symm y) ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), (1 : ℝ)) * J := by
-    unfold chartGramDiffSup matrixEntryL1
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum Matrix.entrywiseL1
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
           |(DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α ((extChartAt I α).symm y) -
@@ -479,10 +479,10 @@ theorem metricJet3_le_gram (α : M) :
             gram0_le (I := I) (M := M) g₁ g₂ α 3 hy p.1 p.2
       _ = (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
           (1 : ℝ)) * J := by simp
-  have h1 : chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y ≤
+  have h1 : DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) g₁ g₂ α y ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E), B) * J := by
-    unfold chartGramPartialDiffSup gramPartialDiffEntry
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartialAbsDiffEntry
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E),
@@ -497,10 +497,10 @@ theorem metricJet3_le_gram (α : M) :
       _ = (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E), B) * J := by
         simp only [B, Finset.sum_mul]
-  have h2 : chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+  have h2 : DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) g₁ g₂ α y ≤
       (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
         Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), B ^ 2) * J := by
-    unfold chartGramPartial2DiffSup gramPartial2DiffEntry
+    unfold DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum DifferentialGeometry.Tensor.Coordinates.chartGramPartial2AbsDiffEntry
     calc
       (∑ p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E),
@@ -545,11 +545,11 @@ theorem metricJet3_le_gram (α : M) :
           Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
           Fin (Module.finrank ℝ E), B ^ 3) * J := by
         rw [Finset.sum_mul]
-  unfold metricJet3DiffSup chartMetricJet2DiffSup chartMetricJet1DiffSup
+  unfold metricJet3DiffSup DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum
   calc
-    chartGramDiffSup (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) +
-          chartGramPartialDiffSup (I := I) (M := M) g₁ g₂ α y +
-        chartGramPartial2DiffSup (I := I) (M := M) g₁ g₂ α y +
+    DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α ((extChartAt I α).symm y) +
+          DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum (I := I) (M := M) g₁ g₂ α y +
+        DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum (I := I) (M := M) g₁ g₂ α y +
       gramD3DiffSup (I := I) (M := M) g₁ g₂ α y
         ≤ ((∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E), (1 : ℝ)) * J +
             (∑ _p : Fin (Module.finrank ℝ E) × Fin (Module.finrank ℝ E) ×
@@ -646,7 +646,7 @@ theorem metricJet2_intrinsic
       ∀ (g₁ g₂ : SmoothRiemannianMetric I M) {b : M},
         b ∈ tsupport (fun x : M =>
           ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x) →
-        chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α (extChartAt I α b) ≤
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α (extChartAt I α b) ≤
           C * ∑ i ∈ Finset.range 3,
             Real.sqrt (riemannianFiberNormSq (I := I) (M := M) gBase 0 (2 + i) b
               ((iteratedCovGrad (I := I) gBase 0 2 i
@@ -694,7 +694,7 @@ theorem metricJet2_intrinsic
   have hfib' := hfib D hyK
   rw [hb_pre] at hfib'
   calc
-    chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α (extChartAt I α b)
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α (extChartAt I α b)
         ≤ Cmetric * chartGramJetDiffSeminormSum (I := I) (M := M) 2 g₁ g₂ α
             (interior (extChartAt I α).target) (extChartAt I α b) := hmetric'
     _ ≤ Cmetric * (Npair *

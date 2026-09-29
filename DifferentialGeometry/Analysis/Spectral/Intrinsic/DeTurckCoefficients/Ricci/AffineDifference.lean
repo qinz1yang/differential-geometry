@@ -340,16 +340,16 @@ theorem chartRicciSecondOrderTerm_sub_abs_le
     (hCdiff : ∀ m i j k : Fin (Module.finrank ℝ E),
       |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α i j k) y -
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α i j k) y| ≤
-        Cdiff * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y)
+        Cdiff * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y)
     (i k : Fin (Module.finrank ℝ E)) :
     |chartRicciSecondOrderTerm (I := I) g₁ α i k y -
         chartRicciSecondOrderTerm (I := I) g₂ α i k y| ≤
       2 * (Module.finrank ℝ E : ℝ) * Cdiff *
-        chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
   rw [chartRicciSecondOrderTerm, chartRicciSecondOrderTerm, ← Finset.sum_sub_distrib]
-  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y with hjet2_def
-  have hjet2_nn : 0 ≤ jet2 := chartMetricJet2DiffSup_nonneg _ _ _ _
+  set jet2 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y with hjet2_def
+  have hjet2_nn : 0 ≤ jet2 := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
   refine le_trans (Finset.abs_sum_le_sum_abs _ _) ?_
   refine le_trans (Finset.sum_le_sum
     (g := fun _ : Fin (Module.finrank ℝ E) => 2 * Cdiff * jet2) (fun j _ => ?_)) ?_
@@ -383,7 +383,7 @@ theorem chartRicciFirstOrderTerm_sub_abs_le
     (hClip : ∀ i j k : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g₁ α i j k y -
           chartChristoffel (I := I) g₂ α i j k y| ≤
-        Clip * chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y)
+        Clip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y)
     (hMg1 : ∀ i j k : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g₁ α i j k y| ≤ Mg)
     (hMg2 : ∀ i j k : Fin (Module.finrank ℝ E),
@@ -392,11 +392,11 @@ theorem chartRicciFirstOrderTerm_sub_abs_le
     |chartRicciFirstOrderTerm (I := I) g₁ α i k y -
         chartRicciFirstOrderTerm (I := I) g₂ α i k y| ≤
       4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg *
-        chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
   rw [chartRicciFirstOrderTerm, chartRicciFirstOrderTerm, ← Finset.sum_sub_distrib]
-  set jet1 : ℝ := chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y with hjet1_def
-  have hjet1_nn : 0 ≤ jet1 := chartMetricJet1DiffSup_nonneg _ _ _ _
+  set jet1 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y with hjet1_def
+  have hjet1_nn : 0 ≤ jet1 := DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_nonneg _ _ _ _
   have hprod : ∀ a₁ a₂ a₃ a₄ a₅ a₆ : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g₁ α a₁ a₂ a₃ y *
             chartChristoffel (I := I) g₁ α a₄ a₅ a₆ y -
@@ -542,7 +542,7 @@ theorem chartRicci_pou_lip
           ∀ i k : Fin (Module.finrank ℝ E),
             |chartRicciTensor (I := I) (gSeq k₁) α i k (extChartAt I α b) -
               chartRicciTensor (I := I) (gSeq k₂) α i k (extChartAt I α b)| ≤
-                C * chartMetricJet2DiffSup (I := I) (M := M)
+                C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
                   (gSeq k₁) (gSeq k₂) α (extChartAt I α b) := by
   classical
   obtain ⟨Clip, hClip_pos, hClip⟩ :=
@@ -561,27 +561,27 @@ theorem chartRicci_pou_lip
     positivity
   refine ⟨C, hC_pos, ?_⟩
   intro α hα k₁ k₂ b hb i k
-  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M)
+  have hjet2_nn : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
-    chartMetricJet2DiffSup_nonneg _ _ _ _
-  have hjet1_le_jet2 : chartMetricJet1DiffSup (I := I) (M := M)
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
+  have hjet1_le_jet2 : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b) ≤
-        chartMetricJet2DiffSup (I := I) (M := M)
+        DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
-    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M)
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M)
       (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
   have hCdiff' : ∀ m i j k : Fin (Module.finrank ℝ E),
       |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (chartChristoffel (I := I) (gSeq k₁) α i j k) (extChartAt I α b) -
         DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
           (chartChristoffel (I := I) (gSeq k₂) α i j k) (extChartAt I α b)| ≤
-        Cdiff * chartMetricJet2DiffSup (I := I) (M := M)
+        Cdiff * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
     fun m i j k => hCdiff α hα k₁ k₂ b hb m i j k
   have hClip' : ∀ i j k : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) (gSeq k₁) α i j k (extChartAt I α b) -
         chartChristoffel (I := I) (gSeq k₂) α i j k (extChartAt I α b)| ≤
-        Clip * chartMetricJet1DiffSup (I := I) (M := M)
+        Clip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M)
           (gSeq k₁) (gSeq k₂) α (extChartAt I α b) :=
     fun i j k => hClip α hα k₁ k₂ b hb i j k
   have hMg1 : ∀ i j k : Fin (Module.finrank ℝ E),
@@ -608,7 +608,7 @@ theorem chartRicci_pou_lip
     ring
   rw [hsplit]
   refine (abs_add_le _ _).trans ?_
-  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M)
+  set jet2 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
     (gSeq k₁) (gSeq k₂) α (extChartAt I α b) with hjet2_def
   have h1st' :
       |chartRicciFirstOrderTerm (I := I) (gSeq k₁) α i k (extChartAt I α b) -
@@ -636,7 +636,7 @@ theorem exists_chartRicciTensor_lipschitz_on_compact
     (hKsub : K ⊆ interior (extChartAt I α).target) :
     ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i k : Fin (Module.finrank ℝ E),
       |chartRicciTensor (I := I) g₁ α i k y - chartRicciTensor (I := I) g₂ α i k y| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
   obtain ⟨Clip, hClip_pos, hClip⟩ :=
     exists_chartChristoffel_lipschitz_on_compact (I := I) (M := M) g₁ g₂ α hK hKsub
@@ -644,7 +644,7 @@ theorem exists_chartRicciTensor_lipschitz_on_compact
       ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i j k : Fin (Module.finrank ℝ E),
         |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α i j k) y -
             DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α i j k) y| ≤
-          C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := fun m =>
+          C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := fun m =>
     exists_chartChristoffelDeriv_lipschitz_on_compact (I := I) (M := M) g₁ g₂ α m hK hKsub
   choose Cm hCm_pos hCm using hCdiff_each
   set Cdiff : ℝ := Finset.univ.sup' Finset.univ_nonempty Cm with hCdiff_def
@@ -663,22 +663,22 @@ theorem exists_chartRicciTensor_lipschitz_on_compact
       positivity
     linarith
   intro y hy i k
-  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
-    chartMetricJet2DiffSup_nonneg _ _ _ _
-  have hjet1_le_jet2 : chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y ≤
-      chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
-    chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y
+  have hjet2_nn : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
+  have hjet1_le_jet2 : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y ≤
+      DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y
   have hCdiff : ∀ m i j k : Fin (Module.finrank ℝ E),
       |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₁ α i j k) y -
           DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g₂ α i j k) y| ≤
-        Cdiff * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        Cdiff * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := by
     intro m i' j' k'
     refine (hCm m y hy i' j' k').trans ?_
     exact mul_le_mul_of_nonneg_right (Finset.le_sup' Cm (Finset.mem_univ m)) hjet2_nn
   have hClip' : ∀ i j k : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g₁ α i j k y -
           chartChristoffel (I := I) g₂ α i j k y| ≤
-        Clip * chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y :=
+        Clip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y :=
     fun i' j' k' => hClip y hy i' j' k'
   have hMg1' : ∀ i j k : Fin (Module.finrank ℝ E),
       |chartChristoffel (I := I) g₁ α i j k y| ≤ Mg :=
@@ -701,7 +701,7 @@ theorem exists_chartRicciTensor_lipschitz_on_compact
     ring
   rw [hsplit]
   refine (abs_add_le _ _).trans ?_
-  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y with hjet2_def
+  set jet2 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y with hjet2_def
   have h1st' : |chartRicciFirstOrderTerm (I := I) g₁ α i k y -
         chartRicciFirstOrderTerm (I := I) g₂ α i k y| ≤
       4 * (Module.finrank ℝ E : ℝ) ^ 2 * Clip * Mg * jet2 := by

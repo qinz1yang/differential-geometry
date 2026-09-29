@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
 import DifferentialGeometry.Analysis.Spectral.Tensor.UniformChartBounds.Metric.InverseGramLowerBound
 import Mathlib.LinearAlgebra.Matrix.NonsingularInverse
@@ -75,36 +76,6 @@ theorem _root_.Matrix.inv_entry_sub_abs_le_of_entry_bound
           nsmul_eq_mul]
         ring
 
-def matrixEntryL1 {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ) : ℝ :=
-  ∑ pq : (Fin n) × (Fin n), |A pq.1 pq.2|
-
-lemma matrixEntryL1_nonneg {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ) :
-    0 ≤ matrixEntryL1 A :=
-  Finset.sum_nonneg (fun _ _ => abs_nonneg _)
-
-lemma abs_entry_le_matrixEntryL1 {n : ℕ} (A : Matrix (Fin n) (Fin n) ℝ)
-    (p q : Fin n) : |A p q| ≤ matrixEntryL1 A := by
-  classical
-  exact Finset.single_le_sum
-    (f := fun pq : (Fin n) × (Fin n) => |A pq.1 pq.2|)
-    (fun pq _ => abs_nonneg _) (Finset.mem_univ (p, q))
-
-def chartGramDiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M) : ℝ :=
-  matrixEntryL1 (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x)
-
-lemma chartGramDiffSup_nonneg (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M) :
-    0 ≤ chartGramDiffSup (I := I) (M := M) g₁ g₂ α x :=
-  matrixEntryL1_nonneg _
-
-lemma chartGramMatrix_sub_entry_abs_le_gramDiffSup
-    (g₁ g₂ : SmoothRiemannianMetric I M) (α x : M)
-    (p q : Fin (Module.finrank ℝ E)) :
-    |DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x p q - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x p q| ≤
-      chartGramDiffSup (I := I) (M := M) g₁ g₂ α x := by
-  have h := abs_entry_le_matrixEntryL1
-    (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₁ α x - DifferentialGeometry.Tensor.Coordinates.chartGramMatrix g₂ α x) p q
-  rwa [Matrix.sub_apply] at h
-
 theorem chartInvGramMatrix_entry_sub_abs_le
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
@@ -145,7 +116,7 @@ theorem chartInvGramMatrix_entry_sub_abs_le
   unfold chartInvGramMatrix
   exact h
 
-theorem chartInvGramMatrix_entry_sub_abs_le_gramDiffSup
+theorem chartInvGramMatrix_entry_sub_abs_le_chartGramDiffSum
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) {x : M}
     (hx : x ∈ (trivializationAt E (TangentSpace I) α).baseSet)
     {M_b : ℝ}
@@ -155,9 +126,9 @@ theorem chartInvGramMatrix_entry_sub_abs_le_gramDiffSup
     |chartInvGramMatrix (I := I) g₁ α x k l -
         chartInvGramMatrix (I := I) g₂ α x k l| ≤
       (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 *
-        chartGramDiffSup (I := I) (M := M) g₁ g₂ α x :=
+        DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α x :=
   chartInvGramMatrix_entry_sub_abs_le (I := I) (M := M) g₁ g₂ α hx hM1 hM2
-    (fun p q => chartGramMatrix_sub_entry_abs_le_gramDiffSup (I := I) (M := M)
+    (fun p q => DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_sub_entry_abs_le_chartGramDiffSum (I := I) (M := M)
       g₁ g₂ α x p q) k l
 
 lemma exists_chartInvGramMatrix_entry_bound_on_compact
@@ -180,12 +151,12 @@ lemma exists_chartInvGramMatrix_entry_bound_on_compact
     hC ⟨x, hx, rfl⟩
   have h_l1_eq :
       chartInvGramMatrixL1Sum (I := I) (M := M) g α x =
-        matrixEntryL1 (chartInvGramMatrix (I := I) g α x) := rfl
+        Matrix.entrywiseL1 (chartInvGramMatrix (I := I) g α x) := rfl
   have h_entry_le :
       |chartInvGramMatrix (I := I) g α x p q| ≤
         chartInvGramMatrixL1Sum (I := I) (M := M) g α x := by
     rw [h_l1_eq]
-    exact abs_entry_le_matrixEntryL1 (chartInvGramMatrix (I := I) g α x) p q
+    exact Matrix.abs_entry_le_entrywiseL1 (chartInvGramMatrix (I := I) g α x) p q
   exact h_entry_le.trans (h_l1_le.trans (le_max_left _ _))
 
 theorem exists_chartInvGramMatrix_lipschitz_on_compact
@@ -195,7 +166,7 @@ theorem exists_chartInvGramMatrix_lipschitz_on_compact
     ∃ C : ℝ, 0 < C ∧ ∀ x ∈ K, ∀ k l : Fin (Module.finrank ℝ E),
       |chartInvGramMatrix (I := I) g₁ α x k l -
           chartInvGramMatrix (I := I) g₂ α x k l| ≤
-        C * chartGramDiffSup (I := I) (M := M) g₁ g₂ α x := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α x := by
   classical
   obtain ⟨M₁, hM₁_nn, hM₁⟩ :=
     exists_chartInvGramMatrix_entry_bound_on_compact (I := I) (M := M) g₁ α hK hKsub
@@ -216,16 +187,16 @@ theorem exists_chartInvGramMatrix_lipschitz_on_compact
     fun p q => (hM₁ x hx p q).trans (le_max_left _ _)
   have hM2' : ∀ p q, |chartInvGramMatrix (I := I) g₂ α x p q| ≤ M_b :=
     fun p q => (hM₂ x hx p q).trans (le_max_right _ _)
-  have h_pt := chartInvGramMatrix_entry_sub_abs_le_gramDiffSup
+  have h_pt := chartInvGramMatrix_entry_sub_abs_le_chartGramDiffSum
     (I := I) (M := M) g₁ g₂ α hx_base hM1' hM2' k l
-  have h_gram_nn : 0 ≤ chartGramDiffSup (I := I) (M := M) g₁ g₂ α x :=
-    chartGramDiffSup_nonneg (I := I) (M := M) g₁ g₂ α x
+  have h_gram_nn : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α x :=
+    DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum_nonneg (I := I) (M := M) g₁ g₂ α x
   calc |chartInvGramMatrix (I := I) g₁ α x k l -
             chartInvGramMatrix (I := I) g₂ α x k l|
       ≤ (Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 *
-          chartGramDiffSup (I := I) (M := M) g₁ g₂ α x := h_pt
+          DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α x := h_pt
     _ ≤ ((Module.finrank ℝ E : ℝ) ^ 2 * M_b ^ 2 + 1) *
-          chartGramDiffSup (I := I) (M := M) g₁ g₂ α x := by
+          DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M) g₁ g₂ α x := by
         refine mul_le_mul_of_nonneg_right ?_ h_gram_nn
         linarith
 
@@ -243,7 +214,7 @@ theorem chartInvGram_pou_lip
           ∀ p q : Fin (Module.finrank ℝ E),
             |chartInvGramMatrix (I := I) (gSeq k₁) α b p q -
                 chartInvGramMatrix (I := I) (gSeq k₂) α b p q| ≤
-              C * chartGramDiffSup (I := I) (M := M)
+              C * DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α b := by
   obtain ⟨M_b, hM_b, hM⟩ :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.chartInvGram_pou_bnd
@@ -257,11 +228,11 @@ theorem chartInvGram_pou_lip
   have hb_base : b ∈ (trivializationAt E (TangentSpace I) α).baseSet :=
     DifferentialGeometry.Analysis.Parabolic.TensorSpectral.pouTsupport_subset_baseSet
       (I := I) (M := M) α hb
-  have hpt := chartInvGramMatrix_entry_sub_abs_le_gramDiffSup
+  have hpt := chartInvGramMatrix_entry_sub_abs_le_chartGramDiffSum
     (I := I) (M := M) (gSeq k₁) (gSeq k₂) α hb_base
       (hM α hα k₁ b hb) (hM α hα k₂ b hb) p q
-  have hdiff_nonneg : 0 ≤ chartGramDiffSup (I := I) (M := M)
-      (gSeq k₁) (gSeq k₂) α b := chartGramDiffSup_nonneg _ _ _ _
+  have hdiff_nonneg : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum (I := I) (M := M)
+      (gSeq k₁) (gSeq k₂) α b := DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum_nonneg _ _ _ _
   exact hpt.trans (mul_le_mul_of_nonneg_right (by dsimp [C]; linarith) hdiff_nonneg)
 
 end DeTurckCoefficients

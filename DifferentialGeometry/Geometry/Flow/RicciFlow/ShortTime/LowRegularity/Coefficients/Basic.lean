@@ -115,7 +115,7 @@ structure HasLowRegularityCoefficientBounds {ι : Type*}
         ∀ i j : Fin (Module.finrank ℝ E),
           |chartDeTurckRHSComp (I := I) gBase (gSeq k₁) α i j (extChartAt I α b) -
             chartDeTurckRHSComp (I := I) gBase (gSeq k₂) α i j (extChartAt I α b)| ≤
-              D.rhsLip * chartMetricJet2DiffSup (I := I) (M := M)
+              D.rhsLip * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
                 (gSeq k₁) (gSeq k₂) α (extChartAt I α b)
   rhs_d1_lipschitz :
     ∀ α ∈ chartAtlasPOUFinset (I := I) (M := M),

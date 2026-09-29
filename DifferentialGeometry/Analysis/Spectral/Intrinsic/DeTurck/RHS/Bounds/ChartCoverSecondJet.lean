@@ -45,7 +45,7 @@ theorem abstractRHSFrameComponent_diff_abs_le_jet2_chartCenter
             deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I α).symm (extChartAt I α α)))
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm (extChartAt I α α)))
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm (extChartAt I α α)))| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α (extChartAt I α α) := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α (extChartAt I α α) := by
   obtain ⟨C, hC_pos, hC⟩ :=
     abstractRHSFrameComponent_diff_abs_le_jet2 (I := I) g_bg g₁ g₂ α
       (K := {extChartAt I α α}) isCompact_singleton
@@ -79,7 +79,7 @@ theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
             deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I (α c)).symm y))
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) i ((extChartAt I (α c)).symm y))
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) j ((extChartAt I (α c)).symm y))| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ (α c) y := by
   classical
   choose C hC_pos hC using fun (c : ι) (hc : c ∈ t) =>
     abstractRHSFrameComponent_diff_abs_le_jet2 (I := I) g_bg g₁ g₂ (α c)
@@ -90,8 +90,8 @@ theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
     linarith
   intro c hc y hy i j
   have hbound := hC c hc y hy i j
-  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y :=
-    chartMetricJet2DiffSup_nonneg _ _ _ _
+  have hjet2_nn : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ (α c) y :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
   have hCc_le : C c hc ≤ 1 + ∑ d ∈ t.attach, C d.1 d.2 := by
     have hmem : (⟨c, hc⟩ : {x // x ∈ t}) ∈ t.attach := Finset.mem_attach _ _
     have hsingle : C c hc ≤ ∑ d ∈ t.attach, C d.1 d.2 :=
@@ -103,9 +103,9 @@ theorem exists_uniform_const_RHSFrameComponent_diff_jet2_on_finset
           deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I (α c)).symm y))
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) i ((extChartAt I (α c)).symm y))
         (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) (α c) j ((extChartAt I (α c)).symm y))|
-      ≤ C c hc * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y := hbound
+      ≤ C c hc * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ (α c) y := hbound
     _ ≤ (1 + ∑ d ∈ t.attach, C d.1 d.2) *
-          chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ (α c) y :=
+          DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ (α c) y :=
         mul_le_mul_of_nonneg_right hCc_le hjet2_nn
 
 end Spectral

@@ -220,7 +220,7 @@ theorem chartCarrierRHSComp_diff_abs_le_jet2
     ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
       |chartDeTurckRHSComp (I := I) g_bg g₁ α i j y -
           chartDeTurckRHSComp (I := I) g_bg g₂ α i j y| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y :=
   exists_chartDeTurckRHSComp_lipschitz_on_compact (I := I) g_bg g₁ g₂ α hK hKsub
 
 omit [CompactSpace M] in
@@ -284,7 +284,7 @@ theorem abstractRHSFrameComponent_diff_abs_le_jet2
             deTurckRicciRHS (I := I) g_bg g₂ ((extChartAt I α).symm y))
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α i ((extChartAt I α).symm y))
           (DifferentialGeometry.Tensor.Coordinates.chartBasisVecFiber (I := I) α j ((extChartAt I α).symm y))| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := by
   obtain ⟨C, hC_pos, hC⟩ :=
     chartCarrierRHSComp_diff_abs_le_jet2 (I := I) g_bg g₁ g₂ α hK hKsub
   refine ⟨C, hC_pos, ?_⟩

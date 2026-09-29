@@ -534,34 +534,34 @@ theorem chartLieD_sub
   classical
   set J : ℝ := metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y with hJ_def
   have hJ_nn : 0 ≤ J := metricJet3_nonneg (I := I) (M := M) g₁ g₂ α y
-  have hJ₂_le : chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y ≤ J :=
+  have hJ₂_le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y ≤ J :=
     metricJet2_le_jet3 (I := I) (M := M) g₁ g₂ α y
-  have hJ₁_le : chartMetricJet1DiffSup (I := I) (M := M) g₁ g₂ α y ≤ J :=
-    (chartMetricJet1DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y).trans hJ₂_le
+  have hJ₁_le : DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y ≤ J :=
+    (DifferentialGeometry.Tensor.Coordinates.chartMetricJet1DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y).trans hJ₂_le
   have hGram : ∀ a b, |chartGramOnE (I := I) g₁ α a b y -
       chartGramOnE (I := I) g₂ α a b y| ≤ 1 * J := by
     intro a b
     rw [one_mul, chartGramOnE_def, chartGramOnE_def]
-    exact (chartGramMatrix_sub_entry_abs_le_gramDiffSup (I := I) (M := M)
+    exact (DifferentialGeometry.Tensor.Coordinates.chartGramMatrix_sub_entry_abs_le_chartGramDiffSum (I := I) (M := M)
       g₁ g₂ α ((extChartAt I α).symm y) a b).trans
-        ((chartGramDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans hJ₁_le)
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramDiffSum_le_chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y).trans hJ₁_le)
   have hGramD : ∀ e a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (chartGramOnE (I := I) g₁ α a b) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e (chartGramOnE (I := I) g₂ α a b) y| ≤ 1 * J := by
     intro e a b
     rw [one_mul]
-    exact (partialDeriv_chartGramOnE_sub_abs_le_partialDiffSup
+    exact (DifferentialGeometry.Tensor.Coordinates.partialDeriv_chartGramOnE_sub_abs_le_chartGramPartialDiffSum
       (I := I) (M := M) g₁ g₂ α y e a b).trans
-        ((chartGramPartialDiffSup_le_jet1 (I := I) (M := M) g₁ g₂ α y).trans hJ₁_le)
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramPartialDiffSum_le_chartMetricJet1DiffSum (I := I) (M := M) g₁ g₂ α y).trans hJ₁_le)
   have hGramD2 : ∀ e r a b, |DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartGramOnE (I := I) g₁ α a b)) y -
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) e
         (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) r (chartGramOnE (I := I) g₂ α a b)) y| ≤ 1 * J := by
     intro e r a b
     rw [one_mul]
-    exact (partialDeriv2_chartGramOnE_sub_abs_le_partial2DiffSup
+    exact (DifferentialGeometry.Tensor.Coordinates.partialDeriv2_chartGramOnE_sub_abs_le_chartGramPartial2DiffSum
       (I := I) (M := M) g₁ g₂ α y e r a b).trans
-        ((chartGramPartial2DiffSup_le_jet2 (I := I) (M := M) g₁ g₂ α y).trans hJ₂_le)
+        ((DifferentialGeometry.Tensor.Coordinates.chartGramPartial2DiffSum_le_chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y).trans hJ₂_le)
   let K_A : ℝ := (W₁ * Q₁ + DV) + (W₀ * Q₂ + V)
   let K_B : ℝ := (W₁ * Q₁ + DV) + (W₂ * Q₀ + D2V)
   rw [partial_chartLie (I := I) g₁ g_bg α d i j hy,

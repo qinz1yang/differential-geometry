@@ -63,20 +63,20 @@ theorem gramD3DiffSup_nonneg
   exact Finset.sum_nonneg fun _ _ => abs_nonneg _
 
 def metricJet3DiffSup (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) : ℝ :=
-  chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y +
+  DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y +
     gramD3DiffSup (I := I) (M := M) g₁ g₂ α y
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricJet3_nonneg
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
     0 ≤ metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y :=
-  add_nonneg (chartMetricJet2DiffSup_nonneg _ _ _ _)
+  add_nonneg (DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _)
     (gramD3DiffSup_nonneg (I := I) (M := M) g₁ g₂ α y)
 
 omit [NeZero (Module.finrank ℝ E)] in
 theorem metricJet2_le_jet3
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
-    chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y ≤
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y ≤
       metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y :=
   le_add_of_nonneg_right (gramD3DiffSup_nonneg (I := I) (M := M) g₁ g₂ α y)
 
@@ -85,6 +85,6 @@ theorem gramD3_le_jet3
     (g₁ g₂ : SmoothRiemannianMetric I M) (α : M) (y : E) :
     gramD3DiffSup (I := I) (M := M) g₁ g₂ α y ≤
       metricJet3DiffSup (I := I) (M := M) g₁ g₂ α y :=
-  le_add_of_nonneg_left (chartMetricJet2DiffSup_nonneg _ _ _ _)
+  le_add_of_nonneg_left (DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _)
 
 end DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

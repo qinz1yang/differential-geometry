@@ -1360,7 +1360,7 @@ theorem hcovgrad_jet_bound_holds
           mul_le_mul_of_nonneg_right ((le_max_right _ _).trans (le_max_right _ _)) hR_nn
 
 omit [BoundarylessManifold I M] in
-theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
+theorem chartMetricJet2DiffSum_realizeMetricAt_le_toHs
     (g_bg : SmoothRiemannianMetric I M) {σ : ℝ}
     {u₁ u₂ : TensorHs (I := I) (M := M) g_bg 0 2 σ}
     (hu₁ : isRealizableMetricPerturbationAt (I := I) g_bg u₁)
@@ -1369,13 +1369,13 @@ theorem chartMetricJet2DiffSup_realizeMetricAt_le_toHs
     (hKsub : K ⊆ interior ((extChartAt I α).target : Set E))
     (k : ℕ) (h_super : 2 * k > Module.finrank ℝ E + 4) :
     ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K,
-      chartMetricJet2DiffSup (I := I) (M := M)
+      DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M)
           (realizeMetricAt (I := I) g_bg u₁) (realizeMetricAt (I := I) g_bg u₂) α y ≤
         C * ‖SmoothCcTensor.toHs (g := g_bg) (r := 0) (s := 2) (2 * k)
           (realizableRepr (I := I) g_bg hu₁ - realizableRepr (I := I) g_bg hu₂)‖ := by
   obtain ⟨C₀, hC₀_nn, hcovgrad_jet_bound⟩ :=
     hcovgrad_jet_bound_holds (I := I) g_bg hu₁ hu₂ α hK hKsub
-  exact chartMetricJet2DiffSup_realizeMetricAt_le_toHs_of_covariant_jet_bound (I := I) g_bg hu₁ hu₂ α hKsub k h_super
+  exact chartMetricJet2DiffSum_realizeMetricAt_le_toHs_of_covariant_jet_bound (I := I) g_bg hu₁ hu₂ α hKsub k h_super
     hC₀_nn hcovgrad_jet_bound
 
 end MetricRealization

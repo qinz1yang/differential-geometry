@@ -7564,6 +7564,7 @@ import DifferentialGeometry.Geometry.Metric.Convergence.Window.EventualBounds
 import DifferentialGeometry.Geometry.Metric.ConvexProjection
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
+import DifferentialGeometry.Geometry.Metric.Coordinates.JetDifference
 import DifferentialGeometry.Geometry.Metric.Coordinates.FiberExpansion
 import DifferentialGeometry.Geometry.Metric.Coordinates.FrameBounds
 import DifferentialGeometry.Geometry.Metric.Coordinates.InnerExpansion
@@ -17537,3 +17538,4 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.Densit
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.LocalUpperBound
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.Monotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.ReducedVolume.TailEstimate
+import DifferentialGeometry.Analysis.Normed.Matrix.Entrywise

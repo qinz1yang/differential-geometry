@@ -166,7 +166,7 @@ theorem exists_chartDeTurckRHSComp_lipschitz_on_compact
     ∃ C : ℝ, 0 < C ∧ ∀ y ∈ K, ∀ i j : Fin (Module.finrank ℝ E),
       |chartDeTurckRHSComp (I := I) g_bg g₁ α i j y -
           chartDeTurckRHSComp (I := I) g_bg g₂ α i j y| ≤
-        C * chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y := by
+        C * DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y := by
   classical
   obtain ⟨Cric, hCric_pos, hCric⟩ :=
     DeTurckCoefficients.exists_chartRicciTensor_lipschitz_on_compact
@@ -178,9 +178,9 @@ theorem exists_chartDeTurckRHSComp_lipschitz_on_compact
   · have h1 : 0 < 2 * Cric := by positivity
     linarith
   intro y hy i j
-  have hjet2_nn : 0 ≤ chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y :=
-    DeTurckCoefficients.chartMetricJet2DiffSup_nonneg _ _ _ _
-  set jet2 : ℝ := chartMetricJet2DiffSup (I := I) (M := M) g₁ g₂ α y with hjet2_def
+  have hjet2_nn : 0 ≤ DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y :=
+    DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum_nonneg _ _ _ _
+  set jet2 : ℝ := DifferentialGeometry.Tensor.Coordinates.chartMetricJet2DiffSum (I := I) (M := M) g₁ g₂ α y with hjet2_def
   have hsplit :
       chartDeTurckRHSComp (I := I) g_bg g₁ α i j y -
           chartDeTurckRHSComp (I := I) g_bg g₂ α i j y =
