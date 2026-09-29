@@ -181,8 +181,6 @@ theorem smoothApproxSeq_smoothFChartResidual_limit_eq_fChartResidual
     {u_h : H1Compl (I := I) (M := M) g}
     (hu_h : u_h ∈ laplacianDomainPow (I := I) (M := M) g 2) :
     ∀ F_lim : EuclN → ℝ,
-      DeGiorgi.MemW1p (d := Module.finrank ℝ E) 2 F_lim
-        (chartTargetEuclid (I := I) (M := M) α) →
       Tendsto (fun n =>
         DifferentialGeometry.Analysis.Sobolev.Euclidean.iteratedWeakSobolevNorm
           (d := Module.finrank ℝ E) 1 2
@@ -197,7 +195,7 @@ theorem smoothApproxSeq_smoothFChartResidual_limit_eq_fChartResidual
         DifferentialGeometry.Analysis.Laplacian.DiffChartBilinearH1Compl.fChartResidual
           (I := I) (M := M) g α u_h := by
   classical
-  intro F_lim _ h_wkp_tendsto
+  intro F_lim h_wkp_tendsto
   set v : ℕ → SmoothScalar g := fun n =>
     smoothApproxSeq (I := I) (M := M) g hu_h n with hv_def
   have h_eLpNorm_volume_tendsto :

@@ -214,8 +214,9 @@ theorem fChartResidual_memWkp_two_two
     (smoothApproxSeqWkpThree (I := I) (M := M) g hu_h)
     (smoothApproxSeq_smoothFChartResidual_wkpNorm_cauchy_w22
       (I := I) (M := M) g α hu_h)
-    (smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
-      (I := I) (M := M) g α hu_h)
+    (fun F_lim _ h_tendsto =>
+      smoothApproxSeqWkpThree_smoothFChartResidual_limit_eq_fChartResidual_w22
+        (I := I) (M := M) g α hu_h F_lim h_tendsto)
 
 theorem base_f_chart_memWkp_two_two
     (g : SmoothRiemannianMetric I M) (α : M)
