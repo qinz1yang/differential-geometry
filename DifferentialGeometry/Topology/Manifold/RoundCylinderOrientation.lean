@@ -26,6 +26,7 @@ private theorem exp_mfderiv_bijective (t : ℝ) :
     rw [mfderiv_eq_fderiv, (Real.hasDerivAt_exp t).hasFDerivAt.fderiv]
     apply ContinuousLinearMap.ext
     intro v
+    change ℝ at v
     change v * Real.exp t = Real.exp t * v
     exact mul_comm _ _
   rw [h]
