@@ -11,7 +11,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery
 
 universe u
 
-open Topology in
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology in
 theorem exists_poincare_controlled_extinction
     (M : DifferentialGeometry.Topology.ClosedOrientedManifold.{u} 3)
     [SimplyConnectedSpace M.Carrier]
