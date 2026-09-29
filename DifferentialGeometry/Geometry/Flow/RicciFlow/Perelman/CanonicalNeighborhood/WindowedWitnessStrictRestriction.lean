@@ -294,8 +294,10 @@ theorem WindowedModelWitness.toRestrictOpen_preservesTangentOrientationAt
   rw [TangentOrientationSection.restrictOpen_orientation]
   convert hpres using 2
   rw [hc]
-  simp only [hder]
-  exact Iff.rfl
+  apply Iff.of_eq
+  congr 3
+  ext v
+  exact DFunLike.congr_fun hder v
 
 theorem WindowedModelWitness.orientedWitness_toRestrictOpen
     (W : WindowedModelWitness eps kappa S x.val t)

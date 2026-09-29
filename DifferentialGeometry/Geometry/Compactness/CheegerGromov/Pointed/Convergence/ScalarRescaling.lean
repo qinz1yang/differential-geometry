@@ -236,8 +236,8 @@ theorem exists_scalar_rescaled_source_comparison
     rw [hd, hvalue]
     dsimp only [eta]
     constructor
-    · convert mul_le_mul_of_nonneg_left hh.1 hqp.le using 1 <;> ac_rfl
-    · convert mul_le_mul_of_nonneg_left hh.2 hqp.le using 1 <;> ac_rfl
+    · convert mul_le_mul_of_nonneg_left hh.1 hqp.le using 1; ac_rfl
+    · convert mul_le_mul_of_nonneg_left hh.2 hqp.le using 1; ac_rfl
   refine ⟨hcpt, hsrc, hmetric, ?_, ?_⟩
   · apply DifferentialGeometry.PartialDiffeomorph.closedBall_subset_image_closedBall_of_metric_lower G H F (x n) hR
       (by norm_num : 0 < (2 : ℝ)) (show R / 4 < R / 2 by linarith) hcpt hsrc
