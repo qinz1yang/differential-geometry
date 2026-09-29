@@ -64,7 +64,7 @@ theorem eLpNorm_weighted_contDiffOn_mul_le
   by_cases hw : MemLp w 2 μw
   swap
   · refine ⟨1, zero_le_one, ?_⟩
-    have htop : eLpNorm w 2 μw = ∞ := top_unique (not_lt.mp hw)
+    have htop : eLpNorm w 2 μw = (⊤ : ℝ≥0∞) := top_unique (not_lt.mp hw)
     change eLpNorm (fun y => c y * w y) 2 μw ≤ ENNReal.ofReal 1 * eLpNorm w 2 μw
     rw [htop, ENNReal.ofReal_one, one_mul]
     exact le_top

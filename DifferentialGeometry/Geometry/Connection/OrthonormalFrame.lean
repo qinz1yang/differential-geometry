@@ -580,7 +580,7 @@ theorem orthonormalFrameConnectionForm_curveWithin_apply (cov : CovariantDerivat
         (mfderivWithin 𝓘(ℝ, ℝ)
           (I.prod 𝓘(ℝ, skewAdjoint.submodule ℝ (F →L[ℝ] F))) Q J t
             ((NormedSpace.fromTangentSpace t).symm 1)))) = _
-    rw [hz, zero_apply, map_zero, map_zero,
+    rw [hz, zero_apply, ContinuousLinearMap.map_zero, ContinuousLinearMap.map_zero,
       cov.derivAlongWithin_eq_zero_of_not_uniqueDiffWithinAt γ _ hJ]
 
 

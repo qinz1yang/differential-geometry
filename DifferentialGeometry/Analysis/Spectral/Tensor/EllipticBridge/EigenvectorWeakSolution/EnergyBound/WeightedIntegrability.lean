@@ -128,7 +128,7 @@ theorem memLp_chartPulledWeightedMeasure_of_memLp_volume_of_ae_zero_off_compact
   exact hw_K.of_measure_le_smul (c := ENNReal.ofReal c) ENNReal.ofReal_ne_top h_le
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tensorL2ChartComponent_ae_zero_off_chartPouKernel
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -171,7 +171,7 @@ lemma tensorL2ChartComponent_ae_zero_off_chartPouKernel
   exact ae_eq_zero_off_of_tendsto_Lp h_term h_comp_tendsto
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2ChartComponent_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -245,7 +245,7 @@ private lemma cutoffComponentEuclid_eq_zero_off_cutoffChartKernelEuclid
       Idx Jdx htar
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -285,7 +285,7 @@ lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid
   exact ae_eq_zero_off_of_tendsto_Lp h_term h_comp_tendsto
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 theorem tensorL2ChartComponentCutoff_memLp_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -544,7 +544,7 @@ lemma chartPulledWeightedMeasure_restrict_absolutelyContinuous
   exact (withDensity_absolutelyContinuous (volume : Measure EuclN) _).restrict _
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tensorL2ChartComponent_ae_zero_off_chartPouKernel_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :
@@ -559,7 +559,7 @@ lemma tensorL2ChartComponent_ae_zero_off_chartPouKernel_weighted
       (I := I) (M := M) g r s u α P₀)
 
 omit [CompleteSpace E] in
-omit [NeZero (Module.finrank ℝ E)] in
+omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
 lemma tensorL2ChartComponentCutoff_ae_zero_off_cutoffChartKernelEuclid_weighted
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (u : TensorL2 r s g) (α : M) (P₀ : TensorCompIdx (E := E) r s) :

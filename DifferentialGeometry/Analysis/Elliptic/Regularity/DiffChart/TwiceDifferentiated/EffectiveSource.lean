@@ -811,7 +811,6 @@ private lemma fChartEffectiveTwiceNumerator_memLp_vol_K
   have h_step12 := h_step11.add hE2
   unfold effectiveSourceChartSecondOrderNumerator
   convert h_step12 using 2 with y
-  simp only [Pi.add_apply, Pi.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

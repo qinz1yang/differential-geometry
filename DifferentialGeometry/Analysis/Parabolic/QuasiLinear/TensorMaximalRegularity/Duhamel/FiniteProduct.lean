@@ -374,14 +374,11 @@ theorem timeL2Inclusion_maximalRegularityDuhamelVectorField
         (show a + 1 ≤ a + 2 by linarith))).compLpL 2 (timeMeasure T)
           (maximalRegularityDuhamelVectorField hT u₀ F) =
         maximalRegularityDuhamelVectorFieldHa1 hT u₀ F := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ)
-    (X := fun _ : ι => TensorHs (I := I) (M := M) g r s (a + 1))
-    (timeMeasure T)).injective
-  rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
-  simp only [maximalRegularityDuhamelVectorField, maximalRegularityDuhamelVectorFieldHa1,
-    LinearIsometryEquiv.apply_symm_apply]
-  exact timeL2Inclusion_maximalRegularityDuhamelSolutionFieldPi hT hT1 u₀
-    (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F)
+  unfold maximalRegularityDuhamelVectorField maximalRegularityDuhamelVectorFieldHa1
+  rw [← Lp.piLpEquiv_symm_piLpMap (𝕜 := ℝ)]
+  exact congrArg _
+    (timeL2Inclusion_maximalRegularityDuhamelSolutionFieldPi hT hT1 u₀
+      (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T) F))
 
 theorem maximalRegularityDuhamelVectorField_Ha1_ae_pointwise_le
     [NeZero (Module.finrank ℝ E)] (hT : 0 < T)
