@@ -16,22 +16,7 @@ open scoped Manifold ContDiff Topology ENNReal
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
-theorem tendsto_zero_max_iff {a b : ℕ → ℝ} (ha : ∀ i, 0 ≤ a i) (hb : ∀ i, 0 ≤ b i) :
-    Tendsto (fun i => max (a i) (b i)) atTop (𝓝 0) ↔
-      Tendsto a atTop (𝓝 0) ∧ Tendsto b atTop (𝓝 0) := by
-  constructor
-  · intro h
-    exact ⟨tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h
-        (fun i => ha i) (fun i => le_max_left _ _),
-      tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds h
-        (fun i => hb i) (fun i => le_max_right _ _)⟩
-  · rintro ⟨ha', hb'⟩
-    refine tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds
-      (by simpa using ha'.add hb') (fun i => ?_) (fun i => ?_)
-    · exact le_trans (ha i) (le_max_left _ _)
-    · exact max_le (by linarith [hb i]) (by linarith [ha i])
-
-theorem sSup_image_Icc_eq_max {g : ℝ → ℝ} {v δ : ℝ} (hv : 0 < v) (hδ : 0 < δ)
+private theorem sSup_image_Icc_eq_max {g : ℝ → ℝ} {v δ : ℝ} (hv : 0 < v) (hδ : 0 < δ)
     (hA : BddAbove (g '' Set.Ioc (0 : ℝ) (min v δ)))
     (hB : BddAbove (g '' Set.Icc (min v δ) v)) :
     sSup (g '' Set.Icc (0 : ℝ) v) =
@@ -64,7 +49,7 @@ theorem sSup_image_Icc_eq_max {g : ℝ → ℝ} {v δ : ℝ} (hv : 0 < v) (hδ :
   rw [hIcc, Set.image_insert_eq, Set.image_union,
     csSup_insert (hA.union hB) (hneA.inl), csSup_union hA hneA hB hneB]
 
-theorem sSup_eq_of_const_on_nonempty {s : Set ℝ} (hs : s.Nonempty) {c : ℝ} :
+private theorem sSup_eq_of_const_on_nonempty {s : Set ℝ} (hs : s.Nonempty) {c : ℝ} :
     sSup {r : ℝ | ∃ u ∈ s, c = r} = c := by
   have hset : {r : ℝ | ∃ u ∈ s, c = r} = {c} := by
     ext r
