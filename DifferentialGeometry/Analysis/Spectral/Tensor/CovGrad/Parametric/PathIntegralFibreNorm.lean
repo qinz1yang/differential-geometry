@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Metric.PointwiseInner.Algebra
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.Inner
 import Mathlib.Analysis.Convex.Integral
 import Mathlib.Analysis.Convex.Mul
-import Mathlib.Analysis.Seminorm
+import Mathlib.Analysis.Normed.Module.Seminorm.Basic
 import Mathlib.MeasureTheory.Integral.Prod
 
 open DifferentialGeometry.TensorMetric (abs_tensorInnerPointwise_le_mul riemannianFiberNormSq

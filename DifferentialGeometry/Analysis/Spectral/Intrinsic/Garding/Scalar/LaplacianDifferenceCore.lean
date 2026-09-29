@@ -397,8 +397,7 @@ theorem scalarLapDiff_eq
     intro i
     convert grad2_cc_diag (I := I) (M := M) q U
       ⟨smoothOrthoFrame (I := I) a x i,
-        smoothOrthoFrame_smooth (I := I) a x i⟩ x using 1 <;>
-      rfl
+        smoothOrthoFrame_smooth (I := I) a x i⟩ x using 1
   have hconn :
       Tensor0SSpace.toModel
           (cometricDoubleTraceFib (I := I) h 0 x CD)

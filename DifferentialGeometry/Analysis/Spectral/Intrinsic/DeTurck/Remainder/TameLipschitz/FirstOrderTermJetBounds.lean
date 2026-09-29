@@ -445,7 +445,6 @@ private lemma pAO_connectionDifference_antisymm (gA gB : SmoothRiemannianMetric 
   rw [pAO_connectionDifference_self_zero (I := I) (M := M) gA x u v] at h
   exact eq_neg_of_add_eq_zero_left h.symm
 
- in
 omit [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 omit [SigmaCompactSpace M] in
