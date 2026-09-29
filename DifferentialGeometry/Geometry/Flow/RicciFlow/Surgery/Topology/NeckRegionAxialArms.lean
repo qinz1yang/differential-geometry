@@ -227,7 +227,7 @@ theorem SpatialNeck.exists_axial_minimizingArms {g : SmoothRiemannianMetric I3 M
     set w := Real.sqrt (metricScalarAt g x) *
       metricDistance g (nk.map (nk.center, hgt 0)) (nk.map (nk.center, hgt 1))
     set H := 3 * D / 2
-    unfold comparisonAngle
+    unfold comparisonAngle comparisonCosine
     apply Real.arccos_le_arccos
     have hu0 : 0 < u0 := by nlinarith
     have hu1 : 0 < u1 := by nlinarith

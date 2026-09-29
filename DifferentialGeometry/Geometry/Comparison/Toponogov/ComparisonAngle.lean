@@ -88,7 +88,7 @@ theorem comparisonAngle_abs_sub {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
   have hval : (a ^ 2 + b ^ 2 - |a - b| ^ 2) / (2 * a * b) = 1 := by
     apply (div_eq_iff hden).2
     nlinarith [sq_abs (a - b)]
-  rw [comparisonAngle, hval, Real.arccos_one]
+  rw [comparisonAngle, comparisonCosine, hval, Real.arccos_one]
 
 
 theorem comparisonAngle_add {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
@@ -97,7 +97,7 @@ theorem comparisonAngle_add {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
   have hval : (a ^ 2 + b ^ 2 - (a + b) ^ 2) / (2 * a * b) = -1 := by
     apply (div_eq_iff hden).2
     ring
-  rw [comparisonAngle, hval, Real.arccos_neg_one]
+  rw [comparisonAngle, comparisonCosine, hval, Real.arccos_neg_one]
 
 theorem metricComparisonAngle_sideInequalities {X : Type*} [PseudoMetricSpace X] (x o y : X) :
     |dist o x - dist o y| ≤ dist x y ∧ dist x y ≤ dist o x + dist o y := by

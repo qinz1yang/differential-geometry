@@ -32,7 +32,13 @@ theorem exists_smoothTwoSidedCollar_of_compact_regularLevel
     levelAtlasDiffeomorph 𝓘(ℝ, MorseModel (m + 1)) hf.contMDiff hr
   have hd (x : LevelSetSpace f a) : d x = x := by
     rfl
-  have hdi (x : LevelSetSpace f a) : d.symm x = x :=
+  let dInv : @Diffeomorph ℝ _ (MorseModel m) _ _ (MorseModel m) _ _
+      (MorseModel m) _ (MorseModel m) _ 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel m)
+      (LevelSetSpace f a) _ D (LevelSetSpace f a) _ C ∞ :=
+    @Diffeomorph.symm ℝ _ (MorseModel m) _ _ (MorseModel m) _ _
+      (MorseModel m) _ (MorseModel m) _ 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel m)
+      (LevelSetSpace f a) _ C (LevelSetSpace f a) _ D ∞ d
+  have hdi (x : LevelSetSpace f a) : dInv x = x :=
     (d.toEquiv.symm_apply_eq).2 (hd x).symm
   let cD := @SmoothTwoSidedCollar.reparametrize
     (MorseModel m) _ _ (MorseModel m) _
@@ -41,7 +47,7 @@ theorem exists_smoothTwoSidedCollar_of_compact_regularLevel
     (LevelSetSpace f a) _ C (MorseModel (m + 1)) _ inferInstance
     (Subtype.val : LevelSetSpace f a → MorseModel (m + 1)) c
     (MorseModel m) _ _ (MorseModel m) _ 𝓘(ℝ, MorseModel m)
-    (LevelSetSpace f a) _ D d.symm
+    (LevelSetSpace f a) _ D dInv
   let c' : SmoothTwoSidedCollar 𝓘(ℝ, MorseModel m) 𝓘(ℝ, MorseModel (m + 1))
       (Subtype.val : LevelSetSpace f a → MorseModel (m + 1)) :=
     { radius := cD.radius
@@ -51,6 +57,6 @@ theorem exists_smoothTwoSidedCollar_of_compact_regularLevel
       zero_eq := fun x => (cD.zero_eq x).trans (congrArg Subtype.val (hdi x)) }
   refine ⟨c', ?_⟩
   intro p
-  exact hc (d.symm p.1, p.2)
+  exact hc (dInv p.1, p.2)
 
 end DifferentialGeometry.Manifold.RegularLevel
