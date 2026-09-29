@@ -76,7 +76,6 @@ theorem restrictSubtypes_symm_apply (e : _root_.OpenPartialHomeomorph X Y) (s : 
     ((restrictSubtypes e s t hs ht h).symm y : X) = e.symm y := by
   classical
   change (if hx : e.symm y ∈ s then (⟨e.symm y, hx⟩ : s) else hs).val = e.symm y
-  rw [dite_eq_left ((h (e.symm y) (e.map_target hy)).mpr
-    (by rw [e.right_inv hy]; exact y.property))]
+  rw [dite_eq_left ((h (e.symm y) (e.map_target hy)).mpr (by rw [e.right_inv hy]; exact y.property))]
 
 end DifferentialGeometry.Topology.OpenPartialHomeomorph

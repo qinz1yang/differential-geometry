@@ -86,8 +86,7 @@ theorem nonempty_diffeomorph_sphere_of_homeomorph_sphere
 theorem exists_isSmoothEmbedding_sphere_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M]
-    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) |
-      z.val ∈ stdSimplexBoundary 3} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ d : Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1 → M,
       IsSmoothEmbedding (𝓡 2) (𝓡∂ 3) ∞ d ∧ range d = range ψ := by
@@ -273,8 +272,7 @@ theorem isSmoothHandleStage_step [FiniteDimensional ℝ E]
         simp
       rw [hR, Set.sdiff_empty]
       exact isSmoothHandleStage_adjunction_zero _
-  · change IsPLCellAttachment 3
-      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+  · change IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
       (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ ({0, 1} : Set ℝ)) L C N'.space at hatt
     obtain ⟨g, hg⟩ := hatt.exists_isPLCellAttachmentWith
     have hT := boundaryComplex_space_of_isPLCellAttachmentWith_one hL hN' hg
@@ -290,8 +288,7 @@ theorem isSmoothHandleStage_step [FiniteDimensional ℝ E]
     have hrange' : range (fun z => θ (h (φ z))) = ⋃ j, f j '' Metric.closedBall 0 1 := by
       rw [← hrange, ← Set.range_comp']
     refine isSmoothHandleStage_of_attachment
-      (R := (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ
-        ({0, 1} : Set ℝ))
+      (R := (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) \ stdSimplexBoundary 2) ×ˢ ({0, 1} : Set ℝ))
       (Fr := stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1)
       (Set.prod_mono Set.sdiff_subset Subset.rfl) ?_ (Set.prod_mono (fun _ hx => hx.1) Subset.rfl)
       hBP hgP hgB hSL hT φ hφg e helow hecell h hbd θ hθ (fun z => θ (h (φ z))) (fun _ => rfl)
@@ -303,8 +300,7 @@ theorem isSmoothHandleStage_step [FiniteDimensional ℝ E]
     · rcases ht with rfl | rfl
       · exact ⟨le_rfl, zero_le_one⟩
       · exact ⟨zero_le_one, le_rfl⟩
-  · change IsPLCellAttachment 3
-      (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
+  · change IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ×ˢ Icc (0 : ℝ) 1)
       (stdSimplexBoundary 2 ×ˢ Icc (0 : ℝ) 1) L C N'.space at hatt
     obtain ⟨g, hg⟩ := hatt.exists_isPLCellAttachmentWith
     have hT := boundaryComplex_space_of_isPLCellAttachmentWith_two hL hN' hg
@@ -338,8 +334,7 @@ theorem isSmoothHandleStage_step [FiniteDimensional ℝ E]
       rcases ht with rfl | rfl
       · exact ⟨le_rfl, zero_le_one⟩
       · exact ⟨zero_le_one, le_rfl⟩
-  · change IsPLCellAttachment 3
-      (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) (stdSimplexBoundary 3) L C N'.space
+  · change IsPLCellAttachment 3 (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) (stdSimplexBoundary 3) L C N'.space
       at hatt
     obtain ⟨g, hg⟩ := hatt.exists_isPLCellAttachmentWith
     have hT := boundaryComplex_space_of_isPLCellAttachmentWith_three hL hN' hg
@@ -363,8 +358,7 @@ theorem isSmoothHandleStage_step [FiniteDimensional ℝ E]
         congr 1
         exact Set.eq_univ_of_forall fun z => z.property
       have hFr : adjunctionCell Subtype.val (fun z => h (φ z)) ''
-          {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) |
-            z.val ∈ (∅ : Set (Fin 4 → ℝ))} = ∅ := by
+          {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ (∅ : Set (Fin 4 → ℝ))} = ∅ := by
         ext p
         simp
       rw [hR, hFr, Set.union_empty]

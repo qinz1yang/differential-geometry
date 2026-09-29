@@ -9,8 +9,6 @@ import Mathlib.Topology.UnitInterval
 
 open Set Topology
 
-open Convexity.StdSimplex (coordinateSet convex_coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "Plane" => EuclideanSpace ℝ (Fin 2)
@@ -29,7 +27,7 @@ theorem exists_diskMap_halfspace_homotopy {P : Set Plane} (hP : IsPLBall 2 P)
       ((∀ z, z.2 = 0 → (Φ z).2 = 0) → ∀ z t, z.2 = 0 → (H (z, t)).2 = 0) := by
   classical
   obtain ⟨q, hq⟩ := id hP
-  let Δ := coordinateSet ℝ (Fin 3)
+  let Δ := Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
   let r := Function.invFunOn q Δ
   let B := P ×ˢ Icc (-1 : ℝ) 1
   let S : Set ((Plane × ℝ) × unitInterval) := {w | w.1 ∈ B}
@@ -41,7 +39,7 @@ theorem exists_diskMap_halfspace_homotopy {P : Set Plane} (hP : IsPLBall 2 P)
     (q (a w), (1 - (w.2 : ℝ)) * w.1.2 + (w.2 : ℝ) * (Φ w.1).2)
   have hamem : MapsTo a S Δ := by
     intro w hw
-    exact (convex_coordinateSet ℝ (Fin 3)) (hrmem _ hw.1)
+    exact (Convexity.StdSimplex.convex_coordinateSet ℝ (Fin 3)) (hrmem _ hw.1)
       (hrmem _ (hbox hw).1) (sub_nonneg.mpr w.2.2.2) w.2.2.1 (sub_add_cancel _ _)
   have ht : Continuous (fun w : (Plane × ℝ) × unitInterval => (w.2 : ℝ)) :=
     continuous_subtype_val.comp continuous_snd

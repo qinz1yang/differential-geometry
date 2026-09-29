@@ -136,8 +136,7 @@ theorem IsPLCellOn.isConnected {M : Type*} [TopologicalSpace M]
   obtain ⟨P, r, v, hr, hv, rfl, -⟩ := hS
   have hP : IsConnected P := by
     have h1 : IsConnected (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) :=
-      (Convexity.StdSimplex.convex_coordinateSet ℝ _).isConnected
-        ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (d + 1))⟩
+      (Convexity.StdSimplex.convex_coordinateSet ℝ _).isConnected ⟨_, Convexity.StdSimplex.single_mem_coordinateSet ℝ (0 : Fin (d + 1))⟩
     have h2 := h1.image r hr.isPiecewiseAffineOn.continuousOn
     rwa [hr.bijOn.image_eq] at h2
   exact hP.image v hv.continuousOn

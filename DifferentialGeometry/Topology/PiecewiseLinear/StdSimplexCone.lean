@@ -8,8 +8,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LinkEuclidean
 
 open Set Topology
 
-open Convexity.StdSimplex (coordinateSet convexHull_basis_eq_coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -58,7 +56,7 @@ theorem two_le_card_stdVertices : 2 ≤ (stdVertices n).card := by
 
 theorem convexHull_stdVertices :
     convexHull ℝ ((stdVertices n : Finset (Fin (n + 2) → ℝ)) : Set (Fin (n + 2) → ℝ)) =
-      coordinateSet ℝ (Fin (n + 2)) := by
+      Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
   have hfun : (fun i : Fin (n + 2) => (Pi.single i (1 : ℝ) : Fin (n + 2) → ℝ)) =
       fun i j => if i = j then (1 : ℝ) else 0 := by
     funext i j
@@ -66,7 +64,7 @@ theorem convexHull_stdVertices :
     by_cases h : i = j
     · simp [h]
     · simp [h, Ne.symm h]
-  rw [coe_stdVertices, hfun, convexHull_basis_eq_coordinateSet]
+  rw [coe_stdVertices, hfun, Convexity.StdSimplex.convexHull_basis_eq_coordinateSet]
 
 theorem stdCenter_mem_openSimplex : stdCenter n ∈ openSimplex (stdVertices n) := by
   have hn2 : ((n : ℝ) + 2) ≠ 0 := by positivity
@@ -84,7 +82,7 @@ theorem isConeBase_std :
   isConeBase_simplexBoundary _ (two_le_card_stdVertices n) (stdCenter_mem_openSimplex n)
 
 theorem coneComplex_std_space :
-    (coneComplex (isConeBase_std n)).space = coordinateSet ℝ (Fin (n + 2)) := by
+    (coneComplex (isConeBase_std n)).space = Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := by
   rw [← convexHull_stdVertices]
   ext x
   rw [mem_coneComplex_space_iff]

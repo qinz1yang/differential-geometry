@@ -9,13 +9,11 @@ import Mathlib.Tactic
 
 open Set Topology
 
-open Convexity.StdSimplex (coordinateSet coordinateBarycenter_apply coordinateBarycenter)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 open DifferentialGeometry.Simplex
 
-private noncomputable def rimRadialMidpoint (b : boundary (Fin 3)) : coordinateSet ℝ (Fin 3) :=
+private noncomputable def rimRadialMidpoint (b : boundary (Fin 3)) : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) :=
   ⟨fun i => (b.val.val i + (3 : ℝ)⁻¹) / 2, by
     constructor
     · intro i
@@ -31,11 +29,11 @@ private theorem rimRadialMidpoint_pos (b : boundary (Fin 3)) (i : Fin 3) :
   positivity
 
 private theorem rimRadialMidpoint_ne (b : boundary (Fin 3)) :
-    rimRadialMidpoint b ≠ coordinateBarycenter := by
+    rimRadialMidpoint b ≠ Convexity.StdSimplex.coordinateBarycenter := by
   obtain ⟨i, hi⟩ := b.property
   intro he
-  have hei := congrArg (fun x : coordinateSet ℝ (Fin 3) => x.val i) he
-  simp only [rimRadialMidpoint, coordinateBarycenter_apply, Fintype.card_fin] at hei
+  have hei := congrArg (fun x : Convexity.StdSimplex.coordinateSet ℝ (Fin 3) => x.val i) he
+  simp only [rimRadialMidpoint, Convexity.StdSimplex.coordinateBarycenter_apply, Fintype.card_fin] at hei
   rw [hi] at hei
   norm_num at hei
 

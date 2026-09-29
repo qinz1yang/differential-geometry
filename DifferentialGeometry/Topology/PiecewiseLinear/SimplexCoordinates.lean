@@ -7,8 +7,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 
 open Set
 
-open Convexity.StdSimplex (coordinateSet convexHull_range_single_eq_coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 section Algebra
@@ -16,15 +14,15 @@ section Algebra
 variable {ι E : Type*} [Fintype ι] [AddCommGroup E] [Module ℝ E]
 
 theorem linearCombination_image_stdSimplex (v : ι → E) :
-    Fintype.linearCombination ℝ v '' coordinateSet ℝ ι = convexHull ℝ (range v) := by
+    Fintype.linearCombination ℝ v '' Convexity.StdSimplex.coordinateSet ℝ ι = convexHull ℝ (range v) := by
   classical
   have hmap : (Fintype.linearCombination ℝ v) ∘ (fun i : ι => Pi.single i (1 : ℝ)) = v := by
     funext i
     simp only [Function.comp_apply, Fintype.linearCombination_apply_single, one_smul]
-  rw [← convexHull_range_single_eq_coordinateSet, LinearMap.image_convexHull, ← range_comp, hmap]
+  rw [← Convexity.StdSimplex.convexHull_range_single_eq_coordinateSet, LinearMap.image_convexHull, ← range_comp, hmap]
 
 theorem linearCombination_mem_convexHull_image_iff_of_affineIndependent {v : ι → E}
-    (hv : AffineIndependent ℝ v) (J : Set ι) {x : ι → ℝ} (hx : x ∈ coordinateSet ℝ ι) :
+    (hv : AffineIndependent ℝ v) (J : Set ι) {x : ι → ℝ} (hx : x ∈ Convexity.StdSimplex.coordinateSet ℝ ι) :
     Fintype.linearCombination ℝ v x ∈ convexHull ℝ (v '' J) ↔ ∀ i ∉ J, x i = 0 := by
   classical
   have hcomb : Fintype.linearCombination ℝ v x = Finset.univ.affineCombination ℝ v x :=
@@ -52,10 +50,9 @@ end Algebra
 theorem isPLHomeomorphOn_linearCombination_of_affineIndependent
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {ι : Type} [Fintype ι] {v : ι → E} (hv : AffineIndependent ℝ v) :
-    IsPLHomeomorphOn (Fintype.linearCombination ℝ v)
-      (coordinateSet ℝ ι) (convexHull ℝ (range v)) := by
+    IsPLHomeomorphOn (Fintype.linearCombination ℝ v) (Convexity.StdSimplex.coordinateSet ℝ ι) (convexHull ℝ (range v)) := by
   have himage := linearCombination_image_stdSimplex v
-  have hinj : InjOn (Fintype.linearCombination ℝ v) (coordinateSet ℝ ι) := by
+  have hinj : InjOn (Fintype.linearCombination ℝ v) (Convexity.StdSimplex.coordinateSet ℝ ι) := by
     intro x hx y hy hxy
     apply (affineIndependent_iff_eq_of_fintype_affineCombination_eq ℝ v).mp hv x y hx.2 hy.2
     rw [Finset.affineCombination_eq_linear_combination _ _ _ hx.2,

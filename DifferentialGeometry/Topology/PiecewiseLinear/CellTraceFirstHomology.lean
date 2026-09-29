@@ -28,8 +28,7 @@ theorem IsPLCellOn.exists_homeomorph {d : ℕ} {S B : Set M} (h : IsPLCellOn d S
   obtain ⟨P, r, u, hr, hu, rfl, rfl⟩ := h
   have hmaps : ∀ x : Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)), u (r x) ∈ u '' P :=
     fun x => ⟨r x, hr.bijOn.mapsTo x.2, rfl⟩
-  let f : Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)) → u '' P :=
-    fun x => ⟨u (r x), hmaps x⟩
+  let f : Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1)) → u '' P := fun x => ⟨u (r x), hmaps x⟩
   have hcont : Continuous f :=
     ((hu.continuousOn.comp hr.isPiecewiseAffineOn.continuousOn hr.bijOn.mapsTo).comp_continuous
       continuous_subtype_val Subtype.property).subtype_mk _
@@ -42,8 +41,7 @@ theorem IsPLCellOn.exists_homeomorph {d : ℕ} {S B : Set M} (h : IsPLCellOn d S
     obtain ⟨x, hx, rfl⟩ := hr.bijOn.surjOn hp
     exact ⟨⟨x, hx⟩, rfl⟩
   have : CompactSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin (d + 1))) :=
-    isCompact_iff_compactSpace.mp
-      (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin (d + 1)))
+    isCompact_iff_compactSpace.mp (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin (d + 1)))
   refine ⟨Continuous.homeoOfEquivCompactToT2 (f := Equiv.ofBijective f ⟨hinj, hsurj⟩) hcont,
     fun x => ?_⟩
   change u (r x) ∈ u '' (r '' stdSimplexBoundary d) ↔ _
@@ -140,10 +138,8 @@ theorem IsPLCellOn.carriesFirstHomologyOnto_inter_interior {C Bd C' T R : Set M}
     CarriesFirstHomologyOnto (Bd ∩ interior T) T := by
   obtain ⟨Φ, hΦ⟩ := hC.exists_homeomorph
   have : CompactSpace (Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) :=
-    isCompact_iff_compactSpace.mp
-      (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 4))
-  have he : Continuous fun x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) =>
-      ((Φ x : C) : M) :=
+    isCompact_iff_compactSpace.mp (Convexity.StdSimplex.isCompact_coordinateSet ℝ (Fin 4))
+  have he : Continuous fun x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) => ((Φ x : C) : M) :=
     continuous_subtype_val.comp Φ.continuous
   have hK : IsCompact (C ∩ C') := hC.isCompact.inter_right hC'.isClosed
   obtain ⟨ε, hε, hKε⟩ := hK.exists_thickening_subset_open isOpen_interior hCC'
@@ -153,8 +149,7 @@ theorem IsPLCellOn.carriesFirstHomologyOnto_inter_interior {C Bd C' T R : Set M}
     ⟨min (1 / 8) (η / 8), by positivity, min_le_left _ _, by
       have := min_le_right (1 / 8 : ℝ) (η / 8)
       linarith⟩
-  obtain ⟨Cm, hCmdef⟩ : ∃ Cm : Set M, Cm =
-      (fun x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) => ((Φ x : C) : M)) ''
+  obtain ⟨Cm, hCmdef⟩ : ∃ Cm : Set M, Cm = (fun x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) => ((Φ x : C) : M)) ''
       {x | δ ≤ minimumCoordinate x} := ⟨_, rfl⟩
   have hCmc : IsCompact Cm := by
     rw [hCmdef]
@@ -206,8 +201,7 @@ theorem IsPLCellOn.carriesFirstHomologyOnto_inter_interior {C Bd C' T R : Set M}
     rw [hAdef] at hw'
     exact interior_subset hw'.1
   have hSK : ∀ w ∈ S, w ∈ C ∩ C' := fun w hw => ⟨hSC w hw, (hSmem w hw).1.1⟩
-  let x : S → Convexity.StdSimplex.coordinateSet ℝ (Fin 4) :=
-    fun w => Φ.symm ⟨w.1, hSC w.1 w.2⟩
+  let x : S → Convexity.StdSimplex.coordinateSet ℝ (Fin 4) := fun w => Φ.symm ⟨w.1, hSC w.1 w.2⟩
   have hx : Continuous x := Φ.symm.continuous.comp (continuous_subtype_val.subtype_mk _)
   have hex : ∀ w : S, ((Φ (x w) : C) : M) = w := by
     intro w
@@ -223,9 +217,7 @@ theorem IsPLCellOn.carriesFirstHomologyOnto_inter_interior {C Bd C' T R : Set M}
     intro w hbar
     have hlt := hxm w
     rw [hbar] at hlt
-    obtain ⟨i, hi⟩ := exists_minimumCoordinate
-      (Convexity.StdSimplex.coordinateBarycenter :
-        Convexity.StdSimplex.coordinateSet ℝ (Fin 4))
+    obtain ⟨i, hi⟩ := exists_minimumCoordinate (Convexity.StdSimplex.coordinateBarycenter : Convexity.StdSimplex.coordinateSet ℝ (Fin 4))
     rw [hi, Convexity.StdSimplex.coordinateBarycenter_apply] at hlt
     norm_num at hlt
     linarith

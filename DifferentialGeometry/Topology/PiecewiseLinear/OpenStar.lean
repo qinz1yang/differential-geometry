@@ -7,8 +7,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
 
 open Set Topology
 
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -180,8 +178,7 @@ open Classical in
 theorem exists_starHomeo [FiniteDimensional ℝ E] (K : Geometry.SimplicialComplex ℝ E)
     [Finite K.faces] {p : E} (hp : {p} ∈ K.faces) {n : ℕ}
     (hsph : IsPLSphere n (SimplicialComplex.geometricLink K {p}).space) :
-    ∃ g : (Fin (n + 2) → ℝ) → E,
-      IsPLHomeomorphOn g (coordinateSet ℝ (Fin (n + 2))) (closedStar K p) ∧
+    ∃ g : (Fin (n + 2) → ℝ) → E, IsPLHomeomorphOn g (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) (closedStar K p) ∧
       g '' openSimplex (stdVertices n) = openStar K p ∧ g (stdCenter n) = p := by
   obtain ⟨f, hf⟩ := hsph
   obtain ⟨f₀, hf₀⟩ := isPLSphere_simplexBoundary_std n

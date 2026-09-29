@@ -9,11 +9,9 @@ import Mathlib.Topology.Homeomorph.Lemmas
 open Set Topology
 open DifferentialGeometry.Simplex
 
-open Convexity.StdSimplex (coordinateSet coordinateBarycenter)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-local notation "Triangle" => coordinateSet ℝ (Fin 3)
+local notation "Triangle" => Convexity.StdSimplex.coordinateSet ℝ (Fin 3)
 local notation "Interval" => Icc (-1 : ℝ) 1
 
 theorem exists_prism_rim_retraction
@@ -21,7 +19,7 @@ theorem exists_prism_rim_retraction
     (e : (Triangle × Interval) ≃ₜ Q)
     (hD : range (fun p : Triangle => (e (p, ⟨0, by norm_num⟩) : X)) = D)
     (hR : range (fun b : boundary (Fin 3) => (e (b.val, ⟨0, by norm_num⟩) : X)) = R)
-    (hP : (e (coordinateBarycenter, ⟨0, by norm_num⟩) : X) = P) :
+    (hP : (e (Convexity.StdSimplex.coordinateBarycenter, ⟨0, by norm_num⟩) : X) = P) :
     ∃ (U : Set Q) (r : C(U, R)), IsOpen U ∧
       (∀ x : R, ∃ y : U, ((y : Q) : X) = x ∧ r y = x) ∧
       ∃ d : C(↥(D \ (R ∪ {P})), U), (∀ x, ((d x : Q) : X) = x) ∧
@@ -34,7 +32,7 @@ theorem exists_prism_rim_retraction
   let eB : boundary (Fin 3) ≃ₜ R :=
     hB.toHomeomorph.trans (Homeomorph.setCongr hR)
   have heB (b : boundary (Fin 3)) : (eB b : X) = e (b.val, t₀) := rfl
-  let U : Set Q := {q | (e.symm q).1 ≠ coordinateBarycenter}
+  let U : Set Q := {q | (e.symm q).1 ≠ Convexity.StdSimplex.coordinateBarycenter}
   have hU : IsOpen U :=
     isOpen_compl_singleton.preimage (continuous_fst.comp e.symm.continuous)
   let p : C(U, punctured (Fin 3)) :=
@@ -45,7 +43,7 @@ theorem exists_prism_rim_retraction
     intro x
     let b := eB.symm x
     have hb : (e (b.val, t₀)) ∈ U := by
-      change (e.symm (e (b.val, t₀))).1 ≠ coordinateBarycenter
+      change (e.symm (e (b.val, t₀))).1 ≠ Convexity.StdSimplex.coordinateBarycenter
       rw [e.symm_apply_apply]
       exact boundary_ne_barycenter b.property
     refine ⟨⟨e (b.val, t₀), hb⟩, ?_, ?_⟩
@@ -64,10 +62,10 @@ theorem exists_prism_rim_retraction
     have hxD := hD.symm.subset x.property.1
     obtain ⟨a, ha⟩ := hxD
     have haQ : e (a, t₀) = ⟨x.val, hDQ x.property.1⟩ := Subtype.ext ha
-    change (e.symm ⟨x.val, hDQ x.property.1⟩).1 ≠ coordinateBarycenter
+    change (e.symm ⟨x.val, hDQ x.property.1⟩).1 ≠ Convexity.StdSimplex.coordinateBarycenter
     rw [← haQ, e.symm_apply_apply]
     intro haP
-    change a = coordinateBarycenter at haP
+    change a = Convexity.StdSimplex.coordinateBarycenter at haP
     apply x.property.2
     right
     exact ha.symm.trans (by simpa only [haP] using hP)
@@ -90,7 +88,7 @@ theorem exists_prism_rim_retraction
         rw [← hfirst, hi] at hp
         exact (lt_irrefl 0 hp)
       · have heq : e (((s₀ (eB.symm x)).val.val), t₀) =
-            e (coordinateBarycenter, t₀) := Subtype.ext (hxP.trans hP.symm)
+            e (Convexity.StdSimplex.coordinateBarycenter, t₀) := Subtype.ext (hxP.trans hP.symm)
         exact (s₀ (eB.symm x)).val.property (congrArg Prod.fst (e.injective heq))
   let s : C(R, ↥(D \ (R ∪ {P}))) :=
     ⟨fun x => ⟨f x, hfD x⟩, by

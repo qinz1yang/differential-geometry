@@ -347,8 +347,7 @@ theorem image_glueEmbed₂_eq (h : IsGlueIso A₁ A₂ ψ ψ') {t : Finset F} (h
   have hw₂ : {w} ∈ A₂.faces :=
     A₂.down_closed ht (Finset.singleton_subset_iff.mpr hw) (Finset.singleton_nonempty w)
   change glueEmbed₂ A₂ ψ' w = glueEmbed₁ A₁ ψ (ψ' w)
-  rw [glueEmbed₁, glueEmbed₂, ite_eq_left hw₂, ite_eq_left (h.symm.singleton_mem hw₂),
-    h.right t ht w hw]
+  rw [glueEmbed₁, glueEmbed₂, ite_eq_left hw₂, ite_eq_left (h.symm.singleton_mem hw₂), h.right t ht w hw]
 
 theorem exists_face_filter_glued₁
     (hfull₁ : ∀ s ∈ K₁.faces, (∀ v ∈ s, {v} ∈ A₁.faces) → s ∈ A₁.faces)

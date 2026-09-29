@@ -10,8 +10,6 @@ import Mathlib.Analysis.Normed.Affine.AddTorsorBases
 
 open Set Topology
 
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
@@ -312,13 +310,13 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
     rw [sum_reindex_of_equiv e, hA]
     exact Finset.sum_congr rfl fun i _ => by rw [hwx x i]
   let g : E → Fin (n + 2) → ℝ := fun y i => weights T y (q i)
-  have hg_mem : ∀ y ∈ convexHull ℝ (T : Set E), g y ∈ coordinateSet ℝ (Fin (n + 2)) := fun y hy =>
+  have hg_mem : ∀ y ∈ convexHull ℝ (T : Set E), g y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) := fun y hy =>
     ⟨fun i => weights_nonneg hy (hq i),
       (sum_reindex_of_equiv e (weights T y)).symm.trans (sum_weights hy)⟩
   have hAg : ∀ y ∈ convexHull ℝ (T : Set E), A (g y) = y := fun y hy => by
     rw [hA]
     exact (sum_reindex_of_equiv e fun v => weights T y v • v).symm.trans (sum_weights_smul hy)
-  have hinj : InjOn A (coordinateSet ℝ (Fin (n + 2))) := fun x hx x' hx' hxx' => by
+  have hinj : InjOn A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2))) := fun x hx x' hx' hxx' => by
     have h := eq_on_of_sum_smul_eq hT ((hwx_sum x).trans hx.2) ((hwx_sum x').trans hx'.2)
       (by rw [hwx_smul x, hwx_smul x', hxx'])
     funext i
@@ -347,7 +345,7 @@ theorem isPLSphere_biUnion_erase [FiniteDimensional ℝ E] {n : ℕ} (T : Finset
       (Finset.notMem_erase v T)
   have hbij : BijOn A (stdSimplexBoundary (n + 1)) Q := ⟨hmaps, hinj.mono fun x hx => hx.1, hsurj⟩
   refine ⟨A, hbij, ?_, ?_⟩
-  · have hSU : stdSimplexBoundary (n + 1) = ⋃ i : Fin (n + 2), (coordinateSet ℝ (Fin (n + 2)) ∩
+  · have hSU : stdSimplexBoundary (n + 1) = ⋃ i : Fin (n + 2), (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 2)) ∩
         (LinearMap.proj i : (Fin (n + 2) → ℝ) →ₗ[ℝ] ℝ).toAffineMap ⁻¹'
           convexHull ℝ (({0} : Finset ℝ) : Set ℝ)) := by
       ext x

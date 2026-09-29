@@ -7,8 +7,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SimplicialMap
 
 open Set
 
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem sum_reindex_of_equiv {α M : Type*} [AddCommMonoid M] {s : Finset α} {n : ℕ}
@@ -37,23 +35,23 @@ theorem isPLBall_convexHull_of_affineIndependent [FiniteDimensional ℝ E] {n : 
     rw [sum_reindex_of_equiv e, hA]
     exact Finset.sum_congr rfl fun i _ => by rw [hwx x i]
   let g : E → Fin (n + 1) → ℝ := fun y i => weights s y (p i)
-  have hg_mem : ∀ y ∈ convexHull ℝ (s : Set E), g y ∈ coordinateSet ℝ (Fin (n + 1)) := fun y hy =>
+  have hg_mem : ∀ y ∈ convexHull ℝ (s : Set E), g y ∈ Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1)) := fun y hy =>
     ⟨fun i => weights_nonneg hy (hp i),
       (sum_reindex_of_equiv e (weights s y)).symm.trans (sum_weights hy)⟩
   have hAg : ∀ y ∈ convexHull ℝ (s : Set E), A (g y) = y := fun y hy => by
     rw [hA]
     exact (sum_reindex_of_equiv e fun v => weights s y v • v).symm.trans (sum_weights_smul hy)
-  have hmaps : MapsTo A (coordinateSet ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) := fun x hx => by
+  have hmaps : MapsTo A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) := fun x hx => by
     rw [hA]
     exact (convex_convexHull ℝ _).sum_mem (fun i _ => hx.1 i) hx.2 fun i _ =>
       subset_convexHull ℝ _ (Finset.mem_coe.mpr (hp i))
-  have hinj : InjOn A (coordinateSet ℝ (Fin (n + 1))) := fun x hx x' hx' hxx' => by
+  have hinj : InjOn A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) := fun x hx x' hx' hxx' => by
     have h := eq_on_of_sum_smul_eq hs ((hwx_sum x).trans hx.2) ((hwx_sum x').trans hx'.2)
       (by rw [hwx_smul x, hwx_smul x', hxx'])
     funext i
     rw [← hwx x i, ← hwx x' i]
     exact h (p i) (hp i)
-  have hbij : BijOn A (coordinateSet ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) :=
+  have hbij : BijOn A (Convexity.StdSimplex.coordinateSet ℝ (Fin (n + 1))) (convexHull ℝ (s : Set E)) :=
     ⟨hmaps, hinj, fun y hy => ⟨g y, hg_mem y hy, hAg y hy⟩⟩
   refine ⟨A, hbij, ?_, ?_⟩
   · exact (isPiecewiseAffineOn_of_affine_of_isHPolytope A.toAffineMap

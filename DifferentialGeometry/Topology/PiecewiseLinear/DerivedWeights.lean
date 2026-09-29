@@ -125,8 +125,7 @@ theorem weights_eq_of_mem_min [DecidableEq E] {T : Finset E}
   intro v hv v₀ hv₀
   rw [← hμx, weights_sum_centroid hT hd (fun s hs => (hμ₀ s hs).le) hμ₁ ((hd m hm).2 hv),
     weights_sum_centroid hT hd (fun s hs => (hμ₀ s hs).le) hμ₁ ((hd m hm).2 hv₀)]
-  exact Finset.sum_congr rfl fun s hs => by
-    rw [ite_eq_left (hmin s hs hv), ite_eq_left (hmin s hs hv₀)]
+  exact Finset.sum_congr rfl fun s hs => by rw [ite_eq_left (hmin s hs hv), ite_eq_left (hmin s hs hv₀)]
 
 def faceNeighborhoodFaces [DecidableEq E] (T : Finset E) (f : Finset E) : Set (Finset E) :=
   {u | ∃ d : Finset (Finset E), (∀ s ∈ d, s.Nonempty ∧ s ⊆ T) ∧

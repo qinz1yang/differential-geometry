@@ -7,14 +7,12 @@ import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 
 open Set
 
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 def HasPushPropertyAt (C D : Set (EuclideanSpace ℝ (Fin 3))) : Prop :=
   IsPLBall 3 C ∧ IsPLBall 2 D ∧ D ⊆ frontier C ∧
     ∀ f : (Fin 3 → ℝ) → EuclideanSpace ℝ (Fin 3),
-      IsPLHomeomorphOn f (coordinateSet ℝ (Fin 3)) D →
+      IsPLHomeomorphOn f (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) D →
       ∀ N : Set (EuclideanSpace ℝ (Fin 3)), IsPolyhedron N →
         C \ (f '' stdSimplexBoundary 2) ⊆ interior N →
         ∃ h : EuclideanSpace ℝ (Fin 3) ≃ₜ EuclideanSpace ℝ (Fin 3),

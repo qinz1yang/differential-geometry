@@ -42,8 +42,7 @@ theorem simplicialMap_coneComplex_apply {p : E} {L : Geometry.SimplicialComplex 
       if v = p then 1 - s else s * weights σ z v := by
     refine weights_eq ((coneComplex h).indep hins) hx ?_ ?_
     · rw [Finset.sum_insert hpσ, ite_eq_left rfl,
-        Finset.sum_congr rfl fun v hv => ite_eq_right (ne_of_mem_of_not_mem hv hpσ),
-        ← Finset.mul_sum,
+        Finset.sum_congr rfl fun v hv => ite_eq_right (ne_of_mem_of_not_mem hv hpσ), ← Finset.mul_sum,
         sum_weights hz]
       ring
     · rw [Finset.sum_insert hpσ, ite_eq_left rfl,

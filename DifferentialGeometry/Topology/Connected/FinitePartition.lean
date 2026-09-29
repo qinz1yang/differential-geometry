@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Connected.TwoComponentPartition
 import DifferentialGeometry.Topology.Connected.FiniteClosedCover
 
 open Set

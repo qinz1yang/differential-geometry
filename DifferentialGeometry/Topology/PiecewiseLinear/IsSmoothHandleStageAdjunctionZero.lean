@@ -12,19 +12,17 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Polyhedron
 open Set Topology
 open scoped Manifold ContDiff
 
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem isSmoothHandleStage_adjunction_zero
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [CompactSpace M]
-    (ψ : {z : coordinateSet ℝ (Fin 4) | z.val ∈ (∅ : Set (Fin 4 → ℝ))} → M) :
-    IsSmoothHandleStage (AdjunctionSpace (Subtype.val : _ → coordinateSet ℝ (Fin 4)) ψ)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ (∅ : Set (Fin 4 → ℝ))} → M) :
+    IsSmoothHandleStage (AdjunctionSpace (Subtype.val : _ → Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ψ)
       (adjunctionLower ψ '' (𝓡∂ 3).boundary M ∪
         adjunctionCell Subtype.val ψ '' {z | z.val ∈ stdSimplexBoundary 3}) := by
-  let q : AdjunctionSpace (Subtype.val : _ → coordinateSet ℝ (Fin 4)) ψ ≃ₜ
-      (coordinateSet ℝ (Fin 4) ⊕ M) :=
+  let q : AdjunctionSpace (Subtype.val : _ → Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) ψ ≃ₜ
+      (Convexity.StdSimplex.coordinateSet ℝ (Fin 4) ⊕ M) :=
     { toFun := Quot.lift id (by
         intro x y hxy
         rcases hxy with ⟨z, _⟩
@@ -52,18 +50,18 @@ theorem isSmoothHandleStage_adjunction_zero
   refine ⟨ClosedCell 3 ⊕ M, inferInstance, inferInstance, inferInstance, inferInstance,
     inferInstance, e, ?_⟩
   have hq_lower (x : M) : q (adjunctionLower ψ x) = Sum.inr x := rfl
-  have hq_cell (x : coordinateSet ℝ (Fin 4)) : q (adjunctionCell Subtype.val ψ x) = Sum.inl x := rfl
+  have hq_cell (x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) : q (adjunctionCell Subtype.val ψ x) = Sum.inl x := rfl
   have he_lower (x : M) : e (adjunctionLower ψ x) = Sum.inr x := by
     change (Homeomorph.sumCongr c (Homeomorph.refl M)) (q (adjunctionLower ψ x)) = _
     rw [hq_lower x]
     rfl
-  have he_cell (x : coordinateSet ℝ (Fin 4)) :
+  have he_cell (x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) :
       e (adjunctionCell Subtype.val ψ x) = Sum.inl (c x) := by
     change (Homeomorph.sumCongr c (Homeomorph.refl M))
       (q (adjunctionCell Subtype.val ψ x)) = _
     rw [hq_cell x]
     rfl
-  have hc_boundary (x : coordinateSet ℝ (Fin 4)) :
+  have hc_boundary (x : Convexity.StdSimplex.coordinateSet ℝ (Fin 4)) :
       ‖((c x : ClosedCell 3).val : EuclideanSpace ℝ (Fin 3))‖ = 1 ↔
         x.val ∈ stdSimplexBoundary 3 := by
     change ‖((DifferentialGeometry.Simplex.stdSimplexNormedBallHomeomorph

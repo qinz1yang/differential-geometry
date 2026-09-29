@@ -12,16 +12,14 @@ import Mathlib.Geometry.Manifold.Instances.Sphere
 
 open Set Topology Manifold
 open scoped Manifold ContDiff
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
 theorem nonempty_homeomorph_stdSimplexBoundary_three_sphere :
-    Nonempty ({z : coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} ≃ₜ
+    Nonempty ({z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} ≃ₜ
       Metric.sphere (0 : EuclideanSpace ℝ (Fin 3)) 1) := by
-  have hset : {z : coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} =
+  have hset : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} =
       DifferentialGeometry.Simplex.boundary (Fin (3 + 1)) := by
     ext z
     exact ⟨fun h => h.2, fun h => ⟨z.2, h⟩⟩
@@ -32,14 +30,14 @@ theorem nonempty_homeomorph_stdSimplexBoundary_three_sphere :
 theorem isClopen_boundaryManifold_preimage_range_of_isClosedEmbedding
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M]
-    (ψ : {z : coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     IsClopen ((fun b : BoundaryManifold (𝓡∂ 3) M => (b : M)) ⁻¹' range ψ) := by
   classical
   let _ : ChartedSpace (EuclideanSpace ℝ (Fin 2)) (BoundaryManifold (𝓡∂ 3) M) :=
     BoundaryManifold.chartedSpace (I := 𝓡∂ 3)
   obtain ⟨a₀⟩ := nonempty_homeomorph_stdSimplexBoundary_three_sphere
-  let ψ' : {z : coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} →
+  let ψ' : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} →
       BoundaryManifold (𝓡∂ 3) M := fun z => ⟨ψ z, hψbd (mem_range_self z)⟩
   have hψ'c : Continuous ψ' := hψ.continuous.subtype_mk _
   have hψ'i : Function.Injective ψ' := fun z w h => hψ.injective (congrArg Subtype.val h)
@@ -69,7 +67,7 @@ theorem isClopen_boundaryManifold_preimage_range_of_isClosedEmbedding
 theorem exists_opens_boundaryManifold_homeomorph_sphere
     {M : Type} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
     [IsManifold (𝓡∂ 3) ∞ M]
-    (ψ : {z : coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
+    (ψ : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} → M)
     (hψ : IsClosedEmbedding ψ) (hψbd : range ψ ⊆ (𝓡∂ 3).boundary M) :
     ∃ W : TopologicalSpace.Opens (BoundaryManifold (𝓡∂ 3) M),
       IsClosed (W : Set (BoundaryManifold (𝓡∂ 3) M)) ∧ CompactSpace W ∧
@@ -78,7 +76,7 @@ theorem exists_opens_boundaryManifold_homeomorph_sphere
   classical
   have hcl := isClopen_boundaryManifold_preimage_range_of_isClosedEmbedding ψ hψ hψbd
   obtain ⟨a₀⟩ := nonempty_homeomorph_stdSimplexBoundary_three_sphere
-  let ψ' : {z : coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} →
+  let ψ' : {z : Convexity.StdSimplex.coordinateSet ℝ (Fin 4) | z.val ∈ stdSimplexBoundary 3} →
       BoundaryManifold (𝓡∂ 3) M := fun z => ⟨ψ z, hψbd (mem_range_self z)⟩
   have hψ'e : IsEmbedding ψ' := IsEmbedding.subtypeVal.of_comp_iff.mp hψ.isEmbedding
   have hpre : (fun b : BoundaryManifold (𝓡∂ 3) M => (b : M)) ⁻¹' range ψ = range ψ' := by

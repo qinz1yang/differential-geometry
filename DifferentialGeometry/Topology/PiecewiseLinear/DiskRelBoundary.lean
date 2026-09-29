@@ -121,8 +121,7 @@ theorem exists_pos_forall_exists_isPiecewiseAffineOn_stdCone_eqOn_boundary
             exact hcl₂ a ha
           · have hval : w a b = f (σ a * (1 - u b), σ a * u b) := by
               simp only [hwdef]
-              rw [ite_eq_right (by omega), ite_eq_right (by omega),
-                ite_eq_right (by omega), ite_eq_right (by omega)]
+              rw [ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega), ite_eq_right (by omega)]
             rw [hval, dist_self]
             exact hε.le
   obtain ⟨Ψ, hPA, -, hray₁, hray₂, houter, himg⟩ :=

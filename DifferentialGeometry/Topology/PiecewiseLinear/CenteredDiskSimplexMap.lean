@@ -8,8 +8,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.StdSimplexCone
 
 open Set Topology Metric
 
-open Convexity.StdSimplex (coordinateSet)
-
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 section Centered
@@ -51,7 +49,7 @@ open DifferentialGeometry.Simplex (coordinateSimplex stdSimplexCoordinateHomeomo
   mem_frontier_coordinateSimplex_iff) in
 theorem exists_continuous_injective_image_closedBall_eq_stdSimplex :
     ∃ g : EuclideanSpace ℝ (Fin 2) → Fin 3 → ℝ, Continuous g ∧ Function.Injective g ∧
-      g '' closedBall 0 1 = coordinateSet ℝ (Fin 3) ∧ g '' sphere 0 1 = stdSimplexBoundary 2 ∧
+      g '' closedBall 0 1 = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) ∧ g '' sphere 0 1 = stdSimplexBoundary 2 ∧
       g 0 = stdCenter 1 := by
   let L := EuclideanSpace.equiv (Fin 2) ℝ
   let T : Set (EuclideanSpace ℝ (Fin 2)) := L ⁻¹' coordinateSimplex 2
@@ -91,7 +89,7 @@ theorem exists_continuous_injective_image_closedBall_eq_stdSimplex :
     funext j
     have := congrFun hw j.succ
     simpa [F] using this
-  have hFsimplex : F '' coordinateSimplex 2 = coordinateSet ℝ (Fin 3) := by
+  have hFsimplex : F '' coordinateSimplex 2 = Convexity.StdSimplex.coordinateSet ℝ (Fin 3) := by
     ext s
     constructor
     · rintro ⟨w, hw, rfl⟩
