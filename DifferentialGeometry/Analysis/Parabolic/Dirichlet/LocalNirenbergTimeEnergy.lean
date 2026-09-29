@@ -255,7 +255,7 @@ private theorem integral_mul_chart_source_dual_comp_eq
       ∫ t, ζ t * (∫ y in Ω, f (t, y) * H1ComplDirichletToLp q (L (v t))
         ((extChartAt I_hs α).symm ((toEuclidean (E := EuN)).symm y))) ∂μ := by
   have hz : MemLp (fun t => ζ t • L (v t)) 2 μ :=
-    ((Lp.memLp v).continuousLinearMap_comp L).smul hζ
+    hζ.smul ((Lp.memLp v).continuousLinearMap_comp L)
   let z := hz.toLp (fun t => ζ t • L (v t))
   have hzeq : (z : Z → H1ComplDirichlet q) =ᵐ[μ] fun t => ζ t • L (v t) := hz.coeFn_toLp
   calc

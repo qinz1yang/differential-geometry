@@ -366,7 +366,7 @@ private theorem rs_l6_l3_l2
   have hmono :
       eLpNorm (rsFiberFun g p c Y) 2 μ ≤
         eLpNorm (fun x => rsFiberFun g r c Φ x * rsFiberFun g p r W x) 2 μ := by
-    apply eLpNorm_mono
+    apply eLpNorm_mono hYmem.aestronglyMeasurable
     intro x
     rw [Real.norm_eq_abs, abs_of_nonneg (fiber_rs_nonneg g p c Y x),
       Real.norm_eq_abs, abs_of_nonneg

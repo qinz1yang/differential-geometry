@@ -205,7 +205,10 @@ private theorem parameterDerivativeH0Pi_normalized_contraction
   have hn : (eLpNorm (fun t => Z.comp (A₁ t)) 2 (timeMeasure T)).toReal ≤
       (eLpNorm A₁ 2 (timeMeasure T)).toReal :=
     ENNReal.toReal_mono hA₁.eLpNorm_lt_top.ne
-      (eLpNorm_mono (fun t => hpoint (A₁ t)))
+      (eLpNorm_mono
+        (((ContinuousLinearMap.compL ℝ _ _ _) Z).continuous.comp_aestronglyMeasurable
+          hA₁.aestronglyMeasurable)
+        (fun t => hpoint (A₁ t)))
   refine ⟨?_, ?_⟩
   · filter_upwards [hC] with t ht
     exact (hpoint _).trans ht

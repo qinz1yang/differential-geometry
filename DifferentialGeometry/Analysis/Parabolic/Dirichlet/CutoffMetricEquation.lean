@@ -110,7 +110,8 @@ theorem exists_lp_dual_of_cutoff_metric_divergence_equation
   have hσmem : MemLp σ ∞ ν := hlift _ hσall.continuousOn
   have hAmem (i j) : MemLp (A i j) ∞ ν := hlift _ (hAall i j).continuousOn
   have hC : MemLp C 2 ν :=
-    (hS.mul (r := 2) hrinv).sub ((hU.mul (r := 2) hσmem).mul (r := 2) (hrt.mul (r := ∞) hrinv))
+    (hrinv.fun_mul (r := 2) hS).sub
+      ((hrinv.fun_mul (r := ∞) hrt).fun_mul (r := 2) (hσmem.fun_mul (r := 2) hU))
   let : IsFiniteMeasure (volume.restrict Ω₀) := by
     refine ⟨?_⟩
     rw [Measure.restrict_apply MeasurableSet.univ, univ_inter]
@@ -121,7 +122,7 @@ theorem exists_lp_dual_of_cutoff_metric_divergence_equation
   have hP (j) : MemLp (P j) 2 ν := by
     apply memLp_finsetSum
     intro i _
-    exact (hK i).mul (r := 2) (hAmem i j)
+    exact (hAmem i j).fun_mul (r := 2) (hK i)
   have hSsub : Ioo a b ×ˢ Ω₀ ⊆ D.regular ×ˢ Ω := by
     intro p hp
     exact ⟨hreg (Ioo_subset_Icc_self hp.1), hsub hp.2⟩
@@ -135,7 +136,7 @@ theorem exists_lp_dual_of_cutoff_metric_divergence_equation
     intro φ hφ hφc hφs
     exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo
       (Ioo_subset_Icc_self.trans hreg) hΩ₀ (hsub.trans hchart)
-      ((hU.mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+      ((hσmem.fun_mul (r := 2) hU).locallyIntegrable (by norm_num))
       (hS.locallyIntegrable (by norm_num))
       (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * K i p *
         fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) hweak hφ hφc hφs
@@ -158,7 +159,7 @@ theorem exists_lp_dual_of_cutoff_metric_divergence_equation
         (hψrc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
     have hin (i j) : Integrable (fun p => A i j p * K i p *
         fderiv ℝ (fun z => ψ z / r z) p (0, EuclideanSpace.single j 1)) ν :=
-      (((hdψ j).mul (r := 2) ((hK i).mul (r := 2) (hAmem i j))).integrable (by norm_num))
+      ((((hAmem i j).fun_mul (r := 2) (hK i)).fun_mul (r := 2) (hdψ j)).integrable (by norm_num))
     have heach (j) : (∫ p, P j p * fderiv ℝ (fun z => ψ z / r z) p
         (0, EuclideanSpace.single j 1) ∂ν) =
         ∑ i, ∫ p, A i j p * K i p * fderiv ℝ (fun z => ψ z / r z) p

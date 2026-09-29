@@ -70,24 +70,13 @@ lemma memLp_volume_compact_contDiffOn_mul
     · obtain ⟨C₀, hC₀⟩ := hK_compact.bddAbove_image hc_contOn_K.norm
       exact ⟨max C₀ 0, le_max_right _ _,
         fun y hy => (hC₀ ⟨y, hy, rfl⟩).trans (le_max_left _ _)⟩
-  obtain ⟨C, hC_nn, hC_bd⟩ := hbdd
+  obtain ⟨C, _, hC_bd⟩ := hbdd
   have hc_meas : AEStronglyMeasurable c
       ((volume : Measure EuclN).restrict K) :=
     hc_contOn_K.aestronglyMeasurable hK_meas
   have hc_ae_bd : ∀ᵐ y ∂((volume : Measure EuclN).restrict K), ‖c y‖ ≤ C :=
     (ae_restrict_iff' hK_meas).mpr (Filter.Eventually.of_forall hC_bd)
-  refine ⟨hc_meas.mul hw.1, ?_⟩
-  have hpt : ∀ᵐ y ∂((volume : Measure EuclN).restrict K),
-      ‖c y * w y‖ ≤ ‖(C : ℝ) • w y‖ := by
-    filter_upwards [hc_ae_bd] with y hy
-    rw [norm_mul, norm_smul]
-    have hC_norm : ‖c y‖ ≤ ‖(C : ℝ)‖ := by
-      rw [Real.norm_of_nonneg hC_nn]; exact hy
-    exact mul_le_mul_of_nonneg_right hC_norm (norm_nonneg _)
-  exact lt_of_le_of_lt
-    (eLpNorm_mono_ae (μ := (volume : Measure EuclN).restrict K)
-      (hc_meas.mul hw.1) hpt)
-    (hw.const_smul (C : ℝ)).2
+  exact (memLp_top_of_bound hc_meas C hc_ae_bd).fun_mul hw
 
 open DifferentialGeometry.Analysis.Spectral in
 omit [CompleteSpace E] in

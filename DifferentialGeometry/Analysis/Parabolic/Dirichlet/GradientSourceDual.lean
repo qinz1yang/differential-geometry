@@ -253,7 +253,9 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_source_dual
   have hηmem : MemLp (fun p : ℝ × EuStd => η p.2) ∞ ν := hlift _ hηall.continuousOn
   have hAmem (i j) : MemLp (A i j) ∞ ν := hlift _ (hAall i j).continuousOn
   have hC (k) : MemLp (C k) 2 ν :=
-    ((Lp.memLp (F k)).mul (r := 2) hrinv).sub (((hV k).mul (r := 2) hσmem).mul (r := 2) (hrt.mul (r := ∞) hrinv))
+    (hrinv.fun_mul (r := 2) (Lp.memLp (F k))).sub
+      ((hrinv.fun_mul (r := ∞) hrt).fun_mul (r := 2)
+        (hσmem.fun_mul (r := 2) (hV k)))
   have hQ (k j) : MemLp (Q k j) 2 ν := by
     apply memLp_finsetSum
     intro i _
@@ -265,12 +267,12 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_source_dual
     hlift _ (((hηall.div hrall hrne).fderiv_of_isOpen (m := (⊤ : ℕ∞)) (D.regular_isOpen.prod hΩ)
       (by simp)).clm_apply contDiffOn_const).continuousOn
   have hB (k) : MemLp (B k) 2 ν := by
-    apply ((hC k).mul hηmem).sub
+    apply (hηmem.fun_mul (r := 2) (hC k)).sub
     apply memLp_finsetSum
     intro i _
     apply memLp_finsetSum
     intro j _
-    exact (hdηr j).mul (r := 2) ((Lp.memLp (H k i)).mul (r := 2) (hAmem i j))
+    exact ((hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))).fun_mul (r := 2) (hdηr j)
   refine ⟨hQ, hB, ?_⟩
   intro k
   exact exists_lp_chart_source_sub_divergence_dual α hΩ₀ hΩ₀c hΩ₀s (hB k) (hQ k)
@@ -406,7 +408,9 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_weak_equation
   have hηmem : MemLp (fun p : ℝ × EuStd => η p.2) ∞ ν := hlift _ hηall.continuousOn
   have hAmem (i j) : MemLp (A i j) ∞ ν := hlift _ (hAall i j).continuousOn
   have hC (k) : MemLp (C k) 2 ν :=
-    ((Lp.memLp (F k)).mul (r := 2) hrinv).sub (((hV k).mul (r := 2) hσmem).mul (r := 2) (hrt.mul (r := ∞) hrinv))
+    (hrinv.fun_mul (r := 2) (Lp.memLp (F k))).sub
+      ((hrinv.fun_mul (r := ∞) hrt).fun_mul (r := 2)
+        (hσmem.fun_mul (r := 2) (hV k)))
   have hdηr (j) : MemLp (fun p => fderiv ℝ (fun z : ℝ × EuStd => η z.2 / r z) p
       (0, EuclideanSpace.single j 1)) ∞ ν :=
     hlift _ (((hηall.div hrall hrne).fderiv_of_isOpen (m := (⊤ : ℕ∞)) (D.regular_isOpen.prod hΩ)
@@ -421,20 +425,20 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_weak_equation
     have hP (j) : MemLp (P j) 2 ν := by
       apply memLp_finsetSum
       intro i _
-      exact (Lp.memLp (H k i)).mul (r := 2) (hAmem i j)
+      exact (hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))
     have hSsub : Ioo t₀ t₁ ×ˢ Ω₀ ⊆ D.regular ×ˢ Ω := by
       intro p hp
       exact ⟨hreg ⟨ht₀.le.trans hp.1.1.le, hp.1.2.le.trans ht₁.le⟩, hsub hp.2⟩
     have hr := hrall.mono hSsub
     have hpQ (j) : LocallyIntegrable (fun p => η p.2 / r p * P j p) ν := by
       have hm : MemLp (fun p => η p.2 / r p * P j p) 2 ν := by
-        convert (hP j).mul (r := 2) (hrinv.mul (r := ∞) hηmem) using 1
+        convert (hηmem.fun_mul (r := ∞) hrinv).fun_mul (r := 2) (hP j) using 1
         ext p
         simp [div_eq_mul_inv]
       exact (hm.integrable (by norm_num)).locallyIntegrable
     have hpB (j) : LocallyIntegrable (fun p => P j p * fderiv ℝ
         (fun z => η z.2 / r z) p (0, EuclideanSpace.single j 1)) ν :=
-      (((hdηr j).mul (r := 2) (hP j)).integrable (by norm_num)).locallyIntegrable
+      (((hP j).fun_mul (r := 2) (hdηr j)).integrable (by norm_num)).locallyIntegrable
     have hw : ∀ ψ : ℝ × EuStd → ℝ, ContDiff ℝ (⊤ : ℕ∞) ψ → HasCompactSupport ψ →
         tsupport ψ ⊆ Ioo t₀ t₁ ×ˢ Ω₀ →
         (∫ p, (σ p * V k p) * fderiv ℝ ψ p (1, 0) ∂ν) =
@@ -454,7 +458,7 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_weak_equation
           (hψrc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
       have hin (i j) : Integrable (fun p => A i j p * H k i p *
           fderiv ℝ (fun z => ψ z / r z) p (0, EuclideanSpace.single j 1)) ν :=
-        (((hdψ j).mul (r := 2) ((Lp.memLp (H k i)).mul (r := 2) (hAmem i j))).integrable (by norm_num))
+        ((((hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))).fun_mul (r := 2) (hdψ j)).integrable (by norm_num))
       have heach (j) : (∫ p, P j p * fderiv ℝ (fun z => ψ z / r z) p
           (0, EuclideanSpace.single j 1) ∂ν) =
           ∑ i, ∫ p, A i j p * H k i p * fderiv ℝ (fun z => ψ z / r z) p
@@ -465,7 +469,7 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_gradient_weak_equation
       rw [Finset.sum_comm]
       exact hfixed k ψ hψ hψc hψs
     have he := integral_cutoff_weak_equation hΩ₀ hη hr (fun p hp => hrne p (hSsub hp))
-      ((((hC k).mul (r := 2) hηmem).integrable (by norm_num)).locallyIntegrable) hpQ hpB hw
+      (((hηmem.fun_mul (r := 2) (hC k)).integrable (by norm_num)).locallyIntegrable) hpQ hpB hw
       φ hφ hφc hφs
     have hQeq (j) (p : ℝ × EuStd) : (η p.2 / r p) * P j p = Q k j p := by
       simp only [P, Q, Finset.mul_sum, mul_assoc]

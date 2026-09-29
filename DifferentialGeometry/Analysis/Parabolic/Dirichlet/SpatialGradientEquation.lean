@@ -157,7 +157,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation
     have hDρ := hlift _ hDρc.continuousOn
     have hDDρ := hlift _ hDDρc.continuousOn
     let C := fun p => Dρ p * R p + DDρ p * U p
-    have hC : MemLp C 2 ν := ((Lp.memLp R).mul hDρ).add (hU.mul hDDρ)
+    have hC : MemLp C 2 ν := (hDρ.fun_mul (r := 2) (Lp.memLp R)).add (hDDρ.fun_mul (r := 2) hU)
     let f := fun p => Fdiv p + Flower p - C p
     have hf : MemLp f 2 ν := ((Lp.memLp Fdiv).add (Lp.memLp Flower)).sub hC
     refine ⟨hf.toLp f, ?_⟩
@@ -187,10 +187,10 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation
         (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1)) ν
     have hmainI (i j) : Integrable (fun p => A i j p * H k i p *
         fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-      ((hdmem j).mul (r := 2) ((Lp.memLp (H k i)).mul (r := 2) (hAmem i j))).integrable (by norm_num)
+      (((hAmem i j).fun_mul (r := 2) (Lp.memLp (H k i))).fun_mul (r := 2) (hdmem j)).integrable (by norm_num)
     have herrorI (i j) : Integrable (fun p => fderiv ℝ (A i j) p (0, EuclideanSpace.single k 1) * V i p *
         fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-      ((hdmem j).mul (r := 2) ((hV i).mul (r := 2) (hDAmem i j))).integrable (by norm_num)
+      (((hDAmem i j).fun_mul (r := 2) (hV i)).fun_mul (r := 2) (hdmem j)).integrable (by norm_num)
     have hsplit (i j) : (∫ p, (A i j p * H k i p +
         fderiv ℝ (A i j) p (0, EuclideanSpace.single k 1) * V i p) *
           fderiv ℝ φ p (0, EuclideanSpace.single j 1) ∂ν) =
@@ -220,7 +220,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation
           simp_rw [Finset.sum_add_distrib]
     have hφLp : MemLp φ ∞ ν := hφ.continuous.memLp_top_of_hasCompactSupport hφc ν
     have hint (g : ℝ × EuStd → ℝ) (hg : MemLp g 2 ν) : Integrable (fun p => g p * φ p) ν :=
-      (hφLp.mul (r := 2) hg).integrable (by norm_num)
+      (hg.fun_mul (r := 2) hφLp).integrable (by norm_num)
     have hFeq : (∫ p, (hf.toLp f) p * φ p ∂ν) =
         (∫ p, Fdiv p * φ p ∂ν) + (∫ p, Flower p * φ p ∂ν) - ∫ p, C p * φ p ∂ν := by
       have hc : (∫ p, (hf.toLp f) p * φ p ∂ν) = ∫ p, f p * φ p ∂ν := by
@@ -328,7 +328,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_gradient_equation_fixed_density
     fun t ht => hreg ⟨ht₀.le.trans ht.1.le, ht.2.le.trans ht₁.le⟩
   intro k φ hφ hφc hφs
   exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo hJ hΩ₀
-    (hsub.trans hchart) (((hV k).mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+    (hsub.trans hchart) ((hσmem.fun_mul (r := 2) (hV k)).locallyIntegrable (by norm_num))
     ((Lp.memLp (F k)).locallyIntegrable (by norm_num))
     (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * H k i p *
       fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) (hF k) hφ hφc hφs

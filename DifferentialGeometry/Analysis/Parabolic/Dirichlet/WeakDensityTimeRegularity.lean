@@ -165,7 +165,7 @@ theorem exists_local_lp_time_weak_derivative_of_weighted_weak_equation
     intro φ hφ hφc hφs
     have hint (i j) : Integrable (fun p => A i j p * V i p *
         fderiv ℝ φ p (0, EuclideanSpace.single j 1)) ν :=
-      (((Lp.memLp (V i)).mul (r := 2) (hAmem i j)).locallyIntegrable
+      (((hAmem i j).fun_mul (r := 2) (Lp.memLp (V i))).locallyIntegrable
         (by norm_num)).integrable_smul_right_of_hasCompactSupport
           ((hφ.continuous_fderiv (by simp)).clm_apply continuous_const)
           (hφc.fderiv_apply ℝ (0, EuclideanSpace.single j 1))
@@ -208,7 +208,8 @@ theorem exists_local_lp_time_weak_derivative_of_weighted_weak_equation
       (m := (⊤ : ℕ∞)) (by simp)).clm_apply contDiffOn_const).continuousOn)
   let T := fun p => (ρ p)⁻¹ * Source p - ((ρ p)⁻¹ * fderiv ℝ ρ p (1, 0)) * U p
   have hT : MemLp T 2 ν :=
-    (hSource.mul (r := 2) hρinv).sub (hU.mul (r := 2) (hρt.mul (r := ∞) hρinv))
+    (hρinv.fun_mul (r := 2) hSource).sub
+      ((hρinv.fun_mul (r := ∞) hρt).fun_mul (r := 2) hU)
   refine ⟨H, hT.toLp T, hH, hUtwo, ?_, ?_⟩
   · filter_upwards [hT.coeFn_toLp, hDivK] with p hp hDp
     rw [hp]

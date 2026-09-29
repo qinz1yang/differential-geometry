@@ -955,12 +955,13 @@ private lemma tensorContribSurrogate_memLp_two
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
     eLpNorm_mono_enorm
+      (DifferentialGeometry.Analysis.Sobolev.Chart.chartPushedRaw_measurable
+        (I := I) (M := M) α h_c_meas).aestronglyMeasurable
       (chartPushedRaw_tensorContribSurrogate_le_rep
         (I := I) (M := M) g φ α hu_h)
   have h_rep_memLp := chartTensorPairingLocalRep_memLp_two
     (I := I) (M := M) g α φ hu_h
-  have h_rep_eLp_lt_top := h_rep_memLp.2
-  refine ⟨h_c_meas.aestronglyMeasurable, ?_⟩
+  have h_rep_eLp_lt_top := h_rep_memLp.eLpNorm_lt_top
   calc eLpNorm (tensorContribSurrogate (I := I) (M := M) g φ α hu_h) 2
         (riemannianVolumeMeasure (I := I) (M := M) g)
       ≤ ENNReal.ofReal C_α *

@@ -115,7 +115,7 @@ theorem IsWeakEvolutionSolution.exists_lp_weak_hessian_equation_fixed_density
     fun t ht => hreg ⟨ht₀.le.trans ht.1.le, ht.2.le.trans ht₁.le⟩
   intro k l φ hφ hφc hφs
   exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo hJ hΩ₀
-    (hsub.trans hchart) (((Lp.memLp (H k l)).mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+    (hsub.trans hchart) ((hσmem.fun_mul (r := 2) (Lp.memLp (H k l))).locallyIntegrable (by norm_num))
     ((Lp.memLp (S k l)).locallyIntegrable (by norm_num))
     (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * K k l i p *
       fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) (hS k l) hφ hφc hφs
@@ -248,11 +248,13 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_hessian_source_dual
   have hηmem : MemLp (fun p : ℝ × EuStd => η p.2) ∞ ν := hlift _ hηall.continuousOn
   have hAmem (i j) : MemLp (A i j) ∞ ν := hlift _ (hAall i j).continuousOn
   have hC (k l) : MemLp (C k l) 2 ν :=
-    ((Lp.memLp (S k l)).mul (r := 2) hrinv).sub (((Lp.memLp (H k l)).mul (r := 2) hσmem).mul (r := 2) (hrt.mul (r := ∞) hrinv))
+    (hrinv.fun_mul (r := 2) (Lp.memLp (S k l))).sub
+      ((hrinv.fun_mul (r := ∞) hrt).fun_mul (r := 2)
+        (hσmem.fun_mul (r := 2) (Lp.memLp (H k l))))
   have hP (k l j) : MemLp (P k l j) 2 ν := by
     apply memLp_finsetSum
     intro i _
-    exact (Lp.memLp (K k l i)).mul (r := 2) (hAmem i j)
+    exact (hAmem i j).fun_mul (r := 2) (Lp.memLp (K k l i))
   have hQ (k l j) : MemLp (Q k l j) 2 ν := by
     apply memLp_finsetSum
     intro i _
@@ -264,12 +266,12 @@ theorem IsWeakEvolutionSolution.exists_lp_cutoff_hessian_source_dual
     hlift _ (((hηall.div hrall hrne).fderiv_of_isOpen (m := (⊤ : ℕ∞)) (D.regular_isOpen.prod hΩ)
       (by simp)).clm_apply contDiffOn_const).continuousOn
   have hB (k l) : MemLp (B k l) 2 ν := by
-    apply ((hC k l).mul hηmem).sub
+    apply (hηmem.fun_mul (r := 2) (hC k l)).sub
     apply memLp_finsetSum
     intro i _
     apply memLp_finsetSum
     intro j _
-    exact (hdηr j).mul (r := 2) ((Lp.memLp (K k l i)).mul (r := 2) (hAmem i j))
+    exact ((hAmem i j).fun_mul (r := 2) (Lp.memLp (K k l i))).fun_mul (r := 2) (hdηr j)
   refine ⟨hC, hP, hQ, hB, hdηr, ?_⟩
   intro k l
   exact exists_lp_chart_source_sub_divergence_dual α hΩ₀ hΩ₀c hΩ₀s (hB k l) (hQ k l)

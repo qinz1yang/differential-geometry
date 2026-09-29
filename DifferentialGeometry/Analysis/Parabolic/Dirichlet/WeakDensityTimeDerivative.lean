@@ -119,17 +119,17 @@ theorem exists_timeH1_cutoff_mass_of_weighted_weak_equation
         (0, EuclideanSpace.single j 1)) ∞ ν :=
     hlift _ ((((hηS.div hr hrne).fderiv_of_isOpen hS (m := (⊤ : ℕ∞))
       (by simp)).clm_apply contDiffOn_const).continuousOn)
-  have hW : MemLp (fun p => σ p * U p) 2 ν := (Lp.memLp U).mul (r := 2) hσ
+  have hW : MemLp (fun p => σ p * U p) 2 ν := hσ.fun_mul (r := 2) (Lp.memLp U)
   have hC : MemLp C 2 ν :=
-    ((Lp.memLp F).mul (r := 2) hrinv).sub
-      (hW.mul (r := 2) (hrt.mul (r := ∞) hrinv))
+    (hrinv.fun_mul (r := 2) (Lp.memLp F)).sub
+      ((hrinv.fun_mul (r := ∞) hrt).fun_mul (r := 2) hW)
   have hQ (j : Fin (Module.finrank ℝ EuN)) : MemLp (Q j) 2 ν :=
-    (Lp.memLp (P j)).mul (r := 2) hηr
+    hηr.fun_mul (r := 2) (Lp.memLp (P j))
   have hB : MemLp B 2 ν := by
-    apply (hC.mul (r := 2) hηp).sub
+    apply (hηp.fun_mul (r := 2) hC).sub
     apply memLp_finsetSum
     intro j _
-    exact (hdηr j).mul (r := 2) (Lp.memLp (P j))
+    exact (Lp.memLp (P j)).fun_mul (r := 2) (hdηr j)
   have hI : Ioo a b ×ˢ Ω ⊆ S :=
     (Set.prod_mono Ioo_subset_Icc_self subset_closure).trans hSsub
   have hfixed : ∀ φ : ℝ × EuStd → ℝ,
@@ -206,16 +206,16 @@ theorem exists_timeH1_cutoff_mass_of_weighted_weak_equation
     have hint (A : ℝ × EuStd → ℝ) (hA : MemLp A 2 ν)
         (χ : EuStd → ℝ) (hχ : MemLp χ ∞ (volume.restrict Ω)) :
         Integrable (fun p => τ p.1 * A p * χ p.2) ν :=
-      ((hχ.comp_snd μ).mul (r := 2) (hA.mul (r := 2)
-        (hτmem.comp_fst (volume.restrict Ω)))).integrable (by norm_num)
+      (((hτmem.comp_fst (volume.restrict Ω)).fun_mul (r := 2) hA).fun_mul
+        (r := 2) (hχ.comp_snd μ)).integrable (by norm_num)
     have hmain (j) : Integrable (fun p => τ p.1 * ((η p.2 / r p) * P j p) *
         fderiv ℝ ψ p.2 (EuclideanSpace.single j 1)) ν :=
       hint (Q j) (hQ j) _ (hdψmem j)
     have herr (j) : Integrable (fun p => τ p.1 * (P j p *
         fderiv ℝ (fun z => η z.2 / r z) p (0, EuclideanSpace.single j 1)) * ψ p.2) ν :=
-      hint _ ((hdηr j).mul (r := 2) (Lp.memLp (P j))) ψ hψmem
+      hint _ ((Lp.memLp (P j)).fun_mul (r := 2) (hdηr j)) ψ hψmem
     have hsource : Integrable (fun p => τ p.1 * (η p.2 * C p) * ψ p.2) ν :=
-      hint _ (hC.mul (r := 2) hηp) ψ hψmem
+      hint _ (hηp.fun_mul (r := 2) hC) ψ hψmem
     have hmem : ∀ᵐ p ∂ν, p.1 ∈ Icc a b ∧ p.2 ∈ Ω := by
       apply (Measure.ae_prod_iff_ae_ae (measurableSet_Icc.prod hΩ.measurableSet)).mpr
       filter_upwards [ae_restrict_mem measurableSet_Icc] with t ht

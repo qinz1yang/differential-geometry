@@ -1067,7 +1067,7 @@ lemma bilin_eigenvectorPouApprox_tendsto
             g r s i α P₀ i' y) 1
           ((volume : Measure EuclN).restrict
             (chartTargetEuclid (I := I) (M := M) α)) :=
-        hwp_memLp.mul hpst_memLp
+        hpst_memLp.fun_mul (r := 1) hwp_memLp
       have hprod_int : Integrable (fun y =>
           principalSymbolTest (I := I) (M := M) g α ψ i' y *
             eigenvectorChartWeakPartial (I := I) (M := M)
