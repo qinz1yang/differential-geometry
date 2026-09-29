@@ -20,11 +20,9 @@ local instance partialGraphClosedCellIsManifold : IsManifold (𝓡∂ 3) ∞ (Cl
 structure MarkedBall (N : ClosedOrientedManifold.{u} 3) where
   ball : ClosedCell 3 → N.Carrier
   ball_embedding : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ ball
-  collar : Set N.Carrier
-  collar_isOpen : IsOpen collar
-  ball_subset_collar : range ball ⊆ collar
-  collarBudget : ℝ
-  collarBudget_pos : 0 < collarBudget
+  neighborhood : Set N.Carrier
+  isOpen_neighborhood : IsOpen neighborhood
+  range_ball_subset_neighborhood : range ball ⊆ neighborhood
 
 namespace MarkedBall
 
@@ -32,11 +30,8 @@ variable {N : ClosedOrientedManifold.{u} 3}
 
 def boundary (B : MarkedBall N) : S2 → N.Carrier := B.ball ∘ sphereToClosedCell
 
-theorem boundary_mem_collar (B : MarkedBall N) (z : S2) : B.boundary z ∈ B.collar :=
-  B.ball_subset_collar (mem_range_self (sphereToClosedCell z))
-
-theorem collarBudget_ne_zero (B : MarkedBall N) : B.collarBudget ≠ 0 :=
-  ne_of_gt B.collarBudget_pos
+theorem boundary_mem_neighborhood (B : MarkedBall N) (z : S2) : B.boundary z ∈ B.neighborhood :=
+  B.range_ball_subset_neighborhood (mem_range_self (sphereToClosedCell z))
 
 end MarkedBall
 
@@ -50,9 +45,9 @@ structure MarkedManifoldGraph where
   vertexManifold : Vertex → ConnectedClosedOrientedManifold.{u} 3
   flag : (e : Edge) → (b : Bool) →
     MarkedBall (vertexManifold (endpoint e b)).toClosedOrientedManifold
-  flag_collar_disjoint : ∀ (v : Vertex)
+  flag_neighborhood_disjoint : ∀ (v : Vertex)
       (f f' : {p : Edge × Bool // endpoint p.1 p.2 = v}), f ≠ f' →
-      Disjoint (f.2 ▸ (flag f.1.1 f.1.2).collar) (f'.2 ▸ (flag f'.1.1 f'.1.2).collar)
+      Disjoint (f.2 ▸ (flag f.1.1 f.1.2).neighborhood) (f'.2 ▸ (flag f'.1.1 f'.1.2).neighborhood)
   attach : (e : Edge) → (b : Bool) → S2 → (vertexManifold (endpoint e b)).Carrier
   attach_eq : ∀ (e : Edge) (b : Bool) (z : S2),
     attach e b z = (flag e b).ball (sphereToClosedCell z)
@@ -198,7 +193,7 @@ abbrev twoVertex (N : ConnectedClosedOrientedManifold.{0} 3)
   endpoint := fun _ b => b
   vertexManifold := fun _ => N
   flag := fun _ b => if b then B' else B
-  flag_collar_disjoint := fun v f f' hne => by
+  flag_neighborhood_disjoint := fun v f f' hne => by
     refine absurd (Subtype.ext ?_) hne
     refine Prod.ext (Subsingleton.elim _ _) ?_
     exact f.2.trans f'.2.symm
@@ -232,17 +227,12 @@ structure PartialRealization (G : MarkedManifoldGraph.{u}) (S : Finset G.Edge) w
   covers : ∀ x : realization.Carrier,
     (∃ (v : G.Vertex) (y : G.puncturedCarrier S v), vertexPiece v y = x) ∨
     (∃ (e : G.Edge) (he : e ∈ S) (y : G.cylinderCarrier e), cylinderPiece e he y = x)
-  survivingFlag_collar_disjoint : ∀ (e e' : G.Edge) (he : e ∉ S) (he' : e' ∉ S), e ≠ e' →
-    Disjoint (survivingFlag e he).collar (survivingFlag e' he').collar
+  survivingFlag_neighborhood_disjoint : ∀ (e e' : G.Edge) (he : e ∉ S) (he' : e' ∉ S), e ≠ e' →
+    Disjoint (survivingFlag e he).neighborhood (survivingFlag e' he').neighborhood
 
 namespace PartialRealization
 
 variable {G : MarkedManifoldGraph.{u}} {S : Finset G.Edge} (P : PartialRealization G S)
-
-def collarBudget (e : G.Edge) (he : e ∉ S) : ℝ := (P.survivingFlag e he).collarBudget
-
-theorem collarBudget_pos (e : G.Edge) (he : e ∉ S) : 0 < P.collarBudget e he :=
-  (P.survivingFlag e he).collarBudget_pos
 
 def survivingFlags (e : {e : G.Edge // e ∉ S}) : MarkedBall P.realization :=
   P.survivingFlag e.1 e.2
@@ -298,7 +288,7 @@ abbrev oneVertex (N : ConnectedClosedOrientedManifold.{u} 3) : MarkedManifoldGra
   endpoint := fun e => PEmpty.elim e
   vertexManifold := fun _ => N
   flag := fun e => PEmpty.elim e
-  flag_collar_disjoint := fun _ f => PEmpty.elim f.1.1
+  flag_neighborhood_disjoint := fun _ f => PEmpty.elim f.1.1
   attach := fun e => PEmpty.elim e
   attach_eq := fun e => PEmpty.elim e
 
@@ -314,7 +304,7 @@ def oneVertexEmpty (N : ConnectedClosedOrientedManifold.{u} 3) :
   survivingFlag := fun e => PEmpty.elim e
   covers := fun x =>
     Or.inl ⟨PUnit.unit, ⟨x, by rintro ⟨e, -, -⟩; exact PEmpty.elim e⟩, rfl⟩
-  survivingFlag_collar_disjoint := fun e => PEmpty.elim e
+  survivingFlag_neighborhood_disjoint := fun e => PEmpty.elim e
 
 theorem componentCorrespondence_oneVertexEmpty (N : ConnectedClosedOrientedManifold.{u} 3) :
     (oneVertexEmpty N).componentCorrespondence := by

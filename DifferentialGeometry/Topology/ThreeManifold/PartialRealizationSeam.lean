@@ -47,7 +47,7 @@ namespace MarkedBall
 
 variable {N : ClosedOrientedManifold.{u} 3}
 
-theorem ball_ne_of_disjoint_collar {B B' : MarkedBall N} (h : Disjoint B.collar B'.collar) :
+theorem ball_ne_of_disjoint_neighborhood {B B' : MarkedBall N} (h : Disjoint B.neighborhood B'.neighborhood) :
     B.ball ≠ B'.ball := by
   intro hball
   have hx : B.ball (closedCellCenter 3) ∈ range B.ball := mem_range_self _
@@ -365,10 +365,8 @@ structure FlagMarking (P : PartialRealization G S) where
   marked : (e : G.Edge) → (b : Bool) → e ∉ S → MarkedBall P.realization
   transport : ∀ (e : G.Edge) (b : Bool) (he : e ∉ S) (x : ClosedCell 3),
     (marked e b he).ball x = P.vertexPiece (G.endpoint e b) (G.flagBallPoint S e b he x)
-  reserve : ∀ (e : G.Edge) (b : Bool) (he : e ∉ S),
-    (marked e b he).collarBudget ≤ (G.flag e b).collarBudget
-  collar_disjoint : ∀ (e e' : G.Edge) (b b' : Bool) (he : e ∉ S) (he' : e' ∉ S),
-    (e, b) ≠ (e', b') → Disjoint (marked e b he).collar (marked e' b' he').collar
+  neighborhood_disjoint : ∀ (e e' : G.Edge) (b b' : Bool) (he : e ∉ S) (he' : e' ∉ S),
+    (e, b) ≠ (e', b') → Disjoint (marked e b he).neighborhood (marked e' b' he').neighborhood
 
 namespace FlagMarking
 
@@ -378,8 +376,8 @@ def toSurvivingFlag (e : G.Edge) (he : e ∉ S) : MarkedBall P.realization :=
   M.marked e false he
 
 theorem disjoint_toSurvivingFlag (e e' : G.Edge) (he : e ∉ S) (he' : e' ∉ S) (hne : e ≠ e') :
-    Disjoint (M.toSurvivingFlag e he).collar (M.toSurvivingFlag e' he').collar :=
-  M.collar_disjoint e e' false false he he' fun h => hne (Prod.mk.inj h).1
+    Disjoint (M.toSurvivingFlag e he).neighborhood (M.toSurvivingFlag e' he').neighborhood :=
+  M.neighborhood_disjoint e e' false false he he' fun h => hne (Prod.mk.inj h).1
 
 theorem toSurvivingFlag_transport (e : G.Edge) (he : e ∉ S) (x : ClosedCell 3) :
     (M.toSurvivingFlag e he).ball x = P.vertexPiece (G.endpoint e false)
@@ -389,18 +387,17 @@ theorem toSurvivingFlag_transport (e : G.Edge) (he : e ∉ S) (x : ClosedCell 3)
 end FlagMarking
 
 def flagMarkingOneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
     (oneVertexLoopEmpty N B B' hdisj).FlagMarking where
   marked := fun _ b _ => if b then B' else B
   transport := fun _ _ _ _ => rfl
-  reserve := fun _ _ _ => le_refl _
-  collar_disjoint := fun _ _ b b' _ _ hne => by
+  neighborhood_disjoint := fun _ _ b b' _ _ hne => by
     have hbb : b ≠ b' := fun h => hne (Prod.ext rfl h)
-    exact MarkedManifoldGraph.disjoint_collar_if_flags_ne hdisj hbb
+    exact MarkedManifoldGraph.disjoint_neighborhood_if_flags_ne hdisj hbb
 
 theorem not_flagMarkerTransport_constBall_oneVertexLoopEmpty
     (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
     ¬ (oneVertexLoopEmpty N B B' hdisj).FlagMarkerTransport (fun _ => B)
       PUnit.unit (Finset.notMem_empty PUnit.unit) := by
   intro htrans
@@ -408,7 +405,7 @@ theorem not_flagMarkerTransport_constBall_oneVertexLoopEmpty
     funext x
     have h : B.ball x = (if true then B' else B).ball x := htrans true x
     simpa using h
-  exact MarkedBall.ball_ne_of_disjoint_collar hdisj htrue
+  exact MarkedBall.ball_ne_of_disjoint_neighborhood hdisj htrue
 
 theorem seamEquation_iff_boundaryGluing_rel (P : PartialRealization G (insert e S)) :
     P.SeamEquation e (Finset.mem_insert_self e S) ↔
@@ -430,11 +427,9 @@ structure StepAssemblyData (G : MarkedManifoldGraph.{u}) (S : Finset G.Edge) (e 
     (x : ClosedCell 3),
     (survivingFlag f b hf).ball x = quotient (Quot.mk (G.stepAssemblyRel S e)
       (Sum.inl ⟨G.endpoint f b, G.flagBallPoint (insert e S) f b hf x⟩))
-  survivingFlag_reserve : ∀ (f : G.Edge) (b : Bool) (hf : f ∉ insert e S),
-    (survivingFlag f b hf).collarBudget ≤ (G.flag f b).collarBudget
-  survivingFlag_collar_disjoint : ∀ (f f' : G.Edge) (b b' : Bool) (hf : f ∉ insert e S)
+  survivingFlag_neighborhood_disjoint : ∀ (f f' : G.Edge) (b b' : Bool) (hf : f ∉ insert e S)
     (hf' : f' ∉ insert e S), (f, b) ≠ (f', b') →
-    Disjoint (survivingFlag f b hf).collar (survivingFlag f' b' hf').collar
+    Disjoint (survivingFlag f b hf).neighborhood (survivingFlag f' b' hf').neighborhood
 
 namespace StepAssemblyData
 
@@ -463,8 +458,8 @@ def partialRealization : PartialRealization G (insert e S) where
     · refine Or.inr ⟨q.1.1, q.1.2, ⟨q.2, ?_⟩⟩
       change D.quotient (Quot.mk (G.stepAssemblyRel S e) (Sum.inr ⟨q.1, q.2⟩)) = x
       exact hx
-  survivingFlag_collar_disjoint f f' hf hf' hne :=
-    D.survivingFlag_collar_disjoint f f' false false hf hf'
+  survivingFlag_neighborhood_disjoint f f' hf hf' hne :=
+    D.survivingFlag_neighborhood_disjoint f f' false false hf hf'
       (fun h => hne (Prod.mk.inj h).1)
 
 theorem partialRealization_seamEquation :
@@ -488,9 +483,8 @@ theorem partialRealization_seamEquation :
 def partialRealizationFlagMarking : (D.partialRealization).FlagMarking where
   marked := D.survivingFlag
   transport := fun f b hf x => D.survivingFlag_transport f b hf x
-  reserve := fun f b hf => D.survivingFlag_reserve f b hf
-  collar_disjoint := fun f f' b b' hf hf' hne =>
-    D.survivingFlag_collar_disjoint f f' b b' hf hf' hne
+  neighborhood_disjoint := fun f f' b b' hf hf' hne =>
+    D.survivingFlag_neighborhood_disjoint f f' b b' hf hf' hne
 
 theorem exists_partialRealization_and_flagMarking (D : StepAssemblyData G S e) :
     ∃ P' : PartialRealization G (insert e S),

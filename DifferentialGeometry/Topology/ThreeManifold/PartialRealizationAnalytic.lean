@@ -16,9 +16,9 @@ namespace MarkedBall
 
 variable {N : ClosedOrientedManifold.{u} 3}
 
-theorem disjoint_range_ball {B B' : MarkedBall N} (h : Disjoint B.collar B'.collar) :
+theorem disjoint_range_ball {B B' : MarkedBall N} (h : Disjoint B.neighborhood B'.neighborhood) :
     Disjoint (range B.ball) (range B'.ball) :=
-  h.mono B.ball_subset_collar B'.ball_subset_collar
+  h.mono B.range_ball_subset_neighborhood B'.range_ball_subset_neighborhood
 
 theorem boundary_not_mem_own_interior (B : MarkedBall N) (z : S²) :
     B.boundary z ∉ (range B.ball \ range (B.ball ∘ sphereToClosedCell)) :=
@@ -45,11 +45,11 @@ theorem mem_flagInterior_cast_iff (e : G.Edge) (b : Bool) (v : G.Vertex)
   cases hv
   exact Iff.rfl
 
-theorem flagBall_cast_subset_collar (e : G.Edge) (b : Bool) (v : G.Vertex)
+theorem flagBall_cast_subset_neighborhood (e : G.Edge) (b : Bool) (v : G.Vertex)
     (hv : G.endpoint e b = v) :
-    hv ▸ range (G.flag e b).ball ⊆ hv ▸ (G.flag e b).collar := by
+    hv ▸ range (G.flag e b).ball ⊆ hv ▸ (G.flag e b).neighborhood := by
   cases hv
-  exact (G.flag e b).ball_subset_collar
+  exact (G.flag e b).range_ball_subset_neighborhood
 
 theorem flagBoundary_not_mem_own_flagInterior_cast (e : G.Edge) (b : Bool)
     (hv : G.endpoint e b = G.endpoint e b) (z : S²) :
@@ -69,11 +69,11 @@ theorem flagBoundary_not_mem_removedBallSet (S : Finset G.Edge) (e : G.Edge) (b 
   · have hne : (⟨(e, b), rfl⟩ :
         {p : G.Edge × Bool // G.endpoint p.1 p.2 = G.endpoint e b}) ≠
         ⟨(e', b'), hv'⟩ := fun hh => hsame (congrArg Subtype.val hh)
-    have hdisj := G.flag_collar_disjoint (G.endpoint e b) ⟨(e, b), rfl⟩ ⟨(e', b'), hv'⟩ hne
+    have hdisj := G.flag_neighborhood_disjoint (G.endpoint e b) ⟨(e, b), rfl⟩ ⟨(e', b'), hv'⟩ hne
     have hball : Disjoint (range (G.flag e b).ball)
         (hv' ▸ range (G.flag e' b').ball) :=
-      hdisj.mono (G.flag e b).ball_subset_collar
-        (flagBall_cast_subset_collar G e' b' (G.endpoint e b) hv')
+      hdisj.mono (G.flag e b).range_ball_subset_neighborhood
+        (flagBall_cast_subset_neighborhood G e' b' (G.endpoint e b) hv')
     refine Set.disjoint_left.mp hball
       (mem_range_self (f := (G.flag e b).ball) (sphereToClosedCell z)) ?_
     exact (mem_flagBall_cast_iff G e' b' (G.endpoint e b) hv' _).mpr
@@ -89,11 +89,11 @@ theorem flagBall_not_mem_removedBallSet (S : Finset G.Edge) (e : G.Edge) (b : Bo
     intro hh
     have hv : e = e' := congrArg (fun p : G.Edge × Bool => p.1) (congrArg Subtype.val hh)
     exact he (hv ▸ he')
-  have hdisj := G.flag_collar_disjoint (G.endpoint e b) ⟨(e, b), rfl⟩ ⟨(e', b'), hv'⟩ hne
+  have hdisj := G.flag_neighborhood_disjoint (G.endpoint e b) ⟨(e, b), rfl⟩ ⟨(e', b'), hv'⟩ hne
   have hball : Disjoint (range (G.flag e b).ball)
       (hv' ▸ range (G.flag e' b').ball) :=
-    hdisj.mono (G.flag e b).ball_subset_collar
-      (flagBall_cast_subset_collar G e' b' (G.endpoint e b) hv')
+    hdisj.mono (G.flag e b).range_ball_subset_neighborhood
+      (flagBall_cast_subset_neighborhood G e' b' (G.endpoint e b) hv')
   refine Set.disjoint_left.mp hball (mem_range_self (f := (G.flag e b).ball) x) ?_
   exact (mem_flagBall_cast_iff G e' b' (G.endpoint e b) hv' _).mpr
     (((mem_flagInterior_cast_iff G e' b' (G.endpoint e b) hv' _).mp hmem).1)
@@ -329,14 +329,14 @@ theorem injOn_adjunctionLower_compl_range {A : Type v} {B : Type w} {X : Type u}
 
 namespace MarkedManifoldGraph
 
-theorem disjoint_collar_if_flags_ne {N : ClosedOrientedManifold.{u} 3} {B B' : MarkedBall N}
-    (hdisj : Disjoint B.collar B'.collar) {b b' : Bool} (hbb : b ≠ b') :
-    Disjoint (if b then B' else B).collar (if b' then B' else B).collar := by
+theorem disjoint_neighborhood_if_flags_ne {N : ClosedOrientedManifold.{u} 3} {B B' : MarkedBall N}
+    (hdisj : Disjoint B.neighborhood B'.neighborhood) {b b' : Bool} (hbb : b ≠ b') :
+    Disjoint (if b then B' else B).neighborhood (if b' then B' else B).neighborhood := by
   have hsymm := hdisj.symm
   cases b <;> cases b' <;> simp_all
 
 abbrev oneVertexLoop (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
     MarkedManifoldGraph.{0} where
   Vertex := PUnit
   Edge := PUnit
@@ -346,13 +346,13 @@ abbrev oneVertexLoop (N : ConnectedClosedOrientedManifold.{0} 3)
   endpoint := fun _ _ => PUnit.unit
   vertexManifold := fun _ => N
   flag := fun _ b => if b then B' else B
-  flag_collar_disjoint := fun v f f' hne => by
+  flag_neighborhood_disjoint := fun v f f' hne => by
     obtain ⟨⟨u, b⟩, hb⟩ := f
     obtain ⟨⟨u', b'⟩, hb'⟩ := f'
     have hbb : b ≠ b' := fun h => hne (Subtype.ext (Prod.ext (Subsingleton.elim u u') h))
     subst hb
     cases hb'
-    exact disjoint_collar_if_flags_ne hdisj hbb
+    exact disjoint_neighborhood_if_flags_ne hdisj hbb
   attach := fun _ b => (if b then B' else B).boundary
   attach_eq := fun _ b z => rfl
 
@@ -367,15 +367,11 @@ def FlagMarkerTransport (P : PartialRealization G S) (marked : Bool → MarkedBa
   ∀ (b : Bool) (x : ClosedCell 3),
     (marked b).ball x = P.vertexPiece (G.endpoint e b) (G.flagBallPoint S e b he x)
 
-def MarkerReserve (P : PartialRealization G S) (marked : Bool → MarkedBall P.realization)
-    (e : G.Edge) : Prop :=
-  ∀ b : Bool, (marked b).collarBudget ≤ (G.flag e b).collarBudget
-
-def MarkerCollarTransport (P : PartialRealization G S) (marked : Bool → MarkedBall P.realization)
+def markerNeighborhoodTransport (P : PartialRealization G S) (marked : Bool → MarkedBall P.realization)
     (e : G.Edge) : Prop :=
   ∀ b : Bool, range (fun x : {y : (G.vertexManifold (G.endpoint e b)).Carrier //
-      y ∈ (G.flag e b).collar ∧ y ∉ G.removedBallSet S (G.endpoint e b)} =>
-        P.vertexPiece (G.endpoint e b) ⟨x.1, x.2.2⟩) ⊆ (marked b).collar
+      y ∈ (G.flag e b).neighborhood ∧ y ∉ G.removedBallSet S (G.endpoint e b)} =>
+        P.vertexPiece (G.endpoint e b) ⟨x.1, x.2.2⟩) ⊆ (marked b).neighborhood
 
 theorem range_markedBall_subset_vertexPiece (P : PartialRealization G S)
     {marked : Bool → MarkedBall P.realization} {e : G.Edge} {he : e ∉ S}
@@ -395,7 +391,7 @@ end PartialRealization
 namespace PartialRealization
 
 def oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
     PartialRealization (MarkedManifoldGraph.oneVertexLoop N B B' hdisj) (∅ : Finset PUnit) where
   realization := N.toClosedOrientedManifold
   vertexPiece := fun _ => ⟨Subtype.val, continuous_subtype_val⟩
@@ -404,29 +400,24 @@ def oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
   covers := fun x =>
     Or.inl ⟨PUnit.unit,
       ⟨x, by rintro ⟨e, he, -, -⟩; exact Finset.notMem_empty e he⟩, rfl⟩
-  survivingFlag_collar_disjoint := fun _ _ _ _ hne => absurd rfl hne
+  survivingFlag_neighborhood_disjoint := fun _ _ _ _ hne => absurd rfl hne
 
 theorem flagMarkerTransport_oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
     (oneVertexLoopEmpty N B B' hdisj).FlagMarkerTransport (fun b => if b then B' else B)
       PUnit.unit (Finset.notMem_empty PUnit.unit) :=
   fun _ _ => rfl
 
-theorem markerReserve_oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
-    (oneVertexLoopEmpty N B B' hdisj).MarkerReserve (fun b => if b then B' else B) PUnit.unit :=
-  fun _ => le_refl _
-
-theorem markerCollarTransport_oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
-    (oneVertexLoopEmpty N B B' hdisj).MarkerCollarTransport (fun b => if b then B' else B)
+theorem markerNeighborhoodTransport_oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
+    (oneVertexLoopEmpty N B B' hdisj).markerNeighborhoodTransport (fun b => if b then B' else B)
       PUnit.unit := by
   intro b y hy
   obtain ⟨x, rfl⟩ := hy
   exact x.2.1
 
 theorem injOn_vertexPiece_oneVertexLoopEmpty (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood) :
     Set.InjOn ((oneVertexLoopEmpty N B B' hdisj).vertexPiece PUnit.unit)
       (range ((MarkedManifoldGraph.oneVertexLoop N B B' hdisj).flagBallPoint ∅ PUnit.unit false
           (Finset.notMem_empty PUnit.unit)) ∪
@@ -437,7 +428,7 @@ theorem injOn_vertexPiece_oneVertexLoopEmpty (N : ConnectedClosedOrientedManifol
 
 theorem not_flagMarkerTransport_survivingFlag_oneVertexLoopEmpty
     (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.collar B'.collar)
+    (B B' : MarkedBall N.toClosedOrientedManifold) (hdisj : Disjoint B.neighborhood B'.neighborhood)
     (hinj : Set.InjOn ((oneVertexLoopEmpty N B B' hdisj).vertexPiece PUnit.unit)
       (range ((MarkedManifoldGraph.oneVertexLoop N B B' hdisj).flagBallPoint ∅ PUnit.unit false
           (Finset.notMem_empty PUnit.unit)) ∪

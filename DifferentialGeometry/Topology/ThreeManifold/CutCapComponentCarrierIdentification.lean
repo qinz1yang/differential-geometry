@@ -31,7 +31,7 @@ theorem cappedFactor_cutCapVertex (C : ConnectedComponents M.Carrier)
   (E.cappedFactor_eq_of_mem C _ (E.tubes.coreBoundarySphere (a.1, side) sphereBasePoint)
       rfl).trans (E.cutEndFactor_coe_eq_associatedFactor C a side sphereBasePoint).symm
 
-theorem reachable_cutCapVertex (K : E.CutCapCollarFamily) (a : E.tubes.Index) :
+theorem reachable_cutCapVertex (K : E.CutCapNeighborhoodFamily) (a : E.tubes.Index) :
     ((E.cutCapMarkedGraph K).processedGraph Finset.univ).Reachable
       (E.cutCapVertex a false) (E.cutCapVertex a true) := by
   classical
@@ -43,18 +43,18 @@ theorem reachable_cutCapVertex (K : E.CutCapCollarFamily) (a : E.tubes.Index) :
     MarkedManifoldGraph.processedGraph_mono _ (Finset.subset_univ _)
   exact h.mono hle
 
-def cutCapBranchBlock_eq_cutComponentBranches (K : E.CutCapCollarFamily) : Prop :=
+def cutCapBranchBlock_eq_cutComponentBranches (K : E.CutCapNeighborhoodFamily) : Prop :=
   ∀ (C : ConnectedComponents M.Carrier) (_ : E.cutIndices C ≠ ∅) (a : E.cutIndices C)
     (v : (E.cutCapMarkedGraph K).Vertex),
     (v ∈ ((E.cutCapMarkedGraph K).vertexBlock Finset.univ (E.cutCapVertex a.1 false) :
         Set (E.cutCapMarkedGraph K).Vertex)) ↔ v ∈ E.cappedCutComponents C
 
-def cutCapBranchBlockList_eq_cutPieceSummands (K : E.CutCapCollarFamily) : Prop :=
+def cutCapBranchBlockList_eq_cutPieceSummands (K : E.CutCapNeighborhoodFamily) : Prop :=
   ∀ (C : ConnectedComponents M.Carrier) (_ : E.cutIndices C ≠ ∅) (a : E.cutIndices C),
     (E.cutCapMarkedGraph K).vertexBlockList Finset.univ (E.cutCapVertex a.1 false) =
       E.cappedCutPieceSummands C
 
-theorem forall₂_vertexBlockList_cappedCutPieceFactors (K : E.CutCapCollarFamily)
+theorem forall₂_vertexBlockList_cappedCutPieceFactors (K : E.CutCapNeighborhoodFamily)
     (h : E.cutCapBranchBlockList_eq_cutPieceSummands K)
     (C : ConnectedComponents M.Carrier) (hC : E.cutIndices C ≠ ∅) (a : E.cutIndices C) :
     List.Forall₂ (fun (A B : ConnectedClosedOrientedManifold.{u} 3) =>
@@ -65,7 +65,7 @@ theorem forall₂_vertexBlockList_cappedCutPieceFactors (K : E.CutCapCollarFamil
   rw [h C hC a]
   exact E.forall₂_cappedCutPieceSummands_cappedCutPieceFactors C
 
-theorem card_vertexBlock_eq_card_cappedCutPieceFactorSet (K : E.CutCapCollarFamily)
+theorem card_vertexBlock_eq_card_cappedCutPieceFactorSet (K : E.CutCapNeighborhoodFamily)
     (hb : E.cutCapBranchBlock_eq_cutComponentBranches K)
     (hQ : ClosedOrientedManifold.componentSeparated Q)
     (hD : ClosedOrientedManifold.componentSeparated E.discarded)
@@ -95,7 +95,7 @@ theorem card_vertexBlock_eq_card_cappedCutPieceFactorSet (K : E.CutCapCollarFami
     exact (congrArg Set.ncard hset).trans rfl
   rw [hblock, hncard, ← E.card_cappedCutPieceFactorSet C]
 
-theorem exists_blockInvariant_of_isEmpty_edge (K : E.CutCapCollarFamily)
+theorem exists_blockInvariant_of_isEmpty_edge (K : E.CutCapNeighborhoodFamily)
     (hEdge : IsEmpty (E.cutCapMarkedGraph K).Edge)
     (F : Finset (E.cutCapMarkedGraph K).Edge)
     (Z : ConnectedClosedOrientedManifold.{u} 3) :
@@ -104,7 +104,7 @@ theorem exists_blockInvariant_of_isEmpty_edge (K : E.CutCapCollarFamily)
   cases hF
   exact E.exists_cutCapEmptyRealization_blockInvariant K Z
 
-noncomputable def cutCapGraphRealization_of_isEmpty_index (K : E.CutCapCollarFamily)
+noncomputable def cutCapGraphRealization_of_isEmpty_index (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) [IsEmpty E.tubes.Index] :
     E.CutCapGraphRealization K S := by
   have hEdge : IsEmpty (E.cutCapMarkedGraph K).Edge :=

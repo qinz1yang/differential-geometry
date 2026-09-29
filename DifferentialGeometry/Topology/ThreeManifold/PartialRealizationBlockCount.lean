@@ -462,14 +462,14 @@ theorem not_blockCountBalance_twoVertexEmpty (N N' : ConnectedClosedOrientedMani
   simp at h'
 
 theorem blockExponent_oneVertexLoop (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (h : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (h : Disjoint B.neighborhood B'.neighborhood) :
     (oneVertexLoop N B B' h).blockExponent Finset.univ PUnit.unit = 1 := by
   rw [blockExponent_univ_eq_card_edge_sub_add_one (oneVertexLoop N B B' h) PUnit.unit
     fun _ _ => SimpleGraph.Reachable.of_subsingleton]
   simp
 
 theorem blockCountBalance_oneVertexLoop (N : ConnectedClosedOrientedManifold.{0} 3)
-    (B B' : MarkedBall N.toClosedOrientedManifold) (h : Disjoint B.collar B'.collar) :
+    (B B' : MarkedBall N.toClosedOrientedManifold) (h : Disjoint B.neighborhood B'.neighborhood) :
     (oneVertexLoop N B B' h).BlockCountBalance :=
   blockCountBalance_of_preconnected (oneVertexLoop N B B' h)
     fun _ _ => SimpleGraph.Reachable.of_subsingleton
@@ -523,7 +523,7 @@ def twoVertexEmpty (N N' : ConnectedClosedOrientedManifold.{0} 3) :
       rcases x with x | x
       · exact ⟨false, ⟨x, by rintro ⟨e, -, -⟩; exact PEmpty.elim e⟩, rfl⟩
       · exact ⟨true, ⟨x, by rintro ⟨e, -, -⟩; exact PEmpty.elim e⟩, rfl⟩)
-  survivingFlag_collar_disjoint := fun e => PEmpty.elim e
+  survivingFlag_neighborhood_disjoint := fun e => PEmpty.elim e
 
 theorem componentCorrespondence_twoVertexEmpty (N N' : ConnectedClosedOrientedManifold.{0} 3) :
     (twoVertexEmpty N N').componentCorrespondence := by

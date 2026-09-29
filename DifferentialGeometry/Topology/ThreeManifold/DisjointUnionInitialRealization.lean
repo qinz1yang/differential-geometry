@@ -84,30 +84,28 @@ def flagMarkedBall (e : G.Edge) : MarkedBall (vertexSum G) where
         (M := fun v => (G.vertexManifold v).Carrier)
         (I := 𝓡 3) (n := ∞) (G.endpoint e false))
       (G.flag e false).ball_embedding
-  collar := Sigma.mk (G.endpoint e false) '' (G.flag e false).collar
-  collar_isOpen :=
-    (IsOpenEmbedding.sigmaMk (i := G.endpoint e false)).isOpenMap _ (G.flag e false).collar_isOpen
-  ball_subset_collar := by
+  neighborhood := Sigma.mk (G.endpoint e false) '' (G.flag e false).neighborhood
+  isOpen_neighborhood :=
+    (IsOpenEmbedding.sigmaMk (i := G.endpoint e false)).isOpenMap _ (G.flag e false).isOpen_neighborhood
+  range_ball_subset_neighborhood := by
     rintro _ ⟨x, rfl⟩
     exact ⟨(G.flag e false).ball x,
-      (G.flag e false).ball_subset_collar (mem_range_self x), rfl⟩
-  collarBudget := (G.flag e false).collarBudget
-  collarBudget_pos := (G.flag e false).collarBudget_pos
+      (G.flag e false).range_ball_subset_neighborhood (mem_range_self x), rfl⟩
 
 theorem flagMarkedBall_ball (e : G.Edge) (x : ClosedCell 3) :
     (flagMarkedBall G e).ball x =
       (⟨G.endpoint e false, (G.flag e false).ball x⟩ : (vertexSum G).Carrier) := rfl
 
-theorem flagMarkedBall_collar (e : G.Edge) :
-    (flagMarkedBall G e).collar =
-      Sigma.mk (G.endpoint e false) '' (G.flag e false).collar := rfl
+theorem flagMarkedBall_neighborhood (e : G.Edge) :
+    (flagMarkedBall G e).neighborhood =
+      Sigma.mk (G.endpoint e false) '' (G.flag e false).neighborhood := rfl
 
-theorem flagMarkedBall_collar_disjoint (e e' : G.Edge) (h : e ≠ e') :
-    Disjoint (flagMarkedBall G e).collar (flagMarkedBall G e').collar := by
-  rw [flagMarkedBall_collar, flagMarkedBall_collar]
+theorem flagMarkedBall_neighborhood_disjoint (e e' : G.Edge) (h : e ≠ e') :
+    Disjoint (flagMarkedBall G e).neighborhood (flagMarkedBall G e').neighborhood := by
+  rw [flagMarkedBall_neighborhood, flagMarkedBall_neighborhood]
   by_cases hv : G.endpoint e false = G.endpoint e' false
   · refine disjoint_sigmaMk_image_of_eq hv ?_
-    refine G.flag_collar_disjoint (G.endpoint e false) ⟨(e, false), rfl⟩ ⟨(e', false), hv.symm⟩ ?_
+    refine G.flag_neighborhood_disjoint (G.endpoint e false) ⟨(e, false), rfl⟩ ⟨(e', false), hv.symm⟩ ?_
     intro heq
     exact h (Prod.mk.inj (Subtype.ext_iff.mp heq)).1
   · exact disjoint_sigmaMk_image_of_ne hv _ _
@@ -135,7 +133,7 @@ def initialPartialRealization : PartialRealization G ∅ where
   survivingFlag e _ := flagMarkedBall G e
   covers x := Or.inl ⟨x.1,
     ⟨x.2, by rw [removedBallSet_empty]; exact Set.notMem_empty x.2⟩, Sigma.eta x⟩
-  survivingFlag_collar_disjoint e e' _ _ hne := flagMarkedBall_collar_disjoint G e e' hne
+  survivingFlag_neighborhood_disjoint e e' _ _ hne := flagMarkedBall_neighborhood_disjoint G e e' hne
 
 theorem componentCorrespondence_initialPartialRealization :
     (initialPartialRealization G).componentCorrespondence := by
