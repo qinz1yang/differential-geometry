@@ -5460,6 +5460,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.SublevelMinimizer
 import DifferentialGeometry.Geometry.Metric.Duality
 import DifferentialGeometry.Geometry.Metric.OrthonormalFrame.Parseval
 import DifferentialGeometry.Geometry.Metric.Sphere.Round.Covering
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Geometry.Neck.CapSeparation
 import DifferentialGeometry.Geometry.Neck.CompactCapClassification
 import DifferentialGeometry.Geometry.Neck.CompactCapCover

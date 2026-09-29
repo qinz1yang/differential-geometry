@@ -1,3 +1,4 @@
+import DifferentialGeometry.Geometry.Metric.TensorInner.FiberNorm.SlotPairing
 import DifferentialGeometry.Geometry.Metric.Family.TensorNorm
 import DifferentialGeometry.Analysis.Integration.Measure.Family.Continuity
 import DifferentialGeometry.Analysis.Integration.Measure.Family.LocalVariation
