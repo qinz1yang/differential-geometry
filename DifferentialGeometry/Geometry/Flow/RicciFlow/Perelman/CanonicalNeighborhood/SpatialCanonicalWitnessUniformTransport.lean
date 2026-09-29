@@ -722,6 +722,7 @@ private theorem transport_neck_alternative {g : SmoothRiemannianMetric I3 P}
       partialDiffeomorph_image_trans]
     exact congrArg (fun s => F '' s) n.boundary_eq
 
+omit [SigmaCompactSpace P] [SigmaCompactSpace N] in
 private theorem transport_cap_alternative {g : SmoothRiemannianMetric I3 P}
     {g' : SmoothRiemannianMetric I3 N} {F : PartialDiffeomorph I3 I3 P N ∞} {x : P}
     {D : Set P} {eps alpha C2' : ℝ} (hD : IsCompact D) (hDF : D ⊆ F.source)

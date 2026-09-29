@@ -540,6 +540,7 @@ private def orientedRotatedNeck (N : NormalizedNeck g δ₀ k)
     (side : Bool) (hl : l ≤ k) : NormalizedNeck g δ l :=
   (((N.monoDelta hδ hδ1).rotatedDatum e he side).oriented).toNormalizedNeck.lowerOrder hl
 
+omit [SigmaCompactSpace M] in
 private theorem orientedRotatedNeck_eq_datum_chart
     (N : NormalizedNeck g δ₀ k) (hδ : δ₀ ≤ δ) (hδ1 : δ < 1)
     (e : ThreeSpace ≃ₗᵢ[ℝ] ThreeSpace)

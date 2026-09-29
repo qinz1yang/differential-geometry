@@ -162,7 +162,7 @@ theorem le_of_arclength_lipschitz_integral_bound {u v : ℝ → ℝ} {x₀ K ell
     have hl : 0 ≤ 2 * lam / ell := by positivity
     linarith
 
-omit [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
+omit [CompleteSpace E] [SigmaCompactSpace Q] hT2 hCompact hConnected hBoundary in
 theorem rfs_ramp_small_angle (g : SmoothRiemannianMetric I Q)
     (c : ProductCurve Q) (lambda t ell K : ℝ) (hlambda : 0 < lambda)
     (hell : 0 < ell) (hK : 0 < K) (hdegree : c.degree = 1)

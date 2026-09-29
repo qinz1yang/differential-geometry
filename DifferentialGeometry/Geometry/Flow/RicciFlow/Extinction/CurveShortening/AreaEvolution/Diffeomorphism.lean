@@ -17,6 +17,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
   {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
 
+omit [T2Space M] in
 theorem loopFamilyLeastArea_postcomposeDiffeomorph
     (g : ℝ → SmoothRiemannianMetric I M) (Φ : M ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A)
     (γ : ℝ → Surgery.Topology.ContinuousFreeLoop M) (t : ℝ) :

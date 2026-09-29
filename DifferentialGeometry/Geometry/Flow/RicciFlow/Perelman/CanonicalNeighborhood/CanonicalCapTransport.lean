@@ -219,6 +219,7 @@ def LocalCap.map
   · intro z
     rw [partialDiffeomorph_trans_apply, L.core_boundary_eq]
 
+omit [SigmaCompactSpace P] [SigmaCompactSpace Mm] in
 @[simp] theorem LocalCap.map_tube
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
@@ -228,6 +229,7 @@ def LocalCap.map
     (chain : OrderedNeckChain S eps t (e '' L.tube)) :
     (LocalCap.map L e hU chain).tube = e '' L.tube := rfl
 
+omit [SigmaCompactSpace P] [SigmaCompactSpace Mm] in
 @[simp] theorem LocalCap.map_core_carrier
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
@@ -258,6 +260,7 @@ def LocalCap.mapOfNeckFamily
     (orderedNeckChainTransport L.chain e
       (Set.subset_union_right.trans L.union_eq.ge |>.trans hU) necks hmap)
 
+omit [SigmaCompactSpace P] [SigmaCompactSpace Mm] in
 theorem canonicalAlternative_transport_cap {Dm : RealTimeInterval}
     {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}
@@ -272,6 +275,7 @@ theorem canonicalAlternative_transport_cap {Dm : RealTimeInterval}
   exact ⟨CanonicalAlternative.cap
     (LocalCap.map L e hU chain) deep⟩
 
+omit [SigmaCompactSpace P] [SigmaCompactSpace Mm] in
 theorem canonicalAlternative_transport_cap_of_necks {Dm : RealTimeInterval}
     {Sm : SolutionOn (I := I3) (M := P) Dm}
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := Mm) D}

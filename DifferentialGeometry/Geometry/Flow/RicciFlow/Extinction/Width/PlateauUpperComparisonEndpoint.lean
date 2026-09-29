@@ -56,6 +56,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [hT2 : T2Space Q] [hCompact : CompactSpace Q]
   [hBoundary : I.Boundaryless] [hSigma : SigmaCompactSpace Q]
 
+omit hSigma in
 theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_of_openIsotopy
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     {D : RealTimeInterval} {a b : ℝ} (W : SmoothMetricWindow (I := I) (M := Q) D a b)

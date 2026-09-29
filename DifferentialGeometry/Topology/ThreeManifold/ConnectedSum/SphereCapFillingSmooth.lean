@@ -220,8 +220,11 @@ theorem unitFillingOfSphereChart_fill_eq (P : SphereUnitFilling.S3)
       : SphereUnitFilling.S3) = (ULift.down (α := SphereUnitFilling.S3) x.1) := by
     rw [puncturedHomeomorph_apply_val P d hd]
     rfl
-  rw [unitFillingOfSphereChart_fill, SphereUnitFilling.capFill_apply,
-    SphereUnitFilling.capFillMap_val, SphereUnitFilling.capPoint_apply, hΦ]
+  have hfill := congrArg Subtype.val
+    (unitFillingOfSphereChart_fill P d hd c (d.toBallChart.interiorToPunctured x))
+  refine hfill.trans ?_
+  rw [SphereUnitFilling.capFill_apply, SphereUnitFilling.capFillMap_val,
+    SphereUnitFilling.capPoint_apply, hΦ]
 
 theorem ballComplementSmooth_unitFillingOfSphereChart (P : SphereUnitFilling.S3)
     (d : OrientedBallChart standardThreeSphereLift.{u}.toClosedOrientedManifold)

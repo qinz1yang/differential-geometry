@@ -438,7 +438,7 @@ theorem iteratedDeriv_two_intrinsicFrameGram_eq_riemannOp
       ring
 
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
-  [T2Space (TangentBundle I M)] in
+  [RiemannianBundle (fun x : M => TangentSpace I x)] [T2Space (TangentBundle I M)] in
 private theorem firstBianchiAt_metricRm04At
     [PseudoEMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M) :

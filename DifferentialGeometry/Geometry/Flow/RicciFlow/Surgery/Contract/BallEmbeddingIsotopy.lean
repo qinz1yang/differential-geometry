@@ -76,12 +76,13 @@ theorem ballEmbeddingIsotopy_iff_ambientIsotopic :
         BallEmbeddingAmbientIsotopic ι U o e e' :=
   Iff.rfl
 
-theorem ballEmbeddingAmbientIsotopic_of_supportedBallEmbeddingIsotopy {ι : Type u} [Fintype ι]
+theorem ballEmbeddingAmbientIsotopic_of_supportedBallEmbeddingIsotopy {ι : Type u} [Finite ι]
     {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     {o : ManifoldOrientation ThreeModel U 3} {e e' : ι → OrientedBallEmbedding U o}
     (h : SupportedBallEmbeddingIsotopy ι U o e e') :
     BallEmbeddingAmbientIsotopic ι U o e e' := by
   classical
+  let _ : Fintype ι := Fintype.ofFinite ι
   obtain ⟨J, V, r, hJc, hJi, hJ0, hVc, hVd, hVfix, hr0, hr1, hJ1, havoid⟩ := h
   have hfix : ∀ (i : ι) (t : ℝ) (x : U), x ∉ V i → (J i t) x = x ∧ (J i t).symm x = x :=
     fun i t x hx =>

@@ -148,7 +148,6 @@ def NormalizedNeck.monoDelta {M : Type u} [TopologicalSpace M] [ChartedSpace Thr
 
 theorem NormalizedNeck.nonempty_monoDelta {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-
     {g : SmoothRiemannianMetric ThreeModel M} {δ δ' : ℝ} {k : ℕ}
     (h : δ ≤ δ') (h' : δ' < 1) (hn : Nonempty (NormalizedNeck g δ k)) :
     Nonempty (NormalizedNeck g δ' k) :=

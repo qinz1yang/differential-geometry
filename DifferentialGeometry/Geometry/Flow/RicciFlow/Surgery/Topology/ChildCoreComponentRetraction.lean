@@ -212,6 +212,7 @@ noncomputable def coreComponentRetraction
       T.coreFun_mem_core (p := ((1 : I), (u.1 : M))) u.1.2).subtype_mk
       fun u => (mem_puncturedCoreComponent_iff T c u.1).mp u.2
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem coreComponentRetraction_comp_coreComponentInclusion
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     (c : ConnectedComponents ↥T.core) :
@@ -247,6 +248,7 @@ noncomputable def coreComponentHomotopy
     apply Subtype.ext
     rfl
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem coreComponentInclusion_comp_coreComponentRetraction_homotopic_id
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     (c : ConnectedComponents ↥T.core) :
@@ -262,6 +264,7 @@ noncomputable def puncturedCoreComponentHomotopyEquivCoreComponent
     (coreComponentRetraction_comp_coreComponentInclusion T hsm c)
     (coreComponentInclusion_comp_coreComponentRetraction_homotopic_id T hsm c)).symm
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_puncturedCoreComponent_iff_coreComponent
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     (c : ConnectedComponents ↥T.core) :
@@ -269,6 +272,7 @@ theorem simplyConnectedSpace_puncturedCoreComponent_iff_coreComponent
       SimplyConnectedSpace (ComponentCarrier c) :=
   (puncturedCoreComponentHomotopyEquivCoreComponent T hsm c).simplyConnectedSpace_iff
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem simplyConnectedSpace_coreComponent_of_puncturedCoreComponent
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     (c : ConnectedComponents ↥T.core)

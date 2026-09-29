@@ -525,6 +525,7 @@ variable {M : Type*} [TopologicalSpace M] [T2Space M] [ChartedSpace ThreeSpace M
 
 local instance : Fact ((-2 : ℝ) < 2) := ⟨by norm_num⟩
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem frontier_range_tube_subset {a : T.Index}
     (hsm : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     frontier (range (T.tube a)) ⊆ T.tube a '' {z : TubeDomain | z.2.1 = 2 ∨ z.2.1 = -2} := by
@@ -606,6 +607,7 @@ theorem coreFun_eq_compressTubeFun {a : T.Index} {p : I × M} (hp : p.2 ∈ T.pu
       compressCoord_eq_self_of_le_neg_one p.1 h1]
     exact (T.tube_tubeCoord a p.2 ha).symm
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem coreFun_eq_self_of_mem_closure_compl
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     {p : I × M} (hp : p.2 ∈ closure {x : M | x ∉ ⋃ a, range (T.tube a)}) :
@@ -650,6 +652,7 @@ theorem mem_closure_compl_of_mem_closure_range_compl {u : ↥T.puncturedCore}
     (hO.preimage continuous_subtype_val) huO
   exact hcon ⟨(v : M), hvO, hvA⟩
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem continuousOn_coreFun_closure_compl
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ContinuousOn (fun p : I × ↥T.puncturedCore => T.coreFun (p.1, (p.2 : M)))
@@ -726,6 +729,7 @@ private theorem continuousOn_biUnion_isClosed_finset {ι X Y : Type*} [Topologic
         (ht a (Finset.mem_insert_self a s)) ?_
       exact (s.finite_toSet).isClosed_biUnion fun i hi => ht i (Finset.mem_insert_of_mem hi)
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem continuous_coreFun
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     Continuous fun p : I × ↥T.puncturedCore => T.coreFun (p.1, (p.2 : M)) := by

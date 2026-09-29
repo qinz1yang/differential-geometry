@@ -34,6 +34,7 @@ theorem derivWithin_Icc_eq_deriv_of_mem_Ico {F : ℝ → ℝ} {a b t₀ : ℝ}
 variable [hT2 : T2Space Q] [hCompact : CompactSpace Q] [hSigma : SigmaCompactSpace Q]
   [hBoundary : I.Boundaryless]
 
+omit hSigma in
 theorem SmoothDisk.integrableOn_diskExtension_metricVariationDensity
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     {D : RealTimeInterval} {a b t₀ : ℝ} (W : SmoothMetricWindow (I := I) (M := Q) D a b)
@@ -74,6 +75,7 @@ theorem SmoothDisk.integrableOn_diskExtension_metricVariationDensity
       u.metricVariationDensity W.family.metric (Icc a b) t₀ ⟨z, hz⟩ from dite_eq_left hz]
   exact hdens ⟨z, hz⟩
 
+omit hSigma in
 theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor_and_boundaryFlux
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     {D : RealTimeInterval} {a b : ℝ} (W : SmoothMetricWindow (I := I) (M := Q) D a b)

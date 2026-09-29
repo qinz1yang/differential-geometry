@@ -153,6 +153,7 @@ theorem isSmoothEmbedding_boundarySphere (b : T.Boundary)
     (by decide)
 
 
+omit [IsManifold ThreeModel ∞ M] in
 private theorem exists_openPartialHomeomorph_tube_interior (a : T.Index)
     (hs : IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ∃ e : OpenPartialHomeomorph (Sphere 2 × ℝ) M,
@@ -205,6 +206,7 @@ private theorem exists_openPartialHomeomorph_tube_interior (a : T.Index)
     rfl
 
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem isClopen_preimage_of_capCore_of_boundarySphere
     [T2Space M] {K : Set M} (cap : CapCore K)
     (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1)) (hfront : frontier K = range (T.boundarySphere b))
@@ -250,6 +252,7 @@ theorem isClopen_preimage_of_capCore_of_boundarySphere
     rw [← hE q (by constructor <;> linarith [hv.1, hv.2])]
     rfl
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
     [T2Space M] {K : Set M} (cap : CapCore K) (hcore : K ⊆ T.core)
     (b : T.Boundary) (hfront : frontier K = range (T.boundarySphere b))
@@ -266,6 +269,7 @@ theorem connectedComponent_eq_preimage_of_capCore_of_boundarySphere
   exact Subset.antisymm (hcl.connectedComponent_subset hx) (hpre.subset_connectedComponent hx)
 
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem connectedComponent_subset_preimage_of_capCore_of_boundarySphere
     [T2Space M] {K : Set M} (cap : CapCore K)
     (b : T.Boundary) (hdisj : Disjoint K (T.removedBand b.1))

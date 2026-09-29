@@ -16,7 +16,7 @@ theorem isOpen_image_of_isImmersion {E : Type*} [NormedAddCommGroup E] [NormedSp
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I' ∞ M]
     {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
     {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ E' G}
-    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
     {f : M → N} (hf : IsImmersion I' J ∞ f)
     (hdim : Module.finrank ℝ E = Module.finrank ℝ E')
     {W : Set M} (hW : IsOpen W) (hWi : W ⊆ I'.interior M) : IsOpen (f '' W) := by

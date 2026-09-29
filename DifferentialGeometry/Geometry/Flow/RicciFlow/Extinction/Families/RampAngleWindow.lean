@@ -128,7 +128,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
 
 include hT2 hCompact hConnected hBoundary
 
-omit [SigmaCompactSpace Q] hCompact hConnected hBoundary in
+omit [CompleteSpace E] [SigmaCompactSpace Q] hCompact hConnected hBoundary in
 theorem exists_lambda_ramp_angle_window
     (B : RicciBackground (I := I) (M := Q) D a b)
     (K ell eta : ℝ) (hK : 0 < K) (hell : 0 < ell) (heta : 0 < eta) :

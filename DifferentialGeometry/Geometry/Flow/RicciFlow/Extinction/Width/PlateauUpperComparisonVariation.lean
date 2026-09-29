@@ -23,6 +23,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 variable {g : ℝ → SmoothRiemannianMetric I Q} {D : RealTimeInterval}
   {hG : MetricFamilySmoothOn D g} {t₀ : ℝ}
 
+omit hSigma in
 theorem SmoothDisk.hasDerivAt_transportedArea_isotopy_flux
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     (hG : MetricFamilySmoothOn D g)
@@ -295,6 +296,7 @@ theorem SmoothDisk.hasDerivAt_transportedArea_isotopy_flux
 
 
 
+omit hSigma in
 theorem rfs_plateau_upper_comparison_of_minimizingDiskCompetitor
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     {D : RealTimeInterval} {a b : ℝ} (W : SmoothMetricWindow (I := I) (M := Q) D a b)
@@ -415,6 +417,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 variable {g : ℝ → SmoothRiemannianMetric I Q} {D : RealTimeInterval}
   {hG : MetricFamilySmoothOn D g} {t₀ : ℝ}
 
+omit hSigma in
 theorem SmoothDisk.hasDerivWithinAt_transportedArea_isotopy_flux_on_Icc
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     (hG : MetricFamilySmoothOn D g)
