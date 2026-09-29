@@ -29,7 +29,7 @@ local notation "EuStd" => EuclideanSpace ℝ (Fin (Module.finrank ℝ EuN))
 private theorem lpNorm_coe_le_norm_of_measure_le
     {P : Type*} [MeasurableSpace P] {μ ν : Measure P}
     (hν : ν ≤ μ) (f : Lp ℝ 2 μ) : lpNorm f 2 ν ≤ ‖f‖ := by
-  rw [← toReal_eLpNorm ((Lp.memLp f).mono_measure hν).aestronglyMeasurable, Lp.norm_def]
+  rw [← toReal_eLpNorm, Lp.norm_def]
   exact ENNReal.toReal_mono (Lp.eLpNorm_ne_top _) (eLpNorm_mono_measure _ hν)
 
 private theorem exists_uniform_lp_weak_time_deriv_norm_le_initial_of_cutoff

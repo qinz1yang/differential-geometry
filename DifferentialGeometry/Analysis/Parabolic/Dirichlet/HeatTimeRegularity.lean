@@ -261,7 +261,7 @@ theorem exists_local_lp_weak_time_deriv_of_heat_timeH1
     (μ := ν) (S := S) (isOpen_Ioo.prod hΩ₀) (by norm_num : (1 : ℝ≥0∞) ≤ 2) v hU (Lp.memLp R)
     (hρsmooth.mono (Set.prod_mono hreg₀ (hsub.trans (subset_closure.trans hΩV))))
     (fun p hp => hρne p (hsub.trans (subset_closure.trans hΩV) hp.2))
-    hρinv (hDρ.mul (r := ∞) hρinv) hR
+    hρinv (hρinv.fun_mul (r := ∞) hDρ) hR
   exact ⟨R₀, hR₀⟩
 
 theorem weak_time_derivative_eq_source_of_heat_timeH1

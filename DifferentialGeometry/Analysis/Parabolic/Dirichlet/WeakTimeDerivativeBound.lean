@@ -273,7 +273,7 @@ private theorem norm_sum_mul_fields_le_lpNorm
     simpa only [hVp] using hp
   have hb := norm_varying_coefficient_sum_le a ha (fun i => lpNorm (a i) ∞ μ)
     (fun i => ae_le_lpNorm_exponent_top (ha i)) (fun i => (hV i).toLp (V i)) F he
-  simpa only [Lp.norm_toLp, toReal_eLpNorm (hV _).aestronglyMeasurable] using hb
+  simpa only [Lp.norm_toLp, toReal_eLpNorm] using hb
 
 private theorem norm_weak_time_source_le
     {P ι : Type*} [MeasurableSpace P] [Fintype ι] {μ : Measure P}

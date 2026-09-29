@@ -238,7 +238,7 @@ theorem exists_local_weak_time_deriv_of_metric_divergence_equation
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) isOpen_Ioo hΩ₀ (1 : ℝ)
     ((Lp.memLp U).mono_measure hmeasure) ((Lp.memLp S).mono_measure hmeasure)
     V H hAb hDAb hAs hHV (hρ.mono hregion) (fun p hp => hρne p (hregion hp))
-    hρinv (hDρ.mul (r := ∞) hρinv) hweak₀
+    hρinv (hρinv.fun_mul (r := ∞) hDρ) hweak₀
   exact ⟨R, hR⟩
 
 end DifferentialGeometry.Analysis.Parabolic

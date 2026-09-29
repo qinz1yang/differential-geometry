@@ -166,7 +166,7 @@ theorem exists_local_weak_partial_trees_of_second_time_derivative_of_metric_dive
     (by norm_num : (1 : ℝ≥0∞) ≤ 2) isOpen_Ioo hΩ₀ (1 : ℝ)
     ((Lp.memLp U).mono_measure hmeasure) ((Lp.memLp S).mono_measure hmeasure)
     V H hAb hDAb hAs hHV (hρ.mono hregion) (fun p hp => hρne p (hregion hp))
-    hρinv (hDρ.mul (r := ∞) hρinv) hweak₀
+    hρinv (hρinv.fun_mul (r := ∞) hDρ) hweak₀
   have hmem : ∀ᵐ p ∂ν₀, p ∈ Ioo c d ×ˢ Ω₀ := by
     have htime : μ₀ = volume.restrict (Ioo c d) := by
       change (volume.restrict (Icc a b)).restrict (Icc c d) = volume.restrict (Ioo c d)

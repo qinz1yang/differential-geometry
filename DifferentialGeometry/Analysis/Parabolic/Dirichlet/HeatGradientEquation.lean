@@ -503,7 +503,7 @@ theorem exists_lp_weak_gradient_equation_fixed_density_of_heat_timeH1
     fun t ht => hreg ⟨ha.le.trans ht.1.le, ht.2.le.trans hb.le⟩
   intro k φ hφ hφc hφs
   exact integral_fixed_density_eq_of_weighted_identity hG q α isOpen_Ioo hJ hΩ₀
-    (hsub.trans hchart) (((hV k).mul (r := 2) hσmem).locallyIntegrable (by norm_num))
+    (hsub.trans hchart) ((hσmem.fun_mul (r := 2) (hV k)).locallyIntegrable (by norm_num))
     ((Lp.memLp (Q k)).locallyIntegrable (by norm_num))
     (fun ψ => ∑ i, ∑ j, ∫ p, A i j p * H k i p *
       fderiv ℝ ψ p (0, EuclideanSpace.single j 1) ∂ν) (hQ k) hφ hφc hφs

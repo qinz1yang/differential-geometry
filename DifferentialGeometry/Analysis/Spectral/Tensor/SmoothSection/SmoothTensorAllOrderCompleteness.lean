@@ -676,6 +676,9 @@ private lemma chartComponent_toLp_tendsto
   set dseq : ℕ → EuclN → ℝ := fun n =>
     tensorChartComponent (I := I) (M := M) g r s (F n) α P.1 P.2 -
       chartLimitComp (I := I) (M := M) g r s F hF_cauchy α P with hdseq_def
+  have hdm (n : ℕ) : AEStronglyMeasurable (dseq n) μ :=
+    ((tensorChartComponent_memLp (I := I) (M := M) g r s (F n) α P.1 P.2).sub
+      (chartLimitComp_memLp (I := I) (M := M) g r s F hF_cauchy α P)).aestronglyMeasurable
   have hdsupp : ∀ n, Function.support (dseq n) ⊆ K := by
     intro n z hz
     rw [Function.mem_support] at hz
@@ -694,12 +697,12 @@ private lemma chartComponent_toLp_tendsto
     obtain ⟨N, hN⟩ := chartLimitComp_uniform (I := I) (M := M) g r s F hF_cauchy α P ε hε
     refine ⟨N, fun n hn => ?_⟩
     have hrestrict : eLpNorm (dseq n) 2 (μ.restrict K) = eLpNorm (dseq n) 2 μ :=
-      eLpNorm_restrict_eq_of_support_subset (hdsupp n)
+      eLpNorm_restrict_eq_of_support_subset (hdm n) (hdsupp n)
     have hbound_ae : ∀ᵐ z ∂(μ.restrict K), ‖dseq n z‖ ≤ ε := by
       filter_upwards with z
       rw [hdseq_def]
       exact hN n hn z
-    have hle := eLpNorm_le_of_ae_bound (p := 2) hbound_ae
+    have hle := eLpNorm_le_of_ae_bound (p := 2) (hdm n).restrict hbound_ae
     rw [hrestrict] at hle
     refine hle.trans ?_
     rw [hc_def, Measure.restrict_apply_univ]
@@ -991,7 +994,7 @@ private lemma chartKernelCutoffPushed_toEuclidean_extChartAt'
       (toEuclidean_extChartAt_mem_chartTargetEuclid (I := I) (M := M) α hz),
     symm_toEuclidean_symm_toEuclidean_extChartAt (I := I) (M := M) α hz]
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorL2ChartComponentU_ae_eq_chartKernelCutoffPushed_mul
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
@@ -1011,7 +1014,7 @@ private lemma tensorL2ChartComponentU_ae_eq_chartKernelCutoffPushed_mul
       one_mul]
   · rw [hy hk, mul_zero]
 
-omit [BoundarylessManifold I M] in
+omit [BoundarylessManifold I M] [I.Boundaryless] in
 omit [NeZero (Module.finrank ℝ E)] in
 private lemma tensorL2ChartComponentU_ae_zero_where_chartPushedPouWeight_zero
     (g : SmoothRiemannianMetric I M) (r s : ℕ)

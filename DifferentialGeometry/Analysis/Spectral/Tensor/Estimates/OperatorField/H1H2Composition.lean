@@ -226,8 +226,8 @@ private theorem rsFiber3_le_6
       (1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal) ≠ ⊤ :=
     ENNReal.mul_ne_top hmem.eLpNorm_ne_top hpow
   have hreal := ENNReal.toReal_mono htop hcmp
-  rw [toReal_eLpNorm hcont.aestronglyMeasurable, ENNReal.toReal_mul,
-    toReal_eLpNorm hcont.aestronglyMeasurable,
+  rw [toReal_eLpNorm, ENNReal.toReal_mul,
+    toReal_eLpNorm,
     show 1 / (3 : ℝ≥0∞).toReal - 1 / (6 : ℝ≥0∞).toReal =
       (1 / 6 : ℝ) by norm_num] at hreal
   simpa only [V, mul_comm] using hreal
@@ -391,9 +391,9 @@ private theorem rs_l6_l3_l2
           eLpNorm (rsFiberFun g p r W) 3 μ ≠ ⊤ :=
     ENNReal.mul_ne_top hΦmem.eLpNorm_ne_top hWmem.eLpNorm_ne_top
   have hreal := ENNReal.toReal_mono hfinite hENN
-  rw [toReal_eLpNorm hYmem.aestronglyMeasurable,
-    ENNReal.toReal_mul, toReal_eLpNorm hΦmem.aestronglyMeasurable,
-    toReal_eLpNorm hWmem.aestronglyMeasurable] at hreal
+  rw [toReal_eLpNorm,
+    ENNReal.toReal_mul, toReal_eLpNorm,
+    toReal_eLpNorm] at hreal
   rw [← fiber_rs_lp2 (I := I) (M := M) g p c Y]
   exact hreal
 
