@@ -24,7 +24,8 @@ theorem norm_sq_le_pullbackMetricCoefficients_of_fixed_derivative
       (mfderiv I 𝓘(ℝ, F) Φ (r y)).comp (mfderiv 𝓘(ℝ, F) I r y) := by
     have h := mfderiv_comp y hΦ hr
     rw [mfderiv_eq_fderiv] at h
-    ext w
+    apply ContinuousLinearMap.ext
+    intro w
     have hw := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (Φ (r y))
       (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) y).symm w))) h
     simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,

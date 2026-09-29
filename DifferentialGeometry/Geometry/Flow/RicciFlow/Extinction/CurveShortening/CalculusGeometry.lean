@@ -216,7 +216,8 @@ private theorem chartRep_surjective_iff
         E →L[ℝ] EuclideanSpace ℝ (Fin n)) := by
     have h := hcomp2.mfderiv
     rw [mfderiv_eq_fderiv] at h
-    ext v
+    apply ContinuousLinearMap.ext
+    intro v
     have hv := congrArg (fun L => NormedSpace.fromTangentSpace (𝕜 := ℝ)
       (extChartAt J q (F ((extChartAt I p).symm (extChartAt I p x))))
         (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (extChartAt I p x)).symm v))) h

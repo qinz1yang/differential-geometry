@@ -93,7 +93,8 @@ theorem det_fderiv_chartTransition_pos (c c' : OrientedBallChart M)
     rw [mfderiv_eq_fderiv] at hcr
     have hfd : fderiv ℝ (fun x : E3 => c'.chart.symm (c.chart x)) (0 : E3) =
         B.comp e.toContinuousLinearMap := by
-      ext v
+      apply ContinuousLinearMap.ext
+      intro v
       have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
         (c'.chart.symm (c.chart (0 : E3)))
           (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (0 : E3)).symm v))) hcr

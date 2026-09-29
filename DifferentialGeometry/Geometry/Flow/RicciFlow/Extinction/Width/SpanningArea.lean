@@ -1177,7 +1177,8 @@ private theorem integrable_parametricJacobian_compact_convex
       fderiv ℝ (e.map ∘ u) z := by
     have h := mfderiv_comp z ((e.smooth.mdifferentiable (by simp)) _) hdA
     rw [mfderiv_eq_fderiv] at h
-    ext v
+    apply ContinuousLinearMap.ext
+    intro v
     have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e.map (u z))
       (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z).symm v))) h
     simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
@@ -1304,7 +1305,8 @@ theorem integrable_loopSpeed (g : SmoothRiemannianMetric I Q)
       fderiv ℝ (e.map ∘ loopLift γ) t := by
     have h := mfderiv_comp t ((e.smooth.mdifferentiable (by simp)) _) ht
     rw [mfderiv_eq_fderiv] at h
-    ext v
+    apply ContinuousLinearMap.ext
+    intro v
     have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
       (e.map (loopLift γ t)) (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
     simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,

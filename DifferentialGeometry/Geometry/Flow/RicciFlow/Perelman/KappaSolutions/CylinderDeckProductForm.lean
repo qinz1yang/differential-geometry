@@ -155,11 +155,14 @@ theorem cylinderDeck_fst_eq_at_zero (x : SphereTwo) (s : ℝ) :
     intro r
     have h : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, SphereAmbient)
         (((↑) : SphereTwo → SphereAmbient) ∘ f) r = 0 := by
-      ext a
+      apply ContinuousLinearMap.ext
+      intro a
       rw [mfderiv_comp_apply r (hcoe.mdifferentiable (by decide) (f r))
         (hf.mdifferentiable (by decide) r) a, hz, zero_apply, map_zero]
+      rfl
     rw [mfderiv_eq_fderiv] at h
-    ext a
+    apply ContinuousLinearMap.ext
+    intro a
     have ha := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (f r : SphereAmbient)
       (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) r).symm a))) h
     simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,

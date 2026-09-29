@@ -52,7 +52,8 @@ private theorem norm_fderiv_comp_sq_le_diskMapEnergyDensity
         (mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) u z) := by
     have h := mfderiv_comp z (hΦ.mdifferentiableAt one_ne_zero) hu
     rw [mfderiv_eq_fderiv] at h
-    ext v
+    apply ContinuousLinearMap.ext
+    intro v
     have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (Φ (u z))
       (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z).symm v))) h
     simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,

@@ -51,7 +51,8 @@ theorem exists_loop_neighborhood_embedding_retraction
           (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) (fun s : ℝ => γ (s : loopCircle)) t) := by
       have h := mfderiv_comp t (he.mdifferentiableAt (by simp)) (hγ.smooth.mdifferentiableAt (by simp))
       rw [mfderiv_eq_fderiv] at h
-      ext v
+      apply ContinuousLinearMap.ext
+      intro v
       have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
         (e (γ (t : loopCircle))) (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
       simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
@@ -72,7 +73,8 @@ theorem exists_loop_neighborhood_embedding_retraction
       have h := mfderiv_comp t (hΓs.mdifferentiableAt (by simp))
         (AddCircle.contMDiff_coe.mdifferentiableAt (by simp))
       rw [mfderiv_eq_fderiv] at h
-      ext v
+      apply ContinuousLinearMap.ext
+      intro v
       have hv := congrArg (fun L => NormedSpace.fromTangentSpace (𝕜 := ℝ) (G t)
         (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
       simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
