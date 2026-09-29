@@ -26,5 +26,7 @@ theorem chartCoord_source_mfderiv {U : V → M} {z : V}
       fderiv ℝ ((extChartAt 𝓘(ℝ, E) p) ∘ U) z := by
   rw [TangentBundle.continuousLinearMapAt_trivializationAt hp,
     ← mfderiv_comp z (mdifferentiableAt_extChartAt hp) hU, mfderiv_eq_fderiv]
+  ext v
+  rfl
 
 end DifferentialGeometry.Geometry

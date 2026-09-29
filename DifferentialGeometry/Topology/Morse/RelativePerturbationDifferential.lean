@@ -40,9 +40,9 @@ def perturbationDifferential (f : E → ℝ) (φ : Fin n → E → ℝ)
 theorem perturbationDifferential_eq {f : E → ℝ} {φ : Fin n → E → ℝ} {q : (Fin n → ℝ) × E}
     (hf : DifferentiableAt ℝ f q.2) (hφ : ∀ i, DifferentiableAt ℝ (φ i) q.2) :
     perturbationDifferential f φ q = fderiv ℝ f q.2 + ∑ i, q.1 i • fderiv ℝ (φ i) q.2 := by
-  simpa only [mfderiv_eq_fderiv, parameterDifferential_apply, perturbationDifferential] using
-    mfderiv_finitePerturbation (I := 𝓘(ℝ, E)) hf.mdifferentiableAt
-      (fun i => (hφ i).mdifferentiableAt) q.1
+  have hd := hf.hasFDerivAt.add (HasFDerivAt.fun_sum (u := Finset.univ)
+    (fun i _ => (hφ i).hasFDerivAt.const_mul (q.1 i)))
+  exact hd.fderiv
 
 
 theorem contDiff_perturbationDifferential {f : E → ℝ} {φ : Fin n → E → ℝ}
@@ -65,9 +65,23 @@ theorem hasFDerivAt_perturbationDifferential_parameter {f : E → ℝ} {φ : Fin
     (hf : DifferentiableAt ℝ f x) (hφ : ∀ i, DifferentiableAt ℝ (φ i) x) (a : Fin n → ℝ) :
     HasFDerivAt (fun p => perturbationDifferential f φ (p,x))
       (parameterDifferential (I := 𝓘(ℝ, E)) φ x) a := by
-  simpa only [mfderiv_eq_fderiv, perturbationDifferential] using
-    hasFDerivAt_mfderiv_finitePerturbation (I := 𝓘(ℝ, E)) hf.mdifferentiableAt
-      (fun i => (hφ i).mdifferentiableAt) a
+  let A : (Fin n → ℝ) →L[ℝ] (E →L[ℝ] ℝ) :=
+    (Fintype.linearCombination ℝ (fun i => fderiv ℝ (φ i) x)).toContinuousLinearMap
+  have hA : A = parameterDifferential (I := 𝓘(ℝ, E)) φ x := by
+    ext p v
+    simp only [parameterDifferential_apply]
+    change (∑ i, p i • fderiv ℝ (φ i) x) v =
+      (∑ i, p i • (show E →L[ℝ] ℝ from mfderiv 𝓘(ℝ, E) 𝓘(ℝ, ℝ) (φ i) x)) v
+    simp only [mfderiv_eq_fderiv]
+    rfl
+  have hd := (A.hasFDerivAt (x := a)).const_add (fderiv ℝ f x)
+  rw [hA] at hd
+  apply hd.congr_of_eventuallyEq
+  exact Filter.Eventually.of_forall fun p => by
+    change perturbationDifferential f φ (p, x) =
+      fderiv ℝ f x + parameterDifferential (I := 𝓘(ℝ, E)) φ x p
+    rw [perturbationDifferential_eq hf hφ]
+    exact congrArg (fun L => fderiv ℝ f x + L p) hA
 
 
 theorem surjective_fderiv_perturbationDifferential {f : E → ℝ} {φ : Fin n → E → ℝ}

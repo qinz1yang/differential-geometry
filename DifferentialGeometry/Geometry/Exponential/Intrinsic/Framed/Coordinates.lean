@@ -186,7 +186,7 @@ theorem intrinsicFrame_deriv_zero
     (I' := modelWithCornersSelf Real E) (I'' := I) 0 hF hL
   have hLderiv : mfderiv (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (fun z : E => L z) 0 = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hLderiv] at hchain
   have hFderiv : mfderiv (modelWithCornersSelf Real E) I F (L 0) =
       ContinuousLinearMap.id Real E := by
@@ -233,7 +233,7 @@ theorem intrinsicFrame_mfderiv
     (I' := modelWithCornersSelf Real E) (I'' := I) z hF hL
   have hLderiv : mfderiv (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (fun w : E => L w) z = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hLderiv] at hchain
   have happ := congrArg (fun D => D v) hchain
   have hjac :=

@@ -55,6 +55,8 @@ private theorem exists_circle_embedding_regular_level_fin_two
       ((hf.contDiffAt (hU.mem_nhds x.property)).contMDiffAt)
   have hdg (x : O) : mfderiv 𝓘(ℝ, Fin 2 → ℝ) 𝓘(ℝ, ℝ) g x = fderiv ℝ f x.val := by
     rw [DifferentialGeometry.mfderiv_restrict_open, mfderiv_eq_fderiv]
+    ext v
+    rfl
   have hgr (x : O) (hx : g x = a) : mfderiv 𝓘(ℝ, Fin 2 → ℝ) 𝓘(ℝ, ℝ) g x ≠ 0 := by
     rw [hdg]
     exact hr x.val x.property hx

@@ -99,8 +99,8 @@ private theorem mfderiv_collarParametrization
       ((𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1)))).prod 𝓘(ℝ, ℝ))
       (productCoordinateDiffeomorph d) z = (euclideanProductChart d).toContinuousLinearMap := by
     change mfderiv _ _ (euclideanProductChart d) z = _
-    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod, mfderiv_eq_fderiv,
-      (euclideanProductChart d).hasFDerivAt.fderiv]
+    rw [← modelWithCornersSelf_prod, chartedSpaceSelf_prod]
+    exact (euclideanProductChart d).mfderiv_eq
   exact congrArg (fun L : EuclideanSpace ℝ (Fin (d + 2)) →L[ℝ]
     (EuclideanSpace ℝ (Fin (d + 1)) × ℝ) =>
       ((mfderiv 𝓘(ℝ, EuclideanSpace ℝ (Fin (d + 1))) I f (euclideanProductChart d z).1).prodMap

@@ -87,7 +87,7 @@ private lemma bijective_mfderiv_circleExp [Fact (Module.finrank ℝ ℂ = 1 + 1)
   have hCval : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℂ)
       (fun s : ℝ => Complex.exp (((2 * Real.pi * s : ℝ) : ℂ) * Complex.I)) t
       = ContinuousLinearMap.toSpanSingleton ℝ c := by
-    rw [mfderiv_eq_fderiv, hderiv.hasFDerivAt.fderiv]
+    exact hderiv.hasFDerivAt.hasMFDerivAt.mfderiv
   have hspan : Function.Injective (ContinuousLinearMap.toSpanSingleton ℝ c) := by
     intro x y hxy
     rw [ContinuousLinearMap.toSpanSingleton_apply, ContinuousLinearMap.toSpanSingleton_apply] at hxy

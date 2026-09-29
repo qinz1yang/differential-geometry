@@ -57,7 +57,7 @@ theorem mfderiv_framedExpMap
     z hF hL
   have hLderiv :
       mfderiv 𝓘(Real, E) 𝓘(Real, E) (fun w : E => L w) z = L := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L.mfderiv_eq
   rw [hLderiv] at hchain
   change mfderiv 𝓘(Real, E) I (F ∘ fun w : E => L w) z =
     (mfderiv 𝓘(Real, E) I F (L z)).comp L

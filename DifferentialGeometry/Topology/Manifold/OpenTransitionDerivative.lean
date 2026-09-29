@@ -43,6 +43,8 @@ theorem mfderiv_eq_comp_fderiv_of_open_transition
       (fun u : W => J u.val) zW = _
     rw [DifferentialGeometry.mfderiv_restrict_open (fun u : U => J u) W zW,
       DifferentialGeometry.mfderiv_restrict_open J U z, mfderiv_eq_fderiv]
+    ext v
+    rfl
   have htauw : tau zW = w := Subtype.ext hzw
   have hcomp : g ∘ tau = fun u : W => f u.val := by
     funext u

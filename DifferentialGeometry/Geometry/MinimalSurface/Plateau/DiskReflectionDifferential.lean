@@ -22,7 +22,7 @@ theorem mfderiv_comp_planeLinearEquiv (U : ℂ → M) (L : ℂ ≃L[ℝ] ℂ) (z
   have hL : MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) L z :=
     L.differentiableAt.mdifferentiableAt
   by_cases hU : MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, E) U (L z)
-  · rw [mfderiv_comp z hU hL, mfderiv_eq_fderiv, L.hasFDerivAt.fderiv]
+  · rw [mfderiv_comp z hU hL, L.mfderiv_eq]
   · have hc : ¬ MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, E) (U ∘ L) z := by
       intro h
       have hi : MDifferentiableAt 𝓘(ℝ, ℂ) 𝓘(ℝ, ℂ) L.symm (L z) :=

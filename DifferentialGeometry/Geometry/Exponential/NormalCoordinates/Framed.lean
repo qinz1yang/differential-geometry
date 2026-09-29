@@ -197,7 +197,7 @@ theorem mfderiv_framedExp (g : SmoothRiemannianMetric I M) (p : M)
     (I' := modelWithCornersSelf Real E) (I'' := I) z hΦ hL
   have hLderiv : mfderiv (modelWithCornersSelf Real E)
       (modelWithCornersSelf Real E) (fun w : E => L0 w) z = L0 := by
-    rw [mfderiv_eq_fderiv, ContinuousLinearMap.fderiv]
+    exact L0.mfderiv_eq
   rw [hLderiv] at hchain
   have hfun : (fun w : E => framedExpDiffeo (I := I) g p w) =
       fun w : E => Φ (L0 w) := by

@@ -321,7 +321,7 @@ private theorem curve_velocity_comp (γ : ℝ → Q) (φ : ℝ → ℝ) (x : ℝ
   have ha_one : (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ x) (1 : ℝ) = deriv φ x := by
     have hclm : mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, ℝ) φ x =
         ContinuousLinearMap.toSpanSingleton ℝ (deriv φ x) := by
-      rw [mfderiv_eq_fderiv, ← toSpanSingleton_deriv]
+      exact hφ.hasDerivAt.hasFDerivAt.hasMFDerivAt.mfderiv
     have h := congrArg (fun L : ℝ →L[ℝ] ℝ => L 1) hclm
     rw [ContinuousLinearMap.toSpanSingleton_apply, one_smul] at h
     exact h

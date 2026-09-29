@@ -34,6 +34,8 @@ theorem diskMapPartial_trivAt_eq_fderiv {U : ℂ → M} {α : M} {z : ℂ} (w : 
     rw [TangentBundle.continuousLinearMapAt_trivializationAt (I := 𝓘(ℝ, E)) hsrc,
       ← mfderiv_comp z (mdifferentiableAt_extChartAt (I := 𝓘(ℝ, E)) hsrc) hU,
       mfderiv_eq_fderiv]
+    ext v
+    rfl
   exact congrArg (fun L => L w) h
 
 variable [FiniteDimensional ℝ E]
