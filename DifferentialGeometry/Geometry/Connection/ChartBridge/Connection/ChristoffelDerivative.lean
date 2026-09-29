@@ -43,7 +43,7 @@ lemma partialDeriv_chartChristoffelBracket_eq
       DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l
         (chartGramOnE (I := I) g α i j) z) y)
       (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E m) = _
-  rw [fderiv_fun_sub (h1.add h2) h3, fderiv_fun_add h1 h2]
+  rw [fderiv_fun_sub (h1.fun_add h2) h3, fderiv_fun_add h1 h2]
   rfl
 
 theorem partialDeriv_chartChristoffel_eq

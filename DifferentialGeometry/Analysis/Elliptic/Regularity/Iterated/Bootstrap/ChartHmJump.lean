@@ -335,7 +335,7 @@ private theorem chosenMthMixed_memWkp_two_two
     h_chart_H_m_plus_1_u α
   obtain ⟨Ω'', hΩ''_open, hKα_in_Ω'', hΩ''_compact_closure,
       h_closureΩ''_in_chart, h_memWkp_22_Ω''⟩ :=
-    iteratedDerivedChartBilinear_memWkp_two_two_interior
+    DifferentialGeometry.Analysis.Laplacian.IteratedNirenbergInterior.iteratedDerivedChartBilinear_memWkp_two_two_interior
       (I := I) (M := M) g α m B_m.data h_chart_H_m_plus_1_at_α
   rw [h_directions] at h_memWkp_22_Ω''
   set Ω : Set EuclN := chartTargetEuclid (I := I) (M := M) α with hΩ_def
