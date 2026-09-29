@@ -151,14 +151,6 @@ theorem eLpNorm_diffQuot_restrict_le_of_cthickening
     rw [h_eq, eLpNorm_const_smul]
     simp [Real.enorm_eq_ofReal_abs]
   rw [h_const_pull]
-  have hτ_aesm :
-      AEStronglyMeasurable
-        (DifferentialGeometry.Analysis.Sobolev.translate
-          (d := Module.finrank ℝ E) k h w_ext) (volume : Measure EuclN) := by
-    have hMP : MeasurePreserving
-        (fun x : EuclN => x + h • EuclideanSpace.single k 1) volume volume :=
-      measurePreserving_add_right volume _
-    exact hw_ext_aesm.comp_measurePreserving hMP
   have h_minkowski :
       eLpNorm (DifferentialGeometry.Analysis.Sobolev.translate
         (d := Module.finrank ℝ E) k h w_ext - w_ext) 2

@@ -64,7 +64,8 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
     have hb := hcollapseV (γ (p.2.1 (j + 1))) (hmap ht₁).2
       (γ (p.2.1 j)) (hmap ht₀).2
       (hterm _ (hmap ht₁).2) (hterm _ (hmap ht₀).2)
-    convert hb using 1 <;> congr 1 <;> apply Subtype.ext <;>
+    convert hb using 1
+    congr 1 <;> apply Subtype.ext <;>
       simp only [γT, projIcc_of_mem, ht₀, ht₁]
   have hmetric : riemannianCurveLength (H.event i).terminal.metric γT a b ≤
       ENNReal.ofReal (ell s) * riemannianCurveLength

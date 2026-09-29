@@ -78,15 +78,29 @@ theorem single_mem_coordinateSet (R : Type*) [Semiring R] [PartialOrder R]
   · subst j; simp
   · simp [Pi.single_eq_of_ne h]
 
-theorem isCompact_coordinateSet (R I : Type*) [Ring R] [PartialOrder R]
-    [IsStrictOrderedRing R] [TopologicalSpace R] [IsTopologicalRing R]
-    [CompactIccSpace R] [OrderClosedTopology R] [Fintype I] :
+theorem isCompact_coordinateSet (R I : Type*) [Semiring R] [PartialOrder R]
+    [TopologicalSpace R] [ContinuousAdd R] [OrderClosedTopology R]
+    [CompactIccSpace R] [IsOrderedAddMonoid R] [Fintype I] :
     IsCompact (coordinateSet R I) := by
-  rw [← range_weights_eq_coordinateSet]
-  exact isCompact_range (isEmbedding_toFun_comp_weights R I).continuous
+  have hclosed : IsClosed (coordinateSet R I) := by
+    have heq : coordinateSet R I =
+        (⋂ i, {x : I → R | 0 ≤ x i}) ∩ {x | ∑ i, x i = 1} := by
+      ext x
+      simp only [coordinateSet, Set.mem_inter_iff, Set.mem_iInter, Set.mem_ofPred_eq]
+    rw [heq]
+    apply IsClosed.inter
+    · exact isClosed_iInter fun i => isClosed_le continuous_const (continuous_apply i)
+    · exact isClosed_eq
+        (continuous_finsetSum Finset.univ fun i _ => continuous_apply i) continuous_const
+  apply IsCompact.of_isClosed_subset (s := Set.Icc (0 : I → R) 1) isCompact_Icc hclosed
+  intro x hx
+  change (∀ i, 0 ≤ x i) ∧ ∀ i, x i ≤ 1
+  refine ⟨hx.1, fun i => ?_⟩
+  rw [← hx.2]
+  exact Finset.single_le_sum (fun j _ => hx.1 j) (Finset.mem_univ i)
 
-instance coordinateSetCompactSpace [Ring R] [PartialOrder R] [IsStrictOrderedRing R]
-    [TopologicalSpace R] [IsTopologicalRing R] [CompactIccSpace R] [OrderClosedTopology R]
+instance coordinateSetCompactSpace [Semiring R] [PartialOrder R] [TopologicalSpace R]
+    [ContinuousAdd R] [OrderClosedTopology R] [CompactIccSpace R] [IsOrderedAddMonoid R]
     [Fintype I] : CompactSpace (coordinateSet R I) :=
   isCompact_iff_compactSpace.mp (isCompact_coordinateSet R I)
 

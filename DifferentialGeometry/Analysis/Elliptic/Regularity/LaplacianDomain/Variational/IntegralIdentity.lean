@@ -691,19 +691,6 @@ private lemma chartPushedLpFromLp_smoothToLp_aeEq
         ((chartPulledWeightedMeasure (I := I) g α).restrict
           (chartTargetEuclid (I := I) (M := M) α)) = 0 :=
     le_antisymm h_diff_bound (zero_le)
-  have h_aestrong : AEStronglyMeasurable (fun y =>
-      DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α (((smoothToLp (I := I) (M := M) g v :
-          Lp ℝ 2 _) : M → ℝ)) y -
-      DifferentialGeometry.Analysis.Sobolev.Chart.chartPushed (I := I) (M := M)
-        (chartAtlasPOU I M) α v.toFun y)
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) := by
-    refine AEStronglyMeasurable.sub ?_ ?_
-    · exact (chartPushed_memLp_chartPulledWeightedMeasure_restrict_of_memLp
-        (I := I) (M := M) g α h_meas_lp_coe (Lp.memLp _)).aestronglyMeasurable
-    · exact (chartPushed_memLp_chartPulledWeightedMeasure_restrict_of_memLp
-        (I := I) (M := M) g α h_meas_v v.memLp_two).aestronglyMeasurable
   have h_aeEq_zero := (MeasureTheory.eLpNorm_eq_zero_iff
     (by norm_num : (2 : ℝ≥0∞) ≠ 0)).mp h_chart_eLpNorm_zero
   filter_upwards [h_aeEq_zero] with y hy
