@@ -277,10 +277,7 @@ theorem exists_uniform_standard_radial_image_frontier_tangent_sectional_lower_bo
     simp only [localPullMetric_inner, scaleMetric_inner] at hh
     simp only [hder, Function.comp_apply]
     apply (mul_le_mul_iff_left₀ hq).mp
-    convert hh using 1
-    · rfl
-    · ring
-    · ring
+    convert hh using 1 <;> ring
 
 
 end DifferentialGeometry.PDE.RicciFlow
