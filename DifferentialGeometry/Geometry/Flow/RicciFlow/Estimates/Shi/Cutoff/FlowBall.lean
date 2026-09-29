@@ -587,7 +587,7 @@ private theorem nonempty_lowerSupport_center
     {D : RealTimeInterval} {S : SolutionOn (I := I) (M := M) D}
     (hS : IsSolutionOn S) {time : RealTimeInterval.FlowTime D}
     (B : FlowMetricBall S time) {T t : ℝ} (hregt : t ∈ D.regular) :
-    Nonempty (ShiCutoffLowerSupportAt (flowG S) T
+    Nonempty (ParabolicCutoffLowerSupportAt (flowG S) T
       (shiCutoffError B T) (shiCutoff B) t B.center) := by
   classical
   let d : ℝ := Module.finrank ℝ E
@@ -664,7 +664,7 @@ private theorem nonempty_lowerSupport_of_ne_center
     (hEnorm : IsMetricNorm (I := I) (M := M) (S.base.metric t))
     {x : M} (hOx : B.center ≠ x)
     (hxχ : 0 < shiCutoff (I := I) B t x) :
-    Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG (I := I) S) T
+    Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG (I := I) S) T
       (shiCutoffError (I := I) B T) (shiCutoff (I := I) B) t x) := by
   classical
   let d : Real := Module.finrank Real E

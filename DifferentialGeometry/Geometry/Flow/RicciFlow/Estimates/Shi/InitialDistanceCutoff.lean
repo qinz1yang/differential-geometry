@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.BernsteinMaximum
 import DifferentialGeometry.Geometry.Comparison.DistanceHessianLocal
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
@@ -215,7 +215,7 @@ def ShiSelfCoupledLowerSupportAt.toCutoffLowerSupport
     {T A eps : Real} {Λ χ : Real → M → Real} {t : Real} {x : M}
     (h : ShiSelfCoupledLowerSupportAt (I := I) G T A Λ χ t x)
     (hA : A ≤ eps) (hΛ : Λ t x ≤ eps) (hχ : 0 ≤ χ t x) :
-    ShiCutoffLowerSupportAt (I := I) G T eps χ t x where
+    ParabolicCutoffLowerSupportAt (I := I) G T eps χ t x where
   phi := h.phi
   eq_at := h.eq_at
   lower_nhds := h.lower_nhds

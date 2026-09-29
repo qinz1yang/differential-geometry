@@ -4908,7 +4908,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.CompleteGlobal
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.ConstantMonotonicity
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Curvature
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Estimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.FlowBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.AllBounds

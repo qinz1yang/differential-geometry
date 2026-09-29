@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import Mathlib.Analysis.SpecialFunctions.Pow.Real
 
 open DifferentialGeometry.Geometry.Curvature
@@ -37,7 +37,7 @@ structure ShiFixedCutoff
     ContinuousOn (fun p : Real × M => chi p.1 p.2) (Set.Icc 0 T ×ˢ support)
   lower_support :
     ∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M, 0 < chi t x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) G T eps chi t x)
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) G T eps chi t x)
 
 def polynomialAbsorptionBound (a b c d : Real) : Real :=
   max 1 (max (4 * a / c) (max (4 * b / c) (4 * d / c))) ^ 2

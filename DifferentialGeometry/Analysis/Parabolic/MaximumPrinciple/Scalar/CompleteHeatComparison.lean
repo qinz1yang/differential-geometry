@@ -7,7 +7,6 @@ open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
 open DifferentialGeometry.Analysis.Parabolic
-open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Analysis
@@ -32,7 +31,7 @@ theorem nonpositive_of_heat_subsolution_and_cutoffs
     (hbound : ∀ t ∈ Icc 0 T, ∀ x : M, q t x ≤ C)
     (hheat : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M,
       parabolicOperatorWithDrift G T (fun _ _ => 0) q t x ≤ 0)
-    (hcut : ∀ O : M, Nonempty (ShiBarrierCutoffData G T O)) :
+    (hcut : ∀ O : M, Nonempty (ParabolicBarrierCutoffSequence G T O)) :
     ∀ t ∈ Icc 0 T, ∀ x : M, q t x ≤ 0 := by
   let φ : ℝ → ℝ := fun r => Real.exp r - 1
   let u : ℝ → M → ℝ := fun t x => φ (q t x)

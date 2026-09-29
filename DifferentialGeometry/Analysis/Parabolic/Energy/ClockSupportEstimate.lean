@@ -6,7 +6,7 @@ noncomputable section
 
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Analysis
@@ -49,7 +49,7 @@ private theorem gradient_const_mul_local (g : SmoothRiemannianMetric I M)
 private theorem clock_pair_regular
     (G : MetricConnectionFamily (I := I) (M := M) ℝ)
     (T ε A t : ℝ) (χ : ℝ → M → ℝ) (x : M)
-    (F : ShiCutoffLowerSupportAt G T ε χ t x)
+    (F : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (u v : ℝ → M → ℝ)
     (hu_time : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
     (hv_time : DifferentiableWithinAt ℝ (fun s => v s x) (Icc 0 T) t)
@@ -122,7 +122,7 @@ variable
     (hvK : ∀ t ∈ Icc 0 T, ∀ x : M, 0 < χ t x → v t x ≤ K ^ 2)
     (hw : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M, 0 < χ t x → 0 ≤ w t x)
     (hcut : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M, 0 < χ t x →
-      Nonempty (ShiCutoffLowerSupportAt G T ε χ t x))
+      Nonempty (ParabolicCutoffLowerSupportAt G T ε χ t x))
     (hu_time : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M, 0 < χ t x →
       DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
     (hv_time : ∀ t ∈ Icc 0 T, 0 < t → ∀ x : M, 0 < χ t x →

@@ -126,7 +126,7 @@ private theorem curvature_energy_of_finite_cutoff
     (hχrange : ∀ s ∈ Icc 0 (R ^ 2), ∀ x, χ s x ∈ Icc (0 : ℝ) 1)
     (hχout : ∀ s ∈ Icc 0 (R ^ 2), ∀ x ∉ Cpt, χ s x = 0)
     (hcut : ∀ s ∈ Icc 0 (R ^ 2), 0 < s → ∀ x, 0 < χ s x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S) (R ^ 2)
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S) (R ^ 2)
         (finiteDistanceCutoffConstant (Module.finrank ℝ E) / R ^ 2) χ s x))
     (hzero : ∀ s ∈ Icc 0 (R ^ 2), ∀ x, 0 < χ s x →
       nablaKRm04NormSqIntrinsic S 0 s x ≤ (1 / R ^ 2) ^ 2)
@@ -278,7 +278,7 @@ theorem fixed_ball_curvature_and_scalar_gradient_bound
     (∀ s ∈ Icc 0 (R ^ 2), ∀ x, x ∉ Cpt → χ s x = 0) ∧
     (∀ s ∈ Icc 0 (R ^ 2), ∀ x, 0 < χ s x → x ∈ B.set) ∧
     (∀ s ∈ Icc 0 (R ^ 2), 0 < s → ∀ x, 0 < χ s x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S0) (R ^ 2)
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S0) (R ^ 2)
         (finiteDistanceCutoffConstant n / R ^ 2) χ s x)) ∧
     (∀ s x, χ s x = DifferentialGeometry.Analysis.CutoffProfile.evalue
       (ENNReal.ofReal ((8 / R) * Real.exp (((n : ℝ) ^ 2 / R ^ 2) * s)) *

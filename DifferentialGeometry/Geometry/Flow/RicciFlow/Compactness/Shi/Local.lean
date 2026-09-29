@@ -483,7 +483,7 @@ private theorem complete_of_cutoff
     (hw_grad : ∀ k : Nat, ∀ t : Real, t ∈ Set.Icc 0 T → 0 < t → ∀ x : M,
       MDifferentiableAt I (I.prod 𝓘(Real, E))
         (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (w k t) y) x)
-    (cut : ShiCutoffData (I := I) G T)
+    (cut : ParabolicCutoffSequence (I := I) G T)
     (m : Nat) (c : Real) (hc : 0 ≤ c)
     (hlevelC : ∀ k : Nat, k ≤ m + 1 → levelC k ≤ c)
     (hKato : ∀ k : Nat, k ≤ m → ∀ s : Real, s ∈ Set.Icc 0 T → 0 < s → ∀ y : M,
@@ -497,7 +497,7 @@ private theorem complete_of_cutoff
     exists_trunc_tower (I := I) G levelC K aScale T hT hK haScale hslab
       hregular hw_nonneg hw0_bound hTK hheat hLap hw_cont hw_space hw_grad
       (m + 1) c hc hlevelC
-  have cutB : ShiCutoffData (I := I) G B.T := by
+  have cutB : ParabolicCutoffSequence (I := I) G B.T := by
     simpa only [hBT] using cut
   have hgradB : TowerNormGradUpTo (I := I) B m := by
     intro k hk s hs hspos y
@@ -554,7 +554,7 @@ private theorem complete_of_barrier
       MDifferentiableAt I (I.prod 𝓘(Real, E))
         (T% fun y : M ↦ gradientFun (I := I) (G.metric t) (w k t) y) x)
     (hcut : ∀ O : M,
-      Nonempty (ShiBarrierCutoffData (I := I) G T O))
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) G T O))
     (m : Nat) (c : Real) (hc : 0 ≤ c)
     (hlevelC : ∀ k : Nat, k ≤ m + 1 → levelC k ≤ c)
     (hKato : ∀ k : Nat, k ≤ m → ∀ s : Real, s ∈ Set.Icc 0 T → 0 < s → ∀ y : M,
@@ -569,7 +569,7 @@ private theorem complete_of_barrier
       hregular hw_nonneg hw0_bound hTK hheat hLap hw_cont hw_space hw_grad
       (m + 1) c hc hlevelC
   have cutB : ∀ O : M,
-      Nonempty (ShiBarrierCutoffData (I := I) G B.T O) := by
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) G B.T O) := by
     intro O
     simpa only [hBT] using hcut O
   have hgradB : TowerNormGradUpTo (I := I) B m := by
@@ -933,7 +933,7 @@ theorem movingRm_of_bound
       with_unfolding_all exact hraw
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
-      Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) (flowG (I := I) S0) T O) := by
     exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0
@@ -1300,7 +1300,7 @@ theorem movingShi_of_bound
       with_unfolding_all exact hraw
     exact hraw'.trans hCK
   have hcut : ∀ O : F.M,
-      Nonempty (ShiBarrierCutoffData (I := I) (flowG (I := I) S0) T O) := by
+      Nonempty (ParabolicBarrierCutoffSequence (I := I) (flowG (I := I) S0) T O) := by
     exact nonempty_shi_barrier_cutoff_data_of_solution
       (I := I) (S := S0) hS0 hT hSlab hreg0
       hRiemannT0 hKNonneg hcurv0

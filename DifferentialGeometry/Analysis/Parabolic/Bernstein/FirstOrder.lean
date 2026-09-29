@@ -7,7 +7,6 @@ noncomputable section
 open Bundle Filter Set
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow
 open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Analysis.Parabolic
@@ -19,7 +18,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
 theorem parabolic_cutoff_pow_mul_le
     {G : MetricConnectionFamily (I := I) (M := M) ℝ} {T ε t : ℝ}
     {χ : ℝ → M → ℝ} {x : M}
-    (q : ShiCutoffLowerSupportAt G T ε χ t x)
+    (q : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (ht : t ∈ Icc 0 T) (hε : 0 ≤ ε)
     (u : ℝ → M → ℝ) (v f : ℝ) (p : ℕ)
     (hu0 : 0 ≤ u t x) (hv0 : 0 ≤ v)
@@ -115,7 +114,7 @@ private theorem bernstein_first_order_algebra
 private theorem cutoff_product_regularity
     {G : MetricConnectionFamily (I := I) (M := M) ℝ} {T ε t : ℝ}
     {χ : ℝ → M → ℝ} {x : M}
-    (q : ShiCutoffLowerSupportAt G T ε χ t x)
+    (q : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (u : ℝ → M → ℝ) (p : ℕ)
     (hut : DifferentiableWithinAt ℝ (fun s => u s x) (Icc 0 T) t)
     (hus : ∀ᶠ y in 𝓝 x, MDifferentiableAt I 𝓘(ℝ, ℝ) (u t) y)
@@ -185,7 +184,7 @@ private theorem bernstein_combination_data
 private theorem support_bernstein_data
     {G : MetricConnectionFamily (I := I) (M := M) ℝ} {T ε t : ℝ}
     {χ : ℝ → M → ℝ} {x : M}
-    (q : ShiCutoffLowerSupportAt G T ε χ t x)
+    (q : ParabolicCutoffLowerSupportAt G T ε χ t x)
     (u₀ u₁ u₂ : ℝ → M → ℝ) (c K α : ℝ)
     (ht : t ∈ Icc 0 T) (huniq : UniqueDiffWithinAt ℝ (Icc 0 T) t)
     (hc : 0 ≤ c) (hK : 0 ≤ K) (hα : 0 ≤ α) (hε : 0 ≤ ε)

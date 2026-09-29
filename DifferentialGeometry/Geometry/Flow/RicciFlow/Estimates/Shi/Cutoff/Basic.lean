@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Analysis.Parabolic.Operator
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.CalabiSupport
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Metric.TensorInner.FiberMetric.Tensor0SMetric
 
@@ -131,7 +131,7 @@ def DistanceBarrier.ScaledDistanceSupport.cutoffLowerSupport
       |deriv (deriv DifferentialGeometry.Analysis.CutoffProfile.value) s| ≤ Cη)
     (hρ : DistanceBarrier.ScaledDistanceSupport
       (I := I) S O T t x d Λ r) :
-    ShiCutoffLowerSupportAt (I := I) (flowG (I := I) S) T
+    ParabolicCutoffLowerSupportAt (I := I) (flowG (I := I) S) T
       (Csq * a ^ 2 * U ^ 2 +
         Cη * (2 * (d - 1) * a ^ 2 * U ^ 2 +
           a * U * Real.sqrt ((d - 1) * Λ) + a ^ 2 * U ^ 2)) χ t x := by
@@ -437,7 +437,7 @@ theorem nonempty_shi_barrier_cutoff_data_of_solution
       nablaKRm04NormSqIntrinsic (I := I) S 0 s y ≤ K) :
     ∀ O : M,
       Nonempty
-        (ShiBarrierCutoffData
+        (ParabolicBarrierCutoffSequence
           (I := I) (flowG (I := I) S) T O) := by
   classical
   intro O

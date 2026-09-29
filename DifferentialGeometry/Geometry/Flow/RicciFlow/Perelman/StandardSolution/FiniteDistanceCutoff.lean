@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.FixedBallMovingControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.Noncollapsing.FlowBall.Calabi
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Defs
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Analysis.Calculus.Cutoff.Profile
 import DifferentialGeometry.Geometry.Metric.PointwiseInner.Bounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Distance.Barrier
@@ -115,7 +115,7 @@ private theorem profile_of_scaled_support
     (hfinite : riemannianEDistOf (I := I) (S.base.metric t) O x ≠ ⊤)
     (F : DistanceBarrier.ScaledDistanceSupport (I := I) S O T t x n Lambda
       (riemannianEDistOf (I := I) (S.base.metric t) O x).toReal) :
-    Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S) T eps
+    Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S) T eps
       (fun s y => DifferentialGeometry.Analysis.CutoffProfile.evalue
         (ENNReal.ofReal (alpha * Real.exp (Lambda * s)) *
           riemannianEDistOf (I := I) (S.base.metric s) O y)) t x) := by
@@ -399,7 +399,7 @@ theorem finite_distance_cutoff_on_controlled_ball
     ContinuousOn (fun p : ℝ × M => chi p.1 p.2) (spacetimeSlab (M := M) (time : ℝ)) ∧
     (∀ s ∈ Icc 0 (time : ℝ), ∀ x, 0 < chi s x → x ∈ B.setAt s) ∧
     (∀ s ∈ Icc 0 (time : ℝ), 0 < s → ∀ x, 0 < chi s x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S) (time : ℝ) eps chi s x)) := by
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S) (time : ℝ) eps chi s x)) := by
   let T : ℝ := time
   let R := B.radius
   let n : ℝ := Module.finrank ℝ E
@@ -573,7 +573,7 @@ theorem fixed_ball_finite_distance_cutoff
     (∀ s ∈ Icc 0 (R ^ 2), ∀ x, x ∉ Ksupport → chi s x = 0) ∧
     (∀ s ∈ Icc 0 (R ^ 2), ∀ x, 0 < chi s x → x ∈ B.set) ∧
     (∀ s ∈ Icc 0 (R ^ 2), 0 < s → ∀ x, 0 < chi s x →
-      Nonempty (ShiCutoffLowerSupportAt (I := I) (flowG S0) (R ^ 2)
+      Nonempty (ParabolicCutoffLowerSupportAt (I := I) (flowG S0) (R ^ 2)
         (finiteDistanceCutoffConstant (Module.finrank ℝ E) / R ^ 2) chi s x)) ∧
     (∀ s x, chi s x = DifferentialGeometry.Analysis.CutoffProfile.evalue
       (ENNReal.ofReal ((8 / R) * Real.exp (((Module.finrank ℝ E : ℝ) ^ 2 / R ^ 2) * s)) *
