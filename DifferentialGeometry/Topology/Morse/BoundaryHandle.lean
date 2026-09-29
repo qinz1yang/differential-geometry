@@ -69,11 +69,7 @@ private theorem exists_cocore_collar_of_isNondegenerateCriticalPointAt
                     1 - Real.sqrt (1 - 2 * τ / (2 * ε + r ^ 2 * ‖z.2.val‖ ^ 2)) = s.val) := by
   let data : MorseChart n k hk (f p) I f := morseChart I f hf p (f p) k hk hnd hindex rfl
   have hdata : data.p = p := by
-    have hAnd {P Q : Prop} {α : Type} (F : P → Q → α) (h : P ∧ Q) :
-        And.rec F h = F h.1 h.2 := by
-      cases h
-      rfl
-    simp only [data, morseChart, hAnd]
+    simp only [data, morseChart]
   let ρ : ℝ := min data.R data.smoothRadius
   have hρ : 0 < ρ := lt_min data.radius_pos data.smoothRadius_pos
   let ε : ℝ := ρ ^ 2 / 32

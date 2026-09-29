@@ -169,7 +169,8 @@ private theorem exists_constant_tail_extension_action_le
     have hval := hev.self_of_nhds
     have hder := hev.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
     unfold stageRegularizedLagrangian lVelocity
-    rw [hval, hder]
+    rw [hder, hval]
+    rfl
   have hheadLag := hlagEq eta (gamma jf) a v hav (fun _ hr => hetaLeft _ hr.2)
   have htailEq := hlagEq eta tail v w hvw (fun _ hr => hetaRight _ hr.1)
   have hheadInt : IntervalIntegrable (H.stageRegularizedLagrangian first T eta) volume a v :=

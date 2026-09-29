@@ -247,18 +247,12 @@ theorem TerminalLimitMetric.exists_contMDiff_action_lt_of_terminal_curve
     intro r hr
     rw [uIoo_of_le hd.1.le] at hr
     have hn : β =ᶠ[𝓝 r] α₁ := by filter_upwards [Ioo_mem_nhds hr.1 hr.2] with t ht; exact hβleft (Ioo_subset_Icc_self ht)
-    have hv := hn.self_of_nhds
-    have hder := hn.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
-    unfold lRegularizedLagrangian lVelocity
-    rw [hv, hder]
+    exact lagrangian_eq_of_eventuallyEq T hn
   have hβLagRight : EqOn (lRegularizedLagrangian G.flow T β) (lRegularizedLagrangian G.flow T α₂) (uIoo d v) := by
     intro r hr
     rw [uIoo_of_le hd.2.le] at hr
     have hn : β =ᶠ[𝓝 r] α₂ := by filter_upwards [Ioo_mem_nhds hr.1 hr.2] with t ht; exact hβright (Ioo_subset_Icc_self ht)
-    have hv := hn.self_of_nhds
-    have hder := hn.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
-    unfold lRegularizedLagrangian lVelocity
-    rw [hv, hder]
+    exact lagrangian_eq_of_eventuallyEq T hn
   have hβintLeft := hα₁int.congr_uIoo hβLagLeft.symm
   have hβintRight := hα₂int.congr_uIoo hβLagRight.symm
   refine ⟨β, hβ, (hβleft ⟨le_rfl, hd.1.le⟩).trans ?_, (hβright ⟨hd.2.le, le_rfl⟩).trans hα₂v,

@@ -46,6 +46,6 @@ theorem nonempty_poleEndpointRescaledFlowSeq_baseInjBound
       tau q hsigma hF.nonnegativeCurvatureOperator i le_rfl)
   intro i x hx
   apply hlocal i 0 le_rfl x
-  convert hx.le using 1 <;> rfl
+  convert hx.le using 1; rfl
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.KappaSolutions

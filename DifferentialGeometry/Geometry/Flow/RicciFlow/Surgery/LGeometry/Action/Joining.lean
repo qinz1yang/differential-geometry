@@ -172,7 +172,8 @@ private theorem TerminalLimitMetric.exists_contMDiff_action_join_lt
       have hv := he.self_of_nhds
       have hd := he.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
       unfold lRegularizedLagrangian lVelocity
-      rw [hv, hd]
+      rw [hd, hv]
+      rfl
     have hright : EqOn (lRegularizedLagrangian G.flow T η) (lRegularizedLagrangian G.flow T β) (uIoo w v) := by
       intro t ht
       rw [uIoo_of_le hwv.le] at ht
@@ -182,7 +183,8 @@ private theorem TerminalLimitMetric.exists_contMDiff_action_join_lt
       have hv := he.self_of_nhds
       have hd := he.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
       unfold lRegularizedLagrangian lVelocity
-      rw [hv, hd]
+      rw [hd, hv]
+      rfl
     have hintLeft := hαint.congr_uIoo hleft.symm
     have hintRight := hβint.congr_uIoo hright.symm
     have hηu : η u = α u := ite_eq_left huw

@@ -3147,7 +3147,8 @@ theorem sum_stageRegularizedAction_ge_of_leaves_common_compact_set
     have hd := hnear.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
     have he : H.stageRegularizedLagrangian j.val T (f (inc j) ∘ β j) t = H.stageRegularizedLagrangian j.val T (α' j) t := by
       unfold stageRegularizedLagrangian lVelocity
-      rw [hv, hd]
+      rw [hd, hv]
+      rfl
     exact (H.stageRegularizedLagrangian_comp_eq_of_localPullMetric j.val S (f (inc j)) (hf (inc j)) T
       ((hβ j).mdifferentiable one_ne_zero t) (hmet j t ht)).symm.trans he
   have hi (j : H.StageInterval k.val last) :

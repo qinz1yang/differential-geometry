@@ -111,8 +111,6 @@ private theorem tensor0S_hasDerivAt_laplacian_of_pullback
   simp only [tensor0SPullbackCLE_apply, tensor0SPullbackCLM_apply] at h
   convert h using 1
   · rfl
-  rw [Tensor0SSpace.add_apply]
-  rfl
 
 open DifferentialGeometry.Geometry.Curvature
 

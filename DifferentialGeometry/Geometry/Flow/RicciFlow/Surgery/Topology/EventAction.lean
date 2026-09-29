@@ -1583,7 +1583,8 @@ theorem lRegularizedAction_le_of_minimal_event_competitor
     have hv := hn.self_of_nhds
     have hder := hn.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
     unfold lRegularizedLagrangian lVelocity
-    rw [hv, hder]
+    rw [hder, hv]
+    rfl
   have halphaIntLeft : IntervalIntegrable (lRegularizedLagrangian G.flow T alpha) volume l c := halphaInt.mono_set (by
     simpa only [uIcc_of_le hlc, uIcc_of_le hlw] using Icc_subset_Icc le_rfl hcw)
   have halphaIntRight : IntervalIntegrable (lRegularizedLagrangian G.flow T alpha) volume c w := halphaInt.mono_set (by

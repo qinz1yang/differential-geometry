@@ -70,10 +70,20 @@ private theorem hamiltonian_rescaled_pullback
     rw [hleft y hy]
   have hgrad : gradientFun g (fun y => phi theta (Φ.symm (Φ y))) x =
       gradientFun g (phi theta) x := by
-    change metricSharp g x (mfderiv J 𝓘(ℝ, ℝ)
-      (fun y => phi theta (Φ.symm (Φ y))) x).toLinearMap =
-        metricSharp g x (mfderiv J 𝓘(ℝ, ℝ) (phi theta) x).toLinearMap
-    rw [heq.mfderiv_eq]
+    have hval : phi theta (Φ.symm (Φ x)) = phi theta x :=
+      congrArg (phi theta) (hleft x hx)
+    have hmf := heq.mfderiv_eq (I := J) (I' := 𝓘(ℝ, ℝ))
+    have hmv : mvfderiv J (fun y => phi theta (Φ.symm (Φ y))) x =
+        mvfderiv J (phi theta) x := by
+      unfold mvfderiv
+      rw [hmf]
+      dsimp only
+      rw [hval]
+      apply ContinuousLinearMap.ext
+      intro v
+      rfl
+    exact congrArg (fun A : TangentSpace J x →L[ℝ] ℝ =>
+      metricSharp g x A.toLinearMap) hmv
   change g.inner x
     (gradientFun g (fun y => phi theta (Φ.symm (Φ y))) x)
     (gradientFun g (fun y => phi theta (Φ.symm (Φ y))) x) = _ at hnorm

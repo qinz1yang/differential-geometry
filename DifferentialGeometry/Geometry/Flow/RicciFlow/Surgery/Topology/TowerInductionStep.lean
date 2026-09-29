@@ -509,7 +509,11 @@ theorem exists_retainedCoreHistory_eventCount_zero (P : OrientedThreeStage.{u}) 
     positive := preservesTangentOrientation_refl P.orientation
     metric_eq := by
       intro x v w
-      simp only [Diffeomorph.coe_refl, mfderiv_id]
+      change g.inner x
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x v)
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x w) =
+          g.inner x v w
+      rw [mfderiv_id]
       rfl }⟩
 
 theorem exists_retainedCoreHistory_eventCount_one (P : OrientedThreeStage.{u}) (g : P.Metric)
@@ -523,7 +527,11 @@ theorem exists_retainedCoreHistory_eventCount_one (P : OrientedThreeStage.{u}) (
     positive := preservesTangentOrientation_refl P.orientation
     metric_eq := by
       intro x v w
-      simp only [Diffeomorph.coe_refl, mfderiv_id]
+      change g.inner x
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x v)
+        (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x w) =
+          g.inner x v w
+      rw [mfderiv_id]
       rfl }⟩
 
 theorem exists_retainedCoreHistory_eventCount_one_of_isEmpty_output

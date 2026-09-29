@@ -74,7 +74,11 @@ def InitialIdentification.atZero (P : OrientedThreeStage.{u}) (g : P.Metric) :
   positive := preservesTangentOrientation_refl P.orientation
   metric_eq := by
     intro x v w
-    simp only [Diffeomorph.coe_refl, mfderiv_id]
+    change g.inner x
+      (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x v)
+      (mfderiv ThreeModel ThreeModel (id : P.Carrier → P.Carrier) x w) =
+        g.inner x v w
+    rw [mfderiv_id]
     rfl
 
 namespace ObservedHistory

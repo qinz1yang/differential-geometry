@@ -3640,7 +3640,6 @@ private theorem scalar_time_space_product_evolution
   have htime : HasDerivAt (fun r : Real => q r x) d t := by
     convert (hc.mul (hFtime.const_mul (h x))).congr_of_eventuallyEq
       (Filter.Eventually.of_forall fun _ => rfl) using 1
-    all_goals rfl
   refine ⟨htime, ?_⟩
   have hprod : ContMDiff I 𝓘(Real, Real) ∞
       (fun y : M => h y * F t y) := hh.mul hFsmooth

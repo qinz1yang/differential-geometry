@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.LocalAllOrders
 import DifferentialGeometry.Geometry.Operator.HessianAlgebra
 import DifferentialGeometry.Geometry.Operator.Scaling
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
-import Mathlib.Data.Real.Pointwise
+import Mathlib.Basic.Real.Pointwise
 
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature

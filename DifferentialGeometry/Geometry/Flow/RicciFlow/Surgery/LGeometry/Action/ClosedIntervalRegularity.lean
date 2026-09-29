@@ -826,7 +826,8 @@ theorem stageRegularizedAction_piecewise_Iic
     have hval := hev.self_of_nhds
     have hder := hev.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
     unfold stageRegularizedLagrangian lVelocity
-    rw [hval, hder]
+    rw [hder, hval]
+    rfl
   have hlagLeft := hlagEq gamma alpha hac hleft
   have hlagRight := hlagEq gamma beta hcb hright
   have hintLeft : IntervalIntegrable (H.stageRegularizedLagrangian j T gamma) volume a c :=

@@ -3936,7 +3936,8 @@ private theorem survivor_lift_weighted_action_on_shrunk_collar
     rw [← hlag]
     have hv := heq.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
     unfold stageRegularizedLagrangian lVelocity
-    rw [heq.self_of_nhds, hv]
+    rw [hv, heq.self_of_nhds]
+    rfl
   have hleft := htransfer i.succ (fun z : W => F z.val) hlocalNew
     (gamma ⟨i.succ, hf.trans i.castSucc_lt_succ.le, hl⟩) hcw.le le_rfl hwd.le
     (fun q hq => hnew ⟨hc0.le.trans hq.1.le, hq.2.le⟩) (fun q hq => by

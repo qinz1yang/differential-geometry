@@ -116,7 +116,8 @@ theorem exists_ancientKappa_redLength_baseTime_le
   have h := div_le_div_of_nonneg_right (hcost b hb c a hc ha hbound p q)
     (by positivity : 0 ≤ 2 * a)
   simp only [redLength, Real.sqrt_sq ha.le, Real.sqrt_sq (mul_pos hcpos ha).le]
-  convert h using 1 <;> first | rfl | field_simp [ha.ne', hcpos.ne']
+  convert h using 1
+  first | rfl | field_simp [ha.ne', hcpos.ne']
 
 
 theorem exists_ancientKappa_redLength_shift_le
