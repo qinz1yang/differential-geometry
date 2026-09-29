@@ -38,7 +38,8 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii
         (_hδ : metricCauchySchwarzBound (I := I) (M := M) g₀ (ccTensorBilinSymm (I := I) g₀ S) δ),
           SmoothCcTensor g₀ 0 2)
     {L : ℝ≥0} (hLipN : LipschitzWith L Nfun)
-    (H2 : ∃ C₁ C₂ : ℝ≥0, ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
+    (C₁ C₂ : ℝ≥0)
+    (H2 : ∀ (u u' : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)),
       ‖Nfun u - Nfun u'‖ ≤
         (C₁ : ℝ) * max ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                           (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) u‖
@@ -54,7 +55,8 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii
         w
         = F (tensorSectionRealizeMetric (I := I) g₀ S hδ_lt hδ) x v w)
     (hForce : ∀ {T : ℝ} (hT : 0 < T) (hT1 : T ≤ 1)
-        (hTT₀ : T ≤ (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose)
+        (hTT₀ : T ≤ (nemytskiiExistenceTime C₁ C₂
+          ‖Nfun (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖))
         (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
         (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T)
         (hduh : u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
@@ -62,7 +64,7 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii
         (hforce : gforce =ᵐ[timeMeasure T]
           (fun t => Nfun (maximalRegularityDuhamelSolutionField (I := I) (M := M) (a : ℝ) hT
             (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2)) gforce t)))
-        (hgforce : ‖gforce‖ ≤ 1 / (16 * ((H2.choose : ℝ) + 1)))
+        (hgforce : ‖gforce‖ ≤ 1 / (16 * ((C₁ : ℝ) + 1)))
         (htrace : timeH1.trace0 _ T u = 0),
       ∃ (d₂F : ℝ), 0 < d₂F ∧ d₂F ≤ T ∧
         ∃ (f : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ),
@@ -108,15 +110,14 @@ theorem quasilinear_metric_short_time_existence_of_nemytskii
       IsQuasilinearMetricParabolicSolution (I := I) F g₀ T g_DT ∧ JointChartGramSmooth (I := I) T
         g_DT := by
   classical
-  obtain ⟨_, hT₀pos, hsol⟩ :=
-    (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose_spec
-  set T : ℝ := min (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose 1 with
-    hT_def
-  have hT_pos : 0 < T := lt_min hT₀pos one_pos
-  have hT_le₀ : T ≤ (quasilinear_maxreg_solution_of_nemytskii g₀ a Nfun hLipN H2).choose :=
-    min_le_left _ _
-  have hT_le1 : T ≤ 1 := min_le_right _ _
-  obtain ⟨u, gforce, hduh, hforce, htrace, hderiv, hgforce⟩ := hsol hT_pos hT_le₀ hT_le1
+  let D := ‖Nfun (0 : TensorHs (I := I) (M := M) g₀ 0 2 ((a : ℝ) + 2))‖
+  let T := nemytskiiExistenceTime C₁ C₂ D
+  have hT_pos : 0 < T := nemytskiiExistenceTime_pos C₁ C₂ (norm_nonneg _)
+  have hT_le₀ : T ≤ nemytskiiExistenceTime C₁ C₂ D := le_rfl
+  have hT_le1 : T ≤ 1 := nemytskiiExistenceTime_le_one C₁ C₂ D
+  obtain ⟨u, gforce, hduh, hforce, htrace, hderiv, hgforce⟩ :=
+    quasilinear_strong_existence_of_time_le_mixed_lipschitz_bound (I := I) (M := M)
+      g₀ a Nfun hLipN C₁ C₂ D (norm_nonneg _) le_rfl H2 hT_pos hT_le₀
   have hForce2 :
       ∃ (d₂F : ℝ), 0 < d₂F ∧ d₂F ≤ T ∧
         ∃ (f : TensorEigenIdx (I := I) (M := M) g₀ 0 2 → ℝ → ℝ),
