@@ -156,10 +156,10 @@ theorem maximalRegularityDuhamelVectorField_compLpL_tensorHsInclusion
             (show a + 2 ≤ b + 2 by linarith)) u₀)
         ((ContinuousLinearMap.piLpMap 2 (fun _ : ι =>
           tensorHsInclusion (g := g) (r := r) (s := s) hab)).compLpL 2 (timeMeasure T) f) := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-  rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
-  simp only [maximalRegularityDuhamelVectorField, LinearIsometryEquiv.apply_symm_apply,
-    Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
+  unfold maximalRegularityDuhamelVectorField
+  rw [← Lp.piLpEquiv_symm_piLpMap (𝕜 := ℝ)]
+  simp only [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
+  congr 1
   apply PiLp.ext
   intro i
   exact maximalRegularityDuhamelSolutionField_compLpL_tensorHsInclusion hab hT h_compact

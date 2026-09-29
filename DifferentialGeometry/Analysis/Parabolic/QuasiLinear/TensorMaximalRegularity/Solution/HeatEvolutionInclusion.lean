@@ -53,9 +53,9 @@ theorem heatVectorField_compLpL_tensorHsInclusion
         2 (timeMeasure T) (heatVectorField b T u₀) =
       heatVectorField a T (ContinuousLinearMap.piLpMap 2 (fun _ : ι => tensorHsInclusion
         (g := g) (r := r) (s := s) (show a + 1 ≤ b + 1 by linarith)) u₀) := by
-  apply (Lp.piLpEquiv (𝕜 := ℝ) (timeMeasure T)).injective
-  rw [Lp.piLpEquiv_compLpL (𝕜 := ℝ)]
-  simp only [heatVectorField, LinearIsometryEquiv.apply_symm_apply]
+  unfold heatVectorField
+  rw [← Lp.piLpEquiv_symm_piLpMap (𝕜 := ℝ)]
+  congr 1
   apply PiLp.ext
   intro i
   exact heatEvolutionField_compLpL_tensorHsInclusion hab hT hc (u₀ i)
