@@ -290,7 +290,7 @@ theorem exists_ricciOrderZeroRiemannCoeff_metricPerturbationPath_riemannianFiber
         ((iteratedCovGrad (I := I) g₀ 0 2 (e m')
           (convexPerturbation (I := I) g₀ T 0 s)).toSection x)) ≤
         ∏ _m' : Fin n, (1 + (Csob * R) ^ 2) :=
-      Finset.prod_le_prod
+      Finset.prod_le_prod₀
         (fun m' _ => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m') x _)
         (fun m' _ => hcell (e m') (hem m'))
     refine le_trans hstep ?_

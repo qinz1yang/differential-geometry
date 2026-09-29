@@ -394,7 +394,7 @@ private theorem productGridTerm_integral_le_topOrderJetSq
     calc (∏ m ∈ Zset, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         ≤ ∏ _m ∈ Zset, Λ ^ 2 := by
-          apply Finset.prod_le_prod (fun m _ => hnn (e m) x)
+          apply Finset.prod_le_prod₀ (fun m _ => hnn (e m) x)
           intro m hm
           have hem0 : e m = 0 := by have := (Finset.mem_filter.mp hm).2; omega
           rw [hem0]; exact hΛsup x

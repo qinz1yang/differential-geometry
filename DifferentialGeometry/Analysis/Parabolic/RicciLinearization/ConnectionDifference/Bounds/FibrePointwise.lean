@@ -209,7 +209,7 @@ lemma fibPointwiseBound_coframe (g₀ : SmoothRiemannianMetric I M) (x : M) (d :
         (fun j => tangentModel (I := I) x (w j)) =
       coframeS (I := I) (M := M) g₀ x d e K (fun j => w j) := rfl
   rw [hval, coframeS_apply, one_mul, Finset.abs_prod]
-  refine Finset.prod_le_prod (fun j _ => abs_nonneg _) (fun j _ => ?_)
+  refine Finset.prod_le_prod₀ (fun j _ => abs_nonneg _) (fun j _ => ?_)
   have hcs := abs_metric_inner_le_sqrt_metric_quadratic (I := I) (M := M) g₀ x (e (K j)) (w j)
   have h1 : g₀.inner x (e (K j)) (e (K j)) = 1 := by rw [horth (K j) (K j)]; simp
   rw [h1, Real.sqrt_one, one_mul] at hcs

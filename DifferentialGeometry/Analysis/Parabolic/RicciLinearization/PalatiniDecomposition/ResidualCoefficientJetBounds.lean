@@ -247,7 +247,7 @@ theorem exists_ricciOrderZeroAACommCoeffField_metricPerturbationPath_l2JetWindow
       rw [Combinatorics.boundedFactorGrid, Combinatorics.boundedFactorGrid]
       refine Finset.sum_le_sum fun n _ => ?_
       refine Finset.sum_le_sum fun e _ => ?_
-      refine Finset.prod_le_prod
+      refine Finset.prod_le_prod₀
         (fun m _ => riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e m) x _)
         (fun m _ => ?_)
       rw [hcP, iteratedCovGrad_smul_real]
@@ -290,7 +290,7 @@ private lemma palatiniBoundedFactorGridWindow_mono_of_le (b b' : ℕ → ℝ) (h
   rw [Combinatorics.boundedFactorGrid, Combinatorics.boundedFactorGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 theorem ricci_background_curvature_difference_l2_jet_bound_on_metric_path
     (g₀ : SmoothRiemannianMetric I M) (a : ℕ)

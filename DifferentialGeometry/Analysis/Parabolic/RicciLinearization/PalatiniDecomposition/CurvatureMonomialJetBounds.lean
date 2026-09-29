@@ -311,7 +311,7 @@ lemma antidiagonalTupleGridWindow_mono (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b
   rw [Combinatorics.antidiagonalTupleGrid, Combinatorics.antidiagonalTupleGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 lemma le_antidiagonalTupleGrid (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) (q : ℕ) (hq : 1 ≤ q) :
     b q ≤ Combinatorics.antidiagonalTupleGrid b q := by

@@ -3679,7 +3679,7 @@ theorem exists_inverseMetricDifferenceSlotCoefficient_grid_l2_jetLinear_highOrde
             ∏ m ∈ Finset.univ.filter (fun m : Fin n' => 0 < e m),
               (Cg1 i * L * ‖iteratedCovGrad (I := I) g₀ 0 2 i T₀‖
                 ^ (2 * (e m : ℝ) / (i : ℝ))) :=
-          Finset.prod_le_prod hF_nn hFG
+          Finset.prod_le_prod₀ hF_nn hFG
         have hprodG : (∏ m ∈ Finset.univ.filter (fun m : Fin n' => 0 < e m),
             (Cg1 i * L * ‖iteratedCovGrad (I := I) g₀ 0 2 i T₀‖
               ^ (2 * (e m : ℝ) / (i : ℝ)))) =

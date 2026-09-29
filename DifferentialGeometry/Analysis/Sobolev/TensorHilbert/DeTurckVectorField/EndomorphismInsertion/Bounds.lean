@@ -141,7 +141,7 @@ private theorem diagonalProductTerm_integral_le
     calc (∏ m ∈ Zset, riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e m) x
             ((iteratedCovGrad (I := I) g₀ 0 2 (e m) P).toSection x))
         ≤ ∏ _m ∈ Zset, Λ ^ 2 := by
-          apply Finset.prod_le_prod (fun m _ => hnn (e m) x)
+          apply Finset.prod_le_prod₀ (fun m _ => hnn (e m) x)
           intro m hm
           have hem0 : e m = 0 := by have := (Finset.mem_filter.mp hm).2; omega
           rw [hem0]; exact hΛsup x
@@ -1077,7 +1077,7 @@ private lemma window_grid_le (g₀ : SmoothRiemannianMetric I M)
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e k) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (e k) P).toSection x)) ≤
         ∏ _k : Fin m, max (Λw ^ 2) 1 := by
-      apply Finset.prod_le_prod
+      apply Finset.prod_le_prod₀
       · intro k _
         exact riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e k) x _
       · intro k _

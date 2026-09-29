@@ -100,7 +100,7 @@ private lemma basisJet_apply_le {m : ℕ}
   have hprod : (∏ i : Fin m, ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (v i)‖) ≤ B ^ m := by
     calc
       (∏ i : Fin m, ‖(DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (v i)‖) ≤ ∏ _i : Fin m, B :=
-        Finset.prod_le_prod (fun _ _ => norm_nonneg _) (fun i _ => hsingle i)
+        Finset.prod_le_prod₀ (fun _ _ => norm_nonneg _) (fun i _ => hsingle i)
       _ = B ^ m := by simp
   have hop := F.le_opNorm (fun i => (DifferentialGeometry.Tensor.Coordinates.chartModelBasis E) (v i))
   rw [Real.norm_eq_abs] at hop

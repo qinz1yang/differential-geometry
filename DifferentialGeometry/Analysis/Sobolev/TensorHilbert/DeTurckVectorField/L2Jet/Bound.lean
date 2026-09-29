@@ -515,7 +515,7 @@ private lemma window_grid_le (g₀ : SmoothRiemannianMetric I M)
         riemannianFiberNormSq (I := I) (M := M) g₀ 0 (2 + e k) x
           ((iteratedCovGrad (I := I) g₀ 0 2 (e k) P).toSection x)) ≤
         ∏ _k : Fin m, max (Λw ^ 2) 1 := by
-      apply Finset.prod_le_prod
+      apply Finset.prod_le_prod₀
       · intro k _
         exact riemannianFiberNormSq_nonneg (I := I) (M := M) g₀ 0 (2 + e k) x _
       · intro k _

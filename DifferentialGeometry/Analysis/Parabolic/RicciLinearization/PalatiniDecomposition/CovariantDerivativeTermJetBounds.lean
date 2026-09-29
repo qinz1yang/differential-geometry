@@ -76,7 +76,7 @@ private lemma lrBFGW_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j)
   rw [Combinatorics.boundedFactorGrid, Combinatorics.boundedFactorGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 private lemma lrWindow_le_bFGW (b : ℕ → ℝ) (hb : ∀ j, 0 ≤ b j) {K W W' : ℕ}
     (hK : W ≤ K + 1) (hW : W ≤ W') (_hW1 : 1 ≤ W') :
@@ -743,7 +743,7 @@ private lemma lrGridWindow_mono_of_le (b b' : ℕ → ℝ) (hb : ∀ j, 0 ≤ b 
   rw [Combinatorics.antidiagonalTupleGrid, Combinatorics.antidiagonalTupleGrid]
   refine Finset.sum_le_sum fun n _ => ?_
   refine Finset.sum_le_sum fun e _ => ?_
-  exact Finset.prod_le_prod (fun m _ => hb (e m)) (fun m _ => hbb (e m))
+  exact Finset.prod_le_prod₀ (fun m _ => hb (e m)) (fun m _ => hbb (e m))
 
 private theorem riemannCurvatureRemainderGridWindow (g₀ : SmoothRiemannianMetric I M) (Λ0 : ℝ)
     (hΛ0 : 0 ≤ Λ0)
