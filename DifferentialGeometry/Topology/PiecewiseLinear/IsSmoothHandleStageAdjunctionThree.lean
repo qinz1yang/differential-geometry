@@ -11,6 +11,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.SmoothCapAttachment
 
 open Set Topology Manifold
 open scoped Manifold ContDiff
+
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 universe u
