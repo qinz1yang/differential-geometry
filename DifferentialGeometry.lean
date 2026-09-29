@@ -6898,7 +6898,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckCont
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EventGraphSumReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.ExtinctionContractReduction
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.GeometricReconstructionAssembly
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.GlobalStepInputsPinnedReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.GraphSumGluingReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.HornCylinderEscape

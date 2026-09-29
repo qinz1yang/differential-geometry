@@ -48,10 +48,4 @@ theorem finiteConnectedSum_orientedDiffeomorph_of_forall₂
   DifferentialGeometry.Topology.finiteConnectedSum_congr_of_connectedSumLaws
     DifferentialGeometry.Topology.connectedSumLaws_holds h
 
-theorem geometricReconstructionBackground_of_relativeCollarUniqueness_ballEmbeddingIsotopy
-    (h : relativeCollarUniqueness.{u} ∧ ballEmbeddingIsotopy.{u}) :
-    geometricReconstructionBackground.{u} :=
-  geometricReconstructionBackground_iff.mpr
-    ⟨h.1, h.2, sphereDiffeomorphismIsotopyConnected_holds⟩
-
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

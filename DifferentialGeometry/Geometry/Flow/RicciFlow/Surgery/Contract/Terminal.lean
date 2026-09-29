@@ -402,9 +402,13 @@ def GlobalStepConclusion (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ 
         (∀ x : (K.stage (Fin.succ j)).Carrier,
           -3 / (a₀ + 2 * K.time (Fin.succ j)) ≤ metricScalarAt (K.event j).outputMetric x)
 
-def globalMetricStep (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
+theorem GlobalStepConclusion.scale_positive
+    (p : CutoffParameters) (τ ε d : ℝ) (k : ℕ) (a₀ : ℝ)
     (DiscardedCutOpen : Type u → Prop)
-    (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen) : Prop :=
-  GlobalStepConclusion.{u} p τ ε d k a₀ DiscardedCutOpen inputs
+    (inputs : GlobalStepInputs.{u} p τ ε d k DiscardedCutOpen)
+    (h : GlobalStepConclusion p τ ε d k a₀ DiscardedCutOpen inputs) :
+    ∃ hstar : ℝ, 0 < hstar ∧ 2 * hstar ^ 2 < τ := by
+  obtain ⟨hstar, hpos, hlt, _⟩ := h
+  exact ⟨hstar, hpos, hlt⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology

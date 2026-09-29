@@ -50,9 +50,6 @@ def relativeCollarUniqueness : Prop :=
               Φ (c₀ (p, t)) = c₁ (p, t)) ∧
             Set.EqOn Φ id Uᶜ ∧ Set.EqOn Φ.symm id Uᶜ
 
-def boundaryCollarGeometry : Prop :=
-  disjointBoundaryCollarFamily.{u} ∧ relativeCollarUniqueness.{u}
-
 structure OrientedBallEmbedding (U : Type u) [TopologicalSpace U]
     [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     (o : ManifoldOrientation ThreeModel U 3) where
@@ -104,10 +101,6 @@ def seifertVanKampenPushout : Prop :=
   ∀ {X : Type u} [TopologicalSpace X] (U V : Set X),
     IsOpen U → IsOpen V → U ∪ V = Set.univ →
       DifferentialGeometry.Topology.VanKampen.fullGroupoidSquareIsPushoutStatement U V
-
-def geometricReconstructionBackground : Prop :=
-  boundaryCollarGeometry.{u} ∧ ballEmbeddingIsotopy.{u} ∧
-    sphereDiffeomorphismIsotopyConnected ∧ seifertVanKampenPushout.{u}
 
 def ballEmbeddingAmbientIsotopy : Prop :=
   ∀ (ι : Type u) [Fintype ι]
