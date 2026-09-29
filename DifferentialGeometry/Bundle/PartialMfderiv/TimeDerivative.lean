@@ -98,8 +98,20 @@ theorem ContMDiffOn.fiberwise_time_derivWithin {s : Set ℝ} {u : Set M}
     (mapsTo_id _) hp₀ (fun _ hp => hp.1) hs.uniqueMDiffOn
   have hd' : ContMDiffWithinAt (𝓘(ℝ, ℝ).prod I) 𝓘(ℝ, F) m
       (fun p : ℝ × M => derivWithin (fun t => C (t, p.2)) s p.1) (s ×ˢ u) p₀ := by
-    simpa only [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin,
-      derivWithin] using hd
+    convert hd using 1
+    funext p
+    simp only [inTangentCoordinates, mfderivWithin_eq_fderivWithin]
+    dsimp only [ContinuousLinearMap.inCoordinates]
+    simp only [Prod.mk.eta, TangentBundle.continuousLinearMapAt_model_space,
+      TangentBundle.symmL_model_space]
+    change derivWithin (fun t => C (t, p.2)) s p.1 =
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) (C (p.1, p.2)))
+        ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (C (p.1, p.2))).symm
+          (fderivWithin ℝ (fun t => C (t, p.2)) s p.1
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+              ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1))))
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
+    rfl
   have heq (p : ℝ × M) (hp : p ∈ s ×ˢ u) (hb : p.2 ∈ e.baseSet) :
       (e ⟨p.2, derivWithin (fun t => f t p.2) s p.1⟩).2 =
         derivWithin (fun t => C (t, p.2)) s p.1 := by

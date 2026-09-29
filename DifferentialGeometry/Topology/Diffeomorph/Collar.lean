@@ -23,7 +23,20 @@ private theorem contMDiffOn_deriv_snd
     (fun q : N × ℝ => q.2) (fun q : N × ℝ => q) (fun _ : N × ℝ => (1 : ℝ))
     contMDiffAt_snd contMDiffAt_id contMDiffAt_const (by simp)
   apply ContMDiffAt.contMDiffWithinAt
-  simpa only [inTangentCoordinates_model_space, mfderiv_eq_fderiv, deriv] using hv
+  convert hv using 1
+  funext q
+  simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change deriv (fun t => Φ (q.1, t)) q.2 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (Φ (q.1, q.2)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (Φ (q.1, q.2))).symm
+        (fderiv ℝ (fun t => Φ (q.1, t)) q.2
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) q.2)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) q.2).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
+  rfl
 
 namespace OpenPartialHomeomorph
 

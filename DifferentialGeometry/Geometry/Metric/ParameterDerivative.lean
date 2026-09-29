@@ -26,8 +26,20 @@ theorem contMDiffAt_deriv_fst {f : ℝ × M → ℝ} {q : ℝ × M}
     hf.comp (q, q.1) (contMDiffAt_snd.prodMk (contMDiffAt_snd.comp _ contMDiffAt_fst))
   have h := hcomp.mfderiv_apply (m := ∞) (fun p : ℝ × M => fun r : ℝ => f (r, p.2))
     Prod.fst id (fun _ : ℝ × M => (1 : ℝ)) contMDiffAt_fst contMDiffAt_id contMDiffAt_const (by simp)
-  simpa only [inTangentCoordinates_model_space, id_eq, mfderiv_eq_fderiv,
-    fderiv_apply_one_eq_deriv] using h
+  convert h using 1
+  funext p
+  simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change deriv (fun r => f (r, p.2)) p.1 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (p.1, p.2)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (p.1, p.2))).symm
+        (fderiv ℝ (fun r => f (r, p.2)) p.1
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
+  rfl
 
 
 
@@ -73,8 +85,20 @@ theorem contMDiffOn_derivWithin_fst {f : ℝ × M → ℝ} {T : Set ℝ} {U : Se
     (g := Prod.fst) (g₁ := id) (g₂ := fun _ : ℝ × M => (1 : ℝ))
     hcomp contMDiffWithinAt_fst contMDiffWithinAt_id contMDiffWithinAt_const (by simp)
     (mapsTo_id _) hq (fun _ hp => hp.1) hT.uniqueMDiffOn
-  simpa only [inTangentCoordinates_model_space, id_eq, mfderivWithin_eq_fderivWithin,
-    derivWithin] using h
+  convert h using 1
+  funext p
+  simp only [inTangentCoordinates, mfderivWithin_eq_fderivWithin]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change derivWithin (fun r => f (r, p.2)) T p.1 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (p.1, p.2)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (p.1, p.2))).symm
+        (fderivWithin ℝ (fun r => f (r, p.2)) T p.1
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.1).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
+  rfl
 
 end DifferentialGeometry.Geometry
 

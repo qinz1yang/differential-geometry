@@ -25,7 +25,20 @@ theorem contMDiff_verticalDeriv {h : M × ℝ → ℝ} (hh : ContMDiff (I.prod �
     (fun (q : M × ℝ) r ↦ h (q.1, r)) Prod.snd id (fun _ : M × ℝ ↦ (1 : ℝ))
     (hf.contMDiffAt (x := (q, q.2))) contMDiffAt_snd contMDiffAt_id contMDiffAt_const
     (by simp : (∞ : WithTop ℕ∞) + 1 ≤ ∞)
-  simpa only [inTangentCoordinates_model_space, mfderiv_eq_fderiv, fderiv_apply_one_eq_deriv, id_eq] using hd
+  convert hd using 1
+  funext p
+  simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change deriv (fun r => h (p.1, r)) p.2 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (h (p.1, p.2)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (h (p.1, p.2))).symm
+        (fderiv ℝ (fun r => h (p.1, r)) p.2
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.2)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.2).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
+  rfl
 
 set_option backward.isDefEq.respectTransparency false in
 theorem contMDiffOn_inverse_of_continuousOn [CompleteSpace E]

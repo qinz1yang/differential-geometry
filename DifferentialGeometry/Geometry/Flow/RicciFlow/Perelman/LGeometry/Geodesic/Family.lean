@@ -88,7 +88,19 @@ private theorem contDiffAt_time_fderiv_family
     (x₀ := A0) (m := ∞) (n := ∞)
     hF' htime hparam hone le_rfl
   apply contMDiffAt_iff_contDiffAt.mp
-  simpa only [inTangentCoordinates_model_space, mfderiv_eq_fderiv, id_eq] using h
+  convert h using 1
+  funext A
+  simp only [inTangentCoordinates, mfderiv_eq_fderiv]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change fderiv Real (fun s : Real => F (A, s)) s0 1 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (F (A, s0)))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (F (A, s0))).symm
+        (fderiv Real (fun s : Real => F (A, s)) s0
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) s0)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) s0).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
 
 omit [InnerProductSpace Real E] [FiniteDimensional Real E]
   [NeZero (Module.finrank Real E)] [I.Boundaryless] [T2Space M] in

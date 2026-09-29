@@ -764,7 +764,19 @@ private theorem partialSnd_set_contMDiffOn_Icc
       contMDiffWithinAt_snd contMDiffWithinAt_id contMDiffWithinAt_const le_rfl
       (Set.mapsTo_id _) hp₀
       (fun q hq => hq.2) hUM
-  simpa [inTangentCoordinates_model_space, mfderivWithin_eq_fderivWithin] using h_apply
+  convert h_apply using 1
+  funext p
+  simp only [inTangentCoordinates, mfderivWithin_eq_fderivWithin]
+  dsimp only [ContinuousLinearMap.inCoordinates]
+  simp only [TangentBundle.continuousLinearMapAt_model_space,
+    TangentBundle.symmL_model_space]
+  change fderivWithin ℝ (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2 1 =
+    (NormedSpace.fromTangentSpace (𝕜 := ℝ) (f p.1 p.2))
+      ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (f p.1 p.2)).symm
+        (fderivWithin ℝ (fun s => f p.1 s) (Set.Icc (0 : ℝ) T) p.2
+          ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.2)
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) p.2).symm 1))))
+  simp only [ContinuousLinearEquiv.apply_symm_apply]
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless]
     [BoundarylessManifold I M] [T2Space M] [SigmaCompactSpace M] in

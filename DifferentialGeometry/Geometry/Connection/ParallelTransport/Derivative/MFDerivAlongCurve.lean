@@ -40,16 +40,13 @@ theorem chartCoord_mfderiv_along_curve_eq_fderiv
         (mfderiv I 𝓘(ℝ, E) (extChartAt I α) (γ t)).comp
           (mfderiv 𝓘(ℝ, ℝ) I γ t) :=
     mfderiv_comp t hφ_mdiff hγ_mdiff
-  have hmf_eq_f :
-      mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ((extChartAt I α) ∘ γ) t =
-        fderiv ℝ ((extChartAt I α) ∘ γ) t :=
-    mfderiv_eq_fderiv (𝕜 := ℝ) (f := (extChartAt I α) ∘ γ) (x := t)
-  have hRHS :
-      (fderiv ℝ ((extChartAt I α) ∘ γ) t : ℝ →L[ℝ] E) (1 : ℝ) =
-        ((mfderiv I 𝓘(ℝ, E) (extChartAt I α) (γ t)).comp
-            (mfderiv 𝓘(ℝ, ℝ) I γ t)) (1 : ℝ) := by
-    rw [← hmf_eq_f, hchain]; rfl
-  rw [hRHS]; rfl
+  have heval := congrArg
+    (fun L => (NormedSpace.fromTangentSpace (𝕜 := ℝ) (extChartAt I α (γ t)))
+      (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm 1))) hchain
+  rw [mfderiv_eq_fderiv] at heval
+  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+    ContinuousLinearEquiv.apply_symm_apply] at heval
+  exact heval.symm
 
 theorem chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
     {γ : ℝ → M} {t : ℝ} (hγ : MDifferentiableAt 𝓘(ℝ, ℝ) I γ t)
@@ -66,16 +63,13 @@ theorem chartCoord_mfderiv_along_curve_eq_fderiv_of_mdifferentiableAt
         (mfderiv I 𝓘(ℝ, E) (extChartAt I α) (γ t)).comp
           (mfderiv 𝓘(ℝ, ℝ) I γ t) :=
     mfderiv_comp t hφ_mdiff hγ
-  have hmf_eq_f :
-      mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ((extChartAt I α) ∘ γ) t =
-        fderiv ℝ ((extChartAt I α) ∘ γ) t :=
-    mfderiv_eq_fderiv (𝕜 := ℝ) (f := (extChartAt I α) ∘ γ) (x := t)
-  have hRHS :
-      (fderiv ℝ ((extChartAt I α) ∘ γ) t : ℝ →L[ℝ] E) (1 : ℝ) =
-        ((mfderiv I 𝓘(ℝ, E) (extChartAt I α) (γ t)).comp
-            (mfderiv 𝓘(ℝ, ℝ) I γ t)) (1 : ℝ) := by
-    rw [← hmf_eq_f, hchain]; rfl
-  rw [hRHS]; rfl
+  have heval := congrArg
+    (fun L => (NormedSpace.fromTangentSpace (𝕜 := ℝ) (extChartAt I α (γ t)))
+      (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm 1))) hchain
+  rw [mfderiv_eq_fderiv] at heval
+  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+    ContinuousLinearEquiv.apply_symm_apply] at heval
+  exact heval.symm
 
 theorem chartCoord_mfderivWithin_along_curve_eq_fderivWithin
     {γ : ℝ → M} {J : Set ℝ} {t₀ : ℝ} {α : M}
@@ -97,9 +91,14 @@ theorem chartCoord_mfderivWithin_along_curve_eq_fderivWithin
           (mfderivWithin 𝓘(ℝ, ℝ) I γ J t₀) :=
     mfderivWithin_comp_of_preimage_mem_nhdsWithin (x := t₀) (f := γ)
       (u := (chartAt H α).source) hφ hγ hpre hxs
-  rw [← mfderivWithin_eq_fderivWithin, hchain,
-    mfderivWithin_of_isOpen (chartAt H α).open_source ht]
-  rfl
+  rw [mfderivWithin_of_isOpen (chartAt H α).open_source ht] at hchain
+  have heval := congrArg
+    (fun L => (NormedSpace.fromTangentSpace (𝕜 := ℝ) (extChartAt I α (γ t₀)))
+      (L ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t₀).symm 1))) hchain
+  rw [mfderivWithin_eq_fderivWithin] at heval
+  simp only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+    ContinuousLinearEquiv.apply_symm_apply] at heval
+  exact heval.symm
 
 theorem velocity_coord_diff
     (γ : ℝ → M) (t : ℝ) (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I 2 γ t) :

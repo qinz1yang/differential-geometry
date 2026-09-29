@@ -343,8 +343,20 @@ private theorem partialFderiv_continuous
     (by norm_num)
   have hD' : ContMDiffAt P 𝓘(ℝ, V →L[ℝ] W) (0 : ℕ∞)
       (fun z : V × M ↦ fderiv ℝ (fun u : V ↦ F u z.2) z.1) p := by
-    simpa only [inTangentCoordinates_model_space, mfderiv_eq_fderiv, f, IV, IW]
-      using hD
+    convert hD using 1
+    funext z
+    simp only [f, IV, IW, inTangentCoordinates, mfderiv_eq_fderiv]
+    dsimp only [ContinuousLinearMap.inCoordinates]
+    simp only [TangentBundle.continuousLinearMapAt_model_space,
+      TangentBundle.symmL_model_space]
+    ext v
+    change fderiv ℝ (fun u : V => F u z.2) z.1 v =
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) (F z.1 z.2))
+        ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (F z.1 z.2)).symm
+          (fderiv ℝ (fun u : V => F u z.2) z.1
+            ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z.1)
+              ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z.1).symm v))))
+    simp only [ContinuousLinearEquiv.apply_symm_apply]
   exact hD'.continuousAt.continuousWithinAt
 
 omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)]
