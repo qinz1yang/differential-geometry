@@ -1,16 +1,21 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
+import DifferentialGeometry.Topology.Homology.IntegralChainMaps
 import Mathlib.AlgebraicTopology.SimplicialSet.TopAdj
 import Mathlib.Topology.Homotopy.HomotopyGroup
 import Mathlib.GroupTheory.Perm.Sign
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.SimplyConnected
 import Mathlib.Topology.CompactOpen
 import Mathlib.Tactic.FinCases
+import Mathlib.Tactic.Abel
+import Mathlib.Tactic.Linarith
+import Mathlib.Tactic.NormNum
+import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 import Mathlib.Data.Fin.VecNotation
 
 noncomputable section
 
 open CategoryTheory CategoryTheory.Limits AlgebraicTopology Set
-open scoped Topology unitInterval Simplicial Manifold ContDiff
+open scoped Topology unitInterval Simplicial
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 

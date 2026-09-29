@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.CubeSphereDegreeUnit
 import DifferentialGeometry.Topology.Homology.LiftedSphereRelativeBridge
 

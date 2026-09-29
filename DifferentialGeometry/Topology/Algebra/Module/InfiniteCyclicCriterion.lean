@@ -121,6 +121,46 @@ theorem not_nonempty_linearEquiv_int_botSubmodule :
 
 end DifferentialGeometry.Algebra.Module
 
+namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
+section ZsmulGenerator
+
+variable {A : Type*} [AddCommGroup A] [Module ℤ A]
+
+theorem isUnit_apply_iff_of_int_linearEquiv (φ : ℤ ≃ₗ[ℤ] ℤ) (m : ℤ) :
+    IsUnit (φ m) ↔ IsUnit m := by
+  have hg : IsUnit (φ 1) := by
+    refine isUnit_iff_exists_inv.mpr ⟨φ.symm 1, ?_⟩
+    have hs := map_smul φ (φ.symm 1) (1 : ℤ)
+    simp only [smul_eq_mul, mul_one, LinearEquiv.apply_symm_apply] at hs
+    rw [mul_comm]
+    exact hs.symm
+  have hm : φ m = m * (φ 1) := by
+    have hs := map_smul φ m (1 : ℤ)
+    simpa only [smul_eq_mul, mul_one] using hs
+  have hφ : φ 1 = 1 ∨ φ 1 = -1 := Int.isUnit_iff.mp hg
+  rw [hm]
+  rcases hφ with h | h
+  · rw [h, mul_one]
+  · rw [h, mul_neg_one]
+    exact ⟨fun hh => by simpa using hh.neg, fun hh => hh.neg⟩
+
+theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv (e e' : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e c) ↔ IsUnit (e' c) := by
+  have h : (e.symm.trans e') (e c) = e' c := by
+    rw [LinearEquiv.trans_apply, LinearEquiv.symm_apply_apply]
+  rw [← h]
+  exact (isUnit_apply_iff_of_int_linearEquiv (e.symm.trans e') (e c)).symm
+
+theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv_trans {B : Type*} [AddCommGroup B]
+    [Module ℤ B] (f : A ≃ₗ[ℤ] B) (e : B ≃ₗ[ℤ] ℤ) (e' : A ≃ₗ[ℤ] ℤ) (c : A) :
+    IsUnit (e (f c)) ↔ IsUnit (e' c) :=
+  isUnit_apply_iff_isUnit_apply_of_linearEquiv (f.trans e) e' c
+
+end ZsmulGenerator
+
+end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+
 open Lean in
 run_cmd do
   let allowed : List Name := [``propext, ``Classical.choice, ``Quot.sound]

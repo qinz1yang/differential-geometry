@@ -1,4 +1,6 @@
+import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Topology.Homology.Relative.Basic
+import DifferentialGeometry.Topology.Homology.IntegralChainMaps
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChartSimplexBlend
 import DifferentialGeometry.Topology.Homology.LiftedSphere
@@ -26,22 +28,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 
-def integralCoefficients : ModuleCat.{u} ℤ := ModuleCat.of ℤ (ULift.{u} ℤ)
-
-
-def integralChainsFunctor : TopCat.{u} ⥤ ChainComplex (ModuleCat.{u} ℤ) ℕ :=
-  (singularChainComplexFunctor (ModuleCat.{u} ℤ)).obj integralCoefficients
-
-
-def integralHomologyFunctor (n : ℕ) : TopCat.{u} ⥤ ModuleCat.{u} ℤ :=
-  (singularHomologyFunctor (ModuleCat.{u} ℤ) n).obj integralCoefficients
-
 variable (X : Type u) [TopologicalSpace X]
-
-abbrev IntegralChains := integralChainsFunctor.obj (TopCat.of X)
-
-abbrev IntegralHomology (n : ℕ) := (integralHomologyFunctor n).obj (TopCat.of X)
-
 
 def subspaceInclusion (A : Set X) : TopCat.of A ⟶ TopCat.of X :=
   TopCat.ofHom ⟨Subtype.val, continuous_subtype_val⟩
@@ -67,11 +54,6 @@ abbrev LocalIntegralHomology (x : X) (n : ℕ) :=
   RelativeIntegralHomology X ({x}ᶜ) n
 
 variable {X} {Y : Type u} [TopologicalSpace Y]
-
-
-def integralHomologyMap (n : ℕ) (f : C(X, Y)) :
-    IntegralHomology X n ⟶ IntegralHomology Y n :=
-  (integralHomologyFunctor n).map (TopCat.ofHom f)
 
 
 theorem integralHomologyMap_eq_of_homotopic {f g : C(X, Y)}
@@ -139,12 +121,6 @@ theorem absoluteToRelative_compl_singleton_injective_of_subsingleton (x : X)
     (h : Subsingleton (IntegralHomology ({x}ᶜ : Set X) 3)) :
     Function.Injective (absoluteToRelative X ({x}ᶜ) 3) :=
   absoluteToRelative_injective_of_subsingleton ({x}ᶜ) 3 h
-
-
-def singularSimplexChain {n : ℕ} (f : C(Convexity.StdSimplex ℝ (Fin (n + 1)), X)) :
-    integralCoefficients ⟶ (IntegralChains X).X n :=
-  (TopCat.toSSet.obj (TopCat.of X)).ιChainComplex
-    ((TopCat.toSSetObjEquiv (TopCat.of X) (.op ⦋n⦌)).symm f)
 
 
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
@@ -746,36 +722,6 @@ theorem isUnit_apply_iff_bijective_zsmul (e : A ≃ₗ[ℤ] ℤ) (c : A) :
       rw [map_zsmul, LinearEquiv.apply_symm_apply, smul_eq_mul] at h
       exact h
     exact isUnit_iff_exists_inv.mpr ⟨k, by rw [mul_comm]; exact hk'⟩
-
-theorem isUnit_apply_iff_of_int_linearEquiv (φ : ℤ ≃ₗ[ℤ] ℤ) (m : ℤ) :
-    IsUnit (φ m) ↔ IsUnit m := by
-  have hg : IsUnit (φ 1) := by
-    refine isUnit_iff_exists_inv.mpr ⟨φ.symm 1, ?_⟩
-    have hs := map_smul φ (φ.symm 1) (1 : ℤ)
-    simp only [smul_eq_mul, mul_one, LinearEquiv.apply_symm_apply] at hs
-    rw [mul_comm]
-    exact hs.symm
-  have hm : φ m = m * (φ 1) := by
-    have hs := map_smul φ m (1 : ℤ)
-    simpa only [smul_eq_mul, mul_one] using hs
-  have hφ : φ 1 = 1 ∨ φ 1 = -1 := Int.isUnit_iff.mp hg
-  rw [hm]
-  rcases hφ with h | h
-  · rw [h, mul_one]
-  · rw [h, mul_neg_one]
-    exact ⟨fun hh => by simpa using hh.neg, fun hh => hh.neg⟩
-
-theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv (e e' : A ≃ₗ[ℤ] ℤ) (c : A) :
-    IsUnit (e c) ↔ IsUnit (e' c) := by
-  have h : (e.symm.trans e') (e c) = e' c := by
-    rw [LinearEquiv.trans_apply, LinearEquiv.symm_apply_apply]
-  rw [← h]
-  exact (isUnit_apply_iff_of_int_linearEquiv (e.symm.trans e') (e c)).symm
-
-theorem isUnit_apply_iff_isUnit_apply_of_linearEquiv_trans {B : Type*} [AddCommGroup B]
-    [Module ℤ B] (f : A ≃ₗ[ℤ] B) (e : B ≃ₗ[ℤ] ℤ) (e' : A ≃ₗ[ℤ] ℤ) (c : A) :
-    IsUnit (e (f c)) ↔ IsUnit (e' c) :=
-  isUnit_apply_iff_isUnit_apply_of_linearEquiv (f.trans e) e' c
 
 theorem isUnit_apply_iff_exists_surjective_functional (e : A ≃ₗ[ℤ] ℤ) (c : A) :
     IsUnit (e c) ↔ ∃ φ : A →ₗ[ℤ] ℤ, Function.Surjective φ ∧ φ c = 1 := by

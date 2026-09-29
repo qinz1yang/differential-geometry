@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HurewiczCube
+import DifferentialGeometry.External.CanonicalTopology.Topology.Homology.Integral
+import DifferentialGeometry.Topology.Homology.HurewiczCube
 
 noncomputable section
 

@@ -1,4 +1,5 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HurewiczCube
+import DifferentialGeometry.Topology.Homology.HurewiczCube
+import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Topology.Homology.HurewiczLowDegreeAssembly
 import DifferentialGeometry.Topology.Homology.CubeSphereGenerator
 import DifferentialGeometry.Topology.Homotopy.ManifoldVanishing

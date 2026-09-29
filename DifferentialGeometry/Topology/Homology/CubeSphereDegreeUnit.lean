@@ -1,3 +1,4 @@
+import DifferentialGeometry.Topology.Algebra.Module.InfiniteCyclicCriterion
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
 import DifferentialGeometry.Topology.Homology.HurewiczBijectionFrontier
 import DifferentialGeometry.Topology.Homology.IntegralReducedCoefficientBridge

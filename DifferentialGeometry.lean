@@ -5472,6 +5472,9 @@ import DifferentialGeometry.Tensor.RSTensor.SlotSubstitution
 import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
+import DifferentialGeometry.Topology.Homology.CubeBoundaryFaceChain
+import DifferentialGeometry.Topology.Homology.HurewiczCube
+import DifferentialGeometry.Topology.Homology.IntegralChainMaps
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Extension
 import DifferentialGeometry.Topology.Manifold.RegularLevel.AtlasCompatibility
 import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
@@ -7115,7 +7118,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapPrese
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapTransitionSkeleton
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCoreHalfSpaceModel
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereGenerator
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeBoundaryFaceChain
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeSphereRelativeReduction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeTetrahedralChainBridge
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Descendants
@@ -7174,7 +7176,6 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRest
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySlices
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Homology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HomotopyGroupsAssembly
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HurewiczCube
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSlabCapBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LinearOrientation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LocalClassRealizationLocality

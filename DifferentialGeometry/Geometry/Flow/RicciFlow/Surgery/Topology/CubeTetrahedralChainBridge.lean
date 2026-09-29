@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CubeBoundaryFaceChain
+import DifferentialGeometry.Topology.Homology.CubeBoundaryFaceChain
 import DifferentialGeometry.Topology.Homology.HurewiczTwoMultiplication
 import DifferentialGeometry.Topology.Homology.SquareBoundaryDegree
 
