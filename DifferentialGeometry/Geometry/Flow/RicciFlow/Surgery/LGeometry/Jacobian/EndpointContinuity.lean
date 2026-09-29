@@ -141,7 +141,8 @@ theorem continuousWithinAt_historyReducedJacobianAlong {B₀ : ℝ}
       lJacobianDensity Wv.S T (fun q => β (Z₀.1, Real.sqrt q))
         (fun i q => mfderiv 𝓘(ℝ, ThreeSpace) ThreeModel (fun Z => β (Z, Real.sqrt q)) Z₀.1
           (chartModelBasis ThreeSpace i)) (w ^ 2) := by
-    have hf : (Wv.f ⟨first, hk⟩ ∘ fun Z => β (Z, w)) =ᶠ[𝓝 Z₀.1]
+    have hf : (Wv.f ⟨first, hk⟩ ∘ fun Z : ThreeSpace => β (Z, w))
+        =ᶠ[nhds (X := ThreeSpace) Z₀.1]
         H.historyLCurveMap hle T w p Z₀ ⟨first, le_rfl, hle⟩ w := by
       filter_upwards [hV.mem_nhds hZ₀V] with Z hZ
       rw [Function.comp_apply, historyLCurveMap_of_mem _ _ (hVdom Z hZ)]
