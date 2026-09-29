@@ -539,6 +539,7 @@ theorem ricciReactionCoordinateArray_bound
           ((2 : Real) * (Fintype.card Idx : Real) * B) *
             compNormSqMulti Wc := by simp only [N]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M] in
 theorem movingMetricReaction_bound
@@ -603,6 +604,7 @@ theorem movingMetricReaction_bound
   simp only [Fintype.card_fin]
   exact le_rfl
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M]
   [I.Boundaryless]
   [BoundarylessManifold I M]
@@ -754,6 +756,7 @@ theorem traceTimeDerivMetric_bound
     _ = (-2 : Real) * metricTracePair0SAt (I := I) (g t) Q := by
       rw [hscalar]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M] [T2Space M]
   [SigmaCompactSpace M] in
 theorem moving_metric_reaction_and_volume_bound

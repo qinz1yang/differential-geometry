@@ -160,6 +160,7 @@ theorem cc_flux_slot (q h : SmoothRiemannianMetric I M)
   rw [scalarFlux_eval (I := I) (M := M),
     cotangent_slot_apply (I := I) (M := M)]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 theorem cc_top_pair
     (q h : SmoothRiemannianMetric I M)
@@ -249,6 +250,7 @@ theorem cc_top_pair
     (δ / (1 - δ)) * ‖SmoothCcTensor.toL2 A‖ ^ 2
   exact hneg
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 theorem cc_last_pair
     (q h : SmoothRiemannianMetric I M)

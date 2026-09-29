@@ -166,6 +166,7 @@ private theorem negGInvDiffRaisedEndo_inner_self_le
     _ ≤ (δ / (1 - δ)) * (Real.sqrt (g₀.inner x v v) * Real.sqrt (g₀.inner x v v)) := hbnd
     _ = (δ / (1 - δ)) * g₀.inner x v v := by rw [hsq]
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] [I.Boundaryless] [BoundarylessManifold I M]
   [T2Space M] [SigmaCompactSpace M] in
 private theorem tensorInnerPointwise_negGInvDiffSlot_le
@@ -3301,6 +3302,7 @@ private theorem exists_oneMinusConnLapIter_pairing_remainder
       (I := I) (M := M) g₀ g₁ n h htie hδ_lt hδ_nn hδ
   exact ⟨Clower, hClower_nn, hbound⟩
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 private theorem termPrincipalSlotPairing_le_dirichlet_top
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)
@@ -3386,6 +3388,7 @@ private theorem termPrincipalSlotPairing_le_dirichlet_top
   rw [hnorm] at hslot
   exact hslot
 
+omit [NeZero (Module.finrank ℝ E)] in
 omit [BoundarylessManifold I M] in
 theorem edgeTerm_slot_le
     (g₀ g₁ : SmoothRiemannianMetric I M) (n : ℕ)

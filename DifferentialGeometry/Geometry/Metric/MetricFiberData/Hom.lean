@@ -286,7 +286,7 @@ theorem homFlatLinear_self_eq_zero_iff [AddCommGroup V] [Module Real V]
   rw [hA]
   exact trace_adjoint_comp_eq_zero_iff A
 
-theorem hom_nonneg [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
+private theorem hom_nonneg [AddCommGroup V] [Module Real V] [FiniteDimensional Real V]
     [AddCommGroup W] [Module Real W] [FiniteDimensional Real W]
     (DV : MetricFiberData V) (DW : MetricFiberData W) :
     Function.Injective (homFlatLinear DV DW) ∧
