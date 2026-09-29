@@ -290,11 +290,22 @@ theorem mfderiv_apply_mfderiv_eq_of_regularCrossing (i : Fin H.eventCount)
         (mfderiv ThreeModel ThreeModel
           (W.f ⟨i.castSucc, hl, i.castSucc_lt_succ.le.trans hh⟩) z V) =
       mfderiv ThreeModel ThreeModel (W.f ⟨i.succ, hl.trans i.castSucc_lt_succ.le, hh⟩) z V := by
+  have heq := W.eventuallyEq_comp_of_regularCrossing i hl hh z hψ
+  have hpoint : ψ (W.f ⟨i.castSucc, hl, i.castSucc_lt_succ.le.trans hh⟩ z) =
+      W.f ⟨i.succ, hl.trans i.castSucc_lt_succ.le, hh⟩ z := heq.self_of_nhds
   have h := mfderiv_comp z (W.mdifferentiableAt_of_regularCrossing i hl hh z hψ)
     ((W.localDiffeomorph _ z).mdifferentiableAt (by simp))
-  rw [(W.eventuallyEq_comp_of_regularCrossing i hl hh z hψ).mfderiv_eq] at h
-  rw [h]
-  rfl
+  rw [heq.mfderiv_eq] at h
+  have hv := congrArg
+    (fun D : TangentSpace ThreeModel z →L[ℝ]
+        TangentSpace ThreeModel
+          (ψ (W.f ⟨i.castSucc, hl, i.castSucc_lt_succ.le.trans hh⟩ z)) =>
+      DifferentialGeometry.tangentSpaceModelContinuousLinearEquiv (I := ThreeModel)
+        (ψ (W.f ⟨i.castSucc, hl, i.castSucc_lt_succ.le.trans hh⟩ z)) (D V)) h
+  dsimp only [Function.comp_apply] at hv
+  rw [hpoint] at hv
+  simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+    tangentSpaceCast] using! hv.symm
 
 theorem eventually_regularCrossing_invFun [Nonempty W.X] (i : Fin H.eventCount)
     (hl : lo ≤ i.castSucc) (hh : i.succ ≤ hi) (z : W.X) :

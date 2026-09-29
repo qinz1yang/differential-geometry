@@ -69,8 +69,10 @@ private theorem exists_round_sphere_net {r : ℝ} (hr : 0 < r) :
   let _ : MetricSpace (Sphere 2) := m
   let e : PseudoEMetricSpace (Sphere 2) :=
     @PseudoMetricSpace.toPseudoEMetricSpace (Sphere 2) m.toPseudoMetricSpace
+  let _ : PseudoEMetricSpace (Sphere 2) := e
   let _ : WeakPseudoEMetricSpace (Sphere 2) :=
     @PseudoEMetricSpace.toWeakPseudoEMetricSpace (Sphere 2) e
+  let _ : EDist (Sphere 2) := e.toEDist
   obtain ⟨A, hA⟩ := (isCompact_univ : IsCompact (univ : Set (Sphere 2))).elim_finite_subcover
     (fun q => Metric.eball q (ENNReal.ofReal r)) (fun _ => Metric.isOpen_eball) (by
       intro p _

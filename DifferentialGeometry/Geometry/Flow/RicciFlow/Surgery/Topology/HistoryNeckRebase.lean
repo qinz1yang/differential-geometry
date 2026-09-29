@@ -613,7 +613,7 @@ private theorem eventually_exists_lift_before_of_nhds_le
     intro z hz
     refine ⟨mem_univ _, ?_⟩
     have hz' : s + z.2 / q < s := hz.2
-    have hdiv : z.2 / q < 0 := (add_lt_iff_neg_left).mp hz'
+    have hdiv : z.2 / q < 0 := (add_lt_iff_neg_left s).mp hz'
     exact (div_lt_iff₀ hq).mp hdiv |>.trans_eq (zero_mul q)
   have h := eventually_exists_lift_nhdsWithin hmap hpre hP
   simp only [Prod.map_apply, zero_div, add_zero] at h

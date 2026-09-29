@@ -204,7 +204,8 @@ private theorem seed_terminal_hasInjRadiusAt (hK : KLim kappa F)
   have hadd : R / 8 + R / 8 = R / 4 := by ring
   rw [hhalf, hadd] at hcgt
   have hinj := (selectedCGTInjRadius_le_quotient (E := E) hK.kappa_pos.le hR).trans hcgt
-  convert hinj using 1 <;> rfl
+  convert hinj using 1
+  rfl
 
 end OneFlow
 
