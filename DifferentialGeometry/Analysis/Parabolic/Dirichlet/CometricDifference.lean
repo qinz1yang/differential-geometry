@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Operator.Divergence
 import DifferentialGeometry.Analysis.Sobolev.DirichletHs.EnergyDuality
 import DifferentialGeometry.Analysis.Elliptic.WithBoundary.DirichletFormCompletion
 import DifferentialGeometry.Analysis.Integration.Measure.Parametric.CompactIntegral
-import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.ComparisonEndomorphismPairing
+import DifferentialGeometry.Analysis.Sobolev.TensorHilbert.MetricPerturbation.InverseCometricMultiplier
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Scalar.Gradient
 import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity
 
