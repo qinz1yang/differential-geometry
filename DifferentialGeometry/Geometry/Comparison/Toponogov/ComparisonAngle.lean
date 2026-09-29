@@ -3,17 +3,21 @@ import Mathlib.Topology.MetricSpace.Basic
 import Mathlib.Tactic.FieldSimp
 import Mathlib.Tactic.Linarith
 import Mathlib.Tactic.Positivity
+import Mathlib.Tactic.Ring
 
 namespace DifferentialGeometry.Geometry.Comparison.Toponogov
 
 open Filter Set
 open scoped Topology
 
+noncomputable abbrev comparisonCosine (a b c : ℝ) : ℝ :=
+  (a ^ 2 + b ^ 2 - c ^ 2) / (2 * a * b)
+
 noncomputable def comparisonAngle (a b c : ℝ) : ℝ :=
-  Real.arccos ((a ^ 2 + b ^ 2 - c ^ 2) / (2 * a * b))
+  Real.arccos (comparisonCosine a b c)
 
 
-noncomputable def metricComparisonAngle {X : Type*} [MetricSpace X] (x o y : X) : ℝ :=
+noncomputable def metricComparisonAngle {X : Type*} [PseudoMetricSpace X] (x o y : X) : ℝ :=
   comparisonAngle (dist o x) (dist o y) (dist x y)
 
 
@@ -41,20 +45,25 @@ theorem cos_comparisonAngle {a b c : ℝ} (ha : 0 < a) (hb : 0 < b)
   Real.cos_arccos (comparison_cosine_mem_Icc ha hb hlower hupper).1
     (comparison_cosine_mem_Icc ha hb hlower hupper).2
 
+theorem comparisonCosine_scale {a b c scale : ℝ} (hscale : scale ≠ 0) :
+    comparisonCosine (scale * a) (scale * b) (scale * c) = comparisonCosine a b c := by
+  unfold comparisonCosine
+  have hnum : (scale * a) ^ 2 + (scale * b) ^ 2 - (scale * c) ^ 2 =
+      scale ^ 2 * (a ^ 2 + b ^ 2 - c ^ 2) := by ring
+  have hden : 2 * (scale * a) * (scale * b) = scale ^ 2 * (2 * a * b) := by ring
+  rw [hnum, hden, mul_div_mul_left _ _ (pow_ne_zero 2 hscale)]
+
 theorem comparisonAngle_scale (a b c : ℝ) {lam : ℝ} (hlam : 0 < lam) :
-    comparisonAngle (lam * a) (lam * b) (lam * c) = comparisonAngle a b c := by
-  unfold comparisonAngle
-  congr 1
-  have hnum : (lam * a) ^ 2 + (lam * b) ^ 2 - (lam * c) ^ 2 =
-      lam ^ 2 * (a ^ 2 + b ^ 2 - c ^ 2) := by ring
-  have hden : 2 * (lam * a) * (lam * b) = lam ^ 2 * (2 * a * b) := by ring
-  rw [hnum, hden, mul_div_mul_left _ _ (pow_ne_zero 2 hlam.ne')]
+    comparisonAngle (lam * a) (lam * b) (lam * c) = comparisonAngle a b c :=
+  congrArg Real.arccos (comparisonCosine_scale hlam.ne')
 
+theorem comparisonCosine_comm (a b c : ℝ) :
+    comparisonCosine a b c = comparisonCosine b a c := by
+  unfold comparisonCosine
+  ring
 
-theorem comparisonAngle_comm (a b c : ℝ) : comparisonAngle a b c = comparisonAngle b a c := by
-  unfold comparisonAngle
-  congr 1
-  congr 1 <;> ring
+theorem comparisonAngle_comm (a b c : ℝ) : comparisonAngle a b c = comparisonAngle b a c :=
+  congrArg Real.arccos (comparisonCosine_comm a b c)
 
 theorem tendsto_comparisonAngle {A : Type*} {l : Filter A} {a b c : A → ℝ}
     {a0 b0 c0 : ℝ} (ha : Tendsto a l (𝓝 a0)) (hb : Tendsto b l (𝓝 b0))
@@ -90,12 +99,18 @@ theorem comparisonAngle_add {a b : ℝ} (ha : 0 < a) (hb : 0 < b) :
     ring
   rw [comparisonAngle, hval, Real.arccos_neg_one]
 
+theorem metricComparisonAngle_sideInequalities {X : Type*} [PseudoMetricSpace X] (x o y : X) :
+    |dist o x - dist o y| ≤ dist x y ∧ dist x y ≤ dist o x + dist o y := by
+  constructor
+  · simpa only [dist_comm o x, dist_comm o y] using abs_dist_sub_le x y o
+  · simpa only [dist_comm x o] using dist_triangle x o y
+
 theorem cos_metricComparisonAngle {X : Type*} [MetricSpace X] {x o y : X}
     (hx : x ≠ o) (hy : y ≠ o) :
     Real.cos (metricComparisonAngle x o y) =
       (dist o x ^ 2 + dist o y ^ 2 - dist x y ^ 2) / (2 * dist o x * dist o y) := by
-  apply cos_comparisonAngle (dist_pos.mpr hx.symm) (dist_pos.mpr hy.symm)
-  · simpa only [dist_comm o x, dist_comm o y] using abs_dist_sub_le x y o
-  · simpa only [dist_comm x o] using dist_triangle x o y
+  exact cos_comparisonAngle (dist_pos.mpr hx.symm) (dist_pos.mpr hy.symm)
+    (metricComparisonAngle_sideInequalities x o y).1
+    (metricComparisonAngle_sideInequalities x o y).2
 
 end DifferentialGeometry.Geometry.Comparison.Toponogov

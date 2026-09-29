@@ -39,9 +39,7 @@ theorem riemannianDistance_scale_sq (g : SmoothRiemannianMetric I M)
 
 theorem riemannianComparisonAngle_scale_sq
     (g : SmoothRiemannianMetric I M) {scale : ℝ} (hscale : 0 < scale)
-    {x o y : M}
-    (hox : 0 < riemannianDistance (I := I) g o x)
-    (hoy : 0 < riemannianDistance (I := I) g o y) :
+    {x o y : M} :
     riemannianComparisonAngle (I := I)
         (scaleMetric (I := I) (scale ^ 2) (sq_pos_of_pos hscale) g) x o y =
       riemannianComparisonAngle (I := I) g x o y := by
@@ -49,6 +47,6 @@ theorem riemannianComparisonAngle_scale_sq
   rw [riemannianDistance_scale_sq (I := I) g hscale o x,
     riemannianDistance_scale_sq (I := I) g hscale o y,
     riemannianDistance_scale_sq (I := I) g hscale x y]
-  exact comparisonAngle_scale hox hoy hscale
+  exact comparisonAngle_scale hscale
 
 end DifferentialGeometry.Toponogov
