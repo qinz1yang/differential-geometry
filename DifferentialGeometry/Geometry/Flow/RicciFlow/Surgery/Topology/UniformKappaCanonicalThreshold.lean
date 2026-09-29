@@ -86,7 +86,7 @@ theorem exists_uniform_canonical_threshold_of_parabolically_noncollapsed
         interior_mono W.window_mem
     obtain ⟨B, hB⟩ := htransfer kappa P.Carrier _ G.flow G.equation delta
       P.orientation x t le_rfl hreg hw
-    exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+    exact ⟨B.canonicalWitnessMono B.tolerance_lt.le hsmall,
       hB.mono_eps B.tolerance_lt.le hsmall⟩
   intro kappa hkappa rho hrho Phi hPhi
   have hA₀ : 0 < (rho ^ 2)⁻¹ := by positivity
@@ -272,7 +272,7 @@ theorem exists_uniform_canonical_threshold_of_parabolically_noncollapsed
       interior_mono W'.window_mem
   obtain ⟨B, hB⟩ := htransfer kappa' P.Carrier _ G.flow G.equation delta
     P.orientation x t le_rfl hreg hwG
-  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall,
+  exact ⟨B.canonicalWitnessMono B.tolerance_lt.le hsmall,
     hB.mono_eps B.tolerance_lt.le hsmall⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

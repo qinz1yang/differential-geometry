@@ -39,7 +39,7 @@ noncomputable def OrientedThreeStage.ofSmoothOrientation (M : Type u) [Topologic
   orientation := TangentOrientationSection.ofSmoothOrientation o
 
 noncomputable def OrientedThreeStage.ofFiniteCapQuotient {M : Type u} [TopologicalSpace M]
-    {ι : Type u} [Finite ι] {precision : ι → ℝ} {L : ℝ}
+    {ι : Type u} {precision : ι → ℝ} {L : ℝ}
     (hL : 0 < L) (hδ : ∀ i, 0 < precision i)
     (f : ∀ i : ι, DifferentialGeometry.Geometry.Neck.bufferedCylinder (precision i) → M)
     (hf : ∀ i, Topology.IsOpenEmbedding (f i))

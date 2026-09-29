@@ -69,7 +69,7 @@ theorem BallMarking.isotopic_of_transition_tube [Subsingleton I] (B B' : BallMar
     (ballChartIsotopic_of_transition_tube (B.ball i) (B'.ball i) hover hVopen hVsub hVψ
       hVball hseg)
 
-theorem G_ball_of_relative_transition_tube
+theorem connectedBallMarkingIsotopy_of_relative_transition_tube
     (h : ∀ (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier] (I : Type u)
       [Fintype I] (B B' : BallMarking M I),
       (∀ i, ∀ x ∈ Metric.closedBall (0 : E3) 2,
@@ -86,7 +86,7 @@ theorem G_ball_of_relative_transition_tube
           Disjoint ((B'.ball i).chart '' V i) ((B'.ball j).chart '' V j)) ∧
         ∀ i j, i ≠ j → ∀ x ∈ Metric.closedBall (0 : E3) 2,
           (B.ball i).chart x ∉ (B'.ball j).chart '' V j) :
-    G_ball.{u} := by
+    connectedBallMarkingIsotopy.{u} := by
   intro M _ I _ B B'
   obtain ⟨hover, V, hVopen, hVsub, hVψ, hVball, hseg, hdisj, havoid⟩ := h M I B B'
   exact B.isotopic_of_relative_transition_tube B' hover V hVopen hVsub hVψ hVball hseg

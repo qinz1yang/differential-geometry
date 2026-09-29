@@ -303,7 +303,7 @@ by
   have he := @isSmoothEmbedding_coe_sphere EuclideanThree inferInstance inferInstance 2
     (⟨by simp⟩ : Fact (Module.finrank ℝ EuclideanThree = 2 + 1))
   have d : SphereSides (Set.range (fun x : SphereTwo => (x : EuclideanThree))) :=
-    ((jordanBrouwer_openThreeSpace (fun x : SphereTwo => (x : EuclideanThree)) he
+    ((smoothSphereSidesOpenThreeSpace (fun x : SphereTwo => (x : EuclideanThree)) he
       (Diffeomorph.refl (modelWithCornersSelf ℝ EuclideanThree)
         EuclideanThree ∞)).toSphereSides)
   exact ⟨d.toTwoSidedSeparation⟩

@@ -76,8 +76,7 @@ theorem nonempty_ancientMetricSubsequence
       h.lipschitz_in_time h.covariant_derivative_bounds h.local_lower_bound
   exact ⟨{ subseq := φ, strictMono := hφ, limit := gInf, converges := hconv }⟩
 
-theorem ancientMetricInput_const (gRef : SmoothRiemannianMetric I M)
-    [SigmaCompactSpace M] :
+theorem ancientMetricInput_const (gRef : SmoothRiemannianMetric I M) :
     AncientMetricInput (I := I) (fun _ _ => gRef) gRef where
   lipschitz_in_time := by
     intro n K hK p

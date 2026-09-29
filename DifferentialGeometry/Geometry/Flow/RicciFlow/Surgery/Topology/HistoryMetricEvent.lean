@@ -94,7 +94,7 @@ theorem exists_extension_after_metricCutCapEvent_with_source (H : RetainedCoreHi
     H.appendEvent_stage_castSucc E.incoming.lt F hinit 0
   have hmetric : HEq (K.toHistory.initialMetric 0) (H.toHistory.initialMetric 0) :=
     H.appendEvent_initialMetric_castSucc_heq E.incoming.lt F hinit 0
-  let B := A.of_stageZero hstage hmetric
+  let B := A.ofStageZero hstage hmetric
   refine ⟨K, B, ⟨hHJ.trans hJK, (A.map_of_stageZero_heq hstage hmetric).symm⟩,
     hJs ▸ hsb, rfl, hJs, H.appendEvent_stage_last E.incoming.lt F hinit,
     H.appendEvent_initialMetric_last_heq E.incoming.lt F hinit, Fin.last H.eventCount, rfl,

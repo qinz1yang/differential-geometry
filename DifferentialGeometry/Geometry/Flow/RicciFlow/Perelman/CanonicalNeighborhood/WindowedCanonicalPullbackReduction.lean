@@ -48,7 +48,7 @@ def OrientedCanonicalPullbackAt (eps : ℝ) : Prop :=
         OrientedWitness S o delta kappa x t → Nonempty (CanonicalWitness S eps C1 C2 x t)
 
 omit [T2Space M] [SigmaCompactSpace M] in
-def WindowedModelWitness.mono_kappa {eps kappa kappa' : ℝ} {x : M} {t : ℝ}
+def WindowedModelWitness.monoKappa {eps kappa kappa' : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness eps kappa' S x t) (hpos : 0 < kappa) (hle : kappa ≤ kappa') :
     WindowedModelWitness eps kappa S x t :=
   { W with model_ancient := isAncientKappaSolution_of_kappa_le W.model_ancient hpos hle }
@@ -59,7 +59,7 @@ theorem OrientedWitness.mono_kappa {eps kappa kappa' : ℝ} {x : M} {t : ℝ}
     (hpos : 0 < kappa) (hle : kappa ≤ kappa') :
     OrientedWitness S o eps kappa x t := by
   obtain ⟨W', oN, hO⟩ := W
-  exact ⟨W'.mono_kappa hpos hle, oN, hO⟩
+  exact ⟨W'.monoKappa hpos hle, oN, hO⟩
 
 theorem windowedCanonicalPullbackAt_mono {eps eps' : ℝ}
     (h : WindowedCanonicalPullbackAt.{u} eps) (hle : eps ≤ eps') (hsmall : eps' < 1 / 11) :
@@ -69,7 +69,7 @@ theorem windowedCanonicalPullbackAt_mono {eps eps' : ℝ}
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
   refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS x t hreg hw => ?_⟩
   obtain ⟨W⟩ := himp M D S hS x t hreg hw
-  exact ⟨W.mono_eps hle hsmall⟩
+  exact ⟨W.monoEps hle hsmall⟩
 
 theorem orientedCanonicalPullbackAt_mono {eps eps' : ℝ}
     (h : OrientedCanonicalPullbackAt.{u} eps) (hle : eps ≤ eps') (hsmall : eps' < 1 / 11) :
@@ -79,7 +79,7 @@ theorem orientedCanonicalPullbackAt_mono {eps eps' : ℝ}
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hkappa
   refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W⟩ := himp M D S hS o x t hreg hw
-  exact ⟨W.mono_eps hle hsmall⟩
+  exact ⟨W.monoEps hle hsmall⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem orientedCanonicalPullbackAt_of_windowedCanonicalPullbackAt {eps : ℝ}
@@ -113,7 +113,7 @@ theorem windowedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :
     · exact hmain kappa hkappa hkappa1
     · obtain ⟨delta, hd, hd1, himp⟩ := hmain 1 one_pos le_rfl
       exact ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS x t hreg hw =>
-        himp M D S hS x t hreg (hw.mono_kappa one_pos (not_le.mp hkappa1).le)⟩
+        himp M D S hS x t hreg (hw.monoKappa one_pos (not_le.mp hkappa1).le)⟩
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem orientedCanonicalPullbackAt_iff_kappa_le_one {eps : ℝ} :

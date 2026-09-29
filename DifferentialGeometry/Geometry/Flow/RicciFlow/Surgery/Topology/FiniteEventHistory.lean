@@ -38,7 +38,7 @@ def ofEvents : RetainedCoreHistory.{u} where
 def ofEventsInitialIdentification :
     InitialIdentification (stage 0) (metric 0)
       (ofEvents time htime hzero stage metric event hinitial houtput hOld).toHistory :=
-  InitialIdentification.of_stageZero (InitialIdentification.atZero (stage 0) (metric 0))
+  InitialIdentification.ofStageZero (InitialIdentification.atZero (stage 0) (metric 0))
     rfl HEq.rfl
 
 @[simp] theorem ofEvents_eventCount :

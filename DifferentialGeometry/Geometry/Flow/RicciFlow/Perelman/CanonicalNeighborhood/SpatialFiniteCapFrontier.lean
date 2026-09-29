@@ -116,7 +116,7 @@ theorem exists_cap_move_on_finite_spatial_neck_frontier
           range (fun z : Sphere 2 => (neck i).map (z, level i)) ⊆ interior V ∧
           next.card < alive.card)) := by
   exact exists_cap_move_on_finite_spatial_neck_frontier_of_sphere_subset alive point neck level
-    hlevel hdisjoint i hi cap.core_model
+    hlevel hdisjoint i hi cap.coreModel
     (by
       rintro z ⟨v, rfl⟩
       exact (neck i).image_slab_subset_cap_core_of_center_in_slab heps q (hlevel i hi) hy cap hdepth

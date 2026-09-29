@@ -22,13 +22,13 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
 
-def WindowedModelWitness.mono_of_interior_regular
+def WindowedModelWitness.monoOfInteriorRegular
     (hS : IsSolutionOn S) (hregular : interior D.carrier ⊆ D.regular)
     {delta eps kappa : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness delta kappa S x t)
     (hde : delta ≤ eps) (he : eps < 1) :
     WindowedModelWitness eps kappa S x t := by
-  apply W.mono_of_regular hS hde he
+  apply W.monoOfRegular hS hde he
   intro s hs
   apply hregular
   apply interior_mono W.window_mem
@@ -58,7 +58,7 @@ theorem WindowedModelWitness.mono_strict_of_interior_regular
         ∀ y ∈ riemannianClosedBallOf (I := I3) (W.model.S.base.metric 0)
           W.model.basepoint (modelRadius eps),
           tensor02CovDerivNormWith (I := I3) a
-            ((W.mono_of_interior_regular hS hregular hde he).comparison.jet b s)
+            ((W.monoOfInteriorRegular hS hregular hde he).comparison.jet b s)
             (W.model.S.base.metric s) (W.model.S.base.metric s) y < eps := by
   intro a b hab s hs y hy
   have ht : s ∈ Set.Icc (-modelDepth delta) 0 :=
@@ -75,7 +75,7 @@ theorem orientedWitness_mono_of_interior_regular
     {x : M} {t : ℝ} (hw : OrientedWitness S o delta kappa x t) :
     OrientedWitness S o eps kappa x t := by
   obtain ⟨W, oN, hO⟩ := hw
-  exact ⟨W.mono_of_interior_regular hS hregular hde he, oN, hO⟩
+  exact ⟨W.monoOfInteriorRegular hS hregular hde he, oN, hO⟩
 
 
 theorem orientedWitness_mono_closedOpen {a b : ℝ} {hab : a < b}

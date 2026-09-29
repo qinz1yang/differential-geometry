@@ -19,7 +19,7 @@ universe u
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem RealizedFiniteHorn.exists_original_source_rescaled_ball_capture
@@ -146,7 +146,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem RealizedFiniteHorn.exists_original_source_rescaled_diagonal
@@ -251,7 +251,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.t2TangentBundle
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
-  PointedRiemannianManifold.sigmaCompact RealizedFiniteHorn.metric_space
+  PointedRiemannianManifold.sigmaCompact RealizedFiniteHorn.metricSpace
   RealizedFiniteHorn.charted RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
 
 variable {X : FlowSequence.{u}} (H : RealizedFiniteHorn X)

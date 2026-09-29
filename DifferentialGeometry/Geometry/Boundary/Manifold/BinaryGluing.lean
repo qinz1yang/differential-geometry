@@ -42,7 +42,7 @@ variable {N : Type v} [TopologicalSpace N] [ChartedSpace H N]
 
 open DifferentialGeometry.Integral.DivergenceTheorem.WithBoundary
 
-private theorem range_restrict_eq {α : Type*} {β : Type*} [TopologicalSpace α] [TopologicalSpace β]
+private theorem range_restrict_eq {α : Type*} {β : Type*}
     {f : α → β} {p : α → Prop} {q : β → Prop} (H : ∀ x, p x → q (f x))
     (H' : ∀ x, q (f x) → p x) :
     range (MapsTo.restrict f p q H) = Subtype.val ⁻¹' range f := by

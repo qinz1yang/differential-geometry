@@ -56,7 +56,7 @@ private theorem cast_map_heq {X X' : OrientedThreeStage.{u}} {m : X.Metric} {m' 
 
 end StageIdentification
 
-def InitialIdentification.of_stageZero {P : OrientedThreeStage.{u}} {g : P.Metric}
+def InitialIdentification.ofStageZero {P : OrientedThreeStage.{u}} {g : P.Metric}
     {H K : ObservedHistory.{u}} (A : InitialIdentification P g H)
     (hstage : K.stage 0 = H.stage 0) (hmetric : HEq (K.initialMetric 0) (H.initialMetric 0)) :
     InitialIdentification P g K :=
@@ -65,7 +65,7 @@ def InitialIdentification.of_stageZero {P : OrientedThreeStage.{u}} {g : P.Metri
 theorem InitialIdentification.map_of_stageZero_heq {P : OrientedThreeStage.{u}} {g : P.Metric}
     {H K : ObservedHistory.{u}} (A : InitialIdentification P g H)
     (hstage : K.stage 0 = H.stage 0) (hmetric : HEq (K.initialMetric 0) (H.initialMetric 0)) :
-    HEq (InitialIdentification.of_stageZero A hstage hmetric).map A.map :=
+    HEq (InitialIdentification.ofStageZero A hstage hmetric).map A.map :=
   StageIdentification.cast_map_heq (StageIdentification.ofInitial A) hstage hmetric
 
 def InitialIdentification.atZero (P : OrientedThreeStage.{u}) (g : P.Metric) :
@@ -350,7 +350,7 @@ private def alignedLayerStep (C : RetainedCoreEventChain P g) (n : ℕ) (L : Ali
   time_last_eq := C.nextTimeLastEq n L
   stage_last_eq := C.nextStageLastEq n L
   metric_last_heq := C.nextMetricLastHeq n L
-  initial := InitialIdentification.of_stageZero L.initial (C.nextStageZero n L)
+  initial := InitialIdentification.ofStageZero L.initial (C.nextStageZero n L)
     (C.nextInitialMetricHeq n L)
 
 private def alignedLayer (C : RetainedCoreEventChain P g) (n : ℕ) : AlignedLayer C n :=

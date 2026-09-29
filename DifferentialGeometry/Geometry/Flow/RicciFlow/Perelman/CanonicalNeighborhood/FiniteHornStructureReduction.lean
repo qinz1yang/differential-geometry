@@ -22,7 +22,7 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
   PointedRiemannianManifold.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem not_nonempty_finiteControlledRadius_of_boundedAtDistanceShell
@@ -41,13 +41,13 @@ theorem finite_horn_construction_of_realizedDistanceCurvatureEscapeShell
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             RealizedDistanceCurvatureEscape X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) :
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) :
     ∃ alphaMax collarMin : ℝ, 0 < alphaMax ∧ alphaMax < 1 / 11 ∧ 0 < collarMin ∧
       ∀ alpha : ℝ, 0 < alpha → alpha ≤ alphaMax → ∀ collar : ℝ, collarMin ≤ collar →
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   let _ := hkappa
   let _ := hsigma
   let _ := hPhi
@@ -64,13 +64,13 @@ theorem finite_horn_construction_iff_realizedDistanceCurvatureEscapeShell
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             RealizedDistanceCurvatureEscape X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) ↔
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) ↔
     (∃ alphaMax collarMin : ℝ, 0 < alphaMax ∧ alphaMax < 1 / 11 ∧ 0 < collarMin ∧
       ∀ alpha : ℝ, 0 < alpha → alpha ≤ alphaMax → ∀ collar : ℝ, collarMin ≤ collar →
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth) := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth) := by
   constructor
   · rintro ⟨a, c, ha, ha', hc, hmain⟩
     exact ⟨a, c, ha, ha', hc, fun alpha halpha hle collar hcol =>

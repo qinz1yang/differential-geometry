@@ -44,7 +44,7 @@ theorem exists_canonicalWitness_of_orientedWitness {ε : ℝ} (hε : 0 < ε) (h�
   intro P a s G δ κ o y t hδ hwin hw C1 C2 h1 h2
   obtain ⟨B, hB⟩ := hpipe κ P.Carrier (RealTimeInterval.closedOpen a s G.lt) G.flow G.equation δ
     o y t hδ hwin hw
-  exact ⟨(B.canonicalWitness_mono B.tolerance_lt.le hε').enlarge_constants h1 h2,
+  exact ⟨(B.canonicalWitnessMono B.tolerance_lt.le hε').enlargeConstants h1 h2,
     (hB.mono_eps B.tolerance_lt.le hε').enlarge_constants h1 h2⟩
 
 theorem exists_scalar_derivative_bounds_of_scaled_localPull_witness :

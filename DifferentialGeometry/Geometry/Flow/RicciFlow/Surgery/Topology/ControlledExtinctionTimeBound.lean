@@ -51,7 +51,7 @@ theorem hasControlledExtinctionWithin_of_observedHistory
     HasControlledExtinctionWithin P.toClosedOrientedManifold g B := by
   have hn : 0 < H.eventCount :=
     @ObservedHistory.eventCount_pos_of_final_empty H A.initial_nonempty hempty
-  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistory_of_cutCapCompletion hn hc hout
+  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout
             time := H.time (Fin.last H.eventCount)
             time_pos := H.last_time_pos hn
             initial := A.toFiniteSurgeryHistory hn (H.toSurgeryEvents hc hout)

@@ -8,7 +8,7 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Topology.SphereSeparation
 
-noncomputable def smoothSphereSidesOpenThreeSpace_of_alexanderDuality
+noncomputable def smoothSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (e : SphereTwo → N)
@@ -18,7 +18,7 @@ noncomputable def smoothSphereSidesOpenThreeSpace_of_alexanderDuality
       N EuclideanThree ∞)
     (hAD : HasAlexanderDualityH0Certificate (ψ ∘ e)) :
     SmoothSphereSides (Set.range e) := by
-  let d := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+  let d := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
     e he ψ hAD
   exact {
     toSphereSides := d

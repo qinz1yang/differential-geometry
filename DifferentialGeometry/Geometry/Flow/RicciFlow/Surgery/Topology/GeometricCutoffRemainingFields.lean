@@ -64,7 +64,7 @@ end DifferentialGeometry.CheegerGromovCompactness
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 
 def NormalizedNeck.monoDelta {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold ThreeModel ∞ M]
     {g : SmoothRiemannianMetric ThreeModel M} {δ δ' : ℝ} {k : ℕ}
     (N : NormalizedNeck g δ k) (h : δ ≤ δ') (h' : δ' < 1) :
     NormalizedNeck g δ' k := by
@@ -148,14 +148,14 @@ def NormalizedNeck.monoDelta {M : Type u} [TopologicalSpace M] [ChartedSpace Thr
 
 theorem NormalizedNeck.nonempty_monoDelta {M : Type u} [TopologicalSpace M]
     [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
+
     {g : SmoothRiemannianMetric ThreeModel M} {δ δ' : ℝ} {k : ℕ}
     (h : δ ≤ δ') (h' : δ' < 1) (hn : Nonempty (NormalizedNeck g δ k)) :
     Nonempty (NormalizedNeck g δ' k) :=
   hn.map fun N => N.monoDelta h h'
 
 theorem exists_normalizedNeck_iff_of_le {M : Type u} [TopologicalSpace M]
-    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M] [T2Space M] [SigmaCompactSpace M]
+    [ChartedSpace ThreeSpace M] [IsManifold ThreeModel ∞ M]
     {g : SmoothRiemannianMetric ThreeModel M} {δ : ℝ} {L : ℕ} :
     (∃ k : ℕ, L ≤ k ∧ Nonempty (NormalizedNeck g δ k)) ↔
       Nonempty (NormalizedNeck g δ L) := by

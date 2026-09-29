@@ -258,7 +258,7 @@ noncomputable def puncturedCoreComponentHomotopyEquivCoreComponent
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a))
     (c : ConnectedComponents ↥T.core) :
     ↥(T.puncturedCoreComponent c) ≃ₕ ComponentCarrier c :=
-  (homotopyEquiv_of_retraction (coreComponentInclusion T c) (coreComponentRetraction T hsm c)
+  (homotopyEquivOfRetraction (coreComponentInclusion T c) (coreComponentRetraction T hsm c)
     (coreComponentRetraction_comp_coreComponentInclusion T hsm c)
     (coreComponentInclusion_comp_coreComponentRetraction_homotopic_id T hsm c)).symm
 
@@ -330,7 +330,7 @@ theorem childCarrierOpenCover_of_childCarrierCoreCapCover
   intro c hpar
   let d := hd c hpar
   have hUsc : SimplyConnectedSpace ↥d.U :=
-    (homotopyEquiv_of_retraction (childCoreInclusionRestrict E c d.core_subset_U) d.retraction
+    (homotopyEquivOfRetraction (childCoreInclusionRestrict E c d.core_subset_U) d.retraction
       d.retraction_comp_inclusion d.inclusion_comp_retraction_homotopic).simplyConnectedSpace_iff.mp
       (hcore c hpar)
   exact ⟨d.U, d.V, d.x₀, d.isOpen_U, d.isOpen_V, d.cover, d.mem_x₀_U, d.mem_x₀_V,

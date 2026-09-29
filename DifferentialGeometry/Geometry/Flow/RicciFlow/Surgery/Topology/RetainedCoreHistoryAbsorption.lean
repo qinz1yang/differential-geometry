@@ -105,7 +105,7 @@ def absorbingInitial {g : P.Metric} (H : RetainedCoreHistory.{u})
     [IsEmpty (H.stage (Fin.last H.eventCount)).Carrier]
     (A : InitialIdentification P g H.toHistory) (n : ℕ) :
     InitialIdentification P g (H.absorbingHistory n).toHistory :=
-  InitialIdentification.of_stageZero A (H.absorbingHistory_stage_zero n)
+  InitialIdentification.ofStageZero A (H.absorbingHistory_stage_zero n)
     (H.absorbingHistory_initialMetric_zero n)
 
 theorem absorbingInitial_map_heq {g : P.Metric} (H : RetainedCoreHistory.{u})

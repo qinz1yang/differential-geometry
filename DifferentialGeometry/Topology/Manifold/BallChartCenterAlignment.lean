@@ -286,7 +286,7 @@ theorem BallMarking.relativeTransitionTube_singleton
     (DifferentialGeometry.Topology.BallMarking.singleton c)
 
 theorem relativeCollarUniqueness_conclusion_of_self {S : Type u} [TopologicalSpace S]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S] [IsManifold (𝓡 2) ∞ S]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
     (c : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3) (S × EuclideanHalfSpace 1)
       (EuclideanHalfSpace 3) ∞)
     (hunif : ∀ (p : S) (t : EuclideanHalfSpace 1), t.1 0 < 1 → (p, t) ∈ c.source)

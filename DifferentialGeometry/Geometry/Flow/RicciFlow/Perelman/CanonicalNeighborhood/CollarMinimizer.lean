@@ -70,7 +70,7 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_collar_minimizer_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∃ i, ∀ x ∈ H.subend i,
+      H₀ ≤ H.collarDepth → ∃ i, ∀ x ∈ H.subend i,
       ∃ (F : PartialDiffeomorph IC I3 Cylinder W ∞) (p : Sphere 2),
         F (p, 0) = x ∧ IsCompact (F '' (univ ×ˢ Icc (-H₀) H₀)) ∧
         ∀ q r : Sphere 2, ∃ gamma : ℝ → W,
@@ -86,7 +86,7 @@ theorem exists_finiteHorn_collar_minimizer_depth :
   intro x hx
   obtain ⟨C, F, p, hcenter, _hsection, hsource, hQ, ⟨cmp⟩⟩ := htail x hx
   have hsubset : (univ ×ˢ Icc (-H₀) H₀ : Set Cylinder) ⊆
-      univ ×ˢ Icc (-H.collar_depth) H.collar_depth := by
+      univ ×ˢ Icc (-H.collarDepth) H.collarDepth := by
     intro z hz
     exact ⟨hz.1, ⟨(neg_le_neg hdepth).trans hz.2.1, hz.2.2.trans hdepth⟩⟩
   have hcpt : IsCompact (F '' (univ ×ˢ Icc (-H₀) H₀)) :=
@@ -97,8 +97,8 @@ theorem exists_finiteHorn_collar_minimizer_depth :
   obtain ⟨gamma, hstart, hend, hsmooth, hmem, hlength⟩ :=
     hminimize C (fun _ => C.metric 0)
       (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
-      (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
-      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision cmp rfl H.neck_precision_pos.le
+      (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) {0}
+      (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision cmp rfl H.neck_precision_pos.le
       (by linarith [H.neck_precision_small]) (by simp) hsource hsubset q r
   refine ⟨gamma, hstart, hend, hsmooth, hmem, ?_⟩
   rw [metricPathELength_scaleMetric, edistOf_scale] at hlength

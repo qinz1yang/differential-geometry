@@ -63,10 +63,10 @@ theorem relativeTransitionTube_refl_of_subsingleton (B : BallMarking M I) [Subsi
 
 end BallMarking
 
-theorem G_ball_of_relativeTransitionTube
+theorem connectedBallMarkingIsotopy_of_relativeTransitionTube
     (h : ∀ (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier] (I : Type u)
       [Fintype I] (B B' : BallMarking M I), B.RelativeTransitionTube B') :
-    G_ball.{u} := by
+    connectedBallMarkingIsotopy.{u} := by
   intro M _ I _ B B'
   exact B.isotropic_of_relativeTransitionTube B' (h M I B B')
 
@@ -74,6 +74,7 @@ theorem selfTransport_of_relativeTransitionTube
     (h : ∀ (M : ClosedOrientedManifold.{u} 3) [ConnectedSpace M.Carrier] (I : Type u)
       [Fintype I] (B B' : BallMarking M I), B.RelativeTransitionTube B') :
     SelfTransport.{u} :=
-  selfTransport_of_G_ball (G_ball_of_relativeTransitionTube h)
+  selfTransport_of_connectedBallMarkingIsotopy
+    (connectedBallMarkingIsotopy_of_relativeTransitionTube h)
 
 end DifferentialGeometry.Topology

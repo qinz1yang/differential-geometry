@@ -15,7 +15,7 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_common_arms_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ outer : ℕ, ∃ target middle : ℕ,
+      H₀ ≤ H.collarDepth → ∀ outer : ℕ, ∃ target middle : ℕ,
         closure (H.subend target) ⊆ H.subend middle ∧
         closure (H.subend middle) ⊆ H.subend outer ∧
         ∀ p : Fin 2 → W, (∀ k, p k ∈ H.subend target) →

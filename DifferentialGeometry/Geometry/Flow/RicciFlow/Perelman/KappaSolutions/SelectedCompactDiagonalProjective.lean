@@ -105,7 +105,7 @@ theorem exists_poleEndpoint_strongNecks_or_diagonal_canonical_with_projective_pr
         ∃ cap : LocalCap (co.pointedFlow Phi rfl Subset.rfl).S (neckModelTolerance alpha) (d (cylinderDiagonalQuotientMap p)) 0 U,
           cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
           cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-          (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+          (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
           cap.chain.count = 1 ∧
           (∀ j, cap.chain.centers j = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
             (∀ z : Cylinder, (cap.chain.necks j).map z = d (cylinderDiagonalQuotientMap (z.1, z.2 + L))) ∧
@@ -120,7 +120,7 @@ theorem exists_poleEndpoint_strongNecks_or_diagonal_canonical_with_projective_pr
               ∃ cap' : LocalCap F.S (2 * alpha) (q (phi (co.φ i) + N)) (-tau (phi (co.φ i) + N)) (Phi.map (co.φ i) '' U),
                 cap'.core.carrier = Phi.map (co.φ i) '' cap.core.carrier ∧
                 cap'.tube = Phi.map (co.φ i) '' cap.tube ∧
-                cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph (co.φ i)) ∧
+                cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph (co.φ i)) ∧
                 cap'.chain.count = 1 ∧
                 (∀ j, cap'.chain.centers j = Phi.map (co.φ i) (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
                   (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map (co.φ i) (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧
@@ -149,7 +149,7 @@ theorem exists_poleEndpoint_strongNecks_or_diagonal_canonical_with_projective_pr
                           Phi.map (co.φ i) (d (cylinderDiagonalQuotientMap z))) ∧
                       (∀ z : Cylinder, z.2 ∈ Icc (0 : ℝ) 1 →
                         e (Geometry.cylinderDiagonalQuotientDiffeomorph
-                          (cylinderDiagonalQuotientMap (z.1, L + z.2))).val = cap'.tube_map z) ∧
+                          (cylinderDiagonalQuotientMap (z.1, L + z.2))).val = cap'.tubeMap z) ∧
                       ∃ pr : ProjectivePresentation F.M,
                         (∀ a : Surgery.Topology.Sphere 3, pr.quotient a = e (realProjectiveSpaceQuotientMap a)) ∧
                         ∃ D : ThreeSpace ≃ₘ⟮I3, I3⟯ ThreeSpace,

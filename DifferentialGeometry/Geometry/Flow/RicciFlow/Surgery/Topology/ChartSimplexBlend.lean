@@ -312,15 +312,15 @@ theorem chartSimplex_hasFDerivAt_transition (S T : OrientedChartSimplex o x) :
   rw [c.left_inv hy]
 
 
-def chartSimplex_centeredTransition (S T : OrientedChartSimplex o x) (v : ThreeSpace) :
+def chartSimplexCenteredTransition (S T : OrientedChartSimplex o x) (v : ThreeSpace) :
     ThreeSpace := T.chart (S.chart.symm (S.chart x + v)) - T.chart x
 
 @[simp] theorem chartSimplex_centeredTransition_zero (S T : OrientedChartSimplex o x) :
-    chartSimplex_centeredTransition S T 0 = 0 := by
-  simp [chartSimplex_centeredTransition, S.chart.left_inv S.center_mem]
+    chartSimplexCenteredTransition S T 0 = 0 := by
+  simp [chartSimplexCenteredTransition, S.chart.left_inv S.center_mem]
 
 theorem chartSimplex_hasFDerivAt_centeredTransition (S T : OrientedChartSimplex o x) :
-    HasFDerivAt (chartSimplex_centeredTransition S T)
+    HasFDerivAt (chartSimplexCenteredTransition S T)
       (simplexDerivativeTransition S T).toContinuousLinearMap 0 := by
   have h : HasFDerivAt (T.chart ∘ S.chart.symm)
       (simplexDerivativeTransition S T).toContinuousLinearMap (S.chart x + 0) := by
@@ -330,21 +330,21 @@ theorem chartSimplex_hasFDerivAt_centeredTransition (S T : OrientedChartSimplex 
   convert! hcomp.sub_const (T.chart x) using 1
 
 
-def chartSimplex_transitionDomain (S T : OrientedChartSimplex o x) : Set ThreeSpace :=
+def chartSimplexTransitionDomain (S T : OrientedChartSimplex o x) : Set ThreeSpace :=
   (fun v => S.chart x + v) ⁻¹' (S.chart.symm.trans T.chart).source
 
 theorem chartSimplex_transitionDomain_open (S T : OrientedChartSimplex o x) :
-    IsOpen (chartSimplex_transitionDomain S T) :=
+    IsOpen (chartSimplexTransitionDomain S T) :=
   (S.chart.symm.trans T.chart).open_source.preimage (continuous_const.add continuous_id)
 
 theorem chartSimplex_zero_mem_transitionDomain (S T : OrientedChartSimplex o x) :
-    0 ∈ chartSimplex_transitionDomain S T := by
+    0 ∈ chartSimplexTransitionDomain S T := by
   change S.chart x + 0 ∈ S.chart.target ∩ S.chart.symm ⁻¹' T.chart.source
   simpa only [add_zero, mem_inter_iff, mem_preimage, S.chart.left_inv S.center_mem] using
     And.intro (S.chart.map_source S.center_mem) T.center_mem
 
 theorem chartSimplex_centeredTransition_continuousOn (S T : OrientedChartSimplex o x) :
-    ContinuousOn (chartSimplex_centeredTransition S T) (chartSimplex_transitionDomain S T) := by
+    ContinuousOn (chartSimplexCenteredTransition S T) (chartSimplexTransitionDomain S T) := by
   exact ((S.chart.symm.trans T.chart).continuousOn.comp
     (continuous_const.add continuous_id).continuousOn (fun _ h => h)).sub continuousOn_const
 
@@ -359,22 +359,22 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 
 theorem chartSimplex_exists_blend_radius (S T : OrientedChartSimplex o x) :
     ∃ ε : ℝ, 0 < ε ∧ ∀ v ∈ Metric.ball (0 : ThreeSpace) ε,
-      v ∈ chartSimplex_transitionDomain S T ∧
+      v ∈ chartSimplexTransitionDomain S T ∧
       ∀ t : unitInterval,
         T.chart x + (simplexDerivativeTransition S T v +
-          (t : ℝ) • (chartSimplex_centeredTransition S T v -
+          (t : ℝ) • (chartSimplexCenteredTransition S T v -
             simplexDerivativeTransition S T v)) ∈ T.chart.target ∧
         (v ≠ 0 → simplexDerivativeTransition S T v +
-          (t : ℝ) • (chartSimplex_centeredTransition S T v -
+          (t : ℝ) • (chartSimplexCenteredTransition S T v -
             simplexDerivativeTransition S T v) ≠ 0) := by
   let D := simplexDerivativeTransition S T
-  let f := chartSimplex_centeredTransition S T
+  let f := chartSimplexCenteredTransition S T
   have hf := chartSimplex_hasFDerivAt_centeredTransition S T
   have hf0 : f 0 = 0 := chartSimplex_centeredTransition_zero S T
   obtain ⟨δ, hδ, hδin⟩ := Metric.mem_nhds_iff.mp
     (T.chart.open_target.mem_nhds (T.chart.map_source T.center_mem))
   obtain ⟨η, hη, hbound⟩ := exists_relative_derivative_bound D hf hf0
-  have hU : ∀ᶠ v in 𝓝 (0 : ThreeSpace), v ∈ chartSimplex_transitionDomain S T :=
+  have hU : ∀ᶠ v in 𝓝 (0 : ThreeSpace), v ∈ chartSimplexTransitionDomain S T :=
     (chartSimplex_transitionDomain_open S T).mem_nhds
       (chartSimplex_zero_mem_transitionDomain S T)
   have hF : ∀ᶠ v in 𝓝 (0 : ThreeSpace), f v ∈ Metric.ball 0 δ :=
@@ -541,16 +541,16 @@ private noncomputable def chartSimplexLinear (T : OrientedChartSimplex o x)
 private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex o x)
     {ε : ℝ} (D : ThreeSpace →L[ℝ] ThreeSpace) (r : ℝ) (h0 : 0 ≤ r) (hrS : r ≤ S.radius)
     (hblend : ∀ v ∈ Metric.ball (0 : ThreeSpace) ε,
-      v ∈ chartSimplex_transitionDomain S T ∧
+      v ∈ chartSimplexTransitionDomain S T ∧
       ∀ t : unitInterval,
-        T.chart x + (D v + (t : ℝ) • (chartSimplex_centeredTransition S T v - D v)) ∈
+        T.chart x + (D v + (t : ℝ) • (chartSimplexCenteredTransition S T v - D v)) ∈
           T.chart.target ∧
-        (v ≠ 0 → D v + (t : ℝ) • (chartSimplex_centeredTransition S T v - D v) ≠ 0))
+        (v ≠ 0 → D v + (t : ℝ) • (chartSimplexCenteredTransition S T v - D v) ≠ 0))
     (hε : ∀ q, r • positiveTetrahedron q ∈ Metric.ball (0 : ThreeSpace) ε)
     (hmem : ∀ q, T.chart x + D (r • positiveTetrahedron q) ∈ T.chart.target) :
     (chartSimplexLinear T D r hmem).Homotopy (chartSimplexRadius S r h0 hrS) where
   toFun p := T.chart.symm (T.chart x + (D (r • positiveTetrahedron p.2) +
-    (p.1 : ℝ) • (chartSimplex_centeredTransition S T (r • positiveTetrahedron p.2) -
+    (p.1 : ℝ) • (chartSimplexCenteredTransition S T (r • positiveTetrahedron p.2) -
       D (r • positiveTetrahedron p.2))))
   continuous_toFun := by
     have hv : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
@@ -559,14 +559,14 @@ private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex 
         S.chart x + r • positiveTetrahedron p.2 ∈ S.chart.target := by
       intro p
       have h := (hblend _ (hε p.2)).1
-      rw [chartSimplex_transitionDomain, OpenPartialHomeomorph.trans_source,
+      rw [chartSimplexTransitionDomain, OpenPartialHomeomorph.trans_source,
         OpenPartialHomeomorph.symm_source, Set.mem_preimage, Set.mem_inter_iff] at h
       exact h.1
     have hmem2 : ∀ p : unitInterval × Convexity.StdSimplex ℝ (Fin 4),
         S.chart.symm (S.chart x + r • positiveTetrahedron p.2) ∈ T.chart.source := by
       intro p
       have h := (hblend _ (hε p.2)).1
-      rw [chartSimplex_transitionDomain, OpenPartialHomeomorph.trans_source,
+      rw [chartSimplexTransitionDomain, OpenPartialHomeomorph.trans_source,
         OpenPartialHomeomorph.symm_source, Set.mem_preimage, Set.mem_inter_iff] at h
       exact h.2
     have hsymm : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
@@ -576,7 +576,7 @@ private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex 
         T.chart (S.chart.symm (S.chart x + r • positiveTetrahedron p.2)) :=
       T.chart.continuousOn.comp_continuous hsymm hmem2
     have hcent : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
-        chartSimplex_centeredTransition S T (r • positiveTetrahedron p.2) :=
+        chartSimplexCenteredTransition S T (r • positiveTetrahedron p.2) :=
       hchart.sub continuous_const
     have hDv : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         D (r • positiveTetrahedron p.2) := D.continuous.comp hv
@@ -584,7 +584,7 @@ private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex 
       continuous_subtype_val.comp continuous_fst
     have hcomb : Continuous fun p : unitInterval × Convexity.StdSimplex ℝ (Fin 4) =>
         T.chart x + (D (r • positiveTetrahedron p.2) + (p.1 : ℝ) •
-          (chartSimplex_centeredTransition S T (r • positiveTetrahedron p.2) -
+          (chartSimplexCenteredTransition S T (r • positiveTetrahedron p.2) -
             D (r • positiveTetrahedron p.2))) :=
       continuous_const.add (hDv.add (ht.smul (hcent.sub hDv)))
     exact T.chart.continuousOn_symm.comp_continuous hcomb
@@ -598,10 +598,10 @@ private noncomputable def chartSimplexBlendHomotopy (S T : OrientedChartSimplex 
   map_one_left q := by
     simp only [chartSimplexRadius_apply]
     have h1' : ((1 : unitInterval) : ℝ) = 1 := rfl
-    rw [h1', one_smul, chartSimplex_centeredTransition]
+    rw [h1', one_smul, chartSimplexCenteredTransition]
     have hw : S.chart.symm (S.chart x + r • positiveTetrahedron q) ∈ T.chart.source := by
       have h := (hblend _ (hε q)).1
-      rw [chartSimplex_transitionDomain, OpenPartialHomeomorph.trans_source,
+      rw [chartSimplexTransitionDomain, OpenPartialHomeomorph.trans_source,
         OpenPartialHomeomorph.symm_source, Set.mem_preimage, Set.mem_inter_iff] at h
       exact h.2
     have harg : T.chart x + (D (r • positiveTetrahedron q) +
@@ -744,7 +744,7 @@ theorem OrientedChartSimplex.exists_positiveCharts_simplexFamily
     change T.chart.symm (T.chart x + (simplexDerivativeTransition S T
         (r • positiveTetrahedron q) +
       ((unitInterval.symm t : unitInterval) : ℝ) •
-        (chartSimplex_centeredTransition S T (r • positiveTetrahedron q) -
+        (chartSimplexCenteredTransition S T (r • positiveTetrahedron q) -
           simplexDerivativeTransition S T (r • positiveTetrahedron q)))) ≠ x
     exact chartSimplex_lift_ne_center T ((hblend _ (hεball q)).2 (unitInterval.symm t) |>.1)
       ((hblend _ (hεball q)).2 (unitInterval.symm t) |>.2 (hrv q hq))

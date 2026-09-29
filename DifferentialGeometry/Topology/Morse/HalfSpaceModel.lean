@@ -46,7 +46,6 @@ theorem morseHalfSpaceEuclideanHomeomorph_symm_apply_val (m : ℕ)
     ((morseHalfSpaceEuclideanHomeomorph m).symm x).1 =
       (morseModelEuclideanEquiv m).symm x.1 := rfl
 
-@[simp]
 theorem modelWithCornersEuclideanHalfSpace_morseHalfSpaceEuclideanHomeomorph
     (m : ℕ) (x : MorseHalfSpace m) :
     modelWithCornersEuclideanHalfSpace (m + 1) (morseHalfSpaceEuclideanHomeomorph m x) =

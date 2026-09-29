@@ -18,7 +18,7 @@ universe u
 
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
@@ -94,7 +94,7 @@ theorem finite_horn_construction_of_terminalDerivativeBoundProducer
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth :=
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth :=
   finite_horn_construction_of_boundedAtDistanceShell hkappa hsigma hPhi
     (boundedAtDistanceShell_of_terminalDerivativeBoundProducer h)
 

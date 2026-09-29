@@ -34,14 +34,14 @@ theorem LocalCap.exists_ball_complement_chart_of_core_ball_complement_chart
       B '' ((b ∘ F) '' ball (0 : ThreeSpace) (1 / 2))ᶜ = U ∧
       EqOn B P (b '' ball (0 : ThreeSpace) 1)ᶜ ∧
       (∀ q : Sphere 2, ∀ a ∈ Icc (0 : ℝ) 1,
-        B (b (F ((1 - a / 2) • (q : ThreeSpace)))) = cap.tube_map (q, a)) ∧
+        B (b (F ((1 - a / 2) • (q : ThreeSpace)))) = cap.tubeMap (q, a)) ∧
       ∃ V : Set Cylinder, IsOpen V ∧ univ ×ˢ Icc (0 : ℝ) 1 ⊆ V ∧
-        EqOn (fun q => B (b (F ((1 - q.2 / 2) • (q.1 : ThreeSpace))))) cap.tube_map V := by
+        EqOn (fun q => B (b (F ((1 - q.2 / 2) • (q.1 : ThreeSpace))))) cap.tubeMap V := by
   have hK : IsCompact (b '' ball (0 : ThreeSpace) 1)ᶜ :=
     (b.toOpenPartialHomeomorph.isOpen_image_of_subset_source isOpen_ball
       (ball_subset_closedBall.trans hb)).isClosed_compl.isCompact
   have hboundary : P '' (b '' sphere (0 : ThreeSpace) 1) =
-      range (fun q : Sphere 2 => cap.tube_map (q, 0)) := by
+      range (fun q : Sphere 2 => cap.tubeMap (q, 0)) := by
     rw [DifferentialGeometry.Topology.Manifold.image_sphere_eq_frontier_of_ball_complement
       b P hb hK hP, hcore, ← cap.inner_boundary]
     ext y
@@ -53,7 +53,7 @@ theorem LocalCap.exists_ball_complement_chart_of_core_ball_complement_chart
       exact ⟨(q, 0), ⟨mem_univ _, rfl⟩, rfl⟩
   obtain ⟨B, F, hF, hBs, hBi, hBP, hBT, V, hVo, hVs, hBV⟩ :=
     DifferentialGeometry.Topology.Manifold.exists_ball_complement_chart_of_ball_complement_and_cylinder
-      b P cap.tube_map hb hP cap.tube_domain hboundary
+      b P cap.tubeMap hb hP cap.tube_domain hboundary
       (fun q a ha hm => (cap.tube_map_mem_core_iff ha).mp (hcore ▸ hm))
   refine ⟨B, F, hF, hBs, ?_, hBP, hBT, V, hVo, hVs, hBV⟩
   rw [hBi, hcore, cap.tube_eq, ← cap.union_eq]
@@ -80,10 +80,10 @@ theorem LocalCap.exists_projective_model_of_core_projective_chart
       B '' (b' '' ball (0 : ThreeSpace) 1)ᶜ = U ∧
       EqOn B P (b '' ball (0 : ThreeSpace) 1)ᶜ ∧
       (∀ q : Sphere 2, ∀ a ∈ Icc (0 : ℝ) 1,
-        B (b' ((2 - a) • (q : ThreeSpace))) = cap.tube_map (q, a)) ∧
+        B (b' ((2 - a) • (q : ThreeSpace))) = cap.tubeMap (q, a)) ∧
       Nonempty (CapCore U) ∧
       ∃ V : Set Cylinder, IsOpen V ∧ univ ×ˢ Icc (0 : ℝ) 1 ⊆ V ∧
-        EqOn (fun q => B (b' ((2 - q.2) • (q.1 : ThreeSpace)))) cap.tube_map V := by
+        EqOn (fun q => B (b' ((2 - q.2) • (q.1 : ThreeSpace)))) cap.tubeMap V := by
   obtain ⟨e, he⟩ := pr.exists_realProjectiveThree_diffeomorph
   refine ⟨e, he, ?_⟩
   obtain ⟨B, F, hF, hBs, hBi, hBP, hBT, V, hVo, hVs, hBV⟩ :=

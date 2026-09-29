@@ -80,7 +80,7 @@ def LocalEDistComparison
   ∀ c, ∀ s ∈ Ioo s₀ (H.time i.succ), ∀ x ∈ (Kc c).support.region,
     ∃ U ∈ 𝓝 x, ∀ y ∈ U, ∀ z ∈ U,
       riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-        ((Kc c).rfs_whole_parent_map y) ((Kc c).rfs_whole_parent_map z) ≤
+        ((Kc c).canonicalWholeParentMap y) ((Kc c).canonicalWholeParentMap z) ≤
       ENNReal.ofReal (ell s) * riemannianEDistOf
         ((H.stage i.castSucc).componentMetric
           ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) y z
@@ -93,7 +93,7 @@ def LocalTerminalEDistComparison
       ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
       ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
       riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-        ((Kc c).rfs_whole_parent_map y) ((Kc c).rfs_whole_parent_map z) ≤
+        ((Kc c).canonicalWholeParentMap y) ((Kc c).canonicalWholeParentMap z) ≤
       riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩
 
 def LocalTerminalParentEDistComparison

@@ -26,7 +26,7 @@ theorem not_isPreconnected_compl_and_not_mem_connectedComponentIn_of_diffeomorph
         (c.intersection = 1 ∨ c.intersection = -1) →
           z ∉ connectedComponentIn (Set.range e)ᶜ p :=
   not_isPreconnected_compl_and_not_mem_connectedComponentIn_of_sphereSides
-    (jordanBrouwer_openThreeSpace e he ψ).toSphereSides
+    (smoothSphereSidesOpenThreeSpace e he ψ).toSphereSides
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

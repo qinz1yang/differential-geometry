@@ -51,7 +51,7 @@ private theorem timeJets_restrict (J : ℕ → ℝ → ℝ) {a b c : ℝ}
 variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M]
 
-def WindowedModelWitness.mono_of_regular {D : RealTimeInterval}
+def WindowedModelWitness.monoOfRegular {D : RealTimeInterval}
     {S : SolutionOn (I := I3) (M := M) D} (hS : IsSolutionOn S)
     {delta eps kappa : ℝ} {x : M} {t : ℝ}
     (W : WindowedModelWitness delta kappa S x t)
@@ -159,6 +159,6 @@ theorem orientedWitness_mono_closed {T : ℝ} {hT : 0 ≤ T}
     have ht := W.time_mem.2
     exact ⟨by change 0 < t + s / S.scalar t x; linarith,
       by change t + s / S.scalar t x < T; linarith⟩
-  exact ⟨W.mono_of_regular hS hde he hreg, oN, hO⟩
+  exact ⟨W.monoOfRegular hS hde he hreg, oN, hO⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

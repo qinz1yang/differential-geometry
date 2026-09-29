@@ -14,7 +14,7 @@ universe u v
 
 private abbrev E₃ := EuclideanSpace ℝ (Fin 3)
 
-theorem isPreconnected_compl_iUnion_of_collar {X : Type*} [TopologicalSpace X] [T1Space X]
+theorem isPreconnected_compl_iUnion_of_collar {X : Type*} [TopologicalSpace X]
     [PreconnectedSpace X] {ι : Type*} [Finite ι] (K V : ι → Set X)
     (hKcl : ∀ i, IsClosed (K i)) (hVop : ∀ i, IsOpen (V i)) (hKV : ∀ i, K i ⊆ V i)
     (hdisj : ∀ i j, i ≠ j → Disjoint (V i) (K j))

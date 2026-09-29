@@ -21,7 +21,7 @@ theorem embeddedSphere_hasAlexanderDualityH0Certificate
     (fun p ↦ (embeddedSphereAdjugateNormal_ne_zero_mem he p).1)
     isZero_integerSingularHomology_sphereTwo_one
 
-noncomputable def jordanBrouwer_openThreeSpace
+noncomputable def smoothSphereSidesOpenThreeSpace
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (e : SphereTwo → N)
@@ -30,7 +30,7 @@ noncomputable def jordanBrouwer_openThreeSpace
     (ψ : Diffeomorph (𝓘(ℝ, EuclideanThree)) (𝓘(ℝ, EuclideanThree))
       N EuclideanThree ∞) :
     SmoothSphereSides (Set.range e) :=
-  smoothSphereSidesOpenThreeSpace_of_alexanderDuality e he ψ
+  smoothSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate e he ψ
     (embeddedSphere_hasAlexanderDualityH0Certificate
       (ψ ∘ e) (he.postcomp_diffeomorph ψ))
 
@@ -43,7 +43,7 @@ noncomputable def compactSideOpenThreeSpace
       (𝓘(ℝ, EuclideanSpace ℝ (Fin 2))) (𝓘(ℝ, EuclideanThree)) ∞ e)
     (ψ : Diffeomorph (𝓘(ℝ, EuclideanThree)) (𝓘(ℝ, EuclideanThree))
       N EuclideanThree ∞) : Set N :=
-  (jordanBrouwer_openThreeSpace e he ψ).compactSide
+  (smoothSphereSidesOpenThreeSpace e he ψ).compactSide
 
 
 noncomputable def endSideOpenThreeSpace
@@ -54,7 +54,7 @@ noncomputable def endSideOpenThreeSpace
       (𝓘(ℝ, EuclideanSpace ℝ (Fin 2))) (𝓘(ℝ, EuclideanThree)) ∞ e)
     (ψ : Diffeomorph (𝓘(ℝ, EuclideanThree)) (𝓘(ℝ, EuclideanThree))
       N EuclideanThree ∞) : Set N :=
-  (jordanBrouwer_openThreeSpace e he ψ).endSide
+  (smoothSphereSidesOpenThreeSpace e he ψ).endSide
 
 theorem jordanBrouwer_openThreeSpace_unique
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
@@ -73,11 +73,11 @@ theorem jordanBrouwer_openThreeSpace_unique
     B = compactSideOpenThreeSpace e he ψ ∧
       E = endSideOpenThreeSpace e he ψ := by
   exact SphereSides.side_sets_unique_of_core_properties
-    (jordanBrouwer_openThreeSpace e he ψ).toSphereSides B E
+    (smoothSphereSidesOpenThreeSpace e he ψ).toSphereSides B E
     hBopen hEopen hBconnected hEconnected hdisjoint hunion
     hBcompact hEnoncompact
 
-noncomputable def jordanBrouwer_openThreeSpace_components
+noncomputable def connectedComponentsComplEquivFinTwoOpenThreeSpace
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (e : SphereTwo → N)
@@ -87,7 +87,7 @@ noncomputable def jordanBrouwer_openThreeSpace_components
       N EuclideanThree ∞) :
     ConnectedComponents (((Set.range e)ᶜ : Set N)) ≃ Fin 2 :=
   connectedComponentsComplEquivFinTwo
-    (jordanBrouwer_openThreeSpace e he ψ).toSphereSides
+    (smoothSphereSidesOpenThreeSpace e he ψ).toSphereSides
 
 noncomputable def bicollarSliceSidesOpenThreeSpace
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
@@ -98,7 +98,7 @@ noncomputable def bicollarSliceSidesOpenThreeSpace
     (ψ : Diffeomorph (𝓘(ℝ, EuclideanThree)) (𝓘(ℝ, EuclideanThree))
       N EuclideanThree ∞)
     (c : AxialInterval a) : SphereSides (sliceImage Φ c) :=
-  bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ
+  bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ
     (fun t ↦
       hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding_of_sphereH1
         (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ)
@@ -121,7 +121,7 @@ theorem bicollar_sides_openThreeSpace
       (negativeHalfImage Φ ha ⊆ d.endSide ∧
         positiveHalfImage Φ ha ⊆ d.compactSide) := by
   simpa only [bicollarSliceSidesOpenThreeSpace,
-    bicollarSliceSidesOpenThreeSpace_of_alexanderDuality] using
+    bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates] using
     bicollar_sides_openThreeSpace_of_sphereH1
       ha Φ hΦ ψ isZero_integerSingularHomology_sphereTwo_one
 
@@ -149,7 +149,7 @@ theorem bicollar_order_openThreeSpace
     closure (d s).compactSide ⊂ (d t).compactSide ∧
     closure (d s).compactSide ⊂ closure (d t).compactSide := by
   simpa only [bicollarSliceSidesOpenThreeSpace,
-    bicollarSliceSidesOpenThreeSpace_of_alexanderDuality] using
+    bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates] using
     bicollar_order_openThreeSpace_of_sphereH1
       ha Φ hΦ ψ isZero_integerSingularHomology_sphereTwo_one o₀ hst
 
@@ -165,11 +165,11 @@ theorem disjoint_spheres_nested_openThreeSpace
       N EuclideanThree ∞)
     (hdisjoint : Disjoint (Set.range e₁) (Set.range e₂))
     (hmeet :
-      let d₁ := (jordanBrouwer_openThreeSpace e₁ he₁ ψ).toSphereSides
-      let d₂ := (jordanBrouwer_openThreeSpace e₂ he₂ ψ).toSphereSides
+      let d₁ := (smoothSphereSidesOpenThreeSpace e₁ he₁ ψ).toSphereSides
+      let d₂ := (smoothSphereSidesOpenThreeSpace e₂ he₂ ψ).toSphereSides
       (d₁.compactSide ∩ d₂.compactSide).Nonempty) :
-    let d₁ := (jordanBrouwer_openThreeSpace e₁ he₁ ψ).toSphereSides
-    let d₂ := (jordanBrouwer_openThreeSpace e₂ he₂ ψ).toSphereSides
+    let d₁ := (smoothSphereSidesOpenThreeSpace e₁ he₁ ψ).toSphereSides
+    let d₂ := (smoothSphereSidesOpenThreeSpace e₂ he₂ ψ).toSphereSides
     Xor
       (closure d₁.compactSide ⊂ d₂.compactSide ∧
         d₂.compactSide = interior (closure d₂.compactSide) ∧
@@ -177,8 +177,8 @@ theorem disjoint_spheres_nested_openThreeSpace
       (closure d₂.compactSide ⊂ d₁.compactSide ∧
         d₁.compactSide = interior (closure d₁.compactSide) ∧
         closure d₂.compactSide ⊂ closure d₁.compactSide) := by
-  let d₁ := (jordanBrouwer_openThreeSpace e₁ he₁ ψ).toSphereSides
-  let d₂ := (jordanBrouwer_openThreeSpace e₂ he₂ ψ).toSphereSides
+  let d₁ := (smoothSphereSidesOpenThreeSpace e₁ he₁ ψ).toSphereSides
+  let d₂ := (smoothSphereSidesOpenThreeSpace e₂ he₂ ψ).toSphereSides
   exact d₁.disjoint_sides_strictly_nested d₂ hdisjoint
     (isConnected_range he₁.contMDiff.continuous)
     (isConnected_range he₂.contMDiff.continuous) hmeet

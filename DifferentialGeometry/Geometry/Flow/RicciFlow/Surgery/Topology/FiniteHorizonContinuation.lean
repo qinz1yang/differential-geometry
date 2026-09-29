@@ -154,13 +154,13 @@ theorem RetainedCoreHistory.exists_extension_to_horizon_of_volume_debit
   obtain ⟨J, hJ, hJB | ⟨hB, G, hG, hp⟩⟩ :=
     H.exists_closedSlab_extension_to_horizon_of_volume_debit S hH hC hv hprefix hhorizon
       hend hscalar hdebit hproduce
-  · let A' := A.of_stageZero (prefix_initial_stage (hprefix J hJ))
+  · let A' := A.ofStageZero (prefix_initial_stage (hprefix J hJ))
       (prefix_initial_metric (hprefix J hJ))
     refine ⟨J, A', hJB, ⟨hprefix J hJ, ?_⟩,
       J, hJ, ObservedHistory.IsPrefixOf.refl _, rfl⟩
     exact (A.map_of_stageZero_heq _ _).symm
   · let K := J.extendHorizon B hB G hG
-    let A' := A.of_stageZero (prefix_initial_stage hp) (prefix_initial_metric hp)
+    let A' := A.ofStageZero (prefix_initial_stage hp) (prefix_initial_metric hp)
     exact ⟨K, A', rfl, ⟨hp, (A.map_of_stageZero_heq _ _).symm⟩,
       J, hJ, J.extendHorizon_isPrefixOf_of_time_eq_horizon B hB G hG (hend J hJ), rfl⟩
 

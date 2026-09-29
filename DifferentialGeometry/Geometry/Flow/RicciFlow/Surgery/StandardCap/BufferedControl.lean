@@ -96,17 +96,17 @@ structure TrackedChart (P : OrientedThreeStage.{u}) (G : ℝ → P.Metric)
   domain : Set ThreeSpace
   domain_open : IsOpen domain
   wide : ∀ x : ThreeSpace, ‖x‖ ≤ L → x ∈ domain
-  normalized_metric : ℝ → SmoothRiemannianMetric ThreeModel ThreeSpace
+  normalizedMetric : ℝ → SmoothRiemannianMetric ThreeModel ThreeSpace
   normalized_metric_eq : ∀ s ∈ Icc (0 : ℝ) time,
     ∀ (x : ThreeSpace) (V W : TangentSpace ThreeModel x),
-      (normalized_metric s).inner x V W = (q - s)⁻¹ *
+      (normalizedMetric s).inner x V W = (q - s)⁻¹ *
         (G (q - s)).inner (flow s x)
           (mfderiv ThreeModel ThreeModel (flow s) x V)
           (mfderiv ThreeModel ThreeModel (flow s) x W)
   curvature_bound : ∀ s ∈ Icc (0 : ℝ) time, ∀ x : ThreeSpace, ‖x‖ ≤ L →
-    curvatureNormSq (normalized_metric s) x
+    curvatureNormSq (normalizedMetric s) x
       (DifferentialGeometry.Geometry.Curvature.metricRm04At (I := ThreeModel)
-        (M := ThreeSpace) (normalized_metric s) x) ≤ K ^ 2
+        (M := ThreeSpace) (normalizedMetric s) x) ≤ K ^ 2
 
 structure AdmissibleDatum (c : CapClass) where
   history : ObservedHistory.{u}

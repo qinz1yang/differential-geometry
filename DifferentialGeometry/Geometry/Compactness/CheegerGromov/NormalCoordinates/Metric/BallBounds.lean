@@ -73,7 +73,7 @@ def subseq
       exact h.metric_deriv n p (f j) (le_trans hnj (hf j)) x hx
 
 omit [NeZero (Module.finrank Real E)] in
-def of_normalCoordMetricBounds
+def ofNormalCoordMetricBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : NormalCoordMetricBounds (I := I) X) :
     SeqBallNormalCoordMetricBounds (I := I) X where
@@ -297,7 +297,7 @@ def subseq
       exact h.metric_deriv n p (f j) (le_trans hnj (hf j)) x hx
 
 omit [NeZero (Module.finrank Real E)] in
-def of_framedCoordMetricBounds
+def ofFramedCoordMetricBounds
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : FramedCoordMetricBounds (I := I) X) :
     SeqBallFramedCoordMetricBounds (I := I) X where

@@ -79,7 +79,7 @@ def ofFramedCoordMetricBounds
   volume := volume
   dist_eq := dist_eq
   realizes := realizes
-  normalBounds := SeqBallFramedCoordMetricBounds.of_framedCoordMetricBounds (I := I)
+  normalBounds := SeqBallFramedCoordMetricBounds.ofFramedCoordMetricBounds (I := I)
     normalBounds
   normalRadius := normalRadius
 

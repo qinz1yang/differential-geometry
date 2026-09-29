@@ -333,7 +333,7 @@ theorem exists_positive_surface_global_product_on_closed_past_of_curvatureOperat
   let _ := hσ
   let _ := morseModelEuclideanModelChartedSpace 2 N
   let _ := isManifold_morseModelEuclideanModel (n := 2) (M := N)
-  let A := diffeomorph_morseModelEuclideanModel (n := 2) (M := N)
+  let A := morseModelEuclideanModelDiffeomorph (n := 2) (M := N)
   let B := A.prodCongr (Diffeomorph.refl 𝓘(ℝ, ℝ) ℝ ∞)
   let G' := G.pullback A
   refine ⟨N, htop, inferInstance, inferInstance, ht2, hσ, G',

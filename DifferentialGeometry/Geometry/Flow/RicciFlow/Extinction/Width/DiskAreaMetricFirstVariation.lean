@@ -52,7 +52,7 @@ private theorem diskArea_eq_integral_riemannianAreaDensity_extension
     (Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall)
 
 theorem SmoothDisk.hasDerivAt_diskArea_metricFamily
-    [CompactSpace Q] [SigmaCompactSpace Q]
+    [CompactSpace Q]
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     (u : SmoothDisk (I := I) (Q := Q)) (g : ℝ → SmoothRiemannianMetric I Q)
     (J : Set ℝ) {D : RealTimeInterval} {t₀ : ℝ}
@@ -191,7 +191,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimension
   [T2Space Q] [I.Boundaryless]
 
 theorem SmoothDisk.hasDerivAt_diskArea_metricFamily_of_uniqueDiffWithinAt
-    [CompactSpace Q] [SigmaCompactSpace Q]
+    [CompactSpace Q]
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E) [CompactSpace c.Q]
     (u : SmoothDisk (I := I) (Q := Q)) (g : ℝ → SmoothRiemannianMetric I Q)
     (J : Set ℝ) {D : RealTimeInterval} {t₀ : ℝ}

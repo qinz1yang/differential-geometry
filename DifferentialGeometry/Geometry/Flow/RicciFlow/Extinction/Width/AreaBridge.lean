@@ -71,7 +71,7 @@ theorem parametricJacobian_eq_zero_of_subsingleton_model (I : ModelWithCorners �
   · rfl
 
 theorem eventuallyEq_const_of_subsingleton_model (I : ModelWithCorners ℝ E H)
-    (Q : Type*) [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q] [Subsingleton E]
+    (Q : Type*) [TopologicalSpace Q] [ChartedSpace H Q] [Subsingleton E]
     {X : Type*} [TopologicalSpace X] {u : X → Q} {x : X} (hu : ContinuousAt u x) :
     u =ᶠ[𝓝 x] (fun _ => u x) := by
   let _ : Subsingleton H := subsingleton_of_subsingleton_model I ‹Subsingleton E›

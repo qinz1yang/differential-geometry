@@ -29,14 +29,14 @@ theorem exists_finiteHorn_transverse_axis_bound :
   obtain ⟨C, F, p, hcenter, ⟨G⟩, hsource, hQ, ⟨cmp⟩⟩ := htail x hx
   obtain ⟨q, haxis⟩ := G.axis_crosses
   have hlevel : ∀ y : Sphere 2, (y, (0 : ℝ)) ∈
-      univ ×ˢ Icc (-H.collar_depth) H.collar_depth := by
+      univ ×ˢ Icc (-H.collarDepth) H.collarDepth := by
     intro y
     exact ⟨mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
   obtain ⟨gamma, hstart, hend, hsmooth, _hmem, hlength⟩ :=
     hshortcuts C (fun _ => C.metric 0)
       (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
-      (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
-      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 cmp rfl H.neck_precision_pos.le
+      (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) {0}
+      (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision 0 cmp rfl H.neck_precision_pos.le
       (by linarith [H.neck_precision_small]) (by simp) hsource hlevel p q
   have hdist := (edistOf_le_metricPathELength
     (scaleMetric (metricScalarAt g x) hQ g) (by norm_num : (0 : ℝ) ≤ 1) hsmooth).trans hlength
@@ -44,9 +44,9 @@ theorem exists_finiteHorn_transverse_axis_bound :
   have hreal := ENNReal.toReal_mono ENNReal.ofReal_ne_top hdist
   rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal (Real.sqrt_nonneg _),
     ENNReal.toReal_ofReal hD.le] at hreal
-  change Real.sqrt (metricScalarAt g x) * metricDistance g x (H.axial.point G.crossing_parameter) ≤ D at hreal
+  change Real.sqrt (metricScalarAt g x) * metricDistance g x (H.axial.point G.crossingParameter) ≤ D at hreal
   rw [← H.intrinsic] at hreal
-  refine ⟨hQ, G.crossing_parameter, G.crossing_mem, ?_⟩
+  refine ⟨hQ, G.crossingParameter, G.crossing_mem, ?_⟩
   apply (le_div_iff₀ (Real.sqrt_pos.mpr hQ)).mpr
   nlinarith
 

@@ -17,11 +17,11 @@ theorem smoothSchoenfliesBallFilling_iff_exists_ambient_diffeomorph :
     SphereSeparation.smoothSchoenfliesThree_iff_exists_ambient_diffeomorph
 
 theorem compactSide_jordanBrouwer_openThreeSpace_coe_sphere :
-    (SphereSeparation.jordanBrouwer_openThreeSpace (Subtype.val : S² → ℝ³)
+    (SphereSeparation.smoothSphereSidesOpenThreeSpace (Subtype.val : S² → ℝ³)
       isSmoothEmbedding_sphereTwo_subtype
       (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).compactSide = ball (0 : ℝ³) 1 :=
   (SphereSeparation.SphereSides.side_sets_unique_of_core_properties
-    (SphereSeparation.jordanBrouwer_openThreeSpace (Subtype.val : S² → ℝ³)
+    (SphereSeparation.smoothSphereSidesOpenThreeSpace (Subtype.val : S² → ℝ³)
       isSmoothEmbedding_sphereTwo_subtype
       (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).toSphereSides
     (ball (0 : ℝ³) 1) ((closedBall (0 : ℝ³) 1)ᶜ)
@@ -38,7 +38,7 @@ theorem compactSide_jordanBrouwer_openThreeSpace_coe_sphere :
 theorem exists_diffeomorph_image_ball_roundSphere :
     ∃ D : ℝ³ ≃ₘ[ℝ] ℝ³,
       D '' ball (0 : ℝ³) 1 =
-        (SphereSeparation.jordanBrouwer_openThreeSpace (Subtype.val : S² → ℝ³)
+        (SphereSeparation.smoothSphereSidesOpenThreeSpace (Subtype.val : S² → ℝ³)
           isSmoothEmbedding_sphereTwo_subtype
           (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).compactSide := by
   refine ⟨Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞, ?_⟩

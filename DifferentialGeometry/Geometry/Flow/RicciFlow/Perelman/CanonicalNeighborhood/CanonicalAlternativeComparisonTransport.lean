@@ -46,7 +46,7 @@ theorem CanonicalAlternative.exists_transport_tolerance_of_metricComparisonOn
   rcases hshape with ⟨Ln, rfl⟩ | ⟨Lc, deep, rfl⟩
   · have hmodel : neckModelTolerance alpha < 1 / 11 :=
       (neckModelTolerance_le alpha).trans_lt (by linarith)
-    let L₁ := Ln.mono_eps heps hmodel
+    let L₁ := Ln.monoEps heps hmodel
     obtain ⟨delta, hdelta, htr⟩ := L₁.exists_transport_tolerance_of_metricComparisonOn hS ha
       hsmall (hab.trans_le hwindow) hslab hreg V hVcompact hK hKV (hneck Ln rfl)
     refine ⟨delta, hdelta, ?_⟩

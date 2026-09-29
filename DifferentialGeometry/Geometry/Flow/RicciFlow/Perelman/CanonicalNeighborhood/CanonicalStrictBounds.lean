@@ -119,7 +119,7 @@ theorem SecLower.mono {g : SmoothRiemannianMetric I3 M} {a b : ℝ} {U : Set M}
   exact (mul_le_mul_of_nonneg_right hab (sectional_area_nonneg g y v w)).trans (h y hy v w)
 
 
-def CanonicalAlternative.mono_constant {C C' : ℝ} {U : Set M}
+def CanonicalAlternative.monoConstant {C C' : ℝ} {U : Set M}
     (A : CanonicalAlternative S eps C x t U) (hC : 0 < C) (hCC : C ≤ C')
     (hQ : 0 ≤ S.scalar t x) : CanonicalAlternative S eps C' x t U := by
   cases A with
@@ -134,11 +134,11 @@ omit [T2Space M] [SigmaCompactSpace M] in
 @[simp] theorem CanonicalAlternative.mono_constant_requiresVolume
     {C C' : ℝ} {U : Set M} (A : CanonicalAlternative S eps C x t U)
     (hC : 0 < C) (hCC : C ≤ C') (hQ : 0 ≤ S.scalar t x) :
-    (A.mono_constant hC hCC hQ).requiresVolume = A.requiresVolume := by
+    (A.monoConstant hC hCC hQ).requiresVolume = A.requiresVolume := by
   cases A <;> rfl
 
 
-def CanonicalWitness.enlarge_constants (W : CanonicalWitness S eps C1 C2 x t)
+def CanonicalWitness.enlargeConstants (W : CanonicalWitness S eps C1 C2 x t)
     {C1' C2' : ℝ} (h1 : C1 ≤ C1') (h2 : C2 ≤ C2') :
     CanonicalWitness S eps C1' C2' x t := by
   have hC2 : 0 < C2 := zero_lt_one.trans_le W.one_le_comparison_constant
@@ -161,7 +161,7 @@ def CanonicalWitness.enlarge_constants (W : CanonicalWitness S eps C1 C2 x t)
       ⟨(mul_le_mul_of_nonneg_right hinv W.Q_pos.le).trans (W.scalar_bounds y hy).1,
         (W.scalar_bounds y hy).2.trans hupper⟩
     rm_bound := fun y hy => (W.rm_bound y hy).trans hupper
-    alternative := W.alternative.mono_constant hC2 h2 W.Q_pos.le
+    alternative := W.alternative.monoConstant hC2 h2 W.Q_pos.le
     volume := ?_
     gradient := ?_
     time_derivative := W.time_derivative.trans (mul_le_mul_of_nonneg_right h2 (sq_nonneg _)) }
@@ -180,13 +180,13 @@ def CanonicalWitness.enlarge_constants (W : CanonicalWitness S eps C1 C2 x t)
 @[simp] theorem CanonicalWitness.enlarge_constants_domain
     (W : CanonicalWitness S eps C1 C2 x t) {C1' C2' : ℝ}
     (h1 : C1 ≤ C1') (h2 : C2 ≤ C2') :
-    (W.enlarge_constants h1 h2).domain = W.domain := rfl
+    (W.enlargeConstants h1 h2).domain = W.domain := rfl
 
 
 @[simp] theorem CanonicalWitness.enlarge_constants_requiresVolume
     (W : CanonicalWitness S eps C1 C2 x t) {C1' C2' : ℝ}
     (h1 : C1 ≤ C1') (h2 : C2 ≤ C2') :
-    (W.enlarge_constants h1 h2).alternative.requiresVolume = W.alternative.requiresVolume := by
+    (W.enlargeConstants h1 h2).alternative.requiresVolume = W.alternative.requiresVolume := by
   exact CanonicalAlternative.mono_constant_requiresVolume W.alternative
     (zero_lt_one.trans_le W.one_le_comparison_constant) h2 W.Q_pos.le
 
@@ -207,7 +207,7 @@ theorem CanonicalWitness.exists_strict_reserve_witness
           ENNReal.ofReal (C⁻¹ / (S.scalar t x * Real.sqrt (S.scalar t x))) <
             riemannianVolumeMeasure I3 M (S.base.metric t) W'.domain.carrier) := by
   obtain ⟨hC, h1, h2, hscalar, hrm, hvolume⟩ := W.strict_curvature_volume_reserves
-  let W' := W.enlarge_constants h1.le h2.le
+  let W' := W.enlargeConstants h1.le h2.le
   obtain ⟨a, b, margin, ha, har, hm, hab, _, houter⟩ := W'.exists_radial_reserve
   have hinner : riemannianClosedBallOf (I := I3) (S.base.metric t) x a ⊆ W'.domain.carrier := by
     intro y hy

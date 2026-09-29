@@ -303,7 +303,7 @@ noncomputable def sumInlRangeDiffeomorph {Q D : Type*} [TopologicalSpace Q]
   contMDiff_invFun := contMDiff_sumInlCorestrict
 
 theorem isSmoothEmbedding_of_comp_sumInl {M Q D : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M] [TopologicalSpace Q]
+    [ChartedSpace (EuclideanHalfSpace 3) M] [TopologicalSpace Q]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) Q] [IsManifold (𝓡 3) ∞ Q] [TopologicalSpace D]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) D] [IsManifold (𝓡 3) ∞ D]
     (f : M → Q) (h : IsSmoothEmbedding (𝓡∂ 3) (𝓡 3) ∞ ((Sum.inl : Q → Q ⊕ D) ∘ f)) :
@@ -444,7 +444,7 @@ theorem toSurgeryEvents_output
     ((H.toSurgeryEvents hc hout) i).outputMetric = H.initialMetric i.succ :=
   H.event_output i
 
-noncomputable def toSurgeryFiniteSurgeryHistory_of_cutCapCompletion (H : ObservedHistory.{u})
+noncomputable def toSurgeryFiniteSurgeryHistoryOfCutCapCompletion (H : ObservedHistory.{u})
     (hn : 0 < H.eventCount)
     (hc : (i : Fin H.eventCount) → SmoothCutCapCompletion (H.event i).transition)
     (hout : (i : Fin H.eventCount) →

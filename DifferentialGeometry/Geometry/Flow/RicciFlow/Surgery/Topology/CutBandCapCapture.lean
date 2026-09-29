@@ -60,7 +60,7 @@ theorem closedBand_subset_cap_core_interior_or_meets_inner_boundary
     (hcontact : T.tube a q ∈ cap.core.carrier) :
     (T.tube a '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ⊆ interior cap.core.carrier) ∨
       ∃ (r : TubeDomain) (z : Sphere 2), r.2.val ∈ Icc (-1 : ℝ) 1 ∧
-        T.tube a r = cap.tube_map (z,0) := by
+        T.tube a r = cap.tubeMap (z,0) := by
   rcases Set.disjoint_or_nonempty_inter
       (T.tube a '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1}) (frontier cap.core.carrier) with hd | h
   · exact Or.inl (DifferentialGeometry.Topology.isPreconnected_subset_interior_of_meets_of_disjoint_frontier
@@ -80,14 +80,14 @@ theorem closedBand_subset_cap_core_interior_or_far_inner_boundary
     (hcontact : T.tube a q ∈ cap.core.carrier) :
     (T.tube a '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ⊆ interior cap.core.carrier) ∨
       ∃ (r : TubeDomain) (z : Sphere 2), r.2.val ∈ Icc (-1 : ℝ) 1 ∧
-        T.tube a r = cap.tube_map (z,0) ∧
+        T.tube a r = cap.tubeMap (z,0) ∧
         10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x (T.tube a r) := by
   obtain h | ⟨r,z,hr,he⟩ := T.closedBand_subset_cap_core_interior_or_meets_inner_boundary cap a q hq hcontact
   · exact Or.inl h
   · refine Or.inr ⟨r,z,hr,he,?_⟩
     apply hdepth
     rw [he,← cap.tube_eq]
-    exact mem_image_of_mem cap.tube_map ⟨mem_univ _,le_rfl,zero_le_one⟩
+    exact mem_image_of_mem cap.tubeMap ⟨mem_univ _,le_rfl,zero_le_one⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.TubeSystem
 
@@ -123,7 +123,7 @@ theorem closedBand_subset_cap_core_interior_or_center_far_of_spatialNeck
     (hcontact : T.tube a q ∈ cap.core.carrier) :
     (T.tube a '' {q : TubeDomain | q.2.val ∈ Icc (-1 : ℝ) 1} ⊆ interior cap.core.carrier) ∨
       ∃ (r : TubeDomain) (z : Sphere 2), r.2.val ∈ Icc (-1 : ℝ) 1 ∧
-        T.tube a r = cap.tube_map (z,0) ∧
+        T.tube a r = cap.tubeMap (z,0) ∧
         ENNReal.ofReal (10000 / Real.sqrt (S.scalar t x)) ≤
           riemannianEDistOf (S.base.metric t) x p +
             ENNReal.ofReal (7 * Real.sqrt (1+eps) / Real.sqrt (metricScalarAt (S.base.metric t) p)) := by

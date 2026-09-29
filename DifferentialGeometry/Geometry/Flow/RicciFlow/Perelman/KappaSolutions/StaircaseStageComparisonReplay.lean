@@ -167,9 +167,9 @@ theorem of_boundedGeometryNormalChartData_exists_stage_metric
     BoundedGeometryNormalChartData.phaseRadius,
     BoundedGeometryNormalChartData.chartMetric,
     SeqBallNormalChartData.chartMetric,
-    SeqBallNormalChartData.of_boundedGeometryNormalChartData]
+    SeqBallNormalChartData.ofBoundedGeometryNormalChartData]
     using exists_stage_metric (I := I) inp
-      (SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d) P L r
+      (SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d) P L r
 
 def phaseK
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
@@ -457,7 +457,7 @@ theorem of_boundedGeometryNormalChartData_exists_stage_pair
             PhaseFlow.phaseErr (d.phaseK (2 * q alpha))) := by
   classical
   refine SeqBallNormalChartData.exists_stage_pair inp
-    (SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d)
+    (SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d)
     d.metricC d.metricC_nonneg ?_ P L phi hphi hcomplete hconn V C1 gInf ?_ ?_ ?_ q ?_
   · intro j x
     let : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -466,17 +466,17 @@ theorem of_boundedGeometryNormalChartData_exists_stage_pair
     let : T2Space (TangentBundle I (X.obj j).M) :=
       (X.obj j).t2TangentBundle
     exact ⟨d.metricBounds j x, rfl, fun _p => le_rfl⟩
-  · simpa only [SeqBallNormalChartData.of_boundedGeometryNormalChartData,
+  · simpa only [SeqBallNormalChartData.ofBoundedGeometryNormalChartData,
       SeqBallNormalChartData.phaseRadius,
       BoundedGeometryNormalChartData.phaseRadius] using hV
-  · simpa only [SeqBallNormalChartData.of_boundedGeometryNormalChartData] using hcenter
-  · simpa only [SeqBallNormalChartData.of_boundedGeometryNormalChartData,
+  · simpa only [SeqBallNormalChartData.ofBoundedGeometryNormalChartData] using hcenter
+  · simpa only [SeqBallNormalChartData.ofBoundedGeometryNormalChartData,
       SeqBallNormalChartData.chartMetric,
       BoundedGeometryNormalChartData.chartMetric] using hmetric
   · intro alpha
     obtain ⟨hq, hwide, hacc, herr, hinv⟩ := hqdata alpha
     refine ⟨hq, hwide, ?_, ?_, ?_⟩
-    · simpa only [SeqBallNormalChartData.of_boundedGeometryNormalChartData] using hacc
+    · simpa only [SeqBallNormalChartData.ofBoundedGeometryNormalChartData] using hacc
     · rw [show SeqBallNormalChartData.phaseKOf d.metricC d.metricC_nonneg
           (2 * q alpha) = d.phaseK (2 * q alpha) by
         apply NNReal.eq

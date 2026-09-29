@@ -68,7 +68,7 @@ theorem coreInclusion_comp_coreRetraction_homotopic_id
 noncomputable def puncturedCoreHomotopyEquivCore
     (hsm : ∀ a : T.Index, IsSmoothEmbedding ((𝓡 2).prod (𝓡∂ 1)) ThreeModel ∞ (T.tube a)) :
     ↥T.puncturedCore ≃ₕ ↥T.core :=
-  (homotopyEquiv_of_retraction (coreInclusion T) (coreRetraction T hsm)
+  (homotopyEquivOfRetraction (coreInclusion T) (coreRetraction T hsm)
     (coreRetraction_comp_coreInclusion T hsm)
     (coreInclusion_comp_coreRetraction_homotopic_id T hsm)).symm
 

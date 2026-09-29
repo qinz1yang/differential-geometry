@@ -27,7 +27,7 @@ private theorem conformal_disk_producer_standard_model
         (∀ θ, v.map (diskBoundary θ) = γ θ) → diskArea g u.map ≤ diskArea g v.map := by
   obtain ⟨q, τ, Q, hq⟩ := Geometry.exists_conformalMinimizingDisk_of_compact g hdim
     γ.toContinuousLoop (isSmoothEmbeddedLoop_of_regularLoop γ hγ hemb himm) hctr
-  let u := smoothDisk_of_smoothDiskExtension hq.extension
+  let u := smoothDiskOfSmoothDiskExtension hq.extension
   obtain ⟨ψ, hψ, hmono, hinc, hlift⟩ := hq.positiveTrace
   let σ : SmoothWeaklyMonotoneCircleMap :=
     { map := τ
@@ -80,7 +80,7 @@ theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
     hctr.postcompose ⟨Φ, Φ.continuous⟩
   obtain ⟨u, σ, htrace, hconf, hharm, hmin⟩ :=
     conformal_disk_producer_standard_model g' hdim γ' hγ' hemb' himm' hctr'
-  let v := SmoothDisk.comp_diffeomorph Φ.symm u
+  let v := SmoothDisk.compDiffeomorph Φ.symm u
   refine ⟨v, σ, ?_, u.isConformal_comp_diffeomorph_symm Φ g hconf,
     u.isHarmonic_comp_diffeomorph_symm Φ g hharm, ?_⟩
   · intro θ
@@ -88,12 +88,12 @@ theorem conformal_disk_producer (g : SmoothRiemannianMetric I Q)
     rw [htrace]
     exact Φ.symm_apply_apply _
   · intro w hw
-    have htracew (θ) : (SmoothDisk.comp_diffeomorph Φ w).map (diskBoundary θ) = γ' θ :=
+    have htracew (θ) : (SmoothDisk.compDiffeomorph Φ w).map (diskBoundary θ) = γ' θ :=
       congrArg Φ (hw θ)
     calc
       diskArea g v.map = diskArea g' u.map :=
         (diskArea_pullbackMetricCross g Φ.symm u.map).symm
-      _ ≤ diskArea g' (SmoothDisk.comp_diffeomorph Φ w).map := hmin _ htracew
+      _ ≤ diskArea g' (SmoothDisk.compDiffeomorph Φ w).map := hmin _ htracew
       _ = diskArea g w.map := by
         rw [diskArea_pullbackMetricCross]
         congr 1

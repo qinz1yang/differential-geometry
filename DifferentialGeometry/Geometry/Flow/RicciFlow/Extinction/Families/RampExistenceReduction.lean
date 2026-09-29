@@ -196,12 +196,12 @@ theorem RampSolutionExistence.of_uniformExtension
     (H : RampUniformExtension (I := I) (M := Q) (D := D) (a := a) (b := b) B lambda) :
     RampSolutionExistence (I := I) (D := D) (a := a) (b := b) B lambda := by
   intro c₀ hsmooth hramp₀
-  have hτ : 0 < H.local_time := H.local_time_pos
+  have hτ : 0 < H.localTime := H.local_time_pos
   have key : ∀ n : ℕ, 1 ≤ n → ∃ c : ProductCurve Q,
-      c.IsSolutionOn B.family.metric lambda (Icc a (min b (a + (n : ℝ) * H.local_time))) ∧
-      c.IsRampOn B.family.metric lambda (Icc a (min b (a + (n : ℝ) * H.local_time))) ∧
+      c.IsSolutionOn B.family.metric lambda (Icc a (min b (a + (n : ℝ) * H.localTime))) ∧
+      c.IsRampOn B.family.metric lambda (Icc a (min b (a + (n : ℝ) * H.localTime))) ∧
       (∀ z, c.map z a = c₀.map z a) ∧
-      ∀ x t, t ∈ Icc a (min b (a + (n : ℝ) * H.local_time)) →
+      ∀ x t, t ∈ Icc a (min b (a + (n : ℝ) * H.localTime)) →
         c.curvature B.family.metric lambda x t ≤
           c₀.curvatureEnvelope B.family.metric lambda B.B₀ B.C a b t := by
     intro n hn
@@ -209,7 +209,7 @@ theorem RampSolutionExistence.of_uniformExtension
     | base =>
       obtain ⟨c, hsol, hramp, hdat, hcurv⟩ :=
         H.exists_from_start (I := I) (M := Q) (D := D) (a := a) (b := b) c₀ hsmooth hramp₀
-      have hgoal : min b (a + ((1 : ℕ) : ℝ) * H.local_time) = min b (a + H.local_time) := by
+      have hgoal : min b (a + ((1 : ℕ) : ℝ) * H.localTime) = min b (a + H.localTime) := by
         norm_num
       rw [hgoal]
       exact ⟨c,
@@ -220,12 +220,12 @@ theorem RampSolutionExistence.of_uniformExtension
         hcurv⟩
     | succ n hn ih =>
       obtain ⟨c, hsol, hramp, hdat, hcurv⟩ := ih
-      by_cases hb : min b (a + (n : ℝ) * H.local_time) = b
-      · have hnext : min b (a + (((n + 1 : ℕ) : ℝ)) * H.local_time) =
-            min b (a + (n : ℝ) * H.local_time) := by
-          have hge : b ≤ a + (n : ℝ) * H.local_time := min_eq_left_iff.mp hb
-          have hcast : a + (((n + 1 : ℕ) : ℝ)) * H.local_time =
-              a + (n : ℝ) * H.local_time + H.local_time := by
+      by_cases hb : min b (a + (n : ℝ) * H.localTime) = b
+      · have hnext : min b (a + (((n + 1 : ℕ) : ℝ)) * H.localTime) =
+            min b (a + (n : ℝ) * H.localTime) := by
+          have hge : b ≤ a + (n : ℝ) * H.localTime := min_eq_left_iff.mp hb
+          have hcast : a + (((n + 1 : ℕ) : ℝ)) * H.localTime =
+              a + (n : ℝ) * H.localTime + H.localTime := by
             push_cast
             ring
           rw [hcast, min_eq_left (by linarith), hb]
@@ -235,28 +235,28 @@ theorem RampSolutionExistence.of_uniformExtension
         · intro x t ht
           rw [hnext] at ht
           exact hcurv x t ht
-      · have hlt : min b (a + (n : ℝ) * H.local_time) < b :=
+      · have hlt : min b (a + (n : ℝ) * H.localTime) < b :=
           lt_of_le_of_ne (min_le_left _ _) hb
-        have hnonneg : (0 : ℝ) ≤ (n : ℝ) * H.local_time :=
+        have hnonneg : (0 : ℝ) ≤ (n : ℝ) * H.localTime :=
           mul_nonneg (Nat.cast_nonneg n) hτ.le
-        have hle : a ≤ min b (a + (n : ℝ) * H.local_time) := le_min B.lt.le (by linarith)
-        have heq : min b (a + (n : ℝ) * H.local_time) = a + (n : ℝ) * H.local_time :=
+        have hle : a ≤ min b (a + (n : ℝ) * H.localTime) := le_min B.lt.le (by linarith)
+        have heq : min b (a + (n : ℝ) * H.localTime) = a + (n : ℝ) * H.localTime :=
           rampMin_eq_right_of_lt b _ hlt
         obtain ⟨c', hsol', hramp', hagree, hcurv'⟩ :=
           H.extend (I := I) (M := Q) (D := D) (a := a) (b := b)
-            (min b (a + (n : ℝ) * H.local_time)) c c₀ hle hlt hsmooth hramp₀
+            (min b (a + (n : ℝ) * H.localTime)) c c₀ hle hlt hsmooth hramp₀
             hdat hsol hramp hcurv
-        have hnext : min b (min b (a + (n : ℝ) * H.local_time) + H.local_time) =
-            min b (a + (((n + 1 : ℕ) : ℝ)) * H.local_time) := by
+        have hnext : min b (min b (a + (n : ℝ) * H.localTime) + H.localTime) =
+            min b (a + (((n + 1 : ℕ) : ℝ)) * H.localTime) := by
           rw [heq]
           congr 1
           push_cast
           ring
-        have hle' : min b (a + (((n + 1 : ℕ) : ℝ)) * H.local_time) ≤
-            min b (a + (n : ℝ) * H.local_time) + H.local_time := by
+        have hle' : min b (a + (((n + 1 : ℕ) : ℝ)) * H.localTime) ≤
+            min b (a + (n : ℝ) * H.localTime) + H.localTime := by
           rw [← hnext]
           exact min_le_right _ _
-        have hpos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) * H.local_time :=
+        have hpos : (0 : ℝ) < ((n + 1 : ℕ) : ℝ) * H.localTime :=
           mul_pos (Nat.cast_pos.mpr (Nat.succ_pos n)) hτ
         refine ⟨c',
           ProductCurve.IsSolutionOn.mono_Icc le_rfl hle' (lt_min B.lt (by linarith)) hsol',
@@ -268,12 +268,12 @@ theorem RampSolutionExistence.of_uniformExtension
           rw [← hnext] at ht
           exact hcurv' x t ht
   obtain ⟨c, hsol, hramp, hdat, hcurv⟩ :=
-    key (Nat.ceil ((b - a) / H.local_time))
+    key (Nat.ceil ((b - a) / H.localTime))
       (Nat.succ_le_of_lt (Nat.ceil_pos.mpr (div_pos (sub_pos.mpr B.lt) hτ)))
-  have hmul : (b - a) / H.local_time ≤ (Nat.ceil ((b - a) / H.local_time) : ℝ) :=
+  have hmul : (b - a) / H.localTime ≤ (Nat.ceil ((b - a) / H.localTime) : ℝ) :=
     Nat.le_ceil _
   rw [div_le_iff₀ hτ] at hmul
-  have hmin : min b (a + (Nat.ceil ((b - a) / H.local_time) : ℝ) * H.local_time) = b :=
+  have hmin : min b (a + (Nat.ceil ((b - a) / H.localTime) : ℝ) * H.localTime) = b :=
     min_eq_left (by linarith [hmul])
   rw [hmin] at hsol hramp hcurv
   exact ⟨c, hsol, hramp, hdat, hcurv⟩

@@ -25,7 +25,7 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 private theorem rfs_whole_parent_map_staticNeckPoint_of_nonneg (b : G.ChildBoundary c)
     (z : neckCentralDomain (G.static b.1).delta) (hz : 0 ≤ z.1.1.2) :
-    K.rfs_whole_parent_map (G.staticNeckPoint c b z.1) = K.localCollapse b z := by
+    K.canonicalWholeParentMap (G.staticNeckPoint c b z.1) = K.localCollapse b z := by
   obtain ⟨x, hx⟩ := G.staticNeckPoint_mem_childCore_range c b z.1 hz
   rw [← hx, K.rfs_whole_parent_map_childCore]
   apply Subtype.ext
@@ -41,7 +41,7 @@ private theorem rfs_whole_parent_map_staticNeckPoint_of_nonneg (b : G.ChildBound
 
 private theorem rfs_whole_parent_map_staticNeckPoint_of_level_le (b : G.ChildBoundary c)
     (z : neckCentralDomain (G.static b.1).delta) (hz : K.level b ≤ z.1.1.2) :
-    K.rfs_whole_parent_map (G.staticNeckPoint c b z.1) = K.localCollapse b z := by
+    K.canonicalWholeParentMap (G.staticNeckPoint c b z.1) = K.localCollapse b z := by
   by_cases h0 : 0 ≤ z.1.1.2
   · exact K.rfs_whole_parent_map_staticNeckPoint_of_nonneg b z h0
   · let w : Sphere 2 × ↑(Icc (K.level b) 0) := ⟨z.1.1.1, z.1.1.2, hz, (not_le.mp h0).le⟩
@@ -60,7 +60,7 @@ private theorem exists_nhds_staticNeckPoint_eq_localCollapse (b : G.ChildBoundar
     {U : Set (neckCentralDomain (G.static b.1).delta)} (hU : U ∈ 𝓝 z) :
     ∃ V ∈ 𝓝 (G.staticNeckPoint c b z.1), ∀ y ∈ V,
       ∃ w ∈ U, G.staticNeckPoint c b w.1 = y ∧
-        K.rfs_whole_parent_map y = K.localCollapse b w := by
+        K.canonicalWholeParentMap y = K.localCollapse b w := by
   obtain ⟨O, Φ, hO, -, -⟩ := G.exists_diffeomorph_range_staticNeck c b
   have hopen : _root_.Topology.IsOpenEmbedding (G.staticNeckPoint c b) :=
     ⟨(G.staticNeckPoint_isSmoothEmbedding c b).isEmbedding, hO ▸ O.isOpen⟩
@@ -126,7 +126,7 @@ private theorem collar_level_notMem_core (b : G.ChildBoundary c) (y : Sphere 2) 
 private theorem rfs_whole_parent_map_eventually_eq_tip_at_collar_level
     (b : G.ChildBoundary c) (y : Sphere 2) :
     ∀ᶠ x in 𝓝 (K.collar b (y, ⟨K.level b, le_rfl, (K.level_negative b).le⟩)),
-      K.rfs_whole_parent_map x = K.tip b := by
+      K.canonicalWholeParentMap x = K.tip b := by
   classical
   let : Fintype K.support.Boundary := K.support.finiteBoundary
   let upper : Set (Sphere 2 × ↑(Icc (K.level b) 0)) :=
@@ -197,7 +197,7 @@ private theorem rfs_whole_parent_map_eventually_eq_tip_at_collar_level
 private theorem rfs_whole_parent_map_eventually_eq_tip_of_mem_exterior
     (b : G.ChildBoundary c) {x : (G.Parent c).Carrier}
     (hx : x ∈ (K.exterior.exterior (K.boundaryLabel b)).region) :
-    ∀ᶠ y in 𝓝 x, K.rfs_whole_parent_map y = K.tip b := by
+    ∀ᶠ y in 𝓝 x, K.canonicalWholeParentMap y = K.tip b := by
   by_cases hxR : x ∈ K.support.region
   · have hboundary : x ∈ (Subtype.val : K.support.region → (G.Parent c).Carrier) ''
         range (K.support.sphere (K.boundaryLabel b)) := by
@@ -213,8 +213,8 @@ private theorem rfs_whole_parent_map_eventually_eq_tip_of_mem_exterior
 private theorem rfs_whole_parent_map_locallyConstant_of_mem_exterior
     (b : G.ChildBoundary c) {x : (G.Parent c).Carrier}
     (hx : x ∈ (K.exterior.exterior (K.boundaryLabel b)).region) :
-    ∃ U ∈ 𝓝 x, ∀ y ∈ U, K.rfs_whole_parent_map y = K.rfs_whole_parent_map x := by
-  refine ⟨{y | K.rfs_whole_parent_map y = K.tip b},
+    ∃ U ∈ 𝓝 x, ∀ y ∈ U, K.canonicalWholeParentMap y = K.canonicalWholeParentMap x := by
+  refine ⟨{y | K.canonicalWholeParentMap y = K.tip b},
     K.rfs_whole_parent_map_eventually_eq_tip_of_mem_exterior b hx, ?_⟩
   intro y hy
   exact hy.trans (K.rfs_whole_parent_map_eq_tip_of_mem_exterior b hx).symm
@@ -248,7 +248,7 @@ end ComparisonSupport
 theorem local_terminal_edist_comparison_iff_local_terminal_distance_control
     (Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c) :
     G.LocalTerminalEDistComparison Kc ↔
-      ∀ c, (Kc c).LocalTerminalDistanceControl (Kc c).rfs_whole_parent_map := by
+      ∀ c, (Kc c).LocalTerminalDistanceControl (Kc c).canonicalWholeParentMap := by
   constructor
   · intro h c
     exact ComparisonSupport.localTerminalDistanceControl_of_localTerminalEDistComparison Kc h
@@ -309,7 +309,7 @@ private theorem exists_terminal_smooth_survivor_lift (x : G.transition.ChildCore
         ContMDiff ThreeModel (𝓡∂ 3) ∞ σ ∧
         (∀ y, (H.event i).oldTerminal (σ y) = y.1) ∧
         ∀ y, ∃ z : (G.Parent c).Carrier, z.1 = y.1.1 ∧
-          (H.event i).oldOutput (σ y) = (K.rfs_whole_parent_map z).1 := by
+          (H.event i).oldOutput (σ y) = (K.canonicalWholeParentMap z).1 := by
   classical
   let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
   let : IsManifold (𝓡∂ 3) ∞ (H.event i).old := (H.event i).oldSmooth
@@ -428,7 +428,7 @@ private theorem exists_nhds_terminal_edist_le_of_core_interior (x : G.transition
         ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
         ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
         riemannianEDistOf (H.event i).outputMetric
-            (K.rfs_whole_parent_map y).1 (K.rfs_whole_parent_map z).1 ≤
+            (K.canonicalWholeParentMap y).1 (K.canonicalWholeParentMap z).1 ≤
           riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩ := by
   classical
   let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
@@ -486,7 +486,7 @@ private theorem exists_nhds_terminal_edist_le_of_level_lt (b : G.ChildBoundary c
         ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
         ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
         riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-            (K.rfs_whole_parent_map y) (K.rfs_whole_parent_map z) ≤
+            (K.canonicalWholeParentMap y) (K.canonicalWholeParentMap z) ≤
           riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩ := by
   obtain ⟨V, hV, hdist⟩ :=
     (G.static b.1).witness.exists_mem_nhds_collapse_riemannianEDistOf_le p
@@ -523,7 +523,7 @@ private theorem exists_nhds_terminal_edist_le_at_collar_level (b : G.ChildBounda
         ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
         ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
         riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-            (K.rfs_whole_parent_map y) (K.rfs_whole_parent_map z) ≤
+            (K.canonicalWholeParentMap y) (K.canonicalWholeParentMap z) ≤
           riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩ := by
   let x := K.collar b (p, ⟨K.level b, le_rfl, (K.level_negative b).le⟩)
   have hboundary : x ∈ (Subtype.val : K.support.region → (G.Parent c).Carrier) ''
@@ -561,7 +561,7 @@ private theorem exists_nhds_terminal_edist_le_on_collar (b : G.ChildBoundary c)
         ∀ hy : y.1 ∈ (H.event i).incoming.terminalRegularRegion,
         ∀ hz : z.1 ∈ (H.event i).incoming.terminalRegularRegion,
         riemannianEDistOf ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-            (K.rfs_whole_parent_map y) (K.rfs_whole_parent_map z) ≤
+            (K.canonicalWholeParentMap y) (K.canonicalWholeParentMap z) ≤
           riemannianEDistOf (H.event i).terminal.metric ⟨y.1, hy⟩ ⟨z.1, hz⟩ := by
   rcases lt_or_eq_of_le p.2.2.1 with hp | hp
   · have hpoint : G.staticNeckPoint c b (K.collarParameter b p).1 = K.collar b p := by
@@ -587,7 +587,7 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 theorem ComparisonSupport.rfs_whole_parent_map_localTerminalDistanceControl
     {c : ConnectedComponents (H.stage i.succ).Carrier} (K : G.ComparisonSupport c) :
-    K.LocalTerminalDistanceControl K.rfs_whole_parent_map := by
+    K.LocalTerminalDistanceControl K.canonicalWholeParentMap := by
   intro x hx
   obtain (⟨y, hy, rfl⟩ | ⟨b, p, rfl⟩) := K.mem_interior_childCore_range_or_collar x hx
   · exact K.exists_nhds_terminal_edist_le_of_core_interior y hy

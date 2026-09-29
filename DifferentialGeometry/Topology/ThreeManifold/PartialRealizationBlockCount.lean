@@ -554,7 +554,7 @@ theorem hasBlockPresentation_twoVertexEmpty (N N' : ConnectedClosedOrientedManif
         finiteConnectedSum_singleton]
       rfl
     rw [hb]
-    exact ⟨(ClosedOrientedManifold.sumComponentInl_orientedDiffeomorph
+    exact ⟨(ClosedOrientedManifold.sumComponentInlOrientedDiffeomorph
         (Y := N'.toClosedOrientedManifold) y.1).trans
       (ClosedOrientedManifold.componentOrientedDiffeomorph N.toClosedOrientedManifold
         (ConnectedComponents.mk y.1))⟩
@@ -565,7 +565,7 @@ theorem hasBlockPresentation_twoVertexEmpty (N N' : ConnectedClosedOrientedManif
         finiteConnectedSum_singleton]
       rfl
     rw [hb]
-    exact ⟨(ClosedOrientedManifold.sumComponentInr_orientedDiffeomorph
+    exact ⟨(ClosedOrientedManifold.sumComponentInrOrientedDiffeomorph
         (X := N.toClosedOrientedManifold) y.1).trans
       (ClosedOrientedManifold.componentOrientedDiffeomorph N'.toClosedOrientedManifold
         (ConnectedComponents.mk y.1))⟩

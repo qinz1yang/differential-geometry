@@ -139,7 +139,7 @@ theorem exists_window_spatialCanonicalWitness_of_standard_close {ε : ℝ} (hε 
       (RealTimeInterval.closed 0 T hT0) S hS δ₀ o z T le_rfl hwin hOW
     have h1 : Cold ≤ max Cold (1000 * Cs) := le_max_left _ _
     have h2 : Cold ≤ C2 := h1.trans hC2
-    exact ⟨((B.canonicalWitness_mono B.tolerance_lt.le hε').enlarge_constants h1 h2).toSpatial,
+    exact ⟨((B.canonicalWitnessMono B.tolerance_lt.le hε').enlargeConstants h1 h2).toSpatial,
       CanonicalWitness.capTubeHasNeckChart_toSpatial
         ((hB.mono_eps B.tolerance_lt.le hε').enlarge_constants h1 h2)⟩
   · have hTy : T ∈ Icc 0 Θ₃ := ⟨hT0, (not_le.mp hold).le⟩

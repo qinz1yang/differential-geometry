@@ -16,7 +16,7 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_approximate_pair_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ outer : ℕ, ∃ (target middle : ℕ) (D : ℝ),
+      H₀ ≤ H.collarDepth → ∀ outer : ℕ, ∃ (target middle : ℕ) (D : ℝ),
         0 < D ∧ closure (H.subend target) ⊆ H.subend middle ∧
         closure (H.subend middle) ⊆ H.subend outer ∧
         (∀ x : W, dist (x : UniformSpace.Completion W) H.endpoint < D → x ∈ H.subend target) ∧

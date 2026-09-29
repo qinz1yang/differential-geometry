@@ -46,7 +46,7 @@ theorem chartMap_of_boundedGeometryNormalChartData
      letI : ChartedSpace H (X.obj k).M := (X.obj k).charted
      letI : IsManifold I ∞ (X.obj k).M := (X.obj k).smooth
      letI : T2Space (TangentBundle I (X.obj k).M) := (X.obj k).t2TangentBundle
-     (of_boundedGeometryNormalChartData (I := I) d).chartMap k x = d.chartMap k x) :=
+     (ofBoundedGeometryNormalChartData (I := I) d).chartMap k x = d.chartMap k x) :=
   rfl
 
 omit [CompleteSpace E] in

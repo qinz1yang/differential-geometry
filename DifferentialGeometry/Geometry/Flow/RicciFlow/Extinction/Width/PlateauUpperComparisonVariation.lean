@@ -59,28 +59,28 @@ theorem SmoothDisk.hasDerivAt_transportedArea_isotopy_flux
   let u' : C(Metric.closedBall (0 : ℂ) 1, c.Q) :=
     ⟨fun z => U' (z : ℂ), (hU'sm.mono hDN).continuousOn.domRestrict⟩
   have hExt' : Geometry.SmoothDiskExtension (E := E) u' U' := ⟨fun _ => rfl, N, hN, hDN, hU'sm⟩
-  have hu'eq : ∀ z : Disk, U' (z : ℂ) = (SmoothDisk.comp_diffeomorph φ u).map z := by
+  have hu'eq : ∀ z : Disk, U' (z : ℂ) = (SmoothDisk.compDiffeomorph φ u).map z := by
     intro z
     simp only [U', SmoothDisk.comp_diffeomorph_map]
     rw [hUeq z]
-  have hw : Geometry.SmoothDiskExtension (E := E) (SmoothDisk.comp_diffeomorph φ u).map U' :=
+  have hw : Geometry.SmoothDiskExtension (E := E) (SmoothDisk.compDiffeomorph φ u).map U' :=
     ⟨fun z => (hu'eq z).symm ▸ rfl, N, hN, hDN, hU'sm⟩
-  have hwconf : (SmoothDisk.comp_diffeomorph φ u).IsConformal (g' t₀) :=
+  have hwconf : (SmoothDisk.compDiffeomorph φ u).IsConformal (g' t₀) :=
     SmoothDisk.isConformal_comp_diffeomorph φ (g t₀) u hconf
   have hconf' : ∀ z ∈ Metric.closedBall (0 : ℂ) 1, DiskMapConformalAt (g' t₀) U' z :=
-    (SmoothDisk.isConformal_iff_diskMapConformalAt (SmoothDisk.comp_diffeomorph φ u)
+    (SmoothDisk.isConformal_iff_diskMapConformalAt (SmoothDisk.compDiffeomorph φ u)
       (g' t₀) hw).mp hwconf
-  have hwharm : (SmoothDisk.comp_diffeomorph φ u).IsHarmonic (g' t₀) :=
+  have hwharm : (SmoothDisk.compDiffeomorph φ u).IsHarmonic (g' t₀) :=
     SmoothDisk.isHarmonic_comp_diffeomorph φ (g t₀) u hharm
   have hharm' : ∀ z ∈ Metric.ball (0 : ℂ) 1, diskMapTension (g' t₀) U' z = 0 := by
     intro z hz
-    have h1 : (diskMapTension (g' t₀) (diskExtension (SmoothDisk.comp_diffeomorph φ u).map) z : E)
+    have h1 : (diskMapTension (g' t₀) (diskExtension (SmoothDisk.compDiffeomorph φ u).map) z : E)
         = 0 :=
       SmoothDisk.diskMapTension_eq_zero_of_isHarmonic_interior
-        (SmoothDisk.comp_diffeomorph φ u) (g' t₀) hwharm hz
+        (SmoothDisk.compDiffeomorph φ u) (g' t₀) hwharm hz
     have hmem : Metric.closedBall (0 : ℂ) 1 ∈ 𝓝 z :=
       Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall
-    have hgerm : (diskExtension (SmoothDisk.comp_diffeomorph φ u).map) =ᶠ[𝓝 z] U' := by
+    have hgerm : (diskExtension (SmoothDisk.compDiffeomorph φ u).map) =ᶠ[𝓝 z] U' := by
       filter_upwards [hmem] with w hw'
       rw [diskExtension_coe _ ⟨w, hw'⟩]
       exact (hu'eq ⟨w, hw'⟩).symm
@@ -183,14 +183,14 @@ theorem SmoothDisk.hasDerivAt_transportedArea_isotopy_flux
         (mfderiv I 𝓘(ℝ, E) (⇑φ) (u.map z)) (u.inwardConormal (g t₀) z) := by
       rw [← hz]
       exact (SmoothDisk.inwardConormal_eq_diskMapInwardConormal (E := E) (Q := c.Q)
-          (SmoothDisk.comp_diffeomorph φ u) (g' t₀) hw z).symm.trans
+          (SmoothDisk.compDiffeomorph φ u) (g' t₀) hw z).symm.trans
         (SmoothDisk.inwardConormal_comp_diffeomorph (E := E) (A := c.Q) φ (g t₀) u z)
     have hspeed : u.boundarySpeed (g t₀) x =
         Real.sqrt (diskMapConformalCoefficient (g' t₀) U' ζ) * (2 * Real.pi) := by
       rw [← SmoothDisk.boundarySpeed_comp_diffeomorph (E := E) (A := c.Q) φ (g t₀) u x]
       rw [mul_comm]
       exact SmoothDisk.boundarySpeed_eq_diskMapConformalCoefficient (E := E) (Q := c.Q)
-        (SmoothDisk.comp_diffeomorph φ u) (g' t₀) hw x hconfz
+        (SmoothDisk.compDiffeomorph φ u) (g' t₀) hw x hconfz
     have hV : (u.isotopyVelocity Phi T t₀ hid) z =
         mfderiv 𝓘(ℝ, ℝ) I (fun r : ℝ => Phi r (u.map z)) t₀ 1 := by
       change mfderivWithin 𝓘(ℝ, ℝ) I (fun r : ℝ => Phi r (u.map z)) T t₀ 1 = _
@@ -452,28 +452,28 @@ theorem SmoothDisk.hasDerivWithinAt_transportedArea_isotopy_flux_on_Icc
   let u' : C(Metric.closedBall (0 : ℂ) 1, c.Q) :=
     ⟨fun z => U' (z : ℂ), (hU'sm.mono hDN).continuousOn.domRestrict⟩
   have hExt' : Geometry.SmoothDiskExtension (E := E) u' U' := ⟨fun _ => rfl, N, hN, hDN, hU'sm⟩
-  have hu'eq : ∀ z : Disk, U' (z : ℂ) = (SmoothDisk.comp_diffeomorph φ u).map z := by
+  have hu'eq : ∀ z : Disk, U' (z : ℂ) = (SmoothDisk.compDiffeomorph φ u).map z := by
     intro z
     simp only [U', SmoothDisk.comp_diffeomorph_map]
     rw [hUeq z]
-  have hw : Geometry.SmoothDiskExtension (E := E) (SmoothDisk.comp_diffeomorph φ u).map U' :=
+  have hw : Geometry.SmoothDiskExtension (E := E) (SmoothDisk.compDiffeomorph φ u).map U' :=
     ⟨fun z => (hu'eq z).symm ▸ rfl, N, hN, hDN, hU'sm⟩
-  have hwconf : (SmoothDisk.comp_diffeomorph φ u).IsConformal (g' t₀) :=
+  have hwconf : (SmoothDisk.compDiffeomorph φ u).IsConformal (g' t₀) :=
     SmoothDisk.isConformal_comp_diffeomorph φ (g t₀) u hconf
   have hconf' : ∀ z ∈ Metric.closedBall (0 : ℂ) 1, DiskMapConformalAt (g' t₀) U' z :=
-    (SmoothDisk.isConformal_iff_diskMapConformalAt (SmoothDisk.comp_diffeomorph φ u)
+    (SmoothDisk.isConformal_iff_diskMapConformalAt (SmoothDisk.compDiffeomorph φ u)
       (g' t₀) hw).mp hwconf
-  have hwharm : (SmoothDisk.comp_diffeomorph φ u).IsHarmonic (g' t₀) :=
+  have hwharm : (SmoothDisk.compDiffeomorph φ u).IsHarmonic (g' t₀) :=
     SmoothDisk.isHarmonic_comp_diffeomorph φ (g t₀) u hharm
   have hharm' : ∀ z ∈ Metric.ball (0 : ℂ) 1, diskMapTension (g' t₀) U' z = 0 := by
     intro z hz
-    have h1 : (diskMapTension (g' t₀) (diskExtension (SmoothDisk.comp_diffeomorph φ u).map) z : E)
+    have h1 : (diskMapTension (g' t₀) (diskExtension (SmoothDisk.compDiffeomorph φ u).map) z : E)
         = 0 :=
       SmoothDisk.diskMapTension_eq_zero_of_isHarmonic_interior
-        (SmoothDisk.comp_diffeomorph φ u) (g' t₀) hwharm hz
+        (SmoothDisk.compDiffeomorph φ u) (g' t₀) hwharm hz
     have hmem : Metric.closedBall (0 : ℂ) 1 ∈ 𝓝 z :=
       Filter.mem_of_superset (Metric.isOpen_ball.mem_nhds hz) Metric.ball_subset_closedBall
-    have hgerm : (diskExtension (SmoothDisk.comp_diffeomorph φ u).map) =ᶠ[𝓝 z] U' := by
+    have hgerm : (diskExtension (SmoothDisk.compDiffeomorph φ u).map) =ᶠ[𝓝 z] U' := by
       filter_upwards [hmem] with w hw'
       rw [diskExtension_coe _ ⟨w, hw'⟩]
       exact (hu'eq ⟨w, hw'⟩).symm
@@ -576,14 +576,14 @@ theorem SmoothDisk.hasDerivWithinAt_transportedArea_isotopy_flux_on_Icc
         (mfderiv I 𝓘(ℝ, E) (⇑φ) (u.map z)) (u.inwardConormal (g t₀) z) := by
       rw [← hz]
       exact (SmoothDisk.inwardConormal_eq_diskMapInwardConormal (E := E) (Q := c.Q)
-          (SmoothDisk.comp_diffeomorph φ u) (g' t₀) hw z).symm.trans
+          (SmoothDisk.compDiffeomorph φ u) (g' t₀) hw z).symm.trans
         (SmoothDisk.inwardConormal_comp_diffeomorph (E := E) (A := c.Q) φ (g t₀) u z)
     have hspeed : u.boundarySpeed (g t₀) x =
         Real.sqrt (diskMapConformalCoefficient (g' t₀) U' ζ) * (2 * Real.pi) := by
       rw [← SmoothDisk.boundarySpeed_comp_diffeomorph (E := E) (A := c.Q) φ (g t₀) u x]
       rw [mul_comm]
       exact SmoothDisk.boundarySpeed_eq_diskMapConformalCoefficient (E := E) (Q := c.Q)
-        (SmoothDisk.comp_diffeomorph φ u) (g' t₀) hw x hconfz
+        (SmoothDisk.compDiffeomorph φ u) (g' t₀) hw x hconfz
     have hV : (u.isotopyVelocity Phi (Icc a b) t₀ hid) z =
         mfderivWithin 𝓘(ℝ, ℝ) I (fun r : ℝ => Phi r (u.map z)) (Icc a b) t₀ 1 := rfl
     have hpair : (g' t₀).inner (U' ζ)

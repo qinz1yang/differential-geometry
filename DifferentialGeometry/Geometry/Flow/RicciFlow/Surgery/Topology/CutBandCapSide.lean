@@ -205,7 +205,7 @@ theorem exists_capCore_in_cutCore_of_spatialNeck_center_close
     apply nk.isSmoothEmbedding_level
     cases side <;> simpa only [boundaryLevel, Bool.false_eq_true, ite_false, ite_true,
       abs_neg, abs_one] using hsmall
-  exact T.exists_capCore_in_cutCore_of_boundary_spheres_subset a cap.core_model hsmooth
+  exact T.exists_capCore_in_cutCore_of_boundary_spheres_subset a cap.coreModel hsmooth
     (T.central_and_boundary_spheres_subset_of_closedBand_subset a hinside).2 hanchor
 
 omit [ChartedSpace ThreeSpace M] [T2Space M] in

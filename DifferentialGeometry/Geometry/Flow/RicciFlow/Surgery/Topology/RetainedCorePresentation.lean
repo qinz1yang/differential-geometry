@@ -321,7 +321,7 @@ theorem toSurgeryFiniteSurgeryHistory_poincareControlled_iff {H : ObservedHistor
       IsSmoothEmbedding (𝓡∂ 3) ThreeModel ∞
         (fun x : (H.event i).old =>
           (H.event i).transition.trace.capping.coreInclusion x.1)) :
-    (H.toSurgeryFiniteSurgeryHistory_of_cutCapCompletion hn hc hout).poincareControlled ↔
+    (H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout).poincareControlled ↔
       ∀ i : Fin H.eventCount, (H.event i).poincareStandardDiscarded :=
   Iff.rfl
 

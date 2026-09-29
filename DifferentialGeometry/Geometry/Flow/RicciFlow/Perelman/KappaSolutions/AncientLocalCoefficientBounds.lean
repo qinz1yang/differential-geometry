@@ -16,7 +16,7 @@ open CanonicalNeighborhood
 open scoped _root_.Manifold ContDiff _root_.Topology
 
 private theorem continuousOn_of_uniform_time_sequences
-    {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [LocallyCompactSpace E]
+    {E F : Type*} [NormedAddCommGroup E] [LocallyCompactSpace E]
     [NormedAddCommGroup F] {U : Set E} (hU : IsOpen U) {J : Set ℝ}
     {f : ℝ → E → F}
     (hspace : ∀ t ∈ J, ContinuousOn (f t) U)

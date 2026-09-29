@@ -402,7 +402,10 @@ noncomputable def unitFillingOfSphereChartIso :
 
 @[simp]
 theorem unitFillingOfSphereChartIso_fill (q : d.toBallChart.Punctured) :
-    (unitFillingOfSphereChartIso A P d hd c).fill q
+    @DFunLike.coe
+      (BallChart.Punctured (M := ULift.{u} SphereUnitFilling.S3) d.toBallChart ≃ₜ
+        {x : M.Carrier // x ∈ BallImage c}) _ _ _
+      (unitFillingOfSphereChartIso A P d hd c).fill q
       = (SphereUnitFilling.capFillIso A P c.toBallChart)
         ((BallChart.puncturedHomeomorphOfImage d.toBallChart
           (SphereUnitFilling.sphereBallChart P) uliftSphereHomeomorph
@@ -788,8 +791,8 @@ open DifferentialGeometry.Topology.SphereUnitFilling (E3)
 
 noncomputable def compPartialDiffeomorph
     {M : Type*} {N : Type*} [TopologicalSpace M]
-    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M]
-    [TopologicalSpace N] [ChartedSpace E3 N] [IsManifold (𝓡 3) ∞ N]
+    [ChartedSpace E3 M]
+    [TopologicalSpace N] [ChartedSpace E3 N]
     (φ : PartialDiffeomorph 𝓘(ℝ, E3) (𝓡 3)
       E3 M ∞)
     (Φ : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) :
@@ -824,8 +827,8 @@ noncomputable def compPartialDiffeomorph
 @[simp]
 lemma compPartialDiffeomorph_apply
     {M : Type*} {N : Type*} [TopologicalSpace M]
-    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M]
-    [TopologicalSpace N] [ChartedSpace E3 N] [IsManifold (𝓡 3) ∞ N]
+    [ChartedSpace E3 M]
+    [TopologicalSpace N] [ChartedSpace E3 N]
     (φ : PartialDiffeomorph 𝓘(ℝ, E3) (𝓡 3)
       E3 M ∞)
     (Φ : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) (u : E3) :
@@ -833,8 +836,8 @@ lemma compPartialDiffeomorph_apply
 
 lemma compPartialDiffeomorph_source
     {M : Type*} {N : Type*} [TopologicalSpace M]
-    [ChartedSpace E3 M] [IsManifold (𝓡 3) ∞ M]
-    [TopologicalSpace N] [ChartedSpace E3 N] [IsManifold (𝓡 3) ∞ N]
+    [ChartedSpace E3 M]
+    [TopologicalSpace N] [ChartedSpace E3 N]
     (φ : PartialDiffeomorph 𝓘(ℝ, E3) (𝓡 3)
       E3 M ∞)
     (Φ : M ≃ₘ⟮𝓡 3, 𝓡 3⟯ N) :

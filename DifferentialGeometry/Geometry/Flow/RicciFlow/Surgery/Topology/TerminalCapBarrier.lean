@@ -62,13 +62,13 @@ theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck
     (cap : LocalCap G.flow eps x.val t U) (hU : U ⊆ G.terminalRegularRegion)
     {δ : ℝ} {k : ℕ} (N : NormalizedNeck L.metric δ k)
     (hδ : δ < 1 / 102) (hk : 2 ≤ k)
-    (hmap : ∀ z : neckBuffer δ, (N.chart z).val = cap.tube_map z.val) :
+    (hmap : ∀ z : neckBuffer δ, (N.chart z).val = cap.tubeMap z.val) :
     ∃ (K : CompactDomain G.terminalRegularOpen) (e : Sphere 2 → G.terminalRegularOpen),
       Subtype.val '' K.carrier = cap.core.carrier ∪
-        cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+        cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       x ∈ interior K.carrier ∧ K.carrier ⊆ Subtype.val ⁻¹' U ∧
       frontier K.carrier = range e ∧ IsSmoothEmbedding I2 I3 ∞ e ∧
-      (∀ q, (e q).val = cap.tube_map (q, 1 / 2)) ∧
+      (∀ q, (e q).val = cap.tubeMap (q, 1 / 2)) ∧
       (∀ q (hq : (q, (1 / 2 : ℝ)) ∈ neckBuffer δ), e q = N.chart ⟨(q, 1 / 2), hq⟩) ∧
       (∀ z : neckBuffer δ, z.val.2 ∈ Icc (-101 : ℝ) 101 →
         |metricScalarAt L.metric (N.chart z) / N.scale - 1| ≤ 4323 * δ) ∧
@@ -80,7 +80,7 @@ theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck
         ∀ q : Sphere 2 × symmetricOpenInterval c.radius,
           (∃ hz : (q.1, 1 / 2 + (q.2 : ℝ)) ∈ neckBuffer δ,
             c.toFun q = N.chart ⟨(q.1, 1 / 2 + (q.2 : ℝ)), hz⟩) ∧
-          (c.toFun q).val = cap.tube_map (q.1, 1 / 2 + (q.2 : ℝ)) ∧
+          (c.toFun q).val = cap.tubeMap (q.1, 1 / 2 + (q.2 : ℝ)) ∧
             (c.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0) := by
   have hlen : (102 : ℝ) < δ⁻¹ :=
     (lt_inv_comm₀ (by norm_num) N.delta_pos).mpr (by simpa only [one_div] using hδ)
@@ -88,13 +88,13 @@ theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck
     constructor <;> linarith
   let e : Sphere 2 → G.terminalRegularOpen := fun q =>
     (N.cylindricalChart.chart ⟨(q, 1 / 2), hmid q⟩ : G.terminalRegularOpen)
-  have he (q : Sphere 2) : (e q).val = cap.tube_map (q, 1 / 2) :=
+  have he (q : Sphere 2) : (e q).val = cap.tubeMap (q, 1 / 2) :=
     (congrArg Subtype.val (N.cylindricalChart_chart_apply _)).trans (hmap _)
   obtain ⟨K₀, hK₀, hx₀, hK₀U, hfront₀⟩ :=
     cap.exists_truncated_compactDomain (by norm_num : (1 / 2 : ℝ) ∈ Ioo 0 1)
   let K := K₀.restrictOpen G.terminalRegularOpen (hK₀U.trans hU)
   have hK : Subtype.val '' K.carrier = cap.core.carrier ∪
-      cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) :=
+      cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) :=
     (K₀.image_restrictOpen_carrier _ _).trans hK₀
   have hxK : x ∈ interior K.carrier := by
     change x ∈ interior (K₀.restrictOpen G.terminalRegularOpen _).carrier
@@ -155,7 +155,7 @@ theorem TerminalLimitMetric.exists_cap_midpoint_region_of_normalizedNeck
     constructor <;> linarith [hz.1, hz.2]
   · intro q
     obtain ⟨hz, hq⟩ := hcoord' q
-    have hpoint : (c'.toFun q).val = cap.tube_map (q.1, 1 / 2 + (q.2 : ℝ)) :=
+    have hpoint : (c'.toFun q).val = cap.tubeMap (q.1, 1 / 2 + (q.2 : ℝ)) :=
       (congrArg Subtype.val hq).trans (hmap _)
     refine ⟨⟨hz, hq⟩, hpoint, ?_⟩
     change (c'.toFun q).val ∈ K₀.carrier ↔ _
@@ -182,7 +182,7 @@ theorem TerminalLimitMetric.eventually_cap_midpoint_region
     ∀ᶠ n in Filter.atTop, ∃ (N : NormalizedNeck L.metric δ k)
       (K : CompactDomain G.terminalRegularOpen) (e : Sphere 2 → G.terminalRegularOpen),
       Subtype.val '' K.carrier = (cap n).core.carrier ∪
-        (cap n).tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+        (cap n).tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       x ∈ interior K.carrier ∧ K.carrier ⊆ Subtype.val ⁻¹' (W n).domain.carrier ∧
       (∀ y ∈ K.carrier, metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric y ∧
         metricScalarAt L.metric y < 2 * C2 * metricScalarAt L.metric x) ∧
@@ -190,7 +190,7 @@ theorem TerminalLimitMetric.eventually_cap_midpoint_region
         metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric (N.chart z) ∧
           metricScalarAt L.metric (N.chart z) < 2 * C2 * metricScalarAt L.metric x) ∧
       frontier K.carrier = range e ∧ IsSmoothEmbedding I2 I3 ∞ e ∧
-      (∀ q, (e q).val = (cap n).tube_map (q, 1 / 2)) ∧
+      (∀ q, (e q).val = (cap n).tubeMap (q, 1 / 2)) ∧
       (∀ q (hq : (q, (1 / 2 : ℝ)) ∈ neckBuffer δ), e q = N.chart ⟨(q, 1 / 2), hq⟩) ∧
       (∀ z : neckBuffer δ, z.val.2 ∈ Icc (-101 : ℝ) 101 →
         |metricScalarAt L.metric (N.chart z) / N.scale - 1| ≤ 4323 * δ) ∧
@@ -202,7 +202,7 @@ theorem TerminalLimitMetric.eventually_cap_midpoint_region
         ∀ q : Sphere 2 × symmetricOpenInterval c.radius,
           (∃ hz : (q.1, 1 / 2 + (q.2 : ℝ)) ∈ neckBuffer δ,
             c.toFun q = N.chart ⟨(q.1, 1 / 2 + (q.2 : ℝ)), hz⟩) ∧
-          (c.toFun q).val = (cap n).tube_map (q.1, 1 / 2 + (q.2 : ℝ)) ∧
+          (c.toFun q).val = (cap n).tubeMap (q.1, 1 / 2 + (q.2 : ℝ)) ∧
             (c.toFun q ∈ K.carrier ↔ (q.2 : ℝ) ≤ 0) := by
   obtain ⟨K₀, hK₀, v, neck, _, _, hcapture⟩ :=
     L.eventually_cap_neck_compact_capture hτ x W hW cap depth hcap
@@ -216,7 +216,7 @@ theorem TerminalLimitMetric.eventually_cap_midpoint_region
     intro y hy
     obtain ⟨z, _, he⟩ := hcn (Or.inl hy)
     exact he ▸ z.property
-  have hNcap : ∀ z : neckBuffer δ, (N.chart z).val = (cap n).tube_map z.val :=
+  have hNcap : ∀ z : neckBuffer δ, (N.chart z).val = (cap n).tubeMap z.val :=
     fun z => (hNmap z).trans (hmap z.val).symm
   obtain ⟨K, e, hK, hxK, hKU, hfront, hemb, heold, heN, hscalar, hmetric, hdomain, hc⟩ :=
     L.exists_cap_midpoint_region_of_normalizedNeck

@@ -56,6 +56,12 @@ def sphereMappingTorusDescend (D : SphereMappingTorusIsotopy) :
     | symm x y hxy ih => exact ih.symm
     | trans x y z hxy hyz ihxy ihyz => exact ihxy.trans ihyz
 
+@[simp]
+theorem sphereMappingTorusDescend_mk (D : SphereMappingTorusIsotopy)
+    (p : SphereTwo × Set.Icc (0 : ℝ) 1) :
+    sphereMappingTorusDescend D (Quotient.mk _ p) =
+      (D.isotopy (p.2 : ℝ) p.1, ((p.2 : ℝ) : AddCircle (1 : ℝ))) := rfl
+
 theorem continuous_sphereMappingTorusDescend (D : SphereMappingTorusIsotopy) :
     Continuous (sphereMappingTorusDescend D) :=
   Continuous.quotient_lift (continuous_sphereMappingTorusToCircle D) _
@@ -144,13 +150,11 @@ theorem sphereMappingTorusHomeomorph_apply (D : SphereMappingTorusIsotopy)
     (x : SphereMappingTorus D.target) :
     sphereMappingTorusHomeomorph D x = sphereMappingTorusDescend D x := rfl
 
-@[simp]
 theorem sphereMappingTorusHomeomorph_mk (D : SphereMappingTorusIsotopy)
     (p : SphereTwo × Set.Icc (0 : ℝ) 1) :
     sphereMappingTorusHomeomorph D (Quotient.mk _ p) =
       (D.isotopy (p.2 : ℝ) p.1, ((p.2 : ℝ) : AddCircle (1 : ℝ))) := by
-  rw [sphereMappingTorusHomeomorph_apply, sphereMappingTorusDescend, Quotient.lift_mk]
-  rfl
+  rw [sphereMappingTorusHomeomorph_apply, sphereMappingTorusDescend_mk]
 
 def addCircleOneHomeomorphSphereOne :
     AddCircle (1 : ℝ) ≃ₜ Metric.sphere (0 : EuclideanSpace ℝ (Fin 2)) 1 :=

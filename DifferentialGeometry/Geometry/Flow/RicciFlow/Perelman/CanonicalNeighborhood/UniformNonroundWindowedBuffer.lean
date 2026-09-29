@@ -81,8 +81,8 @@ theorem exists_universal_nonround_windowed_buffer_constant_with_cap_neck_charts
   obtain ⟨i, hi, hCi⟩ := (hbuffer.and hlarge).exists
   obtain ⟨B, hB⟩ := hi
   apply hfail (phi i)
-  refine ⟨B.enlarge_constants hCi, ?_⟩
-  change (B.witness.enlarge_constants hCi.le hCi.le).capTubeHasNeckChart alpha
+  refine ⟨B.enlargeConstants hCi, ?_⟩
+  change (B.witness.enlargeConstants hCi.le hCi.le).capTubeHasNeckChart alpha
   exact hB.enlarge_constants hCi.le hCi.le
 
 theorem exists_universal_nonround_windowed_buffer_constant
@@ -150,7 +150,7 @@ theorem exists_universal_nonround_windowed_canonicalWitness
   refine ⟨C, C, hC, hC, fun kappa => ⟨delta, hd, hd1, ?_⟩⟩
   intro M _ _ _ _ _ D S hS x t W hreg hnc orient
   obtain ⟨B⟩ := hmain kappa M D S hS delta x t W le_rfl hreg hnc orient
-  exact ⟨B.canonicalWitness_mono B.tolerance_lt.le hsmall⟩
+  exact ⟨B.canonicalWitnessMono B.tolerance_lt.le hsmall⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn
 

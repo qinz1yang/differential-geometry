@@ -429,7 +429,7 @@ theorem jet_zero_eq_metric_difference {h : ℝ → SmoothRiemannianMetric J N}
   rw [hjet, hpull, hcross]
 
 
-def TransportedErrorTower.ofPullbackCross_of_close
+def TransportedErrorTower.ofPullbackCrossOfClose
     {k : ℝ → SmoothRiemannianMetric I3 P} {g : ℝ → SmoothRiemannianMetric I3 M} {F : P → M}
     {V : Set P} {times : Set ℝ} {order' : ℕ} {eps : ℝ}
     (c : MetricComparisonOn k g F V times order' eps)
@@ -545,7 +545,7 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifo
   [T2Space P] [SigmaCompactSpace P]
 
 
-def StrongNeck.transport_of_comparisons {Dm : RealTimeInterval}
+def StrongNeck.transportOfComparisons {Dm : RealTimeInterval}
     {Sm : SolutionOn (I := I3) (M := P) Dm} {p : P} {D : RealTimeInterval}
     {S : SolutionOn (I := I3) (M := M) D} {x : M} {t : ℝ} {alpha eps : ℝ} {V : Set P}
     {order' : ℕ}
@@ -588,13 +588,13 @@ def StrongNeck.transport_of_comparisons {Dm : RealTimeInterval}
     rw [hPhi y]
     exact hcore y hy
   exact StrongNeck.transport nk hQ Fmap cmp
-    (TransportedErrorTower.ofPullbackCross_of_close cmp nk.cylinder.metric Phi
+    (TransportedErrorTower.ofPullbackCrossOfClose cmp nk.cylinder.metric Phi
       (nk.map : Cylinder → P) (fun y => (hPhi y).symm)
       (nk.comparison.mono hsub horder2 le_rfl) hUopen hV horder heps ha halpha' hdiff)
     hsmall hKeps hbase hcore hVsource htime hjet
 
 
-def SpatialNeck.transport_of_comparisons {gm : SmoothRiemannianMetric I3 P} {p : P}
+def SpatialNeck.transportOfComparisons {gm : SmoothRiemannianMetric I3 P} {p : P}
     {g : SmoothRiemannianMetric I3 M} {x : M} {alpha eps : ℝ} {V : Set P} {order' : ℕ}
     (nk : SpatialNeck gm alpha p) (hQ : 0 < metricScalarAt g x)
     (Fmap : PartialDiffeomorph I3 I3 P M ∞)
@@ -623,7 +623,7 @@ def SpatialNeck.transport_of_comparisons {gm : SmoothRiemannianMetric I3 P} {p :
     rw [hPhi y]
     exact hcore y hy
   exact SpatialNeck.transport nk hQ Fmap cmp
-    (TransportedErrorTower.ofPullbackCross_of_close cmp (fun _ => nk.cylinder.metric 0) Phi
+    (TransportedErrorTower.ofPullbackCrossOfClose cmp (fun _ => nk.cylinder.metric 0) Phi
       (nk.map : Cylinder → P) (fun y => (hPhi y).symm)
       (nk.comparison.mono hsub horder2 le_rfl) hUopen hV horder heps ha halpha'
       (fun _ _ _ _ _ _ _ => DifferentiableWithinAt.singleton))

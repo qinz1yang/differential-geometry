@@ -52,7 +52,7 @@ def LocalLengthComparison
           (G.transition.childParent c)) γ a b ≠ ⊤ →
         riemannianCurveLength
           ((H.stage i.succ).componentMetric (H.event i).outputMetric c)
-          (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+          (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
         ENNReal.ofReal (ell s) * riemannianCurveLength
           ((H.stage i.castSucc).componentMetric
             ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b
@@ -62,7 +62,7 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
     (hlocal : G.LocalLengthComparison Kc) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, f c = (Kc c).rfs_whole_parent_map) ∧
+      (∀ c, f c = (Kc c).canonicalWholeParentMap) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
         Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧
@@ -72,7 +72,7 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
             riemannianEDistOf ((H.stage i.castSucc).componentMetric
               ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) x y := by
   obtain ⟨s₀, hs₀, ell, hell, htend, hloc⟩ := hlocal
-  refine ⟨fun c => (Kc c).rfs_whole_parent_map, fun c => rfl, s₀, hs₀, ell, hell, htend, ?_⟩
+  refine ⟨fun c => (Kc c).canonicalWholeParentMap, fun c => rfl, s₀, hs₀, ell, hell, htend, ?_⟩
   intro c s hs x y
   let gs : SmoothRiemannianMetric ThreeModel (G.Parent c).Carrier :=
     (H.stage i.castSucc).componentMetric ((H.event i).incoming.flow.base.metric s)
@@ -84,7 +84,7 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
       ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
         a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
         riemannianCurveLength gs γ a b ≠ ⊤ →
-        riemannianCurveLength hc (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+        riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
           ENNReal.ofReal (ell s) * riemannianCurveLength gs γ a b := by
     intro x
     by_cases hx : x ∈ (Kc c).support.region
@@ -92,12 +92,12 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
       exact ⟨U, hU, hU'⟩
     · obtain ⟨U, hU, hconst⟩ := (Kc c).rfs_whole_parent_map_locallyConstant_of_notMem hx
       refine ⟨U, hU, fun a b γ hab hγ hmap hfin => ?_⟩
-      have hone : ∀ t ∈ Icc a b, (fun t => (Kc c).rfs_whole_parent_map (γ t)) t =
-          (Kc c).rfs_whole_parent_map x :=
+      have hone : ∀ t ∈ Icc a b, (fun t => (Kc c).canonicalWholeParentMap (γ t)) t =
+          (Kc c).canonicalWholeParentMap x :=
         fun t ht => hconst (γ t) (hmap ht)
       have hzero := riemannianCurveLength_eq_zero_of_apply_eq_const (g := hc)
-        (γ := fun t => (Kc c).rfs_whole_parent_map (γ t))
-        (a := a) (b := b) (q := (Kc c).rfs_whole_parent_map x) hone
+        (γ := fun t => (Kc c).canonicalWholeParentMap (γ t))
+        (a := a) (b := b) (q := (Kc c).canonicalWholeParentMap x) hone
       rw [hzero]
       exact bot_le
   let : SecondCountableTopology (G.Parent c).Carrier :=
@@ -112,14 +112,14 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
         ∀ (a b : ℝ) (γ : ℝ → (G.Parent c).Carrier),
           a ≤ b → ContinuousOn γ (Icc a b) → MapsTo γ (Icc a b) U →
           riemannianCurveLength gs γ a b ≠ ⊤ →
-          riemannianCurveLength hc (fun t => (Kc c).rfs_whole_parent_map (γ t)) a b ≤
+          riemannianCurveLength hc (fun t => (Kc c).canonicalWholeParentMap (γ t)) a b ≤
             ↑(NNReal.mk (ell s) hL) * riemannianCurveLength gs γ a b :=
       fun x => by
         obtain ⟨U, hU, hU'⟩ := hlocFull x
         exact ⟨U, hU, fun a b γ hab hγ hmap hfin => by
           simpa only [ENNReal.ofReal_eq_coe_nnreal hL] using hU' a b γ hab hγ hmap hfin⟩
     have h := rfs_local_to_global_length_of_ne_top gs hc
-      ((Kc c).rfs_whole_parent_map) (NNReal.mk (ell s) hL) hlocCoe hfin
+      ((Kc c).canonicalWholeParentMap) (NNReal.mk (ell s) hL) hlocCoe hfin
     rwa [ENNReal.ofReal_eq_coe_nnreal hL]
 
 theorem rfs_child_comparison_metric_of_exists_local_length_comparison
@@ -127,7 +127,7 @@ theorem rfs_child_comparison_metric_of_exists_local_length_comparison
       G.LocalLengthComparison Kc) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
         Filter.Tendsto ell (𝓝[<] (H.time i.succ)) (𝓝 1) ∧

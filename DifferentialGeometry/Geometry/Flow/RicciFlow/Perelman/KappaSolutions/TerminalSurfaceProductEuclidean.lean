@@ -48,7 +48,7 @@ variable [NormedAddCommGroup E] [NormedSpace ℝ E]
 variable [NormedAddCommGroup F] [NormedSpace ℝ F]
 variable [TopologicalSpace H] [TopologicalSpace H'] [TopologicalSpace M]
 
-noncomputable def diffeomorph_chartedSpaceTransHomeomorph
+noncomputable def diffeomorphChartedSpaceTransHomeomorph
     (I : ModelWithCorners ℝ E H) (J : ModelWithCorners ℝ F H')
     (e : H ≃ₜ H') (L : E ≃L[ℝ] F) (hcompat : ∀ y, J (e y) = L (I y))
     [ChartedSpace H M] [IsManifold I ∞ M] :
@@ -120,7 +120,7 @@ theorem nonempty_terminalSurfaceProduct_of_hasCurvatureSurfaceProductSplitting
     DifferentialGeometry.Manifold.isManifold_transHomeomorph (M := P.N)
       (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)) (𝓡 2) e L hcompat
   let Ψ : P.N ≃ₘ⟮𝓡 2, 𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)⟯ P.N :=
-    DifferentialGeometry.Manifold.diffeomorph_chartedSpaceTransHomeomorph (M := P.N)
+    DifferentialGeometry.Manifold.diffeomorphChartedSpaceTransHomeomorph (M := P.N)
       (𝓘(ℝ, DifferentialGeometry.Topology.Morse.MorseModel 2)) (𝓡 2) e L hcompat
   let hmetric : SmoothRiemannianMetric (𝓡 2) P.N :=
     DifferentialGeometry.Diffeomorph.pullbackMetricCross P.metricN Ψ

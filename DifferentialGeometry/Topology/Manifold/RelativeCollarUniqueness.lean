@@ -84,9 +84,7 @@ def BoundaryCollarRegularization : Prop :=
 
 theorem exists_diffeomorph_of_eqOn_halfStrip
     {S : Type u} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
-    [IsManifold (𝓡 2) ∞ S] [T2Space S] [CompactSpace S]
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
     (c₀ c₁ : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
       (S × EuclideanHalfSpace 1) M ∞)
     {ε : ℝ} (hε : 0 < ε)

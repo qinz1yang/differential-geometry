@@ -264,7 +264,7 @@ end ChartReflection
 private theorem pullbackMetricCross_pathELength_integral
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [FiniteDimensional ℝ E]
     {H G : Type*} [TopologicalSpace H] [TopologicalSpace G]
     {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
@@ -2098,7 +2098,7 @@ omit [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I 
 private theorem riemannianCurveLength_pullbackMetricCross'
     {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
     {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
-    {P : Type*} [TopologicalSpace P] [ChartedSpace H' P] [IsManifold J ∞ P] [T2Space P]
+    {P : Type*} [TopologicalSpace P] [ChartedSpace H' P] [IsManifold J ∞ P]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
     (g : SmoothRiemannianMetric J P) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), J⟯ P) (γ : ℝ → A) (a b : ℝ) :
     Surgery.Topology.riemannianCurveLength (Diffeomorph.pullbackMetricCross g Ψ) γ a b =

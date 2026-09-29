@@ -13,7 +13,7 @@ open scoped _root_.Manifold ContDiff ENNReal
 
 universe u
 
-attribute [local instance] RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted
+attribute [local instance] RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted
   RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
 
 def BoundedAtDistanceShell (kappa sigma : ℝ) (Phi : ℝ → ℝ) : Prop :=
@@ -28,7 +28,7 @@ theorem finite_horn_construction_of_boundedAtDistanceShell {kappa sigma : ℝ} {
         ∃ epsStar : ℝ, 0 < epsStar ∧ ∀ eps : ℝ, 0 < eps → eps ≤ epsStar →
           ∀ X : NormalizedSequence.{u} eps kappa sigma Phi,
             FiniteControlledRadius X → ∃ H : RealizedFiniteHorn X.toFlowSequence,
-              H.horn.neck_precision = alpha ∧ collar ≤ H.horn.collar_depth := by
+              H.horn.neckPrecision = alpha ∧ collar ≤ H.horn.collarDepth := by
   let _ := hkappa
   let _ := hsigma
   let _ := hPhi

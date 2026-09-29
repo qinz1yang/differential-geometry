@@ -110,7 +110,7 @@ theorem metricFamilySmoothOn_quotientProductMetric (A : QuotientProductAtlas I M
 
 omit [CompleteSpace E] in
 theorem exists_smoothMetricWindow_quotientProduct (A : QuotientProductAtlas I M) [I.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] {D : RealTimeInterval} {a b : ℝ}
+    [T2Space M] {D : RealTimeInterval} {a b : ℝ}
     (B : SmoothMetricWindow (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold

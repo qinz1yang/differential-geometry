@@ -15,8 +15,8 @@ open DifferentialGeometry DifferentialGeometry.Geometry.Connection
 
 variable {V : Type*} [NormedAddCommGroup V] [InnerProductSpace ℝ V]
 
-local instance : NormedAddCommGroup (V →L[ℝ] ℝ) := ContinuousLinearMap.toNormedAddCommGroup
-local instance : NormedSpace ℝ (V →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace
+private local instance dualNormedAddCommGroup : NormedAddCommGroup (V →L[ℝ] ℝ) := ContinuousLinearMap.toNormedAddCommGroup
+private local instance dualNormedSpace : NormedSpace ℝ (V →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace
 local instance : NormedAddCommGroup (V →L[ℝ] V →L[ℝ] ℝ) :=
   ContinuousLinearMap.toNormedAddCommGroup
 local instance : NormedSpace ℝ (V →L[ℝ] V →L[ℝ] ℝ) := ContinuousLinearMap.toNormedSpace

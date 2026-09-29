@@ -151,7 +151,7 @@ variable {E : SmoothCutCapTransition P Q D N} {c : ConnectedComponents Q.Carrier
 
 theorem simplyConnectedSpace_U (hcore : SimplyConnectedSpace (E.ChildCore c)) :
     SimplyConnectedSpace ↥d.U :=
-  (homotopyEquiv_of_retraction (E.childCoreInclusionRestrict c d.core_subset_U) d.retraction
+  (homotopyEquivOfRetraction (E.childCoreInclusionRestrict c d.core_subset_U) d.retraction
     d.retraction_comp_inclusion d.inclusion_comp_retraction_homotopic).simplyConnectedSpace_iff.mp
     hcore
 

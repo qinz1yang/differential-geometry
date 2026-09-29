@@ -410,7 +410,7 @@ private theorem cap_neck_chart_mono_tolerances
     {S : SolutionOn (I := I3) (M := M) D} {eps eps' C1 C2 : ℝ} {x : M} {t : ℝ}
     {W : CanonicalWitness S eps C1 C2 x t} (hW : W.capTubeHasNeckChart eps)
     (heps : eps ≤ eps') (hsmall : eps' < 1 / 11) :
-    (W.mono_eps heps hsmall).capTubeHasNeckChart eps' := by
+    (W.monoEps heps hsmall).capTubeHasNeckChart eps' := by
   intro cap depth htag
   obtain ⟨v, nk, hmap⟩ := hW.mono_eps heps hsmall cap depth htag
   exact ⟨v, nk.mono heps hsmall, hmap⟩
@@ -715,13 +715,13 @@ theorem exists_horn_cutoff_with_volume_decrease_and_standard_discard_of_canonica
     intro x t ht hx
     have hqle : qcan ≤ C * qcan := le_mul_of_one_le_left hqcan.le hC
     obtain ⟨W, hW⟩ := hcanonical x t ht (hqle.trans_lt hx)
-    exact ⟨W.mono_eps (min_le_left _ _) hGeomSmall,
+    exact ⟨W.monoEps (min_le_left _ _) hGeomSmall,
       cap_neck_chart_mono_tolerances hW (min_le_left _ _) hGeomSmall⟩
   have htop : ∀ x t, t ∈ Ioo D.startTime D.endTime → qcan < D.slab.flow.scalar t x →
       ∃ W : CanonicalWitness D.slab.flow epsTop C1 C2 x t, W.capTubeHasNeckChart epsTop := by
     intro x t ht hx
     obtain ⟨W, hW⟩ := hcanonical x t ht hx
-    exact ⟨W.mono_eps (min_le_right _ _) hTopSmall,
+    exact ⟨W.monoEps (min_le_right _ _) hTopSmall,
       cap_neck_chart_mono_tolerances hW (min_le_right _ _) hTopSmall⟩
   obtain ⟨ρ, hρ, hρle, hmono, hmonoOn, hrecenter, hprotect, P, hradius,
     hfloor, _, hscale, hupper, hlow, hbase⟩ := hgeometry D hcore hprotected hgeo

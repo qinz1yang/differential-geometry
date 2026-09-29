@@ -210,7 +210,7 @@ theorem exists_curvatureOperatorNonnegative_and_metricScalarAt_ne_zero :
       norm_num⟩
 
 theorem exists_metricScalarAt_ne_zero_of_finiteHorn {W : Type u} [MetricSpace W]
-    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] [SigmaCompactSpace W]
+    [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W]
     {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) :
     ∃ x : W, metricScalarAt g x ≠ 0 := by
   obtain ⟨i, hi⟩ := H.curvature_diverges 0

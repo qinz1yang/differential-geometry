@@ -9,7 +9,7 @@ open scoped Manifold ContDiff Topology
 
 namespace DifferentialGeometry.Topology.SphereSeparation
 
-noncomputable def smoothSphereSidesOpenThreeSpace_of_openBicollar_of_sphereH1
+noncomputable def smoothSphereSidesOpenThreeSpaceOfOpenBicollarOfVanishingH1
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (e : SphereTwo → N)
@@ -24,11 +24,11 @@ noncomputable def smoothSphereSidesOpenThreeSpace_of_openBicollar_of_sphereH1
     (hSphere : IsZero
       (integerSingularHomology (TopCat.of SphereTwo) 1)) :
     SmoothSphereSides (Set.range e) :=
-  smoothSphereSidesOpenThreeSpace_of_alexanderDuality e he ψ
+  smoothSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate e he ψ
     (hasAlexanderDualityH0Certificate_of_openBicollar_of_sphereH1
       ha (ψ ∘ e) Φ hΦ hzero hSphere)
 
-noncomputable def smoothSphereSidesOpenThreeSpace_of_openBicollar
+noncomputable def smoothSphereSidesOpenThreeSpaceOfOpenBicollarOfCellularComparison
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (e : SphereTwo → N)
@@ -44,7 +44,7 @@ noncomputable def smoothSphereSidesOpenThreeSpace_of_openBicollar
       (integerSingularChains (TopCat.of SphereTwo))
       sphereTwoCellularChainComplex) :
     SmoothSphereSides (Set.range e) :=
-  smoothSphereSidesOpenThreeSpace_of_alexanderDuality e he ψ
+  smoothSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate e he ψ
     (hasAlexanderDualityH0Certificate_of_openBicollar
       ha (ψ ∘ e) Φ hΦ hzero comparison)
 
@@ -63,7 +63,7 @@ theorem bicollar_sides_openThreeSpace_of_sphereH1
       hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding_of_sphereH1
         (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ) hSphere (axialZero ha)
     let d :=
-      topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexanderDuality
+      bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificate
         Φ hΦ ψ (axialZero ha) hAD
     Xor
       (negativeHalfImage Φ ha ⊆ d.compactSide ∧
@@ -91,7 +91,7 @@ theorem bicollar_sides_openThreeSpace_of_cellularComparison
       hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding
         (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ) comparison (axialZero ha)
     let d :=
-      topologicalSphereSidesOpenThreeSpace_bicollarSlice_of_alexanderDuality
+      bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificate
         Φ hΦ ψ (axialZero ha) hAD
     Xor
       (negativeHalfImage Φ ha ⊆ d.compactSide ∧
@@ -119,12 +119,12 @@ theorem bicollar_order_openThreeSpace_of_sphereH1
         hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding_of_sphereH1
           (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ) hSphere c
       IsAxiallyOrientedAtZero ha Φ
-        (bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD))
+        (bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD))
     {s t : AxialInterval a} (hst : s < t) :
     let hAD := fun c ↦
       hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding_of_sphereH1
         (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ) hSphere c
-    let d := bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD
+    let d := bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD
     (closure (d s).compactSide ⊆ (d t).compactSide ∧
       (d t).compactSide = interior (closure (d t).compactSide)) ∧
     closure (d t).compactSide =
@@ -158,12 +158,12 @@ theorem bicollar_order_openThreeSpace_of_cellularComparison
         hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding
           (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ) comparison c
       IsAxiallyOrientedAtZero ha Φ
-        (bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD))
+        (bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD))
     {s t : AxialInterval a} (hst : s < t) :
     let hAD := fun c ↦
       hasAlexanderDualityH0Certificate_bicollarSlice_of_smoothEmbedding
         (ψ ∘ Φ) (hΦ.postcomp_diffeomorph ψ) comparison c
-    let d := bicollarSliceSidesOpenThreeSpace_of_alexanderDuality Φ hΦ ψ hAD
+    let d := bicollarSliceSidesOpenThreeSpaceOfAlexanderDualityCertificates Φ hΦ ψ hAD
     (closure (d s).compactSide ⊆ (d t).compactSide ∧
       (d t).compactSide = interior (closure (d t).compactSide)) ∧
     closure (d t).compactSide =

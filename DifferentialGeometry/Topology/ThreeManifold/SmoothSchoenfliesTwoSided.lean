@@ -20,10 +20,10 @@ noncomputable def smoothSchoenfliesTwoSided : Prop :=
   ∀ (e : S² → ℝ³) (he : Manifold.IsSmoothEmbedding (𝓡 2) (𝓡 3) ∞ e),
     ∃ Φ : ℝ³ ≃ₘ[ℝ] ℝ³,
       Φ '' ball (0 : ℝ³) 1 =
-          (SphereSeparation.jordanBrouwer_openThreeSpace e he
+          (SphereSeparation.smoothSphereSidesOpenThreeSpace e he
             (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).compactSide ∧
         Φ '' (closedBall (0 : ℝ³) 1)ᶜ =
-          (SphereSeparation.jordanBrouwer_openThreeSpace e he
+          (SphereSeparation.smoothSphereSidesOpenThreeSpace e he
             (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).endSide
 
 theorem smoothSchoenfliesThree_iff_smoothSchoenfliesTwoSided :
@@ -42,7 +42,7 @@ theorem smoothSchoenfliesThree_iff_smoothSchoenfliesTwoSided :
           D.toHomeomorph.image_compl (closedBall (0 : ℝ³) 1)),
       hcl, hD,
       SphereSeparation.SphereSides.endSide_eq_compl_closure_compactSide
-        (SphereSeparation.jordanBrouwer_openThreeSpace e he
+        (SphereSeparation.smoothSphereSidesOpenThreeSpace e he
           (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).toSphereSides]
   · intro h
     refine SphereSeparation.smoothSchoenfliesThree_iff_smoothSchoenfliesBallFilling.mpr ?_
@@ -53,11 +53,11 @@ theorem smoothSchoenfliesThree_iff_smoothSchoenfliesTwoSided :
 theorem exists_ambient_diffeomorph_twoSides_roundSphere :
     ∃ Φ : ℝ³ ≃ₘ[ℝ] ℝ³,
       Φ '' ball (0 : ℝ³) 1 =
-          (SphereSeparation.jordanBrouwer_openThreeSpace (Subtype.val : S² → ℝ³)
+          (SphereSeparation.smoothSphereSidesOpenThreeSpace (Subtype.val : S² → ℝ³)
             isSmoothEmbedding_sphereTwo_subtype
             (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).compactSide ∧
         Φ '' (closedBall (0 : ℝ³) 1)ᶜ =
-          (SphereSeparation.jordanBrouwer_openThreeSpace (Subtype.val : S² → ℝ³)
+          (SphereSeparation.smoothSphereSidesOpenThreeSpace (Subtype.val : S² → ℝ³)
             isSmoothEmbedding_sphereTwo_subtype
             (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).endSide := by
   refine ⟨Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞, ?_, ?_⟩
@@ -65,7 +65,7 @@ theorem exists_ambient_diffeomorph_twoSides_roundSphere :
     exact compactSide_jordanBrouwer_openThreeSpace_coe_sphere.symm
   · rw [Diffeomorph.coe_refl, Set.image_id,
       SphereSeparation.SphereSides.endSide_eq_compl_closure_compactSide
-        (SphereSeparation.jordanBrouwer_openThreeSpace (Subtype.val : S² → ℝ³)
+        (SphereSeparation.smoothSphereSidesOpenThreeSpace (Subtype.val : S² → ℝ³)
           isSmoothEmbedding_sphereTwo_subtype
           (Diffeomorph.refl 𝓘(ℝ, ℝ³) ℝ³ ∞)).toSphereSides,
       compactSide_jordanBrouwer_openThreeSpace_coe_sphere, closure_ball (0 : ℝ³) one_ne_zero]

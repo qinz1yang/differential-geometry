@@ -139,7 +139,7 @@ noncomputable def connectedSumAmbientToComplementFreeProductEquiv
       (connectedSumRightGluingPoint BN glue b))
     (connectedSumAmbientToComplementFactorEquiv BM BN glue b)
 
-noncomputable def fundamentalGroupEquiv_connectedSum
+noncomputable def fundamentalGroupEquivConnectedSum
     {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]
     [T2Space M] [T2Space N] [ConnectedSpace M] [ConnectedSpace N]
     [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
@@ -319,7 +319,7 @@ theorem fundamentalGroupEquiv_connectedSum_comp_left
     (BM : SmoothEmbeddedClosedThreeCellWithCollar M)
     (BN : SmoothEmbeddedClosedThreeCellWithCollar N)
     (glue : CellBoundary 3 ≃ₜ CellBoundary 3) (b : CellBoundary 3) :
-    (fundamentalGroupEquiv_connectedSum BM BN glue b).toMonoidHom.comp
+    (fundamentalGroupEquivConnectedSum BM BN glue b).toMonoidHom.comp
         (Monoid.CoprodI.of
           (M := fundamentalGroupSourceFactor
             (connectedSumLeftGluingPoint BM b : M)
@@ -358,7 +358,7 @@ theorem fundamentalGroupEquiv_connectedSum_comp_right
     (BM : SmoothEmbeddedClosedThreeCellWithCollar M)
     (BN : SmoothEmbeddedClosedThreeCellWithCollar N)
     (glue : CellBoundary 3 ≃ₜ CellBoundary 3) (b : CellBoundary 3) :
-    (fundamentalGroupEquiv_connectedSum BM BN glue b).toMonoidHom.comp
+    (fundamentalGroupEquivConnectedSum BM BN glue b).toMonoidHom.comp
         (Monoid.CoprodI.of
           (M := fundamentalGroupSourceFactor
             (connectedSumLeftGluingPoint BM b : M)

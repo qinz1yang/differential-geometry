@@ -27,12 +27,12 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 theorem rfs_whole_parent_map_isLocalDiffeomorphAt_childCore
     (x : G.transition.ChildCore c) (hx : (𝓡∂ 3).IsInteriorPoint x.1) :
-    IsLocalDiffeomorphAt ThreeModel ThreeModel ∞ K.rfs_whole_parent_map
+    IsLocalDiffeomorphAt ThreeModel ThreeModel ∞ K.canonicalWholeParentMap
       (G.transition.childCoreIntoParent c x) := by
   let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
   let : IsManifold (𝓡∂ 3) ∞ (H.event i).old := (H.event i).oldSmooth
   obtain ⟨U, hxU, σ, hσ, hσval, hσout⟩ := K.exists_smooth_survivor_lift x hx
-  let f : U → (G.Child c).Carrier := fun y => K.rfs_whole_parent_map y.1
+  let f : U → (G.Child c).Carrier := fun y => K.canonicalWholeParentMap y.1
   let a : (H.event i).old → (H.stage i.castSucc).Carrier := fun z => z.1.1
   have ha : ContMDiff (𝓡∂ 3) ThreeModel ∞ a := (H.event i).old_induced.contMDiff
   have hout : (fun y : U => (f y).1) = (H.event i).oldOutput ∘ σ :=
@@ -93,7 +93,7 @@ theorem rfs_whole_parent_map_isLocalDiffeomorphAt_childCore
       f hf hinj rfl
   exact DifferentialGeometry.isLocalDiffeomorphAt_of_comp
     (f := (Subtype.val : U → (G.Parent c).Carrier))
-    (g := K.rfs_whole_parent_map) (x := ⟨G.transition.childCoreIntoParent c x, hxU⟩)
+    (g := K.canonicalWholeParentMap) (x := ⟨G.transition.childCoreIntoParent c x, hxU⟩)
     (hlocal ⟨_, hxU⟩)
     (DifferentialGeometry.isLocalDiffeomorph_subtype_val (I := ThreeModel) (U := U) ⟨_, hxU⟩)
 
@@ -124,10 +124,10 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
 
 theorem rfs_whole_parent_map_preservesTangentOrientationAt_childCore
     (x : G.transition.ChildCore c) (hx : (𝓡∂ 3).IsInteriorPoint x.1) :
-    ∃ hf : Function.Bijective (mfderiv ThreeModel ThreeModel K.rfs_whole_parent_map
+    ∃ hf : Function.Bijective (mfderiv ThreeModel ThreeModel K.canonicalWholeParentMap
       (G.transition.childCoreIntoParent c x)),
       PreservesTangentOrientationAt (G.Parent c).orientation (G.Child c).orientation
-        K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) hf := by
+        K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) hf := by
   let : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
   let : IsManifold (𝓡∂ 3) ∞ (H.event i).old := (H.event i).oldSmooth
   obtain ⟨U, hxU, σ, hσ, hσval, hσout⟩ := K.exists_smooth_survivor_lift x hx
@@ -138,7 +138,7 @@ theorem rfs_whole_parent_map_preservesTangentOrientationAt_childCore
   have hαz : α z = x.1 := Subtype.ext (hσval z)
   let a : G.transition.trace.tubes.core → (H.stage i.castSucc).Carrier := Subtype.val
   let j := G.transition.trace.capping.coreInclusion
-  let F := K.rfs_whole_parent_map
+  let F := K.canonicalWholeParentMap
   have hF : MDifferentiableAt ThreeModel ThreeModel F z.1 :=
     (K.rfs_whole_parent_map_isLocalDiffeomorphAt_childCore x hx).mdifferentiableAt (by simp)
   have hsrc : a ∘ α = (fun y : U => y.1.1) := funext hσval
@@ -273,45 +273,45 @@ variable {H : ObservedHistory.{u}} {i : Fin H.eventCount} {parameters : CutoffPa
   {c : ConnectedComponents (H.stage i.succ).Carrier} (K : G.ComparisonSupport c)
 
 theorem rfs_whole_parent_map_fundamentalClass :
-    integralHomologyMap 3 K.rfs_whole_parent_map
+    integralHomologyMap 3 K.canonicalWholeParentMap
       (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation := by
   let : ConnectedSpace (G.Child c).Carrier := (H.stage i.succ).component_connected c
   obtain ⟨x, hx, hfiber⟩ := K.exists_rfs_whole_parent_map_singleton_fiber
   let p := G.transition.childCoreIntoParent c x
-  have heq : K.rfs_whole_parent_map p = G.transition.childCoreInclusion c x :=
+  have heq : K.canonicalWholeParentMap p = G.transition.childCoreInclusion c x :=
     K.rfs_whole_parent_map_childCore x
-  have hmaps : MapsTo K.rfs_whole_parent_map ({p}ᶜ)
-      ({K.rfs_whole_parent_map p}ᶜ) := by
+  have hmaps : MapsTo K.canonicalWholeParentMap ({p}ᶜ)
+      ({K.canonicalWholeParentMap p}ᶜ) := by
     intro z hz hzy
     apply hz
-    have hzpre : z ∈ K.rfs_whole_parent_map ⁻¹' {G.transition.childCoreInclusion c x} := by
+    have hzpre : z ∈ K.canonicalWholeParentMap ⁻¹' {G.transition.childCoreInclusion c x} := by
       exact hzy.trans heq
     rw [hfiber] at hzpre
     exact hzpre
   obtain ⟨_, hpos⟩ := K.rfs_whole_parent_map_preservesTangentOrientationAt_childCore x hx
   have hlocal := localOrientationClass_natural_of_isLocalDiffeomorphAt
     (G.Parent c).orientation (G.Child c).orientation (n := ∞) (by simp)
-    K.rfs_whole_parent_map p
+    K.canonicalWholeParentMap p
     (K.rfs_whole_parent_map_isLocalDiffeomorphAt_childCore x hx) hmaps hpos
   exact DifferentialGeometry.Topology.integralSingularHomologyMap_eq_of_relativeHomologyMap_eq
-    3 K.rfs_whole_parent_map hmaps
+    3 K.canonicalWholeParentMap hmaps
     (fundamentalClass (G.Parent c).orientation) (fundamentalClass (G.Child c).orientation)
     (localOrientationClass (G.Parent c).orientation p)
-    (localOrientationClass (G.Child c).orientation (K.rfs_whole_parent_map p))
+    (localOrientationClass (G.Child c).orientation (K.canonicalWholeParentMap p))
     (fundamentalClass_local (G.Parent c).orientation p)
-    (fundamentalClass_local (G.Child c).orientation (K.rfs_whole_parent_map p))
+    (fundamentalClass_local (G.Child c).orientation (K.canonicalWholeParentMap p))
     hlocal (by
       intro a b hab
       obtain ⟨m, rfl⟩ := (fundamentalClass_generator (G.Child c).orientation).surjective a
       obtain ⟨n, rfl⟩ := (fundamentalClass_generator (G.Child c).orientation).surjective b
       change (absoluteToRelative (G.Child c).Carrier
-        ({K.rfs_whole_parent_map p}ᶜ) 3).hom (m • fundamentalClass (G.Child c).orientation) =
+        ({K.canonicalWholeParentMap p}ᶜ) 3).hom (m • fundamentalClass (G.Child c).orientation) =
         (absoluteToRelative (G.Child c).Carrier
-          ({K.rfs_whole_parent_map p}ᶜ) 3).hom (n • fundamentalClass (G.Child c).orientation) at hab
+          ({K.canonicalWholeParentMap p}ᶜ) 3).hom (n • fundamentalClass (G.Child c).orientation) at hab
       rw [map_zsmul, map_zsmul] at hab
       have hmn : m = n := (localOrientationClass_generator (G.Child c).orientation
-        (K.rfs_whole_parent_map p)).injective (by
+        (K.canonicalWholeParentMap p)).injective (by
           simpa only [fundamentalClass_local] using hab)
       rw [hmn])
 
@@ -319,10 +319,10 @@ theorem rfs_whole_parent_map_fundamentalClass :
 theorem rfs_whole_parent_map_orientedDegree :
     let : ConnectedSpace (G.Child c).Carrier := (H.stage i.succ).component_connected c
     orientedDegree (G.Parent c).orientation (G.Child c).orientation
-      K.rfs_whole_parent_map = 1 := by
+      K.canonicalWholeParentMap = 1 := by
   let : ConnectedSpace (G.Child c).Carrier := (H.stage i.succ).component_connected c
   apply (orientedDegree_eq_iff (G.Parent c).orientation (G.Child c).orientation
-    K.rfs_whole_parent_map 1).mpr
+    K.canonicalWholeParentMap 1).mpr
   simpa only [one_smul] using K.rfs_whole_parent_map_fundamentalClass
 
 end DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.GeometricCutoffRecord.ComparisonSupport

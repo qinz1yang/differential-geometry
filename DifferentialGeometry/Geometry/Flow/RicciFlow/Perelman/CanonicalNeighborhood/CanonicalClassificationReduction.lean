@@ -41,7 +41,7 @@ theorem kappaUniformCanonicalClassification_of_buffered_canonical_pullback
   obtain ⟨delta, hdelta, hdelta1, hmain'⟩ := hfinal kappa hkappa
   refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W⟩ := hmain' M D S hS o x t hreg hw
-  exact ⟨W.mono_eps (min_le_left _ _) (by linarith)⟩
+  exact ⟨W.monoEps (min_le_left _ _) (by linarith)⟩
 
 theorem buffered_canonical_pullback_iff_kappaUniformCanonicalClassification :
     kappaUniformCanonicalClassification.{u} ↔
@@ -79,7 +79,7 @@ theorem kappaUniformCanonicalClassification_iff_witness_tolerance :
     refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
     obtain ⟨W⟩ := hmain M D S hS o x t hreg hw
     have hmin : min eps (1 / 44) ≤ eps := min_le_left _ _
-    exact ⟨W.mono_eps (by linarith) heps11⟩
+    exact ⟨W.monoEps (by linarith) heps11⟩
   · intro hclass eps heps heps44
     obtain ⟨C1, C2, hC1, hC2, hfinal⟩ := hclass (eps / 2) (by linarith) (by linarith)
     exact ⟨C1, C2, hC1, hC2, fun kappa hkappa => hfinal kappa hkappa⟩
@@ -105,7 +105,7 @@ theorem kappaUniformCanonicalClassification_iff_tolerance_half :
     refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
     obtain ⟨W⟩ := hmain M D S hS o x t hreg hw
     have hmin : min eps (1 / 44) ≤ eps := min_le_left _ _
-    exact ⟨W.mono_eps (by linarith) (by linarith)⟩
+    exact ⟨W.monoEps (by linarith) (by linarith)⟩
   · intro hclass eps heps heps44
     exact hclass eps heps (by linarith)
 
@@ -162,7 +162,7 @@ theorem kappaUniformCanonicalClassification_iff_single_constant :
     obtain ⟨delta, hdelta, hdelta1, hmain⟩ := hfinal kappa hkappa
     refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
     obtain ⟨W⟩ := hmain M D S hS o x t hreg hw
-    exact ⟨W.enlarge_constants (le_max_left C1 C2) (le_max_right C1 C2)⟩
+    exact ⟨W.enlargeConstants (le_max_left C1 C2) (le_max_right C1 C2)⟩
   · intro hclass eps heps heps44
     obtain ⟨C, hC, hfinal⟩ := hclass eps heps heps44
     exact ⟨C, C, hC, hC, fun kappa hkappa => hfinal kappa hkappa⟩

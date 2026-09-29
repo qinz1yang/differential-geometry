@@ -26,7 +26,7 @@ theorem DiskSmoothExtension.smoothUpToBoundary {u : C(Disk, Q)} {U : ℂ → Q}
   exact (diskExtension_coe u ⟨z, hz⟩).trans (heq ⟨z, hz⟩).symm
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] in
-def smoothDisk_of_diskSmoothExtension {u : C(Disk, Q)} {U : ℂ → Q}
+def smoothDiskOfDiskSmoothExtension {u : C(Disk, Q)} {U : ℂ → Q}
     (h : DiskSmoothExtension I u U) : SmoothDisk (I := I) (Q := Q) where
   map := u
   smooth z := by
@@ -44,7 +44,7 @@ def smoothDisk_of_diskSmoothExtension {u : C(Disk, Q)} {U : ℂ → Q}
 
 omit [FiniteDimensional ℝ E] [IsManifold I ∞ Q] in
 @[simp] theorem smoothDisk_of_diskSmoothExtension_map {u : C(Disk, Q)} {U : ℂ → Q}
-    (h : DiskSmoothExtension I u U) : (smoothDisk_of_diskSmoothExtension h).map = u := rfl
+    (h : DiskSmoothExtension I u U) : (smoothDiskOfDiskSmoothExtension h).map = u := rfl
 
 def HasDiskSmoothExtensionDensity (g : SmoothRiemannianMetric I Q)
     (γ : Surgery.Topology.ContinuousFreeLoop Q) : Prop :=
@@ -61,7 +61,7 @@ theorem plateauDiskDensity_of_hasDiskSmoothExtensionDensity (g : SmoothRiemannia
     PlateauDiskDensity (I := I) (Q := Q) g γ := by
   intro v
   obtain ⟨vj, Uj, hdata, htend⟩ := h v
-  exact ⟨fun j => smoothDisk_of_diskSmoothExtension (hdata j).1,
+  exact ⟨fun j => smoothDiskOfDiskSmoothExtension (hdata j).1,
     fun j θ => (hdata j).2 θ, htend⟩
 
 omit [FiniteDimensional ℝ E] in

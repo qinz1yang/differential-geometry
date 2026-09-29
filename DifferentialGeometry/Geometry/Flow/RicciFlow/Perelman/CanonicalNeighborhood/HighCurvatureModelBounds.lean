@@ -60,7 +60,7 @@ theorem oriented_witness_mono (S : SolutionOn (I := I3) (M := M) D)
     (hw : OrientedWitness S o delta kappa x t) :
     OrientedWitness S o eps kappa x t := by
   obtain ⟨W, oN, hO⟩ := hw
-  exact ⟨W.mono_of_regular hS hde he hreg, oN, hO⟩
+  exact ⟨W.monoOfRegular hS hde he hreg, oN, hO⟩
 
 theorem strict_model_witness_open (S : SolutionOn (I := I3) (M := M) D)
     (hS : IsSolutionOn S) {eps kappa : ℝ}
@@ -530,10 +530,10 @@ theorem buffered_canonical_pullback :
   obtain ⟨W, orient, _hpreserved⟩ := hw
   by_cases hr : IsShrinkingSphericalSpaceFormFlow W.model
   · obtain ⟨K⟩ := hroundTransfer W (min_le_right _ _) hS hreg hr
-    exact ⟨K.enlarge_constants (le_max_right _ _) (le_max_right _ _)⟩
+    exact ⟨K.enlargeConstants (le_max_right _ _) (le_max_right _ _)⟩
   · obtain ⟨B⟩ := hnonround kappa M D S hS (min dn dr) x t W
       (min_le_left _ _) hreg hr orient
-    exact ⟨(B.canonicalWitness_mono B.tolerance_lt.le hsmall).enlarge_constants
+    exact ⟨(B.canonicalWitnessMono B.tolerance_lt.le hsmall).enlargeConstants
       (le_max_left _ _) (le_max_left _ _)⟩
 
 theorem smooth_canonical_neighborhood :

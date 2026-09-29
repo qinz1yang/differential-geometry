@@ -14,7 +14,7 @@ namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u
 
 theorem ballChartIsotopicAwayFromCompact_of_modelIsotopy {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
+    [ChartedSpace ThreeSpace U] [T2Space U]
     (b b' : BallChart 3 (𝓡 3) U) (C : Set U)
     (D : ℝ → Diffeomorph ThreeModel ThreeModel ThreeSpace ThreeSpace ∞)
     (hDc : ContDiff ℝ ∞ (fun q : ℝ × ThreeSpace => D q.1 q.2))
@@ -67,7 +67,7 @@ theorem ballChartIsotopicAwayFromCompact_of_modelIsotopy {U : Type u} [Topologic
       hact x hx]
 
 theorem ballChartIsotopicAwayFromCompact_of_matching_refl {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
+    [ChartedSpace ThreeSpace U] [T2Space U]
     (b b' : BallChart 3 (𝓡 3) U) (C : Set U)
     (hover : b.chart '' Metric.closedBall (0 : ThreeSpace) 1 ⊆ b'.chart.target)
     (hpoint : ∀ x ∈ Metric.closedBall (0 : ThreeSpace) 1, b'.chart.symm (b.chart x) = x) :

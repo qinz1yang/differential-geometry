@@ -17,7 +17,7 @@ variable {M N : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞
 
 theorem metricRm04StdAt_of_pullback_on_opens
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric I N)
-    (U : Opens M) (V : Opens N) [SigmaCompactSpace U] [SigmaCompactSpace V]
+    (U : Opens M) (V : Opens N)
     (Φ : U ≃ₘ⟮I, I⟯ V)
     (heq : ∀ (y : U) (v w : TangentSpace I y),
       g.inner (y : M) v w = h.inner (Φ y : N)

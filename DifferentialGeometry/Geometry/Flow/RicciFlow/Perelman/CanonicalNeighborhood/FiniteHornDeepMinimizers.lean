@@ -21,7 +21,7 @@ omit [MetricSpace W] [ChartedSpace ThreeSpace W] [IsManifold I3 ∞ W] in
 theorem exists_no_endpoint_shortcut_depth_uniform_in_manifold :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (W : Type u) [MetricSpace W] [ChartedSpace ThreeSpace W]
       [IsManifold I3 ∞ W], ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ a b : EndRay H.endpoint,
+      H₀ ≤ H.collarDepth → ∀ a b : EndRay H.endpoint,
         dist (a.point a.length) (b.point b.length) < a.length + b.length := by
   obtain ⟨D, hD, hshortcuts⟩ := exists_transverse_shortcuts_uniform_in_manifold.{u}
   refine ⟨4 * (D + 1), by positivity, ?_⟩
@@ -32,14 +32,14 @@ theorem exists_no_endpoint_shortcut_depth_uniform_in_manifold :
   obtain ⟨s, hs, q, hq⟩ := G.endRay_meets_center g H a haout
   obtain ⟨t, ht, r, hr⟩ := G.endRay_meets_center g H b hbout
   have hlevel : ∀ z : Sphere 2, (z, (0 : ℝ)) ∈
-      (univ ×ˢ Icc (-H.collar_depth) H.collar_depth : Set Cylinder) := by
+      (univ ×ˢ Icc (-H.collarDepth) H.collarDepth : Set Cylinder) := by
     intro z
     exact ⟨mem_univ _, by constructor <;> linarith [H.collar_depth_pos]⟩
   obtain ⟨gamma, hstart, hend, hsmooth, _hmem, hlength⟩ :=
     hshortcuts W C (fun _ => C.metric 0)
       (fun _ => scaleMetric (metricScalarAt g w) hQ g) F
-      (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
-      (⌈H.neck_precision⁻¹⌉₊) H.neck_precision 0 cmp rfl H.neck_precision_pos.le
+      (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) {0}
+      (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision 0 cmp rfl H.neck_precision_pos.le
       (by linarith [H.neck_precision_small]) (by simp) hsource hlevel q r
   have hdist := (edistOf_le_metricPathELength (scaleMetric (metricScalarAt g w) hQ g)
     (by norm_num : (0 : ℝ) ≤ 1) hsmooth).trans hlength
@@ -73,7 +73,7 @@ theorem exists_no_endpoint_shortcut_depth_uniform_in_manifold :
 
 theorem exists_finiteHorn_no_endpoint_shortcut_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ a b : EndRay H.endpoint,
+      H₀ ≤ H.collarDepth → ∀ a b : EndRay H.endpoint,
         dist (a.point a.length) (b.point b.length) < a.length + b.length := by
   obtain ⟨H₀, hH₀, hsave⟩ := exists_no_endpoint_shortcut_depth_uniform_in_manifold
   exact ⟨H₀, hH₀, hsave W⟩
@@ -82,7 +82,7 @@ variable [SigmaCompactSpace W]
 
 theorem exists_finiteHorn_deep_minimizer_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ i : ℕ, ∃ j : ℕ, closure (H.subend j) ⊆ H.subend i ∧
+      H₀ ≤ H.collarDepth → ∀ i : ℕ, ∃ j : ℕ, closure (H.subend j) ⊆ H.subend i ∧
         ∀ x ∈ H.subend j, ∀ y ∈ H.subend j,
         ∃ gamma : ℝ → W, gamma 0 = x ∧ gamma 1 = y ∧
           ContMDiff 𝓘(ℝ, ℝ) I3 ∞ gamma ∧
@@ -99,12 +99,12 @@ theorem exists_finiteHorn_deep_minimizer_depth :
   obtain ⟨j, hj⟩ := finiteHorn_subend_radial_small g H (lt_min hd (by positivity : 0 < delta / 8))
   obtain ⟨k, hk⟩ := ((tendsto_order.1 H.cut_height_zero).2 _ (H.cut_height_mem i).1).exists
   have hkbuffer : closure (H.subend k) ⊆ H.subend i := by
-    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cut_height k} :=
+    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cutHeight k} :=
       isClosed_le H.tube.continuous_height continuous_const
-    have hsub : H.subend k ⊆ {z : W | H.tube.height z ≤ H.cut_height k} := by
+    have hsub : H.subend k ⊆ {z : W | H.tube.height z ≤ H.cutHeight k} := by
       intro z hz
       rw [H.subend_eq k] at hz
-      change H.tube.height z < H.cut_height k at hz
+      change H.tube.height z < H.cutHeight k at hz
       exact hz.le
     intro z hz
     rw [H.subend_eq i]
@@ -244,12 +244,12 @@ theorem finiteHorn_deep_minimizers_of_endRay_dist_lt_sum
   obtain ⟨j, hj⟩ := finiteHorn_subend_radial_small g H (lt_min hd (by positivity : 0 < delta / 8))
   obtain ⟨k, hk⟩ := ((tendsto_order.1 H.cut_height_zero).2 _ (H.cut_height_mem i).1).exists
   have hkbuffer : closure (H.subend k) ⊆ H.subend i := by
-    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cut_height k} :=
+    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cutHeight k} :=
       isClosed_le H.tube.continuous_height continuous_const
-    have hsub : H.subend k ⊆ {z : W | H.tube.height z ≤ H.cut_height k} := by
+    have hsub : H.subend k ⊆ {z : W | H.tube.height z ≤ H.cutHeight k} := by
       intro z hz
       rw [H.subend_eq k] at hz
-      change H.tube.height z < H.cut_height k at hz
+      change H.tube.height z < H.cutHeight k at hz
       exact hz.le
     intro z hz
     rw [H.subend_eq i]

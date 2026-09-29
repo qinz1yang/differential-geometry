@@ -44,7 +44,7 @@ theorem canonical_bounds_of_canonicalWitness_of_scalar_derivative_bounds {M : Ty
         Real.sqrt ((S.base.metric t).inner x v v) := by
   refine ⟨fun hage => ?_, hder.trans (mul_le_mul_of_nonneg_right h3 (sq_nonneg _)), fun v => ?_⟩
   · obtain ⟨K, hK⟩ := hwit (hτ.trans hage)
-    exact ⟨K.enlarge_constants h1 h2, hK.enlarge_constants h1 h2⟩
+    exact ⟨K.enlargeConstants h1 h2, hK.enlarge_constants h1 h2⟩
   · refine (hgrad v).trans ?_
     have hnn : 0 ≤ S.scalar t x * Real.sqrt (S.scalar t x) *
         Real.sqrt ((S.base.metric t).inner x v v) := by positivity

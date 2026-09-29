@@ -44,7 +44,7 @@ noncomputable def redVolume
     ∂riemannianVolumeMeasure (I := I) (M := M)
       (S.base.metric (T - tau))
 
-theorem redVolume_eq_upstream [CompactSpace M]
+theorem redVolume_eq_upstream
     (S : SolutionOn (I := I) (M := M) D)
     (T : ℝ) (x : M) (tau : ℝ) :
     DifferentialGeometry.PDE.RicciFlow.redVolume S T x tau =

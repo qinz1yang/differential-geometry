@@ -239,7 +239,7 @@ theorem isSphereHomologyGenerator_circleSphereFundamentalClass_iff_coordinate :
       simp [LinearEquiv.neg_apply]
 
 theorem hurewiczOneLoopGeneration_iff_surjective_sphereHurewicz_circleSphereFundamentalClass
-    [PathConnectedSpace X] (x : X) :
+    (x : X) :
     HurewiczOneLoopGeneration x ↔
       Function.Surjective (sphereHurewicz 0 x circleSphereFundamentalClass) := by
   let h : HomotopyGroup (Fin 1) X x →* Multiplicative (integralSingularHomology 1 X) :=
@@ -305,7 +305,7 @@ theorem hurewiczOneLoopGeneration_iff_surjective_sphereHurewicz_circleSphereFund
   exact AddMonoidHom.range_eq_top.trans hsurj.symm
 
 theorem abelianizationHomotopyGroupOne_equiv_of_circleSphereFundamentalClass
-    [PathConnectedSpace X] (x : X)
+    (x : X)
     (hsurj : Function.Surjective (sphereHurewicz 0 x circleSphereFundamentalClass))
     (hker : ∀ a : HomotopyGroup (Fin 1) X x,
       sphereHurewicz 0 x circleSphereFundamentalClass a = 0 →

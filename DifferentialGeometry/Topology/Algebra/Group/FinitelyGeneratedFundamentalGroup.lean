@@ -83,7 +83,7 @@ theorem groupFG_coprodI {ι : Type v} [Finite ι] (G : ι → Type u) [∀ i, Gr
       (Monoid.CoprodI.of : G i →* Monoid.CoprodI G).rangeRestrict_surjective
   exact (Group.fg_iff_subgroup_fg _).mp hi
 
-theorem groupFG_of_groupFG_coprodI {ι : Type v} [Finite ι] (G : ι → Type u)
+theorem groupFG_of_groupFG_coprodI {ι : Type v} (G : ι → Type u)
     [∀ i, Group (G i)] (i : ι) (h : Group.FG (Monoid.CoprodI G)) : Group.FG (G i) := by
   classical
   let φ : (j : ι) → G j →* G i := fun j =>

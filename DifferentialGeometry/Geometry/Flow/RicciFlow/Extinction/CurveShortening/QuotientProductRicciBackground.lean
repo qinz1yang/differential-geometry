@@ -74,7 +74,7 @@ private theorem iterCov_metricRicci_one_eq_totalNabla0SFun [T2Space M]
   exact congrArg (fun T => T x) (Tensor0SBundle.totalNabla0SRealizes_unique h1 h2)
 
 theorem exists_ricciBackground_quotientProduct_of_isSolutionOn (A : QuotientProductAtlas I M)
-    [I.Boundaryless] [SigmaCompactSpace M] [T2Space M]
+    [I.Boundaryless] [T2Space M]
     {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda)
     (hflow : letI := A.charts
@@ -172,7 +172,7 @@ private theorem ricciTensor_quotientProductMetric_eq_zero [T2Space M] [I.Boundar
 
 theorem isSolutionOn_const_quotientProductFamily_of_ricciTensor_eq_zero [T2Space M]
     [I.Boundaryless] [BoundarylessManifold I M] (A : QuotientProductAtlas I M)
-    [SigmaCompactSpace M] (g : SmoothRiemannianMetric I M)
+    (g : SmoothRiemannianMetric I M)
     (hflat : ∀ (y : M) (v w : TangentSpace I y), ricciTensor g y v w = 0)
     (lambda : ℝ) (hlambda : 0 < lambda) (D : RealTimeInterval) :
     letI := A.charts

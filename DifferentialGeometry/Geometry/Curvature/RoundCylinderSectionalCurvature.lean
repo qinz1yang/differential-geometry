@@ -31,7 +31,7 @@ theorem metricRm04StandardAt_prodEuclidean_axis
   simpa only [map_zero, add_zero] using hinner
 
 theorem metricRm04StandardAt_roundCylinder_axis
-    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)]
     (x : Metric.sphere (0 : E) 1 × ℝ) (v : TangentSpace (𝓡 n) x.1) :
     metricRm04StandardAt (roundCylinderMetric (E := E) (n := n)) x
@@ -49,7 +49,7 @@ theorem metricRm04StandardAt_roundCylinder_axis
     ((v, 0) : TangentSpace ((𝓡 n).prod 𝓘(ℝ, ℝ)) x)
 
 theorem metricScalarAt_roundCylinder_pos
-    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E] [FiniteDimensional ℝ E]
+    {E : Type*} [NormedAddCommGroup E] [InnerProductSpace ℝ E]
     {n : ℕ} [Fact (Module.finrank ℝ E = n + 1)] (hn : 2 ≤ n)
     (x : Metric.sphere (0 : E) 1 × ℝ) :
     0 < metricScalarAt (roundCylinderMetric (E := E) (n := n)) x := by

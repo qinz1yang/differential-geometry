@@ -461,7 +461,7 @@ def childCoreNeighborhoodDeformation (c : ConnectedComponents Q.Carrier)
 def childCoreNeighborhoodHomotopyEquiv (c : ConnectedComponents Q.Carrier)
     {r : ℝ} (hr : 0 ≤ r) (hr1 : r < 1) :
     ContinuousMap.HomotopyEquiv (E.ChildCore c) (E.childCoreNeighborhood c r) :=
-  homotopyEquiv_of_retraction
+  homotopyEquivOfRetraction
     (E.childCoreInclusionRestrict c
       (E.range_childCoreInclusion_subset_childCoreNeighborhood c hr1))
     (E.childCoreNeighborhoodRetraction c hr hr1)

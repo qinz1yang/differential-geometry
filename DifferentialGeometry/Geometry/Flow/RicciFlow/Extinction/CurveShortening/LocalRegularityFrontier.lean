@@ -101,7 +101,7 @@ theorem curveShorteningDerivativeEstimate_iff_nonempty
     exact ⟨K.delta, K.radius, K.coefficient, K.delta_pos, K.delta_lt_one, K.radius_pos,
       K.radius_le_one, K.coefficient_pos, K.curve, K.product⟩
 
-noncomputable def curveShorteningRegularityInput_of_derivativeEstimate
+noncomputable def curveShorteningRegularityInputOfDerivativeEstimate
     (B : RicciBackground (I := I) (M := M) D a b) {L₀ Θ₀ : ℝ}
     (h : CurveShorteningDerivativeEstimate B L₀ Θ₀) :
     CurveShorteningRegularityInput (I := I) (M := M) (D := D) (a := a) (b := b) B L₀ Θ₀ :=
@@ -120,7 +120,7 @@ theorem curveShorteningDerivativeEstimate_mono_data {B : RicciBackground (I := I
       hproduct lambda hlambda hlambda_one T hT hTb J hJ c hc (hlen.trans hL)
         (hcurv.trans hΘ))⟩
 
-def CurveShorteningRegularityInput.mono_data {B : RicciBackground (I := I) (M := M) D a b}
+def CurveShorteningRegularityInput.restrictBounds {B : RicciBackground (I := I) (M := M) D a b}
     {L₀ Θ₀ L Θ : ℝ}
     (K : CurveShorteningRegularityInput (I := I) (M := M) (D := D) (a := a) (b := b) B L₀ Θ₀)
     (hL : L ≤ L₀) (hΘ : Θ ≤ Θ₀) :

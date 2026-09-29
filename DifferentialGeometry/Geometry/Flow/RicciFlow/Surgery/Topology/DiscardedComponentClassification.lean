@@ -247,7 +247,7 @@ theorem exists_poincareStandardDiscarded_tolerance_of_canonical_neighborhoods :
     | positive whole data sec => exact Or.inl whole
     | round whole data => exact Or.inl whole
     | cap data depth =>
-      refine Or.inr ⟨data.core.carrier, ⟨data.core_model⟩, data.core_inside.trans interior_subset, ?_⟩
+      refine Or.inr ⟨data.core.carrier, ⟨data.coreModel⟩, data.core_inside.trans interior_subset, ?_⟩
       have hball := DifferentialGeometry.Geometry.Metric.riemannianEDistOf_ball_subset_of_le_frontier_distance
         ((H.event i).incoming.flow.base.metric t) data.center_inside
         (r := ENNReal.ofReal (10000 / Real.sqrt ((H.event i).incoming.flow.scalar t x))) (by

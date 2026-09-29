@@ -81,7 +81,7 @@ theorem exists_windowedModelWitness_canonicalWitness_of_model_round_component
         ring
       _ ≤ modelRadius delta := modelRadius_anti W.eps_pos hdradius
   let K : CanonicalWitness W.model.S eta (2 * C1) C2 W.model.basepoint 0 :=
-    K0.enlarge_constants (by linarith) le_rfl
+    K0.enlargeConstants (by linarith) le_rfl
   have hKuniv : K.domain.carrier = univ := hK0univ
   have hKouter : K.domain.carrier ⊆ riemannianBallOf (W.model.S.base.metric 0)
       W.model.basepoint (2 * C1) := by
@@ -247,7 +247,7 @@ theorem exists_windowed_bufferedCanonical_with_cap_neck_charts_of_round_model
         10000 / Real.sqrt (S.scalar t x) ≤ metricDistance (S.base.metric t) x y) : False := by
     let j : Fin cap.chain.count := ⟨0, cap.chain.count_pos⟩
     let p := (cap.chain.necks j).center
-    have hv : cap.tube_map (p, 0) ∈ cap.tube := by
+    have hv : cap.tubeMap (p, 0) ∈ cap.tube := by
       rw [← cap.tube_eq]
       exact ⟨(p, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩
     have hcontra := localCap_tube_depth_lt_two_mul_comparisonConstant K' cap hdepth hv

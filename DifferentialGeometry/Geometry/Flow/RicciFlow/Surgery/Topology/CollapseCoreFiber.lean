@@ -110,10 +110,10 @@ private theorem childCoreInclusion_ne_cap (x : G.transition.ChildCore c)
 
 theorem rfs_whole_parent_map_preimage_childCoreInclusion (x : G.transition.ChildCore c)
     (hx : (𝓡∂ 3).IsInteriorPoint x.1) :
-    K.rfs_whole_parent_map ⁻¹' {G.transition.childCoreInclusion c x} =
+    K.canonicalWholeParentMap ⁻¹' {G.transition.childCoreInclusion c x} =
       {G.transition.childCoreIntoParent c x} := by
   ext y
-  change K.rfs_whole_parent_map y = G.transition.childCoreInclusion c x ↔
+  change K.canonicalWholeParentMap y = G.transition.childCoreInclusion c x ↔
     y = G.transition.childCoreIntoParent c x
   constructor
   · intro hy
@@ -142,7 +142,7 @@ theorem rfs_whole_parent_map_preimage_childCoreInclusion (x : G.transition.Child
 theorem rfs_whole_parent_map_locally_injective_at_childCore (x : G.transition.ChildCore c)
     (hx : (𝓡∂ 3).IsInteriorPoint x.1) :
     ∃ U ∈ 𝓝 (G.transition.childCoreIntoParent c x),
-      Set.InjOn K.rfs_whole_parent_map U := by
+      Set.InjOn K.canonicalWholeParentMap U := by
   refine ⟨Set.range (G.transition.childCoreIntoParent c),
     G.transition.range_childCoreIntoParent_mem_nhds c x hx, ?_⟩
   rintro y ⟨y', rfl⟩ z ⟨z', rfl⟩ h
@@ -153,7 +153,7 @@ theorem rfs_whole_parent_map_locally_injective_at_childCore (x : G.transition.Ch
 theorem exists_rfs_whole_parent_map_singleton_fiber :
     ∃ x : G.transition.ChildCore c,
       (𝓡∂ 3).IsInteriorPoint x.1 ∧
-      K.rfs_whole_parent_map ⁻¹' {G.transition.childCoreInclusion c x} =
+      K.canonicalWholeParentMap ⁻¹' {G.transition.childCoreInclusion c x} =
         {G.transition.childCoreIntoParent c x} := by
   obtain ⟨x, hx⟩ := G.transition.exists_childCore_interior_point c
   exact ⟨x, hx, K.rfs_whole_parent_map_preimage_childCoreInclusion x hx⟩

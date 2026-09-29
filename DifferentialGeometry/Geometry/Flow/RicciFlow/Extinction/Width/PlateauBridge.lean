@@ -21,7 +21,7 @@ variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {Q : Type*} [TopologicalSpace Q] [ChartedSpace E Q] [IsManifold 𝓘(ℝ, E) ∞ Q]
 
 omit [IsManifold 𝓘(ℝ, E) ∞ Q] in
-def smoothDisk_of_smoothDiskExtension {u : C(Disk, Q)} {U : ℂ → Q}
+def smoothDiskOfSmoothDiskExtension {u : C(Disk, Q)} {U : ℂ → Q}
     (h : Geometry.SmoothDiskExtension (E := E) u U) :
     SmoothDisk (I := 𝓘(ℝ, E)) (Q := Q) where
   map := u
@@ -101,7 +101,7 @@ theorem SmoothDisk.isConformal_iff_diskMapConformalAt
     exact (SmoothDisk.isConformalAt_iff_diskMapConformalAt w g h z).mpr (hw z z.property)
 
 omit [IsManifold 𝓘(ℝ, E) ∞ Q] in
-def DiskLocalExtension.of_smoothDiskExtension {u : C(Disk, Q)} {U : ℂ → Q}
+def DiskLocalExtension.ofSmoothDiskExtension {u : C(Disk, Q)} {U : ℂ → Q}
     (h : Geometry.SmoothDiskExtension (E := E) u U) (z : Disk) :
     DiskLocalExtension (I := 𝓘(ℝ, E)) u z :=
   let N := Classical.choose h.2
@@ -118,7 +118,7 @@ def DiskLocalExtension.of_smoothDiskExtension {u : C(Disk, Q)} {U : ℂ → Q}
 omit [IsManifold 𝓘(ℝ, E) ∞ Q] in
 @[simp] theorem DiskLocalExtension.of_smoothDiskExtension_map
     {u : C(Disk, Q)} {U : ℂ → Q} (h : Geometry.SmoothDiskExtension (E := E) u U) (z : Disk) :
-    (DiskLocalExtension.of_smoothDiskExtension h z).map = U := rfl
+    (DiskLocalExtension.ofSmoothDiskExtension h z).map = U := rfl
 
 variable [FiniteDimensional ℝ E]
 
@@ -131,7 +131,7 @@ theorem SmoothDisk.diskMapTension_eq_zero_of_isHarmonic
     {U : ℂ → Q} (h : Geometry.SmoothDiskExtension (E := E) w.map U)
     (z : Disk) (hw : w.IsHarmonic g) :
     (Geometry.diskMapTension g U (z : ℂ) : E) = 0 := by
-  have h0 := hw z (DiskLocalExtension.of_smoothDiskExtension h z)
+  have h0 := hw z (DiskLocalExtension.ofSmoothDiskExtension h z)
   rwa [DiskLocalExtension.of_smoothDiskExtension_map,
     diskLocalTension_eq_diskMapTension] at h0
 
@@ -335,13 +335,13 @@ theorem smooth_exact_disk_density_stdModel
     mem_spanningDiskCompetitors_of_diskCompetitor g γ.toContinuousLoop v
   obtain ⟨vj, Uj, hdata, htend⟩ :=
     Geometry.exists_smooth_spanning_disks_smooth_extension_tendsto_area g hγ hv
-  refine ⟨fun j => smoothDisk_of_smoothDiskExtension (E := E) (hdata j).1, ?_, ?_⟩
+  refine ⟨fun j => smoothDiskOfSmoothDiskExtension (E := E) (hdata j).1, ?_, ?_⟩
   · intro j θ
-    have h1 : (smoothDisk_of_smoothDiskExtension (E := E) (hdata j).1).map = vj j := rfl
+    have h1 : (smoothDiskOfSmoothDiskExtension (E := E) (hdata j).1).map = vj j := rfl
     rw [h1]
     exact (diskTrace_eq_iff (vj j) γ.toContinuousLoop).mp (hdata j).2 θ
   · have hfun : (fun j => diskArea g
-        (smoothDisk_of_smoothDiskExtension (E := E) (hdata j).1).map) =
+        (smoothDiskOfSmoothDiskExtension (E := E) (hdata j).1).map) =
         fun j => Geometry.riemannianDiskArea g (vj j) := by
       funext j
       rw [diskArea_eq_riemannianDiskArea]
@@ -362,7 +362,7 @@ variable {E₁ : Type*} [NormedAddCommGroup E₁] [NormedSpace ℝ E₁]
   {H₂ : Type*} [TopologicalSpace H₂] {I₂ : ModelWithCorners ℝ E₂ H₂}
   {M₂ : Type*} [TopologicalSpace M₂] [ChartedSpace H₂ M₂] [IsManifold I₂ ∞ M₂]
 
-def SmoothDisk.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
+def SmoothDisk.compDiffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
     (u : SmoothDisk (I := I₁) (Q := M₁)) : SmoothDisk (I := I₂) (Q := M₂) where
   map := ⟨fun z => Φ (u.map z), Φ.continuous.comp u.map.continuous⟩
   smooth z := by
@@ -377,7 +377,7 @@ def SmoothDisk.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
     intro w hw
     simp only [diskExtension, dite_eq_left hw.2, F.agrees ⟨hw.1, hw.2⟩, ContinuousMap.coe_mk]
 
-def InteriorSmoothDisk.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
+def InteriorSmoothDisk.compDiffeomorph (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
     (u : InteriorSmoothDisk (I := I₁) (Q := M₁)) : InteriorSmoothDisk (I := I₂) (Q := M₂) where
   map := ⟨fun z => Φ (u.map z), Φ.continuous.comp u.map.continuous⟩
   smooth z hz := by
@@ -403,7 +403,7 @@ theorem IsSignedWeaklyMonotoneTrace.comp_diffeomorph (Φ : M₁ ≃ₘ⟮I₁, I
 omit [IsManifold I₁ ∞ M₁] [IsManifold I₂ ∞ M₂] in
 theorem SmoothDisk.comp_diffeomorph_map (Φ : M₁ ≃ₘ⟮I₁, I₂⟯ M₂)
     (u : SmoothDisk (I := I₁) (Q := M₁)) (z : Disk) :
-    (SmoothDisk.comp_diffeomorph Φ u).map z = Φ (u.map z) := rfl
+    (SmoothDisk.compDiffeomorph Φ u).map z = Φ (u.map z) := rfl
 
 variable [FiniteDimensional ℝ E₁] [T2Space M₁]
 

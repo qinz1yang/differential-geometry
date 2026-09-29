@@ -43,8 +43,7 @@ theorem exists_partial_pullback_time_tower
 
 
 theorem exists_closedWindow_pullback_metric_time_tower
-    [I.Boundaryless] [SigmaCompactSpace M] [NeZero (Module.finrank ℝ E)]
-    [BoundarylessManifold I M]
+    [I.Boundaryless] [SigmaCompactSpace M]
     {D : RealTimeInterval} (S : SolutionOn (I := I) (M := M) D) (hS : IsSolutionOn S)
     {a c b : ℝ} (hac : a < c) (hcb : c < b)
     (hslab : Icc a b ⊆ D.carrier) (hreg : Ioo a b ⊆ D.regular)

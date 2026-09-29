@@ -71,9 +71,9 @@ theorem modelCanonicalWitness_of_branches (hbranches : ModelCanonicalWitnessBran
   intro P hbranch hbase
   rcases hbranch with hspherical | hkappa
   · obtain ⟨W⟩ := hmainA P hspherical hbase
-    exact ⟨W.enlarge_constants (le_max_left _ _) (le_max_left _ _)⟩
+    exact ⟨W.enlargeConstants (le_max_left _ _) (le_max_left _ _)⟩
   · obtain ⟨W⟩ := hmainB P hkappa hbase
-    exact ⟨W.enlarge_constants (le_max_right _ _) (le_max_right _ _)⟩
+    exact ⟨W.enlargeConstants (le_max_right _ _) (le_max_right _ _)⟩
 
 theorem kappaUniformCanonicalClassification_of_modelBranches
     (hdichotomy : AncientModelClassificationDichotomy.{u})

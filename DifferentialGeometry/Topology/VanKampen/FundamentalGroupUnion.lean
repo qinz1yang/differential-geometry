@@ -15,8 +15,7 @@ variable {X : Type u} [TopologicalSpace X]
 
 private noncomputable def amalgamatedProductCollapse
     (U V : Set X) (x₀ : X) (hx₀ : x₀ ∈ U ∩ V)
-    [Subsingleton (FundamentalGroup (↑(U ∩ V)) (overlapBasepoint U V x₀ hx₀))]
-    [Subsingleton (FundamentalGroup V (rightBasepoint V x₀ hx₀.2))] :
+    [Subsingleton (FundamentalGroup (↑(U ∩ V)) (overlapBasepoint U V x₀ hx₀))] :
     Monoid.PushoutI (fundamentalGroupAmalgamation U V x₀ hx₀) →*
       FundamentalGroup U (leftBasepoint U x₀ hx₀.1) :=
   Monoid.PushoutI.lift
@@ -29,8 +28,7 @@ private noncomputable def amalgamatedProductCollapse
 
 private theorem amalgamatedProductCollapse_comp_of_false
     (U V : Set X) (x₀ : X) (hx₀ : x₀ ∈ U ∩ V)
-    [Subsingleton (FundamentalGroup (↑(U ∩ V)) (overlapBasepoint U V x₀ hx₀))]
-    [Subsingleton (FundamentalGroup V (rightBasepoint V x₀ hx₀.2))] :
+    [Subsingleton (FundamentalGroup (↑(U ∩ V)) (overlapBasepoint U V x₀ hx₀))] :
     (amalgamatedProductCollapse U V x₀ hx₀).comp
         (Monoid.PushoutI.of
           (φ := fundamentalGroupAmalgamation U V x₀ hx₀) false) =

@@ -48,7 +48,7 @@ def subseq
       exact h.bound n p (f j) (le_trans hnj (hf j))
 
 omit [CompleteSpace E] in
-def of_boundedGeometry
+def ofBoundedGeometry
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     (h : SeqBoundedGeometry (I := I) X) :
     SeqBallGeometry (I := I) X where

@@ -440,9 +440,7 @@ theorem iteratedDeriv_two_intrinsicFrameGram_eq_riemannOp
 omit [NeZero (Module.finrank ℝ E)] [I.Boundaryless] [SigmaCompactSpace M]
   [T2Space (TangentBundle I M)] in
 private theorem firstBianchiAt_metricRm04At
-    [BoundarylessManifold I M]
-    [PseudoEMetricSpace M] [IsRiemannianManifold I M] [CompleteSpace M]
-    [IsContinuousRiemannianBundle E (fun y : M => TangentSpace I y)]
+    [PseudoEMetricSpace M]
     (g : SmoothRiemannianMetric I M) (p : M) :
     FirstBianchiAt (I := I) (metricRm04At (I := I) (M := M) g p) := by
   have hreal : rm04RealizesConnection (I := I) g (metricCov (I := I) (M := M) g)

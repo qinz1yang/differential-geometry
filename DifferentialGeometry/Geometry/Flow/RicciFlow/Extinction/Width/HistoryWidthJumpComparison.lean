@@ -16,7 +16,7 @@ abbrev ChildComparisonData {H : ObservedHistory.{u}} {i : Fin H.eventCount}
     {parameters : CutoffParameters} (G : GeometricCutoffRecord H i parameters) : Prop :=
   ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
-    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (fundamentalClass (G.Parent c).orientation) =
         fundamentalClass (G.Child c).orientation) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
@@ -47,7 +47,7 @@ theorem historyWidth_event_jump_of_childComparison (H : ObservedHistory.{u})
     ENNReal.ofReal (historyWidth H h0 terminal (historyStageTime H i.succ)) ≤
       liminf (fun t => ENNReal.ofReal (historyWidth H h0 terminal t))
         (𝓝[<] (historyStageTime H i.succ)) := by
-  let chain := rfs_finite_ancestor_chain H terminal
+  let chain := finiteAncestorChain H terminal
   let SC := rfs_simply_connected_history H h0
   let G := cutoff i
   let c := chain.component i.succ

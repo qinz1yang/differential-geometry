@@ -180,7 +180,7 @@ theorem compact_family_regular_homotopy
     (B : SmoothMetricWindow (I := I) (M := M) D a b)
     {d : ℝ} (had : a < d)
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N)
-    {P : Type*} [TopologicalSpace P] [CompactSpace P]
+    {P : Type*} [TopologicalSpace P]
     (solutions : P → CurveMap M)
     (hsol : ∀ p, (solutions p).IsSolutionOn B.family.metric (Icc a d))
     (hcont : @Continuous P (CurveMap M) inferInstance (smoothCylinderTopology e (Icc a d)) solutions)

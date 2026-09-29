@@ -18,14 +18,14 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
   [IsManifold I3 ∞ M] [T2Space M] [SigmaCompactSpace M]
   {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
 
-def LocalNeck.mono_eps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
+def LocalNeck.monoEps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
     (L : LocalNeck S eps x t U) (heps : eps ≤ eps') (hsmall : eps' < 1 / 11) :
     LocalNeck S eps' x t U where
   strong := L.strong.mono heps hsmall
   region_eq := L.region_eq
   boundary_eq := L.boundary_eq
 
-def OrderedNeckChain.mono_eps {eps eps' t : ℝ} {V : Set M}
+def OrderedNeckChain.monoEps {eps eps' t : ℝ} {V : Set M}
     (c : OrderedNeckChain S eps t V) (heps : eps ≤ eps') (hsmall : eps' < 1 / 11) :
     OrderedNeckChain S eps' t V where
   count := c.count
@@ -39,15 +39,15 @@ def OrderedNeckChain.mono_eps {eps eps' t : ℝ} {V : Set M}
   swept_eq := c.swept_eq
   transition_increasing := c.transition_increasing
 
-def LocalCap.mono_eps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
+def LocalCap.monoEps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
     (C : LocalCap S eps x t U) (heps : eps ≤ eps') (hsmall : eps' < 1 / 11) :
     LocalCap S eps' x t U where
   core := C.core
   core_inside := C.core_inside
   center_inside := C.center_inside
-  core_model := C.core_model
+  coreModel := C.coreModel
   tube := C.tube
-  tube_map := C.tube_map
+  tubeMap := C.tubeMap
   tube_domain := C.tube_domain
   tube_eq := C.tube_eq
   union_eq := C.union_eq
@@ -56,11 +56,11 @@ def LocalCap.mono_eps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
   outer_boundary := C.outer_boundary
   boundary_eq := C.boundary_eq
   boundaries_disjoint := C.boundaries_disjoint
-  chain := C.chain.mono_eps heps hsmall
-  core_boundary_map := C.core_boundary_map
+  chain := C.chain.monoEps heps hsmall
+  coreBoundaryMap := C.coreBoundaryMap
   core_boundary_eq := C.core_boundary_eq
 
-def RoundComponent.mono_eps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
+def RoundComponent.monoEps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
     (R : RoundComponent S eps x t U) (hpos : 0 < eps) (heps : eps ≤ eps') :
     RoundComponent S eps' x t U := by
   letI : TopologicalSpace R.Z := R.topology
@@ -90,23 +90,23 @@ def RoundComponent.mono_eps {eps eps' : ℝ} {x : M} {t : ℝ} {U : Set M}
         (Nat.ceil_mono (inv_anti₀ hpos heps)) heps
       metric_bounds := R.metric_bounds }
 
-def CanonicalAlternative.mono_eps {eps eps' C : ℝ} {x : M} {t : ℝ} {U : Set M}
+def CanonicalAlternative.monoEps {eps eps' C : ℝ} {x : M} {t : ℝ} {U : Set M}
     (A : CanonicalAlternative S eps C x t U) (hpos : 0 < eps) (heps : eps ≤ eps')
     (hsmall : eps' < 1 / 11) : CanonicalAlternative S eps' C x t U := by
   cases A with
-  | neck data => exact .neck (data.mono_eps heps hsmall)
-  | cap data deep => exact .cap (data.mono_eps heps hsmall) deep
+  | neck data => exact .neck (data.monoEps heps hsmall)
+  | cap data deep => exact .cap (data.monoEps heps hsmall) deep
   | positive whole data sec => exact .positive whole data sec
-  | round whole data => exact .round whole (data.mono_eps hpos heps)
+  | round whole data => exact .round whole (data.monoEps hpos heps)
 
 omit [T2Space M] [SigmaCompactSpace M] in
 @[simp] theorem CanonicalAlternative.mono_eps_requiresVolume {eps eps' C : ℝ} {x : M} {t : ℝ}
     {U : Set M} (A : CanonicalAlternative S eps C x t U) (hpos : 0 < eps) (heps : eps ≤ eps')
     (hsmall : eps' < 1 / 11) :
-    (A.mono_eps hpos heps hsmall).requiresVolume = A.requiresVolume := by
+    (A.monoEps hpos heps hsmall).requiresVolume = A.requiresVolume := by
   cases A <;> rfl
 
-def CanonicalWitness.mono_eps {eps eps' C1 C2 : ℝ} {x : M} {t : ℝ}
+def CanonicalWitness.monoEps {eps eps' C1 C2 : ℝ} {x : M} {t : ℝ}
     (W : CanonicalWitness S eps C1 C2 x t)
     (heps : eps ≤ eps') (hsmall : eps' < 1 / 11) :
     CanonicalWitness S eps' C1 C2 x t where
@@ -123,7 +123,7 @@ def CanonicalWitness.mono_eps {eps eps' C1 C2 : ℝ} {x : M} {t : ℝ}
   inside_ball := W.inside_ball
   scalar_bounds := W.scalar_bounds
   rm_bound := W.rm_bound
-  alternative := W.alternative.mono_eps W.eps_pos heps hsmall
+  alternative := W.alternative.monoEps W.eps_pos heps hsmall
   volume := by
     intro hv
     exact W.volume (by
@@ -131,11 +131,11 @@ def CanonicalWitness.mono_eps {eps eps' C1 C2 : ℝ} {x : M} {t : ℝ}
   gradient := W.gradient
   time_derivative := W.time_derivative
 
-def BufferedCanonical.canonicalWitness_mono {alpha C H : ℝ} {x : M} {t : ℝ}
+def BufferedCanonical.canonicalWitnessMono {alpha C H : ℝ} {x : M} {t : ℝ}
     (B : BufferedCanonical S alpha C H x t) {eps : ℝ}
     (heps : B.tolerance ≤ eps) (hsmall : eps < 1 / 11) :
     CanonicalWitness S eps C C x t :=
-  B.witness.mono_eps heps hsmall
+  B.witness.monoEps heps hsmall
 
 def kappaUniformCanonicalClassification : Prop :=
   ∀ eps : ℝ, 0 < eps → eps ≤ 1 / 44 →
@@ -167,6 +167,6 @@ theorem buffered_canonical_pullback_of_classification
   obtain ⟨delta, hd, hd1, himp⟩ := hmain kappa hk
   refine ⟨delta, hd, hd1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W⟩ := himp M D S hS o x t hreg hw
-  exact ⟨W.mono_eps (by linarith) (by linarith)⟩
+  exact ⟨W.monoEps (by linarith) (by linarith)⟩
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

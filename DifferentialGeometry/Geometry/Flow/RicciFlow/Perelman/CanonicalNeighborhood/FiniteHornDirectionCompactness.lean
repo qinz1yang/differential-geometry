@@ -214,11 +214,11 @@ theorem separatedEndRays_of_exists_pos_angle (H : FiniteHorn g) (angles : EndAng
 
 theorem finite_horn_direction_compactness_of_inputs
     (hnet : ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ScaleDirectionNet g H)
+      H₀ ≤ H.collarDepth → ScaleDirectionNet g H)
     (hsep : ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ angles : EndAngles H, SeparatedEndRays g H angles) :
+      H₀ ≤ H.collarDepth → ∀ angles : EndAngles H, SeparatedEndRays g H angles) :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ angles : EndAngles H, letI := angles.metric;
+      H₀ ≤ H.collarDepth → ∀ angles : EndAngles H, letI := angles.metric;
         TotallyBounded (Set.univ : Set angles.quotient) ∧
           CompactSpace (UniformSpace.Completion angles.quotient) ∧
           ∃ a b : EndRay H.endpoint, 0 < angles.angle a b := by
@@ -238,11 +238,11 @@ theorem separatedEndRays_iff_exists_pos_angle (H : FiniteHorn g) (angles : EndAn
 
 theorem finite_horn_direction_compactness_of_geometric_inputs
     (hnet : ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ScaleDirectionNet g H)
+      H₀ ≤ H.collarDepth → ScaleDirectionNet g H)
     (hsep : ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ScaleSeparatedEndRays g H) :
+      H₀ ≤ H.collarDepth → ScaleSeparatedEndRays g H) :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ angles : EndAngles H, letI := angles.metric;
+      H₀ ≤ H.collarDepth → ∀ angles : EndAngles H, letI := angles.metric;
         TotallyBounded (Set.univ : Set angles.quotient) ∧
           CompactSpace (UniformSpace.Completion angles.quotient) ∧
           ∃ a b : EndRay H.endpoint, 0 < angles.angle a b := by

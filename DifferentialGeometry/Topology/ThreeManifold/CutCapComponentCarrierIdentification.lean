@@ -43,19 +43,19 @@ theorem reachable_cutCapVertex (K : E.CutCapNeighborhoodFamily) (a : E.tubes.Ind
     MarkedManifoldGraph.processedGraph_mono _ (Finset.subset_univ _)
   exact h.mono hle
 
-def cutCapBranchBlock_eq_cutComponentBranches (K : E.CutCapNeighborhoodFamily) : Prop :=
+def cutCapVertexBlockEqCappedCutComponents (K : E.CutCapNeighborhoodFamily) : Prop :=
   ∀ (C : ConnectedComponents M.Carrier) (_ : E.cutIndices C ≠ ∅) (a : E.cutIndices C)
     (v : (E.cutCapMarkedGraph K).Vertex),
     (v ∈ ((E.cutCapMarkedGraph K).vertexBlock Finset.univ (E.cutCapVertex a.1 false) :
         Set (E.cutCapMarkedGraph K).Vertex)) ↔ v ∈ E.cappedCutComponents C
 
-def cutCapBranchBlockList_eq_cutPieceSummands (K : E.CutCapNeighborhoodFamily) : Prop :=
+def cutCapVertexBlockListEqCappedCutPieceSummands (K : E.CutCapNeighborhoodFamily) : Prop :=
   ∀ (C : ConnectedComponents M.Carrier) (_ : E.cutIndices C ≠ ∅) (a : E.cutIndices C),
     (E.cutCapMarkedGraph K).vertexBlockList Finset.univ (E.cutCapVertex a.1 false) =
       E.cappedCutPieceSummands C
 
 theorem forall₂_vertexBlockList_cappedCutPieceFactors (K : E.CutCapNeighborhoodFamily)
-    (h : E.cutCapBranchBlockList_eq_cutPieceSummands K)
+    (h : E.cutCapVertexBlockListEqCappedCutPieceSummands K)
     (C : ConnectedComponents M.Carrier) (hC : E.cutIndices C ≠ ∅) (a : E.cutIndices C) :
     List.Forall₂ (fun (A B : ConnectedClosedOrientedManifold.{u} 3) =>
       Nonempty (ClosedOrientedManifold.OrientedDiffeomorph A.toClosedOrientedManifold
@@ -66,7 +66,7 @@ theorem forall₂_vertexBlockList_cappedCutPieceFactors (K : E.CutCapNeighborhoo
   exact E.forall₂_cappedCutPieceSummands_cappedCutPieceFactors C
 
 theorem card_vertexBlock_eq_card_cappedCutPieceFactorSet (K : E.CutCapNeighborhoodFamily)
-    (hb : E.cutCapBranchBlock_eq_cutComponentBranches K)
+    (hb : E.cutCapVertexBlockEqCappedCutComponents K)
     (hQ : ClosedOrientedManifold.componentSeparated Q)
     (hD : ClosedOrientedManifold.componentSeparated E.discarded)
     (hside : E.summandSidesSeparated) (C : ConnectedComponents M.Carrier)
@@ -104,7 +104,7 @@ theorem exists_blockInvariant_of_isEmpty_edge (K : E.CutCapNeighborhoodFamily)
   cases hF
   exact E.exists_cutCapEmptyRealization_blockInvariant K Z
 
-noncomputable def cutCapGraphRealization_of_isEmpty_index (K : E.CutCapNeighborhoodFamily)
+noncomputable def cutCapGraphRealizationOfIsEmptyIndex (K : E.CutCapNeighborhoodFamily)
     (S : ConnectedClosedOrientedManifold.{u} 3) [IsEmpty E.tubes.Index] :
     E.CutCapGraphRealization K S := by
   have hEdge : IsEmpty (E.cutCapMarkedGraph K).Edge :=

@@ -480,7 +480,7 @@ noncomputable def emptyParenthesizedConnectedSumFundamentalGroupEquiv
       uniq := fun x => Subsingleton.elim x 1 }
   exact sphereEquiv.trans MulEquiv.ofUnique
 
-noncomputable def fundamentalGroupEquiv_parenthesizedConnectedSumLeaves :
+noncomputable def fundamentalGroupEquivParenthesizedConnectedSumLeaves :
     {r : ℕ} → {ι : Type} → {result : BasedConnectedClosedSmoothThreeManifold} →
       (c : ParenthesizedConnectedSumConstruction r ι result) →
       FundamentalGroup result result.basepoint ≃*
@@ -492,8 +492,8 @@ noncomputable def fundamentalGroupEquiv_parenthesizedConnectedSumLeaves :
       (coprodISingletonEquiv (FundamentalGroup factor factor.basepoint)).symm
   | _, _, _, .combine left left_nonempty right right_nonempty result step =>
       step.fundamentalGroupEquiv.trans <|
-        ((fundamentalGroupEquiv_parenthesizedConnectedSumLeaves left).coprodCongr
-          (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves right)).trans <|
+        ((fundamentalGroupEquivParenthesizedConnectedSumLeaves left).coprodCongr
+          (fundamentalGroupEquivParenthesizedConnectedSumLeaves right)).trans <|
             (combineFactorFreeProductEquivCoprod left left_nonempty
               right right_nonempty result step).symm
 
@@ -517,7 +517,7 @@ noncomputable def ParenthesizedConnectedSumConstruction.factorToResult :
 theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResult :
     {r : ℕ} → {ι : Type} → {result : BasedConnectedClosedSmoothThreeManifold} →
       (c : ParenthesizedConnectedSumConstruction r ι result) → (i : ι) →
-      (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves c).toMonoidHom.comp
+      (fundamentalGroupEquivParenthesizedConnectedSumLeaves c).toMonoidHom.comp
           (c.factorToResult i) =
         (Monoid.CoprodI.of : c.factorFundamentalGroup i →*
           Monoid.CoprodI c.factorFundamentalGroup) := by
@@ -537,7 +537,7 @@ theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResul
       cases i with
       | inl i =>
           ext g
-          simp only [fundamentalGroupEquiv_parenthesizedConnectedSumLeaves,
+          simp only [fundamentalGroupEquivParenthesizedConnectedSumLeaves,
             ParenthesizedConnectedSumConstruction.factorToResult,
             MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom]
           let gLeft := combineLeftFactorEquiv left left_nonempty right right_nonempty result step
@@ -550,8 +550,8 @@ theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResul
           change
             (combineFactorFreeProductEquivCoprod left left_nonempty right right_nonempty
               result step).symm
-                (((fundamentalGroupEquiv_parenthesizedConnectedSumLeaves left).coprodCongr
-                  (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves right))
+                (((fundamentalGroupEquivParenthesizedConnectedSumLeaves left).coprodCongr
+                  (fundamentalGroupEquivParenthesizedConnectedSumLeaves right))
                     (step.fundamentalGroupEquiv
                       (step.leftFactorHom (left.factorToResult i gLeft)))) =
               Monoid.CoprodI.of g
@@ -560,12 +560,12 @@ theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResul
             (combineFactorFreeProductEquivCoprod left left_nonempty right right_nonempty
               result step).symm
                 (Monoid.Coprod.inl
-                  ((fundamentalGroupEquiv_parenthesizedConnectedSumLeaves left)
+                  ((fundamentalGroupEquivParenthesizedConnectedSumLeaves left)
                     (left.factorToResult i gLeft))) =
               Monoid.CoprodI.of g
           have hih := DFunLike.congr_fun (ihLeft i) gLeft
           change
-            (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves left)
+            (fundamentalGroupEquivParenthesizedConnectedSumLeaves left)
                 (left.factorToResult i gLeft) = Monoid.CoprodI.of gLeft at hih
           rw [hih]
           exact DFunLike.congr_fun
@@ -573,7 +573,7 @@ theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResul
               left left_nonempty right right_nonempty result step i) g
       | inr j =>
           ext g
-          simp only [fundamentalGroupEquiv_parenthesizedConnectedSumLeaves,
+          simp only [fundamentalGroupEquivParenthesizedConnectedSumLeaves,
             ParenthesizedConnectedSumConstruction.factorToResult,
             MonoidHom.comp_apply, MulEquiv.coe_toMonoidHom]
           let gRight := combineRightFactorEquiv left left_nonempty right right_nonempty result step
@@ -586,8 +586,8 @@ theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResul
           change
             (combineFactorFreeProductEquivCoprod left left_nonempty right right_nonempty
               result step).symm
-                (((fundamentalGroupEquiv_parenthesizedConnectedSumLeaves left).coprodCongr
-                  (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves right))
+                (((fundamentalGroupEquivParenthesizedConnectedSumLeaves left).coprodCongr
+                  (fundamentalGroupEquivParenthesizedConnectedSumLeaves right))
                     (step.fundamentalGroupEquiv
                       (step.rightFactorHom (right.factorToResult j gRight)))) =
               Monoid.CoprodI.of g
@@ -596,12 +596,12 @@ theorem fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResul
             (combineFactorFreeProductEquivCoprod left left_nonempty right right_nonempty
               result step).symm
                 (Monoid.Coprod.inr
-                  ((fundamentalGroupEquiv_parenthesizedConnectedSumLeaves right)
+                  ((fundamentalGroupEquivParenthesizedConnectedSumLeaves right)
                     (right.factorToResult j gRight))) =
               Monoid.CoprodI.of g
           have hih := DFunLike.congr_fun (ihRight j) gRight
           change
-            (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves right)
+            (fundamentalGroupEquivParenthesizedConnectedSumLeaves right)
                 (right.factorToResult j gRight) = Monoid.CoprodI.of gRight at hih
           rw [hih]
           exact DFunLike.congr_fun
@@ -624,12 +624,12 @@ noncomputable def ParenthesizedConnectedSumConstruction.leavesToOrderedFreeProdu
       Monoid.CoprodI c.orderedFactorFundamentalGroup :=
   c.orderedToLeavesFreeProductEquiv.symm
 
-noncomputable def fundamentalGroupEquiv_parenthesizedFiniteConnectedSum
+noncomputable def fundamentalGroupEquivParenthesizedFiniteConnectedSum
     {r : ℕ} {ι : Type} {result : BasedConnectedClosedSmoothThreeManifold}
     (c : ParenthesizedConnectedSumConstruction r ι result) :
     FundamentalGroup result result.basepoint ≃*
       Monoid.CoprodI c.orderedFactorFundamentalGroup :=
-  (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves c).trans
+  (fundamentalGroupEquivParenthesizedConnectedSumLeaves c).trans
     c.leavesToOrderedFreeProductEquiv
 
 
@@ -642,13 +642,13 @@ noncomputable def ParenthesizedConnectedSumConstruction.orderedFactorToResult
 theorem fundamentalGroupEquiv_parenthesizedFiniteConnectedSum_comp_orderedFactorToResult
     {r : ℕ} {ι : Type} {result : BasedConnectedClosedSmoothThreeManifold}
     (c : ParenthesizedConnectedSumConstruction r ι result) (i : Fin r) :
-    (fundamentalGroupEquiv_parenthesizedFiniteConnectedSum c).toMonoidHom.comp
+    (fundamentalGroupEquivParenthesizedFiniteConnectedSum c).toMonoidHom.comp
         (c.orderedFactorToResult i) =
       (Monoid.CoprodI.of : c.orderedFactorFundamentalGroup i →*
         Monoid.CoprodI c.orderedFactorFundamentalGroup) := by
   ext g
   change c.leavesToOrderedFreeProductEquiv
-      ((fundamentalGroupEquiv_parenthesizedConnectedSumLeaves c)
+      ((fundamentalGroupEquivParenthesizedConnectedSumLeaves c)
         (c.factorToResult (c.factorIndexEquivFin.symm i) g)) =
     Monoid.CoprodI.of
       (M := c.orderedFactorFundamentalGroup) (i := i) g
@@ -656,7 +656,7 @@ theorem fundamentalGroupEquiv_parenthesizedFiniteConnectedSum_comp_orderedFactor
     (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves_comp_factorToResult
       c (c.factorIndexEquivFin.symm i)) g
   change
-    (fundamentalGroupEquiv_parenthesizedConnectedSumLeaves c)
+    (fundamentalGroupEquivParenthesizedConnectedSumLeaves c)
         (c.factorToResult (c.factorIndexEquivFin.symm i) g) =
       Monoid.CoprodI.of
         (M := c.factorFundamentalGroup) (i := c.factorIndexEquivFin.symm i) g at hleaf

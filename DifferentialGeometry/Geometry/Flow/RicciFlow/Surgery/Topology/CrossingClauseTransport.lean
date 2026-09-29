@@ -62,7 +62,7 @@ private theorem canonical_clauses_upgrade {M : Type u} [TopologicalSpace M]
   refine ⟨fun hage => ?_, hder.trans (mul_le_mul_of_nonneg_right h3 (sq_nonneg _)),
     fun v => (hgrad v).trans ?_⟩
   · obtain ⟨W, hW⟩ := hwit (hτ.trans hage)
-    exact ⟨W.enlarge_constants h1 h2, hW.enlarge_constants h1 h2⟩
+    exact ⟨W.enlargeConstants h1 h2, hW.enlarge_constants h1 h2⟩
   · have hnn : 0 ≤ S.scalar t x * Real.sqrt (S.scalar t x) *
         Real.sqrt ((S.base.metric t).inner x v v) := by
       refine mul_nonneg ?_ (Real.sqrt_nonneg _)

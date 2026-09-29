@@ -16,7 +16,7 @@ universe u
 
 private theorem interior_maximal_chart {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {e e' : OpenPartialHomeomorph M H} {x : M}
     (he : e ∈ IsManifold.maximalAtlas I ∞ M)
     (he' : e' ∈ IsManifold.maximalAtlas I ∞ M)
@@ -47,7 +47,7 @@ theorem immersion_image_mem_nhds {E : Type*} [NormedAddCommGroup E] [NormedSpace
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
     {G : Type*} [TopologicalSpace G] {J : ModelWithCorners ℝ E' G}
-    {N : Type*} [TopologicalSpace N] [ChartedSpace G N] [IsManifold J ∞ N]
+    {N : Type*} [TopologicalSpace N] [ChartedSpace G N]
     [FiniteDimensional ℝ E] [FiniteDimensional ℝ E']
     {f : M → N} {x : M}
     (hf : IsImmersionAt I J ∞ f x)

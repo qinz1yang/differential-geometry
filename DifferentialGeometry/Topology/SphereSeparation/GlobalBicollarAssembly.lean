@@ -72,7 +72,7 @@ theorem hasAlexanderDualityH0Certificate_of_smooth_normalField_of_sphereH1
     ha e (normalFieldBicollar e ν a) hΦ
       (normalFieldBicollar_zeroSlice e ν ha) hSphere
 
-noncomputable def smoothSphereSidesOpenThreeSpace_of_smooth_normalField_of_sphereH1
+noncomputable def smoothSphereSidesOpenThreeSpaceOfNormalFieldOfVanishingH1
     {N : Type*} [TopologicalSpace N] [ChartedSpace EuclideanThree N]
     [IsManifold (modelWithCornersSelf ℝ EuclideanThree) ∞ N]
     (e : SphereTwo → N)
@@ -88,7 +88,7 @@ noncomputable def smoothSphereSidesOpenThreeSpace_of_smooth_normalField_of_spher
     (hSphere : IsZero
       (integerSingularHomology (TopCat.of SphereTwo) 1)) :
     SmoothSphereSides (Set.range e) :=
-  smoothSphereSidesOpenThreeSpace_of_alexanderDuality e he ψ
+  smoothSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate e he ψ
     (hasAlexanderDualityH0Certificate_of_smooth_normalField_of_sphereH1
       (he.postcomp_diffeomorph ψ) hν hνnormal hνne hSphere)
 
@@ -120,9 +120,9 @@ theorem disjoint_spheres_nested_openThreeSpace_of_smooth_normalFields_of_sphereH
       let hAD₂ :=
         hasAlexanderDualityH0Certificate_of_smooth_normalField_of_sphereH1
           (he₂.postcomp_diffeomorph ψ) hν₂ hν₂normal hν₂ne hSphere
-      let d₁ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+      let d₁ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
         e₁ he₁ ψ hAD₁
-      let d₂ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+      let d₂ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
         e₂ he₂ ψ hAD₂
       (d₁.compactSide ∩ d₂.compactSide).Nonempty) :
     let hAD₁ :=
@@ -131,9 +131,9 @@ theorem disjoint_spheres_nested_openThreeSpace_of_smooth_normalFields_of_sphereH
     let hAD₂ :=
       hasAlexanderDualityH0Certificate_of_smooth_normalField_of_sphereH1
         (he₂.postcomp_diffeomorph ψ) hν₂ hν₂normal hν₂ne hSphere
-    let d₁ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+    let d₁ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
       e₁ he₁ ψ hAD₁
-    let d₂ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+    let d₂ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
       e₂ he₂ ψ hAD₂
     Xor
       (closure d₁.compactSide ⊂ d₂.compactSide ∧

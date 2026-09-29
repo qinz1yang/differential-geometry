@@ -74,8 +74,7 @@ theorem recenter_scale_of_presentedStaticCap
         metricScalarAt (H.event i).terminal.metric ((static b).neck.center) :=
   fun b => (static b).neck.scale_scalar
 
-theorem no_cuts_discard_iff_retainedCore_ne_univ
-    [IsEmpty (H.event i).transition.trace.tubes.Index] :
+theorem exists_notMem_retainedCore_iff_ne_univ :
     (∃ x : (H.event i).transition.trace.tubes.core,
         x ∉ (H.event i).transition.trace.retainedCore) ↔
       (H.event i).transition.trace.retainedCore ≠ Set.univ :=

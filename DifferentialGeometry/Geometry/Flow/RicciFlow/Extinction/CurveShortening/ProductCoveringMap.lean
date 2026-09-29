@@ -118,7 +118,7 @@ theorem map_unitTangent_eq [T2Space M] (A : QuotientProductAtlas I M) [I.Boundar
       (c.coverLift x t)) ((c.speed g lambda x t)⁻¹) (c.X (I := I) x t)).symm
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem map_X_eq_zero_iff [T2Space M] (A : QuotientProductAtlas I M) [I.Boundaryless]
+theorem map_X_eq_zero_iff (A : QuotientProductAtlas I M)
     {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J) :
     letI := A.charts
     letI := A.smoothManifold
@@ -224,7 +224,7 @@ theorem cover_time_derivative {J : Set ℝ} (hc : c.SmoothOn (I := I) J) (x t : 
   exact Prod.ext rfl hy
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem map_velocity_eq [T2Space M] (A : QuotientProductAtlas I M) [I.Boundaryless]
+theorem map_velocity_eq (A : QuotientProductAtlas I M)
     (J : Set ℝ) (hc : c.SmoothOn (I := I) J) (x t : ℝ) (ht : t ∈ J)
     (huniq : UniqueMDiffWithinAt 𝓘(ℝ, ℝ) J t) :
     letI := A.charts
@@ -253,14 +253,14 @@ theorem map_velocity_eq [T2Space M] (A : QuotientProductAtlas I M) [I.Boundaryle
     rfl
   rw [hvel, c.cover_time_derivative hc x t ht huniq]
 
-def CoverSmoothLift (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
+def CoverSmoothLift (A : QuotientProductAtlas I M)
     (c : ProductCurve M) (J : Set ℝ) : Prop :=
   letI := A.charts
   letI := A.smoothManifold
   c.map.SmoothOn (I := I.prod 𝓘(ℝ, ℝ)) J → c.SmoothOn (I := I) J
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem CoverSmoothLift_empty (A : QuotientProductAtlas I M) [T2Space M] [I.Boundaryless]
+theorem CoverSmoothLift_empty (A : QuotientProductAtlas I M)
     (c : ProductCurve M) : CoverSmoothLift A c ∅ := by
   let := A.charts
   let := A.smoothManifold

@@ -43,7 +43,6 @@ theorem subsingleton_integralSingularHomology_two_iff_relative_of_puncturedDuali
 omit [CompactSpace M] in
 theorem puncturedDualityInputs_of_noncompactThreeManifoldTopHomologyVanishing
     (o : TangentOrientationSection M) (x₀ : M)
-    [SimplyConnectedSpace ↥({x₀}ᶜ : Set M)]
     (hprop : localClassRealizationLocallyConstant o)
     (h : poincareDualityTwoOne ({x₀}ᶜ : Set M))
     (hv : noncompactThreeManifoldTopHomologyVanishing.{u}) :

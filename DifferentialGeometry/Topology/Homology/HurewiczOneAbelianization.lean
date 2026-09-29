@@ -671,7 +671,7 @@ theorem integralPathLoopChainMap_simplex [PathConnectedSpace X] (x : X)
   rw [← integralSingularChainBasis_apply]
   exact (integralSingularChainBasis 1 X).constr_basis ℕ _ σ
 
-theorem integralSourceVertexMap_eq_targetVertexMap_of_cycle [PathConnectedSpace X]
+theorem integralSourceVertexMap_eq_targetVertexMap_of_cycle
     (z : integralSingularCycles 0 X) :
     integralSourceVertexMap (z : (integralSingularChains X).X 1) =
       integralTargetVertexMap (z : (integralSingularChains X).X 1) := by
@@ -682,7 +682,7 @@ theorem integralSourceVertexMap_eq_targetVertexMap_of_cycle [PathConnectedSpace 
   rw [hz, sub_eq_zero] at h
   exact h.symm
 
-def HurewiczOneLoopGeneration [PathConnectedSpace X] (x : X) : Prop :=
+def HurewiczOneLoopGeneration (x : X) : Prop :=
   ∀ y : integralSingularHomology 1 X,
     y ∈ Submodule.span ℤ (Set.range (fun γ : Path x x => integralPathLoopClass γ))
 
@@ -709,7 +709,7 @@ theorem hurewiczOneLoopGeneration_punit (x : PUnit.{u + 1}) : HurewiczOneLoopGen
   rw [@Subsingleton.elim _ hsub y 0]
   exact Submodule.zero_mem _
 
-noncomputable def abelianization_equiv_of_surjective_ker_eq_commutator {G : Type*} [Group G]
+noncomputable def abelianizationEquivOfSurjectiveKerEqCommutator {G : Type*} [Group G]
     {A : Type*} [CommGroup A] (f : G →* A) (hsurj : Function.Surjective f)
     (hker : f.ker = commutator G) : Abelianization G ≃* A :=
   QuotientGroup.liftEquiv (commutator G) hsurj hker.symm
@@ -723,7 +723,7 @@ def hurewiczSphereMonoidHom (x : X)
   map_one' := by rw [sphereHurewicz_one]; rfl
   map_mul' a b := by rw [hmul]; rfl
 
-theorem abelianizationHomotopyGroupOne_equiv_of_hurewiczOne [PathConnectedSpace X] (x : X)
+theorem abelianizationHomotopyGroupOne_equiv_of_hurewiczOne (x : X)
     (c : integralSingularHomology (0 + 1) (liftedHomotopySphere.{u} 0))
     (hmul : ∀ a b : HomotopyGroup (Fin 1) X x,
       sphereHurewicz 0 x c (a * b) = sphereHurewicz 0 x c a + sphereHurewicz 0 x c b)
@@ -732,7 +732,7 @@ theorem abelianizationHomotopyGroupOne_equiv_of_hurewiczOne [PathConnectedSpace 
       a ∈ commutator (HomotopyGroup (Fin 1) X x)) :
     Nonempty (Abelianization (HomotopyGroup (Fin 1) X x) ≃*
       Multiplicative (integralSingularHomology 1 X)) := by
-  refine ⟨abelianization_equiv_of_surjective_ker_eq_commutator
+  refine ⟨abelianizationEquivOfSurjectiveKerEqCommutator
     (hurewiczSphereMonoidHom x c hmul) ?_ ?_⟩
   · intro y
     obtain ⟨a, ha⟩ := hsurj (Multiplicative.toAdd y)

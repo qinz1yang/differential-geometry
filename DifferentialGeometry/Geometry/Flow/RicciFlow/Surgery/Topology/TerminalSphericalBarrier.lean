@@ -173,7 +173,7 @@ theorem TerminalLimitMetric.eventually_spatialNeck_of_canonical_caps
     (hcap : ∀ n, (W n).alternative = CanonicalAlternative.cap (cap n) (depth n)) :
     ∀ᶠ n in atTop, ∃ (v : G.terminalRegularOpen) (nk : SpatialNeck L.metric δ v),
       v.val ∈ (cap n).tube ∧
-        ∀ z : neckBuffer δ, (nk.map z.val).val = (cap n).tube_map z.val := by
+        ∀ z : neckBuffer δ, (nk.map z.val).val = (cap n).tubeMap z.val := by
   have heps : 0 < eps := by
     obtain ⟨v, nk, hmap⟩ := hW 0 (cap 0) (depth 0) (hcap 0)
     exact nk.eps_pos
@@ -184,7 +184,7 @@ theorem TerminalLimitMetric.eventually_spatialNeck_of_canonical_caps
   obtain ⟨v, source, hsource, hv, N, hNv, _, hNmap⟩ := hn
   obtain ⟨nk, _, hnkmap⟩ := N.exists_spatialNeck le_rfl hδsmall le_rfl
   let nk' : SpatialNeck L.metric δ v := hNv ▸ nk
-  have hm : ∀ z : neckBuffer δ, (nk'.map z.val).val = (cap n).tube_map z.val := by
+  have hm : ∀ z : neckBuffer δ, (nk'.map z.val).val = (cap n).tubeMap z.val := by
     cases hNv
     intro z
     exact (congrArg Subtype.val (hnkmap z)).trans ((hNmap z).trans (hsource z.val).symm)
@@ -205,7 +205,7 @@ theorem TerminalLimitMetric.eventually_cap_spherical_barrier
     ∀ᶠ n in atTop, ∃ (v : G.terminalRegularOpen) (nk : SpatialNeck L.metric δ v)
       (K : CompactDomain G.terminalRegularOpen),
       Subtype.val '' K.carrier = (cap n).core.carrier ∪
-        (cap n).tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+        (cap n).tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       x ∈ interior K.carrier ∧ K.carrier ⊆ Subtype.val ⁻¹' (W n).domain.carrier ∧
       (∀ y ∈ K.carrier, metricScalarAt L.metric x / (2 * C2) < metricScalarAt L.metric y ∧
         metricScalarAt L.metric y < 2 * C2 * metricScalarAt L.metric x) ∧
@@ -480,12 +480,12 @@ theorem TerminalLimitMetric.spatial_neck_or_cap_of_canonical_neighborhoods
         W hW cap depth hcap).and
           (L.eventually_ball_subset_canonical_cap_core hτ x hxpos W cap depth)).and hupper).exists
     have hsubset : (cap n).core.carrier ∪
-        (cap n).tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ⊆ G.terminalRegularOpen := by
+        (cap n).tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ⊆ G.terminalRegularOpen := by
       rw [← hK]
       rintro z ⟨w, _, rfl⟩
       exact w.property
     have hpreimage : Subtype.val ⁻¹' ((cap n).core.carrier ∪
-        (cap n).tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2))) = K.carrier := by
+        (cap n).tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2))) = K.carrier := by
       rw [← hK, preimage_image_eq _ Subtype.val_injective]
     have hmodel := (cap n).nonempty_capCore_truncated_core
       (by norm_num : (1 / 2 : ℝ) ∈ Icc 0 1)

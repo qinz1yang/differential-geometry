@@ -14,7 +14,7 @@ open DifferentialGeometry.PDE.RicciFlow.Extinction.Width
 variable {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
   {M : Type*} [TopologicalSpace M] [ChartedSpace E M] [IsManifold 𝓘(ℝ, E) ∞ M]
 
-def homogeneousCoordinates_of_homogeneouslyRegularMetric
+def homogeneousCoordinatesOfHomogeneouslyRegularMetric
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) (h : HomogeneouslyRegularMetric g) :
     HomogeneousCoordinates (I := 𝓘(ℝ, E)) (Q := M) g 3 := by
   classical
@@ -98,7 +98,7 @@ def homogeneousCoordinates_of_homogeneouslyRegularMetric
 theorem nonempty_homogeneousCoordinates_of_euclideanMetric :
     Nonempty (HomogeneousCoordinates (I := 𝓘(ℝ, plateauCoordinateSpace))
       (Q := plateauCoordinateSpace) (euclideanMetric plateauCoordinateSpace) 3) :=
-  ⟨homogeneousCoordinates_of_homogeneouslyRegularMetric (euclideanMetric plateauCoordinateSpace)
+  ⟨homogeneousCoordinatesOfHomogeneouslyRegularMetric (euclideanMetric plateauCoordinateSpace)
     homogeneouslyRegularMetric_euclideanMetric⟩
 
 end DifferentialGeometry.Geometry

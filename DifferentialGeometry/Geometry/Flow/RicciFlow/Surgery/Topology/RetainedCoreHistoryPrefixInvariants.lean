@@ -24,7 +24,7 @@ theorem inCutoffClass_prefixAt {g₀ : P₀.Metric} {B : ℝ} {p₀ : CutoffPara
   obtain ⟨⟨A⟩, -, hB, hrec, hΛ⟩ := hH
   have hc : Fin.castLE (Nat.succ_le_succ (Nat.le_of_lt_succ k.isLt)) (0 : Fin (k.val + 1)) = 0 :=
     Fin.ext (by simp)
-  refine ⟨⟨InitialIdentification.of_stageZero A (congrArg H.stage hc)
+  refine ⟨⟨InitialIdentification.ofStageZero A (congrArg H.stage hc)
     (congr_arg_heq H.initialMetric hc)⟩, rfl, ?_, ?_, hΛ⟩
   · exact ((H.time_strictMono.monotone (Fin.le_last k)).trans H.time_le_horizon).trans_lt hB
   · obtain ⟨p, records, hfam⟩ :=

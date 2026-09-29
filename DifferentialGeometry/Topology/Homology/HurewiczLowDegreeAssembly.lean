@@ -49,7 +49,7 @@ theorem
 theorem
     homotopyTwo_subsingleton_of_sphereHurewiczTwoCanonical_of_noncompactPoincareDuality
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
     (hTwo : SphereHurewiczTwoCanonical M) (x q : M)
     (hpd : noncompactPoincareDualityTwoOne ({x}ᶜ : Set M)) :
     Subsingleton (HomotopyGroup (Fin 2) M q) :=
@@ -59,7 +59,7 @@ theorem
 theorem
     homotopyTwo_subsingleton_of_hurewiczTwoSphereNullhomotopic_of_noncompactPoincareDuality
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
     (hnull : HurewiczTwoSphereNullhomotopic M) (x q : M)
     (hpd : noncompactPoincareDualityTwoOne ({x}ᶜ : Set M)) :
     Subsingleton (HomotopyGroup (Fin 2) M q) :=
@@ -70,7 +70,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology in
 theorem
     sphereHurewiczTwoCanonical_iff_forall_subsingleton_homotopyGroup_of_noncompactPoincareDuality
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
     (x : M) (hpd : noncompactPoincareDualityTwoOne ({x}ᶜ : Set M)) :
     SphereHurewiczTwoCanonical M ↔ ∀ q : M, Subsingleton (HomotopyGroup (Fin 2) M q) :=
   sphereHurewiczTwoCanonical_iff_forall_subsingleton_homotopyGroup
@@ -78,7 +78,7 @@ theorem
 
 theorem hurewicz_two_and_three_isomorphism_of_lowDegreeAssembly
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
-    [IsManifold (𝓡 3) ∞ M] [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
+    [T2Space M] [CompactSpace M] [SimplyConnectedSpace M]
     (x : M) (hpd : noncompactPoincareDualityTwoOne ({x}ᶜ : Set M))
     (hTwo : SphereHurewiczTwoCanonical M)
     (hgen : IsSphereHomologyGenerator.{u} 2 cubeSphereFundamentalClass)

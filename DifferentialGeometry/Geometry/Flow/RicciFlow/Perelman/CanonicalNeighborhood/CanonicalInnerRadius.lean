@@ -40,7 +40,7 @@ theorem CanonicalWitness.closedBall_nine_subset_of_scalar_one
     simpa only [StrongNeck.region, ← L.region_eq] using hsub
   | cap cap deep =>
     let p : Sphere 2 := ⟨EuclideanSpace.single 0 1, by simp⟩
-    let v := cap.tube_map (p, 0)
+    let v := cap.tubeMap (p, 0)
     have hv : v ∈ cap.tube := by
       rw [← cap.tube_eq]
       exact ⟨(p, 0), ⟨mem_univ _, by norm_num⟩, rfl⟩

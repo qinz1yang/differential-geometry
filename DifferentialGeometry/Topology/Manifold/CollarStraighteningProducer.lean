@@ -38,7 +38,7 @@ theorem collarImage_subset_of_supported_matching_of_le
   exact hfix _ ⟨(s, t), lt_of_lt_of_le hq hδη, rfl⟩
 
 theorem eqOn_symm_comp_of_eqOn_id {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M]
+    [ChartedSpace (EuclideanHalfSpace 3) M]
     {Φ Ψ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞} {K : Set M}
     (hΦ : Set.EqOn Φ id Kᶜ) (hΨ : Set.EqOn Ψ id Kᶜ) :
     Set.EqOn (Φ.trans Ψ) id Kᶜ ∧ Set.EqOn (Φ.trans Ψ).symm id Kᶜ := by
@@ -61,7 +61,7 @@ theorem eqOn_symm_comp_of_eqOn_id {M : Type u} [TopologicalSpace M]
     _ = x := Diffeomorph.symm_apply_apply _ x
 
 private theorem eqOn_symm_of_eqOn_id' {M : Type u} [TopologicalSpace M]
-    [ChartedSpace (EuclideanHalfSpace 3) M] [IsManifold (𝓡∂ 3) ∞ M]
+    [ChartedSpace (EuclideanHalfSpace 3) M]
     {Φ : Diffeomorph (𝓡∂ 3) (𝓡∂ 3) M M ∞} {X : Set M}
     (h : Set.EqOn Φ id X) : Set.EqOn Φ.symm id X := by
   intro x hx
@@ -142,9 +142,7 @@ theorem exists_dilationStrip_subset_of_prescribedStrip
 
 theorem exists_supported_diffeomorph_of_eqOn_prescribedStrip
     {S : Type u} [TopologicalSpace S] [ChartedSpace (EuclideanSpace ℝ (Fin 2)) S]
-    [IsManifold (𝓡 2) ∞ S] [T2Space S] [CompactSpace S]
     {M : Type u} [TopologicalSpace M] [ChartedSpace (EuclideanHalfSpace 3) M]
-    [IsManifold (𝓡∂ 3) ∞ M] [T2Space M] [SigmaCompactSpace M]
     (c₀ c₁ : PartialDiffeomorph ((𝓡 2).prod (𝓡∂ 1)) (𝓡∂ 3)
       (S × EuclideanHalfSpace 1) M ∞)
     {ε : ℝ} (hε : 0 < ε)

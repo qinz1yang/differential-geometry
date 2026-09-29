@@ -45,7 +45,7 @@ theorem kappaUniformCanonicalClassification_of_windowedCanonicalPullback
   refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
   obtain ⟨W, _oN, _hO⟩ := hw
   obtain ⟨Wc⟩ := himp M D S hS x t hreg W
-  exact ⟨Wc.mono_eps (min_le_left _ _) (by linarith)⟩
+  exact ⟨Wc.monoEps (min_le_left _ _) (by linarith)⟩
 
 theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
     (hc0 : 0 < c) (hc : c ≤ 1) :
@@ -74,7 +74,7 @@ theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
         div_le_div_of_nonneg_right (min_le_right _ _) (by norm_num)
       have h2 : 2 * (c * eps) / 2 = c * eps := by ring
       linarith [h1, h2]
-    exact ⟨W.mono_eps hle (by nlinarith [heps.le, heps44, hc])⟩
+    exact ⟨W.monoEps hle (by nlinarith [heps.le, heps44, hc])⟩
   · intro hscaled eps heps heps44
     obtain ⟨C1, C2, hC1, hC2, hmain⟩ :=
       hscaled (eps / 2) (by linarith) (by linarith)
@@ -83,7 +83,7 @@ theorem kappaUniformCanonicalClassification_iff_scaled_tolerance {c : ℝ}
     refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
     obtain ⟨W⟩ := himp M D S hS o x t hreg hw
     have hle : c * (eps / 2) ≤ eps / 2 := by nlinarith [heps.le, hc]
-    exact ⟨W.mono_eps hle (by linarith)⟩
+    exact ⟨W.monoEps hle (by linarith)⟩
 
 theorem kappaUniformCanonicalClassification_iff_lt_two_elevenths :
     kappaUniformCanonicalClassification.{u} ↔
@@ -106,7 +106,7 @@ theorem kappaUniformCanonicalClassification_iff_lt_two_elevenths :
     obtain ⟨delta, hdelta, hdelta1, himp⟩ := hmain kappa hkappa
     refine ⟨delta, hdelta, hdelta1, fun M _ _ _ _ _ D S hS o x t hreg hw => ?_⟩
     obtain ⟨W⟩ := himp M D S hS o x t hreg hw
-    exact ⟨W.mono_eps (div_le_div_of_nonneg_right (min_le_left _ _) (by norm_num))
+    exact ⟨W.monoEps (div_le_div_of_nonneg_right (min_le_left _ _) (by norm_num))
       (by linarith)⟩
   · intro hclass eps heps heps44
     exact hclass eps heps (by linarith)

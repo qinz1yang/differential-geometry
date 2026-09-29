@@ -39,10 +39,10 @@ structure ChildComparisonInputs
   convergence : G.LocalTerminalParentEDistComparison Kc convergenceTime scale
   multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ
   map_eq : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-    integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c) = multiplier c • b c
+    integralHomologyMap 3 (Kc c).canonicalWholeParentMap (a c) = multiplier c • b c
   generator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
     ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c)) = 1
+      φ (integralHomologyMap 3 (Kc c).canonicalWholeParentMap (a c)) = 1
   positive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c
 
 variable {G}
@@ -64,7 +64,7 @@ theorem ChildComparisonInputs.integralHomologyMap_eq
       IntegralHomology (G.Child c).Carrier 3}
     (h : G.ChildComparisonInputs a b)
     (c : ConnectedComponents (H.stage i.succ).Carrier) :
-    integralHomologyMap 3 (h.Kc c).rfs_whole_parent_map (a c) = b c :=
+    integralHomologyMap 3 (h.Kc c).canonicalWholeParentMap (a c) = b c :=
   (ComparisonSupport.rfs_collapse_degree_of_localTerminalDistanceControl_and_class_generator
     (K := h.Kc c) (a c) (b c)
     (ComparisonSupport.localTerminalDistanceControl_of_localTerminalEDistComparison
@@ -77,7 +77,7 @@ theorem rfs_child_comparison_of_data
       (fun c => fundamentalClass (G.Child c).orientation)) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c)
           (fundamentalClass (G.Parent c).orientation) =
         fundamentalClass (G.Child c).orientation) ∧
@@ -98,7 +98,7 @@ theorem rfs_child_comparison_of_nonempty_data
       (fun c => fundamentalClass (G.Child c).orientation))) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c)
           (fundamentalClass (G.Parent c).orientation) =
         fundamentalClass (G.Child c).orientation) ∧

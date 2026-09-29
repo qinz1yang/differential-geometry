@@ -269,7 +269,6 @@ private theorem exists_coverShift_of_fiber_eq {x y : M × ℝ}
 omit [CompleteSpace E] in
 private theorem metricFiberCompatible_of_coverShift_invariant [T2Space M]
     {N : Type*} [TopologicalSpace N] [ChartedSpace (ModelProd H ℝ) N]
-    [IsManifold (I.prod 𝓘(ℝ, ℝ)) ∞ N]
     (f : M × ℝ → N)
     (hf : IsLocalDiffeomorph (I.prod 𝓘(ℝ, ℝ)) (I.prod 𝓘(ℝ, ℝ)) ∞ f)
     (g : SmoothRiemannianMetric I M) (lambda : ℝ) (hlambda : 0 < lambda)

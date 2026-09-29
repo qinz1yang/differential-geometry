@@ -74,18 +74,18 @@ theorem seqGlobalCurvatureBound_of_seqBoundedGeometry
   ⟨hgeom.C, hgeom.nonneg, fun i k => hgeom.bound i k⟩
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-def seqBoundedGeometry_of_seqGlobalCurvatureBound
+def seqBoundedGeometryOfSeqGlobalCurvatureBound
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (h : SeqGlobalCurvatureBound (I := I) X) :
     SeqBoundedGeometry (I := I) X := by
   exact ⟨Classical.choose h, (Classical.choose_spec h).1, (Classical.choose_spec h).2⟩
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-def seqBoundedGeometry_of_seqUniformLocalCurvatureBound
+def seqBoundedGeometryOfSeqUniformLocalCurvatureBound
     (X : PointedRiemannianSeq.{u, uE, uH} (I := I))
     (h : SeqUniformLocalCurvatureBound (I := I) X) :
     SeqBoundedGeometry (I := I) X :=
-  seqBoundedGeometry_of_seqGlobalCurvatureBound (I := I) X
+  seqBoundedGeometryOfSeqGlobalCurvatureBound (I := I) X
     (seqGlobalCurvatureBound_of_seqUniformLocalCurvatureBound (I := I) X h)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in

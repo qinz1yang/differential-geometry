@@ -144,7 +144,7 @@ theorem exists_pointed_uniform_positive_covariant_bound
       (X.term (phi (i + N0))).topology (X.term (phi (i + N0))).charted
       (X.term (phi (i + N0))).smooth (X.term (phi (i + N0))).t2
       (X.term (phi (i + N0))).sigmaCompact (Phi.partialDiffeomorph (i + N0))
-      U inferInstance (hUmap i) (gSeq i t) ((X.term (phi (i + N0))).S.base.metric t)
+      U (hUmap i) (gSeq i t) ((X.term (phi (i + N0))).S.base.metric t)
       (hpair i t) q ⟨x, hx⟩]
     have htrace := Real.sqrt_le_sqrt (ricTower_normSq_le
       (X.term (phi (i + N0))).S t q (Phi.map (i + N0) x))

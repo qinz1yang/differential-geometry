@@ -15,7 +15,7 @@ universe u
 theorem exists_finiteHorn_end_geometry_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (W : Type u) [MetricSpace W] [ChartedSpace ThreeSpace W]
       [IsManifold I3 ∞ W] [SigmaCompactSpace W], ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth →
+      H₀ ≤ H.collarDepth →
       (∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
         ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) →
         hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →
@@ -48,7 +48,7 @@ theorem hornEndGeometryDepth_spec
     (W : Type u) [MetricSpace W] [ChartedSpace ThreeSpace W]
     [IsManifold I3 ∞ W] [SigmaCompactSpace W]
     (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g)
-    (hdepth : hornEndGeometryDepth.{u} ≤ H.collar_depth) :
+    (hdepth : hornEndGeometryDepth.{u} ≤ H.collarDepth) :
     (∃ d : ℝ, 0 < d ∧ ∀ a b : EndRay H.endpoint,
       ∀ lo hi : Fin 2 → ℝ, (∀ k, 0 < lo k) →
       hi 0 ≤ a.length → hi 1 ≤ b.length → (∀ k, hi k ≤ d) →

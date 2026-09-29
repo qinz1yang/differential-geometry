@@ -55,7 +55,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_compact_exterior
         ∃ cap : LocalCap Sm (neckModelTolerance alpha) (d (cylinderDiagonalQuotientMap p)) 0 U,
           cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
           cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-          (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+          (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
           cap.chain.count = 1 ∧
           (∀ j, cap.chain.centers j = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
             (∀ z : Cylinder, (cap.chain.necks j).map z = d (cylinderDiagonalQuotientMap (z.1, z.2 + L))) ∧
@@ -70,7 +70,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_compact_exterior
               ∃ cap' : LocalCap F.S (2 * alpha) (q (rho i)) (-tau (rho i)) (Phi.map i '' U),
                 cap'.core.carrier = Phi.map i '' cap.core.carrier ∧
                 cap'.tube = Phi.map i '' cap.tube ∧
-                cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph i) ∧
+                cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph i) ∧
                 cap'.chain.count = 1 ∧
                 (∀ j, cap'.chain.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
                   (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map i (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧
@@ -95,10 +95,10 @@ theorem exists_diagonal_basepoint_canonical_transport_with_compact_exterior
     cap, hcore, htube, hmap, hcount, hchain, hfar, hK, hlim, B, hBc, hUB, ?_⟩
   filter_upwards [hcaps] with i hci
   obtain ⟨hBi, cap', hcore', htube', hmap', hcount', hchain', hdepth', Ks, hKs, hrad, hcap⟩ := hci
-  have hboundary (z : Sphere 2) : cap'.tube_map (z, 1) =
+  have hboundary (z : Sphere 2) : cap'.tubeMap (z, 1) =
       Phi.map i (d (cylinderDiagonalQuotientMap (z, L + 1))) := by
     rw [hmap']
-    change Phi.map i (cap.tube_map (z, 1)) = _
+    change Phi.map i (cap.tubeMap (z, 1)) = _
     rw [hmap (z, 1)]
   have hrange : range (fun z : Sphere 2 => Phi.map i (d (cylinderDiagonalQuotientMap (z, L + 1)))) =
       frontier (Phi.map i '' (d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-(L + 1)) (L + 1))))) := by
@@ -167,7 +167,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_exterior_ball
         ∃ cap : LocalCap Sm (neckModelTolerance alpha) (d (cylinderDiagonalQuotientMap p)) 0 U,
           cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
           cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-          (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+          (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
           cap.chain.count = 1 ∧
           (∀ j, cap.chain.centers j = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
             (∀ z : Cylinder, (cap.chain.necks j).map z = d (cylinderDiagonalQuotientMap (z.1, z.2 + L))) ∧
@@ -182,7 +182,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_exterior_ball
               ∃ cap' : LocalCap F.S (2 * alpha) (q (rho i)) (-tau (rho i)) (Phi.map i '' U),
                 cap'.core.carrier = Phi.map i '' cap.core.carrier ∧
                 cap'.tube = Phi.map i '' cap.tube ∧
-                cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph i) ∧
+                cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph i) ∧
                 cap'.chain.count = 1 ∧
                 (∀ j, cap'.chain.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
                   (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map i (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧
@@ -280,7 +280,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_projective_presentati
         ∃ cap : LocalCap Sm (neckModelTolerance alpha) (d (cylinderDiagonalQuotientMap p)) 0 U,
           cap.core.carrier = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc (-L) L)) ∧
           cap.tube = d '' (cylinderDiagonalQuotientMap '' (univ ×ˢ Icc L (L + 1))) ∧
-          (∀ z : Cylinder, cap.tube_map z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
+          (∀ z : Cylinder, cap.tubeMap z = d (cylinderDiagonalQuotientMap (z.1, L + z.2))) ∧
           cap.chain.count = 1 ∧
           (∀ j, cap.chain.centers j = d (cylinderDiagonalQuotientMap (p.1, L)) ∧
             (∀ z : Cylinder, (cap.chain.necks j).map z = d (cylinderDiagonalQuotientMap (z.1, z.2 + L))) ∧
@@ -295,7 +295,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_projective_presentati
               ∃ cap' : LocalCap F.S (2 * alpha) (q (rho i)) (-tau (rho i)) (Phi.map i '' U),
                 cap'.core.carrier = Phi.map i '' cap.core.carrier ∧
                 cap'.tube = Phi.map i '' cap.tube ∧
-                cap'.tube_map = cap.tube_map.trans (Phi.partialDiffeomorph i) ∧
+                cap'.tubeMap = cap.tubeMap.trans (Phi.partialDiffeomorph i) ∧
                 cap'.chain.count = 1 ∧
                 (∀ j, cap'.chain.centers j = Phi.map i (d (cylinderDiagonalQuotientMap (p.1, L))) ∧
                   (∀ z : Cylinder, (cap'.chain.necks j).map z = Phi.map i (d (cylinderDiagonalQuotientMap (z.1, z.2 + L)))) ∧
@@ -322,7 +322,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_projective_presentati
                           Phi.map i (d (cylinderDiagonalQuotientMap z))) ∧
                       (∀ z : Cylinder, z.2 ∈ Icc (0 : ℝ) 1 →
                         e (Geometry.cylinderDiagonalQuotientDiffeomorph
-                          (cylinderDiagonalQuotientMap (z.1, L + z.2))).val = cap'.tube_map z) ∧
+                          (cylinderDiagonalQuotientMap (z.1, L + z.2))).val = cap'.tubeMap z) ∧
                       ∃ pr : ProjectivePresentation F.M,
                         (∀ a : Sphere 3, pr.quotient a = e (realProjectiveSpaceQuotientMap a)) ∧
                         ∃ D : ThreeSpace ≃ₘ⟮I3, I3⟯ ThreeSpace,
@@ -347,7 +347,7 @@ theorem exists_diagonal_basepoint_canonical_transport_with_projective_presentati
     hextconn, hextcompact, hsmooth, hboundary, hemb, G, hG, hGo, hGc, hGs, e, heSlab, ?_, pr, hpr, D, hD, heG⟩
   intro z hz
   rw [heSlab (z.1, L + z.2) ⟨mem_univ _, by constructor <;> linarith [abs_nonneg p.2, hz.1, hz.2]⟩, hmap']
-  change Phi.map i (d (cylinderDiagonalQuotientMap (z.1, L + z.2))) = Phi.map i (cap.tube_map z)
+  change Phi.map i (d (cylinderDiagonalQuotientMap (z.1, L + z.2))) = Phi.map i (cap.tubeMap z)
   rw [hmap z]
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

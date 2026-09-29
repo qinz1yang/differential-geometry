@@ -523,7 +523,6 @@ theorem connectedSum_charts (M : ConnectedClosedOrientedManifold.{u} 3)
       (orientedBallChart M).toBallChart (orientedBallChart N).toBallChart
       boundaryAttachment.1.toHomeomorph := rfl
 
-@[simp]
 theorem connectedSum_smooth (M : ConnectedClosedOrientedManifold.{u} 3)
     (N : ConnectedClosedOrientedManifold.{v} 3) :
     (connectedSum M N).smooth = ConnectedSumQuotient.csIsManifold

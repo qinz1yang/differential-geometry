@@ -192,7 +192,6 @@ private theorem support_pushforwardField_subset
     [TopologicalSpace M₂] [ChartedSpace H₂ M₂]
     (I₁ : ModelWithCorners ℝ E₁ H₁) (I₂ : ModelWithCorners ℝ E₂ H₂)
     (e : PartialDiffeomorph I₁ I₂ M₁ M₂ ∞) (v : ∀ x : M₁, TangentSpace I₁ x)
-    [IsManifold I₁ 1 M₁] [IsManifold I₂ 1 M₂]
     {z : M₂} (hz : pushforwardField I₁ I₂ e v z ≠ 0) :
     z ∈ e '' (tsupport v) := by
   by_cases hzt : z ∈ e.target
@@ -209,11 +208,10 @@ private theorem support_pushforwardField_subset
 private theorem mfderiv_doubleSeamPatch_eq_comp_doubleFold
     {M E H F G : Type} [TopologicalSpace M] [CompactSpace M] [T2Space M]
     [NormedAddCommGroup E] [NormedSpace ℝ E] [TopologicalSpace H] [ChartedSpace H M]
-    (I : ModelWithCorners ℝ E H) [IsManifold I ∞ M]
+    (I : ModelWithCorners ℝ E H)
     (B : Set M) [NormedAddCommGroup F] [NormedSpace ℝ F]
     [TopologicalSpace G] [ChartedSpace G B] (J : ModelWithCorners ℝ F G)
-    [IsManifold J ∞ B] [ChartedSpace E (Double B)]
-    [IsManifold 𝓘(ℝ, E) ∞ (Double B)] [T2Space (Double B)]
+    [ChartedSpace E (Double B)]
     (r : C(M, ℝ)) (hr : ∀ b : B, r b.val = 0)
     (hz : ∀ x, r x = 0 → x ∈ B) (hn : ∀ x, 0 ≤ r x)
     {a : ℝ} (c : C(B × Icc (0 : ℝ) a, M))

@@ -144,7 +144,7 @@ theorem exists_windowSliceLimit_pair_of_diffeomorphFamily
     sameManifoldWindowSliceGlue_of_diffeomorphFamily Y hT p g phi Phi hbase m₂⟩
 
 theorem sameManifoldWindowSliceConvergenceMaps_of_limitGlue
-    [I.Boundaryless] (Y : SameManifoldFlowSeq.{u, uE, uH} I M)
+    (Y : SameManifoldFlowSeq.{u, uE, uH} I M)
     (hT : Tendsto Y.horizon atTop atTop) (phi : Nat → Nat) (t : Real)
     (L : PointedFlowData.{u, uE, uH} (I := I) CanonicalNeighborhood.ancientTimeInterval)
     (h : SameManifoldWindowLimitGlue Y hT phi L) :

@@ -24,7 +24,7 @@ private theorem exists_isOpen_survivor_neighborhood (x : G.transition.ChildCore 
       G.transition.childCoreIntoParent c x ∈ U ∧
       ∀ y ∈ U, ∃ z : G.transition.ChildCore c,
         G.transition.childCoreIntoParent c z = y ∧
-        K.rfs_whole_parent_map y = G.transition.childCoreInclusion c z := by
+        K.canonicalWholeParentMap y = G.transition.childCoreInclusion c z := by
   obtain ⟨U, hU, hUopen, hxU⟩ := mem_nhds_iff.mp
     (G.transition.range_childCoreIntoParent_mem_nhds c x hx)
   refine ⟨U, hUopen, hxU, ?_⟩
@@ -40,7 +40,7 @@ theorem exists_smooth_survivor_lift (x : G.transition.ChildCore c)
       ∃ σ : U → (H.event i).old,
         ContMDiff ThreeModel (𝓡∂ 3) ∞ σ ∧
         (∀ y, (σ y).1.1 = y.1.1) ∧
-        (∀ y, (H.event i).oldOutput (σ y) = (K.rfs_whole_parent_map y.1).1) := by
+        (∀ y, (H.event i).oldOutput (σ y) = (K.canonicalWholeParentMap y.1).1) := by
   classical
   let oldCharts : ChartedSpace (EuclideanHalfSpace 3) (H.event i).old := (H.event i).oldCharts
   let oldSmooth : IsManifold (𝓡∂ 3) ∞ (H.event i).old := (H.event i).oldSmooth

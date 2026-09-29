@@ -220,7 +220,7 @@ def ballChartIsotopicAwayFromCompactOnClosedBall {U : Type u} [TopologicalSpace 
     ∀ x ∈ Metric.closedBall (0 : ThreeSpace) ρ, J 1 (b.chart x) = b'.chart x
 
 theorem ballChartIsotopicAwayFromCompactOnClosedBall_of_modelIsotopy {U : Type u}
-    [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
+    [TopologicalSpace U] [ChartedSpace ThreeSpace U] [T2Space U]
     (b b' : BallChart 3 (𝓡 3) U) (C : Set U) (ρ : ℝ)
     (D : ℝ → Diffeomorph ThreeModel ThreeModel ThreeSpace ThreeSpace ∞)
     (hDc : ContDiff ℝ ∞ (fun q : ℝ × ThreeSpace => D q.1 q.2))
@@ -274,7 +274,7 @@ theorem ballChartIsotopicAwayFromCompactOnClosedBall_of_modelIsotopy {U : Type u
 
 open DifferentialGeometry.Topology.Manifold in
 theorem ballChartIsotopicAwayFromCompactOnClosedBall_of_closedBallComparison_and_tube
-    {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
+    {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U]
     [T2Space U] (b b' : BallChart 3 (𝓡 3) U) (C : Set U) {ρ : ℝ} (hρ : 0 < ρ)
     (hsrc : Metric.closedBall (0 : ThreeSpace) ρ ⊆ b.chart.source)
     (hsrc' : Metric.closedBall (0 : ThreeSpace) ρ ⊆ b'.chart.source)
@@ -619,7 +619,7 @@ theorem orientedBallChartIsotopicAwayFromCompact_of_centerComparison_and_tube
 
 theorem orientedBallChartIsotopicAwayFromCompact_centerComparison_hypotheses_satisfiable
     {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
-    [T2Space U] (o : ManifoldOrientation ThreeModel U 3) (b : OrientedBallEmbedding U o) :
+    (o : ManifoldOrientation ThreeModel U 3) (b : OrientedBallEmbedding U o) :
     ∃ (b' : OrientedBallEmbedding U o) (C : Set U), IsCompact C ∧
       b.chart '' Metric.closedBall (0 : ThreeSpace) 1 ⊆ b'.chart.target ∧
       Disjoint (b.chart '' Metric.closedBall (0 : ThreeSpace) 1) C ∧

@@ -343,9 +343,9 @@ theorem exists_metricBounds_full_radius_of_boundedGeometry
      letI : ChartedSpace H (X.obj j).M := (X.obj j).charted
      letI : IsManifold I ∞ (X.obj j).M := (X.obj j).smooth
      letI : T2Space (TangentBundle I (X.obj j).M) := (X.obj j).t2TangentBundle
-     ∃ b : (((SeqBallNormalChartData.of_boundedGeometryNormalChartData
+     ∃ b : (((SeqBallNormalChartData.ofBoundedGeometryNormalChartData
        (I := I) d₀).chart j x).MetricBounds (X.obj j).metric),
-       b.radius = ((SeqBallNormalChartData.of_boundedGeometryNormalChartData
+       b.radius = ((SeqBallNormalChartData.ofBoundedGeometryNormalChartData
          (I := I) d₀).chart j x).radius ∧ ∀ q, b.C q ≤ d₀.metricC q) := by
   let : TopologicalSpace (X.obj j).M := (X.obj j).topology
   let : ChartedSpace H (X.obj j).M := (X.obj j).charted

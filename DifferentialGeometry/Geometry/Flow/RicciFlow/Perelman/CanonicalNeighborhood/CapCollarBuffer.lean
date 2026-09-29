@@ -43,11 +43,11 @@ theorem exists_common_buffer_constant_of_cap_collar
     simpa only [← mul_assoc, mul_inv_cancel₀ hCp.ne', one_mul] using hh
   have hroot : Real.sqrt (S.scalar t p) ≤ Real.sqrt C * Real.sqrt (S.scalar t v) := by
     simpa only [Real.sqrt_mul hCp.le] using Real.sqrt_le_sqrt hprod
-  let K0 := K.enlarge_constants le_rfl hC0
+  let K0 := K.enlargeConstants le_rfl hC0
   have hK0cap : ∃ depth, K0.alternative = CanonicalAlternative.cap cap depth := by
     obtain ⟨depth, hdepth⟩ := hcap
     refine ⟨depth, ?_⟩
-    change K.alternative.mono_constant (zero_lt_one.trans_le K.one_le_comparison_constant) hC0 K.Q_pos.le = _
+    change K.alternative.monoConstant (zero_lt_one.trans_le K.one_le_comparison_constant) hC0 K.Q_pos.le = _
     rw [hdepth]
     rfl
   have hvU : v ∈ K0.domain.carrier := cap.union_eq.symm ▸ Or.inr hv
@@ -70,12 +70,12 @@ theorem exists_common_buffer_constant_of_cap_collar
       simpa only [mul_assoc] using hh
     exact hh.trans (hratio.trans (div_le_div_of_nonneg_right (hCd0.trans hCinc) (Real.sqrt_nonneg _)))
   obtain ⟨hCfinal, hAfinal, hCfinal0, hscal, hrm, hvol⟩ := K0.strict_curvature_volume_reserves
-  let Kfinal := K0.enlarge_constants hAfinal.le hCfinal0.le
+  let Kfinal := K0.enlargeConstants hAfinal.le hCfinal0.le
   obtain ⟨a, b, margin, ha, _har, hm, hbm, hinner, houter⟩ := Kfinal.exists_radial_reserve
   have hKfinalCap : ∃ depth, Kfinal.alternative = CanonicalAlternative.cap cap depth := by
     obtain ⟨depth, hdepth⟩ := hK0cap
     refine ⟨depth, ?_⟩
-    change K0.alternative.mono_constant (zero_lt_one.trans_le K0.one_le_comparison_constant) hCfinal0.le K0.Q_pos.le = _
+    change K0.alternative.monoConstant (zero_lt_one.trans_le K0.one_le_comparison_constant) hCfinal0.le K0.Q_pos.le = _
     rw [hdepth]
     rfl
   let B : BufferedCanonical S alpha (max A C0 + 1) H p t := {

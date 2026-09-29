@@ -19,7 +19,7 @@ theorem hasConformalMinimizingInteriorDisk_of_diffeomorph
     (h : HasConformalMinimizingInteriorDisk (Diffeomorph.pullbackMetricCross g Φ.symm)
       (gamma.postcomposeDiffeomorph Φ)) : HasConformalMinimizingInteriorDisk g gamma := by
   obtain ⟨u, hconf, hharm, htrace, hfinite, hminL, hminS⟩ := h
-  let v := InteriorSmoothDisk.comp_diffeomorph Φ.symm u
+  let v := InteriorSmoothDisk.compDiffeomorph Φ.symm u
   refine ⟨v, u.isConformal_comp_diffeomorph_symm Φ g hconf,
     u.isHarmonic_comp_diffeomorph_symm Φ g hharm, ?_, ?_, ?_, ?_⟩
   · have ht := htrace.comp_diffeomorph Φ.symm
@@ -38,7 +38,7 @@ theorem hasConformalMinimizingInteriorDisk_of_diffeomorph
       _ ≤ diskArea (Diffeomorph.pullbackMetricCross g Φ.symm) w'.1.map := hminL w'.1 w'.2
       _ = diskArea g w.map := harea
   · intro w hw
-    let w' := SmoothDisk.comp_diffeomorph Φ w
+    let w' := SmoothDisk.compDiffeomorph Φ w
     have htr : ∀ theta, w'.map (diskBoundary theta) = (gamma.postcomposeDiffeomorph Φ) theta :=
       fun theta => congrArg Φ (hw theta)
     calc diskArea g v.map = diskArea (Diffeomorph.pullbackMetricCross g Φ.symm) u.map :=

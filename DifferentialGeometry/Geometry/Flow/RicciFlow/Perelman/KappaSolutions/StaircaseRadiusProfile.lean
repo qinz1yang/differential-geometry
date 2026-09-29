@@ -203,7 +203,7 @@ theorem exists_metricBounds_radiusProfileFloor_of_boundedGeometry
      letI : ChartedSpace H (X.obj j).M := (X.obj j).charted
      letI : IsManifold I ∞ (X.obj j).M := (X.obj j).smooth
      letI : T2Space (TangentBundle I (X.obj j).M) := (X.obj j).t2TangentBundle
-     ∃ b : (((SeqBallNormalChartData.of_boundedGeometryNormalChartData
+     ∃ b : (((SeqBallNormalChartData.ofBoundedGeometryNormalChartData
        (I := I) d₀).chart j x).MetricBounds (X.obj j).metric),
        b.radius = d₀.ratio * hd.mu R ∧ ∀ q : Nat, b.C q ≤ d₀.metricC q) := by
   let : TopologicalSpace (X.obj j).M := (X.obj j).topology
@@ -215,20 +215,20 @@ theorem exists_metricBounds_radiusProfileFloor_of_boundedGeometry
        letI : ChartedSpace H (X.obj j).M := (X.obj j).charted
        letI : IsManifold I ∞ (X.obj j).M := (X.obj j).smooth
        letI : T2Space (TangentBundle I (X.obj j).M) := (X.obj j).t2TangentBundle
-       ((SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d₀).chart j x
+       ((SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d₀).chart j x
          ).MetricDerivBound (X.obj j).metric
          (Metric.ball (0 : E) (d₀.ratio * hd.mu R)) q (d₀.metricC q)) := by
     intro q _ z hz
     have hsub : Metric.ball (0 : E) (d₀.ratio * hd.mu R) ⊆
         Metric.ball (0 : E)
-          ((SeqBallNormalChartData.of_boundedGeometryNormalChartData
+          ((SeqBallNormalChartData.ofBoundedGeometryNormalChartData
             (I := I) d₀).chart j x).radius :=
       Metric.ball_subset_ball (radiusProfileFloor_le_chart_radius (I := I)
-        (SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d₀) hR)
+        (SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d₀) hR)
     exact d₀.metric_deriv j q x z (hsub hz)
   obtain ⟨b, hb, -, hC⟩ :=
     exists_metricBounds_radiusProfileFloor_of_offShell (I := I)
-      (SeqBallNormalChartData.of_boundedGeometryNormalChartData (I := I) d₀)
+      (SeqBallNormalChartData.ofBoundedGeometryNormalChartData (I := I) d₀)
       hreal x hn hR d₀.metricC d₀.metricC_nonneg (fun q _ => le_rfl) hfull
   exact ⟨b, hb, hC⟩
 

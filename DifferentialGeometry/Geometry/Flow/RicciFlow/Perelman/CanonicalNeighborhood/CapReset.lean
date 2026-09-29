@@ -295,10 +295,10 @@ theorem CanonicalWitness.exists_singleton_cap_reset_with_capCore
     (hnested : W ⊆ cap.core.carrier) :
     ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
       Nonempty (CapCore V.carrier) ∧
-      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      V.carrier = cap.core.carrier ∪ cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       W ⊆ V.carrier ∧ cap.core.carrier ⊆ V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
       frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
-      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ z, neck.map z = cap.tubeMap z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
       oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
   obtain ⟨v, nk, hmap⟩ := hchart cap hdepth htag
@@ -343,10 +343,10 @@ theorem CanonicalWitness.exists_singleton_cap_reset
     (hout : ∃ r > 0, ∀ a, 0 < a → a < r → oldneck.map (oldneck.center, a) ∉ W)
     (hnested : W ⊆ cap.core.carrier) :
     ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
-      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      V.carrier = cap.core.carrier ∪ cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       W ⊆ V.carrier ∧ cap.core.carrier ⊆ V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
       frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
-      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ z, neck.map z = cap.tubeMap z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
       oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
   obtain ⟨V, v, neck, _, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=
@@ -370,10 +370,10 @@ theorem CanonicalWitness.exists_connected_singleton_cap_reset_with_capCore
     (hnested : W ⊆ cap.core.carrier) :
     ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
       Nonempty (CapCore V.carrier) ∧ IsConnected (interior V.carrier) ∧
-      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      V.carrier = cap.core.carrier ∪ cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       W ⊆ V.carrier ∧ cap.core.carrier ⊆ V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
       frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
-      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ z, neck.map z = cap.tubeMap z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
       oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
   obtain ⟨V, v, neck, hmodel, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=
@@ -399,10 +399,10 @@ theorem CanonicalWitness.exists_connected_singleton_cap_reset
     (hnested : W ⊆ cap.core.carrier) :
     ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
       IsConnected (interior V.carrier) ∧
-      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      V.carrier = cap.core.carrier ∪ cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       W ⊆ V.carrier ∧ cap.core.carrier ⊆ V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
       frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
-      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ z, neck.map z = cap.tubeMap z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) ∧
       oldneck.map '' (univ ×ˢ Icc (1 / 8 : ℝ) (3 / 8)) ⊆ V.carrier \ W := by
   obtain ⟨V, v, neck, _, hconn, hV, hWV, hcore, hVU, hfrontV, hmap, houtV, hfresh⟩ :=

@@ -318,7 +318,10 @@ theorem unitFillingOfSphereChart_fill (P : SphereUnitFilling.S3)
       = (SphereUnitFilling.sphereBallChart P).chart u)
     (c : OrientedBallChart M.toClosedOrientedManifold)
     (q : d.toBallChart.Punctured) :
-    (unitFillingOfSphereChart P d hd c).fill q
+    @DFunLike.coe
+      (BallChart.Punctured (M := ULift.{u} SphereUnitFilling.S3) d.toBallChart ≃ₜ
+        {x : M.Carrier // x ∈ BallImage c}) _ _ _
+      (unitFillingOfSphereChart P d hd c).fill q
       = (SphereUnitFilling.capFill P c.toBallChart)
         ((BallChart.puncturedHomeomorphOfImage d.toBallChart
           (SphereUnitFilling.sphereBallChart P) uliftSphereHomeomorph

@@ -18,11 +18,11 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 theorem finiteHorn_tail_ball_capture (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) :
     ∃ i, ∀ x ∈ H.subend i,
       ∃ (F : PartialDiffeomorph IC I3 Cylinder W ∞) (p : Sphere 2),
-        F (p, 0) = x ∧ univ ×ˢ Icc (-H.collar_depth) H.collar_depth ⊆ F.source ∧
+        F (p, 0) = x ∧ univ ×ˢ Icc (-H.collarDepth) H.collarDepth ⊆ F.source ∧
         ∃ hQ : 0 < metricScalarAt g x,
-          riemannianBallOf (scaleMetric (metricScalarAt g x) hQ g) x (H.collar_depth / 2) ⊆
-            F '' (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) ∧
-          ∀ r : ℝ, r < H.collar_depth / 2 →
+          riemannianBallOf (scaleMetric (metricScalarAt g x) hQ g) x (H.collarDepth / 2) ⊆
+            F '' (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) ∧
+          ∀ r : ℝ, r < H.collarDepth / 2 →
             IsCompact (riemannianClosedBallOf (scaleMetric (metricScalarAt g x) hQ g) x r) := by
   obtain ⟨i, htail⟩ := H.cylindrical_tail
   refine ⟨i, ?_⟩
@@ -41,7 +41,7 @@ theorem finiteHorn_tail_ball_capture (g : SmoothRiemannianMetric I3 W) (H : Fini
 
 theorem exists_finiteHorn_ambient_collar_trapping_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∃ i, ∀ x ∈ H.subend i,
+      H₀ ≤ H.collarDepth → ∃ i, ∀ x ∈ H.subend i,
       ∃ (F : PartialDiffeomorph IC I3 Cylinder W ∞) (p : Sphere 2),
         F (p, 0) = x ∧ univ ×ˢ Icc (-H₀) H₀ ⊆ F.source ∧
         IsCompact (F '' (univ ×ˢ Icc (-H₀) H₀)) ∧
@@ -60,7 +60,7 @@ theorem exists_finiteHorn_ambient_collar_trapping_depth :
   intro x hx
   obtain ⟨C, F, p, hcenter, _hsection, hsource, hQ, ⟨cmp⟩⟩ := htail x hx
   have hsubset : (univ ×ˢ Icc (-H₀) H₀ : Set Cylinder) ⊆
-      univ ×ˢ Icc (-H.collar_depth) H.collar_depth := by
+      univ ×ˢ Icc (-H.collarDepth) H.collarDepth := by
     intro z hz
     exact ⟨hz.1, ⟨(neg_le_neg hdepth).trans hz.2.1, hz.2.2.trans hdepth⟩⟩
   have hcpt : IsCompact (F '' (univ ×ˢ Icc (-H₀) H₀)) :=
@@ -69,8 +69,8 @@ theorem exists_finiteHorn_ambient_collar_trapping_depth :
   refine ⟨F, p, hcenter, hsubset.trans hsource, hcpt, hQ, ?_⟩
   exact htrap C (fun _ => C.metric 0)
     (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
-    (univ ×ˢ Icc (-H.collar_depth) H.collar_depth) {0}
-    (⌈H.neck_precision⁻¹⌉₊) H.neck_precision cmp rfl H.neck_precision_pos.le
+    (univ ×ˢ Icc (-H.collarDepth) H.collarDepth) {0}
+    (⌈H.neckPrecision⁻¹⌉₊) H.neckPrecision cmp rfl H.neck_precision_pos.le
     (by linarith [H.neck_precision_small]) (by simp) hsource hsubset
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

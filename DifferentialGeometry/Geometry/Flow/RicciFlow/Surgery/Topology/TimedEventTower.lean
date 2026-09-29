@@ -286,7 +286,7 @@ private def layerCore (C : RetainedCoreTimedEventChain P g) (m : ℕ) {H : Retai
     metric_last_heq := hAttachInitial.trans hmetric₁
     cap_metric_heq := ?_
     restrict_prev := ?_
-    initial := InitialIdentification.of_stageZero A hstageZero hmetricZero
+    initial := InitialIdentification.ofStageZero A hstageZero hmetricZero
     initial_heq := (InitialIdentification.map_of_stageZero_heq A hstageZero hmetricZero).trans hA }
   · intro h τ
     exact (hAttachSlab h τ).trans ((heq_of_eq (closedPrefix_flow_metric _ h hgt τ)).trans

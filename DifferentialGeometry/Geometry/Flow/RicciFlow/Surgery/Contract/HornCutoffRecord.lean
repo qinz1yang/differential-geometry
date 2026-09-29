@@ -2275,7 +2275,7 @@ private theorem exists_append_metricCutCapEvent
     H.appendEvent_stage_castSucc E.incoming.lt F hinit 0
   have hmetric : HEq (K.toHistory.initialMetric 0) (H.toHistory.initialMetric 0) :=
     H.appendEvent_initialMetric_castSucc_heq E.incoming.lt F hinit 0
-  let B := A.of_stageZero hstage hmetric
+  let B := A.ofStageZero hstage hmetric
   refine ⟨K, B, ⟨hprefix, (A.map_of_stageZero_heq hstage hmetric).symm⟩,
     rfl, rfl, H.appendEvent_time_last E.incoming.lt F hinit,
     H.appendEvent_stage_last E.incoming.lt F hinit,

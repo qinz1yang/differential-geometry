@@ -122,8 +122,8 @@ theorem exists_diffeomorph_finiteConnectedSum_standardThreeSphere
           exact nonemptyDiffeomorph_trans hstep ⟨u⟩
 
 theorem exists_diffeomorph_standardThreeSphere_of_isOrientedPoincareStandard
-    {M : ClosedOrientedManifold.{u} 3} [ConnectedSpace M.Carrier]
-    [SimplyConnectedSpace M.Carrier] (h : isOrientedPoincareStandard M) :
+    {M : ClosedOrientedManifold.{u} 3} [SimplyConnectedSpace M.Carrier]
+    (h : isOrientedPoincareStandard M) :
     Nonempty (M.Carrier ≃ₘ⟮𝓡 3, 𝓡 3⟯
       standardThreeSphereLift.{u}.toClosedOrientedManifold.Carrier) := by
   classical

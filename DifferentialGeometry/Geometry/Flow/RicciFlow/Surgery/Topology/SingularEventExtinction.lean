@@ -132,7 +132,7 @@ theorem exists_poincare_controlled_extinction_of_singular_events_of_horizon_inva
             (H.time (Fin.last H.eventCount)) = H.initialMetric (Fin.last H.eventCount)),
           E.incoming = G ∧ H.appendEvent E.incoming.lt E hinit ∈ S := by
     intro H hH hHB s G hs hinit hsing
-    let A := (InitialIdentification.atZero P g).of_stageZero
+    let A := (InitialIdentification.atZero P g).ofStageZero
       (prefix_stage_zero_eq hH.1) (prefix_metric_zero_heq hH.1)
     obtain ⟨Q, E, hE, q, hincoming, hInvNext, hqfixed, hqradius, hqorder, hqaccuracy, hqrecenter,
       ⟨R⟩, hbfrE, hctrlE, F, hF, hvol⟩ :=

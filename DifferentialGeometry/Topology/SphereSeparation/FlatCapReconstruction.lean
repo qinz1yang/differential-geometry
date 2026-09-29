@@ -40,9 +40,9 @@ theorem exists_flat_cap_reconstruction_regions
       Ψ '' (closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×ˢ {0}))
     (hgun : range (g 0) ∪ range (g 1) = range e ∪
       Ψ '' (closedBall (0 : EuclideanSpace ℝ (Fin 2)) 1 ×ˢ {0})) :
-    let d := (jordanBrouwer_openThreeSpace e he
+    let d := (smoothSphereSidesOpenThreeSpace e he
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
-    let d_f := fun i => (jordanBrouwer_openThreeSpace (f i) (hf i)
+    let d_f := fun i => (smoothSphereSidesOpenThreeSpace (f i) (hf i)
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
     ∃ (Φ : Fin 2 → EuclideanThree ≃ₜ EuclideanThree)
       (C : Fin 2 → Set EuclideanThree) (d' : ∀ i, SphereSides (range (g i))),
@@ -78,6 +78,6 @@ theorem exists_flat_cap_reconstruction_regions
   exact SphereSides.flat_cap_reconstruction_regions he.isEmbedding hb hbboundary hcover
     hinter Ψ (le_of_lt hR) (le_trans (abs_nonneg (a 0)) (le_of_lt (haε 0))) hS hboundary
     χ hχ hχD hg hflat hgfix hrange hgin hgun
-    (jordanBrouwer_openThreeSpace e he (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides d'
+    (smoothSphereSidesOpenThreeSpace e he (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides d'
 
 end DifferentialGeometry.Topology.SphereSeparation

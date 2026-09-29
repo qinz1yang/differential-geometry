@@ -237,7 +237,7 @@ theorem scaleLineMetric_not_solution (h : SmoothRiemannianMetric 𝓘(Real, Real
     rw [<- hderiv0.deriv, hderiv1.deriv]
   linarith
 
-noncomputable def ancientMetricSubsequence_const
+noncomputable def ancientMetricSubsequenceConst
     (h : SmoothRiemannianMetric 𝓘(Real, Real) Real) :
     AncientMetricSubsequence (I := 𝓘(Real, Real)) (fun (_ : Nat) (_ : Real) => h) h where
   subseq := id
@@ -247,7 +247,7 @@ noncomputable def ancientMetricSubsequence_const
     intro n K _ p ε hε
     exact ⟨0, fun k _ t _ => by rw [metricDerivNormSupOn_self]; exact hε⟩
 
-noncomputable def ancientMetricSubsequence_scaleLineMetric
+noncomputable def ancientMetricSubsequenceScaleLineMetric
     (h : SmoothRiemannianMetric 𝓘(Real, Real) Real) :
     AncientMetricSubsequence (I := 𝓘(Real, Real))
       (fun (_ : Nat) (t : Real) => scaleLineMetric h t) h where
@@ -286,12 +286,12 @@ theorem exists_ancientMetricSubsequence_limit_equation_holds_and_fails :
         H.limit (arcInterval 1))) := by
   constructor
   · refine ⟨euclideanMetric (E := Real),
-      ancientMetricSubsequence_const (euclideanMetric (E := Real)), ?_⟩
+      ancientMetricSubsequenceConst (euclideanMetric (E := Real)), ?_⟩
     change Nonempty (SameManifoldLimitEquationData (I := 𝓘(Real, Real)) (M := Real)
       (fun _ : Real => euclideanMetric (E := Real)) (arcInterval 1))
     exact nonempty_sameManifoldLimitEquationData_line (euclideanMetric (E := Real))
   · refine ⟨euclideanMetric (E := Real),
-      ancientMetricSubsequence_scaleLineMetric (euclideanMetric (E := Real)), ?_⟩
+      ancientMetricSubsequenceScaleLineMetric (euclideanMetric (E := Real)), ?_⟩
     change ¬ Nonempty (SameManifoldLimitEquationData (I := 𝓘(Real, Real)) (M := Real)
       (fun t : Real => scaleLineMetric (euclideanMetric (E := Real)) t) (arcInterval 1))
     exact scaleLineMetric_not_solution (euclideanMetric (E := Real))

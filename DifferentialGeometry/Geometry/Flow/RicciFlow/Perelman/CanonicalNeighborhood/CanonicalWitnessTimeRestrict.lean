@@ -53,9 +53,9 @@ def LocalCap.timeRestrict {eps : ℝ} {x : M} {t : ℝ} {U : Set M} (C : LocalCa
   core := C.core
   core_inside := C.core_inside
   center_inside := C.center_inside
-  core_model := C.core_model
+  coreModel := C.coreModel
   tube := C.tube
-  tube_map := C.tube_map
+  tubeMap := C.tubeMap
   tube_domain := C.tube_domain
   tube_eq := C.tube_eq
   union_eq := C.union_eq
@@ -65,7 +65,7 @@ def LocalCap.timeRestrict {eps : ℝ} {x : M} {t : ℝ} {U : Set M} (C : LocalCa
   boundary_eq := C.boundary_eq
   boundaries_disjoint := C.boundaries_disjoint
   chain := C.chain.timeRestrict hD
-  core_boundary_map := C.core_boundary_map
+  coreBoundaryMap := C.coreBoundaryMap
   core_boundary_eq := C.core_boundary_eq
 
 def RoundComponent.timeRestrict {eps : ℝ} {x : M} {t : ℝ} {U : Set M}

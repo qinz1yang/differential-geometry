@@ -30,11 +30,11 @@ theorem isOrientedPoincareStandard_capComponent
   cases hy : E.presentation x with
   | inl q =>
     exact isOrientedPoincareStandard_of_orientedDiffeomorph
-      (ClosedOrientedManifold.sumComponentInl_orientedDiffeomorph (X := Q) (Y := E.discarded) q)
+      (ClosedOrientedManifold.sumComponentInlOrientedDiffeomorph (X := Q) (Y := E.discarded) q)
       (hnext (ConnectedComponents.mk q))
   | inr d =>
     exact isOrientedPoincareStandard_of_orientedDiffeomorph
-      (ClosedOrientedManifold.sumComponentInr_orientedDiffeomorph (X := Q) (Y := E.discarded) d)
+      (ClosedOrientedManifold.sumComponentInrOrientedDiffeomorph (X := Q) (Y := E.discarded) d)
       (hdiscard (ConnectedComponents.mk d))
 
 theorem isOrientedPoincareStandard_capComponent_of_poincareControlled

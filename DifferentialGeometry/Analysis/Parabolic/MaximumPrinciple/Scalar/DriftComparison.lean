@@ -261,7 +261,6 @@ theorem heat_pot_comparison_with_drift_const
   simpa using hcmp t ht x
 
 theorem exists_heat_pot_subsolution_with_drift_of_initial_positive
-    [VectorBundle Real E (TangentSpace I : M → Type _)] [Nonempty M]
     (G : MetricConnectionFamily (I := I) (M := M) Real) {T : Real} (hT : 0 ≤ T) :
     ∃ (X : Real → (x : M) → TangentSpace I x) (V u : Real → M → Real),
       (∀ t ∈ Set.Icc 0 T, 0 < t → ∀ x : M,
@@ -276,7 +275,7 @@ theorem exists_heat_pot_subsolution_with_drift_of_initial_positive
   simp
 
 theorem exists_heat_pot_subsolution_with_drift_of_unbounded_potential
-    [VectorBundle Real E (TangentSpace I : M → Type _)] [Nonempty M]
+    [Nonempty M]
     (G : MetricConnectionFamily (I := I) (M := M) Real) :
     ∃ (X : Real → (x : M) → TangentSpace I x) (V u : Real → M → Real),
       (∀ t ∈ Set.Icc 0 1, 0 < t → ∀ x : M,

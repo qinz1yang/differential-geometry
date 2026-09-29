@@ -43,7 +43,7 @@ theorem commHomeomorph_inr (c : BallChart 3 (𝓡 3) M) (d : BallChart 3 (𝓡 3
     (a : csSphere ≃ₜ csSphere) (y : d.Punctured) :
     commHomeomorph c d a (inr c d a y) = inl d c a.symm y := rfl
 
-theorem commHomeomorph_interiorLeft [T2Space M] [T2Space N]
+theorem commHomeomorph_interiorLeft [T2Space M]
     (c : BallChart 3 (𝓡 3) M) (d : BallChart 3 (𝓡 3) N) (x : c.interior) :
     commHomeomorph c d boundaryAttachment.1.toHomeomorph
         (interiorLeft c d boundaryAttachment.1 x)
@@ -52,7 +52,7 @@ theorem commHomeomorph_interiorLeft [T2Space M] [T2Space N]
   rw [interiorRight, Function.comp_apply]
   rfl
 
-theorem commHomeomorph_interiorRight [T2Space M] [T2Space N]
+theorem commHomeomorph_interiorRight [T2Space N]
     (c : BallChart 3 (𝓡 3) M) (d : BallChart 3 (𝓡 3) N) (x : d.interior) :
     commHomeomorph c d boundaryAttachment.1.toHomeomorph
         (interiorRight c d boundaryAttachment.1 x)

@@ -110,7 +110,7 @@ structure ChildComparisonReducedInputs
       IntegralHomology (G.Child c).Carrier 3) where
   Kc : (c : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c
   distanceControl : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-    (Kc c).LocalTerminalDistanceControl (Kc c).rfs_whole_parent_map
+    (Kc c).LocalTerminalDistanceControl (Kc c).canonicalWholeParentMap
   convergenceTime : ℝ
   convergenceTime_mem : convergenceTime ∈ Ico (H.time i.castSucc) (H.time i.succ)
   scale : ℝ → ℝ
@@ -119,10 +119,10 @@ structure ChildComparisonReducedInputs
   localEDist : G.LocalEDistComparison Kc convergenceTime scale
   multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ
   map_eq : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-    integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c) = multiplier c • b c
+    integralHomologyMap 3 (Kc c).canonicalWholeParentMap (a c) = multiplier c • b c
   generator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
     ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c)) = 1
+      φ (integralHomologyMap 3 (Kc c).canonicalWholeParentMap (a c)) = 1
   positive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c
 
 variable {G}
@@ -156,7 +156,7 @@ theorem rfs_child_comparison_of_reducedInputs
     (h : G.ChildComparisonReducedInputs a b) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
@@ -184,7 +184,7 @@ theorem rfs_child_comparison_of_canonicalReducedInputs
       IntegralHomology (G.Child c).Carrier 3)
     (hdistanceControl : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
       (G.canonicalComparisonSupport hSC c).LocalTerminalDistanceControl
-        (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map)
+        (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap)
     (convergenceTime : ℝ)
     (hconvergenceTime : convergenceTime ∈ Ico (H.time i.castSucc) (H.time i.succ))
     (scale : ℝ → ℝ)
@@ -193,16 +193,16 @@ theorem rfs_child_comparison_of_canonicalReducedInputs
     (hlocalEDist : G.LocalEDistComparison (G.canonicalComparisonSupport hSC) convergenceTime scale)
     (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
     (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map (a c) =
+      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap (a c) =
         multiplier c • b c)
     (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
       ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map
+        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap
           (a c)) = 1)
     (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
@@ -241,16 +241,16 @@ theorem rfs_child_comparison_of_canonicalTerminalInputs
     (hregion : G.TerminalParentRegionConvexity (G.canonicalComparisonSupport hSC) s₀)
     (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
     (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map (a c) =
+      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap (a c) =
         multiplier c • b c)
     (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
       ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map
+        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap
           (a c)) = 1)
     (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
@@ -283,16 +283,16 @@ theorem rfs_child_comparison_of_canonicalUniformConvergence
     (huniform : G.TerminalParentUniformConvergence s₀)
     (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
     (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map (a c) =
+      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap (a c) =
         multiplier c • b c)
     (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
       ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map
+        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap
           (a c)) = 1)
     (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
@@ -318,11 +318,11 @@ theorem rfs_whole_parent_map_class_eq_of_multiplierForm
     (a : IntegralHomology (G.Parent c).Carrier 3)
     (b : IntegralHomology (G.Child c).Carrier 3)
     {k : ℤ}
-    (hmap : integralHomologyMap 3 K.rfs_whole_parent_map a = k • b)
+    (hmap : integralHomologyMap 3 K.canonicalWholeParentMap a = k • b)
     (hgen : ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-      φ (integralHomologyMap 3 K.rfs_whole_parent_map a) = 1)
+      φ (integralHomologyMap 3 K.canonicalWholeParentMap a) = 1)
     (hk : 0 < k) :
-    integralHomologyMap 3 K.rfs_whole_parent_map a = b :=
+    integralHomologyMap 3 K.canonicalWholeParentMap a = b :=
   (DifferentialGeometry.Topology.eq_of_pos_zsmul_and_linearMap_eq_one
     (A := IntegralHomology (G.Child c).Carrier 3)
     ⟨k, hgen.choose, hmap, hk, hgen.choose_spec⟩).1
@@ -343,14 +343,14 @@ theorem rfs_child_comparison_of_localEDistComparison_and_class_generator
     (hlocalEDist : G.LocalEDistComparison Kc convergenceTime scale)
     (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
     (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-      integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c) = multiplier c • b c)
+      integralHomologyMap 3 (Kc c).canonicalWholeParentMap (a c) = multiplier c • b c)
     (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
       ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-        φ (integralHomologyMap 3 (Kc c).rfs_whole_parent_map (a c)) = 1)
+        φ (integralHomologyMap 3 (Kc c).canonicalWholeParentMap (a c)) = 1)
     (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧
@@ -383,16 +383,16 @@ theorem rfs_child_comparison_of_canonicalLocalEDistComparison_and_class_generato
     (hlocalEDist : G.LocalEDistComparison (G.canonicalComparisonSupport hSC) convergenceTime scale)
     (multiplier : (c : ConnectedComponents (H.stage i.succ).Carrier) → ℤ)
     (hmap : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
-      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map (a c) =
+      integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap (a c) =
         multiplier c • b c)
     (hgenerator : ∀ c : ConnectedComponents (H.stage i.succ).Carrier,
       ∃ φ : IntegralHomology (G.Child c).Carrier 3 →ₗ[ℤ] ℤ,
-        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).rfs_whole_parent_map
+        φ (integralHomologyMap 3 (G.canonicalComparisonSupport hSC c).canonicalWholeParentMap
           (a c)) = 1)
     (hpositive : ∀ c : ConnectedComponents (H.stage i.succ).Carrier, 0 < multiplier c) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
         C((G.Parent c).Carrier, (G.Child c).Carrier),
-      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+      (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
       (∀ c, integralHomologyMap 3 (f c) (a c) = b c) ∧
       ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,
         (∀ s ∈ Ioo s₀ (H.time i.succ), 1 ≤ ell s) ∧

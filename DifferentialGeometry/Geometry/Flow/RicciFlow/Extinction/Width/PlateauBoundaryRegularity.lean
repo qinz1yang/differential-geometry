@@ -29,7 +29,7 @@ theorem exists_smoothDisk_and_circleMap_of_smooth_extension_and_lift
       u.map = q ∧ σ.map = τ ∧ σ.lift = ψ ∧
       (∀ θ, u.map (diskBoundary θ) = γ (σ.map θ)) ∧
       u.IsConformal g ∧ u.IsHarmonic g := by
-  let u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := M) := smoothDisk_of_smoothDiskExtension hQ
+  let u : SmoothDisk (I := 𝓘(ℝ, E)) (Q := M) := smoothDiskOfSmoothDiskExtension hQ
   let σ : SmoothWeaklyMonotoneCircleMap :=
     { map := τ
       lift := ψ

@@ -34,9 +34,9 @@ theorem exists_diffeomorph_ball_of_cylinderCap_replacements
       Ψ p ∈ e '' (range (b i))ᶜ ↔ ‖p.1‖ = 1 ∧ 0 < (if i = 0 then σ else -σ) * p.2)
     (D : Fin 2 → EuclideanThree ≃ₘ[ℝ] EuclideanThree)
     (hD : ∀ i, D i '' closedBall 0 1 = closure
-      (jordanBrouwer_openThreeSpace (f i) (hf i)
+      (smoothSphereSidesOpenThreeSpace (f i) (hf i)
         (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides.compactSide) :
-    let d := (jordanBrouwer_openThreeSpace e he
+    let d := (smoothSphereSidesOpenThreeSpace e he
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
     ∃ H : EuclideanThree ≃ₘ[ℝ] EuclideanThree,
       H '' closedBall 0 1 = closure d.compactSide ∧ H '' sphere 0 1 = range e := by
@@ -79,7 +79,7 @@ theorem exists_diffeomorph_ball_of_cylinderCap_images
       Ψ p ∈ e '' (range (b i))ᶜ ↔ ‖p.1‖ = 1 ∧ 0 < (if i = 0 then σ else -σ) * p.2)
     (T D : Fin 2 → EuclideanThree ≃ₘ[ℝ] EuclideanThree)
     (hD : ∀ i, D i '' sphere 0 1 = range (T i ∘ f i)) :
-    let d := (jordanBrouwer_openThreeSpace e he
+    let d := (smoothSphereSidesOpenThreeSpace e he
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
     ∃ H : EuclideanThree ≃ₘ[ℝ] EuclideanThree,
       H '' closedBall 0 1 = closure d.compactSide ∧ H '' sphere 0 1 = range e := by
@@ -89,9 +89,9 @@ theorem exists_diffeomorph_ball_of_cylinderCap_images
     rw [image_comp, hD i, range_comp]
     exact (T i).symm_image_image _
   have hAball (i : Fin 2) : A i '' closedBall 0 1 = closure
-      (jordanBrouwer_openThreeSpace (f i) (hf i)
+      (smoothSphereSidesOpenThreeSpace (f i) (hf i)
         (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides.compactSide := by
-    let d := (jordanBrouwer_openThreeSpace (f i) (hf i)
+    let d := (smoothSphereSidesOpenThreeSpace (f i) (hf i)
       (Diffeomorph.refl (𝓡 3) EuclideanThree ∞)).toSphereSides
     let d' := standardUnitSphereSides.image (A i).toHomeomorph
     have hunion : d'.compactSide ∪ d'.endSide = (range (f i))ᶜ := by

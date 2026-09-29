@@ -51,7 +51,7 @@ structure SeqBallNormalChartData
 
 namespace SeqBallNormalChartData
 
-def of_boundedGeometryNormalChartData
+def ofBoundedGeometryNormalChartData
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}
     {hd : InjectivityRadiusDecay (I := I) X}
     (d : BoundedGeometryNormalChartData (I := I) X hd) :

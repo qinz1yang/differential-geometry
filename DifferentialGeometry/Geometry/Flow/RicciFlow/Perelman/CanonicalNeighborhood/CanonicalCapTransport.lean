@@ -168,10 +168,10 @@ def LocalCap.map
     core := L.core.map e hcore
     core_inside := ?_
     center_inside := ?_
-    core_model := Classical.choice
-      (capCore_transport_of_partialDiffeomorph L.core_model e hcore)
+    coreModel := Classical.choice
+      (capCore_transport_of_partialDiffeomorph L.coreModel e hcore)
     tube := e '' L.tube
-    tube_map := L.tube_map.trans e
+    tubeMap := L.tubeMap.trans e
     tube_domain := ?_
     tube_eq := ?_
     union_eq := ?_
@@ -181,7 +181,7 @@ def LocalCap.map
     boundary_eq := ?_
     boundaries_disjoint := ?_
     chain := chain
-    core_boundary_map := fun z => e (L.core_boundary_map z)
+    coreBoundaryMap := fun z => e (L.coreBoundaryMap z)
     core_boundary_eq := ?_ }
   · change e '' L.core.carrier ⊆ interior (e '' Um)
     exact (Set.image_mono L.core_inside).trans
@@ -199,7 +199,7 @@ def LocalCap.map
   · change e '' L.core.carrier ∩ e '' L.tube = frontier (e '' L.core.carrier)
     rw [← partialDiffeomorph_image_inter_of_subset_source e hcore htube, L.overlap_eq,
       partialDiffeomorph_image_frontier_of_subset_source e hcore hcore_closed hecore_closed]
-  · change (L.tube_map.trans e) '' (Set.univ ×ˢ ({0} : Set ℝ)) =
+  · change (L.tubeMap.trans e) '' (Set.univ ×ˢ ({0} : Set ℝ)) =
       frontier (e '' L.core.carrier)
     rw [partialDiffeomorph_image_trans, L.inner_boundary,
       partialDiffeomorph_image_frontier_of_subset_source e hcore hcore_closed hecore_closed]

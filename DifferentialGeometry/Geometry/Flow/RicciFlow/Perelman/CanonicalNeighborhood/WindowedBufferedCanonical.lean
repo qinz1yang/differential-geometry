@@ -36,12 +36,12 @@ theorem exists_uniform_windowed_bufferedCanonical_with_cap_neck_charts
   obtain ⟨W, orient, _⟩ := hw
   by_cases hr : IsShrinkingSphericalSpaceFormFlow W.model
   · obtain ⟨B, hB⟩ := hround W (hd.trans (min_le_right _ _)) hS hreg hr
-    refine ⟨B.enlarge_constants (by linarith [le_max_right Cn Cr]), ?_⟩
+    refine ⟨B.enlargeConstants (by linarith [le_max_right Cn Cr]), ?_⟩
     exact hB.enlarge_constants (by linarith [le_max_right Cn Cr])
       (by linarith [le_max_right Cn Cr])
   · obtain ⟨B, hB⟩ := hnonround kappa M D S hS delta x t W
       (hd.trans (min_le_left _ _)) hreg hr orient
-    refine ⟨B.enlarge_constants (by linarith [le_max_left Cn Cr]), ?_⟩
+    refine ⟨B.enlargeConstants (by linarith [le_max_left Cn Cr]), ?_⟩
     exact hB.enlarge_constants (by linarith [le_max_left Cn Cr])
       (by linarith [le_max_left Cn Cr])
 

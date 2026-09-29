@@ -45,8 +45,6 @@ theorem covDerivAlong_map_localIso
     [I.Boundaryless] [J.Boundaryless]
     [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric I M) (g' : SmoothRiemannianMetric J N)
     {f : M → N} (hld : IsLocalDiffeomorph I J ∞ f)
     (hpres : ∀ (x : M) (v w : TangentSpace I x),
@@ -213,8 +211,6 @@ theorem covDerivAlong_map_localPullMetric
     [I.Boundaryless] [J.Boundaryless]
     [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) {f : M → N} (hld : IsLocalDiffeomorph I J ∞ f)
     (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t)) (t : ℝ)
     (hγ : ContMDiffAt 𝓘(ℝ, ℝ) I ∞ γ t)
@@ -233,8 +229,6 @@ theorem covDerivAlong_map_of_eq_localPullMetric
     [I.Boundaryless] [J.Boundaryless]
     [T2Space M] [BoundarylessManifold I M]
     [T2Space N] [BoundarylessManifold J N]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
-    [IsManifold J 1 N] [IsManifold J ((∞ : WithTop ℕ∞) + 1) N]
     (g : SmoothRiemannianMetric J N) {f : M → N} (hld : IsLocalDiffeomorph I J ∞ f)
     (k : SmoothRiemannianMetric I M)
     (hk : localPullMetric (I := I) (J := J) g f hld = k)
@@ -250,8 +244,6 @@ theorem covDerivAlong_map_of_eq_localPullMetric
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)]
   [CompleteSpace F] [NeZero (Module.finrank ℝ F)] in
 theorem covDerivAlong_map_localIso_id_witness
-    [I.Boundaryless] [T2Space M] [BoundarylessManifold I M]
-    [IsManifold I 1 M] [IsManifold I ((∞ : WithTop ℕ∞) + 1) M]
     (g : SmoothRiemannianMetric I M)
     (γ : ℝ → M) (V : ∀ t, TangentSpace I (γ t)) (t : ℝ) :
     mfderiv I I (_root_.id : M → M) (γ t) (covDerivAlong (I := I) g γ V t) =

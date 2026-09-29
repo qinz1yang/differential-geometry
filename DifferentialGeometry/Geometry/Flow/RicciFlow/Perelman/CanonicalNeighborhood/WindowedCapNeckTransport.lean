@@ -40,7 +40,7 @@ theorem LocalCap.exists_windowed_transport_tolerance
   have htube : IsCompact L.tube := by
     rw [← L.tube_eq]
     exact (isCompact_univ.prod isCompact_Icc).image_of_continuousOn
-      (L.tube_map.contMDiffOn_toFun.continuousOn.mono L.tube_domain)
+      (L.tubeMap.contMDiffOn_toFun.continuousOn.mono L.tube_domain)
   have hU : IsCompact U := by
     rw [L.union_eq]
     exact L.core.compact.union htube

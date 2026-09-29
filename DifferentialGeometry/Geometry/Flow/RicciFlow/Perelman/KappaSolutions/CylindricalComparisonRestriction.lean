@@ -70,7 +70,7 @@ private theorem restrictedCylinderTensor_norm
     tensor02CovDerivNormWith_pullbackTensor02FieldCross]
 
 
-def backwardMetricComparison_cylindricalRestriction
+def backwardMetricComparisonCylindricalRestriction
     (F : PointedFlowData.{u, 0, 0} (I := I3) ancientTimeInterval)
     (tau : ℕ → ℝ) (htau : ∀ i, 0 < tau i) (q : ℕ → F.M)
     {L : PointedRiemannianManifold.{u, 0, 0} (I := I3)} {phi : ℕ → ℕ}

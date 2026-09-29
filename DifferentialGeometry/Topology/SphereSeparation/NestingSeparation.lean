@@ -21,14 +21,14 @@ theorem disjoint_spheres_nested_openThreeSpace_of_alexanderDuality
     (hAD₂ : HasAlexanderDualityH0Certificate (ψ ∘ e₂))
     (hdisjoint : Disjoint (Set.range e₁) (Set.range e₂))
     (hmeet :
-      let d₁ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+      let d₁ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
         e₁ he₁ ψ hAD₁
-      let d₂ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+      let d₂ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
         e₂ he₂ ψ hAD₂
       (d₁.compactSide ∩ d₂.compactSide).Nonempty) :
-    let d₁ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+    let d₁ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
       e₁ he₁ ψ hAD₁
-    let d₂ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+    let d₂ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
       e₂ he₂ ψ hAD₂
     Xor
       (closure d₁.compactSide ⊂ d₂.compactSide ∧
@@ -37,9 +37,9 @@ theorem disjoint_spheres_nested_openThreeSpace_of_alexanderDuality
       (closure d₂.compactSide ⊂ d₁.compactSide ∧
         d₁.compactSide = interior (closure d₁.compactSide) ∧
         closure d₂.compactSide ⊂ closure d₁.compactSide) := by
-  let d₁ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+  let d₁ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
     e₁ he₁ ψ hAD₁
-  let d₂ := topologicalSphereSidesOpenThreeSpace_of_alexanderDuality
+  let d₂ := topologicalSphereSidesOpenThreeSpaceOfAlexanderDualityCertificate
     e₂ he₂ ψ hAD₂
   exact d₁.disjoint_sides_strictly_nested d₂ hdisjoint
     (isConnected_range he₁.contMDiff.continuous)

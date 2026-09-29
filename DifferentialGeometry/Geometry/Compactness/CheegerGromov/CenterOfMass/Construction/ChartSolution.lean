@@ -303,7 +303,7 @@ theorem has_live_chart_center_solution_of_cage
       deriv := fun q z hz => (d.metricBounds (L.φ k) x0).deriv q z (hsub4 hz) }
   have hmb : mb.radius = (d.chart (L.φ k) x0).radius / 4 := rfl
   have hsol := SeqBallNormalChartData.center_of_mass_satisfies_normal_coordinate_equation
-    (SeqBallNormalChartData.of_boundedGeometryNormalChartData d)
+    (SeqBallNormalChartData.ofBoundedGeometryNormalChartData d)
     (L.φ k) (hcomplete.complete (L.φ k))
     (hconn (L.φ k)) x0 hq he hf happrox
     (by
@@ -311,7 +311,7 @@ theorem has_live_chart_center_solution_of_cage
       hρInner hpairs
   exact ⟨hq, e, he, hf, by
     simpa only [x0, y, rho0,
-      SeqBallNormalChartData.of_boundedGeometryNormalChartData] using hsol⟩
+      SeqBallNormalChartData.ofBoundedGeometryNormalChartData] using hsol⟩
 
 theorem exists_live_chart_center_solutions
     {X : PointedRiemannianSeq.{u, uE, uH} (I := I)}

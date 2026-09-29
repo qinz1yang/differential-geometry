@@ -270,7 +270,7 @@ theorem childCore_simplyConnected_of_childCarrierSimplyConnected
   let _ : PathConnectedSpace (E.ChildCore c) := E.pathConnectedSpace_childCore c
   let _ : PathConnectedSpace ThreeBall := isPathConnected_iff_pathConnectedSpace.mp
     ((convex_closedBall (0 : ThreeSpace) 1).isPathConnected ⟨0, by simp⟩)
-  let e := homotopyEquiv_of_retraction (E.childCoreInclusionRestrict c d.core_subset_U) d.retraction
+  let e := homotopyEquivOfRetraction (E.childCoreInclusionRestrict c d.core_subset_U) d.retraction
     d.retraction_comp_inclusion d.inclusion_comp_retraction_homotopic
   have hUpc : PathConnectedSpace ↥d.U := pathConnectedSpace_of_homotopyEquiv_aux e
   have hVpc : ∀ b, PathConnectedSpace ↥(d.V b) := fun b =>

@@ -98,7 +98,7 @@ theorem rampUniformExtension_exists_localTime_and_continuation
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ)
     (H : RampUniformExtension (I := I) (M := M) (D := D) (a := a) (b := b) B lambda) :
     ∃ δ : ℝ, RampUniformLocalTime B lambda δ ∧ RampUniformContinuation B lambda δ :=
-  ⟨H.local_time, ⟨H.local_time_pos, H.exists_from_start⟩, H.extend⟩
+  ⟨H.localTime, ⟨H.local_time_pos, H.exists_from_start⟩, H.extend⟩
 
 omit [SigmaCompactSpace M] [CompactSpace M] [Nonempty M] [I.Boundaryless] in
 def rampUniformExtensionOfLocalTimeAndContinuation
@@ -140,7 +140,7 @@ theorem rampLocalExistence_of_uniformExtension
     (H : RampUniformExtension (I := I) (M := M) (D := D) (a := a) (b := b) B lambda) :
     RampLocalExistence B lambda e := by
   intro c₀ hs hr
-  refine ⟨H.local_time, H.local_time_pos, univ,
+  refine ⟨H.localTime, H.local_time_pos, univ,
     @isOpen_univ (ProductCurve M) (smoothProductInitialTopology e a), mem_univ c₀, ?_⟩
   intro q _ hqs hqr
   exact H.exists_from_start q hqs hqr
@@ -198,7 +198,7 @@ theorem exists_uniform_localData_of_uniformExtension
     (hramp : ∀ p, (initial p).IsRampOn B.family.metric lambda {a})
     (H : RampUniformExtension (I := I) (M := M) (D := D) (a := a) (b := b) B lambda) :
     ∃ δ : ℝ, 0 < δ ∧ RampUniformLocalData B lambda δ initial :=
-  ⟨H.local_time, H.local_time_pos,
+  ⟨H.localTime, H.local_time_pos,
     fun p => H.exists_from_start (initial p) (hsmooth p) (hramp p)⟩
 
 omit [SigmaCompactSpace M] [CompactSpace M] [Nonempty M] [I.Boundaryless] in
@@ -216,7 +216,7 @@ theorem rampUniformContinuation_zero (B : RicciBackground (I := I) (M := M) D a 
 omit [SigmaCompactSpace M] [CompactSpace M] [Nonempty M] [I.Boundaryless] in
 theorem nonempty_rampUniformExtension_zero (B : RicciBackground (I := I) (M := M) D a b) :
     Nonempty (RampUniformExtension (I := I) (M := M) (D := D) (a := a) (b := b) B 0) :=
-  ⟨{ local_time := 1
+  ⟨{ localTime := 1
      local_time_pos := one_pos
      exists_from_start := (rampUniformLocalTime_zero B).2
      extend := rampUniformContinuation_zero B }⟩

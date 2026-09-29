@@ -71,7 +71,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact EndAngles.metric
 
 theorem RealizedFiniteHorn.exists_marked_original_source_local_distance_cone

@@ -77,7 +77,7 @@ theorem collar_endpoint_distance_lower_bound
 theorem finiteHorn_scalar_radius_lower_bound
     (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g) :
     ∃ i, ∀ x ∈ H.subend i,
-      H.collar_depth ^ 2 / 16 ≤
+      H.collarDepth ^ 2 / 16 ≤
         metricScalarAt g x * dist (x : UniformSpace.Completion W) H.endpoint ^ 2 := by
   obtain ⟨i, htail⟩ := H.cylindrical_tail
   refine ⟨i, ?_⟩
@@ -88,10 +88,10 @@ theorem finiteHorn_scalar_radius_lower_bound
     hsource (fun _ hy => hy) p
   rw [hcenter] at hbound
   have hnonneg : 0 ≤ Real.sqrt (metricScalarAt g x) *
-      dist (x : UniformSpace.Completion W) H.endpoint + H.collar_depth / 4 := by
+      dist (x : UniformSpace.Completion W) H.endpoint + H.collarDepth / 4 := by
     exact add_nonneg (mul_nonneg (Real.sqrt_nonneg _) dist_nonneg)
       (div_nonneg H.collar_depth_pos.le (by norm_num))
-  have hsq : (H.collar_depth / 4) ^ 2 ≤
+  have hsq : (H.collarDepth / 4) ^ 2 ≤
       (Real.sqrt (metricScalarAt g x) * dist (x : UniformSpace.Completion W) H.endpoint) ^ 2 := by
     nlinarith [mul_nonneg (sub_nonneg.mpr hbound) hnonneg]
   rw [mul_pow, Real.sq_sqrt hQ.le] at hsq

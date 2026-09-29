@@ -37,8 +37,7 @@ def TangentOrientationSection.toManifoldOrientation {M : Type u} [TopologicalSpa
 
 theorem mfderivToContinuousLinearEquiv_toLinearEquiv_eq_ofBijective
     {M N : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] [TopologicalSpace N] [ChartedSpace ThreeSpace N]
-    [IsManifold ThreeModel ∞ N]
+    [TopologicalSpace N] [ChartedSpace ThreeSpace N]
     (f : M ≃ₘ⟮ThreeModel, ThreeModel⟯ N) (x : M)
     (hf : Function.Bijective (mfderiv ThreeModel ThreeModel f x)) :
     (f.mfderivToContinuousLinearEquiv (by simp) x).toLinearEquiv =
@@ -106,7 +105,7 @@ theorem exists_poincare_controlled_extinction_of_observedHistory
     Nonempty (PoincareControlledExtinction P.toClosedOrientedManifold g) := by
   have hn : 0 < H.eventCount :=
     @ObservedHistory.eventCount_pos_of_final_empty H A.initial_nonempty hempty
-  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistory_of_cutCapCompletion hn hc hout
+  refine ⟨{ history := H.toSurgeryFiniteSurgeryHistoryOfCutCapCompletion hn hc hout
             time := H.time (Fin.last H.eventCount)
             time_pos := H.last_time_pos hn
             initial := A.toFiniteSurgeryHistory hn (H.toSurgeryEvents hc hout)

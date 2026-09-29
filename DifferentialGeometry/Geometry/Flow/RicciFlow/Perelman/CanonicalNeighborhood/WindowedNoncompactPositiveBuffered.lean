@@ -51,7 +51,7 @@ theorem exists_buffered_image_with_cap_neck_charts_of_windowed_models_of_noncomp
         ∃ (cap : LocalCap L.S eps L.basepoint 0 K.domain.carrier) (v : L.M)
           (neck : StrongNeck L.S eps v 0),
           (∃ depth, K.alternative = CanonicalAlternative.cap cap depth) ∧
-          cap.tube_map = neck.map ∧ v ∈ cap.tube ∧ cap.chain.count = 1 ∧
+          cap.tubeMap = neck.map ∧ v ∈ cap.tube ∧ cap.chain.count = 1 ∧
           (∀ j : Fin cap.chain.count, cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
             cap.chain.lo j = 0 ∧ cap.chain.hi j = 1) ∧
           ∀ᶠ i in atTop,
@@ -64,7 +64,7 @@ theorem exists_buffered_image_with_cap_neck_charts_of_windowed_models_of_noncomp
               ∃ capi depthi, Ki.alternative = CanonicalAlternative.cap capi depthi ∧
                 capi.tube = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.tube ∧
                 capi.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.core.carrier ∧
-                capi.tube_map = cap.tube_map.trans
+                capi.tubeMap = cap.tubeMap.trans
                   (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
                 ∃ ni : StrongNeck (S (phi i)) alpha ((W (phi i)).embedding (F.map i v)) (t (phi i)),
                   ni.map = neck.map.trans
@@ -85,7 +85,7 @@ theorem exists_buffered_image_with_cap_neck_charts_of_windowed_models_of_noncomp
     exists_bufferedCanonical_of_noncompact_ancient_positive L hL hnoncompact hsec L.basepoint
       halpha0 halpha0small Hmodel
   obtain ⟨capK, depthK, hKalt, hcapK⟩ := hcapExists
-  have hcapKmap : capK.tube_map = neck.map := by
+  have hcapKmap : capK.tubeMap = neck.map := by
     cases hKU
     rw [eq_of_heq hcapK]
     exact hcapmap
@@ -138,7 +138,7 @@ theorem exists_buffered_image_of_windowed_models_of_noncompact_positive_limit
         ∃ (cap : LocalCap L.S eps L.basepoint 0 K.domain.carrier) (v : L.M)
           (neck : StrongNeck L.S eps v 0),
           (∃ depth, K.alternative = CanonicalAlternative.cap cap depth) ∧
-          cap.tube_map = neck.map ∧ v ∈ cap.tube ∧ cap.chain.count = 1 ∧
+          cap.tubeMap = neck.map ∧ v ∈ cap.tube ∧ cap.chain.count = 1 ∧
           (∀ j : Fin cap.chain.count, cap.chain.centers j = v ∧ HEq (cap.chain.necks j) neck ∧
             cap.chain.lo j = 0 ∧ cap.chain.hi j = 1) ∧
           ∀ᶠ i in atTop,
@@ -151,7 +151,7 @@ theorem exists_buffered_image_of_windowed_models_of_noncompact_positive_limit
               ∃ capi depthi, Ki.alternative = CanonicalAlternative.cap capi depthi ∧
                 capi.tube = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.tube ∧
                 capi.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.core.carrier ∧
-                capi.tube_map = cap.tube_map.trans
+                capi.tubeMap = cap.tubeMap.trans
                   (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
                 ∃ ni : StrongNeck (S (phi i)) alpha ((W (phi i)).embedding (F.map i v)) (t (phi i)),
                   ni.map = neck.map.trans

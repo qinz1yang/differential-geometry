@@ -450,7 +450,7 @@ end PointedCGHMaps
     (F : PointedFlowData.{u, uE, uH} (I := I) D) (f : Nat -> Nat) :
     (PointedFlowSeq.const F).subseq f = PointedFlowSeq.const F := rfl
 
-noncomputable def PointedCGHMaps.staticEuclideanLine_ofSubseq
+noncomputable def PointedCGHMaps.staticEuclideanLineOfSubseq
     (D : DifferentialGeometry.Geometry.Curvature.RealTimeInterval) :
     PointedCGHMaps (I := 𝓘(Real, Real))
       (PointedFlowSeq.const (PointedFlowData.staticEuclideanLine D))

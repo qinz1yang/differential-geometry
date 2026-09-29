@@ -11,7 +11,7 @@ namespace DifferentialGeometry.Topology.Manifold
 private abbrev E₃ := EuclideanSpace ℝ (Fin 3)
 
 theorem ballChartIsotopic_of_modelIsotopy {M : Type*} [TopologicalSpace M]
-    [ChartedSpace E₃ M] [IsManifold (𝓡 3) ∞ M] [T2Space M]
+    [ChartedSpace E₃ M] [T2Space M]
     (c c' : BallChart 3 (𝓡 3) M)
     (hover : ∀ x ∈ Metric.closedBall (0 : E₃) 2, c.chart x ∈ c'.chart.target)
     (D : ℝ → Diffeomorph 𝓘(ℝ, E₃) 𝓘(ℝ, E₃) E₃ E₃ ∞)

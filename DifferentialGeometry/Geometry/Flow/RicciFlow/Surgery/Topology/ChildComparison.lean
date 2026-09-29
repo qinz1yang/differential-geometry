@@ -20,15 +20,15 @@ namespace ComparisonSupport
 variable {G} {c : ConnectedComponents (H.stage i.succ).Carrier} (K : G.ComparisonSupport c)
 
 theorem rfs_collapse_degree :
-    K.LocalTerminalLengthControl K.rfs_whole_parent_map ∧
+    K.LocalTerminalLengthControl K.canonicalWholeParentMap ∧
     (∀ x ∉ K.support.region, ∃ U ∈ 𝓝 x, ∀ y ∈ U,
-      K.rfs_whole_parent_map y = K.rfs_whole_parent_map x) ∧
+      K.canonicalWholeParentMap y = K.canonicalWholeParentMap x) ∧
     (∀ x : G.transition.ChildCore c,
-      K.rfs_whole_parent_map (G.transition.childCoreIntoParent c x) =
+      K.canonicalWholeParentMap (G.transition.childCoreIntoParent c x) =
         G.transition.childCoreInclusion c x) ∧
-    integralHomologyMap 3 K.rfs_whole_parent_map (fundamentalClass (G.Parent c).orientation) =
+    integralHomologyMap 3 K.canonicalWholeParentMap (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation ∧
-    Function.Surjective K.rfs_whole_parent_map := by
+    Function.Surjective K.canonicalWholeParentMap := by
   exact ⟨K.rfs_whole_parent_map_localTerminalLengthControl_of_localTerminalDistanceControl
     (rfs_whole_parent_map_localTerminalDistanceControl G K),
     fun _ hx => K.rfs_whole_parent_map_locallyConstant_of_notMem hx,
@@ -43,7 +43,7 @@ theorem rfs_child_comparison
       SimplyConnectedSpace ((H.stage i.castSucc).component p).Carrier) :
     ∃ f : (c : ConnectedComponents (H.stage i.succ).Carrier) →
       C((G.Parent c).Carrier, (G.Child c).Carrier),
-    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.rfs_whole_parent_map) ∧
+    (∀ c, ∃ K : G.ComparisonSupport c, f c = K.canonicalWholeParentMap) ∧
     (∀ c, integralHomologyMap 3 (f c) (fundamentalClass (G.Parent c).orientation) =
       fundamentalClass (G.Child c).orientation) ∧
     ∃ s₀ ∈ Ico (H.time i.castSucc) (H.time i.succ), ∃ ell : ℝ → ℝ,

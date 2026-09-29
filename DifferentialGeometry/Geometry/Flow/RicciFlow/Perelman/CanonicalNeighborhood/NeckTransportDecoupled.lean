@@ -352,7 +352,7 @@ def StrongNeck.transportOfComparisons' {Dm : RealTimeInterval}
     rw [hPhi y]
     exact hcore y hy
   exact StrongNeck.transport' nk hQ Fmap cmp
-    (TransportedErrorTower.ofPullbackCross_of_close cmp nk.cylinder.metric Phi
+    (TransportedErrorTower.ofPullbackCrossOfClose cmp nk.cylinder.metric Phi
       (nk.map : Cylinder → P) (fun y => (hPhi y).symm)
       (nk.comparison.mono hsub horder2 le_rfl) hUopen hV horder heps hbeta_pos hbeta_small hdiff)
     hsmall hbeta_le hKeps hbase hcore hVsource htime hjet
@@ -387,7 +387,7 @@ def SpatialNeck.transportOfComparisons' {gm : SmoothRiemannianMetric I3 P} {p : 
     rw [hPhi y]
     exact hcore y hy
   exact SpatialNeck.transport' nk hQ Fmap cmp
-    (TransportedErrorTower.ofPullbackCross_of_close cmp (fun _ => nk.cylinder.metric 0) Phi
+    (TransportedErrorTower.ofPullbackCrossOfClose cmp (fun _ => nk.cylinder.metric 0) Phi
       (nk.map : Cylinder → P) (fun y => (hPhi y).symm)
       (nk.comparison.mono hsub horder2 le_rfl) hUopen hV horder heps hbeta_pos hbeta_small
       (fun _ _ _ _ _ _ _ => DifferentiableWithinAt.singleton))

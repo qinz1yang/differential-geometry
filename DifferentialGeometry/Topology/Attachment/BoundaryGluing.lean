@@ -395,7 +395,7 @@ theorem setoid_isEmpty (X : Type u) [TopologicalSpace X] : (isEmpty X).setoid = 
   change (isEmpty X).rel x y ↔ x = y
   exact rel_isEmpty X x y
 
-def quotientHomeomorph_isEmpty (X : Type u) [TopologicalSpace X] :
+def quotientHomeomorphIsEmpty (X : Type u) [TopologicalSpace X] :
     Quotient (isEmpty X).setoid ≃ₜ X :=
   (Homeomorph.Quotient.congrRight (fun x y => by rw [setoid_isEmpty])).trans
     Homeomorph.quotientBot

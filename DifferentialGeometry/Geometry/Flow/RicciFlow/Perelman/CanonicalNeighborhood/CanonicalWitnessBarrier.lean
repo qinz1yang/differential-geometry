@@ -44,7 +44,7 @@ theorem canonicalWitness_localBarrier_cap
       S.scalar t y ≤ B) :
     ∃ (U : CompactDomain M) (cap : LocalCap S eps x t U.carrier),
       U = W.domain ∧ x ∈ interior U.carrier ∧
-      (cap.tube_map '' (Set.univ ×ˢ ({1} : Set ℝ)) = frontier U.carrier) ∧
+      (cap.tubeMap '' (Set.univ ×ˢ ({1} : Set ℝ)) = frontier U.carrier) ∧
       ∀ y ∈ U.carrier, 2 * A < S.scalar t y ∧ S.scalar t y ≤ B := by
   obtain ⟨cap, _, halt⟩ := hcap
   refine ⟨W.domain, ?_, rfl, W.center_inside, ?_, ?_⟩

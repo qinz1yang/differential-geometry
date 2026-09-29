@@ -83,7 +83,7 @@ theorem exists_connected_cap_filling_on_finite_spatial_neck_frontier_of_mul_scal
         range (fun z : Sphere 2 => (neck j).map (z, level j)) ∧
       range (fun z : Sphere 2 => (neck i).map (z, level i)) ⊆ interior (W ∪ K) := by
   apply exists_connected_cap_filling_on_finite_spatial_neck_frontier_of_not_subset
-    alive point neck level hlevel hdisjoint i hi cap.core_model
+    alive point neck level hlevel hdisjoint i hi cap.coreModel
     (by
       rintro z ⟨v, rfl⟩
       exact (neck i).image_slab_subset_cap_core_of_center_in_slab heps q (hlevel i hi) hy cap hdepth

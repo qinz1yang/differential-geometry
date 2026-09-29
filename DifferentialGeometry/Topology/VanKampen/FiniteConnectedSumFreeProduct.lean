@@ -241,7 +241,7 @@ theorem connectedSumBasedFreeProduct_of_neck_realization
   refine ⟨(FundamentalGroup.fundamentalGroupMulEquivOfPathConnected
       (φ (ThreeManifold.connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b))
       (chosenPoint (connectedSum M N))).symm.trans
-    (((ThreeManifold.fundamentalGroupEquiv_connectedSum BM BN glue b).trans
+    (((ThreeManifold.fundamentalGroupEquivConnectedSum BM BN glue b).trans
       (DifferentialGeometry.Topology.fundamentalGroupMulEquivOfHomotopyEquiv
         φ.toHomotopyEquiv
         (ThreeManifold.connectedSumNeckMidpoint BM.boundaryMap BN.boundaryMap glue b)

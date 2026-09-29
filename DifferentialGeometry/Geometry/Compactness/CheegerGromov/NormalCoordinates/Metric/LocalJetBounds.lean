@@ -55,7 +55,7 @@ structure LocalBoundedGeometryOn
   bound : ∀ k : Nat, HasLocalCurvDerivBound (I := I) X p A k (C k)
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
-def LocalBoundedGeometryOn.of_boundedGeometry
+def LocalBoundedGeometryOn.ofBoundedGeometry
     (X : PointedRiemannianManifold.{u, uE, uH} (I := I))
     (hX : BoundedGeometry (I := I) X) (p : X.M) (A : Real) :
     LocalBoundedGeometryOn (I := I) X p A where

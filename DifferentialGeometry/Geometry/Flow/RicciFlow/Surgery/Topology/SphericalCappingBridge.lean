@@ -111,7 +111,7 @@ theorem componentMap_mk (x : T.core) :
     K.componentMap (ConnectedComponents.mk x) =
       ConnectedComponents.mk (K.coreInclusion x) := rfl
 
-theorem rfs_cap_component_bijection [CompactSpace T.core] [LocallyConnectedSpace T.core]
+theorem rfs_cap_component_bijection
     [T2Space N.Carrier] : Function.Bijective K.componentMap := by
   let _ : CompactSpace T.toTopological.core := isCompact_iff_compactSpace.mp K.core_compact
   let _ : LocallyConnectedSpace T.toTopological.core :=
@@ -119,17 +119,17 @@ theorem rfs_cap_component_bijection [CompactSpace T.core] [LocallyConnectedSpace
   exact DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.Capping.rfs_cap_component_bijection
     K.toTopological
 
-noncomputable def componentEquiv [CompactSpace T.core] [LocallyConnectedSpace T.core]
+noncomputable def componentEquiv
     [T2Space N.Carrier] :
     ConnectedComponents T.core ≃ ConnectedComponents N.Carrier :=
   Equiv.ofBijective K.componentMap (K.rfs_cap_component_bijection)
 
-theorem componentEquiv_apply [CompactSpace T.core] [LocallyConnectedSpace T.core]
+theorem componentEquiv_apply
     [T2Space N.Carrier] (x : T.core) :
     K.componentEquiv (ConnectedComponents.mk x) =
       ConnectedComponents.mk (K.coreInclusion x) := rfl
 
-theorem component_meets_core [CompactSpace T.core] [LocallyConnectedSpace T.core]
+theorem component_meets_core
     [T2Space N.Carrier] (c : ConnectedComponents N.Carrier) :
     ∃ x : T.core, ConnectedComponents.mk (K.coreInclusion x) = c := by
   obtain ⟨d, hd⟩ := (K.rfs_cap_component_bijection).surjective c

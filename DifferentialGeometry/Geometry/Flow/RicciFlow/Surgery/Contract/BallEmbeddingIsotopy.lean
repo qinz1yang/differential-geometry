@@ -44,7 +44,7 @@ def BallEmbeddingAmbientIsotopic (ι : Type u) (U : Type u) [TopologicalSpace U]
       ∃ r : ℝ, 0 < r ∧ r ≤ 1 ∧ ∀ i : ι, ∀ x : ThreeSpace,
         x ∈ Metric.closedBall 0 r → H 1 ((e i).chart x) = (e' i).chart x
 
-def SupportedBallEmbeddingIsotopy (ι : Type u) [Fintype ι] (U : Type u) [TopologicalSpace U]
+def SupportedBallEmbeddingIsotopy (ι : Type u) (U : Type u) [TopologicalSpace U]
     [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     (o : ManifoldOrientation ThreeModel U 3) (e e' : ι → OrientedBallEmbedding U o) : Prop :=
   ∃ (J : ι → ℝ → Diffeomorph ThreeModel ThreeModel U U ∞) (V : ι → Set U) (r : ℝ),
@@ -125,7 +125,7 @@ theorem ballEmbeddingIsotopy_of_supportedBallEmbeddingIsotopy
   intro ι _ U _ _ _ _ _ o e e' _ _
   exact ballEmbeddingAmbientIsotopic_of_supportedBallEmbeddingIsotopy (h ι U o e e')
 
-theorem supportedBallEmbeddingIsotopy_self {ι : Type u} [Fintype ι] {U : Type u}
+theorem supportedBallEmbeddingIsotopy_self {ι : Type u} {U : Type u}
     [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     (o : ManifoldOrientation ThreeModel U 3) (e : ι → OrientedBallEmbedding U o) :
     SupportedBallEmbeddingIsotopy ι U o e e :=
@@ -150,7 +150,7 @@ theorem ballEmbeddingAmbientIsotopic_of_isEmpty {ι : Type u} [IsEmpty ι] {U : 
     ∅, isCompact_empty, fun _ _ _ => rfl, fun _ _ _ => rfl, 1, by norm_num, le_rfl,
     fun i => isEmptyElim i⟩
 
-theorem supportedBallEmbeddingIsotopy_of_isEmpty {ι : Type u} [Fintype ι] [IsEmpty ι]
+theorem supportedBallEmbeddingIsotopy_of_isEmpty {ι : Type u} [IsEmpty ι]
     {U : Type u} [TopologicalSpace U] [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U]
     (o : ManifoldOrientation ThreeModel U 3) (e e' : ι → OrientedBallEmbedding U o) :
     SupportedBallEmbeddingIsotopy ι U o e e' :=

@@ -17,7 +17,7 @@ variable {W : Type u} [MetricSpace W] [ChartedSpace ThreeSpace W]
 
 theorem exists_finiteHorn_compact_complete_metric_depth :
     ∃ H₀ : ℝ, 0 < H₀ ∧ ∀ (g : SmoothRiemannianMetric I3 W) (H : FiniteHorn g),
-      H₀ ≤ H.collar_depth → ∀ outer : ℕ, ∃ inner : ℕ,
+      H₀ ≤ H.collarDepth → ∀ outer : ℕ, ∃ inner : ℕ,
         closure (H.subend inner) ⊆ H.subend outer ∧
         ∀ A B : Set W, IsCompact A → IsCompact B →
           A ⊆ H.subend inner → B ⊆ H.subend inner →
@@ -174,12 +174,12 @@ theorem finiteHorn_compact_complete_metric_of_endRay_dist_lt_sum
   obtain ⟨j, hjheight⟩ :=
     ((tendsto_order.1 H.cut_height_zero).2 _ (H.cut_height_mem outer).1).exists
   have hj : closure (H.subend j) ⊆ H.subend outer := by
-    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cut_height j} :=
+    have hclosed : IsClosed {z : W | H.tube.height z ≤ H.cutHeight j} :=
       isClosed_le H.tube.continuous_height continuous_const
-    have hsub : H.subend j ⊆ {z : W | H.tube.height z ≤ H.cut_height j} := by
+    have hsub : H.subend j ⊆ {z : W | H.tube.height z ≤ H.cutHeight j} := by
       intro z hz
       rw [H.subend_eq j] at hz
-      change H.tube.height z < H.cut_height j at hz
+      change H.tube.height z < H.cutHeight j at hz
       exact hz.le
     intro z hz
     rw [H.subend_eq outer]

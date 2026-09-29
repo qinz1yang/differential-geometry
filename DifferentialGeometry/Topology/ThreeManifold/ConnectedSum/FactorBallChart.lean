@@ -14,7 +14,7 @@ universe u v
 private abbrev E3 := EuclideanSpace ℝ (Fin 3)
 
 theorem exists_disjointBallChart_closedBall {M : Type*} [TopologicalSpace M]
-    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M] [IsManifold (𝓡 3) ∞ M]
+    [ChartedSpace (EuclideanSpace ℝ (Fin 3)) M]
     (c : BallChart 3 (𝓡 3) M) :
     ∃ d δ : BallChart 3 (𝓡 3) M,
       (∀ x ∈ Metric.closedBall (0 : EuclideanSpace ℝ (Fin 3)) 2,

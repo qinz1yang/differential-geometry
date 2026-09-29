@@ -129,7 +129,7 @@ theorem exists_gradientRicciSoliton_isHamiltonNormalizedPotential
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H} [I.Boundaryless]
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
-    [T2Space M] [SigmaCompactSpace M] [ConnectedSpace M]
+    [T2Space M] [ConnectedSpace M]
     {g : SmoothRiemannianMetric I M} {f : C^∞⟮I, M; ℝ⟯}
     (hsol : gradientRicciSoliton (I := I) g f 1) :
     ∃ f' : C^∞⟮I, M; ℝ⟯,

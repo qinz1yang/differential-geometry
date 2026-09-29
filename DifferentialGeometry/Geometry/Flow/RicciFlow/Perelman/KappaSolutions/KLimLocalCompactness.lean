@@ -195,7 +195,7 @@ section Sequence
 
 variable [I.Boundaryless] (X : PointedFlowSeq.{u, uE, uH} (I := I)) {kappa : ℝ}
 
-def klim_three_baseInjBound [NeZero (Module.finrank ℝ E)]
+def klimThreeBaseInjBound [NeZero (Module.finrank ℝ E)]
     (hK : ∀ i, KLim kappa (X.term i)) (hdim : Module.finrank ℝ E = 3)
     (hquarter : ∀ i,
       let _ : TopologicalSpace (X.term i).M := (X.term i).topology
@@ -331,7 +331,7 @@ theorem exists_klim_three_ancient_limit
     intro t ht z v
     simpa only [one_mul] using (hK i).metric_inner_le ht.2 le_rfl z v
   exact exists_local_ancient_flow_compactness X hD hcomplete
-    (fun i => (hK i).connected) (klim_three_baseInjBound X hK hdim hquarter)
+    (fun i => (hK i).connected) (klimThreeBaseInjBound X hK hdim hquarter)
     hlocalInput hlowerInput
 
 end Sequence

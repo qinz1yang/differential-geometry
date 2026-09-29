@@ -90,7 +90,7 @@ theorem exists_surface_product_on_closed_interval_of_terminal_rank_one
   let _ := hSigma
   let _ := morseModelEuclideanModelChartedSpace 2 N
   let _ := isManifold_morseModelEuclideanModel (n := 2) (M := N)
-  let A := diffeomorph_morseModelEuclideanModel (n := 2) (M := N)
+  let A := morseModelEuclideanModelDiffeomorph (n := 2) (M := N)
   let B := A.prodCongr (Diffeomorph.refl 𝓘(ℝ) ℝ ∞)
   let Phi := B.trans (F.trans Psi.symm)
   let k := fun t => Diffeomorph.pullbackMetricCross (h t) A

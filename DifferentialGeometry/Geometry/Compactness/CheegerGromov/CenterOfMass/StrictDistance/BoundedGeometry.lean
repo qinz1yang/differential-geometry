@@ -234,7 +234,7 @@ theorem strict_distance_convexity
         (CenterOfMass.halfSqDist pt) S := by
       simpa only [S] using
         SeqBallNormalChartData.halfSqDist_contMDiffOn
-          (SeqBallNormalChartData.of_boundedGeometryNormalChartData d)
+          (SeqBallNormalChartData.ofBoundedGeometryNormalChartData d)
           k hcomplete hconn x hq he hf mb hmb hρ hρq hρInner
     have hmap : MapsTo γ unitInterval S := by
       intro t ht
@@ -288,7 +288,7 @@ theorem strict_distance_convexity
           (mfderiv 𝓘(Real) I γ t 1) := by
       intro t ht
       exact SeqBallNormalChartData.hess_pos
-        (SeqBallNormalChartData.of_boundedGeometryNormalChartData d)
+        (SeqBallNormalChartData.ofBoundedGeometryNormalChartData d)
         k hcomplete hconn x hq he hf happrox heta mb (d.metricC 1) hqAcc
         hmb le_rfl hρInner hρ hρq
         (by

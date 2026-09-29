@@ -387,7 +387,7 @@ theorem StandardSolution.exists_strict_oriented_witness
     exact ⟨by linarith,
       (ENNReal.ofReal_lt_one.mpr (by linarith)).trans_eq Q.lifetime_eq_one.symm⟩
   have hlt : δ / 4 < δ := by linarith
-  let W := W₄.mono_of_regular hP hlt.le hδ1 hreg4
+  let W := W₄.monoOfRegular hP hlt.le hδ1 hreg4
   have hU : W.embedding '' riemannianClosedBallOf (W.model.S.base.metric 0) W.model.basepoint
       (modelRadius δ + 1) ⊆ (standardCapWindow D : Set ThreeSpace) :=
     image_subset_standardCapWindow hT₀mem hδ hδ1 W₄ hΛ1 hΛ hR1 hx hD

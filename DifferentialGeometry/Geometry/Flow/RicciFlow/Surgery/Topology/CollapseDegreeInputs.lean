@@ -41,7 +41,7 @@ theorem localTerminalDistanceControl_const (K : G.ComparisonSupport c)
 theorem localTerminalDistanceControl_of_localTerminalEDistComparison
     (Kc : (c' : ConnectedComponents (H.stage i.succ).Carrier) → G.ComparisonSupport c')
     (h : G.LocalTerminalEDistComparison Kc) :
-    (Kc c).LocalTerminalDistanceControl (Kc c).rfs_whole_parent_map := by
+    (Kc c).LocalTerminalDistanceControl (Kc c).canonicalWholeParentMap := by
   intro x hx
   obtain ⟨U, hU, hterm, hmain⟩ := h c x hx
   refine ⟨U, hU, hterm, fun y hy z hz hy' hz' => ?_⟩

@@ -53,11 +53,11 @@ theorem LocalCap.exists_exterior_ball_of_compact_ancientKappa_of_projective_slic
   let _ : ConnectedSpace F.M := hF.connected
   obtain ⟨⟨p, hp, honto, hlocal⟩, _hpi⟩ := exists_spherical_cover_of_compact_ancientKappa F hF
   have hxU : x ∈ interior U := cap.core_inside (interior_subset cap.center_inside)
-  have hxout : x ∉ range (fun z : Sphere 2 => cap.tube_map (z, 1)) := by
+  have hxout : x ∉ range (fun z : Sphere 2 => cap.tubeMap (z, 1)) := by
     rw [cap.range_outer_boundary_eq]
     exact fun h => disjoint_interior_frontier.le_bot ⟨hxU, h⟩
   obtain ⟨G, hG, hGs⟩ := DifferentialGeometry.Topology.exists_ball_chart_of_spherical_cover
-    hp honto hlocal (fun z : Sphere 2 => cap.tube_map (z, 1)) cap.outer_boundary_isSmoothEmbedding hxout
+    hp honto hlocal (fun z : Sphere 2 => cap.tubeMap (z, 1)) cap.outer_boundary_isSmoothEmbedding hxout
   rw [cap.range_outer_boundary_eq] at hGs
   let B := G '' Metric.ball (0 : ThreeSpace) 1
   have hbs : Metric.ball (0 : ThreeSpace) 1 ⊆ G.source := Metric.ball_subset_closedBall.trans hG

@@ -35,10 +35,10 @@ private theorem CanonicalWitness.exists_cap_core_with_spatial_neck_frontier
     (htag : witness.alternative = CanonicalAlternative.cap cap hdepth) :
     ∃ (V : CompactDomain M) (v : M) (neck : SpatialNeck (S.base.metric t) eps v),
       Nonempty (CapCore V.carrier) ∧
-      V.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      V.carrier = cap.core.carrier ∪ cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       x ∈ interior V.carrier ∧ V.carrier ⊆ witness.domain.carrier ∧
       frontier V.carrier = range (fun q : Sphere 2 => neck.map (q, 1 / 2)) ∧
-      (∀ z, neck.map z = cap.tube_map z) ∧
+      (∀ z, neck.map z = cap.tubeMap z) ∧
       (∀ q : Sphere 2, ∀ a, 0 < a → a < 1 / 2 → neck.map (q, 1 / 2 + a) ∉ V.carrier) := by
   obtain ⟨v, nk, hmap⟩ := hchart cap hdepth htag
   obtain ⟨V, hV, hxV, hVU, hVfront⟩ :=
@@ -283,9 +283,9 @@ private theorem CanonicalWitness.exists_cap_core_on_connectedComponent
     (htag : W.alternative = CanonicalAlternative.cap cap hdepth) :
     ∃ (K : CompactDomain U) (v : U) (nk : SpatialNeck ((S.base.metric t).restrictOpen U) eps v),
       Nonempty (CapCore K.carrier) ∧
-      Subtype.val '' K.carrier = cap.core.carrier ∪ cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
+      Subtype.val '' K.carrier = cap.core.carrier ∪ cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) (1 / 2)) ∧
       frontier K.carrier = range (fun q : Sphere 2 => nk.map (q, 1 / 2)) ∧
-      (∀ z ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹, (nk.map z : M) = cap.tube_map z) ∧
+      (∀ z ∈ univ ×ˢ Ioo (-eps⁻¹) eps⁻¹, (nk.map z : M) = cap.tubeMap z) ∧
       riemannianBallOf ((S.base.metric t).restrictOpen U) xU
         (1000 / Real.sqrt (metricScalarAt ((S.base.metric t).restrictOpen U) xU)) ⊆
           interior K.carrier := by

@@ -45,7 +45,7 @@ theorem WindowedModelWitness.canonicalAlternative_cap_of_transported_necks
       intro y hy
       norm_num
       exact hfar y hy)
-  exact canonicalAlternative_transport_cap_of_necks (L.mono_eps heps hsmall)
+  exact canonicalAlternative_transport_cap_of_necks (L.monoEps heps hsmall)
     W.embedding hsource necks hmap W.base_map hdeep
 
 end DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHorn

@@ -42,7 +42,7 @@ theorem exists_uniform_canonicalWitness_with_cap_neck_charts_of_windowedModelWit
       ∃ K : CanonicalWitness S alpha (max Cn Cr) (max Cn Cr) x t,
         K.capTubeHasNeckChart alpha := by
     rintro C' hC' ⟨B, hB⟩
-    exact ⟨(B.canonicalWitness_mono B.tolerance_lt.le hsmall).enlarge_constants hC' hC',
+    exact ⟨(B.canonicalWitnessMono B.tolerance_lt.le hsmall).enlargeConstants hC' hC',
       (hB.mono_eps B.tolerance_lt.le hsmall).enlarge_constants hC' hC'⟩
   by_cases hr : IsShrinkingSphericalSpaceFormFlow W.model
   · exact key Cr (le_max_right _ _) (hround W (hd.trans (min_le_right _ _)) hS hreg hr)

@@ -121,9 +121,9 @@ structure GlobalNeckCrossSection
   tube : GlobalNeckTube W
   center_eq : ∀ p : Sphere 2, tube.map (p, 1 / 2) = F (p, 0)
   deep_side : ∃ i, ∀ x ∈ subend i, tube.height x < 1 / 2
-  crossing_parameter : ℝ
-  crossing_mem : crossing_parameter ∈ Set.Ioc 0 axisLength
-  axis_crosses : ∃ p : Sphere 2, F (p, 0) = axis crossing_parameter
+  crossingParameter : ℝ
+  crossing_mem : crossingParameter ∈ Set.Ioc 0 axisLength
+  axis_crosses : ∃ p : Sphere 2, F (p, 0) = axis crossingParameter
 
 omit [IsManifold I3 ∞ W] [SigmaCompactSpace W] in
 theorem GlobalNeckCrossSection.path_meets_center
@@ -149,57 +149,57 @@ structure _root_.DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborho
   axial : EndRay endpoint
   tube : GlobalNeckTube W
   subend : ℕ → Set W
-  cut_height : ℕ → ℝ
-  cut_height_mem : ∀ i, cut_height i ∈ Set.Ioo (0 : ℝ) 1
-  cut_height_zero : Filter.Tendsto cut_height Filter.atTop (nhds 0)
-  subend_eq : ∀ i, subend i = {x | tube.height x < cut_height i}
+  cutHeight : ℕ → ℝ
+  cut_height_mem : ∀ i, cutHeight i ∈ Set.Ioo (0 : ℝ) 1
+  cut_height_zero : Filter.Tendsto cutHeight Filter.atTop (nhds 0)
+  subend_eq : ∀ i, subend i = {x | tube.height x < cutHeight i}
   open_subend : ∀ i, IsOpen (subend i)
   connected_subend : ∀ i, IsConnected (subend i)
   nested : ∀ i, subend (i + 1) ⊆ subend i
   cofinal_axial : ∀ i, ∃ d : ℝ, 0 < d ∧ d ≤ axial.length ∧
     ∀ s ∈ Set.Ioc 0 d, axial.point s ∈ subend i
   ambient : Type u
-  [ambient_metric : MetricSpace ambient]
+  [ambientMetric : MetricSpace ambient]
   [ambient_complete : CompleteSpace ambient]
   inclusion : W → ambient
   inclusion_continuous : Continuous inclusion
   inclusion_injective : Function.Injective inclusion
-  ambient_end : ambient
-  ambient_axial : ∀ s ∈ Set.Ioc 0 axial.length, dist (inclusion (axial.point s)) ambient_end = s
+  ambientEnd : ambient
+  ambient_axial : ∀ s ∈ Set.Ioc 0 axial.length, dist (inclusion (axial.point s)) ambientEnd = s
   local_distance : ∀ x : W, ∃ U ∈ nhds x, ∀ y ∈ U, ∀ z ∈ U,
     dist (inclusion y) (inclusion z) = dist y z
-  outer_frontier : Set ambient
-  frontier_eq : outer_frontier = frontier (Set.range inclusion) \ {ambient_end}
+  outerFrontier : Set ambient
+  frontier_eq : outerFrontier = frontier (Set.range inclusion) \ {ambientEnd}
   inclusion_isOpenEmbedding : Topology.IsOpenEmbedding inclusion
-  frontier_far : ∃ δ : ℝ, 0 < δ ∧ ∀ z ∈ outer_frontier, δ ≤ dist z ambient_end
-  deep_capture : ∃ δ : ℝ, 0 < δ ∧ ∀ z : ambient, z ≠ ambient_end →
-    dist z ambient_end < δ → z ∈ Set.range inclusion
+  frontier_far : ∃ δ : ℝ, 0 < δ ∧ ∀ z ∈ outerFrontier, δ ≤ dist z ambientEnd
+  deep_capture : ∃ δ : ℝ, 0 < δ ∧ ∀ z : ambient, z ≠ ambientEnd →
+    dist z ambientEnd < δ → z ∈ Set.range inclusion
   nonnegative : SecLower g 0 Set.univ
   curvature_diverges : ∀ C : ℝ, ∃ i, ∀ x ∈ subend i, C < metricScalarAt g x
   curvature_distance_lower : ∃ c : ℝ, 0 < c ∧ ∀ x ∈ subend 0,
     c ≤ metricScalarAt g x * dist (x : UniformSpace.Completion W) endpoint ^ 2
-  neck_precision : ℝ
-  neck_precision_pos : 0 < neck_precision
-  neck_precision_small : neck_precision < 1 / 11
-  collar_depth : ℝ
-  collar_depth_pos : 0 < collar_depth
+  neckPrecision : ℝ
+  neck_precision_pos : 0 < neckPrecision
+  neck_precision_small : neckPrecision < 1 / 11
+  collarDepth : ℝ
+  collar_depth_pos : 0 < collarDepth
   cylindrical_tail : ∃ i,
     ∀ x ∈ subend i, ∃ (cyl : CylinderReference)
       (F : PartialDiffeomorph IC I3 Cylinder W ∞) (p : Sphere 2),
       F (p, 0) = x ∧
       Nonempty (GlobalNeckCrossSection F subend axial.point axial.length) ∧
-      Set.univ ×ˢ Set.Icc (-collar_depth) collar_depth ⊆ F.source ∧
+      Set.univ ×ˢ Set.Icc (-collarDepth) collarDepth ⊆ F.source ∧
       ∃ hQ : 0 < metricScalarAt g x,
         Nonempty (MetricComparisonOn (fun _ => cyl.metric 0)
           (fun _ => scaleMetric (metricScalarAt g x) hQ g) F
-          (Set.univ ×ˢ Set.Icc (-collar_depth) collar_depth)
-          {0} (⌈neck_precision⁻¹⌉₊) neck_precision)
+          (Set.univ ×ˢ Set.Icc (-collarDepth) collarDepth)
+          {0} (⌈neckPrecision⁻¹⌉₊) neckPrecision)
   ambient_end_isometry : ∃ i, (∀ x ∈ subend i, ∀ y ∈ subend i,
       dist x y = dist (inclusion x) (inclusion y)) ∧
     ∀ x ∈ subend i, dist (x : UniformSpace.Completion W) endpoint =
-      dist (inclusion x) ambient_end
+      dist (inclusion x) ambientEnd
 
-attribute [local instance] FiniteHorn.ambient_metric
+attribute [local instance] FiniteHorn.ambientMetric
 
 structure EndGeometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) where
   unique_endpoint : (⋂ i, closure ((fun x : W => (x : UniformSpace.Completion W)) '' H.subend i)) =
@@ -207,28 +207,28 @@ structure EndGeometry {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g) where
   intrinsic_ambient : ∃ i, (∀ x ∈ H.subend i, ∀ y ∈ H.subend i,
     dist x y = dist (H.inclusion x) (H.inclusion y)) ∧
     ∀ x ∈ H.subend i, dist (x : UniformSpace.Completion W) H.endpoint =
-      dist (H.inclusion x) H.ambient_end
+      dist (H.inclusion x) H.ambientEnd
   rays : ∃ i, ∀ x ∈ H.subend i, ∃ a : EndRay H.endpoint, a.point a.length = x
   frontier_escape : ∀ w : ℕ → W,
     Filter.Tendsto (fun i => (w i : UniformSpace.Completion W)) Filter.atTop (nhds H.endpoint) →
-    ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outer_frontier,
+    ∀ R : ℝ, 0 < R → ∀ᶠ i in Filter.atTop, ∀ z ∈ H.outerFrontier,
       R * dist (w i : UniformSpace.Completion W) H.endpoint < dist (H.inclusion (w i)) z
 
 structure RayApproximation {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
     (a b : EndRay H.endpoint) (lo hi : Fin 2 → ℝ) where
-  target_index : ℕ
-  arm_index : ℕ
-  connector_index : ℕ
-  target_buffer : closure (H.subend target_index) ⊆ H.subend arm_index
-  arm_buffer : closure (H.subend arm_index) ⊆ H.subend connector_index
-  target_mem : (∀ s ∈ Set.Icc (lo 0) (hi 0), a.point s ∈ H.subend target_index) ∧
-    (∀ t ∈ Set.Icc (lo 1) (hi 1), b.point t ∈ H.subend target_index)
+  targetIndex : ℕ
+  armIndex : ℕ
+  connectorIndex : ℕ
+  target_buffer : closure (H.subend targetIndex) ⊆ H.subend armIndex
+  arm_buffer : closure (H.subend armIndex) ⊆ H.subend connectorIndex
+  target_mem : (∀ s ∈ Set.Icc (lo 0) (hi 0), a.point s ∈ H.subend targetIndex) ∧
+    (∀ t ∈ Set.Icc (lo 1) (hi 1), b.point t ∈ H.subend targetIndex)
   base : ℕ → W
   arm : Fin 2 → ℕ → ℝ → W
   length : Fin 2 → ℕ → ℝ
   length_pos : ∀ k i, 0 < length k i
   arm_smooth : ∀ k i, ContMDiffOn 𝓘(ℝ, ℝ) I3 ∞ (arm k i) (Set.Icc 0 (length k i))
-  arm_mem : ∀ k i s, s ∈ Set.Icc 0 (length k i) → arm k i s ∈ H.subend arm_index
+  arm_mem : ∀ k i s, s ∈ Set.Icc 0 (length k i) → arm k i s ∈ H.subend armIndex
   parameter : Fin 2 → ℕ → ℝ → ℝ
   starts : ∀ k i, arm k i 0 = base i
   minimizing : ∀ k i s, s ∈ Set.Icc 0 (length k i) → ∀ t ∈ Set.Icc 0 (length k i),
@@ -239,7 +239,7 @@ structure RayApproximation {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
     ∃ c : ℝ → W, c 0 = arm 0 i s ∧
       c 1 = arm 1 i t ∧
       ContMDiffOn 𝓘(ℝ, ℝ) I3 ∞ c (Set.Icc (0 : ℝ) 1) ∧
-      (∀ u ∈ Set.Icc (0 : ℝ) 1, c u ∈ H.subend connector_index) ∧
+      (∀ u ∈ Set.Icc (0 : ℝ) 1, c u ∈ H.subend connectorIndex) ∧
       ∀ u ∈ Set.Icc (0 : ℝ) 1, ∀ v ∈ Set.Icc (0 : ℝ) 1,
         dist (c u) (c v) = |u - v| *
           dist (arm 0 i s) (arm 1 i t)

@@ -145,12 +145,6 @@ theorem parabolicRescale_metric {D : RealTimeInterval}
         (F.S.base.metric (parabolicTime t Q s)) := by
   rw [parabolicRescale_solution, parabolicSolution_metric]
 
-@[simp] theorem parabolicRescale_metric_zero {D : RealTimeInterval}
-    (F : PointedFlowData.{u, 0, 0} I3 D) (t Q : ℝ) (hQ : 0 < Q) (ht : t ∈ D.carrier) :
-    (parabolicRescale F t Q hQ ht).S.base.metric 0 =
-      DifferentialGeometry.scaleMetric (I := I3) Q hQ (F.S.base.metric t) := by
-  rw [parabolicRescale_metric, parabolicTime_zero]
-
 theorem parabolicRescale_scalar {D : RealTimeInterval}
     (F : PointedFlowData.{u, 0, 0} I3 D) (t Q : ℝ) (hQ : 0 < Q) (ht : t ∈ D.carrier)
     (s : ℝ) (x : F.M) :
@@ -206,7 +200,7 @@ theorem parabolicRescale_curvDerivNormSq {D : RealTimeInterval}
   exact parabolicRescale_rmNormSq F t Q hQ ht s y
 
 theorem secLower_scaleMetric {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold I3 ∞ M] [IsManifold I3 1 M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I3 ∞ M] [IsManifold I3 1 M] [T2Space M]
     (g : SmoothRiemannianMetric I3 M) (c a : ℝ) (hc : 0 < c) (U : Set M) :
     SecLower (DifferentialGeometry.scaleMetric (I := I3) c hc g) a U ↔
       SecLower g (c * a) U := by
@@ -244,7 +238,7 @@ theorem secLower_scaleMetric {M : Type u} [TopologicalSpace M] [ChartedSpace Thr
     exact mul_le_mul_of_nonneg_left h₁ hc.le
 
 theorem secLower_scaleMetric_zero {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold I3 ∞ M] [IsManifold I3 1 M] [T2Space M] [SigmaCompactSpace M]
+    [IsManifold I3 ∞ M] [IsManifold I3 1 M] [T2Space M]
     (g : SmoothRiemannianMetric I3 M) (c : ℝ) (hc : 0 < c) (U : Set M) :
     SecLower (DifferentialGeometry.scaleMetric (I := I3) c hc g) 0 U ↔ SecLower g 0 U := by
   simpa using secLower_scaleMetric g c 0 hc U

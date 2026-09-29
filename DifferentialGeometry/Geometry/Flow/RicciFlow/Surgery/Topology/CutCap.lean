@@ -395,7 +395,7 @@ def childCore [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] [
   E.capping.componentEquiv.symm (E.cappedChild c)
 
 
-def rfs_child_parent [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] [T2Space N]
+def childParent [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] [T2Space N]
     (c : ConnectedComponents Q) : ConnectedComponents M :=
   continuous_subtype_val.connectedComponentsMap (E.childCore c)
 

@@ -28,24 +28,24 @@ variable {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
 
 omit [SigmaCompactSpace M] in
 theorem LocalCap.outer_boundary_isSmoothEmbedding (cap : LocalCap S eps x t U) :
-    Manifold.IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => cap.tube_map (z, 1)) := by
+    Manifold.IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => cap.tubeMap (z, 1)) := by
   let f : Sphere 2 → Cylinder := fun z => (z, 1)
   have hf : Manifold.IsSmoothEmbedding I2 IC ∞ f :=
     (Manifold.IsSmoothEmbedding.id : Manifold.IsSmoothEmbedding I2 I2 ∞ (Prod.fst ∘ f)).of_comp
       (J := IC) (by simp) (contMDiff_id.prodMk contMDiff_const) contMDiff_fst
-  have hsrc (z : Sphere 2) : f z ∈ cap.tube_map.source :=
+  have hsrc (z : Sphere 2) : f z ∈ cap.tubeMap.source :=
     cap.tube_domain ⟨mem_univ _, zero_le_one, le_rfl⟩
-  have hcont : ContMDiff I2 I3 ∞ (cap.tube_map ∘ f) :=
-    contMDiffOn_univ.mp (cap.tube_map.contMDiffOn_toFun.comp hf.contMDiff.contMDiffOn
+  have hcont : ContMDiff I2 I3 ∞ (cap.tubeMap ∘ f) :=
+    contMDiffOn_univ.mp (cap.tubeMap.contMDiffOn_toFun.comp hf.contMDiff.contMDiffOn
       (fun z _ => hsrc z))
-  have hinj : Function.Injective (cap.tube_map ∘ f) := by
+  have hinj : Function.Injective (cap.tubeMap ∘ f) := by
     intro a b hab
-    exact congrArg Prod.fst (cap.tube_map.toPartialEquiv.injOn (hsrc a) (hsrc b) hab)
+    exact congrArg Prod.fst (cap.tubeMap.toPartialEquiv.injOn (hsrc a) (hsrc b) hab)
   refine ⟨DifferentialGeometry.Topology.Manifold.isImmersion_of_injective_mfderiv (by simp) hcont ?_,
     (hcont.continuous.isClosedEmbedding hinj).isEmbedding⟩
   intro z
-  change Function.Injective (mfderiv I2 I3 (cap.tube_map ∘ f) z)
-  have hlocal := cap.tube_map.isLocalDiffeomorphAt IC I3 ∞ (hsrc z)
+  change Function.Injective (mfderiv I2 I3 (cap.tubeMap ∘ f) z)
+  have hlocal := cap.tubeMap.isLocalDiffeomorphAt IC I3 ∞ (hsrc z)
   rw [mfderiv_comp z (hlocal.contMDiffAt.mdifferentiableAt (by simp))
     (hf.contMDiff.mdifferentiable (by simp) z)]
   exact (hlocal.mfderivToContinuousLinearEquiv (by simp)).injective.comp
@@ -53,7 +53,7 @@ theorem LocalCap.outer_boundary_isSmoothEmbedding (cap : LocalCap S eps x t U) :
 
 omit [T2Space M] [SigmaCompactSpace M] in
 theorem LocalCap.range_outer_boundary_eq (cap : LocalCap S eps x t U) :
-    range (fun z : Sphere 2 => cap.tube_map (z, 1)) = frontier U := by
+    range (fun z : Sphere 2 => cap.tubeMap (z, 1)) = frontier U := by
   rw [← cap.outer_boundary]
   ext y
   constructor
@@ -100,7 +100,7 @@ theorem LocalCap.isConnected_interior_and_compl [PreconnectedSpace M]
   have hi : (interior U).Nonempty := ⟨x, cap.core_inside (interior_subset cap.center_inside)⟩
   have hfront : (frontier U).Nonempty := by
     let p : Sphere 2 := ⟨EuclideanSpace.single 0 1, by simp [PiLp.norm_single]⟩
-    refine ⟨cap.tube_map (p, 1), ?_⟩
+    refine ⟨cap.tubeMap (p, 1), ?_⟩
     rw [← cap.outer_boundary]
     exact ⟨(p, 1), ⟨mem_univ _, rfl⟩, rfl⟩
   have hext : Uᶜ.Nonempty := by
@@ -125,8 +125,8 @@ theorem LocalCap.complementary_region [PreconnectedSpace M] [CompactSpace M]
     IsOpen Uᶜ ∧ IsConnected Uᶜ ∧ IsCompact (closure Uᶜ) ∧
       IsConnected (closure Uᶜ) ∧ closure Uᶜ = (interior U)ᶜ ∧
       frontier Uᶜ = frontier U ∧ U ∪ closure Uᶜ = univ ∧ U ∩ closure Uᶜ = frontier U ∧
-      range (fun z : Sphere 2 => cap.tube_map (z, 1)) = frontier Uᶜ ∧
-      Manifold.IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => cap.tube_map (z, 1)) := by
+      range (fun z : Sphere 2 => cap.tubeMap (z, 1)) = frontier Uᶜ ∧
+      Manifold.IsSmoothEmbedding I2 I3 ∞ (fun z : Sphere 2 => cap.tubeMap (z, 1)) := by
   have hc : IsClosed U := cap.isCompact_carrier.isClosed
   have hext := cap.isConnected_interior_and_compl.2
   refine ⟨hc.isOpen_compl, hext, isClosed_closure.isCompact, hext.closure,
@@ -190,7 +190,7 @@ theorem LocalCap.nonempty_smoothSideClosure_compl (cap : LocalCap S eps x t U) :
   have hregular : closure (interior U) = U := by
     simpa only [hK] using K.regular_closed
   have hc : IsClosed U := cap.isCompact_carrier.isClosed
-  let e : Sphere 2 → M := fun z => cap.tube_map (z, 1)
+  let e : Sphere 2 → M := fun z => cap.tubeMap (z, 1)
   have he : Manifold.IsSmoothEmbedding I2 I3 ∞ e := cap.outer_boundary_isSmoothEmbedding
   have hrange : range e = frontier U := cap.range_outer_boundary_eq
   have hBclosure : closure Uᶜ = Uᶜ ∪ range e := by

@@ -65,7 +65,7 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
         ∃ capi depthi, Ki.alternative = CanonicalAlternative.cap capi depthi ∧
           capi.tube = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.tube ∧
           capi.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.core.carrier ∧
-          capi.tube_map = cap.tube_map.trans
+          capi.tubeMap = cap.tubeMap.trans
             (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
           ∃ ni : StrongNeck (S (phi i)) alpha
               ((W (phi i)).embedding (F.map i v)) (t (phi i)),
@@ -152,7 +152,7 @@ private theorem cap_tube_map_eq_of_heq
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D} {eps eps' : ℝ}
     {x : M} {t : ℝ} {U V : Set M} (heps : eps = eps') (hUV : U = V)
     {a : LocalCap S eps x t U} {b : LocalCap S eps' x t V} (h : HEq a b) :
-    a.tube_map = b.tube_map := by
+    a.tubeMap = b.tubeMap := by
   cases heps
   cases hUV
   rw [eq_of_heq h]
@@ -177,7 +177,7 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
     (hscalar : L.S.scalar 0 L.basepoint = 1)
     (cap : LocalCap L.S eps L.basepoint 0 K.domain.carrier)
     (hcap : ∃ depth, K.alternative = CanonicalAlternative.cap cap depth)
-    {v : L.M} (neck : StrongNeck L.S eps v 0) (hmap : ∀ z, cap.tube_map z = neck.map z)
+    {v : L.M} (neck : StrongNeck L.S eps v 0) (hmap : ∀ z, cap.tubeMap z = neck.map z)
     (ha : 0 < alpha) (hasmall : alpha < 1 / 11)
     (heps : eps < neckModelTolerance (alpha / 4))
     (hfar : ∀ y ∈ cap.tube, max 40000 (2 * max H 0) ≤ metricDistance (L.S.base.metric 0) L.basepoint y) :
@@ -191,7 +191,7 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
         ∃ capi depthi, Ki.alternative = CanonicalAlternative.cap capi depthi ∧
           capi.tube = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.tube ∧
           capi.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.core.carrier ∧
-          capi.tube_map = cap.tube_map.trans
+          capi.tubeMap = cap.tubeMap.trans
             (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
           ∃ ni : StrongNeck (S (phi i)) alpha
               ((W (phi i)).embedding (F.map i v)) (t (phi i)),
@@ -220,15 +220,15 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
   intro i hi
   obtain ⟨Ki, hKi, capi, depthi, hKiAlt, htubei, hcorei, hmapi, ni, hni, B,
     hBeps, hBU, hBr, capB, depthB, hBAlt, hcapB⟩ := hi
-  have hvalues : ∀ z, capi.tube_map z = ni.map z := by
+  have hvalues : ∀ z, capi.tubeMap z = ni.map z := by
     intro z
     rw [hmapi, hni]
     change (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
-      (W (phi i)).embedding) (cap.tube_map z) =
+      (W (phi i)).embedding) (cap.tubeMap z) =
         (partialDiffeomorphTransMixed (F.partialDiffeomorph i)
           (W (phi i)).embedding) (neck.map z)
     rw [hmap z]
-  have hcapvalues : ∀ z, capB.tube_map z = ni.map z := by
+  have hcapvalues : ∀ z, capB.tubeMap z = ni.map z := by
     rw [cap_tube_map_eq_of_heq hBeps hBU hcapB]
     exact hvalues
   refine ⟨Ki, hKi, capi, depthi, hKiAlt, htubei, hcorei, hmapi, ni, hni,
@@ -259,7 +259,7 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
     (hscalar : L.S.scalar 0 L.basepoint = 1)
     (cap : LocalCap L.S eps L.basepoint 0 K.domain.carrier)
     (hcap : ∃ depth, K.alternative = CanonicalAlternative.cap cap depth)
-    {v : L.M} (neck : StrongNeck L.S eps v 0) (hmap : cap.tube_map = neck.map)
+    {v : L.M} (neck : StrongNeck L.S eps v 0) (hmap : cap.tubeMap = neck.map)
     (hv : v ∈ cap.tube)
     (ha : 0 < alpha) (hasmall : alpha < 1 / 11)
     (heps : eps < neckModelTolerance (alpha / 4))
@@ -274,7 +274,7 @@ theorem CanonicalWitness.exists_eventually_buffered_image_of_windowed_models_of_
         ∃ capi depthi, Ki.alternative = CanonicalAlternative.cap capi depthi ∧
           capi.tube = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.tube ∧
           capi.core.carrier = (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) '' cap.core.carrier ∧
-          capi.tube_map = cap.tube_map.trans
+          capi.tubeMap = cap.tubeMap.trans
             (partialDiffeomorphTransMixed (F.partialDiffeomorph i) (W (phi i)).embedding) ∧
           ∃ ni : StrongNeck (S (phi i)) alpha
               ((W (phi i)).embedding (F.map i v)) (t (phi i)),

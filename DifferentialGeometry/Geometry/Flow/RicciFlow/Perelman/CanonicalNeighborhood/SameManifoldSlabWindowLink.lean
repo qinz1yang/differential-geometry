@@ -119,7 +119,7 @@ noncomputable def highCurvatureSameManifoldFlowSeq {T : ℝ} (hT : 0 < T)
     (hS : IsSolutionOn S) (x : ℕ → M) (t : ℕ → ℝ)
     (htmem : ∀ i, t i ∈ Set.Ico (0 : ℝ) T) (htpos : ∀ i, 0 < t i)
     (hpos : ∀ i, 0 < S.scalar (t i) (x i)) (i : ℕ) (s : ℝ) :
-    (highCurvatureSameManifoldFlowSeq hT S hS x t htmem htpos hpos).metricFamily i s =
+    ((highCurvatureSameManifoldFlowSeq hT S hS x t htmem htpos hpos).solution i).family.metric s =
       rescaledMetric (I := I3) S (t i) (S.scalar (t i) (x i)) (hpos i) s :=
   highCurvatureSlabFlow_metric hT S hS x t htmem htpos hpos i s
 

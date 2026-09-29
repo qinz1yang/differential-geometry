@@ -29,7 +29,7 @@ def ancestorComponent (H : ObservedHistory.{u})
     (j : Fin (H.eventCount + 1)) → ConnectedComponents (H.stage j).Carrier :=
   Fin.reverseInduction terminal (fun j c => (H.event j).transition.childParent c)
 
-def rfs_finite_ancestor_chain (H : ObservedHistory.{u})
+def finiteAncestorChain (H : ObservedHistory.{u})
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
     FiniteAncestorChain H terminal where
   component := ancestorComponent H terminal
@@ -39,7 +39,7 @@ def rfs_finite_ancestor_chain (H : ObservedHistory.{u})
 theorem exists_unique_finiteAncestorChain (H : ObservedHistory.{u})
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
     Nonempty (Unique (FiniteAncestorChain H terminal)) := by
-  let canonical := rfs_finite_ancestor_chain H terminal
+  let canonical := finiteAncestorChain H terminal
   refine ⟨{ default := canonical, uniq := ?_ }⟩
   intro chain
   have hcomponent : chain.component = canonical.component := by

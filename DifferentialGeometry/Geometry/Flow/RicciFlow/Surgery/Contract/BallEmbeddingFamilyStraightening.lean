@@ -314,7 +314,7 @@ theorem ballChartIsotopicAwayFromCompact_self {U : Type u} [TopologicalSpace U]
     rfl
 
 theorem ballChartIsotopicAwayFromCompact_affine {U : Type u} [TopologicalSpace U]
-    [ChartedSpace ThreeSpace U] [IsManifold ThreeModel ∞ U] [T2Space U]
+    [ChartedSpace ThreeSpace U] [T2Space U]
     (c : BallChart 3 (𝓡 3) U) (hr : 0 < Real.exp (-1))
     (hs : ‖(0 : ThreeSpace)‖ + 2 * Real.exp (-1) ≤ 2) :
     ballChartIsotopicAwayFromCompact c (c.affine 0 (Real.exp (-1)) hr hs) ∅ := by

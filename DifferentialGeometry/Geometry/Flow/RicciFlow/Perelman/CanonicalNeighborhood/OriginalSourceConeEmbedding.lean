@@ -20,7 +20,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem RealizedFiniteHorn.exists_original_source_forward_inverse_capture
@@ -167,7 +167,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact EndAngles.metric
 
 theorem RealizedFiniteHorn.range_mem_nhds_of_marked_original_source_inverse_family
@@ -332,7 +332,7 @@ open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 universe u v
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact EndAngles.metric
 
 theorem RealizedFiniteHorn.exists_marked_original_source_local_cone_embedding

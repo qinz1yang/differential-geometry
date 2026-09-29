@@ -338,7 +338,7 @@ theorem edist_proj_le (x y : ℝ) :
 theorem riemannianCurveLength_pullbackMetricCross
     {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
     {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q] [T2Space Q]
+    {Q : Type*} [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]
     (g : SmoothRiemannianMetric I Q) (Ψ : A ≃ₘ⟮𝓘(ℝ, E), I⟯ Q) (γ : ℝ → A) (a b : ℝ) :
     Surgery.Topology.riemannianCurveLength (Diffeomorph.pullbackMetricCross g Ψ) γ a b =

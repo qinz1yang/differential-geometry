@@ -32,7 +32,7 @@ theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParame
     (h0 : ∀ c : ConnectedComponents (H.stage 0).Carrier,
       SimplyConnectedSpace ((H.stage 0).component c).Carrier)
     (terminal : ConnectedComponents (H.stage (Fin.last H.eventCount)).Carrier) :
-    let chain := rfs_finite_ancestor_chain H terminal
+    let chain := finiteAncestorChain H terminal
     let hSC := rfs_simply_connected_history H h0
     (∀ j : Fin (H.eventCount + 1),
       let P := (H.stage j).component (chain.component j)
@@ -54,12 +54,12 @@ theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParame
       letI : SimplyConnectedSpace P.Carrier := hSC j.castSucc ((H.event j).transition.childParent child)
       letI : SimplyConnectedSpace Q.Carrier := hSC j.succ child
       ∃ K : G.ComparisonSupport child,
-        (∀ p : P.Carrier, basedHomotopyMap K.rfs_whole_parent_map p
+        (∀ p : P.Carrier, basedHomotopyMap K.canonicalWholeParentMap p
           (positiveHomotopyClass P.orientation p) =
-            positiveHomotopyClass Q.orientation (K.rfs_whole_parent_map p)) ∧
-        FreeHomotopyClass.map (contractibleLoopPostcompose K.rfs_whole_parent_map)
+            positiveHomotopyClass Q.orientation (K.canonicalWholeParentMap p)) ∧
+        FreeHomotopyClass.map (contractibleLoopPostcompose K.canonicalWholeParentMap)
           (positiveFreeContractibleClass P.orientation) = positiveFreeContractibleClass Q.orientation) := by
-  let chain := rfs_finite_ancestor_chain H terminal
+  let chain := finiteAncestorChain H terminal
   let hSC := rfs_simply_connected_history H h0
   constructor
   · intro j
@@ -81,14 +81,14 @@ theorem rfs_finite_ancestry (H : ObservedHistory.{u}) (parameters : CutoffParame
     let : SimplyConnectedSpace P.Carrier := hSC j.castSucc ((H.event j).transition.childParent child)
     let : SimplyConnectedSpace Q.Carrier := hSC j.succ child
     obtain ⟨K⟩ := G.rfs_comparison_support child
-    have hd : orientedDegree P.orientation Q.orientation K.rfs_whole_parent_map = 1 := by
-      apply (orientedDegree_eq_iff P.orientation Q.orientation K.rfs_whole_parent_map 1).mpr
+    have hd : orientedDegree P.orientation Q.orientation K.canonicalWholeParentMap = 1 := by
+      apply (orientedDegree_eq_iff P.orientation Q.orientation K.canonicalWholeParentMap 1).mpr
       simpa only [one_smul] using K.rfs_collapse_degree.2.2.2.1
     refine ⟨K, ?_, positiveFreeContractibleClass_natural P.orientation Q.orientation
-      K.rfs_whole_parent_map hd⟩
+      K.canonicalWholeParentMap hd⟩
     intro p
     simpa only [hd, zpow_one] using
-      rfs_degree_class_transport P.orientation Q.orientation K.rfs_whole_parent_map p
+      rfs_degree_class_transport P.orientation Q.orientation K.canonicalWholeParentMap p
 
 structure AncestorRestrictionData (short long : ObservedHistory.{u}) where
   count_le : short.eventCount ≤ long.eventCount
@@ -125,20 +125,20 @@ theorem rfs_finite_ancestry_restrict
     (terminal : ConnectedComponents (long.stage (Fin.last long.eventCount)).Carrier)
     (earlier : ConnectedComponents (short.stage (Fin.last short.eventCount)).Carrier)
     (hearlier : R.componentToLong (Fin.last short.eventCount) earlier =
-      (rfs_finite_ancestor_chain long terminal).component
+      (finiteAncestorChain long terminal).component
         (Fin.castLE (Nat.add_le_add_right R.count_le 1) (Fin.last short.eventCount))) :
     ∀ j : Fin (short.eventCount + 1), R.componentToLong j
-      ((rfs_finite_ancestor_chain short earlier).component j) =
-        (rfs_finite_ancestor_chain long terminal).component
+      ((finiteAncestorChain short earlier).component j) =
+        (finiteAncestorChain long terminal).component
           (Fin.castLE (Nat.add_le_add_right R.count_le 1) j) := by
   intro j
   induction j using Fin.reverseInduction with
   | last =>
-    rw [(rfs_finite_ancestor_chain short earlier).terminal_eq]
+    rw [(finiteAncestorChain short earlier).terminal_eq]
     exact hearlier
   | cast j ih =>
-    rw [(rfs_finite_ancestor_chain short earlier).parent_eq, componentToLong_parent R j, ih]
-    exact ((rfs_finite_ancestor_chain long terminal).parent_eq (Fin.castLE R.count_le j)).symm
+    rw [(finiteAncestorChain short earlier).parent_eq, componentToLong_parent R j, ih]
+    exact ((finiteAncestorChain long terminal).parent_eq (Fin.castLE R.count_le j)).symm
 
 end AncestorRestrictionData
 

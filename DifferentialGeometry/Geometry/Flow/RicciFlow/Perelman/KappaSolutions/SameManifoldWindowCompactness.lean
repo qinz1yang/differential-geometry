@@ -212,7 +212,7 @@ noncomputable def ofSolution (D : DifferentialGeometry.Geometry.Curvature.RealTi
 
 end SameManifoldLimitEquationData
 
-noncomputable def SameManifoldFlowSeq.sameManifoldLimitEquationData_term
+noncomputable def SameManifoldFlowSeq.sameManifoldLimitEquationDataTerm
     (Y : SameManifoldFlowSeq.{u, uE, uH} I M) (n : Nat) :
     SameManifoldLimitEquationData (I := I) (Y.metricFamily n) (arcInterval (Y.horizon n)) :=
   SameManifoldLimitEquationData.ofSolution (I := I) (arcInterval (Y.horizon n))

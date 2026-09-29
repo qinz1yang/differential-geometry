@@ -41,13 +41,13 @@ theorem EndRay.metricScalarAt_tendsto_atTop
   rw [a.radial (d i) hi]
   exact hsmall
 
-attribute [local instance] FiniteHorn.ambient_metric
+attribute [local instance] FiniteHorn.ambientMetric
 
 theorem not_continuousAt_ambient_scalar_extension
     {g : SmoothRiemannianMetric I3 W} (H : FiniteHorn g)
     (f : H.ambient → ℝ) (j : ℕ)
     (hscalar : ∀ w ∈ H.subend j, f (H.inclusion w) = metricScalarAt g w) :
-    ¬ ContinuousAt f H.ambient_end := by
+    ¬ ContinuousAt f H.ambientEnd := by
   intro hcont
   let d : ℕ → ℝ := fun i => H.axial.length / ((i : ℝ) + 1)
   have hd : ∀ i, d i ∈ Set.Ioc 0 H.axial.length := by
@@ -62,7 +62,7 @@ theorem not_continuousAt_ambient_scalar_extension
       (tendsto_one_div_add_atTop_nhds_zero_nat (𝕜 := ℝ)).const_mul H.axial.length
   have hpoint : Filter.Tendsto
       (fun i => H.inclusion (H.axial.point (d i)))
-      Filter.atTop (nhds H.ambient_end) := by
+      Filter.atTop (nhds H.ambientEnd) := by
     apply Metric.tendsto_nhds.2
     intro δ hδ
     filter_upwards [hzero.eventually (eventually_lt_nhds hδ)] with i hi
@@ -73,11 +73,11 @@ theorem not_continuousAt_ambient_scalar_extension
     filter_upwards [hzero.eventually (eventually_lt_nhds hδ)] with i hi
     exact htail _ ⟨(hd i).1, hi.le⟩
   have hlarge := (H.axial.metricScalarAt_tendsto_atTop H (Filter.Eventually.of_forall hd)
-    hzero).eventually_gt_atTop (f H.ambient_end + 1)
+    hzero).eventually_gt_atTop (f H.ambientEnd + 1)
   have hsmall := (hcont.tendsto.comp hpoint).eventually
-    (eventually_lt_nhds (show f H.ambient_end < f H.ambient_end + 1 by linarith))
+    (eventually_lt_nhds (show f H.ambientEnd < f H.ambientEnd + 1 by linarith))
   obtain ⟨i, hi, hsc, hmemi⟩ := (hlarge.and (hsmall.and hmem)).exists
-  change f (H.inclusion (H.axial.point (d i))) < f H.ambient_end + 1 at hsc
+  change f (H.inclusion (H.axial.point (d i))) < f H.ambientEnd + 1 at hsc
   rw [hscalar _ hmemi] at hsc
   exact (not_lt_of_ge hi.le) hsc
 
@@ -101,9 +101,9 @@ attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
   PointedRiemannianManifold.topology PointedRiemannianManifold.charted
   PointedRiemannianManifold.smooth PointedRiemannianManifold.t2
-  PointedRiemannianManifold.sigmaCompact RealizedFiniteHorn.metric_space
+  PointedRiemannianManifold.sigmaCompact RealizedFiniteHorn.metricSpace
   RealizedFiniteHorn.charted RealizedFiniteHorn.smooth RealizedFiniteHorn.sigmaCompact
-  FiniteHorn.ambient_metric
+  FiniteHorn.ambientMetric
 
 theorem RealizedFiniteHorn.scalar_tendsto {X : FlowSequence.{u}}
     (H : RealizedFiniteHorn X) (x : H.space) :
@@ -137,7 +137,7 @@ open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovC
 universe u
 attribute [local instance] PointedFlowData.topology PointedFlowData.charted
   PointedFlowData.smooth PointedFlowData.t2 PointedFlowData.sigmaCompact
-  RealizedFiniteHorn.metric_space RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
+  RealizedFiniteHorn.metricSpace RealizedFiniteHorn.charted RealizedFiniteHorn.smooth
   RealizedFiniteHorn.sigmaCompact
 
 theorem RealizedFiniteHorn.exists_center_scalar_threshold

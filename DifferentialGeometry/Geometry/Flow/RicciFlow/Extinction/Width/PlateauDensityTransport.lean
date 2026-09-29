@@ -44,11 +44,11 @@ theorem plateauDiskDensity_of_diffeomorph (g : SmoothRiemannianMetric I Q)
     congr 1
     funext z
     exact Φ.symm_apply_apply (v.1.map z)
-  refine ⟨fun j => (w j).comp_diffeomorph Φ.symm, ?_, ?_⟩
+  refine ⟨fun j => (w j).compDiffeomorph Φ.symm, ?_, ?_⟩
   · intro j θ
     rw [SmoothDisk.comp_diffeomorph_map, hw j θ]
     simp
-  · have hfun : (fun j => diskArea g (⇑((w j).comp_diffeomorph Φ.symm).map)) =
+  · have hfun : (fun j => diskArea g (⇑((w j).compDiffeomorph Φ.symm).map)) =
         fun j => diskArea (Diffeomorph.pullbackMetricCross g Φ.symm) (⇑(w j).map) := by
       funext j
       exact (diskArea_pullbackMetricCross g Φ.symm (⇑(w j).map)).symm
@@ -65,7 +65,7 @@ theorem plateauDiskDensity_of_standardModelCopy
   plateauDiskDensity_of_diffeomorph g c.equiv γ h
 
 theorem smooth_exact_disk_density_of_standardModelCopy
-    (c : Geometry.Topology.StandardModelCopy I Q E) [I.Boundaryless] [CompactSpace Q]
+    (c : Geometry.Topology.StandardModelCopy I Q E)
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (h : PlateauDiskDensity (I := 𝓘(ℝ, E)) (Q := c.Q)
       (Diffeomorph.pullbackMetricCross g c.equiv.symm)

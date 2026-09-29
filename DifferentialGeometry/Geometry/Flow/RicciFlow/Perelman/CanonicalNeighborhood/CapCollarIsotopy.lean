@@ -26,26 +26,26 @@ theorem LocalCap.exists_isotopy_image_tube_strip
       (∀ s, F s x = x ∧ (F s).symm x = x) ∧
       (∀ s, F s '' U = U ∧ (F s).symm '' U = U) ∧
       (∀ s ∈ Icc (0 : ℝ) 1,
-        F s '' cap.tube = cap.tube_map '' (univ ×ˢ Icc (s * d) 1)) ∧
+        F s '' cap.tube = cap.tubeMap '' (univ ×ˢ Icc (s * d) 1)) ∧
       ∃ K : Set M, IsCompact K ∧ K ⊆ interior U \ {x} ∧
         ∀ s, EqOn (F s) id Kᶜ ∧ EqOn (F s).symm id Kᶜ := by
-  have hsource : univ ×ˢ Icc (0 : ℝ) 0 ⊆ cap.tube_map.source := by
+  have hsource : univ ×ˢ Icc (0 : ℝ) 0 ⊆ cap.tubeMap.source := by
     intro z hz
     exact cap.tube_domain ⟨hz.1, hz.2.1, hz.2.2.trans zero_le_one⟩
-  have hband : cap.tube_map '' (univ ×ˢ Icc (0 : ℝ) 0) ⊆ interior U \ {x} := by
+  have hband : cap.tubeMap '' (univ ×ˢ Icc (0 : ℝ) 0) ⊆ interior U \ {x} := by
     rintro y ⟨⟨z, a⟩, ha, rfl⟩
     have ha0 : a = 0 := le_antisymm ha.2.2 ha.2.1
     subst a
-    have hfront : cap.tube_map (z, 0) ∈ frontier cap.core.carrier :=
+    have hfront : cap.tubeMap (z, 0) ∈ frontier cap.core.carrier :=
       cap.inner_boundary ▸ ⟨(z, 0), ⟨mem_univ _, rfl⟩, rfl⟩
     refine ⟨cap.core_inside (cap.core.compact.isClosed.frontier_subset hfront), ?_⟩
     intro heq
-    have heq' : cap.tube_map (z, 0) = x := heq
+    have heq' : cap.tubeMap (z, 0) = x := heq
     rw [heq'] at hfront
     exact hfront.2 cap.center_inside
   obtain ⟨l, u, hl, hu, hsrc, himg⟩ :=
     DifferentialGeometry.Topology.Compactness.exists_larger_product_chart_band
-      cap.tube_map.toOpenPartialHomeomorph le_rfl hsource
+      cap.tubeMap.toOpenPartialHomeomorph le_rfl hsource
       (isOpen_interior.sdiff isClosed_singleton) hband
   let b := min u (1 / 2 : ℝ)
   have hb : 0 < b := lt_min hu (by norm_num)
@@ -57,7 +57,7 @@ theorem LocalCap.exists_isotopy_image_tube_strip
   have hsub : (univ : Set (Sphere 2)) ×ˢ Ioo l b ⊆ univ ×ˢ Ioo l u :=
     Set.prod_mono (subset_refl _) (Ioo_subset_Ioo le_rfl hbu)
   obtain ⟨φ, _, _, _, hmove, hpos, hfix, F, hF, hFi, hF0, htrack, _, K, hK, hKU, hFfix⟩ :=
-    cap.tube_map.exists_collar_reparametrization_isotopy ⟨hl, hb⟩
+    cap.tubeMap.exists_collar_reparametrization_isotopy ⟨hl, hb⟩
       ⟨hl.trans hd, hdb⟩ (hsub.trans hsrc)
   have hKO : K ⊆ interior U \ {x} := hKU.trans ((Set.image_mono hsub).trans himg)
   have hxK : x ∉ K := fun hx => (hKO hx).2 (mem_singleton x)
@@ -83,10 +83,10 @@ theorem LocalCap.exists_isotopy_image_tube_strip
       rw [(φ s).continuous.image_Icc_of_strictMono (strictMono_of_deriv_pos (hpos s)), hzero, hone]
     calc
       F s '' cap.tube =
-          cap.tube_map '' ((Prod.map id (φ s)) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
+          cap.tubeMap '' ((Prod.map id (φ s)) '' (univ ×ˢ Icc (0 : ℝ) 1)) := by
         rw [← cap.tube_eq, image_image, image_image]
         exact image_congr fun z hz => htrack s z (cap.tube_domain hz)
-      _ = cap.tube_map '' (univ ×ˢ Icc (s * d) 1) := by
+      _ = cap.tubeMap '' (univ ×ˢ Icc (s * d) 1) := by
         rw [prodMap_image_prod, image_id, hinterval]
 
 theorem LocalCap.exists_isotopy_with_strict_tube_depth [PreconnectedSpace M]

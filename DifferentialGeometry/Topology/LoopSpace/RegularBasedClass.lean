@@ -65,7 +65,7 @@ theorem regularContractibleLoop_homotopyGroupMap_bijective
       exact ⟨Hr.symm⟩
 
 
-def regularContractibleLoop_pi2Equiv
+def regularContractibleLoopPiTwoMulEquiv
     (g : SmoothRiemannianMetric 𝓘(ℝ, E) M) {n : ℕ}
     (e : M → EuclideanSpace ℝ (Fin n))
     (he : ContMDiff 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) ∞ e)

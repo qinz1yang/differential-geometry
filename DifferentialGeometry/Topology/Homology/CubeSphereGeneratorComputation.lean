@@ -119,17 +119,17 @@ theorem hasCubeSquareAlignment_iff_exists_canonical_alignment :
     HasCubeSquareAlignment.{u} ↔
       ∃ τ : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ]
           integralSingularHomology 2 (liftedHomotopySphere.{u} 1),
-        integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass
+        cubeSquareHomologyAlignment
           (LinearEquiv.refl ℤ CubeSphereMayerVietorisSource.{u}) τ :=
   Iff.rfl
 
 
 
-theorem hasCubeSquareAlignment_of_integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass
+theorem hasCubeSquareAlignment_of_cubeSquareHomologyAlignment
     {B : Type u} [AddCommGroup B] [Module ℤ B]
     (f : CubeSphereMayerVietorisSource.{u} ≃ₗ[ℤ] B)
     (τ : B ≃ₗ[ℤ] integralSingularHomology 2 (liftedHomotopySphere.{u} 1))
-    (halign : integralSphereHomologyShiftEquiv_cubeSphereFundamentalClass f τ) :
+    (halign : cubeSquareHomologyAlignment f τ) :
     HasCubeSquareAlignment.{u} :=
   ⟨f.trans τ, halign⟩
 
