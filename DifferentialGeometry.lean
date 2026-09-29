@@ -5457,6 +5457,7 @@ import DifferentialGeometry.Topology.Combinatorics.FairEnumeration
 import DifferentialGeometry.Topology.Connected.BoundaryCollarComponent
 import DifferentialGeometry.Topology.Connected.ClosedAttachments
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Extension
+import DifferentialGeometry.Topology.Manifold.RegularLevel.AtlasCompatibility
 import DifferentialGeometry.Topology.MetricSpace.GeodesicCompactness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactPathAvoidance
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CompactSlabVolume
