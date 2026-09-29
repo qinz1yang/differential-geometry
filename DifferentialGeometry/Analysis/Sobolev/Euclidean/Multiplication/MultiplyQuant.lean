@@ -1,4 +1,5 @@
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.Multiplication.Multiply
+import Mathlib.Analysis.Calculus.FDeriv.Measurable
 
 noncomputable section
 
@@ -46,25 +47,41 @@ lemma eLpNorm_partial_eta_mul_le
     {η : E → ℝ}
     {C : ℝ}
     (hη_grad_bound : ∀ x ∈ Ω, ‖fderiv ℝ η x‖ ≤ C)
-    (i : Fin d) (v : E → ℝ)
-    (hηv : AEStronglyMeasurable
-      (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * v x)
-      (volume.restrict Ω)) :
+    (i : Fin d) (v : E → ℝ) :
     eLpNorm (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * v x)
         p (volume.restrict Ω) ≤
       ENNReal.ofReal C * eLpNorm v p (volume.restrict Ω) := by
-  refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := v) (c := C) hηv ?_ p
-  refine (ae_restrict_iff' hΩ.measurableSet).mpr ?_
-  refine Filter.Eventually.of_forall (fun x hx => ?_)
-  calc
-    ‖(fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * v x‖
-        = ‖(fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))‖ * ‖v x‖ := norm_mul _ _
-    _ ≤ ‖fderiv ℝ η x‖ * ‖v x‖ := by
-          gcongr
-          exact norm_partial_eta_le_fderiv i x
-    _ ≤ C * ‖v x‖ := by
-          gcongr
-          exact hη_grad_bound x hx
+  by_cases hC : C ≤ 0
+  · have hzero : (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * v x)
+        =ᵐ[volume.restrict Ω] 0 := by
+      filter_upwards [ae_restrict_mem hΩ.measurableSet] with x hx
+      have hcoeff : (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) = 0 :=
+        norm_eq_zero.mp (le_antisymm
+          ((norm_partial_eta_le_fderiv i x).trans ((hη_grad_bound x hx).trans hC))
+          (norm_nonneg _))
+      simp only [hcoeff, zero_mul, Pi.zero_apply]
+    rw [eLpNorm_congr_ae hzero, eLpNorm_zero]
+    exact bot_le
+  · by_cases hv : AEStronglyMeasurable v (volume.restrict Ω)
+    · have hηv : AEStronglyMeasurable
+          (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * v x)
+          (volume.restrict Ω) :=
+        (measurable_fderiv_apply_const ℝ η (EuclideanSpace.single i (1 : ℝ))).aestronglyMeasurable.mul hv
+      refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul (g := v) (c := C) hηv ?_ p
+      refine (ae_restrict_iff' hΩ.measurableSet).mpr ?_
+      refine Filter.Eventually.of_forall (fun x hx => ?_)
+      calc
+        ‖(fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * v x‖
+            = ‖(fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))‖ * ‖v x‖ := norm_mul _ _
+        _ ≤ ‖fderiv ℝ η x‖ * ‖v x‖ := by
+              gcongr
+              exact norm_partial_eta_le_fderiv i x
+        _ ≤ C * ‖v x‖ := by
+              gcongr
+              exact hη_grad_bound x hx
+    · rw [eLpNorm_of_not_aestronglyMeasurable hv,
+        ENNReal.mul_top (ENNReal.ofReal_pos.mpr (lt_of_not_ge hC)).ne']
+      exact le_top
 
 lemma eLpNorm_chosenWeakPartialOrZero_smul_smooth_bounded_le
     {p : ℝ≥0∞} (hp_one : 1 ≤ p) {Ω : Set E} (hΩ : IsOpen Ω)
@@ -87,14 +104,6 @@ lemma eLpNorm_chosenWeakPartialOrZero_smul_smooth_bounded_le
       (volume.restrict Ω) :=
     hη_smooth.continuous.aestronglyMeasurable.mul
       (chosenWeakPartialOrZero_memLp_of_mem hu i).aestronglyMeasurable
-  have hderiv_cont : Continuous
-      (fun x : E => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))) :=
-    (hη_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
-      continuous_const
-  have hdηu_meas : AEStronglyMeasurable
-      (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
-      (volume.restrict Ω) :=
-    hderiv_cont.aestronglyMeasurable.mul hu.1.aestronglyMeasurable
   rw [eLpNorm_congr_ae hae]
   have hSumEq :
       (fun x => η x * chosenWeakPartialOrZero (d := d) p i u Ω x +
@@ -126,7 +135,7 @@ lemma eLpNorm_chosenWeakPartialOrZero_smul_smooth_bounded_le
       eLpNorm (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
           p (volume.restrict Ω)
         ≤ ENNReal.ofReal C * eLpNorm u p (volume.restrict Ω) :=
-    eLpNorm_partial_eta_mul_le (d := d) hΩ hη_grad_bound i u hdηu_meas
+    eLpNorm_partial_eta_mul_le (d := d) hΩ hη_grad_bound i u
   exact add_le_add hbnd1 hbnd2
 
 lemma ofReal_eq_ofReal_max_zero (C : ℝ) :

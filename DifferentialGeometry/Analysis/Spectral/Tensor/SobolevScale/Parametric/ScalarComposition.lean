@@ -207,18 +207,21 @@ theorem norm_scalarCompOn_sub_le_of_lipschitzOnWith
     apply (pi_norm_le_iff_of_nonneg (Finset.sum_nonneg (fun i _ => norm_nonneg (d i x)))).2
     intro i
     exact Finset.single_le_sum (fun j _ => norm_nonneg (d j x)) (Finset.mem_univ i)
+  have hab : Continuous (fun x => a x - b x) :=
+    (continuous_pi (fun i => (TensorRSField.scalar0_smooth (u i).toSection).continuous)).sub
+      (continuous_pi (fun i => (TensorRSField.scalar0_smooth (v i).toSection).continuous))
   have hsum : eLpNorm (fun x => a x - b x) 2 μ ≤ ∑ i, eLpNorm (d i) 2 μ := by
     calc
       _ ≤ eLpNorm (fun x => ∑ i, ‖d i x‖) 2 μ :=
-        eLpNorm_mono_ae_real (Filter.Eventually.of_forall hpn)
+        eLpNorm_mono_ae_real hab.aestronglyMeasurable (Filter.Eventually.of_forall hpn)
       _ ≤ ∑ i, eLpNorm (fun x => ‖d i x‖) 2 μ := by
         have heq : (fun x => ∑ i, ‖d i x‖) = ∑ i, (fun x => ‖d i x‖) := by
           funext x
           simp only [Finset.sum_apply]
         rw [heq]
-        exact eLpNorm_sum_le (fun i _ => (hd i).aestronglyMeasurable.norm)
-          (by norm_num : (1 : ENNReal) ≤ 2)
-      _ = _ := by simp only [eLpNorm_norm]
+        exact eLpNorm_sum_le (by norm_num : (1 : ENNReal) ≤ 2)
+      _ = _ := Finset.sum_congr rfl (fun i _ =>
+        eLpNorm_norm (d i) (hd i).aestronglyMeasurable)
   have hbound := (hL.eLpNorm_comp_sub_le μ 2 a b
     (Filter.Eventually.of_forall huK) (Filter.Eventually.of_forall hvK)
     (hFa.aestronglyMeasurable.sub hFb.aestronglyMeasurable)).trans

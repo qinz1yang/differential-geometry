@@ -519,7 +519,6 @@ theorem memLp_weighted_contDiffOn_mul
     · rw [Set.indicator_of_mem hyK]
     · rw [Set.indicator_of_notMem hyK, hy hyK, mul_zero, mul_zero]
   have h_bdd_mul : MemLp (fun y => K.indicator c y * w y) 2 μw := by
-    refine ⟨hc_meas.mul hw.1, ?_⟩
     have hpt : ∀ y : EuclN, ‖K.indicator c y * w y‖ ≤ ‖(C : ℝ) • w y‖ := by
       intro y
       have hlhs : ‖K.indicator c y * w y‖ = ‖K.indicator c y‖ * ‖w y‖ :=
@@ -528,7 +527,9 @@ theorem memLp_weighted_contDiffOn_mul
         rw [norm_smul, Real.norm_eq_abs, abs_of_nonneg hC_nn]
       rw [hlhs, hrhs]
       exact mul_le_mul_of_nonneg_right (hci_bd y) (norm_nonneg _)
-    exact lt_of_le_of_lt (eLpNorm_mono (μ := μw) hpt) (hw.const_smul (C : ℝ)).2
+    exact lt_of_le_of_lt
+      (eLpNorm_mono (μ := μw) (hc_meas.mul hw.aestronglyMeasurable) hpt)
+      (hw.const_smul (C : ℝ))
   exact MemLp.ae_eq h_prod_eq.symm h_bdd_mul
 
 omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]

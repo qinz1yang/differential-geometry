@@ -115,16 +115,11 @@ theorem exists_memW01p_smooth_mul_bounds_of_lipschitz
     have hfirst : AEStronglyMeasurable (fun x => η x * hu.weakGrad x i)
         (volume.restrict Ω) :=
       hη.continuous.aestronglyMeasurable.mul (hu.weakGrad_component_memLp i).aestronglyMeasurable
-    have hsecond : AEStronglyMeasurable
-        (fun x => fderiv ℝ η x (EuclideanSpace.single i 1) * f x)
-        (volume.restrict Ω) :=
-      ((hη.continuous_fderiv (by simp)).clm_apply continuous_const).aestronglyMeasurable.mul
-        hfm.aestronglyMeasurable
     refine (eLpNorm_add_le (by norm_num)).trans ?_
     have hleft := (eLpNorm_eta_mul_le hΩ
       (fun x _ => by simpa only [Real.norm_eq_abs] using hηbound x)
       (fun x => hu.weakGrad x i) hfirst).trans (mul_le_mul_right (hpartial i) _)
-    have hright := (eLpNorm_partial_eta_mul_le hΩ (fun x _ => hdηbound x) i f hsecond).trans
+    have hright := (eLpNorm_partial_eta_mul_le hΩ (fun x _ => hdηbound x) i f).trans
       (mul_le_mul_right hfun _)
     calc
       _ ≤ ENNReal.ofReal C * ENNReal.ofReal (Real.sqrt B) +

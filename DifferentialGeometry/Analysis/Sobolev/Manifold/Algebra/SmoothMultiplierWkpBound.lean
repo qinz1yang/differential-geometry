@@ -170,14 +170,6 @@ private lemma wkpNorm_eta_target_le_split
       hη_smooth.continuous.aestronglyMeasurable.mul
         (DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero_memLp_of_mem
           hu_W1p i).aestronglyMeasurable
-    have hderiv_cont : Continuous
-        (fun x : EuclN => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ))) :=
-      (hη_smooth.continuous_fderiv (by simp : ((⊤ : ℕ∞) : WithTop ℕ∞) ≠ 0)).clm_apply
-        continuous_const
-    have hdηu_meas : AEStronglyMeasurable
-        (fun x => (fderiv ℝ η x) (EuclideanSpace.single i (1 : ℝ)) * u x)
-        (volume.restrict Ω) :=
-      hderiv_cont.aestronglyMeasurable.mul hu.memLp.aestronglyMeasurable
     rw [eLpNorm_congr_ae hae]
     have hSumEq :
         (fun x => η x * DifferentialGeometry.Analysis.Sobolev.Euclidean.chosenWeakPartialOrZero
@@ -219,7 +211,7 @@ private lemma wkpNorm_eta_target_le_split
             (volume.restrict Ω) ≤
           ENNReal.ofReal C1 * eLpNorm u p (volume.restrict Ω) :=
       DifferentialGeometry.Analysis.Sobolev.Euclidean.eLpNorm_partial_eta_mul_le
-        (d := Module.finrank ℝ E) hΩ_open hη1 i u hdηu_meas
+        (d := Module.finrank ℝ E) hΩ_open hη1 i u
     exact add_le_add hbnd1 hbnd2
   rw [hLHS_unfold', hRHS_unfold']
   have hGrad_LHS_bnd :

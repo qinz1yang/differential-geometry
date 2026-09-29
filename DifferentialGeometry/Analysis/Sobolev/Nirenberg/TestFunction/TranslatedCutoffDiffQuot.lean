@@ -227,12 +227,35 @@ theorem eLpNorm_translatedCutoffSqDiffQuot_restrict_le
     {M_η : ℝ} (hM_η : ∀ x, |η x| ≤ M_η)
     (Ω' : Set EuclN)
     (hf : AEStronglyMeasurable (translatedCutoffSqDiffQuot k h η u)
-      (volume : Measure EuclN)) :
+      ((volume : Measure EuclN).restrict Ω')) :
     eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 ((volume : Measure EuclN).restrict Ω') ≤
       ENNReal.ofReal (M_η^2) *
         eLpNorm (diffQuot k h u) 2 (volume : Measure EuclN) := by
-  refine le_trans ?_ (eLpNorm_translatedCutoffSqDiffQuot_le (d := d) k h hM_η hf)
-  exact eLpNorm_mono_measure _ Measure.restrict_le_self
+  have hb : eLpNorm (translatedCutoffSqDiffQuot k h η u) 2 (volume.restrict Ω') ≤
+      ENNReal.ofReal (M_η^2) *
+        eLpNorm (translate k (-h) (diffQuot k h u)) 2 (volume.restrict Ω') := by
+    refine eLpNorm_le_mul_eLpNorm_of_ae_le_mul hf ?_ 2
+    filter_upwards [] with x
+    rw [translatedCutoffSqDiffQuot_apply, norm_mul]
+    rw [Real.norm_eq_abs ((η (x + (-h) • EuclideanSpace.single k 1))^2),
+      abs_of_nonneg (sq_nonneg _)]
+    apply mul_le_mul_of_nonneg_right _ (norm_nonneg _)
+    simpa only [sq_abs] using
+      pow_le_pow_left₀ (abs_nonneg _) (hM_η (x + (-h) • EuclideanSpace.single k 1)) 2
+  have hrestrict :
+      eLpNorm (translate k (-h) (diffQuot k h u)) 2 (volume.restrict Ω') ≤
+        eLpNorm (translate k (-h) (diffQuot k h u)) 2 volume :=
+    eLpNorm_mono_measure _ Measure.restrict_le_self
+  let τ : EuclN ≃ₜ EuclN := Homeomorph.addRight ((-h) • EuclideanSpace.single k 1)
+  have hMP : MeasurePreserving τ volume volume := measurePreserving_add_right volume _
+  have heq : eLpNorm (translate k (-h) (diffQuot k h u)) 2 volume =
+      eLpNorm (diffQuot k h u) 2 volume := by
+    change eLpNorm ((diffQuot k h u) ∘ τ) 2 volume = _
+    have ht := τ.measurableEmbedding.eLpNorm_map_measure
+      (g := diffQuot k h u) (p := 2) (μ := volume)
+    rw [hMP.map_eq] at ht
+    exact ht.symm
+  exact (hb.trans (mul_le_mul_right hrestrict _)).trans_eq (congrArg _ heq)
 
 omit [NeZero d] in
 omit [NeZero d] in

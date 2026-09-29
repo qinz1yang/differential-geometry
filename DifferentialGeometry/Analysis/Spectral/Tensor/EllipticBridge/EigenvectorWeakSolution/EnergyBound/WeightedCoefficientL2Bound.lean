@@ -61,6 +61,13 @@ theorem eLpNorm_weighted_contDiffOn_mul_le
   set μw : Measure EuclN :=
     (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) with hμw_def
+  by_cases hw : MemLp w 2 μw
+  swap
+  · refine ⟨1, zero_le_one, ?_⟩
+    have htop : eLpNorm w 2 μw = ∞ := top_unique (not_lt.mp hw)
+    change eLpNorm (fun y => c y * w y) 2 μw ≤ ENNReal.ofReal 1 * eLpNorm w 2 μw
+    rw [htop, ENNReal.ofReal_one, one_mul]
+    exact le_top
   have hcontOn_K : ContinuousOn c K := hc.continuousOn.mono hK_in
   have hbdd : ∃ C : ℝ, 0 ≤ C ∧ ∀ y ∈ K, ‖c y‖ ≤ C := by
     by_cases hK_empty : K = ∅
@@ -81,7 +88,9 @@ theorem eLpNorm_weighted_contDiffOn_mul_le
     · rw [hy hyK, mul_zero, smul_zero, norm_zero]
   have h_mono :
       eLpNorm (fun y => c y * w y) 2 μw ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μw :=
-    eLpNorm_mono_ae (μ := μw) h_dom
+    eLpNorm_mono_ae (μ := μw)
+      (memLp_weighted_contDiffOn_mul (I := I) (M := M) g α hc hK_compact
+        hK_compact.isClosed.measurableSet hK_in hw hw_zero).aestronglyMeasurable h_dom
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μw
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
@@ -139,7 +148,9 @@ theorem eLpNorm_weighted_contDiffOn_mul_le_uniform
     · rw [hy hyK, mul_zero, smul_zero, norm_zero]
   have h_mono :
       eLpNorm (fun y => c y * w y) 2 μw ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μw :=
-    eLpNorm_mono_ae (μ := μw) h_dom
+    eLpNorm_mono_ae (μ := μw)
+      (memLp_weighted_contDiffOn_mul (I := I) (M := M) g α hc hK_compact
+        hK_compact.isClosed.measurableSet hK_in hw hw_zero).aestronglyMeasurable h_dom
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μw
         = ENNReal.ofReal C * eLpNorm w 2 μw := by

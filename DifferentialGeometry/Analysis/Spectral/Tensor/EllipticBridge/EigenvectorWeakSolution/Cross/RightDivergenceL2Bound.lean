@@ -59,9 +59,26 @@ private lemma eLpNorm_indicatorPou_mul_le
   set μw : Measure EuclN :=
     (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) with hμw_def
-  obtain ⟨C, hC_nn, hC_bd⟩ :=
+  obtain ⟨C₀, _, hC₀_bd⟩ :=
     exists_bound_on_chartPouKernel (I := I) (M := M) α hc
+  let C : ℝ := max C₀ 1
+  have hC_pos : 0 < C := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hC_nn : 0 ≤ C := hC_pos.le
+  have hC_bd : ∀ y ∈ chartPouKernel (I := I) (M := M) α, ‖c y‖ ≤ C :=
+    fun y hy => (hC₀_bd y hy).trans (le_max_left _ _)
   refine ⟨C, hC_nn, ?_⟩
+  by_cases hw : AEStronglyMeasurable w μw
+  swap
+  · change eLpNorm
+        (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
+        2 μw ≤ ENNReal.ofReal C * eLpNorm w 2 μw
+    rw [eLpNorm_of_not_aestronglyMeasurable hw,
+      ENNReal.mul_top (ENNReal.ofReal_pos.mpr hC_pos).ne']
+    exact le_top
+  have hc_meas : AEStronglyMeasurable
+      (Set.indicator (chartPouKernel (I := I) (M := M) α) c) μw :=
+    (aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc).mono_ac
+      (chartPulledWeightedMeasure_restrict_absolutelyContinuous (I := I) (M := M) g α)
   have hci_bd : ∀ y : EuclN,
       ‖Set.indicator (chartPouKernel (I := I) (M := M) α) c y‖ ≤ C := by
     intro y
@@ -85,7 +102,7 @@ private lemma eLpNorm_indicatorPou_mul_le
           (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
           2 μw
         ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μw :=
-    eLpNorm_mono_ae (μ := μw) h_dom
+    eLpNorm_mono_ae (μ := μw) (hc_meas.mul hw) h_dom
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μw
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
@@ -122,9 +139,26 @@ private lemma eLpNorm_indicatorPou_mul_le_uniform
   set μw : Measure EuclN :=
     (chartPulledWeightedMeasure (I := I) g α).restrict
       (chartTargetEuclid (I := I) (M := M) α) with hμw_def
-  obtain ⟨C, hC_nn, hC_bd⟩ :=
+  obtain ⟨C₀, _, hC₀_bd⟩ :=
     exists_bound_on_chartPouKernel (I := I) (M := M) α hc
+  let C : ℝ := max C₀ 1
+  have hC_pos : 0 < C := lt_of_lt_of_le zero_lt_one (le_max_right _ _)
+  have hC_nn : 0 ≤ C := hC_pos.le
+  have hC_bd : ∀ y ∈ chartPouKernel (I := I) (M := M) α, ‖c y‖ ≤ C :=
+    fun y hy => (hC₀_bd y hy).trans (le_max_left _ _)
   refine ⟨C, hC_nn, fun w => ?_⟩
+  by_cases hw : AEStronglyMeasurable w μw
+  swap
+  · change eLpNorm
+        (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
+        2 μw ≤ ENNReal.ofReal C * eLpNorm w 2 μw
+    rw [eLpNorm_of_not_aestronglyMeasurable hw,
+      ENNReal.mul_top (ENNReal.ofReal_pos.mpr hC_pos).ne']
+    exact le_top
+  have hc_meas : AEStronglyMeasurable
+      (Set.indicator (chartPouKernel (I := I) (M := M) α) c) μw :=
+    (aestronglyMeasurable_indicator_mul (I := I) (M := M) α hc).mono_ac
+      (chartPulledWeightedMeasure_restrict_absolutelyContinuous (I := I) (M := M) g α)
   have hci_bd : ∀ y : EuclN,
       ‖Set.indicator (chartPouKernel (I := I) (M := M) α) c y‖ ≤ C := by
     intro y
@@ -148,7 +182,7 @@ private lemma eLpNorm_indicatorPou_mul_le_uniform
           (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
           2 μw
         ≤ eLpNorm (fun y => (C : ℝ) • w y) 2 μw :=
-    eLpNorm_mono_ae (μ := μw) h_dom
+    eLpNorm_mono_ae (μ := μw) (hc_meas.mul hw) h_dom
   have h_smul :
       eLpNorm (fun y => (C : ℝ) • w y) 2 μw
         = ENNReal.ofReal C * eLpNorm w 2 μw := by
@@ -165,24 +199,6 @@ private lemma eLpNorm_indicatorPou_mul_le_uniform
     _ = ENNReal.ofReal C * eLpNorm w 2 μw := h_smul
 
 end PerSummandBound
-
-section MeasurabilityTransfer
-
-
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
-    [SigmaCompactSpace M] in
-private lemma aestronglyMeasurable_weighted_of_chartL2
-    (g : SmoothRiemannianMetric I M) (α : M)
-    {f : EuclN → ℝ}
-    (hf : AEStronglyMeasurable f (chartLebesgueMeasure (I := I) (M := M) α)) :
-    AEStronglyMeasurable f
-      ((chartPulledWeightedMeasure (I := I) g α).restrict
-        (chartTargetEuclid (I := I) (M := M) α)) :=
-  hf.mono_ac
-    (chartPulledWeightedMeasure_restrict_absolutelyContinuous (I := I) (M := M)
-      g α)
-
-end MeasurabilityTransfer
 
 section UniformConstant
 
@@ -294,37 +310,6 @@ theorem eLpNorm_crossRightGradCoeffDivLimit_le_uniform
     gcongr
     rw [hCpart_def]
     exact Finset.single_le_sum (fun k _ => hCpartF_nn k) (Finset.mem_univ j)
-  have hAcomp_meas : ∀ P : TensorCompIdx (E := E) r s,
-      AEStronglyMeasurable (Acomp P) μw := by
-    intro P
-    rw [hAcomp_def, hμw_def]
-    exact aestronglyMeasurable_weighted_of_chartL2 (I := I) (M := M) g α
-      (Lp.aestronglyMeasurable _)
-  have hApart_meas : ∀ (P : TensorCompIdx (E := E) r s)
-      (l : Fin (Module.finrank ℝ E)),
-      AEStronglyMeasurable (Apart P l) μw := by
-    intro P l
-    rw [hApart_def, hμw_def]
-    exact aestronglyMeasurable_weighted_of_chartL2 (I := I) (M := M) g α
-      (Lp.aestronglyMeasurable _)
-  have hsummandComp_meas : ∀ j, AEStronglyMeasurable (summandComp j) μw := by
-    intro j
-    rw [hsummandComp_def]
-    refine AEStronglyMeasurable.mul ?_ (hAcomp_meas j.2.1)
-    rw [hμw_def]
-    exact aestronglyMeasurable_weighted_of_chartL2 (I := I) (M := M) g α
-      (aestronglyMeasurable_indicator_mul (I := I) (M := M) α
-        (euclidPartial_crossRightDivFactor_contDiffOn (I := I) (M := M)
-          g r s α P₀ j.1 j.2.1 j.2.2))
-  have hsummandPart_meas : ∀ j, AEStronglyMeasurable (summandPart j) μw := by
-    intro j
-    rw [hsummandPart_def]
-    refine AEStronglyMeasurable.mul ?_ (hApart_meas j.2.1 j.1)
-    rw [hμw_def]
-    exact aestronglyMeasurable_weighted_of_chartL2 (I := I) (M := M) g α
-      (aestronglyMeasurable_indicator_mul (I := I) (M := M) α
-        (crossRightDivFactor_contDiffOn (I := I) (M := M)
-          g r s α P₀ j.1 j.2.1 j.2.2))
   have h_funcA :
       (fun y => ∑ l : Fin (Module.finrank ℝ E),
           ∑ P : TensorCompIdx (E := E) r s,
@@ -389,11 +374,9 @@ theorem eLpNorm_crossRightGradCoeffDivLimit_le_uniform
       rw [← h_funcA, ← h_funcB]
       rfl
     rw [h_split]
-    refine le_trans (eLpNorm_add_le ?_ ?_ (by norm_num)) (add_le_add ?_ ?_)
-    · exact Finset.aestronglyMeasurable_sum _ (fun j _ => hsummandComp_meas j)
-    · exact Finset.aestronglyMeasurable_sum _ (fun j _ => hsummandPart_meas j)
-    · exact eLpNorm_sum_le (fun j _ => hsummandComp_meas j) (by norm_num)
-    · exact eLpNorm_sum_le (fun j _ => hsummandPart_meas j) (by norm_num)
+    refine le_trans (eLpNorm_add_le (by norm_num)) (add_le_add ?_ ?_)
+    · exact eLpNorm_sum_le (by norm_num)
+    · exact eLpNorm_sum_le (by norm_num)
   have h_groupA :
       (∑ j : ι, eLpNorm (summandComp j) 2 μw)
         ≤ ENNReal.ofReal ((Fintype.card ι : ℝ) * Ccomp) * Sumcomp := by
