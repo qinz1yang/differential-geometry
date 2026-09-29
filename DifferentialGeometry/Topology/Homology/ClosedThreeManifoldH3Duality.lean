@@ -181,6 +181,7 @@ theorem not_injective_singularHomologyMap_two_compl_origin_threeSpace :
     ((absoluteToRelative_surjective_iff_injective_singularHomologyMap_two_compl_singleton
       (M := ThreeSpace) 0).mpr hinj)
 
+omit [IsManifold ThreeModel ∞ M] in
 theorem closedThreeManifoldPuncturedVanishing_iff_noncompactPoincareDuality
     [T2Space M] [CompactSpace M] [ConnectedSpace M]
     [Subsingleton (integralSingularCohomology 1 M)] (x₀ : M) :
