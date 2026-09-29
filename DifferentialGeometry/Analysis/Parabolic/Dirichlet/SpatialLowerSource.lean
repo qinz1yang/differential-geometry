@@ -54,7 +54,7 @@ private theorem exists_lp_product_source
     ((Lp.memLp F).locallyIntegrable (by norm_num)) k hF φ hφ hφc hφs
   refine (integral_congr_ae ?_).trans heq
   filter_upwards [hU] with p hp
-  simp only [Pi.mul_apply, hp]
+  simp only [hp]
 
 open DifferentialGeometry.Analysis.Laplacian.WithBoundary.Dirichlet
 open DifferentialGeometry.Analysis.Laplacian

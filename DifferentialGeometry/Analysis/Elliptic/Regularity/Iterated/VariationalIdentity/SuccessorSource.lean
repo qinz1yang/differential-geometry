@@ -771,7 +771,6 @@ private lemma fChartEffectiveStepNumerator_memLp_vol_K
   have h_step4 := h_step3.add hE
   unfold fChartEffectiveStepNumerator
   convert h_step4 using 2 with y
-  simp only [Pi.add_apply, Pi.sub_apply]
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in

@@ -1289,7 +1289,7 @@ theorem CurvatureJetTerm.curvOrderAtMost_launchDeriv {N : Nat} :
 theorem intrinsicJacobiCorrectionTerm.curvOrderAtMost (m : Nat) :
     (intrinsicJacobiCorrectionTerm m).curvOrderAtMost 1 := by
   simp only [intrinsicJacobiCorrectionTerm, CurvatureJetTerm.curvOrderAtMost]
-  repeat' first | constructor | (intro i; fin_cases i <;> trivial)
+  repeat' first | exact le_rfl | constructor | (intro i; fin_cases i <;> trivial)
 
 theorem intrinsicJacobiResidualTerm.curvOrderAtMost (n : Nat) :
     (intrinsicJacobiResidualTerm n).curvOrderAtMost n := by

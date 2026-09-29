@@ -574,7 +574,7 @@ theorem quasilinear_strong_existence_of_mixed_lipschitz
         (C₂ : ℝ) * ‖tensorHsInclusion (I := I) (M := M) (g := g₀) (r := 0) (s := 2)
                       (show (a : ℝ) + 1 ≤ (a : ℝ) + 2 by linarith) (u - u')‖) :
     ∃ T₀ : ℝ, 0 < T₀ ∧ T₀ ≤ 1 ∧
-      ∀ {T : ℝ} (hT : 0 < T) (hTsmall : T ≤ T₀),
+      ∀ {T : ℝ} (hT : 0 < T), T ≤ T₀ →
         ∃ (u : MaximalRegularitySolutionSpace (I := I) (M := M) (a : ℝ) T)
           (gforce : timeL2 (TensorHs (I := I) (M := M) g₀ 0 2 (a : ℝ)) T),
           u = maximalRegularityDuhamelMap (I := I) (M := M) (a : ℝ) hT
