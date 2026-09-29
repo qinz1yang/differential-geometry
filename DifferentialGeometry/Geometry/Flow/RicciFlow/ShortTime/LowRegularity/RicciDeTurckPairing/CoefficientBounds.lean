@@ -1955,7 +1955,8 @@ open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
 open DifferentialGeometry.Analysis.Elliptic
-  (integrable_riemannianFiberNormSq_toSection riemannianFiberNormSq)
+  (integrable_riemannianFiberNormSq_toSection)
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Sobolev
   (cometricCastG0 covariantJetNormSq covariantJetNormSq_add_le covariantJetNormSq_nonneg
     covariantJetNormSq_reindexCoefficientInputSlots covariantJetNormSq_rsDomDomCongrSection

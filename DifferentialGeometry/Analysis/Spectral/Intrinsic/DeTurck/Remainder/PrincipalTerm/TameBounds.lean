@@ -27,6 +27,11 @@ import DifferentialGeometry.Analysis.Estimates.ProductBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.PrincipalTerm.CometricCoefficientFibreSupremum
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Remainder.PrincipalTerm.PathIntegralJetL2
 
+open DifferentialGeometry.TensorMetric
+  (fiberNormSqComponent riemannianFiberNormSq riemannianFiberNormSq_add_le
+    riemannianFiberNormSq_eq_sum_component_sq riemannianFiberNormSq_eq_tensorInnerPointwise
+    riemannianFiberNormSq_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
+
 section
 open DifferentialGeometry.Analysis.Elliptic
 open DifferentialGeometry.Geometry.Curvature
@@ -40,11 +45,6 @@ open scoped Manifold Topology ContDiff ENNReal BigOperators
 namespace DifferentialGeometry
 namespace Analysis
 namespace Spectral
-
-open DifferentialGeometry.TensorMetric
-  (fiberNormSqComponent riemannianFiberNormSq riemannianFiberNormSq_add_le
-    riemannianFiberNormSq_eq_sum_component_sq riemannianFiberNormSq_eq_tensorInnerPointwise
-    riemannianFiberNormSq_nonneg tensorInnerPointwise_smul_left tensorInnerPointwise_smul_right)
 
 open DifferentialGeometry.Integral.L2
 

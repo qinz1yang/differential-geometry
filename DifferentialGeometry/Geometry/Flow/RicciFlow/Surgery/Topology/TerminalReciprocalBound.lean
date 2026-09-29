@@ -4,7 +4,6 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter
 open DifferentialGeometry.Geometry.Curvature
-open DifferentialGeometry.PDE.RicciFlow.Perelman.CanonicalNeighborhood
 open scoped Manifold ContDiff NNReal Topology
 
 namespace DifferentialGeometry.PDE.RicciFlow.Surgery.Topology.OrientedThreeStage.IncomingSlab

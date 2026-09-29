@@ -10,7 +10,7 @@ open CanonicalNeighborhood.FiniteHorn
 open Bundle _root_.Manifold Set Filter
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.CheegerGromovCompactness
 open DifferentialGeometry.Tensor0SBundle CanonicalNeighborhood
-open CanonicalNeighborhood DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
+open DifferentialGeometry.PDE.RicciFlow.Surgery.Topology
 open scoped _root_.Manifold ContDiff _root_.Topology
 
 universe u

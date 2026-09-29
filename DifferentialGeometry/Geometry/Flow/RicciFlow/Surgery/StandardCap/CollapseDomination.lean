@@ -132,24 +132,39 @@ theorem collapseMap_eVariationOn_le_of_cylinder_lower {A B η : ℝ}
      letI : IsContinuousRiemannianBundle EC
        (TangentSpace IC : DifferentialGeometry.Geometry.Neck.openCylinder B → Type _) :=
        inferInstance
-     letI : PseudoEMetricSpace (DifferentialGeometry.Geometry.Neck.openCylinder B) :=
+     letI sourceMetric : PseudoEMetricSpace (DifferentialGeometry.Geometry.Neck.openCylinder B) :=
        .ofRiemannianMetric IC (DifferentialGeometry.Geometry.Neck.openCylinder B)
+     letI : WeakPseudoEMetricSpace (DifferentialGeometry.Geometry.Neck.openCylinder B) :=
+       @PseudoEMetricSpace.toWeakPseudoEMetricSpace
+         (DifferentialGeometry.Geometry.Neck.openCylinder B) sourceMetric
      let k := insertedMetric hA hAB hη g
      let ck := k.toContinuousRiemannianMetric
      letI : RiemannianBundle (TangentSpace (𝓡 3) : insertionBall B → Type _) :=
        ⟨ck.toRiemannianMetric⟩
      letI : IsContinuousRiemannianBundle E3 (TangentSpace (𝓡 3) : insertionBall B → Type _) :=
        inferInstance
-     letI : PseudoEMetricSpace (insertionBall B) := .ofRiemannianMetric (𝓡 3) (insertionBall B)
+     letI targetMetric : PseudoEMetricSpace (insertionBall B) :=
+       .ofRiemannianMetric (𝓡 3) (insertionBall B)
+     letI : WeakPseudoEMetricSpace (insertionBall B) :=
+       @PseudoEMetricSpace.toWeakPseudoEMetricSpace (insertionBall B) targetMetric
      eVariationOn (collapseMap hA hAB ∘ γ) (Icc a b) ≤ eVariationOn γ (Icc a b)) := by
-  apply eVariationOn_comp_le_of_ae_mfderiv g (insertedMetric hA hAB hη g)
-    (collapseMap hA hAB) (collapseMap_local_intrinsic_bound hA hAB g _) _ γ a b hγ
-  have hnull := riemannianVolumeMeasure_snd_fiber_eq_zero
-    (DifferentialGeometry.Geometry.Neck.openCylinder B) g (collapseTip A)
-  have hae : ∀ᵐ q ∂riemannianVolumeMeasure IC (DifferentialGeometry.Geometry.Neck.openCylinder B) g,
-      q.val.2 ≠ collapseTip A := measure_eq_zero_iff_ae_notMem.mp hnull
-  filter_upwards [hae] with q hq
-  intro _hdiff v
-  exact Real.sqrt_le_sqrt (collapseMap_inner_le_of_cylinder_lower hA hAB hη g q hq v (hlower q v))
+  have hdf : ∀ᵐ q ∂riemannianVolumeMeasure IC
+      (DifferentialGeometry.Geometry.Neck.openCylinder B) g,
+      MDifferentiableAt IC (𝓡 3) (collapseMap hA hAB) q → ∀ v : TangentSpace IC q,
+        Real.sqrt ((insertedMetric hA hAB hη g).inner (collapseMap hA hAB q)
+          (mfderiv IC (𝓡 3) (collapseMap hA hAB) q v)
+          (mfderiv IC (𝓡 3) (collapseMap hA hAB) q v)) ≤ Real.sqrt (g.inner q v v) := by
+    have hnull := riemannianVolumeMeasure_snd_fiber_eq_zero
+      (DifferentialGeometry.Geometry.Neck.openCylinder B) g (collapseTip A)
+    have hae : ∀ᵐ q ∂riemannianVolumeMeasure IC (DifferentialGeometry.Geometry.Neck.openCylinder B) g,
+        q.val.2 ≠ collapseTip A := measure_eq_zero_iff_ae_notMem.mp hnull
+    filter_upwards [hae] with q hq
+    intro _hdiff v
+    exact Real.sqrt_le_sqrt
+      (collapseMap_inner_le_of_cylinder_lower hA hAB hη g q hq v (hlower q v))
+  have hmain := eVariationOn_comp_le_of_ae_mfderiv (I := IC) (J := 𝓡 3)
+    g (insertedMetric hA hAB hη g) (collapseMap hA hAB)
+    (collapseMap_local_intrinsic_bound hA hAB g _) hdf γ a b hγ
+  simpa only [Bundle.ContMDiffRiemannianMetric.toRiemannianMetric] using hmain
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

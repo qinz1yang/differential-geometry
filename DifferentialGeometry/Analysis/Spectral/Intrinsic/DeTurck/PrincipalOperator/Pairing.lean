@@ -453,7 +453,8 @@ private theorem pcoeff1_bound
       linarith
     _ ≤ Cout * (2 * (Cmul * A * B)) := by
       gcongr
-      convert hprod using 1 <;> rfl
+      convert hprod using 1
+      rfl
     _ = (C * NT) * NW := by
       dsimp only [C, A, B]
       ring
