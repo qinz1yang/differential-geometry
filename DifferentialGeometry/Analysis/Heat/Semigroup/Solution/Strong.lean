@@ -172,7 +172,6 @@ private lemma exp_convolution_derivative_identity
       (lam * (phi s * h s) + phi s * dh s) s := by
     intro s
     convert (hphi_deriv s).mul (hderiv s) using 1
-    all_goals (try rfl)
     all_goals ring
   have hfirst : Continuous (fun s => lam * (phi s * h s)) :=
     continuous_const.mul (hphi.mul hh)

@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Elliptic.HarmonicRigidity
 import DifferentialGeometry.Analysis.Spectral.Scalar.SpectralGap
+import DifferentialGeometry.Analysis.Spectral.Scalar.EigenIdx
 import DifferentialGeometry.Analysis.Spectral.Scalar.PoissonSolvability
 import DifferentialGeometry.Analysis.Elliptic.Regularity.Bochner.Polarised
 import DifferentialGeometry.Analysis.Heat.Smoothing.Regularity.SmoothRepresentative
