@@ -3824,6 +3824,7 @@ import DifferentialGeometry.Geometry.Connection.AlongCurveRegularity
 import DifferentialGeometry.Geometry.Connection.Associated
 import DifferentialGeometry.Geometry.Connection.ChartBridge.TensorDerivative
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Frame
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisIdentity

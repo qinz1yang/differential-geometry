@@ -1,7 +1,7 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.InverseGram.Perturbation
 import DifferentialGeometry.Analysis.Parabolic.RicciLinearization.Variation.InverseGram
 import DifferentialGeometry.Geometry.Curvature.Riemann.Ricci
-import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoffel
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator
@@ -407,94 +407,6 @@ theorem exists_chartChristoffel_lipschitz_on_compact
     chartMetricJet1DiffSup_nonneg _ _ _ _
   refine h_pt.trans ?_
   refine mul_le_mul_of_nonneg_right (by linarith) hjet1_nn
-
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartInvGramOnE_differentiableAt_int
-    (g : SmoothRiemannianMetric I M) (α : M) (k l : Fin (Module.finrank ℝ E))
-    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentiableAt ℝ (chartInvGramOnE (I := I) g α k l) y := by
-  have hcd : ContDiffOn ℝ ∞ (chartInvGramOnE (I := I) g α k l)
-      (interior (extChartAt I α).target) :=
-    (chartInvGramOnE_contDiffOn (I := I) g α k l).mono interior_subset
-  exact (hcd.contDiffAt (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
-
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma partial_chartGramOnE_differentiableAt_int
-    (g : SmoothRiemannianMetric I M) (α : M) (a l b : Fin (Module.finrank ℝ E))
-    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentiableAt ℝ (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) a (chartGramOnE (I := I) g α l b)) y := by
-  exact ((partial_chartGramOnE_contDiffOn_int (I := I) g α a l b).contDiffAt
-    (isOpen_interior.mem_nhds hy)).differentiableAt (by simp)
-
-omit [NeZero (Module.finrank ℝ E)] in
-private lemma chartChristoffelBracket_differentiableAt_int
-    (g : SmoothRiemannianMetric I M) (α : M) (i j l : Fin (Module.finrank ℝ E))
-    {y : E} (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentiableAt ℝ (chartChristoffelBracket (I := I) g α i j l) y := by
-  have h1 := partial_chartGramOnE_differentiableAt_int (I := I) g α i l j hy
-  have h2 := partial_chartGramOnE_differentiableAt_int (I := I) g α j l i hy
-  have h3 := partial_chartGramOnE_differentiableAt_int (I := I) g α l i j hy
-  exact (h1.add h2).sub h3
-
-omit [NeZero (Module.finrank ℝ E)] in
-lemma partialDeriv_chartChristoffelBracket_eq
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (m i j l : Fin (Module.finrank ℝ E)) {y : E}
-    (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffelBracket (I := I) g α i j l) y =
-      chartChristoffelBracketDeriv (I := I) g α m i j l y := by
-  have h1 := partial_chartGramOnE_differentiableAt_int (I := I) g α i l j hy
-  have h2 := partial_chartGramOnE_differentiableAt_int (I := I) g α j l i hy
-  have h3 := partial_chartGramOnE_differentiableAt_int (I := I) g α l i j hy
-  unfold chartChristoffelBracket chartChristoffelBracketDeriv
-  rw [partialDeriv_sub (i := m)
-    (fun y => DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l j) y +
-        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) g α l i) y)
-      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) l (chartGramOnE (I := I) g α i j)) (h1.add h2) h3,
-    partialDeriv_add (i := m) (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) i (chartGramOnE (I := I) g α l j))
-      (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) j (chartGramOnE (I := I) g α l i)) h1 h2]
-
-omit [NeZero (Module.finrank ℝ E)] in
-theorem partialDeriv_chartChristoffel_eq
-    (g : SmoothRiemannianMetric I M) (α : M)
-    (m i j k : Fin (Module.finrank ℝ E)) {y : E}
-    (hy : y ∈ interior (extChartAt I α).target) :
-    DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y =
-      (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        (DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartInvGramOnE (I := I) g α k l) y *
-            chartChristoffelBracket (I := I) g α i j l y +
-          chartInvGramOnE (I := I) g α k l y *
-            chartChristoffelBracketDeriv (I := I) g α m i j l y) := by
-  classical
-  have heq : chartChristoffel (I := I) g α i j k =
-      fun z : E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramOnE (I := I) g α k l z * chartChristoffelBracket (I := I) g α i j l z := by
-    funext z
-    exact chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket (I := I) g α i j k z
-  rw [show DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m (chartChristoffel (I := I) g α i j k) y =
-        DifferentialGeometry.Tensor.Coordinates.partialDeriv (E := E) m
-          (fun z : E => (1 / 2 : ℝ) * ∑ l : Fin (Module.finrank ℝ E),
-            chartInvGramOnE (I := I) g α k l z * chartChristoffelBracket (I := I) g α i j l z) y from by
-    rw [heq]]
-  have hsum_diff : ∀ l : Fin (Module.finrank ℝ E),
-      DifferentiableAt ℝ
-        (fun z : E => chartInvGramOnE (I := I) g α k l z * chartChristoffelBracket (I := I) g α i j l z) y :=
-    fun l => (chartInvGramOnE_differentiableAt_int (I := I) g α k l hy).mul
-      (chartChristoffelBracket_differentiableAt_int (I := I) g α i j l hy)
-  rw [partialDeriv_const_mul (i := m) (1 / 2 : ℝ)
-      (fun z : E => ∑ l : Fin (Module.finrank ℝ E),
-        chartInvGramOnE (I := I) g α k l z * chartChristoffelBracket (I := I) g α i j l z)
-      (DifferentiableAt.fun_sum (fun l _ => hsum_diff l))]
-  congr 1
-  rw [partialDeriv_sum (i := m) Finset.univ
-      (fun l => fun z : E => chartInvGramOnE (I := I) g α k l z * chartChristoffelBracket (I := I) g α i j l z)
-      (fun l _ => hsum_diff l)]
-  refine Finset.sum_congr rfl (fun l _ => ?_)
-  rw [partialDeriv_mul (i := m) (chartInvGramOnE (I := I) g α k l)
-      (chartChristoffelBracket (I := I) g α i j l)
-      (chartInvGramOnE_differentiableAt_int (I := I) g α k l hy)
-      (chartChristoffelBracket_differentiableAt_int (I := I) g α i j l hy),
-    partialDeriv_chartChristoffelBracket_eq (I := I) g α m i j l hy]
 
 private lemma abs_triple_prod_sub_le (A₁ A₂ B₁ B₂ C₁ C₂ : ℝ) :
     |A₁ * B₁ * C₁ - A₂ * B₂ * C₂| ≤

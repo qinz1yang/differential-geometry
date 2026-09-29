@@ -1,5 +1,6 @@
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.LieCorrection.Zero.FiberOperators
 import DifferentialGeometry.Analysis.Spectral.Tensor.CovGrad.RicciDeTurck.LieCoefficientApplication
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
 
 open DifferentialGeometry.Analysis.Sobolev
     DifferentialGeometry.Analysis.Sobolev.IntrinsicSobolev.SmoothCcTensorHs
@@ -1814,9 +1815,8 @@ open DifferentialGeometry.Analysis.Parabolic.TensorSpectral (ccTensor02Symm unit
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization (realizedGramDeriv metricPerturbationPath)
 open DifferentialGeometry.Geometry.Connection
   (chartChristoffelBracket chartChristoffelBracketDeriv
-  chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket)
-open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients
-  (partialDeriv_chartChristoffel_eq partialDeriv_chartChristoffelBracket_eq)
+  chartChristoffel_eq_sum_invGramOnE_chartChristoffelBracket
+  partialDeriv_chartChristoffel_eq partialDeriv_chartChristoffelBracket_eq)
 private noncomputable def lieCorrectionZeroIg (g₁ : SmoothRiemannianMetric I M) (x : M) :
     Fin (Module.finrank ℝ E) → Fin (Module.finrank ℝ E) → ℝ :=
   fun a b => chartInvGramMatrix (I := I) g₁ x x a b

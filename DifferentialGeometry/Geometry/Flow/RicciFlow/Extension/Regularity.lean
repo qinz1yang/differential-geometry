@@ -6,6 +6,7 @@ import DifferentialGeometry.Geometry.Curvature.Metric.LeviCivita
 import DifferentialGeometry.Geometry.Metric.Family.Continuity
 import DifferentialGeometry.Analysis.Calculus.TimeJet.Commutation
 import Mathlib.Analysis.Calculus.ContDiff.Comp
+import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.ChristoffelDerivative
 open DifferentialGeometry.Tensor.RicciIdentity
 open DifferentialGeometry.Tensor.RSTensor
 open DifferentialGeometry.PDE.RicciFlow
