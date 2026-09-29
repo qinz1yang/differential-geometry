@@ -649,7 +649,8 @@ theorem deTurckPrincipalCometricTerm_realize_Hs_norm_succ_le [Nonempty M]
             Cj0 * ‖smoothCcToTensorHs (I := I) (M := M) g₀ ((0 + 1 : ℕ) : ℝ) S‖) :=
         le_trans harm (by
           have := mul_le_mul_of_nonneg_left hjet hCEκ_nn
-          rwa [hCEκ_def] at this ⊢)
+          rw [hCEκ_def] at this ⊢
+          exact this)
       have hMbase_ge : CEκ * Cj0 ≤ Mbase := by
         rw [hMbase_def]
         nlinarith only [hCEκ_nn, hCgrad_nn,

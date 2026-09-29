@@ -265,7 +265,7 @@ theorem connectedSumLeftFactorHom_eq_inverseBallDeletion_then_inclusion
       BM.boundaryMap BM.continuous_boundaryMap
       BN.boundaryMap BN.continuous_boundaryMap glue b)
       ((BM.fundamentalGroupComplementEquiv
-        (connectedSumLeftGluingPoint BM b)).symm g) using 1 <;> rfl
+        (connectedSumLeftGluingPoint BM b)).symm g) using 1; rfl
 
 theorem connectedSumRightFactorHom_eq_inverseBallDeletion_then_inclusion
     {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]
@@ -309,7 +309,7 @@ theorem connectedSumRightFactorHom_eq_inverseBallDeletion_then_inclusion
       BM.boundaryMap BM.continuous_boundaryMap
       BN.boundaryMap BN.continuous_boundaryMap glue b)
       ((BN.fundamentalGroupComplementEquiv
-        (connectedSumRightGluingPoint BN glue b)).symm g) using 1 <;> rfl
+        (connectedSumRightGluingPoint BN glue b)).symm g) using 1; rfl
 
 theorem fundamentalGroupEquiv_connectedSum_comp_left
     {M N : Type u} [TopologicalSpace M] [TopologicalSpace N]

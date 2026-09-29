@@ -243,7 +243,8 @@ theorem exists_h1ComplDirichlet_chartPullback
   have hg : MemWkp 1 2 g Ω := (MemWkp_congr_ae (by norm_num) hΩ hfgΩ).mp hf
   obtain ⟨w, hw, hn⟩ := hbound g hgm hg hgs
   refine ⟨w, hw.trans (chartPullback_ae_eq_of_ae_eq q α hfg).symm, ?_⟩
-  rwa [wkpNorm_congr_ae (by norm_num) hΩ hfgΩ] at ⊢
+  rw [wkpNorm_congr_ae (by norm_num) hΩ hfgΩ]
+  exact hn
 
 def h1ComplDirichletChartPullback
     (q : SmoothRiemannianMetric I_hs M) (α : M) {Ω : Set EuStd}

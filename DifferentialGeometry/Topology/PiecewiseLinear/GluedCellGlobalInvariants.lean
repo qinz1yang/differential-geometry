@@ -313,8 +313,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
     have hab : 1 - (t : ℝ) + (t : ℝ) = 1 := sub_add_cancel 1 (t : ℝ)
     have hmem_ball := convex_ball (ec (D x.1)) ε hm1 hm2 ha hb hab
     have hdist : dist ((1 - (t : ℝ)) • ec (D x.1) + (t : ℝ) • w) (ec (D x.1)) < ε := by
-      have := Metric.mem_ball.mp hmem_ball
-      rwa [dist_comm] at this
+      exact Metric.mem_ball.mp hmem_ball
     have hzV := hchartbuf x.1 hxR _ hdist
     obtain ⟨y, hyV, hyz⟩ := hzV
     have hysrc : y ∈ ec.source := hVec hyV
@@ -388,8 +387,7 @@ theorem exists_globalInvariants_of_gluedCell (D D' : SingularTwoCell M)
       have hab : 1 - (t : ℝ) + (t : ℝ) = 1 := sub_add_cancel 1 (t : ℝ)
       have hmem_ball := convex_ball (ec (D x.1)) ε hm1 hm2 ha hb hab
       have hdist : dist ((1 - (t : ℝ)) • ec (D x.1) + (t : ℝ) • w) (ec (D x.1)) < ε := by
-        have := Metric.mem_ball.mp hmem_ball
-        rwa [dist_comm] at this
+        exact Metric.mem_ball.mp hmem_ball
       have hzV := hchartbuf x.1 hxR _ hdist
       obtain ⟨y, hyV, hyz⟩ := hzV
       have hysrc : y ∈ ec.source := hVec hyV

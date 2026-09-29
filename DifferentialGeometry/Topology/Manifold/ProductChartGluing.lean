@@ -178,7 +178,7 @@ theorem productChartMap_injOn
     change P i zv = P j wv at heq
     by_cases hsame : i = j
     · have hphase : zv = wv := (P i).injOn (hsource i hzmem)
-        (by rw [hsame]; exact hsource j hwmem) (by rwa [hsame] at heq ⊢)
+        (by rw [hsame]; exact hsource j hwmem) (by rw [hsame] at heq ⊢; exact heq)
       have hfst := congrArg Prod.fst hphase
       have hsnd := congrArg Prod.snd hphase
       refine Prod.ext (show z.1 = w.1 from hfst) ?_
