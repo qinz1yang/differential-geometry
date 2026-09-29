@@ -139,7 +139,8 @@ theorem collapseMap_mfderiv_of_height_lt {A B : ℝ} (hA : 0 < A)
       (Iio_mem_nhds hq))] with u hu
     apply Subtype.ext
     rw [collapseMap_collapsed hA hAB u hu.le, collapseMap_collapsed hA hAB q hq.le]
-  rw [heq.mfderiv_eq (I := IC) (I' := 𝓡 3), mfderiv_const]
+  rw [heq.mfderiv_eq (I := IC) (I' := 𝓡 3), mfderiv_const,
+    ContinuousLinearMap.comp_zero]
 
 private def smoothRadialMap (A : ℝ) (q : S2 × ℝ) : E3 :=
   collapseRadius A q.2 • (q.1 : E3)

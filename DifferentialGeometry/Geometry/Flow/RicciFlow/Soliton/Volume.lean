@@ -45,7 +45,9 @@ theorem canonicalMetric_volumeMeasure
     congr 1
     ring
   rw [canonicalMetric, riemannianVolumeMeasure_pullback,
-    volume_scaleMetric, Measure.map_smul]
+    volume_scaleMetric, Measure.map_smul _
+      (canonicalFlowDiffeomorph (I := I) g f sigma hcomplete hsol
+        (canonicalFlowParameter sigma t)).symm.continuous.measurable.aemeasurable]
   rw [← ENNReal.ofReal_pow (Real.sqrt_nonneg (1 - sigma * t)), hpower]
 
 theorem canonicalMetricFamily_volumeMeasure
