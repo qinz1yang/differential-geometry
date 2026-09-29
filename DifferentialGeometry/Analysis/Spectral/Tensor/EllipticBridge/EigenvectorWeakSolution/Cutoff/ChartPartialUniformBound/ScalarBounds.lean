@@ -39,14 +39,9 @@ private local instance : BorelSpace M := ⟨rfl⟩
 local notation "EuclN" => EuclideanSpace ℝ (Fin (Module.finrank ℝ E))
 
 lemma eLpNorm_add_add_sub_le
-    {β : Type*} [MeasurableSpace β] {ν : Measure β} {a b c : β → ℝ}
-    (ha : AEStronglyMeasurable a ν) (hb : AEStronglyMeasurable b ν)
-    (hc : AEStronglyMeasurable c ν) :
+    {β : Type*} [MeasurableSpace β] {ν : Measure β} {a b c : β → ℝ} :
     eLpNorm (fun y => a y + b y - c y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν + eLpNorm c 2 ν := by
-  let _ := ha
-  let _ := hb
-  let _ := hc
   have h_ab : eLpNorm (fun y => a y + b y) 2 ν ≤
       eLpNorm a 2 ν + eLpNorm b 2 ν :=
     eLpNorm_add_le (by norm_num)

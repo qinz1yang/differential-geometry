@@ -1202,6 +1202,7 @@ lemma iteratedWeakSobolevNorm_tensorChartComp_le_rawClassical
               (f := fun y : EuclN => ∑ l ∈ Finset.range (m + 1), ‖iteratedFDeriv ℝ l v y‖)
               (p := 2) (μ := volume.restrict K)
             have hsum := eLpNorm_sum_le
+              (μ := (volume : Measure EuclN).restrict K)
               (s := Finset.range (m + 1))
               (f := fun l => fun y : EuclN => ‖iteratedFDeriv ℝ l v y‖)
               (by norm_num : (1 : ℝ≥0∞) ≤ 2)

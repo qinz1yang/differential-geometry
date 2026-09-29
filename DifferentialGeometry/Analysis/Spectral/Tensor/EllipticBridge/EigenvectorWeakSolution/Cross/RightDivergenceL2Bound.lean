@@ -69,10 +69,7 @@ private lemma eLpNorm_indicatorPou_mul_le
   refine ⟨C, hC_nn, ?_⟩
   by_cases hw : AEStronglyMeasurable w μw
   swap
-  · change eLpNorm
-        (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
-        2 μw ≤ ENNReal.ofReal C * eLpNorm w 2 μw
-    rw [eLpNorm_of_not_aestronglyMeasurable hw,
+  · rw [eLpNorm_of_not_aestronglyMeasurable hw,
       ENNReal.mul_top (ENNReal.ofReal_pos.mpr hC_pos).ne']
     exact le_top
   have hc_meas : AEStronglyMeasurable
@@ -149,10 +146,7 @@ private lemma eLpNorm_indicatorPou_mul_le_uniform
   refine ⟨C, hC_nn, fun w => ?_⟩
   by_cases hw : AEStronglyMeasurable w μw
   swap
-  · change eLpNorm
-        (fun y => Set.indicator (chartPouKernel (I := I) (M := M) α) c y * w y)
-        2 μw ≤ ENNReal.ofReal C * eLpNorm w 2 μw
-    rw [eLpNorm_of_not_aestronglyMeasurable hw,
+  · rw [eLpNorm_of_not_aestronglyMeasurable hw,
       ENNReal.mul_top (ENNReal.ofReal_pos.mpr hC_pos).ne']
     exact le_top
   have hc_meas : AEStronglyMeasurable

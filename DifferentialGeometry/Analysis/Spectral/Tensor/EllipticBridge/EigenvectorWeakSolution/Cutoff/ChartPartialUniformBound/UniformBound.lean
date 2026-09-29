@@ -1405,22 +1405,7 @@ theorem exists_const_sum_eLpNorm_chosenWeakPartialOrZero_cutoffComponentEuclid_l
       exact euclidPartial_cutoffComponentEuclid_eq_three_terms
         (I := I) (M := M) g r s S.toCcTensor α k Idx Jdx hy
     rw [eLpNorm_congr_ae h_three]
-    have h_cov_meas : AEStronglyMeasurable tCov
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-      (cutoffCovDerivComponent_continuousOn (I := I) (M := M) g r s S.toCcTensor α
-        k Idx Jdx).aestronglyMeasurable hμ_meas
-    have h_cross_meas : AEStronglyMeasurable tCross
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-      (cutoffLeibnizCrossTerm_continuousOn (I := I) (M := M) g r s S.toCcTensor α
-        k Idx Jdx).aestronglyMeasurable hμ_meas
-    have h_low_meas : AEStronglyMeasurable tLow
-        ((volume : Measure EuclN).restrict
-          (chartTargetEuclid (I := I) (M := M) α)) :=
-      (cutoffLowerOrderTerm_continuousOn (I := I) (M := M) g r s S.toCcTensor α
-        k Idx Jdx).aestronglyMeasurable hμ_meas
-    exact eLpNorm_add_add_sub_le h_cov_meas h_cross_meas h_low_meas
+    exact eLpNorm_add_add_sub_le
   refine (Finset.sum_le_sum (fun k _ => hdir k)).trans ?_
   rw [Finset.sum_add_distrib, Finset.sum_add_distrib]
   have h_cov_sum :
