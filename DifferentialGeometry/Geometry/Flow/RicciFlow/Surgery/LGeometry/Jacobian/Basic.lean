@@ -1,4 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.LGeometry.Exponential.Regularity
+import DifferentialGeometry.Analysis.Integration.Measure.ParamDensityCongruence
 
 set_option autoImplicit false
 
@@ -186,8 +187,7 @@ private theorem paramDensity_congr {X : Type*} [TopologicalSpace X]
     (g : SmoothRiemannianMetric ThreeModel X)
     {w : ThreeSpace} {f f' : ThreeSpace → X} (h : f =ᶠ[𝓝 w] f') :
     paramDensity g f w = paramDensity g f' w := by
-  simp only [paramDensity, paramGramMatrix]
-  rw [h.mfderiv_eq, h.eq_of_nhds]
+  exact DifferentialGeometry.Integral.Measure.paramDensity_eq_of_eventuallyEq g h
 
 private theorem paramGramMatrix_apply_of_eventuallyEq_comp {X Y : Type*} [TopologicalSpace X]
     [ChartedSpace ThreeSpace X] [IsManifold ThreeModel ∞ X] [T2Space X] [TopologicalSpace Y]
@@ -205,9 +205,8 @@ private theorem paramGramMatrix_apply_of_eventuallyEq_comp {X Y : Type*} [Topolo
   have hc (e : ThreeSpace) : (mfderiv 𝓘(ℝ, ThreeSpace) ThreeModel (F ∘ Ψ) w e : ThreeSpace) =
       mfderiv ThreeModel ThreeModel F (Ψ w) (mfderiv 𝓘(ℝ, ThreeSpace) ThreeModel Ψ w e) :=
     mfderiv_comp_apply w hFd hΨ e
-  have hΦ : paramGramMatrix g Φ w = paramGramMatrix g (F ∘ Ψ) w := by
-    simp only [paramGramMatrix]
-    rw [h.mfderiv_eq, h.eq_of_nhds]
+  have hΦ : paramGramMatrix g Φ w = paramGramMatrix g (F ∘ Ψ) w :=
+    DifferentialGeometry.Integral.Measure.paramGramMatrix_eq_of_eventuallyEq g h
   rw [hΦ]
   subst hg
   exact (congrArg₂ (fun x y : ThreeSpace => g.inner (F (Ψ w)) x y) (hc _) (hc _)).trans

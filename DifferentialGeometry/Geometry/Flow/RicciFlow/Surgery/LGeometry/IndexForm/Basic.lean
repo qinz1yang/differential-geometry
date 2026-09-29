@@ -145,7 +145,7 @@ theorem exists_isSmoothVariation_eq_curve (f₀ : ℝ → ℝ → M)
         exact not_lt.2 h)
       simp [κ, this]
   have hκ01 : ∀ u s, 0 ≤ κ u s ∧ κ u s ≤ 1 := fun u s =>
-    ⟨mul_nonneg ρ.nonneg ψ.nonneg, mul_le_one₀ ρ.le_one ψ.nonneg ψ.le_one⟩
+    ⟨mul_nonneg ρ.nonneg ψ.nonneg, (mul_le_mul_of_nonneg_right ρ.le_one ψ.nonneg).trans (by simpa only [one_mul] using ψ.le_one)⟩
   let G : ℝ × ℝ → E := fun p => φ (f₀ p.1 p.2) + κ p.1 p.2 • (φ (σ p.1) - φ (f₀ p.1 c))
   let B : Set (ℝ × ℝ) := {p | |p.1| < η ∧ |p.2 - c| < η}
   have hBo : IsOpen B :=

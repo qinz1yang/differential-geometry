@@ -906,8 +906,7 @@ theorem exists_mem_connectedComponent_of_monotone_cover {Y : Type*} [Topological
         exact hw
       · intro hz
         exact ⟨⟨z, hsub hz⟩, hz, rfl⟩
-    convert isPreconnected_range γ.continuous using 1
-    exact himg
+    exact himg.symm ▸ isPreconnected_range γ.continuous
   exact hS.subset_connectedComponent (show (⟨x, hx⟩ : V k) ∈ S from ⟨0, γ.source⟩)
     (show (⟨y, hy⟩ : V k) ∈ S from ⟨1, γ.target⟩)
 
