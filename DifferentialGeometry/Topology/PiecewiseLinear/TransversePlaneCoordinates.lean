@@ -279,7 +279,7 @@ theorem exists_mem_apply_eq_one_iff_not_le_ker {S : Submodule ℝ E} {ℓ : E �
     rw [h1] at h0
     exact one_ne_zero h0
   · intro h
-    rw [SetLike.not_le_iff_exists] at h
+    rw [IsConcreteLE.not_le_iff_exists] at h
     obtain ⟨u, hu, hnot⟩ := h
     have hne : ℓ u ≠ 0 := fun hz => hnot (LinearMap.mem_ker.mpr hz)
     exact ⟨(ℓ u)⁻¹ • u, S.smul_mem _ hu, by

@@ -20,7 +20,7 @@ def liftedSquareBoundaryHomeomorph :
     ↥(liftedSquareBoundary.{u}) ≃ₜ ↥(Cube.boundary (Fin 2) : Set Square) where
   toFun x := ⟨x.val.down, x.property⟩
   invFun t := ⟨ULift.up t.val, t.property⟩
-  left_inv x := Subtype.ext (ULift.ext x.val (ULift.up x.val.down) rfl).symm
+  left_inv x := Subtype.ext (ULift.ext rfl).symm
   right_inv := fun _ => Subtype.ext rfl
   continuous_toFun := Continuous.subtype_mk
     (continuous_uliftDown.comp continuous_subtype_val) _
@@ -30,10 +30,10 @@ def liftedSquareBoundaryHomeomorph :
 def liftedSquareBoundaryPunctureHomeomorph :
     ↥(liftedSquareBoundaryPuncture.{u}) ≃ₜ ↥squareBoundaryPuncture where
   toFun x := ⟨x.val.down, x.property.1,
-    fun h => x.property.2 (ULift.ext x.val (ULift.up squareNorthEast) h)⟩
+    fun h => x.property.2 (ULift.ext h)⟩
   invFun t := ⟨ULift.up t.val, t.property.1,
     fun h => t.property.2 (congrArg ULift.down h)⟩
-  left_inv x := Subtype.ext (ULift.ext x.val (ULift.up x.val.down) rfl).symm
+  left_inv x := Subtype.ext (ULift.ext rfl).symm
   right_inv := fun _ => Subtype.ext rfl
   continuous_toFun := Continuous.subtype_mk
     (continuous_uliftDown.comp continuous_subtype_val) _
@@ -43,10 +43,10 @@ def liftedSquareBoundaryPunctureHomeomorph :
 def liftedSquareBoundaryOriginPunctureHomeomorph :
     ↥(liftedSquareBoundaryOriginPuncture.{u}) ≃ₜ ↥squareBoundaryOriginPuncture where
   toFun x := ⟨x.val.down, x.property.1,
-    fun h => x.property.2 (ULift.ext x.val (ULift.up squareOrigin) h)⟩
+    fun h => x.property.2 (ULift.ext h)⟩
   invFun t := ⟨ULift.up t.val, t.property.1,
     fun h => t.property.2 (congrArg ULift.down h)⟩
-  left_inv x := Subtype.ext (ULift.ext x.val (ULift.up x.val.down) rfl).symm
+  left_inv x := Subtype.ext (ULift.ext rfl).symm
   right_inv := fun _ => Subtype.ext rfl
   continuous_toFun := Continuous.subtype_mk
     (continuous_uliftDown.comp continuous_subtype_val) _

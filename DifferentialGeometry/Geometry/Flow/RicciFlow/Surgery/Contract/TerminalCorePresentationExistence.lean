@@ -327,7 +327,7 @@ private def componentPresentationOfHalfCylinders
     spatial_neck := ?_ }
   · intro i j hij
     rw [range_half_cylinder_eq_image, range_half_cylinder_eq_image]
-    exact hdisjoint (fun h => hij (ULift.ext _ _ h))
+    exact hdisjoint (fun h => hij (ULift.ext h))
   · rw [hfrontier]
     ext x
     simp only [mem_iUnion]

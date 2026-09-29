@@ -490,7 +490,7 @@ theorem exists_wallSystemCells_of_generic_crossing (D : SingularTwoCell M) {BdM 
       exact hplane v (hσ₁V hv₁) j (fun _ => hkerle) (hle ((AffineSubspace.mem_inf_iff _ _ _).mpr
         ⟨subset_affineSpan ℝ _ (mem_image_of_mem φ hv₁),
           subset_affineSpan ℝ _ (mem_image_of_mem φ hv₂)⟩))
-  obtain ⟨q, hqL, hqnot⟩ := SetLike.not_le_iff_exists.mp hnotle
+  obtain ⟨q, hqL, hqnot⟩ := IsConcreteLE.not_le_iff_exists.mp hnotle
   obtain ⟨hq₁, hq₂⟩ := (AffineSubspace.mem_inf_iff _ _ _).mp hqL
   set d := q - z with hd
   have hdir : ∀ {σ : Finset (EuclideanSpace ℝ (Fin 2))}
