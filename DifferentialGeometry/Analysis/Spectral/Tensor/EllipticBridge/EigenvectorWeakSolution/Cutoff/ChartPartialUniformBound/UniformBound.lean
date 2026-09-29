@@ -887,7 +887,7 @@ private lemma exists_const_eLpNorm_cutoffCovDerivComponent_le_uniform
       (I := I) (M := M) g r s α
       (fun x : M => ((chartKernelCutoff (I := I) (M := M) α
         : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-      (chartKernelCutoff_contMDiff (I := I) (M := M) α).continuous.measurable
+      (chartKernelCutoff_contMDiff (I := I) (M := M) α).continuous.measurable.aestronglyMeasurable
       (fun x => (chartKernelCutoff_mem_Icc (I := I) (M := M) α x).1)
       (fun x => (chartKernelCutoff_mem_Icc (I := I) (M := M) α x).2)
       hKα_compact
@@ -1144,7 +1144,7 @@ private theorem exists_const_covDerivLowerOrderCoeff_bdd_cutoff
   rw [add_mul]
   linarith
 
-omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] [I.Boundaryless] in
+omit [CompleteSpace E] [NeZero (Module.finrank ℝ E)] in
 private lemma eLpNorm_coeff_mul_cutoffComponent_le
     (g : SmoothRiemannianMetric I M) (r s : ℕ)
     (S : SmoothCcTensor g r s) (α : M)
@@ -1172,6 +1172,7 @@ private lemma eLpNorm_coeff_mul_cutoffComponent_le
   classical
   set μ : Measure EuclN :=
     (volume : Measure EuclN).restrict (chartTargetEuclid (I := I) (M := M) α)
+    with hμ_def
   set comp : EuclN → ℝ :=
     cutoffComponentEuclid (I := I) (M := M) g r s S α Idx' Jdx' with hcomp_def
   have hpt : ∀ y : EuclN,

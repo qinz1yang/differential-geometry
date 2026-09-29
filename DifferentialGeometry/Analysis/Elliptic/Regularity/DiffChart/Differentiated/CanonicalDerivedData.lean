@@ -482,7 +482,7 @@ lemma base_f_chart_ae_zero_off_chart_image_pou_tsupport
       hB_compact hB_compact.measurableSet
     have h_prod_memLp : MemLp (fun y => densityOnEuclid (I := I) g α y *
         D.fChart y) 2 ((volume : Measure EuclN).restrict B) :=
-      MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fchart_K_memLp h_density_memLp_top
+      MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_density_memLp_top h_fchart_K_memLp
     have hB_finite : (volume : Measure EuclN) B < ⊤ := hB_compact.measure_lt_top
     have : IsFiniteMeasure ((volume : Measure EuclN).restrict B) := by
       refine ⟨?_⟩
@@ -942,7 +942,7 @@ theorem derived_chart_variational_identity
       have h_fc_K := h_chosenFC_memLp K' hK' hK'_in
       have h_density_memLp_top := ((densityOnEuclid_continuousOn (I := I) g α).mono hK'_in).memLp_top_of_isCompact (μ := volume)
         hK' hK'.measurableSet
-      exact MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fc_K h_density_memLp_top
+      exact MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_density_memLp_top h_fc_K
     have h_partials_int : Integrable (fun y => (∑ i, ∑ j,
           (fderiv ℝ (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
               (EuclideanSpace.single j 1) *
@@ -973,7 +973,7 @@ theorem derived_chart_variational_identity
           exact (h_eval.contDiffOn.comp h_fderiv_diff (mapsTo_univ _ _)).continuousOn
         have h_coef_memLp_top := (h_coef_contOn.mono hK'_in).memLp_top_of_isCompact (μ := volume)
           hK' hK'.measurableSet
-        exact MemLp.mul' (p := ∞) (q := 2) (r := 2) h_wp_K h_coef_memLp_top
+        exact MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_coef_memLp_top h_wp_K
       have h_inner : ∀ i, Integrable (fun y => ∑ j, (fderiv ℝ
             (weightedInvGramDerivOnEuclid (I := I) g α i j l) y)
               (EuclideanSpace.single j 1) *
@@ -996,7 +996,7 @@ theorem derived_chart_variational_identity
           (I := I) (M := M) g α hu_h i j hK' hK'_in
         have h_coef_memLp_top := ((weightedInvGramDerivOnEuclid_continuousOn (I := I) g α i j l).mono
           hK'_in).memLp_top_of_isCompact (μ := volume) hK' hK'.measurableSet
-        exact MemLp.mul' (p := ∞) (q := 2) (r := 2) h_cspu_K h_coef_memLp_top
+        exact MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_coef_memLp_top h_cspu_K
       have h_inner : ∀ i, Integrable (fun y => ∑ j,
             weightedInvGramDerivOnEuclid (I := I) g α i j l y *
             chosenSecondPartialChartPushedU (I := I) (M := M) g α u_h i j y * ψ y)
@@ -1021,7 +1021,7 @@ theorem derived_chart_variational_identity
         exact h_smul.mono_measure h_le
       have h_coef_memLp_top := ((densityDerivOnEuclid_continuousOn (I := I) g α l).mono
         hK'_in).memLp_top_of_isCompact (μ := volume) hK' hK'.measurableSet
-      exact MemLp.mul' (p := ∞) (q := 2) (r := 2) h_uc_K h_coef_memLp_top
+      exact MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_coef_memLp_top h_uc_K
     have h_B_int : Integrable (fun y => densityDerivOnEuclid (I := I) g α l y *
         D_base.fChart y * ψ y) ((volume : Measure EuclN).restrict Ω) := by
       apply integrable_mul_compact_local
@@ -1031,7 +1031,7 @@ theorem derived_chart_variational_identity
         hK' hK'_in
       have h_coef_memLp_top := ((densityDerivOnEuclid_continuousOn (I := I) g α l).mono
         hK'_in).memLp_top_of_isCompact (μ := volume) hK' hK'.measurableSet
-      exact MemLp.mul' (p := ∞) (q := 2) (r := 2) h_fc_K h_coef_memLp_top
+      exact MemLp.fun_mul (p := ∞) (q := 2) (r := 2) h_coef_memLp_top h_fc_K
     have h_step1 : Integrable (fun y =>
         densityOnEuclid (I := I) g α y *
           chosenFChartDeriv (I := I) (M := M) g α hu_h l y * ψ y +

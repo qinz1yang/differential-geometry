@@ -1,6 +1,7 @@
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakGradientLimit
 import DifferentialGeometry.Analysis.Sobolev.Intrinsic.WeakProduct
 import DifferentialGeometry.Analysis.Integration.L2Convergence
+import Mathlib.MeasureTheory.Function.ConvergenceInMeasure
 
 set_option autoImplicit false
 
@@ -36,19 +37,12 @@ private lemma abs_sqrt_inner_sub_le (g : SmoothRiemannianMetric I M) (x : M)
   rw [hsym] at hw
   exact abs_le.mpr ⟨by linarith, by linarith⟩
 
-omit [Module.Finite ℝ E] in
-private lemma continuous_fiber_metric_norm (g : SmoothRiemannianMetric I M) (x : M) :
-    Continuous (fun v : TangentSpace I x => Real.sqrt (g.inner x v v)) :=
-  Real.continuous_sqrt.comp ((g.inner x).continuous.clm_apply continuous_id)
-
 variable [CompactSpace M] [T2Space M]
 
 
 theorem tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto
     (g : SmoothRiemannianMetric I M) {V : ℕ → ∀ x : M, TangentSpace I x}
     {G : ∀ x : M, TangentSpace I x}
-    (hpoint : ∀ᵐ x ∂riemannianVolumeMeasure I M g,
-      Tendsto (fun n => V n x) atTop (𝓝 (G x)))
     (hV : ∀ n, AEStronglyMeasurable (fun x => Real.sqrt
       (g.inner x (V n x) (V n x))) (riemannianVolumeMeasure I M g))
     (hmetric : Tendsto (fun n => eLpNorm (fun x => Real.sqrt
@@ -56,12 +50,21 @@ theorem tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto
       (riemannianVolumeMeasure I M g)) atTop (𝓝 0)) :
     Tendsto (fun n => eLpNorm (fun x => Real.sqrt (g.inner x (V n x) (V n x)) -
       Real.sqrt (g.inner x (G x) (G x))) 2 (riemannianVolumeMeasure I M g)) atTop (𝓝 0) := by
+  have hmeasure : TendstoInMeasure (riemannianVolumeMeasure I M g)
+      (fun n x => Real.sqrt (g.inner x (V n x - G x) (V n x - G x))) atTop 0 := by
+    apply tendstoInMeasure_of_tendsto_eLpNorm (p := (2 : ℝ≥0∞)) (by norm_num)
+    simpa only [sub_zero] using hmetric
+  obtain ⟨s, _, hpoint⟩ := hmeasure.exists_seq_tendsto_ae
   have hG : AEStronglyMeasurable
       (fun x => Real.sqrt (g.inner x (G x) (G x)))
       (riemannianVolumeMeasure I M g) := by
-    apply aestronglyMeasurable_of_tendsto_ae atTop hV
+    apply aestronglyMeasurable_of_tendsto_ae atTop (fun n => hV (s n))
     filter_upwards [hpoint] with x hx
-    exact ((continuous_fiber_metric_norm g x).tendsto _).comp hx
+    apply tendsto_iff_dist_tendsto_zero.mpr
+    apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hx
+      (fun _ => dist_nonneg)
+    intro n
+    simpa only [Real.dist_eq] using abs_sqrt_inner_sub_le g x (V (s n) x) (G x)
   apply tendsto_of_tendsto_of_tendsto_of_le_of_le tendsto_const_nhds hmetric (fun _ => bot_le)
   intro n
   have hdiffmeas : AEStronglyMeasurable
@@ -78,8 +81,6 @@ theorem tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto
 theorem memLp_metric_norm_of_smooth_limit (g : SmoothRiemannianMetric I M)
     (V : ℕ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {G : ∀ x : M, TangentSpace I x}
-    (hpoint : ∀ᵐ x ∂riemannianVolumeMeasure I M g,
-      Tendsto (fun n => V n x) atTop (𝓝 (G x)))
     (hmetric : Tendsto (fun n => eLpNorm (fun x => Real.sqrt
       (g.inner x (V n x - G x) (V n x - G x))) 2
       (riemannianVolumeMeasure I M g)) atTop (𝓝 0)) :
@@ -91,7 +92,7 @@ theorem memLp_metric_norm_of_smooth_limit (g : SmoothRiemannianMetric I M)
     Real.continuous_sqrt.comp (TangentBundle.continuous_g_inner_of_smooth_sections g (V n) (V n))
   apply Lp.memLp_of_cauchy_tendsto (by norm_num : (1 : ℝ≥0∞) ≤ 2)
     (fun n => (hV n).memLp_of_hasCompactSupport (isClosed_tsupport _).isCompact) _
-  exact tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto g hpoint
+  exact tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto g
     (fun n => (hV n).aestronglyMeasurable) hmetric
 
 
@@ -168,8 +169,6 @@ theorem HasWeakRiemannianGradLp.of_metricL2_limit [I.Boundaryless]
 theorem tendsto_integral_metric_energy_of_smooth_limit (g : SmoothRiemannianMetric I M)
     (V : ℕ → Cₛ^∞⟮I; E, (TangentSpace I : M → Type _)⟯)
     {G : ∀ x : M, TangentSpace I x}
-    (hpoint : ∀ᵐ x ∂riemannianVolumeMeasure I M g,
-      Tendsto (fun n => V n x) atTop (𝓝 (G x)))
     (hmetric : Tendsto (fun n => eLpNorm (fun x => Real.sqrt
       (g.inner x (V n x - G x) (V n x - G x))) 2
       (riemannianVolumeMeasure I M g)) atTop (𝓝 0)) :
@@ -180,8 +179,8 @@ theorem tendsto_integral_metric_energy_of_smooth_limit (g : SmoothRiemannianMetr
   have hV (n : ℕ) : MemLp (fun x => Real.sqrt (g.inner x (V n x) (V n x))) 2 μ :=
     (Real.continuous_sqrt.comp (TangentBundle.continuous_g_inner_of_smooth_sections g (V n) (V n))).memLp_of_hasCompactSupport
       (isClosed_tsupport _).isCompact
-  have hG := memLp_metric_norm_of_smooth_limit g V hpoint hmetric
-  have hnorm := tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto g hpoint
+  have hG := memLp_metric_norm_of_smooth_limit g V hmetric
+  have hnorm := tendsto_eLpNorm_metric_norm_sub_of_metricL2_tendsto g
     (fun n => (hV n).aestronglyMeasurable) hmetric
   have hnonneg (x : M) (v : TangentSpace I x) : 0 ≤ g.inner x v v := by
     by_cases hv : v = 0

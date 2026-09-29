@@ -112,9 +112,9 @@ private theorem integral_local_dirichlet_nirenberg_flux_eq
     (hC.mul (continuousOn_chart_inverse_partial α hΩs φ j)).memLp_top_of_subset_isCompact
       hΩc hΩ.measurableSet subset_closure
   have hfirst : MemLp (fun z => A z * D i u z) 2 (volume.restrict Ω) :=
-    (Lp.memLp (D i u)).mul' (r := 2) hA'
+    hA'.fun_mul (r := 2) (Lp.memLp (D i u))
   have hsecond : MemLp (fun z => R z * D i u z) 2 (volume.restrict Ω) :=
-    (Lp.memLp (D i u)).mul' (r := 2) hR
+    hR.fun_mul (r := 2) (Lp.memLp (D i u))
   have hV : MemLp V 2 (volume.restrict Ω) :=
     (memWkp_chartInverse_H1ComplDirichletToLp q α hΩ hΩc hΩs v).memLp
   have hCP : EqOn (fun z => C z * P z) A Ω := by

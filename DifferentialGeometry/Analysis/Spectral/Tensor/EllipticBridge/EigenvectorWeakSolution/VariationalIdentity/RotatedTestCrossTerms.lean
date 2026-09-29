@@ -372,7 +372,7 @@ private lemma crossLeftPairing_integrable
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    hcut_memLp.mul' hm_memLp
+    hm_memLp.fun_mul (r := 1) hcut_memLp
   refine (memLp_one_iff_integrable.mp hprod).congr ?_
   refine (MeasureTheory.ae_restrict_iff'
     (chartTargetEuclid_measurableSet (I := I) (M := M) α)).mpr
@@ -422,7 +422,7 @@ lemma crossLeftLimitPairing_integrable
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    hlim_memLp.mul' hm_memLp
+    hm_memLp.fun_mul (r := 1) hlim_memLp
   refine (memLp_one_iff_integrable.mp hprod).congr ?_
   refine Filter.Eventually.of_forall (fun y => ?_)
   ring
@@ -753,7 +753,7 @@ private lemma crossRightValuePairing_integrable
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    hcut_memLp.mul' hm_memLp
+    hm_memLp.fun_mul (r := 1) hcut_memLp
   refine (memLp_one_iff_integrable.mp hprod).congr ?_
   refine Filter.Eventually.of_forall (fun y => ?_)
   ring
@@ -798,7 +798,7 @@ lemma crossRightValueLimitPairing_integrable
         Lp ℝ 2 (chartLebesgueMeasure (I := I) (M := M) α)) : EuclN → ℝ) y) 1
       ((volume : Measure EuclN).restrict
         (chartTargetEuclid (I := I) (M := M) α)) :=
-    hlim_memLp.mul' hm_memLp
+    hm_memLp.fun_mul (r := 1) hlim_memLp
   refine (memLp_one_iff_integrable.mp hprod).congr ?_
   refine Filter.Eventually.of_forall (fun y => ?_)
   ring

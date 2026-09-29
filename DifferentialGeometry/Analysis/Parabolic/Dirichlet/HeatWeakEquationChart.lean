@@ -268,16 +268,17 @@ theorem integral_spacetime_test_divergence_of_heat_timeH1
   let S := fun p => ρ p * F p * φ p
   let K := fun p => -(∑ i, ∑ j, Q i j p) + S p
   have hQ (i j) : Integrable (Q i j) ν :=
-    ((hd (0, EuclideanSpace.single j 1)).mul' (r := 2)
-      ((Lp.memLp (V i)).mul' (r := 2) (hA i j))).integrable (by norm_num)
+    (((hA i j).fun_mul (r := 2) (Lp.memLp (V i))).fun_mul (r := 2)
+      (hd (0, EuclideanSpace.single j 1))).integrable (by norm_num)
   have hL : Integrable L ν :=
-    (hφp.mul' (r := 2) ((((Lp.memLp U).mul' (r := 2) hτ).add (Lp.memLp F)).mul'
-      (r := 2) hρ)).integrable (by norm_num)
+    ((hρ.fun_mul (r := 2)
+      ((hτ.fun_mul (r := 2) (Lp.memLp U)).add (Lp.memLp F))).fun_mul
+        (r := 2) hφp).integrable (by norm_num)
   have hR : Integrable R ν :=
-    (((hd (1, 0)).add (hφp.mul' (r := ∞) hτ)).mul' (r := 2)
-      ((Lp.memLp U).mul' (r := 2) hρ)).integrable (by norm_num)
+    ((hρ.fun_mul (r := 2) (Lp.memLp U)).fun_mul (r := 2)
+      ((hd (1, 0)).add (hτ.fun_mul (r := ∞) hφp))).integrable (by norm_num)
   have hS : Integrable S ν :=
-    (hφp.mul' (r := 2) ((Lp.memLp F).mul' (r := 2) hρ)).integrable (by norm_num)
+    ((hρ.fun_mul (r := 2) (Lp.memLp F)).fun_mul (r := 2) hφp).integrable (by norm_num)
   have hsum : Integrable (fun p => ∑ i, ∑ j, Q i j p) ν :=
     integrable_finsetSum _ fun i _ => integrable_finsetSum _ fun j _ => hQ i j
   have hK : Integrable K ν := hsum.neg.add hS
@@ -342,7 +343,8 @@ theorem integral_spacetime_test_divergence_of_heat_timeH1
         rw [hz]
         rfl
   have htime : Integrable (fun p => ρ p * U p * fderiv ℝ φ p (1, 0)) ν :=
-    ((hd (1, 0)).mul' (r := 2) ((Lp.memLp U).mul' (r := 2) hρ)).integrable (by norm_num)
+    ((hρ.fun_mul (r := 2) (Lp.memLp U)).fun_mul (r := 2)
+      (hd (1, 0))).integrable (by norm_num)
   have hsum_int : (∫ p, ∑ i, ∑ j, Q i j p ∂ν) = ∑ i, ∑ j, ∫ p, Q i j p ∂ν := by
     rw [integral_finsetSum _ (fun i _ => integrable_finsetSum _ fun j _ => hQ i j)]
     apply Finset.sum_congr rfl

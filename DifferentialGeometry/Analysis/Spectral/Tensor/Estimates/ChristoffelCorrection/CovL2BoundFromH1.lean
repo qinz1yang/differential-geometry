@@ -175,8 +175,11 @@ omit [NeZero (Module.finrank ℝ E)] in
 omit [CompactSpace M] in
 private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
-    (w : M → ℝ) (hw_meas : Measurable w) (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
-    {K_M : Set M} (hK_M_compact : IsCompact K_M)
+    (w : M → ℝ) {K_M : Set M}
+    (hw_meas : AEStronglyMeasurable w
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict K_M))
+    (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
+    (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
     (hw_support : tsupport w ⊆ K_M) :
@@ -261,7 +264,7 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
   have hf_ae : AEStronglyMeasurable f μ := by
     have hK_meas : MeasurableSet K_M := hK_M_compact.measurableSet
     have hf_restrict : AEStronglyMeasurable f (μ.restrict K_M) :=
-      hw_meas.aestronglyMeasurable.mul
+      hw_meas.mul
         (hSqSum_cont.sqrt.aestronglyMeasurable hK_meas)
     have hf_indicator : K_M.indicator f = f := by
       funext b
@@ -332,8 +335,11 @@ private lemma sq_eLpNorm_chartWeight_mul_sqrt_sum_le_const_mul_h1NormSq
 omit [CompactSpace M] [NeZero (Module.finrank ℝ E)] in
 theorem exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_const_mul_h1Norm
     (g : SmoothRiemannianMetric I M) (r s : ℕ) (α : M)
-    (w : M → ℝ) (hw_meas : Measurable w) (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
-    {K_M : Set M} (hK_M_compact : IsCompact K_M)
+    (w : M → ℝ) {K_M : Set M}
+    (hw_meas : AEStronglyMeasurable w
+      ((riemannianVolumeMeasure (I := I) (M := M) g).restrict K_M))
+    (hw_nn : ∀ x, 0 ≤ w x) (hw_le_one : ∀ x, w x ≤ 1)
+    (hK_M_compact : IsCompact K_M)
     (hK_M_sub_baseSet :
       K_M ⊆ (trivializationAt E (TangentSpace I) α).baseSet)
     (hw_support : tsupport w ⊆ K_M) :
@@ -394,7 +400,7 @@ theorem exists_eLpNorm_chartPou_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_cons
   exists_eLpNorm_chartWeight_mul_sqrt_sum_chartRSTwistInv_cov_norm_sq_le_const_mul_h1Norm
     (I := I) (M := M) g r s α
     (fun x : M => ((chartAtlasPOU I M α : C^∞⟮I, M; ℝ⟯) : M → ℝ) x)
-    (chartAtlasPOU I M α).contMDiff.continuous.measurable
+    (chartAtlasPOU I M α).contMDiff.continuous.measurable.aestronglyMeasurable
     (fun x => (chartAtlasPOU I M).nonneg α x)
     (fun x => (chartAtlasPOU I M).le_one α x)
     ((isClosed_tsupport _).isCompact)
