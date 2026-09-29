@@ -112,7 +112,7 @@ theorem exists_uniform_high_curvature_models :
   have hμle : ∀ c, μ ≤ kappa c := by
     intro c
     have hb : ∏ j ∈ (Finset.univ : Finset (ConnectedComponents P.Carrier)).erase c,
-        min (kappa j) 1 ≤ 1 := Finset.prod_le_one
+        min (kappa j) 1 ≤ 1 := Finset.prod_le_one₀
           (fun j _ => (lt_min (hkappa j) zero_lt_one).le) (fun j _ => min_le_right _ _)
     have heq : μ = min (kappa c) 1 *
         ∏ j ∈ (Finset.univ : Finset (ConnectedComponents P.Carrier)).erase c,

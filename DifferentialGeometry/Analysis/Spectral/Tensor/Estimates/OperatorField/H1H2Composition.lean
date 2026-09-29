@@ -377,14 +377,10 @@ private theorem rs_l6_l3_l2
       eLpNorm (fun x => rsFiberFun g r c Φ x * rsFiberFun g p r W x) 2 μ ≤
         eLpNorm (rsFiberFun g r c Φ) 6 μ *
           eLpNorm (rsFiberFun g p r W) 3 μ := by
-    simpa using
-      (eLpNorm_le_eLpNorm_mul_eLpNorm'_of_norm
-        (p := 6) (q := 3) (r := 2) (μ := μ)
-        (hΦc.aestronglyMeasurable) (hWc.aestronglyMeasurable)
-        (fun a b : ℝ => a * b) 1
-        (Filter.Eventually.of_forall (fun x => by
-          rw [Real.norm_eq_abs, abs_mul]
-          norm_num)))
+    simpa only [smul_eq_mul, Pi.mul_def] using
+      (eLpNorm_smul_le_mul_eLpNorm
+        (p := (6 : ENNReal)) (q := 3) (r := 2) (μ := μ)
+        hΦc.aestronglyMeasurable hWc.aestronglyMeasurable)
   have hENN := hmono.trans hholder
   have hfinite :
       eLpNorm (rsFiberFun g r c Φ) 6 μ *

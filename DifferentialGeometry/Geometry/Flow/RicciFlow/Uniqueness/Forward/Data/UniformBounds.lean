@@ -715,7 +715,7 @@ private theorem ricReactAbs_le {Idx : Type*} [Fintype Idx] [DecidableEq Idx] {s 
       have hprod : |∏ α ∈ (Finset.univ : Finset (Fin s)).erase b,
           identityInvMetric (Idx := Idx) (I0 α) (J0 α)| ≤ 1 := by
         rw [Finset.abs_prod]
-        exact Finset.prod_le_one (fun α _ => hδ0 _ _) (fun α _ => hδ _ _)
+        exact Finset.prod_le_one₀ (fun α _ => hδ0 _ _) (fun α _ => hδ _ _)
       calc |∏ α ∈ (Finset.univ : Finset (Fin s)).erase b,
               identityInvMetric (Idx := Idx) (I0 α) (J0 α)| *
             |∑ p : Idx, ∑ q : Idx, identityInvMetric (Idx := Idx) (I0 b) p *

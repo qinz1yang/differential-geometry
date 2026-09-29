@@ -47,7 +47,7 @@ private lemma det_le_one_of_rayleigh
       RCLike.re (dotProduct (star ⇑v) (Matrix.mulVec A ⇑v)) ≤ 1) :
     A.det ≤ 1 := by
   rw [hA.isHermitian.det_eq_prod_eigenvalues]
-  refine Finset.prod_le_one (fun i _ => ?_) (fun i _ => ?_)
+  refine Finset.prod_le_one₀ (fun i _ => ?_) (fun i _ => ?_)
   · exact_mod_cast hA.eigenvalues_nonneg i
   · exact_mod_cast eigenvalues_le_of_rayleigh hA.isHermitian hray i
 
