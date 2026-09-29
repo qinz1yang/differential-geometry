@@ -257,7 +257,7 @@ theorem productCurve_integral_angle_of_smoothOn {E : Type*} [NormedAddCommGroup 
         ring
 
 theorem productCurve_integral_angle {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
-    [FiniteDimensional ℝ E] [CompleteSpace E] {H : Type*} [TopologicalSpace H]
+    [FiniteDimensional ℝ E] {H : Type*} [TopologicalSpace H]
     {I : ModelWithCorners ℝ E H}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
     (c : ProductCurve M) (g : ℝ → SmoothRiemannianMetric I M)
@@ -406,7 +406,7 @@ def smoothProductCylinderTopology {E : Type*} [NormedAddCommGroup E] [NormedSpac
 
 private theorem productCylinder_generateFrom_congr {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) {J : Set ℝ}
     {d d' : ProductCurve M} (h : ∀ z t, t ∈ J → d.map z t = d'.map z t) :
     ∀ s ∈ {U | ∃ c : ProductCurve M, ∃ m : ℕ, ∃ ε : ℝ,
@@ -432,7 +432,7 @@ private theorem productCylinder_generateFrom_congr {E : Type*} [NormedAddCommGro
 
 private theorem productCylinder_continuousAt_congr {E : Type*} [NormedAddCommGroup E]
     [NormedSpace ℝ E] {H : Type*} [TopologicalSpace H] {I : ModelWithCorners ℝ E H}
-    {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+    {M : Type*} [TopologicalSpace M] [ChartedSpace H M]
     {N : ℕ} (e : Width.SmoothLoopEmbedding (I := I) (Q := M) N) {J : Set ℝ}
     {P : Type*} [TopologicalSpace P] {f g : P → ProductCurve M} {p : P}
     (h : ∀ᶠ q in 𝓝 p, ∀ z t, t ∈ J → (f q).map z t = (g q).map z t)

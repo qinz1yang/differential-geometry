@@ -180,7 +180,7 @@ theorem contDiffOn_height_of_map_smoothOn_of_continuousOn (A : QuotientProductAt
   rfl
 
 omit [CompleteSpace E] in
-theorem coverSmoothLift_of_continuousOn_height (A : QuotientProductAtlas I M) [T2Space M]
+theorem coverSmoothLift_of_continuousOn_height (A : QuotientProductAtlas I M)
     [I.Boundaryless] (c : ProductCurve M) (J : Set ℝ)
     (hyc : ContinuousOn (fun p : ℝ × ℝ => c.y p.1 p.2) (univ ×ˢ J)) :
     CoverSmoothLift A c J := by

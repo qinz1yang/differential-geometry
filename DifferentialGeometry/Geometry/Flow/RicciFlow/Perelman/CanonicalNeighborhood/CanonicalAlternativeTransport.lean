@@ -149,9 +149,8 @@ theorem nonempty_positiveComponent_transport_sphereThree {M : Type}
   exact positiveComponent_transport_of_partialDiffeomorph c e (by rw [hsrc])
 
 theorem canonicalAlternative_transport_positive {P : Type u} [TopologicalSpace P]
-    [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
+    [ChartedSpace ThreeSpace P]
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {eps C : ℝ} {U : Set P}
     (data : PositiveComponent (M := P) U) (e : PartialDiffeomorph I3 I3 P M ∞)
@@ -259,7 +258,6 @@ theorem roundComponent_transport_of_comparison {P : Type u} [TopologicalSpace P]
 theorem canonicalAlternative_transport_round {P : Type u} [TopologicalSpace P]
     [ChartedSpace ThreeSpace P] [IsManifold I3 ∞ P] [T2Space P] [SigmaCompactSpace P]
     {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M] [IsManifold I3 ∞ M]
-    [T2Space M] [SigmaCompactSpace M]
     {Dm : RealTimeInterval} {Sm : SolutionOn (I := I3) (M := P) Dm}
     {p : P} {D : RealTimeInterval} {S : SolutionOn (I := I3) (M := M) D}
     {x : M} {t : ℝ} {epsR : ℝ} {U V : Set P} {order' : ℕ} {eps C : ℝ}

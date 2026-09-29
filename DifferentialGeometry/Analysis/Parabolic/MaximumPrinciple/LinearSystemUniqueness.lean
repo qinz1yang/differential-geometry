@@ -75,7 +75,6 @@ theorem laplacianAt_univ_sum
     (fun i _ => Filter.Eventually.of_forall (hf i)) (fun i _ => hgrad i)
 
 theorem laplacianAt_sum_sq
-    [VectorBundle ℝ E (TangentSpace I : M → Type _)]
     (G : MetricConnectionFamily (I := I) (M := M) ℝ) {n : ℕ}
     (u : M → Fin n → ℝ) (t : ℝ) (x : M)
     (hu : ∀ i : Fin n, ContMDiff I 𝓘(ℝ, ℝ) ∞ (fun y : M => u y i)) :

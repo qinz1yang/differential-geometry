@@ -215,7 +215,7 @@ theorem rfs_csf_ramp_family_of_windowExtension
     (B : RicciBackground (I := I) (M := Q) D a b) (lambda omega : ℝ)
     (hlambda : 0 < lambda) (hlambda_one : lambda ≤ 1)
     {d : ℕ} (e : SmoothLoopEmbedding (I := I) (Q := Q) d)
-    {P : Type*} [TopologicalSpace P] [CompactSpace P] (initial : P → ProductCurve Q)
+    {P : Type*} [TopologicalSpace P] (initial : P → ProductCurve Q)
     (hcontinuous : @Continuous P (ProductCurve Q) inferInstance
       (smoothProductInitialTopology e a) initial)
     (hsmooth : ∀ p, (initial p).SmoothOn (I := I) {a})

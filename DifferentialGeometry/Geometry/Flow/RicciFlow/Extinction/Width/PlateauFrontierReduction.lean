@@ -35,7 +35,7 @@ variable [FiniteDimensional ℝ E]
 
 theorem smooth_exact_disk_density_of_smooth_disk_area_density
     (c : DifferentialGeometry.Geometry.Topology.StandardModelCopy I Q E)
-    [I.Boundaryless] [T2Space Q] [CompactSpace Q]
+    [T2Space Q]
     (g : SmoothRiemannianMetric I Q) (γ : RegularLoop I Q)
     (h : Geometry.SmoothDiskAreaDensity (E := E)
       (Diffeomorph.pullbackMetricCross g c.equiv.symm)

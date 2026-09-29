@@ -176,7 +176,7 @@ theorem isSolutionOn_quotientProductFamily (A : QuotientProductAtlas I M) [I.Bou
   simpa only [quotientProductFamily] using hdescent
 
 theorem exists_ricciBackground_quotientProduct (A : QuotientProductAtlas I M) [I.Boundaryless]
-    [SigmaCompactSpace M] [T2Space M] {D : RealTimeInterval} {a b : ℝ}
+    [T2Space M] {D : RealTimeInterval} {a b : ℝ}
     (B : RicciBackground (I := I) (M := M) D a b) (lambda : ℝ) (hlambda : 0 < lambda) :
     letI := A.charts
     letI := A.smoothManifold

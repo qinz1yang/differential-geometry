@@ -41,8 +41,7 @@ theorem subsingleton_integralSingularHomology_compl_singleton_of_homeomorph_punc
     (integralSingularHomologyHomotopyEquiv n e.toHomotopyEquiv).symm.injective h
 
 theorem puncturedThreeManifoldTopHomologyVanishing_of_puncturedVanishing_of_punctureHomeomorph
-    {M : Type u} [TopologicalSpace M] [ChartedSpace ThreeSpace M]
-    [IsManifold ThreeModel ∞ M] (x₀ : M)
+    {M : Type u} [TopologicalSpace M] (x₀ : M)
     (h : ClosedThreeManifoldPuncturedVanishing M x₀)
     (htrans : ∀ x : M, Nonempty (({x₀}ᶜ : Set M) ≃ₜ ({x}ᶜ : Set M))) :
     PuncturedThreeManifoldTopHomologyVanishing M x₀ :=

@@ -93,10 +93,10 @@ theorem normSq0S_iterCov_rm04_prod_of_flat [I.Boundaryless] [BoundarylessManifol
   normSq0S_prod_of_forall_fst (I := I) (J := J) g h p (4 + m) _ _
     (fun slots => iterCov_prod_flat_apply (I := I) (J := J) g h hflat m p slots)
 
-theorem normSq0S_iterCov_ricci_prod_of_ricciFlat [I.Boundaryless] [BoundarylessManifold I M]
+theorem normSq0S_iterCov_ricci_prod_of_ricciFlat [BoundarylessManifold I M]
     {F : Type*} [NormedAddCommGroup F] [NormedSpace ℝ F] [FiniteDimensional ℝ F]
     {K : Type*} [TopologicalSpace K] {J : ModelWithCorners ℝ F K} {N : Type*} [TopologicalSpace N]
-    [ChartedSpace K N] [IsManifold J ∞ N] [T2Space N] [J.Boundaryless] [BoundarylessManifold J N]
+    [ChartedSpace K N] [IsManifold J ∞ N] [T2Space N] [BoundarylessManifold J N]
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
     (hflat : ∀ (y : N) (w : Fin 2 → TangentSpace J y), metricRicciAt h y w = 0)
     (m : ℕ) (p : M × N) :

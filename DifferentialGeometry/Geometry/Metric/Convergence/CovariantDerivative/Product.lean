@@ -136,7 +136,7 @@ theorem iterCov_prod_flat_apply [I.Boundaryless] [J.Boundaryless]
           rw [hVdef, productVectorField_apply]
 
 omit [SigmaCompactSpace M] [SigmaCompactSpace N] in
-theorem iterCov_ricci_prod_flat_apply [I.Boundaryless] [J.Boundaryless]
+theorem iterCov_ricci_prod_flat_apply
     [BoundarylessManifold I M] [BoundarylessManifold J N]
     (g : SmoothRiemannianMetric I M) (h : SmoothRiemannianMetric J N)
     (hflat : ∀ (y : N) (w : Fin 2 → TangentSpace J y), metricRicciAt h y w = 0) :

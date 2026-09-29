@@ -293,7 +293,7 @@ private theorem pullbackMetricCross_pathELength_integral
 private theorem pullbackMetricCross_riemannianEDistOf
     {E F : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [NormedAddCommGroup F] [NormedSpace ℝ F]
-    [FiniteDimensional ℝ E] [FiniteDimensional ℝ F]
+    [FiniteDimensional ℝ E]
     {H G : Type*} [TopologicalSpace H] [TopologicalSpace G]
     {I : ModelWithCorners ℝ E H} {J : ModelWithCorners ℝ F G}
     {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M] [T2Space M]
@@ -2096,7 +2096,7 @@ private theorem loopLength_eq_riemannianCurveLength_real'
 omit [TopologicalSpace H] [TopologicalSpace Q] [ChartedSpace H Q] [IsManifold I ∞ Q]
   boundarylessI t2Q compactQ connectedQ in
 private theorem riemannianCurveLength_pullbackMetricCross'
-    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E'] [FiniteDimensional ℝ E']
+    {E' : Type*} [NormedAddCommGroup E'] [NormedSpace ℝ E']
     {H' : Type*} [TopologicalSpace H'] {J : ModelWithCorners ℝ E' H'}
     {P : Type*} [TopologicalSpace P] [ChartedSpace H' P] [IsManifold J ∞ P]
     {A : Type*} [TopologicalSpace A] [ChartedSpace E A] [IsManifold 𝓘(ℝ, E) ∞ A] [T2Space A]

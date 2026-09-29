@@ -147,7 +147,7 @@ theorem map_X_eq_zero_iff (A : QuotientProductAtlas I M)
     exact h''
 
 omit [FiniteDimensional ℝ E] [CompleteSpace E] in
-theorem map_immersedOn_iff [T2Space M] (A : QuotientProductAtlas I M) [I.Boundaryless]
+theorem map_immersedOn_iff (A : QuotientProductAtlas I M)
     {J : Set ℝ} (hc : c.SmoothOn (I := I) J) :
     letI := A.charts
     letI := A.smoothManifold

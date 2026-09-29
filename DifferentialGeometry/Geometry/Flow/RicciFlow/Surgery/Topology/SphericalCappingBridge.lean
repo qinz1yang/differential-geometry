@@ -195,8 +195,7 @@ noncomputable def coreToCapped (C : ConnectedComponents M.Carrier)
     (d : E.coreCutComponents C) : E.cappedCutComponents C :=
   ⟨E.capping.componentMap d.1, E.componentMap_mem_cappedCutComponents C d.2⟩
 
-theorem coreToCapped_injective (C : ConnectedComponents M.Carrier)
-    [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] :
+theorem coreToCapped_injective (C : ConnectedComponents M.Carrier) :
     Function.Injective (E.coreToCapped C) := by
   intro d d' h
   refine Subtype.ext ((E.capping.rfs_cap_component_bijection).injective ?_)
@@ -214,8 +213,7 @@ theorem coreToCapped_surjective (C : ConnectedComponents M.Carrier) :
     rw [SphericalCapping.componentMap_mk]
     exact hxD
 
-theorem coreToCapped_bijective (C : ConnectedComponents M.Carrier)
-    [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] :
+theorem coreToCapped_bijective (C : ConnectedComponents M.Carrier) :
     Function.Bijective (E.coreToCapped C) :=
   ⟨E.coreToCapped_injective C, E.coreToCapped_surjective C⟩
 
@@ -224,8 +222,7 @@ theorem cappedCutComponents_nonempty (C : ConnectedComponents M.Carrier) :
   obtain ⟨d, hd⟩ := E.coreCutComponents_nonempty C
   exact ⟨E.coreToCapped C ⟨d, hd⟩, (E.coreToCapped C ⟨d, hd⟩).2⟩
 
-theorem natCard_coreCutComponents_eq_cappedCutComponents (C : ConnectedComponents M.Carrier)
-    [CompactSpace E.tubes.core] [LocallyConnectedSpace E.tubes.core] :
+theorem natCard_coreCutComponents_eq_cappedCutComponents (C : ConnectedComponents M.Carrier) :
     Nat.card (E.coreCutComponents C) = Nat.card (E.cappedCutComponents C) :=
   Nat.card_eq_of_bijective _ (E.coreToCapped_bijective C)
 

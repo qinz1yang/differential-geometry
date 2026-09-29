@@ -94,7 +94,7 @@ theorem X_postcomposeDiffeomorph (c : CurveMap Q) (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, 
   rw [mfderiv_comp x hΦ hf]
   rfl
 
-theorem speed_postcomposeDiffeomorph [T2Space Q] [T2Space A] (c : CurveMap Q)
+theorem speed_postcomposeDiffeomorph [T2Space A] (c : CurveMap Q)
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : ℝ → SmoothRiemannianMetric I Q) (x t : ℝ)
     (hf : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x) :
     (c.postcomposeDiffeomorph Φ).speed (fun s => Diffeomorph.pullbackMetricCross (g s) Φ.symm) x t =
@@ -106,7 +106,7 @@ theorem speed_postcomposeDiffeomorph [T2Space Q] [T2Space A] (c : CurveMap Q)
     Diffeomorph.inner_pullbackMetricCross_comp (g t) Φ (c.lift x t) (c.X x t) (c.X x t)
   rw [CurveMap.speed, CurveMap.speed, CurveMap.lift_postcomposeDiffeomorph,
     CurveMap.X_postcomposeDiffeomorph c Φ x t hf, hinner]
-theorem unitTangent_postcomposeDiffeomorph [T2Space Q] [T2Space A] (c : CurveMap Q)
+theorem unitTangent_postcomposeDiffeomorph [T2Space A] (c : CurveMap Q)
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : ℝ → SmoothRiemannianMetric I Q) (x t : ℝ)
     (hf : MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x) :
     (c.postcomposeDiffeomorph Φ).unitTangent
@@ -178,7 +178,7 @@ theorem slice_mdifferentiableAt (c : CurveMap Q) (J : Set ℝ) (hc : c.SmoothOn 
     MDifferentiableAt 𝓘(ℝ, ℝ) I (fun y => c.lift y t) x :=
   (CurveMap.slice_contMDiffAt c J hc t ht x).mdifferentiableAt (by simp)
 
-theorem curvatureVector_postcomposeDiffeomorph [I.Boundaryless] [NeZero (Module.finrank ℝ E)]
+theorem curvatureVector_postcomposeDiffeomorph [I.Boundaryless]
     [T2Space Q] [T2Space A]
     (c : CurveMap Q) (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : ℝ → SmoothRiemannianMetric I Q)
     (hc : c.SmoothOn (I := I) univ) (hi : c.ImmersedOn (I := I) univ) (x t : ℝ) :
@@ -346,7 +346,7 @@ theorem SmoothDisk.inwardConormal_comp_diffeomorph [T2Space A]
   · rw [ite_eq_left h, ite_eq_left h, SmoothDisk.differential_comp_diffeomorph, map_smul]
   · rw [ite_eq_right h, ite_eq_right h, map_zero]
 
-theorem SmoothDisk.boundarySpeed_comp_diffeomorph [T2Space Q] [T2Space A]
+theorem SmoothDisk.boundarySpeed_comp_diffeomorph [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (x : ℝ) :
     (SmoothDisk.compDiffeomorph Φ u).boundarySpeed
@@ -650,7 +650,7 @@ theorem boundaryDensityValue_eq (g : SmoothRiemannianMetric I Q) (p : Q)
     boundaryDensityValue g p v n s = g.inner p v n * s := rfl
 
 theorem SmoothDisk.boundaryCurvatureDensity_comp_diffeomorph [I.Boundaryless]
-    [NeZero (Module.finrank ℝ E)] [T2Space Q] [T2Space A]
+    [T2Space Q] [T2Space A]
     (Φ : Q ≃ₘ⟮I, 𝓘(ℝ, E)⟯ A) (g : SmoothRiemannianMetric I Q)
     (u : SmoothDisk (I := I) (Q := Q)) (γ : RegularLoop I Q)
     (hγ : ContMDiff 𝓘(ℝ, ℝ) I ∞ (loopLift γ.toContinuousLoop))
@@ -758,7 +758,6 @@ theorem disk_curvature_inequality [hBoundary : I.Boundaryless] [hT2 : T2Space Q]
   let c : Geometry.Topology.StandardModelCopy I Q E :=
     Geometry.Topology.standardModelCopy (I := I) (M := Q) (e := ContinuousLinearEquiv.refl ℝ E)
   let _ : CompactSpace c.Q := c.equiv.toHomeomorph.compactSpace
-  have : NeZero (Module.finrank ℝ E) := ⟨by rw [hdim]; norm_num⟩
   have hγ' : ContMDiff 𝓘(ℝ, ℝ) 𝓘(ℝ, E) ∞
       (loopLift (γ.postcomposeDiffeomorph c.equiv).toContinuousLoop) := by
     have h := c.equiv.contMDiff.comp hγ
