@@ -165,6 +165,6 @@ theorem collapseMap_eVariationOn_le_of_cylinder_lower {A B η : ℝ}
   have hmain := eVariationOn_comp_le_of_ae_mfderiv (I := IC) (J := 𝓡 3)
     g (insertedMetric hA hAB hη g) (collapseMap hA hAB)
     (collapseMap_local_intrinsic_bound hA hAB g _) hdf γ a b hγ
-  simpa only [Bundle.ContMDiffRiemannianMetric.toRiemannianMetric] using hmain
+  exact hmain
 
 end DifferentialGeometry.PDE.RicciFlow.StandardCap

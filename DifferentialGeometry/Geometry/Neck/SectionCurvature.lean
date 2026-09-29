@@ -156,7 +156,8 @@ theorem NormalizedNeck.metricRm04_chart_lower_bound_of_normalized
           (mfderiv NeckCylinderModel ThreeModel N.chart x u)))
   rw [hRm, N.normalized_inner, N.normalized_inner, N.normalized_inner] at hbound
   apply (mul_le_mul_iff_right₀ N.scale_pos).mp
-  convert hbound using 1 <;> first | rfl | ring
+  convert hbound using 1
+  first | rfl | ring
 
 theorem NormalizedNeck.metricRm04_centralSphere_lower_bound_of_normalized
     (N : NormalizedNeck g δ k) (c : ℝ) (y : Sphere 2)
@@ -320,7 +321,8 @@ private theorem metricRm04_map_horizontal_lower_bound
     exact metricRm04_cylindricalChart_eq nk x (u, 0) (v, 0) (v, 0) (u, 0)
   erw [hRm, hinner, hinner, hinner] at hbound
   apply (mul_le_mul_iff_right₀ nk.Q_pos).mp
-  convert hbound using 1 <;> first | rfl | ring
+  convert hbound using 1
+  first | rfl | ring
 
 theorem SpatialNeck.metricRm04_section_lower_bound
     (nk : SpatialNeck g eps p) (heps : eps ≤ 1 / 1000)

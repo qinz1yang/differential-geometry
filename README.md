@@ -14,7 +14,7 @@ rev = "v0.1.3"
 ```
 
 Release `v0.1.3` is pinned to Lean and Mathlib `v4.33.1`.
-The current development branch uses Lean and Mathlib `v4.34.1`.
+The current development branch uses Lean and Mathlib `v4.35.0-rc3`.
 
 Import the full library with
 

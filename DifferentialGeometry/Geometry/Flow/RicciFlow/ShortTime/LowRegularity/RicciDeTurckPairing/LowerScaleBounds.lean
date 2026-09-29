@@ -578,7 +578,7 @@ open DifferentialGeometry.Analysis.Sobolev.TensorHilbert
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Analysis.Elliptic (riemannianFiberNormSq)
+open DifferentialGeometry.TensorMetric (riemannianFiberNormSq)
 open DifferentialGeometry.Analysis.Spectral
   (operatorFieldApply operatorFieldApplication_add_left ccTensorToHs ccToHsLin ccToHsLin_apply
     deTurckSmoothRemainder)
