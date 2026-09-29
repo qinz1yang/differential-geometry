@@ -2085,16 +2085,46 @@ private theorem exists_directed_local_joins_of_pullback_germ
       (F.right_inv hy)).symm.trans hm.symm
   have hvel : (mfderiv ThreeModel ThreeModel (F : X → Y) (alpha r)
       (lVelocity (I := ThreeModel) alpha r) : ThreeSpace) = lVelocity (I := ThreeModel) beta r := by
-    unfold lVelocity
-    rw [← hcenter.mfderiv_eq]
-    exact (mfderiv_comp_apply r (F.mdifferentiableAt (by simp) hsource) halpha 1).symm
+    let one : TangentSpace 𝓘(ℝ, ℝ) r :=
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) r).symm (1 : ℝ)
+    have hcomp := mfderiv_comp_apply r (F.mdifferentiableAt (by simp) hsource) halpha one
+    have hmf := hcenter.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
+    have hm := congrArg
+      (fun D : TangentSpace 𝓘(ℝ, ℝ) r →L[ℝ] TangentSpace ThreeModel ((F ∘ alpha) r) =>
+        DifferentialGeometry.tangentSpaceModelContinuousLinearEquiv
+          (I := ThreeModel) ((F ∘ alpha) r) (D one)) hmf
+    dsimp only [Function.comp_apply] at hm
+    rw [hpoint] at hm
+    have hvelEq : (lVelocity (I := ThreeModel) (F ∘ alpha) r : ThreeSpace) =
+        lVelocity (I := ThreeModel) beta r := by
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        tangentSpaceCast] using! hm
+    exact (show (mfderiv ThreeModel ThreeModel (F : X → Y) (alpha r)
+      (lVelocity (I := ThreeModel) alpha r) : ThreeSpace) =
+        lVelocity (I := ThreeModel) (F ∘ alpha) r from by
+      simpa only [lVelocity] using! hcomp.symm).trans hvelEq
   have hbeta : MDifferentiableAt 𝓘(ℝ, ℝ) ThreeModel beta r :=
     ((F.mdifferentiableAt (by simp) hsource).comp r halpha).congr_of_eventuallyEq hcenter.symm
   have hvelInv : (mfderiv ThreeModel ThreeModel (F.symm : Y → X) (beta r)
       (lVelocity (I := ThreeModel) beta r) : ThreeSpace) = lVelocity (I := ThreeModel) alpha r := by
-    unfold lVelocity
-    rw [← hcenterInv.mfderiv_eq]
-    exact (mfderiv_comp_apply r (F.symm.mdifferentiableAt (by simp) htarget) hbeta 1).symm
+    let one : TangentSpace 𝓘(ℝ, ℝ) r :=
+      (NormedSpace.fromTangentSpace (𝕜 := ℝ) r).symm (1 : ℝ)
+    have hcomp := mfderiv_comp_apply r (F.symm.mdifferentiableAt (by simp) htarget) hbeta one
+    have hmf := hcenterInv.mfderiv_eq (I := 𝓘(ℝ, ℝ)) (I' := ThreeModel)
+    have hm := congrArg
+      (fun D : TangentSpace 𝓘(ℝ, ℝ) r →L[ℝ] TangentSpace ThreeModel ((F.symm ∘ beta) r) =>
+        DifferentialGeometry.tangentSpaceModelContinuousLinearEquiv
+          (I := ThreeModel) ((F.symm ∘ beta) r) (D one)) hmf
+    dsimp only [Function.comp_apply] at hm
+    rw [hpointInv] at hm
+    have hvelEq : (lVelocity (I := ThreeModel) (F.symm ∘ beta) r : ThreeSpace) =
+        lVelocity (I := ThreeModel) alpha r := by
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        tangentSpaceCast] using! hm
+    exact (show (mfderiv ThreeModel ThreeModel (F.symm : Y → X) (beta r)
+      (lVelocity (I := ThreeModel) beta r) : ThreeSpace) =
+        lVelocity (I := ThreeModel) (F.symm ∘ beta) r from by
+      simpa only [lVelocity] using! hcomp.symm).trans hvelEq
   have hscalar : A.scalar (T - r ^ 2) (alpha r) = B.scalar (T - r ^ 2) (beta r) := by
     change metricScalarAt (A.base.metric (T - r ^ 2)) (alpha r) =
       metricScalarAt (B.base.metric (T - r ^ 2)) (beta r)
