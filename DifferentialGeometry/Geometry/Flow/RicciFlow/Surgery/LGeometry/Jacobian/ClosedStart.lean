@@ -598,7 +598,6 @@ theorem continuousWithinAt_historyReducedJacobianAlong_of_closedStart (hw : 0 < 
       exact (hrep Z hZ v ⟨hv.1.1, hvw⟩).symm
     rw [← paramDensity_eq_historyLJacobianDensity_of_eventuallyEq ⟨first, le_rfl, hle⟩ v hf,
       hmet v hv, historyLAction_truncate_eq Z₀ h0 hvw hd]
-    rfl
   have hdens : ContinuousWithinAt (fun v =>
       paramDensity (G.flow.base.metric (T - v ^ 2)) (fun Z => β (Z, v)) Z₀.1) S w :=
     continuousWithinAt_paramDensity_of_metricSmoothUpTo G.smoothUpTo hV isOpen_Ioo hβ hZV
