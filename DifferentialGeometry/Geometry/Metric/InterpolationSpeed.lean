@@ -46,15 +46,21 @@ theorem exists_interpolation_endpoint_speed_bound (g : SmoothRiemannianMetric �
   have h₀der : deriv B₀ t =
       mfderiv 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (γ₀ t)
         (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ₀ t 1) := by
-    rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv,
-      mfderiv_comp t (he.mdifferentiableAt (by simp)) h₀]
-    rfl
+    have h := mfderiv_comp t (he.mdifferentiableAt (by simp)) h₀
+    rw [mfderiv_eq_fderiv] at h
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e (γ₀ t))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm (1 : ℝ)))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hv
   have h₁der : deriv B₁ t =
       mfderiv 𝓘(ℝ, E) 𝓘(ℝ, EuclideanSpace ℝ (Fin n)) e (γ₁ t)
         (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) γ₁ t 1) := by
-    rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv,
-      mfderiv_comp t (he.mdifferentiableAt (by simp)) h₁]
-    rfl
+    have h := mfderiv_comp t (he.mdifferentiableAt (by simp)) h₁
+    rw [mfderiv_eq_fderiv] at h
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e (γ₁ t))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm (1 : ℝ)))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hv
   have hb₀ : ‖deriv B₀ t‖ ≤ Ce * riemannianCurveSpeed g γ₀ t := by
     rw [h₀der]
     exact hCe _ _

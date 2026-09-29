@@ -287,9 +287,12 @@ theorem ofReal_abs_sub_le_riemannianEDistOf
         mdifferentiableAt_iff_differentiableAt.mp hcomp
       have hval : deriv (fun s : ℝ => f (γ s)) t
           = mvfderiv (I := I) f (γ t) (mfderiv 𝓘(ℝ, ℝ) I γ t 1) := by
-        rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv,
-          show (fun s : ℝ => f (γ s)) = f ∘ γ from rfl, mfderiv_comp t hfd hγd]
-        rfl
+        have h := mfderiv_comp t hfd hγd
+        rw [mfderiv_eq_fderiv] at h
+        have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (f (γ t))
+          (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm (1 : ℝ)))) h
+        simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+          ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hv
       have := hdiff.hasDerivAt
       rwa [hval] at this
     have hderivval : ∀ t ∈ Set.Ioo (0 : ℝ) 1,

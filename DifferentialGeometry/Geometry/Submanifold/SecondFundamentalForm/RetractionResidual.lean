@@ -79,9 +79,14 @@ theorem retraction_christoffel_residual_eq_zero_open
       (hγ.mdifferentiable (by simp) 0)
     have htotal := congrArg
       (fun q : TangentBundle I M => (mfderiv I 𝓘(ℝ, F) eVal q.1 q.2 : F)) hv
-    rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv]
-    change mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, F) (eVal ∘ γ) 0 1 = _
-    rw [hd]
+    rw [mfderiv_eq_fderiv] at hd
+    have hdv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (eVal (γ 0))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (0 : ℝ)).symm (1 : ℝ)))) hd
+    have hder : deriv cVal 0 = mfderiv I 𝓘(ℝ, F) eVal (γ 0)
+        (mfderiv 𝓘(ℝ, ℝ) I γ 0 (1 : ℝ)) := by
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hdv
+    rw [hder]
     rw [mfderiv_subtypeVal_comp (I := I) (J := 𝓘(ℝ, F)) e x] at htotal
     exact htotal
   have hPc : P ∘ cVal = cVal := by
@@ -141,13 +146,14 @@ theorem retraction_christoffel_residual_fderiv_eq_zero_open
     rw [hleft]
   have hvel : fderiv ℝ P z v =
       (mfderiv I 𝓘(ℝ, F) e (r z) (mfderiv 𝓘(ℝ, F) I r z v) : F) := by
-    rw [← mfderiv_eq_fderiv]
-    change mfderiv 𝓘(ℝ, F) 𝓘(ℝ, F) ((fun x => (e x : F)) ∘ r) z v = _
     have heVal : ContMDiff I 𝓘(ℝ, F) ∞ (fun x => (e x : F)) :=
       contMDiff_subtype_val.comp he
-    rw [mfderiv_comp z (heVal.mdifferentiable (by simp) (r z)) hr,
-      mfderiv_subtypeVal_comp e (r z)]
-    rfl
+    have h := mfderiv_comp z (heVal.mdifferentiable (by simp) (r z)) hr
+    rw [mfderiv_eq_fderiv, mfderiv_subtypeVal_comp e (r z)] at h
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e (r z) : F)
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z).symm v))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using! hv
   have h := retraction_christoffel_residual_eq_zero_open g G he hgeo hPe (r z) hP
     (mfderiv 𝓘(ℝ, F) I r z v)
   dsimp [P] at h ⊢

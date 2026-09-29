@@ -50,7 +50,13 @@ private theorem norm_fderiv_comp_sq_le_diskMapEnergyDensity
   have hchain : fderiv ℝ (Φ ∘ u) z =
       (mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) Φ (u z)).comp
         (mfderiv 𝓘(ℝ, ℂ) 𝓘(ℝ, E) u z) := by
-    rw [← mfderiv_eq_fderiv, mfderiv_comp z (hΦ.mdifferentiableAt one_ne_zero) hu]
+    have h := mfderiv_comp z (hΦ.mdifferentiableAt one_ne_zero) hu
+    rw [mfderiv_eq_fderiv] at h
+    ext v
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (Φ (u z))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z).symm v))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using! hv
   have hdir (v : ℂ) : ‖fderiv ℝ (Φ ∘ u) z v‖ ^ 2 ≤
       (C : ℝ) ^ 2 * g.inner (u z) (diskMapPartial u z v) (diskMapPartial u z v) := by
     rw [hchain]

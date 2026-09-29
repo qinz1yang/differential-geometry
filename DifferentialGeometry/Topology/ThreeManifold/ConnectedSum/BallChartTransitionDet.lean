@@ -75,7 +75,6 @@ theorem det_fderiv_chartTransition_pos (c c' : OrientedBallChart M)
       : E3 →L[ℝ] E3))
       = ((OrientationAssembly.chartTangentEquiv c h0).trans
           (OrientationAssembly.chartTangentEquiv c' h0').symm : E3 ≃L[ℝ] E3).toContinuousLinearMap := by
-    rw [← mfderiv_eq_fderiv]
     have hc' : ((mfderiv (𝓡 3) (𝓡 3) (fun y : M.Carrier => c'.chart.symm y)
           (c.chart (0 : E3)) : E3 →L[ℝ] E3)) = B :=
       hc.symm ▸ (rfl : ((mfderiv (𝓡 3) (𝓡 3) (fun y : M.Carrier => c'.chart.symm y)
@@ -91,7 +90,16 @@ theorem det_fderiv_chartTransition_pos (c c' : OrientedBallChart M)
         hchain
       rw [h1, hc']
       congr 1
-    rw [hcr]
+    rw [mfderiv_eq_fderiv] at hcr
+    have hfd : fderiv ℝ (fun x : E3 => c'.chart.symm (c.chart x)) (0 : E3) =
+        B.comp e.toContinuousLinearMap := by
+      ext v
+      have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
+        (c'.chart.symm (c.chart (0 : E3)))
+          (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) (0 : E3)).symm v))) hcr
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply] using! hv
+    rw [hfd]
     refine ContinuousLinearMap.ext fun v => ?_
     rw [ContinuousLinearMap.comp_apply, hBv]
     rfl

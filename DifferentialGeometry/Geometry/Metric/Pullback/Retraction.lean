@@ -52,8 +52,13 @@ theorem pullbackMetricCoefficients_comp_fderiv_of_leftInverse
         g.inner (u x) (mfderiv 𝓘(ℝ, V) I u x v) (mfderiv 𝓘(ℝ, V) I u x w) := by
   have hd : fderiv ℝ (e ∘ u) x =
       (mfderiv I 𝓘(ℝ, F) e (u x)).comp (mfderiv 𝓘(ℝ, V) I u x) := by
-    rw [← mfderiv_eq_fderiv]
-    exact mfderiv_comp x he hu
+    have h := mfderiv_comp x he hu
+    rw [mfderiv_eq_fderiv] at h
+    ext z
+    have hz := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e (u x))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) x).symm z))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using! hz
   rw [hd]
   exact pullbackMetricCoefficients_mfderiv_of_leftInverse g he hr hleft _ _
 

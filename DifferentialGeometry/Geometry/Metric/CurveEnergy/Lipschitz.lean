@@ -225,9 +225,12 @@ theorem exists_curve_energy_bound_of_hasCompactSupport
     filter_upwards [ae_mdifferentiableAt_riemannian_curve g hα] with t ht
     have heq : deriv (e ∘ α) t = mfderiv 𝓘(ℝ, E) 𝓘(ℝ, F) e (α t)
         (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) α t 1) := by
-      rw [← fderiv_apply_one_eq_deriv, ← mfderiv_eq_fderiv,
-        mfderiv_comp t (he.mdifferentiableAt one_ne_zero) ht]
-      rfl
+      have h := mfderiv_comp t (he.mdifferentiableAt one_ne_zero) ht
+      rw [mfderiv_eq_fderiv] at h
+      have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e (α t))
+        (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm (1 : ℝ)))) h
+      simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+        ContinuousLinearEquiv.apply_symm_apply, fderiv_apply_one_eq_deriv] using! hv
     rw [heq]
     have hb := pow_le_pow_left₀ (norm_nonneg _)
       (hbound (α t) (mfderiv 𝓘(ℝ, ℝ) 𝓘(ℝ, E) α t 1)) 2

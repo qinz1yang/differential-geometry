@@ -1175,8 +1175,13 @@ private theorem integrable_parametricJacobian_compact_convex
   let V : ℂ →L[ℝ] TangentSpace I (u z) := mfderiv 𝓘(ℝ, ℂ) I u z
   have hchain : (mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map (u z)).comp V =
       fderiv ℝ (e.map ∘ u) z := by
-    rw [← mfderiv_eq_fderiv]
-    exact (mfderiv_comp z ((e.smooth.mdifferentiable (by simp)) _) hdA).symm
+    have h := mfderiv_comp z ((e.smooth.mdifferentiable (by simp)) _) hdA
+    rw [mfderiv_eq_fderiv] at h
+    ext v
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ) (e.map (u z))
+      (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) z).symm v))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using! hv.symm
   have hnorm : ‖fderiv ℝ (e.map ∘ u) z‖ ≤ L := norm_fderiv_le_of_lipschitzOn ℝ hnhds hL
   have hb (i : Fin 2) : Real.sqrt (g.inner (u z) (V (diskBasis i)) (V (diskBasis i))) ≤ M := by
     have h := hbound (u z) (V (diskBasis i))
@@ -1297,8 +1302,13 @@ theorem integrable_loopSpeed (g : SmoothRiemannianMetric I Q)
   let V : ℝ →L[ℝ] TangentSpace I (loopLift γ t) := mfderiv 𝓘(ℝ, ℝ) I (loopLift γ) t
   have hchain : (mfderiv I 𝓘(ℝ, EuclideanSpace ℝ (Fin N)) e.map (loopLift γ t)).comp V =
       fderiv ℝ (e.map ∘ loopLift γ) t := by
-    rw [← mfderiv_eq_fderiv]
-    exact (mfderiv_comp t ((e.smooth.mdifferentiable (by simp)) _) ht).symm
+    have h := mfderiv_comp t ((e.smooth.mdifferentiable (by simp)) _) ht
+    rw [mfderiv_eq_fderiv] at h
+    ext v
+    have hv := congrArg (fun D => NormedSpace.fromTangentSpace (𝕜 := ℝ)
+      (e.map (loopLift γ t)) (D ((NormedSpace.fromTangentSpace (𝕜 := ℝ) t).symm v))) h
+    simpa only [ContinuousLinearMap.comp_apply, ContinuousLinearEquiv.coe_coe,
+      ContinuousLinearEquiv.apply_symm_apply] using! hv.symm
   have hnorm : ‖fderiv ℝ (e.map ∘ loopLift γ) t‖ ≤ L := norm_fderiv_le_of_lipschitz ℝ hL
   change Real.sqrt (g.inner (loopLift γ t) (V 1) (V 1)) ≤ C * (L : ℝ)
   have h := hbound (loopLift γ t) (V 1)
