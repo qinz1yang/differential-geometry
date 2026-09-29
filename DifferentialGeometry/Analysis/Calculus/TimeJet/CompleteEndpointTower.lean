@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Analysis.Elliptic.Barrier.SupportComparison
 import DifferentialGeometry.Analysis.Parabolic.Energy.CutoffEnergy
 import DifferentialGeometry.Analysis.Calculus.TimeJet.EndpointTower
@@ -7,7 +8,7 @@ set_option autoImplicit false
 noncomputable section
 open Set Filter Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology BigOperators
 namespace DifferentialGeometry.Analysis
 

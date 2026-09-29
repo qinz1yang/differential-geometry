@@ -1073,6 +1073,7 @@ import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.Semigr
 import DifferentialGeometry.Analysis.Parabolic.AbstractSemigroup.Spectral.SemigroupLaw
 import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Analysis.Parabolic.Bernstein.FirstOrder
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Analysis.Parabolic.ConditionStability
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorConjugate
 import DifferentialGeometry.Analysis.Parabolic.CurvatureOperatorEvolution

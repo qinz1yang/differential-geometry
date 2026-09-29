@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Analysis.Calculus.TimeJet.CompleteEndpointTower
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.StandardCurvatureBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Cutoff.Basic
@@ -78,7 +79,7 @@ theorem curvature_endpoint_bound_complete (T : ℝ) (hT : 0 ≤ T)
         parabolicOperatorWithDrift (flowG S) T (fun _ _ => 0) (nablaKRm04NormSqIntrinsic S k) t x ≤
           -2 * nablaKRm04NormSqIntrinsic S (k + 1) t x +
             towerReactionSum (nablaKRm04NormSqIntrinsic S) c k t x := by
-      obtain ⟨d, hd, hle⟩ := (towerHeatBoundOn_of_solution S hS k).mono_cost (hcost k hk)
+      obtain ⟨d, hd, hle⟩ := (towerHeatBoundOn_of_solution S hS k).mono_const (hcost k hk)
         ⟨t, hregular t ht hp⟩ x
       have hderiv := (hd.mono hslab).derivWithin ((uniqueDiffOn_Icc hT) t ht)
       rw [parabolicOperatorWithDrift_eq, hderiv, heatOperatorWithDrift_zero_drift]

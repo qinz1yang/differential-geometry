@@ -1,4 +1,8 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Components
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum towerReactionSum_mono_const)
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
@@ -21,25 +25,6 @@ variable [CompleteSpace E] [T2Space M]
 variable [I.Boundaryless] [CompactSpace M]
 variable [VectorBundle Real E (TangentSpace I : M -> Type _)]
 variable {Idx : Type*} [Fintype Idx] [DecidableEq Idx]
-
-omit [TopologicalSpace M] [T2Space M] [CompactSpace M] in
-theorem towerReactionSum_mono_const
-    (w : ℕ -> Real -> M -> Real) {c c' : Real} (hcc : c <= c')
-    (k : ℕ) (t : Real) (x : M) :
-    towerReactionSum (M := M) w c k t x <= towerReactionSum (M := M) w c' k t x := by
-  unfold towerReactionSum
-  apply Finset.sum_le_sum
-  intro j _
-  have h1 : 0 <= Real.sqrt (w j t x) := Real.sqrt_nonneg _
-  have h2 : 0 <= Real.sqrt (w (k - j) t x) := Real.sqrt_nonneg _
-  have h3 : 0 <= Real.sqrt (w k t x) := Real.sqrt_nonneg _
-  have hprod : 0 <= Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x) :=
-    mul_nonneg (mul_nonneg h1 h2) h3
-  calc c * Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x)
-      = c * (Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x)) := by ring
-    _ <= c' * (Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x)) :=
-        mul_le_mul_of_nonneg_right hcc hprod
-    _ = c' * Real.sqrt (w j t x) * Real.sqrt (w (k - j) t x) * Real.sqrt (w k t x) := by ring
 
 omit [DecidableEq Idx] in
 theorem towerLevelConst_mono {k m : ℕ} (hkm : k <= m) :

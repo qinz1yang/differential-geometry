@@ -1,3 +1,4 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.FiniteTime.CurvatureBlowupRateIntrinsic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.BernsteinMaximum
 import DifferentialGeometry.Geometry.Operator.Gradient.Regularity

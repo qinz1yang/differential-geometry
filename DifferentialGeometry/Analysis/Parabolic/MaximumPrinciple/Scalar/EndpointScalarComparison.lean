@@ -1,11 +1,11 @@
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.First
+import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.AffineBarrier
 import Mathlib.Analysis.Calculus.TangentCone.Real
 
 set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Analysis
 variable {E H M : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]

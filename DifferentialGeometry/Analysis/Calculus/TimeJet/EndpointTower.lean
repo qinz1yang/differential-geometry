@@ -1,11 +1,11 @@
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Scalar.EndpointScalarComparison
-import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 
 set_option autoImplicit false
 noncomputable section
 open Set Bundle Manifold DifferentialGeometry
 open DifferentialGeometry.Geometry.Curvature DifferentialGeometry.Geometry.Operator
-open DifferentialGeometry.PDE.RicciFlow DifferentialGeometry.Analysis.Parabolic
+open DifferentialGeometry.Analysis.Parabolic
 open scoped Manifold ContDiff BigOperators
 namespace DifferentialGeometry.Analysis
 

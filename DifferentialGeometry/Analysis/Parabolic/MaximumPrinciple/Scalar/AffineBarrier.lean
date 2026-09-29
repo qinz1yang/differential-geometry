@@ -184,4 +184,132 @@ theorem scalar_two_sided_affine_barrier
     dsimp [z] at this
     linarith
 
+section
+
+variable {E : Type*} [NormedAddCommGroup E] [NormedSpace Real E]
+variable [FiniteDimensional Real E]
+variable {H : Type*} [TopologicalSpace H]
+variable {I : ModelWithCorners Real E H}
+variable {M : Type*} [TopologicalSpace M] [ChartedSpace H M] [IsManifold I ∞ M]
+variable [CompleteSpace E] [T2Space M]
+
+omit [CompleteSpace E] [T2Space M] in
+theorem scalar_subsolution_affine_bound
+    [I.Boundaryless] [CompactSpace M]
+    [VectorBundle Real E (TangentSpace I : M -> Type _)]
+    (G : DifferentialGeometry.Geometry.Curvature.MetricConnectionFamily (I := I) (M := M) Real)
+    (T : Real)
+    (X : Real -> (x : M) -> TangentSpace I x)
+    (F : Real -> M -> Real) (a b : Real)
+    (hw_cont : ContinuousOn
+      (fun p : Real × M => (a + b * p.1) - F p.1 p.2)
+      (DifferentialGeometry.Analysis.Parabolic.spacetimeSlab (M := M) T))
+    (hF_time : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, DifferentiableWithinAt Real
+        (fun s : Real => F s x) (Set.Icc 0 T) t)
+    (hF_space : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall y : M, MDifferentiableAt I 𝓘(Real, Real) (F t) y)
+    (hF_grad : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t) y) x)
+    (hinit : forall x : M, F 0 x <= a)
+    (hsub : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t -> forall x : M,
+      DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift (I := I) G T X F t x <=
+        b) :
+    forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, F t x <= a + b * t := by
+  let w : Real -> M -> Real := fun t x => (a + b * t) - F t x
+  have hw0 : forall x : M, 0 <= w 0 x := by
+    intro x
+    have : F 0 x <= a := hinit x
+    simp only [w]
+    nlinarith [this]
+  have hw_time : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, DifferentiableWithinAt Real (fun s : Real => w s x) (Set.Icc 0 T) t := by
+    intro t ht htpos x
+    have hbarrier : DifferentiableWithinAt Real
+        (fun s : Real => a + b * s) (Set.Icc 0 T) t := by
+      have hlin : DifferentiableWithinAt Real (fun s : Real => b * s) (Set.Icc 0 T) t := by
+        simpa using
+          (differentiableWithinAt_fun_id (𝕜 := Real) (s := Set.Icc 0 T) (x := t)).const_mul b
+      exact (differentiableWithinAt_const a).add hlin
+    exact hbarrier.sub (hF_time t ht htpos x)
+  have hw_mdiff : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDifferentiableAt I 𝓘(Real, Real) (w t) x := by
+    intro t ht htpos x
+    have : MDifferentiableAt I 𝓘(Real, Real)
+        (fun y : M => (a + b * t) - F t y) x :=
+      mdifferentiableAt_const.sub (hF_space t ht htpos x)
+    simpa [w] using this
+  have hw_grad : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, MDiffAt (T% fun y : M =>
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (w t) y) x := by
+    intro t ht htpos x
+    have hplain :
+        (fun y : M =>
+          DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (w t) y) =
+        (fun y : M =>
+          - DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t)
+            y) := by
+      funext y
+      have hwt : w t = (fun z : M => (a + b * t) - F t z) := rfl
+      rw [hwt]
+      calc
+        DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t)
+            (fun z : M => (a + b * t) - F t z) y =
+          DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t)
+              (fun _ : M => (a + b * t)) y -
+            DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t) y := by
+            exact DifferentialGeometry.Geometry.Operator.gradientFun_sub (I := I) (G.metric t)
+              mdifferentiableAt_const (hF_space t ht htpos y)
+        _ = - DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t)
+          y := by
+            rw [DifferentialGeometry.Geometry.Operator.gradientFun_const]
+            simp
+    have hsection :
+        (T% fun y : M =>
+          DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (w t) y) =
+        (T% fun y : M =>
+          - DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t)
+            y) := by
+      funext y
+      simpa using congrFun hplain y
+    rw [hsection]
+    have hneg :
+        (T% fun y : M =>
+          - DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t) y) =
+        (T% ((-1 : Real) • fun y : M =>
+          DifferentialGeometry.Geometry.Operator.gradientFun (I := I) (G.metric t) (F t) y)) := by
+      funext y
+      simp
+    rw [hneg]
+    exact (hF_grad t ht htpos x).smul_const_section (a := (-1 : Real))
+  have hnegative : forall t : Real, t ∈ Set.Icc 0 T -> 0 < t ->
+      forall x : M, w t x < 0 ->
+        0 <= DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift (I := I) G T X w t
+          x := by
+    intro t ht htpos x _hwneg
+    have huniq : UniqueDiffWithinAt Real (Set.Icc 0 T) t :=
+      (uniqueDiffOn_Icc (lt_of_lt_of_le htpos ht.2)).uniqueDiffWithinAt ht
+    have hident :
+        DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift (I := I) G T X w t x =
+          b - DifferentialGeometry.Analysis.Parabolic.parabolicOperatorWithDrift (I := I) G T X F t
+            x := by
+      simpa [w] using
+        parabolic_affine_sub_nhds (I := I) (G := G) T X F a b t x huniq
+          (hF_time t ht htpos x)
+          (Filter.Eventually.of_forall (hF_space t ht htpos)) (hF_grad t ht htpos x)
+    rw [hident]
+    have := hsub t ht htpos x
+    linarith
+  have hw_nonneg :
+      forall t : Real, t ∈ Set.Icc 0 T -> forall x : M, 0 <= w t x :=
+    DifferentialGeometry.Analysis.Parabolic.strict_barrier_positive_region (I := I) G T X w
+      hw_cont hw0 hw_time hw_mdiff hw_grad hnegative
+  intro t ht x
+  have := hw_nonneg t ht x
+  simp only [w] at this
+  linarith
+
+end
+
 end DifferentialGeometry.Analysis.Parabolic

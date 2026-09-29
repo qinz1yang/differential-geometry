@@ -1,7 +1,11 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Connection.Coordinates.CovariantDerivativeComponents
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Connection.Components
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum TowerHeatBoundOn)
+
 open DifferentialGeometry.Geometry.Curvature
 
 set_option autoImplicit false

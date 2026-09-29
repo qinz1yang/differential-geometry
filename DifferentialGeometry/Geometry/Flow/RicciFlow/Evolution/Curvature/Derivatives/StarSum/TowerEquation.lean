@@ -1,7 +1,11 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.StarSum.HeatEquation
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Evolution.ReactionEstimate
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.Basic
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Curvature.Derivatives.Frame.Invariant
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum TowerHeatBoundOn)
+
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 open DifferentialGeometry.Geometry.Operator

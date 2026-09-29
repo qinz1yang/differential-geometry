@@ -1,3 +1,5 @@
+import DifferentialGeometry.Geometry.Operator.Gradient.Regularity
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Derivatives.Higher
 import DifferentialGeometry.Analysis.Parabolic.Bernstein.Cutoff
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Ricci.Basic
@@ -1585,10 +1587,13 @@ private theorem GfunCut_space_diff
     intro i _
     simp only [c, f]
     ring]
-  exact mdifferentiableAt_finset_sum_smul (I := I)
-    (Finset.range (m + 1)) f c x (fun i _ ↦ by
-      exact ((cut.space_diff (n := n) ht x).pow (i + 1)).mul
-        (B.spatial_differentiable i t ht htpos x))
+  rw [show (fun y : M => ∑ i ∈ Finset.range (m + 1), c i * f i y) =
+      ∑ i ∈ Finset.range (m + 1), c i • f i by
+    funext y
+    simp only [Finset.sum_apply, Pi.smul_apply, smul_eq_mul]]
+  exact MDifferentiableAt.sum (fun i _ =>
+    (((cut.space_diff (n := n) ht x).pow (i + 1)).mul
+      (B.spatial_differentiable i t ht htpos x)).const_smul (c i))
 
 namespace BernsteinTower
 
@@ -1755,8 +1760,13 @@ theorem estimate_cutoff_at
             intro i _
             simp only [c, f]
             ring]
-          exact mdiffAt_gradientFun_finset_sum_smul (I := I)
-            (Finset.range (m + 1)) G s f c y hf hgradf
+          refine mdifferentiableAt_gradientFun_finset_sum (G.metric s)
+            (Finset.range (m + 1)) (fun i z => c i * f i z) y ?_ ?_
+          · intro i hi
+            exact Filter.Eventually.of_forall fun z => (hf i hi z).const_smul (c i)
+          · intro i hi
+            exact mdifferentiableAt_gradientFun_const_mul (G.metric s) (c i)
+              (Filter.Eventually.of_forall (hf i hi)) (hgradf i hi)
         have hFcont : ContinuousOn (fun p : Real × M ↦ F p.1 p.2)
             (Set.Icc 0 B.T ×ˢ cut.support n) := by
           simpa only [F] using
@@ -1894,10 +1904,11 @@ theorem estimate_cutoff_at
                 bBar n - parabolicOperatorWithDrift (I := I) G B.T
                   (fun _ z ↦ (0 : TangentSpace I z)) F s y := by
             simpa only [w] using
-              parabolicOperatorWithDrift_affine_sub (I := I) G B.T
+              parabolic_affine_sub_nhds (I := I) (G := G) B.T
                 (fun _ z ↦ (0 : TangentSpace I z)) F aBar (bBar n) s y
                 huniq (hFtime s hs hspos y)
-                (fun z ↦ hFspace s hs hspos z) (hFgrad s hs hspos y)
+                (Filter.Eventually.of_forall (fun z ↦ hFspace s hs hspos z))
+                (hFgrad s hs hspos y)
           have hsub := GfunCut_parabolic_le (I := I) B cut hmpos
             hgrad hs hspos y
             (fun j hj ↦ by

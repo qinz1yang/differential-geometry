@@ -1,4 +1,8 @@
+import DifferentialGeometry.Analysis.Parabolic.Bernstein.Reaction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.Shi.Solution.Basic
+
+open DifferentialGeometry.Analysis.Parabolic (towerReactionSum TowerHeatBoundOn towerReactionSum_mono_const)
+
 open DifferentialGeometry.PDE.RicciFlow
 open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Operator
