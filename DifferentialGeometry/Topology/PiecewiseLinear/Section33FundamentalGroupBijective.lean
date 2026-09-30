@@ -11,10 +11,10 @@ namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 local notation "E3" => EuclideanSpace ℝ (Fin 3)
 
-theorem section33_fundamentalGroup_map_bijective_of_isTube
+theorem IsTube.bijective_fundamentalGroup_map_frontier
     {K : Geometry.SimplicialComplex ℝ E3} {N N' : Set E3} {C : E3 → Set E3}
     {D Dbd Ec Eint Ebd : Finset E3 → Set E3} {h : E3 → E3}
-    {XK : Geometry.SimplicialComplex ℝ E3} (h264 : Moise264Orientable)
+    {XK : Geometry.SimplicialComplex ℝ E3}
     (ht : IsTube K N C D Dbd h N')
     (h2 : IsPolyhedralTubeNeighborhood K h N' Ec Eint Ebd XK)
     (hXc : IsConnected (frontier XK.space))
@@ -225,7 +225,7 @@ theorem section33_fundamentalGroup_map_bijective_of_isTube
     refine Eq.trans ?_ hγ
     exact (Path.Homotopic.Quotient.eq.mpr hσ).symm
   have hinjSW : Function.Injective (FundamentalGroup.map ιSW x) :=
-    injective_fundamentalGroup_map_of_moise264Orientable h264 finrank_euclideanSpace_fin hBman
+    injective_fundamentalGroup_map_of_no_compressing_disk finrank_euclideanSpace_fin hBman
       (hFr ▸ hXc) hFr.symm hWo hSW (fun Δ r hr hΔ hmeet hb => by
         by_contra hnn
         exact hnoLTD Δ ⟨r, hr, hΔ, hmeet, hb, hnn⟩) x

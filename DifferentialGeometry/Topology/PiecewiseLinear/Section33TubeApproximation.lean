@@ -294,9 +294,21 @@ theorem exists_section33Extension_image_dualCell_subset (h324 : Moise324)
 
 end Extension
 
-theorem moise331OnTube_of_moise323_of_moise324_of_moise264Orientable (h323 : Moise323)
-    (h324 : Moise324) (h264 : Moise264Orientable) : Moise331OnTube := by
-  intro K N N' C D Dbd h ht hconn hend W hW
+open Classical in
+theorem exists_isPLHomeomorphOn_tube_image_dualCell_subset_of_pseudoCell_constructions
+    (h323 : Moise323) (h324 : Moise324)
+    (K : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3)))
+    (N N' : Set (EuclideanSpace ℝ (Fin 3)))
+    (C : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
+    (D Dbd : Finset (EuclideanSpace ℝ (Fin 3)) → Set (EuclideanSpace ℝ (Fin 3)))
+    (h : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3))
+    (ht : IsTube K N C D Dbd h N') (hconn : IsConnected K.space)
+    (hend : ∀ v : K.vertices, ((SimplicialComplex.edgeGraph K).neighborSet v).ncard ≠ 1)
+    (W : EuclideanSpace ℝ (Fin 3) → Set (EuclideanSpace ℝ (Fin 3)))
+    (hW : ∀ v ∈ K.vertices, W v ∈ nhdsSet (h '' C v)) :
+    ∃ f : EuclideanSpace ℝ (Fin 3) → EuclideanSpace ℝ (Fin 3),
+      IsPLHomeomorphOn f N (f '' N) ∧ f '' N ∈ nhdsSet (h '' K.space) ∧
+      ∀ v ∈ K.vertices, f '' C v ⊆ W v := by
   have hr : ∀ v : EuclideanSpace ℝ (Fin 3), ∃ r : ℝ, v ∈ K.vertices →
       0 < r ∧ Metric.thickening (2 * r) (h '' C v) ⊆ W v := by
     intro v
@@ -323,7 +335,7 @@ theorem moise331OnTube_of_moise323_of_moise324_of_moise264Orientable (h323 : Moi
   have h9 := section33_not_isLoopTheoremDisk hd h2 h34 h7
     fun _ hv₁ _ he₁ hcard _ _ hr' hΔ hbd hcenter hmiss =>
       section33_disk_meets_graph h324 hd hend hv₁ he₁ hcard hr' hΔ hbd hcenter hmiss
-  have h10 := section33_fundamentalGroup_map_bijective_of_isTube h264 ht h2 h56.2.1 h9
+  have h10 := IsTube.bijective_fundamentalGroup_map_frontier ht h2 h56.2.1 h9
   have h12 := section33_faceEulerChar_handlePiece hd h2 h34 h56 h10
   obtain ⟨g, hg, hgA, hgD⟩ := exists_section33BoundaryMatch hd hconn h2 h34 h56 h12
   obtain ⟨e₁, he₁, he₁c⟩ := ht.hasEdge

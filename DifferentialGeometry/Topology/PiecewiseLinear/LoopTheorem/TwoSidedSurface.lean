@@ -5,7 +5,6 @@ import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarComplementCollars
 import DifferentialGeometry.Topology.PiecewiseLinear.BicollarBoundaryLoop
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Orientable
-import DifferentialGeometry.Topology.PiecewiseLinear.ExtendedLoopTheoremStatement
 
 open Set Topology
 
@@ -37,11 +36,11 @@ theorem exists_compressing_disk_of_twoSided_surface
     exists_bicollar_complement_with_boundary_collars K L hK hL hLK htwo
   let _ : Finite R.faces := hRfin
   have hRo : IsOrientable 3 R := hKo.of_space_subset K R hRK hK hR
-  obtain ⟨c, hcW, hsub, γ, hγR, hγ⟩ :=
+  obtain ⟨c, hcW, -, γ, hγR, hγ⟩ :=
     exists_nontrivial_boundary_loop_of_bicollar_complement K L R hK hL hLK hR
       W ρ hρ hρzero hW hWnhds hRspace x g hg hgin
   obtain ⟨D, r, hr, hDR, hDr, hb, hessential⟩ :=
-    loop_theorem R hRfin hR hRo c hsub γ hγR hγ
+    loop_theorem R hRfin hR hRo c γ hγR hγ
   obtain ⟨σ, hσ, hσzero, hσW, hσR, hσL, f, p, hf, hpf⟩ := hcollars c hcW
   let B := (connectedComponentComplex (boundaryComplex 3 R) c).space
   let J := r '' stdSimplexBoundary 2

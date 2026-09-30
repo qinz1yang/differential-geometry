@@ -15,19 +15,26 @@ open Set Topology
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
-theorem moise306_of_moise252 (h252 : Moise252) : Moise306 := by
-  intro Y T₀ T₁ hY
+theorem IsToroidalShell.exists_isPLTorus_separates
+    {Y T₀ T₁ : Set (EuclideanSpace ℝ (Fin 3))} (hY : IsToroidalShell Y T₀ T₁) :
+    ∃ T : Set (EuclideanSpace ℝ (Fin 3)),
+      IsPLTorus T ∧ T ⊆ interior Y ∧ Separates T T₀ T₁ := by
   obtain ⟨L, hLfin, hL, hLc, hLo, -, hsep, -, -, hχ, hLY, -⟩ :=
-    hY.exists_separating_surface_bettiOne_eq_two h252
+    hY.exists_separating_surface_bettiOne_eq_two
   let _ : Finite L.faces := hLfin.to_subtype
   exact ⟨L.space, ⟨isPolyhedron_space L,
     hL.nonempty_homeomorph_torus_of_isOrientable_of_eulerChar_eq_zero L hLc hLo hχ⟩,
     hLY, hsep⟩
 
-theorem moise307_of_moise306_of_moise252 (h306 : Moise306) (h252 : Moise252) : Moise307 := by
+theorem exists_hasCylindricalDiagram_between_nested_tori
+    {S₁ S₂ : Set (EuclideanSpace ℝ (Fin 3))}
+    (hS₁ : IsTopologicalSolidTorus S₁) (hS₂ : IsTopologicalSolidTorus S₂)
+    (h₁₂ : S₁ ⊆ interior S₂)
+    (hshell : IsToroidalShell (closure (S₂ \ S₁)) (frontier S₁) (frontier S₂)) :
+    ∃ S : Set (EuclideanSpace ℝ (Fin 3)),
+      HasCylindricalDiagram S ∧ S₁ ⊆ interior S ∧ S ⊆ interior S₂ := by
   classical
-  intro S₁ S₂ hS₁ hS₂ h₁₂ hshell
-  obtain ⟨T, hT, hTshell, hsep⟩ := h306 _ _ _ hshell
+  obtain ⟨T, hT, hTshell, hsep⟩ := hshell.exists_isPLTorus_separates
   obtain ⟨L, hLfin, hL, hLc, hLT⟩ := hT.exists_combinatorial_triangulation
   let _ : Finite L.faces := hLfin.to_subtype
   subst T
@@ -46,7 +53,7 @@ theorem moise307_of_moise306_of_moise252 (h306 : Moise306) (h252 : Moise252) : M
     hT.exists_nontrivial_fundamentalGroup_kernel_in_solidTorus hS₂ hT₂
   obtain ⟨D, r, hr, hD₂, hmeet, hboundary, hess⟩ :=
     IsCombinatorialManifold.exists_essential_disk_in_neighborhood_of_fundamentalGroup_map_eq_one
-      h252 L hL (by simp) hLc isOpen_interior hT₂ x g hg hnull
+      L hL (by simp) hLc isOpen_interior hT₂ x g hg hnull
   have hmeetR : D ∩ frontier R.space = r '' stdSimplexBoundary 2 := by
     rwa [hfront]
   have hessR : ∃ hJ : r '' stdSimplexBoundary 2 ⊆ frontier R.space,
@@ -104,13 +111,11 @@ theorem moise307_of_moise306_of_moise252 (h306 : Moise306) (h252 : Moise252) : M
     rw [heq] at hnull
     exact (not_nullhomotopic_inclusion_of_nested_tori hS₁ hS₂ h₁₂ hshell hnull).elim
 
-theorem moise307_of_moise252 (h252 : Moise252) : Moise307 := by
-  exact moise307_of_moise306_of_moise252 (moise306_of_moise252 h252) h252
-
 theorem moise306 : Moise306 :=
-  moise306_of_moise252 loop_theorem
+  fun _ _ _ hY => hY.exists_isPLTorus_separates
 
 theorem moise307 : Moise307 :=
-  moise307_of_moise252 loop_theorem
+  fun _ _ hS₁ hS₂ h₁₂ hshell =>
+    exists_hasCylindricalDiagram_between_nested_tori hS₁ hS₂ h₁₂ hshell
 
 end DifferentialGeometry.Topology.PiecewiseLinear

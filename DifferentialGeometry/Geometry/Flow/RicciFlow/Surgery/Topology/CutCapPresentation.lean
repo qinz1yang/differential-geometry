@@ -59,7 +59,8 @@ private theorem tangentChartEquiv_sumInl_apply (p x : M)
     tangentChartEquiv (M ⊕ M') (Sum.inl p) (Sum.inl x) hx'
         (show TangentSpace ThreeModel (Sum.inl x) from v) =
       tangentChartEquiv M p x hx v := by
-  rw [tangentChartEquiv, tangentChartEquiv, Trivialization.linearEquivAt_apply,
+  rw [tangentChartEquiv, tangentChartEquiv, DifferentialGeometry.tangentChartEquiv,
+    DifferentialGeometry.tangentChartEquiv, Trivialization.linearEquivAt_apply,
     Trivialization.linearEquivAt_apply, TangentBundle.trivializationAt_apply,
     TangentBundle.trivializationAt_apply, extend_sumInl, extend_sumInl_apply]
 
@@ -71,7 +72,8 @@ private theorem tangentChartEquiv_sumInr_apply (p x : M')
     tangentChartEquiv (M ⊕ M') (Sum.inr p) (Sum.inr x) hx'
         (show TangentSpace ThreeModel (Sum.inr x) from v) =
       tangentChartEquiv M' p x hx v := by
-  rw [tangentChartEquiv, tangentChartEquiv, Trivialization.linearEquivAt_apply,
+  rw [tangentChartEquiv, tangentChartEquiv, DifferentialGeometry.tangentChartEquiv,
+    DifferentialGeometry.tangentChartEquiv, Trivialization.linearEquivAt_apply,
     Trivialization.linearEquivAt_apply, TangentBundle.trivializationAt_apply,
     TangentBundle.trivializationAt_apply, extend_sumInr, extend_sumInr_apply]
 

@@ -70,9 +70,10 @@ theorem loop_theorem
     (K : Geometry.SimplicialComplex ℝ E) (hKfin : Finite K.faces)
     (hK : IsCombinatorialManifoldWithBoundary 3 K) (hor : IsOrientable 3 K)
     (c : ConnectedComponents (boundaryComplex 3 K).space)
-    (hsub : (connectedComponentComplex (boundaryComplex 3 K) c).space ⊆ K.space)
     (γ : freeLoop (connectedComponentComplex (boundaryComplex 3 K) c).space)
-    (hnull : ((⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
+    (hnull : ((⟨Set.inclusion
+      ((space_mono_of_faces_subset (restrict_faces_subset (boundaryComplex 3 K) _)).trans
+        (boundaryComplex_space_subset 3 K)), continuous_inclusion _⟩ :
       C((connectedComponentComplex (boundaryComplex 3 K) c).space, K.space)).comp γ).Nullhomotopic)
     (hess : ¬ γ.Nullhomotopic) :
     ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
@@ -83,6 +84,9 @@ theorem loop_theorem
         ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
           C(r '' stdSimplexBoundary 2,
             (connectedComponentComplex (boundaryComplex 3 K) c).space)).Nullhomotopic := by
+  let hsub : (connectedComponentComplex (boundaryComplex 3 K) c).space ⊆ K.space :=
+    (space_mono_of_faces_subset (restrict_faces_subset (boundaryComplex 3 K) _)).trans
+      (boundaryComplex_space_subset 3 K)
   apply exists_polyhedralDisk_of_normalSystemDisk_of_orientable ?_ K hKfin hK hor c hsub γ
     hnull hess
   intro S horS hproperS

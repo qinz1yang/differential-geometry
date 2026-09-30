@@ -16,7 +16,7 @@ variable {Q : Type*} [TopologicalSpace Q]
 
 def constantContractibleLoops : C(Q, DifferentialGeometry.Topology.contractibleLoop Q) :=
   ⟨fun q => ⟨DifferentialGeometry.Topology.FreeLoop.constants q, ContinuousMap.nullhomotopic_of_constant q⟩,
-    constantLoops.continuous.subtype_mk _⟩
+    DifferentialGeometry.Topology.FreeLoop.constants.continuous.subtype_mk _⟩
 
 def IsEssentialFamilyClass (ξ : FreeContractibleSphereClass Q) : Prop :=
   ∀ f : C(Sphere 2, Q), DifferentialGeometry.Topology.FreeHomotopyClass.mk (constantContractibleLoops.comp f) ≠ ξ
@@ -70,7 +70,7 @@ theorem rfs_essential_short_family (g : SmoothRiemannianMetric I Q) :
     obtain ⟨F, hzero, hone⟩ := hcontract (Sphere 2) Γ.1 hshort
     let i : C(ContractibleRegularLoop (I := I) (Q := Q), RegularLoop I Q) :=
       ⟨Subtype.val, continuous_subtype_val⟩
-    let f : C(Sphere 2, Q) := loopEvaluation.comp (regularLoopInclusion.comp (i.comp Γ.1))
+    let f : C(Sphere 2, Q) := DifferentialGeometry.Topology.FreeLoop.evaluation.comp (regularLoopInclusion.comp (i.comp Γ.1))
     have hhom : ContinuousMap.Homotopic (contractibleRegularLoopInclusion.comp Γ.1)
         (constantContractibleLoops.comp f) := by
       refine ⟨{

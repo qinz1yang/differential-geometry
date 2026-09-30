@@ -562,7 +562,6 @@ theorem continuous_regularLoop_iff {K : Type*} [TopologicalSpace K] {N : ℕ}
     · intro k t
       have hp : Function.Periodic (fun t : ℝ =>
           e.map ((Γ k).toContinuousLoop (t : Surgery.Topology.Circle))) 1 := fun s => by
-        simp only [Surgery.Topology.Circle]
         exact congrArg (fun z => e.map ((Γ k).toContinuousLoop z))
           (AddCircle.coe_add_period (1 : ℝ) s)
       simpa only [iteratedDeriv_one] using

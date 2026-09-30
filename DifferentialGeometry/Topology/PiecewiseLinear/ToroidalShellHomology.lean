@@ -46,7 +46,7 @@ theorem IsToroidalShell.eulerChar_eq_zero_of_separates_of_fundamentalGroup_map_i
   norm_num
 
 theorem IsToroidalShell.exists_separating_surface_bettiOne_eq_two
-    (h252 : Moise252) (hY : IsToroidalShell Y T₀ T₁) :
+    (hY : IsToroidalShell Y T₀ T₁) :
     ∃ (S : Geometry.SimplicialComplex ℝ (EuclideanSpace ℝ (Fin 3))) (hSfin : S.faces.Finite),
       letI := hSfin.to_subtype
       IsCombinatorialManifold 2 S ∧ IsConnected S.space ∧ IsOrientable 2 S ∧
@@ -56,7 +56,7 @@ theorem IsToroidalShell.exists_separating_surface_bettiOne_eq_two
         Function.Injective (FundamentalGroup.map
           (⟨Set.inclusion hSY, continuous_inclusion hSY⟩ : C(S.space, interior Y)) x) := by
   obtain ⟨S, hSfin, hS, hSc, ho, ht, hsep, hn, hSY, hi⟩ :=
-    hY.exists_non_simply_connected_separating_surface_fundamentalGroup_map_injective h252
+    hY.exists_non_simply_connected_separating_surface_fundamentalGroup_map_injective
   let _ : Finite S.faces := hSfin.to_subtype
   obtain ⟨x, hx⟩ := hSc.nonempty
   have hb := hY.bettiOne_eq_two_of_separates_of_fundamentalGroup_map_injective

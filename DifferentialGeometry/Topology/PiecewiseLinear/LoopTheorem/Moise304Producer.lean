@@ -7,7 +7,7 @@ open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear
 
 theorem moise304 : Moise304 :=
-  moise304_of_moise252 loop_theorem
+  fun _ _ _ hX => hX.exists_isPLSphere_separates
 
 theorem moise305Tame : Moise305Tame :=
   moise305_tame_of_moise304 moise304

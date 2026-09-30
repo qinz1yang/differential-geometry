@@ -104,9 +104,9 @@ theorem rfs_child_comparison_metric_of_local_length_comparison
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Parent c).Carrier
   let : SecondCountableTopology (G.Child c).Carrier :=
     ChartedSpace.secondCountable_of_sigmaCompact ThreeSpace (G.Child c).Carrier
-  letI : RegularSpace (G.Parent c).Carrier :=
+  let : RegularSpace (G.Parent c).Carrier :=
     DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
-  letI : RegularSpace (G.Child c).Carrier :=
+  let : RegularSpace (G.Child c).Carrier :=
     DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
   by_cases hfin : riemannianEDistOf gs x y = ⊤
   · rw [hfin, ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr

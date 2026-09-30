@@ -219,9 +219,9 @@ theorem rfs_child_comparison_metric_of_regionLengthComparison
         (γ := F ∘ γ) (a := a) (b := b) (q := F z) hconst'
       rw [hzero]
       exact bot_le
-  letI : RegularSpace ↥W :=
+  let : RegularSpace ↥W :=
     DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
-  letI : RegularSpace (G.Child c).Carrier :=
+  let : RegularSpace (G.Child c).Carrier :=
     DifferentialGeometry.Topology.Manifold.regularSpace_of_chartedSpace ThreeModel
   by_cases hfin : riemannianEDistOf gs x y = ⊤
   · rw [hfin, ENNReal.mul_top (ne_of_gt (ENNReal.ofReal_pos.mpr

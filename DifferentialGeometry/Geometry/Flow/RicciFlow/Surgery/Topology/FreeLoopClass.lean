@@ -1690,7 +1690,7 @@ theorem positiveFreeLoopClass_eq (o : TangentOrientationSection M) (q : M) :
     rw [← pathTransport_eq_homotopyGroupTransport 2 p (positiveHomotopyClass o q₀)]
     exact positiveHomotopyClass_pathTransport o p
   have hmain : positiveBasedLoopClass o q =
-      DifferentialGeometry.Topology.homotopyGroupTransport 1 (p.map constantLoops.continuous)
+      DifferentialGeometry.Topology.homotopyGroupTransport 1 (p.map DifferentialGeometry.Topology.FreeLoop.constants.continuous)
         (positiveBasedLoopClass o q₀) := by
     rw [positiveBasedLoopClass, positiveBasedLoopClass,
       freeLoopAdjunction_eq_piThreeFreeLoopPiTwoMulEquiv q,
@@ -1698,7 +1698,7 @@ theorem positiveFreeLoopClass_eq (o : TangentOrientationSection M) (q : M) :
     exact DifferentialGeometry.Topology.piThreeFreeLoopPiTwoMulEquiv_transport p
       (positiveHomotopyClass o q₀)
   rw [hmain]
-  exact (forgetBasedSphere_homotopyGroupTransport (p.map constantLoops.continuous)
+  exact (forgetBasedSphere_homotopyGroupTransport (p.map DifferentialGeometry.Topology.FreeLoop.constants.continuous)
     (positiveBasedLoopClass o q₀)).symm
 
 theorem positiveFreeLoopClass_nontrivial (o : TangentOrientationSection M) (q : M) :

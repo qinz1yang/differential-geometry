@@ -22,27 +22,6 @@ universe u
 def IsNullHomotopic {X : Type u} [TopologicalSpace X] (γ : freeLoop X) : Prop :=
   ∃ x : X, γ.Homotopic (ContinuousMap.const _ x)
 
-open Classical in
-def Moise252 : Prop :=
-  ∀ {E : Type} [NormedAddCommGroup E] [NormedSpace ℝ E] [FiniteDimensional ℝ E]
-    (K : Geometry.SimplicialComplex ℝ E) (_ : Finite K.faces),
-    IsCombinatorialManifoldWithBoundary 3 K → IsOrientable 3 K →
-    ∀ c : ConnectedComponents (boundaryComplex 3 K).space,
-    ∀ hsub : (connectedComponentComplex (boundaryComplex 3 K) c).space ⊆ K.space,
-    ∀ γ : freeLoop (connectedComponentComplex (boundaryComplex 3 K) c).space,
-      IsNullHomotopic ((⟨Set.inclusion hsub, continuous_inclusion hsub⟩ :
-        C((connectedComponentComplex (boundaryComplex 3 K) c).space, K.space)).comp γ) →
-      ¬ IsNullHomotopic γ →
-      ∃ (Δ : Set E) (r : (Fin 3 → ℝ) → E),
-        IsPLHomeomorphOn r (Convexity.StdSimplex.coordinateSet ℝ (Fin 3)) Δ ∧
-        Δ ⊆ K.space ∧
-        Δ ∩ (boundaryComplex 3 K).space = r '' stdSimplexBoundary 2 ∧
-        ∃ hboundary : r '' stdSimplexBoundary 2 ⊆
-            (connectedComponentComplex (boundaryComplex 3 K) c).space,
-          ¬ (⟨Set.inclusion hboundary, continuous_inclusion hboundary⟩ :
-            C(r '' stdSimplexBoundary 2,
-              (connectedComponentComplex (boundaryComplex 3 K) c).space)).Nullhomotopic
-
 def IsTopologicalCell (n : ℕ) {E : Type u} [TopologicalSpace E] (C : Set E) : Prop :=
   Nonempty (C ≃ₜ Metric.closedBall (0 : EuclideanSpace ℝ (Fin n)) 1)
 
