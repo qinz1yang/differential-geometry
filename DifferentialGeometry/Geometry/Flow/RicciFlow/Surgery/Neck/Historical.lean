@@ -100,8 +100,9 @@ end NeckDatum
 
 private theorem metricScalarAt_roundCylinderMetric_eq_one (x : NeckCylinder) :
     metricScalarAt roundCylinderMetric x = 1 := by
+  let : Fact (Module.finrank ℝ ThreeSpace = 2 + 1) := ⟨by simp [ThreeSpace]⟩
   rw [roundCylinderMetric_eq_geometry]
-  rw [metricScalarAt_roundCylinder]
+  rw [metricScalarAt_roundCylinder (E := ThreeSpace) (n := 2)]
   norm_num
 
 theorem exists_center_scalar_inv_sq_roundCylinder :
