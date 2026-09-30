@@ -34188,6 +34188,202 @@
           "direct_sorry": false
         }
       ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Integral/Circle.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "f8ee8682eec481e75851c634e609a5b2a3d02cb02c638abeb334539d79f92709",
+      "sha256": "f8ee8682eec481e75851c634e609a5b2a3d02cb02c638abeb334539d79f92709",
+      "declarations": [
+        {
+          "name": "ContinuousMap.intervalIntegrable_circle",
+          "kind": "theorem",
+          "line": 15,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousMap.circleIntegralCLM",
+          "kind": "def",
+          "line": 26,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousMap.circleIntegralCLM_apply",
+          "kind": "theorem",
+          "line": 51,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousMap.norm_circleIntegralCLM_le",
+          "kind": "theorem",
+          "line": 55,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
+      "sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
+      "declarations": [
+        {
+          "name": "ContinuousMap.ringInverse_apply",
+          "kind": "theorem",
+          "line": 13,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "contDiffOn_circleIntegral_resolvent",
+          "kind": "theorem",
+          "line": 27,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContDiffOn.circleIntegral_resolvent",
+          "kind": "theorem",
+          "line": 55,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjection.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "0a7c1e2020123232e4a27814dc9977b4a5e1704334145c643365c70cca94459d",
+      "sha256": "0a7c1e2020123232e4a27814dc9977b4a5e1704334145c643365c70cca94459d",
+      "declarations": [
+        {
+          "name": "ContinuousLinearMap.circleIntegral_apply",
+          "kind": "theorem",
+          "line": 17,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.resolvent_apply_of_mem_eigenspace",
+          "kind": "theorem",
+          "line": 22,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.integral_sub_inv_eq_zero_of_not_mem_closedBall",
+          "kind": "theorem",
+          "line": 38,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.starProjection_eigenspace_iSup_apply",
+          "kind": "theorem",
+          "line": 51,
+          "private": true,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.circleIntegral_resolvent_eq_starProjection",
+          "kind": "theorem",
+          "line": 68,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Submodule.iSup_eigenspace_starProjection_eq",
+          "kind": "theorem",
+          "line": 117,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionRankStability.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "3f4e498e508c9846fb30f52a38a39552ed936a520939fb16e0db0253f7ee8ab6",
+      "sha256": "3f4e498e508c9846fb30f52a38a39552ed936a520939fb16e0db0253f7ee8ab6",
+      "declarations": [
+        {
+          "name": "Submodule.injective_orthogonalProjectionOnto_restrict_of_norm_sub_lt_one",
+          "kind": "theorem",
+          "line": 12,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "Submodule.finrank_eq_of_norm_starProjection_sub_lt_one",
+          "kind": "theorem",
+          "line": 30,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Integral/Resolvent.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "da0c3124709353a111179c535620491caf7d59fb4aab957c73209ebc94b291a0",
+      "sha256": "da0c3124709353a111179c535620491caf7d59fb4aab957c73209ebc94b291a0",
+      "declarations": [
+        {
+          "name": "spectrum.norm_normalized_circleIntegral_resolvent_sub_le",
+          "kind": "theorem",
+          "line": 15,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionBounds.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "e39a176f73d09ccda1c0db16256f3131eb306cbb1dec422690576f14e9af6e9c",
+      "sha256": "e39a176f73d09ccda1c0db16256f3131eb306cbb1dec422690576f14e9af6e9c",
+      "declarations": [
+        {
+          "name": "ContinuousLinearMap.norm_starProjection_eigenspace_ball_sub_le",
+          "kind": "theorem",
+          "line": 18,
+          "private": false,
+          "direct_sorry": false
+        },
+        {
+          "name": "ContinuousLinearMap.finrank_eigenspace_ball_eq_of_norm_sub_starProjection_lt",
+          "kind": "theorem",
+          "line": 68,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+      "role": "independent",
+      "source_checkout": "GC_MIGRATED_435_RC3",
+      "original_sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
+      "sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
+      "declarations": [
+        {
+          "name": "ContDiffOn.starProjection_eigenspace_ball",
+          "kind": "theorem",
+          "line": 13,
+          "private": false,
+          "direct_sorry": false
+        }
+      ]
     }
   ],
   "gate_sha256": "6a37a323d5f7cbd401e5176ee32063e407cdc9c6dbcb233147928c184c71dbd1",
@@ -34215,10 +34411,10 @@
     "GC.LongTime.late_derivative_tests_of_flow",
     "GC.LongTime.local_disk_comparisons_of_cusp_exterior"
   ],
-  "audit_sha256": "cd9aeadebc745cb69ffd36d982575a49169da590444911e1f607c97d43d9b50d",
+  "audit_sha256": "90a03b5cc9a7eb30c80b9820022b266f9555e9b2caf611c7cc0cb26892afb531",
   "registry_sha256": {
     "docs/geometrization/skeleton/manifest.json": "991f5516f9483478a9da209aae88c2518cae29bf5408ff99a7f891849b0360a8",
-    "docs/geometrization/chapter3/manifest.json": "1e43c57f99ce5f295f491ec1790f234dd2dbc92c35165602a333941b158f8da3",
+    "docs/geometrization/chapter3/manifest.json": "4aabf238417a468fc40a12e7fa1d232053ef188a2fc599a9bccea633c8320436",
     "docs/geometrization/MODULE_PLACEMENT.json": "dfebe13f228a574c8ba28286b3654cc766c14efd2cdca503fdd4ee464fc66d2c",
     "docs/geometrization/integration/historical/skeleton_67f27962/manifest.json": "c45e8acb4658d358e3e4208e843220a8f81095b01a77e445f46dcee53fea08b5",
     "docs/geometrization/integration/historical/original_options.json": "832d46987ba0f4611fc3c7adc6bd95f05e079e0031837db7e727ca2620880628",

@@ -1,0 +1,243 @@
+{
+  "status": "Scratch checked; not yet installed",
+  "modules": [
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Integral/Circle.lean",
+      "module": "DifferentialGeometry.Analysis.Integration.Integral.Circle",
+      "source_sha256": "f8ee8682eec481e75851c634e609a5b2a3d02cb02c638abeb334539d79f92709",
+      "candidate": "Circle.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+      "module": "DifferentialGeometry.Analysis.Calculus.CircleResolvent",
+      "source_sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
+      "candidate": "CircleResolvent.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjection.lean",
+      "module": "DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjection",
+      "source_sha256": "0a7c1e2020123232e4a27814dc9977b4a5e1704334145c643365c70cca94459d",
+      "candidate": "SpectralProjection.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionRankStability.lean",
+      "module": "DifferentialGeometry.Analysis.InnerProductSpace.ProjectionRankStability",
+      "source_sha256": "3f4e498e508c9846fb30f52a38a39552ed936a520939fb16e0db0253f7ee8ab6",
+      "candidate": "ProjectionRankStability.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Integral/Resolvent.lean",
+      "module": "DifferentialGeometry.Analysis.Integration.Integral.Resolvent",
+      "source_sha256": "da0c3124709353a111179c535620491caf7d59fb4aab957c73209ebc94b291a0",
+      "candidate": "Resolvent.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionBounds.lean",
+      "module": "DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionBounds",
+      "source_sha256": "e39a176f73d09ccda1c0db16256f3131eb306cbb1dec422690576f14e9af6e9c",
+      "candidate": "SpectralProjectionBounds.lean"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+      "module": "DifferentialGeometry.Analysis.InnerProductSpace.SpectralProjectionRegularity",
+      "source_sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
+      "candidate": "SpectralProjectionRegularity.lean"
+    }
+  ],
+  "authored_public_declarations": 13,
+  "elaborated_declarations": 28,
+  "direct_admissions": 0,
+  "axioms": [
+    "Classical.choice",
+    "Quot.sound",
+    "propext"
+  ],
+  "actual_examples": 10,
+  "checks": [
+    {
+      "source": "DifferentialGeometry/Analysis/Integration/Integral/Circle.lean",
+      "sha256": "f8ee8682eec481e75851c634e609a5b2a3d02cb02c638abeb334539d79f92709",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/Integration/Integral/Circle.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/Integration/Integral/Circle.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.14263916015625
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+      "sha256": "8ae105c9eee8ee937d382783b2b1b0ce91ccbfe9e65d4bdc437a5c04cc2ad18b",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/Calculus/CircleResolvent.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.7309839725494385
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjection.lean",
+      "sha256": "0a7c1e2020123232e4a27814dc9977b4a5e1704334145c643365c70cca94459d",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjection.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjection.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.016679048538208
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionRankStability.lean",
+      "sha256": "3f4e498e508c9846fb30f52a38a39552ed936a520939fb16e0db0253f7ee8ab6",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/InnerProductSpace/ProjectionRankStability.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/InnerProductSpace/ProjectionRankStability.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.6125562191009521
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/Integration/Integral/Resolvent.lean",
+      "sha256": "da0c3124709353a111179c535620491caf7d59fb4aab957c73209ebc94b291a0",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/Integration/Integral/Resolvent.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/Integration/Integral/Resolvent.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.8814129829406738
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionBounds.lean",
+      "sha256": "e39a176f73d09ccda1c0db16256f3131eb306cbb1dec422690576f14e9af6e9c",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionBounds.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionBounds.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.225113868713379
+    },
+    {
+      "source": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+      "sha256": "27c42fe387d1518fc6c4e68f59dd370dd2fac5a922bfc4c9ec6bf7598ce5954f",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-R",
+        "/tmp/gc_spectral_scratch",
+        "-o",
+        "/tmp/gc_spectral_scratch/build/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.olean",
+        "/tmp/gc_spectral_scratch/DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 1.8865582942962646
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/contour_projection_candidates/ContourProjectionApplications.lean",
+      "sha256": "3d7cd90af7a22d5b800e913f01560cf4684b11a2de2b89493c053c6989571c4b",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/contour_projection_candidates/ContourProjectionApplications.lean"
+      ],
+      "exit_code": 0,
+      "silent": true,
+      "seconds": 2.8287858963012695
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/contour_projection_candidates/ContourLint.lean",
+      "sha256": "14c195430cec7f3c2054b290a4cee9ffa1ff220819bc31a9bd8b0dda9fde69e0",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/contour_projection_candidates/ContourLint.lean"
+      ],
+      "exit_code": 0,
+      "silent": false,
+      "seconds": 4.543168067932129
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/contour_projection_candidates/ContourAxioms.lean",
+      "sha256": "b0fe1528a022e79364c52796e9b957e44443c3603f968ef9f6dab3221d2232f0",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/contour_projection_candidates/ContourAxioms.lean"
+      ],
+      "exit_code": 0,
+      "silent": false,
+      "seconds": 1.6771280765533447
+    },
+    {
+      "source": "docs/geometrization/integration/evidence/contour_projection_candidates/ContourAudit.lean",
+      "sha256": "8a114a9100de825934d8a784eb64da3358fe609de6fe4babdbe4c18f9e44f862",
+      "command": [
+        "python3",
+        "/tmp/gc_spectral_check_one.py",
+        "-DmaxHeartbeats=16000000",
+        "-DmaxRecDepth=100000",
+        "-Dpp.maxSteps=50000",
+        "-Dpp.universes=true",
+        "/Users/bennettchow/Documents/Documents - Unknown/Codex/Geometrization/Worktrees/wtgc1/GC_MIGRATED_435_RC3/docs/geometrization/integration/evidence/contour_projection_candidates/ContourAudit.lean"
+      ],
+      "exit_code": 0,
+      "silent": false,
+      "seconds": 21.224170923233032
+    }
+  ],
+  "lint_scope": "All five declaration linters via #lint- pass. Expected hash-command warnings occur only in the diagnostic driver, not the seven source modules or application source.",
+  "evidence_hashes": {
+    "ContourAudit.lean": "8a114a9100de825934d8a784eb64da3358fe609de6fe4babdbe4c18f9e44f862",
+    "ProjectionRankStability.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "CircleResolvent.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ContourAxioms.log": "bf9372d8ce55910da85eb6927b5f498860f3d7aa6acd99b8dcb95b2815341afe",
+    "ContourAudit.log": "415113bffadb58e550ac36957e526e56f698bbc6a7ff289b15e6c2536f8c4a23",
+    "ContourAxioms.lean": "b0fe1528a022e79364c52796e9b957e44443c3603f968ef9f6dab3221d2232f0",
+    "Resolvent.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "SpectralProjectionRegularity.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "Circle.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ContourProjectionApplications.lean": "3d7cd90af7a22d5b800e913f01560cf4684b11a2de2b89493c053c6989571c4b",
+    "ContourLint.log": "04e705dc8c8f6cec7aa0bb47ab0cca1f17b8c12ed20df829b1c43e1e3bc0a33e",
+    "ContourLint.lean": "14c195430cec7f3c2054b290a4cee9ffa1ff220819bc31a9bd8b0dda9fde69e0",
+    "SpectralProjection.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "SpectralProjectionBounds.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ContourProjectionApplications.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "upstream_commit": "777299070a5529e96345e0033979706fd00c7e62",
+  "toolchain": "leanprover/lean4:v4.35.0-rc3",
+  "mathlib_commit": "c55e6e786f49471c72fbddbec5415808896aec1e"
+}

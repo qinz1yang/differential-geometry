@@ -1,0 +1,21 @@
+'ContinuousMap.circleIntegralCLM' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContinuousMap.circleIntegralCLM_apply' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContinuousMap.norm_circleIntegralCLM_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'contDiffOn_circleIntegral_resolvent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContDiffOn.circleIntegral_resolvent' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContinuousLinearMap.circleIntegral_resolvent_eq_starProjection' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Submodule.iSup_eigenspace_starProjection_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'Submodule.injective_orthogonalProjectionOnto_restrict_of_norm_sub_lt_one' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'Submodule.finrank_eq_of_norm_starProjection_sub_lt_one' depends on axioms: [propext, Classical.choice, Quot.sound]
+'spectrum.norm_normalized_circleIntegral_resolvent_sub_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'ContinuousLinearMap.norm_starProjection_eigenspace_ball_sub_le' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'ContinuousLinearMap.finrank_eigenspace_ball_eq_of_norm_sub_starProjection_lt' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound]
+'ContDiffOn.starProjection_eigenspace_ball' depends on axioms: [propext, Classical.choice, Quot.sound]

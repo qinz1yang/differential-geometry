@@ -5905,6 +5905,69 @@
       ],
       "contract_notes": "../chapter14/projection_resolvent.md",
       "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Integral/Circle.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Calculus/CircleResolvent.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjection.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/ProjectionRankStability.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/Integration/Integral/Resolvent.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionBounds.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
+    },
+    {
+      "path": "DifferentialGeometry/Analysis/InnerProductSpace/SpectralProjectionRegularity.lean",
+      "blueprint_nodes": [
+        "CFS04",
+        "CFS12"
+      ],
+      "contract_notes": "../chapter14/contour_projection.md",
+      "status": "proved-subclaims"
     }
   ],
   "scope": "Independent metric, Alexandrov, local-collapse and finite-regularity leaves, registered against the accepted migrated upstream; see the joint integration receipt for verification status.",
