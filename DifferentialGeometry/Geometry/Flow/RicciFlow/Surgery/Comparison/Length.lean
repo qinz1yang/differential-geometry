@@ -86,11 +86,6 @@ private theorem local_length_comparison_of_local_terminal_edist_comparison
         (H.event i).incoming.terminalRegularOpen) γT a b =
       DifferentialGeometry.Geometry.riemannianCurveVariation ((H.stage i.castSucc).componentMetric
         ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b := by
-    change DifferentialGeometry.Geometry.riemannianCurveVariation
-      (((H.event i).incoming.flow.base.metric s).restrictOpen
-        (H.event i).incoming.terminalRegularOpen) γT a b =
-      DifferentialGeometry.Geometry.riemannianCurveVariation ((H.stage i.castSucc).componentMetric
-        ((H.event i).incoming.flow.base.metric s) (G.transition.childParent c)) γ a b
     rw [DifferentialGeometry.Geometry.riemannianCurveVariation_restrictOpen _ _ _ _ _ hγT.continuousOn]
     have hcongr := DifferentialGeometry.Geometry.riemannianCurveVariation_congr ((H.event i).incoming.flow.base.metric s)
       (show EqOn (Subtype.val ∘ γT) (Subtype.val ∘ γ) (Icc a b) from hγeq)

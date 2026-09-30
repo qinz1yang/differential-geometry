@@ -30,8 +30,6 @@ open DifferentialGeometry.Analysis.Spectral.LieCorrectionZeroFiberOperators
   (lieCorrectionZeroInsertionFib lieCorrectionZeroInsertionFib_toModel lieCorrectionZeroNEndo)
 open DifferentialGeometry.Geometry.Connection
   (slotInsertEndoCc slotInsertEndoCc_add)
-open DifferentialGeometry.Geometry.Curvature
-  (slotInsertEndomorphism slotInsertEndomorphism_apply_eval)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.DeTurckCoefficients

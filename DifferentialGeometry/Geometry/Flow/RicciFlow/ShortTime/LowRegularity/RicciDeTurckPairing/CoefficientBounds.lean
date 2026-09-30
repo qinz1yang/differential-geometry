@@ -1974,8 +1974,7 @@ open DifferentialGeometry.Analysis.Spectral
     ccTensor02Symm_eq_self)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
 open DifferentialGeometry.Geometry.Curvature
-  (connectionDifferenceFib_apply_eval connectionDifferenceSection connectionDifferenceSection_self connectionDifferenceSection_toSection
-    slotInsertEndomorphism)
+  (connectionDifferenceFib_apply_eval connectionDifferenceSection connectionDifferenceSection_self connectionDifferenceSection_toSection)
 
 private lemma mul_le_one_add_mul_sum
     (R D N : ℝ) (hR : 0 ≤ R) (hD : 0 ≤ D) (hN : 0 ≤ N) :

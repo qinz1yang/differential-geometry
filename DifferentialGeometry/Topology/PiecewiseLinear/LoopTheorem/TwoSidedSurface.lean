@@ -36,7 +36,7 @@ theorem exists_compressing_disk_of_twoSided_surface
     exists_bicollar_complement_with_boundary_collars K L hK hL hLK htwo
   let _ : Finite R.faces := hRfin
   have hRo : IsOrientable 3 R := hKo.of_space_subset K R hRK hK hR
-  obtain ⟨c, hcW, -, γ, hγR, hγ⟩ :=
+  obtain ⟨c, hcW, hsub, γ, hγR, hγ⟩ :=
     exists_nontrivial_boundary_loop_of_bicollar_complement K L R hK hL hLK hR
       W ρ hρ hρzero hW hWnhds hRspace x g hg hgin
   obtain ⟨D, r, hr, hDR, hDr, hb, hessential⟩ :=
