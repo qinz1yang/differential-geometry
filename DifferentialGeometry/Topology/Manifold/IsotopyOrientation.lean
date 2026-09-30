@@ -52,14 +52,14 @@ private theorem orientation_map_coordinates_comp {U : Type u} [TopologicalSpace 
       = Orientation.map (Fin 3) T' (Orientation.map (Fin 3)
           (T.symm.trans (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv)
           (Orientation.map (Fin 3) T (o.orientation x₀))) :=
-        (DifferentialGeometry.VectorBundle.map_orientation_trans_between
+        (DifferentialGeometry.orientation_map_trans
           (T.symm.trans (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv) T'
-          (Orientation.map (Fin 3) T (o.orientation x₀))).symm
+          (Orientation.map (Fin 3) T (o.orientation x₀)))
     _ = Orientation.map (Fin 3) T'
           (Orientation.map (Fin 3) (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv
             (o.orientation x₀)) := by
         congr 1
-        rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between T.symm
+        rw [DifferentialGeometry.orientation_map_trans T.symm
           (R.mfderivToContinuousLinearEquiv (by simp) x₀).toLinearEquiv
           (Orientation.map (Fin 3) T (o.orientation x₀)), hsymm]
 

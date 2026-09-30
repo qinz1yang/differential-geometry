@@ -9,7 +9,6 @@ import Mathlib.Tactic.Ring
 
 open DifferentialGeometry.TensorMetric
   (fiberNormSqComponent tensorInnerPointwise tensorInnerPointwise_eq_sum_componentS_mul)
-open DifferentialGeometry.Geometry.Curvature
 open DifferentialGeometry.Geometry.Connection
 
 noncomputable section
@@ -115,8 +114,8 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
 private theorem slotFib_eval_at (r : ℕ) (j : Fin r) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
     (A : Tensor0SSpace r I x) (v : Fin r → TangentSpace I x) :
-    (slotInsertEndoFib r j x Λ A) v = A (Function.update v j (Λ (v j))) := by
-  exact slotInsertEndoFib_apply_natural (I := I) (M := M) r j x Λ A v
+    (slotInsertEndomorphism r j x Λ A) v = A (Function.update v j (Λ (v j))) := by
+  exact slotInsertEndomorphism_apply_natural (I := I) (M := M) r j x Λ A v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -135,13 +134,13 @@ private theorem inner_slotAt_le
         (TensorRSSpace.toModel W)
         (TensorRSSpace.toModel
           (show TensorRSSpace 0 r I x from
-            TensorRSSpace.ofCLM ((slotInsertEndoFib r j x Λ).comp
+            TensorRSSpace.ofCLM ((slotInsertEndomorphism r j x Λ).comp
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W))))
       ≤ κ * tensorInnerPointwise g₀ 0 r x
           (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) := by
   classical
   set slotW : TensorRSSpace 0 r I x :=
-    TensorRSSpace.ofCLM ((slotInsertEndoFib r j x Λ).comp
+    TensorRSSpace.ofCLM ((slotInsertEndomorphism r j x Λ).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W)) with hslotW
   set Wm : ContinuousMultilinearMap ℝ (fun _ : Fin r ↦ TangentSpace I x) ℝ :=
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W)
@@ -163,10 +162,10 @@ private theorem inner_slotAt_le
     intro K J
     rw [hWm, hslotW]
     rw [show fiberNormSqComponent (I := I) (M := M) g₀ x 0 r
-          (TensorRSSpace.ofCLM ((slotInsertEndoFib r j x Λ).comp
+          (TensorRSSpace.ofCLM ((slotInsertEndomorphism r j x Λ).comp
             (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W)))
           (Module.finrank ℝ E) e K J =
-        (slotInsertEndoFib r j x Λ
+        (slotInsertEndomorphism r j x Λ
           ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W)
             ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
               (fun k ↦ g₀.inner x (e (K k)))))) (fun k ↦ e (J k)) from rfl,
@@ -249,7 +248,7 @@ theorem _root_.DifferentialGeometry.TensorMetric.tensorInnerPointwise_slot_inser
         (TensorRSSpace.toModel W)
         (TensorRSSpace.toModel
           (show TensorRSSpace 0 r I x from
-            TensorRSSpace.ofCLM ((slotInsertEndoFib r j x Λ).comp
+            TensorRSSpace.ofCLM ((slotInsertEndomorphism r j x Λ).comp
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W))))
       ≤ κ * tensorInnerPointwise g₀ 0 r x
           (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) := by
@@ -286,8 +285,8 @@ omit [FiniteDimensional ℝ E] [NeZero (Module.finrank ℝ E)] [CompactSpace M] 
 theorem slotInsertEndoFib_bundle_eval (s : ℕ) (x : M)
     (Λ : TangentSpace I x →L[ℝ] TangentSpace I x)
     (A : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1) → TangentSpace I x) :
-    (slotInsertEndoFib (s + 1) 0 x Λ A) v = A (Function.update v 0 (Λ (v 0))) := by
-  exact slotInsertEndoFib_apply_natural (I := I) (M := M) (s + 1) 0 x Λ A v
+    (slotInsertEndomorphism (s + 1) 0 x Λ A) v = A (Function.update v 0 (Λ (v 0))) := by
+  exact slotInsertEndomorphism_apply_natural (I := I) (M := M) (s + 1) 0 x Λ A v
 
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless] [T2Space M]
     [SigmaCompactSpace M] in
@@ -320,7 +319,7 @@ theorem tensorInnerPointwise_slotΛ_le
         (TensorRSSpace.toModel W)
         (TensorRSSpace.toModel
           (show TensorRSSpace 0 (s+1) I x from
-            TensorRSSpace.ofCLM ((slotInsertEndoFib (s+1) 0 x Λ).comp
+            TensorRSSpace.ofCLM ((slotInsertEndomorphism (s+1) 0 x Λ).comp
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from W))))
       ≤ κ * tensorInnerPointwise g₀ 0 (s+1) x
           (TensorRSSpace.toModel W) (TensorRSSpace.toModel W) := by
@@ -450,21 +449,21 @@ theorem tensorInnerPointwise_slotΛ_self_adjoint
     tensorInnerPointwise g₀ 0 (s + 1) x
         (TensorRSSpace.toModel
           (show TensorRSSpace 0 (s + 1) I x from
-            TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x Λ).comp
+            TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x Λ).comp
               (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A))))
         (TensorRSSpace.toModel B)
       = tensorInnerPointwise g₀ 0 (s + 1) x
           (TensorRSSpace.toModel A)
           (TensorRSSpace.toModel
             (show TensorRSSpace 0 (s + 1) I x from
-              TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x Λ).comp
+              TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x Λ).comp
                 (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from B)))) := by
   classical
   set slotA : TensorRSSpace 0 (s + 1) I x :=
-    TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x Λ).comp
+    TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x Λ).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A)) with hslotA
   set slotB : TensorRSSpace 0 (s + 1) I x :=
-    TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x Λ).comp
+    TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x Λ).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from B)) with hslotB
   set Am : ContinuousMultilinearMap ℝ (fun _ : Fin (s + 1) => TangentSpace I x) ℝ :=
     ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A)
@@ -491,10 +490,10 @@ theorem tensorInnerPointwise_slotΛ_self_adjoint
     intro K J
     rw [hAm, hslotA]
     rw [show fiberNormSqComponent (I := I) (M := M) g₀ x 0 (s + 1)
-          (TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x Λ).comp
+          (TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x Λ).comp
             (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A))) (Module.finrank ℝ E)
               e K J
-        = (slotInsertEndoFib (s + 1) 0 x Λ
+        = (slotInsertEndomorphism (s + 1) 0 x Λ
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from A)
               ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
                 (fun k => g₀.inner x (e (K k)))))) (fun k => e (J k)) from rfl,
@@ -507,10 +506,10 @@ theorem tensorInnerPointwise_slotΛ_self_adjoint
     intro K J
     rw [hBm, hslotB]
     rw [show fiberNormSqComponent (I := I) (M := M) g₀ x 0 (s + 1)
-          (TensorRSSpace.ofCLM ((slotInsertEndoFib (s + 1) 0 x Λ).comp
+          (TensorRSSpace.ofCLM ((slotInsertEndomorphism (s + 1) 0 x Λ).comp
             (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from B))) (Module.finrank ℝ E)
               e K J
-        = (slotInsertEndoFib (s + 1) 0 x Λ
+        = (slotInsertEndomorphism (s + 1) 0 x Λ
             ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from B)
               ((ContinuousMultilinearMap.mkPiAlgebra ℝ (Fin 0) ℝ).compContinuousLinearMap
                 (fun k => g₀.inner x (e (K k)))))) (fun k => e (J k)) from rfl,

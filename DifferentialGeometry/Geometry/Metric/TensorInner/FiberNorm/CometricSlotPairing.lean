@@ -3,7 +3,6 @@ import DifferentialGeometry.Geometry.Metric.ComparisonEndomorphism
 
 open DifferentialGeometry.TensorMetric (tensorInnerPointwise)
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
-open DifferentialGeometry.Geometry.Curvature
 
 noncomputable section
 
@@ -24,7 +23,7 @@ private local instance : CompleteSpace E := FiniteDimensional.complete ℝ E
 
 def gInvDiffSlotApplied (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (W : TensorRSSpace 0 (s + 1) I x) : TensorRSSpace 0 (s+1) I x :=
-  TensorRSSpace.ofCLM ((slotInsertEndoFib (s+1) 0 x
+  TensorRSSpace.ofCLM ((slotInsertEndomorphism (s+1) 0 x
     (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
     (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s+1) I x from W))
 omit [NeZero (Module.finrank ℝ E)] in
@@ -50,13 +49,13 @@ theorem tensorInnerPointwise_gInvDiffSlot_le
 def gInvDiffSlotAt (g₀ g₁ : SmoothRiemannianMetric I M) (r : ℕ) (j : Fin r) (x : M)
     (W : TensorRSSpace 0 r I x) : TensorRSSpace 0 r I x :=
   TensorRSSpace.ofCLM
-    ((slotInsertEndoFib r j x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
+    ((slotInsertEndomorphism r j x (metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W))
 private noncomputable def negDiffSlotApplied
     (g₀ g₁ : SmoothRiemannianMetric I M) (s : ℕ) (x : M)
     (W : TensorRSSpace 0 (s + 1) I x) : TensorRSSpace 0 (s + 1) I x :=
   TensorRSSpace.ofCLM
-    ((slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x
+    ((slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x
         (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace (s + 1) I x from W))
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -70,7 +69,7 @@ private theorem negDiffSlot_eq_neg
     show (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) =
         (-1 : ℝ) • metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x from
       (neg_one_smul ℝ _).symm,
-    slotInsertEndoFib_smul_left (I := I) (M := M) (s + 1) 0 x,
+    slotInsertEndomorphism_smul_left (I := I) (M := M) (s + 1) 0 x,
     neg_one_smul, ContinuousLinearMap.neg_comp]
   rfl
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -145,7 +144,7 @@ private noncomputable def negDiffSlotAt
     (g₀ g₁ : SmoothRiemannianMetric I M) (r : ℕ) (j : Fin r) (x : M)
     (W : TensorRSSpace 0 r I x) : TensorRSSpace 0 r I x :=
   TensorRSSpace.ofCLM
-    ((slotInsertEndoFib (I := I) (M := M) r j x
+    ((slotInsertEndomorphism (I := I) (M := M) r j x
         (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x)).comp
       (show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace r I x from W))
 omit [NeZero (Module.finrank ℝ E)] [CompactSpace M] [BoundarylessManifold I M] [I.Boundaryless]
@@ -159,7 +158,7 @@ private theorem negSlotAt_model
     show (-metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x) =
         (-1 : ℝ) • metricComparisonDifferenceEndomorphism (I := I) g₀ g₁ x from
       (neg_one_smul ℝ _).symm,
-    slotInsertEndoFib_smul_left (I := I) (M := M) r j x,
+    slotInsertEndomorphism_smul_left (I := I) (M := M) r j x,
     neg_one_smul, ContinuousLinearMap.neg_comp]
   rfl
 omit [NeZero (Module.finrank ℝ E)] in

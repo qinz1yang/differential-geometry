@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.Connected.Separation
 import DifferentialGeometry.Topology.Connected.TwoSided
 import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram
 import DifferentialGeometry.Topology.PiecewiseLinear.SolidTorus
-import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
+import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.Basic
 import DifferentialGeometry.Topology.PiecewiseLinear.MapApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldApproximation
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph

@@ -2517,7 +2517,7 @@ open DifferentialGeometry.Analysis.Spectral
    slotExtendFib_apply slotExtend_toSection slotExtendIter ccTensor02Symm_eq_self
    tail_base_split toModel_rsDomDomCongr_apply)
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc slotInsertEndoCc_toSection)
-open DifferentialGeometry.Geometry.Curvature (slotInsertEndoFib_apply_eval)
+open DifferentialGeometry.Tensor0SBundle (slotInsertEndomorphism_apply_eval)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -3408,13 +3408,13 @@ theorem connectionDifferenceInsertionInnerDerivativeCoefficient_apply
     ContinuousLinearEquiv.symm_apply_apply]
   rw [smoothCcTensorBilinForm_ccTensor02Symm]
   change _ = Tensor0SSpace.toModel
-    (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib (I := I) (M := M) 3 0 x
+    (DifferentialGeometry.Tensor0SBundle.slotInsertEndomorphism (I := I) (M := M) 3 0 x
       (symmRaiseEndo (I := I) (M := M) g W x)
       ((show Tensor0SSpace 0 I x →L[ℝ] Tensor0SSpace 3 I x from
         (domDomCongrSection (I := I) g (finRotate 3)
           (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)).toSection x)
         (unitTensor (I := I) (M := M) x))) m
-  rw [slotInsertEndoFib_apply_eval]
+  rw [slotInsertEndomorphism_apply_eval]
   change _ = unitModel (I := I) (M := M) g 3
     (domDomCongrSection (I := I) g (finRotate 3)
       (metricLoweredConnectionDifferenceCoefficient (I := I) g gm)) x

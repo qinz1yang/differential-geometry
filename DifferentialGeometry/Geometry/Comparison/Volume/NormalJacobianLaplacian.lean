@@ -125,7 +125,7 @@ theorem laplacian_normalJacobian_inv_sqrt_centre
       (fun q => (Real.sqrt (normalJacobian g p (normalChartAt g p q)))⁻¹) p =
       (1 / 6 : ℝ) * Curvature.metricScalarAt g p := by
   classical
-  obtain ⟨F, hF, hFf⟩ := exists_smooth_germ
+  obtain ⟨F, hF, hFf⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn
     (normalChart_ball_preimage_isOpen g p) (normalChart_ball_preimage_mem g p)
     (contMDiffOn_normalJacobian_inv_sqrt g p)
   have hLap := Operator.laplacian_congr_of_eventuallyEq (LeviCivita g) g

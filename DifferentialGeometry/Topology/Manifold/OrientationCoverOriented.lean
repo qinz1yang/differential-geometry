@@ -41,7 +41,7 @@ theorem tangentOrientationCanonical_chart (hdim : Module.finrank ℝ E = n) :
       (tangentOrientationProjection_isCoveringMap hdim).isLocalHomeomorph x y hy hb v).symm
   change Orientation.map (Fin n) A (tangentOrientationCanonical hdim y) = _
   rw [← hcomp]
-  exact (map_orientation_trans_between P B (tangentOrientationCanonical hdim y)).symm.trans
+  exact (DifferentialGeometry.orientation_map_trans P B (tangentOrientationCanonical hdim y)).trans
     ((congrArg (Orientation.map (Fin n) B) (tangentOrientationCanonical_projects hdim y)).trans
       (tangentOrientation_chart hdim x.proj y.proj hb y.snd).2.symm)
 

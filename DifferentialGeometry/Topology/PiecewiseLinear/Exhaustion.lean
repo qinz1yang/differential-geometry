@@ -157,8 +157,7 @@ theorem exists_exhaustion {m : ℕ} {X : Type u} [TopologicalSpace X]
       IsPolyhedralManifoldWithBoundary (n := m + 1) (m + 1) (N i) ∧
       N i ⊆ interior (N (i + 1))) ∧ ⋃ i, N i = U := by
   classical
-  obtain ⟨T, hT⟩ := plManifoldTriangulation (m + 1)
-    (inferInstance : ChartedSpace (EuclideanSpace ℝ (Fin (m + 1))) X) inferInstance
+  obtain ⟨T, hT⟩ := exists_plTriangulation_isCombinatorialManifold (n := m + 1) (X := X)
   have := hU.locallyCompactSpace
   let C : ℕ → Set X := fun i => ((↑) : U → X) '' compactCovering U i
   have hC : ∀ i, IsCompact (C i) := fun i =>

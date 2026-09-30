@@ -692,7 +692,7 @@ private theorem lEndVelocity_cov
   have hcovGrad := covDerivAlong_congr_of_eventuallyEq
     (I := I) g eta hgradEv
   obtain ⟨f₀, hf₀, hf₀eq⟩ :=
-    DifferentialGeometry.exists_smooth_germ (I := I) hU₀open hyU₀ hsmooth
+    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU₀open hyU₀ hsmooth
   have hgradEq :
       (T% fun q ↦ gradientFun (I := I) g f₀ q) =ᶠ[nhds y]
         (T% fun q ↦ gradientFun (I := I) g

@@ -64,7 +64,7 @@ theorem exists_orientedBallChart_of_open_embedding
     rw [hgder]
     rfl
   rw [heq]
-  erw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between]
+  erw [DifferentialGeometry.orientation_map_trans]
   rw [c.preserves_orientation x hxsrc]
   have h := hfo (g x)
   rw [hgx] at h

@@ -131,7 +131,7 @@ theorem OrientedBallEmbedding.transition_fderiv_det_pos {U : Type u} [Topologica
     exact h2.symm
   have hmap : Orientation.map (Fin 3) (Aeq.trans Ceq) (modelBasisOrientation 0)
       = modelBasisOrientation 0 := by
-    rw [← DifferentialGeometry.VectorBundle.map_orientation_trans_between Aeq Ceq
+    rw [DifferentialGeometry.orientation_map_trans Aeq Ceq
       (modelBasisOrientation 0), hA, hC, modelBasisOrientation_eq]
   have hdet : 0 < LinearMap.det ((Aeq.trans Ceq :
       TangentSpace ThreeModel (0 : ThreeSpace) →ₗ[ℝ]

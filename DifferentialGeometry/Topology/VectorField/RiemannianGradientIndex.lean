@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.VectorField.RiemannianGradientLinearization
 import DifferentialGeometry.Topology.VectorField.GradientLinearization
-import DifferentialGeometry.Tensor.QuadraticForm.MetricSignature
+import DifferentialGeometry.Geometry.Metric.LinearAlgebra.QuadraticForm.MetricSignature
 import DifferentialGeometry.Topology.VectorField.InteriorIndexLinearization
 
 set_option autoImplicit false

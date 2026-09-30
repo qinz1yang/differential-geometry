@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.TwoParameterFields
 import DifferentialGeometry.Geometry.Comparison.Variation.Covariant.ChainRule
-import DifferentialGeometry.Bundle.SmoothScalarGerm
+import DifferentialGeometry.Topology.Manifold.SmoothGerm
 import DifferentialGeometry.Geometry.Connection.ChartBridge.Curvature.BasisBracket
 import DifferentialGeometry.Geometry.Connection.ParallelTransport.AlongCurve
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Pointwise
@@ -82,7 +82,7 @@ private theorem exists_smooth_exp
   have hc : ∀ i, ∃ f : Real -> Real,
       ContMDiff 𝓘(Real, Real) 𝓘(Real, Real) ∞ f ∧
         f =ᶠ[𝓝 t] cLocal i :=
-    fun i => exists_smooth_germ (I := 𝓘(Real, Real))
+    fun i => exists_contMDiff_eventuallyEq_of_contMDiffOn (I := 𝓘(Real, Real))
       hUopen htU (hcLocalOn i)
   choose c hcsm hceq using hc
   have hγcont : ContinuousAt γ t := hγ.continuous.continuousAt

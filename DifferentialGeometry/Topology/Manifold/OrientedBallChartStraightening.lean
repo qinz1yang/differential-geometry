@@ -80,7 +80,7 @@ theorem OrientedBallEmbedding.preserves_orientation_comp {U : Type u} [Topologic
         (NormedSpace.fromTangentSpace x).symm.toLinearEquiv).orientation) =
     o.orientation (e.chart x) at hpres
   rw [hL, OrientedBallEmbedding.comp_chart_apply e Φ x,
-    ← DifferentialGeometry.VectorBundle.map_orientation_trans_between A B, hpres,
+    DifferentialGeometry.orientation_map_trans A B, hpres,
     hΦ (e.chart x)]
 
 theorem OrientedBallEmbedding.isCompact_closedBall_image {U : Type u} [TopologicalSpace U]

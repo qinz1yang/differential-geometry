@@ -1,7 +1,8 @@
 import DifferentialGeometry.Analysis.Elliptic.EndomorphismKernel
 import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.Reaction
 import DifferentialGeometry.Bundle.ContinuousLinearMapSection.Spacetime
-import DifferentialGeometry.Bundle.SmoothSubbundle.KernelMotion
+import DifferentialGeometry.Analysis.InnerProductSpace.Kernel
+import DifferentialGeometry.Bundle.SmoothSubbundle.Kernel
 import DifferentialGeometry.Geometry.Connection.ChartFrame.RicciIdentitySmoothFrame
 import DifferentialGeometry.Geometry.Connection.Laplacian.VectorBundle
 

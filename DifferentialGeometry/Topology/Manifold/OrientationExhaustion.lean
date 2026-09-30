@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
-import DifferentialGeometry.Bundle.Orientation.Classes
+import DifferentialGeometry.Tensor.LinearAlgebra.Orientation.Classes
 import Mathlib.Data.Fintype.Pigeonhole
 import Mathlib.Order.OrderIsoNat
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Orientation

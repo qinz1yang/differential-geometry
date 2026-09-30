@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Family.Regularity.Pair
 import DifferentialGeometry.Geometry.Connection.TensorNabla.Iterated.TimeDerivative
 import DifferentialGeometry.Analysis.Calculus.FiniteDimension
 import DifferentialGeometry.Geometry.Operator.Gradient.Basic
-import DifferentialGeometry.Bundle.PartialMfderiv.Interior
+import DifferentialGeometry.Geometry.Coordinates.Calculus.InteriorDerivative
 
 set_option autoImplicit false
 

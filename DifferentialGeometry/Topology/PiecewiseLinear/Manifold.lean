@@ -146,14 +146,4 @@ theorem isPL_symm_of_homeomorph [HasGroupoid M (plGroupoid n)] {P : Type*} [Topo
     rwa [univ_inter]
   exact hPA'.of_inter_of_mem_nhds (F.open_target.mem_nhds hyF)
 
-universe u
-
-def PLApproximationManifold (n : ℕ) : Prop :=
-  ∀ {M₁ M₂ : Type u} [TopologicalSpace M₁] [T2Space M₁] [SecondCountableTopology M₁]
-    [MetricSpace M₂] [SecondCountableTopology M₂]
-    [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₁] [ChartedSpace (EuclideanSpace ℝ (Fin n)) M₂]
-    [HasGroupoid M₁ (plGroupoid n)] [HasGroupoid M₂ (plGroupoid n)] (h : M₁ ≃ₜ M₂)
-    (φ : M₁ → ℝ), Continuous φ → (∀ x, 0 < φ x) →
-    ∃ f : M₁ ≃ₜ M₂, IsPL n n f ∧ ∀ x, dist (f x) (h x) < φ x
-
 end DifferentialGeometry.Topology.PiecewiseLinear

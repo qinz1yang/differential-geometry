@@ -71,7 +71,7 @@ theorem localDiffeomorph_orientation_comp
     change mfderiv (𝓡 n) (𝓡 n) (r ∘ f) x v = mfderiv (𝓡 n) (𝓡 n) r (f x)
       (mfderiv (𝓡 n) (𝓡 n) f x v)
     exact mfderiv_comp_apply x (r.mdifferentiable (by simp) _) (hf.mdifferentiable (by simp) _) v
-  rw [he, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hfo]
+  rw [he, DifferentialGeometry.orientation_map_trans, hfo]
   exact hr (f x)
 
 theorem exists_orientationReversing_sphereTwoTimesCircleLift :

@@ -115,7 +115,7 @@ theorem hasDerivAt_curveDensity_intrinsicJacobi
       exact (expMapIntrinsic_def g hEnorm p u).symm.trans
         (by simpa only [ContinuousLinearEquiv.symm_apply_apply] using B.hom_eq hu)]
     exact B.hom.map_source hu
-  obtain ⟨F, hF, hFf⟩ := exists_smooth_germ B.hom.open_target hq
+  obtain ⟨F, hF, hFf⟩ := exists_contMDiff_eventuallyEq_of_contMDiffOn B.hom.open_target hq
     (contMDiffOn_branchEnergy B)
   have hSym (i j : ι) : hessFun g (branchEnergy g B) q (V i 1) (V j 1) =
       hessFun g (branchEnergy g B) q (V j 1) (V i 1) := by

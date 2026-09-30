@@ -1,5 +1,5 @@
 import DifferentialGeometry.Bundle.Hom
-import DifferentialGeometry.Bundle.OrthonormalFrame
+import DifferentialGeometry.Geometry.Metric.VectorBundle.OrthonormalFrame
 import DifferentialGeometry.Analysis.InnerProductSpace.HilbertSchmidt
 import DifferentialGeometry.Geometry.Metric.BundlePullback
 import DifferentialGeometry.Geometry.Metric.MetricFiberData.Hom

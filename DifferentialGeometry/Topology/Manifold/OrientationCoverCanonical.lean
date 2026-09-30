@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Manifold.OrientationCoverDeck
-import DifferentialGeometry.Bundle.Orientation.Map
+import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
 
 noncomputable section
 open Bundle Manifold
@@ -75,7 +75,7 @@ theorem tangentOrientationDeck_reverses_canonical (hdim : Module.finrank ℝ E =
   apply (Orientation.map (Fin n) Q).injective
   change Orientation.map (Fin n) Q (Orientation.map (Fin n) D _) =
     Orientation.map (Fin n) Q (-tangentOrientationCanonical hdim (τ z))
-  rw [map_orientation_trans_between, hcomp, Orientation.map_neg]
+  rw [← DifferentialGeometry.orientation_map_trans, hcomp, Orientation.map_neg]
   exact (tangentOrientationCanonical_projects hdim z).trans
     ((@neg_neg (Orientation ℝ E (Fin n)) inferInstance z.snd).symm.trans
       (congrArg (fun o : Orientation ℝ E (Fin n) => -o)

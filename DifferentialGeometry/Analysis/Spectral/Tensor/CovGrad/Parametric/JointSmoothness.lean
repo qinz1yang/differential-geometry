@@ -462,13 +462,13 @@ theorem covGrad_step_jointContMDiffOn
     refine hYapply.congr ?_
     rintro ⟨x, t⟩ -
     rfl
-  have hcomp := (covGradBundleSmoothEquiv (I := I) (M := M) r
+  have hcomp := (covariantSlotBundleSmoothEquiv (I := I) (M := M) r
     sIdx).toDiffeomorph.contMDiff.comp_contMDiffOn
     hCLM
   refine hcomp.congr ?_
   rintro ⟨x, t⟩ -
   rw [Function.comp_apply,
-    covGradBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r sIdx x (φfield (x, t))]
+    covariantSlotBundleSmoothEquiv_toDiffeomorph_apply (I := I) (M := M) r sIdx x (φfield (x, t))]
   rw [covGrad_toSection_apply]
 
 

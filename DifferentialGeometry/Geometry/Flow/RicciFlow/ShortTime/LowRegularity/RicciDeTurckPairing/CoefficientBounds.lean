@@ -31,7 +31,7 @@ open DifferentialGeometry.Analysis.Spectral
    toModel_rsDomDomCongr_apply)
 open DifferentialGeometry.Geometry.Connection
   (slotInsertEndoCc slotInsertEndoCc_add slotInsertEndoCc_smul unitZeroSec)
-open DifferentialGeometry.Geometry.Curvature (slotInsertEndoFib_apply_eval)
+open DifferentialGeometry.Tensor0SBundle (slotInsertEndomorphism_apply_eval)
 open DifferentialGeometry.PDE.DeTurck.RicciLinearization
 open DifferentialGeometry.Analysis.Spectral.DeTurck
 open DifferentialGeometry.Analysis.Spectral.MetricRealization
@@ -876,7 +876,7 @@ private lemma termSlotFib_toModel_apply (s : ℕ) (x : M)
     (D : Tensor0SSpace (s + 1) I x) (v : Fin (s + 1 + 1) → E) :
     Tensor0SSpace.toModel (termSlotFib (I := I) (M := M) s x Term D) v =
       Tensor0SSpace.toModel
-        (DifferentialGeometry.Geometry.Curvature.slotInsertEndoFib
+        (DifferentialGeometry.Tensor0SBundle.slotInsertEndomorphism
           (I := I) (M := M) (s + 1) 0 x
           (Term ((tangentSpaceModelContinuousLinearEquiv (I := I) x).symm (v 0))) D)
         (Matrix.vecTail v) := by
@@ -907,7 +907,7 @@ theorem deTurckLieCovariantDerivativeSecondOrderCoefficient_eq_permuted_connecti
     Tensor0SSpace.toModel
       ((rsDomDomCongr ricciQuadraticPermutationSwapBlocks
         ((connectionDifferenceContravariantInsertionField (I := I) g gm).toSection x)) D) v
-  rw [termSlotFib_toModel_apply, slotInsertEndoFib_apply_eval]
+  rw [termSlotFib_toModel_apply, slotInsertEndomorphism_apply_eval]
   rw [toModel_rsDomDomCongr_apply,
     ContinuousMultilinearMap.domDomCongr_apply]
   rw [connectionDifferenceContravariantInsertionField_toSection, connContr21_insert]
@@ -1975,7 +1975,7 @@ open DifferentialGeometry.Analysis.Spectral
 open DifferentialGeometry.Geometry.Connection (slotInsertEndoCc)
 open DifferentialGeometry.Geometry.Curvature
   (connectionDifferenceFib_apply_eval connectionDifferenceSection connectionDifferenceSection_self connectionDifferenceSection_toSection
-    slotInsertEndoFib)
+    slotInsertEndomorphism)
 
 private lemma mul_le_one_add_mul_sum
     (R D N : ℝ) (hR : 0 ≤ R) (hD : 0 ≤ D) (hN : 0 ≤ N) :
@@ -3689,7 +3689,7 @@ theorem sharpFlatEndoCc_eq_slotInsertEndoCc_zero
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g 0
           (metricComparisonEndomorphismField (I := I) (M := M) g gm)).toSection x) om =
-      slotInsertEndoFib (I := I) (M := M) 1 0 x
+      slotInsertEndomorphism (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g gm x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g gm x) om w]

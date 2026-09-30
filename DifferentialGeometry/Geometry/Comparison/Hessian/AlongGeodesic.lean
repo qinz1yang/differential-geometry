@@ -112,7 +112,7 @@ theorem deriv2_geo_on_at
       hessFun (I := I) g f (γ t)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1)
         ((mfderiv 𝓘(ℝ, ℝ) I γ t : ℝ →L[ℝ] TangentSpace I (γ t)) 1) := by
-  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_smooth_germ (I := I) hU ht hf
+  obtain ⟨F, hF, hFf⟩ := DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hU ht hf
   have hcomp : (F ∘ γ) =ᶠ[𝓝 t] (f ∘ γ) :=
     hγ.continuous.continuousAt.eventually hFf
   calc

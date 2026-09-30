@@ -93,13 +93,13 @@ theorem hasFDerivAt_radialExtension_geometricCircleHomeomorph
 
 theorem det_radialStretchLinearMap (a : ℝ) :
     (radialStretchLinearMap a).toLinearMap.det = a := by
-  rw [DifferentialGeometry.Geometry.complex_linearMap_det]
+  rw [LinearMap.det_complex]
   simp [radialStretchLinearMap_apply]
 
 private theorem complex_smul_det (c : ℂ) (A : ℂ →L[ℝ] ℂ) :
     (c • A).toLinearMap.det = Complex.normSq c * A.toLinearMap.det := by
-  rw [DifferentialGeometry.Geometry.complex_linearMap_det,
-    DifferentialGeometry.Geometry.complex_linearMap_det]
+  rw [LinearMap.det_complex,
+    LinearMap.det_complex]
   simp only [ContinuousLinearMap.coe_coe, _root_.smul_apply, smul_eq_mul,
     Complex.mul_re, Complex.mul_im, Complex.normSq_apply]
   ring

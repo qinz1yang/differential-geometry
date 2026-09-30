@@ -714,7 +714,7 @@ theorem branchEnergy_hess
     intro z hz
     rfl
   obtain ⟨eSmooth, heSmooth, he_eq⟩ :=
-    DifferentialGeometry.exists_smooth_germ (I := I) hUopen hqU heU
+    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hUopen hqU heU
   have hgrad_eq :
       (fun z => gradientFun (I := I) g eSmooth z) =ᶠ[𝓝 q]
         fun z => gradientFun (I := I) g
@@ -901,7 +901,7 @@ theorem branchHess_jacobi
   obtain ⟨U, hUopen, hqU, hrU⟩ :=
     branchRadius_open (I := I) B hu hu_pos
   obtain ⟨rSmooth, hrSmooth, hr_eq⟩ :=
-    DifferentialGeometry.exists_smooth_germ (I := I) hUopen hqU hrU
+    DifferentialGeometry.exists_contMDiff_eventuallyEq_of_contMDiffOn (I := I) hUopen hqU hrU
   have hgrad_eq :
       (fun z => gradientFun (I := I) g rSmooth z) =ᶠ[𝓝 q]
         fun z => gradientFun (I := I) g

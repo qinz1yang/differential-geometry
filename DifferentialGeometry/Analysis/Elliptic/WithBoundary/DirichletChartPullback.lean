@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Operator.WithBoundary.GradientContinuity
 import DifferentialGeometry.Geometry.Operator.Hessian.Trace.ChartGramRegularity
 import DifferentialGeometry.Analysis.Sobolev.Chart.ChartTransition.ChartPullbackSmooth
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.H1Energy
-import DifferentialGeometry.Tensor.Coordinates.PartialDerivative
+import DifferentialGeometry.Analysis.Calculus.PartialDerivative.Coordinates
 
 noncomputable section
 

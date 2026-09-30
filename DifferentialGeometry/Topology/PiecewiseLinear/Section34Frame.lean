@@ -5,7 +5,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Moise308Nested
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOn
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedralGraph
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34Endpoint
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.Approximation
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import Mathlib.AlgebraicTopology.FundamentalGroupoid.FundamentalGroup
 import Mathlib.Logic.Relation

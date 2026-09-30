@@ -500,7 +500,7 @@ private theorem sharpFlatEndomorphism_slot_zero
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g 0
           (metricComparisonEndomorphismField (I := I) (M := M) g g₁)).toSection x) om =
-      slotInsertEndoFib (I := I) (M := M) 1 0 x
+      slotInsertEndomorphism (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g g₁ x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g g₁ x) om w]
@@ -667,7 +667,7 @@ private lemma slotInsertEndomorphism_add (g : SmoothRiemannianMetric I M) (s : �
   rw [add_apply]
   simp only [slotInsertEndoCc_toSection]
   rw [show ((A + B) x) = A x + B x from by rw [ContMDiffSection.coe_add]; rfl]
-  rw [slotInsertEndoFib_add_left, add_apply]
+  rw [slotInsertEndomorphism_add_left, add_apply]
 
 theorem HasMoserTameBounds.inverseMetricDifferenceSlot
     (g : SmoothRiemannianMetric I M)

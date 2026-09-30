@@ -407,14 +407,14 @@ lemma curry_termSlotFib_eq_slotInsert (s : ℕ) (x : M)
     (A : Tensor0SSpace (s + 1) I x) (v0 : TangentSpace I x) :
     (tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         (bilinearSlotInsertCLM (I := I) (M := M) s x Term A)) v0 =
-      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) A := by
+      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term v0) A := by
   apply (tensor0SSpaceFiberContinuousLinearEquiv (I := I) (s + 1) x).injective
   refine ContinuousMultilinearMap.ext (fun vt => ?_)
   change Tensor0SSpace.eval
       ((tensor0SCurry (I := I) (M := M) (𝕜 := ℝ) (s + 1) x
         (bilinearSlotInsertCLM (I := I) (M := M) s x Term A)) v0) vt =
     Tensor0SSpace.eval
-      (slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Term v0) A) vt
+      (slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Term v0) A) vt
   rw [tensor0S_curry_apply_eval, termSlotFib_apply_eval]
   simp only [Fin.cons_zero]
   rfl

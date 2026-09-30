@@ -61,8 +61,8 @@ lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   have hRHS : (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ s Λ -
           slotInsertEndoCc (I := I) (M := M) g₀ s Λ').toSection x) D =
-      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Λ x) D -
-        slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x (Λ' x) D := by
+      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Λ x) D -
+        slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x (Λ' x) D := by
     rw [show ((slotInsertEndoCc (I := I) (M := M) g₀ s Λ -
           slotInsertEndoCc (I := I) (M := M) g₀ s Λ').toSection x) =
         (slotInsertEndoCc (I := I) (M := M) g₀ s Λ).toSection x -
@@ -71,7 +71,7 @@ lemma slotInsertEndoCc_sub (g₀ : SmoothRiemannianMetric I M) (s : ℕ)
   rw [hRHS]
   have hLHS : (show Tensor0SSpace (s + 1) I x →L[ℝ] Tensor0SSpace (s + 1) I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ s (Λ - Λ')).toSection x) D =
-      slotInsertEndoFib (I := I) (M := M) (s + 1) 0 x ((Λ - Λ') x) D := rfl
+      slotInsertEndomorphism (I := I) (M := M) (s + 1) 0 x ((Λ - Λ') x) D := rfl
   rw [hLHS, show ((Λ - Λ') x) = Λ x - Λ' x from rfl,
     slotInsertEndoFib_sub_left (I := I) (M := M) (s + 1) 0 x (Λ x) (Λ' x)]
   rw [sub_apply]
@@ -95,7 +95,7 @@ theorem connectionDifferenceDeTurckVectorFieldInsert_eq_cometricRaise (g₀ g₁
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g₀ 0
           (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref)).toSection x) om =
-      slotInsertEndoFib (I := I) (M := M) 1 0 x
+      slotInsertEndomorphism (I := I) (M := M) 1 0 x
         (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (connectionDifferenceDeTurckVectorFieldSection (I := I) (M := M) g₀ g₁ g_ref x) om w]

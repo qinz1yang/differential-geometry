@@ -76,7 +76,7 @@ theorem mvfderiv_hilbertSchmidtInner
       eventually_of_mem (hS.mem_nhds hxS) hsum
     change mfderiv I 𝓘(ℝ, ℝ) _ x (X x) = _
     rw [hgerm.mfderiv_eq]
-    have h := mvfderiv_finset_sum_apply_at Finset.univ
+    have h := mvfderiv_finset_sum_apply Finset.univ
       (fun i y => inner ℝ (A y (e i y)) (C y (e i y))) (X x)
       (fun i _ => (hAdiff i).inner_bundle (hCdiff i))
     change mfderiv I 𝓘(ℝ, ℝ)

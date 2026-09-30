@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Anci
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
-import DifferentialGeometry.Bundle.Orientation.Map
+import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
 
 set_option autoImplicit false
 
@@ -72,8 +72,8 @@ private theorem isCompatibleOrientation_pullbackOrientationAt (o : TangentOrient
         Trivialization.continuousLinearMapAt_apply_of_mem (R := ℝ) (e := T) (hUMT hfy)]
       rfl
     · unfold pullbackOrientationAt
-      rw [DifferentialGeometry.VectorBundle.map_orientation_trans_between,
-        DifferentialGeometry.VectorBundle.map_orientation_trans_between]
+      rw [← DifferentialGeometry.orientation_map_trans,
+        ← DifferentialGeometry.orientation_map_trans]
       have hMf : (((e y).symm.trans L).trans (L.symm.trans ((e y).trans Mf))) = Mf := by
         apply LinearEquiv.ext
         intro v
@@ -131,7 +131,7 @@ theorem TangentOrientationSection.preservesTangentOrientationAt_pullback
   rw [he]
   change Orientation.map (Fin 3) e.toLinearEquiv
     (Orientation.map (Fin 3) e.toLinearEquiv.symm (o.orientation (f y))) = o.orientation (f y)
-  rw [DifferentialGeometry.VectorBundle.map_orientation_trans_between, LinearEquiv.symm_trans_self,
+  rw [← DifferentialGeometry.orientation_map_trans, LinearEquiv.symm_trans_self,
     Orientation.map_refl]
   rfl
 
@@ -268,7 +268,7 @@ private theorem preservesTangentOrientationAt_comp {A B C : Type*} [TopologicalS
     intro v
     simp only [LinearEquiv.ofBijective_apply, LinearEquiv.trans_apply,
       ContinuousLinearMap.coe_coe, hcomp, ContinuousLinearMap.comp_apply]
-  rw [he, ← DifferentialGeometry.VectorBundle.map_orientation_trans_between, hpf, hpg]
+  rw [he, DifferentialGeometry.orientation_map_trans, hpf, hpg]
   rfl
 
 end Comparison

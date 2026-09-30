@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.CoreBandGluing
 import DifferentialGeometry.Topology.Attachment.Reparametrization
-import DifferentialGeometry.Bundle.Orientation.Map
+import DifferentialGeometry.External.CanonicalTopology.LinearAlgebra.Orientation
 
 set_option autoImplicit false
 
@@ -140,7 +140,7 @@ theorem coreInclusion_inverse_orientation (x : T.core) :
   let B := LinearEquiv.ofBijective (mfderiv (𝓡∂ 3) (𝓡 3) C.coreInclusion x).toLinearMap hj
   refine ⟨hi, hj, ?_⟩
   change Orientation.map (Fin 3) (B.symm.trans A) (N.orientation.orientation (C.coreInclusion x)) = _
-  rw [← h, DifferentialGeometry.VectorBundle.map_orientation_trans_between]
+  rw [← h, ← DifferentialGeometry.orientation_map_trans]
   have heq : (A.symm.trans B).trans (B.symm.trans A) = LinearEquiv.refl ℝ _ := by ext v; simp
   rw [heq, Orientation.map_refl]
   rfl

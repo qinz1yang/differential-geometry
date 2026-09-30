@@ -92,7 +92,7 @@ private theorem exists_ambient_isotopy_closing_arc_homotopy_eqOn_integralCurve
     hΓ.comp ((hτ.contMDiff.comp contMDiff_fst).prodMk contMDiff_snd)
   have hvelocity : ContMDiff (𝓘(ℝ).prod (𝓡∂ 1)) 𝓘(ℝ, Plane) ∞
       (fun q : ℝ × unitInterval => deriv (fun z => Γ (z, q.2)) q.1) :=
-    fun q => DifferentialGeometry.timeDeriv_smoothAt (hΓ q) (by simp)
+    fun q => DifferentialGeometry.contMDiffAt_partial_deriv_fst (hΓ q) (by simp)
   have hv : ContMDiff (𝓘(ℝ, ℝ × ℝ).prod (𝓡∂ 1)) 𝓘(ℝ, Plane) ∞ v :=
     hvelocity.comp ((hτ.contMDiff.comp contMDiff_fst).prodMk contMDiff_snd)
   have hve (r t : ℝ) (u : unitInterval) :

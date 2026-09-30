@@ -202,7 +202,7 @@ private theorem connLowerK
     fin_cases i <;> rfl
   rw [hv]
   rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
-    slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
+    slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval]
   have hu :
       Function.update (![v 2, v 0, v 1] : Fin 3 → E) 0
           (tangentLinearMapToModel
@@ -461,7 +461,7 @@ private theorem daWeight_cap
         (ricciConnectionDifferenceDerivativeMetricWeight (I := I) (M := M) g gm W) y from rfl]
     simp only [ricciConnectionDifferenceDerivativeMetricWeight, unitModel, operatorFieldApplication_toSection,
       ContinuousLinearMap.comp_apply, slotInsertEndoCc_toSection,
-      slotInsertEndoFib_apply_eval]
+      slotInsertEndomorphism_apply_eval]
     have hu :
         Function.update
             ![tangentSpaceModelContinuousLinearEquiv (I := I) y v,
@@ -901,7 +901,7 @@ private theorem daMono_eval
             tangentSpaceModelContinuousLinearEquiv (I := I) x
               (smoothOrthoFrame (I := I) g x b x)] = _
     rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply,
-      slotInsertEndoCc_toSection, slotInsertEndoFib_apply_eval]
+      slotInsertEndoCc_toSection, slotInsertEndomorphism_apply_eval]
     have hv :
         Function.update
             ![tangentSpaceModelContinuousLinearEquiv (I := I) x
@@ -5384,7 +5384,7 @@ private theorem sharp_eq_slot0
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (slotInsertEndoCc (I := I) (M := M) g 0
           (metricComparisonEndomorphismField (I := I) (M := M) g g₁)).toSection x) om =
-      slotInsertEndoFib (I := I) (M := M) 1 0 x
+      slotInsertEndomorphism (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g g₁ x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g g₁ x) om w]

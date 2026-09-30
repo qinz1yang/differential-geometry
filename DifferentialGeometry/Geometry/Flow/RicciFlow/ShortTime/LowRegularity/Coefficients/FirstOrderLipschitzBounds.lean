@@ -280,7 +280,7 @@ private theorem moving_pair
   rw [hv₀]
   rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply]
   simp only [fullSlot3, slotInsertEndoCc_toSection]
-  rw [slotInsertEndoFib_apply_eval]
+  rw [slotInsertEndomorphism_apply_eval]
   have hv :
       Function.update (![v 2, v 0, v 1] : Fin 3 → E) 0
           (tangentLinearMapToModel
@@ -520,7 +520,7 @@ private theorem raise_cross
   rw [hv₀]
   rw [unitModel, operatorFieldApplication_toSection, ContinuousLinearMap.comp_apply]
   simp only [fullSlot3, slotInsertEndoCc_toSection]
-  rw [slotInsertEndoFib_apply_eval]
+  rw [slotInsertEndomorphism_apply_eval]
   simp only [Matrix.cons_val_zero]
   have hv :
       Function.update (![v 2, v 0, v 1] : Fin 3 → E) 0
@@ -1484,7 +1484,7 @@ private theorem sharp_eq_slot0
   rw [show (show Tensor0SSpace 1 I x →L[ℝ] Tensor0SSpace 1 I x from
         (endoSlotZeroCcTensor (I := I) (M := M) g 0
           (metricComparisonEndomorphismField (I := I) (M := M) g gm)).toSection x) om =
-      slotInsertEndoFib (I := I) (M := M) 1 0 x
+      slotInsertEndomorphism (I := I) (M := M) 1 0 x
         (metricComparisonEndomorphism (I := I) g gm x) om from rfl]
   rw [cotangentToDual_slotInsertEndoFib (I := I) (M := M) x
     (metricComparisonEndomorphism (I := I) g gm x) om w]
@@ -3081,7 +3081,7 @@ private theorem sharp_pair
       (-1 : ℝ) • ((metricComparisonEndomorphism (I := I) g gT x).comp
         ((symmRaiseEndo (I := I) (M := M) g (T - U) x).comp
           (metricComparisonEndomorphism (I := I) g gU x))) by rw [neg_one_smul],
-    slotInsertEndoFib_smul_left, neg_one_smul]
+    slotInsertEndomorphism_smul_left, neg_one_smul]
   rw [ContinuousLinearMap.comp_assoc]
 
 omit [CompactSpace M] in

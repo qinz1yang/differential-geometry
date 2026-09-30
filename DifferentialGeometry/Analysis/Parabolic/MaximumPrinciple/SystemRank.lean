@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.RankSpreading
 import DifferentialGeometry.Analysis.Spectral.BundleLowerKyFan
 import DifferentialGeometry.Analysis.TimeInterval
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
-import DifferentialGeometry.Bundle.HomNorm
+import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
 import DifferentialGeometry.Geometry.Metric.BundleContinuity
 
 set_option autoImplicit false

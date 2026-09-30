@@ -1,5 +1,6 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Transition361
+import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.Basic
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
+import Mathlib.Topology.EMetricSpace.Paracompact
 
 open Set Topology
 

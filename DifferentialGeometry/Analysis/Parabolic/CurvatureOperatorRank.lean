@@ -2,7 +2,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.PositiveSystem
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionRegularity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureReactionPositivity
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.CurvatureOperatorRankRigidity
-import DifferentialGeometry.Bundle.HomNorm
+import DifferentialGeometry.Geometry.Metric.VectorBundle.HomNorm
 import DifferentialGeometry.Geometry.Metric.BundleContinuity
 import DifferentialGeometry.Analysis.Spectral.BundleLowerKyFan
 

@@ -5,7 +5,6 @@ import DifferentialGeometry.Geometry.Metric.LocalRealization
 set_option autoImplicit false
 noncomputable section
 open Set Bundle DifferentialGeometry DifferentialGeometry.Geometry
-open DifferentialGeometry.Geometry.Tensor
 open scoped Manifold ContDiff Topology
 namespace DifferentialGeometry.Geometry.Metric
 
@@ -81,7 +80,7 @@ theorem exists_local_metric_extension_of_halfClosed_cylinder_section
   by_cases hq0 : q.2 = 0
   · have hA : 0 < A := by linarith [hq.2.1, hq.2.2]
     obtain ⟨O, hqO, hOleft, B, hB, hBeq⟩ :=
-      exists_contMDiffOn_bilinear_extension_across_cylinder_boundary b hA hb q hq0
+      DifferentialGeometry.BilinearForm.exists_contMDiffOn_bilinear_extension_across_cylinder_boundary b hA hb q hq0
     let C : ∀ y : S × ℝ, TangentSpace (I.prod 𝓘(ℝ)) y →L[ℝ]
         TangentSpace (I.prod 𝓘(ℝ)) y →L[ℝ] ℝ :=
       fun y => (fun C : (E × ℝ) →L[ℝ] (E × ℝ) →L[ℝ] ℝ =>
@@ -89,7 +88,7 @@ theorem exists_local_metric_extension_of_halfClosed_cylinder_section
     have hC : ContMDiffOn (I.prod 𝓘(ℝ))
         ((I.prod 𝓘(ℝ)).prod 𝓘(ℝ, (E × ℝ) →L[ℝ] (E × ℝ) →L[ℝ] ℝ)) ∞
         (fun y : S × ℝ => TotalSpace.mk' ((E × ℝ) →L[ℝ] (E × ℝ) →L[ℝ] ℝ) y (C y)) O :=
-      contMDiffOn_bilinear_symmetrize hB
+      DifferentialGeometry.BilinearForm.contMDiffOn_bilinear_symmetrize hB
     have hCval (y : S × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ)) y) :
         C y v w = (1 / 2 : ℝ) * (B y v w + B y w v) := rfl
     have hCsymm (y : S × ℝ) (v w : TangentSpace (I.prod 𝓘(ℝ)) y) :
