@@ -98,11 +98,11 @@ theorem relativeHomologyMap_comp {X Y W : TopCat.{u}} {A : Set X} {B : Set Y} {D
 
 @[reassoc (attr := simp)]
 lemma relativeHomologyMap_id_comp {X : TopCat.{u}} {A B D : Set X}
-    (hAB : A ⊆ B) (hBD : B ⊆ D) (n : ℕ) :
+    (hAB : Set.MapsTo (𝟙 X) A B) (hBD : Set.MapsTo (𝟙 X) B D) (n : ℕ) :
     relativeHomologyMap R (𝟙 X) hAB n ≫ relativeHomologyMap R (𝟙 X) hBD n =
-      relativeHomologyMap R (𝟙 X) (hAB.trans hBD) n := by
+      relativeHomologyMap R (𝟙 X) (fun _ hx => hBD (hAB hx)) n := by
   simpa only [Category.id_comp] using
-    (relativeHomologyMap_comp R (𝟙 X) (𝟙 X) hAB hBD (hAB.trans hBD) n).symm
+    (relativeHomologyMap_comp R (𝟙 X) (𝟙 X) hAB hBD (fun _ hx => hBD (hAB hx)) n).symm
 
 def scMap {X Y : TopCat.{u}} {A : Set X} {B : Set Y} (f : X ⟶ Y) (hf : Set.MapsTo f A B) :
     (pair X A).chainComplexShortComplex R ⟶ (pair Y B).chainComplexShortComplex R where

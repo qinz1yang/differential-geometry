@@ -329,6 +329,7 @@ theorem coneSplit_upperRoof [Nontrivial ι] (v : ι → E) (a : ι) :
   ext x
   simp [SimplexSplit.upperRoof, coneSplit]
 
+omit [Nonempty ι] [FiniteDimensional ℝ E] in
 theorem facet_boundary_eq_inter_roof [Nontrivial ι]
     (v : ι → E) (hv : AffineIndependent ℝ v) (a : ι) :
     simplexBoundary (facetVertices v a) = simplexFacet v a ∩ (coneSplit a).lowerRoof v := by
