@@ -2,8 +2,7 @@ import DifferentialGeometry.Geometry.Connection.ChartBridge.Connection.Christoff
 import DifferentialGeometry.Geometry.Metric.Coordinates.InverseGramPerturbation
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.JetBounds
 import DifferentialGeometry.Geometry.Metric.Convergence.Coordinates.InverseGram
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.Ricci.AffineDifference
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurckCoefficients.RHS.AbsoluteBound
+import DifferentialGeometry.Geometry.Curvature.Coordinates.Ricci.Perturbation
 
 noncomputable section
 

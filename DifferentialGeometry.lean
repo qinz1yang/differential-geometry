@@ -2134,7 +2134,7 @@ import DifferentialGeometry.Analysis.Spectral.HamiltonGramReaction
 import DifferentialGeometry.Analysis.Spectral.HamiltonTraceContractions
 import DifferentialGeometry.Analysis.Spectral.HeatTrace
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.CompactResolvent
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.ConnectionLaplacianMaximalRegularity
+import DifferentialGeometry.Analysis.Parabolic.MaximalRegularity.TensorSpectralLaplacian
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.DeTurckPrincipalCoefficientIdentity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Existence.Quasilinear
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.LieCorrection.BackgroundDifferences
@@ -2147,7 +2147,6 @@ import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalD
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Deviation
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.SelfBound
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.MetricPrincipalDefect.Symmetry
-import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Nonlinearity
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.LowOrderDecomposition
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.AdjointBounds
 import DifferentialGeometry.Analysis.Spectral.Intrinsic.DeTurck.Pairing.TopOrder.Algebra
@@ -4224,6 +4223,8 @@ import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.Curvature
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.CurvatureFromJet
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.EntryDerivatives
 import DifferentialGeometry.Geometry.Curvature.Coordinates.MetricJet.NormalCoordinateSecondJet
+import DifferentialGeometry.Geometry.Curvature.Coordinates.Ricci.Decomposition
+import DifferentialGeometry.Geometry.Curvature.Coordinates.Ricci.Perturbation
 import DifferentialGeometry.Geometry.Curvature.Coordinates.RiemannTensorBridge
 import DifferentialGeometry.Geometry.Curvature.Coordinates.ScalarTrace
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Bounds.CovariantTwoTensor.FiberNorm
