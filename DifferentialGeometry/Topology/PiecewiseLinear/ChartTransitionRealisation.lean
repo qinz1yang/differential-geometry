@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchTubeCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.InteriorCharts
 
 open Set
 

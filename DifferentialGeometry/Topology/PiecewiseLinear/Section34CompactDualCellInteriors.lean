@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualRecognition
-import DifferentialGeometry.Topology.RegularClosed
+import DifferentialGeometry.Topology.Connected.RegularClosed
 
 open Set Topology
 

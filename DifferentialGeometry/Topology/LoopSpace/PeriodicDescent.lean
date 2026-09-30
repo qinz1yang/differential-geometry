@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.UniformSmoothing
+import DifferentialGeometry.Analysis.Calculus.Periodic.LoopApproximation
 
 
 

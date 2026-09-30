@@ -1,8 +1,8 @@
-import DifferentialGeometry.Topology.PlanarJordan.SaddleIsotopy
+import DifferentialGeometry.Topology.PlanarJordan.Saddle.Isotopy
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleCapNormalForm
 import DifferentialGeometry.Topology.SphereSeparation.SaddleCapTransport
 import DifferentialGeometry.Topology.SphereSeparation.SaddleCapClosingArc
-import DifferentialGeometry.Topology.SphereSeparation.HeightSection
+import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Height.HeightSection
 
 open Set Metric Manifold Schoenflies
 open scoped ContDiff Manifold Topology

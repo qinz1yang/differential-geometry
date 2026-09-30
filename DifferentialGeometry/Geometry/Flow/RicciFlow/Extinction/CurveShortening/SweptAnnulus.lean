@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.CompactConvexSourceLipschitz
-import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+import DifferentialGeometry.Topology.Circle.Lipschitz
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SweptAreaEstimates
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Extinction.CurveShortening.SlopeEstimateReduction

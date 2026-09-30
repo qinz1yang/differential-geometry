@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.CompactSourceDerivative
 import DifferentialGeometry.Geometry.Metric.ConvexSourceLipschitz
-import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+import DifferentialGeometry.Topology.Circle.Lipschitz
 
 section
 

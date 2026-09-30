@@ -1,7 +1,7 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedFixture
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedTubeScale
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.HalfTurn.BoundaryRealization
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.HalfTurn.TubeScaling
 import
-  DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceReadingRestriction
+  DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Restriction
 
 open Set Topology
 open DifferentialGeometry.Topology.Homotopy (StrongDeformationRetract)

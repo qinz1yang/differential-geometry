@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Neck.CrossSectionGraph
 import DifferentialGeometry.Topology.FiberwiseHomeomorph
 import DifferentialGeometry.Geometry.Affine.Interval
-import DifferentialGeometry.Topology.OrderedCollar
+import DifferentialGeometry.Topology.GraphBand.OrderedParametrization
 
 noncomputable section
 open Set DifferentialGeometry

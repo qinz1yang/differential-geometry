@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistorySurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoff
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.Metric.ClosedRegularity
 import DifferentialGeometry.Geometry.Metric.Family.CoefficientExtension
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Neck.BackwardMetric
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.HistoryRestriction
 

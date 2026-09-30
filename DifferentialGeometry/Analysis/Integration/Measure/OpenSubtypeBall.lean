@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Geometry.Metric.Restriction.Ball
 import DifferentialGeometry.Geometry.Comparison.Distance.Continuity
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 

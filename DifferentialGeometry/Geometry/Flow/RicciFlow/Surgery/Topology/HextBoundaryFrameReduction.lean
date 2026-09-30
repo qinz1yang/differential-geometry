@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalCappingCompletion
-import DifferentialGeometry.Topology.ThreeManifold.CoreCapOppositeSides
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.CoreCapIntersection
 
 set_option autoImplicit false
 noncomputable section

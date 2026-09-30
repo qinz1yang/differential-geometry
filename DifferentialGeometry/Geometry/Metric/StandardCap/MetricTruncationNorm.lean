@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Metric.StandardCap.MetricTruncation
 import DifferentialGeometry.Geometry.Metric.StandardCap.EndTranslations
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Geometry.Metric.InterpolationNorm
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction

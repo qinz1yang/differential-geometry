@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCell
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetLocalModel
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.DoubleLocus.LocalArcModel
 
 open Set Topology
 namespace DifferentialGeometry.Topology.PiecewiseLinear

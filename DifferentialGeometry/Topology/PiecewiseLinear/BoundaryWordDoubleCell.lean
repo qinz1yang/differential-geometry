@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordLoopClass
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwo
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DiskInDouble
 
 open Set Topology
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.NeighborhoodRetraction
 import DifferentialGeometry.Analysis.Calculus.Compactness.Lipschitz
 import DifferentialGeometry.Topology.Manifold.AddCircle.Circle
-import DifferentialGeometry.Topology.LoopSpace.CircleMetric
+import DifferentialGeometry.Topology.Circle.Metric
 import Mathlib.Topology.MetricSpace.Antilipschitz
 
 noncomputable section

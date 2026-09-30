@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.OrientationCoverDeck
+import DifferentialGeometry.Topology.Manifold.OrientationCover.Deck
 import DifferentialGeometry.Geometry.Metric.CoveringPullback
 
 

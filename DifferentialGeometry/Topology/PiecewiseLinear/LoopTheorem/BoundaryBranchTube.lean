@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchTubeCharts
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchArc
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.InteriorCharts
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.Arc
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryAdaptation
 
 open Set Topology Metric Filter

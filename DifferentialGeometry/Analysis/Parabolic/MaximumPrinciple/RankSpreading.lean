@@ -5,7 +5,7 @@ import DifferentialGeometry.Analysis.Parabolic.MaximumPrinciple.InitialData
 import DifferentialGeometry.Geometry.Metric.Family.Regularity.DifferentialOperator
 import DifferentialGeometry.Analysis.FiniteDimensional.Rank
 import DifferentialGeometry.Topology.ConnectedCompactNeighborhood
-import DifferentialGeometry.Topology.MonotoneStratification
+import DifferentialGeometry.Topology.Order.LevelSetPartition
 import Mathlib.Geometry.Manifold.BumpFunction
 import Mathlib.Order.Lattice.Nat
 import Mathlib.Tactic.Linarith

@@ -7,7 +7,7 @@ import DifferentialGeometry.Geometry.Metric.StandardCap.CompactDoubleCharts
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Geometry.Metric.Coordinates.ChartGram
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Compactness.Fields.Convergence
 import DifferentialGeometry.Topology.Exhaustion

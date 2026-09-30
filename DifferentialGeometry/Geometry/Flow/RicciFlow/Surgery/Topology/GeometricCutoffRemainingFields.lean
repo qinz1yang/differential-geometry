@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.EndNeckFields
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Flat
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 

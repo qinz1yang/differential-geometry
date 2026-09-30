@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.FiniteHisto
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.History
 import DifferentialGeometry.Topology.Embedding.Diffeomorph
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingOpenTarget
-import DifferentialGeometry.Topology.ThreeManifold.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 
 noncomputable section

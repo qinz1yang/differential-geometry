@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.ThinAnnulus
+import DifferentialGeometry.Analysis.Complex.Annulus.ThinAttachment
 import DifferentialGeometry.Analysis.Sobolev.Interpolation.Cylinder
 import DifferentialGeometry.Analysis.Sobolev.Euclidean.DirichletEnergy.Polar
 import Mathlib.Analysis.Calculus.FDeriv.Add

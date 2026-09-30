@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Morse.RegularLevel.CriticalSeparation
 import DifferentialGeometry.Topology.Morse.RegularLevel.SaddleTransport
-import DifferentialGeometry.Topology.PlanarJordan.SaddleCapSides
+import DifferentialGeometry.Topology.PlanarJordan.Saddle.CapSides
 
 open Set Metric Manifold
 open scoped ContDiff

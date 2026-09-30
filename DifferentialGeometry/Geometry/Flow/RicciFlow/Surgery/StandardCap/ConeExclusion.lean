@@ -6,7 +6,7 @@ import Mathlib.Analysis.Normed.Module.RCLike.Real
 import DifferentialGeometry.Geometry.Comparison.Toponogov.PuncturedConeConvergence
 import DifferentialGeometry.Geometry.Metric.ConeChart.Construction
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.MapDistance
 import DifferentialGeometry.Geometry.Metric.Convergence.Metric.InverseComposition
 import DifferentialGeometry.Geometry.Metric.Distance.LocalBall

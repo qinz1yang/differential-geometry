@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ActualFillingBoundaryCollar
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentPairedCornerModel
+import DifferentialGeometry.Topology.PiecewiseLinear.Collar.PairedFillingRegions
 
 open Set Topology
 

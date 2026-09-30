@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Co
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.StandardSolution.Lifetime.Value
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 noncomputable section

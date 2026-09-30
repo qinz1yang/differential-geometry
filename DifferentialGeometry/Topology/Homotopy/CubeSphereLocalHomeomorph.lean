@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Homotopy.CubeSphereProjection
-import DifferentialGeometry.Topology.Homotopy.OpenCollapseLocalHomeomorph
+import DifferentialGeometry.Topology.Compactification.OpenCollapseLocalHomeomorph
 
 noncomputable section
 

@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.MinimalSurface.Plateau.CompactHomogeneousRe
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.MetricCompleteness
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.SelectedConformalDisk
 import DifferentialGeometry.Geometry.Measure.Area.SpanningComponent
-import DifferentialGeometry.Topology.LoopSpace.RegularDerivativeBounds
+import DifferentialGeometry.Geometry.Metric.LoopSpace.C1DerivativeBounds
 
 
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.MinimizingLog
-import DifferentialGeometry.Topology.Compactness.DiagonalNeighborhood
+import DifferentialGeometry.Topology.EMetricSpace.CompactDiagonal
 
 
 

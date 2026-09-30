@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedTransport
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
-import DifferentialGeometry.Topology.Manifold.OrientedBallChartMap
+import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Map
 
 set_option autoImplicit false
 noncomputable section

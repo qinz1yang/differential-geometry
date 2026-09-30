@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Connected.MaximumPrinciple
 import DifferentialGeometry.Topology.Connected.BallInterior
-import DifferentialGeometry.Topology.Connected.CircleCaps
+import DifferentialGeometry.Topology.Circle.ConnectedSubsets
 
 section
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Analysis.Sobolev.Euclidean.Replacement.BoundaryLensE
 import DifferentialGeometry.Analysis.Complex.BoundaryLens.Geometry
 import DifferentialGeometry.Analysis.Calculus.Interpolation.MonotoneArc
 import DifferentialGeometry.Analysis.Sobolev.Interpolation.BoundaryCap
-import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
+import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Defs
 
 noncomputable section
 

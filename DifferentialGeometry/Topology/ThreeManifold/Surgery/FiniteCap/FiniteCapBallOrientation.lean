@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCoreOrientation
-import DifferentialGeometry.Topology.Manifold.ClosedBallOrientation
+import DifferentialGeometry.Topology.Manifold.ClosedBall.Orientation
 
 set_option autoImplicit false
 noncomputable section

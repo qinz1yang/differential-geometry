@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Opens
 import DifferentialGeometry.Topology.Manifold.ComponentDiffeomorph
-import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 
 noncomputable section

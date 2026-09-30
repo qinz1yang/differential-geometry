@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CutAndPaste
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Cutting
 
 open Set Topology
 

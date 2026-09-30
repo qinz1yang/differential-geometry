@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildParent
 import DifferentialGeometry.Topology.Manifold.InteriorImage
-import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
+import DifferentialGeometry.Topology.Homotopy.Retraction
 import Mathlib.Geometry.Manifold.SmoothEmbedding
 import Mathlib.Topology.Homotopy.Equiv
 

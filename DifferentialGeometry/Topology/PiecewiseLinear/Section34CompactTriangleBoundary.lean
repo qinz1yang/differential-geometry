@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ConeSphereBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellCone
 import DifferentialGeometry.Topology.PiecewiseLinear.DualCellVertexInterface
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleTraces
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood.TriangleTrace
 
 open Set
 

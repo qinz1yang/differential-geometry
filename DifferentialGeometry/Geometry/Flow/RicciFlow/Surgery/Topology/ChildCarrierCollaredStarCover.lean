@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ChildCarrie
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.PuncturedCoreComponent
 import DifferentialGeometry.Topology.FundamentalGroup.HomotopyEquiv
 import DifferentialGeometry.Topology.FundamentalGroup.Sphere
-import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
+import DifferentialGeometry.Topology.Homotopy.Retraction
 
 set_option autoImplicit false
 

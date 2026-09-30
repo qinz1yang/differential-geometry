@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.SphereSeparation.BicollarOrientation
-import DifferentialGeometry.Topology.SphereSeparation.Incidence
+import DifferentialGeometry.Topology.Connected.Separation.Local
 
 set_option autoImplicit false
 

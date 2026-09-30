@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.SpanningDiskPrism
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DiskPushOff
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Boundary.PushOff
 
 open Set Topology
 

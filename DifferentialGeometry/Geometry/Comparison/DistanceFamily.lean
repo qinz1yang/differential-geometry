@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Exponential.DiagonalExponential.FixedBasePa
 import DifferentialGeometry.Geometry.Metric.Family.LocalEquivalence
 import DifferentialGeometry.Geometry.Comparison.LocalDistanceComparison
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper
-import DifferentialGeometry.Topology.CompactFamily
+import DifferentialGeometry.Topology.Compactness.Family
 import DifferentialGeometry.Topology.Order.Interval
 import Mathlib.Topology.Order.ProjIcc
 import Mathlib.Topology.Semicontinuity.Basic

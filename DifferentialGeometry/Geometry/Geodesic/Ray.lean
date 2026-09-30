@@ -1,5 +1,5 @@
-import DifferentialGeometry.Geometry.Metric.Ray
-import DifferentialGeometry.Geometry.Metric.Segment
+import DifferentialGeometry.Topology.MetricSpace.Geodesic.Ray
+import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
 import DifferentialGeometry.Geometry.Geodesic.EquationGerm
 import DifferentialGeometry.Geometry.Exponential.Intrinsic.Geodesic.Smoothness
 import DifferentialGeometry.Geometry.Comparison.HopfRinow.Proper

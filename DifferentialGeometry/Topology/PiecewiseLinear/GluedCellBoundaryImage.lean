@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CellGluing
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.SourceGluing
 
 open Set
 

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedCellSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactOuterFace
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchRecognition
+import DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCell.OuterBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.PatchCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCellSeparation
 
 open Set Topology

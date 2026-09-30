@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardCylinderCover
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.SphereChartReparametrization
-import DifferentialGeometry.Topology.Manifold.BallChartOrientation
+import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Orientation
 import DifferentialGeometry.Topology.ThreeManifold.AntipodalPresentation
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Boundary
 import Mathlib.Analysis.Normed.Module.Ball.Pointwise

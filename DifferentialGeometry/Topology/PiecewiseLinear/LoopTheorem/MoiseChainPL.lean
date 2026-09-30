@@ -1,8 +1,8 @@
 import DifferentialGeometry.Topology.Homotopy.FreeLoopNullhomotopy
 import DifferentialGeometry.Topology.PiecewiseLinear.MoiseChain
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskFilling
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SourceNormalSystem
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDiskBoundaryWord
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.SimplicialConstruction
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryWord.EmbeddedDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronLocalConnectedness
 
 open Set Topology

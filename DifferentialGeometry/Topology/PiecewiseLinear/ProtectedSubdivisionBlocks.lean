@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ProtectedSubdivisionStarInj
 import DifferentialGeometry.Topology.PiecewiseLinear.StableCrossingBlockRecentre
 import DifferentialGeometry.Topology.PiecewiseLinear.WallSystemBlocks
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SingularSetOfCrossing
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.DoubleLocus.CrossingCharts
 
 open Set Topology Metric
 

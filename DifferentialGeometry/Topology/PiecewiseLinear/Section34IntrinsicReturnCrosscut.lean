@@ -60,7 +60,7 @@ theorem exists_section34_model_trace_crosscut_in_return_disk
   obtain ⟨x, hxD, hxF⟩ := hdirty
   obtain ⟨t, hxt⟩ := mem_iUnion.mp hxF
   obtain ⟨Q, v, hQ, hv, himageQ, hfrontQ⟩ :=
-    exists_section34FaceTorus_intrinsic_model hcut hgraph t
+    exists_PL_solid_torus_model_of_faceTorus hcut hgraph t
   obtain ⟨ι, hι, F, hF, -, hmodeltrace, hactual, hdis, htrace, -⟩ :=
     exists_finite_section34Trace_model_circles hcut hf₁ hinv t hQ hv himageQ hfrontQ
   let _ := hι

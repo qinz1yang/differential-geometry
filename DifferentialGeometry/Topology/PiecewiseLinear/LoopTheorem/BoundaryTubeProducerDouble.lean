@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchEndChart
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.EndpointChart
 
 open Set Topology
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Analysis.Convex.ProperConeFace
 import DifferentialGeometry.Tensor.RSTensor.Functoriality.Pullback
-import DifferentialGeometry.Geometry.Metric.QuadraticBounds.Nullspace
+import DifferentialGeometry.Tensor.RSTensor.Kernel
 
 set_option autoImplicit false
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHalfSpace
+import DifferentialGeometry.Topology.PiecewiseLinear.DoubleManifold.HalfSpace
 import Mathlib.Analysis.InnerProductSpace.PiL2
 import Mathlib.Topology.Algebra.Module.FiniteDimension
 import Mathlib.Topology.OpenPartialHomeomorph.Composition

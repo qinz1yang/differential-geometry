@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph.Orientation
-import DifferentialGeometry.Topology.Manifold.SmoothOrientationComparison
-import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Comparison
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
 
 set_option autoImplicit false
 

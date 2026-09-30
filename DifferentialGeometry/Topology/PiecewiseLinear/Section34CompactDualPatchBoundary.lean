@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualSubcomplex
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.Subcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualTetraBoundary
 
 open Set
@@ -143,7 +143,7 @@ theorem compactDualCutBoundary_patch_eq_union
     have heL : e.1 ∈ L.faces := ⟨e.2.1, e.2.2.2⟩
     have hi := graphDualCell_space_inter_of_mem M L hLM hLc heL hvE hu huv.symm
     exact hi.symm.subset.trans inter_subset_left
-  obtain ⟨q, hq, hqb⟩ := exists_isPLHomeomorphOn_compactDualPatch_with_boundary M K hKM x
+  obtain ⟨q, hq, hqb⟩ := exists_isPLHomeomorphOn_compact_dual_patch_with_boundary M K hKM x
   have hlocal := isPLCellOn_id_of_isPLBall hq
   have hcanonical := isPLCellOn_compactDualCutCell_of_isPLBall M K hKM (.patch x) ⟨q, hq⟩
   rw [hcanonical.boundary_eq hlocal, hqb, inter_union_distrib_left,

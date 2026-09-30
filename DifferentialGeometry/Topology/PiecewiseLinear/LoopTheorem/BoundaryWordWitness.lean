@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallHomotopy
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryBranchDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.Descent
 
 open Set Topology
 

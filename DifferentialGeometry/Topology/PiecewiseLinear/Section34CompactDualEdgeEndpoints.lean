@@ -65,7 +65,7 @@ theorem compactDualCutBoundary_edgeArc_eq_pair
         exact ⟨fun h => ⟨⟨h.1, hRS h.2⟩, h.2⟩, fun h => ⟨h.1.1, h.2⟩⟩
       _ = (splittingDisk S e.1 heS).space ∩ R := by
         rw [splittingDisk_space_inter_subcomplex M S hSM heS]
-      _ = _ := splittingDisk_inter_tetraResidual_eq_upperLink S heS htS e.2.2.1 t.2.2 hmax
+      _ = _ := splittingDisk_inter_tetra_residual_eq_upperLink S heS htS e.2.2.1 t.2.2 hmax
   obtain ⟨B, -, hB, hball⟩ := exists_subcomplex_compactDualEdgeArc M K hKM i
   have hG : IsPLBall 1 G.space := (hB.trans htrace) ▸ hball
   obtain ⟨q, hq⟩ := hG

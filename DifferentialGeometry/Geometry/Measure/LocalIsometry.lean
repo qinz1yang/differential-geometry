@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.Distance.LocalPullCompactness
 import DifferentialGeometry.Geometry.Metric.OpenEmbeddingPullback
 import DifferentialGeometry.Geometry.Measure.OpenSubtypeVolume
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 import DifferentialGeometry.Geometry.Metric.DistancePullback
 import DifferentialGeometry.Geometry.Metric.Distance.Ball

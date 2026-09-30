@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Nonc
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.NoncompactShrinkerCover
 import DifferentialGeometry.Topology.Covering.CylinderQuotientModels
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.CylinderAsymptoticVolumeRatio
-import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
 
 set_option autoImplicit false
 

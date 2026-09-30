@@ -8,13 +8,13 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckRestriction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckCurvatureDistance
 import DifferentialGeometry.Geometry.Metric.CurveVariation.Restriction
-import DifferentialGeometry.Geometry.Metric.Segment
+import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
 import DifferentialGeometry.Geometry.Neck.ScalarSeparation
 import DifferentialGeometry.Geometry.Neck.SpatialTolerance
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Topology.Compactness.ConvergentFamily
 import DifferentialGeometry.Topology.Compactness.Cocompact
-import DifferentialGeometry.Topology.DenseEmbedding
+import DifferentialGeometry.Topology.Embedding.Dense
 import DifferentialGeometry.Topology.Manifold.ProductChartCollar
 import DifferentialGeometry.Topology.Homeomorph.CylinderChain
 import DifferentialGeometry.Topology.Homeomorph.Interior

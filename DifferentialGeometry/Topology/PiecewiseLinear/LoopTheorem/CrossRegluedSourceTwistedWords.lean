@@ -1,6 +1,6 @@
 import
-  DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceRectangleBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceTwistedReading
+  DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.RectangleBoundary
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.HalfTurn.SourceCoordinates
 
 open Set Topology
 

@@ -2,14 +2,14 @@ import DifferentialGeometry.Analysis.Complex.Argument
 import DifferentialGeometry.Analysis.Complex.CircleArc
 import Mathlib.Analysis.Calculus.Deriv.MeanValue
 import Mathlib.Analysis.Real.Pi.Bounds
-import DifferentialGeometry.Topology.LoopSpace.PeriodicExtension
+import DifferentialGeometry.Topology.Circle.PeriodicExtension
 import DifferentialGeometry.Topology.Homeomorph.AffinePeriodic
 import DifferentialGeometry.Topology.LoopSpace.JoinedLoop
 import DifferentialGeometry.Topology.LoopSpace.AffineLift
-import DifferentialGeometry.Topology.LoopSpace.CircleMetric
+import DifferentialGeometry.Topology.Circle.Metric
 import Mathlib.Analysis.Normed.Module.Normalize
 import DifferentialGeometry.Analysis.Complex.BoundaryLens.Geometry
-import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism.Plane
+import DifferentialGeometry.Topology.Homeomorph.Radial.Plane
 
 noncomputable section
 

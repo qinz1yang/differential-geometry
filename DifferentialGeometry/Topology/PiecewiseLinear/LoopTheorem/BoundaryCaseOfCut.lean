@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCandidatesOfCut
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseFromSource
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolvedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.Cell
 import Mathlib.Topology.Subpath
 
 open Set Topology

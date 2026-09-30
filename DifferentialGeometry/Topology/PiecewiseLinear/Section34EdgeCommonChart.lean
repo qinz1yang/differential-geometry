@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LocallyFiniteManifoldCofaces
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConnectedCarriers
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.ConnectedCarriers
 
 open Set
 

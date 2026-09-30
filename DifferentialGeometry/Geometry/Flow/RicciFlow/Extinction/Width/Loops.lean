@@ -17,8 +17,8 @@ import DifferentialGeometry.Topology.LoopSpace.Regular
 import DifferentialGeometry.Topology.Homotopy.Map
 import DifferentialGeometry.Analysis.Calculus.Derivative.AffineCurveFamilies
 import DifferentialGeometry.Analysis.Calculus.IteratedDerivative.Families
-import DifferentialGeometry.Topology.LoopSpace.SmoothingSuperposition
-import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+import DifferentialGeometry.Analysis.Calculus.Periodic.LoopSuperposition
+import DifferentialGeometry.Topology.Circle.Lipschitz
 import DifferentialGeometry.Topology.MetricSpace.CompactNeighborhood
 import DifferentialGeometry.Geometry.Metric.SmoothLipschitz
 

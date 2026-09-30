@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RfsTopologyFrontier
-import DifferentialGeometry.Topology.VanKampen.HomotopyRetract
+import DifferentialGeometry.Topology.Homotopy.Retraction
 import DifferentialGeometry.Topology.VanKampen.SimplyConnectedUnion
 
 set_option autoImplicit false

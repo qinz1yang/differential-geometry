@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCoreMetricEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCutoffGeometryReduction
-import DifferentialGeometry.Topology.ThreeManifold.CutCapWithoutCuts
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.WithoutCuts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PositiveComponentSpaceForm
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctionCutCapEvent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledExtinctionAssembly

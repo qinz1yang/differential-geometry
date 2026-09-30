@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SurfaceDiskNeighborhood
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34RelativeCoincidentPush
+import DifferentialGeometry.Topology.PiecewiseLinear.Surface.Compression.CoincidentPatch
 
 open Set Topology
 

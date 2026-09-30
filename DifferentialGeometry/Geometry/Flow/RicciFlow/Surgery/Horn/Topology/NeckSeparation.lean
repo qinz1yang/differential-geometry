@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.SphereSeparation.ProductEnds
 import DifferentialGeometry.Topology.SphereSeparation.Transport
 import DifferentialGeometry.Topology.Covering.CylindricalModel
-import DifferentialGeometry.Topology.SphereSeparation.BicollarComponents
+import DifferentialGeometry.Topology.Collar.TwoSided.Components
 import DifferentialGeometry.Topology.SphereSeparation.BicollarLineReparametrization
 import DifferentialGeometry.Geometry.Neck.OpenImageCompactSide
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Horn.Coordinates.NeckChart

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.PairedBallLoop
-import DifferentialGeometry.Topology.ThreeManifold.PairedBallMerge
-import DifferentialGeometry.Topology.ThreeManifold.PairedBallEmpty
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Merge
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.GraphGluing.PairedBall.Empty
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedCongruence

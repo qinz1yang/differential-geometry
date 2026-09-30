@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticCap
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 import DifferentialGeometry.Geometry.Metric.Convergence.Time.CompactBounds
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Limit.Metric.ScalarConvergence
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 noncomputable section

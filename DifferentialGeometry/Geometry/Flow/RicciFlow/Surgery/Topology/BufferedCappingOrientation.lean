@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTr
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BufferedFiniteCappingSmooth
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.WorldBridges
 import DifferentialGeometry.Topology.Manifold.OrientationTransport
-import DifferentialGeometry.Topology.Manifold.ClosedBallOrientation
+import DifferentialGeometry.Topology.Manifold.ClosedBall.Orientation
 import DifferentialGeometry.Topology.Manifold.BallChartAffine
 import DifferentialGeometry.Topology.Manifold.SmoothModelTransportSource
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CutCoreOrientation

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34ControlledVertexCells
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.VertexCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34IncidentBufferSubdivision
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34OuterTorusTransport
 
@@ -23,23 +23,23 @@ theorem exists_section34_outer_torus_carriers
     (hman : IsCombinatorialManifoldWithBoundary 3 𝒦'.complex)
     (car : Section34VertexIndex 𝒦 𝒦' → Finset Ea)
     (hcar : ∀ w, car w ∈ 𝒦.complex.faces)
-    (hCcar : ∀ w, section34GraphVertexCell 𝒦 𝒦' w ⊆
+    (hCcar : ∀ w, graphVertexCell 𝒦 𝒦' w ⊆
       Section34CarrierSupport 𝒦 (car w))
     (ψ : M₁ → ℝ) (hψc : ContinuousOn ψ U)
-    (hsmall : ∀ w, ∀ x ∈ section34GraphVertexCell 𝒦 𝒦' w,
-      ∀ y ∈ section34GraphVertexCell 𝒦 𝒦' w, ∀ z ∈ section34GraphVertexCell 𝒦 𝒦' w,
+    (hsmall : ∀ w, ∀ x ∈ graphVertexCell 𝒦 𝒦' w,
+      ∀ y ∈ graphVertexCell 𝒦 𝒦' w, ∀ z ∈ graphVertexCell 𝒦 𝒦' w,
         dist (h y) (h z) < ψ x)
     (ct : Section34SimplexIndex 𝒦 3 → OpenPartialHomeomorph M₂ E3)
     (hct : ∀ s, ct s ∈ (plGroupoid 3).maximalAtlas M₂)
     (Sd : Section34SimplexIndex 𝒦 3 → Set E3)
     (hspine : ∀ s, IsSpine (Sd s) (ct s '' (h '' simplexRim 𝒦 s.1)))
     (hCbuffer : ∀ (w : Section34VertexIndex 𝒦 𝒦') (s : Section34SimplexIndex 𝒦 3),
-      Section34Incident w.1 s.1 → h '' section34GraphVertexCell 𝒦 𝒦' w ⊆
+      Section34Incident w.1 s.1 → h '' graphVertexCell 𝒦 𝒦' w ⊆
         (ct s).source ∩ (ct s) ⁻¹' interior (Sd s)) :
     ∃ Q : Section34VertexIndex 𝒦 𝒦' → Set M₂,
-      (∀ w, IsOpen (Q w) ∧ h '' section34GraphVertexCell 𝒦 𝒦' w ⊆ interior (Q w) ∧
+      (∀ w, IsOpen (Q w) ∧ h '' graphVertexCell 𝒦 𝒦' w ⊆ interior (Q w) ∧
         Q w ⊆ H (car w) ∧
-        (∀ x ∈ section34GraphVertexCell 𝒦 𝒦' w, ∀ y ∈ Q w, ∀ z ∈ Q w,
+        (∀ x ∈ graphVertexCell 𝒦 𝒦' w, ∀ y ∈ Q w, ∀ z ∈ Q w,
           dist y z < ψ x) ∧
         (∀ s : Section34SimplexIndex 𝒦 3,
           (Q w ∩ h '' simplexBody 𝒦 s.1).Nonempty ↔ Section34Incident w.1 s.1) ∧
@@ -47,16 +47,16 @@ theorem exists_section34_outer_torus_carriers
           Section34Incident w.1 s.1 → Q w ⊆ interior (H s.1)) ∧
       Section34OuterTorus 𝒦 𝒦' h Q ct Sd := by
   classical
-  let C := section34GraphVertexCell 𝒦 𝒦'
-  have hcell : ∀ w, IsPLCellOn 3 (C w) (section34GraphVertexBoundary 𝒦 𝒦' w) :=
-    isPLCellOn_section34GraphVertexCell hsub hmap hman
+  let C := graphVertexCell 𝒦 𝒦'
+  have hcell : ∀ w, IsPLCellOn 3 (C w) (graphVertexCellBoundary 𝒦 𝒦' w) :=
+    isPLCellOn_graphVertexCell hsub hmap hman
   have hCc : ∀ w, IsCompact (C w) := fun w => (hcell w).isCompact
   have hCU : ∀ w, C w ⊆ U := fun w =>
-    (section34GraphVertexCell_subset_carrierSupport w).trans
+    (graphVertexCell_subset_simplexCarrierSupport w).trans
       ((locallyFinite_section34CarrierSupport 𝒦').1 w.1)
   have hCinc : ∀ w (s : Section34SimplexIndex 𝒦 3),
       (C w ∩ simplexBody 𝒦 s.1).Nonempty ↔ Section34Incident w.1 s.1 :=
-    fun w s => section34GraphVertexCell_inter_simplexBody_nonempty_iff hsub hmap w s.2.1
+    fun w s => graphVertexCell_inter_simplexBody_nonempty_iff hsub hmap w s.2.1
   have hlf : LocallyFinite fun s : Section34SimplexIndex 𝒦 3 =>
       (Subtype.val : U → M₁) ⁻¹' simplexBody 𝒦 s.1 := by
     let f : Section34SimplexIndex 𝒦 3 → 𝒦.complex.faces := fun s => ⟨s.1, s.2.1⟩
@@ -82,7 +82,7 @@ theorem exists_section34_outer_torus_carriers
     mem_iInter₂.mpr fun s hs => hCbuffer w s hs hy
   obtain ⟨Q, hQ⟩ := exists_section34_graph_cell_carrier_neighborhoods hU hh hH C
     hCc hCU hCinc car hcar hCcar
-    (fun w s => section34GraphVertexCell_subset_incident_carrierSupport hsub hmap w s.2.1)
+    (fun w s => graphVertexCell_subset_incident_simplexCarrierSupport hsub hmap w s.2.1)
     V hV hCV ψ hψc hsmall
   have hQbuffer : ∀ (w : Section34VertexIndex 𝒦 𝒦') (s : Section34SimplexIndex 𝒦 3),
       Section34Incident w.1 s.1 → Q w ⊆
@@ -98,7 +98,7 @@ theorem exists_section34_outer_torus_carriers
     rintro _ ⟨x, hx, rfl⟩
     have hx' := (graphSkeletonSpace_inter_simplexBody_eq_simplexRim 𝒦 s).superset hx
     have hΓcov := subset_of_mem_nhdsSet
-      (iUnion_section34GraphVertexCell_mem_nhdsSet hU hsub hmap)
+      (iUnion_graphVertexCell_mem_nhdsSet hU hsub hmap)
     obtain ⟨w, hw⟩ := mem_iUnion.mp (hΓcov hx'.1)
     exact mem_iUnion₂.mpr ⟨w, (hCinc w s).mp ⟨x, hw, hx'.2⟩,
       (hQ w).2.1 (mem_image_of_mem h hw)⟩

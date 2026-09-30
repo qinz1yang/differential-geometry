@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BranchSlideConjugation
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Carrier
 
 open Set Topology
 open scoped Manifold

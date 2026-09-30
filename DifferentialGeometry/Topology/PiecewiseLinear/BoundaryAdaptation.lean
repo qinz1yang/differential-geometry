@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryDouble
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolvedCell
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalCellProperness
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryHalfSpace
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.Cell
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Properness
+import DifferentialGeometry.Topology.PiecewiseLinear.DoubleManifold.HalfSpace
 
 open Set Topology
 

@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.FiniteBallUnion
 import DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellIncidence
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCellSeparation
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualTraces
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchRecognition
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.PatchCells
 import DifferentialGeometry.Topology.SimplicialComplex.EdgeGraph
 
 open Set Topology

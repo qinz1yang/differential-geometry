@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CylinderSplice
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchCarrier
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDescent
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Carrier
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Complexity
 import DifferentialGeometry.Topology.PiecewiseLinear.PLImage
 
 open Set

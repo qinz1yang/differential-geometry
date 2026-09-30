@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.AnnulusBoundary
 import DifferentialGeometry.Topology.PiecewiseLinear.PlanarDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceCircleNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RefinedResidualCells
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CutExhaustion
+import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhood.Restriction
 import DifferentialGeometry.Topology.PlanarJordan.CompactRegion
 
 open Set Topology

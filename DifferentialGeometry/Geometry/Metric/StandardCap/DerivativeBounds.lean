@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.StandardCap.EndTranslations
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
 import DifferentialGeometry.Geometry.Metric.Tensor.IsometryNorm
 import DifferentialGeometry.Geometry.Metric.Tensor.CompactBounds
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 noncomputable section

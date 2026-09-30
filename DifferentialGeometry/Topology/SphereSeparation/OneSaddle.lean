@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleBand
 import DifferentialGeometry.Topology.SphereSeparation.OneSaddleCutoffStraightening
-import DifferentialGeometry.Topology.SphereSeparation.TwoCriticalPoints
+import DifferentialGeometry.Topology.ThreeManifold.Schoenflies.Saddle.TwoCriticalPoints
 import DifferentialGeometry.Topology.Morse.ScalarComposition
 import DifferentialGeometry.Topology.Morse.ConstantGerm
 import DifferentialGeometry.Topology.Morse.Naturality

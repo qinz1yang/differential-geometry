@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentCarrierBandStep
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentMotionComposition
+import DifferentialGeometry.Topology.PiecewiseLinear.Homeomorph.SupportedComposition
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34RetainedTraceNonempty
 
 open Set Topology
@@ -64,7 +64,7 @@ theorem exists_section34_singleton_carrier_family_of_current_trace
     have hZ₁ := disjoint_union_right.mpr
       ⟨disjoint_union_right.mpr ⟨hArim₁, hBrim₁⟩, hout₁⟩
     obtain ⟨hIsub, -, hK', hK'S, hfix', hPL', -, -, hkeep', -, htrace'⟩ :=
-      supported_second_trace_motion_comp (Γ := fun k : Fin (cnt e) => Pg e k.val)
+      supported_trace_motion_comp (Γ := fun k : Fin (cnt e) => Pg e k.val)
         Ψ Φ hK hK₁ hKS hK₁S (interior_mono hSpCc)
         hfix hfix₁ hΨ hΦ hZ hZ₁ I J hkeep hkeep₁ htrace₁
     have hArim' := disjoint_union_left.mpr ⟨hArim, hArim₁⟩

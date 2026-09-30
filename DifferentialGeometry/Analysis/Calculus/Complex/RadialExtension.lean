@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.RadialHomeomorphism
+import DifferentialGeometry.Topology.Homeomorph.Radial.Disk
 import Mathlib.Analysis.SpecialFunctions.Complex.LogDeriv
 import Mathlib.Analysis.SpecialFunctions.ExpDeriv
 import Mathlib.LinearAlgebra.Complex.Determinant

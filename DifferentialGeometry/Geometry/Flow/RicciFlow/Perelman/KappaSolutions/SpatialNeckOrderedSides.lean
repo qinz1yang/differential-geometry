@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckOrientedSides
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.SpatialNeckAmbientTopology
-import DifferentialGeometry.Topology.SphereSeparation.FiniteBicollarOrder
+import DifferentialGeometry.Topology.Collar.TwoSided.FiniteOrder
 
 set_option autoImplicit false
 

@@ -64,7 +64,7 @@ theorem exists_section34_relative_vertex_signs [FiniteDimensional ℝ Ea]
     intro x hx y hy hxy
     exact congrArg Subtype.val (hh.injective (show U.domRestrict h ⟨x, hx⟩ =
       U.domRestrict h ⟨y, hy⟩ from hxy))
-  have hcarrier := section34_vertex_carrier_connected
+  have hcarrier := isConnected_vertex_carrier_union
     hU hh hframe hprep hsep hDvsub hDv hDvQ hQlf hDnbhd
   choose b hb hbQ using exists_section34_vertex_chart hframe htor
   have hHA (w : Section34VertexIndex 𝒦 𝒦') :

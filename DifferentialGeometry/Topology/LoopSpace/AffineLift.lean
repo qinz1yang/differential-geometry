@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.LoopSpace.PeriodicDescent
-import DifferentialGeometry.Topology.LoopSpace.Lipschitz
+import DifferentialGeometry.Topology.Circle.Lipschitz
 
 
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundarySurgeryCellPredicate
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryBranch.ReplacementCell
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWitnessOfCell
 
 open Set Topology

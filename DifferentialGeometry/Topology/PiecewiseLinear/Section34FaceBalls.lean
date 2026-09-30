@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.BallUnionFrontier
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartBallGeneralPosition
 import DifferentialGeometry.Topology.PiecewiseLinear.ChartImagePLCell
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ExteriorComponent
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceBallNeighborhoods
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.FaceBalls.Neighborhoods
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34FaceTorusHomology
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34SplitDiskIntersection
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBoundaryImage
@@ -628,7 +628,7 @@ theorem exists_section34FaceBalls (hU : IsOpen U)
     id hcut
   choose C' hC'c hC'1 hRC' hC'dis using exists_section34FaceTorusAuxiliary hh hcut hgraph
   obtain ⟨Wn, -, -, hWo, -, -, hWH, hWV, hWW, hWS, hWbad, hcell⟩ :=
-    exists_section34FaceBallNeighborhoods hU hh hcut hctrl hgraph
+    exists_controlled_face_ball_neighborhoods hU hh hcut hctrl hgraph
       (fun s => C' s \ interior (section34FaceTorus (section34VertexBallImage src f₁) s))
       (fun s => (hC'c s).isClosed.sdiff isOpen_interior) hC'dis
   choose C Cb hC hbodyC hCW using hcell

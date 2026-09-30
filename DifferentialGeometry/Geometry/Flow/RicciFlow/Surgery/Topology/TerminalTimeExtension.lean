@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabJointSmoothness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.EventData
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ClosedWindowTimeJets
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.PolynomialFields
 import DifferentialGeometry.Geometry.Metric.Convergence.Compactness.Precompactness

@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductCut
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductSide
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.Product.HalfSpace
 import
-  DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductTubeReading
+  DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.Product.SourceCoordinates
 
 open Set Topology
 open DifferentialGeometry.Topology.Homotopy

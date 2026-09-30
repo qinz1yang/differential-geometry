@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.LoopSpace.PeriodicExtension
+import DifferentialGeometry.Topology.Circle.PeriodicExtension
 import DifferentialGeometry.Analysis.Calculus.Periodic.Affine
 import Mathlib.Dynamics.Circle.RotationNumber.TranslationNumber
 import Mathlib.Algebra.BigOperators.Intervals

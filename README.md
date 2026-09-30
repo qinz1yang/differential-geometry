@@ -38,9 +38,9 @@ Each is `sorry`-free (axioms: `propext, Classical.choice, Quot.sound`).
 
 - [Poincaré conjecture](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean#L27) — every compact, Hausdorff, simply connected topological three-manifold without boundary is homeomorphic to the unit sphere $S^3 \subset \mathbb{R}^4$. The final statement uses only Lean/Mathlib concepts. The [smooth version](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean#L15) gives a diffeomorphism for smooth three-manifolds.
 - [Finite-time extinction with surgery, simply connected case](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Extinction/Existence.lean#L15) — every simply connected closed oriented smooth three-manifold, with any initial smooth Riemannian metric, admits a controlled finite surgery history ending in the empty manifold at a positive finite time. The [extinction structure](DifferentialGeometry/Geometry/Flow/RicciFlow/Surgery/Extinction/ControlledExtinction.lean#L14) records the initial metric identification and the empty terminal stage.
-- [Moise's theorem: compatible smooth structures in dimension three](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L33) — every compact Hausdorff topological three-manifold admits a smooth atlas compatible with its given topology. The development supplies [PL approximation](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L27) and [compact PL smoothing](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L30), providing the bridge from smooth to topological Poincaré.
-- [Perelman's canonical neighborhood theorem](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L539) — in a Ricci flow on a closed connected oriented three-manifold over a finite time interval, every point of sufficiently large scalar curvature lies in a controlled neck, cap, positively curved compact component, or nearly round component. The development also gives [curvature-scale bounds for all mixed space-time curvature derivatives](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L586).
-- [Compactness of ancient κ-solutions](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L566) — three-dimensional ancient κ-solutions with fixed κ and basepoint scalar curvature normalized to one admit smoothly convergent pointed subsequences with an ancient κ-solution limit, together with [universal mixed curvature-derivative estimates](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/HighCurvatureModelBounds.lean#L579).
+- [Moise's theorem: compatible smooth structures in dimension three](DifferentialGeometry/Topology/ThreeManifold/SmoothStructure.lean#L10) — every compact Hausdorff topological three-manifold admits a smooth atlas compatible with its given topology. The development supplies [PL approximation](DifferentialGeometry/Topology/PiecewiseLinear/Approximation/PartialHomeomorph.lean#L32) and [compact PL smoothing](DifferentialGeometry/Topology/PiecewiseLinear/Smoothing/Compact.lean#L88), providing the bridge from smooth to topological Poincaré.
+- [Perelman's canonical neighborhood theorem](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/Existence/HighCurvature.lean#L539) — in a Ricci flow on a closed connected oriented three-manifold over a finite time interval, every point of sufficiently large scalar curvature lies in a controlled neck, cap, positively curved compact component, or nearly round component. The development also gives [curvature-scale bounds for all mixed space-time curvature derivatives](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/Existence/HighCurvature.lean#L586).
+- [Compactness of ancient κ-solutions](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/Existence/HighCurvature.lean#L566) — three-dimensional ancient κ-solutions with fixed κ and basepoint scalar curvature normalized to one admit smoothly convergent pointed subsequences with an ancient κ-solution limit, together with [universal mixed curvature-derivative estimates](DifferentialGeometry/Geometry/Flow/RicciFlow/Perelman/CanonicalNeighborhood/Existence/HighCurvature.lean#L579).
 - [Hamilton's compactness theorem](DifferentialGeometry/Geometry/Flow/RicciFlow/Compactness/Limits/Hamilton.lean#L27) — complete connected pointed Ricci flows on a common open time interval, with uniform curvature bounds on compact time intervals and a uniform positive basepoint injectivity-radius bound at time zero, admit a smooth pointed Cheeger–Gromov–Hamilton convergent subsequence with a complete limit.
 - [Hamilton's theorem (1982)](DifferentialGeometry/Geometry/Flow/RicciFlow/DimensionThree/PositiveRicci/Hamilton.lean#L29) — a closed three-manifold admitting a positive-Ricci metric admits a constant-positive-sectional-curvature metric and is a spherical space form.
 - [Ricci flow short-time existence](DifferentialGeometry/Geometry/Flow/RicciFlow/ShortTime/Existence.lean#L34) — on every closed Riemannian manifold $(M, g_0)$ the Ricci flow $\partial_t g = -2\,\mathrm{Ric}_{g(t)}$ has a solution on some $[0, T)$ with $g(0) = g_0$, jointly smooth in $(t, x)$ up to and including the initial time. Proved via the DeTurck's trick and a conjugating flow of the DeTurck vector field.
@@ -73,16 +73,18 @@ cd differential-geometry
 lake build DifferentialGeometry.Topology.ThreeManifold.Poincare
 ```
 
-To inspect the Poincaré theorem's transitive axioms, temporarily add
-
-```lean
-#print axioms DifferentialGeometry.Topology.poincare_conjecture
-```
-
-to [`Poincare.lean`](DifferentialGeometry/Topology/ThreeManifold/Poincare.lean), then run
+To inspect the Poincaré theorem's transitive axioms after building, use a temporary file
+outside the source tree:
 
 ```bash
-lake build DifferentialGeometry.Topology.ThreeManifold.Poincare
+audit_dir=$(mktemp -d)
+cat > "$audit_dir/PoincareAxioms.lean" <<'LEAN'
+import DifferentialGeometry.Topology.ThreeManifold.Poincare
+#print axioms DifferentialGeometry.Topology.poincare_conjecture
+LEAN
+lake env lean "$audit_dir/PoincareAxioms.lean"
+rm "$audit_dir/PoincareAxioms.lean"
+rmdir "$audit_dir"
 ```
 
 ## PDE infrastructure
@@ -102,7 +104,7 @@ The classical De Giorgi–Nash–Moser regularity machinery is vendored under [`
 
 The topology library supplies the constructions used by Moise smoothing, surgery, and the Poincaré endpoint:
 
-- [**PL topology, triangulation & smoothing**](DifferentialGeometry/Topology/PiecewiseLinear) — simplicial complexes, links and stars, subdivisions, PL balls and spheres, local charts, finite gluing, approximation and isotopy. [Compact PL triangulations](DifferentialGeometry/Topology/PiecewiseLinear/TriangulationExistence.lean#L57) and [smooth structures on compact topological three-manifolds](DifferentialGeometry/Topology/PiecewiseLinear/Moise352Producer.lean#L33) connect the combinatorial and smooth developments.
+- [**PL topology, triangulation & smoothing**](DifferentialGeometry/Topology/PiecewiseLinear) — simplicial complexes, links and stars, subdivisions, PL balls and spheres, local charts, finite gluing, approximation and isotopy. [Compact PL triangulations](DifferentialGeometry/Topology/PiecewiseLinear/TriangulationExistence.lean#L57) and [smooth structures on compact topological three-manifolds](DifferentialGeometry/Topology/ThreeManifold/SmoothStructure.lean#L10) connect the combinatorial and smooth developments.
 - [**Fundamental groups, homotopy & coverings**](DifferentialGeometry/Topology/Covering) — path and homotopy lifting, covering transformations, deck groups, and based/free sphere-map constructions. The [van Kampen development](DifferentialGeometry/Topology/VanKampen) includes [fundamental groups of finite connected sums](DifferentialGeometry/Topology/VanKampen/FiniteConnectedSumFreeProduct.lean#L277).
 - [**Homology, cohomology & orientation**](DifferentialGeometry/Topology/Homology) — singular chains, relative and local homology, excision, [Mayer–Vietoris exactness](DifferentialGeometry/Topology/Homology/MayerVietorisExactness.lean#L125), compactly supported cohomology, cap products, low-degree Hurewicz maps, local orientation classes and fundamental classes. These developments build on the [vendored canonical-topology core](DifferentialGeometry/External/CanonicalTopology/Topology/Homology).
 - [**Morse theory & handles**](DifferentialGeometry/Topology/Morse) — Morse normal forms, regular-level transport, critical-point attachment, sublevel topology and smooth handle attachment, supported by [handle and collar constructions](DifferentialGeometry/Topology/Handle).

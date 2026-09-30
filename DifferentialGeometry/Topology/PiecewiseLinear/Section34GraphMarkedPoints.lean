@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphResidualCover
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCutIncidence
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.SplittingDisks.Basic
 import DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRestriction
 
 open Set
@@ -133,7 +133,7 @@ theorem exists_singleton_section34GraphSplitCell_inter_residualTriangle
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (s : Section34SimplexIndex 𝒦 3) (e : Section34EdgeIndex 𝒦 𝒦')
     (hes : Section34Incident e.1 s.1) :
-    ∃ p : M, section34GraphSplitCell 𝒦 𝒦' e ∩
+    ∃ p : M, graphSplittingDisk 𝒦 𝒦' e ∩
       section34GraphResidualCell 𝒦 𝒦' s.1 = {p} := by
   classical
   let S₀ := simplexComplex s.1 (𝒦.complex.indep s.2.1)

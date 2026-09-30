@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.CyclicBallMeridians
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactFaceCycle
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.FaceCycles
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceSeams
 
 open Set Topology

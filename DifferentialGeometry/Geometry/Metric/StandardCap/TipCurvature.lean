@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.StandardCap.Metric
 import DifferentialGeometry.Geometry.Curvature.LocalIsometry
 import DifferentialGeometry.Geometry.Curvature.Riemann.SectionalCurvature
 import DifferentialGeometry.Geometry.Curvature.Sphere.ConstCurvature
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 set_option autoImplicit false
 

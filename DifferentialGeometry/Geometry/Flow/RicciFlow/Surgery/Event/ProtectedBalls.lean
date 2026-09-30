@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SurvivorCha
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.SurvivorMap
 import DifferentialGeometry.Geometry.Metric.Comparison.IsometricBalls
 import DifferentialGeometry.Analysis.Integration.Measure.PullbackCross
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 noncomputable section
 

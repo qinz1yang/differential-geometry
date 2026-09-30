@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34JointCellMatching
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34NestedDeletedTorus
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.NestedFaceTori
 
 open Set Topology
 

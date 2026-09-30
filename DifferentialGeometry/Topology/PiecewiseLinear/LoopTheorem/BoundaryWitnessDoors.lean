@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryWordWitness
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchInjection
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Injection
 
 open Set Topology
 

@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.DiscardedCa
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutNeckPath
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.IncomingSpatialNeck
 import DifferentialGeometry.Topology.ThreeManifold.PuncturedCapClassification
-import DifferentialGeometry.Topology.ThreeManifold.CoreComponentBoundary
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.CoreComponentBoundary
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.UncutDiscardedClassification
 
 noncomputable section

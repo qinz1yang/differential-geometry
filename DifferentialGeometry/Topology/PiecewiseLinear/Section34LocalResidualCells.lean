@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualCells
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34GraphCoreComplex
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.Cores
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSubcomplex
 
 open Set

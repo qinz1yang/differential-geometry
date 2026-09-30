@@ -1,7 +1,7 @@
 import DifferentialGeometry.External.CanonicalTopology.Topology.LoopSpace.BasedCircle
 import DifferentialGeometry.Topology.PiecewiseLinear.ClosedBranchOrientability
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneCollar
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ClosedBranch.TwoSidedCollar
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneSource
 
 open Set Topology

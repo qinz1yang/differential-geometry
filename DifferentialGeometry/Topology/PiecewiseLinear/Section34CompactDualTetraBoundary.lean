@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhoodResidualRestriction
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactDualCellInteriors
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPatchRecognition
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.CellDecomposition.PatchCells
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCellSeparation
 
 open Set Topology

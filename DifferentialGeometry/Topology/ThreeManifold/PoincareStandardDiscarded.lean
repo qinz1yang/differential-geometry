@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormTrivial
 

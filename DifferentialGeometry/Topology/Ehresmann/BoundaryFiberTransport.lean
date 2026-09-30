@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.Ehresmann.BoundaryInterval
-import DifferentialGeometry.Topology.Ehresmann.CompletionFiber
+import DifferentialGeometry.Topology.Ehresmann.IntervalCompletion.Fiber
 
 noncomputable section
 open Set Topology Manifold

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Neck.CompactClassification
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.SpatialNeckLocalTransport
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleSimplyConnected
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.FundamentalGroup
 import DifferentialGeometry.Topology.Manifold.Orientation
 
 noncomputable section

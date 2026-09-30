@@ -164,12 +164,12 @@ theorem section34GraphResidualCell_eq_empty_of_card_le_two
   have hbody : simplexBody 𝒦 t ⊆ graphSkeletonSpace 𝒦 :=
     fun x hx => mem_iUnion₂.mpr ⟨t, ⟨ht, hcard⟩, hx⟩
   have hN : graphSkeletonSpace 𝒦 ⊆
-      ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w := by
+      ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w := by
     calc
       graphSkeletonSpace 𝒦 = 𝒦'.map '' L.space := hcore.symm
       _ ⊆ 𝒦'.map '' (derivedNeighborhood 𝒦'.complex L).space := image_mono hLN
-      _ = ⋃ w : Section34VertexIndex 𝒦 𝒦', section34GraphVertexCell 𝒦 𝒦' w :=
-        (iUnion_section34GraphVertexCell 𝒦 𝒦').symm
+      _ = ⋃ w : Section34VertexIndex 𝒦 𝒦', graphVertexCell 𝒦 𝒦' w :=
+        (iUnion_graphVertexCell 𝒦 𝒦').symm
   rw [section34GraphResidualCell, sdiff_eq_empty.mpr (hbody.trans hN), closure_empty]
 
 theorem pairwiseDisjoint_section34GraphResidualTriangle

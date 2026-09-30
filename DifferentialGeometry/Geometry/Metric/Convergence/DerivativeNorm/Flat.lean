@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Pullback
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 
 open DifferentialGeometry.Geometry.Curvature

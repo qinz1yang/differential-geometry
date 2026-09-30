@@ -94,9 +94,9 @@ theorem exists_section34_relative_edge_character
     have hDQ := section34_splitDisk_subset_vertex_boundary hframe
       (fun e => (hends e).2.2) (ends e).2 e (Or.inr rfl)
     have hPh : h '' src (.vertexBall (ends e).1) ⊆ (ct (s e)).source :=
-      (section34_image_vertexBall_subset_Q hprep _).trans (subset_union_left.trans (hcs e))
+      (image_vertexBall_subset_carrier hprep _).trans (subset_union_left.trans (hcs e))
     have hQh : h '' src (.vertexBall (ends e).2) ⊆ (ct (s e)).source :=
-      (section34_image_vertexBall_subset_Q hprep _).trans (subset_union_right.trans (hcs e))
+      (image_vertexBall_subset_carrier hprep _).trans (subset_union_right.trans (hcs e))
     have hPc := (hDvQ (ends e).1).trans (subset_union_left.trans (hcs e))
     have hQc := (hDvQ (ends e).2).trans (subset_union_right.trans (hcs e))
     have hhc : h '' (src (.vertexBall (ends e).1) ∪ src (.vertexBall (ends e).2)) ⊆

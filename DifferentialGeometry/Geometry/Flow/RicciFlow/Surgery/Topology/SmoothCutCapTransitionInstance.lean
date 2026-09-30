@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapPrese
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ExtinctEventModelConstruction
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphericalTransitionBridge
 import DifferentialGeometry.Topology.Manifold.InteriorAtlas
-import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
+import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
 
 noncomputable section
 open Set Bundle Manifold

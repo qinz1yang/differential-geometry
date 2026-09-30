@@ -9,7 +9,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.Models
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.ModelCoverGaussian
 import DifferentialGeometry.Geometry.Metric.PullbackScaling
 import DifferentialGeometry.Topology.Covering.SmoothLift
-import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
 import DifferentialGeometry.Topology.Covering.CylindricalModel
 import DifferentialGeometry.Topology.ProjectiveSpace.SphereHalfTurnFrame
 import DifferentialGeometry.Topology.Manifold.LocallyPathConnected

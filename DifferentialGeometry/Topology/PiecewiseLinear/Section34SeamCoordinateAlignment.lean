@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CrossingRibbonAnnuli
+import DifferentialGeometry.Topology.PiecewiseLinear.CylindricalDiagram.RibbonAnnuli
 
 open Set
 

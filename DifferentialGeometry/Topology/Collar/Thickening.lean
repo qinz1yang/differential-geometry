@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.BicollaredComplement
 import DifferentialGeometry.Topology.Homeomorph.ClosedExtension
-import DifferentialGeometry.Topology.VanKampen.BoundaryCollarOrientation
+import DifferentialGeometry.Topology.Collar.TwoSided.Orientation
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarRestriction
 import Mathlib.Tactic.Linarith
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.GoodPointNeckArmFrontier
-import DifferentialGeometry.Topology.SphereSeparation.PathCrossing
-import DifferentialGeometry.Topology.SphereSeparation.ProductLevels
+import DifferentialGeometry.Topology.Connected.Separation.PathCrossing
+import DifferentialGeometry.Topology.Connected.Separation.Product
 
 noncomputable section
 open Set

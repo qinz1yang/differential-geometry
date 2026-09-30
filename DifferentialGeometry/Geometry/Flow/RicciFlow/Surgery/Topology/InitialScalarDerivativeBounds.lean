@@ -4,7 +4,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ClosedSlabE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Estimates.ScalarDerivativeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabUniqueness
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SlabPullback
-import DifferentialGeometry.Geometry.Operator.Gradient.PullbackAt
+import DifferentialGeometry.Geometry.Operator.GradientPullback
 
 noncomputable section
 
@@ -172,10 +172,10 @@ theorem exists_uniform_initial_scalar_derivative_bounds_of_isometry
         (gradientFun (G.flow.base.metric t) (G.flow.scalar t) (φ y))
         (gradientFun (G.flow.base.metric t) (G.flow.scalar t) (φ y)) := by
     rw [hscalarFun]
-    exact normGradSqFun_comp_of_pullback_inner (F.flow.base.metric t) (G.flow.base.metric t)
-      (φ.contMDiff.mdifferentiable (by simp) y)
+    exact normGradSqFun_eq_of_pullback_inner (F.flow.base.metric t) (G.flow.base.metric t)
+      φ y (φ.contMDiff.mdifferentiable (by simp) y)
       (fun v w => Diffeomorph.pullbackMetricCross_inner (G.flow.base.metric t) φ y v w)
-      (φ.mfderivToContinuousLinearEquiv (by simp) y).surjective
+      (φ.mfderivToContinuousLinearEquiv (by simp) y).surjective (G.flow.scalar t)
       ((metricScalar_smooth (G.flow.base.metric t)).mdifferentiableAt (by simp))
   have htimeFun : (fun r => F.flow.scalar r y) = fun r => G.flow.scalar r (φ y) :=
     funext (fun r => hscalar r y)

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Metric.StandardCap.ConformalFactor
 import DifferentialGeometry.Geometry.Metric.Conformal.Basic
 import DifferentialGeometry.Geometry.Metric.Convergence.CovariantDerivative.Norm.Continuity
 import Mathlib.Geometry.Manifold.Instances.Sphere
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Geometry.Metric.Conformal.OfContDiff
 import DifferentialGeometry.Bundle.Section
 

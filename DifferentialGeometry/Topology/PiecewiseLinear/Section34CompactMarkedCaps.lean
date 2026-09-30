@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.TriangleSubcomplex
 import DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellBridgeDisk
 import DifferentialGeometry.Topology.PiecewiseLinear.SplitDiskCenter
 import DifferentialGeometry.Topology.PiecewiseLinear.TubeOfGraphDualCells

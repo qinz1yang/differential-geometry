@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
-import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluingPresentation
 
 noncomputable section

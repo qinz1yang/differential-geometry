@@ -3,7 +3,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.ManifoldComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SphereCellPush
 import DifferentialGeometry.Topology.ConvexFrontier
-import DifferentialGeometry.Topology.RegularClosed
+import DifferentialGeometry.Topology.Connected.RegularClosed
 
 open Set
 

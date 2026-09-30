@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.Naturality.Pullback.PartialDiffeomorph
 import DifferentialGeometry.Topology.Manifold.ImmersionCriterion
-import DifferentialGeometry.Topology.NormedSphere
+import DifferentialGeometry.Topology.MetricSpace.Sphere
 import Mathlib.Geometry.Manifold.Instances.Sphere
 
 noncomputable section

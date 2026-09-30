@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProductBranch
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.Product.Branches
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCaseOfCut
 
 open Set Topology

@@ -17,7 +17,7 @@ theorem finiteConnectedSum_append (L K : List (ConnectedClosedOrientedManifold.{
       (connectedSum (finiteConnectedSum L) (finiteConnectedSum K)).toClosedOrientedManifold) :=
   finiteConnectedSum_append_of_unit_assoc_transport
     connectedSum_sphere_right connectedSum_sphere_left connectedSum_assoc
-    (fun X Y Y' h => h.elim fun f =>
+    (fun X _ _ h => h.elim fun f =>
       nonempty_orientedDiffeomorph_connectedSum_of_orientedDiffeomorph
         (ClosedOrientedManifold.OrientedDiffeomorph.refl X.toClosedOrientedManifold) f) L K
 
@@ -27,10 +27,10 @@ theorem finiteConnectedSum_perm {L L' : List (ConnectedClosedOrientedManifold.{u
       (finiteConnectedSum L).toClosedOrientedManifold
       (finiteConnectedSum L').toClosedOrientedManifold) :=
   finiteConnectedSum_perm_of_comm_assoc_transport connectedSum_comm connectedSum_assoc
-    (fun X X' Y h => h.elim fun f =>
+    (fun _ _ Y h => h.elim fun f =>
       nonempty_orientedDiffeomorph_connectedSum_of_orientedDiffeomorph f
         (ClosedOrientedManifold.OrientedDiffeomorph.refl Y.toClosedOrientedManifold))
-    (fun X Y Y' h => h.elim fun f =>
+    (fun X _ _ h => h.elim fun f =>
       nonempty_orientedDiffeomorph_connectedSum_of_orientedDiffeomorph
         (ClosedOrientedManifold.OrientedDiffeomorph.refl X.toClosedOrientedManifold) f) hp
 
@@ -54,7 +54,7 @@ theorem finiteConnectedSum_opposite (L : List (ConnectedClosedOrientedManifold.{
       (finiteConnectedSum
         (L.map ConnectedClosedOrientedManifold.opposite)).toClosedOrientedManifold) :=
   finiteConnectedSum_opposite_of_binary_transport connectedSum_opposite
-    (fun X Y Y' h => h.elim fun f =>
+    (fun X _ _ h => h.elim fun f =>
       nonempty_orientedDiffeomorph_connectedSum_of_orientedDiffeomorph
         (ClosedOrientedManifold.OrientedDiffeomorph.refl X.toClosedOrientedManifold) f)
     standardThreeSphereLift_orientationReversing_diffeomorph L

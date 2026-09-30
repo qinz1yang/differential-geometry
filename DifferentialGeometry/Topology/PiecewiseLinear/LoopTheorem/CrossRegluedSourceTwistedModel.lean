@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossRegluedSourceProduct
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Regluing.Models.Product.Map
 import Mathlib.Geometry.Manifold.Instances.Quotient
 
 open Set Topology

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Connection.ParallelLineSplitting
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.LocalProduct
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 noncomputable section
 

@@ -49,7 +49,7 @@ theorem compactDualCutBoundary_faceArc_eq_pair
       (graphDualCell_inter_derivedNeighborhoodCell_eq_upperLink S H hvS hsS hH)
   have hball : IsPLBall 1 G.space := by
     rw [← graphDualCell_inter_derivedNeighborhoodCell_eq_upperLink S H hvS hsS hH]
-    exact isPLBall_graphDualCell_inter_triangleCell S H hsS hvs s.2.2 hmax hH
+    exact isPLBall_graphDualCell_inter_triangle_cell S H hsS hvs s.2.2 hmax hH
   obtain ⟨q, hq⟩ := hball
   have hlocal := isPLCellOn_id_of_isPLBall hq
   rw [hq.image_stdSimplexBoundary_eq_boundaryComplex G rfl] at hlocal

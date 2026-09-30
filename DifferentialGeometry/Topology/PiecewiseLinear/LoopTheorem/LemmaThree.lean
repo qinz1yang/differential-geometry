@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SurfaceNeighborhood
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryComponent.SurfaceNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.Orientation
 import Mathlib.Topology.Covering.Basic
 

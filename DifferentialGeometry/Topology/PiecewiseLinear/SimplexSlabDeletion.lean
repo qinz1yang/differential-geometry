@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexSlabInterior
 import DifferentialGeometry.Topology.PiecewiseLinear.SubcomplexComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.BallDensity
-import DifferentialGeometry.Topology.RegularClosed
+import DifferentialGeometry.Topology.Connected.RegularClosed
 
 open Set
 

@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchBoundary
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchPreimage
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryCrossing
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Boundary
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Preimage
+import DifferentialGeometry.Topology.PiecewiseLinear.Crossing.BoundaryDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.DiskCrosscut
 
 open Set Topology

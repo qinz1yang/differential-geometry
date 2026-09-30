@@ -1,9 +1,9 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapGluingPresentation
-import DifferentialGeometry.Topology.ThreeManifold.CutCapGraphSumFrontier
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.GraphDecomposition
 import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidenceCycleRank
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
 
 noncomputable section
 

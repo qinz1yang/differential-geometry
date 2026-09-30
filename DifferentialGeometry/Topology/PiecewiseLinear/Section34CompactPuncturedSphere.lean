@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactMouthAvoidance
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPolygonFilling
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.VertexDiskFilling
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactPuncturedLink
 
 open Set Topology

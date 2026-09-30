@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.VectorField.RegularChartSplice
-import DifferentialGeometry.Topology.VectorField.ChartIndexHomotopy
+import DifferentialGeometry.Topology.VectorField.Index.BoundaryHomotopy
 import Mathlib.Order.Interval.Set.Infinite
 
 set_option autoImplicit false

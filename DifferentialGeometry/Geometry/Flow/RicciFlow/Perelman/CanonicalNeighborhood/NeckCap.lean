@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Comparison.Soul.SbrBusemannData
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.Models.Positive.CapTubeBounds
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.FiniteHornGeometry
 import DifferentialGeometry.Topology.Manifold.PartialDiffeomorph
-import DifferentialGeometry.Topology.SphereSeparation.HalfSpaceClosure
+import DifferentialGeometry.Topology.SphereSeparation.SmoothClosure.Charts
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapRegionStructure
 import DifferentialGeometry.Topology.ThreeManifold.SmoothSchoenflies
 import DifferentialGeometry.Topology.SphereSeparation.SchoenfliesSides

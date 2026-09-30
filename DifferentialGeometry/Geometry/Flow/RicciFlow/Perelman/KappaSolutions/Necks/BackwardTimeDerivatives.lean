@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Evolution.TimeDerivatives.MetricComparison
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Necks.BackwardRescaling
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Necks.Defs
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 
 
 set_option autoImplicit false

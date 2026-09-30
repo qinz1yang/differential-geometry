@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchCaseOneTransport
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.InteriorTwoSided
+import DifferentialGeometry.Topology.PiecewiseLinear.Crossing.TwoSidedDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.PolyhedronLocalConnectedness
 
 open Set Topology

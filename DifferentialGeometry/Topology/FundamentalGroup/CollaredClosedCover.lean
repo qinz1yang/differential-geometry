@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.Connected.CollaredCover
 import DifferentialGeometry.Topology.FundamentalGroup.OpenCoverKernel
 import DifferentialGeometry.Topology.FundamentalGroup.Retraction
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarInjection
-import DifferentialGeometry.Topology.VanKampen.BoundaryCollarOrientation
+import DifferentialGeometry.Topology.Collar.TwoSided.Orientation
 
 open Set
 open scoped ContinuousMap

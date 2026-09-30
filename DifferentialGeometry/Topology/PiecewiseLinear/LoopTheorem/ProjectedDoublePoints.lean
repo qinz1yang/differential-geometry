@@ -1,5 +1,5 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.DoublePointCover
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDisk
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.DoubleLocus.Cover
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.EmbeddedDisk
 
 open Set Topology
 

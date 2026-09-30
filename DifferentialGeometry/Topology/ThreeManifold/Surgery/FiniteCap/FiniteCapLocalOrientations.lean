@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapNeighborhoodSmooth
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCoreInteriorSmooth
-import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
 
 set_option autoImplicit false
 noncomputable section

@@ -18,7 +18,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactBigonSlide
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCompressionLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactResidualBalls
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactCutAndGraph
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTraceNormalization
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.NormalForm
 
 open Set Topology
 
@@ -197,7 +197,7 @@ theorem moise341OnNeighborhood (h331 : Moise331OnTube) :
         obtain ⟨g', gBd', hinv', hoff, hc, hp⟩ :=
           exists_compactBigonSlide hcut hcar hgraph hg s hop
         exact ⟨g', gBd', hinv', hoff, section34CompactFaceBallRank_lt_of_bigonSlide hc hp⟩)
-  have htrace := compactTrace_of_noOperation hcut hgraph hinv hnc hnb
+  have htrace := isCompactMeridionalFaceTraceFamily_of_no_admissible_moves hcut hgraph hinv hnc hnb
   obtain ⟨tgtD, tgtDBd, tgtA, tgtABd, tgtP, hdisk⟩ :=
     exists_compactFaceDisks hcut hgraph hinv htrace
   obtain ⟨tgtR, tgtRBd, tgtX, tgtXBd, tgtI, tgtIBd, tgtO, tgtOBd, tgtQ, tgtQBd, hres⟩ :=

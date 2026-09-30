@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamResolvedCell
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.Cell
 import DifferentialGeometry.Topology.PiecewiseLinear.Prism
 
 open Set

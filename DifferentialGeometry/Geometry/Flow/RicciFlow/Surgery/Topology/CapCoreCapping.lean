@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.ThreeManifold.SmoothUncapping
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.Uncapping.LocalDiffeomorphism
 import DifferentialGeometry.Topology.Manifold.ClosedBall.Extension
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CapCoverClassification
 import DifferentialGeometry.Topology.Manifold.SmoothEmbeddingDiffeomorph

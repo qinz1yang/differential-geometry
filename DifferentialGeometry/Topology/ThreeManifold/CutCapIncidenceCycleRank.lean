@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.AssociativeFlattening
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
-import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
 import DifferentialGeometry.Topology.ThreeManifold.CutCapStandardReconstruction
 
 noncomputable section

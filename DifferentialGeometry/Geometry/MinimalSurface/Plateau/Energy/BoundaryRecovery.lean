@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.MinimalSurface.Plateau.Energy.LocalComparison
 import DifferentialGeometry.Topology.LoopSpace.AffineLift
-import DifferentialGeometry.Topology.LoopSpace.WeaklyMonotone
+import DifferentialGeometry.Topology.Circle.WeaklyMonotone.Defs
 import Mathlib.Analysis.SpecialFunctions.Complex.CircleMap
 import DifferentialGeometry.Analysis.Sobolev.Interpolation.BoundaryRecovery
 import DifferentialGeometry.Analysis.Calculus.SmoothExtension.BoundedDerivative

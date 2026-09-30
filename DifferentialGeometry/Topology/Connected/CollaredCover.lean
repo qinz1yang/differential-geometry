@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.Connected.ClosedCover
 import DifferentialGeometry.Topology.VanKampen.BoundaryCollarInjection
-import DifferentialGeometry.Topology.VanKampen.BoundaryCollarOrientation
+import DifferentialGeometry.Topology.Collar.TwoSided.Orientation
 
 open Set
 

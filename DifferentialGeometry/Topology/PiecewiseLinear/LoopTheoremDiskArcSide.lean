@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GeneralPosition
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CrossSeamTubePages
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Resolution.Pages
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheoremDiskCircleStep
 
 open Set Topology

@@ -1,5 +1,5 @@
 import Mathlib.Tactic.Group
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDiskBoundaryWord
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.BoundaryWord.EmbeddedDisk
 
 namespace DifferentialGeometry.Topology.PiecewiseLinear.BoundaryWordElimination
 

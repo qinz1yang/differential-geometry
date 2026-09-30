@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Metric.RicciSoliton.SurfaceFlux
 import DifferentialGeometry.Geometry.Operator.HessianExtrema
 import DifferentialGeometry.Topology.Morse.CriticalPoints
 import DifferentialGeometry.Topology.Morse.RegularLevel.NoCriticalValues
-import DifferentialGeometry.Topology.Morse.Riemannian
+import DifferentialGeometry.Geometry.Operator.Gradient.CriticalPoint
 
 set_option autoImplicit false
 

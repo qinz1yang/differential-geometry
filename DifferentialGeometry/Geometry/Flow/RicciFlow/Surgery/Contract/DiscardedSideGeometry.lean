@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.PoincareSta
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RetainedCorePresentation
 import DifferentialGeometry.Topology.ThreeManifold.CutCapReconstruction
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardModels
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
 import DifferentialGeometry.Topology.ThreeManifold.StandardSphere
 
 set_option autoImplicit false

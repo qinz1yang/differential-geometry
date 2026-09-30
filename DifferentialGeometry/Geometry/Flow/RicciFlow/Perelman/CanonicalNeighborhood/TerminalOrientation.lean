@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.BlowupConvergence
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Subsequence
-import DifferentialGeometry.Topology.Manifold.OrientationExhaustion
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Exhaustion
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 
 noncomputable section

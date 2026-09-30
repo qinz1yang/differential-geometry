@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurv
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceNecks
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.BoundedCurvatureAtDistanceCone
 import DifferentialGeometry.Geometry.Neck.FiniteEnd
-import DifferentialGeometry.Geometry.Metric.Segment
+import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
 
 set_option autoImplicit false
 

@@ -4,7 +4,7 @@ import DifferentialGeometry.Topology.ThreeManifold.SphericalBoundaryProjectiveHo
 import DifferentialGeometry.Topology.ThreeManifold.NestedBallRecapping
 import DifferentialGeometry.Topology.ThreeManifold.CapCoreBallReplacement
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.ProjectivePresentation
-import DifferentialGeometry.Topology.ThreeManifold.CoreComponentGeometry
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.Capping.CoreComponentTopology
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCapCoreComponent
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CapCoreCapping
 

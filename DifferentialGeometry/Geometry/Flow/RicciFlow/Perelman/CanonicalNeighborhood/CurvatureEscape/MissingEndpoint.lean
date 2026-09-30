@@ -6,7 +6,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborho
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.CanonicalNeighborhood.CurvatureEscape.LocalCompactness
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Curves
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.Connected
-import DifferentialGeometry.Geometry.Metric.Segment
+import DifferentialGeometry.Topology.MetricSpace.Geodesic.Segment
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergence.AmbientQuadraticControl
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Perelman.KappaSolutions.Compactness.SelectedScalarNormalization
 

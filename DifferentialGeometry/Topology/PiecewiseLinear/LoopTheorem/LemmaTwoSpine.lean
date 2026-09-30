@@ -1,7 +1,7 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ComplexityInduction
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.EmbeddedDiskOfDoubleCell
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.ComplexityInduction
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.EmbeddedDiskInDouble
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.LemmaTwoEndpoint
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ProjectedBoundaryLoop
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Covering.BoundaryLoop
 
 open Set Topology
 

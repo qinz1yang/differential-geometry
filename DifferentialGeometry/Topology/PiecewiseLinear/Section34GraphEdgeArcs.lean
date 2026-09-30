@@ -107,7 +107,7 @@ theorem exists_isPLCellOn_section34GraphSplitCell_inter_residualTetrahedron
     (hsub : IsSubdivision 𝒦'.complex 𝒦.complex) (hmap : 𝒦'.map = 𝒦.map)
     (t : Section34SimplexIndex 𝒦 4) (e : Section34EdgeIndex 𝒦 𝒦')
     (het : Section34Incident e.1 t.1) :
-    ∃ B, IsPLCellOn 1 (section34GraphSplitCell 𝒦 𝒦' e ∩
+    ∃ B, IsPLCellOn 1 (graphSplittingDisk 𝒦 𝒦' e ∩
       section34GraphResidualCell 𝒦 𝒦' t.1) B := by
   classical
   let S₀ := simplexComplex t.1 (𝒦.complex.indep t.2.1)

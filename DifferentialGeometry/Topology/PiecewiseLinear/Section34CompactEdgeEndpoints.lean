@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BoundaryFacets
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactEdgeTraces
+import DifferentialGeometry.Topology.PiecewiseLinear.DerivedNeighborhood.EdgeTrace
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactTriangleEndpoints
 import DifferentialGeometry.Topology.PiecewiseLinear.UpperLinkBoundary
 

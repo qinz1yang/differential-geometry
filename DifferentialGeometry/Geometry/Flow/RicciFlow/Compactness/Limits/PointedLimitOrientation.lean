@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Convergen
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.Background
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 import DifferentialGeometry.Geometry.Metric.Distance.Finiteness
-import DifferentialGeometry.Topology.Manifold.OrientationExhaustion
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Exhaustion
 import DifferentialGeometry.Topology.Manifold.SmoothOrientationCompatible
 
 set_option autoImplicit false

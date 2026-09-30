@@ -1,6 +1,6 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.CoverReduction
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalBasepoint
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.SphereCase
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.Covering.Existence
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.NormalSystem.Basepoint
+import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BoundaryComponent.Sphere
 import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.MoiseChainPL
 
 open Set

@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.ControlledE
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.SphereDiffeomorphismIsotopyConnected
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.FiniteLaws
 import DifferentialGeometry.Topology.ThreeManifold.CutCapDecompositionAssembly
-import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
 import DifferentialGeometry.Topology.ThreeManifold.SphericalSpaceFormOrientationClosure
 
 set_option autoImplicit false

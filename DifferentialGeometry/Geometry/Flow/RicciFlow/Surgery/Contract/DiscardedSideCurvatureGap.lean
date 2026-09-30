@@ -1,7 +1,7 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Contract.DiscardedSideGeometry
 import DifferentialGeometry.Geometry.Metric.Sphere.Quotient.SpaceFormCovering
 import DifferentialGeometry.Topology.Manifold.Components
-import DifferentialGeometry.Topology.ThreeManifold.CutCap
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Defs
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardComponentwise
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandardDiscardedModels
 

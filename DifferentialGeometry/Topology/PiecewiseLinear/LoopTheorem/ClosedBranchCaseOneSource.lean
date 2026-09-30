@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchPreimage
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Preimage
 import DifferentialGeometry.Topology.Covering.Sheets
 import DifferentialGeometry.Topology.Covering.TwoSheetSection
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.GraphDualCellRestriction
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CutExhaustion
+import DifferentialGeometry.Topology.PiecewiseLinear.RegularNeighborhood.Restriction
 
 open Set
 

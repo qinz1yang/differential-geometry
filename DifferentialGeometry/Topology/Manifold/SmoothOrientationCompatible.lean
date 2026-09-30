@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
 import DifferentialGeometry.Topology.Manifold.Orientation
 
 set_option autoImplicit false

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.ThreeManifold.PoincareStandard
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
 
 noncomputable section
 

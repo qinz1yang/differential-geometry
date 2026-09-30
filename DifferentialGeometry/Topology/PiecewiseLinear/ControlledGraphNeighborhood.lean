@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.LabelledCellAssembly
 import DifferentialGeometry.Topology.PiecewiseLinear.PLCellOnStability
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Frame
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34Statements
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34DeletedBalls
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.GraphNeighborhood.VertexBallDeletion
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34ConfinedTubeCircleRemoval
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34EdgeMatchingLeaf
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34VertexApproximation
@@ -94,7 +94,7 @@ theorem controlledGraphNeighborhood (h341 : Moise341) :
     section34Core_of_eqOn_off_support G₂ hcpcell (fun w => (hsubs w).2.1) hGp₁ hGp₂ hcore₁
       hSpK hoff₂
   obtain ⟨Dv, DvBd, Dd, DdBd, hDvdef, hDv, hDd, hDmeet, hDdBd, hDmark, hDnbhd⟩ :=
-    exists_section34DeletedBalls hU hh hframe hN hQlf hprep hpack₂ hone hcore₂
+    exists_vertex_ball_family_of_single_trace hU hh hframe hN hQlf hprep hpack₂ hone hcore₂
   have hDvP : ∀ w, Dv w ⊆ G₂ w '' Cp w := by
     intro w
     rw [hDvdef w]

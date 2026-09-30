@@ -31,7 +31,7 @@ theorem exists_section34Trace_circle_intrinsic_model
       u '' frontier P = frontier (section34FaceTorus (section34VertexBallImage src f₁) s) ∧
       IsPLSphere 1 C ∧ C ⊆ frontier P ∧ u '' C = J := by
   obtain ⟨P, u, hP, hu, hUP, hfront⟩ :=
-    exists_section34FaceTorus_intrinsic_model hcut hgraph s
+    exists_PL_solid_torus_model_of_faceTorus hcut hgraph s
   have hJT' : J ⊆ u '' P := by
     rw [hUP]
     exact hJT.trans (section34Trace_subset_faceTorus hcut hgraph.2.2.1 hinv s)

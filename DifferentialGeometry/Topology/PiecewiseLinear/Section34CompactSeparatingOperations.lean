@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactInnermostReturn
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactSeparatingReturn
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.SeparatingReturn
 
 open Set Topology
 

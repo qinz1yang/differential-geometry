@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleOrientationClosure
 import DifferentialGeometry.Topology.Manifold.DiffeomorphOrientationDichotomy
-import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircleLift
+import DifferentialGeometry.Topology.ThreeManifold.SphereTwoTimesCircle.SmoothModel
 
 set_option autoImplicit false
 noncomputable section

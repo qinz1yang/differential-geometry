@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.DerivedSurfaceCap
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.ClosedBranchTubeDerivedCells
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Tube.DerivedCells
 
 open Set
 

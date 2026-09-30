@@ -1,4 +1,4 @@
-import DifferentialGeometry.Geometry.Metric.PointPicking
+import DifferentialGeometry.Topology.MetricSpace.PointPicking
 import DifferentialGeometry.Geometry.Metric.Distance.Topology
 import DifferentialGeometry.Geometry.Metric.Distance.Ball
 

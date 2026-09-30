@@ -92,7 +92,7 @@ theorem exists_positive_finite_section34Trace_circles
       fblBd s ∩ frontier
         (section34FaceTorus (section34VertexBallImage src f₁) s) = ⋃ i, J i := by
   obtain ⟨P, u, hP, hu, hUP, hfront⟩ :=
-    exists_section34FaceTorus_intrinsic_model hcut hgraph s
+    exists_PL_solid_torus_model_of_faceTorus hcut hgraph s
   obtain ⟨r, J, hr, -, -, -, hJ, hdis, hN, hT, -⟩ :=
     exists_positive_finite_section34Trace_model_circles hcut hgraph.2.2.1 hinv
       s hP hu hUP hfront

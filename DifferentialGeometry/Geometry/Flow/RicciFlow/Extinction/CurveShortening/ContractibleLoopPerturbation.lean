@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.LoopModel
-import DifferentialGeometry.Topology.LoopSpace.ContractibleNearby
+import DifferentialGeometry.Geometry.Metric.LoopSpace.ContractibleNearby
 
 noncomputable section
 

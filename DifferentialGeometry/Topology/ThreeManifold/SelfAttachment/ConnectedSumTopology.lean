@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.ConnectedSumCommutation
 import DifferentialGeometry.Topology.ThreeManifold.SelfAttachment.Sphere.PositiveModel
 import DifferentialGeometry.Topology.Manifold.OrientedChartInOpen
-import DifferentialGeometry.Topology.Manifold.OrientedBallChartMap
+import DifferentialGeometry.Topology.Manifold.OrientedBallChart.Map
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.ChoiceIndependence
 import DifferentialGeometry.Topology.ThreeManifold.ConnectedSum.OrientedLaws
 

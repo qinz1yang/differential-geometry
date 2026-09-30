@@ -5,7 +5,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.GeometricCu
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.RecenterAux
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.StaticNeckChildCore
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Event.SurvivorChartTransfer
-import DifferentialGeometry.Topology.RelativeOpenInterior
+import DifferentialGeometry.Topology.Connected.RelativeInterior
 
 noncomputable section
 open Set Manifold Filter

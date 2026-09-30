@@ -2,7 +2,7 @@ import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.Bo
 import DifferentialGeometry.Geometry.Compactness.CheegerGromov.Pointed.Bounds.InjectivityRadius
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.Restriction
 import DifferentialGeometry.Geometry.Metric.Restriction
-import DifferentialGeometry.Topology.SigmaCompactOpen
+import DifferentialGeometry.Topology.Manifold.SigmaCompact
 import DifferentialGeometry.Bundle.FiberBundleHausdorff
 
 noncomputable section

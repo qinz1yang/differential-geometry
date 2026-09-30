@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.ArcSubinterval
 import DifferentialGeometry.Topology.PiecewiseLinear.CircleClosedCover
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDiskDescent
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CompactReturnDisks
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.ReturnDiskCrosscuts
+import DifferentialGeometry.Topology.PiecewiseLinear.Approximation.Normalization.ReturnDisks
 import DifferentialGeometry.Topology.PiecewiseLinear.SurfaceDiskContainment
 
 open Set Topology

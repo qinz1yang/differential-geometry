@@ -1,7 +1,7 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CuttingAnnulusCoordinates
 import DifferentialGeometry.Topology.Manifold.HalfClosedIntervalSmoothMaps
 import DifferentialGeometry.Topology.Manifold.Attachment.RadialCollarOrientation
-import DifferentialGeometry.Topology.Manifold.SmoothOrientationComposition
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Composition
 
 set_option autoImplicit false
 noncomputable section

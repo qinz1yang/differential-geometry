@@ -1,5 +1,5 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentFillingBoundaryCollar
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34CurrentCollarSheetLocalization
+import DifferentialGeometry.Topology.PiecewiseLinear.Collar.SheetLocalization
 
 open Set Topology
 

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Flow.RicciFlow.Surgery.Topology.CutCap
-import DifferentialGeometry.Topology.ThreeManifold.CutCapIncidence
+import DifferentialGeometry.Topology.ThreeManifold.Surgery.CutCap.Incidence
 
 noncomputable section
 

@@ -1,6 +1,6 @@
 import DifferentialGeometry.Geometry.Curvature.CurvatureOperator.Derivatives.LocalPullback
 import DifferentialGeometry.Geometry.Metric.UniversalCover.Completeness
-import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
 
 set_option autoImplicit false
 

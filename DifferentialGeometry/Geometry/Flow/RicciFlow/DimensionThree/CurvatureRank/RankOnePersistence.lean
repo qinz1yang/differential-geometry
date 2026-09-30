@@ -3,7 +3,7 @@ import DifferentialGeometry.Geometry.Flow.RicciFlow.Solution.ProductQuotient
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.UniversalCover
 import DifferentialGeometry.Geometry.Curvature.DimensionThree.SurfaceProductCompactness
 import DifferentialGeometry.Geometry.Metric.RicciSoliton.UniversalCover
-import DifferentialGeometry.Topology.Covering.Smooth.LocalDiffeomorph
+import DifferentialGeometry.Topology.Covering.UniversalCover.LocalDiffeomorph
 import DifferentialGeometry.Geometry.Flow.RicciFlow.ShortTime.Compact
 import DifferentialGeometry.Geometry.Flow.RicciFlow.DimensionThree.CurvatureTrichotomy
 import DifferentialGeometry.Geometry.Curvature.SurfaceProductBounds

@@ -1,5 +1,5 @@
 import DifferentialGeometry.Geometry.Metric.HalfClosedJets
-import DifferentialGeometry.Topology.ClosureSupremum
+import DifferentialGeometry.Topology.Order.ClosureSupremum
 import DifferentialGeometry.Geometry.Metric.DerivativeENorm
 import DifferentialGeometry.Geometry.Metric.Convergence.DerivativeNorm.Restriction
 

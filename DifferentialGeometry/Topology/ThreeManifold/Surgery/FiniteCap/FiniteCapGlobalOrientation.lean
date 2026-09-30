@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.FiniteCapOverlapCoordinates
 import DifferentialGeometry.Topology.ThreeManifold.Surgery.FiniteCap.CuttingAnnulusOrientation
-import DifferentialGeometry.Topology.Manifold.SmoothOrientationOpen
+import DifferentialGeometry.Topology.Manifold.SmoothOrientation.Open
 
 set_option autoImplicit false
 noncomputable section

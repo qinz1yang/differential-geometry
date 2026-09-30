@@ -1,6 +1,6 @@
 import DifferentialGeometry.Topology.PiecewiseLinear.BallReplacement
 import DifferentialGeometry.Topology.PiecewiseLinear.HandleDecompositionOfEdgeCollars
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Deletion
 import DifferentialGeometry.Topology.PiecewiseLinear.SimplexBall
 import DifferentialGeometry.Topology.PiecewiseLinear.SphericalDiskComplement
 import DifferentialGeometry.Topology.PiecewiseLinear.SplittingDiskRim

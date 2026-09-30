@@ -2,7 +2,7 @@ import DifferentialGeometry.Topology.PiecewiseLinear.CircleArcNeighborhood
 import DifferentialGeometry.Topology.PiecewiseLinear.CrossingTraceCircles
 import DifferentialGeometry.Topology.PiecewiseLinear.PLSphereLocallyPlanar
 import DifferentialGeometry.Topology.PiecewiseLinear.ExistsGeneralPositionSolidTorusRelative
-import DifferentialGeometry.Topology.PiecewiseLinear.LoopTheorem.BranchDeletion
+import DifferentialGeometry.Topology.PiecewiseLinear.SingularDisk.Branch.Deletion
 
 open Set Topology
 

@@ -1,4 +1,4 @@
-import DifferentialGeometry.Topology.PiecewiseLinear.Section34SynchronizedShellTraces
+import DifferentialGeometry.Topology.PiecewiseLinear.Annulus.ExteriorShellTraces
 
 open Set
 
